@@ -1,12 +1,12 @@
 {
   "activity": {
     "owner": {
-      "id": "codex-specs-design-author",
-      "role": "design"
+      "id": "independent-full-specs-final-model-reviewer",
+      "role": "review"
     },
-    "reason": "Route: M5 independently approved. Reconcile M6 model provenance and current governance with the approved complete retirement before final source deletion; requirements and Delivery allocation remain unchanged.",
-    "stage": "design",
-    "status": "in-progress"
+    "reason": "Route: final M6 current-owner/provenance/governance package ready for exact-basis Design reassessment and unchanged Delivery reliance assessment before deletion.",
+    "stage": "design-review",
+    "status": "ready"
   },
   "applicability": [
     {
@@ -20,11 +20,11 @@
     },
     {
       "actor": {
-        "id": "codex-full-specs-implement",
-        "role": "implement"
+        "id": "codex-specs-design-author",
+        "role": "design"
       },
       "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/evidence.json",
-      "reason": "Current M5 implementation and corrected proof inspected.",
+      "reason": "Exact M6 source/current owner reconciliation authoring evidence.",
       "value": "current"
     },
     {
@@ -47,21 +47,21 @@
     },
     {
       "actor": {
-        "id": "independent-full-specs-design-reviewer",
-        "role": "review"
+        "id": "codex-specs-design-author",
+        "role": "design"
       },
       "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/design-review-full-specs-reconciled.json",
-      "reason": "Exact corrected owner package reassessed after all required preservation findings; complete scoped direction remains applicable.",
-      "value": "current"
+      "reason": "Final M6 model provenance/current-authority edits change exact subjects; original judgments remain historical. Independent current-basis Design and unchanged Delivery allocation assessment required before final deletion reliance.",
+      "value": "stale"
     },
     {
       "actor": {
-        "id": "independent-full-specs-delivery-reviewer",
-        "role": "review"
+        "id": "codex-specs-design-author",
+        "role": "design"
       },
       "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/delivery-review-full-specs.json",
-      "reason": "Independent complete primary-plan sequencing/proof judgment against exact current approved Design and Proposal. No implementation/readiness or downstream authorization claim.",
-      "value": "current"
+      "reason": "Final M6 model provenance/current-authority edits change exact subjects; original judgments remain historical. Independent current-basis Design and unchanged Delivery allocation assessment required before final deletion reliance.",
+      "value": "stale"
     },
     {
       "actor": {
@@ -152,21 +152,21 @@
     {
       "id": "system",
       "subject": {
-        "identity": "sha256:e3e435a9fff5c3a5b787af3e8aab1a4b02795613edd4593b34205f2a3f3fc5da",
+        "identity": "sha256:d6c35b64cc3ea5ff9b170124fda92c4d16658974859266b50b5852273d10d63d",
         "path": "docs/design/system.md"
       }
     },
     {
       "id": "skill",
       "subject": {
-        "identity": "sha256:ff0b198f8bab40a9b0a07d9bac4c961ef9ad45e6f094edcf190069cf6b6bfbce",
+        "identity": "sha256:ad80a8e44a1f3c2bcc5c79fa06e5b0ba6e62b248e66a8105a458f3505f68145e",
         "path": "docs/design/skill/skill.md"
       }
     },
     {
       "id": "cli",
       "subject": {
-        "identity": "sha256:88ec93a42cb25e040afffdea8462424d54c797d1147fea4b3d28cb430d444ad2",
+        "identity": "sha256:d5732348725e6dfaefec6a423ca51d1a66f674b884917e39a8e073ba56d6c168",
         "path": "docs/design/cli/cli.md"
       }
     },
@@ -180,21 +180,21 @@
     {
       "id": "workflow",
       "subject": {
-        "identity": "sha256:e4953b253ffe955d4ff3beacde0076c927ece9b5858b31a31b8c30f8cc637e50",
+        "identity": "sha256:ca2ba146c7cd45409b8b37a22d2baece26efed668f3ddad9309f495056ee1623",
         "path": "docs/design/skill/workflow.md"
       }
     },
     {
       "id": "design",
       "subject": {
-        "identity": "sha256:dce9c0f117ce3f0613cc155924a7a2c6d5ebd75cea54ce9fdbbfbd7995b8295c",
+        "identity": "sha256:d787cece629dd7eed0a12c53366a5d41aa52f59d5c1250881550b5eebe04ff0a",
         "path": "docs/design/skill/design.md"
       }
     },
     {
       "id": "assessment",
       "subject": {
-        "identity": "sha256:5f8a1cd6360df6f769c60fadab3aae95dce6b229dadb74b05013e08ece77f792",
+        "identity": "sha256:ae3b59ec189fd66962ddb3f50a4c0e48422fc9a1086aae641c54dd1481fd715b",
         "path": "docs/design/skill/assessment.md"
       }
     },
@@ -215,21 +215,21 @@
     {
       "id": "validation",
       "subject": {
-        "identity": "sha256:90e00cf969ff8f6c7cfb59f6e31e323ff5642f31189e55cee7e5240b96e1e86d",
+        "identity": "sha256:a8e0b1f979c2eb004e0a370a944895df81b29d093543b1a3913d26efb6c61607",
         "path": "docs/design/engineering/validation.md"
       }
     },
     {
       "id": "packaging",
       "subject": {
-        "identity": "sha256:30110347de1ebc23fd6406963b6cc3d0e22e632fd5e1e7ef040298ba9e1f5a92",
+        "identity": "sha256:6dfe2436431bc52be7b3715e9249559bb7a893b08f6211e0a43b1a936b6096fd",
         "path": "docs/design/engineering/packaging.md"
       }
     },
     {
       "id": "release",
       "subject": {
-        "identity": "sha256:445fcce43479c00e703dd0ec37df10d072017eff1843acc68bad5c7ca1165a26",
+        "identity": "sha256:4e64ece2c8b1147778fa31becc2ecb1d08469b7610cf53d29ecf40b49865441e",
         "path": "docs/design/engineering/release.md"
       }
     }

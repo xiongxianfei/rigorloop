@@ -424,6 +424,70 @@
         }
       ],
       "summary": "260 current population files reconciled,16 retired authoring cases and exclusive validators removed, current assets and synthetic report protection retained. Actual candidate and final integrated CI passed."
+    },
+    {
+      "actor": {
+        "id": "codex-specs-design-author",
+        "role": "design"
+      },
+      "id": "m6-design-reconciliation",
+      "procedure": "Verify exact111 remaining spec bytes against baseline; map27 coupled architecture/ADR sources, reconcile model historical provenance/current governance and run12-model structure check.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:417264e528358a41faecf5c0601bb5f4a5c2cc46e17f6149acd32a478bc2d8bd",
+          "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m6-design-reconciliation.json"
+        },
+        {
+          "identity": "sha256:d6c35b64cc3ea5ff9b170124fda92c4d16658974859266b50b5852273d10d63d",
+          "path": "docs/design/system.md"
+        },
+        {
+          "identity": "sha256:ad80a8e44a1f3c2bcc5c79fa06e5b0ba6e62b248e66a8105a458f3505f68145e",
+          "path": "docs/design/skill/skill.md"
+        },
+        {
+          "identity": "sha256:d5732348725e6dfaefec6a423ca51d1a66f674b884917e39a8e073ba56d6c168",
+          "path": "docs/design/cli/cli.md"
+        },
+        {
+          "identity": "sha256:5cc2d2850fbc4147b1bd123a1f36c3f88baa49d4b698985bee00a6975ed03b4b",
+          "path": "docs/design/engineering/engineering.md"
+        },
+        {
+          "identity": "sha256:ca2ba146c7cd45409b8b37a22d2baece26efed668f3ddad9309f495056ee1623",
+          "path": "docs/design/skill/workflow.md"
+        },
+        {
+          "identity": "sha256:d787cece629dd7eed0a12c53366a5d41aa52f59d5c1250881550b5eebe04ff0a",
+          "path": "docs/design/skill/design.md"
+        },
+        {
+          "identity": "sha256:ae3b59ec189fd66962ddb3f50a4c0e48422fc9a1086aae641c54dd1481fd715b",
+          "path": "docs/design/skill/assessment.md"
+        },
+        {
+          "identity": "sha256:47f878a9d343a531d459abd5d4648a6389842dee771007c94ce672493ffaaab1",
+          "path": "docs/design/cli/records.md"
+        },
+        {
+          "identity": "sha256:756a282dbfe5f363eb4eb39986e0f68cf607501bfb9de2a98d96de66b0819578",
+          "path": "docs/design/cli/installation.md"
+        },
+        {
+          "identity": "sha256:a8e0b1f979c2eb004e0a370a944895df81b29d093543b1a3913d26efb6c61607",
+          "path": "docs/design/engineering/validation.md"
+        },
+        {
+          "identity": "sha256:6dfe2436431bc52be7b3715e9249559bb7a893b08f6211e0a43b1a936b6096fd",
+          "path": "docs/design/engineering/packaging.md"
+        },
+        {
+          "identity": "sha256:4e64ece2c8b1147778fa31becc2ecb1d08469b7610cf53d29ecf40b49865441e",
+          "path": "docs/design/engineering/release.md"
+        }
+      ],
+      "summary": "Requirements/views/examples and Delivery allocation unchanged. Current model/governance basis requires independent refreshed assessment; source deletion and final integration remain outstanding."
     }
   ],
   "schema_version": 3

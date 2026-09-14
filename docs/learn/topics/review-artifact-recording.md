@@ -1,33 +1,7 @@
-# Review Artifact Recording
+# Review artifact recording
 
-This topic is curated learn guidance. Authoritative review-recording rules remain in `CONSTITUTION.md`, `docs/workflows.md`, `specs/rigorloop-workflow.md`, review skills, active plans, and review artifact validators.
+[Assessment](../../design/skill/assessment.md) owns finding meaning and independent disposition; [Records](../../design/cli/records.md) owns the current stored grammar. Use the public CLI's targeted review and finding commands for governed recording, with exact subjects and current revision.
 
-## 2026-05-20: Start Material Findings With Parser-Owned Fields
+Record a stable finding identity, severity, location, evidence, required outcome and safe resolution path before relying on a review. Human-readable prose must not replace required structured fields. Preserve the finding's origin and let its reporter assess resolution.
 
-- Source session: `docs/learn/sessions/2026-05-20-review-artifact-field-shape.md`
-- Primary classification: `durable-lesson`
-- Secondary routes: none
-
-Material findings are not only readable Markdown. They are parsed records.
-
-When recording a material finding, create the machine-readable field block before adding explanatory prose:
-
-```text
-Finding ID:
-Severity:
-Location:
-Evidence:
-Required outcome:
-Safe resolution path:
-```
-
-The root cause of the 2026-05-20 review artifact miss was source-shape substitution: the finding had the right human concepts, but they were written as prose bullets, so `review-log.md` and `review-resolution.md` referenced a Finding ID that the detailed review record did not expose as `Finding ID:`.
-
-Best practice:
-
-- draft from the exact field labels first;
-- only then add narrative context;
-- before linking a finding from `review-log.md` or `review-resolution.md`, confirm the detailed review record contains literal `Finding ID: <id>`;
-- run `python scripts/validate-review-artifacts.py --mode structure docs/changes/<change-id>` while findings remain open.
-
-Use closeout mode only when review-resolution is intentionally closed.
+The [original field-shape incident](../sessions/2026-05-20-review-artifact-field-shape.md) motivates this lesson. Its Markdown ledger/parser and old validation command are retired; that historical procedure does not govern current recording.
