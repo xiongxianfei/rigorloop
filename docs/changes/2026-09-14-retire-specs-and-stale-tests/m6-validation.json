@@ -1,0 +1,85 @@
+{
+  "milestone": "m6",
+  "baseline_commit": "3eefc51c",
+  "commands": [
+    {
+      "command": "python scripts/select-validation.py --mode local --json",
+      "exit_code": 0,
+      "result": "All current actual changes classified; no dropped source deletion.",
+      "log": "/tmp/full-specs-m6-local-final.json",
+      "log_sha256": "cb25e3b7e24cfe983295ae383458244af2ebfb74f97fd2ddd8b2bfa356d57f76"
+    },
+    {
+      "command": "python scripts/test-select-validation.py",
+      "exit_code": 0,
+      "result": "177 tests passed; six actual Git stage/trust partitions in added regression.",
+      "log": "/tmp/full-specs-m6-selector-final.log",
+      "log_sha256": "9adde916f13d02a374b32b8be54e6fdba08dfc2743a110c4a4e663094b61f5e3"
+    },
+    {
+      "command": "python scripts/test-validation-execution.py",
+      "exit_code": 0,
+      "result": "52 tests passed.",
+      "log": "/tmp/full-specs-m6-execution.log",
+      "log_sha256": "08c5b97b5d9b1de086924f8a6acead9afde4b734caa0d8f3f68feba0a064f283"
+    },
+    {
+      "command": "python scripts/validate-boundary-first.py --check",
+      "exit_code": 0,
+      "result": "12 current models, structure and references passed; no semantic approval claim.",
+      "log": "/tmp/full-specs-m6-models-final.log",
+      "log_sha256": "1c2b197de4ae823f5f214578f58536cd37d2bc60481610def47813bdfe81c719"
+    },
+    {
+      "command": "python scripts/validate-documentation-prose.py --mode enforce",
+      "exit_code": 0,
+      "result": "Default README/VISION scope passed; touched27Markdown additionally passed.",
+      "log": "/tmp/full-specs-m6-prose-final.log",
+      "log_sha256": "aad15dbbd7c80f3224c0b9f91180b5ab44dd774caa53c67098e770ca1f615d0d"
+    },
+    {
+      "command": "python scripts/build-adapters.py --check",
+      "exit_code": 0,
+      "result": "Current generated output synchronized.",
+      "log": "/tmp/full-specs-m6-build.log",
+      "log_sha256": "43ce2eb9750b9a03de563b4a9242ac46151b6a870f322d9c1fb22a7050c2bcff"
+    },
+    {
+      "command": "python scripts/validate-guide-system.py",
+      "exit_code": 0,
+      "result": "Current guide ownership checks passed.",
+      "log": "/tmp/full-specs-m6-guides-final.log",
+      "log_sha256": "30b10cb627e19c4554967d541f14e2ba18919ab60193d19e9352ed5a5764da1d"
+    },
+    {
+      "command": "npm test --prefix packages/rigorloop",
+      "exit_code": 0,
+      "result": "419 current Node tests passed.",
+      "log": "/tmp/full-specs-m6-npm.log",
+      "log_sha256": "4e3ae10ed1ee95b0295a42b7238617c91bbf292f28148c29e2ca8b16507b04df"
+    },
+    {
+      "command": "python scripts/test-release-transaction.py ReleaseCandidateIntegrationTests.test_actual_candidate_build_and_packed_metadata_chain",
+      "exit_code": 0,
+      "result": "Actual current candidate build/qualification and packed CLI/install chain passed with specs, architecture and ADR trees absent; owned fixed0.5.1 fixture, no live publication.",
+      "log": "/tmp/full-specs-m6-candidate.log",
+      "log_sha256": "08a199684b3cfe8661436d3303107969f91d182bfd0f2b0be6fdfd43dbb0cf4f"
+    },
+    {
+      "command": "bash scripts/ci.sh --mode local --broad-smoke",
+      "exit_code": 0,
+      "result": "Complete selected plus required broad run passed.",
+      "log": "/tmp/full-specs-m6-ci-local.log",
+      "log_sha256": "ba9d543dd166c7fb032cd2d751528305993a4327c06a2750de498c66cb7cc7c8"
+    }
+  ],
+  "corrections": [
+    "Initial real Git regression failed all six stage/trust partitions: general discovery omitted deleted paths and rename sources. Corrected with deletion-inclusive no-rename discovery; staged missing index entry now proves original HEAD source.",
+    "Initial full selector:175pass/2fail due deleted repository spec fixture/word row. Customer fixture now isolated, stale literal row retired, all177passed. PRtemplate route also proved failing before classifying its current contributor purpose.",
+    "Map ownership sentence omitted exact current guide boundary; restored explicit Workflow/CLI/route ownership and guide/prose checks passed.",
+    "Initial combined local+broad run failed only the existing optional-discovery map orientation case; restored current Explore/Research links and optional owner handoff. Focused case, guide/prose and complete combined rerun passed; original failure log retained at /tmp/full-specs-m6-ci-local-initial.log."
+  ],
+  "limitations": [
+    "Local runs are not hostedCI. Model/prose/record structure success is not independent semantic approval. Historical proof stays scoped to its exact earlier subject. Final review and distinctVerify remain separate."
+  ]
+}

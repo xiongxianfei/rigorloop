@@ -488,6 +488,50 @@
         }
       ],
       "summary": "Corrected observability owner and unrecoverable learn source.10 historical positive v2 examples additionally dispositioned, current examples/negative proof retained. Requirement IDs/behavior/Delivery allocation unchanged; independent reassessment required before deletion."
+    },
+    {
+      "actor": {
+        "id": "codex-full-specs-implement",
+        "role": "implement"
+      },
+      "id": "m6-implementation",
+      "procedure": "Execute M6 TG-07/08 and final integrated allocation; exact actual commands, logs, identity and source/test disposition are in the registered subjects.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:354031d4d2b78832532bbe4fa3d28c9ee2536cbeacff304e242957428ad5ecbf",
+          "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m6-source-removal.json"
+        },
+        {
+          "identity": "sha256:267a0433a708a383353fe963bf78080b163cc3337b08417f18486dc1bdf6626c",
+          "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m6-validation.json"
+        },
+        {
+          "identity": "sha256:68cc9ca9614502380db7950fa1516a2a1ef91236dfec454796189f9bf5ac2b25",
+          "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m6-implementation.md"
+        },
+        {
+          "identity": "sha256:2a6bcfe20b9c8796101168b49c64be8fa114cbe0587e5f0292f843a2727c8b72",
+          "path": "scripts/validation_selection.py"
+        },
+        {
+          "identity": "sha256:76b1fa9cee04586fa87ad37d04c72d749861c1d6206c39f6ad7e489d88101ac8",
+          "path": "scripts/validation_execution.py"
+        },
+        {
+          "identity": "sha256:084f2de3e824b7287c28450e62a84beabb25091d221d0b79493c3d016d5473fd",
+          "path": "scripts/test-select-validation.py"
+        },
+        {
+          "identity": "sha256:b332586a3b72717e63743365937b4e852af25cc1d35a5aceac09919923700ee2",
+          "path": "scripts/release_candidate_tests.py"
+        },
+        {
+          "identity": "sha256:8fc2ed428aece2aec213fbd9686f07ec1c01491ad550c37f325b91af33c010ce",
+          "path": "docs/project-map.md"
+        }
+      ],
+      "summary": "148 selected source/example removals plus retired token guidance; complete current source/protection reconciliation and meaningful negative proof. Local selected+broad validation passed; actual committed PR-range proof remains pending before milestone review."
     }
   ],
   "schema_version": 3

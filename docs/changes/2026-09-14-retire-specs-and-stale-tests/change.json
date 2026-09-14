@@ -1,12 +1,12 @@
 {
   "activity": {
     "owner": {
-      "id": "independent-full-specs-final-model-reviewer",
-      "role": "review"
+      "id": "codex-full-specs-implement",
+      "role": "implement"
     },
-    "reason": "Route: recorded M6 provenance/owner findings corrected; final exact package and historical example disposition ready for independent reassessment and separate unchanged Delivery reliance.",
-    "stage": "design-review",
-    "status": "ready"
+    "reason": "Route: independently approved reconciled M6 Design and unchanged Delivery; all three authoring findings resolved. Execute final source removal, complete deletion/rename discovery and allocated integration proof.",
+    "stage": "implement",
+    "status": "in-progress"
   },
   "applicability": [
     {
@@ -20,11 +20,11 @@
     },
     {
       "actor": {
-        "id": "codex-specs-design-author",
-        "role": "design"
+        "id": "codex-full-specs-implement",
+        "role": "implement"
       },
       "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/evidence.json",
-      "reason": "Exact M6 source/current owner reconciliation authoring evidence.",
+      "reason": "Exact M6 implementation/source/proof subjects inspected; current execution evidence recorded without claiming review or final readiness.",
       "value": "current"
     },
     {

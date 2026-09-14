@@ -1020,27 +1020,17 @@ RETIRED_SPEC_READ_PATHS = frozenset({
 })
 
 
-def _retired_spec_read_deletions(repo_root: Path, *revisions: str) -> list[str]:
-    # Keep general discovery unchanged; this retirement's exact deleted inputs
-    # must still select the current protective suites in local and PR flows.
-    return [path for path in _git_lines(
-        repo_root, "diff", "--name-only", "--diff-filter=D", *revisions,
-        "--", *sorted(RETIRED_SPEC_READ_PATHS),
-    ) if path in RETIRED_SPEC_READ_PATHS]
-
-
 def _git_local_changed_paths(repo_root: Path) -> list[str]:
-    tracked = _git_lines(repo_root, "diff", "--name-only", "--diff-filter=ACMRT", "HEAD", "--", ".")
-    staged = _git_lines(repo_root, "diff", "--cached", "--name-only", "--diff-filter=ACMRT", "--", ".")
+    # Both rename endpoints need classification; unknown/deleted inputs must
+    # not disappear merely because Git found a similar surviving destination.
+    tracked = _git_lines(repo_root, "diff", "--name-only", "--no-renames", "--diff-filter=ACDMRT", "HEAD", "--", ".")
+    staged = _git_lines(repo_root, "diff", "--cached", "--name-only", "--no-renames", "--diff-filter=ACDMRT", "--", ".")
     untracked = _git_lines(repo_root, "ls-files", "--others", "--exclude-standard")
-    return _dedupe([*tracked, *staged, *untracked,
-                    *_retired_spec_read_deletions(repo_root, "HEAD"),
-                    *_retired_spec_read_deletions(repo_root, "--cached")])
+    return _dedupe([*tracked, *staged, *untracked])
 
 
 def _git_range_changed_paths(repo_root: Path, base: str, head: str) -> list[str]:
-    return _dedupe([*_git_lines(repo_root, "diff", "--name-only", "--diff-filter=ACMRT", base, head, "--", "."),
-                    *_retired_spec_read_deletions(repo_root, base, head)])
+    return _git_lines(repo_root, "diff", "--name-only", "--no-renames", "--diff-filter=ACDMRT", base, head, "--", ".")
 
 
 def _resolve_changed_sections(
@@ -1824,6 +1814,10 @@ def _proven_prose_deletion(path: str, *, repo_root: Path, tracked_deletion: bool
         return False
     if tracked_deletion:
         return True
+    # A staged deletion has left the index, but its HEAD entry still proves
+    # that the absent path is an actual tracked removal.
+    if path in _git_lines(repo_root, "ls-tree", "-r", "--name-only", "HEAD", "--", path):
+        return True
     result = subprocess.run(
         ["git", "log", "-1", "--format=", "--name-status", "--no-renames", "HEAD", "--", path],
         cwd=repo_root, capture_output=True, text=True,
@@ -2125,7 +2119,7 @@ def _path_category(path: str) -> str | None:
         return "release"
     if path == "docs/workflows.md":
         return "workflow-guidance"
-    if path == "CONTRIBUTING.md":
+    if path in {"CONTRIBUTING.md", ".github/pull_request_template.md"}:
         return "contributor-guidance"
     if path in {".prettierrc.json", ".markdownlint.json"}:
         return "validator-documentation-prose"

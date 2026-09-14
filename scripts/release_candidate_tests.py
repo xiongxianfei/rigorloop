@@ -307,6 +307,13 @@ class ReleaseCandidateIntegrationTests(unittest.TestCase):
             for relative in ['skills', 'templates/shared', 'packages/rigorloop/dist', 'scripts/adapter_templates', 'docs/design', 'tests/fixtures', 'packages/rigorloop/test']:
                 shutil.rmtree(source / relative)
                 shutil.copytree(repository / relative, source / relative)
+            # A pre-commit no-spec run must not silently restore retired trees
+            # from the clone's HEAD. Mirror their current absence in this owned fixture.
+            retired_trees = ['specs', 'docs/architecture', 'docs/adr']
+            for relative in retired_trees:
+                if not (repository / relative).exists():
+                    shutil.rmtree(source / relative, ignore_errors=True)
+                    self.assertFalse((source / relative).exists())
             for relative in ['AGENTS.md', 'CONSTITUTION.md', 'VISION.md', 'README.md', 'packages/rigorloop/README.md', 'dist/adapters/manifest.yaml', 'dist/adapters/README.md']:
                 shutil.copyfile(repository / relative, source / relative)
             # This scenario releases the fixed 0.5.1 fixture, independently of
@@ -327,6 +334,7 @@ class ReleaseCandidateIntegrationTests(unittest.TestCase):
             git('checkout', '-B', 'main')
             git('add', 'scripts', 'skills', 'templates/shared', 'docs/releases/v0.5.1.md', '.github/workflows/release.yml',
                 'packages/rigorloop', 'dist/adapters', 'docs/design', 'tests/fixtures', 'AGENTS.md', 'CONSTITUTION.md', 'VISION.md', 'README.md')
+            git('add', '-u')
             git('-c', 'user.name=Release Fixture', '-c', 'user.email=fixture@example.invalid',
                 '-c', 'commit.gpgsign=false', 'commit', '--allow-empty', '-m', 'Reviewed source fixture')
             commit, ref = git('rev-parse', 'HEAD'), git('symbolic-ref', 'HEAD')
