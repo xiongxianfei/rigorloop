@@ -20,8 +20,15 @@
         "role": "review"
       },
       "required_outcome": "Update guide validation to protect current plan-index versus owning-change state separation without requiring historical YAML wording. Add failing-before/passing-after current-only index proof and retain negative detection for missing navigation/owner policy; rerun complete guide suite and independently reassess.",
-      "resolution": null,
-      "state": "open",
+      "resolution": {
+        "actor": {
+          "id": "independent-m2-code-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [],
+        "rationale": "Frozen78727a4e replaces historical change.yaml obligation with current change.json while retaining navigation-index/owning-change checks. Added current-only index case passes and loss-of-policy case fails. Reviewer independently reran complete11guide tests successfully; public validator and recorded post-CI supplement passed."
+      },
+      "state": "resolved",
       "subjects": [
         {
           "identity": "sha256:254453eb105fe95e6101bc0cd08f207c8ffb6efe4202daba3c1ce4ba8183f043",

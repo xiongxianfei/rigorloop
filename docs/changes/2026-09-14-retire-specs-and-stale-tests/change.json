@@ -1,11 +1,11 @@
 {
   "activity": {
     "owner": {
-      "id": "spec-read-retirement-review",
-      "role": "review"
+      "id": "codex-full-specs-implement",
+      "role": "implement"
     },
-    "reason": "Route: corrected M2 with passing focused and selected evidence ready for independent Code Review reassessment.",
-    "stage": "code-review",
+    "reason": "Route: M2 corrected independent review approved and finding resolved. Continue user-authorized M3 CLI/package/release cleanup.",
+    "stage": "implement",
     "status": "in-progress"
   },
   "applicability": [
@@ -88,6 +88,15 @@
       },
       "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/code-review-m2-first.json",
       "reason": "Exact current guide-validator failure directly reproduced before production correction.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "independent-m2-code-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/code-review-m2-corrected.json",
+      "reason": "Frozen corrected M2 and scoped actual evidence independently assessed; no required milestone finding remains.",
       "value": "current"
     }
   ],
@@ -224,6 +233,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/code-review-m2-first.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/code-review-m2-corrected.json"
     }
   ],
   "schema_version": 3,
@@ -255,7 +268,7 @@
         "RC-SR-22",
         "RC-SR-23"
       ],
-      "status": "in-progress"
+      "status": "completed"
     },
     {
       "id": "m3",
@@ -270,7 +283,7 @@
         "DIST-SR-24",
         "REL-SR-26"
       ],
-      "status": "pending"
+      "status": "in-progress"
     },
     {
       "id": "m4",

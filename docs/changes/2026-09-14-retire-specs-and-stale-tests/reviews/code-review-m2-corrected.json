@@ -1,0 +1,116 @@
+{
+  "assessment_scope": "Complete corrected M2 milestone Code Review and M1 interaction assessment; not final six-milestone whole-change review.",
+  "change_id": "2026-09-14-retire-specs-and-stale-tests",
+  "contributors": [
+    {
+      "id": "codex-m2-implementer",
+      "role": "implement"
+    }
+  ],
+  "findings": [],
+  "id": "code-review-m2-corrected",
+  "independence_basis": "Separate nonauthor reviewer inspected full89c91c9d..78727a4eM2diff, current/removed proof mechanisms, approved M2 scope and six actual validation logs; reproduced initial guide defect and independently reran corrected guide suite. No implementation authored by reviewer.",
+  "judgment": "approved",
+  "limitations": [
+    "No whole-repository audit completion, final Verify, branch/PR readiness, hosted CI or publication approval is claimed.",
+    "Historical migration fixture records are no longer executable inputs of retired tests but retain original bytes; remaining full-repository member disposition stays in M5."
+  ],
+  "rationale": [
+    "Scope/spec alignment: pass. Historical ledger/corpus/size/scaffold assertions and unused test-only parser/loading helpers have explicit retirement; portable feature/proof grammar remains separately protected by M1 structural tests. No public result/authority vocabulary is retired as incidental wording.",
+    "Coverage and preserved failures: pass. Current297skill tests retain specialist operation/unknown-value, resource-loading, output-group, write/proof/retry identity, Verify basis, PR suffix, CI repair and package parity proof. Removed methods and affected helper/generated-fixture groups are recorded; reduced counts alone are not equivalence evidence.",
+    "Published-skill semantics: pass. Six actual shared-scan consumers now defer adoption to selected project authority, retain malformed/unknown failure and Design Review ownership, and do not infer activation from installation/history. Explicit retained-customer legacy source reconciliation remains scoped, not blanket repository activation. Bugfix removes compulsory measurement while preserving complete behavior, safety and parity.",
+    "Guide/error behavior: pass after correction. Workflow/Assessment current owners are checked directly; current-only plan index accepts current record naming, missing navigation policy remains rejected. Reviewer independently ran python scripts/test-guide-system-validator.py:11passed; reported finding resolved.",
+    "Architecture, compatibility and security: pass. Existing capability/resource/projection owners remain; no new format, state owner or mutation permission introduced. Removed helpers have no normal validator callers; generated reference paths retain11projections. No credential/network or external integration changes.",
+    "Validation/derived currency: pass within M2. All6log hashes match recorded evidence;19canonical skills,297skill tests,11guide tests, projection validation and500selected CI rows passed. Final guide-only correction followed CI and received full affected-suite/public-validator rerun; unaffected prior evidence is explicitly bounded.",
+    "Handoff/current evidence: pass. M2 engineering is frozen and required finding resolved. Mutable routing/registry evidence is excluded from enduring engineering subject basis. Route may settle M2 and continue M3–M6; complete stale fixture inventory, all-specs removal, integrated final review and Verify remain downstream."
+  ],
+  "reviewer": {
+    "id": "independent-m2-code-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:509dbed62dfcc7e76c0bf6b9f73fdd1f98fd2e92c256c0d63557615273e39273",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m2-implementation.md"
+    },
+    {
+      "identity": "sha256:6fd14ac0fba4016d338ee2df329f4eba0a8e53a5a52b7d28df67ecdd76c72755",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m2-test-maintenance.json"
+    },
+    {
+      "identity": "sha256:6b9c35a4daa1ea4c998708a827cb6e88e9283f035936680ab9b3cc459ea8434b",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m2-validation.json"
+    },
+    {
+      "identity": "sha256:6decd4e4be579f273a2051ba005a6cb4830e7e2a0323f3444e77b9e43bba34bb",
+      "path": "scripts/skill_validation.py"
+    },
+    {
+      "identity": "sha256:f5a7941ed35cad94592cc85a1082e78f612c1739bb8d41f31a2ee9aa2c21aa08",
+      "path": "scripts/test-guide-system-validator.py"
+    },
+    {
+      "identity": "sha256:692053196f7fa4950a78ae72bf2bd13278af64ae79c4693ad708122089cc8136",
+      "path": "scripts/test-skill-validator.py"
+    },
+    {
+      "identity": "sha256:f933f576b5d827b54065fc2fe84481e985974169f40091b52f0f17aee8807e5b",
+      "path": "scripts/validate-guide-system.py"
+    },
+    {
+      "identity": "sha256:170ea2df25ee71ab3e27f26ab8290758d7a575bb1747d5b89c7eb45de7394dfc",
+      "path": "skills/bugfix/SKILL.md"
+    },
+    {
+      "identity": "sha256:30c094ea81e1b6cb875fd75430ee7b2721e3bdf93830c9953f2381d7c8d5cb23",
+      "path": "skills/code-review/SKILL.md"
+    },
+    {
+      "identity": "sha256:2888de55cc39d5a96d60e86b0f70821de86e4b2a41fd9218e0ad7748cd64e5dc",
+      "path": "skills/implement/SKILL.md"
+    },
+    {
+      "identity": "sha256:31022b5d36e3f9846c37900e3c94e23614156e9aae9eece0c778add4207b9a62",
+      "path": "skills/plan/SKILL.md"
+    },
+    {
+      "identity": "sha256:7ef76959ad5415890fffedead1af6fba55a39c849a8f9531329e855acd418143",
+      "path": "skills/route/SKILL.md"
+    },
+    {
+      "identity": "sha256:71e429d296885eb46f7c7e1903e6cc05b60c79d35e331a3a56d2b945fbaf2ef4",
+      "path": "skills/verify/SKILL.md"
+    },
+    {
+      "identity": "sha256:c18ccff73157195652ddad80e59446e1cfb1031e981712b9121413d47875b69f",
+      "path": "templates/shared/boundary-first-compact-scan.md"
+    },
+    {
+      "identity": "sha256:6d5736e2a2b01f76c09a027dd32498ed5e4454a3ab31c139643aba5d0ce9222c",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/design-review-full-specs-reconciled.json"
+    },
+    {
+      "identity": "sha256:4fe9ba5249200ec64b76158c490360e861393a585b2546f6401a59687bf5dcf2",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/delivery-review-full-specs.json"
+    },
+    {
+      "identity": "sha256:3e99392f5974d61f13f6c3bf8f5b616dbb5c6ca3a997f83a36e89ca43a7dd8e3",
+      "path": "docs/plans/2026-09-14-retire-specs-and-stale-tests.md"
+    },
+    {
+      "identity": "sha256:ff0b198f8bab40a9b0a07d9bac4c961ef9ad45e6f094edcf190069cf6b6bfbce",
+      "path": "docs/design/skill/skill.md"
+    },
+    {
+      "identity": "sha256:e4953b253ffe955d4ff3beacde0076c927ece9b5858b31a31b8c30f8cc637e50",
+      "path": "docs/design/skill/workflow.md"
+    },
+    {
+      "identity": "sha256:5f8a1cd6360df6f769c60fadab3aae95dce6b229dadb74b05013e08ece77f792",
+      "path": "docs/design/skill/assessment.md"
+    }
+  ],
+  "summary": "M2 retires obsolete skill instrumentation and reconciles current guidance while retaining specialist authority, result and resource protection.",
+  "target": "code"
+}
