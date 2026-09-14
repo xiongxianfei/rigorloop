@@ -1,3 +1,4 @@
+import {snapshotGitEnvironment,assertSnapshotRoot} from './record_snapshot_git.mjs';
 // Repository consumers share the CLI's bounded archive/header discriminator.
 import {execFileSync} from 'node:child_process';
 import {resolve} from 'node:path';
@@ -9,7 +10,8 @@ try{
  const root=resolve(rootArg);let reader=new RecordFiles(root);
  if(revision){
   if(!/^(?:[a-f0-9]{40}|[a-f0-9]{64})$/.test(revision))stop('invalid-input');
-  const git=args=>execFileSync('git',['-C',root,...args],{maxBuffer:MIB+1,timeout:10000,stdio:['ignore','pipe','pipe']});
+  assertSnapshotRoot(root);
+  const git=args=>execFileSync('git',['-C',root,...args],{env:snapshotGitEnvironment(),maxBuffer:MIB+1,timeout:10000,stdio:['ignore','pipe','pipe']});
   if(git(['rev-parse','--verify',`${revision}^{commit}`]).toString().trim()!==revision)stop('invalid-input');
   const entry=path=>{
    reader.path(path);

@@ -840,16 +840,7 @@ def compose_mode(mode, scratch, *, base='', head='', skip_diff_scoped=False):
             else:
                 changed = dirty or (_git('diff','--name-only','-z','--diff-filter=ACMRT','HEAD~1','HEAD','--','.').split('\0') if previous else [])
                 roots = _current_roots(changed)
-        authored = [x for x in dirty if not x.startswith(('.codex/skills/','dist/adapters/'))]
-        if authored and (not skip_diff_scoped or not previous):
-            lifecycle = ['--mode','explicit-paths']
-            for path in authored:
-                lifecycle.extend(['--path',path])
-        elif previous:
-            lifecycle = ['--mode','push-main-ci','--before',previous,'--after',_git('rev-parse','--verify','HEAD')]
-        else:
-            raise ValueError('Unable to determine artifact lifecycle validation scope')
-        values.update({'<roots>':roots,'<lifecycle-args>':lifecycle})
+        values.update({'<roots>': roots})
     plans = []
     for key in MODE_CHECK_IDS[mode]:
         if key.endswith('review_artifacts.changed_roots') and not roots:

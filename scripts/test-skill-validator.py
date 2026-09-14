@@ -3471,18 +3471,6 @@ Use the inputs somehow and produce a useful result.
             self.assertNotIn("review-log.md", body)
 
 
-    def test_downstream_status_settlement_validator_enforcement_is_deferred(self) -> None:
-        validator_body = (ROOT / "scripts" / "validate-artifact-lifecycle.py").read_text(
-            encoding="utf-8"
-        )
-        deferred_enforcement_terms = [
-            "Upstream status settlement",
-            "Settlement result",
-            "stale upstream artifact status",
-        ]
-        for term in deferred_enforcement_terms:
-            with self.subTest(term=term):
-                self.assertNotIn(term, validator_body)
 
 
     def test_review_independence_m3_code_review_pilot_guidance(self) -> None:

@@ -1882,6 +1882,7 @@ class PublishedEvidenceCloseoutTests(unittest.TestCase):
         self.assertEqual(before, after)
 
 
+from release_evidence_tests import ReleaseEvidenceTests
 from release_candidate_tests import ReleaseCandidateTests, ReleaseCandidateIntegrationTests, CurrentSourceQualificationTests  # noqa: E402
 
 

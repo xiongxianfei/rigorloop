@@ -21,17 +21,6 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 VALIDATOR = ROOT / "scripts" / "validate-change-metadata.py"
-QUERY_HELPER = ROOT / "scripts" / "query-change-record.py"
-FIXTURES = ROOT / "tests" / "fixtures" / "change-metadata"
-VALID_BASIC_FIXTURE = FIXTURES / "valid-basic" / "change.yaml"
-CLEAN_RECEIPT_ROOT = (
-    ROOT
-    / "tests"
-    / "fixtures"
-    / "review-artifacts"
-    / "valid-clean-receipt-root"
-    / "change.yaml"
-)
 SUITE_NAME = "test-change-metadata-validator"
 
 
@@ -43,14 +32,6 @@ class RunnerConfig:
     pattern: str | None
 
 
-def load_validator_module():
-    spec = importlib.util.spec_from_file_location("validate_change_metadata", VALIDATOR)
-    if spec is None or spec.loader is None:
-        raise RuntimeError("could not load validate-change-metadata.py")
-    module = importlib.util.module_from_spec(spec)
-    sys.modules[spec.name] = module
-    spec.loader.exec_module(module)
-    return module
 
 
 def run_validator(*targets: Path) -> subprocess.CompletedProcess[str]:
@@ -62,24 +43,6 @@ def run_validator(*targets: Path) -> subprocess.CompletedProcess[str]:
     )
 
 
-def run_query_change_record(
-    repo_root: Path,
-    change_id: str,
-    query: str,
-) -> subprocess.CompletedProcess[str]:
-    return subprocess.run(
-        [
-            sys.executable,
-            str(QUERY_HELPER),
-            change_id,
-            query,
-            "--repo-root",
-            str(repo_root),
-        ],
-        capture_output=True,
-        text=True,
-        cwd=ROOT,
-    )
 
 
 def parse_runner_args(argv: list[str]) -> tuple[RunnerConfig | None, int]:
@@ -243,24 +206,8 @@ def main(argv: list[str]) -> int:
 
 
 class ChangeMetadataValidatorFixtureTests(unittest.TestCase):
-    def assertPathPasses(self, target: Path) -> None:
-        result = run_validator(target)
-        self.assertEqual(
-            result.returncode,
-            0,
-            msg=f"expected '{target}' to pass\nstdout:\n{result.stdout}\nstderr:\n{result.stderr}",
-        )
 
 
-    def assertPathFails(self, target: Path, expected_text: str) -> None:
-        result = run_validator(target)
-        combined_output = f"{result.stdout}\n{result.stderr}"
-        self.assertNotEqual(
-            result.returncode,
-            0,
-            msg=f"expected '{target}' to fail",
-        )
-        self.assertIn(expected_text, combined_output)
 
 
     def test_retired_measurement_input_rejects_without_reading_or_writing(self):

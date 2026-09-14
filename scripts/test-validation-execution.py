@@ -797,7 +797,8 @@ class CompositionTests(unittest.TestCase):
                 self.assertIn(build.check_id,check.dependencies)
                 self.assertFalse(any(p.args[:2] == ['bash','scripts/ci.sh'] for p in plans))
             self.assertIn('rigorloop_cli.test',{p.check_id for p in plans})
-            self.assertIn('workflow_automation.engine_regression',{p.check_id for p in plans})
+            self.assertIn('main.governed_lifecycle_cli.validate',{p.check_id for p in plans})
+            self.assertIn('governed_lifecycle_cli_wrapper.test',{p.check_id for p in plans})
 
     def test_unknown_value_composed_mode_rejects(self):
         from validation_execution import compose_mode
