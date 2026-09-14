@@ -503,7 +503,7 @@
           "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m6-source-removal.json"
         },
         {
-          "identity": "sha256:c274e6acc359b6e6a658c329422d5403d34d34c4811c75894b026da26f48ac20",
+          "identity": "sha256:6d2197a709240d6749b63e90c17fd4fc8e06cda4835559c81435cdb1cfc06bee",
           "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m6-validation.json"
         },
         {
@@ -535,7 +535,7 @@
           "path": "docs/project-map.md"
         }
       ],
-      "summary": "148 selected source/example removals plus retired token guidance; complete current source/protection reconciliation and meaningful negative proof. Local selected+broad validation passed; actual committed PR-range proof remains pending before milestone review."
+      "summary": "148 selected source/example removals plus retired token guidance; complete current source/protection reconciliation and meaningful negative proof. Actual committed PR range and local broad validation passed."
     }
   ],
   "schema_version": 3

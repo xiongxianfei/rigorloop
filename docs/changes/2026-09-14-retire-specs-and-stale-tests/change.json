@@ -1,12 +1,12 @@
 {
   "activity": {
     "owner": {
-      "id": "codex-full-specs-implement",
-      "role": "implement"
+      "id": "independent-full-specs-m6-reviewer",
+      "role": "review"
     },
-    "reason": "Route: independently approved reconciled M6 Design and unchanged Delivery; all three authoring findings resolved. Execute final source removal, complete deletion/rename discovery and allocated integration proof.",
-    "stage": "implement",
-    "status": "in-progress"
+    "reason": "Route: M6 complete source and test reconciliation, corrected selector/composer integration, current local+broad and exact committed PR-range proof passed. Independent complete M6 review required before milestone closeout and fresh whole-change review.",
+    "stage": "code-review",
+    "status": "ready"
   },
   "applicability": [
     {
