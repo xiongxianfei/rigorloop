@@ -1,12 +1,12 @@
 {
   "activity": {
     "owner": {
-      "id": "codex-full-specs-implement",
-      "role": "implement"
+      "id": "independent-full-specs-m5-reviewer",
+      "role": "review"
     },
-    "reason": "Route: corrected M4 independently approved and snapshot finding resolved; continue authorized M5 complete test/fixture assessment.",
-    "stage": "implement",
-    "status": "in-progress"
+    "reason": "Route: complete M5 population audit and required corrected proof passed; independent milestone assessment required.",
+    "stage": "code-review",
+    "status": "ready"
   },
   "applicability": [
     {
@@ -24,7 +24,7 @@
         "role": "implement"
       },
       "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/evidence.json",
-      "reason": "Exact M4 implementation and corrected proof inspected.",
+      "reason": "Current M5 implementation and corrected proof inspected.",
       "value": "current"
     },
     {

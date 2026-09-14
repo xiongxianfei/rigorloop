@@ -1,13 +1,13 @@
 ---
-name: spec
+name: proposal
 description: Use this fixture when validating generated output asset presence.
 ---
 
-# Spec
+# Proposal
 
 ## Resource map
 
-- COPY `assets/spec-skeleton.md` when creating a new spec.
+- COPY `assets/proposal-skeleton.md` when creating a new proposal.
   Fill: status, summary, requirements, acceptance criteria, decision log.
   Do not emit unfilled placeholders.
 

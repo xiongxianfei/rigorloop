@@ -384,6 +384,46 @@
         }
       ],
       "summary": "109 retired sources/fixtures reconciled; current release checklist and snapshot/discovery checks pass, including 176 selector, 419 Node, 176 release and 52 executor tests."
+    },
+    {
+      "actor": {
+        "id": "codex-full-specs-implement",
+        "role": "implement"
+      },
+      "id": "m5-test-maintenance",
+      "procedure": "Complete tracked test/helper/fixture and generated-domain audit; candidate fixture correction after actual failed qualification.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:149262038e392538f8c0d6d82f246cbc9a611ac0d0e792134202504d401fb44e",
+          "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m5-test-maintenance.json"
+        }
+      ],
+      "summary": "260 current population files assessed;16 exclusive retired authoring tests removed. Current asset protection retained; candidate now includes matching current fixtures. Actual corrected candidate integration passed."
+    },
+    {
+      "actor": {
+        "id": "codex-full-specs-implement",
+        "role": "implement"
+      },
+      "id": "m5-validation",
+      "procedure": "Run all required M5 selector/executor/local+broad checks and focused transferred protection; reproduce and correct candidate fixture mismatch. Exact commands/logs in m5-validation.json.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:162b34cfae7a2e2544996158e60ea3fa33849d1ec704e738b5b292d0bac14cb9",
+          "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m5-validation.json"
+        },
+        {
+          "identity": "sha256:5466b6b4128dc0ca36625b6984109a491b17b5339bfd874326cea22e904e2b21",
+          "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m5-implementation.md"
+        },
+        {
+          "identity": "sha256:149262038e392538f8c0d6d82f246cbc9a611ac0d0e792134202504d401fb44e",
+          "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m5-test-maintenance.json"
+        }
+      ],
+      "summary": "260 current population files reconciled,16 retired authoring cases and exclusive validators removed, current assets and synthetic report protection retained. Actual candidate and final integrated CI passed."
     }
   ],
   "schema_version": 3

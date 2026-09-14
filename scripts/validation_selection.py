@@ -1308,7 +1308,7 @@ def _apply_path_selection(
         _add_check(
             selected,
             "current_records.validate",
-            "Changed lifecycle artifact requires artifact lifecycle validation.",
+            "Changed governed artifact requires current record discovery and validation.",
             path=path,
         )
         return
@@ -1318,7 +1318,7 @@ def _apply_path_selection(
         _add_check(
             selected,
             "current_records.validate",
-            "Changed architecture diagram requires validation of its architecture package context.",
+            "Changed architecture diagram requires current record discovery and validation.",
             path=architecture_doc or path,
         )
         return
@@ -1334,20 +1334,20 @@ def _apply_path_selection(
             _add_check(
                 selected,
                 "current_records.validate",
-                "Changed plan index surface requires paired plan index surface lifecycle validation.",
+                "Changed plan navigation requires current record discovery and validation.",
                 path=index_path,
             )
         _add_check(
             selected,
             "current_records.validate",
-            "Changed plan index requires artifact lifecycle validation with the related plan context.",
+            "Changed plan navigation requires current record discovery and validation.",
             path=path,
         )
         for context_path in context_paths:
             _add_check(
                 selected,
                 "current_records.validate",
-                "Changed plan index requires artifact lifecycle validation with the related plan context.",
+                "Changed plan navigation requires current record discovery and validation.",
                 path=context_path,
             )
         return
@@ -1428,7 +1428,7 @@ def _apply_path_selection(
         if target.exists() or target.is_symlink():
             blocking_results.append({"code": "retired-spec-read-input", "path": path,
                                      "message": "Retired spec-read instrumentation must not be recreated without a current contract and catalog entry."})
-        for check_id in ("selector.regression", "skills.regression", "skills.regression"):
+        for check_id in ("selector.regression", "skills.regression"):
             _add_check(selected, check_id,
                        "Retired fixed-log paths retain current selector and requirement-fidelity protection.")
         return
@@ -1609,7 +1609,7 @@ def _apply_path_selection(
         _add_check(
             selected,
             "governed_lifecycle_cli_wrapper.test",
-            "Changed artifact lifecycle validator requires lifecycle regression fixtures.",
+            "Changed artifact lifecycle validator requires current discovery and release regression proof.",
         )
         return
 
@@ -1617,7 +1617,7 @@ def _apply_path_selection(
         _add_check(
             selected,
             "governed_lifecycle_cli_wrapper.test",
-            "Changed artifact lifecycle fixture requires lifecycle regression fixtures.",
+            "Changed artifact lifecycle fixture requires current discovery and release regression proof.",
         )
         return
 
@@ -1631,12 +1631,12 @@ def _apply_path_selection(
         _add_check(
             selected,
             "governed_lifecycle_cli_wrapper.test",
-            "Changed retained change fixture rationale requires lifecycle regression fixtures.",
+            "Changed retained change fixture rationale requires current discovery and release regression proof.",
         )
         _add_check(
             selected,
             "current_records.validate",
-            "Changed retained change fixture rationale requires lifecycle validation.",
+            "Changed retained change fixture rationale requires current record discovery and validation.",
             path=path,
         )
         return

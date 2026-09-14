@@ -59,22 +59,44 @@ REQUIRED_PROFILE_FIELD_CASES = (
 
 
 class HistoricalReleaseReaderTests(unittest.TestCase):
-    def test_unchanged_three_target_evidence_is_readable_but_not_current_profile(self):
-        for tag in ("v0.3.5", "v0.5.0"):
-            with self.subTest(tag=tag):
-                with self.assertRaises(ReleaseProfileError) as caught:
-                    load_release_profile(tag, root=ROOT)
-                self.assertIn("unknown target: opencode", caught.exception.errors)
-                self.assertFalse(validate_release_timing_evidence(tag, root=ROOT).errors)
-                self.assertEqual(validate_published_release_artifacts(tag, root=ROOT), [])
+    def make_recorded_fixture(self, root):
+        # Owned synthetic report: compatibility parsing never reads a completed release.
+        PublishedEvidenceCloseoutTests().make_prepared_repo(root)
+        result = close_release_publication("v0.3.5", root=root, provider=RecordingPublicEvidenceProvider())
+        self.assertEqual(result.errors, ())
+        profile = root / "docs/releases/profiles/v0.3.5.yaml"
+        profile.write_text(profile.read_text().replace("- claude", "- claude\n  - opencode"))
+        timing = root / "docs/releases/v0.3.5/timing.yaml"
+        timing.write_text(ReleaseGateParityAndTimingTests().valid_timing_text())
+        published = root / "docs/releases/v0.3.5/npm-publication.md"
+        text = published.read_text()
+        row = text.split("  claude:\n", 1)[1].split("```", 1)[0]
+        row = ("  opencode:\n" + row).replace("claude", "opencode")
+        table = next(line for line in text.splitlines() if line.startswith("| claude |"))
+        table = table.replace("claude", "opencode")
+        text = text.replace("\n```\n\n| Target", "\n" + row + "```\n\n| Target") + table + "\n"
+        # Root-qualified multi-root fields are a distinct retained report grammar.
+        text = text.replace("sha256:provider-opencode-tree", ".opencode/skills=sha256:skills;.opencode/commands=sha256:commands")
+        published.write_text(text)
+        return profile
+
+    def test_owned_three_target_evidence_is_readable_but_not_current_profile(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.make_recorded_fixture(root)
+            before = {str(p.relative_to(root)): p.read_bytes() for p in root.rglob("*") if p.is_file()}
+            with self.assertRaises(ReleaseProfileError) as caught:
+                load_release_profile("v0.3.5", root=root)
+            self.assertIn("unknown target: opencode", caught.exception.errors)
+            self.assertFalse(validate_release_timing_evidence("v0.3.5", root=root).errors)
+            self.assertEqual(validate_published_release_artifacts("v0.3.5", root=root), [])
+            self.assertEqual(before, {str(p.relative_to(root)): p.read_bytes() for p in root.rglob("*") if p.is_file()})
 
     def test_unknown_value_rejects_in_historical_reader(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
-            path = root / "docs/releases/profiles/v0.3.5.yaml"
-            path.parent.mkdir(parents=True)
-            original = (ROOT / "docs/releases/profiles/v0.3.5.yaml").read_text()
-            path.write_text(original.replace("- opencode", "- unknown_value"))
+            profile = self.make_recorded_fixture(root)
+            profile.write_text(profile.read_text().replace("- opencode", "- unknown_value"))
             self.assertIn("unknown target: unknown_value", validate_release_timing_evidence("v0.3.5", root=root).errors)
 
 
@@ -1494,13 +1516,6 @@ class RecordingPublicEvidenceProvider:
         if command.endswith(" version"):
             stdout = "0.3.5\n"
             summary = "0.3.5"
-        elif target == "opencode":
-            stdout = (
-                "created opencode adapter\n"
-                "tree_hashes=.opencode/skills=sha256:provider-opencode-skills;.opencode/commands=sha256:provider-opencode-commands\n"
-                "file_counts=.opencode/skills=14;.opencode/commands=3\n"
-            )
-            summary = "created opencode adapter"
         else:
             stdout = (
                 f"created {target} adapter\n"
