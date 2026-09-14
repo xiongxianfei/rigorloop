@@ -20,8 +20,15 @@
         "role": "review"
       },
       "required_outcome": "Bind all snapshot enumeration/classification/blob reads to literal requested Git objects, consistently disabling replace refs through wrapper and child validators. Reject/neutralize ambient Git repository redirection and prevent automatic lazy network fetch or trace side effects where they defeat exact-root/read-only proof. Add actual Git replacement/ambient-env regression with unchanged repository and malformed snapshot still failing, retain clean snapshot versus dirty-worktree distinction, and rerun affected boundary/selector tests before independent reassessment.",
-      "resolution": null,
-      "state": "open",
+      "resolution": {
+        "actor": {
+          "id": "independent-m4-code-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [],
+        "rationale": "Frozen 719de0ff binds wrapper and both direct snapshot readers to literal commit objects and actual declared repository root. Restricted Git environment disables replacement, ambient redirection/config/trace, lazy fetch and transport. Actual replacement, nested-root, dirty-worktree, missing-object partial-repository control and no-write regressions pass. Reviewer independently reran all 6 snapshot/discovery tests on final source."
+      },
+      "state": "resolved",
       "subjects": [
         {
           "identity": "sha256:11873732f4893d44b6152b9b0bd93db1198c7dec97dfb27bbd2ebe326cc62e1e",

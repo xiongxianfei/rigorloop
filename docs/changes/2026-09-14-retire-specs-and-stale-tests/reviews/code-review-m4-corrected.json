@@ -1,0 +1,144 @@
+{
+  "assessment_scope": "Complete corrected M4 milestone and interactions with reviewed M1-M3. Not final six-milestone integrated Code Review.",
+  "change_id": "2026-09-14-retire-specs-and-stale-tests",
+  "contributors": [
+    {
+      "id": "codex-m4-implementer",
+      "role": "implement"
+    }
+  ],
+  "findings": [],
+  "id": "code-review-m4-corrected",
+  "independence_basis": "Separate nonauthor reviewer inspected complete 350b3c19..719de0ff milestone diff, retired engine dependencies and cases, release helper transfer, current owners and plan, actual validation logs; independently reproduced original identity defect and ran corrected snapshot and release-helper suites. No implementation authored.",
+  "judgment": "approved",
+  "limitations": [
+    "M5/M6 and integrated whole-change Code Review/Verify remain outstanding; no branch readiness, PR readiness, publication or hosted CI claim.",
+    "Remaining stale selector explanation wording is editorial and does not restore retired commands; navigation/provenance reconciliation remains allocated downstream."
+  ],
+  "rationale": [
+    "Scope and authority: pass. Named lifecycle, Markdown review ledger, automatic workflow engine and exclusive fixture populations have complete grouped dispositions with explicit retirement of obsolete predicates. All 109 removed source hashes independently match baseline. Original historical change/release records are unchanged; no forced legacy migration or new runtime format is introduced.",
+    "Current detection: pass. Portable specialist fidelity, independence, public outputs and authority obligations retain skill proof; current v3 structure, reference, finding, parser, discovery and recovery negatives retain separate CLI proof. No equivalence is claimed between retired operational eligibility and structural record validation.",
+    "Release behavior: pass. Live release_transaction import transfers to release-owned helper. Retained checklist/parsing/deferral function ASTs are unchanged; 12 original cases preserve gate and registry missing/duplicate/unknown/state/deferral/secret hazards, supplemented by current wrapper, candidate identity and safe explicit-path proof. Reviewer independently ran all 15 release helper tests successfully.",
+    "Snapshot safety: pass after correction. Actual Git tests distinguish exact commit from corrupted worktree, reject malformed and symlink snapshots, disable replacement refs and ambient root redirection, reject parent repository lookup, and preserve all repository file bytes when an owned partial repository would otherwise lazy-fetch. Shared JS environment/root helper and Python wrapper apply the same boundary. Reviewer independently ran all 6 final snapshot/discovery tests successfully.",
+    "Consumer and execution integration: pass. Deleted engine commands have no live executable callers; selector, main and broad composition invoke current discovery/record and release checks. Exact PR/main snapshot selection remains, deleted inputs are not read as live files, and retained selector/executor tests cover receiving commands and failure behavior.",
+    "Validation evidence: pass. All 8 recorded log hashes and byte sizes independently match. Recorded final proof includes 176 selector, 419 CLI, 296 skill, 7 metadata, 6 snapshot, 176 release and 52 execution tests plus successful local and broad CI after the executor expectation correction. Engineering frozen at 719de0ff; mutable change/evidence registries excluded from enduring engineering basis.",
+    "Milestone handoff: M4 approved and material finding resolved. Route may close M4 and continue M5 complete repository case/fixture audit, then M6 provenance/navigation reconciliation. Current review does not substitute for final whole-change assessment or Verify."
+  ],
+  "reviewer": {
+    "id": "independent-m4-code-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:134e6b898d6850157c968a61223251b8bc7144babfa7f484df8a4b6b2914dc0b",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m4-implementation.md"
+    },
+    {
+      "identity": "sha256:4e8b9f4be2834e49977ff7d0c218ee36e43a7dfab5ea04f7973ceed1d40eb01e",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m4-test-maintenance.json"
+    },
+    {
+      "identity": "sha256:46d6a1a5c6323ac33fd4d6b59cf1d4a21e91874abe2976e0a5ff86f42894c5be",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m4-validation.json"
+    },
+    {
+      "identity": "sha256:5c6f2a0f59a3cf959794a7f5c171ee083b42413a4323cdd51e03e69d61d62a9c",
+      "path": "scripts/classify-record-store.mjs"
+    },
+    {
+      "identity": "sha256:8c6bedfcc75f7a3c1df262c7a720d0b0d3326901c76f98b055aa7ee8e0a9e3ce",
+      "path": "scripts/record_snapshot_git.mjs"
+    },
+    {
+      "identity": "sha256:406863863b71f4b64955aee84e0142c47d92dc9ac54ffa40d2925200810631bf",
+      "path": "scripts/release_evidence.py"
+    },
+    {
+      "identity": "sha256:08a2ad916d7780538347d60aaa94c3412b6387c35e1bdb5196df4ed556a1899a",
+      "path": "scripts/release_evidence_tests.py"
+    },
+    {
+      "identity": "sha256:097993dd4b9561a4a419e66bb757e128b615fc38949d196bb4ab5437089719f3",
+      "path": "scripts/release_transaction.py"
+    },
+    {
+      "identity": "sha256:c86259d3dc825303f5307f2d75048364e665177f27e7817c52f5b9ed94802ac9",
+      "path": "scripts/test-adapter-distribution.py"
+    },
+    {
+      "identity": "sha256:7abcc4df0a0423ea6f0cdb1d422c53022d5aae197a3df22688f44f9ab53cdcce",
+      "path": "scripts/test-change-metadata-validator.py"
+    },
+    {
+      "identity": "sha256:4fa39865be902fc3d0765000944f3ce641a7bd085558c68e439108e2ea34afc2",
+      "path": "scripts/test-governed-lifecycle-cli-validator.py"
+    },
+    {
+      "identity": "sha256:519248503a3a7eef5d5ba030d515aacca2725d252bc0a3af78aa420943e3908b",
+      "path": "scripts/test-release-transaction.py"
+    },
+    {
+      "identity": "sha256:c70024f6c747941802e22ddd63f162ceb003dae93995d016998e440511f87bcb",
+      "path": "scripts/test-select-validation.py"
+    },
+    {
+      "identity": "sha256:71a6efcc0c85d8a5f874399b5ba5c617b57749174b77a21dab67ed6195c9701b",
+      "path": "scripts/test-skill-validator.py"
+    },
+    {
+      "identity": "sha256:a77995f782214a991634c6a8ce4c50c0fb20e32ed59ad81e4b8a22838b4dcb0c",
+      "path": "scripts/test-validation-execution.py"
+    },
+    {
+      "identity": "sha256:e91b9cb250f6a09b9678bc0fd7b7e6bb96820e14826420c568e79beb75165d34",
+      "path": "scripts/validate-governed-lifecycle-cli.py"
+    },
+    {
+      "identity": "sha256:1e81116e49068c1fe471b3c91beb2ec9b3dd3face484ef6aef46bd233792fea6",
+      "path": "scripts/validate-record-store.mjs"
+    },
+    {
+      "identity": "sha256:77862e7237da942fe9058a384994be2cc287b24d07f57d6134afa6b9820e7a82",
+      "path": "scripts/validation_execution.py"
+    },
+    {
+      "identity": "sha256:bd42e57d7af0fc7915cdd54e663db1e2c67532405b84169a7c2a3605586530c6",
+      "path": "scripts/validation_selection.py"
+    },
+    {
+      "identity": "sha256:6d5736e2a2b01f76c09a027dd32498ed5e4454a3ab31c139643aba5d0ce9222c",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/design-review-full-specs-reconciled.json"
+    },
+    {
+      "identity": "sha256:4fe9ba5249200ec64b76158c490360e861393a585b2546f6401a59687bf5dcf2",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/delivery-review-full-specs.json"
+    },
+    {
+      "identity": "sha256:3e99392f5974d61f13f6c3bf8f5b616dbb5c6ca3a997f83a36e89ca43a7dd8e3",
+      "path": "docs/plans/2026-09-14-retire-specs-and-stale-tests.md"
+    },
+    {
+      "identity": "sha256:90e00cf969ff8f6c7cfb59f6e31e323ff5642f31189e55cee7e5240b96e1e86d",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:445fcce43479c00e703dd0ec37df10d072017eff1843acc68bad5c7ca1165a26",
+      "path": "docs/design/engineering/release.md"
+    },
+    {
+      "identity": "sha256:e4953b253ffe955d4ff3beacde0076c927ece9b5858b31a31b8c30f8cc637e50",
+      "path": "docs/design/skill/workflow.md"
+    },
+    {
+      "identity": "sha256:5f8a1cd6360df6f769c60fadab3aae95dce6b229dadb74b05013e08ece77f792",
+      "path": "docs/design/skill/assessment.md"
+    },
+    {
+      "identity": "sha256:47f878a9d343a531d459abd5d4648a6389842dee771007c94ce672493ffaaab1",
+      "path": "docs/design/cli/records.md"
+    }
+  ],
+  "summary": "M4 retires obsolete governance engines while preserving current recording and release proof; exact snapshot identity finding is resolved.",
+  "target": "code"
+}

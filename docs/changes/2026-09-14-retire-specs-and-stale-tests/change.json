@@ -1,12 +1,12 @@
 {
   "activity": {
     "owner": {
-      "id": "independent-full-specs-m4-reviewer",
-      "role": "review"
+      "id": "codex-full-specs-implement",
+      "role": "implement"
     },
-    "reason": "Route: M4 required proof passed; independent corrected milestone assessment and finding disposition required.",
-    "stage": "code-review",
-    "status": "ready"
+    "reason": "Route: corrected M4 independently approved and snapshot finding resolved; continue authorized M5 complete test/fixture assessment.",
+    "stage": "implement",
+    "status": "in-progress"
   },
   "applicability": [
     {
@@ -124,6 +124,15 @@
       },
       "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/code-review-m4-first.json",
       "reason": "Current exact-snapshot false success reproduced before production correction.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "independent-m4-code-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/code-review-m4-corrected.json",
+      "reason": "Exact frozen corrected M4 independently assessed against approved scope and current proof; no material milestone finding remains.",
       "value": "current"
     }
   ],
@@ -276,6 +285,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/code-review-m4-first.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/code-review-m4-corrected.json"
     }
   ],
   "schema_version": 3,
@@ -335,7 +348,7 @@
         "VAL-SR-27",
         "ENG-SR-15"
       ],
-      "status": "in-progress"
+      "status": "completed"
     },
     {
       "id": "m5",
@@ -347,7 +360,7 @@
         "ENG-SR-15",
         "VAL-SR-26"
       ],
-      "status": "pending"
+      "status": "in-progress"
     },
     {
       "id": "m6",
