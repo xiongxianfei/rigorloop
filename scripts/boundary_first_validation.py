@@ -1,42 +1,19 @@
 #!/usr/bin/env python3
-"""Deterministic boundary-first record and activation validation."""
+"""Deterministic model and explicitly selected feature/proof validation."""
 
 from __future__ import annotations
 
 import hashlib
 import json
-import os
 import re
-import subprocess
 from dataclasses import dataclass
 from pathlib import Path, PurePosixPath
 
 from model_layout import PROJECT_MODEL_PATHS
 
-from boundary_first_reference import (
-    CANONICAL_REFERENCE,
-    GOVERNED_SKILLS,
-    METHOD_VERSION,
-    RESOURCE_MANIFEST,
-    ProjectionContractError,
-    project_reference,
-)
-from adapter_distribution import (
-    AdapterArtifactEntry,
-    parse_adapter_artifact_metadata_yaml,
-)
+from boundary_first_reference import METHOD_VERSION
 
 
-ACTIVATION_RECORD = Path("specs/boundary-first-activation.yaml")
-PROOF_MODEL_SPEC = Path("specs/boundary-first-proof-model.md")
-ACTIVE_RELEASE_INTENT = "v0.4.0"
-ACTIVE_ROLLBACK_RELEASE = "v0.3.6"
-# Immutable rollback evidence population; current Distribution support is separate.
-ACTIVE_ROLLBACK_ADAPTERS = ("claude", "codex", "opencode")
-ACTIVE_ROLLBACK_METADATA_SHA256 = (
-    "cd3de1a215b50e79f207ab9384394e22c3929e83739e305b623d6ef2bb3b20a6"
-)
-ACTIVATION_STATES = frozenset({"pending", "active"})
 CORE_DIMENSIONS = (
     "input-domain",
     "state-lifecycle",
@@ -70,7 +47,6 @@ BOUNDARY_ID_RE = re.compile(
 INTERACTION_ID_RE = re.compile(r"^INT-[0-9]{3}$")
 PROOF_ID_RE = re.compile(r"^PRF-[0-9]{3}$")
 STABLE_ID_RE = re.compile(r"^[A-Za-z][A-Za-z0-9-]*$")
-SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
 FEATURE_HEADINGS = (
     "Boundary model",
     "Boundary definitions",
@@ -122,24 +98,6 @@ PROOF_COLUMNS = (
     "Manual procedure IDs",
     "Uncovered gap ID",
 )
-ACTIVATION_FIELDS = frozenset(
-    {
-        "contract_version",
-        "state",
-        "activating_release",
-        "rollback_release",
-        "canonical_reference",
-        "canonical_reference_sha256",
-        "resource_manifest",
-        "resource_manifest_sha256",
-        "grandfathering_baseline_revision",
-        "grandfathered_specs",
-        "governed_skills",
-        "projection_sha256",
-    }
-)
-
-
 @dataclass(frozen=True)
 class ValidationIssue:
     code: str
@@ -158,17 +116,8 @@ class ValidationIssue:
         }
 
 
-@dataclass(frozen=True)
-class RollbackArtifactIdentity:
-    adapter: str
-    archive: str
-    sha256: str
 
 
-@dataclass(frozen=True)
-class RollbackSelection:
-    release: str
-    artifacts: tuple[RollbackArtifactIdentity, ...]
 
 
 def _issue(
@@ -962,25 +911,8 @@ def validate_proof_map(
     return tuple(issues)
 
 
-def _activation_data(path: Path) -> tuple[dict[str, object] | None, ValidationIssue | None]:
-    if not path.is_file():
-        return None, _issue("BFR-ACTIVATION-MISSING", ACTIVATION_RECORD.as_posix(), "activation record is missing", "-", ACTIVATION_RECORD.as_posix())
-    try:
-        data = json.loads(path.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError) as exc:
-        return None, _issue("BFR-ACTIVATION-PARSE", ACTIVATION_RECORD.as_posix(), "activation record is not deterministic JSON-compatible YAML", type(exc).__name__, "valid object")
-    if not isinstance(data, dict):
-        return None, _issue("BFR-ACTIVATION-SHAPE", ACTIVATION_RECORD.as_posix(), "activation record must be an object", type(data).__name__, "object")
-    return data, None
 
 
-def _lifecycle_status(text: str) -> str | None:
-    status_section = _section(_live_markdown(text), "Status")
-    for line in status_section.splitlines():
-        value = line.strip().lstrip("-").strip().strip("`").rstrip(".").casefold()
-        if value:
-            return value
-    return None
 
 
 def _specs_root_issue(root: Path) -> ValidationIssue | None:
@@ -1006,578 +938,18 @@ def _specs_root_issue(root: Path) -> ValidationIssue | None:
     return None
 
 
-def _fixed_authoritative_path(
-    root: Path,
-    relative_path: Path,
-) -> tuple[Path | None, ValidationIssue | None]:
-    specs_issue = _specs_root_issue(root)
-    if specs_issue:
-        return None, specs_issue
-    candidate = root / relative_path
-    resolved_specs = (root / "specs").resolve()
-    resolved_candidate = candidate.resolve(strict=False)
-    if (
-        candidate.is_symlink()
-        or resolved_candidate.parent != resolved_specs
-        or (candidate.exists() and not candidate.is_file())
-    ):
-        return None, _issue(
-            "BFR-AUTHORITATIVE-PATH-UNSAFE",
-            relative_path.as_posix(),
-            "authoritative input must be repository-contained and non-symlink",
-            relative_path.as_posix(),
-            "repository-owned regular file",
-        )
-    return candidate, None
 
 
-def _contained_regular_file(
-    root: Path,
-    relative_path: Path,
-) -> tuple[Path | None, ValidationIssue | None]:
-    candidate = root / relative_path
-    current = root
-    for part in relative_path.parts:
-        current = current / part
-        if current.is_symlink():
-            return None, _issue(
-                "BFR-ROLLBACK-PATH-UNSAFE",
-                relative_path.as_posix(),
-                "rollback metadata path must not traverse a symlink",
-                relative_path.as_posix(),
-                "repository-contained regular file",
-            )
-    resolved_root = root.resolve()
-    resolved_candidate = candidate.resolve(strict=False)
-    if (
-        not resolved_candidate.is_relative_to(resolved_root)
-        or not candidate.is_file()
-    ):
-        return None, _issue(
-            "BFR-ROLLBACK-PATH-UNSAFE",
-            relative_path.as_posix(),
-            "rollback metadata input must be a repository-contained regular file",
-            relative_path.as_posix(),
-            "repository-contained regular file",
-        )
-    return candidate, None
 
 
-def _rollback_package_matrix(
-    root: Path,
-    activation_data: dict[str, object],
-) -> tuple[tuple[RollbackArtifactIdentity, ...], tuple[ValidationIssue, ...]]:
-    """Select existing rollback package identities without mutation or installation."""
-
-    rollback_release = activation_data.get("rollback_release")
-    if (
-        activation_data.get("state") != "active"
-        or not isinstance(rollback_release, str)
-        or not re.fullmatch(r"v[0-9]+\.[0-9]+\.[0-9]+", rollback_release)
-    ):
-        return (), (
-            _issue(
-                "BFR-ROLLBACK-SELECTION",
-                ACTIVATION_RECORD.as_posix(),
-                "rollback package selection requires an active snapshot and rollback release",
-                [activation_data.get("state"), rollback_release],
-                ["active", "v<major>.<minor>.<patch>"],
-            ),
-        )
-
-    metadata_relative = (
-        Path("docs/reports/adapter-artifacts/releases")
-        / f"{rollback_release}.yaml"
-    )
-    metadata_path, metadata_issue = _contained_regular_file(root, metadata_relative)
-    path_issues = tuple(
-        issue for issue in (metadata_issue,) if issue is not None
-    )
-    if path_issues:
-        return (), path_issues
-    assert metadata_path is not None
-
-    try:
-        metadata_bytes = metadata_path.read_bytes()
-        metadata = parse_adapter_artifact_metadata_yaml(
-            metadata_bytes.decode("utf-8"),
-            metadata_path,
-        )
-    except (OSError, UnicodeDecodeError, ValueError) as exc:
-        return (), (
-            _issue(
-                "BFR-ROLLBACK-METADATA",
-                metadata_relative.as_posix(),
-                "rollback package metadata is malformed or unreadable",
-                str(exc),
-                "valid existing adapter support and artifact metadata",
-            ),
-        )
-
-    expected_adapters = ACTIVE_ROLLBACK_ADAPTERS
-    by_adapter: dict[str, list[AdapterArtifactEntry]] = {}
-    for artifact in metadata.artifacts:
-        by_adapter.setdefault(artifact.adapter, []).append(artifact)
-
-    issues: list[ValidationIssue] = []
-    metadata_sha256 = hashlib.sha256(metadata_bytes).hexdigest()
-    if (
-        rollback_release == ACTIVE_ROLLBACK_RELEASE
-        and metadata_sha256 != ACTIVE_ROLLBACK_METADATA_SHA256
-    ):
-        issues.append(
-            _issue(
-                "BFR-ROLLBACK-METADATA-IDENTITY",
-                metadata_relative.as_posix(),
-                "rollback metadata differs from the immutable tracked release record",
-                metadata_sha256,
-                ACTIVE_ROLLBACK_METADATA_SHA256,
-            )
-        )
-    if metadata.version != rollback_release:
-        issues.append(
-            _issue(
-                "BFR-ROLLBACK-MIXED-VERSION",
-                metadata_relative.as_posix(),
-                "rollback artifact metadata release differs from the selected release",
-                metadata.version,
-                rollback_release,
-            )
-        )
-    if tuple(sorted(by_adapter, key=lambda value: value.encode("utf-8"))) != expected_adapters:
-        issues.append(
-            _issue(
-                "BFR-ROLLBACK-ADAPTER-SET",
-                metadata_relative.as_posix(),
-                "rollback artifacts must match the original rollback release inventory exactly",
-                sorted(by_adapter),
-                expected_adapters,
-            )
-        )
-    if metadata.validation_result != "pass":
-        issues.append(
-            _issue(
-                "BFR-ROLLBACK-RESULT",
-                metadata_relative.as_posix(),
-                "rollback release validation result must pass",
-                metadata.validation_result,
-                "pass",
-            )
-        )
-
-    matrix: list[RollbackArtifactIdentity] = []
-    for adapter in expected_adapters:
-        artifacts = by_adapter.get(adapter, [])
-        if len(artifacts) != 1:
-            issues.append(
-                _issue(
-                    "BFR-ROLLBACK-ADAPTER-COUNT",
-                    metadata_relative.as_posix(),
-                    "rollback metadata must contain exactly one artifact per adapter",
-                    [adapter, len(artifacts)],
-                    [adapter, 1],
-                )
-            )
-            continue
-        artifact = artifacts[0]
-        expected_archive = f"rigorloop-adapter-{adapter}-{rollback_release}.zip"
-        if (
-            artifact.archive != expected_archive
-            or artifact.result != "pass"
-            or not SHA256_RE.fullmatch(artifact.sha256)
-        ):
-            issues.append(
-                _issue(
-                    "BFR-ROLLBACK-ARTIFACT",
-                    metadata_relative.as_posix(),
-                    "rollback artifact identity must match the selected release and pass",
-                    [adapter, artifact.archive, artifact.sha256, artifact.result],
-                    [adapter, expected_archive, "64 lowercase hex characters", "pass"],
-                )
-            )
-            continue
-        matrix.append(
-            RollbackArtifactIdentity(
-                adapter=adapter,
-                archive=artifact.archive,
-                sha256=artifact.sha256,
-            )
-        )
-
-    if issues:
-        return (), tuple(issues)
-    return tuple(matrix), ()
 
 
-def rollback_package_selection(
-    root: Path,
-) -> tuple[RollbackSelection | None, tuple[ValidationIssue, ...]]:
-    """Select rollback identities from the fixed, validated activation manifest."""
-
-    record_path, path_issue = _fixed_authoritative_path(root, ACTIVATION_RECORD)
-    if path_issue:
-        return None, (path_issue,)
-    assert record_path is not None
-    data, parse_issue = _activation_data(record_path)
-    if parse_issue:
-        return None, (parse_issue,)
-    assert data is not None
-    activation_issues = validate_activation(root)
-    if activation_issues:
-        return None, activation_issues
-    rollback_release = data.get("rollback_release")
-    if data.get("state") != "active" or not isinstance(rollback_release, str):
-        return None, (
-            _issue(
-                "BFR-ROLLBACK-SELECTION",
-                ACTIVATION_RECORD.as_posix(),
-                "authoritative activation manifest is not active",
-                data.get("state"),
-                "active",
-            ),
-        )
-    matrix, matrix_issues = _rollback_package_matrix(root, data)
-    if matrix_issues:
-        return None, matrix_issues
-    return RollbackSelection(release=rollback_release, artifacts=matrix), ()
 
 
-def derive_grandfathered_specs(
-    root: Path,
-    baseline_revision: str,
-) -> tuple[tuple[str, ...], tuple[ValidationIssue, ...]]:
-    """Derive the frozen historical-spec inventory without writing repository state."""
-    eligible: list[str] = []
-    git_environment = {
-        "PATH": os.environ.get("PATH", os.defpath),
-        "LC_ALL": "C",
-        "GIT_NO_REPLACE_OBJECTS": "1",
-        "GIT_NO_LAZY_FETCH": "1",
-        "GIT_CONFIG_NOSYSTEM": "1",
-        "GIT_CONFIG_GLOBAL": os.devnull,
-        "GIT_CONFIG_SYSTEM": os.devnull,
-    }
-    if not re.fullmatch(r"[0-9a-f]{40}", baseline_revision):
-        return (), (
-            _issue(
-                "BFR-BASELINE-REVISION",
-                ACTIVATION_RECORD.as_posix(),
-                "grandfathering baseline must be a full commit identity",
-                baseline_revision,
-                "40-character lowercase hexadecimal commit identity",
-            ),
-        )
-    try:
-        object_type = subprocess.run(
-            ["git", "cat-file", "-t", baseline_revision],
-            cwd=root,
-            check=True,
-            capture_output=True,
-            text=True,
-            env=git_environment,
-        ).stdout.strip()
-    except (OSError, subprocess.CalledProcessError):
-        return (), (
-            _issue(
-                "BFR-BASELINE-UNAVAILABLE",
-                ACTIVATION_RECORD.as_posix(),
-                "grandfathering baseline is unavailable",
-                baseline_revision,
-                "readable source-control commit",
-            ),
-        )
-    if object_type != "commit":
-        return (), (
-            _issue(
-                "BFR-BASELINE-TYPE",
-                ACTIVATION_RECORD.as_posix(),
-                "grandfathering baseline must identify a commit",
-                object_type,
-                "commit",
-            ),
-        )
-    try:
-        listing = subprocess.run(
-            ["git", "ls-tree", "-rz", baseline_revision, "--", "specs"],
-            cwd=root,
-            check=True,
-            capture_output=True,
-            env=git_environment,
-        ).stdout.split(b"\0")
-    except (OSError, subprocess.CalledProcessError):
-        return (), (
-            _issue(
-                "BFR-BASELINE-UNAVAILABLE",
-                ACTIVATION_RECORD.as_posix(),
-                "grandfathering baseline is unavailable",
-                baseline_revision,
-                "readable source-control commit",
-            ),
-        )
-    for entry in listing:
-        if not entry:
-            continue
-        try:
-            header, raw_relative = entry.split(b"\t", 1)
-            mode, object_type, object_id = header.decode("ascii").split(" ", 2)
-            relative = raw_relative.decode("utf-8")
-        except (UnicodeDecodeError, ValueError):
-            return (), (
-                _issue(
-                    "BFR-BASELINE-TREE",
-                    ACTIVATION_RECORD.as_posix(),
-                    "baseline tree entry is malformed or not UTF-8",
-                    entry,
-                    "regular UTF-8 Git tree entry",
-                ),
-            )
-        if (
-            not re.fullmatch(r"specs/[^/]+\.md", relative)
-            or relative == "specs/README.md"
-            or relative.endswith(".test.md")
-            or relative == PROOF_MODEL_SPEC.as_posix()
-        ):
-            continue
-        if object_type != "blob" or mode not in {"100644", "100755"}:
-            return (), (
-                _issue(
-                    "BFR-BASELINE-MODE",
-                    relative,
-                    "baseline feature spec must be a regular blob",
-                    f"{mode} {object_type}",
-                    "100644 blob or 100755 blob",
-                ),
-            )
-        try:
-            raw_text = subprocess.run(
-                ["git", "cat-file", "blob", object_id],
-                cwd=root,
-                check=True,
-                capture_output=True,
-                env=git_environment,
-            ).stdout
-            text = raw_text.decode("utf-8")
-        except (OSError, subprocess.CalledProcessError, UnicodeDecodeError):
-            return (), (
-                _issue(
-                    "BFR-BASELINE-UNAVAILABLE",
-                    relative,
-                    "baseline feature spec cannot be read",
-                    baseline_revision,
-                    "readable source-control object",
-                ),
-            )
-        if _lifecycle_status(text) not in {"accepted", "approved", "active"}:
-            continue
-        if _line_value(_live_markdown(text), "boundary_contract") is not None:
-            continue
-        eligible.append(relative)
-    return tuple(sorted(eligible, key=lambda value: value.encode("utf-8"))), ()
 
 
-def _validate_activation(
-    root: Path,
-) -> tuple[ValidationIssue, ...]:
-    record_path, record_path_issue = _fixed_authoritative_path(
-        root,
-        ACTIVATION_RECORD,
-    )
-    if record_path_issue:
-        return (record_path_issue,)
-    assert record_path is not None
-    spec_path, spec_path_issue = _fixed_authoritative_path(
-        root,
-        PROOF_MODEL_SPEC,
-    )
-    if spec_path_issue:
-        return (spec_path_issue,)
-    assert spec_path is not None
-    data, parse_issue = _activation_data(record_path)
-    if parse_issue:
-        return (parse_issue,)
-    assert data is not None
-    vocabulary: list[ValidationIssue] = []
-    state = data.get("state")
-    if not isinstance(state, str) or state not in ACTIVATION_STATES:
-        vocabulary.append(
-            _issue("BFR-UNKNOWN-ACTIVATION-STATE", ACTIVATION_RECORD.as_posix(), "unknown activation state", state, ", ".join(sorted(ACTIVATION_STATES)))
-        )
-    if set(data) != ACTIVATION_FIELDS:
-        vocabulary.append(_issue("BFR-ACTIVATION-FIELDS", ACTIVATION_RECORD.as_posix(), "activation fields are not closed", sorted(data), sorted(ACTIVATION_FIELDS)))
-    if data.get("contract_version") != METHOD_VERSION:
-        vocabulary.append(_issue("BFR-UNKNOWN-CONTRACT-VERSION", ACTIVATION_RECORD.as_posix(), "unknown activation contract version", data.get("contract_version"), METHOD_VERSION))
-    governed_skills = data.get("governed_skills")
-    if not isinstance(governed_skills, list) or any(
-        not isinstance(skill, str) or skill not in GOVERNED_SKILLS
-        for skill in governed_skills
-    ):
-        vocabulary.append(_issue("BFR-UNKNOWN-GOVERNED-SKILL", ACTIVATION_RECORD.as_posix(), "governed skill inventory contains an unknown value", governed_skills, list(GOVERNED_SKILLS)))
-    if vocabulary:
-        priority = {
-            "BFR-UNKNOWN-ACTIVATION-STATE": 0,
-            "BFR-UNKNOWN-CONTRACT-VERSION": 1,
-            "BFR-UNKNOWN-GOVERNED-SKILL": 2,
-            "BFR-ACTIVATION-FIELDS": 3,
-        }
-        return tuple(sorted(vocabulary, key=lambda issue: priority[issue.code]))
-
-    issues: list[ValidationIssue] = []
-
-    spec_state = None
-    if spec_path.is_file():
-        spec_state = _line_value(spec_path.read_text(encoding="utf-8"), "Boundary-first contract activation")
-    if spec_state != state:
-        issues.append(_issue("BFR-ACTIVATION-STATE-MISMATCH", PROOF_MODEL_SPEC.as_posix(), "activation YAML and authoritative spec state differ", state, spec_state))
-
-    expected_source = data.get("canonical_reference")
-    if expected_source != CANONICAL_REFERENCE.as_posix():
-        issues.append(_issue("BFR-CANONICAL-PATH", ACTIVATION_RECORD.as_posix(), "canonical reference path differs", expected_source, CANONICAL_REFERENCE.as_posix()))
-    expected_manifest = data.get("resource_manifest")
-    if expected_manifest != RESOURCE_MANIFEST.as_posix():
-        issues.append(_issue("BFR-RESOURCE-MANIFEST-PATH", ACTIVATION_RECORD.as_posix(), "resource manifest path differs", expected_manifest, RESOURCE_MANIFEST.as_posix()))
-    try:
-        projection_result = project_reference(root, mode="check")
-    except ProjectionContractError as exc:
-        projection_result = None
-        issues.append(
-            _issue(
-                exc.code,
-                (
-                    exc.path
-                    if exc.path != "-"
-                    else CANONICAL_REFERENCE.as_posix()
-                ),
-                exc.message,
-                exc.offending_value,
-                exc.expected,
-            )
-        )
-    if projection_result is not None:
-        actual_source_hash = projection_result.source_sha256
-        if data.get("canonical_reference_sha256") != actual_source_hash:
-            issues.append(_issue("BFR-CANONICAL-HASH", CANONICAL_REFERENCE.as_posix(), "canonical reference hash differs", data.get("canonical_reference_sha256"), actual_source_hash))
-        if data.get("resource_manifest_sha256") != projection_result.manifest_sha256:
-            issues.append(_issue("BFR-RESOURCE-MANIFEST-HASH", RESOURCE_MANIFEST.as_posix(), "resource manifest hash differs", data.get("resource_manifest_sha256"), projection_result.manifest_sha256))
-        for error in projection_result.errors:
-            code, _, affected_path = error.partition(": ")
-            issues.append(
-                _issue(
-                    "BFR-PROJECTION-DIVERGENT"
-                    if code == "BFR-PROJECTION-STALE"
-                    else code,
-                    affected_path or ACTIVATION_RECORD.as_posix(),
-                    "governed projection check failed",
-                    code,
-                    "canonical raw-byte projection",
-                )
-            )
-        if data.get("projection_sha256") != projection_result.projection_sha256:
-            issues.append(_issue("BFR-PROJECTION-HASH", ACTIVATION_RECORD.as_posix(), "projection identity differs", data.get("projection_sha256"), projection_result.projection_sha256))
-
-    if governed_skills != list(GOVERNED_SKILLS):
-        issues.append(_issue("BFR-GOVERNED-SKILLS", ACTIVATION_RECORD.as_posix(), "governed skill inventory differs", data.get("governed_skills"), list(GOVERNED_SKILLS)))
-
-    activating_release = data.get("activating_release")
-    rollback_release = data.get("rollback_release")
-    baseline_revision = data.get("grandfathering_baseline_revision")
-    if state == "pending":
-        for field, value in (
-            ("activating_release", activating_release),
-            ("rollback_release", rollback_release),
-            ("grandfathering_baseline_revision", baseline_revision),
-        ):
-            if value != "-":
-                issues.append(
-                    _issue(
-                        "BFR-PENDING-ACTIVATION-VALUE",
-                        ACTIVATION_RECORD.as_posix(),
-                        f"pending {field} must use the sentinel",
-                        value,
-                        "-",
-                    )
-                )
-    else:
-        if activating_release != ACTIVE_RELEASE_INTENT:
-            issues.append(
-                _issue(
-                    "BFR-ACTIVATING-RELEASE",
-                    ACTIVATION_RECORD.as_posix(),
-                    "active snapshot release intent differs",
-                    activating_release,
-                    ACTIVE_RELEASE_INTENT,
-                )
-            )
-        if rollback_release != ACTIVE_ROLLBACK_RELEASE:
-            issues.append(
-                _issue(
-                    "BFR-ROLLBACK-RELEASE",
-                    ACTIVATION_RECORD.as_posix(),
-                    "active snapshot rollback release differs",
-                    rollback_release,
-                    ACTIVE_ROLLBACK_RELEASE,
-                )
-            )
-        if not isinstance(baseline_revision, str) or not re.fullmatch(
-            r"[0-9a-f]{40}",
-            baseline_revision,
-        ):
-            issues.append(
-                _issue(
-                    "BFR-BASELINE-REVISION",
-                    ACTIVATION_RECORD.as_posix(),
-                    "active baseline must be a full commit identity",
-                    baseline_revision,
-                    "40-character lowercase hexadecimal commit identity",
-                )
-            )
-
-    grandfathered = data.get("grandfathered_specs")
-    if not isinstance(grandfathered, list):
-        issues.append(_issue("BFR-GRANDFATHERED-SHAPE", ACTIVATION_RECORD.as_posix(), "grandfathered_specs must be a list", type(grandfathered).__name__, "list"))
-    else:
-        previous: bytes | None = None
-        for item_path in grandfathered:
-            encoded = item_path.encode("utf-8") if isinstance(item_path, str) else b""
-            if (
-                not isinstance(item_path, str)
-                or (previous is not None and encoded <= previous)
-                or not re.fullmatch(r"specs/[^/]+\.md", item_path)
-                or item_path.endswith(".test.md")
-                or item_path == "specs/README.md"
-                or item_path == PROOF_MODEL_SPEC.as_posix()
-            ):
-                issues.append(
-                    _issue(
-                        "BFR-GRANDFATHERED-ORDER",
-                        ACTIVATION_RECORD.as_posix(),
-                        "grandfathered paths must be eligible unique top-level feature specs sorted by raw UTF-8 bytes",
-                        item_path,
-                        "eligible sorted specs/*.md paths",
-                    )
-                )
-                continue
-            previous = encoded
-        if state == "pending" and grandfathered:
-            issues.append(
-                _issue(
-                    "BFR-PENDING-GRANDFATHERED",
-                    ACTIVATION_RECORD.as_posix(),
-                    "pending manifest must have an empty grandfathered inventory",
-                    grandfathered,
-                    [],
-                )
-            )
-    if state == "active":
-        _, rollback_issues = _rollback_package_matrix(root, data)
-        issues.extend(rollback_issues)
-
-    return tuple(issues)
 
 
-def validate_activation(root: Path) -> tuple[ValidationIssue, ...]:
-    """Validate the standing strict activation contract."""
-
-    return _validate_activation(root)
 
 
 def _changed_spec_path(
@@ -1707,22 +1079,10 @@ def validate_model_path(root: Path, relative_path: str) -> tuple[ValidationIssue
 def validate_changed_spec(root: Path, relative_path: str) -> tuple[ValidationIssue, ...]:
     if relative_path.startswith("docs/design/"):
         return validate_model_path(root, relative_path)
-    if relative_path == PROOF_MODEL_SPEC.as_posix():
-        return ()
     path, path_issue = _changed_spec_path(root, relative_path)
     if path_issue:
         return (path_issue,)
     assert path is not None
-    activation_path, activation_path_issue = _fixed_authoritative_path(
-        root,
-        ACTIVATION_RECORD,
-    )
-    if activation_path_issue:
-        return (activation_path_issue,)
-    assert activation_path is not None
-    activation, parse_issue = _activation_data(activation_path)
-    if parse_issue or activation is None:
-        return (parse_issue,) if parse_issue else ()
     is_test_spec = relative_path.endswith(".test.md")
     feature_relative = (
         relative_path.removesuffix(".test.md") + ".md"
@@ -1752,32 +1112,23 @@ def validate_changed_spec(root: Path, relative_path: str) -> tuple[ValidationIss
     feature_text = feature_path.read_text(encoding="utf-8")
     live_feature = _live_markdown(feature_text)
     marker = _line_value(live_feature, "boundary_contract")
-    state = activation.get("state")
-    grandfathered = {
-        item
-        for item in activation.get("grandfathered_specs", [])
-        if isinstance(item, str)
-    }
-    if state == "pending" and marker is not None:
-        return (_issue("BFR-MARKER-INACTIVE", feature_relative, "marker is forbidden while activation is inactive", marker, "-"),)
-    if state == "active" and feature_relative not in grandfathered and marker != METHOD_VERSION:
-        return (_issue("BFR-NEW-SPEC-MARKER", feature_relative, "new feature spec requires active boundary marker", marker, METHOD_VERSION),)
     if marker is not None and marker != METHOD_VERSION:
         return (_issue("BFR-UNKNOWN-CONTRACT-VERSION", feature_relative, "unknown boundary contract", marker, METHOD_VERSION),)
-    if (
-        state == "active"
-        and feature_relative in grandfathered
-        and marker is None
-    ):
+    if marker is None:
         # A partial adoption is malformed content, not an unmarked historical
         # document awaiting substantive classification. Ignore code examples.
         if re.search(r"(?m)^boundary_contract:", live_feature) or any(
             heading in _level_two_headings(live_feature) for heading in FEATURE_HEADINGS
         ):
             return validate_feature_record(feature_text, feature_relative, root=root)
-        if is_test_spec:
-            return ()
-        return (_issue("BFR-GRANDFATHERED-REVIEW", feature_relative, "changed grandfathered spec requires independent Design Review classification", "-", "semantic design-review"),)
+        issues = [_issue("BFR-ADOPTION-REVIEW", feature_relative, "unmarked feature requires independent Design Review adoption classification", "-", "semantic design-review")]
+        if is_test_spec and proof_path.is_file():
+            proof = _live_markdown(proof_path.read_text(encoding="utf-8"))
+            if re.search(r"(?m)^(?:boundary_contract:|Boundary model (?:version|scope):|## Proof map(?:\s|$))", proof):
+                # A claimed proof record cannot be checked against an unadopted
+                # feature. Report the structural gap as well as its decision owner.
+                issues.append(_issue("BFR-PROOF-FEATURE-UNADOPTED", proof_relative, "proof record requires a structurally valid governing feature record"))
+        return tuple(issues)
     if marker == METHOD_VERSION:
         issues = list(
             validate_feature_record(
@@ -1816,3 +1167,40 @@ def validate_changed_spec(root: Path, relative_path: str) -> tuple[ValidationIss
             )
         return tuple(issues)
     return ()
+
+
+def validate_repository_examples(root: Path) -> tuple[tuple[str, ...], tuple[ValidationIssue, ...]]:
+    """Check model-document examples and JSON syntax in declared owned namespaces.
+
+    Complete stored records and request/result semantics retain their schema and
+    interaction checks in the model example suites; syntax never grants approval.
+    """
+    checked = []
+    issues = []
+    for namespace in ("docs/design/cli/examples", "docs/design/skill/examples/workflow"):
+        base = root / namespace
+        if any(parent.is_symlink() for parent in (base, *base.parents) if parent != root):
+            issues.append(_issue("BFR-EXAMPLE-PATH", namespace, "example namespace must not traverse symlinks"))
+            continue
+        if not base.exists():
+            continue
+        for path in sorted(base.rglob("*")):
+            relative = path.relative_to(root).as_posix()
+            if path.is_symlink():
+                issues.append(_issue("BFR-EXAMPLE-PATH", relative, "example must not be a symlink"))
+            elif path.is_file() and path.suffix == ".json":
+                checked.append(relative)
+                try:
+                    json.loads(path.read_text(encoding="utf-8"))
+                except (OSError, UnicodeError, ValueError):
+                    issues.append(_issue("BFR-EXAMPLE-JSON", relative, "example must be readable valid JSON"))
+    # The authoring model owns the portable model-document worked example.
+    relative = PROJECT_MODEL_PATHS["design"]
+    if not validate_model_path(root, relative):
+        text = (root / relative).read_text(encoding="utf-8")
+        for index, (_, example) in enumerate(re.findall(r"^(`{3,})markdown\n([\s\S]*?)^\1[ \t]*$", text, re.MULTILINE)):
+            if "Model validation contract:" in example:
+                label = f"{relative}#model-example-{index + 1}"
+                checked.append(label)
+                issues.extend(validate_model_record(example, label))
+    return tuple(checked), tuple(issues)

@@ -243,7 +243,7 @@ These target namespaces define the current contract. Historical records are not 
 
 ### Examples
 
-The [stored-record example index](examples/records/README.md) separates current v3 examples from historical v2 examples. The complete collection and focused correction examples below illustrate the current contract. Historical JSON remains unchanged and is not a supported input or current acceptance scenario. All examples use synthetic identities and do not establish real assessment results. CLI owns request/response examples; Workflow owns actor sequencing.
+The [stored-record example index](examples/records/README.md) indexes current v3 examples and recoverable provenance for retired historical v2 illustrations. The complete collection and focused correction examples below illustrate the current contract. Historical JSON retains its original bytes and meaning in Git and is not a supported input or current acceptance scenario. All examples use synthetic identities and do not establish real assessment results. CLI owns request/response examples; Workflow owns actor sequencing.
 
 ### Retained judgments for unresolved findings
 

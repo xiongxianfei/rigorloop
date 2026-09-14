@@ -15,7 +15,7 @@ Session records preserve the historical thread for a learn run. They record trig
 
 Topic files are curated guidance, not authoritative workflow, product, architecture, validation, skill, implementation, or decision contracts.
 
-They may summarize confirmed durable lessons and point to the session record and action-owning artifacts that explain the source. They must not override higher-priority artifacts such as `CONSTITUTION.md`, approved specs, ADRs, architecture docs, workflow docs, skill files, accepted proposals, active plans, or the artifact that owns a behavior change.
+They may summarize confirmed durable lessons and point to the session record and action-owning artifacts that explain the source. They must not override higher-priority artifacts such as `CONSTITUTION.md`, approved owning Designs and workflow contracts, skill files, accepted proposals, active plans, or the artifact that owns a behavior change.
 
 Topic entries may be added, superseded, removed, revised, or absorbed into an authoritative artifact. When curation must remove, revise, or absorb an entry, preserve traceability through a session link, authoritative-artifact link, topic-file rationale, or explain-change rationale.
 

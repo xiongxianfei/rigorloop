@@ -31,7 +31,7 @@ MANIFEST_BYTES = b"""schema_version: 1
 contract_version: boundary-first-v1
 resources:
   - id: compact-core
-    source: specs/references/boundary-first-method-v1.md
+    source: templates/shared/boundary-first-method-v1.md
     target: references/boundary-first-method-v1.md
     consumers:
       - route
@@ -43,13 +43,13 @@ resources:
       - code-review
       - verify
   - id: feature-authoring
-    source: specs/references/boundary-first-feature-authoring-v1.md
+    source: templates/shared/boundary-first-feature-authoring-v1.md
     target: references/boundary-first-feature-authoring-v1.md
     consumers:
       - design
       - design-review
   - id: proof
-    source: specs/references/boundary-first-proof-v1.md
+    source: templates/shared/boundary-first-proof-v1.md
     target: references/boundary-first-proof-v1.md
     consumers:
       - delivery-review
@@ -67,7 +67,8 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
             b"# portable boundary method\n\n"
             b"Boundary model version: boundary-first-v1\n"
         )
-        (root / "specs" / "boundary-first-resources.yaml").write_bytes(
+        (root / "scripts").mkdir(exist_ok=True)
+        (root / "scripts" / "boundary-first-resources.yaml").write_bytes(
             MANIFEST_BYTES
         )
         (source.parent / "boundary-first-feature-authoring-v1.md").write_bytes(
@@ -91,7 +92,7 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
         self.assertEqual(METHOD_VERSION, "boundary-first-v1")
         self.assertEqual(
             CANONICAL_REFERENCE,
-            Path("specs/references/boundary-first-method-v1.md"),
+            Path("templates/shared/boundary-first-method-v1.md"),
         )
         self.assertEqual(
             GOVERNED_SKILLS,
@@ -112,7 +113,7 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
         )
         self.assertEqual(
             RESOURCE_MANIFEST,
-            Path("specs/boundary-first-resources.yaml"),
+            Path("scripts/boundary-first-resources.yaml"),
         )
 
     def test_manifest_is_the_exact_closed_resource_authority(self) -> None:
@@ -207,8 +208,8 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
                 b"      - verify\n", b"      - verify\n      - verify\n"
             ),
             "duplicate-source": MANIFEST_BYTES.replace(
-                b"specs/references/boundary-first-proof-v1.md",
-                b"specs/references/boundary-first-feature-authoring-v1.md",
+                b"templates/shared/boundary-first-proof-v1.md",
+                b"templates/shared/boundary-first-feature-authoring-v1.md",
                 1,
             ),
             "duplicate-target": MANIFEST_BYTES.replace(
@@ -244,8 +245,8 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
             ),
             "wrong-source": (
                 MANIFEST_BYTES.replace(
-                    b"specs/references/boundary-first-proof-v1.md",
-                    b"specs/references/alternate-proof-v1.md",
+                    b"templates/shared/boundary-first-proof-v1.md",
+                    b"templates/shared/alternate-proof-v1.md",
                 ),
                 "proof",
             ),
@@ -262,7 +263,7 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
                 _, root = self.make_repository()
                 if name == "wrong-source":
                     (
-                        root / "specs/references/alternate-proof-v1.md"
+                        root / "templates/shared/alternate-proof-v1.md"
                     ).write_bytes(b"# alternate\n")
                 (root / RESOURCE_MANIFEST).write_bytes(raw)
                 with self.assertRaisesRegex(
@@ -281,7 +282,7 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
 
     def test_mixed_canonical_resource_version_fails_before_write(self) -> None:
         _, root = self.make_repository()
-        proof = root / "specs/references/boundary-first-proof-v1.md"
+        proof = root / "templates/shared/boundary-first-proof-v1.md"
         proof.write_text(
             "# Proof\n\nBoundary model version: boundary-first-v2\n",
             encoding="utf-8",
@@ -296,7 +297,7 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
     def test_manifest_rejects_unsafe_paths_before_mutation(self) -> None:
         variants = {
             "absolute": b"/tmp/boundary.md",
-            "dot": b"specs/./references/boundary.md",
+            "dot": b"templates/./shared/boundary.md",
             "escape": b"../boundary.md",
             "outside-target": b"assets/boundary-first-method-v1.md",
         }
@@ -304,7 +305,7 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
             with self.subTest(name=name):
                 _, root = self.make_repository()
                 raw = MANIFEST_BYTES
-                needle = b"specs/references/boundary-first-method-v1.md"
+                needle = b"templates/shared/boundary-first-method-v1.md"
                 if name == "outside-target":
                     needle = b"references/boundary-first-method-v1.md"
                 (root / RESOURCE_MANIFEST).write_bytes(
@@ -393,7 +394,7 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
             root
             / "skills/design/references/nested/boundary-first-extra.md",
             root
-            / "specs/references/boundary-first-proof-v2.md",
+            / "templates/shared/boundary-first-proof-v2.md",
         )
         for extra in extras:
             extra.parent.mkdir(parents=True, exist_ok=True)
@@ -447,7 +448,7 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
         existing.write_bytes(b"original")
         (
             root
-            / "specs/references/boundary-first-proof-v1.md"
+            / "templates/shared/boundary-first-proof-v1.md"
         ).unlink()
 
         with self.assertRaisesRegex(
@@ -570,10 +571,10 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
             RESOURCE_MANIFEST,
             CANONICAL_REFERENCE,
             Path(
-                "specs/references/"
+                "templates/shared/"
                 "boundary-first-feature-authoring-v1.md"
             ),
-            Path("specs/references/boundary-first-proof-v1.md"),
+            Path("templates/shared/boundary-first-proof-v1.md"),
         )
         target_count = len(projected_paths())
         mutation_indices = (1, (target_count + 1) // 2, target_count)
@@ -698,7 +699,7 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
         self.assertNotEqual(completed.returncode, 0)
         self.assertIn("BFR-MANIFEST-MISSING", completed.stdout)
         self.assertIn(
-            "path=specs/boundary-first-resources.yaml",
+            "path=scripts/boundary-first-resources.yaml",
             completed.stdout,
         )
         self.assertIn("expected=existing resource manifest", completed.stdout)
@@ -746,7 +747,7 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
 
         with self.assertRaisesRegex(
             ProjectionContractError,
-            "BFR-PATH-SYMLINK: specs/references",
+            "BFR-PATH-SYMLINK: templates/shared",
         ):
             project_reference(root, mode="check")
 
@@ -819,7 +820,7 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
             root / "skills/route/references/other-guidance.md"
         )
         skill_link.symlink_to(target)
-        canonical_link = root / "specs/references/other-guidance.md"
+        canonical_link = root / "templates/shared/other-guidance.md"
         canonical_link.symlink_to(target)
 
         result = project_reference(root, mode="check")
@@ -860,7 +861,7 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
         _, root = self.make_repository()
         feature = (
             root
-            / "specs/references/boundary-first-feature-authoring-v1.md"
+            / "templates/shared/boundary-first-feature-authoring-v1.md"
         )
         secret = "token-super-secret-resource-version"
         feature.write_text(
@@ -884,7 +885,7 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
         self.assertEqual(completed.returncode, 2)
         self.assertIn("BFR-RESOURCE-VERSION-UNKNOWN", completed.stdout)
         self.assertIn(
-            "path=specs/references/"
+            "path=templates/shared/"
             "boundary-first-feature-authoring-v1.md",
             completed.stdout,
         )
@@ -929,10 +930,10 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
 
         feature = (
             ROOT
-            / "specs/references/boundary-first-feature-authoring-v1.md"
+            / "templates/shared/boundary-first-feature-authoring-v1.md"
         ).read_text(encoding="utf-8")
         proof = (
-            ROOT / "specs/references/boundary-first-proof-v1.md"
+            ROOT / "templates/shared/boundary-first-proof-v1.md"
         ).read_text(encoding="utf-8")
         self.assertIn("## Feature-spec boundary record", feature)
         self.assertNotIn("## Test-spec proof record", feature)

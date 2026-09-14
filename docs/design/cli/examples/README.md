@@ -11,10 +11,6 @@ These examples belong to the [CLI design](../cli.md). Stored objects are indexed
 | [Assessment update failures](v3-assessment-update-errors/README.md) | V3 interface | New-command failures before v3 selection, with a retained schema-2 unknown-command control. |
 | [Verify limitations update](v3-verify-limitations-update/README.md) | V3 | Whole-field edit preserving conditional basis, plus projections distinguishing present and absent basis. |
 
-Historical navigation only; these files are not current operational examples.
-
-| Historical example | Contract | Original purpose |
-| --- | --- | --- |
-| [Work status update](v2-work-status-update/README.md) | Historical, non-operational | Original targeted request schema 1 and result schema 2 with a retired v2 stored contract; do not execute. |
+Historical v2 illustrations are recoverable at `7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e` under their original `docs/design/cli/examples/` paths; exact files are recorded in the [cleanup disposition](../../../changes/2026-09-14-retire-specs-and-stale-tests/m6-design-reconciliation.json). They are not current inputs or acceptance examples.
 
 V3 requests retain targeted-recording-v1/schema_version 1; v3 stored records and the v3 result profile use their separately selected version 3. Schema and command conformance do not turn synthetic decisions into actual assessments. Do not infer a workflow approval or complete assessment read from a successful storage receipt or scope.complete alone.

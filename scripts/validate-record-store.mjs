@@ -1,3 +1,4 @@
+import {snapshotGitEnvironment,assertSnapshotRoot} from './record_snapshot_git.mjs';
 // Repository metadata validation reuses the recorder's read-only, bounded checks.
 import { basename, dirname, resolve } from "node:path";
 import { execFileSync } from "node:child_process";
@@ -8,8 +9,9 @@ const formatFor = bytes => storedFormat(JSON.parse(bytes.toString()));
 
 function snapshotFiles(root, changeId, revision) {
   if (!/^(?:[a-f0-9]{40}|[a-f0-9]{64})$/.test(revision)) throw new Error();
+  assertSnapshotRoot(root);
   const git = args => execFileSync("git", ["-C", root, ...args],
-    {maxBuffer: 1024 * 1024 + 1, timeout: 10000, stdio: ["ignore", "pipe", "pipe"]});
+    {env: snapshotGitEnvironment(), maxBuffer: 1024 * 1024 + 1, timeout: 10000, stdio: ["ignore", "pipe", "pipe"]});
   const commit = git(["rev-parse", "--verify", `${revision}^{commit}`]).toString().trim();
   if (commit !== revision) throw new Error();
   let total = 0;

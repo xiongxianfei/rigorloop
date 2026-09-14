@@ -12,23 +12,21 @@ External runtime instructions and direct user instructions govern within their a
 Within repository artifacts, follow this order:
 
 1. This Constitution.
-2. Approved owning Designs for adopted responsibilities, or approved feature specs for responsibilities not yet migrated.
-3. Applicable retained architecture documents and ADRs.
-4. The initiative's approved execution plan.
-5. Independently applicable test specifications.
-6. [AGENTS.md](AGENTS.md), implementation and informal historical discussion.
+2. Approved owning Designs, including their decisions.
+3. The initiative's approved execution plan and verification allocation.
+4. [AGENTS.md](AGENTS.md), implementation and informal historical discussion.
 
 Contributors MUST identify conflicts and follow the highest applicable authority; they MUST NOT silently blend contradictory rules or invent missing decisions.
 [VISION.md](VISION.md) governs vision and proposal fit below this Constitution, ahead of feature documents, proposals and README summaries.
 
 [System](docs/design/system.md) owns model composition and delegates detailed contracts to [Skill](docs/design/skill/skill.md), [CLI](docs/design/cli/cli.md) and [Engineering](docs/design/engineering/engineering.md).
 Their approved child contracts govern their declared responsibilities; this Constitution establishes principles, and AGENTS supplies repository operating instructions.
-Existing adoption scopes and surviving legacy responsibilities remain as declared by those owners; a new document, package or installation alone MUST NOT establish adoption or expand an approval.
+Customer projects retain their explicitly selected contracts. Current repository responsibilities follow these owners; a new document, package or installation alone MUST NOT establish adoption or expand an approval.
 Actors MUST respect artifact ownership and return corrections to the responsible owner; recording a decision does not grant approval, progression or execution permission.
 
 ## Design and compatibility
 
-Externally observable behavior MUST have an approved owning Design or retained feature spec before implementation.
+Externally observable behavior MUST have an approved owning Design before implementation.
 Contracts MUST define requirements, edge cases, non-goals, compatibility and acceptance; required behavior MUST map to concrete verification, retaining stable requirement IDs where used.
 [Design](docs/design/skill/design.md) owns authoring conventions and reconciled behavioral and technical decisions.
 Architecture or behavior changes MUST update the affected contract, consumers, documentation and examples in the same change.

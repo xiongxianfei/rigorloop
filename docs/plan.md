@@ -29,6 +29,8 @@ Current blockers are not recorded in this index.
 
 ## Current plan references
 
+- [Retire all specs and stale tests](plans/2026-09-14-retire-specs-and-stale-tests.md) — [owning change](changes/2026-09-14-retire-specs-and-stale-tests/change.json).
+
 - [Retire fixed spec-read-log instrumentation](plans/2026-09-14-retire-spec-read-log.md) — [owning change](changes/2026-09-14-retire-spec-read-log/change.json).
 
 - [2026-09-13 Token-cost feature retirement](plans/2026-09-13-token-cost-retirement.md) — [owning cleanup change](changes/2026-09-13-current-design-repository-cleanup/change.json).

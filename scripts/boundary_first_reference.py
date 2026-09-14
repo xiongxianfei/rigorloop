@@ -10,12 +10,12 @@ from pathlib import Path, PurePosixPath
 from typing import Mapping
 
 METHOD_VERSION = "boundary-first-v1"
-RESOURCE_MANIFEST = Path("specs/boundary-first-resources.yaml")
+RESOURCE_MANIFEST = Path("scripts/boundary-first-resources.yaml")
 RESOURCE_MANIFEST_SHA256 = (
-    "320335d3e902eea21c49a2d0a933427cd1953c3eb298819420f10fbd496339d7"
+    "d7806a57f7cf4d4b6329da679d8b1e96189908833d8fa8337d5be45ae9a8cb18"
 )
 CANONICAL_REFERENCE = Path(
-    "specs/references/boundary-first-method-v1.md"
+    "templates/shared/boundary-first-method-v1.md"
 )
 PROJECTED_REFERENCE = Path("references/boundary-first-method-v1.md")
 GOVERNED_SKILLS = (
@@ -291,9 +291,9 @@ def _closed_path(value: object, *, field: str) -> Path:
         raise _manifest_error(
             "PATH", f"{field} is not a normalized repository-relative path"
         )
-    if field == "source" and raw_parts[:2] != ["specs", "references"]:
+    if field == "source" and raw_parts[:2] != ["templates", "shared"]:
         raise _manifest_error(
-            "PATH", f"source is outside specs/references: {value}"
+            "PATH", f"source is outside templates/shared: {value}"
         )
     if field == "target" and (
         len(raw_parts) != 2 or raw_parts[0] != "references"
@@ -653,10 +653,12 @@ def _unexpected_canonical_resources(
     root: Path,
     expected_sources: tuple[Path, ...],
 ) -> tuple[Path, ...]:
-    references = _repository_path(root, Path("specs/references"))
+    references = _repository_path(root, Path("templates/shared"))
     if not references.is_dir():
         return ()
+    # The shared compact scan has a separate projection owner.
     expected = {root / source for source in expected_sources}
+    expected.add(root / "templates/shared/boundary-first-compact-scan.md")
     found = {
         candidate
         for candidate in references.rglob("*")

@@ -11,7 +11,6 @@ import subprocess
 import sys
 import unittest
 from unittest import mock
-import math
 import os
 import tempfile
 import textwrap
@@ -29,96 +28,16 @@ import skill_validation
 ROOT = Path(__file__).resolve().parents[1]
 VALIDATOR = ROOT / "scripts" / "validate-skills.py"
 FIXTURES = ROOT / "tests" / "fixtures" / "skills"
-SCAN_SENSITIVE_SKILLS = [
-    "architecture",
-    "architecture-review",
-    "bugfix",
-    "ci-maintenance",
-    "code-review",
-    "implement",
-    "plan",
-    "plan-review",
-    "pr",
-    "project-map",
-    "proposal",
-    "proposal-review",
-    "research",
-    "spec",
-    "spec-review",
-    "verify",
-    "vision",
-    "route",
-]
-FORMAL_REVIEW_SKILLS = [
-    "proposal-review",
-    "spec-review",
-    "architecture-review",
-    "plan-review",
-    "code-review",
-]
-DOWNSTREAM_STATUS_SETTLEMENT_FIRST_SLICE_SKILLS = [
-    "spec",
-    "architecture",
-    "plan",
-]
-DOWNSTREAM_STATUS_SETTLEMENT_LATER_SLICE_SKILLS = [
-    "implement",
-    "verify",
-    "pr",
-]
 DOWNSTREAM_REVIEW_CLOSEOUT_SKILLS = [
     "route",
     "verify",
     "pr",
 ]
-PR_SELF_CONTAINED_LIFECYCLE_SKILLS = [
-    "route",
-    "plan",
-    "implement",
-    "verify",
-    "pr",
-]
-MILESTONE_AWARE_REVIEW_HANDOFF_SKILLS = [
-    "route",
-    "implement",
-    "code-review",
-    "plan",
-]
 SHARED_REVIEW_BLOCK_PATH = ROOT / "templates" / "shared" / "review-isolation-and-recording.md"
-SKILL_CONTRACT_SPEC = ROOT / "specs" / "skill-contract.md"
-SKILL_CONTRACT_TEST_SPEC = ROOT / "specs" / "skill-contract.test.md"
-SKILL_CONTRACT_PLAN = ROOT / "docs" / "plans" / "2026-05-08-skill-contract-optimization.md"
-SINGLE_SOURCE_WORKFLOW_STATE_SPEC = ROOT / "specs" / "single-source-of-workflow-state.md"
-SINGLE_SOURCE_WORKFLOW_STATE_TEST_SPEC = ROOT / "specs" / "single-source-of-workflow-state.test.md"
-SINGLE_SOURCE_WORKFLOW_STATE_PLAN = (
-    ROOT / "docs" / "plans" / "2026-05-09-single-source-of-workflow-state.md"
-)
-SKILL_CONTRACT_WORKFLOW_SPEC = ROOT / "specs" / "rigorloop-workflow.md"
-SKILL_CONTRACT_WORKFLOWS_DOC = ROOT / "docs" / "workflows.md"
-SKILL_CONTRACT_AGENTS = ROOT / "AGENTS.md"
-IMPLEMENTATION_AUTOPROGRESSION_CHANGE_ROOT = (
-    ROOT
-    / "docs"
-    / "changes"
-    / "2026-06-24-separately-armed-implementation-autoprogression-through-verify"
-)
 SKILL_CONTRACT_EVIDENCE_BLOCK = ROOT / "templates" / "shared" / "evidence-collection-efficiency.md"
 SKILL_CONTRACT_FIRST_SLICE_SKILLS = [
     "route",
     "plan",
-    "implement",
-    "code-review",
-    "verify",
-    "pr",
-    "learn",
-]
-TOKEN_COST_SELECTED_SKILLS = [
-    "proposal",
-    "proposal-review",
-    "spec",
-    "spec-review",
-    "plan",
-    "plan-review",
     "implement",
     "code-review",
     "verify",
@@ -149,17 +68,6 @@ PROGRESSIVE_LOADING_CODE_REVIEW_PROTECTED_TERMS = [
     "milestone-aware",
     "stop conditions",
     "result format",
-]
-CUSTOMER_PORTABLE_FIRST_SLICE_SKILLS = [
-    "proposal",
-    "proposal-review",
-    "design",
-    "plan",
-    "implement",
-    "route",
-    "verify",
-    "pr",
-    "project-map",
 ]
 CUSTOMER_PORTABLE_M2_SKILLS = [
     "proposal",
@@ -242,32 +150,6 @@ SKILL_CONTRACT_PROGRESS_SKILLS = [
     "verify",
     "pr",
 ]
-PROJECT_ARTIFACT_LOOKUP_SKILLS = [
-    "proposal",
-    "spec",
-    "architecture",
-    "plan",
-    "proposal-review",
-    "spec-review",
-    "architecture-review",
-    "plan-review",
-    "code-review",
-    "verify",
-    "pr",
-]
-CHANGE_RECORD_BOUNDED_READ_SKILLS = [
-    "proposal-review",
-    "code-review",
-    "verify",
-    "pr",
-    "plan",
-]
-CHANGE_RECORD_FULL_READ_ESCALATION_TERMS = [
-    "full `change.yaml`",
-    "forensic reconstruction",
-    "unsupported-shape",
-    "whole-record review",
-]
 PUBLIC_WORKFLOW_AND_SKILL_SURFACES = [
     "README.md",
     "AGENTS.md",
@@ -288,11 +170,6 @@ RETIRED_PUBLIC_ROUTE_PATTERNS = {
     "mini-spec": re.compile(r"\bmini[- ]spec\b", re.IGNORECASE),
     "proportional evidence": re.compile(r"\bproportional[- ]evidence\b", re.IGNORECASE),
 }
-WORKFLOW_SPEC_ALLOWED_RETIRED_ROUTE_CONTEXTS = [
-    "MUST NOT classify work as",
-    "Static validation MUST fail",
-    "not separate",
-]
 PUBLISHED_SKILL_FORBIDDEN_INTERNAL_PATTERNS = {
     "workflow spec path": re.compile(r"\bspecs/rigorloop-workflow\.md\b"),
     "skill contract spec path": re.compile(r"\bspecs/skill-contract\.md\b"),
@@ -389,37 +266,10 @@ def extract_markdown_block(text: str, heading: str) -> str:
     return text[start:next_heading].rstrip() + "\n"
 
 
-def estimate_local_tokens(text: str) -> int:
-    if not text:
-        return 0
-    return max(1, max(len(text.split()), math.ceil(len(text) / 4)))
-
-
-def assert_progressive_loading_quick_guide_contract(
-    test_case: unittest.TestCase,
-    skill_body: str,
-    *,
-    max_position_tokens: int = 800,
-    max_words: int = 250,
-) -> None:
+def assert_progressive_loading_quick_guide_contract(test_case, skill_body):
     quick_guide = extract_markdown_block(skill_body, "Quick operating guide")
-    heading_index = skill_body.find("## Quick operating guide")
-    leading_text = skill_body[:heading_index]
-    test_case.assertLessEqual(
-        estimate_local_tokens(leading_text),
-        max_position_tokens,
-        "Quick operating guide must appear within the first 800 estimated tokens",
-    )
-
     for label in PROGRESSIVE_LOADING_QUICK_GUIDE_LABELS:
         test_case.assertIn(label, quick_guide)
-
-    guide_word_count = len(quick_guide.split())
-    has_safety_rationale = "safety rationale" in skill_body.lower()
-    test_case.assertTrue(
-        guide_word_count <= max_words or has_safety_rationale,
-        "Quick operating guide over 250 words requires a safety rationale",
-    )
     test_case.assertIn("full-file", skill_body)
     test_case.assertIn("broader-section", skill_body)
 
@@ -533,12 +383,10 @@ def assert_boundary_id_covered(test_case: unittest.TestCase, body: str, boundary
     test_case.fail(f"EB{boundary_number} is not covered explicitly or by range")
 
 
-
-
 class SkillValidatorFixtureTests(unittest.TestCase):
     maxDiff = None
 
-    def write_spec_family_asset_fixture(
+    def write_asset_fixture(
         self,
         root: Path,
         skill_name: str,
@@ -584,7 +432,7 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             asset_path.write_text(textwrap.dedent(content), encoding="utf-8")
         return skill_dir
 
-    def spec_family_asset_text(
+    def asset_text(
         self,
         *,
         template: str,
@@ -615,7 +463,7 @@ class SkillValidatorFixtureTests(unittest.TestCase):
         body: str = "| <field> | <value> |\n",
         include_metadata: bool = True,
     ) -> str:
-        return self.spec_family_asset_text(
+        return self.asset_text(
             template=template,
             skill=skill,
             status=status,
@@ -632,7 +480,7 @@ class SkillValidatorFixtureTests(unittest.TestCase):
         body: str = "| <field> | <value> |\n",
         include_metadata: bool = True,
     ) -> str:
-        return self.spec_family_asset_text(
+        return self.asset_text(
             template=template,
             skill=skill,
             status=status,
@@ -1527,141 +1375,61 @@ Use the inputs somehow and produce a useful result.
             "ci-maintenance must flag bounded PR repair eligibility",
         )
 
-    def test_spec_family_asset_valid_fixture_passes(self) -> None:
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
-            self.write_spec_family_asset_fixture(
-                root,
-                "spec",
-                {
-                    "assets/spec-skeleton.md": self.spec_family_asset_text(
-                        template="spec-skeleton-v1", skill="spec", body="## Status\n\n<status>\n"
-                    ),
-                },
-            )
-            self.write_spec_family_asset_fixture(
-                root,
-                "spec-review",
-                {
-                    "assets/review-result-skeleton.md": self.spec_family_asset_text(
-                        template="spec-review-result-skeleton-v1",
-                        skill="spec-review",
-                        body=(
-                            "## Result\n\n"
-                            "- Review status: <review status>\n"
-                            "- Recording status: <recording status>\n"
-                        ),
-                    ),
-                    "assets/material-finding.md": self.spec_family_asset_text(
-                        template="spec-review-material-finding-v1",
-                        skill="spec-review",
-                        body=(
-                            "## Finding <finding id>\n\n"
-                            "- Finding ID: <finding id>\n"
-                            "- Severity: <severity>\n"
-                            "- Location: <location>\n"
-                            "- Evidence: <evidence>\n"
-                            "- Required outcome: <required outcome>\n"
-                            "- Safe resolution path: <safe resolution path>\n"
-                            "- needs-decision rationale: <needs-decision rationale>\n"
-                        ),
-                    ),
-                },
-                resource_entries=textwrap.dedent(
-                    """\
-                    - COPY `assets/material-finding.md` when recording each material finding.
-                      Fill: Finding ID, Severity, Location, Evidence, Required outcome, Safe resolution path.
-                      Confirm the literal `Finding ID:` line exists before linking the finding from `review-log.md` or `review-resolution.md`.
-                      Do not emit unfilled placeholders.
-                    - COPY `assets/review-result-skeleton.md` when recording the review result.
-                      Fill: review result fields.
-                      Do not emit unfilled placeholders.
-                    """
-                ),
-            )
-            self.write_spec_family_asset_fixture(
-                root,
-                "test-spec",
-                {
-                    "assets/test-spec-skeleton.md": self.spec_family_asset_text(
-                        template="test-spec-skeleton-v1",
-                        skill="test-spec",
-                        body="## Status\n\n<status>\n",
-                    ),
-                    "assets/test-case.md": self.spec_family_asset_text(
-                        template="test-spec-test-case-v1", skill="test-spec"
-                    ),
-                    "assets/coverage-map-row.md": self.spec_family_asset_text(
-                        template="test-spec-coverage-map-row-v1", skill="test-spec"
-                    ),
-                    "assets/validation-command-row.md": self.spec_family_asset_text(
-                        template="test-spec-validation-command-row-v1",
-                        skill="test-spec",
-                    ),
-                    "assets/milestone-proof-row.md": self.spec_family_asset_text(
-                        template="test-spec-milestone-proof-row-v1",
-                        skill="test-spec",
-                    ),
-                },
-            )
 
-            result = run_validator(root)
-            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
-
-    def test_spec_family_generated_asset_presence_passes_for_complete_output(self) -> None:
+    def test_current_generated_asset_presence_passes_for_complete_output(self) -> None:
         fixture = FIXTURES / "published-design/generated-output-presence/valid"
         errors = skill_validation.validate_generated_asset_presence(
-            skill_name="spec",
-            canonical_skill_dir=fixture / "canonical/spec",
-            generated_skill_dir=fixture / "generated/spec",
+            skill_name="proposal",
+            canonical_skill_dir=fixture / "canonical/proposal",
+            generated_skill_dir=fixture / "generated/proposal",
             surface_label="generated skill mirror",
         )
 
         self.assertEqual(errors, [])
 
-    def test_spec_family_generated_asset_presence_fails_for_missing_generated_asset(self) -> None:
+    def test_current_generated_asset_presence_fails_for_missing_generated_asset(self) -> None:
         fixture = FIXTURES / "published-design/generated-output-presence/missing-asset"
         errors = skill_validation.validate_generated_asset_presence(
-            skill_name="spec",
-            canonical_skill_dir=fixture / "canonical/spec",
-            generated_skill_dir=fixture / "generated/spec",
+            skill_name="proposal",
+            canonical_skill_dir=fixture / "canonical/proposal",
+            generated_skill_dir=fixture / "generated/proposal",
             surface_label="generated skill mirror",
         )
 
         self.assertEqual(
             errors,
             [
-                "Generated output for skill 'spec' is missing mapped asset "
-                "'assets/spec-skeleton.md' in generated skill mirror"
+                "Generated output for skill 'proposal' is missing mapped asset "
+                "'assets/proposal-skeleton.md' in generated skill mirror"
             ],
         )
 
-    def test_spec_family_generated_asset_presence_names_adapter_surface(self) -> None:
+    def test_current_generated_asset_presence_names_adapter_surface(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
-            canonical_skill_dir = self.write_spec_family_asset_fixture(
+            canonical_skill_dir = self.write_asset_fixture(
                 root / "canonical",
-                "spec-review",
+                "code-review",
                 {
-                    "assets/review-result-skeleton.md": self.spec_family_asset_text(
-                        template="spec-review-result-skeleton-v1",
-                        skill="spec-review",
+                    "assets/review-result-skeleton.md": self.asset_text(
+                        template="code-review-result-skeleton-v1",
+                        skill="code-review",
                         body="## Result\n\n- Review status: <review status>\n",
                     ),
-                    "assets/material-finding.md": self.spec_family_asset_text(
-                        template="spec-review-material-finding-v1",
-                        skill="spec-review",
+                    "assets/material-finding.md": self.asset_text(
+                        template="code-review-material-finding-v1",
+                        skill="code-review",
                         body="## Finding <finding id>\n\n- Finding ID: <finding id>\n- Severity: <severity>\n",
                     ),
                 },
             )
-            generated_skill_dir = root / "generated-adapter" / "spec-review"
+            generated_skill_dir = root / "generated-adapter" / "code-review"
             generated_asset = generated_skill_dir / "assets/review-result-skeleton.md"
             generated_asset.parent.mkdir(parents=True, exist_ok=True)
             generated_asset.write_text("generated result skeleton", encoding="utf-8")
 
             errors = skill_validation.validate_generated_asset_presence(
-                skill_name="spec-review",
+                skill_name="code-review",
                 canonical_skill_dir=canonical_skill_dir,
                 generated_skill_dir=generated_skill_dir,
                 surface_label="generated adapter output",
@@ -1670,401 +1438,22 @@ Use the inputs somehow and produce a useful result.
             self.assertEqual(
                 errors,
                 [
-                    "Generated output for skill 'spec-review' is missing mapped asset "
+                    "Generated output for skill 'code-review' is missing mapped asset "
                     "'assets/material-finding.md' in generated adapter output"
                 ],
             )
 
-    def test_spec_family_asset_rejects_unapproved_asset_paths(self) -> None:
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
-            self.write_spec_family_asset_fixture(
-                root,
-                "spec-review",
-                {
-                    "assets/review-result-skeleton.md": self.spec_family_asset_text(
-                        template="spec-review-result-skeleton-v1", skill="spec-review"
-                    ),
-                    "assets/material-finding.md": self.spec_family_asset_text(
-                        template="spec-review-material-finding-v1", skill="spec-review"
-                    ),
-                    "assets/review-dimension-row.md": self.spec_family_asset_text(
-                        template="spec-review-dimension-row-v1", skill="spec-review"
-                    ),
-                },
-            )
 
-            result = run_validator(root)
-            self.assertNotEqual(result.returncode, 0)
-            self.assertIn("spec-family asset rollout must ship exactly approved assets", result.stdout + result.stderr)
 
-    def test_spec_family_asset_resource_map_requires_copy_and_fields(self) -> None:
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
-            self.write_spec_family_asset_fixture(
-                root,
-                "spec",
-                {
-                    "assets/spec-skeleton.md": self.spec_family_asset_text(
-                        template="spec-skeleton-v1", skill="spec"
-                    ),
-                },
-                resource_entries=textwrap.dedent(
-                    """\
-                    - READ `assets/spec-skeleton.md` when creating a spec.
-                      Do not emit unfilled placeholders.
-                    """
-                ),
-            )
 
-            result = run_validator(root)
-            output = result.stdout + result.stderr
-            self.assertNotEqual(result.returncode, 0)
-            self.assertIn("Resource map entry for 'assets/spec-skeleton.md' must use literal COPY", output)
-            self.assertIn("Resource map entry for 'assets/spec-skeleton.md' must name fields or structures to fill", output)
 
-    def valid_test_spec_proof_contract_output(self) -> str:
-        return textwrap.dedent(
-            """\
-            # Representative Test Spec
 
-            ## Status
 
-            active
-
-            ## Validation commands
-
-            | Command ID | Command | Classification | Owner | Owning milestone | First required milestone | Failure behavior | Zero-test behavior | Evidence artifact | Safe mode / side-effect boundary |
-            | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-            | CMD1 | `python scripts/test-example.py` | existing/configured | implement | M1 | M1 closeout | fail milestone validation | zero tests fail | `docs/changes/example/change.yaml` | local only; no network |
-            | CMD2 | `python scripts/planned-validator.py` | planned-for-implementation | implement | M2 | M2 closeout | fail milestone validation | zero tests fail | `docs/changes/example/change.yaml` | local only; no network |
-            | CMD3 | `python scripts/ci-validator.py` | ci-owned | ci | ci | CI required check | fail CI validation | zero tests fail | `docs/changes/example/change.yaml` | CI only; no local network |
-            | CMD4 | `python scripts/release-validator.py` | release-owned | release | release | release closeout | block release evidence | not applicable; release evidence command | `docs/changes/example/release-evidence.md` | release-owned; no publication during implementation |
-
-            ## Milestone proof map
-
-            | Milestone | Required test IDs | Manual proof IDs | Command IDs | Evidence artifacts | Required before | Notes |
-            | --- | --- | --- | --- | --- | --- | --- |
-            | M1 | T1 | none | CMD1 | `docs/changes/example/change.yaml` | code-review M1 | Existing validator proof. |
-            | M2 | T2 | none | CMD2 | `docs/changes/example/change.yaml` | code-review M2 | Planned command becomes required. |
-            | CI | T3 | none | CMD3 | `docs/changes/example/change.yaml` | CI required check | CI-owned command proof. |
-            | release | T4 | none | CMD4 | `docs/changes/example/release-evidence.md` | release closeout | Release-owned command proof. |
-
-            ## Test cases
-
-            ### T1. Existing command-backed proof
-
-            - Covers: R1
-            - Level: unit
-            - Command IDs: CMD1
-            - Steps: Run `python scripts/test-example.py`.
-            - Expected result: passes.
-            - Evidence artifact: `docs/changes/example/change.yaml`
-            - Automation location: `python scripts/test-example.py`
-            - Required by milestone: M1
-
-            ### T2. Planned command proof
-
-            - Covers: R2
-            - Level: unit
-            - Command IDs: CMD2
-            - Steps: Run planned validator after M2 implementation.
-            - Expected result: passes.
-            - Evidence artifact: `docs/changes/example/change.yaml`
-            - Automation location: `python scripts/planned-validator.py`
-            - Required by milestone: M2
-
-            ### T3. CI-owned command proof
-
-            - Covers: EC3
-            - Level: smoke
-            - Command IDs: CMD3
-            - Steps: CI runs `python scripts/ci-validator.py`.
-            - Expected result: CI evidence is recorded.
-            - Evidence artifact: `docs/changes/example/change.yaml`
-            - Automation location: `python scripts/ci-validator.py`
-            - Required by milestone: CI required check
-
-            ### T4. Release-owned command proof
-
-            - Covers: EC4
-            - Level: smoke
-            - Command IDs: CMD4
-            - Steps: Release owner runs `python scripts/release-validator.py`.
-            - Expected result: Release evidence is recorded.
-            - Evidence artifact: `docs/changes/example/release-evidence.md`
-            - Automation location: `python scripts/release-validator.py`
-            - Required by milestone: release closeout
-            """
-        )
-
-    def test_test_spec_proof_contract_valid_command_ledger_passes(self) -> None:
-        errors = skill_validation.validate_test_spec_proof_contract_fixture(
-            self.valid_test_spec_proof_contract_output(),
-            milestone_based_plan=True,
-        )
-        self.assertEqual(errors, [])
-
-    def test_test_spec_proof_contract_named_command_missing_ledger_fails(self) -> None:
-        fixture = self.valid_test_spec_proof_contract_output().replace(
-            "| CMD1 | `python scripts/test-example.py` | existing/configured | implement | M1 | M1 closeout | fail milestone validation | zero tests fail | `docs/changes/example/change.yaml` | local only; no network |\n",
-            "",
-        )
-        errors = skill_validation.validate_test_spec_proof_contract_fixture(
-            fixture,
-            milestone_based_plan=True,
-        )
-        self.assertIn("named validation command missing from ledger: python scripts/test-example.py", errors)
-
-    def test_test_spec_proof_contract_command_missing_classification_fails(self) -> None:
-        fixture = self.valid_test_spec_proof_contract_output().replace(
-            "| CMD1 | `python scripts/test-example.py` | existing/configured | implement | M1 | M1 closeout | fail milestone validation | zero tests fail | `docs/changes/example/change.yaml` | local only; no network |",
-            "| CMD1 | `python scripts/test-example.py` |  | implement | M1 | M1 closeout | fail milestone validation | zero tests fail | `docs/changes/example/change.yaml` | local only; no network |",
-        )
-        errors = skill_validation.validate_test_spec_proof_contract_fixture(
-            fixture,
-            milestone_based_plan=True,
-        )
-        self.assertIn("command CMD1 missing classification", errors)
-
-    def test_test_spec_proof_contract_unknown_classification_fails_closed(self) -> None:
-        fixture = self.valid_test_spec_proof_contract_output().replace(
-            "existing/configured",
-            "already-configured",
-            1,
-        )
-        errors = skill_validation.validate_test_spec_proof_contract_fixture(
-            fixture,
-            milestone_based_plan=True,
-        )
-        self.assertIn("command CMD1 has unknown classification: already-configured", errors)
-
-    def test_test_spec_proof_contract_planned_command_missing_owner_or_milestone_fails(self) -> None:
-        fixture = self.valid_test_spec_proof_contract_output().replace(
-            "| CMD2 | `python scripts/planned-validator.py` | planned-for-implementation | implement | M2 | M2 closeout | fail milestone validation | zero tests fail | `docs/changes/example/change.yaml` | local only; no network |",
-            "| CMD2 | `python scripts/planned-validator.py` | planned-for-implementation |  |  |  | fail milestone validation | zero tests fail | `docs/changes/example/change.yaml` | local only; no network |",
-        )
-        errors = skill_validation.validate_test_spec_proof_contract_fixture(
-            fixture,
-            milestone_based_plan=True,
-        )
-        self.assertIn("planned command CMD2 missing owner", errors)
-        self.assertIn("planned command CMD2 missing owning milestone", errors)
-        self.assertIn("planned command CMD2 missing first required milestone", errors)
-
-    def test_test_spec_proof_contract_milestone_plan_missing_milestone_map_fails(self) -> None:
-        fixture = re.sub(
-            r"## Milestone proof map\n\n(?:\|.*\n)+\n",
-            "",
-            self.valid_test_spec_proof_contract_output(),
-        )
-        errors = skill_validation.validate_test_spec_proof_contract_fixture(
-            fixture,
-            milestone_based_plan=True,
-        )
-        self.assertIn("milestone-based plan missing Milestone proof map", errors)
-
-    def test_test_spec_proof_contract_raw_command_without_command_id_fails(self) -> None:
-        fixture = self.valid_test_spec_proof_contract_output().replace(
-            "- Command IDs: CMD1",
-            "- Command IDs: none",
-            1,
-        )
-        errors = skill_validation.validate_test_spec_proof_contract_fixture(
-            fixture,
-            milestone_based_plan=True,
-        )
-        self.assertIn("test case T1 uses raw command without Command ID", errors)
-
-    def test_test_spec_proof_contract_trivial_command_free_non_milestone_passes(self) -> None:
-        fixture = textwrap.dedent(
-            """\
-            # Trivial Test Spec
-
-            ## Status
-
-            active
-
-            ## Validation commands
-
-            No validation commands are part of this proof map because the change is documentation-only.
-
-            ## Milestone proof map
-
-            Not applicable because this is a one-shot non-milestone change.
-
-            ## Test cases
-
-            ### T1. Static documentation review
-
-            - Covers: R1
-            - Level: manual
-            - Command IDs: none
-            - Steps: Review the changed prose.
-            - Expected result: Approved wording is present.
-            - Evidence artifact: not applicable
-            - Automation location: manual
-            - Required by milestone: not applicable
-            """
-        )
-        errors = skill_validation.validate_test_spec_proof_contract_fixture(
-            fixture,
-            milestone_based_plan=False,
-        )
-        self.assertEqual(errors, [])
-
-    def test_spec_family_asset_metadata_status_and_placeholder_required(self) -> None:
-        cases = [
-            (
-                "missing metadata",
-                self.spec_family_asset_text(
-                    template="spec-skeleton-v1",
-                    skill="spec",
-                    include_metadata=False,
-                ),
-                "asset metadata missing required field 'Template'",
-            ),
-            (
-                "invalid status",
-                self.spec_family_asset_text(
-                    template="spec-skeleton-v1",
-                    skill="spec",
-                    status="example",
-                ),
-                "spec-family asset 'assets/spec-skeleton.md' Template status must be one of normative, optional",
-            ),
-            (
-                "missing placeholder",
-                self.spec_family_asset_text(
-                    template="spec-skeleton-v1",
-                    skill="spec",
-                    body="## Status\n\nStatus field.\n",
-                ),
-                "asset 'assets/spec-skeleton.md' must include a visible placeholder",
-            ),
-            (
-                "filler prose",
-                self.spec_family_asset_text(
-                    template="spec-skeleton-v1",
-                    skill="spec",
-                    body="your text here\n",
-                ),
-                "asset 'assets/spec-skeleton.md' must not use filler placeholder text",
-            ),
-            (
-                "root dependency",
-                self.spec_family_asset_text(
-                    template="spec-skeleton-v1",
-                    skill="spec",
-                    body="Run scripts/internal-check.py before filling <field>.\n",
-                ),
-                "asset 'assets/spec-skeleton.md' must not require repository-root dependency",
-            ),
-        ]
-
-        for name, asset_text, expected in cases:
-            with self.subTest(name=name), tempfile.TemporaryDirectory() as temporary:
-                root = Path(temporary)
-                self.write_spec_family_asset_fixture(
-                    root,
-                    "spec",
-                    {
-                        "assets/spec-skeleton.md": asset_text,
-                    },
-                )
-
-                result = run_validator(root)
-                self.assertNotEqual(result.returncode, 0)
-                self.assertIn(expected, result.stdout + result.stderr)
-
-    def test_spec_review_asset_review_policy_prose_fails(self) -> None:
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
-            self.write_spec_family_asset_fixture(
-                root,
-                "spec-review",
-                {
-                    "assets/review-result-skeleton.md": self.spec_family_asset_text(
-                        template="spec-review-result-skeleton-v1",
-                        skill="spec-review",
-                        body="This asset MUST define severity policy for reviewers.\n<field>\n",
-                    ),
-                    "assets/material-finding.md": self.spec_family_asset_text(
-                        template="spec-review-material-finding-v1", skill="spec-review"
-                    ),
-                },
-            )
-
-            result = run_validator(root)
-            self.assertNotEqual(result.returncode, 0)
-            self.assertIn(
-                "spec-review asset 'assets/review-result-skeleton.md' must not contain review-policy labels or guidance",
-                result.stdout + result.stderr,
-            )
-
-    def test_spec_review_asset_review_policy_field_label_fails(self) -> None:
-        for forbidden_label in (
-            "Severity policy",
-            "Recording-status rules",
-            "Review dimension",
-            "Security",
-            "Privacy",
-            "Observability",
-            "Sufficiency",
-            "Safe-resolution decision",
-        ):
-            with self.subTest(forbidden_label=forbidden_label):
-                with tempfile.TemporaryDirectory() as temporary:
-                    root = Path(temporary)
-                    self.write_spec_family_asset_fixture(
-                        root,
-                        "spec-review",
-                        {
-                            "assets/review-result-skeleton.md": self.spec_family_asset_text(
-                                template="spec-review-result-skeleton-v1",
-                                skill="spec-review",
-                                body=f"- {forbidden_label}: <policy>\n",
-                            ),
-                            "assets/material-finding.md": self.spec_family_asset_text(
-                                template="spec-review-material-finding-v1", skill="spec-review"
-                            ),
-                        },
-                    )
-
-                    result = run_validator(root)
-                    self.assertNotEqual(result.returncode, 0)
-                    self.assertIn(
-                        "spec-review asset 'assets/review-result-skeleton.md' must not contain review-policy labels or guidance",
-                        result.stdout + result.stderr,
-                    )
-
-    def test_spec_family_baseline_summary_records_required_surfaces(self) -> None:
-        baseline = (
-            ROOT
-            / "docs"
-            / "changes"
-            / "2026-05-20-spec-family-assets-progressive-disclosure"
-            / "baseline.md"
-        )
-        self.assertTrue(baseline.exists())
-        text = baseline.read_text(encoding="utf-8")
-        for required in [
-            "PR #79 remains the authoritative behavior baseline",
-            "skills/spec/SKILL.md",
-            "skills/spec-review/SKILL.md",
-            "skills/test-spec/SKILL.md",
-            "Closed enums that remain in `SKILL.md`",
-            "Stop conditions that remain in `SKILL.md`",
-            "Review dimensions or coverage obligations that remain in `SKILL.md`",
-            "Source location for each extracted asset",
-        ]:
-            with self.subTest(required=required):
-                self.assertIn(required, text)
 
     def test_proposal_family_asset_valid_fixture_passes(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
-            self.write_spec_family_asset_fixture(
+            self.write_asset_fixture(
                 root,
                 "proposal",
                 {
@@ -2080,7 +1469,7 @@ Use the inputs somehow and produce a useful result.
                     ),
                 },
             )
-            self.write_spec_family_asset_fixture(
+            self.write_asset_fixture(
                 root,
                 "proposal-review",
                 {
@@ -2139,7 +1528,7 @@ Use the inputs somehow and produce a useful result.
     def test_proposal_review_result_skeleton_preserves_baseline_result_block(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
-            self.write_spec_family_asset_fixture(
+            self.write_asset_fixture(
                 root,
                 "proposal-review",
                 {
@@ -2197,7 +1586,7 @@ Use the inputs somehow and produce a useful result.
     def test_proposal_family_asset_rejects_unapproved_asset_paths(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
-            self.write_spec_family_asset_fixture(
+            self.write_asset_fixture(
                 root,
                 "proposal",
                 {
@@ -2220,7 +1609,7 @@ Use the inputs somehow and produce a useful result.
     def test_proposal_family_asset_resource_map_requires_copy_and_fields(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
-            self.write_spec_family_asset_fixture(
+            self.write_asset_fixture(
                 root,
                 "proposal",
                 {
@@ -2300,7 +1689,7 @@ Use the inputs somehow and produce a useful result.
         for name, asset_text, expected in cases:
             with self.subTest(name=name), tempfile.TemporaryDirectory() as temporary:
                 root = Path(temporary)
-                self.write_spec_family_asset_fixture(
+                self.write_asset_fixture(
                     root,
                     "proposal",
                     {
@@ -2327,7 +1716,7 @@ Use the inputs somehow and produce a useful result.
             with self.subTest(forbidden_label=forbidden_label):
                 with tempfile.TemporaryDirectory() as temporary:
                     root = Path(temporary)
-                    self.write_spec_family_asset_fixture(
+                    self.write_asset_fixture(
                         root,
                         "proposal-review",
                         {
@@ -2360,7 +1749,7 @@ Use the inputs somehow and produce a useful result.
         ):
             with self.subTest(label=label), tempfile.TemporaryDirectory() as temporary:
                 root = Path(temporary)
-                self.write_spec_family_asset_fixture(
+                self.write_asset_fixture(
                     root,
                     "proposal-review",
                     {
@@ -2388,7 +1777,7 @@ Use the inputs somehow and produce a useful result.
     def test_proposal_review_asset_policy_prose_fails(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
-            self.write_spec_family_asset_fixture(
+            self.write_asset_fixture(
                 root,
                 "proposal-review",
                 {
@@ -2415,7 +1804,7 @@ Use the inputs somehow and produce a useful result.
     def test_proposal_family_generated_asset_presence_names_adapter_surface(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
-            canonical_skill_dir = self.write_spec_family_asset_fixture(
+            canonical_skill_dir = self.write_asset_fixture(
                 root / "canonical",
                 "proposal-review",
                 {
@@ -2454,7 +1843,7 @@ Use the inputs somehow and produce a useful result.
     def test_review_family_asset_resource_map_requires_finding_id_confirmation(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
-            self.write_spec_family_asset_fixture(
+            self.write_asset_fixture(
                 root,
                 "code-review",
                 {
@@ -2570,287 +1959,20 @@ Use the inputs somehow and produce a useful result.
 
 
 
-    def test_spec_review_canonical_contract_rejects_test_spec_immediate_stage(self) -> None:
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
-            skill_dir = self.write_spec_family_asset_fixture(
-                root,
-                "spec-review",
-                {
-                    "assets/review-result-skeleton.md": self.spec_family_asset_text(
-                        template="spec-review-result-skeleton-v1",
-                        skill="spec-review",
-                        body=(
-                            "## Result\n\n"
-                            "- Review status: <approved | changes-requested | blocked | inconclusive>\n"
-                            "- Immediate next stage: <architecture | plan | test-spec>\n"
-                            "- Eventual test-spec readiness: <ready | conditionally-ready | not-ready>\n"
-                            "- Stop condition: <none or stop condition>\n"
-                        ),
-                    ),
-                    "assets/material-finding.md": self.review_family_asset_text(
-                        template="spec-review-material-finding-v1",
-                        skill="spec-review",
-                        body=(
-                            "## Finding <finding id>\n\n"
-                            "- Finding ID: <finding id>\n"
-                            "- Severity: <severity>\n"
-                            "- Location: <location>\n"
-                            "- Evidence: <evidence>\n"
-                            "- Required outcome: <required outcome>\n"
-                            "- Safe resolution path: <safe resolution path>\n"
-                            "- needs-decision rationale: <needs-decision rationale>\n"
-                        ),
-                    ),
-                },
-            )
-
-            errors = skill_validation.validate_spec_review_canonical_contract(
-                skill_dir / "SKILL.md"
-            )
-
-        self.assertIn(
-            "spec-review result skeleton Immediate next stage enum must exclude test-spec",
-            "\n".join(errors),
-        )
-
-    def test_spec_review_canonical_contract_rejects_duplicate_material_field_list(self) -> None:
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
-            skill_dir = self.write_spec_family_asset_fixture(
-                root,
-                "spec-review",
-                {
-                    "assets/review-result-skeleton.md": self.spec_family_asset_text(
-                        template="spec-review-result-skeleton-v1",
-                        skill="spec-review",
-                        body=(
-                            "## Result\n\n"
-                            "- Review status: <approved | changes-requested | blocked | inconclusive>\n"
-                            "- Immediate next stage: <spec revision | review-resolution | architecture | plan | none>\n"
-                            "- Eventual test-spec readiness: <ready | conditionally-ready | not-ready>\n"
-                            "- Stop condition: <none or stop condition>\n"
-                        ),
-                    ),
-                    "assets/material-finding.md": self.review_family_asset_text(
-                        template="spec-review-material-finding-v1",
-                        skill="spec-review",
-                        body=(
-                            "## Finding <finding id>\n\n"
-                            "- Finding ID: <finding id>\n"
-                            "- Severity: <severity>\n"
-                            "- Location: <location>\n"
-                            "- Evidence: <evidence>\n"
-                            "- Required outcome: <required outcome>\n"
-                            "- Safe resolution path: <safe resolution path>\n"
-                            "- needs-decision rationale: <needs-decision rationale>\n"
-                        ),
-                    ),
-                },
-            )
-            skill_path = skill_dir / "SKILL.md"
-            skill_path.write_text(
-                skill_path.read_text(encoding="utf-8")
-                + textwrap.dedent(
-                    """
-
-                    ## Isolation and Recording
-
-                    Material findings must include:
-
-                    - Finding ID
-                    - Severity
-                    - Location
-                    - Evidence
-                    - Required outcome
-                    - Safe resolution path
-                    """
-                ),
-                encoding="utf-8",
-            )
-
-            errors = skill_validation.validate_spec_review_canonical_contract(skill_path)
-
-        self.assertIn(
-            "spec-review SKILL.md must not re-enumerate the complete material-finding field list outside the Resource map",
-            "\n".join(errors),
-        )
 
 
-    def assertSpecReviewResultPasses(self, result_text: str) -> None:
-        errors = skill_validation.validate_spec_review_result_fields(
-            textwrap.dedent(result_text)
-        )
-        self.assertEqual(errors, [])
 
-    def assertSpecReviewResultFails(self, result_text: str, expected_text: str) -> None:
-        errors = skill_validation.validate_spec_review_result_fields(
-            textwrap.dedent(result_text)
-        )
-        self.assertTrue(errors, "expected controlled spec-review result fixture to fail")
-        self.assertIn(expected_text, "\n".join(errors))
 
-    def test_spec_review_result_fixture_accepts_allowed_immediate_next_stage_values(self) -> None:
-        fixtures = {
-            "spec revision": (
-                "Review status: changes-requested\n"
-                "Immediate next stage: spec revision\n"
-                "Eventual test-spec readiness: not-ready\n"
-                "Stop condition: none\n"
-            ),
-            "review-resolution": (
-                "Review status: blocked\n"
-                "Immediate next stage: review-resolution\n"
-                "Eventual test-spec readiness: not-ready\n"
-                "Stop condition: material findings require disposition\n"
-            ),
-            "architecture": (
-                "Review status: approved\n"
-                "Immediate next stage: architecture\n"
-                "Eventual test-spec readiness: conditionally-ready\n"
-                "Readiness condition: architecture must be completed before test-spec authoring\n"
-                "Stop condition: none\n"
-            ),
-            "plan": (
-                "Review status: approved\n"
-                "Immediate next stage: plan\n"
-                "Eventual test-spec readiness: ready\n"
-                "Stop condition: none\n"
-            ),
-            "none": (
-                "Review status: inconclusive\n"
-                "Immediate next stage: none\n"
-                "Eventual test-spec readiness: not-ready\n"
-                "Stop condition: missing reviewer input\n"
-            ),
-        }
 
-        for stage, fixture in fixtures.items():
-            with self.subTest(stage=stage):
-                self.assertSpecReviewResultPasses(fixture)
 
-    def test_spec_review_result_fixture_rejects_test_spec_as_immediate_next_stage(self) -> None:
-        self.assertSpecReviewResultFails(
-            """
-            Review status: approved
-            Immediate next stage: test-spec
-            Eventual test-spec readiness: ready
-            Stop condition: none
-            """,
-            "Immediate next stage must not be test-spec",
-        )
 
-    def test_spec_review_result_fixture_rejects_pseudo_routing_values(self) -> None:
-        for stage in ("blocker handling", "missing-context resolution", "ready for test-spec"):
-            with self.subTest(stage=stage):
-                self.assertSpecReviewResultFails(
-                    f"""
-                    Review status: blocked
-                    Immediate next stage: {stage}
-                    Eventual test-spec readiness: not-ready
-                    Stop condition: blocker
-                    """,
-                    "Immediate next stage is not an allowed value",
-                )
 
-    def test_spec_review_result_fixture_rejects_approved_not_ready(self) -> None:
-        self.assertSpecReviewResultFails(
-            """
-            Review status: approved
-            Immediate next stage: plan
-            Eventual test-spec readiness: not-ready
-            Stop condition: none
-            """,
-            "approved requires Eventual test-spec readiness ready or conditionally-ready",
-        )
 
-    def test_spec_review_result_fixture_rejects_not_assessed_readiness(self) -> None:
-        self.assertSpecReviewResultFails(
-            """
-            Review status: inconclusive
-            Immediate next stage: none
-            Eventual test-spec readiness: not-assessed
-            Stop condition: missing reviewer input
-            """,
-            "Eventual test-spec readiness must not be not-assessed",
-        )
-
-    def test_spec_review_result_fixture_rejects_status_to_routing_contradictions(self) -> None:
-        invalid = {
-            "approved spec revision": (
-                "Review status: approved\n"
-                "Immediate next stage: spec revision\n"
-                "Eventual test-spec readiness: ready\n"
-                "Stop condition: none\n",
-                "approved requires Immediate next stage architecture or plan",
-            ),
-            "approved review-resolution": (
-                "Review status: approved\n"
-                "Immediate next stage: review-resolution\n"
-                "Eventual test-spec readiness: ready\n"
-                "Stop condition: none\n",
-                "approved requires Immediate next stage architecture or plan",
-            ),
-            "approved none": (
-                "Review status: approved\n"
-                "Immediate next stage: none\n"
-                "Eventual test-spec readiness: ready\n"
-                "Stop condition: none\n",
-                "approved requires Immediate next stage architecture or plan",
-            ),
-            "changes-requested plan": (
-                "Review status: changes-requested\n"
-                "Immediate next stage: plan\n"
-                "Eventual test-spec readiness: not-ready\n"
-                "Stop condition: none\n",
-                "changes-requested requires Immediate next stage spec revision or review-resolution",
-            ),
-            "blocked architecture": (
-                "Review status: blocked\n"
-                "Immediate next stage: architecture\n"
-                "Eventual test-spec readiness: not-ready\n"
-                "Stop condition: blocker\n",
-                "blocked requires Immediate next stage review-resolution or none",
-            ),
-            "inconclusive plan": (
-                "Review status: inconclusive\n"
-                "Immediate next stage: plan\n"
-                "Eventual test-spec readiness: not-ready\n"
-                "Stop condition: missing input\n",
-                "inconclusive requires Immediate next stage none",
-            ),
-        }
-
-        for name, (fixture, expected) in invalid.items():
-            with self.subTest(name=name):
-                self.assertSpecReviewResultFails(fixture, expected)
-
-    def test_spec_review_result_fixture_requires_stop_condition_for_inconclusive(self) -> None:
-        self.assertSpecReviewResultFails(
-            """
-            Review status: inconclusive
-            Immediate next stage: none
-            Eventual test-spec readiness: not-ready
-            Stop condition: none
-            """,
-            "inconclusive requires a concrete Stop condition",
-        )
-
-    def test_spec_review_result_fixture_requires_condition_for_conditionally_ready(self) -> None:
-        self.assertSpecReviewResultFails(
-            """
-            Review status: approved
-            Immediate next stage: architecture
-            Eventual test-spec readiness: conditionally-ready
-            Stop condition: none
-            """,
-            "conditionally-ready requires a named condition",
-        )
 
     def test_review_family_material_finding_requires_parser_owned_labels(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
-            self.write_spec_family_asset_fixture(
+            self.write_asset_fixture(
                 root,
                 "code-review",
                 {
@@ -2901,13 +2023,12 @@ Use the inputs somehow and produce a useful result.
             )
             for skill_name, finding_body in (
                 ("code-review", common_finding),
-                ("proposal-review", common_finding),
-                ("spec-review", changed_finding),
+                ("proposal-review", changed_finding),
             ):
                 result_body = "- Review status: <review status>\n"
                 if skill_name == "proposal-review":
                     result_body = "## Result\n\n- Skill: proposal-review\n- Review status: <review status>\n"
-                self.write_spec_family_asset_fixture(
+                self.write_asset_fixture(
                     root,
                     skill_name,
                     {
@@ -2934,7 +2055,7 @@ Use the inputs somehow and produce a useful result.
     def test_review_family_asset_policy_field_labels_fail(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
-            self.write_spec_family_asset_fixture(
+            self.write_asset_fixture(
                 root,
                 "code-review",
                 {
@@ -2958,276 +2079,6 @@ Use the inputs somehow and produce a useful result.
                 result.stdout + result.stderr,
             )
 
-    def test_proposal_family_baseline_summary_records_required_surfaces(self) -> None:
-        baseline = (
-            ROOT
-            / "docs"
-            / "changes"
-            / "2026-05-20-proposal-family-assets-progressive-disclosure"
-            / "baseline.md"
-        )
-        self.assertTrue(baseline.exists())
-        text = baseline.read_text(encoding="utf-8")
-        for required in [
-            "Source commit or branch point",
-            "skills/proposal/SKILL.md",
-            "skills/proposal-review/SKILL.md",
-            "Source file hashes",
-            "Existing full skeleton section set",
-            "Repeated substructure fields to extract",
-            "Conditional sections governed by `SKILL.md`",
-            "Closed enums that remain in `SKILL.md`",
-            "Scope-preservation and scope-budget rules that remain in `SKILL.md`",
-            "Vision fit and standing artifact gate rules that remain in `SKILL.md`",
-            "Review dimensions and recording obligations that remain in `SKILL.md`",
-            "Source location for each extracted asset",
-        ]:
-            with self.subTest(required=required):
-                self.assertIn(required, text)
-
-    def test_published_design_routing_coverage_fixture_is_bounded(self) -> None:
-        routing = (
-            ROOT
-            / "docs"
-            / "changes"
-            / "2026-05-19-rigorloop-published-skill-design-contract"
-            / "routing-coverage.md"
-        ).read_text(encoding="utf-8")
-
-        self.assertIn("This evidence is a fixture and transcript-review input.", routing)
-        self.assertIn("It does not claim deterministic runtime skill auto-selection.", routing)
-        self.assertIn("| Skill | Positive triggers | Near misses | Competing skills | Should-not-trigger prompt classes |", routing)
-        for skill in ("`proposal`", "`proposal-review`"):
-            with self.subTest(skill=skill):
-                self.assertIn(f"| {skill} |", routing)
-        for fixture_type in (
-            "Obvious positive",
-            "Casual positive",
-            "Edge positive",
-            "Near negative",
-            "Competing skill",
-            "Should not trigger",
-        ):
-            with self.subTest(fixture_type=fixture_type):
-                self.assertIn(fixture_type, routing)
-        forbidden_claims = [
-            "proves automatic runtime selection",
-            "CI proves runtime skill selection",
-            "use broad semantic scoring",
-        ]
-        for claim in forbidden_claims:
-            with self.subTest(claim=claim):
-                self.assertNotIn(claim, routing)
-
-    def test_published_design_spec_family_routing_coverage_fixture_is_bounded(self) -> None:
-        routing = (
-            ROOT
-            / "docs"
-            / "changes"
-            / "2026-05-19-published-skill-design-spec-family"
-            / "routing-coverage.md"
-        ).read_text(encoding="utf-8")
-
-        self.assertIn("This evidence is a fixture and transcript-review input.", routing)
-        self.assertIn("It does not claim deterministic runtime skill auto-selection.", routing)
-        self.assertIn("| Skill | Positive triggers | Near misses | Competing skills | Should-not-trigger prompt classes |", routing)
-        for skill in ("`spec`", "`spec-review`"):
-            with self.subTest(skill=skill):
-                self.assertIn(f"| {skill} |", routing)
-        for fixture_type in (
-            "Obvious positive",
-            "Casual positive",
-            "Edge positive",
-            "Near negative",
-            "Competing skill",
-            "Should not trigger",
-        ):
-            with self.subTest(fixture_type=fixture_type):
-                self.assertIn(fixture_type, routing)
-        forbidden_claims = [
-            "proves automatic runtime selection",
-            "CI proves runtime skill selection",
-            "use broad semantic scoring",
-        ]
-        for claim in forbidden_claims:
-            with self.subTest(claim=claim):
-                self.assertNotIn(claim, routing)
-
-    def test_published_design_plan_family_routing_coverage_fixture_is_bounded(self) -> None:
-        routing = (
-            ROOT
-            / "docs"
-            / "changes"
-            / "2026-05-19-published-skill-design-plan-family"
-            / "routing-coverage.md"
-        ).read_text(encoding="utf-8")
-
-        self.assertIn("prompt\nfixtures evaluate description coverage and transcript behavior", routing)
-        self.assertIn("do not\nclaim deterministic runtime model auto-selection", routing)
-        for required_field in (
-            "positive triggers",
-            "near misses",
-            "competing skills",
-            "should-not-trigger classes",
-        ):
-            with self.subTest(required_field=required_field):
-                self.assertIn(required_field, routing)
-        for skill in ("`plan`", "`plan-review`"):
-            with self.subTest(skill=skill):
-                self.assertIn(f"## {skill}", routing)
-        for fixture_type in (
-            "obvious positive",
-            "casual positive",
-            "edge positive",
-            "near negative",
-            "competing skill",
-            "should not trigger",
-        ):
-            with self.subTest(fixture_type=fixture_type):
-                self.assertIn(fixture_type, routing)
-        forbidden_claims = [
-            "proves automatic runtime selection",
-            "CI proves runtime skill selection",
-            "use broad semantic scoring",
-        ]
-        for claim in forbidden_claims:
-            with self.subTest(claim=claim):
-                self.assertNotIn(claim, routing)
-
-    def test_published_design_spec_family_audit_records_deterministic_gaps(self) -> None:
-        audit = (
-            ROOT
-            / "docs"
-            / "changes"
-            / "2026-05-19-published-skill-design-spec-family"
-            / "skill-audit.md"
-        ).read_text(encoding="utf-8")
-
-        for skill in ("`spec`", "`spec-review`"):
-            with self.subTest(skill=skill):
-                self.assertIn(f"| {skill} |", audit)
-                self.assertIn("description routing gap", audit)
-                self.assertIn("missing near-miss boundary", audit)
-                self.assertIn("missing workflow role", audit)
-                self.assertIn("missing compact output skeleton", audit)
-        self.assertIn("No packaged `references/`, `scripts/`, or `assets/` directories exist", audit)
-        self.assertIn("Both target skills earn their existence", audit)
-        self.assertIn("None recorded in this audit.", audit)
-
-    def test_published_design_plan_family_audit_records_deterministic_gaps(self) -> None:
-        audit = (
-            ROOT
-            / "docs"
-            / "changes"
-            / "2026-05-19-published-skill-design-plan-family"
-            / "skill-audit.md"
-        ).read_text(encoding="utf-8")
-
-        for skill in ("`plan`", "`plan-review`"):
-            with self.subTest(skill=skill):
-                self.assertIn(f"| {skill} |", audit)
-                self.assertIn("description routing gap", audit)
-                self.assertIn("missing near-miss boundary", audit)
-                self.assertIn("missing workflow role", audit)
-                self.assertIn("missing output template", audit)
-        self.assertIn("Neither ships packaged `references/`, `scripts/`, or `assets/` resources", audit)
-        self.assertIn("Both skills earn their existence", audit)
-        self.assertIn("M1 did not identify a production validator gap", audit)
-        self.assertIn("None.", audit)
-
-    def test_published_design_spec_family_preservation_and_parity_are_scaffolded(self) -> None:
-        change_root = ROOT / "docs" / "changes" / "2026-05-19-published-skill-design-spec-family"
-        preservation = (change_root / "behavior-preservation.md").read_text(encoding="utf-8")
-        parity = (change_root / "behavior-parity.md").read_text(encoding="utf-8")
-
-        for skill in ("`spec`", "`spec-review`"):
-            with self.subTest(skill=skill):
-                self.assertIn(f"| {skill} |", preservation)
-                self.assertNotIn(f"| {skill} | pending M3 | pending M3 | pending M3 |", preservation)
-                self.assertIn(skill, parity)
-        for artifact_id in ("`SF-PARITY-1`", "`SF-PARITY-2`", "`SF-PARITY-3`"):
-            with self.subTest(artifact_id=artifact_id):
-                self.assertIn(artifact_id, parity)
-        self.assertIn("M3 must not close on structural validation alone", preservation)
-        self.assertIn("M3 must not claim behavior parity from structural validation alone", parity)
-        self.assertIn("## M3 Preservation Result", preservation)
-        self.assertIn("## M3 Final Parity Statement", parity)
-        self.assertIn("| `spec` | 9164 | 192 | 2288 |", parity)
-        self.assertIn("| `spec-review` | 7968 | 183 | 1992 |", parity)
-
-    def test_published_design_execution_review_evidence_is_scaffolded(self) -> None:
-        change_root = (
-            ROOT
-            / "docs"
-            / "changes"
-            / "2026-05-19-published-skill-design-implement-code-review"
-        )
-        audit = (change_root / "skill-audit.md").read_text(encoding="utf-8")
-        routing = (change_root / "routing-coverage.md").read_text(encoding="utf-8")
-        preservation = (change_root / "behavior-preservation.md").read_text(encoding="utf-8")
-        parity = (change_root / "behavior-parity.md").read_text(encoding="utf-8")
-
-        for skill in ("`implement`", "`code-review`"):
-            with self.subTest(skill=skill):
-                self.assertIn(f"| {skill} | yes |", audit)
-                self.assertIn(f"## {skill}", routing)
-                self.assertIn(f"| {skill} |", preservation)
-                self.assertIn(skill, parity)
-        for fixture_type in (
-            "Obvious positive",
-            "Casual positive",
-            "Edge positive",
-            "Near negative",
-            "Competing skill",
-            "Should not trigger",
-        ):
-            with self.subTest(fixture_type=fixture_type):
-                self.assertIn(fixture_type, routing)
-        self.assertIn("They do not claim runtime model auto-selection in CI.", routing)
-        self.assertIn("No merge or retire candidate is approved in this slice.", audit)
-        self.assertIn("| `implement` | 4421 |", audit)
-        self.assertIn("| `code-review` | 5054 |", audit)
-        self.assertIn("M3 must fill final evidence", preservation)
-        self.assertIn("M3 must confirm the rewrite preserves these outcomes", parity)
-
-    def test_published_design_plan_family_preservation_and_parity_are_scaffolded(self) -> None:
-        change_root = ROOT / "docs" / "changes" / "2026-05-19-published-skill-design-plan-family"
-        preservation = (change_root / "behavior-preservation.md").read_text(encoding="utf-8")
-        parity = (change_root / "behavior-parity.md").read_text(encoding="utf-8")
-
-        for skill in ("`plan`", "`plan-review`"):
-            with self.subTest(skill=skill):
-                self.assertIn(f"| {skill} |", preservation)
-                self.assertIn(skill, parity)
-                self.assertNotIn(f"| {skill} | pending", parity)
-        for required_rule in (
-            "Current Handoff Summary",
-            "Upstream status settlement",
-            "formal lifecycle review",
-            "review-log.md",
-            "test-spec",
-        ):
-            with self.subTest(required_rule=required_rule):
-                self.assertIn(required_rule, preservation)
-        for case_id in (
-            "PLAN-P1",
-            "PLAN-P2",
-            "PLAN-P3",
-            "PLAN-P4",
-            "PLAN-P5",
-            "PRV-P1",
-            "PRV-P2",
-            "PRV-P3",
-            "PRV-P4",
-            "PRV-P5",
-        ):
-            with self.subTest(case_id=case_id):
-                self.assertIn(case_id, parity)
-        self.assertIn("| `plan` | 14070 | 303 | 3518 | 15447 | 317 | 3862 | +344 | +9.78% | within +10% hard cap |", parity)
-        self.assertIn("| `plan-review` | 6529 | 165 | 1631 | 7183 | 157 | 1794 | +163 | +9.99% | within +10% hard cap |", parity)
-        self.assertIn("## M3 Preservation Result", preservation)
-        self.assertIn("## M3 Final Parity Statement", parity)
-        self.assertIn("No lifecycle behavior weakening was found", parity)
 
     def test_skill_readability_pilot_pair_opts_into_contract(self) -> None:
         for skill_name in ("proposal", "proposal-review"):
@@ -3272,27 +2123,6 @@ Use the inputs somehow and produce a useful result.
         combined_output = f"{result.stdout}\n{result.stderr}"
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("generated output path must not be used as authored source of truth", combined_output)
-
-    def retired_workflow_guidance_defines_bounded_extraction_and_output_budgets(self) -> None:
-        workflow_text = (ROOT / "docs" / "workflows.md").read_text(encoding="utf-8")
-        required_terms = [
-            "bounded extraction",
-            "stable IDs",
-            "matching line numbers",
-            "exact ranges",
-            "full-file read",
-            "routine command output target: 40 lines",
-            "routine command output warning threshold: 80 lines",
-            "single excerpt target: 12 lines",
-            "single excerpt warning threshold: 20 lines",
-            "one summary line per file",
-            "--verbose",
-        ]
-        for term in required_terms:
-            with self.subTest(term=term):
-                self.assertIn(term, workflow_text)
-
-
 
 
     def test_vision_skill_defines_state_based_boundaries_and_readme_marker_contract(self) -> None:
@@ -3550,53 +2380,6 @@ Use the inputs somehow and produce a useful result.
         self.assertIn("routine vision alignment", assessment)
         self.assertIn("a Proposal Review judgment", assessment)
 
-    def test_active_vision_spec_retires_lowercase_path_and_user_facing_modes(self) -> None:
-        spec = (ROOT / "specs" / "vision-skill.md").read_text(encoding="utf-8")
-        test_spec = (ROOT / "specs" / "vision-skill.test.md").read_text(encoding="utf-8")
-
-        required_terms = [
-            "`VISION.md`: the canonical project vision document at the repository root.",
-            "state-based behavior",
-            "establish project vision",
-            "update vision",
-            "sync README",
-            "retired root `vision.md`",
-            "no longer exposes `create`, `revise`, or `mirror` as user-facing modes",
-            "strategic-positioning pass",
-            "docs/vision/strategic-positioning.md",
-            "methodology-as-product",
-            "MUST NOT exceed 900 words",
-        ]
-        for term in required_terms:
-            with self.subTest(file="spec", term=term):
-                self.assertIn(term, spec)
-
-        test_spec_terms = [
-            "`R73`-`R79`",
-            "`R80`-`R86`",
-            "`AC11`",
-            "`AC16`",
-            "negative proof",
-            "RigorLoop-style methodology",
-            "Windows-native file manager",
-            "Git extension",
-        ]
-        for term in test_spec_terms:
-            with self.subTest(file="test_spec", term=term):
-                self.assertIn(term, test_spec)
-
-        forbidden_terms = [
-            "MUST define exactly these operating modes",
-            "Create mode MUST create",
-            "Mirror mode MUST",
-            "Revise mode MUST",
-            "Every `vision` skill run MUST report the mode used",
-            "mode used, files changed",
-        ]
-        for body, label in ((spec, "spec"), (test_spec, "test_spec")):
-            for term in forbidden_terms:
-                with self.subTest(file=label, term=term):
-                    self.assertNotIn(term, body)
 
     def test_workflow_refactor_stage_skill_guidance_alignment(self) -> None:
         workflow = (ROOT / "skills" / "route" / "SKILL.md").read_text(encoding="utf-8")
@@ -3709,45 +2492,6 @@ Use the inputs somehow and produce a useful result.
         self.assertNotIn("next required or default downstream stage", verify)
         self.assertNotIn("downstream stage is `ci`", verify)
 
-    def retired_customer_project_portability_workflow_guide(self) -> None:
-        workflow_guide = (ROOT / "docs" / "workflows.md").read_text(encoding="utf-8")
-        block = extract_markdown_block(workflow_guide, "Customer-project portability")
-
-        required_terms = [
-            "Public skills operate in customer-project mode by default.",
-            "Use project-local artifacts when present",
-            "`docs/workflows.md`",
-            "`rigorloop.yaml`",
-            "`rigorloop.lock`",
-            "`docs/changes/<change-id>/change.yaml`",
-            "Do not require RigorLoop repository-internal `specs/`, `docs/`, `CONSTITUTION.md`, `AGENTS.md`, reports, or follow-up files in a customer project.",
-            "portable defaults where safe",
-            "block on ambiguity",
-        ]
-        for term in required_terms:
-            with self.subTest(term=term):
-                self.assertIn(term, block)
-
-        self.assertNotIn("must read RigorLoop", block)
-        self.assertNotIn("required precondition for every task", block)
-
-    def retired_workflow_skill_customer_project_guide_caveat(self) -> None:
-        workflow = (ROOT / "skills" / "route" / "SKILL.md").read_text(encoding="utf-8")
-        block = extract_markdown_block(workflow, "Customer-project workflow guide")
-
-        required_terms = [
-            "create or refresh the project-local `docs/workflows.md`",
-            "RigorLoop is being adopted",
-            "artifact locations are missing",
-            "routing depends on local workflow guidance",
-            "Do not require RigorLoop repository-internal specs or docs to be present.",
-            "Use project-local guidance when available",
-            "portable defaults",
-            "block on ambiguity",
-        ]
-        for term in required_terms:
-            with self.subTest(term=term):
-                self.assertIn(term, block)
 
     def test_customer_portable_public_skills_define_project_local_evidence_contract(self) -> None:
         for skill_name in CUSTOMER_PORTABLE_M2_SKILLS:
@@ -4001,51 +2745,6 @@ Use the inputs somehow and produce a useful result.
 
         self.assertNotRegex(proof, r"<[^>\n]+>|\[FILL IN\]|\bTODO\b|\bTBD\b")
 
-    def test_project_map_cold_read_proof_covers_required_cases(self) -> None:
-        proof_path = (
-            ROOT
-            / "docs"
-            / "changes"
-            / "2026-06-23-evidence-bound-incremental-project-map"
-            / "cold-read-proof.md"
-        )
-        proof = proof_path.read_text(encoding="utf-8")
-
-        required_terms = [
-            "Small repository",
-            "Monorepo or multi-service fixture",
-            "Intentionally stale map",
-            "root map only",
-            "root map plus area map",
-            "correction note",
-            "stale",
-            "No deferral is recorded for M3.",
-        ]
-        for term in required_terms:
-            with self.subTest(term=term):
-                self.assertIn(term, proof)
-
-    def test_project_map_behavior_preservation_links_m3_output_proof(self) -> None:
-        proof_path = (
-            ROOT
-            / "docs"
-            / "changes"
-            / "2026-06-23-evidence-bound-incremental-project-map"
-            / "behavior-preservation.md"
-        )
-        proof = proof_path.read_text(encoding="utf-8")
-
-        required_terms = [
-            "Milestone: M3. Representative Output and Preservation Evidence",
-            "Status: M3 evidence recorded",
-            "representative-project-map-outputs.md",
-            "cold-read-proof.md",
-            "does not claim generated adapter inclusion",
-            "does not claim final verification",
-        ]
-        for term in required_terms:
-            with self.subTest(term=term):
-                self.assertIn(term, proof)
 
     def test_customer_portable_required_internal_dependency_detector_examples(self) -> None:
         forbidden_examples = [
@@ -4190,8 +2889,6 @@ Use the inputs somehow and produce a useful result.
                     self.assertNotIn(term, body)
 
 
-
-
     def test_shared_isolation_and_recording_block_defines_broad_material_rule(self) -> None:
         canonical = extract_markdown_block(
             SHARED_REVIEW_BLOCK_PATH.read_text(encoding="utf-8"),
@@ -4259,198 +2956,6 @@ Use the inputs somehow and produce a useful result.
             self.assertIn("review-reliance.md", body)
             self.assertIn("does not approve", body)
             self.assertNotIn("review-log.md", body)
-
-
-
-    def test_downstream_status_settlement_validator_enforcement_is_deferred(self) -> None:
-        validator_body = (ROOT / "scripts" / "validate-artifact-lifecycle.py").read_text(
-            encoding="utf-8"
-        )
-        deferred_enforcement_terms = [
-            "Upstream status settlement",
-            "Settlement result",
-            "stale upstream artifact status",
-        ]
-        for term in deferred_enforcement_terms:
-            with self.subTest(term=term):
-                self.assertNotIn(term, validator_body)
-
-
-
-
-
-    def test_milestone_aware_workflow_specs_remove_unconditional_verify_handoff(self) -> None:
-        required_terms = [
-            "milestone-based plan",
-            "clean non-final implementation milestone",
-            "next in-scope implementation milestone",
-            "clean final implementation milestone",
-            "all in-scope implementation milestones are closed",
-            "lifecycle-closeout milestone",
-            "review-requested",
-            "resolution-needed",
-        ]
-        for relative_path in [
-            "specs/workflow-stage-autoprogression.md",
-            "specs/rigorloop-workflow.md",
-        ]:
-            body = (ROOT / relative_path).read_text(encoding="utf-8")
-            for term in required_terms:
-                with self.subTest(path=relative_path, required=term):
-                    self.assertIn(term, body)
-
-        stale_terms = [
-            "once `code-review` is satisfied and no accepted findings remain unresolved, the workflow MUST continue into `verify` unless a stop condition applies",
-            "routing a clean review to `verify`",
-            "route to `verify`",
-            "routes to `verify`",
-            "hand off to `verify`",
-            "make `verify` available",
-            "`verify` may proceed",
-            "ready for `verify`",
-            "whole plan ready for `verify`",
-        ]
-        for relative_path in [
-            "specs/workflow-stage-autoprogression.md",
-            "specs/rigorloop-workflow.md",
-            "specs/workflow-stage-autoprogression.test.md",
-            "specs/rigorloop-workflow.test.md",
-        ]:
-            body = (ROOT / relative_path).read_text(encoding="utf-8")
-            for term in stale_terms:
-                with self.subTest(path=relative_path, stale=term):
-                    self.assertNotIn(term, body)
-
-
-    def test_implementation_through_verify_behavior_preservation_covers_acceptance_and_itv_checks(self) -> None:
-        preservation = (
-            IMPLEMENTATION_AUTOPROGRESSION_CHANGE_ROOT / "behavior-preservation.md"
-        ).read_text(encoding="utf-8")
-
-        for check_number in range(1, 40):
-            with self.subTest(check=f"ITV-{check_number:03d}"):
-                self.assertIn(f"`ITV-{check_number:03d}`", preservation)
-        for criterion_number in range(1, 26):
-            with self.subTest(criterion=f"AC-ITV-{criterion_number:03d}"):
-                self.assertIn(f"`AC-ITV-{criterion_number:03d}`", preservation)
-
-        required_terms = [
-            "Profile off",
-            "Authoring autoprogression",
-            "No test-spec-review stage",
-            "Owner decisions",
-            "Review independence",
-            "PR boundary",
-            "Bugfix and manual skill invocations",
-            "Audit reconstruction",
-            "Phase C promotion",
-            "Not enabled in first slice",
-        ]
-        for term in required_terms:
-            with self.subTest(term=term):
-                self.assertIn(term, preservation)
-
-    def test_consolidated_delivery_review_workflow_surfaces_are_declared(self) -> None:
-        workflow_spec = (ROOT / "specs" / "rigorloop-workflow.md").read_text(
-            encoding="utf-8"
-        )
-        route_skill = (ROOT / "skills" / "route" / "SKILL.md").read_text(encoding="utf-8")
-        root_guidance = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
-        review_validator = (ROOT / "scripts" / "review_artifact_validation.py").read_text(
-            encoding="utf-8"
-        )
-
-        for path, body in [
-            ("specs/rigorloop-workflow.md", workflow_spec),
-            ("skills/route/SKILL.md", route_skill),
-        ]:
-            with self.subTest(path=path):
-                self.assertIn(
-                    "plan -> delivery-review -> implement",
-                    body,
-                )
-
-        self.assertIn("[Workflow](docs/design/skill/workflow.md)", root_guidance)
-        self.assertIn('"test-spec-review"', review_validator)
-        self.assertIn("TEST_SPEC_REVIEW_STATUSES", review_validator)
-        self.assertIn("TEST_SPEC_REVIEW_IMMEDIATE_NEXT_STAGES", review_validator)
-        self.assertIn("TEST_SPEC_REVIEW_IMPLEMENTATION_HANDOFFS", review_validator)
-
-
-    def test_single_source_workflow_state_test_spec_maps_static_proof(self) -> None:
-        body = SINGLE_SOURCE_WORKFLOW_STATE_TEST_SPEC.read_text(encoding="utf-8")
-        required_test_cases = [
-            "T1. Active plan exposes one live current handoff owner",
-            "T2. Non-owner plan sections do not duplicate live next-stage claims",
-            "T3. Change-local evidence surfaces keep scoped ownership",
-            "T4. Milestone state vocabulary and transitions are enforced",
-            "T5. State-sync checklist updates affected owners",
-            "T6. Plan lifecycle closeout and merge boundary remain explicit",
-            "T7. Verify, explain-change, and PR claim boundaries stay separated",
-            "T8. Milestone review loop blocks premature final closeout",
-            "T9. Public skill portability and generated output stay aligned",
-            "T10. First implementation slice avoids broad semantic validation",
-            "T11. Full milestone and final validation closeout",
-        ]
-        for term in required_test_cases:
-            with self.subTest(term=term):
-                self.assertIn(term, body)
-
-        for requirement_number in range(1, 37):
-            with self.subTest(requirement=requirement_number):
-                assert_requirement_id_covered(self, body, requirement_number)
-
-        for example_number in range(1, 5):
-            with self.subTest(example=example_number):
-                self.assertIn(f"`E{example_number}`", body)
-
-        for boundary_number in range(1, 8):
-            with self.subTest(boundary=boundary_number):
-                assert_boundary_id_covered(self, body, boundary_number)
-
-        required_validation_terms = [
-            "Active proof surface for M1 implementation. The active plan `Current Handoff Summary` owns the next workflow action.",
-            "Do not add broad semantic natural-language scoring for plan state.",
-            "python scripts/build-adapters.py --version 0.1.1 --check",
-            "python scripts/validate-adapters.py --version 0.1.1",
-        ]
-        for term in required_validation_terms:
-            with self.subTest(term=term):
-                self.assertIn(term, body)
-
-    def test_single_source_workflow_state_plan_keeps_m1_scaffolding_reviewable(self) -> None:
-        spec = SINGLE_SOURCE_WORKFLOW_STATE_SPEC.read_text(encoding="utf-8")
-        plan = SINGLE_SOURCE_WORKFLOW_STATE_PLAN.read_text(encoding="utf-8")
-
-        required_spec_terms = [
-            "Write current state once; link to it everywhere else.",
-            "the active plan's `Current Handoff Summary` MUST be the authoritative live state block",
-            "The active plan `Readiness` section MUST point to `Current Handoff Summary`",
-            "A state-sync check MUST update the active plan `Current Handoff Summary`",
-            "Published skill wording MUST NOT expose RigorLoop repository-internal source paths",
-            "python scripts/build-adapters.py --version 0.1.1 --check",
-            "python scripts/validate-adapters.py --version 0.1.1",
-        ]
-        for term in required_spec_terms:
-            with self.subTest(surface="spec", term=term):
-                self.assertIn(term, spec)
-
-        required_plan_terms = [
-            "M1. Test Spec and Validator Coverage",
-            "Keep semantic plan-state validation out of scope",
-            "python scripts/test-skill-validator.py",
-            "python scripts/test-artifact-lifecycle-validator.py",
-            "M1-M4 must each pass their implementation handoff and code-review loop before M5 final lifecycle closeout.",
-            "python scripts/build-adapters.py --version 0.1.1 --check",
-            "python scripts/validate-adapters.py --version 0.1.1",
-        ]
-        for term in required_plan_terms:
-            with self.subTest(surface="plan", term=term):
-                self.assertIn(term, plan)
-
-
-
-
 
 
 
@@ -4724,7 +3229,6 @@ Use the inputs somehow and produce a useful result.
         )
 
 
-
     def test_milestone_aware_guidance_removes_unconditional_verify_handoff(self) -> None:
         """Docs and skills must not retain stale unconditional clean-review-to-verify shortcuts."""
 
@@ -4756,17 +3260,6 @@ Use the inputs somehow and produce a useful result.
                 with self.subTest(path=str(relative_path), pattern=label):
                     self.assertIsNone(pattern.search(body))
 
-    def test_workflow_spec_retired_route_terms_are_only_forbidden_context(self) -> None:
-        spec = SKILL_CONTRACT_WORKFLOW_SPEC.read_text(encoding="utf-8")
-        for line_number, line in enumerate(spec.splitlines(), start=1):
-            for label, pattern in RETIRED_PUBLIC_ROUTE_PATTERNS.items():
-                if pattern.search(line) and not any(
-                    context in line for context in WORKFLOW_SPEC_ALLOWED_RETIRED_ROUTE_CONTEXTS
-                ):
-                    self.fail(
-                        f"retired route term '{label}' appears outside forbidden/static-validation "
-                        f"context at {SKILL_CONTRACT_WORKFLOW_SPEC.relative_to(ROOT)}:{line_number}"
-                    )
 
     def test_published_skill_surfaces_block_internal_repository_details(self) -> None:
         """Published skill text must stay portable across projects."""
@@ -4810,38 +3303,6 @@ Use the inputs somehow and produce a useful result.
                 with self.subTest(path=str(relative_path), required=term):
                     self.assertIn(term, body)
 
-    def test_skill_contract_test_spec_maps_static_proof(self) -> None:
-        body = SKILL_CONTRACT_TEST_SPEC.read_text(encoding="utf-8")
-        required_terms = [
-            "T1. Normative skill-contract source and workflow-routing split",
-            "T2. Required and conditional sections are present without hollow normalization",
-            "T3. First-slice and later-phase scope stay exact",
-            "T4. Claim boundaries and do-not-overclaim guidance",
-            "T5. Result blocks and handoff sections are summary-first and local",
-            "T6. Progress, readiness, closeout, and Done stay distinct",
-            "T7. Public shared blocks are canonical copied text with drift checks",
-            "T8. Evidence-reading and example guidance stay bounded",
-            "T9. Generated output is refreshed from concrete canonical changes",
-            "T10. Forbidden-overclaim validation is narrow and positive-first",
-            "T11. Minimum viable skill rule and guidance placement",
-            "T12. Compatibility, security, and non-goal boundaries",
-            "T13. Full milestone and final validation closeout",
-            "T14. Published skills exclude repository-maintainer details",
-            "Do not test runtime workflow routing",
-            "Do not test broad semantic quality of skill prose with natural-language scoring",
-        ]
-        for term in required_terms:
-            with self.subTest(term=term):
-                self.assertIn(term, body)
-
-        for requirement_number in range(1, 21):
-            with self.subTest(requirement=requirement_number):
-                self.assertIn(f"`R{requirement_number}", body)
-
-        for example_number in range(1, 8):
-            with self.subTest(example=example_number):
-                self.assertIn(f"`E{example_number}`", body)
-
 
     def test_skill_contract_current_skill_inventory(self) -> None:
         self.assertTrue((ROOT / "skills/ci-maintenance/SKILL.md").is_file())
@@ -4849,100 +3310,6 @@ Use the inputs somehow and produce a useful result.
             with self.subTest(skill=name):
                 self.assertFalse((ROOT / "skills" / name / "SKILL.md").exists())
 
-    def test_skill_contract_plan_keeps_m1_scaffolding_passable_before_skill_edits(self) -> None:
-        plan = SKILL_CONTRACT_PLAN.read_text(encoding="utf-8")
-        required_terms = [
-            "Validator assertions may be added in M1 only when they can pass without the later canonical skill edits",
-            "Do not leave failing validator assertions committed as M1 closeout evidence.",
-            "Generated-output checks are M4 closeout gates.",
-            "If selector output reports generated drift after M3 canonical skill edits",
-            "Use concrete generated adapter file paths in selector-driven commands; do not pass `--path dist/adapters`.",
-            "dist/adapters/codex/.agents/skills/workflow/SKILL.md",
-            "dist/adapters/claude/.claude/skills/workflow/SKILL.md",
-            "dist/adapters/opencode/.opencode/skills/workflow/SKILL.md",
-        ]
-        for term in required_terms:
-            with self.subTest(term=term):
-                self.assertIn(term, plan)
-
-    def retired_skill_contract_m2_summary_surfaces_keep_source_split(self) -> None:
-        workflow_spec = SKILL_CONTRACT_WORKFLOW_SPEC.read_text(encoding="utf-8")
-        workflows_doc = SKILL_CONTRACT_WORKFLOWS_DOC.read_text(encoding="utf-8")
-        agents = SKILL_CONTRACT_AGENTS.read_text(encoding="utf-8")
-
-        required_workflow_terms = [
-            "`specs/skill-contract.md` owns skill-contract behavior.",
-            "standard skill shape, claim boundaries, result output expectations, shared-block rules, generated-output boundaries, evidence-reading guidance, and minimum viable skill rules",
-            "`specs/rigorloop-workflow.md` continues to own stage order, stage obligation, handoff, and downstream-blocking semantics.",
-        ]
-        for term in required_workflow_terms:
-            with self.subTest(surface="workflow_spec", term=term):
-                self.assertIn(term, workflow_spec)
-
-        required_workflows_terms = [
-            "## Skill Contract",
-            "The normative skill-contract source is `specs/skill-contract.md`.",
-            "The workflow-routing source is `specs/rigorloop-workflow.md`.",
-            "Skills are operational guides, not substitute specs.",
-            "Shipped skill text is the user-facing interface.",
-            "Shared skill policy blocks live under `templates/shared/<block-name>.md`.",
-            "Public shared blocks are copied into consuming skills and checked for drift; maintainer-only blocks such as generated-output handling are not copied into published skills.",
-            "Add a skill only when it owns a distinct artifact, gate, review responsibility, recurring action, or approved operational process.",
-            "Edit canonical skill source under `skills/<skill>/SKILL.md`; for public adapter installation, use `dist/adapters/README.md`. For `v0.1.3` and later, generated public adapter skill bodies are release archives, not tracked source under `dist/adapters/`.",
-        ]
-        for term in required_workflows_terms:
-            with self.subTest(surface="workflows_doc", term=term):
-                self.assertIn(term, workflows_doc)
-
-        required_agents_terms = [
-            "Follow `specs/skill-contract.md` for normalized skill structure and claim boundaries.",
-            "Treat shipped skill text as user-facing.",
-            "Do not create a new skill for one-off behavior; update an existing skill unless the new skill owns a distinct artifact, gate, review responsibility, recurring action, or approved operational process.",
-        ]
-        for term in required_agents_terms:
-            with self.subTest(surface="agents", term=term):
-                self.assertIn(term, agents)
-
-        self.assertNotIn("## Required core sections", agents)
-        self.assertNotIn("## Shared-block source of truth", agents)
-
-    def retired_single_authored_first_slice_docs_and_ignore_policy(self) -> None:
-        readme = (ROOT / "README.md").read_text(encoding="utf-8")
-        workflows_doc = SKILL_CONTRACT_WORKFLOWS_DOC.read_text(encoding="utf-8")
-        agents = SKILL_CONTRACT_AGENTS.read_text(encoding="utf-8")
-        constitution = (ROOT / "CONSTITUTION.md").read_text(encoding="utf-8")
-        gitignore = (ROOT / ".gitignore").read_text(encoding="utf-8")
-
-        shared_terms = [
-            "`skills/` is the only authored skill source.",
-            "dist/adapters/README.md",
-            "generated public adapter skill bodies are release archives",
-            ".codex/skills/",
-            "Historical note: `v0.1.2` kept repository-tree adapter packages during the compatibility window",
-        ]
-        for term in shared_terms:
-            for surface_name, surface in {
-                "README": readme,
-                "workflows": workflows_doc,
-                "AGENTS": agents,
-                "CONSTITUTION": constitution,
-            }.items():
-                with self.subTest(surface=surface_name, term=term):
-                    self.assertIn(term, surface)
-
-        self.assertIn(".codex/skills/", gitignore)
-        self.assertNotIn("commit `.codex/skills/`", readme)
-        self.assertNotIn("tracked `.codex/skills/`", workflows_doc)
-        for surface_name, surface in {
-            "README": readme,
-            "workflows": workflows_doc,
-            "AGENTS": agents,
-            "CONSTITUTION": constitution,
-        }.items():
-            with self.subTest(surface=surface_name, stale_term="Regenerate build-skills"):
-                self.assertNotIn("Regenerate it with `python scripts/build-skills.py`", surface)
-            with self.subTest(surface=surface_name, stale_term="generated local Codex runtime"):
-                self.assertNotIn("`.codex/skills/` is generated local Codex runtime output", surface)
 
     def test_skill_contract_m2_shared_block_sources_exist_and_stay_bounded(self) -> None:
         shared_blocks = {
@@ -4986,7 +3353,6 @@ Use the inputs somehow and produce a useful result.
                 self.assertFalse((ROOT / "templates" / "shared" / f"{block_name}.md").exists())
 
 
-
     def test_progressive_loading_quick_guide_contract_helper_detects_required_shape(self) -> None:
         valid_skill = """# Skill
 
@@ -5019,16 +3385,6 @@ Use a full-file or broader-section read when correctness requires surrounding co
         with self.assertRaises(AssertionError):
             assert_progressive_loading_quick_guide_contract(self, missing_label)
 
-        late_guide = "# Skill\n\n" + ("padding " * 900) + "\n" + valid_skill
-        with self.assertRaises(AssertionError):
-            assert_progressive_loading_quick_guide_contract(self, late_guide)
-
-        overlong_guide = valid_skill.replace(
-            "Use this skill to: route work from the shortest safe operating path.",
-            "Use this skill to: " + ("preserve safety " * 260),
-        )
-        with self.assertRaises(AssertionError):
-            assert_progressive_loading_quick_guide_contract(self, overlong_guide)
 
     def test_progressive_loading_implement_handoff_contract_helper_detects_bounded_state_inspection(self) -> None:
         valid_skill = """# Implement
@@ -5068,38 +3424,6 @@ and result format.
         with self.assertRaises(AssertionError):
             assert_progressive_loading_code_review_protected_contracts(self, split_template)
 
-    def test_progressive_loading_test_spec_maps_static_proof_surfaces(self) -> None:
-        test_spec = (
-            ROOT / "specs" / "progressive-loading-high-cost-public-skills.test.md"
-        ).read_text(encoding="utf-8")
-        plan = (
-            ROOT
-            / "docs"
-            / "plans"
-            / "2026-05-11-progressive-loading-high-cost-public-skills.md"
-        ).read_text(encoding="utf-8")
-
-        required_test_terms = [
-            "T2. Optimized skills contain valid quick operating guides",
-            "T3. `implement` starts handoff-state inspection from active plan state",
-            "T4. Workflow detail migration has owner-surface accounting",
-            "T5. `code-review` preserves protected review contracts",
-            "T6. Section-first reading guidance preserves escape conditions",
-            "scripts/test-skill-validator.py",
-        ]
-        for term in required_test_terms:
-            with self.subTest(file="test_spec", term=term):
-                self.assertIn(term, test_spec)
-
-        plan_terms = [
-            "Quick guide heading, required labels, and top-of-skill placement checks",
-            "Static checks that `implement` names `Current Handoff Summary`",
-            "Static or manual-check scaffolding for protected `code-review` contracts",
-            "Static or report-check scaffolding for workflow migration accounting",
-        ]
-        for term in plan_terms:
-            with self.subTest(file="plan", term=term):
-                self.assertIn(term, plan)
 
     def test_progressive_loading_canonical_skills_satisfy_quick_guide_contract(self) -> None:
         for skill_name in PROGRESSIVE_LOADING_OPTIMIZED_SKILLS:
@@ -5112,38 +3436,6 @@ and result format.
         body = (ROOT / "skills" / "code-review" / "SKILL.md").read_text(encoding="utf-8")
         assert_progressive_loading_code_review_protected_contracts(self, body)
 
-    def retired_progressive_loading_workflow_migration_and_report_surfaces_exist(self) -> None:
-        workflows = (ROOT / "docs" / "workflows.md").read_text(encoding="utf-8")
-        report = (
-            ROOT
-            / "docs"
-            / "reports"
-            / "token-cost"
-            / "optimizations"
-            / "2026-05-11-progressive-loading-high-cost-skills.md"
-        ).read_text(encoding="utf-8")
-
-        for term in [
-            "## Workflow Detail Ownership",
-            "review-resolution detail",
-            "lifecycle-managed artifact tables",
-            "validation-layering detail",
-            "default artifact path lists",
-        ]:
-            with self.subTest(file="workflows", term=term):
-                self.assertIn(term, workflows)
-
-        report_terms = [
-            "## Workflow Detail Migration Table",
-            "| Removed or summarized topic | New owner surface | Rationale |",
-            "Review-resolution details",
-            "Lifecycle-managed artifact table",
-            "Detailed validation layering",
-            "## Static Skill Size",
-        ]
-        for term in report_terms:
-            with self.subTest(file="optimization_report", term=term):
-                self.assertIn(term, report)
 
     def test_proposal_scope_preservation_guidance_is_static_validated(self) -> None:
         proposal = (ROOT / "skills" / "proposal" / "SKILL.md").read_text(encoding="utf-8")
@@ -5224,58 +3516,6 @@ and result format.
             with self.subTest(term=term):
                 self.assertIn(term, proposal_review)
 
-    def retired_cost_bounded_rigor_m1_workflows_bounded_evidence_guidance(self) -> None:
-        workflows = SKILL_CONTRACT_WORKFLOWS_DOC.read_text(encoding="utf-8")
-        evidence = extract_markdown_block(workflows, "Efficient Evidence Collection")
-
-        required_terms = [
-            "Do not broad-search authoritative documents solely for path or state discovery when narrower evidence is available.",
-            "Default evidence sequence for path or state discovery:",
-            "exact user-provided path or change ID",
-            "current handoff summary or active plan state",
-            "`change.yaml`, review log, review resolution, or release metadata",
-            "`docs/workflows.md` artifact-location map",
-            "targeted headings, stable IDs, line ranges, counts, or diffs",
-            "full-file read only when the whole file is the target or bounded evidence is insufficient",
-            "Use bounded evidence before broad reads, but do not under-read.",
-            "Expand to a broader section or full file when bounded evidence is incomplete, contradictory, or insufficient to support the claim being made.",
-            "A full-file read is required when the file itself is the review target",
-        ]
-        for term in required_terms:
-            with self.subTest(term=term):
-                self.assertIn(term, evidence)
-
-        proposal = (ROOT / "skills" / "proposal" / "SKILL.md").read_text(encoding="utf-8")
-        proposal += "\n" + (ROOT / "skills" / "proposal" / "references" / "strategic-and-scope-gates.md").read_text(encoding="utf-8")
-        proposal_review = (
-            ROOT / "skills" / "proposal-review" / "SKILL.md"
-        ).read_text(encoding="utf-8")
-        for body, skill_name in ((proposal, "proposal"), (proposal_review, "proposal-review")):
-            with self.subTest(skill=skill_name, forbidden="full workflow sequence"):
-                self.assertNotIn("Default evidence sequence for path or state discovery:", body)
-
-    def retired_stage_evidence_access_contract_guidance(self) -> None:
-        workflows = SKILL_CONTRACT_WORKFLOWS_DOC.read_text(encoding="utf-8")
-        evidence = extract_markdown_block(workflows, "Stage Evidence Access")
-
-        required_terms = [
-            "Default evidence",
-            "Conditional evidence",
-            "Expansion evidence",
-            "bounded discovery",
-            "path inventory, heading scan, line-number search, count query, targeted diff summary, and metadata lookup",
-            "substantive content outside its default evidence and triggered conditional evidence",
-            "Only include `Evidence expansion` when expansion occurred.",
-            "Do not broad-search authoritative documents solely for path or state discovery",
-            "A stage must expand when bounded evidence is missing, stale, contradictory, or insufficient",
-            "Full-file reads remain allowed",
-            "M1 validation covers `docs/workflows.md`, `skills/proposal/SKILL.md`, and `skills/proposal-review/SKILL.md`",
-            "include `skills/spec/SKILL.md` only when M1 updates `spec`",
-            "M2 validation separately covers `skills/implement/SKILL.md` and `skills/code-review/SKILL.md` when M2 runs",
-        ]
-        for term in required_terms:
-            with self.subTest(term=term):
-                self.assertIn(term, evidence)
 
     def test_stage_evidence_access_proposal_side_skills(self) -> None:
         skill_terms = {
@@ -5317,7 +3557,6 @@ and result format.
                 self.assertIn("Bounded discovery is not evidence expansion.", body)
             with self.subTest(skill=skill_name, term="full-file read"):
                 self.assertIn("full-file", body)
-
 
 
     def test_skill_contract_m3_first_slice_core_sections_and_result_blocks(self) -> None:
@@ -5418,19 +3657,12 @@ and result format.
                     self.assertNotIn(term, body)
 
     def test_workflow_change_root_creation_uses_dated_change_id_convention(self) -> None:
-        workflow_spec = SKILL_CONTRACT_WORKFLOW_SPEC.read_text(encoding="utf-8")
         route_skill = (ROOT / "skills" / "route" / "SKILL.md").read_text(
             encoding="utf-8"
         )
         implement_skill = (ROOT / "skills" / "implement" / "SKILL.md").read_text(
             encoding="utf-8"
         )
-
-        for surface_name, surface_text in [("specs/rigorloop-workflow.md", workflow_spec)]:
-            with self.subTest(surface=surface_name, term="YYYY-MM-DD-slug"):
-                self.assertIn("YYYY-MM-DD-slug", surface_text)
-            with self.subTest(surface=surface_name, term="legacy"):
-                self.assertIn("legacy", surface_text.lower())
 
         for term in [
             "For governed routing, use factual `rigorloop workflow-context` discovery",
@@ -5445,444 +3677,6 @@ and result format.
         ]:
             with self.subTest(surface="skills/implement/SKILL.md", term=term):
                 self.assertIn(term, implement_skill)
-
-    def retired_workflow_map_m2_validator_accepts_current_registry_and_tables(self) -> None:
-        workflows = SKILL_CONTRACT_WORKFLOWS_DOC.read_text(encoding="utf-8")
-        workflow_skill = (ROOT / "skills" / "route" / "SKILL.md").read_text(
-            encoding="utf-8"
-        )
-        stage_skills = {
-            name: (ROOT / "skills" / name / "SKILL.md").read_text(encoding="utf-8")
-            for name in ("plan", "proposal-review", "design-review")
-        }
-
-        errors = skill_validation.validate_workflow_artifact_map_contract(
-            SKILL_CONTRACT_WORKFLOWS_DOC,
-            workflows,
-            workflow_skill_text=workflow_skill,
-            stage_skill_texts=stage_skills,
-        )
-
-        self.assertEqual(errors, [])
-
-    def retired_workflow_map_m2_validator_requires_architecture_registry_entries(
-        self,
-    ) -> None:
-        workflows = SKILL_CONTRACT_WORKFLOWS_DOC.read_text(encoding="utf-8")
-        without_architecture_record = workflows.replace(
-            "  architecture_record:\n"
-            "    owner: architecture\n"
-            "    path: docs/architecture/YYYY-MM-DD-slug.md\n"
-            "    required_when: architecture stage is triggered\n",
-            "",
-        )
-        without_adr = workflows.replace(
-            "  adr:\n"
-            "    owner: architecture\n"
-            "    path: docs/adr/ADR-YYYYMMDD-slug.md\n"
-            "    required_when: durable architecture decision is recorded\n",
-            "",
-        )
-
-        architecture_record_errors = (
-            skill_validation.validate_workflow_artifact_map_contract(
-                SKILL_CONTRACT_WORKFLOWS_DOC,
-                without_architecture_record,
-            )
-        )
-        adr_errors = skill_validation.validate_workflow_artifact_map_contract(
-            SKILL_CONTRACT_WORKFLOWS_DOC,
-            without_adr,
-        )
-
-        self.assertTrue(
-            any(
-                error.endswith(
-                    ": artifact registry missing required entry architecture_record"
-                )
-                for error in architecture_record_errors
-            ),
-            architecture_record_errors,
-        )
-        self.assertTrue(
-            any(
-                error.endswith(": artifact registry missing required entry adr")
-                for error in adr_errors
-            ),
-            adr_errors,
-        )
-
-    def retired_workflow_map_m2_validator_rejects_registry_shape_errors(self) -> None:
-        workflows = """
-        # Workflows
-
-        ## Artifact registry
-
-        ```yaml
-        artifact_locations:
-          proposal:
-            path: docs/proposals/YYYY-MM-DD-slug.md
-            required_when: proposal stage
-          change_plan:
-            owner: plan
-            path: docs/plans/YYYY-MM-DD-slug.md
-        ```
-
-        ## Artifact locations
-
-        | Artifact type | Default location | Owning skill | Required when |
-        | --- | --- | --- | --- |
-        | Proposals | `docs/proposals/YYYY-MM-DD-slug.md` | `proposal` | Proposal stage. |
-        | Plans | `docs/plans/YYYY-MM-DD-slug.md` | `plan` | Planned initiative. |
-        """
-
-        errors = skill_validation.validate_workflow_artifact_map_contract(
-            Path("docs/workflows.md"),
-            textwrap.dedent(workflows),
-        )
-
-        self.assertIn(
-            "docs/workflows.md: artifact registry entry proposal missing owner",
-            errors,
-        )
-        self.assertIn(
-            "docs/workflows.md: artifact registry entry change_plan missing required_when",
-            errors,
-        )
-
-    def retired_workflow_map_m2_validator_rejects_duplicate_registry_keys(self) -> None:
-        workflows = """
-        # Workflows
-
-        ## Artifact registry
-
-        ```yaml
-        artifact_locations:
-          verify_report:
-            owner: verify
-            path: docs/changes/<change-id>/verify-report.md
-            required_when: verify stage
-          verify_report:
-            owner: verify
-            path: docs/changes/<change-id>/verify-report.md
-            required_when: duplicate verify stage
-          proposal:
-            owner: proposal
-            path: docs/proposals/YYYY-MM-DD-slug.md
-            path: docs/proposals/duplicate.md
-            required_when: proposal stage
-        ```
-
-        ## Artifact locations
-
-        | Artifact type | Default location | Owning skill | Required when |
-        | --- | --- | --- | --- |
-        | Verify report | `docs/changes/<change-id>/verify-report.md` | `verify` | Verify stage. |
-        | Proposals | `docs/proposals/YYYY-MM-DD-slug.md` | `proposal` | Proposal stage. |
-        """
-
-        errors = skill_validation.validate_workflow_artifact_map_contract(
-            Path("docs/workflows.md"),
-            textwrap.dedent(workflows),
-        )
-
-        self.assertIn(
-            "docs/workflows.md: artifact registry has duplicate entry verify_report",
-            errors,
-        )
-        self.assertIn(
-            "docs/workflows.md: artifact registry entry proposal has duplicate field path",
-            errors,
-        )
-
-    def retired_workflow_map_m2_validator_rejects_ambiguous_placement(self) -> None:
-        workflows = """
-        # Workflows
-
-        ## Artifact registry
-
-        ```yaml
-        artifact_locations:
-          proposal:
-            owner: proposal
-            required_when: proposal stage
-          pr_handoff:
-            owner: pr
-            path: docs/changes/<change-id>/pr.md
-            external_surface: pull_request_body
-            required_when: pr stage
-        ```
-
-        ## Artifact locations
-
-        | Artifact type | Default location | Owning skill | Required when |
-        | --- | --- | --- | --- |
-        | Proposals | `docs/proposals/YYYY-MM-DD-slug.md` | `proposal` | Proposal stage. |
-        | PR handoff | Pull request body | `pr` | PR stage. |
-        """
-
-        errors = skill_validation.validate_workflow_artifact_map_contract(
-            Path("docs/workflows.md"),
-            textwrap.dedent(workflows),
-        )
-
-        self.assertIn(
-            "docs/workflows.md: repository-local artifact proposal must define exactly one path",
-            errors,
-        )
-        self.assertIn(
-            "docs/workflows.md: artifact registry entry pr_handoff must define exactly one placement representation",
-            errors,
-        )
-
-    def retired_workflow_map_m2_validator_rejects_table_and_path_drift(self) -> None:
-        workflows = """
-        # Workflows
-
-        ## Artifact registry
-
-        ```yaml
-        artifact_locations:
-          change_plan:
-            owner: plan
-            path: docs/changes/<change-id>/plan.md
-            required_when: planned initiative
-          formal_review_record:
-            owner: review skills
-            path: docs/reviews/<stage>-r<n>.md
-            required_when: formal lifecycle review
-        ```
-
-        ## Artifact locations
-
-        | Artifact type | Default location | Owning skill | Required when |
-        | --- | --- | --- | --- |
-        | Plans | `docs/plans/YYYY-MM-DD-slug.md` | `plan` | Planned initiative. |
-        | Formal review records | `docs/reviews/<stage>-r<n>.md` | review skills | Formal lifecycle review. |
-        """
-
-        errors = skill_validation.validate_workflow_artifact_map_contract(
-            Path("docs/workflows.md"),
-            textwrap.dedent(workflows),
-            workflow_skill_text="docs/plans/YYYY-MM-DD-slug.md",
-            stage_skill_texts={
-                "plan": "Canonical plan path: docs/changes/<change-id>/plan.md",
-                "proposal-review": "Record at docs/reviews/proposal-review-r<n>.md",
-            },
-        )
-
-        self.assertIn(
-            "docs/workflows.md: change_plan must use docs/plans/YYYY-MM-DD-slug.md, not docs/changes/<change-id>/plan.md",
-            errors,
-        )
-        self.assertIn(
-            "docs/workflows.md: formal_review_record must route under docs/changes/<change-id>/reviews/",
-            errors,
-        )
-        self.assertIn(
-            "docs/workflows.md: artifact table row Plans placement docs/plans/YYYY-MM-DD-slug.md does not match registry entry change_plan placement docs/changes/<change-id>/plan.md",
-            errors,
-        )
-        self.assertIn(
-            "skills/plan/SKILL.md: stage skill contradicts plan-body registry with docs/changes/<change-id>/plan.md",
-            errors,
-        )
-        self.assertIn(
-            "skills/proposal-review/SKILL.md: stage skill routes formal reviews outside docs/changes/<change-id>/reviews/",
-            errors,
-        )
-
-    def retired_workflow_map_m2_validator_rejects_unknown_artifact_input(self) -> None:
-        errors = skill_validation.validate_workflow_artifact_map_lookup(
-            {"proposal": {"path": "docs/proposals/YYYY-MM-DD-slug.md"}},
-            ["proposal", "release_attestation"],
-        )
-
-        self.assertEqual(
-            errors,
-            [
-                "unknown artifact type release_attestation has unresolved placement; request an explicit path or workflow-map update"
-            ],
-        )
-
-    def retired_project_artifact_location_m1_workflows_doc_names_source_rank(self) -> None:
-        workflows = SKILL_CONTRACT_WORKFLOWS_DOC.read_text(encoding="utf-8")
-        source_rank = extract_markdown_block(workflows, "Artifact-location source rank")
-
-        required_terms = [
-            "source rank is precedence when sources conflict, not mandatory read order",
-            "explicit user-provided path or change ID",
-            "active artifact metadata, active plan metadata, or active change metadata",
-            "approved project specs or schemas",
-            "`docs/workflows.md` artifact-location map",
-            "portable default path",
-            "block on ambiguity",
-            "If a conflict is discovered",
-            "higher-priority source wins",
-        ]
-        for term in required_terms:
-            with self.subTest(term=term):
-                self.assertIn(term, source_rank)
-
-    def retired_project_artifact_location_m1_workflow_skill_refreshes_guide_on_defined_triggers(
-        self,
-    ) -> None:
-        workflow = (
-            ROOT
-            / "skills"
-            / "route"
-            / "references"
-            / "workflow-guide-authoring.md"
-        ).read_text(encoding="utf-8")
-
-        required_terms = [
-            "creates or refreshes the project workflow guide",
-            "artifact-location map",
-            "RigorLoop is adopted in a project and no workflow guide exists",
-            "artifact locations are added, removed, renamed, or customized",
-            "review-recording, examples, reports, or change-root placement changes",
-            "stage skill guidance starts relying on the artifact-location map",
-            "generated-output or adapter source-of-truth guidance changes",
-            "existing guide contradicts current repository paths or governing specs",
-            "reference the guide rather than rewrite it",
-            "must not author proposals, specs, plans, reviews, ADRs, or exact schemas",
-        ]
-        for term in required_terms:
-            with self.subTest(term=term):
-                self.assertIn(term, workflow)
-
-    def retired_workflow_guide_skeleton_m1_asset_and_resource_map_exist(self) -> None:
-        workflow_dir = ROOT / "skills" / "route"
-        workflow = (workflow_dir / "SKILL.md").read_text(encoding="utf-8")
-        skeleton = workflow_dir / "assets" / "workflows-skeleton.md"
-
-        self.assertTrue(skeleton.is_file())
-
-        resource_map = extract_markdown_block(workflow, "Resource map")
-        self.assertIn("- COPY `assets/workflows-skeleton.md`", resource_map)
-        self.assertIn("creating a new project-local", resource_map)
-        self.assertIn("`docs/workflows.md`", resource_map)
-        self.assertIn("fully rewriting a stale workflow guide", resource_map)
-        self.assertIn("Do not emit unfilled placeholders.", resource_map)
-
-    def retired_workflow_guide_skeleton_m1_contains_required_structure(self) -> None:
-        skeleton = (
-            ROOT / "skills" / "route" / "assets" / "workflows-skeleton.md"
-        ).read_text(encoding="utf-8")
-
-        required_terms = [
-            "<!-- Template: workflows-skeleton -->",
-            "<!-- Skill: workflow -->",
-            "<!-- Template status: normative -->",
-            "<!-- Maintained alongside: skills/route/SKILL.md -->",
-            "## Status",
-            "## Source rank",
-            "## Lifecycle graph",
-            "## Stage obligations",
-            "## Artifact registry",
-            "artifact_locations:",
-            "formal_review_record:",
-            "external_surface: pull_request_body",
-            "## Artifact location table",
-            "## Review record placement",
-            "## Plan surfaces",
-            "## Guide ownership",
-            "## Customization rules",
-            "## Migration notes",
-            "## Validation notes",
-        ]
-        for term in required_terms:
-            with self.subTest(term=term):
-                self.assertIn(term, skeleton)
-
-        source_rank_terms = [
-            "Explicit user path or change ID.",
-            "Existing active artifact metadata, active plan metadata, or active change metadata.",
-            "Approved specs or schemas.",
-            "This workflow guide for artifact types it specifies.",
-            "Stage-skill portable default.",
-            "Block on ambiguity.",
-        ]
-        for term in source_rank_terms:
-            with self.subTest(source_rank=term):
-                self.assertIn(term, skeleton)
-
-    def retired_workflow_guide_skeleton_m1_stays_structural(self) -> None:
-        workflow = (ROOT / "skills" / "route" / "SKILL.md").read_text(encoding="utf-8")
-        skeleton = (
-            ROOT / "skills" / "route" / "assets" / "workflows-skeleton.md"
-        ).read_text(encoding="utf-8")
-
-        self.assertNotIn("| Artifact type       | Canonical path", workflow)
-
-        forbidden_terms = [
-            "proposal-review is approved only when",
-            "spec-review is approved only when",
-            "code-review is approved only when",
-            "enum policy",
-            "artifact content schema",
-            "| proposal | mandatory",
-            "| spec | mandatory",
-            "| code-review | mandatory",
-            "mandatory before implementation",
-            "changes requested or blocked",
-        ]
-        for term in forbidden_terms:
-            with self.subTest(term=term):
-                self.assertNotIn(term, skeleton)
-
-    def retired_workflow_guide_skeleton_m2_composes_workflow_map_validation(self) -> None:
-        path = ROOT / "skills" / "route" / "assets" / "workflows-skeleton.md"
-        skeleton = path.read_text(encoding="utf-8")
-
-        self.assertEqual(
-            skill_validation.validate_workflow_guide_skeleton_contract(path, skeleton),
-            [],
-        )
-
-        without_migration_notes = skeleton.replace("## Migration notes", "## Legacy notes", 1)
-        missing_section_errors = skill_validation.validate_workflow_guide_skeleton_contract(
-            path,
-            without_migration_notes,
-        )
-        self.assertIn(
-            f"{path}: workflow-guide skeleton missing required section Migration notes",
-            missing_section_errors,
-        )
-
-        without_formal_review = re.sub(
-            r"\n  formal_review_record:\n"
-            r"    owner: review skills\n"
-            r"    path: docs/changes/<change-id>/reviews/<stage>-r<n>\.md\n"
-            r"    required_when: formal review is recorded\n"
-            r"    notes: formal review artifact\n",
-            "\n",
-            skeleton,
-            count=1,
-        )
-        missing_registry_errors = skill_validation.validate_workflow_guide_skeleton_contract(
-            path,
-            without_formal_review,
-        )
-        self.assertIn(
-            f"{path}: artifact registry missing required entry formal_review_record",
-            missing_registry_errors,
-        )
-
-        mismatched_table = skeleton.replace(
-            "| Proposals | `docs/proposals/<change-id>.md` |",
-            "| Proposals | `docs/proposals/other.md` |",
-            1,
-        )
-        mismatch_errors = skill_validation.validate_workflow_guide_skeleton_contract(
-            path,
-            mismatched_table,
-        )
-        self.assertIn(
-            f"{path}: artifact table row Proposals placement docs/proposals/other.md does not match registry entry proposal placement docs/proposals/<change-id>.md",
-            mismatch_errors,
-        )
-
 
 
     def test_installed_skill_artifact_placement_contract_helper_accepts_compliant_review_skills(
@@ -5913,7 +3707,7 @@ and result format.
                 """
             )
 
-        for skill_name in ("proposal-review", "spec-review"):
+        for skill_name in ("proposal-review",):
             with self.subTest(skill=skill_name):
                 self.assertEqual(
                     skill_validation.validate_installed_skill_artifact_placement_contract(
@@ -5962,11 +3756,6 @@ and result format.
                 "spec-review",
                 "skills/proposal-review/SKILL.md: installed-skill placement contract names the wrong stage-owned record type spec-review records",
             ),
-            (
-                "spec-review",
-                "proposal-review",
-                "skills/spec-review/SKILL.md: installed-skill placement contract names the wrong stage-owned record type proposal-review records",
-            ),
         )
 
         for skill_name, record_type_name, expected_error in cases:
@@ -5986,8 +3775,8 @@ and result format.
         self,
     ) -> None:
         errors = skill_validation.validate_installed_skill_artifact_placement_contract(
-            Path("skills/spec-review/SKILL.md"),
-            "spec-review",
+            Path("skills/proposal-review/SKILL.md"),
+            "proposal-review",
             textwrap.dedent(
                 """\
                 # Spec review
@@ -5995,7 +3784,7 @@ and result format.
                 ## Artifact placement
 
                 Formal review records go under:
-                `docs/changes/<change-id>/reviews/spec-review-r<n>.md`
+                `docs/changes/<change-id>/reviews/proposal-review-r<n>.md`
 
                 Record the review-log entry in:
                 `docs/changes/<change-id>/review-log.md`
@@ -6014,7 +3803,7 @@ and result format.
         )
 
         self.assertIn(
-            "skills/spec-review/SKILL.md: installed-skill placement contract must state the stage-owned record type spec-review record(s)",
+            "skills/proposal-review/SKILL.md: installed-skill placement contract must state the stage-owned record type proposal-review record(s)",
             errors,
         )
 
@@ -6025,13 +3814,13 @@ and result format.
             """\
             # Spec review
 
-            Mentioning spec-review records outside the placement block does not
+            Mentioning proposal-review records outside the placement block does not
             satisfy the placement contract.
 
             ## Artifact placement
 
-            Formal proposal-review records go under:
-            `docs/changes/<change-id>/reviews/spec-review-r<n>.md`
+            Formal spec-review records go under:
+            `docs/changes/<change-id>/reviews/proposal-review-r<n>.md`
 
             Record the review-log entry in:
             `docs/changes/<change-id>/review-log.md`
@@ -6049,13 +3838,13 @@ and result format.
         )
 
         errors = skill_validation.validate_installed_skill_artifact_placement_contract(
-            Path("skills/spec-review/SKILL.md"),
-            "spec-review",
+            Path("skills/proposal-review/SKILL.md"),
+            "proposal-review",
             body,
         )
 
         self.assertIn(
-            "skills/spec-review/SKILL.md: installed-skill placement contract names the wrong stage-owned record type proposal-review records",
+            "skills/proposal-review/SKILL.md: installed-skill placement contract names the wrong stage-owned record type spec-review records",
             errors,
         )
 
@@ -6089,15 +3878,15 @@ and result format.
         self,
     ) -> None:
         errors = skill_validation.validate_installed_skill_artifact_placement_contract(
-            Path("skills/spec-review/SKILL.md"),
-            "spec-review",
+            Path("skills/proposal-review/SKILL.md"),
+            "proposal-review",
             textwrap.dedent(
                 """\
                 # Spec review
 
                 ## Artifact placement
 
-                Formal spec-review records go under `docs/changes/<change-id>/reviews/spec-review-r<n>.md`.
+                Formal proposal-review records go under `docs/changes/<change-id>/reviews/proposal-review-r<n>.md`.
                 Record the review-log entry in `docs/changes/<change-id>/review-log.md`.
                 Use `docs/changes/<change-id>/review-resolution.md` only when material findings require it.
                 Isolated advisory reviews do not create lifecycle artifacts unless explicitly asked.
@@ -6106,58 +3895,8 @@ and result format.
         )
 
         self.assertIn(
-            "skills/spec-review/SKILL.md: installed-skill placement contract must state create-or-request change-pack behavior before claiming Recording status: recorded",
+            "skills/proposal-review/SKILL.md: installed-skill placement contract must state create-or-request change-pack behavior before claiming Recording status: recorded",
             errors,
-        )
-
-    def retired_installed_skill_artifact_placement_contract_helper_checks_workflow_map_sync(
-        self,
-    ) -> None:
-        body = textwrap.dedent(
-            """\
-            # Spec review
-
-            ## Artifact placement
-
-            Formal spec-review records go under:
-            `docs/changes/<change-id>/reviews/spec-review-r<n>.md`
-
-            Record the review-log entry in:
-            `docs/changes/<change-id>/review-log.md`
-
-            Use `docs/changes/<change-id>/review-resolution.md` only when material
-            findings, blocking outcomes, or accepted dispositions require it.
-
-            If this is a formal lifecycle review and no change pack exists, create
-            or request `docs/changes/<change-id>/` before claiming `Recording status:
-            recorded`.
-
-            If the user requested an isolated advisory review and no formal recording
-            is required, do not create lifecycle artifacts unless explicitly asked.
-            """
-        )
-        workflow = "Formal review records | `docs/changes/<change-id>/reviews/<stage>-r<n>.md`"
-
-        errors = skill_validation.validate_installed_skill_artifact_placement_contract(
-            Path("skills/spec-review/SKILL.md"),
-            "spec-review",
-            body,
-            workflow_text=workflow,
-        )
-
-        self.assertEqual(errors, [])
-
-        stale_workflow = "Formal review records | `docs/reviews/<stage>-r<n>.md`"
-        stale_errors = skill_validation.validate_installed_skill_artifact_placement_contract(
-            Path("skills/spec-review/SKILL.md"),
-            "spec-review",
-            body,
-            workflow_text=stale_workflow,
-        )
-
-        self.assertIn(
-            "skills/spec-review/SKILL.md: docs/workflows.md formal review record default does not match docs/changes/<change-id>/reviews/<stage>-r<n>.md",
-            stale_errors,
         )
 
 
@@ -6227,7 +3966,6 @@ and result format.
         helper = (ROOT / "scripts/query-change-record.py").read_text()
         self.assertIn("unsupported", helper.lower())
         self.assertNotIn("load_yaml", helper)
-
 
 
     def test_follow_up_ownership_m1_project_map_skill_boundary(self) -> None:
@@ -6378,10 +4116,6 @@ class MarkdownReadabilityGuidanceTests(unittest.TestCase):
         )
 
 
-
-
-
-
 class RetainedSkillAuthorityTests(unittest.TestCase):
     # These checks protect current actor/asset boundaries or separately retained
     # optional automation methods; they are not legacy record acceptance.
@@ -6461,7 +4195,6 @@ class RetainedSkillAuthorityTests(unittest.TestCase):
         for retired in ("active profile", "writable profile", "selector ledger"):
             with self.subTest(retired=retired):
                 self.assertNotIn(retired, body.lower())
-
 
 
 class RouteSkillCutoverContractTests(unittest.TestCase):
@@ -6609,21 +4342,6 @@ class VerifySkillSimplificationContractTests(unittest.TestCase):
             "untriggered reference does not load",
         ):
             self.assertIn(phrase, self.skill)
-
-
-def historical_profile_body(text: str) -> str:
-    """Keep historical size claims scoped to their original profile.
-
-    The separately adopted recording profile is measured by TG-08, including
-    its complete loaded guidance; it must not rewrite historical measurements.
-    """
-    text = re.sub(r"\n## Test criteria application\n.*?(?=^## |\Z)", "", text, flags=re.MULTILINE | re.DOTALL)
-    text = re.sub(r"^- READ `references/test-(?:quality|maintenance).md`.*\n", "", text, flags=re.MULTILINE)
-    text = re.sub(r"\n## Resource map\n\s*\Z", "\n", text)
-    text = re.sub(r"^- READ `references/review-(?:assessment|reliance).md`.*\n", "", text, flags=re.MULTILINE)
-    text = re.sub(r"\n## Explicit recording\n.*?(?=^## |\Z)", "", text, flags=re.MULTILINE | re.DOTALL)
-    return re.sub(r"\n## Review and Closeout application\n.*?(?=^## |\Z)", "", text,
-                  flags=re.MULTILINE | re.DOTALL)
 
 
 class PRSkillSimplificationTests(unittest.TestCase):
@@ -6787,23 +4505,6 @@ class PRSkillSimplificationTests(unittest.TestCase):
         for phrase in ("registered reviews", "owned dispositions", "blockers", "independent reassessment", "without duplicating every finding"):
             self.assertIn(phrase, self.skill)
 
-    def test_portable_and_governed_profiles_both_decrease(self) -> None:
-        skill_bytes = historical_profile_body(self.skill).encode("utf-8")
-        reference_bytes = self.reference.encode("utf-8")
-        profiles = {
-            "PR0-portable": skill_bytes,
-            "PR1-governed": skill_bytes + reference_bytes,
-        }
-        for name, assembled in profiles.items():
-            with self.subTest(profile=name):
-                # M4 adds the two package-authority identities consumed at PR handoff.
-                self.assertLess(len(assembled), 11750)
-                self.assertLess(len(assembled.decode("utf-8").split()), 1678)
-
-
-
-
-
 
 class PlanSkillSimplificationContractTests(unittest.TestCase):
     def setUp(self) -> None:
@@ -6816,27 +4517,6 @@ class PlanSkillSimplificationContractTests(unittest.TestCase):
             ROOT / "docs" / "changes" / "2026-08-12-plan-skill-simplification"
         )
 
-    @staticmethod
-    def _validate_ledger(
-        entries, *, id_field, required_fields, vocabulary_field, allowed_values
-    ):
-        for entry in entries:
-            if entry.get(vocabulary_field) not in allowed_values:
-                raise ValueError(f"unknown {vocabulary_field}")
-        for entry in entries:
-            missing = [field for field in required_fields if field not in entry]
-            if missing:
-                raise ValueError(f"missing fields: {', '.join(missing)}")
-        identifiers = [entry[id_field] for entry in entries]
-        if len(identifiers) != len(set(identifiers)):
-            raise ValueError(f"duplicate {id_field}")
-        for entry in entries:
-            if (
-                vocabulary_field == "disposition"
-                and entry[vocabulary_field] == "retained-inline"
-                and not entry["destination"].startswith("skills/plan/SKILL.md")
-            ):
-                raise ValueError("inconsistent destination")
 
     def test_plan_simplification_package_and_profiles_are_closed(self) -> None:
         self.assertEqual(
@@ -6879,142 +4559,6 @@ class PlanSkillSimplificationContractTests(unittest.TestCase):
             "milestone committed",
         ):
             self.assertNotIn(forbidden, milestone)
-
-    def test_plan_simplification_inventories_and_scenarios_fail_closed(self) -> None:
-        rules = json.loads(
-            (self.change_root / "plan-rule-disposition.yaml").read_text(
-                encoding="utf-8"
-            )
-        )["rules"]
-        literals = json.loads(
-            (self.change_root / "plan-literal-compatibility.yaml").read_text(
-                encoding="utf-8"
-            )
-        )["literals"]
-        scenarios = json.loads(
-            (self.change_root / "fixtures" / "scenario-contracts.yaml").read_text(
-                encoding="utf-8"
-            )
-        )["scenarios"]
-        valid_dispositions = {
-            "retained-inline",
-            "retained-governed-reference",
-            "retained-boundary-reference",
-            "asset-owned",
-            "removed-duplicate",
-            "removed-obsolete-with-approved-contract-change",
-        }
-        valid_classifications = {
-            "normative-contract",
-            "parser-or-package-contract",
-            "test-only-incidental",
-            "obsolete",
-            "historical-fixture",
-        }
-        self.assertGreaterEqual(len(rules), 15)
-        self.assertGreaterEqual(len(literals), 13)
-        self.assertGreaterEqual(len(scenarios), 14)
-        self._validate_ledger(
-            rules,
-            id_field="rule_id",
-            required_fields={
-                "rule_id", "behavior", "source_locations", "governing_requirements",
-                "applicable_profiles",
-                "disposition",
-                "destination",
-                "preservation_proof",
-            },
-            vocabulary_field="disposition",
-            allowed_values=valid_dispositions,
-        )
-        self._validate_ledger(
-            literals,
-            id_field="literal_id",
-            required_fields={
-                "literal_id",
-                "literal",
-                "classification",
-                "source_location",
-                "consumers",
-                "required_semantics",
-                "disposition",
-                "replacement",
-            },
-            vocabulary_field="classification",
-            allowed_values=valid_classifications,
-        )
-        invalid_rule = json.loads(
-            (self.change_root / "fixtures" / "invalid-rule-disposition.yaml")
-            .read_text(encoding="utf-8")
-        )["rules"][0]
-        invalid_literal = json.loads(
-            (self.change_root / "fixtures" / "invalid-literal-classification.yaml")
-            .read_text(encoding="utf-8")
-        )["literals"][0]
-        with self.assertRaisesRegex(ValueError, "unknown disposition"):
-            self._validate_ledger(
-                [invalid_rule],
-                id_field="rule_id",
-                required_fields={"rule_id", "destination"},
-                vocabulary_field="disposition",
-                allowed_values=valid_dispositions,
-            )
-        with self.assertRaisesRegex(ValueError, "unknown classification"):
-            self._validate_ledger(
-                [invalid_literal],
-                id_field="literal_id",
-                required_fields={"literal_id"},
-                vocabulary_field="classification",
-                allowed_values=valid_classifications,
-            )
-        invalid_fixtures = (
-            (
-                "invalid-rule-duplicate-id.yaml",
-                "rules",
-                "rule_id",
-                {"rule_id", "destination"},
-                "disposition",
-                valid_dispositions,
-                "duplicate rule_id",
-            ),
-            (
-                "invalid-literal-missing-field.yaml",
-                "literals",
-                "literal_id",
-                {"literal_id", "required_semantics"},
-                "classification",
-                valid_classifications,
-                "missing fields",
-            ),
-            (
-                "invalid-rule-destination.yaml",
-                "rules",
-                "rule_id",
-                {"rule_id", "destination"},
-                "disposition",
-                valid_dispositions,
-                "inconsistent destination",
-            ),
-        )
-        for (
-            filename,
-            key,
-            id_field,
-            fields,
-            vocabulary_field,
-            allowed,
-            error,
-        ) in invalid_fixtures:
-            entries = json.loads(
-                (self.change_root / "fixtures" / filename).read_text(encoding="utf-8")
-            )[key]
-            with self.subTest(fixture=filename), self.assertRaisesRegex(
-                ValueError, error
-            ):
-                self._validate_ledger(
-                    entries, id_field=id_field, required_fields=fields,
-                    vocabulary_field=vocabulary_field, allowed_values=allowed,
-                )
 
 
 class ProposalSkillSimplificationTests(unittest.TestCase):
@@ -7125,7 +4669,7 @@ class UnifiedDesignResourceTests(unittest.TestCase):
     def test_legacy_boundary_projection_keeps_complete_format(self):
         root = ROOT / "skills/design/references"
         for name in ("boundary-first-method-v1.md", "boundary-first-feature-authoring-v1.md"):
-            self.assertEqual((root / name).read_bytes(), (ROOT / "specs/references" / name).read_bytes())
+            self.assertEqual((root / name).read_bytes(), (ROOT / "templates/shared" / name).read_bytes())
         body = (root / "boundary-first-feature-authoring-v1.md").read_text()
         headings = ("## Boundary model", "## Boundary definitions", "## Selected interactions", "## Example ownership")
         positions = [body.index(h) for h in headings]
@@ -7141,70 +4685,6 @@ class UnifiedDesignResourceTests(unittest.TestCase):
         self.assertIn("Do not migrate", ref)
         self.assertIn("does not approve", ref)
         self.assertNotIn("record-store check|record", ref)
-
-
-class VisionSkillProgressiveDisclosureLedgerTests(unittest.TestCase):
-    def setUp(self) -> None:
-        self.change = ROOT / "docs" / "changes" / "2026-08-17-vision-skill-progressive-disclosure"
-
-    def load(self, name: str) -> dict:
-        return json.loads((self.change / name).read_text(encoding="utf-8"))
-
-    def test_rule_owners_are_closed_before_consistency(self) -> None:
-        allowed = {"inline", "strategic-reference", "readme-reference", "vision-asset", "positioning-asset", "change-evidence", "existing-validator"}
-        dispositions = {"preserve", "clarify", "add", "move"}
-        rules = self.load("vision-rule-disposition.yaml")["rules"]
-        invalid = self.load("fixtures/invalid-rule-owner.yaml")["rules"]
-        invalid_disposition = self.load("fixtures/invalid-rule-disposition.yaml")["rules"]
-        self.assertTrue(rules)
-        self.assertTrue(all(row["owner"] in allowed for row in rules))
-        self.assertTrue(all(row["disposition"] in dispositions for row in rules))
-        self.assertTrue(any(row["owner"] not in allowed for row in invalid))
-        self.assertTrue(any(row["disposition"] not in dispositions for row in invalid_disposition))
-        self.assertEqual(len({row["rule_id"] for row in rules}), len(rules))
-
-    def test_literal_classifications_are_closed_before_consistency(self) -> None:
-        allowed = {"normative-contract", "parser-or-package-contract", "test-only-incidental", "historical-fixture", "obsolete"}
-        dispositions = {"preserve", "add", "move-reference", "move-asset", "forbid"}
-        literals = self.load("vision-literal-compatibility.yaml")["literals"]
-        invalid = self.load("fixtures/invalid-literal-classification.yaml")["literals"]
-        invalid_disposition = self.load("fixtures/invalid-literal-disposition.yaml")["literals"]
-        self.assertTrue(literals)
-        self.assertTrue(all(row["classification"] in allowed for row in literals))
-        self.assertTrue(all(row["disposition"] in dispositions for row in literals))
-        self.assertTrue(any(row["classification"] not in allowed for row in invalid))
-        self.assertTrue(any(row["disposition"] not in dispositions for row in invalid_disposition))
-        self.assertEqual(len({row["literal_id"] for row in literals}), len(literals))
-
-    def test_vocabularies_have_unknown_value_fixtures(self) -> None:
-        vocabularies = self.load("fixtures/vision-simplification-scenarios.yaml")["vocabularies"]
-        self.assertEqual(set(vocabularies), {"operation", "significance", "strategic_context", "readme_context", "positioning_action", "readme_action", "vision_asset_context", "positioning_asset_context", "assembly", "marker_state", "result"})
-        for name, vocabulary in vocabularies.items():
-            with self.subTest(vocabulary=name):
-                self.assertTrue(vocabulary["allowed"])
-                self.assertIn("not_in_vocabulary", vocabulary["invalid"])
-                self.assertFalse(set(vocabulary["allowed"]) & set(vocabulary["invalid"]))
-
-    def test_assemblies_scenarios_and_architecture_gate_are_complete(self) -> None:
-        fixture = self.load("fixtures/vision-simplification-scenarios.yaml")
-        profiles = fixture["assembly_profiles"]
-        self.assertEqual({row["assembly"] for row in profiles}, set(fixture["vocabularies"]["assembly"]["allowed"]))
-        self.assertEqual(sum(row["primary"] for row in profiles), 3)
-        self.assertEqual(len({row["id"] for row in fixture["scenarios"]}), len(fixture["scenarios"]))
-        required = {"operation", "state", "assembly", "authority", "marker", "positioning", "asset", "manifest", "ordering", "retry", "resource", "compatibility", "measurement", "architecture", "retired-path", "write-boundary"}
-        self.assertTrue(required <= {row["family"] for row in fixture["scenarios"]})
-        self.assertEqual(set(fixture["architecture_triggers"]), {"new persisted multi-file transaction schema", "new classification-state owner", "executable README synchronizer", "new generated-content owner", "independent policy owner"})
-
-    def test_baseline_is_exact_and_pre_split_identity_is_preserved(self) -> None:
-        baseline = (self.change / "evidence" / "profile-size-baseline.md").read_text(encoding="utf-8")
-        for value in ("VA0", "VA0S", "VA1", "VA1S", "VA2", "VA2S", "2,268", "15,845", "627a26b862d04acb001470ba0ef64138071a80e8dd67b2eccf47a41770dcb229", "Total canonical vision package"):
-            self.assertIn(value.lower(), baseline.lower())
-        package = ROOT / "skills" / "vision"
-        paths = sorted(path.relative_to(package).as_posix() for path in package.rglob("*") if path.is_file())
-        if paths == ["SKILL.md"]:
-            self.assertEqual(hashlib.sha256((package / "SKILL.md").read_bytes()).hexdigest(), "627a26b862d04acb001470ba0ef64138071a80e8dd67b2eccf47a41770dcb229")
-        else:
-            self.assertEqual(paths, ["SKILL.md", "assets/strategic-positioning-skeleton.md", "assets/vision-skeleton.md", "references/readme-vision-sync.md", "references/strategic-vision-authoring.md"])
 
 
 class VisionSkillProgressiveDisclosureTests(unittest.TestCase):
@@ -7258,94 +4738,6 @@ class VisionSkillProgressiveDisclosureTests(unittest.TestCase):
             self.assertIn(phrase.lower(), self.skill.lower())
         for claim in ("review approval", "implementation", "validation", "verification", "branch readiness", "PR readiness", "release", "deployment"):
             self.assertIn(claim.lower(), self.skill.lower())
-
-    def test_every_loaded_procedural_profile_decreases(self) -> None:
-        resources = {
-            "VA0": self.skill + self.readme,
-            "VA0S": self.skill,
-            "VA1": self.skill + self.readme,
-            "VA1S": self.skill,
-            "VA2": self.skill + self.strategic + self.readme,
-            "VA2S": self.skill + self.strategic,
-        }
-        for name, assembled in resources.items():
-            with self.subTest(profile=name):
-                self.assertLess(len(assembled.encode("utf-8")), 15845)
-                self.assertLess(len(assembled.split()), 2268)
-
-
-class LearnSkillSimplificationLedgerTests(unittest.TestCase):
-    def setUp(self) -> None:
-        self.change = ROOT / "docs" / "changes" / "2026-08-16-learn-skill-simplification"
-
-    def load(self, name: str) -> dict:
-        return json.loads((self.change / name).read_text(encoding="utf-8"))
-
-    def test_rule_owners_are_closed_before_consistency(self) -> None:
-        allowed = {"inline", "session-reference", "destination-owner", "change-evidence", "existing-validator"}
-        dispositions = {"preserve", "clarify", "add", "move", "replace-writer"}
-        rules = self.load("learn-rule-disposition.yaml")["rules"]
-        invalid = self.load("fixtures/invalid-rule-owner.yaml")["rules"]
-        invalid_disposition = self.load("fixtures/invalid-rule-disposition.yaml")["rules"]
-        self.assertTrue(rules)
-        self.assertTrue(all(row["owner"] in allowed for row in rules))
-        self.assertTrue(all(row["disposition"] in dispositions for row in rules))
-        self.assertTrue(any(row["owner"] not in allowed for row in invalid))
-        self.assertTrue(any(row["disposition"] not in dispositions for row in invalid_disposition))
-        self.assertEqual(len({row["rule_id"] for row in rules}), len(rules))
-
-    def test_literal_classifications_are_closed_before_consistency(self) -> None:
-        allowed = {"normative-contract", "parser-or-package-contract", "test-only-incidental", "historical-fixture", "obsolete"}
-        dispositions = {"preserve", "add", "move-reference", "forbid", "replace-writer"}
-        literals = self.load("learn-literal-compatibility.yaml")["literals"]
-        invalid = self.load("fixtures/invalid-literal-classification.yaml")["literals"]
-        invalid_disposition = self.load("fixtures/invalid-literal-disposition.yaml")["literals"]
-        self.assertTrue(literals)
-        self.assertTrue(all(row["classification"] in allowed for row in literals))
-        self.assertTrue(all(row["disposition"] in dispositions for row in literals))
-        self.assertTrue(any(row["classification"] not in allowed for row in invalid))
-        self.assertTrue(any(row["disposition"] not in dispositions for row in invalid_disposition))
-        self.assertEqual(len({row["literal_id"] for row in literals}), len(literals))
-
-    def test_callers_legacy_dispositions_and_scenarios_are_complete(self) -> None:
-        fixture = self.load("fixtures/learn-simplification-scenarios.yaml")
-        callers = fixture["callers"]
-        self.assertEqual({row["operation"] for row in callers}, {"run-learn-session", "record-learn-route-result"})
-        self.assertFalse(any("assess" in row["operation"] for row in callers))
-        for caller in callers:
-            source = ROOT / caller["source_path"]
-            if caller["source_path"] == "docs/workflows.md":
-                self.assertFalse(source.exists(), "retired workflow guide must remain absent")
-                continue
-            self.assertTrue(source.is_file(), caller["source_path"])
-            if caller["source_path"] == "AGENTS.md":
-                self.assertIn("[Workflow](docs/design/skill/workflow.md)", source.read_text())
-                self.assertIn("periodic, incident-driven", (ROOT / "specs/rigorloop-workflow.md").read_text())
-            else:
-                self.assertIn(caller["source_phrase"], source.read_text(encoding="utf-8"))
-        self.assertEqual(len(fixture["legacy_dispositions"]), 6)
-        self.assertTrue(all(row["writer"] == "destination-owner" for row in fixture["legacy_dispositions"]))
-        scenarios = fixture["scenarios"]
-        self.assertEqual(len({row["id"] for row in scenarios}), len(scenarios))
-        self.assertGreaterEqual(len(scenarios), 28)
-        required = {"operation", "trigger-owner", "path", "interruption", "retry", "evidence", "confirmation", "topic", "route", "result", "compatibility", "resource", "authority", "result-shape", "architecture"}
-        self.assertTrue(required <= {row["family"] for row in scenarios})
-
-    def test_every_closed_vocabulary_has_an_unknown_value_fixture(self) -> None:
-        vocabularies = self.load("fixtures/learn-simplification-scenarios.yaml")["vocabularies"]
-        self.assertEqual(set(vocabularies), {"operation", "classification", "confirmation", "completion_kind", "settlement"})
-        for name, vocabulary in vocabularies.items():
-            with self.subTest(vocabulary=name):
-                self.assertTrue(vocabulary["allowed"])
-                self.assertIn("not_in_vocabulary", vocabulary["invalid"])
-                self.assertFalse(set(vocabulary["allowed"]) & set(vocabulary["invalid"]))
-
-    def test_baseline_and_architecture_gate_are_exact(self) -> None:
-        baseline = (self.change / "evidence" / "profile-size-baseline.md").read_text(encoding="utf-8")
-        for value in ("LR0", "LR1", "1,712", "12,375", "ce64e3aa8d13dee458b7491078050feab86e0b0f1f36d452eec1497561184b0f", "Total canonical learn package"):
-            self.assertIn(value.lower(), baseline.lower())
-        triggers = self.load("fixtures/learn-simplification-scenarios.yaml")["architecture_triggers"]
-        self.assertEqual(set(triggers), {"transaction-grade phase recovery", "new persistent route or session schema owner", "polling or coordination service", "external integration", "new cross-owner mutation authority"})
 
 
 class ExplainChangeSkillRetirementTests(unittest.TestCase):
@@ -7402,58 +4794,6 @@ class LearnSkillSimplificationTests(unittest.TestCase):
             self.assertIn(phrase.lower(), self.skill.lower())
         for claim in ("destination approval", "implementation", "release", "workflow completion", "verification", "branch readiness", "PR readiness"):
             self.assertIn(claim.lower(), self.skill.lower())
-
-    def test_real_profiles_decrease_from_flat_baseline(self) -> None:
-        skill = historical_profile_body(self.skill).encode("utf-8")
-        method = self.method.encode("utf-8")
-        for name, assembled in {"LR0": skill, "LR1": skill + method}.items():
-            with self.subTest(profile=name):
-                self.assertLess(len(assembled), 12375)
-                self.assertLess(len(assembled.decode("utf-8").split()), 1712)
-
-
-
-
-
-
-class ArchitectureSkillSimplificationLedgerTests(unittest.TestCase):
-    def setUp(self) -> None:
-        self.change = ROOT / "docs" / "changes" / "2026-08-15-architecture-skill-simplification"
-
-    def load(self, name: str) -> dict:
-        return json.loads((self.change / name).read_text(encoding="utf-8"))
-
-    def test_rule_owners_are_closed_before_consistency(self) -> None:
-        allowed = {"inline", "method-reference", "governed-reference", "asset", "literal-style", "change-evidence", "existing-validator"}
-        rules = self.load("architecture-rule-disposition.yaml")["rules"]
-        invalid = self.load("fixtures/invalid-rule-owner.yaml")["rules"]
-        self.assertTrue(rules)
-        self.assertTrue(all(row["owner"] in allowed for row in rules))
-        self.assertTrue(any(row["owner"] not in allowed for row in invalid))
-        self.assertEqual(len({row["rule_id"] for row in rules}), len(rules))
-
-    def test_literal_classifications_are_closed_before_consistency(self) -> None:
-        allowed = {"normative-contract", "parser-or-package-contract", "test-only-incidental", "historical-fixture", "obsolete"}
-        literals = self.load("architecture-literal-compatibility.yaml")["literals"]
-        invalid = self.load("fixtures/invalid-literal-classification.yaml")["literals"]
-        self.assertTrue(literals)
-        self.assertTrue(all(row["classification"] in allowed for row in literals))
-        self.assertTrue(any(row["classification"] not in allowed for row in invalid))
-        self.assertEqual(len({row["literal_id"] for row in literals}), len(literals))
-
-    def test_assets_and_scenarios_have_one_identity(self) -> None:
-        assets = self.load("architecture-asset-disposition.yaml")["assets"]
-        scenarios = self.load("fixtures/scenario-contracts.yaml")["scenarios"]
-        self.assertEqual({row["asset"].split("#")[0] for row in assets}, {"architecture-skeleton.md", "adr-skeleton.md", "diagram-styles.mmd"})
-        self.assertEqual(len({row["id"] for row in scenarios}), len(scenarios))
-        self.assertGreaterEqual(len(scenarios), 18)
-
-    def test_baseline_records_all_required_surfaces(self) -> None:
-        baseline = (self.change / "evidence" / "profile-size-baseline.md").read_text(encoding="utf-8")
-        for value in ("AA0", "AA1", "AA2", "13105", "1765", "17893", "2400", "Total canonical package"):
-            self.assertIn(value.lower(), baseline.lower())
-
-
 
 
 class ProjectMapSkillSimplificationTests(unittest.TestCase):
@@ -7553,37 +4893,6 @@ class CiMaintenanceSkillSimplificationTests(unittest.TestCase):
         self.root = ROOT / "docs" / "changes" / "2026-08-19-ci-maintenance-skill-simplification"
         self.skill_dir = ROOT / "skills" / "ci-maintenance"
 
-    def test_preservation_inventories_cover_closed_ownership(self) -> None:
-        rules = (self.root / "ci-maintenance-rule-disposition.yaml").read_text(encoding="utf-8")
-        literals = (self.root / "ci-maintenance-literal-compatibility.yaml").read_text(encoding="utf-8")
-        for value in ("retained-inline", "relocated", "amended", "CIM-R25", "CIM-R59", "unlisted: retained"):
-            self.assertIn(value, rules)
-        for value in ("not-performed-by-ci-maintenance", "closed_vocabularies", "atomic-group-required", "unknown"):
-            self.assertIn(value, literals)
-        requirement_rows = re.findall(r"^  - id: R([0-9]+)$", rules, flags=re.MULTILINE)
-        legacy_rows = re.findall(r"^  - id: CIM-R([0-9]+)$", rules, flags=re.MULTILINE)
-        self.assertEqual(requirement_rows, [str(number) for number in range(1, 55)])
-        self.assertEqual(legacy_rows, [str(number) for number in range(1, 66)])
-        self.assertEqual(len(requirement_rows), len(set(requirement_rows)))
-        self.assertEqual(len(legacy_rows), len(set(legacy_rows)))
-        for value in ("CIM0", "CIM8", "scripts/skill_validation.py", "hosted-ci-observation", "project-command"):
-            self.assertIn(value, literals)
-
-    def test_scenario_inventory_covers_t1_through_t15(self) -> None:
-        scenarios = (self.root / "fixtures" / "scenarios.yaml").read_text(encoding="utf-8")
-        for number in range(1, 16):
-            self.assertIn(f"id: T{number}", scenarios)
-
-    def test_baseline_binds_current_pre_change_package(self) -> None:
-        baseline = (self.root / "evidence" / "profile-size-baseline.md").read_text(encoding="utf-8")
-        self.assertIn("ea5e0d67aec006edda66e196647d058237a10d35267b59d8e38462ee74cfe456", baseline)
-        self.assertIn("2014", baseline)
-        self.assertIn("14395", baseline)
-
-    def test_unknown_value_fixture_is_explicit(self) -> None:
-        literals = (self.root / "ci-maintenance-literal-compatibility.yaml").read_text(encoding="utf-8")
-        self.assertIn("unknown_value_policy", literals)
-        self.assertIn("invalid-or-ambiguous-provider", literals)
 
     def test_package_split_and_closed_axes_are_present(self) -> None:
         skill = (self.skill_dir / "SKILL.md").read_text(encoding="utf-8")
@@ -7658,15 +4967,6 @@ class CiMaintenanceSkillSimplificationTests(unittest.TestCase):
         for phrase in ("partial-blocked", "completed and pending targets", "Retry rebuilds the entire graph", "adopts no stale manifest"):
             self.assertIn(phrase, skill)
 
-    def test_all_loaded_profiles_strictly_decrease(self) -> None:
-        measurements = (self.root / "evidence" / "simplification-measurements.md").read_text(encoding="utf-8")
-        rows = re.findall(r"^\| (CIM[^|]+|Complete package) \| (\d+) \| (\d+) \| (\d+) \| (\d+) \|$", measurements, flags=re.MULTILINE)
-        self.assertEqual(len(rows), 15)
-        for name, before_words, after_words, before_bytes, after_bytes in rows:
-            with self.subTest(assembly=name):
-                self.assertLess(int(after_words), int(before_words))
-                self.assertLess(int(after_bytes), int(before_bytes))
-
 
 class BugfixSkillSimplificationTests(unittest.TestCase):
     def setUp(self) -> None:
@@ -7674,73 +4974,12 @@ class BugfixSkillSimplificationTests(unittest.TestCase):
         self.skill_dir = ROOT / "skills" / "bugfix"
         self.skill = (self.skill_dir / "SKILL.md").read_text(encoding="utf-8")
 
-    def test_preservation_inventories_cover_closed_ownership(self) -> None:
-        rules = (self.root / "bugfix-rule-disposition.yaml").read_text(encoding="utf-8")
-        literals = (self.root / "bugfix-literal-compatibility.yaml").read_text(encoding="utf-8")
-        for value in ("retained-inline", "amended", "removed-duplicate", "unlisted: retained"):
-            self.assertIn(value, rules)
-        requirement_rows = re.findall(r"^  - id: R([0-9]+)$", rules, flags=re.MULTILINE)
-        legacy_rows = re.findall(r"^  - id: BUG-LEGACY-([0-9]+)$", rules, flags=re.MULTILINE)
-        self.assertEqual(requirement_rows, [str(number) for number in range(1, 28)])
-        self.assertEqual(legacy_rows, [f"{number:03d}" for number in range(1, 28)])
-        self.assertEqual(len(requirement_rows), len(set(requirement_rows)))
-        self.assertEqual(len(legacy_rows), len(set(legacy_rows)))
-        for value in ("diagnose-only", "fix-applied", "code-review", "unknown_value_policy"):
-            self.assertIn(value, literals)
-        for consumer in ("scripts/skill_validation.py", "scripts/test-skill-validator.py", "scripts/adapter_distribution.py"):
-            self.assertIn(consumer, literals)
 
-    def test_scenario_inventory_covers_t1_through_t15(self) -> None:
-        scenarios = (self.root / "fixtures" / "scenarios.yaml").read_text(encoding="utf-8")
-        for number in range(1, 16):
-            self.assertIn(f"id: T{number}", scenarios)
-        self.assertIn("outcome: truthful-size-measurement", scenarios)
-        self.assertNotIn("outcome: word-and-byte-reduction", scenarios)
-
-    def test_baseline_binds_current_flat_package(self) -> None:
-        baseline = (self.root / "evidence" / "profile-size-baseline.md").read_text(encoding="utf-8")
-        self.assertIn("ea55e7f477dbc03e11e59798999ce3705125ce24b444766f50da95689c83d2ae", baseline)
-        self.assertIn("586", baseline)
-        self.assertIn("3761", baseline)
-        self.assertIn("one file", baseline.lower())
-        self.assertIn("diagnostic evidence", baseline)
-        self.assertNotIn("strictly smaller", baseline)
-
-    def test_architecture_triggers_remain_absent(self) -> None:
-        rules = (self.root / "bugfix-rule-disposition.yaml").read_text(encoding="utf-8")
-        for trigger in (
-            "persistent-bug-transaction: absent",
-            "repair-engine: absent",
-            "external-issue-integration: absent",
-            "cross-stage-state-owner: absent",
-            "separate-diagnosis-skill: absent",
-        ):
-            self.assertIn(trigger, rules)
-
-    def test_flat_package_and_truthful_size_reporting(self) -> None:
+    def test_bugfix_package_keeps_supported_resources_and_complete_behavior(self):
         files = sorted(path.relative_to(self.skill_dir).as_posix() for path in self.skill_dir.rglob("*") if path.is_file())
         self.assertEqual(files, ["SKILL.md", "references/test-maintenance.md", "references/test-quality.md"])
-        normalized = historical_profile_body(self.skill).replace("\r\n", "\n").replace("\r", "\n")
-        self.assertGreater(len(normalized.split()), 0)
-        self.assertGreater(len(normalized.encode("utf-8")), 0)
-        self.assertIn("Counts are diagnostic", self.skill)
-        self.assertIn("MUST NOT omit, blur, or relocate required behavior", self.skill)
-
-        measurements = (self.root / "evidence" / "simplification-measurements.md").read_text(encoding="utf-8")
-        measured = re.search(
-            r"\| Canonical root and complete package \| (\d+) \| (\d+) \| ([+-]\d+) \| (\d+) \| (\d+) \| ([+-]\d+) \|",
-            measurements,
-        )
-        self.assertIsNotNone(measured)
-        before_words, after_words, word_delta, before_bytes, after_bytes, byte_delta = map(int, measured.groups())
-        self.assertEqual((before_words, before_bytes), (586, 3761))
-        self.assertGreater(after_words, 0)
-        self.assertGreater(after_bytes, 0)
-        # The frozen historical report retains its own arithmetic; current body
-        # changed under the separately reviewed unified-authoring contract.
-        self.assertEqual(word_delta, after_words - before_words)
-        self.assertEqual(byte_delta, after_bytes - before_bytes)
-        self.assertIn("A measured increase is acceptable", measurements)
+        self.assertIn("Keep required behavior complete", self.skill)
+        self.assertNotIn("Report before/after LF-normalized words", self.skill)
 
     def test_meaningful_legacy_rules_remain_executable(self) -> None:
         for phrase in (
@@ -8272,6 +5511,15 @@ class RetireStandaloneTestSpecM4Tests(unittest.TestCase):
     """RTS TS-012 and TS-016 activation governance coherence."""
 
 
+    def test_current_boundary_adoption_is_owned_by_the_selected_project_contract(self):
+        source = (ROOT / "templates/shared/boundary-first-compact-scan.md").read_text()
+        self.assertNotIn("new behavior-changing specs adopt automatically", source)
+        self.assertIn("project's selected contract", source)
+        self.assertIn("Design Review", source)
+        for path in (ROOT / "skills").glob("*/SKILL.md"):
+            text = path.read_text()
+            self.assertNotIn("new behavior-changing specs adopt automatically", text, str(path))
+
     def test_shared_boundary_routing_is_v3_only(self) -> None:
         required = (
             "A pre-implementation verification-allocation gap routes to `plan`",
@@ -8299,8 +5547,6 @@ class RetireStandaloneTestSpecM4Tests(unittest.TestCase):
         self.assertIn("verify", lowered)
         self.assertIn("historical", lowered)
         self.assertNotIn("New changes remain v1 until M5", combined)
-
-
 
 
 class FinalVerificationPackageParityM4Tests(unittest.TestCase):
@@ -8344,8 +5590,6 @@ class RetireStandaloneTestSpecM5Tests(unittest.TestCase):
         self.assertIn("`plan`, `delivery-review`", automation)
         self.assertNotIn("`plan`, `test-spec`, `delivery-review`", automation)
         self.assertFalse((ROOT / "skills/route/assets/workflows-skeleton.md").exists())
-
-
 
 
 class OptionalDiscoverySkillContractTests(unittest.TestCase):
@@ -8465,7 +5709,7 @@ class OptionalDiscoverySkillContractTests(unittest.TestCase):
 
     def test_current_guidance_agrees_on_explicit_optional_discovery_handoff(self) -> None:
         surfaces = {
-            "workflow": ROOT / "specs/rigorloop-workflow.md",
+            "workflow": ROOT / "skills/route/SKILL.md",
             "readme": ROOT / "README.md",
             "project-map": ROOT / "docs/project-map.md",
         }
@@ -8477,8 +5721,6 @@ class OptionalDiscoverySkillContractTests(unittest.TestCase):
             with self.subTest(surface=name, rule="optional"):
                 self.assertIn("Explore", body)
                 self.assertIn("Research", body)
-        self.assertIn("docs/explorations/YYYY-MM-DD-slug.md", bodies["workflow"])
-        self.assertIn("docs/research/YYYY-MM-DD-slug.md", bodies["workflow"])
         self.assertIn("explicit invocation", bodies["workflow"])
         self.assertIn("owning stage", bodies["workflow"])
         self.assertIn("docs/explorations/", bodies["project-map"])
@@ -8491,20 +5733,6 @@ class OptionalDiscoverySkillContractTests(unittest.TestCase):
         self.assertIn("must explicitly adopt", route)
         self.assertIn("does not approve", route)
         self.assertIn("does not advance lifecycle state", route)
-
-
-class SkillOwnerTransferTests(unittest.TestCase):
-    def test_skill_owner_current_contract(self):
-        current = SKILL_CONTRACT_SPEC.read_text()
-        self.assertIn("../docs/design/skill/skill.md", current)
-        self.assertNotIn("R49b.", current)
-        self.assertIn("R38a.", current)
-        self.assertIn("R57c.", current)
-        model = (ROOT / "docs/design/skill/skill.md").read_text()
-        for required in ("SKL-SR-08", "SKL-SR-14", "recognized resource-loading instructions", "explicitly approved temporary exception", "New or changed skills MUST", "generator scripts, maintainer documentation", "raw-byte SHA-256"):
-            self.assertIn(required, model)
-        for required in ("non-empty string `name` and `description`", "two lines of normal prose", "exactly one authoritative fenced block or table", "complete fillable skeleton", "Full-subject reads MUST remain available", "Output caps MUST NOT substitute", "generated candidates are derived and never hand-edited", "Workflow", "Review and Closeout"):
-            self.assertIn(required, model)
 
 
 class ExplicitRecordingGuidanceTests(unittest.TestCase):

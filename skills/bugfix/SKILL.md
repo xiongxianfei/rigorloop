@@ -112,9 +112,9 @@ Rerun the original reproduction or exact alternative, the identity-equal regress
 
 Report operation, terminal result, authority classifications, repository and defect, commands actually run, proof identity, unexecuted checks, uncertainty, changed surfaces, blockers, and next owner. Changed implementation hands off to independent `code-review`; no stage continues automatically. Never claim review approval, explanation, verification, hosted CI, branch or PR readiness, release, deployment, publication, lifecycle completion, or `Done`.
 
-## Package measurement
+## Package clarity
 
-Keep this package as one `SKILL.md`. Report before/after LF-normalized words and UTF-8 bytes; identify the tokenizer or model basis for any token estimate. Counts are diagnostic evidence, not a semantic gate. The skill MUST NOT omit, blur, or relocate required behavior to improve a count. Complete meaning, deterministic interpretation, safety, and package parity take precedence.
+Keep required behavior complete, deterministic and usable. Safety and package parity take precedence over shortening the text.
 
 ## Evidence collection efficiency
 

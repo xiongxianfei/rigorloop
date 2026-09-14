@@ -99,8 +99,8 @@ def validate(repo: Path) -> ValidationResult:
         repo / "CONSTITUTION.md",
         repo / "README.md",
         repo / "docs" / "project-map.md",
-        repo / "specs" / "rigorloop-workflow.md",
-        repo / "specs" / "skill-contract.md",
+        repo / "docs" / "design" / "skill" / "workflow.md",
+        repo / "docs" / "design" / "skill" / "assessment.md",
         repo / "docs" / "design" / "skill" / "skill.md",
     )
     for path in current_surfaces:
@@ -120,7 +120,7 @@ def validate(repo: Path) -> ValidationResult:
         messages.append("ROUTE-GUIDE-007: project map must preserve orientation and route/CLI authority boundaries")
 
     plan_index = _read(repo / "docs" / "plan.md").lower()
-    if not all(term in plan_index for term in ("navigation index", "owning change", "change.yaml")):
+    if not all(term in plan_index for term in ("navigation index", "owning change", "change.json")):
         messages.append("ROUTE-GUIDE-008: docs/plan.md must remain a bounded navigation index")
 
     return ValidationResult(tuple(messages))
