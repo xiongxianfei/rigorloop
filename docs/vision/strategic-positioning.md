@@ -30,6 +30,8 @@ Teams would otherwise rely on ordinary AI coding chats, ad hoc PR descriptions, 
 
 RigorLoop accepts more explicit artifacts and review gates in exchange for stronger confidence that agent-produced changes match human-approved intent.
 
+Durability means preserving recoverable meaning and evidence, not indefinitely retaining every source in the working tree. Current work and evidence still relied upon remain self-contained; investigation of retired material may require the project’s chosen historical storage. This repository chooses Git history without imposing it on customer projects.
+
 ## Compatibility Surfaces
 
 Version control, CI, pull requests, repository-local storage, generated adapter packages, and common agent runtimes are compatibility surfaces. They may support the workflow but are neither its product category nor correctness dependencies.
@@ -40,4 +42,4 @@ RigorLoop refuses to become a generic project-management suite, hosted control p
 
 ## Falsifiability
 
-The vision is wrong if reviewers cannot reconstruct a representative change's purpose, requirements, design constraints, tests, validation evidence, current findings, and verified outcome from its current authoritative artifacts without chat history, Git history, or pull-request access. It is also wrong if teams routinely ignore the artifacts because they slow delivery without improving review quality, or if useful adoption requires a platform migration.
+The vision is wrong if reviewers cannot reconstruct a representative current change's purpose, requirements, design constraints, tests, validation evidence, findings, and verified outcome when claimed from its current authoritative artifacts without chat history, Git history, or pull-request access. Retirement also fails the promise if historical decisions and evidence become unrecoverable or current reliance requires historical retrieval. It is also wrong if teams routinely ignore the artifacts because they slow delivery without improving review quality, or if useful adoption requires a platform migration.

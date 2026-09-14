@@ -184,7 +184,7 @@ Deterministic validation owns schema, vocabulary, path safety, source provenance
 ## Architecture Decisions
 
 - [ADR-20260902 Route Context and Skill Identity](../adr/ADR-20260902-route-context-and-skill-identity.md) — adopts the two-phase read-only context projection, bundled defaults plus optional `rigorloop.workflow.yaml`, a clean public skill rename, and stable stored workflow protocol names.
-- [ADR-20260824 Governed Lifecycle CLI Transaction Boundary](../adr/ADR-20260824-governed-lifecycle-cli-transaction-boundary.md) — retained for state interpretation, semantic mutation, freshness, and transaction ownership.
+- [ADR-20260824 Governed Lifecycle CLI Transaction Boundary](https://github.com/xiongxianfei/rigorloop/blob/39b7c5cb1f03aa761d2f2493d3474ce985e59d6f/docs/adr/ADR-20260824-governed-lifecycle-cli-transaction-boundary.md) — retained for state interpretation, semantic mutation, freshness, and transaction ownership.
 - [ADR-20260825 Workflow-Routed Correction and Artifact Ownership](../adr/ADR-20260825-workflow-routed-correction-and-artifact-ownership.md) — retained; `route` exercises the workflow authority and the CLI validates but does not select corrections.
 
 ## Quality Requirements

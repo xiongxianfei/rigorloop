@@ -85,11 +85,6 @@ MILESTONE_AWARE_REVIEW_HANDOFF_SKILLS = [
     "plan",
 ]
 SHARED_REVIEW_BLOCK_PATH = ROOT / "templates" / "shared" / "review-isolation-and-recording.md"
-FORMAL_REVIEW_RECORDING_SPEC = ROOT / "specs" / "formal-review-recording.md"
-MILESTONE_AWARE_REVIEW_HANDOFF_SPEC = ROOT / "specs" / "milestone-aware-review-handoff.md"
-MILESTONE_AWARE_REVIEW_HANDOFF_TEST_SPEC = (
-    ROOT / "specs" / "milestone-aware-review-handoff.test.md"
-)
 SKILL_CONTRACT_SPEC = ROOT / "specs" / "skill-contract.md"
 SKILL_CONTRACT_TEST_SPEC = ROOT / "specs" / "skill-contract.test.md"
 SKILL_CONTRACT_PLAN = ROOT / "docs" / "plans" / "2026-05-08-skill-contract-optimization.md"
@@ -155,18 +150,6 @@ PROGRESSIVE_LOADING_CODE_REVIEW_PROTECTED_TERMS = [
     "stop conditions",
     "result format",
 ]
-# Source: specs/test-spec-review-gate.md R26.
-R26_REQUIRED_TEST_SPEC_REVIEW_EVIDENCE_PROPERTIES = (
-    "approved",
-    "current",
-    "recorded",
-)
-R26_IMPLEMENT_SKILL_EVIDENCE_SURFACES = (
-    ("workflow_role", "Workflow role"),
-    ("inputs_to_read", "Inputs to read"),
-    ("default_evidence", "Evidence access"),
-    ("pre_implementation_stop_condition", "First-pass completeness"),
-)
 CUSTOMER_PORTABLE_FIRST_SLICE_SKILLS = [
     "proposal",
     "proposal-review",
@@ -550,21 +533,6 @@ def assert_boundary_id_covered(test_case: unittest.TestCase, body: str, boundary
     test_case.fail(f"EB{boundary_number} is not covered explicitly or by range")
 
 
-def assert_implement_skill_carries_r26_evidence_property_matrix(
-    test_case: unittest.TestCase,
-    skill_body: str,
-) -> None:
-    for surface_id, heading in R26_IMPLEMENT_SKILL_EVIDENCE_SURFACES:
-        surface_text = extract_markdown_block(skill_body, heading).lower()
-        for prop in R26_REQUIRED_TEST_SPEC_REVIEW_EVIDENCE_PROPERTIES:
-            test_case.assertIn(
-                prop,
-                surface_text,
-                msg=(
-                    f"R26 evidence property {prop!r} missing from "
-                    f"implement skill surface {surface_id!r}"
-                ),
-            )
 
 
 class SkillValidatorFixtureTests(unittest.TestCase):
@@ -3569,28 +3537,18 @@ Use the inputs somehow and produce a useful result.
                 self.assertNotIn(term, proposal_asset)
 
     def test_governance_workflow_and_readme_define_vision_source_of_truth(self) -> None:
-        constitution = (ROOT / "CONSTITUTION.md").read_text(encoding="utf-8")
-        self.assertIn("2. `VISION.md`", constitution)
-        self.assertIn("3. `specs/`", constitution)
-        self.assertIn("README front-matter", constitution)
-
-        required_terms = [
-            "`VISION.md` is the canonical project-vision artifact",
-            "README content between `<!-- vision:start -->` and `<!-- vision:end -->` is generated from `VISION.md`",
-            "README front-matter is not the source of truth when it conflicts with `VISION.md`",
-        ]
-        for relative_path in ["AGENTS.md", "README.md"]:
-            body = (ROOT / relative_path).read_text(encoding="utf-8")
-            for term in required_terms:
-                with self.subTest(path=relative_path, term=term):
-                    self.assertIn(term, body)
-
-        for relative_path in ["CONSTITUTION.md", "AGENTS.md"]:
-            body = (ROOT / relative_path).read_text(encoding="utf-8")
-            self.assertIn(
-                "Routine vision alignment is Proposal Review evidence, not a required proposal section.",
-                body,
-            )
+        constitution = (ROOT / "CONSTITUTION.md").read_text()
+        agents = (ROOT / "AGENTS.md").read_text()
+        readme = (ROOT / "README.md").read_text()
+        self.assertIn("[VISION.md](VISION.md) owns project identity and direction", constitution)
+        self.assertIn("governs vision and proposal fit below this Constitution", constitution)
+        self.assertIn("README content between `<!-- vision:start -->` and `<!-- vision:end -->` is generated from `VISION.md`", readme)
+        self.assertIn("README front-matter is not the source of truth when it conflicts with `VISION.md`", readme)
+        self.assertIn("Read [CONSTITUTION.md](CONSTITUTION.md)", agents)
+        self.assertIn("README content between the vision markers is generated from it", agents)
+        assessment = (ROOT / "docs/design/skill/assessment.md").read_text()
+        self.assertIn("routine vision alignment", assessment)
+        self.assertIn("a Proposal Review judgment", assessment)
 
     def test_active_vision_spec_retires_lowercase_path_and_user_facing_modes(self) -> None:
         spec = (ROOT / "specs" / "vision-skill.md").read_text(encoding="utf-8")
@@ -4286,10 +4244,14 @@ Use the inputs somehow and produce a useful result.
                 self.assertNotIn(term, normalized)
 
     def test_governance_guidance_uses_broad_material_finding_rule(self) -> None:
-        for relative in ("CONSTITUTION.md", "AGENTS.md"):
-            body = (ROOT / relative).read_text().lower()
-            for term in ("rigorloop-records-v3", "whole-change code review", "historical", "verify", "targeted"):
-                self.assertIn(term, body)
+        constitution = (ROOT / "CONSTITUTION.md").read_text().lower()
+        for term in ("whole-change code review", "material findings", "safe resolution path", "verify"):
+            self.assertIn(term, constitution)
+        agents = (ROOT / "AGENTS.md").read_text()
+        self.assertIn("[Assessment](docs/design/skill/assessment.md)", agents)
+        self.assertIn("[Records](docs/design/cli/records.md)", agents)
+        self.assertIn("targeted recording", agents)
+        self.assertIn("rigorloop-records-v3", (ROOT / "docs/design/cli/records.md").read_text())
 
     def test_downstream_skills_preserve_review_closeout_boundaries(self) -> None:
         for skill in DOWNSTREAM_REVIEW_CLOSEOUT_SKILLS:
@@ -4314,50 +4276,7 @@ Use the inputs somehow and produce a useful result.
                 self.assertNotIn(term, validator_body)
 
 
-    def test_milestone_aware_review_handoff_test_spec_maps_static_proof(self) -> None:
-        body = MILESTONE_AWARE_REVIEW_HANDOFF_TEST_SPEC.read_text(encoding="utf-8")
-        required_terms = [
-            "T1. Scope boundary preserves existing lanes and stop conditions",
-            "T2. Clean review routing distinguishes non-final and final milestones",
-            "T3. Findings stay attached to the reviewed milestone",
-            "T4. Inconclusive or ambiguous review never starts final closeout",
-            "T5. Milestone state vocabulary is single-field and exact",
-            "T6. Implement handoff uses `review-requested` and does not claim final closeout readiness",
-            "T7. Handoff summaries and plan update obligations are explicit",
-            "T8. Milestones are not postponed to reach final closeout",
-            "T9. Lifecycle-closeout milestones are distinguishable from implementation milestones",
-            "T10. Affected workflow, skill, and generated surfaces remain aligned",
-            "T11. First implementation slice stays static-only",
-            "T12. Validation selector accepts concrete generated adapter paths",
-            "T13. Handoff summaries do not expose sensitive data",
-            "T14. Compatibility expectations remain true for existing plans",
-        ]
-        for term in required_terms:
-            with self.subTest(term=term):
-                self.assertIn(term, body)
 
-    def test_milestone_aware_review_handoff_single_state_contract(self) -> None:
-        spec = MILESTONE_AWARE_REVIEW_HANDOFF_SPEC.read_text(encoding="utf-8")
-        test_spec = MILESTONE_AWARE_REVIEW_HANDOFF_TEST_SPEC.read_text(encoding="utf-8")
-        allowed_states = [
-            "`planned`",
-            "`implementing`",
-            "`review-requested`",
-            "`resolution-needed`",
-            "`closed`",
-        ]
-        for body, label in ((spec, "spec"), (test_spec, "test spec")):
-            for state in allowed_states:
-                with self.subTest(file=label, state=state):
-                    self.assertIn(state, body)
-
-        self.assertIn(
-            "`implementation-complete` and `review-clean` are evidence descriptions, not milestone states.",
-            spec,
-        )
-        self.assertIn("`implementation-complete` and `review-clean` are not milestone state values.", test_spec)
-        self.assertNotIn("routing state", spec)
-        self.assertNotIn("implementation evidence state", spec)
 
 
     def test_milestone_aware_workflow_specs_remove_unconditional_verify_handoff(self) -> None:
@@ -4394,10 +4313,8 @@ Use the inputs somehow and produce a useful result.
         for relative_path in [
             "specs/workflow-stage-autoprogression.md",
             "specs/rigorloop-workflow.md",
-            "specs/milestone-aware-review-handoff.md",
             "specs/workflow-stage-autoprogression.test.md",
             "specs/rigorloop-workflow.test.md",
-            "specs/milestone-aware-review-handoff.test.md",
         ]:
             body = (ROOT / relative_path).read_text(encoding="utf-8")
             for term in stale_terms:
@@ -4446,7 +4363,6 @@ Use the inputs somehow and produce a useful result.
         for path, body in [
             ("specs/rigorloop-workflow.md", workflow_spec),
             ("skills/route/SKILL.md", route_skill),
-            ("AGENTS.md", root_guidance),
         ]:
             with self.subTest(path=path):
                 self.assertIn(
@@ -4454,6 +4370,7 @@ Use the inputs somehow and produce a useful result.
                     body,
                 )
 
+        self.assertIn("[Workflow](docs/design/skill/workflow.md)", root_guidance)
         self.assertIn('"test-spec-review"', review_validator)
         self.assertIn("TEST_SPEC_REVIEW_STATUSES", review_validator)
         self.assertIn("TEST_SPEC_REVIEW_IMMEDIATE_NEXT_STAGES", review_validator)
@@ -4925,71 +4842,12 @@ Use the inputs somehow and produce a useful result.
             with self.subTest(example=example_number):
                 self.assertIn(f"`E{example_number}`", body)
 
-    def test_historical_skill_contract_source_and_generated_boundaries_are_defined(self) -> None:
-        spec = (ROOT / "docs/archive/skill-model/2026-09-08/specs/skill-contract.md").read_text(encoding="utf-8")
-        test_spec = SKILL_CONTRACT_TEST_SPEC.read_text(encoding="utf-8")
-        required_spec_terms = [
-            "This spec owns skill-contract behavior.",
-            "`specs/rigorloop-workflow.md` continues to own stage order, stage obligation, handoff, and downstream-blocking semantics.",
-            "Skills are also a published user-facing interface.",
-            "Generated skill mirrors under `.codex/skills/` MUST be treated as derived output.",
-            "Adapter output under `dist/adapters/` MUST be treated as derived output.",
-            "Contributors MUST NOT hand-edit `.codex/skills/` or `dist/adapters/` to satisfy this spec.",
-            "Public shared blocks are copied and checked in v1, not generated into skills.",
-            "Published skill text does not expose repository-local source paths, generated mirror paths, adapter package paths, selector path constraints, drift-check mechanics, shared-block implementation details, or RigorLoop-local examples.",
-            "The baseline normalization first slice and published-skill design pilot MUST NOT add broad natural-language quality scoring.",
-            "The `ci-maintenance` skill is the entrypoint for the `ci-maintenance` stage label.",
-        ]
-        for term in required_spec_terms:
-            with self.subTest(file="spec", term=term):
-                self.assertIn(term, spec)
 
-        required_test_terms = [
-            "Do not add runtime workflow simulation",
-            "Do not add runtime workflow simulation, natural-language scoring, broad prose linting",
-            "generated-output drift checks",
-            "selector validation with concrete generated skill and adapter file paths",
-            "do not pass `--path dist/adapters`",
-        ]
-        for term in required_test_terms:
-            with self.subTest(file="test_spec", term=term):
-                self.assertIn(term, test_spec)
-
-    def test_historical_skill_contract_first_slice_scope_stays_limited(self) -> None:
-        spec = (ROOT / "docs/archive/skill-model/2026-09-08/specs/skill-contract.md").read_text(encoding="utf-8")
-        test_spec = SKILL_CONTRACT_TEST_SPEC.read_text(encoding="utf-8")
-        plan = SKILL_CONTRACT_PLAN.read_text(encoding="utf-8")
-        historical_first_slice = [
-            "workflow" if skill_name == "route" else skill_name
-            for skill_name in SKILL_CONTRACT_FIRST_SLICE_SKILLS
-        ]
-        first_slice_test_spec_list = ", ".join(
-            f"`{skill_name}`" for skill_name in historical_first_slice[:-1]
-        )
-        first_slice_test_spec_list = (
-            f"{first_slice_test_spec_list}, and `{historical_first_slice[-1]}`"
-        )
-
-        self.assertIn(
-            f"first implementation slice names only {first_slice_test_spec_list}",
-            test_spec,
-        )
-
-        for skill_name in SKILL_CONTRACT_FIRST_SLICE_SKILLS:
-            with self.subTest(surface="spec", skill=skill_name):
-                self.assertIn(f"`skills/{skill_name}/SKILL.md`", spec)
-            with self.subTest(surface="plan", skill=skill_name):
-                historical_name = "workflow" if skill_name == "route" else skill_name
-                self.assertIn(f"skills/{historical_name}/SKILL.md", plan)
-
-        self.assertIn("The `ci-maintenance` skill MUST be treated as the skill entrypoint", spec)
-        self.assertIn("The baseline normalization first slice MUST NOT normalize every skill.", spec)
-        self.assertIn("Do not implement Phase 2, Phase 3, or Phase 4 skill normalization", plan)
-        self.assertTrue((ROOT / "skills" / "ci-maintenance" / "SKILL.md").exists())
-
-        for skill_name in SKILL_CONTRACT_FORBIDDEN_NEW_SKILLS:
-            with self.subTest(forbidden_skill=skill_name):
-                self.assertFalse((ROOT / "skills" / skill_name / "SKILL.md").exists())
+    def test_skill_contract_current_skill_inventory(self) -> None:
+        self.assertTrue((ROOT / "skills/ci-maintenance/SKILL.md").is_file())
+        for name in [*SKILL_CONTRACT_FORBIDDEN_NEW_SKILLS, "token-budget"]:
+            with self.subTest(skill=name):
+                self.assertFalse((ROOT / "skills" / name / "SKILL.md").exists())
 
     def test_skill_contract_plan_keeps_m1_scaffolding_passable_before_skill_edits(self) -> None:
         plan = SKILL_CONTRACT_PLAN.read_text(encoding="utf-8")
@@ -5127,35 +4985,6 @@ Use the inputs somehow and produce a useful result.
             with self.subTest(deferred_block=block_name):
                 self.assertFalse((ROOT / "templates" / "shared" / f"{block_name}.md").exists())
 
-    def test_historical_skill_contract_token_cost_amendment_is_defined(self) -> None:
-        spec = (ROOT / "docs/archive/skill-model/2026-09-08/specs/skill-contract.md").read_text(encoding="utf-8")
-        test_spec = SKILL_CONTRACT_TEST_SPEC.read_text(encoding="utf-8")
-
-        required_spec_terms = [
-            "Token-cost discipline is part of normalized skill behavior.",
-            "Token-cost discipline MUST NOT reduce required validation coverage, review obligations, artifact obligations, or workflow stage gates.",
-            "Normalized skills that collect evidence from high-volume surfaces MUST prefer bounded evidence before broad reads.",
-            "Output caps MUST be treated as safety rails, not evidence-selection strategy.",
-            "Summary-first and failure-focused output MUST preserve validation semantics.",
-            "Static validation for token-cost discipline MUST be narrow and reviewable.",
-            "Reviewers MAY report broad, noisy evidence collection as a process defect",
-            "Do not add a standalone `token-budget` skill.",
-        ]
-        for term in required_spec_terms:
-            with self.subTest(file="spec", term=term):
-                self.assertIn(term, spec)
-
-        required_test_terms = [
-            "T15. Token-cost amendment and static proof stay narrow",
-            "bounded evidence before broad reads",
-            "output caps are safety rails, not evidence-selection strategy",
-            "no `skills/token-budget/SKILL.md` path exists",
-        ]
-        for term in required_test_terms:
-            with self.subTest(file="test_spec", term=term):
-                self.assertIn(term, test_spec)
-
-        self.assertFalse((ROOT / "skills" / "token-budget" / "SKILL.md").exists())
 
 
     def test_progressive_loading_quick_guide_contract_helper_detects_required_shape(self) -> None:
@@ -7489,7 +7318,11 @@ class LearnSkillSimplificationLedgerTests(unittest.TestCase):
                 self.assertFalse(source.exists(), "retired workflow guide must remain absent")
                 continue
             self.assertTrue(source.is_file(), caller["source_path"])
-            self.assertIn(caller["source_phrase"], source.read_text(encoding="utf-8"))
+            if caller["source_path"] == "AGENTS.md":
+                self.assertIn("[Workflow](docs/design/skill/workflow.md)", source.read_text())
+                self.assertIn("periodic, incident-driven", (ROOT / "specs/rigorloop-workflow.md").read_text())
+            else:
+                self.assertIn(caller["source_phrase"], source.read_text(encoding="utf-8"))
         self.assertEqual(len(fixture["legacy_dispositions"]), 6)
         self.assertTrue(all(row["writer"] == "destination-owner" for row in fixture["legacy_dispositions"]))
         scenarios = fixture["scenarios"]
@@ -8633,7 +8466,6 @@ class OptionalDiscoverySkillContractTests(unittest.TestCase):
     def test_current_guidance_agrees_on_explicit_optional_discovery_handoff(self) -> None:
         surfaces = {
             "workflow": ROOT / "specs/rigorloop-workflow.md",
-            "agents": ROOT / "AGENTS.md",
             "readme": ROOT / "README.md",
             "project-map": ROOT / "docs/project-map.md",
         }
@@ -8662,20 +8494,7 @@ class OptionalDiscoverySkillContractTests(unittest.TestCase):
 
 
 class SkillOwnerTransferTests(unittest.TestCase):
-    def test_skill_owner_current_contract_and_archive_identity(self):
-        import hashlib
-        archive = ROOT / "docs/archive/skill-model/2026-09-08"
-        originals = {
-            "specs/skill-contract.md": "4471eda8d1e04621710e5a0764a452670df8ba711804a3c2380ff7bdd6d1718f",
-            "specs/skill-readability-contract.md": "08ca1f804c8d877387798b0a21709951ed6096718a03db82067d3ad6749b0eb0",
-            "specs/customer-portable-public-skill-evidence.md": "d786f7bab328b82be9c65cb42d7948337fcfb6bf7bdd32df55005c61d69dacb9",
-            "docs/adr/ADR-20260623-published-skill-resource-integrity.md": "1475793203979247b7b42f22406dd681c424ea74328db6d17f5e1102bd5eb69b",
-        }
-        for relative, identity in originals.items():
-            with self.subTest(source=relative):
-                self.assertEqual(hashlib.sha256((archive / relative).read_bytes()).hexdigest(), identity)
-                if relative != "specs/skill-contract.md":
-                    self.assertEqual((ROOT / relative).read_bytes(), (archive / relative).read_bytes())
+    def test_skill_owner_current_contract(self):
         current = SKILL_CONTRACT_SPEC.read_text()
         self.assertIn("../docs/design/skill/skill.md", current)
         self.assertNotIn("R49b.", current)
@@ -8686,11 +8505,6 @@ class SkillOwnerTransferTests(unittest.TestCase):
             self.assertIn(required, model)
         for required in ("non-empty string `name` and `description`", "two lines of normal prose", "exactly one authoritative fenced block or table", "complete fillable skeleton", "Full-subject reads MUST remain available", "Output caps MUST NOT substitute", "generated candidates are derived and never hand-edited", "Workflow", "Review and Closeout"):
             self.assertIn(required, model)
-        # Links are checked mechanically; independent review owns their meaning.
-        index = archive / "README.md"
-        for relative in re.findall(r"\]\(([^)#]+)(?:#[^)]*)?\)", index.read_text()):
-            if not relative.startswith(("http:", "https:")):
-                self.assertTrue((index.parent / relative).exists(), relative)
 
 
 class ExplicitRecordingGuidanceTests(unittest.TestCase):

@@ -2,7 +2,7 @@
 
 ## Unified authoring adoption
 
-For the selected responsibility, [Design](../docs/design/skill/authoring/design.md) replaces separate normal `spec` and `architecture` authoring with `design`, including one OpenCode `design` alias. Independent `design-review` assesses the exact affected model, legacy-source and example subjects and relevant interactions; no fixed spec/architecture/ADR tuple is required for model work. The normalized skill structure, unrelated invocation rules, historical protocol identities and downstream responsibilities below retain their meaning. Removing old invocations does not retire their documents; source authority follows the explicit Design/System displacement maps.
+For the selected responsibility, [Design](../docs/design/skill/design.md) replaces separate normal `spec` and `architecture` authoring with `design`, including one OpenCode `design` alias. Independent `design-review` assesses the exact affected model, legacy-source and example subjects and relevant interactions; no fixed spec/architecture/ADR tuple is required for model work. The normalized skill structure, unrelated invocation rules, historical protocol identities and downstream responsibilities below retain their meaning. Removing old invocations does not retire their documents; source authority follows the explicit Design/System displacement maps.
 
 ## V2-only runtime retirement
 
@@ -59,7 +59,7 @@ The exact prior-contract inventory frozen in `specs/lifecycle-contract-activatio
 
 ## Consolidated review-gate amendment (historical)
 
-At the reviewed consolidated-gates release cutover, `specs/consolidated-review-gates.md` replaces the legacy artifact-review progression clauses named in that specification. The standard pre-implementation chain becomes `proposal -> proposal-review -> architecture -> spec -> design-review -> plan -> test-spec -> delivery-review -> implement`. Proposal Review evaluates the proposal and its embedded feasibility evidence; Design Review approves the exact architecture, specification, and applicable ADR package; Delivery Review approves the exact plan and test-specification package.
+At the reviewed consolidated-gates release cutover, [historical `specs/consolidated-review-gates.md`](https://github.com/xiongxianfei/rigorloop/blob/39b7c5cb1f03aa761d2f2493d3474ce985e59d6f/specs/consolidated-review-gates.md) replaces the legacy artifact-review progression clauses named in that specification. The standard pre-implementation chain becomes `proposal -> proposal-review -> architecture -> spec -> design-review -> plan -> test-spec -> delivery-review -> implement`. Proposal Review evaluates the proposal and its embedded feasibility evidence; Design Review approves the exact architecture, specification, and applicable ADR package; Delivery Review approves the exact plan and test-specification package.
 
 Architecture, specification, plan, and historical test-specification authorship remain distinct in their records. Package review authority is atomic and binds explicit artifact ID-to-repository-relative-path maps plus the upstream review ID; it uses neither an aggregate revision nor per-document hashes. `spec-review`, `architecture-review`, `plan-review`, and `test-spec-review` remain readable historical evidence but are not current progression entrypoints or aliases. Current final ownership belongs to Code Review, review-resolution, Verify, and PR.
 
@@ -362,7 +362,7 @@ R6g. `CONSTITUTION.md` absence MUST block governance adoption, workflow-governan
 
 R6h. Bootstrap proposals under `R6f` or `R6g` MUST identify the bootstrap exception in `Vision fit`, and `proposal-review` MUST check that exemption.
 
-R6i. When architecture is required, the `architecture` stage MUST produce or update the architecture package defined by `specs/architecture-package-method.md` before planning continues. This workflow spec owns only stage-level routing and handoff for that method; the focused architecture package method spec owns the C4, arc42, ADR, template, and package lifecycle contract.
+R6i. When architecture is required, the `architecture` stage MUST produce or update the architecture package defined by [historical `specs/architecture-package-method.md`](https://github.com/xiongxianfei/rigorloop/blob/39b7c5cb1f03aa761d2f2493d3474ce985e59d6f/specs/architecture-package-method.md) before planning continues. This workflow spec owns only stage-level routing and handoff for that method; the focused architecture package method spec owns the C4, arc42, ADR, template, and package lifecycle contract.
 
 R6j. The `route` skill MUST consume `rigorloop workflow-context` for deterministic governed workflow facts and retain semantic routing judgment. It MUST NOT create, refresh, parse, or consult the retired workflow guide.
 
@@ -1463,7 +1463,7 @@ mechanism.
 - `explain-change`: completed in the change-local evidence pack.
 - `pr`: PR #30 opened for human review.
 - `proposal`: [Review Skill Material Finding Recording](../docs/proposals/2026-05-07-review-skill-material-finding-recording.md)
-- `spec`: [Formal Review Recording](formal-review-recording.md) amendment for isolation-versus-recording behavior.
+- `spec`: [Formal Review Recording](https://github.com/xiongxianfei/rigorloop/blob/39b7c5cb1f03aa761d2f2493d3474ce985e59d6f/specs/formal-review-recording.md) amendment for isolation-versus-recording behavior.
 - `spec`: [Review Finding Resolution Contract](review-finding-resolution-contract.md) amendment for scan-first `review-resolution.md` records.
 - `spec-review`: approved on 2026-05-07 with no material findings.
 - `plan`: [Review Skill Material Finding Recording plan](../docs/plans/2026-05-07-review-skill-material-finding-recording.md)
@@ -1476,7 +1476,7 @@ mechanism.
 - `architecture-review`: approved in [architecture-review-r1](../docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/architecture-review-r1.md)
 - `plan`: [Single Workflow Lane, Explain-Change Before Verify Execution Plan](../docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md)
 - `plan-review`: approved in [plan-review-r2](../docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/plan-review-r2.md)
-- `test-spec`: [RigorLoop workflow test spec](rigorloop-workflow.test.md), [Workflow stage autoprogression test spec](workflow-stage-autoprogression.test.md), [Milestone-aware review handoff test spec](milestone-aware-review-handoff.test.md), and [Skill contract test spec](skill-contract.test.md) confirm the active implementation proof map.
+- `test-spec`: [RigorLoop workflow test spec](rigorloop-workflow.test.md), [Workflow stage autoprogression test spec](workflow-stage-autoprogression.test.md), [Milestone-aware review handoff test spec](https://github.com/xiongxianfei/rigorloop/blob/39b7c5cb1f03aa761d2f2493d3474ce985e59d6f/specs/milestone-aware-review-handoff.test.md), and [Skill contract test spec](skill-contract.test.md) confirm the active implementation proof map.
 - `proposal`: [Separately Armed Implementation Autoprogression Through Verify](../docs/proposals/2026-06-24-separately-armed-implementation-autoprogression-through-verify.md)
 - `proposal-review`: approved in [proposal-review-r1](../docs/changes/2026-06-24-separately-armed-implementation-autoprogression-through-verify/reviews/proposal-review-r1.md)
 - `spec-review`: approved in [spec-review-r1](../docs/changes/2026-06-24-separately-armed-implementation-autoprogression-through-verify/reviews/spec-review-r1.md)

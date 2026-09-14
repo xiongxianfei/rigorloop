@@ -4,9 +4,11 @@ Model validation contract: model-document-v1
 
 Parent model: [Engineering](engineering.md#packaging).
 
-Owning change: [independent parallel tests](../../changes/2026-09-13-independent-parallel-tests/change.json).
+Owning change: [current-design repository cleanup](../../changes/2026-09-13-current-design-repository-cleanup/change.json).
 
 Original composition adoption: [three-model reconciliation](../../changes/2026-09-12-unified-validation-model/change.json).
+
+Prior refinement: [independent parallel tests](../../changes/2026-09-13-independent-parallel-tests/change.json); its selected behavior and evidence retain their own scope.
 
 ## Introduction and Goals
 
@@ -56,7 +58,7 @@ Inputs are canonical skill/resource sources, supported target descriptors, CLI p
 ## Architecture Constraints
 
 
-Canonical skill source remains `skills/`. Target templates remain authored inputs under `scripts/adapter_templates/`. Generated public bodies and archives are not tracked source; `dist/adapters/README.md` and `dist/adapters/manifest.yaml` remain the tracked support surface. Generated output never supplies canonical input to another generator.
+Canonical skill source remains `skills/`. Target templates remain authored inputs under `scripts/adapter_templates/`. Generated public bodies, archives and support manifests are not tracked source. The generated-only support contract below retires the two tracked `dist/adapters/` files after consumer reconciliation. Generated output never supplies canonical input to another generator.
 
 Reuse the existing Python adapter builder/validator and npm package tooling. Preserve archive names, integrity algorithms and supported target descriptors. Builds never read installation-state markers or mutate installed roots. Installation consumes the shared package representation under its own filesystem/diagnostic contract. Closed package target/schema/algorithm values reject before consistency checks.
 
@@ -130,11 +132,13 @@ Canonical source, isolated generation and active installations must remain physi
 | DIST-SR-18 | Required package proof MUST exercise real generated archives, trusted metadata and actual packed-CLI install-only operation for both supported targets, including default conflicts for identical/empty/existing destinations, whole-skill `--force` replacement, unrelated-file/state preservation, and rejection of unsafe destinations in both modes. Local helper success or dry-run alone MUST NOT prove the composed path. Release retains fresh public smoke and publication safeguards; retained integrity and protection against unauthorized data loss MUST survive. |
 | DIST-SR-19 | Fully superseded source documents and the specifically obsolete scripts MUST be removed only after necessary meaning, decisions, current readers and protective proof are reconciled. Mixed sources retain explicit owners. Unknown consumers block affected removal; no blanket archive, test, directory or historical-record deletion is authorized. |
 | DIST-SR-20 | Support withdrawal MUST be disclosed as a public compatibility break and consumed by Release versioning. Failed adoption MUST retain or restore a coherent source/consumer slice without rewriting published versions, old evidence or user state. Design approval alone MUST NOT claim source retirement, implementation or publication. |
+| DIST-SR-21 | Support manifests MUST be derived from canonical skills, approved target descriptors and the requested candidate version inside isolated package output; a tracked dist/adapters manifest MUST NOT supply current candidate truth or be required for validation. Preserve the closed manifest representation, inventory checks and missing/stale/generated-resource failures. Current source MUST contain no generated adapter package fragments. |
+| DIST-SR-22 | Remove dist/adapters/README.md and dist/adapters/manifest.yaml after installation guidance is reconciled into packages/rigorloop/README.md and all current readers use canonical inputs or isolated candidate metadata. Builds MUST NOT recreate tracked support files; --check MUST validate a freshly generated temporary candidate, and persistent archive output MUST require an explicit safe --output-dir. A build without --check or --output-dir MUST reject before writes with corrective usage. |
 
 ## Solution Strategy
 
 
-Keep one package-producing path and one explicitly requested installer path. `build-adapters.py` and `adapter_distribution.py` remain the package owners in code; remove the local mirror alternative rather than redirecting it into `.agents/skills`. Builds use output directories outside active installation roots, reject destinations that overlap canonical sources or active target roots, and never use build-time cleanup as an installer. `--check` performs generation and validation in temporary output, retaining support-manifest consistency without requiring tracked generated bodies.
+Keep one package-producing path and one explicitly requested installer path. `build-adapters.py` and `adapter_distribution.py` remain the package owners in code; remove the local mirror alternative rather than redirecting it into `.agents/skills`. Builds use output directories outside active installation roots, reject destinations that overlap canonical sources or active target roots, and never use build-time cleanup as an installer. `--check` performs generation and validation in temporary output, retaining generated candidate-manifest consistency without requiring tracked support files or bodies.
 
 Retain target descriptors for Codex and Claude Code; withdraw OpenCode from public dispatch and current generation. Retain only independently required historical release-evidence readers with identified consumers. They are separate from installation; neither historical evidence nor old project-state schemas reopen installer compatibility. Current archive production never recreates an OpenCode package; archived-version checks that require the old producer execute against their recorded source instead of a current OpenCode template.
 
@@ -180,7 +184,7 @@ The five spec families below are selected for full source retirement, each with 
 | Adapter invocation R3–13, R15–27, R31–34, R38, R40–42/R44/45/48 | OpenCode current generation/alias/support obligations are superseded by DIST-SR-02/04/17. Exact v0.1.1 smoke, release-note and patch-only decisions remain historical; they do not classify this breaking withdrawal as patch-level. Preserve historical metadata validators and evidence consumers where still exercised. |
 | Archive-install R0–2, R9–13, R25/31, R42, R46–50 | Preserve v0.1.2 compatibility-window and v0.1.3 untracking/public-archive history under DIST-SR-06/17/20; no repeat of completed releases or retroactive invalidation. Named historical release and measurement evidence stays in place. |
 | Archive-install R3–8, R14–24, R26–41 including R15a–d/R41a–g, R43–45/R51 | DIST-SR-03–08/17–19: authored-once, complete supported packages, tracked support only, temporary generation, metadata/checksums/source identity, exact current navigation and release composition. OpenCode population/alias requirements are explicitly superseded. Current package changes must use actual builders and validators. |
-| Archive-install R52–57 | Retain applicable measurement authority at `specs/token-cost-measurement-baseline-and-proposal-scope-preservation.md` and `specs/release-token-friendliness-benchmark-for-skills.md`, with `single-authored-skill-source-generated-output.md` R61–66 for source selection. These v0.1.3 historical report obligations do not introduce a new report/benchmark gate for this initiative. |
+| Archive-install R52–57 | Historical token-measurement/report and benchmark duties are superseded by [Validation VAL-SR-25](validation.md#token-cost-feature-retirement). Preserve independently required canonical-source selection and package integrity, including the applicable non-measurement obligations in `single-authored-skill-source-generated-output.md` R61–66. Original release judgments retain their historical meaning. |
 | Archive-install R58–68 | DIST-SR-19/20 and Validation: no history rewrite, unrelated skill optimization or ledger move; preserved cross-source, metadata, archive and tracked-fragment protection. Concrete allocation belongs to Delivery; no new standalone test specification is created. |
 
 All five sources' unnumbered goals, glossary, inputs/outputs, state/invariants, error/compatibility, privacy, UX/performance, examples, edge cases and acceptance lists follow the corresponding outcomes above. Preserve no-write/dry-run, wrong archive, missing metadata, traversal/symlink, size/count/hash, unknown package-field/value, unmanaged file conflicts, partial failure, proxy secrecy and unsupported-target behavior. Linear archive/tree work and no unrelated-root reads remain quality constraints. OpenCode positive installation/alias examples cease to specify current behavior and gain explicit rejection/preservation outcomes. Their Status, Readiness, Next and Follow-on sections and appended prospective stage-owned lifecycle notices are historical authoring evidence, not current workflow instructions. Workflow, Record Format and Review and Closeout retain current lifecycle/settlement policy; no retired stage-owned format is restored.
@@ -230,9 +234,9 @@ The selected source removal is ten spec/test-spec files and five ADRs. No other 
 | Input domain | DIST-SR-03, DIST-SR-04 | Unknown targets, malformed manifests and missing required resources reject before a valid candidate is claimed. |
 | State/lifecycle | DIST-SR-05, DIST-SR-06 | Generation uses isolated output and does not repair or overwrite active installations; unexecuted checks remain unclaimed. |
 | Identity/authority | DIST-SR-06, DIST-SR-09 | Archive identity, metadata, regular-file membership, algorithm and counts agree; unknown algorithms reject. |
-| Composition/path | DIST-SR-17, DIST-SR-18 | Actual generated archives and the packed CLI demonstrate compatible metadata and installation behavior on both targets. |
+| Composition/path | DIST-SR-17, DIST-SR-18, DIST-SR-21, DIST-SR-22 | Actual generated archives and the packed CLI demonstrate compatible metadata and installation behavior on both targets. With dist/adapters absent, isolated generation, manifest validation and actual packed-CLI install still agree for both targets. |
 | Temporal/retry | DIST-SR-03, DIST-SR-04 | Identical inputs produce identical declared outputs; changed source, generator or package bytes require affected validation. |
-| Failure/recovery | DIST-SR-05, DIST-SR-18 | A failed build/check reports actual partial output and preserves active installations; no fixture replaces the check being claimed. |
+| Failure/recovery | DIST-SR-05, DIST-SR-18, DIST-SR-22 | A failed build/check reports actual partial output and preserves active installations; no fixture replaces the check being claimed. No-output writes reject without recreating tracked files; missing or escaped candidate metadata cannot fall back to a source-tree manifest. |
 | Compatibility/migration | DIST-SR-19, DIST-SR-20 | Current support excludes retired targets while historical evidence remains unchanged; removal follows exact consumer/proof disposition. |
 | External/environment | DIST-SR-06, DIST-SR-18 | Local candidate proof does not establish a public release; Release owns real public identity and fresh installation observations. |
 
@@ -252,3 +256,17 @@ A package-only success is insufficient when the packed CLI consumes stale metada
 ## Next artifacts
 
 Independent Design Review of the exact split, retained source maps and both consumers; Delivery allocates implementation/source retirement and packed-product proof. The hierarchy does not claim runtime adoption or publication.
+
+## Generated-only adapter support
+
+`render_manifest_yaml(version, reports)` already derives the support manifest from portability reports. The tracked copy adds no independent authored inclusion decision: canonical skills and current target descriptors are the inputs. Preserve version/skills/portable/adapters/reason fields and their rejection rules; generate the manifest in the selected candidate output and validate it against actual contents. The archive and installer metadata contracts remain unchanged. `generator.manifest` in candidate artifact reports denotes `manifest.yaml` relative to the declared candidate output, not a required tracked repository path; historical report values remain original facts and cannot authorize current replay.
+
+Retire `_validate_untracked_public_adapter_surface`'s mandatory README/manifest presence requirement, while preserving its actual no-tracked-generated-fragments protection against the tracked source inventory. Current package checks must work when `dist/adapters/` is absent. The old default synchronization behavior is withdrawn: `build-adapters.py --check` uses temporary output, explicit `--output-dir` produces persistent artifacts, and a write invocation without output selection rejects before creating anything. Preserve output containment and active-installation protection. Candidate manifest paths are resolved within their supplied output root; missing, escaped or inconsistent manifests reject, never fall back to a source-tree copy.
+
+Consolidate the adapter README's current two-target installation, dry-run/local-archive, default conflict, force replacement and retired-skill-entry guidance into the existing package installation guide, then update current links. Do not create a replacement adapter documentation directory or duplicate guide. The generic package-generation graph already shows canonical sources feeding isolated artifacts and metadata; eliminating the tracked projection removes an accidental feedback dependency rather than adding a producer. Deployment stays source → isolated output → independently authorized installation/publication.
+
+Reconcile builder/check defaults, report validators, release preparation/candidate code, CLI packaging tests, selectors, contributor guidance and operating references in the same implementation slice. Release owns version-scoped qualification and historical replay retirement. Installation's trusted acquisition, immutable metadata, target roots, conflict behavior and explicit force scope remain unchanged; actual candidate archives and packed CLI installation must prove that composition.
+
+### Token-cost qualification removal
+
+Apply [Validation VAL-SR-25](validation.md#token-cost-feature-retirement) to adapter qualification and generated guidance. Remove token-report imports, file requirements and benchmark dependencies together with their tools. Preserve source identity, authored-source selection, archive inventory/parity, safe destinations and tracked/unignored-runtime detection using independent fixtures. A valid supported package needs no token report; removing measurement does not make an invalid package acceptable. Design selects this outcome; packaging implementation and verification remain required before adoption.

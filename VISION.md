@@ -8,9 +8,7 @@ When the chat ends, teams can lose why a change was made, what was considered, w
 
 RigorLoop exists to make AI-assisted software work traceable, resumable, and reviewable through durable project artifacts.
 
-It turns agent work into durable artifacts.
 The chain runs through proposal, testable system requirements, architecture, verification-aware delivery planning, implementation evidence, review findings, and final verification. External handoff may follow when a project uses one, but it is not part of the required lifecycle.
-The goal is not just faster output.
 The goal is AI work that humans can inspect, trust, continue, and improve.
 
 ## What makes this different
@@ -65,6 +63,8 @@ It is also not for teams that treat specs, tests, architecture, and plans as cer
 RigorLoop commits to making AI-assisted changes easier to inspect, resume, validate, and review.
 A meaningful change exposes its governing source, test obligations, design constraints, implementation rationale, validation commands, reviewer concerns, and handoff state in durable project artifacts rather than agent memory.
 
+Current reliance stays understandable from current artifacts. Retired material remains recoverable through the project’s chosen history without permanent working-tree copies.
+
 ## What it refuses to be
 
 RigorLoop is not a hosted agent runtime, autonomous merge system, generic project-management suite, vendor-specific control plane, or replacement for engineers, reviewers, validation, ownership, and release judgment.
@@ -73,5 +73,6 @@ It refuses to reward code volume without evidence; faster generation matters onl
 
 ## What would prove this wrong
 
-The vision is wrong if reviewers cannot reconstruct a representative change's purpose, requirements, design constraints, tests, validation evidence, current findings, and verified outcome from the current authoritative project artifacts without chat history, Git history, or pull-request access.
+The vision is wrong if reviewers cannot reconstruct a representative current change's purpose, requirements, design constraints, tests, validation evidence, findings, and verified outcome when claimed from current authoritative project artifacts without chat history, Git history, or pull-request access.
+Retired history may require archival access, including Git here. Retirement fails if evidence becomes unrecoverable or current reliance requires historical retrieval.
 It is also wrong when teams routinely ignore the artifacts because they slow delivery without improving review quality, when the public story becomes more attractive but less accurate, or when RigorLoop requires a platform migration before it becomes useful.
