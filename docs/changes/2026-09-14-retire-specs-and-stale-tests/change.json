@@ -1,12 +1,12 @@
 {
   "activity": {
     "owner": {
-      "id": "independent-full-specs-m5-reviewer",
-      "role": "review"
+      "id": "codex-specs-design-author",
+      "role": "design"
     },
-    "reason": "Route: complete M5 population audit and required corrected proof passed; independent milestone assessment required.",
-    "stage": "code-review",
-    "status": "ready"
+    "reason": "Route: M5 independently approved. Reconcile M6 model provenance and current governance with the approved complete retirement before final source deletion; requirements and Delivery allocation remain unchanged.",
+    "stage": "design",
+    "status": "in-progress"
   },
   "applicability": [
     {
@@ -133,6 +133,15 @@
       },
       "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/code-review-m4-corrected.json",
       "reason": "Exact frozen corrected M4 independently assessed against approved scope and current proof; no material milestone finding remains.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-cli-release-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/code-review-m5.json",
+      "reason": "Complete corrected M5 reviewed; route may close milestone and continue M6 under existing authority.",
       "value": "current"
     }
   ],
@@ -289,6 +298,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/code-review-m4-corrected.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/code-review-m5.json"
     }
   ],
   "schema_version": 3,
@@ -360,7 +373,7 @@
         "ENG-SR-15",
         "VAL-SR-26"
       ],
-      "status": "in-progress"
+      "status": "completed"
     },
     {
       "id": "m6",
@@ -373,7 +386,7 @@
         "ENG-SR-15",
         "VAL-SR-27"
       ],
-      "status": "pending"
+      "status": "in-progress"
     }
   ]
 }
