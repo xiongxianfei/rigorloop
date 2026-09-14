@@ -831,14 +831,14 @@ def compose_mode(mode, scratch, *, base='', head='', skip_diff_scoped=False):
             base,head = _git('rev-parse','--verify','HEAD~1'),_git('rev-parse','--verify','HEAD')
         values.update({'<base>':[base],'<head>':[head]})
     else:
-        dirty = _git('diff','--name-only','-z','--diff-filter=ACMRT','HEAD','--','.').split('\0')
+        dirty = _git('diff','--name-only','-z','--no-renames','--diff-filter=ACDMRT','HEAD','--','.').split('\0')
         dirty = [x for x in dirty if x]
         previous = _git('rev-parse','--verify','HEAD~1',optional=True)
         if not skip_diff_scoped:
             if os.environ.get('REVIEW_ARTIFACT_ROOTS'):
                 roots = [x.rstrip('/')+'/change.json' for x in os.environ['REVIEW_ARTIFACT_ROOTS'].split()]
             else:
-                changed = dirty or (_git('diff','--name-only','-z','--diff-filter=ACMRT','HEAD~1','HEAD','--','.').split('\0') if previous else [])
+                changed = dirty or (_git('diff','--name-only','-z','--no-renames','--diff-filter=ACDMRT','HEAD~1','HEAD','--','.').split('\0') if previous else [])
                 roots = _current_roots(changed)
         values.update({'<roots>': roots})
     plans = []

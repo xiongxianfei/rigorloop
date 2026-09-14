@@ -1,230 +1,97 @@
-# RigorLoop Project Map
+# RigorLoop project map
 
-Current design-authoring and composition navigation: [Design](design/skill/design.md) owns unified authoring, model conventions and validation mapping; [System](design/system.md) owns the bounded composition view. Canonical `skills/design/` replaces the two old authors; remaining specs, Level 2 architecture and ADR responsibilities retain their declared contracts. Historical inventories below do not establish the current public author list.
+## Map metadata
 
-## Skill owner navigation
+- Map status: current
+- Scope: repository
+- Baseline: a593d163ce245968694e059130ebe0ac27a58ccc plus M6 source-removal working tree on cleanup/retire-specs-and-stale-tests; exact changed paths and source identities are recorded in the owning cleanup change.
+- Last reviewed: 2026-09-14
+- Coverage: current model hierarchy, canonical skills, CLI, records, validation, packaging, release entrypoints and test/fixture layout.
+- Exclusions: external account configuration, hosted release execution and historical artifact contents.
+- Parent map: not-applicable
+- Known gaps: hosted deployment state is not established by this map.
 
-[Skill](design/skill/skill.md) is the selected common owner under its reviewed implementation/Verify adoption boundary. [Retained Skill Contract](../specs/skill-contract.md) contains the bounded plan/boundary-method remainder; [archive navigation](https://github.com/xiongxianfei/rigorloop/blob/39b7c5cb1f03aa761d2f2493d3474ce985e59d6f/docs/archive/skill-model/2026-09-08/README.md) preserves originals and source-resolved history. The improvement pilot is only proposal/proposal-review; existing follow-ups own remaining adoption. This navigation does not own workflow stage order or grant adoption through model/package availability.
+## Purpose and scope
 
-## Purpose and Scope
+This map orients contributors to the inspected repository. [System](design/system.md) owns model composition; [CONSTITUTION.md](../CONSTITUTION.md) owns governance. This map does not own workflow stage order; Workflow owns it. CLI owns deterministic workflow-context facts, and route owns semantic routing. Exact workflow state belongs to the selected change record. The previous map described retired specs, YAML lifecycle engines, three-target distribution and direct CI gates; the current source paths below correct those claims.
 
-This map describes the current repository shape for contributors and agents who need orientation before architecture, planning, implementation, or review work. It covers the RigorLoop repository as a workflow, validation, skill, adapter, release-evidence, and documentation system.
+## System overview
 
-It does not replace the normative source-of-truth order in `CONSTITUTION.md`, the workflow contract in `specs/rigorloop-workflow.md`, the owning Design/System models and retained architecture detail in `docs/architecture/system/architecture.md`, or change-specific artifacts under `docs/changes/`.
+RigorLoop publishes skill guidance and a command-line executable. [Skill](design/skill/skill.md), [CLI](design/cli/cli.md) and [Engineering](design/engineering/engineering.md) are the three main model owners. Canonical skills live in [skills/](../skills/), and the npm package is [packages/rigorloop/](../packages/rigorloop/). Individual skills work without CLI recording; governed recording uses the executable. No long-running service is present in the inspected runtime. [Explore](../skills/explore/SKILL.md) and [Research](../skills/research/SKILL.md) provide optional discovery support; their conclusions return to the owning stage before changing a decision.
 
-This map orients readers to repository structure and boundaries. It does not own workflow stage order, exact lifecycle artifact placement, or current milestone state.
+## Repository layout
 
-Observed basis: direct inspection of `README.md`, `CONSTITUTION.md`, `AGENTS.md`, `rigorloop workflow-context`, `docs/architecture/system/architecture.md`, selected specs, schemas, scripts, workflows, tests, adapter support files, and repository layout.
-
-## Map Metadata
-
-- Last updated: 2026-09-04
-- Observed basis: current repository tree plus the compact current-state preactivation candidate, route and CLI workflow-context cutover, and optional Explore/Research artifact roots.
-- Covered areas: repository layout, governance and workflow surfaces, lifecycle and optional discovery artifacts, canonical skills, validation and generation scripts, adapter support, release evidence, tests, CI, and known architecture-orientation risks.
-- Known gaps: this map summarizes the canonical architecture package but does not duplicate it; narrow changes still need the governing spec, active plan, matching test spec, and touched files.
-- Refresh trigger: refresh or bypass this map with a no-map rationale when the relied-on area is absent, contradicted by current repository paths, or materially affected by recent changes.
-
-## System Overview
-
-RigorLoop is a repository-local workflow kit, not a deployed service. Its main product is a spec-driven, test-driven workflow for AI-assisted software delivery. Current adopted work uses `rigorloop-records-v2` JSON records through primary targeted CLI commands. The earlier compact candidate remains historical evidence. It is designed to work without Git history and without PR access; external delivery remains optional.
-
-Observed major containers:
-
-- Governance and workflow guidance: `CONSTITUTION.md`, `AGENTS.md`, the current workflow spec, and CLI workflow context.
-- Lifecycle artifacts and optional support: proposals, specs, test specs, architecture, ADRs, plans, review records, change metadata, and verify reports under `docs/` and `specs/`; explicitly invoked Explore and Research outputs live separately under `docs/explorations/` and `docs/research/` and do not own lifecycle decisions.
-- Canonical skills: stage and support skills under `skills/<skill>/SKILL.md`.
-- Validation and generation scripts: Python and shell tooling under `scripts/`.
-- Adapter support surface: tracked install guidance and manifest under `dist/adapters/`; generated adapter bodies are release output for `v0.1.3` and later.
-- Release evidence: `docs/releases/`, `docs/reports/adapter-artifacts/`.
-- Fixtures and regression tests: `tests/fixtures/`, and `scripts/test-*.py`.
-
-```mermaid
-flowchart LR
-  Contributor[Contributor or agent] --> Governance[CONSTITUTION.md / AGENTS.md / workflow spec]
-  Contributor --> Context[rigorloop workflow-context]
-  Contributor --> Lifecycle[docs/ and specs/ lifecycle artifacts]
-  Lifecycle --> Skills[skills/*/SKILL.md]
-  Skills --> Scripts[scripts validators and generators]
-  Scripts --> Evidence[validation, release, and adapter evidence]
-  Scripts --> Adapters[dist/adapters metadata and generated release archives]
-  Evidence --> Reviewer[Human reviewer / PR]
-```
-
-## Repository Layout
-
-| Path | Responsibility |
+| Path | Observed responsibility |
 | --- | --- |
-| `CONSTITUTION.md` | Highest-priority repository governance below external runtime instructions; defines source-of-truth order and cross-cutting rules. |
-| `AGENTS.md` | Concise agent operating guide that points to governing artifacts and repository defaults. |
-| `README.md` | Public project overview, quick start, adapter-install summary, and validation-command orientation. |
-| `VISION.md` | Canonical project vision used by proposals and README generated vision block. |
-| `rigorloop workflow-context` | Read-only deterministic project and selected-change workflow facts, including resolved artifact locations and provenance. |
-| `docs/project-map.md` | Living repository orientation map. It orients; it does not own deferred execution. |
-| `docs/proposals/` | Date-prefixed proposal artifacts. |
-| `docs/explorations/` | Standalone, explicitly invoked Explore artifacts that expand a decision space and hand options to a named owner without approving them. |
-| `docs/research/` | Standalone, explicitly invoked Research artifacts that reduce bounded decision uncertainty and hand sourced findings to a named owner without approving them. |
-| `specs/` | Behavior contracts and matching `.test.md` test specs. `specs/README.md` states that specs are for behavior-changing work that benefits from explicit contracts. |
-| `docs/architecture/system/` | Mixed retained architecture detail and historical diagrams; selected method/composition ownership is in Design/System. |
-| `docs/architecture/*.md` | Historical or legacy architecture records retained after normalization. |
-| `docs/adr/` | Durable architecture decision records. |
-| `docs/plans/` and `docs/plan.md` | Stable execution-plan bodies and their navigation index. |
-| `docs/changes/<change-id>/` | Contract-selected change state. Compact changes use `change.yaml`, stable current review records, conditional material decisions and evidence, and success-only Verify report; registered historical changes retain their prior shape. |
-| `docs/learn/` | Learn sessions and durable topic notes. |
-| `docs/follow-ups.md` | Optional unowned cross-change follow-up surface when routing rules require it. |
-| `docs/releases/<version>/` | Authored release metadata and release notes. |
-| `docs/reports/` | Adapter artifact metadata and retained run evidence. |
-| `skills/` | Only authored skill source, including the public `route` skill. |
-| `.codex/skills/` | Ignored local runtime state; not an authored source. |
-| `scripts/` | Repository-owned validators, selectors, generators, release checks and tests. |
-| `scripts/adapter_templates/` | Thin adapter entrypoint templates for Codex, Claude Code, and opencode. |
-| `schemas/` | JSON schemas for change metadata and skill metadata. |
-| `dist/adapters/` | Tracked adapter install README and support manifest; no generated skill bodies for `v0.1.3` and later. |
-| `.github/workflows/` | Thin GitHub Actions wrappers for CI and release. |
-| `tests/fixtures/` | Fixture trees used by Python regression tests. |
-| `templates/` | Authored templates for architecture, ADRs, diagrams, review-resolution, and shared skill policy blocks. |
+| [VISION.md](../VISION.md), [AGENTS.md](../AGENTS.md), [CONSTITUTION.md](../CONSTITUTION.md) | Project direction, operating guidance and governing principles. |
+| [docs/design/](design/) | Current behavioral and technical contracts, decisions and acceptance intent. |
+| [docs/proposals/](proposals/), [docs/plans/](plans/), [docs/plan.md](plan.md) | Direction, stable delivery intent and plan navigation. |
+| [docs/changes/](changes/) | Current v3 stores and unchanged historical evidence; filename alone does not imply current runtime support. |
+| [skills/](../skills/), [templates/](../templates/) | Authored skill packages, scaffolds and shared projection inputs. |
+| [packages/rigorloop/dist/](../packages/rigorloop/dist/) | Tracked executable JavaScript, runtime schemas and bundled installation metadata; no separate src tree exists. |
+| [scripts/](../scripts/), [schemas/](../schemas/) | Repository validation, generation, release tooling and schema resources. |
+| [tests/fixtures/](../tests/fixtures/), [scripts/fixtures/](../scripts/fixtures/), [packages/rigorloop/test/](../packages/rigorloop/test/) | Static fixtures, executable cases and owned dynamic fixture builders. |
+| [dist/adapters/](../dist/adapters/) | Tracked support README and manifest; generated public skill bodies are archive output. |
+| [docs/releases/](releases/), [docs/reports/](reports/) | Release intent/notes, profiles and retained operational evidence. |
+| [docs/learn/](learn/), [docs/research/](research/), [docs/explorations/](explorations/) | Learning and optional standalone investigation artifacts. |
 
-## Runtime Flow
+The retired repository specs and mixed architecture/ADR trees are recoverable from Git. Their current responsibilities are covered by the Designs and the cleanup's [source disposition](changes/2026-09-14-retire-specs-and-stale-tests/source-disposition.md).
 
-RigorLoop has no long-running server, request router, database worker, or deployed runtime in this repository. Runtime behavior is command-driven:
+## Runtime flow
 
-1. Contributors and agents read governing artifacts using the source-of-truth order in `CONSTITUTION.md`.
-2. Non-trivial changes move through the workflow chain documented in `specs/rigorloop-workflow.md`; route consumes CLI context for deterministic project facts.
-3. Canonical stage skills under `skills/` guide individual lifecycle actions.
-4. Repository-owned scripts validate artifacts, select checks, generate adapter output, and verify release evidence.
-5. GitHub Actions call repository scripts instead of duplicating validation logic.
+Statically traced: [rigorloop.js](../packages/rigorloop/dist/bin/rigorloop.js) dispatches installation, recording, discovery and diagnostic commands. Installation uses [installer-replacement.js](../packages/rigorloop/dist/lib/installer-replacement.js); command logging and rendering are separate modules. Recording uses the package-local record-store modules and schemas. The CLI constructs and persists explicit actor decisions; [route](../skills/route/SKILL.md) supplies semantic routing.
 
-Important command entry points:
+Repository validation enters through [ci.sh](../scripts/ci.sh), uses [validation_selection.py](../scripts/validation_selection.py) for trusted check selection and [validation_execution.py](../scripts/validation_execution.py) for bounded execution. [build-adapters.py](../scripts/build-adapters.py) generates archives from canonical skills and thin templates; [boundary-first-resources.yaml](../scripts/boundary-first-resources.yaml) declares shared projection inputs.
 
-- `bash scripts/ci.sh`: direct Gate A/B/C plus governance wrapper for PR and main; selected-check compatibility wrapper for local, explicit, and release; legacy broad-smoke entry point.
-- `python scripts/select-validation.py`: CLI around `scripts/validation_selection.py` for changed-path classification and stable check selection.
-- `python scripts/validate-skills.py` and `python scripts/test-skill-validator.py`: canonical skill validation and regression checks.
-- `python scripts/build-skills.py --check`: validates generated local Codex mirror output from `skills/` using temporary output by default.
-- `python scripts/build-adapters.py`: generates or checks public adapter output and release archives.
-- `bash scripts/release-verify.sh <tag>`: release gate that runs skill, adapter, release metadata, and security checks for supported release tags.
+## Data flow
 
-## Data Flow
+Current governed storage is rigorloop-records-v3: change.json plus registered review, evidence, decision and Verify JSON records. [Records](design/cli/records.md) owns representation; [CLI](design/cli/cli.md) owns safe queries and writes. Proposals, Designs and plans remain separate engineering subjects with exact identities. Historical stores are excluded from ordinary discovery without executing old validators; malformed current stores remain errors.
 
-The repository data model is artifact-based:
+Skill frontmatter and Markdown resources become generated ZIP archives. The packed npm tarball contains the executable and its allowlisted runtime inputs. [release_candidate.py](../scripts/release_candidate.py) binds prepared source, profile and artifact identities; qualification checks real candidate bytes before approval or execution.
 
-- Governance data: Markdown in `CONSTITUTION.md`, `AGENTS.md`, `VISION.md`, and current workflow specifications.
-- Lifecycle state: `docs/changes/<change-id>/change.yaml` owns mutable artifact settlement, planned-work progress, blockers, routing, and final closeout.
-- Governed intent: proposals, specs, test specs, architecture records, ADRs, and plan bodies remain stable stage-owned content linked to their owning change record.
-- Optional discovery support: Explore artifacts under `docs/explorations/` and Research artifacts under `docs/research/` record options or evidence for a named owning stage; the owner must adopt any conclusion that changes its governed decision.
-- Plan state: `docs/plan.md` is navigation and concrete `docs/plans/*.md` files carry stable milestone definitions and execution intent; current handoff state lives in change metadata.
-- Change metadata: YAML-like `docs/changes/<change-id>/change.yaml`, validated against `schemas/change.schema.json` plus semantic checks in `scripts/change_metadata_semantics.py`.
-- Review data: `docs/changes/<change-id>/reviews/*.md`, `review-log.md`, and conditional `review-resolution.md`, parsed by `scripts/review_artifact_validation.py`.
-- Skill metadata and bodies: frontmatter plus Markdown in `skills/*/SKILL.md`, validated against `schemas/skill.schema.json` by `scripts/skill_validation.py`.
-- Adapter metadata: `dist/adapters/manifest.yaml` records portable skill support and opencode command aliases; adapter artifact metadata is under `docs/reports/adapter-artifacts/releases/`.
-- Release metadata: `docs/releases/<version>/release.yaml` and tracked `release-notes.md`.
+## External boundaries
 
-Serialization boundaries are intentionally simple: Markdown, YAML-like repository files parsed by local scripts, JSON Schema files, JSON output from the validation selector, and ZIP archives generated for adapter release assets.
+[CI](../.github/workflows/ci.yml) and [release automation](../.github/workflows/release.yml) use GitHub Actions. Release tooling interacts with GitHub release assets and npm under separate approval. Installation supports Codex and Claude archives through verified metadata and destination checks. Logs are local diagnostics, not workflow evidence. Account credentials, live release state and target-agent behavior were not inspected for this map.
 
-```mermaid
-flowchart TD
-  Specs[specs/*.md and specs/*.test.md] --> Plans[docs/plans/*.md]
-  Proposals[docs/proposals/*.md] --> Specs
-  Plans --> Changes[docs/changes/*/change.yaml and evidence]
-  Skills[skills/*/SKILL.md] --> BuildSkills[scripts/build-skills.py]
-  Skills --> BuildAdapters[scripts/build-adapters.py]
-  BuildAdapters --> AdapterManifest[dist/adapters/manifest.yaml]
-  BuildAdapters --> ReleaseArchives[release-output adapter archives]
-  Changes --> CI[scripts/ci.sh direct PR/main gates]
-  Changes --> SelectValidation[scripts/select-validation.py local/explicit/release compatibility]
-  SelectValidation --> CI
-  ReleaseMetadata[docs/releases/*] --> ReleaseVerify[scripts/release-verify.sh]
-```
+## Test map
 
-## External Boundaries
+Python unittest entrypoints are scripts/test-*.py; the release suite also imports release_candidate_tests.py, release_coordination_tests.py, release_execution_tests.py and release_evidence_tests.py. Node tests and builders live in packages/rigorloop/test/. The [M5 audit](changes/2026-09-14-retire-specs-and-stale-tests/m5-test-maintenance.json) records the complete reviewed population and generated domains; it is change evidence, not a permanent test registry.
 
-Observed external boundaries:
+Current groups protect skills/resources, portable boundary inputs, documentation, selectors/execution, v3 records/discovery, installation/privacy, archives/npm and actual release candidates. Retired lifecycle/review engines and exclusive fixtures are absent. [validate-governed-lifecycle-cli.py](../scripts/validate-governed-lifecycle-cli.py) validates current discovery or exact Git snapshots; [release_evidence.py](../scripts/release_evidence.py) retains the release-owned checklist.
 
-- Git and GitHub: pull requests, push/tag workflows, GitHub Releases, and `gh release create` in `.github/workflows/release.yml`.
-- Python 3.11 in hosted CI: `.github/workflows/ci.yml` installs Python 3.11 and runs `scripts/ci.sh`.
-- Agent runtimes: Codex, Claude Code, and opencode adapter packages are generated from canonical skills and adapter templates.
-- Shell tools: validation scripts use Git, Bash, Python standard library, and archive tooling through local scripts.
+## CI and release map
 
-No database, network service API, hosted telemetry service, package registry dependency, or application framework is present in the inspected repository. There is no `pyproject.toml`, `package.json`, requirements file, Makefile, or setup file at the repository root.
-
-## Test Map
-
-Regression tests are Python `unittest`-style scripts under `scripts/test-*.py`:
-
-- Skill validation: `scripts/test-skill-validator.py`, `scripts/test-build-skills.py`, and fixtures under `tests/fixtures/skills/`.
-- Adapter generation, validation, release archive behavior, and portability: `scripts/test-adapter-distribution.py` plus fixtures under `tests/fixtures/adapters/`.
-- Validation selector and CI wrapper behavior: `scripts/test-select-validation.py`.
-- Artifact lifecycle validation: `scripts/test-artifact-lifecycle-validator.py` plus `tests/fixtures/artifact-lifecycle/`.
-- Review artifact validation: `scripts/test-review-artifact-validator.py` plus `tests/fixtures/review-artifacts/`.
-- Change metadata validation: `scripts/test-change-metadata-validator.py` plus `tests/fixtures/change-metadata/`.
-
-Test specs live beside feature specs as `specs/<feature>.test.md`; the repository currently has many historical and active specs under `specs/`.
-
-No application unit/integration/e2e test tree exists because there is no deployed application. Smoke-style proof is repository validation and release smoke evidence rather than browser or service smoke tests.
-
-## CI / Release Map
-
-CI is thin by design:
-
-- `.github/workflows/ci.yml` runs on pull requests and pushes to `main`, installs Python 3.11, and delegates to `bash scripts/ci.sh --mode pr` or `--mode main`.
-- `scripts/ci.sh` defaults to broad smoke for legacy compatibility. PR and main use a direct deterministic gate graph; local, explicit, and release retain selector compatibility.
-- `scripts/validation_selection.py` owns stable check IDs such as `skills.validate`, `artifact_lifecycle.validate`, `review_artifacts.validate`, `change_metadata.validate`, `release.validate`, and `broad_smoke.repo`.
-- `.github/workflows/release.yml` runs on `v*` tags, delegates release readiness to `scripts/release-verify.sh`, then creates a GitHub release from tracked release notes and files under `release-output/`.
-
-Common local verification commands:
+Configured commands:
 
 ```bash
-python scripts/validate-skills.py
-python scripts/test-skill-validator.py
-python scripts/build-skills.py --check
-python scripts/select-validation.py --mode explicit --path <path>
-bash scripts/ci.sh --mode explicit --path <path>
-bash scripts/ci.sh --mode pr --base <sha> --head <sha>
-python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path <path>
-python scripts/validate-change-metadata.py docs/changes/<change-id>/change.yaml
-python scripts/validate-review-artifacts.py --mode closeout docs/changes/<change-id>
+bash scripts/ci.sh --mode local
+bash scripts/ci.sh --mode pr --base BASE --head HEAD
+npm test --prefix packages/rigorloop
+python scripts/build-adapters.py --check
 ```
 
-Release-oriented commands:
+The CI workflow selects PR-range checks or full main gates, then separately proves real executor overlap. Python and Node cases share the configured worker budget. Unknown paths or invalid preflight scope fail closed. Release automation calls release-coordinator.py; prepared-candidate qualification reaches release-verify.sh with the exact candidate directory. This map does not authorize publication.
 
-```bash
-bash scripts/release-verify.sh <tag>
-python scripts/build-adapters.py --version <tag> --output-dir <release-output-dir>
-python scripts/validate-release.py --version <tag> --release-output-dir <release-output-dir>
-```
+## Architecture rules observed
 
-## Architecture Rules Observed
+[AGENTS.md](../AGENTS.md) keeps skills/ as the only authored skill source and generated adapter bodies out of tracked source. [Workflow](design/skill/workflow.md) separates stable plans from mutable records. [Assessment](design/skill/assessment.md) requires independent whole-change review and distinct final Verify. Current operations do not fetch retired contracts from Git; historical links identify provenance only.
 
-- Source-of-truth order is explicit and starts with `CONSTITUTION.md`.
-- Canonical authored workflow content lives in `docs/`, `specs/`, `skills/`, `schemas/`, `scripts/`, and `templates/`.
-- `skills/` is the only authored skill source; generated `.codex/skills/` is local runtime state.
-- For `v0.1.3` and later, generated public adapter skill bodies are release archives, not tracked source under `dist/adapters/`.
-- GitHub Actions stay thin and delegate validation to repository-owned scripts.
-- Mutable lifecycle state lives in the owning change record, not in governed artifacts, PR state, or chat.
-- Concrete plan bodies live under `docs/plans/`; `docs/plan.md` is navigation only.
-- Formal lifecycle reviews create durable change-local review evidence.
-- `review-resolution.md` is conditional and reserved for material findings or blocking outcomes that require dispositions.
-- The CLI owns deterministic workflow-context and artifact-location resolution; `route` owns semantic routing decisions.
-- `project-map` orients and may record risks/open questions, but it does not own deferred execution or act as a backlog.
-- Architecture work uses the canonical architecture package and ADRs for durable design decisions.
-- Validation output should be selected and bounded; broad smoke runs only when an authoritative trigger requires it.
+## Risk areas
 
-## Decision Notes
+Historical records deliberately preserve old names and approvals. Consult current owners before relying on them. Snapshot validation and candidate qualification have distinct Git/object and filesystem boundaries; their dedicated tests protect those limits. A source or fixture edit can invalidate earlier validation even when its top-level command is unchanged.
 
-- Architecture orientation index: do not add another broad architecture summary by default. Add a thin index, preferably `docs/architecture/system/README.md` or a short top section in `docs/architecture/system/architecture.md`, only if contributors repeatedly need faster lookup.
-- Project-map freshness: this map uses minimal metadata and contradiction-based refresh triggers. Calendar thresholds, mandatory periodic refresh, a formal project-map review stage, and a full project-map lifecycle state machine remain deferred.
-- Selector coverage: `docs/project-map.md` and `docs/project-map/**.md` are intended to route as `living-reference/project-map`, not as active lifecycle artifacts.
-- Release evidence: keep release evidence in existing roots. `docs/releases/<version>/` owns release metadata and notes, `docs/reports/adapter-artifacts/releases/<version>.yaml` owns generated archive metadata and checksums.
+## Open questions
 
-## Risk Areas
+External account and hosted release state are outside this repository map's scope. No unresolved repository-orientation question was found in the inspected areas.
 
-- Workflow policy spans `CONSTITUTION.md`, `specs/rigorloop-workflow.md`, stage skills, and historical change artifacts; deterministic project facts are centralized in CLI context. The source-of-truth order reduces conflict risk, but stale lower-priority guidance remains possible.
-- Current plan and handoff state is centralized in change metadata. Reviewers still compare it with stable plan intent and stage-owned evidence, but plans and indexes are not writable state projections.
-- Adapter release behavior has moved across compatibility windows (`v0.1.1`, `v0.1.2`, `v0.1.3`). Current rules are documented, but older plans and historical artifacts may describe prior tracked adapter package behavior.
-- Some validators use lightweight custom parsers for Markdown or YAML-like files. This keeps dependencies low but raises maintenance risk when artifact shapes grow.
-- The canonical architecture package is broad and historical. It is useful for orientation, but narrow changes should still read the current governing spec, plan, and touched files instead of relying only on architecture prose.
-- `docs/project-map.md` was absent before this map. Future users must refresh or bypass this map with a no-map rationale if it becomes stale, contradicted, or missing the relied-on area.
+## Evidence trail
 
-## Open Questions
+| Evidence | Type | Result |
+| --- | --- | --- |
+| packages/rigorloop/package.json and dist/bin/rigorloop.js | source | Public package boundary and command dispatch. |
+| scripts/validation_selection.py and validation_execution.py | source | Current catalog and shared bounded executor. |
+| .github/workflows/ci.yml and release.yml | source | Hosted entrypoints and separate operational boundaries. |
+| M4 validation evidence | executed command | Local plus broad CI, Node and current record/release proofs passed on the recorded M4 subjects. |
+| M5 test-maintenance evidence | source | Current test/fixture membership, generators and retained protective purposes. |
 
-- Which parts of the broad canonical architecture package, if any, repeatedly need a thin orientation index?
-- What evidence would justify calendar freshness thresholds or a formal project-map revision workflow later?
-- Does a future release spec need to sharpen the split between maintainer smoke and generated archive metadata, or are the existing paths plus clearer ownership enough?
+Earlier test passes are scoped evidence, not a claim that this map verifies the final cleanup change.

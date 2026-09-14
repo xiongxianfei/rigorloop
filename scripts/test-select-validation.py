@@ -1516,13 +1516,14 @@ raise SystemExit({exit_code})
         self.assertIn("documentation_prose.regression", selected_ids(payload))
 
     def test_contributing_guidance_routes_without_manual_block(self) -> None:
-        result = self.select(["CONTRIBUTING.md"])
+        result = self.select(["CONTRIBUTING.md", ".github/pull_request_template.md"])
         payload = result.to_json_dict()
 
         self.assertEqual(result.status, "ok")
         self.assertFalse(payload["unclassified_paths"])
         self.assertFalse(payload["blocking_results"])
-        self.assertIn({"path": "CONTRIBUTING.md", "category": "contributor-guidance"}, payload["classified_paths"])
+        for path in ("CONTRIBUTING.md", ".github/pull_request_template.md"):
+            self.assertIn({"path": path, "category": "contributor-guidance"}, payload["classified_paths"])
         self.assertTrue(
             {
                 "selector.regression",
@@ -1660,8 +1661,16 @@ raise SystemExit({exit_code})
 
     def test_mixed_skill_and_spec_scope_each_check_to_its_owner(self) -> None:
         skill_path = "skills/design/SKILL.md"
-        spec_path = "specs/progressive-boundary-first-skill-guidance.md"
-        payload = self.select([skill_path, spec_path]).to_json_dict()
+        spec_path = "specs/customer-feature.md"
+        # Portable explicitly selected customer contracts remain supported;
+        # this proof must not read a retired repository contract.
+        repo = self.make_git_repo()
+        for path in (skill_path, spec_path):
+            target = repo / path
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_text("# Explicit customer input\n")
+        self.git_output(repo, "add", ".")
+        payload = select_validation(SelectionRequest(mode="explicit", paths=(skill_path, spec_path), repo_root=repo)).to_json_dict()
 
         self.assertEqual(payload["status"], "ok")
         self.assertIn("skills.validate", selected_ids(payload))
@@ -3272,6 +3281,46 @@ raise SystemExit({exit_code})
             {"adapters.regression", "adapters.drift", "adapters.validate"}.issubset(selected_ids(payload))
         )
         self.assertFalse(payload["blocking_results"])
+
+    def test_git_discovery_includes_deleted_and_both_renamed_paths(self):
+        # TG-08: actual Git status/ranges, including a renamed unknown source.
+        # Neither an unknown deletion nor its known destination may disappear.
+        for unknown in (False, True):
+            with self.subTest(unknown=unknown):
+                repo = self.make_git_repo()
+                deleted = 'specs/retired.md'
+                before = 'unknown-input.xyz' if unknown else 'tests/fixtures/adapters/old/SKILL.md'
+                after = 'tests/fixtures/adapters/new/SKILL.md'
+                unknown_deleted = 'unknown-deleted.xyz'
+                original = (deleted, before, unknown_deleted) if unknown else (deleted, before)
+                for path in original:
+                    target = repo / path
+                    target.parent.mkdir(parents=True, exist_ok=True)
+                    target.write_text('# Stable historical content\n' * 10)
+                self.git_output(repo, 'add', '.')
+                self.git_output(repo, 'commit', '-m', 'original inputs')
+                base = self.git_output(repo, 'rev-parse', 'HEAD')
+                (repo / deleted).unlink()
+                if unknown:
+                    (repo / unknown_deleted).unlink()
+                (repo / after).parent.mkdir(parents=True, exist_ok=True)
+                (repo / before).rename(repo / after)
+                for stage in ('unstaged', 'staged', 'committed'):
+                    with self.subTest(stage=stage):
+                        if stage == 'staged':
+                            self.git_output(repo, 'add', '-A')
+                        elif stage == 'committed':
+                            self.git_output(repo, 'commit', '-m', 'retire and rename')
+                        args = ('--mode', 'pr', '--base', base, '--head', 'HEAD') if stage == 'committed' else ('--mode', 'local')
+                        result = run_selector(*args, cwd=repo)
+                        payload = parse_stdout(result)
+                        self.assertEqual(set(payload['changed_paths']), set(original) | {after})
+                        self.assertEqual(payload['status'], 'blocked' if unknown else 'ok', payload)
+                        self.assertEqual(set(payload['unclassified_paths']), {before, unknown_deleted} if unknown else set())
+                        if unknown:
+                            self.assertNotEqual(result.returncode, 0)
+                        else:
+                            self.assertIn('governed_lifecycle_cli_wrapper.test', selected_ids(payload))
 
     def test_pr_mode_routes_spec_read_retirement_deletions(self) -> None:
         repo = self.make_git_repo()
@@ -5074,15 +5123,6 @@ raise SystemExit(3)
 
     def test_workflow_guidance_aligns_with_validation_layering_contract(self) -> None:
         expectations = {
-            "specs/rigorloop-workflow.md": [
-                "targeted proof",
-                "broad smoke",
-                "manual proof",
-                "scripts/select-validation.py",
-                "broad_smoke_required",
-                "skills.validate",
-                "broad_smoke.repo",
-            ],
             "skills/implement/SKILL.md": [
                 "targeted proof",
                 "broad smoke",
