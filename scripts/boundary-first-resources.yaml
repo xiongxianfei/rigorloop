@@ -2,7 +2,7 @@ schema_version: 1
 contract_version: boundary-first-v1
 resources:
   - id: compact-core
-    source: specs/references/boundary-first-method-v1.md
+    source: templates/shared/boundary-first-method-v1.md
     target: references/boundary-first-method-v1.md
     consumers:
       - route
@@ -14,13 +14,13 @@ resources:
       - code-review
       - verify
   - id: feature-authoring
-    source: specs/references/boundary-first-feature-authoring-v1.md
+    source: templates/shared/boundary-first-feature-authoring-v1.md
     target: references/boundary-first-feature-authoring-v1.md
     consumers:
       - design
       - design-review
   - id: proof
-    source: specs/references/boundary-first-proof-v1.md
+    source: templates/shared/boundary-first-proof-v1.md
     target: references/boundary-first-proof-v1.md
     consumers:
       - delivery-review

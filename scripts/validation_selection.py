@@ -2008,7 +2008,7 @@ def _path_category(path: str) -> str | None:
             or (path.startswith("packages/rigorloop/test/record-store-") and path.endswith(".test.js"))
             or path in {"packages/rigorloop/test/helpers/record-store-launcher.mjs", "packages/rigorloop/test/helpers/recording-query-launcher.mjs", "packages/rigorloop/test/helpers/record-store-interactions.mjs", "packages/rigorloop/test/helpers/record-store-tokenize.py", "packages/rigorloop/test/fixtures/recording-interactions/README.md"}):
         return "explicit-recording"
-    if path == "specs/boundary-first-activation.yaml":
+    if path in {"specs/boundary-first-activation.yaml", "scripts/boundary-first-resources.yaml"}:
         return "lifecycle"
     if path == "README.md":
         return "readme"
@@ -2229,6 +2229,8 @@ def _is_boundary_first_surface(path: str) -> bool:
     return (
         path == "specs/boundary-first-activation.yaml"
         or path == "specs/boundary-first-resources.yaml"
+        or path == "scripts/boundary-first-resources.yaml"
+        or path.startswith("templates/shared/boundary-first-")
         or path == "specs/references/boundary-first-method-v1.md"
         or (path.startswith("specs/") and path.endswith(".md"))
         or (
@@ -2257,6 +2259,10 @@ def _is_boundary_first_reference_surface(path: str) -> bool:
     return (
         path in {
             "specs/boundary-first-resources.yaml",
+            "scripts/boundary-first-resources.yaml",
+            "templates/shared/boundary-first-method-v1.md",
+            "templates/shared/boundary-first-feature-authoring-v1.md",
+            "templates/shared/boundary-first-proof-v1.md",
             "specs/references/boundary-first-method-v1.md",
         }
         or path.endswith("/references/boundary-first-method-v1.md")

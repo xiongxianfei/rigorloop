@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate boundary-first records and the durable activation baseline."""
+"""Validate current models or explicitly selected feature/proof records."""
 
 from __future__ import annotations
 
@@ -7,13 +7,8 @@ import argparse
 import json
 from pathlib import Path
 
-from boundary_first_validation import (
-    ACTIVATION_RECORD,
-    rollback_package_selection,
-    validate_activation,
-    validate_changed_spec,
-)
-
+from boundary_first_validation import validate_changed_spec, validate_repository_examples
+from model_layout import PROJECT_MODEL_PATHS
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
@@ -22,56 +17,32 @@ def main() -> int:
     parser.add_argument("--path", action="append", default=[])
     args = parser.parse_args()
     root = Path(args.root).resolve()
-    model_only = bool(args.path) and all(path.startswith("docs/design/") for path in args.path)
-    issues = [] if model_only else list(validate_activation(root))
-    for path in args.path:
+    paths = sorted(set(args.path or PROJECT_MODEL_PATHS.values()))
+    issues = []
+    for path in paths:
         issues.extend(validate_changed_spec(root, path))
+    examples = ()
+    if not args.path:
+        examples, example_issues = validate_repository_examples(root)
+        issues.extend(example_issues)
     # This one diagnostic is a semantic obligation, not a structural error.
     # All other (including unknown) diagnostics continue to fail closed.
     review_required = [
         {**issue.as_dict(), "owner": "design-review"}
-        for issue in issues if issue.code == "BFR-GRANDFATHERED-REVIEW"
+        for issue in issues if issue.code == "BFR-ADOPTION-REVIEW"
     ]
-    issues = [issue for issue in issues if issue.code != "BFR-GRANDFATHERED-REVIEW"]
+    issues = [issue for issue in issues if issue.code != "BFR-ADOPTION-REVIEW"]
     if issues:
         print(json.dumps({"status": "failed", "issues": [issue.as_dict() for issue in issues], "review_required": review_required}, sort_keys=True))
         return 1
-    if model_only:
-        print(json.dumps({"status": "passed", "paths": sorted(args.path), "validation": "structure-and-references-only"}, sort_keys=True))
-        return 0
-    output: dict[str, object] = {
+    output = {
         "status": "review-required" if review_required else "passed",
         "validation": "structure-and-references-only",
         "review_required": review_required,
-        "activation": "validated",
-        "paths": sorted(args.path),
+        "paths": paths,
+        "examples": list(examples),
+        "example_validation": "model-document-structure-and-json-syntax",
     }
-    activation_data = json.loads((root / ACTIVATION_RECORD).read_text(encoding="utf-8"))
-    output["snapshot"] = activation_data["state"]
-    output["release_intent"] = activation_data["activating_release"]
-    if activation_data.get("state") == "active":
-        selection, selection_issues = rollback_package_selection(root)
-        if selection_issues or selection is None:
-            print(
-                json.dumps(
-                    {
-                        "status": "failed",
-                        "issues": [issue.as_dict() for issue in selection_issues],
-                        "review_required": review_required,
-                    },
-                    sort_keys=True,
-                )
-            )
-            return 1
-        output["rollback_release"] = selection.release
-        output["rollback_artifacts"] = [
-            {
-                "adapter": artifact.adapter,
-                "archive": artifact.archive,
-                "sha256": artifact.sha256,
-            }
-            for artifact in selection.artifacts
-        ]
     print(json.dumps(output, sort_keys=True))
     return 0
 
