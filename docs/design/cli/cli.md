@@ -130,9 +130,9 @@ The [v3 stored schema](../../../schemas/rigorloop-records-v3.schema.json), [targ
 
 ### Examples
 
-The [CLI example index](examples/README.md) separates current v3 public messages, internal observation-digest examples and historical v2 messages. Current examples cover complete recording, explanation updates/projections, finding correction and early-error dispatch; each declares its own starting state and stored-record owner.
+The [CLI example index](examples/README.md) indexes current v3 public messages and internal observation-digest examples, with recoverable provenance for retired historical v2 messages. Current examples cover complete recording, explanation updates/projections, finding correction and early-error dispatch; each declares its own starting state and stored-record owner.
 
-The [observation freshness example](examples/observation-freshness/README.md) supplies internal digest inputs where historical subject A differs from observed B and C while revision and diagnostics remain identical (CLI-SR-14/20). Internal observation schema 2 is not a retired stored record. Digests are synthetic; examples are not runtime evidence or workflow approval. Historical v2 request/response files remain unchanged and do not document supported commands. Stored representations belong to [Record Format](records.md#examples), and actor sequencing to [Workflow](../skill/workflow.md#examples).
+The [observation freshness example](examples/observation-freshness/README.md) supplies internal digest inputs where historical subject A differs from observed B and C while revision and diagnostics remain identical (CLI-SR-14/20). Internal observation schema 2 is not a retired stored record. Digests are synthetic; examples are not runtime evidence or workflow approval. Historical v2 request/response files retain their original bytes and meaning in Git; they do not document supported commands. Stored representations belong to [Record Format](records.md#examples), and actor sequencing to [Workflow](../skill/workflow.md#examples).
 
 ## Architecture Constraints
 

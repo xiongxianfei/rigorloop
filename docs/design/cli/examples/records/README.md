@@ -1,6 +1,6 @@
 # Stored-record examples
 
-These examples belong to [Record Format](../../records.md). V2 examples are non-operational historical illustrations; their stored validators and continuation commands are retired. V3 examples describe the supported stored contract and can be validated against its schema. Do not convert or execute the historical examples. Every assessment, result and identity here is illustrative; none approves real work.
+These examples belong to [Record Format](../../records.md). V3 examples describe the supported stored contract and can be validated against its schema. Historical v2 illustrations, validators and continuation commands are retired. Every assessment, result and identity here is illustrative; none approves real work.
 
 | Example | Version | Purpose and scope |
 | --- | --- | --- |
@@ -10,13 +10,7 @@ These examples belong to [Record Format](../../records.md). V2 examples are non-
 | [Verify without proof references](v3-verify-without-evidence/README.md) | V3 | Complete record with empty proof references: structural recordability does not establish justified success. |
 | [Verify limitations update with Git basis](v3-verify-limitations-update/README.md) | V3 | Self-contained before/after pair preserving the optional seven-value basis object; synthetic values establish no branch readiness. |
 
-Historical navigation only; these files are not current operational examples.
-
-| Historical example | Version | Original purpose |
-| --- | --- | --- |
-| [Change before supporting records](v2-minimal-change/README.md) | V2 | Complete manifest before supporting records are registered. |
-| [Review without assessment subjects](v2-review-without-subjects/README.md) | V2 | Complete structurally recordable review whose exact assessment subjects are missing. |
-| [Review reassessment](v2-review-reassessment/README.md) | V2 | Complete before/after records: subjects and judgment change, but the unresolved finding and its origin remain. |
+Historical v2 illustrations are recoverable at `7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e` under their original `docs/design/cli/examples/` paths; exact files are recorded in the [cleanup disposition](../../../../changes/2026-09-14-retire-specs-and-stale-tests/m6-design-reconciliation.json). They are not current inputs or acceptance examples.
 
 Each scenario has its own folder and README. A single-record scenario uses a descriptive record filename; an update uses before.json and after.json; the five-kind collection uses the stored layout. Repeated-digit identities stand for exact assessed bytes; external engineering files are not supplied. Do not combine records from different rows into a change store unless their scenario explicitly connects them. The v3 complete collection documents its virtual-path mapping and internal references.
 
