@@ -1,0 +1,166 @@
+{
+  "assessment_scope": "Exactly the registered primary plan docs/plans/2026-09-14-retire-specs-and-stale-tests.md, M1–M6, TG-01–08 and TG-FINAL-01/02, against design-review-full-specs-reconciled and proposal-review-full-specs-current-basis. Assessment covers implementation sequencing and verification adequacy together. The current user request ends after reviewed Design/plan preparation; this review records adequacy, not execution, deletion or a downstream continuation instruction.",
+  "change_id": "2026-09-14-retire-specs-and-stale-tests",
+  "contributors": [
+    {
+      "id": "codex-specs-plan-author",
+      "role": "plan"
+    },
+    {
+      "id": "codex-specs-design-author",
+      "role": "design"
+    }
+  ],
+  "findings": [],
+  "id": "delivery-review-full-specs",
+  "independence_basis": "Independent delegated reviewer /root/token_retirement_design_review authored neither this plan, the approved Design package nor proposal/source disposition. Reviewer read the complete primary plan, exact upstream judgments/member maps, current owner requirements and relevant executable command interfaces; no implementation or engineering edits made.",
+  "judgment": "approved",
+  "limitations": [
+    "This is Delivery adequacy approval only. Concrete implementation case/fixture dispositions, proof equivalence, passed tests, complete deletion, milestone Code Reviews and final Verify remain future obligations.",
+    "No source or test deletion, implementation progression, commit, push, publication or external mutation follows automatically: the current request stops at reviewed Design and plan preparation. Route owns any later user-authorized execution.",
+    "New material behavioral ambiguity requires owning Design correction and current affected reassessment; a changed primary plan requires fresh Delivery reliance. Exact original judgments and source identities remain unchanged."
+  ],
+  "rationale": [
+    "Traceability — pass. SYS-SR-13/ENG-SR-15 cover complete source/population reconciliation across M1–M6. DES-SR-23/VAL-SR-28/DIST-SR-24 map current model/explicit-feature and raw resource projection boundaries to M1 and TG01/02. SKL-SR-28/29, WF-SR-19 and RC-SR-22/23 map specialist public authority/results, follow-up and Verify/PR evidence behavior to M2/M4 and TG03/05. CLI-SR-29/30, DIST-SR-23 and REL-SR-26 map generic/recording/logging/package/current-candidate behavior to M3/TG04. VAL-SR-26 and TEST-SR01–14/VAL-SR19–22 govern actual case-purpose and execution audit through M5/TG06. VAL-SR-27 routes actual local/range deletions and renames through M6/TG08. Final groups compose every affected owner and preserve unchanged Records/Installation safety.",
+    "Sequence and safe intermediates — pass. M1 relocates byte-identical methods and reconciles all activation/generation/validation/release callers as one slice before dependent consumer work. M2 handles canonical specialist/workflow surfaces; M3 reconciles CLI/package/release; M4 removes obsolete governance machinery only with retained negative proof; M5 closes the entire case/generator population; M6 removes remaining source authority and tests actual empty-tree operation. Every slice establishes protection before predecessor removal and requires independent complete milestone review/correction before the next relies on it. No absent command or reduced passing count establishes completion.",
+    "Discovery completeness — pass. The 116-source/54-test-spec,235-root-fixture and43-entrypoint counts are starting evidence, not the complete test oracle. Full tracked and generated/inline/parameterized/helper/direct-only discovery precedes the first test change, accumulates exact or complete grouped membership with exceptions and is reconciled against later additions/removals in M5/M6. Uncertain protection remains while investigated; all newly discovered required knowledge/readers stay in this initiative. No silent follow-up deferral or permanent retirement registry is permitted.",
+    "Normal, negative and composed proof — pass. TG01/02 explicitly cover malformed/missing/escaped/drifted resources, unknown markers, current model discovery, empty populations, supported feature/proof grammar and adoption-decision need without historical Git activation. TG03 preserves specialist classifications/output groups, write authority, proof/retry identity and bounded CI repair. TG04 names actual generic versus recording/discovery envelopes, logging failure/privacy/contention, packed contents/install and current candidate failures. TG05/06 retain distinct current rejection, references, authority, fixture isolation, discovery and shared-budget evidence. TG07/08 test no-spec operation, both rename sides, actual deleted paths and mixed unknown/supporting sibling rejection.",
+    "Command feasibility — pass. Inspected existing selector, wrapper, adapter builder and prose CLI entrypoints; the selector accepts the displayed hidden --json compatibility flag and current local/pr/base/head modes. Named literal test/project/build commands exist and the plan explicitly preserves M1/M2 boundary/skill commands while allowing only explained retirement of M4 exclusive entries. Current prepared-candidate qualification is exercised through existing release-owned regression proof, with matching tag/source/profile/artifact identities, not bare historical replay or public execution. Prose default command alone checks its normal defaults; complete selected validation additionally owns the affected document scope, so it is not presented as all-document standalone proof.",
+    "Change-level validation and closeout — pass. TG-FINAL01 requires assembled no-spec model/resource/CLI/archive/npm/install/current-candidate operation, not helper-only or independent partial passes. TG-FINAL02 requires actual local and committed PR-range selection AND wrapper execution from exact baseline7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e, complete case/source disposition and current reliance. All implementation/corrections precede separately named fresh whole-change Code Review; distinct final Verify follows. Milestone approval, integrated tests and source absence cannot substitute for either final gate.",
+    "Reversibility, authority and evidence — pass. Each milestone has coherent source/reader/proof recovery, preserves unrelated/customer installed state and original historical judgments, and routes new normative ambiguity to Design before dependent deletion. Source identities/uncommitted bytes are checked again before removal. Exact subjects, actual commands/results, removed check IDs and retained counterexample detection are mandatory evidence, with current applicability assessed independently. No release/publish/install-to-active-root or other external mutation is authorized by the plan or this review.",
+    "Exact package and prior concerns — pass. Current primary-plan registry matches its inspected identity; current Design/Proposal subjects match; all three upstream specialist preservation findings are resolved. Current plan tracking preparation is an ordinary implementation preflight dependency and has been handled by the author without changing plan bytes. No implementation result or deletion has been reviewed or claimed here."
+  ],
+  "reviewer": {
+    "id": "independent-full-specs-delivery-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:3e99392f5974d61f13f6c3bf8f5b616dbb5c6ca3a997f83a36e89ca43a7dd8e3",
+      "path": "docs/plans/2026-09-14-retire-specs-and-stale-tests.md"
+    },
+    {
+      "identity": "sha256:6d5736e2a2b01f76c09a027dd32498ed5e4454a3ab31c139643aba5d0ce9222c",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/design-review-full-specs-reconciled.json"
+    },
+    {
+      "identity": "sha256:21cfcdf9bea6de3fdb07b8a53dc099a98f48cdc4aa195ef518723a1f96bd3816",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/proposal-review-full-specs-current-basis.json"
+    },
+    {
+      "identity": "sha256:e3e435a9fff5c3a5b787af3e8aab1a4b02795613edd4593b34205f2a3f3fc5da",
+      "path": "docs/design/system.md"
+    },
+    {
+      "identity": "sha256:ff0b198f8bab40a9b0a07d9bac4c961ef9ad45e6f094edcf190069cf6b6bfbce",
+      "path": "docs/design/skill/skill.md"
+    },
+    {
+      "identity": "sha256:e4953b253ffe955d4ff3beacde0076c927ece9b5858b31a31b8c30f8cc637e50",
+      "path": "docs/design/skill/workflow.md"
+    },
+    {
+      "identity": "sha256:dce9c0f117ce3f0613cc155924a7a2c6d5ebd75cea54ce9fdbbfbd7995b8295c",
+      "path": "docs/design/skill/design.md"
+    },
+    {
+      "identity": "sha256:5f8a1cd6360df6f769c60fadab3aae95dce6b229dadb74b05013e08ece77f792",
+      "path": "docs/design/skill/assessment.md"
+    },
+    {
+      "identity": "sha256:88ec93a42cb25e040afffdea8462424d54c797d1147fea4b3d28cb430d444ad2",
+      "path": "docs/design/cli/cli.md"
+    },
+    {
+      "identity": "sha256:47f878a9d343a531d459abd5d4648a6389842dee771007c94ce672493ffaaab1",
+      "path": "docs/design/cli/records.md"
+    },
+    {
+      "identity": "sha256:756a282dbfe5f363eb4eb39986e0f68cf607501bfb9de2a98d96de66b0819578",
+      "path": "docs/design/cli/installation.md"
+    },
+    {
+      "identity": "sha256:5cc2d2850fbc4147b1bd123a1f36c3f88baa49d4b698985bee00a6975ed03b4b",
+      "path": "docs/design/engineering/engineering.md"
+    },
+    {
+      "identity": "sha256:90e00cf969ff8f6c7cfb59f6e31e323ff5642f31189e55cee7e5240b96e1e86d",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:30110347de1ebc23fd6406963b6cc3d0e22e632fd5e1e7ef040298ba9e1f5a92",
+      "path": "docs/design/engineering/packaging.md"
+    },
+    {
+      "identity": "sha256:445fcce43479c00e703dd0ec37df10d072017eff1843acc68bad5c7ca1165a26",
+      "path": "docs/design/engineering/release.md"
+    },
+    {
+      "identity": "sha256:22284c41fdb311c1bb7dbaded1d2ea5c7d53e063d5f40a79a593d6e9e5738045",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/source-disposition.md"
+    },
+    {
+      "identity": "sha256:e503f56ebb4a1be5383fd3e0ec3e1b4ccac5bba8ef8c04a9e8640d8f12e8c9a0",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/source-inventory.tsv"
+    },
+    {
+      "identity": "sha256:36e72bf8ec654015a645287640266dc592b2260f877c5a96e788a80f803e2845",
+      "path": "docs/proposals/2026-09-14-retire-specs-and-stale-tests.md"
+    },
+    {
+      "identity": "sha256:0331f71c48d1476427e9024a0fd5e3bbc49772814a52ee1f6086b35dd3d37f58",
+      "path": "specs/relax-pr-evidence-tail.md"
+    },
+    {
+      "identity": "sha256:c5a764eeebe4d1fe779e3c087064b5f0daa953e88862f0104c4cc3b302445f19",
+      "path": "specs/pr-skill-simplification.md"
+    },
+    {
+      "identity": "sha256:84d5ead6377e034d4d9850c7075b9029911621acc17efc705af156e1acf6daaa",
+      "path": "specs/ci-maintenance-skill-simplification.md"
+    },
+    {
+      "identity": "sha256:320335d3e902eea21c49a2d0a933427cd1953c3eb298819420f10fbd496339d7",
+      "path": "specs/boundary-first-resources.yaml"
+    },
+    {
+      "identity": "sha256:89337cf5da8462ad2afa0c50e04fb7233beea7ce030a049fa3a1695fc57ea2d0",
+      "path": "specs/references/boundary-first-method-v1.md"
+    },
+    {
+      "identity": "sha256:7179b4f48e6ba5a1503237f58875f0dc5fe8cdc2c7e77f277c6debee714387b8",
+      "path": "specs/references/boundary-first-feature-authoring-v1.md"
+    },
+    {
+      "identity": "sha256:ec8e8239c642bf340c4c8aba2105ae9783bced35230bb5bf6501b7b931e6cc4d",
+      "path": "specs/references/boundary-first-proof-v1.md"
+    },
+    {
+      "identity": "sha256:2a42da7884e3aeff0020f814fcb36b98f88ad80fc385a8f52a2b5ddaf4aa0ca9",
+      "path": "docs/design/skill/examples/workflow/correction-cycle.mmd"
+    },
+    {
+      "identity": "sha256:9c72b798118812582b3189718f9da989340d805a8f880ca898bd0438146de55b",
+      "path": "docs/design/cli/examples/v3-complete-assessment-recording/README.md"
+    },
+    {
+      "identity": "sha256:f4bd6a92c07d69f06efc9336eb678e241888d20541fbaf2bd115e1153543a469",
+      "path": "docs/design/cli/examples/v3-assessment-update-errors/README.md"
+    },
+    {
+      "identity": "sha256:4598cfe6e111925f02bb7da60167587512c28ae78b497cf215fba2a22b983508",
+      "path": "docs/design/cli/examples/records/v3-verify-without-evidence/README.md"
+    },
+    {
+      "identity": "sha256:3dae6703651fed191fe384a14224254b7791267014a89662d8872c812493e146",
+      "path": "VISION.md"
+    },
+    {
+      "identity": "sha256:1cc497c48a7de83c64997c5b3b0640ef8ae63afd77e5860416b028ab5025bdb9",
+      "path": "CONSTITUTION.md"
+    }
+  ],
+  "summary": "Approved the complete six-milestone delivery package for all-specs retirement and the whole-repository stale test/fixture audit, with no material Delivery finding.",
+  "target": "delivery"
+}

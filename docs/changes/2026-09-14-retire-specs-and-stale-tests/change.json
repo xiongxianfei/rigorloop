@@ -1,11 +1,11 @@
 {
   "activity": {
     "owner": {
-      "id": "codex-specs-design-author",
-      "role": "design"
+      "id": "codex-full-specs-implement",
+      "role": "implement"
     },
-    "reason": "Route: independent Proposal Review approved complete repository-wide direction and feasibility with no findings. Proposal task is complete; exact Design contracts, dependency reconciliation and later Delivery allocation remain pending. No exact deletion or implementation approval is inferred.",
-    "stage": "design",
+    "reason": "Route: independently approved Design and Delivery packages complete the authorized preparation task. Six approved implementation work entries initialized once; M1 is next. No implementation, source/test deletion, completed case audit, final Verify or PR readiness is claimed.",
+    "stage": "implement",
     "status": "pending"
   },
   "applicability": [
@@ -20,11 +20,47 @@
     },
     {
       "actor": {
-        "id": "codex-specs-proposal-author",
-        "role": "proposal"
+        "id": "codex-specs-plan-author",
+        "role": "plan"
       },
       "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/evidence.json",
-      "reason": "Exact proposal structure, current references and authoring checks; direction approval belongs to the independent recorded review.",
+      "reason": "Exact reviewed authoring package and actual preparation checks; no implementation verification claim.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "independent-full-specs-design-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/design-review-full-specs-first.json",
+      "reason": "First-pass findings bind inspected current package and retained source obligations.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "independent-full-specs-proposal-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/proposal-review-full-specs-current-basis.json",
+      "reason": "Current supportive Design changes reassessed; proposal text and user-selected complete direction remain unchanged.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "independent-full-specs-design-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/design-review-full-specs-reconciled.json",
+      "reason": "Exact corrected owner package reassessed after all required preservation findings; complete scoped direction remains applicable.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "independent-full-specs-delivery-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/delivery-review-full-specs.json",
+      "reason": "Independent complete primary-plan sequencing/proof judgment against exact current approved Design and Proposal. No implementation/readiness or downstream authorization claim.",
       "value": "current"
     }
   ],
@@ -35,33 +71,92 @@
     {
       "id": "system",
       "subject": {
-        "identity": "sha256:69ca7173c8f58490e2f979afe60ae564eade4632c5d20750a1419c0fa98dbb62",
+        "identity": "sha256:e3e435a9fff5c3a5b787af3e8aab1a4b02795613edd4593b34205f2a3f3fc5da",
         "path": "docs/design/system.md"
       }
     },
     {
       "id": "skill",
       "subject": {
-        "identity": "sha256:0368e2fc6233a97f413a73f0d9fab4ca22b25b0b4f55a19a937380e1f0529a18",
+        "identity": "sha256:ff0b198f8bab40a9b0a07d9bac4c961ef9ad45e6f094edcf190069cf6b6bfbce",
         "path": "docs/design/skill/skill.md"
       }
     },
     {
       "id": "cli",
       "subject": {
-        "identity": "sha256:8fbf8613248f7b09435c2869c14cd3c5d5ae0d105279079ca5624c738b716140",
+        "identity": "sha256:88ec93a42cb25e040afffdea8462424d54c797d1147fea4b3d28cb430d444ad2",
         "path": "docs/design/cli/cli.md"
       }
     },
     {
       "id": "engineering",
       "subject": {
-        "identity": "sha256:f45e6a357a78e630496f4e636d5343daeb3197f8a61010060585c7f65d8bc61f",
+        "identity": "sha256:5cc2d2850fbc4147b1bd123a1f36c3f88baa49d4b698985bee00a6975ed03b4b",
         "path": "docs/design/engineering/engineering.md"
+      }
+    },
+    {
+      "id": "workflow",
+      "subject": {
+        "identity": "sha256:e4953b253ffe955d4ff3beacde0076c927ece9b5858b31a31b8c30f8cc637e50",
+        "path": "docs/design/skill/workflow.md"
+      }
+    },
+    {
+      "id": "design",
+      "subject": {
+        "identity": "sha256:dce9c0f117ce3f0613cc155924a7a2c6d5ebd75cea54ce9fdbbfbd7995b8295c",
+        "path": "docs/design/skill/design.md"
+      }
+    },
+    {
+      "id": "assessment",
+      "subject": {
+        "identity": "sha256:5f8a1cd6360df6f769c60fadab3aae95dce6b229dadb74b05013e08ece77f792",
+        "path": "docs/design/skill/assessment.md"
+      }
+    },
+    {
+      "id": "records",
+      "subject": {
+        "identity": "sha256:47f878a9d343a531d459abd5d4648a6389842dee771007c94ce672493ffaaab1",
+        "path": "docs/design/cli/records.md"
+      }
+    },
+    {
+      "id": "installation",
+      "subject": {
+        "identity": "sha256:756a282dbfe5f363eb4eb39986e0f68cf607501bfb9de2a98d96de66b0819578",
+        "path": "docs/design/cli/installation.md"
+      }
+    },
+    {
+      "id": "validation",
+      "subject": {
+        "identity": "sha256:90e00cf969ff8f6c7cfb59f6e31e323ff5642f31189e55cee7e5240b96e1e86d",
+        "path": "docs/design/engineering/validation.md"
+      }
+    },
+    {
+      "id": "packaging",
+      "subject": {
+        "identity": "sha256:30110347de1ebc23fd6406963b6cc3d0e22e632fd5e1e7ef040298ba9e1f5a92",
+        "path": "docs/design/engineering/packaging.md"
+      }
+    },
+    {
+      "id": "release",
+      "subject": {
+        "identity": "sha256:445fcce43479c00e703dd0ec37df10d072017eff1843acc68bad5c7ca1165a26",
+        "path": "docs/design/engineering/release.md"
       }
     }
   ],
-  "plan": null,
+  "plan": {
+    "identity": "sha256:3e99392f5974d61f13f6c3bf8f5b616dbb5c6ca3a997f83a36e89ca43a7dd8e3",
+    "path": "docs/plans/2026-09-14-retire-specs-and-stale-tests.md"
+  },
   "proposal": {
     "identity": "sha256:36e72bf8ec654015a645287640266dc592b2260f877c5a96e788a80f803e2845",
     "path": "docs/proposals/2026-09-14-retire-specs-and-stale-tests.md"
@@ -74,8 +169,107 @@
     {
       "kind": "evidence",
       "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/evidence.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/design-review-full-specs-first.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/proposal-review-full-specs-current-basis.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/design-review-full-specs-reconciled.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/delivery-review-full-specs.json"
     }
   ],
   "schema_version": 3,
-  "work": []
+  "work": [
+    {
+      "id": "m1",
+      "owner": {
+        "id": "codex-full-specs-implement",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "SYS-SR-13",
+        "DES-SR-23",
+        "VAL-SR-28",
+        "DIST-SR-24"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "m2",
+      "owner": {
+        "id": "codex-full-specs-implement",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "SKL-SR-28",
+        "SKL-SR-29",
+        "WF-SR-19",
+        "RC-SR-22",
+        "RC-SR-23"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "m3",
+      "owner": {
+        "id": "codex-full-specs-implement",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "CLI-SR-29",
+        "CLI-SR-30",
+        "DIST-SR-23",
+        "DIST-SR-24",
+        "REL-SR-26"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "m4",
+      "owner": {
+        "id": "codex-full-specs-implement",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "VAL-SR-26",
+        "VAL-SR-27",
+        "ENG-SR-15"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "m5",
+      "owner": {
+        "id": "codex-full-specs-implement",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "ENG-SR-15",
+        "VAL-SR-26"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "m6",
+      "owner": {
+        "id": "codex-full-specs-implement",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "SYS-SR-13",
+        "ENG-SR-15",
+        "VAL-SR-27"
+      ],
+      "status": "pending"
+    }
+  ]
 }
