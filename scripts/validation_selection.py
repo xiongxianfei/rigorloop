@@ -55,6 +55,10 @@ CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
         "current_records.validate", "python scripts/validate-governed-lifecycle-cli.py", "current-records",
         label="Validate current records", modes=("broad-smoke",),
     ),
+    "current_records.snapshot": CheckCatalogEntry(
+        "current_records.snapshot", "python scripts/validate-governed-lifecycle-cli.py --revision <head>", "current-records",
+        label="Validate committed current records",
+    ),
     "release_evidence.validate": CheckCatalogEntry(
         "release_evidence.validate", "python scripts/release_evidence.py <path>...", "release",
     ),
@@ -645,7 +649,7 @@ def catalog_command(
         for path in sorted(models):
             args.extend(["--path", path])
         return _join(*args)
-    if check_id == "current_records.validate" and mode == "pr":
+    if check_id == "current_records.snapshot":
         if not head:
             raise ValueError("current record snapshot requires an exact head")
         return _join("python", "scripts/validate-governed-lifecycle-cli.py", "--revision", head)
@@ -778,8 +782,8 @@ def select_validation(request: SelectionRequest) -> SelectionResult:
         selected["current_records.validate"].paths.clear()
 
     if request.mode == "pr":
-        _add_check(selected, "current_records.validate",
-                   "Every PR validates the exact committed current record snapshot.")
+        _add_check(selected, "current_records.snapshot",
+                   "Every PR validates the exact committed current record snapshot, independently of worktree discovery.")
 
     if _readme_marker_validation_required(tuple(changed_paths), repo_root=repo_root):
         _add_check(

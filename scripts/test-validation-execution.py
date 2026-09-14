@@ -782,6 +782,38 @@ class CompositionTests(unittest.TestCase):
                 self.assertEqual([r.exit_code for r in results],[0])
             self.assertEqual(marker.read_text(),'xx')
 
+    def test_pr_snapshot_and_broad_discovery_compose_as_distinct_checks(self):
+        # Real selector + real catalog composition: neither the exact commit
+        # snapshot nor current-worktree discovery may overwrite the other.
+        import shlex
+        from validation_execution import expand_groups
+        from validation_selection import SelectionRequest, select_validation
+        with tempfile.TemporaryDirectory() as temporary:
+            repo = Path(temporary) / 'repository'
+            repo.mkdir()
+            def git(*args):
+                return subprocess.check_output(['git', '-C', str(repo), *args], text=True, stderr=subprocess.DEVNULL).strip()
+            git('init', '--quiet')
+            (repo / 'README.md').write_text('# Original\n')
+            git('add', '.')
+            commit = ('-c', 'user.name=Fixture', '-c', 'user.email=fixture@example.invalid', '-c', 'commit.gpgsign=false', 'commit', '-qm')
+            git(*commit, 'Original')
+            base = git('rev-parse', 'HEAD')
+            (repo / 'README.md').write_text('# Changed\n')
+            git('add', '.')
+            git(*commit, 'Changed')
+            head = git('rev-parse', 'HEAD')
+            selected = select_validation(SelectionRequest(mode="pr", base=base, head=head, repo_root=repo, broad_smoke=True))
+            self.assertEqual(selected.status, "ok", selected.blocking_results)
+            checks = [c for c in selected.selected_checks if c['id'] == 'broad_smoke.repo' or '--revision' in shlex.split(c['command'])]
+            self.assertEqual(len(checks), 2)
+            plans = [CheckPlan(c['id'], c['command'], shlex.split(c['command']), c.get('reason'), c['phase'], False) for c in checks]
+            composed = expand_groups(plans, Path(temporary))
+        record_checks = [p for p in composed if 'scripts/validate-governed-lifecycle-cli.py' in p.args]
+        self.assertEqual(len(record_checks), 2)
+        self.assertEqual(len({p.check_id for p in record_checks}), 2)
+        self.assertEqual({tuple(p.args[2:]) for p in record_checks}, {(), ('--revision', head)})
+
     def test_catalog_composes_broad_and_main_with_distinct_preserved_package_versions(self):
         from validation_execution import compose_mode
         with tempfile.TemporaryDirectory() as temporary:

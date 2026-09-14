@@ -55,6 +55,7 @@ ADAPTER_REGRESSION_COMMAND = (
 
 EXPECTED_CATALOG = {
     "current_records.validate": "python scripts/validate-governed-lifecycle-cli.py",
+    "current_records.snapshot": "python scripts/validate-governed-lifecycle-cli.py --revision <head>",
     "release_evidence.validate": "python scripts/release_evidence.py <path>...",
     "validation_execution.regression": "python scripts/test-validation-execution.py",
     "record_store.schema": "node scripts/build-record-store-schema.mjs --check",
@@ -4868,13 +4869,13 @@ raise SystemExit(3)
         self.assertNotIn("Gate B: adapter parity regressions", result.stdout)
 
     def test_pr_lifecycle_catalog_preserves_revision_scope(self) -> None:
-        command = catalog_command("current_records.validate", mode="pr",
+        command = catalog_command("current_records.snapshot", mode="pr",
                                   base="base-sha", head="head-sha",
                                   paths=("docs/plans/example.md",))
         self.assertEqual(shlex.split(command),
                          ["python", "scripts/validate-governed-lifecycle-cli.py", "--revision", "head-sha"])
         with self.assertRaises(ValueError):
-            catalog_command("current_records.validate", mode="pr", paths=("README.md",))
+            catalog_command("current_records.snapshot", mode="pr", paths=("README.md",))
 
     def test_pr_always_retains_lifecycle_scope_for_docs_and_code(self) -> None:
         for path in ("README.md", "packages/rigorloop/dist/lib/example.js"):
@@ -4890,8 +4891,8 @@ raise SystemExit(3)
                 result = select_validation(SelectionRequest(mode="pr", base=base, head=head, repo_root=repo))
                 self.assertEqual(result.status, "ok", result.blocking_results)
                 checks = {check["id"]: check for check in result.selected_checks}
-                self.assertIn("current_records.validate", checks)
-                self.assertEqual(shlex.split(checks["current_records.validate"]["command"])[-2:],
+                self.assertIn("current_records.snapshot", checks)
+                self.assertEqual(shlex.split(checks["current_records.snapshot"]["command"])[-2:],
                                  ["--revision", head])
                 if path == "README.md":
                     self.assertNotIn("adapters.regression", checks)
@@ -4909,7 +4910,7 @@ raise SystemExit(3)
         for exit_code in (0, 7):
             with self.subTest(exit_code=exit_code):
                 payload = self.minimal_selector_payload(mode="pr", selected_checks=[{
-                    "id": "current_records.validate", "paths": ["docs/plans/example.md"],
+                    "id": "current_records.snapshot", "paths": ["docs/plans/example.md"],
                     "command": "python scripts/validate-governed-lifecycle-cli.py --revision head-sha",
                 }])
                 fixture = self.write_selector_fixture(payload)
