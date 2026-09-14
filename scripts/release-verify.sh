@@ -4,12 +4,6 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT_DIR"
 
-PLACEHOLDER_MARKERS=(
-  "Replace this script with repository-specific release"" checks"
-  "TO""DO: release checks"
-  "placeholder release"" check"
-)
-
 usage() {
   echo "usage: bash scripts/release-verify.sh <release-tag>" >&2
   echo "or set GITHUB_REF_NAME when running from GitHub Actions." >&2
@@ -64,210 +58,19 @@ PY
   fi
 fi
 
-case "$release_version" in
-  v0.1.0-rc.1|v0.1.0|v0.1.1|v0.1.2|v0.1.3|v0.1.4|v0.1.5|v0.2.0|v0.3.0|v0.3.1|v0.3.2|v0.3.3|v0.3.4|v0.3.5|v0.3.6|v0.4.0|v0.4.1|v0.5.0)
-    ;;
-  *)
-    echo "Unsupported release target: ${release_version}" >&2
-    exit 1
-    ;;
-esac
-
-adapter_version="${release_version#v}"
-if [[ "$release_version" == "v0.1.2" ]]; then
-  adapter_version="0.1.1"
+if [[ "$#" -gt 1 ]]; then
+  usage
+  exit 1
 fi
-uses_release_output="false"
-case "$release_version" in
-  v0.1.2|v0.1.3|v0.1.4|v0.1.5|v0.2.0|v0.3.0|v0.3.1|v0.3.2|v0.3.3|v0.3.4|v0.3.5|v0.3.6|v0.4.0|v0.4.1|v0.5.0)
-    uses_release_output="true"
-    ;;
-esac
-untracked_public_adapters="false"
-case "$release_version" in
-  v0.1.3|v0.1.4|v0.1.5|v0.2.0|v0.3.0|v0.3.1|v0.3.2|v0.3.3|v0.3.4|v0.3.5|v0.3.6|v0.4.0|v0.4.1|v0.5.0)
-    untracked_public_adapters="true"
-    ;;
-esac
-npm_package_release="false"
-case "$release_version" in
-  v0.1.4|v0.1.5|v0.2.0|v0.3.0|v0.3.1|v0.3.2|v0.3.3|v0.3.4|v0.3.5|v0.3.6|v0.4.0|v0.4.1|v0.5.0)
-    npm_package_release="true"
-    ;;
-esac
-release_output_dir="${RELEASE_OUTPUT_DIR:-}"
-cleanup_release_output_dir=""
-if [[ "$uses_release_output" == "true" && -z "$release_output_dir" ]]; then
-  release_output_dir="$(mktemp -d)"
-  cleanup_release_output_dir="$release_output_dir"
+if [[ "${RELEASE_VERIFY_DRY_RUN:-}" == "1" ]]; then
+  echo "release gate failure: current qualification requires actual checks; historical recipe dry runs are unsupported" >&2
+  exit 1
 fi
-if [[ -n "$cleanup_release_output_dir" ]]; then
-  trap 'rm -rf "$cleanup_release_output_dir"' EXIT
+args=(--version "$release_version")
+if [[ -n "${RELEASE_TAG_COMMIT:-}" ]]; then
+  args+=(--release-commit "$RELEASE_TAG_COMMIT")
 fi
-release_commit="${RELEASE_COMMIT:-}"
-if [[ "$uses_release_output" == "true" && -z "$release_commit" ]]; then
-  release_commit="$(python - "$release_version" <<'PY'
-import sys
-from pathlib import Path
-
-sys.path.insert(0, str(Path("scripts").resolve()))
-
-from adapter_distribution import (
-    ADAPTER_ARTIFACT_REPORT_ROOT,
-    parse_adapter_artifact_metadata_yaml,
-)
-
-release_version = sys.argv[1]
-path = ADAPTER_ARTIFACT_REPORT_ROOT / f"{release_version}.yaml"
-metadata = parse_adapter_artifact_metadata_yaml(path.read_text(encoding="utf-8"), path)
-print(metadata.source_commit)
-PY
-)"
+if [[ -n "${RELEASE_OUTPUT_DIR:-}" ]]; then
+  args+=(--release-output-dir "$RELEASE_OUTPUT_DIR")
 fi
-SEEN_COMMANDS=()
-SEEN_LABELS=()
-REQUIRED_CHECK_COMMANDS=(
-  "python scripts/validate-skills.py"
-  "python scripts/test-skill-validator.py"
-  "python scripts/test-adapter-distribution.py"
-)
-if [[ "$untracked_public_adapters" != "true" ]]; then
-  REQUIRED_CHECK_COMMANDS+=(
-    "python scripts/build-adapters.py --version ${adapter_version} --check"
-    "python scripts/validate-adapters.py --version ${adapter_version}"
-  )
-fi
-if [[ "$npm_package_release" == "true" ]]; then
-  REQUIRED_CHECK_COMMANDS+=(
-    "python scripts/test-npm-package-publication.py"
-  )
-fi
-if [[ "$uses_release_output" == "true" ]]; then
-  REQUIRED_CHECK_COMMANDS+=(
-    "python scripts/build-adapters.py --version ${release_version} --output-dir ${release_output_dir}"
-    "python scripts/validate-release.py --version ${release_version} --release-output-dir ${release_output_dir} --release-commit ${release_commit}"
-  )
-else
-  REQUIRED_CHECK_COMMANDS+=(
-    "python scripts/validate-release.py --version ${release_version}"
-  )
-fi
-
-verify_release_script_contract() {
-  local marker=""
-  for marker in "${PLACEHOLDER_MARKERS[@]}"; do
-    if grep -Fq "$marker" scripts/release-verify.sh; then
-      echo "release gate failure: placeholder release-check text remains: ${marker}" >&2
-      return 1
-    fi
-  done
-
-}
-
-describe_standing_release_process_gate() {
-  echo "Standing release-process gate rehearsal"
-  echo "- generated-output currency: repository-owned drift/build/release-output checks must prove current output"
-  echo "- package preview and filesystem materialization: npm package checks must prove package contents before publish"
-  echo "- publish path: trusted publishing preferred; manual fallback requires release evidence"
-  echo "- post-publish registry verification: npm view version, dist-tags, integrity, and fresh CLI materialization"
-  if [[ "${RELEASE_VERIFY_DRY_RUN:-}" == "1" ]]; then
-    echo "- dry-run mode: no publish command is executed"
-  fi
-  echo
-}
-
-run_check() {
-  local label="$1"
-  shift
-  local command_text=""
-  printf -v command_text '%s ' "$@"
-  command_text="${command_text% }"
-  SEEN_LABELS+=("$label")
-  SEEN_COMMANDS+=("$command_text")
-
-  echo "==> ${label}"
-  echo "+ ${command_text}"
-  if [[ "${RELEASE_VERIFY_DRY_RUN:-}" != "1" ]]; then
-    "$@"
-  fi
-  echo
-}
-
-verify_required_invocations() {
-  local required=""
-  local seen=""
-  local found=""
-  for required in "${REQUIRED_CHECK_COMMANDS[@]}"; do
-    found="false"
-    for seen in "${SEEN_COMMANDS[@]}"; do
-      if [[ "$seen" == "$required" ]]; then
-        found="true"
-        break
-      fi
-    done
-    if [[ "$found" != "true" ]]; then
-      echo "release gate failure: required release check was not invoked: ${required}" >&2
-      return 1
-    fi
-  done
-
-  found="false"
-  for seen in "${SEEN_LABELS[@]}"; do
-    if [[ "${seen,,}" == *security* ]]; then
-      found="true"
-      break
-    fi
-  done
-  if [[ "$found" != "true" ]]; then
-    echo "release gate failure: required security check category was not invoked" >&2
-    return 1
-  fi
-}
-
-echo "Release verification for ${release_version}"
-echo "Adapter manifest version: ${adapter_version}"
-echo
-
-verify_release_script_contract
-describe_standing_release_process_gate
-
-run_check "Validate canonical skills" \
-  python scripts/validate-skills.py
-
-run_check "Run skill regression validation" \
-  python scripts/test-skill-validator.py
-
-
-run_check "Run adapter distribution regression tests" \
-  python scripts/test-adapter-distribution.py
-
-if [[ "$untracked_public_adapters" != "true" ]]; then
-  run_check "Check generated adapter drift" \
-    python scripts/build-adapters.py --version "$adapter_version" --check
-
-  run_check "Validate generated adapters and security" \
-    python scripts/validate-adapters.py --version "$adapter_version"
-fi
-
-if [[ "$npm_package_release" == "true" ]]; then
-  run_check "Validate npm package content and packed-package smoke" \
-    python scripts/test-npm-package-publication.py
-fi
-
-if [[ "$uses_release_output" == "true" ]]; then
-  run_check "Build adapter release archives" \
-    python scripts/build-adapters.py --version "$release_version" --output-dir "$release_output_dir"
-fi
-
-
-if [[ "$uses_release_output" == "true" ]]; then
-  run_check "Gate C: validate release metadata, adapter artifacts, materialization evidence, notes, and security" \
-    python scripts/validate-release.py --version "$release_version" --release-output-dir "$release_output_dir" --release-commit "$release_commit"
-else
-  run_check "Gate C: validate release metadata, materialization evidence, notes, and security" \
-    python scripts/validate-release.py --version "$release_version"
-fi
-
-verify_required_invocations
-
-echo "Gate C (release integrity) passed for ${release_version}."
+exec python scripts/validate-release.py "${args[@]}"

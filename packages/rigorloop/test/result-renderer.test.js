@@ -7,7 +7,7 @@ import test from "node:test";
 
 import { projectConciseResult, projectDetailedResult, renderResult, RESULT_FORMATS } from "../dist/lib/result-renderer.js";
 
-const compatibilityFixturePath = join(import.meta.dirname, "fixtures", "observability", "v0.4.x-output-compatibility-v1.json");
+const compatibilityFixturePath = join(import.meta.dirname, "fixtures", "observability", "public-command-output.json");
 
 function compatibilityProject(t) {
   const directory = mkdtempSync(join(tmpdir(), "rigorloop-compatibility-"));
@@ -47,8 +47,8 @@ function detailedArgs(args) {
 
 const detailed = {
   schema_version: 1,
-  command: "lifecycle",
-  operation: "settle-artifact",
+  command: "example",
+  operation: "update",
   status: "blocked",
   change_id: "example",
   lifecycle_revision: "sha256:abc",
@@ -68,8 +68,8 @@ test("concise JSON uses schema 2, closed applicable fields, and compact encoding
     schema_version: 2,
     projection: "concise",
     invocation_id: "a1b2c3d4e5f60718",
-    command: "lifecycle",
-    operation: "settle-artifact",
+    command: "example",
+    operation: "update",
     status: "blocked",
     exit_code: 2,
     change_id: "example",
@@ -86,7 +86,7 @@ test("concise JSON uses schema 2, closed applicable fields, and compact encoding
 
 test("concise human output is actionable and at most two lines", (t) => {
   const output = renderResult(detailed, { format: "concise-human", invocationId: "a1b2c3d4e5f60718", exitCode: 2, observability: "recorded" });
-  assert.ok(output.includes("settle-artifact blocked"));
+  assert.ok(output.includes("update blocked"));
   assert.ok(output.includes("RL_UNRESOLVED_MATERIAL_FINDING"));
   assert.ok(output.includes("next=revise specification"));
   assert.ok(output.includes("invocation=a1b2c3d4e5f60718"));
@@ -108,10 +108,8 @@ test("T10 exact output fixture preserves retained public commands", (t) => {
       value.stdout.package.version = currentPackage.version;
     }
   }
-  assert.equal(fixture.baseline_revision, "fcbbfda44a89945ee06cfa0c1b16dcbd39984036");
   const cli = process.env.RIGORLOOP_COMPATIBILITY_CLI ?? new URL("../dist/bin/rigorloop.js", import.meta.url).pathname;
-  // Distribution intentionally changes init output; its current public tests
-  // cover conflict/force and dry-run facts. Preserve the historical fixture.
+  // Installer success/conflict/force behavior is exercised by cli.test.js.
   const cases = [
     ["version-human-success", ["version"], "empty", false],
     ["unknown-human-failure", ["future-command"], "empty", false],
@@ -126,7 +124,7 @@ test("T10 exact output fixture preserves retained public commands", (t) => {
       env: { ...process.env, RIGORLOOP_FILE_LOG: "off", RIGORLOOP_CONSOLE_LOG_LEVEL: "off" },
     });
     observed[id] = normalizeCompatibilityOutput(child, project);
-    if (process.env.RIGORLOOP_UPDATE_COMPATIBILITY_FIXTURE !== "1") {
+    {
       assert.deepEqual(observed[id], fixture.cases[id], id);
       if (json) {
         const detailedProject = compatibilityProject(t);
@@ -147,12 +145,7 @@ test("T10 exact output fixture preserves retained public commands", (t) => {
     }
   }
   assert.equal(Object.keys(observed).length, 3);
-  if (process.env.RIGORLOOP_UPDATE_COMPATIBILITY_FIXTURE !== "1") {
-    assert.deepEqual(Object.keys(observed).sort(), Object.keys(fixture.cases).filter(id => !id.startsWith("new-change-") && !id.startsWith("lifecycle-") && !id.startsWith("init-")).sort());
-  }
-  if (process.env.RIGORLOOP_UPDATE_COMPATIBILITY_FIXTURE === "1") {
-    writeFileSync(compatibilityFixturePath, `${JSON.stringify({ ...fixture, cases: observed }, null, 2)}\n`);
-  }
+  assert.deepEqual(Object.keys(observed).sort(), Object.keys(fixture.cases).sort());
 });
 
 test("T11 state_changed reflects authoritative mutation facts only", (t) => {
@@ -164,19 +157,19 @@ test("T11 state_changed reflects authoritative mutation facts only", (t) => {
   ];
   for (const [status, stateChanged] of cases) {
     const projected = projectConciseResult({
-      schema_version: 1, command: "lifecycle", operation: "record-review", status: "success",
+      schema_version: 1, command: "example", operation: "record-review", status: "success",
       mutation: { status, state_changed: stateChanged },
     }, { invocationId: "a1b2c3d4e5f60718", exitCode: 0, observability: "disabled" });
     assert.equal(projected.state_changed, stateChanged, status);
   }
-  const read = projectConciseResult({ command: "lifecycle", operation: "status", status: "success" }, {
+  const read = projectConciseResult({ command: "example", operation: "status", status: "success" }, {
     invocationId: "a1b2c3d4e5f60718", exitCode: 0, observability: "recorded",
   });
   assert.equal("state_changed" in read, false);
 });
 
 test("T11 next_operation requires one deterministic continuation", (t) => {
-  const base = { command: "lifecycle", operation: "status", status: "blocked" };
+  const base = { command: "example", operation: "status", status: "blocked" };
   const options = { invocationId: "a1b2c3d4e5f60718", exitCode: 2, observability: "recorded" };
   assert.equal(projectConciseResult({ ...base, permitted_operations: [] }, options).next_operation, undefined);
   assert.equal(projectConciseResult({ ...base, permitted_operations: ["validate"] }, options).next_operation, "validate");
@@ -189,7 +182,7 @@ test("T11 next_operation requires one deterministic continuation", (t) => {
 });
 
 test("T11 every concise terminal result requires common mandatory fields", (t) => {
-  const complete = { command: "lifecycle", operation: "status", status: "success" };
+  const complete = { command: "example", operation: "status", status: "success" };
   const options = { invocationId: "a1b2c3d4e5f60718", exitCode: 0, observability: "recorded" };
   assert.doesNotThrow(() => projectConciseResult(complete, options));
   assert.throws(() => projectConciseResult({ ...complete, command: undefined }, options), /mandatory terminal field/);
@@ -200,10 +193,10 @@ test("T11 every concise terminal result requires common mandatory fields", (t) =
 
 test("T11 shared facts remain equivalent across result classes", (t) => {
   const cases = [
-    { command: "lifecycle", operation: "status", status: "success", exit: 0 },
-    { command: "lifecycle", operation: "settle-artifact", status: "blocked", exit: 2, blockers: [{ code: "RL_BLOCKED" }] },
-    { command: "lifecycle", operation: "validate", status: "error", exit: 4, errors: [{ code: "RL_INVALID_REQUEST" }] },
-    { command: "lifecycle", operation: "record-review", status: "blocked", exit: 5, blockers: [{ code: "RL_STALE_OPERATION" }] },
+    { command: "example", operation: "status", status: "success", exit: 0 },
+    { command: "example", operation: "update", status: "blocked", exit: 2, blockers: [{ code: "RL_BLOCKED" }] },
+    { command: "example", operation: "validate", status: "error", exit: 4, errors: [{ code: "RL_INVALID_REQUEST" }] },
+    { command: "example", operation: "record-review", status: "blocked", exit: 5, blockers: [{ code: "RL_STALE_OPERATION" }] },
     { command: "init", status: "error", exit: 1, errors: [{ code: "RL_CLI_INTERNAL" }] },
   ];
   for (const item of cases) {
@@ -224,7 +217,7 @@ test("T11 shared facts remain equivalent across result classes", (t) => {
 
 test("T11 explicit detailed projection materializes authoritative mutation truth without changing legacy JSON", (t) => {
   for (const stateChanged of [false, true]) {
-    const result = { schema_version: 1, command: "lifecycle", operation: "migrate", status: stateChanged ? "success" : "error" };
+    const result = { schema_version: 1, command: "example", operation: "migrate", status: stateChanged ? "success" : "error" };
     Object.defineProperty(result, "state_changed", { value: stateChanged, enumerable: false });
     const concise = projectConciseResult(result, { invocationId: "a1b2c3d4e5f60718", exitCode: stateChanged ? 0 : 3, observability: "disabled" });
     const detailed = JSON.parse(renderResult(result, { format: "detailed-json" }));
@@ -237,7 +230,7 @@ test("T11 explicit detailed projection materializes authoritative mutation truth
 });
 
 test("T11 every new projection carries a closed observability state", (t) => {
-  const result = { schema_version: 1, command: "lifecycle", operation: "status", status: "success" };
+  const result = { schema_version: 1, command: "example", operation: "status", status: "success" };
   for (const observability of ["recorded", "degraded", "disabled"]) {
     assert.equal(projectConciseResult(result, { invocationId: "a1b2c3d4e5f60718", exitCode: 0, observability }).observability, observability);
     assert.equal(projectDetailedResult(result, { observability }).observability, observability);

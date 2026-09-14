@@ -177,32 +177,6 @@ class TrustedReleaseTagIdentityTests(unittest.TestCase):
 
 
 class DeterministicReleaseGateTests(unittest.TestCase):
-    def test_gate_c_composes_current_gate_a_and_gate_b_without_runtime_commands(self) -> None:
-        result = subprocess.run(
-            ["bash", "scripts/release-verify.sh", "v0.4.0"],
-            cwd=ROOT,
-            env={
-                "PATH": os.environ.get("PATH", ""),
-                "RELEASE_VERIFY_DRY_RUN": "1",
-            },
-            text=True,
-            capture_output=True,
-            check=False,
-        )
-        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
-        output = result.stdout
-        gate_a = output.index("python scripts/validate-skills.py")
-        gate_b_build = output.index("python scripts/build-adapters.py --version v0.4.0")
-        gate_c = output.index("python scripts/validate-release.py --version v0.4.0")
-        self.assertLess(gate_a, gate_b_build)
-        self.assertLess(gate_b_build, gate_c)
-        source = (ROOT / "scripts" / "release-verify.sh").read_text(encoding="utf-8").lower()
-        for forbidden in (
-            "codex exec", "claude --", "opencode run", "analyze-codex-jsonl",
-            "run-token-cost-benchmarks", "transcript", "model matrix",
-        ):
-            with self.subTest(forbidden=forbidden):
-                self.assertNotIn(forbidden, source)
 
     def test_validate_release_cli_names_gate_c_on_failure(self) -> None:
         result = subprocess.run(
@@ -1308,20 +1282,6 @@ class ReleaseGateParityAndTimingTests(unittest.TestCase):
         spec.loader.exec_module(module)
         return module
 
-    def run_validate_release_cli(self, root: Path, version: str = "v0.3.5"):
-        module = self.load_validate_release_module()
-        module.validate_release_output = lambda *args, **kwargs: []
-        module.current_git_commit = lambda: "fixture-commit"
-        stdout = io.StringIO()
-        stderr = io.StringIO()
-        previous_cwd = Path.cwd()
-        try:
-            os.chdir(root)
-            with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(stderr):
-                exit_code = module.main(["--version", version])
-        finally:
-            os.chdir(previous_cwd)
-        return exit_code, stdout.getvalue(), stderr.getvalue()
 
     def make_prepared_repo(self, root: Path) -> None:
         PrepareReleaseTests().make_repo(root)
@@ -1374,29 +1334,6 @@ class ReleaseGateParityAndTimingTests(unittest.TestCase):
             "    result: pass\n"
         )
 
-    def test_release_verify_dry_run_preserves_full_gate_checks(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
-            env = dict(os.environ)
-            env["RELEASE_VERIFY_DRY_RUN"] = "1"
-            env["RELEASE_OUTPUT_DIR"] = str(Path(tmp) / "release-output")
-            env["RELEASE_COMMIT"] = "fixture-commit"
-
-            result = subprocess.run(
-                ["bash", "scripts/release-verify.sh", "v0.3.5"],
-                cwd=ROOT,
-                env=env,
-                text=True,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                check=False,
-            )
-
-        output = result.stderr + result.stdout
-        self.assertEqual(result.returncode, 0, output)
-        self.assertIn("python scripts/test-adapter-distribution.py", output)
-        self.assertIn("python scripts/test-npm-package-publication.py", output)
-        self.assertIn("python scripts/validate-release.py --version v0.3.5", output)
-        self.assertIn("security", output.lower())
 
     def test_release_workflow_delegates_to_release_verify(self) -> None:
         self.assertEqual(validate_release_workflow_parity(ROOT), [])
@@ -1490,66 +1427,6 @@ class ReleaseGateParityAndTimingTests(unittest.TestCase):
 
         self.assertEqual(result.errors, ())
         self.assertTrue(any("preflight" in warning and "target" in warning for warning in result.warnings), result.warnings)
-
-    def test_validate_release_fails_when_profile_requires_missing_timing_evidence(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            PrepareReleaseTests().make_repo(root)
-
-            exit_code, stdout, stderr = self.run_validate_release_cli(root)
-
-        output = stdout + stderr
-        self.assertNotEqual(exit_code, 0, output)
-        self.assertIn("timing.yaml", output)
-        self.assertIn("missing", output)
-
-    def test_validate_release_accepts_profile_required_valid_timing_evidence(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            self.make_prepared_repo(root)
-            self.write_timing(root, self.valid_timing_text())
-
-            exit_code, stdout, stderr = self.run_validate_release_cli(root)
-
-        output = stdout + stderr
-        self.assertEqual(exit_code, 0, output)
-        self.assertIn("validated release metadata for v0.3.5", stdout)
-
-    def test_validate_release_rejects_malformed_timing_evidence(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            self.make_prepared_repo(root)
-            self.write_timing(root, self.valid_timing_text().replace("id: preflight", "id: fast_lane", 1))
-
-            exit_code, stdout, stderr = self.run_validate_release_cli(root)
-
-        output = stdout + stderr
-        self.assertNotEqual(exit_code, 0, output)
-        self.assertIn("unknown timing phase id: fast_lane", output)
-
-    def test_validate_release_reports_timing_budget_warning_without_failure(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            self.make_prepared_repo(root)
-            self.write_timing(root, self.valid_timing_text(preflight_duration=999))
-
-            exit_code, stdout, stderr = self.run_validate_release_cli(root)
-
-        output = stdout + stderr
-        self.assertEqual(exit_code, 0, output)
-        self.assertIn("[WARN]", stderr)
-        self.assertIn("preflight", stderr)
-        self.assertIn("target", stderr)
-
-    def test_validate_release_does_not_require_timing_for_release_without_profile(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-
-            exit_code, stdout, stderr = self.run_validate_release_cli(root, version="v0.3.4")
-
-        output = stdout + stderr
-        self.assertEqual(exit_code, 0, output)
-        self.assertNotIn("timing.yaml", output)
 
 
 class RecordingPublicEvidenceProvider:
@@ -1652,20 +1529,6 @@ class PublishedEvidenceCloseoutTests(unittest.TestCase):
         spec.loader.exec_module(module)
         return module
 
-    def run_validate_release_cli(self, root: Path):
-        module = self.load_validate_release_module()
-        module.validate_release_output = lambda *args, **kwargs: []
-        module.current_git_commit = lambda: "fixture-commit"
-        stdout = io.StringIO()
-        stderr = io.StringIO()
-        previous_cwd = Path.cwd()
-        try:
-            os.chdir(root)
-            with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(stderr):
-                exit_code = module.main(["--version", "v0.3.5"])
-        finally:
-            os.chdir(previous_cwd)
-        return exit_code, stdout.getvalue(), stderr.getvalue()
 
     def make_prepared_repo(self, root: Path) -> None:
         PrepareReleaseTests().make_repo(root)
@@ -1959,35 +1822,6 @@ class PublishedEvidenceCloseoutTests(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0, output)
         self.assertIn("fixture public evidence mode", output)
 
-    def test_validate_release_accepts_published_closeout_evidence(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            self.make_prepared_repo(root)
-            close_release_publication("v0.3.5", root=root, provider=RecordingPublicEvidenceProvider())
-
-            exit_code, stdout, stderr = self.run_validate_release_cli(root)
-
-        output = stdout + stderr
-        self.assertEqual(exit_code, 0, output)
-        self.assertIn("validated release metadata for v0.3.5", stdout)
-
-    def test_validate_release_rejects_published_raw_tree_hash(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            self.make_prepared_repo(root)
-            close_release_publication("v0.3.5", root=root, provider=RecordingPublicEvidenceProvider())
-            npm_publication = root / "docs" / "releases" / "v0.3.5" / "npm-publication.md"
-            npm_publication.write_text(
-                npm_publication.read_text(encoding="utf-8").replace("sha256:provider-codex-tree", "codextree", 1),
-                encoding="utf-8",
-            )
-
-            exit_code, stdout, stderr = self.run_validate_release_cli(root)
-
-        output = stdout + stderr
-        self.assertNotEqual(exit_code, 0, output)
-        self.assertIn("codex", output)
-        self.assertIn("sha256:", output)
 
     def test_close_release_publication_rejects_npx_y_command_shape(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -2048,7 +1882,7 @@ class PublishedEvidenceCloseoutTests(unittest.TestCase):
         self.assertEqual(before, after)
 
 
-from release_candidate_tests import ReleaseCandidateTests, ReleaseCandidateIntegrationTests  # noqa: E402
+from release_candidate_tests import ReleaseCandidateTests, ReleaseCandidateIntegrationTests, CurrentSourceQualificationTests  # noqa: E402
 
 
 from release_coordination_tests import ReleaseCoordinationTests

@@ -1,11 +1,11 @@
 {
   "activity": {
     "owner": {
-      "id": "codex-full-specs-implement",
-      "role": "implement"
+      "id": "codex-independent-m3",
+      "role": "review"
     },
-    "reason": "Route: M2 corrected independent review approved and finding resolved. Continue user-authorized M3 CLI/package/release cleanup.",
-    "stage": "implement",
+    "reason": "Route: required M3 validation passed; complete corrected milestone is ready for independent Code Review.",
+    "stage": "code-review",
     "status": "in-progress"
   },
   "applicability": [
@@ -24,7 +24,7 @@
         "role": "implement"
       },
       "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/evidence.json",
-      "reason": "Current corrected M2 subjects and actual validation.",
+      "reason": "Approved M3 implementation complete for review.",
       "value": "current"
     },
     {
@@ -97,6 +97,15 @@
       },
       "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/code-review-m2-corrected.json",
       "reason": "Frozen corrected M2 and scoped actual evidence independently assessed; no required milestone finding remains.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-cli-release-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/code-review-m3-preliminary.json",
+      "reason": "Current preliminary finding, no final approval.",
       "value": "current"
     }
   ],
@@ -237,6 +246,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/code-review-m2-corrected.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/code-review-m3-preliminary.json"
     }
   ],
   "schema_version": 3,

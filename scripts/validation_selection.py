@@ -92,7 +92,7 @@ CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
     ),
     "adapters.regression": CheckCatalogEntry(
         "adapters.regression",
-        "python scripts/test-adapter-distribution.py AdapterDistributionTests.test_adapter_generation_creates_independent_packages_and_thin_entrypoints AdapterDistributionTests.test_adapter_generation_drift_check_detects_stale_and_unexpected_files AdapterDistributionTests.test_validate_adapters_cli_rejects_retired_repository_output AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives AdapterDistributionTests.test_validate_adapters_cli_accepts_release_archive_root AdapterDistributionTests.test_v0_1_2_release_validation_checks_archives_and_artifact_metadata AdapterDistributionTests.test_distribution_archives_have_independent_complete_resource_inventory AdapterDistributionTests.test_distribution_generation_rejects_source_and_active_output_roots AdapterDistributionTests.test_distribution_generation_preserves_runtime_under_output_parent_and_symlinks AdapterDistributionTests.test_distribution_generated_skill_structure_is_validated_independently AdapterDistributionTests.test_validate_adapter_output_rejects_stale_mapped_resource_hashes AdapterDistributionTests.test_validate_adapter_output_rejects_missing_mapped_resource AdapterDistributionTests.test_validate_adapter_output_rejects_missing_or_malformed_canonical_skills",
+        "python scripts/test-adapter-distribution.py AdapterDistributionTests.test_adapter_generation_creates_independent_packages_and_thin_entrypoints AdapterDistributionTests.test_adapter_generation_drift_check_detects_stale_and_unexpected_files AdapterDistributionTests.test_validate_adapters_cli_rejects_retired_repository_output AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives AdapterDistributionTests.test_validate_adapters_cli_accepts_release_archive_root AdapterDistributionTests.test_current_candidate_metadata_matches_generated_route_only_archives AdapterDistributionTests.test_metadata_unknown_value_profile_fails_before_metadata_reads AdapterDistributionTests.test_distribution_archives_have_independent_complete_resource_inventory AdapterDistributionTests.test_distribution_generation_rejects_source_and_active_output_roots AdapterDistributionTests.test_distribution_generation_preserves_runtime_under_output_parent_and_symlinks AdapterDistributionTests.test_distribution_generated_skill_structure_is_validated_independently AdapterDistributionTests.test_validate_adapter_output_rejects_stale_mapped_resource_hashes AdapterDistributionTests.test_validate_adapter_output_rejects_missing_mapped_resource AdapterDistributionTests.test_validate_adapter_output_rejects_missing_or_malformed_canonical_skills",
         "adapters",
         parallel_safe=True,
     ),
@@ -330,7 +330,7 @@ _CASE_ASSESSMENTS = {
     'governed_lifecycle_cli_wrapper.test': '7c0d389cc4f21926207849803f952fa013b844a4d8c232c679bc30e024646f4b',
 
     'skills.regression': '214972f0018d7ef9e72b7fb32da3cdc8710350aa579a7558c519375187345321',
-    'adapters.regression': '84133e40f66e4595b786ee6f4116f933421fcf1e8e0387e698d0c7935695e8e2',
+    'adapters.regression': '2620ce810346d4e7d5c0c829965605c345302c881a668dfef0dc4a159af3d0e4',
     'adapters.drift': '275c34ecf90ce1c5c83521550790f3619c25f6296541a8fa54ac19e44743ad81',
     'adapters.validate': 'd07757ecafbea97e874b5115988448bc388195b73a7935c83f9b512498fe9598',
     'adapters.full_regression': '209833a7673c5c462eead3a8908a0370cba7f4249b013e258d23f89f70ea4066',
@@ -374,7 +374,7 @@ COVERING_CHECK_IDS = {
 COVERAGE_BASES = {
     'adapters.drift': ('275c34ecf90ce1c5c83521550790f3619c25f6296541a8fa54ac19e44743ad81', 'python-unittest'),
     'adapters.validate': ('d07757ecafbea97e874b5115988448bc388195b73a7935c83f9b512498fe9598', 'python-unittest'),
-    'adapters.regression': ('84133e40f66e4595b786ee6f4116f933421fcf1e8e0387e698d0c7935695e8e2', 'python-unittest'),
+    'adapters.regression': ('2620ce810346d4e7d5c0c829965605c345302c881a668dfef0dc4a159af3d0e4', 'python-unittest'),
     'adapters.full_regression': ('209833a7673c5c462eead3a8908a0370cba7f4249b013e258d23f89f70ea4066', 'python-unittest'),
     'record_retirement.regression': ('875171555af9d01e6580134dd9b5a9264a897b81677bb92aff09a735eee73065', 'node-test'),
     'rigorloop_cli.test': ('92cc1d98945b4cef969b71643189017536f66108f1b0a0f8813b4b9d8d0598e3', 'node-test'),

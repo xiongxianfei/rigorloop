@@ -308,6 +308,42 @@
         }
       ],
       "summary": "Current M2 implementation checks passed; independent correction reassessment still required."
+    },
+    {
+      "actor": {
+        "id": "codex-full-specs-implement",
+        "role": "implement"
+      },
+      "id": "m3-test-maintenance",
+      "procedure": "Inspect exact implementation and command results recorded in milestone evidence.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:0e43993111c296569457816df3785a1f007d87d3eee67785d4b2bc309d34d6ba",
+          "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m3-test-maintenance.json"
+        }
+      ],
+      "summary": "Exact changed case/helper/fixture membership, retired recipes and retained current protection; catalog current replacements use isolated temporary roots."
+    },
+    {
+      "actor": {
+        "id": "codex-full-specs-implement",
+        "role": "implement"
+      },
+      "id": "m3-validation",
+      "procedure": "Inspect exact implementation and command results recorded in milestone evidence.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:63d2be82b3c04f56dc1fa3fa2b62b2ea0285664624f6421e0461b91c6a98de0f",
+          "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m3-validation.json"
+        },
+        {
+          "identity": "sha256:58388f9568184aacfa84034708171224fef52c75df530337da8250f766b77fd2",
+          "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m3-implementation.md"
+        }
+      ],
+      "summary": "Required focused and selected CI commands passed after receipt and catalog corrections. Complete M3 handed to independent Code Review."
     }
   ],
   "schema_version": 3
