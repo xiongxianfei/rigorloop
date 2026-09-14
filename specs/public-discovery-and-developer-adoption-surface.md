@@ -8,7 +8,11 @@ approved
 
 - [Public Discovery and Developer Adoption Surface](../docs/proposals/2026-05-23-public-discovery-and-developer-adoption-surface.md)
 - Proposal review: [proposal-review-r1](../docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/reviews/proposal-review-r1.md)
-- Related approved README contract: [README User Value Positioning](readme-user-value-positioning.md)
+- Historical README contract: [README User Value Positioning](https://github.com/xiongxianfei/rigorloop/blob/39b7c5cb1f03aa761d2f2493d3474ce985e59d6f/specs/readme-user-value-positioning.md)
+
+## Current positioning authority
+
+[VISION.md](../VISION.md) owns current project identity, audience and value positioning; README front matter follows the Constitution and retained vision-skill contract. This supersedes the former README-positioning contract and the Git-first copy, fixed opening section order and retired workflow-guide destinations below. Those examples describe the historical discovery rollout, not current required wording. Current public entry points must explain concrete value and audience fit, make only supported claims, and offer usable next steps before internal mechanics. Repository and npm metadata, truthful discovery links and their applicable validation obligations remain in scope; this amendment does not authorize external metadata changes.
 
 ## Goal and context
 
@@ -139,7 +143,7 @@ anchor, or npm package page unless that surface is approved as the public landin
 page.
 
 DXA-R4. The root README MUST continue to satisfy
-`specs/readme-user-value-positioning.md`.
+[historical `specs/readme-user-value-positioning.md`](https://github.com/xiongxianfei/rigorloop/blob/39b7c5cb1f03aa761d2f2493d3474ce985e59d6f/specs/readme-user-value-positioning.md).
 
 DXA-R4a. This spec MUST NOT be used to reorder the README in a way that violates
 the approved value-first README contract, including the required near-top
@@ -210,7 +214,7 @@ MUST update the owning source artifact or generator and not only `README.md`.
 
 DXA-R9b. If edited README text is outside generated/owned regions,
 implementation MUST verify it does not contradict `VISION.md`, source-of-truth
-sections, or `specs/readme-user-value-positioning.md`.
+sections, or [historical `specs/readme-user-value-positioning.md`](https://github.com/xiongxianfei/rigorloop/blob/39b7c5cb1f03aa761d2f2493d3474ce985e59d6f/specs/readme-user-value-positioning.md).
 
 DXA-R10. The npm package description SHOULD closely mirror the approved GitHub
 repository description when package metadata is touched.
@@ -307,7 +311,7 @@ Inputs:
 - GitHub repository metadata for `xiongxianfei/rigorloop`
 - root `README.md`
 - `VISION.md`
-- `specs/readme-user-value-positioning.md`
+- [historical `specs/readme-user-value-positioning.md`](https://github.com/xiongxianfei/rigorloop/blob/39b7c5cb1f03aa761d2f2493d3474ce985e59d6f/specs/readme-user-value-positioning.md)
 - package metadata for `@xiongxianfei/rigorloop`
 - package README for `@xiongxianfei/rigorloop`
 - GitHub latest release metadata
@@ -334,7 +338,7 @@ Outputs:
 - npm remains a CLI delivery channel, not a canonical workflow source.
 - GitHub repository metadata is external state and requires durable proof.
 - Documentation and metadata changes do not imply runtime behavior changes.
-- The approved README positioning contract remains active.
+- Current README positioning follows VISION.md and the current positioning authority above.
 
 ## Error and boundary behavior
 
@@ -363,7 +367,7 @@ Outputs:
 - Existing workflow rules, review gates, source-of-truth order, validation
   semantics, and release archive trust boundaries remain unchanged.
 - Existing deep README mechanics may be moved, shortened, or linked as long as
-  the README still satisfies this spec and `specs/readme-user-value-positioning.md`.
+  the README still satisfies this spec and [historical `specs/readme-user-value-positioning.md`](https://github.com/xiongxianfei/rigorloop/blob/39b7c5cb1f03aa761d2f2493d3474ce985e59d6f/specs/readme-user-value-positioning.md).
 - Stale pinned `@0.1.5` examples in current adoption surfaces migrate to
   `@0.2.0` for this baseline unless they are intentionally historical.
 - Rollback for tracked file changes is a revert of README/package wording and
@@ -471,7 +475,7 @@ the generated-region ownership rule.
 - AC-DXA-003. GitHub website field is blank or has owner-approved stable docs
   landing proof.
 - AC-DXA-004. README first-contact surface answers the questions in `DXA-R5`
-  while continuing to satisfy `specs/readme-user-value-positioning.md`.
+  while continuing to satisfy [historical `specs/readme-user-value-positioning.md`](https://github.com/xiongxianfei/rigorloop/blob/39b7c5cb1f03aa761d2f2493d3474ce985e59d6f/specs/readme-user-value-positioning.md).
 - AC-DXA-005. README Quick Start includes `@latest` and the current pinned
   stable version, with `@0.2.0` as the current baseline unless source evidence
   requires owner decision.

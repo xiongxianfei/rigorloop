@@ -1,0 +1,94 @@
+{
+  "assessment_scope": "TOKEN-1 first-pass correction assessment during independent review of complete token-retirement delta relative to /tmp/token-retirement-before. The concrete helper/fixture defect is recorded before author correction; this is not a final holistic approval. Governing approved packages: design-review-token-cost-retirement and delivery-review-token-cost-retirement.",
+  "change_id": "2026-09-13-current-design-repository-cleanup",
+  "contributors": [
+    {
+      "id": "codex-token-implementer",
+      "role": "implement"
+    }
+  ],
+  "findings": [
+    {
+      "evidence": "Severity: minor (required scope completion). Location: record-store-interactions.mjs lines 22-28 and recording-interactions/README.md comparison paragraphs. runInteraction defaults guidance=true, reads current skill or git show bd1c4bd3:skills/.../SKILL.md, and collects pieces categorized as guidance/command/request/response. Every retained caller in record-store-interactions.test.js explicitly passes guidance:false and never reads pieces. The removed --measure branch was the only token-count consumer. README still teaches historical loaded-guidance comparison, leaving retired-only machinery and historical-source dependency maintained contrary to VAL-SR-25.",
+      "id": "token-retirement-unused-guidance",
+      "owner": {
+        "id": "codex-token-implementer",
+        "role": "implement"
+      },
+      "reporter": {
+        "id": "codex-token-retirement-code-reviewer",
+        "role": "review"
+      },
+      "required_outcome": "Retire exclusive measurement guidance/collection and its historical Git dependency; document the retained semantic interaction test truthfully. Preserve actual advanced/targeted command execution, semantic/checkpoint/basis equivalence and meaningful calls assertions. Safe resolution: remove unused guidance option/branches and category accumulation if no retained consumer, update test invocation and README, keep execFileSync used by the independent read/hash subprocess, and rerun record-store-interactions tests plus relevant native CLI proof. No new owner decision required.",
+      "resolution": {
+        "actor": {
+          "id": "codex-token-retirement-code-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [
+          {
+            "id": "token-cost-retirement-implementation",
+            "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence.json"
+          }
+        ],
+        "rationale": "Independently reread corrected helper, caller and README. Guidance option, historical git show, loaded-skill comparison and category pieces are removed. Actual execFileSync read/hash, subprocess commands/help, semantic and intermediate checkpoint comparisons, subject basis and calls assertions remain. The four current interaction tests pass in token-interactions-final.log and durable implementation evidence. No remaining caller uses the retired collection."
+      },
+      "state": "resolved",
+      "subjects": [
+        {
+          "identity": "sha256:61e47a3d0c8445c3ecc9da41e2852f950a37a3e8fd84c183a78b2a31e1c2ee67",
+          "path": "packages/rigorloop/test/helpers/record-store-interactions.mjs"
+        },
+        {
+          "identity": "sha256:33ff1d9b4cc6ae50a7f6f9b0e9f8ac4b90b80e76efe706165d6e812fd25e8313",
+          "path": "packages/rigorloop/test/fixtures/recording-interactions/README.md"
+        },
+        {
+          "identity": "sha256:88b3c1ade09faca57b8a85f0b56a82c19cf3b8c5f89a9d31c6234b74485494f4",
+          "path": "packages/rigorloop/test/record-store-interactions.test.js"
+        }
+      ]
+    }
+  ],
+  "id": "code-review-token-retirement-round-1",
+  "independence_basis": "Separate delegated code reviewer /root/token_retirement_design_review has not authored or edited the implementation. Earlier Design and Delivery activity by this reviewer was independent assessment only.",
+  "judgment": "changes-requested",
+  "limitations": [
+    "Required correction is safely defined without a new Design decision. This early first-pass finding record does not approve the entire slice or certify final evidence.",
+    "Author must correct the named helper and documentation, preserve retained interaction observations and rerun relevant tests. Independent whole-slice reassessment and distinct Verify remain required."
+  ],
+  "rationale": [
+    "Spec alignment and scope have a required correction: VAL-SR-25 removes exclusive measurement helpers and retained Git-history dependencies, but the default guidance branch still fetches old skill text solely to accumulate measurement categories.",
+    "Test/edge/error/architecture/compatibility inspection confirms retained interaction tests explicitly disable guidance and compare semantic records, checkpoints, identities and command names. The unused guidance path is not necessary for these protections and current README incorrectly describes it as part of supported comparison. Remove its exclusive collection while retaining real subprocess inspection and negative/error behavior.",
+    "Security/authority remain bounded to local fixture operations in inspected code; no public release action was performed. Derived current skill/package bytes are unchanged by this helper correction. Full selector/adapter/release/CLI final evidence and the remaining whole-slice checklist assessment remain pending; no pass is claimed from incomplete runs."
+  ],
+  "reviewer": {
+    "id": "codex-token-retirement-code-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:61e47a3d0c8445c3ecc9da41e2852f950a37a3e8fd84c183a78b2a31e1c2ee67",
+      "path": "packages/rigorloop/test/helpers/record-store-interactions.mjs"
+    },
+    {
+      "identity": "sha256:33ff1d9b4cc6ae50a7f6f9b0e9f8ac4b90b80e76efe706165d6e812fd25e8313",
+      "path": "packages/rigorloop/test/fixtures/recording-interactions/README.md"
+    },
+    {
+      "identity": "sha256:88b3c1ade09faca57b8a85f0b56a82c19cf3b8c5f89a9d31c6234b74485494f4",
+      "path": "packages/rigorloop/test/record-store-interactions.test.js"
+    },
+    {
+      "identity": "sha256:bc18799fad9b41dbd20afad5a3d11a7fbbb397d7d6df508d68b9b4046fd93be2",
+      "path": "docs/plans/2026-09-13-token-cost-retirement.md"
+    },
+    {
+      "identity": "sha256:b799f7cf38fbaaf9f3946b5e1d05a0b1fc9116a0467d1ce6a24d5dd82c614d52",
+      "path": "docs/design/engineering/validation.md"
+    }
+  ],
+  "summary": "A required token-measurement-only guidance reader remains in the retained interaction helper and its current documentation.",
+  "target": "code"
+}

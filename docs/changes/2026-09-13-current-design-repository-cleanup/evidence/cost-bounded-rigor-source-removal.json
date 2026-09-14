@@ -1,0 +1,96 @@
+{
+  "operation": "consolidate-cost-bounded-rigor",
+  "historical_revision": "39b7c5cb1f03aa761d2f2493d3474ce985e59d6f",
+  "removed_subjects": [
+    {
+      "path": "specs/cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md",
+      "identity": "sha256:3bf5fad77fb9ed35cc701da0b16f7c9c13ce31ad28be78fb8109fa782b127e8b",
+      "historical_identity": "sha256:3bf5fad77fb9ed35cc701da0b16f7c9c13ce31ad28be78fb8109fa782b127e8b",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "specs/cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.test.md",
+      "identity": "sha256:56a202cf528b1880ce5e7d1c2e372bc3dcd16fdc894042b8165d13d929c5aa80",
+      "historical_identity": "sha256:56a202cf528b1880ce5e7d1c2e372bc3dcd16fdc894042b8165d13d929c5aa80",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "specs/stage-evidence-access-contracts-for-cost-bounded-rigor.md",
+      "identity": "sha256:3910a86b249f748e7a743c33d553f78f57e8ac7dfdc3000e2bf027ba8c8a7684",
+      "historical_identity": "sha256:3910a86b249f748e7a743c33d553f78f57e8ac7dfdc3000e2bf027ba8c8a7684",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "specs/stage-evidence-access-contracts-for-cost-bounded-rigor.test.md",
+      "identity": "sha256:926aa0dbe0074dc91e185dd85a22dc570667ebdccb496ef8f1b3b16778dd1170",
+      "historical_identity": "sha256:926aa0dbe0074dc91e185dd85a22dc570667ebdccb496ef8f1b3b16778dd1170",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "specs/cost-bounded-rigor-m2-selected-skill-reminders.md",
+      "identity": "sha256:0d4a1aee0bf7120181652550ac9cf40d76aed3e09ecdbb968f3d8bfe831bd569",
+      "historical_identity": "sha256:0d4a1aee0bf7120181652550ac9cf40d76aed3e09ecdbb968f3d8bfe831bd569",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "specs/cost-bounded-rigor-m2-selected-skill-reminders.test.md",
+      "identity": "sha256:c507608bf139fd929b45cdc2ef7ac49e7c088e54fbc62b929d10fd152a726457",
+      "historical_identity": "sha256:c507608bf139fd929b45cdc2ef7ac49e7c088e54fbc62b929d10fd152a726457",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "specs/cost-bounded-rigor-m3-validation-budget-guidance.md",
+      "identity": "sha256:3e0e22a01f334efae326aee70918f73c807fee4731a484cb175ac5f104f81d7c",
+      "historical_identity": "sha256:3e0e22a01f334efae326aee70918f73c807fee4731a484cb175ac5f104f81d7c",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "specs/cost-bounded-rigor-m3-validation-budget-guidance.test.md",
+      "identity": "sha256:232107472e0bdcdbd38bb3e5e2c2df24ce59071b0a9c26be273d111b0226eb54",
+      "historical_identity": "sha256:232107472e0bdcdbd38bb3e5e2c2df24ce59071b0a9c26be273d111b0226eb54",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "specs/cost-bounded-rigor-m5-progressive-loading-follow-through.md",
+      "identity": "sha256:ace5e6b38c757b58f123284fa27c5cf9c030196c837b0a055cf4220bcc2dc5d1",
+      "historical_identity": "sha256:ace5e6b38c757b58f123284fa27c5cf9c030196c837b0a055cf4220bcc2dc5d1",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "specs/cost-bounded-rigor-m5-progressive-loading-follow-through.test.md",
+      "identity": "sha256:aa6886fa090afcb732aa7c81d6e4b112635890019db78c1a1f2b2d1b2e36e4ff",
+      "historical_identity": "sha256:aa6886fa090afcb732aa7c81d6e4b112635890019db78c1a1f2b2d1b2e36e4ff",
+      "uncommitted_patch": ""
+    }
+  ],
+  "deleted_lines": 3631,
+  "updated_paths": [
+    "docs/design/skill/skill.md",
+    "docs/design/engineering/validation.md"
+  ],
+  "prior_model_identities": {
+    "docs/design/skill/skill.md": "sha256:5175f7ab197d4fa2202f932e21717fd089e0f994b7d5d469f53224098c0aa3fe",
+    "docs/design/engineering/validation.md": "sha256:d6a2ae7cf2c2ca1d57269f383b2c1716c27af55624625f6a0154738cc698d0c5"
+  },
+  "important_knowledge": "Skill preserves evidence defaults, conditional and expansion reads, do-not-under-read, progressive loading, scope treatment and warning-only cost claims. Engineering Validation preserves trigger-driven targeted/broad coverage, dirty-worktree handling, selector ownership and unchanged required proof. Existing skills, selectors, tests, fixtures, package behavior and M4 reports remain unchanged.",
+  "retired_material": "Completed first-slice/M1/M2/M3/M5 rollout boundaries, inventories and old workflow-guide locations retire. Current state remains change-local through Workflow/CLI, not old active-plan summaries. Current proposal sections supersede standalone scope-budget headings. No new submodel or runtime cost gate is introduced.",
+  "historical_preservation": "Exact originals and any uncommitted patches are preserved against retained Git. Historical activation grandfathering inventory, lifecycle transfer tables and review/plan records retain original identities and meaning; they are not live reads of deleted source contents. M4 remains a separate follow-up.",
+  "source_disposition": {
+    "initial R1-R2,R16,R19": "Completed scope/rollout evidence historical; Skill concise local guidance and Engineering preserve existing boundaries",
+    "initial R3-R6 including R4a/R4b/R5a/R5b/R5c": "Skill Evidence access and Proposal procedure, Assessment Proposal Review; old heading superseded, treatments and explicit follow-up retained",
+    "initial R7-R15,R17-R18": "Skill source ownership, evidence access, scope judgment and warning-only measurement; Workflow/CLI replace guide/path-state authority",
+    "stage evidence R1-R4,R17-R18,R23-R29": "Completed population and stage rollout historical; Skill preserves input reclassification rationale, Design owns current downstream authoring",
+    "stage evidence R5-R16,R19-R22": "Skill Evidence access and proportional effort, scoped proposal/review input categories and full-read conditions",
+    "stage evidence R30-R34": "Validation behavior-oriented static checks; Skill preserves warning-only cost and safety boundaries; no semantic read auditor",
+    "M2 R1-R7,R11-R12,R19": "Completed slice scope historical; Skill concise local guidance and justified no-change disposition",
+    "M2 R8-R10,R13-R18": "Skill evidence sufficiency and full-read escape; Validation behavior-oriented proof; existing source, measurement and safety owners",
+    "M3 R1-R19": "Validation scope and cost preserves selection/coverage, explicit triggers, executable owner, dirty-worktree and final evidence duties; completed population restrictions historical",
+    "M5 R1-R5,R13-R15,R20-R21,R25-R29": "Completed follow-through allocation historical; Skill no-change rationale, Validation and Engineering own actual verification; independently applicable M4 triggers remain",
+    "M5 R6-R12,R16-R19,R22-R24,R30": "Skill progressive entry, bounded/full reads, claims and portability; current Workflow/CLI state replaces active-plan Current Handoff Summary; Assessment preserves independent review",
+    "All five test specs, examples, edge cases, unnumbered constraints": "Current owners retain scope, evidence sufficiency, input authority, conditional loading, unchanged check coverage and claims boundaries. Existing executable protection unchanged; obsolete stage/guide references and one-time rollout proof remain historical."
+  },
+  "validation": {
+    "procedure": "python scripts/test-skill-validator.py; python scripts/test-boundary-first-validation.py; python scripts/validate-boundary-first.py --check --path docs/design/skill/skill.md --path docs/design/engineering/validation.md --path specs/cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md --path specs/stage-evidence-access-contracts-for-cost-bounded-rigor.md --path specs/cost-bounded-rigor-m2-selected-skill-reminders.md --path specs/cost-bounded-rigor-m3-validation-budget-guidance.md --path specs/cost-bounded-rigor-m5-progressive-loading-follow-through.md; python scripts/validate-documentation-prose.py --mode enforce --path docs/design/skill/skill.md --path docs/design/engineering/validation.md --path docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md; git diff --check; git diff --cached --check; rg retired-basename scan of scripts/packages/skills/current models/architecture/ADRs",
+    "summary": "354 skill tests and 87 boundary/model tests passed. Structural/reference and prose checks passed with zero prose errors/warnings; diff checks passed. No remaining source references in executable or current model surfaces. Historical grandfathering inventory and lifecycle transfer tables are preserved. No skill, selector, test, fixture, package or M4 report changes. Independent review and wider cleanup Verify remain outstanding."
+  }
+}

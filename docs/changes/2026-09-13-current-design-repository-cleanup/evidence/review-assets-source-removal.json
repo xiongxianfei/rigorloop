@@ -1,0 +1,28 @@
+{
+  "operation": "retire-review-asset-extraction-documents",
+  "historical_revision": "39b7c5cb1f03aa761d2f2493d3474ce985e59d6f",
+  "removed_subjects": [
+    {
+      "path": "specs/review-skill-family-consistency-parser-owned-finding-shape.md",
+      "identity": "sha256:71bb7cd701609c194d79baad5a45e6445998fb227bd609fbf74ec3894e22ec71",
+      "historical_identity": "sha256:5a97dfb119849f7903bd1c1d6b418b74ff32dfb846e1c4bdf7d199c69d0d1352",
+      "uncommitted_patch": "--- 39b7c5cb1f03aa761d2f2493d3474ce985e59d6f:specs/review-skill-family-consistency-parser-owned-finding-shape.md\n+++ specs/review-skill-family-consistency-parser-owned-finding-shape.md\n@@ -14,7 +14,7 @@\n \n The change makes the parser-owned material-finding field block the copied starting structure for review findings while preserving review behavior. It adds skill-local structural assets for material findings and review result blocks, updates resource maps, and adds validation that binds the material-finding asset shape to the existing review-artifact parser contract. Review judgment, review dimensions, severity semantics, recording rules, stop conditions, lifecycle boundaries, and handoff behavior remain in each owning `SKILL.md` or the governing workflow artifacts.\n \n-This spec extends the existing packaged-asset pattern from `specs/skill-contract.md`, `specs/proposal-family-assets-progressive-disclosure.md`, and `specs/spec-family-assets-progressive-disclosure.md`. It does not change the review-artifact parser's accepted field contract.\n+This spec extends the existing packaged-asset pattern from `specs/skill-contract.md`, `specs/proposal-family-assets-progressive-disclosure.md`, and [historical `specs/spec-family-assets-progressive-disclosure.md`](https://github.com/xiongxianfei/rigorloop/blob/39b7c5cb1f03aa761d2f2493d3474ce985e59d6f/specs/spec-family-assets-progressive-disclosure.md). It does not change the review-artifact parser's accepted field contract.\n \n ## Glossary\n \n"
+    },
+    {
+      "path": "specs/review-skill-family-consistency-parser-owned-finding-shape.test.md",
+      "identity": "sha256:aceec29803a97268dfd7ebd9343f4711b57c328b6a5cee2c9c3dfcf21dad1078",
+      "historical_identity": "sha256:aceec29803a97268dfd7ebd9343f4711b57c328b6a5cee2c9c3dfcf21dad1078",
+      "uncommitted_patch": ""
+    }
+  ],
+  "deleted_lines": 742,
+  "updated_paths": [],
+  "important_knowledge": "Skill owns structural assets, contained resource maps, placeholders and policy separation. Assessment owns complete actionable findings and stage-specific judgment; Records owns current stored representation. Existing asset/parser conformance, invalid-fill and policy-leakage checks retain their current applicability and fixtures. No extra model prose is needed.",
+  "retired_material": "Historical review-asset extraction scope, first-slice skill inventories, old Markdown finding/receipt shapes, source-to-asset rollout matrices and measurement obligations retire. Historical stage names and statuses do not become current contracts. This removal does not authorize changing parser behavior or deleting executable asset/parser tests.",
+  "historical_preservation": "Git retains both originals. The one modified spec also retains its complete uncommitted citation patch and both original/current hashes. Historical reviews, plans, proof documents and fixtures keep their original bytes and meaning. The separate review-finding-resolution-contract remains a live automation input.",
+  "validation": {
+    "result": "passed",
+    "procedure": "python scripts/test-skill-validator.py; python scripts/test-review-artifact-validator.py; python scripts/validate-boundary-first.py --check --path specs/review-skill-family-consistency-parser-owned-finding-shape.md --path specs/review-skill-family-consistency-parser-owned-finding-shape.test.md; python scripts/validate-documentation-prose.py --mode enforce --path docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md; git diff --check; git diff --cached --check.",
+    "summary": "354 skill tests and 109 review-parser tests passed. Structural deletion checks passed, prose passed with zero errors/warnings, and diff checks passed. The one uncommitted citation patch and exact original/current hashes are preserved. No current references required amendments. Executable tests and fixtures remain unchanged; no full CI, independent review or final Verify claimed."
+  }
+}

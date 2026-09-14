@@ -1,0 +1,888 @@
+{
+  "historical_revision": "39b7c5cb1f03aa761d2f2493d3474ce985e59d6f",
+  "removed_subjects": [
+    {
+      "path": "benchmarks/token-cost/fixtures/minimal-public-project-architecture-review/AGENTS.md",
+      "identity": "sha256:ddcc744d8d229f963a99a8e75dba46d6ef5c709c31ce6c5f6007aa183066fd86",
+      "historical_identity": "sha256:ddcc744d8d229f963a99a8e75dba46d6ef5c709c31ce6c5f6007aa183066fd86",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "benchmarks/token-cost/fixtures/minimal-public-project-architecture-review/README.md",
+      "identity": "sha256:c545c2ec862bb3f82ddde29b45e982626e6fc5e7b3f93fd610c888e2eca8d0b2",
+      "historical_identity": "sha256:c545c2ec862bb3f82ddde29b45e982626e6fc5e7b3f93fd610c888e2eca8d0b2",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "benchmarks/token-cost/fixtures/minimal-public-project-architecture-review/VISION.md",
+      "identity": "sha256:8c60d8a3fe75d6d7885edd48c9d8c95788d30d11c305ba4c611dcfe7b2514f93",
+      "historical_identity": "sha256:8c60d8a3fe75d6d7885edd48c9d8c95788d30d11c305ba4c611dcfe7b2514f93",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "benchmarks/token-cost/fixtures/minimal-public-project-architecture-review/docs/adr/README.md",
+      "identity": "sha256:3a0d0b4558ff1f839edd6765ef8183730688309592bd31f758f3f63e1a504325",
+      "historical_identity": "sha256:3a0d0b4558ff1f839edd6765ef8183730688309592bd31f758f3f63e1a504325",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "benchmarks/token-cost/fixtures/minimal-public-project-architecture-review/docs/architecture/system/architecture.md",
+      "identity": "sha256:1c6ac65db61cd8a3ff9997c206970e806b5ee4d155a9bc37ba3881da7840e61b",
+      "historical_identity": "sha256:1c6ac65db61cd8a3ff9997c206970e806b5ee4d155a9bc37ba3881da7840e61b",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "benchmarks/token-cost/fixtures/minimal-public-project-architecture-review/docs/architecture/system/diagrams/container.mmd",
+      "identity": "sha256:bde8c8bb94ab13f928d2c637e21f63661bcb44db10b461720309f7fae6fa862f",
+      "historical_identity": "sha256:bde8c8bb94ab13f928d2c637e21f63661bcb44db10b461720309f7fae6fa862f",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "benchmarks/token-cost/fixtures/minimal-public-project-architecture-review/docs/architecture/system/diagrams/context.mmd",
+      "identity": "sha256:65f1f3cb5d92a757295cff05aee1176aaf9cb86f28920ef2b06fd1853529d9e0",
+      "historical_identity": "sha256:65f1f3cb5d92a757295cff05aee1176aaf9cb86f28920ef2b06fd1853529d9e0",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "benchmarks/token-cost/fixtures/minimal-public-project-architecture-review/docs/changes/2026-05-11-architecture-review-benchmark/change.yaml",
+      "identity": "sha256:ae13040ce2868d48d7206db1231977a1f053bf3a1bd5baa75088421adb1cc048",
+      "historical_identity": "sha256:ae13040ce2868d48d7206db1231977a1f053bf3a1bd5baa75088421adb1cc048",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "benchmarks/token-cost/fixtures/minimal-public-project-architecture-review/docs/changes/2026-05-11-architecture-review-benchmark/explain-change.md",
+      "identity": "sha256:a74f4d8d3f0641e35c7857baea7fd8734dbaf8d6cb9949beac065e59fd32ecc3",
+      "historical_identity": "sha256:a74f4d8d3f0641e35c7857baea7fd8734dbaf8d6cb9949beac065e59fd32ecc3",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "benchmarks/token-cost/fixtures/minimal-public-project-architecture-review/specs/example-feature.md",
+      "identity": "sha256:c4e52b99891109c9dee6a4a5de31301d338037f90b79367983c4ffa1c122fc79",
+      "historical_identity": "sha256:c4e52b99891109c9dee6a4a5de31301d338037f90b79367983c4ffa1c122fc79",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "benchmarks/token-cost/fixtures/minimal-public-project-architecture-review/src/app.txt",
+      "identity": "sha256:e27945064822cb99b89638491849299b1b422e63a4de8e918231d59aa1a09b2f",
+      "historical_identity": "sha256:e27945064822cb99b89638491849299b1b422e63a4de8e918231d59aa1a09b2f",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "benchmarks/token-cost/fixtures/minimal-public-project/AGENTS.md",
+      "identity": "sha256:e85d725a8b2616825980ef4a3f080f32bdd1afd1215d499c65ea30469ed4bc2c",
+      "historical_identity": "sha256:e85d725a8b2616825980ef4a3f080f32bdd1afd1215d499c65ea30469ed4bc2c",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "benchmarks/token-cost/fixtures/minimal-public-project/README.md",
+      "identity": "sha256:d8fc710f403ff986e25589208cc72dbc85fe1af356a54d72c9566126857c9bc3",
+      "historical_identity": "sha256:d8fc710f403ff986e25589208cc72dbc85fe1af356a54d72c9566126857c9bc3",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "benchmarks/token-cost/fixtures/minimal-public-project/VISION.md",
+      "identity": "sha256:86ae04386cbafe1edcec9412335587f028c5bf41265bd4e0cef226f8aa5c9299",
+      "historical_identity": "sha256:86ae04386cbafe1edcec9412335587f028c5bf41265bd4e0cef226f8aa5c9299",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "benchmarks/token-cost/fixtures/minimal-public-project/docs/changes/.gitkeep",
+      "identity": "sha256:01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "historical_identity": "sha256:01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "benchmarks/token-cost/fixtures/minimal-public-project/src/example.txt",
+      "identity": "sha256:108045b080ef2d716425782af4c169aa1759016aa6445acc1ae1ffe276a14233",
+      "historical_identity": "sha256:108045b080ef2d716425782af4c169aa1759016aa6445acc1ae1ffe276a14233",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "benchmarks/token-cost/manifest.yaml",
+      "identity": "sha256:80ba6dd9d80469b4ade3dbec34e3efabf9ced8612c06f0ee001b0846ba81628e",
+      "historical_identity": "sha256:80ba6dd9d80469b4ade3dbec34e3efabf9ced8612c06f0ee001b0846ba81628e",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "benchmarks/token-cost/prompts/architecture-no-impact.md",
+      "identity": "sha256:2eee062104ec6354951d1dbc3ab41f1c6f561099a9b0a883b102ad08f0d12ed6",
+      "historical_identity": "sha256:2eee062104ec6354951d1dbc3ab41f1c6f561099a9b0a883b102ad08f0d12ed6",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "benchmarks/token-cost/prompts/architecture-review.md",
+      "identity": "sha256:d1cfa32f25c003af21c2047f4b74468d36ac1a0cf2d6ca57a902ef17a9103c8c",
+      "historical_identity": "sha256:d1cfa32f25c003af21c2047f4b74468d36ac1a0cf2d6ca57a902ef17a9103c8c",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "benchmarks/token-cost/prompts/code-review-small.md",
+      "identity": "sha256:e5075c362dc676c8b84af4e0f64134dd37c99839b717b50f5a7b4c04928aea87",
+      "historical_identity": "sha256:e5075c362dc676c8b84af4e0f64134dd37c99839b717b50f5a7b4c04928aea87",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "benchmarks/token-cost/prompts/explain-change-summary.md",
+      "identity": "sha256:f7d9aead0d2353a7568328d74862f0abf89a66842945b9dfba34e9b565b80766",
+      "historical_identity": "sha256:f7d9aead0d2353a7568328d74862f0abf89a66842945b9dfba34e9b565b80766",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "benchmarks/token-cost/prompts/implement-handoff.md",
+      "identity": "sha256:189954cdd79dba16cc6741955109a98bf0974edc3b2cf53b74c93edc6f9659ae",
+      "historical_identity": "sha256:189954cdd79dba16cc6741955109a98bf0974edc3b2cf53b74c93edc6f9659ae",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "benchmarks/token-cost/prompts/learn-no-durable-lesson.md",
+      "identity": "sha256:030f7c44ba64b88473adf3361058dd10af732b8b9b3eaac645a23e8d83d6f971",
+      "historical_identity": "sha256:030f7c44ba64b88473adf3361058dd10af732b8b9b3eaac645a23e8d83d6f971",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "benchmarks/token-cost/prompts/plan-handoff.md",
+      "identity": "sha256:6361b21c5df62bfbd298b60e4709b65cf982289ce411fab6dc4080a072be44cf",
+      "historical_identity": "sha256:6361b21c5df62bfbd298b60e4709b65cf982289ce411fab6dc4080a072be44cf",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "benchmarks/token-cost/prompts/pr-handoff.md",
+      "identity": "sha256:d2b2afe2d6bd106bf61202e96dfb0acac030b673e68cbfab757f643b215c082f",
+      "historical_identity": "sha256:d2b2afe2d6bd106bf61202e96dfb0acac030b673e68cbfab757f643b215c082f",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "benchmarks/token-cost/prompts/proposal-short.md",
+      "identity": "sha256:37d563c4db3e9a81f181fb2ee41b0ba42f5677e7656108c8bc2d1ff689353c85",
+      "historical_identity": "sha256:37d563c4db3e9a81f181fb2ee41b0ba42f5677e7656108c8bc2d1ff689353c85",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "benchmarks/token-cost/prompts/verify-final-pack.md",
+      "identity": "sha256:c1ced52eab1ac826469381ad7f461bc19efb22635aa04102e0e54f3cd394cca3",
+      "historical_identity": "sha256:c1ced52eab1ac826469381ad7f461bc19efb22635aa04102e0e54f3cd394cca3",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "benchmarks/token-cost/prompts/workflow-route.md",
+      "identity": "sha256:f8fbd62ff27061a9e3a2dc73b00408531f4ad537186bab9490cdb4566d084cc8",
+      "historical_identity": "sha256:f8fbd62ff27061a9e3a2dc73b00408531f4ad537186bab9490cdb4566d084cc8",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/2026-05-10-baseline.md",
+      "identity": "sha256:e1a95747059cf37b4d11d24cca36ad602f6bdc00ede8273e5ac930ee845ba355",
+      "historical_identity": "sha256:e1a95747059cf37b4d11d24cca36ad602f6bdc00ede8273e5ac930ee845ba355",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/cli/v0.4.x-detailed-baseline.json",
+      "identity": "sha256:f124e9cb9fc6d2d88baa0459028c0d7d32020e15379413f200aa7736234fccfd",
+      "historical_identity": "sha256:f124e9cb9fc6d2d88baa0459028c0d7d32020e15379413f200aa7736234fccfd",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/lifecycle/2026-05-14-cost-bounded-rigor-m4-lifecycle-token-cost-summary.md",
+      "identity": "sha256:b2922b393c2bc8864d01ee438ad33d6f5db2c9cece5736d2fc79983c746cdcdc",
+      "historical_identity": "sha256:b2922b393c2bc8864d01ee438ad33d6f5db2c9cece5736d2fc79983c746cdcdc",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/lifecycle/2026-05-14-cost-bounded-rigor-slicing-retrospective.md",
+      "identity": "sha256:8fbe0bf7f48dc40c29ba689fb9c4609d2ee86eb7a83d7be56176c1459d727f98",
+      "historical_identity": "sha256:8fbe0bf7f48dc40c29ba689fb9c4609d2ee86eb7a83d7be56176c1459d727f98",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/optimizations/2026-05-11-progressive-loading-high-cost-skills.md",
+      "identity": "sha256:b058b45907fca26a9e8bbf72dbc6cdc6d6ecadd8e544424e848b0ac7d1707bef",
+      "historical_identity": "sha256:b058b45907fca26a9e8bbf72dbc6cdc6d6ecadd8e544424e848b0ac7d1707bef",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/releases/v0.1.1-skill-token-runtime-v1-pretransition.md",
+      "identity": "sha256:e11cf8b5c6a86a34a112ae2bd30ea310b96d5a1e105a0b721477a816c0f3fb25",
+      "historical_identity": "sha256:e11cf8b5c6a86a34a112ae2bd30ea310b96d5a1e105a0b721477a816c0f3fb25",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/releases/v0.1.1-skill-token-runtime-v1-pretransition.yaml",
+      "identity": "sha256:164c51a81151d80a2c14fa78d3483a90051f9086d54d57b82a3eda142d926564",
+      "historical_identity": "sha256:164c51a81151d80a2c14fa78d3483a90051f9086d54d57b82a3eda142d926564",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/releases/v0.1.1.md",
+      "identity": "sha256:4e31e7d347cb7e799c2fe3bb1db46b43ac8ee2de42ad1a910c5fd197c44c54ff",
+      "historical_identity": "sha256:4e31e7d347cb7e799c2fe3bb1db46b43ac8ee2de42ad1a910c5fd197c44c54ff",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/releases/v0.1.1.yaml",
+      "identity": "sha256:98acd6ee6b401d4c80853595f7c991c4ed0b3334c50b6b06838db3051e9bb4f3",
+      "historical_identity": "sha256:98acd6ee6b401d4c80853595f7c991c4ed0b3334c50b6b06838db3051e9bb4f3",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/releases/v0.1.2.md",
+      "identity": "sha256:9e0d2d6022203ad9580f50316ebb42ceb3f789225d19f910c3e0ea1b14204ab9",
+      "historical_identity": "sha256:9e0d2d6022203ad9580f50316ebb42ceb3f789225d19f910c3e0ea1b14204ab9",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/releases/v0.1.2.yaml",
+      "identity": "sha256:ddc985224a2e625d545a6cab4ec8b019f07152f62d78554c591ef0ccfe7c1f23",
+      "historical_identity": "sha256:ddc985224a2e625d545a6cab4ec8b019f07152f62d78554c591ef0ccfe7c1f23",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/releases/v0.1.3.md",
+      "identity": "sha256:5df6cb28be70a34103cd934e1172ef5b490349a29a376f7dcf1c22e3f4115f91",
+      "historical_identity": "sha256:5df6cb28be70a34103cd934e1172ef5b490349a29a376f7dcf1c22e3f4115f91",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/releases/v0.1.3.yaml",
+      "identity": "sha256:465e420629ed3def5e44b8707335dbc260a18a534ea912e5caa66b163890b3d5",
+      "historical_identity": "sha256:465e420629ed3def5e44b8707335dbc260a18a534ea912e5caa66b163890b3d5",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/runs/v0.1.1/architecture-no-impact-run1.analysis.yaml",
+      "identity": "sha256:6db920da21befc305aff3c51b0704ab51f1beda5b288e1889b9b44813465bcd2",
+      "historical_identity": "sha256:6db920da21befc305aff3c51b0704ab51f1beda5b288e1889b9b44813465bcd2",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/runs/v0.1.1/code-review-small-run1.analysis.yaml",
+      "identity": "sha256:2586582c33924a449ace753554e0098d1e2612bf70b8092aecfcf8f9baef646c",
+      "historical_identity": "sha256:2586582c33924a449ace753554e0098d1e2612bf70b8092aecfcf8f9baef646c",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/runs/v0.1.1/explain-change-summary-run1.analysis.yaml",
+      "identity": "sha256:03381fb49f03a863c243a32e91cc67f108f85b631d857b56e88a3a8b823d6ca7",
+      "historical_identity": "sha256:03381fb49f03a863c243a32e91cc67f108f85b631d857b56e88a3a8b823d6ca7",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/runs/v0.1.1/implement-handoff-run1.analysis.yaml",
+      "identity": "sha256:cffd58adfc499a8693a3e24d61c9936aed0338336b18b13f410f7c4f78b6ced5",
+      "historical_identity": "sha256:cffd58adfc499a8693a3e24d61c9936aed0338336b18b13f410f7c4f78b6ced5",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/runs/v0.1.1/learn-no-durable-lesson-run1.analysis.yaml",
+      "identity": "sha256:cb7f3ed9be1b977ee20d32219aa6203230e874e35205d93f3ec2ab71053ecd2a",
+      "historical_identity": "sha256:cb7f3ed9be1b977ee20d32219aa6203230e874e35205d93f3ec2ab71053ecd2a",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/runs/v0.1.1/plan-handoff-run1.analysis.yaml",
+      "identity": "sha256:c057528bb5732d74175c9ab5e8bda51f62186889f36431d520072e24eace7229",
+      "historical_identity": "sha256:c057528bb5732d74175c9ab5e8bda51f62186889f36431d520072e24eace7229",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/runs/v0.1.1/pr-handoff-run1.analysis.yaml",
+      "identity": "sha256:5172db697eae755ae41a0aa3c7f50446a6dcc019133d5c29c6279d45033e348b",
+      "historical_identity": "sha256:5172db697eae755ae41a0aa3c7f50446a6dcc019133d5c29c6279d45033e348b",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/runs/v0.1.1/proposal-short-run1.analysis.yaml",
+      "identity": "sha256:1362d373fc558985353b83811170a3382b28d727395836ebfff572207266f3e3",
+      "historical_identity": "sha256:1362d373fc558985353b83811170a3382b28d727395836ebfff572207266f3e3",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/runs/v0.1.1/verify-final-pack-run1.analysis.yaml",
+      "identity": "sha256:1385950fdf2614d07f8a63f4f8810948217bb73d38239b5bd933c98c12acfa78",
+      "historical_identity": "sha256:1385950fdf2614d07f8a63f4f8810948217bb73d38239b5bd933c98c12acfa78",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/runs/v0.1.1/workflow-route-run1.analysis.yaml",
+      "identity": "sha256:591b53cbeaf761ed6bc7bc24cbef1d35e3176ef59237aec135aaed1a356bc0a9",
+      "historical_identity": "sha256:591b53cbeaf761ed6bc7bc24cbef1d35e3176ef59237aec135aaed1a356bc0a9",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/runs/v0.1.2/architecture-no-impact-run1.analysis.yaml",
+      "identity": "sha256:41579415999efaf1eba56b687eecdb31dfbe4c51908a49d9a6c4a97803f9be16",
+      "historical_identity": "sha256:41579415999efaf1eba56b687eecdb31dfbe4c51908a49d9a6c4a97803f9be16",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/runs/v0.1.2/code-review-small-run1.analysis.yaml",
+      "identity": "sha256:241237ba45832508d52a75865ed8102d7e74b897215227eeb247550372a9674d",
+      "historical_identity": "sha256:241237ba45832508d52a75865ed8102d7e74b897215227eeb247550372a9674d",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/runs/v0.1.2/explain-change-summary-run1.analysis.yaml",
+      "identity": "sha256:1608d2b72b01bd1c20465e6d760fa4d914998c0ee2a5a639e138acf9359eef33",
+      "historical_identity": "sha256:1608d2b72b01bd1c20465e6d760fa4d914998c0ee2a5a639e138acf9359eef33",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/runs/v0.1.2/implement-handoff-run1.analysis.yaml",
+      "identity": "sha256:33662a32625525e8894e4a13b7ec01b23e0f97cc56325c1d3d509deadd0fd059",
+      "historical_identity": "sha256:33662a32625525e8894e4a13b7ec01b23e0f97cc56325c1d3d509deadd0fd059",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/runs/v0.1.2/learn-no-durable-lesson-run1.analysis.yaml",
+      "identity": "sha256:0d66f416237eb32c00eec096c9bb7c16748a9983ddc892b74d6837480b448806",
+      "historical_identity": "sha256:0d66f416237eb32c00eec096c9bb7c16748a9983ddc892b74d6837480b448806",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/runs/v0.1.2/plan-handoff-run1.analysis.yaml",
+      "identity": "sha256:7ca4ef7e9e3bfb578f506e2d03c93f9f121e8ea12d693855cf2a375bcc88a4e7",
+      "historical_identity": "sha256:7ca4ef7e9e3bfb578f506e2d03c93f9f121e8ea12d693855cf2a375bcc88a4e7",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/runs/v0.1.2/pr-handoff-run1.analysis.yaml",
+      "identity": "sha256:4254cbac76027f5867ebca88d14404560cc65d584fd1cd27e3fa249993cb59cf",
+      "historical_identity": "sha256:4254cbac76027f5867ebca88d14404560cc65d584fd1cd27e3fa249993cb59cf",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/runs/v0.1.2/proposal-short-run1.analysis.yaml",
+      "identity": "sha256:68338f52d568f099b2611004645fe75f7634252351397428e991fdc2d8804a64",
+      "historical_identity": "sha256:68338f52d568f099b2611004645fe75f7634252351397428e991fdc2d8804a64",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/runs/v0.1.2/verify-final-pack-run1.analysis.yaml",
+      "identity": "sha256:5126e7161db0dbd0f3119868401e319ba485a81b97e2ba30826cdaa0377eb727",
+      "historical_identity": "sha256:5126e7161db0dbd0f3119868401e319ba485a81b97e2ba30826cdaa0377eb727",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/runs/v0.1.2/workflow-route-run1.analysis.yaml",
+      "identity": "sha256:add318d23d15fe726d32ea1a878def4352da43eaffa41bd4970bdc0481ea6abe",
+      "historical_identity": "sha256:add318d23d15fe726d32ea1a878def4352da43eaffa41bd4970bdc0481ea6abe",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/runs/v0.1.3/architecture-no-impact-run1.analysis.yaml",
+      "identity": "sha256:3baec2e0b79f2202d7672b1d5ea89aa4eeb9fcf1b48f76ea7134144e1300a7f9",
+      "historical_identity": "sha256:3baec2e0b79f2202d7672b1d5ea89aa4eeb9fcf1b48f76ea7134144e1300a7f9",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/runs/v0.1.3/architecture-no-impact-run1.jsonl",
+      "identity": "sha256:df4b1daa2f5bd85b3c963d592636b775bcdf2b8fc272c65e48f7b1bbff757053",
+      "historical_identity": "sha256:df4b1daa2f5bd85b3c963d592636b775bcdf2b8fc272c65e48f7b1bbff757053",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/runs/v0.1.3/code-review-small-run1.analysis.yaml",
+      "identity": "sha256:cf8ec7820fd3a0af6ad1e965ac2ab7af736da86c46d4c6698ce2796d531f429a",
+      "historical_identity": "sha256:cf8ec7820fd3a0af6ad1e965ac2ab7af736da86c46d4c6698ce2796d531f429a",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/runs/v0.1.3/code-review-small-run1.jsonl",
+      "identity": "sha256:336d4407038c1d9f65dbfbdbd71b6862a394268815baff6b17f5277be62466e3",
+      "historical_identity": "sha256:336d4407038c1d9f65dbfbdbd71b6862a394268815baff6b17f5277be62466e3",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/runs/v0.1.3/explain-change-summary-run1.analysis.yaml",
+      "identity": "sha256:414077a02394181d1da4d05ed590bf11f0fe53f1c7f6fa63df33359fb62b292a",
+      "historical_identity": "sha256:414077a02394181d1da4d05ed590bf11f0fe53f1c7f6fa63df33359fb62b292a",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/runs/v0.1.3/explain-change-summary-run1.jsonl",
+      "identity": "sha256:8da06ec8238462c0c4648ba59a81e2b4fcd8c8e0c5dfaf270949209e6ca0f1ac",
+      "historical_identity": "sha256:8da06ec8238462c0c4648ba59a81e2b4fcd8c8e0c5dfaf270949209e6ca0f1ac",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/runs/v0.1.3/implement-handoff-run1.analysis.yaml",
+      "identity": "sha256:ae65796968cd13cf9342428aeee37ed72264d1e61fd1dd2fbd593ee51456ab86",
+      "historical_identity": "sha256:ae65796968cd13cf9342428aeee37ed72264d1e61fd1dd2fbd593ee51456ab86",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/runs/v0.1.3/implement-handoff-run1.jsonl",
+      "identity": "sha256:d2bf8ad4b9d6c7f9096abc0233e6122e38676f183b4d0a785a8b513cc91ae3c7",
+      "historical_identity": "sha256:d2bf8ad4b9d6c7f9096abc0233e6122e38676f183b4d0a785a8b513cc91ae3c7",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/runs/v0.1.3/learn-no-durable-lesson-run1.analysis.yaml",
+      "identity": "sha256:5bd0efc68c3f93d95ee0ced2b9976e1c3f8cb3b7bfaf788c634c1780a2d6c998",
+      "historical_identity": "sha256:5bd0efc68c3f93d95ee0ced2b9976e1c3f8cb3b7bfaf788c634c1780a2d6c998",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/runs/v0.1.3/learn-no-durable-lesson-run1.jsonl",
+      "identity": "sha256:10721c960c5eca7fa7d411711d082006e07f3805c4c4f0d86490dc92d78568d7",
+      "historical_identity": "sha256:10721c960c5eca7fa7d411711d082006e07f3805c4c4f0d86490dc92d78568d7",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/runs/v0.1.3/plan-handoff-run1.analysis.yaml",
+      "identity": "sha256:be86153908c25c4f6a09c7b8b4f994c9c20165020910b8a36258ab5e34700f01",
+      "historical_identity": "sha256:be86153908c25c4f6a09c7b8b4f994c9c20165020910b8a36258ab5e34700f01",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/runs/v0.1.3/plan-handoff-run1.jsonl",
+      "identity": "sha256:28c204510ea2bf60fa8674979cc1188202876fb2e40614a61301cef1befb4f1e",
+      "historical_identity": "sha256:28c204510ea2bf60fa8674979cc1188202876fb2e40614a61301cef1befb4f1e",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/runs/v0.1.3/pr-handoff-run1.analysis.yaml",
+      "identity": "sha256:ae2c3a3f4437a554e91dfacef5e61f79135100015eb0d0d83fb227d5c1d4b2f0",
+      "historical_identity": "sha256:ae2c3a3f4437a554e91dfacef5e61f79135100015eb0d0d83fb227d5c1d4b2f0",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/runs/v0.1.3/pr-handoff-run1.jsonl",
+      "identity": "sha256:1c9e08390ca31f6926f1781404f03fc782063eb915b9fcbf8ea06cd26bb5ea0a",
+      "historical_identity": "sha256:1c9e08390ca31f6926f1781404f03fc782063eb915b9fcbf8ea06cd26bb5ea0a",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/runs/v0.1.3/proposal-short-run1.analysis.yaml",
+      "identity": "sha256:fc914b452fbcc99d2a5f69473584964090800e3a8420bcebc0ecfa7e350fc834",
+      "historical_identity": "sha256:fc914b452fbcc99d2a5f69473584964090800e3a8420bcebc0ecfa7e350fc834",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/runs/v0.1.3/proposal-short-run1.jsonl",
+      "identity": "sha256:cdab57310f33a44750947e8968847b10ffaf1d5b60350a150bba2b45ae7babe8",
+      "historical_identity": "sha256:cdab57310f33a44750947e8968847b10ffaf1d5b60350a150bba2b45ae7babe8",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/runs/v0.1.3/verify-final-pack-run1.analysis.yaml",
+      "identity": "sha256:88e7ba275b6c4514bc0ea87ba47814c7ad47f3567bb6cf2e203bc792a443b341",
+      "historical_identity": "sha256:88e7ba275b6c4514bc0ea87ba47814c7ad47f3567bb6cf2e203bc792a443b341",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/runs/v0.1.3/verify-final-pack-run1.jsonl",
+      "identity": "sha256:ae4a36e36b1af100e080efa9077e55a22c505cad6f0275a7025839e37cd7917d",
+      "historical_identity": "sha256:ae4a36e36b1af100e080efa9077e55a22c505cad6f0275a7025839e37cd7917d",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/runs/v0.1.3/workflow-route-run1.analysis.yaml",
+      "identity": "sha256:6968114d12648bb369afeee8eec415670eed0bdbf96ebe6d3505f1fe07053783",
+      "historical_identity": "sha256:6968114d12648bb369afeee8eec415670eed0bdbf96ebe6d3505f1fe07053783",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/runs/v0.1.3/workflow-route-run1.jsonl",
+      "identity": "sha256:0eb435e32370d815607e6b0b4f1d0fc02b70307639136cee1e691e24218b0fc6",
+      "historical_identity": "sha256:0eb435e32370d815607e6b0b4f1d0fc02b70307639136cee1e691e24218b0fc6",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/skills/2026-05-18-customer-portable-public-skills-dynamic-benchmark.md",
+      "identity": "sha256:57f469562325a5bf2408dcc1fa87d15c50023347cc36f8e034dfd1460570a408",
+      "historical_identity": "sha256:57f469562325a5bf2408dcc1fa87d15c50023347cc36f8e034dfd1460570a408",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/skills/2026-05-18-customer-portable-public-skills.md",
+      "identity": "sha256:6969518746e97aadab108092d3da13f9c29eb067fc903435942386080513318c",
+      "historical_identity": "sha256:6969518746e97aadab108092d3da13f9c29eb067fc903435942386080513318c",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/skills/2026-05-18-skill-readability-self-containment.md",
+      "identity": "sha256:5a353442b2bca8a4e5e6dae22a06c8a71fed1ebd90421c7322fcae62c214e77f",
+      "historical_identity": "sha256:5a353442b2bca8a4e5e6dae22a06c8a71fed1ebd90421c7322fcae62c214e77f",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/skills/fixtures/customer-portable-public-skills/docs/changes/example-change/change.yaml",
+      "identity": "sha256:cc6bc8de5bddec9601c9dd97fc4b88d5cf1d0946f2d8478fb2b950b55598e8db",
+      "historical_identity": "sha256:cc6bc8de5bddec9601c9dd97fc4b88d5cf1d0946f2d8478fb2b950b55598e8db",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/skills/fixtures/customer-portable-public-skills/docs/changes/example-change/explain-change.md",
+      "identity": "sha256:d3671b60322c55cfcef51feef68121591226898a569d4585427f55ae550163d2",
+      "historical_identity": "sha256:d3671b60322c55cfcef51feef68121591226898a569d4585427f55ae550163d2",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/skills/fixtures/customer-portable-public-skills/docs/plans/customer-plan.md",
+      "identity": "sha256:36fa8001bddf6416f71efbd8aef4f49c1e8c9357cdd8cbf6832887abe8978790",
+      "historical_identity": "sha256:36fa8001bddf6416f71efbd8aef4f49c1e8c9357cdd8cbf6832887abe8978790",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/skills/fixtures/customer-portable-public-skills/docs/workflows.md",
+      "identity": "sha256:bddb9eb90931976dbcd518084edef8a0937d9fb107e955eb945c93289f2e45d4",
+      "historical_identity": "sha256:bddb9eb90931976dbcd518084edef8a0937d9fb107e955eb945c93289f2e45d4",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/skills/fixtures/customer-portable-public-skills/rigorloop.lock",
+      "identity": "sha256:cab9479ba6cdb134f62a3d039a75758d707a5fff036718bfb2b3e7983c6feaf2",
+      "historical_identity": "sha256:cab9479ba6cdb134f62a3d039a75758d707a5fff036718bfb2b3e7983c6feaf2",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/skills/fixtures/customer-portable-public-skills/rigorloop.yaml",
+      "identity": "sha256:4d21dbaa77027c2c7d6337683f36389be668af10743ab03739c90cb3210562ac",
+      "historical_identity": "sha256:4d21dbaa77027c2c7d6337683f36389be668af10743ab03739c90cb3210562ac",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/skills/fixtures/customer-portable-public-skills/specs/customer-feature.md",
+      "identity": "sha256:4f5d8db8d18bbab487c10c01ecb91dd7d4613129a31faf805301384f173c3ea9",
+      "historical_identity": "sha256:4f5d8db8d18bbab487c10c01ecb91dd7d4613129a31faf805301384f173c3ea9",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/skills/fixtures/customer-portable-public-skills/src/app.js",
+      "identity": "sha256:abe31783383aa939582303042dcb0cfd438cc38937f6a833ae1b3220540991ab",
+      "historical_identity": "sha256:abe31783383aa939582303042dcb0cfd438cc38937f6a833ae1b3220540991ab",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/skills/fixtures/customer-portable-public-skills/tests/app.test.js",
+      "identity": "sha256:dbaa50e9c1458b134d00c7693174219392ee0a340943b445a29bd74159707fc2",
+      "historical_identity": "sha256:dbaa50e9c1458b134d00c7693174219392ee0a340943b445a29bd74159707fc2",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/implement-customer-plan-handoff.analysis.yaml",
+      "identity": "sha256:7660bc89b21111f40a4950a61ebff1dc8e819387400cf01f0e0e65325f6dd494",
+      "historical_identity": "sha256:7660bc89b21111f40a4950a61ebff1dc8e819387400cf01f0e0e65325f6dd494",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/implement-customer-plan-handoff.jsonl",
+      "identity": "sha256:77d8084c8d97a16d657292e1f212699507aa7e0faf15b7be9192b4263afa1095",
+      "historical_identity": "sha256:77d8084c8d97a16d657292e1f212699507aa7e0faf15b7be9192b4263afa1095",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/plan-customer-local-spec-and-code.analysis.yaml",
+      "identity": "sha256:6fc65b2f8fbddcc5c83b2b23354c57572dd6f67b5d7a34c0f6509f34826caf69",
+      "historical_identity": "sha256:6fc65b2f8fbddcc5c83b2b23354c57572dd6f67b5d7a34c0f6509f34826caf69",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/plan-customer-local-spec-and-code.jsonl",
+      "identity": "sha256:2a29b3dc241db550cb2c304a14ff606fc186d15e3a7d704201f07152bff1b66c",
+      "historical_identity": "sha256:2a29b3dc241db550cb2c304a14ff606fc186d15e3a7d704201f07152bff1b66c",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/pr-customer-ready-handoff.analysis.yaml",
+      "identity": "sha256:764412e6c4d0400429a8e669aa3486218681e76206a78875f9cfe55ef2683518",
+      "historical_identity": "sha256:764412e6c4d0400429a8e669aa3486218681e76206a78875f9cfe55ef2683518",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/pr-customer-ready-handoff.jsonl",
+      "identity": "sha256:782a9bfffbff7c20e4a5b919f6346485f66f5a070d5694dea079fbd345aa37ed",
+      "historical_identity": "sha256:782a9bfffbff7c20e4a5b919f6346485f66f5a070d5694dea079fbd345aa37ed",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/project-map-customer-repo-orientation.analysis.yaml",
+      "identity": "sha256:d66ec2202b85cde8c09687bb14c2e2783f3b1fe52fa8f555e55579d4937b2002",
+      "historical_identity": "sha256:d66ec2202b85cde8c09687bb14c2e2783f3b1fe52fa8f555e55579d4937b2002",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/project-map-customer-repo-orientation.jsonl",
+      "identity": "sha256:0bb229c07028708c055c963ebdf895cb51ac0af6dcffe24578b0f51557dea2ea",
+      "historical_identity": "sha256:0bb229c07028708c055c963ebdf895cb51ac0af6dcffe24578b0f51557dea2ea",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/prompts/implement-customer-plan-handoff.md",
+      "identity": "sha256:983b1d470e34b86d03602f805efab7f7050b80f388428158eb4063e314b84c3b",
+      "historical_identity": "sha256:983b1d470e34b86d03602f805efab7f7050b80f388428158eb4063e314b84c3b",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/prompts/plan-customer-local-spec-and-code.md",
+      "identity": "sha256:3f0f680bed0a1a3f694701696f56d6efa26f6411be94b51512c2584b4c2d19b0",
+      "historical_identity": "sha256:3f0f680bed0a1a3f694701696f56d6efa26f6411be94b51512c2584b4c2d19b0",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/prompts/pr-customer-ready-handoff.md",
+      "identity": "sha256:8cecf464ec8ce368c68f1582cda1b3aaf3555c028b4ea748a1c10857213b9905",
+      "historical_identity": "sha256:8cecf464ec8ce368c68f1582cda1b3aaf3555c028b4ea748a1c10857213b9905",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/prompts/project-map-customer-repo-orientation.md",
+      "identity": "sha256:4e092ea19118ba13f951a373c9c81e039efda3c25bbef9cc6095ad0a75a65644",
+      "historical_identity": "sha256:4e092ea19118ba13f951a373c9c81e039efda3c25bbef9cc6095ad0a75a65644",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/prompts/proposal-customer-no-internal-docs.md",
+      "identity": "sha256:8e8489426b953af02e8977d49232e143d9425d07612c7378a95f45c8c4cc6e49",
+      "historical_identity": "sha256:8e8489426b953af02e8977d49232e143d9425d07612c7378a95f45c8c4cc6e49",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/prompts/proposal-review-customer-local-artifacts.md",
+      "identity": "sha256:2939d93b9dd222eaca42e1b73cb599123ce1e17edea1fce996ebf6fa0b2cd8ec",
+      "historical_identity": "sha256:2939d93b9dd222eaca42e1b73cb599123ce1e17edea1fce996ebf6fa0b2cd8ec",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/prompts/spec-customer-local-workflow-guide.md",
+      "identity": "sha256:2bcc530d4259cb311f6a0d34d3be025d070790fc11005c38a0c1ae67b4df2ad6",
+      "historical_identity": "sha256:2bcc530d4259cb311f6a0d34d3be025d070790fc11005c38a0c1ae67b4df2ad6",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/prompts/verify-customer-final-pack.md",
+      "identity": "sha256:32eb28833b1ef8d1857ae0dd71f1ec9267bad97c9eebcbffa1171dee4be0f8ef",
+      "historical_identity": "sha256:32eb28833b1ef8d1857ae0dd71f1ec9267bad97c9eebcbffa1171dee4be0f8ef",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/prompts/workflow-customer-route-no-internal-docs.md",
+      "identity": "sha256:6ba1535780b3f5b131e2a6c4946f49d99f71ea54c6ae58b2c9d1e419afec65c8",
+      "historical_identity": "sha256:6ba1535780b3f5b131e2a6c4946f49d99f71ea54c6ae58b2c9d1e419afec65c8",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/proposal-customer-no-internal-docs.analysis.yaml",
+      "identity": "sha256:ef54eaa3a9e892d056c6383e16e176dcb481fb03c379d96f595a1f7ca8ebdf2e",
+      "historical_identity": "sha256:ef54eaa3a9e892d056c6383e16e176dcb481fb03c379d96f595a1f7ca8ebdf2e",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/proposal-customer-no-internal-docs.jsonl",
+      "identity": "sha256:1f2f500e612acecbcfe295c0b997b1591968fb490904714fd245aed6416e9fdb",
+      "historical_identity": "sha256:1f2f500e612acecbcfe295c0b997b1591968fb490904714fd245aed6416e9fdb",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/proposal-review-customer-local-artifacts.analysis.yaml",
+      "identity": "sha256:06be9eadac325c5837ec4fc1e02addda4e5432a9c98242884fe137b543b07d93",
+      "historical_identity": "sha256:06be9eadac325c5837ec4fc1e02addda4e5432a9c98242884fe137b543b07d93",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/proposal-review-customer-local-artifacts.jsonl",
+      "identity": "sha256:04f860516cca00b19657ed372461d32da1ff3b4c0e41752eda86dd6adcf75c92",
+      "historical_identity": "sha256:04f860516cca00b19657ed372461d32da1ff3b4c0e41752eda86dd6adcf75c92",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/spec-customer-local-workflow-guide.analysis.yaml",
+      "identity": "sha256:682be71a445f5ca66b2c86edfe4f9ef26a97c61dfdf3b2cd63be68cf20acd651",
+      "historical_identity": "sha256:682be71a445f5ca66b2c86edfe4f9ef26a97c61dfdf3b2cd63be68cf20acd651",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/spec-customer-local-workflow-guide.jsonl",
+      "identity": "sha256:5f866792790ecedf175d783c4d1521cedd05d9637a63effe0edac4e2868aa033",
+      "historical_identity": "sha256:5f866792790ecedf175d783c4d1521cedd05d9637a63effe0edac4e2868aa033",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/verify-customer-final-pack.analysis.yaml",
+      "identity": "sha256:3f6aeb237ccb0c04647d592ae3a9ec3f4b9b6f7cad2e9fd1a42fbcecc15594c2",
+      "historical_identity": "sha256:3f6aeb237ccb0c04647d592ae3a9ec3f4b9b6f7cad2e9fd1a42fbcecc15594c2",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/verify-customer-final-pack.jsonl",
+      "identity": "sha256:00a7050dd9bbd9ea68a7519e06f5e12f144b6effe0329e4b53783be7044168d1",
+      "historical_identity": "sha256:00a7050dd9bbd9ea68a7519e06f5e12f144b6effe0329e4b53783be7044168d1",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/workflow-customer-route-no-internal-docs.analysis.yaml",
+      "identity": "sha256:820bcabbb9524aa817f2b669848520a993eaaf84f8d785a71db0b534d033b125",
+      "historical_identity": "sha256:820bcabbb9524aa817f2b669848520a993eaaf84f8d785a71db0b534d033b125",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/workflow-customer-route-no-internal-docs.jsonl",
+      "identity": "sha256:c3f2673ab30337e8d4115b4df5bba0390b09c7b5b035e658c3ea9c4336b43f88",
+      "historical_identity": "sha256:c3f2673ab30337e8d4115b4df5bba0390b09c7b5b035e658c3ea9c4336b43f88",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "packages/rigorloop/test/fixtures/observability/token-profiles-v1.json",
+      "identity": "sha256:14beb8eacd31ef82b835687ccb28d654c4c362ee9a6bf75fca08ee88e8c5c03a",
+      "historical_identity": "sha256:14beb8eacd31ef82b835687ccb28d654c4c362ee9a6bf75fca08ee88e8c5c03a",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "packages/rigorloop/test/helpers/record-store-tokenize.py",
+      "identity": "sha256:594cf6f36b3092f92f55953e4cf3a0603e0333af5f52f763601fbf9931ae1d9a",
+      "historical_identity": "sha256:594cf6f36b3092f92f55953e4cf3a0603e0333af5f52f763601fbf9931ae1d9a",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "scripts/analyze-codex-jsonl.py",
+      "identity": "sha256:38d01ab9aee6e936061881f54ee7d3259ce1d4e1a64e31eabe50286062905b6f",
+      "historical_identity": "sha256:38d01ab9aee6e936061881f54ee7d3259ce1d4e1a64e31eabe50286062905b6f",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "scripts/measure-cli-result-bytes.py",
+      "identity": "sha256:d65432f265154e6e381b95297b1d0710dab826172bec2f25db40111a3187f512",
+      "historical_identity": "sha256:d65432f265154e6e381b95297b1d0710dab826172bec2f25db40111a3187f512",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "scripts/measure-skill-tokens.py",
+      "identity": "sha256:704c90dbe5c8e6562d3ded80f5ea3ecbe63758c589630c277804f01abc910bcc",
+      "historical_identity": "sha256:704c90dbe5c8e6562d3ded80f5ea3ecbe63758c589630c277804f01abc910bcc",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "scripts/run-token-cost-benchmarks.py",
+      "identity": "sha256:14ff736db9cd39cf53ad83f9566aafccf083691340e281fce0e456e85390894d",
+      "historical_identity": "sha256:14ff736db9cd39cf53ad83f9566aafccf083691340e281fce0e456e85390894d",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "scripts/test-cli-result-measurement.py",
+      "identity": "sha256:4a8e8b95ef78a9fa42d82d4dd6ba19c26c7b26ff5a96296650617ba118b007a5",
+      "historical_identity": "sha256:4a8e8b95ef78a9fa42d82d4dd6ba19c26c7b26ff5a96296650617ba118b007a5",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "scripts/test-token-cost-measurement.py",
+      "identity": "sha256:b753e59c537716d61fe89c1b895cbc437e3df42553507b4aa5027e9c1857caaf",
+      "historical_identity": "sha256:b753e59c537716d61fe89c1b895cbc437e3df42553507b4aa5027e9c1857caaf",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "scripts/test-token-cost-report-validation.py",
+      "identity": "sha256:abd45de0e51bd7950559adad76f7f7280a69a4c979a87e617d71e0c656f0d7d4",
+      "historical_identity": "sha256:abd45de0e51bd7950559adad76f7f7280a69a4c979a87e617d71e0c656f0d7d4",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "scripts/validate-token-cost-report.py",
+      "identity": "sha256:d29fe22b714a270d39d2b92c591353092222e744092942efa6e3e1a2e6282afb",
+      "historical_identity": "sha256:d29fe22b714a270d39d2b92c591353092222e744092942efa6e3e1a2e6282afb",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "templates/lifecycle-token-cost-summary.md",
+      "identity": "sha256:ecb0e3d13875f05ecb29b2f604c87f2efd189794625ca04068109e12df3c4fe3",
+      "historical_identity": "sha256:ecb0e3d13875f05ecb29b2f604c87f2efd189794625ca04068109e12df3c4fe3",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "tests/fixtures/token-cost/reports/valid-final-pass/manifest.yaml",
+      "identity": "sha256:73b55cf29ef1a5db8c31b88f8f7787a5f86baafd84770ab4942136a87c07d9cd",
+      "historical_identity": "sha256:73b55cf29ef1a5db8c31b88f8f7787a5f86baafd84770ab4942136a87c07d9cd",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "tests/fixtures/token-cost/reports/valid-final-pass/minimal-public-project/AGENTS.md",
+      "identity": "sha256:0bb6ed28f2ccadb4822479e14aa075bf10b93035226b88589ec994f4a73b65ee",
+      "historical_identity": "sha256:0bb6ed28f2ccadb4822479e14aa075bf10b93035226b88589ec994f4a73b65ee",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "tests/fixtures/token-cost/reports/valid-final-pass/minimal-public-project/README.md",
+      "identity": "sha256:0cac6154a3b6817b553ad8631c502a7190d798c0e61708754cd35fbf549a890c",
+      "historical_identity": "sha256:0cac6154a3b6817b553ad8631c502a7190d798c0e61708754cd35fbf549a890c",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "tests/fixtures/token-cost/reports/valid-final-pass/minimal-public-project/VISION.md",
+      "identity": "sha256:8c3d8b3b0df1c93676b3cf432beddb24ecdf3cbf49a05435262fa7d6a95c9f07",
+      "historical_identity": "sha256:8c3d8b3b0df1c93676b3cf432beddb24ecdf3cbf49a05435262fa7d6a95c9f07",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "tests/fixtures/token-cost/reports/valid-final-pass/minimal-public-project/docs/changes/.gitkeep",
+      "identity": "sha256:01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "historical_identity": "sha256:01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "tests/fixtures/token-cost/reports/valid-final-pass/minimal-public-project/docs/workflows.md",
+      "identity": "sha256:92d3f99c41d904d00c1e48790f8b4a91ec0ca3bdb4e4cab02ad0e25878cf232b",
+      "historical_identity": "sha256:92d3f99c41d904d00c1e48790f8b4a91ec0ca3bdb4e4cab02ad0e25878cf232b",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "tests/fixtures/token-cost/reports/valid-final-pass/minimal-public-project/src/example.txt",
+      "identity": "sha256:13550350a8681c84c861aac2e5b440161c2b33a3e4f302ac680ca5b686de48de",
+      "historical_identity": "sha256:13550350a8681c84c861aac2e5b440161c2b33a3e4f302ac680ca5b686de48de",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "tests/fixtures/token-cost/reports/valid-final-pass/prompts/proposal-short.md",
+      "identity": "sha256:c4992f2493a9225e5c1a8a63843f5b6cc94e56b218e0c0b431baa50543e78208",
+      "historical_identity": "sha256:c4992f2493a9225e5c1a8a63843f5b6cc94e56b218e0c0b431baa50543e78208",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "tests/fixtures/token-cost/reports/valid-final-pass/runs/v0.1.1/proposal-short-run1.analysis.yaml",
+      "identity": "sha256:feb7f49f98751cd7cd61c6e62fb35beb04d626f87a57efe6bbf9f3962faa4fa1",
+      "historical_identity": "sha256:feb7f49f98751cd7cd61c6e62fb35beb04d626f87a57efe6bbf9f3962faa4fa1",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "tests/fixtures/token-cost/reports/valid-final-pass/runs/v0.1.1/proposal-short-run1.jsonl",
+      "identity": "sha256:9bc8360ee49d43c2430a425b5bc1c9568edf49650b72187fca23df0e01f504ac",
+      "historical_identity": "sha256:9bc8360ee49d43c2430a425b5bc1c9568edf49650b72187fca23df0e01f504ac",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "tests/fixtures/token-cost/reports/valid-final-pass/v0.1.1.md",
+      "identity": "sha256:04ca5f7460bccf0c627daa82d24fac12f3656ca5aebdfce05890213dbca7634a",
+      "historical_identity": "sha256:04ca5f7460bccf0c627daa82d24fac12f3656ca5aebdfce05890213dbca7634a",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "tests/fixtures/token-cost/reports/valid-final-pass/v0.1.1.yaml",
+      "identity": "sha256:5feea52515bb1bbd1de7e54989cca27d5f1159314d7867160ab91b5fca579d1a",
+      "historical_identity": "sha256:5feea52515bb1bbd1de7e54989cca27d5f1159314d7867160ab91b5fca579d1a",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "tests/fixtures/token-cost/reports/valid-raw-omitted/proposal-short-run1.analysis.yaml",
+      "identity": "sha256:6d64e7a9515c2553fd8cc5074f9007acdd7fa383f9957827c72e11732207f5a5",
+      "historical_identity": "sha256:6d64e7a9515c2553fd8cc5074f9007acdd7fa383f9957827c72e11732207f5a5",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "tests/fixtures/token-cost/reports/valid-raw-omitted/sanitized-summary.yaml",
+      "identity": "sha256:6fece2cc2eb0122cff42363f5325746ca276b242b4d938d834703c7a8b1efd51",
+      "historical_identity": "sha256:6fece2cc2eb0122cff42363f5325746ca276b242b4d938d834703c7a8b1efd51",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "tests/fixtures/token-cost/reports/valid-raw-omitted/v0.1.1.md",
+      "identity": "sha256:28248db18fd054061497e203cd7f87073a8cffe12a30cc48dbdc6d2286842d93",
+      "historical_identity": "sha256:28248db18fd054061497e203cd7f87073a8cffe12a30cc48dbdc6d2286842d93",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "tests/fixtures/token-cost/sample-codex-session.jsonl",
+      "identity": "sha256:7defb032bbaa0feb8a2d366b205574b7dd515fd2a6d7263917178ac7ba3b6127",
+      "historical_identity": "sha256:7defb032bbaa0feb8a2d366b205574b7dd515fd2a6d7263917178ac7ba3b6127",
+      "uncommitted_patch": ""
+    }
+  ],
+  "scope": "VAL-SR-25 exclusive token feature files; historical records remain unchanged"
+}

@@ -1,0 +1,49 @@
+{
+  "operation": "consolidate-proposal-content-and-review-contract",
+  "historical_revision": "39b7c5cb1f03aa761d2f2493d3474ce985e59d6f",
+  "removed_subjects": [
+    {
+      "path": "specs/simplified-proposal-contract.md",
+      "identity": "sha256:2cf50c6c990596b30a64bd5f029806fedec28f688930d72232c2a8b45a1eb71e",
+      "historical_identity": "sha256:2cf50c6c990596b30a64bd5f029806fedec28f688930d72232c2a8b45a1eb71e",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "specs/simplified-proposal-contract.test.md",
+      "identity": "sha256:b4f2a36a451a5e69c6a187ba915382008ab458832988e3333e6ed26f86596d64",
+      "historical_identity": "sha256:b4f2a36a451a5e69c6a187ba915382008ab458832988e3333e6ed26f86596d64",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/architecture/2026-08-30-simplified-proposal-contract.md",
+      "identity": "sha256:d9dc71c61628543ff1e5eae80394e9e0121488eb856c123413c8fc78940b11c8",
+      "historical_identity": "sha256:d9dc71c61628543ff1e5eae80394e9e0121488eb856c123413c8fc78940b11c8",
+      "uncommitted_patch": ""
+    }
+  ],
+  "deleted_lines": 714,
+  "updated_paths": [
+    "docs/design/skill/skill.md",
+    "docs/design/skill/assessment.md",
+    "scripts/test-skill-validator.py"
+  ],
+  "prior_model_identities": {
+    "docs/design/skill/skill.md": "sha256:b9a607c786f5aa60d7285f88a8af467b950cb10e073ad310d4d0accf0eeb74e6",
+    "docs/design/skill/assessment.md": "sha256:3957bb9a4545aa187fc662410b6afb4b120991d5149ee0c5d53f4f64f5023139"
+  },
+  "important_knowledge": "Skill Authoring owns exact proposal sections, optional material impacts, proportionate feasibility, portable content, metadata exclusion and historical compatibility. Assessment owns proposal decision criteria, four vision outcomes, material-issue handling and independent isolated review. Records retains governed lifecycle ownership. No new submodel or runtime behavior is introduced.",
+  "retired_material": "Old YAML-specific ownership prose, rollout sequencing and separate architecture package retire. Current section validation, historical cutover behavior, templates, resource procedures and independent review criteria remain. One existing vision-authority test reads Assessment instead of the deleted spec; its assertions are preserved.",
+  "historical_preservation": "All three originals match retained Git bytes. Current citations resolve to current owners or exact historical Git provenance. Historical record subjects, reviews and proposal compatibility remain unchanged.",
+  "source_disposition": {
+    "SPC-R1-R6,R19": "Skill proposal content under SKL-SR-24/27",
+    "SPC-R7-R8": "Records owns current governed representation; old YAML fields and introduction-only restrictions retire",
+    "SPC-R9-R14,R20": "Assessment Proposal Review criteria under RC-SR-01/03/04 and existing independence/continuation rules",
+    "SPC-R15-R16": "Skill preserves existing historical cutover classification without modifying validators",
+    "SPC-R17-R18": "Existing Skill/Engineering consumer and canonical packaging ownership; completed rollout details retire"
+  },
+  "validation": {
+    "result": "passed",
+    "procedure": "python scripts/test-skill-validator.py; python scripts/test-artifact-lifecycle-validator.py; python scripts/test-boundary-first-validation.py; python scripts/validate-boundary-first.py --check with --path for Skill, Assessment and both deleted specification documents; python scripts/validate-documentation-prose.py --mode enforce --path docs/design/skill/skill.md --path docs/design/skill/assessment.md --path docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md; git diff --check; git diff --cached --check.",
+    "summary": "354 skill tests, 108 lifecycle tests and 87 boundary/model tests passed. The existing vision-authority test retains its assertions against Assessment. Structural model/deletion checks passed, prose passed with zero errors/warnings and diff checks passed. Proposal templates and validation implementation are unchanged. All originals match retained Git bytes; no executable test or historical judgment removed. No full CI, independent review or final Verify claimed."
+  }
+}

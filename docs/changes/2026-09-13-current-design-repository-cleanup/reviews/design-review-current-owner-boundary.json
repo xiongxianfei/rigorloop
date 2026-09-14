@@ -1,0 +1,78 @@
+{
+  "assessment_scope": "Bounded current-owner boundary assessment during the accumulated Design package review: retained Skill contract Current owner and retained boundary versus Skill supported profile and Records RF-SR-06. This intermediate record preserves the supported finding before author correction; full accumulated package assessment remains pending.",
+  "change_id": "2026-09-13-current-design-repository-cleanup",
+  "contributors": [
+    {
+      "id": "codex-design-author",
+      "role": "design"
+    }
+  ],
+  "findings": [
+    {
+      "evidence": "Severity medium; cross-artifact; affected artifact IDs retained-skill-contract, skill, record-format; owning stage design. specs/skill-contract.md Current owner and retained boundary says Records and CLI own v2 representation/mechanics, while Skill Architecture Constraints explicitly selects rigorloop-records-v3 and Records RF-SR-06 retires v2 runtime acceptance. The current notice is a live navigation/authority statement, not a marked historical requirement.",
+      "id": "current-owner-v2-reference",
+      "owner": {
+        "id": "codex-design-author",
+        "role": "design"
+      },
+      "reporter": {
+        "id": "codex-cleanup-design-reviewer",
+        "role": "review"
+      },
+      "required_outcome": "Correct the retained contract current-owner notice to the supported v3 representation/mechanics, explicitly distinguishing archival v2 history if useful. Safe resolution: amend only current-owner guidance, preserve historical requirement IDs/bytes and validate affected prose/links. Do not restore a v2 reader or alter stored historical evidence.",
+      "resolution": {
+        "actor": {
+          "id": "codex-cleanup-design-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [],
+        "rationale": "Independently inspected the amended Current owner and retained boundary in specs/skill-contract.md: it now names current v3 representation/mechanics, consistent with Skill and Records RF-SR-06. Historical requirements remain preserved; no compatibility reader is added."
+      },
+      "state": "resolved",
+      "subjects": [
+        {
+          "identity": "sha256:ddc498247a909e445301e29f613f08afa08baf12178a0d744dce5e671a11c1b7",
+          "path": "specs/skill-contract.md"
+        },
+        {
+          "identity": "sha256:47f878a9d343a531d459abd5d4648a6389842dee771007c94ce672493ffaaab1",
+          "path": "docs/design/cli/records.md"
+        },
+        {
+          "identity": "sha256:0368e2fc6233a97f413a73f0d9fab4ca22b25b0b4f55a19a937380e1f0529a18",
+          "path": "docs/design/skill/skill.md"
+        }
+      ]
+    }
+  ],
+  "id": "design-review-current-owner-boundary",
+  "independence_basis": "Independent delegated reviewer /root/design_refinement_review authored none of these subjects; previous work was read-only advisory inspection.",
+  "judgment": "changes-requested",
+  "limitations": [
+    "This bounded finding record is not the final Design package judgment, implementation review, Verify or readiness approval. Wider source-transfer and package assessment is ongoing."
+  ],
+  "rationale": [
+    "The retained source is intentionally current for plan/boundary obligations and its opening current-owner notice directly tells readers Records and CLI own v2 representation/mechanics. Skill Architecture Constraints and Records RF-SR-06 instead allow only v3 runtime storage. Historical v2 meaning must remain archival, not be described as the current owning interface."
+  ],
+  "reviewer": {
+    "id": "codex-cleanup-design-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:ddc498247a909e445301e29f613f08afa08baf12178a0d744dce5e671a11c1b7",
+      "path": "specs/skill-contract.md"
+    },
+    {
+      "identity": "sha256:47f878a9d343a531d459abd5d4648a6389842dee771007c94ce672493ffaaab1",
+      "path": "docs/design/cli/records.md"
+    },
+    {
+      "identity": "sha256:0368e2fc6233a97f413a73f0d9fab4ca22b25b0b4f55a19a937380e1f0529a18",
+      "path": "docs/design/skill/skill.md"
+    }
+  ],
+  "summary": "The retained Skill contract current-owner notice incorrectly names v2 as current representation.",
+  "target": "design"
+}

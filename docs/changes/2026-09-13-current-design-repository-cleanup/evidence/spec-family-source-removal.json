@@ -1,0 +1,42 @@
+{
+  "operation": "retire-spec-family-assets-and-readability-documents",
+  "historical_revision": "39b7c5cb1f03aa761d2f2493d3474ce985e59d6f",
+  "removed_subjects": [
+    {
+      "path": "specs/spec-family-assets-progressive-disclosure.md",
+      "identity": "sha256:d8bb2742459df4ec209745d3e9461a5e5573514ac4e6464cf3ee27f72f6b3654",
+      "historical_identity": "sha256:0f548c07c8114f38f50a7630390d00d6982e67e6a27f53c36d4df7fed4e8e82d",
+      "uncommitted_patch": "--- 39b7c5cb1f03aa761d2f2493d3474ce985e59d6f:specs/spec-family-assets-progressive-disclosure.md\n+++ specs/spec-family-assets-progressive-disclosure.md\n@@ -332,8 +332,10 @@\n Spec-family asset packaging, progressive disclosure, boundary guidance, and\n evidence-access behavior remain governed here.\n \n-## Spec-review simplification amendment\n-\n-The approved [Spec-Review Skill Simplification](spec-review-skill-simplification.md) permits one additional mapped reference, `references/governed-spec-review-settlement.md`, owned by the `spec-review` package. `SKILL.md` remains self-sufficient for isolated formal judgment and recording; the reference owns only exact governed settlement and workflow-managed automation procedure.\n+## Historical spec-review simplification amendment\n+\n+The historical [Spec-Review Skill Simplification](https://github.com/xiongxianfei/rigorloop/blob/39b7c5cb1f03aa761d2f2493d3474ce985e59d6f/specs/spec-review-skill-simplification.md) permitted one additional mapped reference, `references/governed-spec-review-settlement.md`, owned by the `spec-review` package. `SKILL.md` remains self-sufficient for isolated formal judgment and recording; the reference owns only exact governed settlement and workflow-managed automation procedure.\n \n The result asset may contain one formal core, one required recording group, and governed-settlement, boundary-review, and automated-review conditional groups. Inapplicable groups are omitted. Assets remain structural and do not decide applicability, status, recording, settlement, automation, or handoff.\n+\n+This amendment describes the retired spec-review package. Current authoring uses [Design](../docs/design/skill/design.md); review policy and current recording belong to [Assessment](../docs/design/skill/assessment.md) and [Records](../docs/design/cli/records.md). The historical package and settlement procedure grant no current authority.\n"
+    },
+    {
+      "path": "specs/spec-family-assets-progressive-disclosure.test.md",
+      "identity": "sha256:e9efc17b22f3687ba1304a148b69a3d9898ca2b9ec88d76cd2b6c5a37afc5123",
+      "historical_identity": "sha256:e9efc17b22f3687ba1304a148b69a3d9898ca2b9ec88d76cd2b6c5a37afc5123",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "specs/spec-family-readability-pass.md",
+      "identity": "sha256:a25acd0869f7a84e8f91df6bd93c0f12ad1687b38b56469e2e90f588ab3f0a55",
+      "historical_identity": "sha256:238021b14bba4912df223470166f13080aacb0975d47f8b19c703c1c83a3f731",
+      "uncommitted_patch": "--- 39b7c5cb1f03aa761d2f2493d3474ce985e59d6f:specs/spec-family-readability-pass.md\n+++ specs/spec-family-readability-pass.md\n@@ -16,7 +16,7 @@\n \n The change exists because, after `test-spec` contract normalization, all three skills share the published-skill design baseline but still expose some long prose enumerations, narrated closed enums, and uneven section ordering. The pass makes the installed skill text easier to scan without changing skill behavior, routing, rules, stop conditions, output obligations, lifecycle boundaries, or produced-artifact semantics.\n \n-This spec extends the existing skill readability and published skill contracts. It does not replace `specs/skill-contract.md` or `specs/skill-readability-contract.md`.\n+This spec extends the existing skill readability and published skill contracts. It does not replace `specs/skill-contract.md` or [historical `specs/skill-readability-contract.md`](https://github.com/xiongxianfei/rigorloop/blob/39b7c5cb1f03aa761d2f2493d3474ce985e59d6f/specs/skill-readability-contract.md).\n \n ## Glossary\n \n@@ -124,7 +124,7 @@\n \n - accepted proposal `docs/proposals/2026-05-20-spec-family-readability-pass.md`;\n - canonical skill sources for `spec`, `spec-review`, and `test-spec`;\n-- existing skill contracts in `specs/skill-contract.md` and `specs/skill-readability-contract.md`;\n+- existing skill contracts in `specs/skill-contract.md` and [historical `specs/skill-readability-contract.md`](https://github.com/xiongxianfei/rigorloop/blob/39b7c5cb1f03aa761d2f2493d3474ce985e59d6f/specs/skill-readability-contract.md);\n - review findings and resolution under `docs/changes/2026-05-20-spec-family-readability-pass/`.\n \n Outputs:\n"
+    },
+    {
+      "path": "specs/spec-family-readability-pass.test.md",
+      "identity": "sha256:190b17d295f00cbd9820787eae8ad903cc5168fb0172bc829bc5332050e869f1",
+      "historical_identity": "sha256:190b17d295f00cbd9820787eae8ad903cc5168fb0172bc829bc5332050e869f1",
+      "uncommitted_patch": ""
+    }
+  ],
+  "deleted_lines": 1302,
+  "updated_paths": [
+    "specs/review-skill-family-consistency-parser-owned-finding-shape.md"
+  ],
+  "important_knowledge": "Skill SKL-SR-04/08/12 retains specialist policy ownership, conditional contained resources and structural assets with usable output and no hidden policy. Design retains triggered model/legacy scaffolds and resource integrity. Current readability and validation owners preserve visible stops, claims, behavior and negative proof. No extra model prose or new operational contract is needed.",
+  "retired_material": "The retired spec/spec-review/test-spec asset inventories, exact old resource/section layouts, extraction rollout and presentation-only preservation/enum matrices retire. Their metadata/parity and source governance remainders keep existing current owners. No executable test, historical baseline, fixture or ledger is removed.",
+  "historical_preservation": "Originals remain recoverable at the exact Git revision. Both modified specs also retain their complete uncommitted patches and current hashes here, preserving prior cleanup citation/owner clarifications. Historical records, plans and test specifications retain their original bytes and references. The skill suite still reads the spec-family baseline fixture, which remains available.",
+  "validation": {
+    "result": "passed",
+    "procedure": "python scripts/test-skill-validator.py; python scripts/validate-boundary-first.py --check with --path for all four deleted documents and specs/review-skill-family-consistency-parser-owned-finding-shape.md; python scripts/validate-documentation-prose.py --mode enforce --path docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md; git diff --check; git diff --cached --check.",
+    "summary": "All 354 skill tests passed, including baseline fixture and asset/parser protections. Structural deletion/reference validation passed with independent Design Review classification still required for the citation-only amended legacy spec. Prose passed with zero errors/warnings and diff checks passed. Both modified sources preserve full unified patches from the retained Git originals and exact original/current hashes. No tests removed; no full CI, independent review or final Verify claimed."
+  }
+}

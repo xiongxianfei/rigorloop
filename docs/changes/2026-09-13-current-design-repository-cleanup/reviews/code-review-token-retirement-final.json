@@ -1,0 +1,129 @@
+{
+  "assessment_scope": "Fresh final whole-TOKEN-1 Code Review after implementation and correction, relative to the captured pre-slice working tree /tmp/token-retirement-before and complete refreshed /tmp/token-retirement-slice.diff. All 147 retired file identities and 12 current changed subjects are covered, including selector, release/adapter consumers, controlled interaction proof, contributor guidance and release fixture reconciliation. Approved Design is design-review-token-cost-retirement and approved Delivery is delivery-review-token-cost-retirement. This is the entire plan-defined token-cost slice and its interactions, not final whole-repository-cleanup review; distinct scoped Verify and broader cleanup gates remain separate.",
+  "change_id": "2026-09-13-current-design-repository-cleanup",
+  "contributors": [
+    {
+      "id": "codex-token-implementer",
+      "role": "implement"
+    }
+  ],
+  "findings": [],
+  "id": "code-review-token-retirement-final",
+  "independence_basis": "Independent delegated reviewer /root/token_retirement_design_review did not author or edit any implementation, test correction, fixture or plan. The parent implementation actor made all corrections. This reviewer recorded the first-pass finding before correction and independently assessed its resolution and the complete final scoped delta. Prior Design and Delivery work was independent assessment, not authorship.",
+  "judgment": "approved",
+  "limitations": [
+    "No hosted CI, commit, push, PR, publication or live benchmark execution was observed or authorized. Local proof does not establish public release success.",
+    "This approval covers only the complete token-cost slice identified by the plan and recorded subjects. The accumulated cleanup branch still needs its own complete review and final Verify; no branch-readiness claim is made.",
+    "The full native suite ran before the final isolated interaction-helper correction. Current four-case interaction proof plus inspected exclusive caller boundaries supports reuse of unaffected suite results; no claim is made that all 419 cases were rerun afterward.",
+    "Exact pre-slice snapshot/diff are temporary review aids. Durable evidence records current changed subjects, all removed identities, recovered Git provenance, commands, corrections and scope; historical judgments remain unchanged."
+  ],
+  "rationale": [
+    "Spec alignment — pass: VAL-SR-25 is implemented by removing token-only tools, report/session/benchmark fixtures, lifecycle summary template and profiles; deleting adapter parser/context imports, version-specific token qualification and release wrapper calls; and retiring token-only changed-path options through argparse rejection. No optional token service, substitute metric or synthetic passing check remains in the changed runtime surfaces.",
+    "Test coverage — pass: dedicated token-count/report-schema obligations are explicitly retired rather than disguised as equivalent tests. Retained ignored-untracked source success, tracked/unignored runtime rejection, archive/source identity and current candidate failures remain executable. The adapter suite executes 146 cases using repository catalog/expand_cases/run_scheduled_checks; inspected output contains 146 actual passed rows. Controlled recording retains four semantic/basis/checkpoint/call cases after removal of exclusive measurement collection.",
+    "Edge cases and error handling — pass: removed token paths select retained selector/adapter/release consumer proof; removed IDs and benchmark options are not pass aliases. Closed catalog validation and executor regressions remain active. Release argument forwarding preserves candidate output/source inputs and failure status. Valid qualification without reports and invalid source/runtime cases have direct passing proof; actual CLI result omission/truncation/error boundaries remain protected by retained native tests.",
+    "Architecture boundaries — pass: adapters no longer load the report validator or benchmark manifest; release composition removes only token checks and preserves candidate/profile/artifact validation. Shared adapter code and acquisition/integrity logic remain. The corrected interaction helper retains real advanced and targeted command paths and removes historical Git guidance loading, which had no retained consumer.",
+    "Compatibility — pass within selected retirement: old report duties and commands are intentionally withdrawn by the Design. Non-token release qualification, token-independent ledger fixture semantics and current CLI interfaces remain. Historical ledger constants were restored unchanged, and deleted token path classification never dispatches a missing command. Unsupported changed-path options fail instead of being silently accepted.",
+    "Security/privacy — pass: deleting benchmark/session-report producers removes their agent/report write path; no replacement network, telemetry or publication action is added. Source/runtime rejection, security scans, publication permissions and candidate identity remain in their owners. All removal evidence was independently checked against the 147 captured original hashes and retained Git commit hashes with zero discrepancies.",
+    "Derived artifacts — pass for this slice: canonical published skill and product runtime bytes are unchanged; the only Node changes are test helper/caller cleanup. Actual adapter and selected wrapper tests validate retained candidate/resource boundaries. Release fixture overlays current governance and Designs with current scripts to avoid combining incompatible old authority with new consumers; production release logic is not bypassed or replaced with passing fixtures.",
+    "Unrelated changes — pass within declared exception: current README/project-map token navigation is removed. Two stale governance-text assertions now follow current owner links and README policy, and release fixture guidance is coherent. These evidence corrections are disclosed; broader accumulated document deletions, draft model adoptions and unrelated historical check retirement are outside this approval.",
+    "Validation evidence — pass: durable implementation evidence names 354 skill, 146 adapter, 164 release, 52 executor, 17 ledger and 419 native CLI passes; selector initial 163/164 plus the corrected sole wrapper test pass; four interaction passes after the final helper correction; selected repository wrapper, shell syntax, prose and diff checks. I inspected relevant final logs and runner composition. Full native suite reuse is limited to unaffected populations: the final helper edit affects only the four interaction callers, which were rerun. Initial failures and their correction are retained, not reported as uninterrupted green runs.",
+    "Resolution and closeout — pass for Code Review: token-retirement-unused-guidance was independently reassessed and explicitly resolved before this fresh complete-slice judgment. TOKEN-1 has no remaining required implementation correction identified by this review. The next owner performs distinct scoped Verify; this review neither mutates work state nor closes or approves the broader repository cleanup."
+  ],
+  "reviewer": {
+    "id": "codex-token-retirement-code-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:67080688039df765608224c76f2b075eb4c7c07bfb78ec203f18753236315f55",
+      "path": "README.md"
+    },
+    {
+      "identity": "sha256:55ec1632457bcd42a35f04cbce9f2e15e60aa37c24d83a34d6a3af75ab7a7ecf",
+      "path": "docs/project-map.md"
+    },
+    {
+      "identity": "sha256:20e6a6cf9f33a9893ba9378c241ff2ca1ad3394f45bcb7609eb3231fcce2d2d9",
+      "path": "packages/rigorloop/test/fixtures/recording-interactions/README.md"
+    },
+    {
+      "identity": "sha256:da8df34c3fb5bc423b65c19beaa45d25e634b23ab731937c29259a85e0fca420",
+      "path": "packages/rigorloop/test/helpers/record-store-interactions.mjs"
+    },
+    {
+      "identity": "sha256:e1e5ee271c32a7fb2349a797bbc70fab6dfae3ab6524dd76218950b42ed6e850",
+      "path": "packages/rigorloop/test/record-store-interactions.test.js"
+    },
+    {
+      "identity": "sha256:9115b8211e2e67ac8f807985a1d5fd31106f50452a22987b1cbec94145bb5739",
+      "path": "scripts/adapter_distribution.py"
+    },
+    {
+      "identity": "sha256:686e723c6cc0b02fc18b47bdd7e53689e53923990e6c31894d586f51ee362709",
+      "path": "scripts/release-verify.sh"
+    },
+    {
+      "identity": "sha256:c61a6fb2a952937c3af3dee46d22b86883fc769c3428bb826a0beef585d1e156",
+      "path": "scripts/release_candidate_tests.py"
+    },
+    {
+      "identity": "sha256:73d1b9123a49be3d760938ed7584d14bb71abddd6f2ed0e88b221d962c69f9ef",
+      "path": "scripts/test-adapter-distribution.py"
+    },
+    {
+      "identity": "sha256:a2f081462cb2710a8ade8cfe0e4b8ab673467811faf26837d4e8979ec4be8e89",
+      "path": "scripts/test-select-validation.py"
+    },
+    {
+      "identity": "sha256:7023c1b2c211d0988cf10b26bf0051bcd67c5546b99f3e87b84a3187539ce94e",
+      "path": "scripts/validate-release.py"
+    },
+    {
+      "identity": "sha256:c721d93f4fbf5f48a2f5dda25d4f2bbe4c2260f35a60f3b73367c5b72105a135",
+      "path": "scripts/validation_selection.py"
+    },
+    {
+      "identity": "sha256:6608603ab4c78538a7d0dbe3b1a012b11b1ee0df297065473b8302209e35e1d6",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/token-cost-retirement-implementation.json"
+    },
+    {
+      "identity": "sha256:d2674782249841c60a1a5b9b9b4bc95305561bb386166aeb20e309f2b04575eb",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/token-retirement-removed-files.json"
+    },
+    {
+      "identity": "sha256:bc18799fad9b41dbd20afad5a3d11a7fbbb397d7d6df508d68b9b4046fd93be2",
+      "path": "docs/plans/2026-09-13-token-cost-retirement.md"
+    },
+    {
+      "identity": "sha256:97aab5954605c64cffc5134843683527c596662a9f22f5b29167a976ebd8d5bb",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/reviews/design-review-token-cost-retirement.json"
+    },
+    {
+      "identity": "sha256:89a2f7fa775592c1bc0cd30bd7d10d2d48da6a53adbb66c13bd6b2ea0a7a8081",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/reviews/delivery-review-token-cost-retirement.json"
+    },
+    {
+      "identity": "sha256:b799f7cf38fbaaf9f3946b5e1d05a0b1fc9116a0467d1ce6a24d5dd82c614d52",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:f45e6a357a78e630496f4e636d5343daeb3197f8a61010060585c7f65d8bc61f",
+      "path": "docs/design/engineering/engineering.md"
+    },
+    {
+      "identity": "sha256:091f661ebaf23e61a19291046ccff89dc8c98c4aca3a9e29009acf76e7e2a3f4",
+      "path": "docs/design/engineering/packaging.md"
+    },
+    {
+      "identity": "sha256:77b780c85ee32aaffecc8c0772dd9bc2abf1b13a1b4f1e804d16397046d81a58",
+      "path": "docs/design/engineering/release.md"
+    },
+    {
+      "identity": "sha256:0368e2fc6233a97f413a73f0d9fab4ca22b25b0b4f55a19a937380e1f0529a18",
+      "path": "docs/design/skill/skill.md"
+    }
+  ],
+  "summary": "The complete TOKEN-1 token-cost retirement delta is approved after independently resolving the unused-guidance finding and assessing retained protection and final evidence.",
+  "target": "code"
+}

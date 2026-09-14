@@ -1,0 +1,40 @@
+{
+  "operation": "retire-superseded-workflow-guide-documents",
+  "historical_revision": "39b7c5cb1f03aa761d2f2493d3474ce985e59d6f",
+  "removed_subjects": [
+    {
+      "path": "specs/guide-system-source-of-truth-alignment.md",
+      "identity": "sha256:6672ebebb643ca555603078106fc1fa9f8d152551910796c285da40d44ae17e8",
+      "historical_identity": "sha256:6672ebebb643ca555603078106fc1fa9f8d152551910796c285da40d44ae17e8",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "specs/guide-system-source-of-truth-alignment.test.md",
+      "identity": "sha256:b73666ef2e4b307235a4fccdd6c5ec76e18fac7eb9fc7454d600ab4820c8770b",
+      "historical_identity": "sha256:b73666ef2e4b307235a4fccdd6c5ec76e18fac7eb9fc7454d600ab4820c8770b",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "specs/workflow-skill-artifact-location-map.md",
+      "identity": "sha256:469b4366b6858c05224a549e38e21344ea74df08cd89a0c742c33b12e46a5782",
+      "historical_identity": "sha256:ddb345daede44dad149226c928d2dd138eb65d03ec8d397c3aa2b4ef05680c87",
+      "uncommitted_patch": "--- 39b7c5cb1f03aa761d2f2493d3474ce985e59d6f:specs/workflow-skill-artifact-location-map.md\n+++ specs/workflow-skill-artifact-location-map.md\n@@ -2,7 +2,7 @@\n \n ## Unified authoring compatibility\n \n-The selected [Design](../docs/design/skill/authoring/design.md) owns normal authoring and portable model placement. Existing `workflow-context` legacy artifact-location keys, templates and owner labels remain compatibility metadata for their retained document contracts, not public skill invocations or instructions to recreate retired authors. Current governed model subjects come from primary context and subject inspection; `design` applies an unmigrated source\u2019s declared contract. This amendment adds no discovery kind, schema, routing engine or customer adoption.\n+The selected [Design](../docs/design/skill/design.md) owns normal authoring and portable model placement. Existing `workflow-context` legacy artifact-location keys, templates and owner labels remain compatibility metadata for their retained document contracts, not public skill invocations or instructions to recreate retired authors. Current governed model subjects come from primary context and subject inspection; `design` applies an unmigrated source\u2019s declared contract. This amendment adds no discovery kind, schema, routing engine or customer adoption.\n \n > Historical contract: superseded for current RigorLoop packages by `specs/refocus-workflow-into-route.md`. The artifact-location map and its guide-authoring behavior are retired.\n \n"
+    },
+    {
+      "path": "specs/workflow-skill-artifact-location-map.test.md",
+      "identity": "sha256:11a0811410548c4bdac0cceed2fa7eb62f94dee4443b0c94c7abfcf74fa4a4b0",
+      "historical_identity": "sha256:11a0811410548c4bdac0cceed2fa7eb62f94dee4443b0c94c7abfcf74fa4a4b0",
+      "uncommitted_patch": ""
+    }
+  ],
+  "deleted_lines": 1843,
+  "updated_paths": [],
+  "important_knowledge": "Both sources explicitly declare their guide and artifact-map contracts superseded by refocus-workflow-into-route. That retained contract owns CLI context defaults, overrides, provenance and failure behavior. Design owns normal authoring and model placement; System owns repository layout; Workflow owns semantic coordination. Existing legacy location keys remain compatibility metadata, not retired skill invocations or governance adoption. No new model prose is needed.",
+  "retired_material": "The docs/workflows.md guide-authoring procedure, guide-embedded YAML registry, duplicate Markdown projections, guide consistency rollout and old guide-specific validation obligations retire. Current CLI context, configuration, artifact-placement owners and their tests remain.",
+  "historical_preservation": "Originals are recoverable at the exact Git revision. The modified artifact-location-map specification additionally retains its complete uncommitted patch and both original/current hashes. Historical plans, proof documents and review records remain unchanged. No executable test, fixture or current CLI contract is removed. Two source-displacement rows in specs/stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md retain their historical basis; the later refocus-workflow-into-route contract explicitly supersedes their guide-related ownership. They are not runtime file reads.",
+  "validation": {
+    "result": "passed",
+    "procedure": "python scripts/test-skill-validator.py; python scripts/validate-boundary-first.py --check with --path for all four deleted documents; python scripts/validate-documentation-prose.py --mode enforce --path docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md; git diff --check; git diff --cached --check; rg dependency scan across current models, scripts, packages, skills, schemas and CI.",
+    "summary": "All 354 skill tests passed. Structural deletion checks passed; prose passed with zero errors/warnings and diff checks passed. Dependency scan found no references in current models or executable/CI surfaces. Historical lifecycle displacement-table rows remain unchanged under later explicit guide retirement. Original hashes and the one modified source patch are preserved. No executable tests removed; no full CI, independent review or final Verify claimed."
+  }
+}

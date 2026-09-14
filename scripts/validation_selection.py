@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 from record_store_classification import is_archival_record_store
-from model_layout import PROJECT_MODEL_PATHS
+from model_layout import PROJECT_MODEL_PATHS, RETIRED_MODEL_PATHS
 
 import json
 import hashlib
@@ -241,28 +241,6 @@ CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
         "requirement-fidelity",
         parallel_safe=True, label='Governance: review fidelity', modes=('main',),
     ),
-    "cli_result_measurement.regression": CheckCatalogEntry(
-        "cli_result_measurement.regression",
-        "python scripts/test-cli-result-measurement.py",
-        "token-cost",
-    ),
-    "token_cost.regression": CheckCatalogEntry(
-        "token_cost.regression",
-        "python scripts/test-token-cost-measurement.py",
-        "token-cost",
-        parallel_safe=True,
-    ),
-    "token_cost.report_regression": CheckCatalogEntry(
-        "token_cost.report_regression",
-        "python scripts/test-token-cost-report-validation.py",
-        "token-cost",
-        parallel_safe=True,
-    ),
-    "token_cost.report_validate": CheckCatalogEntry(
-        "token_cost.report_validate",
-        "python scripts/validate-token-cost-report.py <report-yaml>...",
-        "token-cost",
-    ),
     "broad_smoke.repo": CheckCatalogEntry(
         "broad_smoke.repo",
         "bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped",
@@ -336,10 +314,6 @@ CHECK_CATALOG['main.governed_lifecycle_cli.validate'] = CheckCatalogEntry(
     'main.governed_lifecycle_cli.validate', 'python scripts/validate-governed-lifecycle-cli.py', 'main',
     parallel_safe=False, dependencies=(), constraints=None,
     label='Governance: public lifecycle validation', modes=('main',))
-CHECK_CATALOG['main.retirement_ledger.regression'] = CheckCatalogEntry(
-    'main.retirement_ledger.regression', 'python scripts/test-retirement-ledger.py', 'main',
-    parallel_safe=False, dependencies=(), constraints=None,
-    label='Governance: retirement ledger', modes=('main',))
 CHECK_CATALOG['main.artifact_lifecycle.scoped'] = CheckCatalogEntry(
     'main.artifact_lifecycle.scoped', "python scripts/validate-artifact-lifecycle.py --mode push-main-ci --before '<base>' --after '<head>'", 'main',
     parallel_safe=False, dependencies=(), constraints=None,
@@ -360,11 +334,7 @@ _CASE_ASSESSMENTS = {
     'workflow_automation.policy_regression': 'e8cc2ebdf8e5954ffec92512c3040e219c632ca7290efab6246bb136eb14beb4',
     'workflow_automation.state_regression': 'ca899736312f2550425abd5d71ae4cd2be449c9affaeffd7ada7dfac05a01d83',
     'workflow_automation.validator_regression': '4edebc8048e256fdf4ddf3e32525cd0e2488f9b1ffd616fdd283bab98ec321fa',
-    'cli_result_measurement.regression': '1f86e3cf8b10991556deef2bce3a782b208b1114307214b0172a6e59bfe0f60f',
-    'token_cost.regression': 'f532fa1106f66f3101ed9ece85d5cc4e85ad1adbf58add45293df7204d7ece44',
-    'token_cost.report_regression': 'c1dc1ce0e26540aaa85654e65dee962a9ba004d71d8024a7f02f0faa56873ac9',
     'governed_lifecycle_cli_wrapper.test': '7c0d389cc4f21926207849803f952fa013b844a4d8c232c679bc30e024646f4b',
-    'main.retirement_ledger.regression': 'b44ab7503ecbfc7c4407d9857997364981996d2fa5a03906db4d8d11cea1b523',
 
     'skills.regression': '214972f0018d7ef9e72b7fb32da3cdc8710350aa579a7558c519375187345321',
     'adapters.regression': '84133e40f66e4595b786ee6f4116f933421fcf1e8e0387e698d0c7935695e8e2',
@@ -721,7 +691,9 @@ def catalog_command(
                 # be checked at their exact path, not hidden by a valid receiver.
                 old = re.fullmatch(r"docs/design/(?P<model>[a-z0-9][a-z0-9-]{0,79})(?:/(?P=model))?\.md", path)
                 absent = not (repo_root / path).exists() and not (repo_root / path).is_symlink()
-                if old and absent:
+                if path in RETIRED_MODEL_PATHS and absent:
+                    models.add(PROJECT_MODEL_PATHS[RETIRED_MODEL_PATHS[path]])
+                elif old and absent:
                     model = old.group("model")
                     if model == "test":
                         models.add(PROJECT_MODEL_PATHS["validation"])
@@ -778,10 +750,6 @@ def catalog_command(
         ]
         args.extend(versions)
         return _join(*args)
-    if check_id == "token_cost.report_validate":
-        if not paths:
-            raise ValueError("token_cost.report_validate requires at least one report YAML path")
-        return _join("python", "scripts/validate-token-cost-report.py", *paths)
     if check_id == "documentation_prose.enforce":
         if not paths:
             raise ValueError("documentation_prose.enforce requires at least one path")
@@ -832,6 +800,7 @@ def select_validation(request: SelectionRequest) -> SelectionResult:
     registration_debt: list[dict[str, Any]] = []
 
     release_versions: set[str] = set()
+    support_subject_cache: dict[str, set[str] | None] = {}
     for path in changed_paths:
         classification = classify_path(path)
         if classification.category is None:
@@ -857,6 +826,7 @@ def select_validation(request: SelectionRequest) -> SelectionResult:
             release_versions=release_versions,
             repo_root=repo_root,
             changed_sections_by_path=changed_sections_by_path,
+            support_subject_cache=support_subject_cache,
             tracked_deletion=(
                 path in preflight_context.tracked_paths and not (repo_root / path).exists()
             ),
@@ -1226,6 +1196,41 @@ def _git_lines(repo_root: Path, *args: str) -> list[str]:
     return [line.strip() for line in result.stdout.splitlines() if line.strip()]
 
 
+def _support_subject_paths(repo_root: Path, change_root: str) -> set[str] | None:
+    """Read exact Subjects from the existing validator's reference-closed snapshot."""
+    validator = Path(__file__).with_name("validate-record-store.mjs")
+    try:
+        result = subprocess.run(
+            ["node", str(validator), str(repo_root / change_root / "change.json"), "--subjects"],
+            capture_output=True, text=True, timeout=30, check=False,
+        )
+        value = json.loads(result.stdout)
+        if result.returncode or not isinstance(value, dict) or type(value.get("schema_version")) is not int or value["schema_version"] != 1:
+            return None
+        paths = value.get("subject_paths")
+        if not isinstance(paths, list) or not all(isinstance(path, str) for path in paths):
+            return None
+        return set(paths)
+    except (OSError, ValueError, TypeError, subprocess.TimeoutExpired):
+        return None
+
+
+def _safe_support_subject(repo_root: Path, path: str) -> bool:
+    if PurePosixPath(path).is_absolute() or ".." in PurePosixPath(path).parts:
+        return False
+    candidate = repo_root / path
+    try:
+        candidate.relative_to(repo_root)
+        candidate.resolve().relative_to(repo_root)
+        while candidate != repo_root:
+            if candidate.is_symlink():
+                return False
+            candidate = candidate.parent
+        return True
+    except (OSError, ValueError, RuntimeError):
+        return False
+
+
 def _apply_path_selection(
     path: str,
     category: str,
@@ -1239,6 +1244,7 @@ def _apply_path_selection(
     repo_root: Path,
     changed_sections_by_path: dict[str, tuple[str, ...]],
     tracked_deletion: bool,
+    support_subject_cache: dict[str, set[str] | None],
 ) -> None:
     # Record-store owns complete-set validation for its explicitly selected
     # roots. Historical review/lifecycle validators must not reinterpret them.
@@ -1269,14 +1275,30 @@ def _apply_path_selection(
                     if re.fullmatch(r"reviews/[a-z0-9][a-z0-9-]{0,79}\.json", relative):
                         kind = "review"
                     records = metadata.get("records")
-                    if kind is None or not isinstance(records, list) or not any(isinstance(r, dict) and r.get("path") == path and r.get("kind") == kind for r in records):
+                    if kind is None and not reserved:
+                        if not _safe_support_subject(repo_root, path):
+                            blocking_results.append({"code": "unsafe-supporting-subject-path", "path": path,
+                                                     "message": "Supporting Subject paths must stay within the repository without symlinks."})
+                            return
+                        if change_root not in support_subject_cache:
+                            support_subject_cache[change_root] = _support_subject_paths(repo_root, change_root)
+                        subjects = support_subject_cache[change_root]
+                        if subjects is None:
+                            blocking_results.append({"code": "invalid-supporting-subject-store", "path": path,
+                                                     "message": "Validate the complete current record set before selecting supporting Subjects."})
+                        elif path not in subjects:
+                            blocking_results.append({"code": "unregistered-recording-path", "path": path,
+                                                     "message": "Supporting files must be exact Subjects in the validated registered records."})
+                        elif path.endswith(".md") and (repo_root / path).is_file():
+                            _add_check(selected, "documentation_prose.enforce",
+                                       "Changed supporting Markdown retains current prose validation.", path=path)
+                    elif kind is None or not isinstance(records, list) or not any(isinstance(r, dict) and r.get("path") == path and r.get("kind") == kind for r in records):
                         blocking_results.append({"code": "unregistered-recording-path", "path": path,
                                                  "message": "Recording paths must be explicitly registered."})
             return
         # Noncurrent archival evidence has no operational validation route.
         # Dedicated removal checks remain selected for archive-path changes.
         _add_check(selected, "record_retirement.regression", "Archival paths must not restore execution or obstruct current records.")
-        _add_check(selected, "main.retirement_ledger.regression", "Preserve the historical inventory through its canonical Python check.")
         return
     if _is_boundary_first_surface(path):
         _add_check(
@@ -1439,7 +1461,7 @@ def _apply_path_selection(
         return
 
     if category == "skill-source-archive":
-        _add_check(selected, "skills.regression", "Skill archive changes require original-byte, retained-owner and navigation protection.")
+        _add_check(selected, "skills.regression", "Retired skill archive paths select current skill protection without reading historical copies.")
         return
 
     if category == "research-artifact":
@@ -1553,28 +1575,10 @@ def _apply_path_selection(
                        "Isolated advisory evidence requires prose checks and its underlying model/runtime proof, not formal settlement.", path=path)
         return
 
-    if category == "token-cost":
-        if path in {"scripts/measure-cli-result-bytes.py", "scripts/test-cli-result-measurement.py"}:
-            _add_check(selected, "cli_result_measurement.regression",
-                       "CLI measurement changes require retired-profile and provenance rejection proof.")
-        _add_check(
-            selected,
-            "token_cost.regression",
-            "Changed token-cost measurement surface requires token-cost measurement regression fixtures.",
-        )
-        if _is_token_cost_report_validation_surface(path):
-            _add_check(
-                selected,
-                "token_cost.report_regression",
-                "Changed token-cost report validation surface requires report validator regression fixtures.",
-            )
-        if _is_token_cost_release_report_yaml(path):
-            _add_check(
-                selected,
-                "token_cost.report_validate",
-                "Changed token-cost release report metadata requires report validation.",
-                path=path,
-            )
+    if category == "retired-token-cost":
+        for check_id in ("selector.regression", "adapters.regression", "release_transaction.regression"):
+            _add_check(selected, check_id,
+                       "Retired token-cost paths require retained selector and qualification consumer proof.")
         return
 
     if category == "adapter-artifact-metadata":
@@ -1616,7 +1620,6 @@ def _apply_path_selection(
         return
 
     if category == "record-retirement":
-        _add_check(selected, "main.retirement_ledger.regression", "Retirement changes require canonical historical inventory proof.")
         _add_check(
             selected,
             "record_retirement.regression",
@@ -2127,11 +2130,11 @@ def _path_category(path: str) -> str | None:
         "scripts/test-token-cost-report-validation.py",
         "scripts/validate-token-cost-report.py",
     }:
-        return "token-cost"
+        return "retired-token-cost"
     if path.startswith("benchmarks/token-cost/"):
-        return "token-cost"
+        return "retired-token-cost"
     if path.startswith("docs/reports/token-cost/"):
-        return "token-cost"
+        return "retired-token-cost"
     if path == "packages/rigorloop" or path.startswith("packages/rigorloop/"):
         return "rigorloop-cli"
     if path in {
@@ -2148,7 +2151,7 @@ def _path_category(path: str) -> str | None:
     if path.startswith("docs/reports/adapter-artifacts/releases/") and path.endswith(".yaml"):
         return "adapter-artifact-metadata"
     if path.startswith("tests/fixtures/token-cost/"):
-        return "token-cost"
+        return "retired-token-cost"
     if path.startswith("docs/examples/"):
         return "retired-examples"
     if path in SKILL_SOURCE_ARCHIVE_PATHS:
@@ -2264,8 +2267,8 @@ def _is_boundary_first_validation_surface(path: str) -> bool:
     }
 
 
-# Exact byte-preserved source snapshots and their navigation selected by the
-# Skill displacement map. Other archive paths remain unclassified/fail closed.
+# Retired paths remain classifiable for deletion diffs. This does not require
+# archived files to exist; other archive paths remain unclassified/fail closed.
 SKILL_SOURCE_ARCHIVE_PATHS = frozenset({
     "docs/archive/skill-model/2026-09-08/README.md",
     "docs/archive/skill-model/2026-09-08/specs/skill-contract.md",
@@ -2303,18 +2306,8 @@ def _is_tier_b_documentation_prose_path(path: str) -> bool:
     return False
 
 
-def _is_token_cost_release_report_yaml(path: str) -> bool:
-    return (
-        path.startswith("docs/reports/token-cost/releases/")
-        and path.endswith(".yaml")
-    )
 
 
-def _is_token_cost_report_validation_surface(path: str) -> bool:
-    return path in {
-        "scripts/validate-token-cost-report.py",
-        "scripts/test-token-cost-report-validation.py",
-    } or path.startswith("tests/fixtures/token-cost/reports/")
 
 
 def _is_learn_artifact_path(path: str) -> bool:

@@ -1,0 +1,159 @@
+{
+  "operation": "selective-design-consolidation",
+  "historical_revision": "39b7c5cb1f03aa761d2f2493d3474ce985e59d6f",
+  "removed_subjects": [
+    {
+      "path": "specs/architecture-package-method.md",
+      "identity": "sha256:4b8ca5c93fc85e1a8bdceb0203c7ad2faf7e41921d2eeb11c1b3eaf482a95899"
+    },
+    {
+      "path": "specs/architecture-package-method.test.md",
+      "identity": "sha256:86b42bc0f616931f51462da90e579722a720cfc7c24585d3272fb7bf50d03346"
+    },
+    {
+      "path": "docs/adr/ADR-20260428-architecture-package-method.md",
+      "identity": "sha256:70d051e5ce1c4285b8f0fd5980092b1f7fe04a049e6dfddf4c0288bfdd8ac6c2"
+    },
+    {
+      "path": "docs/adr/ADR-20260509-architecture-skill-surface-simplification.md",
+      "identity": "sha256:c772966986f587dbc6dc2f15727c680076c35d3a1882b6fd25ad5f2a401f4f2d"
+    },
+    {
+      "path": "specs/skill-readability-contract.md",
+      "identity": "sha256:08ca1f804c8d877387798b0a21709951ed6096718a03db82067d3ad6749b0eb0"
+    },
+    {
+      "path": "specs/skill-readability-contract.test.md",
+      "identity": "sha256:cc32a7aeadedc4fa20755cc14e2d6517639346f922ab383f9a82c51caee3f711"
+    },
+    {
+      "path": "specs/customer-portable-public-skill-evidence.md",
+      "identity": "sha256:d786f7bab328b82be9c65cb42d7948337fcfb6bf7bdd32df55005c61d69dacb9"
+    },
+    {
+      "path": "specs/customer-portable-public-skill-evidence.test.md",
+      "identity": "sha256:b6d8ec25acffa62b0262195d871aab4b3bc77a183a96752499b974c8103dbc5b"
+    },
+    {
+      "path": "docs/adr/ADR-20260623-published-skill-resource-integrity.md",
+      "identity": "sha256:1475793203979247b7b42f22406dd681c424ea74328db6d17f5e1102bd5eb69b"
+    },
+    {
+      "path": "docs/archive/skill-model/2026-09-08/README.md",
+      "identity": "sha256:c4438b0c652541332ee5f01e9431ed9cebf64460dda0c39d84eef47774003836"
+    },
+    {
+      "path": "docs/archive/skill-model/2026-09-08/docs/adr/ADR-20260623-published-skill-resource-integrity.md",
+      "identity": "sha256:1475793203979247b7b42f22406dd681c424ea74328db6d17f5e1102bd5eb69b"
+    },
+    {
+      "path": "docs/archive/skill-model/2026-09-08/specs/customer-portable-public-skill-evidence.md",
+      "identity": "sha256:d786f7bab328b82be9c65cb42d7948337fcfb6bf7bdd32df55005c61d69dacb9"
+    },
+    {
+      "path": "docs/archive/skill-model/2026-09-08/specs/skill-contract.md",
+      "identity": "sha256:4471eda8d1e04621710e5a0764a452670df8ba711804a3c2380ff7bdd6d1718f"
+    },
+    {
+      "path": "docs/archive/skill-model/2026-09-08/specs/skill-readability-contract.md",
+      "identity": "sha256:08ca1f804c8d877387798b0a21709951ed6096718a03db82067d3ad6749b0eb0"
+    }
+  ],
+  "updated_references": [
+    "docs/architecture/system/architecture.md",
+    "docs/design/skill/authoring/design.md",
+    "docs/project-map.md",
+    "specs/rigorloop-workflow.md",
+    "specs/skill-contract.md",
+    "specs/skill-contract.test.md",
+    "specs/spec-family-readability-pass.md"
+  ],
+  "preserved_protection": "Current model missing/unsafe/unknown-value cases; skill inventory and retained owner checks; full skill resource/portability validation. Historical fixed-copy/wording duties explicitly retired. Selector retains exact retired paths only to classify deletion diffs.",
+  "scope": "14 files, related current owner prose and five validator/test files; no release or raw boundary resources removed.",
+  "updated_owners": [
+    "docs/design/skill/skill.md",
+    "docs/design/skill/authoring/design.md"
+  ],
+  "updated_tooling": [
+    "scripts/boundary_first_validation.py",
+    "scripts/test-boundary-first-validation.py",
+    "scripts/test-skill-validator.py",
+    "scripts/validation_selection.py",
+    "scripts/test-select-validation.py"
+  ],
+  "historical_proof_preserved": [
+    "specs/code-review-skill-simplification.test.md",
+    "specs/legacy-architecture-lifecycle-normalization.test.md"
+  ],
+  "additional_test_reconciliation": "Five stale governance assertions now inspect current owner content or delegation links rather than require long duplicated rules in AGENTS/Constitution.",
+  "validation": {
+    "result": "passed",
+    "procedure": "bash scripts/ci.sh --mode explicit with the exact second-batch deletion, reference, owner and tooling paths; focused reruns of the five corrected governance tests, boundary validation on the final changed spec set, and CompositionTests.test_catalog_composes_broad_and_main_with_distinct_preserved_package_versions. Additional checks: python scripts/test-boundary-first-validation.py (87 tests), SkillOwnerTransferTests, model structural/prose validation and git diff --check.",
+    "summary": "Initial selected CI reported seven failed check entries: five stale governance assertions, boundary validation triggered by two historical proof-link edits, and an untracked-proposal preflight. Five assertions were reconciled to current owners/delegation and passed their exact rerun; the two historical proof documents were restored unchanged, and the final spec scope passed structural validation with expected Design Review classification. Staging the user-authored proposal satisfied preflight and the exact composition rerun passed. Other selected checks passed in the original run. No complete CI rerun after corrections, independent Code/Design Review, or final Verify claimed.",
+    "selected_command": [
+      "bash",
+      "scripts/ci.sh",
+      "--mode",
+      "explicit",
+      "--path",
+      "specs/architecture-package-method.md",
+      "--path",
+      "specs/architecture-package-method.test.md",
+      "--path",
+      "docs/adr/ADR-20260428-architecture-package-method.md",
+      "--path",
+      "docs/adr/ADR-20260509-architecture-skill-surface-simplification.md",
+      "--path",
+      "specs/skill-readability-contract.md",
+      "--path",
+      "specs/skill-readability-contract.test.md",
+      "--path",
+      "specs/customer-portable-public-skill-evidence.md",
+      "--path",
+      "specs/customer-portable-public-skill-evidence.test.md",
+      "--path",
+      "docs/adr/ADR-20260623-published-skill-resource-integrity.md",
+      "--path",
+      "docs/archive/skill-model/2026-09-08/README.md",
+      "--path",
+      "docs/archive/skill-model/2026-09-08/docs/adr/ADR-20260623-published-skill-resource-integrity.md",
+      "--path",
+      "docs/archive/skill-model/2026-09-08/specs/customer-portable-public-skill-evidence.md",
+      "--path",
+      "docs/archive/skill-model/2026-09-08/specs/skill-contract.md",
+      "--path",
+      "docs/archive/skill-model/2026-09-08/specs/skill-readability-contract.md",
+      "--path",
+      "docs/architecture/system/architecture.md",
+      "--path",
+      "docs/design/skill/authoring/design.md",
+      "--path",
+      "docs/project-map.md",
+      "--path",
+      "specs/code-review-skill-simplification.test.md",
+      "--path",
+      "specs/legacy-architecture-lifecycle-normalization.test.md",
+      "--path",
+      "specs/rigorloop-workflow.md",
+      "--path",
+      "specs/skill-contract.md",
+      "--path",
+      "specs/skill-contract.test.md",
+      "--path",
+      "specs/spec-family-readability-pass.md",
+      "--path",
+      "docs/design/skill/skill.md",
+      "--path",
+      "scripts/boundary_first_validation.py",
+      "--path",
+      "scripts/test-boundary-first-validation.py",
+      "--path",
+      "scripts/test-skill-validator.py",
+      "--path",
+      "scripts/validation_selection.py",
+      "--path",
+      "scripts/test-select-validation.py"
+    ],
+    "staged_input": "docs/proposals/2026-09-13-current-design-repository-cleanup.md; no commit created"
+  }
+}

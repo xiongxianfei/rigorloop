@@ -1,0 +1,39 @@
+{
+  "operation": "revise-vision",
+  "assembly": "VA2-strategic-sync",
+  "significance": "substantive-nonmaterial",
+  "authority": "Owner requested vision refinement before approving continuation of cleanup proposal review.",
+  "cause": "Clarify current reliance versus retired history under the Constitution cleanup policy.",
+  "positioning_action": "update",
+  "readme_action": "synchronize-existing",
+  "marker_state": "one-ordered-standalone-pair",
+  "targets": [
+    {
+      "path": "VISION.md",
+      "role": "canonical-vision",
+      "action": "update",
+      "prior_identity": "sha256:9e2d76bff364133fe34d7246c8b4dbbdc2a9c838dc89179ea74037be0a6c0501",
+      "intended_identity": "sha256:3dae6703651fed191fe384a14224254b7791267014a89662d8872c812493e146",
+      "evidence_state": "read-back-confirmed"
+    },
+    {
+      "path": "docs/vision/strategic-positioning.md",
+      "role": "supporting-rationale",
+      "action": "update",
+      "prior_identity": "sha256:7702abe3d548ea3efd9b823ef84932fc0ecebabbb1063f4a9f169904bd1da772",
+      "intended_identity": "sha256:513338d86364c03ef030d567abf590332353a1edfe5fe6ae7a247e9b46781081",
+      "evidence_state": "read-back-confirmed"
+    },
+    {
+      "path": "README.md",
+      "role": "derived-readme",
+      "action": "unchanged",
+      "prior_identity": "sha256:4d9d54946c0ddf3da6823cfef0c48b50b8d89f3ea91326faeb2cefd0459ea28c",
+      "intended_identity": "sha256:4d9d54946c0ddf3da6823cfef0c48b50b8d89f3ea91326faeb2cefd0459ea28c",
+      "evidence_state": "read-back-confirmed"
+    }
+  ],
+  "result": "complete",
+  "readme_front_matter": "unchanged",
+  "readme_rationale": "Pitch, differentiator and audience remain unchanged; existing derived front-matter remains aligned."
+}

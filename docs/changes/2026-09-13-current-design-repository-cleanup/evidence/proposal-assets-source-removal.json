@@ -1,0 +1,38 @@
+{
+  "operation": "consolidate-proposal-asset-contract",
+  "historical_revision": "39b7c5cb1f03aa761d2f2493d3474ce985e59d6f",
+  "removed_subjects": [
+    {
+      "path": "specs/proposal-family-assets-progressive-disclosure.md",
+      "identity": "sha256:e8845497bd91625897f2968821241248c1c2021ca7a02e68d2a4f698b4eb4642",
+      "historical_identity": "sha256:e8845497bd91625897f2968821241248c1c2021ca7a02e68d2a4f698b4eb4642",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "specs/proposal-family-assets-progressive-disclosure.test.md",
+      "identity": "sha256:8fdd227a831a0ded4b2c41260dee87bc644a35603c47516537ae64bac4f2fd88",
+      "historical_identity": "sha256:8fdd227a831a0ded4b2c41260dee87bc644a35603c47516537ae64bac4f2fd88",
+      "uncommitted_patch": ""
+    }
+  ],
+  "deleted_lines": 738,
+  "updated_paths": [
+    "docs/design/skill/skill.md"
+  ],
+  "prior_model_identities": {
+    "docs/design/skill/skill.md": "sha256:4abc98fab3cd55075a9a3667afa5b8071fe4ad5504753aa7f0a82fdaa01e8465"
+  },
+  "important_knowledge": "Skill preserves proposal-family structural assets, scoped metadata/status rules, visible placeholders, conditional COPY guidance, policy separation and deterministic structural-label/policy-leakage validation. Current proposal content replaces obsolete conditional sections. Existing templates, fixtures and regression tests remain unchanged.",
+  "retired_material": "Completed extraction inventories, old conditional proposal sections and finding/result labels superseded by current owners, rollout matrices and per-extraction token-cost targets retire. Existing current checks and independently applicable measurement contracts remain; no new submodel or parser behavior is introduced.",
+  "historical_preservation": "Both originals match retained Git bytes. The baseline fixture remains a live skill-test input and is preserved with historical records and judgments. Current owner references resolve to Skill; source provenance uses the exact retained Git revision.",
+  "source_disposition": {
+    "PFA-R1-R18,R21-R32": "Skill Proposal-family assets under SKL-SR-08/12; current proposal content supersedes historical section/label inventories",
+    "PFA-R19-R20": "Old conditional sections superseded by current proposal content, with intent and material impacts retained in allowed sections",
+    "PFA-R33-R38,R46-R49": "Completed extraction evidence and measurements remain historical; current validation and independently applicable measurement contracts remain",
+    "PFA-R39-R45,R50-R52": "Current Skill output/resource and Engineering packaging/validation owners; executable regression protection preserved"
+  },
+  "validation": {
+    "procedure": "python scripts/test-skill-validator.py; python scripts/test-boundary-first-validation.py; python scripts/validate-boundary-first.py --check --path docs/design/skill/skill.md --path specs/proposal-family-assets-progressive-disclosure.md --path specs/proposal-family-assets-progressive-disclosure.test.md; python scripts/validate-documentation-prose.py --mode enforce --path docs/design/skill/skill.md --path docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md; git diff --check; git diff --cached --check",
+    "summary": "Passed 354 skill tests and 87 boundary/model tests; structural/reference and prose validation passed, with clean diff checks. Independent review and wider cleanup Verify remain outstanding."
+  }
+}

@@ -1,0 +1,289 @@
+{
+  "scope": "TOKEN-1 / VAL-SR-25 only, not wider accumulated cleanup or branch readiness",
+  "changed_paths": [
+    "README.md",
+    "benchmarks/token-cost/fixtures/minimal-public-project/AGENTS.md",
+    "benchmarks/token-cost/fixtures/minimal-public-project/README.md",
+    "benchmarks/token-cost/fixtures/minimal-public-project/VISION.md",
+    "benchmarks/token-cost/fixtures/minimal-public-project/docs/changes/.gitkeep",
+    "benchmarks/token-cost/fixtures/minimal-public-project/src/example.txt",
+    "benchmarks/token-cost/fixtures/minimal-public-project-architecture-review/AGENTS.md",
+    "benchmarks/token-cost/fixtures/minimal-public-project-architecture-review/README.md",
+    "benchmarks/token-cost/fixtures/minimal-public-project-architecture-review/VISION.md",
+    "benchmarks/token-cost/fixtures/minimal-public-project-architecture-review/docs/adr/README.md",
+    "benchmarks/token-cost/fixtures/minimal-public-project-architecture-review/docs/architecture/system/architecture.md",
+    "benchmarks/token-cost/fixtures/minimal-public-project-architecture-review/docs/architecture/system/diagrams/container.mmd",
+    "benchmarks/token-cost/fixtures/minimal-public-project-architecture-review/docs/architecture/system/diagrams/context.mmd",
+    "benchmarks/token-cost/fixtures/minimal-public-project-architecture-review/docs/changes/2026-05-11-architecture-review-benchmark/change.yaml",
+    "benchmarks/token-cost/fixtures/minimal-public-project-architecture-review/docs/changes/2026-05-11-architecture-review-benchmark/explain-change.md",
+    "benchmarks/token-cost/fixtures/minimal-public-project-architecture-review/specs/example-feature.md",
+    "benchmarks/token-cost/fixtures/minimal-public-project-architecture-review/src/app.txt",
+    "benchmarks/token-cost/manifest.yaml",
+    "benchmarks/token-cost/prompts/architecture-no-impact.md",
+    "benchmarks/token-cost/prompts/architecture-review.md",
+    "benchmarks/token-cost/prompts/code-review-small.md",
+    "benchmarks/token-cost/prompts/explain-change-summary.md",
+    "benchmarks/token-cost/prompts/implement-handoff.md",
+    "benchmarks/token-cost/prompts/learn-no-durable-lesson.md",
+    "benchmarks/token-cost/prompts/plan-handoff.md",
+    "benchmarks/token-cost/prompts/pr-handoff.md",
+    "benchmarks/token-cost/prompts/proposal-short.md",
+    "benchmarks/token-cost/prompts/verify-final-pack.md",
+    "benchmarks/token-cost/prompts/workflow-route.md",
+    "docs/project-map.md",
+    "docs/reports/token-cost/2026-05-10-baseline.md",
+    "docs/reports/token-cost/cli/v0.4.x-detailed-baseline.json",
+    "docs/reports/token-cost/lifecycle/2026-05-14-cost-bounded-rigor-m4-lifecycle-token-cost-summary.md",
+    "docs/reports/token-cost/lifecycle/2026-05-14-cost-bounded-rigor-slicing-retrospective.md",
+    "docs/reports/token-cost/optimizations/2026-05-11-progressive-loading-high-cost-skills.md",
+    "docs/reports/token-cost/releases/v0.1.1-skill-token-runtime-v1-pretransition.md",
+    "docs/reports/token-cost/releases/v0.1.1-skill-token-runtime-v1-pretransition.yaml",
+    "docs/reports/token-cost/releases/v0.1.1.md",
+    "docs/reports/token-cost/releases/v0.1.1.yaml",
+    "docs/reports/token-cost/releases/v0.1.2.md",
+    "docs/reports/token-cost/releases/v0.1.2.yaml",
+    "docs/reports/token-cost/releases/v0.1.3.md",
+    "docs/reports/token-cost/releases/v0.1.3.yaml",
+    "docs/reports/token-cost/runs/v0.1.1/architecture-no-impact-run1.analysis.yaml",
+    "docs/reports/token-cost/runs/v0.1.1/code-review-small-run1.analysis.yaml",
+    "docs/reports/token-cost/runs/v0.1.1/explain-change-summary-run1.analysis.yaml",
+    "docs/reports/token-cost/runs/v0.1.1/implement-handoff-run1.analysis.yaml",
+    "docs/reports/token-cost/runs/v0.1.1/learn-no-durable-lesson-run1.analysis.yaml",
+    "docs/reports/token-cost/runs/v0.1.1/plan-handoff-run1.analysis.yaml",
+    "docs/reports/token-cost/runs/v0.1.1/pr-handoff-run1.analysis.yaml",
+    "docs/reports/token-cost/runs/v0.1.1/proposal-short-run1.analysis.yaml",
+    "docs/reports/token-cost/runs/v0.1.1/verify-final-pack-run1.analysis.yaml",
+    "docs/reports/token-cost/runs/v0.1.1/workflow-route-run1.analysis.yaml",
+    "docs/reports/token-cost/runs/v0.1.2/architecture-no-impact-run1.analysis.yaml",
+    "docs/reports/token-cost/runs/v0.1.2/code-review-small-run1.analysis.yaml",
+    "docs/reports/token-cost/runs/v0.1.2/explain-change-summary-run1.analysis.yaml",
+    "docs/reports/token-cost/runs/v0.1.2/implement-handoff-run1.analysis.yaml",
+    "docs/reports/token-cost/runs/v0.1.2/learn-no-durable-lesson-run1.analysis.yaml",
+    "docs/reports/token-cost/runs/v0.1.2/plan-handoff-run1.analysis.yaml",
+    "docs/reports/token-cost/runs/v0.1.2/pr-handoff-run1.analysis.yaml",
+    "docs/reports/token-cost/runs/v0.1.2/proposal-short-run1.analysis.yaml",
+    "docs/reports/token-cost/runs/v0.1.2/verify-final-pack-run1.analysis.yaml",
+    "docs/reports/token-cost/runs/v0.1.2/workflow-route-run1.analysis.yaml",
+    "docs/reports/token-cost/runs/v0.1.3/architecture-no-impact-run1.analysis.yaml",
+    "docs/reports/token-cost/runs/v0.1.3/architecture-no-impact-run1.jsonl",
+    "docs/reports/token-cost/runs/v0.1.3/code-review-small-run1.analysis.yaml",
+    "docs/reports/token-cost/runs/v0.1.3/code-review-small-run1.jsonl",
+    "docs/reports/token-cost/runs/v0.1.3/explain-change-summary-run1.analysis.yaml",
+    "docs/reports/token-cost/runs/v0.1.3/explain-change-summary-run1.jsonl",
+    "docs/reports/token-cost/runs/v0.1.3/implement-handoff-run1.analysis.yaml",
+    "docs/reports/token-cost/runs/v0.1.3/implement-handoff-run1.jsonl",
+    "docs/reports/token-cost/runs/v0.1.3/learn-no-durable-lesson-run1.analysis.yaml",
+    "docs/reports/token-cost/runs/v0.1.3/learn-no-durable-lesson-run1.jsonl",
+    "docs/reports/token-cost/runs/v0.1.3/plan-handoff-run1.analysis.yaml",
+    "docs/reports/token-cost/runs/v0.1.3/plan-handoff-run1.jsonl",
+    "docs/reports/token-cost/runs/v0.1.3/pr-handoff-run1.analysis.yaml",
+    "docs/reports/token-cost/runs/v0.1.3/pr-handoff-run1.jsonl",
+    "docs/reports/token-cost/runs/v0.1.3/proposal-short-run1.analysis.yaml",
+    "docs/reports/token-cost/runs/v0.1.3/proposal-short-run1.jsonl",
+    "docs/reports/token-cost/runs/v0.1.3/verify-final-pack-run1.analysis.yaml",
+    "docs/reports/token-cost/runs/v0.1.3/verify-final-pack-run1.jsonl",
+    "docs/reports/token-cost/runs/v0.1.3/workflow-route-run1.analysis.yaml",
+    "docs/reports/token-cost/runs/v0.1.3/workflow-route-run1.jsonl",
+    "docs/reports/token-cost/skills/2026-05-18-customer-portable-public-skills-dynamic-benchmark.md",
+    "docs/reports/token-cost/skills/2026-05-18-customer-portable-public-skills.md",
+    "docs/reports/token-cost/skills/2026-05-18-skill-readability-self-containment.md",
+    "docs/reports/token-cost/skills/fixtures/customer-portable-public-skills/docs/changes/example-change/change.yaml",
+    "docs/reports/token-cost/skills/fixtures/customer-portable-public-skills/docs/changes/example-change/explain-change.md",
+    "docs/reports/token-cost/skills/fixtures/customer-portable-public-skills/docs/plans/customer-plan.md",
+    "docs/reports/token-cost/skills/fixtures/customer-portable-public-skills/docs/workflows.md",
+    "docs/reports/token-cost/skills/fixtures/customer-portable-public-skills/rigorloop.lock",
+    "docs/reports/token-cost/skills/fixtures/customer-portable-public-skills/rigorloop.yaml",
+    "docs/reports/token-cost/skills/fixtures/customer-portable-public-skills/specs/customer-feature.md",
+    "docs/reports/token-cost/skills/fixtures/customer-portable-public-skills/src/app.js",
+    "docs/reports/token-cost/skills/fixtures/customer-portable-public-skills/tests/app.test.js",
+    "docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/implement-customer-plan-handoff.analysis.yaml",
+    "docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/implement-customer-plan-handoff.jsonl",
+    "docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/plan-customer-local-spec-and-code.analysis.yaml",
+    "docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/plan-customer-local-spec-and-code.jsonl",
+    "docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/pr-customer-ready-handoff.analysis.yaml",
+    "docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/pr-customer-ready-handoff.jsonl",
+    "docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/project-map-customer-repo-orientation.analysis.yaml",
+    "docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/project-map-customer-repo-orientation.jsonl",
+    "docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/prompts/implement-customer-plan-handoff.md",
+    "docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/prompts/plan-customer-local-spec-and-code.md",
+    "docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/prompts/pr-customer-ready-handoff.md",
+    "docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/prompts/project-map-customer-repo-orientation.md",
+    "docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/prompts/proposal-customer-no-internal-docs.md",
+    "docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/prompts/proposal-review-customer-local-artifacts.md",
+    "docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/prompts/spec-customer-local-workflow-guide.md",
+    "docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/prompts/verify-customer-final-pack.md",
+    "docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/prompts/workflow-customer-route-no-internal-docs.md",
+    "docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/proposal-customer-no-internal-docs.analysis.yaml",
+    "docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/proposal-customer-no-internal-docs.jsonl",
+    "docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/proposal-review-customer-local-artifacts.analysis.yaml",
+    "docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/proposal-review-customer-local-artifacts.jsonl",
+    "docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/spec-customer-local-workflow-guide.analysis.yaml",
+    "docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/spec-customer-local-workflow-guide.jsonl",
+    "docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/verify-customer-final-pack.analysis.yaml",
+    "docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/verify-customer-final-pack.jsonl",
+    "docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/workflow-customer-route-no-internal-docs.analysis.yaml",
+    "docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/workflow-customer-route-no-internal-docs.jsonl",
+    "packages/rigorloop/test/fixtures/observability/token-profiles-v1.json",
+    "packages/rigorloop/test/fixtures/recording-interactions/README.md",
+    "packages/rigorloop/test/helpers/record-store-interactions.mjs",
+    "packages/rigorloop/test/helpers/record-store-tokenize.py",
+    "packages/rigorloop/test/record-store-interactions.test.js",
+    "scripts/adapter_distribution.py",
+    "scripts/analyze-codex-jsonl.py",
+    "scripts/measure-cli-result-bytes.py",
+    "scripts/measure-skill-tokens.py",
+    "scripts/release-verify.sh",
+    "scripts/release_candidate_tests.py",
+    "scripts/run-token-cost-benchmarks.py",
+    "scripts/test-adapter-distribution.py",
+    "scripts/test-cli-result-measurement.py",
+    "scripts/test-select-validation.py",
+    "scripts/test-token-cost-measurement.py",
+    "scripts/test-token-cost-report-validation.py",
+    "scripts/validate-release.py",
+    "scripts/validate-token-cost-report.py",
+    "scripts/validation_selection.py",
+    "templates/lifecycle-token-cost-summary.md",
+    "tests/fixtures/token-cost/reports/valid-final-pass/manifest.yaml",
+    "tests/fixtures/token-cost/reports/valid-final-pass/minimal-public-project/AGENTS.md",
+    "tests/fixtures/token-cost/reports/valid-final-pass/minimal-public-project/README.md",
+    "tests/fixtures/token-cost/reports/valid-final-pass/minimal-public-project/VISION.md",
+    "tests/fixtures/token-cost/reports/valid-final-pass/minimal-public-project/docs/changes/.gitkeep",
+    "tests/fixtures/token-cost/reports/valid-final-pass/minimal-public-project/docs/workflows.md",
+    "tests/fixtures/token-cost/reports/valid-final-pass/minimal-public-project/src/example.txt",
+    "tests/fixtures/token-cost/reports/valid-final-pass/prompts/proposal-short.md",
+    "tests/fixtures/token-cost/reports/valid-final-pass/runs/v0.1.1/proposal-short-run1.analysis.yaml",
+    "tests/fixtures/token-cost/reports/valid-final-pass/runs/v0.1.1/proposal-short-run1.jsonl",
+    "tests/fixtures/token-cost/reports/valid-final-pass/v0.1.1.md",
+    "tests/fixtures/token-cost/reports/valid-final-pass/v0.1.1.yaml",
+    "tests/fixtures/token-cost/reports/valid-raw-omitted/proposal-short-run1.analysis.yaml",
+    "tests/fixtures/token-cost/reports/valid-raw-omitted/sanitized-summary.yaml",
+    "tests/fixtures/token-cost/reports/valid-raw-omitted/v0.1.1.md",
+    "tests/fixtures/token-cost/sample-codex-session.jsonl"
+  ],
+  "current_subjects": [
+    {
+      "path": "README.md",
+      "identity": "sha256:67080688039df765608224c76f2b075eb4c7c07bfb78ec203f18753236315f55"
+    },
+    {
+      "path": "docs/project-map.md",
+      "identity": "sha256:55ec1632457bcd42a35f04cbce9f2e15e60aa37c24d83a34d6a3af75ab7a7ecf"
+    },
+    {
+      "path": "packages/rigorloop/test/fixtures/recording-interactions/README.md",
+      "identity": "sha256:20e6a6cf9f33a9893ba9378c241ff2ca1ad3394f45bcb7609eb3231fcce2d2d9"
+    },
+    {
+      "path": "packages/rigorloop/test/helpers/record-store-interactions.mjs",
+      "identity": "sha256:da8df34c3fb5bc423b65c19beaa45d25e634b23ab731937c29259a85e0fca420"
+    },
+    {
+      "path": "packages/rigorloop/test/record-store-interactions.test.js",
+      "identity": "sha256:e1e5ee271c32a7fb2349a797bbc70fab6dfae3ab6524dd76218950b42ed6e850"
+    },
+    {
+      "path": "scripts/adapter_distribution.py",
+      "identity": "sha256:9115b8211e2e67ac8f807985a1d5fd31106f50452a22987b1cbec94145bb5739"
+    },
+    {
+      "path": "scripts/release-verify.sh",
+      "identity": "sha256:686e723c6cc0b02fc18b47bdd7e53689e53923990e6c31894d586f51ee362709"
+    },
+    {
+      "path": "scripts/release_candidate_tests.py",
+      "identity": "sha256:c61a6fb2a952937c3af3dee46d22b86883fc769c3428bb826a0beef585d1e156"
+    },
+    {
+      "path": "scripts/test-adapter-distribution.py",
+      "identity": "sha256:73d1b9123a49be3d760938ed7584d14bb71abddd6f2ed0e88b221d962c69f9ef"
+    },
+    {
+      "path": "scripts/test-select-validation.py",
+      "identity": "sha256:a2f081462cb2710a8ade8cfe0e4b8ab673467811faf26837d4e8979ec4be8e89"
+    },
+    {
+      "path": "scripts/validate-release.py",
+      "identity": "sha256:7023c1b2c211d0988cf10b26bf0051bcd67c5546b99f3e87b84a3187539ce94e"
+    },
+    {
+      "path": "scripts/validation_selection.py",
+      "identity": "sha256:c721d93f4fbf5f48a2f5dda25d4f2bbe4c2260f35a60f3b73367c5b72105a135"
+    }
+  ],
+  "removed_files_evidence": "token-retirement-removed-files.json",
+  "removed_count": 147,
+  "delivered": [
+    "Retired token tools, reports, benchmarks, fixtures, measurement entry points and exclusive guidance collectors.",
+    "Removed selector check IDs, report imports, adapter qualification and release wrapper gates; removed token-only release changed-path flags, now rejected as unsupported.",
+    "Retained deletion-path selection of consumer regressions, invalid source/candidate rejection, valid qualification without token reports, semantic interaction and CLI result contracts."
+  ],
+  "test_disposition": "Exclusive token proof retired under VAL-SR-25. Source safety and valid candidate tests retain independent adapter setup without token fixtures. Retained semantic interactions still compare records, basis, checkpoints and calls. Historical ledger constants restored byte-for-byte from pre-slice snapshot.",
+  "corrections": [
+    "Initial red token requirement removed by implementation.",
+    "Restored execFileSync needed by actual advanced subject subprocess; CLI suite passed.",
+    "Updated two stale governance-text assertions to current owner links/README policy.",
+    "Release candidate fixture now overlays current governance and Design with current scripts instead of mixing old clone guidance; source-fingerprint failures during concurrent edits were rerun on stable inputs.",
+    "Executor preflight correctly rejected untracked approved plan; staged that plan and reran.",
+    "Independent finding token-retirement-unused-guidance corrected by removing unused historical skill loading, pieces and guidance option; semantic tests passed."
+  ],
+  "validation": [
+    {
+      "command": "python scripts/test-select-validation.py",
+      "result": "163/164 passed initially; sole wrapper failure corrected by restoring historical ledger IDs unchanged. Focused rerun below passed."
+    },
+    {
+      "command": "python scripts/test-select-validation.py -k test_ci_wrapper_executes_selector_selected_path_and_root_checks",
+      "result": "1 passed"
+    },
+    {
+      "command": "python /tmp/run-token-adapter-cases.py",
+      "result": "146 passed; full test-adapter-distribution.py population executed by repository expand_cases/run_scheduled_checks with four workers"
+    },
+    {
+      "command": "python scripts/test-release-transaction.py",
+      "result": "164 passed final stable run"
+    },
+    {
+      "command": "python scripts/test-skill-validator.py",
+      "result": "354 passed"
+    },
+    {
+      "command": "npm test --prefix packages/rigorloop",
+      "result": "419 passed before final token-only helper cleanup"
+    },
+    {
+      "command": "node --test packages/rigorloop/test/record-store-interactions.test.js",
+      "result": "4 passed after final helper correction"
+    },
+    {
+      "command": "python scripts/test-retirement-ledger.py",
+      "result": "17 passed"
+    },
+    {
+      "command": "bash scripts/ci.sh --mode explicit --path scripts/adapter_distribution.py --jobs 4",
+      "result": "passed; selector-selected adapter regression, drift and validation"
+    },
+    {
+      "command": "bash -n scripts/release-verify.sh",
+      "result": "passed"
+    },
+    {
+      "command": "git diff --check",
+      "result": "passed"
+    },
+    {
+      "command": "python scripts/validate-documentation-prose.py --mode enforce --path README.md --path docs/project-map.md --path packages/rigorloop/test/fixtures/recording-interactions/README.md --path docs/plans/2026-09-13-token-cost-retirement.md",
+      "result": "passed; zero errors/warnings"
+    },
+    {
+      "command": "python scripts/test-validation-execution.py",
+      "result": "52 passed final run after staging approved plan"
+    }
+  ],
+  "limitations": [
+    "Local validation only; no hosted CI, commit, push or publication.",
+    "Wider repository cleanup remains open.",
+    "Exact pre-slice working-tree snapshot and diff are temporary review aids; removed uncommitted bytes are preserved in the tracked removal evidence."
+  ]
+}

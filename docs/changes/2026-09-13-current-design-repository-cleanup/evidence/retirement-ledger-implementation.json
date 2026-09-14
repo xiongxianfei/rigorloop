@@ -1,0 +1,83 @@
+{
+  "scope": "LEDGER-1 / ledger portion of VAL-SR-23 only",
+  "changed_paths": [
+    "docs/changes/2026-08-10-published-skill-first-repository-simplification/retirement-ledger.json",
+    "docs/plan.md",
+    "scripts/retirement_ledger.py",
+    "scripts/test-retirement-ledger.py",
+    "scripts/test-select-validation.py",
+    "scripts/validation_selection.py",
+    "specs/published-skill-first-repository-simplification.test.md"
+  ],
+  "current_subjects": [
+    {
+      "path": "docs/plan.md",
+      "identity": "sha256:f42425389ed68c49504e22213bfbcabaf8a52240fd206f1cb938f9ae478bea4e"
+    },
+    {
+      "path": "scripts/test-select-validation.py",
+      "identity": "sha256:85e1cc7b94123e496e74ae9ce2796464a61683e0f47ea85f842afd901bea130d"
+    },
+    {
+      "path": "scripts/validation_selection.py",
+      "identity": "sha256:50d69a7b48d15922959978c52941fac7d3737179fe560dda34b26c4b6ee9fdec"
+    },
+    {
+      "path": "specs/published-skill-first-repository-simplification.test.md",
+      "identity": "sha256:7e60bd59598ec008605c19ef92e0657bb7c84a72bfe39416d11a4e8d89817133"
+    }
+  ],
+  "removed_files_evidence": "retirement-ledger-provenance.json",
+  "removed_count": 3,
+  "result": "passed",
+  "validation": [
+    {
+      "command": "python scripts/test-select-validation.py -k test_compact_contract_surfaces_select_cross_runtime_and_metadata_proof",
+      "result": "baseline: 1 passed"
+    },
+    {
+      "command": "python scripts/test-select-validation.py -k test_deleted_historical_ledger_selects_current_rejection_proof",
+      "result": "test-first: failed because old ledger check was selected; after removal:1 passed"
+    },
+    {
+      "command": "python scripts/test-select-validation.py",
+      "result": "165 passed"
+    },
+    {
+      "command": "python scripts/test-validation-execution.py",
+      "result": "52 passed"
+    },
+    {
+      "command": "bash scripts/ci.sh --mode explicit --path scripts/retirement_ledger.py --path scripts/test-retirement-ledger.py --path docs/changes/2026-08-10-published-skill-first-repository-simplification/retirement-ledger.json --jobs 4",
+      "result": "31 selected record-retirement/metadata cases passed"
+    },
+    {
+      "command": "python scripts/validate-documentation-prose.py --mode enforce --path docs/plans/2026-09-14-retirement-ledger-removal.md --path specs/published-skill-first-repository-simplification.test.md",
+      "result": "0 errors/warnings"
+    },
+    {
+      "command": "node scripts/validate-record-store.mjs docs/changes/2026-09-13-current-design-repository-cleanup/change.json",
+      "result": "valid"
+    },
+    {
+      "command": "git diff --check",
+      "result": "passed"
+    }
+  ],
+  "protection_disposition": [
+    "Retired the private ledger schema/parser, frozen inventory and mandated old transition narratives with their sole dedicated test; no replacement ledger or passing alias.",
+    "Current catalog membership, command consistency and invalid vocabulary remain covered by selector/executor tests; explicit retired-ID rejection and deleted historical path scheduling added.",
+    "Current record-retirement and metadata negative boundaries retain their original real assertions and pass through existing CI wrapper.",
+    "The test-spec applicability notice supersedes ledger-only commands while preserving historical IDs and substantive non-ledger requirements."
+  ],
+  "assessment_impact": "The scoped Design review intentionally includes pre-implementation sources: removed originals match Git provenance; changed selector sources match captured baseline. Governing System/Validation and approved Delivery plan remain unchanged. New code review assesses the implemented replacement; prior token review is not retargeted or claimed as approval of this slice.",
+  "unchanged_surfaces": [
+    "Product CLI and package/runtime sources, release and adapters, workflow policy and spec-read-log remain unchanged by this slice.",
+    "Earlier historical change records and judgments are unchanged; only the explicitly retired standalone ledger file is removed."
+  ],
+  "limitations": [
+    "Local proof only; no hosted CI, commit, push, PR or publication.",
+    "Wider cleanup and remaining VAL-SR-23 spec-read-log batch are open.",
+    "Pre-slice snapshot/diff are temporary review aids; durable provenance retains exact recoverable Git revision and identities."
+  ]
+}

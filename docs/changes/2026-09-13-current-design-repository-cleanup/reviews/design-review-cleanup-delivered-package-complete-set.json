@@ -1,0 +1,324 @@
+{
+  "assessment_scope": "Final affected Design-package assessment of the accumulated baseline 39b7c5cb1f03aa761d2f2493d3474ce985e59d6f to current subjects: governance/vision, living-model changed clauses and ownership interactions, source-transfer/retirement maps, scoped retained legacy amendments, and final delivered-scope boundary. This is a new current judgment; historical source-qualified reviews are not retargeted. Technical renewal: unchanged earlier scope is retained after identity comparison; the revised Validation section and integration plan are independently read in full affected context. Previous judgments remain on their original identities.",
+  "change_id": "2026-09-13-current-design-repository-cleanup",
+  "contributors": [
+    {
+      "id": "codex-design-author",
+      "role": "design"
+    }
+  ],
+  "findings": [],
+  "id": "design-review-cleanup-delivered-package-complete-set",
+  "independence_basis": "Independent delegated reviewer /root/design_refinement_review authored no engineering subject, Design amendment, source disposition or plan. Earlier advisory review and findings remained reviewer work.",
+  "judgment": "approved",
+  "limitations": [
+    "This assesses affected engineering clauses, source-transfer choices and relevant unchanged interfaces, not an exhaustive re-review of every unchanged baseline model paragraph or reconstruction of every deleted historical sentence. Recoverability checks establish provenance, not semantic or runtime correctness.",
+    "No implementation approval, passed-test claim, final Verify, release readiness or external action authorization is supplied. Selector correction and full accumulated implementation require independent Code Review and distinct final Verify. Earlier scoped reviews remain historical evidence with their original limits.",
+    "The earlier assumption that inspect alone validates complete reference closure is superseded by this correction. This is technical Design/Delivery approval only; implementation and regression outcomes remain for independent Code Review and final Verify."
+  ],
+  "rationale": [
+    "Challenged source deletion as possible loss of current obligations: mapped important knowledge remains at System, Skill, Design, Workflow, Assessment, CLI and Engineering owners; selected legacy mechanics are explicitly retired and mixed sources retain untransferred obligations. Stable model/requirement identities, the embedded Design example, independent gates, failure/recovery authority and current release/resource safety remain represented. The moved Design model has repaired owning pointers.",
+    "Independently checked removal evidence against Git: all 279 deleted paths at this audit have recorded recoverable source blobs and matching historical SHA256 identities. Source-disposition maps and batch important-knowledge/retired-material descriptions distinguish durable transfers from obsolete mechanics, with explicit patches for uncommitted refinements. Final delivered-scope reconciles chronological proposals/retained rows without rewriting historical evidence.",
+    "Challenged live versus historical protocol: current Records v3 authority is consistent after resolving current-owner-v2-reference. Legacy history links are commit-qualified provenance, not a runtime reader or current policy owner. Constitution separates durable rules from Design realization; Vision and README positioning are coherent with the retained discovery amendment.",
+    "Supporting subjects in current change directories correctly distinguishes exact engineering Subjects from authoritative registered records. Validated existing inspection must precede exact safe membership; reserved/unreferenced/malformed/unsafe paths remain fail-closed, existing checks remain selected, historical identities remain untouched and changed/absent subjects remain an Assessment reliance question. This resolves Design ambiguity without a second schema or authority promotion; the canonical open Code finding still requires implementation proof.",
+    "Cross-owner token-cost retirement is explicit VAL-SR-25; ledger-only VAL-SR-23 delivery does not remove current proof duties. Final scope explicitly excludes adoption/implementation of DIST-SR-21/22, REL-SR-25 and remaining spec-read-log/fixture cleanup. Existing packaging/installation/release boundaries remain applicable. No further material Design contradiction found in the affected package.",
+    "Code review correctly identified that record-store inspect validates individual records but does not establish cross-record reference closure. Existing validate-record-store.mjs already calls the stored format set validator over the captured files. The revised Design requires bounded Subject-path output only from that same validated in-memory snapshot, eliminating the incorrect mechanism assumption without a second reader/schema or authority promotion. Reserved/unknown/unsafe support paths remain blocked; normal and revision validation behavior remain unchanged; mixed/unknown options reject."
+  ],
+  "reviewer": {
+    "id": "codex-cleanup-design-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:5342ade5f2a7035e050f6c8ab4cba871f2e7065b6bec9f163ae0eb03df438276",
+      "path": "AGENTS.md"
+    },
+    {
+      "identity": "sha256:1cc497c48a7de83c64997c5b3b0640ef8ae63afd77e5860416b028ab5025bdb9",
+      "path": "CONSTITUTION.md"
+    },
+    {
+      "identity": "sha256:67080688039df765608224c76f2b075eb4c7c07bfb78ec203f18753236315f55",
+      "path": "README.md"
+    },
+    {
+      "identity": "sha256:3dae6703651fed191fe384a14224254b7791267014a89662d8872c812493e146",
+      "path": "VISION.md"
+    },
+    {
+      "identity": "sha256:6086a22a8db61cdb3b2d7d24d4731faa1eb7e817c2fc77b0dc2c14b8b55258f9",
+      "path": "docs/adr/ADR-20260721-single-bounded-review-fix-workflow-automation.md"
+    },
+    {
+      "identity": "sha256:7e97107b41b2fcd95ce551fc40d0299010f27ec551d96e1dc828122ea2086ef1",
+      "path": "docs/architecture/2026-08-25-workflow-routed-upstream-corrections.md"
+    },
+    {
+      "identity": "sha256:9b27ca3f5fd0893d73209389a8e016a207266dca55ea2dba32b7f8145b87562e",
+      "path": "docs/architecture/2026-09-02-refocus-workflow-into-route.md"
+    },
+    {
+      "identity": "sha256:cfca2c3ba45efc625439bebf36f23bf3a272cf4c10f39218b90ebaac8fe84686",
+      "path": "docs/architecture/system/architecture.md"
+    },
+    {
+      "identity": "sha256:7d97cbf53f54767016af5cd770a3da6640cf035a5e3ab93e23a1766b3019a67a",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/delivered-scope.md"
+    },
+    {
+      "identity": "sha256:b9042ba81364ec039c699048b0da78e096a89e42ab03d8e38ab006846b9191cb",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/april-architecture-source-removal.json"
+    },
+    {
+      "identity": "sha256:423670320e1552ae2eeea488e5ddaac4c08e1d4584881526acc3333e8fc1da8d",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/change-pack-source-removal.json"
+    },
+    {
+      "identity": "sha256:848363083a4404dc8ba6047e8bb1ba62cdb6b2b624169db99d65827da7269137",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/cost-bounded-rigor-source-removal.json"
+    },
+    {
+      "identity": "sha256:5111b5d0b6499a5e29aed8864ba32357c7b6ff0d8070feb25c4bb8f6d8956ebf",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/design-authoring.json"
+    },
+    {
+      "identity": "sha256:d4cebe77532c09a06acc49e9e63b858babfe669768b11f755afb6dfaf002f2c0",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/design-coherence-refinement.json"
+    },
+    {
+      "identity": "sha256:e17e6b10c70902b2ed0affc769c8734e4815b02e9593c043a952ae37b58ac80a",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/design-source-removal.json"
+    },
+    {
+      "identity": "sha256:06e4c005ed77756b83ae9fd542673465d4b5029c9f58a5434aac6726acd84d3a",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/final-verification-source-removal.json"
+    },
+    {
+      "identity": "sha256:80fc4fe220b6655ee5b519c00934e1adc35cb4ed8dec3e283de60e272557c6db",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/lifecycle-navigation-source-removal.json"
+    },
+    {
+      "identity": "sha256:5e076a1981e60123fbd6159f603c52a31b9ad17fbecd4f6d6b0dd3448e92c96d",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/model-layout-refinement.json"
+    },
+    {
+      "identity": "sha256:2caec6d8b9d9c1f67e2b5721fa5bf1a5827e634f0ed691963afc4764b27cd8c4",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/plan-initialization-adr-removal.json"
+    },
+    {
+      "identity": "sha256:21ca18a8d34ab3bd78e1ecf2cbddbdac94c44ef4cab6fc1a1615fd2043af4a82",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/plan-procedure-source-removal.json"
+    },
+    {
+      "identity": "sha256:c2e484ba93795f6f64f3f959f8340b42ef69d67a7b334268a03bc9a115536f3a",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/proposal-assets-source-removal.json"
+    },
+    {
+      "identity": "sha256:78e278bee028f1997c0bfcb79720b633c527644e0339b0b43abd4489eaec5731",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/proposal-contract-source-removal.json"
+    },
+    {
+      "identity": "sha256:db8c1824038a2bbd579277d4f1e52c2a2b8d2d7837ba0708ce9983d9938fcb62",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/proposal-procedures-source-removal.json"
+    },
+    {
+      "identity": "sha256:e7316ae902a0a3f2b6857fd8c5b2abdbd5cc152a917cca5d3baea6f8944e7fd5",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/readme-positioning-source-removal.json"
+    },
+    {
+      "identity": "sha256:8bda8992970249e603589fc89e6636fdc79f26b93b257bd0cf3abdf810e8cda6",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/requirement-delivery-source-removal.json"
+    },
+    {
+      "identity": "sha256:48c4e3ab635ccfafcd6a19789d0a4f3f1107211478225145b330abd6892ad467",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/retired-authoring-source-removal.json"
+    },
+    {
+      "identity": "sha256:b0ec61a98af3b4b35ed53eecb23ab72a7397d73ca8700013765bb9d8e16195bb",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/retirement-ledger-implementation.json"
+    },
+    {
+      "identity": "sha256:b18f857cfd3d925f69980ad41071bd3ec3e880fffb77a63438277ca7a74a824a",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/retirement-ledger-provenance.json"
+    },
+    {
+      "identity": "sha256:d70cd62a8abb08ee050ada00a153fe90370ba952a475c9ae9d19fe06a0502ea5",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/retirement-ledger-scoped-verify.json"
+    },
+    {
+      "identity": "sha256:8852532026b2fa690a7a6fab4b0d58e6f615bec47669fc3d0ae9db0a3e94f9fa",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/review-assets-source-removal.json"
+    },
+    {
+      "identity": "sha256:b09e755d04e904d171c3304b16a39931a73f6970956efafbcf3ffe2b482143a3",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/review-handoff-source-removal.json"
+    },
+    {
+      "identity": "sha256:77b30dc2ead4fbf2a20cc96842dbaa12894d448fc281a6e2be6f084e317e717b",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/review-recording-source-removal.json"
+    },
+    {
+      "identity": "sha256:dff76cea395980b6709c961489ec97a8f339255ff410c31bf50a197baf49160f",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/round-one-design-refinement.json"
+    },
+    {
+      "identity": "sha256:24830c87edbbe83d9ad0905fd14a4bde0550e747244c179be8387ba4f3689f9c",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/routing-review-source-removal.json"
+    },
+    {
+      "identity": "sha256:ef62cfa3157c8c3dde754360cdb783aa145985c764a614ba98f95cfb266b646e",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/second-removal.json"
+    },
+    {
+      "identity": "sha256:547119e60e05df51fa301c6bc8265f0d7bc668928b12b6d9b6b9c78c07dc627d",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/spec-family-source-removal.json"
+    },
+    {
+      "identity": "sha256:d07d6f14f0b21db1cb16b6c5fe9caee9c3df73d3f074bb78bff8567459ea3c02",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/superseded-automation-adr-removal.json"
+    },
+    {
+      "identity": "sha256:8d9477e307726f90e20aa781967369a3adb28aab5344c15ce928eded40d5196b",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/test-stage-removal.json"
+    },
+    {
+      "identity": "sha256:de9ff70a0a54df8b205abb5b9bb90c83f08b94bca6fbfa13613b841a8a48ee42",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/token-cost-retirement-design.json"
+    },
+    {
+      "identity": "sha256:6608603ab4c78538a7d0dbe3b1a012b11b1ee0df297065473b8302209e35e1d6",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/token-cost-retirement-implementation.json"
+    },
+    {
+      "identity": "sha256:dd2f02a0c7ab877cf4e7bcb84f41f81f6b4d8e5ac7677bcfc7a814050bdf5a78",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/token-cost-retirement-scoped-verify.json"
+    },
+    {
+      "identity": "sha256:d2674782249841c60a1a5b9b9b4bc95305561bb386166aeb20e309f2b04575eb",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/token-retirement-removed-files.json"
+    },
+    {
+      "identity": "sha256:f7cfe84d4ee9ec70d0c8f897c95010db2da755ff6f771de1d14b07560963201c",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/transition-release-source-removal.json"
+    },
+    {
+      "identity": "sha256:5f5db3ff3a683bdde65ef194e06f4bba6833cdc247c9769ec56625a62eb0aac5",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/vision-authoring.json"
+    },
+    {
+      "identity": "sha256:60df38c68eac1c3047a02214054504254e8fb81d9e5e778021cf1e94a9cb016a",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/workflow-guide-source-removal.json"
+    },
+    {
+      "identity": "sha256:f4cd3fb5bd5d47f32a269fb216a9980819a4a636d63c6b254f2df3d793e4af53",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md"
+    },
+    {
+      "identity": "sha256:a66c5fe3f4d87ca21e3c33ca5c74f13d74790d978389666843ad194e532dfd13",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-inventory.tsv"
+    },
+    {
+      "identity": "sha256:8fbf8613248f7b09435c2869c14cd3c5d5ae0d105279079ca5624c738b716140",
+      "path": "docs/design/cli/cli.md"
+    },
+    {
+      "identity": "sha256:47f878a9d343a531d459abd5d4648a6389842dee771007c94ce672493ffaaab1",
+      "path": "docs/design/cli/records.md"
+    },
+    {
+      "identity": "sha256:f45e6a357a78e630496f4e636d5343daeb3197f8a61010060585c7f65d8bc61f",
+      "path": "docs/design/engineering/engineering.md"
+    },
+    {
+      "identity": "sha256:091f661ebaf23e61a19291046ccff89dc8c98c4aca3a9e29009acf76e7e2a3f4",
+      "path": "docs/design/engineering/packaging.md"
+    },
+    {
+      "identity": "sha256:77b780c85ee32aaffecc8c0772dd9bc2abf1b13a1b4f1e804d16397046d81a58",
+      "path": "docs/design/engineering/release.md"
+    },
+    {
+      "identity": "sha256:6c91f69b868f0bdd1406d09c69e01771dab51e56ba799e2ed90b826ae1e08be0",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:a130a53c2e4c5752ff06c9931813d98385ca52d9ce4122c84ee949bb05849e4b",
+      "path": "docs/design/skill/assessment.md"
+    },
+    {
+      "identity": "sha256:a881de22bac75fb530374cf569baeea0b88a2e1beda26156c2be4d2e9735a8f8",
+      "path": "docs/design/skill/design.md"
+    },
+    {
+      "identity": "sha256:0368e2fc6233a97f413a73f0d9fab4ca22b25b0b4f55a19a937380e1f0529a18",
+      "path": "docs/design/skill/skill.md"
+    },
+    {
+      "identity": "sha256:512df840fd2154ca9c8279cd7a74e1f47f1d83915accd55a93ed64bd28efb592",
+      "path": "docs/design/skill/workflow.md"
+    },
+    {
+      "identity": "sha256:69ca7173c8f58490e2f979afe60ae564eade4632c5d20750a1419c0fa98dbb62",
+      "path": "docs/design/system.md"
+    },
+    {
+      "identity": "sha256:84399ade9590876a52e7bd1922621f915debb84834f44bfd12d4770452bdb596",
+      "path": "docs/proposals/2026-09-13-current-design-repository-cleanup.md"
+    },
+    {
+      "identity": "sha256:6eba75ab34c648405338b49ef9b889aa35fe7cbbe33db1db4b41502be641a7be",
+      "path": "specs/README.md"
+    },
+    {
+      "identity": "sha256:899a66c9ad84f87a8c790b5d0aee3049eec3e31fb03ada9509a471d9c1eb6da0",
+      "path": "specs/boundary-first-proof-model.md"
+    },
+    {
+      "identity": "sha256:c2b47f090f0760b648618c1226f02a00a2cd29117b33a60a344155b89068c27d",
+      "path": "specs/change-record-catalog-registration-and-bounded-read-model.md"
+    },
+    {
+      "identity": "sha256:e80f0ed0d42d757d5d9769dd661dec1a842036e56c61c5231bdd846e7ff95747",
+      "path": "specs/multi-agent-adapters-first-public-release.md"
+    },
+    {
+      "identity": "sha256:75c20ee6cda4fdf90e229bbfd67f017591edecd1faa5c371174d45c11fc73fe6",
+      "path": "specs/project-artifact-location-guide-and-examples-surface.md"
+    },
+    {
+      "identity": "sha256:59d47abe60bc3f68ffe1648699f51aa7ca1d50d089e12615353f51e1730bee50",
+      "path": "specs/public-discovery-and-developer-adoption-surface.md"
+    },
+    {
+      "identity": "sha256:7e60bd59598ec008605c19ef92e0657bb7c84a72bfe39416d11a4e8d89817133",
+      "path": "specs/published-skill-first-repository-simplification.test.md"
+    },
+    {
+      "identity": "sha256:a7f8cb62fa5fd17bc4d1abf436fd6c5297cb4bdf6ac313bd8e07d1ac590569bc",
+      "path": "specs/review-finding-resolution-contract.md"
+    },
+    {
+      "identity": "sha256:96f95d576d09c2835a825b15afc240a13611c68bcb87690f184b917b6c1891c1",
+      "path": "specs/review-independence-and-criticality.md"
+    },
+    {
+      "identity": "sha256:f7ca7b1a2a65366321588344766a95b1eaf2b451c3b202a79ff2eac142e2d5ba",
+      "path": "specs/rigorloop-workflow.md"
+    },
+    {
+      "identity": "sha256:a81343438938d624bce7cb74f5191fd985e54b2ea279de779ead4ec3ecaa2bcc",
+      "path": "specs/skill-contract.md"
+    },
+    {
+      "identity": "sha256:2ef0710939cba8911a0f70f4f12f7967f0ea59b9d10715e6e9e8d2877ee9622f",
+      "path": "specs/skill-contract.test.md"
+    },
+    {
+      "identity": "sha256:e981f0aaa6d9f3f2e9dfdfeabe4cd6dbb776e11b160518a1a82a89630c294da5",
+      "path": "specs/workflow-stage-autoprogression.md"
+    }
+  ],
+  "summary": "Approved exact renewed design basis for complete-set validation before same-snapshot supporting Subject selection.",
+  "target": "design"
+}

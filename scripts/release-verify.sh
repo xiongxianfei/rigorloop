@@ -152,14 +152,6 @@ else
     "python scripts/validate-release.py --version ${release_version}"
   )
 fi
-if [[ "$release_version" == "v0.1.1" ]]; then
-  REQUIRED_CHECK_COMMANDS+=(
-    "python scripts/validate-token-cost-report.py docs/reports/token-cost/releases/${release_version}.yaml"
-  )
-else
-  REQUIRED_CHECK_COMMANDS+=(
-  )
-fi
 
 verify_release_script_contract() {
   local marker=""
@@ -267,10 +259,6 @@ if [[ "$uses_release_output" == "true" ]]; then
     python scripts/build-adapters.py --version "$release_version" --output-dir "$release_output_dir"
 fi
 
-if [[ "$release_version" == "v0.1.1" ]]; then
-  run_check "Validate token-friendliness report evidence" \
-    python scripts/validate-token-cost-report.py "docs/reports/token-cost/releases/${release_version}.yaml"
-fi
 
 if [[ "$uses_release_output" == "true" ]]; then
   run_check "Gate C: validate release metadata, adapter artifacts, materialization evidence, notes, and security" \

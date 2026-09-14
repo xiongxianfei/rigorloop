@@ -1,0 +1,42 @@
+{
+  "operation": "retire-workflow-and-plan-review-skill-documents",
+  "historical_revision": "39b7c5cb1f03aa761d2f2493d3474ce985e59d6f",
+  "removed_subjects": [
+    {
+      "path": "specs/workflow-skill-simplification.md",
+      "identity": "sha256:7fc148c0d8847fe44139dcc8039169e4730bc008579b6a8d98718948eda9036b",
+      "historical_identity": "sha256:7fc148c0d8847fe44139dcc8039169e4730bc008579b6a8d98718948eda9036b",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "specs/workflow-skill-simplification.test.md",
+      "identity": "sha256:15eedb03de816793c17985d46d648db15039a799457faebe61db21219241ec0e",
+      "historical_identity": "sha256:15eedb03de816793c17985d46d648db15039a799457faebe61db21219241ec0e",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "specs/plan-review-skill-simplification.md",
+      "identity": "sha256:0eec4ef2d96907b452395aa8410d9afd904a8cc99e3e75f9098b4794c8d3947b",
+      "historical_identity": "sha256:0eec4ef2d96907b452395aa8410d9afd904a8cc99e3e75f9098b4794c8d3947b",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "specs/plan-review-skill-simplification.test.md",
+      "identity": "sha256:348e3677645113886a8d4b5b776e43352c9ec6376e6d6cd0d9d56247c8e532fc",
+      "historical_identity": "sha256:348e3677645113886a8d4b5b776e43352c9ec6376e6d6cd0d9d56247c8e532fc",
+      "uncommitted_patch": ""
+    }
+  ],
+  "deleted_lines": 1558,
+  "updated_paths": [
+    "docs/architecture/system/architecture.md"
+  ],
+  "important_knowledge": "Workflow retains semantic routing and actor ownership; Assessment retains independent exact-subject judgment, formal recording and current reliance; CLI/Records retain current persistence. The retained plan-skill-simplification and stage-owned lifecycle contracts continue to own their applicable plan-initialization boundaries. The retained route/context and bounded-automation sources keep their distinct operational contracts. Skill retains resource integrity and portable guidance. No additional model prose is needed.",
+  "retired_material": "The retired workflow and plan-review package inventories, resource-profile enums, guide-authoring branch, historic entry-settlement transactions and rollout ledgers retire. Current routing is route and package assessment is delivery-review. No executable tests, automation contracts, plan-initialization owners or historical fixtures are removed.",
+  "historical_preservation": "All four originals match retained Git bytes. Historical records, plans, review judgments and test-spec evidence retain their original identities and references. Current citations pin exact Git provenance; current operation must not fetch retired sources.",
+  "validation": {
+    "result": "passed",
+    "procedure": "python scripts/test-skill-validator.py; python scripts/validate-boundary-first.py --check with --path for the four deleted spec/proof files; python scripts/validate-documentation-prose.py --mode enforce --path docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md; git diff --check; git diff --cached --check.",
+    "summary": "354 skill tests passed. Structural deletion validation passed. Prose passed with zero errors/warnings and diff checks passed. All deleted originals match retained Git bytes; current architecture provenance links now identify the historical package and current owners. No executable test, fixture, plan-initialization, route/context or bounded-automation contract removed. No full CI, independent review or final Verify claimed."
+  }
+}

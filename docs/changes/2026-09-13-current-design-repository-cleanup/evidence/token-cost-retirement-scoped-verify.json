@@ -1,0 +1,118 @@
+{
+  "skill": "verify",
+  "outcome": "scoped-verification",
+  "execution_mode": "isolated",
+  "profile": "VP0-scoped",
+  "verdict": "passed",
+  "scope": "TOKEN-1 / VAL-SR-25 retirement and retained protection only; not whole-cleanup final readiness",
+  "review": "docs/changes/2026-09-13-current-design-repository-cleanup/reviews/code-review-token-retirement-final.json",
+  "implementation_evidence": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/token-cost-retirement-implementation.json",
+  "subjects": [
+    {
+      "identity": "sha256:67080688039df765608224c76f2b075eb4c7c07bfb78ec203f18753236315f55",
+      "path": "README.md"
+    },
+    {
+      "identity": "sha256:55ec1632457bcd42a35f04cbce9f2e15e60aa37c24d83a34d6a3af75ab7a7ecf",
+      "path": "docs/project-map.md"
+    },
+    {
+      "identity": "sha256:20e6a6cf9f33a9893ba9378c241ff2ca1ad3394f45bcb7609eb3231fcce2d2d9",
+      "path": "packages/rigorloop/test/fixtures/recording-interactions/README.md"
+    },
+    {
+      "identity": "sha256:da8df34c3fb5bc423b65c19beaa45d25e634b23ab731937c29259a85e0fca420",
+      "path": "packages/rigorloop/test/helpers/record-store-interactions.mjs"
+    },
+    {
+      "identity": "sha256:e1e5ee271c32a7fb2349a797bbc70fab6dfae3ab6524dd76218950b42ed6e850",
+      "path": "packages/rigorloop/test/record-store-interactions.test.js"
+    },
+    {
+      "identity": "sha256:9115b8211e2e67ac8f807985a1d5fd31106f50452a22987b1cbec94145bb5739",
+      "path": "scripts/adapter_distribution.py"
+    },
+    {
+      "identity": "sha256:686e723c6cc0b02fc18b47bdd7e53689e53923990e6c31894d586f51ee362709",
+      "path": "scripts/release-verify.sh"
+    },
+    {
+      "identity": "sha256:c61a6fb2a952937c3af3dee46d22b86883fc769c3428bb826a0beef585d1e156",
+      "path": "scripts/release_candidate_tests.py"
+    },
+    {
+      "identity": "sha256:73d1b9123a49be3d760938ed7584d14bb71abddd6f2ed0e88b221d962c69f9ef",
+      "path": "scripts/test-adapter-distribution.py"
+    },
+    {
+      "identity": "sha256:a2f081462cb2710a8ade8cfe0e4b8ab673467811faf26837d4e8979ec4be8e89",
+      "path": "scripts/test-select-validation.py"
+    },
+    {
+      "identity": "sha256:7023c1b2c211d0988cf10b26bf0051bcd67c5546b99f3e87b84a3187539ce94e",
+      "path": "scripts/validate-release.py"
+    },
+    {
+      "identity": "sha256:c721d93f4fbf5f48a2f5dda25d4f2bbe4c2260f35a60f3b73367c5b72105a135",
+      "path": "scripts/validation_selection.py"
+    },
+    {
+      "identity": "sha256:6608603ab4c78538a7d0dbe3b1a012b11b1ee0df297065473b8302209e35e1d6",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/token-cost-retirement-implementation.json"
+    },
+    {
+      "identity": "sha256:d2674782249841c60a1a5b9b9b4bc95305561bb386166aeb20e309f2b04575eb",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/token-retirement-removed-files.json"
+    },
+    {
+      "identity": "sha256:bc18799fad9b41dbd20afad5a3d11a7fbbb397d7d6df508d68b9b4046fd93be2",
+      "path": "docs/plans/2026-09-13-token-cost-retirement.md"
+    },
+    {
+      "identity": "sha256:97aab5954605c64cffc5134843683527c596662a9f22f5b29167a976ebd8d5bb",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/reviews/design-review-token-cost-retirement.json"
+    },
+    {
+      "identity": "sha256:89a2f7fa775592c1bc0cd30bd7d10d2d48da6a53adbb66c13bd6b2ea0a7a8081",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/reviews/delivery-review-token-cost-retirement.json"
+    },
+    {
+      "identity": "sha256:b799f7cf38fbaaf9f3946b5e1d05a0b1fc9116a0467d1ce6a24d5dd82c614d52",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:f45e6a357a78e630496f4e636d5343daeb3197f8a61010060585c7f65d8bc61f",
+      "path": "docs/design/engineering/engineering.md"
+    },
+    {
+      "identity": "sha256:091f661ebaf23e61a19291046ccff89dc8c98c4aca3a9e29009acf76e7e2a3f4",
+      "path": "docs/design/engineering/packaging.md"
+    },
+    {
+      "identity": "sha256:77b780c85ee32aaffecc8c0772dd9bc2abf1b13a1b4f1e804d16397046d81a58",
+      "path": "docs/design/engineering/release.md"
+    },
+    {
+      "identity": "sha256:0368e2fc6233a97f413a73f0d9fab4ca22b25b0b4f55a19a937380e1f0529a18",
+      "path": "docs/design/skill/skill.md"
+    },
+    {
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/reviews/code-review-token-retirement-final.json",
+      "identity": "sha256:731c5df90df3f0f6abce12e208316ef5e6ca73a19e2af6c2d3f680a287959582"
+    }
+  ],
+  "assessment": [
+    "User-authorized feature retirement is expressed by VAL-SR-25/VAL-DEC-08 and allocated coherently to TOKEN-1; exact scoped Design and Delivery approvals remain current.",
+    "All 147 retired files are absent and recoverable using recorded Git identities and uncommitted patches. Retained script entry points contain no retired tool calls; historical deletion classifiers select live consumer protection.",
+    "Valid adapter/source qualification without reports and invalid source/candidate rejection have direct passing tests. CLI semantic, result and failure contracts retain proof; exclusive token tests retire with their governing behavior.",
+    "Reviewed final source identities match current bytes. Independent final complete-slice Code Review approved; its sole required finding is explicitly resolved.",
+    "Reuse is bounded: final four interaction cases cover the only post-native-suite helper/caller change; other native cases and release/adapter production sources are unchanged. Selector initial wrapper failure is corrected and focused test plus actual selected wrapper pass.",
+    "Final diff whitespace and current record-store validation pass. Recorded prose, generated adapter drift/validation, release, executor and skill checks support the scoped result."
+  ],
+  "limitations": [
+    "No branch-readiness or whole-cleanup adoption/closeout judgment. Wider accumulated cleanup still requires its own review and final Verify.",
+    "Only local validation was observed; no hosted CI, commit, push, PR or publication.",
+    "Detailed executed commands, intermediate failures, corrections and final results are in implementation evidence; no uninterrupted first-run success or all-suite post-correction rerun is claimed."
+  ],
+  "next": "Route records TOKEN-1 completion; assess remaining repository cleanup scope separately."
+}

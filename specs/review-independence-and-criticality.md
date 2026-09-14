@@ -14,7 +14,7 @@ This spec defines the contract for independent adversarial review gates in workf
 
 The goal is to make automated review outcomes trustworthy by separating review judgment from authoring context, validation-result anchoring, prior-finding anchoring, and autoprogression incentives. The goal is not to increase finding count. Clean reviews remain valid when the review can show what it tried to falsify and why no material defect was found.
 
-This spec supersedes the "hard fresh-session enforcement is out of scope" boundary in `specs/code-review-independence-under-autoprogression.md` for automated `code-review` once the first rollout phase lands. Existing evidence-backed clean-review and first-pass review-record requirements remain compatible unless a later approved spec replaces them.
+This spec supersedes the "hard fresh-session enforcement is out of scope" boundary in [historical `specs/code-review-independence-under-autoprogression.md`](https://github.com/xiongxianfei/rigorloop/blob/39b7c5cb1f03aa761d2f2493d3474ce985e59d6f/specs/code-review-independence-under-autoprogression.md) for automated `code-review` once the first rollout phase lands. Existing evidence-backed clean-review and first-pass review-record requirements remain compatible unless a later approved spec replaces them.
 
 No implementation or autoprogression behavior changes until this spec, its matching test spec, and the relevant implementation plan are approved.
 

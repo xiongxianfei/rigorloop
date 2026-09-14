@@ -1,0 +1,51 @@
+{
+  "assessment_scope": "Formal Delivery Review round 1 for exact registered primary plan docs/plans/2026-09-14-retirement-ledger-removal.md, LEDGER-1 and TG-LEDGER/TG-LEDGER-INTEGRATED, under design-review-retirement-ledger. Entire plan read and reviewed. Scope includes the three named ledger files, catalog/fingerprint/routes/assertions, and bounded retained test-spec applicability notice; no other portion of VAL-SR-23 or wider cleanup is approved.",
+  "change_id": "2026-09-13-current-design-repository-cleanup",
+  "contributors": [
+    {
+      "id": "codex-ledger-planner",
+      "role": "plan"
+    }
+  ],
+  "findings": [],
+  "id": "delivery-review-retirement-ledger",
+  "independence_basis": "Independent delegated reviewer /root/token_retirement_design_review did not author or edit this plan or its source models. The parent authored the delivery allocation; prior Design Review supplied assessment only.",
+  "judgment": "approved",
+  "limitations": [
+    "Approval supports only authorized LEDGER-1 implementation and its scoped evidence, not wider cleanup, branch readiness, final Verify or publication.",
+    "Actual removed identities, current consumer absence, retained failure detection and executable results remain implementation/review duties. A newly discovered live dependency must be reconciled rather than omitted.",
+    "No implementation tests were run and no plan/model/implementation content was edited by this assessment."
+  ],
+  "rationale": [
+    "VAL-SR-23 ledger requirements map directly to one recoverable implementation milestone. Capturing original identities and uncommitted bytes precedes removal, expected selector protection is established first, and library/test/fixture and exclusive scheduling retire together. The plan avoids a missing-file intermediate handoff and preserves unrelated working-tree cleanup.",
+    "TG-LEDGER retains actual record-retirement and metadata checks while removing only ledger identity and historical-inventory prescriptions. Full selector/executor suites provide current catalog composition, check discovery, unknown-vocabulary and routing protection; frozen old check IDs and ledger-private schema/dual-proof history are not silently recreated as replacement fixtures.",
+    "The exact wrapper command selects both deleted script paths and the historical ledger JSON path. This observes real selection/execution rather than merely asserting string absence, with retained malformed-current/archival exclusion boundaries and no missing command or synthetic pass. Source product/runtime/package code remains outside scope, so broad unrelated runtime execution is not required.",
+    "Current test-spec reliance is reconciled by a ledger-only applicability notice; historical IDs and source records retain meaning. The proposed notice expressly excludes separate spec-read-log retirement and preserves requirement fidelity, unknown-value rejection and maintenance obligations. Touched prose and record-store/diff checks cover the authoring surfaces.",
+    "The plan separately requires fresh independent review of the complete ledger delta after implementation and correction, explicitly including its interaction with preceding token retirement, before distinct scoped Verify. It does not promote a milestone pass into whole-cleanup completion. Recovery restores source and consumers together without changing historical judgments or unrelated work."
+  ],
+  "reviewer": {
+    "id": "codex-ledger-delivery-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:b066c6dfb5644cd3c9f0f8c8818110b6c8bfbcb4abde76ccddce045c74a346fe",
+      "path": "docs/plans/2026-09-14-retirement-ledger-removal.md"
+    },
+    {
+      "identity": "sha256:ab9e03e3908af46bc2a98a908a5ca54893e9c0b235ab003c8bfa2d1e47c29e23",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/reviews/design-review-retirement-ledger.json"
+    },
+    {
+      "identity": "sha256:b799f7cf38fbaaf9f3946b5e1d05a0b1fc9116a0467d1ce6a24d5dd82c614d52",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:69ca7173c8f58490e2f979afe60ae564eade4632c5d20750a1419c0fa98dbb62",
+      "path": "docs/design/system.md"
+    }
+  ],
+  "summary": "The ledger-only delivery package safely joins exclusive source removal with current consumer and retained-proof reconciliation.",
+  "target": "delivery"
+}

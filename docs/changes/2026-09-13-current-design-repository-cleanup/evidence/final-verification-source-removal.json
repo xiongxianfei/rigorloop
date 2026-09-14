@@ -1,0 +1,47 @@
+{
+  "operation": "retire-final-verification-and-explanation-documents",
+  "historical_revision": "39b7c5cb1f03aa761d2f2493d3474ce985e59d6f",
+  "removed_subjects": [
+    {
+      "path": "specs/explain-change-skill-simplification.md",
+      "identity": "sha256:826cbf5c07be5dab2c4e4f2e4631799ba2caac6f46a4570fc78b7b0c3f4f3e15"
+    },
+    {
+      "path": "specs/explain-change-skill-simplification.test.md",
+      "identity": "sha256:8b32492bfb8d6f51dcbd85b6d31560a1b574abadb309585a6afc18d986d65d69"
+    },
+    {
+      "path": "specs/impact-aware-final-verification.md",
+      "identity": "sha256:e4b3e73689520925f3ff03f71338f2ffafb05428a0063937be7116947e5237d6"
+    },
+    {
+      "path": "docs/architecture/2026-08-31-impact-aware-final-verification.md",
+      "identity": "sha256:e0762dcd0608dfe5d4987abd889167dde340de383007eaeac9772b753696677a"
+    },
+    {
+      "path": "docs/adr/ADR-20260831-impact-aware-final-verification.md",
+      "identity": "sha256:a27977586ef4c3f9929cd5d31ec21c34f0b45c5804614bdb02cf6117e74691c9"
+    },
+    {
+      "path": "specs/code-review-branch-reality-and-traceability.md",
+      "identity": "sha256:4ba9d2f0e358bc7bd7367017322d51d9ae0ab5ab955e0d183406a6698eabae23"
+    },
+    {
+      "path": "specs/code-review-branch-reality-and-traceability.test.md",
+      "identity": "sha256:82392d6a06d08a765029f515d481e046aab72c792a805d81a5139c131739d063"
+    }
+  ],
+  "prior_assessment_identity": "sha256:6e0ed191293e04ab3fbeaca5e30123337f6a3d4d837d45b9a766d4b1eeb6f279",
+  "updated_paths": [
+    "docs/design/skill/assessment.md"
+  ],
+  "important_knowledge": "Assessment RC-SR-01/03/04/05/13/15/20 preserves scope/claim ownership, conditional tracked branch authority, direct named-case proof, evidence applicability and success-only explanation. The clarification distinguishes uncommitted implementation review and advisory/non-Git assessment from branch authority. Existing Records/CLI owns current representation and safe recording; its formats do not change.",
+  "retired_material": "Separate Explain Change stage/package, old stage-owned record and evidence-tail formats, historical rollout/migration mechanics, duplicate descriptions and superseded judgment labels. No whole-source copying or new explanatory artifact required.",
+  "dependencies": "No filename or family references in scripts, packages, skills or schemas. Matching names in plan navigation are different retained plan/proposal paths. Activation inventory and historical proof/review/change references retain their original identities and meaning; no current executable reader fetches removed documents.",
+  "deleted_lines": 2197,
+  "validation": {
+    "result": "passed",
+    "procedure": "python scripts/validate-boundary-first.py --check with --path for Assessment and the five deleted spec/proof files; python scripts/validate-documentation-prose.py --mode enforce for Assessment and source-disposition; python scripts/test-skill-validator.py ExplainChangeSkillRetirementTests ReviewCloseoutResourceTests FinalVerificationPackageParityM4Tests; python scripts/test-boundary-first-validation.py ModelRecordTests; git diff --check.",
+    "summary": "All checks passed: six explanation/assessment/package regression tests, 12 model tests, structural deletion validation and prose validation with zero errors/warnings. No tests or runtime behavior removed. No full CI, independent review or final Verify claimed. Existing overview/scenario ownership is unchanged; the prose clarifies RC-SR-01/03/04/05/13/15/20."
+  }
+}

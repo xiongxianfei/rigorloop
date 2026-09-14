@@ -304,10 +304,10 @@ class ReleaseCandidateIntegrationTests(unittest.TestCase):
             shutil.copytree(repository / 'scripts', source / 'scripts', ignore=shutil.ignore_patterns('__pycache__'))
             shutil.copyfile(repository / '.github/workflows/release.yml', source / '.github/workflows/release.yml')
             # Include complete current canonical skills, installer and templates, including removals.
-            for relative in ['skills', 'templates/shared', 'packages/rigorloop/dist', 'scripts/adapter_templates']:
+            for relative in ['skills', 'templates/shared', 'packages/rigorloop/dist', 'scripts/adapter_templates', 'docs/design']:
                 shutil.rmtree(source / relative)
                 shutil.copytree(repository / relative, source / relative)
-            for relative in ['README.md', 'packages/rigorloop/README.md', 'dist/adapters/manifest.yaml', 'dist/adapters/README.md']:
+            for relative in ['AGENTS.md', 'CONSTITUTION.md', 'VISION.md', 'README.md', 'packages/rigorloop/README.md', 'dist/adapters/manifest.yaml', 'dist/adapters/README.md']:
                 shutil.copyfile(repository / relative, source / relative)
             # This scenario releases the fixed 0.5.1 fixture, independently of
             # the repository's next authored version.
@@ -326,7 +326,7 @@ class ReleaseCandidateIntegrationTests(unittest.TestCase):
             git('checkout', '--detach')
             git('checkout', '-B', 'main')
             git('add', 'scripts', 'skills', 'templates/shared', 'docs/releases/v0.5.1.md', '.github/workflows/release.yml',
-                'packages/rigorloop', 'dist/adapters', 'README.md')
+                'packages/rigorloop', 'dist/adapters', 'docs/design', 'AGENTS.md', 'CONSTITUTION.md', 'VISION.md', 'README.md')
             git('-c', 'user.name=Release Fixture', '-c', 'user.email=fixture@example.invalid',
                 '-c', 'commit.gpgsign=false', 'commit', '--allow-empty', '-m', 'Reviewed source fixture')
             commit, ref = git('rev-parse', 'HEAD'), git('symbolic-ref', 'HEAD')

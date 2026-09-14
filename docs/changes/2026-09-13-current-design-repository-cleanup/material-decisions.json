@@ -1,0 +1,1030 @@
+{
+  "body": "Design supersedes optional token measurement, M4 lifecycle-summary triggers, retained report parsing and benchmark qualification duties. Tools, checks, fixtures and reports are not deleted in this design-only turn; implementation and independent review/Verify remain required. Existing records and release judgments remain unchanged. Exact design patches preserve prior identities. Future source deletions must resolve shared callers, preserve uncommitted content and retained Git provenance before removal. Exact source identities and prior model identities are recorded in evidence/token-cost-retirement-design.json. Existing responsibility diagrams and representation stay unchanged. Independent assessment and wider cleanup completion remain outstanding.",
+  "change_id": "2026-09-13-current-design-repository-cleanup",
+  "decisions": [
+    {
+      "actor": {
+        "id": "codex-author",
+        "role": "support"
+      },
+      "id": "vision-retention-clarification",
+      "rationale": "The owner explicitly requested substantive vision refinement before continuing independent Proposal Review. The Constitution cleanup policy prompted clarification of current reliance versus recoverable retired history; project identity, audience and customer portability remain unchanged.",
+      "source_refs": [],
+      "subjects": [
+        {
+          "identity": "sha256:3dae6703651fed191fe384a14224254b7791267014a89662d8872c812493e146",
+          "path": "VISION.md"
+        },
+        {
+          "identity": "sha256:513338d86364c03ef030d567abf590332353a1edfe5fe6ae7a247e9b46781081",
+          "path": "docs/vision/strategic-positioning.md"
+        },
+        {
+          "identity": "sha256:4d9d54946c0ddf3da6823cfef0c48b50b8d89f3ea91326faeb2cefd0459ea28c",
+          "path": "README.md"
+        },
+        {
+          "identity": "sha256:910f935ae2a7d3f47291731696eb33d09c7144630137f35433d5536ca6b003ea",
+          "path": "CONSTITUTION.md"
+        },
+        {
+          "identity": "sha256:84399ade9590876a52e7bd1922621f915debb84834f44bfd12d4770452bdb596",
+          "path": "docs/proposals/2026-09-13-current-design-repository-cleanup.md"
+        },
+        {
+          "identity": "sha256:5f5db3ff3a683bdde65ef194e06f4bba6833cdc247c9769ec56625a62eb0aac5",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/vision-authoring.json"
+        }
+      ]
+    },
+    {
+      "actor": {
+        "id": "codex-design-author",
+        "role": "design"
+      },
+      "id": "cleanup-design-boundaries",
+      "rationale": "Retire only source-qualified obsolete contracts and exclusive checks; preserve current reliance and operational raw inputs. Generated adapter support moves to temporary or explicitly selected output, and current release qualification stops depending on retired historical replay.",
+      "source_refs": [],
+      "subjects": [
+        {
+          "identity": "sha256:4d174d5e1375fd63f8010c57cd409d0982674c8b56369c26d4f72126b8c9c330",
+          "path": "docs/design/system.md"
+        },
+        {
+          "identity": "sha256:d2d708ebfde5172045d657884f9fdc210849928650e104dc91940580573f6d54",
+          "path": "docs/design/engineering/engineering.md"
+        },
+        {
+          "identity": "sha256:d6a2ae7cf2c2ca1d57269f383b2c1716c27af55624625f6a0154738cc698d0c5",
+          "path": "docs/design/engineering/validation.md"
+        },
+        {
+          "identity": "sha256:0d00ba4c773e61762c1e5cf9a02f03185816439313b1593e7ff08b4099167827",
+          "path": "docs/design/engineering/packaging.md"
+        },
+        {
+          "identity": "sha256:2fce1950f9219fd286427ddbbdbdff849c99f036e7a9b5e316f3388d9397caa4",
+          "path": "docs/design/engineering/release.md"
+        },
+        {
+          "identity": "sha256:61ac0320135310c9f114ff3abb95ee6cd0d139e69720b2915f075e5b42751c6f",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md"
+        },
+        {
+          "identity": "sha256:92656d3301103c3772741e34ec84ac642b22abafebf704097886f65d342f4aa1",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-inventory.tsv"
+        },
+        {
+          "identity": "sha256:5111b5d0b6499a5e29aed8864ba32357c7b6ff0d8070feb25c4bb8f6d8956ebf",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/design-authoring.json"
+        },
+        {
+          "identity": "sha256:02b744c73ed63dd049d7655d90a3dbea01943346847fb3951f4f55b54e63a464",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/design-feedback.md"
+        },
+        {
+          "identity": "sha256:2d0c6129f3fe89a2399f9203d4df9b8ce612ccb291f31099f39ae7589c6bf565",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/historical-consumer-references.tsv"
+        }
+      ]
+    },
+    {
+      "actor": {
+        "id": "codex-design-author",
+        "role": "design"
+      },
+      "id": "remove-mapped-design-documents",
+      "rationale": "The user authorized removing fully superseded documents during Design. Removed the exact first 12 documents after byte-for-byte comparison with recoverable Git revision 39b7c5cb1f03aa761d2f2493d3474ce985e59d6f; no uncommitted source content was discarded.",
+      "source_refs": [],
+      "subjects": [
+        {
+          "identity": "sha256:7e97107b41b2fcd95ce551fc40d0299010f27ec551d96e1dc828122ea2086ef1",
+          "path": "docs/architecture/2026-08-25-workflow-routed-upstream-corrections.md"
+        },
+        {
+          "identity": "sha256:9b27ca3f5fd0893d73209389a8e016a207266dca55ea2dba32b7f8145b87562e",
+          "path": "docs/architecture/2026-09-02-refocus-workflow-into-route.md"
+        },
+        {
+          "identity": "sha256:f895cf7cc948b6ad0d39dbf19a2f0e236d1db7b90db15a84bc9b034fdd7af2d9",
+          "path": "docs/architecture/system/architecture.md"
+        },
+        {
+          "identity": "sha256:8fbf8613248f7b09435c2869c14cd3c5d5ae0d105279079ca5624c738b716140",
+          "path": "docs/design/cli/cli.md"
+        },
+        {
+          "identity": "sha256:18c903f997c69904d594bdb34c20b33d79c313a94d7a81a7bb18d2967ef29ed0",
+          "path": "docs/design/skill/workflow.md"
+        },
+        {
+          "identity": "sha256:c2b47f090f0760b648618c1226f02a00a2cd29117b33a60a344155b89068c27d",
+          "path": "specs/change-record-catalog-registration-and-bounded-read-model.md"
+        },
+        {
+          "identity": "sha256:561b05fe6a7ef92ed268dbfc441a8ce489ad9b488f73c16cac69d15a208a7998",
+          "path": "specs/test-spec-review-gate.test.md"
+        },
+        {
+          "identity": "sha256:073eea0f6cdbdb0b7b86fd7ea4776fa7194661f4afff0d3b12060a77118886bb",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md"
+        },
+        {
+          "identity": "sha256:e17e6b10c70902b2ed0affc769c8734e4815b02e9593c043a952ae37b58ac80a",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/design-source-removal.json"
+        }
+      ]
+    },
+    {
+      "actor": {
+        "id": "codex-design-author",
+        "role": "design"
+      },
+      "id": "purposeful-model-subfolders",
+      "rationale": "A single child document stays beside its parent. Subfolders serve several cohesive documents/resources with one owner; short responsibilities remain sections and anticipated growth does not create directories.",
+      "source_refs": [],
+      "subjects": [
+        {
+          "identity": "sha256:1cc497c48a7de83c64997c5b3b0640ef8ae63afd77e5860416b028ab5025bdb9",
+          "path": "CONSTITUTION.md"
+        },
+        {
+          "identity": "sha256:57e07abbbfba797e03fae38e7b9e3913318cca5eb8594b13e90e73f188e58817",
+          "path": "README.md"
+        },
+        {
+          "identity": "sha256:3e800688b824960a03c775ca4f70ea5fb76f23b1a14889be27359145b3999804",
+          "path": "docs/architecture/system/architecture.md"
+        },
+        {
+          "identity": "sha256:6e0ed191293e04ab3fbeaca5e30123337f6a3d4d837d45b9a766d4b1eeb6f279",
+          "path": "docs/design/skill/assessment.md"
+        },
+        {
+          "identity": "sha256:0593cff133872da4be6ea4de3b505ca0edf921f093b125830625cf2365bf2bc8",
+          "path": "docs/design/skill/skill.md"
+        },
+        {
+          "identity": "sha256:303106e605e08e04c910255aab25c2db135ec4dedfdcfaaa8e56bc1eef0b8acf",
+          "path": "docs/design/skill/workflow.md"
+        },
+        {
+          "identity": "sha256:a3030d59d9b47c085f8c514091dc233f9f0dec4a1829668212c99ff530cbb098",
+          "path": "docs/design/system.md"
+        },
+        {
+          "identity": "sha256:ad7edc3483919f5b73473e4702702951f0c9030f419ce5a7ccb55381b9b058c4",
+          "path": "docs/project-map.md"
+        },
+        {
+          "identity": "sha256:6eba75ab34c648405338b49ef9b889aa35fe7cbbe33db1db4b41502be641a7be",
+          "path": "specs/README.md"
+        },
+        {
+          "identity": "sha256:899a66c9ad84f87a8c790b5d0aee3049eec3e31fb03ada9509a471d9c1eb6da0",
+          "path": "specs/boundary-first-proof-model.md"
+        },
+        {
+          "identity": "sha256:1eeb28ff5f0806001da06b7f0c60e1019f176a9845cff6cf0a6763d1d89d8be2",
+          "path": "specs/rigorloop-workflow.md"
+        },
+        {
+          "identity": "sha256:ddc498247a909e445301e29f613f08afa08baf12178a0d744dce5e671a11c1b7",
+          "path": "specs/skill-contract.md"
+        },
+        {
+          "identity": "sha256:469b4366b6858c05224a549e38e21344ea74df08cd89a0c742c33b12e46a5782",
+          "path": "specs/workflow-skill-artifact-location-map.md"
+        },
+        {
+          "identity": "sha256:54a26ddcba87de9f23b5e50670893d3f09f2c0d697f8d58073fc507a179c0c68",
+          "path": "docs/design/skill/design.md"
+        },
+        {
+          "identity": "sha256:2791ad5611bcd3dd3645b53be87134ead82dc935ab296d88d56dfc002540f87b",
+          "path": "scripts/model_layout.py"
+        },
+        {
+          "identity": "sha256:b44e305e98ef41b7ed820898b93c5efeab27f574c1273142290a7ddc7441c480",
+          "path": "scripts/test-boundary-first-validation.py"
+        },
+        {
+          "identity": "sha256:bbcb74939a3645703c0586a4e079eb53eec4481442cb8b6be5d3765378521be7",
+          "path": "scripts/validation_selection.py"
+        },
+        {
+          "identity": "sha256:b9c55240ce1ba4732a11e79c2ace68bc4f6332295bc94b6bbd67350e1d2d91e2",
+          "path": "scripts/test-select-validation.py"
+        },
+        {
+          "identity": "sha256:5e076a1981e60123fbd6159f603c52a31b9ad17fbecd4f6d6b0dd3448e92c96d",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/model-layout-refinement.json"
+        }
+      ]
+    },
+    {
+      "actor": {
+        "id": "codex-design-author",
+        "role": "design"
+      },
+      "id": "retire-test-spec-stage-documents",
+      "rationale": "Remove the 14 documents for the retired standalone test-spec stage; preserve only important current design, plan-allocation, independent assessment and proof principles.",
+      "source_refs": [],
+      "subjects": [
+        {
+          "identity": "sha256:c93c119de205e02dfd2edc53d01663741cbef2b710956abf2b477c5d685e5094",
+          "path": "docs/design/skill/skill.md"
+        },
+        {
+          "identity": "sha256:e381bf1332596bc0a002f5281b9bb22dd21deda3501c9a037eb0e95a7ae751a3",
+          "path": "scripts/test-skill-validator.py"
+        },
+        {
+          "identity": "sha256:8d9477e307726f90e20aa781967369a3adb28aab5344c15ce928eded40d5196b",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/test-stage-removal.json"
+        },
+        {
+          "identity": "sha256:5c3bf25ce57910d965cc32cc839551dcb647c80384ee92cfd35fd92e09da32c0",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md"
+        },
+        {
+          "identity": "sha256:0fd7eaa3344ee3a9881917af0ccaaa3b7e86c6b7b934a84749686e6ec799913b",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-inventory.tsv"
+        }
+      ]
+    },
+    {
+      "actor": {
+        "id": "codex-design-author",
+        "role": "design"
+      },
+      "id": "retire-final-verification-sources",
+      "rationale": "Assessment RC-SR-01/03/04/05/13/15/20 preserves scope/claim ownership, conditional tracked branch authority, direct named-case proof, evidence applicability and success-only explanation. The clarification distinguishes uncommitted implementation review and advisory/non-Git assessment from branch authority. Existing Records/CLI owns current representation and safe recording; its formats do not change.",
+      "source_refs": [],
+      "subjects": [
+        {
+          "identity": "sha256:958e56f823e2e2167f11b7ef577c4d8e41b56d92e727ffaf814e86912d689657",
+          "path": "docs/design/skill/assessment.md"
+        },
+        {
+          "identity": "sha256:06e4c005ed77756b83ae9fd542673465d4b5029c9f58a5434aac6726acd84d3a",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/final-verification-source-removal.json"
+        },
+        {
+          "identity": "sha256:83644693dc300cf03854b6bb34bd1cf91c00616110afe51981297809abbffb9d",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md"
+        },
+        {
+          "identity": "sha256:74becba128c3aac1d4570a250f5bf0c94ec0bc3422408cb26ae0172609cf1e97",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-inventory.tsv"
+        }
+      ]
+    },
+    {
+      "actor": {
+        "id": "codex-design-author",
+        "role": "design"
+      },
+      "id": "retire-review-handoff-sources",
+      "rationale": "Workflow preserves non-final milestone progression, attached correction/review dependencies, current record reliance, legitimate scope revision and isolated-invocation limits. Assessment preserves independent first-pass recording before fixes, justified clean outcomes and independent reassessment. Its existing scopes own distinct Proposal/Design/Delivery reviews and final Code Review before Verify. Specialist criticality/automation policy stays with its existing owners.",
+      "source_refs": [],
+      "subjects": [
+        {
+          "identity": "sha256:96f95d576d09c2835a825b15afc240a13611c68bcb87690f184b917b6c1891c1",
+          "path": "specs/review-independence-and-criticality.md"
+        },
+        {
+          "identity": "sha256:61d6be4776a1c109a841129d9c3b6cbf0a7bc51281b29efeedc3afbe44e9b130",
+          "path": "specs/rigorloop-workflow.md"
+        },
+        {
+          "identity": "sha256:e5cfb491131c5af97075fff40339feacf1c16ce1c114dcd46bba30f4ee580a1e",
+          "path": "docs/design/skill/workflow.md"
+        },
+        {
+          "identity": "sha256:fcd5f694268a768b74ca50f76d20e1e9626f1664486992f8a9e044c5c64a1a5f",
+          "path": "docs/design/skill/assessment.md"
+        },
+        {
+          "identity": "sha256:557a564c2336a8e3e6883237a5003024d887b653cde7be76aee031ec099d235a",
+          "path": "scripts/test-skill-validator.py"
+        },
+        {
+          "identity": "sha256:b09e755d04e904d171c3304b16a39931a73f6970956efafbcf3ffe2b482143a3",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/review-handoff-source-removal.json"
+        },
+        {
+          "identity": "sha256:ade619902294101486628d25635d52e211898ca97a7c63b91c23cb5a0d499bf2",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md"
+        },
+        {
+          "identity": "sha256:e6989411b16db2822ce1a90741c5f4ca8b00f8cb120fb0302bf1957e47dd55b9",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-inventory.tsv"
+        }
+      ]
+    },
+    {
+      "actor": {
+        "id": "codex-design-author",
+        "role": "design"
+      },
+      "id": "retire-review-recording-sources",
+      "rationale": "Assessment RC-SR-04/05/08/10 preserves durable formal review outcomes, clean and isolated recording, first-pass findings before fixes, truthful late reconstruction, explicit recording failures, independent reassessment and evidence before reliance. Workflow preserves responsible actor ownership and upstream correction routing. Records and CLI own current shapes and persistence.",
+      "source_refs": [],
+      "subjects": [
+        {
+          "identity": "sha256:04a890c8404e4e6c3ee0c30d432ba85da115ee8fe738567eb289fbfe62b8bf65",
+          "path": "docs/architecture/system/architecture.md"
+        },
+        {
+          "identity": "sha256:75c20ee6cda4fdf90e229bbfd67f017591edecd1faa5c371174d45c11fc73fe6",
+          "path": "specs/project-artifact-location-guide-and-examples-surface.md"
+        },
+        {
+          "identity": "sha256:a7f8cb62fa5fd17bc4d1abf436fd6c5297cb4bdf6ac313bd8e07d1ac590569bc",
+          "path": "specs/review-finding-resolution-contract.md"
+        },
+        {
+          "identity": "sha256:f7ca7b1a2a65366321588344766a95b1eaf2b451c3b202a79ff2eac142e2d5ba",
+          "path": "specs/rigorloop-workflow.md"
+        },
+        {
+          "identity": "sha256:9370f35cbcc86169a5fd5110828c2065e09d16c5f2340bdb7e87ebb8f0a527f1",
+          "path": "docs/design/skill/workflow.md"
+        },
+        {
+          "identity": "sha256:d645e03218519b23897a6388b74928b53fe04dd9f34d94162e84adf80b32b558",
+          "path": "docs/design/skill/assessment.md"
+        },
+        {
+          "identity": "sha256:a316cbb36825beb19ebaa2e037766e4fb3cd457bc1988b191ab939082b8b3b21",
+          "path": "scripts/test-skill-validator.py"
+        },
+        {
+          "identity": "sha256:77b30dc2ead4fbf2a20cc96842dbaa12894d448fc281a6e2be6f084e317e717b",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/review-recording-source-removal.json"
+        },
+        {
+          "identity": "sha256:b2f6ceb7f2c471597f93600cc754d27bd5c8637838206749d91c25d288985b45",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md"
+        },
+        {
+          "identity": "sha256:95924de946b0421079ca06a0342c1ac60c223a6a78900c9699f30898e7c9d88e",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-inventory.tsv"
+        }
+      ]
+    },
+    {
+      "actor": {
+        "id": "codex-design-author",
+        "role": "design"
+      },
+      "id": "retire-april-architecture-sources",
+      "rationale": "All seven architecture snapshots already declare themselves archived and identify the April 29 consolidation into docs/architecture/system/architecture.md. Current System, Skill/Workflow/Assessment, CLI/Records/Installation and Engineering/Validation/Packaging/Release remain the responsibility owners; retained specialist contracts remain unchanged. No new model text or authority transfer is needed.",
+      "source_refs": [],
+      "subjects": [
+        {
+          "identity": "sha256:52a4afbf5a3c17b4094d738c4bfa323d3c9cc77ea292e7ebaf8401174cd7d570",
+          "path": "specs/docs-changes-usage-policy.md"
+        },
+        {
+          "identity": "sha256:e80f0ed0d42d757d5d9769dd661dec1a842036e56c61c5231bdd846e7ff95747",
+          "path": "specs/multi-agent-adapters-first-public-release.md"
+        },
+        {
+          "identity": "sha256:e981f0aaa6d9f3f2e9dfdfeabe4cd6dbb776e11b160518a1a82a89630c294da5",
+          "path": "specs/workflow-stage-autoprogression.md"
+        },
+        {
+          "identity": "sha256:b9042ba81364ec039c699048b0da78e096a89e42ab03d8e38ab006846b9191cb",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/april-architecture-source-removal.json"
+        },
+        {
+          "identity": "sha256:4bf701b9871e300f2e54cdc989aad5ec1a25fe18ca0c7ccee463179bdbc698da",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md"
+        },
+        {
+          "identity": "sha256:82b250e0da631ee8701f7e2760ab7cddf2c9068445b8edfefd4a64191c3f2051",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-inventory.tsv"
+        }
+      ]
+    },
+    {
+      "actor": {
+        "id": "codex-design-author",
+        "role": "design"
+      },
+      "id": "retire-authoring-skill-sources",
+      "rationale": "Design retains reconciled behavioral/technical authoring, exact targets, safe governed identity, portable isolation, truthful interruption and conflict handling, resource integrity and conditional legacy methods. Assessment retains independent exact-subject judgments, finding completeness, durable recording and applicability; Workflow and CLI/Records retain routing and current save/recovery ownership. Skill and Validation retain resource and negative-proof requirements.",
+      "source_refs": [],
+      "subjects": [
+        {
+          "identity": "sha256:a5d5292798576a50da84203038bcc7d59e0cbb593e7b084691f3c5dc4e11cb36",
+          "path": "docs/design/skill/design.md"
+        },
+        {
+          "identity": "sha256:d8bb2742459df4ec209745d3e9461a5e5573514ac4e6464cf3ee27f72f6b3654",
+          "path": "specs/spec-family-assets-progressive-disclosure.md"
+        },
+        {
+          "identity": "sha256:48c4e3ab635ccfafcd6a19789d0a4f3f1107211478225145b330abd6892ad467",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/retired-authoring-source-removal.json"
+        },
+        {
+          "identity": "sha256:d2b923bf871e44f0080c94747c52bcda98b109c65866836c61259c5e136a2e1b",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md"
+        },
+        {
+          "identity": "sha256:62e758c19df9e06ab2d4b102680690d819623c5f1c89da45477b41339ffd4085",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-inventory.tsv"
+        }
+      ]
+    },
+    {
+      "actor": {
+        "id": "codex-design-author",
+        "role": "design"
+      },
+      "id": "retire-spec-family-sources",
+      "rationale": "Skill SKL-SR-04/08/12 retains specialist policy ownership, conditional contained resources and structural assets with usable output and no hidden policy. Design retains triggered model/legacy scaffolds and resource integrity. Current readability and validation owners preserve visible stops, claims, behavior and negative proof. No extra model prose or new operational contract is needed.",
+      "source_refs": [],
+      "subjects": [
+        {
+          "identity": "sha256:71bb7cd701609c194d79baad5a45e6445998fb227bd609fbf74ec3894e22ec71",
+          "path": "specs/review-skill-family-consistency-parser-owned-finding-shape.md"
+        },
+        {
+          "identity": "sha256:547119e60e05df51fa301c6bc8265f0d7bc668928b12b6d9b6b9c78c07dc627d",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/spec-family-source-removal.json"
+        },
+        {
+          "identity": "sha256:3f30c81047c11e690724594bc23622849073767d771218eea568c5f7e48c78cc",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md"
+        },
+        {
+          "identity": "sha256:37f071d62835e1c2a4468afbd37a662aa0cd9d9fcb3e81f20d3b02fc8c8f3e42",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-inventory.tsv"
+        }
+      ]
+    },
+    {
+      "actor": {
+        "id": "codex-design-author",
+        "role": "design"
+      },
+      "id": "retire-routing-review-sources",
+      "rationale": "Workflow retains semantic routing and actor ownership; Assessment retains independent exact-subject judgment, formal recording and current reliance; CLI/Records retain current persistence. The retained plan-skill-simplification and stage-owned lifecycle contracts continue to own their applicable plan-initialization boundaries. The retained route/context and bounded-automation sources keep their distinct operational contracts. Skill retains resource integrity and portable guidance. No additional model prose is needed.",
+      "source_refs": [],
+      "subjects": [
+        {
+          "identity": "sha256:42e96475b6248552418a43adcd7206d5f0641e42950c348566d8c774cc040c79",
+          "path": "docs/architecture/system/architecture.md"
+        },
+        {
+          "identity": "sha256:24830c87edbbe83d9ad0905fd14a4bde0550e747244c179be8387ba4f3689f9c",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/routing-review-source-removal.json"
+        },
+        {
+          "identity": "sha256:84b5171ee8b3662d8fbef3dd27cc286461ca8eb16d5ef325833fd7c5229a9845",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md"
+        },
+        {
+          "identity": "sha256:fd65b553ea191a216360e939b1eef26af327a940d21f030fad6d1477aabb24a7",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-inventory.tsv"
+        }
+      ]
+    },
+    {
+      "actor": {
+        "id": "codex-design-author",
+        "role": "design"
+      },
+      "id": "retire-workflow-guide-sources",
+      "rationale": "Both sources explicitly declare their guide and artifact-map contracts superseded by refocus-workflow-into-route. That retained contract owns CLI context defaults, overrides, provenance and failure behavior. Design owns normal authoring and model placement; System owns repository layout; Workflow owns semantic coordination. Existing legacy location keys remain compatibility metadata, not retired skill invocations or governance adoption. No new model prose is needed.",
+      "source_refs": [],
+      "subjects": [
+        {
+          "identity": "sha256:60df38c68eac1c3047a02214054504254e8fb81d9e5e778021cf1e94a9cb016a",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/workflow-guide-source-removal.json"
+        },
+        {
+          "identity": "sha256:e79fab5f82cb9b705aed9b21a90d2fde59d0554cd1635b70949772047e03bbb9",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md"
+        },
+        {
+          "identity": "sha256:4ab1feec32a0ff8de290516bcb77a09971460c305e95acae57779c2dc44bdab9",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-inventory.tsv"
+        }
+      ]
+    },
+    {
+      "actor": {
+        "id": "codex-design-author",
+        "role": "design"
+      },
+      "id": "retire-review-assets-sources",
+      "rationale": "Skill owns structural assets, contained resource maps, placeholders and policy separation. Assessment owns complete actionable findings and stage-specific judgment; Records owns current stored representation. Existing asset/parser conformance, invalid-fill and policy-leakage checks retain their current applicability and fixtures. No extra model prose is needed.",
+      "source_refs": [],
+      "subjects": [
+        {
+          "identity": "sha256:8852532026b2fa690a7a6fab4b0d58e6f615bec47669fc3d0ae9db0a3e94f9fa",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/review-assets-source-removal.json"
+        },
+        {
+          "identity": "sha256:0c18fce13b164f48c8599f8cdf1d4ccc3d677954b97d212a26981ba4ff4403ee",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md"
+        },
+        {
+          "identity": "sha256:1f1854ddb2acb398c64c5d41cff305f8495079d585ec7ee6eb5e3c1f198ea2dc",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-inventory.tsv"
+        }
+      ]
+    },
+    {
+      "actor": {
+        "id": "codex-design-author",
+        "role": "design"
+      },
+      "id": "retire-change-pack-sources",
+      "rationale": "Constitution requires durable validation evidence for non-trivial work and governed closeout reconciliation. Workflow owns responsible coordination, Assessment owns review and success-only final explanation, and Records/CLI own current registration and persistence. Current fixture placement, packaging and validation owners remain unchanged. No additional model prose is needed.",
+      "source_refs": [],
+      "subjects": [
+        {
+          "identity": "sha256:423670320e1552ae2eeea488e5ddaac4c08e1d4584881526acc3333e8fc1da8d",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/change-pack-source-removal.json"
+        },
+        {
+          "identity": "sha256:d5ab33e859bdbd006ac467768aef6607d55fae9e2156933fd3ccb6a11cc1d41e",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md"
+        },
+        {
+          "identity": "sha256:4feff3c7c5d5c9de3b2e60ec2a0cee0605373cdbb6c9af6d2640caa50565d2fc",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-inventory.tsv"
+        }
+      ]
+    },
+    {
+      "actor": {
+        "id": "codex-design-author",
+        "role": "design"
+      },
+      "id": "retire-lifecycle-navigation-sources",
+      "rationale": "Workflow preserves stable plan navigation, the ten-entry recent-history bound, historical intent, archive reachability and explicit replacement evidence. Assessment retains current-evidence reliance and stale-required-input blockers versus unrelated debt. Records owns mutable lifecycle representation. The selector fixture uses a surviving test specification and retains its original routing assertions.",
+      "source_refs": [],
+      "subjects": [
+        {
+          "identity": "sha256:1837892bf66fb387cc1cfd05dd46821ee1cbc6d8b02a7e249b770a37d6d65ce2",
+          "path": "docs/design/skill/workflow.md"
+        },
+        {
+          "identity": "sha256:4da8f28db7be7b8a5cd104f3dbfaf140d7c6e98b11db4b408dba90ae20c3a64d",
+          "path": "scripts/test-select-validation.py"
+        },
+        {
+          "identity": "sha256:80fc4fe220b6655ee5b519c00934e1adc35cb4ed8dec3e283de60e272557c6db",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/lifecycle-navigation-source-removal.json"
+        },
+        {
+          "identity": "sha256:f43445ff6cb16bfbbfd80801ba0440ab52be9281a4eb553cc3eba71580a32410",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md"
+        },
+        {
+          "identity": "sha256:e9b1e438e4b7ace218a2644660dd547e6766f5656343f7bc20d0a7ec765b6d17",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-inventory.tsv"
+        }
+      ]
+    },
+    {
+      "actor": {
+        "id": "codex-design-author",
+        "role": "design"
+      },
+      "id": "retire-superseded-automation-adrs",
+      "rationale": "All three ADRs explicitly name ADR-20260721-single-bounded-review-fix-workflow-automation.md as their replacement. That retained decision and the live automation specifications preserve bounded authorization, independent review, owned corrections, retry and external-action boundaries. Workflow and Assessment keep current coordination and reliance ownership. No new model text or behavior change is required.",
+      "source_refs": [],
+      "subjects": [
+        {
+          "identity": "sha256:6086a22a8db61cdb3b2d7d24d4731faa1eb7e817c2fc77b0dc2c14b8b55258f9",
+          "path": "docs/adr/ADR-20260721-single-bounded-review-fix-workflow-automation.md"
+        },
+        {
+          "identity": "sha256:bf7fd72a3e6865a5c93d5f500f051cfdac2d18336ea66ff56ae7ee73c7b303f3",
+          "path": "docs/architecture/system/architecture.md"
+        },
+        {
+          "identity": "sha256:d07d6f14f0b21db1cb16b6c5fe9caee9c3df73d3f074bb78bff8567459ea3c02",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/superseded-automation-adr-removal.json"
+        },
+        {
+          "identity": "sha256:d28ea62907c23605267384a8926e209ccd31ce1a9c2a7c65408ee8703c691783",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md"
+        },
+        {
+          "identity": "sha256:b4d3441f8f966a57b2da7b310ed980fa0484a7c6a2c583382200f7002825c623",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-inventory.tsv"
+        }
+      ]
+    },
+    {
+      "actor": {
+        "id": "codex-design-author",
+        "role": "design"
+      },
+      "id": "retire-transition-release-sources",
+      "rationale": "Packaging and Release retain authored-source, generated-candidate and release-evidence responsibilities. The retained single-authored-source and measurement contracts preserve their independently applicable source-selection semantics. The completed v0.1.1 compatibility window remains historical release context, not a requirement for current tracked adapter packages.",
+      "source_refs": [],
+      "subjects": [
+        {
+          "identity": "sha256:7d9266e683a84968ab8fd1ded4222e9bd0e7855dabd025b55e8927709b62a1f4",
+          "path": "docs/architecture/system/architecture.md"
+        },
+        {
+          "identity": "sha256:f7cfe84d4ee9ec70d0c8f897c95010db2da755ff6f771de1d14b07560963201c",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/transition-release-source-removal.json"
+        },
+        {
+          "identity": "sha256:fd07fb3cb965b35ca6a34378a43d63585c2722efbf71c52f58ec5bc6aa4a3b11",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md"
+        },
+        {
+          "identity": "sha256:d703a54e50a799ef820b18b75fc91bcf5b4beb5120315190b850f187848186a8",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-inventory.tsv"
+        }
+      ]
+    },
+    {
+      "actor": {
+        "id": "codex-design-author",
+        "role": "design"
+      },
+      "id": "retire-readme-positioning-sources",
+      "rationale": "VISION.md owns current identity, audience and value positioning; Constitution and the retained vision-skill contracts govern README derivation. The discovery spec preserves clear value and fit, truthful supported claims and usable next steps while deferring positioning and introductory structure to current vision authority. Repository/npm metadata and discovery obligations remain independently applicable.",
+      "source_refs": [],
+      "subjects": [
+        {
+          "identity": "sha256:59d47abe60bc3f68ffe1648699f51aa7ca1d50d089e12615353f51e1730bee50",
+          "path": "specs/public-discovery-and-developer-adoption-surface.md"
+        },
+        {
+          "identity": "sha256:e7316ae902a0a3f2b6857fd8c5b2abdbd5cc152a917cca5d3baea6f8944e7fd5",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/readme-positioning-source-removal.json"
+        },
+        {
+          "identity": "sha256:aa1c331d0f8f44b85d94489e5d3c6a36e4a667c0e4f49c415bfe32586951411e",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md"
+        },
+        {
+          "identity": "sha256:a90c1426b1f8ea87a273c9b84a2033789e79a44d720afbc8276692c369e3cff0",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-inventory.tsv"
+        }
+      ]
+    },
+    {
+      "actor": {
+        "id": "codex-design-author",
+        "role": "design"
+      },
+      "id": "retire-requirement-delivery-sources",
+      "rationale": "Design preserves the RR/IR/SR/AR conceptual chain, stable requirement identity and realization, distinct optional work decomposition, many-to-many allocation, justified work scope/dependencies and backward evidence traceability. Skill retains authoring/delivery behavior; Assessment retains gate authority. No new artifact or lifecycle layer is introduced.",
+      "source_refs": [],
+      "subjects": [
+        {
+          "identity": "sha256:611d4dd816d13b48f91d9f10059f7ca8325aae09b278e635c07c7919d08f1d56",
+          "path": "docs/design/skill/design.md"
+        },
+        {
+          "identity": "sha256:8bda8992970249e603589fc89e6636fdc79f26b93b257bd0cf3abdf810e8cda6",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/requirement-delivery-source-removal.json"
+        },
+        {
+          "identity": "sha256:7841858bfc488860cebefdbe46743127918825d4ff29139dce1526c2ea4cad78",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md"
+        },
+        {
+          "identity": "sha256:cc85326e8c3fa16739ae810e4db7a119b49137d5065e91b86978fae6618600a7",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-inventory.tsv"
+        }
+      ]
+    },
+    {
+      "actor": {
+        "id": "codex-design-author",
+        "role": "design"
+      },
+      "id": "refine-current-design-coherence",
+      "rationale": "System defines product handoffs and four cross-owner work/failure walkthroughs. Skill delegates requirement refinement, proof criteria and judgment instead of repeating them. Design uses current Installation authority, reconciles compatibility scenarios and marks the superseded DES-DEC-04 state-write choice historical. Workflow owns coordination and navigation without obsolete authoring actors. Assessment consolidates formal recording, independent reassessment and historical-reliance explanations.",
+      "source_refs": [],
+      "subjects": [
+        {
+          "identity": "sha256:c6ad836340194950a2a15f86729c568b5f74c86ff09299d9d8e35f226ff66274",
+          "path": "docs/design/system.md"
+        },
+        {
+          "identity": "sha256:b9a607c786f5aa60d7285f88a8af467b950cb10e073ad310d4d0accf0eeb74e6",
+          "path": "docs/design/skill/skill.md"
+        },
+        {
+          "identity": "sha256:a881de22bac75fb530374cf569baeea0b88a2e1beda26156c2be4d2e9735a8f8",
+          "path": "docs/design/skill/design.md"
+        },
+        {
+          "identity": "sha256:512df840fd2154ca9c8279cd7a74e1f47f1d83915accd55a93ed64bd28efb592",
+          "path": "docs/design/skill/workflow.md"
+        },
+        {
+          "identity": "sha256:3957bb9a4545aa187fc662410b6afb4b120991d5149ee0c5d53f4f64f5023139",
+          "path": "docs/design/skill/assessment.md"
+        },
+        {
+          "identity": "sha256:8fbf8613248f7b09435c2869c14cd3c5d5ae0d105279079ca5624c738b716140",
+          "path": "docs/design/cli/cli.md"
+        },
+        {
+          "identity": "sha256:47f878a9d343a531d459abd5d4648a6389842dee771007c94ce672493ffaaab1",
+          "path": "docs/design/cli/records.md"
+        },
+        {
+          "identity": "sha256:756a282dbfe5f363eb4eb39986e0f68cf607501bfb9de2a98d96de66b0819578",
+          "path": "docs/design/cli/installation.md"
+        },
+        {
+          "identity": "sha256:d6a2ae7cf2c2ca1d57269f383b2c1716c27af55624625f6a0154738cc698d0c5",
+          "path": "docs/design/engineering/validation.md"
+        },
+        {
+          "identity": "sha256:d4cebe77532c09a06acc49e9e63b858babfe669768b11f755afb6dfaf002f2c0",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/design-coherence-refinement.json"
+        },
+        {
+          "identity": "sha256:e6333893ea79bcd8949b7e951693669a09499dcf56b0b02bd5fd79c1c4932f3b",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md"
+        }
+      ]
+    },
+    {
+      "actor": {
+        "id": "codex-design-author",
+        "role": "design"
+      },
+      "id": "consolidate-proposal-contract",
+      "rationale": "Skill Authoring owns exact proposal sections, optional material impacts, proportionate feasibility, portable content, metadata exclusion and historical compatibility. Assessment owns proposal decision criteria, four vision outcomes, material-issue handling and independent isolated review. Records retains governed lifecycle ownership. No new submodel or runtime behavior is introduced.",
+      "source_refs": [],
+      "subjects": [
+        {
+          "identity": "sha256:4abc98fab3cd55075a9a3667afa5b8071fe4ad5504753aa7f0a82fdaa01e8465",
+          "path": "docs/design/skill/skill.md"
+        },
+        {
+          "identity": "sha256:9dab291de136b856319c3aa5559a4ec42936f408f8f62bad54d50ef5dea7dd7f",
+          "path": "docs/design/skill/assessment.md"
+        },
+        {
+          "identity": "sha256:77a3923061c3ff337b4c589436419ec1492cca65ba42e89d31aafaf68a9ed8cd",
+          "path": "scripts/test-skill-validator.py"
+        },
+        {
+          "identity": "sha256:78e278bee028f1997c0bfcb79720b633c527644e0339b0b43abd4489eaec5731",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/proposal-contract-source-removal.json"
+        },
+        {
+          "identity": "sha256:6396f3b74a544cc3c937c113203b8dcee8120cec0089ba2e35ae2a82de2d16e5",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md"
+        },
+        {
+          "identity": "sha256:81f76d9560849c4245e17d0fd90f74a66965ff76a236b68ab814bc31f4e3eab3",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-inventory.tsv"
+        }
+      ]
+    },
+    {
+      "actor": {
+        "id": "codex-design-author",
+        "role": "design"
+      },
+      "id": "consolidate-proposal-asset-contract",
+      "rationale": "Skill preserves proposal-family structural assets, scoped metadata/status rules, visible placeholders, conditional COPY guidance, policy separation and deterministic structural-label/policy-leakage validation. Current proposal content replaces obsolete conditional sections. Existing templates, fixtures and regression tests remain unchanged.",
+      "source_refs": [],
+      "subjects": [
+        {
+          "identity": "sha256:fdb0bb9c5ebbbc971b76cc8aec48a6baa7239f8f3a362af2408bf435378d996f",
+          "path": "docs/design/skill/skill.md"
+        },
+        {
+          "identity": "sha256:c2e484ba93795f6f64f3f959f8340b42ef69d67a7b334268a03bc9a115536f3a",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/proposal-assets-source-removal.json"
+        },
+        {
+          "identity": "sha256:015e2bce89c3bb14256da62ba0836793fb85a0f33c3d4c8081a418263bc7066a",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md"
+        },
+        {
+          "identity": "sha256:a149492339592f8885faff003fe74a6972177ac41439f0f08293b2db1a1f35ea",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-inventory.tsv"
+        }
+      ]
+    },
+    {
+      "actor": {
+        "id": "codex-design-author",
+        "role": "design"
+      },
+      "id": "consolidate-proposal-procedures",
+      "rationale": "Skill preserves proposal target operations, portable/governed isolation, resource assemblies, semantic predicates and exact-basis recovery boundaries. Assessment preserves proposal-review modes, late durable triggers, strategic gates, conditional output and separate recording/settlement/automation authority. Current CLI and Records own persistence; existing executable tests, skills, assets and fixtures remain unchanged.",
+      "source_refs": [],
+      "subjects": [
+        {
+          "identity": "sha256:e336816d6ecde4c2569a7d97b7febd20f4452792bc5205f997d64a3bfb60fe0d",
+          "path": "docs/design/skill/skill.md"
+        },
+        {
+          "identity": "sha256:eb57be1905901b267ea191b71ee1d1f385ab47e84975189b4d06728d2e73b627",
+          "path": "docs/design/skill/assessment.md"
+        },
+        {
+          "identity": "sha256:db8c1824038a2bbd579277d4f1e52c2a2b8d2d7837ba0708ce9983d9938fcb62",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/proposal-procedures-source-removal.json"
+        },
+        {
+          "identity": "sha256:8c7f36801142cfcd4b2167c340c6f9b6cf414d6845f77048a6e24b93bb5b066d",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md"
+        },
+        {
+          "identity": "sha256:636f4b379fae678caba9351dd323e81658bb5ea8e27bbddf8a5e4d6f969a7380",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-inventory.tsv"
+        }
+      ]
+    },
+    {
+      "actor": {
+        "id": "codex-design-author",
+        "role": "design"
+      },
+      "id": "consolidate-plan-procedure",
+      "rationale": "Skill Delivery allocation preserves plan structure, portable/governed boundaries, closed operations, conditional resources, exact approved-plan initialization, rejection of existing work and safe revision. Current Workflow, Assessment, Records and CLI retain coordination, review and persistence ownership. Actual skills, structural assets, executable tests and historical fixtures remain unchanged.",
+      "source_refs": [],
+      "subjects": [
+        {
+          "identity": "sha256:cf9adf08d54a601263daf0fd36b980e8eda7026b6e51e5caaa2aec20940888c4",
+          "path": "docs/design/skill/skill.md"
+        },
+        {
+          "identity": "sha256:21ca18a8d34ab3bd78e1ecf2cbddbdac94c44ef4cab6fc1a1615fd2043af4a82",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/plan-procedure-source-removal.json"
+        },
+        {
+          "identity": "sha256:d5beb7ceaab16f0912949b00966ea22834e0ec455cf0f38d324e402418a6917e",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md"
+        },
+        {
+          "identity": "sha256:e55a9cadbdee5645e0f3cfa1579674e7fdfb0a41d66e355094fbf734f6366079",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-inventory.tsv"
+        }
+      ]
+    },
+    {
+      "actor": {
+        "id": "codex-design-author",
+        "role": "design"
+      },
+      "id": "retire-reviewed-plan-initialization-adr",
+      "rationale": "SKL-DEC-06 preserves the rationale for review-before-initialization, plan-owned derivation and no replacement of existing work, including rejected alternatives and progress-loss consequences. Delivery allocation already defines the current behavior.",
+      "source_refs": [],
+      "subjects": [
+        {
+          "identity": "sha256:5175f7ab197d4fa2202f932e21717fd089e0f994b7d5d469f53224098c0aa3fe",
+          "path": "docs/design/skill/skill.md"
+        },
+        {
+          "identity": "sha256:cfca2c3ba45efc625439bebf36f23bf3a272cf4c10f39218b90ebaac8fe84686",
+          "path": "docs/architecture/system/architecture.md"
+        },
+        {
+          "identity": "sha256:2caec6d8b9d9c1f67e2b5721fa5bf1a5827e634f0ed691963afc4764b27cd8c4",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/plan-initialization-adr-removal.json"
+        },
+        {
+          "identity": "sha256:8a270fb282a84c4b7acef5136c0b530b0aabd50b1a43ac470e4655576c86c347",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md"
+        },
+        {
+          "identity": "sha256:2f540993552db3a1b876f3b5f68dcb3a672a31b946ab1e71651d5a9c976ba7aa",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-inventory.tsv"
+        }
+      ]
+    },
+    {
+      "actor": {
+        "id": "codex-design-author",
+        "role": "design"
+      },
+      "id": "consolidate-cost-bounded-rigor",
+      "rationale": "Skill preserves evidence defaults, conditional and expansion reads, do-not-under-read, progressive loading, scope treatment and warning-only cost claims. Engineering Validation preserves trigger-driven targeted/broad coverage, dirty-worktree handling, selector ownership and unchanged required proof. Existing skills, selectors, tests, fixtures, package behavior and M4 reports remain unchanged.",
+      "source_refs": [],
+      "subjects": [
+        {
+          "identity": "sha256:33c710c83d6382cf819ed5494ba0474cdd5460ccb5244913e47392d6461b1344",
+          "path": "docs/design/skill/skill.md"
+        },
+        {
+          "identity": "sha256:a412f1ab5bcde6329c8b53dd5aaed56fdbd8e867e30f716db1e87fa8b566db12",
+          "path": "docs/design/engineering/validation.md"
+        },
+        {
+          "identity": "sha256:848363083a4404dc8ba6047e8bb1ba62cdb6b2b624169db99d65827da7269137",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/cost-bounded-rigor-source-removal.json"
+        },
+        {
+          "identity": "sha256:57210b10fedc4c3e4a469cb87620743c6ef55d8aeed926b4c6de3a3ee79efb92",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md"
+        },
+        {
+          "identity": "sha256:a66c5fe3f4d87ca21e3c33ca5c74f13d74790d978389666843ad194e532dfd13",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-inventory.tsv"
+        }
+      ]
+    },
+    {
+      "actor": {
+        "id": "codex-design-author",
+        "role": "design"
+      },
+      "id": "refine-round-one-current-design",
+      "rationale": "Current Skill capability/resource ownership is explicit; Proposal/Plan are local owners with only the remaining plan/boundary contract delegated. Evidence and resource rules are referenced instead of repeated. Project-specific stable proposal pointers are distinguished from this repository convention. Validation explicitly ties parallel-test adoption to its own initiative. System names Validation as current owner while preserving TEST IDs.",
+      "source_refs": [],
+      "subjects": [
+        {
+          "identity": "sha256:3e71da64f37a7ef9e911290e328985e6c60d6e94c1d53e61e50aeaf1a16023ea",
+          "path": "docs/design/skill/skill.md"
+        },
+        {
+          "identity": "sha256:a130a53c2e4c5752ff06c9931813d98385ca52d9ce4122c84ee949bb05849e4b",
+          "path": "docs/design/skill/assessment.md"
+        },
+        {
+          "identity": "sha256:67e497d52664c5864f6eb3c9570c408e758d49bf91901dd20a6ce4e8a917aeeb",
+          "path": "docs/design/engineering/validation.md"
+        },
+        {
+          "identity": "sha256:69ca7173c8f58490e2f979afe60ae564eade4632c5d20750a1419c0fa98dbb62",
+          "path": "docs/design/system.md"
+        },
+        {
+          "identity": "sha256:dff76cea395980b6709c961489ec97a8f339255ff410c31bf50a197baf49160f",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/round-one-design-refinement.json"
+        },
+        {
+          "identity": "sha256:af08c24ce229d322b9c6c82d3cd76ff77e94997bf31d275e3de0c45904fd9ecf",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md"
+        },
+        {
+          "identity": "sha256:a66c5fe3f4d87ca21e3c33ca5c74f13d74790d978389666843ad194e532dfd13",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-inventory.tsv"
+        }
+      ]
+    },
+    {
+      "actor": {
+        "id": "codex-design-author",
+        "role": "design"
+      },
+      "id": "design-token-cost-feature-retirement",
+      "rationale": "User reports inconclusive token-cost results and authorizes design refinement for full feature retirement, not continued optional measurement. VAL-SR-25 and VAL-DEC-08 own retirement; Skill, Engineering, Packaging and Release reconcile their dependencies. Concrete source/consumer and acceptance mapping distinguishes exclusive tests from independently useful source-safety and output-contract protection.",
+      "source_refs": [],
+      "subjects": [
+        {
+          "identity": "sha256:b799f7cf38fbaaf9f3946b5e1d05a0b1fc9116a0467d1ce6a24d5dd82c614d52",
+          "path": "docs/design/engineering/validation.md"
+        },
+        {
+          "identity": "sha256:0368e2fc6233a97f413a73f0d9fab4ca22b25b0b4f55a19a937380e1f0529a18",
+          "path": "docs/design/skill/skill.md"
+        },
+        {
+          "identity": "sha256:091f661ebaf23e61a19291046ccff89dc8c98c4aca3a9e29009acf76e7e2a3f4",
+          "path": "docs/design/engineering/packaging.md"
+        },
+        {
+          "identity": "sha256:77b780c85ee32aaffecc8c0772dd9bc2abf1b13a1b4f1e804d16397046d81a58",
+          "path": "docs/design/engineering/release.md"
+        },
+        {
+          "identity": "sha256:f45e6a357a78e630496f4e636d5343daeb3197f8a61010060585c7f65d8bc61f",
+          "path": "docs/design/engineering/engineering.md"
+        },
+        {
+          "identity": "sha256:de9ff70a0a54df8b205abb5b9bb90c83f08b94bca6fbfa13613b841a8a48ee42",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/token-cost-retirement-design.json"
+        },
+        {
+          "identity": "sha256:f4cd3fb5bd5d47f32a269fb216a9980819a4a636d63c6b254f2df3d793e4af53",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md"
+        },
+        {
+          "identity": "sha256:a66c5fe3f4d87ca21e3c33ca5c74f13d74790d978389666843ad194e532dfd13",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-inventory.tsv"
+        }
+      ]
+    }
+  ],
+  "schema_version": 3
+}

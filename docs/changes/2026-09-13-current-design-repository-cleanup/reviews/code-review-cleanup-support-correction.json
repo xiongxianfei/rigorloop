@@ -1,0 +1,103 @@
+{
+  "assessment_scope": "Fresh review of supporting-subject correction within INTEGRATE-1, under design-review-cleanup-delivered-package and delivery-review-cleanup-integration. This records a concrete incomplete-fix finding before correction; complete accumulated cleanup review and final proof remain pending.",
+  "change_id": "2026-09-13-current-design-repository-cleanup",
+  "contributors": [
+    {
+      "id": "codex-cleanup-implementer",
+      "role": "implement"
+    }
+  ],
+  "findings": [
+    {
+      "evidence": "Severity: major. Location: scripts/validation_selection.py:_support_subject_paths and scripts/validate-record-store.mjs complete-set validation. record-store inspect status inspected validates each record/envelope but never invokes format.set. Reproduction /tmp/cleanup-support-reference-repro.py creates the existing valid supporting_subject_repo fixture, changes material-decisions.decisions[0].source_refs to evidence.json/id unknown-check, calls public select_validation and gets status ok/no blockers. The existing validate-record-store.mjs rejects the exact same fixture with exit1. Thus a structurally valid but cross-reference-invalid store supplies supporting membership contrary to approved Validation.",
+      "id": "cleanup-support-incomplete-set-validation",
+      "owner": {
+        "id": "codex-cleanup-implementer",
+        "role": "implement"
+      },
+      "reporter": {
+        "id": "codex-cleanup-code-reviewer",
+        "role": "review"
+      },
+      "required_outcome": "Run existing complete-set validation on the same in-memory inspected files from which exact Subject paths are extracted before admitting support. Safe resolution: narrowly extend existing repository validator to output validated Subject paths after its existing formatFor(...).set, keeping ordinary/revision behavior and unknown option rejection; have selector consume that result with per-invocation caching. Add dangling-reference negative regression and direct ordinary/new-mode argument tests. Do not separately validate and reinspect changing state, add a parallel record parser/schema, or weaken reserved-path checks. Then rerun focused and complete allocated proof.",
+      "resolution": {
+        "actor": {
+          "id": "codex-cleanup-code-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [
+          {
+            "id": "integration-final-validation",
+            "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence.json"
+          }
+        ],
+        "rationale": "Independently reassessed final correction: the existing validator uses one inspected files map, runs complete stored-format set/reference validation, then extracts exact Subject paths from that returned parsed Map. Selector admits only safe explicitly referenced nonreserved paths, preserves reserved registration/unknown/mixed/malformed rejection and reuses only per invocation. Seven direct tests cover changed/deleted support, record preservation, stale membership, mixed unknowns, invalid schema, dangling EntryRefs, reserved paths, escaping links and strict validator options. Independent dangling-reference reproduction now blocks. All 1639 complete selected+broad execution rows passed on unchanged final engineering subjects. Original finding evidence and reviewed identities are preserved."
+      },
+      "state": "resolved",
+      "subjects": [
+        {
+          "identity": "sha256:38e0c3b72202087c79d6c035530c6adffaf9567830e2e184d784f29c8adfd85c",
+          "path": "scripts/validation_selection.py"
+        },
+        {
+          "identity": "sha256:3152e738d7b6848a9e3e45b0c5cf83c3dc0b97f76dab29a9cd38bd5746bcd606",
+          "path": "scripts/test-select-validation.py"
+        },
+        {
+          "identity": "sha256:8290b942f0afc430de6b604e0f2e2fdcf82c3a2166a3213ae7882e225665c3a0",
+          "path": "scripts/validate-record-store.mjs"
+        },
+        {
+          "identity": "sha256:1190b6dcb1fcc32f7a5af2587a581dce9f5c2baad5c1fa87437c23f5c1289a12",
+          "path": "docs/design/engineering/validation.md"
+        },
+        {
+          "identity": "sha256:2e4496fcfc8485a5ea0f0cf57f62b89a5d41f68d5389402ec0b7731c553ac457",
+          "path": "docs/plans/2026-09-14-cleanup-integration-and-commit.md"
+        }
+      ]
+    }
+  ],
+  "id": "code-review-cleanup-support-correction",
+  "independence_basis": "Independent delegated reviewer did not author the selector correction, tests, Design or delivery plan; reproduction used temporary synthetic fixtures only.",
+  "judgment": "changes-requested",
+  "limitations": [
+    "Only this correction assessment is concluded. Original cleanup-supporting-evidence-selection remains open, and no final whole-change approval, Verify or PR readiness is claimed.",
+    "Final checklist and complete local/broad results remain required after correction."
+  ],
+  "rationale": [
+    "Spec alignment and error handling — concern: approved Validation requires the complete registered set to validate before supporting membership is admitted. _support_subject_paths only checks record-store inspect success. That API parses individual records and the snapshot envelope but does not run validateV3Set reference closure.",
+    "Tests and edges — concern: current five tests cover syntax-invalid records, reserved paths, mixed unknown paths, changed/deleted support and escaping links, but not a schema-valid dangling EntryRef. Independent public select_validation reproduction changed a decision source_ref to evidence.json/id unknown-check; selection returned ok with no blockers while validate-record-store.mjs rejected the same set.",
+    "Architecture and compatibility: reuse scripts/validate-record-store.mjs same in-memory files after existing formatFor(...).set. A second independent validate-then-inspect subprocess risks validating one snapshot and reading another; preserve the same-snapshot boundary. Retain normal validator output and strict option rejection.",
+    "Security/derived/scope: no implementation modified by reviewer. Existing scheduled metadata validation would still detect the invalid set, so this is not a false full-pass claim; it is failure of the newly required admission boundary and an unproved malformed-set case. Final validation was stopped by owner before correction; no interrupted run counts as passed."
+  ],
+  "reviewer": {
+    "id": "codex-cleanup-code-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:38e0c3b72202087c79d6c035530c6adffaf9567830e2e184d784f29c8adfd85c",
+      "path": "scripts/validation_selection.py"
+    },
+    {
+      "identity": "sha256:3152e738d7b6848a9e3e45b0c5cf83c3dc0b97f76dab29a9cd38bd5746bcd606",
+      "path": "scripts/test-select-validation.py"
+    },
+    {
+      "identity": "sha256:8290b942f0afc430de6b604e0f2e2fdcf82c3a2166a3213ae7882e225665c3a0",
+      "path": "scripts/validate-record-store.mjs"
+    },
+    {
+      "identity": "sha256:1190b6dcb1fcc32f7a5af2587a581dce9f5c2baad5c1fa87437c23f5c1289a12",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:2e4496fcfc8485a5ea0f0cf57f62b89a5d41f68d5389402ec0b7731c553ac457",
+      "path": "docs/plans/2026-09-14-cleanup-integration-and-commit.md"
+    }
+  ],
+  "summary": "Supporting-subject routing trusts per-record inspection without the required complete-set cross-reference validation.",
+  "target": "code"
+}
