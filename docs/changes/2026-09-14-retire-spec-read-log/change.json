@@ -1,12 +1,12 @@
 {
   "activity": {
     "owner": {
-      "id": "codex-spec-read-verifier",
-      "role": "verify"
+      "id": "codex-spec-read-router",
+      "role": "route"
     },
-    "reason": "Route: M1 completed after fresh independent whole-change approval and full actual proof; no required findings. Distinct final Verify owns final assessment and exact Git handoff.",
+    "reason": "Route: distinct final Verify succeeded for exact selected spec-read-log delivery and Git basis. All in-scope work and independent whole-change review complete; authorized PR handoff follows, with broader cleanup excluded.",
     "stage": "verify",
-    "status": "in-progress"
+    "status": "completed"
   },
   "applicability": [
     {
@@ -62,6 +62,15 @@
       "path": "docs/changes/2026-09-14-retire-spec-read-log/reviews/code-review-spec-read-final-whole-change.json",
       "reason": "Fresh final complete-diff assessment against exact approved Design/Delivery and actual current proof; no unresolved required finding or changed engineering basis.",
       "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-spec-read-verifier",
+        "role": "verify"
+      },
+      "path": "docs/changes/2026-09-14-retire-spec-read-log/verify-report.json",
+      "reason": "Distinct final assessment of exact committed delivery, current independent reviews, complete actual proof and recoverable retired sources; Git basis resolved and unrelated cleanup excluded.",
+      "value": "current"
     }
   ],
   "blockers": [],
@@ -115,6 +124,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-14-retire-spec-read-log/reviews/code-review-spec-read-final-whole-change.json"
+    },
+    {
+      "kind": "verify",
+      "path": "docs/changes/2026-09-14-retire-spec-read-log/verify-report.json"
     }
   ],
   "schema_version": 3,
