@@ -1,5 +1,5 @@
 {
-  "assessment_scope": "Workflow-final-verification, governed-final without Git-readiness claim, for TOKEN-1, LEDGER-1 and INTEGRATE-1 of the selected cleanup change. Assesses the entire delivered diff from 39b7c5cb1f03aa761d2f2493d3474ce985e59d6f on exact current Subjects, source transfers, current consumers, protective tests, final review and integration plan. Local commit follows; external actions are outside scope.",
+  "assessment_scope": "Direct branch-readiness reassessment for commit 78063e9de2bd21d510965a056f9b008cb7edc6b0 on cleanup/current-design-repository against main 39b7c5cb1f03aa761d2f2493d3474ce985e59d6f, bound to this single governed cleanup change. The complete delivered scope and final closeout assessment are retained; no lifecycle transition or broader cleanup adoption is made.",
   "change_id": "2026-09-13-current-design-repository-cleanup",
   "changes": [
     "Simplified Constitution, AGENTS and vision/README; consolidated still-applicable legacy knowledge into the current owning models and reconciled navigation, references and consumer assertions.",
@@ -16,7 +16,7 @@
   "limitations": [
     "Local Linux validation only; hosted CI, push, PR creation, merge and release publication have not been performed or claimed.",
     "Remaining spec-read-log retirement, generated-only adapter support, historical replay/wrapper retirement and other legacy tests/fixtures/sources require separately selected follow-up work.",
-    "This successful governed closeout binds exact engineering Subjects. A local commit changes Git identity; final committed-byte and clean-tree checks follow separately without claiming this report alone supplies Git/PR readiness."
+    "Hosted CI is unobserved at assessment time. User authorization covers pushing and opening the PR; merge and publication remain separate. The Verify evidence commit must preserve this exact engineering basis."
   ],
   "outcome": "success",
   "rationale": [
@@ -25,7 +25,8 @@
     "The seven support-subject regression tests prove changed/deleted registered evidence, malformed sets, dangling references, unknown/mixed paths and options, unregistered reserved records, escaping symlinks, per-invocation freshness and preservation of authoritative record bytes. Both original failing reproductions and the intentionally interrupted earlier run remain truthfully recorded; the final full run supplies current replacement proof.",
     "ENG-SR-13/14 source cleanup maps and recovery evidence account for the complete deletion set; independent recovery audit verified 276 document/token and 3 ledger deletions and reconstructed six patches without errors. Current operation is covered by models, live readers, packaging and release tests without fetching retired sources. Required proof survives retired test-spec prose through the current Validation owner and concrete regression suites.",
     "VAL-SR-25 token retirement and the ledger portion of VAL-SR-23 are fully delivered. The approved integration boundary expressly excludes spec-read-log, DIST-SR-21/22 adapter support, REL-SR-25 historical replay and unselected legacy cleanup; the broad proposal remains direction rather than an overbroad completion claim.",
-    "Current record-store complete-set validation and git diff HEAD --check pass after final review. Only stage-owned evidence and lifecycle bookkeeping follow tested engineering bytes. The recorded successful run includes required release-sensitive and generated artifact proof; no CI infrastructure gap or additional material engineering change requires new allocation."
+    "Current record-store complete-set validation and git diff HEAD --check pass after final review. Only stage-owned evidence and lifecycle bookkeeping follow tested engineering bytes. The recorded successful run includes required release-sensitive and generated artifact proof; no CI infrastructure gap or additional material engineering change requires new allocation.",
+    "Fresh PR-handoff reassessment confirms all 97 final Verify Subjects and all relied-on Design, Delivery and whole-change Code Review Subjects still match committed bytes. All required findings are resolved and in-scope work is complete. The remote main still equals the verified base and the remote cleanup branch and matching PR are absent. Reuse of the actual 1,639-check selected/broad run is justified by identical engineering, governing and proof bytes, unchanged environment and no new contradictory evidence. Older scoped record observations concern their historical identities and do not replace these exact current approvals. Current complete-set validation and diff hygiene pass. This recording adds only attributable Verify evidence; PR must reassess that suffix and reread remote identities before mutation."
   ],
   "review_refs": [
     {
@@ -432,9 +433,18 @@
       "path": "docs/changes/2026-09-13-current-design-repository-cleanup/reviews/code-review-cleanup-delivered-package-final.json"
     }
   ],
-  "summary": "Successful final Verify of the complete delivered repository cleanup: current Design consolidation, governance/vision refinement, recoverable legacy-source removal, token-cost and ledger retirement, and reviewed selector/validator corrections. The exact mapped delivered responsibilities are adopted for this repository. Remaining cleanup is explicitly deferred.",
+  "summary": "Branch-ready for the exact committed delivered cleanup. Successful final Verify of the complete delivered repository cleanup: current Design consolidation, governance/vision refinement, recoverable legacy-source removal, token-cost and ledger retirement, and reviewed selector/validator corrections. The exact mapped delivered responsibilities are adopted for this repository. Remaining cleanup is explicitly deferred.",
   "verifier": {
     "id": "codex-cleanup-verifier",
     "role": "verify"
+  },
+  "verification_basis": {
+    "base_branch": "main",
+    "base_revision": "39b7c5cb1f03aa761d2f2493d3474ce985e59d6f",
+    "head_branch": "cleanup/current-design-repository",
+    "merge_base_revision": "39b7c5cb1f03aa761d2f2493d3474ce985e59d6f",
+    "remote_identity": "git@github.com:xiongxianfei/rigorloop.git",
+    "repository_identity": "https://github.com/xiongxianfei/rigorloop",
+    "verified_subject_revision": "78063e9de2bd21d510965a056f9b008cb7edc6b0"
   }
 }

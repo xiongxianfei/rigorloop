@@ -195,7 +195,7 @@
         "role": "verify"
       },
       "path": "docs/changes/2026-09-13-current-design-repository-cleanup/verify-report.json",
-      "reason": "Distinct final assessment of exact current delivered Subjects, fresh independent whole-change review and resolved findings, complete integrated proof and current lifecycle; deferred work explicitly excluded.",
+      "reason": "Fresh direct branch-readiness reassessment under the user-authorized PR handoff; exact committed engineering, current complete reviews and actual integrated proof remain applicable. Only Verify evidence changes; no lifecycle mutation.",
       "value": "current"
     }
   ],
