@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "normalization": "trim-crlf-and-replace-project-root-v1",
+  "cases": {
+    "version-human-success": {
+      "exit_code": 0,
+      "stdout": "@xiongxianfei/rigorloop 0.5.1",
+      "stderr": ""
+    },
+    "unknown-human-failure": {
+      "exit_code": 4,
+      "stdout": "",
+      "stderr": "Unknown command: future-command\nRun rigorloop --help."
+    },
+    "unknown-json-failure": {
+      "exit_code": 4,
+      "stdout": {
+        "schema_version": 1,
+        "command": "unknown",
+        "package": {
+          "name": "@xiongxianfei/rigorloop",
+          "version": "0.5.1"
+        },
+        "cwd": "<PROJECT>",
+        "status": "error",
+        "summary": "Unknown command: future-command",
+        "actions": [],
+        "artifacts": [],
+        "blockers": [],
+        "warnings": [],
+        "errors": [
+          {
+            "code": "invalid-usage",
+            "message": "Unknown command: future-command",
+            "next_action": "Run rigorloop --help."
+          }
+        ],
+        "diagnostics": {}
+      },
+      "stderr": ""
+    }
+  }
+}
