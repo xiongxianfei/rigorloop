@@ -1,0 +1,124 @@
+{
+  "assessment_scope": "Complete M1 milestone Code Review, including corrected proof-path finding and baseline/source/test-maintenance reconciliation; not final six-milestone whole-change review.",
+  "change_id": "2026-09-14-retire-specs-and-stale-tests",
+  "contributors": [
+    {
+      "id": "codex-m1-implementer",
+      "role": "implement"
+    }
+  ],
+  "findings": [],
+  "id": "code-review-m1-corrected",
+  "independence_basis": "Separate nonauthor reviewer inspected full2de10dff..e1088e01M1diff, current source/tests, approved Design/Delivery and actual proof; reproduced original defect before correction and independently reran corrected public-entrypoint cases. Reviewer authored no implementation.",
+  "judgment": "approved",
+  "limitations": [
+    "This milestone approval does not claim whole-repository source/test audit completion, final Verify, branch/PR readiness, hosted CI or publication.",
+    "Actual general deleted/renamed discovery and remaining specialist/package/release/source retirements remain allocated to later approved milestones; current limited selector relocation wiring is not their completion."
+  ],
+  "rationale": [
+    "Spec alignment/architecture: pass. SYS-SR-13/DES-SR-23/VAL-SR-28/DIST-SR-24 realized by current model/default example scope, explicit customer grammar and maintained source projections; no project activation inferred. Removed activation/rollback/Git helpers have no live executable callers.",
+    "Test coverage/edge cases/error handling: pass. Current61structural and28projection cases preserve malformed/unknown/containment/companion/proof/resource failure boundaries; default missing/empty model population fails, syntax-only example scope is explicit. Original false-pass finding now resolved; independent python scripts/test-boundary-first-validation.py -k unmarked passed3tests.",
+    "Compatibility/recovery: pass. Three relocated method raw bytes and supported consumer/target sets preserved, manifest paths updated coherently, separate compact-scan owner retained. Retired activation vocabulary/history fixtures receive explicit retirement, not substitute pass results. Baseline recovery/test-family disposition is durable; full population remains allocated downstream.",
+    "Security/privacy: pass. Projection safe-source and complete-write behavior retain direct negative cases; example parse errors omit input contents, symlinks fail, customer companion paths remain contained. No external/publication behavior changed.",
+    "Validation/derived surfaces: pass. All4recorded log hashes checked; project-boundary projection/default model checks,176selector cases and693selected CI rows passed. Initial CI began before correction; full affected structural/projection suites plus default validation reran afterward. Reuse of unaffected other scopes is bounded, not claim entire initial execution covered later bytes.",
+    "Upstream/current basis: pass. All extant Design/Delivery subjects unchanged; four absent source inputs are explicitly planned relocation inputs with preserved method bytes and closed manifest rewrite under their approved owners. Historical judgment subjects are not retargeted; source removal itself does not defeat unchanged approved intent.",
+    "Scope/handoff: pass. M1 only; no unrelated cleanup or unapproved public behavior. Mutable routing/evidence registry bookkeeping is excluded from enduring engineering subjects. No required finding remains; Route may settle M1 and continue M2 through remainingM6. Final whole-change Code Review and distinct Verify remain mandatory after allmilestones."
+  ],
+  "reviewer": {
+    "id": "independent-m1-code-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:e3fe5c83e2054c2af231afb3311127c5c51d5c7f899256f30022dc9a6e53bf89",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m1-implementation.md"
+    },
+    {
+      "identity": "sha256:3ba1a5997f446cb451ae9e4d6c20b0db4b42b2e7968a8d813fefc3b723212cca",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m1-test-maintenance.json"
+    },
+    {
+      "identity": "sha256:791703c41574271b2d9292d4442e165fb0005f11fc7de269738699ecd6397bf6",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m1-validation.json"
+    },
+    {
+      "identity": "sha256:e05b08f1db7b29d8beb9d0ddb5be5220bf0fde08e29a23c1798c37ee88a46ff7",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/test-baseline.json"
+    },
+    {
+      "identity": "sha256:d7806a57f7cf4d4b6329da679d8b1e96189908833d8fa8337d5be45ae9a8cb18",
+      "path": "scripts/boundary-first-resources.yaml"
+    },
+    {
+      "identity": "sha256:4b4d412c2a24b59f071ef4813e8dd6c6dcaeb4eb5422cd0533cf20c8811120ef",
+      "path": "scripts/boundary_first_reference.py"
+    },
+    {
+      "identity": "sha256:51069598d69a8fd286c933ac3794746c90d2f6e5381d7889e06b512c01832267",
+      "path": "scripts/boundary_first_validation.py"
+    },
+    {
+      "identity": "sha256:42b24b738e4512fd807149d0c9b7dfdad436884659a63f71f4ed15d463c5cc67",
+      "path": "scripts/test-boundary-first-reference.py"
+    },
+    {
+      "identity": "sha256:7f8711a914201dbff5e9eb25cc906781462a7f0dc8e83457c91a2757b55d86bb",
+      "path": "scripts/test-boundary-first-validation.py"
+    },
+    {
+      "identity": "sha256:957b19b2bf2c8de4aecf82f0f593ceed26564e24642dd06b2b3c1b31c14d797f",
+      "path": "scripts/test-select-validation.py"
+    },
+    {
+      "identity": "sha256:94299996aa213bf5fab826b85e99d31fd1206056561e09c8a89e99855ba9dbf3",
+      "path": "scripts/test-skill-validator.py"
+    },
+    {
+      "identity": "sha256:25f6cf0efda7c3f41ce34183c273900cb76e4aff2fc88183ed430c83b9c6172f",
+      "path": "scripts/validate-boundary-first.py"
+    },
+    {
+      "identity": "sha256:264a4c4c9b6098821d879108135a63041e865119f2c8703af635eaa5616bfc58",
+      "path": "scripts/validation_selection.py"
+    },
+    {
+      "identity": "sha256:7179b4f48e6ba5a1503237f58875f0dc5fe8cdc2c7e77f277c6debee714387b8",
+      "path": "templates/shared/boundary-first-feature-authoring-v1.md"
+    },
+    {
+      "identity": "sha256:89337cf5da8462ad2afa0c50e04fb7233beea7ce030a049fa3a1695fc57ea2d0",
+      "path": "templates/shared/boundary-first-method-v1.md"
+    },
+    {
+      "identity": "sha256:ec8e8239c642bf340c4c8aba2105ae9783bced35230bb5bf6501b7b931e6cc4d",
+      "path": "templates/shared/boundary-first-proof-v1.md"
+    },
+    {
+      "identity": "sha256:6d5736e2a2b01f76c09a027dd32498ed5e4454a3ab31c139643aba5d0ce9222c",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/design-review-full-specs-reconciled.json"
+    },
+    {
+      "identity": "sha256:4fe9ba5249200ec64b76158c490360e861393a585b2546f6401a59687bf5dcf2",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/delivery-review-full-specs.json"
+    },
+    {
+      "identity": "sha256:3e99392f5974d61f13f6c3bf8f5b616dbb5c6ca3a997f83a36e89ca43a7dd8e3",
+      "path": "docs/plans/2026-09-14-retire-specs-and-stale-tests.md"
+    },
+    {
+      "identity": "sha256:90e00cf969ff8f6c7cfb59f6e31e323ff5642f31189e55cee7e5240b96e1e86d",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:30110347de1ebc23fd6406963b6cc3d0e22e632fd5e1e7ef040298ba9e1f5a92",
+      "path": "docs/design/engineering/packaging.md"
+    },
+    {
+      "identity": "sha256:dce9c0f117ce3f0613cc155924a7a2c6d5ebd75cea54ce9fdbbfbd7995b8295c",
+      "path": "docs/design/skill/design.md"
+    }
+  ],
+  "summary": "Corrected M1 coherently retires activation inputs and relocates portable methods while preserving current structural/projection protection.",
+  "target": "code"
+}

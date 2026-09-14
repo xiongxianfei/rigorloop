@@ -1,0 +1,84 @@
+{
+  "milestone": "m3",
+  "commands": [
+    {
+      "command": "npm test --prefix packages/rigorloop",
+      "exit_code": 0,
+      "result": "419 tests passed"
+    },
+    {
+      "command": "python scripts/test-adapter-distribution.py",
+      "exit_code": 0,
+      "result": "95 tests passed; added profile regression passed separately and in corrected release/selected CI"
+    },
+    {
+      "command": "python scripts/test-npm-package-publication.py",
+      "exit_code": 0,
+      "result": "7 tests passed"
+    },
+    {
+      "command": "python scripts/test-release-transaction.py",
+      "exit_code": 0,
+      "result": "161 tests passed after receipt correction"
+    },
+    {
+      "command": "python scripts/build-adapters.py --check",
+      "exit_code": 0,
+      "result": "Current package default v1.0.0 archive build and validation passed"
+    },
+    {
+      "command": "python scripts/test-select-validation.py",
+      "exit_code": 0,
+      "result": "176 tests passed after catalog correction"
+    },
+    {
+      "command": "bash scripts/ci.sh --mode local",
+      "exit_code": 0,
+      "result": "All selected checks passed after catalog and receipt corrections"
+    },
+    {
+      "command": "PYTHONPATH=scripts python -m unittest release_candidate_tests.CurrentSourceQualificationTests",
+      "exit_code": 0,
+      "result": "6 tests passed; new receipt test first reproduced two failures"
+    }
+  ],
+  "logs": [
+    {
+      "local_path": "/tmp/m3-npm.log",
+      "raw_sha256": "f63ea023026515614837568c009d763fab2590df5b3a5fc81215684f7f72c8c3"
+    },
+    {
+      "local_path": "/tmp/full-specs-m3-adapters.log",
+      "raw_sha256": "52a7859c8b964b7394834fda60f2a0919ca748e8e2a7d40abacee13de6e673ce"
+    },
+    {
+      "local_path": "/tmp/m3-npm-package.log",
+      "raw_sha256": "a75d7b2bd3e9af40e6032099b172506764463f8fc814a8ba8b743c07bd7b999a"
+    },
+    {
+      "local_path": "/tmp/full-specs-m3-release-corrected.log",
+      "raw_sha256": "f9d096ab1693696ad9bdb8c97d7dd6a3282f6ad1b28cd5c25be3f6db86adbb8e"
+    },
+    {
+      "local_path": "/tmp/full-specs-m3-build.log",
+      "raw_sha256": "43ce2eb9750b9a03de563b4a9242ac46151b6a870f322d9c1fb22a7050c2bcff"
+    },
+    {
+      "local_path": "/tmp/full-specs-m3-selector-corrected.log",
+      "raw_sha256": "2881f89e8531da47501ca72988de897c751153b14a863a459d822b15196c932b"
+    },
+    {
+      "local_path": "/tmp/full-specs-m3-ci-final.log",
+      "raw_sha256": "2ace9d21bdbc2ecb1f0cc3738a2c4aaa8185450592b5733174ceba7ab54de5ea"
+    },
+    {
+      "local_path": "/tmp/full-specs-m3-receipt-green.log",
+      "raw_sha256": "f528e5fa8f196dfd11fda43508ac785e9dc1e922c1e3185774fb7e7ee0b247bf"
+    }
+  ],
+  "corrections": [
+    "Independent finding m3-candidate-rejection-deletes-receipt: full admission now precedes receipt invalidation. Missing/mismatched preparation regression first failed twice then passed.",
+    "CI case collection exposed removed recipe still selected. Replaced with actual current candidate metadata and unknown-profile regressions; reconciled literal command assessments and coverage identities. Final selected CI passed."
+  ],
+  "limits": "No publication or external release mutation. Historical release records remain unchanged. Implementation evidence does not establish final review/Verify readiness."
+}

@@ -45,7 +45,7 @@ ADAPTER_REGRESSION_COMMAND = (
     "AdapterDistributionTests.test_validate_adapters_cli_rejects_retired_repository_output "
     "AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives "
     "AdapterDistributionTests.test_validate_adapters_cli_accepts_release_archive_root "
-    "AdapterDistributionTests.test_v0_1_2_release_validation_checks_archives_and_artifact_metadata "
+    "AdapterDistributionTests.test_current_candidate_metadata_matches_generated_route_only_archives AdapterDistributionTests.test_metadata_unknown_value_profile_fails_before_metadata_reads "
     "AdapterDistributionTests.test_distribution_archives_have_independent_complete_resource_inventory "
     "AdapterDistributionTests.test_distribution_generation_rejects_source_and_active_output_roots AdapterDistributionTests.test_distribution_generation_preserves_runtime_under_output_parent_and_symlinks AdapterDistributionTests.test_distribution_generated_skill_structure_is_validated_independently "
     "AdapterDistributionTests.test_validate_adapter_output_rejects_stale_mapped_resource_hashes "
@@ -54,6 +54,9 @@ ADAPTER_REGRESSION_COMMAND = (
 )
 
 EXPECTED_CATALOG = {
+    "current_records.validate": "python scripts/validate-governed-lifecycle-cli.py",
+    "current_records.snapshot": "python scripts/validate-governed-lifecycle-cli.py --revision <head>",
+    "release_evidence.validate": "python scripts/release_evidence.py <path>...",
     "validation_execution.regression": "python scripts/test-validation-execution.py",
     "record_store.schema": "node scripts/build-record-store-schema.mjs --check",
     "model.validate": "python scripts/validate-boundary-first.py --check --path docs/design/skill/workflow.md --path docs/design/cli/cli.md --path docs/design/cli/records.md",
@@ -66,18 +69,9 @@ EXPECTED_CATALOG = {
     "adapters.regression": ADAPTER_REGRESSION_COMMAND,
     "adapters.drift": "python scripts/test-adapter-distribution.py AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives",
     "adapters.validate": "python scripts/test-adapter-distribution.py AdapterDistributionTests.test_validate_adapters_cli_accepts_release_archive_root",
-    "review_artifacts.regression": "python scripts/test-review-artifact-validator.py",
-    "review_artifacts.validate": "python scripts/validate-review-artifacts.py <change-root>...",
-    "artifact_lifecycle.regression": "python scripts/test-artifact-lifecycle-validator.py",
-    "artifact_lifecycle.validate": "python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path <path>...",
     "change_metadata.regression": "python scripts/test-change-metadata-validator.py",
     "change_metadata.validate": "python scripts/validate-change-metadata.py <change-yaml>...",
     "change_record_query.regression": "python scripts/test-query-change-record.py",
-    "workflow_automation.engine_regression": "python scripts/test-workflow-automation.py",
-    "workflow_automation.code_state_regression": "python scripts/test-workflow-code-state.py",
-    "workflow_automation.policy_regression": "python scripts/test-workflow-automation-policy.py",
-    "workflow_automation.state_regression": "python scripts/test-workflow-automation-state.py",
-    "workflow_automation.validator_regression": "python scripts/test-validate-workflow-automation.py",
     "release.validate": "python scripts/validate-release.py --recorded-source-auto --version <version>",
     "release_transaction.regression": "python scripts/test-release-transaction.py",
     "readme.validate": "python scripts/validate-readme.py README.md",
@@ -519,7 +513,7 @@ class ValidationSelectionTests(unittest.TestCase):
         self.assertEqual(selected.status, "ok", selected.blocking_results)
         checks = {c["id"] for c in selected.selected_checks}
         self.assertIn("change_metadata.validate", checks)
-        self.assertNotIn("review_artifacts.validate", checks)
+        self.assertNotIn("current_records.validate", checks)
         manifest = target / "change.json"
         value = json.loads(manifest.read_text())
         value["schema_version"] = 2
@@ -557,8 +551,8 @@ class ValidationSelectionTests(unittest.TestCase):
             self.assertEqual(selected.status, "ok", selected.blocking_results)
             checks = {c["id"]: c for c in selected.selected_checks}
             self.assertIn("docs/changes/example/change.json", checks["change_metadata.validate"]["command"])
-            self.assertNotIn("review_artifacts.validate", checks)
-            self.assertNotIn("artifact_lifecycle.validate", checks)
+            self.assertNotIn("current_records.validate", checks)
+            self.assertNotIn("current_records.validate", checks)
 
         (repo / "docs/plan.md").write_text("# Plan index\n")
         (repo / "docs/plan-archive.md").write_text("# Plan archive\n")
@@ -568,8 +562,8 @@ class ValidationSelectionTests(unittest.TestCase):
         self.assertEqual(selected.status, "ok", selected.blocking_results)
         checks = {c["id"]: c for c in selected.selected_checks}
         self.assertIn("docs/changes/example/change.json", checks["change_metadata.validate"]["command"])
-        self.assertIn("docs/changes/example/change.json", checks["artifact_lifecycle.validate"]["command"])
-        self.assertNotIn("docs/changes/example/change.yaml", checks["artifact_lifecycle.validate"]["command"])
+        self.assertEqual(checks["current_records.validate"]["command"], "python scripts/validate-governed-lifecycle-cli.py")
+        self.assertNotIn("docs/changes/example/change.yaml", checks["current_records.validate"]["command"])
 
     def supporting_subject_repo(self, path="docs/changes/example/evidence/notes.md"):
         repo, _ = self.recording_repo()
@@ -668,8 +662,8 @@ class ValidationSelectionTests(unittest.TestCase):
                 checks = {check["id"]: check for check in result.selected_checks}
                 self.assertIn("change_metadata.validate", checks)
                 self.assertIn("docs/changes/example/change.json", checks["change_metadata.validate"]["command"])
-                self.assertNotIn("review_artifacts.validate", checks)
-                self.assertNotIn("artifact_lifecycle.validate", checks)
+                self.assertNotIn("current_records.validate", checks)
+                self.assertNotIn("current_records.validate", checks)
 
     def test_er_m5_001_local_selection_ignores_private_recorder_state_only(self):
         repo, paths = self.recording_repo()
@@ -703,7 +697,7 @@ class ValidationSelectionTests(unittest.TestCase):
             self.assertEqual(result.status, "ok", result.blocking_results)
             checks = {check["id"] for check in result.selected_checks}
             self.assertIn("skills.regression", checks)
-            self.assertNotIn("artifact_lifecycle.validate", checks)
+            self.assertNotIn("current_records.validate", checks)
             self.assertNotIn("documentation_prose.enforce", checks)
         unknown = "docs/archive/skill-model/2026-09-08/unknown_value.md"
         result = select_validation(SelectionRequest(mode="explicit", paths=(unknown,), repo_root=ROOT, preflight_context=self.root_preflight_context))
@@ -888,8 +882,9 @@ class ValidationSelectionTests(unittest.TestCase):
                         subprocess.run(["git", "commit", "-am", "remove contract"], cwd=repo, check=True, capture_output=True)
                     result = select_validation(SelectionRequest(mode="explicit", paths=(path,), repo_root=repo))
                     checks = {c["id"]: c for c in result.selected_checks}
-                    self.assertNotIn("artifact_lifecycle.validate", checks)
-                    self.assertIn("artifact_lifecycle.regression", checks)
+                    self.assertIn("current_records.validate", checks)
+                    self.assertNotIn(path, shlex.split(checks["current_records.validate"]["command"]))
+                    self.assertIn("governed_lifecycle_cli_wrapper.test", checks)
 
     def test_plan_index_does_not_reintroduce_proven_deleted_lifecycle_inputs(self):
         repo = self.make_git_repo()
@@ -906,11 +901,10 @@ class ValidationSelectionTests(unittest.TestCase):
         file.unlink()
         result = select_validation(SelectionRequest(mode="explicit", paths=(path, "docs/plan.md"), repo_root=repo))
         checks = {c["id"]: c for c in result.selected_checks}
-        self.assertIn("artifact_lifecycle.regression", checks)
-        args = shlex.split(checks["artifact_lifecycle.validate"]["command"])
+        self.assertIn("governed_lifecycle_cli_wrapper.test", checks)
+        args = shlex.split(checks["current_records.validate"]["command"])
         self.assertNotIn(path, args)
-        self.assertIn("docs/plan.md", args)
-        self.assertIn("docs/plan-archive.md", args)
+        self.assertIn("guide_system.validate", checks)
 
     def test_unproven_missing_or_present_lifecycle_input_is_not_suppressed(self):
         path = "specs/rigorloop-cli-lockfile.md"
@@ -928,7 +922,7 @@ class ValidationSelectionTests(unittest.TestCase):
                 result = select_validation(SelectionRequest(mode="explicit", paths=(path,), repo_root=repo))
                 checks = {c["id"]: c for c in result.selected_checks}
                 self.assertTrue(result.status == "blocked" or
-                                path in shlex.split(checks["artifact_lifecycle.validate"]["command"]))
+                                any(path in shlex.split(check["command"]) for check in checks.values()))
 
     def test_retired_author_deletion_keeps_package_proof_without_auditing_absent_source(self):
         repo = self.make_git_repo()
@@ -974,7 +968,7 @@ class ValidationSelectionTests(unittest.TestCase):
             self.assertNotIn(path, result.unclassified_paths)
             checks = {check["id"] for check in result.selected_checks}
             self.assertTrue({"documentation_prose.audit", "model.validate", "rigorloop_cli.test"} <= checks)
-            self.assertNotIn("review_artifacts.validate", checks)
+            self.assertNotIn("current_records.validate", checks)
         unknown = "docs/reviews/unknown_value.md"
         result = select_validation(SelectionRequest(mode="explicit", paths=(unknown,), repo_root=ROOT,
                                                    preflight_context=self.root_preflight_context))
@@ -1098,11 +1092,11 @@ class ValidationSelectionTests(unittest.TestCase):
             "scripts/build-adapters.py",
             "scripts/validate-adapters.py",
             "scripts/test-change-metadata-validator.py",
-            "scripts/test-artifact-lifecycle-validator.py",
-            "scripts/test-review-artifact-validator.py",
-            "scripts/validate-review-artifacts.py",
+            "scripts/test-governed-lifecycle-cli-validator.py",
+            "scripts/test-skill-validator.py",
+            "scripts/validate-governed-lifecycle-cli.py",
             "scripts/validate-change-metadata.py",
-            "scripts/validate-artifact-lifecycle.py",
+            "scripts/validate-governed-lifecycle-cli.py",
         ]
         for relative_path in child_scripts:
             name = Path(relative_path).name
@@ -1350,11 +1344,11 @@ raise SystemExit({exit_code})
                 for classified in payload["classified_paths"]
             )
         )
-        self.assertIn("artifact_lifecycle.validate", selected_ids(payload))
+        self.assertIn("current_records.validate", selected_ids(payload))
         lifecycle_check = next(
             check
             for check in payload["selected_checks"]
-            if check["id"] == "artifact_lifecycle.validate"
+            if check["id"] == "current_records.validate"
         )
         self.assertIn(
             "docs/changes/2026-04-25-example/change.yaml",
@@ -1487,7 +1481,7 @@ raise SystemExit({exit_code})
         self.assertEqual(result.status, "ok")
         self.assertNotIn("documentation_prose.enforce", selected_ids(payload))
         self.assertNotIn("documentation_prose.audit", selected_ids(payload))
-        self.assertIn("artifact_lifecycle.validate", selected_ids(payload))
+        self.assertIn("current_records.validate", selected_ids(payload))
         self.assertIn("record_retirement.regression", selected_ids(payload))
         self.assertIn("guide_system.validate", selected_ids(payload))
 
@@ -1523,18 +1517,19 @@ raise SystemExit({exit_code})
         self.assertIn("documentation_prose.regression", selected_ids(payload))
 
     def test_contributing_guidance_routes_without_manual_block(self) -> None:
-        result = self.select(["CONTRIBUTING.md"])
+        result = self.select(["CONTRIBUTING.md", ".github/pull_request_template.md"])
         payload = result.to_json_dict()
 
         self.assertEqual(result.status, "ok")
         self.assertFalse(payload["unclassified_paths"])
         self.assertFalse(payload["blocking_results"])
-        self.assertIn({"path": "CONTRIBUTING.md", "category": "contributor-guidance"}, payload["classified_paths"])
+        for path in ("CONTRIBUTING.md", ".github/pull_request_template.md"):
+            self.assertIn({"path": path, "category": "contributor-guidance"}, payload["classified_paths"])
         self.assertTrue(
             {
                 "selector.regression",
                 "guide_system.validate",
-                "artifact_lifecycle.validate",
+                "current_records.validate",
             }.issubset(selected_ids(payload))
         )
 
@@ -1544,13 +1539,8 @@ raise SystemExit({exit_code})
         expected_parallel_safe = {key for ids in MODE_CHECK_IDS.values() for key in ids if key.endswith(("skills.validate", "skills.regression", "adapters.build_archives", "adapters.validate_archives"))}
 
         expected_cases = {
-            'review_artifacts.regression',
+            'skills.regression',
             'change_record_query.regression',
-            'workflow_automation.code_state_regression',
-            'workflow_automation.engine_regression',
-            'workflow_automation.policy_regression',
-            'workflow_automation.state_regression',
-            'workflow_automation.validator_regression',
             'governed_lifecycle_cli_wrapper.test',
             'skills.regression',
             'adapters.regression',
@@ -1564,7 +1554,7 @@ raise SystemExit({exit_code})
             'documentation_prose.regression',
             'markdown_readability.regression',
             'guide_system.regression',
-            'artifact_lifecycle.regression','change_metadata.regression','selector.regression','validation_execution.regression',
+            'governed_lifecycle_cli_wrapper.test','change_metadata.regression','selector.regression','validation_execution.regression',
         }
         self.assertEqual({key for key,entry in CHECK_CATALOG.items()
                           if entry.constraints and entry.constraints.unit=='python-unittest'},expected_cases)
@@ -1623,7 +1613,7 @@ raise SystemExit({exit_code})
         payload = self.select([path]).to_json_dict()
 
         self.assertEqual(payload["status"], "ok")
-        self.assertNotIn("artifact_lifecycle.validate", selected_ids(payload))
+        self.assertNotIn("current_records.validate", selected_ids(payload))
         self.assertTrue(
             {
                 "boundary_first.validate",
@@ -1641,7 +1631,7 @@ raise SystemExit({exit_code})
         payload = self.select([path]).to_json_dict()
 
         self.assertEqual(payload["status"], "ok")
-        self.assertNotIn("artifact_lifecycle.validate", selected_ids(payload))
+        self.assertNotIn("current_records.validate", selected_ids(payload))
         self.assertEqual(
             {"adapters.regression"},
             selected_ids(payload),
@@ -1664,30 +1654,34 @@ raise SystemExit({exit_code})
         lifecycle = next(
             check
             for check in payload["selected_checks"]
-            if check["id"] == "artifact_lifecycle.validate"
+            if check["id"] == "current_records.validate"
         )
-        for path in paths:
-            with self.subTest(path=path):
-                if path.startswith("docs/changes/"):
-                    self.assertNotIn(path, lifecycle["paths"])
-                    self.assertIn("record_retirement.regression", selected_ids(payload))
-                else:
-                    self.assertIn(path, lifecycle["paths"])
+        self.assertEqual(shlex.split(lifecycle["command"]),
+                         ["python", "scripts/validate-governed-lifecycle-cli.py"])
+        self.assertIn("record_retirement.regression", selected_ids(payload))
 
     def test_mixed_skill_and_spec_scope_each_check_to_its_owner(self) -> None:
         skill_path = "skills/design/SKILL.md"
-        spec_path = "specs/progressive-boundary-first-skill-guidance.md"
-        payload = self.select([skill_path, spec_path]).to_json_dict()
+        spec_path = "specs/customer-feature.md"
+        # Portable explicitly selected customer contracts remain supported;
+        # this proof must not read a retired repository contract.
+        repo = self.make_git_repo()
+        for path in (skill_path, spec_path):
+            target = repo / path
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_text("# Explicit customer input\n")
+        self.git_output(repo, "add", ".")
+        payload = select_validation(SelectionRequest(mode="explicit", paths=(skill_path, spec_path), repo_root=repo)).to_json_dict()
 
         self.assertEqual(payload["status"], "ok")
         self.assertIn("skills.validate", selected_ids(payload))
-        self.assertIn("artifact_lifecycle.validate", selected_ids(payload))
+        self.assertIn("current_records.validate", selected_ids(payload))
         lifecycle = next(
             check
             for check in payload["selected_checks"]
-            if check["id"] == "artifact_lifecycle.validate"
+            if check["id"] == "current_records.validate"
         )
-        self.assertEqual(lifecycle["paths"], [spec_path])
+        self.assertEqual(lifecycle["command"], "python scripts/validate-governed-lifecycle-cli.py")
         boundary = next(
             check
             for check in payload["selected_checks"]
@@ -1702,7 +1696,7 @@ raise SystemExit({exit_code})
 
         self.assertEqual(first["classified_paths"], second["classified_paths"])
         self.assertEqual(selected_ids(first), selected_ids(second))
-        self.assertNotIn("artifact_lifecycle.validate", selected_ids(first))
+        self.assertNotIn("current_records.validate", selected_ids(first))
 
     def test_selector_marks_broad_smoke_as_boundary_phase(self) -> None:
         result = select_validation(
@@ -1916,9 +1910,9 @@ raise SystemExit({exit_code})
                 ("--mode", "explicit", "--path", "scripts/boundary_first_validation.py"),
             ),
             (
-                "artifact_lifecycle.validate",
-                "python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/example/change.yaml",
-                "scripts/validate-artifact-lifecycle.py",
+                "current_records.validate",
+                "python scripts/validate-governed-lifecycle-cli.py",
+                "scripts/validate-governed-lifecycle-cli.py",
                 ("--mode", "explicit", "--path", "docs/changes/example/change.yaml"),
             ),
             (
@@ -1987,7 +1981,7 @@ raise SystemExit({exit_code})
                                 command,
                                 **(
                                     {"paths": ["docs/changes/example/change.yaml"]}
-                                    if check_id == "artifact_lifecycle.validate"
+                                    if check_id == "current_records.validate"
                                     else {"versions": ["v0.4.0"]}
                                     if check_id == "release.validate"
                                     else {}
@@ -2059,7 +2053,7 @@ raise SystemExit({exit_code})
 
         self.assertEqual(result.status, "ok")
         self.assertIn("record_retirement.regression", selected_ids(payload))
-        self.assertIn("artifact_lifecycle.validate", selected_ids(payload))
+        self.assertIn("current_records.validate", selected_ids(payload))
         self.assertIn("release.validate", selected_ids(payload))
         self.assertNotIn("docs/changes/2026-04-25-example/", payload["affected_roots"])
         release_check = next(check for check in payload["selected_checks"] if check["id"] == "release.validate")
@@ -2131,13 +2125,13 @@ raise SystemExit({exit_code})
             "release-version-required",
             {item["code"] for item in payload["blocking_results"]},
         )
-        self.assertIn("artifact_lifecycle.validate", selected_ids(payload))
+        self.assertIn("release_evidence.validate", selected_ids(payload))
         lifecycle_check = next(
-            check for check in payload["selected_checks"] if check["id"] == "artifact_lifecycle.validate"
+            check for check in payload["selected_checks"] if check["id"] == "release_evidence.validate"
         )
         self.assertEqual(
             lifecycle_check["command"],
-            "python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/releases/v1.2.3.md",
+            "python scripts/release_evidence.py docs/releases/v1.2.3.md",
         )
 
     def test_release_guidance_paths_do_not_require_release_version(self) -> None:
@@ -2292,13 +2286,13 @@ raise SystemExit({exit_code})
                 "path": "scripts/validation_cache.py",
                 "category": "validation-retirement",
                 "status": "ok",
-                "checks": {"artifact_lifecycle.regression", "change_metadata.regression"},
+                "checks": {"governed_lifecycle_cli_wrapper.test", "change_metadata.regression"},
             },
             {
                 "path": "scripts/test-validation-cache.py",
                 "category": "validation-retirement",
                 "status": "ok",
-                "checks": {"artifact_lifecycle.regression", "change_metadata.regression"},
+                "checks": {"governed_lifecycle_cli_wrapper.test", "change_metadata.regression"},
             },
             {
                 "path": "scripts/validate-skills.py",
@@ -2328,7 +2322,7 @@ raise SystemExit({exit_code})
                 "path": "scripts/lifecycle_state_sync.py",
                 "category": "validator-artifact-lifecycle",
                 "status": "ok",
-                "checks": {"artifact_lifecycle.regression"},
+                "checks": {"governed_lifecycle_cli_wrapper.test"},
             },
             {
                 "path": "scripts/change_metadata_semantics.py",
@@ -2347,11 +2341,11 @@ raise SystemExit({exit_code})
                 "category": "workflow-automation",
                 "status": "ok",
                 "checks": {
-                    "workflow_automation.code_state_regression",
-                    "workflow_automation.engine_regression",
-                    "workflow_automation.policy_regression",
-                    "workflow_automation.state_regression",
-                    "workflow_automation.validator_regression",
+                    "rigorloop_cli.test",
+                    "rigorloop_cli.test",
+                    "rigorloop_cli.test",
+                    "rigorloop_cli.test",
+                    "rigorloop_cli.test",
                 },
             },
             {
@@ -2359,11 +2353,11 @@ raise SystemExit({exit_code})
                 "category": "workflow-automation",
                 "status": "ok",
                 "checks": {
-                    "workflow_automation.code_state_regression",
-                    "workflow_automation.engine_regression",
-                    "workflow_automation.policy_regression",
-                    "workflow_automation.state_regression",
-                    "workflow_automation.validator_regression",
+                    "rigorloop_cli.test",
+                    "rigorloop_cli.test",
+                    "rigorloop_cli.test",
+                    "rigorloop_cli.test",
+                    "rigorloop_cli.test",
                 },
             },
             {
@@ -2371,11 +2365,11 @@ raise SystemExit({exit_code})
                 "category": "workflow-automation",
                 "status": "ok",
                 "checks": {
-                    "workflow_automation.code_state_regression",
-                    "workflow_automation.engine_regression",
-                    "workflow_automation.policy_regression",
-                    "workflow_automation.state_regression",
-                    "workflow_automation.validator_regression",
+                    "rigorloop_cli.test",
+                    "rigorloop_cli.test",
+                    "rigorloop_cli.test",
+                    "rigorloop_cli.test",
+                    "rigorloop_cli.test",
                 },
             },
             {
@@ -2383,11 +2377,11 @@ raise SystemExit({exit_code})
                 "category": "workflow-automation",
                 "status": "ok",
                 "checks": {
-                    "workflow_automation.code_state_regression",
-                    "workflow_automation.engine_regression",
-                    "workflow_automation.policy_regression",
-                    "workflow_automation.state_regression",
-                    "workflow_automation.validator_regression",
+                    "rigorloop_cli.test",
+                    "rigorloop_cli.test",
+                    "rigorloop_cli.test",
+                    "rigorloop_cli.test",
+                    "rigorloop_cli.test",
                 },
             },
             {
@@ -2395,11 +2389,11 @@ raise SystemExit({exit_code})
                 "category": "workflow-automation",
                 "status": "ok",
                 "checks": {
-                    "workflow_automation.code_state_regression",
-                    "workflow_automation.engine_regression",
-                    "workflow_automation.policy_regression",
-                    "workflow_automation.state_regression",
-                    "workflow_automation.validator_regression",
+                    "rigorloop_cli.test",
+                    "rigorloop_cli.test",
+                    "rigorloop_cli.test",
+                    "rigorloop_cli.test",
+                    "rigorloop_cli.test",
                 },
             },
             {
@@ -2407,11 +2401,11 @@ raise SystemExit({exit_code})
                 "category": "workflow-automation",
                 "status": "ok",
                 "checks": {
-                    "workflow_automation.code_state_regression",
-                    "workflow_automation.engine_regression",
-                    "workflow_automation.policy_regression",
-                    "workflow_automation.state_regression",
-                    "workflow_automation.validator_regression",
+                    "rigorloop_cli.test",
+                    "rigorloop_cli.test",
+                    "rigorloop_cli.test",
+                    "rigorloop_cli.test",
+                    "rigorloop_cli.test",
                 },
             },
             {
@@ -2466,43 +2460,43 @@ raise SystemExit({exit_code})
                 "path": "docs/plan.md",
                 "category": "plan-index",
                 "status": "ok",
-                "checks": {"artifact_lifecycle.validate", "guide_system.validate"},
+                "checks": {"current_records.validate", "guide_system.validate"},
             },
             {
                 "path": "docs/plan-archive.md",
                 "category": "plan-index",
                 "status": "ok",
-                "checks": {"artifact_lifecycle.validate", "guide_system.validate"},
+                "checks": {"current_records.validate", "guide_system.validate"},
             },
             {
                 "path": "docs/architecture/system/diagrams/context.mmd",
                 "category": "architecture-diagram",
                 "status": "ok",
-                "checks": {"artifact_lifecycle.validate"},
+                "checks": {"current_records.validate"},
             },
             {
                 "path": "tests/fixtures/artifact-lifecycle/valid-canonical-arc42-architecture/docs/architecture/system/architecture.md",
                 "category": "artifact-lifecycle-fixtures",
                 "status": "ok",
-                "checks": {"artifact_lifecycle.regression"},
+                "checks": {"governed_lifecycle_cli_wrapper.test"},
             },
             {
                 "path": "tests/fixtures/review-artifacts/valid-clean-receipt-root/review-log.md",
                 "category": "review-artifact-fixtures",
                 "status": "ok",
-                "checks": {"review_artifacts.regression"},
+                "checks": {"skills.regression"},
             },
             {
                 "path": "tests/fixtures/review-artifacts/valid-requirement-compression-calibration/reviews/code-review-r1.md",
                 "category": "review-artifact-fixtures",
                 "status": "ok",
-                "checks": {"review_artifacts.regression"},
+                "checks": {"skills.regression"},
             },
             {
                 "path": "tests/fixtures/review-artifacts/valid-clean-receipt-root/change.yaml",
                 "category": "review-artifact-fixtures",
                 "status": "ok",
-                "checks": {"review_artifacts.regression", "change_metadata.regression"},
+                "checks": {"skills.regression", "change_metadata.regression"},
             },
             {
                 "path": "tests/fixtures/change-metadata/compact-valid/change.yaml",
@@ -2520,13 +2514,13 @@ raise SystemExit({exit_code})
                 "path": "tests/fixtures/requirement-fidelity-gate/representative-reviews/r26-matrix-pilot/spec-read-log.json",
                 "category": "retired-spec-read",
                 "status": "ok",
-                "checks": {"selector.regression", "skills.regression", "review_artifacts.regression"},
+                "checks": {"selector.regression", "skills.regression", "skills.regression"},
             },
             {
                 "path": "scripts/test-fidelity-gate-spec-reads.py",
                 "category": "retired-spec-read",
                 "status": "ok",
-                "checks": {"selector.regression", "skills.regression", "review_artifacts.regression"},
+                "checks": {"selector.regression", "skills.regression", "skills.regression"},
             },
             {
                 "path": "scripts/measure-skill-tokens.py",
@@ -2694,7 +2688,7 @@ raise SystemExit({exit_code})
             with self.subTest(path=path):
                 self.assertIn({"path": path, "category": "learn-artifact"}, payload["classified_paths"])
 
-        self.assertNotIn("artifact_lifecycle.validate", selected_ids(payload))
+        self.assertNotIn("current_records.validate", selected_ids(payload))
         self.assertEqual({"guide_system.validate"}, selected_ids(payload))
 
     def test_research_artifact_path_selects_document_checks_without_unclassified_block(self) -> None:
@@ -2728,8 +2722,8 @@ raise SystemExit({exit_code})
                     payload["classified_paths"],
                 )
 
-        self.assertNotIn("artifact_lifecycle.validate", selected_ids(payload))
-        self.assertNotIn("review_artifacts.validate", selected_ids(payload))
+        self.assertNotIn("current_records.validate", selected_ids(payload))
+        self.assertNotIn("current_records.validate", selected_ids(payload))
         self.assertEqual(payload["selected_checks"], [])
 
     def test_project_map_paths_are_living_reference_not_lifecycle(self) -> None:
@@ -2757,7 +2751,7 @@ raise SystemExit({exit_code})
                     payload["classified_paths"],
                 )
 
-        self.assertNotIn("artifact_lifecycle.validate", selected_ids(payload))
+        self.assertNotIn("current_records.validate", selected_ids(payload))
         self.assertEqual({"guide_system.validate"}, selected_ids(payload))
 
     def test_follow_up_register_path_selects_static_validation(self) -> None:
@@ -2780,18 +2774,20 @@ raise SystemExit({exit_code})
         self.assertEqual(payload["unclassified_paths"], [])
         self.assertEqual(payload["blocking_results"], [])
         self.assertIn({"path": "docs/plan-archive.md", "category": "plan-index"}, payload["classified_paths"])
-        self.assertIn("artifact_lifecycle.validate", selected_ids(payload))
-        lifecycle_check = next(check for check in payload["selected_checks"] if check["id"] == "artifact_lifecycle.validate")
-        self.assertEqual(lifecycle_check["paths"], ["docs/plan-archive.md", "docs/plan.md"])
+        self.assertIn("current_records.validate", selected_ids(payload))
+        lifecycle_check = next(check for check in payload["selected_checks"] if check["id"] == "current_records.validate")
+        self.assertEqual(lifecycle_check["command"], "python scripts/validate-governed-lifecycle-cli.py")
+        self.assertIn("guide_system.validate", selected_ids(payload))
 
 
     def test_selector_and_validation_script_paths_select_regressions(self) -> None:
-        result = self.select(["scripts/select-validation.py", "scripts/validate-review-artifacts.py"])
+        result = self.select(["scripts/select-validation.py", "scripts/validate-governed-lifecycle-cli.py"])
         payload = result.to_json_dict()
 
         self.assertEqual(result.status, "ok")
         self.assertIn("selector.regression", selected_ids(payload))
-        self.assertIn("review_artifacts.regression", selected_ids(payload))
+        self.assertIn("governed_lifecycle_cli_wrapper.test", selected_ids(payload))
+        self.assertIn("rigorloop_cli.test", selected_ids(payload))
 
     def test_governance_paths_select_deterministic_proof_instead_of_empty_ok(self) -> None:
         result = self.select(["AGENTS.md"])
@@ -2816,15 +2812,11 @@ raise SystemExit({exit_code})
 
         self.assertEqual(result.status, "ok")
         self.assertFalse(payload["blocking_results"])
-        self.assertIn("artifact_lifecycle.validate", selected_ids(payload))
-        lifecycle_check = next(check for check in payload["selected_checks"] if check["id"] == "artifact_lifecycle.validate")
-        for path in paths:
-            with self.subTest(path=path):
-                if path == "skills/workflow/SKILL.md" or path.startswith("docs/changes/"):
-                    self.assertNotIn(path, lifecycle_check["paths"])
-                else:
-                    self.assertIn(path, lifecycle_check["paths"])
-        self.assertIn("skills.validate", selected_ids(payload))
+        self.assertIn("current_records.validate", selected_ids(payload))
+        lifecycle_check = next(check for check in payload["selected_checks"] if check["id"] == "current_records.validate")
+        self.assertEqual(shlex.split(lifecycle_check["command"]),
+                         ["python", "scripts/validate-governed-lifecycle-cli.py"])
+        self.assertIn("record_retirement.regression", selected_ids(payload))
 
     def test_readme_path_selects_lightweight_readme_validation(self) -> None:
         temp_root = Path(tempfile.mkdtemp(prefix="validation-selection-readme-no-markers-"))
@@ -2968,7 +2960,7 @@ raise SystemExit({exit_code})
             payload["classified_paths"],
         )
         self.assertEqual(payload["unclassified_paths"], [])
-        self.assertIn("artifact_lifecycle.validate", selected_ids(payload))
+        self.assertIn("current_records.validate", selected_ids(payload))
         self.assertFalse(payload["blocking_results"])
 
     def test_retired_lowercase_root_vision_path_blocks_as_unclassified(self) -> None:
@@ -3018,7 +3010,7 @@ raise SystemExit({exit_code})
         self.assertFalse(payload["unclassified_paths"])
         self.assertFalse(payload["blocking_results"])
         self.assertIn("selector.regression", selected_ids(payload))
-        self.assertIn("artifact_lifecycle.validate", selected_ids(payload))
+        self.assertIn("current_records.validate", selected_ids(payload))
 
     def test_architecture_support_paths_route_without_manual_blocks(self) -> None:
         result = self.select(
@@ -3035,11 +3027,10 @@ raise SystemExit({exit_code})
         self.assertEqual(result.status, "ok")
         self.assertFalse(payload["unclassified_paths"])
         self.assertFalse(payload["blocking_results"])
-        self.assertIn("artifact_lifecycle.validate", selected_ids(payload))
-        self.assertIn("artifact_lifecycle.regression", selected_ids(payload))
-        lifecycle_check = next(check for check in payload["selected_checks"] if check["id"] == "artifact_lifecycle.validate")
-        self.assertIn("docs/architecture/system/architecture.md", lifecycle_check["paths"])
-        self.assertNotIn("docs/changes/2026-04-25-example/change.yaml", lifecycle_check["paths"])
+        self.assertIn("current_records.validate", selected_ids(payload))
+        self.assertIn("governed_lifecycle_cli_wrapper.test", selected_ids(payload))
+        lifecycle_check = next(check for check in payload["selected_checks"] if check["id"] == "current_records.validate")
+        self.assertEqual(lifecycle_check["command"], "python scripts/validate-governed-lifecycle-cli.py")
 
     def test_workflow_refactor_surface_set_selects_expected_checks(self) -> None:
         paths = [
@@ -3058,7 +3049,7 @@ raise SystemExit({exit_code})
             ".codex/skills/workflow/SKILL.md",
             "dist/adapters/codex/.agents/skills/workflow/SKILL.md",
             "scripts/test-select-validation.py",
-            "scripts/test-artifact-lifecycle-validator.py",
+            "scripts/test-governed-lifecycle-cli-validator.py",
             "scripts/build-skills.py",
             "scripts/test-build-skills.py",
             "scripts/test-skill-validator.py",
@@ -3091,7 +3082,7 @@ raise SystemExit({exit_code})
             ".codex/skills/workflow/SKILL.md": "generated-skills",
             "dist/adapters/codex/.agents/skills/workflow/SKILL.md": "generated-adapters",
             "scripts/test-select-validation.py": "selector",
-            "scripts/test-artifact-lifecycle-validator.py": "validator-artifact-lifecycle",
+            "scripts/test-governed-lifecycle-cli-validator.py": "governed-lifecycle-cli-wrapper",
             "scripts/build-skills.py": "validator-skills",
             "scripts/test-build-skills.py": "validator-skills",
             "scripts/test-skill-validator.py": "validator-skills",
@@ -3113,8 +3104,8 @@ raise SystemExit({exit_code})
                 "adapters.drift",
                 "adapters.validate",
                 "record_retirement.regression",
-                "artifact_lifecycle.regression",
-                "artifact_lifecycle.validate",
+                "governed_lifecycle_cli_wrapper.test",
+                "current_records.validate",
                 "guide_system.validate",
                 "readme.validate",
                 "readme.vision_markers",
@@ -3122,13 +3113,8 @@ raise SystemExit({exit_code})
             }.issubset(selected_ids(payload))
         )
         self.assertFalse(payload["broad_smoke_required"])
-        lifecycle_check = next(check for check in payload["selected_checks"] if check["id"] == "artifact_lifecycle.validate")
-        self.assertIn("docs/plan.md", lifecycle_check["paths"])
-        self.assertIn("docs/plan-archive.md", lifecycle_check["paths"])
-        self.assertIn("docs/plans/2026-05-03-workflow-refactor.md", lifecycle_check["paths"])
-        self.assertIn("docs/proposals/2026-05-01-workflow-refactor.md", lifecycle_check["paths"])
-        self.assertIn("specs/rigorloop-workflow.md", lifecycle_check["paths"])
-        self.assertIn("specs/rigorloop-workflow.test.md", lifecycle_check["paths"])
+        lifecycle_check = next(check for check in payload["selected_checks"] if check["id"] == "current_records.validate")
+        self.assertEqual(lifecycle_check["command"], "python scripts/validate-governed-lifecycle-cli.py")
 
     def test_broad_smoke_sources_are_attributed(self) -> None:
         temp_root = Path(tempfile.mkdtemp(prefix="validation-selection-broad-smoke-"))
@@ -3297,6 +3283,46 @@ raise SystemExit({exit_code})
         )
         self.assertFalse(payload["blocking_results"])
 
+    def test_git_discovery_includes_deleted_and_both_renamed_paths(self):
+        # TG-08: actual Git status/ranges, including a renamed unknown source.
+        # Neither an unknown deletion nor its known destination may disappear.
+        for unknown in (False, True):
+            with self.subTest(unknown=unknown):
+                repo = self.make_git_repo()
+                deleted = 'specs/retired.md'
+                before = 'unknown-input.xyz' if unknown else 'tests/fixtures/adapters/old/SKILL.md'
+                after = 'tests/fixtures/adapters/new/SKILL.md'
+                unknown_deleted = 'unknown-deleted.xyz'
+                original = (deleted, before, unknown_deleted) if unknown else (deleted, before)
+                for path in original:
+                    target = repo / path
+                    target.parent.mkdir(parents=True, exist_ok=True)
+                    target.write_text('# Stable historical content\n' * 10)
+                self.git_output(repo, 'add', '.')
+                self.git_output(repo, 'commit', '-m', 'original inputs')
+                base = self.git_output(repo, 'rev-parse', 'HEAD')
+                (repo / deleted).unlink()
+                if unknown:
+                    (repo / unknown_deleted).unlink()
+                (repo / after).parent.mkdir(parents=True, exist_ok=True)
+                (repo / before).rename(repo / after)
+                for stage in ('unstaged', 'staged', 'committed'):
+                    with self.subTest(stage=stage):
+                        if stage == 'staged':
+                            self.git_output(repo, 'add', '-A')
+                        elif stage == 'committed':
+                            self.git_output(repo, 'commit', '-m', 'retire and rename')
+                        args = ('--mode', 'pr', '--base', base, '--head', 'HEAD') if stage == 'committed' else ('--mode', 'local')
+                        result = run_selector(*args, cwd=repo)
+                        payload = parse_stdout(result)
+                        self.assertEqual(set(payload['changed_paths']), set(original) | {after})
+                        self.assertEqual(payload['status'], 'blocked' if unknown else 'ok', payload)
+                        self.assertEqual(set(payload['unclassified_paths']), {before, unknown_deleted} if unknown else set())
+                        if unknown:
+                            self.assertNotEqual(result.returncode, 0)
+                        else:
+                            self.assertIn('governed_lifecycle_cli_wrapper.test', selected_ids(payload))
+
     def test_pr_mode_routes_spec_read_retirement_deletions(self) -> None:
         repo = self.make_git_repo()
         base = self.git_output(repo, "rev-parse", "HEAD")
@@ -3353,7 +3379,7 @@ raise SystemExit({exit_code})
             payload["classified_paths"],
         )
         self.assertNotIn("requirement_fidelity.spec_reads", selected_ids(payload))
-        self.assertTrue({"selector.regression", "skills.regression", "review_artifacts.regression"}.issubset(selected_ids(payload)))
+        self.assertTrue({"selector.regression", "skills.regression", "skills.regression"}.issubset(selected_ids(payload)))
         self.assertEqual(payload["unclassified_paths"], [])
         self.assertFalse(payload["blocking_results"])
 
@@ -3376,7 +3402,7 @@ raise SystemExit({exit_code})
                 payload = parse_stdout(run_selector("--mode", "local", cwd=repo))
                 self.assertEqual(payload["status"], "ok")
                 self.assertEqual(set(payload["changed_paths"]), set(paths))
-                self.assertTrue({"selector.regression", "skills.regression", "review_artifacts.regression"}.issubset(selected_ids(payload)))
+                self.assertTrue({"selector.regression", "skills.regression", "skills.regression"}.issubset(selected_ids(payload)))
                 self.assertNotIn("requirement_fidelity.spec_reads", selected_ids(payload))
 
     def test_spec_read_retirement_removes_catalog_and_mode_entry(self) -> None:
@@ -3554,8 +3580,8 @@ raise SystemExit({exit_code})
         self.assertIn("Run selected check: record_retirement.regression", output)
         self.assertIn("Phase: focused", output)
         self.assertIn("Selected CI phase timing summary:", output)
-        self.assertNotIn("Run selected check: review_artifacts.validate", output)
-        self.assertNotIn("Run selected check: artifact_lifecycle.validate", output)
+        self.assertNotIn("Run selected check: current_records.validate", output)
+        self.assertNotIn("Run selected check: current_records.validate", output)
         self.assertIn("node --test packages/rigorloop/test/record-retirement.test.js", output)
 
     def test_ci_wrapper_fails_on_blocked_selector_without_partial_execution(self) -> None:
@@ -3564,8 +3590,8 @@ raise SystemExit({exit_code})
                 status="blocked",
                 selected_checks=[
                     {
-                        "id": "review_artifacts.validate",
-                        "command": "python scripts/validate-review-artifacts.py docs/changes/example/",
+                        "id": "current_records.validate",
+                        "command": "python scripts/validate-governed-lifecycle-cli.py docs/changes/example/",
                         "reason": "must not run when selector is blocked",
                         "affected_roots": ["docs/changes/example/"],
                     }
@@ -3592,7 +3618,7 @@ raise SystemExit({exit_code})
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("Selector status: blocked", output)
         self.assertIn("unclassified-path", output)
-        self.assertNotIn("Run selected check: review_artifacts.validate", output)
+        self.assertNotIn("Run selected check: current_records.validate", output)
 
     def test_ci_wrapper_rejects_fallback_and_malformed_selector_output(self) -> None:
         fallback_fixture = self.write_selector_fixture(self.minimal_selector_payload(status="fallback"))
@@ -3764,7 +3790,7 @@ with Path(os.environ["ORDER_FILE"]).open("a", encoding="utf-8") as handle:
         self.write_active_counter_script(workspace, "scripts/test-adapter-distribution.py", "adapters")
         self.write_active_counter_script(
             workspace,
-            "scripts/test-artifact-lifecycle-validator.py",
+            "scripts/test-governed-lifecycle-cli-validator.py",
             "artifact-lifecycle",
         )
         fixture = self.write_selector_fixture(
@@ -3773,8 +3799,8 @@ with Path(os.environ["ORDER_FILE"]).open("a", encoding="utf-8") as handle:
                     self.selected_check("skills.regression", "python scripts/test-skill-validator.py"),
                     self.selected_check("adapters.regression", ADAPTER_REGRESSION_COMMAND),
                     self.selected_check(
-                        "artifact_lifecycle.regression",
-                        "python scripts/test-artifact-lifecycle-validator.py",
+                        "governed_lifecycle_cli_wrapper.test",
+                        "python scripts/test-governed-lifecycle-cli-validator.py",
                     ),
                 ]
             )
@@ -3802,7 +3828,7 @@ with Path(os.environ["ORDER_FILE"]).open("a", encoding="utf-8") as handle:
         )
         self.assertLess(
             output.index("adapters.regression | passed | ok |"),
-            output.index("artifact_lifecycle.regression | passed | ok |"),
+            output.index("governed_lifecycle_cli_wrapper.test | passed | ok |"),
         )
 
     def test_ci_wrapper_default_budget_is_capped_and_parent_allocation_bounds_override(self):
@@ -3822,7 +3848,7 @@ with Path(os.environ["ORDER_FILE"]).open("a", encoding="utf-8") as handle:
         self.write_active_counter_script(workspace, "scripts/test-adapter-distribution.py", "adapters")
         self.write_active_counter_script(
             workspace,
-            "scripts/test-artifact-lifecycle-validator.py",
+            "scripts/test-governed-lifecycle-cli-validator.py",
             "artifact-lifecycle",
         )
         fixture = self.write_selector_fixture(
@@ -3831,8 +3857,8 @@ with Path(os.environ["ORDER_FILE"]).open("a", encoding="utf-8") as handle:
                     self.selected_check("skills.regression", "python scripts/test-skill-validator.py"),
                     self.selected_check("adapters.regression", ADAPTER_REGRESSION_COMMAND),
                     self.selected_check(
-                        "artifact_lifecycle.regression",
-                        "python scripts/test-artifact-lifecycle-validator.py",
+                        "governed_lifecycle_cli_wrapper.test",
+                        "python scripts/test-governed-lifecycle-cli-validator.py",
                     ),
                 ]
             )
@@ -4011,7 +4037,7 @@ print("adapters finished")
         )
         self.write_fake_script(
             workspace,
-            "scripts/test-artifact-lifecycle-validator.py",
+            "scripts/test-governed-lifecycle-cli-validator.py",
             """
 import os
 from pathlib import Path
@@ -4027,8 +4053,8 @@ marker_dir.mkdir(parents=True, exist_ok=True)
                     self.selected_check("skills.regression", "python scripts/test-skill-validator.py"),
                     self.selected_check("adapters.regression", ADAPTER_REGRESSION_COMMAND),
                     self.selected_check(
-                        "artifact_lifecycle.regression",
-                        "python scripts/test-artifact-lifecycle-validator.py",
+                        "governed_lifecycle_cli_wrapper.test",
+                        "python scripts/test-governed-lifecycle-cli-validator.py",
                     ),
                 ]
             )
@@ -4055,7 +4081,7 @@ marker_dir.mkdir(parents=True, exist_ok=True)
         self.assertIn("skills.regression | exited | exit code 7 |", output)
         self.assertIn("adapters.regression | " + ("passed | ok |" if allocated_workers(2)>1 else "not started | fail-fast cancelled remaining queue |"), output)
         self.assertIn(
-            "artifact_lifecycle.regression | not started | fail-fast cancelled remaining queue | 0.00s",
+            "governed_lifecycle_cli_wrapper.test | not started | fail-fast cancelled remaining queue | 0.00s",
             output,
         )
 
@@ -4163,7 +4189,7 @@ print("SECOND_STDOUT")
 
     def test_broad_smoke_routes_changed_records_to_current_v3_validator(self):
         workspace = self.make_broad_smoke_workspace(child_bodies={
-            "scripts/validate-review-artifacts.py": "raise SystemExit(9)\n",
+            "scripts/validate-governed-lifecycle-cli.py": "raise SystemExit(0)\n",
             "scripts/validate-change-metadata.py":
                 "import sys\nassert sys.argv[1:] == ['docs/changes/example/change.json'], sys.argv\n",
         })
@@ -4174,7 +4200,7 @@ print("SECOND_STDOUT")
 
     def test_broad_smoke_skips_unrelated_historical_descendants(self):
         workspace = self.make_broad_smoke_workspace(child_bodies={
-            "scripts/validate-review-artifacts.py": "raise SystemExit(9)\n",
+            "scripts/validate-governed-lifecycle-cli.py": "raise SystemExit(0)\n",
             "scripts/validate-change-metadata.py": "raise SystemExit(9)\n",
         })
         current = workspace / "docs/changes/example/change.json"
@@ -4186,7 +4212,7 @@ print("SECOND_STDOUT")
         historical.write_text("historical: changed-operational-input\n")
         result = run_ci("--mode", "broad-smoke", script=workspace / "scripts/ci.sh", cwd=workspace)
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
-        self.assertIn("11 checks passed", result.stdout)
+        self.assertIn("9 checks passed", result.stdout)
         explicit = run_ci("--mode", "broad-smoke", env={"REVIEW_ARTIFACT_ROOTS": "docs/changes/example/"},
                           script=workspace / "scripts/ci.sh", cwd=workspace)
         self.assertEqual(explicit.returncode, 9, explicit.stdout + explicit.stderr)
@@ -4258,7 +4284,7 @@ print("SECOND_STDOUT")
         self.assertEqual(result.returncode, 0, msg=output)
         nonempty_lines = [line for line in output.splitlines() if line.strip()]
         self.assertEqual(len(nonempty_lines), 1, msg=output)
-        self.assertRegex(nonempty_lines[0], r"^\[PASS\] broad-smoke: 12 checks passed in \d+(?:\.\d+)?s$")
+        self.assertRegex(nonempty_lines[0], r"^\[PASS\] broad-smoke: 10 checks passed in \d+(?:\.\d+)?s$")
         self.assertNotIn("STDOUT marker", output)
         self.assertNotIn("STDERR marker", output)
         self.assertNotIn("==>", output)
@@ -4330,7 +4356,7 @@ print("SECOND_STDOUT")
 
         self.assertEqual(result.returncode, 0, msg=output)
         self.assertEqual(self.read_max_active(active_dir), allocated_workers(2), msg=output)
-        self.assertRegex(output, r"^\[PASS\] broad-smoke: 11 checks passed in \d+(?:\.\d+)?s")
+        self.assertRegex(output, r"^\[PASS\] broad-smoke: 9 checks passed in \d+(?:\.\d+)?s")
 
     def test_ci_wrapper_duration_reporting_does_not_use_bash_seconds(self) -> None:
         ci_text = CI.read_text(encoding="utf-8")
@@ -4362,7 +4388,7 @@ print("SECOND_STDOUT")
         workspace = self.make_broad_smoke_workspace(
             failing_children={
                 "scripts/test-skill-validator.py",
-                "scripts/validate-artifact-lifecycle.py",
+                "scripts/validate-governed-lifecycle-cli.py",
                 "scripts/test-adapter-distribution.py",
             }
         )
@@ -4384,7 +4410,7 @@ print("SECOND_STDOUT")
         self.assertLess(first_failure, second_failure)
         self.assertIn("Execution phase:\n" + ("parallel" if allocated_workers(2)>1 else "sequential"), output)
         self.assertIn("Execution phase:\nsequential", output)
-        self.assertIn("[FAIL] broad_smoke.artifact_lifecycle.scoped", output)
+        self.assertIn("[FAIL] current_records.validate", output)
         self.assertIn("Check ID:\nskills.regression", output)
         self.assertIn("Check ID:\nadapters.full_regression", output)
         self.assertIn("Captured output:", output)
@@ -4451,7 +4477,7 @@ os.kill(os.getppid(), signal.SIGKILL)
         output = result.stdout + result.stderr
 
         self.assertEqual(result.returncode, 0, msg=output)
-        self.assertRegex(output, r"\[PASS\] broad-smoke: 12 checks passed in \d+(?:\.\d+)?s")
+        self.assertRegex(output, r"\[PASS\] broad-smoke: 10 checks passed in \d+(?:\.\d+)?s")
         self.assertLess(output.index("validate-skills.py STDOUT marker"), output.index("test-skill-validator.py STDOUT marker"))
         self.assertIn("validate-skills.py STDERR marker", output)
         self.assertIn("test-skill-validator.py STDERR marker", output)
@@ -4843,14 +4869,13 @@ raise SystemExit(3)
         self.assertNotIn("Gate B: adapter parity regressions", result.stdout)
 
     def test_pr_lifecycle_catalog_preserves_revision_scope(self) -> None:
-        command = catalog_command("artifact_lifecycle.validate", mode="pr",
+        command = catalog_command("current_records.snapshot", mode="pr",
                                   base="base-sha", head="head-sha",
                                   paths=("docs/plans/example.md",))
         self.assertEqual(shlex.split(command),
-                         ["python", "scripts/validate-artifact-lifecycle.py", "--mode", "pr-ci",
-                          "--base", "base-sha", "--head", "head-sha"])
+                         ["python", "scripts/validate-governed-lifecycle-cli.py", "--revision", "head-sha"])
         with self.assertRaises(ValueError):
-            catalog_command("artifact_lifecycle.validate", mode="pr", paths=("README.md",))
+            catalog_command("current_records.snapshot", mode="pr", paths=("README.md",))
 
     def test_pr_always_retains_lifecycle_scope_for_docs_and_code(self) -> None:
         for path in ("README.md", "packages/rigorloop/dist/lib/example.js"):
@@ -4866,9 +4891,9 @@ raise SystemExit(3)
                 result = select_validation(SelectionRequest(mode="pr", base=base, head=head, repo_root=repo))
                 self.assertEqual(result.status, "ok", result.blocking_results)
                 checks = {check["id"]: check for check in result.selected_checks}
-                self.assertIn("artifact_lifecycle.validate", checks)
-                self.assertEqual(shlex.split(checks["artifact_lifecycle.validate"]["command"])[-4:],
-                                 ["--base", base, "--head", head])
+                self.assertIn("current_records.snapshot", checks)
+                self.assertEqual(shlex.split(checks["current_records.snapshot"]["command"])[-2:],
+                                 ["--revision", head])
                 if path == "README.md":
                     self.assertNotIn("adapters.regression", checks)
                     self.assertNotIn("rigorloop_cli.test", checks)
@@ -4878,15 +4903,15 @@ raise SystemExit(3)
     def test_pr_wrapper_executes_exact_lifecycle_range_and_preserves_failure(self) -> None:
         workspace = self.make_ci_workspace()
         marker = workspace / "argv.json"
-        self.write_fake_script(workspace, "scripts/validate-artifact-lifecycle.py",
+        self.write_fake_script(workspace, "scripts/validate-governed-lifecycle-cli.py",
                                "import json, os, sys\nfrom pathlib import Path\n"
                                "Path(os.environ['ARGV_MARKER']).write_text(json.dumps(sys.argv[1:]))\n"
                                "sys.exit(int(os.environ['CHECK_EXIT']))\n")
         for exit_code in (0, 7):
             with self.subTest(exit_code=exit_code):
                 payload = self.minimal_selector_payload(mode="pr", selected_checks=[{
-                    "id": "artifact_lifecycle.validate", "paths": ["docs/plans/example.md"],
-                    "command": "python scripts/validate-artifact-lifecycle.py --mode pr-ci --base base-sha --head head-sha",
+                    "id": "current_records.snapshot", "paths": ["docs/plans/example.md"],
+                    "command": "python scripts/validate-governed-lifecycle-cli.py --revision head-sha",
                 }])
                 fixture = self.write_selector_fixture(payload)
                 result = run_ci("--mode", "pr", "--base", "base-sha", "--head", "head-sha",
@@ -4895,7 +4920,7 @@ raise SystemExit(3)
                                 script=workspace / "scripts/ci.sh", cwd=workspace)
                 self.assertEqual(result.returncode, exit_code, result.stdout + result.stderr)
                 self.assertEqual(json.loads(marker.read_text()),
-                                 ["--mode", "pr-ci", "--base", "base-sha", "--head", "head-sha"])
+                                 ["--revision", "head-sha"])
         marker.unlink()
         payload["selected_checks"][0]["command"] = payload["selected_checks"][0]["command"].replace("head-sha", "other-sha")
         fixture = self.write_selector_fixture(payload)
@@ -4915,7 +4940,7 @@ raise SystemExit(3)
 
     def test_catalog_rejects_unknown_value_for_mode(self) -> None:
         with self.assertRaisesRegex(ValueError, "unsupported catalog mode"):
-            catalog_command("artifact_lifecycle.validate", mode="unknown_value", paths=("README.md",))
+            catalog_command("current_records.validate", mode="unknown_value", paths=("README.md",))
 
     def test_main_mode_uses_direct_lifecycle_scope(self) -> None:
         result = run_ci(
@@ -4931,8 +4956,7 @@ raise SystemExit(3)
 
         self.assertEqual(result.returncode, 0, output)
         self.assertIn(
-            "python scripts/validate-artifact-lifecycle.py --mode push-main-ci "
-            "--before before-sha --after after-sha",
+            "python scripts/validate-governed-lifecycle-cli.py --revision after-sha",
             output,
         )
         self.assertNotIn("scripts/select-validation.py", output)
@@ -5100,15 +5124,6 @@ raise SystemExit(3)
 
     def test_workflow_guidance_aligns_with_validation_layering_contract(self) -> None:
         expectations = {
-            "specs/rigorloop-workflow.md": [
-                "targeted proof",
-                "broad smoke",
-                "manual proof",
-                "scripts/select-validation.py",
-                "broad_smoke_required",
-                "skills.validate",
-                "broad_smoke.repo",
-            ],
             "skills/implement/SKILL.md": [
                 "targeted proof",
                 "broad smoke",
@@ -5203,6 +5218,10 @@ raise SystemExit(3)
         paths = (
             "specs/boundary-first-activation.yaml",
             "specs/boundary-first-resources.yaml",
+            "scripts/boundary-first-resources.yaml",
+            "templates/shared/boundary-first-method-v1.md",
+            "templates/shared/boundary-first-feature-authoring-v1.md",
+            "templates/shared/boundary-first-proof-v1.md",
             "specs/feature.md",
             "specs/feature.test.md",
             "skills/design/references/boundary-first-method-v1.md",
@@ -5243,6 +5262,10 @@ raise SystemExit(3)
                 )
                 if path in {
                     "specs/boundary-first-resources.yaml",
+                    "scripts/boundary-first-resources.yaml",
+                    "templates/shared/boundary-first-method-v1.md",
+                    "templates/shared/boundary-first-feature-authoring-v1.md",
+                    "templates/shared/boundary-first-proof-v1.md",
                     "skills/design/references/boundary-first-method-v1.md",
                     "scripts/boundary_first_reference.py",
                     "scripts/project-boundary-first-reference.py",

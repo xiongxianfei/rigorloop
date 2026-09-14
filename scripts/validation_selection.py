@@ -51,6 +51,18 @@ class CheckCatalogEntry:
 
 
 CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
+    "current_records.validate": CheckCatalogEntry(
+        "current_records.validate", "python scripts/validate-governed-lifecycle-cli.py", "current-records",
+        label="Validate current records", modes=("broad-smoke",),
+    ),
+    "current_records.snapshot": CheckCatalogEntry(
+        "current_records.snapshot", "python scripts/validate-governed-lifecycle-cli.py --revision <head>", "current-records",
+        label="Validate committed current records",
+    ),
+    "release_evidence.validate": CheckCatalogEntry(
+        "release_evidence.validate", "python scripts/release_evidence.py <path>...", "release",
+    ),
+
     "record_store.schema": CheckCatalogEntry(
         "record_store.schema", "node scripts/build-record-store-schema.mjs --check", "explicit-recording", parallel_safe=True,
     ),
@@ -92,7 +104,7 @@ CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
     ),
     "adapters.regression": CheckCatalogEntry(
         "adapters.regression",
-        "python scripts/test-adapter-distribution.py AdapterDistributionTests.test_adapter_generation_creates_independent_packages_and_thin_entrypoints AdapterDistributionTests.test_adapter_generation_drift_check_detects_stale_and_unexpected_files AdapterDistributionTests.test_validate_adapters_cli_rejects_retired_repository_output AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives AdapterDistributionTests.test_validate_adapters_cli_accepts_release_archive_root AdapterDistributionTests.test_v0_1_2_release_validation_checks_archives_and_artifact_metadata AdapterDistributionTests.test_distribution_archives_have_independent_complete_resource_inventory AdapterDistributionTests.test_distribution_generation_rejects_source_and_active_output_roots AdapterDistributionTests.test_distribution_generation_preserves_runtime_under_output_parent_and_symlinks AdapterDistributionTests.test_distribution_generated_skill_structure_is_validated_independently AdapterDistributionTests.test_validate_adapter_output_rejects_stale_mapped_resource_hashes AdapterDistributionTests.test_validate_adapter_output_rejects_missing_mapped_resource AdapterDistributionTests.test_validate_adapter_output_rejects_missing_or_malformed_canonical_skills",
+        "python scripts/test-adapter-distribution.py AdapterDistributionTests.test_adapter_generation_creates_independent_packages_and_thin_entrypoints AdapterDistributionTests.test_adapter_generation_drift_check_detects_stale_and_unexpected_files AdapterDistributionTests.test_validate_adapters_cli_rejects_retired_repository_output AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives AdapterDistributionTests.test_validate_adapters_cli_accepts_release_archive_root AdapterDistributionTests.test_current_candidate_metadata_matches_generated_route_only_archives AdapterDistributionTests.test_metadata_unknown_value_profile_fails_before_metadata_reads AdapterDistributionTests.test_distribution_archives_have_independent_complete_resource_inventory AdapterDistributionTests.test_distribution_generation_rejects_source_and_active_output_roots AdapterDistributionTests.test_distribution_generation_preserves_runtime_under_output_parent_and_symlinks AdapterDistributionTests.test_distribution_generated_skill_structure_is_validated_independently AdapterDistributionTests.test_validate_adapter_output_rejects_stale_mapped_resource_hashes AdapterDistributionTests.test_validate_adapter_output_rejects_missing_mapped_resource AdapterDistributionTests.test_validate_adapter_output_rejects_missing_or_malformed_canonical_skills",
         "adapters",
         parallel_safe=True,
     ),
@@ -105,28 +117,6 @@ CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
         "adapters.validate",
         "python scripts/test-adapter-distribution.py AdapterDistributionTests.test_validate_adapters_cli_accepts_release_archive_root",
         "adapters",
-    ),
-    "review_artifacts.regression": CheckCatalogEntry(
-        "review_artifacts.regression",
-        "python scripts/test-review-artifact-validator.py",
-        "review-artifacts",
-        parallel_safe=True, label='Run review artifact validator fixtures', modes=('broad-smoke', 'main'),
-    ),
-    "review_artifacts.validate": CheckCatalogEntry(
-        "review_artifacts.validate",
-        "python scripts/validate-review-artifacts.py <change-root>...",
-        "review-artifacts",
-    ),
-    "artifact_lifecycle.regression": CheckCatalogEntry(
-        "artifact_lifecycle.regression",
-        "python scripts/test-artifact-lifecycle-validator.py",
-        "lifecycle",
-        parallel_safe=True, label='Run artifact lifecycle validator fixtures', modes=('broad-smoke', 'main'),
-    ),
-    "artifact_lifecycle.validate": CheckCatalogEntry(
-        "artifact_lifecycle.validate",
-        "python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path <path>...",
-        "lifecycle",
     ),
     "change_metadata.regression": CheckCatalogEntry(
         "change_metadata.regression",
@@ -144,31 +134,6 @@ CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
         "python scripts/test-query-change-record.py",
         "change-record-query",
         parallel_safe=True, label='Governance: change-record query', modes=('main',),
-    ),
-    "workflow_automation.code_state_regression": CheckCatalogEntry(
-        "workflow_automation.code_state_regression",
-        "python scripts/test-workflow-code-state.py",
-        "workflow-automation", label='Governance: workflow code state', modes=('main',),
-    ),
-    "workflow_automation.engine_regression": CheckCatalogEntry(
-        "workflow_automation.engine_regression",
-        "python scripts/test-workflow-automation.py",
-        "workflow-automation", label='Governance: workflow engine', modes=('main',),
-    ),
-    "workflow_automation.policy_regression": CheckCatalogEntry(
-        "workflow_automation.policy_regression",
-        "python scripts/test-workflow-automation-policy.py",
-        "workflow-automation", label='Governance: workflow policy', modes=('main',),
-    ),
-    "workflow_automation.state_regression": CheckCatalogEntry(
-        "workflow_automation.state_regression",
-        "python scripts/test-workflow-automation-state.py",
-        "workflow-automation", label='Governance: workflow state', modes=('main',),
-    ),
-    "workflow_automation.validator_regression": CheckCatalogEntry(
-        "workflow_automation.validator_regression",
-        "python scripts/test-validate-workflow-automation.py",
-        "workflow-automation", label='Governance: workflow metadata', modes=('main',),
     ),
     "release.validate": CheckCatalogEntry(
         "release.validate",
@@ -291,10 +256,6 @@ CHECK_CATALOG['broad_smoke.review_artifacts.changed_roots'] = CheckCatalogEntry(
     'broad_smoke.review_artifacts.changed_roots', "python scripts/validate-change-metadata.py '<roots>'", 'broad-smoke',
     parallel_safe=False, dependencies=(), constraints=None,
     label='Validate current change records (changed roots)', modes=('broad-smoke',))
-CHECK_CATALOG['broad_smoke.artifact_lifecycle.scoped'] = CheckCatalogEntry(
-    'broad_smoke.artifact_lifecycle.scoped', "python scripts/validate-artifact-lifecycle.py '<lifecycle-args>'", 'broad-smoke',
-    parallel_safe=False, dependencies=(), constraints=None,
-    label='Validate artifact lifecycle (scoped)', modes=('broad-smoke',))
 CHECK_CATALOG['main.adapters.build_archives'] = CheckCatalogEntry(
     'main.adapters.build_archives', "python scripts/build-adapters.py --version v0.1.5 --output-dir '<adapter-output>'", 'main',
     parallel_safe=True, dependencies=(), constraints=ExecutionConstraints(mode="bounded", isolation='Reads canonical sources and writes or validates only the invocation-owned package output; build-success dependency protects the shared artifact; no services or nested worker pool.', basis='8fb2d9cf5eeda804bb972a03447bd547e1e9bd6e3ebc97d1dba68ecf971293f1'),
@@ -304,13 +265,9 @@ CHECK_CATALOG['main.adapters.validate_archives'] = CheckCatalogEntry(
     parallel_safe=True, dependencies=('main.adapters.build_archives',), constraints=ExecutionConstraints(mode="bounded", isolation='Reads canonical sources and writes or validates only the invocation-owned package output; build-success dependency protects the shared artifact; no services or nested worker pool.', basis='8de166b66cc49f8aed72d966ae70c1d9b8871f52ce2bf90f88f512f4218dadf7'),
     label='Gate B: validate all adapter archives', modes=('main',))
 CHECK_CATALOG['main.governed_lifecycle_cli.validate'] = CheckCatalogEntry(
-    'main.governed_lifecycle_cli.validate', 'python scripts/validate-governed-lifecycle-cli.py', 'main',
+    'main.governed_lifecycle_cli.validate', "python scripts/validate-governed-lifecycle-cli.py --revision '<head>'", 'main',
     parallel_safe=False, dependencies=(), constraints=None,
     label='Governance: public lifecycle validation', modes=('main',))
-CHECK_CATALOG['main.artifact_lifecycle.scoped'] = CheckCatalogEntry(
-    'main.artifact_lifecycle.scoped', "python scripts/validate-artifact-lifecycle.py --mode push-main-ci --before '<base>' --after '<head>'", 'main',
-    parallel_safe=False, dependencies=(), constraints=None,
-    label='Governance: main lifecycle scope', modes=('main',))
 
 for _mode_prefix in ('broad_smoke','main'):
     _key = _mode_prefix + '.adapters.build_archives'
@@ -320,17 +277,11 @@ for _mode_prefix in ('broad_smoke','main'):
 # temporary Git/record fixtures, process-local environment and sequential child
 # validation. Selector wrapper probes obey their allocated nested worker budget.
 _CASE_ASSESSMENTS = {
-    'review_artifacts.regression': '15f322f174104843017f7f15514890465bf0a61b79a0daaac56d1571ec6e0552',
     'change_record_query.regression': 'dc1076e407240a32cf64cc147d7d81fe79c39d8ae65b3f35b0606b96e96ba443',
-    'workflow_automation.code_state_regression': 'abcb726abc3e20a32d0e46d2afda5a701865cebfac7d65ac1e9b5b6e520afdac',
-    'workflow_automation.engine_regression': '9379c8a2a5b4a209e4adc79d4e967eadd1521f9226329cbbd755107006d1d080',
-    'workflow_automation.policy_regression': 'e8cc2ebdf8e5954ffec92512c3040e219c632ca7290efab6246bb136eb14beb4',
-    'workflow_automation.state_regression': 'ca899736312f2550425abd5d71ae4cd2be449c9affaeffd7ada7dfac05a01d83',
-    'workflow_automation.validator_regression': '4edebc8048e256fdf4ddf3e32525cd0e2488f9b1ffd616fdd283bab98ec321fa',
     'governed_lifecycle_cli_wrapper.test': '7c0d389cc4f21926207849803f952fa013b844a4d8c232c679bc30e024646f4b',
 
     'skills.regression': '214972f0018d7ef9e72b7fb32da3cdc8710350aa579a7558c519375187345321',
-    'adapters.regression': '84133e40f66e4595b786ee6f4116f933421fcf1e8e0387e698d0c7935695e8e2',
+    'adapters.regression': '2620ce810346d4e7d5c0c829965605c345302c881a668dfef0dc4a159af3d0e4',
     'adapters.drift': '275c34ecf90ce1c5c83521550790f3619c25f6296541a8fa54ac19e44743ad81',
     'adapters.validate': 'd07757ecafbea97e874b5115988448bc388195b73a7935c83f9b512498fe9598',
     'adapters.full_regression': '209833a7673c5c462eead3a8908a0370cba7f4249b013e258d23f89f70ea4066',
@@ -343,7 +294,6 @@ _CASE_ASSESSMENTS = {
     'guide_system.regression': 'cf9e16dbcb4b1bdfed9abaf04190ed46d2ea71cdf5a3ec1bfd46eb39531811eb',
 
     'validation_execution.regression': '092d25fa433d7af08ebe938dbd3837a8914bb7ad871dc4d4bf2a01f470014e79',
-    'artifact_lifecycle.regression': '0d3bf319c63835687a034b94f2003918fddbb599b456a8894d98fa5784f262bf',
     'change_metadata.regression': 'ff7f4d79be49f9635e51521fbf36df43f6276a04e55863c56163746e49726586',
     'selector.regression': 'ce40ab4944eed966a2dba006e9d2545614eef23e6e6767e9f9ed2bee294158f2',
 }
@@ -374,7 +324,7 @@ COVERING_CHECK_IDS = {
 COVERAGE_BASES = {
     'adapters.drift': ('275c34ecf90ce1c5c83521550790f3619c25f6296541a8fa54ac19e44743ad81', 'python-unittest'),
     'adapters.validate': ('d07757ecafbea97e874b5115988448bc388195b73a7935c83f9b512498fe9598', 'python-unittest'),
-    'adapters.regression': ('84133e40f66e4595b786ee6f4116f933421fcf1e8e0387e698d0c7935695e8e2', 'python-unittest'),
+    'adapters.regression': ('2620ce810346d4e7d5c0c829965605c345302c881a668dfef0dc4a159af3d0e4', 'python-unittest'),
     'adapters.full_regression': ('209833a7673c5c462eead3a8908a0370cba7f4249b013e258d23f89f70ea4066', 'python-unittest'),
     'record_retirement.regression': ('875171555af9d01e6580134dd9b5a9264a897b81677bb92aff09a735eee73065', 'node-test'),
     'rigorloop_cli.test': ('92cc1d98945b4cef969b71643189017536f66108f1b0a0f8813b4b9d8d0598e3', 'node-test'),
@@ -699,28 +649,20 @@ def catalog_command(
         for path in sorted(models):
             args.extend(["--path", path])
         return _join(*args)
+    if check_id == "current_records.snapshot":
+        if not head:
+            raise ValueError("current record snapshot requires an exact head")
+        return _join("python", "scripts/validate-governed-lifecycle-cli.py", "--revision", head)
+    if check_id == "release_evidence.validate":
+        if not paths:
+            raise ValueError("release evidence validation requires explicit paths")
+        return _join("python", "scripts/release_evidence.py", *paths)
     if check_id == "adapters.validate":
         return _join(
             "python",
             "scripts/test-adapter-distribution.py",
             "AdapterDistributionTests.test_validate_adapters_cli_accepts_release_archive_root",
         )
-    if check_id == "review_artifacts.validate":
-        if not affected_roots:
-            raise ValueError("review_artifacts.validate requires at least one change root")
-        return _join("python", "scripts/validate-review-artifacts.py", *affected_roots)
-    if check_id == "artifact_lifecycle.validate":
-        if mode == "pr":
-            if not base or not head:
-                raise ValueError("PR lifecycle validation requires base and head")
-            return _join("python", "scripts/validate-artifact-lifecycle.py", "--mode", "pr-ci",
-                         "--base", base, "--head", head)
-        if not paths:
-            raise ValueError("artifact_lifecycle.validate requires at least one path")
-        args = ["python", "scripts/validate-artifact-lifecycle.py", "--mode", "explicit-paths"]
-        for path in paths:
-            args.extend(["--path", path])
-        return _join(*args)
     if check_id == "change_metadata.validate":
         if not paths:
             raise ValueError("change_metadata.validate requires at least one change.json path")
@@ -825,27 +767,23 @@ def select_validation(request: SelectionRequest) -> SelectionResult:
             ),
         )
 
-    # Apply deletion provenance after every contributor (including plan context)
-    # has selected inputs, so another changed path cannot reintroduce a deletion.
-    lifecycle = selected.get("artifact_lifecycle.validate")
-    if lifecycle:
-        deleted = {
-            path for path in lifecycle.paths
-            if path in changed_paths and _is_lifecycle_path(path) and _proven_prose_deletion(
-                path, repo_root=repo_root,
-                tracked_deletion=path in preflight_context.tracked_paths,
-            )
-        }
-        if deleted:
-            lifecycle.paths.difference_update(deleted)
-            if not lifecycle.paths:
-                del selected["artifact_lifecycle.validate"]
-            _add_check(selected, "artifact_lifecycle.regression",
-                       "Proven lifecycle artifact deletion retains regression without reading absent inputs.")
+    # Removed legacy source paths retain current owner checks without asking an
+    # explicit-input validator to read absent history.
+    removed = {path for path in changed_paths if _is_lifecycle_path(path) and
+               _proven_prose_deletion(path, repo_root=repo_root,
+                   tracked_deletion=path in preflight_context.tracked_paths)}
+    if removed:
+        _add_check(selected, "governed_lifecycle_cli_wrapper.test",
+                   "Deleted legacy artifacts retain current record discovery and snapshot protection.")
+        boundary = selected.get("boundary_first.validate")
+        if boundary:
+            boundary.paths.difference_update(removed)
+    if "current_records.validate" in selected:
+        selected["current_records.validate"].paths.clear()
 
     if request.mode == "pr":
-        _add_check(selected, "artifact_lifecycle.validate",
-                   "Every PR retains revision-bound lifecycle and baseline checks.")
+        _add_check(selected, "current_records.snapshot",
+                   "Every PR validates the exact committed current record snapshot, independently of worktree discovery.")
 
     if _readme_marker_validation_required(tuple(changed_paths), repo_root=repo_root):
         _add_check(
@@ -1086,27 +1024,17 @@ RETIRED_SPEC_READ_PATHS = frozenset({
 })
 
 
-def _retired_spec_read_deletions(repo_root: Path, *revisions: str) -> list[str]:
-    # Keep general discovery unchanged; this retirement's exact deleted inputs
-    # must still select the current protective suites in local and PR flows.
-    return [path for path in _git_lines(
-        repo_root, "diff", "--name-only", "--diff-filter=D", *revisions,
-        "--", *sorted(RETIRED_SPEC_READ_PATHS),
-    ) if path in RETIRED_SPEC_READ_PATHS]
-
-
 def _git_local_changed_paths(repo_root: Path) -> list[str]:
-    tracked = _git_lines(repo_root, "diff", "--name-only", "--diff-filter=ACMRT", "HEAD", "--", ".")
-    staged = _git_lines(repo_root, "diff", "--cached", "--name-only", "--diff-filter=ACMRT", "--", ".")
+    # Both rename endpoints need classification; unknown/deleted inputs must
+    # not disappear merely because Git found a similar surviving destination.
+    tracked = _git_lines(repo_root, "diff", "--name-only", "--no-renames", "--diff-filter=ACDMRT", "HEAD", "--", ".")
+    staged = _git_lines(repo_root, "diff", "--cached", "--name-only", "--no-renames", "--diff-filter=ACDMRT", "--", ".")
     untracked = _git_lines(repo_root, "ls-files", "--others", "--exclude-standard")
-    return _dedupe([*tracked, *staged, *untracked,
-                    *_retired_spec_read_deletions(repo_root, "HEAD"),
-                    *_retired_spec_read_deletions(repo_root, "--cached")])
+    return _dedupe([*tracked, *staged, *untracked])
 
 
 def _git_range_changed_paths(repo_root: Path, base: str, head: str) -> list[str]:
-    return _dedupe([*_git_lines(repo_root, "diff", "--name-only", "--diff-filter=ACMRT", base, head, "--", "."),
-                    *_retired_spec_read_deletions(repo_root, base, head)])
+    return _git_lines(repo_root, "diff", "--name-only", "--no-renames", "--diff-filter=ACDMRT", base, head, "--", ".")
 
 
 def _resolve_changed_sections(
@@ -1373,8 +1301,8 @@ def _apply_path_selection(
     if category == "lifecycle":
         _add_check(
             selected,
-            "artifact_lifecycle.validate",
-            "Changed lifecycle artifact requires artifact lifecycle validation.",
+            "current_records.validate",
+            "Changed governed artifact requires current record discovery and validation.",
             path=path,
         )
         return
@@ -1383,8 +1311,8 @@ def _apply_path_selection(
         architecture_doc = _architecture_doc_for_diagram(path)
         _add_check(
             selected,
-            "artifact_lifecycle.validate",
-            "Changed architecture diagram requires validation of its architecture package context.",
+            "current_records.validate",
+            "Changed architecture diagram requires current record discovery and validation.",
             path=architecture_doc or path,
         )
         return
@@ -1399,33 +1327,31 @@ def _apply_path_selection(
         for index_path in _plan_index_surface_paths():
             _add_check(
                 selected,
-                "artifact_lifecycle.validate",
-                "Changed plan index surface requires paired plan index surface lifecycle validation.",
+                "current_records.validate",
+                "Changed plan navigation requires current record discovery and validation.",
                 path=index_path,
             )
         _add_check(
             selected,
-            "artifact_lifecycle.validate",
-            "Changed plan index requires artifact lifecycle validation with the related plan context.",
+            "current_records.validate",
+            "Changed plan navigation requires current record discovery and validation.",
             path=path,
         )
         for context_path in context_paths:
             _add_check(
                 selected,
-                "artifact_lifecycle.validate",
-                "Changed plan index requires artifact lifecycle validation with the related plan context.",
+                "current_records.validate",
+                "Changed plan navigation requires current record discovery and validation.",
                 path=context_path,
             )
         return
 
     if category == "release":
         if _is_flat_release_evidence_path(path):
-            _add_check(
-                selected,
-                "artifact_lifecycle.validate",
-                "Changed flat release evidence requires release evidence checklist validation.",
-                path=path,
-            )
+            if _proven_prose_deletion(path, repo_root=repo_root, tracked_deletion=tracked_deletion):
+                _add_check(selected, "release_transaction.regression", "Deleted release evidence retains current release proof without reading absent history.")
+            else:
+                _add_check(selected, "release_evidence.validate", "Changed release evidence requires its release-owned gate and safety checks.", path=path)
             return
         version = _release_version_from_path(path)
         if not version:
@@ -1496,7 +1422,7 @@ def _apply_path_selection(
         if target.exists() or target.is_symlink():
             blocking_results.append({"code": "retired-spec-read-input", "path": path,
                                      "message": "Retired spec-read instrumentation must not be recreated without a current contract and catalog entry."})
-        for check_id in ("selector.regression", "skills.regression", "review_artifacts.regression"):
+        for check_id in ("selector.regression", "skills.regression"):
             _add_check(selected, check_id,
                        "Retired fixed-log paths retain current selector and requirement-fidelity protection.")
         return
@@ -1573,6 +1499,8 @@ def _apply_path_selection(
         return
 
     if category in {"explicit-recording", "isolated-recording-evidence"}:
+        if path in {"scripts/classify-record-store.mjs", "scripts/validate-record-store.mjs", "scripts/record_snapshot_git.mjs", "scripts/record_store_classification.py"}:
+            _add_check(selected, "governed_lifecycle_cli_wrapper.test", "Snapshot readers retain exact Git identity, local source and no-write regression proof.")
         for check_id in ("rigorloop_cli.test", "record_store.schema", "model.validate",
                          "boundary_first.regression", "change_metadata.regression"):
             _add_check(selected, check_id,
@@ -1602,10 +1530,14 @@ def _apply_path_selection(
         )
         return
 
+    if category in {"validator-review-artifacts", "review-artifact-fixtures"}:
+        _add_check(selected, "rigorloop_cli.test", "Retired review readers retain current v3 record, reference and finding protection.")
+    if category in {"validator-artifact-lifecycle", "artifact-lifecycle-fixtures"}:
+        _add_check(selected, "release_transaction.regression", "Retired lifecycle readers retain transferred release checklist and actual transaction protection.")
     if category == "validator-review-artifacts":
         _add_check(
             selected,
-            "review_artifacts.regression",
+            "skills.regression",
             "Changed review artifact validator requires review artifact regression fixtures.",
         )
         return
@@ -1613,7 +1545,7 @@ def _apply_path_selection(
     if category == "review-artifact-fixtures":
         _add_check(
             selected,
-            "review_artifacts.regression",
+            "skills.regression",
             "Changed review artifact fixture requires review artifact regression fixtures.",
         )
         if path.endswith("/change.yaml"):
@@ -1659,13 +1591,7 @@ def _apply_path_selection(
         return
 
     if category == "workflow-automation":
-        for check_id in (
-            "workflow_automation.code_state_regression",
-            "workflow_automation.engine_regression",
-            "workflow_automation.policy_regression",
-            "workflow_automation.state_regression",
-            "workflow_automation.validator_regression",
-        ):
+        for check_id in ("rigorloop_cli.test", "skills.regression"):
             _add_check(
                 selected,
                 check_id,
@@ -1676,21 +1602,21 @@ def _apply_path_selection(
     if category == "validator-artifact-lifecycle":
         _add_check(
             selected,
-            "artifact_lifecycle.regression",
-            "Changed artifact lifecycle validator requires lifecycle regression fixtures.",
+            "governed_lifecycle_cli_wrapper.test",
+            "Changed artifact lifecycle validator requires current discovery and release regression proof.",
         )
         return
 
     if category == "artifact-lifecycle-fixtures":
         _add_check(
             selected,
-            "artifact_lifecycle.regression",
-            "Changed artifact lifecycle fixture requires lifecycle regression fixtures.",
+            "governed_lifecycle_cli_wrapper.test",
+            "Changed artifact lifecycle fixture requires current discovery and release regression proof.",
         )
         return
 
     if category == "validation-retirement":
-        for check_id in ("artifact_lifecycle.regression", "change_metadata.regression"):
+        for check_id in ("governed_lifecycle_cli_wrapper.test", "change_metadata.regression"):
             _add_check(selected, check_id,
                        "Retired cache paths require current execution and safe rejection proof.", path=path)
         return
@@ -1698,13 +1624,13 @@ def _apply_path_selection(
     if category == "retained-change-fixture":
         _add_check(
             selected,
-            "artifact_lifecycle.regression",
-            "Changed retained change fixture rationale requires lifecycle regression fixtures.",
+            "governed_lifecycle_cli_wrapper.test",
+            "Changed retained change fixture rationale requires current discovery and release regression proof.",
         )
         _add_check(
             selected,
-            "artifact_lifecycle.validate",
-            "Changed retained change fixture rationale requires lifecycle validation.",
+            "current_records.validate",
+            "Changed retained change fixture rationale requires current record discovery and validation.",
             path=path,
         )
         return
@@ -1881,7 +1807,7 @@ def _add_lifecycle_warning_check(
     path: str,
     reason: str,
 ) -> None:
-    _add_check(selected, "artifact_lifecycle.validate", reason, path=path)
+    _add_check(selected, "current_records.validate", reason, path=path)
 
 
 def _proven_prose_deletion(path: str, *, repo_root: Path, tracked_deletion: bool) -> bool:
@@ -1891,6 +1817,10 @@ def _proven_prose_deletion(path: str, *, repo_root: Path, tracked_deletion: bool
     if target.exists() or target.is_symlink():
         return False
     if tracked_deletion:
+        return True
+    # A staged deletion has left the index, but its HEAD entry still proves
+    # that the absent path is an actual tracked removal.
+    if path in _git_lines(repo_root, "ls-tree", "-r", "--name-only", "HEAD", "--", path):
         return True
     result = subprocess.run(
         ["git", "log", "-1", "--format=", "--name-status", "--no-renames", "HEAD", "--", path],
@@ -1999,7 +1929,7 @@ def _path_category(path: str) -> str | None:
                         "packages/rigorloop/dist/templates/rigorloop-records-v3/records.json",
                         "packages/rigorloop/dist/lib/record-format-v3.js", "packages/rigorloop/dist/lib/record-format-core.js",
                         "packages/rigorloop/test/helpers/v3-fixture.mjs", "packages/rigorloop/test/helpers/record-store-launcher.mjs",
-                        "packages/rigorloop/dist/lib/record-json.js", "scripts/classify-record-store.mjs", "scripts/record_store_classification.py"}
+                        "packages/rigorloop/dist/lib/record-json.js", "scripts/classify-record-store.mjs", "scripts/record_snapshot_git.mjs", "scripts/record_store_classification.py"}
             or path in {"schemas/targeted-recording-v1.schema.json", "packages/rigorloop/dist/schemas/targeted-recording-v1.schema.json", "schemas/explicit-recording-v1.schema.json", "scripts/build-record-store-schema.mjs", "scripts/validate-record-store.mjs",
                         "templates/explicit-recording/records.json", "packages/rigorloop/dist/templates/explicit-recording/records.json",
                         "packages/rigorloop/dist/schemas/explicit-recording-v1.schema.json"}
@@ -2008,7 +1938,7 @@ def _path_category(path: str) -> str | None:
             or (path.startswith("packages/rigorloop/test/record-store-") and path.endswith(".test.js"))
             or path in {"packages/rigorloop/test/helpers/record-store-launcher.mjs", "packages/rigorloop/test/helpers/recording-query-launcher.mjs", "packages/rigorloop/test/helpers/record-store-interactions.mjs", "packages/rigorloop/test/helpers/record-store-tokenize.py", "packages/rigorloop/test/fixtures/recording-interactions/README.md"}):
         return "explicit-recording"
-    if path == "specs/boundary-first-activation.yaml":
+    if path in {"specs/boundary-first-activation.yaml", "scripts/boundary-first-resources.yaml"}:
         return "lifecycle"
     if path == "README.md":
         return "readme"
@@ -2154,6 +2084,8 @@ def _path_category(path: str) -> str | None:
         "scripts/test-npm-package-publication.py",
     }:
         return "rigorloop-cli"
+    if path in {"scripts/release_evidence.py", "scripts/release_evidence_tests.py"}:
+        return "release-transaction"
     if path in {
         "scripts/validate-governed-lifecycle-cli.py",
         "scripts/test-governed-lifecycle-cli-validator.py",
@@ -2191,7 +2123,7 @@ def _path_category(path: str) -> str | None:
         return "release"
     if path == "docs/workflows.md":
         return "workflow-guidance"
-    if path == "CONTRIBUTING.md":
+    if path in {"CONTRIBUTING.md", ".github/pull_request_template.md"}:
         return "contributor-guidance"
     if path in {".prettierrc.json", ".markdownlint.json"}:
         return "validator-documentation-prose"
@@ -2229,6 +2161,8 @@ def _is_boundary_first_surface(path: str) -> bool:
     return (
         path == "specs/boundary-first-activation.yaml"
         or path == "specs/boundary-first-resources.yaml"
+        or path == "scripts/boundary-first-resources.yaml"
+        or path.startswith("templates/shared/boundary-first-")
         or path == "specs/references/boundary-first-method-v1.md"
         or (path.startswith("specs/") and path.endswith(".md"))
         or (
@@ -2257,6 +2191,10 @@ def _is_boundary_first_reference_surface(path: str) -> bool:
     return (
         path in {
             "specs/boundary-first-resources.yaml",
+            "scripts/boundary-first-resources.yaml",
+            "templates/shared/boundary-first-method-v1.md",
+            "templates/shared/boundary-first-feature-authoring-v1.md",
+            "templates/shared/boundary-first-proof-v1.md",
             "specs/references/boundary-first-method-v1.md",
         }
         or path.endswith("/references/boundary-first-method-v1.md")

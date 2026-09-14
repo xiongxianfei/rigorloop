@@ -1,0 +1,141 @@
+{
+  "assessment_scope": "Exact ten changed models, unchanged Records/Installation, complete source disposition/inventory and named supporting interactions; full Design package approval for Delivery planning, not source deletion or implementation completion.",
+  "change_id": "2026-09-14-retire-specs-and-stale-tests",
+  "contributors": [
+    {
+      "id": "codex-specs-design-author",
+      "role": "design"
+    }
+  ],
+  "findings": [],
+  "id": "design-review-full-specs-reconciled",
+  "independence_basis": "Independent nonauthor reviewer assessed revised whole owner package, source disposition and recovery inventory, affected specialist contracts and unchanged record/installation/example interactions. All three reported preservation findings were reassessed against author corrections; reviewer made no engineering edits.",
+  "judgment": "approved",
+  "limitations": [
+    "Approval authorizes planning reliance on this exact package only. No tests/fixtures are deleted, no implementation protection-equivalence claim is made and no public compatibility/publication action is executed.",
+    "Delivery must enumerate concrete transitive consumers and actual test populations with case-group exceptions, prove retained failure detection and reconcile all additions/removals before final closeout. A newly discovered unmapped current behavioral obligation returns to Design; it cannot silently become deferred or be retired by this approval.",
+    "Existing unchanged examples are inspected for declared interaction semantics; these synthetic records and structural author checks are not executed assessment or runtime-success evidence."
+  ],
+  "rationale": [
+    "Behavior and realization: pass. Existing Skill/CLI/Engineering owners cover all selected source families; whole source inventory includes116 exact baseline identities, companion test documents and machine resources. Reviewer independently recovered all116 baseline hashes and found no unmapped source/companion membership. Distinct current acceptance intent remains an input to Delivery, not blanket executable deletion.",
+    "Specialist preservation: pass after correction. Skill retains exact public operations, closed result/authority domains and output groups; CI bounded repair retains strict admission/action/evidence limits. Workflow owns follow-up statuses and fields; Assessment owns Verify outcome/mode/evidence domains and RC-SR-23 relaxed suffix semantics. Historical metrics/ledger enums are explicitly separate from current public/parser outcomes.",
+    "Compatibility and ownership: pass. Repository all-specs retirement does not ban portable customer feature formats or revive retired lifecycle engines. Generic observed CLI, primary recording, advanced store and discovery domains stay separate. Records safety, Installation conflict/force and external release/PR authority remain independently owned.",
+    "Resource and boundary realization: pass. Byte-preserving shared methods move to maintained templates/shared inputs with closed scripts manifest and exact existing projection consumers; raw method bytes and skill-relative resource identities survive. Historical activation/grandfathering/rollback readers retire while explicit feature grammar, model/unsafe-path/unknown-value proof and package integrity remain.",
+    "Complete test maintenance and routing: pass. Actual discovered, parameterized, inline/helper and outside-fixture cases require retain/refine/remove disposition; unknown protection blocks completion. Actual local/range deletion and both rename sides must route current owner/consumer checks; unknown and mixed paths block without synthetic success. No permanent per-file retirement registry or measurement programme is added.",
+    "Composition/architecture/acceptance: pass. Existing parent graphs own unchanged product composition; added diagnostic runtime/deployment views define local log boundary. Current examples retain recordable-claim versus justified-readiness and independent-correction semantics. New source/consumer, package-without-specs, malformed-current-input and handoff-suffix scenarios supply concrete outcomes for Delivery.",
+    "Decisions/recovery/adoption: pass. Important retained scope has receiving owners and explicit retirement for historical rollout/format/metric obligations; original identities/judgments are preserved. Earlier no-whole-directory and17-skill pilot scope is qualified by current complete retirement. Coherent source/reader recovery and reviewed implementation plus distinct Verify remain adoption conditions. All three first-pass findings resolved."
+  ],
+  "reviewer": {
+    "id": "independent-full-specs-design-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:e3e435a9fff5c3a5b787af3e8aab1a4b02795613edd4593b34205f2a3f3fc5da",
+      "path": "docs/design/system.md"
+    },
+    {
+      "identity": "sha256:ff0b198f8bab40a9b0a07d9bac4c961ef9ad45e6f094edcf190069cf6b6bfbce",
+      "path": "docs/design/skill/skill.md"
+    },
+    {
+      "identity": "sha256:e4953b253ffe955d4ff3beacde0076c927ece9b5858b31a31b8c30f8cc637e50",
+      "path": "docs/design/skill/workflow.md"
+    },
+    {
+      "identity": "sha256:dce9c0f117ce3f0613cc155924a7a2c6d5ebd75cea54ce9fdbbfbd7995b8295c",
+      "path": "docs/design/skill/design.md"
+    },
+    {
+      "identity": "sha256:5f8a1cd6360df6f769c60fadab3aae95dce6b229dadb74b05013e08ece77f792",
+      "path": "docs/design/skill/assessment.md"
+    },
+    {
+      "identity": "sha256:88ec93a42cb25e040afffdea8462424d54c797d1147fea4b3d28cb430d444ad2",
+      "path": "docs/design/cli/cli.md"
+    },
+    {
+      "identity": "sha256:47f878a9d343a531d459abd5d4648a6389842dee771007c94ce672493ffaaab1",
+      "path": "docs/design/cli/records.md"
+    },
+    {
+      "identity": "sha256:756a282dbfe5f363eb4eb39986e0f68cf607501bfb9de2a98d96de66b0819578",
+      "path": "docs/design/cli/installation.md"
+    },
+    {
+      "identity": "sha256:5cc2d2850fbc4147b1bd123a1f36c3f88baa49d4b698985bee00a6975ed03b4b",
+      "path": "docs/design/engineering/engineering.md"
+    },
+    {
+      "identity": "sha256:90e00cf969ff8f6c7cfb59f6e31e323ff5642f31189e55cee7e5240b96e1e86d",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:30110347de1ebc23fd6406963b6cc3d0e22e632fd5e1e7ef040298ba9e1f5a92",
+      "path": "docs/design/engineering/packaging.md"
+    },
+    {
+      "identity": "sha256:445fcce43479c00e703dd0ec37df10d072017eff1843acc68bad5c7ca1165a26",
+      "path": "docs/design/engineering/release.md"
+    },
+    {
+      "identity": "sha256:22284c41fdb311c1bb7dbaded1d2ea5c7d53e063d5f40a79a593d6e9e5738045",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/source-disposition.md"
+    },
+    {
+      "identity": "sha256:e503f56ebb4a1be5383fd3e0ec3e1b4ccac5bba8ef8c04a9e8640d8f12e8c9a0",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/source-inventory.tsv"
+    },
+    {
+      "identity": "sha256:36e72bf8ec654015a645287640266dc592b2260f877c5a96e788a80f803e2845",
+      "path": "docs/proposals/2026-09-14-retire-specs-and-stale-tests.md"
+    },
+    {
+      "identity": "sha256:0331f71c48d1476427e9024a0fd5e3bbc49772814a52ee1f6086b35dd3d37f58",
+      "path": "specs/relax-pr-evidence-tail.md"
+    },
+    {
+      "identity": "sha256:c5a764eeebe4d1fe779e3c087064b5f0daa953e88862f0104c4cc3b302445f19",
+      "path": "specs/pr-skill-simplification.md"
+    },
+    {
+      "identity": "sha256:84d5ead6377e034d4d9850c7075b9029911621acc17efc705af156e1acf6daaa",
+      "path": "specs/ci-maintenance-skill-simplification.md"
+    },
+    {
+      "identity": "sha256:320335d3e902eea21c49a2d0a933427cd1953c3eb298819420f10fbd496339d7",
+      "path": "specs/boundary-first-resources.yaml"
+    },
+    {
+      "identity": "sha256:89337cf5da8462ad2afa0c50e04fb7233beea7ce030a049fa3a1695fc57ea2d0",
+      "path": "specs/references/boundary-first-method-v1.md"
+    },
+    {
+      "identity": "sha256:7179b4f48e6ba5a1503237f58875f0dc5fe8cdc2c7e77f277c6debee714387b8",
+      "path": "specs/references/boundary-first-feature-authoring-v1.md"
+    },
+    {
+      "identity": "sha256:ec8e8239c642bf340c4c8aba2105ae9783bced35230bb5bf6501b7b931e6cc4d",
+      "path": "specs/references/boundary-first-proof-v1.md"
+    },
+    {
+      "identity": "sha256:2a42da7884e3aeff0020f814fcb36b98f88ad80fc385a8f52a2b5ddaf4aa0ca9",
+      "path": "docs/design/skill/examples/workflow/correction-cycle.mmd"
+    },
+    {
+      "identity": "sha256:9c72b798118812582b3189718f9da989340d805a8f880ca898bd0438146de55b",
+      "path": "docs/design/cli/examples/v3-complete-assessment-recording/README.md"
+    },
+    {
+      "identity": "sha256:f4bd6a92c07d69f06efc9336eb678e241888d20541fbaf2bd115e1153543a469",
+      "path": "docs/design/cli/examples/v3-assessment-update-errors/README.md"
+    },
+    {
+      "identity": "sha256:4598cfe6e111925f02bb7da60167587512c28ae78b497cf215fba2a22b983508",
+      "path": "docs/design/cli/examples/records/v3-verify-without-evidence/README.md"
+    }
+  ],
+  "summary": "Reconciled Design preserves important current contracts and explicitly retires obsolete sources and validation obligations across the complete selected scope.",
+  "target": "design"
+}

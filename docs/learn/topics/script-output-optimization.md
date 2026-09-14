@@ -1,6 +1,6 @@
 # Script Output Optimization
 
-This topic is curated learn guidance. Authoritative script behavior remains in specs, accepted proposals, active plans, and the scripts themselves.
+This topic is curated learn guidance. [Validation](../../design/engineering/validation.md) owns current execution and reporting behavior.
 
 ## 2026-05-22: Optimize Every Output Layer, Not Just One Producer
 
@@ -16,7 +16,7 @@ When script output remains noisy after an output-compaction change, check whethe
 - test-runner defaults;
 - UI transcript folding.
 
-The recent script-output optimization compacted `scripts/test-select-validation.py` and selected-CI wrapper behavior. It did not compact `scripts/ci.sh --mode broad-smoke`, which still streams child output through `run_check`, or other unittest fixture scripts such as `scripts/test-change-metadata-validator.py`, which still uses verbose per-test success output.
+The source session describes a historical wrapper implementation. Current catalog execution is in `scripts/validation_execution.py`; its output and case receipts must preserve failures across producer, wrapper and runner boundaries.
 
 Best practice:
 

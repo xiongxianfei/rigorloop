@@ -1,0 +1,214 @@
+{
+  "assessment_scope": "Independent exact affected Design package, unchanged relied-on owners and whole-source disposition for repository specs retirement; this first pass identifies required source-preservation corrections, not implementation readiness.",
+  "change_id": "2026-09-14-retire-specs-and-stale-tests",
+  "contributors": [
+    {
+      "id": "codex-specs-design-author",
+      "role": "design"
+    }
+  ],
+  "findings": [
+    {
+      "evidence": "Major; source R11–22 and R40 define distinct refresh/state-transition authorities, remote/PR states, operation results and hosted-CI states plus required result fields. Skill Remaining specialist contracts summarizes general PR behavior but no current model defines the closed operation domain opened/draft-opened/updated/reused/prepared-not-opened/blocked, requested vs actual mutation/result fields, or title/full-body refresh boundary. source-disposition promises retained output contracts without retiring these clauses.",
+      "id": "specialist-pr-result-contract",
+      "owner": {
+        "id": "codex-specs-design-author",
+        "role": "design"
+      },
+      "reporter": {
+        "id": "independent-full-specs-design-reviewer",
+        "role": "review"
+      },
+      "required_outcome": "Design owner must preserve the important exact public result/authority contracts in the current Skill owner or explicitly decide their retirement with compatibility and consumer implications. Preserve no-portable-fallback and requested-intent versus actual outcome distinctions. Update source-qualified disposition; safe resolution is model authorship then independent rereview, not treating live literals as incidental wording during test cleanup.",
+      "resolution": {
+        "actor": {
+          "id": "independent-full-specs-design-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [],
+        "rationale": "Current Skill specialist vocabulary table now retains PR refresh/transition/remote/operation/CI domains; outputs preserve requested versus actual mutation and readiness, title/whole-body refresh limits and blocked preparation distinction. Independent source comparison establishes Design correction only; executable adoption remains downstream."
+      },
+      "state": "resolved",
+      "subjects": [
+        {
+          "identity": "sha256:4f7099e53a4d00919e24bdce037aeeb8455cba3aac9134108f08b74826df5996",
+          "path": "docs/design/skill/skill.md"
+        },
+        {
+          "identity": "sha256:c5a764eeebe4d1fe779e3c087064b5f0daa953e88862f0104c4cc3b302445f19",
+          "path": "specs/pr-skill-simplification.md"
+        },
+        {
+          "identity": "sha256:d5846fcaf31522bdcf25e51f1a77a1cf79cefc254f443617c81989929e42bca2",
+          "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/source-disposition.md"
+        }
+      ]
+    },
+    {
+      "evidence": "Major; source R55–60 requires independent ordinary-infrastructure/bounded-pr-ci-repair classification, already-open PR plus exact failed run/head, current review/Verify, no open material finding, authoritative commands and external authority; allowed repair actions and unchanged-basis evidence preservation are explicit. New Skill CI text defines create/revise/review but omits this separate admission/action contract. Assessment source map only says preserve bounded repair while decision basis applies; it does not define eligibility.",
+      "id": "specialist-ci-bounded-repair",
+      "owner": {
+        "id": "codex-specs-design-author",
+        "role": "design"
+      },
+      "reporter": {
+        "id": "independent-full-specs-design-reviewer",
+        "role": "review"
+      },
+      "required_outcome": "Design owner must carry bounded repair eligibility, allowed actions, strict approved-behavior-only limit, unchanged-evidence preservation and earliest-owner routing into current Skill/Workflow owner with explicit Assessment linkage; or explicitly retire that capability and reconcile compatibility. Update source-qualified disposition and rereview before deletion/planning reliance.",
+      "resolution": {
+        "actor": {
+          "id": "independent-full-specs-design-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [],
+        "rationale": "Current Skill Bounded PR CI repair now retains independent admission, exact failed run/head and current evidence prerequisites, authorized commands/writes, approved-restoration-only limit, no-open-finding condition, exact replacement observation and unchanged-evidence/no-churn exception with earliest-owner return. Independent source comparison establishes Design correction only; executable adoption remains downstream."
+      },
+      "state": "resolved",
+      "subjects": [
+        {
+          "identity": "sha256:4f7099e53a4d00919e24bdce037aeeb8455cba3aac9134108f08b74826df5996",
+          "path": "docs/design/skill/skill.md"
+        },
+        {
+          "identity": "sha256:84d5ead6377e034d4d9850c7075b9029911621acc17efc705af156e1acf6daaa",
+          "path": "specs/ci-maintenance-skill-simplification.md"
+        },
+        {
+          "identity": "sha256:d5846fcaf31522bdcf25e51f1a77a1cf79cefc254f443617c81989929e42bca2",
+          "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/source-disposition.md"
+        }
+      ]
+    },
+    {
+      "evidence": "Major: Assessment Specialist verification interface says evidence-only suffix classification follows RC-SR-21, but RC-SR-21 governs historical v2 assessments. No current model carries relax-pr-evidence-tail R3–17: reviewed-subject ancestry, cumulative final diff independent of commit count/topology, exact current attributable review/workflow/Verify evidence, protected/mixed/cross-change/unknown/stale invalidation, and refusal of path-only authority or readiness creation. Skill names the enum and delegates to Assessment; source disposition promises retained relaxed evidence-tail behavior.",
+      "id": "specialist-evidence-suffix-contract",
+      "owner": {
+        "id": "codex-specs-design-author",
+        "role": "design"
+      },
+      "reporter": {
+        "id": "independent-full-specs-design-reviewer",
+        "role": "review"
+      },
+      "required_outcome": "Design owner must add the supported relaxed evidence-suffix behavior to its current owner and correct the requirement/owner references. Preserve PR read-only classification, Verify readiness authority, current exact attribution, cumulative final-diff semantics and failure-before-external-write boundary. Update source disposition and representative acceptance; safe correction is Design authorship and independent rereview before source removal or plan reliance.",
+      "resolution": {
+        "actor": {
+          "id": "independent-full-specs-design-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [],
+        "rationale": "Independently compared new Assessment RC-SR-23 and Evidence-only handoff suffix to source R1–22. Current owner now preserves ancestry, cumulative final diff independent of topology, exact attributable same-change evidence, protected/mixed/unknown/unsafe/stale/cross-change invalidation, no readiness creation, PR read-only classification and existing external identity/readback safety. Erroneous RC-SR-21 reference corrected; source disposition explicitly identifies transfer. Design correction established, not executable adoption."
+      },
+      "state": "resolved",
+      "subjects": [
+        {
+          "identity": "sha256:522d6e1748a635be6f58dd8d90dde112b350841ea4076c5a324939cd6ca570f5",
+          "path": "docs/design/skill/assessment.md"
+        },
+        {
+          "identity": "sha256:ff0b198f8bab40a9b0a07d9bac4c961ef9ad45e6f094edcf190069cf6b6bfbce",
+          "path": "docs/design/skill/skill.md"
+        },
+        {
+          "identity": "sha256:0331f71c48d1476427e9024a0fd5e3bbc49772814a52ee1f6086b35dd3d37f58",
+          "path": "specs/relax-pr-evidence-tail.md"
+        },
+        {
+          "identity": "sha256:9aa7572ef7247da280fada23dbb9165bb5ec9fb40ba1926b737e3502798f11c2",
+          "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/source-disposition.md"
+        }
+      ]
+    }
+  ],
+  "id": "design-review-full-specs-first",
+  "independence_basis": "Separate nonauthor reviewer inspected model deltas, current owner interactions, inventory/disposition and relevant preserved specialist/CLI/boundary source clauses; reviewer authored no Design content.",
+  "judgment": "changes-requested",
+  "limitations": [
+    "This is a changes-requested first-pass Design assessment; corrected affected package requires independent reassessment before plan reliance.",
+    "No implementation, case inventory completion, executed preservation proof or exact test deletion approval is claimed."
+  ],
+  "rationale": [
+    "System/Engineering scope and test maintenance: pass. Complete source tree and actual generated/inline case populations are required, no silent family deferral is permitted, historical invalid input may retain useful protection, and no check-count reduction proves success.",
+    "Boundary/resource and CLI composition: current owner separation is explicit. Portable feature grammar and byte-preserving resource projections survive historical activation retirement; generic logging/result and recording/discovery interfaces are distinguished. Concrete source relocation and deletion/rename routing have negative acceptance intent.",
+    "Specialist source-preservation: concern. PR closed result/authority domains and required observable result fields are retained by source disposition but omitted from current owners. CI bounded-repair eligibility and action contract is absent beyond Assessment reliance language; general CI and assessment rules cannot reconstruct its exact admission boundary.",
+    "Source recovery and adoption: inventory names recoverable baseline identities and paired test documents; no deletion or implementation approval is inferred. Source mappings must close these current obligations before Delivery relies on the complete package."
+  ],
+  "reviewer": {
+    "id": "independent-full-specs-design-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:e3e435a9fff5c3a5b787af3e8aab1a4b02795613edd4593b34205f2a3f3fc5da",
+      "path": "docs/design/system.md"
+    },
+    {
+      "identity": "sha256:4f7099e53a4d00919e24bdce037aeeb8455cba3aac9134108f08b74826df5996",
+      "path": "docs/design/skill/skill.md"
+    },
+    {
+      "identity": "sha256:97c18996764445784c170101d10c20e1b979679bb40e1d56c51e4d815267f40b",
+      "path": "docs/design/skill/workflow.md"
+    },
+    {
+      "identity": "sha256:dce9c0f117ce3f0613cc155924a7a2c6d5ebd75cea54ce9fdbbfbd7995b8295c",
+      "path": "docs/design/skill/design.md"
+    },
+    {
+      "identity": "sha256:a130a53c2e4c5752ff06c9931813d98385ca52d9ce4122c84ee949bb05849e4b",
+      "path": "docs/design/skill/assessment.md"
+    },
+    {
+      "identity": "sha256:88ec93a42cb25e040afffdea8462424d54c797d1147fea4b3d28cb430d444ad2",
+      "path": "docs/design/cli/cli.md"
+    },
+    {
+      "identity": "sha256:47f878a9d343a531d459abd5d4648a6389842dee771007c94ce672493ffaaab1",
+      "path": "docs/design/cli/records.md"
+    },
+    {
+      "identity": "sha256:756a282dbfe5f363eb4eb39986e0f68cf607501bfb9de2a98d96de66b0819578",
+      "path": "docs/design/cli/installation.md"
+    },
+    {
+      "identity": "sha256:5cc2d2850fbc4147b1bd123a1f36c3f88baa49d4b698985bee00a6975ed03b4b",
+      "path": "docs/design/engineering/engineering.md"
+    },
+    {
+      "identity": "sha256:90e00cf969ff8f6c7cfb59f6e31e323ff5642f31189e55cee7e5240b96e1e86d",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:30110347de1ebc23fd6406963b6cc3d0e22e632fd5e1e7ef040298ba9e1f5a92",
+      "path": "docs/design/engineering/packaging.md"
+    },
+    {
+      "identity": "sha256:445fcce43479c00e703dd0ec37df10d072017eff1843acc68bad5c7ca1165a26",
+      "path": "docs/design/engineering/release.md"
+    },
+    {
+      "identity": "sha256:d5846fcaf31522bdcf25e51f1a77a1cf79cefc254f443617c81989929e42bca2",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/source-disposition.md"
+    },
+    {
+      "identity": "sha256:e503f56ebb4a1be5383fd3e0ec3e1b4ccac5bba8ef8c04a9e8640d8f12e8c9a0",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/source-inventory.tsv"
+    },
+    {
+      "identity": "sha256:36e72bf8ec654015a645287640266dc592b2260f877c5a96e788a80f803e2845",
+      "path": "docs/proposals/2026-09-14-retire-specs-and-stale-tests.md"
+    },
+    {
+      "identity": "sha256:c5a764eeebe4d1fe779e3c087064b5f0daa953e88862f0104c4cc3b302445f19",
+      "path": "specs/pr-skill-simplification.md"
+    },
+    {
+      "identity": "sha256:84d5ead6377e034d4d9850c7075b9029911621acc17efc705af156e1acf6daaa",
+      "path": "specs/ci-maintenance-skill-simplification.md"
+    }
+  ],
+  "summary": "The coordinated retirement direction is coherent, but two important specialist contracts lack complete current owners before their sources can retire.",
+  "target": "design"
+}

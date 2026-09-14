@@ -1,0 +1,62 @@
+{
+  "assessment_scope": "Fresh complete primary-plan Delivery applicability assessment against design-review-m6-reconciled and current source dispositions; existing M1–M6 allocation and TG01–08/final groups unchanged. This judges sequencing, scope and proof adequacy, not actual completion or test results.",
+  "change_id": "2026-09-14-retire-specs-and-stale-tests",
+  "contributors": [
+    {
+      "id": "codex-specs-plan-author",
+      "role": "plan"
+    },
+    {
+      "id": "codex-specs-design-author",
+      "role": "design"
+    }
+  ],
+  "findings": [],
+  "id": "delivery-review-m6-current-basis",
+  "independence_basis": "Independent delegated reviewer authored no primary plan or Design contribution. Reread the complete exact registered primary plan and independently assessed its requirement-to-boundary-to-milestone-to-proof allocation against fresh design-review-m6-reconciled; this is separate from the Design judgment and implementation assessment.",
+  "judgment": "approved",
+  "limitations": [
+    "Approval supports continuing reliance on this exact stable allocation only; it neither reissues earlier milestone implementation approvals nor proves the complete test audit or M6 deletion outcome.",
+    "Final evidence must incorporate the discovered ten historical examples and corrected current references, reconcile current tested subjects and run all explicitly required final checks. Source/plan/procedure changes affecting those obligations require the responsible reassessment."
+  ],
+  "rationale": [
+    "Registered plan path and exact identity remain unchanged from the original independently approved Delivery package. Current Design refinement changes provenance/current-navigation treatment without changing required behavior, supporting views, public contracts or requirement allocation. The plan’s reference to unchanged Records means unchanged behavior; its revised example navigation is included in fresh Design and already covered by M6.",
+    "M1–M5 establish maintained resources, specialist/CLI/package consumers and complete test population dispositions before M6 removes final sources. The added historical examples are a concrete dependency-audit remainder under complete repository scope, not a new behavior or silent deferral. M6 explicitly covers all newly found dependencies, current model/example links and final stale material; uncertain obligations remain stop-and-correct work.",
+    "The required trace remains complete: SYS-SR-13/ENG-SR-15 and VAL-SR-26/27 feed M6 current authority/source retirement; CLI/Records version and negative protections feed TG04/05/07/08; TG-FINAL-01 covers assembled no-spec CLI/resource/package/candidate operation; TG-FINAL-02 reconciles every baseline/new source and generated/case family. Ten historical-positive example removals require updated discovered membership and surviving current validation, not new positive v2 compatibility.",
+    "Proof is allocated to actual current boundaries and commands, including model/resource validation, retained Node/package/candidate tests, complete selected-plus-broad execution and actual baseline7ad33e1b-to-HEAD PR selector and wrapper. Deleted commands cannot become no-op passes; unknown/mixed/deleted/renamed routing and meaningful negative proof remain required. No fake hosted/published result or bare historical release replay is accepted.",
+    "Coherent source/reader/proof restoration, unchanged historical judgment preservation, identity checks and return to Design for a normative gap make intermediate correction safe. Final whole-change Code Review is a separate checkpoint after all implementation/corrections and precedes distinct Verify; milestone approvals or integrated tests cannot replace either. No allocation defect or infeasible new dependency was found."
+  ],
+  "reviewer": {
+    "id": "independent-full-specs-delivery-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:3e99392f5974d61f13f6c3bf8f5b616dbb5c6ca3a997f83a36e89ca43a7dd8e3",
+      "path": "docs/plans/2026-09-14-retire-specs-and-stale-tests.md"
+    },
+    {
+      "identity": "sha256:d8126750ee6870203771a6101212ea25565214b9978791acde26f9deb203b27a",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/design-review-m6-reconciled.json"
+    },
+    {
+      "identity": "sha256:903933825ce63a6685c52efe920b4df1fdd9fe6f5fe90b9a097dcb241e0179b7",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m6-design-reconciliation.json"
+    },
+    {
+      "identity": "sha256:22284c41fdb311c1bb7dbaded1d2ea5c7d53e063d5f40a79a593d6e9e5738045",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/source-disposition.md"
+    },
+    {
+      "identity": "sha256:e503f56ebb4a1be5383fd3e0ec3e1b4ccac5bba8ef8c04a9e8640d8f12e8c9a0",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/source-inventory.tsv"
+    },
+    {
+      "identity": "sha256:36e72bf8ec654015a645287640266dc592b2260f877c5a96e788a80f803e2845",
+      "path": "docs/proposals/2026-09-14-retire-specs-and-stale-tests.md"
+    }
+  ],
+  "summary": "The unchanged six-milestone plan remains adequate for the reconciled M6 Design and discovered historical-example retirement.",
+  "target": "delivery"
+}

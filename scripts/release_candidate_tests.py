@@ -304,9 +304,16 @@ class ReleaseCandidateIntegrationTests(unittest.TestCase):
             shutil.copytree(repository / 'scripts', source / 'scripts', ignore=shutil.ignore_patterns('__pycache__'))
             shutil.copyfile(repository / '.github/workflows/release.yml', source / '.github/workflows/release.yml')
             # Include complete current canonical skills, installer and templates, including removals.
-            for relative in ['skills', 'templates/shared', 'packages/rigorloop/dist', 'scripts/adapter_templates', 'docs/design']:
+            for relative in ['skills', 'templates/shared', 'packages/rigorloop/dist', 'scripts/adapter_templates', 'docs/design', 'tests/fixtures', 'packages/rigorloop/test']:
                 shutil.rmtree(source / relative)
                 shutil.copytree(repository / relative, source / relative)
+            # A pre-commit no-spec run must not silently restore retired trees
+            # from the clone's HEAD. Mirror their current absence in this owned fixture.
+            retired_trees = ['specs', 'docs/architecture', 'docs/adr']
+            for relative in retired_trees:
+                if not (repository / relative).exists():
+                    shutil.rmtree(source / relative, ignore_errors=True)
+                    self.assertFalse((source / relative).exists())
             for relative in ['AGENTS.md', 'CONSTITUTION.md', 'VISION.md', 'README.md', 'packages/rigorloop/README.md', 'dist/adapters/manifest.yaml', 'dist/adapters/README.md']:
                 shutil.copyfile(repository / relative, source / relative)
             # This scenario releases the fixed 0.5.1 fixture, independently of
@@ -326,7 +333,8 @@ class ReleaseCandidateIntegrationTests(unittest.TestCase):
             git('checkout', '--detach')
             git('checkout', '-B', 'main')
             git('add', 'scripts', 'skills', 'templates/shared', 'docs/releases/v0.5.1.md', '.github/workflows/release.yml',
-                'packages/rigorloop', 'dist/adapters', 'docs/design', 'AGENTS.md', 'CONSTITUTION.md', 'VISION.md', 'README.md')
+                'packages/rigorloop', 'dist/adapters', 'docs/design', 'tests/fixtures', 'AGENTS.md', 'CONSTITUTION.md', 'VISION.md', 'README.md')
+            git('add', '-u')
             git('-c', 'user.name=Release Fixture', '-c', 'user.email=fixture@example.invalid',
                 '-c', 'commit.gpgsign=false', 'commit', '--allow-empty', '-m', 'Reviewed source fixture')
             commit, ref = git('rev-parse', 'HEAD'), git('symbolic-ref', 'HEAD')
@@ -483,3 +491,94 @@ class ReleaseCandidateIntegrationTests(unittest.TestCase):
             (output / data['tarball']).write_bytes(b'changed after checks')
             with self.assertRaisesRegex(CandidateError, 'identity'):
                 verify_candidate(output, data['candidate_id'])
+
+
+class CurrentSourceQualificationTests(unittest.TestCase):
+    def setUp(self):
+        import runpy
+        self.module = runpy.run_path(str(Path(__file__).with_name('validate-release.py')))
+        self.main = self.module['main']
+        self.temp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temp.cleanup)
+        self.root = Path(self.temp.name)
+        (self.root / 'packages/rigorloop').mkdir(parents=True)
+        (self.root / 'packages/rigorloop/package.json').write_text(json.dumps({'name': '@xiongxianfei/rigorloop', 'version': '0.5.1'}))
+
+    def invoke(self, args):
+        import contextlib, io
+        output = io.StringIO()
+        with contextlib.chdir(self.root), contextlib.redirect_stdout(output), contextlib.redirect_stderr(output):
+            status = self.main(args)
+        return status, output.getvalue()
+
+    def test_historical_replay_rejects_before_any_old_source_reader(self):
+        with patch.dict(self.main.__globals__, {'adapter_artifact_source_commit': lambda *args: self.fail('historical reader invoked')}):
+            code, output = self.invoke(['--version', 'v0.4.0', '--recorded-source-auto'])
+        self.assertEqual(code, 1)
+        self.assertIn('historical-replay', output)
+        self.assertFalse((self.root / 'docs').exists())
+
+    def test_missing_current_profile_rejects_before_output_changes(self):
+        output = self.root / 'candidate'
+        code, diagnostic = self.invoke(['--version', 'v0.5.1', '--prepared-candidate', str(output)])
+        self.assertEqual(code, 1)
+        self.assertIn('current-source', diagnostic)
+        self.assertFalse(output.exists())
+
+    def test_selected_profile_does_not_admit_mismatched_package_version(self):
+        path = self.root / 'docs/releases/profiles/v0.4.0.yaml'
+        path.parent.mkdir(parents=True)
+        path.write_text(profile_text('v0.4.0'))
+        code, output = self.invoke(['--version', 'v0.4.0'])
+        self.assertEqual(code, 1)
+        self.assertIn('historical-replay', output)
+
+    def test_matching_current_source_is_not_a_hardcoded_version_list(self):
+        for version in ('0.4.0', '13.4.2'):
+            with self.subTest(version=version):
+                (self.root / 'packages/rigorloop/package.json').write_text(json.dumps({'name': '@xiongxianfei/rigorloop', 'version': version}))
+                path = self.root / ('docs/releases/profiles/v' + version + '.yaml')
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text(profile_text('v' + version))
+                calls = []
+                def verify(tag, output):
+                    calls.append((tag, output))
+                    return 1
+                with patch.dict(self.main.__globals__, {'verify_prepared_release': verify}):
+                    code, _ = self.invoke(['--version', 'v' + version, '--release-output-dir', 'candidate'])
+                self.assertEqual(code, 1)
+                self.assertEqual(calls, [('v' + version, self.root / 'candidate')])
+
+    def test_explicit_recorded_commit_mismatch_stops_before_verification(self):
+        path = self.root / 'docs/releases/profiles/v0.5.1.yaml'
+        path.parent.mkdir(parents=True)
+        path.write_text(profile_text('v0.5.1'))
+        with patch.dict(self.main.__globals__, {'current_git_commit': lambda root=None: 'a' * 40,
+                        'verify_prepared_release': lambda *args: self.fail('verification must not run')}):
+            code, output = self.invoke(['--version', 'v0.5.1', '--release-commit', 'b' * 40, '--release-output-dir', 'candidate'])
+        self.assertEqual(code, 1)
+        self.assertIn('recorded commit', output)
+        self.assertFalse((self.root / 'candidate').exists())
+
+    def test_missing_or_mismatched_preparation_preserves_prior_receipt(self):
+        from release_transaction import _release_notes_generated_block, load_release_profile
+        path = self.root / 'docs/releases/profiles/v0.5.1.yaml'
+        path.parent.mkdir(parents=True)
+        path.write_text(profile_text('v0.5.1'))
+        notes = self.root / 'docs/releases/v0.5.1/release-notes.md'
+        notes.parent.mkdir(parents=True)
+        notes.write_text('# RigorLoop v0.5.1\n' + _release_notes_generated_block(load_release_profile('v0.5.1', root=self.root)))
+        output = self.root / 'candidate'
+        output.mkdir()
+        receipt = output / 'release-verification.json'
+        original = b'{"result":"pass","prepared_commit":"previous"}\n'
+        for preparation in (None, {'tag': 'v9.9.9', 'prepared_commit': 'wrong'}):
+            with self.subTest(preparation=preparation):
+                receipt.write_bytes(original)
+                if preparation is not None:
+                    (output / 'preparation.json').write_text(json.dumps(preparation))
+                code, diagnostic = self.invoke(['--version', 'v0.5.1', '--prepared-candidate', str(output)])
+                self.assertEqual(code, 1)
+                self.assertIn('Release integrity:', diagnostic)
+                self.assertTrue(receipt.exists(), 'rejected admission deleted prior evidence')
+                self.assertEqual(receipt.read_bytes(), original)

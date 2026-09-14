@@ -1,0 +1,67 @@
+{
+  "milestone": "m2",
+  "commands": [
+    {
+      "command": "python scripts/validate-skills.py",
+      "exit_code": 0,
+      "result": "19 canonical skill files validated"
+    },
+    {
+      "command": "python scripts/test-skill-validator.py",
+      "exit_code": 0,
+      "result": "297 tests passed"
+    },
+    {
+      "command": "python scripts/test-guide-system-validator.py",
+      "exit_code": 0,
+      "result": "11 tests passed after independent correction"
+    },
+    {
+      "command": "python scripts/validate-guide-system.py",
+      "exit_code": 0,
+      "result": "Current route/contributor guide validation passed after correction"
+    },
+    {
+      "command": "python scripts/project-boundary-first-reference.py --check",
+      "exit_code": 0,
+      "result": "11 unchanged portable resource projections"
+    },
+    {
+      "command": "bash scripts/ci.sh --mode local",
+      "exit_code": 0,
+      "result": "500 selected check rows passed"
+    },
+    {
+      "command": "git diff HEAD --check",
+      "exit_code": 0,
+      "result": "No whitespace errors"
+    }
+  ],
+  "correction_supplement": "Selected CI preceded the final plan-index literal correction. The complete affected guide suite and guide validator were rerun after correction; other current selected check inputs remained unchanged.",
+  "logs": [
+    {
+      "local_path": "/tmp/m2-ci.log",
+      "raw_sha256": "4abcbeb19755aaea2c571b109b7a083badf4382b5c562cf99547d0ad391da2fc"
+    },
+    {
+      "local_path": "/tmp/m2-skills.log",
+      "raw_sha256": "067e2700d30f40d47a3ce92143efbe48eeef9d221867cdc9f6ae9ef5d7b9c350"
+    },
+    {
+      "local_path": "/tmp/m2-guide.log",
+      "raw_sha256": "14294c83dccce4d79cc92f470ea2ea6faf753a570196d8ae54aa3cf6a7dff8b3"
+    },
+    {
+      "local_path": "/tmp/m2-guide-validator.log",
+      "raw_sha256": "30b10cb627e19c4554967d541f14e2ba18919ab60193d19e9352ed5a5764da1d"
+    },
+    {
+      "local_path": "/tmp/m2-projection.log",
+      "raw_sha256": "d839f2b44a94c9984d008a4f895f134a38fd0809ffe997fbd3b63c14b33b481d"
+    },
+    {
+      "local_path": "/tmp/m2-validate-skills.log",
+      "raw_sha256": "28aa61f49c731ed3f1604f931a37dfc36af4b9772e8d9d8d824d0de167c2743c"
+    }
+  ]
+}

@@ -135,7 +135,7 @@ Use `@latest` for manual exploration. Use an explicit version such as `@0.3.5` f
 
 ## Source of Truth
 
-npm is the CLI delivery channel. The canonical workflow sources, skills, specs, schemas, and release records live in the GitHub repository:
+npm is the CLI delivery channel. The canonical workflow sources, skills, Designs, schemas, and release records live in the GitHub repository:
 
 ```text
 https://github.com/xiongxianfei/rigorloop

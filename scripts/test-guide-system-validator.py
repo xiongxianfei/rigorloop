@@ -38,8 +38,8 @@ class RouteGuideValidatorTests(unittest.TestCase):
             "CONSTITUTION.md",
             "docs/project-map.md",
             "docs/plan.md",
-            "specs/rigorloop-workflow.md",
-            "specs/skill-contract.md",
+            "docs/design/skill/workflow.md",
+            "docs/design/skill/assessment.md",
             "docs/design/skill/skill.md",
             "skills/route/SKILL.md",
         ):
@@ -50,6 +50,19 @@ class RouteGuideValidatorTests(unittest.TestCase):
 
     def tearDown(self) -> None:
         self.temp.cleanup()
+
+    def test_current_workflow_model_cannot_restore_retired_guide_authority(self):
+        owner = self.repo / "docs/design/skill/workflow.md"
+        owner.parent.mkdir(parents=True, exist_ok=True)
+        owner.write_text("Use docs/workflows.md.\n")
+        self.assertTrue(any("ROUTE-GUIDE-006" in item for item in validator.validate(self.repo).messages))
+
+    def test_current_only_plan_index_preserves_navigation_policy(self):
+        index = self.repo / "docs/plan.md"
+        index.write_text("# Plans\nNavigation index to stable plans; mutable state lives in the owning change record change.json.\n")
+        self.assertEqual(validator.validate(self.repo).messages, ())
+        index.write_text("# Plans\nCurrent milestone: done.\n")
+        self.assertTrue(any("ROUTE-GUIDE-008" in item for item in validator.validate(self.repo).messages))
 
     def test_current_repository_contract_passes(self) -> None:
         self.assertEqual(validator.validate(self.repo).messages, ())

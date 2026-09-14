@@ -1,0 +1,106 @@
+{
+  "milestone": "m6",
+  "baseline_commit": "3eefc51c",
+  "commands": [
+    {
+      "command": "python scripts/select-validation.py --mode local --json",
+      "exit_code": 0,
+      "result": "All current actual changes classified; no dropped source deletion.",
+      "log": "/tmp/full-specs-m6-local-final.json",
+      "log_sha256": "e769d245073cbf6a737fe776b3b0605536c100330b0aaca87955f572326498a9"
+    },
+    {
+      "command": "python scripts/test-select-validation.py",
+      "exit_code": 0,
+      "result": "177 tests passed; six actual Git stage/trust partitions in added regression.",
+      "log": "/tmp/full-specs-m6-selector-final.log",
+      "log_sha256": "f5125511ff4f96e38781b86d32886ebf37f627c8c4a9db17ce7e6c4a0179ca78"
+    },
+    {
+      "command": "python scripts/test-validation-execution.py",
+      "exit_code": 0,
+      "result": "53 tests passed.",
+      "log": "/tmp/full-specs-m6-execution-final.log",
+      "log_sha256": "64d8063a2d7165da99767dfbe21f15c5a4817e2c93d441d3536645228821a776"
+    },
+    {
+      "command": "python scripts/validate-boundary-first.py --check",
+      "exit_code": 0,
+      "result": "12 current models, structure and references passed; no semantic approval claim.",
+      "log": "/tmp/full-specs-m6-models-final.log",
+      "log_sha256": "1c2b197de4ae823f5f214578f58536cd37d2bc60481610def47813bdfe81c719"
+    },
+    {
+      "command": "python scripts/validate-documentation-prose.py --mode enforce",
+      "exit_code": 0,
+      "result": "Default README/VISION scope passed; touched27Markdown additionally passed.",
+      "log": "/tmp/full-specs-m6-prose-final.log",
+      "log_sha256": "aad15dbbd7c80f3224c0b9f91180b5ab44dd774caa53c67098e770ca1f615d0d"
+    },
+    {
+      "command": "python scripts/build-adapters.py --check",
+      "exit_code": 0,
+      "result": "Current generated output synchronized.",
+      "log": "/tmp/full-specs-m6-build.log",
+      "log_sha256": "43ce2eb9750b9a03de563b4a9242ac46151b6a870f322d9c1fb22a7050c2bcff"
+    },
+    {
+      "command": "python scripts/validate-guide-system.py",
+      "exit_code": 0,
+      "result": "Current guide ownership checks passed.",
+      "log": "/tmp/full-specs-m6-guides-final.log",
+      "log_sha256": "30b10cb627e19c4554967d541f14e2ba18919ab60193d19e9352ed5a5764da1d"
+    },
+    {
+      "command": "npm test --prefix packages/rigorloop",
+      "exit_code": 0,
+      "result": "419 current Node tests passed.",
+      "log": "/tmp/full-specs-m6-npm.log",
+      "log_sha256": "4e3ae10ed1ee95b0295a42b7238617c91bbf292f28148c29e2ca8b16507b04df"
+    },
+    {
+      "command": "python scripts/test-release-transaction.py ReleaseCandidateIntegrationTests.test_actual_candidate_build_and_packed_metadata_chain",
+      "exit_code": 0,
+      "result": "Actual current candidate build/qualification and packed CLI/install chain passed with specs, architecture and ADR trees absent; owned fixed0.5.1 fixture, no live publication.",
+      "log": "/tmp/full-specs-m6-candidate.log",
+      "log_sha256": "08a199684b3cfe8661436d3303107969f91d182bfd0f2b0be6fdfd43dbb0cf4f"
+    },
+    {
+      "command": "bash scripts/ci.sh --mode local --broad-smoke",
+      "exit_code": 0,
+      "result": "Complete selected plus required broad run passed.",
+      "log": "/tmp/full-specs-m6-ci-local.log",
+      "log_sha256": "da2af4f0c7365e84e29e4175f4b049e049d8ec2cf489b2cfd1c6f65c055c4e1e"
+    },
+    {
+      "command": "python scripts/select-validation.py --mode pr --base 7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e --head HEAD --json",
+      "exit_code": 0,
+      "result": "Complete actual committed range classified, including all deleted and both renamed paths; no unknown paths.",
+      "log": "/tmp/full-specs-m6-range-final.json",
+      "log_sha256": "abc0b5d29f1606f4ff566d0a58115fefeab350ae301a2d13afe625749d28ea4b"
+    },
+    {
+      "command": "bash scripts/ci.sh --mode pr --base 7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e --head HEAD",
+      "exit_code": 0,
+      "result": "Complete actual committed PR range passed.",
+      "log": "/tmp/full-specs-m6-ci-pr.log",
+      "log_sha256": "4731c722c7047fad6d765d28a83cfd88ecc8639c647f8ccd62c0c3f4d5974b8e"
+    }
+  ],
+  "corrections": [
+    "Initial real Git regression failed all six stage/trust partitions: general discovery omitted deleted paths and rename sources. Corrected with deletion-inclusive no-rename discovery; staged missing index entry now proves original HEAD source.",
+    "New snapshot check also required one explicit expected-catalog row; 11 catalog/output cases and all177selector tests passed after that update.",
+    "Initial full selector:175pass/2fail due deleted repository spec fixture/word row. Customer fixture now isolated, stale literal row retired, all177passed. PRtemplate route also proved failing before classifying its current contributor purpose.",
+    "Map ownership sentence omitted exact current guide boundary; restored explicit Workflow/CLI/route ownership and guide/prose checks passed.",
+    "Initial combined local+broad run failed only the existing optional-discovery map orientation case; restored current Explore/Research links and optional owner handoff. Focused case, guide/prose and complete combined rerun passed; original failure log retained at /tmp/full-specs-m6-ci-local-initial.log."
+  ],
+  "limitations": [
+    "Earlier local+broad pass at45aa80e3 is preserved in /tmp/full-specs-m6-ci-local-before-pr-correction.log; refreshed local+broad execution covers the snapshot/discovery correction. PR-range initial run at45aa80e3 failed before execution on conflicting current_records.validate arguments; separate snapshot/discovery canonicalIDs and actual composition regression correct the integration. Original failure log /tmp/full-specs-m6-ci-pr-initial.log. Local runs are not hostedCI. Model/prose/record structure success is not independent semantic approval. Historical proof stays scoped to its exact earlier subject. Final review and distinctVerify remain separate."
+  ],
+  "pr_range_basis": {
+    "base_revision": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+    "head_revision": "025596df1dc1f00d37e40bec29fb64e7d0eee6d4",
+    "selection_paths": 398,
+    "scope": "Exact original source range; PR CI also validates its bound prepared candidate, as identified in the log."
+  }
+}

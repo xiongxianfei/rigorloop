@@ -1,0 +1,622 @@
+{
+  "change_id": "2026-09-14-retire-specs-and-stale-tests",
+  "checks": [
+    {
+      "actor": {
+        "id": "codex-specs-proposal-author",
+        "role": "proposal"
+      },
+      "id": "proposal-author-checks",
+      "procedure": "python scripts/validate-documentation-prose.py --mode enforce --path docs/proposals/2026-09-14-retire-specs-and-stale-tests.md; node scripts/validate-record-store.mjs docs/changes/2026-09-14-retire-specs-and-stale-tests/change.json; Python assertions for exact proposal headings and existing relative-link targets.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:36e72bf8ec654015a645287640266dc592b2260f877c5a96e788a80f803e2845",
+          "path": "docs/proposals/2026-09-14-retire-specs-and-stale-tests.md"
+        }
+      ],
+      "summary": "Prose validation:0errors/0warnings. Complete record set valid. Exactly seven required sections plus the allowed material-impact section in order; all current local links resolve. Baseline counts and live dependency examples checked; independent Proposal Review approved direction and feasibility. No implementation, test-retirement or whole-cleanup verification is claimed."
+    },
+    {
+      "actor": {
+        "id": "codex-specs-design-author",
+        "role": "design"
+      },
+      "id": "design-author-checks",
+      "procedure": "Ten-model python scripts/validate-boundary-first.py --root . --path checks and eleven-document python scripts/validate-documentation-prose.py --mode enforce --path checks passed before suffix correction. After RC-SR-23 correction reran boundary validation for docs/design/skill/assessment.md and prose validation for it plus source-disposition.md; git diff --check passed. Exact baseline inventory/hash comparison covered 116 specs at 7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:e3e435a9fff5c3a5b787af3e8aab1a4b02795613edd4593b34205f2a3f3fc5da",
+          "path": "docs/design/system.md"
+        },
+        {
+          "identity": "sha256:ff0b198f8bab40a9b0a07d9bac4c961ef9ad45e6f094edcf190069cf6b6bfbce",
+          "path": "docs/design/skill/skill.md"
+        },
+        {
+          "identity": "sha256:e4953b253ffe955d4ff3beacde0076c927ece9b5858b31a31b8c30f8cc637e50",
+          "path": "docs/design/skill/workflow.md"
+        },
+        {
+          "identity": "sha256:dce9c0f117ce3f0613cc155924a7a2c6d5ebd75cea54ce9fdbbfbd7995b8295c",
+          "path": "docs/design/skill/design.md"
+        },
+        {
+          "identity": "sha256:5f8a1cd6360df6f769c60fadab3aae95dce6b229dadb74b05013e08ece77f792",
+          "path": "docs/design/skill/assessment.md"
+        },
+        {
+          "identity": "sha256:88ec93a42cb25e040afffdea8462424d54c797d1147fea4b3d28cb430d444ad2",
+          "path": "docs/design/cli/cli.md"
+        },
+        {
+          "identity": "sha256:47f878a9d343a531d459abd5d4648a6389842dee771007c94ce672493ffaaab1",
+          "path": "docs/design/cli/records.md"
+        },
+        {
+          "identity": "sha256:756a282dbfe5f363eb4eb39986e0f68cf607501bfb9de2a98d96de66b0819578",
+          "path": "docs/design/cli/installation.md"
+        },
+        {
+          "identity": "sha256:5cc2d2850fbc4147b1bd123a1f36c3f88baa49d4b698985bee00a6975ed03b4b",
+          "path": "docs/design/engineering/engineering.md"
+        },
+        {
+          "identity": "sha256:90e00cf969ff8f6c7cfb59f6e31e323ff5642f31189e55cee7e5240b96e1e86d",
+          "path": "docs/design/engineering/validation.md"
+        },
+        {
+          "identity": "sha256:30110347de1ebc23fd6406963b6cc3d0e22e632fd5e1e7ef040298ba9e1f5a92",
+          "path": "docs/design/engineering/packaging.md"
+        },
+        {
+          "identity": "sha256:445fcce43479c00e703dd0ec37df10d072017eff1843acc68bad5c7ca1165a26",
+          "path": "docs/design/engineering/release.md"
+        },
+        {
+          "identity": "sha256:22284c41fdb311c1bb7dbaded1d2ea5c7d53e063d5f40a79a593d6e9e5738045",
+          "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/source-disposition.md"
+        },
+        {
+          "identity": "sha256:e503f56ebb4a1be5383fd3e0ec3e1b4ccac5bba8ef8c04a9e8640d8f12e8c9a0",
+          "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/source-inventory.tsv"
+        }
+      ],
+      "summary": "Structural/prose checks passed with no errors or warnings. Independent Design findings prompted exact public specialist interfaces, bounded CI repair and complete evidence-only handoff suffix preservation. No tests/specs deleted or implementation performed. Semantic judgment and finding disposition belong to independent Design Review."
+    },
+    {
+      "actor": {
+        "id": "codex-specs-plan-author",
+        "role": "plan"
+      },
+      "id": "plan-author-checks",
+      "procedure": "python scripts/validate-documentation-prose.py --mode enforce --path docs/plans/2026-09-14-retire-specs-and-stale-tests.md --path docs/plan.md; git diff --check; bounded plan structure/link/command existence checks against plan and milestone assets.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:3e99392f5974d61f13f6c3bf8f5b616dbb5c6ca3a997f83a36e89ca43a7dd8e3",
+          "path": "docs/plans/2026-09-14-retire-specs-and-stale-tests.md"
+        },
+        {
+          "identity": "sha256:febca9be58096191340755b31381e082183f0a49c6e1f0efa0b6ff3529adcc7d",
+          "path": "docs/plan.md"
+        },
+        {
+          "identity": "sha256:6d5736e2a2b01f76c09a027dd32498ed5e4454a3ab31c139643aba5d0ce9222c",
+          "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/design-review-full-specs-reconciled.json"
+        },
+        {
+          "identity": "sha256:21cfcdf9bea6de3fdb07b8a53dc099a98f48cdc4aa195ef518723a1f96bd3816",
+          "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/proposal-review-full-specs-current-basis.json"
+        },
+        {
+          "identity": "sha256:22284c41fdb311c1bb7dbaded1d2ea5c7d53e063d5f40a79a593d6e9e5738045",
+          "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/source-disposition.md"
+        },
+        {
+          "identity": "sha256:e503f56ebb4a1be5383fd3e0ec3e1b4ccac5bba8ef8c04a9e8640d8f12e8c9a0",
+          "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/source-inventory.tsv"
+        }
+      ],
+      "summary": "Prose errors=0 warnings=0. Six ordered implementation milestones map the full source/test scope and exact current owner requirements to TG-01–08 and integrated TG-FINAL-01/02, actual commands, recovery, milestone reviews and separate final whole-change Code Review then Verify. All literal script paths and local plan links exist; execution commands are allocated, not claimed executed. No work initialized from unreviewed plan."
+    },
+    {
+      "actor": {
+        "id": "codex-specs-plan-author",
+        "role": "plan"
+      },
+      "id": "planning-closeout-checks",
+      "procedure": "python scripts/validate-documentation-prose.py --mode enforce --path docs/plans/2026-09-14-retire-specs-and-stale-tests.md --path docs/plan.md; plan asset sections/milestone/link/command-path checks; git diff --check; python scripts/select-validation.py --mode local --json after staging the new plan.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:3e99392f5974d61f13f6c3bf8f5b616dbb5c6ca3a997f83a36e89ca43a7dd8e3",
+          "path": "docs/plans/2026-09-14-retire-specs-and-stale-tests.md"
+        },
+        {
+          "identity": "sha256:4fe9ba5249200ec64b76158c490360e861393a585b2546f6401a59687bf5dcf2",
+          "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/delivery-review-full-specs.json"
+        },
+        {
+          "identity": "sha256:febca9be58096191340755b31381e082183f0a49c6e1f0efa0b6ff3529adcc7d",
+          "path": "docs/plan.md"
+        }
+      ],
+      "summary": "Plan/index prose errors=0 warnings=0; six ordered milestones and required sections present, local links and literal scripts exist. Local selection status ok with nine selected checks, no unknown paths, blockers or registration debt; this is preflight/selection, not execution of those checks. Independent Delivery Review approved the exact package with no findings. Six work entries initialized from its exact approved plan; implementation remains pending."
+    },
+    {
+      "actor": {
+        "id": "codex-full-specs-implement",
+        "role": "implement"
+      },
+      "id": "m1-test-inventory",
+      "procedure": "Capture baseline membership and inspect M1 test/helper removal, retained detection and independent correction.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:e05b08f1db7b29d8beb9d0ddb5be5220bf0fde08e29a23c1798c37ee88a46ff7",
+          "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/test-baseline.json"
+        },
+        {
+          "identity": "sha256:3ba1a5997f446cb451ae9e4d6c20b0db4b42b2e7968a8d813fefc3b723212cca",
+          "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m1-test-maintenance.json"
+        }
+      ],
+      "summary": "M1 case-group audit updated after proof-path correction; remaining repository families are not yet audited."
+    },
+    {
+      "actor": {
+        "id": "codex-full-specs-implement",
+        "role": "implement"
+      },
+      "id": "m1-implementation-checks",
+      "procedure": "Run exact M1 focused commands and local selected CI; after independent finding, rerun complete affected boundary and projection suites plus default model check.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:e05b08f1db7b29d8beb9d0ddb5be5220bf0fde08e29a23c1798c37ee88a46ff7",
+          "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/test-baseline.json"
+        },
+        {
+          "identity": "sha256:3ba1a5997f446cb451ae9e4d6c20b0db4b42b2e7968a8d813fefc3b723212cca",
+          "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m1-test-maintenance.json"
+        },
+        {
+          "identity": "sha256:791703c41574271b2d9292d4442e165fb0005f11fc7de269738699ecd6397bf6",
+          "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m1-validation.json"
+        },
+        {
+          "identity": "sha256:e3fe5c83e2054c2af231afb3311127c5c51d5c7f899256f30022dc9a6e53bf89",
+          "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m1-implementation.md"
+        },
+        {
+          "identity": "sha256:d7806a57f7cf4d4b6329da679d8b1e96189908833d8fa8337d5be45ae9a8cb18",
+          "path": "scripts/boundary-first-resources.yaml"
+        },
+        {
+          "identity": "sha256:4b4d412c2a24b59f071ef4813e8dd6c6dcaeb4eb5422cd0533cf20c8811120ef",
+          "path": "scripts/boundary_first_reference.py"
+        },
+        {
+          "identity": "sha256:51069598d69a8fd286c933ac3794746c90d2f6e5381d7889e06b512c01832267",
+          "path": "scripts/boundary_first_validation.py"
+        },
+        {
+          "identity": "sha256:42b24b738e4512fd807149d0c9b7dfdad436884659a63f71f4ed15d463c5cc67",
+          "path": "scripts/test-boundary-first-reference.py"
+        },
+        {
+          "identity": "sha256:7f8711a914201dbff5e9eb25cc906781462a7f0dc8e83457c91a2757b55d86bb",
+          "path": "scripts/test-boundary-first-validation.py"
+        },
+        {
+          "identity": "sha256:957b19b2bf2c8de4aecf82f0f593ceed26564e24642dd06b2b3c1b31c14d797f",
+          "path": "scripts/test-select-validation.py"
+        },
+        {
+          "identity": "sha256:94299996aa213bf5fab826b85e99d31fd1206056561e09c8a89e99855ba9dbf3",
+          "path": "scripts/test-skill-validator.py"
+        },
+        {
+          "identity": "sha256:25f6cf0efda7c3f41ce34183c273900cb76e4aff2fc88183ed430c83b9c6172f",
+          "path": "scripts/validate-boundary-first.py"
+        },
+        {
+          "identity": "sha256:264a4c4c9b6098821d879108135a63041e865119f2c8703af635eaa5616bfc58",
+          "path": "scripts/validation_selection.py"
+        },
+        {
+          "identity": "sha256:7179b4f48e6ba5a1503237f58875f0dc5fe8cdc2c7e77f277c6debee714387b8",
+          "path": "templates/shared/boundary-first-feature-authoring-v1.md"
+        },
+        {
+          "identity": "sha256:89337cf5da8462ad2afa0c50e04fb7233beea7ce030a049fa3a1695fc57ea2d0",
+          "path": "templates/shared/boundary-first-method-v1.md"
+        },
+        {
+          "identity": "sha256:ec8e8239c642bf340c4c8aba2105ae9783bced35230bb5bf6501b7b931e6cc4d",
+          "path": "templates/shared/boundary-first-proof-v1.md"
+        }
+      ],
+      "summary": "M1 implementation and required checks passed as detailed in m1-validation.json; independent correction reassessment remains required."
+    },
+    {
+      "actor": {
+        "id": "codex-full-specs-implement",
+        "role": "implement"
+      },
+      "id": "m2-implementation-checks",
+      "procedure": "Inspect exact M2 cases/helpers and retained protection; run canonical skill, skill regression, guide regression, projection and local CI checks; rerun complete affected guide checks after independent correction.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:6decd4e4be579f273a2051ba005a6cb4830e7e2a0323f3444e77b9e43bba34bb",
+          "path": "scripts/skill_validation.py"
+        },
+        {
+          "identity": "sha256:f5a7941ed35cad94592cc85a1082e78f612c1739bb8d41f31a2ee9aa2c21aa08",
+          "path": "scripts/test-guide-system-validator.py"
+        },
+        {
+          "identity": "sha256:692053196f7fa4950a78ae72bf2bd13278af64ae79c4693ad708122089cc8136",
+          "path": "scripts/test-skill-validator.py"
+        },
+        {
+          "identity": "sha256:f933f576b5d827b54065fc2fe84481e985974169f40091b52f0f17aee8807e5b",
+          "path": "scripts/validate-guide-system.py"
+        },
+        {
+          "identity": "sha256:170ea2df25ee71ab3e27f26ab8290758d7a575bb1747d5b89c7eb45de7394dfc",
+          "path": "skills/bugfix/SKILL.md"
+        },
+        {
+          "identity": "sha256:30c094ea81e1b6cb875fd75430ee7b2721e3bdf93830c9953f2381d7c8d5cb23",
+          "path": "skills/code-review/SKILL.md"
+        },
+        {
+          "identity": "sha256:2888de55cc39d5a96d60e86b0f70821de86e4b2a41fd9218e0ad7748cd64e5dc",
+          "path": "skills/implement/SKILL.md"
+        },
+        {
+          "identity": "sha256:31022b5d36e3f9846c37900e3c94e23614156e9aae9eece0c778add4207b9a62",
+          "path": "skills/plan/SKILL.md"
+        },
+        {
+          "identity": "sha256:7ef76959ad5415890fffedead1af6fba55a39c849a8f9531329e855acd418143",
+          "path": "skills/route/SKILL.md"
+        },
+        {
+          "identity": "sha256:71e429d296885eb46f7c7e1903e6cc05b60c79d35e331a3a56d2b945fbaf2ef4",
+          "path": "skills/verify/SKILL.md"
+        },
+        {
+          "identity": "sha256:c18ccff73157195652ddad80e59446e1cfb1031e981712b9121413d47875b69f",
+          "path": "templates/shared/boundary-first-compact-scan.md"
+        },
+        {
+          "identity": "sha256:6fd14ac0fba4016d338ee2df329f4eba0a8e53a5a52b7d28df67ecdd76c72755",
+          "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m2-test-maintenance.json"
+        },
+        {
+          "identity": "sha256:6b9c35a4daa1ea4c998708a827cb6e88e9283f035936680ab9b3cc459ea8434b",
+          "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m2-validation.json"
+        },
+        {
+          "identity": "sha256:509dbed62dfcc7e76c0bf6b9f73fdd1f98fd2e92c256c0d63557615273e39273",
+          "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m2-implementation.md"
+        }
+      ],
+      "summary": "Current M2 implementation checks passed; independent correction reassessment still required."
+    },
+    {
+      "actor": {
+        "id": "codex-full-specs-implement",
+        "role": "implement"
+      },
+      "id": "m3-test-maintenance",
+      "procedure": "Inspect exact implementation and command results recorded in milestone evidence.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:0e43993111c296569457816df3785a1f007d87d3eee67785d4b2bc309d34d6ba",
+          "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m3-test-maintenance.json"
+        }
+      ],
+      "summary": "Exact changed case/helper/fixture membership, retired recipes and retained current protection; catalog current replacements use isolated temporary roots."
+    },
+    {
+      "actor": {
+        "id": "codex-full-specs-implement",
+        "role": "implement"
+      },
+      "id": "m3-validation",
+      "procedure": "Inspect exact implementation and command results recorded in milestone evidence.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:63d2be82b3c04f56dc1fa3fa2b62b2ea0285664624f6421e0461b91c6a98de0f",
+          "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m3-validation.json"
+        },
+        {
+          "identity": "sha256:58388f9568184aacfa84034708171224fef52c75df530337da8250f766b77fd2",
+          "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m3-implementation.md"
+        }
+      ],
+      "summary": "Required focused and selected CI commands passed after receipt and catalog corrections. Complete M3 handed to independent Code Review."
+    },
+    {
+      "actor": {
+        "id": "codex-full-specs-implement",
+        "role": "implement"
+      },
+      "id": "m4-test-maintenance",
+      "procedure": "AST member, fixture and caller audit against 350b3c19; review correction and selector/executor reconciliation.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:4e8b9f4be2834e49977ff7d0c218ee36e43a7dfab5ea04f7973ceed1d40eb01e",
+          "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m4-test-maintenance.json"
+        }
+      ],
+      "summary": "109 retired files accounted for, including 46 lifecycle, 41 review and 3 metadata fixtures; release helper protection transferred. Full validation recorded separately."
+    },
+    {
+      "actor": {
+        "id": "codex-full-specs-implement",
+        "role": "implement"
+      },
+      "id": "m4-validation",
+      "procedure": "Run focused and required M4 validation commands, correct findings/failures, then run final local plus broad CI. Exact logs/results in m4-validation.json.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:46d6a1a5c6323ac33fd4d6b59cf1d4a21e91874abe2976e0a5ff86f42894c5be",
+          "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m4-validation.json"
+        },
+        {
+          "identity": "sha256:134e6b898d6850157c968a61223251b8bc7144babfa7f484df8a4b6b2914dc0b",
+          "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m4-implementation.md"
+        },
+        {
+          "identity": "sha256:4e8b9f4be2834e49977ff7d0c218ee36e43a7dfab5ea04f7973ceed1d40eb01e",
+          "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m4-test-maintenance.json"
+        }
+      ],
+      "summary": "109 retired sources/fixtures reconciled; current release checklist and snapshot/discovery checks pass, including 176 selector, 419 Node, 176 release and 52 executor tests."
+    },
+    {
+      "actor": {
+        "id": "codex-full-specs-implement",
+        "role": "implement"
+      },
+      "id": "m5-test-maintenance",
+      "procedure": "Complete tracked test/helper/fixture and generated-domain audit; candidate fixture correction after actual failed qualification.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:149262038e392538f8c0d6d82f246cbc9a611ac0d0e792134202504d401fb44e",
+          "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m5-test-maintenance.json"
+        }
+      ],
+      "summary": "260 current population files assessed;16 exclusive retired authoring tests removed. Current asset protection retained; candidate now includes matching current fixtures. Actual corrected candidate integration passed."
+    },
+    {
+      "actor": {
+        "id": "codex-full-specs-implement",
+        "role": "implement"
+      },
+      "id": "m5-validation",
+      "procedure": "Run all required M5 selector/executor/local+broad checks and focused transferred protection; reproduce and correct candidate fixture mismatch. Exact commands/logs in m5-validation.json.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:162b34cfae7a2e2544996158e60ea3fa33849d1ec704e738b5b292d0bac14cb9",
+          "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m5-validation.json"
+        },
+        {
+          "identity": "sha256:5466b6b4128dc0ca36625b6984109a491b17b5339bfd874326cea22e904e2b21",
+          "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m5-implementation.md"
+        },
+        {
+          "identity": "sha256:149262038e392538f8c0d6d82f246cbc9a611ac0d0e792134202504d401fb44e",
+          "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m5-test-maintenance.json"
+        }
+      ],
+      "summary": "260 current population files reconciled,16 retired authoring cases and exclusive validators removed, current assets and synthetic report protection retained. Actual candidate and final integrated CI passed."
+    },
+    {
+      "actor": {
+        "id": "codex-specs-design-author",
+        "role": "design"
+      },
+      "id": "m6-design-reconciliation",
+      "procedure": "Explicit27-file coupled owner map; verify37 changed current commit/path pairs and148 selected source hashes from retained Git;12-model structure and25 touched prose files pass.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:903933825ce63a6685c52efe920b4df1fdd9fe6f5fe90b9a097dcb241e0179b7",
+          "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m6-design-reconciliation.json"
+        },
+        {
+          "identity": "sha256:d6c35b64cc3ea5ff9b170124fda92c4d16658974859266b50b5852273d10d63d",
+          "path": "docs/design/system.md"
+        },
+        {
+          "identity": "sha256:ad80a8e44a1f3c2bcc5c79fa06e5b0ba6e62b248e66a8105a458f3505f68145e",
+          "path": "docs/design/skill/skill.md"
+        },
+        {
+          "identity": "sha256:eef25314c2f34d4cceca2b8e2a12675fd9773da34fa949fd92cb224ed6a456e7",
+          "path": "docs/design/cli/cli.md"
+        },
+        {
+          "identity": "sha256:5cc2d2850fbc4147b1bd123a1f36c3f88baa49d4b698985bee00a6975ed03b4b",
+          "path": "docs/design/engineering/engineering.md"
+        },
+        {
+          "identity": "sha256:ca2ba146c7cd45409b8b37a22d2baece26efed668f3ddad9309f495056ee1623",
+          "path": "docs/design/skill/workflow.md"
+        },
+        {
+          "identity": "sha256:d787cece629dd7eed0a12c53366a5d41aa52f59d5c1250881550b5eebe04ff0a",
+          "path": "docs/design/skill/design.md"
+        },
+        {
+          "identity": "sha256:ae3b59ec189fd66962ddb3f50a4c0e48422fc9a1086aae641c54dd1481fd715b",
+          "path": "docs/design/skill/assessment.md"
+        },
+        {
+          "identity": "sha256:c088b648eb0a8308c8cae1deb7f5be562cf5fb81ceed2552d5256851ca69acf7",
+          "path": "docs/design/cli/records.md"
+        },
+        {
+          "identity": "sha256:756a282dbfe5f363eb4eb39986e0f68cf607501bfb9de2a98d96de66b0819578",
+          "path": "docs/design/cli/installation.md"
+        },
+        {
+          "identity": "sha256:a8e0b1f979c2eb004e0a370a944895df81b29d093543b1a3913d26efb6c61607",
+          "path": "docs/design/engineering/validation.md"
+        },
+        {
+          "identity": "sha256:6dfe2436431bc52be7b3715e9249559bb7a893b08f6211e0a43b1a936b6096fd",
+          "path": "docs/design/engineering/packaging.md"
+        },
+        {
+          "identity": "sha256:4e64ece2c8b1147778fa31becc2ecb1d08469b7610cf53d29ecf40b49865441e",
+          "path": "docs/design/engineering/release.md"
+        }
+      ],
+      "summary": "Corrected observability owner and unrecoverable learn source.10 historical positive v2 examples additionally dispositioned, current examples/negative proof retained. Requirement IDs/behavior/Delivery allocation unchanged; independent reassessment required before deletion."
+    },
+    {
+      "actor": {
+        "id": "codex-full-specs-implement",
+        "role": "implement"
+      },
+      "id": "m6-implementation",
+      "procedure": "Execute M6 TG-07/08 and final integrated allocation; exact actual commands, logs, identity and source/test disposition are in the registered subjects.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:64a2e81e5ba9fd71b714b9a793e657bcb1ecea8dabf98ac9c226deacfd3937da",
+          "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m6-source-removal.json"
+        },
+        {
+          "identity": "sha256:6d2197a709240d6749b63e90c17fd4fc8e06cda4835559c81435cdb1cfc06bee",
+          "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m6-validation.json"
+        },
+        {
+          "identity": "sha256:9558c2bc385d26e5627a50b353882a006c7757a6e73a1499c6e1cf753bfe3d1f",
+          "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m6-implementation.md"
+        },
+        {
+          "identity": "sha256:686e24be4a47ddf34be53eaad4126a002eae773f9312c05bda8ce4cda2df8fea",
+          "path": "scripts/validation_selection.py"
+        },
+        {
+          "identity": "sha256:76b1fa9cee04586fa87ad37d04c72d749861c1d6206c39f6ad7e489d88101ac8",
+          "path": "scripts/validation_execution.py"
+        },
+        {
+          "identity": "sha256:82e820633a664af832a325e3f5f3bcfccc4229696b9f3cdae5aafcaa3b23e138",
+          "path": "scripts/test-select-validation.py"
+        },
+        {
+          "identity": "sha256:ee6c432abbe128a78cc3f48f4175790ab83a6a2253f32dbf5290e6ae68ea71b7",
+          "path": "scripts/test-validation-execution.py"
+        },
+        {
+          "identity": "sha256:b332586a3b72717e63743365937b4e852af25cc1d35a5aceac09919923700ee2",
+          "path": "scripts/release_candidate_tests.py"
+        },
+        {
+          "identity": "sha256:8fc2ed428aece2aec213fbd9686f07ec1c01491ad550c37f325b91af33c010ce",
+          "path": "docs/project-map.md"
+        }
+      ],
+      "summary": "148 selected source/example removals plus retired token guidance; complete current source/protection reconciliation and meaningful negative proof. Actual committed PR range and local broad validation passed."
+    },
+    {
+      "actor": {
+        "id": "codex-full-specs-verify",
+        "role": "verify"
+      },
+      "id": "final-verification",
+      "procedure": "Fresh node scripts/validate-record-store.mjs docs/changes/2026-09-14-retire-specs-and-stale-tests/change.json; git diff --check; python scripts/validate-boundary-first.py --check; python scripts/build-adapters.py --check all passed. Directly verified96 current final-review Subject hashes, sixcompleted milestones, tenexplicit resolved findings, absent tracked/worktree source trees, twelveactual command log hashes and exact base/head/remote. Reused current completed local+broad and exactPR-range execution at025596df; inspected subsequent diff contains only attributable current verification/review/routing evidence, no engineering changes. No hostedCI claim.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:d6c35b64cc3ea5ff9b170124fda92c4d16658974859266b50b5852273d10d63d",
+          "path": "docs/design/system.md"
+        },
+        {
+          "identity": "sha256:ad80a8e44a1f3c2bcc5c79fa06e5b0ba6e62b248e66a8105a458f3505f68145e",
+          "path": "docs/design/skill/skill.md"
+        },
+        {
+          "identity": "sha256:eef25314c2f34d4cceca2b8e2a12675fd9773da34fa949fd92cb224ed6a456e7",
+          "path": "docs/design/cli/cli.md"
+        },
+        {
+          "identity": "sha256:5cc2d2850fbc4147b1bd123a1f36c3f88baa49d4b698985bee00a6975ed03b4b",
+          "path": "docs/design/engineering/engineering.md"
+        },
+        {
+          "identity": "sha256:ca2ba146c7cd45409b8b37a22d2baece26efed668f3ddad9309f495056ee1623",
+          "path": "docs/design/skill/workflow.md"
+        },
+        {
+          "identity": "sha256:d787cece629dd7eed0a12c53366a5d41aa52f59d5c1250881550b5eebe04ff0a",
+          "path": "docs/design/skill/design.md"
+        },
+        {
+          "identity": "sha256:ae3b59ec189fd66962ddb3f50a4c0e48422fc9a1086aae641c54dd1481fd715b",
+          "path": "docs/design/skill/assessment.md"
+        },
+        {
+          "identity": "sha256:c088b648eb0a8308c8cae1deb7f5be562cf5fb81ceed2552d5256851ca69acf7",
+          "path": "docs/design/cli/records.md"
+        },
+        {
+          "identity": "sha256:756a282dbfe5f363eb4eb39986e0f68cf607501bfb9de2a98d96de66b0819578",
+          "path": "docs/design/cli/installation.md"
+        },
+        {
+          "identity": "sha256:a8e0b1f979c2eb004e0a370a944895df81b29d093543b1a3913d26efb6c61607",
+          "path": "docs/design/engineering/validation.md"
+        },
+        {
+          "identity": "sha256:6dfe2436431bc52be7b3715e9249559bb7a893b08f6211e0a43b1a936b6096fd",
+          "path": "docs/design/engineering/packaging.md"
+        },
+        {
+          "identity": "sha256:4e64ece2c8b1147778fa31becc2ecb1d08469b7610cf53d29ecf40b49865441e",
+          "path": "docs/design/engineering/release.md"
+        },
+        {
+          "identity": "sha256:36e72bf8ec654015a645287640266dc592b2260f877c5a96e788a80f803e2845",
+          "path": "docs/proposals/2026-09-14-retire-specs-and-stale-tests.md"
+        },
+        {
+          "identity": "sha256:3e99392f5974d61f13f6c3bf8f5b616dbb5c6ca3a997f83a36e89ca43a7dd8e3",
+          "path": "docs/plans/2026-09-14-retire-specs-and-stale-tests.md"
+        },
+        {
+          "identity": "sha256:b93aed4385ba272f7ac24b912ab1c38c2e68b05c793f0f8f53ff5eec0b9a4e5a",
+          "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/final-code-review.json"
+        },
+        {
+          "identity": "sha256:6d2197a709240d6749b63e90c17fd4fc8e06cda4835559c81435cdb1cfc06bee",
+          "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m6-validation.json"
+        },
+        {
+          "identity": "sha256:64a2e81e5ba9fd71b714b9a793e657bcb1ecea8dabf98ac9c226deacfd3937da",
+          "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m6-source-removal.json"
+        }
+      ],
+      "summary": "Distinct final Verify confirms complete M1–M6 delivery and current obligation/proof coherence; no open findings, missing current owners, unknown source/test family or required correction remains."
+    }
+  ],
+  "schema_version": 3
+}

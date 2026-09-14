@@ -18,4 +18,4 @@ Do not claim that a compact form is reconstructable, parser-valid by constructio
 - review findings need parser-owned field labels, not only equivalent prose;
 - quiet script output needs unchanged command selection, exit codes, and failure reporting.
 
-Efficiency metrics are useful only under a preservation gate. A byte, token, or output-line reduction proves the mechanism helped, but it cannot compensate for lost audit evidence or changed validation behavior.
+A shorter response cannot compensate for lost audit evidence or changed validation behavior. Judge the result by preserved meaning, relevant evidence and usable diagnostics.

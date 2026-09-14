@@ -115,20 +115,6 @@ class MappedResourceIdentity:
     sha256: str
 
 
-@dataclass(frozen=True)
-class BoundaryLoadingMeasurement:
-    skill_name: str
-    mapped_resource_ids: tuple[str, ...]
-    initial_resource_ids: tuple[str, ...]
-    permitted_expansion_ids: tuple[str, ...]
-    mapped_resource_count: int
-    initial_resource_count: int
-    expanded_resource_count: int
-    mapped_resource_bytes: int
-    initial_resource_bytes: int
-    expanded_resource_bytes: int
-
-
 def validate_requirement_delivery_model_copy(
     skill_path: Path,
     skill_name: str | None,
@@ -174,114 +160,6 @@ def validate_discovery_support_copy(
     if local_path.read_bytes() != canonical_path.read_bytes():
         return [f"{local_path}: mapped discovery-support reference differs from canonical source"]
     return []
-
-
-def measure_boundary_loading_profiles(
-    repo_root: Path,
-    fixture_path: Path,
-) -> dict[str, BoundaryLoadingMeasurement]:
-    """Validate and measure the closed representative boundary loading profiles."""
-
-    try:
-        document = json.loads(fixture_path.read_text(encoding="utf-8"))
-    except (OSError, UnicodeError, json.JSONDecodeError) as error:
-        raise ValueError("loading profile fixture must be readable JSON-compatible YAML") from error
-    if not isinstance(document, dict) or set(document) != {
-        "schema_version",
-        "profiles",
-    }:
-        raise ValueError("loading profile fixture must use the closed top-level shape")
-    if (
-        type(document["schema_version"]) is not int
-        or document["schema_version"] != 1
-    ):
-        raise ValueError("loading profile schema version is not supported")
-    if not isinstance(document["profiles"], list):
-        raise ValueError("loading profile profiles must be a list")
-
-    try:
-        manifest = load_resource_manifest(repo_root)
-    except ProjectionContractError as error:
-        raise ValueError(f"loading profile resource manifest is invalid: {error.code}") from error
-    resources = {resource.resource_id: resource for resource in manifest.resources}
-    expected_by_skill = {
-        skill_name: tuple(
-            resource.resource_id
-            for resource in manifest.resources
-            if skill_name in resource.consumers
-        )
-        for skill_name in sorted(BOUNDARY_FIRST_GOVERNED_SKILLS)
-    }
-    measurements: dict[str, BoundaryLoadingMeasurement] = {}
-    profile_fields = {
-        "skill",
-        "mapped_resource_ids",
-        "initial_resource_ids",
-        "permitted_expansion_ids",
-    }
-    for profile in document["profiles"]:
-        if not isinstance(profile, dict) or set(profile) != profile_fields:
-            raise ValueError("loading profile row must use the closed field set")
-        skill_name = profile["skill"]
-        if (
-            not isinstance(skill_name, str)
-            or skill_name not in BOUNDARY_FIRST_GOVERNED_SKILLS
-        ):
-            raise ValueError("loading profile skill is not in the closed vocabulary")
-        if skill_name in measurements:
-            raise ValueError("loading profile skill must appear exactly once")
-
-        lists: dict[str, tuple[str, ...]] = {}
-        for field in (
-            "mapped_resource_ids",
-            "initial_resource_ids",
-            "permitted_expansion_ids",
-        ):
-            value = profile[field]
-            if (
-                not isinstance(value, list)
-                or any(not isinstance(item, str) for item in value)
-                or len(value) != len(set(value))
-            ):
-                raise ValueError(f"loading profile {field} must be a unique string list")
-            unknown = set(value) - set(resources)
-            if unknown:
-                raise ValueError(
-                    f"loading profile {field} contains an unknown resource"
-                )
-            lists[field] = tuple(value)
-
-        mapped = lists["mapped_resource_ids"]
-        initial = lists["initial_resource_ids"]
-        expansion = lists["permitted_expansion_ids"]
-        if mapped != expected_by_skill[skill_name]:
-            raise ValueError("loading profile mapped resources do not match the manifest")
-        if set(initial) & set(expansion) or set(initial) | set(expansion) != set(mapped):
-            raise ValueError(
-                "loading profile initial and expansion resources must partition mapped resources"
-            )
-
-        byte_counts = {
-            resource_id: (repo_root / resources[resource_id].source).stat().st_size
-            for resource_id in mapped
-        }
-        expanded = tuple(resource_id for resource_id in mapped)
-        measurements[skill_name] = BoundaryLoadingMeasurement(
-            skill_name=skill_name,
-            mapped_resource_ids=mapped,
-            initial_resource_ids=initial,
-            permitted_expansion_ids=expansion,
-            mapped_resource_count=len(mapped),
-            initial_resource_count=len(initial),
-            expanded_resource_count=len(expanded),
-            mapped_resource_bytes=sum(byte_counts.values()),
-            initial_resource_bytes=sum(byte_counts[item] for item in initial),
-            expanded_resource_bytes=sum(byte_counts[item] for item in expanded),
-        )
-
-    if set(measurements) != set(BOUNDARY_FIRST_GOVERNED_SKILLS):
-        raise ValueError("loading profile fixture must cover every governed skill")
-    return measurements
 
 
 PLACEHOLDER_PATTERN = re.compile(r"\b(TODO|TBD)\b")
@@ -346,11 +224,6 @@ PACKAGED_NON_ASSET_RESOURCE_ALLOWLIST = {
     ("proposal-review", "references/proposal-review-recording-and-settlement.md"),
     ("proposal-review", "references/conditional-proposal-gates.md"),
     ("proposal-review", "references/requirement-to-delivery-model.md"),
-    ("spec", "references/governed-spec-authoring.md"),
-    ("spec", "references/requirement-to-delivery-model.md"),
-    ("spec-review", "references/governed-spec-review-settlement.md"),
-    ("test-spec", "references/governed-test-spec-authoring.md"),
-    ("test-spec-review", "references/test-spec-review-recording-and-settlement.md"),
 }
 
 
@@ -562,110 +435,20 @@ PROJECT_MAP_SKELETON_FORBIDDEN_POLICY_PATTERNS = {
     "handoff rules": re.compile(r"\bhandoff rules?\b", re.IGNORECASE),
     "claim boundaries": re.compile(r"\bclaim boundaries?\b", re.IGNORECASE),
 }
-SPEC_FAMILY_ASSET_APPROVED_ASSETS = {
-    "spec": {
-        "assets/spec-skeleton.md",
-    },
-    "spec-review": {
-        "assets/review-result-skeleton.md",
-        "assets/material-finding.md",
-    },
-    "test-spec": {
-        "assets/test-spec-skeleton.md",
-        "assets/test-case.md",
-        "assets/coverage-map-row.md",
-        "assets/validation-command-row.md",
-        "assets/milestone-proof-row.md",
-    },
-}
-TEST_SPEC_COMMAND_CLASSIFICATIONS = {
-    "existing/configured",
-    "planned-for-implementation",
-    "release-owned",
-    "ci-owned",
-    "external-owned",
-    "not-applicable",
-}
-TEST_SPEC_VALIDATION_COMMAND_COLUMNS = (
-    "Command ID",
-    "Command",
-    "Classification",
-    "Owner",
-    "Owning milestone",
-    "First required milestone",
-    "Failure behavior",
-    "Zero-test behavior",
-    "Evidence artifact",
-    "Safe mode / side-effect boundary",
-)
-TEST_SPEC_MILESTONE_PROOF_COLUMNS = (
-    "Milestone",
-    "Required test IDs",
-    "Manual proof IDs",
-    "Command IDs",
-    "Evidence artifacts",
-    "Required before",
-    "Notes",
-)
-TEST_SPEC_COMMAND_PATTERN = re.compile(
-    r"`(?P<command>(?:python|pytest|npm|pnpm|yarn|uv|ruff|mypy|make|bash|sh)\s+[^`]+)`"
-)
-SPEC_FAMILY_ASSET_REQUIRED_METADATA_FIELDS = {
+SHARED_ASSET_REQUIRED_METADATA_FIELDS = {
     "Template",
     "Skill",
     "Template status",
     "Maintained alongside",
 }
-SPEC_FAMILY_ASSET_TEMPLATE_STATUS_VALUES = {"normative", "optional"}
-SPEC_FAMILY_ASSET_PLACEHOLDER_PATTERN = re.compile(r"<[^>\n]+>|\[FILL IN\]|TODO:")
-SPEC_FAMILY_ASSET_FILLER_PATTERN = re.compile(
+SHARED_ASSET_TEMPLATE_STATUS_VALUES = {"normative", "optional"}
+SHARED_ASSET_PLACEHOLDER_PATTERN = re.compile(r"<[^>\n]+>|\[FILL IN\]|TODO:")
+SHARED_ASSET_FILLER_PATTERN = re.compile(
     r"\b(?:your text here|lorem ipsum)\b",
     re.IGNORECASE,
 )
-SPEC_REVIEW_ASSET_FORBIDDEN_POLICY_PATTERN = re.compile(
-    r"\b(?:must|should|review[- ]dimension|severity policy|sufficiency|"
-    r"safe[- ]resolution decision|recording[- ]status|security|privacy|"
-    r"observability|example)\b",
-    re.IGNORECASE,
-)
-SPEC_REVIEW_ASSET_ALLOWED_FIELD_LABEL_PATTERN = re.compile(
+ASSET_FIELD_LABEL_PATTERN = re.compile(
     r"^\s*(?:[-*]\s*)?(?P<label>[A-Za-z][A-Za-z /_-]*):\s*<[^>\n]+>\s*$"
-)
-SPEC_REVIEW_ASSET_APPROVED_LABELS = {
-    "skill",
-    "review-status",
-    "material-findings",
-    "recording-status",
-    "recording-blocker",
-    "review-record",
-    "review-log",
-    "review-resolution",
-    "open-blockers",
-    "immediate-next-stage",
-    "eventual-test-spec-readiness",
-    "stop-condition",
-    "settlement-mode",
-    "settlement-status",
-    "governed-change-identity",
-    "boundary-applicability",
-    "boundary-resources",
-    "boundary-blocker",
-    "automation-mode",
-    "automation-evidence",
-    "automation-result",
-    "finding-id",
-    "severity",
-    "location",
-    "evidence",
-    "required-outcome",
-    "safe-resolution-path",
-    "needs-decision-rationale",
-}
-SPEC_REVIEW_ASSET_FORBIDDEN_LABEL_PATTERN = re.compile(
-    r"\b(?:severity[- ]policy|sufficiency|safe[- ]resolution[- ]decision|"
-    r"recording[- ]status[- ]rules?|security|privacy|observability|"
-    r"review[- ]dimension)\b",
-    re.IGNORECASE,
 )
 PROPOSAL_FAMILY_ASSET_APPROVED_ASSETS = {
     "proposal": {
@@ -742,8 +525,6 @@ CI_MAINTENANCE_AUTHORING_REFERENCE = "references/github-workflow-authoring.md"
 REVIEW_FAMILY_FIRST_SLICE_SKILLS = {
     "code-review",
     "proposal-review",
-    "spec-review",
-    "test-spec-review",
 }
 REVIEW_FAMILY_ASSET_APPROVED_ASSETS = {
     skill_name: {
@@ -764,33 +545,6 @@ REVIEW_FAMILY_MATERIAL_FINDING_ALLOWED_LABELS = {
     *REVIEW_FAMILY_PARSER_FIELD_LABELS,
     "needs-decision rationale",
 }
-SPEC_REVIEW_RESULT_FIELD_PATTERN = re.compile(
-    r"^\s*(?:[-*]\s*)?(?P<label>[A-Za-z][A-Za-z /_-]*):\s*(?P<value>.*?)\s*$"
-)
-SPEC_REVIEW_RESULT_ALLOWED_REVIEW_STATUSES = {
-    "approved",
-    "changes-requested",
-    "blocked",
-    "inconclusive",
-}
-SPEC_REVIEW_RESULT_ALLOWED_IMMEDIATE_STAGES = {
-    "spec revision",
-    "review-resolution",
-    "architecture",
-    "plan",
-    "none",
-}
-SPEC_REVIEW_RESULT_ALLOWED_READINESS = {
-    "ready",
-    "conditionally-ready",
-    "not-ready",
-}
-SPEC_REVIEW_RESULT_PSEUDO_ROUTING_VALUES = {
-    "blocker handling",
-    "missing-context resolution",
-    "test-spec",
-    "ready for test-spec",
-}
 REVIEW_FAMILY_ASSET_FORBIDDEN_POLICY_PATTERN = re.compile(
     r"\b(?:must|should|review[- ]dimension definitions?|review[- ]dimension guidance|"
     r"severity[- ]policy|review[- ]status[- ]policy|material[- ]finding[- ]sufficiency|"
@@ -801,312 +555,29 @@ REVIEW_FAMILY_ASSET_FORBIDDEN_POLICY_PATTERN = re.compile(
     re.IGNORECASE,
 )
 ASSET_ROLLOUT_APPROVED_ASSETS = {
-    **SPEC_FAMILY_ASSET_APPROVED_ASSETS,
     **PROPOSAL_FAMILY_ASSET_APPROVED_ASSETS,
     **REVIEW_FAMILY_ASSET_APPROVED_ASSETS,
 }
-INSTALLED_SKILL_PLACEMENT_REVIEW_PATHS = {
-    "proposal-review": "docs/changes/<change-id>/reviews/proposal-review-r<n>.md",
-    "spec-review": "docs/changes/<change-id>/reviews/spec-review-r<n>.md",
-    "test-spec-review": "docs/changes/<change-id>/reviews/test-spec-review-r<n>.md",
-}
-INSTALLED_SKILL_PLACEMENT_REVIEW_RECORD_TYPES = {
-    "proposal-review": {
-        "record_type_terms": (
-            "proposal-review record",
-            "proposal-review records",
-        ),
-        "forbidden_record_type_terms": (
-            "spec-review record",
-            "spec-review records",
-        ),
-    },
-    "spec-review": {
-        "record_type_terms": (
-            "spec-review record",
-            "spec-review records",
-        ),
-        "forbidden_record_type_terms": (
-            "proposal-review record",
-            "proposal-review records",
-        ),
-    },
-    "test-spec-review": {
-        "record_type_terms": (
-            "test-spec-review record",
-            "test-spec-review records",
-        ),
-        "forbidden_record_type_terms": (
-            "proposal-review record",
-            "proposal-review records",
-        ),
-    },
-}
+INSTALLED_SKILL_PLACEMENT_REVIEW_PATHS = {'proposal-review': 'docs/changes/<change-id>/reviews/proposal-review-r<n>.md'}
+INSTALLED_SKILL_PLACEMENT_REVIEW_RECORD_TYPES = {'proposal-review': {'record_type_terms': ('proposal-review record', 'proposal-review records'), 'forbidden_record_type_terms': ('spec-review record', 'spec-review records')}}
 INSTALLED_SKILL_PLACEMENT_REVIEW_LOG_PATH = "docs/changes/<change-id>/review-log.md"
 INSTALLED_SKILL_PLACEMENT_REVIEW_RESOLUTION_PATH = (
     "docs/changes/<change-id>/review-resolution.md"
 )
 
 
-def _normalize_result_label(label: str) -> str:
-    return re.sub(r"[\s/_]+", "-", label.strip().lower())
 
 
-def _parse_spec_review_result_fields(text: str) -> dict[str, str]:
-    fields: dict[str, str] = {}
-    for line in text.splitlines():
-        match = SPEC_REVIEW_RESULT_FIELD_PATTERN.match(line)
-        if not match:
-            continue
-        label = _normalize_result_label(match.group("label"))
-        fields[label] = match.group("value").strip()
-    return fields
 
 
-def validate_spec_review_result_fields(text: str) -> list[str]:
-    """Validate structurally inspectable spec-review result fields."""
-
-    fields = _parse_spec_review_result_fields(text)
-    errors: list[str] = []
-
-    review_status = fields.get("review-status")
-    immediate_stage = fields.get("immediate-next-stage")
-    readiness = fields.get("eventual-test-spec-readiness")
-    stop_condition = fields.get("stop-condition")
-    readiness_condition = (
-        fields.get("readiness-condition")
-        or fields.get("eventual-test-spec-readiness-condition")
-        or fields.get("condition")
-    )
-
-    for label, value in (
-        ("Review status", review_status),
-        ("Immediate next stage", immediate_stage),
-        ("Eventual test-spec readiness", readiness),
-        ("Stop condition", stop_condition),
-    ):
-        if value is None:
-            errors.append(f"spec-review result missing required field: {label}")
-
-    if review_status is not None and review_status not in SPEC_REVIEW_RESULT_ALLOWED_REVIEW_STATUSES:
-        errors.append(f"Review status is not an allowed value: {review_status}")
-
-    if immediate_stage is not None:
-        if immediate_stage == "test-spec":
-            errors.append("Immediate next stage must not be test-spec")
-        if (
-            immediate_stage not in SPEC_REVIEW_RESULT_ALLOWED_IMMEDIATE_STAGES
-            or immediate_stage in SPEC_REVIEW_RESULT_PSEUDO_ROUTING_VALUES
-        ):
-            errors.append(f"Immediate next stage is not an allowed value: {immediate_stage}")
-
-    if readiness is not None:
-        if readiness == "not-assessed":
-            errors.append("Eventual test-spec readiness must not be not-assessed")
-        if readiness not in SPEC_REVIEW_RESULT_ALLOWED_READINESS:
-            errors.append(f"Eventual test-spec readiness is not an allowed value: {readiness}")
-
-    if review_status == "approved":
-        if immediate_stage not in {"architecture", "plan"}:
-            errors.append("approved requires Immediate next stage architecture or plan")
-        if readiness not in {"ready", "conditionally-ready"}:
-            errors.append(
-                "approved requires Eventual test-spec readiness ready or conditionally-ready"
-            )
-
-    if review_status == "changes-requested":
-        if immediate_stage not in {"spec revision", "review-resolution"}:
-            errors.append(
-                "changes-requested requires Immediate next stage spec revision or review-resolution"
-            )
-        if readiness != "not-ready":
-            errors.append("changes-requested requires Eventual test-spec readiness not-ready")
-
-    if review_status == "blocked":
-        if immediate_stage not in {"review-resolution", "none"}:
-            errors.append("blocked requires Immediate next stage review-resolution or none")
-        if readiness != "not-ready":
-            errors.append("blocked requires Eventual test-spec readiness not-ready")
-
-    if review_status == "inconclusive":
-        if immediate_stage != "none":
-            errors.append("inconclusive requires Immediate next stage none")
-        if readiness != "not-ready":
-            errors.append("inconclusive requires Eventual test-spec readiness not-ready")
-        if stop_condition in {None, "", "none"}:
-            errors.append("inconclusive requires a concrete Stop condition")
-
-    if readiness == "conditionally-ready" and not readiness_condition:
-        errors.append("conditionally-ready requires a named condition")
-
-    return errors
 
 
-def _placeholder_values(value: str | None) -> set[str]:
-    if value is None:
-        return set()
-    stripped = value.strip()
-    if stripped.startswith("<") and stripped.endswith(">"):
-        stripped = stripped[1:-1]
-    return {part.strip() for part in stripped.split("|") if part.strip()}
 
 
-def _sectionless_text(body: str, heading: str) -> str:
-    lines = body.splitlines()
-    result: list[str] = []
-    skipping = False
-    marker = f"## {heading}"
-    for line in lines:
-        if line.strip() == marker:
-            skipping = True
-            continue
-        if skipping and line.startswith("## "):
-            skipping = False
-        if not skipping:
-            result.append(line)
-    return "\n".join(result)
 
 
-def _normalized_material_field_mentions(text: str) -> set[str]:
-    mentions: set[str] = set()
-    for line in _iter_lines_outside_fences(text):
-        stripped = line.strip()
-        if stripped.startswith("- "):
-            stripped = stripped[2:].strip()
-        stripped = stripped.strip("` ")
-        if not stripped:
-            continue
-        label = stripped.split(":", 1)[0].split(",", 1)[0].strip("` ")
-        normalized = label.lower()
-        if normalized in {field.lower() for field in REVIEW_FAMILY_PARSER_FIELD_LABELS}:
-            mentions.add(normalized)
-    return mentions
 
 
-def validate_spec_review_canonical_contract(skill_path: Path) -> list[str]:
-    errors: list[str] = []
-    try:
-        _, body = load_skill_file(skill_path)
-    except ValueError as exc:
-        return [str(exc)]
-
-    result_skeleton_path = skill_path.parent / "assets" / "review-result-skeleton.md"
-    material_finding_path = skill_path.parent / "assets" / "material-finding.md"
-
-    if not result_skeleton_path.is_file():
-        errors.append(f"{skill_path}: spec-review result skeleton is missing")
-        result_skeleton_text = ""
-    else:
-        result_skeleton_text = result_skeleton_path.read_text(encoding="utf-8")
-
-    result_fields = _parse_spec_review_result_fields(result_skeleton_text)
-    required_result_fields = {
-        "review-status": "Review status",
-        "immediate-next-stage": "Immediate next stage",
-        "eventual-test-spec-readiness": "Eventual test-spec readiness",
-        "stop-condition": "Stop condition",
-    }
-    for normalized_label, display_label in required_result_fields.items():
-        if normalized_label not in result_fields:
-            errors.append(
-                f"{result_skeleton_path}: spec-review result skeleton missing field: {display_label}"
-            )
-
-    immediate_values = _placeholder_values(result_fields.get("immediate-next-stage"))
-    if "test-spec" in immediate_values:
-        errors.append(
-            "spec-review result skeleton Immediate next stage enum must exclude test-spec"
-        )
-    if immediate_values and immediate_values != SPEC_REVIEW_RESULT_ALLOWED_IMMEDIATE_STAGES:
-        expected = ", ".join(sorted(SPEC_REVIEW_RESULT_ALLOWED_IMMEDIATE_STAGES))
-        actual = ", ".join(sorted(immediate_values))
-        errors.append(
-            "spec-review result skeleton Immediate next stage enum mismatch: "
-            f"expected {expected}; found {actual}"
-        )
-
-    readiness_values = _placeholder_values(result_fields.get("eventual-test-spec-readiness"))
-    if "not-assessed" in readiness_values:
-        errors.append(
-            "spec-review result skeleton Eventual test-spec readiness enum must exclude not-assessed"
-        )
-    if readiness_values and readiness_values != SPEC_REVIEW_RESULT_ALLOWED_READINESS:
-        expected = ", ".join(sorted(SPEC_REVIEW_RESULT_ALLOWED_READINESS))
-        actual = ", ".join(sorted(readiness_values))
-        errors.append(
-            "spec-review result skeleton Eventual test-spec readiness enum mismatch: "
-            f"expected {expected}; found {actual}"
-        )
-
-    routing_section = _extract_markdown_section(body, "Routing and testability assessment")
-    if routing_section is None:
-        errors.append(
-            f"{skill_path}: spec-review must include a Routing and testability assessment section"
-        )
-        routing_section = ""
-
-    for value in sorted(SPEC_REVIEW_RESULT_ALLOWED_IMMEDIATE_STAGES):
-        if value not in routing_section:
-            errors.append(
-                f"{skill_path}: Routing and testability assessment missing immediate-stage value: {value}"
-            )
-    for value in sorted(SPEC_REVIEW_RESULT_ALLOWED_READINESS):
-        if value not in routing_section:
-            errors.append(
-                f"{skill_path}: Routing and testability assessment missing readiness value: {value}"
-            )
-    if "approved" in routing_section and "not-ready" in routing_section:
-        approved_rule_pattern = re.compile(
-            r"approved[^\n.]*Eventual test-spec readiness[^\n.]*"
-            r"(?:ready[^\n.]*conditionally-ready|conditionally-ready[^\n.]*ready)",
-            re.IGNORECASE,
-        )
-        if not approved_rule_pattern.search(routing_section):
-            errors.append(
-                f"{skill_path}: Routing and testability assessment must bind approved to ready or conditionally-ready"
-            )
-
-    no_test_spec_routing = re.search(
-        r"(?:do not|never)[^\n.]*test-spec[^\n.]*Immediate next stage",
-        routing_section,
-        re.IGNORECASE,
-    ) or re.search(
-        r"Immediate next stage[^\n.]*(?:do not|never|must not)[^\n.]*test-spec",
-        routing_section,
-        re.IGNORECASE,
-    )
-    if not no_test_spec_routing:
-        errors.append(
-            f"{skill_path}: Routing and testability assessment must state that test-spec is not an Immediate next stage value"
-        )
-
-    if material_finding_path.is_file():
-        material_finding_text = material_finding_path.read_text(encoding="utf-8")
-        material_finding_body = _asset_body_without_metadata(material_finding_text)
-        material_labels = {
-            label.lower()
-            for label in _asset_field_labels(material_finding_body)
-            if label in REVIEW_FAMILY_PARSER_FIELD_LABELS
-        }
-        missing_material_labels = {
-            label.lower() for label in REVIEW_FAMILY_PARSER_FIELD_LABELS
-        } - material_labels
-        for label in sorted(missing_material_labels):
-            errors.append(
-                f"{material_finding_path}: spec-review material-finding asset missing field label: {label}"
-            )
-
-    skill_without_resource_map = _sectionless_text(body, "Resource map")
-    skill_material_mentions = _normalized_material_field_mentions(skill_without_resource_map)
-    complete_required_mentions = {
-        label.lower() for label in REVIEW_FAMILY_PARSER_FIELD_LABELS
-    }
-    if complete_required_mentions <= skill_material_mentions:
-        errors.append(
-            "spec-review SKILL.md must not re-enumerate the complete material-finding field list outside the Resource map"
-        )
-
-    return errors
 INSTALLED_SKILL_PLAN_SURFACE_PATHS = (
     "docs/plan.md",
     "docs/plans/YYYY-MM-DD-slug.md",
@@ -1312,173 +783,6 @@ def _extract_markdown_section(body: str, heading: str) -> str | None:
     return "\n".join(section_lines).strip()
 
 
-def _clean_table_cell(cell: str) -> str:
-    value = cell.strip()
-    if len(value) >= 2 and value.startswith("`") and value.endswith("`"):
-        value = value[1:-1]
-    return value.strip()
-
-
-def _is_blank_or_placeholder(value: str) -> bool:
-    normalized = value.strip().lower()
-    return not normalized or normalized in {"none", "not applicable", "n/a", "-"}
-
-
-def _parse_markdown_table(section: str, expected_columns: tuple[str, ...]) -> list[dict[str, str]]:
-    rows: list[dict[str, str]] = []
-    lines = [line.strip() for line in section.splitlines() if line.strip().startswith("|")]
-    for index, line in enumerate(lines):
-        cells = [_clean_table_cell(cell) for cell in line.strip().strip("|").split("|")]
-        if tuple(cells) != expected_columns:
-            continue
-        if index + 2 > len(lines):
-            return rows
-        for row_line in lines[index + 2 :]:
-            row_cells = [
-                _clean_table_cell(cell)
-                for cell in row_line.strip().strip("|").split("|")
-            ]
-            if len(row_cells) != len(expected_columns):
-                continue
-            rows.append(dict(zip(expected_columns, row_cells)))
-        return rows
-    return rows
-
-
-def _split_ids(value: str, prefix: str) -> list[str]:
-    if _is_blank_or_placeholder(value):
-        return []
-    return re.findall(rf"\b{re.escape(prefix)}\d+\b", value)
-
-
-def _extract_test_case_blocks(section: str) -> list[tuple[str, str]]:
-    blocks: list[tuple[str, str]] = []
-    current_id: str | None = None
-    current_lines: list[str] = []
-    for line in section.splitlines():
-        match = re.match(r"^###\s+(?P<id>T\d+)\b", line.strip())
-        if match:
-            if current_id is not None:
-                blocks.append((current_id, "\n".join(current_lines)))
-            current_id = match.group("id")
-            current_lines = [line]
-            continue
-        if current_id is not None:
-            current_lines.append(line)
-    if current_id is not None:
-        blocks.append((current_id, "\n".join(current_lines)))
-    return blocks
-
-
-def _test_case_command_ids(block: str) -> list[str]:
-    for line in block.splitlines():
-        if line.strip().startswith("- Command IDs:"):
-            return _split_ids(line.split(":", 1)[1], "CMD")
-    return []
-
-
-def validate_test_spec_proof_contract_fixture(
-    body: str,
-    *,
-    milestone_based_plan: bool,
-) -> list[str]:
-    """Representative fixture validation for the test-spec proof contract.
-
-    This intentionally validates static representative outputs rather than every
-    historical test-spec artifact.
-    """
-
-    errors: list[str] = []
-    validation_section = _extract_markdown_section(body, "Validation commands")
-    if validation_section is None:
-        errors.append("missing Validation commands section")
-        command_rows: list[dict[str, str]] = []
-    else:
-        command_rows = _parse_markdown_table(
-            validation_section,
-            TEST_SPEC_VALIDATION_COMMAND_COLUMNS,
-        )
-
-    command_by_id: dict[str, dict[str, str]] = {}
-    command_values: set[str] = set()
-    if command_rows:
-        for row in command_rows:
-            command_id = row["Command ID"]
-            command = row["Command"]
-            classification = row["Classification"]
-            if _is_blank_or_placeholder(command_id):
-                errors.append("validation command row missing command ID")
-                continue
-            command_by_id[command_id] = row
-            if not _is_blank_or_placeholder(command):
-                command_values.add(command)
-            if _is_blank_or_placeholder(classification):
-                errors.append(f"command {command_id} missing classification")
-            elif classification not in TEST_SPEC_COMMAND_CLASSIFICATIONS:
-                errors.append(
-                    f"command {command_id} has unknown classification: {classification}"
-                )
-            for column in (
-                "Command",
-                "Owner",
-                "Owning milestone",
-                "First required milestone",
-                "Failure behavior",
-                "Zero-test behavior",
-                "Evidence artifact",
-                "Safe mode / side-effect boundary",
-            ):
-                if _is_blank_or_placeholder(row[column]):
-                    errors.append(f"command {command_id} missing {column.lower()}")
-            if classification == "planned-for-implementation":
-                if _is_blank_or_placeholder(row["Owner"]):
-                    errors.append(f"planned command {command_id} missing owner")
-                if _is_blank_or_placeholder(row["Owning milestone"]):
-                    errors.append(f"planned command {command_id} missing owning milestone")
-                if _is_blank_or_placeholder(row["First required milestone"]):
-                    errors.append(
-                        f"planned command {command_id} missing first required milestone"
-                    )
-    elif validation_section is not None and "No validation commands are part of this proof map" not in validation_section:
-        errors.append("Validation commands section missing command ledger or no-command rationale")
-
-    test_cases_section = _extract_markdown_section(body, "Test cases") or ""
-    for test_id, block in _extract_test_case_blocks(test_cases_section):
-        command_ids = _test_case_command_ids(block)
-        raw_commands = [match.group("command").strip() for match in TEST_SPEC_COMMAND_PATTERN.finditer(block)]
-        if raw_commands and not command_ids:
-            errors.append(f"test case {test_id} uses raw command without Command ID")
-        for command_id in command_ids:
-            if command_id not in command_by_id:
-                errors.append(f"test case {test_id} references unknown Command ID {command_id}")
-        for command in raw_commands:
-            if command not in command_values:
-                errors.append(f"named validation command missing from ledger: {command}")
-
-    milestone_section = _extract_markdown_section(body, "Milestone proof map")
-    if milestone_based_plan:
-        if milestone_section is None:
-            errors.append("milestone-based plan missing Milestone proof map")
-        else:
-            milestone_rows = _parse_markdown_table(
-                milestone_section,
-                TEST_SPEC_MILESTONE_PROOF_COLUMNS,
-            )
-            if not milestone_rows:
-                errors.append("milestone-based plan missing Milestone proof map")
-            for row in milestone_rows:
-                for command_id in _split_ids(row["Command IDs"], "CMD"):
-                    if command_id not in command_by_id:
-                        errors.append(
-                            f"milestone {row['Milestone']} references unknown Command ID {command_id}"
-                        )
-    elif milestone_section is not None and "Not applicable" not in milestone_section:
-        # Non-milestone fixtures may still include an explicit map; no error.
-        pass
-
-    return errors
-
-
 def _normalized_prose(text: str) -> str:
     return re.sub(r"\s+", " ", text).strip().lower()
 
@@ -1516,7 +820,7 @@ def _has_conditional_review_resolution_behavior(text: str) -> bool:
 def _has_isolated_advisory_carveout(text: str) -> bool:
     normalized = _normalized_prose(text)
     return (
-        ("isolated advisory" in normalized or "outside `spec-review`" in normalized)
+        "isolated advisory" in normalized
         and (
             "do not create lifecycle artifacts" in normalized
             or "without lifecycle artifacts" in normalized
@@ -1579,16 +883,6 @@ def validate_installed_skill_artifact_placement_contract(
         return errors
 
     placement_source = body
-    if skill_name == "test-spec-review":
-        recording_reference = (
-            path.parent
-            / "references"
-            / "test-spec-review-recording-and-settlement.md"
-        )
-        if recording_reference.is_file():
-            placement_source = "\n".join(
-                [body, recording_reference.read_text(encoding="utf-8")]
-            )
 
     placement = _extract_markdown_section(placement_source, "Artifact placement")
     if placement is None:
@@ -2235,87 +1529,6 @@ def validate_project_map_canonical_contract(
     )
 
 
-def _validate_spec_family_asset_file(
-    path: Path,
-    relative_resource: str,
-    skill_name: str,
-    text: str,
-) -> list[str]:
-    errors: list[str] = []
-    metadata = _asset_metadata(text)
-
-    missing = sorted(SPEC_FAMILY_ASSET_REQUIRED_METADATA_FIELDS - metadata.keys())
-    for field in missing:
-        errors.append(f"{path}: asset metadata missing required field '{field}'")
-
-    if missing:
-        return errors
-
-    if metadata["Skill"] != skill_name:
-        errors.append(
-            f"{path}: spec-family asset '{relative_resource}' must declare Skill: {skill_name}"
-        )
-
-    status = metadata["Template status"]
-    if status not in SPEC_FAMILY_ASSET_TEMPLATE_STATUS_VALUES:
-        allowed = ", ".join(sorted(SPEC_FAMILY_ASSET_TEMPLATE_STATUS_VALUES))
-        errors.append(
-            f"{path}: spec-family asset '{relative_resource}' Template status must be one of {allowed}"
-        )
-
-    maintained_alongside = metadata["Maintained alongside"]
-    expected_maintained_alongside = f"skills/{skill_name}/SKILL.md"
-    if maintained_alongside != expected_maintained_alongside:
-        errors.append(
-            f"{path}: spec-family asset '{relative_resource}' must be maintained alongside {expected_maintained_alongside}"
-        )
-
-    asset_body = _asset_body_without_metadata(text)
-    if not SPEC_FAMILY_ASSET_PLACEHOLDER_PATTERN.search(asset_body):
-        errors.append(
-            f"{path}: asset '{relative_resource}' must include a visible placeholder"
-        )
-
-    if SPEC_FAMILY_ASSET_FILLER_PATTERN.search(asset_body):
-        errors.append(
-            f"{path}: asset '{relative_resource}' must not use filler placeholder text"
-        )
-
-    for line_number, line in enumerate(_iter_lines_outside_fences(text), start=1):
-        if not PUBLISHED_INTERNAL_PATH_PATTERN.search(line):
-            continue
-        context = _required_repository_dependency_context(line)
-        if context is None:
-            continue
-        match = PUBLISHED_INTERNAL_PATH_REFERENCE_PATTERN.search(line)
-        dependency = match.group("path") if match else line.strip()
-        errors.append(
-            f"{path}:{line_number}: asset '{relative_resource}' must not require repository-root dependency: {dependency}"
-        )
-
-    review_policy_lines: list[str] = []
-    for line in asset_body.splitlines():
-        if line.lstrip().startswith("#"):
-            continue
-        field_label_match = SPEC_REVIEW_ASSET_ALLOWED_FIELD_LABEL_PATTERN.match(line)
-        if field_label_match is not None:
-            label = field_label_match.group("label")
-            normalized_label = _normalized_asset_label(label)
-            if SPEC_REVIEW_ASSET_FORBIDDEN_LABEL_PATTERN.search(
-                line
-            ) or SPEC_REVIEW_ASSET_FORBIDDEN_LABEL_PATTERN.search(normalized_label):
-                review_policy_lines.append(line)
-                continue
-            if normalized_label in SPEC_REVIEW_ASSET_APPROVED_LABELS:
-                continue
-        review_policy_lines.append(line)
-    review_policy_text = "\n".join(review_policy_lines)
-    if skill_name == "spec-review" and SPEC_REVIEW_ASSET_FORBIDDEN_POLICY_PATTERN.search(review_policy_text):
-        errors.append(
-            f"{path}: spec-review asset '{relative_resource}' must not contain review-policy labels or guidance"
-        )
-
-    return errors
 
 
 def _proposal_review_asset_policy_errors(
@@ -2328,7 +1541,7 @@ def _proposal_review_asset_policy_errors(
     for line in asset_body.splitlines():
         if not line.strip() or line.lstrip().startswith("#"):
             continue
-        field_label_match = SPEC_REVIEW_ASSET_ALLOWED_FIELD_LABEL_PATTERN.match(line)
+        field_label_match = ASSET_FIELD_LABEL_PATTERN.match(line)
         if PROPOSAL_REVIEW_ASSET_FORBIDDEN_POLICY_PATTERN.search(line):
             review_policy_lines.append(line)
             continue
@@ -2388,7 +1601,7 @@ def _review_family_should_validate(
         return False
     if "assets/material-finding.md" not in relative_assets:
         return False
-    if skill_name in {"code-review", "spec-review"}:
+    if skill_name == "code-review":
         return True
     return bool(resource_map and "Finding ID:" in resource_map)
 
@@ -2396,7 +1609,7 @@ def _review_family_should_validate(
 def _asset_field_labels(asset_body: str) -> list[str]:
     labels: list[str] = []
     for line in asset_body.splitlines():
-        field_label_match = SPEC_REVIEW_ASSET_ALLOWED_FIELD_LABEL_PATTERN.match(line)
+        field_label_match = ASSET_FIELD_LABEL_PATTERN.match(line)
         if field_label_match is not None:
             labels.append(field_label_match.group("label"))
     return labels
@@ -2405,7 +1618,7 @@ def _asset_field_labels(asset_body: str) -> list[str]:
 def _review_family_material_finding_field_block(asset_body: str) -> str:
     block_lines: list[str] = []
     for line in asset_body.splitlines():
-        field_label_match = SPEC_REVIEW_ASSET_ALLOWED_FIELD_LABEL_PATTERN.match(line)
+        field_label_match = ASSET_FIELD_LABEL_PATTERN.match(line)
         if field_label_match is None:
             continue
         label = field_label_match.group("label")
@@ -2423,7 +1636,7 @@ def _validate_review_family_asset_file(
     errors: list[str] = []
     metadata = _asset_metadata(text)
 
-    missing = sorted(SPEC_FAMILY_ASSET_REQUIRED_METADATA_FIELDS - metadata.keys())
+    missing = sorted(SHARED_ASSET_REQUIRED_METADATA_FIELDS - metadata.keys())
     for field in missing:
         errors.append(f"{path}: asset metadata missing required field '{field}'")
 
@@ -2448,12 +1661,12 @@ def _validate_review_family_asset_file(
         )
 
     asset_body = _asset_body_without_metadata(text)
-    if not SPEC_FAMILY_ASSET_PLACEHOLDER_PATTERN.search(asset_body):
+    if not SHARED_ASSET_PLACEHOLDER_PATTERN.search(asset_body):
         errors.append(
             f"{path}: asset '{relative_resource}' must include a visible placeholder"
         )
 
-    if SPEC_FAMILY_ASSET_FILLER_PATTERN.search(asset_body):
+    if SHARED_ASSET_FILLER_PATTERN.search(asset_body):
         errors.append(
             f"{path}: asset '{relative_resource}' must not use filler placeholder text"
         )
@@ -2582,7 +1795,7 @@ def _validate_proposal_family_asset_file(
     errors: list[str] = []
     metadata = _asset_metadata(text)
 
-    missing = sorted(SPEC_FAMILY_ASSET_REQUIRED_METADATA_FIELDS - metadata.keys())
+    missing = sorted(SHARED_ASSET_REQUIRED_METADATA_FIELDS - metadata.keys())
     for field in missing:
         errors.append(f"{path}: asset metadata missing required field '{field}'")
 
@@ -2595,8 +1808,8 @@ def _validate_proposal_family_asset_file(
         )
 
     status = metadata["Template status"]
-    if status not in SPEC_FAMILY_ASSET_TEMPLATE_STATUS_VALUES:
-        allowed = ", ".join(sorted(SPEC_FAMILY_ASSET_TEMPLATE_STATUS_VALUES))
+    if status not in SHARED_ASSET_TEMPLATE_STATUS_VALUES:
+        allowed = ", ".join(sorted(SHARED_ASSET_TEMPLATE_STATUS_VALUES))
         errors.append(
             f"{path}: proposal-family asset '{relative_resource}' Template status must be one of {allowed}"
         )
@@ -2609,12 +1822,12 @@ def _validate_proposal_family_asset_file(
         )
 
     asset_body = _asset_body_without_metadata(text)
-    if not SPEC_FAMILY_ASSET_PLACEHOLDER_PATTERN.search(asset_body):
+    if not SHARED_ASSET_PLACEHOLDER_PATTERN.search(asset_body):
         errors.append(
             f"{path}: asset '{relative_resource}' must include a visible placeholder"
         )
 
-    if SPEC_FAMILY_ASSET_FILLER_PATTERN.search(asset_body):
+    if SHARED_ASSET_FILLER_PATTERN.search(asset_body):
         errors.append(
             f"{path}: asset '{relative_resource}' must not use filler placeholder text"
         )
@@ -2699,84 +1912,6 @@ def validate_generated_asset_presence(
     return errors
 
 
-def _validate_spec_family_asset_rollout(
-    path: Path,
-    body: str,
-    skill_name: str | None,
-) -> list[str]:
-    if skill_name not in SPEC_FAMILY_ASSET_APPROVED_ASSETS:
-        return []
-
-    skill_dir = path.parent
-    resources = _resource_files(skill_dir)
-    if not resources:
-        return []
-
-    errors: list[str] = []
-    unexpected_resource_classes = [
-        resource.relative_to(skill_dir).as_posix()
-        for resource in resources
-        if not resource.relative_to(skill_dir).as_posix().startswith("assets/")
-        and not _is_approved_packaged_non_asset_resource(
-            skill_name,
-            resource.relative_to(skill_dir).as_posix(),
-        )
-    ]
-    for relative_resource in unexpected_resource_classes:
-        errors.append(
-            f"{path}: spec-family asset rollout must not ship packaged non-asset resource '{relative_resource}'"
-        )
-
-    assets = [
-        asset
-        for asset in sorted((skill_dir / "assets").rglob("*"))
-        if asset.is_file() and asset.name != ".gitkeep"
-    ] if (skill_dir / "assets").is_dir() else []
-    relative_assets = {asset.relative_to(skill_dir).as_posix() for asset in assets}
-    approved_assets = SPEC_FAMILY_ASSET_APPROVED_ASSETS[skill_name]
-    if relative_assets != approved_assets:
-        expected = ", ".join(sorted(approved_assets))
-        actual = ", ".join(sorted(relative_assets)) or "none"
-        errors.append(
-            f"{path}: spec-family asset rollout must ship exactly approved assets: expected {expected}; found {actual}"
-        )
-
-    section = _extract_markdown_section(body, "Resource map")
-    if section is None:
-        return errors
-
-    for relative_resource in sorted(relative_assets & approved_assets):
-        entry = _resource_entry_text(section, relative_resource)
-        if entry is None:
-            continue
-        expected_prefix = f"- COPY `{relative_resource}`"
-        if not entry.startswith(expected_prefix):
-            errors.append(
-                f"{path}: Resource map entry for '{relative_resource}' must use literal COPY"
-            )
-        if not RESOURCE_LOAD_CONDITION_PATTERN.search(entry):
-            errors.append(
-                f"{path}: Resource map entry for '{relative_resource}' must include a trigger condition"
-            )
-        if not PLAN_ASSET_FIELDS_TO_FILL_PATTERN.search(entry):
-            errors.append(
-                f"{path}: Resource map entry for '{relative_resource}' must name fields or structures to fill"
-            )
-        if "Do not emit unfilled placeholders" not in entry:
-            errors.append(
-                f"{path}: Resource map entry for '{relative_resource}' must instruct agents not to emit unfilled placeholders"
-            )
-
-    for asset in assets:
-        relative_resource = asset.relative_to(skill_dir).as_posix()
-        if relative_resource not in approved_assets:
-            continue
-        text = asset.read_text(encoding="utf-8")
-        errors.extend(
-            _validate_spec_family_asset_file(asset, relative_resource, skill_name, text)
-        )
-
-    return errors
 
 
 def _validate_proposal_family_asset_rollout(
@@ -3432,13 +2567,6 @@ def validate_skill_file(path: Path, schema: dict) -> tuple[list[str], str | None
         )
     )
     errors.extend(
-        _validate_spec_family_asset_rollout(
-            path,
-            body,
-            name.strip() if isinstance(name, str) else None,
-        )
-    )
-    errors.extend(
         _validate_proposal_family_asset_rollout(
             path,
             body,
@@ -3481,8 +2609,6 @@ def validate_skill_file(path: Path, schema: dict) -> tuple[list[str], str | None
                     body,
                 )
             )
-        if skill_name == "spec-review":
-            errors.extend(validate_spec_review_canonical_contract(path))
     return errors, skill_name
 
 

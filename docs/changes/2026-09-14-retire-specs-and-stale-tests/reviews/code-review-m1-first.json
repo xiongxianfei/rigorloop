@@ -1,0 +1,92 @@
+{
+  "assessment_scope": "Bounded first-pass M1 implementation review and reproduced required correction; not final whole-change review.",
+  "change_id": "2026-09-14-retire-specs-and-stale-tests",
+  "contributors": [
+    {
+      "id": "codex-m1-implementer",
+      "role": "implement"
+    }
+  ],
+  "findings": [
+    {
+      "evidence": "Major; scripts/boundary_first_validation.py validate_changed_spec marker-none branch returns () for is_test_spec. Public command returns passed with no review_required for explicitly selected malformed proof when companion feature is unmarked. Reproduced with Boundary model version: unknown_value and ## Proof map; exit0. This bypasses the selected proof and conceals unresolved feature adoption.",
+      "id": "m1-unmarked-proof-false-pass",
+      "owner": {
+        "id": "codex-m1-implementer",
+        "role": "implement"
+      },
+      "reporter": {
+        "id": "independent-m1-code-reviewer",
+        "role": "review"
+      },
+      "required_outcome": "Preserve unmarked adoption as an explicit Design Review observation for either selected feature or proof; malformed/unknown/partial feature or proof structure must remain a failure without assuming adoption. Add public-command regression for plain unmarked companion, unknown proof marker/version and malformed/partial proof before fixing the short-circuit; rerun focused structural and applicable integrated checks, then independent reassessment.",
+      "resolution": {
+        "actor": {
+          "id": "independent-m1-code-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [],
+        "rationale": "Frozen e1088e01 corrects plain unmarked proof to review-required and claimed/unknown/partial proof to failed with adoption observation preserved. Public-entrypoint regression covers plain text, unknown feature marker, unknown proof version, partial Proof map and valid proof without adopted governing feature. Independent focused unmarked run passed3tests; author complete affected61structural/28projection reruns passed after correction."
+      },
+      "state": "resolved",
+      "subjects": [
+        {
+          "identity": "sha256:0b3fd0eacc8cfd77da0fe7742a0027f5910f06e0357036ee38787ee075f94332",
+          "path": "scripts/boundary_first_validation.py"
+        },
+        {
+          "identity": "sha256:25f6cf0efda7c3f41ce34183c273900cb76e4aff2fc88183ed430c83b9c6172f",
+          "path": "scripts/validate-boundary-first.py"
+        }
+      ]
+    }
+  ],
+  "id": "code-review-m1-first",
+  "independence_basis": "Separate nonauthor reviewer inspected staged M1 delta from2de10dff, approved M1 intent and current public validator entrypoint; reproduced failing contract in an owned temporary customer tree without modifying implementation.",
+  "judgment": "changes-requested",
+  "limitations": [
+    "Local integrated CI remains running and no pass is claimed. Final M1 assessment requires correction, current proof and frozen handoff."
+  ],
+  "rationale": [
+    "VAL-SR-28 requires unknown/malformed explicit inputs to fail closed and unmarked adoption to remain an explicit Design Review decision. In validate_changed_spec, unmarked governing feature plus selected test-spec returns empty issues before inspecting proof.",
+    "Public reproduction: unmarked specs/feature.md plus specs/feature.test.md containing Boundary model version: unknown_value and an empty Proof map; validate-boundary-first.py --check --path specs/feature.test.md returns0, status passed, review_required empty. A plain unmarked proof also hides the required adoption observation.",
+    "Other inspected M1 boundaries retain raw resource bytes, closed projections, direct source/manifest safety and default missing-model failure. No surviving activation-helper imports found. These observations do not override the reproduced failure."
+  ],
+  "reviewer": {
+    "id": "independent-m1-code-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:0b3fd0eacc8cfd77da0fe7742a0027f5910f06e0357036ee38787ee075f94332",
+      "path": "scripts/boundary_first_validation.py"
+    },
+    {
+      "identity": "sha256:25f6cf0efda7c3f41ce34183c273900cb76e4aff2fc88183ed430c83b9c6172f",
+      "path": "scripts/validate-boundary-first.py"
+    },
+    {
+      "identity": "sha256:4b4d412c2a24b59f071ef4813e8dd6c6dcaeb4eb5422cd0533cf20c8811120ef",
+      "path": "scripts/boundary_first_reference.py"
+    },
+    {
+      "identity": "sha256:264a4c4c9b6098821d879108135a63041e865119f2c8703af635eaa5616bfc58",
+      "path": "scripts/validation_selection.py"
+    },
+    {
+      "identity": "sha256:90e00cf969ff8f6c7cfb59f6e31e323ff5642f31189e55cee7e5240b96e1e86d",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:3e99392f5974d61f13f6c3bf8f5b616dbb5c6ca3a997f83a36e89ca43a7dd8e3",
+      "path": "docs/plans/2026-09-14-retire-specs-and-stale-tests.md"
+    },
+    {
+      "identity": "sha256:dbec10925f1578455c123367f0513a9b79aad54bff3a08c1f2a3ddaafae34e76",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m1-test-maintenance.json"
+    }
+  ],
+  "summary": "Explicit customer proof selection can report structural success without checking malformed proof or surfacing adoption need.",
+  "target": "code"
+}

@@ -16,7 +16,7 @@ from pathlib import Path
 from typing import Any, Protocol
 
 from adapter_distribution import parse_manifest_yaml, parse_release_yaml
-from artifact_lifecycle_validation import validate_release_evidence_checklist
+from release_evidence import validate_release_evidence_checklist
 
 
 SCHEMA_VERSION = "release-profile-v1"

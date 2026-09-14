@@ -1,0 +1,1002 @@
+{
+  "stage": "design",
+  "milestone": "m6",
+  "scope": "Current owner/governance and source provenance reconciliation within approved complete retirement; requirement IDs, behavior, views and Delivery allocation unchanged. Ten exclusively historical v2 examples retire with their current index references; current examples and negative proof remain.",
+  "sources_to_remove": [
+    {
+      "path": "docs/adr/ADR-20260419-repository-source-layout.md",
+      "sha256": "f7267328b689bd8b63fda982507227b8bf32630b49ee864264036acf6592fe41",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Packaging DIST-SR-01\u201324; Skill common contract. Preserve canonical skills, thin reproducible archives, explicit local-runtime distinction and trusted package metadata; retire tracked-mirror, token and completed compatibility-window obligations."
+    },
+    {
+      "path": "docs/adr/ADR-20260512-generated-skill-output-release-artifacts.md",
+      "sha256": "ca6c031942c3450cb84c15c6ce3cd4f5a6aa9de7e1a1dd1371b5d8ad42ed954e",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Packaging DIST-SR-01\u201324; Skill common contract. Preserve canonical skills, thin reproducible archives, explicit local-runtime distinction and trusted package metadata; retire tracked-mirror, token and completed compatibility-window obligations."
+    },
+    {
+      "path": "docs/adr/ADR-20260515-rigorloop-cli-package-and-codex-init.md",
+      "sha256": "46dec555d672b31c45ddcce7062cbfd2241f6dac61b7c8c856d1ebaeafc9fc3e",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "CLI CLI-SR-01\u201330; Installation DIST-SR-07\u201316; Packaging DIST-SR-23. Preserve one public binary, trusted archive/metadata/member boundaries and actual local/network installation proof. Retire scaffold-only/name-specific first release and old --adapter/new-change interfaces."
+    },
+    {
+      "path": "docs/adr/ADR-20260516-rigorloop-npm-publication.md",
+      "sha256": "d9a3dc5ae7a5509956ebff8beca16033c949c563d13bf461f95848b5ce2b0c53",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Packaging DIST-SR-23; Release REL-SR-01\u201326. Preserve actual npm member allowlist, trusted publishing, candidate-bound approval/provenance and immutable fix-forward publication. Retire the completed first-version bootstrap exception."
+    },
+    {
+      "path": "docs/adr/ADR-20260522-change-record-catalog-registration-and-bounded-read-model.md",
+      "sha256": "b6b4b9f381689fe223aa02617c25b9f73836763d18b519b285803afe86a9def1",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "CLI CLI-SR-01\u201330; Records RF-SR-01\u201314; Validation VAL-SR-27. Preserve bounded selected queries, exact registry subjects, unknown/unregistered routing failures and separate read/validation authority. Retire old query-change-record helper and semantic registration schema."
+    },
+    {
+      "path": "docs/adr/ADR-20260625-independent-adversarial-review-gates.md",
+      "sha256": "ad621401e9d813f7ddece0d1400e3930f7fec2174f6f01a21cb1e47dd33ce404",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Assessment RC-SR-01\u201323; Skill SKL-SR-28/29. Preserve independent review, requirement fidelity, material findings, exact origins and separately owned disposition. Retire old automated eligibility/Markdown receipt representation; current policy and v3 evidence remain."
+    },
+    {
+      "path": "docs/adr/ADR-20260626-requirement-fidelity-gate.md",
+      "sha256": "f9e2b4fb74f3285bde068aee316806513c735eaa13dbbbda20aa88eadd788b56",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Assessment RC-SR-01\u201323; Skill SKL-SR-28/29. Preserve independent review, requirement fidelity, material findings, exact origins and separately owned disposition. Retire old automated eligibility/Markdown receipt representation; current policy and v3 evidence remain."
+    },
+    {
+      "path": "docs/adr/ADR-20260721-single-bounded-review-fix-workflow-automation.md",
+      "sha256": "6086a22a8db61cdb3b2d7d24d4731faa1eb7e817c2fc77b0dc2c14b8b55258f9",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Workflow WF-SR-01\u201319; Skill SKL-SR-28/29; CLI CLI-SR-01\u201330. Preserve bounded authorized continuation, correction ownership, stable plans, explicit current work and origin-retaining evidence. Retire YAML/v1/v2 semantic coordinator, eligibility, state projection and migration machinery."
+    },
+    {
+      "path": "docs/adr/ADR-20260727-portable-boundary-first-reference-projection-and-activation.md",
+      "sha256": "b5d623f338020f15570ca061940933469603dc1f99b6311c125038efc1ed4cf3",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Design DES-SR-23; Validation VAL-SR-28; Packaging DIST-SR-24. Preserve explicit portable feature/proof grammar, compact boundary scan, meaningful interactions, deterministic resource projection and missing/drifted/path-negative proof. Retire historical activation, grandfathering, rollback, atomic custom publisher and completed metric rollout."
+    },
+    {
+      "path": "docs/adr/ADR-20260728-portable-boundary-first-release-manifest-and-package-rollback.md",
+      "sha256": "3d09255eb51dacb2fd2fe756a656fc9719edd6de99763f23ae9ad09fd1b1c1e2",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Design DES-SR-23; Validation VAL-SR-28; Packaging DIST-SR-24. Preserve explicit portable feature/proof grammar, compact boundary scan, meaningful interactions, deterministic resource projection and missing/drifted/path-negative proof. Retire historical activation, grandfathering, rollback, atomic custom publisher and completed metric rollout."
+    },
+    {
+      "path": "docs/adr/ADR-20260729-progressive-boundary-guidance-resources.md",
+      "sha256": "ad78a2f644679a6b0dbaaa6000c1c9b0a8751f9abeb238fcb74cee04e16181c9",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Design DES-SR-23; Validation VAL-SR-28; Packaging DIST-SR-24. Preserve explicit portable feature/proof grammar, compact boundary scan, meaningful interactions, deterministic resource projection and missing/drifted/path-negative proof. Retire historical activation, grandfathering, rollback, atomic custom publisher and completed metric rollout."
+    },
+    {
+      "path": "docs/adr/ADR-20260729-stage-owned-change-local-lifecycle-state.md",
+      "sha256": "fd9202c7f77dab2a1f29b485528ba42c4c97d064a57bd90958907f91a8efd933",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Workflow WF-SR-01\u201319; Skill SKL-SR-28/29; CLI CLI-SR-01\u201330. Preserve bounded authorized continuation, correction ownership, stable plans, explicit current work and origin-retaining evidence. Retire YAML/v1/v2 semantic coordinator, eligibility, state projection and migration machinery."
+    },
+    {
+      "path": "docs/adr/ADR-20260805-boundary-first-activation-candidate-and-atomic-publication.md",
+      "sha256": "614c19fb59aae74205845024fa23993fed38e0b5dce2c65991a24909858b542a",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Design DES-SR-23; Validation VAL-SR-28; Packaging DIST-SR-24. Preserve explicit portable feature/proof grammar, compact boundary scan, meaningful interactions, deterministic resource projection and missing/drifted/path-negative proof. Retire historical activation, grandfathering, rollback, atomic custom publisher and completed metric rollout."
+    },
+    {
+      "path": "docs/adr/ADR-20260806-checked-revision-boundary-activation-and-routine-release.md",
+      "sha256": "dcdecc94c62a4d55e108711b466976c2309cb6bf4cfc866110461e9c44d82cdf",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Design DES-SR-23; Validation VAL-SR-28; Packaging DIST-SR-24. Preserve explicit portable feature/proof grammar, compact boundary scan, meaningful interactions, deterministic resource projection and missing/drifted/path-negative proof. Retire historical activation, grandfathering, rollback, atomic custom publisher and completed metric rollout."
+    },
+    {
+      "path": "docs/adr/ADR-20260818-ordered-final-review-stage-evidence-tail.md",
+      "sha256": "d7b1fb1da32f22b28e9fd302e3a0881574563445a2e96c02cb00b4c97a1b76ea",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Assessment RC-SR-23. Preserve exact reviewed subject and cumulative attributable final-evidence-only suffix regardless of commit topology; unknown/mixed/protected/contradictory changes invalidate reliance. Retire the stricter S-R-E ordering and separate explain-change stage."
+    },
+    {
+      "path": "docs/adr/ADR-20260825-local-cli-observability-and-result-projection-boundary.md",
+      "sha256": "5e98900b19ff15a759dd59923c80d6a052281d345eec477d1814d82953a5a19e",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "CLI CLI-SR-14\u201320/29/30. Preserve invocation controller, allowlisted local events, synchronous bounded append/rotation lock, privacy and safe diagnostics, pure rendering, semantic-result authority and truthful failure degradation. Retire only named-release adoption measurements; this is not boundary-method activation policy."
+    },
+    {
+      "path": "docs/adr/ADR-20260825-workflow-routed-correction-and-artifact-ownership.md",
+      "sha256": "bb9ae9746eea36669c560153660dda049dee8470cf3f38eb2304c3fd3e08d8c5",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Workflow WF-SR-01\u201319; Skill SKL-SR-28/29; CLI CLI-SR-01\u201330. Preserve bounded authorized continuation, correction ownership, stable plans, explicit current work and origin-retaining evidence. Retire YAML/v1/v2 semantic coordinator, eligibility, state projection and migration machinery."
+    },
+    {
+      "path": "docs/adr/ADR-20260902-route-context-and-skill-identity.md",
+      "sha256": "f09d242c3d65fc4fd8fcc412d30a880554786fa4b22edd1ec6fff9c329773d5c",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Workflow WF-SR-01\u201319; CLI CLI-SR-01\u201330; Skill SKL-SR-28/29. Preserve route semantic ownership, factual bounded workflow-context, explicit configuration and ambiguity/no-mutation failures. Retire workflow skill/docs-workflows fallback and old evaluator-derived permitted-operation projections."
+    },
+    {
+      "path": "docs/architecture/2026-08-25-workflow-routed-upstream-corrections.md",
+      "sha256": "7e97107b41b2fcd95ce551fc40d0299010f27ec551d96e1dc828122ea2086ef1",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Workflow WF-SR-01\u201319; Skill SKL-SR-28/29; CLI CLI-SR-01\u201330. Preserve bounded authorized continuation, correction ownership, stable plans, explicit current work and origin-retaining evidence. Retire YAML/v1/v2 semantic coordinator, eligibility, state projection and migration machinery."
+    },
+    {
+      "path": "docs/architecture/2026-09-02-refocus-workflow-into-route.md",
+      "sha256": "9b27ca3f5fd0893d73209389a8e016a207266dca55ea2dba32b7f8145b87562e",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Workflow WF-SR-01\u201319; CLI CLI-SR-01\u201330; Skill SKL-SR-28/29. Preserve route semantic ownership, factual bounded workflow-context, explicit configuration and ambiguity/no-mutation failures. Retire workflow skill/docs-workflows fallback and old evaluator-derived permitted-operation projections."
+    },
+    {
+      "path": "docs/architecture/2026-09-03-refine-explore-research-optional-discovery-skills.md",
+      "sha256": "1d1f20e8ea4d4e868121130644174322971e8479dd7fb121bd0ad16d4526e34a",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Skill discovery interface SKL-SR-28/29; Workflow WF-SR-19. Preserve optional Explore/Research distinction, explicit invocation artifacts, named owner adoption, no automatic stage mutation and independent factual/directional judgment; retire old stage names and template freezes."
+    },
+    {
+      "path": "docs/architecture/2026-09-03-relax-pr-evidence-tail.md",
+      "sha256": "81fd2ae8664cae24f0ae697f2cd47aac4dfdf7b6458fdc6752c3f8786257f32d",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Assessment RC-SR-23. Preserve exact reviewed subject and cumulative attributable final-evidence-only suffix regardless of commit topology; unknown/mixed/protected/contradictory changes invalidate reliance. Retire the stricter S-R-E ordering and separate explain-change stage."
+    },
+    {
+      "path": "docs/architecture/system/architecture.md",
+      "sha256": "cfca2c3ba45efc625439bebf36f23bf3a272cf4c10f39218b90ebaac8fe84686",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "System SYS-SR-01\u201313 and complete Skill/CLI/Engineering child hierarchy. Preserve Level2 specialist behavior, runtime/input/output/authority/failure boundaries, current recording and packaging/release constraints through source-disposition.md and owning models. Retire duplicate broad architecture/diagrams and obsolete engines/activation/three-target edges."
+    },
+    {
+      "path": "docs/architecture/system/diagrams/component-boundary-guidance.mmd",
+      "sha256": "de3935312a9e36888a3c05e279267a6a0bf3e3b38a786d6784234bc6e1867e00",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Design DES-SR-23; Validation VAL-SR-28; Packaging DIST-SR-24. Preserve explicit portable feature/proof grammar, compact boundary scan, meaningful interactions, deterministic resource projection and missing/drifted/path-negative proof. Retire historical activation, grandfathering, rollback, atomic custom publisher and completed metric rollout."
+    },
+    {
+      "path": "docs/architecture/system/diagrams/component-workflow-automation.mmd",
+      "sha256": "118c9997f862cdc46e1c117a440d9b51d0bdecb2c739b57ddb7f6328f64321f2",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Workflow WF-SR-01\u201319; Skill SKL-SR-28/29; CLI CLI-SR-01\u201330. Preserve bounded authorized continuation, correction ownership, stable plans, explicit current work and origin-retaining evidence. Retire YAML/v1/v2 semantic coordinator, eligibility, state projection and migration machinery."
+    },
+    {
+      "path": "docs/architecture/system/diagrams/container.mmd",
+      "sha256": "a0a823bc6946aa0179d0d21dc5f698fe06b4021f8ebe8d6ba002211b45ac0899",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "System SYS-SR-01\u201313 and complete Skill/CLI/Engineering child hierarchy. Preserve Level2 specialist behavior, runtime/input/output/authority/failure boundaries, current recording and packaging/release constraints through source-disposition.md and owning models. Retire duplicate broad architecture/diagrams and obsolete engines/activation/three-target edges."
+    },
+    {
+      "path": "docs/architecture/system/diagrams/context.mmd",
+      "sha256": "2456223f3d76c111074e2e23a0b55ab08be46b8d5848684641a93a0353c599b0",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "System SYS-SR-01\u201313 and complete Skill/CLI/Engineering child hierarchy. Preserve Level2 specialist behavior, runtime/input/output/authority/failure boundaries, current recording and packaging/release constraints through source-disposition.md and owning models. Retire duplicate broad architecture/diagrams and obsolete engines/activation/three-target edges."
+    },
+    {
+      "path": "specs/README.md",
+      "sha256": "6eba75ab34c648405338b49ef9b889aa35fe7cbbe33db1db4b41502be641a7be",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/boundary-first-proof-model.md",
+      "sha256": "899a66c9ad84f87a8c790b5d0aee3049eec3e31fb03ada9509a471d9c1eb6da0",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/boundary-first-proof-model.test.md",
+      "sha256": "c57ac0b74f6209dbab09741cb97f0139750cced084297dd1ba61da7cec3366c8",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/boundary-first-v1-v0-3-7-activation-release.md",
+      "sha256": "ac8ca11ddb0d150fcbc58d3874e6eb1568675cc436cd6e9888c92141a8d46d66",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/boundary-first-v1-v0-3-7-activation-release.test.md",
+      "sha256": "bd38d12bcb558e1352b0e49ef0d5d5d018238c22ccceaea841aee3c9dd5fa5af",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/bugfix-skill-simplification.md",
+      "sha256": "a3ff7c2894f8a51eb18f39a06b31ec3ba8cb53d0dfb2941e13b0fb44470d93d7",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/bugfix-skill-simplification.test.md",
+      "sha256": "0e0d98ca2a719b8a6dd3cdad5cc6d1bc688528b545a7dbb7388146b45153f1c3",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/change-record-catalog-registration-and-bounded-read-model.md",
+      "sha256": "c2b47f090f0760b648618c1226f02a00a2cd29117b33a60a344155b89068c27d",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/change-record-catalog-registration-and-bounded-read-model.test.md",
+      "sha256": "894fe8b71942518e45f979012aceee0d052ae9d1d667c371d6c8aab237ace16a",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/ci-maintenance-skill-simplification.md",
+      "sha256": "84d5ead6377e034d4d9850c7075b9029911621acc17efc705af156e1acf6daaa",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/ci-maintenance-skill-simplification.test.md",
+      "sha256": "09c66d787e672c5b2307470808a8f27971f1f2eb0dee92147a45044c88c98983",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/ci-maintenance-skill.md",
+      "sha256": "62ccbe97657f3b16051bce03a6056d70ef575a343d0401e10c3d7a378bedb10a",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/ci-maintenance-skill.test.md",
+      "sha256": "623fd3aff5055da7ea4b583b48677cc34ff0669f18d0ed83a0607fab2ca0e7ce",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/cli-observability-and-token-efficient-results.md",
+      "sha256": "b2bbe336ebf56ec47d2c595e47095f12998d3a1d837e67000a58e6f79c1ffae4",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/cli-observability-and-token-efficient-results.test.md",
+      "sha256": "8c509aeb9adf3f0b329f235fa729934210919fdbb93b24bb5d29e57d2af80e8a",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/code-review-skill-simplification.md",
+      "sha256": "fdf3592a0c8059dbd17936dd690134cd2a6054f4430b36bf984db14cbc06fc0e",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/code-review-skill-simplification.test.md",
+      "sha256": "0b40574979e75b7a18a4bae9687504c986fbad584e9fdfe25034d73ab8541166",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/constitution-governance-surface.md",
+      "sha256": "4e55fdd1ad1f18e3151105dea26baccbf3569c53bb86d5ea6114c0654d8b5b6c",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/constitution-governance-surface.test.md",
+      "sha256": "c6608c3d71d5aaf46e55520b2397c4acb3f680cb01e18f76968515fc9f239d69",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/cost-bounded-rigor-m4-lifecycle-token-cost-summary.md",
+      "sha256": "7c079a7ccae2a8c2edadd81a08dfd53995c33325bf64e677d0e0bfa7d642856c",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/cost-bounded-rigor-m4-lifecycle-token-cost-summary.test.md",
+      "sha256": "07fef7aec99d254b5a923df1cfef6dbde6bb73f9b412440955800dbe9f6579be",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/documentation-source-formatting.md",
+      "sha256": "93f764fbcedda823272f4e7c457109c0b7cb1c87b020c320457c4b9993ece723",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/documentation-source-formatting.test.md",
+      "sha256": "c53cce065529b46f54a4450db99877b41014b027de6ce398f38d174f626d34d7",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/expand-dynamic-token-friendliness-benchmarks-for-core-skills.md",
+      "sha256": "e16e58374e22dab1644f2e113c4a3590f53a8fd0c2fb7dfe38b3b788293c5bc2",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/expand-dynamic-token-friendliness-benchmarks-for-core-skills.test.md",
+      "sha256": "12d11925d5d97d2a8f07de7c85b45fe9ce313bcf01676a9fc504536907988423",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/feature-template.md",
+      "sha256": "f1c05a9b7c48d44a81d36e23d23925abba29aacae7375335f357063f638263b3",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/feature-template.test.md",
+      "sha256": "bfe6e8333bc4f77727976ebfee9a405d622e8388a2f5dac327e87168afe1c3cf",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/follow-up-ownership-and-deferred-work-register.md",
+      "sha256": "063c2cb75786c4fa7ef649036da094b75e0037947e233daebd62d4bfb27e6ef9",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/follow-up-ownership-and-deferred-work-register.test.md",
+      "sha256": "5a916286d09eb4604703ff339aaf0cf49c59c5726341014e51f60063b8a9f564",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/implement-first-attempt-correctness.md",
+      "sha256": "3a8d6759c2ecb517137b42127d199dcadb55bff3d98a326ec54b3c4976e0cbfb",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/implement-first-attempt-correctness.test.md",
+      "sha256": "7e4d8469e5c5af5e60f132358df5c85f69175a8454a6d85e61042c2e2080a9db",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/implement-skill-simplification.md",
+      "sha256": "b2cedc4d386b00acfa609f844844f7ba87d7dbd1768e67c58c7a0f74aa697069",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/implement-skill-simplification.test.md",
+      "sha256": "6d0cf6da865e485e883cd6aa4006938adb2e320e333f1cfb3f83f311ef6792ef",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/implementation-autoprogression-through-verify.test.md",
+      "sha256": "9cce19288ca4fd8965c16db883d12f000ed53c80ff3a82f7ffd68f39f242b158",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/installed-skill-artifact-placement-contract.md",
+      "sha256": "8907a71e32a451b409c7d0c7133329c4183f3f412d3ee326c1ac416715f0e8c5",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/installed-skill-artifact-placement-contract.test.md",
+      "sha256": "0f22d62b5d12669dbfd5b353d5c4a45c3501ffbace1c44e833ae569b58762d91",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/learn-artifact-model.md",
+      "sha256": "e1f068e539d8cad3e20493e13515a3529d83fbd7dc71ae8a201b5c1adcd66cdc",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/learn-artifact-model.test.md",
+      "sha256": "954f22cca623ec7da98717513992f83a97e7e55b2bde4d805d4792e1cd084768",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/learn-skill-simplification.md",
+      "sha256": "a7c71210ad45ab2b48daad06b5af0567046551f0f13e56a8cb8168c4d09016db",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/learn-skill-simplification.test.md",
+      "sha256": "7618bdbfd88a5cdc7fe9e4c8fd77b65baba495f040ad6df1c53e0933c807819d",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/markdown-readability-contract.md",
+      "sha256": "6a8ed333bb9ed3a8e3ad9bd351966cd468e9cfad383c8ee410300a7877b63f80",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/markdown-readability-contract.test.md",
+      "sha256": "a513a4cb5ea1c0c700e18a74dc1aa3158b259345a2dd2940f91e4acfd81fd63c",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/multi-agent-adapters-first-public-release.md",
+      "sha256": "e80f0ed0d42d757d5d9769dd661dec1a842036e56c61c5231bdd846e7ff95747",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/multi-agent-adapters-first-public-release.test.md",
+      "sha256": "8d6b02784ae07f83595f377fa08bb11ef66606abf5f270d2bdda44860cd9d793",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/pr-skill-simplification.md",
+      "sha256": "c5a764eeebe4d1fe779e3c087064b5f0daa953e88862f0104c4cc3b302445f19",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/pr-skill-simplification.test.md",
+      "sha256": "f6dc8a8d208fb263975a5795f2be1aacb98fa6308e84838b0f4dec33a4f4e752",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/progressive-boundary-first-skill-guidance.md",
+      "sha256": "983a6cab29dd12ff18866f06a2a818ab9c198dd3a3ccddccc06c8e95516d2dd2",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/progressive-boundary-first-skill-guidance.test.md",
+      "sha256": "30595f49cb782e772588334dc9b6c31c728f5b6567892784d6fa27488e3f5257",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/progressive-loading-high-cost-public-skills.md",
+      "sha256": "03e33794a51fdea44fcf72b3711823a42392edb2fee493dd93f3e9f3481c8f26",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/progressive-loading-high-cost-public-skills.test.md",
+      "sha256": "ba48ed6c6d466566b91e6a969ab07319d9d9fe7b385462c717428441a04fd724",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/project-artifact-location-guide-and-examples-surface.md",
+      "sha256": "75c20ee6cda4fdf90e229bbfd67f017591edecd1faa5c371174d45c11fc73fe6",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/project-artifact-location-guide-and-examples-surface.test.md",
+      "sha256": "6e4550a229790163d4afe79a74b086cad25d88aa045f7e0a5332a7dfa593b1bc",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/project-map.md",
+      "sha256": "0ae5fb0c030c31770efed7f8ae711bc6a17063e4514542796690c18f8fc1d954",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/project-map.test.md",
+      "sha256": "0798e6d9e68540037bebd1884ccde2895d168e61388efc891d3ce48dd2b54914",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/public-adapter-artifact-migration-examples-concise-skill-release.md",
+      "sha256": "f3fe5801ed5f28dfe50335d0f958394bb4d3410a58847abdf1007f011c472ba3",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/public-adapter-artifact-migration-examples-concise-skill-release.test.md",
+      "sha256": "84d12ab2e0bdc1d641a097e5371c64a701a77940d468e3ad55eb5e27130c2805",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/public-discovery-and-developer-adoption-surface.md",
+      "sha256": "59d47abe60bc3f68ffe1648699f51aa7ca1d50d089e12615353f51e1730bee50",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/public-discovery-and-developer-adoption-surface.test.md",
+      "sha256": "8c851069bac8fd7e5b93560184d3cef35596d10c8d14c1f033f28e620efc3985",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/published-skill-first-repository-simplification.md",
+      "sha256": "5b08ce71c66a0519d7384f85f1165ad1bec05ea27d2c2f0749aeafff5311027a",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/published-skill-first-repository-simplification.test.md",
+      "sha256": "7e60bd59598ec008605c19ef92e0657bb7c84a72bfe39416d11a4e8d89817133",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/refine-explore-research-optional-discovery-skills.md",
+      "sha256": "d870c06717513ddd0952a559ce1af21dbafb165148d9af6e52d53e936d6e216e",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/refocus-workflow-into-route.md",
+      "sha256": "a664f27e23e3052fd11fd5e3595a4c4a4d99329ef32470617115cc8bfa780826",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/relax-pr-evidence-tail.md",
+      "sha256": "0331f71c48d1476427e9024a0fd5e3bbc49772814a52ee1f6086b35dd3d37f58",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/release-token-friendliness-benchmark-for-skills.md",
+      "sha256": "b3d8b980693c674a6219f97f5b36117e1777a770631bbca8200b338ad43a65f2",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/release-token-friendliness-benchmark-for-skills.test.md",
+      "sha256": "9eeec1a0eb3440432fd696ee107c3386335a5c87121b252897a654b0344af70d",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/requirement-fidelity-gate.md",
+      "sha256": "9c93828823bb91f2856d79f61ffe12752b9e3e8cfa2509754999bcbdbe7dfd70",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/requirement-fidelity-gate.test.md",
+      "sha256": "ce9828d00bd5b9c644f1501a34c097d76ced2c0c4f966700816348fa560fe953",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/review-finding-resolution-contract.md",
+      "sha256": "a7f8cb62fa5fd17bc4d1abf436fd6c5297cb4bdf6ac313bd8e07d1ac590569bc",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/review-finding-resolution-contract.test.md",
+      "sha256": "5a7039a925f6fb495c7c6bb01beec36b481df3e36f6de17ab737124d3aa059cf",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/review-fix-autoprogression.md",
+      "sha256": "93354da708d72127323734bb1ddef24d637582009403f3d406231b70f97e3a9f",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/review-fix-autoprogression.test.md",
+      "sha256": "6bb0b8a6a2cc865ce0a6316b3bcb1506fbaea5471a6714a6199074f3e53c1c36",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/review-independence-and-criticality.md",
+      "sha256": "96f95d576d09c2835a825b15afc240a13611c68bcb87690f184b917b6c1891c1",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/review-independence-and-criticality.test.md",
+      "sha256": "282df6ad9bb65abaa4f4061546fd851cf23157aa425374d8cd00c00495972e46",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/rigorloop-cli-package-and-codex-init.md",
+      "sha256": "61032b715680a1f0a76e420e45c7d3bd12ea4c063783d49ca864da4fd9ebfbc9",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/rigorloop-cli-package-and-codex-init.test.md",
+      "sha256": "e2dd589f985a991100ddac56073617be9ce8770227778f41f6eb734188dbba63",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/rigorloop-npm-publication.md",
+      "sha256": "bd3f2051cfd6337369c9c44b1b03e4b7368adf6b1ba5e53bd08e3d0cf09e54e3",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/rigorloop-npm-publication.test.md",
+      "sha256": "9fb3c389264e1a1dcd92e9b2e924d239e1d77e63b8c8b29c5afbb730fb2cafa3",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/rigorloop-workflow.md",
+      "sha256": "f7ca7b1a2a65366321588344766a95b1eaf2b451c3b202a79ff2eac142e2d5ba",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/rigorloop-workflow.test.md",
+      "sha256": "af01f5f80c873769d7de51b75e8d255d63010368a7749bb8009b468cc39ab8d3",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/script-output-optimization.md",
+      "sha256": "141729c17fb3308a91cc1697fd7410094d39fdea3cfed0071e99b0f13fca9ac3",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/script-output-optimization.test.md",
+      "sha256": "82f130586ea91b9892bb11dee1a70f1eea5eeb41530eb54705b452552b55aaa5",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/single-authored-skill-source-generated-output.md",
+      "sha256": "4ac4ac53451c729f279110e85c0711b98b0f175123be691501379340dcc35c81",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/single-authored-skill-source-generated-output.test.md",
+      "sha256": "b3b749dc8cdf5b151af7b081b70ded0be5c9bd6e327d0be488470a0a3a4bd815",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/single-bounded-review-fix-workflow-automation.md",
+      "sha256": "1099da25cc1e6ba6069031d156c2ea6aca52c2aa65472e4e5e8580a55add4b4a",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/single-bounded-review-fix-workflow-automation.test.md",
+      "sha256": "009b528d7875a97617a260e5f2bc733b0366064e8a05308e8fa3e0352a6db0b0",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/single-source-of-workflow-state.md",
+      "sha256": "81315bb0bd882247f323f9f02b6e9763ead2fb45aa8ff9a505b1eb269f401fd2",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/single-source-of-workflow-state.test.md",
+      "sha256": "4aa60e1d7ff9530f5ee43e487d91eaff6445d624484f5a28255fc72cb7751707",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/skill-contract.md",
+      "sha256": "a81343438938d624bce7cb74f5191fd985e54b2ea279de779ead4ec3ecaa2bcc",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/skill-contract.test.md",
+      "sha256": "2ef0710939cba8911a0f70f4f12f7967f0ea59b9d10715e6e9e8d2877ee9622f",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/skill-token-cost-optimization.md",
+      "sha256": "5e5a04b7e09caea714cdc94a52df6278d31513a80485f302b0f65cbeab8748c8",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/skill-token-cost-optimization.test.md",
+      "sha256": "8b5177e0a62d540bdc979ae02558831bffddc3230180ff42f222d126340c1b84",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md",
+      "sha256": "e774cd55d710767e780188682cfd3ab5fc0afd0f37218fe83fc9875e20f4c21b",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/stage-owned-lifecycle-artifacts-and-change-local-workflow-state.test.md",
+      "sha256": "4a1a3f9346992703fa46d1ce26df0b1b83c7609046d8001adc2e90aebbe4295b",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/token-and-runtime-efficient-scanning.md",
+      "sha256": "db37fa477c12065b8b75161a781c34ef8357c50f05418cef64a8798dd83e21d3",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/token-and-runtime-efficient-scanning.test.md",
+      "sha256": "89da8f91d2fd890710139736c35708bc46c7b42b7f0ea8e49147d145e77d3d8a",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/token-cost-measurement-baseline-and-proposal-scope-preservation.md",
+      "sha256": "d509c8e2e6e7deeae1af2f44b93679175060a02dc6f54a6ec1d17290f225aa1b",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/token-cost-measurement-baseline-and-proposal-scope-preservation.test.md",
+      "sha256": "07a9270a947534f9a4bbd5a3a6f438023dd310521bd4d596f97f0befeb89cfa5",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/usability-first-boundary-release.md",
+      "sha256": "5045edf83c5e71531445f524b88c4098f28fc115bf6ba8277335c178058bf6cd",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/usability-first-boundary-release.test.md",
+      "sha256": "4669a662b16d87e236ecb0387135431e7ae706f05b6532a4d51529b60745b833",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/verify-skill-simplification.md",
+      "sha256": "bbcc8c97186adc6539839257936eaad02c344b252cdf2873d3dc97ded3e2e397",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/verify-skill-simplification.test.md",
+      "sha256": "94de3a50d0dd4c12a63acc939af77a18b02e88aa60b5f7eb22f30ae580fff986",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/vision-skill-progressive-disclosure.md",
+      "sha256": "75838eb48ce591e9f4c5a6ade209b6e99f0ff5fa1f66f451c4a7ce70ba2abe08",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/vision-skill-progressive-disclosure.test.md",
+      "sha256": "bf819480b651dde0d1d5189f56628094392b8a8b34fbecefdcdaab6645bd12e1",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/vision-skill-simplification-and-vision-md-migration.md",
+      "sha256": "da6fbda1b39834c2d6331a7238b6219d8076ee915a282f9bae5273ee63323068",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/vision-skill-simplification-and-vision-md-migration.test.md",
+      "sha256": "44bc6356029b1de07b7ab3fbedb805a353ee4dfc5538765b56c07e5d77f29434",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/vision-skill.md",
+      "sha256": "b225e142bb9cd461c97993f1ed094828980d9b2777de09fd49c6314ed6d1a2d2",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/vision-skill.test.md",
+      "sha256": "592cee008203c37dc836705d4d34174f093db87059fa29e5a316a306f3ba12be",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/workflow-routed-upstream-corrections.md",
+      "sha256": "1a3bc2c06cc7e30f4f9feac9d53448c0d344d0fdc0ff10f7a28520bda1bb7100",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/workflow-routed-upstream-corrections.test.md",
+      "sha256": "de1c1fbfd1e55a9c7feb15ce6cd649f6ef147068b9e1187af313a43d357a1e30",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/workflow-stage-autoprogression.md",
+      "sha256": "e981f0aaa6d9f3f2e9dfdfeabe4cd6dbb776e11b160518a1a82a89630c294da5",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "specs/workflow-stage-autoprogression.test.md",
+      "sha256": "8f2aa8f12163a2fd6b8f752fa9eeec7df98728d0c117f32b1f6258d0d83fb75d",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Exact family/requirements/retirement decision in source-disposition.md and source-inventory.tsv"
+    },
+    {
+      "path": "docs/design/cli/examples/v2-work-status-update/README.md",
+      "sha256": "a2e1774f250b89aea4b3c862e7e5fae2acb78cc6486cb51cb05f9ec136337bd5",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Historical positive v2 stored/request examples explicitly excluded from current acceptance by CLI and Records. No current test/fixture reader; only generic model JSON syntax discovery. Current v3 examples, negative v2-store errors and internal schema2 observations remain. Preserve original example bytes/meaning in Git, not a copied archive."
+    },
+    {
+      "path": "docs/design/cli/examples/v2-work-status-update/request.json",
+      "sha256": "f35f7b4c6fc54f3bbe5164b1d75ef2b786f7898a8d64199f0d15dab2c2b3018e",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Historical positive v2 stored/request examples explicitly excluded from current acceptance by CLI and Records. No current test/fixture reader; only generic model JSON syntax discovery. Current v3 examples, negative v2-store errors and internal schema2 observations remain. Preserve original example bytes/meaning in Git, not a copied archive."
+    },
+    {
+      "path": "docs/design/cli/examples/v2-work-status-update/response.json",
+      "sha256": "75c8d51fdb5756ad71879f183ca6c08b807b7eba3f8e4648e0adbb682a77ab96",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Historical positive v2 stored/request examples explicitly excluded from current acceptance by CLI and Records. No current test/fixture reader; only generic model JSON syntax discovery. Current v3 examples, negative v2-store errors and internal schema2 observations remain. Preserve original example bytes/meaning in Git, not a copied archive."
+    },
+    {
+      "path": "docs/design/cli/examples/records/v2-minimal-change/README.md",
+      "sha256": "20b6576be594afa31b410c5258d4d453521c6af6bc63925ceabf2e0814d1a1ef",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Historical positive v2 stored/request examples explicitly excluded from current acceptance by CLI and Records. No current test/fixture reader; only generic model JSON syntax discovery. Current v3 examples, negative v2-store errors and internal schema2 observations remain. Preserve original example bytes/meaning in Git, not a copied archive."
+    },
+    {
+      "path": "docs/design/cli/examples/records/v2-minimal-change/change.json",
+      "sha256": "523ee35620d9deb9b393ecb59c414bd25e240be81a28dc76f347d412e0201cb6",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Historical positive v2 stored/request examples explicitly excluded from current acceptance by CLI and Records. No current test/fixture reader; only generic model JSON syntax discovery. Current v3 examples, negative v2-store errors and internal schema2 observations remain. Preserve original example bytes/meaning in Git, not a copied archive."
+    },
+    {
+      "path": "docs/design/cli/examples/records/v2-review-without-subjects/README.md",
+      "sha256": "d479e679aad0c6437864c14a57898ecb83f296d9863f73a18962426f11a8cc23",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Historical positive v2 stored/request examples explicitly excluded from current acceptance by CLI and Records. No current test/fixture reader; only generic model JSON syntax discovery. Current v3 examples, negative v2-store errors and internal schema2 observations remain. Preserve original example bytes/meaning in Git, not a copied archive."
+    },
+    {
+      "path": "docs/design/cli/examples/records/v2-review-without-subjects/review.json",
+      "sha256": "2a3d109d1be88ae0fa2b72fa8e14b34b781fb7e65ac07b93a7b7baa4eb6ea735",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Historical positive v2 stored/request examples explicitly excluded from current acceptance by CLI and Records. No current test/fixture reader; only generic model JSON syntax discovery. Current v3 examples, negative v2-store errors and internal schema2 observations remain. Preserve original example bytes/meaning in Git, not a copied archive."
+    },
+    {
+      "path": "docs/design/cli/examples/records/v2-review-reassessment/README.md",
+      "sha256": "cda984a4940320d34d75cb38d4de1e56ffa0e6ea5f90b12edf452efc49355463",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Historical positive v2 stored/request examples explicitly excluded from current acceptance by CLI and Records. No current test/fixture reader; only generic model JSON syntax discovery. Current v3 examples, negative v2-store errors and internal schema2 observations remain. Preserve original example bytes/meaning in Git, not a copied archive."
+    },
+    {
+      "path": "docs/design/cli/examples/records/v2-review-reassessment/after.json",
+      "sha256": "c13ffa7fe8d4189f2f30f7bb5c603c50c0e8d4d783dc394013d7db81883f32e0",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Historical positive v2 stored/request examples explicitly excluded from current acceptance by CLI and Records. No current test/fixture reader; only generic model JSON syntax discovery. Current v3 examples, negative v2-store errors and internal schema2 observations remain. Preserve original example bytes/meaning in Git, not a copied archive."
+    },
+    {
+      "path": "docs/design/cli/examples/records/v2-review-reassessment/before.json",
+      "sha256": "df39c9d8cb532e8fa48f3590e3558a4308bdfd815aab09b68866247be35d2f1d",
+      "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+      "disposition": "Historical positive v2 stored/request examples explicitly excluded from current acceptance by CLI and Records. No current test/fixture reader; only generic model JSON syntax discovery. Current v3 examples, negative v2-store errors and internal schema2 observations remain. Preserve original example bytes/meaning in Git, not a copied archive."
+    }
+  ],
+  "provenance": {
+    "docs/architecture/system/architecture.md": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+    "specs/published-skill-first-repository-simplification.md": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+    "docs/adr/ADR-20260810-published-skill-first-validation-architecture.md": "13cb745286e285155154b2a2fc852603cc702c80",
+    "docs/architecture/system/diagrams/component-published-skill-validation.mmd": "13cb745286e285155154b2a2fc852603cc702c80",
+    "specs/published-skill-first-repository-simplification.test.md": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+    "docs/adr/ADR-20260424-generated-adapter-packages.md": "d3396a228347d2a5c1222e9786c2ba9eb8e5531f",
+    "docs/adr/ADR-20260513-v0-1-3-adapter-release-archive-install-surface.md": "d3396a228347d2a5c1222e9786c2ba9eb8e5531f",
+    "docs/adr/ADR-20260516-rigorloop-cli-lockfile.md": "d3396a228347d2a5c1222e9786c2ba9eb8e5531f",
+    "docs/adr/ADR-20260518-multi-adapter-init-and-proxy-download.md": "d3396a228347d2a5c1222e9786c2ba9eb8e5531f",
+    "docs/adr/ADR-20260524-target-native-init-state-boundary.md": "d3396a228347d2a5c1222e9786c2ba9eb8e5531f",
+    "specs/single-authored-skill-source-generated-output.md": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+    "specs/multi-agent-adapters-first-public-release.md": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+    "specs/release-process-contract.md": "6b6db7fcf98d78c2e1f15afe0b5b9ca37d3261d8",
+    "specs/release-process-contract.test.md": "6b6db7fcf98d78c2e1f15afe0b5b9ca37d3261d8",
+    "specs/release-transaction-automation.md": "6b6db7fcf98d78c2e1f15afe0b5b9ca37d3261d8",
+    "specs/release-transaction-automation.test.md": "6b6db7fcf98d78c2e1f15afe0b5b9ca37d3261d8",
+    "docs/adr/ADR-20260523-release-process-contract.md": "6b6db7fcf98d78c2e1f15afe0b5b9ca37d3261d8",
+    "docs/adr/ADR-20260629-release-transaction-profile.md": "6b6db7fcf98d78c2e1f15afe0b5b9ca37d3261d8",
+    "specs/boundary-first-activation.yaml": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+    "specs/test-layering-and-change-scoped-validation.md": "383368f3c274e5713fa958e0dd4e46fc25082c0c",
+    "specs/test-and-ci-speed-optimization.md": "383368f3c274e5713fa958e0dd4e46fc25082c0c",
+    "specs/validation-execution-performance-and-preflight.md": "383368f3c274e5713fa958e0dd4e46fc25082c0c",
+    "specs/validation-runtime-follow-through.md": "383368f3c274e5713fa958e0dd4e46fc25082c0c",
+    "specs/selector-regression-runtime-reduction.md": "383368f3c274e5713fa958e0dd4e46fc25082c0c",
+    "specs/broad-smoke-safe-parallelism.md": "383368f3c274e5713fa958e0dd4e46fc25082c0c",
+    "specs/validation-idempotency-and-cache-hit-safety.md": "383368f3c274e5713fa958e0dd4e46fc25082c0c",
+    "docs/adr/ADR-20260523-validation-idempotency-cache-hit-safety.md": "383368f3c274e5713fa958e0dd4e46fc25082c0c",
+    "specs/rigorloop-workflow.md": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+    "specs/skill-contract.md": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+    "specs/architecture-package-method.md": "39b7c5cb1f03aa761d2f2493d3474ce985e59d6f",
+    "specs/skill-invocation-commands-for-adapters.md": "d3396a228347d2a5c1222e9786c2ba9eb8e5531f",
+    "specs/target-native-init.md": "d3396a228347d2a5c1222e9786c2ba9eb8e5531f",
+    "specs/multi-adapter-init-and-proxy-aware-download.md": "d3396a228347d2a5c1222e9786c2ba9eb8e5531f",
+    "specs/feature-template.md": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e"
+  },
+  "changed_surfaces": [
+    ".github/pull_request_template.md",
+    "AGENTS.md",
+    "CONSTITUTION.md",
+    "CONTRIBUTING.md",
+    "README.md",
+    "docs/changes/2026-09-14-retire-specs-and-stale-tests/change.json",
+    "docs/changes/2026-09-14-retire-specs-and-stale-tests/evidence.json",
+    "docs/changes/2026-09-14-retire-specs-and-stale-tests/m6-design-reconciliation.json",
+    "docs/design/cli/cli.md",
+    "docs/design/cli/examples/README.md",
+    "docs/design/cli/examples/records/README.md",
+    "docs/design/cli/records.md",
+    "docs/design/engineering/packaging.md",
+    "docs/design/engineering/release.md",
+    "docs/design/engineering/validation.md",
+    "docs/design/skill/assessment.md",
+    "docs/design/skill/design.md",
+    "docs/design/skill/skill.md",
+    "docs/design/skill/workflow.md",
+    "docs/design/system.md",
+    "docs/learn/README.md",
+    "docs/learn/topics/evidence-preserving-compaction.md",
+    "docs/learn/topics/plan-lifecycle-closeout.md",
+    "docs/learn/topics/review-artifact-recording.md",
+    "docs/learn/topics/script-output-optimization.md",
+    "docs/learn/topics/skill-asset-design.md",
+    "docs/learn/topics/token-cost-measurement.md",
+    "docs/learn/topics/workflow-stage-order.md",
+    "packages/rigorloop/README.md",
+    "packages/rigorloop/package.json"
+  ],
+  "preservation": "111 remaining specs match the116-source baseline; five earlier removals/relocations remain in reviewed M1/M2 evidence.27 coupled architecture/ADR files have explicit individual owner mappings.10 historical positive v2 example files retain exact bytes in Git. Production historical records, original judgments and learn sessions remain unchanged.",
+  "governance": "Constitution retains authority, requirement-before-code, independent review/Verify, permissions and proof. Its hierarchy now composes Design decisions and plan-owned verification allocation without duplicate legacy layers; customer contracts remain explicitly supported. AGENTS removes only the retired canonical directory.",
+  "current_guidance": "README/contributor/package/PR template now reference current Designs/v3 and actual CI modes; curated learn topics remove superseded state/ledger/stage guidance and retain useful lessons/session provenance. Token-measurement topic retires under already-approved VAL-SR-25; no programme or duty remains. Project map refresh and source deletion follow accepted reconciliation.",
+  "validation": {
+    "command": "python scripts/validate-boundary-first.py --check",
+    "result": "passed;12 model structures and supporting example syntax, no semantic approval"
+  },
+  "delivery_impact": "Existing stable plan and TG01\u201308/final allocation unchanged; required M6 integration/provenance/local+range proof remains. Exact changed models need independent current-basis Design reassessment; Delivery reviewer judges continuing allocation reliance.",
+  "retired_current_guidance": {
+    "path": "docs/learn/topics/token-cost-measurement.md",
+    "recoverable_commit": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+    "reason": "Already-approved complete token-measurement programme retirement VAL-SR-25; historical source sessions untouched."
+  },
+  "historical_example_audit": {
+    "files": [
+      "docs/design/cli/examples/v2-work-status-update/README.md",
+      "docs/design/cli/examples/v2-work-status-update/request.json",
+      "docs/design/cli/examples/v2-work-status-update/response.json",
+      "docs/design/cli/examples/records/v2-minimal-change/README.md",
+      "docs/design/cli/examples/records/v2-minimal-change/change.json",
+      "docs/design/cli/examples/records/v2-review-without-subjects/README.md",
+      "docs/design/cli/examples/records/v2-review-without-subjects/review.json",
+      "docs/design/cli/examples/records/v2-review-reassessment/README.md",
+      "docs/design/cli/examples/records/v2-review-reassessment/after.json",
+      "docs/design/cli/examples/records/v2-review-reassessment/before.json"
+    ],
+    "consumer_search": "No references in scripts/, packages/rigorloop/test/, skills/ or templates/. Current indexes and CLI/Records navigation reconciled; generic model syntax discovery no longer traverses these positive historical inputs.",
+    "current_protection": "419 Node cases and retained v3 examples protect current parsing, reference/identity and storage effects; current v2 rejection scenarios remain. Historical positive illustration removal does not alter schema2 transport/digest or unknown-command results."
+  },
+  "corrections": [
+    "m6-observability-adr-disposition: replaced name-based coupled disposition with explicit27-file owner map; observability maps to CLI invocation/logging/privacy/result contracts.",
+    "m6 historical skill-asset source: corrected to actual recoverable39b7c5cb revision; all changed provenance pairs and every selected deletion commit/path checked directly."
+  ],
+  "provenance_validation": {
+    "method": "git cat-file -e for every changed current Markdown commit/path; git show plus SHA256 for every selected source",
+    "explicit_pairs": 37,
+    "exact_source_identities": 148,
+    "errors": []
+  }
+}

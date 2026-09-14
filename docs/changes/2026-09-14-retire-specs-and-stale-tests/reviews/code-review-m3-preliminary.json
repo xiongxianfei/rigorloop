@@ -1,0 +1,68 @@
+{
+  "assessment_scope": "Bounded current-source/prepared-candidate receipt preservation review of working diff from adeb0c74.",
+  "change_id": "2026-09-14-retire-specs-and-stale-tests",
+  "contributors": [
+    {
+      "id": "codex-full-specs-implement",
+      "role": "implement"
+    }
+  ],
+  "findings": [
+    {
+      "evidence": "P2. scripts/validate-release.py verify_prepared_release: receipt.unlink precedes validate_prepared_release (~140). Reviewer invoked actual main via runpy in temporary cwd with package @xiongxianfei/rigorloop version 0.5.1, matching profile_text(v0.5.1), existing candidate/release-verification.json containing prior receipt, and absent preparation.json. main([--version,v0.5.1,--prepared-candidate,<temporary candidate>]) returned 1; receipt_survives=false; candidate_preparation_present=false. No publication or external command ran. REL Repository cleanup adoption and M3 TG-04 require missing or mismatched candidate basis rejection before report writes/side effects.",
+      "id": "m3-candidate-rejection-deletes-receipt",
+      "owner": {
+        "id": "codex-full-specs-implement",
+        "role": "implement"
+      },
+      "reporter": {
+        "id": "codex-cli-release-reviewer",
+        "role": "review"
+      },
+      "required_outcome": "Admit complete immutable candidate/source/profile basis before deleting existing verification receipt. Missing or mismatched preparation must preserve output bytes. After admission, invalidate stale proof before actual checks. Add missing/mismatched preparation preservation regressions and retain admitted-failed-check invalidation. Implementation correction; no Design decision needed.",
+      "resolution": {
+        "actor": {
+          "id": "codex-cli-release-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [
+          {
+            "id": "m3-validation",
+            "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/evidence.json"
+          }
+        ],
+        "rationale": "Corrected frozen a8b082c6 admits complete source/profile/preparation before receipt invalidation, then invalidates before actual checks. Independently ran all six CurrentSourceQualificationTests successfully; missing and mismatched preparation preserve exact prior receipt bytes. Corrected full release suite passed 161 and selected CI passed, with raw log hashes verified by reviewer."
+      },
+      "state": "resolved",
+      "subjects": [
+        {
+          "identity": "sha256:cb2d2be916e93ac5ac26e55375b4294f6a2187f714bbb55bf5b12e5cc52af346",
+          "path": "scripts/validate-release.py"
+        }
+      ]
+    }
+  ],
+  "id": "code-review-m3-preliminary",
+  "independence_basis": "Separate nonauthor reviewer agent; only earlier read-only source-gap analysis, no implementation or test authorship.",
+  "judgment": "inconclusive",
+  "limitations": [
+    "Full integration suites and frozen milestone evidence pending; no final M3 approval."
+  ],
+  "rationale": [
+    "Actual main invocation with matching source package/profile but absent preparation.json deletes existing release-verification.json before rejection.",
+    "REL current qualification and M3 TG-04 require missing candidate basis failure before output side effects."
+  ],
+  "reviewer": {
+    "id": "codex-cli-release-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:cb2d2be916e93ac5ac26e55375b4294f6a2187f714bbb55bf5b12e5cc52af346",
+      "path": "scripts/validate-release.py"
+    }
+  ],
+  "summary": "Preliminary M3 review: reproduced candidate admission defect; final judgment pending.",
+  "target": "code"
+}

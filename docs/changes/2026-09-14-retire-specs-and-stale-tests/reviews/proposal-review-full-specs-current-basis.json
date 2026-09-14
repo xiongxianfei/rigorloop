@@ -1,0 +1,63 @@
+{
+  "assessment_scope": "Formal/manual Proposal applicability reassessment with broad scope-budget gate; unchanged complete specs and stale-validation objective, no direction expansion or narrowing.",
+  "change_id": "2026-09-14-retire-specs-and-stale-tests",
+  "contributors": [
+    {
+      "id": "codex-specs-proposal-author",
+      "role": "proposal"
+    },
+    {
+      "id": "codex-specs-design-author",
+      "role": "design"
+    }
+  ],
+  "findings": [],
+  "id": "proposal-review-full-specs-current-basis",
+  "independence_basis": "Same independent nonauthor proposal assessor reassessed unchanged proposal and current revised support owners; authored no proposal or Design content. Earlier subject identities are preserved unchanged.",
+  "judgment": "approved",
+  "limitations": [
+    "Proposal approval supports Design only and does not approve exact implementation or prove discovery/adoption complete. Earlier review remains attached to its original source identities."
+  ],
+  "rationale": [
+    "All original direction dimensions remain pass: material mixed-authority problem, current-knowledge/useful-protection goals, clear whole-scope objective, explicit dependencies, recoverable history and bounded existing-owner feasibility.",
+    "Scope preservation passes: all116 sources and complete test/fixture population require disposition, no unresolved family can silently defer; customer feature formats remain supported without adopting repository governance.",
+    "Vision alignment: aligned. Changed supporting models refine the approved direction and preserve current reliance; no new platform, token metric, public operational authority or release action is introduced."
+  ],
+  "reviewer": {
+    "id": "independent-full-specs-proposal-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:36e72bf8ec654015a645287640266dc592b2260f877c5a96e788a80f803e2845",
+      "path": "docs/proposals/2026-09-14-retire-specs-and-stale-tests.md"
+    },
+    {
+      "identity": "sha256:3dae6703651fed191fe384a14224254b7791267014a89662d8872c812493e146",
+      "path": "VISION.md"
+    },
+    {
+      "identity": "sha256:1cc497c48a7de83c64997c5b3b0640ef8ae63afd77e5860416b028ab5025bdb9",
+      "path": "CONSTITUTION.md"
+    },
+    {
+      "identity": "sha256:e3e435a9fff5c3a5b787af3e8aab1a4b02795613edd4593b34205f2a3f3fc5da",
+      "path": "docs/design/system.md"
+    },
+    {
+      "identity": "sha256:90e00cf969ff8f6c7cfb59f6e31e323ff5642f31189e55cee7e5240b96e1e86d",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:30110347de1ebc23fd6406963b6cc3d0e22e632fd5e1e7ef040298ba9e1f5a92",
+      "path": "docs/design/engineering/packaging.md"
+    },
+    {
+      "identity": "sha256:22284c41fdb311c1bb7dbaded1d2ea5c7d53e063d5f40a79a593d6e9e5738045",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/source-disposition.md"
+    }
+  ],
+  "summary": "Original whole-repository cleanup direction remains applicable after current-owner refinements.",
+  "target": "proposal"
+}

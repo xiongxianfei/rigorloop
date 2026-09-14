@@ -51,9 +51,9 @@ Recommended first pass:
 3. Start your first real change with `proposal`.
 4. Move through review gates only when the durable artifacts are current.
 
-Read the [normative workflow contract](specs/rigorloop-workflow.md) when you need to customize the lifecycle or resolve a process question.
+Read the [normative workflow contract](docs/design/skill/workflow.md) when you need to customize the lifecycle or resolve a process question.
 
-Key paths: [workflow contract](specs/rigorloop-workflow.md) · [contribute](CONTRIBUTING.md) · [bug report](.github/ISSUE_TEMPLATE/bug.yml) · [feature request](.github/ISSUE_TEMPLATE/feature.yml) · [security](SECURITY.md)
+Key paths: [workflow contract](docs/design/skill/workflow.md) · [contribute](CONTRIBUTING.md) · [bug report](.github/ISSUE_TEMPLATE/bug.yml) · [feature request](.github/ISSUE_TEMPLATE/feature.yml) · [security](SECURITY.md)
 
 ## Recommended Use
 
@@ -107,7 +107,7 @@ Do not rewrite durable guides just for symmetry.
 | --- | --- |
 | Understand project direction | [VISION.md](VISION.md) |
 | Understand governance and source-of-truth order | [CONSTITUTION.md](CONSTITUTION.md) |
-| Find workflow stages and artifact paths | Run `rigorloop workflow-context`; read [the workflow contract](specs/rigorloop-workflow.md) for policy |
+| Find workflow stages and artifact paths | Run `rigorloop workflow-context`; read [the workflow contract](docs/design/skill/workflow.md) for policy |
 | Orient to repository structure | [docs/project-map.md](docs/project-map.md) |
 | See active, blocked, and recent work | [docs/plan.md](docs/plan.md) |
 | Use one lifecycle stage | [skills/](skills/) |
@@ -173,7 +173,7 @@ Automation always stops before PR creation, push, publication, release, deployme
 - Automatic workflow never merges, releases, deploys, publishes, or performs destructive Git actions by default.
 - `pr` is an optional human-visible external boundary for projects that use pull requests; open it only when readiness checks pass.
 
-For the complete contract, read [specs/rigorloop-workflow.md](specs/rigorloop-workflow.md) and [specs/workflow-stage-autoprogression.md](specs/workflow-stage-autoprogression.md).
+For the complete contract, read [Workflow](docs/design/skill/workflow.md) and [Assessment](docs/design/skill/assessment.md).
 
 ## Worked Example
 
@@ -194,7 +194,7 @@ A RigorLoop change leaves a traceable artifact chain:
 
 Use RigorLoop when:
 
-- you want AI-assisted work to stay reviewable, traceable, and grounded in explicit proposals, specs, plans, tests, and verification
+- you want AI-assisted work to stay reviewable, traceable, and grounded in explicit proposals, Designs, plans, tests, and verification
 - you need a repository-local workflow that leaves durable change history instead of burying decisions in chat
 - you want a workflow that makes the path from idea to reviewed change visible and auditable
 
@@ -314,8 +314,8 @@ Existing destination skills conflict even when identical. Use `--force` for comp
 
 ## Learn More / Contribute
 
-- Workflow detail: [specs/rigorloop-workflow.md](specs/rigorloop-workflow.md); inspect project facts with `rigorloop workflow-context`
-- Artifact and skill docs: [specs/README.md](specs/README.md) and [skills/](skills/)
+- Workflow detail: [Workflow](docs/design/skill/workflow.md); inspect project facts with `rigorloop workflow-context`
+- Artifact and skill docs: [System](docs/design/system.md) and [skills/](skills/)
 - Report problems or feature ideas: [bug report template](.github/ISSUE_TEMPLATE/bug.yml) and [feature request template](.github/ISSUE_TEMPLATE/feature.yml)
 - Review PR expectations before contributing: [.github/pull_request_template.md](.github/pull_request_template.md)
 - Contribution guide: [CONTRIBUTING.md](CONTRIBUTING.md)
@@ -327,7 +327,7 @@ RigorLoop recommends one standard workflow for complete AI-assisted delivery:
 
 - Standing artifacts: `VISION.md` and `CONSTITUTION.md`
 - Living references: `docs/project-map.md` when repository shape is not obvious enough for safe reliance
-- Workflow infrastructure: specs, CLI workflow context, affected root guidance, affected skills, and generated outputs
+- Workflow infrastructure: Designs, CLI workflow context, affected root guidance, affected skills, and generated outputs
 - On-demand support: `explore` and `research`
 - Compact per-change chain: `proposal -> proposal-review -> design -> design-review -> plan -> delivery-review -> implement -> code-review -> review-resolution when triggered -> ci-maintenance when triggered -> verify`. PR is an optional external handoff after lifecycle completion.
 - Periodic learning: `learn`
@@ -338,7 +338,7 @@ Do not rely on `docs/project-map.md` when it is absent, stale, contradicted, or 
 
 Users may manually invoke individual skills for focused output. A manual skill invocation is isolated by default and does not imply that the full workflow is complete.
 
-The normative contract lives in [specs/rigorloop-workflow.md](specs/rigorloop-workflow.md). Deterministic project-local workflow facts come from `rigorloop workflow-context`; semantic routing belongs to `route`.
+The normative contract lives in [Workflow](docs/design/skill/workflow.md). Deterministic project-local workflow facts come from `rigorloop workflow-context`; semantic routing belongs to `route`.
 
 ## What This Repository Contains
 
@@ -346,7 +346,7 @@ The normative contract lives in [specs/rigorloop-workflow.md](specs/rigorloop-wo
 - isolated manual skill invocation for focused skill output
 - standing artifacts, living references, on-demand support, a per-change chain, and periodic learning as distinct lifecycle categories
 - a repository orientation map at `docs/project-map.md`
-- canonical workflow sources in `docs/`, `specs/`, `skills/`, `schemas/`, and `scripts/`
+- canonical workflow sources in `docs/`, `skills/`, `schemas/`, and `scripts/`
 - ignored local Codex runtime state in `.codex/skills/`
 - generated public adapter packages in `dist/adapters/`
 - a change-local artifact pattern under `docs/changes/<change-id>/` for non-trivial work
@@ -354,7 +354,7 @@ The normative contract lives in [specs/rigorloop-workflow.md](specs/rigorloop-wo
 ## Change-Local Artifact Packs
 
 - Manual skill invocations may omit `docs/changes/<change-id>/` when they are not used to claim complete workflow delivery.
-- Only `rigorloop-records-v2` is supported at runtime: `change.json`, registered JSON reviews, evidence, material decisions and the success-only Verify record. Canonical engineering artifacts remain referenced in place.
+- Only `rigorloop-records-v3` is supported at runtime: `change.json`, registered JSON reviews, evidence, material decisions and the success-only Verify record. Canonical engineering artifacts remain referenced in place.
 - Actors own judgments and closeout; the CLI records explicit decisions and observations. Recording does not require Git history or PR access.
 - Named legacy stored formats and their execution engines are retired. Preserve historical records unchanged as archival evidence; current commands reject retired input without fallback or migration.
 - Historical explanations formerly under `docs/explain/` are retained in the plan archive; see the [retired-path mapping](docs/plan-archive.md#retired-explanation-paths). New work records its final explanation in the owning change’s contract-selected Verify report.
@@ -363,7 +363,6 @@ The normative contract lives in [specs/rigorloop-workflow.md](specs/rigorloop-wo
 
 - Edit canonical workflow content in:
   - `docs/`
-  - `specs/`
   - `skills/`
   - `schemas/`
   - `scripts/`
@@ -374,47 +373,41 @@ The normative contract lives in [specs/rigorloop-workflow.md](specs/rigorloop-wo
 
 ## Validation Commands
 
-Before PR, run the same structural checks that CI runs:
+Run the repository-owned selector and required checks for your change:
 
-- `python scripts/validate-skills.py`
-- `python scripts/test-skill-validator.py`
-- `python scripts/test-adapter-distribution.py`
-- `python scripts/build-adapters.py --version v0.1.3 --output-dir <release-output-dir>`
-- `python scripts/validate-adapters.py --root <release-output-dir> --version v0.1.3`
+```bash
+bash scripts/ci.sh --mode local
+```
 
-Use `bash scripts/ci.sh` to run the same checks through the repository-owned CI wrapper.
+[Contributing](CONTRIBUTING.md#validation-scope) explains scoped and PR-range checks. Packaging changes also use `python scripts/build-adapters.py --check`; release qualification follows the actual prepared-candidate procedure in [Release](docs/design/engineering/release.md).
 
 ## Repository Layout
 
 ```text
 .
 ├── AGENTS.md
+├── CONSTITUTION.md
+├── VISION.md
 ├── .github/
-│   ├── ISSUE_TEMPLATE/
-│   ├── pull_request_template.md
-│   └── workflows/
 ├── docs/
-│   ├── plan.md
-│   ├── project-map.md
-│   ├── proposals/
-│   ├── roadmap.md
-│   ├── workflows.md
+│   ├── design/
 │   ├── changes/
 │   ├── plans/
-│   ├── architecture/
-│   └── adr/
-├── .codex/
-│   └── skills/
-├── dist/
-│   └── adapters/
+│   ├── proposals/
+│   ├── releases/
+│   ├── plan.md
+│   └── project-map.md
+├── packages/rigorloop/
+├── dist/adapters/
 ├── scripts/
 ├── skills/
 ├── schemas/
-└── specs/
+├── templates/
+└── tests/
 ```
 
 ## License
 
 This repository currently ships with the MIT license.
 
-The unified authoring candidate replaces `spec` and `architecture` with `design`. Existing retired entries require [separate inspection and reconciliation](packages/rigorloop/README.md#upgrading-retired-authoring-skills); installation does not manage project state or automatically migrate those entries. The selected [Design](docs/design/skill/design.md) and [System](docs/design/system.md) own the bounded method/composition migration. The three main models are [Skill](docs/design/skill/skill.md), [CLI](docs/design/cli/cli.md) and [Engineering](docs/design/engineering/engineering.md). Engineering [Packaging](docs/design/engineering/packaging.md) owns artifact production; CLI [Installation](docs/design/cli/installation.md) owns trusted acquisition and destination writes. Other document consolidation remains [explicit follow-up work](docs/follow-ups.md).
+The unified authoring skill replaces `spec` and `architecture` with `design`. Existing retired entries require [separate inspection and reconciliation](packages/rigorloop/README.md#upgrading-retired-authoring-skills); installation does not manage project state or automatically migrate those entries. The selected [Design](docs/design/skill/design.md) and [System](docs/design/system.md) own the bounded method/composition migration. The three main models are [Skill](docs/design/skill/skill.md), [CLI](docs/design/cli/cli.md) and [Engineering](docs/design/engineering/engineering.md). Engineering [Packaging](docs/design/engineering/packaging.md) owns artifact production; CLI [Installation](docs/design/cli/installation.md) owns trusted acquisition and destination writes. Current responsibilities are self-contained in these models; retired source provenance and removal evidence are recorded in the [cleanup change](docs/changes/2026-09-14-retire-specs-and-stale-tests/change.json).

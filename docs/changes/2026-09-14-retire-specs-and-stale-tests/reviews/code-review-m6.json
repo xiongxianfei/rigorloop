@@ -1,0 +1,108 @@
+{
+  "assessment_scope": "M6 complete source deletion, current Design/governance/provenance and navigation reconciliation, deletion/rename discovery, candidate source absence, and corrected PR snapshot/broad discovery composition. Milestone-only review against reconciled 49-member Design package and unchanged Delivery; not final whole-change Code Review.",
+  "change_id": "2026-09-14-retire-specs-and-stale-tests",
+  "contributors": [
+    {
+      "id": "codex-full-specs-implement",
+      "role": "implement"
+    }
+  ],
+  "findings": [],
+  "id": "code-review-m6",
+  "independence_basis": "Separate nonauthor reviewer inspected cumulative M6 authoring and implementation, source recovery/disposition, current protection and exact evidence. Reviewer authored no engineering changes or tests; preliminary recommendations and direct independent test runs were assessment only.",
+  "judgment": "approved",
+  "limitations": [
+    "M6 milestone closeout only. No implementation milestones remain after owner closeout, but fresh independent whole-change Code Review and distinct Verify remain required; no branch/PR readiness or publication claim.",
+    "Recorded command outcomes are local evidence, not hosted CI. Structural validators do not replace semantic approval. Historical evidence remains scoped to its original subjects; prior reviews are preserved."
+  ],
+  "rationale": [
+    "Authority and scope: pass. Reconciled Design and Delivery own source retirement and preserve concrete current contracts; prior authoring findings are resolved on the current package. No replacement runtime authority is inferred merely from a newer model name. Current instructions, project map and navigation point to owning current Designs; Git recovery references are provenance, not operational retrieval.",
+    "Source removal and recovery: pass. Independently checked all 148 removed manifest paths are absent and every declared Git commit:path SHA256 matches. These account for 111 remaining specs, 27 coupled architecture/ADR documents and ten historical positive-v2 illustrations; prior five spec removals/relocations close the 116 baseline specs. Separately mapped obsolete token-measurement guidance deletion is intentional. Historical change records are preserved.",
+    "Behavior and trust: pass. General local/index/range discovery now includes deletions and both rename endpoints; unknown deleted or renamed source paths still block. HEAD provenance handles staged deletion absent from the index. Customer portable contract fixtures remain explicit inputs; absent retired repository inputs do not become valid current authority. PR template uses existing contributor checks.",
+    "Tests and population: pass. Independently verified 257 unchanged M5 population hashes and all three changed-file hashes. Six actual Git stage/trust partitions prove deletion/rename behavior, rather than source-word fingerprints. Only obsolete old-spec wording is removed; current customer input routing and shared negative protection survive. Candidate fixture mirrors absence of retired source trees before its own commit and retains actual qualification/packed CLI/install execution.",
+    "Cross-slice correction: pass. Actual PR execution exposed same canonical ID with differing snapshot and worktree arguments. Distinct current_records.snapshot and current_records.validate preserve both obligations without weakening canonical conflict rejection or command trust. Independently passed real-selector/real-composer regression, same-ID argument/constraint rejection, and three exact-head catalog/selection/dispatch tests including tampered revision rejection before launch and child failure propagation.",
+    "Validation and evidence: pass. Independently verified all 12 recorded raw log hashes, all 398 exact source-range Git paths against successful selection, empty blockers/unknowns, and successful actual PR CI completion. Required fresh local+broad proof, 177 selector and 53 executor tests cover the correction; current Node 419, model, guide, prose, generated-output and actual candidate evidence remain applicable. Executed source 025596df to final 455ac8d1 changes only evidence/state. Earlier failures and superseded proof are identified rather than reused as current success.",
+    "Maintainability, documentation and side effects: pass. Snapshot identity models a distinct operational input, with unchanged trusted command reconstruction, failure handling and dedup conflict rules. Current optional Explore/Research ownership is accurately restored in the map. No portable grammar change, retired-store acceptance, install/release trust weakening, live publication or engineering writes by this reviewer."
+  ],
+  "reviewer": {
+    "id": "codex-cli-release-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:9558c2bc385d26e5627a50b353882a006c7757a6e73a1499c6e1cf753bfe3d1f",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m6-implementation.md"
+    },
+    {
+      "identity": "sha256:64a2e81e5ba9fd71b714b9a793e657bcb1ecea8dabf98ac9c226deacfd3937da",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m6-source-removal.json"
+    },
+    {
+      "identity": "sha256:6d2197a709240d6749b63e90c17fd4fc8e06cda4835559c81435cdb1cfc06bee",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m6-validation.json"
+    },
+    {
+      "identity": "sha256:903933825ce63a6685c52efe920b4df1fdd9fe6f5fe90b9a097dcb241e0179b7",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m6-design-reconciliation.json"
+    },
+    {
+      "identity": "sha256:d8126750ee6870203771a6101212ea25565214b9978791acde26f9deb203b27a",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/design-review-m6-reconciled.json"
+    },
+    {
+      "identity": "sha256:c63715aec6eb39dd86d6da0969547bb0369dc1ee0f1e53af2ae8ac97ac72d19c",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/delivery-review-m6-current-basis.json"
+    },
+    {
+      "identity": "sha256:3e99392f5974d61f13f6c3bf8f5b616dbb5c6ca3a997f83a36e89ca43a7dd8e3",
+      "path": "docs/plans/2026-09-14-retire-specs-and-stale-tests.md"
+    },
+    {
+      "identity": "sha256:686e24be4a47ddf34be53eaad4126a002eae773f9312c05bda8ce4cda2df8fea",
+      "path": "scripts/validation_selection.py"
+    },
+    {
+      "identity": "sha256:76b1fa9cee04586fa87ad37d04c72d749861c1d6206c39f6ad7e489d88101ac8",
+      "path": "scripts/validation_execution.py"
+    },
+    {
+      "identity": "sha256:82e820633a664af832a325e3f5f3bcfccc4229696b9f3cdae5aafcaa3b23e138",
+      "path": "scripts/test-select-validation.py"
+    },
+    {
+      "identity": "sha256:ee6c432abbe128a78cc3f48f4175790ab83a6a2253f32dbf5290e6ae68ea71b7",
+      "path": "scripts/test-validation-execution.py"
+    },
+    {
+      "identity": "sha256:b332586a3b72717e63743365937b4e852af25cc1d35a5aceac09919923700ee2",
+      "path": "scripts/release_candidate_tests.py"
+    },
+    {
+      "identity": "sha256:8fc2ed428aece2aec213fbd9686f07ec1c01491ad550c37f325b91af33c010ce",
+      "path": "docs/project-map.md"
+    },
+    {
+      "identity": "sha256:a8e0b1f979c2eb004e0a370a944895df81b29d093543b1a3913d26efb6c61607",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:d6c35b64cc3ea5ff9b170124fda92c4d16658974859266b50b5852273d10d63d",
+      "path": "docs/design/system.md"
+    },
+    {
+      "identity": "sha256:24af26bb7ce0a17c07afcab73c4f8119a127a338be90d9c0910ead925561f642",
+      "path": "CONSTITUTION.md"
+    },
+    {
+      "identity": "sha256:a15d4f3889629c69f946269da05e32f00161148a07f7de62f01038ced3e28cb9",
+      "path": "AGENTS.md"
+    },
+    {
+      "identity": "sha256:15f16953bd26df0240c53334daa4c34cc6351aaa35ab315066d11b2e32d796d0",
+      "path": "CONTRIBUTING.md"
+    }
+  ],
+  "summary": "Complete corrected M6 approved at 3eefc51c..455ac8d1, with executed source basis 025596df and final evidence-only closeout; no unresolved M6 findings.",
+  "target": "code"
+}

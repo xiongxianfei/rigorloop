@@ -1,7 +1,7 @@
 {
   "name": "@xiongxianfei/rigorloop",
   "version": "1.0.0",
-  "description": "Rigorous workflow for AI coding agents: proposals, specs, review gates, and durable validation evidence from idea to verified change.",
+  "description": "Rigorous workflow for AI coding agents: proposals, Designs, review gates, and durable validation evidence from idea to verified change.",
   "keywords": [
     "ai-agents",
     "ai-coding",

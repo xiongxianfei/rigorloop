@@ -310,15 +310,6 @@ class ExecutionTests(unittest.TestCase):
             with self.subTest(changes=changes), self.assertRaises(ValueError):
                 validate_plans([dataclasses.replace(self.plan('a'), **changes)], jobs=2)
 
-    def test_reverse_completion_keeps_order_and_separate_streams(self):
-        results = self.run_plans([self.plan('slow', 'import time; time.sleep(.15); print("one")'),
-                                  self.plan('fast', 'import sys; print("two", file=sys.stderr)')])
-        self.assertEqual([r.plan.check_id for r in results], ['slow', 'fast'])
-        self.assertEqual([r.exit_code for r in results], [0, 0])
-        self.assertEqual(results[0].stdout_path.read_text(), 'one\n')
-        self.assertEqual(results[1].stderr_path.read_text(), 'two\n')
-        self.assertLess(results[1].elapsed_seconds, results[0].elapsed_seconds)
-
     def test_independent_failure_continues_and_dependency_failure_prevents_launch(self):
         marker = self.root / 'forbidden'
         results = self.run_plans([self.plan('failed', 'raise SystemExit(7)'),
@@ -329,14 +320,46 @@ class ExecutionTests(unittest.TestCase):
         self.assertFalse(marker.exists())
 
     def test_parallel_tasks_actually_overlap_with_bounded_workers(self):
+        from validation_execution import CheckResult
         gate = self.root / 'gate'
         gate.mkdir()
-        body = ('import pathlib,time; p=pathlib.Path(%r); (p/%r).touch(); '
-                'deadline=time.monotonic()+2\nwhile %r and len(list(p.iterdir()))<2:\n'
-                ' if time.monotonic()>deadline: raise SystemExit(8)\n time.sleep(.01)')
-        results = self.run_plans([self.plan('a', body % (str(gate), 'a', int(os.environ.get('RIGORLOOP_VALIDATION_WORKERS','2'))>1)),
-                                  self.plan('b', body % (str(gate), 'b', int(os.environ.get('RIGORLOOP_VALIDATION_WORKERS','2'))>1))])
+        parallel = int(os.environ.get('RIGORLOOP_VALIDATION_WORKERS', '2')) > 1
+        observed = []
+        body = """import pathlib, sys, time
+p = pathlib.Path({gate!r})
+name = {name!r}
+(p / name).touch()
+deadline = time.monotonic() + 10
+while {parallel!r} and (not (p / 'a').exists() or not (p / 'b').exists()
+                       or (name == 'a' and not (p / 'b-observed').exists())):
+    if time.monotonic() > deadline:
+        raise SystemExit(8)
+    time.sleep(.01)
+print(name + '-stdout')
+print(name + '-stderr', file=sys.stderr)
+"""
+
+        def observe_result(*args, **kwargs):
+            result = CheckResult(*args, **kwargs)
+            observed.append(result.plan.check_id)
+            if result.plan.check_id == 'b':
+                (gate / 'b-observed').touch()
+            return result
+
+        # Both children rendezvous; a can finish only after the real scheduler
+        # records b. The deadline bounds a broken handshake, not relative speed.
+        with patch('validation_execution.CheckResult', side_effect=observe_result):
+            results = self.run_plans([
+                self.plan(name, body.format(gate=str(gate), name=name, parallel=parallel))
+                for name in ('a', 'b')
+            ], timeout_seconds=15)
+        self.assertEqual(observed, ['b', 'a'] if parallel else ['a', 'b'])
+        self.assertEqual([r.plan.check_id for r in results], ['a', 'b'])
         self.assertEqual([r.exit_code for r in results], [0, 0])
+        for result in results:
+            name = result.plan.check_id
+            self.assertEqual(result.stdout_path.read_text(), name + '-stdout\n')
+            self.assertEqual(result.stderr_path.read_text(), name + '-stderr\n')
 
     def test_serial_barrier_and_queue_time_excluded(self):
         gate = self.root / 'gate'
@@ -782,6 +805,38 @@ class CompositionTests(unittest.TestCase):
                 self.assertEqual([r.exit_code for r in results],[0])
             self.assertEqual(marker.read_text(),'xx')
 
+    def test_pr_snapshot_and_broad_discovery_compose_as_distinct_checks(self):
+        # Real selector + real catalog composition: neither the exact commit
+        # snapshot nor current-worktree discovery may overwrite the other.
+        import shlex
+        from validation_execution import expand_groups
+        from validation_selection import SelectionRequest, select_validation
+        with tempfile.TemporaryDirectory() as temporary:
+            repo = Path(temporary) / 'repository'
+            repo.mkdir()
+            def git(*args):
+                return subprocess.check_output(['git', '-C', str(repo), *args], text=True, stderr=subprocess.DEVNULL).strip()
+            git('init', '--quiet')
+            (repo / 'README.md').write_text('# Original\n')
+            git('add', '.')
+            commit = ('-c', 'user.name=Fixture', '-c', 'user.email=fixture@example.invalid', '-c', 'commit.gpgsign=false', 'commit', '-qm')
+            git(*commit, 'Original')
+            base = git('rev-parse', 'HEAD')
+            (repo / 'README.md').write_text('# Changed\n')
+            git('add', '.')
+            git(*commit, 'Changed')
+            head = git('rev-parse', 'HEAD')
+            selected = select_validation(SelectionRequest(mode="pr", base=base, head=head, repo_root=repo, broad_smoke=True))
+            self.assertEqual(selected.status, "ok", selected.blocking_results)
+            checks = [c for c in selected.selected_checks if c['id'] == 'broad_smoke.repo' or '--revision' in shlex.split(c['command'])]
+            self.assertEqual(len(checks), 2)
+            plans = [CheckPlan(c['id'], c['command'], shlex.split(c['command']), c.get('reason'), c['phase'], False) for c in checks]
+            composed = expand_groups(plans, Path(temporary))
+        record_checks = [p for p in composed if 'scripts/validate-governed-lifecycle-cli.py' in p.args]
+        self.assertEqual(len(record_checks), 2)
+        self.assertEqual(len({p.check_id for p in record_checks}), 2)
+        self.assertEqual({tuple(p.args[2:]) for p in record_checks}, {(), ('--revision', head)})
+
     def test_catalog_composes_broad_and_main_with_distinct_preserved_package_versions(self):
         from validation_execution import compose_mode
         with tempfile.TemporaryDirectory() as temporary:
@@ -797,7 +852,8 @@ class CompositionTests(unittest.TestCase):
                 self.assertIn(build.check_id,check.dependencies)
                 self.assertFalse(any(p.args[:2] == ['bash','scripts/ci.sh'] for p in plans))
             self.assertIn('rigorloop_cli.test',{p.check_id for p in plans})
-            self.assertIn('workflow_automation.engine_regression',{p.check_id for p in plans})
+            self.assertIn('main.governed_lifecycle_cli.validate',{p.check_id for p in plans})
+            self.assertIn('governed_lifecycle_cli_wrapper.test',{p.check_id for p in plans})
 
     def test_unknown_value_composed_mode_rejects(self):
         from validation_execution import compose_mode

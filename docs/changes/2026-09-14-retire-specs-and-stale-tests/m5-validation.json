@@ -1,0 +1,82 @@
+{
+  "milestone": "m5",
+  "baseline_commit": "f1e4e8e2",
+  "commands": [
+    {
+      "command": "python scripts/test-select-validation.py",
+      "exit_code": 0,
+      "result": "176 tests passed; repeated within final CI after candidate fixture correction"
+    },
+    {
+      "command": "python scripts/test-validation-execution.py",
+      "exit_code": 0,
+      "result": "52 tests passed"
+    },
+    {
+      "command": "python scripts/test-skill-validator.py",
+      "exit_code": 0,
+      "result": "280 tests passed"
+    },
+    {
+      "command": "python scripts/test-release-transaction.py HistoricalReleaseReaderTests",
+      "exit_code": 0,
+      "result": "2 tests passed"
+    },
+    {
+      "command": "python scripts/test-release-transaction.py ReleaseCandidateIntegrationTests.test_actual_candidate_build_and_packed_metadata_chain",
+      "exit_code": 0,
+      "result": "Actual candidate build, qualification, retained approval/execution fixture and packed metadata chain passed"
+    },
+    {
+      "command": "bash scripts/ci.sh --mode local --broad-smoke",
+      "exit_code": 0,
+      "result": "All selected and broad checks passed"
+    }
+  ],
+  "logs": [
+    {
+      "path": "/tmp/full-specs-m5-selector.log",
+      "sha256": "3c82e31fbd4386d641a09a040091b69035152d358adec57da4e1819756608405",
+      "bytes": 53
+    },
+    {
+      "path": "/tmp/full-specs-m5-execution.log",
+      "sha256": "9f6864a841f1a891801a12f2eb39650c4d96ea6f5262ca1ad3f28d34be72abba",
+      "bytes": 892
+    },
+    {
+      "path": "/tmp/full-specs-m5-skills-final.log",
+      "sha256": "3b4620be643c4f10ac1882c801f516749d3ee412240a743dc1dbf0b54d3dd08f",
+      "bytes": 47145
+    },
+    {
+      "path": "/tmp/full-specs-m5-report-readers.log",
+      "sha256": "396fa13ad4a55a2d25fc003254aa0f52822528c1bc15e9d3fd6f0d2e3ba2dc86",
+      "bytes": 100
+    },
+    {
+      "path": "/tmp/full-specs-m5-candidate-green.log",
+      "sha256": "a483ec0f416de9c993fb087facfd2da13b299bda6175ba39d215ecfc99e4ff93",
+      "bytes": 679
+    },
+    {
+      "path": "/tmp/full-specs-m5-ci-final.log",
+      "sha256": "a480007fdf7005d0ac71eb8da6baa8750cb31c392355e126e2cf76815221d97e",
+      "bytes": 205493
+    },
+    {
+      "path": "/tmp/full-specs-m5-ci.log",
+      "sha256": "03a0368d481b06a404e3c4b2bc6450a1867ea225acc5c153786083ed3feb3871",
+      "bytes": 207495,
+      "result": "failed-before-correction"
+    },
+    {
+      "path": "/tmp/rigorloop-release-check-o9cqhcwd.log",
+      "sha256": "8e26ad2ef85c3c8e12ad3b8d35e8a5f9668c95b4743fdcb8b7902f2719af8885",
+      "bytes": 48139,
+      "result": "failed-before-correction"
+    }
+  ],
+  "corrections": "Initial integrated candidate failed because its source fixture copied current validators but retained committed pre-rename fixture paths. Exact private failure showed missing current proposal fixture. Mirroring current fixture and package-test trees preserves actual qualification. Focused actual candidate and final full CI then passed.",
+  "limitations": "Milestone implementation evidence; final independent milestone judgment, M6 and final whole-change Review/Verify remain required."
+}

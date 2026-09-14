@@ -831,25 +831,16 @@ def compose_mode(mode, scratch, *, base='', head='', skip_diff_scoped=False):
             base,head = _git('rev-parse','--verify','HEAD~1'),_git('rev-parse','--verify','HEAD')
         values.update({'<base>':[base],'<head>':[head]})
     else:
-        dirty = _git('diff','--name-only','-z','--diff-filter=ACMRT','HEAD','--','.').split('\0')
+        dirty = _git('diff','--name-only','-z','--no-renames','--diff-filter=ACDMRT','HEAD','--','.').split('\0')
         dirty = [x for x in dirty if x]
         previous = _git('rev-parse','--verify','HEAD~1',optional=True)
         if not skip_diff_scoped:
             if os.environ.get('REVIEW_ARTIFACT_ROOTS'):
                 roots = [x.rstrip('/')+'/change.json' for x in os.environ['REVIEW_ARTIFACT_ROOTS'].split()]
             else:
-                changed = dirty or (_git('diff','--name-only','-z','--diff-filter=ACMRT','HEAD~1','HEAD','--','.').split('\0') if previous else [])
+                changed = dirty or (_git('diff','--name-only','-z','--no-renames','--diff-filter=ACDMRT','HEAD~1','HEAD','--','.').split('\0') if previous else [])
                 roots = _current_roots(changed)
-        authored = [x for x in dirty if not x.startswith(('.codex/skills/','dist/adapters/'))]
-        if authored and (not skip_diff_scoped or not previous):
-            lifecycle = ['--mode','explicit-paths']
-            for path in authored:
-                lifecycle.extend(['--path',path])
-        elif previous:
-            lifecycle = ['--mode','push-main-ci','--before',previous,'--after',_git('rev-parse','--verify','HEAD')]
-        else:
-            raise ValueError('Unable to determine artifact lifecycle validation scope')
-        values.update({'<roots>':roots,'<lifecycle-args>':lifecycle})
+        values.update({'<roots>': roots})
     plans = []
     for key in MODE_CHECK_IDS[mode]:
         if key.endswith('review_artifacts.changed_roots') and not roots:

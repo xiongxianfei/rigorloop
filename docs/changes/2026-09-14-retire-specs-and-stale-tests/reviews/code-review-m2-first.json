@@ -1,0 +1,79 @@
+{
+  "assessment_scope": "Bounded M2 first-pass stale-consumer finding; no final milestone judgment.",
+  "change_id": "2026-09-14-retire-specs-and-stale-tests",
+  "contributors": [
+    {
+      "id": "codex-m2-implementer",
+      "role": "implement"
+    }
+  ],
+  "findings": [
+    {
+      "evidence": "Major scope-completeness defect: scripts/validate-guide-system.py ROUTE-GUIDE-008 mandates literal change.yaml although current navigation uses change.json. Replacing only legacy filename strings in an otherwise valid existing owned guide fixture triggers ROUTE-GUIDE-008. This retains obsolete wording as mandatory protection.",
+      "id": "m2-plan-index-legacy-literal",
+      "owner": {
+        "id": "codex-m2-implementer",
+        "role": "implement"
+      },
+      "reporter": {
+        "id": "independent-m2-code-reviewer",
+        "role": "review"
+      },
+      "required_outcome": "Update guide validation to protect current plan-index versus owning-change state separation without requiring historical YAML wording. Add failing-before/passing-after current-only index proof and retain negative detection for missing navigation/owner policy; rerun complete guide suite and independently reassess.",
+      "resolution": {
+        "actor": {
+          "id": "independent-m2-code-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [],
+        "rationale": "Frozen78727a4e replaces historical change.yaml obligation with current change.json while retaining navigation-index/owning-change checks. Added current-only index case passes and loss-of-policy case fails. Reviewer independently reran complete11guide tests successfully; public validator and recorded post-CI supplement passed."
+      },
+      "state": "resolved",
+      "subjects": [
+        {
+          "identity": "sha256:254453eb105fe95e6101bc0cd08f207c8ffb6efe4202daba3c1ce4ba8183f043",
+          "path": "scripts/validate-guide-system.py"
+        },
+        {
+          "identity": "sha256:febca9be58096191340755b31381e082183f0a49c6e1f0efa0b6ff3529adcc7d",
+          "path": "docs/plan.md"
+        }
+      ]
+    }
+  ],
+  "id": "code-review-m2-first",
+  "independence_basis": "Separate nonauthor reviewer inspected M2 diff and reproduced current-only navigation rejection using existing test-owned temporary guide fixture; no implementation edits.",
+  "judgment": "changes-requested",
+  "limitations": [
+    "Selected CI remains running; no complete M2 pass is claimed. Current correction and affected proof require independent reassessment before milestone approval."
+  ],
+  "rationale": [
+    "M2 must reconcile current guide/validator owners and retire incidental obsolete representation assertions while preserving navigation policy. ROUTE-GUIDE-008 still requires change.yaml alongside navigation index and owning change.",
+    "In existing owned RouteGuideValidatorTests setup, replacing only change.yaml strings with change.json preserves navigation policy but produces ROUTE-GUIDE-008. Historical links currently satisfy the false obligation; a current-only index cannot pass."
+  ],
+  "reviewer": {
+    "id": "independent-m2-code-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:254453eb105fe95e6101bc0cd08f207c8ffb6efe4202daba3c1ce4ba8183f043",
+      "path": "scripts/validate-guide-system.py"
+    },
+    {
+      "identity": "sha256:febca9be58096191340755b31381e082183f0a49c6e1f0efa0b6ff3529adcc7d",
+      "path": "docs/plan.md"
+    },
+    {
+      "identity": "sha256:e4953b253ffe955d4ff3beacde0076c927ece9b5858b31a31b8c30f8cc637e50",
+      "path": "docs/design/skill/workflow.md"
+    },
+    {
+      "identity": "sha256:3e99392f5974d61f13f6c3bf8f5b616dbb5c6ca3a997f83a36e89ca43a7dd8e3",
+      "path": "docs/plans/2026-09-14-retire-specs-and-stale-tests.md"
+    }
+  ],
+  "summary": "Touched guide validator still requires obsolete change.yaml wording for an otherwise valid current plan index.",
+  "target": "code"
+}

@@ -1,0 +1,109 @@
+{
+  "assessment_scope": "M5 remaining test/helper/fixture population and retired named-author validator cleanup, current asset/recorded-release protection, selector explanations and integrated candidate fixture correction. Includes M1–M4 interaction evidence; not final six-milestone whole-change Code Review.",
+  "change_id": "2026-09-14-retire-specs-and-stale-tests",
+  "contributors": [
+    {
+      "id": "codex-full-specs-implement",
+      "role": "implement"
+    }
+  ],
+  "findings": [],
+  "id": "code-review-m5",
+  "independence_basis": "Separate nonauthor reviewer independently inspected full M5 diff, live shared callers, fixture transfer and parameter-domain maintenance evidence. Earlier recommendations were read-only assessment; reviewer authored no implementation/tests or plan.",
+  "judgment": "approved",
+  "limitations": [
+    "M6 and fresh final whole-change Code Review then distinct Verify remain required. This approves M5 only, not branch/PR readiness or publication.",
+    "Population completeness is bounded to repository-owned test/helper/fixture trees and named prior-stage inventories; historical documentation examples and final removed-source navigation require M6 disposition.",
+    "Final integration used safe fixture/provider boundaries; no live external release was performed."
+  ],
+  "rationale": [
+    "Contract/scope alignment: pass. Retired spec/spec-review/test-spec positive authoring validators and exclusive status/readiness machinery disappear without changing current model or explicit portable feature/proof grammar. Three unused semantic evaluator JSON corpora have no current consumer and retire with their already-retired capability.",
+    "Shared failure protection: pass. Metadata/status/placeholder/filler/field-label utilities remain under neutral names and retain current proposal/code-review callers. Generated presence/missing-resource/surface diagnostics transfer to actual current skills; cross-review material-field mismatch compares two current review families. Existing policy-label, vocabulary, resource-map and asset validation negatives remain. Independently ran the four transferred generated-asset/cross-review tests successfully.",
+    "Recorded release compatibility: pass. Two owned synthetic tests replace reads of finished v0.3.5/v0.5.0 production reports. A fake provider creates only synthetic report input; current profile loader rejects OpenCode, read-only compatibility validates the distinct multi-root grammar, unknown targets reject, and before/after fixture bytes agree. Obsolete provider OpenCode execution branch is removed. Independently ran both reader tests successfully.",
+    "Population/maintenance adequacy: pass. All 260 final population file hashes match. Independent enumeration of existing tracked scripts/test-* and scripts/fixtures, tests/fixtures and package test trees found no omitted members. Source-bound test/helper and loop-domain inventory plus grouped hazards distinguish retained negative/path/identity/authority protection from historical recipe assertions; prior milestone disposition is retained. Test count alone is not proof.",
+    "Integrated correction: pass. Actual candidate initially mixed current validators with committed pre-rename fixtures; failure is preserved. Source fixture now copies current tests/fixtures and package test tree together with current scripts before its commit, keeping deletions and renamed inputs coherent. This changes the synthetic source, not qualification predicates; actual candidate and final selected+broad CI pass. Selector reason changes correct claimed scope; duplicate check tuple removal preserves selected IDs.",
+    "Validation/evidence: pass. Independently verified all eight raw log hashes and lengths, including failed-before-correction evidence. Final evidence reports skills 280, selector 176, executor 52, two readers, actual candidate integration and complete local+broad selected CI passing. Earlier independent four asset/two reader runs concern unchanged reviewed functions.",
+    "Maintainability/documentation/security: pass. No new generic validator service, legacy acceptance fallback, live publication, fabricated historical approval or user-state operation is introduced. Change-local inventory and rationale remain scoped evidence; M6 owns final source deletion/navigation reconciliation."
+  ],
+  "reviewer": {
+    "id": "codex-cli-release-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:5466b6b4128dc0ca36625b6984109a491b17b5339bfd874326cea22e904e2b21",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m5-implementation.md"
+    },
+    {
+      "identity": "sha256:149262038e392538f8c0d6d82f246cbc9a611ac0d0e792134202504d401fb44e",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m5-test-maintenance.json"
+    },
+    {
+      "identity": "sha256:162b34cfae7a2e2544996158e60ea3fa33849d1ec704e738b5b292d0bac14cb9",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m5-validation.json"
+    },
+    {
+      "identity": "sha256:518edd4cd362ca686cecbf2bd76ac6d20ce462c0aa5cb76d12195127ef63f031",
+      "path": "scripts/release_candidate_tests.py"
+    },
+    {
+      "identity": "sha256:96442c954d15c68bf1f22d4650fb5f3d6bd0d9bbeba3cb7a3037346712256454",
+      "path": "scripts/skill_validation.py"
+    },
+    {
+      "identity": "sha256:6737ec7dedec8aebebb4ce938660e8d195054bc5921ec84743ecd1a958d3a4b2",
+      "path": "scripts/test-release-transaction.py"
+    },
+    {
+      "identity": "sha256:a91a45ca90e098a5fd8f2301111cc3a9ddf5e05f0012344aee9806c6e8ac4cc9",
+      "path": "scripts/test-skill-validator.py"
+    },
+    {
+      "identity": "sha256:3a6c66fc66e5d8534f3aa096788d2d128f4f067e932ba130cf5c28f4566dbe61",
+      "path": "scripts/validation_selection.py"
+    },
+    {
+      "identity": "sha256:1be200cd2da2582d71a0f081e45ab2ec359aad1ef992f58050ee9b12effa9820",
+      "path": "tests/fixtures/skills/published-design/generated-output-presence/missing-asset/canonical/proposal/SKILL.md"
+    },
+    {
+      "identity": "sha256:5f77556e23b38f9b0fb7c89e6e46103d3b847a5d8808699c26ae4faddc8e0432",
+      "path": "tests/fixtures/skills/published-design/generated-output-presence/missing-asset/canonical/proposal/assets/proposal-skeleton.md"
+    },
+    {
+      "identity": "sha256:611728df9c54ff5cd44aed821c7bc4753bc5662f85ac7d8149eef2980cec404d",
+      "path": "tests/fixtures/skills/published-design/generated-output-presence/missing-asset/generated/proposal/SKILL.md"
+    },
+    {
+      "identity": "sha256:1be200cd2da2582d71a0f081e45ab2ec359aad1ef992f58050ee9b12effa9820",
+      "path": "tests/fixtures/skills/published-design/generated-output-presence/valid/canonical/proposal/SKILL.md"
+    },
+    {
+      "identity": "sha256:5f77556e23b38f9b0fb7c89e6e46103d3b847a5d8808699c26ae4faddc8e0432",
+      "path": "tests/fixtures/skills/published-design/generated-output-presence/valid/canonical/proposal/assets/proposal-skeleton.md"
+    },
+    {
+      "identity": "sha256:611728df9c54ff5cd44aed821c7bc4753bc5662f85ac7d8149eef2980cec404d",
+      "path": "tests/fixtures/skills/published-design/generated-output-presence/valid/generated/proposal/SKILL.md"
+    },
+    {
+      "identity": "sha256:5f77556e23b38f9b0fb7c89e6e46103d3b847a5d8808699c26ae4faddc8e0432",
+      "path": "tests/fixtures/skills/published-design/generated-output-presence/valid/generated/proposal/assets/proposal-skeleton.md"
+    },
+    {
+      "identity": "sha256:3e99392f5974d61f13f6c3bf8f5b616dbb5c6ca3a997f83a36e89ca43a7dd8e3",
+      "path": "docs/plans/2026-09-14-retire-specs-and-stale-tests.md"
+    },
+    {
+      "identity": "sha256:90e00cf969ff8f6c7cfb59f6e31e323ff5642f31189e55cee7e5240b96e1e86d",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:ff0b198f8bab40a9b0a07d9bac4c961ef9ad45e6f094edcf190069cf6b6bfbce",
+      "path": "docs/design/skill/skill.md"
+    }
+  ],
+  "summary": "Complete corrected M5 approved at f1e4e8e2..c1209840; no unresolved M5 findings.",
+  "target": "code"
+}

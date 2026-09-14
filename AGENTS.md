@@ -19,7 +19,7 @@ Use [docs/project-map.md](docs/project-map.md) only when current for the area; o
 
 - Make the smallest complete change, preserve user work and avoid unrelated refactors.
 - Follow [System's directory layout](docs/design/system.md#repository-directory-layout); preserve stable model IDs and declared example ownership.
-- Edit canonical sources in `docs/`, `specs/`, `skills/`, `schemas/`, `scripts/` and `templates/`; `skills/` is the only authored skill source.
+- Edit canonical sources in `docs/`, `skills/`, `schemas/`, `scripts/` and `templates/`; `skills/` is the only authored skill source.
 - Keep architecture and ADR scaffolds in `templates/`. Use `skills/plan/assets/plan-skeleton.md` for plans; do not create duplicate scaffolds or overwrite an unrelated initiative's plan.
 - Do not hand-edit generated adapter output. Keep local `.codex/skills/` untracked; use [adapter guidance](dist/adapters/README.md) and [Packaging](docs/design/engineering/packaging.md).
 - Treat published skills as user-facing: keep repository-maintainer mechanics out of their instructions. Add a skill only for a distinct recurring responsibility, artifact, gate or operational process.
