@@ -40,6 +40,26 @@
         }
       ],
       "summary": "Corrected rda-dr-01 example-only unintended references; current normative retirement requirement preserved."
+    },
+    {
+      "actor": {
+        "id": "codex-implementer",
+        "role": "implement"
+      },
+      "id": "plan-authoring",
+      "procedure": "Plan uses current approved design-review-r2; first Design review remains stale with resolved finding and original judgment. Scoped one implementation milestone, TG01/02 and FINAL01/02, V1–V6, coordinated rollback and separate final review then Verify. python scripts/validate-guide-system.py passed. No implementation or work initialization before Delivery approval.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:e19785d07ec8e4e81e2c8c76b0ad16da57d4ecf69d0c002a1d031acad76c1f16",
+          "path": "docs/plans/2026-09-15-retire-legacy-design-authoring.md"
+        },
+        {
+          "identity": "sha256:63b2131f461d2171c96d69032a390e95e8f7c500bdf3e1e7209f055b487d3faf",
+          "path": "docs/plan.md"
+        }
+      ],
+      "summary": "Allocated complete retirement slice, independent semantic/source and installed-package proof plus final gates."
     }
   ],
   "schema_version": 3

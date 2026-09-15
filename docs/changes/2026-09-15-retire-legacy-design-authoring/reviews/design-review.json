@@ -20,8 +20,20 @@
         "role": "review"
       },
       "required_outcome": "Restore internally valid synthetic example references and preserve its original label-normalization meaning. Safe resolution: remove only the four accidental DES-SR-24 insertions inside the fenced example, retain DES-SR-24 in the real Design acceptance table, validate the extracted example plus affected models, refresh exact model registration/evidence and return for independent reassessment. No owner policy decision is needed.",
-      "resolution": null,
-      "state": "open",
+      "resolution": {
+        "actor": {
+          "id": "retirement-independent-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [
+          {
+            "id": "design-example-correction",
+            "path": "docs/changes/2026-09-15-retire-legacy-design-authoring/evidence.json"
+          }
+        ],
+        "rationale": "Reporter inspected4865316c against348dc740: exactly four stray DES-SR-24 insertions removed inside the example; current complete fence independently compared byte-identical to643f6cd6. Reporter reran python tests/engineering/validation/test-boundary-first-validation.py ModelRecordTests.test_model_design_example_and_parent_validate_without_counting_fenced_marker (1 passed) and python scripts/validate-boundary-first.py --check --path docs/design/skill/authoring/design.md --path docs/design/skill/skill.md --path docs/design/system.md (passed). Actual DES-SR-24 requirement and real acceptance rows remain; synthetic LAB references and non-applicable rows are valid. No remaining correction required."
+      },
+      "state": "resolved",
       "subjects": [
         {
           "identity": "sha256:b4983acca9575d4c995b60bbeb522f7b665484b4a3a4da4ea41756d63049d073",

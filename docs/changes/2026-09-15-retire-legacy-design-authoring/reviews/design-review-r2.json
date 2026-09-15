@@ -1,0 +1,91 @@
+{
+  "assessment_scope": "Formal lifecycle Design Review round2, whole affected registered design/skill/system package at4865316c, including restored inline label-normalization example. Complete first-pass assessment reused only for affirmatively unchanged engineering contracts; exact four-line correction and all relevant interactions reassessed. Upstream proposal-review remains unchanged direction authority.",
+  "change_id": "2026-09-15-retire-legacy-design-authoring",
+  "contributors": [
+    {
+      "id": "codex-design-author",
+      "role": "design"
+    }
+  ],
+  "findings": [],
+  "id": "design-review-r2",
+  "independence_basis": "Independent reviewer /root/retirement_review authored neither initial Design nor correction. Root authored all engineering amendments; reviewer independently inspected exact changes, compared baseline example bytes and reran existing example/model checks. Reviewer only records its judgment and finding disposition.",
+  "judgment": "approved",
+  "limitations": [
+    "This approves only the exact Design package for authorized delivery planning, not implementation, final verification or external action.",
+    "No target-agent execution or package qualification occurred here; Delivery must allocate concrete installed resources, source-preservation and consumer proof.",
+    "Initial design-authoring evidence described enclosing-model structural checks; current example validity rests on the explicit correction evidence and reviewer rerun, not retroactive expansion of that initial pass."
+  ],
+  "rationale": [
+    "Behavior and realization: DES-SR-24 prohibits create/rebuild/amend standalone architecture/ADR output, preserving reads and authorized scoped adoption. Existing source-selection/technical resources can implement this without new runtime, schema or installation behavior.",
+    "Authority and compatibility: the package openly withdraws old output support, leaves project documents and authority unchanged absent explicit adoption, prevents template presence from re-enabling output, and retains feature-spec/proof support via DES-SR-14/23. No implementation convenience weakens the approved direction.",
+    "Ownership and recovery: Design remains supported-output owner; System/Skill defer to it, while Assessment, Workflow, CLI/Records and Packaging retain their operations. Coherent source/consumer rollback and historical judgment preservation remain explicit. No external permission is inferred.",
+    "Decision and migration preservation: DES-DEC-07 explicitly supersedes only the architecture/ADR part of DES-DEC-04. The five-file map retires fixed packaging and preserves goals, constraints, context, structure, flows, quality, risks, vocabulary, decision alternatives/consequences/follow-up and provenance. Existing technical-design guidance covers these concerns. Repository template copies compare byte-identical to their matching skill assets. Commit643f6cd6d368238f0ca2a5075430634cf9307ad3 supplies recoverable originals.",
+    "Consumer reconciliation: Design Review must distinguish source inputs from output members; Plan may consume retained requirements without promising old-format edits. Resource-map/READ/COPY and exclusive-presence checks are implementation consumers explicitly selected for reconciliation. Generic lint fixtures and common diagram styles remain independently useful.",
+    "Acceptance: unsupported create/rebuild/amend even with a customer template, preserved files, missing/conflicting adoption authority, explicit obligation mapping, retained feature amendment, source-versus-output review and clean installed resource completeness/retired-resource absence are concrete local/integrated outcomes for Delivery. No target-agent behavior is claimed from structural success.",
+    "Views: affected models retain clear responsibility overviews and reasoned Context/Building Block/Runtime/Deployment selection. Design adds a supported-output stop to Building Block and pre-authoring stop in Runtime prose. Existing parent views remain adequate because product owners and deployment boundaries do not change.",
+    "Example correctness and finding disposition: independently inspected exactly four example-only removals, compared the complete fence byte-identical to643f6cd6, and reran the existing extracted-example test and three-model structural check successfully. LAB-SR01/02/03 retain their pure normalization outcomes and non-applicable rows use only -. Actual retirement acceptance still cites DES-SR-24. Reporter resolved rda-dr-01 with correction evidence; no other package source changed since complete first-pass reading.",
+    "Current applicability and overall judgment: exact current registered models match this assessment; root correction changed only the previously defective inline example. No required correction, necessary owner decision or missing material evidence remains. First-pass judgment and original finding subjects retain their historical meaning. Proposal direction remains unchanged; its old feasibility-source identity is not retargeted. The three-member package is approved for authorized plan authoring only."
+  ],
+  "reviewer": {
+    "id": "retirement-independent-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:70729f932c5b46e42c5f79a208ec6ca9de8513831d58e09250df5bb9b73e6517",
+      "path": "docs/design/skill/authoring/design.md"
+    },
+    {
+      "identity": "sha256:e1184234b6a5f1a85f3e7b88ef3c699217178aa6257d9569689d1d59fafbf709",
+      "path": "docs/design/skill/skill.md"
+    },
+    {
+      "identity": "sha256:7a88f81f0044f2f9739ca27e9ebfb6cef77628f87b8422a240d9b776a4b921d8",
+      "path": "docs/design/system.md"
+    },
+    {
+      "identity": "sha256:707cc801b29efaf98694fee68a60e1e26063a4359e5e1b1f8fe4a66976941bf6",
+      "path": "docs/proposals/2026-09-15-retire-legacy-design-authoring.md"
+    },
+    {
+      "identity": "sha256:994333d0936c24c4283b4e5de4bc83734cb0630e6ce2af2bb72fd0b712655122",
+      "path": "docs/changes/2026-09-15-retire-legacy-design-authoring/reviews/proposal-review.json"
+    },
+    {
+      "identity": "sha256:8f24c82956dfafdee4d389b3c7353d3d73968e4c440a7c6fa10eabc47de5e06b",
+      "path": "skills/design/references/legacy-technical-authoring.md"
+    },
+    {
+      "identity": "sha256:e6d3e17551cceb876f8b8e73c2bdff37c7793d7bb47d15361713f8a89c9ecafa",
+      "path": "skills/design/assets/legacy-architecture-skeleton.md"
+    },
+    {
+      "identity": "sha256:86ed2ec3cd1152a3eb8c9dc7eb8a29c806bd122accd5d9752401cf2fecccab0d",
+      "path": "skills/design/assets/legacy-adr-skeleton.md"
+    },
+    {
+      "identity": "sha256:e6d3e17551cceb876f8b8e73c2bdff37c7793d7bb47d15361713f8a89c9ecafa",
+      "path": "templates/architecture.md"
+    },
+    {
+      "identity": "sha256:86ed2ec3cd1152a3eb8c9dc7eb8a29c806bd122accd5d9752401cf2fecccab0d",
+      "path": "templates/adr.md"
+    },
+    {
+      "identity": "sha256:45453043b926cf24f91756b8a46f51e2164926a15657ce1ab57a37e7f3be9f2f",
+      "path": "skills/design/references/technical-design.md"
+    },
+    {
+      "identity": "sha256:87c0fee6c3a753cfb520dcd578de42c1f68d8eb3ddcd6dc16299826e57f86fae",
+      "path": "skills/design/references/legacy-source-reconciliation.md"
+    },
+    {
+      "identity": "sha256:d9519adefc361bebb37d9f37d7f339c02ab214dbd0b3929a5e40d7172a9b0ff3",
+      "path": "docs/changes/2026-09-15-retire-legacy-design-authoring/evidence.json"
+    }
+  ],
+  "summary": "The corrected exact Design/Skill/System package coherently retires standalone architecture/ADR authoring, preserves source authority and engineering meaning, and keeps feature-spec support; the reporter verified the example correction and resolved rda-dr-01.",
+  "target": "design"
+}

@@ -1,11 +1,11 @@
 {
   "activity": {
     "owner": {
-      "id": "codex-design-review",
+      "id": "codex-delivery-review",
       "role": "route"
     },
-    "reason": "Approved proposal direction realized in exact Design/System/Skill amendments, explicit compatibility withdrawal and five-file disposition. Independent Design Review required before Delivery.",
-    "stage": "design-review",
+    "reason": "Current design-review-r2 approved after reporter-resolved example correction. Stable one-milestone plan and integrated proof allocation ready for independent Delivery Review.",
+    "stage": "delivery-review",
     "status": "ready"
   },
   "applicability": [
@@ -33,7 +33,16 @@
         "role": "review"
       },
       "path": "docs/changes/2026-09-15-retire-legacy-design-authoring/reviews/design-review.json",
-      "reason": "Current complete first-pass assessment of frozen348dc740 package; actionable embedded-example defect recorded before author correction.",
+      "reason": "Initial348dc740 package assessment retains original judgment and subjects; corrected4865316c package is independently approved by design-review-r2. Original finding is resolved by reporter; first-pass assessment must not supply current package reliance.",
+      "value": "stale"
+    },
+    {
+      "actor": {
+        "id": "retirement-independent-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-15-retire-legacy-design-authoring/reviews/design-review-r2.json",
+      "reason": "Renewed independent whole-package assessment at4865316c after reporter-verified example correction; exact registered model subjects current, rda-dr-01 resolved, other engineering contracts affirmatively unchanged.",
       "value": "current"
     }
   ],
@@ -63,7 +72,10 @@
       }
     }
   ],
-  "plan": null,
+  "plan": {
+    "identity": "sha256:e19785d07ec8e4e81e2c8c76b0ad16da57d4ecf69d0c002a1d031acad76c1f16",
+    "path": "docs/plans/2026-09-15-retire-legacy-design-authoring.md"
+  },
   "proposal": {
     "identity": "sha256:707cc801b29efaf98694fee68a60e1e26063a4359e5e1b1f8fe4a66976941bf6",
     "path": "docs/proposals/2026-09-15-retire-legacy-design-authoring.md"
@@ -80,6 +92,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-15-retire-legacy-design-authoring/reviews/design-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-15-retire-legacy-design-authoring/reviews/design-review-r2.json"
     }
   ],
   "schema_version": 3,
