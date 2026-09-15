@@ -1,12 +1,12 @@
 {
   "activity": {
     "owner": {
-      "id": "codex-implement",
-      "role": "implement"
+      "id": "codex-review-coordinator",
+      "role": "route"
     },
-    "reason": "Independent M3 review approves exact f7e29a7c and actual current candidates with no findings. M3 closed; proceed approved M4 runtime-test maintenance and complete inventory reconciliation, then final branch gates.",
-    "stage": "implement",
-    "status": "in-progress"
+    "reason": "Independent M4 review approved with no findings; all four milestones closed. Fresh independent whole-change Code Review required before distinct final Verify and user-authorized PR handoff.",
+    "stage": "code-review",
+    "status": "ready"
   },
   "applicability": [
     {
@@ -79,6 +79,15 @@
       },
       "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/m3-code-review.json",
       "reason": "Independent exact frozen M3 scope and actual candidate reassessment; no engineering change since the successful command and archive observations. Milestone scope only.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "all-skills-m4-code-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/m4-code-review.json",
+      "reason": "Independent exact-head M4 assessment plus complete inventory reconciliation; no unresolved M4 correction. Milestone only, subject to separate final whole-change review and Verify.",
       "value": "current"
     }
   ],
@@ -155,6 +164,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/m3-code-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/m4-code-review.json"
     }
   ],
   "schema_version": 3,
@@ -213,7 +226,7 @@
         "VAL-SR-30",
         "VAL-SR-31"
       ],
-      "status": "in-progress"
+      "status": "completed"
     }
   ]
 }
