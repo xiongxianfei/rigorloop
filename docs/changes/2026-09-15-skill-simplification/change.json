@@ -1,12 +1,12 @@
 {
   "activity": {
     "owner": {
-      "id": "codex-implement",
-      "role": "implement"
+      "id": "codex-review-coordinator",
+      "role": "route"
     },
-    "reason": "M4 clean independent rereview and reporter-owned CI blocker resolution permit M5. Assess vision/constitution/project-map; apply only scoped Constitution corrections and substantiate retained packages. No armed automation.",
-    "stage": "implement",
-    "status": "in-progress"
+    "reason": "M5 family dispositions and required checks ready for independent m5-code-review; M6 not started.",
+    "stage": "code-review",
+    "status": "ready"
   },
   "applicability": [
     {

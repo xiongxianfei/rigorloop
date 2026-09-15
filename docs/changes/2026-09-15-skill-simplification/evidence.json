@@ -963,6 +963,102 @@
         }
       ],
       "summary": "Accepted m4-ci-fenced-examples: normative assembly extraction now uses a scoped scanner for both backtick and tilde fences before section selection, requiring matching closing marker and sufficient length; no shared reader change; negative example headings cannot select/truncate the live section. Two new regression cases failed against b33d0e94 implementation (fenced-only complete table accepted; fenced unknown/example heading interfered with valid table), then identical eight-case proof passed with the first correction. Independent rereview reproduced tilde-fence incompleteness; three additional test methods failed before the complete scanner correction. All eleven focused methods now pass, including both fence styles, mismatched/short closures, longer matching closure and example-heading protection. Original eight methods remain unchanged in the final correction. Full python tests/skill/test-skill-validator.py: 303 passed. V1 Bugfix/CI passed. bash scripts/ci.sh --mode local: all selected checks passed, including adapters.regression. Existing V3 all95 baseline proof remains informative; current local selected adapter regression and exact existing candidate revalidation refresh affected reader behavior. python scripts/validate-adapters.py --version v1.0.0 --adapter-root /tmp/rigorloop-skill-m4-jcglleo2 --clean-install-smoke --skill ci-maintenance passed both adapters with corrected reader; M4 archive/source bytes unchanged, hashes remain m4-validation values. git diff --cached --check passed; V5 follows recording. This fixes a preventable first-pass miss; review finding remains open for its independent reporter, no self-approved resolution."
+    },
+    {
+      "actor": {
+        "id": "codex-implementer",
+        "role": "implement"
+      },
+      "id": "m5-obligations",
+      "procedure": "Root full entrypoint/reference/asset and owning-contract inspection plus independent read-only preparation; obligation destination and unchanged-consumer assessment for M5, pending independent formal Code Review.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:60c1478b79ccef8cdfe902a0fdcb2857c06b20caa8201463cd382f8937e5d05c",
+          "path": "skills/vision/SKILL.md"
+        },
+        {
+          "identity": "sha256:898bfed1f88674ef570af3928c7e5927daa4c40c8b9d8cf27e4e104bf2c12462",
+          "path": "skills/vision/assets/strategic-positioning-skeleton.md"
+        },
+        {
+          "identity": "sha256:1e94ae8b324ea1f3a68584c1d93ccd118c961147656ac9cfaea8f85c17fc666c",
+          "path": "skills/vision/assets/vision-skeleton.md"
+        },
+        {
+          "identity": "sha256:535e535565e3585e4d62de1b870c972d10173a0ea1e04151f0c8856b37872fae",
+          "path": "skills/vision/references/readme-vision-sync.md"
+        },
+        {
+          "identity": "sha256:84ca0d0a9dcab0d229cd7499f562b9e34849c3a3a696af8260cf8211697c269d",
+          "path": "skills/vision/references/strategic-vision-authoring.md"
+        },
+        {
+          "identity": "sha256:78367de4baa67f068f99a05144103291857ddb2302be1631fd73ebe0048b8231",
+          "path": "skills/constitution/SKILL.md"
+        },
+        {
+          "identity": "sha256:0ca90bb1cb731ffa6e702b82f77bccc3c5761154403e15cb6eb1157ec1d54013",
+          "path": "skills/project-map/SKILL.md"
+        },
+        {
+          "identity": "sha256:1bfc68c053deac5df9124c4f630492b263043ae65c4dd524fe964f4490ba3efe",
+          "path": "skills/project-map/assets/project-map-skeleton.md"
+        },
+        {
+          "identity": "sha256:d28ae2198d747e33b32e1fdbc2f0950c5f1b90e669f09a2d017ceae460b1b8ed",
+          "path": "skills/project-map/references/map-maintenance-and-area-coordination.md"
+        }
+      ],
+      "summary": "M5 complete family assessment under SKL-SR-01–15/24–27/29/30/32 and GOV/VIS/Project Map owners. Constitution changes two bounded lines: source-of-truth topic now asks for the project-selected authority order, including retained specs and Designs, rather than imposing an obsolete fixed list; Expected output points to the existing route skill instead of absent workflow. All twelve governance topics, equivalent-existing-guidance rule, AGENTS-only option, normative language, conflicts/no silent removal, source artifact authority and changed-rule reporting remain. No new layout, artifact, vocabulary or permission.\nVision retained: existing body resolves operation/significance/action/independent resource predicates before mutation. Strategic authoring and README sync references keep judgment distinct from deterministic marker derivation; two assets own structure only. Six assemblies, exact skip, no inferred establishment, source-first manifest/identity ordering, partial completion and exact retry each protect distinct outcomes. Another reduction would hide scope or recovery obligations.\nProject Map retained: quick guide links to specific stops, then resource map/classification and minimal coordination preflight. Create/refresh/read-only audit and repository/area remain independent; metadata freshness differs from invocation result and current implementation differs from intended Design. Reference owns refresh/audit/area coordination and area-first/root-registration-last exact retry; skeleton owns metadata/table labels, evidence trail and section order. Closed values, source ranking, missing/stale map fallback to source, command authority, partial orphan prevention and risk-to-owner handoff remain clear. Independent reviewer judges complete packages rather than a shorter-word target.\nReaders/tests scan found no consumer requiring the two changed Constitution sentences. Existing foundation fixture/manifest/parity protections remain unchanged; no tests mirroring prose edits were added. All shared sources, resources and declared consumer projections remain unchanged; live canonical source is skills/."
+    },
+    {
+      "actor": {
+        "id": "codex-implementer",
+        "role": "implement"
+      },
+      "id": "m5-validation",
+      "procedure": "Executed family validation, fresh temporary candidate, real CLI installation plus installed Constitution/archive byte comparison, and local actual-change selector on frozen M5 sources. Qualification v1.0.0 is not a release; semantic obligation preservation requires independent review.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:60c1478b79ccef8cdfe902a0fdcb2857c06b20caa8201463cd382f8937e5d05c",
+          "path": "skills/vision/SKILL.md"
+        },
+        {
+          "identity": "sha256:898bfed1f88674ef570af3928c7e5927daa4c40c8b9d8cf27e4e104bf2c12462",
+          "path": "skills/vision/assets/strategic-positioning-skeleton.md"
+        },
+        {
+          "identity": "sha256:1e94ae8b324ea1f3a68584c1d93ccd118c961147656ac9cfaea8f85c17fc666c",
+          "path": "skills/vision/assets/vision-skeleton.md"
+        },
+        {
+          "identity": "sha256:535e535565e3585e4d62de1b870c972d10173a0ea1e04151f0c8856b37872fae",
+          "path": "skills/vision/references/readme-vision-sync.md"
+        },
+        {
+          "identity": "sha256:84ca0d0a9dcab0d229cd7499f562b9e34849c3a3a696af8260cf8211697c269d",
+          "path": "skills/vision/references/strategic-vision-authoring.md"
+        },
+        {
+          "identity": "sha256:78367de4baa67f068f99a05144103291857ddb2302be1631fd73ebe0048b8231",
+          "path": "skills/constitution/SKILL.md"
+        },
+        {
+          "identity": "sha256:0ca90bb1cb731ffa6e702b82f77bccc3c5761154403e15cb6eb1157ec1d54013",
+          "path": "skills/project-map/SKILL.md"
+        },
+        {
+          "identity": "sha256:1bfc68c053deac5df9124c4f630492b263043ae65c4dd524fe964f4490ba3efe",
+          "path": "skills/project-map/assets/project-map-skeleton.md"
+        },
+        {
+          "identity": "sha256:d28ae2198d747e33b32e1fdbc2f0950c5f1b90e669f09a2d017ceae460b1b8ed",
+          "path": "skills/project-map/references/map-maintenance-and-area-coordination.md"
+        }
+      ],
+      "summary": "V1 python scripts/validate-skills.py skills/vision/SKILL.md skills/constitution/SKILL.md skills/project-map/SKILL.md passed. V4 fresh actual Codex/Claude archive build and supported vision/project-map mapped-resource clean-install smoke passed; complete inventories include Constitution. Initial --skill constitution selection was rejected because this skill has no mapped resources; it did not test installation and is not reported as success. Corrected invocation uses the existing supported resource selectors. Separate real-install observation through validate_clean_install_smoke with a subprocess.run wrapper compared each actual installed constitution/SKILL.md byte-for-byte to its sole entry in the corresponding validated archive, before existing temporary cleanup; both matched. No mocked command result or active user install. Commands [[\"python\", \"scripts/build-adapters.py\", \"--version\", \"v1.0.0\", \"--output-dir\", \"/tmp/rigorloop-skill-m5-oh0ceirw\"], [\"python\", \"scripts/validate-adapters.py\", \"--version\", \"v1.0.0\", \"--adapter-root\", \"/tmp/rigorloop-skill-m5-oh0ceirw\", \"--clean-install-smoke\", \"--skill\", \"vision\", \"--skill\", \"project-map\"]]; archive SHA256 {\"rigorloop-adapter-codex-v1.0.0.zip\": \"b7073a86030f8f6f3457c635f5455c33bc5b501b3fc7ea4779b15affee633432\", \"rigorloop-adapter-claude-v1.0.0.zip\": \"4f7d9407f9ba08b545dd67a58937652f1276fb4d4b403b4225d1b75acb4045bf\"}. V6 bash scripts/ci.sh --mode local all selected checks passed. git diff --cached --check passed; V5 follows recording. No validator or packaging code changed since current M4 reader correction, so scoped new package proof and selected CI suffice; M4 suite proof remains applicable to unchanged readers. No live project-governance changes, remote mutations or hosted CI observation."
     }
   ],
   "schema_version": 3
