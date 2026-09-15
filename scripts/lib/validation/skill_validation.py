@@ -45,7 +45,7 @@ REVIEW_ASSESSMENT_CONSUMERS = frozenset({"proposal-review", "design-review", "de
 
 
 TEST_QUALITY_CONSUMERS = frozenset(['design', 'bugfix', 'ci-maintenance', 'code-review', 'delivery-review', 'design-review', 'implement', 'plan', 'route', 'verify'])
-DESIGN_RESOURCES = frozenset(['references/architecture-view-examples.md', 'assets/design-skeleton.md', 'assets/diagram-styles.mmd', 'assets/legacy-adr-skeleton.md', 'assets/legacy-architecture-skeleton.md', 'references/boundary-first-feature-authoring-v1.md', 'references/boundary-first-method-v1.md', 'references/governed-design-authoring.md', 'references/legacy-source-reconciliation.md', 'references/legacy-technical-authoring.md', 'references/model-authoring.md', 'references/system-composition.md', 'references/technical-design.md', 'references/test-quality.md'])
+DESIGN_RESOURCES = frozenset(['references/architecture-view-examples.md', 'assets/design-skeleton.md', 'assets/diagram-styles.mmd', 'references/boundary-first-feature-authoring-v1.md', 'references/boundary-first-method-v1.md', 'references/governed-design-authoring.md', 'references/legacy-source-reconciliation.md', 'references/model-authoring.md', 'references/system-composition.md', 'references/technical-design.md', 'references/test-quality.md'])
 
 TEST_MAINTENANCE_CONSUMERS = frozenset(['bugfix', 'ci-maintenance', 'code-review', 'delivery-review', 'implement', 'plan', 'route', 'verify'])
 
@@ -2607,10 +2607,10 @@ def validate_skill_file(path: Path, schema: dict) -> tuple[list[str], str | None
     errors.extend(_validate_resource_map(path, body))
     if skill_name == "design":
         actual = {p.relative_to(path.parent).as_posix() for p in path.parent.rglob("*") if p.is_file() and p != path}
-        for missing in sorted(DESIGN_RESOURCES - actual):
-            errors.append(f"{path}: required design resource missing: {missing}")
         for unknown in sorted(actual - DESIGN_RESOURCES):
             errors.append(f"{path}: unknown design resource: {unknown}")
+        for missing in sorted(DESIGN_RESOURCES - actual):
+            errors.append(f"{path}: required design resource missing: {missing}")
     errors.extend(validate_ci_maintenance_contract(path, metadata, body))
     errors.extend(validate_targeted_recording_profile(path, body))
     errors.extend(_validate_published_self_containment(path, metadata, body))

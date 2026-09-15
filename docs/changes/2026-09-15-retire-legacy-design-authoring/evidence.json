@@ -60,6 +60,50 @@
         }
       ],
       "summary": "Allocated complete retirement slice, independent semantic/source and installed-package proof plus final gates."
+    },
+    {
+      "actor": {
+        "id": "codex-implementer",
+        "role": "implement"
+      },
+      "id": "m1-implementation",
+      "procedure": "Removed exactly five approved files: skills/design/assets/legacy-architecture-skeleton.md, skills/design/assets/legacy-adr-skeleton.md, skills/design/references/legacy-technical-authoring.md, templates/architecture.md, templates/adr.md. Original643f6cd6 paths preserve recoverability. Living technical/model references retain all applicable architecture concerns and decision context/choice/alternatives/consequences/identities. Source-reconciliation retains exact authority, no implicit conversion, explicit scoped adoption and unaffected-owner mapping. Standalone create/rebuild/amend requests stop including mandatory-template inputs; description/ownership/outputs/governed procedure/reviewer consumer agree. Separate feature methods and shared styles unchanged; Plan and other review/implementation guidance only consume retained requirements/decisions and therefore need no output-authoring change. Generic template-path lint fixtures remain independently useful; retired resource/asset assertions replaced with current model asset traceability and explicit resurrection rejection. Unknown design resource diagnostics precede missing-resource consistency. Fail-first7methods had5 expected failures; current focused15 and full306skill tests pass, canonical19 pass. Candidate build/temporary install passed; full packaging/local/fullbranch proof and independent review still due, not preclaimed.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:e6fad8644bfbdc8dd82addaf56e38d4c7776169b3cde1d5792cb613aabd8daf7",
+          "path": "scripts/lib/validation/skill_validation.py"
+        },
+        {
+          "identity": "sha256:b09a3b401fd1b96beba6b20f83331d6ae3b49697a3cd0514ca6b22db862b4698",
+          "path": "skills/design-review/SKILL.md"
+        },
+        {
+          "identity": "sha256:fdbaf69d34c804b765848e08b3423a18a6ad380abc3b9e2546681fb0a9f29c65",
+          "path": "skills/design/SKILL.md"
+        },
+        {
+          "identity": "sha256:fdc363ed6e0ccdf501c451598daaf38691ac6e8e85397cb5cad64fe13a09cc9e",
+          "path": "skills/design/references/governed-design-authoring.md"
+        },
+        {
+          "identity": "sha256:5d27d9865afc3dafcb7852910504450309c06a751826e96eab6b696c3967e443",
+          "path": "skills/design/references/legacy-source-reconciliation.md"
+        },
+        {
+          "identity": "sha256:5ae252fdf0c0eaf8496b90480a168bf4c348799d5fa288e8e2e3ea2def43f63e",
+          "path": "skills/design/references/model-authoring.md"
+        },
+        {
+          "identity": "sha256:92b7b4ce21ea27d6b7c516c4b4fd9f0af495da69e7b007230969cd0c533509f7",
+          "path": "skills/design/references/technical-design.md"
+        },
+        {
+          "identity": "sha256:a0c007940ce17143256e784b098c01e8f9f265a0299ad537fc29d884e33b0640",
+          "path": "tests/skill/test-skill-validator.py"
+        }
+      ],
+      "summary": "Implemented complete standalone architecture/ADR authoring retirement; required validation and independent semantic assessment continue."
     }
   ],
   "schema_version": 3

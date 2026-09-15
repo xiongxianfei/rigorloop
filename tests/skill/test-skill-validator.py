@@ -1095,10 +1095,10 @@ class SkillValidatorFixtureTests(SkillCliChecks, SkillGuidanceChecks, unittest.T
             expected_text="architecture: unmapped skill-local resource reference `templates/unapproved.md`",
         )
 
-    def test_current_architecture_resource_map_uses_packaged_assets(self) -> None:
+    def test_current_design_resource_map_uses_packaged_assets(self) -> None:
         root = ROOT / "skills/design"
         body = (root / "SKILL.md").read_text()
-        for name in ("legacy-architecture-skeleton.md", "legacy-adr-skeleton.md", "diagram-styles.mmd"):
+        for name in ("design-skeleton.md", "diagram-styles.mmd"):
             self.assertIn(f"COPY `assets/{name}`", body)
             self.assertTrue((root / "assets" / name).is_file())
         for private in ("templates/architecture.md", "templates/adr.md", "templates/diagram-styles.mmd"):
@@ -4092,8 +4092,6 @@ class RetainedSkillAuthorityTests(unittest.TestCase):
         asset_paths = [
             ROOT / "skills" / "proposal" / "assets" / "proposal-skeleton.md",
             ROOT / "skills" / "design" / "assets" / "design-skeleton.md",
-            ROOT / "skills" / "design" / "assets" / "legacy-architecture-skeleton.md",
-            ROOT / "skills" / "design" / "assets" / "legacy-adr-skeleton.md",
             ROOT / "skills" / "plan" / "assets" / "plan-skeleton.md",
         ]
         forbidden = (
@@ -4579,6 +4577,34 @@ class ProposalSkillSimplificationTests(unittest.TestCase):
 
 
 class UnifiedDesignResourceTests(unittest.TestCase):
+    def test_retired_standalone_resources_are_absent_and_cannot_be_reintroduced(self):
+        retired = ("assets/legacy-architecture-skeleton.md", "assets/legacy-adr-skeleton.md",
+                   "references/legacy-technical-authoring.md")
+        for resource in retired:
+            with self.subTest(resource=resource), tempfile.TemporaryDirectory() as tmp:
+                source = ROOT / "skills/design"
+                self.assertFalse((source / resource).exists())
+                root = Path(tmp) / "design"
+                shutil.copytree(source, root)
+                (root / resource).write_text("# Retired standalone output resource\n")
+                result = run_validator(root)
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn("unknown design resource: " + resource, result.stdout + result.stderr)
+        for name in ("architecture.md", "adr.md"):
+            self.assertFalse((ROOT / "templates" / name).exists())
+
+    def test_unknown_design_resource_precedes_missing_resource_consistency(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp) / "design"
+            shutil.copytree(ROOT / "skills/design", root)
+            (root / "references/unrecognized.md").write_text("# Unexpected resource\n")
+            (root / "references/technical-design.md").unlink()
+            result = run_validator(root)
+            self.assertNotEqual(result.returncode, 0)
+            output = result.stdout + result.stderr
+            self.assertLess(output.index("unknown design resource: references/unrecognized.md"),
+                            output.index("required design resource missing: references/technical-design.md"))
+
     def test_complete_package_and_retired_names(self):
         root = ROOT / "skills/design"
         self.assertFalse((ROOT / "skills/spec").exists())
@@ -5226,13 +5252,12 @@ class RequirementDeliveryModelM1Tests(unittest.TestCase):
 
     def test_m1_existing_artifact_structures_already_expose_traceability_without_new_entities(self) -> None:
         spec_asset = (ROOT / "skills" / "design" / "assets" / "design-skeleton.md").read_text(encoding="utf-8")
-        architecture_asset = (ROOT / "skills" / "design" / "assets" / "legacy-architecture-skeleton.md").read_text(encoding="utf-8")
         milestone_asset = (ROOT / "skills" / "plan" / "assets" / "milestone.md").read_text(encoding="utf-8")
         self.assertIn("## Requirements", spec_asset)
-        self.assertIn("## Related artifacts", architecture_asset)
+        self.assertIn("## Architecture Decisions", spec_asset)
         self.assertIn("- Requirements:", milestone_asset)
         self.assertIn("- Architecture responsibility:", milestone_asset)
-        combined = "\n".join((spec_asset, architecture_asset, milestone_asset))
+        combined = "\n".join((spec_asset, milestone_asset))
         for forbidden in ("RR ID", "IR ID", "AR ID", "## Epic", "## Feature", "## Story"):
             with self.subTest(forbidden=forbidden):
                 self.assertNotIn(forbidden, combined)
