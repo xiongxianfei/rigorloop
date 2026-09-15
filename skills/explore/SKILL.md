@@ -67,7 +67,7 @@ Stop option generation when enough materially distinct options expose the real d
 3. Load the common support rules and the exploration skeleton.
 4. Identify affected users, systems, or workflows and separate facts, assumptions, and unknowns.
 5. Challenge framing that assumes one solution. Generate enough materially distinct options to expose the real decision space.
-6. Include status quo or deferral when credible, but do not manufacture weak alternatives. A small decision may need only the current behavior and one credible change.
+6. Apply the Proportional option rule below to select credible alternatives without a fixed count.
 7. Define useful decision criteria and compare directions at the level needed by the owner. Use the option methods only when reframing or deliberate divergence needs more guidance; use the high-impact method only for strategically broad or difficult-to-reverse decisions.
 8. Identify bounded factual questions that could materially change the comparison and hand those questions to Research when invoked.
 9. Record a leading option or next investigation only as advice for consideration, then hand the artifact to the decision owner.
