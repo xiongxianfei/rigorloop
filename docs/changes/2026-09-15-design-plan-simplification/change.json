@@ -1,11 +1,11 @@
 {
   "activity": {
     "owner": {
-      "id": "codex-route",
-      "role": "route"
+      "id": "codex-design",
+      "role": "design"
     },
-    "reason": "Independent first-pass Proposal Review approved the exact unchanged proposal with no findings. Requested review and recording complete; isolated stop here. No Design work, automation or downstream continuation started.",
-    "stage": "proposal-review",
+    "reason": "Design authoring complete: exact Skill/Plan amendments and unchanged Design retention basis registered with material decision and successful local validation. Independent Design Review is the next gate; no review approval, delivery allocation or implementation is claimed.",
+    "stage": "design",
     "status": "completed"
   },
   "applicability": [
@@ -17,12 +17,52 @@
       "path": "docs/changes/2026-09-15-design-plan-simplification/reviews/proposal-review.json",
       "reason": "Fresh independent assessment of the exact unchanged committed proposal and current relied-on basis; no material findings or unresolved necessary owner decisions.",
       "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-design-author",
+        "role": "design"
+      },
+      "path": "docs/changes/2026-09-15-design-plan-simplification/material-decisions.json",
+      "reason": "Current Design-author choice bound to exact draft models; independent Design Review still required.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-design-author",
+        "role": "design"
+      },
+      "path": "docs/changes/2026-09-15-design-plan-simplification/evidence.json",
+      "reason": "Current exact draft engineering basis and bounded author observations; no downstream approval or execution inferred.",
+      "value": "current"
     }
   ],
   "blockers": [],
   "change_id": "2026-09-15-design-plan-simplification",
   "contract": "rigorloop-records-v3",
-  "models": [],
+  "models": [
+    {
+      "id": "skill",
+      "subject": {
+        "identity": "sha256:f6a787ef5a6c76d26d4d9393e1c104c3b5ae39098e168d86cd1215ad7c855297",
+        "path": "docs/design/skill/skill.md"
+      }
+    },
+    {
+      "id": "plan",
+      "subject": {
+        "identity": "sha256:3540d9d72b6f8e97bc62ed46bab56c6c152b86ceea1b874abb32379df93286b8",
+        "path": "docs/design/skill/authoring/plan.md"
+      }
+    },
+    {
+      "id": "design",
+      "subject": {
+        "identity": "sha256:0f7e41a1de83d542d9291a842876ae7c75ebb214242cca18ee825f539f52b778",
+        "path": "docs/design/skill/authoring/design.md"
+      }
+    }
+  ],
   "plan": null,
   "proposal": {
     "identity": "sha256:4a58cf175439ff0dd5ce7057d430ff9cf32836a2564de84a527a238abc7bb77e",
@@ -32,6 +72,14 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-15-design-plan-simplification/reviews/proposal-review.json"
+    },
+    {
+      "kind": "decisions",
+      "path": "docs/changes/2026-09-15-design-plan-simplification/material-decisions.json"
+    },
+    {
+      "kind": "evidence",
+      "path": "docs/changes/2026-09-15-design-plan-simplification/evidence.json"
     }
   ],
   "schema_version": 3,
