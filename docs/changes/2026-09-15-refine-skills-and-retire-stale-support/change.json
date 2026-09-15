@@ -1,12 +1,12 @@
 {
   "activity": {
     "owner": {
-      "id": "codex-implement",
-      "role": "implement"
+      "id": "codex-review-coordinator",
+      "role": "route"
     },
-    "reason": "Independent M2 review approved exact f820adf6 and full allocation without findings. M2 closed; begin approved M3 packaging/release support maintenance and fresh candidate qualification.",
-    "stage": "implement",
-    "status": "in-progress"
+    "reason": "M3 allocated support maintenance and fresh candidates complete with required proof; hand frozen slice to independent review. M4 remains pending.",
+    "stage": "code-review",
+    "status": "ready"
   },
   "applicability": [
     {

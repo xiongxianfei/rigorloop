@@ -384,6 +384,202 @@
         }
       ],
       "summary": "All M2 required direct and selected proof passed. Baseline deletion/rename test failed2subcases then passed after surviving-check routing. Initial standalone resource case used still-supported generic project qualification and remained valid; corrected test to mixed-line sibling resource boundary instead of changing generic recognition. Final mixed-line check passed, current helper exception absent. Python invocation of absent query observed interpreter missing-file error and exit2; not a promised product contract."
+    },
+    {
+      "actor": {
+        "id": "codex-implementer",
+        "role": "implement"
+      },
+      "id": "m3-implementation",
+      "procedure": "Actual diff/source/caller audit and independent full package/release/test inventory. Existing generated-only adapter support Design/source gap retained as baseline debt: live dist/adapters files/readers cannot be deleted without changing build-default/release behavior excluded by this approved plan. No publication, active installation, format or release-policy changes. All unique required fault domains retained; test count adapter95, npm8→7, release180 unchanged.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:d261b723bf793fdbd85acb15438b997dced864b6e348a46e1cdaa5e683b38ec9",
+          "path": "scripts/lib/packaging/adapter_distribution.py"
+        },
+        {
+          "identity": "sha256:243258bf48098b29fbf6b32f8722fe4fabe25e17b3aeb80968520b2f62551d56",
+          "path": "scripts/resources/adapter-templates/claude/CLAUDE.md"
+        },
+        {
+          "identity": "sha256:4b22736b37ffcd31a5b937fdd390971084dce870e952cf3b3a0dc7e4f83d6238",
+          "path": "scripts/validate-release.py"
+        },
+        {
+          "identity": "sha256:b4b995a5046ed0e79f02efba078eb152b40f9aa5afcc8dce8ed6ade2c791fa88",
+          "path": "tests/engineering/packaging/test-adapter-distribution.py"
+        },
+        {
+          "identity": "sha256:c20233722f9c78d00e83d34da64328e3f6692f8b9f1aab7d3aa2d267fbb81ca9",
+          "path": "tests/engineering/packaging/test-npm-package-publication.py"
+        },
+        {
+          "identity": "sha256:7e7dac59ac9e0612e4d93b2b9d84d333b61cdc120c5ec9621848c137da82d0f9",
+          "path": "tests/engineering/release/release_execution_tests.py"
+        },
+        {
+          "identity": "sha256:4e8531fe62efa0fed683ec9e693707414560f5848a5c356aeb0fb437c41d8fbd",
+          "path": "tests/engineering/release/test-release-transaction.py"
+        }
+      ],
+      "summary": "M3 corrects generated Claude /spec→/design guidance with fail-first existing test, removes4 test-only staged-v3 builder/validator helper functions and2aliases proven byte-equivalent to supported current builders, and retargets2 useful archive cases to current production APIs. All real tree/archive containment, unsafe destination, preserved-byte and resource/mixed-entrypoint negatives remain. Removes1 internal constant-shape npm test because retained path detector and actual tarball inspector expose those failures; removes2 uncalled release loader helpers+unused import. Corrects3 misleading test names and deprecated npm-tarball-root help without changing accepted arguments or qualification behavior. Retired internals recoverable at555f394c original paths. Full M3 population has coherent dispositions; preparation note follows with final choices above taking precedence over candidate language.\n\n# Independent M3 preparation inventory\n\nReviewer: packaging_support_review. Date: 2026-09-15. Scope: M3 of docs/plans/2026-09-15-refine-skills-and-retire-stale-support.md. This is read-only preparation, not formal Code Review or approval. No repository file was edited. Sources remain subject to M1/M2 progression and exact frozen M3 review.\n\n## Method and discovery\n\nRead Constitution, Code Review skill, the plan, Packaging and Release governing obligations; inspected actual test bodies, fixtures, helper calls, production ownership, CLI wrappers and selected/direct/CI consumers. Imported each actual runner and used unittest.defaultTestLoader.loadTestsFromModule without executing test cases: adapter runner discovers 95 AdapterDistributionTests; npm runner discovers eight NpmPackagePublicationTests; release runner discovers 180 tests across 18 classes. These numbers reconcile discovery only, not adequacy or passing validation.\n\nThe release runner imports ReleaseEvidenceTests, ReleaseCandidateTests, ReleaseCandidateIntegrationTests, CurrentSourceQualificationTests, ReleaseCoordinationTests, ReleaseApprovalTests, ReleaseEvidenceStoreTests and ReleaseExecutorTests. Their imported source totals are 15 + 30 + 9 + 27; 99 runner-local methods complete 180. release_fixture_helpers.py is support, not an undiscovered test suite. There is no setattr/load_tests generated class population or intentional skip found in these allocated files. Parameterized subTest domains are real source content: 17 adapter, eight npm, seven candidate, one coordination, seven evidence, three execution and six transaction sites; these include many cases and cannot be assessed by 283 method counts alone.\n\nReal callers: validation_selection catalogs adapter selected classes/cases, complete broad-smoke adapter runner, complete npm runner and complete release runner. validation_execution composes those current catalog commands. validate-release.py executes complete skill, adapter and npm suites plus actual adapter and tarball validation and packed smoke. release_candidate.py builds/validates candidates and joins prepared verification; release-coordinator.py is called by ci.sh check-ci and release.yml prepare/execute. publish-github-packages.yml runs actual npm publication validation with an intentional selected-tag current/historical path choice, separately tested by executing its shell step. No live publication was attempted.\n\n## Proposed concrete maintenance\n\n1. Claude template still recommends `/spec`, which is absent from current canonical inventory. Replace this example with `/design` and reconcile test_claude_entrypoint_documents_native_skill_invocation. It currently requires `/spec`, so passing that assertion preserves stale guidance. Retain native slash syntax, installed roots, no permission defaults and independent package guidance.\n2. Remove NpmPackagePublicationTests.test_forbidden_path_patterns_are_explicit and its now-unused FORBIDDEN_PATH_PATTERNS import. It only checks internal constant strings. Its five responsibilities already run through is_forbidden_path in test_forbidden_path_detection_rejects_root_and_nested_sensitive_files: .agents/.codex, adapter directories, root/nested ZIP and env paths. test_inspector_rejects_forbidden_paths independently constructs tarballs and reaches the real inspector for archive/env/adapter violations. Retain those behavior checks.\n3. Remove the two unused load_validate_release_module methods in ReleaseGateParityAndTimingTests and PublishedEvidenceCloseoutTests. Neither has a call site; real module loading remains exercised by CurrentSourceQualificationTests, candidate integration and separate wrapper tests. Remove imports only if no surviving uses.\n4. Rename inaccurate retained test descriptions, without deleting proof: ReleaseEvidenceStoreTests.test_source_ref_and_path_escape_rejected only tests source-ref collision; ReleaseGateParityAndTimingTests.test_release_workflow_delegates_to_release_verify now tests validate_release_workflow_parity→validate_workflow. test_manifest_render_records_partial_portability emits two fully portable current-target fixture rows because the old OpenCode exclusion no longer affects supported targets. Clarify it as retired-target exclusion/current manifest behavior.\n5. Optionally reconcile stale CLI help in validate-release.py: `--npm-tarball-root` says bootstrap publication evidence, but current main never uses it to qualify a release and rejects it in prepared mode. Preserve parser/admission behavior; do not remove an interface in a test cleanup.\n\n## Adapter case groups and retention\n\n- Current package/version/default parser and unknown profile before metadata read: retain, independently protects command defaults and fail-closed admission before filesystem use.\n- Canonical current inventory and retired gate absence: retain explicit expected inventory, canonical unknown value rejection, unexpected retired generated member rejection. Method names mentioning post-cutover describe a current contract; age is not deletion evidence.\n- Generated tree/archive/current candidate metadata: retain independent full filesystem resource oracle, declared Claude frontmatter transform checks, complete resources, hashes/sizes/counts and target identity. Metadata helper correctness, archive bytes, generated output and installed output are distinct boundaries.\n- Output safety: retain archive/tree/staged combinations against canonical roots, active roots, ancestors, symlinks, hardlinks, FIFO and nested alias escapes; tests prove preserved existing bytes and no partial other-target output.\n- Raw resource parity: retain stale/missing generated and archived resource negatives with layer/path/hash diagnostics. Boundary-resource projection/inventory digest uses source manifest and actual generated/archive/install bytes; it is not equivalent to a generic template asset.\n- Clean installs: retain real command runner path, explicit selection preflight, unknown/duplicate/noncanonical selection, non-installing success stub rejection, installed missing/stale resource and unowned boundary resources for each target. Actual install verification prevents a successful child exit from falsely proving filesystem correctness.\n- Portability scanner: retain independent fixtures for malformed name/description/body, unsupported metadata, install location, UI/runtime and dollar invocation. Retain narrow equivalence identity, punctuation/phrase, variable/math/escape, Unicode, rendered markup and benign false-positive cases. Many retired-target samples are positive controls showing unsupported target prose does not exclude current adapters; they are not assertions that OpenCode works.\n- Manifest/render/drift: retain explicit representation/quote escaping, version/inventory disagreement, current transformed output, missing/stale/unexpected/error classification, no persistent cache, bounded normal summary and complete deterministic verbose output. These exercise different user outcomes and parser/formatter boundaries.\n- Security/CLI/readme/template: retain keys/private path/permission-bypass rejection, actual CLI root/selection/trusted identity errors, native invocation semantics and active documentation/install contract readers, correcting stale examples. Stronger product checks do not automatically establish contributor-link or root-boundary guidance.\n\nThe staged-v3 builder/validator and two STAGED_V3 aliases have only packaging-test callers in current live source searches; their `inactive v3` descriptions are stale. They are an explicit separate internal implementation path exercised in output-safety tests and two archive cases. Retention/removal needs root's scope disposition; do not remove just the cases and leave an unproved implementation. If retired as unused internal support, transfer exact current Verify resource and unexpected archive-member protection to ordinary build/validate paths and reconcile safety loops. This note does not authorize an API retirement.\n\n## npm case groups and retention\n\nRetain actual workflow current/historical selected-tag dispatch (including both-path preference, missing runner and failed runner exit), package metadata lifecycle/dependency policy, real tarball allow/deny inspection, installed public binary and actual two-target init, explicit v3 storage/targeted recording, no implicit config/state adoption, conflict/recovery and rejected input byte preservation, packed actor workflow and public observability/log/output documentation. Fixture tarball deny checks are distinct from the pack/install smoke; installed boundary evidence is distinct from source Node tests. Only the constant-pattern shape test is established redundant above.\n\n## Release case groups and retention\n\n- HistoricalReleaseReaderTests: synthetic three-target historical report parsing remains supported while current profiles reject old target; preserves bytes and unknown rejection. No completed production report is required.\n- TrustedReleaseTagIdentityTests/DeterministicReleaseGateTests: retain real lightweight/annotated tag identity, mismatched name/commit, missing hosted ref and actual wrapper propagation/diagnostic boundaries.\n- ReleaseProfileTests: retain required fields (nine input omissions), malformed YAML, exact version, enum-first errors, routine/special distinction and owner decision. Different missing fields are separate validation obligations.\n- ReleaseSurfaceInventoryTests/LiteralAuditBaselineTests: retain classifications, missing/unknown fields, override rationale, historical rationale, generated-owner rule, unauthorized changed literals, report-only baseline drift and actual operational baseline loading. Their current reader remains live.\n- PrepareReleaseTests: retain pending generation/idempotency, approved version preservation, narrative/history preservation, no invented passes, report-only check mode, finalized evidence preservation only when complete, complete standing rows, missing/duplicate/unknown rows, premature published statuses, smoke shape/table projection/target errors and actual CLI/no-external-state path.\n- ReleasePreflightTests: retain actual Git discovery versus explicit paths, absent git error, profile/local-input/version/metadata/literal faults, dirty output, local/remote tag conflict and unreachable remote uncertainty. These are preflight outcomes, not substitute qualification proof.\n- ReleaseGateParityAndTimingTests: retain workflow composition and invalid bypass proof, generated/valid/missing/malformed phase/duration/result diagnostics and over-target warning semantics. Raw diagnostic validator errors do not imply release failure: candidate/executor tests separately establish missing timing is nonblocking.\n- PublishedEvidenceCloseoutTests: retain separate GitHub asset, npm integrity/tarball URL, version smoke and each target smoke observations; unavailable service and failed smoke preserve prior files, fixture mode must be explicit, provider values override fixture literals, CLI check does not write, malformed tree hashes/target rows reject, history stays immutable. Similar success setup has distinct asserted output facts.\n- ReleaseEvidenceTests: retain all 15 cases. Preflight/registry table row presence/duplicates/vocabulary across pending/final/emergency are a Cartesian requirement domain, not duplicates of transaction generation checks. Status vocabulary and deferral status are distinct fields. Blank owner versus not-applicable owner are different invalid inputs. Exact candidate context, wrong revision/proof, path escape/symlink/version and secret rejection preserve scoped evidence authority.\n- ReleaseCandidateTests/CurrentSourceQualificationTests: retain source identity including nested scripts/resources and bytecode exclusion, symlink rejection, current source/profile matching before writes, explicit recorded commit, no hardcoded version list, no-op and reviewed version intent, sealed artifact identity, unknown IDs/results, path containment, evidence ref separation, Boolean size, portable receipts and CI basis/failure forwarding.\n- ReleaseCandidateIntegrationTests: retain full real builders/validators/packed install/metadata chain with only provider effects substituted. It proves coordinator prepare→one approval→execute→durable outcome, duplicate/retry behavior, lost response, failed smoke/reporting, absent timing/mirror, packed identity and actual installer replacement. Unit fake tarballs do not replace this boundary.\n- ReleaseApprovalTests/ReleaseEvidenceStoreTests/ReleaseExecutorTests: retain exact provider fact binding, runtime approval rejection, real Git compare-and-swap, immutable source/evidence separation, durable active-attempt exclusion, pre-write persistence failure, uncertain post-write observation, delayed visibility, partial GitHub resume, no duplicate immutable publication, recovery/reporting persistence, actual network-publisher sealed tarball/OIDC argv and token exclusion. Source-ref test name should be corrected to its actual scope.\n- ReleaseCoordinationTests: retain setup/permissions/prerequisite validation, OIDC, sanitized CLI/CI exceptions, exact evidence mirror reuse/conflict, missing retry observations and actual workflow restrictions. FixtureHostedServices, PackedPublicFixture, FixtureApprovals, FixturePublisher and invoke_dispatch supply safe external effects while real coordinator, argparse, evidence and packed CLI execute.\n\n## Scripts, libraries, templates and fixtures\n\nAll 23 allocated script/resource members have an ownership disposition: build-adapters.py/validate-adapters.py and adapter_distribution.py own tree/archive build, parity, manifest and install observation; validate-npm-package.py/npm_package_validation.py own package policy/tarball checks; prepare-release.py/release-preflight.py/close-release-publication.py and release_transaction.py own profile-derived preparation, cheap admission and observed closeout; release-verify.sh/validate-release.py own exact qualification; release_evidence.py/lib/release/release_evidence.py own current evidence validation; release-coordinator.py/release_coordination.py own CI/hosted composition; release_candidate.py seals source/artifacts; release_execution.py owns approval/evidence/retry; release_provider.py isolates actual external observation/publication. Both __init__.py files are package markers. Codex template stays current; Claude template needs the correction above. No broad script removal has demonstrated preserved responsibility.\n\nRead all recursive files under tests/fixtures/adapters (15 SKILL.md plus one asset) and tests/fixtures/release-transaction (17 profile inputs, six literal audit inputs, four surface inventory inputs, one current-version JSON). Adapter fixtures all have evaluate/copy/transformation callers; portable asset owns mapped bytes. Old-looking strings in intentionally generic, historical or unsupported-target fixture inputs remain useful discrimination cases. Every release profile is explicitly addressed by the runner's field matrix or individual case. Each literal/surface fixture is read through current parsers. current-version.json has a current generator and release candidate/transaction consumer references; it is generated state, not safely removable unused fixture based on its old version alone. Dynamic temporary Git repos, archives, fixture releases and test-generated field mutations are covered by their owning case groups above.\n\nTransitive current operational support outside M3 roots includes the live release literal/surface baseline under docs/changes/2026-06-29-release-transaction-automation, release profiles/notes, canonical skills, boundary resource manifest, package sources/templates/schemas and workflow YAML. Do not delete or retarget historical record bytes. Actual final candidate qualification must bind current canonical resource bytes after M1/M2/M3.\n\n## Design/source discrepancy requiring scoped disposition\n\nPackaging Design lines63 and206–212 explicitly select eventual retirement of both tracked dist/adapters/README.md and manifest.yaml after complete consumer reconciliation. Both files and their live readers are still present in this branch. The current M3 selected plan is preservation-oriented and forbids new policy/compatibility behavior. Do not confuse reviewing these live dependencies with a claim that earlier retirement is implemented. Root should record the limitation/disposition; deleting the files alone breaks guidance, tests and release fixture consumers. This independent preparation does not approve such expansion or demand policy changes.\n\n## Limits and next handoff\n\nNo full suites or final candidate qualification were run by this preparation reviewer; imported discovery is not passing proof. The bounded staged/current equivalence probe below ran real builds and validators only for that comparison. Root owns authorship and V5/V6/V7/V8 execution after M2 approval. Formal M3 review must inspect exact frozen diff, reconcile all implemented cleanup against this inventory, inspect real candidate hashes/contents and six temporary-install evidence, and assess newly affected dependencies. No final whole-change Code Review, Verify, public publication or PR readiness is claimed.\n\n\n## Staged/current equivalence follow-up and safe removal map\n\nRoot confirmed the generated-only support Design/source gap is a pre-existing limitation outside this plan's unchanged runtime/release-policy scope. Retain live tracked support and record this limitation.\n\nFor staged-only helpers, additional direct source inspection establishes equal current canonical inventory: STAGED_V3_ADAPTER_SKILLS is exactly POST_CUTOVER_ADAPTER_SKILLS/PUBLISHED_SKILL_INVOCATION_NAMES; STAGED_V3_OPENCODE_COMMAND_ALIASES is exactly OPENCODE_COMMAND_ALIASES. _staged_adapter_files selects those names from the same validated reports and calls the same _expected_adapter_files_from_reports as ordinary generation. Canonical collect_skill_reports rejects unknown/missing inventory before either build. No current Design, published skill, CLI, release/candidate or workflow calls the staged functions; only the packaging tests do.\n\nExecuted an owned temporary Python probe importing actual build_adapter_archives, build_staged_v3_adapter_archives, validate_adapter_archives and validate_staged_v3_adapter_archives. Both validators returned []; corresponding v1.0.0 archives were byte-identical: Codex 377992817c278fff60c76ceb0b6f6f8ddfe413a7fb0dd61f9f03bb4dbd198484; Claude a7b67c826b3d32ef0e51c7727baecb2b3cc411e31207bf8a6cef5f6011e0c559. Injecting .agents/skills/explain-change/SKILL.md into the ordinary archive produced the expected `adapter archive unexpected entries: codex` error naming that exact member. The TemporaryDirectory was removed on completion. This is bounded replacement proof, not M3's final candidate evidence or an installation pass.\n\nSafe maintenance map for author consideration:\n\n- Remove _staged_adapter_files, _staged_v3_adapter_files, build_staged_v3_adapter_archives and validate_staged_v3_adapter_archives plus the two STAGED_V3 aliases; this removes an unused internal path, leaving current supported builder/validator APIs unchanged.\n- Retarget both staged archive tests to build_adapter_archives/validate_adapter_archives and current names. Keep all complete Verify-resource, retired Explain-change absence and injected unexpected-entry assertions. Replace alias membership assertions with ordinary current inventory or rely on actual archive absence while preserving existing canonical inventory tests.\n- Remove only the staged operation value/branch from both generation-output safety matrices; preserve all tree/archive destinations, aliases, ancestor/nested link/hardlink/FIFO hazards, preserved-byte checks and no-other-target-write checks.\n- Remove staged imports. Keep the normal OPENCODE aliases/historical target reader compatibility untouched; they have other callers and are not covered by this removal proof.\n- Run both retargeted tests plus the complete safety matrices before accepting the helper deletion, then full V5/V6/V7/V8. Reconcile method-name consumers if renamed, though current selector strings do not name the two staged methods.\n"
+    },
+    {
+      "actor": {
+        "id": "codex-implementer",
+        "role": "implement"
+      },
+      "id": "m3-validation",
+      "procedure": "python tests/engineering/packaging/test-adapter-distribution.py; python tests/engineering/packaging/test-npm-package-publication.py; python tests/engineering/release/test-release-transaction.py; bash scripts/ci.sh --mode local; git diff --check. All exit0; full terminal logs /tmp/allskills-m3-{adapters,npm,release,local}.log. No hosted CI/public publication claim.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:d261b723bf793fdbd85acb15438b997dced864b6e348a46e1cdaa5e683b38ec9",
+          "path": "scripts/lib/packaging/adapter_distribution.py"
+        },
+        {
+          "identity": "sha256:243258bf48098b29fbf6b32f8722fe4fabe25e17b3aeb80968520b2f62551d56",
+          "path": "scripts/resources/adapter-templates/claude/CLAUDE.md"
+        },
+        {
+          "identity": "sha256:4b22736b37ffcd31a5b937fdd390971084dce870e952cf3b3a0dc7e4f83d6238",
+          "path": "scripts/validate-release.py"
+        },
+        {
+          "identity": "sha256:b4b995a5046ed0e79f02efba078eb152b40f9aa5afcc8dce8ed6ade2c791fa88",
+          "path": "tests/engineering/packaging/test-adapter-distribution.py"
+        },
+        {
+          "identity": "sha256:c20233722f9c78d00e83d34da64328e3f6692f8b9f1aab7d3aa2d267fbb81ca9",
+          "path": "tests/engineering/packaging/test-npm-package-publication.py"
+        },
+        {
+          "identity": "sha256:7e7dac59ac9e0612e4d93b2b9d84d333b61cdc120c5ec9621848c137da82d0f9",
+          "path": "tests/engineering/release/release_execution_tests.py"
+        },
+        {
+          "identity": "sha256:4e8531fe62efa0fed683ec9e693707414560f5848a5c356aeb0fb437c41d8fbd",
+          "path": "tests/engineering/release/test-release-transaction.py"
+        }
+      ],
+      "summary": "All required M3 direct, local and candidate commands passed. Template expectation failed before implementation; focused5 cases passed26.373s. Independent original staged/current equality proof established replacement before deletion. adapters: Ran 95 tests in 216.102s, OK; npm: Ran 7 tests in 25.293s, OK; release: Ran 180 tests in 125.537s, OK"
+    },
+    {
+      "actor": {
+        "id": "codex-implementer",
+        "role": "implement"
+      },
+      "id": "m3-candidate",
+      "procedure": "python scripts/build-adapters.py --version v1.0.0 --output-dir /tmp/rigorloop-allskills-m3-ddtsaywq; python scripts/validate-adapters.py --version v1.0.0 --adapter-root /tmp/rigorloop-allskills-m3-ddtsaywq --clean-install-smoke --skill route --skill verify --skill pr --skill design-review --skill delivery-review --skill code-review. Both exit0; /tmp/allskills-m3-candidate.log. Qualification label v1.0.0 is not release authority.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:d261b723bf793fdbd85acb15438b997dced864b6e348a46e1cdaa5e683b38ec9",
+          "path": "scripts/lib/packaging/adapter_distribution.py"
+        },
+        {
+          "identity": "sha256:243258bf48098b29fbf6b32f8722fe4fabe25e17b3aeb80968520b2f62551d56",
+          "path": "scripts/resources/adapter-templates/claude/CLAUDE.md"
+        },
+        {
+          "identity": "sha256:4b22736b37ffcd31a5b937fdd390971084dce870e952cf3b3a0dc7e4f83d6238",
+          "path": "scripts/validate-release.py"
+        },
+        {
+          "identity": "sha256:b4b995a5046ed0e79f02efba078eb152b40f9aa5afcc8dce8ed6ade2c791fa88",
+          "path": "tests/engineering/packaging/test-adapter-distribution.py"
+        },
+        {
+          "identity": "sha256:c20233722f9c78d00e83d34da64328e3f6692f8b9f1aab7d3aa2d267fbb81ca9",
+          "path": "tests/engineering/packaging/test-npm-package-publication.py"
+        },
+        {
+          "identity": "sha256:7e7dac59ac9e0612e4d93b2b9d84d333b61cdc120c5ec9621848c137da82d0f9",
+          "path": "tests/engineering/release/release_execution_tests.py"
+        },
+        {
+          "identity": "sha256:4e8531fe62efa0fed683ec9e693707414560f5848a5c356aeb0fb437c41d8fbd",
+          "path": "tests/engineering/release/test-release-transaction.py"
+        },
+        {
+          "identity": "sha256:170ea2df25ee71ab3e27f26ab8290758d7a575bb1747d5b89c7eb45de7394dfc",
+          "path": "skills/bugfix/SKILL.md"
+        },
+        {
+          "identity": "sha256:9baf5a042084cd36d4748453529fc4ef6e46e9bdfe35bdf294ab9e458da14e84",
+          "path": "skills/ci-maintenance/SKILL.md"
+        },
+        {
+          "identity": "sha256:3a619d70420a2568451b87c2cd008f750794f5a9ff2727cf46d8b4a12ea5ebea",
+          "path": "skills/code-review/SKILL.md"
+        },
+        {
+          "identity": "sha256:78367de4baa67f068f99a05144103291857ddb2302be1631fd73ebe0048b8231",
+          "path": "skills/constitution/SKILL.md"
+        },
+        {
+          "identity": "sha256:cd43b65881a5a4f5cf33c489d5899d528dcb2edb802c4d451028d7c7a6f6ed12",
+          "path": "skills/delivery-review/SKILL.md"
+        },
+        {
+          "identity": "sha256:fdbaf69d34c804b765848e08b3423a18a6ad380abc3b9e2546681fb0a9f29c65",
+          "path": "skills/design/SKILL.md"
+        },
+        {
+          "identity": "sha256:d0a7aeaf23190c0f502984505adaa141df7a038e580f4c773953d664bfd5ae7f",
+          "path": "skills/design-review/SKILL.md"
+        },
+        {
+          "identity": "sha256:efa0d878731c3061d8d6e1abe3bd10a09350ae6a007434b69cb6ca66dc36e6d9",
+          "path": "skills/explore/SKILL.md"
+        },
+        {
+          "identity": "sha256:ca44a09944d4fca982dd831d270144cc61652e9f09e3cf4d62f209d70eb2a068",
+          "path": "skills/implement/SKILL.md"
+        },
+        {
+          "identity": "sha256:5d17ddfa86443e6d4c5db1751bee6d270a829524bde3959432bdb29d26b537c5",
+          "path": "skills/learn/SKILL.md"
+        },
+        {
+          "identity": "sha256:6cd60cc830789db910f9b69df013a018c64554adfdd4b4fe3ca4137cf81af1ec",
+          "path": "skills/plan/SKILL.md"
+        },
+        {
+          "identity": "sha256:b11edc2b87d5994110719cf29bfd50fa6fdebc6cff3eb4d831ac451e3f370db2",
+          "path": "skills/pr/SKILL.md"
+        },
+        {
+          "identity": "sha256:0ca90bb1cb731ffa6e702b82f77bccc3c5761154403e15cb6eb1157ec1d54013",
+          "path": "skills/project-map/SKILL.md"
+        },
+        {
+          "identity": "sha256:d060a266b4c6b19c4000f43cad1d486ad1eec94ba96856a7696e2302341c06aa",
+          "path": "skills/proposal/SKILL.md"
+        },
+        {
+          "identity": "sha256:fb016e07f7975b6a308494dd18fb044d43084df368c08e858349bd70191e9ea1",
+          "path": "skills/proposal-review/SKILL.md"
+        },
+        {
+          "identity": "sha256:8c515351026597bf999020bf25ae493df4429e21bc0f6b7d341a4ef975c01ecd",
+          "path": "skills/research/SKILL.md"
+        },
+        {
+          "identity": "sha256:527638e5a352819a0efa13cd743b968b271f11097634ac600b986a8cceff510a",
+          "path": "skills/route/SKILL.md"
+        },
+        {
+          "identity": "sha256:620e48e9a618d3947eb7aaf43a1669cb90baa3dea063aa7bc79819cff8d1d6fc",
+          "path": "skills/verify/SKILL.md"
+        },
+        {
+          "identity": "sha256:60c1478b79ccef8cdfe902a0fdcb2857c06b20caa8201463cd382f8937e5d05c",
+          "path": "skills/vision/SKILL.md"
+        }
+      ],
+      "summary": "Fresh current candidates qualify across both supported adapters. All19skills/138canonical members independently compared under declared transforms; six moved/current recording paths physically present; corrected Claude /design entrypoint present. Candidate identities {\"rigorloop-adapter-claude-v1.0.0.zip\": \"cf1f24d4f8897d544612d867779d027153755b2c6fb563f1ebc45cb56858991a\", \"rigorloop-adapter-codex-v1.0.0.zip\": \"377992817c278fff60c76ceb0b6f6f8ddfe413a7fb0dd61f9f03bb4dbd198484\"}. Independent actual candidate observation /tmp/allskills-m3-independent-candidate.json is incorporated by formal M3 reviewer. Temporary clean installs only; owned candidate retained for review."
     }
   ],
   "schema_version": 3

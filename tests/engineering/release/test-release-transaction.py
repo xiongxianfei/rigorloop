@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 import contextlib
-import importlib.util
 import io
 import shutil
 import sys
@@ -1296,14 +1295,6 @@ class ReleasePreflightTests(unittest.TestCase):
 class ReleaseGateParityAndTimingTests(unittest.TestCase):
     maxDiff = None
 
-    def load_validate_release_module(self):
-        module_path = ROOT / "scripts" / "validate-release.py"
-        spec = importlib.util.spec_from_file_location("validate_release_cli_under_test", module_path)
-        self.assertIsNotNone(spec)
-        self.assertIsNotNone(spec.loader)
-        module = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(module)
-        return module
 
 
     def make_prepared_repo(self, root: Path) -> None:
@@ -1358,7 +1349,7 @@ class ReleaseGateParityAndTimingTests(unittest.TestCase):
         )
 
 
-    def test_release_workflow_delegates_to_release_verify(self) -> None:
+    def test_release_workflow_matches_current_coordination_contract(self) -> None:
         self.assertEqual(validate_release_workflow_parity(ROOT), [])
 
     def test_release_workflow_parity_rejects_direct_validate_release_gate(self) -> None:
@@ -1536,14 +1527,6 @@ class RecordingPublicEvidenceProvider:
 class PublishedEvidenceCloseoutTests(unittest.TestCase):
     maxDiff = None
 
-    def load_validate_release_module(self):
-        module_path = ROOT / "scripts" / "validate-release.py"
-        spec = importlib.util.spec_from_file_location("validate_release_published_under_test", module_path)
-        self.assertIsNotNone(spec)
-        self.assertIsNotNone(spec.loader)
-        module = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(module)
-        return module
 
 
     def make_prepared_repo(self, root: Path) -> None:
