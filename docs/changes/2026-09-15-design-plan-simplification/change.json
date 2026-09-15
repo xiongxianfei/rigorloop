@@ -4,7 +4,7 @@
       "id": "codex-review-coordinator",
       "role": "route"
     },
-    "reason": "M1 implementation and required milestone checks/candidate complete. Independent reviewer to record complete milestone judgment and actual TG01/F01 trace; original-base full validation runs before fresh final review. Work remains in-progress until approved review.",
+    "reason": "M1 independently approved with no findings and closed. Fresh final whole-change Code Review remains required after complete original-base V7 validation, followed by distinct Verify and user-authorized PR.",
     "stage": "code-review",
     "status": "ready"
   },
@@ -52,6 +52,15 @@
       },
       "path": "docs/changes/2026-09-15-design-plan-simplification/reviews/delivery-review.json",
       "reason": "Fresh complete independent first-pass assessment of the exact current primary plan against unchanged approved Design subjects, with supporting evidence append classified by content and no unresolved required correction or decision.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "design-plan-m1-code-review",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-15-design-plan-simplification/reviews/m1-code-review.json",
+      "reason": "Fresh exact frozen M1 assessment with current approved engineering/delivery targets, actual proof/candidate basis and complete semantic handoff observations; historical supporting identities retain their original meaning.",
       "value": "current"
     }
   ],
@@ -109,6 +118,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-15-design-plan-simplification/reviews/delivery-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-15-design-plan-simplification/reviews/m1-code-review.json"
     }
   ],
   "schema_version": 3,
@@ -129,7 +142,7 @@
         "PLAN-SR-07",
         "PLAN-SR-08"
       ],
-      "status": "in-progress"
+      "status": "completed"
     }
   ]
 }
