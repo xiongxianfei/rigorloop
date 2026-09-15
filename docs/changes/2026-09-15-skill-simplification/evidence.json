@@ -1303,6 +1303,30 @@
         }
       ],
       "summary": "TG-FINAL-02: exact canonical enumeration equals nineteen unique family entries: {\"m1\": {\"changed\": [\"implement\", \"code-review\"], \"retained\": []}, \"m2\": {\"changed\": [\"plan\", \"proposal-review\"], \"retained\": [\"proposal\", \"design\", \"design-review\", \"delivery-review\"]}, \"m3\": {\"changed\": [], \"retained\": [\"route\", \"verify\", \"pr\"]}, \"m4\": {\"changed\": [\"ci-maintenance\"], \"retained\": [\"bugfix\"]}, \"m5\": {\"changed\": [\"constitution\"], \"retained\": [\"vision\", \"project-map\"]}, \"m6\": {\"changed\": [\"explore\", \"learn\"], \"retained\": [\"research\"]}}. Eight improved packages and eleven substantively retained packages; all source/resource/asset dispositions in corresponding mN-obligations and validation entries. M1–M5 accepted under scoped current independent reviews; M6 awaits its own review, then fresh integrated final Code Review. This is no blanket conformance claim or count-only acceptance. All shared source/copy bytes, other specialist layouts, public invocation/storage/authority boundaries and CLI runtime unchanged. Only implement/code-review use the alternate layout and new local recording resources. CI preserves intended Design values via approved DEC08 correction and fence regression. TG-FINAL-01 actual producer/consumer path remains the M3-traced proposal/Design/Delivery-to-implement/code-review/route/Verify/PR chain; later edits alter none of those output contracts. Final independent review must refresh this whole-chain instruction inspection, including external claims and optional support return-to-owner. TG-06 original advisory is recoverable at6ffd08e9:docs/reviews/2026-09-15-skill-simplification-proposal-review.md with original bytes; current formal reviews replace reliance, net original-base diff has no advisory path, no selector exception. Follow-ups preserve further adoption owners. Fresh all-inventory candidate identities and executed commands in m6-validation."
+    },
+    {
+      "actor": {
+        "id": "codex-implementer",
+        "role": "implement"
+      },
+      "id": "final-pr-validation-failed",
+      "procedure": "Observed actual full-range selector and direct existing guide gate on Node24.14.1/Python3.12.3; capture exact failure before correction. Original full log retained for current investigation. No final success or hosted CI claim.",
+      "result": "failed",
+      "subjects": [
+        {
+          "identity": "sha256:80a10b07f2d972ac81a8395f7bce1eb7339871fd1831d74852ae4c2b1bde6760",
+          "path": "skills/code-review/SKILL.md"
+        },
+        {
+          "identity": "sha256:fe2934d930187290fb016138f203f7eef4a6b11714f6bc62eac9e73f7e3f15bf",
+          "path": "scripts/validate-guide-system.py"
+        },
+        {
+          "identity": "sha256:504cbe9317427874b32c61edff61ec901be155e619ae4362e95ebe07ff341997",
+          "path": "tests/engineering/validation/test-guide-system-validator.py"
+        }
+      ],
+      "summary": "Full original-base PR-mode command bash scripts/ci.sh --mode pr --base 51833994a520bf29c9aae135e9405331cf76b755 --head d59dcda2 (resolved d59dcda2b60768512445b5d49facaf8beafc7c77) exited125. Automatic release-integrity preparation used isolated prepared source23476b2f2c0d95cd4d31e19dee54c7127be5e336 and candidate b6d7e35fd1d143779c98fe6d31a648df5b45a1e6ad67b2683c2c9a6f71598cdb, no publication. guide_system.validate failed ROUTE-GUIDE-010 on skills/code-review/SKILL.md Status and milestone handoff: sentence calls Workflow the routing actor. Remaining dependent broad-smoke/selector/executor/release checks were not started, not passed. Root reran python scripts/validate-guide-system.py at current source and reproduced the exact failure. Existing guide regression owns this negative rule; fix source wording to route actor under unchanged Workflow contract, do not weaken validator. Current M6 candidate remains proof of packaging bytes only, not final readiness."
     }
   ],
   "schema_version": 3

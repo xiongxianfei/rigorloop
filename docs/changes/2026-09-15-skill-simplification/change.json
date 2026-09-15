@@ -1,12 +1,12 @@
 {
   "activity": {
     "owner": {
-      "id": "codex-review-coordinator",
-      "role": "route"
+      "id": "codex-implement",
+      "role": "implement"
     },
-    "reason": "All six implementation milestones have current independent approvals, including M4 correction rereview; original finding and CI blocker resolved by reporters. Begin distinct fresh final whole-change Code Review of original-base cumulative diff and all nineteen dispositions/TG-FINAL01–02. Full-range PR-mode proof running against frozen d59dcda2; no final Verify or PR claim yet.",
-    "stage": "code-review",
-    "status": "ready"
+    "reason": "Return final-route-actor-wording and reporter final-routing-actor blocker to M1. Existing guide regression and direct failure establish proof; correct only actor wording, refresh affected candidate/local/full-range proof, then independent M1 rereview and fresh final whole-change review. M2–M6 accepted source dispositions remain unchanged; no reinitialization or new policy.",
+    "stage": "implement",
+    "status": "in-progress"
   },
   "applicability": [
     {
@@ -56,12 +56,12 @@
     },
     {
       "actor": {
-        "id": "independent-m1-review",
-        "role": "review"
+        "id": "codex-route",
+        "role": "route"
       },
       "path": "docs/changes/2026-09-15-skill-simplification/reviews/m1-code-review.json",
-      "reason": "Fresh independent judgment of frozen M1 implementation commit and current exact governing/proof basis. All ten dimensions and required M1 groups are satisfied with no material findings; expected scoped upstream supporting-file changes do not defeat the unchanged approved Design or Delivery allocation.",
-      "value": "current"
+      "reason": "Final review requires a scoped M1 Code Review handoff correction. Preserve original judgment/subjects; renewed M1 approval must assess the corrected package.",
+      "value": "stale"
     },
     {
       "actor": {
@@ -134,6 +134,15 @@
       "path": "docs/changes/2026-09-15-skill-simplification/reviews/m6-code-review.json",
       "reason": "Fresh independent full M6 package and accepted inventory-disposition assessment against unchanged current Design/Delivery authority, complete current proof and actual final candidate. No unresolved necessary M6 correction remains; final holistic review remains distinct.",
       "value": "current"
+    },
+    {
+      "actor": {
+        "id": "independent-design-review",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/final-code-review.json",
+      "reason": "Fresh exact complete final first-pass assessment with independently confirmed required correction and explicit incomplete full-range validation; no clean handoff.",
+      "value": "current"
     }
   ],
   "blockers": [
@@ -203,6 +212,59 @@
         {
           "identity": "sha256:c008afcc679e337de9c885dbfba583b7cee94d86766ef9bbdce546cabc703ac9",
           "path": "skills/ci-maintenance/SKILL.md"
+        }
+      ]
+    },
+    {
+      "evidence": "Final PR-mode CI and direct guide check deterministically reject new Code Review handoff phrase that names Workflow as semantic routing actor (ROUTE-GUIDE-010). Current route skill and Workflow contract separate actor from model.",
+      "id": "final-routing-actor",
+      "origin": {
+        "evidence": "Final PR-mode CI and direct guide check deterministically reject new Code Review handoff phrase that names Workflow as semantic routing actor (ROUTE-GUIDE-010). Current route skill and Workflow contract separate actor from model.",
+        "rationale": "Final required check exposes same-slice consumer miss in M1; current authority already identifies route. No new Design or permission decision; implementation wording correction and independent reassessment are required.",
+        "reporter": {
+          "id": "codex-implementer",
+          "role": "implement"
+        },
+        "required_outcome": "Restore route actor wording in M1 Code Review handoff, preserve guide validator, rerun original failed proof and package/current full-branch checks, obtain affected independent M1 rereview and fresh whole-change Code Review. Reporter assesses proof before resolution.",
+        "subjects": [
+          {
+            "identity": "sha256:80a10b07f2d972ac81a8395f7bce1eb7339871fd1831d74852ae4c2b1bde6760",
+            "path": "skills/code-review/SKILL.md"
+          },
+          {
+            "identity": "sha256:fe2934d930187290fb016138f203f7eef4a6b11714f6bc62eac9e73f7e3f15bf",
+            "path": "scripts/validate-guide-system.py"
+          },
+          {
+            "identity": "sha256:504cbe9317427874b32c61edff61ec901be155e619ae4362e95ebe07ff341997",
+            "path": "tests/engineering/validation/test-guide-system-validator.py"
+          }
+        ],
+        "supporting_judgment": null
+      },
+      "owner": {
+        "id": "codex-implementer",
+        "role": "implement"
+      },
+      "reporter": {
+        "id": "codex-implementer",
+        "role": "implement"
+      },
+      "required_outcome": "Restore route actor wording in M1 Code Review handoff, preserve guide validator, rerun original failed proof and package/current full-branch checks, obtain affected independent M1 rereview and fresh whole-change Code Review. Reporter assesses proof before resolution.",
+      "resolution": null,
+      "state": "open",
+      "subjects": [
+        {
+          "identity": "sha256:80a10b07f2d972ac81a8395f7bce1eb7339871fd1831d74852ae4c2b1bde6760",
+          "path": "skills/code-review/SKILL.md"
+        },
+        {
+          "identity": "sha256:fe2934d930187290fb016138f203f7eef4a6b11714f6bc62eac9e73f7e3f15bf",
+          "path": "scripts/validate-guide-system.py"
+        },
+        {
+          "identity": "sha256:504cbe9317427874b32c61edff61ec901be155e619ae4362e95ebe07ff341997",
+          "path": "tests/engineering/validation/test-guide-system-validator.py"
         }
       ]
     }
@@ -282,6 +344,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-15-skill-simplification/reviews/m6-code-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/final-code-review.json"
     }
   ],
   "schema_version": 3,
@@ -297,7 +363,7 @@
         "SKL-SR-32",
         "SKL-SR-31"
       ],
-      "status": "completed"
+      "status": "in-progress"
     },
     {
       "id": "m2",
