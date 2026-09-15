@@ -1,12 +1,12 @@
 {
   "activity": {
     "owner": {
-      "id": "codex-route",
+      "id": "codex-review-coordinator",
       "role": "route"
     },
-    "reason": "Independent Delivery Review approved exact primary plan with no findings. Full review readback and22 subject identities confirmed. Requested review complete; implementation is next, with work initialization and execution not performed in this review-only step.",
-    "stage": "delivery-review",
-    "status": "completed"
+    "reason": "M1 implementation and required milestone checks/candidate complete. Independent reviewer to record complete milestone judgment and actual TG01/F01 trace; original-base full validation runs before fresh final review. Work remains in-progress until approved review.",
+    "stage": "code-review",
+    "status": "ready"
   },
   "applicability": [
     {
@@ -29,11 +29,11 @@
     },
     {
       "actor": {
-        "id": "codex-plan-author",
-        "role": "plan"
+        "id": "codex-implementer",
+        "role": "implement"
       },
       "path": "docs/changes/2026-09-15-design-plan-simplification/evidence.json",
-      "reason": "Exact newly authored delivery intent and observed authoring checks; implementation and independent Delivery Review remain separate.",
+      "reason": "Exact current M1 source and scoped actual observations; inspect individual commands, historical failures and limits. No review or final readiness implied.",
       "value": "current"
     },
     {
@@ -112,5 +112,24 @@
     }
   ],
   "schema_version": 3,
-  "work": []
+  "work": [
+    {
+      "id": "m1",
+      "owner": {
+        "id": "codex-implementer",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "PLAN-SR-01",
+        "PLAN-SR-02",
+        "PLAN-SR-03",
+        "PLAN-SR-04",
+        "PLAN-SR-05",
+        "PLAN-SR-06",
+        "PLAN-SR-07",
+        "PLAN-SR-08"
+      ],
+      "status": "in-progress"
+    }
+  ]
 }

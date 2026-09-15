@@ -16,6 +16,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 from lib.validation import skill_validation
 
 PILOTS = {
+    "plan": ("governed-plan-authoring.md", "valid governed plan authority"),
     "implement": ("governed-implementation-recording.md", "governed_recording_context"),
     "code-review": ("governed-code-review-recording.md", "governed_recording_context"),
     "proposal": ("governed-proposal-authoring.md", "governed_proposal_candidate_context"),
@@ -127,6 +128,15 @@ class RecordingReferenceContractTests(unittest.TestCase):
 
 
 class RelocatedPlanSurfaceTests(unittest.TestCase):
+    def test_plan_current_paths_without_inline_recording(self):
+        path = Path("/tmp/plan/SKILL.md")
+        body = "## Recording boundary\n" + "\n".join((
+            "docs/plan.md", "docs/plans/YYYY-MM-DD-slug.md",
+            "docs/changes/<change-id>/change.json", "docs/changes/<change-id>/",
+            "[Title](plans/YYYY-MM-DD-slug.md)"))
+        self.assertEqual(skill_validation.validate_installed_skill_plan_surface_contract(path, "plan", body), [])
+        self.assertTrue(skill_validation.validate_installed_skill_plan_surface_contract(path, "plan", body.replace("change.json", "change.yaml")))
+
     def test_implement_current_plan_paths_without_inline_recording(self):
         path = Path("/tmp/implement/SKILL.md")
         body = "## Recording boundary\n" + "\n".join((
