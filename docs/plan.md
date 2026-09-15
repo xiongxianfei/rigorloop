@@ -31,6 +31,8 @@ Current blockers are not recorded in this index.
 
 ## Current plan references
 
+- [Design and Plan skill simplification](plans/2026-09-15-design-plan-simplification.md) — [owning change](changes/2026-09-15-design-plan-simplification/change.json).
+
 - [Skill simplification](plans/2026-09-15-skill-simplification.md) — [owning change](changes/2026-09-15-skill-simplification/change.json).
 
 - [Risk-driven test redesign](plans/2026-09-15-risk-driven-test-redesign.md) — scoped portable plan; no governed change record selected.

@@ -35,7 +35,8 @@ class SkillGuidanceChecks:
         names = ("proposal", "proposal-review", "design", "design-review", "plan", "delivery-review",
                  "implement", "code-review", "route", "verify", "bugfix", "ci-maintenance", "pr",
                  "research", "explore", "learn")
-        references = {"implement": "references/governed-implementation-recording.md",
+        references = {"plan": "references/governed-plan-authoring.md",
+                      "implement": "references/governed-implementation-recording.md",
                       "code-review": "references/governed-code-review-recording.md",
                       "design": "references/governed-design-authoring.md",
                       "proposal": "references/governed-proposal-authoring.md",
@@ -70,7 +71,7 @@ class SkillGuidanceChecks:
 class ExplicitRecordingGuidanceTests(unittest.TestCase):
     def test_targeted_pilot_canonical_references_are_valid(self):
         # Real canonical-resource consistency; component faults use minimal fixtures.
-        for name in ("proposal", "proposal-review", "implement", "code-review"):
+        for name in ("proposal", "proposal-review", "implement", "code-review", "plan"):
             with self.subTest(skill=name):
                 path = ROOT / "skills" / name / "SKILL.md"
                 body = path.read_text(encoding="utf-8")
