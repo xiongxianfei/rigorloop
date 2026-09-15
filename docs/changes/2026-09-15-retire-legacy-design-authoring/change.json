@@ -78,7 +78,7 @@
         "role": "verify"
       },
       "path": "docs/changes/2026-09-15-retire-legacy-design-authoring/verify-report.json",
-      "reason": "Distinct final assessment of exact current reviewed engineering, actual proof, resolved concern and complete governed chain; no external readiness inferred.",
+      "reason": "Reassessed current complete reviewed engineering and attributable evidence suffix for explicitly authorized PR handoff; immutable repository/remote/base/head basis resolved and branch checks passed.",
       "value": "current"
     }
   ],

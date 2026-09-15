@@ -1,5 +1,5 @@
 {
-  "assessment_scope": "workflow-final-verification; governed-final; VP1-final-readiness. Exact change2026-09-15-retire-legacy-design-authoring and complete approved direction/three-model Design/Delivery/M1/independent final review/current proof chain. Local governed closeout only; no external handoff claim.",
+  "assessment_scope": "branch-readiness; isolated; VP1-final-readiness. Reassessed complete governed change and exact reviewed engineering for user-authorized PR handoff from retire-legacy-design-authoring to main in xiongxianfei/rigorloop. Prior local completion remains valid; this assessment adds current immutable Git/remote basis without changing lifecycle state.",
   "change_id": "2026-09-15-retire-legacy-design-authoring",
   "changes": [
     "Removed two legacy Design scaffolds, their exclusive technical-authoring reference and two duplicate repository templates.",
@@ -39,7 +39,7 @@
   "limitations": [
     "Standalone architecture/ADR authoring is intentionally unsupported; a project requiring it must choose another tool or explicitly authorize scoped adoption into living Designs. Existing source authority remains intact.",
     "Semantic checks are independent instruction/artifact inspection, not a live-agent performance benchmark or universal compliance claim.",
-    "Hosted CI is unobserved; actual local validation is recorded. No PR, release, merge or active-environment installation is part of this closeout."
+    "Hosted CI is unobserved before PR creation. This assessment establishes branch readiness for the exact normalized basis; it does not claim PR creation, hosted success, merge, release or active-environment installation."
   ],
   "outcome": "success",
   "rationale": [
@@ -51,7 +51,8 @@
     "Packaging passes: fresh actual Codex/Claude candidates and temporary Design installs passed; root and independent reviewer each compared every one of12 current Design files under declared transformations and observed all3 retired skill resources absent. Candidate hashes are durable in m1-candidate. No relevant source/generator input changed afterward, and no active installation or release occurred.",
     "Impact classification is complete: public authoring output compatibility, skill packaging, documentation, resource validation and change-local lifecycle evidence are affected and have approved behavior/proof. Record schemas, runtime persistence/API operations, dependencies, generator/installer mechanics and external project state are unaffected by inspected byte-identical sources and preserved boundaries. Generic path fixtures and historical reviews are not current loading dependencies. Unknown impact or unresolved required concern would block success; none remains.",
     "Actual final-validation records original-base full branch checks, selected broad smoke and isolated release-integrity qualification. Local/V6 proof covers the exact current engineering content; subsequent content is attributable review/validation/workflow recording with structural checks, not a product change. Earlier dirty-tree preflight rejection is disclosed and not counted as a test pass. Current final review subject identities match; prior feasibility-source drift and approved deletion preserve historical judgment scope rather than renewing it.",
-    "Distinct Verify assesses this whole chain after review. Recovery restores the coupled source/resource/check set from recoverable643f6cd6 without rewriting evidence. The chosen compatibility withdrawal is explicit and remains the principal adoption impact. No new publication, installation, automatic conversion or workflow authority follows from this result."
+    "Distinct Verify assesses this whole chain after review. Recovery restores the coupled source/resource/check set from recoverable643f6cd6 without rewriting evidence. The chosen compatibility withdrawal is explicit and remains the principal adoption impact. No new publication, installation, automatic conversion or workflow authority follows from this result.",
+    "PR branch assessment: current remote main and merge base equal643f6cd6; local handoff280d7d10 is clean and tracked; remote head and matching PR are absent. Exact current CLI-inspected engineering, evidence and review identities all match successful local Verify. Complete suffix after reviewed77ec7c62 consists only of independently authored final approval, its registration and completed Verify/activity evidence, inspected by content; no engineering, authority, plan or proof changed. Existing full original-base CI and candidate proof retain applicability under the plan evidence-reuse rule. Fresh exact committed-record validation and original-base git diff --check pass. No relevant environment/dependency/source change or contradictory evidence is observed. This supports branch-ready for the normalized basis; PR readiness and external mutation remain the PR owner responsibility."
   ],
   "review_refs": [
     {
@@ -198,5 +199,14 @@
   "verifier": {
     "id": "codex-verifier",
     "role": "verify"
+  },
+  "verification_basis": {
+    "base_branch": "main",
+    "base_revision": "643f6cd6d368238f0ca2a5075430634cf9307ad3",
+    "head_branch": "retire-legacy-design-authoring",
+    "merge_base_revision": "643f6cd6d368238f0ca2a5075430634cf9307ad3",
+    "remote_identity": "git@github.com:xiongxianfei/rigorloop.git",
+    "repository_identity": "https://github.com/xiongxianfei/rigorloop",
+    "verified_subject_revision": "280d7d100e7ff66606835c8f377e08020971e8cc"
   }
 }
