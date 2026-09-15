@@ -64,6 +64,230 @@
         }
       ],
       "summary": "Created four-milestone complete-inventory plan with exact source allocation, grouped proof, coupled retirement rollback and separate final whole-change review/Verify. Authoring checks passed; no Delivery approval or implementation claim."
+    },
+    {
+      "actor": {
+        "id": "codex-implementer",
+        "role": "implement"
+      },
+      "id": "m1-implementation",
+      "procedure": "SKL-SR33–35/HAND-SR04: moved complete conditional recording from route/design-review/delivery-review/pr to the four existing local references; added Verify governed-verification-recording only. Local scope/classification/essential stops remain, with late triggers and portable paths. PR reference is explicitly read-only: writer construction/recovery removed there, exact contract/revision/subject reliance retained. Descriptions clarify Design Review feature-output versus retained architecture sources and Code Review milestone/final scope. PR asset names successful Verify rationale once and actual Design/retained architecture source. Plan final next-stage labels reconciled to existing delivery-review/design/route owners (no new handoff behavior). Shared policy sources, underlying CLI, schemas, package generator and other specialist methods unchanged. Complete changed/retained package inspection and all M1 test/fixture groups are included in independent review; selected retention remains substantive, not line-count based.\nValidator RECORDING_REFERENCES now includes the five exact destinations; independent hardcoded profile tests apply missing/mapped/wrong/escaped/undecodable/incomplete cases to each. No inline-heading early-return escape for selected skills. Existing proposal-specific artifact-placement grammar remains scoped to proposal-review; no new placement grammar imposed on Design/Delivery Review. Guidance/closeout readers follow the selected current resource. Two safe removals: duplicate M3 test-spec directory absence was already covered by broader M5 current inventory case at same filesystem boundary; orphan assert_progressive_loading_implement_handoff_contract and its synthetic-only self-test had no canonical consumer, whereas canonical Implement/package checks remain. Other helpers with real canonical consumers remain. Duplicate identical vocabulary assertion removed, without deleting its protection. No unknown-value vocabulary added. Runtime case scope falls306→304 only for the two assessed removals; meaningful negative/resource protection grows within existing parameterized cases.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:a1da85504234d9c204736978c97d1fe3bf289bf14cd05bcb4587587c733497a6",
+          "path": "scripts/lib/validation/skill_validation.py"
+        },
+        {
+          "identity": "sha256:3a619d70420a2568451b87c2cd008f750794f5a9ff2727cf46d8b4a12ea5ebea",
+          "path": "skills/code-review/SKILL.md"
+        },
+        {
+          "identity": "sha256:cd43b65881a5a4f5cf33c489d5899d528dcb2edb802c4d451028d7c7a6f6ed12",
+          "path": "skills/delivery-review/SKILL.md"
+        },
+        {
+          "identity": "sha256:1ae503588443240f229b5a59722e8fc6544a1d74762f7cc37477624ad262c622",
+          "path": "skills/delivery-review/references/delivery-review-recording-and-settlement.md"
+        },
+        {
+          "identity": "sha256:d0a7aeaf23190c0f502984505adaa141df7a038e580f4c773953d664bfd5ae7f",
+          "path": "skills/design-review/SKILL.md"
+        },
+        {
+          "identity": "sha256:321165b0a2fbdf6f2f137f85ee4345fe70ebd893b2955b21f2d36bd0a97f4ee2",
+          "path": "skills/design-review/references/design-review-recording-and-settlement.md"
+        },
+        {
+          "identity": "sha256:6cd60cc830789db910f9b69df013a018c64554adfdd4b4fe3ca4137cf81af1ec",
+          "path": "skills/plan/SKILL.md"
+        },
+        {
+          "identity": "sha256:b11edc2b87d5994110719cf29bfd50fa6fdebc6cff3eb4d831ac451e3f370db2",
+          "path": "skills/pr/SKILL.md"
+        },
+        {
+          "identity": "sha256:755b76db1d452b01ccacff8b9932644ee0094c6e1b6203d81bd6bd45bee658ae",
+          "path": "skills/pr/assets/pr-body-skeleton.md"
+        },
+        {
+          "identity": "sha256:56a63ca914b3ed0f5bffd9d3cef7b34506670f6f0fbc303f17a7bc20e1375de6",
+          "path": "skills/pr/references/governed-pr-readiness.md"
+        },
+        {
+          "identity": "sha256:527638e5a352819a0efa13cd743b968b271f11097634ac600b986a8cceff510a",
+          "path": "skills/route/SKILL.md"
+        },
+        {
+          "identity": "sha256:2a5e4c1a580e69fbc57dd5e17f5c191f891263e3ee9ec389fee876c84f0aeef8",
+          "path": "skills/route/references/governed-lifecycle-routing.md"
+        },
+        {
+          "identity": "sha256:620e48e9a618d3947eb7aaf43a1669cb90baa3dea063aa7bc79819cff8d1d6fc",
+          "path": "skills/verify/SKILL.md"
+        },
+        {
+          "identity": "sha256:616c6d655d325b6e21398bde8b98627bf76d5a3d9cccb39496cc4bb16082f490",
+          "path": "skills/verify/references/governed-verification-recording.md"
+        },
+        {
+          "identity": "sha256:460f8e5b57cb9f3440415497cf6b4f5e6ff117d3fd13a19430cdf45a9dc19ca8",
+          "path": "tests/skill/skill_contract_tests.py"
+        },
+        {
+          "identity": "sha256:c0df8f4cabeff098b08e651d1c27e5e3ea89cb8530d5313b46d9f0cd824d0ea0",
+          "path": "tests/skill/skill_guidance_tests.py"
+        },
+        {
+          "identity": "sha256:1e443b5606c4183f76b13541ba0d13018aa05769df4705aeefba8c97fcd53290",
+          "path": "tests/skill/test-skill-validator.py"
+        }
+      ],
+      "summary": "Implemented complete M1 skill/reader slice; independent full-package and test-maintenance judgment follows."
+    },
+    {
+      "actor": {
+        "id": "codex-implementer",
+        "role": "implement"
+      },
+      "id": "m1-validation",
+      "procedure": "Actual fail-first RecordingReferenceContractTests:9methods,45 expected subtest failures before selected-reader extension (/tmp/allskills-m1-failfirst.log). Focused recording/guidance13 passed. Actual final python tests/skill/test-skill-validator.py:304passed21.476s (/tmp/allskills-m1-full-stable.log); python scripts/validate-skills.py skills:19passed; bash scripts/ci.sh --mode local:exit0,focused159.48s,Boundary passed (/tmp/allskills-m1-local-stable.log). git diff --check passed. Earlier full run exposed closeout prose reader still checking inline only, corrected to selected reference. An attempted extra reviewer-placement negative was invalid for two capabilities without that placement grammar; reverted speculative expansion and retained original proposal grammar. Initial local CI intentionally stopped while those tests were corrected; no pass claimed. Stable rerun supplies current proof. No source changes after stable run. Candidate proof separately recorded. No hosted CI/final correctness or semantic universal-agent claim.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:a1da85504234d9c204736978c97d1fe3bf289bf14cd05bcb4587587c733497a6",
+          "path": "scripts/lib/validation/skill_validation.py"
+        },
+        {
+          "identity": "sha256:3a619d70420a2568451b87c2cd008f750794f5a9ff2727cf46d8b4a12ea5ebea",
+          "path": "skills/code-review/SKILL.md"
+        },
+        {
+          "identity": "sha256:cd43b65881a5a4f5cf33c489d5899d528dcb2edb802c4d451028d7c7a6f6ed12",
+          "path": "skills/delivery-review/SKILL.md"
+        },
+        {
+          "identity": "sha256:1ae503588443240f229b5a59722e8fc6544a1d74762f7cc37477624ad262c622",
+          "path": "skills/delivery-review/references/delivery-review-recording-and-settlement.md"
+        },
+        {
+          "identity": "sha256:d0a7aeaf23190c0f502984505adaa141df7a038e580f4c773953d664bfd5ae7f",
+          "path": "skills/design-review/SKILL.md"
+        },
+        {
+          "identity": "sha256:321165b0a2fbdf6f2f137f85ee4345fe70ebd893b2955b21f2d36bd0a97f4ee2",
+          "path": "skills/design-review/references/design-review-recording-and-settlement.md"
+        },
+        {
+          "identity": "sha256:6cd60cc830789db910f9b69df013a018c64554adfdd4b4fe3ca4137cf81af1ec",
+          "path": "skills/plan/SKILL.md"
+        },
+        {
+          "identity": "sha256:b11edc2b87d5994110719cf29bfd50fa6fdebc6cff3eb4d831ac451e3f370db2",
+          "path": "skills/pr/SKILL.md"
+        },
+        {
+          "identity": "sha256:755b76db1d452b01ccacff8b9932644ee0094c6e1b6203d81bd6bd45bee658ae",
+          "path": "skills/pr/assets/pr-body-skeleton.md"
+        },
+        {
+          "identity": "sha256:56a63ca914b3ed0f5bffd9d3cef7b34506670f6f0fbc303f17a7bc20e1375de6",
+          "path": "skills/pr/references/governed-pr-readiness.md"
+        },
+        {
+          "identity": "sha256:527638e5a352819a0efa13cd743b968b271f11097634ac600b986a8cceff510a",
+          "path": "skills/route/SKILL.md"
+        },
+        {
+          "identity": "sha256:2a5e4c1a580e69fbc57dd5e17f5c191f891263e3ee9ec389fee876c84f0aeef8",
+          "path": "skills/route/references/governed-lifecycle-routing.md"
+        },
+        {
+          "identity": "sha256:620e48e9a618d3947eb7aaf43a1669cb90baa3dea063aa7bc79819cff8d1d6fc",
+          "path": "skills/verify/SKILL.md"
+        },
+        {
+          "identity": "sha256:616c6d655d325b6e21398bde8b98627bf76d5a3d9cccb39496cc4bb16082f490",
+          "path": "skills/verify/references/governed-verification-recording.md"
+        },
+        {
+          "identity": "sha256:460f8e5b57cb9f3440415497cf6b4f5e6ff117d3fd13a19430cdf45a9dc19ca8",
+          "path": "tests/skill/skill_contract_tests.py"
+        },
+        {
+          "identity": "sha256:c0df8f4cabeff098b08e651d1c27e5e3ea89cb8530d5313b46d9f0cd824d0ea0",
+          "path": "tests/skill/skill_guidance_tests.py"
+        },
+        {
+          "identity": "sha256:1e443b5606c4183f76b13541ba0d13018aa05769df4705aeefba8c97fcd53290",
+          "path": "tests/skill/test-skill-validator.py"
+        }
+      ],
+      "summary": "M1 required canonical, component, full skill, candidate and selected local checks passed on stable engineering."
+    },
+    {
+      "actor": {
+        "id": "codex-implementer",
+        "role": "implement"
+      },
+      "id": "m1-candidate",
+      "procedure": "Actual python scripts/build-adapters.py --version v1.0.0 --output-dir /tmp/rigorloop-allskills-m1-x8ux00v4; python scripts/validate-adapters.py --version v1.0.0 --adapter-root /tmp/rigorloop-allskills-m1-x8ux00v4 --clean-install-smoke --skill route --skill verify --skill pr --skill design-review --skill delivery-review --skill code-review both exit0. Log /tmp/allskills-m1-candidate.log. Archive hashes {\"rigorloop-adapter-codex-v1.0.0.zip\": \"377992817c278fff60c76ceb0b6f6f8ddfe413a7fb0dd61f9f03bb4dbd198484\", \"rigorloop-adapter-claude-v1.0.0.zip\": \"a7b67c826b3d32ef0e51c7727baecb2b3cc411e31207bf8a6cef5f6011e0c559\"}. Complete generator/resource parity validator executed and temporary installs qualified; no active install or publication. Canonical skill/generator inputs unchanged afterward; test-only fixes do not alter candidate bytes. Retain owned candidate until independent inspection then clean after reliance.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:3a619d70420a2568451b87c2cd008f750794f5a9ff2727cf46d8b4a12ea5ebea",
+          "path": "skills/code-review/SKILL.md"
+        },
+        {
+          "identity": "sha256:cd43b65881a5a4f5cf33c489d5899d528dcb2edb802c4d451028d7c7a6f6ed12",
+          "path": "skills/delivery-review/SKILL.md"
+        },
+        {
+          "identity": "sha256:1ae503588443240f229b5a59722e8fc6544a1d74762f7cc37477624ad262c622",
+          "path": "skills/delivery-review/references/delivery-review-recording-and-settlement.md"
+        },
+        {
+          "identity": "sha256:d0a7aeaf23190c0f502984505adaa141df7a038e580f4c773953d664bfd5ae7f",
+          "path": "skills/design-review/SKILL.md"
+        },
+        {
+          "identity": "sha256:321165b0a2fbdf6f2f137f85ee4345fe70ebd893b2955b21f2d36bd0a97f4ee2",
+          "path": "skills/design-review/references/design-review-recording-and-settlement.md"
+        },
+        {
+          "identity": "sha256:6cd60cc830789db910f9b69df013a018c64554adfdd4b4fe3ca4137cf81af1ec",
+          "path": "skills/plan/SKILL.md"
+        },
+        {
+          "identity": "sha256:b11edc2b87d5994110719cf29bfd50fa6fdebc6cff3eb4d831ac451e3f370db2",
+          "path": "skills/pr/SKILL.md"
+        },
+        {
+          "identity": "sha256:755b76db1d452b01ccacff8b9932644ee0094c6e1b6203d81bd6bd45bee658ae",
+          "path": "skills/pr/assets/pr-body-skeleton.md"
+        },
+        {
+          "identity": "sha256:56a63ca914b3ed0f5bffd9d3cef7b34506670f6f0fbc303f17a7bc20e1375de6",
+          "path": "skills/pr/references/governed-pr-readiness.md"
+        },
+        {
+          "identity": "sha256:527638e5a352819a0efa13cd743b968b271f11097634ac600b986a8cceff510a",
+          "path": "skills/route/SKILL.md"
+        },
+        {
+          "identity": "sha256:2a5e4c1a580e69fbc57dd5e17f5c191f891263e3ee9ec389fee876c84f0aeef8",
+          "path": "skills/route/references/governed-lifecycle-routing.md"
+        },
+        {
+          "identity": "sha256:620e48e9a618d3947eb7aaf43a1669cb90baa3dea063aa7bc79819cff8d1d6fc",
+          "path": "skills/verify/SKILL.md"
+        },
+        {
+          "identity": "sha256:616c6d655d325b6e21398bde8b98627bf76d5a3d9cccb39496cc4bb16082f490",
+          "path": "skills/verify/references/governed-verification-recording.md"
+        }
+      ],
+      "summary": "Fresh supported candidates and temporary installs of all six selected skills passed."
     }
   ],
   "schema_version": 3

@@ -4,8 +4,8 @@
       "id": "codex-review-coordinator",
       "role": "route"
     },
-    "reason": "Stable four-milestone plan and navigation authored and registered after Design R2 approval; awaiting independent Delivery Review before work initialization or implementation.",
-    "stage": "delivery-review",
+    "reason": "M1 implemented with stable canonical/component/full/candidate/local proof; independent full-package/test inventory review required before milestone completion or M2.",
+    "stage": "code-review",
     "status": "ready"
   },
   "applicability": [
@@ -20,11 +20,11 @@
     },
     {
       "actor": {
-        "id": "codex-plan-author",
-        "role": "plan"
+        "id": "codex-implementer",
+        "role": "implement"
       },
       "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/evidence.json",
-      "reason": "Exact stable plan authoring and allocation checks; independent Delivery Review is still required.",
+      "reason": "Current scoped observation; inspect each check and subjects, not a blanket pass for changed evidence.",
       "value": "current"
     },
     {
@@ -119,5 +119,62 @@
     }
   ],
   "schema_version": 3,
-  "work": []
+  "work": [
+    {
+      "id": "m1",
+      "owner": {
+        "id": "codex-implementer",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "SKL-SR-33",
+        "SKL-SR-34",
+        "SKL-SR-35",
+        "HAND-SR-04",
+        "VAL-SR-29",
+        "VAL-SR-31"
+      ],
+      "status": "in-progress"
+    },
+    {
+      "id": "m2",
+      "owner": {
+        "id": "codex-implementer",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "CLI-SR-31",
+        "VAL-SR-29",
+        "VAL-SR-30",
+        "VAL-SR-31"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "m3",
+      "owner": {
+        "id": "codex-implementer",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "VAL-SR-29",
+        "VAL-SR-31",
+        "SKL-SR-33"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "m4",
+      "owner": {
+        "id": "codex-implementer",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "VAL-SR-29",
+        "VAL-SR-30",
+        "VAL-SR-31"
+      ],
+      "status": "pending"
+    }
+  ]
 }

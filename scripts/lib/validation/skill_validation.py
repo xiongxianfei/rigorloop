@@ -2521,7 +2521,13 @@ def validate_metadata_against_schema(metadata: dict[str, str], schema: dict, pat
     return errors
 
 
-PILOT_RECORDING_REFERENCES = {
+RECORDING_REFERENCES = {
+    'route': 'references/governed-lifecycle-routing.md',
+    'verify': 'references/governed-verification-recording.md',
+    'pr': 'references/governed-pr-readiness.md',
+    'design-review': 'references/design-review-recording-and-settlement.md',
+    'delivery-review': 'references/delivery-review-recording-and-settlement.md',
+
     "plan": "references/governed-plan-authoring.md",
     "proposal": "references/governed-proposal-authoring.md",
     "proposal-review": "references/proposal-review-recording-and-settlement.md",
@@ -2532,7 +2538,7 @@ PILOT_RECORDING_REFERENCES = {
 
 def validate_targeted_recording_profile(path: Path, body: str) -> list[str]:
     """Check the selected primary interface, not semantic workflow eligibility."""
-    relative = PILOT_RECORDING_REFERENCES.get(path.parent.name)
+    relative = RECORDING_REFERENCES.get(path.parent.name)
     errors: list[str] = []
     if relative is not None:
         resource_map = _extract_markdown_section(body, "Resource map") or ""
@@ -2542,6 +2548,12 @@ def validate_targeted_recording_profile(path: Path, body: str) -> list[str]:
             errors.append(f"{path}: missing body recording boundary")
         classification = _extract_markdown_section(body, "Invocation classification") or ""
         trigger = {
+            'route': 'governed_change_context',
+            'verify': 'adopted recording authority',
+            'pr': 'PR1-governed',
+            'design-review': 'durable or formal review',
+            'delivery-review': 'durable or formal review',
+
             "plan": "valid governed plan authority",
             "proposal": "governed_proposal_candidate_context",
             "proposal-review": "durable_recording_context",

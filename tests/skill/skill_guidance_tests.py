@@ -35,7 +35,7 @@ class SkillGuidanceChecks:
         names = ("proposal", "proposal-review", "design", "design-review", "plan", "delivery-review",
                  "implement", "code-review", "route", "verify", "bugfix", "ci-maintenance", "pr",
                  "research", "explore", "learn")
-        references = {"plan": "references/governed-plan-authoring.md",
+        references = {'route': 'references/governed-lifecycle-routing.md', 'verify': 'references/governed-verification-recording.md', 'pr': 'references/governed-pr-readiness.md', 'design-review': 'references/design-review-recording-and-settlement.md', 'delivery-review': 'references/delivery-review-recording-and-settlement.md', "plan": "references/governed-plan-authoring.md",
                       "implement": "references/governed-implementation-recording.md",
                       "code-review": "references/governed-code-review-recording.md",
                       "design": "references/governed-design-authoring.md",
@@ -90,7 +90,10 @@ class ExplicitRecordingGuidanceTests(unittest.TestCase):
         path = ROOT / "skills/route/SKILL.md"
         text = path.read_text()
         self.assertEqual(validate_targeted_recording_profile(path, text), [])
-        self.assertTrue(validate_targeted_recording_profile(path, text.replace("rigorloop context", "record-store check|record", 1)))
+        # Retained inline profiles must still reject the retired normal writer.
+        inline_path = ROOT / "skills/bugfix/SKILL.md"
+        inline = inline_path.read_text()
+        self.assertTrue(validate_targeted_recording_profile(inline_path, inline.replace("rigorloop context", "record-store check|record", 1)))
 
     def test_explicit_profiles_are_scoped_and_use_model_owned_records(self):
         # Structural reachability only; the independent M3 walkthrough owns semantics.
@@ -99,11 +102,11 @@ class ExplicitRecordingGuidanceTests(unittest.TestCase):
                 text = (ROOT / "skills" / skill / "SKILL.md").read_text(encoding="utf-8")
                 if skill == "design":
                     text = "## Explicit recording\n" + (ROOT / "skills/design/references/governed-design-authoring.md").read_text()
-                if skill in skill_validation.PILOT_RECORDING_REFERENCES:
-                    text = (ROOT / "skills" / skill / skill_validation.PILOT_RECORDING_REFERENCES[skill]).read_text()
+                if skill in skill_validation.RECORDING_REFERENCES:
+                    text = (ROOT / "skills" / skill / skill_validation.RECORDING_REFERENCES[skill]).read_text()
                 self.assertEqual(text.count("## Explicit recording\n"), 1)
                 block = text.split("## Explicit recording\n", 1)[1].split("\n## ", 1)[0]
-                for phrase in ("project has adopted", "rigorloop-records-v3", "project's governing documents", "historical", "expected identities", "does not approve", "rigorloop-records-v3", "rigorloop context", "subject inspect", "targeted", "Do not migrate"):
+                for phrase in ("project has adopted", "rigorloop-records-v3", "project's governing documents", "historical", "expected identities", "does not approve", "rigorloop context", "subject inspect", "targeted", "Do not migrate"):
                     self.assertIn(phrase, block)
                 self.assertNotIn("roots retain their exact compatibility contract", block)
                 self.assertNotIn("record-store check|record", block)
