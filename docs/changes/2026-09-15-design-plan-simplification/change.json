@@ -1,12 +1,12 @@
 {
   "activity": {
     "owner": {
-      "id": "codex-review-coordinator",
-      "role": "route"
+      "id": "codex-verify",
+      "role": "verify"
     },
-    "reason": "M1 independently approved with no findings and closed. Fresh final whole-change Code Review remains required after complete original-base V7 validation, followed by distinct Verify and user-authorized PR.",
-    "stage": "code-review",
-    "status": "ready"
+    "reason": "M1 completed and fresh independent final whole-change Code Review approved with no findings. Distinct final Verify now assesses exact complete authority, review and proof chain before separately authorized PR.",
+    "stage": "verify",
+    "status": "in-progress"
   },
   "applicability": [
     {
@@ -33,7 +33,7 @@
         "role": "implement"
       },
       "path": "docs/changes/2026-09-15-design-plan-simplification/evidence.json",
-      "reason": "Exact current M1 source and scoped actual observations; inspect individual commands, historical failures and limits. No review or final readiness implied.",
+      "reason": "Current scoped observation; inspect each check and subjects, not a blanket pass for changed evidence.",
       "value": "current"
     },
     {
@@ -61,6 +61,15 @@
       },
       "path": "docs/changes/2026-09-15-design-plan-simplification/reviews/m1-code-review.json",
       "reason": "Fresh exact frozen M1 assessment with current approved engineering/delivery targets, actual proof/candidate basis and complete semantic handoff observations; historical supporting identities retain their original meaning.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "design-plan-final-code-review",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-15-design-plan-simplification/reviews/final-code-review.json",
+      "reason": "Fresh complete independent final diff and integrated chain assessment on exact current authority, source and full proof; engineering unchanged after tested head, later evidence suffix attributed and historical approvals preserved.",
       "value": "current"
     }
   ],
@@ -122,6 +131,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-15-design-plan-simplification/reviews/m1-code-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-15-design-plan-simplification/reviews/final-code-review.json"
     }
   ],
   "schema_version": 3,
