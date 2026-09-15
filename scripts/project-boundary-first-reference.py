@@ -6,7 +6,7 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-from boundary_first_reference import (
+from lib.validation.boundary_first_reference import (
     PROJECTION_MODES,
     ProjectionContractError,
     format_contract_error,

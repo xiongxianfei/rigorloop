@@ -12,7 +12,7 @@ Original composition adoption: [three-model reconciliation](../../changes/2026-0
 
 Installation owns the observable `init codex` and `init claude` behavior: trusted package acquisition, destination preflight, explicit replacement, results and bounded recovery. Choosing this installation method requires the CLI; individual skill use does not. Package production and its shared metadata/hash representation belong to [Engineering Packaging](../engineering/packaging.md#stable-representations).
 
-This child receives the installation portion of the former Distribution model without weakening integrity, default conflicts, explicit force scope or state preservation. The hierarchy changes ownership, not public permission. Original source maps and compatibility decisions remain attributable through [Packaging's retained source map](../engineering/packaging.md#source-displacement-and-preservation).
+This child receives the installation portion of the former Distribution model without weakening integrity, default conflicts, explicit force scope or state preservation. The hierarchy changes ownership, not public permission. [Packaging's compatibility and proof contract](../engineering/packaging.md#product-compatibility-and-proof) defines the shared protections; [historical provenance](#historical-provenance) identifies the original transfer basis.
 
 ## Architecture Overview
 
@@ -217,6 +217,6 @@ The packed CLI is the observation boundary, not just helper calls. Exercise both
 
 The former combined ownership decision is replaced by an explicit package-producer/installer-consumer interface. All retained replacement steps and negative outcomes remain obligations. Force replacement can remove local changes inside selected units, and its help/results must describe that scope. Retained originals are outside discovery roots; they are not a new eligibility ledger or automatic recovery service.
 
-## Source transfer and next artifacts
+## Historical provenance
 
-The [reconciliation evidence (`design-preservation-delta`)](../../changes/2026-09-12-unified-validation-model/evidence.json) assigns DIST-SR-02/07/08/10–16 and DIST-DEC-03–05 here. Shared package representation and integrated proof remain Packaging-owned; Release retains publication. Independent Design Review assesses this split and exact consumers before Delivery allocates implementation and verification.
+Completed source-transfer mappings and original adoption handoffs are recoverable at `38a3042e63c7c2462ecf8ffed29f4ac0cbb8923f:docs/design/cli/installation.md`. Their source-qualified IDs and judgments retain their original scope; they do not supply current approval or operational inputs. Current behavior and proof obligations are specified in this Design and its named owners.

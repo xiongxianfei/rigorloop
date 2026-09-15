@@ -347,7 +347,7 @@ Delivery removes exclusive legacy stored definitions and reconciles consumers wh
 
 Owning change: [retire-v2-record-format](../../changes/2026-09-11-retire-v2-record-format/change.json), following the [approved direction](../../proposals/2026-09-11-retire-v2-record-format.md).
 
-After the coordinated adoption disposition in [Workflow](../skill/workflow.md#v2-retirement-coordination), `rigorloop-records-v3` with stored schema_version 3 is the sole operational contract for the entire change store, including every registered record. No v4 is introduced. V3 explanation fields, conditional verification_basis, Review finding ID-only immutability and immutable blocker origins remain unchanged. Retiring v2 does not reinstate Review finding snapshots or redesign other records.
+After the coordinated adoption disposition in [Workflow](../skill/workflow.md#retired-format-dependency-protection), `rigorloop-records-v3` with stored schema_version 3 is the sole operational contract for the entire change store, including every registered record. No v4 is introduced. V3 explanation fields, conditional verification_basis, Review finding ID-only immutability and immutable blocker origins remain unchanged. Retiring v2 does not reinstate Review finding snapshots or redesign other records.
 
 RF-SR-06/12/14 and the current compatibility table incorporate the retirement decision directly. RF-DEC-06 preserves why continuation was necessary for its original initiative; RF-DEC-08 ends that operational promise through a separate dependency disposition. Prior approvals retain their original subjects, not authority over this consolidated text.
 
@@ -410,14 +410,6 @@ Embedded rationale can reach the existing per-record size limit; the CLI must re
 
 Stored format: versioned durable data contract. Finding: current review problem account with immutable ID. Concern: change-level blocker with current fields and retained origin. Origin: immutable original basis for a blocker. Applicability: actor-declared usability of an entire supporting record. Subject identity: digest of the exact assessed file bytes. Transport: transient CLI request or response, independently versioned.
 
-## Drafting basis and authority
+## Historical provenance
 
-The [v2 retirement change](../../changes/2026-09-11-retire-v2-record-format/change.json) owns this consolidation. Earlier [compact retirement](../../changes/2026-09-08-retire-compact-workflow-mutations/change.json) and [structured-assessment adoption](../../changes/2026-09-10-structured-assessment-explanations/change.json) remain historical provenance for their exact decisions and subjects. Current requirements above integrate their surviving obligations. Model text grants neither release publication nor customer activation.
-
-## Next artifacts
-
-Independent Design Review assesses the exact revised owning models and relied-on examples. The owning retirement plan carries delivery and verification allocation; current routing and actual results belong to the owning change and stage evidence.
-
-## Follow-on artifacts
-
-None yet.
+Completed source-transfer mappings and original adoption handoffs are recoverable at `38a3042e63c7c2462ecf8ffed29f4ac0cbb8923f:docs/design/cli/records.md`. Their source-qualified IDs and judgments retain their original scope; they do not supply current approval or operational inputs. Current behavior and proof obligations are specified in this Design and its named owners.

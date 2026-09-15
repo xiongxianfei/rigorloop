@@ -6,7 +6,7 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-from release_transaction import ReleaseProfileError, prepare_release
+from lib.release.release_transaction import ReleaseProfileError, prepare_release
 
 
 def build_parser() -> argparse.ArgumentParser:

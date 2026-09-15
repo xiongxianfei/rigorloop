@@ -4,7 +4,7 @@ Model validation contract: model-document-v1
 
 The CLI operates on `rigorloop-records-v3`. The current definitions below integrate structured assessments and stored-format retirement. [Retirement provenance](#v2-runtime-retirement) preserves the owning decision; independently versioned interfaces remain separate.
 
-For this repository’s [complete source retirement](../../changes/2026-09-14-retire-specs-and-stale-tests/source-disposition.md), current responsibilities are self-contained in the owning Designs. Earlier source-transfer tables below preserve the scope and reasoning of their original initiatives; their instructions to retain or amend legacy specs, architecture, activation state or retired engines are historical and are superseded by this complete retirement. Source-qualified IDs and original judgments keep their original meaning; provenance is not a runtime input or current approval. Customer feature contracts and explicit portable resources remain supported under their own project authority.
+For this repository’s [complete source retirement](../../changes/2026-09-14-retire-specs-and-stale-tests/source-disposition.md), current responsibilities are self-contained in the owning Designs. Original source-transfer inventories remain recoverable through [Historical provenance](#historical-provenance); their instructions to retain or amend legacy specs, architecture, activation state or retired engines are historical and superseded by this complete retirement. Source-qualified IDs and original judgments keep their original meaning; provenance is not a runtime input or current approval. Customer feature contracts and explicit portable resources remain supported under their own project authority.
 
 ## Product responsibility and submodels
 
@@ -585,7 +585,7 @@ This inventory is the CLI-owned companion to Workflow's retirement allocation. I
 | CLI-MAP-04 | [Governed lifecycle CLI spec](https://github.com/xiongxianfei/rigorloop/blob/39b7c5cb1f03aa761d2f2493d3474ce985e59d6f/specs/governed-lifecycle-cli.md), R2–5, R7–17, R19–25 and R28: lifecycle commands, effective-state projection, semantic registration/settlement, automatic invalidation and migration | Remove lifecycle dispatch, mutation, interpretation and migration handlers; reject retired input without a lifecycle alias or migration operation. | CLI-SR-01/03/07/10/11 |
 | CLI-MAP-05 | [System architecture](https://github.com/xiongxianfei/rigorloop/blob/7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e/docs/architecture/system/architecture.md), Building Block View → Governed Lifecycle CLI: pure interpretation, transition evaluation and transaction adaptation | Disconnect and remove the old engine from current architecture and runtime; retain historical documentation as evidence, clearly outside current support. | CLI-SR-01–10 |
 | CLI-MAP-06 | Compact schema (historical `../../../schemas/compact-current-state-v1.schema.json`) and compact templates (historical `../../../templates/compact/current-review.md`) with evidence, decisions and Verify siblings | Remove exclusive old schemas, templates and activation metadata; preserve shared current dependencies and archival records without front-matter reinterpretation. | CLI-SR-02/03/10 and WF-SR-02/10 |
-| CLI-MAP-07 | [Metadata validator](../../../scripts/validate-change-metadata.py), [metadata regression tests](../../../scripts/test-change-metadata-validator.py), compact canonical-contract tests (historical `../../../scripts/test-compact-current-state-canonical-contract.py`) | Remove positive acceptance and completed-rollout assertions for retired behavior. Retain shared structural/safety proof under the owning plan’s test-maintenance scope; reconcile selectors and direct callers. | CLI-SR-02/07/10 |
+| CLI-MAP-07 | [Metadata validator](../../../scripts/validate-change-metadata.py), [metadata regression tests](../../../tests/engineering/validation/test-change-metadata-validator.py), compact canonical-contract tests (historical `../../../scripts/test-compact-current-state-canonical-contract.py`) | Remove positive acceptance and completed-rollout assertions for retired behavior. Retain shared structural/safety proof under the owning plan’s test-maintenance scope; reconcile selectors and direct callers. | CLI-SR-02/07/10 |
 
 Runtime removal targets include the dispatcher branches for compact/lifecycle/new-change, their exclusive engines and helpers, and old stored-format acceptance in record-store and validators. Shared safety helpers survive only through their current responsibility and regression proof. Delivery expands the dependency table below into exact files and checks; a filename containing v1, compact or lifecycle is not by itself a deletion criterion.
 
@@ -713,7 +713,7 @@ For CLI-SR-24–27, observe a limitations-only read/edit/read cycle with preserv
 
 ## V2 runtime retirement
 
-Owning change: [retire-v2-record-format](../../changes/2026-09-11-retire-v2-record-format/change.json). The retirement decision is owned by RF and [Workflow's disposition](../skill/workflow.md#v2-retirement-coordination); original Design approval is distinct from the owning implementation and Verify evidence.
+Owning change: [retire-v2-record-format](../../changes/2026-09-11-retire-v2-record-format/change.json). The retirement decision is owned by RF and [Workflow's disposition](../skill/workflow.md#retired-format-dependency-protection); original Design approval is distinct from the owning implementation and Verify evidence.
 
 ### Version domains and dispatch after retirement
 
@@ -826,18 +826,6 @@ The current interface is v3-only. The owning change carries implementation and v
 
 Candidate: complete replacement content constructed from targeted edits or explicitly submitted by advanced callers. Read set: exact inputs on which the caller based its decisions. Conflict: a current identity differs from an expected one. Drift: an observed difference between a record's subject and actual content. Transaction: recoverable publication of a bounded set of replacements. Observation: a fact reported without mutating workflow decisions.
 
-## Drafting basis and authority
-
-The [v2 retirement change](../../changes/2026-09-11-retire-v2-record-format/change.json) owns this consolidation. Earlier [compact retirement](../../changes/2026-09-08-retire-compact-workflow-mutations/change.json) and structured-assessment adoption preserve their exact historical subjects and decisions. The current definitions integrate surviving interfaces directly; no historical schema or approval is retargeted.
-
-## Next artifacts
-
-Independent Design Review assesses the current owner package and affected examples. The retirement plan allocates checks, and the owning change records routing, actual validation and final Verify; release and PR authority remain separate.
-
-## Follow-on artifacts
-
-None yet.
-
 ## Generic commands and local observability
 
 This section owns the remaining general CLI contract formerly held by package/init and observability specs. The primary recording commands, advanced record-store and rejected retired commands keep their own grammars, versioned responses and storage-only claims; they bypass the generic observed-command wrapper. Workflow-context exposes its own discovery result within its observed invocation. General help/version, installation and log inspection use the shared diagnostic path. Legacy lifecycle eligibility/next-operation projections do not become v3 fields.
@@ -887,3 +875,7 @@ flowchart LR
 ```
 
 The graph supplies the additional runtime and deployment boundary; the existing CLI Context and Building Block views still own project authority and command/persistence relationships. Ordinary semantic output, explicit diagnostic lookup and private diagnostic files are different surfaces. Representative proof compares successful and rejected commands under recorded/disabled/degraded logging; checks corrupt/oversized/private input, contention, stale locks, unsafe paths and rotation; and demonstrates recorder schemas and repository bytes are unchanged. No live external task or published release is needed to establish these deterministic boundaries.
+
+## Historical provenance
+
+Completed source-transfer mappings and original adoption handoffs are recoverable at `38a3042e63c7c2462ecf8ffed29f4ac0cbb8923f:docs/design/cli/cli.md`. Their source-qualified IDs and judgments retain their original scope; they do not supply current approval or operational inputs. Current behavior and proof obligations are specified in this Design and its named owners.

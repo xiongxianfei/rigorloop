@@ -41,7 +41,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path("scripts").resolve()))
-from release_transaction import validate_trusted_release_tag_identity
+from lib.release.release_transaction import validate_trusted_release_tag_identity
 
 errors = validate_trusted_release_tag_identity(sys.argv[1], sys.argv[2], sys.argv[3])
 if errors:

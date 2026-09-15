@@ -28,7 +28,7 @@ Actors MUST respect artifact ownership and return corrections to the responsible
 
 Externally observable behavior MUST have an approved owning Design before implementation.
 Contracts MUST define requirements, edge cases, non-goals, compatibility and acceptance; required behavior MUST map to concrete verification, retaining stable requirement IDs where used.
-[Design](docs/design/skill/design.md) owns authoring conventions and reconciled behavioral and technical decisions.
+[Design](docs/design/skill/authoring/design.md) owns authoring conventions and reconciled behavioral and technical decisions.
 Architecture or behavior changes MUST update the affected contract, consumers, documentation and examples in the same change.
 
 Workflow, CI, schema, generation and public contributor-contract changes MUST address compatibility and appropriate adoption, migration or recovery.
