@@ -1,0 +1,93 @@
+{
+  "assessment_scope": "Formal independent Design Review, first round, of the complete registered model skill and its inventory-simplification amendment, including SR-30–32 and DEC-06/07. Other subjects identify the accepted proposal, upstream proposal-review record and governing or inspected feasibility basis, not additional approval targets. Relevant interactions are specialist assessment and workflow authority, CLI recording, validation selection and packaged resource integrity. No changed normative examples or scoped legacy members are selected. Recording mode formal-lifecycle; direct invocation remains isolated after the requested review.",
+  "change_id": "2026-09-15-skill-simplification",
+  "contributors": [
+    {
+      "id": "codex-author",
+      "role": "design"
+    }
+  ],
+  "findings": [],
+  "id": "design-review",
+  "independence_basis": "The parent agent /root authored the Design amendment in the earlier authorized Design turn. Separate delegated agent /root/independent_design_review independently inspected the complete affected model, actual diff, proposal and relevant contracts and implementation evidence without editing any reviewed subject. The reviewer waited for fresh formal Proposal Review and current same-change authority before deciding and recording this formal result; a role label or assumption reset is not the independence basis.",
+  "judgment": "approved",
+  "limitations": [
+    "Approval covers the exact affected Design package for separately authorized delivery planning. It does not authorize implementation, approve published skill changes, settle milestone state, establish final verification/readiness or permit external publication/installation.",
+    "The new recording references and revised entrypoints have not been implemented. Useful improvement, full inventory dispositions, consumer reconciliation, generated package integrity and integrated handoff proof must be established during the allocated implementation and independent assessments; no runtime or savings benchmark is claimed.",
+    "This reviewer writes only its review and applicability. Route owns activity and continuation. Scoped Design CI does not establish whole-branch, final-store or hosted CI readiness."
+  ],
+  "rationale": [
+    "Criterion 1 — realization supports required behavior: pass. Inventory simplification maps all 19 canonical skills to their owners and selects concrete instruction ordering, two skill-local recording references, retained conditional execution/review references and existing assets. SR-30–32 tie these choices to obligation preservation, independent trigger selection and useful selected-reading-path improvement. Failure outcomes stop dependent work while distinguishing package integrity from untriggered runtime dependencies.",
+    "Criterion 2 — real constraints: pass. The Design preserves IP0/IP1/IP2 authority and current v3 recording semantics, project-selected portable/adopted policy, source containment, resource byte parity, permission boundaries and unchanged public values/output fields. No new installer, runtime backend, record schema, external mutation or customer adoption is inferred. New references are explicitly prospective implementation destinations, not claimed existing qualified resources.",
+    "Criterion 3 — approved goals preserved: pass. The entire inventory remains allocated within this initiative through justified change or evidence-backed retention. The pilot does not close remaining families or inherit historical proposal-family approval. Clear execution and preservation outrank line counts, token quotas or mere prose relocation, matching the proposal goals without a silent implementation-convenience reduction.",
+    "Criterion 4 — boundaries: pass. Entry scope/authority, resource selection, specialist execution, evidence recording, independent review and route-owned continuation stay distinct. Manual governed recording cannot imply planned or armed execution. Late triggers recheck authority and load complete procedure before dependent action. Missing, stale, conflicting or escaped resources, interrupted writes and retry identities have explicit failure boundaries. No additional data/security boundary is introduced.",
+    "Criterion 5 — decisions: pass. Stable DEC-06 and DEC-07 give context, selected inventory/pilot layout and local recording destinations, alternatives and consequences. Historical DEC-01–05 and SR-16–23 retain their declared original population; existing obligations remain owned and their historical judgments are not retargeted. No new material owner decision remains unresolved for this package.",
+    "Criterion 6 — shared ownership and consumers: pass. Skill owns presentation and specialist realization; Assessment owns judgment, independence and closeout; Workflow owns routing/automation; CLI/Records own supported persistence; Validation and Packaging own proof and distribution. Existing shared sources are preserved and any later required shared edit must reconcile all actual consumers. The selected validator corrections name actual heading-dependent readers, maintain non-pilot selection and preserve required source/package checks. Unchanged sibling-model policy needs no competing amendment.",
+    "Criterion 7 — credible feasibility and acceptance: pass. Inspection confirmed repeated entrypoint guidance and the actual validate_targeted_recording_profile early return when Explicit recording is absent, plus installed-placement and plan-surface heading branches in skill_validation.py. The Design requires selected-path validation against missing/unreadable/escaped/wrong procedure rather than unrelated keyword presence. Its acceptance table covers input, authority, composition, retry, failure, compatibility and environment outcomes, including the integrated implement-to-review handoff. Independent before/after semantic assessment follows Validation TEST-SR-16; concrete proof allocation remains with Delivery. This establishes feasible Design, not observed implementation improvement.",
+    "Criterion 8 — migration and remaining work: pass. Before removal or relocation, coherent obligation groups require exact original package, current owner/applicability, surviving destination, affected consumers and justified supersession/retention. Existing assets and shared methods keep their contracts. Non-pilot families retain current layouts until specifically reconciled, and FU-015–018 remain open with their receiving owners. No source directory retirement, historical evidence rewrite or blanket audit completion is authorized.",
+    "Criterion 9 — architecture views: pass. The complete model has a labeled overview linking nine behavioral owners, user authority, CLI/Records, outputs and Engineering to their detailed owners. Context, Building Block, Runtime and Deployment each have reasoned necessity and a drawn view. Runtime explicitly handles authority/resource failure and the simplification table adds late-trigger reselection; deployment preserves canonical-to-package-to-agent placement. The new instruction factoring changes no external owner or service and the views agree with the selected requirements.",
+    "Upstream and current applicability: fresh formal proposal-review is approved and current for the exact registered proposal, with no findings. Full scoped context supplies the one-member Design map and current review activity; the selected finding and blocker sets are empty with no missing paths. Its earlier advisory review is not relied on as formal approval. The reviewed scope is adequately assessable and has no required correction or necessary unresolved decision.",
+    "Validation: bash scripts/ci.sh --mode explicit --path docs/design/skill/skill.md completed with exit 0 and Selected CI checks passed. Selected record_store.schema, model.validate, boundary_first.regression, change_metadata.regression and rigorloop_cli.test all passed. git diff --check -- docs/design/skill/skill.md and git diff --cached --check -- docs/design/skill/skill.md also passed. CLI subject inspect supplied exact identities, and scoped context supplied the current revision. These mechanical results support structural consistency; the nine criterion judgments above supply semantic assessment."
+  ],
+  "reviewer": {
+    "id": "independent-design-review",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:e93d9f7891ea9eca3e6dd6c8677027b3d2871d1c1a05ca15f640ac14f2aca11b",
+      "path": "docs/design/skill/skill.md"
+    },
+    {
+      "identity": "sha256:fd389fd478a412bb091bbe5ca976bc42466769c0a3184c68eb30e8124959fc4a",
+      "path": "docs/proposals/2026-09-15-skill-simplification.md"
+    },
+    {
+      "identity": "sha256:49d6399b0936d051c027c5e1ec929b4719da5411fd6996b1707ab7a82cb8e280",
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/proposal-review.json"
+    },
+    {
+      "identity": "sha256:cc1912d5c0cd17b42bfd4a3f705a561b0c2f678045f0659f2406a1ea13e6c5a5",
+      "path": "CONSTITUTION.md"
+    },
+    {
+      "identity": "sha256:4eedbac3ea4702f50c84ebafec521663759debe48b183496272e9d420e1b1f86",
+      "path": "docs/design/system.md"
+    },
+    {
+      "identity": "sha256:af968c5583c27abb95e9a2b2ac0293deba30c522e72480c6f9aa05066659ae19",
+      "path": "docs/design/skill/assessment.md"
+    },
+    {
+      "identity": "sha256:ed5380294c163077a289f3566e041b8d580f7217b15756f961aba181400a757d",
+      "path": "docs/design/skill/workflow.md"
+    },
+    {
+      "identity": "sha256:0f7e41a1de83d542d9291a842876ae7c75ebb214242cca18ee825f539f52b778",
+      "path": "docs/design/skill/authoring/design.md"
+    },
+    {
+      "identity": "sha256:200d5859395b87e7999e152f44c7d77a1da7d21d85ba028349f4fdd5eb70ed14",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:0aec3cfc2bf73424bf08d8c4efb775e4f7b5051b8417e8ebf1c90ada91aedbfa",
+      "path": "docs/design/engineering/packaging.md"
+    },
+    {
+      "identity": "sha256:2888de55cc39d5a96d60e86b0f70821de86e4b2a41fd9218e0ad7748cd64e5dc",
+      "path": "skills/implement/SKILL.md"
+    },
+    {
+      "identity": "sha256:30c094ea81e1b6cb875fd75430ee7b2721e3bdf93830c9953f2381d7c8d5cb23",
+      "path": "skills/code-review/SKILL.md"
+    },
+    {
+      "identity": "sha256:ff05600fd3cd81584a7eac99105e9802c00c5813d995bddc1dea013371d8fbb4",
+      "path": "scripts/lib/validation/skill_validation.py"
+    }
+  ],
+  "summary": "The inventory simplification and implement/code-review pilot form a coherent, feasible engineering contract with preserved obligations and sufficient acceptance intent for delivery planning.",
+  "target": "design"
+}

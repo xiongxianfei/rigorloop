@@ -1,0 +1,176 @@
+{
+  "activity": {
+    "owner": {
+      "id": "codex-implement",
+      "role": "implement"
+    },
+    "reason": "M1 is the first pending milestone; proposal/design/delivery approvals current and no findings or blockers. Implement pilot and TG06 before independent m1-code-review; manual authorized sequence, no armed automation.",
+    "stage": "implement",
+    "status": "in-progress"
+  },
+  "applicability": [
+    {
+      "actor": {
+        "id": "independent-proposal-review",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/proposal-review.json",
+      "reason": "Fresh independent formal assessment of the exact registered proposal and current governing basis, after explicit registration authority. The direction remains supported; the current Design draft is not an approved subject of this proposal assessment.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "independent-design-review",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/design-review.json",
+      "reason": "Fresh independent assessment of the exact complete registered model and its current upstream approval, governing constraints and inspected feasibility basis. All nine criteria are satisfied; no changed subjects, unresolved material concerns or contradictory evidence defeat current Design reliance.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-planner",
+        "role": "plan"
+      },
+      "path": "docs/changes/2026-09-15-skill-simplification/evidence.json",
+      "reason": "Observed structural, allocation and scoped-command results for the exact completed primary plan and navigation; no broader readiness claim.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "independent-delivery-review",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/delivery-review.json",
+      "reason": "Independent assessment of the exact registered primary plan against unchanged current approved direction/Design and current feasibility evidence. Safe sequencing, all-skill allocation, proof boundaries, TG-06 preservation and final closeout dependencies are adequately specified with no material findings.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-route",
+        "role": "route"
+      },
+      "path": "docs/changes/2026-09-15-skill-simplification/material-decisions.json",
+      "reason": "Current direct user authorization and exact approved delivery scope.",
+      "value": "current"
+    }
+  ],
+  "blockers": [],
+  "change_id": "2026-09-15-skill-simplification",
+  "contract": "rigorloop-records-v3",
+  "models": [
+    {
+      "id": "skill",
+      "subject": {
+        "identity": "sha256:e93d9f7891ea9eca3e6dd6c8677027b3d2871d1c1a05ca15f640ac14f2aca11b",
+        "path": "docs/design/skill/skill.md"
+      }
+    }
+  ],
+  "plan": {
+    "identity": "sha256:40bd6b7023ff319fcad7e85de6cc60921990b286dfaca5c2cc0a47310f483640",
+    "path": "docs/plans/2026-09-15-skill-simplification.md"
+  },
+  "proposal": {
+    "identity": "sha256:fd389fd478a412bb091bbe5ca976bc42466769c0a3184c68eb30e8124959fc4a",
+    "path": "docs/proposals/2026-09-15-skill-simplification.md"
+  },
+  "records": [
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/proposal-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/design-review.json"
+    },
+    {
+      "kind": "evidence",
+      "path": "docs/changes/2026-09-15-skill-simplification/evidence.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/delivery-review.json"
+    },
+    {
+      "kind": "decisions",
+      "path": "docs/changes/2026-09-15-skill-simplification/material-decisions.json"
+    }
+  ],
+  "schema_version": 3,
+  "work": [
+    {
+      "id": "m1",
+      "owner": {
+        "id": "codex-implementer",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "SKL-SR-30",
+        "SKL-SR-32",
+        "SKL-SR-31"
+      ],
+      "status": "in-progress"
+    },
+    {
+      "id": "m2",
+      "owner": {
+        "id": "codex-implementer",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "SKL-SR-30",
+        "SKL-SR-32"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "m3",
+      "owner": {
+        "id": "codex-implementer",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "SKL-SR-30",
+        "SKL-SR-32"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "m4",
+      "owner": {
+        "id": "codex-implementer",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "SKL-SR-30",
+        "SKL-SR-32"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "m5",
+      "owner": {
+        "id": "codex-implementer",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "SKL-SR-30",
+        "SKL-SR-32"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "m6",
+      "owner": {
+        "id": "codex-implementer",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "SKL-SR-30",
+        "SKL-SR-32"
+      ],
+      "status": "pending"
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "change_id": "2026-09-15-skill-simplification",
+  "checks": [
+    {
+      "actor": {
+        "id": "codex-planner",
+        "role": "plan"
+      },
+      "id": "plan-authoring-validation",
+      "procedure": "Run bash scripts/ci.sh --mode explicit --path docs/plans/2026-09-15-skill-simplification.md --path docs/plan.md --path docs/changes/2026-09-15-skill-simplification/change.json; run git diff --cached --check. Compare level-two headings to plan-skeleton.md and each of six milestones to milestone.md field labels; compare backtick skill names in Implementation scope fields to skills/*/SKILL.md, requiring each of the 19 names exactly once; check relative Markdown link targets and no unfilled angle-bracket/TODO fields.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:40bd6b7023ff319fcad7e85de6cc60921990b286dfaca5c2cc0a47310f483640",
+          "path": "docs/plans/2026-09-15-skill-simplification.md"
+        },
+        {
+          "identity": "sha256:6b66922daf31401279d8fd5a9e12ed39df323715ec32e676bd13a996f856bb7f",
+          "path": "docs/plan.md"
+        },
+        {
+          "identity": "sha256:e93d9f7891ea9eca3e6dd6c8677027b3d2871d1c1a05ca15f640ac14f2aca11b",
+          "path": "docs/design/skill/skill.md"
+        },
+        {
+          "identity": "sha256:21061218b060228c8f3361e1f375008fb66d60b7cda9fc1347c0589f2c369828",
+          "path": "skills/plan/assets/plan-skeleton.md"
+        },
+        {
+          "identity": "sha256:007c46c11105018bc0429b7bc85aef0f555b4ce654cdcce27f4f4657e0ba9c75",
+          "path": "skills/plan/assets/milestone.md"
+        },
+        {
+          "identity": "sha256:f461dd267b53fa6690f9ee8222e4fa8642e27a3cafe530fd8fa75bb2243bb5fb",
+          "path": "skills/plan/assets/decision-log-row.md"
+        }
+      ],
+      "summary": "Authoring checks passed on the exact final plan and navigation. Scoped CI exited 0 with current_records.validate, change_metadata.regression, change_metadata.validate and guide_system.validate passing; structural/allocation/link checks passed and staged whitespace check passed. Six implementation milestones allocate all 19 skills, with local proof, integration, recovery and distinct final Code Review/Verify. Work remains absent until approved Delivery Review. The existing advisory-file whole-changed-set validation limitation is allocated to M1/TG-06, not waived. This is plan-authoring evidence only, not Delivery approval, implementation proof or branch readiness."
+    }
+  ],
+  "schema_version": 3
+}

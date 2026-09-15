@@ -1,0 +1,89 @@
+{
+  "assessment_scope": "Formal Delivery Review, first round, of the sole registered primary plan. The other subjects are approved proposal/Design, governing contracts, upstream review and authoring-validation evidence, and the inspected selector implementation supporting TG-06 feasibility; they are not additional delivery package members. Upstream Design Review ID is design-review. Scope includes M1–M6, TG-01–06, TG-FINAL-01/02, validation commands, recovery and the separate final whole-change review/Verify checkpoint. Plan activity is completed and the explicit review handoff supplies assessment authority; this reviewer does not mutate activity or initialize work.",
+  "change_id": "2026-09-15-skill-simplification",
+  "contributors": [
+    {
+      "id": "codex-planner",
+      "role": "plan"
+    }
+  ],
+  "findings": [],
+  "id": "delivery-review",
+  "independence_basis": "The parent agent /root, attributed as codex-planner, authored the primary plan. The separate delegated agent /root/independent_design_review performs this Delivery Review without authoring or editing the plan, Design or implementation. Its earlier independent Design assessment does not constitute plan authorship. This assessment independently traces the complete plan and required proof to current approved Design; role labels alone are not independence.",
+  "judgment": "approved",
+  "limitations": [
+    "Approval is for the exact primary plan and its combined implementation/verification allocation. Work initialization and execution remain separately owned; this assessment does not establish implementation completion, Code Review, final Verify, branch/PR readiness or hosted CI success.",
+    "TG-06 is a required preservation/reconciliation operation, not yet executed proof. Its intermediate deleted advisory path remains unclassified until the reviewed provenance/cleanup sequence is complete; the final full branch range must cover committed work in addition to local changes. No validation-policy exemption is approved.",
+    "Concrete improvement and preservation for every family, actual new tests and packages, corrected findings and integrated final observations remain delivery work. Retention requires substantive evidence; approval does not declare the current 19 packages already simplified or universally conformant."
+  ],
+  "rationale": [
+    "Package and authority: pass. Full scoped context returns the exact registered primary plan, one Skill model and current approved proposal-review/design-review evidence, with no findings, blockers or missing paths in the selected scope. Exact plan identity matches CLI subject inspection. Required Design and proposal scope remain unchanged; the plan creates no alternate test-spec package or behavioral authority.",
+    "Traceability and completeness: pass. SKL-SR-30–32, preserved common/specialist rules and DEC-06/07 map to architectural owners, six milestones, TG observations and V1–V6 commands/manual review. A fresh bounded inventory check found six ordered milestones and all 19 canonical skills exactly once in Implementation scope. The eight Design acceptance dimensions map to earliest milestone proof and integrated follow-through. A retained skill requires substantive independent retention evidence rather than an empty code edit or line-count conclusion.",
+    "M1 and pilot proof: pass. Approved classification/layout and independent recording destinations are implemented together with relevant profile/placement/resource readers and their protection. TG-02 traces isolated, planned, armed, manual recording and late-trigger cases, including absent/stale/conflicting authority. TG-03 requires meaningful missing/unmapped/escaped/unreadable/wrong/stale-resource and closed-selector negatives before reader changes where feasible. V1–V4 cover canonical, reader regression and real candidate/temporary install boundaries. Actual CLI behavior remains unchanged and is protected by existing appropriate persistence proof rather than invented behavior tests.",
+    "M2 and M3 allocation: pass. Six authoring/upstream review packages preserve their approved layouts, assets, fingerprints and producer/consumer interfaces; route/verify/pr then preserve coordination, scoped/final assessment and separately authorized external actions. TG-04 applies family-specific specialist judgment and TG-FINAL-01 first traces the complete chain after those interfaces are available. A newly needed layout/resource architecture returns through its owning Design and review, so Delivery does not preapprove unrelated decisions.",
+    "M4, M5 and M6 allocation: pass. Repair capabilities receive explicit diagnosis/proof/write/recovery checks; foundations retain canonical-source, authority and observed-map boundaries; discovery/learning retain optional triggers, attributable conclusions and owned adoption. Each named family has complete scope, dependencies, commands, evidence, review, risks and rollback. M6 reconciles all 19 dispositions and FU-015–018 only to the extent accepted evidence supports their own scope, retaining unrelated consolidation rather than declaring universal completion.",
+    "Sequence and intermediate safety: pass. M1 establishes the shared-reader pattern before later families; sequential clean independent reviews limit overlapping validator/package edits. Every changed family must reconcile its consumers and pass complete package proof before its handoff. Rollback restores coherent body/reference/reader slices while retaining unrelated work and evidence; stale record/application state cannot be rewound into renewed approval. Proof-authoring precedes relevant reader changes where feasible, and missing behavior or materially changed milestone scope returns to its actual owner before dependent work.",
+    "Integrated proof and closeout: pass. TG-FINAL-01 uses actual producer outputs as consumer inputs and checks independently triggered recording, authority denial and final-review separation; TG-FINAL-02 requires final full inventory/candidate composition. Both explicitly cannot be waived by a milestone-local result. Independent semantic assessment has starting paths, expected outcomes, bounded observations and limits; material uncertainty receives focused manual evidence under TEST-SR-16. A fresh final whole-change Code Review follows all six milestones/corrections and integrated proof, then distinct Verify; no test group or milestone review substitutes for either checkpoint.",
+    "Validation realism and protection: pass. V1/V2/V3 are existing canonical validators and suites; current validate-skills.py/validate-adapters.py help confirms named target and clean-install-smoke/skill options. V4 builds into owned temporary output and validates both supported archives and temporary installed packages, using changed-family selection and a fresh full final candidate. Shared-resource changes require all actual consumers. Existing proof reuse is conditional on unchanged exact basis and no freshness override; structural success is not usability or executed-customer-workflow evidence. Failures, incomplete authority, unclassified paths and protected-test uncertainty remain visible rather than waived.",
+    "TG-06 preservation and selector feasibility: pass. The advisory is currently a staged new path and its original judgment/bytes must survive before retirement. Inspection of validation_selection.py confirms local selection includes HEAD/index deletions and classifies unknown paths even when absent, while base/head selection uses the net diff. A feasible existing-contract sequence is to preserve the exact advisory in a reachable same-branch baseline commit, verify provenance and replace current reliance with formal records, reconcile live references, then retire it in a separate cleanup commit before source edits. The deletion-only interim still has an unclassified local path and grants no readiness claim. Subsequent local checks plus full original-base-to-engineering-head selection cover current and committed change; the net branch has no advisory addition/deletion but retains recoverable ancestor bytes. This satisfies the planned preservation outcome without a catch-all exemption, historical rewrite, extra publication authority or pretending deletion itself classifies the path.",
+    "Permissions and plan bounds: pass. Product scope excludes policy, public-format and installation/release changes; temporary packaging proof has owned paths and cleanup. The user’s later authorization through PR governs separate downstream PR activity after successful Verify, so the plan’s implementation non-goal for external handoff is not an authority conflict. No remote action or implementation is performed by this review.",
+    "Validation and current evidence: a fresh Python allocation check passed for M1–M6 and exactly 19 skills; git diff --cached --check -- docs/plans/2026-09-15-skill-simplification.md passed. CLI subject inspection and full selected context confirmed exact basis/current applicability. Existing registered plan-authoring-validation reports passed scoped plan/navigation/change checks; its exact plan subject is unchanged, so those authoring checks were not blindly rerun. CLI help/selector source inspection supplies bounded command feasibility. These observations support review and do not claim implementation or final full-branch validation."
+  ],
+  "reviewer": {
+    "id": "independent-delivery-review",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:40bd6b7023ff319fcad7e85de6cc60921990b286dfaca5c2cc0a47310f483640",
+      "path": "docs/plans/2026-09-15-skill-simplification.md"
+    },
+    {
+      "identity": "sha256:e93d9f7891ea9eca3e6dd6c8677027b3d2871d1c1a05ca15f640ac14f2aca11b",
+      "path": "docs/design/skill/skill.md"
+    },
+    {
+      "identity": "sha256:5ea24213d164d301ed4690f3647bbb98d8f5709bf10af03c3efbdcad08ef9826",
+      "path": "docs/design/skill/authoring/plan.md"
+    },
+    {
+      "identity": "sha256:af968c5583c27abb95e9a2b2ac0293deba30c522e72480c6f9aa05066659ae19",
+      "path": "docs/design/skill/assessment.md"
+    },
+    {
+      "identity": "sha256:200d5859395b87e7999e152f44c7d77a1da7d21d85ba028349f4fdd5eb70ed14",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:0aec3cfc2bf73424bf08d8c4efb775e4f7b5051b8417e8ebf1c90ada91aedbfa",
+      "path": "docs/design/engineering/packaging.md"
+    },
+    {
+      "identity": "sha256:cc1912d5c0cd17b42bfd4a3f705a561b0c2f678045f0659f2406a1ea13e6c5a5",
+      "path": "CONSTITUTION.md"
+    },
+    {
+      "identity": "sha256:89bc6ad721e14bd6a309af91a2e6dc8bcaa353b16ea6d8344bbe564bab1c7db3",
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/design-review.json"
+    },
+    {
+      "identity": "sha256:fd389fd478a412bb091bbe5ca976bc42466769c0a3184c68eb30e8124959fc4a",
+      "path": "docs/proposals/2026-09-15-skill-simplification.md"
+    },
+    {
+      "identity": "sha256:49d6399b0936d051c027c5e1ec929b4719da5411fd6996b1707ab7a82cb8e280",
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/proposal-review.json"
+    },
+    {
+      "identity": "sha256:3d7653cf528094abf226ad4411e7bcbea1b73479da4a48e1a4eeacd47d54538e",
+      "path": "docs/changes/2026-09-15-skill-simplification/evidence.json"
+    },
+    {
+      "identity": "sha256:e0239dc403a6a9f0ea0a2905c8268ebf0d015bd5767cbb7961ed35e5bd883c21",
+      "path": "scripts/lib/validation/validation_selection.py"
+    }
+  ],
+  "summary": "The six-milestone delivery allocation safely covers the full skill inventory and provides proportional proof, preservation and independent closeout requirements.",
+  "target": "delivery"
+}
