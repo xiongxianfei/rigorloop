@@ -1,8 +1,6 @@
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {readFileSync} from 'node:fs';
-import {validateMutationRequest} from '../dist/lib/recording-construction.js';
-import {validatePrimaryResult} from '../dist/lib/recording-contract.js';
 import {canonicalJSON} from '../dist/lib/recording-observations.js';
 import {digest} from '../dist/lib/record-store-files.js';
 

@@ -202,7 +202,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "--npm-tarball-root",
-        help="Directory containing the packed npm tarball named by bootstrap publication evidence.",
+        help="Retired historical-replay option; unsupported for current release qualification.",
     )
     parser.add_argument("--prepared-candidate", help="Exact local candidate output; complete prepublication checks, no publication.")
     return parser

@@ -47,7 +47,6 @@ from selection_test_helpers import (
     allocated_workers,
     EXPECTED_CATALOG,
     ADAPTER_REGRESSION_COMMAND,
-    RETIRED_MIRROR_CHECK_IDS,
     CHANGE_METADATA_PASSING_TEST,
     CHANGE_METADATA_FAILING_TEST,
 )

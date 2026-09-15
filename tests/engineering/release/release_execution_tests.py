@@ -97,7 +97,7 @@ class ReleaseEvidenceStoreTests(unittest.TestCase):
                 self.assertEqual(a.read('docs/releases/v0.5.1.md'), b'first observation\n')
                 self.assertEqual(a.read('docs/releases/v0.5.2.md'), b'later observation\n')
 
-    def test_source_ref_and_path_escape_rejected(self):
+    def test_source_ref_collision_is_rejected(self):
         with self.assertRaises(ExecutionError): GitEvidence('remote', 'refs/heads/main', source_ref='refs/heads/main')
 
 

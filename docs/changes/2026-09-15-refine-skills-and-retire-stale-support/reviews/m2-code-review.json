@@ -1,0 +1,351 @@
+{
+  "assessment_scope": "Independent milestone M2 Code Review of frozen engineering f820adf6bb5a2ab8e7199870250c202636f8b55c against baseline75c81499 and the exact approved proposal/four-model/primary-plan package. Includes complete M2 scripts, actual case groups, direct/dynamic discovery, recursive fixtures, catalog/callers, deletion/rename/unknown boundaries, current-runtime preservation and M1 shared validator impact.",
+  "change_id": "2026-09-15-refine-skills-and-retire-stale-support",
+  "contributors": [
+    {
+      "id": "codex-implementer",
+      "role": "implement"
+    }
+  ],
+  "findings": [],
+  "id": "m2-code-review",
+  "independence_basis": "Separate nonauthor reviewer agent /root/support_inventory_review independently inspected actual source bodies, callers, case-level groups, recursive fixtures, complete approved authority, frozen diff and command evidence. Root authored all engineering. This reviewer produced only read-only preparatory recommendations and this review record, with no engineering, proposal, Design, plan or routing edits. Root remained read-only during the sole review-record writer window.",
+  "judgment": "approved",
+  "limitations": [
+    "Milestone approval only. M3 packaging/release and M4 complete runtime/inventory closeout remain, followed by fresh independent final whole-change Code Review and distinct Verify. No final readiness, hosted CI, publication or installed-agent reliability is claimed.",
+    "Command execution belongs to the implementation owner; this reviewer independently inspected source, actual diff, full governed command evidence and terminal results rather than rerunning unchanged expensive suites. Independent discovery collection is not claimed as test execution.",
+    "Historical reviewed source identities remain unchanged archival observations where later engineering drifted. This new assessment supports only the current M2 scope; no previous approval is retargeted."
+  ],
+  "rationale": [
+    "Authority and scope — pass. Independently inspected frozen M2 engineering f820adf6bb5a2ab8e7199870250c202636f8b55c against baseline75c81499, the exact registered proposal, all four current model identities and primary plan. All six authority hashes match registration. Approved Design R2, Delivery and M1 judgments were read with their rationale/limits; skills-dr-01 is reporter-resolved. No open blocker or required correction is present. Historical subject drift in prior assessments remains historical and is not retargeted. CLI-SR-31/CLI-DEC-08 authorize withdrawal of the exact query command response; VAL-SR-29/30/31 and TEST-SR-07–10 govern maintenance. This assesses the complete M2 allocation and the shared M1 validator impact, not only changed files.",
+    "Spec alignment — pass. The old unconditional rejection shim, its two exclusive tests, stale skill existence assertion, catalog entry/fingerprint and helper exception are removed together. The old structured response itself is deliberately withdrawn; a Python missing-file error is not a replacement product promise. Current metadata validation remains and its input description now names change.json. No additional live runtime, record format, schema or public wrapper is retired.",
+    "Test coverage — pass. The new regression constructs actual committed Git deletions of both retired paths and a rename whose old path is known or unknown. It asserts both rename identities, required surviving record/metadata/selector checks, absence of the removed ID/command, and blocked exit2 for mixed unknown input. Independent hardcoded expected IDs distinguish the prior implementation; author recorded baseline failure before the change and final pass. The skill mixed-line subcase detects the old helper exemption leaking past the first externally qualified reference. Existing generic project-provided recognition remains tested. All remaining M2 groups have explicit protective-value dispositions below.",
+    "Edge cases — pass. Historical paths retain deletion classification without executable aliases. Old and current orphan-parser paths remain classifiable for moves/deletion; only the current-file expectation is removed. Direct-only fixture failure, environment-injected metadata failure, mixin composition, dynamic/import/load_tests populations and recursive fixtures were inspected. Normal discovery was independently collected without executing cases, then reconciled with actual passed runners; counts supplement source-based protection assessment.",
+    "Error handling — pass. Current malformed/retired/unknown record rejection, unavailable and incomplete discovery, missing registered data, normalized errors and source-byte preservation remain covered by metadata and Node suites. No parser or wrapper implementation implementing those guarantees changes. Shared resource lint removes only the exact obsolete bypass; generic external/illustrative recognition remains. Existing selector unknown-input blocking and executor cleanup/retry failure boundaries are retained.",
+    "Architecture boundaries — pass. Removed project_yaml.py has no import, function caller or dynamic consumer after repository-wide source/caller search; its only live mentions were selection metadata. Independent release _load_yaml_subset and boundary manifest parsing remain untouched. The two orphan SelectionFixtures YAML-era helpers and unused RETIRED_MIRROR_CHECK_IDS have no callers. Active boundary parser branches are intentionally retained after assessment because this round establishes no safe replacement or adequate maintenance benefit for a sensitive behavior change. No architecture or ownership contract moves.",
+    "Compatibility — pass. Current CLI/record safeguards remain in their actual runtime and wrapper suites, rather than claiming the retired shim tests prove them. Deletion paths select record_retirement.regression, change_metadata.regression and selector.regression with real commands. The obsolete ID is absent from the catalog and fingerprint map. Existing synthetic historic path inputs remain where they protect Git deletion/move behavior. Removed files are recoverable at baseline75c81499 by their original paths; restoring query support would restore the coupled catalog/tests/callers unit and would not restore a YAML decoder.",
+    "Security/privacy — pass. No dependency, secret, network permission, authorization or logging change. Retained tests protect containment, symlinks, Git environment/replace-object isolation, unavailable promisor objects without fetch, redacted diagnostics and no source mutation. Removing unused parser/shim paths adds no fallback. Public current discovery and process cleanup remain real boundary observations.",
+    "Derived artifact currency — pass for M2 scope. No authored skill/resource, generator, schema or package implementation byte changed in this slice. M1 archive/temporary-install observations therefore remain informative for those unchanged bytes; their historical identities are preserved. Shared validator behavior changed and full300-skill proof was freshly rerun. This does not replace the independently required fresh complete M3 candidate qualification.",
+    "Unrelated changes — pass. The ten engineering files implement the allocated coupled retirement and proven maintenance only. The removed lifecycle-word selector case repeated the identical input and its useful no-current-record check is already covered by the stronger canonical-skill case. Deduplicated schema/template/set/script-fixture and measurement entries were identical inputs; every distinct input/assertion remains. Preparatory review recommendations were read-only; all engineering was authored by the implementation owner.",
+    "Validation evidence — pass. Inspected current m2-implementation and m2-validation plus terminal logs: python tests/skill/test-skill-validator.py300 passed32.485s; python tests/engineering/validation/test-select-validation.py184 passed120.53s; python tests/engineering/validation/test-change-metadata-validator.py7 passed7.88s; python tests/engineering/validation/test-validation-execution.py52 passed57.518s; npm --prefix packages/rigorloop test419 passed27.864s. bash scripts/ci.sh --mode local completed all selected checks with focused896.46s, including final duplicate-only fixture cleanup. These satisfy V2/V3/V4/V8 scope; unchanged groups need no invented redundant direct rerun. The initial standalone helper phrase remained valid generic external context, and the author corrected the test to the intended sibling-reference hazard rather than broadening parser behavior. Current record validation and whitespace checks are performed at recording handoff. No failing evidence is hidden by the reduced discovery count.",
+    "Complete M2 protective-value account, independently inspected in preparation and reaffirmed against the frozen implementation. All five established cleanup groups below are now implemented and verified; other groups are retained for the stated contributions. The baseline discovery count includes the two expressly retired query cases; current retained selector count is unchanged because one redundant case is replaced by the real Git boundary regression. The original preparation phrase “root elected” identifies the engineering author choice, which this assessment now independently accepts.\n\n## Current discovery and support population\n\nNormal entrypoints were collected with the actual `validation_execution.unittest_adapter('collect', ...)` under Python `-B`, without executing test bodies. Exact identities are in `/tmp/allskills-m2-normal-discovery.json`. Baseline: boundary reference 28; boundary validation 61; metadata 7; prose 14; current-discovery wrapper 6; guide 13; Markdown readability 7; retired query 2; selector 184; executor 52. Counts are reconciliation support, not protection judgments.\n\nSelector 184 includes the actual mixins SelectionContractChecks, SelectionGitChecks, SelectionCliChecks composed in ValidationSelectionTests plus ten ScriptOutputContractTests. SelectionFixtures is support, not an independent suite. ScriptOutputFixtureTests.fixture_contract_failure is deliberately direct-only and fails when explicitly selected; do not remove for absence from ordinary discovery. The metadata runner injects an eighth deliberately failing method only under RIGORLOOP_CHANGE_METADATA_FAILURE_FIXTURE=1; executor and selector tests exercise its normal dynamic discovery and output. Executor synthetic Python load_tests/import aliases and Node dynamic declarations are actual adapter hazards, not unused fixtures.\n\nRecursive fixture inspection used Path.rglob and rg --files --hidden. M2 fixture roots contain six boundary Markdown files and thirteen documentation-prose Markdown files; no hidden additional fixture members or exclusive query fixture directory was found. Temporary Git/process/script fixtures live inside real test bodies and are included below.\n\n## Protective groups and dispositions\n\n### Boundary reference projection — retain\n\n`test-boundary-first-reference.py` and `boundary_first_reference.py`, `project-boundary-first-reference.py`, `resources/boundary-first/boundary-first-resources.yaml` have distinct protections: exact closed manifest/resource/consumer identities; unknown values before consistency; missing/duplicate fields; unsafe normalized paths; raw-byte parity/idempotency and digest serialization; absent/stale/unexpected/nested resources; source/consumer/parent symlink boundaries; late preflight failure before writes; first/middle/last failure rollback; KeyboardInterrupt restoration; input drift; parent-topology swap with continued best-effort recovery; bounded redacted CLI diagnostics; unrelated symlink nonapplicability. These execute actual projection functions and CLI, with independent literal manifest and expected tuples. Canonical portable contract and no-stage-policy phrase guards remain per the approved plan because equivalent omission protection is not established. The implementation-name absence assertion is weak but does not justify removing a separately governed architectural guard without stronger disposition.\n\n### Feature/proof/model grammar — retain\n\n`test-boundary-first-validation.py`, `boundary_first_validation.py`, `validate-boundary-first.py` and `model_layout.py` protect portable selected feature/proof support, not a revived test-spec lifecycle. Structural cases distinguish current JSON owner pointers from rejected legacy YAML authority without reading archives; exact marker placement, all closed vocabularies, table/separator/fence/indent grammar, requirement/owner/scope references, duplicate IDs, cross-boundary example composition, missing direct proof, manual/automated/gap shape and semantic-review limits. Activation-named cases now exercise explicit document selection, containment, deletion/companion behavior and privacy. AdoptionReviewHandoffTests distinguish review-required success from approval, unknown/malformed input and mixed structural failure. ModelRecordTests cover all current owners, allowed portable flat paths, declared layout, nested/example rejection, missing/duplicate/malformed tables and local references. CurrentBoundaryCommandTests prove default model/example discovery, malformed JSON redaction, symlinks, empty population failure and standalone customer grammar.\n\nAll six durable fixtures have current uses: minimal/complete provide smallest owned boundary/direct proof; complex/complex-complete prove multiple requirements and direct interaction proof; semantic-omission proves structure cannot judge hidden semantics; gap proves absence of direct proof fails. Generated valid_feature/valid_proof strings provide mutation-local grammar controls. Similar positive minimal cases differ as durable-fixture integrity versus mutation starting point and remain useful.\n\nActive `_marker_issues` contains unreachable stage_owned-positive branches behind unconditional legacy rejection; root elected to retain this sensitive parser unchanged. No current grammar or diagnostic obligation is retired, and its full negative tests remain useful. This is assessed retention, not a claim that every source line is essential.\n\n### Current record metadata and discovery — retain\n\n`test-change-metadata-validator.py`, `validate-change-metadata.py`, `test-governed-lifecycle-cli-validator.py`, `validate-governed-lifecycle-cli.py`, `validate-record-store.mjs`, `classify-record-store.mjs`, `record_snapshot_git.mjs`, `record_store_classification.py` remain active. Metadata tests validate complete registered sets rather than only manifests or workflow eligibility: current v3 acceptance, unknown/mixed versions, duplicate keys/newline encoding and symlink rejection, missing/bad registered members, applicability versus subject freshness, retired cache-measurement rejection before state effects. Current-discovery tests distinguish archives from malformed current residue and unavailable/incomplete responses. Exact Git snapshots ignore later worktree corruption, reject wrong roots/unknown revisions/symlink topology, suppress replace-object/environment redirects and trace writes, and fail missing promisor objects without fetch or mutation. Selector supporting-subject tests additionally require registered-set validity and forbid reserved-path promotion. Keep current metadata wrapper; change only stale catalog JSON input description.\n\n### Prose, readability, guide, README — retain\n\n`test-documentation-prose-validator.py` / `validate-documentation-prose.py` and all thirteen fixtures protect deterministic source-line errors, explicit two-space and backslash hard-break exceptions, list continuation versus nested/fenced structure, named phrase/command/lifecycle splits, structural exclusions, warnings versus enforcement, formatter configuration and no mutation. The historical wording inside fixtures is input, not current instructions. `test-markdown-readability-validator.py` / `validate-markdown-readability.py` protect changed-section enforcement versus historical audit, long complete-line warnings, generated-region metadata/pairing, placeholders, exclusions and public CLI behavior. These are distinct current interfaces despite partial phrase overlap. `test-guide-system-validator.py` / `validate-guide-system.py` protect composed current authority surfaces, retired guide/skill/resource restoration, declared model owners versus historical/undeclared prose, plan index ownership and semantic routing actor. `validate-readme.py` retains the lightweight H1/readability and optional standalone marker contract; selector tests directly execute absent, valid and malformed marker forms. No whole script or exclusive fixture is redundant here.\n\n### Selection, CI and execution — retain with targeted maintenance\n\n`selection_contract_tests.py` protects independent catalog/command population, isolated suite units, package initializer transitive consumers, predecessor/deletion routing, model owner versus example mapping, current and retired recording paths, canonical/generated isolation, sibling proof preservation, documentation tiers, release versions, README/vision markers, broad-smoke attribution, trusted PR revisions, unsupported modes and thin hosted-CI ownership. Historic synthetic path spellings exercise deletion compatibility; do not remove them merely for being old.\n\n`selection_git_tests.py` protects actual changed/deleted/renamed discovery across unstaged/staged/committed scopes; current registered-set and supporting-subject routing; malformed versions, unknown mixed paths and reinspection; symlink/containment and tracking preflight; known versus unproven deletions; exact PR Git scope and actual selected readability failure. `selection_cli_tests.py` executes actual selector/CI boundaries with isolated scripted children: JSON/error envelopes, mixed unknown blocks before work, trusted catalog commands, argument forwarding, resource budgets, serial versus actual concurrent children, fail-fast versus completed independent work, stable ordered captures, timeout/signal/unavailable/decode/large-output distinction, current/archival record discovery, dependency prevention, nonrecursive composition, diagnostic broad scope preserving original failure, and metadata runner output. Lower executor tests must not replace these public wrapper observations.\n\n`test-validation-execution.py` protects actual process graph validation before launch, capped allocation, orphan and escaped-session ownership, interrupt/timeout cleanup and fresh retry, preserving completed outcomes during cleanup, signal/unavailable distinction and capture errors. Python/Node adapters test normal import/discovery/hooks, direct selectors, skipped/todo/duplicate/empty/mismatched receipts, dynamic declarations, no body execution during collection, native package glob/CWD, fresh case execution and dependencies. Catalog tests reject unknown or stale execution metadata. Composition tests prove authored full/narrow coverage and prerequisites, overlap exactly once within invocation, new invocation freshness, incompatible IDs, focused/boundary failure ordering and distinct snapshot versus current discovery. Retain all unique cases and actual child fixtures.\n\n`ci.sh`, `select-validation.py`, `validation_selection.py`, `validation_execution.py`, `validation_node_adapter.mjs` are the active .github/workflows/ci.yml → shell → selector/catalog → scheduler chain. `scripts/lib/__init__.py` and validation initializer retain normal package imports. Node record and projection wrappers are reached through catalog/direct callers, not orphaned just because they lack a standalone test file. Catalog Python case units collect each normal runner; independent expected catalogs and real adapter tests prevent names-only success. Project map is not used as inventory authority.\n\n## Independently established cleanup and reviewed implementation\n\n1. Approved coupled query retirement: remove query-change-record.py and both RetiredQueryTests; remove catalog/fingerprint/old runner consumers and the special published helper exception, correct metadata input description. Retain old/new deleted path classification selecting current record/metadata/selector checks; real deletion/rename and mixed unknown proof must precede closure. Removed JSON rejection response has explicit CLI-SR-31 retirement, not an equivalent-success alias.\n2. Orphan internal `scripts/lib/validation/project_yaml.py`: full source read; no current import, dynamic user or function caller in scripts/tests/packages/skills/templates/Designs/workflows. Current release `_load_yaml_subset` and boundary manifest parser are separate. Only selector path mapping and test expectations refer to it. Root independently confirmed this and chose removal; retain deleted-path routing, remove from current-descendant expectation. Prior plan retained it due uncertainty, not a surviving runtime promise. Recover through pre-M2 Git path; no live format is retired.\n3. `SelectionFixtures.assert_registered_change_evidence_routes` and `write_change_with_evidence_deferral`: rg definitions only, stale YAML-era construction/assertions, no direct dynamic user; remove. `RETIRED_MIRROR_CHECK_IDS`: only definition and unused runner import; remove both.\n4. `test_lifecycle_words_do_not_change_skill_path_classification`: identical select call twice without content mutation; useful no-current_records assertion duplicates `test_canonical_skill_only_uses_purpose_built_checks_without_lifecycle` on identical input. Remove redundant method; misleading title does not add proof.\n5. Deduplicate literal v3 schema/template path entries, repeated set members, duplicate child_scripts writes and repeated identical measure-cli-result-bytes representative path. Keep every unique input/assertion. This reduces maintenance clutter without claiming fewer distinct failures covered.\n\nNo further test, fixture, runner or public interface retirement is established. Maintain root-elected active parser retention and all unique source/archive/current-record/recovery/CLI observation boundaries.\n",
+    "Gate and handoff. No material finding or direct-proof gap remains within M2. Route may close this milestone and continue the authorized M3. M3/M4, fresh independent final whole-change Code Review and separate successful Verify remain required; neither this milestone judgment nor storage success establishes branch or PR readiness."
+  ],
+  "reviewer": {
+    "id": "all-skills-m2-code-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:12a38c1809fa0deca17805ca783020c7783934e6c1f91bbb1e7c9fb6c2e4fb2a",
+      "path": ".github/workflows/ci.yml"
+    },
+    {
+      "identity": "sha256:a15d4f3889629c69f946269da05e32f00161148a07f7de62f01038ced3e28cb9",
+      "path": "AGENTS.md"
+    },
+    {
+      "identity": "sha256:cc1912d5c0cd17b42bfd4a3f705a561b0c2f678045f0659f2406a1ea13e6c5a5",
+      "path": "CONSTITUTION.md"
+    },
+    {
+      "identity": "sha256:fa259933a9f5a0237bcd9cf6afc26d424f6bb5515873e5303c0437dfdaa1e4f0",
+      "path": "CONTRIBUTING.md"
+    },
+    {
+      "identity": "sha256:2353750b6945c69a374d7fe5b3035fedfcac1969e2f91523016ab40f3545fc88",
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/evidence.json"
+    },
+    {
+      "identity": "sha256:7907f1a326b120964eec01572acc2fcf56bab9fcb2d103bf05db5323abe0863e",
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/delivery-review.json"
+    },
+    {
+      "identity": "sha256:8f385aab6b83ab80bc9f5509c7b59142cbe41eebe6a38dbe9cdafb17f8293ec2",
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/design-review-r2.json"
+    },
+    {
+      "identity": "sha256:05e88966576096b19540546d18331e58b6ecdd2f3f06eec8c5b4661fff54ccee",
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/design-review.json"
+    },
+    {
+      "identity": "sha256:b870c385289bde46d375acb33633fe351650c49b6e3caf7b7c69bfed8da3b367",
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/m1-code-review.json"
+    },
+    {
+      "identity": "sha256:5431c6263902bb5f0f4e558198781f9437602e417dc79741fc40823001ab7383",
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/proposal-review.json"
+    },
+    {
+      "identity": "sha256:46396ee3e8e0327d1ca4ca1485cf9f1802689acfe7fe0ec88e1cd4eddc2c644e",
+      "path": "docs/design/cli/cli.md"
+    },
+    {
+      "identity": "sha256:46068496c23e3a9e82befbea7d5c0c68242eb0928ddb15ccf431cbd9b52a94a6",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:af968c5583c27abb95e9a2b2ac0293deba30c522e72480c6f9aa05066659ae19",
+      "path": "docs/design/skill/assessment.md"
+    },
+    {
+      "identity": "sha256:5a38d6bb26ebdd63527843c5dbf94caeb0c306dcfe89cfb03fc5aced4dd14388",
+      "path": "docs/design/skill/delivery-handoff.md"
+    },
+    {
+      "identity": "sha256:18f39802c01fda9ff16fa68fd0fce03dafe33f032dc0006f0033095096856bcc",
+      "path": "docs/design/skill/skill.md"
+    },
+    {
+      "identity": "sha256:7a88f81f0044f2f9739ca27e9ebfb6cef77628f87b8422a240d9b776a4b921d8",
+      "path": "docs/design/system.md"
+    },
+    {
+      "identity": "sha256:7b8f0ec8889d36ba01d05812d9aa8223a3dd79e6a10f42c7cef9573542060130",
+      "path": "docs/plans/2026-09-15-refine-skills-and-retire-stale-support.md"
+    },
+    {
+      "identity": "sha256:3bf51df8d9be1c016255c493aebe495b5d102fe015237adf099823752967686d",
+      "path": "docs/proposals/2026-09-15-refine-skills-and-retire-stale-support.md"
+    },
+    {
+      "identity": "sha256:6c879a76afc9d6317951ba1dc883b9a5c220ba80df0cdb3b2f94e60363794207",
+      "path": "packages/rigorloop/package.json"
+    },
+    {
+      "identity": "sha256:9f03477a3dc5da070181ed4bc973c5ba4de620c5519510afb541bf25503f63c0",
+      "path": "scripts/ci.sh"
+    },
+    {
+      "identity": "sha256:4f5bc31f7f0b96b77ac95df60aab63ba428a29ed7acddef39919cb2d46dfd00a",
+      "path": "scripts/classify-record-store.mjs"
+    },
+    {
+      "identity": "sha256:a475fe529b9464273e1cf43cf390decb9b7073a0a7aafe10ed7c134a1255d244",
+      "path": "scripts/lib/__init__.py"
+    },
+    {
+      "identity": "sha256:c5e7f5224503ad3831c673814967d35154554f2ffd74e21e71c0e498c7f7d281",
+      "path": "scripts/lib/validation/__init__.py"
+    },
+    {
+      "identity": "sha256:d2e536f938312d4ac2ba06b40477be58b706c28162b8592881d792333af9d9a5",
+      "path": "scripts/lib/validation/boundary_first_reference.py"
+    },
+    {
+      "identity": "sha256:b55874a5f7d9c3af9cb9cbd66fbc7939f7aba30c3ba54931d8f251f923bf5426",
+      "path": "scripts/lib/validation/boundary_first_validation.py"
+    },
+    {
+      "identity": "sha256:8b518a76baf1d9b8e1aa1e44c64b7419053d18df4c7ea775f2eaccc62fe6062f",
+      "path": "scripts/lib/validation/model_layout.py"
+    },
+    {
+      "identity": "sha256:8c6bedfcc75f7a3c1df262c7a720d0b0d3326901c76f98b055aa7ee8e0a9e3ce",
+      "path": "scripts/lib/validation/record_snapshot_git.mjs"
+    },
+    {
+      "identity": "sha256:9ec9b7cee1d8aac02df56aff79f63fc8a97a264a09c970ffee9f0dba5d921495",
+      "path": "scripts/lib/validation/record_store_classification.py"
+    },
+    {
+      "identity": "sha256:47d068ee2ffb8f442ef6e5632a4203186a0f67c0464e2324323f455f0a0ee068",
+      "path": "scripts/lib/validation/skill_validation.py"
+    },
+    {
+      "identity": "sha256:132a133c71cef31f4aefbb49835c4269c9cd80ba492686e9988b4573e776b9f3",
+      "path": "scripts/lib/validation/validation_execution.py"
+    },
+    {
+      "identity": "sha256:4ff0c3964282dcd004ff906dfdfacb9e5c9c4ef0ede5a2bda9be1e7c71381da4",
+      "path": "scripts/lib/validation/validation_node_adapter.mjs"
+    },
+    {
+      "identity": "sha256:1f4e51ed4390a82f7f3569848808ed114b7ea7e9c73f3a8a07ef46a819b05c59",
+      "path": "scripts/lib/validation/validation_selection.py"
+    },
+    {
+      "identity": "sha256:c0d4ea281726275b5c5f929ea686179b6ff8f31ec0e5927d0df0a48b31aa9508",
+      "path": "scripts/project-boundary-first-reference.py"
+    },
+    {
+      "identity": "sha256:d7806a57f7cf4d4b6329da679d8b1e96189908833d8fa8337d5be45ae9a8cb18",
+      "path": "scripts/resources/boundary-first/boundary-first-resources.yaml"
+    },
+    {
+      "identity": "sha256:4eeb52c295358ab195c8a139ccd71d6b33b068ddeb29845e6e16af40a4aee56c",
+      "path": "scripts/select-validation.py"
+    },
+    {
+      "identity": "sha256:caa4bc96e3f7af566bf8d96d5cf63409b5903ac25de8f268740abfd4ed05b2f7",
+      "path": "scripts/validate-boundary-first.py"
+    },
+    {
+      "identity": "sha256:854ec86b200da3540a07d9c7df95aea696a114d4e4ff574f213e85c393a44db2",
+      "path": "scripts/validate-change-metadata.py"
+    },
+    {
+      "identity": "sha256:79a9e944af3afe56e9dce90bc4d418ee7302a216415c9a649fa9df5d7b578ab9",
+      "path": "scripts/validate-documentation-prose.py"
+    },
+    {
+      "identity": "sha256:e91b9cb250f6a09b9678bc0fd7b7e6bb96820e14826420c568e79beb75165d34",
+      "path": "scripts/validate-governed-lifecycle-cli.py"
+    },
+    {
+      "identity": "sha256:fe2934d930187290fb016138f203f7eef4a6b11714f6bc62eac9e73f7e3f15bf",
+      "path": "scripts/validate-guide-system.py"
+    },
+    {
+      "identity": "sha256:6f72e27abcf3df8de4489413bd7de6944deedbd4bc06dab61cf8b18ac92b9051",
+      "path": "scripts/validate-markdown-readability.py"
+    },
+    {
+      "identity": "sha256:4142308f6c435d4e82541dfa10220586c1b29e4654c3a86b324b6b5aaf0eb632",
+      "path": "scripts/validate-readme.py"
+    },
+    {
+      "identity": "sha256:95728e886a0f8b91ba828b3fe38691686065f2b1dd6c47dbb07f775d4e9b6dc2",
+      "path": "scripts/validate-record-store.mjs"
+    },
+    {
+      "identity": "sha256:3a619d70420a2568451b87c2cd008f750794f5a9ff2727cf46d8b4a12ea5ebea",
+      "path": "skills/code-review/SKILL.md"
+    },
+    {
+      "identity": "sha256:952548a58c0f8cc23c959539e698d309a98fe630c10b37a40c44973f56b251cd",
+      "path": "tests/engineering/validation/fixtures/boundary-first/feature-records/complex.md"
+    },
+    {
+      "identity": "sha256:4cb7a204e0280bf57c83e4e13f5bc38c7cd5b7bab1409a9f6403115947934cb1",
+      "path": "tests/engineering/validation/fixtures/boundary-first/feature-records/minimal.md"
+    },
+    {
+      "identity": "sha256:299b88acc292cd9f47174654b8e31f641ac87eb8ec660690cc8134ca825720e5",
+      "path": "tests/engineering/validation/fixtures/boundary-first/feature-records/semantic-omission.md"
+    },
+    {
+      "identity": "sha256:6192fc7f1e4b7e70754c91c457d89ba14d4d957c4f8b270898fb1eee752353a6",
+      "path": "tests/engineering/validation/fixtures/boundary-first/proof-maps/complete.md"
+    },
+    {
+      "identity": "sha256:5a5c80fbc972c5cbd14e44483fbef5ff2a8099e0fbcdaa79c45dd4995dae36eb",
+      "path": "tests/engineering/validation/fixtures/boundary-first/proof-maps/complex-complete.md"
+    },
+    {
+      "identity": "sha256:6907f8fb1ece7847fd2d39bca3f22b9ff32037bb8f8bd708e6c2f83031d9fc6a",
+      "path": "tests/engineering/validation/fixtures/boundary-first/proof-maps/gap.md"
+    },
+    {
+      "identity": "sha256:b715a9251509278392d58a62557b2afe67aa63492ea0cae029f9bd4e6bb3c3c6",
+      "path": "tests/engineering/validation/selection_cli_tests.py"
+    },
+    {
+      "identity": "sha256:320635af2debb9dc2f976f820d6390072e2dfddbea9a2e97bea55cb79f1728e0",
+      "path": "tests/engineering/validation/selection_contract_tests.py"
+    },
+    {
+      "identity": "sha256:318f0b659d5b45f93323ccf1e3f091dad75ff4b61c54ea189bde1851c59d017a",
+      "path": "tests/engineering/validation/selection_git_tests.py"
+    },
+    {
+      "identity": "sha256:2e60ccc930d88eb62dab397dfe81a4b5d0b99a217564d82a767c8bdfb70ec449",
+      "path": "tests/engineering/validation/selection_test_helpers.py"
+    },
+    {
+      "identity": "sha256:9d13e5af2fdff369007a13d63c180960e9fe11910be2047c0bead0470991b74d",
+      "path": "tests/engineering/validation/test-boundary-first-reference.py"
+    },
+    {
+      "identity": "sha256:c77947b6b9de79ee781ae84bb6a97664f7439f8b837c7cb7702e065de88e2989",
+      "path": "tests/engineering/validation/test-boundary-first-validation.py"
+    },
+    {
+      "identity": "sha256:da72bcb80d9cf94a16b119957e6162f8bedacd27bbea70be10429b424f9a4193",
+      "path": "tests/engineering/validation/test-change-metadata-validator.py"
+    },
+    {
+      "identity": "sha256:dc10776c0eb29063aa26af888cfeed1b58fe397a573045a7a19e45fc717a3a3a",
+      "path": "tests/engineering/validation/test-documentation-prose-validator.py"
+    },
+    {
+      "identity": "sha256:fe065d545c066d2ebdc8c6facbe773d547adaea93dc79f14292eb81814d0790b",
+      "path": "tests/engineering/validation/test-governed-lifecycle-cli-validator.py"
+    },
+    {
+      "identity": "sha256:504cbe9317427874b32c61edff61ec901be155e619ae4362e95ebe07ff341997",
+      "path": "tests/engineering/validation/test-guide-system-validator.py"
+    },
+    {
+      "identity": "sha256:6235d8e9143bae6ffd5d17d83c817618e960ecdd2472efe80a115614668a9a6d",
+      "path": "tests/engineering/validation/test-markdown-readability-validator.py"
+    },
+    {
+      "identity": "sha256:927ec31f77e468235806dafe9f128771d6374d4cb28ef219b4dc1f11452f764a",
+      "path": "tests/engineering/validation/test-select-validation.py"
+    },
+    {
+      "identity": "sha256:b3bfb43b260bdb22ed6ec01a44259f0adf963b4da85a94f36fb425f8e0c6eb24",
+      "path": "tests/engineering/validation/test-validation-execution.py"
+    },
+    {
+      "identity": "sha256:872b6b2afbda4a75afe1020b55eb9be4d94f25dcbd524c3a50291debe0d34123",
+      "path": "tests/fixtures/documentation-prose/fail/command-and-lifecycle.md"
+    },
+    {
+      "identity": "sha256:0a1d65744e3d3b2ad325905765adc1a7e505ade0db2498126539b59b52959486",
+      "path": "tests/fixtures/documentation-prose/fail/list-item-mechanical-continuation.md"
+    },
+    {
+      "identity": "sha256:26257aa6198ba6e79ee3e1b1b81f6791fe8c6bd331a62577a2b1d588c15b3507",
+      "path": "tests/fixtures/documentation-prose/fail/mechanical-wrap.md"
+    },
+    {
+      "identity": "sha256:406b3f96517da583303158108addd2bd4d5c912c55596f7c58f39ff32bdb4bde",
+      "path": "tests/fixtures/documentation-prose/fail/named-regressions.md"
+    },
+    {
+      "identity": "sha256:d509cd786af602d523441098d37a7a8395ac2e815aa7b822cdd3d248557a0149",
+      "path": "tests/fixtures/documentation-prose/fail/no-hard-break-mechanical-wrap.md"
+    },
+    {
+      "identity": "sha256:fc9a339ee565ec637fed011e25b5d80cbc0ce33b00d79c1a962d2e18a7c6325a",
+      "path": "tests/fixtures/documentation-prose/pass/explicit-hard-break-backslash.md"
+    },
+    {
+      "identity": "sha256:c09153c83d5a0c044b4d07f246babeebb1de0177a07817ff45c35594bd07433d",
+      "path": "tests/fixtures/documentation-prose/pass/explicit-hard-break.md"
+    },
+    {
+      "identity": "sha256:aa3c6b5c5be44947a11fa7edc337e4a40c5629556ff0bf51a3648211b1a5a352",
+      "path": "tests/fixtures/documentation-prose/pass/list-item-nested-structure.md"
+    },
+    {
+      "identity": "sha256:0a88faa26c9353d529f295b7214ec4be57f38ad4af6617f09f62aca6d37e3e38",
+      "path": "tests/fixtures/documentation-prose/pass/list-item-single-line.md"
+    },
+    {
+      "identity": "sha256:5c94a27e9d9c3531808e37425252111b80a7285812cad8b5b5bcb2103ff2e7fc",
+      "path": "tests/fixtures/documentation-prose/pass/list-item-with-fenced-code.md"
+    },
+    {
+      "identity": "sha256:355c58f2496a0713858da666829a8c5ec054bc4ede2b14a03eb643b063d8d87f",
+      "path": "tests/fixtures/documentation-prose/pass/semantic-lines.md"
+    },
+    {
+      "identity": "sha256:61daf1e3ac4c08265b27c6b3ad68b4e06ce1d7dfb7c56648c3bafd8d9d248dda",
+      "path": "tests/fixtures/documentation-prose/pass/structural-exclusions.md"
+    },
+    {
+      "identity": "sha256:e2173fa04305c30a55f833bcc0aeddb6ee0d652b3cce10baa8a5170cbc5989b3",
+      "path": "tests/fixtures/documentation-prose/warn/ambiguous-clause.md"
+    },
+    {
+      "identity": "sha256:1bb93c4b78c889f47feec57eb13bc246754227f92854e238f951a25f9f225c84",
+      "path": "tests/skill/test-skill-validator.py"
+    }
+  ],
+  "summary": "M2 coupled query withdrawal and justified validation-support cleanup preserve all remaining required protection; complete allocated populations and shared-validator impact are assessed with no material finding.",
+  "target": "code"
+}

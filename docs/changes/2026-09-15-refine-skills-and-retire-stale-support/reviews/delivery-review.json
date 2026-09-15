@@ -1,0 +1,135 @@
+{
+  "assessment_scope": "First-pass formal Delivery Review of the sole registered primary plan docs/plans/2026-09-15-refine-skills-and-retire-stale-support.md, against approved design-review-r2 and its Skill, Validation, CLI and Delivery Handoff members, the unchanged approved proposal, and reporter-resolved skills-dr-01. Assessment covers all 19 skill packages, complete test/script/fixture/support inventory, sequencing, intermediate states, requirement-to-proof traceability, execution feasibility, recovery and closeout; source inspections establish feasibility rather than implementation correctness.",
+  "change_id": "2026-09-15-refine-skills-and-retire-stale-support",
+  "contributors": [
+    {
+      "id": "codex-plan-author",
+      "role": "plan"
+    }
+  ],
+  "findings": [],
+  "id": "delivery-review",
+  "independence_basis": "Separate nonauthor agent /root/all_skills_delivery_review read the complete primary plan authored at 75b200af67443605bcc07df1f1294c1bfdf5da70 and independently assessed its exact approved Design basis, sequencing and proof allocation. Root authored the plan before delegation and performed only read-only parallel checks. This reviewer edited no proposal, Design, plan, implementation or routing state; only this review record is written.",
+  "judgment": "approved",
+  "limitations": [
+    "Approval covers this exact primary plan and verification allocation for authorized implementation only; no implementation, full inventory audit, candidate qualification, final Verify, branch readiness or hosted CI pass is claimed.",
+    "Complete per-population protective-value assessment and actual commands remain required during M1-M4. Additional behavioral retirement or changed architecture must return to the owning Design and affected delivery assessment.",
+    "This isolated review does not initialize work, advance lifecycle state, commit, push, open a PR, publish or install into an active environment."
+  ],
+  "rationale": [
+    "Authority and exact package: current CLI-inspected primary-plan and four model identities match registration. Complete proposal and Design R2 judgments are approved and inspected with their findings and limitations; the original Design finding is reporter-resolved and its first-pass judgment remains stale. CLI-DEC-07 retains v2-retirement meaning, while CLI-DEC-08 governs the selected helper withdrawal. Earlier feasibility hashes and changed evidence-container bytes are not retargeted or mistaken for current engineering approval.",
+    "Scope and realism: M1 explicitly assigns every complete package for all 19 names, including transitive resources, assets, shared guidance and projection consumers; the 13 retained packages require current substantive rationale. M1-M4 enumerate source populations and recursive fixtures, with explicit reconciliation of outside/additional/direct-only/generated members, package scripts and CI. Counts or unchanged names cannot close an unassessed remainder. The substantial audit remains implementation work with review between slices, not an unsupported claim that Design inspection finished it.",
+    "Sequencing and intermediate safety: M1 changes entrypoints and all affected resource readers/fixtures together, with interim candidate parity. M2 withdraws the query shim as a coupled source/catalog/fingerprint/selector/test/helper-exception unit after M1 review; it reruns affected M1 checks. M3 separately assesses packaging/release support and qualifies fresh candidates. M4 completes runtime cases and all remaining inventory, with explicit invalidation and reassessment of earlier affected proof. Each milestone defines dependencies, coherent rollback and independently reviewed evidence before its successor.",
+    "Requirement trace: SKL-SR-33 maps complete skills to M1/TG-01/02 and final inventory; SKL-SR-34/35 maps the five selected paths and descriptions to resource-reader negatives and installed parity. HAND-SR-04 maps PR asset ownership to M1 and semantic/final coherence. CLI-SR-31 and VAL-SR-30 map retirement to M2/TG-03/04 and retained public-runtime safety to M4/TG-06. VAL-SR-29/31 and TEST-SR maintenance obligations span every group and TG-FINAL-02. Requirement, owning boundary, milestone, proof group and actual command or scoped manual observation are connected.",
+    "Skill proof adequacy: TG-01 compares complete ordinary/governed/late-trigger/failure reading paths with performer, authority, exact subjects, expected outcome, inspection and limitations. Route automation, scoped versus final Verify, read-only PR and advisory/formal review remain distinct. TG-02 explicitly rejects missing, wrong, escaped, incomplete and mixed references and heading-removal bypass. Actual validate_targeted_recording_profile currently returns early without an inline heading outside the named pilot, substantiating the planned consumer correction. Semantic observations supplement executable structure rather than pretending phrase matches establish usability.",
+    "Retirement and compatibility: inspected query-change-record.py is solely a structured rejection with exit 2, whereas the metadata wrapper performs current v3 validation and distinct error normalization. The approved Design expressly withdraws the old path response and preserves current interface safeguards. M2 requires old-command absence, no surviving callers, meaningful deleted/renamed-path routing and mixed known/unknown rejection without passing aliases. TG-03/06 and V4 observe current unsupported inputs, containment, privacy and no mutation through runtime boundaries; rollback restores the coupled current shim unit without reviving a YAML decoder.",
+    "Test-maintenance adequacy: each population must identify governing protection, actual cases and fixtures, independent expected outcomes and justified diagnostic contribution. Replacement detection precedes reduction; unknown protection is retained while investigating and remains a completion blocker. Direct runners, mixins, dynamic domains and generated cases are explicit. The semantic-checklist guard remains pending sufficient independent replacement. A passing smaller suite, cost or historical naming cannot justify deletion. This is a reviewable protection-preserving method without an unnecessary permanent per-function ledger.",
+    "Commands and installed boundaries: inspected current ci.sh modes, package test script, repeated --skill adapter option and direct test entrypoints agree with V1-V10. V7 qualifies actual Codex/Claude candidates and temporary installs of all five relocated skills plus code-review; TG-FINAL-01 requires complete canonical-to-archive comparison under declared transforms and exact hashes. M3 retains distinct release transaction/provenance/recovery boundaries. V9/V10 use the original immutable base with resolved current head, and final committed record snapshots follow attributable evidence-only suffixes. Existing isolated publication test environments do not grant real publication authority.",
+    "Closeout, recovery and concerns: all four milestone reviews and required corrections precede a fresh independent final whole-change Code Review, which precedes distinct successful Verify. Integrated tests cannot substitute for that checkpoint. Changed shared inputs require reruns/reassessment rather than blanket reuse. Restoration uses pre-milestone coupled units, owned temporary candidates and preserved failed evidence; no active installation or remote mutation is authorized. All eight boundary dimensions are addressed through the model scenario mapping, retaining unchanged temporal/retry and partial-failure proof rather than inventing new behavior. No required plan correction or missing decision remains."
+  ],
+  "reviewer": {
+    "id": "all-skills-delivery-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:7b8f0ec8889d36ba01d05812d9aa8223a3dd79e6a10f42c7cef9573542060130",
+      "path": "docs/plans/2026-09-15-refine-skills-and-retire-stale-support.md"
+    },
+    {
+      "identity": "sha256:3bf51df8d9be1c016255c493aebe495b5d102fe015237adf099823752967686d",
+      "path": "docs/proposals/2026-09-15-refine-skills-and-retire-stale-support.md"
+    },
+    {
+      "identity": "sha256:18f39802c01fda9ff16fa68fd0fce03dafe33f032dc0006f0033095096856bcc",
+      "path": "docs/design/skill/skill.md"
+    },
+    {
+      "identity": "sha256:46068496c23e3a9e82befbea7d5c0c68242eb0928ddb15ccf431cbd9b52a94a6",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:46396ee3e8e0327d1ca4ca1485cf9f1802689acfe7fe0ec88e1cd4eddc2c644e",
+      "path": "docs/design/cli/cli.md"
+    },
+    {
+      "identity": "sha256:5a38d6bb26ebdd63527843c5dbf94caeb0c306dcfe89cfb03fc5aced4dd14388",
+      "path": "docs/design/skill/delivery-handoff.md"
+    },
+    {
+      "identity": "sha256:5431c6263902bb5f0f4e558198781f9437602e417dc79741fc40823001ab7383",
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/proposal-review.json"
+    },
+    {
+      "identity": "sha256:8f385aab6b83ab80bc9f5509c7b59142cbe41eebe6a38dbe9cdafb17f8293ec2",
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/design-review-r2.json"
+    },
+    {
+      "identity": "sha256:05e88966576096b19540546d18331e58b6ecdd2f3f06eec8c5b4661fff54ccee",
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/design-review.json"
+    },
+    {
+      "identity": "sha256:cc1912d5c0cd17b42bfd4a3f705a561b0c2f678045f0659f2406a1ea13e6c5a5",
+      "path": "CONSTITUTION.md"
+    },
+    {
+      "identity": "sha256:a15d4f3889629c69f946269da05e32f00161148a07f7de62f01038ced3e28cb9",
+      "path": "AGENTS.md"
+    },
+    {
+      "identity": "sha256:fa259933a9f5a0237bcd9cf6afc26d424f6bb5515873e5303c0437dfdaa1e4f0",
+      "path": "CONTRIBUTING.md"
+    },
+    {
+      "identity": "sha256:7a88f81f0044f2f9739ca27e9ebfb6cef77628f87b8422a240d9b776a4b921d8",
+      "path": "docs/design/system.md"
+    },
+    {
+      "identity": "sha256:af968c5583c27abb95e9a2b2ac0293deba30c522e72480c6f9aa05066659ae19",
+      "path": "docs/design/skill/assessment.md"
+    },
+    {
+      "identity": "sha256:9f03477a3dc5da070181ed4bc973c5ba4de620c5519510afb541bf25503f63c0",
+      "path": "scripts/ci.sh"
+    },
+    {
+      "identity": "sha256:c312233283f2fb2b175d29f59edfb46da3dd0f990152f366428f061ec6761689",
+      "path": "scripts/validate-adapters.py"
+    },
+    {
+      "identity": "sha256:e6fad8644bfbdc8dd82addaf56e38d4c7776169b3cde1d5792cb613aabd8daf7",
+      "path": "scripts/lib/validation/skill_validation.py"
+    },
+    {
+      "identity": "sha256:e0239dc403a6a9f0ea0a2905c8268ebf0d015bd5767cbb7961ed35e5bd883c21",
+      "path": "scripts/lib/validation/validation_selection.py"
+    },
+    {
+      "identity": "sha256:4e9596037bb50c69e9af9d502fdd434f8ddb10ad75f8e693ffbf35446821d6dd",
+      "path": "scripts/query-change-record.py"
+    },
+    {
+      "identity": "sha256:854ec86b200da3540a07d9c7df95aea696a114d4e4ff574f213e85c393a44db2",
+      "path": "scripts/validate-change-metadata.py"
+    },
+    {
+      "identity": "sha256:6c879a76afc9d6317951ba1dc883b9a5c220ba80df0cdb3b2f94e60363794207",
+      "path": "packages/rigorloop/package.json"
+    },
+    {
+      "identity": "sha256:a0c007940ce17143256e784b098c01e8f9f265a0299ad537fc29d884e33b0640",
+      "path": "tests/skill/test-skill-validator.py"
+    },
+    {
+      "identity": "sha256:0d7c97ffe7d8e0728b935e3e18fdfb49dff391660886290442a76681d99b79fb",
+      "path": "tests/engineering/packaging/test-adapter-distribution.py"
+    },
+    {
+      "identity": "sha256:5353fa1165740406a99d813836977a11c553ee1b92b639fc31d30f685df7397b",
+      "path": "tests/engineering/release/test-release-transaction.py"
+    }
+  ],
+  "summary": "The four-milestone plan safely allocates the complete skill/support scope and sufficient milestone and integrated proof, with coherent retirement, recovery and separate final whole-change review and Verify.",
+  "target": "delivery"
+}

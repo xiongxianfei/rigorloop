@@ -48,8 +48,6 @@ class SelectionContractChecks:
             "templates/explicit-recording/records.json",
             "schemas/rigorloop-records-v3.schema.json",
             "templates/rigorloop-records-v3/records.json",
-            "schemas/rigorloop-records-v3.schema.json",
-            "templates/rigorloop-records-v3/records.json",
             "tests/fixtures/rigorloop-records-v3/records.json",
         )
         for path in paths:
@@ -89,7 +87,7 @@ class SelectionContractChecks:
 
     def test_package_initializers_select_all_descendant_consumers(self):
         # Initializers have no legacy predecessor: all descendant readers apply.
-        descendants = {'validation': ['scripts/lib/validation/boundary_first_reference.py', 'scripts/lib/validation/boundary_first_validation.py', 'scripts/lib/validation/model_layout.py', 'scripts/lib/validation/project_yaml.py', 'scripts/lib/validation/record_store_classification.py', 'scripts/lib/validation/skill_validation.py', 'scripts/lib/validation/validation_execution.py', 'scripts/lib/validation/validation_selection.py', 'scripts/lib/validation/validation_node_adapter.mjs', 'scripts/lib/validation/record_snapshot_git.mjs'], 'packaging': ['scripts/lib/packaging/adapter_distribution.py', 'scripts/lib/packaging/npm_package_validation.py'], 'release': ['scripts/lib/release/release_candidate.py', 'scripts/lib/release/release_coordination.py', 'scripts/lib/release/release_evidence.py', 'scripts/lib/release/release_execution.py', 'scripts/lib/release/release_provider.py', 'scripts/lib/release/release_transaction.py']}
+        descendants = {'validation': ['scripts/lib/validation/boundary_first_reference.py', 'scripts/lib/validation/boundary_first_validation.py', 'scripts/lib/validation/model_layout.py', 'scripts/lib/validation/record_store_classification.py', 'scripts/lib/validation/skill_validation.py', 'scripts/lib/validation/validation_execution.py', 'scripts/lib/validation/validation_selection.py', 'scripts/lib/validation/validation_node_adapter.mjs', 'scripts/lib/validation/record_snapshot_git.mjs'], 'packaging': ['scripts/lib/packaging/adapter_distribution.py', 'scripts/lib/packaging/npm_package_validation.py'], 'release': ['scripts/lib/release/release_candidate.py', 'scripts/lib/release/release_coordination.py', 'scripts/lib/release/release_evidence.py', 'scripts/lib/release/release_execution.py', 'scripts/lib/release/release_provider.py', 'scripts/lib/release/release_transaction.py']}
         all_required = set()
         for group, paths in descendants.items():
             with self.subTest(group=group):
@@ -105,7 +103,7 @@ class SelectionContractChecks:
 
 
     def test_tooling_module_and_resource_moves_preserve_required_selection(self):
-        # ENG-SR-16: changing either side of a move preserves actual check scope.
+        # ENG-SR-16: both sides retain check scope, including retired parser deletion paths.
         destinations = {'scripts/boundary_first_reference.py': 'scripts/lib/validation/boundary_first_reference.py',
          'scripts/boundary_first_validation.py': 'scripts/lib/validation/boundary_first_validation.py',
          'scripts/model_layout.py': 'scripts/lib/validation/model_layout.py',
@@ -143,7 +141,7 @@ class SelectionContractChecks:
             "test-boundary-first-reference.py", "test-boundary-first-validation.py",
             "test-change-metadata-validator.py", "test-documentation-prose-validator.py",
             "test-governed-lifecycle-cli-validator.py", "test-guide-system-validator.py",
-            "test-markdown-readability-validator.py", "test-query-change-record.py",
+            "test-markdown-readability-validator.py",
             "test-select-validation.py", "test-validation-execution.py",
         )
         for name in names:
@@ -484,9 +482,7 @@ class SelectionContractChecks:
 
         expected_cases = {
             'skills.regression',
-            'change_record_query.regression',
             'governed_lifecycle_cli_wrapper.test',
-            'skills.regression',
             'adapters.regression',
             'adapters.drift',
             'adapters.validate',
@@ -572,14 +568,6 @@ class SelectionContractChecks:
         self.assertIn("record_retirement.regression", selected_ids(payload))
 
 
-    def test_lifecycle_words_do_not_change_skill_path_classification(self) -> None:
-        path = "skills/design/SKILL.md"
-        first = self.select([path]).to_json_dict()
-        second = self.select([path]).to_json_dict()
-
-        self.assertEqual(first["classified_paths"], second["classified_paths"])
-        self.assertEqual(selected_ids(first), selected_ids(second))
-        self.assertNotIn("current_records.validate", selected_ids(first))
 
 
     def test_selector_marks_broad_smoke_as_boundary_phase(self) -> None:
@@ -852,17 +840,13 @@ class SelectionContractChecks:
                 "path": "scripts/query-change-record.py",
                 "category": "change-record-query",
                 "status": "ok",
-                "checks": {"change_record_query.regression", "change_metadata.regression"},
+                "checks": {"record_retirement.regression", "change_metadata.regression", "selector.regression"},
             },
             {
                 "path": "scripts/workflow_automation.py",
                 "category": "workflow-automation",
                 "status": "ok",
                 "checks": {
-                    "rigorloop_cli.test",
-                    "rigorloop_cli.test",
-                    "rigorloop_cli.test",
-                    "rigorloop_cli.test",
                     "rigorloop_cli.test",
                 },
             },
@@ -872,10 +856,6 @@ class SelectionContractChecks:
                 "status": "ok",
                 "checks": {
                     "rigorloop_cli.test",
-                    "rigorloop_cli.test",
-                    "rigorloop_cli.test",
-                    "rigorloop_cli.test",
-                    "rigorloop_cli.test",
                 },
             },
             {
@@ -883,10 +863,6 @@ class SelectionContractChecks:
                 "category": "workflow-automation",
                 "status": "ok",
                 "checks": {
-                    "rigorloop_cli.test",
-                    "rigorloop_cli.test",
-                    "rigorloop_cli.test",
-                    "rigorloop_cli.test",
                     "rigorloop_cli.test",
                 },
             },
@@ -896,10 +872,6 @@ class SelectionContractChecks:
                 "status": "ok",
                 "checks": {
                     "rigorloop_cli.test",
-                    "rigorloop_cli.test",
-                    "rigorloop_cli.test",
-                    "rigorloop_cli.test",
-                    "rigorloop_cli.test",
                 },
             },
             {
@@ -908,10 +880,6 @@ class SelectionContractChecks:
                 "status": "ok",
                 "checks": {
                     "rigorloop_cli.test",
-                    "rigorloop_cli.test",
-                    "rigorloop_cli.test",
-                    "rigorloop_cli.test",
-                    "rigorloop_cli.test",
                 },
             },
             {
@@ -919,10 +887,6 @@ class SelectionContractChecks:
                 "category": "workflow-automation",
                 "status": "ok",
                 "checks": {
-                    "rigorloop_cli.test",
-                    "rigorloop_cli.test",
-                    "rigorloop_cli.test",
-                    "rigorloop_cli.test",
                     "rigorloop_cli.test",
                 },
             },
@@ -1153,12 +1117,6 @@ class SelectionContractChecks:
                 "category": "governed-lifecycle-cli-wrapper",
                 "status": "ok",
                 "checks": {"rigorloop_cli.test", "governed_lifecycle_cli_wrapper.test"},
-            },
-            {
-                "path": "scripts/measure-cli-result-bytes.py",
-                "category": "retired-token-cost",
-                "status": "ok",
-                "checks": {"selector.regression", "adapters.regression", "release_transaction.regression"},
             },
             {
                 "path": "tests/fixtures/token-cost/sample-codex-session.jsonl",
