@@ -1,0 +1,39 @@
+{
+  "activity": {
+    "owner": {
+      "id": "all-skills-proposal-reviewer",
+      "role": "review"
+    },
+    "reason": "User requested isolated independent Proposal Review; formal review requires a current change root. No Design progression authorized by this recording.",
+    "stage": "proposal-review",
+    "status": "in-progress"
+  },
+  "applicability": [
+    {
+      "actor": {
+        "id": "all-skills-proposal-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/proposal-review.json",
+      "reason": "Independent assessment of the exact unchanged proposal and inspected current direction basis. Valid for this scope only; later changes require impact assessment.",
+      "value": "current"
+    }
+  ],
+  "blockers": [],
+  "change_id": "2026-09-15-refine-skills-and-retire-stale-support",
+  "contract": "rigorloop-records-v3",
+  "models": [],
+  "plan": null,
+  "proposal": {
+    "identity": "sha256:3bf51df8d9be1c016255c493aebe495b5d102fe015237adf099823752967686d",
+    "path": "docs/proposals/2026-09-15-refine-skills-and-retire-stale-support.md"
+  },
+  "records": [
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/proposal-review.json"
+    }
+  ],
+  "schema_version": 3,
+  "work": []
+}
