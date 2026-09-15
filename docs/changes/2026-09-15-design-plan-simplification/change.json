@@ -1,0 +1,39 @@
+{
+  "activity": {
+    "owner": {
+      "id": "codex-route",
+      "role": "route"
+    },
+    "reason": "Independent first-pass Proposal Review approved the exact unchanged proposal with no findings. Requested review and recording complete; isolated stop here. No Design work, automation or downstream continuation started.",
+    "stage": "proposal-review",
+    "status": "completed"
+  },
+  "applicability": [
+    {
+      "actor": {
+        "id": "design-plan-proposal-review",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-15-design-plan-simplification/reviews/proposal-review.json",
+      "reason": "Fresh independent assessment of the exact unchanged committed proposal and current relied-on basis; no material findings or unresolved necessary owner decisions.",
+      "value": "current"
+    }
+  ],
+  "blockers": [],
+  "change_id": "2026-09-15-design-plan-simplification",
+  "contract": "rigorloop-records-v3",
+  "models": [],
+  "plan": null,
+  "proposal": {
+    "identity": "sha256:4a58cf175439ff0dd5ce7057d430ff9cf32836a2564de84a527a238abc7bb77e",
+    "path": "docs/proposals/2026-09-15-design-plan-simplification.md"
+  },
+  "records": [
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-15-design-plan-simplification/reviews/proposal-review.json"
+    }
+  ],
+  "schema_version": 3,
+  "work": []
+}

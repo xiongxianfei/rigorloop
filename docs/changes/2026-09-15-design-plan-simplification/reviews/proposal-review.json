@@ -1,0 +1,94 @@
+{
+  "assessment_scope": "First-pass independent Proposal Review of the complete exact proposal at commit 8a9684b746c6f427c63f57234f126939feb4c938 against the user-selected two-skill scope, no-separate-pilot preference, current vision/Constitution and relied-on presentation/authoring contracts. Other listed subjects are supporting basis, not separately approved Design or implementation targets. All ten proposal dimensions and scope preservation were assessed.",
+  "change_id": "2026-09-15-design-plan-simplification",
+  "contributors": [
+    {
+      "id": "codex-proposal-author",
+      "role": "proposal"
+    }
+  ],
+  "findings": [],
+  "id": "proposal-review",
+  "independence_basis": "The proposal was authored and committed by the root Codex agent at 8a9684b746c6f427c63f57234f126939feb4c938 before this independent reviewer was delegated the task. This distinct subagent /root/design_plan_proposal_review read and assessed the complete unchanged proposal and relied-on current source; it did not author, edit or suggest corrections to that proposal. The root only created the minimal recording registry during review.",
+  "judgment": "approved",
+  "limitations": [
+    "Source inspection supports the opportunity and architectural feasibility; actual usability or runtime efficiency improvement has not been measured or claimed.",
+    "This is direction approval only. It does not establish detailed Design adequacy, delivery/proof adequacy, implementation correctness, package currency, final verification, branch/PR readiness, release or installation authority.",
+    "The invocation is isolated Proposal Review. No automatic downstream handoff occurs; Design or broader progression requires applicable authorization. Normal project use supplies subsequent feedback without an added experiment or reporting duty."
+  ],
+  "rationale": [
+    "Challenge — pass. Current Plan places complete record construction ahead of Purpose and Invocation classification and repeats output, scope and handoff guidance. Design already has scope/reconciliation first and a governed reference. The proposal distinguishes source observations from measured usability defects and does not force a Design rewrite.",
+    "Goals — pass. Immediate author-task clarity, less irrelevant reading, complete installed guidance and intact independent handoffs address the observed opportunity without specifying a universal layout or a numerical reduction target.",
+    "Scope — pass. The two authoring packages are core; owning Design, assets and necessary direct validation/package consumers are bounded dependencies. Reviewer changes are restricted to actual output/input compatibility. Other families, changed formats/operations/gates/authority/invocations, release and active installation are excluded.",
+    "Governing principle — pass. Making the task easier while preserving every applicable obligation is concise, outcome-oriented and independent of a particular factoring technique.",
+    "Direction — pass. Establish authority and required inputs, perform the core authoring work, produce the artifact and hand it to the independent reviewer. Conditional substantial procedure remains discoverable through explicit triggers, while compact unconditional rules remain visible. Justified retention prevents change-for-change sake.",
+    "Feasibility — pass. Exactly one embedded Feasibility section gives an affirmative bounded assessment, current source and owning-contract basis, the uncertainty about useful Design changes and protective Plan repetition, preservation constraints, and no known Design-entry blocker. Existing governed references show that conditional factoring fits the current architecture. Semantic assessment remains necessary; no runtime efficiency claim is inferred.",
+    "Material impact — pass. Potential loss of obligations, broken installed dependencies, review-handoff mismatch and accidental expansion of the pair-only layout are addressed through explicit preservation and reconciliation boundaries. Discovery requiring changed authority, format or reviewer responsibility returns for a separate direction decision. No unresolved proposal-level impact requires another owner decision.",
+    "Vision alignment — pass; aligned. Clear task execution with durable authoring outcomes supports human-understandable, traceable and independently reviewable engineering while retaining required evidence and decisions. No vision exception or missing standing artifact is needed.",
+    "Downstream authority — pass. The current Skill presentation decision explicitly limits the existing equivalent to Implement/Code Review. The proposal requires a new owning Design decision and independent assessment for any extension, and leaves concrete factoring, layout and proof allocation to Design and Delivery. Plan approved-work initialization and the Design/Delivery responsibility distinction remain protected.",
+    "Requested decision — pass. Approval is bounded direction sufficiency for subsequent authorized Design, with necessary compatibility and justified retention. It grants no implementation or publication permission and this review-only invocation does not authorize downstream execution.",
+    "Scope preservation — pass. The user-selected next round is Design/Plan authoring with reviewer compatibility. Both remain visible; ordinary project use supplies later feedback and no separate pilot is introduced. FU-015 is selected only for these authoring capabilities; wider FU-015–018 ownership remains open. No material incoming goal is silently dropped.",
+    "Invocation classification: formal-lifecycle/manual; durable_recording_context=true; assembly PRR1-recorded. vision_exception_context=false, standing_artifact_context=false, scope_budget_context=false: one bounded authoring direction with necessary compatibility dependencies is not a broad multi-workstream initiative. No trigger ambiguity. Current selected context is complete, with no existing review, finding or blocker for this new change. Recording does not itself grant approval or continuation."
+  ],
+  "reviewer": {
+    "id": "design-plan-proposal-review",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:4a58cf175439ff0dd5ce7057d430ff9cf32836a2564de84a527a238abc7bb77e",
+      "path": "docs/proposals/2026-09-15-design-plan-simplification.md"
+    },
+    {
+      "identity": "sha256:cc1912d5c0cd17b42bfd4a3f705a561b0c2f678045f0659f2406a1ea13e6c5a5",
+      "path": "CONSTITUTION.md"
+    },
+    {
+      "identity": "sha256:3dae6703651fed191fe384a14224254b7791267014a89662d8872c812493e146",
+      "path": "VISION.md"
+    },
+    {
+      "identity": "sha256:4eedbac3ea4702f50c84ebafec521663759debe48b183496272e9d420e1b1f86",
+      "path": "docs/design/system.md"
+    },
+    {
+      "identity": "sha256:6faa52a99a86576f696ae723fc3fafce3553d8a8eae97a0a445327c818dd08b7",
+      "path": "docs/design/skill/skill.md"
+    },
+    {
+      "identity": "sha256:0f7e41a1de83d542d9291a842876ae7c75ebb214242cca18ee825f539f52b778",
+      "path": "docs/design/skill/authoring/design.md"
+    },
+    {
+      "identity": "sha256:5ea24213d164d301ed4690f3647bbb98d8f5709bf10af03c3efbdcad08ef9826",
+      "path": "docs/design/skill/authoring/plan.md"
+    },
+    {
+      "identity": "sha256:2298926b2f3844831548f4f10c9d58d408eaf32e4505a270e2c0bd643eef3fa4",
+      "path": "skills/design/SKILL.md"
+    },
+    {
+      "identity": "sha256:5bef8bd9d85a7a1139bc20a4fb0e62ce2a2046f7bbd61fd64496bd4398cc7068",
+      "path": "skills/plan/SKILL.md"
+    },
+    {
+      "identity": "sha256:d7598a7af645b395db8332e64743d3c19c1529c705a0b2e7a349bae1d1d889f9",
+      "path": "skills/design/references/governed-design-authoring.md"
+    },
+    {
+      "identity": "sha256:87d9c81f215ea8c7d4f86675e1450175058c2f44e902235bb1700e7e340389a2",
+      "path": "skills/plan/references/governed-plan-authoring.md"
+    },
+    {
+      "identity": "sha256:fd389fd478a412bb091bbe5ca976bc42466769c0a3184c68eb30e8124959fc4a",
+      "path": "docs/proposals/2026-09-15-skill-simplification.md"
+    },
+    {
+      "identity": "sha256:184fad139d1bca2db42db633841ab90cf9b284d69846dc48906a0b5c88089965",
+      "path": "docs/follow-ups.md"
+    }
+  ],
+  "summary": "The Design/Plan simplification direction is sufficiently valuable, bounded and feasible for authorized Design work while preserving every applicable obligation.",
+  "target": "proposal"
+}
