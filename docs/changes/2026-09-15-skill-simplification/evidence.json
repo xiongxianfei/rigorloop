@@ -771,6 +771,22 @@
         }
       ],
       "summary": "Passed V1 on route/verify/pr and V5 current record set. V6 bash scripts/ci.sh --mode local passed all selected current-record checks (9.55s). Reused unchanged full M2 candidate {\"directory\": \"/tmp/rigorloop-skill-m2-pk3k1fet\", \"commands\": [[\"python\", \"scripts/build-adapters.py\", \"--version\", \"v1.0.0\", \"--output-dir\", \"/tmp/rigorloop-skill-m2-pk3k1fet\"], [\"python\", \"scripts/validate-adapters.py\", \"--version\", \"v1.0.0\", \"--adapter-root\", \"/tmp/rigorloop-skill-m2-pk3k1fet\", \"--clean-install-smoke\", \"--skill\", \"plan\", \"--skill\", \"proposal-review\"]], \"archives\": {\"rigorloop-adapter-codex-v1.0.0.zip\": \"7818adb2b5a4b2acd462163e68a42fd46f3d8fd7cd8bfe32c5953e3b16edf5c9\", \"rigorloop-adapter-claude-v1.0.0.zip\": \"afc26ecdf244d9694bb7b5c89a5d6ba2d9453784c6a106b0ee88c0f850b68756\"}}; fresh python scripts/validate-adapters.py --version v1.0.0 --adapter-root DIR --clean-install-smoke --skill route --skill verify --skill pr passed (DIR is recorded candidate directory). This verifies current parity and actual temporary installation of the three retained packages. V2/V3 logic and population unaffected; prior current full suite/packaging results reused with no new code/resource behavior. Full final all-skill proof and independent integrated assessment still required."
+    },
+    {
+      "actor": {
+        "id": "codex-author",
+        "role": "design"
+      },
+      "id": "ci-design-authoring",
+      "procedure": "Root/codex-author2026-09-15 authored bounded Design reconciliation after exact mismatch/provenance inspection and read-only challenge. Named structural and scoped checks executed on final subject.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:6faa52a99a86576f696ae723fc3fafce3553d8a8eae97a0a445327c818dd08b7",
+          "path": "docs/design/skill/skill.md"
+        }
+      ],
+      "summary": "M4 upstream correction under existing SKL-SR-29/30/32: new CI selection/resource table and SKL-DEC08 preserve nine intended full names and existing authority while resolving review/provider/privilege/structure/coverage precedence, creation risk mapping, late privilege and denied/no-assembly outcomes. No new mode, executable classifier or permission; historical outputs stay unchanged. Existing identity/write safety, resource ownership, diagrams and component boundaries remain adequate; this refines selection inside the same CI responsibility. Pilot-reference wording now describes stable destinations with evidence-owned qualification, without changing obligations. Original Design/Delivery records marked stale for new M4 reliance; original subjects retained. M1–M3 packages/assessments are unaffected within their scoped responsibilities. After independent Design Review, Plan will explicitly allocate M4 correction/proof and request Delivery Review before implementation. Passed python scripts/validate-boundary-first.py --check --path docs/design/skill/skill.md, bash scripts/ci.sh --mode explicit --path docs/design/skill/skill.md (all selected checks, focused319.46s), and git diff --cached --check. Log /tmp/skill-ci-design-validation.log. No implementation/gate approval claimed."
     }
   ],
   "schema_version": 3

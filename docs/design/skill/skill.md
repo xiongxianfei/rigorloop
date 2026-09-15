@@ -357,6 +357,30 @@ CI results report requested/actual operation, target kind, provider, privilege, 
 
 
 
+#### CI assembly selection and resources
+
+The published short CIM0–CIM8 labels with reassigned meanings are an implementation mismatch, not aliases for the declared assemblies. Correct current guidance to the existing full names; preserve historical outputs and records without migration or reinterpretation.
+
+Validate the closed classification values, exact target and applicable authority before selecting an assembly. Invalid or ambiguous inputs stop with the supported blocked outcome; they are not a tenth assembly or an alias for a valid one. External platform state remains review-or-route only. Privileged authoring without the required exact approved Design/review stops before resource-dependent mutation.
+
+Use the following disjoint selections for supported invocations. Review is classified first, independently of provider or privilege; it never acquires authoring authority. For authoring, select the project-native branch before the GitHub-specific branches. Within GitHub authoring, approved privilege takes precedence over ordinary structural/coverage selections. For ordinary revision, authorized structural replacement takes precedence over coverage; coverage still independently adds its resource. These rules preserve the nine existing assembly identities while making the previously implicit combined cases explicit.
+
+| Assembly | Selection | Required resources and external evidence |
+| --- | --- | --- |
+| CIM0-narrow-review | Read-only review without coverage-sensitive judgment, including supported privileged, project-native or external-state review | Entrypoint; relevant exact project or privileged evidence only as required to judge the reviewed target. No authoring reference or skeleton. |
+| CIM1-coverage-review | Read-only review with coverage-sensitive judgment | Entrypoint and risk map; relevant exact external evidence as required by the review. |
+| CIM6-project-native-authoring | Supported non-GitHub repository-file authoring under an exact project-native contract | Entrypoint, risk map when coverage-sensitive, and external content/command/validation/write contract. Existing privileged-authoring authority remains independently required when applicable; no GitHub serialization or skeleton. |
+| CIM7-privileged-approved-create | GitHub creation under exact approved privileged Design/review | Entrypoint, GitHub authoring reference, risk map, skeleton and exact external approved Design/review. |
+| CIM8-privileged-approved-revise | GitHub revision under exact approved privileged Design/review | Entrypoint, GitHub authoring reference and exact external approved Design/review; independently add risk map for coverage and skeleton for authorized structural replacement. |
+| CIM2-ordinary-github-create | Ordinary GitHub creation | Entrypoint, GitHub authoring reference, risk map and skeleton. New workflow coverage must be selected from project risk/command evidence even when coverage was not the user's initial concern. |
+| CIM5-structural-github-revise | Ordinary GitHub revision with authorized structural replacement | Entrypoint, GitHub authoring reference and skeleton; independently add risk map when coverage-sensitive. |
+| CIM4-coverage-github-revise | Ordinary GitHub revision preserving structure with coverage-sensitive judgment | Entrypoint, GitHub authoring reference and risk map. |
+| CIM3-narrow-github-revise | Ordinary GitHub revision preserving structure without coverage-sensitive judgment | Entrypoint and GitHub authoring reference. |
+
+Every successful selection reports exactly one assembly, actual conditional resources and external evidence separately. A late coverage, structural or privilege trigger requires reclassification and loading the complete newly required resource before dependent judgment or mutation; it never supplies missing authority. Late-discovered privilege stops authoring without exact approved Design/review; with that authority, GitHub work selects CIM7/CIM8 and project-native work retains CIM6 with the newly required external evidence before mutation. Existing create/revise identity, privilege, no-clobber/conditional-write, batch and failure rules still apply. A blocked classification reports its reason without inventing an assembly value.
+
+Acceptance must distinguish ordinary create, narrow/coverage/structural revision, coverage plus structural revision, approved privileged create/revise with independent additions, project-native authoring, narrow/coverage reviews across supported target/privilege contexts, invalid values and denied external/privileged writes, and late coverage/structure/privilege additions. Assess unique selection and resource reachability independently from output-token presence. Structural checks can protect the closed nine-row vocabulary and selected resource paths; independent semantic inspection judges classification meaning and permission preservation. No executable CI classifier, new invocation enum or general agent-compliance harness is introduced.
+
 ### Bounded PR CI repair
 
 This is the existing narrow exception within CI maintenance, not a general automatic approval. Admission requires an already-open PR, exact failing hosted run and head, current applicable Code Review and Verify evidence, no open material finding, already-authoritative commands and existing authority for every external mutation. The correction only restores already-approved behavior. Changes to requirements, architecture, runtime implementation, dependencies, lifecycle schema/routing, review outcomes or another decision-bearing contract reject this mode and return to the earliest affected owner; ambiguity cannot preserve readiness.
@@ -409,7 +433,7 @@ For implement/code-review, this Design selects an equivalent to the generic head
 
 #### Simplification resource selection
 
-The two new paths below are selected implementation destinations, not existing or already-qualified resources. The entrypoint retains each load condition and the obligation to stop before dependent action when required content or authority is unavailable.
+The two paths below are selected implementation destinations; actual package qualification belongs to current implementation and validation evidence. The entrypoint retains each load condition and the obligation to stop before dependent action when required content or authority is unavailable.
 
 | Invocation condition | Required presentation and resources |
 | --- | --- |
@@ -542,6 +566,7 @@ Material combined hazards are a shorter entry file plus a missing transitive pro
 | SKL-DEC-05 | Keep important current knowledge in its owner and retain mixed operational inputs. Retired originals use recoverable Git provenance rather than duplicate archive files. | Indiscriminate deletion loses live constraints; rewriting old judgments erases provenance; copying every old clause into the living model preserves fragmentation. Historical-only wording and rollout details need no current copy. |
 | SKL-DEC-06 | Simplify the entire inventory through obligation-preserving changes or justified retention, beginning with implement/code-review. Select a compact equivalent layout only for that pair; other skills retain their approved structure until specifically reconciled. | A global rewrite hides specialist differences; stopping at the pilot silently drops the inventory goal. Existing delivery and evidence surfaces can allocate the remainder without another registry. |
 | SKL-DEC-07 | Put each pilot's detailed recording in its own triggered reference, independent of planned or automated procedure. Preserve existing shared sources and output assets. | Reusing an automation-only reference leaves manual recording incomplete; a new universal recording manual adds cross-skill dependencies. Two local references preserve skill-specific operations and package containment at the cost of two deliberately bounded load points. |
+| SKL-DEC-08 | Restore the nine Design-declared CI assemblies with explicit review/provider/privilege/structure/coverage selection and complete conditional resources. | Retaining reassigned short labels would adopt an implementation defect; names alone leave combined cases ambiguous. Preserve intended supported actions and denial boundaries, existing resource ownership and historical output bytes; add no mode or permission. |
 
 ## Quality Requirements
 

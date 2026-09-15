@@ -1,0 +1,245 @@
+{
+  "assessment_scope": "Formal milestone M3 Code Review, baseline 2208c891 to handoff commit 0db7e96e. Assesses route/verify/pr retention, m3-obligations and m3-validation, and interim TG-FINAL-01 using actual M1/M2 producer bodies and assets. Other subjects bind governing and predecessor review evidence, not additional new implementation scope. All ten dimensions and TG-01/04/05 are assessed. Recording is formal and manual; no automation is armed.",
+  "change_id": "2026-09-15-skill-simplification",
+  "contributors": [
+    {
+      "id": "codex-implementer",
+      "role": "implement"
+    },
+    {
+      "id": "codex-review-coordinator",
+      "role": "route"
+    }
+  ],
+  "findings": [],
+  "id": "m3-code-review",
+  "independence_basis": "The parent /root authored M3 retention/evidence and coordination records. Separate agent /root/independent_proposal_review performed read-only package and integrated-path inspection, then independently reassessed this frozen M3 handoff. It did not edit the retained skill packages or author their M3 evidence/coordination records. Prior analytical observations were inputs, not edits or approval of this handoff.",
+  "judgment": "approved",
+  "limitations": [
+    "This is M3 milestone approval only. M4–M6, refreshed final TG-FINAL-01, full inventory/package qualification, independent final whole-change Code Review and distinct Verify remain required. No branch/PR readiness or hosted CI success is claimed.",
+    "The integrated trace is semantic instruction inspection, not a live customer workflow or runtime/efficiency benchmark. Current validation execution is supported by registered author evidence and observed logs; this reviewer did not rerun unchanged suites.",
+    "The pre-existing CI assembly mismatch and its selection ambiguities require owned M4 Design reconciliation and subsequent implementation/review; this judgment neither approves that package nor disposes the issue.",
+    "Review records judgment and applicability only; Route owns milestone completion and continuation."
+  ],
+  "rationale": [
+    "Spec alignment: pass. SKL-SR-30 permits evidence-backed retention and SR-32 rejects edits or line counts as proxies for improvement. M3 covers the three allocated packages; no user goal is dropped. Root retains current approved layouts rather than extending the pilot layout exception. Approved Design/Delivery and current M1/M2 judgments support this sequence.",
+    "Test coverage and validation evidence: pass. The actual diff contains no runtime, test, validator, package-source or asset change. Registered m3-validation and the observed /tmp/skill-m3-ci.log and /tmp/skill-m3-candidate.log establish the author’s current V1 three-skill checks, V5 record validation, V6 selected local checks and fresh retained-candidate parity/temporary installs for route, verify and pr. All 22 package subject identities were independently checked against both evidence entries before recording. No new test is justified for unchanged runtime/selector behavior; TG-03 reader changes are not applicable.",
+    "Edge cases and error handling: pass. Route distinguishes portable/governed/command/armed contexts, stops retired-adapter use and does not promote from missing or stale approval. Verify distinguishes scoped success from final readiness, aggregates required failures without averaging and loads explanation only after success. PR independently rejects invalid classifications, stale basis, unsafe remote relationships, ambiguous PR identity and missing readback while retaining actual partial effects. Required late/unavailable resources remain fail-closed at their consumer boundary.",
+    "Architecture boundaries: pass. route’s body selects responsibility; governed-lifecycle-routing.md coordinates exact work and bounded-workflow-automation.md adds separately authorized procedure. verify’s impact, applicability, final aggregation and success explanation resources answer different evidence questions. pr’s governed-pr-readiness.md consumes current Verify identity and its body asset supplies conditional structure. Repeated local reminders at these distinct decisions prevent mistaken ownership; removing them or extracting additional core rules has no established usability benefit.",
+    "Compatibility and security/privacy: pass. The existing public classifications, profile-specific resources, portable paths and output structures are unchanged. Manual recording does not arm automation; reviewer recording cannot mutate author work or routing. PR keeps separate push/refresh/state-transition authority, no force push, exact base/head checks and no unobserved hosted-success claim. No credentials, external writes, schemas or backend behavior are introduced by this slice.",
+    "Derived artifact currency: pass for M3. Evidence names the unchanged full M2 candidate directory and both archive digests; the freshly observed candidate validator reports archive parity and clean installs for all three retained packages. Their complete current source identities match M3 evidence. This is a justified unchanged-source reuse with fresh package observation, not inference from archive presence; final all-skill qualification remains allocated.",
+    "Unrelated changes: pass. The commit-range diff contains only same-change evidence/coordination and registration of the independent M2 review. M2 completion precedes M3 work and M3 remains in progress pending this assessment. No source cleanup, policy exemption or silently revised upstream approval is present. Known CI assembly ambiguity belongs to M4 and neither blocks these unchanged consumers nor receives a retention disposition here.",
+    "TG-01/04 retention: route retains meaningful classification/coordination/automation separation; verify retains independent requested-outcome, execution and resource profiles plus distinct final evidence methods; pr retains independent submission, refresh, state-transition, remote relation and readback decisions. All three were inspected as complete packages with actual shared resources and output assets. Their existing local duplication serves different decision points; retention is supported by functional coverage and consumer usability rather than package length.",
+    "Interim TG-FINAL-01: proposal’s seven-section artifact feeds independent direction/feasibility review; Design hands exact owners/examples/decisions and acceptance intent to package review; Plan/milestone assets allocate requirements, proof commands, recovery and final-review checkpoint. Revised implement obtains exact current Design/Delivery IDs and maps before planned mutation and emits scope/proof plus conditional plan/milestone/commit identity. Code Review independently checks actual diff/direct proof and records judgment before fixes; Route alone closes work. Missing feasibility, package identity, approval or direct proof stops the first corresponding consumer. A clean final milestone cannot replace fresh integrated whole-change review; Verify then separately validates current proof and records either failure/blocker or successful explanation. PR requires all seven Verify basis fields and separate external authority/readback rather than reconstructing missing basis. Isolated paths remain bounded; record availability does not arm automation. These are independent instruction observations, not executed customer workflows.",
+    "Current reliance: unchanged package bytes and current exact governing/plan basis support this assessment. Mechanical drift in earlier records reflects their preserved historical evidence/subject identities, not a changed M3 engineering subject or retargeted approval. No selected current finding or blocker prevents M3 judgment. All three later milestones and final integrated review/Verify remain outside the claim."
+  ],
+  "reviewer": {
+    "id": "independent-m3-review",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:7ef76959ad5415890fffedead1af6fba55a39c849a8f9531329e855acd418143",
+      "path": "skills/route/SKILL.md"
+    },
+    {
+      "identity": "sha256:89337cf5da8462ad2afa0c50e04fb7233beea7ce030a049fa3a1695fc57ea2d0",
+      "path": "skills/route/references/boundary-first-method-v1.md"
+    },
+    {
+      "identity": "sha256:e6069cfc3b63578853a5622931146407af99861e0d2d85f96049738d72838e5c",
+      "path": "skills/route/references/bounded-workflow-automation.md"
+    },
+    {
+      "identity": "sha256:9b87caeadf713953a47ec019f6ac1972fe656b09d32bfae83122dd87d4b15b56",
+      "path": "skills/route/references/governed-lifecycle-routing.md"
+    },
+    {
+      "identity": "sha256:0ac3e3ccc77aee7e6d60d5d56dd61a1d7424aa3443910cb85d198993bdd82818",
+      "path": "skills/route/references/review-reliance.md"
+    },
+    {
+      "identity": "sha256:7c7037e519b4558f8126460892ff33721026e05b2d8f7469b7ba86477ee81b9b",
+      "path": "skills/route/references/test-maintenance.md"
+    },
+    {
+      "identity": "sha256:8b0a4b44f27de8c2d24ea21344b75594d5f5c9a247f91d42390068f96d4bf998",
+      "path": "skills/route/references/test-quality.md"
+    },
+    {
+      "identity": "sha256:71e429d296885eb46f7c7e1903e6cc05b60c79d35e331a3a56d2b945fbaf2ef4",
+      "path": "skills/verify/SKILL.md"
+    },
+    {
+      "identity": "sha256:0555d0faa7bd43db14c8432efbaca9499bb8679c3512e1ebaff23a67ce595a16",
+      "path": "skills/verify/assets/verify-report-skeleton.md"
+    },
+    {
+      "identity": "sha256:89337cf5da8462ad2afa0c50e04fb7233beea7ce030a049fa3a1695fc57ea2d0",
+      "path": "skills/verify/references/boundary-first-method-v1.md"
+    },
+    {
+      "identity": "sha256:920ba4df53ff35ac846dfc6f43ab562ef33c494b7b91c9ebd398978901009543",
+      "path": "skills/verify/references/branch-readiness-verification.md"
+    },
+    {
+      "identity": "sha256:40c445c52193a4bc3bd7c09298942b74b75c428fbaba6608cd634641314cf8f2",
+      "path": "skills/verify/references/evidence-applicability.md"
+    },
+    {
+      "identity": "sha256:ce9a29eac445c15368448d6cab974080b1b2dda8ae81478748af95c36003a6b8",
+      "path": "skills/verify/references/final-impact-analysis.md"
+    },
+    {
+      "identity": "sha256:e19b99a0cb69b9051c6eeae20d76c4a0cf3925e8fd1686ceb6671c7749cc3dc5",
+      "path": "skills/verify/references/requirement-to-delivery-model.md"
+    },
+    {
+      "identity": "sha256:0ac3e3ccc77aee7e6d60d5d56dd61a1d7424aa3443910cb85d198993bdd82818",
+      "path": "skills/verify/references/review-reliance.md"
+    },
+    {
+      "identity": "sha256:d2e875322c6fe4a133a46b2a7994160793bbc6ed8cff6ceffcc0843c0193c693",
+      "path": "skills/verify/references/successful-explanation.md"
+    },
+    {
+      "identity": "sha256:7c7037e519b4558f8126460892ff33721026e05b2d8f7469b7ba86477ee81b9b",
+      "path": "skills/verify/references/test-maintenance.md"
+    },
+    {
+      "identity": "sha256:8b0a4b44f27de8c2d24ea21344b75594d5f5c9a247f91d42390068f96d4bf998",
+      "path": "skills/verify/references/test-quality.md"
+    },
+    {
+      "identity": "sha256:948e12262daf061361febfba9c3f3bd366576cd3403343fce6d5d50e51643128",
+      "path": "skills/pr/SKILL.md"
+    },
+    {
+      "identity": "sha256:717f484d26d68ca651976faa2ae26edc776bbded073592138a6a3993cc2b9cd1",
+      "path": "skills/pr/assets/pr-body-skeleton.md"
+    },
+    {
+      "identity": "sha256:640b6c938ec69cf71537da9adc371b50eb336421527ff9dc2b744768ed3ea83f",
+      "path": "skills/pr/references/governed-pr-readiness.md"
+    },
+    {
+      "identity": "sha256:0ac3e3ccc77aee7e6d60d5d56dd61a1d7424aa3443910cb85d198993bdd82818",
+      "path": "skills/pr/references/review-reliance.md"
+    },
+    {
+      "identity": "sha256:cc1912d5c0cd17b42bfd4a3f705a561b0c2f678045f0659f2406a1ea13e6c5a5",
+      "path": "CONSTITUTION.md"
+    },
+    {
+      "identity": "sha256:e93d9f7891ea9eca3e6dd6c8677027b3d2871d1c1a05ca15f640ac14f2aca11b",
+      "path": "docs/design/skill/skill.md"
+    },
+    {
+      "identity": "sha256:ed5380294c163077a289f3566e041b8d580f7217b15756f961aba181400a757d",
+      "path": "docs/design/skill/workflow.md"
+    },
+    {
+      "identity": "sha256:af968c5583c27abb95e9a2b2ac0293deba30c522e72480c6f9aa05066659ae19",
+      "path": "docs/design/skill/assessment.md"
+    },
+    {
+      "identity": "sha256:afc1c0e613582e71b88cf5169d1d1b0dce9a8c84ba8348c39b324235c9435fce",
+      "path": "docs/design/skill/delivery-handoff.md"
+    },
+    {
+      "identity": "sha256:40bd6b7023ff319fcad7e85de6cc60921990b286dfaca5c2cc0a47310f483640",
+      "path": "docs/plans/2026-09-15-skill-simplification.md"
+    },
+    {
+      "identity": "sha256:51b0e06487f0607e474cd83ed0ab9f2a1efc52358de042abab331bd9f5766075",
+      "path": "docs/changes/2026-09-15-skill-simplification/evidence.json"
+    },
+    {
+      "identity": "sha256:89bc6ad721e14bd6a309af91a2e6dc8bcaa353b16ea6d8344bbe564bab1c7db3",
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/design-review.json"
+    },
+    {
+      "identity": "sha256:910acfcb05f9d89d2e717fcd8295132a1e2a2154481c161be4557fc3a38a1a6d",
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/delivery-review.json"
+    },
+    {
+      "identity": "sha256:6812b4c4f9dc5ea6d454ebf0ebe9b55b0bea6b99798c74fbeef17a4c46d507fd",
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/m1-code-review.json"
+    },
+    {
+      "identity": "sha256:8fe7419c8148125687e31d371ceda7906c980e5829d61ad32f3105d8f9e73490",
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/m2-code-review.json"
+    },
+    {
+      "identity": "sha256:d060a266b4c6b19c4000f43cad1d486ad1eec94ba96856a7696e2302341c06aa",
+      "path": "skills/proposal/SKILL.md"
+    },
+    {
+      "identity": "sha256:fb016e07f7975b6a308494dd18fb044d43084df368c08e858349bd70191e9ea1",
+      "path": "skills/proposal-review/SKILL.md"
+    },
+    {
+      "identity": "sha256:2298926b2f3844831548f4f10c9d58d408eaf32e4505a270e2c0bd643eef3fa4",
+      "path": "skills/design/SKILL.md"
+    },
+    {
+      "identity": "sha256:f9ee51047c3a8c0cced45a9238d17f7341a7661563863b0380173883ece0fe18",
+      "path": "skills/design-review/SKILL.md"
+    },
+    {
+      "identity": "sha256:5bef8bd9d85a7a1139bc20a4fb0e62ce2a2046f7bbd61fd64496bd4398cc7068",
+      "path": "skills/plan/SKILL.md"
+    },
+    {
+      "identity": "sha256:aa47d716979b176f9ba898407e9e9b78aad13df100d90c063a9a51051d66f787",
+      "path": "skills/delivery-review/SKILL.md"
+    },
+    {
+      "identity": "sha256:ca44a09944d4fca982dd831d270144cc61652e9f09e3cf4d62f209d70eb2a068",
+      "path": "skills/implement/SKILL.md"
+    },
+    {
+      "identity": "sha256:80a10b07f2d972ac81a8395f7bce1eb7339871fd1831d74852ae4c2b1bde6760",
+      "path": "skills/code-review/SKILL.md"
+    },
+    {
+      "identity": "sha256:0c1a586ac38ed79a130404e0936cbf0a030060050b6278fab625e316a5642bc8",
+      "path": "skills/proposal/assets/proposal-skeleton.md"
+    },
+    {
+      "identity": "sha256:004189d8bbf456a020165b74cdf1f322dc1d2b3ce0b14e81079c76963fdffed6",
+      "path": "skills/design/assets/design-skeleton.md"
+    },
+    {
+      "identity": "sha256:21061218b060228c8f3361e1f375008fb66d60b7cda9fc1347c0589f2c369828",
+      "path": "skills/plan/assets/plan-skeleton.md"
+    },
+    {
+      "identity": "sha256:007c46c11105018bc0429b7bc85aef0f555b4ce654cdcce27f4f4657e0ba9c75",
+      "path": "skills/plan/assets/milestone.md"
+    },
+    {
+      "identity": "sha256:c3b6dc912d2d0afd18fcc9a89a308aaa86cbe14d35f3e604846c703c35a2ee2d",
+      "path": "skills/implement/assets/implementation-result-skeleton.md"
+    },
+    {
+      "identity": "sha256:3fbdfcf4de28c316af271109d4798797d3b11c3a198478fad3e8c25ea507cc71",
+      "path": "skills/implement/references/planned-milestone-implementation.md"
+    },
+    {
+      "identity": "sha256:4314ea671b56f89ea9e04db0f0e69d03a902950483d72f015aef045b4dabbd1c",
+      "path": "skills/implement/references/governed-implementation-recording.md"
+    },
+    {
+      "identity": "sha256:3bcba3cc33836cd001205dd8b05c67a46aaff74ae405c9e58c84cec4786324b3",
+      "path": "skills/code-review/assets/review-result-skeleton.md"
+    },
+    {
+      "identity": "sha256:456244060bca19154279328b27a3f254ddebadcf3ff24f155949f8d3c48e3674",
+      "path": "skills/code-review/references/governed-code-review-recording.md"
+    }
+  ],
+  "summary": "The three unchanged coordination and handoff packages have substantive retention justification and adequate current package evidence; the interim integrated instruction trace preserves stage and authority boundaries.",
+  "target": "code"
+}
