@@ -301,9 +301,6 @@ PUBLISHED_RESOURCE_ILLUSTRATIVE_PREFIX_PATTERN = re.compile(
     r"(?:resource|file|path)\s*:\s*[`'\"]?$",
     re.IGNORECASE,
 )
-PUBLISHED_PROJECT_PROVIDED_HELPER_PATHS = {
-    "scripts/query-change-record.py",
-}
 TEMPORARY_RESOURCE_INTEGRITY_EXCEPTIONS: set[tuple[str, str, str]] = set()
 RESOURCE_LOAD_CONDITION_PATTERN = re.compile(
     r"\b(when|if|only|use|read|run|load)\b",
@@ -1153,15 +1150,10 @@ def _resource_reference_has_external_context(
 ) -> bool:
     prefix = line[previous_reference_end : reference.start]
     suffix = line[reference.end : next_reference_start]
-    full_prefix = line[: reference.start]
     return bool(
         PUBLISHED_RESOURCE_EXTERNAL_PREFIX_PATTERN.search(prefix)
         or PUBLISHED_RESOURCE_EXTERNAL_SUFFIX_PATTERN.match(suffix)
         or PUBLISHED_RESOURCE_ILLUSTRATIVE_PREFIX_PATTERN.search(prefix)
-        or (
-            reference.path in PUBLISHED_PROJECT_PROVIDED_HELPER_PATHS
-            and re.search(r"\bwhen the project provides the helper\b", full_prefix, re.IGNORECASE)
-        )
     )
 
 

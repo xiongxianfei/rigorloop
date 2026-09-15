@@ -126,14 +126,8 @@ CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
     ),
     "change_metadata.validate": CheckCatalogEntry(
         "change_metadata.validate",
-        "python scripts/validate-change-metadata.py <change-yaml>...",
+        "python scripts/validate-change-metadata.py <change.json>...",
         "change-metadata",
-    ),
-    "change_record_query.regression": CheckCatalogEntry(
-        "change_record_query.regression",
-        "python tests/engineering/validation/test-query-change-record.py",
-        "change-record-query",
-        parallel_safe=True, label='Governance: change-record query', modes=('main',),
     ),
     "release.validate": CheckCatalogEntry(
         "release.validate",
@@ -277,7 +271,6 @@ for _mode_prefix in ('broad_smoke','main'):
 # temporary Git/record fixtures, process-local environment and sequential child
 # validation. Selector wrapper probes obey their allocated nested worker budget.
 _CASE_ASSESSMENTS = {
-    'change_record_query.regression': '06a223652f7518117bbf6659b0cc5b0b8c52c337d13fdbc8bcd45d162081674d',
     'governed_lifecycle_cli_wrapper.test': '04a6b9ef79282ecce87c3f46709f49dbb0e9850c56b1815ef0840760ff4b439a',
 
     'skills.regression': '8e9e4b2d0536c1705f034523cedefc2dd2032561fe2bba42198c1e36d530b52f',
@@ -1587,16 +1580,10 @@ def _apply_path_selection(
         return
 
     if category == "change-record-query":
-        _add_check(
-            selected,
-            "change_record_query.regression",
-            "Changed change-record query helper requires query regression fixtures.",
-        )
-        _add_check(
-            selected,
-            "change_metadata.regression",
-            "Changed change-record query helper depends on supported change metadata shapes.",
-        )
+        # Deleted shim paths remain routable; no removed command is executable.
+        for check_id in ("record_retirement.regression", "change_metadata.regression", "selector.regression"):
+            _add_check(selected, check_id,
+                       "Retired query paths require current record safety and deletion-routing proof.", path=path)
         return
 
     if category == "workflow-automation":
@@ -1926,7 +1913,7 @@ def _build_result(
     )
 
 
-# Exact source relocations retain their existing selection responsibilities.
+# Exact source relocations (including subsequently retired sources) retain deletion routing.
 _TOOL_PATH_PREDECESSORS = {'scripts/lib/validation/boundary_first_reference.py': 'scripts/boundary_first_reference.py',
  'scripts/lib/validation/boundary_first_validation.py': 'scripts/boundary_first_validation.py',
  'scripts/lib/validation/model_layout.py': 'scripts/model_layout.py',

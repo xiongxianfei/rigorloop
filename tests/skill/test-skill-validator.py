@@ -830,6 +830,11 @@ class SkillValidatorFixtureTests(SkillCliChecks, SkillGuidanceChecks, unittest.T
     def test_published_skill_legacy_lint_checks_each_reference_on_mixed_line(self) -> None:
         cases = [
             (
+                "When the project provides the helper, read references/external.md and run scripts/query-change-record.py.",
+                "scripts/query-change-record.py",
+                "references/external.md",
+            ),
+            (
                 "Use the user-provided references/external.md and templates/architecture.md.",
                 "templates/architecture.md",
                 "references/external.md",
@@ -3816,10 +3821,6 @@ and result format.
         )
 
 
-    def test_change_record_catalog_m4_query_commands_exist(self) -> None:
-        helper = (ROOT / "scripts/query-change-record.py").read_text()
-        self.assertIn("unsupported", helper.lower())
-        self.assertNotIn("load_yaml", helper)
 
 
     def test_follow_up_ownership_m1_project_map_skill_boundary(self) -> None:
