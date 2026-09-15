@@ -26,6 +26,15 @@
       "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/evidence.json",
       "reason": "Current exact Design authorship and structural/source observations only; independent assessment and downstream proof remain separate.",
       "value": "current"
+    },
+    {
+      "actor": {
+        "id": "all-skills-design-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/design-review.json",
+      "reason": "Current first-pass assessment of the exact four-model package and inspected basis. Changes requested; this is not approval for planning.",
+      "value": "current"
     }
   ],
   "blockers": [],
@@ -74,6 +83,10 @@
     {
       "kind": "evidence",
       "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/evidence.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/design-review.json"
     }
   ],
   "schema_version": 3,
