@@ -1,0 +1,1091 @@
+{
+  "assessment_scope": "Governed milestone M1 only: complete allocated packages, shared guidance/projection, skill validators and all skill tests/mixins/recursive fixtures; actual engineering range04908f0c..164d4bbfe7e129376b99e6e7a54340e396545d58. All ten Code Review checklist items and TG-01/TG-02 assessed. This is not final whole-change review.",
+  "change_id": "2026-09-15-refine-skills-and-retire-stale-support",
+  "contributors": [
+    {
+      "id": "codex-implementer",
+      "role": "implement"
+    }
+  ],
+  "findings": [],
+  "id": "m1-code-review",
+  "independence_basis": "Separate nonauthor agent /root/all_skills_delivery_review independently inspected actual source, full package/test population, approved authority, root-owned validation evidence and actual candidate bytes. Reviewer performed no engineering edits, authoring, implementation fixes, routing or work-state writes. Read-only preparation concerns were resolved by root before this exact-head first-pass formal judgment. Prior independent Delivery Review did not author the assessed plan or code.",
+  "judgment": "approved",
+  "limitations": [
+    "Source semantic inspection establishes concrete reading paths, not universal agent behavior, transcript success, runtime speed or token savings.",
+    "Root executed full tests/local CI/candidate installation; reviewer inspected their evidence and logs and directly compared actual archive bytes. No hosted CI claim.",
+    "M2-M4 and final whole-change Code Review plus Verify remain required. Candidate observations cover the six allocated M1 install targets; no release or active customer install authorized.",
+    "Upstream original review snapshots and earlier test observations retain historical subjects. Current model/plan authority and exact frozen M1 source are assessed explicitly here; future changes require applicability reassessment."
+  ],
+  "rationale": [
+    "Spec alignment — pass. Reviewed the complete M1 engineering diff 04908f0c..164d4bbfe7e129376b99e6e7a54340e396545d58, exact proposal and four owning model identities, approved Design Review R2 8f385aab6b83ab80bc9f5509c7b59142cbe41eebe6a38dbe9cdafb17f8293ec2 and Delivery Review 7907f1a326b120964eec01572acc2fcf56bab9fcb2d103bf05db5323abe0863e. The sole primary plan remains 7b8f0ec8889d36ba01d05812d9aa8223a3dd79e6a10f42c7cef9573542060130. Broad context was necessary because M1 explicitly allocates all nineteen complete packages and every skill test/mixin/fixture, not just edited files. Changed support-method identities in upstream historical review subjects do not change approved model/plan content or resurrect old method versions; current methods were independently assessed here.",
+    "Test coverage — pass. Hardcoded ten recording-profile test inputs independently exercise selected mappings, classification/load triggers, missing profile/boundary/token, wrong/missing selected resource despite inline or unrelated distractors, containment and decoding errors. The actual selected-reader implementation now reaches all five moved destinations before its former inline-heading early return. Existing proposal-review placement grammar remains scoped; other review skills do not gain invented placement semantics. Existing unknown-consumer and closed-vocabulary tests remain. Runtime scope change 306 to301 is accounted for by five justified removals, not accidental runner omission.",
+    "Edge cases — pass. Reviewed ordinary/governed/late-trigger/failure reading paths, unsupported automation, scoped/final Verify and optional Git basis, PR prepare/open/read-only records and advisory/formal reviewers. Missing or conflicting authority cannot silently fall back to portable execution. Controlled negative cases supply mechanical selected-resource proof; the separate semantic observations below supply procedure/authority assessment.",
+    "Error handling — pass. Selected resources are resolved beneath the skill root, unreadable/undecodable paths fail explicitly and incomplete selected profiles cannot borrow unrelated text. Existing errors, unknown-before-consistency behavior and nonselected inline-profile validation remain. Recoverable record conflicts and actor-owned blockers retain their owners; PR consumes records without recovery or mutation authority.",
+    "Architecture boundaries — pass. Complete conditional recording moved to four existing local references and one new Verify reference. Universal classification, substantive gate duties, essential stops, policy adoption, isolated use and bounded claims remain at the entrypoint. Scope, schema, runtime CLI, generator and lifecycle owners are unchanged; Plan result labels now name existing Design/Route owners.",
+    "Compatibility — pass. Customer-provided specifications, retained architecture/ADR sources and scoped feature amendments remain legitimate governing inputs. Public values and output semantics are preserved; Code Review description exposes existing final whole-change responsibility. PR body removes the duplicate Explain-change field and cites successful Verify rationale once, while retaining actual Design/retained project source context. Query-helper withdrawal belongs to M2 and is neither implemented nor approved by this M1 judgment.",
+    "Security/privacy — pass. No dependency, remote operation, secrets/logging path or runtime authority changes. Containment faults remain tested. Project adoption and exact subject/revision checks remain bounded; copying reference content does not grant mutation, approval, automation or external-action permission.",
+    "Derived artifact currency — pass within M1. Independently inspected both actual archive hashes and all55 files across the six selected packages: Codex55 byte-identical; Claude49 resources byte-identical and six SKILL bodies changed only by declared frontmatter drops. Candidate identities and full observations below. Root-owned candidate validation executed clean temporary installs; no live install, release or full nineteen-package M3 qualification is claimed.",
+    "Unrelated changes — pass. Diff contains only allocated skill/resource/reader/test improvements and governing evidence/coordination records. Test-only inventory correction removes unused helpers and demonstrations with no product observation; no source behavior changed in that correction. Full package audit supports retained resources rather than imposing a uniform layout.",
+    "Validation evidence — pass. Read complete scoped m1-implementation, m1-validation, m1-candidate and m1-inventory-correction records. Failure-first log records45 expected subtest failures before reader extension; focused13 and canonical19 passed. Final full301 tests passed22.064s; final local selected CI passed151.88s. Inspected terminal logs directly. Earlier304 result is preserved historical observation and superseded for changed test source by correction proof; unchanged skill/generator bytes preserve candidate applicability. No hosted CI or final readiness claim follows.",
+    "Test-maintenance conclusions — pass. Removed duplicate M3 standalone test-spec directory absence is subsumed by stronger M5 same filesystem observation. Removed Implement handoff helper/self-test had only synthetic self-callers; current Implement package protection remains. Removed requirement/boundary ID helpers had no callers. Three CI cases observed only stdlib/local graph code; the fourth now directly protects canonical no-clobber, identity match, providers-before-wrappers and cycle-block clauses without a simulated graph. All five removal contributions are known; no fixture or useful failure boundary was deleted. Correction reviewed after author edits and final301 proof. Preparatory recommendations were reviewer concerns only; this reviewer authored no engineering.",
+    "Complete nineteen-package retention/change account, independently inspected and current at frozen head:\n\n| Package | Current obligations supporting retention / selected correction |\n| --- | --- |\n| constitution | Compact governing authority, quality, compatibility, security, review and cleanup; no unnecessary resource layer. Generic customer specs/architecture references remain valid source authority. |\n| vision | Six assemblies, strategic versus editorial scope, exact README skip, source-first mutation, marker preservation, manifest/retry identities, two structural assets and two separate procedures. Retain. |\n| learn | Separate session/result operations, confirmed classification, unique session creation, immutable route completion kind, exact owner result, interruption and retry. Retain. |\n| bugfix | Diagnosis/fix separation, command/write scope, identity-stable proof, exhaustive proof action table, authority exclusions and bounded outcomes. Compact inline recording is justified. Retain. |\n| project-map | Create/refresh/audit, repository/area scope, bounded preflight, evidence/freshness meanings, ownership and registration transaction/retry. Retain. |\n| explore | Bounded option discovery, proportional alternatives, optional deep methods, standalone owner-adopted artifact and authority limits. Retain. |\n| research | Decision-relevant factual uncertainty, sources/experiments/confidence, optional methods, standalone owner-adopted evidence. Retain. |\n| ci-maintenance | Nine assemblies, provider and coverage separation, exact validation authority, safe batch ordering and retries, bounded PR repair, minimal safe skeleton. Retain package; assess simulated tests below. |\n| proposal | Seven sections plus conditional impact, embedded feasibility, independent strategic and governed contexts, scope preservation and bounded result. Retain. |\n| proposal-review | Four assemblies, recording independent of automation, ten review dimensions, conditional scope/standing/vision, own first-pass and nonauthor duties. Retain. |\n| design | Living-model overview/supporting views, stable model IDs, owned examples/schema, legacy source adoption mapping, boundary method and current skeleton. Retain all resources. No new standalone architecture/ADR output needed. |\n| plan | Stable intent versus mutable work, three operations, one-time initialization, eight risk-specific verification methods, final Code Review then Verify and three assets. Correct obsolete Result next-stage labels spec/architecture/workflow to design/route; root reports done. |\n| implement | Independent isolated/planned/armed classifications and recording, proof-first current milestone, retained unsupported automation stop and conditional result groups. Retain. |\n| code-review | Description needed milestone AND final whole-change review. Retain semantic checklist, nonauthor judgment, exact packages, material findings, direct proof and correction/final integration. |\n| design-review | Living Designs and scoped retained source contracts, exact package/examples, feasibility and coherence, nonauthor and no cross-owner editing. Move recording procedure into mapped local reference; retain universal gate duties inline. |\n| delivery-review | One primary-plan decision joins sequencing and verification; exact upstream subjects, correction ownership and final whole-change checks. Move recording into mapped local reference. |\n| route | Generic/governed/automated/bootstrap/stateless contexts, quick guide and stopping boundaries; governed recording belongs in existing governed method. Retain optional discovery and unsupported legacy automation stop. |\n| verify | Scope/final-readiness versus recording independent; keep evidence meanings inline, final aggregation/impact/applicability/explanation separate, success-only rationale and owned blockers. New recording reference is appropriately conditional. |\n| pr | Prepare/open/draft, read-only readiness authority, directional Git basis, bounded suffix and immediate rereads, truthful partial effects. Relocate record reads into existing readiness method; body cites successful Verify rationale once and actual Design/retained source context. |\n\nAll transitive references/assets read. Shared policy projections compared by bytes: test-quality 10 copies, test-maintenance 8, review-reliance 10, review-assessment 4, requirement-to-delivery-model 7, boundary-first-method-v1 8, boundary-first-feature-authoring-v1 2, boundary-first-proof-v1 1, discovery-support 2; each family one body. Repeated package copies preserve standalone installation and conditional policy adoption, not independent policy forks.\n\n",
+    "Complete M1 test/mixin/fixture protective-value account:\n\nRead all five tests/skill modules, including mixins imported into main TestCase, helper/constants module, and every main module test class. Current source was changing during review; final frozen review must bind exact revision.\n\n- SkillValidatorFixtureTests and inherited SkillCliChecks/SkillGuidanceChecks: base structure/frontmatter, readability version/closed enums, exact COPY/READ/RUN inventory, packaged script I/O/failure declarations, root dependency and multiline loading parsing, portability, assets metadata/fingerprints/placeholders, generated asset presence and named diagnostics, current canonical package semantics and legacy/customer source support.\n- RecordingReferenceContractTests: independent hardcoded selected destination/trigger inputs, valid minimal profile, missing or wrong selected reference despite distractors, symlink escape, undecodable resource, omitted classification/loading/profile/command tokens. Real validator calls; preserve fault-specific diagnostics. RelocatedPlanSurfaceTests checks current JSON placement and wrong YAML. CiAssemblyDeclarationTests protects closed values and actual Markdown/fence parsing.\n- ExplicitRecordingGuidanceTests: canonical resource destinations and current-v3 versus retired-writer selection, guarded placement semantics. Do not infer that all reviewers support proposal-review-only placement grammar.\n- MarkdownReadabilityGuidanceTests, RetainedSkillAuthorityTests, RouteSkillCutoverContractTests, VerifySkillSimplificationContractTests, PRSkillSimplificationTests, PlanSkillSimplificationContractTests, ProposalSkillSimplificationTests, UnifiedDesignResourceTests: distinct package-level authority, profiles, resource conditions, fail-closed boundaries, asset semantics and canonical semantic checks. Phrase checks are intentional interim guidance protection, not runtime-agent accuracy proof.\n- VisionSkillProgressiveDisclosureTests, LearnSkillSimplificationTests, ProjectMapSkillSimplificationTests, CiMaintenanceSkillSimplificationTests, BugfixSkillSimplificationTests: current package operation classifications, write ownership, transaction/retry, structural outputs and closed proof actions. CI simulation exceptions below.\n- ConsolidatedReviewGateSkillContractTests, RequirementDeliveryModelM1/M2/M3Tests, ReviewCloseoutResourceTests, RetireStandaloneTestSpecM3/M4/M5Tests, FinalVerificationPackageParityM4Tests, ExplainChangeSkillRetirementTests: current package boundaries, shared-copy identity, unknown consumer rejection, current routing and publication absence. Historic class names do not imply obsolete protection.\n- OptionalDiscoverySkillContractTests and TestPolicyResourceTests: standalone bounded exploration/research, shared policy bytes, consumer unknown/missing/drift failures, optional routing and no implicit authority.\n- review_independence_skill_phrases.py remains called by current canonical tests: its R5/R8 labels and historical citations identify review-method requirements, not current routing authority.\n- Recursive tests/fixtures/skills audit: 86 files including hidden empty-skill/.gitkeep, 60 unique byte bodies read in full. Frontmatter, duplicate name, missing sibling skill, readability, project-map, published resource/script rules, plan structural faults and generated asset presence all have live consumers. Identical bytes across different fault packages supply independent test assemblies. Retain all absent a changed supported boundary. Fixture scripts are data used to test packaged-resource declarations; no reason to delete merely because they print a fixed result.\n- Transitive historical representative-project-map-outputs.md is read by a current example-contract test; it explicitly presents concrete fixture excerpts rather than repository observations. It protects material versus incidental claims, stale/wrong-at-baseline distinction, command execution truth and root/area registration. Retain as active example dependency rather than delete for date alone.\n\n",
+    "TG-01 independent source and candidate observation, performer all-skills-m1-code-reviewer, 2026-09-15; exact file identities are the subjects of this recorded review. Preparation observations were reassessed against frozen head; the following concrete paths and outcomes are inspection evidence:\n| Selected input and authority | Reading path | Expected and observed by inspection |\n| --- | --- | --- |\n| Route manual invocation, no governed change or armed automation | Entry classification/assembly, quick guide and universal stopping/claim rules | No governed method is required merely for general routing. Optional discovery remains optional. Current activity authority is not fabricated from a status report. |\n| Route explicit supported governed change; late resolved governed identity | Entry governed_change_context -> governed-lifecycle-routing | Same scoped v3 inspection, subjects, optimistic revision, targeted operations and actor ownership now live in the selected method. A late trigger loads before dependent action. Method cannot arm automation. |\n| Route requested automation against unsupported legacy store | Entry automation selection -> bounded-workflow-automation plus governed identity rules | Unsupported adapter stops; moving ordinary recording has not revived historical automation or merged cancellation/status with mutation authority. |\n| Verify scoped check without adopted recording | Invocation classification -> scoped outcome; inline evidence meanings | Scope does not select final aggregation, impact, applicability or successful explanation. No governed store or Git proof is invented. |\n| Verify scoped/final outcome with adopted recording; successful final readiness optionally preparing Git handoff | Independent adopted recording authority -> new governed-verification-recording; final outcome independently -> branch-readiness, impact, applicability, successful-explanation methods | Same failed-evidence/owned-blocker path, success-only verify record and whole-field correction limits preserved. Git basis applies when the downstream claim needs it; recording selection cannot promote a scoped check to final readiness. |\n| PR prepare or open with absent versus explicit governed signal | Invocation PR0/PR1 -> governed-pr-readiness for PR1; pr-body-skeleton for body generation | Prepare remains nonmutating. Governed method is expressly read-only, cannot construct record mutations/recover store or manufacture approval. Open keeps immediate rereads, exact successful Verify basis, directional Git and explicit external-action authority. Body has one successful Verify rationale field and actual Design/retained architecture source field. |\n| Design/Delivery advisory isolated judgment versus durable/formal review, including late durable trigger | Invocation classification and universal review duties -> respective recording-and-settlement method when durable/formal | Full semantic gate duties stay inline. Durable trigger does not itself adopt a v3 store: method selects actual project contract. Formal review cannot edit targets or coordinate state. Missing/mixed/escaped required guidance stops before dependent reliance/write. |\n| Code Review milestone or final integrated change | Description -> same respective assessment scope and handoff instructions | Description now exposes both existing responsibilities. Milestone approval cannot substitute for fresh final whole-change review or Verify. |\n\nResource failures are inspected as ownership and stopping rules; existing controlled validator faults provide mechanical observations separately. No prompt execution, transcript grading, universal agent reliability or token reduction is claimed.\n\n## Actual candidate observations\n\nInspected every file in six requested packages (route, verify, pr, design-review, delivery-review, code-review) from each archive against current source: 55 files per archive. Codex all55 byte-identical. Claude49 references/assets byte-identical and all six SKILL bodies preserve prose exactly; differences are only removal of argument-hint, version and schema-version where present, matching declared target transforms. The relocated Verify reference and all recording methods are physically present. New Code Review description and PR body field changes survive both candidates.\n\n- Codex SHA256: 377992817c278fff60c76ceb0b6f6f8ddfe413a7fb0dd61f9f03bb4dbd198484\n- Claude SHA256: a7b67c826b3d32ef0e51c7727baecb2b3cc411e31207bf8a6cef5f6011e0c559\n\nThese match /tmp/allskills-m1-candidate-hashes.json. /tmp/allskills-m1-candidate.log reports Gate B actual archive and clean temporary install validation for all six. Independent archive inspection is my direct observation; installation execution belongs to root's command evidence. Broader final19 qualification remains M3, not claimed here.\n",
+    "M1 support population — pass. validate-skills.py remains the thin public CLI that aggregates actual validator results and exits on failures; its CLI mixin tests exercise process behavior, explicit targets, absent targets and nonexecution of target scripts. skill_validation.py retains structural/profile/asset/shared-policy checks exercised by the complete fixture and canonical suite; only selected recording mapping and triggers change. Shared guidance remains byte-consistent across consumers, and boundary-first-resources.yaml preserves explicit compact-core, feature-authoring and proof projections. No duplicate source owner or new audit mechanism introduced.",
+    "Gate and handoff — approved first pass, no material findings. This applicable clean review permits only M1 closeout by Route. M2, M3 and M4 remain pending. A fresh independent final whole-change Code Review after all slices/corrections and a distinct successful Verify remain mandatory; neither this judgment nor saved records establishes branch, PR, release or lifecycle completion."
+  ],
+  "reviewer": {
+    "id": "all-skills-m1-code-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:a15d4f3889629c69f946269da05e32f00161148a07f7de62f01038ced3e28cb9",
+      "path": "AGENTS.md"
+    },
+    {
+      "identity": "sha256:cc1912d5c0cd17b42bfd4a3f705a561b0c2f678045f0659f2406a1ea13e6c5a5",
+      "path": "CONSTITUTION.md"
+    },
+    {
+      "identity": "sha256:370c6abaa9ce4f70413a6b16fa54c7d982f5e366c714383956d2ba962086f5dc",
+      "path": "docs/changes/2026-06-23-evidence-bound-incremental-project-map/representative-project-map-outputs.md"
+    },
+    {
+      "identity": "sha256:dfda0a282bc3f9f5893b23d218515d9d226732960f2f4c49a050ab8d8e370d5d",
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/evidence.json"
+    },
+    {
+      "identity": "sha256:7907f1a326b120964eec01572acc2fcf56bab9fcb2d103bf05db5323abe0863e",
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/delivery-review.json"
+    },
+    {
+      "identity": "sha256:8f385aab6b83ab80bc9f5509c7b59142cbe41eebe6a38dbe9cdafb17f8293ec2",
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/design-review-r2.json"
+    },
+    {
+      "identity": "sha256:5431c6263902bb5f0f4e558198781f9437602e417dc79741fc40823001ab7383",
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/proposal-review.json"
+    },
+    {
+      "identity": "sha256:46396ee3e8e0327d1ca4ca1485cf9f1802689acfe7fe0ec88e1cd4eddc2c644e",
+      "path": "docs/design/cli/cli.md"
+    },
+    {
+      "identity": "sha256:8bcdb2872f9b6887212264493f1421a58b91b9b7ab9d12bcd240bcd5a9b5f966",
+      "path": "docs/design/cli/records.md"
+    },
+    {
+      "identity": "sha256:0aec3cfc2bf73424bf08d8c4efb775e4f7b5051b8417e8ebf1c90ada91aedbfa",
+      "path": "docs/design/engineering/packaging.md"
+    },
+    {
+      "identity": "sha256:46068496c23e3a9e82befbea7d5c0c68242eb0928ddb15ccf431cbd9b52a94a6",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:af968c5583c27abb95e9a2b2ac0293deba30c522e72480c6f9aa05066659ae19",
+      "path": "docs/design/skill/assessment.md"
+    },
+    {
+      "identity": "sha256:5a38d6bb26ebdd63527843c5dbf94caeb0c306dcfe89cfb03fc5aced4dd14388",
+      "path": "docs/design/skill/delivery-handoff.md"
+    },
+    {
+      "identity": "sha256:18f39802c01fda9ff16fa68fd0fce03dafe33f032dc0006f0033095096856bcc",
+      "path": "docs/design/skill/skill.md"
+    },
+    {
+      "identity": "sha256:ed5380294c163077a289f3566e041b8d580f7217b15756f961aba181400a757d",
+      "path": "docs/design/skill/workflow.md"
+    },
+    {
+      "identity": "sha256:7b8f0ec8889d36ba01d05812d9aa8223a3dd79e6a10f42c7cef9573542060130",
+      "path": "docs/plans/2026-09-15-refine-skills-and-retire-stale-support.md"
+    },
+    {
+      "identity": "sha256:3bf51df8d9be1c016255c493aebe495b5d102fe015237adf099823752967686d",
+      "path": "docs/proposals/2026-09-15-refine-skills-and-retire-stale-support.md"
+    },
+    {
+      "identity": "sha256:a1da85504234d9c204736978c97d1fe3bf289bf14cd05bcb4587587c733497a6",
+      "path": "scripts/lib/validation/skill_validation.py"
+    },
+    {
+      "identity": "sha256:d7806a57f7cf4d4b6329da679d8b1e96189908833d8fa8337d5be45ae9a8cb18",
+      "path": "scripts/resources/boundary-first/boundary-first-resources.yaml"
+    },
+    {
+      "identity": "sha256:3711d0996eab2b5f079a06c91d29960b65377c2fb860db7b27674ed4f64d7ac8",
+      "path": "scripts/validate-skills.py"
+    },
+    {
+      "identity": "sha256:170ea2df25ee71ab3e27f26ab8290758d7a575bb1747d5b89c7eb45de7394dfc",
+      "path": "skills/bugfix/SKILL.md"
+    },
+    {
+      "identity": "sha256:7c7037e519b4558f8126460892ff33721026e05b2d8f7469b7ba86477ee81b9b",
+      "path": "skills/bugfix/references/test-maintenance.md"
+    },
+    {
+      "identity": "sha256:8b0a4b44f27de8c2d24ea21344b75594d5f5c9a247f91d42390068f96d4bf998",
+      "path": "skills/bugfix/references/test-quality.md"
+    },
+    {
+      "identity": "sha256:9baf5a042084cd36d4748453529fc4ef6e46e9bdfe35bdf294ab9e458da14e84",
+      "path": "skills/ci-maintenance/SKILL.md"
+    },
+    {
+      "identity": "sha256:6c73d246c7be1491d4331ee5a1b7fa1dc1e741b1d0bd4b57a52c6780050d1531",
+      "path": "skills/ci-maintenance/assets/github-workflow-skeleton.yml"
+    },
+    {
+      "identity": "sha256:94648462ed81388b8b89abd0ce42200599c1697b5f808f544e2477db7de9ef94",
+      "path": "skills/ci-maintenance/references/github-workflow-authoring.md"
+    },
+    {
+      "identity": "sha256:0ac3e3ccc77aee7e6d60d5d56dd61a1d7424aa3443910cb85d198993bdd82818",
+      "path": "skills/ci-maintenance/references/review-reliance.md"
+    },
+    {
+      "identity": "sha256:5fd364cb19df0f090adea02f3869c568fe0d1e5b2fdfbef0256ef4ec5b0fc118",
+      "path": "skills/ci-maintenance/references/risk-to-check-map.md"
+    },
+    {
+      "identity": "sha256:7c7037e519b4558f8126460892ff33721026e05b2d8f7469b7ba86477ee81b9b",
+      "path": "skills/ci-maintenance/references/test-maintenance.md"
+    },
+    {
+      "identity": "sha256:8b0a4b44f27de8c2d24ea21344b75594d5f5c9a247f91d42390068f96d4bf998",
+      "path": "skills/ci-maintenance/references/test-quality.md"
+    },
+    {
+      "identity": "sha256:3a619d70420a2568451b87c2cd008f750794f5a9ff2727cf46d8b4a12ea5ebea",
+      "path": "skills/code-review/SKILL.md"
+    },
+    {
+      "identity": "sha256:69d15f3af3d6d4eee4a6220a78c784c0deb40818128c235531f894c72ff4d0d9",
+      "path": "skills/code-review/assets/material-finding.md"
+    },
+    {
+      "identity": "sha256:3bcba3cc33836cd001205dd8b05c67a46aaff74ae405c9e58c84cec4786324b3",
+      "path": "skills/code-review/assets/review-result-skeleton.md"
+    },
+    {
+      "identity": "sha256:89337cf5da8462ad2afa0c50e04fb7233beea7ce030a049fa3a1695fc57ea2d0",
+      "path": "skills/code-review/references/boundary-first-method-v1.md"
+    },
+    {
+      "identity": "sha256:456244060bca19154279328b27a3f254ddebadcf3ff24f155949f8d3c48e3674",
+      "path": "skills/code-review/references/governed-code-review-recording.md"
+    },
+    {
+      "identity": "sha256:e19b99a0cb69b9051c6eeae20d76c4a0cf3925e8fd1686ceb6671c7749cc3dc5",
+      "path": "skills/code-review/references/requirement-to-delivery-model.md"
+    },
+    {
+      "identity": "sha256:82e302a3a915f10d05b229a3550f462ca6b35a9e3f7e892ec7a393733c2c64e0",
+      "path": "skills/code-review/references/review-assessment.md"
+    },
+    {
+      "identity": "sha256:0ac3e3ccc77aee7e6d60d5d56dd61a1d7424aa3443910cb85d198993bdd82818",
+      "path": "skills/code-review/references/review-reliance.md"
+    },
+    {
+      "identity": "sha256:7c7037e519b4558f8126460892ff33721026e05b2d8f7469b7ba86477ee81b9b",
+      "path": "skills/code-review/references/test-maintenance.md"
+    },
+    {
+      "identity": "sha256:8b0a4b44f27de8c2d24ea21344b75594d5f5c9a247f91d42390068f96d4bf998",
+      "path": "skills/code-review/references/test-quality.md"
+    },
+    {
+      "identity": "sha256:36bc4c3cd13c589475a5b3df85e5aea8d055dc115b9acabb7d3e7eb64885eba4",
+      "path": "skills/code-review/references/workflow-managed-automated-review.md"
+    },
+    {
+      "identity": "sha256:78367de4baa67f068f99a05144103291857ddb2302be1631fd73ebe0048b8231",
+      "path": "skills/constitution/SKILL.md"
+    },
+    {
+      "identity": "sha256:cd43b65881a5a4f5cf33c489d5899d528dcb2edb802c4d451028d7c7a6f6ed12",
+      "path": "skills/delivery-review/SKILL.md"
+    },
+    {
+      "identity": "sha256:238979f9f7baa4af72370da0f19d69ecfe855cacac44d3fd08d39bef897af835",
+      "path": "skills/delivery-review/assets/material-finding.md"
+    },
+    {
+      "identity": "sha256:d8551b3f4f3228fd37de61c15695118d8e390a3e61cc030f58cfc26172b74e06",
+      "path": "skills/delivery-review/assets/review-result-skeleton.md"
+    },
+    {
+      "identity": "sha256:89337cf5da8462ad2afa0c50e04fb7233beea7ce030a049fa3a1695fc57ea2d0",
+      "path": "skills/delivery-review/references/boundary-first-method-v1.md"
+    },
+    {
+      "identity": "sha256:ec8e8239c642bf340c4c8aba2105ae9783bced35230bb5bf6501b7b931e6cc4d",
+      "path": "skills/delivery-review/references/boundary-first-proof-v1.md"
+    },
+    {
+      "identity": "sha256:1ae503588443240f229b5a59722e8fc6544a1d74762f7cc37477624ad262c622",
+      "path": "skills/delivery-review/references/delivery-review-recording-and-settlement.md"
+    },
+    {
+      "identity": "sha256:e19b99a0cb69b9051c6eeae20d76c4a0cf3925e8fd1686ceb6671c7749cc3dc5",
+      "path": "skills/delivery-review/references/requirement-to-delivery-model.md"
+    },
+    {
+      "identity": "sha256:82e302a3a915f10d05b229a3550f462ca6b35a9e3f7e892ec7a393733c2c64e0",
+      "path": "skills/delivery-review/references/review-assessment.md"
+    },
+    {
+      "identity": "sha256:0ac3e3ccc77aee7e6d60d5d56dd61a1d7424aa3443910cb85d198993bdd82818",
+      "path": "skills/delivery-review/references/review-reliance.md"
+    },
+    {
+      "identity": "sha256:7c7037e519b4558f8126460892ff33721026e05b2d8f7469b7ba86477ee81b9b",
+      "path": "skills/delivery-review/references/test-maintenance.md"
+    },
+    {
+      "identity": "sha256:8b0a4b44f27de8c2d24ea21344b75594d5f5c9a247f91d42390068f96d4bf998",
+      "path": "skills/delivery-review/references/test-quality.md"
+    },
+    {
+      "identity": "sha256:d0a7aeaf23190c0f502984505adaa141df7a038e580f4c773953d664bfd5ae7f",
+      "path": "skills/design-review/SKILL.md"
+    },
+    {
+      "identity": "sha256:1a40d18438452d64bd395938d70d4fdc1c2a86dc948f002ece72042feebb86de",
+      "path": "skills/design-review/assets/material-finding.md"
+    },
+    {
+      "identity": "sha256:011d7c9d2662d7f19806bc4d19141bb50becf1327cac24f0926409fa3b9c4681",
+      "path": "skills/design-review/assets/review-result-skeleton.md"
+    },
+    {
+      "identity": "sha256:7179b4f48e6ba5a1503237f58875f0dc5fe8cdc2c7e77f277c6debee714387b8",
+      "path": "skills/design-review/references/boundary-first-feature-authoring-v1.md"
+    },
+    {
+      "identity": "sha256:89337cf5da8462ad2afa0c50e04fb7233beea7ce030a049fa3a1695fc57ea2d0",
+      "path": "skills/design-review/references/boundary-first-method-v1.md"
+    },
+    {
+      "identity": "sha256:321165b0a2fbdf6f2f137f85ee4345fe70ebd893b2955b21f2d36bd0a97f4ee2",
+      "path": "skills/design-review/references/design-review-recording-and-settlement.md"
+    },
+    {
+      "identity": "sha256:e19b99a0cb69b9051c6eeae20d76c4a0cf3925e8fd1686ceb6671c7749cc3dc5",
+      "path": "skills/design-review/references/requirement-to-delivery-model.md"
+    },
+    {
+      "identity": "sha256:82e302a3a915f10d05b229a3550f462ca6b35a9e3f7e892ec7a393733c2c64e0",
+      "path": "skills/design-review/references/review-assessment.md"
+    },
+    {
+      "identity": "sha256:0ac3e3ccc77aee7e6d60d5d56dd61a1d7424aa3443910cb85d198993bdd82818",
+      "path": "skills/design-review/references/review-reliance.md"
+    },
+    {
+      "identity": "sha256:8b0a4b44f27de8c2d24ea21344b75594d5f5c9a247f91d42390068f96d4bf998",
+      "path": "skills/design-review/references/test-quality.md"
+    },
+    {
+      "identity": "sha256:fdbaf69d34c804b765848e08b3423a18a6ad380abc3b9e2546681fb0a9f29c65",
+      "path": "skills/design/SKILL.md"
+    },
+    {
+      "identity": "sha256:004189d8bbf456a020165b74cdf1f322dc1d2b3ce0b14e81079c76963fdffed6",
+      "path": "skills/design/assets/design-skeleton.md"
+    },
+    {
+      "identity": "sha256:020be16bb4b01f1eb1a1605562ffd6b31af9e5ba2ee12b1a1e1735acb6378a56",
+      "path": "skills/design/assets/diagram-styles.mmd"
+    },
+    {
+      "identity": "sha256:5ff3bd5cec3b6ad239ea1fa8676a2fb3cfae1a3ee8fb22876a96112de065727e",
+      "path": "skills/design/references/architecture-view-examples.md"
+    },
+    {
+      "identity": "sha256:7179b4f48e6ba5a1503237f58875f0dc5fe8cdc2c7e77f277c6debee714387b8",
+      "path": "skills/design/references/boundary-first-feature-authoring-v1.md"
+    },
+    {
+      "identity": "sha256:89337cf5da8462ad2afa0c50e04fb7233beea7ce030a049fa3a1695fc57ea2d0",
+      "path": "skills/design/references/boundary-first-method-v1.md"
+    },
+    {
+      "identity": "sha256:fdc363ed6e0ccdf501c451598daaf38691ac6e8e85397cb5cad64fe13a09cc9e",
+      "path": "skills/design/references/governed-design-authoring.md"
+    },
+    {
+      "identity": "sha256:5d27d9865afc3dafcb7852910504450309c06a751826e96eab6b696c3967e443",
+      "path": "skills/design/references/legacy-source-reconciliation.md"
+    },
+    {
+      "identity": "sha256:5ae252fdf0c0eaf8496b90480a168bf4c348799d5fa288e8e2e3ea2def43f63e",
+      "path": "skills/design/references/model-authoring.md"
+    },
+    {
+      "identity": "sha256:bbff5f36ced2f5e0ddc648a78278e378d81990b0266e0a7172b28d524a4da3cb",
+      "path": "skills/design/references/system-composition.md"
+    },
+    {
+      "identity": "sha256:92b7b4ce21ea27d6b7c516c4b4fd9f0af495da69e7b007230969cd0c533509f7",
+      "path": "skills/design/references/technical-design.md"
+    },
+    {
+      "identity": "sha256:8b0a4b44f27de8c2d24ea21344b75594d5f5c9a247f91d42390068f96d4bf998",
+      "path": "skills/design/references/test-quality.md"
+    },
+    {
+      "identity": "sha256:efa0d878731c3061d8d6e1abe3bd10a09350ae6a007434b69cb6ca66dc36e6d9",
+      "path": "skills/explore/SKILL.md"
+    },
+    {
+      "identity": "sha256:563ac2485aae1b87bd810a39088248d98c9ad0c5ad35382f1453ef770cd0834c",
+      "path": "skills/explore/assets/exploration-skeleton.md"
+    },
+    {
+      "identity": "sha256:34e7f9f8700cc36cbd75d5c738960fea850597c8c0984f029fd7513757045ffb",
+      "path": "skills/explore/references/discovery-support.md"
+    },
+    {
+      "identity": "sha256:453fab982d0f956cc5a0da6aab90ca426a8221952bcf0b97a52c2b67e857d1cd",
+      "path": "skills/explore/references/high-impact-decision-method.md"
+    },
+    {
+      "identity": "sha256:b675f6ba638dc741930c52f88037b3eeff3759996c6fafd1b2a2f2d68b64d0d3",
+      "path": "skills/explore/references/option-discovery-methods.md"
+    },
+    {
+      "identity": "sha256:ca44a09944d4fca982dd831d270144cc61652e9f09e3cf4d62f209d70eb2a068",
+      "path": "skills/implement/SKILL.md"
+    },
+    {
+      "identity": "sha256:c3b6dc912d2d0afd18fcc9a89a308aaa86cbe14d35f3e604846c703c35a2ee2d",
+      "path": "skills/implement/assets/implementation-result-skeleton.md"
+    },
+    {
+      "identity": "sha256:a01c95993574f75b9712ab5d671c55e7a9808e1593e870ea4fdcfea9c803ba98",
+      "path": "skills/implement/references/automated-review-correction.md"
+    },
+    {
+      "identity": "sha256:89337cf5da8462ad2afa0c50e04fb7233beea7ce030a049fa3a1695fc57ea2d0",
+      "path": "skills/implement/references/boundary-first-method-v1.md"
+    },
+    {
+      "identity": "sha256:4314ea671b56f89ea9e04db0f0e69d03a902950483d72f015aef045b4dabbd1c",
+      "path": "skills/implement/references/governed-implementation-recording.md"
+    },
+    {
+      "identity": "sha256:3fbdfcf4de28c316af271109d4798797d3b11c3a198478fad3e8c25ea507cc71",
+      "path": "skills/implement/references/planned-milestone-implementation.md"
+    },
+    {
+      "identity": "sha256:0ac3e3ccc77aee7e6d60d5d56dd61a1d7424aa3443910cb85d198993bdd82818",
+      "path": "skills/implement/references/review-reliance.md"
+    },
+    {
+      "identity": "sha256:7c7037e519b4558f8126460892ff33721026e05b2d8f7469b7ba86477ee81b9b",
+      "path": "skills/implement/references/test-maintenance.md"
+    },
+    {
+      "identity": "sha256:8b0a4b44f27de8c2d24ea21344b75594d5f5c9a247f91d42390068f96d4bf998",
+      "path": "skills/implement/references/test-quality.md"
+    },
+    {
+      "identity": "sha256:5d17ddfa86443e6d4c5db1751bee6d270a829524bde3959432bdb29d26b537c5",
+      "path": "skills/learn/SKILL.md"
+    },
+    {
+      "identity": "sha256:13ee89432023349ea066943da5951837bdd38c3ee6bfcfc28ebfd511af28abad",
+      "path": "skills/learn/references/session-method.md"
+    },
+    {
+      "identity": "sha256:6cd60cc830789db910f9b69df013a018c64554adfdd4b4fe3ca4137cf81af1ec",
+      "path": "skills/plan/SKILL.md"
+    },
+    {
+      "identity": "sha256:f461dd267b53fa6690f9ee8222e4fa8642e27a3cafe530fd8fa75bb2243bb5fb",
+      "path": "skills/plan/assets/decision-log-row.md"
+    },
+    {
+      "identity": "sha256:007c46c11105018bc0429b7bc85aef0f555b4ce654cdcce27f4f4657e0ba9c75",
+      "path": "skills/plan/assets/milestone.md"
+    },
+    {
+      "identity": "sha256:21061218b060228c8f3361e1f375008fb66d60b7cda9fc1347c0589f2c369828",
+      "path": "skills/plan/assets/plan-skeleton.md"
+    },
+    {
+      "identity": "sha256:c66bfce2f8ed9a0772aa3b53633f3d7819a46dfeafd9f241041373b7502f2346",
+      "path": "skills/plan/references/boundary-and-negative-verification.md"
+    },
+    {
+      "identity": "sha256:89337cf5da8462ad2afa0c50e04fb7233beea7ce030a049fa3a1695fc57ea2d0",
+      "path": "skills/plan/references/boundary-first-method-v1.md"
+    },
+    {
+      "identity": "sha256:458a50b4fc744502d8c85227f0ef71a7f202b6623799fe5c2b0128cbd4a7a3b0",
+      "path": "skills/plan/references/concurrency-and-retry-verification.md"
+    },
+    {
+      "identity": "sha256:2879a21841562b4b41273148b2212bf32a083c0f1d6e029c8633acb7d01eeb12",
+      "path": "skills/plan/references/cross-milestone-integration-verification.md"
+    },
+    {
+      "identity": "sha256:7da74e3c307eca561f6d09986a4273a2109e103c4625120f5341b594d51e869c",
+      "path": "skills/plan/references/failure-and-recovery-verification.md"
+    },
+    {
+      "identity": "sha256:1730af83099870547579b5a5d033bdb95dbd4d3abc100818c940bd948ea1931f",
+      "path": "skills/plan/references/governed-plan-authoring.md"
+    },
+    {
+      "identity": "sha256:6de936e6bccc3b7dfa724573bccd33fcab13f197d85db2bd489893433b6f1758",
+      "path": "skills/plan/references/manual-and-operational-evidence.md"
+    },
+    {
+      "identity": "sha256:0ef6fd47a39cc8bc73ce00c32a474d062942fd5586f8ed5d958be4c76de65a44",
+      "path": "skills/plan/references/migration-and-compatibility-verification.md"
+    },
+    {
+      "identity": "sha256:e19b99a0cb69b9051c6eeae20d76c4a0cf3925e8fd1686ceb6671c7749cc3dc5",
+      "path": "skills/plan/references/requirement-to-delivery-model.md"
+    },
+    {
+      "identity": "sha256:0ac3e3ccc77aee7e6d60d5d56dd61a1d7424aa3443910cb85d198993bdd82818",
+      "path": "skills/plan/references/review-reliance.md"
+    },
+    {
+      "identity": "sha256:b45e5908eb7acec77f39c451cb55c2d630da5a2a85502d16937b9e7347aaec48",
+      "path": "skills/plan/references/security-and-authority-verification.md"
+    },
+    {
+      "identity": "sha256:17e276d6f01f851b3002a00f44bddfee0dd1720878d562ebda9fd0b250f73641",
+      "path": "skills/plan/references/state-machine-verification.md"
+    },
+    {
+      "identity": "sha256:7c7037e519b4558f8126460892ff33721026e05b2d8f7469b7ba86477ee81b9b",
+      "path": "skills/plan/references/test-maintenance.md"
+    },
+    {
+      "identity": "sha256:8b0a4b44f27de8c2d24ea21344b75594d5f5c9a247f91d42390068f96d4bf998",
+      "path": "skills/plan/references/test-quality.md"
+    },
+    {
+      "identity": "sha256:b11edc2b87d5994110719cf29bfd50fa6fdebc6cff3eb4d831ac451e3f370db2",
+      "path": "skills/pr/SKILL.md"
+    },
+    {
+      "identity": "sha256:755b76db1d452b01ccacff8b9932644ee0094c6e1b6203d81bd6bd45bee658ae",
+      "path": "skills/pr/assets/pr-body-skeleton.md"
+    },
+    {
+      "identity": "sha256:56a63ca914b3ed0f5bffd9d3cef7b34506670f6f0fbc303f17a7bc20e1375de6",
+      "path": "skills/pr/references/governed-pr-readiness.md"
+    },
+    {
+      "identity": "sha256:0ac3e3ccc77aee7e6d60d5d56dd61a1d7424aa3443910cb85d198993bdd82818",
+      "path": "skills/pr/references/review-reliance.md"
+    },
+    {
+      "identity": "sha256:0ca90bb1cb731ffa6e702b82f77bccc3c5761154403e15cb6eb1157ec1d54013",
+      "path": "skills/project-map/SKILL.md"
+    },
+    {
+      "identity": "sha256:1bfc68c053deac5df9124c4f630492b263043ae65c4dd524fe964f4490ba3efe",
+      "path": "skills/project-map/assets/project-map-skeleton.md"
+    },
+    {
+      "identity": "sha256:d28ae2198d747e33b32e1fdbc2f0950c5f1b90e669f09a2d017ceae460b1b8ed",
+      "path": "skills/project-map/references/map-maintenance-and-area-coordination.md"
+    },
+    {
+      "identity": "sha256:fb016e07f7975b6a308494dd18fb044d43084df368c08e858349bd70191e9ea1",
+      "path": "skills/proposal-review/SKILL.md"
+    },
+    {
+      "identity": "sha256:d518a86f03d043d88e78e52bd2482882c81ffd82c486915be4567517ad5f4667",
+      "path": "skills/proposal-review/assets/material-finding.md"
+    },
+    {
+      "identity": "sha256:c2c95c45e032f1d4359ac2a0ddd784035658b621af84a4e04c483386d4b93754",
+      "path": "skills/proposal-review/assets/review-result-skeleton.md"
+    },
+    {
+      "identity": "sha256:4e6a02a1e769f2615829e00fc237d1996424719c5384afb9c6bf92023ac939bd",
+      "path": "skills/proposal-review/references/conditional-proposal-gates.md"
+    },
+    {
+      "identity": "sha256:a41826013c56d59f98abaab1909399582b7c771dcdb016b7f7c1f8560595bba8",
+      "path": "skills/proposal-review/references/proposal-review-recording-and-settlement.md"
+    },
+    {
+      "identity": "sha256:e19b99a0cb69b9051c6eeae20d76c4a0cf3925e8fd1686ceb6671c7749cc3dc5",
+      "path": "skills/proposal-review/references/requirement-to-delivery-model.md"
+    },
+    {
+      "identity": "sha256:82e302a3a915f10d05b229a3550f462ca6b35a9e3f7e892ec7a393733c2c64e0",
+      "path": "skills/proposal-review/references/review-assessment.md"
+    },
+    {
+      "identity": "sha256:0ac3e3ccc77aee7e6d60d5d56dd61a1d7424aa3443910cb85d198993bdd82818",
+      "path": "skills/proposal-review/references/review-reliance.md"
+    },
+    {
+      "identity": "sha256:d060a266b4c6b19c4000f43cad1d486ad1eec94ba96856a7696e2302341c06aa",
+      "path": "skills/proposal/SKILL.md"
+    },
+    {
+      "identity": "sha256:0c1a586ac38ed79a130404e0936cbf0a030060050b6278fab625e316a5642bc8",
+      "path": "skills/proposal/assets/proposal-skeleton.md"
+    },
+    {
+      "identity": "sha256:a2005e6f6e095ee33947e68b848ee9597730f4e1403580b63c9c549c13260cc0",
+      "path": "skills/proposal/references/governed-proposal-authoring.md"
+    },
+    {
+      "identity": "sha256:e19b99a0cb69b9051c6eeae20d76c4a0cf3925e8fd1686ceb6671c7749cc3dc5",
+      "path": "skills/proposal/references/requirement-to-delivery-model.md"
+    },
+    {
+      "identity": "sha256:f346b7a366e64de1b5046535132fd79381de77c9fcdf599363500229034476fa",
+      "path": "skills/proposal/references/strategic-and-scope-gates.md"
+    },
+    {
+      "identity": "sha256:8c515351026597bf999020bf25ae493df4429e21bc0f6b7d341a4ef975c01ecd",
+      "path": "skills/research/SKILL.md"
+    },
+    {
+      "identity": "sha256:0af8d7e88d3b2c3e11c816a487e05741ecae1f2688142df75b051128a538e6ca",
+      "path": "skills/research/assets/research-skeleton.md"
+    },
+    {
+      "identity": "sha256:34e7f9f8700cc36cbd75d5c738960fea850597c8c0984f029fd7513757045ffb",
+      "path": "skills/research/references/discovery-support.md"
+    },
+    {
+      "identity": "sha256:c4889513a95a779796e72db751ed6704fc6e7cf5b23acba7d4a0a602c282bba4",
+      "path": "skills/research/references/experiment-and-confidence-method.md"
+    },
+    {
+      "identity": "sha256:96db28c08f5bb5e80ddf2840ed3606e8af5f296aff7a433e762d5b5739635259",
+      "path": "skills/research/references/source-and-repository-method.md"
+    },
+    {
+      "identity": "sha256:527638e5a352819a0efa13cd743b968b271f11097634ac600b986a8cceff510a",
+      "path": "skills/route/SKILL.md"
+    },
+    {
+      "identity": "sha256:89337cf5da8462ad2afa0c50e04fb7233beea7ce030a049fa3a1695fc57ea2d0",
+      "path": "skills/route/references/boundary-first-method-v1.md"
+    },
+    {
+      "identity": "sha256:e6069cfc3b63578853a5622931146407af99861e0d2d85f96049738d72838e5c",
+      "path": "skills/route/references/bounded-workflow-automation.md"
+    },
+    {
+      "identity": "sha256:2a5e4c1a580e69fbc57dd5e17f5c191f891263e3ee9ec389fee876c84f0aeef8",
+      "path": "skills/route/references/governed-lifecycle-routing.md"
+    },
+    {
+      "identity": "sha256:0ac3e3ccc77aee7e6d60d5d56dd61a1d7424aa3443910cb85d198993bdd82818",
+      "path": "skills/route/references/review-reliance.md"
+    },
+    {
+      "identity": "sha256:7c7037e519b4558f8126460892ff33721026e05b2d8f7469b7ba86477ee81b9b",
+      "path": "skills/route/references/test-maintenance.md"
+    },
+    {
+      "identity": "sha256:8b0a4b44f27de8c2d24ea21344b75594d5f5c9a247f91d42390068f96d4bf998",
+      "path": "skills/route/references/test-quality.md"
+    },
+    {
+      "identity": "sha256:620e48e9a618d3947eb7aaf43a1669cb90baa3dea063aa7bc79819cff8d1d6fc",
+      "path": "skills/verify/SKILL.md"
+    },
+    {
+      "identity": "sha256:0555d0faa7bd43db14c8432efbaca9499bb8679c3512e1ebaff23a67ce595a16",
+      "path": "skills/verify/assets/verify-report-skeleton.md"
+    },
+    {
+      "identity": "sha256:89337cf5da8462ad2afa0c50e04fb7233beea7ce030a049fa3a1695fc57ea2d0",
+      "path": "skills/verify/references/boundary-first-method-v1.md"
+    },
+    {
+      "identity": "sha256:920ba4df53ff35ac846dfc6f43ab562ef33c494b7b91c9ebd398978901009543",
+      "path": "skills/verify/references/branch-readiness-verification.md"
+    },
+    {
+      "identity": "sha256:40c445c52193a4bc3bd7c09298942b74b75c428fbaba6608cd634641314cf8f2",
+      "path": "skills/verify/references/evidence-applicability.md"
+    },
+    {
+      "identity": "sha256:ce9a29eac445c15368448d6cab974080b1b2dda8ae81478748af95c36003a6b8",
+      "path": "skills/verify/references/final-impact-analysis.md"
+    },
+    {
+      "identity": "sha256:616c6d655d325b6e21398bde8b98627bf76d5a3d9cccb39496cc4bb16082f490",
+      "path": "skills/verify/references/governed-verification-recording.md"
+    },
+    {
+      "identity": "sha256:e19b99a0cb69b9051c6eeae20d76c4a0cf3925e8fd1686ceb6671c7749cc3dc5",
+      "path": "skills/verify/references/requirement-to-delivery-model.md"
+    },
+    {
+      "identity": "sha256:0ac3e3ccc77aee7e6d60d5d56dd61a1d7424aa3443910cb85d198993bdd82818",
+      "path": "skills/verify/references/review-reliance.md"
+    },
+    {
+      "identity": "sha256:d2e875322c6fe4a133a46b2a7994160793bbc6ed8cff6ceffcc0843c0193c693",
+      "path": "skills/verify/references/successful-explanation.md"
+    },
+    {
+      "identity": "sha256:7c7037e519b4558f8126460892ff33721026e05b2d8f7469b7ba86477ee81b9b",
+      "path": "skills/verify/references/test-maintenance.md"
+    },
+    {
+      "identity": "sha256:8b0a4b44f27de8c2d24ea21344b75594d5f5c9a247f91d42390068f96d4bf998",
+      "path": "skills/verify/references/test-quality.md"
+    },
+    {
+      "identity": "sha256:60c1478b79ccef8cdfe902a0fdcb2857c06b20caa8201463cd382f8937e5d05c",
+      "path": "skills/vision/SKILL.md"
+    },
+    {
+      "identity": "sha256:898bfed1f88674ef570af3928c7e5927daa4c40c8b9d8cf27e4e104bf2c12462",
+      "path": "skills/vision/assets/strategic-positioning-skeleton.md"
+    },
+    {
+      "identity": "sha256:1e94ae8b324ea1f3a68584c1d93ccd118c961147656ac9cfaea8f85c17fc666c",
+      "path": "skills/vision/assets/vision-skeleton.md"
+    },
+    {
+      "identity": "sha256:535e535565e3585e4d62de1b870c972d10173a0ea1e04151f0c8856b37872fae",
+      "path": "skills/vision/references/readme-vision-sync.md"
+    },
+    {
+      "identity": "sha256:84ca0d0a9dcab0d229cd7499f562b9e34849c3a3a696af8260cf8211697c269d",
+      "path": "skills/vision/references/strategic-vision-authoring.md"
+    },
+    {
+      "identity": "sha256:c18ccff73157195652ddad80e59446e1cfb1031e981712b9121413d47875b69f",
+      "path": "templates/shared/boundary-first-compact-scan.md"
+    },
+    {
+      "identity": "sha256:7179b4f48e6ba5a1503237f58875f0dc5fe8cdc2c7e77f277c6debee714387b8",
+      "path": "templates/shared/boundary-first-feature-authoring-v1.md"
+    },
+    {
+      "identity": "sha256:89337cf5da8462ad2afa0c50e04fb7233beea7ce030a049fa3a1695fc57ea2d0",
+      "path": "templates/shared/boundary-first-method-v1.md"
+    },
+    {
+      "identity": "sha256:ec8e8239c642bf340c4c8aba2105ae9783bced35230bb5bf6501b7b931e6cc4d",
+      "path": "templates/shared/boundary-first-proof-v1.md"
+    },
+    {
+      "identity": "sha256:34e7f9f8700cc36cbd75d5c738960fea850597c8c0984f029fd7513757045ffb",
+      "path": "templates/shared/discovery-support.md"
+    },
+    {
+      "identity": "sha256:5c8b0698837d11b7d7ca75b7b99a905747bd970ad4a5a1d1d154d01ce0e8dc03",
+      "path": "templates/shared/evidence-collection-efficiency.md"
+    },
+    {
+      "identity": "sha256:e19b99a0cb69b9051c6eeae20d76c4a0cf3925e8fd1686ceb6671c7749cc3dc5",
+      "path": "templates/shared/requirement-to-delivery-model.md"
+    },
+    {
+      "identity": "sha256:82e302a3a915f10d05b229a3550f462ca6b35a9e3f7e892ec7a393733c2c64e0",
+      "path": "templates/shared/review-assessment.md"
+    },
+    {
+      "identity": "sha256:b52c7ee1d217eb65a5db649dc8f945c11d5b9907a049690cad99ffbc335b8512",
+      "path": "templates/shared/review-isolation-and-recording.md"
+    },
+    {
+      "identity": "sha256:0ac3e3ccc77aee7e6d60d5d56dd61a1d7424aa3443910cb85d198993bdd82818",
+      "path": "templates/shared/review-reliance.md"
+    },
+    {
+      "identity": "sha256:7c7037e519b4558f8126460892ff33721026e05b2d8f7469b7ba86477ee81b9b",
+      "path": "templates/shared/test-maintenance.md"
+    },
+    {
+      "identity": "sha256:8b0a4b44f27de8c2d24ea21344b75594d5f5c9a247f91d42390068f96d4bf998",
+      "path": "templates/shared/test-quality.md"
+    },
+    {
+      "identity": "sha256:0b4c540a94b98c99cd936df2f0141727eef6958b53a20e02f47c1411dac0753b",
+      "path": "tests/fixtures/skills/duplicate-name/first/SKILL.md"
+    },
+    {
+      "identity": "sha256:4df73a9a8ffc9555c0ce5df4b3b1fd8b03e4bdfd83195f5246630836f9c3b70f",
+      "path": "tests/fixtures/skills/duplicate-name/second/SKILL.md"
+    },
+    {
+      "identity": "sha256:6d6e7b1bdba20512d9e73a23c8d62f84e3ec79908fb763c90be682e49adf66b9",
+      "path": "tests/fixtures/skills/missing-description/SKILL.md"
+    },
+    {
+      "identity": "sha256:4fe7eb7549dbc723b1c1c6c073bc664e87a6d5106be4129544e43d0092b0b988",
+      "path": "tests/fixtures/skills/missing-expected-output/SKILL.md"
+    },
+    {
+      "identity": "sha256:cd5991b3a0f6ac4786311e7d262a85c1398067206ee67797f8e5ff1ce6ef0ae4",
+      "path": "tests/fixtures/skills/missing-name/SKILL.md"
+    },
+    {
+      "identity": "sha256:e3ff020955bc8e95ccb13270fdecceb89c4a8226eeecedab24f73eae7e65f0a8",
+      "path": "tests/fixtures/skills/missing-skill-file/empty-skill/.gitkeep"
+    },
+    {
+      "identity": "sha256:a9f4a7a12411b63f6065a4d3a9244de8a5acacde15aba6dab715f5762e523d4a",
+      "path": "tests/fixtures/skills/missing-skill-file/valid-sibling/SKILL.md"
+    },
+    {
+      "identity": "sha256:f1513ddf331abd81214b448275227083f053bc56234e708b568bfb6e516ea8f6",
+      "path": "tests/fixtures/skills/missing-title/SKILL.md"
+    },
+    {
+      "identity": "sha256:a1a489010c75b16aab16c50ec8b0c72e52b6ee5220333540d5df8ac6c6ad0ce5",
+      "path": "tests/fixtures/skills/placeholder-text/SKILL.md"
+    },
+    {
+      "identity": "sha256:356437c2babce16774471b576a2d2647d66f3b56147675936b877d59f4cea585",
+      "path": "tests/fixtures/skills/project-map-contract/valid/SKILL.md"
+    },
+    {
+      "identity": "sha256:857cf5c7039f1db7a85bb41552feacd06873373509bb9e012edd72eafe5dbe46",
+      "path": "tests/fixtures/skills/project-map-contract/valid/assets/project-map-skeleton.md"
+    },
+    {
+      "identity": "sha256:aeb66d38616a73285a0c594fe14577fa3ef80b083bf80287fa0329d7fac4354f",
+      "path": "tests/fixtures/skills/published-design/description-too-long/SKILL.md"
+    },
+    {
+      "identity": "sha256:1be200cd2da2582d71a0f081e45ab2ec359aad1ef992f58050ee9b12effa9820",
+      "path": "tests/fixtures/skills/published-design/generated-output-presence/missing-asset/canonical/proposal/SKILL.md"
+    },
+    {
+      "identity": "sha256:5f77556e23b38f9b0fb7c89e6e46103d3b847a5d8808699c26ae4faddc8e0432",
+      "path": "tests/fixtures/skills/published-design/generated-output-presence/missing-asset/canonical/proposal/assets/proposal-skeleton.md"
+    },
+    {
+      "identity": "sha256:611728df9c54ff5cd44aed821c7bc4753bc5662f85ac7d8149eef2980cec404d",
+      "path": "tests/fixtures/skills/published-design/generated-output-presence/missing-asset/generated/proposal/SKILL.md"
+    },
+    {
+      "identity": "sha256:1be200cd2da2582d71a0f081e45ab2ec359aad1ef992f58050ee9b12effa9820",
+      "path": "tests/fixtures/skills/published-design/generated-output-presence/valid/canonical/proposal/SKILL.md"
+    },
+    {
+      "identity": "sha256:5f77556e23b38f9b0fb7c89e6e46103d3b847a5d8808699c26ae4faddc8e0432",
+      "path": "tests/fixtures/skills/published-design/generated-output-presence/valid/canonical/proposal/assets/proposal-skeleton.md"
+    },
+    {
+      "identity": "sha256:611728df9c54ff5cd44aed821c7bc4753bc5662f85ac7d8149eef2980cec404d",
+      "path": "tests/fixtures/skills/published-design/generated-output-presence/valid/generated/proposal/SKILL.md"
+    },
+    {
+      "identity": "sha256:5f77556e23b38f9b0fb7c89e6e46103d3b847a5d8808699c26ae4faddc8e0432",
+      "path": "tests/fixtures/skills/published-design/generated-output-presence/valid/generated/proposal/assets/proposal-skeleton.md"
+    },
+    {
+      "identity": "sha256:22e264017c4c5e215cdc0c6939815d943d5fdc259ba913384aaba3343f803033",
+      "path": "tests/fixtures/skills/published-design/missing-resource-map/SKILL.md"
+    },
+    {
+      "identity": "sha256:aac770652db67f982d3ac2bfa4925d7feae9bb7f8a2076bf0685738a1c06f728",
+      "path": "tests/fixtures/skills/published-design/missing-resource-map/references/detail.md"
+    },
+    {
+      "identity": "sha256:a7401a7f836d0c8adc6080f789e2fcccc570e87b666c7c86a1db940a4da3bb79",
+      "path": "tests/fixtures/skills/published-design/packaged-script-missing-failure/SKILL.md"
+    },
+    {
+      "identity": "sha256:688f11c193a35df1d5b293a444efdc041c1fd879e0fd693c285abbbf1fe6d1c6",
+      "path": "tests/fixtures/skills/published-design/packaged-script-missing-failure/scripts/check.py"
+    },
+    {
+      "identity": "sha256:bd2c83dde5dedbd1387cf42b5bb480ae4fdd5f1744cca6a00b07867022034268",
+      "path": "tests/fixtures/skills/published-design/packaged-script-resource-map/SKILL.md"
+    },
+    {
+      "identity": "sha256:688f11c193a35df1d5b293a444efdc041c1fd879e0fd693c285abbbf1fe6d1c6",
+      "path": "tests/fixtures/skills/published-design/packaged-script-resource-map/scripts/validate_output.py"
+    },
+    {
+      "identity": "sha256:3f6016ae1fbaae2e69baa3940982fec2821d6aaa839445590cfcd252f157bc29",
+      "path": "tests/fixtures/skills/published-design/packaged-script-valid/SKILL.md"
+    },
+    {
+      "identity": "sha256:688f11c193a35df1d5b293a444efdc041c1fd879e0fd693c285abbbf1fe6d1c6",
+      "path": "tests/fixtures/skills/published-design/packaged-script-valid/scripts/check.py"
+    },
+    {
+      "identity": "sha256:fbd90168a1283623b3035dcac9c256a98daedc296723fa0bb22c26e0afeb3c2b",
+      "path": "tests/fixtures/skills/published-design/plan-assets-fingerprint-mismatch/SKILL.md"
+    },
+    {
+      "identity": "sha256:bb1c9db48d12b29c13034674299b8f37ea2c6df3a655d012863d924502801be4",
+      "path": "tests/fixtures/skills/published-design/plan-assets-fingerprint-mismatch/assets/decision-log-row.md"
+    },
+    {
+      "identity": "sha256:0f04ec21508f0df156e23105849799631007526f8ec5860eec47479a3ac571a9",
+      "path": "tests/fixtures/skills/published-design/plan-assets-fingerprint-mismatch/assets/milestone.md"
+    },
+    {
+      "identity": "sha256:0a59483c21ee8590009b4ef478f8f7353244dfefe0d72726e21a5b3e32f99f45",
+      "path": "tests/fixtures/skills/published-design/plan-assets-fingerprint-mismatch/assets/plan-skeleton.md"
+    },
+    {
+      "identity": "sha256:38ad4b613ca4a0824dfcd11a70367e35cb0e315cc0a6423603be4dba42c7b94e",
+      "path": "tests/fixtures/skills/published-design/plan-assets-missing-approved-asset/SKILL.md"
+    },
+    {
+      "identity": "sha256:7f6e8be4e324336b8b131483283f01516b8c103df644b16502f041e09248b7ef",
+      "path": "tests/fixtures/skills/published-design/plan-assets-missing-approved-asset/assets/milestone.md"
+    },
+    {
+      "identity": "sha256:0a59483c21ee8590009b4ef478f8f7353244dfefe0d72726e21a5b3e32f99f45",
+      "path": "tests/fixtures/skills/published-design/plan-assets-missing-approved-asset/assets/plan-skeleton.md"
+    },
+    {
+      "identity": "sha256:7f08a42a5f935e2f74945687150a3b10555a3d1fb6c8e9ad691afe0a68c4aba0",
+      "path": "tests/fixtures/skills/published-design/plan-assets-missing-fields/SKILL.md"
+    },
+    {
+      "identity": "sha256:bb1c9db48d12b29c13034674299b8f37ea2c6df3a655d012863d924502801be4",
+      "path": "tests/fixtures/skills/published-design/plan-assets-missing-fields/assets/decision-log-row.md"
+    },
+    {
+      "identity": "sha256:7f6e8be4e324336b8b131483283f01516b8c103df644b16502f041e09248b7ef",
+      "path": "tests/fixtures/skills/published-design/plan-assets-missing-fields/assets/milestone.md"
+    },
+    {
+      "identity": "sha256:0a59483c21ee8590009b4ef478f8f7353244dfefe0d72726e21a5b3e32f99f45",
+      "path": "tests/fixtures/skills/published-design/plan-assets-missing-fields/assets/plan-skeleton.md"
+    },
+    {
+      "identity": "sha256:6ef837c08aa129f41c188dcdfa3e12dc2b14d4cde8e06745ea2628b270c2fffb",
+      "path": "tests/fixtures/skills/published-design/plan-assets-missing-metadata/SKILL.md"
+    },
+    {
+      "identity": "sha256:bb1c9db48d12b29c13034674299b8f37ea2c6df3a655d012863d924502801be4",
+      "path": "tests/fixtures/skills/published-design/plan-assets-missing-metadata/assets/decision-log-row.md"
+    },
+    {
+      "identity": "sha256:e22b8614fd5b8cb81ea8ca982d7d766e8f8d87318c4850b263651c8f863dd4bc",
+      "path": "tests/fixtures/skills/published-design/plan-assets-missing-metadata/assets/milestone.md"
+    },
+    {
+      "identity": "sha256:0a59483c21ee8590009b4ef478f8f7353244dfefe0d72726e21a5b3e32f99f45",
+      "path": "tests/fixtures/skills/published-design/plan-assets-missing-metadata/assets/plan-skeleton.md"
+    },
+    {
+      "identity": "sha256:73a18e6a100e8eb3a30854dd3f36ca8b906cdf5774ca3bfb9c45e80962f5f716",
+      "path": "tests/fixtures/skills/published-design/plan-assets-missing-placeholder/SKILL.md"
+    },
+    {
+      "identity": "sha256:bb1c9db48d12b29c13034674299b8f37ea2c6df3a655d012863d924502801be4",
+      "path": "tests/fixtures/skills/published-design/plan-assets-missing-placeholder/assets/decision-log-row.md"
+    },
+    {
+      "identity": "sha256:94f3f6c354797ce6ad76e31df3c77bf949bdec1ac618167458acd620de4766f4",
+      "path": "tests/fixtures/skills/published-design/plan-assets-missing-placeholder/assets/milestone.md"
+    },
+    {
+      "identity": "sha256:0a59483c21ee8590009b4ef478f8f7353244dfefe0d72726e21a5b3e32f99f45",
+      "path": "tests/fixtures/skills/published-design/plan-assets-missing-placeholder/assets/plan-skeleton.md"
+    },
+    {
+      "identity": "sha256:e9d967a2ad6afe9bf107c6d800da33080e03632682d4487362587e9b3af48c0c",
+      "path": "tests/fixtures/skills/published-design/plan-assets-missing-resource-map-entry/SKILL.md"
+    },
+    {
+      "identity": "sha256:653596574393b7dd166c0aed011151b8bab3c54f4317140baf96fab757af9abc",
+      "path": "tests/fixtures/skills/published-design/plan-assets-missing-resource-map-entry/assets/decision-log-row.md"
+    },
+    {
+      "identity": "sha256:a93379463cb7bd080e0bae8aac635f8e7ac27aba76afcaa6ad18facaf9e83bd5",
+      "path": "tests/fixtures/skills/published-design/plan-assets-missing-resource-map-entry/assets/milestone.md"
+    },
+    {
+      "identity": "sha256:7c8005dd2f4f7de1645b1b6b48e9594f5754063c8bbab6967dc28e727033d663",
+      "path": "tests/fixtures/skills/published-design/plan-assets-missing-resource-map-entry/assets/plan-skeleton.md"
+    },
+    {
+      "identity": "sha256:aadc27b69a1e67a0631b4ea3fa9b77a2ef8fd1ab6c98b45231729eed7d636d37",
+      "path": "tests/fixtures/skills/published-design/plan-assets-non-copy-verb/SKILL.md"
+    },
+    {
+      "identity": "sha256:bb1c9db48d12b29c13034674299b8f37ea2c6df3a655d012863d924502801be4",
+      "path": "tests/fixtures/skills/published-design/plan-assets-non-copy-verb/assets/decision-log-row.md"
+    },
+    {
+      "identity": "sha256:7f6e8be4e324336b8b131483283f01516b8c103df644b16502f041e09248b7ef",
+      "path": "tests/fixtures/skills/published-design/plan-assets-non-copy-verb/assets/milestone.md"
+    },
+    {
+      "identity": "sha256:0a59483c21ee8590009b4ef478f8f7353244dfefe0d72726e21a5b3e32f99f45",
+      "path": "tests/fixtures/skills/published-design/plan-assets-non-copy-verb/assets/plan-skeleton.md"
+    },
+    {
+      "identity": "sha256:7c67d2c9406257b2b76f74dc66755aef1822b6733515dc855bf261bd0d5de32c",
+      "path": "tests/fixtures/skills/published-design/plan-assets-optional-status/SKILL.md"
+    },
+    {
+      "identity": "sha256:bb1c9db48d12b29c13034674299b8f37ea2c6df3a655d012863d924502801be4",
+      "path": "tests/fixtures/skills/published-design/plan-assets-optional-status/assets/decision-log-row.md"
+    },
+    {
+      "identity": "sha256:1f5c01d8b2dac5991c005a98de4d038999999139e7f35ef07cf9e9c9fe467a0a",
+      "path": "tests/fixtures/skills/published-design/plan-assets-optional-status/assets/milestone.md"
+    },
+    {
+      "identity": "sha256:0a59483c21ee8590009b4ef478f8f7353244dfefe0d72726e21a5b3e32f99f45",
+      "path": "tests/fixtures/skills/published-design/plan-assets-optional-status/assets/plan-skeleton.md"
+    },
+    {
+      "identity": "sha256:e293df411be8f78864b6d87e5e66f1867923ef0b827efbede668817d9c4b2bbb",
+      "path": "tests/fixtures/skills/published-design/plan-assets-root-dependency/SKILL.md"
+    },
+    {
+      "identity": "sha256:bb1c9db48d12b29c13034674299b8f37ea2c6df3a655d012863d924502801be4",
+      "path": "tests/fixtures/skills/published-design/plan-assets-root-dependency/assets/decision-log-row.md"
+    },
+    {
+      "identity": "sha256:a8b909b99c258ee8716f6812a23fad7f330ab88e1cc168a0e6acf52c117b94c6",
+      "path": "tests/fixtures/skills/published-design/plan-assets-root-dependency/assets/milestone.md"
+    },
+    {
+      "identity": "sha256:0a59483c21ee8590009b4ef478f8f7353244dfefe0d72726e21a5b3e32f99f45",
+      "path": "tests/fixtures/skills/published-design/plan-assets-root-dependency/assets/plan-skeleton.md"
+    },
+    {
+      "identity": "sha256:34c54aacd214d92911f405226b6b700005b17a63f23715dbad519c12fe6a6e81",
+      "path": "tests/fixtures/skills/published-design/plan-assets-section-mismatch/SKILL.md"
+    },
+    {
+      "identity": "sha256:bb1c9db48d12b29c13034674299b8f37ea2c6df3a655d012863d924502801be4",
+      "path": "tests/fixtures/skills/published-design/plan-assets-section-mismatch/assets/decision-log-row.md"
+    },
+    {
+      "identity": "sha256:7f6e8be4e324336b8b131483283f01516b8c103df644b16502f041e09248b7ef",
+      "path": "tests/fixtures/skills/published-design/plan-assets-section-mismatch/assets/milestone.md"
+    },
+    {
+      "identity": "sha256:e2183017707c3df3842d2124955a69bf708b41ed67c46db13ee06014a8d1c8c9",
+      "path": "tests/fixtures/skills/published-design/plan-assets-section-mismatch/assets/plan-skeleton.md"
+    },
+    {
+      "identity": "sha256:ba66089f629c0365359a06205e57f000279a2fe692bb8d93fe63624fbf111423",
+      "path": "tests/fixtures/skills/published-design/plan-assets-valid/SKILL.md"
+    },
+    {
+      "identity": "sha256:653596574393b7dd166c0aed011151b8bab3c54f4317140baf96fab757af9abc",
+      "path": "tests/fixtures/skills/published-design/plan-assets-valid/assets/decision-log-row.md"
+    },
+    {
+      "identity": "sha256:a93379463cb7bd080e0bae8aac635f8e7ac27aba76afcaa6ad18facaf9e83bd5",
+      "path": "tests/fixtures/skills/published-design/plan-assets-valid/assets/milestone.md"
+    },
+    {
+      "identity": "sha256:467553a6ae6c6e423317588a0ce942d934ff15ac38c873b09f2ebf3129d023c6",
+      "path": "tests/fixtures/skills/published-design/plan-assets-valid/assets/plan-skeleton.md"
+    },
+    {
+      "identity": "sha256:73eb27e1274248b7fc27f191f12522660452cd436437dff291f21c579692a11f",
+      "path": "tests/fixtures/skills/published-design/required-root-script-command/SKILL.md"
+    },
+    {
+      "identity": "sha256:9f89843bb24bdf3fb9f37f9b475b053c22155d96436ddaab04acd7229981616d",
+      "path": "tests/fixtures/skills/published-design/required-root-script/SKILL.md"
+    },
+    {
+      "identity": "sha256:cf0cf2bff1200fe1ffd8c145e7d22dca51375de32888d750ae36be866cc93a20",
+      "path": "tests/fixtures/skills/published-design/resource-map-missing-resource/SKILL.md"
+    },
+    {
+      "identity": "sha256:aac770652db67f982d3ac2bfa4925d7feae9bb7f8a2076bf0685738a1c06f728",
+      "path": "tests/fixtures/skills/published-design/resource-map-missing-resource/references/detail.md"
+    },
+    {
+      "identity": "sha256:70b5dcabf21debb71647b018469e98b86ca096357a2985bed4d59b3a6773c176",
+      "path": "tests/fixtures/skills/published-design/when-to-use-replaces-description/SKILL.md"
+    },
+    {
+      "identity": "sha256:bcc0f544afebf60dcc73a57731b6a25da7f7686398928437af530dbe8285eed2",
+      "path": "tests/fixtures/skills/skill-readability/duplicate-closed-enum/SKILL.md"
+    },
+    {
+      "identity": "sha256:dca5724e8a63d84ac45719c5a4b2f61a1b40cc8f0be54dbc0d21fdb56766ca3b",
+      "path": "tests/fixtures/skills/skill-readability/invalid-schema-version/SKILL.md"
+    },
+    {
+      "identity": "sha256:18a50d0febdb56c3b4f30ea06aa9f4d4392d00bf6864cbf50a3089a93ea0c988",
+      "path": "tests/fixtures/skills/skill-readability/invalid-stage/SKILL.md"
+    },
+    {
+      "identity": "sha256:fd7c5290935d41bfedebc9d2ced5bc08c199d6f11abedc62f50f94e2693d6111",
+      "path": "tests/fixtures/skills/skill-readability/missing-output-skeleton/SKILL.md"
+    },
+    {
+      "identity": "sha256:10ea5e260a38e26afc65f69082a53b276fdf28fdda8e0a986d5e96ec228bd458",
+      "path": "tests/fixtures/skills/skill-readability/missing-version/SKILL.md"
+    },
+    {
+      "identity": "sha256:073a6dc48c7e47c3dd4aa458631ad7de976829849a200aae5d5b1d93b2ec9679",
+      "path": "tests/fixtures/skills/skill-readability/missing-workflow-role-field/SKILL.md"
+    },
+    {
+      "identity": "sha256:0d443b91ae758d34cff6fedc1279d3ec9954fed57fd646b6f98f264951db1e4d",
+      "path": "tests/fixtures/skills/skill-readability/missing-workflow-role/SKILL.md"
+    },
+    {
+      "identity": "sha256:6740b12eaa8d4d3977589e5b5b90c96e3808d848c5af25c3d6d249572a358954",
+      "path": "tests/fixtures/skills/skill-readability/output-skeleton-without-placeholder/SKILL.md"
+    },
+    {
+      "identity": "sha256:e8ffb7667c6f9304d5962a659a1bf46691b4ca67f484d0bbbda7a4ca567adef0",
+      "path": "tests/fixtures/skills/skill-readability/required-internal-reference/SKILL.md"
+    },
+    {
+      "identity": "sha256:a7cf00c8f09438c6427c3f7b030843e246fe854d81c85548c7dbb15848d1366d",
+      "path": "tests/fixtures/skills/skill-readability/valid-pilot/SKILL.md"
+    },
+    {
+      "identity": "sha256:e8f58fb23739f304250c7964ed9840e512932fa17d0f075bfc00ac09bd31c0af",
+      "path": "tests/fixtures/skills/valid-basic/SKILL.md"
+    },
+    {
+      "identity": "sha256:f768f7e0fdfb277b30b6cdaaad398149b0e2fcce1cf496ab16f7cd4ce6800ed8",
+      "path": "tests/skill/review_independence_skill_phrases.py"
+    },
+    {
+      "identity": "sha256:2848fac640355c18e78beae17fc60d6826bd7121caaad4d33cd59809e2a25a63",
+      "path": "tests/skill/skill_cli_tests.py"
+    },
+    {
+      "identity": "sha256:460f8e5b57cb9f3440415497cf6b4f5e6ff117d3fd13a19430cdf45a9dc19ca8",
+      "path": "tests/skill/skill_contract_tests.py"
+    },
+    {
+      "identity": "sha256:c0df8f4cabeff098b08e651d1c27e5e3ea89cb8530d5313b46d9f0cd824d0ea0",
+      "path": "tests/skill/skill_guidance_tests.py"
+    },
+    {
+      "identity": "sha256:36f45b534fb375d585a881fcc9830b98218924672ef7affaf2f66e35f9230a0f",
+      "path": "tests/skill/test-skill-validator.py"
+    }
+  ],
+  "summary": "M1 approved: complete nineteen-skill audit, conditional recording relocation with fail-closed readers, current descriptions/PR rationale and justified test cleanup preserve supported obligations. No material finding remains.",
+  "target": "code"
+}

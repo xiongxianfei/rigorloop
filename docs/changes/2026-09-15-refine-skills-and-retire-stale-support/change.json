@@ -1,12 +1,12 @@
 {
   "activity": {
     "owner": {
-      "id": "codex-review-coordinator",
-      "role": "route"
+      "id": "codex-implement",
+      "role": "implement"
     },
-    "reason": "M1 implemented with stable canonical/component/full/candidate/local proof; independent full-package/test inventory review required before milestone completion or M2.",
-    "stage": "code-review",
-    "status": "ready"
+    "reason": "Independent m1-code-review approved exact164d4bbf with complete inventory and no findings. M1 closed; proceed to approved M2 query and validation support scope under existing authority through PR.",
+    "stage": "implement",
+    "status": "in-progress"
   },
   "applicability": [
     {
@@ -52,6 +52,15 @@
       },
       "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/delivery-review.json",
       "reason": "Independent complete assessment of the exact current sole primary-plan package against approved Design R2. No material correction remains; current only for this assessed allocation and authority.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "all-skills-m1-code-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/m1-code-review.json",
+      "reason": "Independent complete M1 assessment of exact frozen engineering164d4bbfe7e129376b99e6e7a54340e396545d58 and approved package/allocation; no unresolved M1 correction. Applies to this milestone only.",
       "value": "current"
     }
   ],
@@ -116,6 +125,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/delivery-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/m1-code-review.json"
     }
   ],
   "schema_version": 3,
@@ -134,7 +147,7 @@
         "VAL-SR-29",
         "VAL-SR-31"
       ],
-      "status": "in-progress"
+      "status": "completed"
     },
     {
       "id": "m2",
@@ -148,7 +161,7 @@
         "VAL-SR-30",
         "VAL-SR-31"
       ],
-      "status": "pending"
+      "status": "in-progress"
     },
     {
       "id": "m3",
