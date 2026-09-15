@@ -4,7 +4,7 @@
       "id": "codex-review-coordinator",
       "role": "route"
     },
-    "reason": "M6 support family and integrated inventory/package proof ready for independent m6-code-review; after acceptance require a distinct fresh whole-change Code Review, then Verify before PR.",
+    "reason": "All six implementation milestones have current independent approvals, including M4 correction rereview; original finding and CI blocker resolved by reporters. Begin distinct fresh final whole-change Code Review of original-base cumulative diff and all nineteen dispositions/TG-FINAL01–02. Full-range PR-mode proof running against frozen d59dcda2; no final Verify or PR claim yet.",
     "stage": "code-review",
     "status": "ready"
   },
@@ -124,6 +124,15 @@
       },
       "path": "docs/changes/2026-09-15-skill-simplification/reviews/m5-code-review.json",
       "reason": "Fresh independent full-family assessment against exact current Design/Delivery and M5 proof; two-line correction preserves obligations, retentions are substantive and current candidate evidence covers both adapters. No unresolved necessary M5 correction remains.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "independent-m6-review",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/m6-code-review.json",
+      "reason": "Fresh independent full M6 package and accepted inventory-disposition assessment against unchanged current Design/Delivery authority, complete current proof and actual final candidate. No unresolved necessary M6 correction remains; final holistic review remains distinct.",
       "value": "current"
     }
   ],
@@ -269,6 +278,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-15-skill-simplification/reviews/m5-code-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/m6-code-review.json"
     }
   ],
   "schema_version": 3,
@@ -344,7 +357,7 @@
         "SKL-SR-30",
         "SKL-SR-32"
       ],
-      "status": "in-progress"
+      "status": "completed"
     }
   ]
 }
