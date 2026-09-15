@@ -36,6 +36,17 @@
         }
       ],
       "summary": "Authoring checks passed on the exact final plan and navigation. Scoped CI exited 0 with current_records.validate, change_metadata.regression, change_metadata.validate and guide_system.validate passing; structural/allocation/link checks passed and staged whitespace check passed. Six implementation milestones allocate all 19 skills, with local proof, integration, recovery and distinct final Code Review/Verify. Work remains absent until approved Delivery Review. The existing advisory-file whole-changed-set validation limitation is allocated to M1/TG-06, not waived. This is plan-authoring evidence only, not Delivery approval, implementation proof or branch readiness."
+    },
+    {
+      "actor": {
+        "id": "codex-implementer",
+        "role": "implement"
+      },
+      "id": "m1-advisory-provenance",
+      "procedure": "Python compared git show COMMIT:PATH to current bytes; rg located exact path consumers. Constitution cleanup and approved plan TG-06; no selector exemption.",
+      "result": "passed",
+      "subjects": [],
+      "summary": "TG-06: Exact original advisory bytes are recoverable at commit 6ffd08e9cce0d3ab28090fab3b1570adbd50a84f, repository-relative path docs/reviews/2026-09-15-skill-simplification-proposal-review.md. Git show bytes equal original file before retirement. Current approval relies on registered proposal-review, design-review and delivery-review, never this advisory. Remaining mentions in Design/plan/review describe scoped cleanup provenance, not runtime inputs; no imports, packaging or generators consume it. Retire the unclassified live path. The deletion-only intermediate is not validation-ready; after cleanup commit run local source checks and full original-base-to-final-head validation. Original judgment remains unchanged in reachable Git history."
     }
   ],
   "schema_version": 3
