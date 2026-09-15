@@ -2019,6 +2019,146 @@
         }
       ],
       "summary": "Fresh TG-FINAL-02 candidate after M1 routing correction: exact full140 canonical package files across19 skills preserved in both adapters. Same disjoint family inventory in integrated-inventory (eight changed, eleven retained), now with corrected route actor and fresh package identities; earlier candidate hashes remain historical proof for their original bytes. Commands [[\"python\", \"scripts/build-adapters.py\", \"--version\", \"v1.0.0\", \"--output-dir\", \"/tmp/rigorloop-skill-final-corrected-as5xr5yh\"], [\"python\", \"scripts/validate-adapters.py\", \"--version\", \"v1.0.0\", \"--adapter-root\", \"/tmp/rigorloop-skill-final-corrected-as5xr5yh\", \"--clean-install-smoke\"]]; archive SHA256 {\"rigorloop-adapter-codex-v1.0.0.zip\": \"d4b312137b5791675c2094f11c5b2b2e5d7e4bbb0b55e5ac2e7b7bd3f225905c\", \"rigorloop-adapter-claude-v1.0.0.zip\": \"c56976532ed960f5150e40b9ab5744cd510345e85cd94c6fadbfcb0ad98b8e0e\"}. Actual build, archive validation and default all-mapped-resource clean-install checks passed. Resource-free Constitution remains included in all19 archive inventory; M5 actual Constitution installation evidence is applicable to its unchanged entrypoint bytes. Shared resources/assets unchanged; only new local implement/code-review recording refs and scoped source edits selected, no universal layout. V1 all19 passed in M6, pilot V1 refreshed after sole subsequent source change; final full-range CI and independent review still follow."
+    },
+    {
+      "actor": {
+        "id": "codex-implementer",
+        "role": "implement"
+      },
+      "id": "final-pr-validation",
+      "procedure": "Executed complete original-base/head PR-mode command under current CI-owned temporary release-integrity preparation, observed exit0 and all selected focused/boundary/broad outcomes. Current scoped record validation follows evidence append; inspect exact reviewed-source and evidence-only suffix separately. Actual final published archive identities and all140file subjects are in integrated-final-candidate.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:6faa52a99a86576f696ae723fc3fafce3553d8a8eae97a0a445327c818dd08b7",
+          "path": "docs/design/skill/skill.md"
+        },
+        {
+          "identity": "sha256:184fad139d1bca2db42db633841ab90cf9b284d69846dc48906a0b5c88089965",
+          "path": "docs/follow-ups.md"
+        },
+        {
+          "identity": "sha256:6b66922daf31401279d8fd5a9e12ed39df323715ec32e676bd13a996f856bb7f",
+          "path": "docs/plan.md"
+        },
+        {
+          "identity": "sha256:dda20558b508359cb33ebd15455f21c8a8975e47dcceb37ed64dc1336ac4638e",
+          "path": "docs/plans/2026-09-15-skill-simplification.md"
+        },
+        {
+          "identity": "sha256:fd389fd478a412bb091bbe5ca976bc42466769c0a3184c68eb30e8124959fc4a",
+          "path": "docs/proposals/2026-09-15-skill-simplification.md"
+        },
+        {
+          "identity": "sha256:5ccb37e68487fa495e9804cdc6471329c003b01b309cb08e68cc7c3e8d4c864f",
+          "path": "scripts/lib/validation/skill_validation.py"
+        },
+        {
+          "identity": "sha256:fe2934d930187290fb016138f203f7eef4a6b11714f6bc62eac9e73f7e3f15bf",
+          "path": "scripts/validate-guide-system.py"
+        },
+        {
+          "identity": "sha256:170ea2df25ee71ab3e27f26ab8290758d7a575bb1747d5b89c7eb45de7394dfc",
+          "path": "skills/bugfix/SKILL.md"
+        },
+        {
+          "identity": "sha256:9baf5a042084cd36d4748453529fc4ef6e46e9bdfe35bdf294ab9e458da14e84",
+          "path": "skills/ci-maintenance/SKILL.md"
+        },
+        {
+          "identity": "sha256:3d3392d6f0d8f31162d2e8160acac31f7af14039a9bf2daa7bd0a1a8a123f286",
+          "path": "skills/code-review/SKILL.md"
+        },
+        {
+          "identity": "sha256:456244060bca19154279328b27a3f254ddebadcf3ff24f155949f8d3c48e3674",
+          "path": "skills/code-review/references/governed-code-review-recording.md"
+        },
+        {
+          "identity": "sha256:78367de4baa67f068f99a05144103291857ddb2302be1631fd73ebe0048b8231",
+          "path": "skills/constitution/SKILL.md"
+        },
+        {
+          "identity": "sha256:aa47d716979b176f9ba898407e9e9b78aad13df100d90c063a9a51051d66f787",
+          "path": "skills/delivery-review/SKILL.md"
+        },
+        {
+          "identity": "sha256:f9ee51047c3a8c0cced45a9238d17f7341a7661563863b0380173883ece0fe18",
+          "path": "skills/design-review/SKILL.md"
+        },
+        {
+          "identity": "sha256:2298926b2f3844831548f4f10c9d58d408eaf32e4505a270e2c0bd643eef3fa4",
+          "path": "skills/design/SKILL.md"
+        },
+        {
+          "identity": "sha256:efa0d878731c3061d8d6e1abe3bd10a09350ae6a007434b69cb6ca66dc36e6d9",
+          "path": "skills/explore/SKILL.md"
+        },
+        {
+          "identity": "sha256:ca44a09944d4fca982dd831d270144cc61652e9f09e3cf4d62f209d70eb2a068",
+          "path": "skills/implement/SKILL.md"
+        },
+        {
+          "identity": "sha256:4314ea671b56f89ea9e04db0f0e69d03a902950483d72f015aef045b4dabbd1c",
+          "path": "skills/implement/references/governed-implementation-recording.md"
+        },
+        {
+          "identity": "sha256:5d17ddfa86443e6d4c5db1751bee6d270a829524bde3959432bdb29d26b537c5",
+          "path": "skills/learn/SKILL.md"
+        },
+        {
+          "identity": "sha256:5bef8bd9d85a7a1139bc20a4fb0e62ce2a2046f7bbd61fd64496bd4398cc7068",
+          "path": "skills/plan/SKILL.md"
+        },
+        {
+          "identity": "sha256:948e12262daf061361febfba9c3f3bd366576cd3403343fce6d5d50e51643128",
+          "path": "skills/pr/SKILL.md"
+        },
+        {
+          "identity": "sha256:0ca90bb1cb731ffa6e702b82f77bccc3c5761154403e15cb6eb1157ec1d54013",
+          "path": "skills/project-map/SKILL.md"
+        },
+        {
+          "identity": "sha256:fb016e07f7975b6a308494dd18fb044d43084df368c08e858349bd70191e9ea1",
+          "path": "skills/proposal-review/SKILL.md"
+        },
+        {
+          "identity": "sha256:d060a266b4c6b19c4000f43cad1d486ad1eec94ba96856a7696e2302341c06aa",
+          "path": "skills/proposal/SKILL.md"
+        },
+        {
+          "identity": "sha256:8c515351026597bf999020bf25ae493df4429e21bc0f6b7d341a4ef975c01ecd",
+          "path": "skills/research/SKILL.md"
+        },
+        {
+          "identity": "sha256:7ef76959ad5415890fffedead1af6fba55a39c849a8f9531329e855acd418143",
+          "path": "skills/route/SKILL.md"
+        },
+        {
+          "identity": "sha256:71e429d296885eb46f7c7e1903e6cc05b60c79d35e331a3a56d2b945fbaf2ef4",
+          "path": "skills/verify/SKILL.md"
+        },
+        {
+          "identity": "sha256:60c1478b79ccef8cdfe902a0fdcb2857c06b20caa8201463cd382f8937e5d05c",
+          "path": "skills/vision/SKILL.md"
+        },
+        {
+          "identity": "sha256:504cbe9317427874b32c61edff61ec901be155e619ae4362e95ebe07ff341997",
+          "path": "tests/engineering/validation/test-guide-system-validator.py"
+        },
+        {
+          "identity": "sha256:d2f7f243937243d480871fa551254f6c489c99482542294dc21c5f06ed4bbb17",
+          "path": "tests/skill/skill_contract_tests.py"
+        },
+        {
+          "identity": "sha256:e869294aff0baba44dd6414cf69f1cfbd1d67b34ae6cc5bde4b387aa01aa6800",
+          "path": "tests/skill/skill_guidance_tests.py"
+        },
+        {
+          "identity": "sha256:0e056f8b033eead8dc1899d27a3f62767940b8be3182a3f00e1b2cf75ce7c173",
+          "path": "tests/skill/test-skill-validator.py"
+        }
+      ],
+      "summary": "TG-FINAL01/02/06 supporting executed proof: bash scripts/ci.sh --mode pr --base 51833994a520bf29c9aae135e9405331cf76b755 --head de0e6cec (resolved de0e6cec98a2f485b04cf3fd09f08db8fb389f34) exited0. All selected checks passed; focused367.05s, boundary108.21s, boundary scope passed. Existing CI automatically prepared release-integrity source b1d4cd7ead92fa495c80bf98e2cff52e2e08617c from that exact head, candidate cc23737be64ad644b3d0c2aaeb220ca1bd45dcd5153e2628226eb4aa5b6de915, in an isolated temporary tree. Its broad-smoke-required release metadata selected the full preserved shared broad scope, including guide system, validators, schema/model/record/CLI, adapter full regression, release and validation-executor protection. The previously failed guide prerequisite and previously not-started dependents now passed; original final-pr-validation-failed remains true historical failure evidence, not a current failed check. No source/selector/guard bypass or publication occurred. Exact real source remains de0e6cec; subsequent commits contain attributable correction/package evidence, M1 independent rereview and workflow state only, with unchanged engineering bytes. Full original-base selector found no unclassified advisory path; original advisory remains recoverable in6ffd08e9. Local Nodev24.14.1/Python3.12.3. Hosted CI remains unobserved. Fresh finalwhole review and Verify are still required; this run is validation, not approval."
     }
   ],
   "schema_version": 3
