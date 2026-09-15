@@ -28,6 +28,22 @@
         }
       ],
       "summary": "Authored four-model refinement package with full inventory completion boundaries, five selected presentation changes, Code Review description correction, explicit query-helper withdrawal and sole Verify-rationale artifact. Structural/source reconciliation checks passed; independent Design Review remains required."
+    },
+    {
+      "actor": {
+        "id": "codex-design-author",
+        "role": "design"
+      },
+      "id": "design-decision-id-correction",
+      "procedure": "Searched CLI-DEC-08 across docs, skills, scripts, tests and package tests before assignment: no existing reference. Inspected current CLI-DEC-07 prose and retained v2 retirement plan; added a current decision row documenting that original single-v3-adapter, independent-transport and bounded-archive-recognition meaning. Renamed only the new query-helper decision to CLI-DEC-08. No historical plan/review/subject or CLI-SR-31 behavior changed; other three models unchanged. python scripts/validate-boundary-first.py --check --path docs/design/cli/cli.md passed structure/references; git diff --check passed. Original first-pass review committed before correction, with finding open for reporter disposition.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:46396ee3e8e0327d1ca4ca1485cf9f1802689acfe7fe0ec88e1cd4eddc2c644e",
+          "path": "docs/design/cli/cli.md"
+        }
+      ],
+      "summary": "Corrected skills-dr-01 without changing query-retirement behavior: preserve CLI-DEC-07 for v2 retirement and assign unused CLI-DEC-08 to query-helper withdrawal. Independent reporter disposition and package reassessment remain required."
     }
   ],
   "schema_version": 3
