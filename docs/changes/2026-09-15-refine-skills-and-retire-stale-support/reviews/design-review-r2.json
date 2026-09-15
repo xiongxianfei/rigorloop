@@ -1,5 +1,5 @@
 {
-  "assessment_scope": "First-pass formal Design Review of the exact registered Skill, Validation, CLI and Delivery Handoff models as one package, against the complete unchanged proposal and accepted proposal-review. Read each model in full and inspected the actual changed sections, prior decision use, selected source procedures, resource validators, query shim/tests, catalog/caller references and PR asset. Assessed all four requested goals, full-inventory completion boundary, cross-owner responsibilities, feasibility, compatibility, preservation and representative normal/exceptional outcomes. This is Design assessment, not the subsequent complete implementation-package or case-by-case support audit.",
+  "assessment_scope": "Round-two independent formal Design Review of the exact registered Skill, Validation, CLI and Delivery Handoff package, against unchanged approved proposal and proposal-review. Reassessed the corrected CLI decision table, its current and historical callers, first-pass finding and correction evidence, and all package interactions. Prior complete-model/source inspection is retained only for the affirmatively unchanged subjects; the complete package judgment here is new. All four user goals and the full-inventory completion boundary remain included.",
   "change_id": "2026-09-15-refine-skills-and-retire-stale-support",
   "contributors": [
     {
@@ -7,48 +7,14 @@
       "role": "design"
     }
   ],
-  "findings": [
-    {
-      "evidence": "Severity: medium. Scope: artifact-local. Affected artifact ID: cli. Owning stage: design. Location: docs/design/cli/cli.md:807 (new CLI-DEC-07 row), compared with line 751 in Removal and retained dependency map. The new row assigns CLI-DEC-07 to query-helper withdrawal, but line 751 already says CLI-DEC-07 selects a single stored adapter with independent transports and bounded archival header recognition. docs/plans/2026-09-11-retire-v2-record-format.md:61 allocates RF-DEC-08, CLI-DEC-07 to that earlier retirement. git show bd634da5:docs/design/cli/cli.md confirms the prior meaning. No original row need be present in the current decisions table for this stable referenced identity to remain occupied. Structural model checks pass but do not validate this semantic collision.",
-      "id": "skills-dr-01",
-      "owner": {
-        "id": "codex-design-author",
-        "role": "design"
-      },
-      "reporter": {
-        "id": "all-skills-design-reviewer",
-        "role": "review"
-      },
-      "required_outcome": "Preserve CLI-DEC-07 as the original v2-runtime-retirement decision and give query-helper withdrawal a distinct unused stable decision ID. Reconcile current references and provide an unambiguous current description of the preserved decision where needed; do not rewrite historical plans, reviews or judgments to the new meaning. Safe resolution: change only the owning CLI Design decision mapping/necessary current references, retain CLI-SR-31 and intended withdrawal behavior, check all current CLI-DEC references, run the affected model check, and return the revised exact package for independent reassessment. No upstream direction decision is required.",
-      "resolution": {
-        "actor": {
-          "id": "all-skills-design-reviewer",
-          "role": "review"
-        },
-        "evidence_refs": [
-          {
-            "id": "design-decision-id-correction",
-            "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/evidence.json"
-          }
-        ],
-        "rationale": "Independently inspected commit 11157599995298c26bb851e2c130f90e58c091ee and exact current CLI model. CLI-DEC-07 now explicitly preserves the original single-v3-adapter, independent-transport and bounded-archive-recognition decision, consistent with its unchanged line-751 reference and v2 retirement plan. Query withdrawal now uses CLI-DEC-08; git grep against pre-correction 4acf350a finds no prior use across docs/skills/scripts/tests/package tests. Only the CLI decision table changed in engineering content; CLI-SR-31, other models and historical plans/judgments are unchanged. Independently ran the CLI model structural check successfully. Required stable-identity preservation and distinct query-retirement meaning are satisfied; no residual risk or deferred work from this finding."
-      },
-      "state": "resolved",
-      "subjects": [
-        {
-          "identity": "sha256:ba79d93d064e42610611fe96e4e770b469a77c3e18491fc9f0fadcfaeefd28fd",
-          "path": "docs/design/cli/cli.md"
-        }
-      ]
-    }
-  ],
-  "id": "design-review",
-  "independence_basis": "Separate nonauthor reviewer agent /root/all_skills_design_review assessed authored commit 7cd3b5ea9ba346fdbb7b0fb7e7e457b753868f5f and its exact four registered models. The root authored the package before delegation and performed only read-only parallel checks during this assessment. This reviewer edited no Design, proposal or implementation; its only repository writes are this assessment and finding.",
-  "judgment": "changes-requested",
+  "findings": [],
+  "id": "design-review-r2",
+  "independence_basis": "Separate nonauthor reviewer agent /root/all_skills_design_review performed the first-pass complete package assessment and independently assessed the author correction at commit 11157599995298c26bb851e2c130f90e58c091ee. Root authored every Design change before this review and stayed read-only during review. This reviewer authored only review/finding records and made no proposal, Design, implementation or plan edits.",
+  "judgment": "approved",
   "limitations": [
-    "Planning must not rely on package approval until the required decision-identity correction receives an applicable independent Design reassessment.",
-    "Complete skill-package and case/script/fixture relevance evidence, exact retirement implementation and concrete proof allocation remain required downstream; this review does not approve unknown deletions or claim that audit complete.",
-    "Source/Design inspection and model structural checks do not demonstrate revised runtime behavior, generated package parity, universal agent compliance, final readiness or external-action authorization."
+    "Approval covers this exact four-model Design package for authorized planning only; it does not approve an execution plan, implementation or final readiness.",
+    "The full skill-package and test/script/fixture audit remains a required delivery completion obligation. Conditional retention does not establish that assessment complete, and additional behavior retirement requires its governing owner before removal.",
+    "No implementation tests, generated-candidate parity, universal agent compliance, external publication, installation or hosted validation result is claimed by this Design Review."
   ],
   "rationale": [
     "Direction and scope: SKL-SR-33 preserves all 19 packages, and VAL-SR-29 accounts for repository/package tests, fixtures, generated/direct-only cases and all script/support populations, including files outside the listed groups. Retention rows explicitly require current complete-package evidence during delivery; earlier approval, line count and reduced-suite passes cannot close unassessed work. This meets the proposal without pretending the broad implementation audit has already occurred.",
@@ -59,8 +25,9 @@
     "Test maintenance and risk: TEST-SR-07–10 and VAL-SR-29–31 require each removed/consolidated protection to have established retained detection or explicit owner retirement, including fixtures and real observation boundaries. Unknown protection blocks completion rather than being declared obsolete. The published-skill semantic-checklist guard remains until sufficient independently assessed replacement. Semantic inspection is not universal agent-compliance proof. These requirements are adequate Design inputs for a concrete reviewed allocation.",
     "Artifact labels and responsibility: HAND-SR-04/HAND-DEC-02 remove the duplicate Explain-change artifact prompt while preserving the successful Verify rationale, core/conditional evidence groups, actual living Design or retained project architecture context, and all external-action prerequisites. The existing PR skeleton substantiates the stale label. Broadened Code Review description reflects its already-owned final whole-change duty without granting a new gate.",
     "Architecture and examples: all four affected models have an overview, labeled authority/input/output relationships and explicit supporting-view decisions. Their existing necessary views still describe the selected changes: method relocation remains inside published Skill packaging and one retired repository helper does not add a CLI/validation subsystem. No declared example is modified. System composition, Assessment policy and runtime/packaging owners retain their current boundaries; no new detailed owner is needed.",
-    "Required correction: CLI-DEC-07 is newly assigned to query-shim removal at cli.md:807, while the same current model at line 751 and the existing v2 retirement plan at line 61 already use that identity for single stored-adapter/independent-transport/archive-recognition decisions. The latter use is recoverable in commit bd634da5 and predates this round. The new assignment makes one stable identity mean two unrelated decisions and defeats preservation and unambiguous traceability. This is an artifact-local CLI Design defect with a safe correction, not a missing direction-owner decision.",
-    "Assessment applicability and proof limits: the exact unchanged proposal and its complete independent judgment continue to supply direction-level authority. Its earlier Skill/Validation feasibility subject hashes remain historical and are not retargeted to these drafts; this review supplies the current package assessment. Independently ran python scripts/validate-boundary-first.py --check for all four model paths: passed structure/references-only. That result does not detect the semantic decision-identity collision and cannot approve the package. No implementation, packaging, whole-inventory audit or final verification pass is inferred."
+    "Decision preservation: CLI-DEC-07 now documents the original single v3 stored-adapter, independent-transport and bounded archive-recognition decision without changing its historical references. Query-helper withdrawal is separately CLI-DEC-08, unused in the inspected pre-correction tree. This resolves the first-pass collision without changing CLI-SR-31 or its supported-interface safeguards. The original reporter explicitly resolved skills-dr-01 with correction evidence; the prior changes-requested judgment and exact subjects remain intact and its applicability is stale.",
+    "Whole-package current reliance: current CLI-inspected identities equal all four registered model references. Every first-pass relied-on subject except the corrected CLI model is byte-identical, including proposal/review, other three models, source procedures, validators, callers, tests and historical plan. Git diff confirms the sole engineering delta is the reviewed decision-table correction; accompanying workflow evidence adds no changed product authority. Prior complete readings and unchanged source inspection therefore remain adequate, with the corrected CLI meaning reassessed here. Scope/requirements/resource destinations, safety preservation, proof obligations and owner boundaries still form one coherent package.",
+    "Validation and claim boundary: independently ran python scripts/validate-boundary-first.py --check --path docs/design/cli/cli.md successfully after correction. The earlier independently observed four-model structural pass remains applicable to the other unchanged three models. Semantic review, rather than those structural checks, establishes the corrected decision meaning. Full implementation-package inspection, all test/script/fixture relevance dispositions and exact executable proof remain explicit Delivery obligations; no existing proposal feasibility or historical cleanup approval is broadened into completion evidence."
   ],
   "reviewer": {
     "id": "all-skills-design-reviewer",
@@ -77,7 +44,7 @@
       "path": "docs/design/engineering/validation.md"
     },
     {
-      "identity": "sha256:ba79d93d064e42610611fe96e4e770b469a77c3e18491fc9f0fadcfaeefd28fd",
+      "identity": "sha256:46396ee3e8e0327d1ca4ca1485cf9f1802689acfe7fe0ec88e1cd4eddc2c644e",
       "path": "docs/design/cli/cli.md"
     },
     {
@@ -191,8 +158,16 @@
     {
       "identity": "sha256:0d7c97ffe7d8e0728b935e3e18fdfb49dff391660886290442a76681d99b79fb",
       "path": "tests/engineering/packaging/test-adapter-distribution.py"
+    },
+    {
+      "identity": "sha256:05e88966576096b19540546d18331e58b6ecdd2f3f06eec8c5b4661fff54ccee",
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/design-review.json"
+    },
+    {
+      "identity": "sha256:7db366df9cbd6e7cc992114fa34574e0c821c8d90184a1f8644993cfd5575110",
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/evidence.json"
     }
   ],
-  "summary": "The complete refinement is coherent in scope, selected resource placement and protection-preserving retirement, but the new query-helper decision reuses an existing v2-retirement decision identity and must be corrected before planning relies on this package.",
+  "summary": "The complete four-model refinement package is coherent and sufficiently specified for authorized delivery planning. The corrected decision mapping preserves prior v2-retirement authority and separately identifies query-helper withdrawal.",
   "target": "design"
 }

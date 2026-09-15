@@ -33,7 +33,16 @@
         "role": "review"
       },
       "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/design-review.json",
-      "reason": "Current first-pass assessment of the exact four-model package and inspected basis. Changes requested; this is not approval for planning.",
+      "reason": "Original first-pass judgment and subjects remain unchanged as historical assessment; the CLI subject changed to correct skills-dr-01. Reporter has assessed resolution; use separate current package reassessment design-review-r2 for reliance.",
+      "value": "stale"
+    },
+    {
+      "actor": {
+        "id": "all-skills-design-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/design-review-r2.json",
+      "reason": "Fresh complete package reassessment after independently verified decision-identity correction. Exact current package has no unresolved required Design correction; supports authorized planning only.",
       "value": "current"
     }
   ],
@@ -87,6 +96,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/design-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/design-review-r2.json"
     }
   ],
   "schema_version": 3,
