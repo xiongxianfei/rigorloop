@@ -288,6 +288,22 @@
         }
       ],
       "summary": "Fresh supported candidates and temporary installs of all six selected skills passed."
+    },
+    {
+      "actor": {
+        "id": "codex-implementer",
+        "role": "implement"
+      },
+      "id": "m1-inventory-correction",
+      "procedure": "python tests/skill/test-skill-validator.py:301 passed22.064s, /tmp/allskills-m1-final-tests.log. bash scripts/ci.sh --mode local:all selected passed151.88s focused, /tmp/allskills-m1-final-local.log. Prior canonical/archive/install inputs unchanged; M1 actual candidate proof remains applicable. This supersedes prior304-test result only for current test source, preserves original observation.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:36f45b534fb375d585a881fcc9830b98218924672ef7affaf2f66e35f9230a0f",
+          "path": "tests/skill/test-skill-validator.py"
+        }
+      ],
+      "summary": "Completed independent inventory preparation: two unused R/EB helpers and three CI tests that only simulated stdlib/local graph behavior removed. Fourth local graph removed while canonical no-clobber, identity, provider ordering and cycle-block guidance now directly checked. Together with earlier two removed tests, full suite is 301 (baseline306). No fixture protection removed. All19 complete packages and all86 recursive fixtures inspected independently; formal review will bind complete dispositions."
     }
   ],
   "schema_version": 3
