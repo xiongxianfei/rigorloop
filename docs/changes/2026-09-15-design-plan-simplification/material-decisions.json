@@ -1,0 +1,35 @@
+{
+  "body": "PLAN-DEC-02 and PLAN-SR-08 own realization and preservation. Skill links this scoped Plan choice without reusing historical approval. Retain Design and its existing model, technical, example, legacy, recording and asset responsibilities. No change to reviewer outputs, shared policy, record operations, document formats, installations or public invocations. Normal project use supplies feedback without a separate pilot. Independent Design Review must assess the new exact model package and retention basis before delivery planning.",
+  "change_id": "2026-09-15-design-plan-simplification",
+  "decisions": [
+    {
+      "actor": {
+        "id": "codex-design-author",
+        "role": "design"
+      },
+      "id": "authoring-presentation",
+      "rationale": "Approved direction selects two-package assessment with justified retention. Current Plan places complete recording before task and has an existing governed reference dependent on parent context; select Plan-specific equivalent and complete that reference. Current Design already supplies core-first authority/reconciliation and distinct scoped methods; retain it.",
+      "source_refs": [
+        {
+          "id": "proposal-review",
+          "path": "docs/changes/2026-09-15-design-plan-simplification/reviews/proposal-review.json"
+        }
+      ],
+      "subjects": [
+        {
+          "identity": "sha256:f6a787ef5a6c76d26d4d9393e1c104c3b5ae39098e168d86cd1215ad7c855297",
+          "path": "docs/design/skill/skill.md"
+        },
+        {
+          "identity": "sha256:3540d9d72b6f8e97bc62ed46bab56c6c152b86ceea1b874abb32379df93286b8",
+          "path": "docs/design/skill/authoring/plan.md"
+        },
+        {
+          "identity": "sha256:0f7e41a1de83d542d9291a842876ae7c75ebb214242cca18ee825f539f52b778",
+          "path": "docs/design/skill/authoring/design.md"
+        }
+      ]
+    }
+  ],
+  "schema_version": 3
+}

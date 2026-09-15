@@ -21,6 +21,7 @@ Plan turns settled engineering requirements and realization into safe implementa
 | PLAN-SR-05 | Initialization MUST add missing work only from the exact current approved Delivery Review plan and MUST NOT duplicate, replace, repair or update existing work. |
 | PLAN-SR-06 | Required conditional resources and the three normative plan assets MUST preserve their structure, metadata, fingerprints and package parity; missing resources and unknown operations MUST reject. |
 | PLAN-SR-07 | Retries, changed milestones and competing writes MUST preserve existing evidence and require current authority and reassessment; historical plan intent MUST NOT reconstruct current workflow state. |
+| PLAN-SR-08 | The Plan entrypoint MUST expose its task, authority, invocation classification and resource selection before detailed recording construction. Its reviewed equivalent layout MUST preserve PLAN-SR-01–07 and applicable common Skill obligations through a complete core procedure, explicitly triggered local methods and unchanged usable output assets; fewer lines or relocated text alone MUST NOT establish improvement. |
 
 ## Architecture Overview
 
@@ -61,6 +62,45 @@ Current [Records](../../cli/records.md) and [CLI](../../cli/cli.md) own identiti
 
 Preserve proof of exact creation/revision targets, unknown operations, stale review or authority, absent versus existing work, interrupted or competing writes, no cross-owner mutation, stable plan output and missing triggered resources.
 
+## Authoring presentation
+
+Scoped direction: [Design and Plan simplification](../../../proposals/2026-09-15-design-plan-simplification.md). This section selects a Plan-specific equivalent under SKL-SR-03/04/07/12; it does not inherit the Implement/Code Review approval or change another capability's layout. The [owning change](../../../changes/2026-09-15-design-plan-simplification/change.json) carries current assessment and delivery evidence.
+
+### Core and conditional guidance
+
+Keep `Workflow role`, `Invocation classification`, `Recording boundary`, `Plan quality contract`, `Resource map` and `Expected output` as explicit sections. Arrange role, scope, required inputs and classification before recording construction; use one operating sequence for target resolution, basis inspection, allocation, asset filling, coherence checks and exact review handoff. Consolidated scope/inputs and output/handoff/stops sections may replace the corresponding generic headings while preserving their functional duties. Keep the adopted Test criteria and Review and Closeout applications intact and discoverable before dependent judgments.
+
+Move the complete existing `Explicit recording` profile into `references/governed-plan-authoring.md`, replacing that reference's dependence on a parent-owned context procedure. The reference becomes self-contained for scoped context, subject inspection, response dispatch, record contract, revision/reads, targeted recording, applicability and recovery. Its existing create/revise and approved-initialization duties remain distinct. No new reference, record operation, shared policy or runtime selector is introduced.
+
+The body keeps the portable/governed distinction, exact operation names, prerequisite checks, narrow initialization limit and essential stops. Its `Recording boundary` and READ trigger select the existing governed reference only for valid governed plan authority; a governed signal must be validated before dependent writes. Missing, malformed, stale, conflicting or ambiguous authority prevents portable fallback. Boundary and specialist verification methods retain independent triggers; neither the presence of a plan nor recording establishes automation or permission to initialize work. A late trigger requires its complete method before dependent action.
+
+| Original obligation group | Selected destination and preservation |
+| --- | --- |
+| Purpose, near misses, workflow role, project evidence and target placement | Body scope/inputs and classification: settled direction and exact approved Design basis remain prerequisites; portable plan/navigation and governed record paths stay distinguishable. |
+| Complete recording construction before the task | Existing governed reference, with its `Explicit recording` profile; body selection and stops remain sufficient to choose safely without reconstructing the method. |
+| Plan quality and repeated milestone/boundary allocation reminders | Keep the full quality contract and compact operating sequence; remove only a repetition whose governing requirement and remaining instruction are explicit. Preserve safe sequencing before proof allocation, integrated proof, final whole-change review and recovery. |
+| Three normative COPY assets, output skeleton, expected output and handoff reminders | Existing assets retain all fields, metadata and fingerprints. One body output/handoff account retains operation, exact subject, author-owned evidence, blockers and Delivery Review destination; it does not duplicate full assets or move policy into them. |
+| Isolation, claims, stops, approved initialization and retry limits | Keep essential limits visible before action and complete operation-specific procedure in the governed reference. Plan cannot settle review, change existing work or route later stages. |
+| Shared quality, review reliance, boundary and evidence-access guidance | Preserve current sources, adoption and READ conditions, complete-subject reading and all required local copies. No shared wording change is selected. |
+
+The three plan assets and specialist resource set remain unchanged. Public descriptions, operation values and output meaning are preserved. A missing untriggered resource need not block unrelated portable runtime work, but an incomplete distributed package still fails qualification. A shorter body that forces unnecessary reference reads is not an acceptable implementation of PLAN-SR-08.
+
+### Design retention and handoff compatibility
+
+The related `design` package is retained. Its entrypoint already selects scope and authority before its six-step reconciliation procedure and loads recording conditionally. The model-authoring reference owns document rules and examples; technical-design owns significant realization reasoning; architecture-view-examples supplies concrete illustrations. Their repeated overview reminders protect different selection and execution points. Legacy references supply separately triggered customer contracts. No identified overlap justifies merging those methods, weakening their triggers or changing Design outputs in this slice. This retention is subject to independent assessment of the complete package, not inferred from its size or prior approval.
+
+Design still hands Design Review the exact affected models and examples, required behavior and realization, decisions, assessment basis, acceptance intent, assumptions and applicability impacts. Plan consumes the currently approved exact Design package and turns its requirements and local/integrated outcomes into stable delivery allocation. Delivery Review still consumes that plan, the approved Design basis and verification allocation. An absent or stale required member stops the first dependent author or reviewer; a shorter handoff cannot omit it. Reviewer procedures and assets require no change because these producer obligations and fields remain intact. Review judgments and workflow transitions remain Assessment- and Workflow-owned.
+
+### Consumer reconciliation and acceptance intent
+
+The current recording-profile reader in `scripts/lib/validation/skill_validation.py` selects four skill-local references and otherwise checks an inline `Explicit recording` section. Extend its selected-reference protection to Plan's existing governed reference so removal of that heading cannot bypass the profile check. Preserve a mapped body boundary and load condition; require complete procedure in the selected contained file, not an unrelated file or remembered instructions. Reconcile the installed-placement and plan-surface readers that also branch on the inline heading, and the applicable normalized-layout checks, with this exact Plan equivalent. Other capabilities retain their existing selection and layout protection.
+
+Existing validation must continue to reject unknown values before consistency checks and distinguish missing, unreadable, escaped, unmapped, wrong or incomplete selected procedure. Preserve current `change.json` placement and navigation/plan/state separation after relocation. Incidental wording assertions may change only while retaining their protection. Existing generation must carry the complete Plan and retained Design packages with supported adapter transformations, transitive resources and byte parity. No generator, manifest, installer or document format change is selected.
+
+Representative assessment follows a portable create/revise request, a valid governed create/revise request, and approved initialization with absent versus existing work. Each must identify task and authority before recording detail, reach all applicable instructions, produce complete output and stop on missing or conflicting basis. Separately assess late resource selection and failed/retried recording without cross-owner mutation. Integrated assessment traces actual Design output through Design Review into Plan, then the actual Plan asset output into Delivery Review; local heading checks cannot prove this correspondence. Delivery allocates concrete proof and independent semantic observation under existing policy; no separate project-use pilot, token score or new recurring gate is required.
+
+Existing Context and Runtime views remain necessary; the runtime view below exposes resource selection before operation. The overview's allocation/output/initialization responsibilities and external edges are unchanged. No additional Building Block diagram is needed: the destination table describes instruction placement within one method. Deployment remains owned by Skill and Packaging because this adds no artifact family or execution environment. Authoring/System composition, Assessment, Workflow, CLI/Records and Packaging retain their existing interfaces and examples; their policy and output contracts are unaffected. A later discovery that changes those interfaces returns to its owner before dependent implementation.
+
 ## Plan assets
 
 The three normative plan assets are `plan-skeleton.md`, `milestone.md` and `decision-log-row.md`. The full skeleton owns section order and placeholders, the milestone asset owns repeated delivery structure, and the decision row owns its table shape. COPY entries state when to use each and what to fill. Do not duplicate the full structure in the skill or add a separate handoff-summary asset. Handoff contains one stable owning-record pointer, with mutable state under Workflow/Records. Index links are relative clickable links.
@@ -83,7 +123,9 @@ flowchart LR
 
 ```mermaid
 flowchart TB
-    Input["Resolve settled basis and exact target"] --> Action{"Authorized operation?"}
+    Input["Resolve settled basis and exact target"] --> Resources{"Authority and triggered resources complete?"}
+    Resources -->|"no"| Owner
+    Resources -->|"yes"| Action{"Authorized operation?"}
     Action -->|"unknown or unauthorized"| Owner
     Action -->|"create or revise"| Allocate["Allocate milestones, proof, commands and recovery"]
     Allocate --> Gap{"Behavior or authority gap?"}
@@ -105,12 +147,12 @@ The following outcomes refine SKL-SR-04/08/10/24/27–29 for Plan. SKL-DEC-06 be
 
 | Dimension | Requirement basis | Distinct outcome to demonstrate |
 | --- | --- | --- |
-| Input domain | PLAN-SR-01, PLAN-SR-06 | Missing milestone fields or unknown operation values reject; valid assets produce complete output without placeholders. |
+| Input domain | PLAN-SR-01, PLAN-SR-06, PLAN-SR-08 | Missing milestone fields or unknown operation values reject; valid assets produce complete output without placeholders. Core task and selection precede detailed recording construction. |
 | State/lifecycle | PLAN-SR-03, PLAN-SR-05 | An authored plan contains stable intent; initialization with existing work leaves it unchanged and returns to Route. |
 | Identity/authority | PLAN-SR-04, PLAN-SR-05 | A changed or unreviewed plan cannot initialize work; exact current review and absence are independently checked. |
-| Composition/path | PLAN-SR-01, PLAN-SR-02 | A cross-component requirement receives integrated proof and a separate final review checkpoint with necessary prerequisites. |
+| Composition/path | PLAN-SR-01, PLAN-SR-02, PLAN-SR-08 | A cross-component requirement receives integrated proof and a separate final review checkpoint with necessary prerequisites. Actual Design output and current review basis remain sufficient Plan inputs; complete Plan output remains sufficient Delivery Review input. |
 | Temporal/retry | PLAN-SR-05, PLAN-SR-07 | Retry after lost response does not duplicate work; changed milestone definitions require authorized replanning. |
-| Failure/recovery | PLAN-SR-04, PLAN-SR-07 | File/registration asymmetry or interrupted recording stops dependent mutation and preserves recovery evidence. |
+| Failure/recovery | PLAN-SR-04, PLAN-SR-06, PLAN-SR-07, PLAN-SR-08 | File/registration asymmetry or interrupted recording stops dependent mutation and preserves recovery evidence. Missing or invalid selected procedure stops dependent action; heading removal cannot bypass recording checks or restore retired placement. |
 | Compatibility/migration | PLAN-SR-03, PLAN-SR-06, PLAN-SR-07 | Existing plan assets retain their fingerprints and historical plans keep original judgments without enabling retired storage. |
 | External/environment | PLAN-SR-01, PLAN-SR-02, PLAN-SR-06 | Commands with external side effects have explicit permission and environment prerequisites; unavailable proof remains visibly unallocated or blocked. |
 
@@ -120,6 +162,7 @@ The following outcomes refine SKL-SR-04/08/10/24/27–29 for Plan. SKL-DEC-06 be
 | --- | --- | --- |
 | SKL-DEC-06 | Initialize missing work only from the exact approved Delivery Review plan. Plan derives the initial work, Assessment owns review and Route coordinates subsequent work. | Initializing before review can freeze milestones that review must change. Reviewer-owned initialization mixes judgment with authoring; coordinator-owned derivation duplicates plan semantics. Allowing ordinary plan revision to replace existing work risks losing progress. Current Records/CLI own identities and recovery; the historical no-hash alternative and two-phase settlement protocol are superseded. |
 | PLAN-DEC-01 | Extract delivery allocation and Plan assets into one specialist owner under Authoring; preserve SKL-DEC-06 initialization limits. | A second verification-only plan would split sequencing from proof. Keeping both together supports review while Workflow retains current state. |
+| PLAN-DEC-02 | Select the bounded Plan layout and move complete recording construction into its existing governed reference. Retain the Design package with explicit rationale and assess the actual author/reviewer handoffs. | Keeping recording before task selection retains unnecessary reading; a new reference duplicates an existing owner. Applying the same layout to Design adds no established benefit. Required selection, output and authority remain visible and complete. |
 
 ## Quality and risks
 

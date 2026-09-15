@@ -1,0 +1,174 @@
+{
+  "activity": {
+    "owner": {
+      "id": "codex-verify",
+      "role": "verify"
+    },
+    "reason": "Distinct final Verify succeeded after independent complete review and required current proof. All implementation closed; user explicitly authorizes separate PR submission. No merge/release/install or persistent automation authority.",
+    "stage": "verify",
+    "status": "completed"
+  },
+  "applicability": [
+    {
+      "actor": {
+        "id": "design-plan-proposal-review",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-15-design-plan-simplification/reviews/proposal-review.json",
+      "reason": "Fresh independent assessment of the exact unchanged committed proposal and current relied-on basis; no material findings or unresolved necessary owner decisions.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-design-author",
+        "role": "design"
+      },
+      "path": "docs/changes/2026-09-15-design-plan-simplification/material-decisions.json",
+      "reason": "Current Design-author choice bound to exact draft models; independent Design Review still required.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-implementer",
+        "role": "implement"
+      },
+      "path": "docs/changes/2026-09-15-design-plan-simplification/evidence.json",
+      "reason": "Current scoped observation; inspect each check and subjects, not a blanket pass for changed evidence.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "design-plan-design-review",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-15-design-plan-simplification/reviews/design-review.json",
+      "reason": "Fresh complete independent assessment of the exact registered three-model package and unchanged approved direction, with current source/consumer basis. Earlier supporting-subject drifts were assessed semantically and historical identities preserved.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "design-plan-delivery-review",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-15-design-plan-simplification/reviews/delivery-review.json",
+      "reason": "Fresh complete independent first-pass assessment of the exact current primary plan against unchanged approved Design subjects, with supporting evidence append classified by content and no unresolved required correction or decision.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "design-plan-m1-code-review",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-15-design-plan-simplification/reviews/m1-code-review.json",
+      "reason": "Fresh exact frozen M1 assessment with current approved engineering/delivery targets, actual proof/candidate basis and complete semantic handoff observations; historical supporting identities retain their original meaning.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "design-plan-final-code-review",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-15-design-plan-simplification/reviews/final-code-review.json",
+      "reason": "Fresh complete independent final diff and integrated chain assessment on exact current authority, source and full proof; engineering unchanged after tested head, later evidence suffix attributed and historical approvals preserved.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-verifier",
+        "role": "verify"
+      },
+      "path": "docs/changes/2026-09-15-design-plan-simplification/verify-report.json",
+      "reason": "Distinct final assessment of exact unchanged engineering, fresh independent final review, complete current proof and concern closeout; final evidence-only suffix requires scoped current safety checks.",
+      "value": "current"
+    }
+  ],
+  "blockers": [],
+  "change_id": "2026-09-15-design-plan-simplification",
+  "contract": "rigorloop-records-v3",
+  "models": [
+    {
+      "id": "skill",
+      "subject": {
+        "identity": "sha256:f6a787ef5a6c76d26d4d9393e1c104c3b5ae39098e168d86cd1215ad7c855297",
+        "path": "docs/design/skill/skill.md"
+      }
+    },
+    {
+      "id": "plan",
+      "subject": {
+        "identity": "sha256:3540d9d72b6f8e97bc62ed46bab56c6c152b86ceea1b874abb32379df93286b8",
+        "path": "docs/design/skill/authoring/plan.md"
+      }
+    },
+    {
+      "id": "design",
+      "subject": {
+        "identity": "sha256:0f7e41a1de83d542d9291a842876ae7c75ebb214242cca18ee825f539f52b778",
+        "path": "docs/design/skill/authoring/design.md"
+      }
+    }
+  ],
+  "plan": {
+    "identity": "sha256:8c2ed5fe7de2f3de5c64709ef45bf9a5c8b00431565e219161bef0989f2d92aa",
+    "path": "docs/plans/2026-09-15-design-plan-simplification.md"
+  },
+  "proposal": {
+    "identity": "sha256:4a58cf175439ff0dd5ce7057d430ff9cf32836a2564de84a527a238abc7bb77e",
+    "path": "docs/proposals/2026-09-15-design-plan-simplification.md"
+  },
+  "records": [
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-15-design-plan-simplification/reviews/proposal-review.json"
+    },
+    {
+      "kind": "decisions",
+      "path": "docs/changes/2026-09-15-design-plan-simplification/material-decisions.json"
+    },
+    {
+      "kind": "evidence",
+      "path": "docs/changes/2026-09-15-design-plan-simplification/evidence.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-15-design-plan-simplification/reviews/design-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-15-design-plan-simplification/reviews/delivery-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-15-design-plan-simplification/reviews/m1-code-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-15-design-plan-simplification/reviews/final-code-review.json"
+    },
+    {
+      "kind": "verify",
+      "path": "docs/changes/2026-09-15-design-plan-simplification/verify-report.json"
+    }
+  ],
+  "schema_version": 3,
+  "work": [
+    {
+      "id": "m1",
+      "owner": {
+        "id": "codex-implementer",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "PLAN-SR-01",
+        "PLAN-SR-02",
+        "PLAN-SR-03",
+        "PLAN-SR-04",
+        "PLAN-SR-05",
+        "PLAN-SR-06",
+        "PLAN-SR-07",
+        "PLAN-SR-08"
+      ],
+      "status": "completed"
+    }
+  ]
+}

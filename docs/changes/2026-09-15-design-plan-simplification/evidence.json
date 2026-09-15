@@ -1,0 +1,786 @@
+{
+  "change_id": "2026-09-15-design-plan-simplification",
+  "checks": [
+    {
+      "actor": {
+        "id": "codex-design-author",
+        "role": "design"
+      },
+      "id": "design-authoring",
+      "procedure": "Design author assessment on 2026-09-15: current Proposal Review approves the exact unchanged proposal; its original model supporting identities remain historical direction basis, not approval of these new Design revisions. Reconciled two owning documents: Skill delegates this distinct equivalent; Plan defines PLAN-SR-08, PLAN-DEC-02, grouped obligation destinations, resource/authority ordering, consumer protections and integrated acceptance. Registered unchanged Design owner supplies retention basis. Plan original inline Explicit recording precedes task/classification; existing governed-plan-authoring references parent context. Complete that existing resource, preserve full core quality, all three assets/fingerprints, operations and narrow approved initialization, and reconcile actual recording/placement/plan-surface readers. Design retained after bounded inspection of entrypoint, model-authoring, technical-design, architecture examples, governed, system composition and legacy methods plus mapped output structures: core steps select responsibility/authority before realization; model-format rules, technical choice reasoning, examples and legacy authority have distinct triggers and duties. All 33 canonical Design/Plan files are captured as package subjects, not a claim every file was changed or a new customer runtime executed. Current Design Review Inputs/Review contract consumes exact models/examples, direction, decisions, assessment basis and local/integrated intent; current Delivery Review consumes primary plan, approved Design ID/map, requirements/allocation/proof. These producer fields remain unchanged. Inspection supports unaffected reviewer contracts; independent review must assess complete exact draft package and retained guidance. Shared policy, runtime, commands, record schema, assets, generated output and existing examples are unchanged. Prior exact model/package baselines captured before edits: [{\"path\": \"docs/design/skill/skill.md\", \"identity\": \"sha256:6faa52a99a86576f696ae723fc3fafce3553d8a8eae97a0a445327c818dd08b7\"}, {\"path\": \"docs/design/skill/authoring/plan.md\", \"identity\": \"sha256:5ea24213d164d301ed4690f3647bbb98d8f5709bf10af03c3efbdcad08ef9826\"}, {\"path\": \"docs/design/skill/authoring/design.md\", \"identity\": \"sha256:0f7e41a1de83d542d9291a842876ae7c75ebb214242cca18ee825f539f52b778\"}, {\"path\": \"skills/design/SKILL.md\", \"identity\": \"sha256:2298926b2f3844831548f4f10c9d58d408eaf32e4505a270e2c0bd643eef3fa4\"}, {\"path\": \"skills/plan/SKILL.md\", \"identity\": \"sha256:5bef8bd9d85a7a1139bc20a4fb0e62ce2a2046f7bbd61fd64496bd4398cc7068\"}]. Validation: bash scripts/ci.sh --mode local passed against the two changed model files and staged activity record; complete selected results in /tmp/design-plan-design-ci.log. git diff --cached --check passed. Subsequent registration and this evidence append require current record validation; no source implementation or candidate qualification is claimed. Initial change.link/decision batch was rejected atomically for missing decision body; corrected explicit request supplied narrative before save, with no fabricated success. Local Node24.14.1/Python3.12.3. No independent Design Review, delivery plan, implementation, hosted CI or external handoff occurred.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:f6a787ef5a6c76d26d4d9393e1c104c3b5ae39098e168d86cd1215ad7c855297",
+          "path": "docs/design/skill/skill.md"
+        },
+        {
+          "identity": "sha256:3540d9d72b6f8e97bc62ed46bab56c6c152b86ceea1b874abb32379df93286b8",
+          "path": "docs/design/skill/authoring/plan.md"
+        },
+        {
+          "identity": "sha256:0f7e41a1de83d542d9291a842876ae7c75ebb214242cca18ee825f539f52b778",
+          "path": "docs/design/skill/authoring/design.md"
+        },
+        {
+          "identity": "sha256:2298926b2f3844831548f4f10c9d58d408eaf32e4505a270e2c0bd643eef3fa4",
+          "path": "skills/design/SKILL.md"
+        },
+        {
+          "identity": "sha256:004189d8bbf456a020165b74cdf1f322dc1d2b3ce0b14e81079c76963fdffed6",
+          "path": "skills/design/assets/design-skeleton.md"
+        },
+        {
+          "identity": "sha256:020be16bb4b01f1eb1a1605562ffd6b31af9e5ba2ee12b1a1e1735acb6378a56",
+          "path": "skills/design/assets/diagram-styles.mmd"
+        },
+        {
+          "identity": "sha256:86ed2ec3cd1152a3eb8c9dc7eb8a29c806bd122accd5d9752401cf2fecccab0d",
+          "path": "skills/design/assets/legacy-adr-skeleton.md"
+        },
+        {
+          "identity": "sha256:e6d3e17551cceb876f8b8e73c2bdff37c7793d7bb47d15361713f8a89c9ecafa",
+          "path": "skills/design/assets/legacy-architecture-skeleton.md"
+        },
+        {
+          "identity": "sha256:5ff3bd5cec3b6ad239ea1fa8676a2fb3cfae1a3ee8fb22876a96112de065727e",
+          "path": "skills/design/references/architecture-view-examples.md"
+        },
+        {
+          "identity": "sha256:7179b4f48e6ba5a1503237f58875f0dc5fe8cdc2c7e77f277c6debee714387b8",
+          "path": "skills/design/references/boundary-first-feature-authoring-v1.md"
+        },
+        {
+          "identity": "sha256:89337cf5da8462ad2afa0c50e04fb7233beea7ce030a049fa3a1695fc57ea2d0",
+          "path": "skills/design/references/boundary-first-method-v1.md"
+        },
+        {
+          "identity": "sha256:d7598a7af645b395db8332e64743d3c19c1529c705a0b2e7a349bae1d1d889f9",
+          "path": "skills/design/references/governed-design-authoring.md"
+        },
+        {
+          "identity": "sha256:87c0fee6c3a753cfb520dcd578de42c1f68d8eb3ddcd6dc16299826e57f86fae",
+          "path": "skills/design/references/legacy-source-reconciliation.md"
+        },
+        {
+          "identity": "sha256:8f24c82956dfafdee4d389b3c7353d3d73968e4c440a7c6fa10eabc47de5e06b",
+          "path": "skills/design/references/legacy-technical-authoring.md"
+        },
+        {
+          "identity": "sha256:6a556136cb73c4b7eb40393a5d5c97ffe6c14f75188a73200e466676bf0a8841",
+          "path": "skills/design/references/model-authoring.md"
+        },
+        {
+          "identity": "sha256:bbff5f36ced2f5e0ddc648a78278e378d81990b0266e0a7172b28d524a4da3cb",
+          "path": "skills/design/references/system-composition.md"
+        },
+        {
+          "identity": "sha256:45453043b926cf24f91756b8a46f51e2164926a15657ce1ab57a37e7f3be9f2f",
+          "path": "skills/design/references/technical-design.md"
+        },
+        {
+          "identity": "sha256:8b0a4b44f27de8c2d24ea21344b75594d5f5c9a247f91d42390068f96d4bf998",
+          "path": "skills/design/references/test-quality.md"
+        },
+        {
+          "identity": "sha256:5bef8bd9d85a7a1139bc20a4fb0e62ce2a2046f7bbd61fd64496bd4398cc7068",
+          "path": "skills/plan/SKILL.md"
+        },
+        {
+          "identity": "sha256:f461dd267b53fa6690f9ee8222e4fa8642e27a3cafe530fd8fa75bb2243bb5fb",
+          "path": "skills/plan/assets/decision-log-row.md"
+        },
+        {
+          "identity": "sha256:007c46c11105018bc0429b7bc85aef0f555b4ce654cdcce27f4f4657e0ba9c75",
+          "path": "skills/plan/assets/milestone.md"
+        },
+        {
+          "identity": "sha256:21061218b060228c8f3361e1f375008fb66d60b7cda9fc1347c0589f2c369828",
+          "path": "skills/plan/assets/plan-skeleton.md"
+        },
+        {
+          "identity": "sha256:c66bfce2f8ed9a0772aa3b53633f3d7819a46dfeafd9f241041373b7502f2346",
+          "path": "skills/plan/references/boundary-and-negative-verification.md"
+        },
+        {
+          "identity": "sha256:89337cf5da8462ad2afa0c50e04fb7233beea7ce030a049fa3a1695fc57ea2d0",
+          "path": "skills/plan/references/boundary-first-method-v1.md"
+        },
+        {
+          "identity": "sha256:458a50b4fc744502d8c85227f0ef71a7f202b6623799fe5c2b0128cbd4a7a3b0",
+          "path": "skills/plan/references/concurrency-and-retry-verification.md"
+        },
+        {
+          "identity": "sha256:2879a21841562b4b41273148b2212bf32a083c0f1d6e029c8633acb7d01eeb12",
+          "path": "skills/plan/references/cross-milestone-integration-verification.md"
+        },
+        {
+          "identity": "sha256:7da74e3c307eca561f6d09986a4273a2109e103c4625120f5341b594d51e869c",
+          "path": "skills/plan/references/failure-and-recovery-verification.md"
+        },
+        {
+          "identity": "sha256:87d9c81f215ea8c7d4f86675e1450175058c2f44e902235bb1700e7e340389a2",
+          "path": "skills/plan/references/governed-plan-authoring.md"
+        },
+        {
+          "identity": "sha256:6de936e6bccc3b7dfa724573bccd33fcab13f197d85db2bd489893433b6f1758",
+          "path": "skills/plan/references/manual-and-operational-evidence.md"
+        },
+        {
+          "identity": "sha256:0ef6fd47a39cc8bc73ce00c32a474d062942fd5586f8ed5d958be4c76de65a44",
+          "path": "skills/plan/references/migration-and-compatibility-verification.md"
+        },
+        {
+          "identity": "sha256:e19b99a0cb69b9051c6eeae20d76c4a0cf3925e8fd1686ceb6671c7749cc3dc5",
+          "path": "skills/plan/references/requirement-to-delivery-model.md"
+        },
+        {
+          "identity": "sha256:0ac3e3ccc77aee7e6d60d5d56dd61a1d7424aa3443910cb85d198993bdd82818",
+          "path": "skills/plan/references/review-reliance.md"
+        },
+        {
+          "identity": "sha256:b45e5908eb7acec77f39c451cb55c2d630da5a2a85502d16937b9e7347aaec48",
+          "path": "skills/plan/references/security-and-authority-verification.md"
+        },
+        {
+          "identity": "sha256:17e276d6f01f851b3002a00f44bddfee0dd1720878d562ebda9fd0b250f73641",
+          "path": "skills/plan/references/state-machine-verification.md"
+        },
+        {
+          "identity": "sha256:7c7037e519b4558f8126460892ff33721026e05b2d8f7469b7ba86477ee81b9b",
+          "path": "skills/plan/references/test-maintenance.md"
+        },
+        {
+          "identity": "sha256:8b0a4b44f27de8c2d24ea21344b75594d5f5c9a247f91d42390068f96d4bf998",
+          "path": "skills/plan/references/test-quality.md"
+        },
+        {
+          "identity": "sha256:f9ee51047c3a8c0cced45a9238d17f7341a7661563863b0380173883ece0fe18",
+          "path": "skills/design-review/SKILL.md"
+        },
+        {
+          "identity": "sha256:aa47d716979b176f9ba898407e9e9b78aad13df100d90c063a9a51051d66f787",
+          "path": "skills/delivery-review/SKILL.md"
+        },
+        {
+          "identity": "sha256:5ccb37e68487fa495e9804cdc6471329c003b01b309cb08e68cc7c3e8d4c864f",
+          "path": "scripts/lib/validation/skill_validation.py"
+        },
+        {
+          "identity": "sha256:4a58cf175439ff0dd5ce7057d430ff9cf32836a2564de84a527a238abc7bb77e",
+          "path": "docs/proposals/2026-09-15-design-plan-simplification.md"
+        },
+        {
+          "identity": "sha256:6037416b9b6159f6b2204b2bb79e5560e9d63ba504a698545e6f8fcae4cbb098",
+          "path": "docs/changes/2026-09-15-design-plan-simplification/reviews/proposal-review.json"
+        }
+      ],
+      "summary": "Draft Plan presentation and exact preservation/consumer acceptance defined; Design retained with explicit rationale. Local Design checks passed; independent Design Review remains required."
+    },
+    {
+      "actor": {
+        "id": "codex-plan-author",
+        "role": "plan"
+      },
+      "id": "plan-authoring",
+      "procedure": "2026-09-15: create-primary-plan under current approved proposal-review and design-review. Read complete selected registry, exact reviewed subjects, owning Plan requirements/acceptance, current entrypoint/reference, actual reader branches, independent reference-fault tests and normative plan assets. All47 Design Review subjects matched before authoring; approved models and implementation sources remain unchanged. One M1 couples Plan body/reference and direct consumer protection as a single safe commit/rollback unit; Design retention, all eight Plan boundary rows, authority/retry/initialization, output completeness and resource negatives are allocated. TG-FINAL01 requires actual filled artifact-to-reviewer correspondence; TG-FINAL02 requires fresh dual-adapter candidate/temporary installation proof. Separate fresh final whole-change Code Review and distinct Verify remain mandatory after M1. No unreviewed work initialized. Current proposal-review supporting-model drift retains its already assessed historical direction meaning; Design Review is not retargeted. Appending plan evidence changes its earlier supporting evidence-container identity only and does not change that earlier entry or approved Design scope. Commands actually run: bash scripts/ci.sh --mode local exited0, selected current metadata/guide checks passed, focused19.64s; git diff --check passed; local link-target inspection passed; git diff HEAD -- skills scripts tests docs/design empty. These are plan-authoring observations, not execution of V1–V7 future implementation proof. No implementation, candidate generation, Delivery Review, hosted CI or external action occurred.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:8c2ed5fe7de2f3de5c64709ef45bf9a5c8b00431565e219161bef0989f2d92aa",
+          "path": "docs/plans/2026-09-15-design-plan-simplification.md"
+        },
+        {
+          "identity": "sha256:0a4dcd3cad1dc2f752de7adace385a20965130a9fa9f341ec03174a5ee8eca77",
+          "path": "docs/plan.md"
+        },
+        {
+          "identity": "sha256:f6a787ef5a6c76d26d4d9393e1c104c3b5ae39098e168d86cd1215ad7c855297",
+          "path": "docs/design/skill/skill.md"
+        },
+        {
+          "identity": "sha256:3540d9d72b6f8e97bc62ed46bab56c6c152b86ceea1b874abb32379df93286b8",
+          "path": "docs/design/skill/authoring/plan.md"
+        },
+        {
+          "identity": "sha256:0f7e41a1de83d542d9291a842876ae7c75ebb214242cca18ee825f539f52b778",
+          "path": "docs/design/skill/authoring/design.md"
+        },
+        {
+          "identity": "sha256:4a58cf175439ff0dd5ce7057d430ff9cf32836a2564de84a527a238abc7bb77e",
+          "path": "docs/proposals/2026-09-15-design-plan-simplification.md"
+        },
+        {
+          "identity": "sha256:6037416b9b6159f6b2204b2bb79e5560e9d63ba504a698545e6f8fcae4cbb098",
+          "path": "docs/changes/2026-09-15-design-plan-simplification/reviews/proposal-review.json"
+        },
+        {
+          "identity": "sha256:8770679b93ac7b28dc00714a992c5ad3b8f9d0c2ccdbabb24895d7ad543c3061",
+          "path": "docs/changes/2026-09-15-design-plan-simplification/reviews/design-review.json"
+        },
+        {
+          "identity": "sha256:5bef8bd9d85a7a1139bc20a4fb0e62ce2a2046f7bbd61fd64496bd4398cc7068",
+          "path": "skills/plan/SKILL.md"
+        },
+        {
+          "identity": "sha256:87d9c81f215ea8c7d4f86675e1450175058c2f44e902235bb1700e7e340389a2",
+          "path": "skills/plan/references/governed-plan-authoring.md"
+        },
+        {
+          "identity": "sha256:21061218b060228c8f3361e1f375008fb66d60b7cda9fc1347c0589f2c369828",
+          "path": "skills/plan/assets/plan-skeleton.md"
+        },
+        {
+          "identity": "sha256:007c46c11105018bc0429b7bc85aef0f555b4ce654cdcce27f4f4657e0ba9c75",
+          "path": "skills/plan/assets/milestone.md"
+        },
+        {
+          "identity": "sha256:f461dd267b53fa6690f9ee8222e4fa8642e27a3cafe530fd8fa75bb2243bb5fb",
+          "path": "skills/plan/assets/decision-log-row.md"
+        },
+        {
+          "identity": "sha256:5ccb37e68487fa495e9804cdc6471329c003b01b309cb08e68cc7c3e8d4c864f",
+          "path": "scripts/lib/validation/skill_validation.py"
+        },
+        {
+          "identity": "sha256:d2f7f243937243d480871fa551254f6c489c99482542294dc21c5f06ed4bbb17",
+          "path": "tests/skill/skill_contract_tests.py"
+        }
+      ],
+      "summary": "Stable one-milestone delivery plan with explicit requirement/boundary allocation, integrated handoff/package proof, recovery and separate final gates authored and locally validated."
+    },
+    {
+      "actor": {
+        "id": "codex-implementer",
+        "role": "implement"
+      },
+      "id": "m1-preservation",
+      "procedure": "Original baseline011dcfd1. Complete original Explicit recording block byte-preserved in existing governed-plan-authoring.md, including all scoped CLI/dispatch/revision/read/applicability/recovery and no-approval duties. Parent-context dependency changed to local above procedure. Task/role/classification now precede detailed method; body boundary retains authority, late triggers, invalid-governed stop, absent-work-only initialization and no automation inference. Plan quality contract, Test criteria and Review applications, Resource map, claims and Result block compare byte-identically to original. Repeated allocation reminder is already present in Plan quality; Output/Expected/Handoff now refer to complete mapped assets with same output fields and explicit owners. All Design sources, three Plan assets and templates/shared unchanged. Existing normalized headings remain, so no generalized layout bypass is needed. Installed review-placement returns before Plan; no unrelated mutation. Current plan-surface branch and recording reference selection require Plan detection. Two scoped test helper maps explicitly include Plan; no new public closed vocabulary or runtime operation. Other four references retain their independent cases. Scope is two Plan files, bounded reader and two test helpers; no generated outputs edited. TG01/F01 independent semantic assessment is recorded by the reviewer separately, not inferred from these comparisons.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:2298926b2f3844831548f4f10c9d58d408eaf32e4505a270e2c0bd643eef3fa4",
+          "path": "skills/design/SKILL.md"
+        },
+        {
+          "identity": "sha256:004189d8bbf456a020165b74cdf1f322dc1d2b3ce0b14e81079c76963fdffed6",
+          "path": "skills/design/assets/design-skeleton.md"
+        },
+        {
+          "identity": "sha256:020be16bb4b01f1eb1a1605562ffd6b31af9e5ba2ee12b1a1e1735acb6378a56",
+          "path": "skills/design/assets/diagram-styles.mmd"
+        },
+        {
+          "identity": "sha256:86ed2ec3cd1152a3eb8c9dc7eb8a29c806bd122accd5d9752401cf2fecccab0d",
+          "path": "skills/design/assets/legacy-adr-skeleton.md"
+        },
+        {
+          "identity": "sha256:e6d3e17551cceb876f8b8e73c2bdff37c7793d7bb47d15361713f8a89c9ecafa",
+          "path": "skills/design/assets/legacy-architecture-skeleton.md"
+        },
+        {
+          "identity": "sha256:5ff3bd5cec3b6ad239ea1fa8676a2fb3cfae1a3ee8fb22876a96112de065727e",
+          "path": "skills/design/references/architecture-view-examples.md"
+        },
+        {
+          "identity": "sha256:7179b4f48e6ba5a1503237f58875f0dc5fe8cdc2c7e77f277c6debee714387b8",
+          "path": "skills/design/references/boundary-first-feature-authoring-v1.md"
+        },
+        {
+          "identity": "sha256:89337cf5da8462ad2afa0c50e04fb7233beea7ce030a049fa3a1695fc57ea2d0",
+          "path": "skills/design/references/boundary-first-method-v1.md"
+        },
+        {
+          "identity": "sha256:d7598a7af645b395db8332e64743d3c19c1529c705a0b2e7a349bae1d1d889f9",
+          "path": "skills/design/references/governed-design-authoring.md"
+        },
+        {
+          "identity": "sha256:87c0fee6c3a753cfb520dcd578de42c1f68d8eb3ddcd6dc16299826e57f86fae",
+          "path": "skills/design/references/legacy-source-reconciliation.md"
+        },
+        {
+          "identity": "sha256:8f24c82956dfafdee4d389b3c7353d3d73968e4c440a7c6fa10eabc47de5e06b",
+          "path": "skills/design/references/legacy-technical-authoring.md"
+        },
+        {
+          "identity": "sha256:6a556136cb73c4b7eb40393a5d5c97ffe6c14f75188a73200e466676bf0a8841",
+          "path": "skills/design/references/model-authoring.md"
+        },
+        {
+          "identity": "sha256:bbff5f36ced2f5e0ddc648a78278e378d81990b0266e0a7172b28d524a4da3cb",
+          "path": "skills/design/references/system-composition.md"
+        },
+        {
+          "identity": "sha256:45453043b926cf24f91756b8a46f51e2164926a15657ce1ab57a37e7f3be9f2f",
+          "path": "skills/design/references/technical-design.md"
+        },
+        {
+          "identity": "sha256:8b0a4b44f27de8c2d24ea21344b75594d5f5c9a247f91d42390068f96d4bf998",
+          "path": "skills/design/references/test-quality.md"
+        },
+        {
+          "identity": "sha256:6c99c7f9f75ce3c5a194e836f557ec0b1f59a63cd90cbe82588586d1c3aebbd8",
+          "path": "skills/plan/SKILL.md"
+        },
+        {
+          "identity": "sha256:f461dd267b53fa6690f9ee8222e4fa8642e27a3cafe530fd8fa75bb2243bb5fb",
+          "path": "skills/plan/assets/decision-log-row.md"
+        },
+        {
+          "identity": "sha256:007c46c11105018bc0429b7bc85aef0f555b4ce654cdcce27f4f4657e0ba9c75",
+          "path": "skills/plan/assets/milestone.md"
+        },
+        {
+          "identity": "sha256:21061218b060228c8f3361e1f375008fb66d60b7cda9fc1347c0589f2c369828",
+          "path": "skills/plan/assets/plan-skeleton.md"
+        },
+        {
+          "identity": "sha256:c66bfce2f8ed9a0772aa3b53633f3d7819a46dfeafd9f241041373b7502f2346",
+          "path": "skills/plan/references/boundary-and-negative-verification.md"
+        },
+        {
+          "identity": "sha256:89337cf5da8462ad2afa0c50e04fb7233beea7ce030a049fa3a1695fc57ea2d0",
+          "path": "skills/plan/references/boundary-first-method-v1.md"
+        },
+        {
+          "identity": "sha256:458a50b4fc744502d8c85227f0ef71a7f202b6623799fe5c2b0128cbd4a7a3b0",
+          "path": "skills/plan/references/concurrency-and-retry-verification.md"
+        },
+        {
+          "identity": "sha256:2879a21841562b4b41273148b2212bf32a083c0f1d6e029c8633acb7d01eeb12",
+          "path": "skills/plan/references/cross-milestone-integration-verification.md"
+        },
+        {
+          "identity": "sha256:7da74e3c307eca561f6d09986a4273a2109e103c4625120f5341b594d51e869c",
+          "path": "skills/plan/references/failure-and-recovery-verification.md"
+        },
+        {
+          "identity": "sha256:1730af83099870547579b5a5d033bdb95dbd4d3abc100818c940bd948ea1931f",
+          "path": "skills/plan/references/governed-plan-authoring.md"
+        },
+        {
+          "identity": "sha256:6de936e6bccc3b7dfa724573bccd33fcab13f197d85db2bd489893433b6f1758",
+          "path": "skills/plan/references/manual-and-operational-evidence.md"
+        },
+        {
+          "identity": "sha256:0ef6fd47a39cc8bc73ce00c32a474d062942fd5586f8ed5d958be4c76de65a44",
+          "path": "skills/plan/references/migration-and-compatibility-verification.md"
+        },
+        {
+          "identity": "sha256:e19b99a0cb69b9051c6eeae20d76c4a0cf3925e8fd1686ceb6671c7749cc3dc5",
+          "path": "skills/plan/references/requirement-to-delivery-model.md"
+        },
+        {
+          "identity": "sha256:0ac3e3ccc77aee7e6d60d5d56dd61a1d7424aa3443910cb85d198993bdd82818",
+          "path": "skills/plan/references/review-reliance.md"
+        },
+        {
+          "identity": "sha256:b45e5908eb7acec77f39c451cb55c2d630da5a2a85502d16937b9e7347aaec48",
+          "path": "skills/plan/references/security-and-authority-verification.md"
+        },
+        {
+          "identity": "sha256:17e276d6f01f851b3002a00f44bddfee0dd1720878d562ebda9fd0b250f73641",
+          "path": "skills/plan/references/state-machine-verification.md"
+        },
+        {
+          "identity": "sha256:7c7037e519b4558f8126460892ff33721026e05b2d8f7469b7ba86477ee81b9b",
+          "path": "skills/plan/references/test-maintenance.md"
+        },
+        {
+          "identity": "sha256:8b0a4b44f27de8c2d24ea21344b75594d5f5c9a247f91d42390068f96d4bf998",
+          "path": "skills/plan/references/test-quality.md"
+        },
+        {
+          "identity": "sha256:fe7dfeb7703ea0f60e67182710bda05f9450823a3774c4d0b7d31ea11284c602",
+          "path": "scripts/lib/validation/skill_validation.py"
+        },
+        {
+          "identity": "sha256:0f5283854556a3c7732de38ae39ac47541ea388fc23fe7ee451b16436af9fb9e",
+          "path": "tests/skill/skill_contract_tests.py"
+        },
+        {
+          "identity": "sha256:f1b12638b4d14ec457b640bce86b2ca3529943d37280af24067eba55aa5a657a",
+          "path": "tests/skill/skill_guidance_tests.py"
+        },
+        {
+          "identity": "sha256:8c2ed5fe7de2f3de5c64709ef45bf9a5c8b00431565e219161bef0989f2d92aa",
+          "path": "docs/plans/2026-09-15-design-plan-simplification.md"
+        }
+      ],
+      "summary": "M1 implements PLAN-SR-08 with complete recording relocation and preserved Plan/Design obligations."
+    },
+    {
+      "actor": {
+        "id": "codex-implementer",
+        "role": "implement"
+      },
+      "id": "m1-validation",
+      "procedure": "Commands actually run in Node24.14.1/Python3.12.3: python tests/skill/test-skill-validator.py RecordingReferenceContractTests RelocatedPlanSurfaceTests initially ran11 tests with10 expected failures exposing Plan no-inline bypass and retired placement (/tmp/dp-fail-first.log); after correction11 passed (/tmp/dp-focused-final.log). Full skill suite initial304 methods failed2/error1 on preserved result/handoff output and remaining inline test reader; corrected source labels and actual reader mapping without weakening checks, then python tests/skill/test-skill-validator.py passed304 (/tmp/dp-skill-suite-final.log). python tests/engineering/packaging/test-adapter-distribution.py passed95 (/tmp/dp-packaging-suite.log). python scripts/validate-skills.py skills passed all19 (/tmp/dp-all-skills.log). bash scripts/ci.sh --mode local passed selected checks focused178.34s and boundary scope (/tmp/dp-local-ci.log). Final purely whitespace line separation in selector table followed by focused11 pass; no semantic source/test change defeats full-suite reuse, and complete original-base PR-mode validation remains due before final review. git diff --check passed. Test oracles use independently named reference and trigger inputs, exact fault diagnostics and current-vs-retired paths; actual candidate proof separate. No hosted CI or approval inferred.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:2298926b2f3844831548f4f10c9d58d408eaf32e4505a270e2c0bd643eef3fa4",
+          "path": "skills/design/SKILL.md"
+        },
+        {
+          "identity": "sha256:004189d8bbf456a020165b74cdf1f322dc1d2b3ce0b14e81079c76963fdffed6",
+          "path": "skills/design/assets/design-skeleton.md"
+        },
+        {
+          "identity": "sha256:020be16bb4b01f1eb1a1605562ffd6b31af9e5ba2ee12b1a1e1735acb6378a56",
+          "path": "skills/design/assets/diagram-styles.mmd"
+        },
+        {
+          "identity": "sha256:86ed2ec3cd1152a3eb8c9dc7eb8a29c806bd122accd5d9752401cf2fecccab0d",
+          "path": "skills/design/assets/legacy-adr-skeleton.md"
+        },
+        {
+          "identity": "sha256:e6d3e17551cceb876f8b8e73c2bdff37c7793d7bb47d15361713f8a89c9ecafa",
+          "path": "skills/design/assets/legacy-architecture-skeleton.md"
+        },
+        {
+          "identity": "sha256:5ff3bd5cec3b6ad239ea1fa8676a2fb3cfae1a3ee8fb22876a96112de065727e",
+          "path": "skills/design/references/architecture-view-examples.md"
+        },
+        {
+          "identity": "sha256:7179b4f48e6ba5a1503237f58875f0dc5fe8cdc2c7e77f277c6debee714387b8",
+          "path": "skills/design/references/boundary-first-feature-authoring-v1.md"
+        },
+        {
+          "identity": "sha256:89337cf5da8462ad2afa0c50e04fb7233beea7ce030a049fa3a1695fc57ea2d0",
+          "path": "skills/design/references/boundary-first-method-v1.md"
+        },
+        {
+          "identity": "sha256:d7598a7af645b395db8332e64743d3c19c1529c705a0b2e7a349bae1d1d889f9",
+          "path": "skills/design/references/governed-design-authoring.md"
+        },
+        {
+          "identity": "sha256:87c0fee6c3a753cfb520dcd578de42c1f68d8eb3ddcd6dc16299826e57f86fae",
+          "path": "skills/design/references/legacy-source-reconciliation.md"
+        },
+        {
+          "identity": "sha256:8f24c82956dfafdee4d389b3c7353d3d73968e4c440a7c6fa10eabc47de5e06b",
+          "path": "skills/design/references/legacy-technical-authoring.md"
+        },
+        {
+          "identity": "sha256:6a556136cb73c4b7eb40393a5d5c97ffe6c14f75188a73200e466676bf0a8841",
+          "path": "skills/design/references/model-authoring.md"
+        },
+        {
+          "identity": "sha256:bbff5f36ced2f5e0ddc648a78278e378d81990b0266e0a7172b28d524a4da3cb",
+          "path": "skills/design/references/system-composition.md"
+        },
+        {
+          "identity": "sha256:45453043b926cf24f91756b8a46f51e2164926a15657ce1ab57a37e7f3be9f2f",
+          "path": "skills/design/references/technical-design.md"
+        },
+        {
+          "identity": "sha256:8b0a4b44f27de8c2d24ea21344b75594d5f5c9a247f91d42390068f96d4bf998",
+          "path": "skills/design/references/test-quality.md"
+        },
+        {
+          "identity": "sha256:6c99c7f9f75ce3c5a194e836f557ec0b1f59a63cd90cbe82588586d1c3aebbd8",
+          "path": "skills/plan/SKILL.md"
+        },
+        {
+          "identity": "sha256:f461dd267b53fa6690f9ee8222e4fa8642e27a3cafe530fd8fa75bb2243bb5fb",
+          "path": "skills/plan/assets/decision-log-row.md"
+        },
+        {
+          "identity": "sha256:007c46c11105018bc0429b7bc85aef0f555b4ce654cdcce27f4f4657e0ba9c75",
+          "path": "skills/plan/assets/milestone.md"
+        },
+        {
+          "identity": "sha256:21061218b060228c8f3361e1f375008fb66d60b7cda9fc1347c0589f2c369828",
+          "path": "skills/plan/assets/plan-skeleton.md"
+        },
+        {
+          "identity": "sha256:c66bfce2f8ed9a0772aa3b53633f3d7819a46dfeafd9f241041373b7502f2346",
+          "path": "skills/plan/references/boundary-and-negative-verification.md"
+        },
+        {
+          "identity": "sha256:89337cf5da8462ad2afa0c50e04fb7233beea7ce030a049fa3a1695fc57ea2d0",
+          "path": "skills/plan/references/boundary-first-method-v1.md"
+        },
+        {
+          "identity": "sha256:458a50b4fc744502d8c85227f0ef71a7f202b6623799fe5c2b0128cbd4a7a3b0",
+          "path": "skills/plan/references/concurrency-and-retry-verification.md"
+        },
+        {
+          "identity": "sha256:2879a21841562b4b41273148b2212bf32a083c0f1d6e029c8633acb7d01eeb12",
+          "path": "skills/plan/references/cross-milestone-integration-verification.md"
+        },
+        {
+          "identity": "sha256:7da74e3c307eca561f6d09986a4273a2109e103c4625120f5341b594d51e869c",
+          "path": "skills/plan/references/failure-and-recovery-verification.md"
+        },
+        {
+          "identity": "sha256:1730af83099870547579b5a5d033bdb95dbd4d3abc100818c940bd948ea1931f",
+          "path": "skills/plan/references/governed-plan-authoring.md"
+        },
+        {
+          "identity": "sha256:6de936e6bccc3b7dfa724573bccd33fcab13f197d85db2bd489893433b6f1758",
+          "path": "skills/plan/references/manual-and-operational-evidence.md"
+        },
+        {
+          "identity": "sha256:0ef6fd47a39cc8bc73ce00c32a474d062942fd5586f8ed5d958be4c76de65a44",
+          "path": "skills/plan/references/migration-and-compatibility-verification.md"
+        },
+        {
+          "identity": "sha256:e19b99a0cb69b9051c6eeae20d76c4a0cf3925e8fd1686ceb6671c7749cc3dc5",
+          "path": "skills/plan/references/requirement-to-delivery-model.md"
+        },
+        {
+          "identity": "sha256:0ac3e3ccc77aee7e6d60d5d56dd61a1d7424aa3443910cb85d198993bdd82818",
+          "path": "skills/plan/references/review-reliance.md"
+        },
+        {
+          "identity": "sha256:b45e5908eb7acec77f39c451cb55c2d630da5a2a85502d16937b9e7347aaec48",
+          "path": "skills/plan/references/security-and-authority-verification.md"
+        },
+        {
+          "identity": "sha256:17e276d6f01f851b3002a00f44bddfee0dd1720878d562ebda9fd0b250f73641",
+          "path": "skills/plan/references/state-machine-verification.md"
+        },
+        {
+          "identity": "sha256:7c7037e519b4558f8126460892ff33721026e05b2d8f7469b7ba86477ee81b9b",
+          "path": "skills/plan/references/test-maintenance.md"
+        },
+        {
+          "identity": "sha256:8b0a4b44f27de8c2d24ea21344b75594d5f5c9a247f91d42390068f96d4bf998",
+          "path": "skills/plan/references/test-quality.md"
+        },
+        {
+          "identity": "sha256:fe7dfeb7703ea0f60e67182710bda05f9450823a3774c4d0b7d31ea11284c602",
+          "path": "scripts/lib/validation/skill_validation.py"
+        },
+        {
+          "identity": "sha256:0f5283854556a3c7732de38ae39ac47541ea388fc23fe7ee451b16436af9fb9e",
+          "path": "tests/skill/skill_contract_tests.py"
+        },
+        {
+          "identity": "sha256:f1b12638b4d14ec457b640bce86b2ca3529943d37280af24067eba55aa5a657a",
+          "path": "tests/skill/skill_guidance_tests.py"
+        },
+        {
+          "identity": "sha256:8c2ed5fe7de2f3de5c64709ef45bf9a5c8b00431565e219161bef0989f2d92aa",
+          "path": "docs/plans/2026-09-15-design-plan-simplification.md"
+        }
+      ],
+      "summary": "M1 required focused, full skill/package and local checks passed; fail-first history retained."
+    },
+    {
+      "actor": {
+        "id": "codex-implementer",
+        "role": "implement"
+      },
+      "id": "m1-candidate",
+      "procedure": "Actual commands: python scripts/build-adapters.py --version v1.0.0 --output-dir /tmp/rigorloop-design-plan-candidate.f3QKdW; python scripts/validate-adapters.py --version v1.0.0 --adapter-root /tmp/rigorloop-design-plan-candidate.f3QKdW --clean-install-smoke --skill plan --skill design. Both exit0; log /tmp/dp-candidate.log. Actual archives SHA256 {\"/tmp/rigorloop-design-plan-candidate.f3QKdW/rigorloop-adapter-codex-v1.0.0.zip\": \"6c85e921932c8a16d1f2d9ea199249675d709aaf69ff4628bf45d880a8c64921\", \"/tmp/rigorloop-design-plan-candidate.f3QKdW/rigorloop-adapter-claude-v1.0.0.zip\": \"da4c7125befd9e2bd55c6af9dd6d892f9f08373c3171c67d133219755a11940d\"}. Includes full current packages/transitive resources with supported transforms; actual mapped Plan/Design temporary installs qualified. v1.0.0 is local qualification, no publication or active install. Design and Plan assets unchanged; candidate contains current skill bytes and subsequent edit is reader whitespace only. Candidate retained until independent assessment/final reliance is complete, then cleanup only that owned directory.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:2298926b2f3844831548f4f10c9d58d408eaf32e4505a270e2c0bd643eef3fa4",
+          "path": "skills/design/SKILL.md"
+        },
+        {
+          "identity": "sha256:004189d8bbf456a020165b74cdf1f322dc1d2b3ce0b14e81079c76963fdffed6",
+          "path": "skills/design/assets/design-skeleton.md"
+        },
+        {
+          "identity": "sha256:020be16bb4b01f1eb1a1605562ffd6b31af9e5ba2ee12b1a1e1735acb6378a56",
+          "path": "skills/design/assets/diagram-styles.mmd"
+        },
+        {
+          "identity": "sha256:86ed2ec3cd1152a3eb8c9dc7eb8a29c806bd122accd5d9752401cf2fecccab0d",
+          "path": "skills/design/assets/legacy-adr-skeleton.md"
+        },
+        {
+          "identity": "sha256:e6d3e17551cceb876f8b8e73c2bdff37c7793d7bb47d15361713f8a89c9ecafa",
+          "path": "skills/design/assets/legacy-architecture-skeleton.md"
+        },
+        {
+          "identity": "sha256:5ff3bd5cec3b6ad239ea1fa8676a2fb3cfae1a3ee8fb22876a96112de065727e",
+          "path": "skills/design/references/architecture-view-examples.md"
+        },
+        {
+          "identity": "sha256:7179b4f48e6ba5a1503237f58875f0dc5fe8cdc2c7e77f277c6debee714387b8",
+          "path": "skills/design/references/boundary-first-feature-authoring-v1.md"
+        },
+        {
+          "identity": "sha256:89337cf5da8462ad2afa0c50e04fb7233beea7ce030a049fa3a1695fc57ea2d0",
+          "path": "skills/design/references/boundary-first-method-v1.md"
+        },
+        {
+          "identity": "sha256:d7598a7af645b395db8332e64743d3c19c1529c705a0b2e7a349bae1d1d889f9",
+          "path": "skills/design/references/governed-design-authoring.md"
+        },
+        {
+          "identity": "sha256:87c0fee6c3a753cfb520dcd578de42c1f68d8eb3ddcd6dc16299826e57f86fae",
+          "path": "skills/design/references/legacy-source-reconciliation.md"
+        },
+        {
+          "identity": "sha256:8f24c82956dfafdee4d389b3c7353d3d73968e4c440a7c6fa10eabc47de5e06b",
+          "path": "skills/design/references/legacy-technical-authoring.md"
+        },
+        {
+          "identity": "sha256:6a556136cb73c4b7eb40393a5d5c97ffe6c14f75188a73200e466676bf0a8841",
+          "path": "skills/design/references/model-authoring.md"
+        },
+        {
+          "identity": "sha256:bbff5f36ced2f5e0ddc648a78278e378d81990b0266e0a7172b28d524a4da3cb",
+          "path": "skills/design/references/system-composition.md"
+        },
+        {
+          "identity": "sha256:45453043b926cf24f91756b8a46f51e2164926a15657ce1ab57a37e7f3be9f2f",
+          "path": "skills/design/references/technical-design.md"
+        },
+        {
+          "identity": "sha256:8b0a4b44f27de8c2d24ea21344b75594d5f5c9a247f91d42390068f96d4bf998",
+          "path": "skills/design/references/test-quality.md"
+        },
+        {
+          "identity": "sha256:6c99c7f9f75ce3c5a194e836f557ec0b1f59a63cd90cbe82588586d1c3aebbd8",
+          "path": "skills/plan/SKILL.md"
+        },
+        {
+          "identity": "sha256:f461dd267b53fa6690f9ee8222e4fa8642e27a3cafe530fd8fa75bb2243bb5fb",
+          "path": "skills/plan/assets/decision-log-row.md"
+        },
+        {
+          "identity": "sha256:007c46c11105018bc0429b7bc85aef0f555b4ce654cdcce27f4f4657e0ba9c75",
+          "path": "skills/plan/assets/milestone.md"
+        },
+        {
+          "identity": "sha256:21061218b060228c8f3361e1f375008fb66d60b7cda9fc1347c0589f2c369828",
+          "path": "skills/plan/assets/plan-skeleton.md"
+        },
+        {
+          "identity": "sha256:c66bfce2f8ed9a0772aa3b53633f3d7819a46dfeafd9f241041373b7502f2346",
+          "path": "skills/plan/references/boundary-and-negative-verification.md"
+        },
+        {
+          "identity": "sha256:89337cf5da8462ad2afa0c50e04fb7233beea7ce030a049fa3a1695fc57ea2d0",
+          "path": "skills/plan/references/boundary-first-method-v1.md"
+        },
+        {
+          "identity": "sha256:458a50b4fc744502d8c85227f0ef71a7f202b6623799fe5c2b0128cbd4a7a3b0",
+          "path": "skills/plan/references/concurrency-and-retry-verification.md"
+        },
+        {
+          "identity": "sha256:2879a21841562b4b41273148b2212bf32a083c0f1d6e029c8633acb7d01eeb12",
+          "path": "skills/plan/references/cross-milestone-integration-verification.md"
+        },
+        {
+          "identity": "sha256:7da74e3c307eca561f6d09986a4273a2109e103c4625120f5341b594d51e869c",
+          "path": "skills/plan/references/failure-and-recovery-verification.md"
+        },
+        {
+          "identity": "sha256:1730af83099870547579b5a5d033bdb95dbd4d3abc100818c940bd948ea1931f",
+          "path": "skills/plan/references/governed-plan-authoring.md"
+        },
+        {
+          "identity": "sha256:6de936e6bccc3b7dfa724573bccd33fcab13f197d85db2bd489893433b6f1758",
+          "path": "skills/plan/references/manual-and-operational-evidence.md"
+        },
+        {
+          "identity": "sha256:0ef6fd47a39cc8bc73ce00c32a474d062942fd5586f8ed5d958be4c76de65a44",
+          "path": "skills/plan/references/migration-and-compatibility-verification.md"
+        },
+        {
+          "identity": "sha256:e19b99a0cb69b9051c6eeae20d76c4a0cf3925e8fd1686ceb6671c7749cc3dc5",
+          "path": "skills/plan/references/requirement-to-delivery-model.md"
+        },
+        {
+          "identity": "sha256:0ac3e3ccc77aee7e6d60d5d56dd61a1d7424aa3443910cb85d198993bdd82818",
+          "path": "skills/plan/references/review-reliance.md"
+        },
+        {
+          "identity": "sha256:b45e5908eb7acec77f39c451cb55c2d630da5a2a85502d16937b9e7347aaec48",
+          "path": "skills/plan/references/security-and-authority-verification.md"
+        },
+        {
+          "identity": "sha256:17e276d6f01f851b3002a00f44bddfee0dd1720878d562ebda9fd0b250f73641",
+          "path": "skills/plan/references/state-machine-verification.md"
+        },
+        {
+          "identity": "sha256:7c7037e519b4558f8126460892ff33721026e05b2d8f7469b7ba86477ee81b9b",
+          "path": "skills/plan/references/test-maintenance.md"
+        },
+        {
+          "identity": "sha256:8b0a4b44f27de8c2d24ea21344b75594d5f5c9a247f91d42390068f96d4bf998",
+          "path": "skills/plan/references/test-quality.md"
+        },
+        {
+          "identity": "sha256:fe7dfeb7703ea0f60e67182710bda05f9450823a3774c4d0b7d31ea11284c602",
+          "path": "scripts/lib/validation/skill_validation.py"
+        },
+        {
+          "identity": "sha256:0f5283854556a3c7732de38ae39ac47541ea388fc23fe7ee451b16436af9fb9e",
+          "path": "tests/skill/skill_contract_tests.py"
+        },
+        {
+          "identity": "sha256:f1b12638b4d14ec457b640bce86b2ca3529943d37280af24067eba55aa5a657a",
+          "path": "tests/skill/skill_guidance_tests.py"
+        },
+        {
+          "identity": "sha256:8c2ed5fe7de2f3de5c64709ef45bf9a5c8b00431565e219161bef0989f2d92aa",
+          "path": "docs/plans/2026-09-15-design-plan-simplification.md"
+        }
+      ],
+      "summary": "Fresh supported candidate generation and temporary clean installs passed for Plan and Design."
+    },
+    {
+      "actor": {
+        "id": "codex-implementer",
+        "role": "implement"
+      },
+      "id": "final-pr-validation",
+      "procedure": "Actual command: bash scripts/ci.sh --mode pr --base 851f5f9c49eea8f40c82db3aa18e5c96667d5026 --head 04f5d2d0. Resolved engineering head04f5d2d0edfd622d9bf7cba336eec51046f6c4f0. Observed complete output /tmp/dp-full-pr-ci.log ends Selected CI checks passed; boundary107.10s and focused355.28s. Repository-owned release-integrity preparation produced isolated sourcef7c8e034ac5cbc96781dccbd848f530a2e19baca from this exact head, candidate577cb23934407dbc82f60ca6a82e2ad69db7dfde65f60c48876b14d0837ebbab. Its release metadata adds authoritative broad smoke; complete selected checks passed, including current record snapshot, schema, model/boundary, skills/tests, CLI, adapter/distribution, release/transaction, guide/prose, npm publication and broad smoke. Isolated prepared metadata is validation-only, no repository source edit or publication. Current55b3fac2 differs from tested engineering head only by attributable independent M1 review and work/activity closeout; all engineering subjects remain exact. Record-only final suffix gets current structural/snapshot validation after saves. Independent final review and distinct Verify remain separate; hosted CI unobserved.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:3540d9d72b6f8e97bc62ed46bab56c6c152b86ceea1b874abb32379df93286b8",
+          "path": "docs/design/skill/authoring/plan.md"
+        },
+        {
+          "identity": "sha256:f6a787ef5a6c76d26d4d9393e1c104c3b5ae39098e168d86cd1215ad7c855297",
+          "path": "docs/design/skill/skill.md"
+        },
+        {
+          "identity": "sha256:0a4dcd3cad1dc2f752de7adace385a20965130a9fa9f341ec03174a5ee8eca77",
+          "path": "docs/plan.md"
+        },
+        {
+          "identity": "sha256:8c2ed5fe7de2f3de5c64709ef45bf9a5c8b00431565e219161bef0989f2d92aa",
+          "path": "docs/plans/2026-09-15-design-plan-simplification.md"
+        },
+        {
+          "identity": "sha256:4a58cf175439ff0dd5ce7057d430ff9cf32836a2564de84a527a238abc7bb77e",
+          "path": "docs/proposals/2026-09-15-design-plan-simplification.md"
+        },
+        {
+          "identity": "sha256:fe7dfeb7703ea0f60e67182710bda05f9450823a3774c4d0b7d31ea11284c602",
+          "path": "scripts/lib/validation/skill_validation.py"
+        },
+        {
+          "identity": "sha256:6c99c7f9f75ce3c5a194e836f557ec0b1f59a63cd90cbe82588586d1c3aebbd8",
+          "path": "skills/plan/SKILL.md"
+        },
+        {
+          "identity": "sha256:1730af83099870547579b5a5d033bdb95dbd4d3abc100818c940bd948ea1931f",
+          "path": "skills/plan/references/governed-plan-authoring.md"
+        },
+        {
+          "identity": "sha256:0f5283854556a3c7732de38ae39ac47541ea388fc23fe7ee451b16436af9fb9e",
+          "path": "tests/skill/skill_contract_tests.py"
+        },
+        {
+          "identity": "sha256:f1b12638b4d14ec457b640bce86b2ca3529943d37280af24067eba55aa5a657a",
+          "path": "tests/skill/skill_guidance_tests.py"
+        }
+      ],
+      "summary": "V7 complete original-base branch validation passed, including selected broad smoke and release-integrity qualification."
+    }
+  ],
+  "schema_version": 3
+}

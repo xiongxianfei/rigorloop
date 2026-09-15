@@ -1,0 +1,238 @@
+{
+  "assessment_scope": "Independent first-pass milestone Code Review of M1 actual diff011dcfd1..04f5d2d0, all ten checklist dimensions, complete changed Plan and retained Design packages, TG-01 semantic preservation, TG-02 fault proof, actual TG-FINAL-01 artifact correspondence and TG-FINAL-02 candidates. Additional exact subjects establish authority or proof basis, not extra approval targets.",
+  "change_id": "2026-09-15-design-plan-simplification",
+  "contributors": [
+    {
+      "id": "codex-implementer",
+      "role": "implement"
+    }
+  ],
+  "findings": [],
+  "id": "m1-code-review",
+  "independence_basis": "Root authored M1 before delegating to distinct subagent /root/dp_m1_review. I independently inspected original/revised complete packages, actual diff/readers/fault oracles, current exact approved model/delivery basis and concrete filled handoff, and actual candidate bytes. I did not edit source or author a semantic correction. An optional whitespace-only line formatting observation was incorporated by the author; it supplied no reviewed logic or normative content. Sole record-writer ownership was transferred only after frozen04f5d2d0 and current proof; this operation writes review evidence only.",
+  "judgment": "approved",
+  "limitations": [
+    "This is milestone approval only. Fresh independent complete-branch Code Review after required V7 and distinct final Verify remain necessary; no branch, PR, final closeout or hosted CI readiness is claimed.",
+    "Semantic proof is named independent source/artifact correspondence with explicit expected stops, not a live agent exercise, usability measurement or token/runtime benchmark. No publication, active installation or wider adoption closure is inferred.",
+    "Candidate installation results are consumed from actual repository-owned validation output; reviewer separately compared all33 package files in actual archives. The temporary v1.0.0 label is qualification only."
+  ],
+  "rationale": [
+    "Spec alignment — pass. Reviewed actual complete M1 diff from 011dcfd1 to frozen04f5d2d0, the approved PLAN-SR-01–08/PLAN-DEC-02 selection and the unchanged primary delivery plan. The implementation uses the existing governed reference, exposes role/task/classification before detailed recording and preserves the complete allocation contract. No new operation, shared policy, artifact family or universal layout is introduced. The exact current Design member map is design=sha256:0f7e41a1de83d542d9291a842876ae7c75ebb214242cca18ee825f539f52b778, plan=sha256:3540d9d72b6f8e97bc62ed46bab56c6c152b86ceea1b874abb32379df93286b8 and skill=sha256:f6a787ef5a6c76d26d4d9393e1c104c3b5ae39098e168d86cd1215ad7c855297, approved by design-review. Delivery Review approves primary plan sha256:8c2ed5fe7de2f3de5c64709ef45bf9a5c8b00431565e219161bef0989f2d92aa.",
+    "Test coverage — pass. TG-02 extends independently named reference/trigger fixtures to Plan, retaining non-Plan populations. Each mutation asserts its intended input and precise diagnostic: missing boundary/classification/load trigger, unmapped unknown reference, missing selected file despite unrelated/inline alternatives, escaped symlink, undecodable bytes, missing profile and required token. The current placement fixture accepts change.json with Recording boundary and rejects change.yaml. Fail-first11 methods produced10 expected failures; current focused11 pass and complete304 pass. These expose the actual heading-removal bypass and retired-path selection rather than deriving expected values from production lookup tables. No test or semantic obligation was deleted.",
+    "Edge cases — pass. TG-01 performed by this independent reviewer on2026-09-15 against the full original and revised Plan packages. Portable create/revise reads task/placement/assets and writes plan/navigation only, without untriggered governed loading. Valid governed create/revise independently resolves exact authority and selects the complete existing reference. Approved initialization checks current Delivery basis and absent work before work add; existing/conflicting work returns to Route unchanged. A late governed trigger loads the same method before action; missing/stale/unknown/conflicting authority stops without portable fallback or inferred automation. Boundary/proof methods remain independently triggered. Interrupted or retried recording rereads/reassesses revision and actual work; busy/recovery-required is not a save or permission to duplicate work. These are explicit instruction-path observations, not fabricated runtime executions.",
+    "Error handling — pass. The relocated profile retains schema_version dispatch before status/operation, explicit record-contract selection, scope/omission inspection, exact subjects/reads, expected_revision, targeted writes and conflict/recovery handling. The body preserves invalid-authority and missing/unreadable/escaped/stale/mixed-version method stops before dependent actions. The reference preserves partial evidence and bars full-file reconstruction/retired fallback. The selected reader returns specific missing/escaped/undecodable/profile diagnostics, and canonical validation invokes it. Existing CLI persistence behavior is not modified or claimed newly implemented.",
+    "Architecture boundaries — pass. Plan authors stable intent and permitted evidence, independently reviewed absent-work initialization remains the sole narrow exception; Route owns existing work/routing, Assessment owns judgment, CLI/Records own construction and persistence. Plan surface selection now recognizes this approved body boundary. The installed review-placement reader excludes Plan and needs no change; generic normalized-layout protection already admits its required existing sections. The coupled body/reference/readers/tests form the allocated complete compatibility unit. Shared sources, all three normative assets and full retained Design package are unchanged.",
+    "Compatibility — pass. TG-01 grouped preservation mapping independently checked: original role/scope/inputs survive in body; the entire original Explicit recording construction survives in the existing reference; all quality allocation bullets remain; the removed repeated boundary mapping survives in Plan quality contract with the missing-owner stop still explicit; output consolidation retains selected operation, exact plan, author-owned evidence/recording outcome, blockers and immediate independent Delivery Review handoff. Three assets retain labels, metadata and fingerprints. Claims, shared applications, resource map and Result remain intact. No current plan/state/navigation distinction, published operation, stored format or historical judgment is migrated.",
+    "Security/privacy — pass. Actual diff contains no credentials, network mutation, logging, dependency or permission change. Invalid governed inputs cannot confer portable or initialization authority; missing required resources cannot be reconstructed and containment is checked. Source packages still distinguish publication/customer adoption from installation and independent approval from storage. Temporary qualification does not authorize active-environment writes. User continuation authority remains separately recorded and grants no merge/release permission.",
+    "Derived artifact currency — pass within actual M1 evidence scope. Read m1-candidate and actual build/clean-install output for /tmp/rigorloop-design-plan-candidate.f3QKdW. Independently opened both actual archives and compared all33 Plan/Design source files, including untriggered methods and assets: Codex exact bytes; Claude only declared version/schema-version/argument-hint frontmatter removal. Actual archive SHA256 values are6c85e921932c8a16d1f2d9ea199249675d709aaf69ff4628bf45d880a8c64921 and da4c7125befd9e2bd55c6af9dd6d892f9f08373c3171c67d133219755a11940d respectively. Supported validate-adapters --clean-install-smoke --skill plan --skill design passed both. Initial reviewer scratch expectation omitted argument-hint removal; inspecting declared transform and actual diff corrected that scratch oracle, with no candidate defect. No canonical skill changed after build; final reader whitespace cannot change package bytes.",
+    "Unrelated changes — pass. Five M1 engineering files change: Plan body/reference, one validator and two test helpers. Design retention was assessed over the whole entrypoint, ten references and four assets: core-first authority and six reconciliation steps remain sufficient; model/technical/view-example/composition/legacy methods have distinct triggered duties, including mandatory overview/supporting-view decisions and complete legacy contracts. Repeated overview reminders cover selection versus execution, so removing them has no justified benefit. Wider FU-015–018 adoption, shared sources, other skills, assets, installer/generator and runtime CLI remain outside this delivered change.",
+    "Validation evidence — pass for milestone scope. Current m1-validation records and observed logs support all19 canonical skills,304 full skill methods,95 packaging methods, focused11 and local CI selected checks with focused178.34s/boundary pass. Earlier expected and iterative failures remain disclosed; no failed run is called success. The final selector whitespace-only separation was followed by focused11 pass and cannot alter semantic/source package behavior. TG-01 semantic observations and TG-FINAL-01 concrete correspondence below complement deterministic proof. Full original-base V7 remains a final-stage requirement; this milestone judgment does not preclaim that run, hosted CI, branch readiness or Verify.",
+    "TG-FINAL-01 concrete filled output trace — pass. Starting from the actual current Plan Design at docs/design/skill/authoring/plan.md, observed PLAN-SR-01–08, PLAN-DEC-02, necessary Context/Runtime views and all eight requirement-linked acceptance rows supply behavior/realization/decisions and local/integrated observation intent. The actual registered design-review member map above includes retained Design and Skill owners and current exact identities. Plan Inputs consumes these approved subjects; no approval field need be embedded in an asset. The filled docs/plans/2026-09-15-design-plan-simplification.md then allocates all Plan SRs to actual M1; TG-01/02 and TG-FINAL-01/02; commands V1–V7; exact affected components; safe dependencies; completion/evidence/review criteria; coordinated rollback; and separate final whole-change review checkpoint before Verify. These are real filled fields from the unchanged plan/milestone/decision assets, not hypothetical labels. The current delivery-review record consumes that same sole primary-plan identity and design-review ID/map, assessing sequence and verification together. First failure points are explicit: missing/stale Design member stops Plan Inputs/classification before dependent authoring; a missing allocation in the filled plan is rejected by Delivery Review Review contract and routes to Plan; a changed primary-plan identity stops approved initialization before work add. No runtime invocation, fake review or workflow transition was performed by this trace.",
+    "Current reliance and handoff — pass. Complete current scoped context and full required review records show approved Proposal/Design/Delivery basis with no findings or blockers. Older supporting source/evidence identities remain inspection provenance: the model package and primary plan approval targets are unchanged; earlier reviewer inspection of preimplementation Plan/reader sources was feasibility basis, not approval of future implementation. Evidence-container append and current M1 changes are assessed by this new exact-subject review rather than retargeting old reviews. M1 has no required correction and no other implementation milestone remains. Route may close M1 and arrange separately required fresh whole-change Code Review after V7; milestone approval and integrated proof never substitute for that checkpoint or distinct Verify."
+  ],
+  "reviewer": {
+    "id": "design-plan-m1-code-review",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:2298926b2f3844831548f4f10c9d58d408eaf32e4505a270e2c0bd643eef3fa4",
+      "path": "skills/design/SKILL.md"
+    },
+    {
+      "identity": "sha256:004189d8bbf456a020165b74cdf1f322dc1d2b3ce0b14e81079c76963fdffed6",
+      "path": "skills/design/assets/design-skeleton.md"
+    },
+    {
+      "identity": "sha256:020be16bb4b01f1eb1a1605562ffd6b31af9e5ba2ee12b1a1e1735acb6378a56",
+      "path": "skills/design/assets/diagram-styles.mmd"
+    },
+    {
+      "identity": "sha256:86ed2ec3cd1152a3eb8c9dc7eb8a29c806bd122accd5d9752401cf2fecccab0d",
+      "path": "skills/design/assets/legacy-adr-skeleton.md"
+    },
+    {
+      "identity": "sha256:e6d3e17551cceb876f8b8e73c2bdff37c7793d7bb47d15361713f8a89c9ecafa",
+      "path": "skills/design/assets/legacy-architecture-skeleton.md"
+    },
+    {
+      "identity": "sha256:5ff3bd5cec3b6ad239ea1fa8676a2fb3cfae1a3ee8fb22876a96112de065727e",
+      "path": "skills/design/references/architecture-view-examples.md"
+    },
+    {
+      "identity": "sha256:7179b4f48e6ba5a1503237f58875f0dc5fe8cdc2c7e77f277c6debee714387b8",
+      "path": "skills/design/references/boundary-first-feature-authoring-v1.md"
+    },
+    {
+      "identity": "sha256:89337cf5da8462ad2afa0c50e04fb7233beea7ce030a049fa3a1695fc57ea2d0",
+      "path": "skills/design/references/boundary-first-method-v1.md"
+    },
+    {
+      "identity": "sha256:d7598a7af645b395db8332e64743d3c19c1529c705a0b2e7a349bae1d1d889f9",
+      "path": "skills/design/references/governed-design-authoring.md"
+    },
+    {
+      "identity": "sha256:87c0fee6c3a753cfb520dcd578de42c1f68d8eb3ddcd6dc16299826e57f86fae",
+      "path": "skills/design/references/legacy-source-reconciliation.md"
+    },
+    {
+      "identity": "sha256:8f24c82956dfafdee4d389b3c7353d3d73968e4c440a7c6fa10eabc47de5e06b",
+      "path": "skills/design/references/legacy-technical-authoring.md"
+    },
+    {
+      "identity": "sha256:6a556136cb73c4b7eb40393a5d5c97ffe6c14f75188a73200e466676bf0a8841",
+      "path": "skills/design/references/model-authoring.md"
+    },
+    {
+      "identity": "sha256:bbff5f36ced2f5e0ddc648a78278e378d81990b0266e0a7172b28d524a4da3cb",
+      "path": "skills/design/references/system-composition.md"
+    },
+    {
+      "identity": "sha256:45453043b926cf24f91756b8a46f51e2164926a15657ce1ab57a37e7f3be9f2f",
+      "path": "skills/design/references/technical-design.md"
+    },
+    {
+      "identity": "sha256:8b0a4b44f27de8c2d24ea21344b75594d5f5c9a247f91d42390068f96d4bf998",
+      "path": "skills/design/references/test-quality.md"
+    },
+    {
+      "identity": "sha256:6c99c7f9f75ce3c5a194e836f557ec0b1f59a63cd90cbe82588586d1c3aebbd8",
+      "path": "skills/plan/SKILL.md"
+    },
+    {
+      "identity": "sha256:f461dd267b53fa6690f9ee8222e4fa8642e27a3cafe530fd8fa75bb2243bb5fb",
+      "path": "skills/plan/assets/decision-log-row.md"
+    },
+    {
+      "identity": "sha256:007c46c11105018bc0429b7bc85aef0f555b4ce654cdcce27f4f4657e0ba9c75",
+      "path": "skills/plan/assets/milestone.md"
+    },
+    {
+      "identity": "sha256:21061218b060228c8f3361e1f375008fb66d60b7cda9fc1347c0589f2c369828",
+      "path": "skills/plan/assets/plan-skeleton.md"
+    },
+    {
+      "identity": "sha256:c66bfce2f8ed9a0772aa3b53633f3d7819a46dfeafd9f241041373b7502f2346",
+      "path": "skills/plan/references/boundary-and-negative-verification.md"
+    },
+    {
+      "identity": "sha256:89337cf5da8462ad2afa0c50e04fb7233beea7ce030a049fa3a1695fc57ea2d0",
+      "path": "skills/plan/references/boundary-first-method-v1.md"
+    },
+    {
+      "identity": "sha256:458a50b4fc744502d8c85227f0ef71a7f202b6623799fe5c2b0128cbd4a7a3b0",
+      "path": "skills/plan/references/concurrency-and-retry-verification.md"
+    },
+    {
+      "identity": "sha256:2879a21841562b4b41273148b2212bf32a083c0f1d6e029c8633acb7d01eeb12",
+      "path": "skills/plan/references/cross-milestone-integration-verification.md"
+    },
+    {
+      "identity": "sha256:7da74e3c307eca561f6d09986a4273a2109e103c4625120f5341b594d51e869c",
+      "path": "skills/plan/references/failure-and-recovery-verification.md"
+    },
+    {
+      "identity": "sha256:1730af83099870547579b5a5d033bdb95dbd4d3abc100818c940bd948ea1931f",
+      "path": "skills/plan/references/governed-plan-authoring.md"
+    },
+    {
+      "identity": "sha256:6de936e6bccc3b7dfa724573bccd33fcab13f197d85db2bd489893433b6f1758",
+      "path": "skills/plan/references/manual-and-operational-evidence.md"
+    },
+    {
+      "identity": "sha256:0ef6fd47a39cc8bc73ce00c32a474d062942fd5586f8ed5d958be4c76de65a44",
+      "path": "skills/plan/references/migration-and-compatibility-verification.md"
+    },
+    {
+      "identity": "sha256:e19b99a0cb69b9051c6eeae20d76c4a0cf3925e8fd1686ceb6671c7749cc3dc5",
+      "path": "skills/plan/references/requirement-to-delivery-model.md"
+    },
+    {
+      "identity": "sha256:0ac3e3ccc77aee7e6d60d5d56dd61a1d7424aa3443910cb85d198993bdd82818",
+      "path": "skills/plan/references/review-reliance.md"
+    },
+    {
+      "identity": "sha256:b45e5908eb7acec77f39c451cb55c2d630da5a2a85502d16937b9e7347aaec48",
+      "path": "skills/plan/references/security-and-authority-verification.md"
+    },
+    {
+      "identity": "sha256:17e276d6f01f851b3002a00f44bddfee0dd1720878d562ebda9fd0b250f73641",
+      "path": "skills/plan/references/state-machine-verification.md"
+    },
+    {
+      "identity": "sha256:7c7037e519b4558f8126460892ff33721026e05b2d8f7469b7ba86477ee81b9b",
+      "path": "skills/plan/references/test-maintenance.md"
+    },
+    {
+      "identity": "sha256:8b0a4b44f27de8c2d24ea21344b75594d5f5c9a247f91d42390068f96d4bf998",
+      "path": "skills/plan/references/test-quality.md"
+    },
+    {
+      "identity": "sha256:3540d9d72b6f8e97bc62ed46bab56c6c152b86ceea1b874abb32379df93286b8",
+      "path": "docs/design/skill/authoring/plan.md"
+    },
+    {
+      "identity": "sha256:0f7e41a1de83d542d9291a842876ae7c75ebb214242cca18ee825f539f52b778",
+      "path": "docs/design/skill/authoring/design.md"
+    },
+    {
+      "identity": "sha256:f6a787ef5a6c76d26d4d9393e1c104c3b5ae39098e168d86cd1215ad7c855297",
+      "path": "docs/design/skill/skill.md"
+    },
+    {
+      "identity": "sha256:8c2ed5fe7de2f3de5c64709ef45bf9a5c8b00431565e219161bef0989f2d92aa",
+      "path": "docs/plans/2026-09-15-design-plan-simplification.md"
+    },
+    {
+      "identity": "sha256:4a58cf175439ff0dd5ce7057d430ff9cf32836a2564de84a527a238abc7bb77e",
+      "path": "docs/proposals/2026-09-15-design-plan-simplification.md"
+    },
+    {
+      "identity": "sha256:f9ee51047c3a8c0cced45a9238d17f7341a7661563863b0380173883ece0fe18",
+      "path": "skills/design-review/SKILL.md"
+    },
+    {
+      "identity": "sha256:aa47d716979b176f9ba898407e9e9b78aad13df100d90c063a9a51051d66f787",
+      "path": "skills/delivery-review/SKILL.md"
+    },
+    {
+      "identity": "sha256:fe7dfeb7703ea0f60e67182710bda05f9450823a3774c4d0b7d31ea11284c602",
+      "path": "scripts/lib/validation/skill_validation.py"
+    },
+    {
+      "identity": "sha256:0f5283854556a3c7732de38ae39ac47541ea388fc23fe7ee451b16436af9fb9e",
+      "path": "tests/skill/skill_contract_tests.py"
+    },
+    {
+      "identity": "sha256:f1b12638b4d14ec457b640bce86b2ca3529943d37280af24067eba55aa5a657a",
+      "path": "tests/skill/skill_guidance_tests.py"
+    },
+    {
+      "identity": "sha256:6f9d86e382d22d46453d0b7afa7128b043b1622f9be88cc8e82a4b1b43b19b0d",
+      "path": "scripts/lib/packaging/adapter_distribution.py"
+    },
+    {
+      "identity": "sha256:cc1912d5c0cd17b42bfd4a3f705a561b0c2f678045f0659f2406a1ea13e6c5a5",
+      "path": "CONSTITUTION.md"
+    },
+    {
+      "identity": "sha256:6037416b9b6159f6b2204b2bb79e5560e9d63ba504a698545e6f8fcae4cbb098",
+      "path": "docs/changes/2026-09-15-design-plan-simplification/reviews/proposal-review.json"
+    },
+    {
+      "identity": "sha256:8770679b93ac7b28dc00714a992c5ad3b8f9d0c2ccdbabb24895d7ad543c3061",
+      "path": "docs/changes/2026-09-15-design-plan-simplification/reviews/design-review.json"
+    },
+    {
+      "identity": "sha256:5bffc72cb283ec339d093831f0168ccdbe4a47162d92d2e1f3840071919dfa13",
+      "path": "docs/changes/2026-09-15-design-plan-simplification/reviews/delivery-review.json"
+    },
+    {
+      "identity": "sha256:0554c10f835ee826a5d2809a402c62c47233dfd085d3ce25b718731baa275d32",
+      "path": "docs/changes/2026-09-15-design-plan-simplification/evidence.json"
+    }
+  ],
+  "summary": "M1 preserves Plan obligations while moving complete conditional recording behind task and authority selection; retained Design and concrete author/reviewer and package handoffs remain complete.",
+  "target": "code"
+}
