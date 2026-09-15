@@ -55,7 +55,7 @@ If the repo already uses only `AGENTS.md`, update it without adding another file
 Include these sections unless the repo already has equivalent guidance:
 
 1. **Project purpose**: what this repo is for and who it serves.
-2. **Source of truth order**: constitution, specs, architecture, plans, tests, code, chat.
+2. **Source of truth order**: the project-selected order of governing principles, requirements/specs, Designs/architecture, plans, tests, implementation and discussion.
 3. **Spec-driven rules**: when specs are required and how requirements are identified.
 4. **Test-driven rules**: tests first, regression tests for bugs, no unverifiable claims.
 5. **Architecture rules**: boundaries, dependencies, data ownership, migration discipline.
@@ -101,4 +101,4 @@ Avoid vague advice such as “write good tests” unless accompanied by concrete
 - files created or updated;
 - a short list of new or changed rules;
 - unresolved governance questions;
-- recommended next skill, usually `project-map`, `explore`, or `workflow`.
+- recommended next skill, usually `project-map`, `explore`, or `route`.
