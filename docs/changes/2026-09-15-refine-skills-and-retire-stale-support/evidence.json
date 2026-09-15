@@ -44,6 +44,26 @@
         }
       ],
       "summary": "Corrected skills-dr-01 without changing query-retirement behavior: preserve CLI-DEC-07 for v2 retirement and assign unused CLI-DEC-08 to query-helper withdrawal. Independent reporter disposition and package reassessment remain required."
+    },
+    {
+      "actor": {
+        "id": "codex-plan-author",
+        "role": "plan"
+      },
+      "id": "plan-authoring",
+      "procedure": "Confirmed current exact four registered model identities, approved proposal-review and design-review-r2, resolved skills-dr-01, absent plan and absent work before create-primary-plan. Read selected plan methods and existing runner/package/CI commands. Allocated all19 skill packages, 111 current tracked test/script/support members in named code roots, recursive fixture roots and explicit final reconciliation of outside/additional/generated populations. Concrete case protective-value audit remains implementation and independent review work, not claimed complete. M1 skill+reader coherence, M2 query+validation coupled retirement, M3 package/release proof, M4 runtime proof and complete reconciliation; TG01–06 and three integrated groups map every new requirement and retained safety boundaries. V1–V10 use current repository-owned commands; final original-base PR and main gates cover actual branch. Current prose model/guide and recording checks do not stand in for those future executions. Actual python scripts/validate-guide-system.py passed; git diff --check passed; bounded script verified all local plan links, ordered M1–M4 identities, all19 skill names and all111 enumerated source members. No upstream artifact/judgment changed, no work initialized, no test/script/skill implementation performed.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:7b8f0ec8889d36ba01d05812d9aa8223a3dd79e6a10f42c7cef9573542060130",
+          "path": "docs/plans/2026-09-15-refine-skills-and-retire-stale-support.md"
+        },
+        {
+          "identity": "sha256:d0eba4625b8a60a564cca091fa2992141a9599e4b67d8851af779812854d46ab",
+          "path": "docs/plan.md"
+        }
+      ],
+      "summary": "Created four-milestone complete-inventory plan with exact source allocation, grouped proof, coupled retirement rollback and separate final whole-change review/Verify. Authoring checks passed; no Delivery approval or implementation claim."
     }
   ],
   "schema_version": 3

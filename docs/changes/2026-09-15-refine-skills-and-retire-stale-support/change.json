@@ -4,8 +4,8 @@
       "id": "codex-review-coordinator",
       "role": "route"
     },
-    "reason": "Four-model Design package authored and registered after approved proposal; ready for independent Design Review. Implementation remains gated by Design and Delivery approval.",
-    "stage": "design-review",
+    "reason": "Stable four-milestone plan and navigation authored and registered after Design R2 approval; awaiting independent Delivery Review before work initialization or implementation.",
+    "stage": "delivery-review",
     "status": "ready"
   },
   "applicability": [
@@ -20,11 +20,11 @@
     },
     {
       "actor": {
-        "id": "codex-design-author",
-        "role": "design"
+        "id": "codex-plan-author",
+        "role": "plan"
       },
       "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/evidence.json",
-      "reason": "Current exact CLI Design correction and structural proof only; no independent approval inferred.",
+      "reason": "Exact stable plan authoring and allocation checks; independent Delivery Review is still required.",
       "value": "current"
     },
     {
@@ -79,7 +79,10 @@
       }
     }
   ],
-  "plan": null,
+  "plan": {
+    "identity": "sha256:7b8f0ec8889d36ba01d05812d9aa8223a3dd79e6a10f42c7cef9573542060130",
+    "path": "docs/plans/2026-09-15-refine-skills-and-retire-stale-support.md"
+  },
   "proposal": {
     "identity": "sha256:3bf51df8d9be1c016255c493aebe495b5d102fe015237adf099823752967686d",
     "path": "docs/proposals/2026-09-15-refine-skills-and-retire-stale-support.md"
