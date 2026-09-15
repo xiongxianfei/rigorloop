@@ -5405,7 +5405,7 @@ class RetireStandaloneTestSpecM3Tests(unittest.TestCase):
             with self.subTest(reference=name):
                 self.assertTrue((skill_root / "references" / name).is_file())
                 self.assertIn(f"READ `references/{name}` only when", body)
-        self.assertIn("Do not load every specialist reference by default", body)
+        self.assertIn("do not load every specialist reference by default", body.lower())
 
     def test_delivery_review_owns_one_joint_plan_centered_decision(self) -> None:
         body = (ROOT / "skills/delivery-review/SKILL.md").read_text(

@@ -1,12 +1,12 @@
 {
   "activity": {
     "owner": {
-      "id": "codex-implement",
-      "role": "implement"
+      "id": "codex-review-coordinator",
+      "role": "route"
     },
-    "reason": "M1 current independent approval closes only m1. M2 authoring/upstream-review family is next; implement two within-layout consolidations and substantively assess retention of other four packages. No armed automation.",
-    "stage": "implement",
-    "status": "in-progress"
+    "reason": "M2 implemented scoped deduplication and four justified package retentions; required checks passed. Independent m2-code-review assesses all six dispositions before m2 closeout or M3 progression.",
+    "stage": "code-review",
+    "status": "ready"
   },
   "applicability": [
     {

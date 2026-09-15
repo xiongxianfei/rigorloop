@@ -156,15 +156,6 @@ Use:
 
 `not-required` is reserved for non-formal review-like requests outside the formal lifecycle review model.
 
-Material findings must include:
-
-- Finding ID
-- Severity
-- Location
-- Evidence
-- Required outcome
-- Safe resolution path, or `needs-decision` rationale
-
 Do not merely tell the user that review artifacts should be created. Create or update them before final output, or report `Recording status: blocked` with the blocker and smallest next action.
 
 For an isolated review with material findings, the final review output must state:
@@ -179,7 +170,6 @@ For an isolated review with material findings, the final review output must stat
 
 Direct and review-only requests remain isolated. `advisory-durable` never settles or reports formal eligibility; `formal-lifecycle` settles only the exact same-change proposal entry after recording and never advances workflow. Only `formal-lifecycle/workflow-managed-automated` uses automation procedure before returning control to `route`.
 
-Direct or review-only `proposal-review` requests remain isolated by default.
 
 ## Stop conditions and claims
 
