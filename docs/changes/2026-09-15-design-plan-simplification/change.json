@@ -1,11 +1,11 @@
 {
   "activity": {
     "owner": {
-      "id": "codex-route",
-      "role": "route"
+      "id": "codex-plan",
+      "role": "plan"
     },
-    "reason": "Independent first-pass Design Review approved the exact three-model package with no findings. Review evidence read back and all47 subject identities match. Requested review complete; delivery planning is the next stage, not started by this isolated review.",
-    "stage": "design-review",
+    "reason": "Primary delivery plan registered with one coupled implementation milestone, local/integrated proof and separate final review/Verify. Authoring checks passed; next gate is independent Delivery Review. No work initialized or implementation begun.",
+    "stage": "plan",
     "status": "completed"
   },
   "applicability": [
@@ -29,11 +29,11 @@
     },
     {
       "actor": {
-        "id": "codex-design-author",
-        "role": "design"
+        "id": "codex-plan-author",
+        "role": "plan"
       },
       "path": "docs/changes/2026-09-15-design-plan-simplification/evidence.json",
-      "reason": "Current exact draft engineering basis and bounded author observations; no downstream approval or execution inferred.",
+      "reason": "Exact newly authored delivery intent and observed authoring checks; implementation and independent Delivery Review remain separate.",
       "value": "current"
     },
     {
@@ -72,7 +72,10 @@
       }
     }
   ],
-  "plan": null,
+  "plan": {
+    "identity": "sha256:8c2ed5fe7de2f3de5c64709ef45bf9a5c8b00431565e219161bef0989f2d92aa",
+    "path": "docs/plans/2026-09-15-design-plan-simplification.md"
+  },
   "proposal": {
     "identity": "sha256:4a58cf175439ff0dd5ce7057d430ff9cf32836a2564de84a527a238abc7bb77e",
     "path": "docs/proposals/2026-09-15-design-plan-simplification.md"

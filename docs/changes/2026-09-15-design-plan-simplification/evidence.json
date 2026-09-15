@@ -176,6 +176,78 @@
         }
       ],
       "summary": "Draft Plan presentation and exact preservation/consumer acceptance defined; Design retained with explicit rationale. Local Design checks passed; independent Design Review remains required."
+    },
+    {
+      "actor": {
+        "id": "codex-plan-author",
+        "role": "plan"
+      },
+      "id": "plan-authoring",
+      "procedure": "2026-09-15: create-primary-plan under current approved proposal-review and design-review. Read complete selected registry, exact reviewed subjects, owning Plan requirements/acceptance, current entrypoint/reference, actual reader branches, independent reference-fault tests and normative plan assets. All47 Design Review subjects matched before authoring; approved models and implementation sources remain unchanged. One M1 couples Plan body/reference and direct consumer protection as a single safe commit/rollback unit; Design retention, all eight Plan boundary rows, authority/retry/initialization, output completeness and resource negatives are allocated. TG-FINAL01 requires actual filled artifact-to-reviewer correspondence; TG-FINAL02 requires fresh dual-adapter candidate/temporary installation proof. Separate fresh final whole-change Code Review and distinct Verify remain mandatory after M1. No unreviewed work initialized. Current proposal-review supporting-model drift retains its already assessed historical direction meaning; Design Review is not retargeted. Appending plan evidence changes its earlier supporting evidence-container identity only and does not change that earlier entry or approved Design scope. Commands actually run: bash scripts/ci.sh --mode local exited0, selected current metadata/guide checks passed, focused19.64s; git diff --check passed; local link-target inspection passed; git diff HEAD -- skills scripts tests docs/design empty. These are plan-authoring observations, not execution of V1–V7 future implementation proof. No implementation, candidate generation, Delivery Review, hosted CI or external action occurred.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:8c2ed5fe7de2f3de5c64709ef45bf9a5c8b00431565e219161bef0989f2d92aa",
+          "path": "docs/plans/2026-09-15-design-plan-simplification.md"
+        },
+        {
+          "identity": "sha256:0a4dcd3cad1dc2f752de7adace385a20965130a9fa9f341ec03174a5ee8eca77",
+          "path": "docs/plan.md"
+        },
+        {
+          "identity": "sha256:f6a787ef5a6c76d26d4d9393e1c104c3b5ae39098e168d86cd1215ad7c855297",
+          "path": "docs/design/skill/skill.md"
+        },
+        {
+          "identity": "sha256:3540d9d72b6f8e97bc62ed46bab56c6c152b86ceea1b874abb32379df93286b8",
+          "path": "docs/design/skill/authoring/plan.md"
+        },
+        {
+          "identity": "sha256:0f7e41a1de83d542d9291a842876ae7c75ebb214242cca18ee825f539f52b778",
+          "path": "docs/design/skill/authoring/design.md"
+        },
+        {
+          "identity": "sha256:4a58cf175439ff0dd5ce7057d430ff9cf32836a2564de84a527a238abc7bb77e",
+          "path": "docs/proposals/2026-09-15-design-plan-simplification.md"
+        },
+        {
+          "identity": "sha256:6037416b9b6159f6b2204b2bb79e5560e9d63ba504a698545e6f8fcae4cbb098",
+          "path": "docs/changes/2026-09-15-design-plan-simplification/reviews/proposal-review.json"
+        },
+        {
+          "identity": "sha256:8770679b93ac7b28dc00714a992c5ad3b8f9d0c2ccdbabb24895d7ad543c3061",
+          "path": "docs/changes/2026-09-15-design-plan-simplification/reviews/design-review.json"
+        },
+        {
+          "identity": "sha256:5bef8bd9d85a7a1139bc20a4fb0e62ce2a2046f7bbd61fd64496bd4398cc7068",
+          "path": "skills/plan/SKILL.md"
+        },
+        {
+          "identity": "sha256:87d9c81f215ea8c7d4f86675e1450175058c2f44e902235bb1700e7e340389a2",
+          "path": "skills/plan/references/governed-plan-authoring.md"
+        },
+        {
+          "identity": "sha256:21061218b060228c8f3361e1f375008fb66d60b7cda9fc1347c0589f2c369828",
+          "path": "skills/plan/assets/plan-skeleton.md"
+        },
+        {
+          "identity": "sha256:007c46c11105018bc0429b7bc85aef0f555b4ce654cdcce27f4f4657e0ba9c75",
+          "path": "skills/plan/assets/milestone.md"
+        },
+        {
+          "identity": "sha256:f461dd267b53fa6690f9ee8222e4fa8642e27a3cafe530fd8fa75bb2243bb5fb",
+          "path": "skills/plan/assets/decision-log-row.md"
+        },
+        {
+          "identity": "sha256:5ccb37e68487fa495e9804cdc6471329c003b01b309cb08e68cc7c3e8d4c864f",
+          "path": "scripts/lib/validation/skill_validation.py"
+        },
+        {
+          "identity": "sha256:d2f7f243937243d480871fa551254f6c489c99482542294dc21c5f06ed4bbb17",
+          "path": "tests/skill/skill_contract_tests.py"
+        }
+      ],
+      "summary": "Stable one-milestone delivery plan with explicit requirement/boundary allocation, integrated handoff/package proof, recovery and separate final gates authored and locally validated."
     }
   ],
   "schema_version": 3
