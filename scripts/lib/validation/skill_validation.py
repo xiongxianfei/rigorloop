@@ -520,6 +520,13 @@ PROPOSAL_REVIEW_ASSET_FORBIDDEN_LABEL_PATTERN = re.compile(
     re.IGNORECASE,
 )
 CI_MAINTENANCE_SKILL_NAME = "ci-maintenance"
+CI_ASSEMBLY_NAMES = (
+    "CIM0-narrow-review", "CIM1-coverage-review",
+    "CIM2-ordinary-github-create", "CIM3-narrow-github-revise",
+    "CIM4-coverage-github-revise", "CIM5-structural-github-revise",
+    "CIM6-project-native-authoring", "CIM7-privileged-approved-create",
+    "CIM8-privileged-approved-revise",
+)
 CI_MAINTENANCE_SKELETON = "assets/github-workflow-skeleton.yml"
 CI_MAINTENANCE_RISK_MAP = "references/risk-to-check-map.md"
 CI_MAINTENANCE_AUTHORING_REFERENCE = "references/github-workflow-authoring.md"
@@ -2206,6 +2213,29 @@ def _validate_ci_maintenance_risk_map(path: Path, text: str) -> list[str]:
     return errors
 
 
+def _validate_ci_assembly_declaration(path: Path, body: str) -> list[str]:
+    """Check the closed table vocabulary; reviewers assess selection semantics."""
+    section = _extract_markdown_section(body, "Assemblies") or ""
+    rows = []
+    for line in section.splitlines():
+        if not line.lstrip().startswith("|"):
+            continue
+        cell = line.strip().split("|")[1].strip().strip("`")
+        if cell == "Assembly" or re.fullmatch(r":?-+:?", cell):
+            continue
+        rows.append(cell)
+    if not rows:
+        return [f"{path}: Assemblies must declare the nine CI assemblies in a table"]
+    unknown = list(dict.fromkeys(name for name in rows if name not in CI_ASSEMBLY_NAMES))
+    if unknown:
+        return [f"{path}: unknown CI assembly: {name}" for name in unknown]
+    errors = [f"{path}: missing CI assembly: {name}" for name in CI_ASSEMBLY_NAMES
+              if name not in rows]
+    errors.extend(f"{path}: duplicate CI assembly: {name}" for name in CI_ASSEMBLY_NAMES
+                  if rows.count(name) > 1)
+    return errors
+
+
 def validate_ci_maintenance_contract(
     path: Path,
     metadata: dict[str, str],
@@ -2216,7 +2246,7 @@ def validate_ci_maintenance_contract(
     if not is_ci_maintenance_path and not is_ci_maintenance_name:
         return []
 
-    errors: list[str] = []
+    errors = _validate_ci_assembly_declaration(path, body)
     if metadata.get("name") != CI_MAINTENANCE_SKILL_NAME:
         errors.append(f"{path}: ci-maintenance frontmatter must use name: ci-maintenance")
     non_codex_adapter_path = any(part in {".claude", ".opencode"} for part in path.parts)

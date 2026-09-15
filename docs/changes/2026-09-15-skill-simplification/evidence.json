@@ -807,6 +807,134 @@
         }
       ],
       "summary": "M4 now explicitly allocates SKL-DEC08, nine full CI names, disjoint combined/denied/late selection and resources, fail-first closed-table negative protection (unknown before missing/duplicate consistency), complete V2/V3/candidate checks and independent semantic inspection. Source review pointer binds new current Design Review; prior completed M1–M3, M5/M6, all19 inventory and independent final review/Verify remain unchanged. No new stage/work/resource schema or runtime classifier. Plan scoped CI passed all selected current-record checks (10.61s); exact changed allocation and six-milestone preservation inspected. Existing work already initialized and is not recreated or overwritten. No Delivery approval or M4 execution claimed."
+    },
+    {
+      "actor": {
+        "id": "codex-implementer",
+        "role": "implement"
+      },
+      "id": "m4-obligations",
+      "procedure": "Full entrypoint/resource inspection against Skill CI/Bugfix contracts, DEC08, current Design/Delivery reviews and M4 allocation; exact diff and actual validator/fixture consumers. Contributor assessment awaits independent Code Review.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:170ea2df25ee71ab3e27f26ab8290758d7a575bb1747d5b89c7eb45de7394dfc",
+          "path": "skills/bugfix/SKILL.md"
+        },
+        {
+          "identity": "sha256:9baf5a042084cd36d4748453529fc4ef6e46e9bdfe35bdf294ab9e458da14e84",
+          "path": "skills/ci-maintenance/SKILL.md"
+        },
+        {
+          "identity": "sha256:8229a69168bdd8c359eb55c501969ae1623bf5d34ece4077896b490f147e942d",
+          "path": "scripts/lib/validation/skill_validation.py"
+        },
+        {
+          "identity": "sha256:b6cddeeb09829dfb7353357ac8510b032f04f5b9f23596965effe97908d1bbed",
+          "path": "tests/skill/skill_contract_tests.py"
+        },
+        {
+          "identity": "sha256:0e056f8b033eead8dc1899d27a3f62767940b8be3182a3f00e1b2cf75ce7c173",
+          "path": "tests/skill/test-skill-validator.py"
+        },
+        {
+          "identity": "sha256:7c7037e519b4558f8126460892ff33721026e05b2d8f7469b7ba86477ee81b9b",
+          "path": "skills/bugfix/references/test-maintenance.md"
+        },
+        {
+          "identity": "sha256:8b0a4b44f27de8c2d24ea21344b75594d5f5c9a247f91d42390068f96d4bf998",
+          "path": "skills/bugfix/references/test-quality.md"
+        },
+        {
+          "identity": "sha256:6c73d246c7be1491d4331ee5a1b7fa1dc1e741b1d0bd4b57a52c6780050d1531",
+          "path": "skills/ci-maintenance/assets/github-workflow-skeleton.yml"
+        },
+        {
+          "identity": "sha256:94648462ed81388b8b89abd0ce42200599c1697b5f808f544e2477db7de9ef94",
+          "path": "skills/ci-maintenance/references/github-workflow-authoring.md"
+        },
+        {
+          "identity": "sha256:0ac3e3ccc77aee7e6d60d5d56dd61a1d7424aa3443910cb85d198993bdd82818",
+          "path": "skills/ci-maintenance/references/review-reliance.md"
+        },
+        {
+          "identity": "sha256:5fd364cb19df0f090adea02f3869c568fe0d1e5b2fdfbef0256ef4ec5b0fc118",
+          "path": "skills/ci-maintenance/references/risk-to-check-map.md"
+        },
+        {
+          "identity": "sha256:7c7037e519b4558f8126460892ff33721026e05b2d8f7469b7ba86477ee81b9b",
+          "path": "skills/ci-maintenance/references/test-maintenance.md"
+        },
+        {
+          "identity": "sha256:8b0a4b44f27de8c2d24ea21344b75594d5f5c9a247f91d42390068f96d4bf998",
+          "path": "skills/ci-maintenance/references/test-quality.md"
+        }
+      ],
+      "summary": "M4 TG-01/03/04/05, baseline e44d1b46. Bugfix retained after full package inspection: separate diagnose-only/fix and command/write/governed axes prevent accidental mutation; evidence feasibility and proof-action table precede production changes; cause/action/terminal vocabulary does distinct work; phase-specific writes, exact identity-equal reruns, blast radius and independent handoff remain complete. Removing these would hide denial/proof duties. Shared test resources remain exact, no new layout.\nCI complete package corrected under current SKL-DEC-08 and Design/Delivery-CI reviews. Root classification/authority remains first. Assemblies replaces reassigned short labels with the nine intended full values and explicit priority: review, native authoring, approved GitHub privilege, ordinary creation or structural/coverage/narrow revision. Review never loads authoring/skeleton; native uses its exact external contract and independent privilege/risk evidence, no GitHub resources. GitHub creation always maps risk and copies skeleton; revision adds coverage and authorized structure independently. Late coverage/structure/privilege reclassifies before dependent action, missing privileged approval stops. Exact command sources, platform review-or-route, no-clobber/identity writes, batch manifests/partial retries, bounded PR repair and hosted observation remain unchanged. Authoring reference serializes already-settled policy; risk map owns coverage; skeleton grants no authority.\nSemantic cases inspected: CIM0 noncoverage across supported targets; CIM1 coverage review; CIM6 native with/without coverage and exact privileged authority; CIM7 approved privileged create; CIM8 revise with coverage and structural additions; CIM2 ordinary create including initial noncoverage request; CIM5 structural with/without coverage; CIM4 preserving-structure coverage; CIM3 preserving-structure narrow. Invalid classifications and unauthorized privileged/external writes stop without assembly; late privilege denies without approval or selects CIM7/8 (native CIM6 plus approval). Independent reviewer must assess these meanings; structural pass is not semantic proof.\nReader now checks the nine-row declared vocabulary only, rejecting unknown before missing/duplicate consistency. Independent fixture names, valid control and five fault cases prove unknown combined with missing/duplicate, legacy label, missing row, duplicate row and absent table. Existing resource validators retain unavailable/unmapped/escaped/wrong/stale and package parity protection. No runtime classifier, permission, invocation enum, shared policy, asset, schema or live CI change. Scope-complete source correction, not a line-count optimization."
+    },
+    {
+      "actor": {
+        "id": "codex-implementer",
+        "role": "implement"
+      },
+      "id": "m4-validation",
+      "procedure": "Executed focused fail-first/pass, complete validator and packaging suites, fresh two-adapter archive/clean-install proof and local changed-set selector on frozen sources; exact candidate hashes retained above.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:170ea2df25ee71ab3e27f26ab8290758d7a575bb1747d5b89c7eb45de7394dfc",
+          "path": "skills/bugfix/SKILL.md"
+        },
+        {
+          "identity": "sha256:9baf5a042084cd36d4748453529fc4ef6e46e9bdfe35bdf294ab9e458da14e84",
+          "path": "skills/ci-maintenance/SKILL.md"
+        },
+        {
+          "identity": "sha256:8229a69168bdd8c359eb55c501969ae1623bf5d34ece4077896b490f147e942d",
+          "path": "scripts/lib/validation/skill_validation.py"
+        },
+        {
+          "identity": "sha256:b6cddeeb09829dfb7353357ac8510b032f04f5b9f23596965effe97908d1bbed",
+          "path": "tests/skill/skill_contract_tests.py"
+        },
+        {
+          "identity": "sha256:0e056f8b033eead8dc1899d27a3f62767940b8be3182a3f00e1b2cf75ce7c173",
+          "path": "tests/skill/test-skill-validator.py"
+        },
+        {
+          "identity": "sha256:7c7037e519b4558f8126460892ff33721026e05b2d8f7469b7ba86477ee81b9b",
+          "path": "skills/bugfix/references/test-maintenance.md"
+        },
+        {
+          "identity": "sha256:8b0a4b44f27de8c2d24ea21344b75594d5f5c9a247f91d42390068f96d4bf998",
+          "path": "skills/bugfix/references/test-quality.md"
+        },
+        {
+          "identity": "sha256:6c73d246c7be1491d4331ee5a1b7fa1dc1e741b1d0bd4b57a52c6780050d1531",
+          "path": "skills/ci-maintenance/assets/github-workflow-skeleton.yml"
+        },
+        {
+          "identity": "sha256:94648462ed81388b8b89abd0ce42200599c1697b5f808f544e2477db7de9ef94",
+          "path": "skills/ci-maintenance/references/github-workflow-authoring.md"
+        },
+        {
+          "identity": "sha256:0ac3e3ccc77aee7e6d60d5d56dd61a1d7424aa3443910cb85d198993bdd82818",
+          "path": "skills/ci-maintenance/references/review-reliance.md"
+        },
+        {
+          "identity": "sha256:5fd364cb19df0f090adea02f3869c568fe0d1e5b2fdfbef0256ef4ec5b0fc118",
+          "path": "skills/ci-maintenance/references/risk-to-check-map.md"
+        },
+        {
+          "identity": "sha256:7c7037e519b4558f8126460892ff33721026e05b2d8f7469b7ba86477ee81b9b",
+          "path": "skills/ci-maintenance/references/test-maintenance.md"
+        },
+        {
+          "identity": "sha256:8b0a4b44f27de8c2d24ea21344b75594d5f5c9a247f91d42390068f96d4bf998",
+          "path": "skills/ci-maintenance/references/test-quality.md"
+        }
+      ],
+      "summary": "V1 bugfix and ci-maintenance passed. Fail-first command python tests/skill/test-skill-validator.py CiAssemblyDeclarationTests ran six tests against unchanged e44d1b46 validator: five expected failures (unknown, legacy, missing, duplicate, absent declaration), valid control passed. Identical six-case test source passed after reader correction. V2 python tests/skill/test-skill-validator.py: 298 passed. V3 python tests/engineering/packaging/test-adapter-distribution.py: 95 passed. V4 actual build and clean install ci-maintenance passed for Codex and Claude; unchanged Bugfix/shared resources present in complete archives. V6 bash scripts/ci.sh --mode local: all selected checks passed on staged engineering sources. git diff --cached --check passed. V5 record-store validation follows this recording. No customer CI execution or hosted CI observed. Package and structural tests cannot establish prose semantics; independent M4 review is required. Candidate commands [[\"python\", \"scripts/build-adapters.py\", \"--version\", \"v1.0.0\", \"--output-dir\", \"/tmp/rigorloop-skill-m4-jcglleo2\"], [\"python\", \"scripts/validate-adapters.py\", \"--version\", \"v1.0.0\", \"--adapter-root\", \"/tmp/rigorloop-skill-m4-jcglleo2\", \"--clean-install-smoke\", \"--skill\", \"ci-maintenance\"]]; archive SHA256 {\"rigorloop-adapter-codex-v1.0.0.zip\": \"735bad371694c5845cb8c4986be6acc7e461106f0f78b3c27d6dcf73242555b0\", \"rigorloop-adapter-claude-v1.0.0.zip\": \"d897541b947f18a4c77bea92cf2cfb24de3b4a06c4c354c2bfebcd09a6d8c312\"}. Owned temporary candidate only, v1.0.0 qualification label not release."
     }
   ],
   "schema_version": 3

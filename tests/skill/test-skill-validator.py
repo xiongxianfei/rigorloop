@@ -26,7 +26,7 @@ from review_independence_skill_phrases import (
     R8D_RECONCILIATION_CATEGORIES,
 )
 from lib.validation import skill_validation
-from skill_contract_tests import RecordingReferenceContractTests, RelocatedPlanSurfaceTests
+from skill_contract_tests import RecordingReferenceContractTests, RelocatedPlanSurfaceTests, CiAssemblyDeclarationTests
 from skill_cli_tests import SkillCliChecks, run_validator
 from skill_guidance_tests import ExplicitRecordingGuidanceTests, SkillGuidanceChecks
 

@@ -1,12 +1,12 @@
 {
   "activity": {
     "owner": {
-      "id": "codex-implement",
-      "role": "implement"
+      "id": "codex-review-coordinator",
+      "role": "route"
     },
-    "reason": "M4 correction now has current Design and Delivery approval. Implement exact CI selection/resource restoration with tests first; retain Bugfix with substantive proof. Open ci-assembly-mismatch authorizes its scoped correction and remains until reporter assesses implementation proof and independent m4-code-review. No armed automation or live CI mutation.",
-    "stage": "implement",
-    "status": "in-progress"
+    "reason": "M4 complete package and required proof ready for independent m4-code-review. CI blocker remains open until reporter assesses actual proof and review; M5 not started.",
+    "stage": "code-review",
+    "status": "ready"
   },
   "applicability": [
     {
@@ -29,11 +29,11 @@
     },
     {
       "actor": {
-        "id": "codex-planner",
-        "role": "plan"
+        "id": "codex-implementer",
+        "role": "implement"
       },
       "path": "docs/changes/2026-09-15-skill-simplification/evidence.json",
-      "reason": "Current exact amended plan authoring observation under approved CI Design; prior plan evidence retains its original scope.",
+      "reason": "Current scoped observation; inspect each check and subjects, not a blanket pass for changed evidence.",
       "value": "current"
     },
     {
