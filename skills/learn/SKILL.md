@@ -56,7 +56,7 @@ An explicit direct invocation of this skill selects `run-learn-session` unless t
 
 An unknown, missing, combined, or ambiguous operation stops before writes. Operation selection does not grant contributor confirmation, destination mutation, workflow continuation, or external-system authority.
 
-For `run-learn-session`, READ `references/session-method.md` exactly for `run-learn-session`, at most once. If it is missing, unreadable, escaped, stale, contradictory, or mixed-version, stop before session creation or dependent judgment and must not reconstruct it. `record-learn-route-result` does not load it.
+If the required session method is missing, unreadable, escaped, stale, contradictory, or mixed-version, stop before session creation or dependent judgment and must not reconstruct it. `record-learn-route-result` does not load it.
 
 ## Resource map
 
