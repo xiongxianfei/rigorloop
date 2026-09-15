@@ -1,12 +1,12 @@
 {
   "activity": {
     "owner": {
-      "id": "codex-review-coordinator",
-      "role": "route"
+      "id": "codex-implement",
+      "role": "implement"
     },
-    "reason": "M3 allocated support maintenance and fresh candidates complete with required proof; hand frozen slice to independent review. M4 remains pending.",
-    "stage": "code-review",
-    "status": "ready"
+    "reason": "Independent M3 review approves exact f7e29a7c and actual current candidates with no findings. M3 closed; proceed approved M4 runtime-test maintenance and complete inventory reconciliation, then final branch gates.",
+    "stage": "implement",
+    "status": "in-progress"
   },
   "applicability": [
     {
@@ -70,6 +70,15 @@
       },
       "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/m2-code-review.json",
       "reason": "Independent complete M2 assessment of exact frozen engineering and current approved authority, complete allocated protective-value groups and current required proof; no unresolved M2 correction.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "all-skills-packaging-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/m3-code-review.json",
+      "reason": "Independent exact frozen M3 scope and actual candidate reassessment; no engineering change since the successful command and archive observations. Milestone scope only.",
       "value": "current"
     }
   ],
@@ -142,6 +151,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/m2-code-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/m3-code-review.json"
     }
   ],
   "schema_version": 3,
@@ -187,7 +200,7 @@
         "VAL-SR-31",
         "SKL-SR-33"
       ],
-      "status": "in-progress"
+      "status": "completed"
     },
     {
       "id": "m4",
@@ -200,7 +213,7 @@
         "VAL-SR-30",
         "VAL-SR-31"
       ],
-      "status": "pending"
+      "status": "in-progress"
     }
   ]
 }
