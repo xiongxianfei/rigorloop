@@ -35,7 +35,9 @@ class SkillGuidanceChecks:
         names = ("proposal", "proposal-review", "design", "design-review", "plan", "delivery-review",
                  "implement", "code-review", "route", "verify", "bugfix", "ci-maintenance", "pr",
                  "research", "explore", "learn")
-        references = {"design": "references/governed-design-authoring.md",
+        references = {"implement": "references/governed-implementation-recording.md",
+                      "code-review": "references/governed-code-review-recording.md",
+                      "design": "references/governed-design-authoring.md",
                       "proposal": "references/governed-proposal-authoring.md",
                       "proposal-review": "references/proposal-review-recording-and-settlement.md"}
         for name in names:
@@ -68,7 +70,7 @@ class SkillGuidanceChecks:
 class ExplicitRecordingGuidanceTests(unittest.TestCase):
     def test_targeted_pilot_canonical_references_are_valid(self):
         # Real canonical-resource consistency; component faults use minimal fixtures.
-        for name in ("proposal", "proposal-review"):
+        for name in ("proposal", "proposal-review", "implement", "code-review"):
             with self.subTest(skill=name):
                 path = ROOT / "skills" / name / "SKILL.md"
                 body = path.read_text(encoding="utf-8")
@@ -84,7 +86,7 @@ class ExplicitRecordingGuidanceTests(unittest.TestCase):
 
     def test_targeted_profile_validator_rejects_retired_normal_writer(self):
         from lib.validation.skill_validation import validate_targeted_recording_profile
-        path = ROOT / "skills/implement/SKILL.md"
+        path = ROOT / "skills/route/SKILL.md"
         text = path.read_text()
         self.assertEqual(validate_targeted_recording_profile(path, text), [])
         self.assertTrue(validate_targeted_recording_profile(path, text.replace("rigorloop context", "record-store check|record", 1)))
@@ -96,7 +98,7 @@ class ExplicitRecordingGuidanceTests(unittest.TestCase):
                 text = (ROOT / "skills" / skill / "SKILL.md").read_text(encoding="utf-8")
                 if skill == "design":
                     text = "## Explicit recording\n" + (ROOT / "skills/design/references/governed-design-authoring.md").read_text()
-                if skill in ("proposal", "proposal-review"):
+                if skill in skill_validation.PILOT_RECORDING_REFERENCES:
                     text = (ROOT / "skills" / skill / skill_validation.PILOT_RECORDING_REFERENCES[skill]).read_text()
                 self.assertEqual(text.count("## Explicit recording\n"), 1)
                 block = text.split("## Explicit recording\n", 1)[1].split("\n## ", 1)[0]

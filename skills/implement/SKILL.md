@@ -9,52 +9,6 @@ argument-hint: [plan path, milestone ID, feature name, or implementation request
 
 # Test-driven implementation
 
-## Test criteria application
-
-When the project explicitly adopts Validation-model test criteria, use the selectively loaded guidance below for test quality and maintenance. These criteria replace source-local shared test-purpose, case-selection and maintenance criteria for adopted work; retain specialist methods and historical evidence. Actual judgments, evidence applicability and closeout consequences remain with the responsible assessors under the project's review policy.
-
-## Quick operating guide
-
-Use this skill to:
-- implement one approved milestone or isolated request with proof first.
-
-Read first:
-- change-local state when planned;
-- the current milestone, governing spec, active test spec, recorded review evidence, relevant code/tests, and validation commands.
-
-Produce:
-- tests or proof, implementation, validation evidence, and a code-review handoff.
-
-Stop when:
-- authority, scope, proof, or validation is missing, contradictory, stale, or failing.
-
-Do not claim:
-- review, branch, PR, final-verification, or final-closeout outcomes.
-
-Next stage:
-- code-review.
-
-Use full-file or broader-section reading when bounded evidence cannot preserve correctness.
-
-## Review and Closeout application
-
-When project authority explicitly adopts Review and Closeout policy, use the packaged application below for shared assessment meaning. It replaces source-local judgment, independence, applicability, concern-disposition and closeout rules in this skill and its conditional resources; retain specialist methods and contract-selected storage procedures. Historical assessments retain their original meaning but grant no current runtime support. Missing or contradictory required guidance stops dependent reliance.
-
-## Explicit recording
-
-Use this profile when the project has adopted the RigorLoop Record Format and explicitly selected the change. Read the project's governing documents. The Workflow model owns coordination, Review and Closeout owns assessment policy, Record Format owns stored shapes, and CLI owns construction and persistence. Current storage uses `rigorloop-records-v3`; historical stores remain unchanged archival evidence. Select the actual record contract; never mix versions within a store. Retired or unknown stored formats are rejected without fallback. Do not migrate or reinterpret historical records; preserve their bytes and meaning as archival evidence. The project need not contain RigorLoop's internal design repository.
-
-Use the contract-selected recording procedures in this skill and its conditional resources. Dispatch primary results by schema_version (2 or 3), then status and operation; a schema-3 error alone does not establish v3 storage. Read scope and omissions before relying on selected content. Retain substantive stage duties, permissions, independent assessment and proof obligations. Historical records grant no current execution authority.
-
-Use `rigorloop context --root PATH --change ID --input - --format json` with explicitly selected kinds/filters and full detail. Expand the selection when needed: omitted content is not evidence of absence. Copy `record_contract` and `revision` into the targeted request's `contract` and `expected_revision`. Use `rigorloop subject inspect --root PATH --path FILE --content full --format json` for the exact engineering basis and mechanical identities; supply relied-on subjects as `reads` with their expected identities.
-
-Make your decision, then use the purpose-specific command's `--help` and submit its targeted operation on stdin. Use `batch` for related explicit updates. Supply semantic values and any required applicability; the CLI constructs registry entries, preserves neighbors and serializes records. Do not reconstruct complete files or invoke historical eligibility first. Preview is optional; normal writes validate. A save does not approve work, establish readiness or select the next actor. Conflict requires rereading and reassessment; busy/recovery-required is not a save. Use explicit `record-store recover` for interrupted storage. Missing or stale evidence prevents reliance, not recording a correction.
-
-Implement only the authorized reviewed slice with tests first. Use evidence record for observed results and exact subjects; supply required applicability explicitly. Preserve other actors’ decisions and unresolved origins. Explicitly declare impacted applicability stale when warranted; never retarget an old review. Route Design gaps to their owner and hand the slice to independent Code Review without claiming approval.
-
-Implement the smallest scope-complete approved slice with tests or proof first.
-Do not expand scope, silently alter the contract, or claim success without direct evidence.
-
 ## Workflow role
 
 - role_name: implement
@@ -67,19 +21,15 @@ Do not expand scope, silently alter the contract, or claim success without direc
 For planned initiatives, treat the plan and upstream artifacts as read-only.
 Write implementation, tests, and implementation evidence only; route owns milestone and routing state.
 
-## Purpose
+## Scope and inputs
 
-Use after requirements and proof are stable enough to implement.
-Use `bugfix` for defect repair, `code-review` for review, `verify` for final readiness, and `pr` for PR handoff.
-Do not invent requirements, bypass required approvals, or use implementation to resolve unrecorded review findings.
+Implement one approved milestone or a clear isolated implementation request with tests or proof first. Requirements, scope and validation must be stable. Use `bugfix` for defect investigation or repair, the authoring/review owner for artifact work, `verify` for final readiness, and `pr` for PR preparation. Do not invent requirements or implement unrecorded review findings.
 
-## When to use
+Read the applicable project instructions and governing behavior, relevant code/tests and neighboring patterns, proof obligations and validation commands before editing. Retained feature specs, test specs and ADRs apply when the project's selected contract requires them; they are not mandatory artifacts for every isolated request.
 
-Use for an approved milestone or a clear isolated implementation request whose requirements and proof obligations are stable.
+For planned work, additionally require the active plan's exact current milestone, current recorded approved Delivery Review ID and member map, and the approved Design Review ID and package it binds. Read accepted resolution evidence when implementing findings and architecture/ADRs when their boundaries are touched. Missing or stale required approval stops implementation and returns to its owner.
 
-## When not to use
-
-Do not use for defect investigation, artifact authoring or review, final verification, or PR preparation; route those tasks to their owning skill.
+Start with the smallest sufficient evidence set and expand when missing, stale, contradictory or insufficient. Read the whole file when it or surrounding context controls the decision.
 
 ## Project-local evidence
 
@@ -87,33 +37,15 @@ Public skills operate in customer-project mode by default.
 Use relevant project-local artifacts such as `AGENTS.md`, `CONSTITUTION.md`, approved specs, the active plan and test spec, architecture records, review resolution, code, tests, and CI commands. For governed placement and lifecycle facts, consume authoritative CLI workflow context.
 Do not require RigorLoop repository-internal artifacts in customer projects; use safe portable defaults and block on ambiguity.
 
-## Inputs to read
-
-Read before editing:
-
-- `AGENTS.md` and `CONSTITUTION.md` when present;
-- the approved feature spec and concrete current milestone or isolated scope;
-- the active test spec and recorded, approved, current Delivery Review package when a formal workflow-managed delivery package is required;
-- the approved Delivery Review ID and exact contract-selected member map, plus the approved Design Review ID it binds;
-- relevant architecture or ADRs when the slice touches their boundaries;
-- code, tests, neighboring patterns, and milestone validation commands;
-- accepted review-resolution evidence when implementing recorded findings.
-
-## Evidence access
-
-Start with the smallest sufficient set: change-local state, current milestone, approved Design Review and Delivery Review packages, relevant code/tests, and scoped validation commands.
-Read architecture, review resolution, workflow guidance, governance, or neighboring code only when triggered.
-Expand when bounded evidence is missing, stale, contradictory, or insufficient; read the full file when the whole file or surrounding context controls the decision.
-
-## Invocation profiles and authority
+## Invocation classification
 
 Classify the invocation before loading conditional procedure or mutating implementation state.
 
 | Profile | Required authority | Conditional procedure |
 | --- | --- | --- |
-| `IP0-isolated` | Clear direct implementation scope | neither conditional reference |
-| `IP1-planned` | Valid `planned_milestone_context` | planned-milestone reference only |
-| `IP2-planned-armed` | Valid planned context plus matching `armed_automation_context` | both conditional references |
+| `IP0-isolated` | Clear direct implementation scope | neither planned nor automation reference |
+| `IP1-planned` | Valid `planned_milestone_context` | planned-milestone reference |
+| `IP2-planned-armed` | Valid planned context plus matching `armed_automation_context` | planned and automation references |
 
 `planned_milestone_context` requires a workflow-managed invocation, a valid active plan, one exact current milestone owned by `implement`, and a milestone state that permits implementation.
 
@@ -122,6 +54,24 @@ Classify the invocation before loading conditional procedure or mutating impleme
 Armed automation without a valid planned milestone is invalid.
 Conversational wording alone establishes neither predicate.
 Missing, stale, mismatched, contradictory, or ambiguous evidence stops before conditional procedure is loaded or implementation state is mutated.
+
+Classify `governed_recording_context` independently using the Recording boundary below; it can apply to any valid IP0/IP1/IP2 invocation. Shared-method triggers remain independent. Unknown profiles stop before consistency checks; reassess late triggers before dependent action.
+
+## Recording boundary
+
+`governed_recording_context` means the project has adopted the RigorLoop Record Format and explicitly selected a change requiring its current recording profile. It is independent of planned or armed execution and does not mean every durable advisory result uses a governed store.
+
+Read `references/governed-implementation-recording.md` before dependent recording, including when the trigger becomes true later. Select the actual `rigorloop-records-v3` contract; malformed, stale, conflicting or ambiguous governed signals stop affected writes without portable fallback. Missing, unreadable, escaped, stale or mixed-version required resources stop dependent work; do not reconstruct them. Untriggered resources do not block unrelated runtime work.
+
+Loading or saving grants no approval, readiness or continuation. Preserve exact subjects, other actors' decisions and unresolved origins; use the mapped procedure for scoped reads, targeted writes, applicability and conflict/recovery. Project-selected recording outside this profile keeps its own authority.
+
+## Test criteria application
+
+When the project explicitly adopts Validation-model test criteria, use the selectively loaded guidance below for test quality and maintenance. These criteria replace source-local shared test-purpose, case-selection and maintenance criteria for adopted work; retain specialist methods and historical evidence. Actual judgments, evidence applicability and closeout consequences remain with the responsible assessors under the project's review policy.
+
+## Review and Closeout application
+
+When project authority explicitly adopts Review and Closeout policy, use the packaged application below for shared assessment meaning. It replaces source-local judgment, independence, applicability, concern-disposition and closeout rules in this skill and its conditional resources; retain specialist methods and contract-selected storage procedures. Historical assessments retain their original meaning but grant no current runtime support. Missing or contradictory required guidance stops dependent reliance.
 
 ## First-pass completeness
 
@@ -181,10 +131,6 @@ Do not broaden this requirement to isolated manual work that does not claim comp
 Tests must assert real behavior rather than broad mocks or snapshots that pass for the wrong reason.
 Before changing behavior, confirm every implemented boundary or selected interaction has an approved owner and proof obligation.
 
-## Outputs
-
-Produce tests or proof first where feasible, implementation changes, validation evidence, and a `code-review` handoff.
-
 ## Handoff
 
 - Normal next stage: `code-review` for the implemented milestone or isolated slice.
@@ -222,6 +168,8 @@ Diagrams are optional and should reduce real cognitive load.
 Do not require manual-proof contracts from readability guidance alone.
 
 ## Resource map
+
+- READ `references/governed-implementation-recording.md` when `governed_recording_context` is true, before dependent recording.
 
 - READ `references/test-quality.md` when adopted criteria apply and this invocation authors, allocates or assesses test obligations.
 - READ `references/test-maintenance.md` when adopted criteria apply and this invocation changes tests or assesses test maintenance, removal or its impact.
