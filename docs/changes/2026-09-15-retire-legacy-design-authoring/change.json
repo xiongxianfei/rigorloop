@@ -1,0 +1,24 @@
+{
+  "activity": {
+    "owner": {
+      "id": "codex-review-coordinator",
+      "role": "route"
+    },
+    "reason": "User selected retirement of standalone architecture/ADR authoring; independent proposal review before Design.",
+    "stage": "proposal-review",
+    "status": "ready"
+  },
+  "applicability": [],
+  "blockers": [],
+  "change_id": "2026-09-15-retire-legacy-design-authoring",
+  "contract": "rigorloop-records-v3",
+  "models": [],
+  "plan": null,
+  "proposal": {
+    "identity": "sha256:707cc801b29efaf98694fee68a60e1e26063a4359e5e1b1f8fe4a66976941bf6",
+    "path": "docs/proposals/2026-09-15-retire-legacy-design-authoring.md"
+  },
+  "records": [],
+  "schema_version": 3,
+  "work": []
+}
