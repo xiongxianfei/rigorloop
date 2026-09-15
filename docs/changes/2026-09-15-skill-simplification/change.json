@@ -4,7 +4,7 @@
       "id": "codex-review-coordinator",
       "role": "route"
     },
-    "reason": "M1 route actor correction and affected proof ready for independent m1-code-review-rereview. Full original-base PR-mode rerun ongoing; original final finding/root blocker stay open. After M1 approval, require fresh final whole-change review; do not jump to Verify.",
+    "reason": "M1 correction independently approved; all six implementation milestones again complete. Fresh final whole-change reassessment required against corrected source and all nineteen dispositions, with full original-base CI result before approval. Original final finding and root blocker retain their owners; no Verify/PR claim.",
     "stage": "code-review",
     "status": "ready"
   },
@@ -142,6 +142,15 @@
       },
       "path": "docs/changes/2026-09-15-skill-simplification/reviews/final-code-review.json",
       "reason": "Fresh exact complete final first-pass assessment with independently confirmed required correction and explicit incomplete full-range validation; no clean handoff.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "independent-m1-correction-review",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/m1-code-review-rereview.json",
+      "reason": "Fresh independent full current M1 pair and one-phrase correction assessment against exact approved authority, unchanged guide consumer and fresh proof/candidates. Scope supports M1 only; final finding/blocker disposition and whole-change proof remain separately required.",
       "value": "current"
     }
   ],
@@ -348,6 +357,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-15-skill-simplification/reviews/final-code-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/m1-code-review-rereview.json"
     }
   ],
   "schema_version": 3,
@@ -363,7 +376,7 @@
         "SKL-SR-32",
         "SKL-SR-31"
       ],
-      "status": "in-progress"
+      "status": "completed"
     },
     {
       "id": "m2",

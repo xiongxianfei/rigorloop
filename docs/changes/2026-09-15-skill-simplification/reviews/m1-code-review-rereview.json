@@ -1,0 +1,173 @@
+{
+  "assessment_scope": "Fresh M1 corrective milestone Code Review of the full current implement/code-review pair and exact source delta06e4549f..de0e6cec, frozen at7af03b14. All ten dimensions assessed with existing unchanged M1 context and new direct correction proof. Not final whole-change Code Review or disposition of another reporter’s finding.",
+  "change_id": "2026-09-15-skill-simplification",
+  "contributors": [
+    {
+      "id": "codex-implementer",
+      "role": "implement"
+    }
+  ],
+  "findings": [],
+  "id": "m1-code-review-rereview",
+  "independence_basis": "Parent /root authored the one-phrase correction and its evidence. Separate /root/independent_proposal_review did not author the reviewed implementation or correction, and independently inspected current M1 bodies, recording/resources/output boundaries, acting route/Workflow ownership, actual guide consumer/regressions and fresh candidate. The original final-review reporter remains a different reviewer with its own disposition authority.",
+  "judgment": "approved",
+  "limitations": [
+    "Original m1-code-review remains stale. This new review approves current corrected M1 scope only and does not retarget historical approval or candidate identities.",
+    "Full original-base PR-mode proof, reporter-owned final-route-actor-wording disposition, root final-routing-actor disposition, fresh final whole-change Code Review and distinct Verify remain required. Their outstanding state is not waived by milestone approval.",
+    "Semantic scenarios are independent instruction tracing, not customer-agent execution. No hosted CI, final readiness, work/activity mutation or external handoff is claimed."
+  ],
+  "rationale": [
+    "1 Spec alignment — pass for current M1 correction. At source correctionde0e6cec and frozen handoff7af03b14, the sole source delta from06e4549f names route as the actor for milestone/routing changes. This meets final-route-actor-wording required correction under existing Skill/Workflow/Assessment contracts and approved Design/Delivery-CI authority. Workflow remains the governing coordination model; code-review remains evidence-only. No new Design choice or broader correction is needed for this sentence.",
+    "2 Test coverage — pass. Existing guide_system.validate provided a direct failing reproduction before the change, then passed the identical command. The unchanged thirteen-test guide regression includes retired semantic actor rejection, guide fallback, current inventory and authority surfaces. Reviewer inspected the actual regex and full regression source and independently ran python scripts/validate-guide-system.py successfully. No validator weakening, new exception or test tailored solely to corrected wording is introduced.",
+    "3 Edge cases — pass by current pair/path inspection. IP0 isolated implementation still needs clear scope/proof without planned or armed assumptions; IP1 requires exact current planned authority, and IP2 additionally requires durable matching automation authority. Governed recording remains independent and late-triggered. Manual review records formal evidence without arming automation. A clean non-final outcome returns to route for that milestone only; final or corrected last-milestone work still requires separate final whole-change review and Verify. The corrected actor now agrees with the preceding handoff and unchanged implementation ownership instruction.",
+    "4 Error handling — pass. Both exact local recording references retain missing/stale/ambiguous authority stops, schema dispatch, scoped reads, expected revision/subject identities, conflict reread and explicit recovery. Missing required resources stop without reconstruction or portable fallback. Review keeps supported findings under blocked/inconclusive outcomes and cannot turn failed recording into a durable claim. The actor substitution changes none of these paths or proof obligations.",
+    "5 Architecture boundaries — pass. Implementation produces code/tests/proof and the implementation-result asset; Code Review consumes the exact slice and authority, writes its judgment/findings/result, and returns to route. Route owns work/activity decisions under Workflow policy. The review-result asset remains presentation-only and does not grant state mutation. Both local recording methods preserve CLI storage versus approval separation. This removes the specific actor/model ambiguity without moving policy ownership.",
+    "6 Compatibility — pass. Complete current M1 pair remains in the approved pilot layout: core scope/classification precedes independently selected local recording, with unchanged planned/automated and shared methods and output assets. Public names, profiles, native judgments, exact fields, portable/manual behavior and independent review applicability remain intact. Old M1 review stays stale; this is a fresh scoped assessment of corrected current subjects, not a rewrite of the original judgment.",
+    "7 Security/privacy — pass. No external action, credential, permission or adoption boundary changes. Required resource containment and unavailable-authority stops remain. The acting route skill receives no authority beyond existing user/project scope and recorded applicable judgments. Code Review cannot edit implementation or resolve another reporter’s concern.",
+    "8 Derived artifact currency — pass for corrected candidate. Reviewer independently compared all twenty current implement/code-review package files against both newly generated archives; Codex bytes and Claude bodies/resources match, excluding only declared Claude frontmatter in the direct comparison. Both archive hashes equal integrated-final-candidate metadata. Actual candidate log reports default all-mapped-resource clean installs. Earlier candidate identities are not silently reused for the changed entrypoint.",
+    "9 Unrelated changes — pass. Exact correction range modifies only one Code Review sentence plus owning correction/candidate records. Implementation, remaining nineteen-skill dispositions, guide validator/tests and shared sources are unchanged. M2–M6 scoped outcomes are not reopened or expanded by this review. Original final finding and root blocker retain their owners and are deliberately not dispositioned here.",
+    "10 Validation evidence — pass for the milestone correction. m1-routing-correction binds current pair/guide subjects and records same-command failing-before/passing-after proof, thirteen guide regressions, V1 pair and local selected CI success. Inspected local log reports all selected checks passed, focused151.96s; corrected fresh candidate log reports archives/default clean installs. Reviewer performed fresh direct guide validation, actual archive comparisons and exact CLI subject inspection. The full original-base PR-mode rerun is outside this scoped approval and is not claimed passed; it remains required for final reliance.",
+    "Applicability and remaining work — current Design/Delivery targets remain exact and unchanged. The complete pair’s surviving core, evidence, resource and handoff duties remain coherent; the preventable first-pass actor miss is corrected and independently assessed. Approval supports only reopened M1 milestone closeout by route. The original M1 review remains stale, final-route-actor-wording remains reporter-owned and final-routing-actor remains root-owned. Those required whole-change dispositions and fresh integrated final Code Review/Verify still prevent final readiness; this scoped judgment does not waive them."
+  ],
+  "reviewer": {
+    "id": "independent-m1-correction-review",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:ca44a09944d4fca982dd831d270144cc61652e9f09e3cf4d62f209d70eb2a068",
+      "path": "skills/implement/SKILL.md"
+    },
+    {
+      "identity": "sha256:c3b6dc912d2d0afd18fcc9a89a308aaa86cbe14d35f3e604846c703c35a2ee2d",
+      "path": "skills/implement/assets/implementation-result-skeleton.md"
+    },
+    {
+      "identity": "sha256:a01c95993574f75b9712ab5d671c55e7a9808e1593e870ea4fdcfea9c803ba98",
+      "path": "skills/implement/references/automated-review-correction.md"
+    },
+    {
+      "identity": "sha256:89337cf5da8462ad2afa0c50e04fb7233beea7ce030a049fa3a1695fc57ea2d0",
+      "path": "skills/implement/references/boundary-first-method-v1.md"
+    },
+    {
+      "identity": "sha256:4314ea671b56f89ea9e04db0f0e69d03a902950483d72f015aef045b4dabbd1c",
+      "path": "skills/implement/references/governed-implementation-recording.md"
+    },
+    {
+      "identity": "sha256:3fbdfcf4de28c316af271109d4798797d3b11c3a198478fad3e8c25ea507cc71",
+      "path": "skills/implement/references/planned-milestone-implementation.md"
+    },
+    {
+      "identity": "sha256:0ac3e3ccc77aee7e6d60d5d56dd61a1d7424aa3443910cb85d198993bdd82818",
+      "path": "skills/implement/references/review-reliance.md"
+    },
+    {
+      "identity": "sha256:7c7037e519b4558f8126460892ff33721026e05b2d8f7469b7ba86477ee81b9b",
+      "path": "skills/implement/references/test-maintenance.md"
+    },
+    {
+      "identity": "sha256:8b0a4b44f27de8c2d24ea21344b75594d5f5c9a247f91d42390068f96d4bf998",
+      "path": "skills/implement/references/test-quality.md"
+    },
+    {
+      "identity": "sha256:3d3392d6f0d8f31162d2e8160acac31f7af14039a9bf2daa7bd0a1a8a123f286",
+      "path": "skills/code-review/SKILL.md"
+    },
+    {
+      "identity": "sha256:69d15f3af3d6d4eee4a6220a78c784c0deb40818128c235531f894c72ff4d0d9",
+      "path": "skills/code-review/assets/material-finding.md"
+    },
+    {
+      "identity": "sha256:3bcba3cc33836cd001205dd8b05c67a46aaff74ae405c9e58c84cec4786324b3",
+      "path": "skills/code-review/assets/review-result-skeleton.md"
+    },
+    {
+      "identity": "sha256:89337cf5da8462ad2afa0c50e04fb7233beea7ce030a049fa3a1695fc57ea2d0",
+      "path": "skills/code-review/references/boundary-first-method-v1.md"
+    },
+    {
+      "identity": "sha256:456244060bca19154279328b27a3f254ddebadcf3ff24f155949f8d3c48e3674",
+      "path": "skills/code-review/references/governed-code-review-recording.md"
+    },
+    {
+      "identity": "sha256:e19b99a0cb69b9051c6eeae20d76c4a0cf3925e8fd1686ceb6671c7749cc3dc5",
+      "path": "skills/code-review/references/requirement-to-delivery-model.md"
+    },
+    {
+      "identity": "sha256:82e302a3a915f10d05b229a3550f462ca6b35a9e3f7e892ec7a393733c2c64e0",
+      "path": "skills/code-review/references/review-assessment.md"
+    },
+    {
+      "identity": "sha256:0ac3e3ccc77aee7e6d60d5d56dd61a1d7424aa3443910cb85d198993bdd82818",
+      "path": "skills/code-review/references/review-reliance.md"
+    },
+    {
+      "identity": "sha256:7c7037e519b4558f8126460892ff33721026e05b2d8f7469b7ba86477ee81b9b",
+      "path": "skills/code-review/references/test-maintenance.md"
+    },
+    {
+      "identity": "sha256:8b0a4b44f27de8c2d24ea21344b75594d5f5c9a247f91d42390068f96d4bf998",
+      "path": "skills/code-review/references/test-quality.md"
+    },
+    {
+      "identity": "sha256:36bc4c3cd13c589475a5b3df85e5aea8d055dc115b9acabb7d3e7eb64885eba4",
+      "path": "skills/code-review/references/workflow-managed-automated-review.md"
+    },
+    {
+      "identity": "sha256:cc1912d5c0cd17b42bfd4a3f705a561b0c2f678045f0659f2406a1ea13e6c5a5",
+      "path": "CONSTITUTION.md"
+    },
+    {
+      "identity": "sha256:6faa52a99a86576f696ae723fc3fafce3553d8a8eae97a0a445327c818dd08b7",
+      "path": "docs/design/skill/skill.md"
+    },
+    {
+      "identity": "sha256:ed5380294c163077a289f3566e041b8d580f7217b15756f961aba181400a757d",
+      "path": "docs/design/skill/workflow.md"
+    },
+    {
+      "identity": "sha256:af968c5583c27abb95e9a2b2ac0293deba30c522e72480c6f9aa05066659ae19",
+      "path": "docs/design/skill/assessment.md"
+    },
+    {
+      "identity": "sha256:dda20558b508359cb33ebd15455f21c8a8975e47dcceb37ed64dc1336ac4638e",
+      "path": "docs/plans/2026-09-15-skill-simplification.md"
+    },
+    {
+      "identity": "sha256:7ef76959ad5415890fffedead1af6fba55a39c849a8f9531329e855acd418143",
+      "path": "skills/route/SKILL.md"
+    },
+    {
+      "identity": "sha256:fe2934d930187290fb016138f203f7eef4a6b11714f6bc62eac9e73f7e3f15bf",
+      "path": "scripts/validate-guide-system.py"
+    },
+    {
+      "identity": "sha256:504cbe9317427874b32c61edff61ec901be155e619ae4362e95ebe07ff341997",
+      "path": "tests/engineering/validation/test-guide-system-validator.py"
+    },
+    {
+      "identity": "sha256:98efe8ab6e16489d44bcdd1c3ee20dd1e6cd21e52afd1dfe4b01acedcf1cc67c",
+      "path": "docs/changes/2026-09-15-skill-simplification/evidence.json"
+    },
+    {
+      "identity": "sha256:5b7c87f55880e59d1af388e2b345966b1e60f3ec9f013a6f807caa5767942d4a",
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/design-review-ci.json"
+    },
+    {
+      "identity": "sha256:05f955250c43e948f9734e2eb6897d6175e42d18b7afe72cc27d131aa2812f8a",
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/delivery-review-ci.json"
+    },
+    {
+      "identity": "sha256:6812b4c4f9dc5ea6d454ebf0ebe9b55b0bea6b99798c74fbeef17a4c46d507fd",
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/m1-code-review.json"
+    },
+    {
+      "identity": "sha256:a60ecb3dc08dc9f0ab90be06fe57c35ed2fcb3d99599fba7beceab02bf41e865",
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/final-code-review.json"
+    }
+  ],
+  "summary": "The M1 correction names the existing route actor consistently, preserves the complete pilot responsibilities and passes the unchanged direct guide and current package proof.",
+  "target": "code"
+}
