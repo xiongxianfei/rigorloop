@@ -1,4 +1,4 @@
-import {snapshotGitEnvironment,assertSnapshotRoot} from './record_snapshot_git.mjs';
+import {snapshotGitEnvironment,assertSnapshotRoot} from './lib/validation/record_snapshot_git.mjs';
 // Repository consumers share the CLI's bounded archive/header discriminator.
 import {execFileSync} from 'node:child_process';
 import {resolve} from 'node:path';

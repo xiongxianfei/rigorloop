@@ -8,10 +8,10 @@ import re
 import sys
 import subprocess
 
-from release_coordination import (HostedServices, prepare_operation, execute_operation,
+from lib.release.release_coordination import (HostedServices, prepare_operation, execute_operation,
     read_evidence, summary, ENVIRONMENT)
-from release_candidate import CandidateError
-from release_execution import ExecutionError
+from lib.release.release_candidate import CandidateError
+from lib.release.release_execution import ExecutionError
 
 
 def safe_error(exc):
@@ -31,7 +31,7 @@ def safe_error(exc):
 def main(argv=None, *, services=None, root=None):
     argv = sys.argv[1:] if argv is None else argv
     if argv and argv[0] == 'check-ci':
-        from release_candidate import check_ci
+        from lib.release.release_candidate import check_ci
         try:
             return check_ci(argv[1:], root or Path(__file__).resolve().parents[1])
         except (CandidateError, KeyError, TypeError, AttributeError, OSError, ValueError, subprocess.SubprocessError) as exc:

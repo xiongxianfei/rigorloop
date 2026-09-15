@@ -2,7 +2,7 @@
 
 Model validation contract: model-document-v1
 
-For this repository’s [complete source retirement](../../changes/2026-09-14-retire-specs-and-stale-tests/source-disposition.md), current responsibilities are self-contained in the owning Designs. Earlier source-transfer tables below preserve the scope and reasoning of their original initiatives; their instructions to retain or amend legacy specs, architecture, activation state or retired engines are historical and are superseded by this complete retirement. Source-qualified IDs and original judgments keep their original meaning; provenance is not a runtime input or current approval. Customer feature contracts and explicit portable resources remain supported under their own project authority.
+For this repository’s [complete source retirement](../../changes/2026-09-14-retire-specs-and-stale-tests/source-disposition.md), current responsibilities are self-contained in the owning Designs. Original source-transfer inventories remain recoverable through [Historical provenance](#historical-provenance); their instructions to retain or amend legacy specs, architecture, activation state or retired engines are historical and superseded by this complete retirement. Source-qualified IDs and original judgments keep their original meaning; provenance is not a runtime input or current approval. Customer feature contracts and explicit portable resources remain supported under their own project authority.
 
 ## Introduction and Goals
 
@@ -14,6 +14,25 @@ Prior refinement: [independent parallel tests](../../changes/2026-09-13-independ
 
 Original composition adoption: [three-model reconciliation](../../changes/2026-09-12-unified-validation-model/change.json).
 
+## Reading guide
+
+Start with the [submodel inventory](#context-and-scope) and [overview](#architecture-overview), then read the relevant [behavioral submodel](#behavioral-submodels). The detailed [specialist contracts](#remaining-specialist-contracts) follow those summaries. Implementation retains specialist sections here; Authoring, Project Foundations, Discovery, Learning and Delivery Handoff have dedicated model documents.
+
+| Task | Detailed contract |
+| --- | --- |
+| Plan an implementation | [Plan](authoring/plan.md) |
+| Implement a scoped change | [Implement](#implement) |
+| Diagnose or fix a defect | [Bugfix](#bugfix) |
+| Maintain CI | [CI maintenance](#ci-maintenance) and [bounded PR repair](#bounded-pr-ci-repair) |
+| Establish or revise vision | [Vision](project-foundations/vision.md) |
+| Map repository structure | [Project Map](project-foundations/project-map.md) |
+| Capture lessons | [Learning](learning.md) |
+| Prepare a PR handoff | [Delivery Handoff](delivery-handoff.md) |
+| Establish principles or investigate direction | [Constitution](project-foundations/constitution.md) and [Discovery](discovery/discovery.md) |
+| Check specialist values and result fields | [Interface vocabulary and outputs](#specialist-interface-vocabulary-and-outputs) |
+
+[Requirements](#requirements), [acceptance scenarios](#boundary-scan-and-acceptance-scenarios) and [decisions](#architecture-decisions) retain their existing scope. The [capability adoption boundary](#capability-adoption-boundary) states the pilot's applicability; [historical provenance](#historical-provenance) identifies its original transfer evidence.
+
 ## Context and Scope
 
 Users supply intent, project authority and the evidence needed by the selected capability. An agent follows published instructions and produces the scoped artifact, implementation, assessment or explanation. A skill is not an autonomous service; neither installation nor a valid output grants permission for another action. The inventory remains the existing published capabilities, not a new skill for every submodel.
@@ -22,10 +41,13 @@ Users supply intent, project authority and the evidence needed by the selected c
 | --- | --- | --- |
 | Capability Contract | [Common requirements](#requirements) and [capability contract](#capability-contract) | Invocation, evidence access, resources, outputs, errors, portability and common limits. |
 | Workflow | [Workflow](workflow.md) | Activity selection, prerequisites, handoffs, correction and continuation. |
-| Authoring | [Authoring](#authoring) and its [Design method](design.md) | Produce proposals, coherent Designs and delivery plans from authorized intent. |
+| Authoring | [Authoring](authoring/authoring.md) | Produce proposals, coherent Designs and delivery plans from authorized intent. |
 | Implementation | [Implementation](#implementation) | Implement, diagnose and repair scoped changes with appropriate proof. |
 | Assessment | [Assessment](#assessment) and [Review and Closeout](assessment.md) | Judge exact work and evidence independently and report justified conclusions. |
-| Project Support | [Project support](#project-support) | Establish project direction, investigate uncertainty, orient contributors, capture learning and perform authorized external handoff. |
+| Project Foundations | [Project Foundations](project-foundations/project-foundations.md) | Compose purpose, governing principles and observed orientation. |
+| Discovery | [Discovery](discovery/discovery.md) | Investigate materially unclear options and bounded factual uncertainty. |
+| Learning | [Learning](learning.md) | Capture confirmed durable lessons and accountable follow-up. |
+| Delivery Handoff | [Delivery Handoff](delivery-handoff.md) | Prepare and perform authorized PR handoff from current verified subjects. |
 
 A child may be a named section here or a separately maintained model document. Detailed contracts are defined once at those locations. Capability IDs and existing resource paths remain stable; hierarchy alone does not rename public invocations. The historical proposal-family pilot improved only its named pair. Its SKL-SR-16–23 applicability and original judgments remain unchanged; the product behavior composition applies to the existing inventory without claiming an inventory-wide implementation audit.
 
@@ -41,17 +63,27 @@ flowchart TB
         Authoring["Authoring: proposals, Designs and plans"]
         Implementation["Implementation: changes, diagnosis and repair"]
         Assessment["Assessment: independent judgments and closeout"]
-        Support["Project Support: direction, investigation and learning"]
+        Foundations["Project Foundations: purpose, principles and orientation"]
+        Discovery["Discovery: options and facts"]
+        Learning["Learning: durable lessons and follow-up"]
+        Handoff["Delivery Handoff: verified PR handoff"]
     end
     Contract -->|"common contract applied by"| Workflow
     Contract -->|"common contract applied by"| Authoring
     Contract -->|"common contract applied by"| Implementation
     Contract -->|"common contract applied by"| Assessment
-    Contract -->|"common contract applied by"| Support
+    Contract -->|"common contract applied by"| Foundations
+    Contract -->|"common contract applied by"| Discovery
+    Contract -->|"common contract applied by"| Learning
+    Contract -->|"common contract applied by"| Handoff
     Workflow -->|"coordinates authorized work"| Authoring
     Workflow -->|"coordinates authorized work"| Implementation
     Workflow -->|"requests applicable assessment"| Assessment
-    Support -->|"context and findings"| Workflow
+    Foundations -->|"project context"| Workflow
+    Discovery -->|"findings and decision needs"| Workflow
+    Learning -->|"owned follow-up"| Workflow
+    Workflow -->|"authorized handoff"| Handoff
+    Assessment -->|"current review and Verify basis"| Handoff
     Authoring -->|"authored subjects"| Assessment
     Implementation -->|"changes and evidence"| Assessment
     Assessment -->|"judgments and correction owners"| Workflow
@@ -64,11 +96,14 @@ flowchart TB
     Authoring -->|"authored artifacts"| Outputs
     Implementation -->|"changes and evidence"| Outputs
     Assessment -->|"independent conclusions"| Outputs
-    Support -->|"direction and supporting knowledge"| Outputs
+    Foundations -->|"standing project artifacts"| Outputs
+    Discovery -->|"supporting findings"| Outputs
+    Learning -->|"lessons and route results"| Outputs
+    Handoff -->|"prepared or observed PR result"| Outputs
     Contract -.->|"published content and invocation invariants"| Engineering
 ```
 
-Skill owns these six children's composition under [System's parent graph rule](../system.md#parent-graph-ownership). The submodel table above links each node to its contract; [Authoring](#authoring) owns its nested Design-method view. Workflow coordinates governed work, while individual capabilities retain their scoped invocation behavior. CLI and Engineering are external siblings whose shared relationships are owned by System.
+Skill owns these nine children's composition under [System's parent graph rule](../system.md#parent-graph-ownership). The submodel table above links each node to its contract; [Authoring](authoring/authoring.md) owns the composition of Proposal, Design Method and Plan. Workflow coordinates governed work, while individual capabilities retain their scoped invocation behavior. CLI and Engineering are external siblings whose shared relationships are owned by System.
 
 Overview outputs are defined by the [behavioral submodels](#behavioral-submodels); [Context and Scope](#context-and-scope) owns user inputs, [Runtime View](#runtime-view) owns invocation behavior, and [Deployment View](#deployment-view) describes the packaged skill boundary. [CLI](../cli/cli.md) supports governed recording, while [Engineering](../engineering/engineering.md) realizes and delivers the published behavior. Individual skill use remains independent of CLI recording.
 
@@ -77,7 +112,7 @@ Overview outputs are defined by the [behavioral submodels](#behavioral-submodels
 | View | Necessity and reason | Owning detail |
 | --- | --- | --- |
 | Context | Necessary: User invocation, agent interpretation, governed recording and product delivery are distinct boundaries. | [Context view](#context-view) |
-| Building Block | Necessary: Six behavioral owners share one common capability contract and retain their specialist responsibilities. | [Building Block view](#building-block-diagram) |
+| Building Block | Necessary: Nine behavioral owners share one common capability contract and retain their specialist responsibilities. | [Building Block view](#building-block-diagram) |
 | Runtime | Necessary: Portable invocation and governed recording load different resources and must preserve stage and permission limits. | [Runtime view](#runtime-diagram) |
 | Deployment | Necessary: Canonical content, generated archives and target installations have distinct source and runtime roles. | [Deployment view](#deployment-diagram) |
 
@@ -116,11 +151,14 @@ flowchart TB
     Capabilities -->|"engineering intent"| Authoring["Authoring"]
     Capabilities -->|"scoped code and repairs"| Implementation["Implementation"]
     Capabilities -->|"independent judgments"| Assessment["Assessment"]
-    Capabilities -->|"direction, inquiry and learning"| Support["Project Support"]
+    Capabilities -->|"purpose, principles and orientation"| Foundations["Project Foundations"]
+    Capabilities -->|"options and facts"| Discovery["Discovery"]
+    Capabilities -->|"durable lessons"| Learning["Learning"]
+    Capabilities -->|"authorized PR handoff"| Handoff["Delivery Handoff"]
     Authoring -->|"Design method owner"| Design["Design authoring model"]
 ```
 
-Six behavioral owners share one common capability contract and retain their specialist responsibilities. Detailed requirements and scenarios in this model remain authoritative.
+Nine behavioral owners share one common capability contract and retain their specialist responsibilities. Detailed requirements and scenarios in this model remain authoritative.
 
 ### Runtime diagram
 
@@ -179,9 +217,9 @@ Canonical content, generated archives and target installations have distinct sou
 | SKL-SR-24 | Every published capability MUST have one behavioral owner under the submodel inventory and expose its required inputs, scoped action, usable output, failure disposition and handoff; shared conventions MUST NOT substitute for its specialist behavior. |
 | SKL-SR-25 | Individual skills MUST support their authorized portable output without requiring CLI recording. A governed recording trigger MUST instead load and use the supported CLI procedure, retain its prerequisites, and stop on missing or conflicting authority; portable output MUST NOT claim governed completion. |
 | SKL-SR-26 | Published instructions that use the CLI MUST match its supported commands, selectors, request and response contracts. The agent MUST inspect scope and operation results, supply explicit decisions and handle conflicts without inferring approval from persistence. |
-| SKL-SR-27 | Capability implementation MUST preserve the action and output boundaries in Authoring, Implementation, Assessment and Project Support. A shared helper, resource or parent model MUST NOT silently authorize a downstream activity or external action. |
+| SKL-SR-27 | Capability implementation MUST preserve the action and output boundaries in Authoring, Implementation, Assessment, Project Foundations, Discovery, Learning and Delivery Handoff. A shared helper, resource or parent model MUST NOT silently authorize a downstream activity or external action. |
 | SKL-SR-28 | Plan assets MUST preserve the structural and metadata contract in Plan assets below; completed pilot-only scope, measurement and fixed historical-corpus obligations retire without weakening current plan completeness or package integrity. |
-| SKL-SR-29 | Implementation and Project Support MUST preserve the specialist authority, identity, mutation, recovery and usable-output contracts below when their old specs retire. Shared guidance MUST NOT flatten these distinct behaviors or revive retired lifecycle formats. |
+| SKL-SR-29 | Implementation, Project Foundations, Discovery, Learning and Delivery Handoff MUST preserve the specialist authority, identity, mutation, recovery and usable-output contracts at their declared owners. Shared guidance MUST NOT flatten these distinct behaviors or revive retired lifecycle formats. |
 
 ## Behavioral submodels
 
@@ -221,66 +259,7 @@ The [Workflow child](workflow.md) owns coordination. Manual invocation produces 
 
 ### Authoring
 
-Authoring owns Proposal and Plan through the sections below and delegates model authoring to the Design child. The [Plan assets](#plan-assets) and [Design compatibility](design.md#feature-format-compatibility-after-repository-retirement) sections receive the remaining plan/boundary obligations under complete repository retirement.
-
-```mermaid
-flowchart LR
-    Proposal["Proposal capability: bounded direction"]
-    Design["Design child model: behavioral and technical authoring"]
-    Plan["Plan capability: delivery and proof allocation"]
-    Review["External: Assessment"]
-    Proposal -->|"direction subject for review"| Review
-    Review -->|"approved direction or authorized correction"| Design
-    Design -->|"affected model package for review"| Review
-    Review -->|"settled Design basis"| Plan
-    Plan -->|"delivery package for review"| Review
-```
-
-The [Design child](design.md) owns its authoring method; Assessment owns independent judgments, and Workflow coordinates any authorized continuation. This view does not create new Proposal or Plan models or make every individual invocation traverse the full sequence.
-
-| Capability | Required input and action | Output and failure boundary |
-| --- | --- | --- |
-| `proposal` | Clarify authorized intent, scope, governing principle and proportionate feasibility before detailed design. | A direction proposal with explicit limits; material missing direction remains an owner question. It does not approve itself or select implementation details. |
-| `design` | Reconcile approved direction or an authorized correction with behavior, realization, dependencies and acceptance intent using the [Design child](design.md). | Exact affected Designs and assessment basis; material changes to approved product direction return to its decision owner. |
-| `plan` | Allocate settled requirements and boundaries under Delivery allocation below and the explicitly retained plan/boundary obligations. | A stable execution plan and verification allocation; no implementation, upstream approval or mutable lifecycle status in the plan. |
-
-#### Proposal content
-
-Under SKL-SR-24/27, a current proposal has one title and exactly these required level-two sections in order: `Challenge`, `Goals`, `Scope and non-goals`, `Governing principle`, `Proposed direction`, `Feasibility`, and `Decision requested`. `Impact and major trade-offs` is the only optional level-two section; include it between Feasibility and Decision requested only when it could materially affect approval. Deeper headings may organize those sections. Unknown, duplicated or misordered required sections are invalid.
-
-Feasibility must contain a proportionate assessment, credible evidence or bounded assumptions, material constraints and blockers to responsible Design. A proposal fixes direction and approval-relevant impacts; it does not prescribe detailed requirements, APIs, schemas, architecture, implementation sequencing, tests or rollout mechanics. Decision sufficiency determines depth, with no fixed length or token budget. Material vision issues belong in Impact and major trade-offs and Decision requested; Assessment owns the review judgment.
-
-This repository's current proposal content contains no `Status`, `Owning change record`, routine `Vision fit` or reverse ownership pointer. Other projects may require a stable ownership pointer through their governing artifact convention; mutable lifecycle metadata stays in records. Portable proposals need no record or CLI call. Governed records identify the proposal and own its lifecycle under Records; recording grants no downstream approval. Historical settled proposals retain their original contract and bytes. Existing cutover classification remains applicable to historical or unsettled proposals without a new document-version marker or forced rewrite.
-
-#### Proposal procedure
-
-Under SKL-SR-04/05/08/10/24/27, proposal authoring supports exactly `create-primary-proposal` and `revise-primary-proposal`. Resolve one normalized exact target; portable creation requires absence and revision requires the intended existing artifact. Ambiguity stops. Portable authoring writes only the proposal, without lifecycle, review, automation or routing state. An explicit change ID, workflow-managed exact change or structured owning-change pointer selects governed procedure; conversational wording alone does not. Missing, malformed, stale or conflicting governed authority stops without portable fallback. Reclassify a late governed signal before dependent work.
-
-Apply [Conditional resources](#conditional-resources). `governed-proposal-authoring.md` applies governed authority, recording and recovery; `strategic-and-scope-gates.md` applies strategic procedure; `proposal-skeleton.md` owns structure. The four procedure assemblies are `PA0-portable`, `PA0G-portable-gated`, `PA1-governed` and `PA1G-governed-gated`, independently adding governed and strategic references.
-
-Specialized predicates are exactly `vision_exception_context`, `standing_artifact_context`, `initial_intent_table_context` and `scope_budget_context`. The author judges applicability; deterministic validation checks vocabulary and structure, never semantic truth. Apply every true predicate and load strategic procedure once for any nonempty set. Complete late classification before dependent drafting or readiness; unresolved material ambiguity stops. Broad or multipart intent activates detailed intent treatment. Scope classification covers multiple independent items, lifecycle families or downstream artifacts, workflow/release/validation policy, generated output, public skill behavior, or a review concern about hidden follow-up, silent narrowing or multiple workstreams. Apply the work-item treatment and follow-up rules in [Evidence access and proportional effort](#evidence-access-and-proportional-effort) within the allowed proposal sections.
-
-Governed authoring binds the exact change, proposal path, current governing inputs, prior identity for revision, authoring evidence and applicable authority before writing. Verify absence and no competing primary target for creation. Preserve historical reviews, unrelated artifacts and completed evidence; a changed proposal needs current assessment of its new identity. Workflow owns decisions about downstream reliance and reopening; the author never retargets an earlier judgment. Current registration, revision conflicts, retries and storage recovery follow [Records](../cli/records.md) and [CLI](../cli/cli.md). Reread and reassess stale or competing writes, preserve partial evidence and stop on ambiguous outcomes. A retry cannot silently adopt a different path, basis or transaction. Cleanup grants no reset authority: recovery must identify the exact authorized surfaces and preserve other owners' state.
-
-Preserve proof of exact portable targets, authority rejection without fallback, independent and late resource triggers, unknown predicates, partial/conflicting recording and resource failure.
-
-#### Delivery allocation
-
-Plan owns concrete verification allocation: milestone completion conditions, commands, input prerequisites, proof timing, evidence expectations and side-effect permissions. Allocate integrated checks where local proof cannot establish cross-component, cross-milestone, compatibility, concurrency, recovery, security or authority behavior. Implementation supplies tests and observed results. [Design](design.md#requirement-refinement-and-delivery-allocation) owns the requirement-to-work relationship; [Validation](../engineering/validation.md) owns proof quality; [Assessment](assessment.md) owns Delivery Review and final evidence judgments. No one-to-one mapping to test functions or separate test-spec stage is required.
-
-Under SKL-SR-04/08/10/24/27, planning preserves stable execution intent: each milestone identifies its ID and kind, goal, governing requirements and architecture, affected components, dependencies, implementation scope, tests and proof, validation commands and expected results, completion criteria, required evidence, review handoff, risks and rollback or recovery. Include a commit boundary when applicable. Plans contain no current milestone state, command outcomes, validation progress, blockers, review status, routing or closeout progress. Navigation points to the plan and owning change; it never becomes another state owner.
-
-Apply [Conditional resources](#conditional-resources). `governed-plan-authoring.md` applies governed procedure; boundary and specialist proof methods retain their own triggers. The three structural assets own labels and layout, never state or authority. The portable/governed and boundary combinations remain independently loadable as `PL0`, `PL0B`, `PL1` and `PL1B`.
-
-Governed planning classifies exactly `create-primary-plan`, `revise-primary-plan` or `initialize-approved-plan`. Creation requires one selected change, settled prerequisites, authoring authority, a normalized intended path and no conflicting file or registration; no prior plan identity is needed for an absent target. Revision requires the exact matching current plan and registration. Ambiguous targets, conflicting primary candidates, stale authority or file/registration asymmetry stop before mutation. Portable planning writes only its plan and navigation, without governed state. Manual and workflow-managed invocations share the same authoring boundary; loading resources grants no authority, and Route owns later coordination.
-
-The sole initialization exception allows plan to add missing implementation work exactly once from a current approved Delivery Review package containing this exact primary plan. Confirm the reviewed subject remains current, its ordered milestone definitions are valid, required corrections are settled and work is absent before explicit `work add` operations. Never initialize an unreviewed draft or replace, repair or update existing work. A nonempty or conflicting result returns to Route without rewriting it; a retry cannot duplicate work or treat changed evidence as the original authorization. Author only the plan and authorized evidence otherwise. Record exact subjects and hand off to Delivery Review without settling review or claiming implementation readiness.
-
-Current [Records](../cli/records.md) and [CLI](../cli/cli.md) own identities, registration, revision conflicts and recovery; [Workflow](workflow.md) owns continuation and subsequent work decisions. Settled changes to milestone ID, order, kind, completion criteria or required evidence require authorized replanning. Historical plan prose cannot reconstruct current work or override change-local state. Preserve old plans and judgments under their original contracts; reading stable historical intent does not enable retired record formats.
-
-Preserve proof of exact creation/revision targets, unknown operations, stale review or authority, absent versus existing work, interrupted or competing writes, no cross-owner mutation, stable plan output and missing triggered resources.
-
-The remaining plan/boundary contract transfers to [Plan assets](#plan-assets) and [Design compatibility](design.md#feature-format-compatibility-after-repository-retirement) at complete retirement adoption; the prior spec remains applicable until that boundary. Assessment owns [Proposal Review](assessment.md#proposal-review-criteria) and Delivery Review; Design owns model-authoring method, not every product requirement.
+[Authoring](authoring/authoring.md) owns the composition of [Proposal](authoring/proposal.md), [Design Method](authoring/design.md) and [Plan](authoring/plan.md). Each child owns its detailed behavior; Authoring owns their refinement and correction relationships. Workflow coordinates authorized activity and Assessment owns independent judgments. Common Skill requirements, public invocations and resource contracts retain their scope.
 
 ### Implementation
 
@@ -296,19 +275,82 @@ All three use the reusable criteria in [Validation](../engineering/validation.md
 
 [Review and Closeout](assessment.md) is the detailed assessment child. `proposal-review`, `design-review`, `delivery-review`, `code-review` and `verify` assess their exact direction, model package, delivery allocation, implementation and final integrated basis respectively. The reviewer retains independence from the work it judges. Findings identify actionable gaps and correction ownership; a passing structural check cannot replace semantic assessment. Only successful Verify owns the final closeout explanation under the adopted workflow. Assessment does not grant publication permission.
 
-### Project Support
+### Project Foundations
 
-| Capability | Scoped behavior and usable outcome |
+[Project Foundations](project-foundations/project-foundations.md) composes Vision, Constitution and Project Map: intended purpose, governing principles and observed repository orientation. Its child contracts preserve their distinct artifact and authority boundaries.
+
+### Discovery
+
+[Discovery](discovery/discovery.md) composes Explore and Research for materially unclear options and bounded factual uncertainty. These remain optional support capabilities whose conclusions return to the decision owner.
+
+### Learning
+
+[Learning](learning.md) owns Learn sessions, confirmed durable topics and accountable route-result recording. Recording a lesson does not adopt its proposed changes or complete its destination work.
+
+### Delivery Handoff
+
+[Delivery Handoff](delivery-handoff.md) owns PR preparation and authorized external handoff, including current verified identity and readback requirements. It does not own release publication or replace Assessment.
+
+## Remaining specialist contracts
+
+These contracts complete the selected repository source transfer; source-qualified clause groups are recorded in the owning cleanup disposition. They apply to the named capabilities, not every skill. Existing common resource, privacy, fail-closed vocabulary, scope and claim rules remain in force. Published procedures realize these contracts; incidental prose and completed migration instrumentation do not become additional policy owners.
+
+### Implementation capability boundaries
+
+#### Implement
+
+Implement establishes the smallest scope-complete result: all in-scope requirements, authored and aligned surfaces, current boundary/incident failures and required focused proof are handled before Code Review. An unaffected surface needs a reason; known defects and missing required proof cannot be passed to review as later cleanup. This is first-pass completeness, not a promise of no reviewer findings. It changes no review, routing or external permission boundary.
+
+#### Bugfix
+
+Bugfix distinguishes `diagnose-only` from `fix`; conflicting intent permits diagnosis only. Bind exact repository, defect, authority, allowed paths/write categories, command authority, contract and evidence before mutation. Diagnosis changes no tracked or external state. Proof-authoring writes only authorized tests, fixtures and reproductions; production correction requires a failing automated proof, or established infeasibility plus a complete deterministic alternative with inputs, assumptions, expected observation and limits. Unknown causes authorize no production mutation; missing/conflicting/new behavior returns to Design, and test defects cannot weaken expected behavior speculatively. Run the identity-equal original proof after correction and the surrounding checks justified by the actual blast radius. Changed proof is a new basis, never the original test passing. Report actual commands, failures, uncertainty, identities and authority; changed implementation hands off to independent Code Review without autonomous downstream continuation. Governed evidence uses an exact authorized destination; bugfix does not edit another stage's artifacts or state.
+
+#### CI maintenance
+
+CI maintenance separates `create`, `revise` and read-only `review`, target kind, provider, concern and privilege. Creation requires an absent exact target; revision requires an existing exact identity. GitHub procedure applies only to GitHub workflow files; other providers require an exact project-native content, command, validation and write contract. External platform settings are review-or-route only. Privileged authoring requires an approved Design and independent review bound to repository, target, triggers/scope, permissions, credential/OIDC model, runner, environment, fork/secret policy, third-party actions and validation; omitted material choices do not come from a generic skeleton. Ordinary defaults use least privilege and protected secrets/fork boundaries. The risk-to-check resource owns semantic coverage placement; GitHub serialization consumes it and project-owned commands. Coverage-sensitive changes load that resource; narrow maintenance loads it only if coverage is affected.
+
+CI file commits require no-clobber creation or identity-guarded replacement; a plain overwrite rename and read-back do not establish concurrency safety. Validate prepared content and read back committed bytes. If the environment cannot supply the required primitive, stop the mutation. Multi-target work first resolves every target and dependency, validates a safe intermediate ordering, and distinguishes independent, ordered-dependent and atomic-group-required work. The last class blocks before writes; no multi-file transaction is claimed. Partial outcomes identify completed and pending targets and their validity. Retries reassess all current identities. Local checks and ordinary authoring report hosted CI unobserved; only exact observed run/head evidence supports a hosted result. No authoring operation grants privileged execution, external mutation, readiness or publication.
+
+### Specialist interface vocabulary and outputs
+
+Under SKL-SR-29, the following current public domains are closed. Unknown values reject before cross-field consistency; a recognized value still needs its described authority and prerequisites. These are behaviorally meaningful parser/public contracts, not incidental words. Old semantic-rule/literal-migration ledger classifications, corpus sizes and token profiles retire as instrumentation; public operation and result values do not retire with them. Source-qualified IDs in the cleanup disposition remain historical identifiers.
+
+| Capability / independent axis | Supported values |
 | --- | --- |
-| `vision` | Define project identity, audience, commitments and falsifiable outcomes; reconcile generated README vision content without substituting a roadmap. |
-| `constitution` | Define or revise governing engineering principles under the user's authority; expose conflicts instead of silently overriding higher-priority rules. |
-| `explore` | Expand a materially unclear decision space into distinct choices and trade-offs without selecting an owning-stage decision. |
-| `research` | Reduce a bounded factual uncertainty with attributable evidence, confidence and remaining limitations; do not claim to settle product direction. |
-| `project-map` | Describe observed repository structure, entrypoints and boundaries with bounded inferences; do not invent future architecture or lifecycle state. |
-| `learn` | Capture durable lessons and accountable follow-up from observed work without replacing the action-owning stage. |
-| `pr` | Prepare the actual reviewed/verified change and perform the explicitly authorized PR handoff; missing readiness or external authority stops that action. |
+| Bugfix command authority | not-required, current-bounded, absent-or-stale, invalid-or-ambiguous |
+| Bugfix write authority | none, portable-request-bound, governed-scope-bound, absent-or-stale, invalid-or-ambiguous |
+| Governed signal for Bugfix and PR | no-governed-signal, single-governed-candidate, invalid-or-ambiguous-governed-signal |
+| Bugfix reproduction | reproduced, deterministic-alternative, not-established, conflicting |
+| Bugfix contract basis | settled, resolvable-restoration, missing, conflicting, behavior-change-request |
+| Bugfix test feasibility | feasible, infeasible-with-rationale, unresolved |
+| Bugfix regression proof | failing-automated-test, deterministic-alternative, missing, conflicting |
+| Bugfix cause support | supported, uncertain, conflicting |
+| Bugfix root cause | implementation-defect, contract-gap, integration-mismatch, data-or-migration, race-or-timing, configuration-or-environment, test-defect, external-dependency, unknown |
+| Bugfix action | stop-blocked, route-owner, continue-diagnosis, complete-diagnosis, resolve-test-feasibility, author-automated-proof, apply-production-correction, run-post-fix-validation, complete-fix |
+| Bugfix terminal result | diagnosis-complete, diagnosis-incomplete, fix-applied, routed-to-owner, blocked |
+| Implement profile | IP0-isolated, IP1-planned, IP2-planned-armed |
+| CI concern | coverage, performance, caching, permissions, triggers, ordinary-security-hardening |
+| CI target | github-workflow, project-validation-automation, related-platform-configuration, external-platform-state, invalid-or-ambiguous-target |
+| CI provider | github-actions, project-native-other-provider, invalid-or-ambiguous-provider |
+| CI privilege | ordinary-workflow-context, privileged-approved-design, privileged-design-required, invalid-or-ambiguous-privilege-context |
+| CI structure | none, compose-from-skeleton, preserve-existing-structure |
+| CI repair mode | ordinary-infrastructure, bounded-pr-ci-repair |
+| CI batch relation / result | independent, ordered-dependent, atomic-group-required / complete, partial-blocked, blocked-before-write |
+| CI invocation result / hosted observation | created, updated, reviewed, blocked / not-observed; eligible bounded repair may report pending, passed, failed for its exact run/head |
 
-These capability contracts preserve their existing standalone and conditional artifact behavior. Their published specialist procedures remain the realization to reconcile and check, not an excuse to invent extra required artifacts for ordinary work.
+Bugfix chooses blockers and routing before mutation eligibility. A complete failing automated proof permits correction; conflicting proof blocks; feasible missing/alternative proof requires automated proof authoring; unresolved feasibility requires resolution; infeasible proof permits correction only with a complete deterministic alternative. Already corrected work with failed or identity-mismatched required checks blocks, with pending checks validates, and with all required checks passed completes. Terminal results distinguish completed/incomplete diagnosis, applied fix, routed ownership and blocked work; intermediate actions are not terminal results. Report operation/result, authority, repository/defect scope, actual commands, proof identity, unexecuted checks, uncertainty, changed surfaces and next owner.
+
+Implement's planned reference loads for IP1/IP2; armed review/fix procedure requires IP2 with a valid planned milestone, and unplanned automation rejects. The result asset supplies a core group (status, completed scope, changed artifacts, tests, validation/results, blockers, handoff, limits), a planned group only for IP1/IP2 (change/milestone/plan identity, observed milestone/baseline state, milestone validation, commit and review handoff), and an armed group only for IP2 (automation mode/packet, fidelity routing, correction eligibility/cycle, rereview, pause/promotion and final-review dependency). Omit inapplicable groups and unfilled placeholders; output of observed state does not make the result asset its owner.
+
+CI results report requested/actual operation, target kind, provider, privilege, concerns, structure, selected assembly, target identity, mutation outcome, validation evidence, blockers and hosted observation. The nine procedural assemblies remain CIM0-narrow-review, CIM1-coverage-review, CIM2-ordinary-github-create, CIM3-narrow-github-revise, CIM4-coverage-github-revise, CIM5-structural-github-revise, CIM6-project-native-authoring, CIM7-privileged-approved-create and CIM8-privileged-approved-revise. Universal classification determines the assembly; coverage and structural resources add independently and late triggers load before dependent work. Unknown assemblies cannot fall through as ordinary review.
+
+
+
+### Bounded PR CI repair
+
+This is the existing narrow exception within CI maintenance, not a general automatic approval. Admission requires an already-open PR, exact failing hosted run and head, current applicable Code Review and Verify evidence, no open material finding, already-authoritative commands and existing authority for every external mutation. The correction only restores already-approved behavior. Changes to requirements, architecture, runtime implementation, dependencies, lifecycle schema/routing, review outcomes or another decision-bearing contract reject this mode and return to the earliest affected owner; ambiguity cannot preserve readiness.
+
+Inspect the exact failure, make the smallest correction, run its focused check and the exact repository-owned PR check, prefer one coherent repair commit, push only under existing authority and observe the replacement run at the actual head. Preserve current review/explanation/Verify/lifecycle evidence only when its decision basis remains unchanged under Assessment; a CI failure alone does not require a new review round, explanation, Verify report, change record or lifecycle-only commit. A missing prerequisite or unobserved replacement outcome is reported truthfully. This exception neither grants external authority nor weakens current checks.
 
 ## Solution Strategy
 
@@ -341,8 +383,8 @@ The pointer mismatch is resolved by existing precedence, not a request to change
 | Proposal strategic gates and review conditional gates | Preserve conditions, scope-budget vocabulary and follow-up duties; no content change selected. |
 | Both requirement-to-delivery-model copies; review-assessment and review-reliance | Preserve bytes and shared-source ownership under templates/shared. No common-source edit is needed for this pilot. |
 | proposal-skeleton, review-result-skeleton and material-finding assets | Preserve structure and current metadata. No new resource or fingerprint regime is imposed. |
-| scripts/skill_validation.py and scripts/test-skill-validator.py | Select the existing two recording-reference paths for pilot validation; validate complete selected procedure and all body triggers. Retain non-pilot profile checks and unrelated validators. |
-| scripts/test-adapter-distribution.py | Its targeted-profile archive comparison currently reads SKILL.md except for design's reference. Select the two pilot references as the recorded-profile subjects while retaining all supported adapters, inventory and raw-byte checks. |
+| scripts/skill_validation.py and tests/skill/test-skill-validator.py | Select the existing two recording-reference paths for pilot validation; validate complete selected procedure and all body triggers. Retain non-pilot profile checks and unrelated validators. |
+| tests/engineering/packaging/test-adapter-distribution.py | Its targeted-profile archive comparison currently reads SKILL.md except for design's reference. Select the two pilot references as the recorded-profile subjects while retaining all supported adapters, inventory and raw-byte checks. |
 | Existing generators, schemas, shared manifests and package metadata | Preserve formats and transformations. Regenerate candidates under existing tooling when implementation changes canonical bytes; do not edit tracked public adapter bodies. |
 
 ### Validator composition
@@ -351,7 +393,7 @@ The current `validate_targeted_recording_profile` returns no errors when the `Ex
 
 The installed review-placement validator currently recognizes the current recording path through the same body heading. Its pilot selection must resolve current v3 procedure without falling into retired Markdown placement checks after relocation. Non-pilot path selection remains unchanged. No new serialized registry is required: the existing validator's explicit skill/resource mapping is enough. If a new closed constant is introduced, unknown values must have a negative regression; positive presence alone does not demonstrate fail-closed behavior.
 
-Literal source-preservation tests in `scripts/test-skill-validator.py` currently name Skill Contract clauses, headings and invariant prose. At adoption, each affected assertion must be assessed against the displacement map: move its useful protection to the new owner or retire only its obsolete text-identity oracle. Keep behavior/regression protection and unrelated historical-format fixtures. This Design neither deletes tests nor approves a test-count target.
+Literal source-preservation tests in `tests/skill/test-skill-validator.py` currently name Skill Contract clauses, headings and invariant prose. At adoption, each affected assertion must be assessed against the displacement map: move its useful protection to the new owner or retire only its obsolete text-identity oracle. Keep behavior/regression protection and unrelated historical-format fixtures. This Design neither deletes tests nor approves a test-count target.
 
 ## Runtime View
 
@@ -371,13 +413,15 @@ Current package proof ends at Gate A/B and any independently applicable RigorLoo
 
 ### Common contract details retained by consolidation
 
+The adopted `discovery-support` shared-policy family remains supported for Explore and Research. Its copies preserve their declared canonical source and subordinate policy ownership under SKL-SR-13; initial shared-block rollout inventories do not prohibit subsequently approved projections.
+
 The table defines the surviving presentation, portability and resource-enforcement contract under SKL-SR-02–14; source citations identify provenance, not a requirement to reconstruct the rule from historical prose. A normalized skill is one brought into the common structure contract by its approved adoption; a readability-profile skill is one brought into `skill-readability-v1`. Adoption or a declared profile establishes the obligation even if a defective file omits its marker. Absence of a marker is not an exemption for an already-adopted skill. A still-unnormalized skill does not acquire the profile through this consolidation. A reviewed equivalent must identify its actual approving owner and scope; neither existing bytes nor a passing validator constitutes approval of an exception.
 
 | Surviving requirement | Applicable population | Approved equivalent or supersession and source disposition |
 | --- | --- | --- |
 | Frontmatter MUST contain non-empty string `name` and `description`. Normalized published skills MUST additionally include non-empty `version` and `schema-version`. Where the readability profile is selected, `schema-version` MUST be `skill-readability-v1`; unknown values fail explicitly rather than falling through to another profile. | Basic name/description fields apply to published skill metadata. The additional required fields apply to normalized published skills, including the pilot pair; the selected readability profile determines its marker. | Skill Contract R29g makes the version fields required, superseding Readability R32's earlier SHOULD for that population. R29h and Readability R33 retain the selected marker; this initiative selects no new version. Readability R34's initial pilot version assignment is historical, not a mandate to reset current versions. Consumers may ignore the additional fields without behavior change (R35); metadata schema representation remains with its existing owner. |
 | `description` MUST state capability, trigger contexts and important near misses where competing skills or false positives exist, MUST NOT be a synonym dump, and MUST be at most 1024 characters. Essential selection logic MUST NOT exist only in body headings or optional `when_to_use` metadata. | Published skills brought into the description-routing contract; existing unnormalized populations keep their approved exemption until adoption. | Skill Contract R3m–o and R29–f. Optional adapter metadata and useful body summaries remain allowed, but are not substitutes for description coverage. No pilot exception to the maximum is selected. |
-| The normalized structure MUST expose `Purpose`, `When to use`, `When not to use`, `Inputs to read`, `Outputs`, `Handoff`, `Stop conditions`, and `Claims this skill must not make`, retaining necessary specialist sections and all applicable duties for a multi-role skill. Invocation-blocking conditions SHOULD be surfaced before artifact generation/execution. | Normalized skills without an approved replacement layout; the functional duties remain required when a replacement layout is selected. | Skill Contract R3–c, R10 and R31e. The [proposal procedure](#proposal-procedure) and [Proposal Review procedure](assessment.md#proposal-review-procedure) preserve the selected common bodies plus triggered references with their named responsibilities; they replace the generic heading layout for those skills, not its scope/stops/claims coverage. Subsequent proposal and recording amendments continue to determine their current specialist content. |
+| The normalized structure MUST expose `Purpose`, `When to use`, `When not to use`, `Inputs to read`, `Outputs`, `Handoff`, `Stop conditions`, and `Claims this skill must not make`, retaining necessary specialist sections and all applicable duties for a multi-role skill. Invocation-blocking conditions SHOULD be surfaced before artifact generation/execution. | Normalized skills without an approved replacement layout; the functional duties remain required when a replacement layout is selected. | Skill Contract R3–c, R10 and R31e. The [proposal procedure](authoring/proposal.md#proposal-procedure) and [Proposal Review procedure](assessment.md#proposal-review-procedure) preserve the selected common bodies plus triggered references with their named responsibilities; they replace the generic heading layout for those skills, not its scope/stops/claims coverage. Subsequent proposal and recording amendments continue to determine their current specialist content. |
 | A `Workflow role` block MUST be near the top and contain `role_name`, `stage`, `upstream`, `downstream`, and a plain-language `summary`. `role_name` MUST equal the skill name. The summary MUST occupy no more than two lines of normal prose in canonical source. The block MUST make received input, produced outcome and downstream claim limits clear. | Readability-profile skills, under Readability R11–15; lifecycle skills producing/closing artifacts, gating stages, handing off or claiming downstream readiness also require the role coverage under Skill Contract R30/a. | Skill Contract R30b permits omission for non-lifecycle skills outside a separately adopted role-block requirement; it does not waive Readability R11 for skills already in that profile. No later amendment identified for this pilot supersedes its required fields or two-line summary limit. |
 | The role-block `stage` MUST be exactly one of `authoring`, `review`, `execution`, `verification`, `handoff`, `support`, or `periodic`; unknown values MUST fail before role consistency checks. | Readability-profile role blocks. | Readability R14 and SKL-SR-14. This is the skill-role vocabulary, not the separately owned CLI activity-stage vocabulary; the stored-format version does not replace these values with CLI stages. |
 | Every closed vocabulary used by a readability-profile skill MUST have exactly one authoritative fenced block or table in its selected package; its values MUST NOT be re-enumerated in multiple prose locations. Spelling, capitalization and membership MUST match the governing vocabulary unless an approved owner explicitly changes them. | Readability-profile skills and the vocabulary-bearing body/reference selected for each invocation. | Readability R16–18 originally placed the definition in the skill body. Proposal simplification R6/35/39 and Proposal Review simplification R18/20/22 permit the detailed scope vocabulary in its triggered reference; body triggers remain visible. Asset extraction alone does not authorize moving enum policy into assets ([proposal-family assets](#proposal-family-assets), formerly PFA-R3). Under adopted Review and Closeout, its assessment resource owns judgment precedence; historical alternate rules are not a second current definition. Structural fields may refer to the owning vocabulary without re-enumerating it. No blanket exemption from vocabulary presentation is selected. |
@@ -385,7 +429,7 @@ The table defines the surviving presentation, portability and resource-enforceme
 | Each rule, lookup order and guideline SHOULD appear once at the earliest point where it is needed. An intentional safety repetition MUST identify itself as a reminder and MUST NOT conflict. Workflow-wide rules MUST be visibly identified as shared; local rules MUST be distinguishable by section, label or wording. | Readability-profile skills. | Readability R21–24. An adopted-owner application section or explicit scoped resource reference can identify the shared authority; it does not transfer that owner's policy into Skill. Conditional loading changes the earliest required location, not the obligation to supply the complete rule when triggered. |
 | Expected output MUST be summary-first, using a compact `Result` with `Skill`, `Status`, `Artifacts changed`, `Open blockers`, and `Next stage`, or an explicitly reviewed equivalent. Relevant review/evidence/follow-up fields MAY supplement it. | Normalized skills. | Skill Contract R11–c expressly permits equivalent summaries. The pilot's approved proposal output and proposal-review result asset are the equivalents; do not add generic fields to the proposal artifact or replace its specialist review fields. Workflow and Review and Closeout still own status/claim meaning. |
 | Artifact output MUST have a complete fillable skeleton covering all required sections/fields, including applicable review-recording fields. The default is a fenced skeleton near the bottom; a mapped reviewed asset MAY supply the full layout with a compact body output summary/COPY instruction. Emitted output MUST omit untriggered groups and contain no unfilled placeholders. | Artifact-producing readability-profile/normalized skills; only groups applicable under the specialist's current contract are required. | Readability R25–28 is qualified by Skill Contract R34's reviewed equivalent and the later PFA-R14 asset pattern. The pilot retains its three existing assets. The Simplified Proposal Contract SPC-R1–6 replaces obsolete proposal status/routine Vision-fit sections with seven sections and conditional material impact; these historical fields are not reinstated by skeleton preservation. Project governance still decides any stable pointer. |
-| Existing artifact requirements, item formats, coverage and output obligations MUST be mapped to their destination before a new or relocated skeleton is accepted; examples MUST NOT substitute for the normative shape. Asset metadata and fingerprint checks apply only to the exact asset family that adopted them. | Changed artifact-producing skills; plan-specific and proposal-family asset populations retain their separately scoped obligations. | Skill Contract R34a/c preserves output coverage. Retained R37–45 continues to define plan's three assets/fingerprints; The Proposal-family assets section above preserves PFA-R29–31 metadata. These are explicitly retained specialist definitions, not definitions retired in favor of a vague common reference or new universal fingerprint requirement. |
+| Existing artifact requirements, item formats, coverage and output obligations MUST be mapped to their destination before a new or relocated skeleton is accepted; examples MUST NOT substitute for the normative shape. Asset metadata and fingerprint checks apply only to the exact asset family that adopted them. | Changed artifact-producing skills; plan-specific and proposal-family asset populations retain their separately scoped obligations. | Skill Contract R34a/c preserves output coverage. [Plan assets](authoring/plan.md#plan-assets) preserves R37–45's three assets/fingerprints; The Proposal-family assets section above preserves PFA-R29–31 metadata. These are explicitly retained specialist definitions, not definitions retired in favor of a vague common reference or new universal fingerprint requirement. |
 | Public portability validation MUST cover canonical skill files shipped to users, generated public skill copies and public adapter skill copies. It MUST NOT apply to internal specs, plans, tests, generator scripts, maintainer documentation or repository-only contributor documentation. Those internal surfaces MAY retain repository implementation details. | Published skill text and its public copies; the excluded contributor surfaces do not acquire public-text lint through this transfer. | Skill Contract R3d–l and R33–c. Checks MUST be narrow and phrase/path based, rejecting unqualified required RigorLoop-internal dependencies while allowing relevant project-local or user-supplied artifacts, packaged resources, and internal paths when RigorLoop itself or those paths are the authorized target. Packaged skill-local scripts MUST NOT be rejected as repository-root scripts. No later supersession or pilot-specific exemption is selected. |
 | Published instructions MUST route full workflow questions through `route` or another user-facing workflow surface. They MUST NOT require RigorLoop's internal workflow/skill specs, installed-authoring directories, adapter build/select scripts, shared-block mechanics or internal examples as ordinary customer prerequisites. They MAY refer to relevant project `AGENTS.md`, `VISION.md`, governed CLI context, change/plan records, a supplied local workflow contract or project validation command. | Published skills in customer-project mode; the supplied/project-local/authorized-target exceptions above apply. | Skill Contract R3e–h, R12b, R27b and R33. These are surface boundaries, not a blanket ban on every `docs/`, `scripts/` or `specs/` path. Maintainer source/generation/selector instructions remain contributor-facing. |
 | Required skill-local dependencies MUST be declared in `Resource map`. Bounded legacy migration lint MUST examine recognized resource-loading instructions using `assets/`, `references/`, `scripts/` and legacy `templates/` prefixes. An unmapped legacy dependency MUST fail validation unless recorded as migration debt under an explicitly approved temporary exception. Arbitrary repository paths, artifact examples, code snippets and customer-project paths MUST NOT become packaged dependencies merely because they look path-like. | Published skills subject to the implemented resource-integrity amendment; new/changed and inventory enforcement follow the next row. | Skill Contract R49–d. The initial addition of lint is completed rollout history; its recognition scope and fail/exception behavior survive. Recognition of legacy `templates/` does not approve it as a resource class: SKL-SR-08 still requires an explicit later amendment for its verbs, packaging and validation semantics. An existing unmapped reference alone is not an exception. |
@@ -419,7 +463,6 @@ Material combined hazards are a shorter entry file plus a missing transitive pro
 | SKL-DEC-03 | The pair already has extracted assets and useful descriptions. Improve classification-before-recording and complete existing conditional references; retain compliant assets and shared policy copies. | Repeating asset extraction gives no new value. A new generic recording resource adds unnecessary consumers. Leaving all construction prose at the top preserves avoidable common-path reading and dependent-reference fragility. |
 | SKL-DEC-04 | Review policy is already separately owned. Remove obsolete competing instructions only where the selected adopted path replaces them, while retaining a complete portable policy path. | Universal adoption by installation would exceed authority; blindly deleting historical-looking prose can remove still-required portable behavior. The improvement must be assessed semantically, not by keyword count. |
 | SKL-DEC-05 | Keep important current knowledge in its owner and retain mixed operational inputs. Retired originals use recoverable Git provenance rather than duplicate archive files. | Indiscriminate deletion loses live constraints; rewriting old judgments erases provenance; copying every old clause into the living model preserves fragmentation. Historical-only wording and rollout details need no current copy. |
-| SKL-DEC-06 | Initialize missing work only from the exact approved Delivery Review plan. Plan derives the initial work, Assessment owns review and Route coordinates subsequent work. | Initializing before review can freeze milestones that review must change. Reviewer-owned initialization mixes judgment with authoring; coordinator-owned derivation duplicates plan semantics. Allowing ordinary plan revision to replace existing work risks losing progress. Current Records/CLI own identities and recovery; the historical no-hash alternative and two-phase settlement protocol are superseded. |
 
 ## Quality Requirements
 
@@ -446,210 +489,10 @@ Remaining skill adoption is tracked through existing follow-up records. Broader 
 - **Resource identity:** skill-root relative path and raw-byte SHA-256, except for a complete approved transformation contract.
 - **Historical provenance:** an exact recoverable Git revision and original path; it does not require retaining a non-current source in the working tree.
 
-## Source transfers and consumer obligations
+## Capability adoption boundary
 
-The following mappings retain their declared applicability and source identities. Use the current capability and specialist contracts above for normal work; these tables explain transferred obligations and the remaining adoption scope.
+The proposal/proposal-review pilot remains bounded by SKL-SR-16–23. Common capability rules, resource integrity and specialist methods remain with their current sections above; the pilot does not establish adoption for every capability. Accepted assessment of the remaining capability families is tracked as FU-015–018 in the [follow-up register](../../follow-ups.md), with its existing owners and scope.
 
-### Source-qualified displacement map
+## Historical provenance
 
-Every range below is inclusive and includes letter-suffixed clauses unless a row explicitly carves them out. The source IDs remain historical identities, not renamed SKL IDs. Transfer rows replace current common definitions at adoption. Retention rows are expressly outside the transfer and keep their existing amendments and applicable populations. Historical rollout rows do not restart old experiments, token budgets or retired skills.
-
-| Skill Contract source | Destination and substantive disposition |
-| --- | --- |
-| R1, R1a, R1c, R1d; R20, R20a | Replace file-as-owner with SKL-SR-01/22 and this applicability map. Governance may summarize; public/local guidance remains subordinate. |
-| R1b, R20b | Retain Workflow's coordination authority by reference under SKL-SR-04; no new stage semantics. |
-| R2–R2d | SKL-SR-13 and Deployment: canonical skills remain authored; mirrors/packages remain derived and are regenerated/checked under existing distribution contracts. |
-| R3–R3c; R4–R7a | SKL-SR-03/04/12: required functional coverage, specialist section preservation, output/review/execution/support distinctions. Retired skill names are historical examples, not an inventory. R6b/c retain ci-maintenance's existing identity; no rename. |
-| R3d–R3l; R27–R28b; R33–R33c | SKL-SR-02/05/15 and Common contract details: justified capabilities, public/private surface boundary, exact portability-check population and exclusions, safe project-local and packaged resources, no hidden effects. |
-| R3m–R3o; R29–R29h; R30–R31e | SKL-SR-02/03/06 and Common contract details: routing in description, current metadata and role vocabulary, normal procedure, visible stops, proportionate imperative/constraint language and rationale. |
-| R8–R9d | Historical normalization scope/order and absent optional candidates. Preserve originals; do not recreate retired entrypoints or use those phases as current pilot allocation. SKL-SR-01/23 governs this later adoption boundary. |
-| R10–R13f | SKL-SR-04 and Common contract details preserve local claim limits, summary fields/equivalents, local handoffs and Workflow-owned progress/readiness/closeout distinctions. No independent redefinition of specialist approval. |
-| R14–R15d | SKL-SR-13 preserves canonical templates/shared sources, copied parity and subordinate policy ownership. Initial v1 allowed/deferred block inventories and no-generation rollout constraint remain historical, not a prohibition on subsequently approved projections. discovery-support's current copies remain under its existing owner, unchanged. |
-| R16–R17b; R21–R24c | SKL-SR-06/07/12: bounded reading, full-subject escapes, bounded examples, no new gate, no reduced proof, caps versus selection, retrievable omitted detail. |
-| R18–R18d; R25–R26b | SKL-SR-14 and Validation/Review owners: positive-first narrow incident checks, negative-guidance false-positive protection, no semantic scoring; a process finding still requires concrete noisy evidence and a safer strategy without weakening proof. |
-| R19–R19c | SKL-SR-02: distinct responsibility needed for a new skill; one-off advice belongs in existing guidance. Contributor creation examples stay contributor-facing. |
-| R32–R32d; R34–R34c | SKL-SR-08/09/12: full resource map, script I/O/failure, no absence boilerplate, bounded examples and output preservation. |
-| R35–R35g | R35c/d transfer to SKL-SR-14; the other prospective routing/transcript requirements are already superseded by published-skill-first R26. Preserve historical meaning, not a new runtime oracle. |
-| R36–R36j | Historical first design pilot, inventory audit, savings thresholds and preservation evidence. Current pilot is SKL-SR-16–20/23; material preservation remains required, but no historical audit, corpus or percentage gate restarts. |
-| R37–R45e | Retain plan-specific package/asset structure, metadata and fingerprint obligations under this bounded unmigrated section and plan's current owners. Completed rollout restrictions and budgets retain historical meaning; proof clauses already superseded by published-skill-first R26 remain superseded. No plan rewrite or new global asset policy. |
-| R46–R46a | Replace common resource owner with Skill; specialist architecture resource classification remains under Design/current retained contracts, not a competing common contract. |
-| R47–R51a | SKL-SR-08–10/14 and Common contract details: verb classes, containment, canonical presence, recognized legacy loading/prefix scope, unmapped-dependency failure and explicitly approved temporary exceptions, exact path/raw-byte identity, no timestamps/implicit normalization, complete transformation contract. |
-| R52–R52c | R52/a/b are historical proof under existing R26 supersession. Retain R52c's separate live-registry release authority through Deployment and SKL-SR-15; no new installation proof policy. |
-| R53–R53b | SKL-SR-01/14 and Common contract details define immediate new/changed-skill enforcement and the clean-audit or explicit review-visible drift-disposition prerequisite for inventory enforcement. Initial audit-mode rollout remains historical; no reset of active enforcement or new inventory adoption is selected. |
-| R54–R54d | SKL-SR-09/11: missing required method stops; untriggered content may remain unloaded; redundant convenience fallback is disclosed and never package success. |
-| R55–R55e | Historical architecture pilot audit/classification and preservation. Current Design/resource owners retain outcomes; do not repeat retired-author experiments. Source-chain diagnostics remain useful under SKL-SR-13/14 without mandatory old installations. |
-| R56–R63b | Retain boundary-first method, stage-specific selection, projection/activation and compatibility under their existing owners and adopted amendments. Common resource mechanics reference SKL-SR-08–14; no method inventory or projection-manifest relocation is selected. |
-
-| Skill Contract unnumbered source | Destination and disposition |
-| --- | --- |
-| Opening adopted-authoring, v2-only, Test, Review and Closeout amendments; current proposal-stage paragraph | Preserve ownership and original adoption meaning. Context and Scope references each owner; these are not transferred specialist policies. Old lifecycle/entrypoint instructions remain historical. |
-| Goal/context paragraphs on public operating interface, portability, evidence efficiency, resource integrity and normalized metadata | SKL-SR-01–15. Amendment histories of pilot extraction, structural hygiene and retired authors remain archival context. |
-| Prospective proof disposition | Retain validation owner's R24–R29 authority; Deployment states its effect. No copied historical proof can override it. |
-| Spec growth strategy; slice navigation/terminology; related proposals; status; Next/Follow-on/Readiness history | Archive as provenance of the accreted document. Design now owns living-model organization; preserve IDs, judgments and relationships without applying old line-count hygiene or stage queues to new work. |
-| Glossary | Common package/role/asset/identity terms resolve through this model's Common contract details and Glossary; retired paths, corpus names and pilot-specific definitions remain historical or in the retained plan/boundary sections. |
-| Examples E1–E7 | Preserve local-only readiness, shared-copy parity, narrow overclaim detection, justified skill existence and ci-maintenance identity through SKL-SR-02/04/13/14. Old stage wording is historical. |
-| Examples E8–E12, E17 | SKL-SR-02/05/12/14/23: routing, packaged script distinction, no target-selection proof, separately owned retirement and artifact preservation. Retired test-spec identity remains historical. |
-| Examples E13–E16 | Retain plan-specific structure/handoff/corpus history with R37–R45; do not generalize exact plan layout. |
-| Examples E18–E22 | SKL-SR-08–11/14: bounded lint, path false positives, stale-copy failure and fallback distinction. E21's old clean-install scenario is historical under the validation owner's supersession. |
-| Example E23 | Retain method/projection ownership with R56–R63 and reference common parity. |
-| Inputs/outputs; State/invariants | Canonical/derived source, local claims, public/private boundary, routing and resource identity transfer to SKL-SR-02–15; named old pilot outputs, budgets and phase inventories remain history, plan assets/method-specific duties retained above. |
-| Error/boundary behavior | Missing/drifted sources, malformed descriptions/metadata/maps, path escape, false-positive lint, missing transformations and runtime fallback failures transfer to SKL-SR-02/08–14; plan-specific fingerprints remain retained; old transcript/install/budget/structural-hygiene rollout failures remain history. |
-| Compatibility/migration | SKL-SR-01/04/13/20/21 preserve unnormalized populations, reviewed equivalents, existing public names, permitted resource debt and coherent rollback. Existing review recording remains with its owner. |
-| Observability; Security/privacy; Accessibility/UX; Performance | SKL-SR-06/07/14/15 preserve named diagnostics, safe evidence, scanability and bounded checks; no new logs/metrics or token targets. Historical pilot measurement and install diagnostics do not impose fresh experiments. |
-| Edge cases 1–10, 14, 16, 19, 20, 23–25 | SKL-SR-02–14 preserve multi-role coverage, bounded examples, absent maps, script conditions, negative-path examples, source/destination preservation, deliberate transforms and runtime/package separation; clean formal recording follows the current review owner, not the old empty-record exception. |
-| Edge case 11 | Preserve current CLI/portable-target authority under Workflow and SKL-SR-05; old workflow guides do not become current lifecycle authority. |
-| Edge cases 12–13, 15, 17–18, 21–22, 26 | Historical routing/audit, plan fingerprint/corpus, structural hygiene and architecture classification context; current plan/method obligations retained as above. |
-| Non-goals and acceptance criteria | Common source/role/routing/portability/resource/claim/proof boundaries transfer to the corresponding SKL requirements above; plan and boundary-first acceptance stays scoped to retained owners; named first-pilot proof, savings and normalization success remains history. No global test deletion follows. |
-| Prospective stage-owned lifecycle notice; Spec-review conditional-procedure amendment | Preserve original lifecycle/retired-skill history; current Workflow/Record Format/CLI supersede execution. Resource completeness and mixed-version stops survive through SKL-SR-09/13, not a reintroduced spec-review package. |
-
-### Readability and portability reconciliation
-
-The following two source maps cover their complete numbered obligations. Their original related proposals, judgments and follow-on links remain historical evidence; they do not govern new work after adoption. No general formatting tightening is silently imposed on non-pilot skills.
-
-| Source | Destination and substantive disposition |
-| --- | --- |
-| Skill Readability R1–R10 | SKL-SR-05/06/13: canonical generation, preserved quality/behavior, quality before cost, project-local evidence and safe-default/ambiguity boundary. |
-| Readability R11–R15, R19–R24 | SKL-SR-03/06 and Common contract details: existing role fields/stages and summary limits, tables versus ordered lists, one authoritative rule with labeled safety reminders, visible shared versus local authority. No new universal heading mandate. |
-| Readability R16–R18 | SKL-SR-06 and the retained-contract table define the once-only fenced/table presentation, unchanged spelling/membership and explicitly approved conditional-reference placement. These rules transfer here; no archived definition is required to apply them. |
-| Readability R25–R28 | SKL-SR-12: complete output shape and applicable review fields; the later approved asset equivalent supersedes mandatory inline full skeletons. |
-| Readability R29–R35 | R29–31's pilot/rollout inventory and R34's initial version choice are historical. The retained-contract table transfers R32/33/35's metadata and consumer compatibility, including R32's supersession by Skill Contract R29g for normalized published skills. No resurrection of retired names or inventory adoption. |
-| Readability R36–R40, R53, R55–R56 | SKL-SR-14: applicable role/skeleton/enum/path checks, legitimate local paths, explicit enforcement scope and useful failures. Preserve prior exemptions rather than allowing the new pilot to reset enforcement. |
-| Readability R41–R52, R57–R59 | Historical cold-read/output-corpus and token-budget rollout. SKL-SR-06/09/19 retains usable complete instructions, no unresolved regression and assessed improvement; current validation owner governs proof, with no revived target-runtime or numeric gate. |
-| Readability R54, R60 | SKL-SR-04/13/15/21: no implicit package/schema/authority mechanism; retain an ambiguously owned rule until its owner resolves it. |
-| Customer-Portable Public Skill Evidence R1–R10 | SKL-SR-05/07: customer default, permitted relevant local/direct-target/repository-mode evidence, bounded searches and safe defaults/stops. Former local workflow-guide authority is superseded by current Workflow/CLI; guides are not unconditional prerequisites. |
-| Portability R11–R16 | Historical workflow-guide creation duty, now superseded by current route/CLI context. Customer-local evidence and no-required-internals principles survive in SKL-SR-05; no guide generator is reinstated. |
-| Portability R17–R20 | Historical first-slice audit/watchlist scope. SKL-SR-20/23 defines this initiative's exact touched/untouched boundary. |
-| Portability R21–R25 | SKL-SR-04/05/19 preserves essential shapes, stops and claim limits. Review/Verify/PR policy and project-map optional orientation inputs retain their owners; no specialist rewrite. |
-| Portability R26–R28 | SKL-SR-05/14: required internal dependencies fail, clearly project-local, supplied or packaged resources remain valid. |
-| Portability R29–R36 | Historical token reports and customer-fixture runtime benchmarks. Preserve their paths/identities as history; no new runtime evidence requirement. |
-| Portability R37–R39 | SKL-SR-13/15: generate/validate canonical changes, no hand-edited output, no new CLI or hard-token gate. Original first-slice non-goals do not prohibit later separately approved CLI work. |
-
-Readability unnumbered Goal/context and State/invariants preserve quality-first, self-containment and canonical source under SKL-SR-05/06/13. Its E1–E5 and Edge cases 1–8 preserve scanable role/output/vocabulary, material review protection, internal-path failure, clear shared/local policy and ordered-procedure exceptions under SKL-SR-03–06/12/14; obsolete status/Vision-fit fields and inline-skeleton requirements resolve to current proposal and asset owners. Historical token/corpus examples do not impose new gates. Inputs/outputs, Observability, Compatibility, Security, UX, Performance, Non-goals and Acceptance preserve those same obligations, with measurement/install-only rollout outputs historical. Open questions, Status and Next/Follow-on/Readiness remain original judgments.
-
-Portability unnumbered Goal/context, State/invariants, E1–E6 and EC1–EC12 preserve sparse-project operation, local authority distinction, safe target selection, honest recording/validation stops and bounded path lint under SKL-SR-04/05/07/14/15. E1 does not override a project's Constitution gate; E5's workflow-guide generator and EC10/11's first-slice watchlist are historical. Inputs/outputs, Compatibility, Observability, Security, Performance, Non-goals and Acceptance retain canonical generation, secret-free fixtures and no false proof; benchmark/report-path requirements and old settlement vocabulary are historical. Project-map, Verify and PR duties remain specialist-owned references.
-
-### Resource decision and mixed architecture
-
-| Source boundary | Destination and disposition |
-| --- | --- |
-| ADR-20260623-published-skill-resource-integrity Context and Decision: mapped resources, COPY/READ/RUN, containment and no implicit templates/ class | SKL-SR-08/09 and SKL-DEC-02 preserve the missing-resource incident, explicit dependency contract and bounded migration lint. |
-| Same ADR: raw-byte identity, timestamps, transformations | SKL-SR-10 and SKL-DEC-02 preserve exact identity rather than presence-only or silent normalization. |
-| Same ADR: pre-publish all-target clean install and live registry distinction | Current validation owner's published-skill-first R24–R29 supersedes historical mandatory clean installs; preserve separate release authority and filesystem-only materialization boundary. |
-| Same ADR: runtime fallback and all Alternatives considered | SKL-SR-11 and SKL-DEC-02 preserve convenience-only disclosed fallback, rejection of local hand-copy repair, all-inline guidance, presence-only parity, arbitrary path scanning and mandatory live-registry proof. |
-| Same ADR: Consequences and Follow-up | Common validation/classification/identity consequences survive above; completed architecture audit/classification/corpus/clean-install work remains history. Retain original accepted judgment and related source navigation. |
-| Mixed system architecture Runtime View, Published skill resource-integrity flow, items 1–7 | Replace duplicate common validation/generation/identity mechanics with this model's SKL-SR-08–14. |
-| Same flow, items 8–10 | Retain Gate B, installer materialization and no-target-runtime proof under the validation/installation owners, referencing Skill's content invariants. |
-| Crosscutting Concepts, Published skill resource integrity, all four paragraphs | Replace with Skill ownership reference: mapped completeness, raw-byte identity, bounded lint and fallback/package separation resolve here. |
-| Building Block View, published skill resource integrity bullet immediately before Published-Skill Validation | Replace common content-mechanics portion with Skill reference; retain independently owned installer-smoke applicability. |
-| Architecture Decisions index entry for the resource-integrity ADR | Reference SKL-DEC-02 as current decision owner at adoption, with preserved archived ADR identity. |
-| Other Level 2 skill blocks, validation/gate/deployment sections, release and installer sections, proposal-specific details and historical follow-on prose | Retain under existing owners. They apply or narrate the common contract; this initiative does not rewrite code-review/route methods, validation architecture, history paragraphs or old diagrams. |
-
-The [Proposal-family assets](#proposal-family-assets) section owns asset names, structure and policy exclusion; [Assessment](assessment.md#proposal-review-procedure) owns review procedure. The boundary-first manifests, common references, projection code and corresponding ADRs likewise remain operational/method owners; only common resource-contract references change where needed. The generated-output ADR retains its declared scope under [Packaging](../engineering/packaging.md); this Skill refinement does not retire it.
-
-### Retirement and historical provenance
-
-Current behavior and acceptance obligations stay with their named owners. [Constitution](../../../CONSTITUTION.md#repository-cleanup-and-historical-retention) owns this repository's source-retention policy; [cleanup evidence](../../changes/2026-09-13-current-design-repository-cleanup/source-disposition.md) records exact removals and operational exceptions. Resource manifests, shared templates, schemas and fixtures remain live inputs wherever consumed. The current Design and Workflow owners cover the former plan/boundary remainder; portable feature/proof resources remain explicit current inputs. Historical reviews retain their original subjects and do not approve revised common contracts.
-
-### Consumer dispositions and remaining adoption
-
-At adoption, update the common-owner references in CONSTITUTION.md/AGENTS.md, System, contributor source navigation and directly affected validator/spec references. Preserve higher policy owners and keep internal mappings out of shipped text. Current source-path consumers are found by exact-path/ID search and disposed as operational, current authority, or historical navigation; an archive path alone cannot satisfy an operational read. The System integration authored with this model is prospective until the same adoption boundary is met.
-
-The inspected public inventory has 19 skills. Besides the pair, 17 remain outside improvement adoption: design, plan, vision, constitution, project-map; design-review, delivery-review, code-review; route, implement, verify, pr, bugfix, ci-maintenance; explore, research, learn. Existing follow-ups assign these four bounded families to the repository maintainer and receiving Design/capability owners. Their next decision is a baseline assessment against the common owner and their own methods, then an explicit adoption proposal or scoped change. Different recording, recovery, execution and periodic-work responsibilities need their own evidence; a two-skill approval does not establish their suitability.
-
-## Next artifacts
-
-Independent Design Review of this Skill model, the scoped System amendment, retained source clauses and relevant producer/consumer interactions; then Delivery planning and independent Delivery Review. Implementation, milestone reviews, fresh final whole-change Code Review and distinct Verify follow only under their required authority. This section records stable planning intent, not current lifecycle state.
-
-## Remaining specialist contracts
-
-These contracts complete the selected repository source transfer; source-qualified clause groups are recorded in the owning cleanup disposition. They apply to the named capabilities, not every skill. Existing common resource, privacy, fail-closed vocabulary, scope and claim rules remain in force. Published procedures realize these contracts; incidental prose and completed migration instrumentation do not become additional policy owners.
-
-### Plan assets
-
-The three normative plan assets are `plan-skeleton.md`, `milestone.md` and `decision-log-row.md`. The full skeleton owns section order and placeholders, the milestone asset owns repeated delivery structure, and the decision row owns its table shape. COPY entries state when to use each and what to fill. Do not duplicate the full structure in the skill or add a separate handoff-summary asset. Handoff contains one stable owning-record pointer, with mutable state under Workflow/Records. Index links are relative clickable links.
-
-Each asset carries template/version, skill, normative status, structural fingerprint and maintained-alongside metadata. Deterministic checks recompute fingerprints and compare full-skeleton section expectations; structural drift requires reverting or a version/fingerprint update. Assets contain usable structure, never hidden policy or normal customer dependencies on repository internals. Current proof covers valid fill, missing fields, structure drift and package parity. Fixed pilot populations, token-reduction percentages and compulsory historical-plan counts are completed experiment constraints, not future acceptance gates.
-
-### Implementation capability boundaries
-
-Implement establishes the smallest scope-complete result: all in-scope requirements, authored and aligned surfaces, current boundary/incident failures and required focused proof are handled before Code Review. An unaffected surface needs a reason; known defects and missing required proof cannot be passed to review as later cleanup. This is first-pass completeness, not a promise of no reviewer findings. It changes no review, routing or external permission boundary.
-
-Bugfix distinguishes `diagnose-only` from `fix`; conflicting intent permits diagnosis only. Bind exact repository, defect, authority, allowed paths/write categories, command authority, contract and evidence before mutation. Diagnosis changes no tracked or external state. Proof-authoring writes only authorized tests, fixtures and reproductions; production correction requires a failing automated proof, or established infeasibility plus a complete deterministic alternative with inputs, assumptions, expected observation and limits. Unknown causes authorize no production mutation; missing/conflicting/new behavior returns to Design, and test defects cannot weaken expected behavior speculatively. Run the identity-equal original proof after correction and the surrounding checks justified by the actual blast radius. Changed proof is a new basis, never the original test passing. Report actual commands, failures, uncertainty, identities and authority; changed implementation hands off to independent Code Review without autonomous downstream continuation. Governed evidence uses an exact authorized destination; bugfix does not edit another stage's artifacts or state.
-
-CI maintenance separates `create`, `revise` and read-only `review`, target kind, provider, concern and privilege. Creation requires an absent exact target; revision requires an existing exact identity. GitHub procedure applies only to GitHub workflow files; other providers require an exact project-native content, command, validation and write contract. External platform settings are review-or-route only. Privileged authoring requires an approved Design and independent review bound to repository, target, triggers/scope, permissions, credential/OIDC model, runner, environment, fork/secret policy, third-party actions and validation; omitted material choices do not come from a generic skeleton. Ordinary defaults use least privilege and protected secrets/fork boundaries. The risk-to-check resource owns semantic coverage placement; GitHub serialization consumes it and project-owned commands. Coverage-sensitive changes load that resource; narrow maintenance loads it only if coverage is affected.
-
-CI file commits require no-clobber creation or identity-guarded replacement; a plain overwrite rename and read-back do not establish concurrency safety. Validate prepared content and read back committed bytes. If the environment cannot supply the required primitive, stop the mutation. Multi-target work first resolves every target and dependency, validates a safe intermediate ordering, and distinguishes independent, ordered-dependent and atomic-group-required work. The last class blocks before writes; no multi-file transaction is claimed. Partial outcomes identify completed and pending targets and their validity. Retries reassess all current identities. Local checks and ordinary authoring report hosted CI unobserved; only exact observed run/head evidence supports a hosted result. No authoring operation grants privileged execution, external mutation, readiness or publication.
-
-### Project Support boundaries
-
-Vision owns canonical root `VISION.md`; README marker-bounded content is derived. `establish-vision` requires absence and establishment intent, `revise-vision` requires existing vision and bounded update intent, and `sync-readme` leaves vision unchanged. Classify editorial, substantive-nonmaterial or material-repositioning change; settle substantive scope with the owner before finalization. Strategic and README resources load independently, including late triggers. Positioning rationale changes only when its substantive basis requires it; copy structural assets only for creation or authorized full rewrite. Exact owner-approved skip does not claim marker validity or synchronization. Marker parsing rejects malformed/duplicated/reversed pairs; insertion requires authority and preserves surrounding bytes. Resolve target roles, prior/intended identities, authority and evidence in an operation manifest before writes or final skip; write canonical source, rationale, then derived README, rechecking identities before each dependent action. Partial completion reports committed and pending targets. Retry requires the same manifest and basis; lost or conflicting state cannot be adopted. No installation, ordinary README task or retired lowercase file establishes vision. Research and publication retain their separate authority.
-
-Project Map owns observed orientation, with evidence paths, baseline limits and separate observations/inferences; it is neither future design nor backlog. Resolve `create`, `refresh` or read-only `audit` independently from repository/area scope. Absent, stale or contradicted maps require source inspection and a stated limitation before reliance. Use the mapped structural asset and load maintenance/coordination guidance for every refresh, audit, area map or known root/area relationship, including late discoveries. Area creation needs a valid existing root and absent area/registration, binds root and evidence identities, writes the area first, rechecks root and then registers it. Validate reciprocal identities; partial retry completes only the exact missing registration, never adopts an unrelated area. Changed/ambiguous roots or overlaps stop; audit cannot repair. Existing artifacts remain readable without automatic rewriting. Route actionable risks to their action owner under Workflow rather than creating execution commitments in the map.
-
-Learn is periodic or explicitly invoked. `run-learn-session` loads the session method and resolves an exact trigger, scope, evidence and unique session path under `docs/learn/sessions/`; collision suffixes start at `-2`, with no-clobber checks. Frame establishes a durable session, even when later work finds no lesson or confirmation is withheld. Observe separates evidence, inference and unavailable/sensitive data; Classify preserves observation, durable-lesson, artifact-update, decision, direction, process-follow-up and no-durable-lesson outcomes. Required contributor confirmation settles classification only. Pending/rejected confirmation permits no dependent topic or route effects. Confirmed reusable guidance goes to `docs/learn/topics/` with source links, never overriding authoritative models. Topic updates are identity-bound and idempotent; a single event requires evidence of a reusable/systemic gap before becoming durable guidance.
-
-Learn routes derivative work to its owner, using stable session-local `ROUTE-NNN` identities, exact destinations, owners, source/evidence, fixed completion kind (`authoritative-artifact` or `durable-scheduled-follow-up`) and settlement (`pending-owner-action`, `complete`, `blocked`). `record-learn-route-result` binds one existing session/route and exact qualifying owner-produced result, changing only its backlink, settlement and blocker. It cannot redo classification, poll or invoke owners, update topics, mutate destinations or infer approval. Matching retry is idempotent; changed basis or conflicting results stop. Historical sessions remain readable but are not implicitly migrated into result-recording targets. Trigger-owner deferral is not a learn session or execution claim.
-
-PR distinguishes `open`, `draft` and `prepare-only`; explicit pr defaults to open. Preparation has no external mutation. Exact verified repository/remote/base/merge-base/head/subject identities from Verify are required before opening; evidence-tail compatibility follows Assessment's current contract. Resolve actual diff, clean handoff, current remote base, directional head relationship and matching PR. Only absent or ancestor remote heads permit an ordinary push; ahead/diverged/ambiguous state stops. Recheck before push and before host mutation, then read back exact PR/head/base/title/body/state before a result claim. Adequate open/draft PRs are reused; refresh and state conversion each need their own matching authority. Closed/merged/ambiguous matches do not permit reopening or duplicate creation. Retry reconciles observed state. Successful external writes remain reported even if later identity drift blocks readiness. Hosted CI success needs the exact observed run/head. PR does not force-push, merge, publish releases, alter governing state or substitute for Verify.
-
-Constitution governs principles rather than detailed workflow mechanics. Explore expands genuinely unclear alternatives; Research resolves bounded factual uncertainty with attributable sources/confidence; neither adopts its conclusions for an owning stage. Project artifact placement follows exact user/project targets and governed identity where selected, then safe portable defaults. Malformed governed signals never trigger a portable fallback. Artifact-location and discovery guides point to these owners instead of defining competing behavior.
-
-### Specialist interface vocabulary and outputs
-
-Under SKL-SR-29, the following current public domains are closed. Unknown values reject before cross-field consistency; a recognized value still needs its described authority and prerequisites. These are behaviorally meaningful parser/public contracts, not incidental words. Old semantic-rule/literal-migration ledger classifications, corpus sizes and token profiles retire as instrumentation; public operation and result values do not retire with them. Source-qualified IDs in the cleanup disposition remain historical identifiers.
-
-| Capability / independent axis | Supported values |
-| --- | --- |
-| Bugfix command authority | not-required, current-bounded, absent-or-stale, invalid-or-ambiguous |
-| Bugfix write authority | none, portable-request-bound, governed-scope-bound, absent-or-stale, invalid-or-ambiguous |
-| Governed signal for Bugfix and PR | no-governed-signal, single-governed-candidate, invalid-or-ambiguous-governed-signal |
-| Bugfix reproduction | reproduced, deterministic-alternative, not-established, conflicting |
-| Bugfix contract basis | settled, resolvable-restoration, missing, conflicting, behavior-change-request |
-| Bugfix test feasibility | feasible, infeasible-with-rationale, unresolved |
-| Bugfix regression proof | failing-automated-test, deterministic-alternative, missing, conflicting |
-| Bugfix cause support | supported, uncertain, conflicting |
-| Bugfix root cause | implementation-defect, contract-gap, integration-mismatch, data-or-migration, race-or-timing, configuration-or-environment, test-defect, external-dependency, unknown |
-| Bugfix action | stop-blocked, route-owner, continue-diagnosis, complete-diagnosis, resolve-test-feasibility, author-automated-proof, apply-production-correction, run-post-fix-validation, complete-fix |
-| Bugfix terminal result | diagnosis-complete, diagnosis-incomplete, fix-applied, routed-to-owner, blocked |
-| Implement profile | IP0-isolated, IP1-planned, IP2-planned-armed |
-| CI concern | coverage, performance, caching, permissions, triggers, ordinary-security-hardening |
-| CI target | github-workflow, project-validation-automation, related-platform-configuration, external-platform-state, invalid-or-ambiguous-target |
-| CI provider | github-actions, project-native-other-provider, invalid-or-ambiguous-provider |
-| CI privilege | ordinary-workflow-context, privileged-approved-design, privileged-design-required, invalid-or-ambiguous-privilege-context |
-| CI structure | none, compose-from-skeleton, preserve-existing-structure |
-| CI repair mode | ordinary-infrastructure, bounded-pr-ci-repair |
-| CI batch relation / result | independent, ordered-dependent, atomic-group-required / complete, partial-blocked, blocked-before-write |
-| CI invocation result / hosted observation | created, updated, reviewed, blocked / not-observed; eligible bounded repair may report pending, passed, failed for its exact run/head |
-| Project Map freshness / invocation result | current, partial, stale / created, updated, audited, blocked |
-| Project Map evidence / next owner | observed, inferred, unknown / explore, proposal, design, route, none |
-| Project Map assembly | PMA0-simple-root-create, PMA1-maintenance-or-coordinated |
-| Vision significance | editorial, substantive-nonmaterial, material-repositioning |
-| Vision positioning action | unchanged, create, update, full-rewrite, blocked |
-| Vision README action | synchronize-existing, insert-and-synchronize, skip, blocked |
-| Vision asset context / result | not-required, create-or-full-rewrite / complete, partial-retry-required, blocked-before-write |
-| Vision independent resources | strategic_authoring_context: false or true; readme_sync_context: required or skipped |
-| Learn confirmation | pending, confirmed, rejected |
-| PR submission | open, draft, prepare-only |
-| PR refresh authority | none, explicit-title-refresh, explicit-full-replacement, workflow-title-refresh |
-| PR state-transition authority | none, publish-existing-draft, convert-existing-open-to-draft |
-| PR remote branch relation | absent, same, remote-ancestor-of-local, local-ancestor-of-remote, diverged, ambiguous |
-| PR state | absent, open, draft, closed, merged, ambiguous |
-| PR operation result | opened, draft-opened, updated, reused, prepared-not-opened, blocked |
-| PR hosted-CI state | passed, failed, pending, unavailable, unobserved, not-applicable |
-| PR evidence suffix | none, evidence-only, invalidating |
-
-Bugfix chooses blockers and routing before mutation eligibility. A complete failing automated proof permits correction; conflicting proof blocks; feasible missing/alternative proof requires automated proof authoring; unresolved feasibility requires resolution; infeasible proof permits correction only with a complete deterministic alternative. Already corrected work with failed or identity-mismatched required checks blocks, with pending checks validates, and with all required checks passed completes. Terminal results distinguish completed/incomplete diagnosis, applied fix, routed ownership and blocked work; intermediate actions are not terminal results. Report operation/result, authority, repository/defect scope, actual commands, proof identity, unexecuted checks, uncertainty, changed surfaces and next owner.
-
-Implement's planned reference loads for IP1/IP2; armed review/fix procedure requires IP2 with a valid planned milestone, and unplanned automation rejects. The result asset supplies a core group (status, completed scope, changed artifacts, tests, validation/results, blockers, handoff, limits), a planned group only for IP1/IP2 (change/milestone/plan identity, observed milestone/baseline state, milestone validation, commit and review handoff), and an armed group only for IP2 (automation mode/packet, fidelity routing, correction eligibility/cycle, rereview, pause/promotion and final-review dependency). Omit inapplicable groups and unfilled placeholders; output of observed state does not make the result asset its owner.
-
-CI results report requested/actual operation, target kind, provider, privilege, concerns, structure, selected assembly, target identity, mutation outcome, validation evidence, blockers and hosted observation. The nine procedural assemblies remain CIM0-narrow-review, CIM1-coverage-review, CIM2-ordinary-github-create, CIM3-narrow-github-revise, CIM4-coverage-github-revise, CIM5-structural-github-revise, CIM6-project-native-authoring, CIM7-privileged-approved-create and CIM8-privileged-approved-revise. Universal classification determines the assembly; coverage and structural resources add independently and late triggers load before dependent work. Unknown assemblies cannot fall through as ordinary review.
-
-Project Map reports operation, repository or area:<slug> scope, changed artifacts, freshness, correction note, blockers and next owner. Current means relevant cited surfaces were inspected with no known material gap; partial states bounded scope or unavailable important evidence; stale means a relied-on surface materially changed. Vision reports operation/assembly/manifest, target outcomes and claims; establishment adds assumptions, open questions and positioning basis; revision adds changed sections, significance and causal evidence; README-only sync states canonical vision unchanged. Its six existing assemblies are VA0-readme-sync, VA0S-readme-skip, VA1-editorial-sync, VA1S-editorial-skip, VA2-strategic-sync and VA2S-strategic-skip, selected by the independent strategic/sync rules rather than result status. Learn reports session/trigger/scope, confirmation, recording and topic outcomes, route IDs/settlements, exact owner results, blockers and handoff; recording completion does not mean destination completion.
-
-PR reports requested intent, actual operation, actual_external_mutation or none, actual PR state or none, pr-body-ready, pr-open-ready, hosted-CI state, blockers, read-back URL and claim limits. Preparation returns prepared-not-opened with no external mutation. Requested open/draft cannot silently become successful preparation on a blocker. Existing draft/open state is preserved without independent transition authority. Refresh supports only an authorized title or whole-body replacement; no managed-section parser or implied content ownership is introduced. Core PR body groups remain Summary, Why, What changed, Tests and verification, Risks and rollback, Reviewer notes and Follow-ups; governed traceability and material-impact groups are conditional. Required unresolved data blocks opening; no placeholder is emitted.
-
-### Bounded PR CI repair
-
-This is the existing narrow exception within CI maintenance, not a general automatic approval. Admission requires an already-open PR, exact failing hosted run and head, current applicable Code Review and Verify evidence, no open material finding, already-authoritative commands and existing authority for every external mutation. The correction only restores already-approved behavior. Changes to requirements, architecture, runtime implementation, dependencies, lifecycle schema/routing, review outcomes or another decision-bearing contract reject this mode and return to the earliest affected owner; ambiguity cannot preserve readiness.
-
-Inspect the exact failure, make the smallest correction, run its focused check and the exact repository-owned PR check, prefer one coherent repair commit, push only under existing authority and observe the replacement run at the actual head. Preserve current review/explanation/Verify/lifecycle evidence only when its decision basis remains unchanged under Assessment; a CI failure alone does not require a new review round, explanation, Verify report, change record or lifecycle-only commit. A missing prerequisite or unobserved replacement outcome is reported truthfully. This exception neither grants external authority nor weakens current checks.
+Completed source-transfer mappings and original adoption handoffs are recoverable at `38a3042e63c7c2462ecf8ffed29f4ac0cbb8923f:docs/design/skill/skill.md`. Their source-qualified IDs and judgments retain their original scope; they do not supply current approval or operational inputs. Current behavior and proof obligations are specified in this Design and its named owners.

@@ -1,0 +1,2682 @@
+#!/usr/bin/env python3
+"""Shared helpers for generated multi-agent adapter packages."""
+
+from __future__ import annotations
+
+import hashlib
+import json
+import os
+import re
+import shutil
+import stat
+import subprocess
+import sys
+import tempfile
+import zipfile
+from collections import Counter
+from dataclasses import dataclass
+from enum import Enum
+from pathlib import Path, PurePosixPath
+from typing import Any, Callable, Iterable
+
+from lib.validation.skill_validation import (
+    CANONICAL_SKILLS_DIR,
+    MappedResourceIdentity,
+    _extract_markdown_section,
+    _mapped_resource_containment_error,
+    _resource_map_entries,
+    discover_source_skill_dirs,
+    load_skill_file,
+    load_skill_schema,
+    mapped_resource_identities_for_skill,
+    mapped_resource_parity_errors,
+    validate_skill_file,
+)
+
+
+SUPPORTED_ADAPTERS = ("codex", "claude")
+HISTORICAL_TARGETS = ("codex", "claude", "opencode")
+OPENCODE_COMMAND_ALIASES = (
+    "proposal",
+    "proposal-review",
+    "design",
+    "design-review",
+    "plan",
+    "delivery-review",
+    "implement",
+    "code-review",
+    "pr",
+)
+ROOT = Path(__file__).resolve().parents[3]
+ADAPTER_OUTPUT_ROOT = ROOT / "dist" / "adapters"
+ADAPTER_TEMPLATE_ROOT = ROOT / "scripts" / "resources" / "adapter-templates"
+RIGORLOOP_CLI_DIST_ROOT = ROOT / "packages" / "rigorloop" / "dist"
+RELEASE_ROOT = ROOT / "docs" / "releases"
+ARCHIVE_TIMESTAMP = (1980, 1, 1, 0, 0, 0)
+ADAPTER_ARTIFACT_REPORT_ROOT = ROOT / "docs" / "reports" / "adapter-artifacts" / "releases"
+ADAPTER_OUTPUT_CONTRACT_ROOT = PurePosixPath("dist/adapters")
+ADAPTER_SUPPORT_METADATA_FILES = frozenset({Path("README.md")})
+CODEX_LOCAL_RUNTIME_ROOT = ".codex/skills/"
+OPENCODE_COMMAND_ROOT = PurePosixPath(".opencode/commands")
+PACKAGED_RESOURCE_DIRS = ("assets", "references", "scripts")
+COMMON_FRONTMATTER = frozenset({"name", "description"})
+TRANSFORMABLE_FRONTMATTER = frozenset({"argument-hint", "schema-version", "version"})
+PORTABLE_NAME_PATTERN = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
+PUBLISHED_SKILL_INVOCATION_NAMES = (
+    "design",
+    "bugfix",
+    "ci-maintenance",
+    "code-review",
+    "constitution",
+    "delivery-review",
+    "design-review",
+    "explore",
+    "implement",
+    "learn",
+    "plan",
+    "pr",
+    "project-map",
+    "proposal",
+    "proposal-review",
+    "research",
+    "verify",
+    "vision",
+    "route",
+)
+RETIRED_PROGRESSION_SKILLS = frozenset(
+    {"spec-review", "architecture-review", "plan-review", "test-spec-review"}
+)
+POST_CUTOVER_ADAPTER_SKILLS = PUBLISHED_SKILL_INVOCATION_NAMES
+STAGED_V3_ADAPTER_SKILLS = POST_CUTOVER_ADAPTER_SKILLS
+STAGED_V3_OPENCODE_COMMAND_ALIASES = OPENCODE_COMMAND_ALIASES
+CODEX_SKILL_INVOCATION_PATTERN = re.compile(
+    r"\$(?:"
+    + "|".join(
+        re.escape(name)
+        for name in sorted(PUBLISHED_SKILL_INVOCATION_NAMES, key=len, reverse=True)
+    )
+    + r")",
+    re.IGNORECASE | re.ASCII,
+)
+CLAUDE_ROUTE_INVOCATION_PATTERN = re.compile(
+    r"(?<![\w./-])/(?ai:route)"
+    r"(?=$|[ \t\r\n`\"',;:!?)}\]]|\.(?:$|[ \t\r\n]))",
+)
+PAIRED_DOLLAR_MATH_SUFFIX_PATTERN = re.compile(
+    r"(?:|[ \t]*[+\-*/^=<>](?:\\\$|[^$\r\n`;,:])*)"
+)
+TARGET_INCOMPATIBILITY_PATTERNS = {
+    "claude": re.compile(r"\bnot compatible with Claude Code\b", re.IGNORECASE),
+    "opencode": re.compile(r"\bnot compatible with opencode\b", re.IGNORECASE),
+}
+ADAPTER_DRIFT_CATEGORIES = (
+    "missing",
+    "stale",
+    "unexpected",
+    "canonical-source-error",
+    "manifest-error",
+)
+NORMAL_OUTPUT_TARGET_LINES = 40
+NORMAL_OUTPUT_WARNING_LINES = 80
+NORMAL_FAILURE_ENTRY_LIMIT = 10
+
+
+class ReleaseValidationProfile(Enum):
+    CURRENT_SOURCE = "current-source"
+
+
+@dataclass(frozen=True)
+class CleanInstallMappedResource:
+    skill_name: str
+    relative_path: str
+    sha256: str
+    adapters: tuple[str, ...]
+
+
+@dataclass(frozen=True)
+class AdapterConfig:
+    name: str
+    package_root: PurePosixPath
+    entrypoint: PurePosixPath
+    skill_root: PurePosixPath
+
+    def skill_path(self, skill_name: str) -> PurePosixPath:
+        return self.skill_root / skill_name / "SKILL.md"
+
+
+@dataclass(frozen=True)
+class AdapterDecision:
+    adapter: str
+    included: bool
+    reasons: tuple[str, ...] = ()
+    transforms: tuple[str, ...] = ()
+
+
+@dataclass(frozen=True)
+class SkillPortabilityReport:
+    path: Path
+    name: str
+    description: str
+    decisions: tuple[AdapterDecision, ...]
+
+    @property
+    def included_adapters(self) -> tuple[str, ...]:
+        return tuple(decision.adapter for decision in self.decisions if decision.included)
+
+    @property
+    def portable(self) -> bool:
+        return self.included_adapters == SUPPORTED_ADAPTERS
+
+    @property
+    def reason(self) -> str:
+        reasons: list[str] = []
+        for decision in self.decisions:
+            for reason in decision.reasons:
+                if reason not in reasons:
+                    reasons.append(reason)
+        return " ".join(reasons)
+
+    def adapter_decision(self, adapter: str) -> AdapterDecision:
+        for decision in self.decisions:
+            if decision.adapter == adapter:
+                return decision
+        raise KeyError(adapter)
+
+
+@dataclass(frozen=True)
+class ManifestSkillEntry:
+    name: str
+    portable: bool
+    adapters: tuple[str, ...]
+    reason: str = ""
+
+
+@dataclass(frozen=True)
+class CommandAliasSection:
+    count: int
+    aliases: dict[str, str]
+
+
+@dataclass(frozen=True)
+class AdapterManifest:
+    version: str
+    skills: dict[str, ManifestSkillEntry]
+    command_aliases: dict[str, CommandAliasSection]
+
+
+@dataclass(frozen=True)
+class AdapterDriftEntry:
+    category: str
+    path: Path
+    detail: str
+
+    @property
+    def message(self) -> str:
+        if self.category == "missing":
+            return f"missing generated adapter file: {self.path}"
+        if self.category == "stale":
+            return f"stale generated adapter file: {self.path}"
+        if self.category == "unexpected":
+            return f"unexpected generated adapter file: {self.path}"
+        return self.detail
+
+
+@dataclass(frozen=True)
+class _AdapterManifestInspection:
+    path: Path
+    manifest: AdapterManifest | None
+    text: str | None
+    entries: tuple[AdapterDriftEntry, ...]
+
+
+@dataclass(frozen=True)
+class SmokeRow:
+    result: str
+    tool_version: str
+    evidence: str
+    reason: str
+    owner: str
+
+
+@dataclass(frozen=True)
+class ReleaseMetadata:
+    version: str
+    release_type: str
+    publication_status: str | None
+    manifest_version: str
+    supported_tools: tuple[str, ...]
+    adapter_paths: dict[str, str]
+    instruction_entrypoints: dict[str, str]
+    smoke: dict[str, SmokeRow]
+    validation: dict[str, str]
+    npm_package: dict[str, str]
+    adapter_release: dict[str, str]
+
+
+@dataclass(frozen=True)
+class AdapterArtifactEntry:
+    adapter: str
+    archive: str
+    sha256: str
+    install_root: str
+    result: str
+
+
+@dataclass(frozen=True)
+class CombinedAdapterArtifact:
+    required: bool
+    archive: str
+    sha256: str
+    included_adapters: tuple[str, ...]
+
+
+@dataclass(frozen=True)
+class AdapterArtifactMetadata:
+    version: str
+    source_commit: str
+    date: str
+    generator_command: str
+    source_skills: str
+    manifest: str
+    artifacts: tuple[AdapterArtifactEntry, ...]
+    combined_artifact: CombinedAdapterArtifact
+    validation_command: str
+    validation_result: str
+    validated_at: str
+
+
+HISTORICAL_ADAPTERS = {
+    "codex": AdapterConfig(
+        name="codex",
+        package_root=PurePosixPath("dist/adapters/codex"),
+        entrypoint=PurePosixPath("AGENTS.md"),
+        skill_root=PurePosixPath(".agents/skills"),
+    ),
+    "claude": AdapterConfig(
+        name="claude",
+        package_root=PurePosixPath("dist/adapters/claude"),
+        entrypoint=PurePosixPath("CLAUDE.md"),
+        skill_root=PurePosixPath(".claude/skills"),
+    ),
+    "opencode": AdapterConfig(
+        name="opencode",
+        package_root=PurePosixPath("dist/adapters/opencode"),
+        entrypoint=PurePosixPath("AGENTS.md"),
+        skill_root=PurePosixPath(".opencode/skills"),
+    ),
+}
+
+
+ADAPTERS = {name: HISTORICAL_ADAPTERS[name] for name in SUPPORTED_ADAPTERS}
+
+
+def _skill_file(target: Path) -> Path:
+    return target if target.name == "SKILL.md" else target / "SKILL.md"
+
+
+def _normalize_description(value: str | None) -> str:
+    return value.strip() if isinstance(value, str) else ""
+
+
+def _portable_name_errors(name: str, directory_name: str) -> list[str]:
+    errors: list[str] = []
+    if not name:
+        errors.append("Invalid portable skill name: name is required.")
+        return errors
+    if len(name) > 64:
+        errors.append("Invalid portable skill name: name must be 64 characters or fewer.")
+    if not PORTABLE_NAME_PATTERN.fullmatch(name):
+        errors.append(
+            "Invalid portable skill name: use lowercase alphanumeric tokens separated by single hyphens."
+        )
+    if name != directory_name:
+        errors.append("Invalid portable skill name: name must match the generated skill directory.")
+    return errors
+
+
+def _description_errors(description: str) -> list[str]:
+    if not description:
+        return ["Invalid portable description: description is required."]
+    if len(description) > 1024:
+        return ["Invalid portable description: description must be 1024 characters or fewer."]
+    return []
+
+
+def _structure_errors(path: Path) -> list[str]:
+    errors, _name = validate_skill_file(path, load_skill_schema())
+    return errors
+
+
+def _non_codex_reasons(metadata: dict[str, str], text: str) -> list[str]:
+    reasons: list[str] = []
+    unsupported = sorted(set(metadata) - COMMON_FRONTMATTER - TRANSFORMABLE_FRONTMATTER)
+    if unsupported:
+        reasons.append(f"Uses unsupported frontmatter: {', '.join(unsupported)}.")
+    if re.search(r"\bCodex-only invocation syntax\b", text, re.IGNORECASE):
+        reasons.append("Requires Codex-only invocation syntax.")
+    if "agents/openai.yaml" in text:
+        reasons.append("Depends on agents/openai.yaml.")
+    if _references_codex_skills_as_only_install_location(text):
+        reasons.append("References .codex/skills as the only install location.")
+    if (
+        _has_codex_skill_invocation(text)
+        and not _documents_cross_adapter_skill_invocation(text)
+    ):
+        reasons.append("Requires Codex-specific $skill invocation.")
+    if _has_codex_runtime_assumption(text):
+        reasons.append("Assumes Codex-only tool, UI, approval, or runtime assumption.")
+    return reasons
+
+
+def _documents_cross_adapter_skill_invocation(text: str) -> bool:
+    """Recognize the exact route invocation-equivalence contract."""
+
+    expected_codex_code_spans = Counter(
+        (
+            "$route auto: <argument>",
+            "$route auto: <target-stage>",
+            "$route auto: status",
+            "$route auto: off",
+        )
+    )
+    actual_codex_code_spans = Counter(
+        span
+        for span in re.findall(r"`([^`\n]+)`", text)
+        if _has_codex_skill_invocation(span)
+    )
+    if actual_codex_code_spans != expected_codex_code_spans:
+        return False
+
+    equivalence_blocks = re.findall(
+        r"(?ms)^- Adapter invocation equivalents\b.*?(?=^- |\Z)",
+        text,
+    )
+    if len(equivalence_blocks) != 1:
+        return False
+
+    expected_block = (
+        "- Adapter invocation equivalents preserve the same arguments: Codex uses "
+        "`$route auto: <argument>` and Claude uses `/route auto: <argument>`. "
+        "Here `<argument>` is `<target-stage>`, `status`, or `off`.\n"
+    )
+    if equivalence_blocks[0] != expected_block:
+        return False
+    command_blocks = re.findall(
+        r"(?ms)^- `\$route auto: (?:<target-stage>|status)`.*?(?=^- |\Z)",
+        text,
+    )
+    expected_command_blocks = (
+        "- `$route auto: <target-stage>` selects a structured target. Supported "
+        "targets are `proposal-review`, `design`, `design-review`, "
+        "`plan`, `delivery-review`, `implement`, `code-review`, and "
+        "`verify`.\n",
+        "- `$route auto: status` is read-only. `$route auto: off` durably "
+        "cancels the unified run and preserves transition evidence.\n",
+    )
+    if tuple(command_blocks) != expected_command_blocks:
+        return False
+    remaining_source = text
+    for approved_block in (*equivalence_blocks, *command_blocks):
+        remaining_source = remaining_source.replace(approved_block, "", 1)
+    if _has_codex_skill_invocation(remaining_source):
+        return False
+    if CLAUDE_ROUTE_INVOCATION_PATTERN.search(remaining_source):
+        return False
+    return True
+
+
+def _is_identifier_continuation(character: str) -> bool:
+    return bool(character) and (
+        character.isalnum()
+        or character == "_"
+        or character in {"\u200c", "\u200d"}
+        or f"a{character}".isidentifier()
+    )
+
+
+def _has_codex_skill_invocation(text: str) -> bool:
+    """Recognize complete governed dollar tokens outside paired-dollar math."""
+
+    for match in CODEX_SKILL_INVOCATION_PATTERN.finditer(text):
+        if _is_escaped_dollar(text, match.start()):
+            continue
+        preceding = text[match.start() - 1] if match.start() else ""
+        following = text[match.end()] if match.end() < len(text) else ""
+        if _is_identifier_continuation(preceding) or preceding == "$":
+            continue
+        if _is_identifier_continuation(following) or following in {"$", "-"}:
+            continue
+        line_end = text.find("\n", match.end())
+        if line_end == -1:
+            line_end = len(text)
+        closing_dollar = text.find("$", match.end(), line_end)
+        paired_math = False
+        while closing_dollar != -1:
+            if _is_escaped_dollar(text, closing_dollar):
+                closing_dollar = text.find("$", closing_dollar + 1, line_end)
+                continue
+            if _is_plausible_closing_dollar(text, closing_dollar):
+                paired_math = bool(
+                    PAIRED_DOLLAR_MATH_SUFFIX_PATTERN.fullmatch(
+                        text[match.end():closing_dollar]
+                    )
+                )
+            break
+        if paired_math:
+            continue
+        return True
+    return False
+
+
+def _is_plausible_closing_dollar(text: str, index: int) -> bool:
+    if _is_escaped_dollar(text, index):
+        return False
+
+    following = text[index + 1] if index + 1 < len(text) else ""
+    return not (
+        _is_identifier_continuation(following)
+        or following in {"$", "-", "{", "("}
+    )
+
+
+def _is_escaped_dollar(text: str, index: int) -> bool:
+    backslashes = 0
+    cursor = index - 1
+    while cursor >= 0 and text[cursor] == "\\":
+        backslashes += 1
+        cursor -= 1
+    return bool(backslashes % 2)
+
+
+def _target_adapter_reasons(text: str) -> dict[str, tuple[str, ...]]:
+    return {
+        adapter: (f"Not compatible with {adapter}.",)
+        for adapter, pattern in TARGET_INCOMPATIBILITY_PATTERNS.items()
+        if pattern.search(text)
+    }
+
+
+def _references_codex_skills_as_only_install_location(text: str) -> bool:
+    if ".codex/skills" not in text:
+        return False
+
+    lowered = text.lower()
+    alternative_markers = (
+        "dist/adapters/",
+        ".agents/skills",
+        ".claude/skills",
+        ".opencode/skills",
+    )
+    return not any(marker in lowered for marker in alternative_markers)
+
+
+def _has_codex_runtime_assumption(text: str) -> bool:
+    lowered = text.lower()
+    return any(
+        marker in lowered
+        for marker in (
+            "sandbox_permissions",
+            "codex approval behavior",
+            "codex-only tool",
+            "codex-only ui",
+            "codex runtime",
+        )
+    )
+
+
+def _non_codex_transforms(metadata: dict[str, str]) -> tuple[str, ...]:
+    return tuple(
+        f"drop frontmatter: {key}"
+        for key in sorted(set(metadata) & TRANSFORMABLE_FRONTMATTER)
+    )
+
+
+def _all_adapter_decisions(reasons: Iterable[str]) -> tuple[AdapterDecision, ...]:
+    reason_tuple = tuple(reasons)
+    return tuple(
+        AdapterDecision(adapter=adapter, included=False, reasons=reason_tuple)
+        for adapter in SUPPORTED_ADAPTERS
+    )
+
+
+def evaluate_skill(target: Path) -> SkillPortabilityReport:
+    """Classify one canonical skill for first-public-release adapter inclusion."""
+
+    path = _skill_file(target)
+    directory_name = path.parent.name
+    try:
+        metadata, body = load_skill_file(path)
+    except (OSError, ValueError) as exc:
+        return SkillPortabilityReport(
+            path=path,
+            name=directory_name,
+            description="",
+            decisions=_all_adapter_decisions([str(exc)]),
+        )
+
+    name = _normalize_description(metadata.get("name"))
+    description = _normalize_description(metadata.get("description"))
+    common_errors = _portable_name_errors(name, directory_name)
+    common_errors.extend(_description_errors(description))
+    common_errors.extend(_structure_errors(path))
+    if common_errors:
+        return SkillPortabilityReport(
+            path=path,
+            name=name or directory_name,
+            description=description,
+            decisions=_all_adapter_decisions(common_errors),
+        )
+
+    full_text = path.read_text(encoding="utf-8")
+    non_codex_reasons = tuple(_non_codex_reasons(metadata, full_text))
+    target_reasons = _target_adapter_reasons(full_text)
+    non_codex_transforms = _non_codex_transforms(metadata)
+
+    decisions: list[AdapterDecision] = [
+        AdapterDecision(adapter="codex", included=True),
+    ]
+    for adapter in ("claude",):
+        adapter_reasons = non_codex_reasons + target_reasons.get(adapter, ())
+        decisions.append(
+            AdapterDecision(
+                adapter=adapter,
+                included=not adapter_reasons,
+                reasons=adapter_reasons,
+                transforms=() if adapter_reasons else non_codex_transforms,
+            )
+        )
+
+    return SkillPortabilityReport(
+        path=path,
+        name=name,
+        description=description,
+        decisions=tuple(decisions),
+    )
+
+
+def _yaml_double_quoted(value: str) -> str:
+    replacements = {
+        "\\": "\\\\",
+        '"': '\\"',
+        "\b": "\\b",
+        "\f": "\\f",
+        "\n": "\\n",
+        "\r": "\\r",
+        "\t": "\\t",
+    }
+    return '"' + "".join(replacements.get(char, char) for char in value) + '"'
+
+
+def render_manifest_yaml(
+    version: str,
+    reports: Iterable[SkillPortabilityReport],
+    *,
+    command_aliases: tuple[str, ...] = OPENCODE_COMMAND_ALIASES,
+) -> str:
+    """Render the constrained generated adapter manifest shape deterministically."""
+
+    report_tuple = tuple(reports)
+    lines = [f"version: {version}", "skills:"]
+    for report in sorted(report_tuple, key=lambda item: item.name):
+        lines.append(f"  {report.name}:")
+        lines.append(f"    portable: {str(report.portable).lower()}")
+        lines.append(f"    adapters: [{', '.join(report.included_adapters)}]")
+        if not report.portable:
+            lines.append(f"    reason: {_yaml_double_quoted(report.reason)}")
+    lines.append("")
+    return "\n".join(lines)
+
+
+def _strip_manifest_quotes(value: str) -> str:
+    value = value.strip()
+    if len(value) >= 2 and value[0] == value[-1] and value[0] in {"'", '"'}:
+        quote = value[0]
+        value = value[1:-1]
+        if quote == '"':
+            replacements = {
+                "\\\\": "\\",
+                '\\"': '"',
+                "\\b": "\b",
+                "\\f": "\f",
+                "\\n": "\n",
+                "\\r": "\r",
+                "\\t": "\t",
+            }
+            for escaped, plain in replacements.items():
+                value = value.replace(escaped, plain)
+    return value
+
+
+def _parse_manifest_adapter_list(value: str, path: Path, key: str) -> tuple[str, ...]:
+    stripped = value.strip()
+    if not stripped.startswith("[") or not stripped.endswith("]"):
+        raise ValueError(f"{path}: {key}: adapters must use inline list syntax")
+    body = stripped[1:-1].strip()
+    if not body:
+        return ()
+    return tuple(item.strip() for item in body.split(",") if item.strip())
+
+
+def _parse_manifest_bool(value: str, path: Path, key: str) -> bool:
+    stripped = value.strip()
+    if stripped == "true":
+        return True
+    if stripped == "false":
+        return False
+    raise ValueError(f"{path}: {key}: expected true or false")
+
+
+def parse_manifest_yaml(text: str, path: Path = Path("manifest.yaml")) -> AdapterManifest:
+    """Parse the constrained generated adapter manifest shape."""
+
+    data = _parse_simple_yaml(text, path)
+    if not isinstance(data, dict):
+        raise ValueError(f"{path}: expected top-level mapping")
+    version = data.get("version")
+    if not isinstance(version, str) or not version:
+        raise ValueError(f"{path}: version must not be empty")
+    skills_data = data.get("skills")
+    if not isinstance(skills_data, dict):
+        raise ValueError(f"{path}: missing top-level skills mapping")
+    skills: dict[str, ManifestSkillEntry] = {}
+    for skill_name, fields in skills_data.items():
+        if not isinstance(skill_name, str) or not skill_name:
+            raise ValueError(f"{path}: skill name must not be empty")
+        if not isinstance(fields, dict):
+            raise ValueError(f"{path}: {skill_name}: expected mapping")
+        missing = {"portable", "adapters"} - set(fields)
+        if missing:
+            raise ValueError(f"{path}: {skill_name}: missing fields: {', '.join(sorted(missing))}")
+        skills[skill_name] = ManifestSkillEntry(
+            name=skill_name,
+            portable=_parse_manifest_bool(str(fields["portable"]), path, f"{skill_name}.portable"),
+            adapters=_parse_manifest_adapter_list(str(fields["adapters"]), path, f"{skill_name}.adapters"),
+            reason=_strip_manifest_quotes(str(fields.get("reason", ""))),
+        )
+
+    command_aliases: dict[str, CommandAliasSection] = {}
+    command_aliases_data = data.get("command_aliases", {})
+    if command_aliases_data:
+        if not isinstance(command_aliases_data, dict):
+            raise ValueError(f"{path}: command_aliases: expected mapping")
+        for tool, section in command_aliases_data.items():
+            if not isinstance(tool, str) or not tool:
+                raise ValueError(f"{path}: command_aliases: tool name must not be empty")
+            if not isinstance(section, dict):
+                raise ValueError(f"{path}: command_aliases.{tool}: expected mapping")
+            count_value = section.get("count")
+            try:
+                count = int(str(count_value))
+            except (TypeError, ValueError):
+                raise ValueError(f"{path}: command_aliases.{tool}.count: expected integer") from None
+            aliases = section.get("aliases")
+            if not isinstance(aliases, dict):
+                raise ValueError(f"{path}: command_aliases.{tool}.aliases: expected mapping")
+            alias_map: dict[str, str] = {}
+            for alias, alias_path in aliases.items():
+                if not isinstance(alias, str) or not isinstance(alias_path, str):
+                    raise ValueError(
+                        f"{path}: command_aliases.{tool}.aliases: expected string keys and values"
+                    )
+                alias_map[alias] = alias_path
+            command_aliases[tool] = CommandAliasSection(count=count, aliases=alias_map)
+
+    return AdapterManifest(version=version, skills=skills, command_aliases=command_aliases)
+
+
+@dataclass(frozen=True)
+class _YamlLine:
+    indent: int
+    text: str
+    lineno: int
+
+
+def _parse_simple_yaml_scalar(value: str) -> str:
+    stripped = value.strip()
+    if len(stripped) >= 2 and stripped[0] == stripped[-1] and stripped[0] in {"'", '"'}:
+        return _strip_manifest_quotes(stripped)
+    return stripped
+
+
+def _tokenize_simple_yaml(text: str, path: Path) -> list[_YamlLine]:
+    rows: list[_YamlLine] = []
+    for lineno, raw_line in enumerate(text.splitlines(), start=1):
+        if not raw_line.strip() or raw_line.lstrip().startswith("#"):
+            continue
+        if "\t" in raw_line:
+            raise ValueError(f"{path}: line {lineno}: tabs are not supported")
+        indent = len(raw_line) - len(raw_line.lstrip(" "))
+        if indent % 2:
+            raise ValueError(f"{path}: line {lineno}: indentation must use multiples of two spaces")
+        rows.append(_YamlLine(indent=indent, text=raw_line[indent:], lineno=lineno))
+    return rows
+
+
+def _split_simple_yaml_mapping(text: str, path: Path, lineno: int) -> tuple[str, str]:
+    if ":" not in text:
+        raise ValueError(f"{path}: line {lineno}: expected key: value")
+    key, value = text.split(":", 1)
+    key = key.strip()
+    if not key:
+        raise ValueError(f"{path}: line {lineno}: mapping key must not be empty")
+    return key, value.lstrip()
+
+
+def _parse_simple_yaml_block(
+    rows: list[_YamlLine],
+    index: int,
+    indent: int,
+    path: Path,
+) -> tuple[Any, int]:
+    if index >= len(rows):
+        raise ValueError(f"{path}: unexpected end of file")
+    row = rows[index]
+    if row.indent != indent:
+        raise ValueError(f"{path}: line {row.lineno}: expected indentation {indent}, found {row.indent}")
+    if row.text.startswith("- "):
+        return _parse_simple_yaml_list(rows, index, indent, path)
+    return _parse_simple_yaml_mapping(rows, index, indent, path)
+
+
+def _parse_simple_yaml_mapping(
+    rows: list[_YamlLine],
+    index: int,
+    indent: int,
+    path: Path,
+) -> tuple[dict[str, Any], int]:
+    data: dict[str, Any] = {}
+    while index < len(rows):
+        row = rows[index]
+        if row.indent < indent:
+            break
+        if row.indent > indent:
+            raise ValueError(f"{path}: line {row.lineno}: unexpected indentation inside mapping")
+        if row.text.startswith("- "):
+            raise ValueError(f"{path}: line {row.lineno}: unexpected list item inside mapping")
+
+        key, remainder = _split_simple_yaml_mapping(row.text, path, row.lineno)
+        index += 1
+        if remainder:
+            data[key] = _parse_simple_yaml_scalar(remainder)
+            continue
+        if index >= len(rows) or rows[index].indent <= indent:
+            data[key] = ""
+            continue
+        child_indent = rows[index].indent
+        if child_indent != indent + 2:
+            raise ValueError(
+                f"{path}: line {rows[index].lineno}: nested block for {key} "
+                "must be indented by two spaces"
+            )
+        data[key], index = _parse_simple_yaml_block(rows, index, child_indent, path)
+    return data, index
+
+
+def _parse_simple_yaml_list(
+    rows: list[_YamlLine],
+    index: int,
+    indent: int,
+    path: Path,
+) -> tuple[list[Any], int]:
+    values: list[Any] = []
+    while index < len(rows):
+        row = rows[index]
+        if row.indent < indent:
+            break
+        if row.indent > indent:
+            raise ValueError(f"{path}: line {row.lineno}: unexpected indentation inside list")
+        if not row.text.startswith("- "):
+            break
+        item = row.text[2:].lstrip()
+        if not item:
+            if index + 1 >= len(rows) or rows[index + 1].indent <= indent:
+                raise ValueError(f"{path}: line {row.lineno}: list item must not be empty")
+            child_indent = rows[index + 1].indent
+            if child_indent != indent + 2:
+                raise ValueError(
+                    f"{path}: line {rows[index + 1].lineno}: nested list item block "
+                    "must be indented by two spaces"
+                )
+            value, index = _parse_simple_yaml_block(rows, index + 1, child_indent, path)
+            values.append(value)
+            continue
+
+        index += 1
+        candidate_key = item.split(":", 1)[0].strip() if ":" in item else ""
+        if candidate_key and re.fullmatch(r"[A-Za-z0-9_-]+", candidate_key):
+            key, remainder = _split_simple_yaml_mapping(item, path, row.lineno)
+            mapping: dict[str, Any] = {
+                key: _parse_simple_yaml_scalar(remainder) if remainder else ""
+            }
+            if index < len(rows) and rows[index].indent > indent:
+                child_indent = rows[index].indent
+                if child_indent != indent + 2:
+                    raise ValueError(
+                        f"{path}: line {rows[index].lineno}: nested list item mapping "
+                        "must be indented by two spaces"
+                    )
+                extra, index = _parse_simple_yaml_mapping(rows, index, child_indent, path)
+                mapping.update(extra)
+            values.append(mapping)
+            continue
+        if index < len(rows) and rows[index].indent > indent:
+            raise ValueError(f"{path}: line {rows[index].lineno}: unexpected indentation after scalar list item")
+        values.append(_parse_simple_yaml_scalar(item))
+    return values, index
+
+
+def _parse_simple_yaml(text: str, path: Path) -> Any:
+    rows = _tokenize_simple_yaml(text, path)
+    if not rows:
+        raise ValueError(f"{path}: file must not be empty")
+    data, index = _parse_simple_yaml_block(rows, 0, rows[0].indent, path)
+    if index != len(rows):
+        row = rows[index]
+        raise ValueError(f"{path}: line {row.lineno}: unexpected trailing content")
+    return data
+
+
+def _required_string(data: dict[str, Any], key: str, path: Path) -> str:
+    value = data.get(key)
+    if not isinstance(value, str) or not value:
+        raise ValueError(f"{path}: {key}: missing or invalid string")
+    return value
+
+
+def _required_string_list(data: dict[str, Any], key: str, path: Path) -> tuple[str, ...]:
+    value = data.get(key)
+    if not isinstance(value, list) or not all(isinstance(item, str) and item for item in value):
+        raise ValueError(f"{path}: {key}: expected a non-empty list of strings")
+    return tuple(value)
+
+
+def _required_mapping(data: dict[str, Any], key: str, path: Path) -> dict[str, Any]:
+    value = data.get(key)
+    if not isinstance(value, dict):
+        raise ValueError(f"{path}: {key}: expected mapping")
+    return value
+
+
+def _required_bool(data: dict[str, Any], key: str, path: Path) -> bool:
+    value = data.get(key)
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, str):
+        lowered = value.lower()
+        if lowered == "true":
+            return True
+        if lowered == "false":
+            return False
+    raise ValueError(f"{path}: {key}: expected true or false")
+
+
+def _required_string_mapping(data: dict[str, Any], key: str, path: Path) -> dict[str, str]:
+    value = data.get(key)
+    if not isinstance(value, dict):
+        raise ValueError(f"{path}: {key}: expected mapping")
+    mapping: dict[str, str] = {}
+    for item_key, item_value in value.items():
+        if not isinstance(item_key, str) or not isinstance(item_value, str):
+            raise ValueError(f"{path}: {key}: expected string keys and values")
+        mapping[item_key] = item_value
+    return mapping
+
+
+def _required_present_string(data: dict[str, Any], key: str, context: str, path: Path) -> str:
+    if key not in data:
+        raise ValueError(f"{path}: {context}: missing required field {key}")
+    value = data[key]
+    if not isinstance(value, str):
+        raise ValueError(f"{path}: {context}.{key}: expected string")
+    return value
+
+
+def parse_release_yaml(text: str, path: Path = Path("release.yaml")) -> ReleaseMetadata:
+    """Parse the constrained release metadata shape."""
+
+    data = _parse_simple_yaml(text, path)
+    if not isinstance(data, dict):
+        raise ValueError(f"{path}: expected top-level mapping")
+
+    smoke_data = data.get("smoke")
+    if not isinstance(smoke_data, dict):
+        raise ValueError(f"{path}: smoke: expected mapping")
+    smoke: dict[str, SmokeRow] = {}
+    for tool, row in smoke_data.items():
+        if not isinstance(tool, str) or not isinstance(row, dict):
+            raise ValueError(f"{path}: smoke.{tool}: expected mapping")
+        context = f"smoke.{tool}"
+        smoke[tool] = SmokeRow(
+            result=_required_string(row, "result", path),
+            tool_version=_required_string(row, "tool_version", path),
+            evidence=_required_present_string(row, "evidence", context, path),
+            reason=_required_present_string(row, "reason", context, path),
+            owner=_required_present_string(row, "owner", context, path),
+        )
+
+    publication_status = data.get("publication_status")
+    if publication_status is not None and not isinstance(publication_status, str):
+        raise ValueError(f"{path}: publication_status: expected string")
+
+    return ReleaseMetadata(
+        version=_required_string(data, "version", path),
+        release_type=_required_string(data, "release_type", path),
+        publication_status=publication_status,
+        manifest_version=_required_string(data, "manifest_version", path),
+        supported_tools=_required_string_list(data, "supported_tools", path),
+        adapter_paths=_required_string_mapping(data, "adapter_paths", path),
+        instruction_entrypoints=_required_string_mapping(data, "instruction_entrypoints", path),
+        smoke=smoke,
+        validation=_required_string_mapping(data, "validation", path),
+        npm_package=(
+            _required_string_mapping(data, "npm_package", path)
+            if "npm_package" in data
+            else {}
+        ),
+        adapter_release=(
+            _required_string_mapping(data, "adapter_release", path)
+            if "adapter_release" in data
+            else {}
+        ),
+    )
+
+
+def parse_adapter_artifact_metadata_yaml(
+    text: str,
+    path: Path = Path("adapter-artifacts.yaml"),
+) -> AdapterArtifactMetadata:
+    """Parse the adapter artifact metadata schema_version 1 shape."""
+
+    data = _parse_simple_yaml(text, path)
+    if not isinstance(data, dict):
+        raise ValueError(f"{path}: expected top-level mapping")
+    if str(data.get("schema_version")) != "1":
+        raise ValueError(f"{path}: schema_version: expected 1")
+
+    release = _required_mapping(data, "release", path)
+    generator = _required_mapping(data, "generator", path)
+    combined = _required_mapping(data, "combined_artifact", path)
+    validation = _required_mapping(data, "validation", path)
+
+    artifacts_value = data.get("artifacts")
+    if not isinstance(artifacts_value, list) or not artifacts_value:
+        raise ValueError(f"{path}: artifacts: expected non-empty list")
+    artifacts: list[AdapterArtifactEntry] = []
+    for index, item in enumerate(artifacts_value):
+        if not isinstance(item, dict):
+            raise ValueError(f"{path}: artifacts[{index}]: expected mapping")
+        artifacts.append(
+            AdapterArtifactEntry(
+                adapter=_required_string(item, "adapter", path),
+                archive=_required_string(item, "archive", path),
+                sha256=_required_string(item, "sha256", path),
+                install_root=_required_string(item, "install_root", path),
+                result=_required_string(item, "result", path),
+            )
+        )
+
+    return AdapterArtifactMetadata(
+        version=_required_string(release, "version", path),
+        source_commit=_required_string(release, "source_commit", path),
+        date=_required_string(release, "date", path),
+        generator_command=_required_string(generator, "command", path),
+        source_skills=_required_string(generator, "source_skills", path),
+        manifest=_required_string(generator, "manifest", path),
+        artifacts=tuple(artifacts),
+        combined_artifact=CombinedAdapterArtifact(
+            required=_required_bool(combined, "required", path),
+            archive=_required_string(combined, "archive", path),
+            sha256=str(combined.get("sha256", "")),
+            included_adapters=_required_string_list(combined, "included_adapters", path),
+        ),
+        validation_command=_required_string(validation, "command", path),
+        validation_result=_required_string(validation, "result", path),
+        validated_at=_required_string(validation, "validated_at", path),
+    )
+
+
+def collect_skill_reports(skills_root: Path = CANONICAL_SKILLS_DIR) -> tuple[SkillPortabilityReport, ...]:
+    """Evaluate canonical skills in deterministic order."""
+
+    if not skills_root.exists():
+        return ()
+    directories = discover_source_skill_dirs(skills_root)
+    if skills_root.resolve() == CANONICAL_SKILLS_DIR.resolve():
+        directories_by_name = {directory.name: directory for directory in directories}
+        discovered = set(directories_by_name)
+        declared = set(PUBLISHED_SKILL_INVOCATION_NAMES)
+        if discovered != declared:
+            missing = sorted(declared - discovered)
+            unexpected = sorted(discovered - declared)
+            details = []
+            if missing:
+                details.append(f"missing declared canonical skills: {', '.join(missing)}")
+            if unexpected:
+                details.append(f"undeclared canonical skills: {', '.join(unexpected)}")
+            raise ValueError("canonical skill inventory mismatch: " + "; ".join(details))
+        directories = tuple(
+            directories_by_name[name] for name in POST_CUTOVER_ADAPTER_SKILLS
+        )
+    reports = [evaluate_skill(directory) for directory in directories]
+    return tuple(sorted(reports, key=lambda report: (report.name, report.path.as_posix())))
+
+
+def _canonical_skill_source_errors(
+    skills_root: Path,
+    reports: tuple[SkillPortabilityReport, ...] | None = None,
+) -> list[str]:
+    if not skills_root.exists():
+        return [f"canonical skills root does not exist: {skills_root}"]
+    if not skills_root.is_dir() and not (skills_root.is_file() and skills_root.name == "SKILL.md"):
+        return [f"canonical skills root is not a skill directory or SKILL.md file: {skills_root}"]
+
+    reports = collect_skill_reports(skills_root) if reports is None else reports
+    if not reports:
+        return [f"canonical skills root contains no skill files: {skills_root}"]
+
+    errors: list[str] = []
+    for report in reports:
+        if report.included_adapters:
+            continue
+        reason = report.reason or "no adapter inclusion decision"
+        errors.append(f"canonical skill validation failed: {report.path}: {reason}")
+    return errors
+
+
+def _validated_skill_reports(skills_root: Path) -> tuple[SkillPortabilityReport, ...]:
+    reports = collect_skill_reports(skills_root)
+    errors = _canonical_skill_source_errors(skills_root, reports)
+    if errors:
+        raise ValueError("\n".join(errors))
+    return reports
+
+
+def _path_from_posix(path: PurePosixPath) -> Path:
+    return Path(*path.parts)
+
+
+def _adapter_package_relative_root(config: AdapterConfig) -> Path:
+    return _path_from_posix(config.package_root.relative_to(ADAPTER_OUTPUT_CONTRACT_ROOT))
+
+
+def _adapter_contract_relative_path(relative_path: Path) -> str:
+    return (ADAPTER_OUTPUT_CONTRACT_ROOT / PurePosixPath(relative_path.as_posix())).as_posix()
+
+
+def _parse_adapter_version_core(version: str) -> tuple[int, int, int] | None:
+    core = version.removeprefix("v").split("-", 1)[0]
+    parts = core.split(".")
+    if len(parts) != 3:
+        return None
+    try:
+        return int(parts[0]), int(parts[1]), int(parts[2])
+    except ValueError:
+        return None
+
+
+def _supports_opencode_command_aliases(version: str) -> bool:
+    parsed = _parse_adapter_version_core(version)
+    return parsed is not None and parsed >= (0, 1, 1)
+
+
+def default_adapter_version() -> str:
+    """Read package identity when an operation needs its default, not on import."""
+    return "v" + json.loads((ROOT / "packages/rigorloop/package.json").read_text(encoding="utf-8"))["version"]
+
+
+def _render_frontmatter_field(key: str, value: str) -> list[str]:
+    if key == "name" and PORTABLE_NAME_PATTERN.fullmatch(value):
+        return [f"{key}: {value}"]
+
+    lines = [f"{key}: >"]
+    value_lines = value.splitlines() or [""]
+    lines.extend(f"  {line}" for line in value_lines)
+    return lines
+
+
+def _render_transformed_skill(path: Path, drop_keys: tuple[str, ...]) -> str:
+    metadata, body = load_skill_file(path)
+    transformed_metadata = {
+        key: value
+        for key, value in metadata.items()
+        if key in COMMON_FRONTMATTER and key not in drop_keys
+    }
+
+    lines = ["---"]
+    for key in ("name", "description"):
+        lines.extend(_render_frontmatter_field(key, transformed_metadata[key]))
+    lines.append("---")
+
+    text = "\n".join(lines) + "\n" + body
+    if not text.endswith("\n"):
+        text += "\n"
+    return text
+
+
+def render_skill_for_adapter(report: SkillPortabilityReport, decision: AdapterDecision) -> str:
+    """Render one generated skill file for a target adapter."""
+
+    drop_keys = tuple(
+        transform.removeprefix("drop frontmatter: ")
+        for transform in decision.transforms
+        if transform.startswith("drop frontmatter: ")
+    )
+    if not drop_keys:
+        return report.path.read_text(encoding="utf-8")
+    return _render_transformed_skill(report.path, drop_keys)
+
+
+def render_entrypoint_template(
+    template_path: Path,
+    *,
+    version: str,
+    adapter: AdapterConfig,
+    command_aliases: tuple[str, ...] = OPENCODE_COMMAND_ALIASES,
+) -> str:
+    """Render one authored thin adapter entrypoint template."""
+
+    return template_path.read_text(encoding="utf-8").format(
+        adapter=adapter.name,
+        entrypoint=adapter.entrypoint.as_posix(),
+        package_root=adapter.package_root.as_posix(),
+        skill_root=adapter.skill_root.as_posix(),
+        version=version,
+        command_aliases=", ".join(f"`{alias}`" for alias in command_aliases),
+    )
+
+
+def expected_adapter_files(
+    version: str,
+    *,
+    skills_root: Path = CANONICAL_SKILLS_DIR,
+    template_root: Path = ADAPTER_TEMPLATE_ROOT,
+) -> dict[Path, str]:
+    """Return the complete expected generated adapter file map."""
+
+    reports = _validated_skill_reports(skills_root)
+    return _expected_adapter_files_from_reports(
+        version,
+        reports,
+        template_root=template_root,
+    )
+
+
+def _expected_adapter_files_from_reports(
+    version: str,
+    reports: tuple[SkillPortabilityReport, ...],
+    *,
+    template_root: Path = ADAPTER_TEMPLATE_ROOT,
+    command_aliases: tuple[str, ...] = OPENCODE_COMMAND_ALIASES,
+) -> dict[Path, str]:
+    """Return expected generated adapter files from already collected reports."""
+
+    expected: dict[Path, str] = {
+        Path("manifest.yaml"): render_manifest_yaml(
+            version, reports, command_aliases=command_aliases
+        ),
+    }
+
+    for adapter_name in SUPPORTED_ADAPTERS:
+        config = ADAPTERS[adapter_name]
+        package_root = _adapter_package_relative_root(config)
+        template_path = template_root / adapter_name / _path_from_posix(config.entrypoint)
+        expected[package_root / _path_from_posix(config.entrypoint)] = render_entrypoint_template(
+            template_path,
+            version=version,
+            adapter=config,
+            command_aliases=command_aliases,
+        )
+
+        for report in reports:
+            decision = report.adapter_decision(adapter_name)
+            if not decision.included:
+                continue
+            expected[package_root / _path_from_posix(config.skill_path(report.name))] = (
+                render_skill_for_adapter(report, decision)
+            )
+            for resource_path, text in _packaged_skill_resources(report):
+                expected[
+                    package_root
+                    / _path_from_posix(config.skill_root / report.name / PurePosixPath(resource_path.as_posix()))
+                ] = text
+
+    return dict(sorted(expected.items(), key=lambda item: item[0].as_posix()))
+
+
+def _packaged_skill_resources(report: SkillPortabilityReport) -> tuple[tuple[Path, str], ...]:
+    skill_dir = report.path.parent
+    resources: list[tuple[Path, str]] = []
+    for resource_dir_name in PACKAGED_RESOURCE_DIRS:
+        resource_dir = skill_dir / resource_dir_name
+        if not resource_dir.is_dir():
+            continue
+        for path in sorted(resource_dir.rglob("*")):
+            if not path.is_file() or path.name == ".gitkeep":
+                continue
+            resources.append((path.relative_to(skill_dir), path.read_text(encoding="utf-8")))
+    return tuple(resources)
+
+
+def _collect_generated_files(root: Path) -> dict[Path, Path]:
+    if not root.exists():
+        return {}
+    return {
+        path.relative_to(root): path
+        for path in sorted(root.rglob("*"))
+        if path.is_file()
+    }
+
+
+def _manifest_error_entry(path: Path, detail: str) -> AdapterDriftEntry:
+    return AdapterDriftEntry(category="manifest-error", path=path, detail=detail)
+
+
+def _inspect_generated_adapter_manifest(output_root: Path) -> _AdapterManifestInspection:
+    manifest_path = output_root / "manifest.yaml"
+    if not manifest_path.is_file():
+        return _AdapterManifestInspection(
+            path=manifest_path,
+            manifest=None,
+            text=None,
+            entries=(
+                _manifest_error_entry(
+                    manifest_path,
+                    "generated adapter manifest is missing",
+                ),
+            ),
+        )
+
+    try:
+        text = manifest_path.read_text(encoding="utf-8")
+    except (OSError, UnicodeDecodeError) as exc:
+        return _AdapterManifestInspection(
+            path=manifest_path,
+            manifest=None,
+            text=None,
+            entries=(
+                _manifest_error_entry(
+                    manifest_path,
+                    f"generated adapter manifest is unreadable: {exc}",
+                ),
+            ),
+        )
+
+    try:
+        manifest = parse_manifest_yaml(text, manifest_path)
+    except ValueError as exc:
+        return _AdapterManifestInspection(
+            path=manifest_path,
+            manifest=None,
+            text=text,
+            entries=(
+                _manifest_error_entry(
+                    manifest_path,
+                    f"generated adapter manifest is malformed: {exc}",
+                ),
+            ),
+        )
+
+    return _AdapterManifestInspection(
+        path=manifest_path,
+        manifest=manifest,
+        text=text,
+        entries=(),
+    )
+
+
+def _manifest_command_alias_contract_errors(version: str, manifest: AdapterManifest) -> list[str]:
+    return ["current packages must not declare retired command aliases"] if manifest.command_aliases else []
+
+
+def _manifest_contract_entries(
+    version: str,
+    inspection: _AdapterManifestInspection,
+    reports: tuple[SkillPortabilityReport, ...],
+) -> tuple[AdapterDriftEntry, ...]:
+    entries = list(inspection.entries)
+    manifest = inspection.manifest
+    if manifest is None:
+        return tuple(entries)
+
+    specific_start = len(entries)
+    if manifest.version != version:
+        entries.append(
+            _manifest_error_entry(
+                inspection.path,
+                (
+                    "generated adapter manifest version mismatch: "
+                    f"expected {version}, found {manifest.version}"
+                ),
+            )
+        )
+
+    report_by_name = {report.name: report for report in reports}
+    for skill_name, report in report_by_name.items():
+        entry = manifest.skills.get(skill_name)
+        if entry is None:
+            entries.append(
+                _manifest_error_entry(
+                    inspection.path,
+                    f"generated adapter manifest omits canonical skill: {skill_name}",
+                )
+            )
+            continue
+        invalid_adapters = sorted(set(entry.adapters) - set(SUPPORTED_ADAPTERS))
+        if invalid_adapters:
+            entries.append(
+                _manifest_error_entry(
+                    inspection.path,
+                    (
+                        "generated adapter manifest lists unsupported adapter for "
+                        f"{skill_name}: {', '.join(invalid_adapters)}"
+                    ),
+                )
+            )
+        if entry.adapters != report.included_adapters:
+            entries.append(
+                _manifest_error_entry(
+                    inspection.path,
+                    (
+                        f"adapter list mismatch: {skill_name}: "
+                        f"expected {report.included_adapters}, found {entry.adapters}"
+                    ),
+                )
+            )
+        if entry.portable != report.portable:
+            entries.append(
+                _manifest_error_entry(
+                    inspection.path,
+                    (
+                        f"portable flag mismatch: {skill_name}: "
+                        f"expected {report.portable}, found {entry.portable}"
+                    ),
+                )
+            )
+        if not entry.portable and not entry.reason:
+            entries.append(
+                _manifest_error_entry(
+                    inspection.path,
+                    f"non-portable manifest entry missing reason: {skill_name}",
+                )
+            )
+
+    for skill_name in sorted(set(manifest.skills) - set(report_by_name)):
+        entries.append(
+            _manifest_error_entry(
+                inspection.path,
+                f"generated adapter manifest lists unknown skill: {skill_name}",
+            )
+        )
+
+    for error in _manifest_command_alias_contract_errors(version, manifest):
+        entries.append(_manifest_error_entry(inspection.path, error))
+
+    if inspection.text is not None and len(entries) == specific_start:
+        expected_manifest = render_manifest_yaml(version, reports)
+        if inspection.text != expected_manifest:
+            entries.append(
+                _manifest_error_entry(
+                    inspection.path,
+                    "generated adapter manifest differs from expected generated-output contract",
+                )
+            )
+
+    return tuple(entries)
+
+
+def collect_adapter_drift_entries(
+    version: str,
+    *,
+    skills_root: Path = CANONICAL_SKILLS_DIR,
+    template_root: Path = ADAPTER_TEMPLATE_ROOT,
+    output_root: Path = ADAPTER_OUTPUT_ROOT,
+) -> tuple[AdapterDriftEntry, ...]:
+    """Collect structured generated adapter drift entries."""
+
+    reports = collect_skill_reports(skills_root) if skills_root.exists() else ()
+    canonical_errors = _canonical_skill_source_errors(skills_root, reports)
+    if canonical_errors:
+        return tuple(
+            AdapterDriftEntry(
+                category="canonical-source-error",
+                path=skills_root,
+                detail=error,
+            )
+            for error in canonical_errors
+        )
+
+    manifest_inspection = _inspect_generated_adapter_manifest(output_root)
+    manifest_entries = _manifest_contract_entries(version, manifest_inspection, reports)
+    expected = _expected_adapter_files_from_reports(
+        version,
+        reports=reports,
+        template_root=template_root,
+    )
+    existing = _collect_generated_files(output_root)
+    entries: list[AdapterDriftEntry] = list(manifest_entries)
+    skip_manifest_file_drift = bool(manifest_entries)
+
+    for relative_path, expected_text in expected.items():
+        if skip_manifest_file_drift and relative_path == Path("manifest.yaml"):
+            continue
+        generated_path = output_root / relative_path
+        if relative_path not in existing:
+            entries.append(
+                AdapterDriftEntry(
+                    category="missing",
+                    path=generated_path,
+                    detail="generated adapter file is missing",
+                )
+            )
+            continue
+        if existing[relative_path].read_text(encoding="utf-8") != expected_text:
+            entries.append(
+                AdapterDriftEntry(
+                    category="stale",
+                    path=generated_path,
+                    detail="generated adapter file differs from canonical sources",
+                )
+            )
+
+    for relative_path in sorted(set(existing) - set(expected) - ADAPTER_SUPPORT_METADATA_FILES):
+        entries.append(
+            AdapterDriftEntry(
+                category="unexpected",
+                path=output_root / relative_path,
+                detail="generated adapter file is not expected from canonical sources",
+            )
+        )
+
+    return tuple(entries)
+
+
+def collect_adapter_drift(
+    version: str,
+    *,
+    skills_root: Path = CANONICAL_SKILLS_DIR,
+    template_root: Path = ADAPTER_TEMPLATE_ROOT,
+    output_root: Path = ADAPTER_OUTPUT_ROOT,
+) -> list[str]:
+    """Collect missing, stale, and unexpected generated adapter output."""
+
+    return [
+        entry.message
+        for entry in collect_adapter_drift_entries(
+            version,
+            skills_root=skills_root,
+            template_root=template_root,
+            output_root=output_root,
+        )
+    ]
+
+
+def _adapter_drift_counts(entries: Iterable[AdapterDriftEntry]) -> dict[str, int]:
+    counts = {category: 0 for category in ADAPTER_DRIFT_CATEGORIES}
+    for entry in entries:
+        counts[entry.category] = counts.get(entry.category, 0) + 1
+    return counts
+
+
+def _adapter_drift_action(category: str, version: str) -> str:
+    if category in {"missing", "stale", "unexpected"}:
+        return f"rerun python scripts/build-adapters.py --version {version}"
+    if category == "canonical-source-error":
+        return "fix the canonical skill source before regenerating adapters"
+    if category == "manifest-error":
+        return "fix or regenerate the generated adapter manifest"
+    return "inspect the failure detail"
+
+
+def collect_adapter_support_drift_entries(*, skills_root: Path = CANONICAL_SKILLS_DIR,
+                                         output_root: Path = ADAPTER_OUTPUT_ROOT) -> tuple[AdapterDriftEntry, ...]:
+    """Check the tracked support manifest under its own recorded version.
+
+    Requested archive versions are validated against their generated archive
+    manifests. The tracked support matrix is not a second release-tag authority.
+    """
+    inspected = _inspect_generated_adapter_manifest(output_root)
+    version = inspected.manifest.version if inspected.manifest is not None else default_adapter_version()
+    return tuple(entry for entry in collect_adapter_drift_entries(version, skills_root=skills_root, output_root=output_root)
+                 if entry.category in {"canonical-source-error", "manifest-error"})
+
+
+def _adapter_drift_count_summary(entries: tuple[AdapterDriftEntry, ...]) -> str:
+    counts = _adapter_drift_counts(entries)
+    parts = [f"total={len(entries)}"]
+    parts.extend(f"{category}={counts.get(category, 0)}" for category in ADAPTER_DRIFT_CATEGORIES)
+    return " ".join(parts)
+
+
+def _append_over_budget_warning(lines: list[str]) -> list[str]:
+    if len(lines) > NORMAL_OUTPUT_WARNING_LINES:
+        lines.append(
+            (
+                f"warning: normal output exceeded {NORMAL_OUTPUT_WARNING_LINES} lines; "
+                "rerun with --verbose for complete detail."
+            )
+        )
+    return lines
+
+
+def format_adapter_drift_normal(
+    entries: Iterable[AdapterDriftEntry],
+    *,
+    version: str,
+    output_root: Path = ADAPTER_OUTPUT_ROOT,
+    max_entries: int = NORMAL_FAILURE_ENTRY_LIMIT,
+) -> str:
+    """Render summary-first normal adapter drift output."""
+
+    entry_tuple = tuple(entries)
+    if not entry_tuple:
+        return "\n".join(
+            [
+                "adapters.drift: ok",
+                f"version: {version}",
+                f"output_root: {output_root}",
+                "status: generated adapter output is in sync",
+            ]
+        )
+
+    displayed = entry_tuple[:max_entries]
+    lines = [
+        "adapters.drift: failed",
+        f"version: {version}",
+        f"output_root: {output_root}",
+        f"failures: {_adapter_drift_count_summary(entry_tuple)}",
+        f"displayed: {len(displayed)} of {len(entry_tuple)}",
+    ]
+    for entry in displayed:
+        lines.append(f"- {entry.category}: {entry.path}")
+        lines.append(f"  action: {_adapter_drift_action(entry.category, version)}; {entry.detail}")
+    omitted = len(entry_tuple) - len(displayed)
+    if omitted:
+        lines.append(
+            f"omitted: {omitted} failure entries; rerun with --verbose for complete detail."
+        )
+    return "\n".join(_append_over_budget_warning(lines))
+
+
+def format_adapter_drift_verbose(
+    entries: Iterable[AdapterDriftEntry],
+    *,
+    version: str,
+    output_root: Path = ADAPTER_OUTPUT_ROOT,
+) -> str:
+    """Render complete deterministic adapter drift output."""
+
+    entry_tuple = tuple(entries)
+    if not entry_tuple:
+        return format_adapter_drift_normal(
+            entry_tuple,
+            version=version,
+            output_root=output_root,
+        )
+
+    lines = [
+        "adapters.drift: failed",
+        f"version: {version}",
+        f"output_root: {output_root}",
+        f"failures: {_adapter_drift_count_summary(entry_tuple)}",
+    ]
+    for entry in entry_tuple:
+        lines.append(f"- {entry.category}: {entry.path}")
+        lines.append(f"  detail: {entry.detail}")
+    return "\n".join(lines)
+
+
+def _remove_empty_directories(root: Path) -> None:
+    if not root.exists():
+        return
+    directories = sorted(
+        (path for path in root.rglob("*") if path.is_dir()),
+        key=lambda path: len(path.parts),
+        reverse=True,
+    )
+    for directory in directories:
+        try:
+            directory.rmdir()
+        except OSError:
+            continue
+
+
+def _validate_generation_output(output: Path, skills_root: Path) -> None:
+    """Check the complete write/cleanup surface before generation has effects."""
+    source = skills_root.resolve()
+    resolved = output.resolve()
+    if resolved == source or resolved.is_relative_to(source) or source.is_relative_to(resolved):
+        raise ValueError("unsafe output: generation must not overlap canonical skills")
+    runtime_parents = {".codex", ".agents", ".claude", ".opencode"}
+    for candidate in (output.absolute(), resolved):
+        if runtime_parents.intersection(candidate.parts):
+            raise ValueError("unsafe output: generation must not overlap active skill directories")
+    for ancestor in (output, *output.parents):
+        if ancestor.is_symlink():
+            raise ValueError("unsafe output: generation must not follow symlinked destinations")
+
+    if not output.exists():
+        return
+
+    # A synchronized package tree contains target-shaped directories itself.
+    # Only the producer's exact package prefixes are generated output; other
+    # runtime roots below the output may belong to a project and must survive.
+    package_parents = {Path("codex/.agents"), Path("claude/.claude")}
+    def unreadable(error: OSError) -> None:
+        raise error
+
+    for directory, dirs, files in os.walk(output, followlinks=False, onerror=unreadable):
+        for name in dirs + files:
+            path = Path(directory) / name
+            info = path.lstat()
+            if stat.S_ISLNK(info.st_mode):
+                raise ValueError("unsafe output: generation must not follow symlinked destinations")
+            if stat.S_ISREG(info.st_mode):
+                if info.st_nlink != 1:
+                    raise ValueError("unsafe output: generation must not write shared-inode files")
+            elif not stat.S_ISDIR(info.st_mode):
+                raise ValueError("unsafe output: generation requires regular files and directories")
+            if name in runtime_parents and path.relative_to(output) not in package_parents:
+                raise ValueError("unsafe output: generation must not contain active skill directories")
+
+
+def sync_adapter_output(
+    version: str,
+    *,
+    skills_root: Path = CANONICAL_SKILLS_DIR,
+    template_root: Path = ADAPTER_TEMPLATE_ROOT,
+    output_root: Path = ADAPTER_OUTPUT_ROOT,
+) -> None:
+    """Synchronize generated adapter output with canonical sources."""
+
+    _validate_generation_output(output_root, skills_root)
+    expected = expected_adapter_files(
+        version,
+        skills_root=skills_root,
+        template_root=template_root,
+    )
+    existing = _collect_generated_files(output_root)
+    output_root.mkdir(parents=True, exist_ok=True)
+
+    for relative_path, expected_text in expected.items():
+        target_path = output_root / relative_path
+        target_path.parent.mkdir(parents=True, exist_ok=True)
+        if not target_path.exists() or target_path.read_text(encoding="utf-8") != expected_text:
+            target_path.write_text(expected_text, encoding="utf-8")
+
+    for relative_path in sorted(set(existing) - set(expected) - ADAPTER_SUPPORT_METADATA_FILES, reverse=True):
+        path = output_root / relative_path
+        if path.exists():
+            path.unlink()
+
+    _remove_empty_directories(output_root)
+
+
+def adapter_archive_name(adapter: str, version: str) -> str:
+    """Return the release archive name for one adapter."""
+
+    if adapter not in SUPPORTED_ADAPTERS:
+        raise ValueError(f"unsupported adapter: {adapter}")
+    return f"rigorloop-adapter-{adapter}-{version}.zip"
+
+
+def _archive_relative_path(adapter: AdapterConfig, expected_path: Path) -> Path | None:
+    package_root = _adapter_package_relative_root(adapter)
+    try:
+        return expected_path.relative_to(package_root)
+    except ValueError:
+        return None
+
+
+def _write_deterministic_zip(path: Path, files: dict[Path, str]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with zipfile.ZipFile(path, "w") as archive:
+        for relative_path, text in sorted(files.items(), key=lambda item: item[0].as_posix()):
+            info = zipfile.ZipInfo(relative_path.as_posix(), ARCHIVE_TIMESTAMP)
+            info.compress_type = zipfile.ZIP_DEFLATED
+            info.external_attr = 0o644 << 16
+            archive.writestr(info, text.encode("utf-8"))
+
+
+def build_adapter_archives(
+    version: str,
+    output_dir: Path,
+    *,
+    skills_root: Path = CANONICAL_SKILLS_DIR,
+    template_root: Path = ADAPTER_TEMPLATE_ROOT,
+) -> tuple[Path, ...]:
+    """Build deterministic per-adapter release archives from canonical sources."""
+
+    _validate_generation_output(output_dir, skills_root)
+    expected = expected_adapter_files(
+        version,
+        skills_root=skills_root,
+        template_root=template_root,
+    )
+    output_dir.mkdir(parents=True, exist_ok=True)
+    archives: list[Path] = []
+
+    for adapter_name in SUPPORTED_ADAPTERS:
+        adapter = ADAPTERS[adapter_name]
+        archive_files: dict[Path, str] = {}
+        for expected_path, text in expected.items():
+            relative_path = _archive_relative_path(adapter, expected_path)
+            if relative_path is not None:
+                archive_files[relative_path] = text
+        archive_path = output_dir / adapter_archive_name(adapter_name, version)
+        _write_deterministic_zip(archive_path, archive_files)
+        archives.append(archive_path)
+
+    return tuple(archives)
+
+
+def _staged_adapter_files(
+    version: str,
+    skill_names: tuple[str, ...],
+    command_aliases: tuple[str, ...],
+    label: str,
+    *,
+    skills_root: Path = CANONICAL_SKILLS_DIR,
+    template_root: Path = ADAPTER_TEMPLATE_ROOT,
+) -> dict[Path, str]:
+    reports = _validated_skill_reports(skills_root)
+    by_name = {report.name: report for report in reports}
+    missing = sorted(set(skill_names) - set(by_name))
+    if missing:
+        raise ValueError(f"{label} adapter inventory missing canonical skills: {', '.join(missing)}")
+    selected = tuple(by_name[name] for name in skill_names)
+    return _expected_adapter_files_from_reports(
+        version,
+        selected,
+        template_root=template_root,
+        command_aliases=command_aliases,
+    )
+
+
+def _staged_v3_adapter_files(
+    version: str,
+    *,
+    skills_root: Path = CANONICAL_SKILLS_DIR,
+    template_root: Path = ADAPTER_TEMPLATE_ROOT,
+) -> dict[Path, str]:
+    return _staged_adapter_files(
+        version,
+        STAGED_V3_ADAPTER_SKILLS,
+        STAGED_V3_OPENCODE_COMMAND_ALIASES,
+        "staged v3",
+        skills_root=skills_root,
+        template_root=template_root,
+    )
+
+
+def build_staged_v3_adapter_archives(
+    version: str,
+    output_dir: Path,
+    *,
+    skills_root: Path = CANONICAL_SKILLS_DIR,
+    template_root: Path = ADAPTER_TEMPLATE_ROOT,
+) -> tuple[Path, ...]:
+    """Build the inactive v3 adapter candidate without changing tracked output."""
+
+    _validate_generation_output(output_dir, skills_root)
+    expected = _staged_v3_adapter_files(
+        version, skills_root=skills_root, template_root=template_root
+    )
+    output_dir.mkdir(parents=True, exist_ok=True)
+    archives: list[Path] = []
+    for adapter_name in SUPPORTED_ADAPTERS:
+        adapter = ADAPTERS[adapter_name]
+        files = {
+            relative_path: text
+            for expected_path, text in expected.items()
+            if (relative_path := _archive_relative_path(adapter, expected_path)) is not None
+        }
+        archive_path = output_dir / adapter_archive_name(adapter_name, version)
+        _write_deterministic_zip(archive_path, files)
+        archives.append(archive_path)
+    return tuple(archives)
+
+
+def validate_staged_v3_adapter_archives(
+    version: str,
+    root: Path,
+    *,
+    skills_root: Path = CANONICAL_SKILLS_DIR,
+    template_root: Path = ADAPTER_TEMPLATE_ROOT,
+) -> list[str]:
+    """Validate exact inactive-v3 archive contents and reject mixed packages."""
+
+    try:
+        expected = _staged_v3_adapter_files(
+            version, skills_root=skills_root, template_root=template_root
+        )
+    except ValueError as exc:
+        return [str(exc)]
+    errors: list[str] = []
+    for adapter_name in SUPPORTED_ADAPTERS:
+        adapter = ADAPTERS[adapter_name]
+        archive_path = root / adapter_archive_name(adapter_name, version)
+        if not archive_path.is_file():
+            errors.append(f"missing staged v3 adapter archive: {adapter_name}: {archive_path}")
+            continue
+        expected_files = {
+            relative_path.as_posix(): text.encode("utf-8")
+            for expected_path, text in expected.items()
+            if (relative_path := _archive_relative_path(adapter, expected_path)) is not None
+        }
+        try:
+            with zipfile.ZipFile(archive_path) as archive:
+                names = sorted(name for name in archive.namelist() if not name.endswith("/"))
+                expected_names = sorted(expected_files)
+                missing = sorted(set(expected_names) - set(names))
+                unexpected = sorted(set(names) - set(expected_names))
+                if missing:
+                    errors.append(
+                        f"staged v3 adapter archive missing entries: {adapter_name}: {', '.join(missing[:10])}"
+                    )
+                if unexpected:
+                    errors.append(
+                        f"staged v3 adapter archive unexpected entries: {adapter_name}: {', '.join(unexpected[:10])}"
+                    )
+                for name in sorted(set(names) & set(expected_names)):
+                    if archive.read(name) != expected_files[name]:
+                        errors.append(f"staged v3 adapter archive stale entry: {adapter_name}: {name}")
+        except zipfile.BadZipFile:
+            errors.append(f"invalid staged v3 adapter archive: {adapter_name}: {archive_path}")
+    return _dedupe_errors(errors)
+
+
+def _adapter_root(output_root: Path, config: AdapterConfig) -> Path:
+    return output_root / _adapter_package_relative_root(config)
+
+
+def _adapter_skill_root(output_root: Path, config: AdapterConfig) -> Path:
+    return _adapter_root(output_root, config) / _path_from_posix(config.skill_root)
+
+
+def _generated_skill_files(output_root: Path, config: AdapterConfig) -> tuple[Path, ...]:
+    skill_root = _adapter_skill_root(output_root, config)
+    if not skill_root.is_dir():
+        return ()
+    return tuple(sorted(skill_root.glob("*/SKILL.md")))
+
+
+def _command_alias_contract_path(output_root: Path, path: Path) -> str:
+    return _adapter_contract_relative_path(path.relative_to(output_root))
+
+
+def _command_alias_output_path(output_root: Path, contract_path: str) -> Path | None:
+    candidate = PurePosixPath(contract_path)
+    try:
+        relative = candidate.relative_to(ADAPTER_OUTPUT_CONTRACT_ROOT)
+    except ValueError:
+        return None
+    return output_root / _path_from_posix(relative)
+
+
+SECURITY_PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
+    (
+        "private key delimiter",
+        re.compile(r"-----BEGIN [A-Z0-9 ]*PRIVATE KEY-----"),
+    ),
+    (
+        "secret assignment",
+        re.compile(
+            r"\b(?:AWS_SECRET_ACCESS_KEY|SECRET_KEY|API_KEY|ACCESS_TOKEN|AUTH_TOKEN|PRIVATE_TOKEN)"
+            r"\s*[:=]\s*['\"]?[A-Za-z0-9_./+=-]{8,}",
+            re.IGNORECASE,
+        ),
+    ),
+    (
+        "machine-local absolute path",
+        re.compile(
+            r"(?<![A-Za-z0-9_./-])"
+            r"(?:/home/[A-Za-z0-9._-]+/|/Users/[A-Za-z0-9._-]+/|[A-Za-z]:\\Users\\)"
+        ),
+    ),
+    (
+        "permission bypass",
+        re.compile(
+            r"--dangerously-skip-permissions|dangerously skip permissions|"
+            r"bypass (?:all )?(?:tool )?permissions|permission-bypass",
+            re.IGNORECASE,
+        ),
+    ),
+)
+
+
+def scan_security_paths(paths: Iterable[Path]) -> list[str]:
+    """Scan generated adapter files and templates for high-signal unsafe markers."""
+
+    errors: list[str] = []
+    files: list[Path] = []
+    for path in paths:
+        if path.is_file():
+            files.append(path)
+        elif path.is_dir():
+            files.extend(item for item in sorted(path.rglob("*")) if item.is_file())
+
+    for path in sorted(files):
+        try:
+            text = path.read_text(encoding="utf-8")
+        except UnicodeDecodeError:
+            errors.append(f"{path}: file must be UTF-8 text")
+            continue
+        for label, pattern in SECURITY_PATTERNS:
+            if pattern.search(text):
+                errors.append(f"{path}: security violation: {label}")
+
+    return errors
+
+
+def _dedupe_errors(errors: Iterable[str]) -> list[str]:
+    deduped: list[str] = []
+    for error in errors:
+        if error not in deduped:
+            deduped.append(error)
+    return deduped
+
+
+def validate_adapter_output(
+    version: str,
+    *,
+    skills_root: Path = CANONICAL_SKILLS_DIR,
+    template_root: Path = ADAPTER_TEMPLATE_ROOT,
+    output_root: Path = ADAPTER_OUTPUT_ROOT,
+) -> list[str]:
+    """Validate generated adapter packages, manifest consistency, and security markers."""
+
+    errors: list[str] = []
+    canonical_errors = _canonical_skill_source_errors(skills_root)
+    errors.extend(canonical_errors)
+    if not canonical_errors:
+        errors.extend(
+            collect_adapter_drift(
+                version,
+                skills_root=skills_root,
+                template_root=template_root,
+                output_root=output_root,
+            )
+        )
+
+    manifest_path = output_root / "manifest.yaml"
+    manifest: AdapterManifest | None = None
+    if not manifest_path.is_file():
+        errors.append(f"missing adapter manifest: {manifest_path}")
+    else:
+        try:
+            manifest = parse_manifest_yaml(manifest_path.read_text(encoding="utf-8"), manifest_path)
+        except ValueError as exc:
+            errors.append(str(exc))
+
+    if manifest is not None and manifest.version != version:
+        errors.append(
+            f"manifest version mismatch: expected {version}, found {manifest.version} at {manifest_path}"
+        )
+
+    reports = {
+        report.name: report
+        for report in (() if canonical_errors else collect_skill_reports(skills_root))
+    }
+    generated_by_adapter: dict[str, set[str]] = {adapter: set() for adapter in SUPPORTED_ADAPTERS}
+
+    for adapter_name in SUPPORTED_ADAPTERS:
+        config = ADAPTERS[adapter_name]
+        package_root = _adapter_root(output_root, config)
+        entrypoint = package_root / _path_from_posix(config.entrypoint)
+        skill_root = _adapter_skill_root(output_root, config)
+
+        if not package_root.is_dir():
+            errors.append(f"missing adapter directory: {adapter_name}: {package_root}")
+            continue
+        if not entrypoint.is_file():
+            errors.append(f"missing instruction entrypoint: {adapter_name}: {entrypoint}")
+        if adapter_name == "claude":
+            claude_commands = package_root / ".claude" / "commands"
+            if claude_commands.exists():
+                errors.append(f"unexpected claude command wrapper directory: claude: {claude_commands}")
+        if not skill_root.is_dir():
+            errors.append(f"missing adapter skill directory: {adapter_name}: {skill_root}")
+            continue
+
+        for skill_name, report in reports.items():
+            if not report.adapter_decision(adapter_name).included:
+                continue
+            errors.extend(
+                mapped_resource_parity_errors(
+                    report.path.parent,
+                    skill_root / skill_name,
+                    skill_label=f"{adapter_name}/{skill_name}",
+                    surface_label=f"generated adapter output {adapter_name}",
+                )
+            )
+
+        for skill_path in _generated_skill_files(output_root, config):
+            skill_name = skill_path.parent.name
+            generated_by_adapter[adapter_name].add(skill_name)
+            try:
+                metadata, _body = load_skill_file(skill_path)
+            except (OSError, ValueError) as exc:
+                errors.append(f"{skill_path}: {exc}")
+                continue
+            errors.extend(validate_skill_file(skill_path, load_skill_schema())[0])
+            name = _normalize_description(metadata.get("name"))
+            description = _normalize_description(metadata.get("description"))
+            errors.extend(f"{skill_path}: {error}" for error in _portable_name_errors(name, skill_name))
+            errors.extend(f"{skill_path}: {error}" for error in _description_errors(description))
+
+            if adapter_name != "codex":
+                unsupported = sorted(set(metadata) - COMMON_FRONTMATTER)
+                if unsupported:
+                    errors.append(
+                        f"unsupported metadata in {adapter_name}/{skill_name}: {', '.join(unsupported)}"
+                    )
+
+    if manifest is not None:
+        for skill_name, report in reports.items():
+            entry = manifest.skills.get(skill_name)
+            if entry is None:
+                errors.append(f"manifest omits canonical skill: {skill_name}")
+                continue
+            invalid_adapters = sorted(set(entry.adapters) - set(SUPPORTED_ADAPTERS))
+            if invalid_adapters:
+                errors.append(
+                    f"manifest lists unsupported adapter for {skill_name}: {', '.join(invalid_adapters)}"
+                )
+            if entry.adapters != report.included_adapters:
+                errors.append(
+                    f"adapter list mismatch: {skill_name}: expected {report.included_adapters}, "
+                    f"found {entry.adapters}"
+                )
+            if entry.portable != report.portable:
+                errors.append(
+                    f"portable flag mismatch: {skill_name}: expected {report.portable}, "
+                    f"found {entry.portable}"
+                )
+            if not entry.portable and not entry.reason:
+                errors.append(f"non-portable manifest entry missing reason: {skill_name}")
+            for adapter_name in entry.adapters:
+                if (
+                    adapter_name in SUPPORTED_ADAPTERS
+                    and skill_name not in generated_by_adapter[adapter_name]
+                ):
+                    config = ADAPTERS[adapter_name]
+                    expected_path = _adapter_skill_root(output_root, config) / skill_name / "SKILL.md"
+                    errors.append(
+                        f"manifest lists adapter without generated skill: {adapter_name}/{skill_name}: "
+                        f"{expected_path}"
+                    )
+
+        for skill_name in sorted(set(manifest.skills) - set(reports)):
+            errors.append(f"manifest lists unknown skill: {skill_name}")
+
+        for adapter_name, generated_names in generated_by_adapter.items():
+            listed_names = {
+                skill_name
+                for skill_name, entry in manifest.skills.items()
+                if adapter_name in entry.adapters
+            }
+            if generated_names != listed_names:
+                errors.append(
+                    f"generated skill count mismatch for {adapter_name}: "
+                    f"manifest lists {len(listed_names)}, files contain {len(generated_names)}"
+                )
+            for skill_name in sorted(generated_names - listed_names):
+                errors.append(f"generated skill is not listed in manifest: {adapter_name}/{skill_name}")
+
+        if manifest.command_aliases:
+            errors.append("current packages must not declare retired command aliases")
+
+    errors.extend(scan_security_paths((output_root, template_root)))
+    return _dedupe_errors(errors)
+
+
+def _read_archive_text(archive: zipfile.ZipFile, name: str) -> str:
+    try:
+        return archive.read(name).decode("utf-8")
+    except KeyError:
+        raise
+    except UnicodeDecodeError as exc:
+        raise ValueError(f"{name}: archive entry must be UTF-8 text") from exc
+
+
+def validate_adapter_archives(
+    version: str,
+    root: Path,
+    *,
+    skills_root: Path = CANONICAL_SKILLS_DIR,
+    template_root: Path = ADAPTER_TEMPLATE_ROOT,
+) -> list[str]:
+    """Validate generated per-adapter release archive output."""
+
+    errors: list[str] = []
+    canonical_errors = _canonical_skill_source_errors(skills_root)
+    errors.extend(canonical_errors)
+    if canonical_errors:
+        return _dedupe_errors(errors)
+
+    expected = expected_adapter_files(
+        version,
+        skills_root=skills_root,
+        template_root=template_root,
+    )
+    reports = collect_skill_reports(skills_root)
+
+    for adapter_name in SUPPORTED_ADAPTERS:
+        config = ADAPTERS[adapter_name]
+        archive_path = root / adapter_archive_name(adapter_name, version)
+        if not archive_path.is_file():
+            errors.append(f"missing adapter archive: {adapter_name}: {archive_path}")
+            continue
+        try:
+            archive = zipfile.ZipFile(archive_path)
+        except zipfile.BadZipFile:
+            errors.append(f"invalid adapter archive: {adapter_name}: {archive_path}")
+            continue
+        with archive:
+            entries = tuple(sorted(name for name in archive.namelist() if not name.endswith("/")))
+            expected_files = {
+                relative_path: text
+                for expected_path, text in expected.items()
+                if (relative_path := _archive_relative_path(config, expected_path)) is not None
+            }
+            expected_names = tuple(path.as_posix() for path in sorted(expected_files))
+            if entries != expected_names:
+                missing = sorted(set(expected_names) - set(entries))
+                unexpected = sorted(set(entries) - set(expected_names))
+                if missing:
+                    errors.append(
+                        f"adapter archive missing entries: {adapter_name}: {archive_path}: "
+                        f"{', '.join(missing[:10])}"
+                    )
+                if unexpected:
+                    errors.append(
+                        f"adapter archive unexpected entries: {adapter_name}: {archive_path}: "
+                        f"{', '.join(unexpected[:10])}"
+                    )
+
+            entrypoint = config.entrypoint.as_posix()
+            if entrypoint not in entries:
+                errors.append(f"adapter archive missing entrypoint: {adapter_name}: {entrypoint}")
+            skill_root = config.skill_root.as_posix().rstrip("/") + "/"
+            if not any(name.startswith(skill_root) for name in entries):
+                errors.append(f"adapter archive missing skill root: {adapter_name}: {config.skill_root}")
+
+            for report in reports:
+                if not report.adapter_decision(adapter_name).included:
+                    continue
+                for identity in mapped_resource_identities_for_skill(report.path.parent):
+                    resource_entry = (
+                        config.skill_root
+                        / report.name
+                        / PurePosixPath(identity.relative_path)
+                    ).as_posix()
+                    label = f"{adapter_name}/{report.name}"
+                    if resource_entry not in entries:
+                        errors.append(
+                            f"mapped resource missing: {label}: {identity.relative_path} "
+                            f"in adapter archive {archive_path}"
+                        )
+                        continue
+                    actual_sha256 = hashlib.sha256(archive.read(resource_entry)).hexdigest()
+                    if actual_sha256 != identity.sha256:
+                        errors.append(
+                            f"mapped resource parity mismatch: {label}: {identity.relative_path}: "
+                            f"canonical sha256={identity.sha256}; archive sha256={actual_sha256}"
+                        )
+
+            for relative_path, expected_text in expected_files.items():
+                entry_name = relative_path.as_posix()
+                if entry_name not in entries:
+                    continue
+                try:
+                    actual_text = _read_archive_text(archive, entry_name)
+                except (KeyError, ValueError) as exc:
+                    errors.append(f"{archive_path}: {exc}")
+                    continue
+                if actual_text != expected_text:
+                    errors.append(f"adapter archive entry drift: {adapter_name}: {entry_name}")
+
+    return _dedupe_errors(errors)
+
+
+def _normalized_tree_hash_bytes(path: str, content: bytes) -> bytes:
+    if not path.endswith(".md"):
+        return content
+    text = content.decode("utf-8")
+    if text.startswith("\ufeff"):
+        text = text[1:]
+    return text.replace("\r\n", "\n").replace("\r", "\n").encode("utf-8")
+
+
+def _tree_hash_for_rows(rows: list[tuple[str, str]]) -> str:
+    manifest = "rigorloop-tree-hash-v1\n" + "".join(
+        f"{relative_path}\t{sha256}\n" for relative_path, sha256 in sorted(rows, key=lambda row: row[0].casefold())
+    )
+    return hashlib.sha256(manifest.encode("utf-8")).hexdigest()
+
+
+def _archive_root_hash(archive_path: Path, install_root: str) -> tuple[str, int]:
+    rows: list[tuple[str, str]] = []
+    root_prefix = install_root.rstrip("/") + "/"
+    with zipfile.ZipFile(archive_path) as archive:
+        for name in archive.namelist():
+            if name.endswith("/") or not name.startswith(root_prefix):
+                continue
+            relative_path = name[len(root_prefix) :]
+            content = _normalized_tree_hash_bytes(relative_path, archive.read(name))
+            rows.append((relative_path, hashlib.sha256(content).hexdigest()))
+    return _tree_hash_for_rows(rows), len(rows)
+
+
+def _local_release_candidate_metadata(
+    version: str,
+    release_output_dir: Path,
+    *,
+    command_aliases: tuple[str, ...] = OPENCODE_COMMAND_ALIASES,
+) -> dict[str, Any]:
+    artifacts: list[dict[str, Any]] = []
+    for adapter_name in SUPPORTED_ADAPTERS:
+        config = ADAPTERS[adapter_name]
+        archive_name = adapter_archive_name(adapter_name, version)
+        archive_path = release_output_dir / archive_name
+        install_root = config.skill_root.as_posix()
+        tree_sha256, file_count = _archive_root_hash(archive_path, install_root)
+        artifact: dict[str, Any] = {
+            "adapter": adapter_name,
+            "archive": archive_name,
+            "url": f"https://github.com/xiongxianfei/rigorloop/releases/download/{version}/{archive_name}",
+            "sha256": hashlib.sha256(archive_path.read_bytes()).hexdigest(),
+            "size_bytes": archive_path.stat().st_size,
+            "tree_hash_algorithm": "rigorloop-tree-hash-v1",
+        }
+        artifact.update({"install_root": install_root, "tree_sha256": tree_sha256, "file_count": file_count})
+        with zipfile.ZipFile(archive_path) as archive:
+            artifact["skill_names"] = sorted({name[len(install_root) + 1:].split("/")[0] for name in archive.namelist() if name.startswith(install_root + "/")})
+        artifacts.append(artifact)
+
+    return {
+        "schema_version": 1,
+        "release": {
+            "version": version,
+            "source_repository": "xiongxianfei/rigorloop",
+            "source_commit": "local-release-candidate",
+            "release_tag": version,
+            "published_at": "local-release-candidate",
+        },
+        "metadata": {
+            "url": f"https://github.com/xiongxianfei/rigorloop/releases/download/{version}/adapter-artifacts-{version}.json",
+            "sha256": "0" * 64,
+        },
+        "artifacts": artifacts,
+        "validation": {
+            "command": f"python scripts/validate-adapters.py --root <release-output-dir> --version {version}",
+            "result": "pass",
+        },
+    }
+
+
+def _prepare_local_cli_release_candidate(
+    version: str,
+    release_output_dir: Path,
+    *,
+    command_aliases: tuple[str, ...] = OPENCODE_COMMAND_ALIASES,
+) -> Path:
+    candidate_root = Path(tempfile.mkdtemp(prefix="rigorloop-clean-install-cli-"))
+    candidate_dist = candidate_root / "dist"
+    shutil.copytree(RIGORLOOP_CLI_DIST_ROOT, candidate_dist)
+    package_json_path = candidate_root / "package.json"
+    shutil.copy2(RIGORLOOP_CLI_DIST_ROOT.parent / "package.json", package_json_path)
+    package_data = json.loads(package_json_path.read_text(encoding="utf-8"))
+    package_data["version"] = version.removeprefix("v")
+    package_json_path.write_text(json.dumps(package_data, indent=2) + "\n", encoding="utf-8")
+    metadata_dir = candidate_dist / "metadata"
+    metadata_path = metadata_dir / f"adapter-artifacts-{version}.json"
+    metadata = _local_release_candidate_metadata(
+        version, release_output_dir, command_aliases=command_aliases
+    )
+    metadata_text = json.dumps(metadata, indent=2, sort_keys=False) + "\n"
+    metadata_path.write_text(metadata_text, encoding="utf-8")
+    release_index = {
+        "schema_version": 1,
+        "releases": {
+            version: {
+                "source_repository": "xiongxianfei/rigorloop",
+                "release_tag": version,
+                "bundled_metadata": metadata_path.name,
+                "bundled_metadata_sha256": hashlib.sha256(metadata_text.encode("utf-8")).hexdigest(),
+            }
+        },
+    }
+    (metadata_dir / "releases.json").write_text(
+        json.dumps(release_index, indent=2, sort_keys=False) + "\n",
+        encoding="utf-8",
+    )
+    return candidate_dist / "bin" / "rigorloop.js"
+
+
+def _mapped_resources_for_clean_install(
+    skills_root: Path,
+    *,
+    skill_names: tuple[str, ...],
+) -> tuple[CleanInstallMappedResource, ...]:
+    selected = set(skill_names)
+    resources: list[CleanInstallMappedResource] = []
+    reports = {
+        report.name: report
+        for report in collect_skill_reports(skills_root)
+    }
+    for skill_dir in discover_source_skill_dirs(skills_root):
+        identities = mapped_resource_identities_for_skill(skill_dir)
+        if not identities:
+            continue
+        if selected and identities[0].skill_name not in selected:
+            continue
+        for identity in identities:
+            report = reports.get(identity.skill_name)
+            required_adapters = (
+                SUPPORTED_ADAPTERS
+                if selected
+                else report.included_adapters if report is not None else ()
+            )
+            resources.append(
+                CleanInstallMappedResource(
+                    skill_name=identity.skill_name,
+                    relative_path=identity.relative_path,
+                    sha256=identity.sha256,
+                    adapters=required_adapters,
+                )
+            )
+    return tuple(resources)
+
+
+def validate_clean_install_skill_selection(
+    skills_root: Path,
+    skill_names: tuple[str, ...],
+) -> list[str]:
+    """Fail closed on every explicitly requested mapped-skill identity."""
+
+    if not skill_names:
+        return []
+    errors: list[str] = []
+    repeated = sorted(
+        {
+            skill_name
+            for skill_name in skill_names
+            if skill_names.count(skill_name) > 1
+        }
+    )
+    for skill_name in repeated:
+        errors.append(f"clean-install selected skill repeated: {skill_name}")
+    mapped_names = {
+        resource.skill_name
+        for resource in _mapped_resources_for_clean_install(
+            skills_root,
+            skill_names=(),
+        )
+    }
+    for skill_name in sorted(set(skill_names) - mapped_names):
+        errors.append(
+            "clean-install selected skill is unknown or has no mapped "
+            f"resources: {skill_name}"
+        )
+    return _dedupe_errors(errors)
+
+
+def validate_clean_install_smoke(
+    version: str,
+    release_output_dir: Path,
+    *,
+    skills_root: Path = CANONICAL_SKILLS_DIR,
+    skill_names: tuple[str, ...] = (),
+    command_runner: Callable[..., subprocess.CompletedProcess[str]] = subprocess.run,
+    node_binary: str = "node",
+    temp_root: Path | None = None,
+    command_aliases: tuple[str, ...] = OPENCODE_COMMAND_ALIASES,
+) -> list[str]:
+    """Install locally packed archives into empty target projects and verify mapped resources."""
+
+    errors = validate_clean_install_skill_selection(skills_root, skill_names)
+    if errors:
+        return errors
+    resources = _mapped_resources_for_clean_install(skills_root, skill_names=skill_names)
+    if not resources:
+        target = ", ".join(skill_names) if skill_names else "all skills"
+        return [f"clean-install smoke has no mapped resources to validate for {target}"]
+
+    for adapter_name in SUPPORTED_ADAPTERS:
+        archive_path = release_output_dir / adapter_archive_name(adapter_name, version)
+        if not archive_path.is_file():
+            errors.append(f"clean-install archive missing: {adapter_name}: {archive_path}")
+    if errors:
+        return _dedupe_errors(errors)
+
+    cli_path = _prepare_local_cli_release_candidate(
+        version, release_output_dir, command_aliases=command_aliases
+    )
+    projects_root = Path(tempfile.mkdtemp(prefix="rigorloop-clean-install-projects-", dir=temp_root))
+    try:
+        for adapter_name in SUPPORTED_ADAPTERS:
+            config = ADAPTERS[adapter_name]
+            project_root = projects_root / adapter_name
+            project_root.mkdir(parents=True, exist_ok=False)
+            archive_path = release_output_dir / adapter_archive_name(adapter_name, version)
+            command = [
+                node_binary,
+                str(cli_path),
+                "init",
+                adapter_name,
+                "--from-archive",
+                str(archive_path),
+                "--json",
+            ]
+            result = command_runner(
+                command,
+                cwd=project_root,
+                capture_output=True,
+                text=True,
+            )
+            if result.returncode != 0:
+                errors.append(
+                    f"clean-install command failed: {adapter_name}: exit {result.returncode}: "
+                    f"{(result.stderr or result.stdout).strip()}"
+                )
+                continue
+            expected_boundary_resources_by_skill: dict[str, set[str]] = {}
+            for resource in resources:
+                if adapter_name not in resource.adapters:
+                    continue
+                expected_boundary_resources_by_skill.setdefault(
+                    resource.skill_name,
+                    set(),
+                )
+                if Path(resource.relative_path).name.startswith("boundary-first-"):
+                    expected_boundary_resources_by_skill[resource.skill_name].add(
+                        resource.relative_path
+                    )
+            for resource in resources:
+                if adapter_name not in resource.adapters:
+                    continue
+                skill_root = project_root / _path_from_posix(config.skill_root) / resource.skill_name
+                if not skill_root.is_dir():
+                    errors.append(
+                        f"clean-install skill root missing: {adapter_name}/{resource.skill_name}: {skill_root}"
+                    )
+                    continue
+                skill_file = skill_root / "SKILL.md"
+                if not skill_file.is_file():
+                    errors.append(
+                        f"clean-install skill file missing: {adapter_name}/{resource.skill_name}: "
+                        f"{skill_file}"
+                    )
+                    continue
+                try:
+                    skill_file.read_bytes()
+                except OSError as exc:
+                    errors.append(
+                        f"clean-install skill file unreadable: {adapter_name}/{resource.skill_name}: "
+                        f"{exc}"
+                    )
+                    continue
+                installed_resource = skill_root / resource.relative_path
+                if not installed_resource.is_file():
+                    errors.append(
+                        f"clean-install mapped resource missing: {adapter_name}/{resource.skill_name}: "
+                        f"{resource.relative_path} under {skill_root}"
+                    )
+                    continue
+                installed_sha256 = _sha256_file(installed_resource)
+                if installed_sha256 != resource.sha256:
+                    errors.append(
+                        f"clean-install mapped resource parity mismatch: {adapter_name}/{resource.skill_name}: "
+                        f"{resource.relative_path}: canonical sha256={resource.sha256}; "
+                        f"installed sha256={installed_sha256}"
+                    )
+            for skill_name, expected_paths in expected_boundary_resources_by_skill.items():
+                skill_root = project_root / _path_from_posix(config.skill_root) / skill_name
+                if not skill_root.is_dir():
+                    continue
+                installed_paths = {
+                    path.relative_to(skill_root).as_posix()
+                    for path in skill_root.rglob("boundary-first-*.md")
+                    if path.is_file()
+                }
+                for unexpected_path in sorted(installed_paths - expected_paths):
+                    errors.append(
+                        f"clean-install unowned boundary resource: "
+                        f"{adapter_name}/{skill_name}: {unexpected_path}"
+                    )
+    finally:
+        shutil.rmtree(cli_path.parents[2], ignore_errors=True)
+        shutil.rmtree(projects_root, ignore_errors=True)
+
+    return _dedupe_errors(errors)
+
+
+def _sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def _expected_adapter_install_roots(adapters=ADAPTERS) -> dict[str, str]:
+    return {
+        adapter: config.skill_root.as_posix().rstrip("/") + "/"
+        for adapter, config in adapters.items()
+    }
+
+
+def validate_adapter_artifact_metadata(
+    version: str,
+    release_output_dir: Path,
+    *,
+    metadata_root: Path = ADAPTER_ARTIFACT_REPORT_ROOT,
+    release_commit: str | None = None,
+    profile: ReleaseValidationProfile = ReleaseValidationProfile.CURRENT_SOURCE,
+) -> list[str]:
+    """Validate adapter artifact metadata and checksum evidence for one release."""
+
+    if not isinstance(profile, ReleaseValidationProfile):
+        return [f"invalid release validation profile: {profile}"]
+    adapters = ADAPTERS
+    targets = tuple(adapters)
+    metadata_path = metadata_root / f"{version}.yaml"
+    if not metadata_path.is_file():
+        return [f"missing adapter artifact metadata: {metadata_path}"]
+    try:
+        metadata = parse_adapter_artifact_metadata_yaml(
+            metadata_path.read_text(encoding="utf-8"),
+            metadata_path,
+        )
+    except ValueError as exc:
+        return [str(exc)]
+
+    errors: list[str] = []
+    if metadata.version != version:
+        errors.append(f"{metadata_path}: release.version mismatch: expected {version}, found {metadata.version}")
+    if not re.fullmatch(r"[0-9a-f]{7,40}", metadata.source_commit):
+        errors.append(f"{metadata_path}: release.source_commit must be a git SHA")
+    elif release_commit is not None and metadata.source_commit != release_commit:
+        errors.append(
+            f"{metadata_path}: release.source_commit mismatch: "
+            f"expected {release_commit}, found {metadata.source_commit}"
+        )
+    if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", metadata.date):
+        errors.append(f"{metadata_path}: release.date must use YYYY-MM-DD")
+    if not metadata.generator_command:
+        errors.append(f"{metadata_path}: generator.command: missing")
+    if metadata.source_skills != "skills/":
+        errors.append(f"{metadata_path}: generator.source_skills: expected skills/")
+    if metadata.manifest != "dist/adapters/manifest.yaml":
+        errors.append(f"{metadata_path}: generator.manifest: expected dist/adapters/manifest.yaml")
+
+    by_adapter: dict[str, AdapterArtifactEntry] = {}
+    for artifact in metadata.artifacts:
+        if artifact.adapter in by_adapter:
+            errors.append(f"{metadata_path}: duplicate artifact adapter: {artifact.adapter}")
+        by_adapter[artifact.adapter] = artifact
+    if tuple(sorted(by_adapter)) != tuple(sorted(targets)):
+        errors.append(
+            f"{metadata_path}: artifacts must include exactly {targets}, "
+            f"found {tuple(sorted(by_adapter))}"
+        )
+
+    expected_roots = _expected_adapter_install_roots(adapters)
+    for adapter in targets:
+        artifact = by_adapter.get(adapter)
+        if artifact is None:
+            continue
+        expected_archive = f"rigorloop-adapter-{adapter}-{version}.zip"
+        if artifact.archive != expected_archive:
+            errors.append(
+                f"{metadata_path}: artifact {adapter} archive mismatch: "
+                f"expected {expected_archive}, found {artifact.archive}"
+            )
+        if artifact.install_root != expected_roots[adapter]:
+            errors.append(
+                f"{metadata_path}: artifact {adapter} install_root mismatch: "
+                f"expected {expected_roots[adapter]}, found {artifact.install_root}"
+            )
+        if artifact.result != "pass":
+            errors.append(f"{metadata_path}: artifact {adapter} result must be pass")
+        archive_path = release_output_dir / artifact.archive
+        if not archive_path.is_file():
+            errors.append(f"{metadata_path}: missing recorded archive: {adapter}: {archive_path}")
+            continue
+        actual_sha256 = _sha256_file(archive_path)
+        if artifact.sha256 != actual_sha256:
+            errors.append(
+                f"{metadata_path}: sha256 mismatch: {adapter}: "
+                f"expected {actual_sha256}, found {artifact.sha256}"
+            )
+
+    combined = metadata.combined_artifact
+    if combined.required:
+        combined_path = release_output_dir / combined.archive
+        if not combined_path.is_file():
+            errors.append(f"{metadata_path}: missing required combined artifact: {combined_path}")
+        elif combined.sha256 != _sha256_file(combined_path):
+            errors.append(f"{metadata_path}: combined_artifact sha256 mismatch")
+    if tuple(sorted(combined.included_adapters)) != tuple(sorted(targets)):
+        errors.append(
+            f"{metadata_path}: combined_artifact.included_adapters must include exactly {targets}"
+        )
+    if metadata.validation_result != "pass":
+        errors.append(f"{metadata_path}: validation.result must be pass")
+    if not metadata.validation_command:
+        errors.append(f"{metadata_path}: validation.command: missing")
+    if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", metadata.validated_at):
+        errors.append(f"{metadata_path}: validation.validated_at must use YYYY-MM-DD")
+
+    return _dedupe_errors(errors)
+
+
+
+
+TARGET_INIT_SMOKE_ROOTS = {
+    "codex": (".agents/skills",),
+    "claude": (".claude/skills",),
+    "opencode": (".opencode/skills", ".opencode/commands"),
+}
+PENDING_EVIDENCE_MARKERS = ("<pending", "pending", "tbd", "not run", "unknown", "none")

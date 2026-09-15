@@ -1,0 +1,5699 @@
+#!/usr/bin/env python3
+"""Fixture-driven tests for the first-release skill validator."""
+
+from __future__ import annotations
+
+import json
+import hashlib
+import re
+import shutil
+import subprocess
+import sys
+import unittest
+from unittest import mock
+import os
+import tempfile
+import textwrap
+from collections.abc import Callable
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "scripts"))
+
+from review_independence_skill_phrases import (
+    R5_FORBIDDEN_INITIAL_PACKET_ITEMS,
+    R8D_FAILED_REMEDIATION_REQUIRED_PHRASES,
+    R8D_RECONCILIATION_CATEGORIES,
+)
+from lib.validation import skill_validation
+from skill_contract_tests import RecordingReferenceContractTests
+from skill_cli_tests import SkillCliChecks, run_validator
+from skill_guidance_tests import ExplicitRecordingGuidanceTests, SkillGuidanceChecks
+
+
+VALIDATOR = ROOT / "scripts" / "validate-skills.py"
+FIXTURES = ROOT / "tests" / "fixtures" / "skills"
+DOWNSTREAM_REVIEW_CLOSEOUT_SKILLS = [
+    "route",
+    "verify",
+    "pr",
+]
+SHARED_REVIEW_BLOCK_PATH = ROOT / "templates" / "shared" / "review-isolation-and-recording.md"
+SKILL_CONTRACT_EVIDENCE_BLOCK = ROOT / "templates" / "shared" / "evidence-collection-efficiency.md"
+SKILL_CONTRACT_FIRST_SLICE_SKILLS = [
+    "route",
+    "plan",
+    "implement",
+    "code-review",
+    "verify",
+    "pr",
+    "learn",
+]
+PROGRESSIVE_LOADING_OPTIMIZED_SKILLS = [
+    "route",
+    "implement",
+    "code-review",
+]
+PROGRESSIVE_LOADING_QUICK_GUIDE_LABELS = [
+    "Use this skill to:",
+    "Read first:",
+    "Produce:",
+    "Stop when:",
+    "Do not claim:",
+    "Next stage:",
+]
+PROGRESSIVE_LOADING_CODE_REVIEW_PROTECTED_TERMS = [
+    "independent-review",
+    "mixed-evidence",
+    "material finding",
+    "first-pass status",
+    "severity",
+    "isolation",
+    "detailed review record",
+    "milestone-aware",
+    "stop conditions",
+    "result format",
+]
+CUSTOMER_PORTABLE_M2_SKILLS = [
+    "proposal",
+    "proposal-review",
+    "design",
+    "plan",
+    "implement",
+    "verify",
+    "pr",
+]
+CUSTOMER_PORTABLE_REQUIRED_INTERNAL_DEPENDENCY_PATTERNS = {
+    "required RigorLoop specs": re.compile(
+        r"\b(?:must|must first|required|require|required:|read)\b.{0,80}\bRigorLoop\b.{0,80}\bspecs/",
+        re.IGNORECASE,
+    ),
+    "required RigorLoop constitution": re.compile(
+        r"\b(?:must|must first|required|require|required:|read)\b.{0,80}\bRigorLoop\b.{0,80}\bCONSTITUTION\.md\b",
+        re.IGNORECASE,
+    ),
+    "required RigorLoop agents": re.compile(
+        r"\b(?:must|must first|required|require|required:|read)\b.{0,80}\bRigorLoop\b.{0,80}\bAGENTS\.md\b",
+        re.IGNORECASE,
+    ),
+    "required RigorLoop workflow spec": re.compile(
+        r"\bread the RigorLoop workflow spec before proceeding\b",
+        re.IGNORECASE,
+    ),
+    "required RigorLoop reports": re.compile(
+        r"\brequired:\s*docs/reports/token-cost/",
+        re.IGNORECASE,
+    ),
+}
+CUSTOMER_PORTABLE_ALLOWED_GUARD_TERMS = [
+    "project-local",
+    "if present",
+    "when present",
+    "when operating inside the RigorLoop repository",
+    "when this file is the review target",
+    "when the user provided this path",
+    "when governing project docs exist",
+    "direct target",
+]
+SKILL_CONTRACT_FORBIDDEN_NEW_SKILLS = [
+    "ci",
+    "review-resolution",
+    "ui-design",
+    "ui-design-review",
+    "workflow-contract",
+    "adopt-rigorloop",
+]
+SKILL_CONTRACT_DEFERRED_SHARED_BLOCKS = [
+    "vision-fit",
+    "plan-readiness-vs-completion",
+    "milestone-aware-review-handoff",
+    "first-pass-completeness",
+    "material-finding-requirements",
+]
+SKILL_CONTRACT_REQUIRED_CORE_SECTIONS = [
+    "Purpose",
+    "When to use",
+    "When not to use",
+    "Inputs to read",
+    "Outputs",
+    "Handoff",
+    "Stop conditions",
+    "Claims this skill must not make",
+]
+SKILL_CONTRACT_RESULT_FIELDS = [
+    "Skill",
+    "Status",
+    "Artifacts changed",
+    "Open blockers",
+    "Next stage",
+]
+SKILL_CONTRACT_PROGRESS_SKILLS = [
+    "route",
+    "plan",
+    "implement",
+    "code-review",
+    "verify",
+    "pr",
+]
+PUBLIC_WORKFLOW_AND_SKILL_SURFACES = [
+    "README.md",
+    "AGENTS.md",
+    "CONSTITUTION.md",
+    "skills",
+    ".codex/skills",
+    "dist/adapters",
+]
+TEXT_SURFACE_SUFFIXES = {".md", ".txt", ".yaml", ".yml"}
+RETIRED_PUBLIC_ROUTE_PATTERNS = {
+    "fast lane": re.compile(r"\bfast[- ]lane\b", re.IGNORECASE),
+    "full lane": re.compile(r"\bfull[- ]lane\b", re.IGNORECASE),
+    "full-feature lane": re.compile(r"\bfull[- ]feature(?:[- ]lane)?\b", re.IGNORECASE),
+    "low-risk route": re.compile(r"\blow[- ]risk\b", re.IGNORECASE),
+    "high-risk route": re.compile(r"\bhigh[- ]risk\b", re.IGNORECASE),
+    "tiny low-risk route": re.compile(r"\btiny\s+low[- ]risk\b", re.IGNORECASE),
+    "small-change route": re.compile(r"\bsmall[- ]change(?:[- ]lane)?\b", re.IGNORECASE),
+    "mini-spec": re.compile(r"\bmini[- ]spec\b", re.IGNORECASE),
+    "proportional evidence": re.compile(r"\bproportional[- ]evidence\b", re.IGNORECASE),
+}
+PUBLISHED_SKILL_FORBIDDEN_INTERNAL_PATTERNS = {
+    "workflow spec path": re.compile(r"\bspecs/rigorloop-workflow\.md\b"),
+    "skill contract spec path": re.compile(r"\bspecs/skill-contract\.md\b"),
+    "codex generated mirror path": re.compile(r"\.codex/skills"),
+    "adapter package path": re.compile(r"\bdist/adapters\b"),
+    "selector command": re.compile(r"\bscripts/select-validation\.py\b"),
+    "adapter build command": re.compile(r"\bscripts/build-adapters\.py\b"),
+    "shared template path": re.compile(r"\btemplates/shared\b"),
+    "canonical skill source placeholder": re.compile(r"\bskills/<skill>/SKILL\.md\b"),
+    "selector path constraints": re.compile(r"\bselector[- ]path constraints\b", re.IGNORECASE),
+    "selector-driven validation": re.compile(r"\bselector[- ]driven validation\b", re.IGNORECASE),
+    "dist path selector warning": re.compile(r"do not pass `--path dist/adapters`", re.IGNORECASE),
+    "drift-check mechanics": re.compile(r"\bdrift[- ]check mechanics\b", re.IGNORECASE),
+    "generated-output handling": re.compile(r"\bGenerated-output handling\b"),
+    "regenerate generated outputs": re.compile(r"\bRegenerate generated outputs\b"),
+    "repository-owned drift checks": re.compile(r"\bValidate drift with repository-owned checks\b"),
+    "shared blocks copied into skills": re.compile(r"\bShared blocks are copied into skills\b"),
+    "shared-block implementation mechanics": re.compile(
+        r"\bshared[- ]block implementation (?:details|mechanics)\b",
+        re.IGNORECASE,
+    ),
+    "RigorLoop-local examples": re.compile(r"\bRigorLoop-local examples\b", re.IGNORECASE),
+}
+CODE_REVIEW_FORBIDDEN_FINAL_CLOSEOUT_PATTERNS = {
+    "verify only after final milestone": re.compile(
+        r"`?verify`?\s+only\s+after\s+the\s+final\s+in[- ]scope\s+implementation\s+milestone",
+        re.IGNORECASE,
+    ),
+    "final milestone cleanly reviewed to verify": re.compile(
+        r"final\s+in[- ]scope\s+implementation\s+milestone\s+is\s+cleanly\s+reviewed.{0,80}\bverify\b",
+        re.IGNORECASE | re.DOTALL,
+    ),
+    "clean final implementation milestone to verify": re.compile(
+        r"clean\s+final\s+implementation\s+milestone.{0,80}\bverify\b",
+        re.IGNORECASE | re.DOTALL,
+    ),
+}
+VERIFY_FORBIDDEN_EXPLAIN_ORDER_PATTERNS = {
+    "before explanation or PR": re.compile(r"\bbefore explanation or PR\b", re.IGNORECASE),
+    "toward explanation and PR": re.compile(r"\btoward explanation and PR\b", re.IGNORECASE),
+    "verify ascii arrow explain-change": re.compile(
+        r"\bverify\b\s*(?:->|→)\s*`?explain-change`?",
+        re.IGNORECASE,
+    ),
+}
+SKILL_CONTRACT_CLAIM_BOUNDARY_TERMS = {
+    "implement": [
+        "review passed",
+        "clean review",
+        "branch-ready",
+        "PR-ready",
+        "ready-for-final-closeout",
+    ],
+    "code-review": [
+        "branch-ready",
+        "PR-ready",
+        "CI passed",
+        "verification passed",
+    ],
+    "verify": [
+        "PR-ready",
+        "PR body ready",
+        "review passed",
+    ],
+    "pr": [
+        "implementation passed",
+        "review passed",
+        "verification passed",
+        "tests passed",
+        "owning evidence",
+    ],
+    "plan": [
+        "Readiness is not Done",
+        "Remaining completion gates",
+        "ready for PR",
+        "ready for final closeout",
+    ],
+    "learn": [
+        "new workflow policy",
+        "authoritative artifact",
+        "PR readiness",
+    ],
+}
+
+
+def extract_markdown_block(text: str, heading: str) -> str:
+    start_marker = f"## {heading}"
+    start = text.find(start_marker)
+    if start == -1:
+        raise AssertionError(f"missing heading: {start_marker}")
+    next_heading = text.find("\n## ", start + len(start_marker))
+    if next_heading == -1:
+        return text[start:].rstrip() + "\n"
+    return text[start:next_heading].rstrip() + "\n"
+
+
+def assert_progressive_loading_quick_guide_contract(test_case, skill_body):
+    quick_guide = extract_markdown_block(skill_body, "Quick operating guide")
+    for label in PROGRESSIVE_LOADING_QUICK_GUIDE_LABELS:
+        test_case.assertIn(label, quick_guide)
+    test_case.assertIn("full-file", skill_body)
+    test_case.assertIn("broader-section", skill_body)
+
+
+def assert_progressive_loading_implement_handoff_contract(
+    test_case: unittest.TestCase,
+    skill_body: str,
+) -> None:
+    required_terms = [
+        "Current Handoff Summary",
+        "current milestone section",
+        "validation notes",
+        "do not run broad repository searches to infer milestone state",
+        "stop and report the missing state",
+    ]
+    for term in required_terms:
+        test_case.assertIn(term, skill_body)
+
+    forbidden_first_steps = [
+        "start by searching all docs",
+        "start by searching generated adapter output",
+        "infer current state from broad `rg` output",
+    ]
+    for term in forbidden_first_steps:
+        test_case.assertNotIn(term, skill_body)
+
+
+def assert_progressive_loading_code_review_protected_contracts(
+    test_case: unittest.TestCase,
+    skill_body: str,
+) -> None:
+    lowered = skill_body.lower()
+    for term in PROGRESSIVE_LOADING_CODE_REVIEW_PROTECTED_TERMS:
+        test_case.assertIn(term, lowered)
+    test_case.assertNotIn("references/clean-review-template.md", skill_body)
+    test_case.assertNotIn("references/finding-format.md", skill_body)
+
+
+def iter_public_workflow_and_skill_surfaces() -> list[Path]:
+    files: list[Path] = []
+    for relative_path in PUBLIC_WORKFLOW_AND_SKILL_SURFACES:
+        path = ROOT / relative_path
+        if path.is_file():
+            files.append(path)
+            continue
+        if path.is_dir():
+            for candidate in sorted(path.rglob("*")):
+                if candidate.is_file() and candidate.suffix.lower() in TEXT_SURFACE_SUFFIXES:
+                    files.append(candidate)
+    return files
+
+
+def iter_published_skill_text_surfaces() -> list[Path]:
+    files: list[Path] = []
+    for root in [ROOT / "skills", ROOT / ".codex" / "skills"]:
+        if root.exists():
+            files.extend(sorted(root.glob("*/SKILL.md")))
+
+    adapter_root = ROOT / "dist" / "adapters"
+    if adapter_root.exists():
+        for candidate in sorted(adapter_root.rglob("SKILL.md")):
+            if "skills" in candidate.parts:
+                files.append(candidate)
+
+    return files
+
+
+def iter_published_skill_surfaces_for(skill_name: str) -> list[Path]:
+    return [
+        path
+        for path in iter_published_skill_text_surfaces()
+        if path.parent.name == skill_name
+    ]
+
+
+def has_customer_portable_guard(text: str) -> bool:
+    normalized = text.lower()
+    return any(term.lower() in normalized for term in CUSTOMER_PORTABLE_ALLOWED_GUARD_TERMS)
+
+
+def assert_requirement_id_covered(test_case: unittest.TestCase, body: str, requirement_number: int) -> None:
+    if f"`R{requirement_number}`" in body:
+        return
+    range_pattern = re.compile(r"`R(?P<start>\d+)`-`R(?P<end>\d+)`")
+    for match in range_pattern.finditer(body):
+        start = int(match.group("start"))
+        end = int(match.group("end"))
+        if start <= requirement_number <= end:
+            return
+    test_case.fail(f"R{requirement_number} is not covered explicitly or by range")
+
+
+def assert_boundary_id_covered(test_case: unittest.TestCase, body: str, boundary_number: int) -> None:
+    if f"`EB{boundary_number}`" in body:
+        return
+    range_pattern = re.compile(r"`EB(?P<start>\d+)`-`EB(?P<end>\d+)`")
+    for match in range_pattern.finditer(body):
+        start = int(match.group("start"))
+        end = int(match.group("end"))
+        if start <= boundary_number <= end:
+            return
+    test_case.fail(f"EB{boundary_number} is not covered explicitly or by range")
+
+
+class SkillValidatorFixtureTests(SkillCliChecks, SkillGuidanceChecks, unittest.TestCase):
+    maxDiff = None
+
+    def write_asset_fixture(
+        self,
+        root: Path,
+        skill_name: str,
+        assets: dict[str, str],
+        resource_entries: str | None = None,
+    ) -> Path:
+        skill_dir = root / skill_name
+        skill_dir.mkdir(parents=True)
+        if resource_entries is None:
+            resource_entries = "\n".join(
+                [
+                    f"- COPY `{relative_path}` when producing the related artifact structure.\n"
+                    f"  Fill: structural fields for {relative_path}.\n"
+                    "  Do not emit unfilled placeholders."
+                    for relative_path in sorted(assets)
+                ]
+            )
+        (skill_dir / "SKILL.md").write_text(
+            "\n".join(
+                [
+                    "---",
+                    f"name: {skill_name}",
+                    "description: Validate spec-family asset packaging.",
+                    "---",
+                    "",
+                    f"# {skill_name}",
+                    "",
+                    "## Resource map",
+                    "",
+                    resource_entries.rstrip(),
+                    "",
+                    "## Expected output",
+                    "",
+                    "Compact output summary.",
+                    "",
+                ]
+            ),
+            encoding="utf-8",
+        )
+        for relative_path, content in assets.items():
+            asset_path = skill_dir / relative_path
+            asset_path.parent.mkdir(parents=True, exist_ok=True)
+            asset_path.write_text(textwrap.dedent(content), encoding="utf-8")
+        return skill_dir
+
+    def asset_text(
+        self,
+        *,
+        template: str,
+        skill: str,
+        status: str = "normative",
+        body: str = "| <field> | <value> |\n",
+        include_metadata: bool = True,
+    ) -> str:
+        metadata = ""
+        if include_metadata:
+            metadata = textwrap.dedent(
+                f"""\
+                <!-- Template: {template} -->
+                <!-- Skill: {skill} -->
+                <!-- Template status: {status} -->
+                <!-- Maintained alongside: skills/{skill}/SKILL.md -->
+
+                """
+            )
+        return metadata + textwrap.dedent(body)
+
+    def proposal_family_asset_text(
+        self,
+        *,
+        template: str,
+        skill: str,
+        status: str = "normative",
+        body: str = "| <field> | <value> |\n",
+        include_metadata: bool = True,
+    ) -> str:
+        return self.asset_text(
+            template=template,
+            skill=skill,
+            status=status,
+            body=body,
+            include_metadata=include_metadata,
+        )
+
+    def review_family_asset_text(
+        self,
+        *,
+        template: str,
+        skill: str,
+        status: str = "normative",
+        body: str = "| <field> | <value> |\n",
+        include_metadata: bool = True,
+    ) -> str:
+        return self.asset_text(
+            template=template,
+            skill=skill,
+            status=status,
+            body=body,
+            include_metadata=include_metadata,
+        )
+
+    def write_resource_integrity_skill(
+        self,
+        root: Path,
+        *,
+        resource_entries: str,
+        resources: dict[str, str] | None = None,
+        body_extra: str = "",
+        skill_name: str = "resource-integrity-fixture",
+    ) -> Path:
+        skill_dir = root / skill_name
+        skill_dir.mkdir(parents=True)
+        (skill_dir / "SKILL.md").write_text(
+            "\n".join(
+                [
+                    "---",
+                    f"name: {skill_name}",
+                    "description: Validate mapped skill-local resource integrity.",
+                    "---",
+                    "",
+                    f"# {skill_name}",
+                    "",
+                    "## Resource map",
+                    "",
+                    textwrap.dedent(resource_entries).strip(),
+                    "",
+                    "## Expected output",
+                    "",
+                    "Compact output summary.",
+                    "",
+                    body_extra.strip(),
+                    "",
+                ]
+            ),
+            encoding="utf-8",
+        )
+        for relative_path, content in (resources or {}).items():
+            resource_path = skill_dir / relative_path
+            resource_path.parent.mkdir(parents=True, exist_ok=True)
+            resource_path.write_text(textwrap.dedent(content), encoding="utf-8")
+        return skill_dir
+
+    def assertFixturePasses(self, relative_path: str) -> None:
+        result = run_validator(FIXTURES / relative_path)
+        self.assertEqual(
+            result.returncode,
+            0,
+            msg=f"expected fixture '{relative_path}' to pass\nstdout:\n{result.stdout}\nstderr:\n{result.stderr}",
+        )
+
+    def assertFixtureFails(self, relative_path: str, expected_text: str) -> None:
+        result = run_validator(FIXTURES / relative_path)
+        combined_output = f"{result.stdout}\n{result.stderr}"
+        self.assertNotEqual(
+            result.returncode,
+            0,
+            msg=f"expected fixture '{relative_path}' to fail",
+        )
+        self.assertIn(expected_text, combined_output)
+
+    def copy_ci_maintenance_fixture(self, root: Path) -> Path:
+        source = ROOT / "skills" / "ci-maintenance"
+        target = root / "ci-maintenance"
+        shutil.copytree(source, target)
+        return target
+
+    def assertCiMaintenanceFixtureFails(
+        self,
+        mutate: Callable[[Path], None],
+        expected_text: str,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            skill_dir = self.copy_ci_maintenance_fixture(Path(temporary))
+            mutate(skill_dir)
+            result = run_validator(skill_dir)
+            combined_output = f"{result.stdout}\n{result.stderr}"
+            self.assertNotEqual(
+                result.returncode,
+                0,
+                msg=f"expected ci-maintenance fixture to fail\nstdout:\n{result.stdout}\nstderr:\n{result.stderr}",
+            )
+            self.assertIn(expected_text, combined_output)
+
+    def test_valid_skill_passes(self) -> None:
+        self.assertFixturePasses("valid-basic")
+
+    def test_missing_name_fails(self) -> None:
+        self.assertFixtureFails("missing-name", "name: missing required field")
+
+    def test_missing_description_fails(self) -> None:
+        self.assertFixtureFails("missing-description", "description: missing required field")
+
+    def test_missing_title_fails(self) -> None:
+        self.assertFixtureFails("missing-title", "expected exactly one top-level # title")
+
+    def test_missing_expected_output_fails(self) -> None:
+        self.assertFixtureFails(
+            "missing-expected-output", "missing required '## Expected output' section"
+        )
+
+    def test_missing_skill_file_fails(self) -> None:
+        self.assertFixtureFails(
+            "missing-skill-file", "empty-skill/SKILL.md: missing required skill file"
+        )
+
+    def test_duplicate_name_fails(self) -> None:
+        self.assertFixtureFails("duplicate-name", "duplicate skill name: duplicate-name")
+
+    def test_placeholder_text_fails(self) -> None:
+        self.assertFixtureFails("placeholder-text", "placeholder text is not allowed")
+
+    def test_skill_readability_valid_fixture_passes(self) -> None:
+        self.assertFixturePasses("skill-readability/valid-pilot")
+
+    def test_skill_readability_missing_version_fails(self) -> None:
+        self.assertFixtureFails(
+            "skill-readability/missing-version",
+            "version: missing required readability contract field",
+        )
+
+    def test_skill_readability_invalid_schema_version_fails(self) -> None:
+        self.assertFixtureFails(
+            "skill-readability/invalid-schema-version",
+            "schema-version must be 'skill-readability-v1'",
+        )
+
+    def test_skill_readability_missing_workflow_role_fails(self) -> None:
+        self.assertFixtureFails(
+            "skill-readability/missing-workflow-role",
+            "missing required '## Workflow role' section",
+        )
+
+    def test_skill_readability_missing_workflow_role_field_fails(self) -> None:
+        self.assertFixtureFails(
+            "skill-readability/missing-workflow-role-field",
+            "Workflow role missing required field 'downstream'",
+        )
+
+    def test_skill_readability_invalid_stage_fails(self) -> None:
+        self.assertFixtureFails(
+            "skill-readability/invalid-stage",
+            "workflow role stage must be one of",
+        )
+
+    def test_skill_readability_missing_output_skeleton_fails(self) -> None:
+        self.assertFixtureFails(
+            "skill-readability/missing-output-skeleton",
+            "missing required '## Output skeleton' section",
+        )
+
+    def test_skill_readability_output_skeleton_without_placeholder_fails(self) -> None:
+        self.assertFixtureFails(
+            "skill-readability/output-skeleton-without-placeholder",
+            "Output skeleton must include fillable placeholders",
+        )
+
+    def test_skill_readability_required_internal_reference_fails(self) -> None:
+        self.assertFixtureFails(
+            "skill-readability/required-internal-reference",
+            "required unavailable internal reference",
+        )
+
+    def test_skill_readability_duplicate_closed_enum_fails(self) -> None:
+        self.assertFixtureFails(
+            "skill-readability/duplicate-closed-enum",
+            "duplicate closed enum block",
+        )
+
+    def test_published_design_description_too_long_fails(self) -> None:
+        self.assertFixtureFails(
+            "published-design/description-too-long",
+            "description must be 1024 characters or fewer",
+        )
+
+    def test_published_design_when_to_use_cannot_replace_description(self) -> None:
+        self.assertFixtureFails(
+            "published-design/when-to-use-replaces-description",
+            "when_to_use must not replace description",
+        )
+
+    def test_published_design_missing_resource_map_fails(self) -> None:
+        self.assertFixtureFails(
+            "published-design/missing-resource-map",
+            "packaged resources require a '## Resource map' section",
+        )
+
+    def test_published_design_resource_map_must_name_every_resource(self) -> None:
+        self.assertFixtureFails(
+            "published-design/resource-map-missing-resource",
+            "Resource map must name packaged resource 'references/detail.md'",
+        )
+
+    def test_published_design_packaged_script_with_map_passes(self) -> None:
+        self.assertFixturePasses("published-design/packaged-script-valid")
+
+    def test_published_design_packaged_script_requires_failure_behavior(self) -> None:
+        self.assertFixtureFails(
+            "published-design/packaged-script-missing-failure",
+            "packaged script 'scripts/check.py' map entry must describe failure behavior",
+        )
+
+    def test_published_design_repository_root_script_dependency_fails(self) -> None:
+        self.assertFixtureFails(
+            "published-design/required-root-script",
+            "required repository-root dependency",
+        )
+
+    def test_published_design_repository_root_script_command_dependency_fails(self) -> None:
+        self.assertFixtureFails(
+            "published-design/required-root-script-command",
+            "required repository-root dependency by command wording: scripts/validate-internal.py",
+        )
+
+    def test_published_design_packaged_script_resource_map_passes(self) -> None:
+        self.assertFixturePasses("published-design/packaged-script-resource-map")
+
+    def test_published_skill_resource_map_copy_read_run_classes_pass(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            skill_dir = self.write_resource_integrity_skill(
+                Path(temporary),
+                resource_entries="""\
+                - COPY `assets/skeleton.md` when creating the output structure.
+                  Fill all fields and do not emit unfilled placeholders.
+                - READ `references/guidance.md` when reviewing domain guidance.
+                - RUN `scripts/check.py` when deterministic checking is needed.
+                  Input: repository root path.
+                  Output: zero exit code or diagnostic output.
+                  Failure: nonzero exit code blocks the check.
+                """,
+                resources={
+                    "assets/skeleton.md": "# Skeleton\n",
+                    "references/guidance.md": "# Guidance\n",
+                    "scripts/check.py": "print('ok')\n",
+                },
+            )
+            result = run_validator(skill_dir)
+            self.assertEqual(
+                result.returncode,
+                0,
+                msg=f"expected mapped resources to pass\nstdout:\n{result.stdout}\nstderr:\n{result.stderr}",
+            )
+
+    def assertResourceIntegritySkillFails(
+        self,
+        *,
+        resource_entries: str,
+        expected_text: str,
+        resources: dict[str, str] | None = None,
+        body_extra: str = "",
+        skill_name: str = "resource-integrity-fixture",
+    ) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            skill_dir = self.write_resource_integrity_skill(
+                Path(temporary),
+                resource_entries=resource_entries,
+                resources=resources,
+                body_extra=body_extra,
+                skill_name=skill_name,
+            )
+            result = run_validator(skill_dir)
+            combined_output = f"{result.stdout}\n{result.stderr}"
+            self.assertNotEqual(
+                result.returncode,
+                0,
+                msg=f"expected resource-integrity fixture to fail\nstdout:\n{result.stdout}\nstderr:\n{result.stderr}",
+            )
+            self.assertIn(expected_text, combined_output)
+
+    def test_published_skill_resource_map_copy_must_point_to_assets(self) -> None:
+        self.assertResourceIntegritySkillFails(
+            resource_entries="""\
+            - COPY `references/guidance.md` when creating output.
+            """,
+            resources={"references/guidance.md": "# Guidance\n"},
+            expected_text="Resource map entry 'COPY references/guidance.md' must point to assets/",
+        )
+
+    def test_published_skill_resource_map_read_must_point_to_references(self) -> None:
+        self.assertResourceIntegritySkillFails(
+            resource_entries="""\
+            - READ `assets/skeleton.md` when reviewing guidance.
+            """,
+            resources={"assets/skeleton.md": "# Skeleton\n"},
+            expected_text="Resource map entry 'READ assets/skeleton.md' must point to references/",
+        )
+
+    def test_published_skill_resource_map_run_must_point_to_scripts(self) -> None:
+        self.assertResourceIntegritySkillFails(
+            resource_entries="""\
+            - RUN `assets/check.md` when checking output.
+            """,
+            resources={"assets/check.md": "# Check\n"},
+            expected_text="Resource map entry 'RUN assets/check.md' must point to scripts/",
+        )
+
+    def test_published_skill_resource_map_rejects_templates_class(self) -> None:
+        self.assertResourceIntegritySkillFails(
+            resource_entries="""\
+            - COPY `templates/architecture.md` when creating output.
+            """,
+            resources={"templates/architecture.md": "# Architecture\n"},
+            expected_text="Resource map entry 'COPY templates/architecture.md' must point to assets/",
+        )
+
+    def test_published_skill_resource_map_rejects_missing_mapped_resource(self) -> None:
+        self.assertResourceIntegritySkillFails(
+            resource_entries="""\
+            - COPY `assets/missing.md` when creating output.
+            """,
+            expected_text="mapped resource 'assets/missing.md' does not exist in canonical skill source",
+        )
+
+    def test_published_skill_resource_map_rejects_path_traversal(self) -> None:
+        self.assertResourceIntegritySkillFails(
+            resource_entries="""\
+            - READ `../references/escape.md` when reviewing guidance.
+            """,
+            expected_text="mapped resource path '../references/escape.md' must be relative to the skill root and stay inside it",
+        )
+
+    def test_published_skill_resource_map_rejects_absolute_path(self) -> None:
+        self.assertResourceIntegritySkillFails(
+            resource_entries="""\
+            - RUN `/tmp/check.py` when checking output.
+            """,
+            expected_text="mapped resource path '/tmp/check.py' must be relative to the skill root and stay inside it",
+        )
+
+    def test_published_skill_legacy_template_loading_instruction_fails(self) -> None:
+        cases = [
+            ("Use templates/architecture.md when relevant.", "templates/architecture.md"),
+            ("Use templates/architecture.md when available.", "templates/architecture.md"),
+            ("Read references/diagram-conventions.md when needed.", "references/diagram-conventions.md"),
+            ("Copy assets/architecture-skeleton.md if present.", "assets/architecture-skeleton.md"),
+            ("Run scripts/render-diagram.py when relevant.", "scripts/render-diagram.py"),
+        ]
+        for instruction, resource_path in cases:
+            with self.subTest(instruction=instruction):
+                self.assertResourceIntegritySkillFails(
+                    resource_entries="""\
+                    - READ `references/guidance.md` when reviewing guidance.
+                    """,
+                    resources={"references/guidance.md": "# Guidance\n"},
+                    body_extra=instruction,
+                    expected_text=(
+                        f"unmapped skill-local resource reference `{resource_path}`; "
+                        "declare it in `## Resource map`, migrate it to an approved "
+                        "resource class, or remove the instruction"
+                    ),
+                )
+
+    def test_published_skill_legacy_lint_avoids_examples_and_docs_paths(self) -> None:
+        cases = [
+            "Use the project-provided templates/architecture.md when relevant.",
+            "Use templates/custom.md provided by the project.",
+            "Read the repository-root templates/architecture.md when available.",
+            "Read references/policy.md supplied by the repository.",
+            "Use the user-provided references/diagram-conventions.md.",
+            "Example path: templates/architecture.md",
+            "Illustrative resource: references/diagram.md",
+            "The generated artifact may contain the string templates/architecture.md.",
+            "Inspect docs/templates/architecture.md when that artifact is the review target.",
+            """\
+            ```text
+            Use templates/architecture.md in a customer artifact example.
+            ```
+            """,
+            "Customer projects may contain `assets/example.png` as normal data.",
+        ]
+        for instruction in cases:
+            with self.subTest(instruction=instruction):
+                with tempfile.TemporaryDirectory() as temporary:
+                    skill_dir = self.write_resource_integrity_skill(
+                        Path(temporary),
+                        resource_entries="""\
+                        - READ `references/guidance.md` when reviewing guidance.
+                        """,
+                        resources={"references/guidance.md": "# Guidance\n"},
+                        body_extra=f"""\
+                        Artifact examples may mention `docs/changes/example/review-log.md`.
+
+                        {instruction}
+                        """,
+                    )
+                    result = run_validator(skill_dir)
+                    self.assertEqual(
+                        result.returncode,
+                        0,
+                        msg=f"expected non-resource example to pass\nstdout:\n{result.stdout}\nstderr:\n{result.stderr}",
+                    )
+
+    def test_published_skill_legacy_lint_checks_each_reference_on_mixed_line(self) -> None:
+        cases = [
+            (
+                "Use the user-provided references/external.md and templates/architecture.md.",
+                "templates/architecture.md",
+                "references/external.md",
+            ),
+            (
+                """\
+                Use the user-provided references/external.md and
+                templates/architecture.md when relevant.
+                """,
+                "templates/architecture.md",
+                "references/external.md",
+            ),
+            (
+                """\
+                Use templates/architecture.md when relevant and the user-provided
+                references/external.md.
+                """,
+                "templates/architecture.md",
+                "references/external.md",
+            ),
+            (
+                """\
+                - Use the user-provided references/external.md and
+                  templates/architecture.md when relevant.
+                """,
+                "templates/architecture.md",
+                "references/external.md",
+            ),
+            (
+                """\
+                - Use templates/architecture.md when relevant and
+                  the user-provided references/external.md.
+                """,
+                "templates/architecture.md",
+                "references/external.md",
+            ),
+            (
+                "Use the user-provided references/a.md and references/b.md.",
+                "references/b.md",
+                "references/a.md",
+            ),
+            (
+                "Example path: references/example.md; use templates/architecture.md.",
+                "templates/architecture.md",
+                "references/example.md",
+            ),
+        ]
+        for instruction, reported_path, suppressed_path in cases:
+            with self.subTest(instruction=instruction):
+                with tempfile.TemporaryDirectory() as temporary:
+                    skill_dir = self.write_resource_integrity_skill(
+                        Path(temporary),
+                        resource_entries="""\
+                        - READ `references/guidance.md` when reviewing guidance.
+                        """,
+                        resources={"references/guidance.md": "# Guidance\n"},
+                        body_extra=instruction,
+                    )
+                    result = run_validator(skill_dir)
+                    combined_output = f"{result.stdout}\n{result.stderr}"
+                    self.assertNotEqual(
+                        result.returncode,
+                        0,
+                        msg=f"expected mixed reference fixture to fail\nstdout:\n{result.stdout}\nstderr:\n{result.stderr}",
+                    )
+                    self.assertIn(
+                        f"unmapped skill-local resource reference `{reported_path}`",
+                        combined_output,
+                    )
+                    self.assertNotIn(
+                        f"unmapped skill-local resource reference `{suppressed_path}`",
+                        combined_output,
+                    )
+
+    def test_published_skill_legacy_lint_keeps_instruction_boundaries(self) -> None:
+        cases = [
+            """\
+            - Use the user-provided references/external.md.
+            - The generated artifact may contain the string templates/architecture.md.
+            """,
+            """\
+            1. Use the user-provided references/external.md.
+            2. The generated artifact may contain templates/architecture.md.
+            """,
+            """\
+            Use the user-provided references/external.md.
+
+            The generated artifact may contain templates/architecture.md.
+            """,
+            """\
+            Use the user-provided references/external.md.
+
+            ## Output example
+
+            The generated artifact may contain templates/architecture.md.
+            """,
+            """\
+            Use the user-provided references/external.md.
+
+            ```md
+            Use templates/architecture.md.
+            ```
+            """,
+        ]
+        for instruction in cases:
+            with self.subTest(instruction=instruction):
+                with tempfile.TemporaryDirectory() as temporary:
+                    skill_dir = self.write_resource_integrity_skill(
+                        Path(temporary),
+                        resource_entries="""\
+                        - READ `references/guidance.md` when reviewing guidance.
+                        """,
+                        resources={"references/guidance.md": "# Guidance\n"},
+                        body_extra=instruction,
+                    )
+                    result = run_validator(skill_dir)
+                    self.assertEqual(
+                        result.returncode,
+                        0,
+                        msg=f"expected independent instruction boundaries to pass\nstdout:\n{result.stdout}\nstderr:\n{result.stderr}",
+                    )
+
+    def test_published_skill_legacy_lint_ignores_resource_map_entries(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            skill_dir = self.write_resource_integrity_skill(
+                Path(temporary),
+                resource_entries="""\
+                - COPY `assets/architecture-skeleton.md` when authoring architecture.
+                """,
+                resources={"assets/architecture-skeleton.md": "# Architecture\n"},
+            )
+            result = run_validator(skill_dir)
+            self.assertEqual(
+                result.returncode,
+                0,
+                msg=f"expected Resource map entries to stay owned by mapped validation\nstdout:\n{result.stdout}\nstderr:\n{result.stderr}",
+            )
+
+    def test_published_skill_legacy_lint_allows_individually_qualified_references(self) -> None:
+        cases = [
+            "Use the user-provided references/external.md and the project-provided templates/custom.md.",
+            "Use the user-provided references/external.md and templates/custom.md provided by the project.",
+        ]
+        for instruction in cases:
+            with self.subTest(instruction=instruction):
+                with tempfile.TemporaryDirectory() as temporary:
+                    skill_dir = self.write_resource_integrity_skill(
+                        Path(temporary),
+                        resource_entries="""\
+                        - READ `references/guidance.md` when reviewing guidance.
+                        """,
+                        resources={"references/guidance.md": "# Guidance\n"},
+                        body_extra=instruction,
+                    )
+                    result = run_validator(skill_dir)
+                    self.assertEqual(
+                        result.returncode,
+                        0,
+                        msg=f"expected individually qualified references to pass\nstdout:\n{result.stdout}\nstderr:\n{result.stderr}",
+                    )
+
+    def test_published_skill_architecture_legacy_references_fail_after_m3(self) -> None:
+        self.assertResourceIntegritySkillFails(
+            resource_entries="""\
+            - READ `references/guidance.md` when reviewing guidance.
+            """,
+            resources={"references/guidance.md": "# Guidance\n"},
+            body_extra=(
+                "Use `templates/architecture.md` for the full 12-section arc42 structure. "
+                "Use `templates/diagram-styles.mmd` for Mermaid flowchart or graph C4 role styles. "
+                "Use `templates/adr.md` for ADR structure."
+            ),
+            skill_name="architecture",
+            expected_text="architecture: unmapped skill-local resource reference `templates/architecture.md`",
+        )
+
+        self.assertResourceIntegritySkillFails(
+            resource_entries="""\
+            - READ `references/guidance.md` when reviewing guidance.
+            """,
+            resources={"references/guidance.md": "# Guidance\n"},
+            body_extra="Use templates/architecture.md when relevant.",
+            expected_text="resource-integrity-fixture: unmapped skill-local resource reference `templates/architecture.md`",
+        )
+
+        self.assertResourceIntegritySkillFails(
+            resource_entries="""\
+            - READ `references/guidance.md` when reviewing guidance.
+            """,
+            resources={"references/guidance.md": "# Guidance\n"},
+            body_extra="Use templates/unapproved.md when relevant.",
+            skill_name="architecture",
+            expected_text="architecture: unmapped skill-local resource reference `templates/unapproved.md`",
+        )
+
+        self.assertResourceIntegritySkillFails(
+            resource_entries="""\
+            - READ `references/guidance.md` when reviewing guidance.
+            """,
+            resources={"references/guidance.md": "# Guidance\n"},
+            body_extra="Use the user-provided references/external.md and templates/architecture.md when relevant.",
+            skill_name="architecture",
+            expected_text="architecture: unmapped skill-local resource reference `templates/architecture.md`",
+        )
+
+        self.assertResourceIntegritySkillFails(
+            resource_entries="""\
+            - READ `references/guidance.md` when reviewing guidance.
+            """,
+            resources={"references/guidance.md": "# Guidance\n"},
+            body_extra="""\
+            Use `templates/architecture.md` for the full 12-section arc42 structure. Use `templates/diagram-styles.mmd` for Mermaid flowchart or graph C4 role styles. Use `templates/adr.md` for ADR structure.
+            - Use templates/unapproved.md when relevant.
+            """,
+            skill_name="architecture",
+            expected_text="architecture: unmapped skill-local resource reference `templates/unapproved.md`",
+        )
+
+    def test_current_architecture_resource_map_uses_packaged_assets(self) -> None:
+        root = ROOT / "skills/design"
+        body = (root / "SKILL.md").read_text()
+        for name in ("legacy-architecture-skeleton.md", "legacy-adr-skeleton.md", "diagram-styles.mmd"):
+            self.assertIn(f"COPY `assets/{name}`", body)
+            self.assertTrue((root / "assets" / name).is_file())
+        for private in ("templates/architecture.md", "templates/adr.md", "templates/diagram-styles.mmd"):
+            self.assertNotIn(private, body)
+        self.assertEqual(run_validator(root).returncode, 0)
+
+    def test_published_design_plan_asset_pilot_valid_fixture_passes(self) -> None:
+        self.assertFixturePasses("published-design/plan-assets-valid")
+
+    def test_published_design_plan_asset_count_is_exact(self) -> None:
+        self.assertFixtureFails(
+            "published-design/plan-assets-missing-approved-asset",
+            "plan asset pilot must ship exactly approved assets",
+        )
+
+    def test_published_design_plan_asset_metadata_required(self) -> None:
+        self.assertFixtureFails(
+            "published-design/plan-assets-missing-metadata",
+            "asset metadata missing required field 'Template'",
+        )
+
+    def test_published_design_plan_asset_status_must_be_normative(self) -> None:
+        self.assertFixtureFails(
+            "published-design/plan-assets-optional-status",
+            "plan asset pilot asset 'assets/milestone.md' must use normative status",
+        )
+
+    def test_published_design_plan_asset_resource_map_requires_copy(self) -> None:
+        self.assertFixtureFails(
+            "published-design/plan-assets-non-copy-verb",
+            "Resource map entry for 'assets/milestone.md' must use literal COPY",
+        )
+
+    def test_published_design_plan_asset_resource_map_requires_trigger_and_fields(self) -> None:
+        self.assertFixtureFails(
+            "published-design/plan-assets-missing-fields",
+            "Resource map entry for 'assets/milestone.md' must name fields or structures to fill",
+        )
+
+    def test_published_design_plan_asset_resource_map_requires_every_asset(self) -> None:
+        self.assertFixtureFails(
+            "published-design/plan-assets-missing-resource-map-entry",
+            "Resource map must name packaged resource 'assets/decision-log-row.md'",
+        )
+
+    def test_published_design_plan_asset_placeholders_required(self) -> None:
+        self.assertFixtureFails(
+            "published-design/plan-assets-missing-placeholder",
+            "asset 'assets/milestone.md' must include a visible placeholder",
+        )
+
+    def test_published_design_plan_asset_root_dependency_fails(self) -> None:
+        self.assertFixtureFails(
+            "published-design/plan-assets-root-dependency",
+            "asset 'assets/milestone.md' must not require repository-root dependency",
+        )
+
+    def test_published_design_plan_asset_fingerprint_mismatch_fails(self) -> None:
+        self.assertFixtureFails(
+            "published-design/plan-assets-fingerprint-mismatch",
+            "asset 'assets/milestone.md' structural fingerprint mismatch",
+        )
+
+    def test_published_design_plan_skeleton_section_set_mismatch_fails(self) -> None:
+        self.assertFixtureFails(
+            "published-design/plan-assets-section-mismatch",
+            "plan-skeleton section set does not match SKILL.md expected sections",
+        )
+
+    def test_published_plan_inlines_stable_handoff_pointer(self) -> None:
+        plan_dir = ROOT / "skills" / "plan"
+        skeleton = (plan_dir / "assets" / "plan-skeleton.md").read_text(
+            encoding="utf-8"
+        )
+
+        self.assertIn("## Current Handoff Summary", skeleton)
+        self.assertIn(
+            "- Owning change record: <docs/changes/change-id/change.json>",
+            skeleton,
+        )
+        self.assertFalse((plan_dir / "assets" / "current-handoff-summary.md").exists())
+
+    def test_ci_maintenance_contract_validates_canonical_skill(self) -> None:
+        result = run_validator(ROOT / "skills" / "ci-maintenance" / "SKILL.md")
+        self.assertEqual(
+            result.returncode,
+            0,
+            msg=f"expected canonical ci-maintenance skill to pass\nstdout:\n{result.stdout}\nstderr:\n{result.stderr}",
+        )
+
+    def test_ci_maintenance_contract_rejects_stale_identifier_surfaces(self) -> None:
+        def mutate(skill_dir: Path) -> None:
+            skill_path = skill_dir / "SKILL.md"
+            text = skill_path.read_text(encoding="utf-8")
+            skill_path.write_text(
+                text.replace("role_name: ci-maintenance", "role_name: ci"),
+                encoding="utf-8",
+            )
+
+        self.assertCiMaintenanceFixtureFails(
+            mutate,
+            "stale ci-maintenance identifier",
+        )
+
+    def test_ci_maintenance_contract_rejects_missing_schema_version(self) -> None:
+        def mutate(skill_dir: Path) -> None:
+            skill_path = skill_dir / "SKILL.md"
+            text = skill_path.read_text(encoding="utf-8")
+            skill_path.write_text(
+                text.replace("schema-version: skill-readability-v1\n", ""),
+                encoding="utf-8",
+            )
+
+        self.assertCiMaintenanceFixtureFails(
+            mutate,
+            "ci-maintenance frontmatter must include schema-version",
+        )
+
+    def test_ci_maintenance_contract_requires_resource_map_verbs(self) -> None:
+        def mutate(skill_dir: Path) -> None:
+            skill_path = skill_dir / "SKILL.md"
+            text = skill_path.read_text(encoding="utf-8")
+            skill_path.write_text(
+                text.replace(
+                    "- READ `references/risk-to-check-map.md`",
+                    "- COPY `references/risk-to-check-map.md`",
+                ),
+                encoding="utf-8",
+            )
+
+        self.assertCiMaintenanceFixtureFails(
+            mutate,
+            "Resource map entry for 'references/risk-to-check-map.md' must use literal READ",
+        )
+
+    def test_ci_maintenance_contract_requires_skeleton_defaults(self) -> None:
+        def mutate(skill_dir: Path) -> None:
+            skeleton_path = skill_dir / "assets" / "github-workflow-skeleton.yml"
+            text = skeleton_path.read_text(encoding="utf-8")
+            skeleton_path.write_text(
+                text.replace("permissions:\n  contents: read\n\n", ""),
+                encoding="utf-8",
+            )
+
+        self.assertCiMaintenanceFixtureFails(
+            mutate,
+            "workflow skeleton must include least-privilege permissions",
+        )
+
+    def test_ci_maintenance_contract_requires_risk_map_split_and_fail_safe(self) -> None:
+        def mutate(skill_dir: Path) -> None:
+            risk_map_path = skill_dir / "references" / "risk-to-check-map.md"
+            text = risk_map_path.read_text(encoding="utf-8")
+            risk_map_path.write_text(
+                text.replace(
+                    "Unmapped changed surfaces are not no-risk surfaces. Stop for reviewer judgment, route to a conservative boundary check, or both. Missing, stale, incomplete, or conflicting command and placement evidence blocks coverage-sensitive work.\n\n",
+                    "",
+                ),
+                encoding="utf-8",
+            )
+
+        self.assertCiMaintenanceFixtureFails(
+            mutate,
+            "risk map must include unmapped-surface fail-safe",
+        )
+
+    def test_ci_maintenance_contract_requires_review_guardrails_and_command_blocker(self) -> None:
+        def mutate(skill_dir: Path) -> None:
+            skill_path = skill_dir / "SKILL.md"
+            text = skill_path.read_text(encoding="utf-8")
+            skill_path.write_text(
+                text.replace("overbroad permissions", "permission concerns").replace(
+                    "report a blocker instead of guessing",
+                    "continue with a likely command",
+                ),
+                encoding="utf-8",
+            )
+
+        self.assertCiMaintenanceFixtureFails(
+            mutate,
+            "ci-maintenance must flag overbroad permissions during workflow review",
+        )
+
+    def test_ci_maintenance_contract_requires_bounded_pr_repair_guardrails(self) -> None:
+        def mutate(skill_dir: Path) -> None:
+            skill_path = skill_dir / "SKILL.md"
+            text = skill_path.read_text(encoding="utf-8")
+            skill_path.write_text(
+                text.replace(
+                    "Use `bounded-pr-ci-repair` only for an already-open PR with an exact failing run and head",
+                    "Use repair mode for a failing PR",
+                ),
+                encoding="utf-8",
+            )
+
+        self.assertCiMaintenanceFixtureFails(
+            mutate,
+            "ci-maintenance must flag bounded PR repair eligibility",
+        )
+
+
+    def test_current_generated_asset_presence_passes_for_complete_output(self) -> None:
+        fixture = FIXTURES / "published-design/generated-output-presence/valid"
+        errors = skill_validation.validate_generated_asset_presence(
+            skill_name="proposal",
+            canonical_skill_dir=fixture / "canonical/proposal",
+            generated_skill_dir=fixture / "generated/proposal",
+            surface_label="generated skill mirror",
+        )
+
+        self.assertEqual(errors, [])
+
+    def test_current_generated_asset_presence_fails_for_missing_generated_asset(self) -> None:
+        fixture = FIXTURES / "published-design/generated-output-presence/missing-asset"
+        errors = skill_validation.validate_generated_asset_presence(
+            skill_name="proposal",
+            canonical_skill_dir=fixture / "canonical/proposal",
+            generated_skill_dir=fixture / "generated/proposal",
+            surface_label="generated skill mirror",
+        )
+
+        self.assertEqual(
+            errors,
+            [
+                "Generated output for skill 'proposal' is missing mapped asset "
+                "'assets/proposal-skeleton.md' in generated skill mirror"
+            ],
+        )
+
+    def test_current_generated_asset_presence_names_adapter_surface(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            canonical_skill_dir = self.write_asset_fixture(
+                root / "canonical",
+                "code-review",
+                {
+                    "assets/review-result-skeleton.md": self.asset_text(
+                        template="code-review-result-skeleton-v1",
+                        skill="code-review",
+                        body="## Result\n\n- Review status: <review status>\n",
+                    ),
+                    "assets/material-finding.md": self.asset_text(
+                        template="code-review-material-finding-v1",
+                        skill="code-review",
+                        body="## Finding <finding id>\n\n- Finding ID: <finding id>\n- Severity: <severity>\n",
+                    ),
+                },
+            )
+            generated_skill_dir = root / "generated-adapter" / "code-review"
+            generated_asset = generated_skill_dir / "assets/review-result-skeleton.md"
+            generated_asset.parent.mkdir(parents=True, exist_ok=True)
+            generated_asset.write_text("generated result skeleton", encoding="utf-8")
+
+            errors = skill_validation.validate_generated_asset_presence(
+                skill_name="code-review",
+                canonical_skill_dir=canonical_skill_dir,
+                generated_skill_dir=generated_skill_dir,
+                surface_label="generated adapter output",
+            )
+
+            self.assertEqual(
+                errors,
+                [
+                    "Generated output for skill 'code-review' is missing mapped asset "
+                    "'assets/material-finding.md' in generated adapter output"
+                ],
+            )
+
+
+
+
+
+
+
+
+    def test_proposal_family_asset_valid_fixture_passes(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            self.write_asset_fixture(
+                root,
+                "proposal",
+                {
+                    "assets/proposal-skeleton.md": self.proposal_family_asset_text(
+                        template="proposal-skeleton-v1",
+                        skill="proposal",
+                        body=(
+                            "## Status\n\n<status>\n\n"
+                            "## Conditional sections\n\n"
+                            "- Initial intent preservation: include when triggered by SKILL.md.\n"
+                            "- Scope budget: include when triggered by SKILL.md.\n"
+                        ),
+                    ),
+                },
+            )
+            self.write_asset_fixture(
+                root,
+                "proposal-review",
+                {
+                    "assets/review-result-skeleton.md": self.proposal_family_asset_text(
+                        template="proposal-review-result-skeleton-v1",
+                        skill="proposal-review",
+                        body=(
+                            "## Result\n\n"
+                            "- Skill: proposal-review\n"
+                            "- Review status: <review status>\n"
+                            "- Material findings: <material findings>\n"
+                            "- Recording status: <recording status>\n"
+                            "- Recording blocker: <recording blocker>\n"
+                            "- Review record: <review record>\n"
+                            "- Review log: <review log>\n"
+                            "- Review resolution: <review resolution>\n"
+                            "- Open blockers: <open blockers>\n"
+                            "- Immediate next stage: <immediate next stage>\n"
+                            "- Review dimensions: <review dimensions>\n"
+                            "- Scope-preservation result: <scope-preservation result>\n"
+                            "- Recommended edits: <recommended edits>\n"
+                            "- Recommendation: <recommendation>\n"
+                        ),
+                    ),
+                    "assets/material-finding.md": self.proposal_family_asset_text(
+                        template="proposal-review-material-finding-v1",
+                        skill="proposal-review",
+                        body=(
+                            "## Finding <finding id>\n\n"
+                            "- Finding ID: <finding id>\n"
+                            "- Severity: <severity>\n"
+                            "- Location: <location>\n"
+                            "- Evidence: <evidence>\n"
+                            "- Required outcome: <required outcome>\n"
+                            "- Safe resolution path: <safe resolution path>\n"
+                            "- needs-decision rationale: <needs-decision rationale>\n"
+                        ),
+                    ),
+                },
+            )
+
+            # Asset fixtures must also carry the current selected recording package.
+            for name, relative in skill_validation.PILOT_RECORDING_REFERENCES.items():
+                resource = root / name / relative
+                resource.parent.mkdir(parents=True, exist_ok=True)
+                resource.write_bytes((ROOT / "skills" / name / relative).read_bytes())
+                entry = root / name / "SKILL.md"
+                trigger = "governed_proposal_candidate_context" if name == "proposal" else "durable_recording_context"
+                body = entry.read_text().replace("## Resource map", f"## Resource map\n\n- READ `{relative}` when `{trigger}` is true.")
+                body += f"\n## Invocation classification\n\nClassify `{trigger}` before recording.\n"
+                entry.write_text(body + "\n## Recording boundary\n\nRequire the selected reference before governed work.\n")
+
+            result = run_validator(root)
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_proposal_review_result_skeleton_preserves_baseline_result_block(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            self.write_asset_fixture(
+                root,
+                "proposal-review",
+                {
+                    "assets/review-result-skeleton.md": self.proposal_family_asset_text(
+                        template="proposal-review-result-skeleton-v1",
+                        skill="proposal-review",
+                        body=(
+                            "# Result\n\n"
+                            "- Review status: <review status>\n"
+                            "- Material findings: <material findings>\n"
+                            "- Recording status: <recording status>\n"
+                        ),
+                    ),
+                    "assets/material-finding.md": self.proposal_family_asset_text(
+                        template="proposal-review-material-finding-v1",
+                        skill="proposal-review",
+                        body="- Severity: <severity>\n",
+                    ),
+                },
+            )
+
+            result = run_validator(root)
+            self.assertNotEqual(result.returncode, 0)
+            output = result.stdout + result.stderr
+            self.assertIn(
+                "proposal-review review-result-skeleton must include baseline heading: ## Result",
+                output,
+            )
+            self.assertIn(
+                "proposal-review review-result-skeleton must include baseline field: Skill",
+                output,
+            )
+
+    def test_proposal_review_simplification_package_contract(self) -> None:
+        skill_dir = ROOT / "skills" / "proposal-review"
+        skill_text = (skill_dir / "SKILL.md").read_text(encoding="utf-8")
+        recording = (skill_dir / "references" / "proposal-review-recording-and-settlement.md").read_text(encoding="utf-8")
+        gates = (skill_dir / "references" / "conditional-proposal-gates.md").read_text(encoding="utf-8")
+        result = (skill_dir / "assets" / "review-result-skeleton.md").read_text(encoding="utf-8")
+        for value in ("none", "advisory-durable", "formal-lifecycle", "manual", "workflow-managed-automated"):
+            self.assertIn(value, skill_text)
+        for assembly in ("PRR0-core", "PRR0G-context-gated", "PRR1-recorded", "PRR1G-recorded-context-gated"):
+            self.assertIn(assembly, skill_text)
+        for predicate in ("vision_exception_context", "standing_artifact_context", "scope_budget_context"):
+            self.assertIn(predicate, skill_text)
+            self.assertIn(predicate, gates)
+        self.assertIn("Select the exact change", recording)
+        self.assertIn("Do not edit reviewed content", recording)
+        self.assertIn("## Specialized-gate group", result)
+        self.assertIn("## Durable-recording group", result)
+        self.assertIn("## Formal-review group", result)
+        self.assertIn("## Automated-review group", result)
+        self.assertNotIn("what review status means", result.lower())
+
+    def test_proposal_family_asset_rejects_unapproved_asset_paths(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            self.write_asset_fixture(
+                root,
+                "proposal",
+                {
+                    "assets/proposal-skeleton.md": self.proposal_family_asset_text(
+                        template="proposal-skeleton-v1", skill="proposal"
+                    ),
+                    "assets/scope-budget-row.md": self.proposal_family_asset_text(
+                        template="proposal-scope-budget-row-v1", skill="proposal"
+                    ),
+                },
+            )
+
+            result = run_validator(root)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn(
+                "proposal-family asset rollout must ship exactly approved assets",
+                result.stdout + result.stderr,
+            )
+
+    def test_proposal_family_asset_resource_map_requires_copy_and_fields(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            self.write_asset_fixture(
+                root,
+                "proposal",
+                {
+                    "assets/proposal-skeleton.md": self.proposal_family_asset_text(
+                        template="proposal-skeleton-v1", skill="proposal"
+                    ),
+                },
+                resource_entries=textwrap.dedent(
+                    """\
+                    - READ `assets/proposal-skeleton.md` when creating a proposal.
+                      Do not emit unfilled placeholders.
+                    """
+                ),
+            )
+
+            result = run_validator(root)
+            output = result.stdout + result.stderr
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn(
+                "Resource map entry for 'assets/proposal-skeleton.md' must use literal COPY",
+                output,
+            )
+            self.assertIn(
+                "Resource map entry for 'assets/proposal-skeleton.md' must name fields or structures to fill",
+                output,
+            )
+
+    def test_proposal_family_asset_metadata_status_and_placeholder_required(self) -> None:
+        cases = [
+            (
+                "missing metadata",
+                self.proposal_family_asset_text(
+                    template="proposal-skeleton-v1",
+                    skill="proposal",
+                    include_metadata=False,
+                ),
+                "asset metadata missing required field 'Template'",
+            ),
+            (
+                "invalid status",
+                self.proposal_family_asset_text(
+                    template="proposal-skeleton-v1",
+                    skill="proposal",
+                    status="example",
+                ),
+                "proposal-family asset 'assets/proposal-skeleton.md' Template status must be one of normative, optional",
+            ),
+            (
+                "missing placeholder",
+                self.proposal_family_asset_text(
+                    template="proposal-skeleton-v1",
+                    skill="proposal",
+                    body="## Status\n\nStatus field.\n",
+                ),
+                "asset 'assets/proposal-skeleton.md' must include a visible placeholder",
+            ),
+            (
+                "filler prose",
+                self.proposal_family_asset_text(
+                    template="proposal-skeleton-v1",
+                    skill="proposal",
+                    body="your text here\n",
+                ),
+                "asset 'assets/proposal-skeleton.md' must not use filler placeholder text",
+            ),
+            (
+                "root dependency",
+                self.proposal_family_asset_text(
+                    template="proposal-skeleton-v1",
+                    skill="proposal",
+                    body="Run scripts/internal-check.py before filling <field>.\n",
+                ),
+                "asset 'assets/proposal-skeleton.md' must not require repository-root dependency",
+            ),
+        ]
+
+        for name, asset_text, expected in cases:
+            with self.subTest(name=name), tempfile.TemporaryDirectory() as temporary:
+                root = Path(temporary)
+                self.write_asset_fixture(
+                    root,
+                    "proposal",
+                    {
+                        "assets/proposal-skeleton.md": asset_text,
+                    },
+                )
+
+                result = run_validator(root)
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn(expected, result.stdout + result.stderr)
+
+    def test_proposal_review_asset_policy_field_labels_fail(self) -> None:
+        for forbidden_label in (
+            "Severity policy",
+            "Material-finding sufficiency",
+            "Safe-resolution decision rule",
+            "Recording-status rules",
+            "Scope-preservation rules",
+            "Scope-budget review",
+            "Vision fit review",
+            "Standing artifact gate review",
+            "Review dimension guidance",
+        ):
+            with self.subTest(forbidden_label=forbidden_label):
+                with tempfile.TemporaryDirectory() as temporary:
+                    root = Path(temporary)
+                    self.write_asset_fixture(
+                        root,
+                        "proposal-review",
+                        {
+                            "assets/review-result-skeleton.md": self.proposal_family_asset_text(
+                                template="proposal-review-result-skeleton-v1",
+                                skill="proposal-review",
+                                body=f"- {forbidden_label}: <policy>\n",
+                            ),
+                            "assets/material-finding.md": self.proposal_family_asset_text(
+                                template="proposal-review-material-finding-v1",
+                                skill="proposal-review",
+                                body="- Severity: <severity>\n",
+                            ),
+                        },
+                    )
+
+                    result = run_validator(root)
+                    self.assertNotEqual(result.returncode, 0)
+                    self.assertIn(
+                        "proposal-review asset 'assets/review-result-skeleton.md' must not contain review-policy labels or guidance",
+                        result.stdout + result.stderr,
+                    )
+
+    def test_proposal_review_asset_non_allowlisted_field_labels_fail(self) -> None:
+        for label in (
+            "Architecture impact",
+            "Testability notes",
+            "Rollout realism",
+            "Strategic value",
+        ):
+            with self.subTest(label=label), tempfile.TemporaryDirectory() as temporary:
+                root = Path(temporary)
+                self.write_asset_fixture(
+                    root,
+                    "proposal-review",
+                    {
+                        "assets/review-result-skeleton.md": self.proposal_family_asset_text(
+                            template="proposal-review-result-skeleton-v1",
+                            skill="proposal-review",
+                            body=f"- {label}: <notes>\n",
+                        ),
+                        "assets/material-finding.md": self.proposal_family_asset_text(
+                            template="proposal-review-material-finding-v1",
+                            skill="proposal-review",
+                            body="- Severity: <severity>\n",
+                        ),
+                    },
+                )
+
+                result = run_validator(root)
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn(
+                    "proposal-review asset 'assets/review-result-skeleton.md' field label is not in the approved structural-label allowlist: "
+                    + label,
+                    result.stdout + result.stderr,
+                )
+
+    def test_proposal_review_asset_policy_prose_fails(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            self.write_asset_fixture(
+                root,
+                "proposal-review",
+                {
+                    "assets/review-result-skeleton.md": self.proposal_family_asset_text(
+                        template="proposal-review-result-skeleton-v1",
+                        skill="proposal-review",
+                        body="This asset MUST define severity policy for reviewers.\n<field>\n",
+                    ),
+                    "assets/material-finding.md": self.proposal_family_asset_text(
+                        template="proposal-review-material-finding-v1",
+                        skill="proposal-review",
+                        body="- Severity: <severity>\n",
+                    ),
+                },
+            )
+
+            result = run_validator(root)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn(
+                "proposal-review asset 'assets/review-result-skeleton.md' must not contain review-policy labels or guidance",
+                result.stdout + result.stderr,
+            )
+
+    def test_proposal_family_generated_asset_presence_names_adapter_surface(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            canonical_skill_dir = self.write_asset_fixture(
+                root / "canonical",
+                "proposal-review",
+                {
+                    "assets/review-result-skeleton.md": self.proposal_family_asset_text(
+                        template="proposal-review-result-skeleton-v1",
+                        skill="proposal-review",
+                        body="- Review status: <review status>\n",
+                    ),
+                    "assets/material-finding.md": self.proposal_family_asset_text(
+                        template="proposal-review-material-finding-v1",
+                        skill="proposal-review",
+                        body="- Severity: <severity>\n",
+                    ),
+                },
+            )
+            generated_skill_dir = root / "generated-adapter" / "proposal-review"
+            generated_asset = generated_skill_dir / "assets/review-result-skeleton.md"
+            generated_asset.parent.mkdir(parents=True, exist_ok=True)
+            generated_asset.write_text("generated result skeleton", encoding="utf-8")
+
+            errors = skill_validation.validate_generated_asset_presence(
+                skill_name="proposal-review",
+                canonical_skill_dir=canonical_skill_dir,
+                generated_skill_dir=generated_skill_dir,
+                surface_label="generated adapter output",
+            )
+
+            self.assertEqual(
+                errors,
+                [
+                    "Generated output for skill 'proposal-review' is missing mapped asset "
+                    "'assets/material-finding.md' in generated adapter output"
+                ],
+            )
+
+    def test_review_family_asset_resource_map_requires_finding_id_confirmation(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            self.write_asset_fixture(
+                root,
+                "code-review",
+                {
+                    "assets/material-finding.md": self.review_family_asset_text(
+                        template="code-review-material-finding-v1",
+                        skill="code-review",
+                        body=(
+                            "## Finding <finding id>\n\n"
+                            "- Finding ID: <finding id>\n"
+                            "- Severity: <severity>\n"
+                            "- Location: <location>\n"
+                            "- Evidence: <evidence>\n"
+                            "- Required outcome: <required outcome>\n"
+                            "- Safe resolution path: <safe resolution path>\n"
+                            "- needs-decision rationale: <needs-decision rationale>\n"
+                        ),
+                    ),
+                    "assets/review-result-skeleton.md": self.review_family_asset_text(
+                        template="code-review-result-skeleton-v1",
+                        skill="code-review",
+                        body="- Review status: <review status>\n",
+                    ),
+                },
+                resource_entries=textwrap.dedent(
+                    """\
+                    - COPY `assets/material-finding.md` when recording each material finding.
+                      Fill: Finding ID, Severity, Location, Evidence, Required outcome, Safe resolution path.
+                      Do not emit unfilled placeholders.
+                    - COPY `assets/review-result-skeleton.md` when recording the review result.
+                      Fill: review result fields.
+                      Do not emit unfilled placeholders.
+                    """
+                ),
+            )
+
+            result = run_validator(root)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn(
+                "Resource map entry for 'assets/material-finding.md' must instruct agents to confirm the literal Finding ID line before linking",
+                result.stdout + result.stderr,
+            )
+
+    def test_code_review_family_assets_are_installed_and_preserve_status_vocabulary(self) -> None:
+        skills_dir = ROOT / "skills"
+        skill_path = skills_dir / "code-review" / "SKILL.md"
+        skill_text = skill_path.read_text(encoding="utf-8")
+
+        self.assertIn("- COPY `assets/material-finding.md`", skill_text)
+        self.assertIn("- COPY `assets/review-result-skeleton.md`", skill_text)
+        self.assertIn("Finding ID:", skill_text)
+
+        material_finding = (skills_dir / "code-review" / "assets" / "material-finding.md").read_text(
+            encoding="utf-8"
+        )
+        for label in [
+            "Finding ID:",
+            "Severity:",
+            "Location:",
+            "Evidence:",
+            "Required outcome:",
+            "Safe resolution path:",
+            "needs-decision rationale:",
+        ]:
+            self.assertIn(label, material_finding)
+
+        result_skeleton = (
+            skills_dir / "code-review" / "assets" / "review-result-skeleton.md"
+        ).read_text(encoding="utf-8")
+        self.assertIn(
+            "approved | changes-requested | blocked | inconclusive",
+            result_skeleton,
+        )
+        self.assertIn("- Reviewed milestone:", result_skeleton)
+        self.assertIn("- Milestone closeout:", result_skeleton)
+        self.assertNotIn("clean-with-notes", result_skeleton)
+
+    def test_proposal_review_family_assets_preserve_gate_status_vocabulary(self) -> None:
+        skills_dir = ROOT / "skills"
+        skill_text = (skills_dir / "proposal-review" / "SKILL.md").read_text(encoding="utf-8")
+
+        self.assertIn("- COPY `assets/material-finding.md`", skill_text)
+        self.assertIn("- COPY `assets/review-result-skeleton.md`", skill_text)
+        self.assertIn("Finding ID:", skill_text)
+
+        material_finding = (
+            skills_dir / "proposal-review" / "assets" / "material-finding.md"
+        ).read_text(encoding="utf-8")
+        code_review_finding = (
+            skills_dir / "code-review" / "assets" / "material-finding.md"
+        ).read_text(encoding="utf-8")
+        for label in [
+            "Finding ID:",
+            "Severity:",
+            "Location:",
+            "Evidence:",
+            "Required outcome:",
+            "Safe resolution path:",
+            "needs-decision rationale:",
+        ]:
+            self.assertIn(label, material_finding)
+        self.assertEqual(
+            skill_validation._review_family_material_finding_field_block(material_finding),
+            skill_validation._review_family_material_finding_field_block(code_review_finding),
+        )
+
+        result_skeleton = (
+            skills_dir / "proposal-review" / "assets" / "review-result-skeleton.md"
+        ).read_text(encoding="utf-8")
+        self.assertIn("approved | changes-requested | blocked | inconclusive", result_skeleton)
+        self.assertNotIn("clean-with-notes", result_skeleton)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    def test_review_family_material_finding_requires_parser_owned_labels(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            self.write_asset_fixture(
+                root,
+                "code-review",
+                {
+                    "assets/material-finding.md": self.review_family_asset_text(
+                        template="code-review-material-finding-v1",
+                        skill="code-review",
+                        body=(
+                            "## Finding <finding id>\n\n"
+                            "- Finding: <finding id>\n"
+                            "- Severity: <severity>\n"
+                            "- Location: <location>\n"
+                            "- Evidence: <evidence>\n"
+                            "- Required outcome: <required outcome>\n"
+                            "- Safe resolution path: <safe resolution path>\n"
+                        ),
+                    ),
+                    "assets/review-result-skeleton.md": self.review_family_asset_text(
+                        template="code-review-result-skeleton-v1",
+                        skill="code-review",
+                        body="- Review status: <review status>\n",
+                    ),
+                },
+            )
+
+            result = run_validator(root)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn(
+                "review-family material-finding must include parser-owned label 'Finding ID:'",
+                result.stdout + result.stderr,
+            )
+
+    def test_review_family_material_finding_field_block_must_match_across_skills(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            common_finding = (
+                "## Finding <finding id>\n\n"
+                "- Finding ID: <finding id>\n"
+                "- Severity: <severity>\n"
+                "- Location: <location>\n"
+                "- Evidence: <evidence>\n"
+                "- Required outcome: <required outcome>\n"
+                "- Safe resolution path: <safe resolution path>\n"
+                "- needs-decision rationale: <needs-decision rationale>\n"
+            )
+            changed_finding = common_finding.replace(
+                "- Evidence: <evidence>\n- Required outcome: <required outcome>\n",
+                "- Required outcome: <required outcome>\n- Evidence: <evidence>\n",
+            )
+            for skill_name, finding_body in (
+                ("code-review", common_finding),
+                ("proposal-review", changed_finding),
+            ):
+                result_body = "- Review status: <review status>\n"
+                if skill_name == "proposal-review":
+                    result_body = "## Result\n\n- Skill: proposal-review\n- Review status: <review status>\n"
+                self.write_asset_fixture(
+                    root,
+                    skill_name,
+                    {
+                        "assets/material-finding.md": self.review_family_asset_text(
+                            template=f"{skill_name}-material-finding-v1",
+                            skill=skill_name,
+                            body=finding_body,
+                        ),
+                        "assets/review-result-skeleton.md": self.review_family_asset_text(
+                            template=f"{skill_name}-result-skeleton-v1",
+                            skill=skill_name,
+                            body=result_body,
+                        ),
+                    },
+                )
+
+            result = run_validator(root)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn(
+                "review-family material-finding parser-owned field block must be byte-identical across first-slice review skills",
+                result.stdout + result.stderr,
+            )
+
+    def test_review_family_asset_policy_field_labels_fail(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            self.write_asset_fixture(
+                root,
+                "code-review",
+                {
+                    "assets/material-finding.md": self.review_family_asset_text(
+                        template="code-review-material-finding-v1",
+                        skill="code-review",
+                        body="- Severity: <severity>\n",
+                    ),
+                    "assets/review-result-skeleton.md": self.review_family_asset_text(
+                        template="code-review-result-skeleton-v1",
+                        skill="code-review",
+                        body="- Severity policy: <policy>\n",
+                    ),
+                },
+            )
+
+            result = run_validator(root)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn(
+                "review-family asset 'assets/review-result-skeleton.md' must not contain review-policy labels or guidance",
+                result.stdout + result.stderr,
+            )
+
+
+    def test_skill_readability_pilot_pair_opts_into_contract(self) -> None:
+        for skill_name in ("proposal", "proposal-review"):
+            skill_path = ROOT / "skills" / skill_name / "SKILL.md"
+            result = run_validator(skill_path)
+            with self.subTest(skill=skill_name):
+                self.assertEqual(
+                    result.returncode,
+                    0,
+                    msg=(
+                        f"expected {skill_name} to satisfy the readability contract\n"
+                        f"stdout:\n{result.stdout}\nstderr:\n{result.stderr}"
+                    ),
+                )
+                body = skill_path.read_text(encoding="utf-8")
+                self.assertIn("schema-version: skill-readability-v1", body)
+                self.assertIn("## Workflow role", body)
+                self.assertIn("## Output skeleton", body)
+
+
+    def test_skill_readability_execution_review_opts_into_contract(self) -> None:
+        for skill_name in ("implement", "code-review"):
+            skill_path = ROOT / "skills" / skill_name / "SKILL.md"
+            result = run_validator(skill_path)
+            with self.subTest(skill=skill_name):
+                self.assertEqual(
+                    result.returncode,
+                    0,
+                    msg=(
+                        f"expected {skill_name} to satisfy the readability contract\n"
+                        f"stdout:\n{result.stdout}\nstderr:\n{result.stderr}"
+                    ),
+                )
+                body = skill_path.read_text(encoding="utf-8")
+                self.assertIn("schema-version: skill-readability-v1", body)
+                self.assertIn("## Workflow role", body)
+                self.assertIn("## Output skeleton", body)
+
+
+    def test_generated_output_path_is_rejected(self) -> None:
+        result = run_validator(ROOT / ".codex" / "skills")
+        combined_output = f"{result.stdout}\n{result.stderr}"
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("generated output path must not be used as authored source of truth", combined_output)
+
+
+    def test_vision_skill_defines_state_based_boundaries_and_readme_marker_contract(self) -> None:
+        root = ROOT / "skills" / "vision"
+        body = (root / "SKILL.md").read_text(encoding="utf-8")
+        body += "\n" + (root / "references" / "strategic-vision-authoring.md").read_text(encoding="utf-8")
+        body += "\n" + (root / "references" / "readme-vision-sync.md").read_text(encoding="utf-8")
+        required_terms = [
+            "name: vision",
+            "project vision and matching README front-matter",
+            "## State-Based Behavior",
+            "ordinary user intent",
+            "Do not ask users to choose `create`, `revise`, or `mirror` modes.",
+            "Do not create the initial `VISION.md` just because this skill is installed",
+            "`VISION.md` is canonical",
+            "`CONSTITUTION.md` outranks `VISION.md`",
+            "`VISION.md` outranks README front-matter",
+            "retired root `vision.md`",
+            "only supported project-vision artifact",
+            "If the user explicitly asks to establish project vision, create root `VISION.md`",
+            "<!-- vision:start -->",
+            "<!-- vision:end -->",
+            "first H1 block",
+            "Automatic marker insertion is allowed only when creating the initial `VISION.md`.",
+            "When updating an existing `VISION.md` or syncing README",
+            "missing or malformed markers stop the skill before file modification",
+            "explicitly authorizes marker insertion or skipping README mirroring",
+            "malformed, nested, or multiple vision marker pairs",
+            "Files changed:",
+            "README front-matter:",
+            "Assumptions:",
+            "Sections changed:",
+            "`VISION.md` unchanged:",
+            "secrets",
+            "credentials",
+            "private local filesystem paths",
+            "private machine names",
+            "personal data not explicitly intended for publication",
+            "must not fetch external information unless",
+            "distinguish researched facts from project assumptions",
+            "plain Markdown",
+            "rendered tables, diagrams, HTML layout, or generated assets",
+            "compact project inputs",
+            "full-file reads",
+            "summary and stable-ID first",
+            "When full-file read is required",
+        ]
+        for term in required_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, body)
+
+        forbidden_terms = [
+            "## Modes",
+            "Use exactly one mode.",
+            "Mode used:",
+            "The only authorized edit paths are `create`, `revise`, and `mirror`.",
+            "Automatic marker insertion is allowed only in `create` mode.",
+            "In `mirror` or `revise`, missing or malformed markers stop the skill before file modification",
+            "treat `vision.md` as migration input",
+            "both root `vision.md` and root `VISION.md`",
+            "neither root vision file exists",
+        ]
+        for term in forbidden_terms:
+            with self.subTest(term=term):
+                self.assertNotIn(term, body)
+
+    def test_vision_skill_quality_refinement_contract(self) -> None:
+        root = ROOT / "skills" / "vision"
+        body = (root / "SKILL.md").read_text(encoding="utf-8")
+        body += "\n" + (root / "references" / "strategic-vision-authoring.md").read_text(encoding="utf-8")
+        required_terms = [
+            "## Drafting Heuristics",
+            "alternative class or specific tool",
+            "tradeoff",
+            "pain points",
+            "checkable",
+            "observable",
+            "at least one plausible non-fit",
+            "concrete enough to block misaligned proposals",
+            "not additional `VISION.md` sections",
+            "does not require naming a specific competitor",
+            "## Edit Authorization",
+            "`CONSTITUTION.md` outranks `VISION.md`",
+            "`VISION.md` outranks README front-matter",
+            "state-based behavior",
+            "existing visions are not overwritten without clear update intent",
+            "existing or required change-local pack",
+            "before finalizing",
+            "ask or confirm whether the change is `substantive` or `editorial` before finalizing",
+            "required causal link was recorded or not required",
+        ]
+        for term in required_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, body)
+
+        forbidden_terms = [
+            "remind the contributor",
+            "## Source Of Truth",
+            "## Existing Vision Protection",
+            "only authorized edit paths",
+        ]
+        for term in forbidden_terms:
+            with self.subTest(term=term):
+                self.assertNotIn(term, body)
+
+    def test_vision_skill_quality_refinement_structure(self) -> None:
+        root = ROOT / "skills" / "vision"
+        body = (root / "SKILL.md").read_text(encoding="utf-8")
+        strategic = (root / "references" / "strategic-vision-authoring.md").read_text(encoding="utf-8")
+        readme = (root / "references" / "readme-vision-sync.md").read_text(encoding="utf-8")
+
+        workflow_index = body.index("## Workflow Fit")
+        inputs_index = body.index("## Inputs To Read")
+        state_index = body.index("## State-Based Behavior")
+        resource_index = body.index("## Resource classification")
+
+        self.assertLess(workflow_index, inputs_index)
+        self.assertLess(inputs_index, state_index)
+        self.assertLess(state_index, resource_index)
+        self.assertLess(strategic.index("## Strategic Positioning"), strategic.index("## Vision Content"))
+        self.assertLess(strategic.index("## Vision Content"), strategic.index("## Drafting Heuristics"))
+        self.assertIn("## README Front-Matter", readme)
+
+        self.assertNotIn("| Mode |", body)
+        self.assertNotIn("| `create` |", body)
+        self.assertNotIn("| `revise` |", body)
+        self.assertNotIn("| `mirror` |", body)
+
+    def test_vision_skill_strategic_positioning_contract(self) -> None:
+        root = ROOT / "skills" / "vision"
+        body = (root / "SKILL.md").read_text(encoding="utf-8")
+        body += "\n" + (root / "references" / "strategic-vision-authoring.md").read_text(encoding="utf-8")
+        required_terms = [
+            "## Strategic Positioning",
+            "project category",
+            "primary user",
+            "primary pain",
+            "primary promise",
+            "core mechanism",
+            "alternatives",
+            "tradeoff",
+            "compatibility surfaces",
+            "refusals",
+            "falsifiability",
+            "docs/vision/strategic-positioning.md",
+            "`VISION.md` remains canonical",
+            "supporting rationale",
+            "methodology, workflow, protocol, or operating model",
+            "methodology-as-product",
+            "repository layout, Git, CI, pull requests, runtime, package format, hosting platform, language, and template mechanics",
+            "RigorLoop-style",
+            "Windows-native file manager",
+            "Git extension",
+            "Git-first starter kit",
+            "normally stay at or under 750 words",
+            "MUST NOT exceed 900 words",
+            "one optional methodology-oriented section",
+            "strategic-positioning summary",
+            "rationale path",
+            "first sentence names the highest-level category",
+            "differentiator includes a tradeoff",
+            "vision can guide proposal-fit review without chat history",
+        ]
+        for term in required_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, body)
+
+    def test_proposal_skills_define_simplified_direction_contract(self) -> None:
+        proposal_body = (ROOT / "skills" / "proposal" / "SKILL.md").read_text(encoding="utf-8")
+        proposal_asset = (
+            ROOT / "skills" / "proposal" / "assets" / "proposal-skeleton.md"
+        ).read_text(encoding="utf-8")
+        proposal_review_body = (
+            ROOT / "skills" / "proposal-review" / "SKILL.md"
+        ).read_text(encoding="utf-8")
+        review_asset = (
+            ROOT / "skills" / "proposal-review" / "assets" / "review-result-skeleton.md"
+        ).read_text(encoding="utf-8")
+
+        required_sections = [
+            "Challenge",
+            "Goals",
+            "Scope and non-goals",
+            "Governing principle",
+            "Proposed direction",
+            "Feasibility",
+            "Decision requested",
+        ]
+        level_two_headings = [
+            line.removeprefix("## ")
+            for line in proposal_asset.splitlines()
+            if line.startswith("## ")
+        ]
+        self.assertEqual(
+            level_two_headings,
+            required_sections[:-1] + ["Impact and major trade-offs", required_sections[-1]],
+        )
+
+        proposal_terms = [
+            "direction-approval artifact",
+            "exactly seven required level-two sections",
+            "Impact and major trade-offs",
+            "only when it could materially affect approval",
+            "depth is proportional to uncertainty",
+            "No fixed word count, length, or token budget",
+            "detailed behavior, architecture, APIs, commands, schemas, component design, implementation sequencing, verification design, test cases, and rollout mechanics",
+            "Portable authoring requires no `change.json`",
+            "`change.json` is the sole owner of governed proposal lifecycle state and ownership",
+        ]
+        for term in proposal_terms:
+            with self.subTest(skill="proposal", term=term):
+                self.assertIn(term, proposal_body)
+
+        proposal_review_terms = [
+            "Does this proposal provide enough evidence for a responsible decision about whether to pursue the direction?",
+            "too vague",
+            "prematurely settles",
+            "must not create a finding solely because downstream detail or a routine impact section is absent",
+            "Design authoring only",
+            "Direct and review-only requests remain isolated",
+            "aligned",
+            "material-conflict",
+            "vision-revision-requested",
+            "no-vision-bootstrap",
+        ]
+        for term in proposal_review_terms:
+            with self.subTest(skill="proposal-review", term=term):
+                self.assertIn(term, proposal_review_body)
+        self.assertIn("Vision alignment: <aligned | material-conflict | vision-revision-requested | no-vision-bootstrap>", review_asset)
+
+        forbidden_terms = [
+            "## Status",
+            "## Owning change record",
+            "## Vision fit",
+            "## Expected Behavior Changes",
+            "## Architecture Impact",
+            "## Testing and Verification Strategy",
+            "## Rollout and Rollback",
+        ]
+        for term in forbidden_terms:
+            with self.subTest(asset="proposal", forbidden=term):
+                self.assertNotIn(term, proposal_asset)
+
+    def test_governance_workflow_and_readme_define_vision_source_of_truth(self) -> None:
+        constitution = (ROOT / "CONSTITUTION.md").read_text()
+        agents = (ROOT / "AGENTS.md").read_text()
+        readme = (ROOT / "README.md").read_text()
+        self.assertIn("[VISION.md](VISION.md) owns project identity and direction", constitution)
+        self.assertIn("governs vision and proposal fit below this Constitution", constitution)
+        self.assertIn("README content between `<!-- vision:start -->` and `<!-- vision:end -->` is generated from `VISION.md`", readme)
+        self.assertIn("README front-matter is not the source of truth when it conflicts with `VISION.md`", readme)
+        self.assertIn("Read [CONSTITUTION.md](CONSTITUTION.md)", agents)
+        self.assertIn("README content between the vision markers is generated from it", agents)
+        assessment = (ROOT / "docs/design/skill/assessment.md").read_text()
+        self.assertIn("routine vision alignment", assessment)
+        self.assertIn("a Proposal Review judgment", assessment)
+
+
+    def test_workflow_refactor_stage_skill_guidance_alignment(self) -> None:
+        workflow = (ROOT / "skills" / "route" / "SKILL.md").read_text(encoding="utf-8")
+        proposal = (ROOT / "skills" / "proposal" / "SKILL.md").read_text(encoding="utf-8")
+        proposal += "\n" + (ROOT / "skills" / "proposal" / "references" / "strategic-and-scope-gates.md").read_text(encoding="utf-8")
+        proposal_review = (
+            ROOT / "skills" / "proposal-review" / "SKILL.md"
+        ).read_text(encoding="utf-8")
+        proposal_review += "\n" + (
+            ROOT / "skills" / "proposal-review" / "references" / "conditional-proposal-gates.md"
+        ).read_text(encoding="utf-8")
+        ci = (ROOT / "skills" / "ci-maintenance" / "SKILL.md").read_text(encoding="utf-8")
+        learn = (ROOT / "skills" / "learn" / "SKILL.md").read_text(encoding="utf-8")
+        verify = (ROOT / "skills" / "verify" / "SKILL.md").read_text(encoding="utf-8")
+
+        workflow_terms = [
+            "## Lifecycle overview",
+            "Standing artifacts",
+            "Living references",
+            "Workflow infrastructure",
+            "On-demand support",
+            "Per-change chain",
+            "Periodic artifacts",
+            "`mandatory`",
+            "`conditional`",
+            "`on-demand`",
+            "`periodic`",
+            "next mandatory or triggered downstream stage",
+            "ci-maintenance when triggered",
+        ]
+        for term in workflow_terms:
+            with self.subTest(skill="workflow", term=term):
+                self.assertIn(term, workflow)
+
+        workflow_forbidden = [
+            "constitution / project context",
+            "project-map when architecture is unclear",
+            "Treat `learn` as an advice-only follow-up",
+            "Advice-only stages such as `learn`",
+            "next required or default downstream stage",
+            "verify -> ci ->",
+            "`ci` when GitHub workflow automation",
+        ]
+        for term in workflow_forbidden:
+            with self.subTest(skill="workflow", term=term):
+                self.assertNotIn(term, workflow)
+
+        proposal_terms = [
+            "A substantive proposal is any proposal that chooses product direction",
+            "`VISION.md` absence blocks the first substantive proposal",
+            "`CONSTITUTION.md` absence blocks governance adoption",
+            "Bootstrap proposals",
+            "`Impact and major trade-offs` and `Decision requested`",
+            "next mandatory or triggered downstream stage",
+        ]
+        for term in proposal_terms:
+            with self.subTest(skill="proposal", term=term):
+                self.assertIn(term, proposal)
+
+        proposal_review_terms = [
+            "bootstrap exception",
+            "`Impact and major trade-offs` and `Decision requested`",
+            "Request revision if the disclosure is missing",
+            "standing artifact gate",
+        ]
+        for term in proposal_review_terms:
+            with self.subTest(skill="proposal-review", term=term):
+                self.assertIn(term, proposal_review)
+
+        ci_terms = [
+            "ci-maintenance",
+            "CI infrastructure",
+            "bounded PR CI repair",
+            "already-authoritative validation commands",
+            "observe the replacement hosted check",
+            "does not design tests",
+            "does not specify validation commands",
+            "does not claim branch readiness",
+        ]
+        for term in ci_terms:
+            with self.subTest(skill="ci", term=term):
+                self.assertIn(term, ci)
+
+        learn_terms = [
+            "`learn` is periodic or explicitly invoked",
+            "repeated review findings",
+            "blocker or major workflow-process findings",
+            "failed release or adapter smoke",
+            "accepted postmortem action",
+            "explicit maintainer request",
+            "capture the lesson immediately",
+            "scheduled follow-up",
+            "explicit no-learn rationale",
+            "blocks downstream only when a higher-priority artifact explicitly makes it blocking",
+            "contributor-visible tracked or review-visible surface",
+        ]
+        for term in learn_terms:
+            with self.subTest(skill="learn", term=term):
+                self.assertIn(term, learn)
+        self.assertNotIn("advice-only", learn)
+
+        verify_terms = [
+            "hands off to `pr`",
+            "ci-maintenance",
+            "hosted workflow automation, validation automation, or related platform configuration",
+        ]
+        for term in verify_terms:
+            with self.subTest(skill="verify", term=term):
+                self.assertIn(term, verify)
+        self.assertNotIn("next required or default downstream stage", verify)
+        self.assertNotIn("downstream stage is `ci`", verify)
+
+
+    def test_customer_portable_public_skills_define_project_local_evidence_contract(self) -> None:
+        for skill_name in CUSTOMER_PORTABLE_M2_SKILLS:
+            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
+            if skill_name == "design":
+                self.assertIn("Missing, stale, conflicting, escaped or malformed governed signals", body)
+                self.assertIn("without lifecycle claims", body)
+                self.assertIn("portable default", body)
+                continue
+            block = extract_markdown_block(body, "Project-local evidence")
+
+            required_terms = [
+                "customer-project mode by default",
+                "project-local",
+                "RigorLoop repository-internal",
+                "portable defaults",
+                "block on ambiguity",
+                "authoritative CLI workflow context",
+            ]
+            for term in required_terms:
+                with self.subTest(skill=skill_name, term=term):
+                    self.assertIn(term, block)
+
+    def test_project_map_treats_local_orientation_inputs_as_optional(self) -> None:
+        project_map = (ROOT / "skills" / "project-map" / "SKILL.md").read_text(
+            encoding="utf-8"
+        )
+        block = extract_markdown_block(project_map, "Customer-project orientation")
+
+        required_terms = [
+            "customer-project mode by default",
+            "optional project-local orientation inputs",
+            "absence is normal",
+            "Do not search for RigorLoop originals",
+            "`AGENTS.md`",
+            "`CONSTITUTION.md`",
+            "`docs/`",
+            "`specs/`",
+        ]
+        for term in required_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, block)
+
+    def project_map_contract_fixture_errors(self, skill_dir: Path) -> list[str]:
+        skill_path = skill_dir / "SKILL.md"
+        metadata, body = skill_validation.load_skill_file(skill_path)
+        return skill_validation.validate_project_map_contract_fixture(
+            skill_path,
+            metadata,
+            body,
+        )
+
+    def assertProjectMapContractFixtureFails(
+        self,
+        mutate: Callable[[Path], None],
+        expected_text: str,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            skill_dir = Path(temporary) / "project-map-contract"
+            shutil.copytree(FIXTURES / "project-map-contract" / "valid", skill_dir)
+            mutate(skill_dir)
+            errors = self.project_map_contract_fixture_errors(skill_dir)
+            self.assertTrue(errors, "expected controlled project-map fixture to fail")
+            self.assertIn(expected_text, "\n".join(errors))
+
+    def test_project_map_contract_valid_controlled_fixture_passes(self) -> None:
+        self.assertFixturePasses("project-map-contract/valid")
+        errors = self.project_map_contract_fixture_errors(
+            FIXTURES / "project-map-contract" / "valid"
+        )
+        self.assertEqual([], errors)
+
+    def test_project_map_contract_fixture_rejects_missing_baseline(self) -> None:
+        def mutate(skill_dir: Path) -> None:
+            skill_path = skill_dir / "SKILL.md"
+            text = skill_path.read_text(encoding="utf-8")
+            skill_path.write_text(text.replace("- Baseline\n", ""), encoding="utf-8")
+
+        self.assertProjectMapContractFixtureFails(
+            mutate,
+            "project-map contract missing map metadata field 'Baseline'",
+        )
+
+    def test_project_map_contract_fixture_rejects_missing_mode(self) -> None:
+        def mutate(skill_dir: Path) -> None:
+            skill_path = skill_dir / "SKILL.md"
+            text = skill_path.read_text(encoding="utf-8")
+            skill_path.write_text(text.replace("- `audit`\n", ""), encoding="utf-8")
+
+        self.assertProjectMapContractFixtureFails(
+            mutate,
+            "project-map contract missing operation 'audit'",
+        )
+
+    def test_project_map_contract_fixture_requires_skeleton_copy_entry(self) -> None:
+        def mutate(skill_dir: Path) -> None:
+            skill_path = skill_dir / "SKILL.md"
+            text = skill_path.read_text(encoding="utf-8")
+            skill_path.write_text(
+                text.replace(
+                    "- COPY `assets/project-map-skeleton.md`",
+                    "- READ `assets/project-map-skeleton.md`",
+                ),
+                encoding="utf-8",
+            )
+
+        self.assertProjectMapContractFixtureFails(
+            mutate,
+            "Resource map entry for 'assets/project-map-skeleton.md' must use literal COPY",
+        )
+
+    def test_project_map_contract_fixture_rejects_skeleton_hidden_policy(self) -> None:
+        def mutate(skill_dir: Path) -> None:
+            skeleton_path = skill_dir / "assets" / "project-map-skeleton.md"
+            text = skeleton_path.read_text(encoding="utf-8")
+            skeleton_path.write_text(
+                text + "\nSource-rank rules: source code outranks plans.\n",
+                encoding="utf-8",
+            )
+
+        self.assertProjectMapContractFixtureFails(
+            mutate,
+            "project-map skeleton must not own evidence-ranking or source-rank policy",
+        )
+
+    def test_project_map_canonical_contract_passes(self) -> None:
+        result = run_validator(ROOT / "skills" / "project-map" / "SKILL.md")
+        self.assertEqual(
+            result.returncode,
+            0,
+            msg=f"expected canonical project-map skill to pass\nstdout:\n{result.stdout}\nstderr:\n{result.stderr}",
+        )
+
+    def assertProjectMapCanonicalCopyFails(
+        self,
+        mutate: Callable[[Path], None],
+        expected_text: str,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            skill_dir = Path(temporary) / "skills" / "project-map"
+            shutil.copytree(ROOT / "skills" / "project-map", skill_dir)
+            mutate(skill_dir)
+            metadata, body = skill_validation.load_skill_file(skill_dir / "SKILL.md")
+            errors = skill_validation.validate_project_map_contract_fixture(
+                skill_dir / "SKILL.md",
+                metadata,
+                body,
+                diagnostic_subject="contract",
+            )
+            self.assertTrue(errors, "expected corrupted project-map canonical copy to fail")
+            self.assertIn(expected_text, "\n".join(errors))
+
+    def test_project_map_canonical_contract_rejects_missing_workflow_role(self) -> None:
+        def mutate(skill_dir: Path) -> None:
+            skill_path = skill_dir / "SKILL.md"
+            text = skill_path.read_text(encoding="utf-8")
+            skill_path.write_text(
+                re.sub(
+                    r"\n## Workflow role\n.*?(?=\n## )",
+                    "\n",
+                    text,
+                    count=1,
+                    flags=re.DOTALL,
+                ),
+                encoding="utf-8",
+            )
+
+        self.assertProjectMapCanonicalCopyFails(
+            mutate,
+            "project-map contract missing Workflow role",
+        )
+
+    def test_project_map_canonical_contract_requires_mapped_skeleton(self) -> None:
+        def mutate(skill_dir: Path) -> None:
+            skeleton_path = skill_dir / "assets" / "project-map-skeleton.md"
+            skeleton_path.unlink(missing_ok=True)
+
+        self.assertProjectMapCanonicalCopyFails(
+            mutate,
+            "mapped project-map skeleton asset 'assets/project-map-skeleton.md' must exist",
+        )
+
+    def test_project_map_canonical_contract_rejects_hidden_skeleton_policy(self) -> None:
+        def mutate(skill_dir: Path) -> None:
+            skeleton_path = skill_dir / "assets" / "project-map-skeleton.md"
+            skeleton_path.parent.mkdir(parents=True, exist_ok=True)
+            text = (
+                skeleton_path.read_text(encoding="utf-8")
+                if skeleton_path.is_file()
+                else ""
+            )
+            skeleton_path.write_text(
+                text + "\nRefresh triggers: this policy belongs in SKILL.md.\n",
+                encoding="utf-8",
+            )
+
+        self.assertProjectMapCanonicalCopyFails(
+            mutate,
+            "project-map skeleton must not own refresh triggers",
+        )
+
+    def test_project_map_representative_outputs_cover_m3_contract(self) -> None:
+        proof_path = (
+            ROOT
+            / "docs"
+            / "changes"
+            / "2026-06-23-evidence-bound-incremental-project-map"
+            / "representative-project-map-outputs.md"
+        )
+        proof = proof_path.read_text(encoding="utf-8")
+
+        required_terms = [
+            "Representative fixture excerpts, not claims about this repository.",
+            "Map status: current",
+            "Baseline: abc1234+dirty",
+            "Inspected uncommitted paths:",
+            "Parent map: not-applicable",
+            "Parent map: docs/project-map.md",
+            "Durable-boundary rationale:",
+            "Overlap owner:",
+            "Observed:",
+            "Inference:",
+            "Unknown:",
+            "Configured command, not executed in this mapping session",
+            "Executed command:",
+            "Exit code: 0",
+            "Correction note:",
+            "wrong at the previous baseline",
+            "Planned state:",
+            "Current state:",
+            "not represented as deployed",
+            "statically traced",
+            "demonstrated by tests",
+            "partially inferred",
+            "Diagram evidence:",
+            "inferred edge",
+            "Placeholder audit: passed",
+        ]
+        for term in required_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, proof)
+
+        for heading in skill_validation.PROJECT_MAP_REQUIRED_OUTPUT_SECTIONS:
+            with self.subTest(heading=heading):
+                self.assertIn(f"## {heading}", proof)
+        self.assertIn("## Area maps", proof)
+
+        for column in skill_validation.PROJECT_MAP_AREA_REGISTRATION_COLUMNS:
+            with self.subTest(column=column):
+                self.assertIn(column, proof)
+
+        self.assertNotRegex(proof, r"<[^>\n]+>|\[FILL IN\]|\bTODO\b|\bTBD\b")
+
+
+    def test_customer_portable_required_internal_dependency_detector_examples(self) -> None:
+        forbidden_examples = [
+            "must read RigorLoop specs/ before drafting",
+            "required: read RigorLoop CONSTITUTION.md",
+            "must first read RigorLoop AGENTS.md",
+            "read the RigorLoop workflow spec before proceeding",
+            "required: docs/reports/token-cost/releases/latest.md",
+        ]
+        for example in forbidden_examples:
+            with self.subTest(example=example):
+                self.assertTrue(
+                    any(
+                        pattern.search(example)
+                        for pattern in CUSTOMER_PORTABLE_REQUIRED_INTERNAL_DEPENDENCY_PATTERNS.values()
+                    )
+                )
+                self.assertFalse(has_customer_portable_guard(example))
+
+        allowed_examples = [
+            "Read local specs/ if present and relevant.",
+            "Use project-local `CONSTITUTION.md` when governing project docs exist.",
+            "Use RigorLoop repository docs when operating inside the RigorLoop repository.",
+            "Read `AGENTS.md` when this file is the review target.",
+            "Use `docs/workflows.md` when the user provided this path.",
+            "Use RigorLoop specs/ only when the file is the direct target.",
+        ]
+        for example in allowed_examples:
+            with self.subTest(example=example):
+                matched = any(
+                    pattern.search(example)
+                    for pattern in CUSTOMER_PORTABLE_REQUIRED_INTERNAL_DEPENDENCY_PATTERNS.values()
+                )
+                self.assertFalse(matched and not has_customer_portable_guard(example))
+
+    def test_published_skill_surfaces_block_required_rigorloop_internal_dependencies(self) -> None:
+        for path in iter_published_skill_text_surfaces():
+            body = path.read_text(encoding="utf-8")
+            relative_path = path.relative_to(ROOT)
+            for label, pattern in CUSTOMER_PORTABLE_REQUIRED_INTERNAL_DEPENDENCY_PATTERNS.items():
+                for match in pattern.finditer(body):
+                    start = max(match.start() - 160, 0)
+                    end = min(match.end() + 160, len(body))
+                    surrounding = body[start:end]
+                    with self.subTest(path=str(relative_path), forbidden=label):
+                        self.assertTrue(has_customer_portable_guard(surrounding))
+
+    def test_learn_skill_final_artifact_model_and_bounded_process(self) -> None:
+        skill_body = (ROOT / "skills" / "learn" / "SKILL.md").read_text(encoding="utf-8")
+        method_path = ROOT / "skills" / "learn" / "references" / "session-method.md"
+        method_body = method_path.read_text(encoding="utf-8") if method_path.exists() else ""
+        combined_body = skill_body + "\n" + method_body
+        readme_path = ROOT / "docs" / "learn" / "README.md"
+        self.assertTrue(readme_path.exists(), "docs/learn/README.md must exist as the learn namespace index")
+        readme_body = readme_path.read_text(encoding="utf-8")
+
+        required_skill_terms = [
+            "`docs/learn/sessions/YYYY-MM-DD-<slug>.md`",
+            "`docs/learn/topics/<topic>.md`",
+            "Frame",
+            "Observe",
+            "Classify",
+            "Route",
+            "primary classification",
+            "secondary routes",
+            "`observation`",
+            "`durable-lesson`",
+            "`artifact-update`",
+            "`decision`",
+            "`direction`",
+            "`process-follow-up`",
+            "`no-durable-lesson`",
+            "contributor confirmation",
+            "confirmed-by",
+            "candidate classifications",
+            "no-learn rationale",
+            "single event",
+            "systemic gap",
+            "maintainer request",
+            "Maintainer-driven rule adoption without accumulated evidence",
+            "repeated review findings",
+            "repeated incidents",
+            "failed smoke patterns",
+            "recurring validation gaps",
+            "prior session evidence",
+            "not `durable-lesson`",
+            "proposal work",
+            "may later produce an ADR",
+            "accepted authoritative artifact",
+            "incident response",
+            "contributor observation",
+            "periodic learn sessions",
+            "time window start",
+            "time window end",
+            "window basis",
+            "bounded evidence",
+            "trigger statement and named artifacts",
+            "exact sections first",
+            "full-file reads only when narrower evidence is insufficient",
+            "topic files are curated guidance",
+            "must not override",
+            "action-owning artifact",
+            "`docs/roadmap.md`",
+            "pre-session trigger closeout",
+            "Frame phase",
+        ]
+        for term in required_skill_terms:
+            with self.subTest(file="learn skill", term=term):
+                self.assertIn(term, combined_body)
+
+        required_readme_terms = [
+            "docs/learn/",
+            "sessions/",
+            "topics/",
+            "`docs/learn/sessions/YYYY-MM-DD-<slug>.md`",
+            "`docs/learn/topics/<topic>.md`",
+            "raw historical session records",
+            "curated durable topic guidance",
+            "session record is the primary output",
+            "Topic files are curated guidance",
+            "not authoritative",
+            "No templates",
+            "No empty topic taxonomy",
+            "remove, revise, or absorb",
+            "traceability",
+        ]
+        for term in required_readme_terms:
+            with self.subTest(file="learn readme", term=term):
+                self.assertIn(term, readme_body)
+
+        forbidden_terms = [
+            "docs/retrospectives",
+            "docs/learnings",
+            "future learn refactor",
+            "temporary learn refactor",
+            "General retrospective",
+            "Until the future learn refactor",
+        ]
+        for body, label in ((skill_body, "learn skill"), (readme_body, "learn readme")):
+            for term in forbidden_terms:
+                with self.subTest(file=label, term=term):
+                    self.assertNotIn(term, body)
+
+
+    def test_shared_isolation_and_recording_block_defines_broad_material_rule(self) -> None:
+        canonical = extract_markdown_block(
+            SHARED_REVIEW_BLOCK_PATH.read_text(encoding="utf-8"),
+            "Isolation and Recording",
+        )
+        normalized = " ".join(canonical.split())
+        required_terms = [
+            "Isolation governs handoff. Recording follows formal review triggers.",
+            "A direct or review-only request remains isolated by default",
+            "Isolation does not suppress recording.",
+            "Every formal lifecycle review result must be recorded or explicitly blocked.",
+            "`Recording status: recorded`",
+            "`Recording status: blocked`",
+            "Use the selected v3 registry and targeted review/finding commands.",
+            "Preserve finding IDs and unresolved concerns",
+            "Historical records remain unchanged archives",
+            "Saving does not settle workflow",
+            "Material findings must include:",
+            "For an isolated review with material findings",
+            "the final review output must state:",
+            "no automatic downstream handoff",
+            "material Finding IDs",
+            "required review record path",
+            "whether the record must be created before fixing or reconstructed",
+            "whether owner decision is needed",
+        ]
+        for term in required_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, normalized)
+        removed_terms = [
+            "specs/rigorloop-workflow.md",
+            "A tracked artifact is any version-controlled repository file whose",
+            "Operational shortcut",
+            "resolution-step gate",
+            "review-driven edits",
+            "`create-change-local-record-before-fixing`",
+            "`reconstruct-record-because-fixes-already-began`",
+            "`stop-for-owner-decision`",
+            "The durable record should be created",
+            "clean reviews can settle artifact-locally",
+            "`not-required`: no material findings and no detailed-record trigger",
+            "Use the formal review recording change-ID selection rule.",
+            "clean receipt root",
+            "review.status",
+            "unresolved_items",
+            "reviewed_artifact",
+        ]
+        for term in removed_terms:
+            with self.subTest(removed_term=term):
+                self.assertNotIn(term, normalized)
+
+    def test_governance_guidance_uses_broad_material_finding_rule(self) -> None:
+        constitution = (ROOT / "CONSTITUTION.md").read_text().lower()
+        for term in ("whole-change code review", "material findings", "safe resolution path", "verify"):
+            self.assertIn(term, constitution)
+        agents = (ROOT / "AGENTS.md").read_text()
+        self.assertIn("[Assessment](docs/design/skill/assessment.md)", agents)
+        self.assertIn("[Records](docs/design/cli/records.md)", agents)
+        self.assertIn("targeted recording", agents)
+        self.assertIn("rigorloop-records-v3", (ROOT / "docs/design/cli/records.md").read_text())
+
+    def test_downstream_skills_preserve_review_closeout_boundaries(self) -> None:
+        for skill in DOWNSTREAM_REVIEW_CLOSEOUT_SKILLS:
+            body = (ROOT / "skills" / skill / "SKILL.md").read_text()
+            self.assertIn("review-reliance.md", body)
+            self.assertIn("does not approve", body)
+            self.assertNotIn("review-log.md", body)
+
+
+
+
+    def test_review_independence_m3_code_review_pilot_guidance(self) -> None:
+        """Automated code-review guidance includes the blind-first independent gate pilot."""
+
+        body = (
+            ROOT
+            / "skills"
+            / "code-review"
+            / "references"
+            / "workflow-managed-automated-review.md"
+        ).read_text(encoding="utf-8")
+        required_terms = [
+            "## Automated Independent Review Gate",
+            "orchestrator-owned review invocation manifest",
+            "neutral initial packet",
+            "record an independent risk map before validation-result summaries, evidence menus, implementation notes, or prior finding content are released",
+            "risk-map-recorded",
+            "Evidence challenge happens only after the risk map",
+            "Prior finding reconciliation happens only after the blind-first pass",
+            "Clean automated reviews require a clean-review sufficiency receipt",
+            "A clean automated review may advance only when the manifest, phase receipts, clean receipt, risk-tier escalation, unresolved-finding, and second-review gates are satisfied",
+            "A final holistic code review is required before `verify`",
+            "Do not introduce a minimum-finding quota",
+            "The reviewer must not edit the reviewed target during review.",
+            "Direct or profile-off review behavior remains isolated and does not require automated-review manifests unless the result is used as a workflow-managed automated handoff gate.",
+        ]
+        for term in required_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, body)
+        for item in R5_FORBIDDEN_INITIAL_PACKET_ITEMS:
+            with self.subTest(forbidden_initial_packet_item=item):
+                self.assertIn(item, body)
+        for category in R8D_RECONCILIATION_CATEGORIES:
+            with self.subTest(reconciliation_category=category):
+                self.assertIn(category, body)
+        for phrase in R8D_FAILED_REMEDIATION_REQUIRED_PHRASES:
+            with self.subTest(failed_remediation_phrase=phrase):
+                self.assertIn(phrase, body)
+
+    def test_review_independence_m3_workflow_and_implement_route_automated_gate(self) -> None:
+        """Workflow and implement skills route automated code review through the independent gate."""
+
+        required_by_skill = {
+            "route": [
+                "Route-managed automated `code-review` uses the independent adversarial review gate",
+                "The orchestrator creates the neutral review invocation manifest and initial packet",
+                "It must withhold validation-result summaries, evidence menus, implementation notes, and prior finding content until the required phase receipts allow release.",
+                "A clean automated review may advance only after the normalized `review_gate_outcome`, independence manifest, phase receipts, clean receipt, risk-tier gates, unresolved-finding check, and second-review policy all pass.",
+                "Before `verify`, require final holistic code-review evidence covering the complete final diff and cross-milestone interactions.",
+            ],
+            "implement": [
+                "When handing workflow-managed implementation work to automated `code-review`, hand off to the independent adversarial review gate.",
+                "Provide tracked artifacts, the actual diff, governing contracts, and neutral routing metadata.",
+                "Do not expose auto-fix classification to review discovery; findings and verdict are recorded before fixability is classified.",
+                "Before Phase C can enter `verify`, require final holistic code-review evidence for the complete cross-milestone diff.",
+            ],
+        }
+        for skill_name, terms in required_by_skill.items():
+            path = ROOT / "skills" / skill_name / "SKILL.md"
+            if skill_name == "route":
+                path = (
+                    ROOT
+                    / "skills"
+                    / "route"
+                    / "references"
+                    / "bounded-workflow-automation.md"
+                )
+            elif skill_name == "implement":
+                path = (
+                    ROOT
+                    / "skills"
+                    / "implement"
+                    / "references"
+                    / "automated-review-correction.md"
+                )
+            body = path.read_text(encoding="utf-8")
+            for term in terms:
+                with self.subTest(skill=skill_name, term=term):
+                    self.assertIn(term, body)
+        implement_body = (
+            ROOT
+            / "skills"
+            / "implement"
+            / "references"
+            / "automated-review-correction.md"
+        ).read_text(encoding="utf-8")
+        for item in R5_FORBIDDEN_INITIAL_PACKET_ITEMS:
+            with self.subTest(skill="implement", forbidden_initial_packet_item=item):
+                self.assertIn(item, implement_body)
+
+
+    def test_requirement_fidelity_m1_guidance_surfaces(self) -> None:
+        """M1 public guidance teaches requirement-fidelity as an additive code-review pilot."""
+
+        required_by_skill = {
+            "code-review-reference": [
+                "## Requirement-Fidelity Gate",
+                "Requirement fidelity is a sibling gate to independent review: independence reduces anchoring, while fidelity checks the complete normative spec projection.",
+                "For workflow-managed automated `code-review`, use the requirement-fidelity gate when the applicability manifest says `applicable`.",
+                "Start from the relevant spec clause before comparing implementation text, validator assertions, validation evidence, or prior findings.",
+                "Decompose each relevant spec clause into requirement properties before artifact comparison unless accepted decomposition evidence already exists.",
+                "For multi-surface contracts, check every requirement property on every required surface; a global substring match is insufficient.",
+                "Applicable clean automated reviews require a requirement-fidelity receipt.",
+                "A clean automated review may advance only when both the independent-review gate and the requirement-fidelity gate pass when both apply.",
+                "Requirement compression is a material finding when an implementation, validator, skill, workflow, schema, fixture, generated output, or review-recording surface omits a required property.",
+                "Do not introduce a minimum-finding quota.",
+                "Direct or profile-off review behavior remains isolated and does not require requirement-fidelity manifests unless the result is used as a workflow-managed automated handoff gate.",
+            ],
+            "route": [
+                "Route-managed automated `code-review` uses the requirement-fidelity gate when deterministic applicability is `applicable`.",
+                "The requirement-fidelity gate is additive with the independent adversarial review gate; both receipts must pass when both contracts apply.",
+                "Requirement-fidelity review starts from the relevant spec clause, then decomposition, expected surfaces, implementation diff, validator assertions, validation evidence, and prior findings.",
+            ],
+            "implement": [
+                "When handing workflow-managed implementation work to automated `code-review`, include neutral routing metadata for requirement-fidelity applicability.",
+                "Do not present implementation and validator agreement as sufficient proof of spec fidelity.",
+                "When both contracts apply, downstream continuation requires both the independent-review receipt and the requirement-fidelity receipt.",
+            ],
+        }
+        for skill_name, terms in required_by_skill.items():
+            if skill_name == "code-review-reference":
+                path = (
+                    ROOT
+                    / "skills"
+                    / "code-review"
+                    / "references"
+                    / "workflow-managed-automated-review.md"
+                )
+            elif skill_name == "route":
+                path = (
+                    ROOT
+                    / "skills"
+                    / "route"
+                    / "references"
+                    / "bounded-workflow-automation.md"
+                )
+            elif skill_name == "implement":
+                path = (
+                    ROOT
+                    / "skills"
+                    / "implement"
+                    / "references"
+                    / "automated-review-correction.md"
+                )
+            else:
+                path = ROOT / "skills" / skill_name / "SKILL.md"
+            body = path.read_text(encoding="utf-8")
+            for term in terms:
+                with self.subTest(skill=skill_name, term=term):
+                    self.assertIn(term, body)
+
+
+    def test_implement_simplification_m2_package_contract(self) -> None:
+        """M2 keeps universal implementation policy inline and splits conditional procedure."""
+
+        root = ROOT / "skills" / "implement"
+        body = (root / "SKILL.md").read_text(encoding="utf-8")
+        planned = (
+            root / "references" / "planned-milestone-implementation.md"
+        ).read_text(encoding="utf-8")
+        automation = (
+            root / "references" / "automated-review-correction.md"
+        ).read_text(encoding="utf-8")
+        result = (
+            root / "assets" / "implementation-result-skeleton.md"
+        ).read_text(encoding="utf-8")
+
+        planned_mapping = (
+            "- READ `references/planned-milestone-implementation.md` when "
+            "authoritative workflow evidence establishes a current planned milestone "
+            "owned by `implement`."
+        )
+        automation_mapping = (
+            "- READ `references/automated-review-correction.md` only when durable "
+            "workflow evidence formally arms automated review or correction for that "
+            "same current change and milestone."
+        )
+        result_mapping = (
+            "- COPY `assets/implementation-result-skeleton.md` when producing the "
+            "implementation result."
+        )
+        self.assertEqual(body.count(planned_mapping), 1)
+        self.assertEqual(body.count(automation_mapping), 1)
+        self.assertEqual(body.count(result_mapping), 1)
+
+        for heading in (
+            "## Workflow role",
+            "## Quick operating guide",
+            "## Inputs to read",
+            "## Evidence access",
+            "## Invocation profiles and authority",
+            "## First-pass completeness",
+            "## Implementation contract",
+            "## Operating sequence",
+            "## Stop conditions",
+            "## Claims this skill must not make",
+            "## Resource map",
+            "## Boundary-first method",
+            "## Expected output",
+        ):
+            with self.subTest(inline_heading=heading):
+                self.assertIn(heading, body)
+
+        for term in (
+            "`IP0-isolated`",
+            "`IP1-planned`",
+            "`IP2-planned-armed`",
+            "Armed automation without a valid planned milestone is invalid",
+            "Conversational wording alone establishes neither predicate",
+            "Missing, stale, mismatched, contradictory, or ambiguous evidence stops before conditional procedure is loaded or implementation state is mutated.",
+        ):
+            with self.subTest(profile_contract=term):
+                self.assertIn(term, body)
+
+        for heading in (
+            "## Load conditions",
+            "## Milestone authority and inspection",
+            "## Baseline change pack",
+            "## Milestone execution and validation",
+            "## Commit and review handoff",
+            "## Accepted correction return",
+        ):
+            with self.subTest(planned_heading=heading):
+                self.assertIn(heading, planned)
+
+        for heading in (
+            "## Load conditions",
+            "## Armed authority",
+            "## Independent review packet",
+            "## Requirement-fidelity routing",
+            "## Correction and rereview",
+            "## Promotion and pause",
+        ):
+            with self.subTest(automation_heading=heading):
+                self.assertIn(heading, automation)
+
+        for forbidden_policy in (
+            "## First-pass completeness",
+            "## Stop conditions",
+            "## Claims this skill must not make",
+        ):
+            with self.subTest(reference="planned", forbidden=forbidden_policy):
+                self.assertNotIn(forbidden_policy, planned)
+            with self.subTest(reference="automation", forbidden=forbidden_policy):
+                self.assertNotIn(forbidden_policy, automation)
+
+        for heading in (
+            "## Core result",
+            "## Planned milestone",
+            "## Armed automation",
+        ):
+            with self.subTest(result_group=heading):
+                self.assertIn(heading, result)
+        for policy_term in (
+            "what status means",
+            "when correction is allowed",
+            "when review-requested is legal",
+            "what readiness may be claimed",
+        ):
+            with self.subTest(asset_policy=policy_term):
+                self.assertNotIn(policy_term, result.lower())
+
+        self.assertNotIn("## Result\n\n- Skill: implement", body)
+        self.assertNotIn("## Implementation summary", body)
+        self.assertIn(
+            "Armed implementation automation is valid only inside a current planned workflow-managed milestone.",
+            automation,
+        )
+
+
+    def test_milestone_aware_guidance_removes_unconditional_verify_handoff(self) -> None:
+        """Docs and skills must not retain stale unconditional clean-review-to-verify shortcuts."""
+
+        stale_terms = [
+            "first-pass `clean-with-notes` continues to `verify`",
+            "`clean-with-notes` hands off to `verify` when no stop condition applies",
+            "`code-review -> verify` only for first-pass `clean-with-notes`",
+            "hands off to `verify` only when no in-scope implementation milestone remains open or unresolved",
+            "Milestones are not postponed to make `verify` available",
+            "Do not hand off to `verify` until all in-scope implementation milestones are `closed`",
+        ]
+        paths = [
+            "skills/code-review/SKILL.md",
+            "skills/route/SKILL.md",
+        ]
+        for relative_path in paths:
+            body = (ROOT / relative_path).read_text(encoding="utf-8")
+            for term in stale_terms:
+                with self.subTest(path=relative_path, term=term):
+                    self.assertNotIn(term, body)
+
+    def test_public_workflow_and_skill_surfaces_block_retired_route_vocabulary(self) -> None:
+        """Public workflow and shipped skill surfaces must not restore retired lane wording."""
+
+        for path in iter_public_workflow_and_skill_surfaces():
+            body = path.read_text(encoding="utf-8")
+            relative_path = path.relative_to(ROOT)
+            for label, pattern in RETIRED_PUBLIC_ROUTE_PATTERNS.items():
+                with self.subTest(path=str(relative_path), pattern=label):
+                    self.assertIsNone(pattern.search(body))
+
+
+    def test_published_skill_surfaces_block_internal_repository_details(self) -> None:
+        """Published skill text must stay portable across projects."""
+
+        for path in iter_published_skill_text_surfaces():
+            body = path.read_text(encoding="utf-8")
+            relative_path = path.relative_to(ROOT)
+            for label, pattern in PUBLISHED_SKILL_FORBIDDEN_INTERNAL_PATTERNS.items():
+                with self.subTest(path=str(relative_path), pattern=label):
+                    self.assertIsNone(pattern.search(body))
+
+    def test_code_review_and_verify_public_skills_use_current_final_closeout_order(self) -> None:
+        """Current review and Verify route directly through success-owned rationale."""
+
+        code_review_paths = iter_published_skill_surfaces_for("code-review")
+        self.assertTrue(code_review_paths, "expected published code-review skill surfaces")
+        for path in code_review_paths:
+            body = path.read_text(encoding="utf-8")
+            relative_path = path.relative_to(ROOT)
+            for label, pattern in CODE_REVIEW_FORBIDDEN_FINAL_CLOSEOUT_PATTERNS.items():
+                with self.subTest(path=str(relative_path), forbidden=label):
+                    self.assertIsNone(pattern.search(body))
+            for term in ["final closeout", "final explanation", "verify", "PR"]:
+                with self.subTest(path=str(relative_path), required=term):
+                    self.assertIn(term, body)
+
+        verify_paths = iter_published_skill_surfaces_for("verify")
+        self.assertTrue(verify_paths, "expected published verify skill surfaces")
+        for path in verify_paths:
+            body = path.read_text(encoding="utf-8")
+            relative_path = path.relative_to(ROOT)
+            for label, pattern in VERIFY_FORBIDDEN_EXPLAIN_ORDER_PATTERNS.items():
+                with self.subTest(path=str(relative_path), forbidden=label):
+                    self.assertIsNone(pattern.search(body))
+            for term in [
+                "final explanation only after successful final readiness",
+                "before PR",
+                "validates the reviewed final change pack",
+                "hands off to `pr`",
+            ]:
+                with self.subTest(path=str(relative_path), required=term):
+                    self.assertIn(term, body)
+
+
+    def test_skill_contract_current_skill_inventory(self) -> None:
+        self.assertTrue((ROOT / "skills/ci-maintenance/SKILL.md").is_file())
+        for name in [*SKILL_CONTRACT_FORBIDDEN_NEW_SKILLS, "token-budget"]:
+            with self.subTest(skill=name):
+                self.assertFalse((ROOT / "skills" / name / "SKILL.md").exists())
+
+
+    def test_skill_contract_m2_shared_block_sources_exist_and_stay_bounded(self) -> None:
+        shared_blocks = {
+            "review-isolation-and-recording": SHARED_REVIEW_BLOCK_PATH,
+            "evidence-collection-efficiency": SKILL_CONTRACT_EVIDENCE_BLOCK,
+        }
+        for block_name, path in shared_blocks.items():
+            with self.subTest(block=block_name):
+                self.assertTrue(path.exists(), f"missing shared block source: {path}")
+
+        evidence_block = SKILL_CONTRACT_EVIDENCE_BLOCK.read_text(encoding="utf-8")
+        review_block = SHARED_REVIEW_BLOCK_PATH.read_text(encoding="utf-8")
+
+        evidence_terms = [
+            "## Evidence collection efficiency",
+            "Use bounded evidence before broad reads or raw excerpts.",
+            "Use summary and stable-ID first reasoning before broad reads or raw excerpts.",
+            "Prefer check IDs, requirement IDs, test IDs, file paths, counts, line citations",
+            "generated output, validation logs, or repeated scans",
+            "Output caps are safety rails, not evidence-selection strategy.",
+            "Validation summaries must not change selected check coverage, command exit behavior, failure detection, or required validation evidence.",
+            "## When full-file read is required",
+            "Read the full file when the whole file is the review target",
+            "bounded searches disagree or produce incomplete evidence",
+        ]
+        for term in evidence_terms:
+            with self.subTest(block="evidence", term=term):
+                self.assertIn(term, evidence_block)
+
+        self.assertFalse(
+            (ROOT / "templates" / "shared" / "generated-output-handling.md").exists(),
+            "generated-output handling is contributor-maintenance guidance, not an adopted shared block",
+        )
+
+        self.assertIn(
+            "Every formal lifecycle review result must be recorded or explicitly blocked.",
+            review_block,
+        )
+        for block_name in SKILL_CONTRACT_DEFERRED_SHARED_BLOCKS:
+            with self.subTest(deferred_block=block_name):
+                self.assertFalse((ROOT / "templates" / "shared" / f"{block_name}.md").exists())
+
+
+    def test_progressive_loading_quick_guide_contract_helper_detects_required_shape(self) -> None:
+        valid_skill = """# Skill
+
+## Quick operating guide
+
+Use this skill to: route work from the shortest safe operating path.
+
+Read first:
+- active plan
+
+Produce:
+- reviewed route
+
+Stop when:
+- state is missing
+
+Do not claim:
+- downstream readiness
+
+Next stage:
+- test-spec
+
+## When full-file read is required
+
+Use a full-file or broader-section read when correctness requires surrounding context.
+"""
+        assert_progressive_loading_quick_guide_contract(self, valid_skill)
+
+        missing_label = valid_skill.replace("Next stage:\n- test-spec\n", "")
+        with self.assertRaises(AssertionError):
+            assert_progressive_loading_quick_guide_contract(self, missing_label)
+
+
+    def test_progressive_loading_implement_handoff_contract_helper_detects_bounded_state_inspection(self) -> None:
+        valid_skill = """# Implement
+
+## Handoff inspection budget
+
+Start with the active plan's Current Handoff Summary.
+Then read the current milestone section and validation notes.
+For milestone readiness, do not run broad repository searches to infer milestone state.
+If the active plan does not identify the current milestone or next stage, stop and report the missing state.
+"""
+        assert_progressive_loading_implement_handoff_contract(self, valid_skill)
+
+        missing_summary = valid_skill.replace("Current Handoff Summary", "handoff notes")
+        with self.assertRaises(AssertionError):
+            assert_progressive_loading_implement_handoff_contract(self, missing_summary)
+
+        broad_first_step = valid_skill + "\nAgents may start by searching all docs for milestones.\n"
+        with self.assertRaises(AssertionError):
+            assert_progressive_loading_implement_handoff_contract(self, broad_first_step)
+
+    def test_progressive_loading_code_review_protected_contract_helper_detects_safety_regression(self) -> None:
+        valid_skill = """# Code Review
+
+Keep independent-review mode, mixed-evidence handling, material finding requirements,
+first-pass status vocabulary, severity vocabulary, isolation and recording rules,
+detailed review record triggers, milestone-aware review handoff, stop conditions,
+and result format.
+"""
+        assert_progressive_loading_code_review_protected_contracts(self, valid_skill)
+
+        missing_material_findings = valid_skill.replace("material finding requirements,\n", "")
+        with self.assertRaises(AssertionError):
+            assert_progressive_loading_code_review_protected_contracts(self, missing_material_findings)
+
+        split_template = valid_skill + "\nUse references/clean-review-template.md for the clean review template.\n"
+        with self.assertRaises(AssertionError):
+            assert_progressive_loading_code_review_protected_contracts(self, split_template)
+
+
+    def test_progressive_loading_canonical_skills_satisfy_quick_guide_contract(self) -> None:
+        for skill_name in PROGRESSIVE_LOADING_OPTIMIZED_SKILLS:
+            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
+            with self.subTest(skill=skill_name):
+                assert_progressive_loading_quick_guide_contract(self, body)
+
+
+    def test_progressive_loading_canonical_code_review_preserves_protected_contracts(self) -> None:
+        body = (ROOT / "skills" / "code-review" / "SKILL.md").read_text(encoding="utf-8")
+        assert_progressive_loading_code_review_protected_contracts(self, body)
+
+
+    def test_proposal_scope_preservation_guidance_is_static_validated(self) -> None:
+        proposal = (ROOT / "skills" / "proposal" / "SKILL.md").read_text(encoding="utf-8")
+        proposal += "\n" + (ROOT / "skills" / "proposal" / "references" / "strategic-and-scope-gates.md").read_text(encoding="utf-8")
+        proposal += "\n" + (ROOT / "skills" / "proposal" / "assets" / "proposal-skeleton.md").read_text(encoding="utf-8")
+        proposal_review = (
+            ROOT / "skills" / "proposal-review" / "SKILL.md"
+        ).read_text(encoding="utf-8")
+
+        proposal_terms = [
+            "## Scope preservation",
+            "Before drafting or materially revising a proposal, extract the user's initial goals, concerns, constraints, and requested outcomes.",
+            "Keep each material goal visible in `Goals`, `Scope and non-goals`, or the requested decision.",
+            "Closed enum: initial goal treatment",
+            "summarize its destination inside `Scope and non-goals`",
+            "Do not silently drop a user goal when narrowing a proposal; state intentional narrowing and its reason.",
+        ]
+        for term in proposal_terms:
+            with self.subTest(skill="proposal", term=term):
+                self.assertIn(term, proposal)
+
+        proposal_review_terms = [
+            "## Scope preservation review",
+            "Compare the user's initial request with the proposal.",
+            "Each material goal must remain visible in goals, scope, or the requested decision.",
+            "an initial goal disappears, a deferred goal has no follow-up, a rejected goal has no rationale, or scope narrows without explanation",
+            "Under adopted Review and Closeout policy, use the packaged combined-condition rule",
+            "In a project that has not adopted that policy, these scope-preservation failures require `changes-requested`",
+            "review status: `approved`, `changes-requested`, `blocked`, or `inconclusive`",
+            "scope-preservation result",
+            "Do not rewrite the proposal as part of proposal-review unless the user explicitly asks.",
+        ]
+        for term in proposal_review_terms:
+            with self.subTest(skill="proposal-review", term=term):
+                self.assertIn(term, proposal_review)
+
+    def test_cost_bounded_rigor_m1_proposal_scope_budget_guidance(self) -> None:
+        proposal = (ROOT / "skills" / "proposal" / "SKILL.md").read_text(encoding="utf-8")
+        proposal += "\n" + (ROOT / "skills" / "proposal" / "references" / "strategic-and-scope-gates.md").read_text(encoding="utf-8")
+        proposal += "\n" + (ROOT / "skills" / "proposal" / "assets" / "proposal-skeleton.md").read_text(encoding="utf-8")
+
+        required_terms = [
+            "## Scope budget for broad proposals",
+            "Scope-budget applicability is proposal/proposal-review judgment in this first slice, not mechanical validator inference.",
+            "the user request contains two or more independent work items",
+            "the change touches more than one lifecycle family",
+            "the change could reasonably require more than one spec or implementation plan",
+            "release policy, workflow policy, generated output, public skill behavior, or validation policy",
+            "`proposal-review` identifies silent narrowing, hidden follow-up risk, or multi-workstream scope",
+            "Small single-decision proposals may omit the scope budget.",
+            "Closed enum: scope budget treatment",
+            "keep the result inside `Scope and non-goals` rather than adding a level-two section.",
+            "Route deferred work through the follow-up ownership model rather than chat-only notes or `project-map` ownership.",
+            "route selects semantic ownership, `project-map` orients when present, action-owning artifacts track current work, and unowned cross-change follow-ups use the follow-up ownership surface.",
+            "Do not search generated adapter output for authored skill truth.",
+            "Do not add generated public adapter skill bodies back to tracked source.",
+        ]
+        for term in required_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, proposal)
+
+    def test_cost_bounded_rigor_m1_proposal_review_scope_budget_guidance(self) -> None:
+        proposal_review = (
+            ROOT / "skills" / "proposal-review" / "references" / "conditional-proposal-gates.md"
+        ).read_text(encoding="utf-8")
+
+        required_terms = [
+            "## Scope-budget review",
+            "Scope-budget applicability is proposal/proposal-review judgment, not validator inference.",
+            "current scope, same-slice dependencies, separate implementation slices, deferable follow-ups, separate proposals, and out-of-scope work",
+            "Return `changes-requested` when a broad or multi-workstream proposal lacks required scope-budget classification.",
+            "Return `changes-requested` when the proposal hides follow-up work, silently narrows a user request, leaves a treatment or reason blank, omits follow-up routing, or uses a misleading treatment value.",
+            "Small single-decision proposals may omit a scope budget when omission does not create silent narrowing, hidden follow-up risk, or multi-workstream ambiguity.",
+            "Do not request a scope budget solely as routine ceremony.",
+            "Accept non-standard treatment values only when they are clear and create no downstream ambiguity.",
+        ]
+        for term in required_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, proposal_review)
+
+
+    def test_stage_evidence_access_proposal_side_skills(self) -> None:
+        skill_terms = {
+            "proposal": [
+                "## Evidence access",
+                "Default evidence:",
+                "user request",
+                "`VISION.md` when proposal fit matters",
+                "`CONSTITUTION.md` for governance, source-of-truth, workflow, or release-policy changes",
+                "related proposal only when superseding or extending it",
+                "Conditional evidence:",
+                "`docs/project-map.md` when architecture or repository orientation matters",
+                "existing specs or ADRs when the proposal changes their direction",
+                "authoritative CLI workflow context when governed artifact placement or workflow routing matters",
+                "code only when current behavior is part of the decision",
+                "Record a compact reason only when reading substantive evidence outside the default and triggered conditional set.",
+            ],
+            "proposal-review": [
+                "## Evidence access",
+                "Default evidence:",
+                "proposal under review",
+                "user's original request or initial intent",
+                "`VISION.md` or `CONSTITUTION.md` when standing gates or vision fit matter",
+                "Conditional evidence:",
+                "linked specs, ADRs, plans, or learn sessions when the proposal relies on them",
+                "authoritative CLI workflow context when governed workflow behavior or artifact placement is proposed",
+                "code only when the proposal depends on current implementation reality",
+                "Record a compact reason only when reading substantive evidence outside the default and triggered conditional set.",
+            ],
+        }
+
+        for skill_name, required_terms in skill_terms.items():
+            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
+            for term in required_terms:
+                with self.subTest(skill=skill_name, term=term):
+                    self.assertIn(term, body)
+
+            with self.subTest(skill=skill_name, term="bounded discovery"):
+                self.assertIn("Bounded discovery is not evidence expansion.", body)
+            with self.subTest(skill=skill_name, term="full-file read"):
+                self.assertIn("full-file", body)
+
+
+    def test_skill_contract_m3_first_slice_core_sections_and_result_blocks(self) -> None:
+        for skill_name in SKILL_CONTRACT_FIRST_SLICE_SKILLS:
+            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
+            with self.subTest(skill=skill_name, surface="core_sections"):
+                for section in SKILL_CONTRACT_REQUIRED_CORE_SECTIONS:
+                    self.assertIn(f"## {section}", body)
+
+            expected_output_start = body.find("## Expected output")
+            self.assertNotEqual(
+                expected_output_start,
+                -1,
+                msg=f"{skill_name} must preserve the validator-required Expected output section",
+            )
+            expected_output = body[expected_output_start:]
+            with self.subTest(skill=skill_name, surface="result_block"):
+                result_surface = expected_output
+                if skill_name == "code-review":
+                    result_surface = (
+                        ROOT
+                        / "skills"
+                        / "code-review"
+                        / "assets"
+                        / "review-result-skeleton.md"
+                    ).read_text(encoding="utf-8")
+                elif skill_name == "implement":
+                    result_surface = (
+                        ROOT
+                        / "skills"
+                        / "implement"
+                        / "assets"
+                        / "implementation-result-skeleton.md"
+                    ).read_text(encoding="utf-8")
+                self.assertIn("## Result", result_surface)
+                for field in SKILL_CONTRACT_RESULT_FIELDS:
+                    self.assertIn(f"- {field}:", result_surface)
+
+            handoff = extract_markdown_block(body, "Handoff")
+            with self.subTest(skill=skill_name, surface="handoff"):
+                self.assertTrue("workflow" in handoff or "`route`" in handoff)
+                self.assertNotIn("specs/rigorloop-workflow.md", handoff)
+                self.assertIn("Normal next stage", handoff)
+                self.assertIn("Conditional next stages", handoff)
+
+    def test_skill_contract_m3_claim_boundaries_and_readiness_terms(self) -> None:
+        for skill_name, required_terms in SKILL_CONTRACT_CLAIM_BOUNDARY_TERMS.items():
+            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
+            claims = extract_markdown_block(body, "Claims this skill must not make")
+            for term in required_terms:
+                with self.subTest(skill=skill_name, term=term):
+                    self.assertIn(term, claims)
+
+        progress_terms = [
+            "Progress means work that has happened so far.",
+            "Readiness means the next stage that can happen.",
+            "Closeout means the current artifact or stage satisfied its checklist.",
+            "Done means final lifecycle state after required gates are complete.",
+            "Readiness is not Done.",
+        ]
+        for skill_name in SKILL_CONTRACT_PROGRESS_SKILLS:
+            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
+            for term in progress_terms:
+                with self.subTest(skill=skill_name, term=term):
+                    self.assertIn(term, body)
+
+    def test_skill_contract_m3_first_slice_copies_shared_blocks(self) -> None:
+        evidence = extract_markdown_block(
+            SKILL_CONTRACT_EVIDENCE_BLOCK.read_text(encoding="utf-8"),
+            "Evidence collection efficiency",
+        )
+        for skill_name in SKILL_CONTRACT_FIRST_SLICE_SKILLS:
+            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
+            with self.subTest(skill=skill_name, block="evidence"):
+                self.assertEqual(extract_markdown_block(body, "Evidence collection efficiency"), evidence)
+
+            with self.subTest(skill=skill_name, block="generated"):
+                self.assertNotIn("## Generated-output handling", body)
+
+    def test_skill_contract_m3_public_skills_exclude_maintainer_details(self) -> None:
+        forbidden_terms = [
+            "specs/rigorloop-workflow.md",
+            "skills/<skill>/SKILL.md",
+            ".codex/skills",
+            "dist/adapters",
+            "selector-driven validation",
+            "do not pass `--path dist/adapters`",
+            "Generated-output handling",
+            "Regenerate generated outputs",
+            "Validate drift with repository-owned checks",
+            "Shared blocks are copied into skills",
+            "shared-block implementation details",
+        ]
+        for skill_name in SKILL_CONTRACT_FIRST_SLICE_SKILLS:
+            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
+            for term in forbidden_terms:
+                with self.subTest(skill=skill_name, term=term):
+                    self.assertNotIn(term, body)
+
+    def test_workflow_change_root_creation_uses_dated_change_id_convention(self) -> None:
+        route_skill = (ROOT / "skills" / "route" / "SKILL.md").read_text(
+            encoding="utf-8"
+        )
+        implement_skill = (ROOT / "skills" / "implement" / "SKILL.md").read_text(
+            encoding="utf-8"
+        )
+
+        for term in [
+            "For governed routing, use factual `rigorloop workflow-context` discovery",
+            "For a missing formal change root in portable mode, use `YYYY-MM-DD-slug`.",
+        ]:
+            with self.subTest(surface="skills/route/SKILL.md", term=term):
+                self.assertIn(term, route_skill)
+
+        for term in [
+            "When creating a root in governed mode, use the CLI-resolved location.",
+            "In portable mode, use `YYYY-MM-DD-slug` without claiming governed placement.",
+        ]:
+            with self.subTest(surface="skills/implement/SKILL.md", term=term):
+                self.assertIn(term, implement_skill)
+
+
+    def test_installed_skill_artifact_placement_contract_helper_accepts_compliant_review_skills(
+        self,
+    ) -> None:
+        def review_skill_placement_fixture(skill_name: str) -> str:
+            return textwrap.dedent(
+                f"""\
+                # {skill_name}
+
+                ## Artifact placement
+
+                Formal {skill_name} records go under:
+                `docs/changes/<change-id>/reviews/{skill_name}-r<n>.md`
+
+                Record the review-log entry in:
+                `docs/changes/<change-id>/review-log.md`
+
+                Use `docs/changes/<change-id>/review-resolution.md` only when material
+                findings, blocking outcomes, or accepted dispositions require it.
+
+                If this is a formal lifecycle review and no change pack exists, create
+                or request `docs/changes/<change-id>/` before claiming `Recording status:
+                recorded`.
+
+                If the user requested an isolated advisory review and no formal recording
+                is required, do not create lifecycle artifacts unless explicitly asked.
+                """
+            )
+
+        for skill_name in ("proposal-review",):
+            with self.subTest(skill=skill_name):
+                self.assertEqual(
+                    skill_validation.validate_installed_skill_artifact_placement_contract(
+                        Path(f"skills/{skill_name}/SKILL.md"),
+                        skill_name,
+                        review_skill_placement_fixture(skill_name),
+                    ),
+                    [],
+                )
+
+    def test_installed_skill_artifact_placement_contract_helper_rejects_wrong_record_type(
+        self,
+    ) -> None:
+        def review_skill_placement_fixture(
+            *,
+            skill_name: str,
+            record_type_name: str,
+        ) -> str:
+            return textwrap.dedent(
+                f"""\
+                # {skill_name}
+
+                ## Artifact placement
+
+                Formal {record_type_name} records go under:
+                `docs/changes/<change-id>/reviews/{skill_name}-r<n>.md`
+
+                Record the review-log entry in:
+                `docs/changes/<change-id>/review-log.md`
+
+                Use `docs/changes/<change-id>/review-resolution.md` only when material
+                findings, blocking outcomes, or accepted dispositions require it.
+
+                If this is a formal lifecycle review and no change pack exists, create
+                or request `docs/changes/<change-id>/` before claiming `Recording status:
+                recorded`.
+
+                If the user requested an isolated advisory review and no formal recording
+                is required, do not create lifecycle artifacts unless explicitly asked.
+                """
+            )
+
+        cases = (
+            (
+                "proposal-review",
+                "spec-review",
+                "skills/proposal-review/SKILL.md: installed-skill placement contract names the wrong stage-owned record type spec-review records",
+            ),
+        )
+
+        for skill_name, record_type_name, expected_error in cases:
+            with self.subTest(skill=skill_name):
+                errors = skill_validation.validate_installed_skill_artifact_placement_contract(
+                    Path(f"skills/{skill_name}/SKILL.md"),
+                    skill_name,
+                    review_skill_placement_fixture(
+                        skill_name=skill_name,
+                        record_type_name=record_type_name,
+                    ),
+                )
+
+                self.assertIn(expected_error, errors)
+
+    def test_installed_skill_artifact_placement_contract_helper_rejects_missing_record_type(
+        self,
+    ) -> None:
+        errors = skill_validation.validate_installed_skill_artifact_placement_contract(
+            Path("skills/proposal-review/SKILL.md"),
+            "proposal-review",
+            textwrap.dedent(
+                """\
+                # Spec review
+
+                ## Artifact placement
+
+                Formal review records go under:
+                `docs/changes/<change-id>/reviews/proposal-review-r<n>.md`
+
+                Record the review-log entry in:
+                `docs/changes/<change-id>/review-log.md`
+
+                Use `docs/changes/<change-id>/review-resolution.md` only when material
+                findings, blocking outcomes, or accepted dispositions require it.
+
+                If this is a formal lifecycle review and no change pack exists, create
+                or request `docs/changes/<change-id>/` before claiming `Recording status:
+                recorded`.
+
+                If the user requested an isolated advisory review and no formal recording
+                is required, do not create lifecycle artifacts unless explicitly asked.
+                """
+            ),
+        )
+
+        self.assertIn(
+            "skills/proposal-review/SKILL.md: installed-skill placement contract must state the stage-owned record type proposal-review record(s)",
+            errors,
+        )
+
+    def test_installed_skill_artifact_placement_contract_helper_rejects_wrong_record_type_in_artifact_placement_only(
+        self,
+    ) -> None:
+        body = textwrap.dedent(
+            """\
+            # Spec review
+
+            Mentioning proposal-review records outside the placement block does not
+            satisfy the placement contract.
+
+            ## Artifact placement
+
+            Formal spec-review records go under:
+            `docs/changes/<change-id>/reviews/proposal-review-r<n>.md`
+
+            Record the review-log entry in:
+            `docs/changes/<change-id>/review-log.md`
+
+            Use `docs/changes/<change-id>/review-resolution.md` only when material
+            findings, blocking outcomes, or accepted dispositions require it.
+
+            If this is a formal lifecycle review and no change pack exists, create
+            or request `docs/changes/<change-id>/` before claiming `Recording status:
+            recorded`.
+
+            If the user requested an isolated advisory review and no formal recording
+            is required, do not create lifecycle artifacts unless explicitly asked.
+            """
+        )
+
+        errors = skill_validation.validate_installed_skill_artifact_placement_contract(
+            Path("skills/proposal-review/SKILL.md"),
+            "proposal-review",
+            body,
+        )
+
+        self.assertIn(
+            "skills/proposal-review/SKILL.md: installed-skill placement contract names the wrong stage-owned record type spec-review records",
+            errors,
+        )
+
+    def test_installed_skill_artifact_placement_contract_helper_rejects_missing_review_path(
+        self,
+    ) -> None:
+        errors = skill_validation.validate_installed_skill_artifact_placement_contract(
+            Path("skills/proposal-review/SKILL.md"),
+            "proposal-review",
+            textwrap.dedent(
+                """\
+                # Proposal review
+
+                ## Artifact placement
+
+                Formal review records go under `docs/changes/<change-id>/reviews/<stage>-r<n>.md`.
+                Record the review-log entry in `docs/changes/<change-id>/review-log.md`.
+                Use `docs/changes/<change-id>/review-resolution.md` only when material findings require it.
+                If no change pack exists, create or request `docs/changes/<change-id>/` before claiming `Recording status: recorded`.
+                If this is an isolated advisory review, do not create lifecycle artifacts unless explicitly asked.
+                """
+            ),
+        )
+
+        self.assertIn(
+            "skills/proposal-review/SKILL.md: installed-skill placement contract missing default formal review record path docs/changes/<change-id>/reviews/proposal-review-r<n>.md",
+            errors,
+        )
+
+    def test_installed_skill_artifact_placement_contract_helper_rejects_missing_change_pack_behavior(
+        self,
+    ) -> None:
+        errors = skill_validation.validate_installed_skill_artifact_placement_contract(
+            Path("skills/proposal-review/SKILL.md"),
+            "proposal-review",
+            textwrap.dedent(
+                """\
+                # Spec review
+
+                ## Artifact placement
+
+                Formal proposal-review records go under `docs/changes/<change-id>/reviews/proposal-review-r<n>.md`.
+                Record the review-log entry in `docs/changes/<change-id>/review-log.md`.
+                Use `docs/changes/<change-id>/review-resolution.md` only when material findings require it.
+                Isolated advisory reviews do not create lifecycle artifacts unless explicitly asked.
+                """
+            ),
+        )
+
+        self.assertIn(
+            "skills/proposal-review/SKILL.md: installed-skill placement contract must state create-or-request change-pack behavior before claiming Recording status: recorded",
+            errors,
+        )
+
+
+    def test_installed_skill_plan_surface_contract_helper_rejects_ambiguous_plan_wording(
+        self,
+    ) -> None:
+        errors = skill_validation.validate_installed_skill_plan_surface_contract(
+            Path("skills/plan/SKILL.md"),
+            "plan",
+            textwrap.dedent(
+                """\
+                # Plan
+
+                Update the plan before continuing.
+                """
+            ),
+        )
+
+        self.assertIn(
+            "skills/plan/SKILL.md: installed-skill plan surface contract must distinguish docs/plan.md, docs/plans/YYYY-MM-DD-slug.md, docs/changes/<change-id>/change.yaml, and docs/changes/<change-id>/",
+            errors,
+        )
+        self.assertIn(
+            "skills/plan/SKILL.md: installed-skill plan surface contract must tell plan authors to use clickable relative Markdown links like [Title](plans/YYYY-MM-DD-slug.md) in docs/plan.md",
+            errors,
+        )
+
+    def test_installed_skill_plan_surface_contract_helper_accepts_explicit_surfaces(
+        self,
+    ) -> None:
+        body = textwrap.dedent(
+            """\
+            # Plan
+
+            Update the plan index at `docs/plan.md`.
+            Update the plan body at `docs/plans/YYYY-MM-DD-slug.md`.
+            Use change metadata at `docs/changes/<change-id>/change.yaml`.
+            Record review evidence under `docs/changes/<change-id>/`.
+            Write index links as `[Title](plans/YYYY-MM-DD-slug.md)`.
+            """
+        )
+
+        self.assertEqual(
+            skill_validation.validate_installed_skill_plan_surface_contract(
+                Path("skills/plan/SKILL.md"),
+                "plan",
+                body,
+            ),
+            [],
+        )
+
+    def test_installed_skill_plan_surface_contract_canonical_plan_skill(self) -> None:
+        path = ROOT / "skills" / "plan" / "SKILL.md"
+        body = path.read_text(encoding="utf-8")
+
+        self.assertEqual(
+            skill_validation.validate_installed_skill_plan_surface_contract(
+                path.relative_to(ROOT),
+                "plan",
+                body,
+            ),
+            [],
+        )
+
+
+    def test_change_record_catalog_m4_query_commands_exist(self) -> None:
+        helper = (ROOT / "scripts/query-change-record.py").read_text()
+        self.assertIn("unsupported", helper.lower())
+        self.assertNotIn("load_yaml", helper)
+
+
+    def test_follow_up_ownership_m1_project_map_skill_boundary(self) -> None:
+        project_map = (ROOT / "skills" / "project-map" / "SKILL.md").read_text(
+            encoding="utf-8"
+        )
+
+        required_terms = [
+            "## Follow-up boundary",
+            "`project-map` may record risks and open questions for orientation.",
+            "It does not own deferred execution or act as a backlog.",
+            "route it through the appropriate owner surface:",
+            "`docs/follow-ups.md` or another project-local follow-up artifact according to workflow guidance",
+        ]
+        for term in required_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, project_map)
+
+        forbidden_terms = [
+            "| Follow-up type | Owner |",
+            "Active implementation follow-up",
+            "Review finding follow-up",
+        ]
+        for term in forbidden_terms:
+            with self.subTest(term=term):
+                self.assertNotIn(term, project_map)
+
+    def test_follow_up_ownership_register_absent_or_valid_and_no_shared_block(self) -> None:
+        follow_up_shared_blocks = [
+            path
+            for path in (ROOT / "templates" / "shared").glob("*")
+            if "follow" in path.name.lower()
+        ]
+        self.assertEqual([], follow_up_shared_blocks)
+
+        register_path = ROOT / "docs" / "follow-ups.md"
+        if not register_path.exists():
+            return
+
+        register = register_path.read_text(encoding="utf-8")
+        required_terms = [
+            "# Follow-ups",
+            "This file tracks deferred work that is not owned by an active plan",
+            "## Open follow-ups",
+            "| ID | Title | Source | Owner stage | Owner surface | Status | Next action |",
+            "## Closed follow-ups",
+            "| ID | Title | Closed by | Notes |",
+        ]
+        for term in required_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, register)
+
+        allowed_statuses = {"open", "planned", "blocked", "done", "superseded", "deferred"}
+        open_section = extract_markdown_block(register, "Open follow-ups")
+        rows = [
+            line
+            for line in open_section.splitlines()
+            if line.startswith("|")
+            and not re.match(r"^\|\s*-+\s*\|", line)
+            and "ID | Title | Source" not in line
+        ]
+        self.assertGreater(len(rows), 0, "docs/follow-ups.md must not be empty")
+
+        for row in rows:
+            cells = [cell.strip() for cell in row.strip("|").split("|")]
+            self.assertEqual(7, len(cells), row)
+            self.assertTrue(all(cells), row)
+            self.assertIn(cells[5], allowed_statuses, row)
+
+
+class MarkdownReadabilityGuidanceTests(unittest.TestCase):
+    def test_generated_markdown_skeletons_declare_readability_shape(self) -> None:
+        skeletons = [
+            ROOT / "skills" / "proposal" / "assets" / "proposal-skeleton.md",
+            ROOT / "skills" / "design" / "assets" / "design-skeleton.md",
+            ROOT / "skills" / "plan" / "assets" / "plan-skeleton.md",
+        ]
+        required_terms = [
+            "Readability contract:",
+            "normal prose paragraphs",
+            "complete sentences",
+            "stable IDs",
+            "tables",
+        ]
+
+        for skeleton in skeletons:
+            text = skeleton.read_text(encoding="utf-8")
+            for term in required_terms:
+                with self.subTest(skeleton=skeleton, term=term):
+                    self.assertIn(term, text)
+
+    def test_generated_markdown_skills_include_readability_guidance(self) -> None:
+        skill_paths = [
+            ROOT / "skills" / "proposal" / "SKILL.md",
+            ROOT / "skills" / "design" / "SKILL.md",
+            ROOT / "skills" / "plan" / "SKILL.md",
+            ROOT / "skills" / "code-review" / "SKILL.md",
+            ROOT / "skills" / "verify" / "SKILL.md",
+        ]
+        required_terms = [
+            "## Generated Markdown readability",
+            "normal Markdown paragraphs",
+            "Do not split a sentence across physical source lines",
+            "stable IDs",
+            "Do not require manual-proof contracts",
+        ]
+
+        for skill_path in skill_paths:
+            text = skill_path.read_text(encoding="utf-8")
+            for term in required_terms:
+                with self.subTest(skill=skill_path, term=term):
+                    self.assertIn(term, text)
+
+            if skill_path.parent.name == "design":
+                self.assertIn("Living models require the overview and every supporting view judged necessary", text)
+                self.assertIn("other diagrams are optional", text)
+            else:
+                self.assertIn("Diagrams are optional", text)
+
+            with self.subTest(skill=skill_path, term="legacy clause-per-line guidance"):
+                self.assertNotIn("one sentence or natural clause per source line", text)
+
+    def test_implementation_markdown_guidance_keeps_sentences_intact(self) -> None:
+        skill_path = ROOT / "skills" / "implement" / "SKILL.md"
+        text = skill_path.read_text(encoding="utf-8")
+
+        self.assertIn("normal Markdown paragraphs", text)
+        self.assertIn("Do not split a sentence across physical source lines", text)
+        self.assertNotIn("use semantic source lines", text)
+
+    def test_canonical_skill_prose_has_no_suspected_sentence_splits(self) -> None:
+        skill_paths = sorted((ROOT / "skills").glob("*/SKILL.md"))
+        command = [
+            sys.executable,
+            str(ROOT / "scripts" / "validate-documentation-prose.py"),
+            "--mode",
+            "audit",
+        ]
+        for skill_path in skill_paths:
+            command.extend(("--path", str(skill_path.relative_to(ROOT))))
+
+        result = subprocess.run(command, cwd=ROOT, capture_output=True, text=True, check=False)
+
+        self.assertEqual(0, result.returncode, result.stderr)
+        self.assertEqual(
+            f"documentation prose validation: errors=0 warnings=0 paths={len(skill_paths)}\n",
+            result.stdout,
+        )
+
+
+class RetainedSkillAuthorityTests(unittest.TestCase):
+    # These checks protect current actor/asset boundaries or separately retained
+    # optional automation methods; they are not legacy record acceptance.
+    DOWNSTREAM_READ_ONLY_PHRASES = {
+        "implement": "Do not update the plan, upstream artifacts, artifact settlement, or workflow",
+        "code-review": "It must not edit implementation, the plan, artifact settlement, milestone",
+        "verify": "plan and upstream artifacts as read-only",
+        "pr": "upstream artifacts as read-only",
+    }
+
+
+    def test_downstream_skills_keep_upstream_surfaces_read_only(self) -> None:
+        for skill_name, phrase in self.DOWNSTREAM_READ_ONLY_PHRASES.items():
+            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(
+                encoding="utf-8"
+            )
+            with self.subTest(skill=skill_name):
+                self.assertIn(phrase, body)
+
+
+    def test_authoring_skills_do_not_claim_review_settlement(self) -> None:
+        for skill_name in ("proposal", "design", "plan"):
+            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(
+                encoding="utf-8"
+            )
+            with self.subTest(skill=skill_name):
+                self.assertNotIn("self-approve", body.lower())
+                self.assertNotRegex(
+                    body,
+                    r"(?i)(authoring skill|this skill).{0,60}(approve|accept).{0,40}(its|the) (proposal|spec|architecture|plan|test spec)",
+                )
+
+
+    def test_governed_artifact_assets_do_not_emit_mutable_status(self) -> None:
+        asset_paths = [
+            ROOT / "skills" / "proposal" / "assets" / "proposal-skeleton.md",
+            ROOT / "skills" / "design" / "assets" / "design-skeleton.md",
+            ROOT / "skills" / "design" / "assets" / "legacy-architecture-skeleton.md",
+            ROOT / "skills" / "design" / "assets" / "legacy-adr-skeleton.md",
+            ROOT / "skills" / "plan" / "assets" / "plan-skeleton.md",
+        ]
+        forbidden = (
+            "## Status",
+            "Current milestone:",
+            "Review status:",
+            "Next stage:",
+            "Final closeout readiness:",
+        )
+        for asset_path in asset_paths:
+            text = asset_path.read_text(encoding="utf-8")
+            for phrase in forbidden:
+                with self.subTest(asset=asset_path, phrase=phrase):
+                    self.assertNotIn(phrase, text)
+
+
+    def test_route_uses_one_target_and_evidence_first_recovery(self) -> None:
+        body = (
+            ROOT
+            / "skills"
+            / "route"
+            / "references"
+            / "bounded-workflow-automation.md"
+        ).read_text(encoding="utf-8")
+        required = (
+            "one target-driven",
+            "The requested target is the complete automation boundary.",
+            "`$route auto: status` is read-only.",
+            "`$route auto: off` durably cancels",
+            "Resume uses tracked artifact and review evidence.",
+            "Direct review invocations do not activate, resume, or advance automation",
+            "verify failure",
+            "never opens a PR",
+        )
+        for phrase in required:
+            with self.subTest(phrase=phrase):
+                self.assertIn(phrase, body)
+        for retired in ("active profile", "writable profile", "selector ledger"):
+            with self.subTest(retired=retired):
+                self.assertNotIn(retired, body.lower())
+
+
+class RouteSkillCutoverContractTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.root = ROOT / "skills" / "route"
+        self.skill = (self.root / "SKILL.md").read_text(encoding="utf-8")
+
+    def test_route_maps_only_routing_conditional_resources(self) -> None:
+        expected = {
+            "references/governed-lifecycle-routing.md": "READ",
+            "references/bounded-workflow-automation.md": "READ",
+            "references/boundary-first-method-v1.md": "READ",
+        }
+        for relative_path, verb in expected.items():
+            with self.subTest(resource=relative_path):
+                self.assertTrue((self.root / relative_path).is_file())
+                self.assertIn(f"- {verb} `{relative_path}`", self.skill)
+
+        self.assertFalse((self.root / "references/workflow-guide-authoring.md").exists())
+        self.assertFalse((self.root / "assets/workflows-skeleton.md").exists())
+
+    def test_route_declares_exact_predicates_and_assemblies(self) -> None:
+        for predicate in (
+            "governed_change_context",
+            "automation_command_context",
+            "armed_automation_context",
+        ):
+            self.assertIn(predicate, self.skill)
+        self.assertNotIn("workflow_guide_authoring_context", self.skill)
+        for assembly in (
+            "WP0-generic-routing",
+            "WP1-governed",
+            "WP2-governed-automated",
+            "WPB-automation-bootstrap",
+            "WPS-stateless-automation-command",
+        ):
+            self.assertIn(assembly, self.skill)
+        self.assertNotIn("WP3-guide-authoring", self.skill)
+        self.assertNotIn("WP4-governed-guide-authoring", self.skill)
+
+    def test_route_keeps_universal_stops_inline(self) -> None:
+        for phrase in (
+            "Conversational wording alone does not establish",
+            "Unknown artifact types and unknown lifecycle stages are blockers",
+            "Every predicate combination must match exactly one assembly row",
+            "After classification and before resource-dependent interpretation or action",
+            "contradiction among packaged resources",
+            "stop rather than invent, recall, or partially reconstruct",
+        ):
+            self.assertIn(phrase, self.skill)
+
+    def test_route_references_have_non_overlapping_owners(self) -> None:
+        governed = (self.root / "references" / "governed-lifecycle-routing.md").read_text(encoding="utf-8")
+        automation = (self.root / "references" / "bounded-workflow-automation.md").read_text(encoding="utf-8")
+        self.assertIn("reviewed stable plan", governed)
+        self.assertNotIn("architecture-required", governed)
+        self.assertNotIn("architecture-not-required", governed)
+        self.assertNotIn("architecture-ambiguous", governed)
+        self.assertIn("Actor-owned updates", governed)
+        self.assertIn("asks governed lifecycle procedure", automation)
+        self.assertIn("must not redefine stage order", automation)
+
+    def test_route_bootstrap_and_stateless_paths_are_explicit(self) -> None:
+        automation = (self.root / "references" / "bounded-workflow-automation.md").read_text(encoding="utf-8")
+        bootstrap_steps = (
+            "Recognize the explicit target command",
+            "Load bounded workflow automation procedure",
+            "Resolve or create governed change identity",
+            "Validate the governed record",
+            "Reclassify as governed",
+            "Load governed lifecycle procedure",
+            "Only then persist authorization",
+        )
+        positions = [automation.index(step) for step in bootstrap_steps]
+        self.assertEqual(positions, sorted(positions))
+        self.assertIn("no-active-run", automation)
+        self.assertIn("creates no governed or automation state", automation)
+
+    def test_route_consumes_cli_context_and_preserves_protocol_authority(self) -> None:
+        self.assertIn("rigorloop workflow-context", self.skill)
+        self.assertIn("Route owns explicit activity", self.skill)
+        self.assertIn("targeted", self.skill)
+        self.assertNotIn("docs/workflows.md", self.skill)
+
+    def test_current_skill_validator_has_no_retired_guide_parser(self) -> None:
+        validator = (ROOT / "scripts/lib/validation" / "skill_validation.py").read_text(encoding="utf-8")
+        for retired in (
+            "def validate_workflow_artifact_map_lookup",
+            "def validate_workflow_artifact_map_contract",
+            "def validate_workflow_guide_skeleton_contract",
+            "WORKFLOW_GUIDE_SKELETON_REQUIRED_METADATA",
+            "WORKFLOW_ARTIFACT_REQUIRED_REGISTRY_ENTRIES",
+        ):
+            with self.subTest(retired=retired):
+                self.assertNotIn(retired, validator)
+
+
+class VerifySkillSimplificationContractTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.root = ROOT / "skills" / "verify"
+        self.skill = (self.root / "SKILL.md").read_text(encoding="utf-8")
+
+    def test_verify_simplification_maps_exact_resources(self) -> None:
+        for relative_path in (
+            "references/boundary-first-method-v1.md",
+            "references/branch-readiness-verification.md",
+        ):
+            self.assertTrue((self.root / relative_path).is_file())
+            self.assertIn(f"- READ `{relative_path}`", self.skill)
+
+    def test_verify_simplification_declares_closed_outcomes_profiles_and_modes(self) -> None:
+        for value in ("scoped-verification", "branch-readiness", "workflow-final-verification"):
+            self.assertIn(value, self.skill)
+        for value in ("VP0-scoped", "VP0B-scoped-boundary", "VP1-final-readiness", "VP1B-final-readiness-boundary"):
+            self.assertIn(value, self.skill)
+        for value in ("isolated", "governed-final"):
+            self.assertIn(value, self.skill)
+
+    def test_verify_simplification_keeps_item_evidence_and_claim_safety_inline(self) -> None:
+        for phrase in (
+            "passed`, `failed`, `skipped`, `pending`, `not-run`, and `unknown",
+            "configured command is not an actual run",
+            "local validation is not observed hosted CI",
+            "current from stale evidence",
+            "generated-output currency",
+            "manual proof",
+            "branch-ready",
+            "pr-body-ready",
+            "pr-open-ready",
+        ):
+            self.assertIn(phrase, self.skill)
+
+    def test_verify_simplification_reference_owns_aggregation_not_item_meaning(self) -> None:
+        reference = (self.root / "references" / "branch-readiness-verification.md").read_text(encoding="utf-8")
+        for phrase in ("Final-readiness prerequisites", "Final evidence composition", "blocker aggregation", "Verdict and completion"):
+            self.assertIn(phrase, reference)
+        for forbidden in ("defines the meaning of `passed`", "owns workflow stage order", "authorizes `pr`"):
+            self.assertNotIn(forbidden, reference)
+
+    def test_verify_simplification_fails_safe_on_missing_triggered_resource(self) -> None:
+        for phrase in (
+            "missing or unreadable triggered reference",
+            "stop before dependent interpretation, verdict, recording, or handoff",
+            "must not reconstruct",
+            "untriggered reference does not load",
+        ):
+            self.assertIn(phrase, self.skill)
+
+
+class PRSkillSimplificationTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.root = ROOT / "skills" / "pr"
+        self.skill = (self.root / "SKILL.md").read_text(encoding="utf-8")
+        self.reference = (self.root / "references" / "governed-pr-readiness.md").read_text(encoding="utf-8")
+        self.asset = (self.root / "assets" / "pr-body-skeleton.md").read_text(encoding="utf-8")
+        self.verify_skill = (ROOT / "skills" / "verify" / "SKILL.md").read_text(encoding="utf-8")
+        self.verify_reference = (ROOT / "skills" / "verify" / "references" / "branch-readiness-verification.md").read_text(encoding="utf-8")
+        self.verify_explanation = (ROOT / "skills" / "verify" / "references" / "successful-explanation.md").read_text(encoding="utf-8")
+
+    def test_package_inventory_and_resource_map_are_exact(self) -> None:
+        self.assertEqual(sorted(path.name for path in (self.root / "references").iterdir()), ["governed-pr-readiness.md", "review-reliance.md"])
+        self.assertEqual(sorted(path.name for path in (self.root / "assets").iterdir()), ["pr-body-skeleton.md"])
+        self.assertIn("READ `references/governed-pr-readiness.md`", self.skill)
+        self.assertIn("COPY `assets/pr-body-skeleton.md`", self.skill)
+        for profile in ("PR0-portable", "PR1-governed"):
+            self.assertIn(profile, self.skill)
+
+    def test_closed_vocabularies_reject_unknown_values_first(self) -> None:
+        vocabularies = {
+            "governed signal": ("no-governed-signal", "single-governed-candidate", "invalid-or-ambiguous-governed-signal"),
+            "submission intent": ("open", "draft", "prepare-only"),
+            "refresh authority": ("none", "explicit-title-refresh", "explicit-full-replacement", "workflow-title-refresh"),
+            "state-transition authority": ("none", "publish-existing-draft", "convert-existing-open-to-draft"),
+            "branch relation": ("absent", "same", "remote-ancestor-of-local", "local-ancestor-of-remote", "diverged", "ambiguous"),
+            "PR state": ("absent", "open", "draft", "closed", "merged", "ambiguous"),
+            "operation result": ("opened", "draft-opened", "updated", "reused", "prepared-not-opened", "blocked"),
+            "hosted-CI state": ("passed", "failed", "pending", "unavailable", "unobserved", "not-applicable"),
+            "evidence suffix": ("none", "evidence-only", "invalidating"),
+        }
+        for name, allowed in vocabularies.items():
+            with self.subTest(vocabulary=name):
+                self.assertIn(name, self.skill)
+                self.assertTrue(all(value in self.skill for value in allowed))
+        self.assertIn("Unknown values fail before consistency checks", self.skill)
+
+    def test_prepare_only_and_independent_authorities_have_closed_side_effects(self) -> None:
+        for phrase in (
+            "performs no push, PR creation, refresh, publication, draft conversion, or other external mutation",
+            "Submission intent does not grant refresh or PR-state transition authority",
+            "Default `open` preserves an existing draft",
+            "Explicit `draft` preserves an existing open PR",
+            "requested intent, actual operation, blocker, and actual mutation",
+        ):
+            self.assertIn(phrase, self.skill)
+
+    def test_refresh_preserves_body_without_section_parser(self) -> None:
+        for phrase in (
+            "title replacement or explicitly authorized whole-body replacement",
+            "must not parse or mutate Markdown sections",
+            "body bytes remain unchanged",
+            "hidden managed markers",
+        ):
+            self.assertIn(phrase.lower(), self.skill.lower())
+
+    def test_directional_git_and_pr_state_are_fail_closed(self) -> None:
+        for phrase in (
+            "strict ancestor of the local handoff revision",
+            "remote contains work absent locally",
+            "must not force-push",
+            "Closed, merged, multiple, mismatched, or ambiguous",
+            "never create a duplicate matching PR",
+        ):
+            self.assertIn(phrase.lower(), self.skill.lower())
+
+    def test_verify_owns_normalized_basis_and_legacy_is_preparation_only(self) -> None:
+        combined = self.verify_skill + self.verify_reference
+        for field in (
+            "repository_identity", "remote_identity", "base_branch", "base_revision",
+            "merge_base_revision", "head_branch", "verified_subject_revision",
+        ):
+            self.assertIn(field, combined)
+            self.assertIn(field, self.skill)
+        self.assertIn("verification_basis", combined)
+        self.assertIn("Legacy, prose-only, command-only", self.skill)
+        self.assertIn("preparation", self.skill)
+
+    def test_evidence_suffix_external_sequence_and_readback_are_exact(self) -> None:
+        for phrase in (
+            "cumulative final change",
+            "any commit count or direct-parent topology",
+            "current attributable final-review, workflow, and Verify evidence",
+            "path, file name, commit message, or author identity alone",
+            "Immediately before push",
+            "After push and before PR mutation",
+            "Immediately before PR mutation",
+            "After creation, reuse, refresh, or transition",
+            "successful external write truthfully",
+            "pr-open-ready: false",
+        ):
+            self.assertIn(phrase.lower(), self.skill.lower())
+        self.assertNotIn("exactly one direct-child verify-owned evidence commit", self.skill)
+
+    def test_unaffected_signal_retry_body_output_and_claim_contracts_are_preserved(self) -> None:
+        for phrase in (
+            "malformed, stale, conflicting, duplicated, unsafe, escaped, or ambiguous signals stop without portable fallback",
+            "Retry reconciles state",
+            "Procedure owns applicability and adequacy",
+            "requested intent, operation, actual external mutation, actual PR state, readiness booleans, hosted-CI state, blockers, claim limitations, and post-read-back URL",
+            "without current owning evidence",
+        ):
+            self.assertIn(phrase, self.skill)
+
+    def test_evidence_suffix_rejects_protected_mixed_stale_and_cross_change_content(self) -> None:
+        for phrase in (
+            "implementation, tests, specifications, architecture, plans, dependencies, configuration",
+            "generated product output",
+            "public documentation",
+            "another governed change",
+            "mixed",
+            "unknown",
+            "stale",
+            "non-ancestor",
+        ):
+            self.assertIn(phrase.lower(), (self.skill + self.reference).lower())
+
+
+    def test_hosted_ci_result_and_claim_contracts_are_explicit(self) -> None:
+        for phrase in (
+            "current hosted evidence for the exact handoff revision at the PR head",
+            "must never be described as passed",
+            "requested intent", "actual external mutation", "actual PR state",
+            "hosted-CI state", "claim limitations",
+        ):
+            self.assertIn(phrase.lower(), self.skill.lower())
+
+    def test_governed_reference_is_bounded_and_read_only(self) -> None:
+        for phrase in (
+            "change pack", "plan", "review resolution", "historical rationale", "verify",
+            "state-sync", "release-sensitive", "migration", "external completion",
+            "read-only", "must not mutate",
+        ):
+            self.assertIn(phrase.lower(), self.reference.lower())
+        self.assertNotIn("force-push", self.reference.lower())
+
+    def test_body_asset_owns_structure_not_policy(self) -> None:
+        for heading in (
+            "## Summary", "## Why", "## What changed", "## Tests and verification",
+            "## Risks and rollback", "## Reviewer notes", "## Follow-ups",
+        ):
+            self.assertEqual(self.asset.count(heading), 1)
+        for heading in ("## Design and delivery basis", "## Requirement coverage", "## Review resolution summary", "## Lifecycle and verification evidence", "## Migration", "## Security and privacy", "## Release or operational impact"):
+            self.assertEqual(self.asset.count(heading), 1)
+        for forbidden in ("only when", "pr-open-ready", "branch-ready", "force-push"):
+            self.assertNotIn(forbidden, self.asset.lower())
+
+    def test_required_resources_and_lifecycle_claims_fail_closed(self) -> None:
+        for phrase in (
+            "missing, unreadable, escaped, stale, transformed, or mixed-version",
+            "stop before governed readiness judgment",
+            "stop before body generation and external mutation",
+            "must not reconstruct",
+            "must not mutate `change.json`",
+            "no downstream continuation",
+        ):
+            self.assertIn(phrase.lower(), self.skill.lower())
+
+    def test_review_resolution_summary_contract_is_preserved(self) -> None:
+        for phrase in ("registered reviews", "owned dispositions", "blockers", "independent reassessment", "without duplicating every finding"):
+            self.assertIn(phrase, self.skill)
+
+
+class PlanSkillSimplificationContractTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.root = ROOT / "skills" / "plan"
+        self.skill = (self.root / "SKILL.md").read_text(encoding="utf-8")
+        self.reference = (
+            self.root / "references" / "governed-plan-authoring.md"
+        ).read_text(encoding="utf-8")
+        self.change_root = (
+            ROOT / "docs" / "changes" / "2026-08-12-plan-skill-simplification"
+        )
+
+
+    def test_plan_simplification_package_and_profiles_are_closed(self) -> None:
+        self.assertEqual(
+            sorted(path.name for path in (self.root / "assets").iterdir()),
+            ["decision-log-row.md", "milestone.md", "plan-skeleton.md"],
+        )
+        self.assertIn("references/governed-plan-authoring.md", self.skill)
+        self.assertIn("references/boundary-first-method-v1.md", self.skill)
+        for operation in (
+            "create-primary-plan",
+            "revise-primary-plan",
+            "initialize-approved-plan",
+        ):
+            self.assertIn(operation, self.skill)
+        self.assertIn("change link", self.reference)
+        self.assertIn("Conversational wording", self.skill)
+        self.assertIn("does not establish governed authority", self.skill)
+
+    def test_plan_simplification_governed_reference_owns_only_governed_procedure(self) -> None:
+        for phrase in ("approved Delivery Review package", "change link", "Never initialize an unreviewed draft", "route owns subsequent work decisions", "exactly once"):
+            self.assertIn(phrase, self.reference)
+        self.assertNotIn("record-artifact-revision", self.reference)
+
+    def test_plan_simplification_assets_are_stable_intent_only(self) -> None:
+        milestone = (self.root / "assets" / "milestone.md").read_text(
+            encoding="utf-8"
+        )
+        for required in (
+            "Milestone kind",
+            "Completion criteria",
+            "Required evidence",
+            "Review handoff",
+            "Rollback/recovery",
+        ):
+            self.assertIn(required, milestone)
+        for forbidden in (
+            "Milestone state:",
+            "validation passed",
+            "progress updated",
+            "milestone committed",
+        ):
+            self.assertNotIn(forbidden, milestone)
+
+
+class ProposalSkillSimplificationTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.root = ROOT / "skills" / "proposal"
+        self.skill = (self.root / "SKILL.md").read_text(encoding="utf-8")
+        governed_path = self.root / "references" / "governed-proposal-authoring.md"
+        strategic_path = self.root / "references" / "strategic-and-scope-gates.md"
+        self.governed = governed_path.read_text(encoding="utf-8") if governed_path.is_file() else ""
+        self.strategic = strategic_path.read_text(encoding="utf-8") if strategic_path.is_file() else ""
+        self.skeleton = (self.root / "assets" / "proposal-skeleton.md").read_text(encoding="utf-8")
+
+    def test_package_assemblies_and_resource_ownership_are_closed(self) -> None:
+        self.assertEqual(sorted(path.name for path in (self.root / "references").iterdir()), ["governed-proposal-authoring.md", "requirement-to-delivery-model.md", "strategic-and-scope-gates.md"])
+        for assembly in ("PA0-portable", "PA0G-portable-gated", "PA1-governed", "PA1G-governed-gated"):
+            self.assertIn(assembly, self.skill)
+        self.assertIn("READ `references/governed-proposal-authoring.md`", self.skill)
+        self.assertIn("READ `references/strategic-and-scope-gates.md`", self.skill)
+        self.assertIn("COPY `assets/proposal-skeleton.md`", self.skill)
+        self.assertIn("must not reconstruct", self.skill.lower())
+
+    def test_portable_and_governed_operation_authority_is_separate(self) -> None:
+        for operation in ("create-primary-proposal", "revise-primary-proposal"):
+            self.assertIn(operation, self.skill)
+        self.assertIn("change link", self.governed)
+        for phrase in (
+            "governed_proposal_candidate_context",
+            "Conversational wording alone does not establish",
+            "does not grant mutation authority",
+            "must not fall back to portable",
+            "Portable authoring writes only the proposal artifact",
+        ):
+            self.assertIn(phrase.lower(), self.skill.lower())
+        for phrase in ("review readiness", "Conflict requires rereading", "downstream reliance", "prior subject identities"):
+            self.assertIn(phrase.lower(), self.governed.lower())
+
+    def test_governed_retry_and_authorized_reset_fail_closed(self) -> None:
+        for phrase in ("Conflict requires rereading and reassessment", "stop on ambiguous outcome", "Preserve partial evidence", "Do not settle review"):
+            self.assertIn(phrase, self.governed)
+
+    def test_specialized_predicates_and_scope_budget_vocabulary_are_closed(self) -> None:
+        for predicate in ("vision_exception_context", "standing_artifact_context", "initial_intent_table_context", "scope_budget_context"):
+            self.assertIn(predicate, self.skill)
+            self.assertIn(predicate, self.strategic)
+        self.assertIn("semantic proposal judgment", self.skill.lower())
+        self.assertIn("loads exactly once", self.skill.lower())
+        for value in ("in scope", "out of scope", "deferred follow-up", "rejected option", "open question", "core to this proposal", "first-slice candidate", "same-slice dependency", "separate implementation slice", "deferable follow-up", "separate proposal"):
+            self.assertIn(value, self.strategic)
+
+    def test_skeleton_owns_exact_direction_sections_and_one_conditional_section(self) -> None:
+        headings = [
+            line.removeprefix("## ")
+            for line in self.skeleton.splitlines()
+            if line.startswith("## ")
+        ]
+        self.assertEqual(
+            headings,
+            [
+                "Challenge",
+                "Goals",
+                "Scope and non-goals",
+                "Governing principle",
+                "Proposed direction",
+                "Feasibility",
+                "Impact and major trade-offs",
+                "Decision requested",
+            ],
+        )
+        self.assertIn("otherwise omit this section", self.skeleton)
+        self.assertIn("Omit the material-impact section when it is not needed", self.skill)
+        self.assertIn("inside an allowed section", self.skill)
+
+    def test_references_have_non_overlapping_policy_owners(self) -> None:
+        self.assertIn("governed proposal authoring", self.governed.lower())
+        self.assertIn("strategic and scope gates", self.strategic.lower())
+        self.assertNotIn("scope budget treatment", self.governed.lower())
+        self.assertNotIn("change.yaml", self.strategic)
+        self.assertNotIn("review-required", self.strategic)
+
+
+class UnifiedDesignResourceTests(unittest.TestCase):
+    def test_complete_package_and_retired_names(self):
+        root = ROOT / "skills/design"
+        self.assertFalse((ROOT / "skills/spec").exists())
+        self.assertFalse((ROOT / "skills/architecture").exists())
+        self.assertEqual(run_validator(root).returncode, 0)
+        from lib.validation.skill_validation import DESIGN_RESOURCES
+        self.assertEqual({p.relative_to(root).as_posix() for p in root.rglob("*") if p.is_file()}, {"SKILL.md", *DESIGN_RESOURCES})
+
+    def test_missing_each_conditional_design_resource_rejects(self):
+        from lib.validation.skill_validation import DESIGN_RESOURCES
+        for resource in DESIGN_RESOURCES:
+            with self.subTest(resource=resource), tempfile.TemporaryDirectory() as tmp:
+                root = Path(tmp) / "design"
+                shutil.copytree(ROOT / "skills/design", root)
+                (root / resource).unlink()
+                self.assertNotEqual(run_validator(root).returncode, 0)
+
+    def test_unknown_value_design_resource_rejects(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp) / "design"
+            shutil.copytree(ROOT / "skills/design", root)
+            (root / "references/unknown_value.md").write_text("unexpected resource")
+            result = run_validator(root)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("unknown", (result.stdout + result.stderr).lower())
+
+    def test_legacy_boundary_projection_keeps_complete_format(self):
+        root = ROOT / "skills/design/references"
+        for name in ("boundary-first-method-v1.md", "boundary-first-feature-authoring-v1.md"):
+            self.assertEqual((root / name).read_bytes(), (ROOT / "templates/shared" / name).read_bytes())
+        body = (root / "boundary-first-feature-authoring-v1.md").read_text()
+        headings = ("## Boundary model", "## Boundary definitions", "## Selected interactions", "## Example ownership")
+        positions = [body.index(h) for h in headings]
+        self.assertEqual(positions, sorted(positions))
+
+    def test_governed_recording_stays_conditional_and_readable(self):
+        root = ROOT / "skills/design"
+        body = (root / "SKILL.md").read_text()
+        self.assertIn("do not fall back to portable mode", body)
+        self.assertIn("when one valid governed change", body)
+        ref = (root / "references/governed-design-authoring.md").read_text()
+        self.assertIn("expected_revision", ref)
+        self.assertIn("Do not migrate", ref)
+        self.assertIn("does not approve", ref)
+        self.assertNotIn("record-store check|record", ref)
+
+
+class VisionSkillProgressiveDisclosureTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.root = ROOT / "skills" / "vision"
+        self.skill = (self.root / "SKILL.md").read_text(encoding="utf-8")
+        self.strategic = (self.root / "references" / "strategic-vision-authoring.md").read_text(encoding="utf-8")
+        self.readme = (self.root / "references" / "readme-vision-sync.md").read_text(encoding="utf-8")
+        self.vision_asset = (self.root / "assets" / "vision-skeleton.md").read_text(encoding="utf-8")
+        self.positioning_asset = (self.root / "assets" / "strategic-positioning-skeleton.md").read_text(encoding="utf-8")
+        self.package = "\n".join((self.skill, self.strategic, self.readme))
+
+    def test_package_inventory_resource_verbs_and_six_assemblies_are_exact(self) -> None:
+        self.assertEqual(sorted(path.name for path in (self.root / "references").iterdir()), ["readme-vision-sync.md", "strategic-vision-authoring.md"])
+        self.assertEqual(sorted(path.name for path in (self.root / "assets").iterdir()), ["strategic-positioning-skeleton.md", "vision-skeleton.md"])
+        self.assertFalse(any(path.suffix == ".py" for path in self.root.rglob("*")))
+        for mapping in ("READ `references/strategic-vision-authoring.md`", "READ `references/readme-vision-sync.md`", "COPY `assets/vision-skeleton.md`", "COPY `assets/strategic-positioning-skeleton.md`"):
+            self.assertIn(mapping, self.skill)
+        rows = [line for line in self.skill.splitlines() if line.startswith("| `VA")]
+        for assembly in ("VA0-readme-sync", "VA0S-readme-skip", "VA1-editorial-sync", "VA1S-editorial-skip", "VA2-strategic-sync", "VA2S-strategic-skip"):
+            self.assertEqual(sum(assembly in row for row in rows), 1)
+
+    def test_universal_operations_actions_authority_and_claims_remain_inline(self) -> None:
+        for value in ("establish-vision", "revise-vision", "sync-readme", "editorial", "substantive-nonmaterial", "material-repositioning", "synchronize-existing", "insert-and-synchronize", "full-rewrite", "partial-retry-required", "blocked-before-write"):
+            self.assertIn(value, self.skill)
+        for phrase in ("`CONSTITUTION.md` outranks `VISION.md`", "`VISION.md` is canonical", "only supported project-vision artifact", "loading a reference or copying an asset never grants", "privacy", "stop before", "do not claim", "does not hand off automatically"):
+            self.assertIn(phrase.lower(), self.skill.lower())
+        self.assertNotIn("## Modes", self.skill)
+
+    def test_references_have_distinct_procedure_and_no_authority_grant(self) -> None:
+        for phrase in ("project category", "primary user", "primary pain", "primary promise", "core mechanism", "alternatives", "tradeoff", "compatibility surfaces", "refusals", "falsifiability", "MUST NOT exceed 900 words", "methodology-as-product"):
+            self.assertIn(phrase.lower(), self.strategic.lower())
+        for phrase in ("<!-- vision:start -->", "<!-- vision:end -->", "first H1 block", "preserve every byte outside", "derived", "idempot"):
+            self.assertIn(phrase.lower(), self.readme.lower())
+        for reference in (self.strategic, self.readme):
+            self.assertIn("parent skill owns", reference.lower())
+            self.assertNotIn("grants authority", reference.lower())
+
+    def test_assets_are_structural_complete_and_policy_free(self) -> None:
+        for heading in ("## Pitch", "## What makes this different", "## Who it is for", "## Who it is not for", "## What it commits to", "## What it refuses to be", "## What would prove this wrong"):
+            self.assertIn(heading, self.vision_asset)
+        for heading in ("## Project category", "## Primary user", "## Primary pain", "## Primary promise", "## Core mechanism", "## Alternatives", "## Tradeoff", "## Compatibility surfaces", "## Refusals", "## Falsifiability"):
+            self.assertIn(heading, self.positioning_asset)
+        self.assertIn("does not independently override it", self.positioning_asset)
+        for asset in (self.vision_asset, self.positioning_asset):
+            for forbidden in ("authority is", "lifecycle", "review status", "marker parsing", "word limit"):
+                self.assertNotIn(forbidden, asset.lower())
+
+    def test_skip_manifest_write_order_retry_and_resource_failures_are_closed(self) -> None:
+        for phrase in ("not-evaluated-under-exact-skip", "equal prior and intended identities", "authorized change-local authoring evidence before its first target write", "otherwise stop and require Design before planning", "zero-write skip has no changed files", "claims neither synchronization nor marker validity", "write source-first", "immediately before README", "read-back of every required", "committed and pending targets", "portable cross-session recovery", "missing, unreadable, escaped, stale, contradictory, or mixed-version", "do not reconstruct"):
+            self.assertIn(phrase.lower(), self.skill.lower())
+        for claim in ("review approval", "implementation", "validation", "verification", "branch readiness", "PR readiness", "release", "deployment"):
+            self.assertIn(claim.lower(), self.skill.lower())
+
+
+class ExplainChangeSkillRetirementTests(unittest.TestCase):
+    def test_standalone_skill_is_absent_and_verify_owns_explanation(self) -> None:
+        self.assertFalse((ROOT / "skills" / "explain-change").exists())
+        verify = (ROOT / "skills" / "verify" / "SKILL.md").read_text(encoding="utf-8")
+        self.assertIn("final durable explanation", verify)
+        manifest = (ROOT / "dist" / "adapters" / "manifest.yaml").read_text(encoding="utf-8")
+        self.assertNotIn("name: explain-change", manifest)
+class LearnSkillSimplificationTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.root = ROOT / "skills" / "learn"
+        self.skill = (self.root / "SKILL.md").read_text(encoding="utf-8")
+        self.method = (self.root / "references" / "session-method.md").read_text(encoding="utf-8")
+        self.package = self.skill + "\n" + self.method
+
+    def test_package_profiles_and_resource_trigger_are_exact(self) -> None:
+        self.assertEqual(sorted(path.name for path in (self.root / "references").iterdir()), ["session-method.md"])
+        self.assertFalse((self.root / "assets").exists())
+        self.assertIn("LR0-route-result", self.skill)
+        self.assertIn("LR1-session", self.skill)
+        self.assertIn("READ `references/session-method.md`", self.skill)
+        self.assertIn("exactly for `run-learn-session`", self.skill)
+        self.assertIn("at most once", self.skill)
+
+    def test_operations_authority_and_resource_failures_are_closed(self) -> None:
+        for value in ("run-learn-session", "record-learn-route-result"):
+            self.assertIn(value, self.skill)
+        self.assertNotIn("assess-learn-trigger` operation", self.skill)
+        for phrase in ("unknown, missing, combined, or ambiguous", "contributor confirmation", "destination mutation", "workflow continuation", "missing, unreadable, escaped, stale, contradictory, or mixed-version", "must not reconstruct"):
+            self.assertIn(phrase.lower(), self.skill.lower())
+        for phrase in ("unless the request explicitly identifies", "before session creation"):
+            self.assertIn(phrase.lower(), self.skill.lower())
+        self.assertNotIn("$learn", self.skill)
+
+    def test_session_paths_interruption_and_confirmation_fail_closed(self) -> None:
+        for phrase in ("lowest available suffix", "recheck absence", "complete `Frame`", "must not resume, repair, adopt, or overwrite", "same complete session", "new unique path", "pending", "confirmed", "rejected"):
+            self.assertIn(phrase.lower(), self.package.lower())
+        for phrase in ("session identity", "evidence-basis identity", "recorded evidence", "bounded inference", "unknowns", "sensitive or excluded evidence", "conflicting or ambiguous topic content"):
+            self.assertIn(phrase.lower(), self.method.lower())
+
+    def test_routes_and_result_recording_have_narrow_ownership(self) -> None:
+        for value in ("ROUTE-NNN", "pending-owner-action", "complete", "blocked", "authoritative-artifact", "durable-scheduled-follow-up"):
+            self.assertIn(value, self.package)
+        for phrase in ("only the matching route", "exact owner-result identity", "idempotent success", "must not poll", "must not mutate the destination", "historical sessions"):
+            self.assertIn(phrase.lower(), self.package.lower())
+        for field in ("source observation", "confirmed classification", "requested action", "destination kind", "owning skill or process", "evidence-basis identity", "required completion kind", "settlement", "optional owner-result identity", "optional blocker"):
+            self.assertIn(field.lower(), self.method.lower())
+        for phrase in ("fixed when the route is created", "must match the route's immutable required completion kind"):
+            self.assertIn(phrase.lower(), self.package.lower())
+
+    def test_compact_result_and_claim_limits_are_complete(self) -> None:
+        for phrase in ("operation", "session identity and path", "trigger and scope", "confirmation result", "session recording result", "topic effects", "route IDs and settlements", "owner-result identities", "blockers", "next owner or handoff", "claim limitations"):
+            self.assertIn(phrase.lower(), self.skill.lower())
+        for claim in ("destination approval", "implementation", "release", "workflow completion", "verification", "branch readiness", "PR readiness"):
+            self.assertIn(claim.lower(), self.skill.lower())
+
+
+class ProjectMapSkillSimplificationTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.root = ROOT / "skills" / "project-map"
+        self.skill = (self.root / "SKILL.md").read_text(encoding="utf-8")
+        self.reference_path = self.root / "references" / "map-maintenance-and-area-coordination.md"
+        self.reference = self.reference_path.read_text(encoding="utf-8") if self.reference_path.is_file() else ""
+
+    def test_package_and_loaded_assemblies_are_closed(self) -> None:
+        self.assertEqual(sorted(path.name for path in (self.root / "assets").iterdir()), ["project-map-skeleton.md"])
+        self.assertEqual(sorted(path.name for path in (self.root / "references").iterdir()), ["map-maintenance-and-area-coordination.md"])
+        for value in ("PMA0-simple-root-create", "PMA1-maintenance-or-coordinated"):
+            self.assertIn(value, self.skill)
+        self.assertIn("READ `references/map-maintenance-and-area-coordination.md`", self.skill)
+        self.assertIn("COPY `assets/project-map-skeleton.md`", self.skill)
+        self.assertIn("Late coordination discovery", self.skill)
+
+    def test_operation_scope_and_target_state_contract_is_closed(self) -> None:
+        for value in ("`create`", "`refresh`", "`audit`", "`repository`", "`area:<slug>`"):
+            self.assertIn(value, self.skill)
+        for phrase in (
+            "applies only when the resolved target is absent",
+            "applies only when the resolved target exists",
+            "complete rewrite of an existing map is a refresh",
+            "is always read-only",
+            "missing-map",
+            "new refresh operation",
+        ):
+            self.assertIn(phrase, self.skill.lower())
+        self.assertIn("Operation: <create | refresh | audit>", self.skill)
+        self.assertIn("Map scope: <repository | area:<slug>>", self.skill)
+        self.assertNotIn("Mode: <", self.skill)
+
+    def test_coordination_preflight_is_bounded_and_fail_closed(self) -> None:
+        for phrase in (
+            "project-local workflow guidance",
+            "root-map path",
+            "area-map directory",
+            "root registration",
+            "area-map files",
+            "request-supplied coordination evidence",
+            "active change context",
+            "must not broadly scan the repository merely to prove absence",
+            "unavailable, conflicting, or ambiguous",
+        ):
+            self.assertIn(phrase, self.skill.lower())
+
+    def test_universal_evidence_and_reliance_rules_remain_inline(self) -> None:
+        for phrase in (
+            "observed",
+            "inferred",
+            "unknown",
+            "current",
+            "partial",
+            "stale",
+            "configured command",
+            "executed command",
+            "<sha>+dirty",
+            "source and runtime configuration",
+            "must inspect source directly",
+        ):
+            self.assertIn(phrase, self.skill.lower())
+
+    def test_conditional_reference_owns_maintenance_and_area_transaction(self) -> None:
+        for phrase in (
+            "refresh trigger comparison",
+            "affected-section selection",
+            "correction note",
+            "audit procedure",
+            "root registration",
+            "overlap ownership",
+            "previous and current baseline",
+            "write the area map first",
+            "registration last",
+            "transaction commit point",
+            "idempotent success",
+            "must not adopt",
+        ):
+            self.assertIn(phrase, self.reference.lower())
+
+    def test_required_resource_failure_stops_without_reconstruction(self) -> None:
+        for phrase in (
+            "missing",
+            "unreadable",
+            "escaped",
+            "contradictory",
+            "mixed-version",
+            "stop",
+            "must not reconstruct",
+        ):
+            self.assertIn(phrase, self.skill.lower())
+
+
+class CiMaintenanceSkillSimplificationTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.root = ROOT / "docs" / "changes" / "2026-08-19-ci-maintenance-skill-simplification"
+        self.skill_dir = ROOT / "skills" / "ci-maintenance"
+
+
+    def test_package_split_and_closed_axes_are_present(self) -> None:
+        skill = (self.skill_dir / "SKILL.md").read_text(encoding="utf-8")
+        reference = (self.skill_dir / "references" / "github-workflow-authoring.md").read_text(encoding="utf-8")
+        for value in (
+            "create",
+            "revise",
+            "review",
+            "invalid-or-ambiguous-target",
+            "CIM8",
+            "bounded-pr-ci-repair",
+            "not-observed",
+            "pending",
+            "passed",
+            "failed",
+        ):
+            self.assertIn(value, skill)
+        self.assertIn("serializes", reference)
+        self.assertIn("MUST NOT independently choose", reference)
+
+    def test_minimal_skeleton_omits_privileged_and_boundary_examples(self) -> None:
+        skeleton = (self.skill_dir / "assets" / "github-workflow-skeleton.yml").read_text(encoding="utf-8")
+        for forbidden in ("pull_request:", "push:", "schedule:", "workflow_dispatch:", "pull_request_target", "secrets:", "id-token:"):
+            self.assertNotIn(forbidden, skeleton)
+        self.assertIn("permissions:\n  contents: read", skeleton)
+
+    def test_risk_map_owns_semantic_placement(self) -> None:
+        risk_map = (self.skill_dir / "references" / "risk-to-check-map.md").read_text(encoding="utf-8")
+        self.assertIn("sole semantic owner", risk_map)
+        self.assertIn("required execution boundary", risk_map)
+
+    def test_create_no_clobber_uses_commit_time_absence(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            target = Path(temporary) / "ci.yml"
+            target.write_text("concurrent", encoding="utf-8")
+            with self.assertRaises(FileExistsError):
+                descriptor = os.open(target, os.O_WRONLY | os.O_CREAT | os.O_EXCL)
+                os.close(descriptor)
+            self.assertEqual(target.read_text(encoding="utf-8"), "concurrent")
+
+    def test_revise_identity_guard_rejects_concurrent_change(self) -> None:
+        import hashlib
+        with tempfile.TemporaryDirectory() as temporary:
+            target = Path(temporary) / "ci.yml"
+            target.write_text("A", encoding="utf-8")
+            prior = hashlib.sha256(target.read_bytes()).hexdigest()
+            target.write_text("B", encoding="utf-8")
+            current = hashlib.sha256(target.read_bytes()).hexdigest()
+            self.assertNotEqual(prior, current)
+            self.assertEqual(target.read_text(encoding="utf-8"), "B")
+
+    def test_dependency_batch_orders_provider_before_wrapper(self) -> None:
+        dependencies = {"validation-script": set(), "github-workflow": {"validation-script"}}
+        order = []
+        pending = set(dependencies)
+        while pending:
+            ready = sorted(node for node in pending if dependencies[node] <= set(order))
+            self.assertTrue(ready, "atomic-group-required")
+            order.extend(ready)
+            pending.difference_update(ready)
+        self.assertEqual(order, ["validation-script", "github-workflow"])
+
+    def test_atomic_group_cycle_blocks_before_write(self) -> None:
+        dependencies = {"a": {"b"}, "b": {"a"}}
+        ready = [node for node, needs in dependencies.items() if not needs]
+        self.assertEqual(ready, [])
+        skill = (self.skill_dir / "SKILL.md").read_text(encoding="utf-8")
+        self.assertIn("blocked-before-write", skill)
+
+    def test_partial_batch_and_retry_are_exact(self) -> None:
+        skill = (self.skill_dir / "SKILL.md").read_text(encoding="utf-8")
+        for phrase in ("partial-blocked", "completed and pending targets", "Retry rebuilds the entire graph", "adopts no stale manifest"):
+            self.assertIn(phrase, skill)
+
+
+class BugfixSkillSimplificationTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.root = ROOT / "docs" / "changes" / "2026-08-20-bugfix-skill-simplification"
+        self.skill_dir = ROOT / "skills" / "bugfix"
+        self.skill = (self.skill_dir / "SKILL.md").read_text(encoding="utf-8")
+
+
+    def test_bugfix_package_keeps_supported_resources_and_complete_behavior(self):
+        files = sorted(path.relative_to(self.skill_dir).as_posix() for path in self.skill_dir.rglob("*") if path.is_file())
+        self.assertEqual(files, ["SKILL.md", "references/test-maintenance.md", "references/test-quality.md"])
+        self.assertIn("Keep required behavior complete", self.skill)
+        self.assertNotIn("Report before/after LF-normalized words", self.skill)
+
+    def test_meaningful_legacy_rules_remain_executable(self) -> None:
+        for phrase in (
+            "unexpected behavior, failing evidence, incident, regression, or bug report",
+            "governing behavior, current code and tests, available bug evidence",
+            "smallest reliable reproduction",
+            "Assess blast radius and inspect nearby code for the same pattern",
+            "Fix the supported root cause with the smallest scoped change",
+            "Do not refactor unrelated code",
+        ):
+            self.assertIn(phrase, self.skill)
+
+    def test_evidence_vocabularies_and_proof_table_are_complete(self) -> None:
+        for value in (
+            "reproduced",
+            "not-established",
+            "settled",
+            "resolvable-restoration",
+            "behavior-change-request",
+            "feasible",
+            "infeasible-with-rationale",
+            "unresolved",
+            "failing-automated-test",
+            "deterministic-alternative",
+            "missing",
+            "conflicting",
+            "supported",
+            "uncertain",
+        ):
+            self.assertIn(value, self.skill)
+        for required_row in (
+            "Any recognized | failing-automated-test | apply-production-correction",
+            "Any recognized | conflicting | stop-blocked",
+            "feasible | missing or deterministic-alternative | author-automated-proof",
+            "unresolved | missing or deterministic-alternative | resolve-test-feasibility",
+            "infeasible-with-rationale | complete deterministic-alternative | apply-production-correction",
+            "infeasible-with-rationale | missing | stop-blocked",
+        ):
+            self.assertIn(required_row, self.skill)
+
+        table = self.skill.split("Use this exhaustive proof-action table:", 1)[1].split("Before production mutation", 1)[0]
+        rows = []
+        for line in table.splitlines():
+            if not line.startswith("|") or "---" in line or "Test feasibility" in line:
+                continue
+            rows.append(tuple(cell.strip() for cell in line.strip("|").split("|")))
+        self.assertEqual(len(rows), 6)
+
+        feasibilities = ("feasible", "unresolved", "infeasible-with-rationale")
+        proofs = ("failing-automated-test", "conflicting", "missing", "deterministic-alternative")
+        for feasibility in feasibilities:
+            for proof in proofs:
+                matches = []
+                for row_feasibility, row_proof, action in rows:
+                    feasibility_matches = row_feasibility == "Any recognized" or row_feasibility == feasibility
+                    proof_matches = proof in tuple(part.strip() for part in row_proof.replace("complete ", "").split(" or "))
+                    if feasibility_matches and proof_matches:
+                        matches.append(action)
+                self.assertEqual(
+                    len(matches),
+                    1,
+                    f"expected one proof action for {feasibility}/{proof}, got {matches}",
+                )
+
+    def test_edge_classification_prevents_action_overlap(self) -> None:
+        self.assertIn("without one concrete defect returns `blocked`", self.skill)
+        self.assertIn("incomplete claimed deterministic alternative as `missing`", self.skill)
+        self.assertIn("cross-axis inconsistency", self.skill)
+        self.assertIn("contract basis value `conflicting` routes under the next rule", self.skill)
+
+    def test_operation_command_and_write_authority_are_independent(self) -> None:
+        for value in (
+            "diagnose-only",
+            "current-bounded",
+            "portable-request-bound",
+            "governed-scope-bound",
+            "invalid-or-ambiguous",
+            "one concrete defect",
+            "rerun preflight",
+        ):
+            self.assertIn(value, self.skill)
+
+    def test_proof_authoring_precedes_production_correction(self) -> None:
+        for value in (
+            "proof-authoring",
+            "production-correction",
+            "failing-automated-test",
+            "infeasible-with-rationale",
+            "deterministic-alternative",
+            "proof identity",
+        ):
+            self.assertIn(value, self.skill)
+        self.assertLess(self.skill.index("proof-authoring"), self.skill.index("production-correction"))
+        self.assertIn("post-fix-validation", self.skill)
+
+    def test_action_precedence_protects_completed_and_failed_corrections(self) -> None:
+        for value in (
+            "stop-blocked",
+            "route-owner",
+            "continue-diagnosis",
+            "complete-diagnosis",
+            "resolve-test-feasibility",
+            "author-automated-proof",
+            "apply-production-correction",
+            "run-post-fix-validation",
+            "complete-fix",
+        ):
+            self.assertIn(value, self.skill)
+        completed = self.skill.index("correction exists and all required checks pass")
+        eligible = self.skill.index("eligible fix without correction")
+        self.assertLess(completed, eligible)
+
+    def test_causes_and_terminal_results_are_closed(self) -> None:
+        for value in (
+            "implementation-defect",
+            "contract-gap",
+            "integration-mismatch",
+            "data-or-migration",
+            "race-or-timing",
+            "configuration-or-environment",
+            "external-dependency",
+            "test-defect",
+            "unknown",
+            "diagnosis-complete",
+            "diagnosis-incomplete",
+            "fix-applied",
+            "routed-to-owner",
+            "blocked",
+        ):
+            self.assertIn(value, self.skill)
+
+    def test_governed_signals_and_write_owners_fail_closed(self) -> None:
+        for value in (
+            "no-governed-signal",
+            "single-governed-candidate",
+            "invalid-or-ambiguous-governed-signal",
+            "never fall back",
+            "change.json",
+            "read-only",
+            "do not invent",
+        ):
+            self.assertIn(value, self.skill)
+        for required_row in (
+            "Portable diagnose-only | None",
+            "Portable proof-authoring | Request-bound tests, fixtures, test-only helpers, and controlled reproduction artifacts",
+            "Portable production-correction | Request-bound implementation and explicitly scoped non-authoritative documentation or examples",
+            "Governed diagnose-only | None",
+            "Governed proof-authoring | Exact governed proof surfaces and one existing authorized evidence destination",
+            "Governed production-correction | Exact governed implementation, existing authorized evidence, and only scope-named non-authoritative documentation",
+        ):
+            self.assertIn(required_row, self.skill)
+
+    def test_result_and_handoff_claims_are_bounded(self) -> None:
+        for value in (
+            "commands actually run",
+            "unexecuted checks",
+            "changed surfaces",
+            "code-review",
+            "no stage continues automatically",
+            "PR readiness",
+            "lifecycle completion",
+            "Unexpected mutation",
+            "repository and defect",
+            "proof identity",
+            "next owner",
+        ):
+            self.assertIn(value, self.skill)
+
+
+class ConsolidatedReviewGateSkillContractTests(unittest.TestCase):
+    """CRG-T03 and CRG-T13 public-skill contract proof for M4."""
+
+    def test_proposal_owns_one_complete_embedded_feasibility_section(self) -> None:
+        skeleton = (ROOT / "skills/proposal/assets/proposal-skeleton.md").read_text(
+            encoding="utf-8"
+        )
+        proposal = (ROOT / "skills/proposal/SKILL.md").read_text(encoding="utf-8")
+        review = (ROOT / "skills/proposal-review/SKILL.md").read_text(
+            encoding="utf-8"
+        )
+
+        self.assertEqual(skeleton.count("## Feasibility"), 1)
+        for term in ("assessment", "basis", "constraints", "blockers"):
+            self.assertIn(term, skeleton.lower())
+        self.assertIn("exactly one non-empty `Feasibility` section", proposal)
+        self.assertIn("no standalone feasibility artifact", proposal)
+        for term in (
+            "missing",
+            "unsupported",
+            "contradicted",
+            "materially stale",
+            "blocking",
+            "proposal revision",
+        ):
+            self.assertIn(term, review)
+
+    def test_consolidated_review_skills_own_distinct_exact_packages(self) -> None:
+        expected = {
+            "design-review": (
+                "architecture",
+                "specification",
+                "applicable ADR",
+                "accepted Proposal Review ID",
+                "plan authoring",
+            ),
+            "delivery-review": (
+                "execution plan",
+                "exact primary plan",
+                "approved Design Review ID",
+                "requirement -> architectural boundary -> implementation milestone -> required proof -> validation command or manual evidence",
+                "implementation",
+            ),
+        }
+        for skill_name, terms in expected.items():
+            skill_dir = ROOT / "skills" / skill_name
+            body = (skill_dir / "SKILL.md").read_text(encoding="utf-8")
+            for path in (
+                skill_dir / "assets/review-result-skeleton.md",
+                skill_dir / "assets/material-finding.md",
+                skill_dir / f"references/{skill_name}-recording-and-settlement.md",
+            ):
+                self.assertTrue(path.is_file(), path)
+            for term in terms:
+                with self.subTest(skill=skill_name, term=term):
+                    self.assertIn(term, body)
+            for term in (
+                "artifact-local",
+                "cross-artifact",
+                "upstream-direction",
+                "does not edit",
+                "Direct review remains isolated",
+                "review record",
+                "no separate legacy settlement operation",
+            ):
+                with self.subTest(skill=skill_name, term=term):
+                    self.assertIn(term, body)
+
+    def test_post_cutover_inventory_retires_old_reviews_without_aliases(self) -> None:
+        route = (ROOT / "skills/route/SKILL.md").read_text(encoding="utf-8")
+        self.assertIn(
+            "proposal -> proposal-review -> design -> design-review -> plan -> delivery-review -> implement",
+            " ".join(route.split()),
+        )
+        self.assertIn("Supported targets are", route)
+        for retired_target in (
+            "spec-review",
+            "architecture-review",
+            "plan-review",
+            "test-spec-review",
+        ):
+            self.assertNotIn(f"`{retired_target}`", route)
+
+    def test_downstream_skills_consume_package_authority_without_merging_gates(self) -> None:
+        for skill_name in ("code-review", "verify", "pr"):
+            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(
+                encoding="utf-8"
+            )
+            with self.subTest(skill=skill_name):
+                self.assertIn("approved Design Review ID", body)
+                self.assertIn("approved Delivery Review ID", body)
+
+
+class RequirementDeliveryModelM1Tests(unittest.TestCase):
+    def test_m1_shared_model_defines_lightweight_refinement_and_work_decomposition(self) -> None:
+        shared_path = ROOT / "templates" / "shared" / "requirement-to-delivery-model.md"
+        self.assertTrue(shared_path.is_file(), shared_path)
+        shared = shared_path.read_text(encoding="utf-8")
+        for term in (
+            "RR → IR → SR → AR",
+            "Epic → Feature → Story → Task",
+            "The two views are not equivalent hierarchies.",
+            "SR identities are the durable downstream requirement references.",
+            "RR, IR, and AR do not require separate artifacts or identifiers.",
+            "Add a work level only when it materially improves ownership, sequencing, reviewability, traceability, or coordination.",
+            "SR-01 → M1 and M2",
+            "SR-01 + SR-02 → M2",
+        ):
+            with self.subTest(term=term):
+                self.assertIn(term, shared)
+
+    def test_m1_authoring_skills_map_local_responsibility_and_conditionally_load_model(self) -> None:
+        expected = {
+            "proposal": (
+                "Treat the incoming need as RR and the approved proposal as the durable IR-level direction.",
+                "when clarifying an incoming need into proposal direction or explaining how proposal approval feeds Design",
+            ),
+            "plan": (
+                "Treat the plan as the primary allocation surface from SRs and architecture boundaries into proportional delivery work.",
+                "when allocating system requirements and architecture boundaries into milestones or optional work hierarchy",
+            ),
+        }
+        for skill_name, (responsibility, load_condition) in expected.items():
+            skill_root = ROOT / "skills" / skill_name
+            body = (skill_root / "SKILL.md").read_text(encoding="utf-8")
+            local_reference = skill_root / "references" / "requirement-to-delivery-model.md"
+            with self.subTest(skill=skill_name, check="responsibility"):
+                self.assertIn(responsibility, body)
+            with self.subTest(skill=skill_name, check="resource-map"):
+                self.assertIn(
+                    f"READ `references/requirement-to-delivery-model.md` {load_condition}.",
+                    body,
+                )
+            with self.subTest(skill=skill_name, check="packaged-reference"):
+                self.assertTrue(local_reference.is_file(), local_reference)
+
+    def test_m1_existing_artifact_structures_already_expose_traceability_without_new_entities(self) -> None:
+        spec_asset = (ROOT / "skills" / "design" / "assets" / "design-skeleton.md").read_text(encoding="utf-8")
+        architecture_asset = (ROOT / "skills" / "design" / "assets" / "legacy-architecture-skeleton.md").read_text(encoding="utf-8")
+        milestone_asset = (ROOT / "skills" / "plan" / "assets" / "milestone.md").read_text(encoding="utf-8")
+        self.assertIn("## Requirements", spec_asset)
+        self.assertIn("## Related artifacts", architecture_asset)
+        self.assertIn("- Requirements:", milestone_asset)
+        self.assertIn("- Architecture responsibility:", milestone_asset)
+        combined = "\n".join((spec_asset, architecture_asset, milestone_asset))
+        for forbidden in ("RR ID", "IR ID", "AR ID", "## Epic", "## Feature", "## Story"):
+            with self.subTest(forbidden=forbidden):
+                self.assertNotIn(forbidden, combined)
+
+
+class RequirementDeliveryModelM2Tests(unittest.TestCase):
+    def test_m2_review_and_verification_skills_apply_stage_local_traceability(self) -> None:
+        expected = {
+            "proposal-review": "Judge whether the proposal responsibly refines the incoming RR into an IR-level direction sufficient for Design.",
+            "design-review": "Trace the approved IR-level direction into coherent requirements and their Design realization.",
+            "delivery-review": "Trace SRs and architecture boundaries into proportional allocated work and proof.",
+            "code-review": "Trace the implementation to its allocated work, governing SRs, and approved design boundaries.",
+            "verify": "Trace current evidence backward through implementation and allocated work to governing SRs and the approved proposal direction.",
+        }
+        shared = (ROOT / "templates" / "shared" / "requirement-to-delivery-model.md").read_bytes()
+        for skill_name, criterion in expected.items():
+            skill_root = ROOT / "skills" / skill_name
+            body = (skill_root / "SKILL.md").read_text(encoding="utf-8")
+            local_reference = skill_root / "references" / "requirement-to-delivery-model.md"
+            with self.subTest(skill=skill_name, check="criterion"):
+                self.assertIn(criterion, body)
+            with self.subTest(skill=skill_name, check="resource-map"):
+                self.assertIn("READ `references/requirement-to-delivery-model.md` when tracing", body)
+            with self.subTest(skill=skill_name, check="packaged-reference"):
+                self.assertEqual(local_reference.read_bytes(), shared)
+
+    def test_m2_shared_guidance_does_not_grant_review_or_lifecycle_authority(self) -> None:
+        shared = (ROOT / "templates" / "shared" / "requirement-to-delivery-model.md").read_text(encoding="utf-8")
+        self.assertIn("It creates no lifecycle stage, artifact, identifier, settlement authority, readiness claim, or required hierarchy.", shared)
+        for forbidden in ("approval authority", "may settle", "may advance", "automatically approves"):
+            with self.subTest(forbidden=forbidden):
+                self.assertNotIn(forbidden, shared.lower())
+
+
+class ReviewCloseoutResourceTests(unittest.TestCase):
+    def test_unknown_value_consumer_fails_closed(self):
+        errors = skill_validation.validate_review_closeout_copies(Path("unused/SKILL.md"), "unknown_value")
+        self.assertTrue(any("unknown" in e for e in errors))
+
+    def test_missing_drifted_and_valid_resources(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            source = root / "source"
+            source.mkdir()
+            skill = root / "skills" / "code-review" / "SKILL.md"
+            skill.parent.mkdir(parents=True)
+            for name in ("review-assessment", "review-reliance"):
+                (source / (name + ".md")).write_text(name)
+            self.assertTrue(skill_validation.validate_review_closeout_copies(skill, "code-review", source=source))
+            (skill.parent / "references").mkdir()
+            for name in ("review-assessment", "review-reliance"):
+                shutil.copyfile(source / (name + ".md"), skill.parent / "references" / (name + ".md"))
+            self.assertEqual([], skill_validation.validate_review_closeout_copies(skill, "code-review", source=source))
+            (skill.parent / "references" / "review-assessment.md").write_text("drift")
+            self.assertTrue(any("differs" in e for e in skill_validation.validate_review_closeout_copies(skill, "code-review", source=source)))
+
+    def test_all_selected_consumers_carry_exact_resources(self):
+        for name in skill_validation.REVIEW_CLOSEOUT_CONSUMERS:
+            with self.subTest(skill=name):
+                self.assertEqual([], skill_validation.validate_review_closeout_copies(ROOT / "skills" / name / "SKILL.md", name))
+
+
+class RequirementDeliveryModelM3Tests(unittest.TestCase):
+    def test_m3_all_nine_consumers_match_canonical_bytes(self) -> None:
+        canonical = ROOT / "templates" / "shared" / "requirement-to-delivery-model.md"
+        for skill_name in sorted(skill_validation.REQUIREMENT_DELIVERY_MODEL_CONSUMERS):
+            skill_path = ROOT / "skills" / skill_name / "SKILL.md"
+            with self.subTest(skill=skill_name):
+                self.assertEqual(
+                    skill_validation.validate_requirement_delivery_model_copy(skill_path, skill_name),
+                    [],
+                )
+                self.assertEqual(
+                    (skill_path.parent / "references" / "requirement-to-delivery-model.md").read_bytes(),
+                    canonical.read_bytes(),
+                )
+
+    def test_m3_missing_and_drifted_copy_fail_closed(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            canonical = root / "canonical.md"
+            canonical.write_text("canonical\n", encoding="utf-8")
+            skill_path = root / "skills" / "proposal" / "SKILL.md"
+            skill_path.parent.mkdir(parents=True)
+            skill_path.write_text("# Proposal\n", encoding="utf-8")
+            missing = skill_validation.validate_requirement_delivery_model_copy(
+                skill_path, "proposal", canonical_path=canonical
+            )
+            self.assertIn("is missing", missing[0])
+            local = skill_path.parent / "references" / "requirement-to-delivery-model.md"
+            local.parent.mkdir()
+            local.write_text("drifted\n", encoding="utf-8")
+            drifted = skill_validation.validate_requirement_delivery_model_copy(
+                skill_path, "proposal", canonical_path=canonical
+            )
+            self.assertIn("differs from canonical", drifted[0])
+
+    def test_m3_public_validator_rejects_missing_mapped_copy(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            skills_root = root / "skills"
+            shutil.copytree(ROOT / "skills" / "proposal", skills_root / "proposal")
+            missing = skills_root / "proposal" / "references" / "requirement-to-delivery-model.md"
+            missing.unlink()
+            with mock.patch.object(skill_validation, "CANONICAL_SKILLS_DIR", skills_root), mock.patch.object(
+                skill_validation,
+                "REQUIREMENT_DELIVERY_MODEL_SOURCE",
+                ROOT / "templates" / "shared" / "requirement-to-delivery-model.md",
+            ):
+                result = skill_validation.validate_skill_tree(skills_root / "proposal")
+            self.assertTrue(
+                any("mapped requirement-to-delivery reference is missing" in error for error in result.errors),
+                result.errors,
+            )
+
+
+class RetireStandaloneTestSpecM3Tests(unittest.TestCase):
+    """RTS TS-007 through TS-011 and TS-016 skill-package proof."""
+
+    def test_spec_owns_testable_behavior_without_test_mechanics(self) -> None:
+        root = ROOT / "skills/design"
+        body = (root / "SKILL.md").read_text() + (root / "references/model-authoring.md").read_text()
+        for concept in ("observable", "invariants", "authority", "compatibility", "migration", "retries", "concurrency", "recovery", "representative", "prohibited side effects"):
+            self.assertIn(concept, body)
+        self.assertIn("Delivery allocates concrete checks, commands, milestones and evidence", body)
+        skeleton = (root / "assets/design-skeleton.md").read_text()
+        self.assertIn("## Requirements", skeleton)
+        self.assertIn("### Boundary scan and acceptance scenarios", skeleton)
+
+    def test_plan_allocates_verification_without_replacement_artifact(self) -> None:
+        skill = (ROOT / "skills/plan/SKILL.md").read_text(encoding="utf-8")
+        skeleton = (ROOT / "skills/plan/assets/plan-skeleton.md").read_text(
+            encoding="utf-8"
+        )
+        milestone = (ROOT / "skills/plan/assets/milestone.md").read_text(
+            encoding="utf-8"
+        )
+        for field in (
+            "Engineering purpose",
+            "Requirements",
+            "Architecture responsibility",
+            "Dependencies",
+            "Implementation scope",
+            "Completion criteria",
+            "Required verification",
+            "Evidence expectations",
+        ):
+            with self.subTest(field=field):
+                self.assertIn(field, milestone)
+        self.assertIn("## Change-level verification", skeleton)
+        self.assertIn("SR → allocated milestone or work → verification group → concrete proof → evidence", skill)
+        self.assertIn("does not imply complete-change correctness", skill)
+        self.assertIn("not a governed artifact", skill)
+        self.assertIn("safe engineering and dependency sequence", skill)
+
+    def test_plan_specialist_methods_are_complete_and_conditional(self) -> None:
+        skill_root = ROOT / "skills/plan"
+        body = (skill_root / "SKILL.md").read_text(encoding="utf-8")
+        references = (
+            "boundary-and-negative-verification.md",
+            "state-machine-verification.md",
+            "concurrency-and-retry-verification.md",
+            "migration-and-compatibility-verification.md",
+            "failure-and-recovery-verification.md",
+            "security-and-authority-verification.md",
+            "cross-milestone-integration-verification.md",
+            "manual-and-operational-evidence.md",
+        )
+        for name in references:
+            with self.subTest(reference=name):
+                self.assertTrue((skill_root / "references" / name).is_file())
+                self.assertIn(f"READ `references/{name}` only when", body)
+        self.assertIn("Do not load every specialist reference by default", body)
+
+    def test_delivery_review_owns_one_joint_plan_centered_decision(self) -> None:
+        body = (ROOT / "skills/delivery-review/SKILL.md").read_text(
+            encoding="utf-8"
+        )
+        for concept in (
+            "implementation readiness",
+            "verification adequacy",
+            "exact primary plan",
+            "change-level verification",
+            "realistic evidence",
+            "route the correction to `plan`",
+            "standalone test-spec substitute",
+        ):
+            with self.subTest(concept=concept):
+                self.assertIn(concept, body.lower())
+        self.assertIn("one independent decision", body)
+        self.assertNotIn("one execution plan, one test specification", body)
+
+
+    def test_verification_allocation_gaps_route_to_plan_without_legacy_progression(self) -> None:
+        for skill_name in ("design", "plan", "route"):
+            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(
+                encoding="utf-8"
+            )
+            with self.subTest(skill=skill_name):
+                self.assertIn(
+                    "A pre-implementation verification-allocation gap routes to `plan`",
+                    body,
+                )
+                self.assertIn(
+                    "Historical contracts grant no current progression authority",
+                    body,
+                )
+                self.assertNotIn("a proof-only gap routes to `test-spec`", body)
+
+    def test_standalone_test_spec_skill_is_absent_from_canonical_inventory(self) -> None:
+        self.assertFalse((ROOT / "skills/test-spec").exists())
+
+
+class RetireStandaloneTestSpecM4Tests(unittest.TestCase):
+    """RTS TS-012 and TS-016 activation governance coherence."""
+
+
+    def test_current_boundary_adoption_is_owned_by_the_selected_project_contract(self):
+        source = (ROOT / "templates/shared/boundary-first-compact-scan.md").read_text()
+        self.assertNotIn("new behavior-changing specs adopt automatically", source)
+        self.assertIn("project's selected contract", source)
+        self.assertIn("Design Review", source)
+        for path in (ROOT / "skills").glob("*/SKILL.md"):
+            text = path.read_text()
+            self.assertNotIn("new behavior-changing specs adopt automatically", text, str(path))
+
+    def test_shared_boundary_routing_is_v3_only(self) -> None:
+        required = (
+            "A pre-implementation verification-allocation gap routes to `plan`",
+            "Historical contracts grant no current progression authority",
+        )
+        template = (ROOT / "templates/shared/boundary-first-compact-scan.md").read_text(encoding="utf-8")
+        for phrase in required:
+            self.assertIn(phrase, template)
+        for skill_name in ("route", "design", "plan", "implement", "code-review"):
+            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
+            with self.subTest(skill=skill_name):
+                for phrase in required:
+                    self.assertIn(phrase, body)
+        verify = (ROOT / "skills/verify/SKILL.md").read_text(encoding="utf-8")
+        self.assertIn("A pre-implementation verification-allocation gap routes to `plan`", verify)
+        self.assertIn("Historical contracts grant no current progression authority", verify)
+
+    def test_active_guidance_preserves_downstream_gates_and_history(self) -> None:
+        combined = "\n".join(
+            (ROOT / path).read_text(encoding="utf-8")
+            for path in ("CONSTITUTION.md", "AGENTS.md", "skills/route/SKILL.md")
+        )
+        lowered = combined.lower()
+        self.assertIn("code-review", lowered)
+        self.assertIn("verify", lowered)
+        self.assertIn("historical", lowered)
+        self.assertNotIn("New changes remain v1 until M5", combined)
+
+
+class FinalVerificationPackageParityM4Tests(unittest.TestCase):
+
+    def test_verify_has_no_preverification_explanation_dependency(self) -> None:
+        body = (ROOT / "skills/verify/SKILL.md").read_text(encoding="utf-8")
+        for forbidden in (
+            "after `explain-change`",
+            "explain-change artifact",
+            "current explanation",
+            "rationale to `explain-change`",
+        ):
+            self.assertNotIn(forbidden, body)
+        self.assertIn("final explanation only after successful final readiness", body)
+
+
+    def test_scoped_verify_does_not_load_final_impact_or_explanation_resources(self) -> None:
+        body = (ROOT / "skills/verify/SKILL.md").read_text(encoding="utf-8")
+        scoped = body.split("### Final-readiness profile", 1)[1].split("## Execution authority", 1)[0]
+        self.assertIn("Scoped verification loads none of those final-closeout resources", scoped)
+        self.assertNotIn("VP0-scoped` | yes", body)
+        self.assertIn("only after a selected final-readiness attempt has succeeded", body)
+
+
+class RetireStandaloneTestSpecM5Tests(unittest.TestCase):
+    """RTS TS-013 and TS-017 active publication contract."""
+
+    def test_active_public_skill_inventory_has_no_standalone_test_spec(self) -> None:
+        self.assertFalse((ROOT / "skills/test-spec").exists())
+        self.assertFalse((ROOT / "skills/test-spec-review").exists())
+
+    def test_active_workflow_is_plan_centered(self) -> None:
+        body = (ROOT / "skills/route/SKILL.md").read_text(encoding="utf-8")
+        self.assertIn("plan -> delivery-review -> implement", body)
+        self.assertNotIn("plan -> test-spec -> delivery-review", body)
+
+    def test_conditional_workflow_resources_are_plan_centered(self) -> None:
+        automation = (
+            ROOT / "skills/route/references/bounded-workflow-automation.md"
+        ).read_text(encoding="utf-8")
+        self.assertIn("`plan`, `delivery-review`", automation)
+        self.assertNotIn("`plan`, `test-spec`, `delivery-review`", automation)
+        self.assertFalse((ROOT / "skills/route/assets/workflows-skeleton.md").exists())
+
+
+class OptionalDiscoverySkillContractTests(unittest.TestCase):
+    """ER-R1-ER-R22 and ER-R27-ER-R34 canonical package contract."""
+
+    def test_explore_uses_proportional_standalone_option_discovery(self) -> None:
+        body = (ROOT / "skills/explore/SKILL.md").read_text(encoding="utf-8")
+        self.assertIn("docs/explorations/YYYY-MM-DD-slug.md", body)
+        self.assertIn("enough materially distinct options", body)
+        self.assertIn("explicit invocation", body)
+        self.assertIn("decision owner", body)
+        self.assertNotIn("Generate at least five options", body)
+        self.assertNotIn("docs/proposals/YYYY-MM-DD-slug.explore.md", body)
+        self.assertNotIn("inline exploration report", body)
+
+    def test_research_uses_bounded_standalone_evidence(self) -> None:
+        body = (ROOT / "skills/research/SKILL.md").read_text(encoding="utf-8")
+        self.assertIn("docs/research/YYYY-MM-DD-slug.md", body)
+        self.assertIn("bounded", body)
+        self.assertIn("explicit invocation", body)
+        self.assertIn("confidence", body)
+        self.assertIn("decision owner", body)
+        self.assertNotIn("compact research section", body)
+        self.assertNotIn("research artifact path or concise report", body)
+
+    def test_discovery_packages_are_self_contained_and_share_exact_policy(self) -> None:
+        canonical = (ROOT / "templates/shared/discovery-support.md").read_bytes()
+        expected_resources = {
+            "explore": {
+                "assets/exploration-skeleton.md",
+                "references/discovery-support.md",
+                "references/option-discovery-methods.md",
+                "references/high-impact-decision-method.md",
+            },
+            "research": {
+                "assets/research-skeleton.md",
+                "references/discovery-support.md",
+                "references/source-and-repository-method.md",
+                "references/experiment-and-confidence-method.md",
+            },
+        }
+        for skill_name, resources in expected_resources.items():
+            skill_dir = ROOT / "skills" / skill_name
+            body = (skill_dir / "SKILL.md").read_text(encoding="utf-8")
+            with self.subTest(skill=skill_name):
+                self.assertEqual(
+                    canonical,
+                    (skill_dir / "references/discovery-support.md").read_bytes(),
+                )
+                for resource in resources:
+                    self.assertTrue((skill_dir / resource).is_file(), resource)
+                    self.assertIn(resource, body)
+                self.assertIn("## Resource map", body)
+                self.assertIn("## Stop conditions", body)
+                self.assertIn("## Claims this skill must not make", body)
+
+    def test_skill_contract_names_discovery_shared_policy(self) -> None:
+        # Structural name-presence guard only. Admission meaning is assessed by
+        # independent semantic review; this substring cannot establish it.
+        contract = (ROOT / "docs/design/skill/skill.md").read_text(encoding="utf-8")
+        self.assertIn("discovery-support", contract)
+
+    def test_every_discovery_package_file_omits_maintainer_only_details(self) -> None:
+        forbidden = {
+            "canonical skill path": re.compile(r"\bskills/(?:explore|research)/SKILL\.md\b"),
+            "shared template path": re.compile(r"\btemplates/shared\b"),
+            "adapter package path": re.compile(r"\bdist/adapters\b"),
+            "selector constraint": re.compile(r"\bselector[- ]path constraints\b", re.IGNORECASE),
+            "shared-copy mechanics": re.compile(r"\bshared[- ]block implementation\b", re.IGNORECASE),
+        }
+        for skill_name in ("explore", "research"):
+            for path in sorted((ROOT / "skills" / skill_name).rglob("*")):
+                if not path.is_file():
+                    continue
+                body = path.read_text(encoding="utf-8")
+                for label, pattern in forbidden.items():
+                    with self.subTest(skill=skill_name, path=path.name, pattern=label):
+                        self.assertIsNone(pattern.search(body))
+
+    def test_canonical_validation_rejects_discovery_shared_policy_drift(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            canonical = root / "discovery-support.md"
+            canonical.write_text("canonical\n", encoding="utf-8")
+            local = root / "local.md"
+            local.write_text("drifted\n", encoding="utf-8")
+            errors = skill_validation.validate_discovery_support_copy(
+                local,
+                "explore",
+                canonical_path=canonical,
+            )
+        self.assertTrue(any("differs from canonical source" in error for error in errors))
+
+    def test_canonical_validation_rejects_unknown_discovery_skill_name(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            canonical = root / "discovery-support.md"
+            canonical.write_text("canonical\n", encoding="utf-8")
+            local = root / "local.md"
+            local.write_text("canonical\n", encoding="utf-8")
+            errors = skill_validation.validate_discovery_support_copy(
+                local,
+                "unknown-discovery-skill",
+                canonical_path=canonical,
+            )
+        self.assertTrue(any("unknown discovery support consumer" in error for error in errors))
+
+    def test_route_distinguishes_explore_research_both_and_neither(self) -> None:
+        route = (ROOT / "skills/route/SKILL.md").read_text(encoding="utf-8")
+        expected = {
+            "Explore": "the option space is materially unclear",
+            "Research": "a material decision depends on an uncertain fact",
+            "both": "research questions could materially change the option comparison",
+            "neither": "direction and decision-relevant facts are sufficiently clear",
+        }
+        for route_case, phrase in expected.items():
+            with self.subTest(route_case=route_case):
+                self.assertIn(phrase, route)
+
+    def test_current_guidance_agrees_on_explicit_optional_discovery_handoff(self) -> None:
+        surfaces = {
+            "workflow": ROOT / "skills/route/SKILL.md",
+            "readme": ROOT / "README.md",
+            "project-map": ROOT / "docs/project-map.md",
+        }
+        bodies = {
+            name: path.read_text(encoding="utf-8")
+            for name, path in surfaces.items()
+        }
+        for name, body in bodies.items():
+            with self.subTest(surface=name, rule="optional"):
+                self.assertIn("Explore", body)
+                self.assertIn("Research", body)
+        self.assertIn("explicit invocation", bodies["workflow"])
+        self.assertIn("owning stage", bodies["workflow"])
+        self.assertIn("docs/explorations/", bodies["project-map"])
+        self.assertIn("docs/research/", bodies["project-map"])
+
+    def test_route_keeps_incidental_discovery_artifact_free_and_owner_bounded(self) -> None:
+        route = (ROOT / "skills/route/SKILL.md").read_text(encoding="utf-8")
+        self.assertIn("incidental fact check", route)
+        self.assertIn("does not create a discovery artifact", route)
+        self.assertIn("must explicitly adopt", route)
+        self.assertIn("does not approve", route)
+        self.assertIn("does not advance lifecycle state", route)
+
+
+
+
+class TestPolicyResourceTests(unittest.TestCase):
+    def test_unknown_value_test_policy_consumer_fails_closed(self):
+        errors = skill_validation.validate_test_policy_copies(Path("unused/SKILL.md"), "unknown_value")
+        self.assertTrue(any("unknown" in error for error in errors))
+
+    def test_test_policy_missing_and_drifted_resources_reject(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            source = root / "shared"
+            source.mkdir()
+            skill = root / "implement" / "SKILL.md"
+            refs = skill.parent / "references"
+            refs.mkdir(parents=True)
+            for name in ("test-quality", "test-maintenance"):
+                (source / f"{name}.md").write_text("criterion\n")
+            self.assertTrue(skill_validation.validate_test_policy_copies(skill, "implement", source=source))
+            for name in ("test-quality", "test-maintenance"):
+                (refs / f"{name}.md").write_text("criterion\n")
+            self.assertEqual([], skill_validation.validate_test_policy_copies(skill, "implement", source=source))
+            (refs / "test-maintenance.md").write_text("changed\n")
+            self.assertTrue(any("differs" in error for error in skill_validation.validate_test_policy_copies(skill, "implement", source=source)))
+
+    def test_test_policy_canonical_copies_and_conditional_resources(self):
+        for name in skill_validation.TEST_QUALITY_CONSUMERS:
+            with self.subTest(name=name):
+                path = ROOT / "skills" / name / "SKILL.md"
+                self.assertEqual([], skill_validation.validate_test_policy_copies(path, name))
+                self.assertIn("READ `references/test-quality.md`", path.read_text())
+                if name in skill_validation.TEST_MAINTENANCE_CONSUMERS:
+                    self.assertIn("READ `references/test-maintenance.md`", path.read_text())
+
+
+if __name__ == "__main__":
+    unittest.main(verbosity=2)

@@ -7,7 +7,7 @@ import argparse
 import sys
 from pathlib import Path
 
-from validation_selection import (
+from lib.validation.validation_selection import (
     SelectionRequest,
     error_result,
     exit_code_for_status,

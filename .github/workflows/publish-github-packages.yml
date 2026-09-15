@@ -54,7 +54,16 @@ jobs:
           fi
 
       - name: Verify package before publication
-        run: python scripts/test-npm-package-publication.py
+        run: |
+          if [[ -f tests/engineering/packaging/test-npm-package-publication.py ]]; then
+            python tests/engineering/packaging/test-npm-package-publication.py
+          elif [[ -f scripts/test-npm-package-publication.py ]]; then
+            # The selected release tag may predate the test-directory migration.
+            python scripts/test-npm-package-publication.py
+          else
+            echo "Selected release tag has no package publication test" >&2
+            exit 1
+          fi
 
       - name: Publish to GitHub Packages
         run: npm publish --registry=https://npm.pkg.github.com --access public ./packages/rigorloop

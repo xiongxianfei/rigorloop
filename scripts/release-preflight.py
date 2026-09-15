@@ -6,7 +6,7 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-from release_transaction import (
+from lib.release.release_transaction import (
     ReleasePreflightChangedFilesError,
     discover_changed_files,
     release_preflight,

@@ -6,7 +6,7 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-from adapter_distribution import (
+from lib.packaging.adapter_distribution import (
     ADAPTER_OUTPUT_ROOT,
     CANONICAL_SKILLS_DIR,
     validate_adapter_archives,
