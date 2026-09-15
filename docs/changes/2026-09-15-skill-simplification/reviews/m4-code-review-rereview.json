@@ -1,0 +1,117 @@
+{
+  "assessment_scope": "Fresh complete M4 milestone rereview, baseline e44d1b46 through correction commit56984889. Includes full Bugfix/CI package dispositions, actual reader/test diff and current Design/Delivery-CI packages, first-pass finding and refreshed correction proof. Not final whole-change Code Review.",
+  "change_id": "2026-09-15-skill-simplification",
+  "contributors": [
+    {
+      "id": "codex-implementer",
+      "role": "implement"
+    }
+  ],
+  "findings": [],
+  "id": "m4-code-review-rereview",
+  "independence_basis": "Parent /root authored M4 and its corrections. Delegated nonauthor /root/independent_design_review performed the first-pass review, independently reproduced the original and tilde-fence defect, inspected the complete correction and ran all eleven focused tests without editing any authored subject. Prior independent Design assessment did not author this implementation.",
+  "judgment": "approved",
+  "limitations": [
+    "Approval supports M4 milestone closeout only; route owns activity/work changes. M5/M6, integrated final whole-change Code Review and distinct Verify remain required.",
+    "Semantic selection proof is explicit independent manual tracing of published instructions/resources, not customer agent execution. Hosted CI and external handoff were not performed. Original first-pass review/finding remain attributable; no root blocker disposition is supplied."
+  ],
+  "rationale": [
+    "1 Spec alignment — pass. Full CI instructions restore all nine Design-declared names and unique resource/authority selection under DEC-08. The corrected bounded scanner now distinguishes live declarations from backtick/tilde examples before selecting the section, satisfying the recorded SKL-SR-14 defect without changing semantic policy.",
+    "2 Test coverage — pass. Original six vocabulary controls remain unchanged. Five added methods first failed on their respective defective implementations and now cover fenced-only tables, negative examples and headings, tilde fences, mismatched/shorter closers, and longer matching closes. Reviewer independently ran all11 successfully. Full refreshed303 suite and selected adapter regression provide consumer protection; no semantic skill grading is inferred.",
+    "3 Edge cases — pass after corrected fence proof; instructional paths pass independent manual tracing. CIM0/CIM1 select noncoverage/coverage review before provider or privilege, preserving read-only external/native/privileged review. CIM6 native authoring uses exact external contract plus independent risk/privilege evidence. CIM7 privileged create always loads risk/GitHub/skeleton/approval; CIM8 privileged revise adds coverage risk and structural skeleton independently. CIM2 ordinary create always maps risk; CIM5 structural revise precedes CIM4 coverage preserving revise and independently adds risk; CIM3 narrow preserving revise uses GitHub procedure only. Late coverage/structure reclassifies and loads before dependent action; late privilege denies absent approval, otherwise selects CIM7/8 or native CIM6 with approval.",
+    "4 Error handling — pass. Unknown classifications and unsafe/unsupported authority still stop. Actual declaration unknown values still reject before missing/duplicate consistency. Fenced unknown rows are ignored; fenced-only content cannot meet the required table. Marker/length-aware closing preserves examples until their real close. Missing required resources retain their stop and no-memory-fallback behavior.",
+    "5 Architecture — pass. Risk map alone selects risk/check/boundary, GitHub reference serializes settled mapping and skeleton supplies structure. Full resource inspection confirms these duties. No runtime classifier, live CI, owning-policy or schema change. Current design-review-ci and delivery-review-ci approve exact current model/plan; older feasibility-source drift does not retarget those actual approval targets.",
+    "6 Compatibility — pass. Complete Bugfix entrypoint retained: diagnose-only versus fix, exact authority and governed-signal axes, ordered evidence/proof phases, supported-cause routing, proof-action table, identity-equal reruns and phase-specific write boundary serve distinct outcomes and should not be shortened away. CI atomic no-clobber/identity replacement, idempotency, independent/ordered/atomic batches, partial recovery and rebuilt retry manifests remain explicit. Historical short labels retain their original historical meaning; no alias or migration introduced.",
+    "7 Security/privacy — pass. Review supplies no mutation; command sources remain authoritative. Exact privileged Design/review binds target, events, credentials, permissions, runners and fork/secrets behavior. Bounded already-open PR repair retains current evidence/no-open-finding/authority preconditions and restore-only scope. No hosted success inferred.",
+    "8 Derived artifacts — pass within exact candidate scope. Reviewer independently compared all10 files across Bugfix/CI packages with both actual archives: Codex bytes equal, Claude body/resources equal with declared frontmatter transformation. Hashes match m4-validation. No package bytes changed during reader correction; m4-fence-correction records successful fresh two-adapter clean-install validation using the corrected reader.",
+    "9 Unrelated changes — pass. Complete M4 diff from e44d1b46 through56984889 remains CI entrypoint, scoped declaration reader and direct tests plus governed evidence. Shared fence helpers remain unchanged. Full Bugfix retention is justified by its distinct diagnosis/authority/proof/recovery outcomes; other families are untouched.",
+    "10 Validation evidence — pass for M4. m4-validation retains exact original V1/V2 298/V3 95/V4/V6 evidence. Fresh m4-fence-correction records303 full validator tests, all selected local checks including28 adapter regressions, V1 and fresh existing-candidate clean-install validation. Reviewer independently executed11 focused tests and inspected actual archive contents. Original broad packaging95 evidence is retained for unchanged package behavior; current selected consumers and candidate checks refresh the changed reader. No hosted or final branch readiness claim.",
+    "TG-01/03/04/05: actual complete CI instructions and resources improve selection and loading specificity while preserving specialist identity/proof/recovery/authority and shared resource boundaries. Bugfix retention preserves its complete bounded diagnosis/correction procedure and independent handoff. Mechanical parsing remains a bounded structural check, not semantic skill grading; its fenced-example defect is resolved by direct regression proof and this independent rereview.",
+    "Finding and prior-review disposition: m4-ci-fenced-examples is resolved by its original reporter against exact corrected subjects and m4-fence-correction proof. Its original evidence, owner, subjects and required outcome remain intact. Original m4-code-review retains changes-requested first-pass content but is stale for current-source reliance; this new full M4 review supplies the current judgment. Upstream Design/Delivery actual approval targets remain unchanged by correction; anticipated feasibility-source drift does not invalidate those exact scope decisions. The root-reported ci-assembly-mismatch blocker remains reporter-owned and is not closed here."
+  ],
+  "reviewer": {
+    "id": "independent-design-review",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:170ea2df25ee71ab3e27f26ab8290758d7a575bb1747d5b89c7eb45de7394dfc",
+      "path": "skills/bugfix/SKILL.md"
+    },
+    {
+      "identity": "sha256:9baf5a042084cd36d4748453529fc4ef6e46e9bdfe35bdf294ab9e458da14e84",
+      "path": "skills/ci-maintenance/SKILL.md"
+    },
+    {
+      "identity": "sha256:5ccb37e68487fa495e9804cdc6471329c003b01b309cb08e68cc7c3e8d4c864f",
+      "path": "scripts/lib/validation/skill_validation.py"
+    },
+    {
+      "identity": "sha256:d2f7f243937243d480871fa551254f6c489c99482542294dc21c5f06ed4bbb17",
+      "path": "tests/skill/skill_contract_tests.py"
+    },
+    {
+      "identity": "sha256:0e056f8b033eead8dc1899d27a3f62767940b8be3182a3f00e1b2cf75ce7c173",
+      "path": "tests/skill/test-skill-validator.py"
+    },
+    {
+      "identity": "sha256:7c7037e519b4558f8126460892ff33721026e05b2d8f7469b7ba86477ee81b9b",
+      "path": "skills/bugfix/references/test-maintenance.md"
+    },
+    {
+      "identity": "sha256:8b0a4b44f27de8c2d24ea21344b75594d5f5c9a247f91d42390068f96d4bf998",
+      "path": "skills/bugfix/references/test-quality.md"
+    },
+    {
+      "identity": "sha256:6c73d246c7be1491d4331ee5a1b7fa1dc1e741b1d0bd4b57a52c6780050d1531",
+      "path": "skills/ci-maintenance/assets/github-workflow-skeleton.yml"
+    },
+    {
+      "identity": "sha256:94648462ed81388b8b89abd0ce42200599c1697b5f808f544e2477db7de9ef94",
+      "path": "skills/ci-maintenance/references/github-workflow-authoring.md"
+    },
+    {
+      "identity": "sha256:0ac3e3ccc77aee7e6d60d5d56dd61a1d7424aa3443910cb85d198993bdd82818",
+      "path": "skills/ci-maintenance/references/review-reliance.md"
+    },
+    {
+      "identity": "sha256:5fd364cb19df0f090adea02f3869c568fe0d1e5b2fdfbef0256ef4ec5b0fc118",
+      "path": "skills/ci-maintenance/references/risk-to-check-map.md"
+    },
+    {
+      "identity": "sha256:7c7037e519b4558f8126460892ff33721026e05b2d8f7469b7ba86477ee81b9b",
+      "path": "skills/ci-maintenance/references/test-maintenance.md"
+    },
+    {
+      "identity": "sha256:8b0a4b44f27de8c2d24ea21344b75594d5f5c9a247f91d42390068f96d4bf998",
+      "path": "skills/ci-maintenance/references/test-quality.md"
+    },
+    {
+      "identity": "sha256:6faa52a99a86576f696ae723fc3fafce3553d8a8eae97a0a445327c818dd08b7",
+      "path": "docs/design/skill/skill.md"
+    },
+    {
+      "identity": "sha256:dda20558b508359cb33ebd15455f21c8a8975e47dcceb37ed64dc1336ac4638e",
+      "path": "docs/plans/2026-09-15-skill-simplification.md"
+    },
+    {
+      "identity": "sha256:fd389fd478a412bb091bbe5ca976bc42466769c0a3184c68eb30e8124959fc4a",
+      "path": "docs/proposals/2026-09-15-skill-simplification.md"
+    },
+    {
+      "identity": "sha256:9e7e04f15e986044bb05563b5298b0c822255118a3b07dce9db829f289f7a9ef",
+      "path": "docs/changes/2026-09-15-skill-simplification/evidence.json"
+    },
+    {
+      "identity": "sha256:05f955250c43e948f9734e2eb6897d6175e42d18b7afe72cc27d131aa2812f8a",
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/delivery-review-ci.json"
+    },
+    {
+      "identity": "sha256:5b7c87f55880e59d1af388e2b345966b1e60f3ec9f013a6f807caa5767942d4a",
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/design-review-ci.json"
+    }
+  ],
+  "summary": "M4 CI assembly correction and Bugfix retention satisfy the approved scope; the fenced-example finding is resolved after independent correction proof.",
+  "target": "code"
+}

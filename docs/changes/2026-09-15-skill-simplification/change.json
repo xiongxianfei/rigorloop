@@ -1,12 +1,12 @@
 {
   "activity": {
     "owner": {
-      "id": "codex-review-coordinator",
-      "role": "route"
+      "id": "codex-implement",
+      "role": "implement"
     },
-    "reason": "M4 fence finding corrected with fail-first and refreshed proof; independent rereview and reporter disposition required. CI assembly blocker still open pending reporter assessment after clean review.",
-    "stage": "code-review",
-    "status": "ready"
+    "reason": "M4 clean independent rereview and reporter-owned CI blocker resolution permit M5. Assess vision/constitution/project-map; apply only scoped Constitution corrections and substantiate retained packages. No armed automation.",
+    "stage": "implement",
+    "status": "in-progress"
   },
   "applicability": [
     {
@@ -105,7 +105,16 @@
         "role": "review"
       },
       "path": "docs/changes/2026-09-15-skill-simplification/reviews/m4-code-review.json",
-      "reason": "Exact current M4 first-pass scope and independently reproduced open defect; approval targets unchanged, source identities fresh.",
+      "reason": "First-pass changes-requested judgment remains valid historical evidence of its original subjects and defect; corrected sources require the new current complete m4-code-review-rereview. Original finding origin retained with reporter-owned resolution.",
+      "value": "stale"
+    },
+    {
+      "actor": {
+        "id": "independent-design-review",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/m4-code-review-rereview.json",
+      "reason": "Fresh complete M4 rereview against corrected current sources; original finding resolved by reporter with direct regression proof, unchanged upstream targets and current candidate evidence.",
       "value": "current"
     }
   ],
@@ -142,8 +151,32 @@
         "role": "implement"
       },
       "required_outcome": "Design owner clarifies unique selection and complete resources under the nine existing intended values, including denied and late-privilege cases; independent Design/Delivery assessment precedes implementation. M4 restores guidance and consumer protection, proves normal/combined/unknown/denied/late cases, and receives independent Code Review. Historical records stay unchanged; no new modes or permissions.",
-      "resolution": null,
-      "state": "open",
+      "resolution": {
+        "actor": {
+          "id": "codex-implementer",
+          "role": "implement"
+        },
+        "evidence_refs": [
+          {
+            "id": "ci-design-authoring",
+            "path": "docs/changes/2026-09-15-skill-simplification/evidence.json"
+          },
+          {
+            "id": "ci-plan-authoring",
+            "path": "docs/changes/2026-09-15-skill-simplification/evidence.json"
+          },
+          {
+            "id": "m4-validation",
+            "path": "docs/changes/2026-09-15-skill-simplification/evidence.json"
+          },
+          {
+            "id": "m4-fence-correction",
+            "path": "docs/changes/2026-09-15-skill-simplification/evidence.json"
+          }
+        ],
+        "rationale": "As original reporter, assessed approved SKL-DEC-08 Design and amended Delivery allocation, actual corrected full CI selection/resources and original negative/fence correction proof. Fresh independent m4-code-review-rereview approves complete repair package and resolves its own finding. Required outcome met; preserve original blocker evidence/subjects and source provenance. No permission or runtime classifier added."
+      },
+      "state": "resolved",
       "subjects": [
         {
           "identity": "sha256:e93d9f7891ea9eca3e6dd6c8677027b3d2871d1c1a05ca15f640ac14f2aca11b",
@@ -219,6 +252,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-15-skill-simplification/reviews/m4-code-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/m4-code-review-rereview.json"
     }
   ],
   "schema_version": 3,
@@ -270,7 +307,7 @@
         "SKL-SR-30",
         "SKL-SR-32"
       ],
-      "status": "in-progress"
+      "status": "completed"
     },
     {
       "id": "m5",
@@ -282,7 +319,7 @@
         "SKL-SR-30",
         "SKL-SR-32"
       ],
-      "status": "pending"
+      "status": "in-progress"
     },
     {
       "id": "m6",

@@ -20,8 +20,20 @@
         "role": "review"
       },
       "required_outcome": "Ignore fenced examples when extracting normative assembly rows, retain unknown-before-missing/duplicate ordering, and demonstrate fenced-only content fails missing declaration while a valid declaration plus fenced negative example passes. Safe resolution: add both fail-first regression fixtures, use existing fence-aware line scanning or equivalent bounded logic, rerun same proof plus affected validation, then independent rereview. No owner Design decision required.",
-      "resolution": null,
-      "state": "open",
+      "resolution": {
+        "actor": {
+          "id": "independent-design-review",
+          "role": "review"
+        },
+        "evidence_refs": [
+          {
+            "id": "m4-fence-correction",
+            "path": "docs/changes/2026-09-15-skill-simplification/evidence.json"
+          }
+        ],
+        "rationale": "Independent original reporter inspected scoped scanner at56984889 and ran all11 focused tests successfully. Both backtick/tilde examples are excluded before section extraction; only matching sufficiently long markers close a fence; fenced-only and negative-example/heading regressions now meet expected outcomes. Original vocabulary controls remain intact; fresh303 suite, selected adapter/local checks and candidate revalidation support correction applicability. Finding origin/subjects/evidence remain unchanged."
+      },
+      "state": "resolved",
       "subjects": [
         {
           "identity": "sha256:8229a69168bdd8c359eb55c501969ae1623bf5d34ece4077896b490f147e942d",
