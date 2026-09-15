@@ -14,9 +14,9 @@ Mutable lifecycle state, current milestone state, review status, blockers, routi
 
 - Proposal: [Skill simplification](../proposals/2026-09-15-skill-simplification.md).
 - Spec: [Skill Design](../design/skill/skill.md), especially SKL-SR-30–32, Inventory simplification and its model-owned acceptance scenarios.
-- Architecture: Skill's existing views and SKL-DEC-06/07; specialist owners linked in its inventory table retain detailed behavior.
+- Architecture: Skill's existing views and SKL-DEC-06/07/08; specialist owners linked in its inventory table retain detailed behavior.
 - Prior-contract test spec: none independently required for this initiative.
-- Governing review records: [proposal-review](../changes/2026-09-15-skill-simplification/reviews/proposal-review.json) and [design-review](../changes/2026-09-15-skill-simplification/reviews/design-review.json). Read their current applicability and exact subjects through the CLI before reliance; this plan does not copy mutable judgments.
+- Governing review records: [proposal-review](../changes/2026-09-15-skill-simplification/reviews/proposal-review.json) and [design-review-ci](../changes/2026-09-15-skill-simplification/reviews/design-review-ci.json). Read their current applicability and exact subjects through the CLI before reliance; this plan does not copy mutable judgments.
 - Delivery and proof contracts: [Plan](../design/skill/authoring/plan.md), [Assessment](../design/skill/assessment.md), [Validation](../design/engineering/validation.md), [Packaging](../design/engineering/packaging.md) and the [Constitution](../../CONSTITUTION.md).
 
 ## Context and orientation
@@ -44,7 +44,7 @@ Use registered `evidence.json` checks for milestone observations and registered 
 | SKL-SR-01–15 and SKL-SR-24–27: common specialist, resource, portability and claim boundaries | Every applicable package in M1–M6 | TG-01–05 |
 | SKL-SR-16–23: existing proposal-family obligations, with original applicability only | M2 | TG-04; no extension of earlier approvals |
 | SKL-SR-28: existing Plan assets; SKL-SR-29: specialist interfaces | M2 for Plan; M1 and M3–M6 for the applicable specialists | TG-04, TG-05 |
-| SKL-DEC-06/07: bounded pilot, complete inventory, local recording references | M1 realization; remaining scope M2–M6 | TG-01–05 |
+| SKL-DEC-06/07/08: bounded pilot, inventory, local recording and intended CI assembly selection | M1 pilot; M4 CI correction; remaining inventory M2–M6 | TG-01–05 |
 | Assessment RC-SR-02/04/06/11–18: independent review, recording, reliance and final closeout | Each milestone handoff and final checkpoint | Current milestone judgments, TG-FINAL-01/02, distinct Verify |
 | Constitution cleanup and Validation changed-set coverage | M1 evidence provenance reconciliation; every subsequent milestone's actual changed set | TG-06 and local selector checks |
 
@@ -133,17 +133,17 @@ All six milestones are implementation slices. Before starting each, require curr
 - Milestone kind: implementation.
 - Engineering purpose: assess the two repair capabilities together while preserving their distinct diagnosis, proof and mutation boundaries.
 - Requirements: SKL-SR-01–15, SKL-SR-24–27, SKL-SR-29/30/32.
-- Architecture responsibility: Skill's Bugfix, CI maintenance and bounded PR CI repair contracts.
+- Architecture responsibility: Skill's Bugfix, CI maintenance and bounded PR CI repair contracts, including SKL-DEC-08 and the disjoint CI assembly/resource table.
 - Dependencies: M3 clean review and stable review/verification handoffs.
 - Implementation scope: `bugfix` and `ci-maintenance`; no change to accepted production behavior, hosted platform state or privileged-action policy.
 - Files/components likely touched: both skill directories and directly affected validators/tests/resources.
 - Required verification: TG-01, TG-03 when applicable, TG-04 and TG-05.
-- Evidence expectations: diagnose-only versus fix; supported cause and identity-equal proof; ordinary versus privileged CI work; concurrent/partial write and bounded PR repair limits remain explicit.
-- Implementation steps: map each authority and failure obligation; simplify only duplicated or superseded instructions; keep proof feasibility, safe write primitives and recovery methods complete; reconcile actual consumers.
-- Validation commands: V1 for both entrypoints; V2/V3 when relevant; V4 for changed skills; V5 and V6.
-- Expected observable result: the user request and evidence determine the same allowed action and stop condition with clearer instructions.
+- Evidence expectations: diagnose-only versus fix; supported cause and identity-equal proof; ordinary versus privileged CI work; concurrent/partial write and bounded PR repair limits remain explicit. For CI, independently trace all nine supported selections, structural plus coverage, privileged revision with independent additions, project-native/privileged/external review, creation risk mapping, unknown/denied inputs and late coverage/structure/privilege. Late privilege without exact approval stops authoring; it cannot inherit ordinary authority. Structural negative tests reject unknown values before missing/duplicate consistency and detect absent or reassigned assembly declarations; semantic inspection judges actual conditions and resources.
+- Implementation steps: map each authority/failure obligation and assess Bugfix retention; restore CI's nine Design-declared full assembly names and complete resource map; make review/provider/privilege/structure/coverage selection explicit, with denied inputs outside valid assemblies; add fail-first closed-vocabulary/resource-reader protection before changing the validator; preserve identity/write/recovery and bounded-repair rules; reconcile actual consumers. No executable CI classifier or live platform mutation is selected.
+- Validation commands: V1 for both entrypoints; V2 for the CI closed-vocabulary reader and affected fixtures; V3 for package-consumer protection; V4 for changed skills; V5 and V6.
+- Expected observable result: the user request and evidence determine the intended Design-owned action and stop condition with clearer instructions. CI reports one existing full assembly identity with its complete selected resources; short reassigned labels are corrected, historical output remains unchanged, and no permission or public mode is added.
 - Completion criteria: both skill dispositions preserve all closed values, denial outcomes, proof requirements and correction ownership, with no speculative relaxation to shorten guidance.
-- Required evidence: registered `m4-*` checks and `m4-code-review` with authority and failure-path rationale.
+- Required evidence: registered `m4-*` checks and `m4-code-review` with authority, unique assembly/resource selection and failure-path rationale. The CI mismatch blocker retains its original evidence until its reporter assesses the reviewed Design/Delivery basis and actual implementation proof; saving a correction does not supply reviewer approval.
 - Review handoff: complete repair packages, actual diff, tests and any affected handoff consumer.
 - Optional commit boundary: `M4: Simplify defect and CI repair guidance`.
 - Risks: removing a rare but required denial/recovery rule; confusing CI review with authorized mutation.
@@ -281,6 +281,7 @@ The local selector owns any applicable additional CLI, model, schema and regress
 | 2026-09-15 | Reconcile package and validator consumers within each changed family. | Every intermediate candidate must be complete and reviewable. | Deferring consumer fixes to final closeout leaves broken packages and invalid milestone evidence. |
 | 2026-09-15 | Use independent instruction assessment for meaning and automated tests for executable structure/persistence. | These observe different failure boundaries under Validation TEST-SR-15/16. | Token counts, literal wording freezes and a new runtime compliance harness do not establish the required improvement. |
 | 2026-09-15 | Preserve advisory bytes in Git before retiring their unclassified live path once formal records own reliance. | Existing cleanup authority can reconcile provenance without changing validation policy or rewriting judgment. | Deleting uncommitted evidence loses history; retaining a new catch-all exception hides incomplete changed-set coverage. |
+| 2026-09-15 | Make M4 CI assembly correction and proof explicit after independent approval of SKL-DEC-08. | Package inspection found reassigned labels and implicit combined-case selection; the existing Design values and permissions remain authoritative. | Retention would hide a mismatch; restoring names alone leaves missing resource/selection proof. |
 
 ## Readiness
 
