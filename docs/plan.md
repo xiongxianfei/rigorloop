@@ -31,6 +31,8 @@ Current blockers are not recorded in this index.
 
 ## Current plan references
 
+- [Retire standalone architecture and ADR authoring](plans/2026-09-15-retire-legacy-design-authoring.md) — [owning change](changes/2026-09-15-retire-legacy-design-authoring/change.json).
+
 - [Design and Plan skill simplification](plans/2026-09-15-design-plan-simplification.md) — [owning change](changes/2026-09-15-design-plan-simplification/change.json).
 
 - [Skill simplification](plans/2026-09-15-skill-simplification.md) — [owning change](changes/2026-09-15-skill-simplification/change.json).

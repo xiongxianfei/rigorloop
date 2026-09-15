@@ -1,0 +1,177 @@
+{
+  "activity": {
+    "owner": {
+      "id": "codex-verify",
+      "role": "verify"
+    },
+    "reason": "Distinct final Verify succeeded after independent milestone/final reviews, resolved Design finding and complete current validation. User refinement is complete locally; external handoff and publication remain separate.",
+    "stage": "verify",
+    "status": "completed"
+  },
+  "applicability": [
+    {
+      "actor": {
+        "id": "retirement-independent-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-15-retire-legacy-design-authoring/reviews/proposal-review.json",
+      "reason": "Complete independent assessment of unchanged proposal 707cc801b29efaf98694fee68a60e1e26063a4359e5e1b1f8fe4a66976941bf6 and its current scoped feasibility basis; no material concerns or necessary unresolved decisions.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-implementer",
+        "role": "implement"
+      },
+      "path": "docs/changes/2026-09-15-retire-legacy-design-authoring/evidence.json",
+      "reason": "Current scoped observation; inspect each check and subjects, not a blanket pass for changed evidence.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "retirement-independent-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-15-retire-legacy-design-authoring/reviews/design-review.json",
+      "reason": "Initial348dc740 package assessment retains original judgment and subjects; corrected4865316c package is independently approved by design-review-r2. Original finding is resolved by reporter; first-pass assessment must not supply current package reliance.",
+      "value": "stale"
+    },
+    {
+      "actor": {
+        "id": "retirement-independent-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-15-retire-legacy-design-authoring/reviews/design-review-r2.json",
+      "reason": "Renewed independent whole-package assessment at4865316c after reporter-verified example correction; exact registered model subjects current, rda-dr-01 resolved, other engineering contracts affirmatively unchanged.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "retirement-independent-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-15-retire-legacy-design-authoring/reviews/delivery-review.json",
+      "reason": "Independent complete sequencing and proof assessment of registered a06a910c primary plan against current design-review-r2; no required corrections or open necessary decisions.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "retirement-code-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-15-retire-legacy-design-authoring/reviews/m1-code-review.json",
+      "reason": "Exact frozen milestone independently assessed with complete allocated milestone evidence and no required corrections; final lifecycle gates remain separate.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "retirement-code-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-15-retire-legacy-design-authoring/reviews/final-code-review.json",
+      "reason": "Fresh complete original-base assessment after M1 completion and actual V6; exact engineering source and candidate proof remain applicable, no required corrections, distinct Verify still required.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-verifier",
+        "role": "verify"
+      },
+      "path": "docs/changes/2026-09-15-retire-legacy-design-authoring/verify-report.json",
+      "reason": "Reassessed current complete reviewed engineering and attributable evidence suffix for explicitly authorized PR handoff; immutable repository/remote/base/head basis resolved and branch checks passed.",
+      "value": "current"
+    }
+  ],
+  "blockers": [],
+  "change_id": "2026-09-15-retire-legacy-design-authoring",
+  "contract": "rigorloop-records-v3",
+  "models": [
+    {
+      "id": "design",
+      "subject": {
+        "identity": "sha256:70729f932c5b46e42c5f79a208ec6ca9de8513831d58e09250df5bb9b73e6517",
+        "path": "docs/design/skill/authoring/design.md"
+      }
+    },
+    {
+      "id": "skill",
+      "subject": {
+        "identity": "sha256:e1184234b6a5f1a85f3e7b88ef3c699217178aa6257d9569689d1d59fafbf709",
+        "path": "docs/design/skill/skill.md"
+      }
+    },
+    {
+      "id": "system",
+      "subject": {
+        "identity": "sha256:7a88f81f0044f2f9739ca27e9ebfb6cef77628f87b8422a240d9b776a4b921d8",
+        "path": "docs/design/system.md"
+      }
+    }
+  ],
+  "plan": {
+    "identity": "sha256:e19785d07ec8e4e81e2c8c76b0ad16da57d4ecf69d0c002a1d031acad76c1f16",
+    "path": "docs/plans/2026-09-15-retire-legacy-design-authoring.md"
+  },
+  "proposal": {
+    "identity": "sha256:707cc801b29efaf98694fee68a60e1e26063a4359e5e1b1f8fe4a66976941bf6",
+    "path": "docs/proposals/2026-09-15-retire-legacy-design-authoring.md"
+  },
+  "records": [
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-15-retire-legacy-design-authoring/reviews/proposal-review.json"
+    },
+    {
+      "kind": "evidence",
+      "path": "docs/changes/2026-09-15-retire-legacy-design-authoring/evidence.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-15-retire-legacy-design-authoring/reviews/design-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-15-retire-legacy-design-authoring/reviews/design-review-r2.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-15-retire-legacy-design-authoring/reviews/delivery-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-15-retire-legacy-design-authoring/reviews/m1-code-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-15-retire-legacy-design-authoring/reviews/final-code-review.json"
+    },
+    {
+      "kind": "verify",
+      "path": "docs/changes/2026-09-15-retire-legacy-design-authoring/verify-report.json"
+    }
+  ],
+  "schema_version": 3,
+  "work": [
+    {
+      "id": "m1",
+      "owner": {
+        "id": "codex-implementer",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "DES-SR-24",
+        "DES-SR-06",
+        "DES-SR-13",
+        "DES-SR-14",
+        "DES-SR-15",
+        "DES-SR-16",
+        "DES-SR-17",
+        "DES-SR-18",
+        "DES-SR-19",
+        "DES-SR-21",
+        "DES-SR-23"
+      ],
+      "status": "completed"
+    }
+  ]
+}

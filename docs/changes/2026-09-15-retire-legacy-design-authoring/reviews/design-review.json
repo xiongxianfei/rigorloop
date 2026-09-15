@@ -1,0 +1,120 @@
+{
+  "assessment_scope": "Formal lifecycle Design Review, first pass, exact registered design/skill/system package and inline label-normalization example; approved proposal-review supports direction. Examined source aids and replacement technical method for preservation and affected consumer boundaries.",
+  "change_id": "2026-09-15-retire-legacy-design-authoring",
+  "contributors": [
+    {
+      "id": "codex-design-author",
+      "role": "design"
+    }
+  ],
+  "findings": [
+    {
+      "evidence": "Finding ID: RDA-DR-01. Severity: medium. Scope: artifact-local; affected artifact ID design; owning stage design. Location docs/design/skill/authoring/design.md, Example: a small model document, four scenario rows. The frozen348dc740 diff adds DES-SR-24 to the synthetic LAB example despite no such local requirement. Two non-applicable rows now read -, DES-SR-24. Extracting the complete fence and calling lib.validation.boundary_first_validation.validate_model_record returns BFR-MODEL-REFERENCES. This violates DES-SR-11/12 and the declared complete illustrative model contract.",
+      "id": "rda-dr-01",
+      "owner": {
+        "id": "codex-design-author",
+        "role": "design"
+      },
+      "reporter": {
+        "id": "retirement-independent-reviewer",
+        "role": "review"
+      },
+      "required_outcome": "Restore internally valid synthetic example references and preserve its original label-normalization meaning. Safe resolution: remove only the four accidental DES-SR-24 insertions inside the fenced example, retain DES-SR-24 in the real Design acceptance table, validate the extracted example plus affected models, refresh exact model registration/evidence and return for independent reassessment. No owner policy decision is needed.",
+      "resolution": {
+        "actor": {
+          "id": "retirement-independent-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [
+          {
+            "id": "design-example-correction",
+            "path": "docs/changes/2026-09-15-retire-legacy-design-authoring/evidence.json"
+          }
+        ],
+        "rationale": "Reporter inspected4865316c against348dc740: exactly four stray DES-SR-24 insertions removed inside the example; current complete fence independently compared byte-identical to643f6cd6. Reporter reran python tests/engineering/validation/test-boundary-first-validation.py ModelRecordTests.test_model_design_example_and_parent_validate_without_counting_fenced_marker (1 passed) and python scripts/validate-boundary-first.py --check --path docs/design/skill/authoring/design.md --path docs/design/skill/skill.md --path docs/design/system.md (passed). Actual DES-SR-24 requirement and real acceptance rows remain; synthetic LAB references and non-applicable rows are valid. No remaining correction required."
+      },
+      "state": "resolved",
+      "subjects": [
+        {
+          "identity": "sha256:b4983acca9575d4c995b60bbeb522f7b665484b4a3a4da4ea41756d63049d073",
+          "path": "docs/design/skill/authoring/design.md"
+        }
+      ]
+    }
+  ],
+  "id": "design-review",
+  "independence_basis": "Reviewer /root/retirement_review independently read the complete three-member Design package and affected embedded example at frozen348dc740; root authored the reviewed Design amendments. Reviewer authored no engineering content and writes only this review and finding. Prior proposal review is separate scope.",
+  "judgment": "changes-requested",
+  "limitations": [
+    "Approval is withheld pending correction and independent reassessment of RDA-DR-01; this review does not authorize planning reliance or implementation.",
+    "No package build or target-agent execution occurred in this Design Review. Implementation resource reconciliation and concrete proof remain downstream."
+  ],
+  "rationale": [
+    "Behavior and realization: DES-SR-24 prohibits create/rebuild/amend standalone architecture/ADR output, preserving reads and authorized scoped adoption. Existing source-selection/technical resources can implement this without new runtime, schema or installation behavior.",
+    "Authority and compatibility: the package openly withdraws old output support, leaves project documents and authority unchanged absent explicit adoption, prevents template presence from re-enabling output, and retains feature-spec/proof support via DES-SR-14/23. No implementation convenience weakens the approved direction.",
+    "Ownership and recovery: Design remains supported-output owner; System/Skill defer to it, while Assessment, Workflow, CLI/Records and Packaging retain their operations. Coherent source/consumer rollback and historical judgment preservation remain explicit. No external permission is inferred.",
+    "Decision and migration preservation: DES-DEC-07 explicitly supersedes only the architecture/ADR part of DES-DEC-04. The five-file map retires fixed packaging and preserves goals, constraints, context, structure, flows, quality, risks, vocabulary, decision alternatives/consequences/follow-up and provenance. Existing technical-design guidance covers these concerns. Repository template copies compare byte-identical to their matching skill assets. Commit643f6cd6d368238f0ca2a5075430634cf9307ad3 supplies recoverable originals.",
+    "Consumer reconciliation: Design Review must distinguish source inputs from output members; Plan may consume retained requirements without promising old-format edits. Resource-map/READ/COPY and exclusive-presence checks are implementation consumers explicitly selected for reconciliation. Generic lint fixtures and common diagram styles remain independently useful.",
+    "Acceptance: unsupported create/rebuild/amend even with a customer template, preserved files, missing/conflicting adoption authority, explicit obligation mapping, retained feature amendment, source-versus-output review and clean installed resource completeness/retired-resource absence are concrete local/integrated outcomes for Delivery. No target-agent behavior is claimed from structural success.",
+    "Views: affected models retain clear responsibility overviews and reasoned Context/Building Block/Runtime/Deployment selection. Design adds a supported-output stop to Building Block and pre-authoring stop in Runtime prose. Existing parent views remain adequate because product owners and deployment boundaries do not change.",
+    "Example correctness: RDA-DR-01 is a required artifact-local correction. The complete synthetic label-normalization example now cites DES-SR-24 in Input domain and External/environment and uses -, DES-SR-24 for Identity/authority and Compatibility/migration. DES-SR-24 is absent from LAB requirements and unrelated to label normalization. Calling existing validate_model_record on the extracted fence returns BFR-MODEL-REFERENCES; enclosing-model structural success does not prove example validity.",
+    "Upstream applicability: unchanged proposal and original approval retain direction scope; changed feasibility-supporting Design identity is expected and is assessed here, not by retargeting that prior judgment. There are no necessary unresolved policy decisions or missing material evidence; actionable example correction therefore determines changes-requested."
+  ],
+  "reviewer": {
+    "id": "retirement-independent-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:b4983acca9575d4c995b60bbeb522f7b665484b4a3a4da4ea41756d63049d073",
+      "path": "docs/design/skill/authoring/design.md"
+    },
+    {
+      "identity": "sha256:e1184234b6a5f1a85f3e7b88ef3c699217178aa6257d9569689d1d59fafbf709",
+      "path": "docs/design/skill/skill.md"
+    },
+    {
+      "identity": "sha256:7a88f81f0044f2f9739ca27e9ebfb6cef77628f87b8422a240d9b776a4b921d8",
+      "path": "docs/design/system.md"
+    },
+    {
+      "identity": "sha256:707cc801b29efaf98694fee68a60e1e26063a4359e5e1b1f8fe4a66976941bf6",
+      "path": "docs/proposals/2026-09-15-retire-legacy-design-authoring.md"
+    },
+    {
+      "identity": "sha256:994333d0936c24c4283b4e5de4bc83734cb0630e6ce2af2bb72fd0b712655122",
+      "path": "docs/changes/2026-09-15-retire-legacy-design-authoring/reviews/proposal-review.json"
+    },
+    {
+      "identity": "sha256:8f24c82956dfafdee4d389b3c7353d3d73968e4c440a7c6fa10eabc47de5e06b",
+      "path": "skills/design/references/legacy-technical-authoring.md"
+    },
+    {
+      "identity": "sha256:e6d3e17551cceb876f8b8e73c2bdff37c7793d7bb47d15361713f8a89c9ecafa",
+      "path": "skills/design/assets/legacy-architecture-skeleton.md"
+    },
+    {
+      "identity": "sha256:86ed2ec3cd1152a3eb8c9dc7eb8a29c806bd122accd5d9752401cf2fecccab0d",
+      "path": "skills/design/assets/legacy-adr-skeleton.md"
+    },
+    {
+      "identity": "sha256:e6d3e17551cceb876f8b8e73c2bdff37c7793d7bb47d15361713f8a89c9ecafa",
+      "path": "templates/architecture.md"
+    },
+    {
+      "identity": "sha256:86ed2ec3cd1152a3eb8c9dc7eb8a29c806bd122accd5d9752401cf2fecccab0d",
+      "path": "templates/adr.md"
+    },
+    {
+      "identity": "sha256:45453043b926cf24f91756b8a46f51e2164926a15657ce1ab57a37e7f3be9f2f",
+      "path": "skills/design/references/technical-design.md"
+    },
+    {
+      "identity": "sha256:87c0fee6c3a753cfb520dcd578de42c1f68d8eb3ddcd6dc16299826e57f86fae",
+      "path": "skills/design/references/legacy-source-reconciliation.md"
+    }
+  ],
+  "summary": "The retirement contract, bounded compatibility withdrawal and preservation map are coherent, but the edited complete label-normalization example contains unrelated undeclared DES-SR-24 references and malformed non-applicable rows. Correct the example before package approval.",
+  "target": "design"
+}

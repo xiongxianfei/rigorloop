@@ -29,4 +29,4 @@ Trace important requirements to realization choices and expose constraints, alte
 
 A quality scenario names the relevant condition, expected response and observation boundary. Give metrics only where justified; do not fabricate measurements. Assess uncertain material feasibility with targeted evidence, a walkthrough, counterexample, investigation or prototype as needed. Neither a prototype nor formal proof is mandatory for every Design. Record assumptions and residual risks without calling structural validity approval.
 
-Embed important stable decisions in the owning model. For an unmigrated architecture/ADR source, use the separately triggered legacy procedure instead of silently imposing model packaging. Never make temporary change-local truth compete with a current owner.
+Embed important stable decisions in the owning model. Read existing architecture/ADR sources through the source-reconciliation method; author living-Design output only under the selected project authority. Required standalone output stops rather than silently imposing model packaging. Never make temporary change-local truth compete with a current owner.
