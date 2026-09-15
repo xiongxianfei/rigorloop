@@ -4,9 +4,9 @@
       "id": "codex-verify",
       "role": "verify"
     },
-    "reason": "M1 completed and fresh independent final whole-change Code Review approved with no findings. Distinct final Verify now assesses exact complete authority, review and proof chain before separately authorized PR.",
+    "reason": "Distinct final Verify succeeded after independent complete review and required current proof. All implementation closed; user explicitly authorizes separate PR submission. No merge/release/install or persistent automation authority.",
     "stage": "verify",
-    "status": "in-progress"
+    "status": "completed"
   },
   "applicability": [
     {
@@ -70,6 +70,15 @@
       },
       "path": "docs/changes/2026-09-15-design-plan-simplification/reviews/final-code-review.json",
       "reason": "Fresh complete independent final diff and integrated chain assessment on exact current authority, source and full proof; engineering unchanged after tested head, later evidence suffix attributed and historical approvals preserved.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-verifier",
+        "role": "verify"
+      },
+      "path": "docs/changes/2026-09-15-design-plan-simplification/verify-report.json",
+      "reason": "Distinct final assessment of exact unchanged engineering, fresh independent final review, complete current proof and concern closeout; final evidence-only suffix requires scoped current safety checks.",
       "value": "current"
     }
   ],
@@ -135,6 +144,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-15-design-plan-simplification/reviews/final-code-review.json"
+    },
+    {
+      "kind": "verify",
+      "path": "docs/changes/2026-09-15-design-plan-simplification/verify-report.json"
     }
   ],
   "schema_version": 3,
