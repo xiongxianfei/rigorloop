@@ -4,7 +4,7 @@
       "id": "codex-review-coordinator",
       "role": "route"
     },
-    "reason": "M4 complete package and required proof ready for independent m4-code-review. CI blocker remains open until reporter assesses actual proof and review; M5 not started.",
+    "reason": "M4 fence finding corrected with fail-first and refreshed proof; independent rereview and reporter disposition required. CI assembly blocker still open pending reporter assessment after clean review.",
     "stage": "code-review",
     "status": "ready"
   },
@@ -97,6 +97,15 @@
       },
       "path": "docs/changes/2026-09-15-skill-simplification/reviews/delivery-review-ci.json",
       "reason": "Fresh independent assessment of the exact amended primary plan against current design-review-ci and unchanged proposal constraints. Combined sequence, all19 scope, nine-assembly correction/proof and final closeout allocation are sufficient; the CI implementation blocker remains open and reporter-owned.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "independent-design-review",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/m4-code-review.json",
+      "reason": "Exact current M4 first-pass scope and independently reproduced open defect; approval targets unchanged, source identities fresh.",
       "value": "current"
     }
   ],
@@ -206,6 +215,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-15-skill-simplification/reviews/delivery-review-ci.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/m4-code-review.json"
     }
   ],
   "schema_version": 3,

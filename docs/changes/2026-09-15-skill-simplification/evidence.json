@@ -935,6 +935,34 @@
         }
       ],
       "summary": "V1 bugfix and ci-maintenance passed. Fail-first command python tests/skill/test-skill-validator.py CiAssemblyDeclarationTests ran six tests against unchanged e44d1b46 validator: five expected failures (unknown, legacy, missing, duplicate, absent declaration), valid control passed. Identical six-case test source passed after reader correction. V2 python tests/skill/test-skill-validator.py: 298 passed. V3 python tests/engineering/packaging/test-adapter-distribution.py: 95 passed. V4 actual build and clean install ci-maintenance passed for Codex and Claude; unchanged Bugfix/shared resources present in complete archives. V6 bash scripts/ci.sh --mode local: all selected checks passed on staged engineering sources. git diff --cached --check passed. V5 record-store validation follows this recording. No customer CI execution or hosted CI observed. Package and structural tests cannot establish prose semantics; independent M4 review is required. Candidate commands [[\"python\", \"scripts/build-adapters.py\", \"--version\", \"v1.0.0\", \"--output-dir\", \"/tmp/rigorloop-skill-m4-jcglleo2\"], [\"python\", \"scripts/validate-adapters.py\", \"--version\", \"v1.0.0\", \"--adapter-root\", \"/tmp/rigorloop-skill-m4-jcglleo2\", \"--clean-install-smoke\", \"--skill\", \"ci-maintenance\"]]; archive SHA256 {\"rigorloop-adapter-codex-v1.0.0.zip\": \"735bad371694c5845cb8c4986be6acc7e461106f0f78b3c27d6dcf73242555b0\", \"rigorloop-adapter-claude-v1.0.0.zip\": \"d897541b947f18a4c77bea92cf2cfb24de3b4a06c4c354c2bfebcd09a6d8c312\"}. Owned temporary candidate only, v1.0.0 qualification label not release."
+    },
+    {
+      "actor": {
+        "id": "codex-implementer",
+        "role": "implement"
+      },
+      "id": "m4-fence-correction",
+      "procedure": "Exact first-pass finding, fail-first test execution then bounded reader correction; fresh focused/full validator and local selected suite, unchanged actual candidate revalidated with new reader. Limits: lexical structure check, no executable agent or semantic-quality claim.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:5ccb37e68487fa495e9804cdc6471329c003b01b309cb08e68cc7c3e8d4c864f",
+          "path": "scripts/lib/validation/skill_validation.py"
+        },
+        {
+          "identity": "sha256:d2f7f243937243d480871fa551254f6c489c99482542294dc21c5f06ed4bbb17",
+          "path": "tests/skill/skill_contract_tests.py"
+        },
+        {
+          "identity": "sha256:0e056f8b033eead8dc1899d27a3f62767940b8be3182a3f00e1b2cf75ce7c173",
+          "path": "tests/skill/test-skill-validator.py"
+        },
+        {
+          "identity": "sha256:9baf5a042084cd36d4748453529fc4ef6e46e9bdfe35bdf294ab9e458da14e84",
+          "path": "skills/ci-maintenance/SKILL.md"
+        }
+      ],
+      "summary": "Accepted m4-ci-fenced-examples: normative assembly extraction now uses a scoped scanner for both backtick and tilde fences before section selection, requiring matching closing marker and sufficient length; no shared reader change; negative example headings cannot select/truncate the live section. Two new regression cases failed against b33d0e94 implementation (fenced-only complete table accepted; fenced unknown/example heading interfered with valid table), then identical eight-case proof passed with the first correction. Independent rereview reproduced tilde-fence incompleteness; three additional test methods failed before the complete scanner correction. All eleven focused methods now pass, including both fence styles, mismatched/short closures, longer matching closure and example-heading protection. Original eight methods remain unchanged in the final correction. Full python tests/skill/test-skill-validator.py: 303 passed. V1 Bugfix/CI passed. bash scripts/ci.sh --mode local: all selected checks passed, including adapters.regression. Existing V3 all95 baseline proof remains informative; current local selected adapter regression and exact existing candidate revalidation refresh affected reader behavior. python scripts/validate-adapters.py --version v1.0.0 --adapter-root /tmp/rigorloop-skill-m4-jcglleo2 --clean-install-smoke --skill ci-maintenance passed both adapters with corrected reader; M4 archive/source bytes unchanged, hashes remain m4-validation values. git diff --cached --check passed; V5 follows recording. This fixes a preventable first-pass miss; review finding remains open for its independent reporter, no self-approved resolution."
     }
   ],
   "schema_version": 3
