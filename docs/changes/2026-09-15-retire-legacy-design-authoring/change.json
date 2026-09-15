@@ -4,9 +4,9 @@
       "id": "codex-verify",
       "role": "verify"
     },
-    "reason": "Fresh final whole-change Code Review approved with no findings after complete original-base validation. Distinct final Verify assesses all exact authority/proof and resolved concern before local closeout.",
+    "reason": "Distinct final Verify succeeded after independent milestone/final reviews, resolved Design finding and complete current validation. User refinement is complete locally; external handoff and publication remain separate.",
     "stage": "verify",
-    "status": "in-progress"
+    "status": "completed"
   },
   "applicability": [
     {
@@ -70,6 +70,15 @@
       },
       "path": "docs/changes/2026-09-15-retire-legacy-design-authoring/reviews/final-code-review.json",
       "reason": "Fresh complete original-base assessment after M1 completion and actual V6; exact engineering source and candidate proof remain applicable, no required corrections, distinct Verify still required.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-verifier",
+        "role": "verify"
+      },
+      "path": "docs/changes/2026-09-15-retire-legacy-design-authoring/verify-report.json",
+      "reason": "Distinct final assessment of exact current reviewed engineering, actual proof, resolved concern and complete governed chain; no external readiness inferred.",
       "value": "current"
     }
   ],
@@ -135,6 +144,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-15-retire-legacy-design-authoring/reviews/final-code-review.json"
+    },
+    {
+      "kind": "verify",
+      "path": "docs/changes/2026-09-15-retire-legacy-design-authoring/verify-report.json"
     }
   ],
   "schema_version": 3,

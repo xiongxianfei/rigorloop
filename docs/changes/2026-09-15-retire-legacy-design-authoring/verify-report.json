@@ -1,0 +1,202 @@
+{
+  "assessment_scope": "workflow-final-verification; governed-final; VP1-final-readiness. Exact change2026-09-15-retire-legacy-design-authoring and complete approved direction/three-model Design/Delivery/M1/independent final review/current proof chain. Local governed closeout only; no external handoff claim.",
+  "change_id": "2026-09-15-retire-legacy-design-authoring",
+  "changes": [
+    "Removed two legacy Design scaffolds, their exclusive technical-authoring reference and two duplicate repository templates.",
+    "Focused Design architecture/decision output on living models while preserving existing-source interpretation, explicit adoption and feature-spec authoring.",
+    "Reconciled owning contracts and Design Review inputs, resource population and independent retirement/unknown-value tests."
+  ],
+  "evidence_refs": [
+    {
+      "id": "design-authoring",
+      "path": "docs/changes/2026-09-15-retire-legacy-design-authoring/evidence.json"
+    },
+    {
+      "id": "design-example-correction",
+      "path": "docs/changes/2026-09-15-retire-legacy-design-authoring/evidence.json"
+    },
+    {
+      "id": "plan-authoring",
+      "path": "docs/changes/2026-09-15-retire-legacy-design-authoring/evidence.json"
+    },
+    {
+      "id": "m1-implementation",
+      "path": "docs/changes/2026-09-15-retire-legacy-design-authoring/evidence.json"
+    },
+    {
+      "id": "m1-validation",
+      "path": "docs/changes/2026-09-15-retire-legacy-design-authoring/evidence.json"
+    },
+    {
+      "id": "m1-candidate",
+      "path": "docs/changes/2026-09-15-retire-legacy-design-authoring/evidence.json"
+    },
+    {
+      "id": "final-validation",
+      "path": "docs/changes/2026-09-15-retire-legacy-design-authoring/evidence.json"
+    }
+  ],
+  "limitations": [
+    "Standalone architecture/ADR authoring is intentionally unsupported; a project requiring it must choose another tool or explicitly authorize scoped adoption into living Designs. Existing source authority remains intact.",
+    "Semantic checks are independent instruction/artifact inspection, not a live-agent performance benchmark or universal compliance claim.",
+    "Hosted CI is unobserved; actual local validation is recorded. No PR, release, merge or active-environment installation is part of this closeout."
+  ],
+  "outcome": "success",
+  "rationale": [
+    "Current complete scoped context confirms M1 completed, independent milestone and fresh whole-change reviews approved, and the sole material Design finding reporter-resolved with exact correction proof and renewed design-review-r2. The stale first Design judgment retains its original subjects; no author closed the reporter concern or substituted Verify for review.",
+    "User intent maps through approved proposal to DES-SR-24 and DES-DEC-07. Complete five-file retirement is coupled with body/description/resource/technical/model/governed/reviewer reconciliation. The primary plan allocates every affected scenario through TG01/02 and FINAL01/02; no separate old-format output remains under a generic template or legacy reference.",
+    "Preservation passes: living technical/model guidance still owns applicable context, constraints, structure, runtime/deployment, crosscutting concerns, quality and risks. Source reconciliation preserves original decision identity/context/choice/alternatives/consequences/follow-up and unaffected authority before any authorized scoped adoption. No user document was converted or deleted, no old judgment retargeted, and separate feature-spec methods and shared styles are byte-retained.",
+    "Independent semantic proof distinguishes living Design output, mandatory-template ADR edit and architecture rebuild stops, mixed-source scoped adoption with concrete current model fields, and retained feature amendment with both boundary methods. Design Review distinguishes source evidence from output members; Plan can consume retained decisions without authoring their format. These actual source/asset observations satisfy the approved semantic allocation without claiming universal runtime compliance.",
+    "Test validity passes: independent hardcoded retired paths detect resurrection; a mixed unknown/missing resource proves unknown rejection ordering; valid complete package, remaining missing-resource checks, feature projections, generic path lint, traceability and no-mutable-state checks remain. The seven-method fail-first run had five expected failures; current focused15, full306 skill, full95 packaging and all19 canonical checks pass. The accidentally changed LAB example was restored exactly and independently validated through the existing extracted-example regression; no structural-only pass conceals that earlier defect.",
+    "Packaging passes: fresh actual Codex/Claude candidates and temporary Design installs passed; root and independent reviewer each compared every one of12 current Design files under declared transformations and observed all3 retired skill resources absent. Candidate hashes are durable in m1-candidate. No relevant source/generator input changed afterward, and no active installation or release occurred.",
+    "Impact classification is complete: public authoring output compatibility, skill packaging, documentation, resource validation and change-local lifecycle evidence are affected and have approved behavior/proof. Record schemas, runtime persistence/API operations, dependencies, generator/installer mechanics and external project state are unaffected by inspected byte-identical sources and preserved boundaries. Generic path fixtures and historical reviews are not current loading dependencies. Unknown impact or unresolved required concern would block success; none remains.",
+    "Actual final-validation records original-base full branch checks, selected broad smoke and isolated release-integrity qualification. Local/V6 proof covers the exact current engineering content; subsequent content is attributable review/validation/workflow recording with structural checks, not a product change. Earlier dirty-tree preflight rejection is disclosed and not counted as a test pass. Current final review subject identities match; prior feasibility-source drift and approved deletion preserve historical judgment scope rather than renewing it.",
+    "Distinct Verify assesses this whole chain after review. Recovery restores the coupled source/resource/check set from recoverable643f6cd6 without rewriting evidence. The chosen compatibility withdrawal is explicit and remains the principal adoption impact. No new publication, installation, automatic conversion or workflow authority follows from this result."
+  ],
+  "review_refs": [
+    {
+      "id": "proposal-review",
+      "path": "docs/changes/2026-09-15-retire-legacy-design-authoring/reviews/proposal-review.json"
+    },
+    {
+      "id": "design-review-r2",
+      "path": "docs/changes/2026-09-15-retire-legacy-design-authoring/reviews/design-review-r2.json"
+    },
+    {
+      "id": "delivery-review",
+      "path": "docs/changes/2026-09-15-retire-legacy-design-authoring/reviews/delivery-review.json"
+    },
+    {
+      "id": "m1-code-review",
+      "path": "docs/changes/2026-09-15-retire-legacy-design-authoring/reviews/m1-code-review.json"
+    },
+    {
+      "id": "final-code-review",
+      "path": "docs/changes/2026-09-15-retire-legacy-design-authoring/reviews/final-code-review.json"
+    }
+  ],
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:5730ba36d714a612bff8bdd270df094dc65f85606856413d5b654777fdfee2cf",
+      "path": "docs/changes/2026-09-15-retire-legacy-design-authoring/evidence.json"
+    },
+    {
+      "identity": "sha256:6512de7baad5c3e19226cde7cb34038f32613cd2863f02d345accec0d3335e6b",
+      "path": "docs/changes/2026-09-15-retire-legacy-design-authoring/reviews/delivery-review.json"
+    },
+    {
+      "identity": "sha256:02326bafdf0ec245e31d84396e022f6c56af40d72a41b528cc4d11b02b6c4e09",
+      "path": "docs/changes/2026-09-15-retire-legacy-design-authoring/reviews/design-review-r2.json"
+    },
+    {
+      "identity": "sha256:fa34afcb49eb528115621f846eb6d4eac5978ddf2b2eee66e59060500fc09701",
+      "path": "docs/changes/2026-09-15-retire-legacy-design-authoring/reviews/design-review.json"
+    },
+    {
+      "identity": "sha256:230b73401cb77e845ff46fcf45f2b0a158948ff82abe482ac28e30d8ce877cc2",
+      "path": "docs/changes/2026-09-15-retire-legacy-design-authoring/reviews/final-code-review.json"
+    },
+    {
+      "identity": "sha256:33f613e359855ebdcfbc03387a94d45290e5f0730dadcc37922bd655853965f9",
+      "path": "docs/changes/2026-09-15-retire-legacy-design-authoring/reviews/m1-code-review.json"
+    },
+    {
+      "identity": "sha256:994333d0936c24c4283b4e5de4bc83734cb0630e6ce2af2bb72fd0b712655122",
+      "path": "docs/changes/2026-09-15-retire-legacy-design-authoring/reviews/proposal-review.json"
+    },
+    {
+      "identity": "sha256:70729f932c5b46e42c5f79a208ec6ca9de8513831d58e09250df5bb9b73e6517",
+      "path": "docs/design/skill/authoring/design.md"
+    },
+    {
+      "identity": "sha256:e1184234b6a5f1a85f3e7b88ef3c699217178aa6257d9569689d1d59fafbf709",
+      "path": "docs/design/skill/skill.md"
+    },
+    {
+      "identity": "sha256:7a88f81f0044f2f9739ca27e9ebfb6cef77628f87b8422a240d9b776a4b921d8",
+      "path": "docs/design/system.md"
+    },
+    {
+      "identity": "sha256:a0dd9b89636d9e23e123addf8913dd60eed0c791a0016934e7925a7338dce149",
+      "path": "docs/plan.md"
+    },
+    {
+      "identity": "sha256:e19785d07ec8e4e81e2c8c76b0ad16da57d4ecf69d0c002a1d031acad76c1f16",
+      "path": "docs/plans/2026-09-15-retire-legacy-design-authoring.md"
+    },
+    {
+      "identity": "sha256:707cc801b29efaf98694fee68a60e1e26063a4359e5e1b1f8fe4a66976941bf6",
+      "path": "docs/proposals/2026-09-15-retire-legacy-design-authoring.md"
+    },
+    {
+      "identity": "sha256:e6fad8644bfbdc8dd82addaf56e38d4c7776169b3cde1d5792cb613aabd8daf7",
+      "path": "scripts/lib/validation/skill_validation.py"
+    },
+    {
+      "identity": "sha256:b09a3b401fd1b96beba6b20f83331d6ae3b49697a3cd0514ca6b22db862b4698",
+      "path": "skills/design-review/SKILL.md"
+    },
+    {
+      "identity": "sha256:fdbaf69d34c804b765848e08b3423a18a6ad380abc3b9e2546681fb0a9f29c65",
+      "path": "skills/design/SKILL.md"
+    },
+    {
+      "identity": "sha256:004189d8bbf456a020165b74cdf1f322dc1d2b3ce0b14e81079c76963fdffed6",
+      "path": "skills/design/assets/design-skeleton.md"
+    },
+    {
+      "identity": "sha256:020be16bb4b01f1eb1a1605562ffd6b31af9e5ba2ee12b1a1e1735acb6378a56",
+      "path": "skills/design/assets/diagram-styles.mmd"
+    },
+    {
+      "identity": "sha256:5ff3bd5cec3b6ad239ea1fa8676a2fb3cfae1a3ee8fb22876a96112de065727e",
+      "path": "skills/design/references/architecture-view-examples.md"
+    },
+    {
+      "identity": "sha256:7179b4f48e6ba5a1503237f58875f0dc5fe8cdc2c7e77f277c6debee714387b8",
+      "path": "skills/design/references/boundary-first-feature-authoring-v1.md"
+    },
+    {
+      "identity": "sha256:89337cf5da8462ad2afa0c50e04fb7233beea7ce030a049fa3a1695fc57ea2d0",
+      "path": "skills/design/references/boundary-first-method-v1.md"
+    },
+    {
+      "identity": "sha256:fdc363ed6e0ccdf501c451598daaf38691ac6e8e85397cb5cad64fe13a09cc9e",
+      "path": "skills/design/references/governed-design-authoring.md"
+    },
+    {
+      "identity": "sha256:5d27d9865afc3dafcb7852910504450309c06a751826e96eab6b696c3967e443",
+      "path": "skills/design/references/legacy-source-reconciliation.md"
+    },
+    {
+      "identity": "sha256:5ae252fdf0c0eaf8496b90480a168bf4c348799d5fa288e8e2e3ea2def43f63e",
+      "path": "skills/design/references/model-authoring.md"
+    },
+    {
+      "identity": "sha256:bbff5f36ced2f5e0ddc648a78278e378d81990b0266e0a7172b28d524a4da3cb",
+      "path": "skills/design/references/system-composition.md"
+    },
+    {
+      "identity": "sha256:92b7b4ce21ea27d6b7c516c4b4fd9f0af495da69e7b007230969cd0c533509f7",
+      "path": "skills/design/references/technical-design.md"
+    },
+    {
+      "identity": "sha256:8b0a4b44f27de8c2d24ea21344b75594d5f5c9a247f91d42390068f96d4bf998",
+      "path": "skills/design/references/test-quality.md"
+    },
+    {
+      "identity": "sha256:6c99c7f9f75ce3c5a194e836f557ec0b1f59a63cd90cbe82588586d1c3aebbd8",
+      "path": "skills/plan/SKILL.md"
+    },
+    {
+      "identity": "sha256:a0c007940ce17143256e784b098c01e8f9f265a0299ad537fc29d884e33b0640",
+      "path": "tests/skill/test-skill-validator.py"
+    }
+  ],
+  "summary": "Verified Design refinement: standalone architecture/ADR authoring and five exclusive aids are retired, while existing-source authority, scoped adoption, living-Design technical meaning and separate feature-spec support remain intact.",
+  "verifier": {
+    "id": "codex-verifier",
+    "role": "verify"
+  }
+}
