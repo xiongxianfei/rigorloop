@@ -214,4 +214,4 @@ Normal next stage: `delivery-review`. Return missing behavior to `design` and co
 - Status: <created | updated | initialized | blocked>
 - Artifacts changed: <paths or none>
 - Open blockers: <blockers or none>
-- Next stage: <delivery-review | spec | architecture | workflow | blocked>
+- Next stage: <delivery-review | design | route | blocked>

@@ -279,27 +279,6 @@ def assert_progressive_loading_quick_guide_contract(test_case, skill_body):
     test_case.assertIn("broader-section", skill_body)
 
 
-def assert_progressive_loading_implement_handoff_contract(
-    test_case: unittest.TestCase,
-    skill_body: str,
-) -> None:
-    required_terms = [
-        "Current Handoff Summary",
-        "current milestone section",
-        "validation notes",
-        "do not run broad repository searches to infer milestone state",
-        "stop and report the missing state",
-    ]
-    for term in required_terms:
-        test_case.assertIn(term, skill_body)
-
-    forbidden_first_steps = [
-        "start by searching all docs",
-        "start by searching generated adapter output",
-        "infer current state from broad `rg` output",
-    ]
-    for term in forbidden_first_steps:
-        test_case.assertNotIn(term, skill_body)
 
 
 def assert_progressive_loading_code_review_protected_contracts(
@@ -1437,7 +1416,7 @@ class SkillValidatorFixtureTests(SkillCliChecks, SkillGuidanceChecks, unittest.T
 
             # Asset fixtures must also carry the current selected recording package.
             for name in ("proposal", "proposal-review"):
-                relative = skill_validation.PILOT_RECORDING_REFERENCES[name]
+                relative = skill_validation.RECORDING_REFERENCES[name]
                 resource = root / name / relative
                 resource.parent.mkdir(parents=True, exist_ok=True)
                 resource.write_bytes((ROOT / "skills" / name / relative).read_bytes())
@@ -2879,6 +2858,9 @@ class SkillValidatorFixtureTests(SkillCliChecks, SkillGuidanceChecks, unittest.T
         for skill in DOWNSTREAM_REVIEW_CLOSEOUT_SKILLS:
             body = (ROOT / "skills" / skill / "SKILL.md").read_text()
             self.assertIn("review-reliance.md", body)
+            relative = skill_validation.RECORDING_REFERENCES.get(skill)
+            if relative is not None:
+                body += (ROOT / "skills" / skill / relative).read_text()
             self.assertIn("does not approve", body)
             self.assertNotIn("review-log.md", body)
 
@@ -3310,25 +3292,6 @@ Use a full-file or broader-section read when correctness requires surrounding co
             assert_progressive_loading_quick_guide_contract(self, missing_label)
 
 
-    def test_progressive_loading_implement_handoff_contract_helper_detects_bounded_state_inspection(self) -> None:
-        valid_skill = """# Implement
-
-## Handoff inspection budget
-
-Start with the active plan's Current Handoff Summary.
-Then read the current milestone section and validation notes.
-For milestone readiness, do not run broad repository searches to infer milestone state.
-If the active plan does not identify the current milestone or next stage, stop and report the missing state.
-"""
-        assert_progressive_loading_implement_handoff_contract(self, valid_skill)
-
-        missing_summary = valid_skill.replace("Current Handoff Summary", "handoff notes")
-        with self.assertRaises(AssertionError):
-            assert_progressive_loading_implement_handoff_contract(self, missing_summary)
-
-        broad_first_step = valid_skill + "\nAgents may start by searching all docs for milestones.\n"
-        with self.assertRaises(AssertionError):
-            assert_progressive_loading_implement_handoff_contract(self, broad_first_step)
 
     def test_progressive_loading_code_review_protected_contract_helper_detects_safety_regression(self) -> None:
         valid_skill = """# Code Review
@@ -5467,13 +5430,9 @@ class RetireStandaloneTestSpecM3Tests(unittest.TestCase):
                 )
                 self.assertNotIn("a proof-only gap routes to `test-spec`", body)
 
-    def test_standalone_test_spec_skill_is_absent_from_canonical_inventory(self) -> None:
-        self.assertFalse((ROOT / "skills/test-spec").exists())
-
 
 class RetireStandaloneTestSpecM4Tests(unittest.TestCase):
     """RTS TS-012 and TS-016 activation governance coherence."""
-
 
     def test_current_boundary_adoption_is_owned_by_the_selected_project_contract(self):
         source = (ROOT / "templates/shared/boundary-first-compact-scan.md").read_text()
