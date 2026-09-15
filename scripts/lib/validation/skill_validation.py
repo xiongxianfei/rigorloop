@@ -2215,7 +2215,23 @@ def _validate_ci_maintenance_risk_map(path: Path, text: str) -> list[str]:
 
 def _validate_ci_assembly_declaration(path: Path, body: str) -> list[str]:
     """Check the closed table vocabulary; reviewers assess selection semantics."""
-    section = _extract_markdown_section(body, "Assemblies") or ""
+    # Scope this reader to live declarations, including headings outside examples.
+    # Match the opener's marker and minimum length; a different/shorter fence is
+    # example content, not a terminator. Other specialist readers stay unchanged.
+    prose = []
+    fence = None
+    for line in body.splitlines():
+        if fence is not None:
+            if re.fullmatch(r" {0,3}" + re.escape(fence[0]) +
+                            r"{" + str(len(fence)) + r",}\s*", line):
+                fence = None
+            continue
+        opener = re.match(r"^ {0,3}(`{3,}|~{3,})(.*)$", line)
+        if opener and (opener[1][0] == "~" or "`" not in opener[2]):
+            fence = opener[1]
+            continue
+        prose.append(line)
+    section = _extract_markdown_section("\n".join(prose), "Assemblies") or ""
     rows = []
     for line in section.splitlines():
         if not line.lstrip().startswith("|"):

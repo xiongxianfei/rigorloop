@@ -187,3 +187,36 @@ class CiAssemblyDeclarationTests(unittest.TestCase):
     def test_missing_table_rejected(self):
         self.assert_error("Assemblies must declare the nine CI assemblies in a table",
                           declaration="Select one assembly from the supported values.")
+
+
+    def test_fenced_table_is_not_a_declaration(self):
+        table = "".join(f"| `{name}` | selected | required |\n" for name in self.NAMES)
+        self.assert_error("Assemblies must declare the nine CI assemblies in a table",
+                          declaration="```text\n" + table + "```\n")
+
+    def test_fenced_negative_example_does_not_override_declaration(self):
+        table = "".join(f"| `{name}` | selected | required |\n" for name in self.NAMES)
+        # The example heading must not truncate the normative section either.
+        example = "```text\n## Assemblies\n| CIM9-unknown | invalid | none |\n```\n"
+        self.assertEqual(self.check_declaration(declaration=example + table), [])
+
+
+    def test_tilde_fences_are_examples(self):
+        table = "".join(f"| `{name}` | selected | required |\n" for name in self.NAMES)
+        self.assert_error("Assemblies must declare the nine CI assemblies in a table",
+                          declaration="~~~text\n" + table + "~~~\n")
+        self.assertEqual(self.check_declaration(declaration=table +
+                         "~~~text\n| CIM9-unknown | invalid | none |\n~~~\n"), [])
+
+    def test_only_matching_marker_and_length_close_examples(self):
+        table = "".join(f"| `{name}` | selected | required |\n" for name in self.NAMES)
+        for opener, wrong_close in (("````", "```"), ("~~~", "```"), ("```", "~~~")):
+            with self.subTest(opener=opener, wrong_close=wrong_close):
+                self.assert_error("Assemblies must declare the nine CI assemblies in a table",
+                                  declaration=opener + "text\n" + wrong_close + "\n" +
+                                  table + opener + "\n")
+
+    def test_longer_matching_close_restores_normative_rows(self):
+        table = "".join(f"| `{name}` | selected | required |\n" for name in self.NAMES)
+        example = "~~~text `example`\n| CIM9-unknown | invalid | none |\n~~~~\n"
+        self.assertEqual(self.check_declaration(declaration=example + table), [])
