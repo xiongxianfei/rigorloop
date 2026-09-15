@@ -1,12 +1,12 @@
 {
   "activity": {
     "owner": {
-      "id": "codex-delivery-review",
-      "role": "route"
+      "id": "codex-implement",
+      "role": "implement"
     },
-    "reason": "Current CI Design approved; amended exact primary plan linked and validated. Fresh delivery-review-ci must assess M4 correction/proof and unchanged remaining allocation before M4 implementation. Work remains blocked and existing identities retained.",
-    "stage": "delivery-review",
-    "status": "ready"
+    "reason": "M4 correction now has current Design and Delivery approval. Implement exact CI selection/resource restoration with tests first; retain Bugfix with substantive proof. Open ci-assembly-mismatch authorizes its scoped correction and remains until reporter assesses implementation proof and independent m4-code-review. No armed automation or live CI mutation.",
+    "stage": "implement",
+    "status": "in-progress"
   },
   "applicability": [
     {
@@ -89,6 +89,15 @@
       "path": "docs/changes/2026-09-15-skill-simplification/reviews/design-review-ci.json",
       "reason": "Fresh independent complete-model assessment of the registered CI clarification under unchanged approved direction. All nine criteria are satisfied; open implementation correction does not prevent judging the settled Design and does not become resolved by this approval.",
       "value": "current"
+    },
+    {
+      "actor": {
+        "id": "independent-delivery-review-ci",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/delivery-review-ci.json",
+      "reason": "Fresh independent assessment of the exact amended primary plan against current design-review-ci and unchanged proposal constraints. Combined sequence, all19 scope, nine-assembly correction/proof and final closeout allocation are sufficient; the CI implementation blocker remains open and reporter-owned.",
+      "value": "current"
     }
   ],
   "blockers": [
@@ -116,8 +125,8 @@
         "supporting_judgment": null
       },
       "owner": {
-        "id": "codex-author",
-        "role": "design"
+        "id": "codex-implementer",
+        "role": "implement"
       },
       "reporter": {
         "id": "codex-implementer",
@@ -193,6 +202,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-15-skill-simplification/reviews/design-review-ci.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/delivery-review-ci.json"
     }
   ],
   "schema_version": 3,
@@ -244,7 +257,7 @@
         "SKL-SR-30",
         "SKL-SR-32"
       ],
-      "status": "blocked"
+      "status": "in-progress"
     },
     {
       "id": "m5",
