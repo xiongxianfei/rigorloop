@@ -60,6 +60,6 @@ jobs:
         env:
           RIGORLOOP_VALIDATION_WORKERS: "2"
         run: >-
-          python scripts/test-validation-execution.py
+          python tests/engineering/validation/test-validation-execution.py
           ExecutionTests.test_parallel_tasks_actually_overlap_with_bounded_workers
           CaseAdapterTests.test_normal_and_isolated_fixture_preserve_hooks_population_and_parallelism

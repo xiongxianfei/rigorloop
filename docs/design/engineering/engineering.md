@@ -12,6 +12,12 @@ Prior refinement: [independent parallel tests](../../changes/2026-09-13-independ
 
 Engineering owns how this repository builds, proves and delivers high-quality published skills and the CLI. It uses RigorLoop's published behaviors as development tools while retaining an independent assessment of the candidate. System defines the product composition; Skill and CLI define what the delivered products must do.
 
+## Reading guide
+
+The [submodel inventory](#context-and-scope) and [overview](#architecture-overview) identify Development, Validation, Packaging and Release. Read the relevant [Development](#development), [Validation](#validation), [Packaging](#packaging) or [Release](#release) entry, then follow its detailed owner. [Integrated operation and failure](#integrated-operation-and-failure) and [acceptance scenarios](#boundary-scan-and-acceptance-scenarios) cover their shared behavior.
+
+[Repository retirement](#repository-retirement) and the [cleanup delivery boundary](#complete-cleanup-delivery-boundary) preserve current source/proof obligations. [Historical provenance](#historical-provenance) identifies the original adoption context.
+
 ## Context and Scope
 
 Inputs are authorized product direction, exact affected contracts, the selected development tool basis and repository sources. Outputs are implemented candidates, attributable validation and assessment evidence, distributable packages and authorized public release observations. No hosted agent runtime, third customer executor product or automatic external action is introduced.
@@ -152,6 +158,7 @@ Local/CI execution, candidate roots and protected release jobs have distinct res
 | ENG-SR-13 | Development MUST reconcile the exact retirement set, baseline identities, surviving obligations, current consumers and justified retention in change-local evidence. Current claims and open work MUST remain self-contained. Historical-only sources MAY be deleted after recoverability and current-reliance closure; a tracked citation, successful old review or retired filename alone MUST NOT decide current applicability. |
 | ENG-SR-14 | Cleanup MUST remove selected superseded sources and exclusive readers together, preserve uncommitted and unrelated files, and re-evaluate any changed source or newly discovered consumer before its removal. Retained fixtures MUST prove current behavior independently of archived production records. Final closeout MUST account for every selected family and actual residual exceptions; an inventory-only result is insufficient. |
 | ENG-SR-15 | Complete spec retirement MUST account for all baseline specs and the full repository test/fixture population, including embedded data and generators. Retain, refine or remove each assessed family with its current owner, protective purpose and consumer disposition; unresolved required knowledge or proof blocks completion. A family inventory alone MUST NOT stand in for assessment of its cases. |
+| ENG-SR-16 | Repository tooling MUST separate supported command entrypoints, capability-owned internal implementation and authored resources. Relocation MUST preserve command arguments, results, exit status, working-directory behavior, selection, source-integrity checks and actual consumers. Internal imports MUST use explicit package ownership; no wildcard compatibility exports, test-only production dependencies or unrelated consolidation is permitted. |
 
 ## Development
 
@@ -179,6 +186,33 @@ A Skill or CLI requirement change identifies both affected consumers before impl
 
 If the development CLI cannot safely persist a decision, stop that write and preserve the actual outcome. Do not use the candidate's success label to manufacture a review or bypass conflict recovery. A failed validation/package/release operation reports partial work and limits under its own contract. Active governing records, installed customer files and unrelated source changes are not cleanup targets. Completed historical records follow the current retirement contract below.
 
+### Repository tooling organization
+
+Under ENG-SR-16, supported commands remain at their existing `scripts/` paths. The paths below define the coordinated migration target; old internal/resource paths remain the runnable source only until their complete consumer group is moved and assessed. This transition does not preserve a second implementation after adoption. Internal Python modules use explicit `lib.validation`, `lib.packaging` and `lib.release` package imports from the scripts root; Node execution/snapshot helpers follow Validation. Entrypoints own command parsing and reporting, while reusable implementation follows its capability. Existing command bodies need not be split solely to reduce line counts. A module that is also a supported command, such as `release_evidence.py`, retains a thin command entrypoint at its old path. Pure internal old module paths retire after their consumers are reconciled.
+
+```mermaid
+flowchart LR
+    Caller["Contributor / CI / release caller"] -->|"stable command and arguments"| Entry["scripts: supported commands"]
+    subgraph Implementation["scripts/lib: owned internal implementation"]
+        V["validation"]
+        P["packaging"]
+        R["release"]
+        P -->|"canonical resource validation"| V
+        R -->|"candidate generation and integrity"| P
+    end
+    Entry -->|"explicit package imports"| Implementation
+    Resources["scripts/resources: authored templates and manifest"] -->|"canonical inputs"| Implementation
+    Implementation -->|"actual results and exit status"| Entry
+```
+
+This building-block detail refines existing Engineering relationships without adding a runtime service or public product. Context, runtime and deployment views retain their existing actors and trust boundaries. Python commands and subprocess adapters resolve code from their scripts root; resource lookup resolves the intended repository root rather than the process working directory. Tests and candidate source copies include the complete required code/resource tree. Release source identity extends its current top-level script check to the complete authored scripts tree, including nested implementation and resources; moving a module cannot remove it from the checked identity. Generated bytecode is excluded.
+
+Validation owns model, skill, selection, execution and record-validation helpers. Packaging owns adapter production and npm artifact validation; Release owns candidate, coordinator, provider, transaction and evidence implementation. Cross-owner dependencies name their owner explicitly. A helper with uncertain consumers is retained under its primary owner pending separate assessment; this organization does not authorize deleting apparently unused code.
+
+Authored adapter templates move to `scripts/resources/adapter-templates/`; the boundary manifest moves to `scripts/resources/boundary-first/`. Required package contents, canonical skill bytes and manifest semantics remain unchanged. Existing shared resources and package-owned Node runtime code stay with their owners. No new generic utilities package, universal CLI, dependency or test ledger is introduced.
+
+Representative migration acceptance under ENG-SR-16 is a stable direct command and a subprocess worker producing their existing result after internal imports move; old/new changed paths select the same required checks; a candidate with changed nested implementation fails source-integrity validation; and real archive/installed-consumer proof resolves relocated resources. Missing code/resources must fail visibly, without fallback to a second implementation. Restore a coherent captured source/caller slice on failure while preserving unrelated work. Independent reviews and concrete delivery allocation precede implementation.
+
 ## Deployment and maintenance
 
 Development tools operate in the repository under its existing permissions. Package output uses temporary or explicitly selected non-installation locations. Publication uses the exact Release-owned authorization and public endpoints. Individual skills remain independently usable by customers; choosing governed recording or CLI installation introduces the corresponding CLI dependency, not a dependency on this repository's engineering environment.
@@ -192,23 +226,15 @@ Development tools operate in the repository under its existing permissions. Pack
 | Input domain | ENG-SR-02, ENG-SR-05, ENG-SR-15 | An authorized Skill or CLI change has a named product contract and bounded proof; missing authority is surfaced before dependent implementation. Audit includes a helper-generated case and inline fixture as well as standalone test files. |
 | State/lifecycle | ENG-SR-02, ENG-SR-04 | Progress through milestones retains required reviews; a local pass or non-final review cannot close the whole change. |
 | Identity/authority | ENG-SR-03, ENG-SR-08 | The development tool basis and candidate identities remain distinguishable; independent assessment and publication authority are not inferred from self-use. |
-| Composition/path | ENG-SR-01, ENG-SR-07, ENG-SR-13, ENG-SR-14, ENG-SR-15 | Generated skills and the packed CLI agree on resources, commands and records; a helper-only pass cannot hide incompatible products. Removing an archive input and its exclusive reader leaves current CLI, package and evidence consumers self-contained. A current reader or a distinct protected failure prevents classifying its fixture as orphaned. |
+| Composition/path | ENG-SR-01, ENG-SR-07, ENG-SR-13, ENG-SR-14, ENG-SR-15, ENG-SR-16 | Generated skills and the packed CLI agree on resources, commands and records; a helper-only pass cannot hide incompatible products. Removing an archive input and its exclusive reader leaves current CLI, package and evidence consumers self-contained. A current reader or a distinct protected failure prevents classifying its fixture as orphaned. |
 | Temporal/retry | ENG-SR-05, ENG-SR-09 | Concurrent cases share one budget; changed subjects trigger affected proof and reassessment rather than cached success. |
 | Failure/recovery | ENG-SR-09, ENG-SR-10, ENG-SR-14 | Failed or interrupted operations preserve actual partial state and route correction without deleting unrelated sources or historical records. Changed bytes, a new reader or missing historical revision stops the affected deletion; restore the coherent source/consumer slice. |
-| Compatibility/migration | ENG-SR-10, ENG-SR-12 | Every retired source has a resolved consumer/meaning disposition; the hierarchy does not silently revive retired runtime formats or remove required proof. |
-| External/environment | ENG-SR-08, ENG-SR-11 | Customer individual skills work without this repository executor; public release claims require real Release observations and authorization. |
+| Compatibility/migration | ENG-SR-10, ENG-SR-12, ENG-SR-16 | Every retired source has a resolved consumer/meaning disposition; the hierarchy does not silently revive retired runtime formats or remove required proof. |
+| External/environment | ENG-SR-08, ENG-SR-11, ENG-SR-16 | Customer individual skills work without this repository executor; public release claims require real Release observations and authorization. |
 
 ## Decisions and assessment basis
 
 The development process is a consumer of published capability behavior, not a second copy of it. Separate Development from Skill Implementation because one defines this repository's allocation and tooling basis while the other defines reusable agent behavior. Separate Packaging from CLI Installation because artifact production and user filesystem mutation have different inputs, authority and failure recovery. Release keeps publication ownership. The integrated counterexamples above justify these boundaries without claiming executed candidate tests.
-
-## Source disposition and follow-through
-
-The [reconciliation evidence (`design-preservation-delta`)](../../changes/2026-09-12-unified-validation-model/evidence.json) identifies exact source identities, retained contracts, Distribution's split and current consumers. The mapped Validation cache/source/script retirement is recorded as completed in the [original adoption](../../changes/2026-09-12-unified-validation-model/change.json). It is not implementation work for the current initiative; the current scope is the check composition, test maintenance and remaining case independence defined by Validation. Detailed retained specifications remain named authorities for unmigrated obligations. Source changes do not establish reviewed implementation or successful Verify.
-
-## Next artifacts
-
-Independent Design Review of System, Skill, CLI, Engineering and the affected child/legacy contracts, followed by Delivery allocation. Required candidate tests, reviews and distinct final Verify establish coherent implementation; publication retains separate authority.
 
 ## Repository retirement
 
@@ -245,3 +271,7 @@ Use the selected change's exact baseline inventory and source-family disposition
 Audit test entrypoints, individual cases and case generators across scripts, packages, workflow jobs and other tracked locations; include inline objects, temporary-tree builders and every fixture reader. Discover generated cases through the runner or builder where source enumeration is incomplete. One family-level disposition is sufficient only when it explains all members and identifies every exception. A test whose only assertion is an obsolete heading or implementation detail may be removed after its distinct protection is checked. Preserve implementation-sensitive fixtures when they still expose a real fault.
 
 The implementation records actual retained/refined/removed populations and remaining live readers, alongside proof of the protected behaviors. Current registry subjects, review reliance and release inputs require an explicit replacement assessment; do not repair old judgments by changing their subjects. Recheck baseline identities and uncommitted content before removal. Restore a failed source/resource/reader/test slice together. The final whole-change review and Verify cover the complete target, including newly discovered dependencies; an unresolved family cannot become a later cleanup proposal while this initiative is reported complete.
+
+## Historical provenance
+
+Completed source-transfer mappings and original adoption handoffs are recoverable at `38a3042e63c7c2462ecf8ffed29f4ac0cbb8923f:docs/design/engineering/engineering.md`. Their source-qualified IDs and judgments retain their original scope; they do not supply current approval or operational inputs. Current behavior and proof obligations are specified in this Design and its named owners.

@@ -7,7 +7,7 @@ import argparse
 import sys
 from pathlib import Path
 
-from skill_validation import CANONICAL_SKILLS_DIR, ValidationResult, validate_skill_tree
+from lib.validation.skill_validation import CANONICAL_SKILLS_DIR, ValidationResult, validate_skill_tree
 
 
 GATE_NAME = "Gate A (canonical skill integrity)"

@@ -91,7 +91,3 @@ Model validation contract: model-document-v1
 ## Glossary
 
 <Necessary domain terms, or remove when not useful.>
-
-## Next artifacts
-
-<Planning history for independent Design Review and downstream allocation; no mutable stage state.>

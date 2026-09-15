@@ -15,6 +15,8 @@ Index policy:
 
 ## Active
 
+- [Repository tooling organization](plans/2026-09-14-tooling-organization.md) — scoped portable refactor; [evidence](changes/2026-09-14-design-suitability-review/contract-refinement.md).
+
 - [Cleanup integration and local commit](plans/2026-09-14-cleanup-integration-and-commit.md) — [owning change](changes/2026-09-13-current-design-repository-cleanup/change.json).
 
 - [Historical retirement-ledger removal](plans/2026-09-14-retirement-ledger-removal.md) — [owning change](changes/2026-09-13-current-design-repository-cleanup/change.json).
@@ -28,6 +30,10 @@ Compatibility heading only.
 Current blockers are not recorded in this index.
 
 ## Current plan references
+
+- [Risk-driven test redesign](plans/2026-09-15-risk-driven-test-redesign.md) — scoped portable plan; no governed change record selected.
+
+- [Validation test organization](plans/2026-09-14-validation-test-organization.md) — scoped plan; no governed change record selected.
 
 - [Retire all specs and stale tests](plans/2026-09-14-retire-specs-and-stale-tests.md) — [owning change](changes/2026-09-14-retire-specs-and-stale-tests/change.json).
 

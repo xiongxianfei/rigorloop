@@ -8,11 +8,17 @@ Original composition adoption: [three-model reconciliation](../changes/2026-09-1
 
 Prior refinement: [independent parallel tests](../changes/2026-09-13-independent-parallel-tests/change.json); its selected behavior and evidence retain their own scope.
 
-For this repository’s [complete source retirement](../changes/2026-09-14-retire-specs-and-stale-tests/source-disposition.md), current responsibilities are self-contained in the owning Designs. Earlier source-transfer tables below preserve the scope and reasoning of their original initiatives; their instructions to retain or amend legacy specs, architecture, activation state or retired engines are historical and are superseded by this complete retirement. Source-qualified IDs and original judgments keep their original meaning; provenance is not a runtime input or current approval. Customer feature contracts and explicit portable resources remain supported under their own project authority.
+For this repository’s [complete source retirement](../changes/2026-09-14-retire-specs-and-stale-tests/source-disposition.md), current responsibilities are self-contained in the owning Designs. Original source-transfer inventories remain recoverable through [Historical provenance](#historical-provenance); their instructions to retain or amend legacy specs, architecture, activation state or retired engines are historical and superseded by this complete retirement. Source-qualified IDs and original judgments keep their original meaning; provenance is not a runtime input or current approval. Customer feature contracts and explicit portable resources remain supported under their own project authority.
 
 ## Abstract
 
 RigorLoop delivers published skills and a CLI for AI-assisted software engineering. Skills guide agents through useful, bounded activities; the CLI performs explicit inspection, record updates and skill installation. Individual skills can be used without the CLI. Current governed recording requires it, and CLI-based installation requires it only for that method. Engineering uses RigorLoop to build and independently prove both products. System owns their composition and shared interfaces.
+
+## Reading guide
+
+Use the [responsibility inventory](#responsibility-inventory) to locate the existing owner, the [shared interfaces](#shared-interfaces) to identify its neighbors, and the [end-to-end flow](#end-to-end-system-design) to understand delivery. [Integrated acceptance](#integrated-acceptance) and [failure handling](#failure-concurrency-and-recovery) explain the composed outcomes.
+
+[Current cleanup composition](#current-repository-cleanup-composition) and [complete spec retirement](#complete-repository-spec-retirement) identify today's source boundaries. [Historical provenance](#historical-provenance) identifies the recoverable source-transfer maps. The hierarchy and detailed ownership remain unchanged.
 
 ## Architecture Overview
 
@@ -42,7 +48,7 @@ The [end-to-end system design](#end-to-end-system-design) below explains how the
 
 ### Architecture overview convention
 
-[Design DES-SR-22](skill/design.md#architecture-overview-view-and-necessary-supporting-views) owns the overview and supporting-view method. System applies it to this product's composition; each parent applies it to its subsystem. A diagram summarizes its owning contract rather than introducing another policy source.
+[Design DES-SR-22](skill/authoring/design.md#architecture-overview-view-and-necessary-supporting-views) owns the overview and supporting-view method. System applies it to this product's composition; each parent applies it to its subsystem. A diagram summarizes its owning contract rather than introducing another policy source.
 
 ### Parent graph ownership
 
@@ -50,11 +56,15 @@ Each parent owns the integration of its named children; each child owns its deta
 
 ### Repository directory layout
 
-This repository explicitly selects `docs/design/system.md` as its composition root. Main owners are `skill/skill.md`, `cli/cli.md` and `engineering/engineering.md` under `docs/design/`. Skill owns `workflow.md`, `assessment.md` and `design.md`; CLI owns `records.md` and `installation.md`; Engineering owns `validation.md`, `packaging.md` and `release.md`. A main model owns a directory and its same-named main document. A child with one document stays beside that main document. Create a child subfolder only when it has several cohesive documents or supporting resources with a clear owner; place its main document at `<child>/<child>.md`. Short responsibilities remain sections. Do not add a folder solely for a logical category or anticipated growth. These explicitly selected project paths take precedence over the portable Design skill default.
+This repository explicitly selects `docs/design/system.md` as its composition root. Main owners are `skill/skill.md`, `cli/cli.md` and `engineering/engineering.md` under `docs/design/`. Skill owns `workflow.md`, `assessment.md`, `authoring/authoring.md`, `project-foundations/project-foundations.md`, `discovery/discovery.md`, `learning.md` and `delivery-handoff.md`; Project Foundations owns sibling `vision.md`, `constitution.md` and `project-map.md`; Discovery owns sibling `explore.md` and `research.md`; Authoring owns sibling `proposal.md`, `design.md` and `plan.md` in `skill/authoring/`; CLI owns `records.md` and `installation.md`; Engineering owns `validation.md`, `packaging.md` and `release.md`. A main model owns a directory and its same-named main document. A child with one document stays beside that main document. Create a child subfolder only when it has several cohesive documents or supporting resources with a clear owner; place its main document at `<child>/<child>.md`. Short responsibilities remain sections. Do not add a folder solely for a logical category or anticipated growth. These explicitly selected project paths take precedence over the portable Design skill default.
 
 CLI examples remain under `cli/examples/`; Records examples have the distinct `cli/examples/records/` namespace. Workflow examples live under `skill/examples/workflow/`. Each namespace has one owning model and selection must validate that owner. Historical record subjects and example payload identities retain their original meaning; current registries and navigation follow the new paths without rewriting prior approval.
 
 The [directory plan](../plans/2026-09-12-design-directory-layout.md) allocates the coordinated moves and actual-reader corrections. New model path exceptions are exact declared paths, not permission for arbitrary nested or example documents to become normative models. Missing or symlinked targets still fail validation.
+
+### Validation source layout
+
+Repository-level test sources belong under `tests/`, grouped by the owning Skill or Engineering capability; package-owned tests stay in `packages/<package>/test/`. `scripts/` retains supported runnable validation and maintenance commands. Internal implementation belongs under `scripts/lib/{validation,packaging,release}/`, and authored operational resources under `scripts/resources/`, according to [Engineering tooling organization](engineering/engineering.md#repository-tooling-organization). [Validation](engineering/validation.md#test-sources-groups-and-fixtures) owns the concrete test groups, fixture placement and protection-preserving migration contract. Directories follow actual cohesive responsibilities rather than mirroring every model leaf. Existing Python test paths remain supported until each coordinated source/caller migration is implemented and assessed; this layout decision does not itself move files or approve deletion.
 
 ### Responsibility inventory
 
@@ -62,10 +72,21 @@ The [directory plan](../plans/2026-09-12-design-directory-layout.md) allocates t
 | --- | --- | --- |
 | Skill | [Capability Contract](skill/skill.md#capability-contract) | Common invocation, resources, outputs, portability, failures and limits. |
 | Skill | [Workflow](skill/workflow.md) | Published activity coordination, handoffs and correction. |
-| Skill | [Authoring](skill/skill.md#authoring), including the [Design method](skill/design.md) | Proposal, design and delivery-plan behavior. |
+| Skill | [Authoring](skill/authoring/authoring.md) | Proposal, design and delivery-plan behavior. |
+| Authoring | [Proposal](skill/authoring/proposal.md) | Direction, scope, feasibility and proposal authoring. |
+| Authoring | [Design Method](skill/authoring/design.md) | Required behavior, technical realization, decisions and acceptance intent. |
+| Authoring | [Plan](skill/authoring/plan.md) | Milestone sequencing, verification allocation and approved-plan initialization. |
 | Skill | [Implementation](skill/skill.md#implementation) | Scoped implementation, bugfix and CI-maintenance behavior. |
 | Skill | [Assessment](skill/assessment.md) | Independent review, findings, evidence applicability and closeout behavior. |
-| Skill | [Project Support](skill/skill.md#project-support) | Vision, governance, discovery, research, orientation, learning and authorized PR handoff. |
+| Skill | [Project Foundations](skill/project-foundations/project-foundations.md) | Purpose, governing principles and observed orientation. |
+| Project Foundations | [Vision](skill/project-foundations/vision.md) | Canonical vision and derived README content. |
+| Project Foundations | [Constitution](skill/project-foundations/constitution.md) | Governing engineering principles. |
+| Project Foundations | [Project Map](skill/project-foundations/project-map.md) | Observed repository/area orientation. |
+| Skill | [Discovery](skill/discovery/discovery.md) | Option-space and factual uncertainty support. |
+| Discovery | [Explore](skill/discovery/explore.md) | Distinct options and trade-offs. |
+| Discovery | [Research](skill/discovery/research.md) | Attributable facts, confidence and limits. |
+| Skill | [Learning](skill/learning.md) | Confirmed lessons and route-result accountability. |
+| Skill | [Delivery Handoff](skill/delivery-handoff.md) | Prepared and authorized PR handoff. |
 | CLI | [Command Interface](cli/cli.md#command-interface) | Commands, selectors, inputs, results and diagnostics. |
 | CLI | [Records](cli/records.md) | Stored data, identities, versions and preservation invariants. |
 | CLI | [Persistence](cli/cli.md#persistence) | Lossless updates, concurrency, atomic writes and recovery. |
@@ -120,8 +141,11 @@ flowchart TB
         S3["Authoring"]
         S4["Implementation"]
         S5["Assessment"]
-        S6["Project Support"]
-        S1 ~~~ S2 ~~~ S3 ~~~ S4 ~~~ S5 ~~~ S6
+        S6["Project Foundations"]
+        S7["Discovery"]
+        S8["Learning"]
+        S9["Delivery Handoff"]
+        S1 ~~~ S2 ~~~ S3 ~~~ S4 ~~~ S5 ~~~ S6 ~~~ S7 ~~~ S8 ~~~ S9
     end
 
     subgraph CLI["CLI — executable behavior"]
@@ -274,7 +298,7 @@ Correction returns work to its actual owner. A contract gap changes the affected
 
 Existing build/check entrypoints include `scripts/build-adapters.py`, `scripts/validate-adapters.py`, CLI tests under `packages/rigorloop/test/`, `scripts/select-validation.py`, `scripts/ci.sh` and `scripts/release-verify.sh`. Delivery and Release select their exact applicable composition under the owning contracts. Concrete integration outcomes below distinguish a product whose separate parts pass checks from skills and a CLI that work together.
 
-The current [independent-parallel-test refinement](engineering/validation.md#select-each-check-once) keeps these three main models. Validation owns case independence, protective consolidation and canonical check composition; Development allocates and implements that contract, and Assessment judges retained protection. Packaging and Release still define candidate and freshness boundaries. Selecting a check once cannot erase an unsatisfied product, phase or release obligation. New adoption belongs to the current owning change; the original source maps below remain scoped historical adoption decisions.
+The current [independent-parallel-test refinement](engineering/validation.md#select-each-check-once) keeps these three main models. Validation owns case independence, protective consolidation and canonical check composition; Development allocates and implements that contract, and Assessment judges retained protection. Packaging and Release still define candidate and freshness boundaries. Selecting a check once cannot erase an unsatisfied product, phase or release obligation. New adoption belongs to the current owning change; the original source maps remain scoped historical adoption decisions recoverable through [Historical provenance](#historical-provenance).
 
 ## Integrated acceptance
 
@@ -338,79 +362,20 @@ No separate ADR is created for this model-profile draft. These decisions concern
 
 The hierarchy replaces the former flat peer inventory. Skill owns published behavior, CLI owns executable behavior, and Engineering owns this repository's realization. Named child sections avoid a file for every small capability while separately maintained complex contracts remain individually reviewable. Packaging and Installation split the former Distribution ownership because producing artifacts and mutating customer files have different authority and failure boundaries.
 
-## Adoption and source reconciliation
-
-The [approved hierarchy proposal](../proposals/2026-09-12-skill-cli-engineering-model-hierarchy.md) extends the [unified Validation proposal](../proposals/2026-09-12-unified-validation-model.md), preserving no-cache, independent-case, bounded-concurrency and actual cleanup goals. The [reconciliation evidence (`design-preservation-delta`)](../changes/2026-09-12-unified-validation-model/evidence.json) assigns each source and records the exact prior basis. Original source IDs and judgments retain their historical meaning. Detailed source/consumer migration must be reviewed and implemented before runtime adoption is claimed; this Design is not a release or customer-activation record.
-
-The earlier mixed-architecture and necessary-design consolidation maps below retain their scoped source dispositions. They do not introduce additional peer main models or unbounded file-deletion authority. Original lifecycle decisions live in their owning change records rather than another chronological narrative here.
-
-### Exact mixed-architecture migration boundary
-
-Source locations refer to the inspected baseline of `7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e:docs/architecture/system/architecture.md`; its subject identity is recorded with this change's authoring basis. Heading names and selected paragraph/bullet descriptions disambiguate ranges. Only the selected text is replaced in the adopting implementation. Unselected content, especially detailed Level 2 blocks and release/automation/CLI histories, is retained under its existing amended contracts.
-
-| Selected source section and exact text boundary | Replacement owner | Disposition at adoption |
-| --- | --- | --- |
-| Introduction and Goals: opening system-description paragraph; following canonical-method paragraph; goal bullets for structure, architecture reasoning, canonical vs historical evidence, smallest surface and ADR rationale | SYS-SR-01/03 and Design DES-SR-02/05/06 | Replace composition/method claims with links here and to Design. Preserve unrelated product/release/CLI goals below these selected bullets. |
-| Architecture Constraints: bullets naming architecture-method spec ownership, workflow's method role, canonical package/diagram path, architecture/ADR scaffolds, lowest sufficient surface and no normal deltas | Design DES-SR-01/02/05/06/13/14/18 | Replace those method constraints with declared Design ownership and conditional legacy treatment. Retain Constitution, source boundaries, independent state/installation/release/validation constraints and all unselected bullets. |
-| Context and Scope: external repository actors, canonical included/excluded scope, target-agent interpretation boundary and context-diagram navigation | SYS-SR-01/05 and Context and Scope above | Replace the system-level explanation with this view; preserve old diagram access as historical/unmigrated evidence, not current composition authority. |
-| Solution Strategy: first four paragraphs through architecture-review comparison of runtime/deployment/quality/decision history | SYS-SR-02/03 and Design method | Replace with references to current owners. Retain subsequent published-skill product-gate, state/CLI and release strategies under their existing owners. |
-| Building Block View: opening system-level description and complete Level 1 White-Box table only, stopping before Level 2 White-Box: Project-Map Skill Package | SYS-SR-01/02 and responsibility inventory above | Replace high-level ownership catalogue with a System link. Retain all Level 2 blocks as unmigrated detail, including their applicable prior amendments. |
-| Runtime View → Architecture update flow: all eight steps | Design Runtime View; SYS-SR-03/04 | Replace separate authoring/package handoff with the unified method link. Preserve every subsequent runtime subsection; their directly affected references still need scoped consumer reconciliation. |
-| Crosscutting Concepts → Source of truth: both paragraphs | Design DES-SR-02/11/13/18; SYS-SR-02/06 | Remove duplicate model/method authority and outdated flat-model navigation; reference actual owners and the applicable adopted profile. |
-| Crosscutting Concepts → Lowest sufficient architecture surface: opening and four bullets | Design DES-SR-02/04/05/06/14 | Replace old normal output selection with unified authoring and scoped legacy treatment. |
-| Crosscutting Concepts → Diagram source policy: entire single paragraph | Design Technical reasoning and decisions | Replace fixed architecture diagram placement with one-owner text-source guidance; old diagrams retain their historical identity. |
-| Crosscutting Concepts → Legacy architecture handling: entire paragraph | SYS-SR-07 and adoption boundary below | Retain the factual earlier eight-file normalization as historical evidence; explicitly distinguish it from incomplete Design consolidation. |
-| Architecture Decisions: only entries for ADR-20260428-architecture-package-method and ADR-20260509-architecture-skill-surface-simplification, including their summaries in historical follow-on prose | Design Material decision preservation and DES-DEC-01–05 | Current index identifies replacement decision ownership. Preserve all other ADR references and historical follow-on narrative; do not rewrite old approval claims as new approvals. |
-
-An opening notice in the mixed architecture must name this exact boundary and link to the surviving owners. Unmigrated sections remain distinguishable as current responsibility detail or explicit historical evidence under their existing amendments; the notice must not declare the whole file obsolete. The entire architecture file and its diagrams are not deletion targets.
-
-### Necessary-design consolidation map
-
-The [merged direction](../proposals/2026-09-09-consolidate-necessary-design-and-retire-superseded-sources.md) selects a bounded first source group. The affected Design package is Design DES-SR-13/18/21, Validation TEST-SR-08/10/12/14 and this composition under SYS-SR-02/04/06/07/08/09. Skill, Review and Closeout, Workflow, Record Format and CLI remain unchanged dependencies. No separate Validation model is needed: the new choices concern document disposition and protective-value criteria, while operational execution remains with its declared sources.
-
-This map selects exact edits for Delivery, not completed removals. At coherent adoption, replace the selected duplicated authority with owner references and remove the named redundant sources. Preserve all unlisted source content. Until that adoption, existing source clauses govern with their already-adopted amendments. New Test procedural exceptions apply only to this cleanup; they do not silently change unrelated check-retirement policy.
-
-| Selected source / exact boundary | Necessary meaning and destination | Adoption disposition |
-| --- | --- | --- |
-| `7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e:specs/published-skill-first-repository-simplification.md`: R14, R17–20 and R22 as applied to this selected cleanup; corresponding ledger, dual-proof and metrics instructions in Outputs, State and invariants, Error and boundary behavior, Compatibility and migration, Observability, Performance expectations and AC7/AC8/AC10 | Validation's complete retained-contract table under TEST-SR-14 preserves protected failures, applicability, fixture distinctions, owned retirement, retained detection, uncertainty stops and recovery. It explicitly replaces compulsory second-ledger, repeated old-proof and measurement procedures for this slice. | Add one exact scoped amendment naming Validation and its population; do not duplicate the replacement rules in the spec. Retain original R definitions for unselected work, subject to the already-adopted Workflow stored-format amendment. A reader can distinguish the populations without reconstructing archived prose. |
-| Same spec: all other clauses, R1–13, R15/16, R21 and R23–29, including their applicable later amendments and related examples, boundaries and acceptance intent | Existing operational contract remains: canonical/package/release proof, deterministic-versus-semantic boundary, local filesystem proof, admission limits, CI composition and target support. Skill already owns common content invariants; current v3 recording uses CLI/Record Format under the stored-format supersession, not a restored lifecycle parser. | Retain as an explicitly mixed source. R26's exact historical-proof supersessions and R27/R29's remaining integrity and claim restrictions stay readable. This slice does not extract Distribution, Installation, Release, selection/cache, measurement or automation contracts merely to delete this file. |
-| `13cb745286e285155154b2a2fc852603cc702c80:docs/adr/ADR-20260810-published-skill-first-validation-architecture.md`: entire document | Its product-chain, target support, release composition, semantic boundary, local-materialization and admission decisions are already precise in retained spec R1–13/R15/16/R21/R24–29. Retirement meaning follows Validation for this slice and the retained source/Workflow for other populations. Necessary alternatives and consequences are preserved in SYS-DEC-04 below. | Remove after these destinations and current consumers are adopted. No original-path stub or archive copy. Its original review remains about its historical identity, not these replacement models. |
-| `7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e:docs/architecture/system/architecture.md`: complete subsections “Level 2 White-Box: Published-Skill Validation”, “Published-skill product-gate and retirement flow” and “Published-skill-first validation boundary” | Product/recording/semantic composition resolves to the responsibility inventory and interaction owners here; local invariants remain at Skill, CLI/Record Format and the retained operational spec. Validation preserves TEST-SR-14 for this cleanup's retirement criteria. | Remove these three redundant descriptions and their repeated ledger procedure. Retain the distinct Validation and Generation Scripts, Validation flow and Validation layering subsections with their current stored-format qualifications and separate selector/cache/output contracts. |
-| Same architecture: the validation ADR and `component-published-skill-validation.mmd` navigation entries, inline diagram reference in Validation and Generation Scripts, and validation ADR summary in Architecture Decisions | Current navigation resolves to this composition map and the actual local owners, with no repeated normative summary. | Reconcile current references. The final historical follow-on sentence citing the original ADR records its original proposed decision and is not retargeted to a new assessed subject. An incidental historical citation does not restore current reliance. |
-| `13cb745286e285155154b2a2fc852603cc702c80:docs/architecture/system/diagrams/component-published-skill-validation.mmd`: entire diagram | Canonical→package→release dependency, separate semantic/record validation, and external target-runtime boundary are already expressed here and in retained R1–13. The old YAML/Markdown lifecycle label is not a supported current representation. | Remove with its current embedding/navigation; no new duplicate diagram is needed for this tabular composition. Preserve unrelated diagrams. |
-| `7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e:specs/published-skill-first-repository-simplification.test.md`: selected cleanup applicability only; retain the remaining file and historical input-identity table | Existing T1/T10/T13/T14 ledger/measurement/dual-proof prescriptions do not override TEST-SR-14 for this slice. Other tests still describe unmigrated package, release and installer failure boundaries; historical review identities remain attributable. | Add a scoped current-use notice referencing the adopted source amendment and the owning Delivery allocation, without rewriting historical test outcomes or identifiers. Do not rerun historical commands merely because they appear here. Retain the file for its unmigrated proof intent; no new standalone test spec. |
-
-There is no selected redundant copy of these two removal targets in `docs/archive/`; the Skill-resource archives are different subjects under their earlier retention policy. They are not cleanup targets. Historical `docs/changes/` records, input-identity tables, old plans and review citations remain unmodified. This change does not rely on their original ADR/diagram approval to establish current Design correctness; its own exact-subject review and evidence supply that basis. An actual reader or current reliance discovered during implementation must be reconciled or explicitly retained before removal, rather than dismissed as historical.
-
-### Necessary-design consumer and acceptance boundary
-
-| Consumer | Selected treatment and observation boundary |
-| --- | --- |
-| System Skill inventory and FU-012 | Correct the completed common Skill ownership from its original final review/Verify basis; no repeat of the pilot. Route updates FU-012's receiving direction to this consolidation and the named local owners, preserving any remaining validation work explicitly. FU-013/014 and FU-015–018 remain separate. |
-| Source and navigation readers | Reconcile the exact current ADR/diagram references and scoped spec/test-spec notices above. Check current readers against destination sections and retained exceptions; historical citations remain historical and grant no current approval. |
-| `scripts/test-retirement-ledger.py`, `scripts/retirement_ledger.py` and the earlier `retirement-ledger.json` | Original adoption retained this fixture and its reader. The current cleanup explicitly retires that historical-only reader and ledger under Validation VAL-SR-23; preserve their original bytes in Git, not a continuing source-tree exception. |
-| `scripts/ci.sh`, validation selectors and check identifiers | Keep execution and public interface behavior unchanged. Gate A/B/C remain compatible command/result aliases; ordinary Design prose uses skill/package/release checks. No universal alias rewrite or CI redesign is selected. |
-| Canonical skill resources, adapter builders and candidate metadata | No authored skill/resource change is selected. Confirm source/reader dependencies during allocation. If a necessary correction changes packaged inputs, trace archive bytes to current candidate metadata and dependent assertions; regenerate through existing builders and run directly dependent checks, or record an inspected unaffected disposition. Preserve historical releases and publication boundaries. |
-| Design/Delivery/review/Verify | Assess the exact three changed models, this source map and retained source amendments. Allocate changed structural/reference checks and semantic preservation; add executable or package proof only for an affected boundary. RC-SR-15 owns reuse, and explicit current freshness rules still apply. |
-
-For SYS-SR-02/04/06/07/08, demonstrate a removed ADR/diagram with complete current meaning and working current references, a mixed specification retaining its exact operational population, and an unchanged ledger fixture still usable without adding a new ledger. For SYS-SR-04/09, a newly discovered operational reader prevents its source's removal until correction or justified retention; a dependency-affecting edit invalidates any claim of source-only impact. These supplement Composition/path, Compatibility/migration and Failure/recovery scenarios. The accepted completion is actual justified cleanup and coherent owners, not an inventory-only audit or a new model file.
-
-Coordinated adoption requires independently reviewed Design and Delivery, implemented source/consumer dispositions, milestone assessments, fresh whole-change Code Review and distinct successful Verify. A partial removal leaves its exact owner and need explicit; it cannot count as completed removal. Restore a failed source/consumer slice together if necessary, with current applicability assessed; no historical evidence is rewritten. No external installation, release or publication follows from these checks.
-
-## Next artifacts
-
-Independent Design Review of the reconciled parents, children, retained legacy contracts and examples; Delivery then allocates implementation, source/consumer cleanup and proof. Required Code Reviews and distinct Verify establish the implemented result. Publication requires the Release-owned authorization.
-
 ## Current repository cleanup composition
 
 [Engineering Development](engineering/engineering.md#repository-retirement) owns the bounded source disposition and current-reliance closure. [Validation](engineering/validation.md#historical-check-retirement) owns removal of obsolete checks while preserving required detection. [Packaging](engineering/packaging.md#generated-only-adapter-support) owns generated-only adapter metadata and [Release](engineering/release.md#current-qualification-and-retired-release-history) owns the end of historical release replay in current tooling. Skill, CLI Records and Installation retain their product contracts; no portable method, stored-record format or install permission is retired by this repository cleanup.
 
-The existing hierarchy and product-flow graphs remain accurate: this is a source/consumer reconciliation within their existing edges, with no new model or runtime component. The change-local [source disposition](../changes/2026-09-13-current-design-repository-cleanup/source-disposition.md) records selected removals and retained exceptions. It is bounded change evidence, not a second policy owner. Earlier source maps remain historical adoption explanations; this section and the current owners supersede their historical-only original-path retention requirements.
+The original cleanup reconciled sources and consumers within the existing hierarchy without adding runtime components. Authoring’s subsequent decomposition follows the current responsibility inventory and its own composition view. The change-local [source disposition](../changes/2026-09-13-current-design-repository-cleanup/source-disposition.md) records selected removals and retained exceptions. It is bounded change evidence, not a second policy owner. Earlier source maps remain historical adoption explanations; this section and the current owners supersede their historical-only original-path retention requirements.
 
 ## Complete repository spec retirement
 
 The [owning cleanup](../changes/2026-09-14-retire-specs-and-stale-tests/change.json) selects all remaining repository specs and repository-wide stale validation material. Its [source disposition](../changes/2026-09-14-retire-specs-and-stale-tests/source-disposition.md) supplements earlier clause maps; after reviewed coherent implementation and successful Verify, the existing Skill, CLI and Engineering hierarchy is the complete current product-contract entry point. Earlier maps describe their original adoption boundaries, not requirements to keep subsequently retired files at old paths. Until that adoption, the prior contracts still apply.
 
-Skill's existing Implementation and Project Support sections receive remaining specialist behavior; Workflow owns follow-up placement; CLI owns local observability and generic command results; Packaging owns npm content and boundary-resource generation; Validation owns feature-format structural checks, selection and test maintenance. No new submodel is needed: these responsibilities already appear in the hierarchy and have the same producers and consumers. Existing Context, Building Block, Runtime and Deployment views remain applicable, with operational resource placement detailed by Packaging and diagnostic storage detailed by CLI.
+Skill's Implementation section and the Project Foundations, Discovery, Learning and Delivery Handoff models own the corresponding specialist behavior; Workflow owns follow-up placement; CLI owns local observability and generic command results; Packaging owns npm content and boundary-resource generation; Validation owns feature-format structural checks, selection and test maintenance. No new submodel is needed: these responsibilities already appear in the hierarchy and have the same producers and consumers. Existing Context, Building Block, Runtime and Deployment views remain applicable, with operational resource placement detailed by Packaging and diagnostic storage detailed by CLI.
 
 Repository authoring uses living Designs and Delivery allocation, with no required specs directory, duplicate test-spec stage or feature-template copy. Portable feature-format methods remain available for a customer's explicitly selected contract. Specification removal neither enables retired lifecycle commands nor changes Records, Installation permissions or publication authorization. Source-qualified historical IDs remain attributable through the baseline commit and path; current readers use their receiving model.
+
+## Historical provenance
+
+Completed source-transfer mappings and original adoption handoffs are recoverable at `38a3042e63c7c2462ecf8ffed29f4ac0cbb8923f:docs/design/system.md`. Their source-qualified IDs and judgments retain their original scope; they do not supply current approval or operational inputs. Current behavior and proof obligations are specified in this Design and its named owners.
