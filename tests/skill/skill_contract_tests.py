@@ -7,6 +7,7 @@ not copied from the validator's lookup table or canonical prose.
 from contextlib import contextmanager
 from pathlib import Path
 import sys
+import re
 import tempfile
 import unittest
 
@@ -133,3 +134,56 @@ class RelocatedPlanSurfaceTests(unittest.TestCase):
             "docs/changes/<change-id>/change.json", "docs/changes/<change-id>/"))
         self.assertEqual(skill_validation.validate_installed_skill_plan_surface_contract(path, "implement", body), [])
         self.assertTrue(skill_validation.validate_installed_skill_plan_surface_contract(path, "implement", body.replace("change.json", "change.yaml")))
+
+
+class CiAssemblyDeclarationTests(unittest.TestCase):
+    """Protect the Design's closed declaration, not prose selection semantics."""
+
+    # Independent contract inputs; do not import the production vocabulary.
+    NAMES = (
+        "CIM0-narrow-review", "CIM1-coverage-review",
+        "CIM2-ordinary-github-create", "CIM3-narrow-github-revise",
+        "CIM4-coverage-github-revise", "CIM5-structural-github-revise",
+        "CIM6-project-native-authoring", "CIM7-privileged-approved-create",
+        "CIM8-privileged-approved-revise",
+    )
+
+    def check_declaration(self, names=None, declaration=None):
+        path = ROOT / "skills/ci-maintenance/SKILL.md"
+        body = path.read_text(encoding="utf-8")
+        if declaration is None:
+            declaration = "| Assembly | Selection | Resources |\n| --- | --- | --- |\n"
+            declaration += "".join(f"| `{name}` | selected | required |\n"
+                                   for name in (self.NAMES if names is None else names))
+        body, count = re.subn(r"(?ms)^## Assemblies\n.*?(?=^## )",
+                             lambda _: "## Assemblies\n\n" + declaration + "\n", body)
+        self.assertEqual(count, 1, "fixture must replace exactly the declaration section")
+        metadata = {"name": "ci-maintenance", "version": "1.0.0",
+                    "schema-version": "skill-readability-v1"}
+        return skill_validation.validate_ci_maintenance_contract(path, metadata, body)
+
+    def assert_error(self, expected, **kwargs):
+        path = ROOT / "skills/ci-maintenance/SKILL.md"
+        self.assertEqual(self.check_declaration(**kwargs), [f"{path}: {expected}"])
+
+    def test_valid_complete_declaration(self):
+        self.assertEqual(self.check_declaration(), [])
+
+    def test_unknown_rejected_before_missing_and_duplicate_checks(self):
+        self.assert_error("unknown CI assembly: CIM9-unknown",
+                          names=("CIM9-unknown", self.NAMES[0], self.NAMES[0]))
+
+    def test_legacy_short_label_rejected(self):
+        self.assert_error("unknown CI assembly: CIM1", names=("CIM1",) + self.NAMES[1:])
+
+    def test_missing_known_assembly_rejected(self):
+        self.assert_error("missing CI assembly: CIM4-coverage-github-revise",
+                          names=self.NAMES[:4] + self.NAMES[5:])
+
+    def test_duplicate_assembly_rejected(self):
+        self.assert_error("duplicate CI assembly: CIM0-narrow-review",
+                          names=self.NAMES + (self.NAMES[0],))
+
+    def test_missing_table_rejected(self):
+        self.assert_error("Assemblies must declare the nine CI assemblies in a table",
+                          declaration="Select one assembly from the supported values.")
