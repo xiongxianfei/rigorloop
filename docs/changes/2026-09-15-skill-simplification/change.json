@@ -29,11 +29,11 @@
     },
     {
       "actor": {
-        "id": "codex-implementer",
-        "role": "implement"
+        "id": "codex-verifier",
+        "role": "verify"
       },
       "path": "docs/changes/2026-09-15-skill-simplification/evidence.json",
-      "reason": "Current scoped observation; inspect each check and subjects, not a blanket pass for changed evidence.",
+      "reason": "Fresh final-state observations supplement unchanged engineering proof; evidence-only append does not reinterpret historical failed checks or retarget reviews.",
       "value": "current"
     },
     {

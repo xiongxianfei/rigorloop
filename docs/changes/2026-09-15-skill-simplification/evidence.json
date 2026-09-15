@@ -2159,6 +2159,30 @@
         }
       ],
       "summary": "TG-FINAL01/02/06 supporting executed proof: bash scripts/ci.sh --mode pr --base 51833994a520bf29c9aae135e9405331cf76b755 --head de0e6cec (resolved de0e6cec98a2f485b04cf3fd09f08db8fb389f34) exited0. All selected checks passed; focused367.05s, boundary108.21s, boundary scope passed. Existing CI automatically prepared release-integrity source b1d4cd7ead92fa495c80bf98e2cff52e2e08617c from that exact head, candidate cc23737be64ad644b3d0c2aaeb220ca1bd45dcd5153e2628226eb4aa5b6de915, in an isolated temporary tree. Its broad-smoke-required release metadata selected the full preserved shared broad scope, including guide system, validators, schema/model/record/CLI, adapter full regression, release and validation-executor protection. The previously failed guide prerequisite and previously not-started dependents now passed; original final-pr-validation-failed remains true historical failure evidence, not a current failed check. No source/selector/guard bypass or publication occurred. Exact real source remains de0e6cec; subsequent commits contain attributable correction/package evidence, M1 independent rereview and workflow state only, with unchanged engineering bytes. Full original-base selector found no unclassified advisory path; original advisory remains recoverable in6ffd08e9. Local Nodev24.14.1/Python3.12.3. Hosted CI remains unobserved. Fresh finalwhole review and Verify are still required; this run is validation, not approval."
+    },
+    {
+      "actor": {
+        "id": "codex-verifier",
+        "role": "verify"
+      },
+      "id": "verify-final-state",
+      "procedure": "2026-09-15, verifier codex-verifier: node scripts/validate-record-store.mjs docs/changes/2026-09-15-skill-simplification/change.json passed after final review/blocker/routing save; git diff --check 51833994a520bf29c9aae135e9405331cf76b755 HEAD passed. Complete separately selected CLI contexts returned 11 activity/work/finding/blocker items, 18 review/proposal/model/plan items and 22 evidence items; all six work items completed, both findings and both blockers resolved. Direct SHA256 comparison matched all 156 fresh final review subjects. git status --porcelain empty at 72c85c66a39c3b3181f0577858f484164992b879; engineering diff from de0e6cec through current head empty. Observed corrected full CI log ends Selected CI checks passed, focused367.05s/boundary108.21s. git ls-remote origin main remains original base51833994a520bf29c9aae135e9405331cf76b755 and feature absent; merge-base matches. gh repo view confirms xiongxianfei/rigorloop R_kgDOSGsVUQ; push remote git@github.com:xiongxianfei/rigorloop.git. No hosted pass inferred. Adding this attributable Verify evidence changes only evidence container identity; earlier entries and reviewed engineering subjects retain exact bytes.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:2135bb4643050ed701e9004150db43d9ab77eb922509ffa2709b12da49ea665e",
+          "path": "docs/changes/2026-09-15-skill-simplification/reviews/final-code-review-rereview.json"
+        },
+        {
+          "identity": "sha256:335b9ba29f840257c70e1f75c19dfead84c9e83e4ffeca6d41e8275a49643a67",
+          "path": "docs/changes/2026-09-15-skill-simplification/reviews/final-code-review.json"
+        },
+        {
+          "identity": "sha256:f0b0a0ea659ccbbb1cdeb055824b84e9917032fda06db72fba7d2378dc05c3ae",
+          "path": "docs/changes/2026-09-15-skill-simplification/reviews/m4-code-review.json"
+        }
+      ],
+      "summary": "Distinct Verify directly checked current final review identities, complete selected authority/concern/work contexts, clean Git basis and current record validity."
     }
   ],
   "schema_version": 3
