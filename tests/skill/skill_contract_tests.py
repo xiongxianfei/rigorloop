@@ -1,7 +1,7 @@
 """Recording-profile component rules; canonical content is checked separately.
 
 TEST-SR-04/05/18: each fault starts with a valid minimal profile and asserts its
-specific diagnostic. The two pilot selectors are independent contract inputs,
+specific diagnostic. The selected pilot selectors are independent contract inputs,
 not copied from the validator's lookup table or canonical prose.
 """
 from contextlib import contextmanager
@@ -15,6 +15,8 @@ sys.path.insert(0, str(ROOT / "scripts"))
 from lib.validation import skill_validation
 
 PILOTS = {
+    "implement": ("governed-implementation-recording.md", "governed_recording_context"),
+    "code-review": ("governed-code-review-recording.md", "governed_recording_context"),
     "proposal": ("governed-proposal-authoring.md", "governed_proposal_candidate_context"),
     "proposal-review": ("proposal-review-recording-and-settlement.md", "durable_recording_context"),
 }
@@ -121,3 +123,13 @@ class RecordingReferenceContractTests(unittest.TestCase):
                 resource.write_text(self.replace_once(PROFILE, "## Explicit recording", "## Other profile"), encoding="utf-8")
                 self.assert_diagnostic(path, body,
                     f"selected recording reference missing Explicit recording profile: references/{resource.name}")
+
+
+class RelocatedPlanSurfaceTests(unittest.TestCase):
+    def test_implement_current_plan_paths_without_inline_recording(self):
+        path = Path("/tmp/implement/SKILL.md")
+        body = "## Recording boundary\n" + "\n".join((
+            "docs/plan.md", "docs/plans/YYYY-MM-DD-slug.md",
+            "docs/changes/<change-id>/change.json", "docs/changes/<change-id>/"))
+        self.assertEqual(skill_validation.validate_installed_skill_plan_surface_contract(path, "implement", body), [])
+        self.assertTrue(skill_validation.validate_installed_skill_plan_surface_contract(path, "implement", body.replace("change.json", "change.yaml")))

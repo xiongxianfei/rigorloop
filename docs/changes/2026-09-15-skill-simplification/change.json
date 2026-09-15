@@ -1,12 +1,12 @@
 {
   "activity": {
     "owner": {
-      "id": "codex-implement",
-      "role": "implement"
+      "id": "codex-review-coordinator",
+      "role": "route"
     },
-    "reason": "M1 is the first pending milestone; proposal/design/delivery approvals current and no findings or blockers. Implement pilot and TG06 before independent m1-code-review; manual authorized sequence, no armed automation.",
-    "stage": "implement",
-    "status": "in-progress"
+    "reason": "M1 implementation and required validation complete; exact authored slice ready for independent m1-code-review. Milestone stays in-progress until reviewed. M2–M6 pending; user authorization through PR remains applicable.",
+    "stage": "code-review",
+    "status": "ready"
   },
   "applicability": [
     {
@@ -29,11 +29,11 @@
     },
     {
       "actor": {
-        "id": "codex-planner",
-        "role": "plan"
+        "id": "codex-implementer",
+        "role": "implement"
       },
       "path": "docs/changes/2026-09-15-skill-simplification/evidence.json",
-      "reason": "Observed structural, allocation and scoped-command results for the exact completed primary plan and navigation; no broader readiness claim.",
+      "reason": "Current scoped observation; inspect each check and subjects, not a blanket pass for changed evidence.",
       "value": "current"
     },
     {

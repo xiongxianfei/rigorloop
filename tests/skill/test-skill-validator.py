@@ -26,7 +26,7 @@ from review_independence_skill_phrases import (
     R8D_RECONCILIATION_CATEGORIES,
 )
 from lib.validation import skill_validation
-from skill_contract_tests import RecordingReferenceContractTests
+from skill_contract_tests import RecordingReferenceContractTests, RelocatedPlanSurfaceTests
 from skill_cli_tests import SkillCliChecks, run_validator
 from skill_guidance_tests import ExplicitRecordingGuidanceTests, SkillGuidanceChecks
 
@@ -1436,7 +1436,8 @@ class SkillValidatorFixtureTests(SkillCliChecks, SkillGuidanceChecks, unittest.T
             )
 
             # Asset fixtures must also carry the current selected recording package.
-            for name, relative in skill_validation.PILOT_RECORDING_REFERENCES.items():
+            for name in ("proposal", "proposal-review"):
+                relative = skill_validation.PILOT_RECORDING_REFERENCES[name]
                 resource = root / name / relative
                 resource.parent.mkdir(parents=True, exist_ok=True)
                 resource.write_bytes((ROOT / "skills" / name / relative).read_bytes())
@@ -3070,10 +3071,9 @@ class SkillValidatorFixtureTests(SkillCliChecks, SkillGuidanceChecks, unittest.T
 
         for heading in (
             "## Workflow role",
-            "## Quick operating guide",
-            "## Inputs to read",
-            "## Evidence access",
-            "## Invocation profiles and authority",
+            "## Scope and inputs",
+            "## Invocation classification",
+            "## Recording boundary",
             "## First-pass completeness",
             "## Implementation contract",
             "## Operating sequence",
@@ -3353,11 +3353,21 @@ and result format.
         for skill_name in PROGRESSIVE_LOADING_OPTIMIZED_SKILLS:
             body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
             with self.subTest(skill=skill_name):
-                assert_progressive_loading_quick_guide_contract(self, body)
+                if skill_name in {"implement", "code-review"}:
+                    # SKL-SR-31: the approved equivalent exposes core work before
+                    # conditional recording; other skills keep the quick guide.
+                    scope = "Scope and inputs" if skill_name == "implement" else "Scope"
+                    for heading in ("Workflow role", scope, "Invocation classification", "Operating sequence", "Stop conditions", "Resource map", "Expected output"):
+                        self.assertTrue(extract_markdown_block(body, heading).strip())
+                    self.assertLess(body.index("## " + scope), body.index("## Recording boundary"))
+                    self.assertNotIn("## Explicit recording", body)
+                else:
+                    assert_progressive_loading_quick_guide_contract(self, body)
 
 
     def test_progressive_loading_canonical_code_review_preserves_protected_contracts(self) -> None:
         body = (ROOT / "skills" / "code-review" / "SKILL.md").read_text(encoding="utf-8")
+        body += (ROOT / "skills/code-review/references/governed-code-review-recording.md").read_text()
         assert_progressive_loading_code_review_protected_contracts(self, body)
 
 
@@ -3487,7 +3497,12 @@ and result format.
         for skill_name in SKILL_CONTRACT_FIRST_SLICE_SKILLS:
             body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
             with self.subTest(skill=skill_name, surface="core_sections"):
-                for section in SKILL_CONTRACT_REQUIRED_CORE_SECTIONS:
+                sections = SKILL_CONTRACT_REQUIRED_CORE_SECTIONS
+                if skill_name in {"implement", "code-review"}:
+                    # The pair consolidates generic headings only; result fields,
+                    # stops, handoff and package semantics remain checked below.
+                    sections = ("Workflow role", "Scope and inputs" if skill_name == "implement" else "Scope", "Invocation classification", "Operating sequence", "Handoff", "Stop conditions", "Expected output")
+                for section in sections:
                     self.assertIn(f"## {section}", body)
 
             expected_output_start = body.find("## Expected output")

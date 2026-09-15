@@ -216,6 +216,7 @@ RESOURCE_MAP_ENTRY_PATTERN = re.compile(
     re.IGNORECASE,
 )
 PACKAGED_NON_ASSET_RESOURCE_ALLOWLIST = {
+    ("code-review", "references/governed-code-review-recording.md"),
     ("code-review", "references/workflow-managed-automated-review.md"),
     ("code-review", "references/requirement-to-delivery-model.md"),
     ("proposal", "references/governed-proposal-authoring.md"),
@@ -930,7 +931,7 @@ def validate_installed_skill_plan_surface_contract(
         return []
     errors: list[str] = []
     missing = [
-        surface for surface in (tuple(p.replace("change.yaml", "change.json") for p in INSTALLED_SKILL_PLAN_SURFACE_PATHS) if "## Explicit recording" in body else INSTALLED_SKILL_PLAN_SURFACE_PATHS) if surface not in body
+        surface for surface in (tuple(p.replace("change.yaml", "change.json") for p in INSTALLED_SKILL_PLAN_SURFACE_PATHS) if ("## Explicit recording" in body or (skill_name == "implement" and "## Recording boundary" in body)) else INSTALLED_SKILL_PLAN_SURFACE_PATHS) if surface not in body
     ]
     if missing:
         errors.append(
@@ -2477,6 +2478,8 @@ def validate_metadata_against_schema(metadata: dict[str, str], schema: dict, pat
 PILOT_RECORDING_REFERENCES = {
     "proposal": "references/governed-proposal-authoring.md",
     "proposal-review": "references/proposal-review-recording-and-settlement.md",
+    "implement": "references/governed-implementation-recording.md",
+    "code-review": "references/governed-code-review-recording.md",
 }
 
 
@@ -2491,7 +2494,12 @@ def validate_targeted_recording_profile(path: Path, body: str) -> list[str]:
         if "## Recording boundary" not in body:
             errors.append(f"{path}: missing body recording boundary")
         classification = _extract_markdown_section(body, "Invocation classification") or ""
-        trigger = "governed_proposal_candidate_context" if path.parent.name == "proposal" else "durable_recording_context"
+        trigger = {
+            "proposal": "governed_proposal_candidate_context",
+            "proposal-review": "durable_recording_context",
+            "implement": "governed_recording_context",
+            "code-review": "governed_recording_context",
+        }[path.parent.name]
         if trigger not in classification or trigger not in resource_map:
             errors.append(f"{path}: selected recording reference requires its body classification and load trigger: {trigger}")
         resource = path.parent / relative
