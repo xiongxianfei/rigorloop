@@ -1,12 +1,12 @@
 {
   "activity": {
     "owner": {
-      "id": "codex-delivery-review",
-      "role": "route"
+      "id": "codex-implement",
+      "role": "implement"
     },
-    "reason": "Current design-review-r2 approved after reporter-resolved example correction. Stable one-milestone plan and integrated proof allocation ready for independent Delivery Review.",
-    "stage": "delivery-review",
-    "status": "ready"
+    "reason": "Exact independent Delivery Review approved and full saved readback confirmed by root after reviewer usage interruption. Initialize absent approved M1 work; perform authorized refinement and required proof.",
+    "stage": "implement",
+    "status": "in-progress"
   },
   "applicability": [
     {
@@ -43,6 +43,15 @@
       },
       "path": "docs/changes/2026-09-15-retire-legacy-design-authoring/reviews/design-review-r2.json",
       "reason": "Renewed independent whole-package assessment at4865316c after reporter-verified example correction; exact registered model subjects current, rda-dr-01 resolved, other engineering contracts affirmatively unchanged.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "retirement-independent-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-15-retire-legacy-design-authoring/reviews/delivery-review.json",
+      "reason": "Independent complete sequencing and proof assessment of registered a06a910c primary plan against current design-review-r2; no required corrections or open necessary decisions.",
       "value": "current"
     }
   ],
@@ -96,8 +105,34 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-15-retire-legacy-design-authoring/reviews/design-review-r2.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-15-retire-legacy-design-authoring/reviews/delivery-review.json"
     }
   ],
   "schema_version": 3,
-  "work": []
+  "work": [
+    {
+      "id": "m1",
+      "owner": {
+        "id": "codex-implementer",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "DES-SR-24",
+        "DES-SR-06",
+        "DES-SR-13",
+        "DES-SR-14",
+        "DES-SR-15",
+        "DES-SR-16",
+        "DES-SR-17",
+        "DES-SR-18",
+        "DES-SR-19",
+        "DES-SR-21",
+        "DES-SR-23"
+      ],
+      "status": "in-progress"
+    }
+  ]
 }

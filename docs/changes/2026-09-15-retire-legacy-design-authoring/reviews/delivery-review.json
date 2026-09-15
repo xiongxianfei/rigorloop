@@ -1,0 +1,70 @@
+{
+  "assessment_scope": "Formal lifecycle Delivery Review of exactly registered primary plan docs/plans/2026-09-15-retire-legacy-design-authoring.md at a06a910c, against current approved design-review-r2 and exact design/skill/system members. Sequencing and verification allocation assessed together; no standalone test-spec member.",
+  "change_id": "2026-09-15-retire-legacy-design-authoring",
+  "contributors": [
+    {
+      "id": "codex-plan-author",
+      "role": "plan"
+    }
+  ],
+  "findings": [],
+  "id": "delivery-review",
+  "independence_basis": "Reviewer /root/retirement_review independently read the entire primary plan at a06a910c and inspected relevant current implementation/check interfaces. Root authored the plan; reviewer authored neither delivery allocation nor Design/implementation content. Earlier Design assessment is separate from this Delivery judgment.",
+  "judgment": "approved",
+  "limitations": [
+    "This judgment approves only the exact delivery allocation for authorized implementation; it does not claim implementation correctness, executed milestone proof, final readiness or external-action permission.",
+    "The future semantic and candidate observations must be performed on actual revised resources and recorded; this review evaluates their sufficiency and feasibility, not their eventual outcome."
+  ],
+  "rationale": [
+    "Scope and traceability: DES-SR-24 maps to the supported-output/retirement boundary in M1 and TG-01/02 plus both final groups; DES-SR-06/13/14/21 map source/decision preservation to TG-01/F01; DES-SR-15/17/18/19 map package and consumer closure to TG-02/F02; DES-SR-23 retains feature methods and projections. The plan also explicitly covers DES-SR-16 exact handoff in F01 and all eight affected scenario dimensions without inventing a proof-record contract.",
+    "Safe sequence: approved proposal, corrected exact Design Review and this Delivery gate precede implementation. Fail-first retirement/unknown-resource tests precede production edits; instructions, five-file removals and current validators form one reviewable rollback unit. A template-only or validator-only intermediate state cannot qualify as a complete package.",
+    "Source and authority proof: TG-FINAL-01 requires an independent nonauthor to inspect actual full revised package against new living output, ADR edit with mandatory local template, architecture rebuild, mixed-source authorized adoption and retained feature amendment. Required observations include selected resources, concrete model-field meaning, unchanged prohibited source mutation, remaining owner and exact reviewer/Plan handoff; unsupported output and missing authority are distinguishable. This is explicitly semantic artifact inspection rather than unobserved agent-execution proof.",
+    "Test maintenance: actual current DESIGN_RESOURCES and package-map tests enforce the three retiring skill resources; traceability and no-mutable-state tests also include old skeletons. TG-02 explicitly replaces obsolete presence expectations with resurrection rejection, valid package control, unknown-before-missing checks and retained-resource absence/containment. Generic path-lint fixtures, retained asset protection and feature projections remain; retirement of exclusive format tests is Design-authorized rather than justified by passing count.",
+    "Installed boundary and feasibility: existing build-adapters and validate-adapters --clean-install-smoke --skill design support the specified fresh Codex/Claude candidate and temporary install. TG-FINAL-02 separately requires complete current resource parity under declared transforms and absence of all three retired resources; actual hashes and independent assessment prevent treating a builder success as sufficient. Repository copies and current loading callers are checked separately from historical records and path fixtures.",
+    "Validation placement: V1 validates all canonical skills, V2 includes focused changed classes then full suite, V3 protects packaging/install regressions, V4 observes actual candidate/temporary install, V5 current records and selected local CI, and V6 the full original-base branch. HEAD/DIR must be resolved to concrete identities; proof cannot be reused across relevant source/candidate drift. These commands exist and require no new dependency or customer installation.",
+    "Risk, compatibility and recovery: one milestone bounds deliberate external compatibility withdrawal; unchanged feature methods, retained source authority, alternate stale loaders and invalid resource populations have distinct proof. Recovery restores the entire coupled source/check set from the recorded base, preserves user work/evidence, reruns affected proof and requires reassessment. No state migration, schema change, external publication or forceful installation is introduced.",
+    "Independent gates: all allocated local/integrated observations are required before M1 can pass review. The final whole-change Code Review checkpoint explicitly follows completed M1 and corrections and precedes distinct Verify; neither one-milestone approval nor integrated groups substitute for it. Final original-base CI has a separate V6 scope. Review evidence expectations include actual subjects, contributor separation and concern disposition.",
+    "Current reliance: primary plan identity matches registry; corrected three-model package and design-review-r2 approval remain unchanged, rda-dr-01 is reporter-resolved. Evidence-container append after Design Review does not alter its engineering judgment; the original design-authoring enclosing-model pass is not substituted for explicit example-correction proof. No unresolved material finding, necessary decision or unrealistic allocation blocks implementation readiness."
+  ],
+  "reviewer": {
+    "id": "retirement-independent-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:e19785d07ec8e4e81e2c8c76b0ad16da57d4ecf69d0c002a1d031acad76c1f16",
+      "path": "docs/plans/2026-09-15-retire-legacy-design-authoring.md"
+    },
+    {
+      "identity": "sha256:70729f932c5b46e42c5f79a208ec6ca9de8513831d58e09250df5bb9b73e6517",
+      "path": "docs/design/skill/authoring/design.md"
+    },
+    {
+      "identity": "sha256:e1184234b6a5f1a85f3e7b88ef3c699217178aa6257d9569689d1d59fafbf709",
+      "path": "docs/design/skill/skill.md"
+    },
+    {
+      "identity": "sha256:7a88f81f0044f2f9739ca27e9ebfb6cef77628f87b8422a240d9b776a4b921d8",
+      "path": "docs/design/system.md"
+    },
+    {
+      "identity": "sha256:707cc801b29efaf98694fee68a60e1e26063a4359e5e1b1f8fe4a66976941bf6",
+      "path": "docs/proposals/2026-09-15-retire-legacy-design-authoring.md"
+    },
+    {
+      "identity": "sha256:02326bafdf0ec245e31d84396e022f6c56af40d72a41b528cc4d11b02b6c4e09",
+      "path": "docs/changes/2026-09-15-retire-legacy-design-authoring/reviews/design-review-r2.json"
+    },
+    {
+      "identity": "sha256:fe7dfeb7703ea0f60e67182710bda05f9450823a3774c4d0b7d31ea11284c602",
+      "path": "scripts/lib/validation/skill_validation.py"
+    },
+    {
+      "identity": "sha256:0e056f8b033eead8dc1899d27a3f62767940b8be3182a3f00e1b2cf75ce7c173",
+      "path": "tests/skill/test-skill-validator.py"
+    }
+  ],
+  "summary": "One coupled milestone safely reconciles the five retired files, supported guidance, consumers and validation. Requirement-linked semantic, negative-resource, candidate and whole-branch proof plus separate milestone/final reviews and Verify are adequate and feasible.",
+  "target": "delivery"
+}
