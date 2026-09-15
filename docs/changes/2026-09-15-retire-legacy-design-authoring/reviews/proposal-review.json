@@ -1,0 +1,68 @@
+{
+  "assessment_scope": "Formal lifecycle/manual Proposal Review; PRR1-recorded. Complete proposal and incoming user request assessed against Constitution and Vision. Bounded source inspection independently corroborates feasibility; specialized vision_exception_context, standing_artifact_context and scope_budget_context are false. Approval covers proposal direction only.",
+  "change_id": "2026-09-15-retire-legacy-design-authoring",
+  "contributors": [
+    {
+      "id": "codex-proposal-author",
+      "role": "proposal"
+    }
+  ],
+  "findings": [],
+  "id": "proposal-review",
+  "independence_basis": "Independent delegated reviewer /root/retirement_review inspected frozen proposal at 4ba13995 and current source basis; did not author or modify the proposal, governing Designs, implementation or contributor evidence. Root authored the proposal. Reviewer writes only this assessment.",
+  "judgment": "approved",
+  "limitations": [
+    "This approval establishes direction sufficiency for authorized Design work only; it does not approve the detailed Design, delivery plan, implementation, validation, final readiness or external handoff.",
+    "No external adoption inventory was established. The disclosed compatibility withdrawal is accepted as direction; Design must still reconcile actual current consumers and surviving engineering obligations before implementation.",
+    "Supporting source identities capture the current feasibility basis, not approval of their eventual amendments. Later independently reviewed Design work may intentionally change them without retargeting this proposal judgment."
+  ],
+  "rationale": [
+    "Challenge — pass: the existing skill maps two legacy scaffolds and a legacy technical method, and DESIGN_RESOURCES plus named skill tests enforce their package presence. Thus the extra supported authoring path and maintenance obligation are concrete, even without a measured token or latency claim.",
+    "Goals — pass: one supported architecture/decision authoring method and preservation of applicable requirements, rationale and historical meaning answer the user’s request to refine after discussing retirement. No desired engineering outcome disappears.",
+    "Scope — pass: create/rebuild/amend retirement, exclusive instructions/scaffolds/checks and reviewer/author/template consumers form one coherent change. Feature-spec/proof contracts, old records, external project migration and release/install/publication are explicitly excluded. Preserving interpretation of old architecture/ADR inputs does not secretly preserve their authoring output.",
+    "Governing principle — pass: preserving engineering meaning without maintaining an unnecessary authoring format guides responsibility decisions without prescribing detailed technical implementation.",
+    "Direction — pass: living Designs supply architecture and embedded decisions; legacy inputs retain authority until authorized scoped adoption. A required old-format output yields an explicit unsupported-output explanation and owner decision, preventing silent conversion or invented fallback.",
+    "Feasibility — pass: exactly one embedded Feasibility section gives an assessment, source-based basis, constraints and no known blocker. Current Design resource mapping and skill resource declarations corroborate both legacy obligations and available living-model/technical replacement guidance. Dependency audit is appropriately left to Design; no new runtime or storage infrastructure is needed by the direction.",
+    "Material impact — pass: compatibility withdrawal is explicit and the proposal does not claim that external dependents cannot exist. It offers authorized scoped adoption or another authoring tool while retaining existing files and judgments. Package installation cannot adopt a customer contract.",
+    "Vision alignment — aligned: current owning Designs retain testable requirements, architecture, decisions and provenance, preserving the traceability and reviewability chain. Removing duplicate authoring machinery is consistent with the Constitution’s dependency reconciliation and cleanup rules; preserving recoverability and current obligations remains required.",
+    "Downstream authority — pass: the proposal selects supported output and preservation boundaries, leaving requirement amendments, exact resource choices, source disposition, proof allocation and sequencing to Design and Delivery. This review does not approve deletion or implementation before those gates.",
+    "Requested decision — pass: retire standalone architecture/ADR output, retain interpretation and authority-preserving adoption, preserve feature-format scope, and reconcile dependencies together. Scope preservation is complete; no required proposal edits, material findings or open blockers were identified."
+  ],
+  "reviewer": {
+    "id": "retirement-independent-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:707cc801b29efaf98694fee68a60e1e26063a4359e5e1b1f8fe4a66976941bf6",
+      "path": "docs/proposals/2026-09-15-retire-legacy-design-authoring.md"
+    },
+    {
+      "identity": "sha256:cc1912d5c0cd17b42bfd4a3f705a561b0c2f678045f0659f2406a1ea13e6c5a5",
+      "path": "CONSTITUTION.md"
+    },
+    {
+      "identity": "sha256:3dae6703651fed191fe384a14224254b7791267014a89662d8872c812493e146",
+      "path": "VISION.md"
+    },
+    {
+      "identity": "sha256:0f7e41a1de83d542d9291a842876ae7c75ebb214242cca18ee825f539f52b778",
+      "path": "docs/design/skill/authoring/design.md"
+    },
+    {
+      "identity": "sha256:2298926b2f3844831548f4f10c9d58d408eaf32e4505a270e2c0bd643eef3fa4",
+      "path": "skills/design/SKILL.md"
+    },
+    {
+      "identity": "sha256:fe7dfeb7703ea0f60e67182710bda05f9450823a3774c4d0b7d31ea11284c602",
+      "path": "scripts/lib/validation/skill_validation.py"
+    },
+    {
+      "identity": "sha256:0e056f8b033eead8dc1899d27a3f62767940b8be3182a3f00e1b2cf75ce7c173",
+      "path": "tests/skill/test-skill-validator.py"
+    }
+  ],
+  "summary": "The direction responsibly retires standalone architecture/ADR authoring while preserving existing authority and engineering meaning; disclosed compatibility cost and bounded dependency reconciliation are sufficient for Design.",
+  "target": "proposal"
+}

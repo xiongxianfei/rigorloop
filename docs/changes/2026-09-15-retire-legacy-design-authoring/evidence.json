@@ -1,0 +1,30 @@
+{
+  "change_id": "2026-09-15-retire-legacy-design-authoring",
+  "checks": [
+    {
+      "actor": {
+        "id": "codex-implementer",
+        "role": "implement"
+      },
+      "id": "design-authoring",
+      "procedure": "Read exact existing methods/assets/callers. Architecture/ADR create/rebuild/amend becomes unsupported; source reads and authorized adoption preserve meaning/authority. Feature-spec methods and styles retained. Five file retirement map includes recoverable643f6cd6 provenance; generic lint fixtures not dependencies. Updated Design resource/runtime/acceptance/decision and parent claims. python scripts/validate-boundary-first.py --check --path docs/design/skill/authoring/design.md --path docs/design/skill/skill.md --path docs/design/system.md passed structure/references. No implementation changed; prior proposal review approves unchanged direction, supporting old model hashes remain original feasibility basis.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:b4983acca9575d4c995b60bbeb522f7b665484b4a3a4da4ea41756d63049d073",
+          "path": "docs/design/skill/authoring/design.md"
+        },
+        {
+          "identity": "sha256:e1184234b6a5f1a85f3e7b88ef3c699217178aa6257d9569689d1d59fafbf709",
+          "path": "docs/design/skill/skill.md"
+        },
+        {
+          "identity": "sha256:7a88f81f0044f2f9739ca27e9ebfb6cef77628f87b8422a240d9b776a4b921d8",
+          "path": "docs/design/system.md"
+        }
+      ],
+      "summary": "Defined DES-SR-24/DES-DEC-07 retirement with complete surviving obligation map and supported-output boundary."
+    }
+  ],
+  "schema_version": 3
+}

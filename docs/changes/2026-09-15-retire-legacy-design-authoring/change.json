@@ -1,24 +1,74 @@
 {
   "activity": {
     "owner": {
-      "id": "codex-review-coordinator",
+      "id": "codex-design-review",
       "role": "route"
     },
-    "reason": "User selected retirement of standalone architecture/ADR authoring; independent proposal review before Design.",
-    "stage": "proposal-review",
+    "reason": "Approved proposal direction realized in exact Design/System/Skill amendments, explicit compatibility withdrawal and five-file disposition. Independent Design Review required before Delivery.",
+    "stage": "design-review",
     "status": "ready"
   },
-  "applicability": [],
+  "applicability": [
+    {
+      "actor": {
+        "id": "retirement-independent-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-15-retire-legacy-design-authoring/reviews/proposal-review.json",
+      "reason": "Complete independent assessment of unchanged proposal 707cc801b29efaf98694fee68a60e1e26063a4359e5e1b1f8fe4a66976941bf6 and its current scoped feasibility basis; no material concerns or necessary unresolved decisions.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-implementer",
+        "role": "implement"
+      },
+      "path": "docs/changes/2026-09-15-retire-legacy-design-authoring/evidence.json",
+      "reason": "Current scoped observation; inspect each check and subjects, not a blanket pass for changed evidence.",
+      "value": "current"
+    }
+  ],
   "blockers": [],
   "change_id": "2026-09-15-retire-legacy-design-authoring",
   "contract": "rigorloop-records-v3",
-  "models": [],
+  "models": [
+    {
+      "id": "design",
+      "subject": {
+        "identity": "sha256:b4983acca9575d4c995b60bbeb522f7b665484b4a3a4da4ea41756d63049d073",
+        "path": "docs/design/skill/authoring/design.md"
+      }
+    },
+    {
+      "id": "skill",
+      "subject": {
+        "identity": "sha256:e1184234b6a5f1a85f3e7b88ef3c699217178aa6257d9569689d1d59fafbf709",
+        "path": "docs/design/skill/skill.md"
+      }
+    },
+    {
+      "id": "system",
+      "subject": {
+        "identity": "sha256:7a88f81f0044f2f9739ca27e9ebfb6cef77628f87b8422a240d9b776a4b921d8",
+        "path": "docs/design/system.md"
+      }
+    }
+  ],
   "plan": null,
   "proposal": {
     "identity": "sha256:707cc801b29efaf98694fee68a60e1e26063a4359e5e1b1f8fe4a66976941bf6",
     "path": "docs/proposals/2026-09-15-retire-legacy-design-authoring.md"
   },
-  "records": [],
+  "records": [
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-15-retire-legacy-design-authoring/reviews/proposal-review.json"
+    },
+    {
+      "kind": "evidence",
+      "path": "docs/changes/2026-09-15-retire-legacy-design-authoring/evidence.json"
+    }
+  ],
   "schema_version": 3,
   "work": []
 }
