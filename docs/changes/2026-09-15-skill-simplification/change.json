@@ -4,9 +4,9 @@
       "id": "codex-verify",
       "role": "verify"
     },
-    "reason": "All six milestones completed; fresh independent whole-change review approved, both findings and both reporter-owned blockers resolved. Distinct final Verify now assesses current complete chain and exact Git readiness before separately authorized PR handoff.",
+    "reason": "Distinct final Verify saved and read back successfully with exact immutable seven-field basis, current complete review/proof reliance and no open concerns. All governed work complete. User separately authorizes normal push and opening one PR; no merge/release authority.",
     "stage": "verify",
-    "status": "in-progress"
+    "status": "completed"
   },
   "applicability": [
     {
@@ -160,6 +160,15 @@
       },
       "path": "docs/changes/2026-09-15-skill-simplification/reviews/final-code-review-rereview.json",
       "reason": "Fresh complete corrected final engineering assessment and direct current package/proof inspection under unchanged exact approved direction/model/plan. Required reviewer finding resolved; root blocker disposition remains with reporter before Verify.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-verifier",
+        "role": "verify"
+      },
+      "path": "docs/changes/2026-09-15-skill-simplification/verify-report.json",
+      "reason": "Distinct successful complete final assessment of exact current subjects and justified unchanged engineering proof; later external identity checks remain PR-owned.",
       "value": "current"
     }
   ],
@@ -394,6 +403,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-15-skill-simplification/reviews/final-code-review-rereview.json"
+    },
+    {
+      "kind": "verify",
+      "path": "docs/changes/2026-09-15-skill-simplification/verify-report.json"
     }
   ],
   "schema_version": 3,
