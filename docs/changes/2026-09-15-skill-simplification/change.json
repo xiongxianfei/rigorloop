@@ -1,12 +1,12 @@
 {
   "activity": {
     "owner": {
-      "id": "codex-review-coordinator",
-      "role": "route"
+      "id": "codex-verify",
+      "role": "verify"
     },
-    "reason": "M1 correction independently approved; all six implementation milestones again complete. Fresh final whole-change reassessment required against corrected source and all nineteen dispositions, with full original-base CI result before approval. Original final finding and root blocker retain their owners; no Verify/PR claim.",
-    "stage": "code-review",
-    "status": "ready"
+    "reason": "All six milestones completed; fresh independent whole-change review approved, both findings and both reporter-owned blockers resolved. Distinct final Verify now assesses current complete chain and exact Git readiness before separately authorized PR handoff.",
+    "stage": "verify",
+    "status": "in-progress"
   },
   "applicability": [
     {
@@ -141,8 +141,8 @@
         "role": "review"
       },
       "path": "docs/changes/2026-09-15-skill-simplification/reviews/final-code-review.json",
-      "reason": "Fresh exact complete final first-pass assessment with independently confirmed required correction and explicit incomplete full-range validation; no clean handoff.",
-      "value": "current"
+      "reason": "Original first-pass changes-requested judgment retains exact original subjects and historical defect meaning. Corrected final sources and complete fresh proof are assessed by new final-code-review-rereview; no original approval/subject retargeting.",
+      "value": "stale"
     },
     {
       "actor": {
@@ -151,6 +151,15 @@
       },
       "path": "docs/changes/2026-09-15-skill-simplification/reviews/m1-code-review-rereview.json",
       "reason": "Fresh independent full current M1 pair and one-phrase correction assessment against exact approved authority, unchanged guide consumer and fresh proof/candidates. Scope supports M1 only; final finding/blocker disposition and whole-change proof remain separately required.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "independent-design-review",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/final-code-review-rereview.json",
+      "reason": "Fresh complete corrected final engineering assessment and direct current package/proof inspection under unchanged exact approved direction/model/plan. Required reviewer finding resolved; root blocker disposition remains with reporter before Verify.",
       "value": "current"
     }
   ],
@@ -260,8 +269,28 @@
         "role": "implement"
       },
       "required_outcome": "Restore route actor wording in M1 Code Review handoff, preserve guide validator, rerun original failed proof and package/current full-branch checks, obtain affected independent M1 rereview and fresh whole-change Code Review. Reporter assesses proof before resolution.",
-      "resolution": null,
-      "state": "open",
+      "resolution": {
+        "actor": {
+          "id": "codex-implementer",
+          "role": "implement"
+        },
+        "evidence_refs": [
+          {
+            "id": "m1-routing-correction",
+            "path": "docs/changes/2026-09-15-skill-simplification/evidence.json"
+          },
+          {
+            "id": "integrated-final-candidate",
+            "path": "docs/changes/2026-09-15-skill-simplification/evidence.json"
+          },
+          {
+            "id": "final-pr-validation",
+            "path": "docs/changes/2026-09-15-skill-simplification/evidence.json"
+          }
+        ],
+        "rationale": "Original reporter reassessed exact de0e6cec correction, unchanged guide oracle and 13 passing regressions, fresh corrected package qualification, successful original-base full PR-mode proof, approved M1 rereview and fresh complete final-code-review-rereview. Required outcome satisfied; original failed evidence and blocker subjects preserve their historical meaning."
+      },
+      "state": "resolved",
       "subjects": [
         {
           "identity": "sha256:80a10b07f2d972ac81a8395f7bce1eb7339871fd1831d74852ae4c2b1bde6760",
@@ -361,6 +390,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-15-skill-simplification/reviews/m1-code-review-rereview.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/final-code-review-rereview.json"
     }
   ],
   "schema_version": 3,
