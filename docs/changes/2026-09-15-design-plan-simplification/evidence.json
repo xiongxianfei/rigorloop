@@ -728,6 +728,58 @@
         }
       ],
       "summary": "Fresh supported candidate generation and temporary clean installs passed for Plan and Design."
+    },
+    {
+      "actor": {
+        "id": "codex-implementer",
+        "role": "implement"
+      },
+      "id": "final-pr-validation",
+      "procedure": "Actual command: bash scripts/ci.sh --mode pr --base 851f5f9c49eea8f40c82db3aa18e5c96667d5026 --head 04f5d2d0. Resolved engineering head04f5d2d0edfd622d9bf7cba336eec51046f6c4f0. Observed complete output /tmp/dp-full-pr-ci.log ends Selected CI checks passed; boundary107.10s and focused355.28s. Repository-owned release-integrity preparation produced isolated sourcef7c8e034ac5cbc96781dccbd848f530a2e19baca from this exact head, candidate577cb23934407dbc82f60ca6a82e2ad69db7dfde65f60c48876b14d0837ebbab. Its release metadata adds authoritative broad smoke; complete selected checks passed, including current record snapshot, schema, model/boundary, skills/tests, CLI, adapter/distribution, release/transaction, guide/prose, npm publication and broad smoke. Isolated prepared metadata is validation-only, no repository source edit or publication. Current55b3fac2 differs from tested engineering head only by attributable independent M1 review and work/activity closeout; all engineering subjects remain exact. Record-only final suffix gets current structural/snapshot validation after saves. Independent final review and distinct Verify remain separate; hosted CI unobserved.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:3540d9d72b6f8e97bc62ed46bab56c6c152b86ceea1b874abb32379df93286b8",
+          "path": "docs/design/skill/authoring/plan.md"
+        },
+        {
+          "identity": "sha256:f6a787ef5a6c76d26d4d9393e1c104c3b5ae39098e168d86cd1215ad7c855297",
+          "path": "docs/design/skill/skill.md"
+        },
+        {
+          "identity": "sha256:0a4dcd3cad1dc2f752de7adace385a20965130a9fa9f341ec03174a5ee8eca77",
+          "path": "docs/plan.md"
+        },
+        {
+          "identity": "sha256:8c2ed5fe7de2f3de5c64709ef45bf9a5c8b00431565e219161bef0989f2d92aa",
+          "path": "docs/plans/2026-09-15-design-plan-simplification.md"
+        },
+        {
+          "identity": "sha256:4a58cf175439ff0dd5ce7057d430ff9cf32836a2564de84a527a238abc7bb77e",
+          "path": "docs/proposals/2026-09-15-design-plan-simplification.md"
+        },
+        {
+          "identity": "sha256:fe7dfeb7703ea0f60e67182710bda05f9450823a3774c4d0b7d31ea11284c602",
+          "path": "scripts/lib/validation/skill_validation.py"
+        },
+        {
+          "identity": "sha256:6c99c7f9f75ce3c5a194e836f557ec0b1f59a63cd90cbe82588586d1c3aebbd8",
+          "path": "skills/plan/SKILL.md"
+        },
+        {
+          "identity": "sha256:1730af83099870547579b5a5d033bdb95dbd4d3abc100818c940bd948ea1931f",
+          "path": "skills/plan/references/governed-plan-authoring.md"
+        },
+        {
+          "identity": "sha256:0f5283854556a3c7732de38ae39ac47541ea388fc23fe7ee451b16436af9fb9e",
+          "path": "tests/skill/skill_contract_tests.py"
+        },
+        {
+          "identity": "sha256:f1b12638b4d14ec457b640bce86b2ca3529943d37280af24067eba55aa5a657a",
+          "path": "tests/skill/skill_guidance_tests.py"
+        }
+      ],
+      "summary": "V7 complete original-base branch validation passed, including selected broad smoke and release-integrity qualification."
     }
   ],
   "schema_version": 3
