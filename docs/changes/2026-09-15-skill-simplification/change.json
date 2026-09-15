@@ -4,7 +4,7 @@
       "id": "codex-review-coordinator",
       "role": "route"
     },
-    "reason": "M2 implemented scoped deduplication and four justified package retentions; required checks passed. Independent m2-code-review assesses all six dispositions before m2 closeout or M3 progression.",
+    "reason": "M3 complete retention and interim integrated handoff observations recorded; required current validation passed. Independent m3-code-review must judge these three dispositions before closeout. CI assembly gap belongs to the forthcoming M4 Design correction.",
     "stage": "code-review",
     "status": "ready"
   },
@@ -62,6 +62,15 @@
       "path": "docs/changes/2026-09-15-skill-simplification/reviews/m1-code-review.json",
       "reason": "Fresh independent judgment of frozen M1 implementation commit and current exact governing/proof basis. All ten dimensions and required M1 groups are satisfied with no material findings; expected scoped upstream supporting-file changes do not defeat the unchanged approved Design or Delivery allocation.",
       "value": "current"
+    },
+    {
+      "actor": {
+        "id": "independent-m2-review",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/m2-code-review.json",
+      "reason": "Fresh independent assessment of frozen M2 subjects, all six family dispositions and current applicable proof. All ten dimensions and required TG-01/04/05 observations support this milestone without material findings.",
+      "value": "current"
     }
   ],
   "blockers": [],
@@ -108,6 +117,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-15-skill-simplification/reviews/m1-code-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/m2-code-review.json"
     }
   ],
   "schema_version": 3,
@@ -135,7 +148,7 @@
         "SKL-SR-30",
         "SKL-SR-32"
       ],
-      "status": "in-progress"
+      "status": "completed"
     },
     {
       "id": "m3",
@@ -147,7 +160,7 @@
         "SKL-SR-30",
         "SKL-SR-32"
       ],
-      "status": "pending"
+      "status": "in-progress"
     },
     {
       "id": "m4",
