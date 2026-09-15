@@ -1,12 +1,12 @@
 {
   "activity": {
     "owner": {
-      "id": "codex-implement",
-      "role": "implement"
+      "id": "codex-review-coordinator",
+      "role": "route"
     },
-    "reason": "M5 independently approved with complete package proof. Begin M6 optional-support simplification, full nineteen-skill reconciliation, bounded FU-015–018 navigation and fresh final candidates. Further adoption follow-ups stay open; no broader pilot approval.",
-    "stage": "implement",
-    "status": "in-progress"
+    "reason": "M6 support family and integrated inventory/package proof ready for independent m6-code-review; after acceptance require a distinct fresh whole-change Code Review, then Verify before PR.",
+    "stage": "code-review",
+    "status": "ready"
   },
   "applicability": [
     {
