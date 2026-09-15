@@ -938,7 +938,7 @@ def validate_installed_skill_plan_surface_contract(
         return []
     errors: list[str] = []
     missing = [
-        surface for surface in (tuple(p.replace("change.yaml", "change.json") for p in INSTALLED_SKILL_PLAN_SURFACE_PATHS) if ("## Explicit recording" in body or (skill_name == "implement" and "## Recording boundary" in body)) else INSTALLED_SKILL_PLAN_SURFACE_PATHS) if surface not in body
+        surface for surface in (tuple(p.replace("change.yaml", "change.json") for p in INSTALLED_SKILL_PLAN_SURFACE_PATHS) if ("## Explicit recording" in body or (skill_name in {"implement", "plan"} and "## Recording boundary" in body)) else INSTALLED_SKILL_PLAN_SURFACE_PATHS) if surface not in body
     ]
     if missing:
         errors.append(
@@ -2522,6 +2522,7 @@ def validate_metadata_against_schema(metadata: dict[str, str], schema: dict, pat
 
 
 PILOT_RECORDING_REFERENCES = {
+    "plan": "references/governed-plan-authoring.md",
     "proposal": "references/governed-proposal-authoring.md",
     "proposal-review": "references/proposal-review-recording-and-settlement.md",
     "implement": "references/governed-implementation-recording.md",
@@ -2541,6 +2542,7 @@ def validate_targeted_recording_profile(path: Path, body: str) -> list[str]:
             errors.append(f"{path}: missing body recording boundary")
         classification = _extract_markdown_section(body, "Invocation classification") or ""
         trigger = {
+            "plan": "valid governed plan authority",
             "proposal": "governed_proposal_candidate_context",
             "proposal-review": "durable_recording_context",
             "implement": "governed_recording_context",

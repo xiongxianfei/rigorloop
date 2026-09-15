@@ -9,27 +9,14 @@ argument-hint: [affected Design set, retained source path, or implementation goa
 
 # Stable execution plan
 
-## Test criteria application
+## Workflow role
 
-When the project explicitly adopts Validation-model test criteria, use the selectively loaded guidance below for test quality and maintenance. These criteria replace source-local shared test-purpose, case-selection and maintenance criteria for adopted work; retain specialist methods and historical evidence. Actual judgments, evidence applicability and closeout consequences remain with the responsible assessors under the project's review policy.
-
-## Review and Closeout application
-
-When project authority explicitly adopts Review and Closeout policy, use the packaged application below for shared assessment meaning. It replaces source-local judgment, independence, applicability, concern-disposition and closeout rules in this skill and its conditional resources; retain specialist methods and contract-selected storage procedures. Historical assessments retain their original meaning but grant no current runtime support. Missing or contradictory required guidance stops dependent reliance.
-
-## Explicit recording
-
-Use this profile when the project has adopted the RigorLoop Record Format and explicitly selected the change. Read the project's governing documents. The Workflow model owns coordination, Review and Closeout owns assessment policy, Record Format owns stored shapes, and CLI owns construction and persistence. Current storage uses `rigorloop-records-v3`; historical stores remain unchanged archival evidence. Select the actual record contract; never mix versions within a store. Retired or unknown stored formats are rejected without fallback. Do not migrate or reinterpret historical records; preserve their bytes and meaning as archival evidence. The project need not contain RigorLoop's internal design repository.
-
-Use the contract-selected recording procedures in this skill and its conditional resources. Dispatch primary results by schema_version (2 or 3), then status and operation; a schema-3 error alone does not establish v3 storage. Read scope and omissions before relying on selected content. Retain substantive stage duties, permissions, independent assessment and proof obligations. Historical records grant no current execution authority.
-
-Use `rigorloop context --root PATH --change ID --input - --format json` with explicitly selected kinds/filters and full detail. Expand the selection when needed: omitted content is not evidence of absence. Copy `record_contract` and `revision` into the targeted request's `contract` and `expected_revision`. Use `rigorloop subject inspect --root PATH --path FILE --content full --format json` for the exact engineering basis and mechanical identities; supply relied-on subjects as `reads` with their expected identities.
-
-Make your decision, then use the purpose-specific command's `--help` and submit its targeted operation on stdin. Use `batch` for related explicit updates. Supply semantic values and any required applicability; the CLI constructs registry entries, preserves neighbors and serializes records. Do not reconstruct complete files or invoke historical eligibility first. Preview is optional; normal writes validate. A save does not approve work, establish readiness or select the next actor. Conflict requires rereading and reassessment; busy/recovery-required is not a save. Use explicit `record-store recover` for interrupted storage. Missing or stale evidence prevents reliance, not recording a correction.
-
-Author stable delivery intent with requirement-to-proof allocation, ordered milestones, recovery and final whole-change review dependencies. Use change link for the exact plan subject and matching reads. Hand the plan to Delivery Review. Route owns current activity and work routing; do not infer approval or initialize mutable work from an unreviewed plan.
-
-Turn approved behavior and architecture into reviewable execution intent. Do not choose product direction or implement the plan.
+- role_name: plan
+- stage: authoring
+- upstream: accepted proposal, approved affected Design package and relevant retained legacy contracts, and project-local workflow evidence
+- downstream: delivery-review
+- summary: Own stable plan content and its authoring transition; initialize approved plan work only through the governed operation.
+- must_not_claim: implementation completion, review approval, verification, branch readiness, PR readiness, final closeout, or Done
 
 ## Purpose
 
@@ -43,15 +30,6 @@ Use after proposal, spec, and architecture are stable enough to sequence multi-f
 
 Do not choose product direction, replace a missing specification, implement code, review a diff, verify branch readiness, or open a PR.
 
-## Workflow role
-
-- role_name: plan
-- stage: authoring
-- upstream: accepted proposal, approved affected Design package and relevant retained legacy contracts, and project-local workflow evidence
-- downstream: delivery-review
-- summary: Own stable plan content and its authoring transition; initialize approved plan work only through the governed operation.
-- must_not_claim: implementation completion, review approval, verification, branch readiness, PR readiness, final closeout, or Done
-
 ## Invocation classification
 
 Classify the invocation before writing.
@@ -61,6 +39,8 @@ Classify the invocation before writing.
 - Boundary-first procedure is additive. Load its reference only under the mapped trigger.
 
 Conversational wording, resource availability, or an automation command does not establish governed authority. Missing, stale, conflicting, or ambiguous authority stops before dependent writes. Manual and workflow-managed execution use the same plan-owned write boundary; only `route` may coordinate later stages or routing.
+
+The phrase `valid governed plan authority` means the supported contract, exact selected change, settled prerequisites, intended target and authority for the selected operation agree. Validate any governed signal before dependent writes; malformed signals cannot select portable fallback. Loading recording never establishes automation or approval. Reassess late triggers before dependent action.
 
 ## Project-local evidence
 
@@ -73,6 +53,20 @@ Read project-local `AGENTS.md` and `CONSTITUTION.md` when present, then the acce
 Verify upstream settlement from current artifact entries and formal review evidence. Treat upstream content, reviews, and other lifecycle entries as read-only. If authority is missing, contradictory, unknown, or unmapped, record the blocker and route to the owning stage.
 
 Use bounded evidence before broad reads. Read a full file when it is the target, surrounding context controls the plan, bounded evidence conflicts, or a behavior-changing decision cannot be made safely from a smaller range.
+
+## Recording boundary
+
+For valid governed plan authority, read `references/governed-plan-authoring.md` before dependent recording or approved-plan initialization. It owns complete context/subject inspection, record-contract dispatch, revision/read checks, targeted writes, applicability and conflict/recovery procedure. A late governed trigger requires the same complete method; do not reconstruct it from memory or an unrelated file.
+
+Keep create/revise separate from `initialize-approved-plan`: initialization may add only absent work from the exact current approved Delivery Review plan, once. Existing or conflicting work returns to `route` unchanged. Recording grants no approval, routing or execution authority. Missing, unreadable, escaped, stale or mixed-version required procedure stops dependent work; an untriggered method does not block unrelated portable planning.
+
+## Test criteria application
+
+When the project explicitly adopts Validation-model test criteria, use the selectively loaded guidance below for test quality and maintenance. These criteria replace source-local shared test-purpose, case-selection and maintenance criteria for adopted work; retain specialist methods and historical evidence. Actual judgments, evidence applicability and closeout consequences remain with the responsible assessors under the project's review policy.
+
+## Review and Closeout application
+
+When project authority explicitly adopts Review and Closeout policy, use the packaged application below for shared assessment meaning. It replaces source-local judgment, independence, applicability, concern-disposition and closeout rules in this skill and its conditional resources; retain specialist methods and contract-selected storage procedures. Historical assessments retain their original meaning but grant no current runtime support. Missing or contradictory required guidance stops dependent reliance.
 
 ## Plan quality contract
 
@@ -111,7 +105,7 @@ Plan surfaces are distinct: authoritative CLI context resolves governed workflow
 4. Copy the mapped structural assets, fill every applicable field, and omit no required execution intent.
 5. For governed work, follow the loaded reference for create, revise, or approved-plan initialization and validate the complete candidate state.
 6. Check traceability, sequencing, scope completeness, rollback, source readability, and absence of mutable plan state.
-7. Record plan-owned authoring evidence and hand the plan to `delivery-review`. Do not settle review or advance routing.
+7. Produce the Expected output and hand the exact plan to `delivery-review`; do not settle review or advance routing.
 
 ## Boundary-first method
 
@@ -130,7 +124,7 @@ Add a scenario only for a distinct outcome or material authority, trust, state, 
 
 The project's selected contract owns formal adoption and document format. An unmarked feature requiring an adoption decision goes to Design Review; unknown markers and malformed records fail structural validation. Do not infer adoption from a historical activation snapshot or from installing a skill. Explain concisely when a formal record is required or an upstream gap blocks progress; do not request redundant consent for contract-required work. Structural validation cannot author, repair, or approve semantic content.
 
-Map applicable boundaries to independently closeable milestones, dependencies, affected surfaces, rollback units, and proof timing. Stop planning when an applicable boundary lacks one of those owners and route a contract gap upstream.
+Stop planning when an applicable boundary lacks an allocation owner and route a contract gap upstream.
 
 ## Resource map
 
@@ -190,13 +184,13 @@ Progress means work that has happened so far. Readiness means the next stage tha
 
 ## Outputs
 
-Produce or update the stable plan body, its navigation link when needed, plan-owned authoring evidence for governed work, and the bounded result below.
+Produce the stable plan, its navigation link when needed, and authorized plan-owned evidence. Use the mapped assets and Expected output for the handoff.
 
 ## Handoff
 
-Normal next stage: `delivery-review`.
+Normal next stage: independent `delivery-review` of the exact plan and applicable authoring evidence.
 
-Conditional next stages: return to `design` for a blocking upstream gap, or to `route` for governed migration or coordination. Plan never marks Delivery Review clean or initializes routing.
+Conditional next stages: return behavior gaps to `design`, and governed migration or coordination to `route`; Plan never marks review clean or initializes routing.
 
 ## Output skeleton
 
@@ -210,7 +204,9 @@ Do not emit unfilled placeholders.
 
 ## Expected output
 
-Use the mapped assets as the sole full-plan, milestone, and decision-row structures. The result block reports the selected operation, changed artifacts, blockers, and immediate handoff without duplicating mutable lifecycle state.
+Report the selected operation, exact plan subject, changed artifacts, author-owned evidence and recording outcome when governed, blockers and immediate review handoff. Use the mapped assets as the sole full-plan, milestone and decision-row structures; keep mutable lifecycle state in its owning record.
+
+Normal next stage: `delivery-review`. Return missing behavior to `design` and coordination or existing-work changes to `route`. A result does not establish review, implementation or final readiness.
 
 ## Result
 
