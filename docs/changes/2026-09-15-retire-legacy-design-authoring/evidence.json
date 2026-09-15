@@ -24,6 +24,22 @@
         }
       ],
       "summary": "Defined DES-SR-24/DES-DEC-07 retirement with complete surviving obligation map and supported-output boundary."
+    },
+    {
+      "actor": {
+        "id": "codex-implementer",
+        "role": "implement"
+      },
+      "id": "design-example-correction",
+      "procedure": "Restored exactly four erroneous DES-SR24 insertions within fenced LAB example; unchanged example matches original643f6cd6. Existing ModelRecordTests.test_model_design_example_and_parent_validate_without_counting_fenced_marker passed, including extracted sample and unknown-marker rejection. Three affected model structure/reference checks passed. Reporter must independently disposition/reassess; no author approval inferred.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:70729f932c5b46e42c5f79a208ec6ca9de8513831d58e09250df5bb9b73e6517",
+          "path": "docs/design/skill/authoring/design.md"
+        }
+      ],
+      "summary": "Corrected rda-dr-01 example-only unintended references; current normative retirement requirement preserved."
     }
   ],
   "schema_version": 3

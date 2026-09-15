@@ -26,6 +26,15 @@
       "path": "docs/changes/2026-09-15-retire-legacy-design-authoring/evidence.json",
       "reason": "Current scoped observation; inspect each check and subjects, not a blanket pass for changed evidence.",
       "value": "current"
+    },
+    {
+      "actor": {
+        "id": "retirement-independent-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-15-retire-legacy-design-authoring/reviews/design-review.json",
+      "reason": "Current complete first-pass assessment of frozen348dc740 package; actionable embedded-example defect recorded before author correction.",
+      "value": "current"
     }
   ],
   "blockers": [],
@@ -35,7 +44,7 @@
     {
       "id": "design",
       "subject": {
-        "identity": "sha256:b4983acca9575d4c995b60bbeb522f7b665484b4a3a4da4ea41756d63049d073",
+        "identity": "sha256:70729f932c5b46e42c5f79a208ec6ca9de8513831d58e09250df5bb9b73e6517",
         "path": "docs/design/skill/authoring/design.md"
       }
     },
@@ -67,6 +76,10 @@
     {
       "kind": "evidence",
       "path": "docs/changes/2026-09-15-retire-legacy-design-authoring/evidence.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-15-retire-legacy-design-authoring/reviews/design-review.json"
     }
   ],
   "schema_version": 3,

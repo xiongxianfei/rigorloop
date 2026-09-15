@@ -301,14 +301,14 @@ The Responsibility and Requirements sections own this pure transformation and it
 
 | Dimension | Requirement basis | Distinct outcome to demonstrate |
 | --- | --- | --- |
-| Input domain | LAB-SR-01, LAB-SR-02, DES-SR-24 | Leading/trailing spaces disappear, interior spaces remain, empty/all-space inputs return an empty string, and non-string inputs reject. |
+| Input domain | LAB-SR-01, LAB-SR-02 | Leading/trailing spaces disappear, interior spaces remain, empty/all-space inputs return an empty string, and non-string inputs reject. |
 | State/lifecycle | LAB-SR-03 | Calls leave external state unchanged; earlier calls cannot affect a later result. |
-| Identity/authority | -, DES-SR-24 | Not applicable: this pure transformation has no principals or permission decisions; callers own access control. |
+| Identity/authority | - | Not applicable: this pure transformation has no principals or permission decisions; callers own access control. |
 | Composition/path | LAB-SR-01, LAB-SR-03 | Passing the result through normalization again preserves the result. |
 | Temporal/retry | LAB-SR-03 | Repeating the same call yields the same result without accumulated side effects. |
 | Failure/recovery | LAB-SR-02, LAB-SR-03 | Invalid input produces no normalized value or state changes; a following valid call succeeds normally. |
-| Compatibility/migration | -, DES-SR-24 | Not applicable: this example owns no persisted records, versions or migration. |
-| External/environment | LAB-SR-01, LAB-SR-03, DES-SR-24 | The ASCII-space rule produces the same result regardless of locale and without filesystem or network access. |
+| Compatibility/migration | - | Not applicable: this example owns no persisted records, versions or migration. |
+| External/environment | LAB-SR-01, LAB-SR-03 | The ASCII-space rule produces the same result regardless of locale and without filesystem or network access. |
 ````
 
 Extract the fenced content to the hypothetical model path to check its structure. The fence is illustrative content, so its declaration and tables must not count as additional live declarations in this owning Design. Structural validation checks shape and references; independent assessment judges the requirements and scenarios, and implementation tests establish actual behavior. Changing this relied-on example requires reassessment with its owning Design and exact subject under DES-SR-12/16.
