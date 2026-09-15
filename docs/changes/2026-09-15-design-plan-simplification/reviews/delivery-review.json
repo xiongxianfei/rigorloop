@@ -1,0 +1,128 @@
+{
+  "assessment_scope": "Complete first-pass independent Delivery Review of the registered primary plan at f82faf77c7529dedcddc7e8f6fcd461595b9a548 against approved design-review and model members skill, plan and retained design. Safe sequencing and verification adequacy are judged together across all requirements, eight applicable model boundary rows, actual affected consumers, integrated proof groups, recovery, authority and lifecycle closeout.",
+  "change_id": "2026-09-15-design-plan-simplification",
+  "contributors": [
+    {
+      "id": "codex-plan-author",
+      "role": "plan"
+    }
+  ],
+  "findings": [],
+  "id": "delivery-review",
+  "independence_basis": "Root authored and committed the primary plan before this distinct subagent /root/design_plan_delivery_review was assigned independent review. I read the complete exact plan and independently inspected approved model/review basis, actual Plan guidance/assets, affected readers/fault fixtures and candidate APIs. I neither authored nor edited the plan, Design or implementation, and supplied no incorporated authoring correction. Root transferred sole record-writer ownership for this review only; no work or routing mutation is included.",
+  "judgment": "approved",
+  "limitations": [
+    "Approval establishes this exact delivery allocation as a basis for separately authorized implementation; it does not initialize work or claim implementation, Code Review, final Verify, branch/PR readiness or publication.",
+    "This review assessed proof feasibility and required outcomes by exact source/artifact inspection; no implementation tests, new candidates or future semantic handoff executions were performed. Their actual results remain required before M1 handoff and final reliance. Root owns current record validation and review-only closeout.",
+    "No target-agent usability, token reduction or runtime efficiency was measured. Design retention remains an explicit implementation-stage whole-package assessment obligation; wider adoption follow-ups and active environment installation remain outside scope."
+  ],
+  "rationale": [
+    "Package identity and upstream authority — pass. The sole delivery member is the registered primary plan at docs/plans/2026-09-15-design-plan-simplification.md, identity sha256:8c2ed5fe7de2f3de5c64709ef45bf9a5c8b00431565e219161bef0989f2d92aa, committed at f82faf77c7529dedcddc7e8f6fcd461595b9a548. Upstream review ID design-review approves the exact registered skill, plan and retained design model map. Supporting subjects below establish assessment basis and are not extra delivery package members. Complete scoped context returned all10 selected items; review files were read for omitted findings. Both upstream reviews are approved/current, no findings or blockers exist, and work remains absent.",
+    "Requirement-to-proof trace — pass. All PLAN-SR-01–08 map through the named Plan/Skill/retained Design responsibilities to M1 and TG-01/02 or TG-FINAL-01/02. Allocation, complete output and stable state placement are observed through semantic/output checks and current placement guards; authority and initialization/retry protection have explicit absent/existing, stale/unknown and interruption outcomes. Conditional resource/asset and installed sufficiency reach actual candidates. DES-SR obligations are assessed as retained package/consumer correspondence, not silently implemented anew. The eight model-owned boundary rows have assigned proof. These model-document-v1 scenario rows are not a boundary-first-v1 formal proof map; the initial compact scan applies without inventing boundary IDs or requiring a legacy proof-map artifact.",
+    "Safe sequence and milestone isolation — pass. One M1 is the correct complete compatibility unit for Plan body, existing governed reference, selected recording reader and current plan-surface reader. Capturing original sources and independent negative cases precedes production reader changes; source and reader corrections are reconciled before handoff. Separating them would expose either a broken package or heading-dependent validation bypass. The milestone names scope, dependencies, evidence, actual commands, result, review and coherent rollback; no unreviewable lifecycle or unrelated skill rollout is hidden inside it.",
+    "Proof at actual affected boundaries — pass. Inspection confirms validate_targeted_recording_profile currently selects four local references and otherwise returns without checking when an inline heading is absent; its separate trigger lookup must be reconciled with the new selected Plan path. The installed plan-surface reader also selects current change.json via the old heading. TG-02 directly requires valid selected-reference/no-inline behavior, missing boundary or trigger, wrong/unmapped or unreadable/escaped/incomplete procedure and failure of unrelated/inline substitution, together with current-state placement and retired-placement rejection. Canonical validate_skill_file invokes these readers. Installed review-placement returns early for skills outside its review map, so the plan appropriately calls for inspected unaffected disposition rather than unrelated edits. Full reader/guidance suites retain normalized-layout and non-Plan protection.",
+    "Test quality and maintenance — pass. Existing RecordingReferenceContractTests define independent skill/reference/trigger fixtures, assert each intended mutation changes input and require specific diagnostics. Extending this protection is feasible without deriving expected values from the production selector. The plan explicitly requires distinct negative outcomes, unknown-before-consistency protection for any changed closed selector, fail-before/pass-after observations where feasible, preserved non-Plan cases and unchanged asset fields/fingerprints. It forbids weakening guards or removing required tests to make checks pass. Concrete fixtures remain implementation-owned; no mandatory Cartesian inventory or test-count target is introduced.",
+    "Semantic preservation, authority and recovery — pass. TG-01 names an independent nonauthor, exact original/revised paths, loaded methods, bounded action and observable output/stop for portable and governed create/revise, approved initialization with absent versus existing work, unknown/stale authority, late resource selection and failed/retried recording. It requires the complete quality/asset contract, ordinary and adopted-policy paths, no invalid-governed portable fallback, no automation inference, no existing-work mutation and no save-as-approval claim. The original parent profile and reference were inspected: the full construction can move into the existing method without retiring its distinct initialization/recovery procedure. Existing CLI persistence protection is inspected rather than pretending prose relocation implements a new concurrency protocol.",
+    "Integrated author/reviewer correspondence — pass. TG-FINAL-01 goes beyond conceptual field matching: an independent nonauthor must use actual filled Design output and current exact review member map, then concrete filled output from the unchanged Plan/milestone assets, with paths/identities, expected and observed fields and first missing-input or stale-identity consumer stop. Existing artifacts may be used only when they actually exercise the fields; otherwise temporary examples use the real assets. Design output provides exact subjects, reconciled behavior/realization/decisions, assessment and local/integrated intent; Plan assets preserve sources, requirements, dependencies, proof, commands, evidence and recovery consumed by Delivery Review. No invented approval or agent-runtime execution may stand in for this correspondence.",
+    "Package compatibility and environment — pass. TG-FINAL-02 requires fresh Codex and Claude archives, complete Plan and retained Design resources including untriggered files, declared transformations, installed resource and byte observations, hashes and unchanged asset fingerprints. V4 uses supported repeatable --skill plan --skill design flags, archive validation across supported adapters and actual temporary CLI installation; inspection confirms those APIs and mapped-resource paths exist. V3 full adapter regressions supplement rather than substitute actual candidate proof. Qualification v1.0.0 is a local label; no active customer install, release, network mutation or shared package-format change is authorized. Complete-pair rollback preserves original evidence and sources.",
+    "Validation timing and lifecycle closeout — pass. V1/V2 cover canonical structure and full affected reader/guidance proof; V3/V4 cover actual distribution boundaries; V5 validates records without claiming approval; V6 applies repository changed-set selection; V7 covers the complete branch from the original merged base and requires selected broad smoke. Both integrated groups are required before M1 handoff, with explicit freshness after relevant changes. The separate final whole-change Code Review checkpoint depends on all implementation/corrections and applicable milestone review, then distinct Verify assesses the entire chain. Neither integrated tests nor a single clean milestone substitutes for these gates.",
+    "Applicability, scope and handoff — pass. All47 previously inspected Design Review subject identities were refreshed: only its supporting evidence container differs. Comparing the recorded earlier evidence shows the original design-authoring entry unchanged and one new plan-authoring entry; approved engineering models and review are unchanged. The proposal review explicitly targets unchanged direction, so its two earlier supporting model identities retain historical meaning rather than granting Design approval. No old identity or judgment was retargeted. Current plan proof allocation satisfies the approved direction while preserving Design retention and leaving wider FU-015–018 adoption open. Review recording grants no work initialization or downstream execution permission; the requested invocation ends with the result handed to Route."
+  ],
+  "reviewer": {
+    "id": "design-plan-delivery-review",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:8c2ed5fe7de2f3de5c64709ef45bf9a5c8b00431565e219161bef0989f2d92aa",
+      "path": "docs/plans/2026-09-15-design-plan-simplification.md"
+    },
+    {
+      "identity": "sha256:3540d9d72b6f8e97bc62ed46bab56c6c152b86ceea1b874abb32379df93286b8",
+      "path": "docs/design/skill/authoring/plan.md"
+    },
+    {
+      "identity": "sha256:0f7e41a1de83d542d9291a842876ae7c75ebb214242cca18ee825f539f52b778",
+      "path": "docs/design/skill/authoring/design.md"
+    },
+    {
+      "identity": "sha256:f6a787ef5a6c76d26d4d9393e1c104c3b5ae39098e168d86cd1215ad7c855297",
+      "path": "docs/design/skill/skill.md"
+    },
+    {
+      "identity": "sha256:4a58cf175439ff0dd5ce7057d430ff9cf32836a2564de84a527a238abc7bb77e",
+      "path": "docs/proposals/2026-09-15-design-plan-simplification.md"
+    },
+    {
+      "identity": "sha256:8770679b93ac7b28dc00714a992c5ad3b8f9d0c2ccdbabb24895d7ad543c3061",
+      "path": "docs/changes/2026-09-15-design-plan-simplification/reviews/design-review.json"
+    },
+    {
+      "identity": "sha256:6037416b9b6159f6b2204b2bb79e5560e9d63ba504a698545e6f8fcae4cbb098",
+      "path": "docs/changes/2026-09-15-design-plan-simplification/reviews/proposal-review.json"
+    },
+    {
+      "identity": "sha256:b213ed7e43f91a2057e06d1bfa050099eb4237342aa538b9211c2d1c96d1e37f",
+      "path": "docs/changes/2026-09-15-design-plan-simplification/evidence.json"
+    },
+    {
+      "identity": "sha256:cc1912d5c0cd17b42bfd4a3f705a561b0c2f678045f0659f2406a1ea13e6c5a5",
+      "path": "CONSTITUTION.md"
+    },
+    {
+      "identity": "sha256:af968c5583c27abb95e9a2b2ac0293deba30c522e72480c6f9aa05066659ae19",
+      "path": "docs/design/skill/assessment.md"
+    },
+    {
+      "identity": "sha256:4eedbac3ea4702f50c84ebafec521663759debe48b183496272e9d420e1b1f86",
+      "path": "docs/design/system.md"
+    },
+    {
+      "identity": "sha256:5bef8bd9d85a7a1139bc20a4fb0e62ce2a2046f7bbd61fd64496bd4398cc7068",
+      "path": "skills/plan/SKILL.md"
+    },
+    {
+      "identity": "sha256:87d9c81f215ea8c7d4f86675e1450175058c2f44e902235bb1700e7e340389a2",
+      "path": "skills/plan/references/governed-plan-authoring.md"
+    },
+    {
+      "identity": "sha256:21061218b060228c8f3361e1f375008fb66d60b7cda9fc1347c0589f2c369828",
+      "path": "skills/plan/assets/plan-skeleton.md"
+    },
+    {
+      "identity": "sha256:007c46c11105018bc0429b7bc85aef0f555b4ce654cdcce27f4f4657e0ba9c75",
+      "path": "skills/plan/assets/milestone.md"
+    },
+    {
+      "identity": "sha256:2298926b2f3844831548f4f10c9d58d408eaf32e4505a270e2c0bd643eef3fa4",
+      "path": "skills/design/SKILL.md"
+    },
+    {
+      "identity": "sha256:f9ee51047c3a8c0cced45a9238d17f7341a7661563863b0380173883ece0fe18",
+      "path": "skills/design-review/SKILL.md"
+    },
+    {
+      "identity": "sha256:aa47d716979b176f9ba898407e9e9b78aad13df100d90c063a9a51051d66f787",
+      "path": "skills/delivery-review/SKILL.md"
+    },
+    {
+      "identity": "sha256:5ccb37e68487fa495e9804cdc6471329c003b01b309cb08e68cc7c3e8d4c864f",
+      "path": "scripts/lib/validation/skill_validation.py"
+    },
+    {
+      "identity": "sha256:d2f7f243937243d480871fa551254f6c489c99482542294dc21c5f06ed4bbb17",
+      "path": "tests/skill/skill_contract_tests.py"
+    },
+    {
+      "identity": "sha256:c312233283f2fb2b175d29f59edfb46da3dd0f990152f366428f061ec6761689",
+      "path": "scripts/validate-adapters.py"
+    },
+    {
+      "identity": "sha256:6f9d86e382d22d46453d0b7afa7128b043b1622f9be88cc8e82a4b1b43b19b0d",
+      "path": "scripts/lib/packaging/adapter_distribution.py"
+    }
+  ],
+  "summary": "The exact one-milestone delivery package safely couples Plan guidance and reader reconciliation, with adequate preservation, negative, actual handoff and installed-package proof and separate final closeout gates.",
+  "target": "delivery"
+}

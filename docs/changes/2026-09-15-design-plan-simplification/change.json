@@ -1,11 +1,11 @@
 {
   "activity": {
     "owner": {
-      "id": "codex-plan",
-      "role": "plan"
+      "id": "codex-route",
+      "role": "route"
     },
-    "reason": "Primary delivery plan registered with one coupled implementation milestone, local/integrated proof and separate final review/Verify. Authoring checks passed; next gate is independent Delivery Review. No work initialized or implementation begun.",
-    "stage": "plan",
+    "reason": "Independent Delivery Review approved exact primary plan with no findings. Full review readback and22 subject identities confirmed. Requested review complete; implementation is next, with work initialization and execution not performed in this review-only step.",
+    "stage": "delivery-review",
     "status": "completed"
   },
   "applicability": [
@@ -43,6 +43,15 @@
       },
       "path": "docs/changes/2026-09-15-design-plan-simplification/reviews/design-review.json",
       "reason": "Fresh complete independent assessment of the exact registered three-model package and unchanged approved direction, with current source/consumer basis. Earlier supporting-subject drifts were assessed semantically and historical identities preserved.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "design-plan-delivery-review",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-15-design-plan-simplification/reviews/delivery-review.json",
+      "reason": "Fresh complete independent first-pass assessment of the exact current primary plan against unchanged approved Design subjects, with supporting evidence append classified by content and no unresolved required correction or decision.",
       "value": "current"
     }
   ],
@@ -96,6 +105,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-15-design-plan-simplification/reviews/design-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-15-design-plan-simplification/reviews/delivery-review.json"
     }
   ],
   "schema_version": 3,
