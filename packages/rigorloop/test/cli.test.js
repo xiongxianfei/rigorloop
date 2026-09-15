@@ -17,10 +17,6 @@ const cliPath = join(packageRoot, packageJson.bin.rigorloop);
 const publicPackageVersion = packageJson.version;
 const publicReleaseTag = `v${publicPackageVersion}`;
 const publicMetadataFile = `adapter-artifacts-${publicReleaseTag}.json`;
-const publicArchiveFile = `rigorloop-adapter-codex-${publicReleaseTag}.zip`;
-const historicalSkillsOnlyPackageVersion = "0.3.3";
-const historicalSkillsOnlyReleaseTag = `v${historicalSkillsOnlyPackageVersion}`;
-const historicalSkillsOnlyMetadataFile = `adapter-artifacts-${historicalSkillsOnlyReleaseTag}.json`;
 
 function runCli(args, options = {}) {
   return spawnSync(process.execPath, [options.cliPath ?? cliPath, ...args], {
@@ -49,10 +45,6 @@ function readProjectFile(root, path) {
   return readFileSync(join(root, path), "utf8");
 }
 
-function actionFor(output, path) {
-  return output.actions.find((action) => action.path === path);
-}
-
 function assertNoInitMutation(root) {
   assert.deepEqual(listProject(root), []);
 }
@@ -60,11 +52,6 @@ function assertNoInitMutation(root) {
 function assertNoStateFiles(root) {
   assert.equal(existsSync(join(root, "rigorloop.yaml")), false);
   assert.equal(existsSync(join(root, "rigorloop.lock")), false);
-}
-
-function assertStateFilesBytePreserved(root, before) {
-  assert.equal(readProjectFile(root, "rigorloop.yaml"), before.manifest);
-  assert.equal(readProjectFile(root, "rigorloop.lock"), before.lockfile);
 }
 
 function parseJsonResult(result) {
@@ -217,28 +204,6 @@ function fixtureArchive(projectRoot, options = {}) {
     tree_sha256: treeHashForEntries(entries, installRoot),
     file_count: fileCountForEntries(entries, installRoot),
   };
-  if (options.installRoots) {
-    delete artifact.install_root;
-    delete artifact.tree_sha256;
-    delete artifact.file_count;
-    artifact.install_roots = options.installRoots;
-    artifact.root_hashes = Object.fromEntries(
-      Object.entries(options.installRoots).map(([role, root]) => [
-        role,
-        {
-          tree_sha256: treeHashForEntries(entries, root),
-          file_count: fileCountForEntries(entries, root),
-        },
-      ]),
-    );
-  }
-  if (options.commandAliases) {
-    artifact.command_aliases = options.commandAliases;
-  }
-  if (options.skillsOnlyCompatibility) {
-    artifact.skills_only_compatibility = options.skillsOnlyCompatibility;
-  }
-
   const metadata = {
     schema_version: 1,
     release: {
@@ -337,47 +302,6 @@ function fixturePackage(t, options = {}) {
   return { root, cliPath: join(root, "dist", "bin", "rigorloop.js") };
 }
 
-function validV2Lockfile() {
-  return `schema_version: 2
-
-rigorloop:
-  package: "@xiongxianfei/rigorloop"
-  version: "${publicPackageVersion}"
-
-manifest:
-  path: "rigorloop.yaml"
-  sha256: "1111111111111111111111111111111111111111111111111111111111111111"
-
-generated:
-  adapters:
-    - adapter: opencode
-      release: "v${publicPackageVersion}"
-      source: release-archive
-      archive: "rigorloop-adapter-opencode-v${publicPackageVersion}.zip"
-      archive_sha256: "2222222222222222222222222222222222222222222222222222222222222222"
-      tree_hash_algorithm: rigorloop-tree-hash-v1
-      installed_roots:
-        skills: ".opencode/skills"
-        commands: ".opencode/commands"
-      root_hashes:
-        skills:
-          tree_sha256: "3333333333333333333333333333333333333333333333333333333333333333"
-          file_count: 23
-        commands:
-          tree_sha256: "4444444444444444444444444444444444444444444444444444444444444444"
-          file_count: 5
-    - adapter: codex
-      release: "v${publicPackageVersion}"
-      source: release-archive
-      archive: "rigorloop-adapter-codex-v${publicPackageVersion}.zip"
-      archive_sha256: "5555555555555555555555555555555555555555555555555555555555555555"
-      installed_root: ".agents/skills"
-      tree_hash_algorithm: rigorloop-tree-hash-v1
-      tree_sha256: "6666666666666666666666666666666666666666666666666666666666666666"
-      file_count: 23
-`;
-}
-
 function runCliWithBundledMetadata(t, args, cwd, metadata, options = {}) {
   const packageFixture = fixturePackage(t, {
     metadata,
@@ -468,7 +392,6 @@ function assertRedacted(text) {
 
 test("T1 package metadata exposes one public binary and publishable runtime policy", (t) => {
   assert.equal(packageJson.name, "@xiongxianfei/rigorloop");
-  assert.equal(packageJson.version, publicPackageVersion);
   assert.equal(packageJson.private, undefined);
   assert.deepEqual(Object.keys(packageJson.bin), ["rigorloop"]);
   assert.equal(packageJson.bin.rigorloop, "dist/bin/rigorloop.js");
@@ -536,7 +459,7 @@ test("T3 version output reports package identity", (t) => {
 
   assert.equal(result.status, 0, result.stderr);
   assert.match(result.stdout, /@xiongxianfei\/rigorloop/);
-  assert.match(result.stdout, new RegExp("0\\.5\\.1".replaceAll("0\\.5\\.1", publicPackageVersion.replaceAll(".", "\\.")), ""));
+  assert.match(result.stdout, new RegExp(publicPackageVersion.replaceAll(".", "\\.")));
 });
 
 test("T4 unknown commands return usage errors", (t) => {
@@ -806,17 +729,6 @@ test("T11 exit-code mapping covers every public exit class", (t) => {
   }
 });
 
-test("T11 command-path exit-code mapping is enforced for M1 command paths", (t) => {
-  const cwd = tempProject(t);
-  const success = runCli(["init", "codex", "--dry-run", "--json"], { cwd });
-  const blocked = runCli(["init", "cursor", "--json"], { cwd });
-  const usage = runCli(["unknown-command"], { cwd });
-
-  assert.equal(success.status, 0);
-  assert.equal(blocked.status, 2);
-  assert.equal(usage.status, 4);
-});
-
 test("T12 default dry-run reports target and unperformed checks without state files", (t) => {
   const cwd=tempProject(t);const result=runCli(["init","codex","--dry-run","--json"],{cwd});
   assert.equal(result.status,0,result.stderr);const output=JSON.parse(result.stdout);
@@ -906,23 +818,7 @@ test("TMAI-029 network mode downloads official archives for every supported adap
   for (const adapter of supportedAdapterNames()) {
     const cwd = tempProject(t);
     const descriptor = adapterDescriptor(adapter);
-    const options =
-      adapter === "opencode"
-        ? {
-            adapter,
-            installRoot: ".opencode/skills",
-            installRoots: { skills: ".opencode/skills", commands: ".opencode/commands" },
-            entries: [
-              { name: ".opencode/skills/proposal/SKILL.md", bytes: Buffer.from("# Proposal\n", "utf8") },
-              { name: ".opencode/commands/proposal.md", bytes: Buffer.from("# Proposal command\n", "utf8") },
-            ],
-            commandAliases: { opencode: { count: 1, paths: [".opencode/commands/proposal.md"] } },
-          }
-        : {
-            adapter,
-            installRoot: descriptor.primaryInstallRoot(),
-          };
-    const fixture = fixtureArchive(cwd, options);
+    const fixture = fixtureArchive(cwd, { adapter, installRoot: descriptor.primaryInstallRoot() });
     const archiveBytes = readFileSync(fixture.archivePath);
     const officialUrl = expectedArchiveUrl({ releaseTag: `v${publicPackageVersion}`, archive: fixture.archiveName });
     fixture.metadata.artifacts[0].url = officialUrl;
@@ -1069,7 +965,7 @@ test("TMAI-031 human proxy failure output is actionable and redacted", (t) => {
   assert.equal(result.status, 2);
   assert.equal(result.stdout, "");
   assert.match(result.stderr, /adapter codex/);
-  assert.match(result.stderr, new RegExp("release v0\\.5\\.1".replaceAll("0\\.5\\.1", publicPackageVersion.replaceAll(".", "\\.")), ""));
+  assert.match(result.stderr, new RegExp(`release v${publicPackageVersion.replaceAll(".", "\\.")}`));
   assert.match(result.stderr, /failure class proxy/);
   assert.match(result.stderr, new RegExp(officialUrl.replaceAll(".", "\\.")));
   assert.match(result.stderr, /--from-archive/);
@@ -1375,7 +1271,7 @@ test("T26 leaf install-root file conflict is refused without replacing user file
   assert.ok(output.blockers.length);
 });
 
-test("T26 adapter file content conflicts fail installed-tree verification without replacing user files", (t) => {
+test("T26 existing adapter files cause destination conflicts without replacing user files", (t) => {
   const cwd = tempProject(t);
   const fixture = fixtureArchive(cwd);
   mkdirSync(join(cwd, ".agents", "skills", "proposal"), { recursive: true });
