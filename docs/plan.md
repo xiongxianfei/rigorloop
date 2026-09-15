@@ -31,6 +31,8 @@ Current blockers are not recorded in this index.
 
 ## Current plan references
 
+- [Retire standalone architecture and ADR authoring](plans/2026-09-15-retire-legacy-design-authoring.md) — [owning change](changes/2026-09-15-retire-legacy-design-authoring/change.json).
+
 - [Design and Plan skill simplification](plans/2026-09-15-design-plan-simplification.md) — [owning change](changes/2026-09-15-design-plan-simplification/change.json).
 
 - [Skill simplification](plans/2026-09-15-skill-simplification.md) — [owning change](changes/2026-09-15-skill-simplification/change.json).
@@ -103,5 +105,3 @@ Full completed history: see [Plan archive](plan-archive.md).
 ## Historical replacements
 
 - [Activate Boundary-First v1 in v0.4.0](plans/2026-08-05-activate-boundary-first-v1-v0-4-0.md) is the cancelled custom candidate/atomic-publication plan superseded by [Usability-First Boundary-First v0.4.0 Release](plans/2026-08-06-usability-first-boundary-release.md).
-
-- [Retire standalone architecture and ADR authoring](plans/2026-09-15-retire-legacy-design-authoring.md) — [owning change](changes/2026-09-15-retire-legacy-design-authoring/change.json).
