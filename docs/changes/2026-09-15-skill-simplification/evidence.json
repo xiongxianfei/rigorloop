@@ -787,6 +787,26 @@
         }
       ],
       "summary": "M4 upstream correction under existing SKL-SR-29/30/32: new CI selection/resource table and SKL-DEC08 preserve nine intended full names and existing authority while resolving review/provider/privilege/structure/coverage precedence, creation risk mapping, late privilege and denied/no-assembly outcomes. No new mode, executable classifier or permission; historical outputs stay unchanged. Existing identity/write safety, resource ownership, diagrams and component boundaries remain adequate; this refines selection inside the same CI responsibility. Pilot-reference wording now describes stable destinations with evidence-owned qualification, without changing obligations. Original Design/Delivery records marked stale for new M4 reliance; original subjects retained. M1–M3 packages/assessments are unaffected within their scoped responsibilities. After independent Design Review, Plan will explicitly allocate M4 correction/proof and request Delivery Review before implementation. Passed python scripts/validate-boundary-first.py --check --path docs/design/skill/skill.md, bash scripts/ci.sh --mode explicit --path docs/design/skill/skill.md (all selected checks, focused319.46s), and git diff --cached --check. Log /tmp/skill-ci-design-validation.log. No implementation/gate approval claimed."
+    },
+    {
+      "actor": {
+        "id": "codex-planner",
+        "role": "plan"
+      },
+      "id": "ci-plan-authoring",
+      "procedure": "Root/codex-planner2026-09-15 revised M4 allocation after design-review-ci approval; inspected exact nine-line plan diff, six milestones, preserved final gates and existing assets. Ran bash scripts/ci.sh --mode explicit --path docs/plans/2026-09-15-skill-simplification.md and git diff --cached --check.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:dda20558b508359cb33ebd15455f21c8a8975e47dcceb37ed64dc1336ac4638e",
+          "path": "docs/plans/2026-09-15-skill-simplification.md"
+        },
+        {
+          "identity": "sha256:5b7c87f55880e59d1af388e2b345966b1e60f3ec9f013a6f807caa5767942d4a",
+          "path": "docs/changes/2026-09-15-skill-simplification/reviews/design-review-ci.json"
+        }
+      ],
+      "summary": "M4 now explicitly allocates SKL-DEC08, nine full CI names, disjoint combined/denied/late selection and resources, fail-first closed-table negative protection (unknown before missing/duplicate consistency), complete V2/V3/candidate checks and independent semantic inspection. Source review pointer binds new current Design Review; prior completed M1–M3, M5/M6, all19 inventory and independent final review/Verify remain unchanged. No new stage/work/resource schema or runtime classifier. Plan scoped CI passed all selected current-record checks (10.61s); exact changed allocation and six-milestone preservation inspected. Existing work already initialized and is not recreated or overwritten. No Delivery approval or M4 execution claimed."
     }
   ],
   "schema_version": 3

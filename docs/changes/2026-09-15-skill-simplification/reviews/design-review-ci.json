@@ -1,0 +1,76 @@
+{
+  "assessment_scope": "Fresh formal Design Review of the sole registered Skill model at commit 019854d7, including CI assembly selection/resources and DEC-08 plus stable pilot-destination wording. Upstream proposal-review remains approved/current; other subjects identify its direction and governing/feasibility basis, not extra approval targets. This new design-review-ci replaces reliance on the stale earlier Design package for affected work without retargeting historical subjects.",
+  "change_id": "2026-09-15-skill-simplification",
+  "contributors": [
+    {
+      "id": "codex-author",
+      "role": "design"
+    }
+  ],
+  "findings": [],
+  "id": "design-review-ci",
+  "independence_basis": "Parent /root authored the CI assembly clarification. Separate delegated agent /root/independent_design_review independently inspected the exact complete Skill model and its diff to 0db7e96e, existing CI skill/resources, current approved direction and actual authoring proof without editing any reviewed subject. Earlier independent assessments did not author this amendment.",
+  "judgment": "approved",
+  "limitations": [
+    "The published CI assembly mismatch remains uncorrected. Plan must explicitly allocate M4 restoration/negative/combined/late proof and obtain fresh Delivery Review before implementation; the open ci-assembly-mismatch blocker remains reporter-owned.",
+    "This review approves the exact amended Design package, not implementation, current CI invocation correctness, final whole-change review, Verify or external handoff. Original stale Design/Delivery records and historical short-label outputs retain their original identities and meanings."
+  ],
+  "rationale": [
+    "1 Realization supports behavior — pass. The nine existing full assembly names now have explicit selection and complete local/external resource requirements. Review selects narrow/coverage without authoring resources; project-native authoring retains its exact external contract; GitHub creation/revision selects privilege before ordinary structure/coverage. Each supported case has one assembly and independent resource additions. No executable classifier is needed for this instructional contract.",
+    "2 Constraints — pass. Closed classifications and exact target/authority are validated first. Invalid/ambiguous cases and denied external/privileged writes block without an invented tenth assembly. GitHub procedure remains workflow-file serialization, risk mapping owns coverage, skeletons own structure, and project-native authoring keeps its own contract. Existing no-clobber/identity-conditional writes, batch recovery, command ownership and separate external permission remain binding.",
+    "3 Approved goals — pass. The unchanged approved proposal requires preservation of intended specialist values. Restoring the nine already declared full names corrects published misassignment rather than introducing a new mode or permission. Historical short-label outputs remain historical bytes, with no migration or reinterpretation. Full inventory simplification and quality-before-shortening remain intact.",
+    "4 Boundaries and combinations — pass. Ordinary create loads risk map and skeleton; narrow/coverage/structural revisions are disjoint, with structure taking selection precedence and coverage independently adding its method. Approved privileged create/revise retain exact external Design/review and independent structural/coverage additions. Non-GitHub authoring uses CIM6 with independently required privileged authority; read-only privileged/external-state review gains no mutation. Late coverage/structure causes reselection/loading before dependent action; late privilege denies mutation absent exact approval, otherwise selects the privileged GitHub branch or preserves CIM6 with external evidence. These normal, combined, denied and temporal outcomes are assessable without guessing authority.",
+    "5 Decisions — pass. DEC-08 records context, restoration choice, rejected aliases/name-only repair and consequences. Existing DEC-01–07 and historical judgments retain identity and scope. Neutralizing the prospective claim that the pilot references do not exist leaves their paths and evidence-owned qualification unchanged. No necessary unresolved Design decision remains for the selected correction.",
+    "6 Shared ownership and consumers — pass. Skill owns the CI classification/assembly behavior, existing risk and GitHub references retain semantic/serialization ownership, Assessment owns independent review and applicability, and Validation/Packaging retain bounded structural and package proof. No sibling interface or shared policy changes require a second owner amendment. Implementation must reconcile the CI entrypoint and its actual closed-value/resource consumers; Design approval does not claim those corrections already exist.",
+    "7 Feasibility and acceptance — pass. Direct inspection confirms the published short-label reassignment and the existing reusable risk/GitHub/skeleton resources. The amendment explicitly requires unique selection/resource reachability for all ordinary, project-native, privileged, review, invalid/denied and late-trigger partitions, including structural-plus-coverage combinations. Mechanical nine-row/path checks are separated from independent semantic selection/permission assessment. Delivery must allocate these concrete proofs before implementation; output-token presence alone cannot satisfy them.",
+    "8 Preservation/migration — pass. No intended assembly, historical output or current authority is retired. The observed implementation mismatch is explicitly not accepted as an alias. Current support and denial responsibilities remain under their existing owners, with remaining correction assigned to M4. The original Design/Delivery records stay stale for amended M4 reliance; a new reviewed plan and Delivery judgment must precede affected implementation.",
+    "9 Views — pass. The complete unchanged overview and necessary Context/Building Block/Runtime/Deployment diagrams still identify all owners, external inputs/outputs, resource failure and packaged placement. The new table refines decision order inside the existing CI responsibility; it creates no new component, external interface or deployment node. Material elements remain linked to their owning detail and the view necessity reasons remain adequate.",
+    "Prior milestone applicability — the amendment affects CI assembly selection and a non-substantive pilot-destination qualification sentence only. The actual M1–M3 package outcomes, proof boundaries and public interfaces remain unchanged, so their existing scoped judgments are not defeated by this Design amendment. This is an explicit unaffected-basis assessment, not retargeting their identities or approving new M4 implementation. The open ci-assembly-mismatch blocker remains valid for implementation/proof and belongs to its reporter; Design approval alone does not resolve it.",
+    "Validation — current ci-design-authoring binds the exact registered model and records passed model structural validation, scoped model CI and whitespace checks. The actual scoped CI log ends Selected CI checks passed (focused 319.46s). CLI subject inspection confirms the exact model identity. These results establish structural consistency; the nine criterion assessments establish Design coherence. No corrected CI skill, package execution or final readiness is claimed."
+  ],
+  "reviewer": {
+    "id": "independent-design-review",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:6faa52a99a86576f696ae723fc3fafce3553d8a8eae97a0a445327c818dd08b7",
+      "path": "docs/design/skill/skill.md"
+    },
+    {
+      "identity": "sha256:fd389fd478a412bb091bbe5ca976bc42466769c0a3184c68eb30e8124959fc4a",
+      "path": "docs/proposals/2026-09-15-skill-simplification.md"
+    },
+    {
+      "identity": "sha256:49d6399b0936d051c027c5e1ec929b4719da5411fd6996b1707ab7a82cb8e280",
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/proposal-review.json"
+    },
+    {
+      "identity": "sha256:af968c5583c27abb95e9a2b2ac0293deba30c522e72480c6f9aa05066659ae19",
+      "path": "docs/design/skill/assessment.md"
+    },
+    {
+      "identity": "sha256:200d5859395b87e7999e152f44c7d77a1da7d21d85ba028349f4fdd5eb70ed14",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:0aec3cfc2bf73424bf08d8c4efb775e4f7b5051b8417e8ebf1c90ada91aedbfa",
+      "path": "docs/design/engineering/packaging.md"
+    },
+    {
+      "identity": "sha256:c008afcc679e337de9c885dbfba583b7cee94d86766ef9bbdce546cabc703ac9",
+      "path": "skills/ci-maintenance/SKILL.md"
+    },
+    {
+      "identity": "sha256:94648462ed81388b8b89abd0ce42200599c1697b5f808f544e2477db7de9ef94",
+      "path": "skills/ci-maintenance/references/github-workflow-authoring.md"
+    },
+    {
+      "identity": "sha256:5fd364cb19df0f090adea02f3869c568fe0d1e5b2fdfbef0256ef4ec5b0fc118",
+      "path": "skills/ci-maintenance/references/risk-to-check-map.md"
+    }
+  ],
+  "summary": "The CI clarification restores existing assembly identities with coherent selection, resource and denial behavior, while preserving the approved simplification scope.",
+  "target": "design"
+}

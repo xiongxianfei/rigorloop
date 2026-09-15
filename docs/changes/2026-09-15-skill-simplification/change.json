@@ -1,11 +1,11 @@
 {
   "activity": {
     "owner": {
-      "id": "codex-design-review",
+      "id": "codex-delivery-review",
       "role": "route"
     },
-    "reason": "CI selection clarification authored and validated against existing nine values; exact Skill model awaits independent design-review-ci. M4 stays blocked; new Plan/Delivery assessment follows before implementation.",
-    "stage": "design-review",
+    "reason": "Current CI Design approved; amended exact primary plan linked and validated. Fresh delivery-review-ci must assess M4 correction/proof and unchanged remaining allocation before M4 implementation. Work remains blocked and existing identities retained.",
+    "stage": "delivery-review",
     "status": "ready"
   },
   "applicability": [
@@ -29,11 +29,11 @@
     },
     {
       "actor": {
-        "id": "codex-author",
-        "role": "design"
+        "id": "codex-planner",
+        "role": "plan"
       },
       "path": "docs/changes/2026-09-15-skill-simplification/evidence.json",
-      "reason": "Current exact Design authoring proof; earlier checks retain their own subjects/scopes and do not prove this amendment.",
+      "reason": "Current exact amended plan authoring observation under approved CI Design; prior plan evidence retains its original scope.",
       "value": "current"
     },
     {
@@ -79,6 +79,15 @@
       },
       "path": "docs/changes/2026-09-15-skill-simplification/reviews/m3-code-review.json",
       "reason": "Fresh independent formal assessment of frozen M3 handoff, exact unchanged route/verify/pr packages, current proof and actual producer-consumer basis. All ten dimensions and M3 groups support retention with no material findings; final integrated refresh and later milestones remain required.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "independent-design-review",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/design-review-ci.json",
+      "reason": "Fresh independent complete-model assessment of the registered CI clarification under unchanged approved direction. All nine criteria are satisfied; open implementation correction does not prevent judging the settled Design and does not become resolved by this approval.",
       "value": "current"
     }
   ],
@@ -141,7 +150,7 @@
     }
   ],
   "plan": {
-    "identity": "sha256:40bd6b7023ff319fcad7e85de6cc60921990b286dfaca5c2cc0a47310f483640",
+    "identity": "sha256:dda20558b508359cb33ebd15455f21c8a8975e47dcceb37ed64dc1336ac4638e",
     "path": "docs/plans/2026-09-15-skill-simplification.md"
   },
   "proposal": {
@@ -180,6 +189,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-15-skill-simplification/reviews/m3-code-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/design-review-ci.json"
     }
   ],
   "schema_version": 3,
