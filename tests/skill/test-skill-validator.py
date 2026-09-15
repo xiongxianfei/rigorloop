@@ -279,8 +279,6 @@ def assert_progressive_loading_quick_guide_contract(test_case, skill_body):
     test_case.assertIn("broader-section", skill_body)
 
 
-
-
 def assert_progressive_loading_code_review_protected_contracts(
     test_case: unittest.TestCase,
     skill_body: str,
@@ -332,30 +330,6 @@ def iter_published_skill_surfaces_for(skill_name: str) -> list[Path]:
 def has_customer_portable_guard(text: str) -> bool:
     normalized = text.lower()
     return any(term.lower() in normalized for term in CUSTOMER_PORTABLE_ALLOWED_GUARD_TERMS)
-
-
-def assert_requirement_id_covered(test_case: unittest.TestCase, body: str, requirement_number: int) -> None:
-    if f"`R{requirement_number}`" in body:
-        return
-    range_pattern = re.compile(r"`R(?P<start>\d+)`-`R(?P<end>\d+)`")
-    for match in range_pattern.finditer(body):
-        start = int(match.group("start"))
-        end = int(match.group("end"))
-        if start <= requirement_number <= end:
-            return
-    test_case.fail(f"R{requirement_number} is not covered explicitly or by range")
-
-
-def assert_boundary_id_covered(test_case: unittest.TestCase, body: str, boundary_number: int) -> None:
-    if f"`EB{boundary_number}`" in body:
-        return
-    range_pattern = re.compile(r"`EB(?P<start>\d+)`-`EB(?P<end>\d+)`")
-    for match in range_pattern.finditer(body):
-        start = int(match.group("start"))
-        end = int(match.group("end"))
-        if start <= boundary_number <= end:
-            return
-    test_case.fail(f"EB{boundary_number} is not covered explicitly or by range")
 
 
 class SkillValidatorFixtureTests(SkillCliChecks, SkillGuidanceChecks, unittest.TestCase):
@@ -1347,12 +1321,6 @@ class SkillValidatorFixtureTests(SkillCliChecks, SkillGuidanceChecks, unittest.T
             )
 
 
-
-
-
-
-
-
     def test_proposal_family_asset_valid_fixture_passes(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
@@ -1858,19 +1826,6 @@ class SkillValidatorFixtureTests(SkillCliChecks, SkillGuidanceChecks, unittest.T
         ).read_text(encoding="utf-8")
         self.assertIn("approved | changes-requested | blocked | inconclusive", result_skeleton)
         self.assertNotIn("clean-with-notes", result_skeleton)
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     def test_review_family_material_finding_requires_parser_owned_labels(self) -> None:
@@ -2865,8 +2820,6 @@ class SkillValidatorFixtureTests(SkillCliChecks, SkillGuidanceChecks, unittest.T
             self.assertNotIn("review-log.md", body)
 
 
-
-
     def test_review_independence_m3_code_review_pilot_guidance(self) -> None:
         """Automated code-review guidance includes the blind-first independent gate pilot."""
 
@@ -3290,7 +3243,6 @@ Use a full-file or broader-section read when correctness requires surrounding co
         missing_label = valid_skill.replace("Next stage:\n- test-spec\n", "")
         with self.assertRaises(AssertionError):
             assert_progressive_loading_quick_guide_contract(self, missing_label)
-
 
 
     def test_progressive_loading_code_review_protected_contract_helper_detects_safety_regression(self) -> None:
@@ -4852,43 +4804,11 @@ class CiMaintenanceSkillSimplificationTests(unittest.TestCase):
         self.assertIn("sole semantic owner", risk_map)
         self.assertIn("required execution boundary", risk_map)
 
-    def test_create_no_clobber_uses_commit_time_absence(self) -> None:
-        with tempfile.TemporaryDirectory() as temporary:
-            target = Path(temporary) / "ci.yml"
-            target.write_text("concurrent", encoding="utf-8")
-            with self.assertRaises(FileExistsError):
-                descriptor = os.open(target, os.O_WRONLY | os.O_CREAT | os.O_EXCL)
-                os.close(descriptor)
-            self.assertEqual(target.read_text(encoding="utf-8"), "concurrent")
 
-    def test_revise_identity_guard_rejects_concurrent_change(self) -> None:
-        import hashlib
-        with tempfile.TemporaryDirectory() as temporary:
-            target = Path(temporary) / "ci.yml"
-            target.write_text("A", encoding="utf-8")
-            prior = hashlib.sha256(target.read_bytes()).hexdigest()
-            target.write_text("B", encoding="utf-8")
-            current = hashlib.sha256(target.read_bytes()).hexdigest()
-            self.assertNotEqual(prior, current)
-            self.assertEqual(target.read_text(encoding="utf-8"), "B")
-
-    def test_dependency_batch_orders_provider_before_wrapper(self) -> None:
-        dependencies = {"validation-script": set(), "github-workflow": {"validation-script"}}
-        order = []
-        pending = set(dependencies)
-        while pending:
-            ready = sorted(node for node in pending if dependencies[node] <= set(order))
-            self.assertTrue(ready, "atomic-group-required")
-            order.extend(ready)
-            pending.difference_update(ready)
-        self.assertEqual(order, ["validation-script", "github-workflow"])
-
-    def test_atomic_group_cycle_blocks_before_write(self) -> None:
-        dependencies = {"a": {"b"}, "b": {"a"}}
-        ready = [node for node, needs in dependencies.items() if not needs]
-        self.assertEqual(ready, [])
+    def test_write_and_batch_safety_guidance_is_present(self) -> None:
         skill = (self.skill_dir / "SKILL.md").read_text(encoding="utf-8")
-        self.assertIn("blocked-before-write", skill)
+        for phrase in ("Create uses commit-time atomic no-clobber", "Revise replaces only while identity matches", "Providers precede wrappers", "Unsafe states or cycles return `blocked-before-write`"):
+            self.assertIn(phrase, skill)
 
     def test_partial_batch_and_retry_are_exact(self) -> None:
         skill = (self.skill_dir / "SKILL.md").read_text(encoding="utf-8")
@@ -5658,8 +5578,6 @@ class OptionalDiscoverySkillContractTests(unittest.TestCase):
         self.assertIn("must explicitly adopt", route)
         self.assertIn("does not approve", route)
         self.assertIn("does not advance lifecycle state", route)
-
-
 
 
 class TestPolicyResourceTests(unittest.TestCase):
