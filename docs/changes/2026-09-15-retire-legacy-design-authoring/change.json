@@ -1,12 +1,12 @@
 {
   "activity": {
     "owner": {
-      "id": "codex-review-coordinator",
-      "role": "route"
+      "id": "codex-verify",
+      "role": "verify"
     },
-    "reason": "M1 independently approved and complete. Fresh final whole-change review after original-base V6, then distinct Verify.",
-    "stage": "code-review",
-    "status": "ready"
+    "reason": "Fresh final whole-change Code Review approved with no findings after complete original-base validation. Distinct final Verify assesses all exact authority/proof and resolved concern before local closeout.",
+    "stage": "verify",
+    "status": "in-progress"
   },
   "applicability": [
     {
@@ -61,6 +61,15 @@
       },
       "path": "docs/changes/2026-09-15-retire-legacy-design-authoring/reviews/m1-code-review.json",
       "reason": "Exact frozen milestone independently assessed with complete allocated milestone evidence and no required corrections; final lifecycle gates remain separate.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "retirement-code-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-15-retire-legacy-design-authoring/reviews/final-code-review.json",
+      "reason": "Fresh complete original-base assessment after M1 completion and actual V6; exact engineering source and candidate proof remain applicable, no required corrections, distinct Verify still required.",
       "value": "current"
     }
   ],
@@ -122,6 +131,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-15-retire-legacy-design-authoring/reviews/m1-code-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-15-retire-legacy-design-authoring/reviews/final-code-review.json"
     }
   ],
   "schema_version": 3,
