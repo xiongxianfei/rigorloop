@@ -213,7 +213,7 @@ run_selected_mode() {
 import sys
 from pathlib import Path
 sys.path.insert(0, str(Path("scripts").resolve()))
-from validation_execution import selected_main
+from lib.validation.validation_execution import selected_main
 try:
     selected_main(sys.argv[1:])
 except (ValueError, OSError, TypeError, KeyError) as exc:
@@ -228,7 +228,7 @@ run_composed_mode() {
 import sys
 from pathlib import Path
 sys.path.insert(0, str(Path("scripts").resolve()))
-from validation_execution import composed_main
+from lib.validation.validation_execution import composed_main
 try:
     composed_main(sys.argv[1:])
 except (ValueError, OSError, TypeError, KeyError) as exc:

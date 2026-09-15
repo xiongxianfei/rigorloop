@@ -38,6 +38,8 @@ python scripts/validate-documentation-prose.py --mode enforce --path README.md -
 
 ## Validation scope
 
+Repository tests live in `tests/skill/` and `tests/engineering/{validation,packaging,release}/`; package tests stay in `packages/rigorloop/test/`. Supported operational commands remain at the `scripts/` root. Reusable implementation belongs in `scripts/lib/{validation,packaging,release}/`, using explicit package imports; authored operational inputs belong in `scripts/resources/`. Keep command arguments and exit behavior stable when moving internal code; update subprocess readers and copied test repositories together. Follow [Validation’s test organization](docs/design/engineering/validation.md#test-sources-groups-and-fixtures) for behavior groups, shared fixtures and evidence selection.
+
 Use `bash scripts/ci.sh --mode local` for checks selected from the working-tree changes, or `--mode explicit --path PATH` for a bounded surface. PR CI uses the same selector with `--mode pr --base SHA --head SHA`; unclassified paths or failed preflight checks block execution. PR validation checks current record stores at the exact head revision; archival stores are excluded without running retired validators. Main CI retains the full direct gate suite, and release validation retains its existing policy.
 
 Documentation is classified by its role: skills, model contracts, records and executable examples still select their owning checks. A Markdown extension alone does not grant an exemption. Selected checks report durations; full main gates report progress and duration per gate. The unified Validation change retires cache-only and historical-classification checks under its exact source map; surviving required cases and failure detection remain protected.

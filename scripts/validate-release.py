@@ -20,8 +20,8 @@ def current_git_commit(root: Path | None = None) -> str:
 
 def current_source_errors(version: str, root: Path, release_commit: str | None = None) -> list[str]:
     """Admit current explicit source/profile identities before any output write."""
-    from release_candidate import local_file, version_tuple
-    from release_transaction import load_release_profile, is_routine_release_profile
+    from lib.release.release_candidate import local_file, version_tuple
+    from lib.release.release_transaction import load_release_profile, is_routine_release_profile
     try:
         if not version.startswith('v'):
             raise ValueError('release tag must start with v')
@@ -52,10 +52,10 @@ def validate_prepared_release(version: str, root: Path, output: Path) -> list[st
     Historical finalized-release recipes are not replayed by this command.
     """
     import json
-    from release_transaction import (load_release_profile, is_routine_release_profile,
+    from lib.release.release_transaction import (load_release_profile, is_routine_release_profile,
         validate_pending_release_artifacts, _release_notes_generated_block)
-    from adapter_distribution import scan_security_paths
-    from release_candidate import file_identity, local_file, run, CandidateError
+    from lib.packaging.adapter_distribution import scan_security_paths
+    from lib.release.release_candidate import file_identity, local_file, run, CandidateError
     errors = current_source_errors(version, root)
     if errors:
         return errors
@@ -129,7 +129,7 @@ def verify_prepared_release(version: str, output: Path) -> int:
     """
     import json
     import time
-    from release_candidate import run, run_packed_smoke, timing_diagnostics, canonical_bytes, local_file
+    from lib.release.release_candidate import run, run_packed_smoke, timing_diagnostics, canonical_bytes, local_file
     root = Path.cwd()
     receipt = output / 'release-verification.json'
     errors = current_source_errors(version, root)
@@ -149,9 +149,9 @@ def verify_prepared_release(version: str, output: Path) -> int:
     checks = []
     commands = [
         ['python', 'scripts/validate-skills.py'],
-        ['python', 'scripts/test-skill-validator.py'],
-        ['python', 'scripts/test-adapter-distribution.py'],
-        ['python', 'scripts/test-npm-package-publication.py'],
+        ['python', 'tests/skill/test-skill-validator.py'],
+        ['python', 'tests/engineering/packaging/test-adapter-distribution.py'],
+        ['python', 'tests/engineering/packaging/test-npm-package-publication.py'],
         ['python', 'scripts/validate-adapters.py', '--version', version, '--adapter-root', str(output)],
         ['python', 'scripts/validate-npm-package.py', '--tarball', str(local_file(output, facts['tarball']))],
     ]
@@ -235,7 +235,7 @@ def main(argv: list[str] | None = None) -> int:
         context = (os.environ.get('RIGORLOOP_CI_CANDIDATE')
                    if os.environ.get('RIGORLOOP_CI_WORKSPACE') == str(root) else None)
         if context and args.recorded_source_auto:
-            from release_candidate import ci_subject
+            from lib.release.release_candidate import ci_subject
             output = Path(context)
             try:
                 ci_subject(output, root)

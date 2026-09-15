@@ -7,8 +7,8 @@ import argparse
 import json
 from pathlib import Path
 
-from boundary_first_validation import validate_changed_spec, validate_repository_examples
-from model_layout import PROJECT_MODEL_PATHS
+from lib.validation.boundary_first_validation import validate_changed_spec, validate_repository_examples
+from lib.validation.model_layout import PROJECT_MODEL_PATHS
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)

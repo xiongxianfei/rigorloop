@@ -7,9 +7,9 @@ import argparse
 import tempfile
 from pathlib import Path
 
-from adapter_distribution import (
+from lib.packaging.adapter_distribution import (
     ADAPTER_OUTPUT_ROOT,
-    DEFAULT_ADAPTER_VERSION,
+    default_adapter_version,
     build_adapter_archives,
     collect_adapter_support_drift_entries,
     format_adapter_drift_normal,
@@ -20,13 +20,14 @@ from adapter_distribution import (
 
 
 def build_parser() -> argparse.ArgumentParser:
+    version = default_adapter_version()
     parser = argparse.ArgumentParser(
         description="Build or check dist/adapters from canonical skills and adapter templates."
     )
     parser.add_argument(
         "--version",
-        default=DEFAULT_ADAPTER_VERSION,
-        help=f"Adapter package manifest version to render. Default: {DEFAULT_ADAPTER_VERSION}.",
+        default=version,
+        help=f"Adapter package manifest version to render. Default: {version}.",
     )
     parser.add_argument(
         "--check",

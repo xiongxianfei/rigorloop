@@ -9,6 +9,8 @@ import sys
 from dataclasses import dataclass
 from pathlib import Path
 
+from lib.validation.model_layout import PROJECT_MODEL_PATHS
+
 
 PRIMARY_GUIDE_LINKS = (
     "VISION.md",
@@ -99,9 +101,7 @@ def validate(repo: Path) -> ValidationResult:
         repo / "CONSTITUTION.md",
         repo / "README.md",
         repo / "docs" / "project-map.md",
-        repo / "docs" / "design" / "skill" / "workflow.md",
-        repo / "docs" / "design" / "skill" / "assessment.md",
-        repo / "docs" / "design" / "skill" / "skill.md",
+        *(repo / relative for relative in PROJECT_MODEL_PATHS.values()),
     )
     for path in current_surfaces:
         text = _read(path)

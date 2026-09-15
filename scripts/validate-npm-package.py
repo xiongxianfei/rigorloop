@@ -7,7 +7,7 @@ import argparse
 import sys
 from pathlib import Path
 
-from npm_package_validation import NpmPackageValidationError, inspect_package_json, inspect_package_tarball
+from lib.packaging.npm_package_validation import NpmPackageValidationError, inspect_package_json, inspect_package_tarball
 
 
 def main(argv: list[str] | None = None) -> int:
