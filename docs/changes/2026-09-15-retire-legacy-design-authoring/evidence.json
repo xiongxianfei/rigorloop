@@ -164,6 +164,74 @@
         }
       ],
       "summary": "Fresh Codex/Claude build, temporary Design clean installs and complete12-file parity passed; retired resources absent."
+    },
+    {
+      "actor": {
+        "id": "codex-implementer",
+        "role": "implement"
+      },
+      "id": "m1-validation",
+      "procedure": "Actual commands: python tests/skill/test-skill-validator.py UnifiedDesignResourceTests before production7methods failed5 expected retirement/order cases (/tmp/retire-failfirst.log); current focused UnifiedDesignResourceTests RetainedSkillAuthorityTests RequirementDeliveryModelM1Tests SkillValidatorFixtureTests.test_current_design_resource_map_uses_packaged_assets passed15 (/tmp/retire-focused.log). python tests/skill/test-skill-validator.py passed30621.787s (/tmp/retire-full-skill.log); python tests/engineering/packaging/test-adapter-distribution.py passed95280.953s (/tmp/retire-full-package.log); python scripts/validate-skills.py skills passed19. bash scripts/ci.sh --mode local passed all selected checks, focused800.04s aggregate/boundary passed (/tmp/retire-local-ci.log). Independent optional navigation note corrected docs/plan.md to Current plan references; python scripts/validate-guide-system.py passed and full V6 includes final navigation. node scripts/validate-record-store.mjs docs/changes/2026-09-15-retire-legacy-design-authoring/change.json passed; git diff --check passed. Candidate proof separate. Full V6 first preflight on bda stopped because candidate evidence uncommitted; clean rerun on5ff38057 is in progress and not preclaimed. No hosted CI, runtime-agent compliance or review approval inferred.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:70729f932c5b46e42c5f79a208ec6ca9de8513831d58e09250df5bb9b73e6517",
+          "path": "docs/design/skill/authoring/design.md"
+        },
+        {
+          "identity": "sha256:e1184234b6a5f1a85f3e7b88ef3c699217178aa6257d9569689d1d59fafbf709",
+          "path": "docs/design/skill/skill.md"
+        },
+        {
+          "identity": "sha256:7a88f81f0044f2f9739ca27e9ebfb6cef77628f87b8422a240d9b776a4b921d8",
+          "path": "docs/design/system.md"
+        },
+        {
+          "identity": "sha256:a0dd9b89636d9e23e123addf8913dd60eed0c791a0016934e7925a7338dce149",
+          "path": "docs/plan.md"
+        },
+        {
+          "identity": "sha256:e19785d07ec8e4e81e2c8c76b0ad16da57d4ecf69d0c002a1d031acad76c1f16",
+          "path": "docs/plans/2026-09-15-retire-legacy-design-authoring.md"
+        },
+        {
+          "identity": "sha256:707cc801b29efaf98694fee68a60e1e26063a4359e5e1b1f8fe4a66976941bf6",
+          "path": "docs/proposals/2026-09-15-retire-legacy-design-authoring.md"
+        },
+        {
+          "identity": "sha256:e6fad8644bfbdc8dd82addaf56e38d4c7776169b3cde1d5792cb613aabd8daf7",
+          "path": "scripts/lib/validation/skill_validation.py"
+        },
+        {
+          "identity": "sha256:b09a3b401fd1b96beba6b20f83331d6ae3b49697a3cd0514ca6b22db862b4698",
+          "path": "skills/design-review/SKILL.md"
+        },
+        {
+          "identity": "sha256:fdbaf69d34c804b765848e08b3423a18a6ad380abc3b9e2546681fb0a9f29c65",
+          "path": "skills/design/SKILL.md"
+        },
+        {
+          "identity": "sha256:fdc363ed6e0ccdf501c451598daaf38691ac6e8e85397cb5cad64fe13a09cc9e",
+          "path": "skills/design/references/governed-design-authoring.md"
+        },
+        {
+          "identity": "sha256:5d27d9865afc3dafcb7852910504450309c06a751826e96eab6b696c3967e443",
+          "path": "skills/design/references/legacy-source-reconciliation.md"
+        },
+        {
+          "identity": "sha256:5ae252fdf0c0eaf8496b90480a168bf4c348799d5fa288e8e2e3ea2def43f63e",
+          "path": "skills/design/references/model-authoring.md"
+        },
+        {
+          "identity": "sha256:92b7b4ce21ea27d6b7c516c4b4fd9f0af495da69e7b007230969cd0c533509f7",
+          "path": "skills/design/references/technical-design.md"
+        },
+        {
+          "identity": "sha256:a0c007940ce17143256e784b098c01e8f9f265a0299ad537fc29d884e33b0640",
+          "path": "tests/skill/test-skill-validator.py"
+        }
+      ],
+      "summary": "All required milestone deterministic checks passed; actual semantic review and final whole-branch gate remain separate."
     }
   ],
   "schema_version": 3

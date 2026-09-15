@@ -1,12 +1,12 @@
 {
   "activity": {
     "owner": {
-      "id": "codex-implement",
-      "role": "implement"
+      "id": "codex-review-coordinator",
+      "role": "route"
     },
-    "reason": "Exact independent Delivery Review approved and full saved readback confirmed by root after reviewer usage interruption. Initialize absent approved M1 work; perform authorized refinement and required proof.",
-    "stage": "implement",
-    "status": "in-progress"
+    "reason": "M1 complete source and allocated local/candidate proof passed. Independent milestone Code Review to record semantic/package judgment; full original-base validation runs before separate final whole-change review and Verify.",
+    "stage": "code-review",
+    "status": "ready"
   },
   "applicability": [
     {
