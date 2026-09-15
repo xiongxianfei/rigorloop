@@ -44,6 +44,15 @@
       "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/design-review-r2.json",
       "reason": "Fresh complete package reassessment after independently verified decision-identity correction. Exact current package has no unresolved required Design correction; supports authorized planning only.",
       "value": "current"
+    },
+    {
+      "actor": {
+        "id": "all-skills-delivery-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/delivery-review.json",
+      "reason": "Independent complete assessment of the exact current sole primary-plan package against approved Design R2. No material correction remains; current only for this assessed allocation and authority.",
+      "value": "current"
     }
   ],
   "blockers": [],
@@ -103,6 +112,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/design-review-r2.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/delivery-review.json"
     }
   ],
   "schema_version": 3,
