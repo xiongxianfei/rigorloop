@@ -1,12 +1,12 @@
 {
   "activity": {
     "owner": {
-      "id": "all-skills-proposal-reviewer",
-      "role": "review"
+      "id": "codex-review-coordinator",
+      "role": "route"
     },
-    "reason": "User requested isolated independent Proposal Review; formal review requires a current change root. No Design progression authorized by this recording.",
-    "stage": "proposal-review",
-    "status": "in-progress"
+    "reason": "Four-model Design package authored and registered after approved proposal; ready for independent Design Review. Implementation remains gated by Design and Delivery approval.",
+    "stage": "design-review",
+    "status": "ready"
   },
   "applicability": [
     {
@@ -17,12 +17,50 @@
       "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/proposal-review.json",
       "reason": "Independent assessment of the exact unchanged proposal and inspected current direction basis. Valid for this scope only; later changes require impact assessment.",
       "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-design-author",
+        "role": "design"
+      },
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/evidence.json",
+      "reason": "Current exact Design authorship and structural/source observations only; independent assessment and downstream proof remain separate.",
+      "value": "current"
     }
   ],
   "blockers": [],
   "change_id": "2026-09-15-refine-skills-and-retire-stale-support",
   "contract": "rigorloop-records-v3",
-  "models": [],
+  "models": [
+    {
+      "id": "skill",
+      "subject": {
+        "identity": "sha256:18f39802c01fda9ff16fa68fd0fce03dafe33f032dc0006f0033095096856bcc",
+        "path": "docs/design/skill/skill.md"
+      }
+    },
+    {
+      "id": "validation",
+      "subject": {
+        "identity": "sha256:46068496c23e3a9e82befbea7d5c0c68242eb0928ddb15ccf431cbd9b52a94a6",
+        "path": "docs/design/engineering/validation.md"
+      }
+    },
+    {
+      "id": "cli",
+      "subject": {
+        "identity": "sha256:ba79d93d064e42610611fe96e4e770b469a77c3e18491fc9f0fadcfaeefd28fd",
+        "path": "docs/design/cli/cli.md"
+      }
+    },
+    {
+      "id": "delivery-handoff",
+      "subject": {
+        "identity": "sha256:5a38d6bb26ebdd63527843c5dbf94caeb0c306dcfe89cfb03fc5aced4dd14388",
+        "path": "docs/design/skill/delivery-handoff.md"
+      }
+    }
+  ],
   "plan": null,
   "proposal": {
     "identity": "sha256:3bf51df8d9be1c016255c493aebe495b5d102fe015237adf099823752967686d",
@@ -32,6 +70,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/proposal-review.json"
+    },
+    {
+      "kind": "evidence",
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/evidence.json"
     }
   ],
   "schema_version": 3,

@@ -1,0 +1,34 @@
+{
+  "change_id": "2026-09-15-refine-skills-and-retire-stale-support",
+  "checks": [
+    {
+      "actor": {
+        "id": "codex-design-author",
+        "role": "design"
+      },
+      "id": "design-authoring",
+      "procedure": "Read approved exact proposal and complete independent judgment; inspected all 19 entrypoint descriptions/resource maps and selected detailed recording/validator/caller sources. Source search confirms query shim is rejection-only, its two RetiredQueryTests cases, the SkillValidatorFixtureTests.test_change_record_catalog_m4_query_commands_exist assertion, helper exception, catalog/fingerprint and selector fixtures. Metadata wrapper has active callers and remains. Recorded concrete behavior under SKL-SR-33–35, VAL-SR-29–31, CLI-SR-31 and HAND-SR-04, with stable decisions and updated representative scenario rows. Existing graphs and examples remain unchanged because no subsystem/authority/data-flow change is selected. System, Workflow, Assessment, Records, Packaging, Installation and Release retain their boundaries; changes consume their existing authority and proof contracts. Current proposal content/identity remains unchanged and its approval supplies direction only; original supporting model identities retain their feasibility meaning and are not retargeted to this draft. Complete case-by-case support and package audit is an explicit Delivery completion obligation, not claimed done by this source inspection. Actual python scripts/validate-boundary-first.py --check --path docs/design/skill/skill.md --path docs/design/engineering/validation.md --path docs/design/cli/cli.md --path docs/design/skill/delivery-handoff.md passed structure/references; python scripts/validate-guide-system.py passed; git diff --check passed. No skills, scripts or tests implemented or deleted; no runtime, packaging, review, final verification or external handoff pass inferred.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:18f39802c01fda9ff16fa68fd0fce03dafe33f032dc0006f0033095096856bcc",
+          "path": "docs/design/skill/skill.md"
+        },
+        {
+          "identity": "sha256:46068496c23e3a9e82befbea7d5c0c68242eb0928ddb15ccf431cbd9b52a94a6",
+          "path": "docs/design/engineering/validation.md"
+        },
+        {
+          "identity": "sha256:ba79d93d064e42610611fe96e4e770b469a77c3e18491fc9f0fadcfaeefd28fd",
+          "path": "docs/design/cli/cli.md"
+        },
+        {
+          "identity": "sha256:5a38d6bb26ebdd63527843c5dbf94caeb0c306dcfe89cfb03fc5aced4dd14388",
+          "path": "docs/design/skill/delivery-handoff.md"
+        }
+      ],
+      "summary": "Authored four-model refinement package with full inventory completion boundaries, five selected presentation changes, Code Review description correction, explicit query-helper withdrawal and sole Verify-rationale artifact. Structural/source reconciliation checks passed; independent Design Review remains required."
+    }
+  ],
+  "schema_version": 3
+}
