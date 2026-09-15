@@ -1,12 +1,12 @@
 {
   "activity": {
     "owner": {
-      "id": "codex-review-coordinator",
-      "role": "route"
+      "id": "codex-implement",
+      "role": "implement"
     },
-    "reason": "M5 family dispositions and required checks ready for independent m5-code-review; M6 not started.",
-    "stage": "code-review",
-    "status": "ready"
+    "reason": "M5 independently approved with complete package proof. Begin M6 optional-support simplification, full nineteen-skill reconciliation, bounded FU-015–018 navigation and fresh final candidates. Further adoption follow-ups stay open; no broader pilot approval.",
+    "stage": "implement",
+    "status": "in-progress"
   },
   "applicability": [
     {
@@ -115,6 +115,15 @@
       },
       "path": "docs/changes/2026-09-15-skill-simplification/reviews/m4-code-review-rereview.json",
       "reason": "Fresh complete M4 rereview against corrected current sources; original finding resolved by reporter with direct regression proof, unchanged upstream targets and current candidate evidence.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "independent-m5-review",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/m5-code-review.json",
+      "reason": "Fresh independent full-family assessment against exact current Design/Delivery and M5 proof; two-line correction preserves obligations, retentions are substantive and current candidate evidence covers both adapters. No unresolved necessary M5 correction remains.",
       "value": "current"
     }
   ],
@@ -256,6 +265,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-15-skill-simplification/reviews/m4-code-review-rereview.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/m5-code-review.json"
     }
   ],
   "schema_version": 3,
@@ -319,7 +332,7 @@
         "SKL-SR-30",
         "SKL-SR-32"
       ],
-      "status": "in-progress"
+      "status": "completed"
     },
     {
       "id": "m6",
@@ -331,7 +344,7 @@
         "SKL-SR-30",
         "SKL-SR-32"
       ],
-      "status": "pending"
+      "status": "in-progress"
     }
   ]
 }

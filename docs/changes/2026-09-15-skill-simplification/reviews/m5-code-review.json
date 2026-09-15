@@ -1,0 +1,136 @@
+{
+  "assessment_scope": "Formal M5 milestone Code Review of baseline26ef389e through frozen bf0881a7: Constitution two-line correction and complete Vision/Project Map package retentions. All ten dimensions and TG-01/04/05 assessed. Other subjects identify current authority and proof basis; not final whole-change review.",
+  "change_id": "2026-09-15-skill-simplification",
+  "contributors": [
+    {
+      "id": "codex-implementer",
+      "role": "implement"
+    }
+  ],
+  "findings": [],
+  "id": "m5-code-review",
+  "independence_basis": "Parent /root authored the actual M5 source edits and obligation/proof records. Separate agent /root/independent_proposal_review did not author or advise these Constitution edits and independently inspected the exact full foundation packages, applicable owners, diff and actual proof. A different support agent supplied preparatory advice and did not provide this approval.",
+  "judgment": "approved",
+  "limitations": [
+    "Semantic edge-case proof is independent manual tracing of actual published instructions and resources, not live customer-agent execution or a usability benchmark. Existing validators establish structural protection, not semantic approval.",
+    "Initial Constitution resource-selector rejection remains a failed selection. Supported full installation and explicit installed entrypoint parity provide its actual package proof; no selector expansion, active user install, release or hosted CI claim is made.",
+    "This approval supports M5 only. Route owns milestone/activity changes. M6, final inventory and integrated proof refresh, fresh independent final whole-change Code Review and distinct final Verify remain required before external readiness."
+  ],
+  "rationale": [
+    "1 Spec alignment / TG-01 — pass. Actual 26ef389e..bf0881a7 diff changes only two Constitution skill lines plus M5 records. Current design-review-ci binds the unchanged exact Skill model and delivery-review-ci binds the unchanged exact plan. GOV-SR-01–03 require project-selected authority and preservation of equivalent existing guidance. The new authority-topic wording exposes that selection instead of supplying an obsolete fixed ranking; the route successor names the existing routing capability. All twelve governance topics, AGENTS-only convention, assumptions, conflict disclosure and no-silent-removal duties survive. No universal pilot layout authority is inferred.",
+    "2 Test coverage — pass. This bounded prose correction changes no validator, resource schema or executable behavior. Existing Vision combined-body marker/state/security assertions and Project Map controlled/canonical baseline, operation, mapped-asset and hidden-policy checks remain applicable to unchanged files; no sentence-mirroring regression test is warranted. Root m5-validation records current three-entrypoint V1 and actual-change selected CI success. Structural checks support resource integrity; the independent complete-package semantic assessment below supplies meaning.",
+    "3 Edge cases / TG-04 — pass by independent instruction tracing. Constitution with equivalent AGENTS-only guidance retains its selected artifact; conflicting current governance must be exposed, not silently replaced by the example order. Vision absent establishment versus existing revision remains distinct; sync-only leaves VISION unchanged. Exact pre-resolved skip uses no README marker claim; late strategic/sync triggers load their methods before action. Project Map existing-create and absent-refresh cannot silently reclassify, audit cannot repair, and area creation requires a valid root plus absent target and registration. These observed instructions satisfy the corresponding GOV/VIS/MAP scenarios without executing a customer mutation.",
+    "4 Error handling — pass. Full Vision body and README reference bind authority, manifest, prior/intended identities and ordered source/rationale/README writes; malformed markers, changed source or lost retry manifest stop dependent action. Partial completion names committed/pending targets and permits only exact retry. Project Map coordination reference writes area first, rechecks root before registration and permits only identity-matching missing-registration retry; stale/ambiguous roots and orphan conflicts cannot be adopted. Required missing, escaped or contradictory resources stop; retained exceptional procedure has not been shortened away.",
+    "5 Architecture and resource ownership — pass. Complete nine-file foundation inspection confirms Constitution owns principles, Vision owns canonical intent with derived README and supporting rationale, and Project Map owns observed orientation. Vision strategic method owns content/quality while README method owns marker derivation; both skeletons own structure only. Map maintenance reference owns refresh/audit/coordination and skeleton owns metadata, evidence and registration structure. Their retained separation keeps independently triggered methods reachable and avoids merging incompatible artifact duties.",
+    "6 Compatibility and useful retention — pass. Constitution changes a prescribed example into project-selected governance and fixes an unusable successor, improving the actual authoring/handoff path without deleting policy. Vision six assemblies and independent action/resource axes remain necessary for skip, editorial, strategic and partial outcomes; their complete methods/assets are retained because reduction would conceal distinct authority or recovery cases. Map two assemblies retain operation/scope independence, late coordination, freshness versus invocation result, observed/inferred/unknown separation and direct-source fallback for stale or partial maps. Neither retained package gains an adoption, execution or future-architecture claim.",
+    "7 Security/privacy — pass. No new external action or permission results from either Constitution line. Vision retains sensitive-publication filtering, explicit external research authority and no automatic continuation. Map distinguishes configured from executed commands and limits execution to user authority. Source governance, existing work, command provenance and isolated handoff boundaries remain intact.",
+    "8 Derived artifact currency / TG-05 — pass for this candidate. Reviewer independently compared all nine foundation files with both actual archives: Codex bytes match and Claude bodies/resources match with only adapter frontmatter excluded from this direct comparison. Archive hashes match m5-validation. Inspected real-install wrapper invokes subprocess.run, observes each installed Constitution before normal cleanup and compares it with the sole corresponding archive entry; both succeed. Supported Vision/Map mapped-resource clean-install validation also passed. Initial --skill constitution rejection is accurately retained as unsupported selection, not installation success; full actual installs plus direct Constitution parity cover its resource-free entrypoint without changing the selector.",
+    "9 Unrelated changes — pass. Git range contains only the Constitution entrypoint and owning M5 records; Vision/Map and their resources are unchanged. This skill amendment does not modify the repository Constitution, canonical vision or map to demonstrate the capability. No policy, shared source, test reader, adapter implementation or unrelated family changes require further consumer correction in M5.",
+    "10 Validation evidence — pass within milestone scope. Inspected m5-obligations/m5-validation bind all nine exact package files. V1 covers all three entrypoints; V6 log reports selected checks passed, focused157.22s; fresh build, corrected supported candidate validation and real Constitution-install parity are attributable. Reviewer inspected actual candidate logs and parity script, performed independent source/archive comparisons and exact CLI subject inspection. No unchanged broad suite was rerun or claimed. M4 current clean rereview and reporter-owned blocker resolution satisfy the predecessor; appended evidence records do not alter its reviewed engineering targets. This assessment does not renew older subject identities or imply hosted CI success."
+  ],
+  "reviewer": {
+    "id": "independent-m5-review",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:78367de4baa67f068f99a05144103291857ddb2302be1631fd73ebe0048b8231",
+      "path": "skills/constitution/SKILL.md"
+    },
+    {
+      "identity": "sha256:60c1478b79ccef8cdfe902a0fdcb2857c06b20caa8201463cd382f8937e5d05c",
+      "path": "skills/vision/SKILL.md"
+    },
+    {
+      "identity": "sha256:898bfed1f88674ef570af3928c7e5927daa4c40c8b9d8cf27e4e104bf2c12462",
+      "path": "skills/vision/assets/strategic-positioning-skeleton.md"
+    },
+    {
+      "identity": "sha256:1e94ae8b324ea1f3a68584c1d93ccd118c961147656ac9cfaea8f85c17fc666c",
+      "path": "skills/vision/assets/vision-skeleton.md"
+    },
+    {
+      "identity": "sha256:535e535565e3585e4d62de1b870c972d10173a0ea1e04151f0c8856b37872fae",
+      "path": "skills/vision/references/readme-vision-sync.md"
+    },
+    {
+      "identity": "sha256:84ca0d0a9dcab0d229cd7499f562b9e34849c3a3a696af8260cf8211697c269d",
+      "path": "skills/vision/references/strategic-vision-authoring.md"
+    },
+    {
+      "identity": "sha256:0ca90bb1cb731ffa6e702b82f77bccc3c5761154403e15cb6eb1157ec1d54013",
+      "path": "skills/project-map/SKILL.md"
+    },
+    {
+      "identity": "sha256:1bfc68c053deac5df9124c4f630492b263043ae65c4dd524fe964f4490ba3efe",
+      "path": "skills/project-map/assets/project-map-skeleton.md"
+    },
+    {
+      "identity": "sha256:d28ae2198d747e33b32e1fdbc2f0950c5f1b90e669f09a2d017ceae460b1b8ed",
+      "path": "skills/project-map/references/map-maintenance-and-area-coordination.md"
+    },
+    {
+      "identity": "sha256:cc1912d5c0cd17b42bfd4a3f705a561b0c2f678045f0659f2406a1ea13e6c5a5",
+      "path": "CONSTITUTION.md"
+    },
+    {
+      "identity": "sha256:6faa52a99a86576f696ae723fc3fafce3553d8a8eae97a0a445327c818dd08b7",
+      "path": "docs/design/skill/skill.md"
+    },
+    {
+      "identity": "sha256:4e0183e9896ab301f1777410b9a3665d5d4ef392dbd4ed010b27397113c2e3ac",
+      "path": "docs/design/skill/project-foundations/constitution.md"
+    },
+    {
+      "identity": "sha256:df22fcfba261aa582ae0985fd0b34308fd66939ff3cf8c2387600436a2dd6306",
+      "path": "docs/design/skill/project-foundations/vision.md"
+    },
+    {
+      "identity": "sha256:800906693355cd9585df023e9383de6e8aafe9095c289bdd5a7a155d6e96199b",
+      "path": "docs/design/skill/project-foundations/project-map.md"
+    },
+    {
+      "identity": "sha256:af968c5583c27abb95e9a2b2ac0293deba30c522e72480c6f9aa05066659ae19",
+      "path": "docs/design/skill/assessment.md"
+    },
+    {
+      "identity": "sha256:0aec3cfc2bf73424bf08d8c4efb775e4f7b5051b8417e8ebf1c90ada91aedbfa",
+      "path": "docs/design/engineering/packaging.md"
+    },
+    {
+      "identity": "sha256:200d5859395b87e7999e152f44c7d77a1da7d21d85ba028349f4fdd5eb70ed14",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:dda20558b508359cb33ebd15455f21c8a8975e47dcceb37ed64dc1336ac4638e",
+      "path": "docs/plans/2026-09-15-skill-simplification.md"
+    },
+    {
+      "identity": "sha256:f6aee6ab20e193ff8040c17c567a088dd74c4c90e76c71888a92236abfe2348c",
+      "path": "docs/changes/2026-09-15-skill-simplification/evidence.json"
+    },
+    {
+      "identity": "sha256:5b7c87f55880e59d1af388e2b345966b1e60f3ec9f013a6f807caa5767942d4a",
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/design-review-ci.json"
+    },
+    {
+      "identity": "sha256:05f955250c43e948f9734e2eb6897d6175e42d18b7afe72cc27d131aa2812f8a",
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/delivery-review-ci.json"
+    },
+    {
+      "identity": "sha256:27171807e02f19020d49ce001d27cb215b0fdfb1965823a42e87467bb015aef5",
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/m4-code-review-rereview.json"
+    },
+    {
+      "identity": "sha256:6f9d86e382d22d46453d0b7afa7128b043b1622f9be88cc8e82a4b1b43b19b0d",
+      "path": "scripts/lib/packaging/adapter_distribution.py"
+    },
+    {
+      "identity": "sha256:0e056f8b033eead8dc1899d27a3f62767940b8be3182a3f00e1b2cf75ce7c173",
+      "path": "tests/skill/test-skill-validator.py"
+    }
+  ],
+  "summary": "M5 preserves foundation obligations and complete resource paths, improves Constitution authority selection and routing, and justifies Vision/Project Map retention.",
+  "target": "code"
+}
