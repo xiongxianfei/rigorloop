@@ -1,0 +1,158 @@
+{
+  "assessment_scope": "Formal first-pass M4 milestone Code Review, baseline e44d1b46 through b33d0e94; full Bugfix/CI dispositions and directly changed validator/tests, current design-review-ci and delivery-review-ci. Not final whole-change review.",
+  "change_id": "2026-09-15-skill-simplification",
+  "contributors": [
+    {
+      "id": "codex-implementer",
+      "role": "implement"
+    }
+  ],
+  "findings": [
+    {
+      "evidence": "Finding ID: m4-ci-fenced-examples. Severity: major. Location: scripts/lib/validation/skill_validation.py:_validate_ci_assembly_declaration, raw section.splitlines table scan. Read-only Python reproduction imports actual helper, extracts complete current Assemblies table, wraps it in a ```text fence as sole section content: observed [] despite no normative declaration. Keeping valid table and appending fenced | CIM9-unknown | invalid | none | instead reports unknown CI assembly. SKL-SR-14 requires mechanical checks to distinguish instructions from negative examples. Both results are deterministic against validator sha256:8229a69168bdd8c359eb55c501969ae1623bf5d34ece4077896b490f147e942d.",
+      "id": "m4-ci-fenced-examples",
+      "owner": {
+        "id": "codex-implementer",
+        "role": "implement"
+      },
+      "reporter": {
+        "id": "independent-design-review",
+        "role": "review"
+      },
+      "required_outcome": "Ignore fenced examples when extracting normative assembly rows, retain unknown-before-missing/duplicate ordering, and demonstrate fenced-only content fails missing declaration while a valid declaration plus fenced negative example passes. Safe resolution: add both fail-first regression fixtures, use existing fence-aware line scanning or equivalent bounded logic, rerun same proof plus affected validation, then independent rereview. No owner Design decision required.",
+      "resolution": {
+        "actor": {
+          "id": "independent-design-review",
+          "role": "review"
+        },
+        "evidence_refs": [
+          {
+            "id": "m4-fence-correction",
+            "path": "docs/changes/2026-09-15-skill-simplification/evidence.json"
+          }
+        ],
+        "rationale": "Independent original reporter inspected scoped scanner at56984889 and ran all11 focused tests successfully. Both backtick/tilde examples are excluded before section extraction; only matching sufficiently long markers close a fence; fenced-only and negative-example/heading regressions now meet expected outcomes. Original vocabulary controls remain intact; fresh303 suite, selected adapter/local checks and candidate revalidation support correction applicability. Finding origin/subjects/evidence remain unchanged."
+      },
+      "state": "resolved",
+      "subjects": [
+        {
+          "identity": "sha256:8229a69168bdd8c359eb55c501969ae1623bf5d34ece4077896b490f147e942d",
+          "path": "scripts/lib/validation/skill_validation.py"
+        },
+        {
+          "identity": "sha256:b6cddeeb09829dfb7353357ac8510b032f04f5b9f23596965effe97908d1bbed",
+          "path": "tests/skill/skill_contract_tests.py"
+        },
+        {
+          "identity": "sha256:6faa52a99a86576f696ae723fc3fafce3553d8a8eae97a0a445327c818dd08b7",
+          "path": "docs/design/skill/skill.md"
+        }
+      ]
+    }
+  ],
+  "id": "m4-code-review",
+  "independence_basis": "Parent /root authored the M4 implementation. Delegated nonauthor /root/independent_design_review inspected complete repair entrypoints/resources, actual diff and reader/tests, current approval targets and exact evidence, and reproduced an independent defect without editing authored subjects. Earlier Design assessment did not author this implementation.",
+  "judgment": "changes-requested",
+  "limitations": [
+    "Finding m4-ci-fenced-examples must be corrected and independently rereviewed before M4 closeout; M5/M6 and integrated final Code Review/Verify remain.",
+    "Semantic selections were assessed by explicit manual tracing of published instructions/resources, not customer agent execution or hosted CI. Existing ci-assembly-mismatch blocker remains its original reporter’s concern; this assessment does not dispose it."
+  ],
+  "rationale": [
+    "1 Spec alignment — concern: CI prose restores all nine Design-declared names and unique selection under DEC-08, with no new permission. The added table reader violates SKL-SR-14 by counting fenced examples as declarations; finding m4-ci-fenced-examples requires correction.",
+    "2 Test coverage — concern: six independent-name fixtures cover valid, unknown-before-consistency, legacy short label, missing, duplicate and absent table. They omit fenced normative-lookalike and negative-example cases. Reviewer directly reproduced both missing boundaries; passing 298 tests does not establish these paths.",
+    "3 Edge cases — concern for parser fences; instructional paths pass independent manual tracing. CIM0/CIM1 select noncoverage/coverage review before provider or privilege, preserving read-only external/native/privileged review. CIM6 native authoring uses exact external contract plus independent risk/privilege evidence. CIM7 privileged create always loads risk/GitHub/skeleton/approval; CIM8 privileged revise adds coverage risk and structural skeleton independently. CIM2 ordinary create always maps risk; CIM5 structural revise precedes CIM4 coverage preserving revise and independently adds risk; CIM3 narrow preserving revise uses GitHub procedure only. Late coverage/structure reclassifies and loads before dependent action; late privilege denies absent approval, otherwise selects CIM7/8 or native CIM6 with approval.",
+    "4 Error handling — pass for skill; concern for reader. Unknown classifications, escaped/stale/ambiguous targets, unsupported primitives and external/unauthorized privileged mutation stop. Missing triggered resources stop without memory fallback; untriggered absence does not stop unrelated runtime work. New unknown-before-consistency ordering is correct for actual declaration rows, but fenced negative examples falsely raise unknown errors.",
+    "5 Architecture — pass. Risk map alone selects risk/check/boundary, GitHub reference serializes settled mapping and skeleton supplies structure. Full resource inspection confirms these duties. No runtime classifier, live CI, owning-policy or schema change. Current design-review-ci and delivery-review-ci approve exact current model/plan; older feasibility-source drift does not retarget those actual approval targets.",
+    "6 Compatibility — pass. Complete Bugfix entrypoint retained: diagnose-only versus fix, exact authority and governed-signal axes, ordered evidence/proof phases, supported-cause routing, proof-action table, identity-equal reruns and phase-specific write boundary serve distinct outcomes and should not be shortened away. CI atomic no-clobber/identity replacement, idempotency, independent/ordered/atomic batches, partial recovery and rebuilt retry manifests remain explicit. Historical short labels retain their original historical meaning; no alias or migration introduced.",
+    "7 Security/privacy — pass. Review supplies no mutation; command sources remain authoritative. Exact privileged Design/review binds target, events, credentials, permissions, runners and fork/secrets behavior. Bounded already-open PR repair retains current evidence/no-open-finding/authority preconditions and restore-only scope. No hosted success inferred.",
+    "8 Derived artifacts — pass within contributor evidence scope. m4-validation binds exact sources to fresh two-adapter build and clean-install CI proof plus full packaging95. Bugfix/shared package resources are unchanged. This first pass does not claim post-correction candidate currency.",
+    "9 Unrelated changes — pass. Diff e44d1b46..b33d0e94 changes CI entrypoint, its bounded validator and direct test consumers plus scoped governed evidence. Bugfix disposition is justified retention, not an unassessed omission; no other family implementation changed.",
+    "10 Validation evidence — concern limited to new regression gap. Registered V1 both skills, V2 298, V3 95, V4 candidate and V6 local checks passed on exact frozen sources; reviewer independently ran the fence reproduction through the actual new helper, obtaining [] for fenced-only declaration and unknown CIM9 error for a valid declaration plus fenced negative example. Required correction must add failing proof before source fix and refresh affected checks/evidence.",
+    "TG-01/03/04/05: actual complete CI instructions and resources improve selection and loading specificity while preserving specialist identity/proof/recovery/authority and shared resource boundaries. Bugfix retention preserves its complete bounded diagnosis/correction procedure and independent handoff. Mechanical parsing remains a bounded structural check, not semantic skill grading; its fenced-example defect prevents clean M4 closeout."
+  ],
+  "reviewer": {
+    "id": "independent-design-review",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:170ea2df25ee71ab3e27f26ab8290758d7a575bb1747d5b89c7eb45de7394dfc",
+      "path": "skills/bugfix/SKILL.md"
+    },
+    {
+      "identity": "sha256:9baf5a042084cd36d4748453529fc4ef6e46e9bdfe35bdf294ab9e458da14e84",
+      "path": "skills/ci-maintenance/SKILL.md"
+    },
+    {
+      "identity": "sha256:8229a69168bdd8c359eb55c501969ae1623bf5d34ece4077896b490f147e942d",
+      "path": "scripts/lib/validation/skill_validation.py"
+    },
+    {
+      "identity": "sha256:b6cddeeb09829dfb7353357ac8510b032f04f5b9f23596965effe97908d1bbed",
+      "path": "tests/skill/skill_contract_tests.py"
+    },
+    {
+      "identity": "sha256:0e056f8b033eead8dc1899d27a3f62767940b8be3182a3f00e1b2cf75ce7c173",
+      "path": "tests/skill/test-skill-validator.py"
+    },
+    {
+      "identity": "sha256:7c7037e519b4558f8126460892ff33721026e05b2d8f7469b7ba86477ee81b9b",
+      "path": "skills/bugfix/references/test-maintenance.md"
+    },
+    {
+      "identity": "sha256:8b0a4b44f27de8c2d24ea21344b75594d5f5c9a247f91d42390068f96d4bf998",
+      "path": "skills/bugfix/references/test-quality.md"
+    },
+    {
+      "identity": "sha256:6c73d246c7be1491d4331ee5a1b7fa1dc1e741b1d0bd4b57a52c6780050d1531",
+      "path": "skills/ci-maintenance/assets/github-workflow-skeleton.yml"
+    },
+    {
+      "identity": "sha256:94648462ed81388b8b89abd0ce42200599c1697b5f808f544e2477db7de9ef94",
+      "path": "skills/ci-maintenance/references/github-workflow-authoring.md"
+    },
+    {
+      "identity": "sha256:0ac3e3ccc77aee7e6d60d5d56dd61a1d7424aa3443910cb85d198993bdd82818",
+      "path": "skills/ci-maintenance/references/review-reliance.md"
+    },
+    {
+      "identity": "sha256:5fd364cb19df0f090adea02f3869c568fe0d1e5b2fdfbef0256ef4ec5b0fc118",
+      "path": "skills/ci-maintenance/references/risk-to-check-map.md"
+    },
+    {
+      "identity": "sha256:7c7037e519b4558f8126460892ff33721026e05b2d8f7469b7ba86477ee81b9b",
+      "path": "skills/ci-maintenance/references/test-maintenance.md"
+    },
+    {
+      "identity": "sha256:8b0a4b44f27de8c2d24ea21344b75594d5f5c9a247f91d42390068f96d4bf998",
+      "path": "skills/ci-maintenance/references/test-quality.md"
+    },
+    {
+      "identity": "sha256:6faa52a99a86576f696ae723fc3fafce3553d8a8eae97a0a445327c818dd08b7",
+      "path": "docs/design/skill/skill.md"
+    },
+    {
+      "identity": "sha256:dda20558b508359cb33ebd15455f21c8a8975e47dcceb37ed64dc1336ac4638e",
+      "path": "docs/plans/2026-09-15-skill-simplification.md"
+    },
+    {
+      "identity": "sha256:fd389fd478a412bb091bbe5ca976bc42466769c0a3184c68eb30e8124959fc4a",
+      "path": "docs/proposals/2026-09-15-skill-simplification.md"
+    },
+    {
+      "identity": "sha256:76a206a99c31afbc77716e34454ee3eceaca449c00a5b0140532cc2ad5eeb81a",
+      "path": "docs/changes/2026-09-15-skill-simplification/evidence.json"
+    },
+    {
+      "identity": "sha256:05f955250c43e948f9734e2eb6897d6175e42d18b7afe72cc27d131aa2812f8a",
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/delivery-review-ci.json"
+    },
+    {
+      "identity": "sha256:5b7c87f55880e59d1af388e2b345966b1e60f3ec9f013a6f807caa5767942d4a",
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/design-review-ci.json"
+    }
+  ],
+  "summary": "M4 CI selection and Bugfix retention are coherent, but the new table reader mistakes fenced examples for declarations.",
+  "target": "code"
+}

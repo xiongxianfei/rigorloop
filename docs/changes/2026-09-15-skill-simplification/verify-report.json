@@ -1,0 +1,814 @@
+{
+  "assessment_scope": "workflow-final-verification, governed-final, VP1-final-readiness for 2026-09-15-skill-simplification; complete original-base change through 9e586773d1008ec8c0ee20ccbc98494b8c7c0d8a, all19 skills and140 canonical package files, SKL-SR-30–32 and applicable retained requirements, TG01–06/TG-FINAL01–02, exact Git/PR readiness. This is a separate assessment after final Code Review, not an external PR action or release approval.",
+  "change_id": "2026-09-15-skill-simplification",
+  "changes": [
+    "Implement and Code Review present task/authority before independently selected complete local recording procedures; validators and meaningful negative tests support the two approved equivalent layouts.",
+    "Plan, Proposal Review, Explore and Learn remove specific repeated instructions. Constitution respects project-selected authority and names route. Eleven other skills retain their justified specialist contracts.",
+    "CI maintenance restores nine intended assembly names and disjoint selection/resource order, with unknown-value and fenced-example regression protection. Owning Design and Delivery amendment precede this correction.",
+    "All19 dispositions and full Codex/Claude package composition are reconciled. Advisory provenance remains recoverable in Git; FU015–018 remain open for broader adoption."
+  ],
+  "evidence_refs": [
+    {
+      "id": "m1-advisory-provenance",
+      "path": "docs/changes/2026-09-15-skill-simplification/evidence.json"
+    },
+    {
+      "id": "m1-obligations",
+      "path": "docs/changes/2026-09-15-skill-simplification/evidence.json"
+    },
+    {
+      "id": "m1-validation",
+      "path": "docs/changes/2026-09-15-skill-simplification/evidence.json"
+    },
+    {
+      "id": "m2-obligations",
+      "path": "docs/changes/2026-09-15-skill-simplification/evidence.json"
+    },
+    {
+      "id": "m2-validation",
+      "path": "docs/changes/2026-09-15-skill-simplification/evidence.json"
+    },
+    {
+      "id": "m3-obligations",
+      "path": "docs/changes/2026-09-15-skill-simplification/evidence.json"
+    },
+    {
+      "id": "m3-validation",
+      "path": "docs/changes/2026-09-15-skill-simplification/evidence.json"
+    },
+    {
+      "id": "m4-obligations",
+      "path": "docs/changes/2026-09-15-skill-simplification/evidence.json"
+    },
+    {
+      "id": "m4-validation",
+      "path": "docs/changes/2026-09-15-skill-simplification/evidence.json"
+    },
+    {
+      "id": "m4-fence-correction",
+      "path": "docs/changes/2026-09-15-skill-simplification/evidence.json"
+    },
+    {
+      "id": "m5-obligations",
+      "path": "docs/changes/2026-09-15-skill-simplification/evidence.json"
+    },
+    {
+      "id": "m5-validation",
+      "path": "docs/changes/2026-09-15-skill-simplification/evidence.json"
+    },
+    {
+      "id": "m6-obligations",
+      "path": "docs/changes/2026-09-15-skill-simplification/evidence.json"
+    },
+    {
+      "id": "m6-validation",
+      "path": "docs/changes/2026-09-15-skill-simplification/evidence.json"
+    },
+    {
+      "id": "integrated-inventory",
+      "path": "docs/changes/2026-09-15-skill-simplification/evidence.json"
+    },
+    {
+      "id": "m1-routing-correction",
+      "path": "docs/changes/2026-09-15-skill-simplification/evidence.json"
+    },
+    {
+      "id": "integrated-final-candidate",
+      "path": "docs/changes/2026-09-15-skill-simplification/evidence.json"
+    },
+    {
+      "id": "final-pr-validation",
+      "path": "docs/changes/2026-09-15-skill-simplification/evidence.json"
+    },
+    {
+      "id": "verify-final-state",
+      "path": "docs/changes/2026-09-15-skill-simplification/evidence.json"
+    }
+  ],
+  "limitations": [
+    "Hosted CI is unobserved; passing local PR-mode checks do not establish hosted success. PR must observe and truthfully report its exact head state.",
+    "Semantic proof uses independent instruction/asset inspection, not executed customer-agent workflows or a measured token/usability benchmark. Only implement/code-review adopt the alternate layout.",
+    "The final candidate uses local v1.0.0 qualification, not a publication or release. Default clean-install smoke covers mapped-resource skills; unchanged resource-free Constitution additionally has direct M5 real-install byte evidence.",
+    "FU015–018 broader adoption remains open outside this bounded change. Public instruction clarity and Markdown declaration parsing remain review-sensitive; rollback should restore complete affected packages and matching reader/tests while preserving historical evidence."
+  ],
+  "outcome": "success",
+  "rationale": [
+    "Approved proposal direction maps to exact current Skill Design SKL-SR-30–32/DEC06–08 and independently approved delivery-review-ci plan allocation. Milestones M1–M6 each have current independent approval for their final affected scope; final-code-review-rereview independently reassesses the complete corrected change and all10 review dimensions. All six work items are completed; both findings and both original-reporter blockers are resolved with proof, with no outstanding decision.",
+    "TG01/02/04 and TG-FINAL01 are fulfilled by the named independent reviewers current instruction/asset traces: actual producer outputs match the next consumer inputs, recording and automation remain independent, missing or stale evidence stops the appropriate consumer, route owns lifecycle, Verify alone owns success explanation and PR retains separate external identity/authority. No material unknown boundary remains. TG03 uses fail-first missing/wrong/escaped/stale resources and closed CI declaration/example negatives. TG05/final02 directly qualifies both final archives and all140 files; TG06 preserves advisory bytes at6ffd08e9 with current reliance replaced by formal review.",
+    "Required V1–V6 and full original-base PR-mode checks passed against final engineering de0e6cec98a2f485b04cf3fd09f08db8fb389f34, including shared broad smoke and current isolated release-integrity preparation. Reused303 skill tests,95 adapter tests,13 guide regressions and actual candidate checks protect unchanged final engineering. No engineering byte changed in the later evidence/review/workflow suffix. Fresh verify-final-state and record-store validation cover the later final records; all156 final review subject identities matched before the attributable Verify evidence append. That append preserves every earlier evidence entry; container identity drift is explained, not retargeted.",
+    "Final impact: affected public skill instructions/documentation, bounded repository validation reader/tests, packaging composition and governance evidence are covered by semantic review, negative regression, full original-base CI and final actual candidate. Runtime/API/state/persistence/migration/dependencies/external environment and executable authority are unaffected: actual diff introduces no executable product behavior, schema, dependency, hosted workflow, permission or external action change. Shared policy and existing assets remain byte-identical. Build/generation logic is unchanged; changed package inputs are qualified under both supported transformations. No generated adapter output is hand-edited.",
+    "Historical failed final-pr-validation-failed remains failed for its original source; fresh corrected run proves the repaired guide prerequisite and formerly blocked dependents. Superseded reviews retain original subjects/judgments and do not provide current affected approval. Current explicit rereviews and complete final assessment supply that reliance. This distinction explains registered historical drift observations without suppressing them.",
+    "Fresh Git/remote inspection resolves one clean branch and repository, original base and merge-base match, feature remote absent, and exact reviewed source is an ancestor with attributable evidence-only suffix. Successful final verification supports normal separately authorized PR submission; current remote/PR identity must still be reread by PR."
+  ],
+  "review_refs": [
+    {
+      "id": "proposal-review",
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/proposal-review.json"
+    },
+    {
+      "id": "design-review-ci",
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/design-review-ci.json"
+    },
+    {
+      "id": "delivery-review-ci",
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/delivery-review-ci.json"
+    },
+    {
+      "id": "m1-code-review-rereview",
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/m1-code-review-rereview.json"
+    },
+    {
+      "id": "m2-code-review",
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/m2-code-review.json"
+    },
+    {
+      "id": "m3-code-review",
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/m3-code-review.json"
+    },
+    {
+      "id": "m4-code-review-rereview",
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/m4-code-review-rereview.json"
+    },
+    {
+      "id": "m5-code-review",
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/m5-code-review.json"
+    },
+    {
+      "id": "m6-code-review",
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/m6-code-review.json"
+    },
+    {
+      "id": "final-code-review-rereview",
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/final-code-review-rereview.json"
+    }
+  ],
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:170ea2df25ee71ab3e27f26ab8290758d7a575bb1747d5b89c7eb45de7394dfc",
+      "path": "skills/bugfix/SKILL.md"
+    },
+    {
+      "identity": "sha256:7c7037e519b4558f8126460892ff33721026e05b2d8f7469b7ba86477ee81b9b",
+      "path": "skills/bugfix/references/test-maintenance.md"
+    },
+    {
+      "identity": "sha256:8b0a4b44f27de8c2d24ea21344b75594d5f5c9a247f91d42390068f96d4bf998",
+      "path": "skills/bugfix/references/test-quality.md"
+    },
+    {
+      "identity": "sha256:9baf5a042084cd36d4748453529fc4ef6e46e9bdfe35bdf294ab9e458da14e84",
+      "path": "skills/ci-maintenance/SKILL.md"
+    },
+    {
+      "identity": "sha256:6c73d246c7be1491d4331ee5a1b7fa1dc1e741b1d0bd4b57a52c6780050d1531",
+      "path": "skills/ci-maintenance/assets/github-workflow-skeleton.yml"
+    },
+    {
+      "identity": "sha256:94648462ed81388b8b89abd0ce42200599c1697b5f808f544e2477db7de9ef94",
+      "path": "skills/ci-maintenance/references/github-workflow-authoring.md"
+    },
+    {
+      "identity": "sha256:0ac3e3ccc77aee7e6d60d5d56dd61a1d7424aa3443910cb85d198993bdd82818",
+      "path": "skills/ci-maintenance/references/review-reliance.md"
+    },
+    {
+      "identity": "sha256:5fd364cb19df0f090adea02f3869c568fe0d1e5b2fdfbef0256ef4ec5b0fc118",
+      "path": "skills/ci-maintenance/references/risk-to-check-map.md"
+    },
+    {
+      "identity": "sha256:7c7037e519b4558f8126460892ff33721026e05b2d8f7469b7ba86477ee81b9b",
+      "path": "skills/ci-maintenance/references/test-maintenance.md"
+    },
+    {
+      "identity": "sha256:8b0a4b44f27de8c2d24ea21344b75594d5f5c9a247f91d42390068f96d4bf998",
+      "path": "skills/ci-maintenance/references/test-quality.md"
+    },
+    {
+      "identity": "sha256:3d3392d6f0d8f31162d2e8160acac31f7af14039a9bf2daa7bd0a1a8a123f286",
+      "path": "skills/code-review/SKILL.md"
+    },
+    {
+      "identity": "sha256:69d15f3af3d6d4eee4a6220a78c784c0deb40818128c235531f894c72ff4d0d9",
+      "path": "skills/code-review/assets/material-finding.md"
+    },
+    {
+      "identity": "sha256:3bcba3cc33836cd001205dd8b05c67a46aaff74ae405c9e58c84cec4786324b3",
+      "path": "skills/code-review/assets/review-result-skeleton.md"
+    },
+    {
+      "identity": "sha256:89337cf5da8462ad2afa0c50e04fb7233beea7ce030a049fa3a1695fc57ea2d0",
+      "path": "skills/code-review/references/boundary-first-method-v1.md"
+    },
+    {
+      "identity": "sha256:456244060bca19154279328b27a3f254ddebadcf3ff24f155949f8d3c48e3674",
+      "path": "skills/code-review/references/governed-code-review-recording.md"
+    },
+    {
+      "identity": "sha256:e19b99a0cb69b9051c6eeae20d76c4a0cf3925e8fd1686ceb6671c7749cc3dc5",
+      "path": "skills/code-review/references/requirement-to-delivery-model.md"
+    },
+    {
+      "identity": "sha256:82e302a3a915f10d05b229a3550f462ca6b35a9e3f7e892ec7a393733c2c64e0",
+      "path": "skills/code-review/references/review-assessment.md"
+    },
+    {
+      "identity": "sha256:0ac3e3ccc77aee7e6d60d5d56dd61a1d7424aa3443910cb85d198993bdd82818",
+      "path": "skills/code-review/references/review-reliance.md"
+    },
+    {
+      "identity": "sha256:7c7037e519b4558f8126460892ff33721026e05b2d8f7469b7ba86477ee81b9b",
+      "path": "skills/code-review/references/test-maintenance.md"
+    },
+    {
+      "identity": "sha256:8b0a4b44f27de8c2d24ea21344b75594d5f5c9a247f91d42390068f96d4bf998",
+      "path": "skills/code-review/references/test-quality.md"
+    },
+    {
+      "identity": "sha256:36bc4c3cd13c589475a5b3df85e5aea8d055dc115b9acabb7d3e7eb64885eba4",
+      "path": "skills/code-review/references/workflow-managed-automated-review.md"
+    },
+    {
+      "identity": "sha256:78367de4baa67f068f99a05144103291857ddb2302be1631fd73ebe0048b8231",
+      "path": "skills/constitution/SKILL.md"
+    },
+    {
+      "identity": "sha256:aa47d716979b176f9ba898407e9e9b78aad13df100d90c063a9a51051d66f787",
+      "path": "skills/delivery-review/SKILL.md"
+    },
+    {
+      "identity": "sha256:238979f9f7baa4af72370da0f19d69ecfe855cacac44d3fd08d39bef897af835",
+      "path": "skills/delivery-review/assets/material-finding.md"
+    },
+    {
+      "identity": "sha256:d8551b3f4f3228fd37de61c15695118d8e390a3e61cc030f58cfc26172b74e06",
+      "path": "skills/delivery-review/assets/review-result-skeleton.md"
+    },
+    {
+      "identity": "sha256:89337cf5da8462ad2afa0c50e04fb7233beea7ce030a049fa3a1695fc57ea2d0",
+      "path": "skills/delivery-review/references/boundary-first-method-v1.md"
+    },
+    {
+      "identity": "sha256:ec8e8239c642bf340c4c8aba2105ae9783bced35230bb5bf6501b7b931e6cc4d",
+      "path": "skills/delivery-review/references/boundary-first-proof-v1.md"
+    },
+    {
+      "identity": "sha256:3369bbc37d27736ec57500c85e1f1fa6c33fb73e3b4ea96ba6bce8d55a91eb3e",
+      "path": "skills/delivery-review/references/delivery-review-recording-and-settlement.md"
+    },
+    {
+      "identity": "sha256:e19b99a0cb69b9051c6eeae20d76c4a0cf3925e8fd1686ceb6671c7749cc3dc5",
+      "path": "skills/delivery-review/references/requirement-to-delivery-model.md"
+    },
+    {
+      "identity": "sha256:82e302a3a915f10d05b229a3550f462ca6b35a9e3f7e892ec7a393733c2c64e0",
+      "path": "skills/delivery-review/references/review-assessment.md"
+    },
+    {
+      "identity": "sha256:0ac3e3ccc77aee7e6d60d5d56dd61a1d7424aa3443910cb85d198993bdd82818",
+      "path": "skills/delivery-review/references/review-reliance.md"
+    },
+    {
+      "identity": "sha256:7c7037e519b4558f8126460892ff33721026e05b2d8f7469b7ba86477ee81b9b",
+      "path": "skills/delivery-review/references/test-maintenance.md"
+    },
+    {
+      "identity": "sha256:8b0a4b44f27de8c2d24ea21344b75594d5f5c9a247f91d42390068f96d4bf998",
+      "path": "skills/delivery-review/references/test-quality.md"
+    },
+    {
+      "identity": "sha256:2298926b2f3844831548f4f10c9d58d408eaf32e4505a270e2c0bd643eef3fa4",
+      "path": "skills/design/SKILL.md"
+    },
+    {
+      "identity": "sha256:004189d8bbf456a020165b74cdf1f322dc1d2b3ce0b14e81079c76963fdffed6",
+      "path": "skills/design/assets/design-skeleton.md"
+    },
+    {
+      "identity": "sha256:020be16bb4b01f1eb1a1605562ffd6b31af9e5ba2ee12b1a1e1735acb6378a56",
+      "path": "skills/design/assets/diagram-styles.mmd"
+    },
+    {
+      "identity": "sha256:86ed2ec3cd1152a3eb8c9dc7eb8a29c806bd122accd5d9752401cf2fecccab0d",
+      "path": "skills/design/assets/legacy-adr-skeleton.md"
+    },
+    {
+      "identity": "sha256:e6d3e17551cceb876f8b8e73c2bdff37c7793d7bb47d15361713f8a89c9ecafa",
+      "path": "skills/design/assets/legacy-architecture-skeleton.md"
+    },
+    {
+      "identity": "sha256:5ff3bd5cec3b6ad239ea1fa8676a2fb3cfae1a3ee8fb22876a96112de065727e",
+      "path": "skills/design/references/architecture-view-examples.md"
+    },
+    {
+      "identity": "sha256:7179b4f48e6ba5a1503237f58875f0dc5fe8cdc2c7e77f277c6debee714387b8",
+      "path": "skills/design/references/boundary-first-feature-authoring-v1.md"
+    },
+    {
+      "identity": "sha256:89337cf5da8462ad2afa0c50e04fb7233beea7ce030a049fa3a1695fc57ea2d0",
+      "path": "skills/design/references/boundary-first-method-v1.md"
+    },
+    {
+      "identity": "sha256:d7598a7af645b395db8332e64743d3c19c1529c705a0b2e7a349bae1d1d889f9",
+      "path": "skills/design/references/governed-design-authoring.md"
+    },
+    {
+      "identity": "sha256:87c0fee6c3a753cfb520dcd578de42c1f68d8eb3ddcd6dc16299826e57f86fae",
+      "path": "skills/design/references/legacy-source-reconciliation.md"
+    },
+    {
+      "identity": "sha256:8f24c82956dfafdee4d389b3c7353d3d73968e4c440a7c6fa10eabc47de5e06b",
+      "path": "skills/design/references/legacy-technical-authoring.md"
+    },
+    {
+      "identity": "sha256:6a556136cb73c4b7eb40393a5d5c97ffe6c14f75188a73200e466676bf0a8841",
+      "path": "skills/design/references/model-authoring.md"
+    },
+    {
+      "identity": "sha256:bbff5f36ced2f5e0ddc648a78278e378d81990b0266e0a7172b28d524a4da3cb",
+      "path": "skills/design/references/system-composition.md"
+    },
+    {
+      "identity": "sha256:45453043b926cf24f91756b8a46f51e2164926a15657ce1ab57a37e7f3be9f2f",
+      "path": "skills/design/references/technical-design.md"
+    },
+    {
+      "identity": "sha256:8b0a4b44f27de8c2d24ea21344b75594d5f5c9a247f91d42390068f96d4bf998",
+      "path": "skills/design/references/test-quality.md"
+    },
+    {
+      "identity": "sha256:f9ee51047c3a8c0cced45a9238d17f7341a7661563863b0380173883ece0fe18",
+      "path": "skills/design-review/SKILL.md"
+    },
+    {
+      "identity": "sha256:1a40d18438452d64bd395938d70d4fdc1c2a86dc948f002ece72042feebb86de",
+      "path": "skills/design-review/assets/material-finding.md"
+    },
+    {
+      "identity": "sha256:011d7c9d2662d7f19806bc4d19141bb50becf1327cac24f0926409fa3b9c4681",
+      "path": "skills/design-review/assets/review-result-skeleton.md"
+    },
+    {
+      "identity": "sha256:7179b4f48e6ba5a1503237f58875f0dc5fe8cdc2c7e77f277c6debee714387b8",
+      "path": "skills/design-review/references/boundary-first-feature-authoring-v1.md"
+    },
+    {
+      "identity": "sha256:89337cf5da8462ad2afa0c50e04fb7233beea7ce030a049fa3a1695fc57ea2d0",
+      "path": "skills/design-review/references/boundary-first-method-v1.md"
+    },
+    {
+      "identity": "sha256:36cb880ffebe096937325f40ab15f0182142514bab266ec23b6d2e08f7e5206d",
+      "path": "skills/design-review/references/design-review-recording-and-settlement.md"
+    },
+    {
+      "identity": "sha256:e19b99a0cb69b9051c6eeae20d76c4a0cf3925e8fd1686ceb6671c7749cc3dc5",
+      "path": "skills/design-review/references/requirement-to-delivery-model.md"
+    },
+    {
+      "identity": "sha256:82e302a3a915f10d05b229a3550f462ca6b35a9e3f7e892ec7a393733c2c64e0",
+      "path": "skills/design-review/references/review-assessment.md"
+    },
+    {
+      "identity": "sha256:0ac3e3ccc77aee7e6d60d5d56dd61a1d7424aa3443910cb85d198993bdd82818",
+      "path": "skills/design-review/references/review-reliance.md"
+    },
+    {
+      "identity": "sha256:8b0a4b44f27de8c2d24ea21344b75594d5f5c9a247f91d42390068f96d4bf998",
+      "path": "skills/design-review/references/test-quality.md"
+    },
+    {
+      "identity": "sha256:efa0d878731c3061d8d6e1abe3bd10a09350ae6a007434b69cb6ca66dc36e6d9",
+      "path": "skills/explore/SKILL.md"
+    },
+    {
+      "identity": "sha256:563ac2485aae1b87bd810a39088248d98c9ad0c5ad35382f1453ef770cd0834c",
+      "path": "skills/explore/assets/exploration-skeleton.md"
+    },
+    {
+      "identity": "sha256:34e7f9f8700cc36cbd75d5c738960fea850597c8c0984f029fd7513757045ffb",
+      "path": "skills/explore/references/discovery-support.md"
+    },
+    {
+      "identity": "sha256:453fab982d0f956cc5a0da6aab90ca426a8221952bcf0b97a52c2b67e857d1cd",
+      "path": "skills/explore/references/high-impact-decision-method.md"
+    },
+    {
+      "identity": "sha256:b675f6ba638dc741930c52f88037b3eeff3759996c6fafd1b2a2f2d68b64d0d3",
+      "path": "skills/explore/references/option-discovery-methods.md"
+    },
+    {
+      "identity": "sha256:ca44a09944d4fca982dd831d270144cc61652e9f09e3cf4d62f209d70eb2a068",
+      "path": "skills/implement/SKILL.md"
+    },
+    {
+      "identity": "sha256:c3b6dc912d2d0afd18fcc9a89a308aaa86cbe14d35f3e604846c703c35a2ee2d",
+      "path": "skills/implement/assets/implementation-result-skeleton.md"
+    },
+    {
+      "identity": "sha256:a01c95993574f75b9712ab5d671c55e7a9808e1593e870ea4fdcfea9c803ba98",
+      "path": "skills/implement/references/automated-review-correction.md"
+    },
+    {
+      "identity": "sha256:89337cf5da8462ad2afa0c50e04fb7233beea7ce030a049fa3a1695fc57ea2d0",
+      "path": "skills/implement/references/boundary-first-method-v1.md"
+    },
+    {
+      "identity": "sha256:4314ea671b56f89ea9e04db0f0e69d03a902950483d72f015aef045b4dabbd1c",
+      "path": "skills/implement/references/governed-implementation-recording.md"
+    },
+    {
+      "identity": "sha256:3fbdfcf4de28c316af271109d4798797d3b11c3a198478fad3e8c25ea507cc71",
+      "path": "skills/implement/references/planned-milestone-implementation.md"
+    },
+    {
+      "identity": "sha256:0ac3e3ccc77aee7e6d60d5d56dd61a1d7424aa3443910cb85d198993bdd82818",
+      "path": "skills/implement/references/review-reliance.md"
+    },
+    {
+      "identity": "sha256:7c7037e519b4558f8126460892ff33721026e05b2d8f7469b7ba86477ee81b9b",
+      "path": "skills/implement/references/test-maintenance.md"
+    },
+    {
+      "identity": "sha256:8b0a4b44f27de8c2d24ea21344b75594d5f5c9a247f91d42390068f96d4bf998",
+      "path": "skills/implement/references/test-quality.md"
+    },
+    {
+      "identity": "sha256:5d17ddfa86443e6d4c5db1751bee6d270a829524bde3959432bdb29d26b537c5",
+      "path": "skills/learn/SKILL.md"
+    },
+    {
+      "identity": "sha256:13ee89432023349ea066943da5951837bdd38c3ee6bfcfc28ebfd511af28abad",
+      "path": "skills/learn/references/session-method.md"
+    },
+    {
+      "identity": "sha256:5bef8bd9d85a7a1139bc20a4fb0e62ce2a2046f7bbd61fd64496bd4398cc7068",
+      "path": "skills/plan/SKILL.md"
+    },
+    {
+      "identity": "sha256:f461dd267b53fa6690f9ee8222e4fa8642e27a3cafe530fd8fa75bb2243bb5fb",
+      "path": "skills/plan/assets/decision-log-row.md"
+    },
+    {
+      "identity": "sha256:007c46c11105018bc0429b7bc85aef0f555b4ce654cdcce27f4f4657e0ba9c75",
+      "path": "skills/plan/assets/milestone.md"
+    },
+    {
+      "identity": "sha256:21061218b060228c8f3361e1f375008fb66d60b7cda9fc1347c0589f2c369828",
+      "path": "skills/plan/assets/plan-skeleton.md"
+    },
+    {
+      "identity": "sha256:c66bfce2f8ed9a0772aa3b53633f3d7819a46dfeafd9f241041373b7502f2346",
+      "path": "skills/plan/references/boundary-and-negative-verification.md"
+    },
+    {
+      "identity": "sha256:89337cf5da8462ad2afa0c50e04fb7233beea7ce030a049fa3a1695fc57ea2d0",
+      "path": "skills/plan/references/boundary-first-method-v1.md"
+    },
+    {
+      "identity": "sha256:458a50b4fc744502d8c85227f0ef71a7f202b6623799fe5c2b0128cbd4a7a3b0",
+      "path": "skills/plan/references/concurrency-and-retry-verification.md"
+    },
+    {
+      "identity": "sha256:2879a21841562b4b41273148b2212bf32a083c0f1d6e029c8633acb7d01eeb12",
+      "path": "skills/plan/references/cross-milestone-integration-verification.md"
+    },
+    {
+      "identity": "sha256:7da74e3c307eca561f6d09986a4273a2109e103c4625120f5341b594d51e869c",
+      "path": "skills/plan/references/failure-and-recovery-verification.md"
+    },
+    {
+      "identity": "sha256:87d9c81f215ea8c7d4f86675e1450175058c2f44e902235bb1700e7e340389a2",
+      "path": "skills/plan/references/governed-plan-authoring.md"
+    },
+    {
+      "identity": "sha256:6de936e6bccc3b7dfa724573bccd33fcab13f197d85db2bd489893433b6f1758",
+      "path": "skills/plan/references/manual-and-operational-evidence.md"
+    },
+    {
+      "identity": "sha256:0ef6fd47a39cc8bc73ce00c32a474d062942fd5586f8ed5d958be4c76de65a44",
+      "path": "skills/plan/references/migration-and-compatibility-verification.md"
+    },
+    {
+      "identity": "sha256:e19b99a0cb69b9051c6eeae20d76c4a0cf3925e8fd1686ceb6671c7749cc3dc5",
+      "path": "skills/plan/references/requirement-to-delivery-model.md"
+    },
+    {
+      "identity": "sha256:0ac3e3ccc77aee7e6d60d5d56dd61a1d7424aa3443910cb85d198993bdd82818",
+      "path": "skills/plan/references/review-reliance.md"
+    },
+    {
+      "identity": "sha256:b45e5908eb7acec77f39c451cb55c2d630da5a2a85502d16937b9e7347aaec48",
+      "path": "skills/plan/references/security-and-authority-verification.md"
+    },
+    {
+      "identity": "sha256:17e276d6f01f851b3002a00f44bddfee0dd1720878d562ebda9fd0b250f73641",
+      "path": "skills/plan/references/state-machine-verification.md"
+    },
+    {
+      "identity": "sha256:7c7037e519b4558f8126460892ff33721026e05b2d8f7469b7ba86477ee81b9b",
+      "path": "skills/plan/references/test-maintenance.md"
+    },
+    {
+      "identity": "sha256:8b0a4b44f27de8c2d24ea21344b75594d5f5c9a247f91d42390068f96d4bf998",
+      "path": "skills/plan/references/test-quality.md"
+    },
+    {
+      "identity": "sha256:948e12262daf061361febfba9c3f3bd366576cd3403343fce6d5d50e51643128",
+      "path": "skills/pr/SKILL.md"
+    },
+    {
+      "identity": "sha256:717f484d26d68ca651976faa2ae26edc776bbded073592138a6a3993cc2b9cd1",
+      "path": "skills/pr/assets/pr-body-skeleton.md"
+    },
+    {
+      "identity": "sha256:640b6c938ec69cf71537da9adc371b50eb336421527ff9dc2b744768ed3ea83f",
+      "path": "skills/pr/references/governed-pr-readiness.md"
+    },
+    {
+      "identity": "sha256:0ac3e3ccc77aee7e6d60d5d56dd61a1d7424aa3443910cb85d198993bdd82818",
+      "path": "skills/pr/references/review-reliance.md"
+    },
+    {
+      "identity": "sha256:0ca90bb1cb731ffa6e702b82f77bccc3c5761154403e15cb6eb1157ec1d54013",
+      "path": "skills/project-map/SKILL.md"
+    },
+    {
+      "identity": "sha256:1bfc68c053deac5df9124c4f630492b263043ae65c4dd524fe964f4490ba3efe",
+      "path": "skills/project-map/assets/project-map-skeleton.md"
+    },
+    {
+      "identity": "sha256:d28ae2198d747e33b32e1fdbc2f0950c5f1b90e669f09a2d017ceae460b1b8ed",
+      "path": "skills/project-map/references/map-maintenance-and-area-coordination.md"
+    },
+    {
+      "identity": "sha256:d060a266b4c6b19c4000f43cad1d486ad1eec94ba96856a7696e2302341c06aa",
+      "path": "skills/proposal/SKILL.md"
+    },
+    {
+      "identity": "sha256:0c1a586ac38ed79a130404e0936cbf0a030060050b6278fab625e316a5642bc8",
+      "path": "skills/proposal/assets/proposal-skeleton.md"
+    },
+    {
+      "identity": "sha256:a2005e6f6e095ee33947e68b848ee9597730f4e1403580b63c9c549c13260cc0",
+      "path": "skills/proposal/references/governed-proposal-authoring.md"
+    },
+    {
+      "identity": "sha256:e19b99a0cb69b9051c6eeae20d76c4a0cf3925e8fd1686ceb6671c7749cc3dc5",
+      "path": "skills/proposal/references/requirement-to-delivery-model.md"
+    },
+    {
+      "identity": "sha256:f346b7a366e64de1b5046535132fd79381de77c9fcdf599363500229034476fa",
+      "path": "skills/proposal/references/strategic-and-scope-gates.md"
+    },
+    {
+      "identity": "sha256:fb016e07f7975b6a308494dd18fb044d43084df368c08e858349bd70191e9ea1",
+      "path": "skills/proposal-review/SKILL.md"
+    },
+    {
+      "identity": "sha256:d518a86f03d043d88e78e52bd2482882c81ffd82c486915be4567517ad5f4667",
+      "path": "skills/proposal-review/assets/material-finding.md"
+    },
+    {
+      "identity": "sha256:c2c95c45e032f1d4359ac2a0ddd784035658b621af84a4e04c483386d4b93754",
+      "path": "skills/proposal-review/assets/review-result-skeleton.md"
+    },
+    {
+      "identity": "sha256:4e6a02a1e769f2615829e00fc237d1996424719c5384afb9c6bf92023ac939bd",
+      "path": "skills/proposal-review/references/conditional-proposal-gates.md"
+    },
+    {
+      "identity": "sha256:a41826013c56d59f98abaab1909399582b7c771dcdb016b7f7c1f8560595bba8",
+      "path": "skills/proposal-review/references/proposal-review-recording-and-settlement.md"
+    },
+    {
+      "identity": "sha256:e19b99a0cb69b9051c6eeae20d76c4a0cf3925e8fd1686ceb6671c7749cc3dc5",
+      "path": "skills/proposal-review/references/requirement-to-delivery-model.md"
+    },
+    {
+      "identity": "sha256:82e302a3a915f10d05b229a3550f462ca6b35a9e3f7e892ec7a393733c2c64e0",
+      "path": "skills/proposal-review/references/review-assessment.md"
+    },
+    {
+      "identity": "sha256:0ac3e3ccc77aee7e6d60d5d56dd61a1d7424aa3443910cb85d198993bdd82818",
+      "path": "skills/proposal-review/references/review-reliance.md"
+    },
+    {
+      "identity": "sha256:8c515351026597bf999020bf25ae493df4429e21bc0f6b7d341a4ef975c01ecd",
+      "path": "skills/research/SKILL.md"
+    },
+    {
+      "identity": "sha256:0af8d7e88d3b2c3e11c816a487e05741ecae1f2688142df75b051128a538e6ca",
+      "path": "skills/research/assets/research-skeleton.md"
+    },
+    {
+      "identity": "sha256:34e7f9f8700cc36cbd75d5c738960fea850597c8c0984f029fd7513757045ffb",
+      "path": "skills/research/references/discovery-support.md"
+    },
+    {
+      "identity": "sha256:c4889513a95a779796e72db751ed6704fc6e7cf5b23acba7d4a0a602c282bba4",
+      "path": "skills/research/references/experiment-and-confidence-method.md"
+    },
+    {
+      "identity": "sha256:96db28c08f5bb5e80ddf2840ed3606e8af5f296aff7a433e762d5b5739635259",
+      "path": "skills/research/references/source-and-repository-method.md"
+    },
+    {
+      "identity": "sha256:7ef76959ad5415890fffedead1af6fba55a39c849a8f9531329e855acd418143",
+      "path": "skills/route/SKILL.md"
+    },
+    {
+      "identity": "sha256:89337cf5da8462ad2afa0c50e04fb7233beea7ce030a049fa3a1695fc57ea2d0",
+      "path": "skills/route/references/boundary-first-method-v1.md"
+    },
+    {
+      "identity": "sha256:e6069cfc3b63578853a5622931146407af99861e0d2d85f96049738d72838e5c",
+      "path": "skills/route/references/bounded-workflow-automation.md"
+    },
+    {
+      "identity": "sha256:9b87caeadf713953a47ec019f6ac1972fe656b09d32bfae83122dd87d4b15b56",
+      "path": "skills/route/references/governed-lifecycle-routing.md"
+    },
+    {
+      "identity": "sha256:0ac3e3ccc77aee7e6d60d5d56dd61a1d7424aa3443910cb85d198993bdd82818",
+      "path": "skills/route/references/review-reliance.md"
+    },
+    {
+      "identity": "sha256:7c7037e519b4558f8126460892ff33721026e05b2d8f7469b7ba86477ee81b9b",
+      "path": "skills/route/references/test-maintenance.md"
+    },
+    {
+      "identity": "sha256:8b0a4b44f27de8c2d24ea21344b75594d5f5c9a247f91d42390068f96d4bf998",
+      "path": "skills/route/references/test-quality.md"
+    },
+    {
+      "identity": "sha256:71e429d296885eb46f7c7e1903e6cc05b60c79d35e331a3a56d2b945fbaf2ef4",
+      "path": "skills/verify/SKILL.md"
+    },
+    {
+      "identity": "sha256:0555d0faa7bd43db14c8432efbaca9499bb8679c3512e1ebaff23a67ce595a16",
+      "path": "skills/verify/assets/verify-report-skeleton.md"
+    },
+    {
+      "identity": "sha256:89337cf5da8462ad2afa0c50e04fb7233beea7ce030a049fa3a1695fc57ea2d0",
+      "path": "skills/verify/references/boundary-first-method-v1.md"
+    },
+    {
+      "identity": "sha256:920ba4df53ff35ac846dfc6f43ab562ef33c494b7b91c9ebd398978901009543",
+      "path": "skills/verify/references/branch-readiness-verification.md"
+    },
+    {
+      "identity": "sha256:40c445c52193a4bc3bd7c09298942b74b75c428fbaba6608cd634641314cf8f2",
+      "path": "skills/verify/references/evidence-applicability.md"
+    },
+    {
+      "identity": "sha256:ce9a29eac445c15368448d6cab974080b1b2dda8ae81478748af95c36003a6b8",
+      "path": "skills/verify/references/final-impact-analysis.md"
+    },
+    {
+      "identity": "sha256:e19b99a0cb69b9051c6eeae20d76c4a0cf3925e8fd1686ceb6671c7749cc3dc5",
+      "path": "skills/verify/references/requirement-to-delivery-model.md"
+    },
+    {
+      "identity": "sha256:0ac3e3ccc77aee7e6d60d5d56dd61a1d7424aa3443910cb85d198993bdd82818",
+      "path": "skills/verify/references/review-reliance.md"
+    },
+    {
+      "identity": "sha256:d2e875322c6fe4a133a46b2a7994160793bbc6ed8cff6ceffcc0843c0193c693",
+      "path": "skills/verify/references/successful-explanation.md"
+    },
+    {
+      "identity": "sha256:7c7037e519b4558f8126460892ff33721026e05b2d8f7469b7ba86477ee81b9b",
+      "path": "skills/verify/references/test-maintenance.md"
+    },
+    {
+      "identity": "sha256:8b0a4b44f27de8c2d24ea21344b75594d5f5c9a247f91d42390068f96d4bf998",
+      "path": "skills/verify/references/test-quality.md"
+    },
+    {
+      "identity": "sha256:60c1478b79ccef8cdfe902a0fdcb2857c06b20caa8201463cd382f8937e5d05c",
+      "path": "skills/vision/SKILL.md"
+    },
+    {
+      "identity": "sha256:898bfed1f88674ef570af3928c7e5927daa4c40c8b9d8cf27e4e104bf2c12462",
+      "path": "skills/vision/assets/strategic-positioning-skeleton.md"
+    },
+    {
+      "identity": "sha256:1e94ae8b324ea1f3a68584c1d93ccd118c961147656ac9cfaea8f85c17fc666c",
+      "path": "skills/vision/assets/vision-skeleton.md"
+    },
+    {
+      "identity": "sha256:535e535565e3585e4d62de1b870c972d10173a0ea1e04151f0c8856b37872fae",
+      "path": "skills/vision/references/readme-vision-sync.md"
+    },
+    {
+      "identity": "sha256:84ca0d0a9dcab0d229cd7499f562b9e34849c3a3a696af8260cf8211697c269d",
+      "path": "skills/vision/references/strategic-vision-authoring.md"
+    },
+    {
+      "identity": "sha256:6faa52a99a86576f696ae723fc3fafce3553d8a8eae97a0a445327c818dd08b7",
+      "path": "docs/design/skill/skill.md"
+    },
+    {
+      "identity": "sha256:fd389fd478a412bb091bbe5ca976bc42466769c0a3184c68eb30e8124959fc4a",
+      "path": "docs/proposals/2026-09-15-skill-simplification.md"
+    },
+    {
+      "identity": "sha256:dda20558b508359cb33ebd15455f21c8a8975e47dcceb37ed64dc1336ac4638e",
+      "path": "docs/plans/2026-09-15-skill-simplification.md"
+    },
+    {
+      "identity": "sha256:184fad139d1bca2db42db633841ab90cf9b284d69846dc48906a0b5c88089965",
+      "path": "docs/follow-ups.md"
+    },
+    {
+      "identity": "sha256:6b66922daf31401279d8fd5a9e12ed39df323715ec32e676bd13a996f856bb7f",
+      "path": "docs/plan.md"
+    },
+    {
+      "identity": "sha256:5ccb37e68487fa495e9804cdc6471329c003b01b309cb08e68cc7c3e8d4c864f",
+      "path": "scripts/lib/validation/skill_validation.py"
+    },
+    {
+      "identity": "sha256:fe2934d930187290fb016138f203f7eef4a6b11714f6bc62eac9e73f7e3f15bf",
+      "path": "scripts/validate-guide-system.py"
+    },
+    {
+      "identity": "sha256:504cbe9317427874b32c61edff61ec901be155e619ae4362e95ebe07ff341997",
+      "path": "tests/engineering/validation/test-guide-system-validator.py"
+    },
+    {
+      "identity": "sha256:d2f7f243937243d480871fa551254f6c489c99482542294dc21c5f06ed4bbb17",
+      "path": "tests/skill/skill_contract_tests.py"
+    },
+    {
+      "identity": "sha256:e869294aff0baba44dd6414cf69f1cfbd1d67b34ae6cc5bde4b387aa01aa6800",
+      "path": "tests/skill/skill_guidance_tests.py"
+    },
+    {
+      "identity": "sha256:0e056f8b033eead8dc1899d27a3f62767940b8be3182a3f00e1b2cf75ce7c173",
+      "path": "tests/skill/test-skill-validator.py"
+    },
+    {
+      "identity": "sha256:a0af7a8dfcae2e46cc5b0f65bee040031227a791ca74d0634c60345022888b4c",
+      "path": "docs/changes/2026-09-15-skill-simplification/evidence.json"
+    },
+    {
+      "identity": "sha256:05f955250c43e948f9734e2eb6897d6175e42d18b7afe72cc27d131aa2812f8a",
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/delivery-review-ci.json"
+    },
+    {
+      "identity": "sha256:5b7c87f55880e59d1af388e2b345966b1e60f3ec9f013a6f807caa5767942d4a",
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/design-review-ci.json"
+    },
+    {
+      "identity": "sha256:49d6399b0936d051c027c5e1ec929b4719da5411fd6996b1707ab7a82cb8e280",
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/proposal-review.json"
+    },
+    {
+      "identity": "sha256:e20da7644db480cd86d05e5ef84d5411800f55ab69d3c97b560b428b2eb726dd",
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/m1-code-review-rereview.json"
+    },
+    {
+      "identity": "sha256:8fe7419c8148125687e31d371ceda7906c980e5829d61ad32f3105d8f9e73490",
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/m2-code-review.json"
+    },
+    {
+      "identity": "sha256:f3b349df7ffaeef93aec7bd847cf7010db393bbc4abaf09edf66ed8c529b4002",
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/m3-code-review.json"
+    },
+    {
+      "identity": "sha256:27171807e02f19020d49ce001d27cb215b0fdfb1965823a42e87467bb015aef5",
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/m4-code-review-rereview.json"
+    },
+    {
+      "identity": "sha256:aeaa024727332b4946587c421d258f17c3cf4fa67409e106bc01014ccca40e57",
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/m5-code-review.json"
+    },
+    {
+      "identity": "sha256:49f15fa37b4a7eabb0c208973b65fd01c03e73772c9767ee710d67e3c49af231",
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/m6-code-review.json"
+    },
+    {
+      "identity": "sha256:2135bb4643050ed701e9004150db43d9ab77eb922509ffa2709b12da49ea665e",
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/final-code-review-rereview.json"
+    },
+    {
+      "identity": "sha256:dcece9ee149cfa710cd0368e4085b2be8d007d47ef7a3a617a68c97a5730bf00",
+      "path": "docs/changes/2026-09-15-skill-simplification/material-decisions.json"
+    }
+  ],
+  "summary": "Skill simplification is branch-ready: eight improved and eleven justified retained packages preserve required obligations; all six milestones, fresh independent whole-change review and distinct final verification are complete.",
+  "verification_basis": {
+    "base_branch": "main",
+    "base_revision": "51833994a520bf29c9aae135e9405331cf76b755",
+    "head_branch": "skill-simplification-proposal",
+    "merge_base_revision": "51833994a520bf29c9aae135e9405331cf76b755",
+    "remote_identity": "git@github.com:xiongxianfei/rigorloop.git",
+    "repository_identity": "https://github.com/xiongxianfei/rigorloop",
+    "verified_subject_revision": "9e586773d1008ec8c0ee20ccbc98494b8c7c0d8a"
+  },
+  "verifier": {
+    "id": "codex-verifier",
+    "role": "verify"
+  }
+}

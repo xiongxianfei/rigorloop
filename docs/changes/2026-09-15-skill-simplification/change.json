@@ -1,0 +1,488 @@
+{
+  "activity": {
+    "owner": {
+      "id": "codex-verify",
+      "role": "verify"
+    },
+    "reason": "Distinct final Verify saved and read back successfully with exact immutable seven-field basis, current complete review/proof reliance and no open concerns. All governed work complete. User separately authorizes normal push and opening one PR; no merge/release authority.",
+    "stage": "verify",
+    "status": "completed"
+  },
+  "applicability": [
+    {
+      "actor": {
+        "id": "independent-proposal-review",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/proposal-review.json",
+      "reason": "Fresh independent formal assessment of the exact registered proposal and current governing basis, after explicit registration authority. The direction remains supported; the current Design draft is not an approved subject of this proposal assessment.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-author",
+        "role": "design"
+      },
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/design-review.json",
+      "reason": "CI assembly clarification changes the full Skill model and requires new independent Design and affected Delivery review before M4 reliance. Preserve original exact subjects/judgments; earlier reviewed pilot/authoring/coordination slices remain unchanged within their explicit scopes.",
+      "value": "stale"
+    },
+    {
+      "actor": {
+        "id": "codex-verifier",
+        "role": "verify"
+      },
+      "path": "docs/changes/2026-09-15-skill-simplification/evidence.json",
+      "reason": "Fresh final-state observations supplement unchanged engineering proof; evidence-only append does not reinterpret historical failed checks or retarget reviews.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-author",
+        "role": "design"
+      },
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/delivery-review.json",
+      "reason": "CI assembly clarification changes the full Skill model and requires new independent Design and affected Delivery review before M4 reliance. Preserve original exact subjects/judgments; earlier reviewed pilot/authoring/coordination slices remain unchanged within their explicit scopes.",
+      "value": "stale"
+    },
+    {
+      "actor": {
+        "id": "codex-route",
+        "role": "route"
+      },
+      "path": "docs/changes/2026-09-15-skill-simplification/material-decisions.json",
+      "reason": "Current direct user authorization and exact approved delivery scope.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-route",
+        "role": "route"
+      },
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/m1-code-review.json",
+      "reason": "Final review requires a scoped M1 Code Review handoff correction. Preserve original judgment/subjects; renewed M1 approval must assess the corrected package.",
+      "value": "stale"
+    },
+    {
+      "actor": {
+        "id": "independent-m2-review",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/m2-code-review.json",
+      "reason": "Fresh independent assessment of frozen M2 subjects, all six family dispositions and current applicable proof. All ten dimensions and required TG-01/04/05 observations support this milestone without material findings.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "independent-m3-review",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/m3-code-review.json",
+      "reason": "Fresh independent formal assessment of frozen M3 handoff, exact unchanged route/verify/pr packages, current proof and actual producer-consumer basis. All ten dimensions and M3 groups support retention with no material findings; final integrated refresh and later milestones remain required.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "independent-design-review",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/design-review-ci.json",
+      "reason": "Fresh independent complete-model assessment of the registered CI clarification under unchanged approved direction. All nine criteria are satisfied; open implementation correction does not prevent judging the settled Design and does not become resolved by this approval.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "independent-delivery-review-ci",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/delivery-review-ci.json",
+      "reason": "Fresh independent assessment of the exact amended primary plan against current design-review-ci and unchanged proposal constraints. Combined sequence, all19 scope, nine-assembly correction/proof and final closeout allocation are sufficient; the CI implementation blocker remains open and reporter-owned.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "independent-design-review",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/m4-code-review.json",
+      "reason": "First-pass changes-requested judgment remains valid historical evidence of its original subjects and defect; corrected sources require the new current complete m4-code-review-rereview. Original finding origin retained with reporter-owned resolution.",
+      "value": "stale"
+    },
+    {
+      "actor": {
+        "id": "independent-design-review",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/m4-code-review-rereview.json",
+      "reason": "Fresh complete M4 rereview against corrected current sources; original finding resolved by reporter with direct regression proof, unchanged upstream targets and current candidate evidence.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "independent-m5-review",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/m5-code-review.json",
+      "reason": "Fresh independent full-family assessment against exact current Design/Delivery and M5 proof; two-line correction preserves obligations, retentions are substantive and current candidate evidence covers both adapters. No unresolved necessary M5 correction remains.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "independent-m6-review",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/m6-code-review.json",
+      "reason": "Fresh independent full M6 package and accepted inventory-disposition assessment against unchanged current Design/Delivery authority, complete current proof and actual final candidate. No unresolved necessary M6 correction remains; final holistic review remains distinct.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "independent-design-review",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/final-code-review.json",
+      "reason": "Original first-pass changes-requested judgment retains exact original subjects and historical defect meaning. Corrected final sources and complete fresh proof are assessed by new final-code-review-rereview; no original approval/subject retargeting.",
+      "value": "stale"
+    },
+    {
+      "actor": {
+        "id": "independent-m1-correction-review",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/m1-code-review-rereview.json",
+      "reason": "Fresh independent full current M1 pair and one-phrase correction assessment against exact approved authority, unchanged guide consumer and fresh proof/candidates. Scope supports M1 only; final finding/blocker disposition and whole-change proof remain separately required.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "independent-design-review",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/final-code-review-rereview.json",
+      "reason": "Fresh complete corrected final engineering assessment and direct current package/proof inspection under unchanged exact approved direction/model/plan. Required reviewer finding resolved; root blocker disposition remains with reporter before Verify.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-verifier",
+        "role": "verify"
+      },
+      "path": "docs/changes/2026-09-15-skill-simplification/verify-report.json",
+      "reason": "Distinct successful complete final assessment of exact current subjects and justified unchanged engineering proof; later external identity checks remain PR-owned.",
+      "value": "current"
+    }
+  ],
+  "blockers": [
+    {
+      "evidence": "Current ci-maintenance Assemblies reassigns CIM1 to ordinary authoring and CIM4 to invalid stop; owning Skill Design declares CIM1-coverage-review and CIM4-coverage-github-revise, with nine exact long names. Root independently inspected both and historical R25/R26 at recoverable7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e:specs/ci-maintenance-skill-simplification.md:127–129. Implementation0fd262347dc26669110cd30e9d7633605ecee515 introduced the mismatch; no later Design amendment adopted it. Coverage/structural/privileged overlaps and creation resource sets require explicit resolution. Read-only independent preparation independently exposed this; no formal finding or existing judgment is fabricated.",
+      "id": "ci-assembly-mismatch",
+      "origin": {
+        "evidence": "Current ci-maintenance Assemblies reassigns CIM1 to ordinary authoring and CIM4 to invalid stop; owning Skill Design declares CIM1-coverage-review and CIM4-coverage-github-revise, with nine exact long names. Root independently inspected both and historical R25/R26 at recoverable7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e:specs/ci-maintenance-skill-simplification.md:127–129. Implementation0fd262347dc26669110cd30e9d7633605ecee515 introduced the mismatch; no later Design amendment adopted it. Coverage/structural/privileged overlaps and creation resource sets require explicit resolution. Read-only independent preparation independently exposed this; no formal finding or existing judgment is fabricated.",
+        "rationale": "SKL-SR-29/30/32 preserve current specialist values and require assessed retention or complete correction; an actual contract mismatch cannot be retained as compliant. This blocks M4-dependent work only.",
+        "reporter": {
+          "id": "codex-implementer",
+          "role": "implement"
+        },
+        "required_outcome": "Design owner clarifies unique selection and complete resources under the nine existing intended values, including denied and late-privilege cases; independent Design/Delivery assessment precedes implementation. M4 restores guidance and consumer protection, proves normal/combined/unknown/denied/late cases, and receives independent Code Review. Historical records stay unchanged; no new modes or permissions.",
+        "subjects": [
+          {
+            "identity": "sha256:e93d9f7891ea9eca3e6dd6c8677027b3d2871d1c1a05ca15f640ac14f2aca11b",
+            "path": "docs/design/skill/skill.md"
+          },
+          {
+            "identity": "sha256:c008afcc679e337de9c885dbfba583b7cee94d86766ef9bbdce546cabc703ac9",
+            "path": "skills/ci-maintenance/SKILL.md"
+          }
+        ],
+        "supporting_judgment": null
+      },
+      "owner": {
+        "id": "codex-implementer",
+        "role": "implement"
+      },
+      "reporter": {
+        "id": "codex-implementer",
+        "role": "implement"
+      },
+      "required_outcome": "Design owner clarifies unique selection and complete resources under the nine existing intended values, including denied and late-privilege cases; independent Design/Delivery assessment precedes implementation. M4 restores guidance and consumer protection, proves normal/combined/unknown/denied/late cases, and receives independent Code Review. Historical records stay unchanged; no new modes or permissions.",
+      "resolution": {
+        "actor": {
+          "id": "codex-implementer",
+          "role": "implement"
+        },
+        "evidence_refs": [
+          {
+            "id": "ci-design-authoring",
+            "path": "docs/changes/2026-09-15-skill-simplification/evidence.json"
+          },
+          {
+            "id": "ci-plan-authoring",
+            "path": "docs/changes/2026-09-15-skill-simplification/evidence.json"
+          },
+          {
+            "id": "m4-validation",
+            "path": "docs/changes/2026-09-15-skill-simplification/evidence.json"
+          },
+          {
+            "id": "m4-fence-correction",
+            "path": "docs/changes/2026-09-15-skill-simplification/evidence.json"
+          }
+        ],
+        "rationale": "As original reporter, assessed approved SKL-DEC-08 Design and amended Delivery allocation, actual corrected full CI selection/resources and original negative/fence correction proof. Fresh independent m4-code-review-rereview approves complete repair package and resolves its own finding. Required outcome met; preserve original blocker evidence/subjects and source provenance. No permission or runtime classifier added."
+      },
+      "state": "resolved",
+      "subjects": [
+        {
+          "identity": "sha256:e93d9f7891ea9eca3e6dd6c8677027b3d2871d1c1a05ca15f640ac14f2aca11b",
+          "path": "docs/design/skill/skill.md"
+        },
+        {
+          "identity": "sha256:c008afcc679e337de9c885dbfba583b7cee94d86766ef9bbdce546cabc703ac9",
+          "path": "skills/ci-maintenance/SKILL.md"
+        }
+      ]
+    },
+    {
+      "evidence": "Final PR-mode CI and direct guide check deterministically reject new Code Review handoff phrase that names Workflow as semantic routing actor (ROUTE-GUIDE-010). Current route skill and Workflow contract separate actor from model.",
+      "id": "final-routing-actor",
+      "origin": {
+        "evidence": "Final PR-mode CI and direct guide check deterministically reject new Code Review handoff phrase that names Workflow as semantic routing actor (ROUTE-GUIDE-010). Current route skill and Workflow contract separate actor from model.",
+        "rationale": "Final required check exposes same-slice consumer miss in M1; current authority already identifies route. No new Design or permission decision; implementation wording correction and independent reassessment are required.",
+        "reporter": {
+          "id": "codex-implementer",
+          "role": "implement"
+        },
+        "required_outcome": "Restore route actor wording in M1 Code Review handoff, preserve guide validator, rerun original failed proof and package/current full-branch checks, obtain affected independent M1 rereview and fresh whole-change Code Review. Reporter assesses proof before resolution.",
+        "subjects": [
+          {
+            "identity": "sha256:80a10b07f2d972ac81a8395f7bce1eb7339871fd1831d74852ae4c2b1bde6760",
+            "path": "skills/code-review/SKILL.md"
+          },
+          {
+            "identity": "sha256:fe2934d930187290fb016138f203f7eef4a6b11714f6bc62eac9e73f7e3f15bf",
+            "path": "scripts/validate-guide-system.py"
+          },
+          {
+            "identity": "sha256:504cbe9317427874b32c61edff61ec901be155e619ae4362e95ebe07ff341997",
+            "path": "tests/engineering/validation/test-guide-system-validator.py"
+          }
+        ],
+        "supporting_judgment": null
+      },
+      "owner": {
+        "id": "codex-implementer",
+        "role": "implement"
+      },
+      "reporter": {
+        "id": "codex-implementer",
+        "role": "implement"
+      },
+      "required_outcome": "Restore route actor wording in M1 Code Review handoff, preserve guide validator, rerun original failed proof and package/current full-branch checks, obtain affected independent M1 rereview and fresh whole-change Code Review. Reporter assesses proof before resolution.",
+      "resolution": {
+        "actor": {
+          "id": "codex-implementer",
+          "role": "implement"
+        },
+        "evidence_refs": [
+          {
+            "id": "m1-routing-correction",
+            "path": "docs/changes/2026-09-15-skill-simplification/evidence.json"
+          },
+          {
+            "id": "integrated-final-candidate",
+            "path": "docs/changes/2026-09-15-skill-simplification/evidence.json"
+          },
+          {
+            "id": "final-pr-validation",
+            "path": "docs/changes/2026-09-15-skill-simplification/evidence.json"
+          }
+        ],
+        "rationale": "Original reporter reassessed exact de0e6cec correction, unchanged guide oracle and 13 passing regressions, fresh corrected package qualification, successful original-base full PR-mode proof, approved M1 rereview and fresh complete final-code-review-rereview. Required outcome satisfied; original failed evidence and blocker subjects preserve their historical meaning."
+      },
+      "state": "resolved",
+      "subjects": [
+        {
+          "identity": "sha256:80a10b07f2d972ac81a8395f7bce1eb7339871fd1831d74852ae4c2b1bde6760",
+          "path": "skills/code-review/SKILL.md"
+        },
+        {
+          "identity": "sha256:fe2934d930187290fb016138f203f7eef4a6b11714f6bc62eac9e73f7e3f15bf",
+          "path": "scripts/validate-guide-system.py"
+        },
+        {
+          "identity": "sha256:504cbe9317427874b32c61edff61ec901be155e619ae4362e95ebe07ff341997",
+          "path": "tests/engineering/validation/test-guide-system-validator.py"
+        }
+      ]
+    }
+  ],
+  "change_id": "2026-09-15-skill-simplification",
+  "contract": "rigorloop-records-v3",
+  "models": [
+    {
+      "id": "skill",
+      "subject": {
+        "identity": "sha256:6faa52a99a86576f696ae723fc3fafce3553d8a8eae97a0a445327c818dd08b7",
+        "path": "docs/design/skill/skill.md"
+      }
+    }
+  ],
+  "plan": {
+    "identity": "sha256:dda20558b508359cb33ebd15455f21c8a8975e47dcceb37ed64dc1336ac4638e",
+    "path": "docs/plans/2026-09-15-skill-simplification.md"
+  },
+  "proposal": {
+    "identity": "sha256:fd389fd478a412bb091bbe5ca976bc42466769c0a3184c68eb30e8124959fc4a",
+    "path": "docs/proposals/2026-09-15-skill-simplification.md"
+  },
+  "records": [
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/proposal-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/design-review.json"
+    },
+    {
+      "kind": "evidence",
+      "path": "docs/changes/2026-09-15-skill-simplification/evidence.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/delivery-review.json"
+    },
+    {
+      "kind": "decisions",
+      "path": "docs/changes/2026-09-15-skill-simplification/material-decisions.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/m1-code-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/m2-code-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/m3-code-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/design-review-ci.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/delivery-review-ci.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/m4-code-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/m4-code-review-rereview.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/m5-code-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/m6-code-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/final-code-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/m1-code-review-rereview.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/final-code-review-rereview.json"
+    },
+    {
+      "kind": "verify",
+      "path": "docs/changes/2026-09-15-skill-simplification/verify-report.json"
+    }
+  ],
+  "schema_version": 3,
+  "work": [
+    {
+      "id": "m1",
+      "owner": {
+        "id": "codex-implementer",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "SKL-SR-30",
+        "SKL-SR-32",
+        "SKL-SR-31"
+      ],
+      "status": "completed"
+    },
+    {
+      "id": "m2",
+      "owner": {
+        "id": "codex-implementer",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "SKL-SR-30",
+        "SKL-SR-32"
+      ],
+      "status": "completed"
+    },
+    {
+      "id": "m3",
+      "owner": {
+        "id": "codex-implementer",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "SKL-SR-30",
+        "SKL-SR-32"
+      ],
+      "status": "completed"
+    },
+    {
+      "id": "m4",
+      "owner": {
+        "id": "codex-implementer",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "SKL-SR-30",
+        "SKL-SR-32"
+      ],
+      "status": "completed"
+    },
+    {
+      "id": "m5",
+      "owner": {
+        "id": "codex-implementer",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "SKL-SR-30",
+        "SKL-SR-32"
+      ],
+      "status": "completed"
+    },
+    {
+      "id": "m6",
+      "owner": {
+        "id": "codex-implementer",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "SKL-SR-30",
+        "SKL-SR-32"
+      ],
+      "status": "completed"
+    }
+  ]
+}

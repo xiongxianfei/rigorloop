@@ -91,7 +91,6 @@ The plan's primary responsibility is to define the safe engineering and dependen
 - Keep concrete test and check mechanics implementation-owned. A verification group is plan-local stable intent, not a governed artifact, lifecycle state, replacement requirement hierarchy, or standalone verification skill.
 - Keep ordinary verification guidance compact. Load only the specialist method whose risk trigger applies; do not load every specialist reference by default.
 
-Do not load every specialist reference by default.
 - Name exact repository-owned validation commands. Record a visible rationale when an applicable proof cannot be automated.
 - Keep milestones small enough for independent implementation and code review, with explicit commit boundaries when the project requires them.
 - Keep `docs/plan.md` as navigation, never as a second plan body or state owner.

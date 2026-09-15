@@ -1,0 +1,169 @@
+{
+  "assessment_scope": "Formal first-round milestone Code Review of M1, baseline 6ffd08e9cce0d3ab28090fab3b1570adbd50a84f to final implementation commit e8d0674f, including pilot bodies/references, affected validator/tests, TG-06 cleanup and current evidence. Other listed subjects bind governing proposal/Design/Delivery and exact proof basis. All ten review dimensions and TG-01/02/03/05/06 are assessed together; no material findings. The remaining five milestones and final integrated review/Verify are outside this milestone approval.",
+  "change_id": "2026-09-15-skill-simplification",
+  "contributors": [
+    {
+      "id": "codex-implementer",
+      "role": "implement"
+    }
+  ],
+  "findings": [],
+  "id": "m1-code-review",
+  "independence_basis": "Parent /root authored the M1 implementation. Separate agent /root/independent_design_review independently read the actual baseline-to-final diff, complete changed skill entrypoints and selected references/assets, affected tests/readers, current approved direction/Design/Delivery and frozen proof without editing implementation. It assessed instruction paths before relying on author evidence and independently checked recording-paragraph preservation, archive bytes and advisory provenance. Its prior independent Design/Delivery assessments did not author the implementation. This is a manually delegated formal milestone review, not a claim to run a retired automation adapter.",
+  "judgment": "approved",
+  "limitations": [
+    "This milestone approval does not establish full-inventory completion, final whole-change review, Verify, branch/PR readiness or hosted CI success. M2–M6 and required integrated/final gates remain.",
+    "Instruction walkthroughs are independent semantic assessment, not observed customer-agent execution or a token/runtime benchmark. Candidate evidence covers the recorded local Codex/Claude archives and temporary installed pilot packages only.",
+    "Final complete original-base-to-engineering-head validation remains required to cover committed work, including TG-06 net-change reconciliation. Unchanged original upstream identities retain their scoped rationale; expected supporting-source drift must not be mechanically retargeted or confused with approval of later implementation."
+  ],
+  "rationale": [
+    "1. Spec alignment — pass. The exact M1 diff from 6ffd08e9cce0d3ab28090fab3b1570adbd50a84f through e8d0674f implements SKL-SR-30–32 and DEC-06/07: core scope/classification precedes recording detail; two exact local references carry independent recording; specialist duties, public invocations and existing output assets remain intact. Registered obligation groups accurately identify consolidation, unchanged destinations and the remaining 17-skill allocation. Approval covers M1 only.",
+    "2. Test coverage — pass. Independent fixture inputs extend the existing recording-reference faults to implement/code-review without taking expected paths from production configuration. Tests detect missing boundary/classification/load trigger/profile heading, missing revision token, missing selected file despite inline/unrelated fallback, escaped/undecodable file and wrong mapping. The plan-surface regression checks current change.json and rejects retired change.yaml under the relocated boundary. Tests are imported into the supported runner. Existing nonpilot profile checks and shared/package parity retain their protection. The registered 18 failing-before assertions and final 292-test pass support intended detection rather than merely changed wording.",
+    "3. Edge cases — pass. TG-02 independent instruction walkthrough: a clear isolated request selects IP0 from Scope and inputs, reads required local behavior/proof, performs proof-first work and core result/handoff without planned/automation references. A valid planned manual request selects IP1 and its unchanged milestone reference; exact Design/Delivery/milestone authority stays required. Adding a governed recording trigger to either path loads its own complete recording reference and does not arm automation. Valid IP2 additionally loads the unchanged automation procedure; a retired-adapter dependency stops before effects. A late recording trigger rechecks authority and loads the exact local method before the write. These are semantic observations of the actual selected instructions, not customer agent execution claims.",
+    "4. Error handling — pass. Missing, stale, ambiguous or conflicting required authority prevents affected judgment/mutation; unknown profiles reject before consistency. Required unreadable/escaped/stale/mixed resources stop dependent work without reconstruction or portable fallback. An untriggered missing resource does not block unrelated runtime work but fails package integrity. The relocated exact original recording paragraphs retain omitted-scope caution, schema dispatch, revision/read identities, conflict reread, explicit recovery and the distinction between busy/interrupted recording and a successful save. Manual formal review retains recording-before-correction and no false durable claim on failure.",
+    "5. Architecture boundaries — pass. Implementation owns code/proof/evidence, reviewers own independent judgment/findings, Workflow owns state and continuation, and successful Verify owns final explanation. A manual review reaches scope and isolation before conditional storage; adopted policy has independent triggers and portable review remains bounded by its project authority. The implemented handoff removes the competing historical suggestion that Code Review itself changes milestone state. Output structure and required fields remain in unchanged assets; policy remains in procedure. No new shared runtime or cross-skill installation dependency is introduced.",
+    "6. Compatibility — pass. Existing frontmatter, descriptions, profile values, native review outcomes, result fields, shared policy applications, planned/automation references, CLI and record formats remain unchanged. Reviewer materiality/direct-proof/rereview obligations survive consolidation. The author corrected only actual selected recording readers and the tested implement plan-surface helper; installed-review placement remains unaffected because its current map selects only proposal-review. The discarded unreachable code-review placement condition is absent from the final diff. Nonpilot layouts are not subjected to the new equivalent.",
+    "7. Security/privacy — pass. No credentials, private runtime payloads or new external actions enter the product diff. References remain skill-local, selected paths are containment checked, and escaped-path tests exercise rejection. Persistence guidance preserves exact authority, other actors decisions and blocker origins without turning storage into approval. Candidate work is confined to owned temporary directories. TG-06 preservation neither rewrites advisory meaning nor grants release/installation authority.",
+    "8. Derived artifact currency — pass. The frozen V4 log reports both supported generated archives and clean installations for implement/code-review. I independently opened both actual archives and compared every file of both complete pilot packages against current canonical bytes, with only the declared Claude entrypoint frontmatter transform excluded from body comparison. The observed archive SHA256 values match registered evidence: codex 02c334e5e5b75b48d88233761599ecad665d123863f5558f0c329b18c497fdde; claude d86dab68ada6640435a03fecdc65f0b6a34ac32baf6f808100b12a2a3f45d879. New references and unchanged transitive methods/assets are present, including conditionally unused resources. The later validator-only dead-branch reversal changes no candidate source/generator input; V2 and V6 were rerun afterward.",
+    "9. Unrelated changes — pass. The actual engineering diff is confined to the two pilot packages, directly affected validator/tests and planned TG-06 cleanup/evidence. The full inventory is named and allocated but M2–M6 remain pending. No unrelated skill policy, generated output, external platform or implementation runtime is changed. Recorded review/work state is treated separately from engineering approval.",
+    "10. Validation evidence — pass. I read current m1-obligations/m1-validation/m1-advisory-provenance and checked actual diagnostic summaries: V2 reports 292 tests OK, V3 reports 95 tests OK, V4 reports Gate B archives/clean installs, and V6 reports all selected checks passed. Exact CLI-inspected package/test identities match the registered frozen validation subjects. Fresh reviewer V1 for both canonical entrypoints passed; staged whitespace check passed. Earlier concurrent-source packaging failure is explicitly discarded and final frozen proof replaces it. Generic skill-creator rejection of existing repository-approved metadata is disclosed and is not a required product checker. No hosted CI success is inferred.",
+    "TG-01/02 semantic acceptance — useful improvement established. Before the change, both entrypoints required traversing detailed conditional recording before role/classification and implement mixed isolated/planned inputs; code-review also repeated historical routing beside current policy. Now scope, core evidence and invocation selection precede the local recording boundary, and the selected reference alone adds the complete recording method. A governed manual reviewer can inspect exact diff, apply all ten dimensions, report supported findings before correction, then record without assuming automation. A non-governed advisory reviewer keeps exact target, independent judgment, findings, portable project-selected recording and isolated handoff. Material findings and final whole-change requirements remain visible. Both original five-paragraph recording procedures were independently compared and retained byte-for-byte in their new references. This reduces competing prerequisite/ownership interpretation on the selected paths; line counts are not the acceptance oracle.",
+    "TG-03/05 consumer adequacy — the selected recording validator no longer silently returns when either pilot loses its inline heading: each exact local reference, resource-map trigger and classification is mandatory. Wrong/unrelated content cannot substitute. Existing archive tests use an independent filesystem inventory and exercise generated/archived stale bytes, while actual selected pilot clean installations cover installed availability. No new broad natural-language scoring or duplicated runtime persistence test is required for an unchanged CLI.",
+    "TG-06 — preservation is complete within M1. The advisory bytes remain recoverable at 6ffd08e9cce0d3ab28090fab3b1570adbd50a84f:docs/reviews/2026-09-15-skill-simplification-proposal-review.md. I independently read that Git object and obtained SHA256 8a42be20016885af42306024f711439766457b96e551c8c13226e0c39dc1663b, confirmed baseline ancestry and absence of the advisory path from the cumulative original-base diff. Commit b566968e retires the live path after formal records own reliance; evidence preserves exact provenance and explains the invalid deletion-only interim. No selector exemption or current runtime dependency on the advisory remains. Final original-base/head selection remains required for complete branch readiness.",
+    "Upstream applicability reassessment by the original independent Design/Delivery assessor — the unchanged Skill model, proposal and primary plan retain their current approved meaning and constraints. The original Design review included pre-implementation pilot/validator files as explicitly scoped feasibility observations, not additional approval targets. Their anticipated implementation changes do not contradict that rationale: the current diff realizes the selected destinations and preserves obligations, as assessed above. Original Design subject identities remain intact and are not retargeted. Likewise appending M1 checks to evidence.json does not change the original plan-authoring-validation entry or Delivery allocation. Mechanical subject-drift from these expected supporting-file changes is not a newly invalid governing Design or Delivery judgment. Current implementation reliance is bound by this fresh M1 review and its exact new subjects; future contradictory evidence still requires reassessment.",
+    "Handoff — current scoped context identifies M1 in progress and ready for Code Review, with M2–M6 pending and no current findings/blockers in the complete selected scope. This clean M1 judgment returns to route for its own milestone closeout and authorized M2 selection. It neither changes work state nor supplies final whole-change review, integrated all-inventory proof or Verify."
+  ],
+  "reviewer": {
+    "id": "independent-m1-review",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:ca44a09944d4fca982dd831d270144cc61652e9f09e3cf4d62f209d70eb2a068",
+      "path": "skills/implement/SKILL.md"
+    },
+    {
+      "identity": "sha256:c3b6dc912d2d0afd18fcc9a89a308aaa86cbe14d35f3e604846c703c35a2ee2d",
+      "path": "skills/implement/assets/implementation-result-skeleton.md"
+    },
+    {
+      "identity": "sha256:a01c95993574f75b9712ab5d671c55e7a9808e1593e870ea4fdcfea9c803ba98",
+      "path": "skills/implement/references/automated-review-correction.md"
+    },
+    {
+      "identity": "sha256:89337cf5da8462ad2afa0c50e04fb7233beea7ce030a049fa3a1695fc57ea2d0",
+      "path": "skills/implement/references/boundary-first-method-v1.md"
+    },
+    {
+      "identity": "sha256:4314ea671b56f89ea9e04db0f0e69d03a902950483d72f015aef045b4dabbd1c",
+      "path": "skills/implement/references/governed-implementation-recording.md"
+    },
+    {
+      "identity": "sha256:3fbdfcf4de28c316af271109d4798797d3b11c3a198478fad3e8c25ea507cc71",
+      "path": "skills/implement/references/planned-milestone-implementation.md"
+    },
+    {
+      "identity": "sha256:0ac3e3ccc77aee7e6d60d5d56dd61a1d7424aa3443910cb85d198993bdd82818",
+      "path": "skills/implement/references/review-reliance.md"
+    },
+    {
+      "identity": "sha256:7c7037e519b4558f8126460892ff33721026e05b2d8f7469b7ba86477ee81b9b",
+      "path": "skills/implement/references/test-maintenance.md"
+    },
+    {
+      "identity": "sha256:8b0a4b44f27de8c2d24ea21344b75594d5f5c9a247f91d42390068f96d4bf998",
+      "path": "skills/implement/references/test-quality.md"
+    },
+    {
+      "identity": "sha256:80a10b07f2d972ac81a8395f7bce1eb7339871fd1831d74852ae4c2b1bde6760",
+      "path": "skills/code-review/SKILL.md"
+    },
+    {
+      "identity": "sha256:69d15f3af3d6d4eee4a6220a78c784c0deb40818128c235531f894c72ff4d0d9",
+      "path": "skills/code-review/assets/material-finding.md"
+    },
+    {
+      "identity": "sha256:3bcba3cc33836cd001205dd8b05c67a46aaff74ae405c9e58c84cec4786324b3",
+      "path": "skills/code-review/assets/review-result-skeleton.md"
+    },
+    {
+      "identity": "sha256:89337cf5da8462ad2afa0c50e04fb7233beea7ce030a049fa3a1695fc57ea2d0",
+      "path": "skills/code-review/references/boundary-first-method-v1.md"
+    },
+    {
+      "identity": "sha256:456244060bca19154279328b27a3f254ddebadcf3ff24f155949f8d3c48e3674",
+      "path": "skills/code-review/references/governed-code-review-recording.md"
+    },
+    {
+      "identity": "sha256:e19b99a0cb69b9051c6eeae20d76c4a0cf3925e8fd1686ceb6671c7749cc3dc5",
+      "path": "skills/code-review/references/requirement-to-delivery-model.md"
+    },
+    {
+      "identity": "sha256:82e302a3a915f10d05b229a3550f462ca6b35a9e3f7e892ec7a393733c2c64e0",
+      "path": "skills/code-review/references/review-assessment.md"
+    },
+    {
+      "identity": "sha256:0ac3e3ccc77aee7e6d60d5d56dd61a1d7424aa3443910cb85d198993bdd82818",
+      "path": "skills/code-review/references/review-reliance.md"
+    },
+    {
+      "identity": "sha256:7c7037e519b4558f8126460892ff33721026e05b2d8f7469b7ba86477ee81b9b",
+      "path": "skills/code-review/references/test-maintenance.md"
+    },
+    {
+      "identity": "sha256:8b0a4b44f27de8c2d24ea21344b75594d5f5c9a247f91d42390068f96d4bf998",
+      "path": "skills/code-review/references/test-quality.md"
+    },
+    {
+      "identity": "sha256:36bc4c3cd13c589475a5b3df85e5aea8d055dc115b9acabb7d3e7eb64885eba4",
+      "path": "skills/code-review/references/workflow-managed-automated-review.md"
+    },
+    {
+      "identity": "sha256:49b3146c06a776bfeb37284b0889688f99c00d490e5b24d04ee5ab988151a1a6",
+      "path": "scripts/lib/validation/skill_validation.py"
+    },
+    {
+      "identity": "sha256:02b19ce3ec0b36b71195977669212dbc63d2776fb051364195083235c263203f",
+      "path": "tests/skill/skill_contract_tests.py"
+    },
+    {
+      "identity": "sha256:e869294aff0baba44dd6414cf69f1cfbd1d67b34ae6cc5bde4b387aa01aa6800",
+      "path": "tests/skill/skill_guidance_tests.py"
+    },
+    {
+      "identity": "sha256:95c5f12cbc6fe30f03e440ea41e2cf623ff4b5eac53330fcfbfcecb85e4f1d4c",
+      "path": "tests/skill/test-skill-validator.py"
+    },
+    {
+      "identity": "sha256:fd389fd478a412bb091bbe5ca976bc42466769c0a3184c68eb30e8124959fc4a",
+      "path": "docs/proposals/2026-09-15-skill-simplification.md"
+    },
+    {
+      "identity": "sha256:e93d9f7891ea9eca3e6dd6c8677027b3d2871d1c1a05ca15f640ac14f2aca11b",
+      "path": "docs/design/skill/skill.md"
+    },
+    {
+      "identity": "sha256:40bd6b7023ff319fcad7e85de6cc60921990b286dfaca5c2cc0a47310f483640",
+      "path": "docs/plans/2026-09-15-skill-simplification.md"
+    },
+    {
+      "identity": "sha256:49d6399b0936d051c027c5e1ec929b4719da5411fd6996b1707ab7a82cb8e280",
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/proposal-review.json"
+    },
+    {
+      "identity": "sha256:89bc6ad721e14bd6a309af91a2e6dc8bcaa353b16ea6d8344bbe564bab1c7db3",
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/design-review.json"
+    },
+    {
+      "identity": "sha256:910acfcb05f9d89d2e717fcd8295132a1e2a2154481c161be4557fc3a38a1a6d",
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/delivery-review.json"
+    },
+    {
+      "identity": "sha256:6d4efe31df4a8dad82b882f3ff1fedef7d631deb2dae305f7e5654172bf8b15f",
+      "path": "docs/changes/2026-09-15-skill-simplification/evidence.json"
+    }
+  ],
+  "summary": "M1 preserves the complete pilot task and recording paths while making scope, authority and handoff easier to follow; required consumer and package proof supports the slice.",
+  "target": "code"
+}

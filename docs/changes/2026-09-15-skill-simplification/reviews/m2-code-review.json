@@ -1,0 +1,325 @@
+{
+  "assessment_scope": "First-round formal M2 Code Review, baseline 86ddb01a to implementation commit 2208c891. Covers plan/proposal-review duplicate removal, the one case-insensitive test assertion, and retention of proposal/design/design-review/delivery-review under TG-01/04/05. Other subjects identify unchanged governing Design/Delivery and prior milestone/proof basis. All ten dimensions are assessed; no material findings.",
+  "change_id": "2026-09-15-skill-simplification",
+  "contributors": [
+    {
+      "id": "codex-implementer",
+      "role": "implement"
+    }
+  ],
+  "findings": [],
+  "id": "m2-code-review",
+  "independence_basis": "Parent /root authored M2. Separate agent /root/independent_design_review independently inspected the actual diff and six family entrypoints, relevant methods/assets and current approved basis without editing them; it also checked actual frozen proof and archive bytes. Contributor preparation informed evidence selection but did not determine this judgment. This is a manually delegated milestone assessment, not a retired automation-adapter invocation.",
+  "judgment": "approved",
+  "limitations": [
+    "M2 approval covers these six family dispositions and their small consumer change only; M3–M6, integrated proof, final whole-change Code Review and Verify remain. No branch/PR readiness or hosted CI success is claimed.",
+    "Reading-path observations establish instruction adequacy and modest deduplication benefit, not executed customer-agent compliance, token savings or universal normalization. Archive parity was independently observed; installed success relies on the actual frozen V4 evidence."
+  ],
+  "rationale": [
+    "1 Spec alignment and 5 Architecture boundaries — pass. The three removed repetitions retain their exact obligations: Plan quality still forbids default loading of every specialist reference, Proposal Review Material findings and status plus its mapped asset retain every required finding field, and the mode-specific handoff retains direct isolation. Existing layouts, specialist ownership and author/reviewer separation are unchanged. This is the bounded simplification/retention allowed by SKL-SR-30/32 and M2.",
+    "2 Test coverage and 10 Validation evidence — pass. The one changed assertion still checks the identical no-default-loading prohibition but lowercases the body to recognize its surviving mid-sentence form. It drops no case, resource guard or test population. The initial capitalization-only failure is disclosed and corrected; frozen V2 reports 292 tests OK and V6 all selected checks passed. Registered current subjects match CLI inspection; V1 covered all six entrypoints. Existing V3 proof is applicable to unchanged packaging logic, with fresh V4 and selected package regression for current prose. No extra implementation-shaped test is necessary for duplicate removal.",
+    "3 Edge cases and 4 Error handling — pass. Proposal Review still classifies recording/automation independently, loads late durable/specialized triggers before dependent action, distinguishes portable/adopted policy, records findings before fixes and reports blocked recording. Missing/escaped/conflicting guidance and authority still stop. Plan still selects only risk-triggered methods and preserves stale-authority stops, approved-plan-only initialization, incomplete proof handling and conditional output. Removing repeated words adds no new path or relaxed prerequisite.",
+    "6 Compatibility, 7 Security/privacy and 9 Unrelated changes — pass. Public names, values, metadata, asset fields/fingerprints, shared methods, recording commands, permission limits and missing-resource behavior are byte-unchanged. The actual product diff names only the two intended entrypoints plus their direct assertion consumer. There is no new resource, external action, schema change or pilot-layout extension. M3–M6 remain pending; this result does not claim the inventory complete.",
+    "8 Derived artifact currency and TG-05 — pass. Frozen V4 reports actual generated archives and clean installations for both changed skills. I independently compared every file of all six family packages in both recorded archives with current canonical resource bytes and entrypoint bodies, accounting only for the declared Claude frontmatter transform. SHA256 matches recorded values: codex 7818adb2b5a4b2acd462163e68a42fd46f3d8fd7cd8bfe32c5953e3b16edf5c9; claude afc26ecdf244d9694bb7b5c89a5d6ba2d9453784c6a106b0ee88c0f850b68756. The later test-only correction did not change those candidate inputs.",
+    "TG-01/04 changed-package acceptance — Plan now states the same loading rule once at its decision point. Proposal Review now has one field-contract description and its structured asset instead of an additional competing list, and its detailed mode-specific handoff supplies isolation without the trailing duplicate. A manual material-finding path still selects the asset, supplies all six required fields/decision rationale, records before correction and stays isolated. A planning path still chooses only the relevant verification method before allocating proof. These concrete before/after reading observations establish modest useful improvement without claiming runtime-agent behavior or numerical savings.",
+    "TG-01/04 retained-package assessment — proposal already separates exact target/classification and its seven-section direction/feasibility contract from governed and strategic methods, with a clear proposal-review handoff. Design provides a six-step reconciliation method with distinct model/view/composition/legacy/governed resources and exact owner/example review inputs. Design Review retains the necessary nine specialist criteria, complete package/identity assessment and three finding scopes. Delivery Review retains one inseparable sequencing/proof judgment, sole primary-plan membership, allocation-versus-behavior correction ownership and the final-review dependency. Their current specialist procedures and resource maps remain usable under their approved layouts; this slice supplies no justified need for a new extraction architecture. Retention is an assessed no-change decision, not a claim that shorter text is impossible or that historical approval covers new subjects.",
+    "Current reliance and handoff — complete scoped context shows applicable approved proposal/Design/Delivery and clean M1, current M2 review handoff and no findings/blockers. M2 changes neither the governing artifacts nor any M1 implementation subject; additional evidence entries do not alter earlier check meaning. Original review identities are preserved. Route owns M2 closeout and authorized M3 selection; the separate final whole-change review and Verify remain required."
+  ],
+  "reviewer": {
+    "id": "independent-m2-review",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:d060a266b4c6b19c4000f43cad1d486ad1eec94ba96856a7696e2302341c06aa",
+      "path": "skills/proposal/SKILL.md"
+    },
+    {
+      "identity": "sha256:0c1a586ac38ed79a130404e0936cbf0a030060050b6278fab625e316a5642bc8",
+      "path": "skills/proposal/assets/proposal-skeleton.md"
+    },
+    {
+      "identity": "sha256:a2005e6f6e095ee33947e68b848ee9597730f4e1403580b63c9c549c13260cc0",
+      "path": "skills/proposal/references/governed-proposal-authoring.md"
+    },
+    {
+      "identity": "sha256:e19b99a0cb69b9051c6eeae20d76c4a0cf3925e8fd1686ceb6671c7749cc3dc5",
+      "path": "skills/proposal/references/requirement-to-delivery-model.md"
+    },
+    {
+      "identity": "sha256:f346b7a366e64de1b5046535132fd79381de77c9fcdf599363500229034476fa",
+      "path": "skills/proposal/references/strategic-and-scope-gates.md"
+    },
+    {
+      "identity": "sha256:2298926b2f3844831548f4f10c9d58d408eaf32e4505a270e2c0bd643eef3fa4",
+      "path": "skills/design/SKILL.md"
+    },
+    {
+      "identity": "sha256:004189d8bbf456a020165b74cdf1f322dc1d2b3ce0b14e81079c76963fdffed6",
+      "path": "skills/design/assets/design-skeleton.md"
+    },
+    {
+      "identity": "sha256:020be16bb4b01f1eb1a1605562ffd6b31af9e5ba2ee12b1a1e1735acb6378a56",
+      "path": "skills/design/assets/diagram-styles.mmd"
+    },
+    {
+      "identity": "sha256:86ed2ec3cd1152a3eb8c9dc7eb8a29c806bd122accd5d9752401cf2fecccab0d",
+      "path": "skills/design/assets/legacy-adr-skeleton.md"
+    },
+    {
+      "identity": "sha256:e6d3e17551cceb876f8b8e73c2bdff37c7793d7bb47d15361713f8a89c9ecafa",
+      "path": "skills/design/assets/legacy-architecture-skeleton.md"
+    },
+    {
+      "identity": "sha256:5ff3bd5cec3b6ad239ea1fa8676a2fb3cfae1a3ee8fb22876a96112de065727e",
+      "path": "skills/design/references/architecture-view-examples.md"
+    },
+    {
+      "identity": "sha256:7179b4f48e6ba5a1503237f58875f0dc5fe8cdc2c7e77f277c6debee714387b8",
+      "path": "skills/design/references/boundary-first-feature-authoring-v1.md"
+    },
+    {
+      "identity": "sha256:89337cf5da8462ad2afa0c50e04fb7233beea7ce030a049fa3a1695fc57ea2d0",
+      "path": "skills/design/references/boundary-first-method-v1.md"
+    },
+    {
+      "identity": "sha256:d7598a7af645b395db8332e64743d3c19c1529c705a0b2e7a349bae1d1d889f9",
+      "path": "skills/design/references/governed-design-authoring.md"
+    },
+    {
+      "identity": "sha256:87c0fee6c3a753cfb520dcd578de42c1f68d8eb3ddcd6dc16299826e57f86fae",
+      "path": "skills/design/references/legacy-source-reconciliation.md"
+    },
+    {
+      "identity": "sha256:8f24c82956dfafdee4d389b3c7353d3d73968e4c440a7c6fa10eabc47de5e06b",
+      "path": "skills/design/references/legacy-technical-authoring.md"
+    },
+    {
+      "identity": "sha256:6a556136cb73c4b7eb40393a5d5c97ffe6c14f75188a73200e466676bf0a8841",
+      "path": "skills/design/references/model-authoring.md"
+    },
+    {
+      "identity": "sha256:bbff5f36ced2f5e0ddc648a78278e378d81990b0266e0a7172b28d524a4da3cb",
+      "path": "skills/design/references/system-composition.md"
+    },
+    {
+      "identity": "sha256:45453043b926cf24f91756b8a46f51e2164926a15657ce1ab57a37e7f3be9f2f",
+      "path": "skills/design/references/technical-design.md"
+    },
+    {
+      "identity": "sha256:8b0a4b44f27de8c2d24ea21344b75594d5f5c9a247f91d42390068f96d4bf998",
+      "path": "skills/design/references/test-quality.md"
+    },
+    {
+      "identity": "sha256:5bef8bd9d85a7a1139bc20a4fb0e62ce2a2046f7bbd61fd64496bd4398cc7068",
+      "path": "skills/plan/SKILL.md"
+    },
+    {
+      "identity": "sha256:f461dd267b53fa6690f9ee8222e4fa8642e27a3cafe530fd8fa75bb2243bb5fb",
+      "path": "skills/plan/assets/decision-log-row.md"
+    },
+    {
+      "identity": "sha256:007c46c11105018bc0429b7bc85aef0f555b4ce654cdcce27f4f4657e0ba9c75",
+      "path": "skills/plan/assets/milestone.md"
+    },
+    {
+      "identity": "sha256:21061218b060228c8f3361e1f375008fb66d60b7cda9fc1347c0589f2c369828",
+      "path": "skills/plan/assets/plan-skeleton.md"
+    },
+    {
+      "identity": "sha256:c66bfce2f8ed9a0772aa3b53633f3d7819a46dfeafd9f241041373b7502f2346",
+      "path": "skills/plan/references/boundary-and-negative-verification.md"
+    },
+    {
+      "identity": "sha256:89337cf5da8462ad2afa0c50e04fb7233beea7ce030a049fa3a1695fc57ea2d0",
+      "path": "skills/plan/references/boundary-first-method-v1.md"
+    },
+    {
+      "identity": "sha256:458a50b4fc744502d8c85227f0ef71a7f202b6623799fe5c2b0128cbd4a7a3b0",
+      "path": "skills/plan/references/concurrency-and-retry-verification.md"
+    },
+    {
+      "identity": "sha256:2879a21841562b4b41273148b2212bf32a083c0f1d6e029c8633acb7d01eeb12",
+      "path": "skills/plan/references/cross-milestone-integration-verification.md"
+    },
+    {
+      "identity": "sha256:7da74e3c307eca561f6d09986a4273a2109e103c4625120f5341b594d51e869c",
+      "path": "skills/plan/references/failure-and-recovery-verification.md"
+    },
+    {
+      "identity": "sha256:87d9c81f215ea8c7d4f86675e1450175058c2f44e902235bb1700e7e340389a2",
+      "path": "skills/plan/references/governed-plan-authoring.md"
+    },
+    {
+      "identity": "sha256:6de936e6bccc3b7dfa724573bccd33fcab13f197d85db2bd489893433b6f1758",
+      "path": "skills/plan/references/manual-and-operational-evidence.md"
+    },
+    {
+      "identity": "sha256:0ef6fd47a39cc8bc73ce00c32a474d062942fd5586f8ed5d958be4c76de65a44",
+      "path": "skills/plan/references/migration-and-compatibility-verification.md"
+    },
+    {
+      "identity": "sha256:e19b99a0cb69b9051c6eeae20d76c4a0cf3925e8fd1686ceb6671c7749cc3dc5",
+      "path": "skills/plan/references/requirement-to-delivery-model.md"
+    },
+    {
+      "identity": "sha256:0ac3e3ccc77aee7e6d60d5d56dd61a1d7424aa3443910cb85d198993bdd82818",
+      "path": "skills/plan/references/review-reliance.md"
+    },
+    {
+      "identity": "sha256:b45e5908eb7acec77f39c451cb55c2d630da5a2a85502d16937b9e7347aaec48",
+      "path": "skills/plan/references/security-and-authority-verification.md"
+    },
+    {
+      "identity": "sha256:17e276d6f01f851b3002a00f44bddfee0dd1720878d562ebda9fd0b250f73641",
+      "path": "skills/plan/references/state-machine-verification.md"
+    },
+    {
+      "identity": "sha256:7c7037e519b4558f8126460892ff33721026e05b2d8f7469b7ba86477ee81b9b",
+      "path": "skills/plan/references/test-maintenance.md"
+    },
+    {
+      "identity": "sha256:8b0a4b44f27de8c2d24ea21344b75594d5f5c9a247f91d42390068f96d4bf998",
+      "path": "skills/plan/references/test-quality.md"
+    },
+    {
+      "identity": "sha256:fb016e07f7975b6a308494dd18fb044d43084df368c08e858349bd70191e9ea1",
+      "path": "skills/proposal-review/SKILL.md"
+    },
+    {
+      "identity": "sha256:d518a86f03d043d88e78e52bd2482882c81ffd82c486915be4567517ad5f4667",
+      "path": "skills/proposal-review/assets/material-finding.md"
+    },
+    {
+      "identity": "sha256:c2c95c45e032f1d4359ac2a0ddd784035658b621af84a4e04c483386d4b93754",
+      "path": "skills/proposal-review/assets/review-result-skeleton.md"
+    },
+    {
+      "identity": "sha256:4e6a02a1e769f2615829e00fc237d1996424719c5384afb9c6bf92023ac939bd",
+      "path": "skills/proposal-review/references/conditional-proposal-gates.md"
+    },
+    {
+      "identity": "sha256:a41826013c56d59f98abaab1909399582b7c771dcdb016b7f7c1f8560595bba8",
+      "path": "skills/proposal-review/references/proposal-review-recording-and-settlement.md"
+    },
+    {
+      "identity": "sha256:e19b99a0cb69b9051c6eeae20d76c4a0cf3925e8fd1686ceb6671c7749cc3dc5",
+      "path": "skills/proposal-review/references/requirement-to-delivery-model.md"
+    },
+    {
+      "identity": "sha256:82e302a3a915f10d05b229a3550f462ca6b35a9e3f7e892ec7a393733c2c64e0",
+      "path": "skills/proposal-review/references/review-assessment.md"
+    },
+    {
+      "identity": "sha256:0ac3e3ccc77aee7e6d60d5d56dd61a1d7424aa3443910cb85d198993bdd82818",
+      "path": "skills/proposal-review/references/review-reliance.md"
+    },
+    {
+      "identity": "sha256:f9ee51047c3a8c0cced45a9238d17f7341a7661563863b0380173883ece0fe18",
+      "path": "skills/design-review/SKILL.md"
+    },
+    {
+      "identity": "sha256:1a40d18438452d64bd395938d70d4fdc1c2a86dc948f002ece72042feebb86de",
+      "path": "skills/design-review/assets/material-finding.md"
+    },
+    {
+      "identity": "sha256:011d7c9d2662d7f19806bc4d19141bb50becf1327cac24f0926409fa3b9c4681",
+      "path": "skills/design-review/assets/review-result-skeleton.md"
+    },
+    {
+      "identity": "sha256:7179b4f48e6ba5a1503237f58875f0dc5fe8cdc2c7e77f277c6debee714387b8",
+      "path": "skills/design-review/references/boundary-first-feature-authoring-v1.md"
+    },
+    {
+      "identity": "sha256:89337cf5da8462ad2afa0c50e04fb7233beea7ce030a049fa3a1695fc57ea2d0",
+      "path": "skills/design-review/references/boundary-first-method-v1.md"
+    },
+    {
+      "identity": "sha256:36cb880ffebe096937325f40ab15f0182142514bab266ec23b6d2e08f7e5206d",
+      "path": "skills/design-review/references/design-review-recording-and-settlement.md"
+    },
+    {
+      "identity": "sha256:e19b99a0cb69b9051c6eeae20d76c4a0cf3925e8fd1686ceb6671c7749cc3dc5",
+      "path": "skills/design-review/references/requirement-to-delivery-model.md"
+    },
+    {
+      "identity": "sha256:82e302a3a915f10d05b229a3550f462ca6b35a9e3f7e892ec7a393733c2c64e0",
+      "path": "skills/design-review/references/review-assessment.md"
+    },
+    {
+      "identity": "sha256:0ac3e3ccc77aee7e6d60d5d56dd61a1d7424aa3443910cb85d198993bdd82818",
+      "path": "skills/design-review/references/review-reliance.md"
+    },
+    {
+      "identity": "sha256:8b0a4b44f27de8c2d24ea21344b75594d5f5c9a247f91d42390068f96d4bf998",
+      "path": "skills/design-review/references/test-quality.md"
+    },
+    {
+      "identity": "sha256:aa47d716979b176f9ba898407e9e9b78aad13df100d90c063a9a51051d66f787",
+      "path": "skills/delivery-review/SKILL.md"
+    },
+    {
+      "identity": "sha256:238979f9f7baa4af72370da0f19d69ecfe855cacac44d3fd08d39bef897af835",
+      "path": "skills/delivery-review/assets/material-finding.md"
+    },
+    {
+      "identity": "sha256:d8551b3f4f3228fd37de61c15695118d8e390a3e61cc030f58cfc26172b74e06",
+      "path": "skills/delivery-review/assets/review-result-skeleton.md"
+    },
+    {
+      "identity": "sha256:89337cf5da8462ad2afa0c50e04fb7233beea7ce030a049fa3a1695fc57ea2d0",
+      "path": "skills/delivery-review/references/boundary-first-method-v1.md"
+    },
+    {
+      "identity": "sha256:ec8e8239c642bf340c4c8aba2105ae9783bced35230bb5bf6501b7b931e6cc4d",
+      "path": "skills/delivery-review/references/boundary-first-proof-v1.md"
+    },
+    {
+      "identity": "sha256:3369bbc37d27736ec57500c85e1f1fa6c33fb73e3b4ea96ba6bce8d55a91eb3e",
+      "path": "skills/delivery-review/references/delivery-review-recording-and-settlement.md"
+    },
+    {
+      "identity": "sha256:e19b99a0cb69b9051c6eeae20d76c4a0cf3925e8fd1686ceb6671c7749cc3dc5",
+      "path": "skills/delivery-review/references/requirement-to-delivery-model.md"
+    },
+    {
+      "identity": "sha256:82e302a3a915f10d05b229a3550f462ca6b35a9e3f7e892ec7a393733c2c64e0",
+      "path": "skills/delivery-review/references/review-assessment.md"
+    },
+    {
+      "identity": "sha256:0ac3e3ccc77aee7e6d60d5d56dd61a1d7424aa3443910cb85d198993bdd82818",
+      "path": "skills/delivery-review/references/review-reliance.md"
+    },
+    {
+      "identity": "sha256:7c7037e519b4558f8126460892ff33721026e05b2d8f7469b7ba86477ee81b9b",
+      "path": "skills/delivery-review/references/test-maintenance.md"
+    },
+    {
+      "identity": "sha256:8b0a4b44f27de8c2d24ea21344b75594d5f5c9a247f91d42390068f96d4bf998",
+      "path": "skills/delivery-review/references/test-quality.md"
+    },
+    {
+      "identity": "sha256:bf14def76a0cbe8f52f539f1e5135c453d2e1a710c012152aa8f649d46b9a7c0",
+      "path": "tests/skill/test-skill-validator.py"
+    },
+    {
+      "identity": "sha256:e93d9f7891ea9eca3e6dd6c8677027b3d2871d1c1a05ca15f640ac14f2aca11b",
+      "path": "docs/design/skill/skill.md"
+    },
+    {
+      "identity": "sha256:40bd6b7023ff319fcad7e85de6cc60921990b286dfaca5c2cc0a47310f483640",
+      "path": "docs/plans/2026-09-15-skill-simplification.md"
+    },
+    {
+      "identity": "sha256:43af2b48d0c5ca66e8e4e6511281db22b78d289ec4afd64e521cb2afd3831914",
+      "path": "docs/changes/2026-09-15-skill-simplification/evidence.json"
+    },
+    {
+      "identity": "sha256:6812b4c4f9dc5ea6d454ebf0ebe9b55b0bea6b99798c74fbeef17a4c46d507fd",
+      "path": "docs/changes/2026-09-15-skill-simplification/reviews/m1-code-review.json"
+    }
+  ],
+  "summary": "M2 removes redundant instructions without losing their surviving contracts; the four unchanged family packages have justified retention.",
+  "target": "code"
+}

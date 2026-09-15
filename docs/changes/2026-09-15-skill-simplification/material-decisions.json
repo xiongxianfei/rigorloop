@@ -1,0 +1,26 @@
+{
+  "body": "M1–M6 map to work m1–m6 in plan order. Plan initialized absent work after approved Delivery Review; Route owns later state. Root is the implementation author.",
+  "change_id": "2026-09-15-skill-simplification",
+  "decisions": [
+    {
+      "actor": {
+        "id": "codex-route",
+        "role": "route"
+      },
+      "id": "continue-through-pr",
+      "rationale": "The user explicitly instructed: go ahead till submitting a pr. Continue all six reviewed milestones, independent reviews, final Verify, then separately authorized normal push and PR creation under PR safety rules. No merge, release, force-push or active install authority. No retired automation handler is armed.",
+      "source_refs": [],
+      "subjects": [
+        {
+          "identity": "sha256:40bd6b7023ff319fcad7e85de6cc60921990b286dfaca5c2cc0a47310f483640",
+          "path": "docs/plans/2026-09-15-skill-simplification.md"
+        },
+        {
+          "identity": "sha256:910acfcb05f9d89d2e717fcd8295132a1e2a2154481c161be4557fc3a38a1a6d",
+          "path": "docs/changes/2026-09-15-skill-simplification/reviews/delivery-review.json"
+        }
+      ]
+    }
+  ],
+  "schema_version": 3
+}

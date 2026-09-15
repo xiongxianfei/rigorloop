@@ -216,6 +216,7 @@ RESOURCE_MAP_ENTRY_PATTERN = re.compile(
     re.IGNORECASE,
 )
 PACKAGED_NON_ASSET_RESOURCE_ALLOWLIST = {
+    ("code-review", "references/governed-code-review-recording.md"),
     ("code-review", "references/workflow-managed-automated-review.md"),
     ("code-review", "references/requirement-to-delivery-model.md"),
     ("proposal", "references/governed-proposal-authoring.md"),
@@ -519,6 +520,13 @@ PROPOSAL_REVIEW_ASSET_FORBIDDEN_LABEL_PATTERN = re.compile(
     re.IGNORECASE,
 )
 CI_MAINTENANCE_SKILL_NAME = "ci-maintenance"
+CI_ASSEMBLY_NAMES = (
+    "CIM0-narrow-review", "CIM1-coverage-review",
+    "CIM2-ordinary-github-create", "CIM3-narrow-github-revise",
+    "CIM4-coverage-github-revise", "CIM5-structural-github-revise",
+    "CIM6-project-native-authoring", "CIM7-privileged-approved-create",
+    "CIM8-privileged-approved-revise",
+)
 CI_MAINTENANCE_SKELETON = "assets/github-workflow-skeleton.yml"
 CI_MAINTENANCE_RISK_MAP = "references/risk-to-check-map.md"
 CI_MAINTENANCE_AUTHORING_REFERENCE = "references/github-workflow-authoring.md"
@@ -930,7 +938,7 @@ def validate_installed_skill_plan_surface_contract(
         return []
     errors: list[str] = []
     missing = [
-        surface for surface in (tuple(p.replace("change.yaml", "change.json") for p in INSTALLED_SKILL_PLAN_SURFACE_PATHS) if "## Explicit recording" in body else INSTALLED_SKILL_PLAN_SURFACE_PATHS) if surface not in body
+        surface for surface in (tuple(p.replace("change.yaml", "change.json") for p in INSTALLED_SKILL_PLAN_SURFACE_PATHS) if ("## Explicit recording" in body or (skill_name == "implement" and "## Recording boundary" in body)) else INSTALLED_SKILL_PLAN_SURFACE_PATHS) if surface not in body
     ]
     if missing:
         errors.append(
@@ -2205,6 +2213,45 @@ def _validate_ci_maintenance_risk_map(path: Path, text: str) -> list[str]:
     return errors
 
 
+def _validate_ci_assembly_declaration(path: Path, body: str) -> list[str]:
+    """Check the closed table vocabulary; reviewers assess selection semantics."""
+    # Scope this reader to live declarations, including headings outside examples.
+    # Match the opener's marker and minimum length; a different/shorter fence is
+    # example content, not a terminator. Other specialist readers stay unchanged.
+    prose = []
+    fence = None
+    for line in body.splitlines():
+        if fence is not None:
+            if re.fullmatch(r" {0,3}" + re.escape(fence[0]) +
+                            r"{" + str(len(fence)) + r",}\s*", line):
+                fence = None
+            continue
+        opener = re.match(r"^ {0,3}(`{3,}|~{3,})(.*)$", line)
+        if opener and (opener[1][0] == "~" or "`" not in opener[2]):
+            fence = opener[1]
+            continue
+        prose.append(line)
+    section = _extract_markdown_section("\n".join(prose), "Assemblies") or ""
+    rows = []
+    for line in section.splitlines():
+        if not line.lstrip().startswith("|"):
+            continue
+        cell = line.strip().split("|")[1].strip().strip("`")
+        if cell == "Assembly" or re.fullmatch(r":?-+:?", cell):
+            continue
+        rows.append(cell)
+    if not rows:
+        return [f"{path}: Assemblies must declare the nine CI assemblies in a table"]
+    unknown = list(dict.fromkeys(name for name in rows if name not in CI_ASSEMBLY_NAMES))
+    if unknown:
+        return [f"{path}: unknown CI assembly: {name}" for name in unknown]
+    errors = [f"{path}: missing CI assembly: {name}" for name in CI_ASSEMBLY_NAMES
+              if name not in rows]
+    errors.extend(f"{path}: duplicate CI assembly: {name}" for name in CI_ASSEMBLY_NAMES
+                  if rows.count(name) > 1)
+    return errors
+
+
 def validate_ci_maintenance_contract(
     path: Path,
     metadata: dict[str, str],
@@ -2215,7 +2262,7 @@ def validate_ci_maintenance_contract(
     if not is_ci_maintenance_path and not is_ci_maintenance_name:
         return []
 
-    errors: list[str] = []
+    errors = _validate_ci_assembly_declaration(path, body)
     if metadata.get("name") != CI_MAINTENANCE_SKILL_NAME:
         errors.append(f"{path}: ci-maintenance frontmatter must use name: ci-maintenance")
     non_codex_adapter_path = any(part in {".claude", ".opencode"} for part in path.parts)
@@ -2477,6 +2524,8 @@ def validate_metadata_against_schema(metadata: dict[str, str], schema: dict, pat
 PILOT_RECORDING_REFERENCES = {
     "proposal": "references/governed-proposal-authoring.md",
     "proposal-review": "references/proposal-review-recording-and-settlement.md",
+    "implement": "references/governed-implementation-recording.md",
+    "code-review": "references/governed-code-review-recording.md",
 }
 
 
@@ -2491,7 +2540,12 @@ def validate_targeted_recording_profile(path: Path, body: str) -> list[str]:
         if "## Recording boundary" not in body:
             errors.append(f"{path}: missing body recording boundary")
         classification = _extract_markdown_section(body, "Invocation classification") or ""
-        trigger = "governed_proposal_candidate_context" if path.parent.name == "proposal" else "durable_recording_context"
+        trigger = {
+            "proposal": "governed_proposal_candidate_context",
+            "proposal-review": "durable_recording_context",
+            "implement": "governed_recording_context",
+            "code-review": "governed_recording_context",
+        }[path.parent.name]
         if trigger not in classification or trigger not in resource_map:
             errors.append(f"{path}: selected recording reference requires its body classification and load trigger: {trigger}")
         resource = path.parent / relative

@@ -77,9 +77,25 @@ Privileged review is read-only. Mutation needs an exact approved design/review b
 
 ## Assemblies
 
-Select one: `CIM0` narrow review; `CIM1` ordinary GitHub authoring; `CIM2` project-native file; `CIM3` external-state route; `CIM4` invalid stop; `CIM5` coverage review; `CIM6` coverage authoring; `CIM7` privileged review; `CIM8` approved privileged authoring. Add only triggered references and external evidence.
+Validate classification, exact target and authority first. Invalid or ambiguous inputs return `blocked` with a reason and no invented assembly. External state remains review-or-route only; privileged authoring without exact approved Design/review stops.
 
-Creation adds the skeleton; revision adds it only for authorized replacement. Late predicates load additions before dependent action.
+Select exactly one row: review first, then project-native authoring; for GitHub authoring, approved privilege precedes ordinary choices, and ordinary structural revision precedes coverage revision. Resources below are additional to this entrypoint; coverage adds independently.
+
+| Assembly | Selection | Required resources and external evidence |
+| --- | --- | --- |
+| `CIM0-narrow-review` | Read-only, not coverage-sensitive; includes supported privileged, project-native and external-state review | Relevant exact external evidence as needed; no authoring reference or skeleton. |
+| `CIM1-coverage-review` | Read-only, coverage-sensitive | Risk map and relevant exact external evidence as needed. |
+| `CIM6-project-native-authoring` | Supported non-GitHub repository-file authoring | Exact project-native content/command/validation/write contract; risk map if coverage-sensitive; exact privileged approval independently when applicable. No GitHub reference or skeleton. |
+| `CIM7-privileged-approved-create` | GitHub creation with exact privileged approval | GitHub authoring reference, risk map, skeleton and exact approved Design/review. |
+| `CIM8-privileged-approved-revise` | GitHub revision with exact privileged approval | GitHub authoring reference and exact approved Design/review; risk map if coverage-sensitive; skeleton if authorized structural replacement. |
+| `CIM2-ordinary-github-create` | Ordinary GitHub creation | GitHub authoring reference, risk map and skeleton. |
+| `CIM5-structural-github-revise` | Ordinary GitHub revision with authorized structural replacement | GitHub authoring reference and skeleton; risk map if coverage-sensitive. |
+| `CIM4-coverage-github-revise` | Ordinary GitHub revision preserving structure, coverage-sensitive | GitHub authoring reference and risk map. |
+| `CIM3-narrow-github-revise` | Ordinary GitHub revision preserving structure, not coverage-sensitive | GitHub authoring reference. |
+
+Every GitHub creation maps coverage from project risk/command evidence, even if coverage was not the initial concern. Only GitHub creation or authorized structural replacement adds the GitHub skeleton. Report the selected assembly, actual conditional resources and external evidence separately.
+
+Late coverage, structure or privilege requires reclassification and complete resource loading before dependent judgment or mutation. Late privilege stops authoring without exact approved Design/review; with approval, GitHub work selects CIM7/CIM8 and project-native work retains CIM6 with its required external evidence. Loading never supplies authority.
 
 ## Resource map
 
@@ -89,7 +105,7 @@ Creation adds the skeleton; revision adds it only for authorized replacement. La
 - READ `references/review-reliance.md` when applying adopted assessment applicability, correction or closeout policy.
 
 - READ `references/github-workflow-authoring.md` when a GitHub workflow is created or revised under ordinary or exact approved-design authority. It serializes settled policy and does not select coverage.
-- READ `references/risk-to-check-map.md` when coverage-sensitive judgment is required. It owns semantic placement and must include current authoritative commands.
+- READ `references/risk-to-check-map.md` for every GitHub creation or when coverage-sensitive judgment is required. It owns semantic placement and must include current authoritative commands.
 - COPY `assets/github-workflow-skeleton.yml` when creating a GitHub workflow or performing an explicitly authorized structural replacement. Fill every placeholder from current authority; do not emit placeholders.
 
 Confirm every triggered resource is present, readable, inside the package, and from one package version. Missing, unreadable, escaped, contradictory, or mixed-version resources stop; do not reconstruct conditional procedure from memory. An untriggered resource does not block.
