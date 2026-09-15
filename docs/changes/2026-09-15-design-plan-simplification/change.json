@@ -1,11 +1,11 @@
 {
   "activity": {
     "owner": {
-      "id": "codex-design",
-      "role": "design"
+      "id": "codex-route",
+      "role": "route"
     },
-    "reason": "Design authoring complete: exact Skill/Plan amendments and unchanged Design retention basis registered with material decision and successful local validation. Independent Design Review is the next gate; no review approval, delivery allocation or implementation is claimed.",
-    "stage": "design",
+    "reason": "Independent first-pass Design Review approved the exact three-model package with no findings. Review evidence read back and all47 subject identities match. Requested review complete; delivery planning is the next stage, not started by this isolated review.",
+    "stage": "design-review",
     "status": "completed"
   },
   "applicability": [
@@ -34,6 +34,15 @@
       },
       "path": "docs/changes/2026-09-15-design-plan-simplification/evidence.json",
       "reason": "Current exact draft engineering basis and bounded author observations; no downstream approval or execution inferred.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "design-plan-design-review",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-15-design-plan-simplification/reviews/design-review.json",
+      "reason": "Fresh complete independent assessment of the exact registered three-model package and unchanged approved direction, with current source/consumer basis. Earlier supporting-subject drifts were assessed semantically and historical identities preserved.",
       "value": "current"
     }
   ],
@@ -80,6 +89,10 @@
     {
       "kind": "evidence",
       "path": "docs/changes/2026-09-15-design-plan-simplification/evidence.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-15-design-plan-simplification/reviews/design-review.json"
     }
   ],
   "schema_version": 3,
