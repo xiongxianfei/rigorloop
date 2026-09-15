@@ -1,12 +1,12 @@
 {
   "activity": {
     "owner": {
-      "id": "codex-implement",
-      "role": "implement"
+      "id": "codex-review-coordinator",
+      "role": "route"
     },
-    "reason": "Independent m1-code-review approved exact164d4bbf with complete inventory and no findings. M1 closed; proceed to approved M2 query and validation support scope under existing authority through PR.",
-    "stage": "implement",
-    "status": "in-progress"
+    "reason": "M2 implementation and required proof complete; hand exact committed scope to independent Code Review. M3 remains pending.",
+    "stage": "code-review",
+    "status": "ready"
   },
   "applicability": [
     {
