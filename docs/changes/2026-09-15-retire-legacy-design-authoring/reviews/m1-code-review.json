@@ -1,0 +1,140 @@
+{
+  "assessment_scope": "Independent governed M1 Code Review of frozen4bc519c739bb1458c653f15997e775b8584b4883; full ten-dimension assessment including reviewer-performed TG-01/TG-FINAL-01 semantic package observations and TG-FINAL-02 actual archive comparison. Milestone scope, not final whole-change review.",
+  "change_id": "2026-09-15-retire-legacy-design-authoring",
+  "contributors": [
+    {
+      "id": "codex-implementer",
+      "role": "implement"
+    }
+  ],
+  "findings": [],
+  "id": "m1-code-review",
+  "independence_basis": "Reviewer /root/retirement_code_review did not author engineering, governing Design, plan or fixes. Root authored implementation and navigation correction; reviewer independently read actual complete changed skill package, diff, exact authority and proof, and compared actual candidate bytes. Reviewer writes only its assessment.",
+  "judgment": "approved",
+  "limitations": [
+    "Semantic scenarios inspect the actual guidance, model fields and handoff composition; they do not claim live target-agent compliance.",
+    "This milestone approval does not claim final readiness, whole-branch V6 success, hosted CI, publication or installation authority. A fresh final whole-change Code Review after M1 and distinct Verify remain required."
+  ],
+  "rationale": [
+    "Spec alignment — pass. Inspected complete implementation diff 930ca995..4bc519c739bb1458c653f15997e775b8584b4883 against unchanged approved design-review-r2, registered Design/Skill/System and delivery-review primary plan. DES-SR-24 and DES-DEC-07 are implemented together: five exclusive files removed, public authoring/conditional methods/reviewer consumer and closed resource population reconciled. DES-SR-06/13/14/16/21/23 preservation and retained feature support remain explicit.",
+    "Test coverage — pass. TG-02 independent literal retired-resource cases would catch resurrecting any of the three resources even if the production allowlist were changed; repository-copy absence, valid package control, each current resource missing, unknown resource, containment and unchanged feature projections remain. Unknown-plus-missing case asserts diagnostic order. Existing output traceability now uses living Design Architecture Decisions and Plan milestone responsibility; no-mutable-state checks retain supported assets. Generic template-path lint still covers independent boundaries. Fail-first five expected failures and focused15/full306 pass are recorded in m1-validation.",
+    "Edge cases — pass. TG-01/TG-FINAL-01 on 2026-09-15: new living Design selects model-authoring, design-skeleton, architecture-view examples and technical-design when significant choices apply; composition/governed/test methods remain conditional. Stable Requirements, Architecture Decisions and eight scenario dimensions survive; exact affected owners/examples go to independent Design Review. Creating an absent model and revising an existing exact target remain distinct.",
+    "Error handling — pass. An ADR amendment with a mandatory local template stops at Scope and authority plus source-reconciliation Supported output before project mutation; template availability cannot reconstruct a retired method. A requested architecture rebuild has the same explicit stop even when its target exists. Missing package guidance is a distribution defect; missing/conflicting scoped adoption authority returns to the project owner without conversion or portable fallback. Unaffected authorized work may continue. These are independent semantic artifact observations, not measured agent execution.",
+    "Architecture boundaries — pass. Concrete authorized mixed-source adoption trace: an original numbered requirement maps to the living skeleton Requirements ID/Required behavior row with preserved identity; unnumbered security/latency constraints map to Architecture Constraints and Quality Requirements. Original ADR identity and context/selected choice map to Architecture Decisions ID and Context and decision; alternatives/consequences map to its Alternatives and consequences column; follow-up maps to Risks and Technical Debt with a named remaining owner. Source goals/context/structure/runtime/deployment/crosscutting meaning has corresponding current skeleton sections and technical method. Reconciliation explicitly maps every numbered/unnumbered displaced obligation, preserves unaffected responsibility in the original source, resolves contradictions and preserves old review subjects before authority retirement.",
+    "Compatibility — pass. The withdrawal is explicit rather than implicit migration: old architecture/ADR documents remain inspectable source authority; standalone outputs are unsupported. Retained feature amendment selects reconciliation and both unchanged boundary-first methods, preserves stable IDs and four contiguous ordered sections, and stops for missing/duplicated/incomplete anchors or undecidable classification. Design Review distinguishes source basis from supported living/feature output members. Plan reads relevant retained requirements/decisions without promising old-format authorship. Historical judgments are not retargeted, and coherent rollback retains source/check coupling.",
+    "Security/privacy — pass. No new execution, network, permission, schema or active-install mechanism. Existing safe exact target, authority, contained resource and author-only recording boundaries remain. Source adoption requires explicit authority; unsupported output leaves project files unchanged. No secret or debug payload introduced into published sources.",
+    "Derived artifact currency — pass. Independently inspected actual /tmp/rigorloop-retire-design-d3vqd9k6 archives: each contains exactly all12 current Design files, byte-equal to canonical resources after only declared Claude removal of version/schema-version/argument-hint. All3 retired skill resources are absent, both feature methods and common diagram styles present. Codex SHA256 c2798ac69858cbb54b311c68f4957d9b24d754f4666b2eafd0f6289a8a583776; Claude SHA256 36d8c527024bef9e27fc2e2be57db445008f047e0c749f83f20fe1a99014fc28. Actual build and temporary clean-install success is recorded in m1-candidate and observed in its log; no source changed after build. Repository template copies removed and current source caller search leaves only intentional retirement documentation and generic input fixtures.",
+    "Unrelated changes — pass. Source changes stay within approved five-file retirement and consumers/checks. Optional navigation observation was corrected by root by moving this plan link into Current plan references; reviewer edited no subject. Existing customer documents, feature methods, shared styles, runtime operations and unrelated skill responsibilities are unchanged. Original five-file bytes are recoverable at643f6cd6d368238f0ca2a5075430634cf9307ad3; no live runtime retrieval from history is introduced.",
+    "Validation evidence — pass for M1. Inspected actual logs and saved exact-subject m1-validation: python tests/skill/test-skill-validator.py passed306 in21.787s; python tests/engineering/packaging/test-adapter-distribution.py passed95 in280.953s; focused15 and all19 canonical skills pass; local CI selected checks and boundary scope pass; candidate build/temporary installs and independent parity pass. Guide/record validation and diff whitespace checks are recorded. V6 whole original-base branch is still running and is excluded from this completed milestone command claim. Its initial dirty-tree preflight stop is visible; final review/Verify require the completed clean rerun.",
+    "Current reliance — unchanged registered three-model and primary-plan identities retain approved upstream authority. Prior Design-review supporting old source hashes describe the approved retirement basis; their expected later implementation removal does not retarget those judgments. Initial Design finding rda-dr-01 is reporter-resolved with exact example correction and current design-review-r2. Evidence-container append preserves prior claims and makes newer scope explicit. No unresolved material finding, necessary decision or missing milestone basis remains. Fresh final whole-change Code Review and distinct Verify remain required after route closes M1."
+  ],
+  "reviewer": {
+    "id": "retirement-code-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:ca781fcc80ad22f8bd80fa4105a491f299deacc9c5f027e2cd4958a23cea65eb",
+      "path": "docs/changes/2026-09-15-retire-legacy-design-authoring/evidence.json"
+    },
+    {
+      "identity": "sha256:6512de7baad5c3e19226cde7cb34038f32613cd2863f02d345accec0d3335e6b",
+      "path": "docs/changes/2026-09-15-retire-legacy-design-authoring/reviews/delivery-review.json"
+    },
+    {
+      "identity": "sha256:02326bafdf0ec245e31d84396e022f6c56af40d72a41b528cc4d11b02b6c4e09",
+      "path": "docs/changes/2026-09-15-retire-legacy-design-authoring/reviews/design-review-r2.json"
+    },
+    {
+      "identity": "sha256:70729f932c5b46e42c5f79a208ec6ca9de8513831d58e09250df5bb9b73e6517",
+      "path": "docs/design/skill/authoring/design.md"
+    },
+    {
+      "identity": "sha256:e1184234b6a5f1a85f3e7b88ef3c699217178aa6257d9569689d1d59fafbf709",
+      "path": "docs/design/skill/skill.md"
+    },
+    {
+      "identity": "sha256:7a88f81f0044f2f9739ca27e9ebfb6cef77628f87b8422a240d9b776a4b921d8",
+      "path": "docs/design/system.md"
+    },
+    {
+      "identity": "sha256:a0dd9b89636d9e23e123addf8913dd60eed0c791a0016934e7925a7338dce149",
+      "path": "docs/plan.md"
+    },
+    {
+      "identity": "sha256:e19785d07ec8e4e81e2c8c76b0ad16da57d4ecf69d0c002a1d031acad76c1f16",
+      "path": "docs/plans/2026-09-15-retire-legacy-design-authoring.md"
+    },
+    {
+      "identity": "sha256:707cc801b29efaf98694fee68a60e1e26063a4359e5e1b1f8fe4a66976941bf6",
+      "path": "docs/proposals/2026-09-15-retire-legacy-design-authoring.md"
+    },
+    {
+      "identity": "sha256:e6fad8644bfbdc8dd82addaf56e38d4c7776169b3cde1d5792cb613aabd8daf7",
+      "path": "scripts/lib/validation/skill_validation.py"
+    },
+    {
+      "identity": "sha256:b09a3b401fd1b96beba6b20f83331d6ae3b49697a3cd0514ca6b22db862b4698",
+      "path": "skills/design-review/SKILL.md"
+    },
+    {
+      "identity": "sha256:fdbaf69d34c804b765848e08b3423a18a6ad380abc3b9e2546681fb0a9f29c65",
+      "path": "skills/design/SKILL.md"
+    },
+    {
+      "identity": "sha256:004189d8bbf456a020165b74cdf1f322dc1d2b3ce0b14e81079c76963fdffed6",
+      "path": "skills/design/assets/design-skeleton.md"
+    },
+    {
+      "identity": "sha256:020be16bb4b01f1eb1a1605562ffd6b31af9e5ba2ee12b1a1e1735acb6378a56",
+      "path": "skills/design/assets/diagram-styles.mmd"
+    },
+    {
+      "identity": "sha256:5ff3bd5cec3b6ad239ea1fa8676a2fb3cfae1a3ee8fb22876a96112de065727e",
+      "path": "skills/design/references/architecture-view-examples.md"
+    },
+    {
+      "identity": "sha256:7179b4f48e6ba5a1503237f58875f0dc5fe8cdc2c7e77f277c6debee714387b8",
+      "path": "skills/design/references/boundary-first-feature-authoring-v1.md"
+    },
+    {
+      "identity": "sha256:89337cf5da8462ad2afa0c50e04fb7233beea7ce030a049fa3a1695fc57ea2d0",
+      "path": "skills/design/references/boundary-first-method-v1.md"
+    },
+    {
+      "identity": "sha256:fdc363ed6e0ccdf501c451598daaf38691ac6e8e85397cb5cad64fe13a09cc9e",
+      "path": "skills/design/references/governed-design-authoring.md"
+    },
+    {
+      "identity": "sha256:5d27d9865afc3dafcb7852910504450309c06a751826e96eab6b696c3967e443",
+      "path": "skills/design/references/legacy-source-reconciliation.md"
+    },
+    {
+      "identity": "sha256:5ae252fdf0c0eaf8496b90480a168bf4c348799d5fa288e8e2e3ea2def43f63e",
+      "path": "skills/design/references/model-authoring.md"
+    },
+    {
+      "identity": "sha256:bbff5f36ced2f5e0ddc648a78278e378d81990b0266e0a7172b28d524a4da3cb",
+      "path": "skills/design/references/system-composition.md"
+    },
+    {
+      "identity": "sha256:92b7b4ce21ea27d6b7c516c4b4fd9f0af495da69e7b007230969cd0c533509f7",
+      "path": "skills/design/references/technical-design.md"
+    },
+    {
+      "identity": "sha256:8b0a4b44f27de8c2d24ea21344b75594d5f5c9a247f91d42390068f96d4bf998",
+      "path": "skills/design/references/test-quality.md"
+    },
+    {
+      "identity": "sha256:6c99c7f9f75ce3c5a194e836f557ec0b1f59a63cd90cbe82588586d1c3aebbd8",
+      "path": "skills/plan/SKILL.md"
+    },
+    {
+      "identity": "sha256:a0c007940ce17143256e784b098c01e8f9f265a0299ad537fc29d884e33b0640",
+      "path": "tests/skill/test-skill-validator.py"
+    }
+  ],
+  "summary": "M1 implements the complete standalone architecture/ADR authoring retirement with preserved meaning, authority, retained feature support and coherent validation/package boundaries; no material findings.",
+  "target": "code"
+}

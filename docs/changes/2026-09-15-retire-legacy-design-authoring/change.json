@@ -4,7 +4,7 @@
       "id": "codex-review-coordinator",
       "role": "route"
     },
-    "reason": "M1 complete source and allocated local/candidate proof passed. Independent milestone Code Review to record semantic/package judgment; full original-base validation runs before separate final whole-change review and Verify.",
+    "reason": "M1 independently approved and complete. Fresh final whole-change review after original-base V6, then distinct Verify.",
     "stage": "code-review",
     "status": "ready"
   },
@@ -52,6 +52,15 @@
       },
       "path": "docs/changes/2026-09-15-retire-legacy-design-authoring/reviews/delivery-review.json",
       "reason": "Independent complete sequencing and proof assessment of registered a06a910c primary plan against current design-review-r2; no required corrections or open necessary decisions.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "retirement-code-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-15-retire-legacy-design-authoring/reviews/m1-code-review.json",
+      "reason": "Exact frozen milestone independently assessed with complete allocated milestone evidence and no required corrections; final lifecycle gates remain separate.",
       "value": "current"
     }
   ],
@@ -109,6 +118,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-15-retire-legacy-design-authoring/reviews/delivery-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-15-retire-legacy-design-authoring/reviews/m1-code-review.json"
     }
   ],
   "schema_version": 3,
@@ -132,7 +145,7 @@
         "DES-SR-21",
         "DES-SR-23"
       ],
-      "status": "in-progress"
+      "status": "completed"
     }
   ]
 }
