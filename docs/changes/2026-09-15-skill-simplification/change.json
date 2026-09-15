@@ -1,12 +1,12 @@
 {
   "activity": {
     "owner": {
-      "id": "codex-implement",
-      "role": "implement"
+      "id": "codex-review-coordinator",
+      "role": "route"
     },
-    "reason": "Return final-route-actor-wording and reporter final-routing-actor blocker to M1. Existing guide regression and direct failure establish proof; correct only actor wording, refresh affected candidate/local/full-range proof, then independent M1 rereview and fresh final whole-change review. M2–M6 accepted source dispositions remain unchanged; no reinitialization or new policy.",
-    "stage": "implement",
-    "status": "in-progress"
+    "reason": "M1 route actor correction and affected proof ready for independent m1-code-review-rereview. Full original-base PR-mode rerun ongoing; original final finding/root blocker stay open. After M1 approval, require fresh final whole-change review; do not jump to Verify.",
+    "stage": "code-review",
+    "status": "ready"
   },
   "applicability": [
     {
