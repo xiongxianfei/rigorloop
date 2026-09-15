@@ -1,0 +1,314 @@
+{
+  "assessment_scope": "Governed final Verify of 2026-09-15-refine-skills-and-retire-stale-support at 20d1ecd170d6031f9081fbc4a015dd5194e28609 against original main 3c4985f80b242a295116880a5aee9cbbf47b12b0. Assesses exact approved proposal, four Designs, stable plan, complete final diff, all19 skill packages, complete script/test/fixture/caller population, candidate parity, current requirement coverage, review closeout and Git/PR handoff. This is distinct from independent final Code Review.",
+  "change_id": "2026-09-15-refine-skills-and-retire-stale-support",
+  "changes": [
+    "Five skill entrypoints now trigger complete conditional recording resources; reader validation and negative cases protect missing, wrong, escaped and incomplete guidance. Current owner descriptions, plan navigation, PR rationale and Claude examples are reconciled.",
+    "The obsolete Python query shim, exclusive checks and orphan parser are retired together. Deleted/renamed paths still select surviving checks; current record interfaces preserve invalid-input, identity, privacy and no-mutation boundaries.",
+    "All19 skill packages and the full allocated support population have evidence-backed retain/refine/retire dispositions. Dead fixture APIs, self-fulfilling assertions, duplicate cases and obsolete historical PR budget support are removed while historical assessment records remain unchanged.",
+    "The existing Verify closed-vocabulary test now proves its current v3 control succeeds before unknown outcome rejection. Real public process, persistence/recovery, archive/install and release protections remain."
+  ],
+  "evidence_refs": [
+    {
+      "id": "m1-implementation",
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/evidence.json"
+    },
+    {
+      "id": "m1-inventory-correction",
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/evidence.json"
+    },
+    {
+      "id": "m1-candidate",
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/evidence.json"
+    },
+    {
+      "id": "m2-implementation",
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/evidence.json"
+    },
+    {
+      "id": "m2-validation",
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/evidence.json"
+    },
+    {
+      "id": "m3-implementation",
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/evidence.json"
+    },
+    {
+      "id": "m3-validation",
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/evidence.json"
+    },
+    {
+      "id": "m3-candidate",
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/evidence.json"
+    },
+    {
+      "id": "m4-implementation",
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/evidence.json"
+    },
+    {
+      "id": "m4-validation",
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/evidence.json"
+    },
+    {
+      "id": "inventory-reconciliation",
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/evidence.json"
+    }
+  ],
+  "limitations": [
+    "Hosted CI has not yet been observed for the submitted head. All pass claims here are local direct, selected or isolated candidate checks.",
+    "The pre-existing generated-only adapter-support Design/source migration remains incomplete: live dist/adapters support files/readers are retained because changing build/release defaults is outside this approved maintenance scope.",
+    "Candidate validation used temporary clean installs and qualification label v1.0.0. No public release, active user installation, merge or publication was performed or authorized.",
+    "Skill review establishes inspected reading paths and package integrity, not universal agent behavior, benchmarked token savings or timing guarantees."
+  ],
+  "outcome": "success",
+  "rationale": [
+    "SKL-SR-33–35 and HAND-SR-04 are supported by complete package/reading-path assessment, independent normal/governed/late/failure review, selected-resource negatives and actual canonical/archive/install parity. Simplification changes navigation without transferring substantive duties or authorizing lifecycle actions.",
+    "VAL-SR-29–31 and CLI-SR-31 are supported by full body/caller/discovery inventories, coupled query retirement, actual Git deletion/rename and mixed unknown-path proof, and explicit replacement or retirement reasons. Counts document population only; independent failure observations justify retained protection.",
+    "All four milestone reviews and the fresh independent final whole-change review approve the exact assessed scope. The earlier Design decision-ID collision is reporter-resolved and independently rereviewed; no open material finding or blocker remains. Governing subject identities are unchanged from accepted approvals.",
+    "Direct suites, corrected fail-first control, generator parity, local selection and immutable original-base PR/main checks pass. Main reports1034 checks; current package suite418. Integrated gates ran at7bab3b1fd7ee4ca27a967013f7358c5349ac640c; later changes are attributable owning validation/review/workflow evidence only, with no changed engineering input.",
+    "Fresh M3 Codex/Claude candidates retain all138 canonical members across19skills and complete triggered resources; an independent final comparator reconfirmed exact declared transforms and current Claude /design guidance. M4 changed tests/support only, so candidate inputs remain identical.",
+    "Git base/head/merge-base and remote identities are resolved; no unrelated working-tree changes or remote branch divergence exists. Current committed record validation and diff checks support the evidence-only suffix. This establishes branch readiness, leaving PR creation and hosted CI to their respective owners."
+  ],
+  "review_refs": [
+    {
+      "id": "proposal-review",
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/proposal-review.json"
+    },
+    {
+      "id": "design-review-r2",
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/design-review-r2.json"
+    },
+    {
+      "id": "delivery-review",
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/delivery-review.json"
+    },
+    {
+      "id": "m1-code-review",
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/m1-code-review.json"
+    },
+    {
+      "id": "m2-code-review",
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/m2-code-review.json"
+    },
+    {
+      "id": "m3-code-review",
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/m3-code-review.json"
+    },
+    {
+      "id": "m4-code-review",
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/m4-code-review.json"
+    },
+    {
+      "id": "final-code-review",
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/final-code-review.json"
+    }
+  ],
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:46396ee3e8e0327d1ca4ca1485cf9f1802689acfe7fe0ec88e1cd4eddc2c644e",
+      "path": "docs/design/cli/cli.md"
+    },
+    {
+      "identity": "sha256:46068496c23e3a9e82befbea7d5c0c68242eb0928ddb15ccf431cbd9b52a94a6",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:5a38d6bb26ebdd63527843c5dbf94caeb0c306dcfe89cfb03fc5aced4dd14388",
+      "path": "docs/design/skill/delivery-handoff.md"
+    },
+    {
+      "identity": "sha256:18f39802c01fda9ff16fa68fd0fce03dafe33f032dc0006f0033095096856bcc",
+      "path": "docs/design/skill/skill.md"
+    },
+    {
+      "identity": "sha256:d0eba4625b8a60a564cca091fa2992141a9599e4b67d8851af779812854d46ab",
+      "path": "docs/plan.md"
+    },
+    {
+      "identity": "sha256:7b8f0ec8889d36ba01d05812d9aa8223a3dd79e6a10f42c7cef9573542060130",
+      "path": "docs/plans/2026-09-15-refine-skills-and-retire-stale-support.md"
+    },
+    {
+      "identity": "sha256:3bf51df8d9be1c016255c493aebe495b5d102fe015237adf099823752967686d",
+      "path": "docs/proposals/2026-09-15-refine-skills-and-retire-stale-support.md"
+    },
+    {
+      "identity": "sha256:e83e14f4d96c0654efa24bbeae2c3741792aa1d5371d951acd11285eecb33a5b",
+      "path": "packages/rigorloop/test/cli.test.js"
+    },
+    {
+      "identity": "sha256:05f9756ebb3d4692128b38e5f05c05e6b4de2de1c9d1f3c9cddaf98d64655e90",
+      "path": "packages/rigorloop/test/helpers/recording-query-launcher.mjs"
+    },
+    {
+      "identity": "sha256:b48ccbb627ecffc7ab603baa6811e66ca6820d61ae87cd2515bf3e78289d965a",
+      "path": "packages/rigorloop/test/record-store-cli.test.js"
+    },
+    {
+      "identity": "sha256:9b54f891d73fc12a17c7bb6e774f4b1c8a77d439fc60128228b81aa1ab0c55a9",
+      "path": "packages/rigorloop/test/record-store-model-examples.test.js"
+    },
+    {
+      "identity": "sha256:3a5a5881bbc2a77aefcc53b6beef3aedada2d3ed3ba232a7de1052e37d0e9c3c",
+      "path": "packages/rigorloop/test/record-store-queries.test.js"
+    },
+    {
+      "identity": "sha256:d03071552e331cb53ddf02efc13659031ab177918c3ec5e2ce4419a752802e5f",
+      "path": "packages/rigorloop/test/record-store-targeted.test.js"
+    },
+    {
+      "identity": "sha256:f6c5724a6f0912c361b0f08712ba71696dc3b2cf5f62aff3318fde808a8a7237",
+      "path": "packages/rigorloop/test/record-store-v3-contract.test.js"
+    },
+    {
+      "identity": "sha256:c01f9f21ba9cf6e8b1539a6d49d743c5ccbc2cf28f07628a04c4fa87b9b27f8b",
+      "path": "packages/rigorloop/test/record-store-v3-mutations.test.js"
+    },
+    {
+      "identity": "sha256:a279a5ae6312affe664710bcc004b29573f52ee8f51909865ef844340085ff78",
+      "path": "packages/rigorloop/test/record-store-workflow.test.js"
+    },
+    {
+      "identity": "sha256:f1fe37e16c9d468a222ff24dcfeca0f40245eac40e5873ce111210eb98ae1573",
+      "path": "packages/rigorloop/test/result-renderer.test.js"
+    },
+    {
+      "identity": "sha256:d261b723bf793fdbd85acb15438b997dced864b6e348a46e1cdaa5e683b38ec9",
+      "path": "scripts/lib/packaging/adapter_distribution.py"
+    },
+    {
+      "identity": "sha256:47d068ee2ffb8f442ef6e5632a4203186a0f67c0464e2324323f455f0a0ee068",
+      "path": "scripts/lib/validation/skill_validation.py"
+    },
+    {
+      "identity": "sha256:1f4e51ed4390a82f7f3569848808ed114b7ea7e9c73f3a8a07ef46a819b05c59",
+      "path": "scripts/lib/validation/validation_selection.py"
+    },
+    {
+      "identity": "sha256:243258bf48098b29fbf6b32f8722fe4fabe25e17b3aeb80968520b2f62551d56",
+      "path": "scripts/resources/adapter-templates/claude/CLAUDE.md"
+    },
+    {
+      "identity": "sha256:4b22736b37ffcd31a5b937fdd390971084dce870e952cf3b3a0dc7e4f83d6238",
+      "path": "scripts/validate-release.py"
+    },
+    {
+      "identity": "sha256:3a619d70420a2568451b87c2cd008f750794f5a9ff2727cf46d8b4a12ea5ebea",
+      "path": "skills/code-review/SKILL.md"
+    },
+    {
+      "identity": "sha256:cd43b65881a5a4f5cf33c489d5899d528dcb2edb802c4d451028d7c7a6f6ed12",
+      "path": "skills/delivery-review/SKILL.md"
+    },
+    {
+      "identity": "sha256:1ae503588443240f229b5a59722e8fc6544a1d74762f7cc37477624ad262c622",
+      "path": "skills/delivery-review/references/delivery-review-recording-and-settlement.md"
+    },
+    {
+      "identity": "sha256:d0a7aeaf23190c0f502984505adaa141df7a038e580f4c773953d664bfd5ae7f",
+      "path": "skills/design-review/SKILL.md"
+    },
+    {
+      "identity": "sha256:321165b0a2fbdf6f2f137f85ee4345fe70ebd893b2955b21f2d36bd0a97f4ee2",
+      "path": "skills/design-review/references/design-review-recording-and-settlement.md"
+    },
+    {
+      "identity": "sha256:6cd60cc830789db910f9b69df013a018c64554adfdd4b4fe3ca4137cf81af1ec",
+      "path": "skills/plan/SKILL.md"
+    },
+    {
+      "identity": "sha256:b11edc2b87d5994110719cf29bfd50fa6fdebc6cff3eb4d831ac451e3f370db2",
+      "path": "skills/pr/SKILL.md"
+    },
+    {
+      "identity": "sha256:755b76db1d452b01ccacff8b9932644ee0094c6e1b6203d81bd6bd45bee658ae",
+      "path": "skills/pr/assets/pr-body-skeleton.md"
+    },
+    {
+      "identity": "sha256:56a63ca914b3ed0f5bffd9d3cef7b34506670f6f0fbc303f17a7bc20e1375de6",
+      "path": "skills/pr/references/governed-pr-readiness.md"
+    },
+    {
+      "identity": "sha256:527638e5a352819a0efa13cd743b968b271f11097634ac600b986a8cceff510a",
+      "path": "skills/route/SKILL.md"
+    },
+    {
+      "identity": "sha256:2a5e4c1a580e69fbc57dd5e17f5c191f891263e3ee9ec389fee876c84f0aeef8",
+      "path": "skills/route/references/governed-lifecycle-routing.md"
+    },
+    {
+      "identity": "sha256:620e48e9a618d3947eb7aaf43a1669cb90baa3dea063aa7bc79819cff8d1d6fc",
+      "path": "skills/verify/SKILL.md"
+    },
+    {
+      "identity": "sha256:616c6d655d325b6e21398bde8b98627bf76d5a3d9cccb39496cc4bb16082f490",
+      "path": "skills/verify/references/governed-verification-recording.md"
+    },
+    {
+      "identity": "sha256:b4b995a5046ed0e79f02efba078eb152b40f9aa5afcc8dce8ed6ade2c791fa88",
+      "path": "tests/engineering/packaging/test-adapter-distribution.py"
+    },
+    {
+      "identity": "sha256:c20233722f9c78d00e83d34da64328e3f6692f8b9f1aab7d3aa2d267fbb81ca9",
+      "path": "tests/engineering/packaging/test-npm-package-publication.py"
+    },
+    {
+      "identity": "sha256:7e7dac59ac9e0612e4d93b2b9d84d333b61cdc120c5ec9621848c137da82d0f9",
+      "path": "tests/engineering/release/release_execution_tests.py"
+    },
+    {
+      "identity": "sha256:4e8531fe62efa0fed683ec9e693707414560f5848a5c356aeb0fb437c41d8fbd",
+      "path": "tests/engineering/release/test-release-transaction.py"
+    },
+    {
+      "identity": "sha256:320635af2debb9dc2f976f820d6390072e2dfddbea9a2e97bea55cb79f1728e0",
+      "path": "tests/engineering/validation/selection_contract_tests.py"
+    },
+    {
+      "identity": "sha256:318f0b659d5b45f93323ccf1e3f091dad75ff4b61c54ea189bde1851c59d017a",
+      "path": "tests/engineering/validation/selection_git_tests.py"
+    },
+    {
+      "identity": "sha256:2e60ccc930d88eb62dab397dfe81a4b5d0b99a217564d82a767c8bdfb70ec449",
+      "path": "tests/engineering/validation/selection_test_helpers.py"
+    },
+    {
+      "identity": "sha256:927ec31f77e468235806dafe9f128771d6374d4cb28ef219b4dc1f11452f764a",
+      "path": "tests/engineering/validation/test-select-validation.py"
+    },
+    {
+      "identity": "sha256:460f8e5b57cb9f3440415497cf6b4f5e6ff117d3fd13a19430cdf45a9dc19ca8",
+      "path": "tests/skill/skill_contract_tests.py"
+    },
+    {
+      "identity": "sha256:c0df8f4cabeff098b08e651d1c27e5e3ea89cb8530d5313b46d9f0cd824d0ea0",
+      "path": "tests/skill/skill_guidance_tests.py"
+    },
+    {
+      "identity": "sha256:1bb93c4b78c889f47feec57eb13bc246754227f92854e238f951a25f9f225c84",
+      "path": "tests/skill/test-skill-validator.py"
+    },
+    {
+      "identity": "sha256:df2242f5c28210d0d9c327f4ed261d652711fd46e564ba18b07724fa2049c1ab",
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/evidence.json"
+    },
+    {
+      "identity": "sha256:2a97005adf1f2721e2af9dde6766674c9f95a757fa76d33986fc2555d9925e52",
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/final-code-review.json"
+    }
+  ],
+  "summary": "Branch-ready: all four implementation milestones, complete skill/support inventory, independent milestone and fresh whole-change review, and required local proof satisfy the approved maintenance scope. PR submission is separately user-authorized.",
+  "verification_basis": {
+    "base_branch": "main",
+    "base_revision": "3c4985f80b242a295116880a5aee9cbbf47b12b0",
+    "head_branch": "refine-skills-and-retire-stale-support",
+    "merge_base_revision": "3c4985f80b242a295116880a5aee9cbbf47b12b0",
+    "remote_identity": "origin:github.com/xiongxianfei/rigorloop",
+    "repository_identity": "github.com/xiongxianfei/rigorloop",
+    "verified_subject_revision": "20d1ecd170d6031f9081fbc4a015dd5194e28609"
+  },
+  "verifier": {
+    "id": "codex-final-verifier",
+    "role": "verify"
+  }
+}

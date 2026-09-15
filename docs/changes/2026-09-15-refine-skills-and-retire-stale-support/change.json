@@ -1,12 +1,12 @@
 {
   "activity": {
     "owner": {
-      "id": "codex-verify",
-      "role": "verify"
+      "id": "codex-route",
+      "role": "route"
     },
-    "reason": "Fresh independent final whole-change Code Review approved with no findings; all milestones closed and required proof passed. Distinct final Verify owns readiness and durable rationale before separately authorized PR submission.",
+    "reason": "Distinct final Verify saved and read back as successful branch-ready after all four milestones and independent final review. Governed work is complete; user explicitly authorized separate PR submission. Historical drift observations remain unchanged archival facts; current final review and Verify bind exact present subjects.",
     "stage": "verify",
-    "status": "ready"
+    "status": "completed"
   },
   "applicability": [
     {
@@ -98,6 +98,15 @@
       "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/final-code-review.json",
       "reason": "Fresh independent complete original-base whole-change assessment of frozen831831935794a9dc30f09aa50b474efcd2e0a02a and current approved authority/integrated proof; all milestones closed and no unresolved required correction. Supports distinct Verify only.",
       "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-final-verifier",
+        "role": "verify"
+      },
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/verify-report.json",
+      "reason": "Distinct final assessment of exact reviewed engineering and attributable evidence suffix; complete required local gates and current authority independently inspected.",
+      "value": "current"
     }
   ],
   "blockers": [],
@@ -181,6 +190,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/final-code-review.json"
+    },
+    {
+      "kind": "verify",
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/verify-report.json"
     }
   ],
   "schema_version": 3,
