@@ -1,11 +1,11 @@
 {
   "activity": {
     "owner": {
-      "id": "codex-review-coordinator",
-      "role": "route"
+      "id": "codex-verify",
+      "role": "verify"
     },
-    "reason": "Independent M4 review approved with no findings; all four milestones closed. Fresh independent whole-change Code Review required before distinct final Verify and user-authorized PR handoff.",
-    "stage": "code-review",
+    "reason": "Fresh independent final whole-change Code Review approved with no findings; all milestones closed and required proof passed. Distinct final Verify owns readiness and durable rationale before separately authorized PR submission.",
+    "stage": "verify",
     "status": "ready"
   },
   "applicability": [
@@ -89,6 +89,15 @@
       "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/m4-code-review.json",
       "reason": "Independent exact-head M4 assessment plus complete inventory reconciliation; no unresolved M4 correction. Milestone only, subject to separate final whole-change review and Verify.",
       "value": "current"
+    },
+    {
+      "actor": {
+        "id": "all-skills-final-code-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/final-code-review.json",
+      "reason": "Fresh independent complete original-base whole-change assessment of frozen831831935794a9dc30f09aa50b474efcd2e0a02a and current approved authority/integrated proof; all milestones closed and no unresolved required correction. Supports distinct Verify only.",
+      "value": "current"
     }
   ],
   "blockers": [],
@@ -168,6 +177,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/m4-code-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/final-code-review.json"
     }
   ],
   "schema_version": 3,
