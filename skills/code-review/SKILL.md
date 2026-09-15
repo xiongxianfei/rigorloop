@@ -169,7 +169,7 @@ Progress means work that has happened so far. Readiness means the next stage tha
 
 ## Status and milestone handoff
 
-Identify milestone versus final whole-change scope in the judgment. Return the outcome to `route`; Code Review writes evidence, and Workflow owns milestone/routing changes. An applicable clean non-final review permits only its own milestone closeout. Findings retain their correction owner even when the overall judgment is inconclusive. Blocked or inconclusive work stops the affected handoff for its named decision, constraint or missing proof.
+Identify milestone versus final whole-change scope in the judgment. Return the outcome to `route`; Code Review writes evidence, and `route` owns milestone/routing changes. An applicable clean non-final review permits only its own milestone closeout. Findings retain their correction owner even when the overall judgment is inconclusive. Blocked or inconclusive work stops the affected handoff for its named decision, constraint or missing proof.
 
 After every implementation milestone and required correction, final closeout requires a fresh independent holistic Code Review of the complete final diff and cross-milestone interactions, any triggered CI maintenance and distinct `verify`. Milestone review never substitutes or jumps directly to final verification; only successful Verify produces the final explanation. Apply adopted reliance policy when selected; portable review retains its isolated scope, changed-implementation rereview and complete-final-diff assessment without claiming governed authority. Historical contracts grant no current route.
 
