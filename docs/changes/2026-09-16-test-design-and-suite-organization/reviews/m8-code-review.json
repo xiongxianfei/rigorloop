@@ -1,0 +1,110 @@
+{
+  "assessment_scope": "Independent M8 milestone Code Review of commit 954d53de39538bae10ecd3350426458992650532 against baseline 399f2a7fd4408c6a119e7b1af09ca37592e868c9, approved Validation Design and primary delivery plan. Covers all 169 native cases in cli.test.js, installer-replacement.test.js, cli-observability.test.js, cli-invocation-observability.test.js, result-renderer.test.js and workflow-context.test.js; the consumed public-command-output fixture; the actual four-file engineering diff; current runtime, installation, package and CI consumers; and M8 inventory reconciliation and cross-slice interactions. The 17 listed engineering/contract subjects identify the exact assessed package. The 113-subject inventory evidence is relied on for population and consumer reconciliation, not treated as a completed final whole-change review.",
+  "change_id": "2026-09-16-test-design-and-suite-organization",
+  "contributors": [
+    {
+      "id": "codex-root",
+      "role": "implement"
+    }
+  ],
+  "findings": [],
+  "id": "m8-code-review",
+  "independence_basis": "The reviewer is the separate nonauthor agent /root/proposal_reviewer; /root authored the M8 engineering changes and author evidence as codex-root/implement. I did not author or correct the reviewed test sources. I independently read the complete six-file population and fixture, inspected the actual diff and relevant runtime/callers, challenged assertions with controlled counterexamples, recorded m8-cr-01 before its correction, and independently reassessed the corrected subject and final evidence. Earlier milestone reviews by this same nonauthor reviewer supply bounded historical context, not this judgment.",
+  "judgment": "approved",
+  "limitations": [
+    "M8 milestone approval does not establish final whole-change review, Verify, branch/PR readiness, publication or route/work-state closeout. Fresh holistic review and Verify remain required; immutable final PR-range execution is allocated to Verify.",
+    "Large final npm, selected, local and broad results are reused from exact current author evidence and inspected logs. My fresh execution is the bounded independent work named above; no second complete package/broad run is claimed.",
+    "Controlled mutants and ownership probes establish the stated counterexamples on this environment, not every scheduler/filesystem/OS behavior or actual product wrong-limit/duplicate-writer defects. Deterministic network transport does not establish public release availability; retained runtime observed-check limitations remain.",
+    "The 113-subject reconciliation is population/input/caller evidence, not holistic approval. The shared evidence container remains conservatively restricted; reliance is on current individual entries. Historical stale judgments and failed/pre-correction proof retain their original meaning."
+  ],
+  "rationale": [
+    "Spec alignment: pass. The unchanged Validation Design sha256:094d7008c19975ccf293042a7da4faafa99041424c7fd517a0f861020ac7d539 and primary plan sha256:84f6a4188d0a6901b0cbe5ce9b267bf32e11c6aa8aa6c2b86b1ea5f4aa5ffbdb retain current approved Design and Delivery reviews. M8 satisfies TG-08, TEST-SR-19/20 and VAL-SR-32 through direct native scenarios, explicit resource ownership and independent observed outcomes. The existing CLI, logging and Installation contracts remain authority. No behavior retirement, framework or upstream decision is introduced.",
+    "Test coverage: pass. I read all 169 cases and their meaningful generated variants across six files plus the output fixture, including retained bodies. CLI 55 cases retain actual child dispatch, archive construction/extraction, metadata trust gates, adapter matrices and proxy/error behavior. Installer 13 cases retain real preflight, force/absent paths, races, late inode writes and partial progress. Logging 30 core plus 22 invocation cases retain configuration, actual sink/child behavior, bounded records and public output. Renderer 11 retains literal formats and fixture inventory; workflow 38 retains discovery, current/retired states, limits, journal observation and redaction. Full group/input dispositions are in m8-implementation; none relies solely on counts or matching two implementation-derived paths.",
+    "Edge cases: pass. All 147 title/parameter definitions remain; ten declarations representing eleven native cases are intentionally refined and 137 bodies remain AST-identical. Literal byte/count boundaries and named variant domains remain useful. The two real six-child logging scenarios independently require complete writer IDs and event sequences; Promise.allSettled keeps every child inside cleanup ownership. Existing ordered scenarios remain intact. The corrected rotation case independently specifies 5 MiB and exact active-plus-four directory membership. The retained invocation and renderer files are byte-identical.",
+    "Error handling: pass. Installer scenarios cross the actual filesystem mechanisms for unsafe/symlinked paths, changed sources/destinations, unsupported descriptor operations before publication and completed/failed/untouched progress. Corrected symlink and traversal cases observe the actual owned escape destination, sentinel bytes and directory membership rather than unrelated paths. Logging retains partial write, I/O failure, unsafe permissions, lock/fd ownership and actual killed-child behavior. Acquired roots are immediately cleanup-owned and injected functions are restored. Retry and failure outcomes remain distinct from successful schema/shape observations.",
+    "Architecture boundaries: pass. The six retained files are coherent native behavior owners; the large CLI file shares concrete archive and public-child construction without introducing inheritance or a second runner. Ordinary fresh builders/resource functions support explicit actions; assertions consume observed results and bytes. The private formatter adds no dependency. Fresh output-fixture parsing and declared version/temp-path normalization preserve literal expected public facts. Production imports no test helpers, and children settle before cleanup.",
+    "Compatibility and cross-slice consumers: pass. Final normal collection reconciles 35 entrypoints/1373 cases (955 Python and 418 Node), including all 246 class-selector remaps and the sole extracted packed-recording case added before M8. M8 changes no population or generated domain. I inspected the collection procedure/comparison and verified all 17 handoff and 113 inventory subject identities; only four M8 test files differ from M7. Native glob, public invocations and current shared inputs remain. Package and selected-CI callers still execute the real cases, including packed recording. Earlier M6 review is intentionally stale on the shared CLI source; this assessment does not renew it or replace whole-change review.",
+    "Security/privacy: pass. Corrected generic CLI and workflow children use private cwd/log roots with product logging enabled; my strict probes observed zero caller-state files. Containment assertions now observe actual outside-write targets under owned parents. Retained privacy/redaction, unsafe-path and dedicated recording logging-bypass proof remains. Literal concurrent writer sets reject the demonstrated duplicate/missing-ID counterexamples. These are test-protection improvements, not claimed runtime security fixes.",
+    "Concern m8-cr-01: resolved by original reporter. Before correction I recorded that private 4 MiB and five-archive runtime mutants both passed the old boundary case and all 30 core cases. Current test sha256:4302223d2c45bd679bfbda8d487db0f180e8d466ec92daa8e298ada8faed6ef9 uses a literal 5*1024*1024 for setup/observed size and literal exact five-name directory membership, preserving the case and existing exact/above/content checks. I independently reran the unchanged strict probe sha256:5f7b3d7af37c3994fe01066245875c5dc4acb15940bc2bba2a9f8a8366c487db: both mutants fail exactly the intended single ERR_ASSERTION and the probe succeeds; the separate normal case passes. Adjacent literal 16 KiB event-limit proof already rejects an 8 KiB mutant. The original failed evidence, subjects and blocker origin remain; current m8-validation satisfies affected and integrated proof.",
+    "Derived artifact currency: pass within M8. Runtime, installation implementation, package metadata, shared output fixture and selection/execution consumers are unchanged. Actual seven-path selected proof passes change_metadata.regression, change_metadata.validate, rigorloop_cli.test and npm_package_publication.test with no unknown/blocking path. Local and broad proof exercise prior catalog/caller interactions. These results establish local conformance and packed installed observations within their recorded scope, not publication or hosted CI.",
+    "Unrelated changes: pass. The actual range contains four test readability/refinement edits and governed handoff/history records. No runtime, dependency, canonical skill/schema/template, generated adapter, release implementation or hosted workflow changes occur in M8. Full retained-file reading and broader inventory checks are necessary because the milestone owns the remaining population; they do not expand this into final whole-change approval.",
+    "Validation evidence: pass. Exact current m8-implementation, m8-validation and inventory-reconciliation entries and named logs support full npm 418, exact C1, selected C2 (330.37 seconds), actual two-worker C3, local C4 (324.80 seconds), broad C5 (643 checks, 317.02 seconds) and prose/record/whitespace C6. Pre-correction local/broad passes remain historical. My fresh execution covers both strict caller-log probes, duplicate-writer assertion probes, two real six-child scenarios, all 13 installer cases, the strict rotation mutant proof and normal control, plus source/population comparisons. All met their stated outcome. Controlled duplicate-writer probes establish assertion sensitivity; real child cases separately cross the product mechanism. No required M8 proof remains pending."
+  ],
+  "reviewer": {
+    "id": "code-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:556d9ae7e57cb8ccc20a17461e4bf5bc3e45ce84645c710e46c380056038b1aa",
+      "path": "packages/rigorloop/test/cli.test.js"
+    },
+    {
+      "identity": "sha256:8e17781dc2ea385407d1f97516ac3104bc96e331ff1814c0364f6076f7bb97a1",
+      "path": "packages/rigorloop/test/installer-replacement.test.js"
+    },
+    {
+      "identity": "sha256:4302223d2c45bd679bfbda8d487db0f180e8d466ec92daa8e298ada8faed6ef9",
+      "path": "packages/rigorloop/test/cli-observability.test.js"
+    },
+    {
+      "identity": "sha256:e17e9af73635f92b089baaa3dd67e6ccd005d4e9b8c1e2c0314c5d5cca60a0b6",
+      "path": "packages/rigorloop/test/cli-invocation-observability.test.js"
+    },
+    {
+      "identity": "sha256:f1fe37e16c9d468a222ff24dcfeca0f40245eac40e5873ce111210eb98ae1573",
+      "path": "packages/rigorloop/test/result-renderer.test.js"
+    },
+    {
+      "identity": "sha256:8013eddf17d208e5eccc5ffa551c6e170973dfd1fde19a11e254e0eb8ba55ea5",
+      "path": "packages/rigorloop/test/workflow-context.test.js"
+    },
+    {
+      "identity": "sha256:29143443c9f5013dce0b156ae7e4002abb526aa6081e3a4e79bbc053bab57fda",
+      "path": "packages/rigorloop/test/fixtures/observability/public-command-output.json"
+    },
+    {
+      "identity": "sha256:6c879a76afc9d6317951ba1dc883b9a5c220ba80df0cdb3b2f94e60363794207",
+      "path": "packages/rigorloop/package.json"
+    },
+    {
+      "identity": "sha256:6b6d8fb56077b3359ae47b21bc9aab401e2510beb985ffe5fc5d43a6da070b9a",
+      "path": "packages/rigorloop/dist/lib/log-config.js"
+    },
+    {
+      "identity": "sha256:65fd6fa394e24d389c079c44765ff0b46add4ab6223140191bd9dd63956f99d5",
+      "path": "packages/rigorloop/dist/lib/log-sink.js"
+    },
+    {
+      "identity": "sha256:36dfb447364e3407f3ab59d6bd1b35243a0cab116d20d71fc0b159db98d3b6ec",
+      "path": "packages/rigorloop/dist/lib/installer-replacement.js"
+    },
+    {
+      "identity": "sha256:1adea2a89d5aff9d3cb88aaac38bf4fa05dabcfdcf24f36656dece99fa61c266",
+      "path": "packages/rigorloop/dist/bin/rigorloop.js"
+    },
+    {
+      "identity": "sha256:968cc22d8073862ee77152865c9bc9bcbe231625ad17c57315e406082c931737",
+      "path": "scripts/lib/validation/validation_selection.py"
+    },
+    {
+      "identity": "sha256:132a133c71cef31f4aefbb49835c4269c9cd80ba492686e9988b4573e776b9f3",
+      "path": "scripts/lib/validation/validation_execution.py"
+    },
+    {
+      "identity": "sha256:9f03477a3dc5da070181ed4bc973c5ba4de620c5519510afb541bf25503f63c0",
+      "path": "scripts/ci.sh"
+    },
+    {
+      "identity": "sha256:46396ee3e8e0327d1ca4ca1485cf9f1802689acfe7fe0ec88e1cd4eddc2c644e",
+      "path": "docs/design/cli/cli.md"
+    },
+    {
+      "identity": "sha256:5320ca604afb4e0a224317e80e9907c2fc42b78f5ab6322bc81b45d8687d6574",
+      "path": "docs/design/cli/installation.md"
+    }
+  ],
+  "summary": "M8 preserves all 169 allocated native cases and their meaningful variants, makes retained scenarios readable, and strengthens demonstrated logging, containment, writer-identity and rotation-oracle weaknesses. The exact committed correction satisfies m8-cr-01. Complete retained-group assessment and current integrated proof support M8 closeout; distinct whole-change review and Verify remain required.",
+  "target": "code"
+}

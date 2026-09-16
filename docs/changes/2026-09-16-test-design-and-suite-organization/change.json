@@ -2,9 +2,9 @@
   "activity": {
     "owner": {
       "id": "code-reviewer",
-      "role": "review"
+      "role": "route"
     },
-    "reason": "M8 remaining population and final integrated proof complete. Independent M8 review precedes separate fresh whole-change Code Review.",
+    "reason": "All eight milestones are independently approved and required corrections resolved. Select the distinct fresh whole-change Code Review of the complete final diff and cross-milestone interactions.",
     "stage": "code-review",
     "status": "in-progress"
   },
@@ -133,6 +133,15 @@
       },
       "path": "docs/changes/2026-09-16-test-design-and-suite-organization/reviews/m7-code-review.json",
       "reason": "Independent nonauthor assessment of the complete 249-case M7 population, four helpers, 43 shared inputs/examples and actual affected consumers at commit 399f2a7fd4408c6a119e7b1af09ca37592e868c9. Exact authority and 73 engineering subjects remain unchanged. Required outcomes, corrected oracle/ownership counterexamples and current proof are sufficient with no material correction; applies only to this milestone and its stated limits. M8, fresh whole-change review and Verify remain required.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "code-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-16-test-design-and-suite-organization/reviews/m8-code-review.json",
+      "reason": "Independent nonauthor assessment of all 169 M8 native cases, six test files and fixture, four-file actual engineering diff, exact 17-subject package and recorded inventory/caller interactions at commit 954d53de39538bae10ecd3350426458992650532. Current approved authority and final corrected proof match inspected subjects; m8-cr-01 is independently satisfied. Applies to M8 milestone only. Fresh whole-change review and Verify remain separate and required.",
       "value": "current"
     }
   ],
@@ -616,8 +625,20 @@
         "role": "review"
       },
       "required_outcome": "Bind the actual native rotation boundary to the independently specified 5 MiB contract and require exactly the active log plus four archive filenames after rotation. Preserve the existing native case identity, meaningful exact/above-threshold conditions and real filesystem observation. Safe resolution: use a local contract literal for this case's setup and observed expected size and inspect complete resulting directory membership against the literal five required names; other fault fixtures may still use production constants as setup where they do not claim the constant's correctness. The unchanged strict two-mutant probe must pass by observing the intended native assertions fail, while the unmodified native boundary and affected logging/consumer/integrated proof pass. Retain the original failed proof, restrict affected prior evidence, and return corrected exact subjects to this reporter for disposition before final M8 approval. No product or Design decision is missing.",
-      "resolution": null,
-      "state": "open",
+      "resolution": {
+        "actor": {
+          "id": "code-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [
+          {
+            "id": "m8-validation",
+            "path": "docs/changes/2026-09-16-test-design-and-suite-organization/evidence.json"
+          }
+        ],
+        "rationale": "Original reporter independently inspected corrected cli-observability.test.js sha256:4302223d2c45bd679bfbda8d487db0f180e8d466ec92daa8e298ada8faed6ef9 at commit 954d53de39538bae10ecd3350426458992650532. The same native case now constructs exact/above inputs and expected observed size from the literal 5 MiB contract and asserts exactly the active plus four archive filenames from actual directory membership. Existing identity and meaningful conditions remain. The unchanged strict probe sha256:5f7b3d7af37c3994fe01066245875c5dc4acb15940bc2bba2a9f8a8366c487db independently rerun as current returns zero: both 4 MiB and five-archive mutants fail exactly the intended single native assertion, whereas the separate unmodified native case passes. Fresh corrected logging/package, selected, local and broad proof is complete in m8-validation. The original pre-correction subjects, failed proof and immutable origin remain unchanged; runtime is unchanged. Required outcome is satisfied with no remaining correction. This disposition does not establish whole-change or Verify readiness."
+      },
+      "state": "resolved",
       "subjects": [
         {
           "identity": "sha256:d481846cc32b7915a8174e256b0180ab9db15745f3eeb3c253f03a33f84425b0",
@@ -705,6 +726,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-16-test-design-and-suite-organization/reviews/m7-code-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-16-test-design-and-suite-organization/reviews/m8-code-review.json"
     }
   ],
   "schema_version": 3,
@@ -819,7 +844,7 @@
         "TEST-SR-20",
         "VAL-SR-32"
       ],
-      "status": "in-progress"
+      "status": "completed"
     }
   ]
 }
