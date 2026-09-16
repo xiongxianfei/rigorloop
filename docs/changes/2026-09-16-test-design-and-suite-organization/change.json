@@ -4,7 +4,7 @@
       "id": "code-reviewer",
       "role": "review"
     },
-    "reason": "M7 complete native Records population assessed and required proof passes. Independent M7 review precedes M8 engineering.",
+    "reason": "M8 remaining population and final integrated proof complete. Independent M8 review precedes separate fresh whole-change Code Review.",
     "stage": "code-review",
     "status": "in-progress"
   },
@@ -119,11 +119,20 @@
     },
     {
       "actor": {
+        "id": "codex-root",
+        "role": "implement"
+      },
+      "path": "docs/changes/2026-09-16-test-design-and-suite-organization/reviews/m6-code-review.json",
+      "reason": "M8 changes an exact shared reviewed test subject. Preserve the original milestone judgment; require current M8 interaction assessment and the fresh whole-change review.",
+      "value": "stale"
+    },
+    {
+      "actor": {
         "id": "code-reviewer",
         "role": "review"
       },
-      "path": "docs/changes/2026-09-16-test-design-and-suite-organization/reviews/m6-code-review.json",
-      "reason": "Independent nonauthor assessment of all 180 M6 scenarios, 28 recursive inputs, fixture/helper responsibilities and affected actual consumers at a937a578 found settled authority, sufficient exact evidence and no material correction. Fresh reviewer actual-candidate execution also passes with no caller-log writes. Applies to the listed 59 subjects and milestone scope only; M7-M8, integrated whole-change review and Verify remain required.",
+      "path": "docs/changes/2026-09-16-test-design-and-suite-organization/reviews/m7-code-review.json",
+      "reason": "Independent nonauthor assessment of the complete 249-case M7 population, four helpers, 43 shared inputs/examples and actual affected consumers at commit 399f2a7fd4408c6a119e7b1af09ca37592e868c9. Exact authority and 73 engineering subjects remain unchanged. Required outcomes, corrected oracle/ownership counterexamples and current proof are sufficient with no material correction; applies only to this milestone and its stated limits. M8, fresh whole-change review and Verify remain required.",
       "value": "current"
     }
   ],
@@ -444,6 +453,181 @@
           "path": "packages/rigorloop/test/helpers/record-store-interactions.mjs"
         }
       ]
+    },
+    {
+      "evidence": "Two passing native cases write diagnostic files into caller-state stand-in. See original m8-fixture-reproductions.",
+      "id": "m8-log-isolation",
+      "origin": {
+        "evidence": "Two passing native cases write diagnostic files into caller-state stand-in. See original m8-fixture-reproductions.",
+        "rationale": "Bounded test defect within approved M8, requiring identical proof and preserved original observation.",
+        "reporter": {
+          "id": "codex-root",
+          "role": "implement"
+        },
+        "required_outcome": "Same strict probes preserve caller state and normal public/proxy scenarios pass with private log destinations.",
+        "subjects": [
+          {
+            "identity": "sha256:e83e14f4d96c0654efa24bbeae2c3741792aa1d5371d951acd11285eecb33a5b",
+            "path": "packages/rigorloop/test/cli.test.js"
+          },
+          {
+            "identity": "sha256:056407f7078c31147daaff197a500189a771a0f8825a42cbca8615d1e76820e2",
+            "path": "packages/rigorloop/test/workflow-context.test.js"
+          },
+          {
+            "identity": "sha256:460c8fa7b15469b1f9af09690202a0c59f273362e2c95829270f2ff264efe130",
+            "path": "packages/rigorloop/test/cli-observability.test.js"
+          }
+        ],
+        "supporting_judgment": null
+      },
+      "owner": {
+        "id": "codex-root",
+        "role": "implement"
+      },
+      "reporter": {
+        "id": "codex-root",
+        "role": "implement"
+      },
+      "required_outcome": "Same strict probes preserve caller state and normal public/proxy scenarios pass with private log destinations.",
+      "resolution": {
+        "actor": {
+          "id": "codex-root",
+          "role": "implement"
+        },
+        "evidence_refs": [
+          {
+            "id": "m8-validation",
+            "path": "docs/changes/2026-09-16-test-design-and-suite-organization/evidence.json"
+          }
+        ],
+        "rationale": "Original reporter reassesses identical strict probe identities and complete native/selected/integrated proof. Caller writes are owned and the actual assertion bodies reject missing writer identities; original failed observations remain retained. Independent review is separate."
+      },
+      "state": "resolved",
+      "subjects": [
+        {
+          "identity": "sha256:e83e14f4d96c0654efa24bbeae2c3741792aa1d5371d951acd11285eecb33a5b",
+          "path": "packages/rigorloop/test/cli.test.js"
+        },
+        {
+          "identity": "sha256:056407f7078c31147daaff197a500189a771a0f8825a42cbca8615d1e76820e2",
+          "path": "packages/rigorloop/test/workflow-context.test.js"
+        },
+        {
+          "identity": "sha256:460c8fa7b15469b1f9af09690202a0c59f273362e2c95829270f2ff264efe130",
+          "path": "packages/rigorloop/test/cli-observability.test.js"
+        }
+      ]
+    },
+    {
+      "evidence": "Both actual assertion tails accept duplicate/missing writer identities. See original m8-fixture-reproductions.",
+      "id": "m8-writer-oracle",
+      "origin": {
+        "evidence": "Both actual assertion tails accept duplicate/missing writer identities. See original m8-fixture-reproductions.",
+        "rationale": "Bounded test defect within approved M8, requiring identical proof and preserved original observation.",
+        "reporter": {
+          "id": "codex-root",
+          "role": "implement"
+        },
+        "required_outcome": "Same strict assertion probe rejects both corrupt observations; actual concurrent six-child execution and rotation preserve literal writer identities and exact seed bytes.",
+        "subjects": [
+          {
+            "identity": "sha256:e83e14f4d96c0654efa24bbeae2c3741792aa1d5371d951acd11285eecb33a5b",
+            "path": "packages/rigorloop/test/cli.test.js"
+          },
+          {
+            "identity": "sha256:056407f7078c31147daaff197a500189a771a0f8825a42cbca8615d1e76820e2",
+            "path": "packages/rigorloop/test/workflow-context.test.js"
+          },
+          {
+            "identity": "sha256:460c8fa7b15469b1f9af09690202a0c59f273362e2c95829270f2ff264efe130",
+            "path": "packages/rigorloop/test/cli-observability.test.js"
+          }
+        ],
+        "supporting_judgment": null
+      },
+      "owner": {
+        "id": "codex-root",
+        "role": "implement"
+      },
+      "reporter": {
+        "id": "codex-root",
+        "role": "implement"
+      },
+      "required_outcome": "Same strict assertion probe rejects both corrupt observations; actual concurrent six-child execution and rotation preserve literal writer identities and exact seed bytes.",
+      "resolution": {
+        "actor": {
+          "id": "codex-root",
+          "role": "implement"
+        },
+        "evidence_refs": [
+          {
+            "id": "m8-validation",
+            "path": "docs/changes/2026-09-16-test-design-and-suite-organization/evidence.json"
+          }
+        ],
+        "rationale": "Original reporter reassesses identical strict probe identities and complete native/selected/integrated proof. Caller writes are owned and the actual assertion bodies reject missing writer identities; original failed observations remain retained. Independent review is separate."
+      },
+      "state": "resolved",
+      "subjects": [
+        {
+          "identity": "sha256:e83e14f4d96c0654efa24bbeae2c3741792aa1d5371d951acd11285eecb33a5b",
+          "path": "packages/rigorloop/test/cli.test.js"
+        },
+        {
+          "identity": "sha256:056407f7078c31147daaff197a500189a771a0f8825a42cbca8615d1e76820e2",
+          "path": "packages/rigorloop/test/workflow-context.test.js"
+        },
+        {
+          "identity": "sha256:460c8fa7b15469b1f9af09690202a0c59f273362e2c95829270f2ff264efe130",
+          "path": "packages/rigorloop/test/cli-observability.test.js"
+        }
+      ]
+    },
+    {
+      "evidence": "Severity: major. Location: packages/rigorloop/test/cli-observability.test.js:572, T05 rotates only above the exact byte boundary and retains four archives (threshold setup/expected size at lines 585, 589, 599; retention assertions at lines 606–616). CLI's Local diagnostic logging contract requires rotation only above 5 MiB and active plus four archives. The exact-size test instead derives its inputs and expected size from production MAX_LOG_BYTES. The retention test verifies that names 0–4 remain and that archive4 contains former archive3, but never excludes archive5 or any extra retained member.\nIndependent controlled reproduction copied only this native file, package module metadata and its three runtime dependencies into an automatically cleaned private directory; no repository runtime source was changed. Replacing the production 5 MiB constant with 4 MiB leaves all 30 logging-core cases passing. Separately adding rigorloop.5.jsonl to LOG_NAMES and moving the rotation oldest/index bounds to five archives also leaves all 30 cases passing. Unmodified control passes 30. Thus both explicit contract violations remain invisible despite the named boundary test. Adjacent event-size protection is independent: reducing MAX_EVENT_BYTES from 16 KiB to 8 KiB fails exactly T02's literal 16 KiB assertion; no event-limit correction is requested.\nThe identity-stable strict regression is /tmp/rigorloop-suite-organization-work/probe_m8_rotation_contract.py, sha256:5f7b3d7af37c3994fe01066245875c5dc4acb15940bc2bba2a9f8a8366c487db. Run python /tmp/rigorloop-suite-organization-work/probe_m8_rotation_contract.py before (or after/current to retain separate logs). It runs the exact existing named native case under Node TAP in each independently mutated private copy. It succeeds only if each mutant exits1, runs exactly one case, and fails that named case through ERR_ASSERTION; a setup/import error or wrong case does not satisfy it. On this subject both mutant native runs exit0 and the strict regression exits1. Detailed outputs are m8-rotation-contract-before.json and the two named TAP logs; broader diagnostic experiments are m8-review-rotation-limit-probe.json and m8-review-adjacent-limits.json.\nThis is a demonstrated test-oracle defect, not evidence that the current product uses a wrong limit. It is recorded during independently authorized M8 review preparation. The exact final M8 handoff and required integrated proof are still pending, so this reviewer-owned blocker records the concrete required correction without asserting a completed formal M8 judgment. Other reviewed M8 source groups have no preliminary material concern. No implementation, activity, work or another actor's evidence was changed by the reviewer.",
+      "id": "m8-cr-01",
+      "origin": {
+        "evidence": "Severity: major. Location: packages/rigorloop/test/cli-observability.test.js:572, T05 rotates only above the exact byte boundary and retains four archives (threshold setup/expected size at lines 585, 589, 599; retention assertions at lines 606–616). CLI's Local diagnostic logging contract requires rotation only above 5 MiB and active plus four archives. The exact-size test instead derives its inputs and expected size from production MAX_LOG_BYTES. The retention test verifies that names 0–4 remain and that archive4 contains former archive3, but never excludes archive5 or any extra retained member.\nIndependent controlled reproduction copied only this native file, package module metadata and its three runtime dependencies into an automatically cleaned private directory; no repository runtime source was changed. Replacing the production 5 MiB constant with 4 MiB leaves all 30 logging-core cases passing. Separately adding rigorloop.5.jsonl to LOG_NAMES and moving the rotation oldest/index bounds to five archives also leaves all 30 cases passing. Unmodified control passes 30. Thus both explicit contract violations remain invisible despite the named boundary test. Adjacent event-size protection is independent: reducing MAX_EVENT_BYTES from 16 KiB to 8 KiB fails exactly T02's literal 16 KiB assertion; no event-limit correction is requested.\nThe identity-stable strict regression is /tmp/rigorloop-suite-organization-work/probe_m8_rotation_contract.py, sha256:5f7b3d7af37c3994fe01066245875c5dc4acb15940bc2bba2a9f8a8366c487db. Run python /tmp/rigorloop-suite-organization-work/probe_m8_rotation_contract.py before (or after/current to retain separate logs). It runs the exact existing named native case under Node TAP in each independently mutated private copy. It succeeds only if each mutant exits1, runs exactly one case, and fails that named case through ERR_ASSERTION; a setup/import error or wrong case does not satisfy it. On this subject both mutant native runs exit0 and the strict regression exits1. Detailed outputs are m8-rotation-contract-before.json and the two named TAP logs; broader diagnostic experiments are m8-review-rotation-limit-probe.json and m8-review-adjacent-limits.json.\nThis is a demonstrated test-oracle defect, not evidence that the current product uses a wrong limit. It is recorded during independently authorized M8 review preparation. The exact final M8 handoff and required integrated proof are still pending, so this reviewer-owned blocker records the concrete required correction without asserting a completed formal M8 judgment. Other reviewed M8 source groups have no preliminary material concern. No implementation, activity, work or another actor's evidence was changed by the reviewer.",
+        "rationale": "TEST-SR-02/05/08/20 and M8 TG-08 require independently justified observable expected behavior. Both governed rotation limits have a concrete undetected counterexample with a bounded test-only correction. Final integrated proof is pending; this concern must survive it and be recorded before author correction.",
+        "reporter": {
+          "id": "code-reviewer",
+          "role": "review"
+        },
+        "required_outcome": "Bind the actual native rotation boundary to the independently specified 5 MiB contract and require exactly the active log plus four archive filenames after rotation. Preserve the existing native case identity, meaningful exact/above-threshold conditions and real filesystem observation. Safe resolution: use a local contract literal for this case's setup and observed expected size and inspect complete resulting directory membership against the literal five required names; other fault fixtures may still use production constants as setup where they do not claim the constant's correctness. The unchanged strict two-mutant probe must pass by observing the intended native assertions fail, while the unmodified native boundary and affected logging/consumer/integrated proof pass. Retain the original failed proof, restrict affected prior evidence, and return corrected exact subjects to this reporter for disposition before final M8 approval. No product or Design decision is missing.",
+        "subjects": [
+          {
+            "identity": "sha256:d481846cc32b7915a8174e256b0180ab9db15745f3eeb3c253f03a33f84425b0",
+            "path": "packages/rigorloop/test/cli-observability.test.js"
+          },
+          {
+            "identity": "sha256:65fd6fa394e24d389c079c44765ff0b46add4ab6223140191bd9dd63956f99d5",
+            "path": "packages/rigorloop/dist/lib/log-sink.js"
+          }
+        ],
+        "supporting_judgment": null
+      },
+      "owner": {
+        "id": "codex-root",
+        "role": "implement"
+      },
+      "reporter": {
+        "id": "code-reviewer",
+        "role": "review"
+      },
+      "required_outcome": "Bind the actual native rotation boundary to the independently specified 5 MiB contract and require exactly the active log plus four archive filenames after rotation. Preserve the existing native case identity, meaningful exact/above-threshold conditions and real filesystem observation. Safe resolution: use a local contract literal for this case's setup and observed expected size and inspect complete resulting directory membership against the literal five required names; other fault fixtures may still use production constants as setup where they do not claim the constant's correctness. The unchanged strict two-mutant probe must pass by observing the intended native assertions fail, while the unmodified native boundary and affected logging/consumer/integrated proof pass. Retain the original failed proof, restrict affected prior evidence, and return corrected exact subjects to this reporter for disposition before final M8 approval. No product or Design decision is missing.",
+      "resolution": null,
+      "state": "open",
+      "subjects": [
+        {
+          "identity": "sha256:d481846cc32b7915a8174e256b0180ab9db15745f3eeb3c253f03a33f84425b0",
+          "path": "packages/rigorloop/test/cli-observability.test.js"
+        },
+        {
+          "identity": "sha256:65fd6fa394e24d389c079c44765ff0b46add4ab6223140191bd9dd63956f99d5",
+          "path": "packages/rigorloop/dist/lib/log-sink.js"
+        }
+      ]
     }
   ],
   "change_id": "2026-09-16-test-design-and-suite-organization",
@@ -517,6 +701,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-16-test-design-and-suite-organization/reviews/m6-code-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-16-test-design-and-suite-organization/reviews/m7-code-review.json"
     }
   ],
   "schema_version": 3,
@@ -617,7 +805,7 @@
         "TEST-SR-20",
         "VAL-SR-32"
       ],
-      "status": "in-progress"
+      "status": "completed"
     },
     {
       "id": "m8",
@@ -631,7 +819,7 @@
         "TEST-SR-20",
         "VAL-SR-32"
       ],
-      "status": "pending"
+      "status": "in-progress"
     }
   ]
 }

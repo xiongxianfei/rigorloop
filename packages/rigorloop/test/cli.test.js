@@ -1,14 +1,28 @@
 import assert from "node:assert/strict";
 import { execFileSync, spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { copyFileSync, existsSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
+import {
+  copyFileSync,
+  existsSync,
+  lstatSync,
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  readdirSync,
+  rmSync,
+  symlinkSync,
+  writeFileSync,
+} from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { test } from "node:test";
 
 import { exitCodeForResult } from "../dist/lib/command-result.js";
 import { adapterDescriptor, supportedAdapterNames } from "../dist/lib/adapters.js";
-import { expectedArchiveUrl, validateOfficialArchiveUrl } from "../dist/lib/official-archive-url.js";
+import {
+  expectedArchiveUrl,
+  validateOfficialArchiveUrl,
+} from "../dist/lib/official-archive-url.js";
 
 const packageRoot = resolve(import.meta.dirname, "..");
 const packageJsonPath = join(packageRoot, "package.json");
@@ -33,7 +47,7 @@ function runCli(args, options = {}) {
 
 function tempProject(t) {
   const directory = mkdtempSync(join(tmpdir(), "rigorloop-cli-test-"));
-  t.after(() => rmSync(directory, {recursive:true, force:true}));
+  t.after(() => rmSync(directory, { recursive: true, force: true }));
   return directory;
 }
 
@@ -178,17 +192,16 @@ function fixtureArchive(projectRoot, options = {}) {
   const metadataFile = options.metadataFile ?? `adapter-artifacts-${releaseTag}.json`;
   const archiveName = options.archiveName ?? `rigorloop-adapter-${adapter}-${releaseTag}.zip`;
   const installRoot = options.installRoot ?? ".agents/skills";
-  const entries =
-    options.entries ?? [
-      {
-        name: `${installRoot}/proposal/SKILL.md`,
-        bytes: Buffer.from("# Proposal\n\nUse proposal guidance.\r\n", "utf8"),
-      },
-      {
-        name: `${installRoot}/verify/SKILL.md`,
-        bytes: Buffer.from("# Verify\n\nUse verify guidance.\n", "utf8"),
-      },
-    ];
+  const entries = options.entries ?? [
+    {
+      name: `${installRoot}/proposal/SKILL.md`,
+      bytes: Buffer.from("# Proposal\n\nUse proposal guidance.\r\n", "utf8"),
+    },
+    {
+      name: `${installRoot}/verify/SKILL.md`,
+      bytes: Buffer.from("# Verify\n\nUse verify guidance.\n", "utf8"),
+    },
+  ];
   const archiveBytes = options.archiveBytes ?? createZip(entries);
   const archivePath = join(projectRoot, archiveName);
   writeFileSync(archivePath, archiveBytes);
@@ -231,7 +244,7 @@ function fixtureArchive(projectRoot, options = {}) {
 
 function fixturePackage(t, options = {}) {
   const root = mkdtempSync(join(tmpdir(), "rigorloop-package-test-"));
-  t.after(() => rmSync(root, {recursive:true, force:true}));
+  t.after(() => rmSync(root, { recursive: true, force: true }));
   const version = options.version ?? packageJson.version;
   const releaseTag = options.releaseTag ?? `v${version}`;
   const metadataFile = options.metadataFile ?? `adapter-artifacts-${releaseTag}.json`;
@@ -252,16 +265,36 @@ function fixturePackage(t, options = {}) {
     ),
   );
   copyFileSync(cliPath, join(root, "dist", "bin", "rigorloop.js"));
-  copyFileSync(join(packageRoot, "dist", "lib", "adapters.js"), join(root, "dist", "lib", "adapters.js"));
-  copyFileSync(join(packageRoot, "dist", "lib", "command-result.js"), join(root, "dist", "lib", "command-result.js"));
-  for (const file of ["installer-replacement.js", "cli-observability.js", "diagnostic-event.js", "log-config.js", "log-inspection.js", "log-sink.js", "result-renderer.js"]) {
+  copyFileSync(
+    join(packageRoot, "dist", "lib", "adapters.js"),
+    join(root, "dist", "lib", "adapters.js"),
+  );
+  copyFileSync(
+    join(packageRoot, "dist", "lib", "command-result.js"),
+    join(root, "dist", "lib", "command-result.js"),
+  );
+  for (const file of [
+    "installer-replacement.js",
+    "cli-observability.js",
+    "diagnostic-event.js",
+    "log-config.js",
+    "log-inspection.js",
+    "log-sink.js",
+    "result-renderer.js",
+  ]) {
     copyFileSync(join(packageRoot, "dist", "lib", file), join(root, "dist", "lib", file));
   }
-  copyFileSync(join(packageRoot, "dist", "lib", "official-archive-url.js"), join(root, "dist", "lib", "official-archive-url.js"));
+  copyFileSync(
+    join(packageRoot, "dist", "lib", "official-archive-url.js"),
+    join(root, "dist", "lib", "official-archive-url.js"),
+  );
 
   if (options.metadata !== false) {
-    const metadata = options.metadata ?? JSON.parse(readFileSync(join(packageRoot, "dist", "metadata", metadataFile), "utf8"));
-    const metadataContent = typeof metadata === "string" ? metadata : JSON.stringify(metadata, null, 2);
+    const metadata =
+      options.metadata ??
+      JSON.parse(readFileSync(join(packageRoot, "dist", "metadata", metadataFile), "utf8"));
+    const metadataContent =
+      typeof metadata === "string" ? metadata : JSON.stringify(metadata, null, 2);
     writeFileSync(join(root, "dist", "metadata", metadataFile), metadataContent);
     const metadataBytes = Buffer.from(metadataContent, "utf8");
     const release = options.release ?? {
@@ -284,19 +317,21 @@ function fixturePackage(t, options = {}) {
       ),
     );
   } else {
-    const releaseIndex =
-      options.releaseIndex ?? {
-        schema_version: 1,
-        releases: {
-          [releaseTag]: {
-            source_repository: "xiongxianfei/rigorloop",
-            release_tag: releaseTag,
-            bundled_metadata: metadataFile,
-            bundled_metadata_sha256: "0".repeat(64),
-          },
+    const releaseIndex = options.releaseIndex ?? {
+      schema_version: 1,
+      releases: {
+        [releaseTag]: {
+          source_repository: "xiongxianfei/rigorloop",
+          release_tag: releaseTag,
+          bundled_metadata: metadataFile,
+          bundled_metadata_sha256: "0".repeat(64),
         },
-      };
-    writeFileSync(join(root, "dist", "metadata", "releases.json"), JSON.stringify(releaseIndex, null, 2));
+      },
+    };
+    writeFileSync(
+      join(root, "dist", "metadata", "releases.json"),
+      JSON.stringify(releaseIndex, null, 2),
+    );
   }
 
   return { root, cliPath: join(root, "dist", "bin", "rigorloop.js") };
@@ -402,7 +437,9 @@ test("T1 package metadata exposes one public binary and publishable runtime poli
   const files = packageJson.files ?? [];
   assert.deepEqual(files, ["dist/", "package.json", "README.md", "LICENSE"]);
   assert.ok(!files.some((entry) => entry.endsWith(".zip")));
-  assert.ok(!files.some((entry) => entry === "dist/adapters/" || entry.startsWith("dist/adapters")));
+  assert.ok(
+    !files.some((entry) => entry === "dist/adapters/" || entry.startsWith("dist/adapters")),
+  );
 
   const scripts = packageJson.scripts ?? {};
   for (const scriptName of ["preinstall", "install", "postinstall", "prepare", "prepack"]) {
@@ -411,11 +448,16 @@ test("T1 package metadata exposes one public binary and publishable runtime poli
   assert.deepEqual(packageJson.dependencies ?? {}, { yaml: "2.9.0" });
 });
 
-test('TNP-005 source metadata preserves historical release identities', (t) => {
+test("TNP-005 source metadata preserves historical release identities", (t) => {
   // Current candidate metadata is produced by Release, in its isolated package.
   // Actual packed metadata/archive parity is covered by release_candidate_tests.
-  const historicalMetadata = readFileSync(join(packageRoot, "dist", "metadata", "adapter-artifacts-v0.5.0.json"));
-  assert.equal(sha256(historicalMetadata), "74f2d940ce8ef358092609884e9377d0a3955c731e7f437ca63d995862227885");
+  const historicalMetadata = readFileSync(
+    join(packageRoot, "dist", "metadata", "adapter-artifacts-v0.5.0.json"),
+  );
+  assert.equal(
+    sha256(historicalMetadata),
+    "74f2d940ce8ef358092609884e9377d0a3955c731e7f437ca63d995862227885",
+  );
 });
 
 // M5-DOC-001: Package README coverage for multi-adapter init, runtime roots, local archive fallback, and proxy guidance.
@@ -436,8 +478,14 @@ test("TMAI-001 descriptor registry defines the exact supported adapter set", (t)
   assert.deepEqual(adapterDescriptor("codex").installRoots, { skills: ".agents/skills" });
   assert.deepEqual(adapterDescriptor("claude").installRoots, { skills: ".claude/skills" });
   assert.equal(adapterDescriptor("opencode"), undefined);
-  assert.equal(adapterDescriptor("codex").archiveName(`v${publicPackageVersion}`), `rigorloop-adapter-codex-v${publicPackageVersion}.zip`);
-  assert.equal(adapterDescriptor("claude").archiveName(`v${publicPackageVersion}`), `rigorloop-adapter-claude-v${publicPackageVersion}.zip`);
+  assert.equal(
+    adapterDescriptor("codex").archiveName(`v${publicPackageVersion}`),
+    `rigorloop-adapter-codex-v${publicPackageVersion}.zip`,
+  );
+  assert.equal(
+    adapterDescriptor("claude").archiveName(`v${publicPackageVersion}`),
+    `rigorloop-adapter-claude-v${publicPackageVersion}.zip`,
+  );
   assert.equal(adapterDescriptor("cursor"), undefined);
 });
 
@@ -493,7 +541,11 @@ test("TTNI-CLI-002 rejected alias targets fail before mutation", (t) => {
     const output = JSON.parse(result.stdout);
     assert.equal(output.status, "blocked", target);
     assert.equal(output.blockers[0].code, "target-unknown", target);
-    assert.match(output.blockers[0].message, new RegExp(target.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")), target);
+    assert.match(
+      output.blockers[0].message,
+      new RegExp(target.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")),
+      target,
+    );
     assert.match(output.blockers[0].next_action, /codex, claude/, target);
     assertNoInitMutation(cwd);
   }
@@ -562,9 +614,17 @@ test("RT-R30 init rejects obsolete workflow skill installations for every target
     assert.equal(output.status, "blocked", adapter);
     assert.equal(output.blockers[0].code, "obsolete-workflow-skill", adapter);
     assert.equal(output.blockers[0].replacement, "route", adapter);
-    assert.match(output.blockers[0].next_action, /remove .*workflow.*install and invoke route/i, adapter);
+    assert.match(
+      output.blockers[0].next_action,
+      /remove .*workflow.*install and invoke route/i,
+      adapter,
+    );
     assert.deepEqual(listProject(cwd), before, adapter);
-    assert.equal(readProjectFile(cwd, `${root}/workflow/SKILL.md`), "# Obsolete workflow\n", adapter);
+    assert.equal(
+      readProjectFile(cwd, `${root}/workflow/SKILL.md`),
+      "# Obsolete workflow\n",
+      adapter,
+    );
   }
 });
 
@@ -598,7 +658,8 @@ test("RT-R30 init rejects an archive containing the obsolete workflow package", 
   });
   const before = listProject(cwd);
 
-  const result = runCliWithBundledMetadata(t,
+  const result = runCliWithBundledMetadata(
+    t,
     ["init", "codex", "--from-archive", `./${fixture.archiveName}`, "--json"],
     cwd,
     fixture.metadata,
@@ -730,9 +791,15 @@ test("T11 exit-code mapping covers every public exit class", (t) => {
 });
 
 test("T12 default dry-run reports target and unperformed checks without state files", (t) => {
-  const cwd=tempProject(t);const result=runCli(["init","codex","--dry-run","--json"],{cwd});
-  assert.equal(result.status,0,result.stderr);const output=JSON.parse(result.stdout);
-  assert.equal(output.planned_target.install_root,".agents/skills");assert.ok(output.unperformed_checks.includes("archive verification"));assertNoInitMutation(cwd);assert.equal(output.planned_manifest,undefined);assert.equal(output.planned_lockfile,undefined);
+  const cwd = tempProject(t);
+  const result = runCli(["init", "codex", "--dry-run", "--json"], { cwd });
+  assert.equal(result.status, 0, result.stderr);
+  const output = JSON.parse(result.stdout);
+  assert.equal(output.planned_target.install_root, ".agents/skills");
+  assert.ok(output.unperformed_checks.includes("archive verification"));
+  assertNoInitMutation(cwd);
+  assert.equal(output.planned_manifest, undefined);
+  assert.equal(output.planned_lockfile, undefined);
 });
 
 test("T13 init requires a target", (t) => {
@@ -768,10 +835,14 @@ test("TMAI-009 wrong local archive for selected adapter fails before extraction"
     ...fixture.metadata.artifacts[0],
     adapter: "claude",
     archive: `rigorloop-adapter-claude-v${publicPackageVersion}.zip`,
-    url: expectedArchiveUrl({ releaseTag: `v${publicPackageVersion}`, archive: `rigorloop-adapter-claude-v${publicPackageVersion}.zip` }),
+    url: expectedArchiveUrl({
+      releaseTag: `v${publicPackageVersion}`,
+      archive: `rigorloop-adapter-claude-v${publicPackageVersion}.zip`,
+    }),
     install_root: ".claude/skills",
   });
-  const result = runCliWithBundledMetadata(t,
+  const result = runCliWithBundledMetadata(
+    t,
     ["init", "claude", "--from-archive", `./${fixture.archiveName}`, "--json"],
     cwd,
     fixture.metadata,
@@ -789,7 +860,10 @@ test("T15 network mode uses bundled metadata before downloading the official arc
   const cwd = tempProject(t);
   const fixture = fixtureArchive(cwd);
   const archiveBytes = readFileSync(fixture.archivePath);
-  const officialUrl = expectedArchiveUrl({ releaseTag: `v${publicPackageVersion}`, archive: fixture.archiveName });
+  const officialUrl = expectedArchiveUrl({
+    releaseTag: `v${publicPackageVersion}`,
+    archive: fixture.archiveName,
+  });
   fixture.metadata.artifacts[0].url = officialUrl;
   const packageFixture = fixturePackage(t, {
     metadata: fixture.metadata,
@@ -797,7 +871,9 @@ test("T15 network mode uses bundled metadata before downloading the official arc
       source_repository: "xiongxianfei/rigorloop",
       release_tag: `v${publicPackageVersion}`,
       bundled_metadata: `adapter-artifacts-v${publicPackageVersion}.json`,
-      bundled_metadata_sha256: sha256(Buffer.from(JSON.stringify(fixture.metadata, null, 2), "utf8")),
+      bundled_metadata_sha256: sha256(
+        Buffer.from(JSON.stringify(fixture.metadata, null, 2), "utf8"),
+      ),
     },
   });
   const result = runCli(["init", "codex", "--json"], {
@@ -811,7 +887,10 @@ test("T15 network mode uses bundled metadata before downloading the official arc
   assert.equal(output.status, "success");
   assertNoStateFiles(cwd);
   assert.equal(output.artifacts[0].sha256, fixture.metadata.artifacts[0].sha256);
-  assert.equal(readProjectFile(cwd, ".agents/skills/proposal/SKILL.md"), "# Proposal\n\nUse proposal guidance.\n");
+  assert.equal(
+    readProjectFile(cwd, ".agents/skills/proposal/SKILL.md"),
+    "# Proposal\n\nUse proposal guidance.\n",
+  );
 });
 
 test("TMAI-029 network mode downloads official archives for every supported adapter", (t) => {
@@ -820,7 +899,10 @@ test("TMAI-029 network mode downloads official archives for every supported adap
     const descriptor = adapterDescriptor(adapter);
     const fixture = fixtureArchive(cwd, { adapter, installRoot: descriptor.primaryInstallRoot() });
     const archiveBytes = readFileSync(fixture.archivePath);
-    const officialUrl = expectedArchiveUrl({ releaseTag: `v${publicPackageVersion}`, archive: fixture.archiveName });
+    const officialUrl = expectedArchiveUrl({
+      releaseTag: `v${publicPackageVersion}`,
+      archive: fixture.archiveName,
+    });
     fixture.metadata.artifacts[0].url = officialUrl;
     const packageFixture = fixturePackage(t, { metadata: fixture.metadata });
     const result = runCli(["init", adapter, "--json"], {
@@ -840,7 +922,10 @@ test("TMAI-029 network mode downloads official archives for every supported adap
 test("TMAI-029 network failure reports bounded proxy diagnostics in JSON", (t) => {
   const cwd = tempProject(t);
   const fixture = fixtureArchive(cwd);
-  const officialUrl = expectedArchiveUrl({ releaseTag: `v${publicPackageVersion}`, archive: fixture.archiveName });
+  const officialUrl = expectedArchiveUrl({
+    releaseTag: `v${publicPackageVersion}`,
+    archive: fixture.archiveName,
+  });
   fixture.metadata.artifacts[0].url = officialUrl;
   const packageFixture = fixturePackage(t, { metadata: fixture.metadata });
   const result = runCli(["init", "codex", "--json"], {
@@ -863,8 +948,16 @@ test("TMAI-029 network failure reports bounded proxy diagnostics in JSON", (t) =
   assert.equal(output.diagnostics.release, `v${publicPackageVersion}`);
   assert.equal(output.diagnostics.archive_url, officialUrl);
   assert.equal(output.diagnostics.download_failure_class, "dns");
-  assert.match(output.diagnostics.node_env_proxy_status, /^(enabled|disabled|unsupported|unknown)$/);
-  assert.deepEqual(output.diagnostics.proxy_env_vars_detected, ["HTTP_PROXY", "HTTPS_PROXY", "NO_PROXY", "http_proxy"]);
+  assert.match(
+    output.diagnostics.node_env_proxy_status,
+    /^(enabled|disabled|unsupported|unknown)$/,
+  );
+  assert.deepEqual(output.diagnostics.proxy_env_vars_detected, [
+    "HTTP_PROXY",
+    "HTTPS_PROXY",
+    "NO_PROXY",
+    "http_proxy",
+  ]);
   assert.match(output.blockers[0].next_action, /--from-archive/);
   assertRedacted(JSON.stringify(output));
   assert.equal(existsSync(join(cwd, "rigorloop.lock")), false);
@@ -873,7 +966,10 @@ test("TMAI-029 network failure reports bounded proxy diagnostics in JSON", (t) =
 test("TMAI-030 proxy diagnostic enums and env-var allowlist are stable", (t) => {
   const cwd = tempProject(t);
   const fixture = fixtureArchive(cwd);
-  const officialUrl = expectedArchiveUrl({ releaseTag: `v${publicPackageVersion}`, archive: fixture.archiveName });
+  const officialUrl = expectedArchiveUrl({
+    releaseTag: `v${publicPackageVersion}`,
+    archive: fixture.archiveName,
+  });
   fixture.metadata.artifacts[0].url = officialUrl;
   const packageFixture = fixturePackage(t, { metadata: fixture.metadata });
   const result = runCli(["init", "codex", "--json"], {
@@ -901,8 +997,14 @@ test("TMAI-030 proxy diagnostic enums and env-var allowlist are stable", (t) => 
     "https_proxy",
     "no_proxy",
   ]);
-  assert.match(output.diagnostics.node_env_proxy_status, /^(enabled|disabled|unsupported|unknown)$/);
-  assert.match(output.diagnostics.download_failure_class, /^(dns|tls|timeout|http-status|proxy|network|unknown)$/);
+  assert.match(
+    output.diagnostics.node_env_proxy_status,
+    /^(enabled|disabled|unsupported|unknown)$/,
+  );
+  assert.match(
+    output.diagnostics.download_failure_class,
+    /^(dns|tls|timeout|http-status|proxy|network|unknown)$/,
+  );
   assert.equal(JSON.stringify(output).includes("ALL_PROXY"), false);
   assert.equal(JSON.stringify(output).includes("not-allowed.example.invalid"), false);
 });
@@ -910,7 +1012,10 @@ test("TMAI-030 proxy diagnostic enums and env-var allowlist are stable", (t) => 
 test("CR-M4-R1-F1 node_env_proxy_status reports enabled with --use-env-proxy", (t) => {
   const cwd = tempProject(t);
   const fixture = fixtureArchive(cwd);
-  const officialUrl = expectedArchiveUrl({ releaseTag: `v${publicPackageVersion}`, archive: fixture.archiveName });
+  const officialUrl = expectedArchiveUrl({
+    releaseTag: `v${publicPackageVersion}`,
+    archive: fixture.archiveName,
+  });
   fixture.metadata.artifacts[0].url = officialUrl;
   const packageFixture = fixturePackage(t, { metadata: fixture.metadata });
   const result = spawnSync(
@@ -918,7 +1023,10 @@ test("CR-M4-R1-F1 node_env_proxy_status reports enabled with --use-env-proxy", (
     [
       "--use-env-proxy",
       "--import",
-      mockFetchFailureModule(t, officialUrl, { message: "proxy connection failed", code: "ERR_PROXY_CONNECTION_FAILED" }),
+      mockFetchFailureModule(t, officialUrl, {
+        message: "proxy connection failed",
+        code: "ERR_PROXY_CONNECTION_FAILED",
+      }),
       packageFixture.cliPath,
       "init",
       "codex",
@@ -928,6 +1036,7 @@ test("CR-M4-R1-F1 node_env_proxy_status reports enabled with --use-env-proxy", (
       cwd,
       env: {
         ...process.env,
+        RIGORLOOP_LOG_DIR: join(cwd, "logs"),
         HTTP_PROXY: "http://proxy.example.invalid:8080",
         HTTPS_PROXY: "",
         NO_PROXY: "",
@@ -950,7 +1059,10 @@ test("CR-M4-R1-F1 node_env_proxy_status reports enabled with --use-env-proxy", (
 test("TMAI-031 human proxy failure output is actionable and redacted", (t) => {
   const cwd = tempProject(t);
   const fixture = fixtureArchive(cwd);
-  const officialUrl = expectedArchiveUrl({ releaseTag: `v${publicPackageVersion}`, archive: fixture.archiveName });
+  const officialUrl = expectedArchiveUrl({
+    releaseTag: `v${publicPackageVersion}`,
+    archive: fixture.archiveName,
+  });
   fixture.metadata.artifacts[0].url = officialUrl;
   const packageFixture = fixturePackage(t, { metadata: fixture.metadata });
   const result = runCli(["init", "codex"], {
@@ -965,7 +1077,10 @@ test("TMAI-031 human proxy failure output is actionable and redacted", (t) => {
   assert.equal(result.status, 2);
   assert.equal(result.stdout, "");
   assert.match(result.stderr, /adapter codex/);
-  assert.match(result.stderr, new RegExp(`release v${publicPackageVersion.replaceAll(".", "\\.")}`));
+  assert.match(
+    result.stderr,
+    new RegExp(`release v${publicPackageVersion.replaceAll(".", "\\.")}`),
+  );
   assert.match(result.stderr, /failure class proxy/);
   assert.match(result.stderr, new RegExp(officialUrl.replaceAll(".", "\\.")));
   assert.match(result.stderr, /--from-archive/);
@@ -976,8 +1091,12 @@ test("TMAI-032 proxy diagnostics do not mask archive verification failures", (t)
   const cwd = tempProject(t);
   const fixture = fixtureArchive(cwd);
   const wrongArchiveBytes = Buffer.from(readFileSync(fixture.archivePath));
-  wrongArchiveBytes[wrongArchiveBytes.length - 1] = wrongArchiveBytes[wrongArchiveBytes.length - 1] ^ 0xff;
-  const officialUrl = expectedArchiveUrl({ releaseTag: `v${publicPackageVersion}`, archive: fixture.archiveName });
+  wrongArchiveBytes[wrongArchiveBytes.length - 1] =
+    wrongArchiveBytes[wrongArchiveBytes.length - 1] ^ 0xff;
+  const officialUrl = expectedArchiveUrl({
+    releaseTag: `v${publicPackageVersion}`,
+    archive: fixture.archiveName,
+  });
   fixture.metadata.artifacts[0].url = officialUrl;
   const packageFixture = fixturePackage(t, { metadata: fixture.metadata });
   const result = runCli(["init", "codex", "--json"], {
@@ -1002,13 +1121,34 @@ test("T15 network mode rejects non-official archive URLs before fetch", (t) => {
   const cases = [
     ["data URL", "data:application/octet-stream;base64,AAAA"],
     ["wrong host", `https://example.com/rigorloop-adapter-codex-v${publicPackageVersion}.zip`],
-    ["wrong owner", `https://github.com/other/rigorloop/releases/download/v${publicPackageVersion}/rigorloop-adapter-codex-v${publicPackageVersion}.zip`],
-    ["wrong release", `https://github.com/xiongxianfei/rigorloop/releases/download/v0.1.2/rigorloop-adapter-codex-v${publicPackageVersion}.zip`],
-    ["wrong archive", `https://github.com/xiongxianfei/rigorloop/releases/download/v${publicPackageVersion}/other.zip`],
-    ["query", `https://github.com/xiongxianfei/rigorloop/releases/download/v${publicPackageVersion}/rigorloop-adapter-codex-v${publicPackageVersion}.zip?download=1`],
-    ["hash", `https://github.com/xiongxianfei/rigorloop/releases/download/v${publicPackageVersion}/rigorloop-adapter-codex-v${publicPackageVersion}.zip#fragment`],
-    ["http", `http://github.com/xiongxianfei/rigorloop/releases/download/v${publicPackageVersion}/rigorloop-adapter-codex-v${publicPackageVersion}.zip`],
-    ["raw", `https://raw.githubusercontent.com/xiongxianfei/rigorloop/v${publicPackageVersion}/rigorloop-adapter-codex-v${publicPackageVersion}.zip`],
+    [
+      "wrong owner",
+      `https://github.com/other/rigorloop/releases/download/v${publicPackageVersion}/rigorloop-adapter-codex-v${publicPackageVersion}.zip`,
+    ],
+    [
+      "wrong release",
+      `https://github.com/xiongxianfei/rigorloop/releases/download/v0.1.2/rigorloop-adapter-codex-v${publicPackageVersion}.zip`,
+    ],
+    [
+      "wrong archive",
+      `https://github.com/xiongxianfei/rigorloop/releases/download/v${publicPackageVersion}/other.zip`,
+    ],
+    [
+      "query",
+      `https://github.com/xiongxianfei/rigorloop/releases/download/v${publicPackageVersion}/rigorloop-adapter-codex-v${publicPackageVersion}.zip?download=1`,
+    ],
+    [
+      "hash",
+      `https://github.com/xiongxianfei/rigorloop/releases/download/v${publicPackageVersion}/rigorloop-adapter-codex-v${publicPackageVersion}.zip#fragment`,
+    ],
+    [
+      "http",
+      `http://github.com/xiongxianfei/rigorloop/releases/download/v${publicPackageVersion}/rigorloop-adapter-codex-v${publicPackageVersion}.zip`,
+    ],
+    [
+      "raw",
+      `https://raw.githubusercontent.com/xiongxianfei/rigorloop/v${publicPackageVersion}/rigorloop-adapter-codex-v${publicPackageVersion}.zip`,
+    ],
   ];
 
   for (const [name, url] of cases) {
@@ -1030,8 +1170,13 @@ test("T15 official archive URL helper accepts only exact release archive URLs", 
   for (const adapter of supportedAdapterNames()) {
     const archive = adapterDescriptor(adapter).archiveName(releaseTag);
     const officialUrl = expectedArchiveUrl({ releaseTag, archive });
-    assert.equal(officialUrl, `https://github.com/xiongxianfei/rigorloop/releases/download/v${publicPackageVersion}/${archive}`);
-    assert.deepEqual(validateOfficialArchiveUrl({ url: officialUrl, releaseTag, archive }), { ok: true });
+    assert.equal(
+      officialUrl,
+      `https://github.com/xiongxianfei/rigorloop/releases/download/v${publicPackageVersion}/${archive}`,
+    );
+    assert.deepEqual(validateOfficialArchiveUrl({ url: officialUrl, releaseTag, archive }), {
+      ok: true,
+    });
   }
   const archive = `rigorloop-adapter-codex-v${publicPackageVersion}.zip`;
   assert.equal(
@@ -1122,7 +1267,10 @@ test("T16 runtime release metadata environment override is ignored", (t) => {
   const cwd = tempProject(t);
   const fixture = fixtureArchive(cwd);
   const archiveBytes = readFileSync(fixture.archivePath);
-  const officialUrl = expectedArchiveUrl({ releaseTag: `v${publicPackageVersion}`, archive: fixture.archiveName });
+  const officialUrl = expectedArchiveUrl({
+    releaseTag: `v${publicPackageVersion}`,
+    archive: fixture.archiveName,
+  });
   fixture.metadata.artifacts[0].url = officialUrl;
   const packageFixture = fixturePackage(t, {
     metadata: fixture.metadata,
@@ -1130,7 +1278,9 @@ test("T16 runtime release metadata environment override is ignored", (t) => {
       source_repository: "xiongxianfei/rigorloop",
       release_tag: `v${publicPackageVersion}`,
       bundled_metadata: `adapter-artifacts-v${publicPackageVersion}.json`,
-      bundled_metadata_sha256: sha256(Buffer.from(JSON.stringify(fixture.metadata, null, 2), "utf8")),
+      bundled_metadata_sha256: sha256(
+        Buffer.from(JSON.stringify(fixture.metadata, null, 2), "utf8"),
+      ),
     },
   });
 
@@ -1144,13 +1294,21 @@ test("T16 runtime release metadata environment override is ignored", (t) => {
   });
 
   assert.equal(result.status, 0, result.stderr);
-  assert.equal(readProjectFile(cwd, ".agents/skills/proposal/SKILL.md"), "# Proposal\n\nUse proposal guidance.\n");
+  assert.equal(
+    readProjectFile(cwd, ".agents/skills/proposal/SKILL.md"),
+    "# Proposal\n\nUse proposal guidance.\n",
+  );
 });
 
 test("T17 incompatible local archive release is blocked", (t) => {
   const cwd = tempProject(t);
   const fixture = fixtureArchive(cwd, { archiveName: "rigorloop-adapter-codex-v0.1.2.zip" });
-  const result = runCliWithBundledMetadata(t, ["init", "codex", "--from-archive", `./${fixture.archiveName}`, "--json"], cwd, fixture.metadata);
+  const result = runCliWithBundledMetadata(
+    t,
+    ["init", "codex", "--from-archive", `./${fixture.archiveName}`, "--json"],
+    cwd,
+    fixture.metadata,
+  );
 
   assert.equal(result.status, 2);
   const output = JSON.parse(result.stdout);
@@ -1162,14 +1320,22 @@ test("T17 incompatible local archive release is blocked", (t) => {
 test("T18 local archive mode uses bundled metadata and no metadata flag", (t) => {
   const cwd = tempProject(t);
   const fixture = fixtureArchive(cwd);
-  const result = runCliWithBundledMetadata(t, ["init", "codex", "--from-archive", `./${fixture.archiveName}`, "--json"], cwd, fixture.metadata);
+  const result = runCliWithBundledMetadata(
+    t,
+    ["init", "codex", "--from-archive", `./${fixture.archiveName}`, "--json"],
+    cwd,
+    fixture.metadata,
+  );
 
   assert.equal(result.status, 0, result.stderr);
   const output = JSON.parse(result.stdout);
   assert.equal(output.status, "success");
   assert.equal(output.artifacts[0].sha256, fixture.metadata.artifacts[0].sha256);
   assert.equal(output.artifacts[0].tree_sha256, fixture.metadata.artifacts[0].tree_sha256);
-  assert.equal(readProjectFile(cwd, ".agents/skills/proposal/SKILL.md"), "# Proposal\n\nUse proposal guidance.\n");
+  assert.equal(
+    readProjectFile(cwd, ".agents/skills/proposal/SKILL.md"),
+    "# Proposal\n\nUse proposal guidance.\n",
+  );
   assert.doesNotMatch(result.stdout, /metadata/);
 });
 
@@ -1185,7 +1351,8 @@ test("T18 runtime local metadata environment override is ignored", (t) => {
     }),
   );
 
-  const result = runCliWithBundledMetadata(t,
+  const result = runCliWithBundledMetadata(
+    t,
     ["init", "codex", "--from-archive", `./${fixture.archiveName}`, "--json"],
     cwd,
     fixture.metadata,
@@ -1193,7 +1360,10 @@ test("T18 runtime local metadata environment override is ignored", (t) => {
   );
 
   assert.equal(result.status, 0, result.stderr);
-  assert.equal(readProjectFile(cwd, ".agents/skills/proposal/SKILL.md"), "# Proposal\n\nUse proposal guidance.\n");
+  assert.equal(
+    readProjectFile(cwd, ".agents/skills/proposal/SKILL.md"),
+    "# Proposal\n\nUse proposal guidance.\n",
+  );
 });
 
 test("T19 missing bundled metadata blocks local archive install", (t) => {
@@ -1206,10 +1376,19 @@ test("T19 missing bundled metadata blocks local archive install", (t) => {
   ]);
   writeFileSync(join(cwd, `rigorloop-adapter-codex-v${publicPackageVersion}.zip`), archive);
   const packageFixture = fixturePackage(t, { metadata: false });
-  const result = runCli(["init", "codex", "--from-archive", `./rigorloop-adapter-codex-v${publicPackageVersion}.zip`, "--json"], {
-    cwd,
-    cliPath: packageFixture.cliPath,
-  });
+  const result = runCli(
+    [
+      "init",
+      "codex",
+      "--from-archive",
+      `./rigorloop-adapter-codex-v${publicPackageVersion}.zip`,
+      "--json",
+    ],
+    {
+      cwd,
+      cliPath: packageFixture.cliPath,
+    },
+  );
 
   assert.equal(result.status, 2);
   const output = JSON.parse(result.stdout);
@@ -1227,7 +1406,12 @@ test("TTNI-INST-001 default init installs single-root targets without state file
   for (const { adapter, root } of cases) {
     const cwd = tempProject(t);
     const fixture = fixtureArchive(cwd, { adapter, installRoot: root });
-    const result = runCliWithBundledMetadata(t, ["init", adapter, "--from-archive", `./${fixture.archiveName}`, "--json"], cwd, fixture.metadata);
+    const result = runCliWithBundledMetadata(
+      t,
+      ["init", adapter, "--from-archive", `./${fixture.archiveName}`, "--json"],
+      cwd,
+      fixture.metadata,
+    );
 
     assert.equal(result.status, 0, result.stderr);
     const output = JSON.parse(result.stdout);
@@ -1235,16 +1419,29 @@ test("TTNI-INST-001 default init installs single-root targets without state file
     assert.equal(output.state_files.action, "skipped", adapter);
     assert.equal(existsSync(join(cwd, "rigorloop.yaml")), false, adapter);
     assert.equal(existsSync(join(cwd, "rigorloop.lock")), false, adapter);
-    assert.equal(readProjectFile(cwd, `${root}/proposal/SKILL.md`), "# Proposal\n\nUse proposal guidance.\n", adapter);
-    assert.equal(readProjectFile(cwd, `${root}/verify/SKILL.md`), "# Verify\n\nUse verify guidance.\n", adapter);
+    assert.equal(
+      readProjectFile(cwd, `${root}/proposal/SKILL.md`),
+      "# Proposal\n\nUse proposal guidance.\n",
+      adapter,
+    );
+    assert.equal(
+      readProjectFile(cwd, `${root}/verify/SKILL.md`),
+      "# Verify\n\nUse verify guidance.\n",
+      adapter,
+    );
   }
 });
 
 test("T26 overwrite conflicts are refused without replacing user files", (t) => {
   const cwd = tempProject(t);
   writeFileSync(join(cwd, ".agents"), "user file\n");
-  const fixture=fixtureArchive(cwd);
-  const result = runCliWithBundledMetadata(t, ["init", "codex", "--from-archive", fixture.archivePath, "--json", "--force"], cwd, fixture.metadata);
+  const fixture = fixtureArchive(cwd);
+  const result = runCliWithBundledMetadata(
+    t,
+    ["init", "codex", "--from-archive", fixture.archivePath, "--json", "--force"],
+    cwd,
+    fixture.metadata,
+  );
 
   assert.equal(result.status, 5);
   assert.equal(result.stderr, "");
@@ -1259,8 +1456,13 @@ test("T26 leaf install-root file conflict is refused without replacing user file
   const cwd = tempProject(t);
   mkdirSync(join(cwd, ".agents"));
   writeFileSync(join(cwd, ".agents", "skills"), "user file\n");
-  const fixture=fixtureArchive(cwd);
-  const result = runCliWithBundledMetadata(t, ["init", "codex", "--from-archive", fixture.archivePath, "--json", "--force"], cwd, fixture.metadata);
+  const fixture = fixtureArchive(cwd);
+  const result = runCliWithBundledMetadata(
+    t,
+    ["init", "codex", "--from-archive", fixture.archivePath, "--json", "--force"],
+    cwd,
+    fixture.metadata,
+  );
 
   assert.equal(result.status, 5);
   assert.equal(result.stderr, "");
@@ -1276,7 +1478,8 @@ test("T26 existing adapter files cause destination conflicts without replacing u
   const fixture = fixtureArchive(cwd);
   mkdirSync(join(cwd, ".agents", "skills", "proposal"), { recursive: true });
   writeFileSync(join(cwd, ".agents", "skills", "proposal", "SKILL.md"), "user file\n");
-  const result = runCliWithBundledMetadata(t,
+  const result = runCliWithBundledMetadata(
+    t,
     ["init", "codex", "--from-archive", `./${fixture.archiveName}`, "--json"],
     cwd,
     fixture.metadata,
@@ -1298,7 +1501,12 @@ test("T29 release metadata shape and validation result are validated", (t) => {
       return metadata;
     },
   });
-  const wrongRepoResult = runCliWithBundledMetadata(t, ["init", "codex", "--from-archive", `./${wrongRepo.archiveName}`, "--json"], cwd, wrongRepo.metadata);
+  const wrongRepoResult = runCliWithBundledMetadata(
+    t,
+    ["init", "codex", "--from-archive", `./${wrongRepo.archiveName}`, "--json"],
+    cwd,
+    wrongRepo.metadata,
+  );
 
   assert.equal(wrongRepoResult.status, 3);
   assert.equal(JSON.parse(wrongRepoResult.stdout).errors[0].code, "metadata-invalid");
@@ -1310,7 +1518,8 @@ test("T29 release metadata shape and validation result are validated", (t) => {
       return metadata;
     },
   });
-  const missingFieldResult = runCliWithBundledMetadata(t,
+  const missingFieldResult = runCliWithBundledMetadata(
+    t,
     ["init", "codex", "--from-archive", `./${missingField.archiveName}`, "--json"],
     missingFieldProject,
     missingField.metadata,
@@ -1326,7 +1535,8 @@ test("T29 release metadata shape and validation result are validated", (t) => {
       return metadata;
     },
   });
-  const noCodexResult = runCliWithBundledMetadata(t,
+  const noCodexResult = runCliWithBundledMetadata(
+    t,
     ["init", "codex", "--from-archive", `./${noCodex.archiveName}`, "--json"],
     noCodexProject,
     noCodex.metadata,
@@ -1342,7 +1552,8 @@ test("T29 release metadata shape and validation result are validated", (t) => {
       return metadata;
     },
   });
-  const wrongRootResult = runCliWithBundledMetadata(t,
+  const wrongRootResult = runCliWithBundledMetadata(
+    t,
     ["init", "codex", "--from-archive", `./${wrongRoot.archiveName}`, "--json"],
     wrongRootProject,
     wrongRoot.metadata,
@@ -1358,7 +1569,8 @@ test("T29 release metadata shape and validation result are validated", (t) => {
       return metadata;
     },
   });
-  const validationFailResult = runCliWithBundledMetadata(t,
+  const validationFailResult = runCliWithBundledMetadata(
+    t,
     ["init", "codex", "--from-archive", `./${validationFail.archiveName}`, "--json"],
     validationFailProject,
     validationFail.metadata,
@@ -1369,15 +1581,34 @@ test("T29 release metadata shape and validation result are validated", (t) => {
 });
 
 test("T30 archive traversal paths are rejected", (t) => {
-  const cwd = tempProject(t);
+  const parent = tempProject(t);
+  const cwd = join(parent, "project");
+  mkdirSync(cwd);
+  writeFileSync(join(parent, "escape.txt"), "existing parent file\n");
+  const snapshot = () =>
+    readdirSync(parent, { recursive: true })
+      .sort()
+      .map((path) => {
+        const absolute = join(parent, path);
+        return [
+          path,
+          lstatSync(absolute).isDirectory() ? null : readFileSync(absolute).toString("base64"),
+        ];
+      });
   const fixture = fixtureArchive(cwd, {
     entries: [{ name: "../escape.txt", bytes: Buffer.from("escape\n", "utf8") }],
   });
-  const result = runCliWithBundledMetadata(t, ["init", "codex", "--from-archive", `./${fixture.archiveName}`, "--json"], cwd, fixture.metadata);
+  const before = snapshot();
+  const result = runCliWithBundledMetadata(
+    t,
+    ["init", "codex", "--from-archive", `./${fixture.archiveName}`, "--json"],
+    cwd,
+    fixture.metadata,
+  );
 
   assert.equal(result.status, 3);
   assert.equal(JSON.parse(result.stdout).errors[0].code, "archive-path-traversal");
-  assert.equal(existsSync(join(cwd, "escape.txt")), false);
+  assert.deepEqual(snapshot(), before);
 });
 
 test("T31 archive entries must remain under .agents/skills", (t) => {
@@ -1385,7 +1616,12 @@ test("T31 archive entries must remain under .agents/skills", (t) => {
   const fixture = fixtureArchive(cwd, {
     entries: [{ name: "proposal/SKILL.md", bytes: Buffer.from("# Proposal\n", "utf8") }],
   });
-  const result = runCliWithBundledMetadata(t, ["init", "codex", "--from-archive", `./${fixture.archiveName}`, "--json"], cwd, fixture.metadata);
+  const result = runCliWithBundledMetadata(
+    t,
+    ["init", "codex", "--from-archive", `./${fixture.archiveName}`, "--json"],
+    cwd,
+    fixture.metadata,
+  );
 
   assert.equal(result.status, 3);
   assert.equal(JSON.parse(result.stdout).errors[0].code, "archive-install-root-invalid");
@@ -1403,7 +1639,8 @@ test("T31 archive entries must remain under .agents/skills", (t) => {
       },
     ],
   });
-  const supportResult = runCliWithBundledMetadata(t,
+  const supportResult = runCliWithBundledMetadata(
+    t,
     ["init", "codex", "--from-archive", `./${supportFixture.archiveName}`, "--json"],
     supportProject,
     supportFixture.metadata,
@@ -1425,7 +1662,12 @@ test("T33 symlink archive entries are rejected", (t) => {
       },
     ],
   });
-  const result = runCliWithBundledMetadata(t, ["init", "codex", "--from-archive", `./${fixture.archiveName}`, "--json"], cwd, fixture.metadata);
+  const result = runCliWithBundledMetadata(
+    t,
+    ["init", "codex", "--from-archive", `./${fixture.archiveName}`, "--json"],
+    cwd,
+    fixture.metadata,
+  );
 
   assert.equal(result.status, 3);
   assert.equal(JSON.parse(result.stdout).errors[0].code, "archive-symlink-entry");
@@ -1439,7 +1681,8 @@ test("T34 archive verification failures use exit code 3", (t) => {
       return metadata;
     },
   });
-  const checksum = runCliWithBundledMetadata(t,
+  const checksum = runCliWithBundledMetadata(
+    t,
     ["init", "codex", "--from-archive", `./${checksumFixture.archiveName}`, "--json"],
     checksumProject,
     checksumFixture.metadata,
@@ -1454,7 +1697,8 @@ test("T34 archive verification failures use exit code 3", (t) => {
       return metadata;
     },
   });
-  const size = runCliWithBundledMetadata(t,
+  const size = runCliWithBundledMetadata(
+    t,
     ["init", "codex", "--from-archive", `./${sizeFixture.archiveName}`, "--json"],
     sizeProject,
     sizeFixture.metadata,
@@ -1469,7 +1713,8 @@ test("T34 archive verification failures use exit code 3", (t) => {
       return metadata;
     },
   });
-  const tree = runCliWithBundledMetadata(t,
+  const tree = runCliWithBundledMetadata(
+    t,
     ["init", "codex", "--from-archive", `./${treeFixture.archiveName}`, "--json"],
     treeProject,
     treeFixture.metadata,
@@ -1478,50 +1723,105 @@ test("T34 archive verification failures use exit code 3", (t) => {
   assert.equal(JSON.parse(tree.stdout).errors[0].code, "tree-hash-mismatch");
 });
 
-
-for (const [target, installRoot] of [['codex','.agents/skills'],['claude','.claude/skills']]) {
-  test(`DIST conflict preflight and force preserve unrelated content and ignore state: ${target}`,(t)=>{
-    const cwd=tempProject(t);const fixture=fixtureArchive(cwd,{adapter:target,installRoot});
-    const args=['init',target,'--from-archive',`./${fixture.archiveName}`,'--json'];
-    writeFileSync(join(cwd,'rigorloop.yaml'),'not: [yaml');symlinkSync('/missing-state-target',join(cwd,'rigorloop.lock'));
-    let result=runCliWithBundledMetadata(t, args,cwd,fixture.metadata);assert.equal(result.status,0,result.stdout+result.stderr);
-    const first=fixture.entries.find(e=>e.name.startsWith(`${installRoot}/`)&&!e.directory).name;
-    const unit=`${installRoot}/${first.slice(installRoot.length+1).split('/')[0]}`;
-    writeFileSync(join(cwd,unit,'obsolete.txt'),'local edit');mkdirSync(join(cwd,installRoot,'unrelated'));writeFileSync(join(cwd,installRoot,'unrelated','keep'),'keep');
-    result=runCliWithBundledMetadata(t, args,cwd,fixture.metadata);assert.equal(result.status,5,result.stdout+result.stderr);assert.ok(JSON.parse(result.stdout).blockers.some(b=>b.path===unit));
-    result=runCliWithBundledMetadata(t, [...args,'--force'],cwd,fixture.metadata);assert.equal(result.status,0,result.stdout+result.stderr);
-    assert.equal(existsSync(join(cwd,unit,'obsolete.txt')),false);assert.equal(readFileSync(join(cwd,installRoot,'unrelated','keep'),'utf8'),'keep');assert.equal(readFileSync(join(cwd,'rigorloop.yaml'),'utf8'),'not: [yaml');assert.ok(lstatSync(join(cwd,'rigorloop.lock')).isSymbolicLink());
-    assert.ok(JSON.parse(result.stdout).retained.length>0);
+for (const [target, installRoot] of [
+  ["codex", ".agents/skills"],
+  ["claude", ".claude/skills"],
+]) {
+  test(`DIST conflict preflight and force preserve unrelated content and ignore state: ${target}`, (t) => {
+    const cwd = tempProject(t);
+    const fixture = fixtureArchive(cwd, { adapter: target, installRoot });
+    const args = ["init", target, "--from-archive", `./${fixture.archiveName}`, "--json"];
+    writeFileSync(join(cwd, "rigorloop.yaml"), "not: [yaml");
+    symlinkSync(join(cwd, "missing-state-target"), join(cwd, "rigorloop.lock"));
+    let result = runCliWithBundledMetadata(t, args, cwd, fixture.metadata);
+    assert.equal(result.status, 0, result.stdout + result.stderr);
+    const first = fixture.entries.find(
+      (e) => e.name.startsWith(`${installRoot}/`) && !e.directory,
+    ).name;
+    const unit = `${installRoot}/${first.slice(installRoot.length + 1).split("/")[0]}`;
+    writeFileSync(join(cwd, unit, "obsolete.txt"), "local edit");
+    mkdirSync(join(cwd, installRoot, "unrelated"));
+    writeFileSync(join(cwd, installRoot, "unrelated", "keep"), "keep");
+    result = runCliWithBundledMetadata(t, args, cwd, fixture.metadata);
+    assert.equal(result.status, 5, result.stdout + result.stderr);
+    assert.ok(JSON.parse(result.stdout).blockers.some((b) => b.path === unit));
+    result = runCliWithBundledMetadata(t, [...args, "--force"], cwd, fixture.metadata);
+    assert.equal(result.status, 0, result.stdout + result.stderr);
+    assert.equal(existsSync(join(cwd, unit, "obsolete.txt")), false);
+    assert.equal(readFileSync(join(cwd, installRoot, "unrelated", "keep"), "utf8"), "keep");
+    assert.equal(readFileSync(join(cwd, "rigorloop.yaml"), "utf8"), "not: [yaml");
+    assert.ok(lstatSync(join(cwd, "rigorloop.lock")).isSymbolicLink());
+    assert.ok(JSON.parse(result.stdout).retained.length > 0);
   });
 }
-test('DIST retired state flag and OpenCode reject even with force before acquisition',(t)=>{
-  for(const args of [['init','codex','--write-state'],['init','opencode'],['init','opencode','--from-archive','missing.zip']]) {
-    const cwd=tempProject(t);const result=runCli([...args,'--force','--json'],{cwd});assert.equal(result.status,2,result.stdout+result.stderr);assertNoInitMutation(cwd);
-  }
-});
-
-test('DIST all candidate conflicts are reported before absent units are installed', (t) => {
-  const cwd = tempProject(t);
-  const entries = ['a', 'b', 'c'].map(name => ({name: `.agents/skills/${name}/SKILL.md`, bytes: Buffer.from(name)}));
-  const fixture = fixtureArchive(cwd, {entries});
-  mkdirSync(join(cwd, '.agents/skills/a'), {recursive: true});
-  mkdirSync(join(cwd, '.agents/skills/c'));
-  writeFileSync(join(cwd, '.agents/skills/c/SKILL.md'), 'c');
-  const result = runCliWithBundledMetadata(t, ['init', 'codex', '--from-archive', fixture.archiveName, '--json'], cwd, fixture.metadata);
-  assert.equal(result.status, 5, result.stdout + result.stderr);
-  assert.deepEqual(JSON.parse(result.stdout).blockers.map(b => b.path), ['.agents/skills/a', '.agents/skills/c']);
-  assert.equal(existsSync(join(cwd, '.agents/skills/b')), false);
-});
-
-test('DIST retired authoring guards preserve installed and candidate entries even with force', (t) => {
-  for (const skill of ['spec', 'architecture']) for (const installed of [false, true]) {
+test("DIST retired state flag and OpenCode reject even with force before acquisition", (t) => {
+  for (const args of [
+    ["init", "codex", "--write-state"],
+    ["init", "opencode"],
+    ["init", "opencode", "--from-archive", "missing.zip"],
+  ]) {
     const cwd = tempProject(t);
-    const fixture = fixtureArchive(cwd, installed ? {} : {entries: [{name: `.agents/skills/${skill}/SKILL.md`, bytes: Buffer.from('retired')}]});
-    if (installed) { mkdirSync(join(cwd, `.agents/skills/${skill}`), {recursive: true}); writeFileSync(join(cwd, `.agents/skills/${skill}/SKILL.md`), 'local'); }
-    const result = runCliWithBundledMetadata(t, ['init', 'codex', '--from-archive', fixture.archiveName, '--force', '--json'], cwd, fixture.metadata);
+    const result = runCli([...args, "--force", "--json"], { cwd });
     assert.equal(result.status, 2, result.stdout + result.stderr);
-    assert.equal(JSON.parse(result.stdout).blockers[0].code, installed ? 'retired-authoring-installation' : 'retired-authoring-candidate');
-    if (installed) assert.equal(readFileSync(join(cwd, `.agents/skills/${skill}/SKILL.md`), 'utf8'), 'local');
-    else assert.equal(existsSync(join(cwd, '.agents')), false);
+    assertNoInitMutation(cwd);
   }
+});
+
+test("DIST all candidate conflicts are reported before absent units are installed", (t) => {
+  const cwd = tempProject(t);
+  const entries = ["a", "b", "c"].map((name) => ({
+    name: `.agents/skills/${name}/SKILL.md`,
+    bytes: Buffer.from(name),
+  }));
+  const fixture = fixtureArchive(cwd, { entries });
+  mkdirSync(join(cwd, ".agents/skills/a"), { recursive: true });
+  mkdirSync(join(cwd, ".agents/skills/c"));
+  writeFileSync(join(cwd, ".agents/skills/c/SKILL.md"), "c");
+  const result = runCliWithBundledMetadata(
+    t,
+    ["init", "codex", "--from-archive", fixture.archiveName, "--json"],
+    cwd,
+    fixture.metadata,
+  );
+  assert.equal(result.status, 5, result.stdout + result.stderr);
+  assert.deepEqual(
+    JSON.parse(result.stdout).blockers.map((b) => b.path),
+    [".agents/skills/a", ".agents/skills/c"],
+  );
+  assert.equal(existsSync(join(cwd, ".agents/skills/b")), false);
+});
+
+test("DIST retired authoring guards preserve installed and candidate entries even with force", (t) => {
+  for (const skill of ["spec", "architecture"])
+    for (const installed of [false, true]) {
+      const cwd = tempProject(t);
+      const fixture = fixtureArchive(
+        cwd,
+        installed
+          ? {}
+          : {
+              entries: [
+                { name: `.agents/skills/${skill}/SKILL.md`, bytes: Buffer.from("retired") },
+              ],
+            },
+      );
+      if (installed) {
+        mkdirSync(join(cwd, `.agents/skills/${skill}`), { recursive: true });
+        writeFileSync(join(cwd, `.agents/skills/${skill}/SKILL.md`), "local");
+      }
+      const result = runCliWithBundledMetadata(
+        t,
+        ["init", "codex", "--from-archive", fixture.archiveName, "--force", "--json"],
+        cwd,
+        fixture.metadata,
+      );
+      assert.equal(result.status, 2, result.stdout + result.stderr);
+      assert.equal(
+        JSON.parse(result.stdout).blockers[0].code,
+        installed ? "retired-authoring-installation" : "retired-authoring-candidate",
+      );
+      if (installed)
+        assert.equal(readFileSync(join(cwd, `.agents/skills/${skill}/SKILL.md`), "utf8"), "local");
+      else assert.equal(existsSync(join(cwd, ".agents")), false);
+    }
 });

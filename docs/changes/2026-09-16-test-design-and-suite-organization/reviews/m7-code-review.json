@@ -1,0 +1,336 @@
+{
+  "assessment_scope": "Independent milestone M7 Code Review of commit 399f2a7fd4408c6a119e7b1af09ca37592e868c9 against baseline a937a578a633dae31ad19eb9b16c2804b2a24fca, approved Validation Design and primary delivery plan. Covers all 249 M7 scenarios in 16 native files, four helpers, interaction documentation, both shared JSON fixtures, all 41 consumed current model examples and the listed execution, selection, validation, packaging and runtime consumers. The complete subject map identifies exact reviewed bytes. This assesses retained group protection and generated families as well as changed lines; it supports M7 milestone closeout only.",
+  "change_id": "2026-09-16-test-design-and-suite-organization",
+  "contributors": [
+    {
+      "id": "codex-root",
+      "role": "implement"
+    }
+  ],
+  "findings": [],
+  "id": "m7-code-review",
+  "independence_basis": "The reviewer is the separate nonauthor agent /root/proposal_reviewer. The parent agent /root authored the M7 test/helper changes and author evidence as codex-root/implement. I did not author, format, correct or edit those engineering subjects. I independently inspected the complete scoped tests, helpers, inputs, actual diff, governing Design and delivery allocation, actual callers and validation basis, challenged the outcome assertions and ran controlled probes before selecting this judgment. Prior reviews by this same nonauthor agent do not substitute for this fresh milestone assessment.",
+  "judgment": "approved",
+  "limitations": [
+    "This is M7 milestone review, not final whole-change Code Review, Verify, branch readiness, PR approval or publication. M8 must finish its complete population and known fixture/oracle corrections; final integrated reconciliation and distinct review/Verify remain mandatory.",
+    "The full native, direct retirement, selected CI and packed-binary execution results are reused from the exact current author evidence and inspected logs. My fresh execution is limited to the source-AST comparison, identity/population comparisons, three controlled probes and four normal public interactions. No fresh entire package, release candidate, hosted run or broad smoke is claimed.",
+    "Controlled fault/observation probes establish the stated ownership and assertion counterexamples on this environment. They do not demonstrate arbitrary scheduler behavior, power-loss durability beyond the supported transaction boundary, all operating systems, or an actual product lost-neighbor defect. Runtime external-edit protection retains the observed-check boundary stated by CLI.",
+    "Shared examples and fixture actor labels are synthetic storage/conformance inputs. Their approved/success/current values do not authenticate independent review or establish adequate lifecycle proof. Historical and failed records retain their original meaning.",
+    "The evidence container remains conservatively restricted for earlier changed slices. Reliance here is on the explicitly inspected current M7 entries and exact unchanged upstream authority; this review does not renew unrelated historical proof or another assessor's stale judgment."
+  ],
+  "rationale": [
+    "Spec alignment: pass. The current Design Review and Delivery Review approve the unchanged exact Validation model and primary plan. M7 implements TEST-SR-19/20, VAL-SR-32 and TG-07 by retaining cohesive native files, exposing setup/action/expectation and separating independent outcomes from operation construction. CLI-SR-01–13 and the current RF representation/preservation rules remain the required behavior. There is no necessary unresolved owner decision, missing required assessment member or unsupported retirement. M8 and final whole-change review retain their separate allocation.",
+    "Test coverage: pass. I read every M7 native source and helper, including unchanged generated registrations. Contract/format groups retain closed vocabulary, transport/document version separation, JSON and byte/count limits, typed references, complete explanation shapes, mutable finding accounts and immutable blocker origins. Schema-walk unknown-value cases supplement explicit literal domain cases; they do not alone establish completeness. Queries and v3 reads retain filter/projection shape, readable multiline values, omissions versus absence, exact response-budget boundaries, continuation freshness and full assessment readback. The model examples retain independently authored observation digests and changed-preimage proof; their conformance checks make no real review or readiness claim.",
+    "Edge cases: pass. Targeted and v3 mutation groups retain valid controls, explicit decisions, no-writing preview, narrow and complete updates, lossless omitted source spans, independent literal expected values, batch overlap rejection, combined reference validation, missing-member and existing-file rejection, exact-byte no-op, conflict and retry semantics. The changed stale-revision fixture now deliberately flips a final hex character and asserts inequality before invocation, so it cannot accidentally reuse the current digest. Named loop domains preserve distinct version, field, phase, action, output and ownership partitions without new redundant Cartesian expansion.",
+    "Error handling: pass. CLI and persistence groups preserve actual child dispatch and interruption, multi-file before/candidate bytes, writer exclusion, absent-store creation, prepared and committed recovery, interrupted recovery, stale recovery identities, tampered journals and third-state refusal. Filesystem/prototype interpositions exercise EACCES/ENOSPC, symlink/hardlink containment, lock ownership, late basis drift and failures before receipt preparation; finally blocks restore injected functions. I inspected the shared production candidate, publication and recovery boundaries to confirm that these observations cross the actual store mechanism and do not bypass it. Successful schema validation is not used as proof of publication or recovery.",
+    "Architecture boundaries: pass. Existing 16 behavior files and native Node runner remain appropriate. Ordinary fresh-data builders, fault launchers and explicit runInteraction resource operations are composition helpers; result assertions consume observed records and bytes. They introduce no inheritance framework or production dependency on tests. The interaction resource root is acquired immediately before try/finally, so later setup failure is owned. Fresh parsing and structured cloning prevent cross-case mutation; ordered correction/recovery sequences remain inside one scenario. Native file-process isolation remains the boundary for global interpositions.",
+    "Independent interaction oracle: pass. Both actual advanced and targeted paths are now checked separately against required outcomes before their mutual equality is considered. Finding append compares the complete original review plus the independently specified finding; failed Verify compares original checks plus the literal failure and the complete manifest plus the specified open blocker/origin. Applicability records stale and current in separate transactions and checks intermediate declarations, approval, original findings and subjects. Final explanation compares the complete initial Verify object. Every untouched file is compared against actual pre-operation bytes. Dedicated targeted preservation cases separately cover omitted tokens within edited files. These checks do not use baselineCandidate or the mutation builder to derive their expected semantic result.",
+    "Compatibility: pass. C1 normal collection retains exactly 22 package entrypoints and 418 case identities, including all 249 M7 cases in 16 files; I compared the saved before/after collections exactly. The independently rerun parsed-AST comparison confirms 16 of 20 test/helper modules are unchanged except formatting, with precisely the four documented semantic changes. Existing names, generated domains, public fault launchers and alternate packed-binary invocation remain. Retirement's 24 cases retain archive exclusion, reserved-residue rejection and unsupported command/format no-write behavior. No test deletion, behavior retirement, source relocation, selector alias or compatibility fallback was introduced.",
+    "Shared inputs and consumers: pass. I inspected both JSON fixtures and all 41 consumed current examples, confirmed all 43 files byte-identical to the M6 baseline, and traced fresh-copy consumption by native tests and the existing Python metadata/lifecycle and packed recording callers. Synthetic failed evidence, historical judgment, origin and optional verification-basis values remain deliberately distinct from actual authority. Package glob and validation execution still collect the actual named files once; current classifier rules already cover every M7 native/helper/documentation path. No new routing rule is necessary. Current selected proof includes the metadata/model consumers and the real installed recording scenario retained from M5.",
+    "Security/privacy: pass. Dedicated recording dispatch continues to bypass generic logging and reject unsupported grammar before side effects. The generic alias version child now has its own cwd and log root without disabling product logging. The strict probe with enabled logging and an isolated caller-state directory observed zero caller files. Containment, redaction, outside-byte preservation and owned cleanup tests remain. This conclusion is restricted to M7; the separately identified CLI/workflow fixture gaps allocated to M8 are not asserted fixed by a full package pass.",
+    "Derived artifact currency: pass within M7 scope. No runtime, schema, shared JSON/example or package-registration bytes were changed. The seven actual-file selected checks are record_store.schema, model.validate, boundary_first.regression, change_metadata.regression, change_metadata.validate, rigorloop_cli.test and npm_package_publication.test. The inspected selected log records completion for all seven over the actual 24 changed paths, with no unknown/blocking path and the packed installed-target recording test included. These observations support the affected conformance and consumer boundaries; they do not claim hosted CI, publication or final branch readiness.",
+    "Unrelated changes: pass. The actual range contains test readability and the four narrowly documented test/helper corrections, their interaction README explanation, and governed handoff records. A temporary external formatter/tool directory is not added as a project dependency or new runner. The three pre-correction reproductions and original reporter resolutions are retained, and earlier findings remain resolved on their own basis. I have not rewritten any author's evidence, implementation or routing/work state.",
+    "Validation evidence: pass. The current individual m7-implementation and m7-validation entries match all 73 inspected subjects. I examined their exact procedures/results and the preserved failed m7-fixture-reproductions rather than treating the conservatively stale shared evidence container as universally current. Author evidence includes full native 418/418, direct retirement 24/24, four normal interactions, exact C1, and all seven C2 checks. I independently reran the unchanged-identity cleanup, log-isolation and equal-path lost-neighbor probes: setup failure leaves no fixture, the real alias case leaves no caller log, and equal loss of neighbor-0 fails at assertRequiredOutcome. I separately reran all four normal public interaction scenarios: four passed, zero failed or skipped. The lost-neighbor probe deliberately corrupts observed outputs after actual commands and proves the assertion mechanism, not an actual runtime defect. Exact commands, exit statuses and outputs are in /tmp/rigorloop-suite-organization-work/m7-review-probe-results.json and its named logs; the durable rationale states their outcome and limits. The inspected author before logs show the prior leak/orphan and prior acceptance of the equal loss. No further broad rerun is needed for this unchanged handed-off subject."
+  ],
+  "reviewer": {
+    "id": "code-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:8b821b86a8d0f4b2c6b6b4d06e72ad0b68e7f598974e08c37f61bc519f881213",
+      "path": "packages/rigorloop/test/record-store-adoption.test.js"
+    },
+    {
+      "identity": "sha256:8c8e829b78796178f219679a01066aa1da3afe4407f7b4d7b800e8c9c8100fc7",
+      "path": "packages/rigorloop/test/record-store-cli.test.js"
+    },
+    {
+      "identity": "sha256:8f2b0b9956385fe09a45b1f1f4af78b3431f0b38f19503b280f73f988110812d",
+      "path": "packages/rigorloop/test/record-store-contract.test.js"
+    },
+    {
+      "identity": "sha256:43ffd18f671090775efdcbd7e1a275664ca2f70e1fc6bb152c78568032f8d1a5",
+      "path": "packages/rigorloop/test/record-store-format.test.js"
+    },
+    {
+      "identity": "sha256:efc4a0be43c9d4ca6f71811fda2d36f11b8d821441366e90e192504f6153e2fb",
+      "path": "packages/rigorloop/test/record-store-interactions.test.js"
+    },
+    {
+      "identity": "sha256:6d4309e8c93c66615e8c735bca8851255fe89b4eb444ad4b25eaa892d551ffa0",
+      "path": "packages/rigorloop/test/record-store-model-examples.test.js"
+    },
+    {
+      "identity": "sha256:77da68fbf0e80f1a408bcdfebac364ab82cdaa9dc4db3241b10c0996ba11e92e",
+      "path": "packages/rigorloop/test/record-store-persistence.test.js"
+    },
+    {
+      "identity": "sha256:d44569e32340d3bcd5b8cf75b8b65748b05ffab586c75c24fd000ae876dd7e72",
+      "path": "packages/rigorloop/test/record-store-queries.test.js"
+    },
+    {
+      "identity": "sha256:88912fcafa4e9653d1143b63b0a8c2137ea080c4b0e4331d696db2ff62eec5f6",
+      "path": "packages/rigorloop/test/record-store-targeted.test.js"
+    },
+    {
+      "identity": "sha256:34257186420f049e0e6b1b10b27a72a8a77cfc6bb2a9f647d79d8d48dcfbd534",
+      "path": "packages/rigorloop/test/record-store-v3-adoption.test.js"
+    },
+    {
+      "identity": "sha256:49f96a0ddb6483fdc841b1d88914949ec02b2502914a3ff6100efa2939ae961e",
+      "path": "packages/rigorloop/test/record-store-v3-contract.test.js"
+    },
+    {
+      "identity": "sha256:117ebd92b468312214cddff4c1518394eaa107dcaa66eb745cd85b8cede6cf67",
+      "path": "packages/rigorloop/test/record-store-v3-mutations.test.js"
+    },
+    {
+      "identity": "sha256:6e6438e57604d7a0ff98555895d3290234691e297e93afcf8bc3f97854248831",
+      "path": "packages/rigorloop/test/record-store-v3-persistence.test.js"
+    },
+    {
+      "identity": "sha256:3c4df00d40870bc0007b87147870760179fd40b60f4ece9a3d46bc3ae038f4ce",
+      "path": "packages/rigorloop/test/record-store-v3-reads.test.js"
+    },
+    {
+      "identity": "sha256:709226729709ac726d094610658a257e7828061660f693dfb3afea5793fcda17",
+      "path": "packages/rigorloop/test/record-store-workflow.test.js"
+    },
+    {
+      "identity": "sha256:90812d417dadae42f1144f8637308f00a6f0916929bc9fda30fcd3462652d0dd",
+      "path": "packages/rigorloop/test/record-retirement.test.js"
+    },
+    {
+      "identity": "sha256:1d3e114d85e629793baf519d15c132d42499e352cef3a9013d0bcc768315c8e3",
+      "path": "packages/rigorloop/test/helpers/record-store-interactions.mjs"
+    },
+    {
+      "identity": "sha256:940f0561c0c840fde1698a9b1bf09e11e4383132d250e29b8aa6842374d7d889",
+      "path": "packages/rigorloop/test/helpers/record-store-launcher.mjs"
+    },
+    {
+      "identity": "sha256:03222f39be7d2d1c0ca7eda2cd23361f8504a6b7d8c982d380beccaa84df8254",
+      "path": "packages/rigorloop/test/helpers/recording-query-launcher.mjs"
+    },
+    {
+      "identity": "sha256:466599cdcb4ec7abcb5f42c85a4c64ed1f10ddf3805ae1c2ec5cbad520f68dc2",
+      "path": "packages/rigorloop/test/helpers/v3-fixture.mjs"
+    },
+    {
+      "identity": "sha256:f94c2225f0645b79577e3074e9970fc92351ae6f3eaf613c987e498f4bfc038d",
+      "path": "packages/rigorloop/test/fixtures/recording-interactions/README.md"
+    },
+    {
+      "identity": "sha256:dde4b6b431c783ac6b7a642ce7455458d13397a2b24f72cbe0bc7d016a4ed9ab",
+      "path": "tests/fixtures/rigorloop-records-v3/records.json"
+    },
+    {
+      "identity": "sha256:adb156b8e2b196c9e82195b3eac059852ca7a941382fa41e355ff3803bf9ba87",
+      "path": "tests/fixtures/rigorloop-records-v3/storage-safety.json"
+    },
+    {
+      "identity": "sha256:6c879a76afc9d6317951ba1dc883b9a5c220ba80df0cdb3b2f94e60363794207",
+      "path": "packages/rigorloop/package.json"
+    },
+    {
+      "identity": "sha256:968cc22d8073862ee77152865c9bc9bcbe231625ad17c57315e406082c931737",
+      "path": "scripts/lib/validation/validation_selection.py"
+    },
+    {
+      "identity": "sha256:132a133c71cef31f4aefbb49835c4269c9cd80ba492686e9988b4573e776b9f3",
+      "path": "scripts/lib/validation/validation_execution.py"
+    },
+    {
+      "identity": "sha256:da72bcb80d9cf94a16b119957e6162f8bedacd27bbea70be10429b424f9a4193",
+      "path": "tests/engineering/validation/test-change-metadata-validator.py"
+    },
+    {
+      "identity": "sha256:fe065d545c066d2ebdc8c6facbe773d547adaea93dc79f14292eb81814d0790b",
+      "path": "tests/engineering/validation/test-governed-lifecycle-cli-validator.py"
+    },
+    {
+      "identity": "sha256:7a23de2243df0cf51ff07058d2e4570ce85e25c246af992569bb668dad24cc54",
+      "path": "tests/engineering/packaging/npm_recording_tests.py"
+    },
+    {
+      "identity": "sha256:15c4a99d5ec1aa95ca585bb66be1c4a2f8b9cc3f9f19acb8dae32a3b768d0dbf",
+      "path": "packages/rigorloop/dist/lib/recording-mutation-cli.js"
+    },
+    {
+      "identity": "sha256:343b516ff34de23990f9897faa19e4a0f127fbfff9a0c814039140138280efb6",
+      "path": "packages/rigorloop/dist/lib/record-store.js"
+    },
+    {
+      "identity": "sha256:6b6d8fb56077b3359ae47b21bc9aab401e2510beb985ffe5fc5d43a6da070b9a",
+      "path": "packages/rigorloop/dist/lib/log-config.js"
+    },
+    {
+      "identity": "sha256:1d22534396a88cb3f3edb8d19be15cc37b8fe77b458ac2344e9627816094cca8",
+      "path": "docs/design/cli/examples/observation-freshness/expected.json"
+    },
+    {
+      "identity": "sha256:4fde512f9fd9c9b25502d1e983bb9a22382812ac726af6af32e040f7c3ff8222",
+      "path": "docs/design/cli/examples/observation-freshness/scan-b.json"
+    },
+    {
+      "identity": "sha256:d271716355c2d96bd1110c24f37e01de1bfb2a53d011a2f2a884bbebda2b9593",
+      "path": "docs/design/cli/examples/observation-freshness/scan-c.json"
+    },
+    {
+      "identity": "sha256:6dde70e3cfe5d98bd2adfbef63f8ba11c6e7f33f82ed43f23cc06ecfaef3de18",
+      "path": "docs/design/cli/examples/records/v3-complete-store/change.json"
+    },
+    {
+      "identity": "sha256:b04252e754560e4d9e69f62bd1013f546051bf7dea603b15b5fe019c05f4579c",
+      "path": "docs/design/cli/examples/records/v3-complete-store/evidence.json"
+    },
+    {
+      "identity": "sha256:317d54c95b1eb05e19852be20bd193f765a1514446794848149a43464def4551",
+      "path": "docs/design/cli/examples/records/v3-complete-store/material-decisions.json"
+    },
+    {
+      "identity": "sha256:edff4ef7ce625a817047f979c27235f443005f11b18d177d7b02b78c88314775",
+      "path": "docs/design/cli/examples/records/v3-complete-store/reviews/final-code-review.json"
+    },
+    {
+      "identity": "sha256:f35a2863075b2a1688ae1130dd310d728d78de994da6ec4e809d67d2f8f2ecf8",
+      "path": "docs/design/cli/examples/records/v3-complete-store/verify-report.json"
+    },
+    {
+      "identity": "sha256:c70b1cc46c1a3ecbfc49e4dba1f694c2a3ed992652cda40e7d58aa6c1b43f7a3",
+      "path": "docs/design/cli/examples/records/v3-finding-correction/stored-review.json"
+    },
+    {
+      "identity": "sha256:f34998232a1ef52b2ffb444f79a66705a1da5530490328d7102ea322897557fe",
+      "path": "docs/design/cli/examples/records/v3-finding-correction/updated-review.json"
+    },
+    {
+      "identity": "sha256:0a613a0439f4895028df96120e5d375a38d41e3d8223ed04522054118fbdc77a",
+      "path": "docs/design/cli/examples/records/v3-review-limitations-update/after.json"
+    },
+    {
+      "identity": "sha256:c70b1cc46c1a3ecbfc49e4dba1f694c2a3ed992652cda40e7d58aa6c1b43f7a3",
+      "path": "docs/design/cli/examples/records/v3-review-limitations-update/before.json"
+    },
+    {
+      "identity": "sha256:7b143a6b26d1b8b3db90f42f66915f065bf8e341f2a98ea69ea88d3d806227ec",
+      "path": "docs/design/cli/examples/records/v3-verify-limitations-update/after.json"
+    },
+    {
+      "identity": "sha256:57b19025fc02ca889012295cdc09ddbf0d83a452bafcf38260b88d8bcd05b40e",
+      "path": "docs/design/cli/examples/records/v3-verify-limitations-update/before.json"
+    },
+    {
+      "identity": "sha256:99940ecf563be59427e1a4b56f7da9348949ebde8c84507192ba8793dcbf3bd3",
+      "path": "docs/design/cli/examples/records/v3-verify-without-evidence/verify-report.json"
+    },
+    {
+      "identity": "sha256:795080cf9a9b63fd44a77ec745ca7d10995e2bf173581df9534e3b4f395a7ccb",
+      "path": "docs/design/cli/examples/v3-assessment-update-errors/invalid-change-selector-response.json"
+    },
+    {
+      "identity": "sha256:41b6e86f475fa7f278f706e0d094a6cc454f68f11de2ad34429b80acb273cfe5",
+      "path": "docs/design/cli/examples/v3-assessment-update-errors/mixed-store-response.json"
+    },
+    {
+      "identity": "sha256:e47f464a85d7f13b895dfc90d84b55fe24f823844db7f147d83657a8f6be7f6a",
+      "path": "docs/design/cli/examples/v3-assessment-update-errors/review-invalid-arguments-response.json"
+    },
+    {
+      "identity": "sha256:4f3259cd2229ac7f2b664abcec27968e7bf736f8e45801db42ce64849ce920c5",
+      "path": "docs/design/cli/examples/v3-assessment-update-errors/review-missing-store-response.json"
+    },
+    {
+      "identity": "sha256:0578d2152a2330a0bd5787659551494df819f273dc53db3be5fdceabfcdebb1d",
+      "path": "docs/design/cli/examples/v3-assessment-update-errors/unknown-command-response.json"
+    },
+    {
+      "identity": "sha256:a802cb3c67f2ac861614be88e55e8f4e6f6dfca57eaca2aec292288cfe419899",
+      "path": "docs/design/cli/examples/v3-assessment-update-errors/unknown-store-response.json"
+    },
+    {
+      "identity": "sha256:886ab0361fe5924b26f0275ec09410f916fdfc0eb788a0d60f93671fc2ab5a52",
+      "path": "docs/design/cli/examples/v3-assessment-update-errors/verify-invalid-arguments-response.json"
+    },
+    {
+      "identity": "sha256:803c307a1ae75ba0cc8114bdc6a2c9b01bc95a8d30f063abc53e13f753fe56fb",
+      "path": "docs/design/cli/examples/v3-assessment-update-errors/verify-missing-store-response.json"
+    },
+    {
+      "identity": "sha256:70f8883af05d13ef49e52b18209189b63f9c60a5cf381b076aeaeadd91aaad88",
+      "path": "docs/design/cli/examples/v3-complete-assessment-recording/review-record-request.json"
+    },
+    {
+      "identity": "sha256:f84b71e306ec3cc8211e151184e912f1edec7b875a206cebf82dde865644dc3e",
+      "path": "docs/design/cli/examples/v3-complete-assessment-recording/review-record-saved-response.json"
+    },
+    {
+      "identity": "sha256:bcb83a7e18c18e7759d37ef713f167b6f1180dd984ff07d705a06554fcee6d55",
+      "path": "docs/design/cli/examples/v3-complete-assessment-recording/verify-record-request.json"
+    },
+    {
+      "identity": "sha256:8cb57d08879331bb8a520c820f73cadb08711783baae852d33c70e6f198c06de",
+      "path": "docs/design/cli/examples/v3-complete-assessment-recording/verify-record-saved-response.json"
+    },
+    {
+      "identity": "sha256:905ba67b50a06114325bbabaa7c939005a096473ace379cd00cfe37b2a01bd93",
+      "path": "docs/design/cli/examples/v3-finding-correction/request.json"
+    },
+    {
+      "identity": "sha256:26c1d3d2d2cab351801c76ada6428ea8ada951631304dcc97ddbd08d74b56a0e",
+      "path": "docs/design/cli/examples/v3-finding-correction/saved-response.json"
+    },
+    {
+      "identity": "sha256:8489f5ec5e7329011de4660cbcf6877b988fbb8c2d70107ae90dd3cebbb88975",
+      "path": "docs/design/cli/examples/v3-finding-correction/show-response.json"
+    },
+    {
+      "identity": "sha256:0f7e7559a9c199eb4326ecede6ebdf67dd1418970d1609e5fe37b066b062537a",
+      "path": "docs/design/cli/examples/v3-finding-correction/summary-request.json"
+    },
+    {
+      "identity": "sha256:3e39f4d99e7b3589613c78f7e23e528dd6ffbd006f81651f69d8297911c30dc3",
+      "path": "docs/design/cli/examples/v3-finding-correction/summary-response.json"
+    },
+    {
+      "identity": "sha256:9f134ab8c53f99183053f3a0331871a70570690f93c6420e523aa61a2f5d8640",
+      "path": "docs/design/cli/examples/v3-review-limitations-update/set-request.json"
+    },
+    {
+      "identity": "sha256:3a4f87555fbb0b3dcc8239941ca02442e2e85a6c436a74f4954150c758e2d05e",
+      "path": "docs/design/cli/examples/v3-review-limitations-update/set-saved-response.json"
+    },
+    {
+      "identity": "sha256:6d436ffddc2da5286f804f82a2e9190e2a376e2d28387cfaf7520d75581c2d5b",
+      "path": "docs/design/cli/examples/v3-review-limitations-update/set-stale-response.json"
+    },
+    {
+      "identity": "sha256:c322d81e1248a8316bcb281457838054ac001baf30783b6c9d5bca979988c2e6",
+      "path": "docs/design/cli/examples/v3-review-limitations-update/set-unchanged-response.json"
+    },
+    {
+      "identity": "sha256:c73be0db141370e7e5c5fefd34d8c338c0141bcc27a9111a41784918f4464d96",
+      "path": "docs/design/cli/examples/v3-review-limitations-update/show-fields-response.json"
+    },
+    {
+      "identity": "sha256:07e459967b641a8bceb4edf801ce13567ccdfbd00f30977e5931b6ec588dec33",
+      "path": "docs/design/cli/examples/v3-verify-limitations-update/set-request.json"
+    },
+    {
+      "identity": "sha256:21f4098320b9f237c659717044ba08ff5ac7d49a716b9eb76576839d6ff36ca2",
+      "path": "docs/design/cli/examples/v3-verify-limitations-update/set-saved-response.json"
+    },
+    {
+      "identity": "sha256:e50326ce049b621467f317ab97415af8519efcb27db9c4f30c51c6b4ba2f300b",
+      "path": "docs/design/cli/examples/v3-verify-limitations-update/show-absent-basis-response.json"
+    },
+    {
+      "identity": "sha256:4c3047582f62c83ed9d9b87849916a4d444d381abca9c701e7843140df52aa27",
+      "path": "docs/design/cli/examples/v3-verify-limitations-update/show-fields-response.json"
+    }
+  ],
+  "summary": "The Records test population retains its required transaction, preservation, query and public-command protection while making scenarios readable and correcting three demonstrated fixture/oracle weaknesses. The retained boundaries and generated variants remain useful, independently selectable and supported by current proof.",
+  "target": "code"
+}
