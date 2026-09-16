@@ -4,9 +4,9 @@
       "id": "codex-root",
       "role": "route"
     },
-    "reason": "Fresh independent whole-change Code Review approves the complete delivered engineering subject. All milestones and required concerns are closed. Select distinct final Verify, including immutable PR-range proof and the authorized external PR handoff basis.",
+    "reason": "Successful distinct final Verify closes the assessed delivery and binds the exact repository/base/head. User authorized continuation through PR submission; route hands this successful report to the separate PR skill without claiming external publication or merge.",
     "stage": "verify",
-    "status": "in-progress"
+    "status": "completed"
   },
   "applicability": [
     {
@@ -151,6 +151,15 @@
       },
       "path": "docs/changes/2026-09-16-test-design-and-suite-organization/reviews/code-review.json",
       "reason": "Distinct fresh independent whole-change assessment at d81dfdaffc472c8d9a55152d24bda9e899962c00 against main 1195dfb261176d500e319662e2ffad5429cb63be, after all eight milestones and required corrections completed. Exact complete engineering diff, every current test-source module, retained protection, shared fixture/discovery/catalog/product interactions and current integrated proof are adequately assessed with no material correction. Earlier milestone judgments remain bounded historical basis. Supports only the separate Verify gate; no Verify, hosted, PR or completion claim.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-root",
+        "role": "verify"
+      },
+      "path": "docs/changes/2026-09-16-test-design-and-suite-organization/verify-report.json",
+      "reason": "Successful distinct final assessment on exact current subjects, current upstream/whole-change approvals and complete allocated evidence. External handoff remains separately checked; historical restricted evidence is not renewed.",
       "value": "current"
     }
   ],
@@ -743,6 +752,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-16-test-design-and-suite-organization/reviews/code-review.json"
+    },
+    {
+      "kind": "verify",
+      "path": "docs/changes/2026-09-16-test-design-and-suite-organization/verify-report.json"
     }
   ],
   "schema_version": 3,
