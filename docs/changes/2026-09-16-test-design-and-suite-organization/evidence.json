@@ -528,6 +528,198 @@
         }
       ],
       "summary": "C1 refreshed normal discovery:300 unique cases. Exact151 selector mapping is given in m1-pre-correction-validation; corrected mapping remains identical, no duplicate aliases and no unexplained identities. Original267 direct scenario bodies were preserved in extraction modulo helper composition. After correction, all177 methods in staged behavior modules retain method identities and fixture/diagnostic literals (resource indentation compared after the existing builder's normalization); independent review separately judges meaning. Final direct Skill aggregate:300 passed. New source-path selection family failed for all ten additions before the catalog correction, then passed; full184 selector suite passed on unchanged catalog/selector subjects, and current selected CI reran it. C2 current actual19 changed paths (16 engineering and three current record paths): selection and all selected checks passed at jobs4, including current records, Skill, adapters, guide-system, selector and executor regressions. Existing per-case adapter execution exercised isolated cases as well as the direct aggregate. Explicit record-store validation and git diff --check passed. No external services/public installation or semantic-quality claim. These are current M1 source observations; baseline and pre-correction entries preserve their prior identities and cannot be treated as current proof. Later slices must reassess affected shared sources; no whole-inventory completion or final Verify is claimed."
+    },
+    {
+      "actor": {
+        "id": "codex-root",
+        "role": "implement"
+      },
+      "id": "m2-implementation",
+      "procedure": "Assess all149 remaining Skill cases plus helpers/fixtures/callers and changed M1 interactions against M2/TG-02; inspect complete moved source, component faults, canonical structural scopes and independent domain expectations.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:4e1c7aa2e8bf9d5a9956eba6b46341f9e2084fa699f6c487d4c10a6f174615d8",
+          "path": "scripts/lib/validation/validation_selection.py"
+        },
+        {
+          "identity": "sha256:d8ee6b69949e1225bcad347ce1e4d23b24b54c76dc5400657b9d321654c3829a",
+          "path": "tests/engineering/validation/selection_contract_tests.py"
+        },
+        {
+          "identity": "sha256:dc156e9c5567561b28f54a8bc36314aa1877823c1b091cf0ed1720e38e28ddad",
+          "path": "tests/skill/review_independence_skill_phrases.py"
+        },
+        {
+          "identity": "sha256:321b60fb05e1210b1bb6a44291ee89b861cd8e933fdd3c75089747aca6d8dbea",
+          "path": "tests/skill/skill_authority_tests.py"
+        },
+        {
+          "identity": "sha256:bb9c6100863da6f651a1510aa80d2e5582378dd710d11a46fe1682040cc862b5",
+          "path": "tests/skill/skill_bugfix_guidance_tests.py"
+        },
+        {
+          "identity": "sha256:779d457024c46d0979591217fc24365c94392af32e18c719a23bdba95c251024",
+          "path": "tests/skill/skill_ci_guidance_tests.py"
+        },
+        {
+          "identity": "sha256:24bc1ab9e29565d27c003d42c874d2552d3f5f307bc42f3397d7a4e899027bdf",
+          "path": "tests/skill/skill_contract_tests.py"
+        },
+        {
+          "identity": "sha256:317d5e9fbddd9f87f6d1f47fd8618884944d5c0d2dfa0e37f115343037cea64b",
+          "path": "tests/skill/skill_design_resource_tests.py"
+        },
+        {
+          "identity": "sha256:f6e46f420d992f68331baaf83a045808608b1aad33c1ee8cf582be2a81feb964",
+          "path": "tests/skill/skill_discovery_guidance_tests.py"
+        },
+        {
+          "identity": "sha256:35c23e2eb7fac12d4727f881ddfd9b769b25e223dab65d7517841697eaf4d430",
+          "path": "tests/skill/skill_guidance_tests.py"
+        },
+        {
+          "identity": "sha256:4cd1e5ce3444ff0072f48a401e506a32851cc9d6f7a64241bf70689327bed386",
+          "path": "tests/skill/skill_learn_guidance_tests.py"
+        },
+        {
+          "identity": "sha256:cd37a6ed0a6423d84cde9ae464683e20a8d70572359b2b2c16e7e179962f7ef6",
+          "path": "tests/skill/skill_plan_guidance_tests.py"
+        },
+        {
+          "identity": "sha256:301ba04b2d8459dbb663dfa35aebaf44fb61dc1450cee861552be3b882a48723",
+          "path": "tests/skill/skill_pr_guidance_tests.py"
+        },
+        {
+          "identity": "sha256:88a504587544ce79795a5d943e351650bce5c423226fba811f7a5d0abc8641e8",
+          "path": "tests/skill/skill_project_map_guidance_tests.py"
+        },
+        {
+          "identity": "sha256:77b47c830498a8733568353ce1e4e28335ffbcb8ca09ed0b9ae186e40a97d537",
+          "path": "tests/skill/skill_proposal_guidance_tests.py"
+        },
+        {
+          "identity": "sha256:72b58380c93c6ae6e66d9b164d0a929f2dd827487f713be875c92f8d4c718b41",
+          "path": "tests/skill/skill_readability_guidance_tests.py"
+        },
+        {
+          "identity": "sha256:2e09895b076eca7fe11b7a3be9ad4319ca9a454cd8e8d36537db76e6c73ad5a0",
+          "path": "tests/skill/skill_route_guidance_tests.py"
+        },
+        {
+          "identity": "sha256:eb5352563f5e3e8922b30c21aab72c422fdff311477d413d8163011d131847cc",
+          "path": "tests/skill/skill_shared_policy_tests.py"
+        },
+        {
+          "identity": "sha256:431cdff90fd464967ff18cd045317cf6282610123afd5796424cdc254aa720c4",
+          "path": "tests/skill/skill_verify_guidance_tests.py"
+        },
+        {
+          "identity": "sha256:5ac1f89bf43095a3149b34e073ff8c6b7ac2ac0fabc07bae17cf4c20309e3d77",
+          "path": "tests/skill/skill_vision_guidance_tests.py"
+        },
+        {
+          "identity": "sha256:035d1baf2467725bcd1e593fc3dcf8d9c54fe02f6705f1a39d45ad1e46f7c441",
+          "path": "tests/skill/test-skill-validator.py"
+        }
+      ],
+      "summary": "All149 M2 cases are assessed, with the M1 interaction scope explicitly revisited. Retain with cohesive placement: readability4 (required output shapes plus actual prose command), authority19 (read-only ownership, stable artifacts, distinct gates and retained retirement protection), route7 (resource/assembly/stop and command vocabulary), Verify8 (scoped versus final resource/claim dependencies and retired explanation boundary), PR14 (readiness/remote/refresh/hosted-evidence declarations), Plan3 (stable plan structure and local recording authority), Proposal6 (direction sections and conditional gates), Vision5 (source/README/resource/output declarations), Learn5 (session/confirmation/route ownership), Project Map6 (operation/scope/coordination/evidence declarations), CI5 (workflow risk/privilege/atomic write/retry guidance), Bugfix10 (proof-action partitions and scoped write/claim declarations), Discovery10 (portable resources, independent package lists, private drift/unknown controls and explicit handoff). Their scenario bodies, fixtures, parameters and class/method selectors remain unchanged after relocation. Historical class names remain only for selector compatibility. These wording/ordering/structure checks detect specific instruction drift; no phrase presence establishes semantic adequacy, execution of a lifecycle or every agent's behavior.\nStrengthen Design-resource7: independent 11-resource expectation from Design Method's Public resource table; compare actual validator inventory as an observed value, inspect actual package files independently and run every missing-resource subprocess variant with its specific required-resource diagnostic. Retain real private copied packages and unknown-before-missing ordering. Strengthen shared-policy14: independently selected current seven delivery, ten review/reliance, four assessment, ten test-quality and eight test-maintenance owners; exact declared dispatch membership plus direct source/copy byte comparisons prevent production selection omissions from silently removing proof. Missing/drift/unknown controls and real public-boundary variant remain. The historical all_nine selector is explicitly documented as current seven-owner scope.\nRetain/clarify recording-reference9 and CI-assembly11 in the small existing contract module, plus relocated-plan2. Factories are ordinary functions; each profile fault starts with a fresh private ten-owner input and explicit valid control, defining mutation, operation and exact diagnostic. CI inputs independently name nine assemblies and retain unknown/missing/duplicate and fence marker/length partitions. Pure assertion support receives errors. The operation is no longer hidden in assert_* or a TestCase fixture factory. Retain ExplicitRecordingGuidance4 and strengthen its canonical selection against independent resources; the M1 three-guidance group shares that immutable selection with unchanged observations. Phrase-helper tuples remain byte-for-byte equal as values; comments identify their two current optional automated-method consumers and structural-only claim rather than a retired spec path.\nThe remaining M2 inputs are generated private profile trees, fresh CI dictionaries/strings, canonical read-only documents/resources or private skill copies; no mutable factory defaults or borrowed TestCase lifecycle. All11 persistent Skill fixture families (duplicate-name, missing-description, missing-expected-output, missing-name, missing-skill-file, missing-title, placeholder-text, project-map-contract, published-design, skill-readability, valid-basic) retain their M1 readers and nested packaged inputs. M2 introduces no persistent fixture relocation; declared example resources/scripts are inputs, not omitted test entrypoints. The phrase helper remains consumed by M1 canonical guidance. All15 added modules have explicit catalog routing and independently named selector regression rows; the existing direct aggregate now collects only, with no duplicate alias or new runner. Unknown protection in complete Skill scope: none identified. No assertions/cases or supported obligations removed. No broader Skill implementation audit or change to product behavior is claimed."
+    },
+    {
+      "actor": {
+        "id": "codex-root",
+        "role": "implement"
+      },
+      "id": "m2-validation",
+      "procedure": "C1 via normal discover_cases; direct/focused Skill aggregate; python scripts/validate-skills.py skills; focused selector negative/positive wiring; four controlled in-memory inventory-omission experiments; explicit actual-file selection and CI --jobs4; staged diff check and current record validation.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:4e1c7aa2e8bf9d5a9956eba6b46341f9e2084fa699f6c487d4c10a6f174615d8",
+          "path": "scripts/lib/validation/validation_selection.py"
+        },
+        {
+          "identity": "sha256:d8ee6b69949e1225bcad347ce1e4d23b24b54c76dc5400657b9d321654c3829a",
+          "path": "tests/engineering/validation/selection_contract_tests.py"
+        },
+        {
+          "identity": "sha256:dc156e9c5567561b28f54a8bc36314aa1877823c1b091cf0ed1720e38e28ddad",
+          "path": "tests/skill/review_independence_skill_phrases.py"
+        },
+        {
+          "identity": "sha256:321b60fb05e1210b1bb6a44291ee89b861cd8e933fdd3c75089747aca6d8dbea",
+          "path": "tests/skill/skill_authority_tests.py"
+        },
+        {
+          "identity": "sha256:bb9c6100863da6f651a1510aa80d2e5582378dd710d11a46fe1682040cc862b5",
+          "path": "tests/skill/skill_bugfix_guidance_tests.py"
+        },
+        {
+          "identity": "sha256:779d457024c46d0979591217fc24365c94392af32e18c719a23bdba95c251024",
+          "path": "tests/skill/skill_ci_guidance_tests.py"
+        },
+        {
+          "identity": "sha256:24bc1ab9e29565d27c003d42c874d2552d3f5f307bc42f3397d7a4e899027bdf",
+          "path": "tests/skill/skill_contract_tests.py"
+        },
+        {
+          "identity": "sha256:317d5e9fbddd9f87f6d1f47fd8618884944d5c0d2dfa0e37f115343037cea64b",
+          "path": "tests/skill/skill_design_resource_tests.py"
+        },
+        {
+          "identity": "sha256:f6e46f420d992f68331baaf83a045808608b1aad33c1ee8cf582be2a81feb964",
+          "path": "tests/skill/skill_discovery_guidance_tests.py"
+        },
+        {
+          "identity": "sha256:35c23e2eb7fac12d4727f881ddfd9b769b25e223dab65d7517841697eaf4d430",
+          "path": "tests/skill/skill_guidance_tests.py"
+        },
+        {
+          "identity": "sha256:4cd1e5ce3444ff0072f48a401e506a32851cc9d6f7a64241bf70689327bed386",
+          "path": "tests/skill/skill_learn_guidance_tests.py"
+        },
+        {
+          "identity": "sha256:cd37a6ed0a6423d84cde9ae464683e20a8d70572359b2b2c16e7e179962f7ef6",
+          "path": "tests/skill/skill_plan_guidance_tests.py"
+        },
+        {
+          "identity": "sha256:301ba04b2d8459dbb663dfa35aebaf44fb61dc1450cee861552be3b882a48723",
+          "path": "tests/skill/skill_pr_guidance_tests.py"
+        },
+        {
+          "identity": "sha256:88a504587544ce79795a5d943e351650bce5c423226fba811f7a5d0abc8641e8",
+          "path": "tests/skill/skill_project_map_guidance_tests.py"
+        },
+        {
+          "identity": "sha256:77b47c830498a8733568353ce1e4e28335ffbcb8ca09ed0b9ae186e40a97d537",
+          "path": "tests/skill/skill_proposal_guidance_tests.py"
+        },
+        {
+          "identity": "sha256:72b58380c93c6ae6e66d9b164d0a929f2dd827487f713be875c92f8d4c718b41",
+          "path": "tests/skill/skill_readability_guidance_tests.py"
+        },
+        {
+          "identity": "sha256:2e09895b076eca7fe11b7a3be9ad4319ca9a454cd8e8d36537db76e6c73ad5a0",
+          "path": "tests/skill/skill_route_guidance_tests.py"
+        },
+        {
+          "identity": "sha256:eb5352563f5e3e8922b30c21aab72c422fdff311477d413d8163011d131847cc",
+          "path": "tests/skill/skill_shared_policy_tests.py"
+        },
+        {
+          "identity": "sha256:431cdff90fd464967ff18cd045317cf6282610123afd5796424cdc254aa720c4",
+          "path": "tests/skill/skill_verify_guidance_tests.py"
+        },
+        {
+          "identity": "sha256:5ac1f89bf43095a3149b34e073ff8c6b7ac2ac0fabc07bae17cf4c20309e3d77",
+          "path": "tests/skill/skill_vision_guidance_tests.py"
+        },
+        {
+          "identity": "sha256:035d1baf2467725bcd1e593fc3dcf8d9c54fe02f6705f1a39d45ad1e46f7c441",
+          "path": "tests/skill/test-skill-validator.py"
+        }
+      ],
+      "summary": "C1 normal discovery before (M1 current handoff) and after M2: exactly the same300 unique Class.method selectors; no M2 identity mapping needed. Initial pure extraction: all25 classes/123 cases AST-identical, including setup, parameter values and assertions. Subsequent bounded changes are the declared input/oracle/helper refinements, not a count-only preservation claim. Focused20 recording/CI cases passed after fixture/operation separation; strengthened36 cases passed (recording9, CI11, Design7, delivery-copy3, review-copy3, test-policy3). Four owned in-process mutation experiments set one selected production inventory to empty: the corresponding old focused case passed without detecting the omission, while the strengthened case failed by assertion, not by import/setup error. This demonstrates that narrow weakness only; it does not claim the earlier entire suite missed all four hypothetical defects. No product file was mutated and no external service was involved.\nFinal python tests/skill/test-skill-validator.py:300 passed in20.327s. python scripts/validate-skills.py skills: all19 canonical skills passed. New15-path selector family failed before catalog wiring and passed afterward. C2 python scripts/select-validation.py --mode explicit and bash scripts/ci.sh --mode explicit --jobs4 with each of24 actual changed source/record paths completed successfully: Skill300, adapters95, change-metadata regression7 and validation, selector184 and executor52. This re-exercises M1 groups, exact direct entrypoint, isolated discovery/execution, copied-repository consumers and actual adapter observations after shared-source changes. git diff --cached --check passed; explicit current record validation is run after evidence recording. Existing baseline/M1 entries and judgments retain earlier exact identities and scope; the M1 helper correction remains resolved but changed aggregate/guidance/caller subjects require this M2 independent assessment. No final whole-change review or Verify readiness is claimed."
     }
   ],
   "schema_version": 3

@@ -20,8 +20,24 @@
         "role": "review"
       },
       "required_outcome": "Make each affected scenario's input/defining mutation and tested validator invocation explicit. Limit assertion helpers to accepting already observed CompletedProcess/error results plus independent expected diagnostics; retain fresh input builders or explicit resource-lifecycle helpers where reuse is useful. Preserve each existing meaningful case/parameter, real subprocess or component observation boundary, failure diagnostic, cleanup and aggregate/rerun identity. Safe resolution path: author the bounded helper/consumer correction without product or Design changes, record affected discovery and negative-observation proof plus relevant regression results, and return the changed exact subjects to this independent reviewer for disposition. needs-decision rationale: none; codex-root/implement owns the correction under the current approved Design.",
-      "resolution": null,
-      "state": "open",
+      "resolution": {
+        "actor": {
+          "id": "code-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [
+          {
+            "id": "m1-implementation",
+            "path": "docs/changes/2026-09-16-test-design-and-suite-organization/evidence.json"
+          },
+          {
+            "id": "m1-validation",
+            "path": "docs/changes/2026-09-16-test-design-and-suite-organization/evidence.json"
+          }
+        ],
+        "rationale": "The original independent reporter inspected the six corrected sources at commit 677f566d6ccb4c6e1d67cd7e717f1a60c7aaea7d. Cases now visibly own fixed inputs or temporary construction/mutation, invoke the real command/component operation and pass already observed results to pure assertions. The helper has no consuming test-module import. Independent comparison retained all 97 affected test names, 39 fixed input/diagnostic pairs, 14 defining mutation/diagnostic pairs, 13 dynamic resource invocations, all 23 effective resource scenario configurations and seven unchanged builder/operation functions; defining mutation bodies remain unchanged. Current exact-subject m1-implementation/m1-validation and inspected final logs show full 300-case direct and isolated selected execution with required consumers, preserved discovery and intended diagnostics. The approved source-responsibility requirement is therefore met without lost protection or a new product decision. Original finding evidence/subjects and first-pass judgment remain unchanged; this disposition and the separate corrected review supply the current assessment."
+      },
+      "state": "resolved",
       "subjects": [
         {
           "identity": "sha256:655a90c86440ab08e20662c21f7df4e811d61e166c273d76ffdc181b67d8a8a1",

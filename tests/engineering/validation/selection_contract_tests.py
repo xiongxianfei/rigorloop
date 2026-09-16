@@ -192,6 +192,21 @@ class SelectionContractChecks:
             "skill_placement_tests.py",
             "skill_fixture_helpers.py",
             "skill_guidance_helpers.py",
+            "skill_readability_guidance_tests.py",
+            "skill_authority_tests.py",
+            "skill_route_guidance_tests.py",
+            "skill_verify_guidance_tests.py",
+            "skill_pr_guidance_tests.py",
+            "skill_plan_guidance_tests.py",
+            "skill_proposal_guidance_tests.py",
+            "skill_design_resource_tests.py",
+            "skill_vision_guidance_tests.py",
+            "skill_learn_guidance_tests.py",
+            "skill_project_map_guidance_tests.py",
+            "skill_ci_guidance_tests.py",
+            "skill_bugfix_guidance_tests.py",
+            "skill_shared_policy_tests.py",
+            "skill_discovery_guidance_tests.py",
         ):
             with self.subTest(module=name):
                 payload = self.select(["tests/skill/" + name]).to_json_dict()
