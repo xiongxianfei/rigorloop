@@ -1,117 +1,1015 @@
-import {constructMutation} from '../dist/lib/recording-construction.js';
+import { constructMutation } from '../dist/lib/recording-construction.js';
 import assert from 'node:assert/strict';
-import {test} from 'node:test';
-import {readFileSync,mkdtempSync,mkdirSync,rmSync,writeFileSync,unlinkSync,existsSync} from 'node:fs';
-import {tmpdir} from 'node:os';
-import {join} from 'node:path';
-import {executeRecordStore} from '../dist/lib/record-store.js';
-import {executeRecordingMutationCli} from '../dist/lib/recording-mutation-cli.js';
-const f=JSON.parse(readFileSync(new URL('../../../tests/fixtures/rigorloop-records-v3/records.json',import.meta.url)));
-const prefix='docs/changes/example/',mp=prefix+'change.json';
-const encode=x=>JSON.stringify(x)+'\n';
-function rootFor(t,create=true){const root=mkdtempSync(join(tmpdir(),'targeted-'));t.after(()=>rmSync(root,{recursive:true,force:true}));mkdirSync(join(root,'docs/changes'),{recursive:true});if(create)assert.equal(executeRecordStore({root,changeId:'example',operation:'record',request:f.request}).status,'saved');return root;}
-const inspect=root=>executeRecordStore({root,changeId:'example',operation:'inspect'});
-function mutate(root,operation,extra=[],batch=false,overrides={}){const request={schema_version:1,interface:'targeted-recording-v1',contract:'rigorloop-records-v3',change_id:'example',expected_revision:inspect(root).revision,reads:[],[batch?'operations':'operation']:operation,...overrides};const words=batch?['batch']:operation.op.split('.');if(!batch&&operation.target.id&&operation.op!=='change.link')words.push(operation.target.id);if(!batch&&operation.target.review)words.push('--review',operation.target.review);return executeRecordingMutationCli([...words,'--root',root,'--change','example','--input','-','--format','json',...extra],{input:encode(request)}).result;}
+import { test } from 'node:test';
+import {
+  readFileSync,
+  mkdtempSync,
+  mkdirSync,
+  rmSync,
+  writeFileSync,
+  unlinkSync,
+  existsSync,
+} from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { executeRecordStore } from '../dist/lib/record-store.js';
+import { executeRecordingMutationCli } from '../dist/lib/recording-mutation-cli.js';
+const f = JSON.parse(
+  readFileSync(
+    new URL('../../../tests/fixtures/rigorloop-records-v3/records.json', import.meta.url),
+  ),
+);
+const prefix = 'docs/changes/example/',
+  mp = prefix + 'change.json';
+const encode = (x) => JSON.stringify(x) + '\n';
+function rootFor(t, create = true) {
+  const root = mkdtempSync(join(tmpdir(), 'targeted-'));
+  t.after(() => rmSync(root, { recursive: true, force: true }));
+  mkdirSync(join(root, 'docs/changes'), { recursive: true });
+  if (create)
+    assert.equal(
+      executeRecordStore({ root, changeId: 'example', operation: 'record', request: f.request })
+        .status,
+      'saved',
+    );
+  return root;
+}
+const inspect = (root) => executeRecordStore({ root, changeId: 'example', operation: 'inspect' });
+function mutate(root, operation, extra = [], batch = false, overrides = {}) {
+  const request = {
+    schema_version: 1,
+    interface: 'targeted-recording-v1',
+    contract: 'rigorloop-records-v3',
+    change_id: 'example',
+    expected_revision: inspect(root).revision,
+    reads: [],
+    [batch ? 'operations' : 'operation']: operation,
+    ...overrides,
+  };
+  const words = batch ? ['batch'] : operation.op.split('.');
+  if (!batch && operation.target.id && operation.op !== 'change.link')
+    words.push(operation.target.id);
+  if (!batch && operation.target.review) words.push('--review', operation.target.review);
+  return executeRecordingMutationCli(
+    [...words, '--root', root, '--change', 'example', '--input', '-', '--format', 'json', ...extra],
+    { input: encode(request) },
+  ).result;
+}
 // Create through the public supported operation.
-function createStore(root,values){return mutate(root,{op:'change.create',target:{},values});}
-test('TG-05 work.set preserves untouched source tokens and preview writes nothing',t=>{const root=rootFor(t),before=inspect(root),operation={op:'work.set',target:{id:'work-1'},values:{status:'in-progress'}};const preview=mutate(root,operation,['--dry-run']);assert.equal(preview.status,'valid');assert.equal(inspect(root).revision,before.revision);assert.equal(mutate(root,operation).status,'saved');const old=before.snapshot.records.find(r=>r.path===mp).content,next=inspect(root).snapshot.records.find(r=>r.path===mp).content;assert.equal(next,old.replace('"id": "work-1", "status": "completed"','"id": "work-1", "status": "in-progress"'));assert.equal(mutate(root,operation).status,'unchanged');});
-test('TG-05 missing decisions and overlapping batch fields reject all edits',t=>{const root=rootFor(t),before=inspect(root).revision;assert.equal(mutate(root,{op:'work.add',target:{id:'new'},values:{status:'pending'}}).errors[0].code,'missing-input');const op={op:'work.set',target:{id:'work-1'},values:{status:'in-progress'}};assert.equal(mutate(root,[op,op],[],true).errors[0].code,'overlapping-operation');assert.equal(inspect(root).revision,before);});
-const values=(record,keys)=>Object.fromEntries(keys.map(k=>[k,structuredClone(record[k])]));
-const reviewValues=()=>values(f.review,['target','reviewer','contributors','independence_basis','subjects','judgment','summary','assessment_scope','rationale','limitations']);
-const findingValues=()=>values(f.review.findings[0],['reporter','owner','subjects','evidence','required_outcome','state','resolution']);
-const concernValues=()=>({...values(f.change.blockers[0],['reporter','owner','subjects','evidence','required_outcome']),state:'open',resolution:null,basis:{rationale:'Explicit origin rationale',supporting_judgment:null}});
-const app=()=>values(f.change.applicability[0],['value','actor','reason']);
-const record=(root,path)=>JSON.parse(inspect(root).snapshot.records.find(r=>r.path===path).content);
+function createStore(root, values) {
+  return mutate(root, { op: 'change.create', target: {}, values });
+}
+test('TG-05 work.set preserves untouched source tokens and preview writes nothing', (t) => {
+  const root = rootFor(t),
+    before = inspect(root),
+    operation = { op: 'work.set', target: { id: 'work-1' }, values: { status: 'in-progress' } };
+  const preview = mutate(root, operation, ['--dry-run']);
+  assert.equal(preview.status, 'valid');
+  assert.equal(inspect(root).revision, before.revision);
+  assert.equal(mutate(root, operation).status, 'saved');
+  const old = before.snapshot.records.find((r) => r.path === mp).content,
+    next = inspect(root).snapshot.records.find((r) => r.path === mp).content;
+  assert.equal(
+    next,
+    old.replace('"id": "work-1", "status": "completed"', '"id": "work-1", "status": "in-progress"'),
+  );
+  assert.equal(mutate(root, operation).status, 'unchanged');
+});
+test('TG-05 missing decisions and overlapping batch fields reject all edits', (t) => {
+  const root = rootFor(t),
+    before = inspect(root).revision;
+  assert.equal(
+    mutate(root, { op: 'work.add', target: { id: 'new' }, values: { status: 'pending' } }).errors[0]
+      .code,
+    'missing-input',
+  );
+  const op = { op: 'work.set', target: { id: 'work-1' }, values: { status: 'in-progress' } };
+  assert.equal(mutate(root, [op, op], [], true).errors[0].code, 'overlapping-operation');
+  assert.equal(inspect(root).revision, before);
+});
+const values = (record, keys) =>
+  Object.fromEntries(keys.map((k) => [k, structuredClone(record[k])]));
+const reviewValues = () =>
+  values(f.review, [
+    'target',
+    'reviewer',
+    'contributors',
+    'independence_basis',
+    'subjects',
+    'judgment',
+    'summary',
+    'assessment_scope',
+    'rationale',
+    'limitations',
+  ]);
+const findingValues = () =>
+  values(f.review.findings[0], [
+    'reporter',
+    'owner',
+    'subjects',
+    'evidence',
+    'required_outcome',
+    'state',
+    'resolution',
+  ]);
+const concernValues = () => ({
+  ...values(f.change.blockers[0], [
+    'reporter',
+    'owner',
+    'subjects',
+    'evidence',
+    'required_outcome',
+  ]),
+  state: 'open',
+  resolution: null,
+  basis: { rationale: 'Explicit origin rationale', supporting_judgment: null },
+});
+const app = () => values(f.change.applicability[0], ['value', 'actor', 'reason']);
+const record = (root, path) =>
+  JSON.parse(inspect(root).snapshot.records.find((r) => r.path === path).content);
 
-test('public construction and later edits retain two-space indentation', t => {
- const root=rootFor(t,false);
- const create={op:'change.create',target:{},values:{...values(f.change,['proposal','models','activity','plan']),work:[],blockers:[]}};
- const assertIndented=()=>{
-  for(const {content} of inspect(root).snapshot.records){
-   assert.equal(content,JSON.stringify(JSON.parse(content),null,2)+'\n');
+test('public construction and later edits retain two-space indentation', (t) => {
+  const root = rootFor(t, false);
+  const create = {
+    op: 'change.create',
+    target: {},
+    values: {
+      ...values(f.change, ['proposal', 'models', 'activity', 'plan']),
+      work: [],
+      blockers: [],
+    },
+  };
+  const assertIndented = () => {
+    for (const { content } of inspect(root).snapshot.records) {
+      assert.equal(content, JSON.stringify(JSON.parse(content), null, 2) + '\n');
+    }
+  };
+  assert.equal(createStore(root, create.values).status, 'saved');
+  assertIndented();
+  const review = {
+    op: 'review.record',
+    target: { id: 'readable' },
+    values: { ...reviewValues(), summary: 'Paragraph one.\n\nLiteral \\n remains text.' },
+    applicability: app(),
+  };
+  assert.equal(mutate(root, review).status, 'saved');
+  assertIndented();
+  const work = {
+    op: 'work.add',
+    target: { id: 'first' },
+    values: { status: 'pending', owner: { id: 'author', role: 'implement' }, requirement_refs: [] },
+  };
+  assert.equal(mutate(root, work).status, 'saved');
+  assertIndented();
+  assert.equal(mutate(root, { ...work, target: { id: 'second' } }).status, 'saved');
+  assertIndented();
+  const update = {
+    op: 'work.set',
+    target: { id: 'first' },
+    values: {
+      owner: { id: 'new-author', role: 'implement' },
+      requirement_refs: ['CLI-SR-13', 'CLI-SR-17'],
+    },
+  };
+  const reviewBefore = readFileSync(join(root, prefix + 'reviews/readable.json'));
+  assert.equal(mutate(root, update).status, 'saved');
+  assertIndented();
+  assert.deepEqual(readFileSync(join(root, prefix + 'reviews/readable.json')), reviewBefore);
+  const before = inspect(root);
+  assert.equal(mutate(root, update).status, 'unchanged');
+  assert.deepEqual(inspect(root).snapshot, before.snapshot);
+});
+
+test('compact stored JSON is not reformatted by targeted object edits or appends', (t) => {
+  const root = rootFor(t);
+  const current = record(root, mp);
+  const before = encode(current);
+  writeFileSync(join(root, mp), before);
+  const owner = { id: 'new-author', role: 'implement' };
+  assert.equal(
+    mutate(root, { op: 'work.set', target: { id: 'work-1' }, values: { owner } }).status,
+    'saved',
+  );
+  const after = readFileSync(join(root, mp), 'utf8');
+  assert.equal(
+    after,
+    before.replace(JSON.stringify(current.work[0]), JSON.stringify({ ...current.work[0], owner })),
+  );
+  const work = {
+    op: 'work.add',
+    target: { id: 'added' },
+    values: { status: 'pending', owner, requirement_refs: [] },
+  };
+  assert.equal(mutate(root, work).status, 'saved');
+  assert.equal(readFileSync(join(root, mp), 'utf8').trimEnd().includes('\n'), false);
+});
+
+test('TG-05 producers construct explicit registrations', (t) => {
+  const root = rootFor(t, false),
+    create = {
+      op: 'change.create',
+      target: {},
+      values: {
+        ...values(f.change, ['proposal', 'models', 'activity', 'plan', 'work']),
+        blockers: [],
+      },
+    };
+  assert.equal(createStore(root, create.values).status, 'saved');
+  const operations = [
+    {
+      op: 'review.record',
+      target: { id: 'new-review' },
+      values: reviewValues(),
+      applicability: app(),
+    },
+    {
+      op: 'evidence.record',
+      target: { id: 'new-check' },
+      values: values(f.evidence.checks[0], ['actor', 'subjects', 'result', 'procedure', 'summary']),
+      applicability: app(),
+    },
+    {
+      op: 'decision.record',
+      target: { id: 'new-decision' },
+      values: {
+        actor: f.change.activity.owner,
+        subjects: [],
+        rationale: 'Explicit',
+        source_refs: [],
+        body: 'Shared explanation',
+      },
+      applicability: app(),
+    },
+    {
+      op: 'verify.record',
+      target: {},
+      values: {
+        ...values(f.verify, [
+          'verifier',
+          'subjects',
+          'outcome',
+          'summary',
+          'assessment_scope',
+          'rationale',
+          'limitations',
+          'changes',
+        ]),
+        evidence_refs: [],
+        review_refs: [],
+      },
+      applicability: app(),
+    },
+  ];
+  assert.equal(mutate(root, operations, [], true).status, 'saved');
+  assert.equal(record(root, mp).records.length, 4);
+  assert.equal(record(root, prefix + 'material-decisions.json').body, 'Shared explanation');
+  assert.equal(record(root, mp).activity.status, 'completed');
+});
+
+test('TG-05 all origin construction forms retain origin after reassessment', (t) => {
+  const root = rootFor(t);
+  for (const [index, supporting_judgment] of [
+    null,
+    { snapshot: f.change.blockers[0].origin.supporting_judgment },
+    { from_review: 'design-review', rationale: 'Finding-specific account' },
+  ].entries()) {
+    const id = 'new-' + index,
+      values = concernValues();
+    values.basis.supporting_judgment = supporting_judgment;
+    const add = { op: 'blocker.add', target: { id }, values };
+    const r = mutate(root, add);
+    assert.equal(r.status, 'saved', JSON.stringify(r));
+    const before = record(root, mp).blockers.find((x) => x.id === id);
+    assert.ok(before.origin);
+    assert.equal(
+      before.origin.supporting_judgment?.rationale ?? null,
+      supporting_judgment?.from_review
+        ? 'Finding-specific account'
+        : (supporting_judgment?.snapshot?.rationale ?? null),
+    );
+    assert.equal(
+      mutate(root, {
+        op: 'blocker.set',
+        target: add.target,
+        values: { evidence: 'New current evidence' },
+      }).status,
+      'saved',
+    );
+    assert.deepEqual(record(root, mp).blockers.find((x) => x.id === id).origin, before.origin);
   }
- };
- assert.equal(createStore(root,create.values).status,'saved');
- assertIndented();
- const review={op:'review.record',target:{id:'readable'},values:{...reviewValues(),summary:'Paragraph one.\n\nLiteral \\n remains text.'},applicability:app()};
- assert.equal(mutate(root,review).status,'saved');
- assertIndented();
- const work={op:'work.add',target:{id:'first'},values:{status:'pending',owner:{id:'author',role:'implement'},requirement_refs:[]}};
- assert.equal(mutate(root,work).status,'saved');
- assertIndented();
- assert.equal(mutate(root,{...work,target:{id:'second'}}).status,'saved');
- assertIndented();
- const update={op:'work.set',target:{id:'first'},values:{owner:{id:'new-author',role:'implement'},requirement_refs:['CLI-SR-13','CLI-SR-17']}};
- const reviewBefore=readFileSync(join(root,prefix+'reviews/readable.json'));
- assert.equal(mutate(root,update).status,'saved');
- assertIndented();
- assert.deepEqual(readFileSync(join(root,prefix+'reviews/readable.json')),reviewBefore);
- const before=inspect(root);
- assert.equal(mutate(root,update).status,'unchanged');
- assert.deepEqual(inspect(root).snapshot,before.snapshot);
+  const before = record(root, mp).blockers;
+  assert.equal(
+    mutate(root, {
+      op: 'review.record',
+      target: { id: 'design-review' },
+      values: { ...reviewValues(), judgment: 'approved', summary: 'Updated reviewer explanation' },
+    }).status,
+    'saved',
+  );
+  assert.deepEqual(record(root, mp).blockers, before);
 });
 
-test('compact stored JSON is not reformatted by targeted object edits or appends', t => {
- const root=rootFor(t);
- const current=record(root,mp);
- const before=encode(current);
- writeFileSync(join(root,mp),before);
- const owner={id:'new-author',role:'implement'};
- assert.equal(mutate(root,{op:'work.set',target:{id:'work-1'},values:{owner}}).status,'saved');
- const after=readFileSync(join(root,mp),'utf8');
- assert.equal(after,before.replace(JSON.stringify(current.work[0]),JSON.stringify({...current.work[0],owner})));
- const work={op:'work.add',target:{id:'added'},values:{status:'pending',owner,requirement_refs:[]}};
- assert.equal(mutate(root,work).status,'saved');
- assert.equal(readFileSync(join(root,mp),'utf8').trimEnd().includes('\n'),false);
+test('TG-06 completed work accepts Verify failure and blocker, then separate correction decisions', (t) => {
+  const root = rootFor(t),
+    blocker = {
+      op: 'blocker.add',
+      target: { id: 'verify-defect' },
+      values: { ...concernValues(), reporter: { id: 'verifier', role: 'verify' } },
+    };
+  const result = mutate(
+    root,
+    [
+      {
+        op: 'evidence.record',
+        target: { id: 'failed-final' },
+        values: {
+          ...values(f.evidence.checks[0], ['actor', 'subjects', 'result', 'procedure', 'summary']),
+          result: 'failed',
+        },
+      },
+      blocker,
+    ],
+    [],
+    true,
+  );
+  assert.equal(result.status, 'saved');
+  assert.ok(result.observation_summary.by_code['inconsistent-claim']);
+  assert.equal(
+    mutate(root, {
+      op: 'activity.set',
+      target: {},
+      values: {
+        stage: 'implement',
+        status: 'in-progress',
+        owner: f.change.activity.owner,
+        reason: 'Explicit correction routing',
+      },
+    }).status,
+    'saved',
+  );
+  assert.equal(
+    mutate(root, {
+      op: 'review.record',
+      target: { id: 'design-review' },
+      values: { ...reviewValues(), judgment: 'approved' },
+    }).status,
+    'saved',
+  );
+  const stored = record(root, mp).blockers.find((b) => b.id === 'verify-defect');
+  assert.equal(stored.state, 'open');
+  assert.equal(stored.origin.reporter.role, 'verify');
+  assert.equal(
+    mutate(root, {
+      op: 'blocker.set',
+      target: { id: 'verify-defect' },
+      values: {
+        state: 'resolved',
+        resolution: {
+          actor: { id: 'verifier', role: 'verify' },
+          rationale: 'Explicit reassessment',
+          evidence_refs: [],
+        },
+      },
+    }).status,
+    'saved',
+  );
 });
 
-test('TG-05 producers construct explicit registrations',t=>{const root=rootFor(t,false),create={op:'change.create',target:{},values:{...values(f.change,['proposal','models','activity','plan','work']),blockers:[]}};assert.equal(createStore(root,create.values).status,'saved');const operations=[{op:'review.record',target:{id:'new-review'},values:reviewValues(),applicability:app()},{op:'evidence.record',target:{id:'new-check'},values:values(f.evidence.checks[0],['actor','subjects','result','procedure','summary']),applicability:app()},{op:'decision.record',target:{id:'new-decision'},values:{actor:f.change.activity.owner,subjects:[],rationale:'Explicit',source_refs:[],body:'Shared explanation'},applicability:app()},{op:'verify.record',target:{},values:{...values(f.verify,['verifier','subjects','outcome','summary','assessment_scope','rationale','limitations','changes']),evidence_refs:[],review_refs:[]},applicability:app()}];assert.equal(mutate(root,operations,[],true).status,'saved');assert.equal(record(root,mp).records.length,4);assert.equal(record(root,prefix+'material-decisions.json').body,'Shared explanation');assert.equal(record(root,mp).activity.status,'completed');});
+test('TG-05 new review and finding compose; same IDs in distinct reviews are distinct targets', (t) => {
+  const root = rootFor(t);
+  const r = mutate(
+    root,
+    [
+      {
+        op: 'review.record',
+        target: { id: 'other' },
+        values: reviewValues(),
+        applicability: app(),
+      },
+      {
+        op: 'finding.add',
+        target: { review: 'other', id: 'new-finding' },
+        values: findingValues(),
+      },
+      {
+        op: 'finding.add',
+        target: { review: 'design-review', id: 'new-finding' },
+        values: findingValues(),
+      },
+    ],
+    [],
+    true,
+  );
+  assert.equal(r.status, 'saved', JSON.stringify(r));
+});
 
-test('TG-05 all origin construction forms retain origin after reassessment',t=>{const root=rootFor(t);for(const [index,supporting_judgment]of [null,{snapshot:f.change.blockers[0].origin.supporting_judgment},{from_review:'design-review',rationale:'Finding-specific account'}].entries()){const id='new-'+index,values=concernValues();values.basis.supporting_judgment=supporting_judgment;const add={op:'blocker.add',target:{id},values};const r=mutate(root,add);assert.equal(r.status,'saved',JSON.stringify(r));const before=record(root,mp).blockers.find(x=>x.id===id);assert.ok(before.origin);assert.equal(before.origin.supporting_judgment?.rationale??null,supporting_judgment?.from_review?'Finding-specific account':supporting_judgment?.snapshot?.rationale??null);assert.equal(mutate(root,{op:'blocker.set',target:add.target,values:{evidence:'New current evidence'}}).status,'saved');assert.deepEqual(record(root,mp).blockers.find(x=>x.id===id).origin,before.origin);}const before=record(root,mp).blockers;assert.equal(mutate(root,{op:'review.record',target:{id:'design-review'},values:{...reviewValues(),judgment:'approved',summary:'Updated reviewer explanation'}}).status,'saved');assert.deepEqual(record(root,mp).blockers,before);});
+test('TG-05 details carry identities and body edits preserve neighboring JSON tokens', (t) => {
+  const root = rootFor(t),
+    path = prefix + 'reviews/design-review.json',
+    old = inspect(root).snapshot.records.find((r) => r.path === path).content;
+  const body = 'Unicode α 😀\nQuotes " and slash \\';
+  const r = mutate(
+    root,
+    {
+      op: 'review.record',
+      target: { id: 'design-review' },
+      values: { ...reviewValues(), summary: body },
+    },
+    ['--details'],
+  );
+  assert.equal(r.status, 'saved', JSON.stringify(r));
+  assert.equal(r.details.included, true);
+  assert.ok(r.details.files.every((x) => /^sha256:/.test(x.identity)));
+  assert.equal(record(root, path).summary, body);
+  assert.equal(
+    inspect(root).snapshot.records.find((r) => r.path === path).content,
+    old.replace(JSON.stringify(f.review.summary), JSON.stringify(body)),
+  );
+});
 
-test('TG-06 completed work accepts Verify failure and blocker, then separate correction decisions',t=>{const root=rootFor(t),blocker={op:'blocker.add',target:{id:'verify-defect'},values:{...concernValues(),reporter:{id:'verifier',role:'verify'}}};const result=mutate(root,[{op:'evidence.record',target:{id:'failed-final'},values:{...values(f.evidence.checks[0],['actor','subjects','result','procedure','summary']),result:'failed'}},blocker],[],true);assert.equal(result.status,'saved');assert.ok(result.observation_summary.by_code['inconsistent-claim']);assert.equal(mutate(root,{op:'activity.set',target:{},values:{stage:'implement',status:'in-progress',owner:f.change.activity.owner,reason:'Explicit correction routing'}}).status,'saved');assert.equal(mutate(root,{op:'review.record',target:{id:'design-review'},values:{...reviewValues(),judgment:'approved'}}).status,'saved');const stored=record(root,mp).blockers.find(b=>b.id==='verify-defect');assert.equal(stored.state,'open');assert.equal(stored.origin.reporter.role,'verify');assert.equal(mutate(root,{op:'blocker.set',target:{id:'verify-defect'},values:{state:'resolved',resolution:{actor:{id:'verifier',role:'verify'},rationale:'Explicit reassessment',evidence_refs:[]}}}).status,'saved');});
+test('TG-05 every mutable closed vocabulary rejects unknown_value', (t) => {
+  const root = rootFor(t),
+    before = inspect(root).revision;
+  const validVerify = values(f.verify, [
+    'verifier',
+    'subjects',
+    'evidence_refs',
+    'review_refs',
+    'outcome',
+    'summary',
+    'assessment_scope',
+    'rationale',
+    'limitations',
+    'changes',
+  ]);
+  assert.equal(
+    mutate(root, { op: 'verify.record', target: {}, values: validVerify }, ['--dry-run']).status,
+    'valid',
+  );
+  for (const operation of [
+    { op: 'work.set', target: { id: 'work-1' }, values: { status: 'unknown_value' } },
+    { op: 'activity.set', target: {}, values: { ...f.change.activity, stage: 'unknown_value' } },
+    {
+      op: 'review.record',
+      target: { id: 'design-review' },
+      values: { ...reviewValues(), judgment: 'unknown_value' },
+    },
+    {
+      op: 'evidence.record',
+      target: { id: 'check-1' },
+      values: {
+        ...values(f.evidence.checks[0], ['actor', 'subjects', 'result', 'procedure', 'summary']),
+        result: 'unknown_value',
+      },
+    },
+    {
+      op: 'applicability.set',
+      target: { path: prefix + 'evidence.json' },
+      values: { ...app(), value: 'unknown_value' },
+    },
+    {
+      op: 'blocker.set',
+      target: { id: 'blocker-1' },
+      values: { state: 'unknown_value', resolution: null },
+    },
+    { op: 'verify.record', target: {}, values: { ...validVerify, outcome: 'unknown_value' } },
+  ]) {
+    const r = mutate(root, operation);
+    assert.equal(r.status, 'rejected', operation.op);
+  }
+  assert.equal(inspect(root).revision, before);
+});
 
-test('TG-05 new review and finding compose; same IDs in distinct reviews are distinct targets',t=>{const root=rootFor(t);const r=mutate(root,[{op:'review.record',target:{id:'other'},values:reviewValues(),applicability:app()},{op:'finding.add',target:{review:'other',id:'new-finding'},values:findingValues()},{op:'finding.add',target:{review:'design-review',id:'new-finding'},values:findingValues()}],[],true);assert.equal(r.status,'saved',JSON.stringify(r));});
+test('TG-05 adds, sets and records distinguish absent and existing targets', (t) => {
+  const root = rootFor(t);
+  assert.equal(
+    mutate(root, {
+      op: 'work.add',
+      target: { id: 'work-1' },
+      values: values(f.change.work[0], ['status', 'owner', 'requirement_refs']),
+    }).errors[0].code,
+    'target-exists',
+  );
+  assert.equal(
+    mutate(root, { op: 'work.set', target: { id: 'absent' }, values: { status: 'pending' } })
+      .errors[0].code,
+    'target-not-found',
+  );
+  assert.equal(
+    mutate(root, {
+      op: 'work.add',
+      target: { id: 'new-work' },
+      values: values(f.change.work[0], ['status', 'owner', 'requirement_refs']),
+    }).status,
+    'saved',
+  );
+  assert.equal(
+    mutate(root, {
+      op: 'applicability.set',
+      target: { path: prefix + 'evidence.json' },
+      values: { ...app(), value: 'stale' },
+    }).status,
+    'saved',
+  );
+  assert.equal(
+    record(root, mp).applicability.find((a) => a.path === prefix + 'evidence.json').value,
+    'stale',
+  );
+});
 
-test('TG-05 details carry identities and body edits preserve neighboring JSON tokens',t=>{const root=rootFor(t),path=prefix+'reviews/design-review.json',old=inspect(root).snapshot.records.find(r=>r.path===path).content;const body='Unicode α 😀\nQuotes " and slash \\';const r=mutate(root,{op:'review.record',target:{id:'design-review'},values:{...reviewValues(),summary:body}},['--details']);assert.equal(r.status,'saved',JSON.stringify(r));assert.equal(r.details.included,true);assert.ok(r.details.files.every(x=>/^sha256:/.test(x.identity)));assert.equal(record(root,path).summary,body);assert.equal(inspect(root).snapshot.records.find(r=>r.path===path).content,old.replace(JSON.stringify(f.review.summary),JSON.stringify(body)));});
+test('TG-05 overlapping assignments reject and disjoint fields compose', (t) => {
+  const root = rootFor(t);
+  const work = { op: 'work.set', target: { id: 'work-1' }, values: { status: 'pending' } };
+  const valid = mutate(
+    root,
+    [work, { ...work, values: { requirement_refs: ['explicit'] } }],
+    [],
+    true,
+  );
+  assert.equal(valid.status, 'saved');
+  const duplicates = [
+    [
+      { op: 'blocker.add', target: { id: 'new' }, values: concernValues() },
+      { op: 'blocker.add', target: { id: 'new' }, values: concernValues() },
+    ],
+    [
+      {
+        op: 'evidence.record',
+        target: { id: 'check-1' },
+        values: values(f.evidence.checks[0], [
+          'actor',
+          'subjects',
+          'result',
+          'procedure',
+          'summary',
+        ]),
+        applicability: app(),
+      },
+      { op: 'applicability.set', target: { path: prefix + 'evidence.json' }, values: app() },
+    ],
+    [
+      {
+        op: 'decision.record',
+        target: { id: 'new-a' },
+        values: {
+          actor: f.change.activity.owner,
+          subjects: [],
+          source_refs: [],
+          rationale: 'A',
+          body: 'body',
+        },
+      },
+      {
+        op: 'decision.record',
+        target: { id: 'new-b' },
+        values: {
+          actor: f.change.activity.owner,
+          subjects: [],
+          source_refs: [],
+          rationale: 'B',
+          body: 'body',
+        },
+      },
+    ],
+  ];
+  for (const ops of duplicates) {
+    const before = inspect(root).revision;
+    assert.equal(mutate(root, ops, [], true).errors[0].code, 'overlapping-operation');
+    assert.equal(inspect(root).revision, before);
+  }
+});
 
-test('TG-05 every mutable closed vocabulary rejects unknown_value',t=>{const root=rootFor(t),before=inspect(root).revision;const validVerify=values(f.verify,['verifier','subjects','evidence_refs','review_refs','outcome','summary','assessment_scope','rationale','limitations','changes']);assert.equal(mutate(root,{op:'verify.record',target:{},values:validVerify},['--dry-run']).status,'valid');for(const operation of [{op:'work.set',target:{id:'work-1'},values:{status:'unknown_value'}},{op:'activity.set',target:{},values:{...f.change.activity,stage:'unknown_value'}},{op:'review.record',target:{id:'design-review'},values:{...reviewValues(),judgment:'unknown_value'}},{op:'evidence.record',target:{id:'check-1'},values:{...values(f.evidence.checks[0],['actor','subjects','result','procedure','summary']),result:'unknown_value'}},{op:'applicability.set',target:{path:prefix+'evidence.json'},values:{...app(),value:'unknown_value'}},{op:'blocker.set',target:{id:'blocker-1'},values:{state:'unknown_value',resolution:null}},{op:'verify.record',target:{},values:{...validVerify,outcome:'unknown_value'}}]){const r=mutate(root,operation);assert.equal(r.status,'rejected',operation.op);}assert.equal(inspect(root).revision,before);});
+test('TG-05 required blocker origin basis is explicit and immutable on every targeted path', (t) => {
+  const root = rootFor(t);
+  for (const op of ['blocker.set']) {
+    const target = op.startsWith('finding')
+      ? { review: 'design-review', id: 'finding-1' }
+      : { id: 'blocker-1' };
+    for (const values of [{ origin: null }, { basis: null }])
+      assert.equal(mutate(root, { op, target, values }).errors[0].code, 'immutable-origin');
+  }
+  for (const basis of [undefined, null]) {
+    const v = concernValues();
+    if (basis === undefined) delete v.basis;
+    else v.basis = basis;
+    assert.equal(
+      mutate(root, { op: 'blocker.add', target: { id: 'new' }, values: v }).status,
+      'rejected',
+    );
+  }
+  const r = mutate(root, {
+    op: 'finding.set',
+    target: { review: 'design-review', id: 'finding-1' },
+    values: { state: 'open' },
+  });
+  assert.equal(r.errors[0].field, 'resolution');
+});
 
-test('TG-05 adds, sets and records distinguish absent and existing targets',t=>{const root=rootFor(t);assert.equal(mutate(root,{op:'work.add',target:{id:'work-1'},values:values(f.change.work[0],['status','owner','requirement_refs'])}).errors[0].code,'target-exists');assert.equal(mutate(root,{op:'work.set',target:{id:'absent'},values:{status:'pending'}}).errors[0].code,'target-not-found');assert.equal(mutate(root,{op:'work.add',target:{id:'new-work'},values:values(f.change.work[0],['status','owner','requirement_refs'])}).status,'saved');assert.equal(mutate(root,{op:'applicability.set',target:{path:prefix+'evidence.json'},values:{...app(),value:'stale'}}).status,'saved');assert.equal(record(root,mp).applicability.find(a=>a.path===prefix+'evidence.json').value,'stale');});
+test('TG-05 combined references resolve after construction, invalid references publish nothing', (t) => {
+  const root = rootFor(t);
+  const evidence = {
+    op: 'evidence.record',
+    target: { id: 'combined' },
+    values: values(f.evidence.checks[0], ['actor', 'subjects', 'result', 'procedure', 'summary']),
+  };
+  const close = {
+    op: 'blocker.set',
+    target: { id: 'blocker-1' },
+    values: {
+      state: 'resolved',
+      resolution: {
+        actor: f.change.blockers[0].reporter,
+        rationale: 'Explicit decision',
+        evidence_refs: [{ path: prefix + 'evidence.json', id: 'combined' }],
+      },
+    },
+  };
+  assert.equal(mutate(root, [close, evidence], [], true).status, 'saved');
+  const before = inspect(root).revision;
+  close.values.resolution.evidence_refs[0].id = 'absent';
+  assert.equal(
+    mutate(
+      root,
+      [{ op: 'work.set', target: { id: 'work-1' }, values: { status: 'pending' } }, close],
+      [],
+      true,
+    ).status,
+    'rejected',
+  );
+  assert.equal(inspect(root).revision, before);
+});
 
-test('TG-05 overlapping assignments reject and disjoint fields compose',t=>{const root=rootFor(t);const work={op:'work.set',target:{id:'work-1'},values:{status:'pending'}};const valid=mutate(root,[work,{...work,values:{requirement_refs:['explicit']}}],[],true);assert.equal(valid.status,'saved');const duplicates=[
- [{op:'blocker.add',target:{id:'new'},values:concernValues()},{op:'blocker.add',target:{id:'new'},values:concernValues()}],
- [{op:'evidence.record',target:{id:'check-1'},values:values(f.evidence.checks[0],['actor','subjects','result','procedure','summary']),applicability:app()},{op:'applicability.set',target:{path:prefix+'evidence.json'},values:app()}],
- [{op:'decision.record',target:{id:'new-a'},values:{actor:f.change.activity.owner,subjects:[],source_refs:[],rationale:'A',body:'body'}},{op:'decision.record',target:{id:'new-b'},values:{actor:f.change.activity.owner,subjects:[],source_refs:[],rationale:'B',body:'body'}}]
- ];for(const ops of duplicates){const before=inspect(root).revision;assert.equal(mutate(root,ops,[],true).errors[0].code,'overlapping-operation');assert.equal(inspect(root).revision,before);}});
+test('TG-05 linking requires the exact actor-declared basis and preserves historical subjects', async (t) => {
+  const { digest } = await import('../dist/lib/record-store-files.js');
+  const root = rootFor(t),
+    subject = { path: 'new-subject', identity: digest('A') };
+  writeFileSync(join(root, subject.path), 'A');
+  const review = record(root, prefix + 'reviews/design-review.json');
+  for (const target of [
+    { kind: 'proposal' },
+    { kind: 'plan' },
+    { kind: 'model', id: 'new-model' },
+  ]) {
+    const op = { op: 'change.link', target, values: { subject } };
+    assert.equal(mutate(root, op).errors[0].field, 'reads');
+    assert.equal(mutate(root, op, [], false, { reads: [subject] }).status, 'saved');
+  }
+  assert.deepEqual(record(root, prefix + 'reviews/design-review.json'), review);
+  writeFileSync(join(root, subject.path), 'B');
+  const before = inspect(root).revision;
+  assert.equal(
+    mutate(
+      root,
+      { op: 'change.link', target: { kind: 'proposal' }, values: { subject } },
+      [],
+      false,
+      { reads: [subject] },
+    ).status,
+    'conflict',
+  );
+  assert.equal(inspect(root).revision, before);
+});
 
-test('TG-05 required blocker origin basis is explicit and immutable on every targeted path',t=>{const root=rootFor(t);for(const op of ['blocker.set']){const target=op.startsWith('finding')?{review:'design-review',id:'finding-1'}:{id:'blocker-1'};for(const values of [{origin:null},{basis:null}])assert.equal(mutate(root,{op,target,values}).errors[0].code,'immutable-origin');}for(const basis of [undefined,null]){const v=concernValues();if(basis===undefined)delete v.basis;else v.basis=basis;assert.equal(mutate(root,{op:'blocker.add',target:{id:'new'},values:v}).status,'rejected');}const r=mutate(root,{op:'finding.set',target:{review:'design-review',id:'finding-1'},values:{state:'open'}});assert.equal(r.errors[0].field,'resolution');});
+test('TG-05 missing registered content is not initialized and unregistered bytes are never overwritten', (t) => {
+  const root = rootFor(t),
+    path = prefix + 'evidence.json',
+    op = {
+      op: 'evidence.record',
+      target: { id: 'new' },
+      values: values(f.evidence.checks[0], ['actor', 'subjects', 'result', 'procedure', 'summary']),
+    };
+  unlinkSync(join(root, path));
+  const broken = mutate(root, op);
+  assert.equal(broken.errors[0].code, 'broken-reference');
+  assert.ok(broken.observation_summary.by_code['missing-content']);
+  assert.equal(existsSync(join(root, path)), false);
+  const unexpected = prefix + 'reviews/unregistered.json';
+  writeFileSync(join(root, unexpected), 'Unregistered bytes\n');
+  assert.equal(
+    mutate(root, {
+      op: 'review.record',
+      target: { id: 'unregistered' },
+      values: reviewValues(),
+      applicability: app(),
+    }).status,
+    'rejected',
+  );
+  assert.equal(readFileSync(join(root, unexpected), 'utf8'), 'Unregistered bytes\n');
+});
 
-test('TG-05 combined references resolve after construction, invalid references publish nothing',t=>{const root=rootFor(t);const evidence={op:'evidence.record',target:{id:'combined'},values:values(f.evidence.checks[0],['actor','subjects','result','procedure','summary'])};const close={op:'blocker.set',target:{id:'blocker-1'},values:{state:'resolved',resolution:{actor:f.change.blockers[0].reporter,rationale:'Explicit decision',evidence_refs:[{path:prefix+'evidence.json',id:'combined'}]}}};assert.equal(mutate(root,[close,evidence],[],true).status,'saved');const before=inspect(root).revision;close.values.resolution.evidence_refs[0].id='absent';assert.equal(mutate(root,[{op:'work.set',target:{id:'work-1'},values:{status:'pending'}},close],[],true).status,'rejected');assert.equal(inspect(root).revision,before);});
+test('TG-05 new supporting records require explicit applicability and shared narrative', (t) => {
+  const root = rootFor(t, false);
+  assert.equal(
+    createStore(root, {
+      ...values(f.change, ['proposal', 'models', 'activity', 'plan', 'work']),
+      blockers: [],
+    }).status,
+    'saved',
+  );
+  const op = {
+    op: 'decision.record',
+    target: { id: 'first' },
+    values: {
+      actor: f.change.activity.owner,
+      subjects: [],
+      rationale: 'Decision',
+      source_refs: [],
+    },
+  };
+  assert.equal(mutate(root, op).errors[0].field, 'applicability');
+  op.applicability = app();
+  assert.equal(mutate(root, op).errors[0].field, 'body');
+  assert.equal(record(root, mp).records.length, 0);
+});
 
-test('TG-05 linking requires the exact actor-declared basis and preserves historical subjects',async t=>{const {digest}=await import('../dist/lib/record-store-files.js');const root=rootFor(t),subject={path:'new-subject',identity:digest('A')};writeFileSync(join(root,subject.path),'A');const review=record(root,prefix+'reviews/design-review.json');for(const target of [{kind:'proposal'},{kind:'plan'},{kind:'model',id:'new-model'}]){const op={op:'change.link',target,values:{subject}};assert.equal(mutate(root,op).errors[0].field,'reads');assert.equal(mutate(root,op,[],false,{reads:[subject]}).status,'saved');}assert.deepEqual(record(root,prefix+'reviews/design-review.json'),review);writeFileSync(join(root,subject.path),'B');const before=inspect(root).revision;assert.equal(mutate(root,{op:'change.link',target:{kind:'proposal'},values:{subject}},[],false,{reads:[subject]}).status,'conflict');assert.equal(inspect(root).revision,before);});
+test('TG-05 public primary subprocess commands bypass historical logging and eligibility', async (t) => {
+  const { spawnSync } = await import('node:child_process');
+  const root = rootFor(t),
+    cli = new URL('../dist/bin/rigorloop.js', import.meta.url).pathname,
+    request = {
+      schema_version: 1,
+      interface: 'targeted-recording-v1',
+      contract: 'rigorloop-records-v3',
+      change_id: 'example',
+      expected_revision: inspect(root).revision,
+      reads: [],
+      operation: { op: 'work.set', target: { id: 'work-1' }, values: { status: 'pending' } },
+    };
+  const args = [
+    'work',
+    'set',
+    'work-1',
+    '--root',
+    root,
+    '--change',
+    'example',
+    '--input',
+    '-',
+    '--format',
+    'json',
+  ];
+  const run = (words) =>
+    spawnSync(process.execPath, [cli, ...words], {
+      encoding: 'utf8',
+      input: encode(request),
+      env: { ...process.env, RIGORLOOP_LOG_LEVEL: 'debug' },
+    });
+  const written = run(args);
+  assert.equal(written.status, 0, written.stderr);
+  assert.equal(JSON.parse(written.stdout).status, 'saved');
+  const retry = run(args);
+  assert.equal(retry.status, 3);
+  assert.equal(JSON.parse(retry.stdout).status, 'conflict');
+  const status = run(['status', '--root', root, '--change', 'example', '--format', 'json']);
+  assert.equal(JSON.parse(status.stdout).record_contract, 'rigorloop-records-v3');
+  assert.equal(JSON.parse(status.stdout).claim, 'storage-only');
+  assert.equal(run(['work', 'set', 'work-1', '--help']).status, 2);
+  assert.equal(run(['work', 'set', '--help']).status, 0);
+});
 
-test('TG-05 missing registered content is not initialized and unregistered bytes are never overwritten',t=>{const root=rootFor(t),path=prefix+'evidence.json',op={op:'evidence.record',target:{id:'new'},values:values(f.evidence.checks[0],['actor','subjects','result','procedure','summary'])};unlinkSync(join(root,path));const broken=mutate(root,op);assert.equal(broken.errors[0].code,'broken-reference');assert.ok(broken.observation_summary.by_code['missing-content']);assert.equal(existsSync(join(root,path)),false);const unexpected=prefix+'reviews/unregistered.json';writeFileSync(join(root,unexpected),'Unregistered bytes\n');assert.equal(mutate(root,{op:'review.record',target:{id:'unregistered'},values:reviewValues(),applicability:app()}).status,'rejected');assert.equal(readFileSync(join(root,unexpected),'utf8'),'Unregistered bytes\n');});
+test('TG-05 producer applicability changes are explicit targets, not bookkeeping or unchanged entries', (t) => {
+  const root = rootFor(t);
+  const op = {
+    op: 'evidence.record',
+    target: { id: 'check-1' },
+    values: values(f.evidence.checks[0], ['actor', 'subjects', 'result', 'procedure', 'summary']),
+    applicability: { ...app(), value: 'stale' },
+  };
+  const r = mutate(root, op, ['--details']);
+  assert.equal(r.status, 'saved');
+  assert.deepEqual(r.changed, [
+    { kind: 'applicability', target: { path: prefix + 'evidence.json' } },
+  ]);
+  const effect = r.details.effects.find(
+    (e) => e.target.path === prefix + 'evidence.json' && e.changed_fields.includes('value'),
+  );
+  assert.equal(effect.bookkeeping, false);
+});
 
-test('TG-05 new supporting records require explicit applicability and shared narrative',t=>{const root=rootFor(t,false);assert.equal(createStore(root,{...values(f.change,['proposal','models','activity','plan','work']),blockers:[]}).status,'saved');const op={op:'decision.record',target:{id:'first'},values:{actor:f.change.activity.owner,subjects:[],rationale:'Decision',source_refs:[]}};assert.equal(mutate(root,op).errors[0].field,'applicability');op.applicability=app();assert.equal(mutate(root,op).errors[0].field,'body');assert.equal(record(root,mp).records.length,0);});
+test('TG-05 primary grammar validates before filesystem or input and help is operation-specific', () => {
+  for (const args of [
+    ['work', 'set', 'x', '--root', 'missing', '--change', 'example', '--input', '-', '--force'],
+    ['batch', '--root', 'missing', '--change', 'example', '--input', '-', '--dry-run', '--dry-run'],
+    ['verify', '--root', 'missing', '--change', 'example', '--input', '-'],
+    [
+      'activity',
+      'set',
+      '--root',
+      'missing',
+      '--change',
+      'example',
+      '--input',
+      '-',
+      '--format',
+      'unknown_value',
+    ],
+  ]) {
+    let read = false;
+    const r = executeRecordingMutationCli(args, {
+      readInput: () => {
+        read = true;
+        throw Error('must not read');
+      },
+    });
+    assert.equal(r.result.errors[0].code, 'invalid-input');
+    assert.equal(read, false);
+  }
+  const help = executeRecordingMutationCli(['work', 'add', '--help']);
+  assert.equal(help.exitCode, 0);
+  assert.match(help.human, /requirement_refs/);
+  assert.doesNotMatch(help.human, /reviewer|evidence_refs|recovery_identity/);
+});
 
+test('TG-05 same-batch source review capture is ordered and later judgment never retargets origin', (t) => {
+  const root = rootFor(t),
+    rv = reviewValues(),
+    basis = {
+      rationale: 'Concern rationale',
+      supporting_judgment: { from_review: 'design-review', rationale: 'Selected judgment' },
+    };
+  const original = record(root, prefix + 'reviews/design-review.json').judgment;
+  const r = mutate(
+    root,
+    [
+      { op: 'blocker.add', target: { id: 'before-review' }, values: { ...concernValues(), basis } },
+      {
+        op: 'review.record',
+        target: { id: 'design-review' },
+        values: { ...rv, judgment: original === 'approved' ? 'changes-requested' : 'approved' },
+      },
+    ],
+    [],
+    true,
+  );
+  assert.equal(r.status, 'saved');
+  assert.equal(
+    record(root, mp).blockers.find((x) => x.id === 'before-review').origin.supporting_judgment
+      .judgment,
+    original,
+  );
+});
 
-test('TG-05 public primary subprocess commands bypass historical logging and eligibility',async t=>{const {spawnSync}=await import('node:child_process');const root=rootFor(t),cli=new URL('../dist/bin/rigorloop.js',import.meta.url).pathname,request={schema_version:1,interface:'targeted-recording-v1',contract:'rigorloop-records-v3',change_id:'example',expected_revision:inspect(root).revision,reads:[],operation:{op:'work.set',target:{id:'work-1'},values:{status:'pending'}}};const args=['work','set','work-1','--root',root,'--change','example','--input','-','--format','json'];const run=words=>spawnSync(process.execPath,[cli,...words],{encoding:'utf8',input:encode(request),env:{...process.env,RIGORLOOP_LOG_LEVEL:'debug'}});const written=run(args);assert.equal(written.status,0,written.stderr);assert.equal(JSON.parse(written.stdout).status,'saved');const retry=run(args);assert.equal(retry.status,3);assert.equal(JSON.parse(retry.stdout).status,'conflict');const status=run(['status','--root',root,'--change','example','--format','json']);assert.equal(JSON.parse(status.stdout).record_contract,'rigorloop-records-v3');assert.equal(JSON.parse(status.stdout).claim,'storage-only');assert.equal(run(['work','set','work-1','--help']).status,2);assert.equal(run(['work','set','--help']).status,0);});
+test('TG-05 stale preview and lost-result retries conflict before no-op; creation cannot select v1', (t) => {
+  const root = rootFor(t),
+    revision = inspect(root).revision,
+    op = { op: 'work.set', target: { id: 'work-1' }, values: { status: 'pending' } };
+  assert.equal(mutate(root, op, ['--dry-run']).status, 'valid');
+  assert.equal(mutate(root, op).status, 'saved');
+  assert.equal(mutate(root, op, [], false, { expected_revision: revision }).status, 'conflict');
+  assert.equal(mutate(root, op).status, 'unchanged');
+  const absent = rootFor(t, false);
+  assert.equal(
+    mutate(
+      absent,
+      {
+        op: 'change.create',
+        target: {},
+        values: {
+          ...values(f.change, ['proposal', 'models', 'activity', 'plan', 'work']),
+          blockers: [],
+        },
+      },
+      [],
+      false,
+      { contract: 'explicit-recording-v1' },
+    ).status,
+    'rejected',
+  );
+  assert.equal(existsSync(join(absent, prefix)), false);
+});
 
-test('TG-05 producer applicability changes are explicit targets, not bookkeeping or unchanged entries',t=>{const root=rootFor(t);const op={op:'evidence.record',target:{id:'check-1'},values:values(f.evidence.checks[0],['actor','subjects','result','procedure','summary']),applicability:{...app(),value:'stale'}};const r=mutate(root,op,['--details']);assert.equal(r.status,'saved');assert.deepEqual(r.changed,[{kind:'applicability',target:{path:prefix+'evidence.json'}}]);const effect=r.details.effects.find(e=>e.target.path===prefix+'evidence.json'&&e.changed_fields.includes('value'));assert.equal(effect.bookkeeping,false);});
+test('TG-05 ID namespace collisions reject atomically', (t) => {
+  const root = rootFor(t),
+    before = inspect(root).revision;
+  const r = mutate(root, {
+    op: 'finding.add',
+    target: { review: 'design-review', id: 'design-review' },
+    values: values(f.review.findings[0], [
+      'reporter',
+      'owner',
+      'subjects',
+      'evidence',
+      'required_outcome',
+      'state',
+      'resolution',
+    ]),
+  });
+  assert.equal(r.status, 'rejected');
+  assert.equal(inspect(root).revision, before);
+});
 
-test('TG-05 primary grammar validates before filesystem or input and help is operation-specific',()=>{for(const args of [['work','set','x','--root','missing','--change','example','--input','-','--force'],['batch','--root','missing','--change','example','--input','-','--dry-run','--dry-run'],['verify','--root','missing','--change','example','--input','-'],['activity','set','--root','missing','--change','example','--input','-','--format','unknown_value']]){let read=false;const r=executeRecordingMutationCli(args,{readInput:()=>{read=true;throw Error('must not read');}});assert.equal(r.result.errors[0].code,'invalid-input');assert.equal(read,false);}const help=executeRecordingMutationCli(['work','add','--help']);assert.equal(help.exitCode,0);assert.match(help.human,/requirement_refs/);assert.doesNotMatch(help.human,/reviewer|evidence_refs|recovery_identity/);});
+test('TG-05 nested missing actor decisions identify the required field', (t) => {
+  const root = rootFor(t),
+    op = { op: 'blocker.add', target: { id: 'new' }, values: concernValues() };
+  delete op.values.basis.supporting_judgment;
+  const r = mutate(root, op);
+  assert.equal(r.errors[0].code, 'missing-input');
+  assert.equal(r.errors[0].field, 'basis.supporting_judgment');
+});
 
-test('TG-05 same-batch source review capture is ordered and later judgment never retargets origin',t=>{const root=rootFor(t),rv=reviewValues(),basis={rationale:'Concern rationale',supporting_judgment:{from_review:'design-review',rationale:'Selected judgment'}};const original=record(root,prefix+'reviews/design-review.json').judgment;const r=mutate(root,[{op:'blocker.add',target:{id:'before-review'},values:{...concernValues(),basis}},{op:'review.record',target:{id:'design-review'},values:{...rv,judgment:original==='approved'?'changes-requested':'approved'}}],[],true);assert.equal(r.status,'saved');assert.equal(record(root,mp).blockers.find(x=>x.id==='before-review').origin.supporting_judgment.judgment,original);});
+for (const phase of ['after-preparation', 'after-replace:0', 'before-commit', 'after-commit'])
+  test(`TG-05 targeted publication ${phase} interruption recovers exact constructed bytes`, (t) => {
+    const root = rootFor(t),
+      snapshot = inspect(root),
+      operation = { op: 'work.set', target: { id: 'work-1' }, values: { status: 'pending' } },
+      request = {
+        schema_version: 1,
+        interface: 'targeted-recording-v1',
+        contract: 'rigorloop-records-v3',
+        change_id: 'example',
+        expected_revision: snapshot.revision,
+        reads: [],
+        operation,
+      };
+    const args = [
+      'work',
+      'set',
+      'work-1',
+      '--root',
+      root,
+      '--change',
+      'example',
+      '--input',
+      '-',
+      '--format',
+      'json',
+    ];
+    const output = executeRecordingMutationCli(args, {
+      input: encode(request),
+      fault: (p) => (p === phase ? 'crash' : undefined),
+    });
+    assert.equal(output.result.status, 'recovery-required');
+    assert.ok(output.result.transaction);
+    assert.equal(output.result.changed, undefined);
+    const recovered = executeRecordStore({
+      root,
+      changeId: 'example',
+      operation: 'recover',
+      transaction: output.result.transaction.id,
+      expectedRecovery: output.result.transaction.recovery_identity,
+      action: 'complete',
+    });
+    assert.equal(recovered.status, 'recovered');
+    assert.equal(record(root, mp).work[0].status, 'pending');
+    assert.equal(
+      executeRecordingMutationCli(args, { input: encode(request) }).result.status,
+      'conflict',
+    );
+  });
 
-test('TG-05 stale preview and lost-result retries conflict before no-op; creation cannot select v1',t=>{const root=rootFor(t),revision=inspect(root).revision,op={op:'work.set',target:{id:'work-1'},values:{status:'pending'}};assert.equal(mutate(root,op,['--dry-run']).status,'valid');assert.equal(mutate(root,op).status,'saved');assert.equal(mutate(root,op,[],false,{expected_revision:revision}).status,'conflict');assert.equal(mutate(root,op).status,'unchanged');const absent=rootFor(t,false);assert.equal(mutate(absent,{op:'change.create',target:{},values:{...values(f.change,['proposal','models','activity','plan','work']),blockers:[]}},[],false,{contract:'explicit-recording-v1'}).status,'rejected');assert.equal(existsSync(join(absent,prefix)),false);});
+test('TG-05 preview creates no locks and invalid preparation leaves authoritative bytes unchanged', (t) => {
+  const root = rootFor(t),
+    before = inspect(root),
+    operation = { op: 'work.set', target: { id: 'work-1' }, values: { status: 'pending' } },
+    request = {
+      schema_version: 1,
+      interface: 'targeted-recording-v1',
+      contract: 'rigorloop-records-v3',
+      change_id: 'example',
+      expected_revision: before.revision,
+      reads: [],
+      operation,
+    };
+  const args = [
+    'work',
+    'set',
+    'work-1',
+    '--root',
+    root,
+    '--change',
+    'example',
+    '--input',
+    '-',
+    '--format',
+    'json',
+  ];
+  const epoch = join(root, '.rigorloop/record-store/example/epoch'),
+    old = readFileSync(epoch);
+  assert.equal(
+    executeRecordingMutationCli([...args, '--dry-run'], { input: encode(request) }).result.status,
+    'valid',
+  );
+  assert.deepEqual(readFileSync(epoch), old);
+  const rejected = executeRecordingMutationCli(args, {
+    input: encode(request),
+    fault: (p) => (p === 'before-result' ? 'fail' : undefined),
+  });
+  assert.equal(rejected.result.status, 'rejected');
+  assert.equal(inspect(root).revision, before.revision);
+  assert.equal(existsSync(join(root, '.rigorloop/record-store/example/lock')), false);
+});
 
-test('TG-05 ID namespace collisions reject atomically',t=>{const root=rootFor(t),before=inspect(root).revision;const r=mutate(root,{op:'finding.add',target:{review:'design-review',id:'design-review'},values:values(f.review.findings[0],['reporter','owner','subjects','evidence','required_outcome','state','resolution'])});assert.equal(r.status,'rejected');assert.equal(inspect(root).revision,before);});
-
-test('TG-05 nested missing actor decisions identify the required field',t=>{const root=rootFor(t),op={op:'blocker.add',target:{id:'new'},values:concernValues()};delete op.values.basis.supporting_judgment;const r=mutate(root,op);assert.equal(r.errors[0].code,'missing-input');assert.equal(r.errors[0].field,'basis.supporting_judgment');});
-
-for(const phase of ['after-preparation','after-replace:0','before-commit','after-commit'])test(`TG-05 targeted publication ${phase} interruption recovers exact constructed bytes`,t=>{const root=rootFor(t),snapshot=inspect(root),operation={op:'work.set',target:{id:'work-1'},values:{status:'pending'}},request={schema_version:1,interface:'targeted-recording-v1',contract:'rigorloop-records-v3',change_id:'example',expected_revision:snapshot.revision,reads:[],operation};const args=['work','set','work-1','--root',root,'--change','example','--input','-','--format','json'];const output=executeRecordingMutationCli(args,{input:encode(request),fault:p=>p===phase?'crash':undefined});assert.equal(output.result.status,'recovery-required');assert.ok(output.result.transaction);assert.equal(output.result.changed,undefined);const recovered=executeRecordStore({root,changeId:'example',operation:'recover',transaction:output.result.transaction.id,expectedRecovery:output.result.transaction.recovery_identity,action:'complete'});assert.equal(recovered.status,'recovered');assert.equal(record(root,mp).work[0].status,'pending');assert.equal(executeRecordingMutationCli(args,{input:encode(request)}).result.status,'conflict');});
-
-test('TG-05 preview creates no locks and invalid preparation leaves authoritative bytes unchanged',t=>{const root=rootFor(t),before=inspect(root),operation={op:'work.set',target:{id:'work-1'},values:{status:'pending'}},request={schema_version:1,interface:'targeted-recording-v1',contract:'rigorloop-records-v3',change_id:'example',expected_revision:before.revision,reads:[],operation};const args=['work','set','work-1','--root',root,'--change','example','--input','-','--format','json'];const epoch=join(root,'.rigorloop/record-store/example/epoch'),old=readFileSync(epoch);assert.equal(executeRecordingMutationCli([...args,'--dry-run'],{input:encode(request)}).result.status,'valid');assert.deepEqual(readFileSync(epoch),old);const rejected=executeRecordingMutationCli(args,{input:encode(request),fault:p=>p==='before-result'?'fail':undefined});assert.equal(rejected.result.status,'rejected');assert.equal(inspect(root).revision,before.revision);assert.equal(existsSync(join(root,'.rigorloop/record-store/example/lock')),false);});
-
-test('TG-05 operation help describes version-selected stored inputs',()=>{for(const family of ['finding','blocker']){const h=executeRecordingMutationCli([family,'add','--help']).human;assert.doesNotMatch(h,/explicit-recording-v1/);assert.match(h,/rigorloop-records-v3.*required_outcome/);assert.match(h,family==='finding'?/finding-id --review review-id/:/entry-id/);}const h=executeRecordingMutationCli(['change','create','--help']).human;assert.match(h,/requires rigorloop-records-v3/);assert.doesNotMatch(executeRecordingMutationCli(['review','record','--help']).human,/V1 Markdown/);});
+test('TG-05 operation help describes version-selected stored inputs', () => {
+  for (const family of ['finding', 'blocker']) {
+    const h = executeRecordingMutationCli([family, 'add', '--help']).human;
+    assert.doesNotMatch(h, /explicit-recording-v1/);
+    assert.match(h, /rigorloop-records-v3.*required_outcome/);
+    assert.match(h, family === 'finding' ? /finding-id --review review-id/ : /entry-id/);
+  }
+  const h = executeRecordingMutationCli(['change', 'create', '--help']).human;
+  assert.match(h, /requires rigorloop-records-v3/);
+  assert.doesNotMatch(
+    executeRecordingMutationCli(['review', 'record', '--help']).human,
+    /V1 Markdown/,
+  );
+});

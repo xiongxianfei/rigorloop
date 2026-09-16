@@ -1,0 +1,165 @@
+{
+  "assessment_scope": "Formal independent first-pass milestone Code Review of approved plan M1, comparing initial approved-package commit af82f568 with the current working tree. The 16 exact source subjects cover the eight extracted behavior modules, two direct CLI/guidance classes, fixture and guidance support, aggregate, selector classifier, routing regression and contributor navigation. Authority is current approved design-review for Validation model validation and current approved delivery-review for the sole primary plan. All M1 behavior groups and protection dispositions are assessed; the 149 other aggregate cases are preserved pending their separately allocated M2 assessment. M2–M8, final whole-change review, final verification and PR readiness are outside this milestone judgment.",
+  "change_id": "2026-09-16-test-design-and-suite-organization",
+  "contributors": [
+    {
+      "id": "codex-root",
+      "role": "implement"
+    }
+  ],
+  "findings": [
+    {
+      "evidence": "Severity: minor (required). Location: tests/skill/skill_fixture_helpers.py:164–275, with consumers in metadata, resource, asset, CI-maintenance and Project Map scenarios. The approved Validation Design line 234 requires an assertion helper to receive observable results and independently justified expectations and not quietly perform the tested operation. assert_fixture_passes/assert_fixture_fails invoke run_validator; assert_ci_maintenance_fixture_fails and assert_resource_integrity_skill_fails additionally create owned temporary fixtures and apply the supplied variation; both assert_project_map_* routines similarly construct/mutate inputs and execute component validation. Consequently scenarios such as test_missing_name_fails collapse the tested action into assert_* and the new ordinary helper extraction preserves the old mixed source responsibilities. Passing tests demonstrate retained behavior, but do not fulfill TEST-SR-19/20 and the approved scenario/helper dependency rule.",
+      "id": "m1-cr-01",
+      "owner": {
+        "id": "codex-root",
+        "role": "implement"
+      },
+      "reporter": {
+        "id": "code-reviewer",
+        "role": "review"
+      },
+      "required_outcome": "Make each affected scenario's input/defining mutation and tested validator invocation explicit. Limit assertion helpers to accepting already observed CompletedProcess/error results plus independent expected diagnostics; retain fresh input builders or explicit resource-lifecycle helpers where reuse is useful. Preserve each existing meaningful case/parameter, real subprocess or component observation boundary, failure diagnostic, cleanup and aggregate/rerun identity. Safe resolution path: author the bounded helper/consumer correction without product or Design changes, record affected discovery and negative-observation proof plus relevant regression results, and return the changed exact subjects to this independent reviewer for disposition. needs-decision rationale: none; codex-root/implement owns the correction under the current approved Design.",
+      "resolution": {
+        "actor": {
+          "id": "code-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [
+          {
+            "id": "m1-implementation",
+            "path": "docs/changes/2026-09-16-test-design-and-suite-organization/evidence.json"
+          },
+          {
+            "id": "m1-validation",
+            "path": "docs/changes/2026-09-16-test-design-and-suite-organization/evidence.json"
+          }
+        ],
+        "rationale": "The original independent reporter inspected the six corrected sources at commit 677f566d6ccb4c6e1d67cd7e717f1a60c7aaea7d. Cases now visibly own fixed inputs or temporary construction/mutation, invoke the real command/component operation and pass already observed results to pure assertions. The helper has no consuming test-module import. Independent comparison retained all 97 affected test names, 39 fixed input/diagnostic pairs, 14 defining mutation/diagnostic pairs, 13 dynamic resource invocations, all 23 effective resource scenario configurations and seven unchanged builder/operation functions; defining mutation bodies remain unchanged. Current exact-subject m1-implementation/m1-validation and inspected final logs show full 300-case direct and isolated selected execution with required consumers, preserved discovery and intended diagnostics. The approved source-responsibility requirement is therefore met without lost protection or a new product decision. Original finding evidence/subjects and first-pass judgment remain unchanged; this disposition and the separate corrected review supply the current assessment."
+      },
+      "state": "resolved",
+      "subjects": [
+        {
+          "identity": "sha256:655a90c86440ab08e20662c21f7df4e811d61e166c273d76ffdc181b67d8a8a1",
+          "path": "tests/skill/skill_asset_tests.py"
+        },
+        {
+          "identity": "sha256:ff84a3a0d9de610879a25c15025320c0c6787154e08dd82e854c1a1c4d6f7904",
+          "path": "tests/skill/skill_ci_contract_tests.py"
+        },
+        {
+          "identity": "sha256:5c735a742b94630cd17b027e9bf0967046cd7d2aee13493dab20eeb77be76a30",
+          "path": "tests/skill/skill_fixture_helpers.py"
+        },
+        {
+          "identity": "sha256:e3e72813a2a24ba413e45b691fb9aafdc8993275eec70554aa7f7484cdfca526",
+          "path": "tests/skill/skill_metadata_tests.py"
+        },
+        {
+          "identity": "sha256:9f61edfc9229a9752f65dde79e267a9c683736de226377d1c3ddcc24799c6714",
+          "path": "tests/skill/skill_project_map_tests.py"
+        },
+        {
+          "identity": "sha256:e16ac0607436c526bc33ca87a32f2a318706d7bc63e46ad6bfa1f06f8d56545e",
+          "path": "tests/skill/skill_resource_tests.py"
+        }
+      ]
+    }
+  ],
+  "id": "m1-code-review",
+  "independence_basis": "The M1 implementation was authored by /root, recorded as codex-root/implement. Separate agent /root/proposal_reviewer performs this fresh assessment as code-reviewer/review. This reviewer previously assessed the proposal, Design and delivery package but did not author or edit those engineering subjects or any M1 implementation. The reviewer inspected the actual af82f568-to-working-tree diff, current approved authority, moved scenario/helper source and validation logs, independently compared original test bodies, and selected the judgment. The author supplied validation and recording context, not the review outcome. No implementation correction occurred before recording this first-pass finding.",
+  "judgment": "changes-requested",
+  "limitations": [
+    "This is M1 first-pass assessment only. It does not close M1, advance work/activity, approve M2–M8, substitute for the fresh final whole-change Code Review or Verify, or claim branch/PR readiness.",
+    "Runtime execution was performed by the author; the reviewer inspected the actual bounded log results and source rather than rerunning the full suites. The author's durable M1 validation/disposition record is to be appended after this review write to avoid concurrent record mutation; clean rereview must inspect that handoff and current exact implementation basis.",
+    "The before/after counts and AST comparison are preservation checks, not standalone semantic adequacy proof. Group-level protection was independently considered above. The remaining 149 Skill cases receive their complete protection/disposition assessment in M2; their unchanged bodies and aggregate execution are only compatibility evidence here.",
+    "Any correction changes the reviewed source basis. Reassess affected fixture/action/assertion paths, actual discovery and intended negative observations before resolving the finding; reuse unaffected proof only with an affirmative unchanged relevant basis. Full passing first-subject logs do not approve the corrected subject."
+  ],
+  "rationale": [
+    "Spec alignment: concern. The approved Validation model and M1 require composition around cohesive behavior with direct TestCase subclasses, fresh factories and assertions over observed results. The ten direct groups replace the mixed SkillValidatorFixtureTests inheritance while preserving ordinary unittest collection. However skill_fixture_helpers.py lines 164–275 retain compound assert_* routines that run the tested operation and sometimes own setup/mutation. This is a concrete mismatch with the Assertion helper row at Validation line 234 and the scenario dependency graph, not a file-size preference. Required finding m1-cr-01 has a bounded implementation resolution.",
+    "Test coverage: pass for preservation, with the recorded structural correction required. Metadata's 23 cases retain valid inputs and exact intended metadata/readability rejections; Resource Map's 23 retain COPY/READ/RUN classes, absent resources, traversal/absolute paths and instruction-boundary alternatives; Assets' 31 retain metadata, placeholders, exact skeleton/field expectations, forbidden policy additions and generated/adapter presence observations. Their independently written expected messages and supplied invalid inputs still detect the intended failures. None is retired or consolidated merely to reduce size; relocated scenarios are retained with helper-role refinement.",
+    "Test coverage, remaining M1 groups: pass for preservation. Canonical guidance's 32 and inherited guidance's 3 preserve structural drift guards for cross-skill contracts and maintain their explicit nonsemantic claim; installed placement's 9 retain compliant and missing/wrong recording/navigation inputs; portability's 6 retain controlled detector examples plus current published surface checks; Project Map's 12 retain controlled contract fixtures, canonical-copy faults, representative outputs and ownership checks; CI input's 8 retain the real canonical validator and individually mutated schema/resource/risk/review/repair conditions; CLI's 4 retain actual subprocess observations for acceptance, runtime independence, missing-target failure and multiple targets. These are justified retained protections at their actual observations; no structural text check is promoted to semantic skill approval and no generated-presence check is promoted to packed installation proof.",
+    "Edge cases: pass for unchanged M1 behavior. The changed source retains meaningful subtest/parameter bodies and the inherited CLI/guidance methods. Independent AST comparison accounted for all 267 previously directly declared test bodies in the aggregate modulo explicit helper-call composition, with no remaining mismatches; original inherited cases remain in their own modules. This corroborates body preservation, not adequacy by count. Retained negative cases exercise their specific malformed input and diagnostic, including path containment, missing/unknown metadata, forbidden reference classes, asset labels and stale identifiers. No new timing, retry or remote behavior is introduced.",
+    "Error handling: pass for preserved observations. Real validator invocations retain return codes and diagnostic output; component contract checks retain independently supplied malformed inputs and expected errors. Temporary tree builders retain fresh roots and their existing context-managed cleanup. The identified compound assertions do not currently swallow product errors or manufacture success; their concern is hidden operation responsibility and scenario composition. Resolution must preserve the same observed failure boundary and diagnostic rather than replacing it with import or collection success.",
+    "Architecture boundaries: concern limited to m1-cr-01. Direct TestCase classes remove borrowed lifecycle/method ownership and separate metadata, resources, assets, installed placement, portability, Project Map, CI input, canonical guidance, CLI and general guidance. Shared guidance assertions and ordinary input builders otherwise have bounded dependencies. The current compound fixture assertion routines retain an obsolete setup/act/assert abstraction under the new helper names. Source responsibility must be reconciled with the approved factory/resource/assertion distinction; no product Design change or new framework is needed.",
+    "Compatibility: pass. The aggregate continues ordinary unittest collection with each class imported once and no alias/load_tests workaround. The author supplied exact old-to-new mapping: every method moved to these ten classes previously collected as SkillValidatorFixtureTests.<same method>. Actual source/catalog caller inspection found no runtime consumer of the old mixed class; existing aggregate invocation remains supported. The ten new paths are classified with the existing Skill and adapter consumers, and the existing routing regression now checks each path against those independent expected checks. The contributor link points to the owning Design rather than a duplicate standard.",
+    "Security/privacy: pass within this source-only test refactor. Product authorization, external service use, package/runtime dependencies, secrets and release behavior are unchanged. Private temporary paths and subprocess text capture retain existing behavior. No credentials, network operation, destructive cleanup, production fallback or new authority are introduced in the changed code.",
+    "Derived artifact currency: pass within the affected scope. No canonical skill, schema, template or generated adapter is authored in M1, and no generated source edit is smuggled into the change. Existing asset and adapter observations remain test obligations. The inspected selected-CI log includes the affected adapter regression consumer. This review does not claim global packed, installed or released artifact currency.",
+    "Unrelated changes: pass. The source diff stays inside M1's mixed Skill class/support extraction and immediately necessary discovery/selection/contributor reconciliation. Other aggregate classes retain their bodies and discovery. The ExplicitRecordingGuidanceTests comment now states its existing structural guard and independent review limit without weakening an assertion. The still-large canonical behavior module is not independently disqualifying: the approved contract has no line-count target.",
+    "Validation evidence: pass for this first subject, with pre-correction limits. Inspected /tmp/rigorloop-suite-organization-work/m1-before.log reports 300 passed; m1-after.log reports 300 passed; m1-focused.log reports 151 passed. The routing-before log shows expected missing-consumer failures for the new module paths; routing-after reports its one focused test passed. m1-selector.log reports all 184 passed. The actual changed-file selected-CI log reports checks passed, including current_records.validate, skills.regression, adapters.regression, guide_system.validate, selector.regression and validation_execution.regression. These results plus preserved body/discovery mapping support existing protection and routing, but cannot satisfy the source-responsibility requirement. They apply to the recorded pre-correction identities and require proportionate reconsideration after changes.",
+    "Review authority and correction ownership: pass. Current approved Design and Delivery records were freshly read with explicit current applicability and their unchanged exact model/plan identities. The source-observation drift against older population evidence is expected from M1 changes; that old population snapshot is not treated as current implementation proof. No necessary owner decision prevents the supported bounded correction. Under the adopted combined-condition rule this adequately assessable required correction yields changes-requested. The implementer owns the fix; this independent reporter owns disposition and rereview."
+  ],
+  "reviewer": {
+    "id": "code-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:4e902690b40cb3ac6c74159915f44d876974431383095727c297acf6aeb4d94e",
+      "path": "CONTRIBUTING.md"
+    },
+    {
+      "identity": "sha256:20ab513c3aa10a4033d6256010be29c077d64c611d0c0f36090b370020fdd8dd",
+      "path": "scripts/lib/validation/validation_selection.py"
+    },
+    {
+      "identity": "sha256:e268a343a8b19f494d7a0c55c6c9b65bf3482bcc90ed5f614864d03a34c6b91a",
+      "path": "tests/engineering/validation/selection_contract_tests.py"
+    },
+    {
+      "identity": "sha256:655a90c86440ab08e20662c21f7df4e811d61e166c273d76ffdc181b67d8a8a1",
+      "path": "tests/skill/skill_asset_tests.py"
+    },
+    {
+      "identity": "sha256:e74e3d7cd76b2c19077e3301ff91695ca7750f2f46e9f69969b3555dfc5f87e0",
+      "path": "tests/skill/skill_canonical_tests.py"
+    },
+    {
+      "identity": "sha256:ff84a3a0d9de610879a25c15025320c0c6787154e08dd82e854c1a1c4d6f7904",
+      "path": "tests/skill/skill_ci_contract_tests.py"
+    },
+    {
+      "identity": "sha256:82334d502f05d097a55d222c7b4cb3c9b7318a0c04e784801e009826bad74009",
+      "path": "tests/skill/skill_cli_tests.py"
+    },
+    {
+      "identity": "sha256:5c735a742b94630cd17b027e9bf0967046cd7d2aee13493dab20eeb77be76a30",
+      "path": "tests/skill/skill_fixture_helpers.py"
+    },
+    {
+      "identity": "sha256:91f2e1b46573e9d21e97963d966b543cb01c9d93adae38f09f7254ade13162fa",
+      "path": "tests/skill/skill_guidance_helpers.py"
+    },
+    {
+      "identity": "sha256:8782a7cecfffc0408620c203952dd3f7f654531afd1d06e169a4830b54c24757",
+      "path": "tests/skill/skill_guidance_tests.py"
+    },
+    {
+      "identity": "sha256:e3e72813a2a24ba413e45b691fb9aafdc8993275eec70554aa7f7484cdfca526",
+      "path": "tests/skill/skill_metadata_tests.py"
+    },
+    {
+      "identity": "sha256:4dbcf8043bcf50816cad6fde9d077efaeb5f4a2c9a131f8fdf2a7bc86bdf98bd",
+      "path": "tests/skill/skill_placement_tests.py"
+    },
+    {
+      "identity": "sha256:89216543ebe761be1ded01814ee4c1105dbc84d2e8647994348c0aab839c4550",
+      "path": "tests/skill/skill_portability_tests.py"
+    },
+    {
+      "identity": "sha256:9f61edfc9229a9752f65dde79e267a9c683736de226377d1c3ddcc24799c6714",
+      "path": "tests/skill/skill_project_map_tests.py"
+    },
+    {
+      "identity": "sha256:e16ac0607436c526bc33ca87a32f2a318706d7bc63e46ad6bfa1f06f8d56545e",
+      "path": "tests/skill/skill_resource_tests.py"
+    },
+    {
+      "identity": "sha256:df22971d85aac90dc94a36cb710adc49ae7cc2b9c727d983ae2fb2c08b617c12",
+      "path": "tests/skill/test-skill-validator.py"
+    }
+  ],
+  "summary": "The M1 behavior groups, direct TestCase composition and same-slice discovery routing preserve the existing Skill protection, but extracted assertion helpers still construct fixtures, apply mutations and invoke the validator. Their role conflicts with the approved test-script contract and requires correction before this milestone can close.",
+  "target": "code"
+}

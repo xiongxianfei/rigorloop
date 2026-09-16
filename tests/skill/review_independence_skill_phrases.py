@@ -1,9 +1,15 @@
-"""Spec-cited phrase sets for review-independence skill guidance tests."""
+"""Structural phrases for the retained optional automated-review method.
+
+Current consumers are Code Review's workflow-managed-automated-review reference
+and Implement's automated-review-correction reference. These immutable inputs
+protect instruction presence; they do not prove reviewer independence at runtime.
+Historical R5/R8 names remain to preserve the existing test interface.
+"""
 
 from __future__ import annotations
 
 
-# Source: specs/review-independence-and-criticality.md R5 plus M3 auto-fix budget handoff guidance.
+# Neutral initial-packet exclusions in both current consumer references.
 R5_FORBIDDEN_INITIAL_PACKET_ITEMS = (
     "author hidden reasoning",
     "author chain-of-thought",
@@ -22,7 +28,7 @@ R5_FORBIDDEN_INITIAL_PACKET_ITEMS = (
 )
 
 
-# Source: specs/review-independence-and-criticality.md R8c.
+# Prior-finding reconciliation categories in the Code Review reference.
 R8D_RECONCILIATION_CATEGORIES = (
     "resolved",
     "still-present",
@@ -33,7 +39,7 @@ R8D_RECONCILIATION_CATEGORIES = (
 )
 
 
-# Source: specs/review-independence-and-criticality.md R8d.
+# Failed-remediation meaning in that same retained method.
 R8D_FAILED_REMEDIATION_REQUIRED_PHRASES = (
     "failed-remediation",
     "claimed or expected to be fixed",

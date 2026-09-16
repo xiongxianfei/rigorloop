@@ -1,7 +1,6 @@
-"""Real Skill validator command observations, mixed into the supported suite.
+"""Real Skill validator command observations in the supported aggregate.
 
-The mixin preserves existing TestCase.method selectors without registering a
-second copy of the cases. Target traps observe PATH dispatch, not every possible
+Direct test classes expose each case once under its behavior owner. Target traps observe PATH dispatch, not every possible
 absolute executable path or external agent behavior.
 """
 import os
@@ -9,6 +8,7 @@ from pathlib import Path
 import subprocess
 import sys
 import tempfile
+import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
 VALIDATOR = ROOT / "scripts/validate-skills.py"
@@ -19,7 +19,7 @@ def run_validator(target):
                           cwd=ROOT, text=True, capture_output=True, check=False)
 
 
-class SkillCliChecks:
+class SkillCliTests(unittest.TestCase):
     def test_gate_a_accepts_structurally_valid_ambiguous_prose(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             skill = Path(temporary) / "ambiguous" / "SKILL.md"

@@ -1,0 +1,637 @@
+{
+  "assessment_scope": "Fresh final whole-change Code Review of d81dfdaffc472c8d9a55152d24bda9e899962c00 against main baseline 1195dfb261176d500e319662e2ffad5429cb63be. Covers the complete 120-path delivered diff, including all 104 engineering paths, governing Design adoption, primary plan, all M1-M8 test populations, retained meaningful variants, fixtures/helpers and direct, selected, native, packed, release and CI interactions. Exact subjects include every changed engineering artifact, every current authored test-source module and the relevant unchanged contracts/callers. Governance records and current individual evidence entries are assessment basis, not mutable engineering subjects. This is the required holistic review after all implementation/corrections, not an aggregation of milestone approvals and not Verify or PR readiness.",
+  "change_id": "2026-09-16-test-design-and-suite-organization",
+  "contributors": [
+    {
+      "id": "codex-root",
+      "role": "implement"
+    }
+  ],
+  "findings": [],
+  "id": "code-review",
+  "independence_basis": "The independent reviewer is the separate nonauthor agent /root/proposal_reviewer. Parent /root authored the proposal, Validation refinement, plan and implementation as codex-root in proposal/design/plan/implement roles; its single contributor identity is listed with the final implementation role. I did not author or correct those engineering subjects. After every milestone and required correction completed, I performed this distinct fresh assessment of the complete final diff and combined source, fixture, discovery, catalog and product-consumer boundaries, with fresh bounded integration proof. Earlier milestone judgments informed scope and historical counterexamples but did not supply this final judgment. Reviewer scratch probes and governed review records are not contributions to the engineering being approved.",
+  "judgment": "approved",
+  "limitations": [
+    "Approval supports the separate Verify gate. It does not establish successful Verify, branch/PR readiness, hosted CI, live publication, external availability or lifecycle completion. Final immutable PR-range execution and exact committed-record validation remain allocated to Verify.",
+    "Large final suite/local/broad results are reused only on their unchanged inspected engineering/environment basis. Fresh reviewer execution is limited to the stated integrated collection, routing and packed scenario; no redundant complete suite or broad replay is claimed.",
+    "Structural phrases and synthetic conformance actors cannot establish semantic instruction quality or actual approval. Controlled provider responses and fault/mutant probes prove their bounded mechanisms, not public service behavior, all schedulers/platforms or arbitrary crash guarantees.",
+    "The reviewed subjects identify current engineering, while named historical reviews, failed reproductions and individual evidence retain their original scope. This new integrated judgment does not rewrite or reactivate earlier stale approvals. Recording-only changes after this review require current store validation and assessment of their content; they do not automatically alter unchanged engineering proof."
+  ],
+  "rationale": [
+    "Spec alignment: pass. Current approved proposal, Design and Delivery reviews remain bound to unchanged proposal sha256:9145c6d412d85e04bc2bbb04f6cfd4c8bf89a314aee59d9a615d59637a38415e, Validation sha256:094d7008c19975ccf293042a7da4faafa99041424c7fd517a0f861020ac7d539 and plan sha256:84f6a4188d0a6901b0cbe5ce9b267bf32e11c6aa8aa6c2b86b1ea5f4aa5ffbdb. The delivered authoring rules, source-composition graph, illustrative limits and contributor link consistently implement TEST-SR-19/20, VAL-SR-32 and VAL-DEC-11. All eight completed allocations and TG-FINAL-01/02 are assessed. No framework replacement, size quota, product behavior retirement or semantic-quality automation is introduced. Existing published guidance and product owners remain consistent and unchanged.",
+    "Test coverage and complete inventory: pass. All 300 Skill, 136 document/reference/record-validation, 184 selector, 52 executor, 95 adapter, 8 npm, 180 release and 418 native package cases are accounted for, including generated and imported observations. Every current authored test module is within the assessed source population. The final inventory and m1-m8 implementation entries identify protected failures and retain/move/strengthen dispositions, not just counts. I freshly reconciled ordinary discovery at the final commit: 35 entrypoints, 1373 unique native cases, no missing baseline method/native identity, and only the explicit packed-recording case extracted from an existing ordered sequence. The 246 class-selector remaps retain method protection; AST/source comparisons and named parameter inspection provide the separate semantic preservation basis. No unknown, removed or deferred protection remains.",
+    "Architecture and readability: pass. Direct unittest behavior classes, small aggregate imports, local fresh-data/resource functions and native Node scenarios implement the Design's responsibility graph. Skill metadata/resource/asset/placement, boundary grammar/containment/commands, execution adapters/process/composition, packaging transformations/artifacts and release profile/preparation/publication responsibilities are now locatable. Retained larger CLI/Records and small validator groups remain coherent; line count alone does not require fragmentation. Helpers no longer borrow another TestCase lifecycle, and pure assertions no longer hide resource mutation or validator execution. The selector's existing compatibility mixins retain one concrete owner and supported discovery without becoming a new framework. No production-to-test dependency or import cycle was introduced.",
+    "Oracles and meaningful variants: pass. Independent expected Design-resource/consumer sets, model inventory, main/broad check populations, npm runtime membership, candidate checks, stored interaction outcomes and logging limits address demonstrated omission or tautology risks. Canonical bytes, actual archive members, observed pre-operation bytes and contract literals remain distinct from producer outputs. Structural skill phrases are explicitly bounded drift checks; independent inspection supplies semantic judgment. Generated/subtest domains retain their distinct unknown, missing, malformed, state, retry and compatibility outcomes without arbitrary Cartesian expansion. Existing real archive/install, command, Git, transaction and process boundaries are not replaced by successful mocks.",
+    "Edge cases and error handling: pass. Combined sources preserve valid controls and intended diagnostics, current versus retired formats, unknown-before-consistency rejection, no-write observations, stale identities, partial publication, contention, interruption/recovery and retry. M4 now executes the emitted exact positional rerun and proves its original one-case failure; unreliable loader failures require their actual diagnostic and absence of any rerun marker. M7 interaction paths each satisfy independent required outcomes before equivalence is considered, preserving original neighbors and untouched bytes. M8 requires complete literal writer-ID sets, real outside-write observations, literal 5 MiB rotation and exactly four retained archives. Original failing counterexamples and correction proof remain durable; every reporter-owned concern, including m1-cr-01, m4-cr-01 and m8-cr-01, is resolved on its actual corrected subject.",
+    "Fixture ownership and security/privacy: pass. Mutable inputs are fresh or privately materialized; cleanup attaches when resources are acquired, including setup failure. Owned containment roots enclose both project and escape sentinels, global injections restore their originals and real children settle before cleanup. Adapter/npm/release and generic CLI/workflow subprocesses use private logging state. Shared persistent fixture bytes remain unchanged except the non-normative interaction README; Skill resource scripts remain package inputs, not omitted entrypoints. Current shared Records inputs and 41 model examples retain their previously inspected distinct conformance meanings. Isolation, symlink/redaction, failure and actual child cleanup proof remain applicable. No permissions, credentials or external mutation authority changed.",
+    "Compatibility and cross-milestone product consumers: pass. Supported Python entrypoints and native package glob retain complete normal collection, individual selection and hooks. I independently collected all three updated adapter catalog selections and compared them with baseline method identities: exactly 14 regression cases and one case each for drift and validation, no duplicate or missing selector. Skill changes continue through adapter copies, packaging helpers through real archives and packed CLI, release candidate/coordination helpers through real Git and installed binaries, and Records fixtures through Python and Node readers. I freshly executed the packed recording scenario for both installed targets: one native case passed in 13.610 seconds, exercising explicit/primary dispatch and interruption/recovery across the integrated M5/M7/M8 boundary. Historical source/support retirement keeps its prior owner; this change does not claim it complete.",
+    "CI maintenance coverage review: pass. Classification is review / coverage / project-validation-automation / project-native-other-provider / ordinary-workflow-context / preserve-existing-structure / ordinary-infrastructure, assembly CIM1-coverage-review. The risk-to-check map is the approved plan C1-C6 and TG-FINAL allocation plus Validation's authoritative catalog. The only operational diff is validation_selection.py: 55 new test/helper path mappings and three adapter selector/assessment/coverage identities. Risks are missing path routing, wrong subset discovery and copied/direct caller omission; explicit owner-check assertions and actual selected/full proof address each. My four fresh routing regressions covering split Skill, boundary, execution, packaging and release families passed in 0.82 seconds, including unknown siblings and exact commands. Existing workflow triggers, read-only permissions, main/release/PR wrappers, worker probes, phase prerequisites and resource controls are unchanged. No unmapped changed surface or deferred catalog correction remains; final PR-range execution belongs to Verify. No hosted run was observed and no infrastructure was mutated by this review.",
+    "Derived currency and unrelated scope: pass. I independently confirmed the protected runtime, package manifests/lock, canonical skills, schemas, templates, generated output, hosted workflows and packaging/release implementation trees are byte-identical to the baseline. The full range contains the selected Design/navigation/proposal/plan, test/support/catalog changes and their governed records. No new runner, tracked formatter, dependency, permanent case ledger or unapproved release behavior is hidden in the change. Exact final inventory identities cover all 104 engineering differences; record-only closeout since the M8 engineering handoff did not alter required proof surfaces. Earlier stale milestone approvals retain historical subjects and are not silently renewed.",
+    "Validation adequacy: pass for final Code Review. I inspected current individual m8-implementation, m8-validation and inventory-reconciliation and the retained per-slice proof/correction basis, rather than treating the stale shared evidence container as universally current. Corrected final npm 418, C1, actual-file C2, real two-worker C3, fresh local C4, broad C5 (643 checks) and C6 passed on unchanged engineering/environment. Local and broad durations were 324.80 and 317.02 seconds. Final PR-range selection at the immutable handoff identifies 19 checks with zero blocking/unclassified paths; this is selection, not execution. My fresh source/identity audit, full normal collection, three catalog-subset collections, four routing cases and actual packed recording case independently challenge integration. The review scratch collector's initial wrong metadata-field access was corrected before its successful run; it was a reviewer probe setup error, not product evidence. No material scope or proof gap prevents this holistic judgment; distinct Verify must now assess the full chain and execute its remaining exact-range obligations."
+  ],
+  "reviewer": {
+    "id": "code-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:4e902690b40cb3ac6c74159915f44d876974431383095727c297acf6aeb4d94e",
+      "path": "CONTRIBUTING.md"
+    },
+    {
+      "identity": "sha256:094d7008c19975ccf293042a7da4faafa99041424c7fd517a0f861020ac7d539",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:0b027209f70398c0a603fea62bd32774593419b292e7c5ad5687cc07f5671ded",
+      "path": "docs/plan.md"
+    },
+    {
+      "identity": "sha256:84f6a4188d0a6901b0cbe5ce9b267bf32e11c6aa8aa6c2b86b1ea5f4aa5ffbdb",
+      "path": "docs/plans/2026-09-16-test-design-and-suite-organization.md"
+    },
+    {
+      "identity": "sha256:9145c6d412d85e04bc2bbb04f6cfd4c8bf89a314aee59d9a615d59637a38415e",
+      "path": "docs/proposals/2026-09-16-test-design-and-suite-organization.md"
+    },
+    {
+      "identity": "sha256:6c879a76afc9d6317951ba1dc883b9a5c220ba80df0cdb3b2f94e60363794207",
+      "path": "packages/rigorloop/package.json"
+    },
+    {
+      "identity": "sha256:e17e9af73635f92b089baaa3dd67e6ccd005d4e9b8c1e2c0314c5d5cca60a0b6",
+      "path": "packages/rigorloop/test/cli-invocation-observability.test.js"
+    },
+    {
+      "identity": "sha256:4302223d2c45bd679bfbda8d487db0f180e8d466ec92daa8e298ada8faed6ef9",
+      "path": "packages/rigorloop/test/cli-observability.test.js"
+    },
+    {
+      "identity": "sha256:556d9ae7e57cb8ccc20a17461e4bf5bc3e45ce84645c710e46c380056038b1aa",
+      "path": "packages/rigorloop/test/cli.test.js"
+    },
+    {
+      "identity": "sha256:f94c2225f0645b79577e3074e9970fc92351ae6f3eaf613c987e498f4bfc038d",
+      "path": "packages/rigorloop/test/fixtures/recording-interactions/README.md"
+    },
+    {
+      "identity": "sha256:1d3e114d85e629793baf519d15c132d42499e352cef3a9013d0bcc768315c8e3",
+      "path": "packages/rigorloop/test/helpers/record-store-interactions.mjs"
+    },
+    {
+      "identity": "sha256:940f0561c0c840fde1698a9b1bf09e11e4383132d250e29b8aa6842374d7d889",
+      "path": "packages/rigorloop/test/helpers/record-store-launcher.mjs"
+    },
+    {
+      "identity": "sha256:03222f39be7d2d1c0ca7eda2cd23361f8504a6b7d8c982d380beccaa84df8254",
+      "path": "packages/rigorloop/test/helpers/recording-query-launcher.mjs"
+    },
+    {
+      "identity": "sha256:466599cdcb4ec7abcb5f42c85a4c64ed1f10ddf3805ae1c2ec5cbad520f68dc2",
+      "path": "packages/rigorloop/test/helpers/v3-fixture.mjs"
+    },
+    {
+      "identity": "sha256:8e17781dc2ea385407d1f97516ac3104bc96e331ff1814c0364f6076f7bb97a1",
+      "path": "packages/rigorloop/test/installer-replacement.test.js"
+    },
+    {
+      "identity": "sha256:90812d417dadae42f1144f8637308f00a6f0916929bc9fda30fcd3462652d0dd",
+      "path": "packages/rigorloop/test/record-retirement.test.js"
+    },
+    {
+      "identity": "sha256:8b821b86a8d0f4b2c6b6b4d06e72ad0b68e7f598974e08c37f61bc519f881213",
+      "path": "packages/rigorloop/test/record-store-adoption.test.js"
+    },
+    {
+      "identity": "sha256:8c8e829b78796178f219679a01066aa1da3afe4407f7b4d7b800e8c9c8100fc7",
+      "path": "packages/rigorloop/test/record-store-cli.test.js"
+    },
+    {
+      "identity": "sha256:8f2b0b9956385fe09a45b1f1f4af78b3431f0b38f19503b280f73f988110812d",
+      "path": "packages/rigorloop/test/record-store-contract.test.js"
+    },
+    {
+      "identity": "sha256:43ffd18f671090775efdcbd7e1a275664ca2f70e1fc6bb152c78568032f8d1a5",
+      "path": "packages/rigorloop/test/record-store-format.test.js"
+    },
+    {
+      "identity": "sha256:efc4a0be43c9d4ca6f71811fda2d36f11b8d821441366e90e192504f6153e2fb",
+      "path": "packages/rigorloop/test/record-store-interactions.test.js"
+    },
+    {
+      "identity": "sha256:6d4309e8c93c66615e8c735bca8851255fe89b4eb444ad4b25eaa892d551ffa0",
+      "path": "packages/rigorloop/test/record-store-model-examples.test.js"
+    },
+    {
+      "identity": "sha256:77da68fbf0e80f1a408bcdfebac364ab82cdaa9dc4db3241b10c0996ba11e92e",
+      "path": "packages/rigorloop/test/record-store-persistence.test.js"
+    },
+    {
+      "identity": "sha256:d44569e32340d3bcd5b8cf75b8b65748b05ffab586c75c24fd000ae876dd7e72",
+      "path": "packages/rigorloop/test/record-store-queries.test.js"
+    },
+    {
+      "identity": "sha256:88912fcafa4e9653d1143b63b0a8c2137ea080c4b0e4331d696db2ff62eec5f6",
+      "path": "packages/rigorloop/test/record-store-targeted.test.js"
+    },
+    {
+      "identity": "sha256:34257186420f049e0e6b1b10b27a72a8a77cfc6bb2a9f647d79d8d48dcfbd534",
+      "path": "packages/rigorloop/test/record-store-v3-adoption.test.js"
+    },
+    {
+      "identity": "sha256:49f96a0ddb6483fdc841b1d88914949ec02b2502914a3ff6100efa2939ae961e",
+      "path": "packages/rigorloop/test/record-store-v3-contract.test.js"
+    },
+    {
+      "identity": "sha256:117ebd92b468312214cddff4c1518394eaa107dcaa66eb745cd85b8cede6cf67",
+      "path": "packages/rigorloop/test/record-store-v3-mutations.test.js"
+    },
+    {
+      "identity": "sha256:6e6438e57604d7a0ff98555895d3290234691e297e93afcf8bc3f97854248831",
+      "path": "packages/rigorloop/test/record-store-v3-persistence.test.js"
+    },
+    {
+      "identity": "sha256:3c4df00d40870bc0007b87147870760179fd40b60f4ece9a3d46bc3ae038f4ce",
+      "path": "packages/rigorloop/test/record-store-v3-reads.test.js"
+    },
+    {
+      "identity": "sha256:709226729709ac726d094610658a257e7828061660f693dfb3afea5793fcda17",
+      "path": "packages/rigorloop/test/record-store-workflow.test.js"
+    },
+    {
+      "identity": "sha256:f1fe37e16c9d468a222ff24dcfeca0f40245eac40e5873ce111210eb98ae1573",
+      "path": "packages/rigorloop/test/result-renderer.test.js"
+    },
+    {
+      "identity": "sha256:8013eddf17d208e5eccc5ffa551c6e170973dfd1fde19a11e254e0eb8ba55ea5",
+      "path": "packages/rigorloop/test/workflow-context.test.js"
+    },
+    {
+      "identity": "sha256:9f03477a3dc5da070181ed4bc973c5ba4de620c5519510afb541bf25503f63c0",
+      "path": "scripts/ci.sh"
+    },
+    {
+      "identity": "sha256:968cc22d8073862ee77152865c9bc9bcbe231625ad17c57315e406082c931737",
+      "path": "scripts/lib/validation/validation_selection.py"
+    },
+    {
+      "identity": "sha256:a3b914276db0031fb759d66dd319a78c27d353b9cd7c09efed027e8b4dac3651",
+      "path": "tests/engineering/packaging/adapter_archive_tests.py"
+    },
+    {
+      "identity": "sha256:4cfe9a23939cc8e01302b11d3eb93aa5d61bbdeaf5f71762eafd4e80ac79eac0",
+      "path": "tests/engineering/packaging/adapter_contract_tests.py"
+    },
+    {
+      "identity": "sha256:c0fc008b7fc1693da68ea5da94499a59a533349263bd4c453d454b0680c13c47",
+      "path": "tests/engineering/packaging/adapter_diagnostics_tests.py"
+    },
+    {
+      "identity": "sha256:ceae796353aa530ad6992905ae7eeabfe826acc72eba2748f21e3db6605822ae",
+      "path": "tests/engineering/packaging/adapter_fixture_helpers.py"
+    },
+    {
+      "identity": "sha256:69b6aba12a686b6a18eea016037f0fc90733d4e15450d261b5cb69b65b2586fc",
+      "path": "tests/engineering/packaging/adapter_generation_tests.py"
+    },
+    {
+      "identity": "sha256:efd52c34855783491eb3514d4f4ec465f67207a490d973ee993ba6f6ccbb3687",
+      "path": "tests/engineering/packaging/adapter_install_tests.py"
+    },
+    {
+      "identity": "sha256:b0be96634f7d27d04b77c0acf1d7b3864ad463c18b6f638921a2b6a3c90d1d83",
+      "path": "tests/engineering/packaging/adapter_metadata_tests.py"
+    },
+    {
+      "identity": "sha256:76104f3bd772a0977493225f6ed229f43ba491b0ab6cfa1c98664c1c0ed6a79f",
+      "path": "tests/engineering/packaging/adapter_portability_tests.py"
+    },
+    {
+      "identity": "sha256:682dc138b3593fca24e5eb53416beb861ed293b34bfb2e9b25a4ce3a9b90ea19",
+      "path": "tests/engineering/packaging/adapter_resources_tests.py"
+    },
+    {
+      "identity": "sha256:d8251aa93ddc616821bd29ecb469c89ffb02a7eeb93979e0902523cfc559ffd5",
+      "path": "tests/engineering/packaging/npm_fixture_helpers.py"
+    },
+    {
+      "identity": "sha256:7a23de2243df0cf51ff07058d2e4570ce85e25c246af992569bb668dad24cc54",
+      "path": "tests/engineering/packaging/npm_recording_tests.py"
+    },
+    {
+      "identity": "sha256:e82442a66755a025315a98fc4f738fdc0432c8659c97721a63352b4565c5046f",
+      "path": "tests/engineering/packaging/test-adapter-distribution.py"
+    },
+    {
+      "identity": "sha256:ee940a03d9c242b8040b86201f0d3d8f0c061cf372ee7c692f35535f9076fe88",
+      "path": "tests/engineering/packaging/test-npm-package-publication.py"
+    },
+    {
+      "identity": "sha256:dbc1eae25bcf3c6dc0f0874fd1d27329f76a1702cb9718840a908ace3155dbc2",
+      "path": "tests/engineering/release/release_candidate_tests.py"
+    },
+    {
+      "identity": "sha256:3d844d393e1ab58fedc9cd7a849642fe1032b0f6d2962fa63ec967ef50ca9b24",
+      "path": "tests/engineering/release/release_coordination_fixtures.py"
+    },
+    {
+      "identity": "sha256:7c79c52911d9f9dca206b5def10925612af45d126f358b1033ea3201feaf6ead",
+      "path": "tests/engineering/release/release_coordination_tests.py"
+    },
+    {
+      "identity": "sha256:1e09a3e42df7e23c98eb6b33e0db34afe97e849f2c2a4fdd277d448224a4d349",
+      "path": "tests/engineering/release/release_execution_tests.py"
+    },
+    {
+      "identity": "sha256:72505e2f97ee0af33a171678908b14968fd02c2f42e03403cf7acc900f8780e8",
+      "path": "tests/engineering/release/release_fixture_helpers.py"
+    },
+    {
+      "identity": "sha256:8b5d0c663f0268340d6ecc4bebb873b3c14167e6dedaddd0f1261dba941a0425",
+      "path": "tests/engineering/release/release_identity_tests.py"
+    },
+    {
+      "identity": "sha256:bb092f1a0466d5573bc9f1685135b666023f285415f60eec2ada7910ac227953",
+      "path": "tests/engineering/release/release_preflight_tests.py"
+    },
+    {
+      "identity": "sha256:d618792c5af76ae05cabaa4a63cdc8a5dba52e7d7257399a216cf61c4f4c0659",
+      "path": "tests/engineering/release/release_preparation_tests.py"
+    },
+    {
+      "identity": "sha256:490c7b1f5d7a9eaf050434d470236c2c72fb5ecd3b23f022d48299fd7b2c3805",
+      "path": "tests/engineering/release/release_profile_tests.py"
+    },
+    {
+      "identity": "sha256:87089a1a8ac57df570334e28d6d04f2e0354ffaf9645d75fe20175cf006ab58f",
+      "path": "tests/engineering/release/release_provider_fixtures.py"
+    },
+    {
+      "identity": "sha256:60311fa3a10b2d01aed11393e75d92e68d335bc286faf07d9560872185f1559d",
+      "path": "tests/engineering/release/release_publication_tests.py"
+    },
+    {
+      "identity": "sha256:6b94065f47f1000473225d83c4b88d97a5187fc9d75f8be87c53876068d11015",
+      "path": "tests/engineering/release/release_timing_tests.py"
+    },
+    {
+      "identity": "sha256:8446131071b8f71a8b02ffb6855f616f777cf96f892f809c36490a90dada4f23",
+      "path": "tests/engineering/release/test-release-transaction.py"
+    },
+    {
+      "identity": "sha256:e0b142e3a1bf323e24b32168f5cbbcf3993b5fbf2348267de60852d60f931a46",
+      "path": "tests/engineering/validation/boundary_command_tests.py"
+    },
+    {
+      "identity": "sha256:29d610878bd99a8773c1ecba5ebfb553463da33df16a088b1c48ffb39e95eab0",
+      "path": "tests/engineering/validation/boundary_fixture_helpers.py"
+    },
+    {
+      "identity": "sha256:7cab157b39d8a5ba9426bfa965af8adb14e25a4582fcab3ded7fc4e68bbfb0f7",
+      "path": "tests/engineering/validation/boundary_handoff_tests.py"
+    },
+    {
+      "identity": "sha256:4aaac4178da3af0f89c90cb44aa49a53e31924ae91a15058515a7c8ab0ecff59",
+      "path": "tests/engineering/validation/boundary_model_tests.py"
+    },
+    {
+      "identity": "sha256:28a13c7cd0c7ea61c7f3a81f9cbfd6c0d6a327f94bd20b048d4af62c86eb4398",
+      "path": "tests/engineering/validation/boundary_path_tests.py"
+    },
+    {
+      "identity": "sha256:079425436882a8d6d2a6e033c50795c50ba14ea58a3e0b9d7fdf3c8954535b7c",
+      "path": "tests/engineering/validation/boundary_structural_tests.py"
+    },
+    {
+      "identity": "sha256:ab2690653e8c2c6975b4943a6b8dc391a5ad36e05ac8e934294fb5a4c966b734",
+      "path": "tests/engineering/validation/execution_catalog_tests.py"
+    },
+    {
+      "identity": "sha256:75f7d8a09e58d71cb4232c0d6a0b295e91971f9dd4d20dd1f5dcd9170aa81d74",
+      "path": "tests/engineering/validation/execution_composition_tests.py"
+    },
+    {
+      "identity": "sha256:185e782c30cba82b4797e6089be0fed01bab60d9957b183430e5ae4068946a50",
+      "path": "tests/engineering/validation/execution_node_adapter_tests.py"
+    },
+    {
+      "identity": "sha256:8c46af8afde83c86005dbf19de2f655826e447cea41cae844e5c86017cf7fa1a",
+      "path": "tests/engineering/validation/execution_process_tests.py"
+    },
+    {
+      "identity": "sha256:bd94a1e6ac661bc3b88749c2269b29729b1fa35fc81f284c8e5900eb338a602d",
+      "path": "tests/engineering/validation/execution_python_adapter_tests.py"
+    },
+    {
+      "identity": "sha256:a7cd4a7f7803430797ab62f8aabdf14dc7f49c1b21f3534c8069d80b0cae870a",
+      "path": "tests/engineering/validation/selection_contract_tests.py"
+    },
+    {
+      "identity": "sha256:5fc78d7c034f034e2b4b54f32fa412e376eed37bacac5a82f2c27063e7e1c3bc",
+      "path": "tests/engineering/validation/selection_test_helpers.py"
+    },
+    {
+      "identity": "sha256:9d13e5af2fdff369007a13d63c180960e9fe11910be2047c0bead0470991b74d",
+      "path": "tests/engineering/validation/test-boundary-first-reference.py"
+    },
+    {
+      "identity": "sha256:3ef8435f1114964083e229dfdb5aa0e589b4c1026c605bbb78aca08206fd6ea3",
+      "path": "tests/engineering/validation/test-boundary-first-validation.py"
+    },
+    {
+      "identity": "sha256:da72bcb80d9cf94a16b119957e6162f8bedacd27bbea70be10429b424f9a4193",
+      "path": "tests/engineering/validation/test-change-metadata-validator.py"
+    },
+    {
+      "identity": "sha256:dc10776c0eb29063aa26af888cfeed1b58fe397a573045a7a19e45fc717a3a3a",
+      "path": "tests/engineering/validation/test-documentation-prose-validator.py"
+    },
+    {
+      "identity": "sha256:fe065d545c066d2ebdc8c6facbe773d547adaea93dc79f14292eb81814d0790b",
+      "path": "tests/engineering/validation/test-governed-lifecycle-cli-validator.py"
+    },
+    {
+      "identity": "sha256:d87677b73f45099c63a4974a00d8496809f8a584137643881b81eb89dd0643e3",
+      "path": "tests/engineering/validation/test-guide-system-validator.py"
+    },
+    {
+      "identity": "sha256:6235d8e9143bae6ffd5d17d83c817618e960ecdd2472efe80a115614668a9a6d",
+      "path": "tests/engineering/validation/test-markdown-readability-validator.py"
+    },
+    {
+      "identity": "sha256:47867e67cc4136cc409df1dcb0215898874b629387a9c09705dc17eea53144f3",
+      "path": "tests/engineering/validation/test-select-validation.py"
+    },
+    {
+      "identity": "sha256:31bc9e6cd64750cd18240ee810bb596161ae34212b8a07a2cbb9e6ddff9cb522",
+      "path": "tests/engineering/validation/test-validation-execution.py"
+    },
+    {
+      "identity": "sha256:dc156e9c5567561b28f54a8bc36314aa1877823c1b091cf0ed1720e38e28ddad",
+      "path": "tests/skill/review_independence_skill_phrases.py"
+    },
+    {
+      "identity": "sha256:a919847857e83cfbe2d84b1a559b30703f906f586131b7d1be1b8b6ae3c07ba5",
+      "path": "tests/skill/skill_asset_tests.py"
+    },
+    {
+      "identity": "sha256:321b60fb05e1210b1bb6a44291ee89b861cd8e933fdd3c75089747aca6d8dbea",
+      "path": "tests/skill/skill_authority_tests.py"
+    },
+    {
+      "identity": "sha256:bb9c6100863da6f651a1510aa80d2e5582378dd710d11a46fe1682040cc862b5",
+      "path": "tests/skill/skill_bugfix_guidance_tests.py"
+    },
+    {
+      "identity": "sha256:e74e3d7cd76b2c19077e3301ff91695ca7750f2f46e9f69969b3555dfc5f87e0",
+      "path": "tests/skill/skill_canonical_tests.py"
+    },
+    {
+      "identity": "sha256:5781ce673e3dfdeb3e7c737cf9203eaaee6eedf90c422b4292d433dff282197f",
+      "path": "tests/skill/skill_ci_contract_tests.py"
+    },
+    {
+      "identity": "sha256:779d457024c46d0979591217fc24365c94392af32e18c719a23bdba95c251024",
+      "path": "tests/skill/skill_ci_guidance_tests.py"
+    },
+    {
+      "identity": "sha256:82334d502f05d097a55d222c7b4cb3c9b7318a0c04e784801e009826bad74009",
+      "path": "tests/skill/skill_cli_tests.py"
+    },
+    {
+      "identity": "sha256:24bc1ab9e29565d27c003d42c874d2552d3f5f307bc42f3397d7a4e899027bdf",
+      "path": "tests/skill/skill_contract_tests.py"
+    },
+    {
+      "identity": "sha256:317d5e9fbddd9f87f6d1f47fd8618884944d5c0d2dfa0e37f115343037cea64b",
+      "path": "tests/skill/skill_design_resource_tests.py"
+    },
+    {
+      "identity": "sha256:f6e46f420d992f68331baaf83a045808608b1aad33c1ee8cf582be2a81feb964",
+      "path": "tests/skill/skill_discovery_guidance_tests.py"
+    },
+    {
+      "identity": "sha256:c4975a92bd150c46e8a1dfe253aa1c4405d98247f2ce55438b8a9ca4d65f9ed0",
+      "path": "tests/skill/skill_fixture_helpers.py"
+    },
+    {
+      "identity": "sha256:91f2e1b46573e9d21e97963d966b543cb01c9d93adae38f09f7254ade13162fa",
+      "path": "tests/skill/skill_guidance_helpers.py"
+    },
+    {
+      "identity": "sha256:35c23e2eb7fac12d4727f881ddfd9b769b25e223dab65d7517841697eaf4d430",
+      "path": "tests/skill/skill_guidance_tests.py"
+    },
+    {
+      "identity": "sha256:4cd1e5ce3444ff0072f48a401e506a32851cc9d6f7a64241bf70689327bed386",
+      "path": "tests/skill/skill_learn_guidance_tests.py"
+    },
+    {
+      "identity": "sha256:135e8723b035a1e7b9382b163271d4019ff52439cb8c7779958c9e651418921a",
+      "path": "tests/skill/skill_metadata_tests.py"
+    },
+    {
+      "identity": "sha256:4dbcf8043bcf50816cad6fde9d077efaeb5f4a2c9a131f8fdf2a7bc86bdf98bd",
+      "path": "tests/skill/skill_placement_tests.py"
+    },
+    {
+      "identity": "sha256:cd37a6ed0a6423d84cde9ae464683e20a8d70572359b2b2c16e7e179962f7ef6",
+      "path": "tests/skill/skill_plan_guidance_tests.py"
+    },
+    {
+      "identity": "sha256:89216543ebe761be1ded01814ee4c1105dbc84d2e8647994348c0aab839c4550",
+      "path": "tests/skill/skill_portability_tests.py"
+    },
+    {
+      "identity": "sha256:301ba04b2d8459dbb663dfa35aebaf44fb61dc1450cee861552be3b882a48723",
+      "path": "tests/skill/skill_pr_guidance_tests.py"
+    },
+    {
+      "identity": "sha256:88a504587544ce79795a5d943e351650bce5c423226fba811f7a5d0abc8641e8",
+      "path": "tests/skill/skill_project_map_guidance_tests.py"
+    },
+    {
+      "identity": "sha256:d95cb2a4fe3d8e3e017f377817dae4600d073bf3331f4fb742866a4b03c9d690",
+      "path": "tests/skill/skill_project_map_tests.py"
+    },
+    {
+      "identity": "sha256:77b47c830498a8733568353ce1e4e28335ffbcb8ca09ed0b9ae186e40a97d537",
+      "path": "tests/skill/skill_proposal_guidance_tests.py"
+    },
+    {
+      "identity": "sha256:72b58380c93c6ae6e66d9b164d0a929f2dd827487f713be875c92f8d4c718b41",
+      "path": "tests/skill/skill_readability_guidance_tests.py"
+    },
+    {
+      "identity": "sha256:36f4b59aa15cdf712cf9b05042a06eb345aa9d9b979905970248226ebc08708e",
+      "path": "tests/skill/skill_resource_tests.py"
+    },
+    {
+      "identity": "sha256:2e09895b076eca7fe11b7a3be9ad4319ca9a454cd8e8d36537db76e6c73ad5a0",
+      "path": "tests/skill/skill_route_guidance_tests.py"
+    },
+    {
+      "identity": "sha256:eb5352563f5e3e8922b30c21aab72c422fdff311477d413d8163011d131847cc",
+      "path": "tests/skill/skill_shared_policy_tests.py"
+    },
+    {
+      "identity": "sha256:431cdff90fd464967ff18cd045317cf6282610123afd5796424cdc254aa720c4",
+      "path": "tests/skill/skill_verify_guidance_tests.py"
+    },
+    {
+      "identity": "sha256:5ac1f89bf43095a3149b34e073ff8c6b7ac2ac0fabc07bae17cf4c20309e3d77",
+      "path": "tests/skill/skill_vision_guidance_tests.py"
+    },
+    {
+      "identity": "sha256:035d1baf2467725bcd1e593fc3dcf8d9c54fe02f6705f1a39d45ad1e46f7c441",
+      "path": "tests/skill/test-skill-validator.py"
+    },
+    {
+      "identity": "sha256:a32097648ca5d66e788092872f51e416d9e11ca50b87c96d3263a8e206942809",
+      "path": "tests/engineering/release/release_evidence_tests.py"
+    },
+    {
+      "identity": "sha256:b715a9251509278392d58a62557b2afe67aa63492ea0cae029f9bd4e6bb3c3c6",
+      "path": "tests/engineering/validation/selection_cli_tests.py"
+    },
+    {
+      "identity": "sha256:318f0b659d5b45f93323ccf1e3f091dad75ff4b61c54ea189bde1851c59d017a",
+      "path": "tests/engineering/validation/selection_git_tests.py"
+    },
+    {
+      "identity": "sha256:cc1912d5c0cd17b42bfd4a3f705a561b0c2f678045f0659f2406a1ea13e6c5a5",
+      "path": "CONSTITUTION.md"
+    },
+    {
+      "identity": "sha256:7a88f81f0044f2f9739ca27e9ebfb6cef77628f87b8422a240d9b776a4b921d8",
+      "path": "docs/design/system.md"
+    },
+    {
+      "identity": "sha256:18f39802c01fda9ff16fa68fd0fce03dafe33f032dc0006f0033095096856bcc",
+      "path": "docs/design/skill/skill.md"
+    },
+    {
+      "identity": "sha256:af968c5583c27abb95e9a2b2ac0293deba30c522e72480c6f9aa05066659ae19",
+      "path": "docs/design/skill/assessment.md"
+    },
+    {
+      "identity": "sha256:ed5380294c163077a289f3566e041b8d580f7217b15756f961aba181400a757d",
+      "path": "docs/design/skill/workflow.md"
+    },
+    {
+      "identity": "sha256:46396ee3e8e0327d1ca4ca1485cf9f1802689acfe7fe0ec88e1cd4eddc2c644e",
+      "path": "docs/design/cli/cli.md"
+    },
+    {
+      "identity": "sha256:8bcdb2872f9b6887212264493f1421a58b91b9b7ab9d12bcd240bcd5a9b5f966",
+      "path": "docs/design/cli/records.md"
+    },
+    {
+      "identity": "sha256:5320ca604afb4e0a224317e80e9907c2fc42b78f5ab6322bc81b45d8687d6574",
+      "path": "docs/design/cli/installation.md"
+    },
+    {
+      "identity": "sha256:0aec3cfc2bf73424bf08d8c4efb775e4f7b5051b8417e8ebf1c90ada91aedbfa",
+      "path": "docs/design/engineering/packaging.md"
+    },
+    {
+      "identity": "sha256:1cae90f16d152c7811eec499036dc4e7f8f63f82acd62d6b71c58f131d5f19b8",
+      "path": "docs/design/engineering/release.md"
+    },
+    {
+      "identity": "sha256:132a133c71cef31f4aefbb49835c4269c9cd80ba492686e9988b4573e776b9f3",
+      "path": "scripts/lib/validation/validation_execution.py"
+    },
+    {
+      "identity": "sha256:4ff0c3964282dcd004ff906dfdfacb9e5c9c4ef0ede5a2bda9be1e7c71381da4",
+      "path": "scripts/lib/validation/validation_node_adapter.mjs"
+    },
+    {
+      "identity": "sha256:4eeb52c295358ab195c8a139ccd71d6b33b068ddeb29845e6e16af40a4aee56c",
+      "path": "scripts/select-validation.py"
+    },
+    {
+      "identity": "sha256:379e14ae9c190a6293eeb0a9cd78b79e0ed9d91ede88441b23808aad2a312513",
+      "path": "scripts/release-verify.sh"
+    },
+    {
+      "identity": "sha256:e6ccfe19fc3fe7c101b3900d9b2f36debb5f3c62acaf79b5721b1ecd6c43d162",
+      "path": "scripts/lib/release/release_candidate.py"
+    },
+    {
+      "identity": "sha256:2375f4e50b8f49bdef84fdee3715a7487c0a72d0a1c13aa87411ca1db71086ba",
+      "path": "scripts/lib/release/release_coordination.py"
+    },
+    {
+      "identity": "sha256:b72520ed6e1f7b7244533dce6856a114def501c19fdb96525365453301ae4e4f",
+      "path": "scripts/lib/release/release_execution.py"
+    },
+    {
+      "identity": "sha256:4d6b854ce2a1f8f9911ecf48765c196a8e2971f5ae7ae80d90d07b56b9017d2e",
+      "path": "scripts/lib/release/release_provider.py"
+    },
+    {
+      "identity": "sha256:d261b723bf793fdbd85acb15438b997dced864b6e348a46e1cdaa5e683b38ec9",
+      "path": "scripts/lib/packaging/adapter_distribution.py"
+    },
+    {
+      "identity": "sha256:88265d284dc554c8f73b64df1309c54493f2e3ad27ce5248942c34b6bc37474a",
+      "path": "scripts/lib/packaging/npm_package_validation.py"
+    },
+    {
+      "identity": "sha256:1adea2a89d5aff9d3cb88aaac38bf4fa05dabcfdcf24f36656dece99fa61c266",
+      "path": "packages/rigorloop/dist/bin/rigorloop.js"
+    },
+    {
+      "identity": "sha256:36dfb447364e3407f3ab59d6bd1b35243a0cab116d20d71fc0b159db98d3b6ec",
+      "path": "packages/rigorloop/dist/lib/installer-replacement.js"
+    },
+    {
+      "identity": "sha256:65fd6fa394e24d389c079c44765ff0b46add4ab6223140191bd9dd63956f99d5",
+      "path": "packages/rigorloop/dist/lib/log-sink.js"
+    },
+    {
+      "identity": "sha256:6b6d8fb56077b3359ae47b21bc9aab401e2510beb985ffe5fc5d43a6da070b9a",
+      "path": "packages/rigorloop/dist/lib/log-config.js"
+    },
+    {
+      "identity": "sha256:343b516ff34de23990f9897faa19e4a0f127fbfff9a0c814039140138280efb6",
+      "path": "packages/rigorloop/dist/lib/record-store.js"
+    },
+    {
+      "identity": "sha256:8e8da58ee13619ab84ce0161d13db193a4493f51ca125614813343322addeee9",
+      "path": "packages/rigorloop/dist/lib/recording-cli.js"
+    },
+    {
+      "identity": "sha256:a455d2512ae08479992e49e075a12899a0a2a03b69b48d799c5224715d18a88d",
+      "path": "packages/rigorloop/dist/lib/recording-query-cli.js"
+    },
+    {
+      "identity": "sha256:dde4b6b431c783ac6b7a642ce7455458d13397a2b24f72cbe0bc7d016a4ed9ab",
+      "path": "tests/fixtures/rigorloop-records-v3/records.json"
+    },
+    {
+      "identity": "sha256:adb156b8e2b196c9e82195b3eac059852ca7a941382fa41e355ff3803bf9ba87",
+      "path": "tests/fixtures/rigorloop-records-v3/storage-safety.json"
+    },
+    {
+      "identity": "sha256:29143443c9f5013dce0b156ae7e4002abb526aa6081e3a4e79bbc053bab57fda",
+      "path": "packages/rigorloop/test/fixtures/observability/public-command-output.json"
+    },
+    {
+      "identity": "sha256:12a38c1809fa0deca17805ca783020c7783934e6c1f91bbb1e7c9fb6c2e4fb2a",
+      "path": ".github/workflows/ci.yml"
+    },
+    {
+      "identity": "sha256:e0b22cfd2a5a4ad6c1fc97d437b804c2f64260e5b74bb394aa44c58a3ac4a43d",
+      "path": ".github/workflows/release.yml"
+    },
+    {
+      "identity": "sha256:540a4ef7ee36c1234aaa904b6829f356126480eb55722902483bcc9d90528596",
+      "path": ".github/workflows/publish-github-packages.yml"
+    }
+  ],
+  "summary": "The complete delivered change meets the approved test-design and suite-organization direction. Cohesive behavior groups and ordinary composition replace mixed Python classes, retained native groups remain useful, and demonstrated oracle and fixture weaknesses are corrected without lost protection. Complete population and consumer reconciliation plus current integrated proof support the distinct Verify assessment. No material correction remains.",
+  "target": "code"
+}

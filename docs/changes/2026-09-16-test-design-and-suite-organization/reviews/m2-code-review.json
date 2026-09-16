@@ -1,0 +1,130 @@
+{
+  "assessment_scope": "Formal independent first-pass milestone Code Review of approved plan M2, from M1 implementation commit 677f566d6ccb4c6e1d67cd7e717f1a60c7aaea7d through handed-off commit f94f7f0b7f396af1b2d01e78c7465f35abd49ac0. The 21 exact engineering subjects cover 15 new modules, the remaining contract and guidance groups, phrase inputs, aggregate, selector classification and routing regression. Scope includes all 149 M2 cases and named parameter/fixture families, their protection dispositions and the changed aggregate/guidance/selection/phrase interactions with M1. Current approved Design Review design-review for Validation and Delivery Review delivery-review for the sole primary plan remain the upstream authority. This is neither the later fresh final whole-change review nor Verify.",
+  "change_id": "2026-09-16-test-design-and-suite-organization",
+  "contributors": [
+    {
+      "id": "codex-root",
+      "role": "implement"
+    }
+  ],
+  "findings": [],
+  "id": "m2-code-review",
+  "independence_basis": "The M2 implementation was authored by /root, recorded as codex-root/implement. Separate agent /root/proposal_reviewer performs this fresh assessment as code-reviewer/review and did not author or edit any M2 implementation, governing Design or plan. This reviewer previously assessed M1 and its correction, then independently inspected the full M2 diff from 677f566d to f94f7f0b7f396af1b2d01e78c7465f35abd49ac0, read all 15 new behavior modules and complete changed contract/guidance/aggregate sources, checked current authority and author evidence, and selected the judgment. Independent source comparisons and declaration checks corroborate preservation and expected-domain ownership. The author supplied the package and validation handoff, not the conclusion. Only this review evidence is authored by the reviewer.",
+  "judgment": "approved",
+  "limitations": [
+    "Approval covers this exact M2 slice and its affected M1 interactions only. Route retains work/activity ownership. M3–M8, fresh final whole-change Code Review and distinct Verify remain required; branch/PR readiness and publication are not claimed.",
+    "The implementation owner executed runtime checks. The reviewer inspected current durable evidence and bounded actual outputs and independently compared source bodies, expected domains and unchanged dependencies; it did not rerun the full expensive selected suite. Local logs are supplemental: durable records contain the procedures, outcomes, mappings and scope needed without scratch or chat history.",
+    "Canonical phrase/order/structure tests detect specified drift and do not establish semantic instruction adequacy, safe agent behavior, actual external transactions or independent reviewer conduct. Exact published source meaning remains with its owners and applicable independent review.",
+    "The four omission experiments prove strengthened detection for their named focused cases only. They do not establish whole-suite mutation coverage or show that all previous proof failed. No case/behavior retirement or universal test-quality automation is selected.",
+    "Any later changed shared source, fixture, selector, caller or contradictory result requires proportionate reassessment and fresh proof where the relevant basis changes. This assessment does not make pending milestone populations complete."
+  ],
+  "rationale": [
+    "Spec alignment: pass. The implementation follows M2/TG-02 and TEST-SR-19/20, VAL-SR-32: the remaining 25 aggregate classes move into 15 modules organized around current behavior owners, and the entrypoint becomes ordinary collection. Historical class/case names remain for supported selector continuity, not as module ownership. The existing contract pilot stays cohesive. Factories and resource lifecycles are ordinary functions; repeated assertions receive observed errors. Defining recording faults, valid controls and operations are visible in scenarios. No framework, new runner, permanent case ledger, line-count target or product retirement is introduced.",
+    "Test coverage and dispositions, retained structural groups: pass. Readability 4 retains required output shape and actual prose-command observations. Authority 19 retains read-only actors, stable artifacts, distinct review gates and current absence of retired surfaces. Route 7 retains routing resources/assemblies, stop declarations, bootstrap order and absence of retired parser names. Verify 8 retains scoped/final distinctions, claim/evidence declarations and the retired standalone explanation boundary. PR 14 retains independent authority axes, refresh/body preservation declarations, directional Git/PR safety, hosted-evidence boundaries and output structure. Plan 3 retains stable intent and approved-plan authority. These groups protect specific canonical structural drift; their exact phrases do not purport to execute or prove lifecycle semantics.",
+    "Test coverage and dispositions, remaining retained owner groups: pass. Proposal 6 retains exact direction sections, assembly/resource ownership and conditional gates; Vision 5 retains resource/asset inventory, source/README declarations and claim boundaries; Learn 5 retains session/confirmation/route contracts; Project Map 6 retains operations, scope, coordination and evidence declarations; CI guidance 5 retains minimal privilege examples, risk ownership and atomic-write/retry declarations; Bugfix 10 retains bounded authority and the exhaustive six-row proof-action partition, including exactly one action for each independently enumerated feasibility/proof combination; Discovery 10 retains portable resources, shared bytes, private drift/unknown controls and explicit owner-bounded handoffs. These are supported retain dispositions with improved placement, not claims of increased failure sensitivity.",
+    "Test coverage and dispositions, strengthened resource groups: pass. Design resource 7 now uses an independent 11-resource expectation drawn from Design Method's Public resource table, checks actual package membership, and executes every missing-resource subprocess variant against its specific required-resource diagnostic. Shared policy 14 retains missing/drift/unknown controls and public validator coverage while checking independent consumer domains and raw canonical-copy bytes. The reviewer independently compared the declared domains with published READ maps: seven delivery consumers, ten reliance, four assessment, ten quality and eight maintenance. Four controlled in-process empty-inventory probes changed from undetected by their respective old focused cases to detected by assertions after strengthening. This supports the narrow new detection claim; it does not assert that the whole earlier suite missed those hypothetical defects.",
+    "Test coverage and dispositions, contract/input families: pass. Recording reference 9 retains ten independently specified profile owners, each fresh valid control and a distinct missing boundary, missing classification/load trigger, missing primary token, missing selected reference despite complete unrelated/inline content, escaped symlink, undecodable resource, wrong selected filename or missing heading. CI assembly 11 retains nine independent assembly inputs, unknown-before-consistency, missing/duplicate and Markdown fence marker/length partitions. Relocated plan 2 retains current versus retired recording paths. Explicit recording guidance 4 remains structural/canonical protection and now uses independently specified selected resources. These 26 cases plus the 123 moved cases cover the complete 149-case allocation without retirement.",
+    "Edge cases: pass. All 25 moved class identities and 123 class/method selectors were independently matched against the base. Of their method bodies, including setup, 128 are AST-identical and only the five declared inventory/parity improvements differ. Meaningful parameter loops, fence combinations, resource families and declared negative observations remain present. The exact missing-resource messages and unknown-before-missing subprocess observation retain the intended fault rather than merely accepting any exception. Independent domains prevent an implementation inventory omission from silently deleting test iterations. Counts and AST equality corroborate preservation but are not used alone to judge protective value.",
+    "Error handling: pass. recording_profile owns its temporary lifecycle with contextmanager cleanup registered at acquisition, while the caller performs valid control, defining mutation, validation and exact diagnostic assertion. replace_once rejects a missing/no-op intended replacement. ci_assembly_input returns fresh metadata/body and verifies exactly one declaration replacement; its scenario performs the validation. assert_diagnostic checks an already observed error list. Canonical documents are read-only and mutation cases operate on private copies or in-memory strings; symlink and decoding faults remain real filesystem inputs. No helper catches a required failure into success or substitutes unrelated complete resources for the selected dependency.",
+    "Architecture boundaries: pass. Per-skill source modules use direct unittest.TestCase classes and only relevant setup, while cross-skill authority/shared-policy modules have explicit composed obligations. The aggregate imports each group once without aliases or bespoke loader machinery. M1 fixture and guidance support remain unchanged; its corrected pure result assertions are preserved. Phrase tuple values are unchanged and their comments accurately identify the two retained optional automated-method consumers; they neither activate that method nor confer reviewer independence. The small contract module legitimately co-locates fresh builders, a lifecycle helper and a pure assertion with its component scenarios.",
+    "Compatibility and M1 interaction: pass. Normal discovery reports the same 300 unique supported Class.method selectors with no M2 renames or duplicate aliases. The 15 new paths select the independent expected skills.regression and adapters.regression consumers through same-slice classification and routing tests; the new family failed before wiring and passed after. The shared guidance resource mapping is independently specified, with the production mapping observed for consistency, and preserves the M1 guidance observations. All 12 M1 engineering subjects outside the four changed aggregate/guidance/routing subjects were re-inspected at their unchanged approved identities. Current full and isolated Skill execution plus adapter/selector/executor proof covers the changed interactions. Earlier M1 approval remains restricted to its original basis; this review supplies the new affected assessment.",
+    "Security/privacy: pass. No product permissions, secrets, network operations, release authority or external state changes are introduced. Faults are local private fixtures or controlled in-process inventory patches, not edits to production files. Canonical sources stay read-only; no test reads credentials or adds secret logging. Actual escaped-path and invalid-decoding rejection observations remain intact.",
+    "Derived artifact currency: pass for the affected scope. No published skill, template, schema, packed artifact or generated adapter source is authored in M2. Canonical 19-skill validation and actual affected adapter checks support the test reorganization's shared consumers. Independent raw-byte comparisons strengthen source-copy observations without deriving expectations from the production copy validator. Neither these source tests nor this review claim current release/public installation or universal generated-artifact currency.",
+    "Unrelated changes: pass. Engineering changes remain within approved M2's remaining Skill groups, fixture/assertion composition, meaningful oracle improvements, comments identifying retained obligations and necessary selector/caller closure. There is no unassessed removal, accepted behavior change, new semantic grading harness or unrelated implementation refactor. The immutable expected sets are test observations of existing owned contracts, not new production vocabulary.",
+    "Validation evidence: pass. Current m2-implementation/m2-validation declare all 21 independently matched engineering subjects and explicit group/fixture/consumer dispositions. Inspected logs record final direct Skill 300 passed in 20.327s, canonical validation of 19 skills, and strengthened 36 cases passed. C1 preserves all 300 unique selectors. The selected-CI log explicitly lists the 24 actual source/record paths used and jobs=4, then reports success for skills.regression, adapters.regression, change_metadata.regression, change_metadata.validate, selector.regression and validation_execution.regression, covering Skill 300, adapter 95, metadata regression 7, selector 184 and executor 52. Recorded whitespace and current-record validation complete the author handoff. The reviewer inspected both mutation-probe results and the original/final test mechanisms; no production mutation or external service was involved.",
+    "Authority, applicability and judgment: pass. The exact approved Validation model and primary plan and their current independent reviews were refreshed. M1 is recorded completed after its reporter-resolved correction; M2 is the current reviewed slice and M3 remains pending. The evidence file is conservatively stale at record level because it contains historical populations and prior subjects; current m2 entries were individually inspected for exact subjects, procedures, actual results and limits. This bounded entry-level reliance does not refresh older evidence or retarget earlier judgments. No necessary decision, unreliable required basis or supported required correction prevents approval of M2."
+  ],
+  "reviewer": {
+    "id": "code-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:4e1c7aa2e8bf9d5a9956eba6b46341f9e2084fa699f6c487d4c10a6f174615d8",
+      "path": "scripts/lib/validation/validation_selection.py"
+    },
+    {
+      "identity": "sha256:d8ee6b69949e1225bcad347ce1e4d23b24b54c76dc5400657b9d321654c3829a",
+      "path": "tests/engineering/validation/selection_contract_tests.py"
+    },
+    {
+      "identity": "sha256:dc156e9c5567561b28f54a8bc36314aa1877823c1b091cf0ed1720e38e28ddad",
+      "path": "tests/skill/review_independence_skill_phrases.py"
+    },
+    {
+      "identity": "sha256:321b60fb05e1210b1bb6a44291ee89b861cd8e933fdd3c75089747aca6d8dbea",
+      "path": "tests/skill/skill_authority_tests.py"
+    },
+    {
+      "identity": "sha256:bb9c6100863da6f651a1510aa80d2e5582378dd710d11a46fe1682040cc862b5",
+      "path": "tests/skill/skill_bugfix_guidance_tests.py"
+    },
+    {
+      "identity": "sha256:779d457024c46d0979591217fc24365c94392af32e18c719a23bdba95c251024",
+      "path": "tests/skill/skill_ci_guidance_tests.py"
+    },
+    {
+      "identity": "sha256:24bc1ab9e29565d27c003d42c874d2552d3f5f307bc42f3397d7a4e899027bdf",
+      "path": "tests/skill/skill_contract_tests.py"
+    },
+    {
+      "identity": "sha256:317d5e9fbddd9f87f6d1f47fd8618884944d5c0d2dfa0e37f115343037cea64b",
+      "path": "tests/skill/skill_design_resource_tests.py"
+    },
+    {
+      "identity": "sha256:f6e46f420d992f68331baaf83a045808608b1aad33c1ee8cf582be2a81feb964",
+      "path": "tests/skill/skill_discovery_guidance_tests.py"
+    },
+    {
+      "identity": "sha256:35c23e2eb7fac12d4727f881ddfd9b769b25e223dab65d7517841697eaf4d430",
+      "path": "tests/skill/skill_guidance_tests.py"
+    },
+    {
+      "identity": "sha256:4cd1e5ce3444ff0072f48a401e506a32851cc9d6f7a64241bf70689327bed386",
+      "path": "tests/skill/skill_learn_guidance_tests.py"
+    },
+    {
+      "identity": "sha256:cd37a6ed0a6423d84cde9ae464683e20a8d70572359b2b2c16e7e179962f7ef6",
+      "path": "tests/skill/skill_plan_guidance_tests.py"
+    },
+    {
+      "identity": "sha256:301ba04b2d8459dbb663dfa35aebaf44fb61dc1450cee861552be3b882a48723",
+      "path": "tests/skill/skill_pr_guidance_tests.py"
+    },
+    {
+      "identity": "sha256:88a504587544ce79795a5d943e351650bce5c423226fba811f7a5d0abc8641e8",
+      "path": "tests/skill/skill_project_map_guidance_tests.py"
+    },
+    {
+      "identity": "sha256:77b47c830498a8733568353ce1e4e28335ffbcb8ca09ed0b9ae186e40a97d537",
+      "path": "tests/skill/skill_proposal_guidance_tests.py"
+    },
+    {
+      "identity": "sha256:72b58380c93c6ae6e66d9b164d0a929f2dd827487f713be875c92f8d4c718b41",
+      "path": "tests/skill/skill_readability_guidance_tests.py"
+    },
+    {
+      "identity": "sha256:2e09895b076eca7fe11b7a3be9ad4319ca9a454cd8e8d36537db76e6c73ad5a0",
+      "path": "tests/skill/skill_route_guidance_tests.py"
+    },
+    {
+      "identity": "sha256:eb5352563f5e3e8922b30c21aab72c422fdff311477d413d8163011d131847cc",
+      "path": "tests/skill/skill_shared_policy_tests.py"
+    },
+    {
+      "identity": "sha256:431cdff90fd464967ff18cd045317cf6282610123afd5796424cdc254aa720c4",
+      "path": "tests/skill/skill_verify_guidance_tests.py"
+    },
+    {
+      "identity": "sha256:5ac1f89bf43095a3149b34e073ff8c6b7ac2ac0fabc07bae17cf4c20309e3d77",
+      "path": "tests/skill/skill_vision_guidance_tests.py"
+    },
+    {
+      "identity": "sha256:035d1baf2467725bcd1e593fc3dcf8d9c54fe02f6705f1a39d45ad1e46f7c441",
+      "path": "tests/skill/test-skill-validator.py"
+    }
+  ],
+  "summary": "M2 completes the remaining Skill test organization with stable selectors, explicit fixture/action/assertion composition and stronger independent resource inventories. All 149 allocated cases have supported retain or strengthen dispositions, and current direct/selected proof covers the affected M1 interactions. No required correction remains in the reviewed slice.",
+  "target": "code"
+}

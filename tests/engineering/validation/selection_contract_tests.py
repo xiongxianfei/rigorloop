@@ -5,6 +5,7 @@ from selection_test_helpers import (
     CHECK_CATALOG,
     CI,
     EXPECTED_CATALOG,
+    EXPECTED_MODE_CHECK_IDS,
     MODE_CHECK_IDS,
     Path,
     README_VALIDATOR,
@@ -23,8 +24,15 @@ from selection_test_helpers import (
 
 class SelectionContractChecks:
     def test_retired_skill_archive_paths_select_current_protection_without_reading_sources(self):
-        from lib.validation.validation_selection import SKILL_SOURCE_ARCHIVE_PATHS
-        for path in SKILL_SOURCE_ARCHIVE_PATHS:
+        # Retained deletion compatibility independently names the five retired
+        # inputs; changing the producer's registry cannot silently skip them.
+        for path in (
+            "docs/archive/skill-model/2026-09-08/README.md",
+            "docs/archive/skill-model/2026-09-08/specs/skill-contract.md",
+            "docs/archive/skill-model/2026-09-08/specs/skill-readability-contract.md",
+            "docs/archive/skill-model/2026-09-08/specs/customer-portable-public-skill-evidence.md",
+            "docs/archive/skill-model/2026-09-08/docs/adr/ADR-20260623-published-skill-resource-integrity.md",
+        ):
             result = select_validation(SelectionRequest(mode="explicit", paths=(path,), repo_root=ROOT, preflight_context=self.root_preflight_context))
             self.assertEqual(result.status, "ok", result.blocking_results)
             checks = {check["id"] for check in result.selected_checks}
@@ -153,13 +161,31 @@ class SelectionContractChecks:
                                  {c["id"] for c in new.selected_checks})
                 for check in new.selected_checks:
                     self.assertNotIn("scripts/" + name, check["command"])
+        for name in (
+            "boundary_structural_tests.py", "boundary_path_tests.py",
+            "boundary_handoff_tests.py", "boundary_model_tests.py",
+            "boundary_command_tests.py", "boundary_fixture_helpers.py",
+        ):
+            with self.subTest(module=name):
+                payload = self.select(["tests/engineering/validation/" + name]).to_json_dict()
+                self.assertEqual(payload["unclassified_paths"], [])
+                checks = {check["id"]: check for check in payload["selected_checks"]}
+                self.assertEqual(set(checks), {"boundary_first.validate", "boundary_first.regression"})
+                self.assertEqual(checks["boundary_first.regression"]["command"],
+                                 "python tests/engineering/validation/test-boundary-first-validation.py")
+                self.assertEqual(len(checks), len(payload["selected_checks"]))
         unknown = self.select(["tests/engineering/validation/test-unknown.py"])
         self.assertTrue(unknown.to_json_dict()["unclassified_paths"])
 
 
     def test_split_selection_modules_preserve_selector_and_executor_consumers(self):
         for name in ("selection_contract_tests.py", "selection_git_tests.py",
-                     "selection_cli_tests.py", "selection_test_helpers.py"):
+                     "selection_cli_tests.py", "selection_test_helpers.py",
+                     'execution_python_adapter_tests.py',
+                     'execution_process_tests.py',
+                     'execution_node_adapter_tests.py',
+                     'execution_catalog_tests.py',
+                     'execution_composition_tests.py'):
             with self.subTest(module=name):
                 payload = self.select(["tests/engineering/validation/" + name]).to_json_dict()
                 self.assertEqual(payload["unclassified_paths"], [])
@@ -180,7 +206,34 @@ class SelectionContractChecks:
 
     def test_split_skill_modules_select_required_consumers(self):
         # Independently named consumers: a helper move must not hide Skill proof.
-        for name in ("skill_contract_tests.py", "skill_cli_tests.py", "skill_guidance_tests.py"):
+        for name in (
+            "skill_contract_tests.py", "skill_cli_tests.py", "skill_guidance_tests.py",
+            "skill_metadata_tests.py",
+            "skill_resource_tests.py",
+            "skill_asset_tests.py",
+            "skill_ci_contract_tests.py",
+            "skill_canonical_tests.py",
+            "skill_portability_tests.py",
+            "skill_project_map_tests.py",
+            "skill_placement_tests.py",
+            "skill_fixture_helpers.py",
+            "skill_guidance_helpers.py",
+            "skill_readability_guidance_tests.py",
+            "skill_authority_tests.py",
+            "skill_route_guidance_tests.py",
+            "skill_verify_guidance_tests.py",
+            "skill_pr_guidance_tests.py",
+            "skill_plan_guidance_tests.py",
+            "skill_proposal_guidance_tests.py",
+            "skill_design_resource_tests.py",
+            "skill_vision_guidance_tests.py",
+            "skill_learn_guidance_tests.py",
+            "skill_project_map_guidance_tests.py",
+            "skill_ci_guidance_tests.py",
+            "skill_bugfix_guidance_tests.py",
+            "skill_shared_policy_tests.py",
+            "skill_discovery_guidance_tests.py",
+        ):
             with self.subTest(module=name):
                 payload = self.select(["tests/skill/" + name]).to_json_dict()
                 self.assertEqual(payload["unclassified_paths"], [])
@@ -213,6 +266,27 @@ class SelectionContractChecks:
                                  {c["id"] for c in new.selected_checks})
                 for check in new.selected_checks:
                     self.assertNotIn("scripts/" + name, check["command"])
+        # Release imports and service fixtures keep the full native aggregate.
+        release_modules = ('release_identity_tests.py', 'release_profile_tests.py', 'release_preparation_tests.py', 'release_preflight_tests.py', 'release_timing_tests.py', 'release_publication_tests.py', 'release_provider_fixtures.py', 'release_coordination_fixtures.py')
+        for name in release_modules:
+            with self.subTest(release_module=name):
+                payload = self.select(["tests/engineering/release/" + name]).to_json_dict()
+                self.assertEqual(payload["unclassified_paths"], [])
+                self.assertEqual([check["id"] for check in payload["selected_checks"]], ["release_transaction.regression"])
+        self.assertTrue(self.select(["tests/engineering/release/unknown.py"]).to_json_dict()["unclassified_paths"])
+        packaging_groups = (
+            (('adapter_archive_tests.py', 'adapter_contract_tests.py', 'adapter_diagnostics_tests.py', 'adapter_fixture_helpers.py', 'adapter_generation_tests.py', 'adapter_install_tests.py', 'adapter_metadata_tests.py', 'adapter_portability_tests.py', 'adapter_resources_tests.py'), {"adapters.regression", "adapters.drift", "adapters.validate"}),
+            (('npm_fixture_helpers.py', 'npm_recording_tests.py'), {"rigorloop_cli.test", "npm_package_publication.test"}),
+        )
+        for names, expected in packaging_groups:
+            for name in names:
+                with self.subTest(packaging_module=name):
+                    payload = self.select(["tests/engineering/packaging/" + name]).to_json_dict()
+                    self.assertEqual(payload["unclassified_paths"], [])
+                    ids = [check["id"] for check in payload["selected_checks"]]
+                    self.assertEqual(set(ids), expected)
+                    self.assertEqual(len(ids), len(expected))
+        self.assertTrue(self.select(["tests/engineering/packaging/unknown.py"]).to_json_dict()["unclassified_paths"])
         self.assertTrue(self.select(["tests/skill/test-unknown.py"]).to_json_dict()["unclassified_paths"])
         workflow = self.select([".github/workflows/publish-github-packages.yml"])
         self.assertFalse(workflow.to_json_dict()["unclassified_paths"])
@@ -348,7 +422,8 @@ class SelectionContractChecks:
         self.assertNotIn("main.retirement_ledger.regression", CHECK_CATALOG)
         with self.assertRaisesRegex(ValueError, "unknown check ID"):
             catalog_command("main.retirement_ledger.regression")
-        self.assertEqual(set(CHECK_CATALOG), set(EXPECTED_CATALOG) | {key for ids in MODE_CHECK_IDS.values() for key in ids})
+        self.assertEqual(MODE_CHECK_IDS, EXPECTED_MODE_CHECK_IDS)
+        self.assertEqual(set(CHECK_CATALOG), set(EXPECTED_CATALOG) | {key for ids in EXPECTED_MODE_CHECK_IDS.values() for key in ids})
         for check_id, command in EXPECTED_CATALOG.items():
             with self.subTest(check_id=check_id):
                 self.assertEqual(CHECK_CATALOG[check_id].command_template, command)
@@ -478,7 +553,7 @@ class SelectionContractChecks:
     def test_catalog_records_audited_commands_and_initial_case_population(self) -> None:
         from lib.validation.validation_selection import is_parallel_safe_check
 
-        expected_parallel_safe = {key for ids in MODE_CHECK_IDS.values() for key in ids if key.endswith(("skills.validate", "skills.regression", "adapters.build_archives", "adapters.validate_archives"))}
+        expected_parallel_safe = {key for ids in EXPECTED_MODE_CHECK_IDS.values() for key in ids if key.endswith(("skills.validate", "skills.regression", "adapters.build_archives", "adapters.validate_archives"))}
 
         expected_cases = {
             'skills.regression',

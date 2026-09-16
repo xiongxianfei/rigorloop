@@ -1,0 +1,144 @@
+{
+  "assessment_scope": "Independent first-pass milestone Code Review of complete M4/TG-04 from 77632de9a3162c6f87772d00f94830ac39ac64a0 to 79a97302ea08c2e8578637dd5f8088541a7707cd. The 16 exact subjects cover both ordinary entrypoints, retained selector contract/Git/CLI/helper sources, five new executor modules, catalog, unchanged hosted two-worker caller, two shared Records JSON inputs and metadata alternate-runner source. Assessment covers retained/generated/parameterized cases, fixture operations and affected M1–M3 interactions. Approved Validation Design and sole primary plan remain unchanged. This is not final whole-change review or Verify.",
+  "change_id": "2026-09-16-test-design-and-suite-organization",
+  "contributors": [
+    {
+      "id": "codex-root",
+      "role": "implement"
+    }
+  ],
+  "findings": [
+    {
+      "evidence": "Severity: minor (required). Location: tests/engineering/validation/test-select-validation.py:352–357, test_output_contract_unreliable_failure_omits_misleading_scoped_rerun. After the formatter changed to positional named selectors, this test still only asserts absence of '-k \"NoSuchTest\"'. The current formatter cannot emit that spelling, so the asserted negative condition no longer proves the named protection. The reviewer exercised the actual runner in a private Python subprocess, loading the current source and forcing can_emit_scoped_rerun=True only in memory: NoSuchTest emitted Re-run: python tests/engineering/validation/test-select-validation.py \"unittest.loader._FailedTest.NoSuchTest\", yet the unchanged negative regression passed (one test, no errors). Normal source emitted no Re-run line. TEST-SR-05 and M4/TG-04 require assertions capable of detecting the intended misleading-rerun failure; all passing surrounding tests do not supply that observation.",
+      "id": "m4-cr-01",
+      "owner": {
+        "id": "codex-root",
+        "role": "implement"
+      },
+      "reporter": {
+        "id": "code-reviewer",
+        "role": "review"
+      },
+      "required_outcome": "Strengthen the unreliable-failure regression to require absence of any misleading scoped rerun for the actual loader failure, using an observation independent of the retired -k spelling. Preserve nonzero exit and actionable loader diagnostics, exact valid-case emitted rerun execution, supported filters and normal 184-case population. Safe resolution path: codex-root/implement owns a bounded assertion correction; establish that the same controlled bad-rerun counterexample now fails at the intended assertion, run the affected output-contract group and required surrounding proof, record current evidence and return changed exact subjects for reporter disposition and independent corrected review. needs-decision rationale: none; governing behavior is settled.",
+      "resolution": {
+        "actor": {
+          "id": "code-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [
+          {
+            "id": "m4-review-correction",
+            "path": "docs/changes/2026-09-16-test-design-and-suite-organization/evidence.json"
+          }
+        ],
+        "rationale": "Original reporter /root/proposal_reviewer inspected the two-assertion correction at 0853a7eae30aa390dd2872adb7c58b3a3d2e0e87. The case now requires the exact loader-failure diagnostic and rejects every Re-run: marker, independent of command syntax. The reviewer executed the same private actual-runner can_emit_scoped_rerun=True counterexample: the corrected case fails specifically at the absence assertion (one failure, zero errors), while normal execution passes. Fresh collection preserves all 184 selectors; current actual-file selected CI passes 184 selector and 52 executor cases, metadata checks and the unchanged valid-case emitted-rerun observation. Exact subject comparison confirms only this method's assertions changed. Required protection is restored without changing runner behavior, filters or population. Original finding evidence and reviewed subjects are preserved."
+      },
+      "state": "resolved",
+      "subjects": [
+        {
+          "identity": "sha256:467dd9185bb465df7687c55407831ff6993f0117bb76c72003b158cf12506230",
+          "path": "tests/engineering/validation/test-select-validation.py"
+        }
+      ]
+    }
+  ],
+  "id": "m4-code-review",
+  "independence_basis": "Author /root produced M4 as codex-root/implement. Separate nonauthor agent /root/proposal_reviewer acts as code-reviewer/review and did not edit engineering sources, fixtures, Design, plan or workflow. The reviewer read the complete selector entrypoint, all three retained selector behavior modules and helper, all five executor behavior modules and aggregate; inspected the actual base-to-handoff diff, native CI caller, generated children, exact subject matches and author logs; independently compared AST/discovery preservation and exercised an owned in-memory mutation through the actual selector runner. Judgment and finding are independently selected.",
+  "judgment": "changes-requested",
+  "limitations": [
+    "First-pass assessment is limited to exact M4 and affected interactions. M5–M8, fresh independent final whole-change Code Review and distinct Verify remain required. Route owns work/activity state; this record does not close M4 or authorize skipping correction.",
+    "The author ran full direct and selected suites. The reviewer inspected actual logs and independently checked identities, AST/discovery preservation and the bounded output-oracle mutation; it did not rerun every expensive suite.",
+    "The controlled mutation changes only the in-memory decision to emit a rerun in an owned child process. It proves the negative assertion is vacuous for the claimed defect, not that current runtime behavior itself is wrong. Corrected assertion and appropriate proof require reporter reassessment.",
+    "Generated command children establish wrapper dispatch/scheduling/output contracts only. They do not prove all product validators, installed packages, final broad-smoke readiness or external providers.",
+    "Shared persistent Records inputs and downstream package consumers are unchanged. M7/M8 retain their full assessment allocation; earlier milestone approvals remain scoped to their original subjects."
+  ],
+  "rationale": [
+    "Spec alignment: pass apart from the identified oracle concern. M4 implements the approved selector/executor responsibility split, preserves the established selector contract/Git/CLI distinction and introduces five direct native TestCase groups for Python adaptation, process scheduling, Node adaptation, catalog constraints and composition. TEST-SR-19/20 and VAL-SR-32 do not require arbitrary line limits, further class fragmentation or a replacement runner. The bounded formatter correction is within M4 actionable-rerun scope and VAL-SR-12, not a new executor product capability.",
+    "Test coverage, retained selector contract group: pass. All 67 contract cases retain exact check/category/command/phase observations, owner routing and purpose-specific consumers, historical deletion paths versus present invalid files, current model/example owners, explicit unknown/mixed path rejection, governance/navigation distinctions, parser/shared-module consumers, current/retired catalog membership and thin hosted workflow expectations. Parameter domains are literal meaningful path/owner/failure partitions, not a Cartesian count target. The five new executor paths independently require exactly selector.regression and validation_execution.regression with no duplicate check IDs; earlier M1–M3 new paths remain represented.",
+    "Test coverage, independent inventory strengthening: pass. Five retired Skill archive paths are now named independently rather than iterating the production inventory under test. EXPECTED_MODE_CHECK_IDS independently fixes the ordered ten-check broad-smoke and sixteen-check main domains; actual mode membership is compared directly and full catalog membership is built from independent expected domains. Author controlled in-memory omissions show the old focused archive/catalog cases passed and strengthened cases fail at intended assertions. A separate worker-discovery omission was already detected; its contrary initial observation is preserved and no third previously missing protection is claimed.",
+    "Test coverage, retained real Git group: pass. All 46 cases exercise private actual repositories, staged/unstaged/committed paths, both rename sides and unknown deletions, exact PR snapshots versus current discovery, stored discriminator/type failures, registered supporting subjects, malformed/dangling references, escaping symlinks and authoritative tracking. File/directory replacement and present/unproven/deleted historical inputs remain distinct. Selected readability commands and record-validator subject options execute real commands. Shared Records JSON and complete-store example inputs remain unchanged; they are synthetic structural inputs and not approval evidence.",
+    "Test coverage, retained public CLI group: pass. All 61 cases retain real selector/ci.sh invocations, mode and argv forwarding, exact revision binding, invalid flags before dispatch, malformed/blocked/fallback/mismatched payload rejection, forbidden-work markers, known sibling failure propagation and no partial success. Generated child scripts intentionally replace command bodies only in privately copied workspaces whose catalog units explicitly become command; they prove trusted dispatch, scheduling, output and prerequisite behavior, not actual product validation. Broader real validators retain their own suite/CI proof.",
+    "Test coverage, output contract group: concern. Ten ordinary output cases retain compact success, actionable failure, verbose and quiet variants, conflicting flags before execution, zero selection and unsupported JSON. The strengthened reliable-rerun case executes the emitted command and requires exactly the intended failing fixture and diagnostic; its AST identity matches the recorded red-before/green-after proof. However the adjacent unreliable-loader-failure case still rejects only the old '-k \"NoSuchTest\"' substring. That string cannot be emitted by the current positional formatter, so the assertion cannot distinguish the claimed absence of a misleading rerun. The required correction is m4-cr-01; source behavior currently suppresses that rerun, but regression protection is insufficient under TEST-SR-05.",
+    "Test coverage, Python and Node adapters: pass. Eleven Python cases retain imported normal discovery and setup hooks, addressability failures, independently stated class/method/filter selections, duplicate/zero/load-error rejection, skipped/missing/disagreeing/unknown receipts, stale receipt non-reuse, unknown mode before execution, expansion dependencies, opt-in eighth metadata failure population, actual public wrapper expansion, declared serial constraints and normal-versus-isolated execution. Five Node cases retain native declarations, dynamic names, parent hooks, no collection-body side effects, ambiguous/nested-worker/zero/load-error rejection, skip/todo/assertion/hidden-subcase failure, unknown modes and package-native glob/cwd plus actual rerun execution. Generated files are per-case owned resources with immediate registered cleanup.",
+    "Edge cases and process/error handling: pass except the separate output-oracle concern. Twenty-one scheduler cases use actual owned children and exact statuses for graph rejection before launch, nested allocation, serial barriers and queue-time exclusion, independent continuation, prerequisite failures, fail-fast unstarted work, malformed selections and unknown constraints. Bounded rendezvous verifies real overlap and completion-order reporting without treating speed as success. Timeout, ignored TERM, new-session descendants, orphan environment replacement, interruption, cleanup after observed exit, fresh retry and unrelated-child preservation remain real process observations. Decode/missing-capture failures and unavailable versus signal outcomes cannot become success. Private report destinations and child budgets are asserted at the child boundary.",
+    "Architecture boundaries and composition: pass. Eleven composition cases preserve authored full/narrow coverage, stale constraint rejection, exact prerequisite remapping, cycles, one execution per canonical ID, reasons and focused/boundary failure gates, separate observations, repeated new invocations and distinct snapshot/current checks. Four catalog cases retain command-unit coherence, unknown closed values before launch and stale command-basis rejection. Ordinary resource helpers operate on fresh roots and return observable results; assertion helpers do not hide the tested action. The three retained selector mixins contain compatible behavior methods, no setup inheritance or borrowed TestCase instance lifecycle; SelectionFixtures is a bounded native assembly sharing fresh fixture operations and immutable expectations.",
+    "Compatibility and isolation: pass with output-oracle correction required. Independent AST comparison finds the same 65 executor methods including two aggregate runner methods: only three group methods differ, for explicit filter expectations or cwd; the five groups retain all 63 methods and 52 tests. Normal collection files before/after are exactly equal for 184 selector and 52 executor identities. The explicit failure fixture remains addressable without entering normal discovery; metadata's extra failure remains opt-in. Hosted CI's two unchanged named overlap selectors still address the moved classes, and normal imports load local modules without test-body side effects. Known ordinary -k filters remain supported; the formatter now supplies exact positional reruns.",
+    "Security/privacy, derived artifacts and unrelated changes: pass within scope. Fresh repository/workspace/process state belongs to actual cases; cleanup is attached immediately, child markers and outputs remain private, and controlled worker crashes/signals target owned descendants. No production executor logic, schema, skill, generated adapter, published artifact, external service or stored vocabulary changes. The only production catalog edit registers five exact new paths. Canonical check commands/bases and the hosted caller are unchanged, so no generated-package currency or final broad-smoke claim follows from this assessment.",
+    "Validation evidence: sufficient to assess, with the concrete oracle limitation preserved. Author logs pass selector 184 in 185.39s and executor 52 in 60.337s. The actual C3 two-worker invocation passes both named cases, reporting jobs=1 overlap=False and jobs=2 overlap=True for the same two generated Python cases. Actual 13-path C2 jobs=4 runs metadata regression/validation, selector and executor checks successfully. Five-path routing failed before wiring and passes within final direct/selected execution. Reliable-rerun proof AST sha256:fa9a1fe5c9b8109a4f2e411fdaa054861315b25655770f3aeea537c5defa7e85 is unchanged; its before log reports zero selected rerun tests and final ten output-contract cases pass. These successful runs do not cure the independent negative-oracle finding.",
+    "Direct reviewer counterexample: the reviewer loaded the actual test runner in an owned Python subprocess without writing source and compared NoSuchTest normally versus an in-memory can_emit_scoped_rerun=lambda test_id: True mutation. Normal execution exits 1 with no Re-run line; mutated execution exits 1 and emits positional \"unittest.loader._FailedTest.NoSuchTest\". Running the unchanged existing negative regression against that actual mutated runner still succeeds (one test, no errors). The probe demonstrates the claimed failure mechanism is unobserved; it does not claim the current formatter emits that bad command.",
+    "Authority and overall judgment: current approved Design/Delivery identity maps, activity, work state, prior findings and reporter-owned rerun blocker were inspected. M1–M3 completed; M4 active; M5–M8 pending. Earlier review applicability is restricted for changed shared catalog/selector subjects and is not silently renewed here. The mixed evidence file retains historical failed red proof and stale snapshots; this assessment relies on the exact matched M4 entries and actual logs, not universal evidence-file currency. No missing necessary authority, required decision or unassessable material scope prevents a defined correction. The appropriate complete milestone judgment is changes-requested."
+  ],
+  "reviewer": {
+    "id": "code-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:467dd9185bb465df7687c55407831ff6993f0117bb76c72003b158cf12506230",
+      "path": "tests/engineering/validation/test-select-validation.py"
+    },
+    {
+      "identity": "sha256:29bcab3e3fb762ab3b6fd7b83b9110578dda60eccbf40175ba14d44948117a71",
+      "path": "tests/engineering/validation/selection_contract_tests.py"
+    },
+    {
+      "identity": "sha256:318f0b659d5b45f93323ccf1e3f091dad75ff4b61c54ea189bde1851c59d017a",
+      "path": "tests/engineering/validation/selection_git_tests.py"
+    },
+    {
+      "identity": "sha256:b715a9251509278392d58a62557b2afe67aa63492ea0cae029f9bd4e6bb3c3c6",
+      "path": "tests/engineering/validation/selection_cli_tests.py"
+    },
+    {
+      "identity": "sha256:0f8da4d62c3f8aaa197a73b6ddaf1419cc24a19952b839abe75bafe2bd733a51",
+      "path": "tests/engineering/validation/selection_test_helpers.py"
+    },
+    {
+      "identity": "sha256:31bc9e6cd64750cd18240ee810bb596161ae34212b8a07a2cbb9e6ddff9cb522",
+      "path": "tests/engineering/validation/test-validation-execution.py"
+    },
+    {
+      "identity": "sha256:ab2690653e8c2c6975b4943a6b8dc391a5ad36e05ac8e934294fb5a4c966b734",
+      "path": "tests/engineering/validation/execution_catalog_tests.py"
+    },
+    {
+      "identity": "sha256:75f7d8a09e58d71cb4232c0d6a0b295e91971f9dd4d20dd1f5dcd9170aa81d74",
+      "path": "tests/engineering/validation/execution_composition_tests.py"
+    },
+    {
+      "identity": "sha256:185e782c30cba82b4797e6089be0fed01bab60d9957b183430e5ae4068946a50",
+      "path": "tests/engineering/validation/execution_node_adapter_tests.py"
+    },
+    {
+      "identity": "sha256:8c46af8afde83c86005dbf19de2f655826e447cea41cae844e5c86017cf7fa1a",
+      "path": "tests/engineering/validation/execution_process_tests.py"
+    },
+    {
+      "identity": "sha256:bd94a1e6ac661bc3b88749c2269b29729b1fa35fc81f284c8e5900eb338a602d",
+      "path": "tests/engineering/validation/execution_python_adapter_tests.py"
+    },
+    {
+      "identity": "sha256:51f6110d2e8ed3adecc868f847207d50195883fb54e660152bfc2e6187bc41ad",
+      "path": "scripts/lib/validation/validation_selection.py"
+    },
+    {
+      "identity": "sha256:12a38c1809fa0deca17805ca783020c7783934e6c1f91bbb1e7c9fb6c2e4fb2a",
+      "path": ".github/workflows/ci.yml"
+    },
+    {
+      "identity": "sha256:dde4b6b431c783ac6b7a642ce7455458d13397a2b24f72cbe0bc7d016a4ed9ab",
+      "path": "tests/fixtures/rigorloop-records-v3/records.json"
+    },
+    {
+      "identity": "sha256:adb156b8e2b196c9e82195b3eac059852ca7a941382fa41e355ff3803bf9ba87",
+      "path": "tests/fixtures/rigorloop-records-v3/storage-safety.json"
+    },
+    {
+      "identity": "sha256:da72bcb80d9cf94a16b119957e6162f8bedacd27bbea70be10429b424f9a4193",
+      "path": "tests/engineering/validation/test-change-metadata-validator.py"
+    }
+  ],
+  "summary": "M4 preserves all 184 selector and 52 executor cases, clarifies executor responsibility ownership and strengthens independent catalog expectations. The valid named-failure rerun correction is supported. One adjacent retained negative oracle still checks the retired command spelling and does not detect a misleading positional rerun; it requires correction before milestone closeout.",
+  "target": "code"
+}

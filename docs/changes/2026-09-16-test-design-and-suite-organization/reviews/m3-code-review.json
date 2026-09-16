@@ -1,0 +1,190 @@
+{
+  "assessment_scope": "Formal independent first-pass milestone Code Review of approved M3 from base f94f7f0b7f396af1b2d01e78c7465f35abd49ac0 through handed-off HEAD 77632de9a3162c6f87772d00f94830ac39ac64a0. Exact subjects include all seven allocated suites, six boundary modules/helper, selector/classification members, all six boundary documents, thirteen prose fixtures and two shared Records JSON fixtures. Assessment includes retain dispositions for unchanged groups, meaningful generated/parameterized families, metadata alternate runner input and current cross-slice caller effects. Upstream authority remains the exact approved Validation Design and sole primary plan. This is M3 milestone assessment, not final whole-change review or Verify.",
+  "change_id": "2026-09-16-test-design-and-suite-organization",
+  "contributors": [
+    {
+      "id": "codex-root",
+      "role": "implement"
+    }
+  ],
+  "findings": [],
+  "id": "m3-code-review",
+  "independence_basis": "The M3 implementation and author evidence were produced by /root, recorded as codex-root/implement. Separate agent /root/proposal_reviewer acts as code-reviewer/review and did not author or edit the reviewed implementation, fixtures, Design or plan. The reviewer read all seven allocated suites, all six new boundary source/helper modules, every boundary/prose fixture and both Records JSON fixtures; inspected the actual f94f7f0b-to-77632de9 diff and callers; independently compared method preservation and System inventory; inspected actual validation output; and executed the bounded owned after-state isolation probe. The reviewer independently selected this judgment and writes only review evidence.",
+  "judgment": "approved",
+  "limitations": [
+    "Approval is limited to exact M3 and its affected cross-slice interactions. Route owns work/activity closeout. M4–M8, fresh final whole-change Code Review and distinct Verify remain required; no branch, PR or final verification readiness is claimed.",
+    "The implementation owner ran the full direct and selected suites. The reviewer inspected their durable outcomes and actual logs, independently compared source/discovery/inventory preservation and ran the narrow owned after-state fixture probe; it did not rerun every expensive suite.",
+    "Structural grammar, prose and reference checks intentionally do not prove semantic completeness, lifecycle eligibility, artifact approval or runtime behavior described by a sample document. Synthetic Records fixtures and historical-format documents remain test inputs, not current operational authority.",
+    "Shared fixture bytes and contracts are unchanged, so full Node and later selector/executor organization is not completed by this review. Their responsible milestones must assess their own complete populations, generated modes and interactions.",
+    "The controlled ownership probe proves the named neighboring-file and setup-failure cases. It is not a universal concurrency or failure-injection guarantee. Later changed subjects or contradictory evidence require proportionate reassessment and fresh proof where relevant."
+  ],
+  "rationale": [
+    "Spec alignment: pass. M3/TG-03 and TEST-SR-19/20, VAL-SR-32 are applied across the complete seven-suite allocation. Boundary validation separates structural grammar, containment/adoption, semantic-review handoff, current model grammar and real commands, with ordinary aggregate discovery and capability-local fresh record/snapshot support. Guide cleanup is strengthened at acquisition. Coherent retained groups are not fragmented to meet a size target. Product validation behavior, stored vocabularies, framework, source fixture locations and supported selectors remain unchanged.",
+    "Test coverage, boundary reference retain disposition: pass. All 28 cases remain one coherent manifest/projection/transaction group. Independent literal manifest values, exact closed resource/consumer observations, raw-byte and digest expectations protect acceptance and projection. Named variants retain unknown-before-consistency, missing/duplicate/unsafe manifest fields, exact resource tuples, mixed versions, missing/stale/unexpected output and symlink topology rejection. Actual component writes and CLI diagnostics cover privacy, early/middle/late injected write failure, KeyboardInterrupt, every named input-drift source, parent swaps, restoration and retry. Outside roots are privately acquired with immediate cleanup. The retained 946-line source has cohesive operational ownership and meaningful observations; line count alone warrants no rewrite.",
+    "Test coverage, boundary validation organize/strengthen disposition: pass. All 61 cases remain reachable: structural 30, containment/adoption 8, handoff 7, model grammar 12 and command 4. The six checked-in feature/proof documents cover minimal and composed acceptance, structurally valid semantic omission and an explicit proof gap. Generated variations retain exact unknown vocabulary and diagnostic ordering, malformed/fenced/indented tables, ownership/union consistency, duplicate IDs, gap metadata, explicit versus historical adoption, incomplete proof, privacy and read-only observations. Independent AST comparison retains all five class identities and all 66 methods, with 58 bodies identical and eight changes limited to declared containment, inventory or cwd refinements. Every test selector and parameter domain remains represented.",
+    "Test coverage, command inventory strengthen disposition: pass. EXPECTED_MODEL_PATHS is a literal 24-member domain independently matched by the reviewer to System's responsibility inventory, including System itself. It preserves the prior model-grammar test's literal domain and now supplies command fixture construction and expected returned paths instead of reading the production registry for both. Real commands still exercise missing System, empty populations, owned external/inline examples, malformed JSON redaction, example symlinks and explicit customer grammar. Added cwd=ROOT makes invocation dependency explicit without substituting a component helper for the command observation.",
+    "Test coverage, retained current-record and snapshot groups: pass. Metadata 7 retains the retired-measurement rejection/no-write observation plus current version/contract/field, newline/duplicate-key, symlink and complete registered-set checks. It deliberately accepts structurally sound stage state and stale evidence without asserting semantic eligibility or freshness. The complete-store example remains an unchanged read-only source fixture. Governed lifecycle CLI 6 retains current-versus-archive classification, malformed/incomplete discovery failures and actual Git snapshot isolation. Real private repositories cover later working-tree corruption, wrong root, invalid exact revisions, Git replacement/ref redirects, trace-write suppression and missing promisor objects; the control repository demonstrates that a lazy fetch would occur outside the protected boundary, and target file bytes remain unchanged.",
+    "Test coverage, retained document and guide groups: pass. Prose 14 preserves all thirteen pass/fail/warn files, named split reasons, severity/line/action observations, audit/enforce exit behavior, formatter guardrails and no-write copies. Readability 7 retains private changed-section/historical inputs, hard-wrap versus warning distinctions, code/table/HTML/link/generated-region exclusions, marker/source metadata, placeholders and real CLI help/failure observations. Guide 13 retains current/historical owner classification, plan-navigation versus mutable-state rejection, old/mixed skill inventory and forbidden authority/fallback/actor diagnostics. These are structural and exact-observation contracts; none is presented as semantic adequacy or review approval.",
+    "Edge cases and isolation: pass. Three containment scenarios now nest the tested repo inside an owned outer directory; paths outside that repo still exercise genuine escape/symlink rejection while staying inside the fixture's private lifetime. Two former fixed neighboring names no longer overwrite/delete unrelated parent files. The guide suite registers addCleanup immediately after TemporaryDirectory acquisition, before copy2 can fail; unittest therefore cleans after failed setup. The reviewer inspected the owned probe mechanism and ran its after variant: both neighboring sentinels survived and the held guide case's failed-setup directory was removed. Author-recorded before observations demonstrate the former defect without touching public temporary-parent files. No concurrent production mutation is needed to establish this improvement.",
+    "Error handling: pass. Relevant negative cases preserve intended check IDs/messages or exact return/stream/error observations, valid controls and externally visible bytes. Fresh factories build literal records; read-only snapshot support computes expected bytes from owned pre-operation state. Explicit command helpers return results and do not recover errors into success. Projection rollback/retry, malformed current records and mixed review-required/structural-failure cases retain their separate outcomes. Unknown diagnostic codes are not demoted to review-only success.",
+    "Architecture boundaries and compatibility: pass. Direct TestCase owners and the six local modules retain the existing unittest runner and class/method interface without alias duplication. Helper imports do not depend on consuming TestCases. Normal discovery before/after files are exactly equal, accounting for 136 unique normal selectors. The metadata runner's opt-in RIGORLOOP_CHANGE_METADATA_FAILURE_FIXTURE is separately recognized as an eighth intentional failure case for selector/executor wrapper tests, not omitted ordinary coverage; actual callers remain in M4. Six new paths independently assert exact boundary_first.validate/boundary_first.regression consumers, the ordinary command and no duplicates, while unknown siblings remain rejected.",
+    "Shared consumers and earlier milestone interaction: pass. Boundary/prose/Records fixture bytes and the complete-store example were compared against the base and are unchanged. Source inspection identifies Python metadata/governed snapshot/selector fixture readers and Node format, query, contract, targeted persistence, workflow and adoption readers. No shared fixture relocation or generated input contract is changed, so their later full organization remains with M4/M7/M8. The two catalog/selector members shared with M1/M2 have fresh current selection and executor regression proof. Earlier milestone approvals stay attached to their original exact subjects; this assessment supplies the current M3 interaction judgment rather than silently refreshing them.",
+    "Security/privacy: pass. Every newly strengthened external target is outside the tested repo but inside owned temporary storage. The isolation probe patches TemporaryDirectory only into its private outer root and cleans baseline resources explicitly. Existing diagnostic redaction, no unauthorized Git fetch/trace writes, symlink containment and no-write observations remain intact. No new secrets, remote service, external publication, authority grant or production mutation appears in the diff.",
+    "Derived artifact currency and unrelated changes: pass within scope. No canonical skill, template, schema, generated package or production validator logic changes. Retained projection tests inspect actual controlled projections and canonical methods; selected current boundary/guide validation checks their live owned surfaces. This does not claim packaged/released/public-installation currency. The diff is limited to M3 organization, the demonstrated fixture ownership/cleanup improvements, independent inventory expectations, explicit cwd and necessary caller/classification reconciliation. There is no case/assertion retirement or hidden product behavior change.",
+    "Validation evidence: pass. Both m3-implementation and m3-validation declare the same 36 exact subjects independently inspected for this review. Actual direct logs pass boundary reference 28, boundary validation 61, metadata 7, prose 14, governed lifecycle CLI 6, guide 13 and readability 7. The C2 log explicitly names all 12 changed source/record paths and jobs=4 and reports success for boundary_first.validate, boundary_first.regression, change_metadata.regression, change_metadata.validate, guide_system.regression, guide_system.validate, selector.regression and validation_execution.regression, including selector 184 and executor 52. The six-path failing-before/passing-after routing proof is recorded; the initial mistyped selector/loader error is expressly excluded as negative proof. Owned isolation proof, C1 equality, AST comparison, current-record validation and whitespace checks complete the bounded handoff.",
+    "Authority, applicability and overall judgment: pass. The unchanged exact Validation model and primary plan and their independent Design/Delivery judgments were refreshed with current applicability. M2 is completed, M3 is current, and M4 implementation remains pending. Evidence-file applicability is conservatively stale because older entries retain obsolete subject snapshots; this review separately inspects current M3 entries, exact subject matches, procedures and actual outputs rather than treating the whole file as current. The only earlier finding is reporter-resolved. No necessary decision, missing required assessment basis or supported required correction prevents milestone approval."
+  ],
+  "reviewer": {
+    "id": "code-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:9d13e5af2fdff369007a13d63c180960e9fe11910be2047c0bead0470991b74d",
+      "path": "tests/engineering/validation/test-boundary-first-reference.py"
+    },
+    {
+      "identity": "sha256:3ef8435f1114964083e229dfdb5aa0e589b4c1026c605bbb78aca08206fd6ea3",
+      "path": "tests/engineering/validation/test-boundary-first-validation.py"
+    },
+    {
+      "identity": "sha256:da72bcb80d9cf94a16b119957e6162f8bedacd27bbea70be10429b424f9a4193",
+      "path": "tests/engineering/validation/test-change-metadata-validator.py"
+    },
+    {
+      "identity": "sha256:dc10776c0eb29063aa26af888cfeed1b58fe397a573045a7a19e45fc717a3a3a",
+      "path": "tests/engineering/validation/test-documentation-prose-validator.py"
+    },
+    {
+      "identity": "sha256:fe065d545c066d2ebdc8c6facbe773d547adaea93dc79f14292eb81814d0790b",
+      "path": "tests/engineering/validation/test-governed-lifecycle-cli-validator.py"
+    },
+    {
+      "identity": "sha256:d87677b73f45099c63a4974a00d8496809f8a584137643881b81eb89dd0643e3",
+      "path": "tests/engineering/validation/test-guide-system-validator.py"
+    },
+    {
+      "identity": "sha256:6235d8e9143bae6ffd5d17d83c817618e960ecdd2472efe80a115614668a9a6d",
+      "path": "tests/engineering/validation/test-markdown-readability-validator.py"
+    },
+    {
+      "identity": "sha256:e0b142e3a1bf323e24b32168f5cbbcf3993b5fbf2348267de60852d60f931a46",
+      "path": "tests/engineering/validation/boundary_command_tests.py"
+    },
+    {
+      "identity": "sha256:7cab157b39d8a5ba9426bfa965af8adb14e25a4582fcab3ded7fc4e68bbfb0f7",
+      "path": "tests/engineering/validation/boundary_handoff_tests.py"
+    },
+    {
+      "identity": "sha256:4aaac4178da3af0f89c90cb44aa49a53e31924ae91a15058515a7c8ab0ecff59",
+      "path": "tests/engineering/validation/boundary_model_tests.py"
+    },
+    {
+      "identity": "sha256:28a13c7cd0c7ea61c7f3a81f9cbfd6c0d6a327f94bd20b048d4af62c86eb4398",
+      "path": "tests/engineering/validation/boundary_path_tests.py"
+    },
+    {
+      "identity": "sha256:079425436882a8d6d2a6e033c50795c50ba14ea58a3e0b9d7fdf3c8954535b7c",
+      "path": "tests/engineering/validation/boundary_structural_tests.py"
+    },
+    {
+      "identity": "sha256:29d610878bd99a8773c1ecba5ebfb553463da33df16a088b1c48ffb39e95eab0",
+      "path": "tests/engineering/validation/boundary_fixture_helpers.py"
+    },
+    {
+      "identity": "sha256:639c0281421e461f9d622fcc7f5f80051aae6ae8dfc07a8e5976e51e0f4d9a09",
+      "path": "scripts/lib/validation/validation_selection.py"
+    },
+    {
+      "identity": "sha256:bb197432567b48a410f0b624c6fa24355e091c339aac1700a8dc43f12bfd8755",
+      "path": "tests/engineering/validation/selection_contract_tests.py"
+    },
+    {
+      "identity": "sha256:952548a58c0f8cc23c959539e698d309a98fe630c10b37a40c44973f56b251cd",
+      "path": "tests/engineering/validation/fixtures/boundary-first/feature-records/complex.md"
+    },
+    {
+      "identity": "sha256:4cb7a204e0280bf57c83e4e13f5bc38c7cd5b7bab1409a9f6403115947934cb1",
+      "path": "tests/engineering/validation/fixtures/boundary-first/feature-records/minimal.md"
+    },
+    {
+      "identity": "sha256:299b88acc292cd9f47174654b8e31f641ac87eb8ec660690cc8134ca825720e5",
+      "path": "tests/engineering/validation/fixtures/boundary-first/feature-records/semantic-omission.md"
+    },
+    {
+      "identity": "sha256:6192fc7f1e4b7e70754c91c457d89ba14d4d957c4f8b270898fb1eee752353a6",
+      "path": "tests/engineering/validation/fixtures/boundary-first/proof-maps/complete.md"
+    },
+    {
+      "identity": "sha256:5a5c80fbc972c5cbd14e44483fbef5ff2a8099e0fbcdaa79c45dd4995dae36eb",
+      "path": "tests/engineering/validation/fixtures/boundary-first/proof-maps/complex-complete.md"
+    },
+    {
+      "identity": "sha256:6907f8fb1ece7847fd2d39bca3f22b9ff32037bb8f8bd708e6c2f83031d9fc6a",
+      "path": "tests/engineering/validation/fixtures/boundary-first/proof-maps/gap.md"
+    },
+    {
+      "identity": "sha256:872b6b2afbda4a75afe1020b55eb9be4d94f25dcbd524c3a50291debe0d34123",
+      "path": "tests/fixtures/documentation-prose/fail/command-and-lifecycle.md"
+    },
+    {
+      "identity": "sha256:0a1d65744e3d3b2ad325905765adc1a7e505ade0db2498126539b59b52959486",
+      "path": "tests/fixtures/documentation-prose/fail/list-item-mechanical-continuation.md"
+    },
+    {
+      "identity": "sha256:26257aa6198ba6e79ee3e1b1b81f6791fe8c6bd331a62577a2b1d588c15b3507",
+      "path": "tests/fixtures/documentation-prose/fail/mechanical-wrap.md"
+    },
+    {
+      "identity": "sha256:406b3f96517da583303158108addd2bd4d5c912c55596f7c58f39ff32bdb4bde",
+      "path": "tests/fixtures/documentation-prose/fail/named-regressions.md"
+    },
+    {
+      "identity": "sha256:d509cd786af602d523441098d37a7a8395ac2e815aa7b822cdd3d248557a0149",
+      "path": "tests/fixtures/documentation-prose/fail/no-hard-break-mechanical-wrap.md"
+    },
+    {
+      "identity": "sha256:fc9a339ee565ec637fed011e25b5d80cbc0ce33b00d79c1a962d2e18a7c6325a",
+      "path": "tests/fixtures/documentation-prose/pass/explicit-hard-break-backslash.md"
+    },
+    {
+      "identity": "sha256:c09153c83d5a0c044b4d07f246babeebb1de0177a07817ff45c35594bd07433d",
+      "path": "tests/fixtures/documentation-prose/pass/explicit-hard-break.md"
+    },
+    {
+      "identity": "sha256:aa3c6b5c5be44947a11fa7edc337e4a40c5629556ff0bf51a3648211b1a5a352",
+      "path": "tests/fixtures/documentation-prose/pass/list-item-nested-structure.md"
+    },
+    {
+      "identity": "sha256:0a88faa26c9353d529f295b7214ec4be57f38ad4af6617f09f62aca6d37e3e38",
+      "path": "tests/fixtures/documentation-prose/pass/list-item-single-line.md"
+    },
+    {
+      "identity": "sha256:5c94a27e9d9c3531808e37425252111b80a7285812cad8b5b5bcb2103ff2e7fc",
+      "path": "tests/fixtures/documentation-prose/pass/list-item-with-fenced-code.md"
+    },
+    {
+      "identity": "sha256:355c58f2496a0713858da666829a8c5ec054bc4ede2b14a03eb643b063d8d87f",
+      "path": "tests/fixtures/documentation-prose/pass/semantic-lines.md"
+    },
+    {
+      "identity": "sha256:61daf1e3ac4c08265b27c6b3ad68b4e06ce1d7dfb7c56648c3bafd8d9d248dda",
+      "path": "tests/fixtures/documentation-prose/pass/structural-exclusions.md"
+    },
+    {
+      "identity": "sha256:e2173fa04305c30a55f833bcc0aeddb6ee0d652b3cce10baa8a5170cbc5989b3",
+      "path": "tests/fixtures/documentation-prose/warn/ambiguous-clause.md"
+    },
+    {
+      "identity": "sha256:dde4b6b431c783ac6b7a642ce7455458d13397a2b24f72cbe0bc7d016a4ed9ab",
+      "path": "tests/fixtures/rigorloop-records-v3/records.json"
+    },
+    {
+      "identity": "sha256:adb156b8e2b196c9e82195b3eac059852ca7a941382fa41e355ff3803bf9ba87",
+      "path": "tests/fixtures/rigorloop-records-v3/storage-safety.json"
+    }
+  ],
+  "summary": "M3 preserves all 136 allocated cases and their distinct validation obligations. Boundary responsibilities are clearer, containment fixtures now own their outside targets, setup cleanup runs on failure, and command inventory expectations are independent. Retained groups remain justified and current proof covers discovery and affected consumers.",
+  "target": "code"
+}

@@ -1,0 +1,47 @@
+{
+  "assessment_scope": "Independent first-pass Proposal Review of the complete proposal and its embedded feasibility assessment against the original requests to refine detailed testing guidance, assess and reorganize all test populations, and clarify object-oriented test structure. This is formal-lifecycle/manual recording under Constitution and Assessment, assembly PRR1G-recorded-context-gated. Scope includes direction, preservation of initial intent, broad-scope classification, current vision fit, proportionate source feasibility and prior-work boundaries; it does not assess downstream Design or Delivery packages.",
+  "change_id": "2026-09-16-test-design-and-suite-organization",
+  "contributors": [
+    {
+      "id": "codex-root",
+      "role": "proposal"
+    }
+  ],
+  "findings": [],
+  "id": "proposal-review",
+  "independence_basis": "The proposal was authored by the parent agent /root (codex-root). The user explicitly requested independent Proposal Review, and /root delegated the assessment to the separate agent /root/proposal_reviewer (proposal-reviewer). This reviewer read the complete proposal and original intent, inspected the relied-on governing and implementation evidence, and independently selected the judgment. The reviewer did not author or edit the proposal; the parent supplied recording context without selecting the judgment. The reviewer writes only this review evidence.",
+  "judgment": "approved",
+  "limitations": [
+    "Approval concerns proposal-level direction and sufficient feasibility only. The full test inventory, exact ownership/disposition of each group and reconciliation of remaining prior-plan obligations must be established by the downstream owners before relying on a migration plan.",
+    "No runtime baseline, test execution or mutation experiment was performed for this review. Read-only source inspection supports the feasibility claim and does not establish complete discovery, case isolation, replacement protection or final suite adequacy.",
+    "This isolated review does not authorize or initiate Design authoring, Delivery, implementation, case removal, final verification, branch/PR readiness or external handoff. Any later authorized progression must inspect this review's current applicability and complete the applicable gates."
+  ],
+  "rationale": [
+    "Challenge: pass. The insufficiency is explained before the approach: contributors lack practical structural guidance and the implementation mixes responsibilities. At HEAD 1195dfb261176d500e319662e2ffad5429cb63be, wc -l independently confirmed 5,617 lines in tests/skill/test-skill-validator.py. Inspection of its classes, aggregate imports, validator checks, resource checks, workflow checks and individual-skill guidance corroborates the stated maintenance concern. The proposal correctly treats size as a signal rather than evidence that protection may be removed.",
+    "Goals: pass. The goals seek clearer authoring, complete assessment, preserved or strengthened failure detection, independent scenarios and explicit retention/refinement dispositions. They address the challenge without prescribing helper APIs, source moves or deletion quotas.",
+    "Scope: pass. Skill, Validation, Packaging, Release and package-owned CLI, Records and Installation tests are included, together with generated/parameterized cases, imported suites, fixtures, helpers and tests reached through commands or CI outside conventional test directories. Necessary consumer and guidance reconciliation stays with the affected slice. Framework replacement, a new runner, changed product behavior or release policy, fixed size limits and semantic-quality automation are excluded.",
+    "Governing principle: pass. Organizing tests around understandable, runnable and maintainable protection of required behavior is brief, outcome-oriented and consistent with Constitution correctness and reviewability obligations.",
+    "Direction: pass. Refining Validation, using lightweight classes and composition, assessing protection as well as placement, retaining uncertain cases and completing reviewed slices provides a concrete direction. The original object-orientation discussion is preserved without committing to a universal hierarchy or framework.",
+    "Feasibility: pass. Exactly one embedded Feasibility section supplies an assessment, basis, constraints and blockers. Validation's Risk-driven contract testing and Test sources, groups and fixtures sections already own the required principles. tests/skill/skill_contract_tests.py is a 237-line module containing smaller behavior groups, and tests/engineering/release/release_fixture_helpers.py is a 23-line helper that creates fresh local fixture dictionaries without borrowing another TestCase lifecycle. Those current precedents support feasibility without proving whole-suite adequacy. Discovery, selectors, imported/generated populations, realistic process/filesystem/package behavior and unclear legacy assertions are explicitly recognized as later migration constraints.",
+    "Material impact: pass. Whole-suite review and migration effort, excessive abstraction and fragmentation are disclosed. Complete assessment is promised without a test-count, line-count or runtime reduction claim. Affected contributor and published guidance must remain consistent with its owner, while product capabilities, review authority and external release permissions remain outside the initiative.",
+    "Vision alignment: aligned; dimension pass. The proposal makes test intent and protection easier to inspect and maintain, retains traceable obligations and independently reviewed proof decisions, and does not introduce a new platform or unsupported automation claim. This supports VISION.md's reviewable artifacts, human-understandable work and idea-to-verified-change traceability.",
+    "Downstream authority: pass. Exact file layouts and helper interfaces remain with Design; concrete source moves, case removals, sequencing and proof allocation remain with Design or Delivery. The Skill suite is only a first-slice candidate. The test-organization and risk-driven-redesign plans are used as prior allocation/context, not inherited completion authority. Their earlier limited scopes, including the bounded Skill pilot and preservation constraints, are compatible with the explicit requirement to reconcile current work and retain historical judgments. The overlapping complete-skill-refinement proposal is acknowledged rather than silently overwritten.",
+    "Requested decision: pass. Approval is explicitly limited to the direction for detailed Design refinement and complete inventory assessment with necessary reorganization. It neither establishes implementation/final-verification readiness nor grants external action authority.",
+    "Scope-preservation result: pass. Every material original goal remains visible in the initial-intent table and operative scope. Reorganizing all tests is responsibly expressed as complete assessment with changes where needed and explicit suitable-group retention; the user-facing summary had already selected that interpretation. Quality, fixtures, assertions, dependencies and object-oriented structure remain included. No material initial goal is silently deferred or dropped.",
+    "Specialized gates: scope_budget_context=true and satisfied. The two core workstreams, first-slice candidate, remaining implementation populations, same-slice consumers/guidance dependencies and exclusions have clear treatments and boundaries. No hidden deferred follow-up is introduced. vision_exception_context=false because the direction aligns with current vision; standing_artifact_context=false because required Constitution and Vision are present and no bootstrap exception is proposed. Trigger ambiguity: none.",
+    "Governing and evidence basis: CONSTITUTION.md, VISION.md, System composition ownership, Assessment RC-SR-01–05 and Proposal Review criteria, and Validation TEST-SR-01–10/15–18 were inspected alongside the Proposal Review skill and triggered assessment, reliance, recording, conditional-gate and requirement-to-delivery resources. Source feasibility was checked directly rather than inferred from the project map. Relevant prior-plan/proposal scope passages and the three cited test-source precedents were inspected; this proportionate expansion is required by the proposal's implementation and overlap claims. All relied-on files were subject-inspected and supplied as identity-checked reads when recording."
+  ],
+  "reviewer": {
+    "id": "proposal-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:9145c6d412d85e04bc2bbb04f6cfd4c8bf89a314aee59d9a615d59637a38415e",
+      "path": "docs/proposals/2026-09-16-test-design-and-suite-organization.md"
+    }
+  ],
+  "summary": "The direction is valuable, bounded and sufficiently supported for the affected Design work. It addresses the demonstrated concentration of test responsibilities while preserving complete inventory assessment, existing frameworks and useful protection.",
+  "target": "proposal"
+}

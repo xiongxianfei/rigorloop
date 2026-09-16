@@ -1,0 +1,281 @@
+{
+  "assessment_scope": "Governed milestone M6: complete release population (99 former aggregate cases, candidate 30, coordination 9, execution 27 and evidence 15), ordinary fixture boundaries, all 28 recursive release inputs, two retained change-local inventory inputs, shared packaging/native/Git interactions and eight new catalog mappings. Base 2d1baa47e7378e6ff9c8082ddd6e518d49686400; exact reviewed handoff a937a578a633dae31ad19eb9b16c2804b2a24fca. Approved immutable Validation Design and primary plan M6 govern TEST-SR-19/20, VAL-SR-32 and TG-06 with retained Release requirements. M7-M8, fresh final whole-change Code Review and Verify remain outside this milestone; route owns work and activity closeout.",
+  "change_id": "2026-09-16-test-design-and-suite-organization",
+  "contributors": [
+    {
+      "id": "codex-root",
+      "role": "implement"
+    }
+  ],
+  "findings": [],
+  "id": "m6-code-review",
+  "independence_basis": "The nonauthor assessor /root/proposal_reviewer worked separately from implementation author /root (codex-root/implement), inspected the complete M6 release test and support population plus all recursive inputs and relevant actual production/caller boundaries, compared the real base-to-handoff diff and prior helper bodies, and independently selected this judgment. The reviewer reran source comparison and the main actual candidate integration with an additional owned caller-log isolation observation. Only review evidence was authored by this assessor; actor names, old reviews and author passing counts are not substitutes for this separation.",
+  "judgment": "approved",
+  "limitations": [
+    "Milestone M6 assessment only; remaining M7-M8 implementation, integrated whole-change Code Review, final Verify and external handoff retain their separate requirements and owners. No implementation, workflow/work state or another actor's evidence/finding was edited by the reviewer.",
+    "External approval, registry and GitHub transport are explicit deterministic fixtures. Actual package generation, local packed binaries, filesystem effects, CLI dispatch and Git persistence were exercised; no remote protection setup, live publication, hosted runner or real public availability was verified.",
+    "The reviewer independently ran the main actual candidate scenario with a strict owned caller-log observation and reran source/population preservation checks. The full 180-case direct suite and five selected-CI checks were inspected as author evidence rather than repeated in full. The candidate omission experiment establishes the focused oracle mechanism only.",
+    "Production modules and unchanged external consumers were inspected proportionately for the interactions relied on by this complete test-population assessment; this is not a new independent audit of every production release line. Retained historical/generated input data and present manifest readers do not settle separate source-cleanup work.",
+    "Scratch logs, mapping/comparison scripts and controlled probes are local supporting observations. This record and durable m6-implementation/m6-validation preserve commands, outcomes, exact source basis and limitations. Provider terminal whitespace cleanup after author execution is supported by disclosed AST equality and the fresh reviewer integration."
+  ],
+  "rationale": [
+    "Spec alignment — pass. Scoped CLI context retains current independent Design and Delivery approvals against the unchanged exact Validation model and primary plan. M6 follows its complete-population allocation, preserves identity/authority/persistence boundaries and the public aggregate command, and does not change product release behavior, select a retirement, introduce a runner or adopt TestCase inheritance as reuse. The Release Design's retained current-source qualification, historical grammar, single candidate approval, no-overwrite recovery and truthful simulated-provider limits remain the applicable specialist boundaries. Present support-manifest readers and separate cleanup work retain their owners under the plan's prior-work reconciliation.",
+    "Population, source responsibility and preservation — pass. The former aggregate's 99 cases are now direct identity (6), profile/surface/literal (24), preparation (25), preflight (16), timing (9) and public/history (19) groups. Existing candidate (30), coordination (9), approval/Git/executor (27) and evidence (15) groups remain cohesive. The one aggregate imports native classes once; helpers do not import executable test modules. Independently checked exact before/after discovery retains 180 unique class/method selectors. Rerun AST comparison accounts for 159 preserved bodies after declared fixture-call normalization, 20 explicitly expanded operation scenarios and one strengthened candidate assertion. Every changed scenario was read; counts and AST equality alone were not the quality judgment.",
+    "Fixture/helper extraction — pass. Ordinary functions own private repository/prepared-document creation, real Git setup, text snapshots, timing/public data and historical-report construction. Comparing original helper bodies confirms preparation, return paths, values and operation ordering are retained; callers that only require setup harmlessly ignore the new shared pending-file return. Historical construction no longer instantiates another TestCase. assert_errors_contain only inspects supplied errors. Seven profile cases now visibly load and observe errors; six pending-evidence cases own fresh resources, mutation guards, invocation and diagnostics; seven preflight cases visibly construct/mutate/invoke/assert. These are justified responsibility changes rather than aliases or opaque assertion-named workflows.",
+    "Complete input and parameter families — pass. All 28 recursive release inputs were read and remain byte-identical, including the malformed profile, nine required-field variants, explicit version/special/unknown-value cases, literal classifications and surface ownership inputs. Both June 29 change-local inventories remain real operational/test inputs despite their historical directory. current-version.json keeps its writer/location and candidate allowlist; its retained old three-target bytes do not supply current-target authority. Current tests use explicit supported target expectations, while the historical reader fixture separately proves old grammar remains readable and cannot become a current routine profile. Generated fixtures, independent expected row inventories, state/result combinations and named mutation variants remain distinguishable.",
+    "Profile, preparation and preflight protection — pass; retain meaningful coverage. Profiles retain exact valid fields, missing/malformed inputs, version agreement, special-owner distinction and unknown-before-consistency rejection. Surface/literal tests retain classification, rationale, generated owner and unauthorized changed-literal outcomes. Preparation retains idempotency, no-write check mode, unchanged human/history content, independent preflight/registry row inventories, valid pending output and rejection of incomplete or falsely finalized evidence. Real preflight/CLI cases preserve no-write snapshots, actual Git changed-file discovery, local and reachable remote tag conflicts, and unavailable remote state as a warning rather than a successful identity assertion.",
+    "Timing, public closeout, historical and evidence groups — pass; retain with their actual observation limits. Timing cases exercise current workflow parity, complete/missing/malformed/unknown diagnostic data and advisory duration excess without converting absent telemetry into publication correctness. Public closeout checks explicit provider calls/returned values, both target commands, unavailable GitHub/npm and failed smoke preserving prior files, fixture-mode admission, CLI check mode, command grammar, hash/target shape and historical byte preservation. Evidence fixtures independently enumerate required rows and pending/finalized/emergency states, duplicate/missing/unknown values, exact deferral matching, required owner/impact fields, nondeferrable facts, secret rejection and scoped prepared-candidate exceptions. These parser/composition observations are not claimed as hosted/public success.",
+    "Candidate and source qualification — pass. The 22 candidate cases retain nested authored source/resource identity, symlink/escape and artifact-size rejection, changed candidate binding, unknown/failed check rejection, CI-only restrictions, reviewed version intent and portable receipts. Six current-source cases reject historical replay before old readers, missing/mismatched profiles and commits before effects, and preserve a prior receipt on inadmissible preparation. The integration's required check inventory is now the independent literal set profile/preflight/release-integrity; producer CANDIDATE_CHECKS remains a valid fixture construction input, not the sole actual-result oracle. The inspected controlled omission experiment proves this assertion rejects omitted preflight where the old producer-derived expectation accepted it; that synthetic mechanism is kept separate from actual execution.",
+    "Real integration and derived artifact currency — pass within M6. The long candidate case is appropriately one private ordered scenario: actual source preparation, real archive metadata and npm tarball, packed installation, actual CLI dispatcher, exact approval binding and persisted retry history share the same candidate. It checks duplicate execution, retained-artifact retry without rebuilding, lost response, failed smoke/reporting recovery, optional mirror/timing limitations, changed-source no-op rejection, archive/bundled-metadata hash chain, both target installations, unrelated-state preservation and final candidate tamper rejection. It also observes real release verification receipts reaching Skill and both packaging entrypoints. The reviewer independently executed ReleaseCandidateIntegrationTests.test_actual_candidate_build_and_packed_metadata_chain through the public aggregate: one case passed in 77.666s. No protected validator was replaced by a success stub in that scenario.",
+    "Approvals, persistence, retry and failure boundaries — pass. The six approval tests retain exact provider/candidate authority and denial on missing/rejected/stale/unknown or materially changed facts, including package-independent policy inspection. Two Git-store tests use actual private bare repositories and stale compare-and-swap writers, preserving unrelated version bytes and rejecting source-ref collision. The 19 executor cases retain zero writes before admission/persistence, exact one-time write order, unknown external state distinct from absence, lost/timeout responses observed before continuation, partial asset recovery, competing active attempts, retained observations after reporting failure, identity/conflict rejection, real validator-backed tree mismatch, 120 deterministic visibility waits, diagnostic-only timing and OIDC arguments without token fallback. Required negative protection remains observable, not merely a broad raised-error assertion on shared setup.",
+    "Provider boundaries, ownership and security/privacy — pass. RecordingPublicEvidenceProvider, FixtureApprovals, FixturePublisher and PackedPublicFixture preserve their class ASTs; FixtureHostedServices changes only its import to the ordinary provider module. Fresh dictionaries and observation deep copies prevent cross-case reuse. FixturePublisher intentionally inherits production tree/closeout validation while substituting external service effects; PackedPublicFixture installs and runs the actual candidate tarball through substituted transport. Test resource acquisition registers cleanup immediately; per-case npm/cache/log state is private. The reviewer forced file logging and removed inherited RIGORLOOP_LOG_DIR only in a child with an owned XDG_STATE_HOME stand-in: the real integration passed and created zero caller-state files. Existing exception-suppression, secret-bearing evidence, no-token fallback and unsafe retained-ZIP cases remain meaningful.",
+    "Architecture, compatibility and callers — pass. Eight new release module paths select exactly release_transaction.regression, and an unknown release module still blocks classification. Check ID, aggregate command, native adapter, worker constraints and command fingerprint remain unchanged. Relevant actual producer/caller inspection confirms current-version fixture generation and candidate allowed paths, the release coordinator's exact retained-artifact/recovery path, inherited provider tree validation, real Git CAS, the existing CI selector and protected release workflow, unchanged packaging helper/aggregate interactions and package tests' explicit delegation of actual candidate parity to this integration. Native source composition uses ordinary functions and service fixture objects for their actual roles, without a custom framework or executable-test-module dependency.",
+    "Validation evidence and unrelated changes — pass for the allocated scope. Inspected exact m6-implementation/m6-validation and raw logs: direct 180 passes in 125.859s; actual-file selected CI uses 17 paths and passes change_metadata.regression, change_metadata.validate, release_transaction.regression, selector.regression and validation_execution.regression. The eight-path routing regression first fails for all new paths and then passes; an earlier wrong-selector loader error is explicitly not the red proof. Source/input preservation and exact identities were independently checked, and the real candidate/log-isolation execution adds targeted reviewer proof. Post-run provider terminal whitespace trimming is disclosed as AST-preserving. Product modules/workflows and fixture bytes are unchanged; shared catalog/selector and governed record edits are necessary scope, not unrelated implementation.",
+    "Assessment and reliance — pass. Fresh scoped context is complete for selected authority, activity, work, evidence, findings, blockers and applicability. M5's approval is intentionally stale on changed shared catalog/candidate subjects; those interactions were freshly assessed here, without retargeting its history. No prior required finding or blocker remains open, and no supported M6 correction or unresolved decision emerged. The evidence container's conservative stale applicability is not universal current proof: reliance is on inspected exact M6 entries and their disclosed limits. With settled authority and sufficient material basis, the adopted judgment rule yields approved. Parent route may close the milestone review gate; this assessment does not initialize M7 or claim final Verify readiness."
+  ],
+  "reviewer": {
+    "id": "code-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:dbc1eae25bcf3c6dc0f0874fd1d27329f76a1702cb9718840a908ace3155dbc2",
+      "path": "tests/engineering/release/release_candidate_tests.py"
+    },
+    {
+      "identity": "sha256:3d844d393e1ab58fedc9cd7a849642fe1032b0f6d2962fa63ec967ef50ca9b24",
+      "path": "tests/engineering/release/release_coordination_fixtures.py"
+    },
+    {
+      "identity": "sha256:7c79c52911d9f9dca206b5def10925612af45d126f358b1033ea3201feaf6ead",
+      "path": "tests/engineering/release/release_coordination_tests.py"
+    },
+    {
+      "identity": "sha256:a32097648ca5d66e788092872f51e416d9e11ca50b87c96d3263a8e206942809",
+      "path": "tests/engineering/release/release_evidence_tests.py"
+    },
+    {
+      "identity": "sha256:1e09a3e42df7e23c98eb6b33e0db34afe97e849f2c2a4fdd277d448224a4d349",
+      "path": "tests/engineering/release/release_execution_tests.py"
+    },
+    {
+      "identity": "sha256:72505e2f97ee0af33a171678908b14968fd02c2f42e03403cf7acc900f8780e8",
+      "path": "tests/engineering/release/release_fixture_helpers.py"
+    },
+    {
+      "identity": "sha256:8b5d0c663f0268340d6ecc4bebb873b3c14167e6dedaddd0f1261dba941a0425",
+      "path": "tests/engineering/release/release_identity_tests.py"
+    },
+    {
+      "identity": "sha256:bb092f1a0466d5573bc9f1685135b666023f285415f60eec2ada7910ac227953",
+      "path": "tests/engineering/release/release_preflight_tests.py"
+    },
+    {
+      "identity": "sha256:d618792c5af76ae05cabaa4a63cdc8a5dba52e7d7257399a216cf61c4f4c0659",
+      "path": "tests/engineering/release/release_preparation_tests.py"
+    },
+    {
+      "identity": "sha256:490c7b1f5d7a9eaf050434d470236c2c72fb5ecd3b23f022d48299fd7b2c3805",
+      "path": "tests/engineering/release/release_profile_tests.py"
+    },
+    {
+      "identity": "sha256:87089a1a8ac57df570334e28d6d04f2e0354ffaf9645d75fe20175cf006ab58f",
+      "path": "tests/engineering/release/release_provider_fixtures.py"
+    },
+    {
+      "identity": "sha256:60311fa3a10b2d01aed11393e75d92e68d335bc286faf07d9560872185f1559d",
+      "path": "tests/engineering/release/release_publication_tests.py"
+    },
+    {
+      "identity": "sha256:6b94065f47f1000473225d83c4b88d97a5187fc9d75f8be87c53876068d11015",
+      "path": "tests/engineering/release/release_timing_tests.py"
+    },
+    {
+      "identity": "sha256:8446131071b8f71a8b02ffb6855f616f777cf96f892f809c36490a90dada4f23",
+      "path": "tests/engineering/release/test-release-transaction.py"
+    },
+    {
+      "identity": "sha256:94aec6847913d5566bf1ec5ad4b7a63b7a922f0d0121570e7a1d431506cf1bea",
+      "path": "tests/fixtures/release-transaction/current-version.json"
+    },
+    {
+      "identity": "sha256:1d75b6fda1e2cbddd6c99f18d49b491c4f2d5202098f0650a0f10c19dec10045",
+      "path": "tests/fixtures/release-transaction/literal-audit/generated-current-without-owner.yaml"
+    },
+    {
+      "identity": "sha256:1bf0d232d58dffa73c4a99c0a7a1c50d88f5f8fd46be98fc6d367892dc3c91b1",
+      "path": "tests/fixtures/release-transaction/literal-audit/historical-fixture-without-rationale.yaml"
+    },
+    {
+      "identity": "sha256:f10f142308099b088bfd56a851db85073263aa58a114f53b0e2a728724280c39",
+      "path": "tests/fixtures/release-transaction/literal-audit/invalid-missing-classification.yaml"
+    },
+    {
+      "identity": "sha256:af6ac03596872f58fff484460c762a2f6569abf2f546871584feed1043931d28",
+      "path": "tests/fixtures/release-transaction/literal-audit/invalid-unknown-classification.yaml"
+    },
+    {
+      "identity": "sha256:ac885ccc811d9e5a3eaeddee491c8de71d7b3865cbfb69913742041567fac0e1",
+      "path": "tests/fixtures/release-transaction/literal-audit/unauthorized-new-literal.yaml"
+    },
+    {
+      "identity": "sha256:dc8819431c92247df6eda38f769f4dccea8eeb825f6e8585513d0c68383914a2",
+      "path": "tests/fixtures/release-transaction/literal-audit/valid-baseline.yaml"
+    },
+    {
+      "identity": "sha256:6b70e6b9f7744bf59d080205a9b743fde3dccf22f84703f082636d2be1e3bec6",
+      "path": "tests/fixtures/release-transaction/profiles/invalid-malformed.yaml"
+    },
+    {
+      "identity": "sha256:2e523c9f317c92958bfd4a06ef18aaeb6b0a495e4219c9c74c2d012f933cea01",
+      "path": "tests/fixtures/release-transaction/profiles/invalid-missing-adapter-artifacts.yaml"
+    },
+    {
+      "identity": "sha256:1a050268bb6e65846cbc56c877481b6941f1f504ba095b9b20ebe2d1825cc2f9",
+      "path": "tests/fixtures/release-transaction/profiles/invalid-missing-evidence.yaml"
+    },
+    {
+      "identity": "sha256:823a583f6a7f6843fc4e171e23e2028265fa3a69697cc8e5362b0dfb5e30958e",
+      "path": "tests/fixtures/release-transaction/profiles/invalid-missing-npm-dist-tag.yaml"
+    },
+    {
+      "identity": "sha256:0ec99bc7e3e48f4c6ce62c5a7d5cba93afd6a489eaec0e4756358287142e8c09",
+      "path": "tests/fixtures/release-transaction/profiles/invalid-missing-npm-package.yaml"
+    },
+    {
+      "identity": "sha256:886f9db27d3f5c48fe37647723d1cfb6f197ad19686406aea50ff7ce99b20f6a",
+      "path": "tests/fixtures/release-transaction/profiles/invalid-missing-package-version.yaml"
+    },
+    {
+      "identity": "sha256:453a6980e7047574ee31e41ff561c701101784ea8b8c2c84518cf282b89d7397",
+      "path": "tests/fixtures/release-transaction/profiles/invalid-missing-publication.yaml"
+    },
+    {
+      "identity": "sha256:ea3f2cb1d7254e0effb7a4b76f694220322042f0789478520a984bc4bc8a1474",
+      "path": "tests/fixtures/release-transaction/profiles/invalid-missing-release-tag.yaml"
+    },
+    {
+      "identity": "sha256:9e29eee614c684657d10a1396de3f1e0c91a1a882e7c336602fe86f19b395baf",
+      "path": "tests/fixtures/release-transaction/profiles/invalid-missing-targets.yaml"
+    },
+    {
+      "identity": "sha256:bfeb5de80bc73c482a384c4c416f4fb8deebf4afb8d3eb9540dc6273ff54abc2",
+      "path": "tests/fixtures/release-transaction/profiles/invalid-missing-validation.yaml"
+    },
+    {
+      "identity": "sha256:479cb2deeeef9f7b03f22334acb7b3091f1a4e02018b0445f3d6ffb7b389fe4f",
+      "path": "tests/fixtures/release-transaction/profiles/invalid-special-release-without-rationale.yaml"
+    },
+    {
+      "identity": "sha256:71ce5368588d09ed3147443e08e7e0a41cf26e95f26e894587fdb04533b4d38a",
+      "path": "tests/fixtures/release-transaction/profiles/invalid-unknown-npm-dist-tag.yaml"
+    },
+    {
+      "identity": "sha256:ea4d75dc1e1844bccd2151613ace0aa28214e2ea846b98ced3c35dccb916d27c",
+      "path": "tests/fixtures/release-transaction/profiles/invalid-unknown-release-kind.yaml"
+    },
+    {
+      "identity": "sha256:a2f75710b7c65de13240cbf761810a04d1c168bc721b8aeaf85880488fdef8ff",
+      "path": "tests/fixtures/release-transaction/profiles/invalid-unknown-target.yaml"
+    },
+    {
+      "identity": "sha256:cb3d10fb1f370d2447db6c7dc5a646085bf7d952eb0bb1bbdc5a7be2dab85529",
+      "path": "tests/fixtures/release-transaction/profiles/invalid-wrong-package-version.yaml"
+    },
+    {
+      "identity": "sha256:b92ae3087aff57dff3d29e7426baef57cbd1afe4642124abcf4177fd8d7f9a02",
+      "path": "tests/fixtures/release-transaction/profiles/special-release-with-rationale.yaml"
+    },
+    {
+      "identity": "sha256:9bd744cf3cd24753100e021364c9837585c89f83fda149272ae67f0b1b7ac1a8",
+      "path": "tests/fixtures/release-transaction/profiles/valid-routine-v0.3.5.yaml"
+    },
+    {
+      "identity": "sha256:4a133a5d7f2961206bbcf64dd479884482da242c15bf1b0eed6ca7a12893ebff",
+      "path": "tests/fixtures/release-transaction/surface-inventory/invalid-manual-override-without-rationale.yaml"
+    },
+    {
+      "identity": "sha256:e5cd1bddd2abd622409a5726375c5eb5060031d4a9fad4b9839501ccea10e77a",
+      "path": "tests/fixtures/release-transaction/surface-inventory/invalid-missing-classification.yaml"
+    },
+    {
+      "identity": "sha256:1532e6f517cc2af20e9191dea93defb2d38edefee71248912e8bc95b2566a0a8",
+      "path": "tests/fixtures/release-transaction/surface-inventory/invalid-unknown-classification.yaml"
+    },
+    {
+      "identity": "sha256:cde47c9e16781f2314f43910a5c2f218678648a48f7c375978bc583d2c25a94e",
+      "path": "tests/fixtures/release-transaction/surface-inventory/valid-inventory.yaml"
+    },
+    {
+      "identity": "sha256:968cc22d8073862ee77152865c9bc9bcbe231625ad17c57315e406082c931737",
+      "path": "scripts/lib/validation/validation_selection.py"
+    },
+    {
+      "identity": "sha256:a7cd4a7f7803430797ab62f8aabdf14dc7f49c1b21f3534c8069d80b0cae870a",
+      "path": "tests/engineering/validation/selection_contract_tests.py"
+    },
+    {
+      "identity": "sha256:779e86f05bf64da7f9eb91aa01abeb2e13ddb5f51d4413b6b13c3dbfc8625dbc",
+      "path": "scripts/lib/release/release_transaction.py"
+    },
+    {
+      "identity": "sha256:e6ccfe19fc3fe7c101b3900d9b2f36debb5f3c62acaf79b5721b1ecd6c43d162",
+      "path": "scripts/lib/release/release_candidate.py"
+    },
+    {
+      "identity": "sha256:2375f4e50b8f49bdef84fdee3715a7487c0a72d0a1c13aa87411ca1db71086ba",
+      "path": "scripts/lib/release/release_coordination.py"
+    },
+    {
+      "identity": "sha256:b72520ed6e1f7b7244533dce6856a114def501c19fdb96525365453301ae4e4f",
+      "path": "scripts/lib/release/release_execution.py"
+    },
+    {
+      "identity": "sha256:4d6b854ce2a1f8f9911ecf48765c196a8e2971f5ae7ae80d90d07b56b9017d2e",
+      "path": "scripts/lib/release/release_provider.py"
+    },
+    {
+      "identity": "sha256:4b22736b37ffcd31a5b937fdd390971084dce870e952cf3b3a0dc7e4f83d6238",
+      "path": "scripts/validate-release.py"
+    },
+    {
+      "identity": "sha256:5235bf6e07ad9e57858c15574009a9c39c5d8dc10932d8aba52b9a545c3d98b8",
+      "path": "scripts/release-coordinator.py"
+    },
+    {
+      "identity": "sha256:9f03477a3dc5da070181ed4bc973c5ba4de620c5519510afb541bf25503f63c0",
+      "path": "scripts/ci.sh"
+    },
+    {
+      "identity": "sha256:e0b22cfd2a5a4ad6c1fc97d437b804c2f64260e5b74bb394aa44c58a3ac4a43d",
+      "path": ".github/workflows/release.yml"
+    },
+    {
+      "identity": "sha256:ceae796353aa530ad6992905ae7eeabfe826acc72eba2748f21e3db6605822ae",
+      "path": "tests/engineering/packaging/adapter_fixture_helpers.py"
+    },
+    {
+      "identity": "sha256:d8251aa93ddc616821bd29ecb469c89ffb02a7eeb93979e0902523cfc559ffd5",
+      "path": "tests/engineering/packaging/npm_fixture_helpers.py"
+    },
+    {
+      "identity": "sha256:ee940a03d9c242b8040b86201f0d3d8f0c061cf372ee7c692f35535f9076fe88",
+      "path": "tests/engineering/packaging/test-npm-package-publication.py"
+    },
+    {
+      "identity": "sha256:e83e14f4d96c0654efa24bbeae2c3741792aa1d5371d951acd11285eecb33a5b",
+      "path": "packages/rigorloop/test/cli.test.js"
+    },
+    {
+      "identity": "sha256:04afaab8e5505298350096e4e2a1b324e9ddcba0857383f3f780966bd9ee1a80",
+      "path": "docs/changes/2026-06-29-release-transaction-automation/release-surface-inventory.yaml"
+    },
+    {
+      "identity": "sha256:9859cd5ef43ff2cb1216a03e53b2ef5d45919cca3bf5868dc6d81d87682b43a1",
+      "path": "docs/changes/2026-06-29-release-transaction-automation/release-literal-audit-baseline.yaml"
+    }
+  ],
+  "summary": "Independent first-pass M6 milestone Code Review approves the exact 59-subject package at a937a578a633dae31ad19eb9b16c2804b2a24fca. All 180 native release cases, parameter families and 28 recursive inputs are accounted for. Ordinary fixture/service modules remove borrowed TestCase construction, 20 cases expose scenario operations, the actual candidate check oracle is independent, and real Git/archive/packed-binary and ordered retry/recovery observations remain intact. No material finding, unresolved protection or necessary owner decision remains within M6. This is not final whole-change approval, Verify readiness or evidence of public publication.",
+  "target": "code"
+}
