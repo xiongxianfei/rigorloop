@@ -8,7 +8,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 from lib.validation import skill_validation
 
 
-class SkillGuidanceChecks:
+class SkillGuidanceTests(unittest.TestCase):
     def test_optional_discovery_canonical_resources_are_portable(self):
         # Archive byte preservation belongs to the independent inventory test.
         expected_resources = {
@@ -50,8 +50,8 @@ class SkillGuidanceChecks:
                 self.assertIn("subject inspect", body)
                 self.assertNotIn("record-store check|record", body)
 
-    # Retained pending an owner-backed replacement for this legacy checklist
-    # drift guard. Phrase presence is not proof of instruction quality.
+    # Structural drift guard for the published Code Review checklist and its
+    # prohibition on automated semantic grading; adequacy remains review-owned.
     def test_code_review_owns_published_skill_semantic_checklist(self) -> None:
         body = (ROOT / "skills" / "code-review" / "SKILL.md").read_text(
             encoding="utf-8"

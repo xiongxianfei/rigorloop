@@ -1,11 +1,11 @@
 {
   "activity": {
     "owner": {
-      "id": "codex-root",
-      "role": "implement"
+      "id": "code-reviewer",
+      "role": "review"
     },
-    "reason": "User explicitly authorized all remaining approved milestones, independent reviews, final Verify, commits/push and PR submission. Begin M1 under the current approved Delivery package; later milestones remain pending their predecessor review.",
-    "stage": "implement",
+    "reason": "M1 implementation and required correction have current proof; hand exact committed subjects to the independent reporter for disposition and M1 reassessment. M2 remains pending.",
+    "stage": "code-review",
     "status": "in-progress"
   },
   "applicability": [
@@ -30,11 +30,11 @@
     {
       "actor": {
         "id": "codex-root",
-        "role": "plan"
+        "role": "implement"
       },
       "path": "docs/changes/2026-09-16-test-design-and-suite-organization/evidence.json",
-      "reason": "Unchanged Design authoring basis and added Plan allocation/discovery/validation basis remain scoped to their exact declared subjects. No implementation or completed inventory adequacy is claimed; independent assessments keep their own authority.",
-      "value": "current"
+      "reason": "Record contains mixed scope evidence. Design/Plan unchanged-basis checks remain relevant; plan-population-basis is a pre-implementation baseline, and m1-pre-correction-validation applies only to its recorded earlier subjects. Corrected M1 subjects require fresh affected proof; do not treat this record as universal current success.",
+      "value": "stale"
     },
     {
       "actor": {
@@ -53,6 +53,15 @@
       "path": "docs/changes/2026-09-16-test-design-and-suite-organization/reviews/delivery-review.json",
       "reason": "The independent assessor reviewed the complete unchanged primary plan against current approved Design and proposal constraints, source/caller feasibility and inspected author evidence. Sequence and proof allocation are jointly sufficient for authorized implementation, with no unresolved material finding or necessary owner decision in the reviewed scope.",
       "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-root",
+        "role": "implement"
+      },
+      "path": "docs/changes/2026-09-16-test-design-and-suite-organization/reviews/m1-code-review.json",
+      "reason": "Author corrected the six helper/consumer subjects in response to open m1-cr-01. Preserve the first-pass judgment and finding; only the independent reporter may renew assessment and disposition.",
+      "value": "stale"
     }
   ],
   "blockers": [],
@@ -95,6 +104,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-16-test-design-and-suite-organization/reviews/delivery-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-16-test-design-and-suite-organization/reviews/m1-code-review.json"
     }
   ],
   "schema_version": 3,
