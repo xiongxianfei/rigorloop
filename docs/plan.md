@@ -31,6 +31,8 @@ Current blockers are not recorded in this index.
 
 ## Current plan references
 
+- [Test design adoption and complete suite organization](plans/2026-09-16-test-design-and-suite-organization.md) — [owning change](changes/2026-09-16-test-design-and-suite-organization/change.json).
+
 - [Complete skill refinement and stale-support retirement](plans/2026-09-15-refine-skills-and-retire-stale-support.md) — [owning change](changes/2026-09-15-refine-skills-and-retire-stale-support/change.json).
 
 - [Retire standalone architecture and ADR authoring](plans/2026-09-15-retire-legacy-design-authoring.md) — [owning change](changes/2026-09-15-retire-legacy-design-authoring/change.json).
