@@ -1,0 +1,110 @@
+{
+  "assessment_scope": "Complete independent corrected M4/TG-04 milestone assessment from approved M3 base 77632de9a3162c6f87772d00f94830ac39ac64a0 through corrected handoff 0853a7eae30aa390dd2872adb7c58b3a3d2e0e87. All 16 current exact subjects cover selector 184 and executor 52 cases, retained behavior/helper groups, five new executor modules, generated Python/Node children, catalog/native hosted caller, two shared Records JSON fixtures and metadata alternate-runner source. The sole post-first-review engineering change is two assertions in the unreliable-rerun test. This is full corrected milestone approval, not a patch-only opinion, final whole-change review or Verify.",
+  "change_id": "2026-09-16-test-design-and-suite-organization",
+  "contributors": [
+    {
+      "id": "codex-root",
+      "role": "implement"
+    }
+  ],
+  "findings": [],
+  "id": "m4-code-review-corrected",
+  "independence_basis": "Author /root, codex-root/implement, produced the original M4 implementation and the two-assertion correction. Separate nonauthor /root/proposal_reviewer, code-reviewer/review, performed the full first-pass M4 assessment and did not author engineering. For this complete corrected milestone judgment the same independent reviewer inspected the exact 79a97302-to-0853a7ea diff, renewed all 16 subject identities and current authority, reviewed registered correction evidence and actual selected-CI logs, compared discovery and AST preservation, and independently executed both the actual-runner in-memory counterexample and normal corrected test. Unchanged groups retain the earlier complete source inspection with explicit unchanged-basis assessment.",
+  "judgment": "approved",
+  "limitations": [
+    "Approval is limited to complete corrected M4 and affected interactions. Route owns milestone/activity closeout. M5–M8, fresh independent final whole-change Code Review and distinct Verify remain required; no PR or branch readiness is claimed.",
+    "The reviewer reused its complete first-pass source assessment for 15 independently confirmed unchanged engineering subjects and unchanged portions of the selector entrypoint. It independently executed the bounded correction probe and normal case, inspected fresh selected execution and discovery, and did not rerun every expensive direct suite.",
+    "The mutation exists only in memory in a private child process and proves the named negative oracle detects misleading reruns. It is not a claim of a current runtime defect or universal mutation coverage.",
+    "Generated command children retain dispatch/scheduling/output scope; they do not establish all product validators, installed packages, external providers or final broad-smoke readiness. Shared persistent Records inputs and downstream package assessment remain allocated to M7/M8.",
+    "Earlier review and evidence identities remain attached to their original subjects. This new assessment does not retroactively refresh them; relevant later source, dependency, procedure or evidence changes require reassessment."
+  ],
+  "rationale": [
+    "Spec alignment: pass. M4 implements the approved selector/executor responsibility split, preserves the established selector contract/Git/CLI distinction and introduces five direct native TestCase groups for Python adaptation, process scheduling, Node adaptation, catalog constraints and composition. TEST-SR-19/20 and VAL-SR-32 do not require arbitrary line limits, further class fragmentation or a replacement runner. The bounded formatter correction is within M4 actionable-rerun scope and VAL-SR-12, not a new executor product capability.",
+    "Test coverage, retained selector contract group: pass. All 67 contract cases retain exact check/category/command/phase observations, owner routing and purpose-specific consumers, historical deletion paths versus present invalid files, current model/example owners, explicit unknown/mixed path rejection, governance/navigation distinctions, parser/shared-module consumers, current/retired catalog membership and thin hosted workflow expectations. Parameter domains are literal meaningful path/owner/failure partitions, not a Cartesian count target. The five new executor paths independently require exactly selector.regression and validation_execution.regression with no duplicate check IDs; earlier M1–M3 new paths remain represented.",
+    "Test coverage, independent inventory strengthening: pass. Five retired Skill archive paths are now named independently rather than iterating the production inventory under test. EXPECTED_MODE_CHECK_IDS independently fixes the ordered ten-check broad-smoke and sixteen-check main domains; actual mode membership is compared directly and full catalog membership is built from independent expected domains. Author controlled in-memory omissions show the old focused archive/catalog cases passed and strengthened cases fail at intended assertions. A separate worker-discovery omission was already detected; its contrary initial observation is preserved and no third previously missing protection is claimed.",
+    "Test coverage, retained real Git group: pass. All 46 cases exercise private actual repositories, staged/unstaged/committed paths, both rename sides and unknown deletions, exact PR snapshots versus current discovery, stored discriminator/type failures, registered supporting subjects, malformed/dangling references, escaping symlinks and authoritative tracking. File/directory replacement and present/unproven/deleted historical inputs remain distinct. Selected readability commands and record-validator subject options execute real commands. Shared Records JSON and complete-store example inputs remain unchanged; they are synthetic structural inputs and not approval evidence.",
+    "Test coverage, retained public CLI group: pass. All 61 cases retain real selector/ci.sh invocations, mode and argv forwarding, exact revision binding, invalid flags before dispatch, malformed/blocked/fallback/mismatched payload rejection, forbidden-work markers, known sibling failure propagation and no partial success. Generated child scripts intentionally replace command bodies only in privately copied workspaces whose catalog units explicitly become command; they prove trusted dispatch, scheduling, output and prerequisite behavior, not actual product validation. Broader real validators retain their own suite/CI proof.",
+    "Test coverage, output contract group: pass after correction. All ten ordinary output cases retain compact success, actionable failure, verbose/quiet modes, conflicting flags before execution, zero selection and unsupported JSON. The valid-failure case still executes the actual emitted positional command and demands exactly its intended failure and diagnostic. The unreliable-loader-failure case now independently requires the exact FAILED unittest.loader._FailedTest.NoSuchTest diagnostic and absence of any Re-run: marker. Nonzero exit remains explicit. This observes the intended distinction without depending on formatter spelling. Only this one test method changed after first-pass review; no runtime formatter or runner behavior changed.",
+    "Test coverage, Python and Node adapters: pass. Eleven Python cases retain imported normal discovery and setup hooks, addressability failures, independently stated class/method/filter selections, duplicate/zero/load-error rejection, skipped/missing/disagreeing/unknown receipts, stale receipt non-reuse, unknown mode before execution, expansion dependencies, opt-in eighth metadata failure population, actual public wrapper expansion, declared serial constraints and normal-versus-isolated execution. Five Node cases retain native declarations, dynamic names, parent hooks, no collection-body side effects, ambiguous/nested-worker/zero/load-error rejection, skip/todo/assertion/hidden-subcase failure, unknown modes and package-native glob/cwd plus actual rerun execution. Generated files are per-case owned resources with immediate registered cleanup.",
+    "Edge cases and process/error handling: pass. Twenty-one scheduler cases use actual owned children and exact statuses for graph rejection before launch, nested allocation, serial barriers and queue-time exclusion, independent continuation, prerequisite failures, fail-fast unstarted work, malformed selections and unknown constraints. Bounded rendezvous verifies real overlap and completion-order reporting without treating speed as success. Timeout, ignored TERM, new-session descendants, orphan environment replacement, interruption, cleanup after observed exit, fresh retry and unrelated-child preservation remain real process observations. Decode/missing-capture failures and unavailable versus signal outcomes cannot become success. Private report destinations and child budgets are asserted at the child boundary.",
+    "Architecture boundaries and composition: pass. Eleven composition cases preserve authored full/narrow coverage, stale constraint rejection, exact prerequisite remapping, cycles, one execution per canonical ID, reasons and focused/boundary failure gates, separate observations, repeated new invocations and distinct snapshot/current checks. Four catalog cases retain command-unit coherence, unknown closed values before launch and stale command-basis rejection. Ordinary resource helpers operate on fresh roots and return observable results; assertion helpers do not hide the tested action. The three retained selector mixins contain compatible behavior methods, no setup inheritance or borrowed TestCase instance lifecycle; SelectionFixtures is a bounded native assembly sharing fresh fixture operations and immutable expectations.",
+    "Compatibility and isolation: pass. Independent AST comparison finds the same 65 executor methods including two aggregate runner methods: only three group methods differ, for explicit filter expectations or cwd; the five groups retain all 63 methods and 52 tests. Normal collection files before/after are exactly equal for 184 selector and 52 executor identities. The explicit failure fixture remains addressable without entering normal discovery; metadata's extra failure remains opt-in. Hosted CI's two unchanged named overlap selectors still address the moved classes, and normal imports load local modules without test-body side effects. Known ordinary -k filters remain supported; the formatter now supplies exact positional reruns.",
+    "Security/privacy, derived artifacts and unrelated changes: pass within scope. Fresh repository/workspace/process state belongs to actual cases; cleanup is attached immediately, child markers and outputs remain private, and controlled worker crashes/signals target owned descendants. No production executor logic, schema, skill, generated adapter, published artifact, external service or stored vocabulary changes. The only production catalog edit registers five exact new paths. Canonical check commands/bases and the hosted caller are unchanged, so no generated-package currency or final broad-smoke claim follows from this assessment.",
+    "Validation evidence: pass. The prior author direct runs (selector 184, executor 52), unchanged actual C3 two-worker overlap and original five-path routing/independent-inventory proof retain their bounded engineering basis because only two output assertions changed. Current m4-review-correction records all ten output-contract cases passing and fresh normal discovery. Reviewer comparison confirms current correction collection equals the original final 184-case collection exactly. Actual three-path C2 jobs=4 log names the changed selector and review/store paths, executes metadata regression/validation plus selector/executor, and reports success: seven metadata, 184 selector and 52 executor case rows pass. The reviewer also independently ran the corrected negative case normally (one pass) and the controlled bad-rerun probe (one intended assertion failure, zero errors). The expected mutation failure is proof of detection, not an unresolved runtime failure.",
+    "Direct correction proof and reporter disposition: pass. The reviewer read probe_m4_correction.py completely and executed it. It loads the actual current runner definitions into a private child, forces can_emit_scoped_rerun=True only in memory, invokes NoSuchTest and applies the actual corrected test. The emitted positional loader rerun is detected specifically by the Re-run: absence assertion, with exactly one failure and zero errors. The same named method passes normally. This is the same failure mechanism recorded by the first reviewer when the old assertion passed. TEST-SR-05 and M4/TG-04 required outcome is fulfilled; the original reporter explicitly resolves m4-cr-01 with current evidence rather than silently superseding it.",
+    "Authority, applicability and overall judgment: pass. Approved Design/Delivery exact identities and current applicability remain unchanged; M4 is active and M5 pending. All 16 current engineering identities match m4-review-correction. Fifteen are identical to the complete first-pass assessment, and the reviewed two-assertion diff establishes why their source, fixture, caller and validation obligations are unaffected. Current fresh selected proof covers the changed selector and affected executor interaction. Prior first-pass judgment, finding evidence/subjects and original red reproduction remain intact; first-pass review stays stale for changed subjects. The mixed evidence file is assessed entry by entry. The author-owned rerun blocker is already reporter-resolved; the independent required finding is explicitly dispositioned here. No unresolved necessary decision, missing required basis or supported correction remains within complete M4."
+  ],
+  "reviewer": {
+    "id": "code-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:47867e67cc4136cc409df1dcb0215898874b629387a9c09705dc17eea53144f3",
+      "path": "tests/engineering/validation/test-select-validation.py"
+    },
+    {
+      "identity": "sha256:29bcab3e3fb762ab3b6fd7b83b9110578dda60eccbf40175ba14d44948117a71",
+      "path": "tests/engineering/validation/selection_contract_tests.py"
+    },
+    {
+      "identity": "sha256:318f0b659d5b45f93323ccf1e3f091dad75ff4b61c54ea189bde1851c59d017a",
+      "path": "tests/engineering/validation/selection_git_tests.py"
+    },
+    {
+      "identity": "sha256:b715a9251509278392d58a62557b2afe67aa63492ea0cae029f9bd4e6bb3c3c6",
+      "path": "tests/engineering/validation/selection_cli_tests.py"
+    },
+    {
+      "identity": "sha256:0f8da4d62c3f8aaa197a73b6ddaf1419cc24a19952b839abe75bafe2bd733a51",
+      "path": "tests/engineering/validation/selection_test_helpers.py"
+    },
+    {
+      "identity": "sha256:31bc9e6cd64750cd18240ee810bb596161ae34212b8a07a2cbb9e6ddff9cb522",
+      "path": "tests/engineering/validation/test-validation-execution.py"
+    },
+    {
+      "identity": "sha256:ab2690653e8c2c6975b4943a6b8dc391a5ad36e05ac8e934294fb5a4c966b734",
+      "path": "tests/engineering/validation/execution_catalog_tests.py"
+    },
+    {
+      "identity": "sha256:75f7d8a09e58d71cb4232c0d6a0b295e91971f9dd4d20dd1f5dcd9170aa81d74",
+      "path": "tests/engineering/validation/execution_composition_tests.py"
+    },
+    {
+      "identity": "sha256:185e782c30cba82b4797e6089be0fed01bab60d9957b183430e5ae4068946a50",
+      "path": "tests/engineering/validation/execution_node_adapter_tests.py"
+    },
+    {
+      "identity": "sha256:8c46af8afde83c86005dbf19de2f655826e447cea41cae844e5c86017cf7fa1a",
+      "path": "tests/engineering/validation/execution_process_tests.py"
+    },
+    {
+      "identity": "sha256:bd94a1e6ac661bc3b88749c2269b29729b1fa35fc81f284c8e5900eb338a602d",
+      "path": "tests/engineering/validation/execution_python_adapter_tests.py"
+    },
+    {
+      "identity": "sha256:51f6110d2e8ed3adecc868f847207d50195883fb54e660152bfc2e6187bc41ad",
+      "path": "scripts/lib/validation/validation_selection.py"
+    },
+    {
+      "identity": "sha256:12a38c1809fa0deca17805ca783020c7783934e6c1f91bbb1e7c9fb6c2e4fb2a",
+      "path": ".github/workflows/ci.yml"
+    },
+    {
+      "identity": "sha256:dde4b6b431c783ac6b7a642ce7455458d13397a2b24f72cbe0bc7d016a4ed9ab",
+      "path": "tests/fixtures/rigorloop-records-v3/records.json"
+    },
+    {
+      "identity": "sha256:adb156b8e2b196c9e82195b3eac059852ca7a941382fa41e355ff3803bf9ba87",
+      "path": "tests/fixtures/rigorloop-records-v3/storage-safety.json"
+    },
+    {
+      "identity": "sha256:da72bcb80d9cf94a16b119957e6162f8bedacd27bbea70be10429b424f9a4193",
+      "path": "tests/engineering/validation/test-change-metadata-validator.py"
+    }
+  ],
+  "summary": "The bounded M4 correction now proves both actionable exact reruns for real named failures and absence of misleading reruns for loader failures. Complete M4 population, organization, fixtures and caller protections remain supported; the original reporter has reassessed the counterexample and resolved the required finding.",
+  "target": "code"
+}

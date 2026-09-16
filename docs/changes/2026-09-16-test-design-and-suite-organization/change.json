@@ -4,7 +4,7 @@
       "id": "code-reviewer",
       "role": "review"
     },
-    "reason": "M4 correction proof passes; return exact current subjects to independent reviewer for finding disposition and corrected complete milestone judgment.",
+    "reason": "M5 complete population organization and real artifact/consumer proof pass. Await independent milestone Code Review before M6 implementation.",
     "stage": "code-review",
     "status": "in-progress"
   },
@@ -98,6 +98,15 @@
       "path": "docs/changes/2026-09-16-test-design-and-suite-organization/reviews/m4-code-review.json",
       "reason": "Bounded m4-cr-01 assertion correction changes the exact selector subject. Preserve first-pass judgment and open finding for original reporter reassessment.",
       "value": "stale"
+    },
+    {
+      "actor": {
+        "id": "codex-root",
+        "role": "implement"
+      },
+      "path": "docs/changes/2026-09-16-test-design-and-suite-organization/reviews/m4-code-review-corrected.json",
+      "reason": "M5 changes shared catalog, selector contract and helper subjects. Preserve exact approved M4 judgment at0853a7ea; M5 reviews the changed interactions and final whole-change assessment remains mandatory.",
+      "value": "stale"
     }
   ],
   "blockers": [
@@ -147,6 +156,79 @@
         {
           "identity": "sha256:06b13b2bb9679508670d5609825e6f7f4dff2337a3564d198825674e0b6e6a26",
           "path": "tests/engineering/validation/test-select-validation.py"
+        }
+      ]
+    },
+    {
+      "evidence": "Actual native clean-install case passed but created one CLI log file in a caller-owned stand-in state directory; m5-log-isolation-reproduction retains exact scope.",
+      "id": "m5-log-isolation",
+      "origin": {
+        "evidence": "Actual native clean-install case passed but created one CLI log file in a caller-owned stand-in state directory; m5-log-isolation-reproduction retains exact scope.",
+        "rationale": "Author-discovered fixture ownership defect within approved M5; settled Validation contract, not a reviewer finding or product default-log defect.",
+        "reporter": {
+          "id": "codex-root",
+          "role": "implement"
+        },
+        "required_outcome": "Give archive/resource/install test cases privately owned log environment with immediate cleanup; same actual-case probe leaves caller state untouched and direct/selected tests still pass.",
+        "subjects": [
+          {
+            "identity": "sha256:3c08875db79e455dd33dfe0ef387837708d43b418f07c02d4c58e079b2af6152",
+            "path": "tests/engineering/packaging/adapter_fixture_helpers.py"
+          },
+          {
+            "identity": "sha256:8a9e7648ae3cd751be7fff2f2fba6e5208bd096ba0bb515be11d7ea8cf5b78fb",
+            "path": "tests/engineering/packaging/adapter_archive_tests.py"
+          },
+          {
+            "identity": "sha256:f325657359a88f9558fe1e427f403c4133f4a52d65dc6288fbd3236f7983398e",
+            "path": "tests/engineering/packaging/adapter_install_tests.py"
+          },
+          {
+            "identity": "sha256:af02d66de3188b20e616f8181221e15fbd9fbed43f352138a44589225bcad1c6",
+            "path": "tests/engineering/packaging/adapter_resources_tests.py"
+          }
+        ],
+        "supporting_judgment": null
+      },
+      "owner": {
+        "id": "codex-root",
+        "role": "implement"
+      },
+      "reporter": {
+        "id": "codex-root",
+        "role": "implement"
+      },
+      "required_outcome": "Give archive/resource/install test cases privately owned log environment with immediate cleanup; same actual-case probe leaves caller state untouched and direct/selected tests still pass.",
+      "resolution": {
+        "actor": {
+          "id": "codex-root",
+          "role": "implement"
+        },
+        "evidence_refs": [
+          {
+            "id": "m5-validation",
+            "path": "docs/changes/2026-09-16-test-design-and-suite-organization/evidence.json"
+          }
+        ],
+        "rationale": "Original reporter reassessed the identical strict automated no-caller-write regression: one unexpected caller-state file before correction, zero after, actual native install case successful in both. Three installed-CLI groups now own and clean up each case log environment. Final full adapter and actual-file selected proof pass; product default logging is unchanged. Independent judgment remains with Code Review."
+      },
+      "state": "resolved",
+      "subjects": [
+        {
+          "identity": "sha256:3c08875db79e455dd33dfe0ef387837708d43b418f07c02d4c58e079b2af6152",
+          "path": "tests/engineering/packaging/adapter_fixture_helpers.py"
+        },
+        {
+          "identity": "sha256:8a9e7648ae3cd751be7fff2f2fba6e5208bd096ba0bb515be11d7ea8cf5b78fb",
+          "path": "tests/engineering/packaging/adapter_archive_tests.py"
+        },
+        {
+          "identity": "sha256:f325657359a88f9558fe1e427f403c4133f4a52d65dc6288fbd3236f7983398e",
+          "path": "tests/engineering/packaging/adapter_install_tests.py"
+        },
+        {
+          "identity": "sha256:af02d66de3188b20e616f8181221e15fbd9fbed43f352138a44589225bcad1c6",
+          "path": "tests/engineering/packaging/adapter_resources_tests.py"
         }
       ]
     }
@@ -210,6 +292,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-16-test-design-and-suite-organization/reviews/m4-code-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-16-test-design-and-suite-organization/reviews/m4-code-review-corrected.json"
     }
   ],
   "schema_version": 3,
@@ -268,7 +354,7 @@
         "TEST-SR-20",
         "VAL-SR-32"
       ],
-      "status": "in-progress"
+      "status": "completed"
     },
     {
       "id": "m5",
@@ -282,7 +368,7 @@
         "TEST-SR-20",
         "VAL-SR-32"
       ],
-      "status": "pending"
+      "status": "in-progress"
     },
     {
       "id": "m6",

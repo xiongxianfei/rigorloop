@@ -20,8 +20,20 @@
         "role": "review"
       },
       "required_outcome": "Strengthen the unreliable-failure regression to require absence of any misleading scoped rerun for the actual loader failure, using an observation independent of the retired -k spelling. Preserve nonzero exit and actionable loader diagnostics, exact valid-case emitted rerun execution, supported filters and normal 184-case population. Safe resolution path: codex-root/implement owns a bounded assertion correction; establish that the same controlled bad-rerun counterexample now fails at the intended assertion, run the affected output-contract group and required surrounding proof, record current evidence and return changed exact subjects for reporter disposition and independent corrected review. needs-decision rationale: none; governing behavior is settled.",
-      "resolution": null,
-      "state": "open",
+      "resolution": {
+        "actor": {
+          "id": "code-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [
+          {
+            "id": "m4-review-correction",
+            "path": "docs/changes/2026-09-16-test-design-and-suite-organization/evidence.json"
+          }
+        ],
+        "rationale": "Original reporter /root/proposal_reviewer inspected the two-assertion correction at 0853a7eae30aa390dd2872adb7c58b3a3d2e0e87. The case now requires the exact loader-failure diagnostic and rejects every Re-run: marker, independent of command syntax. The reviewer executed the same private actual-runner can_emit_scoped_rerun=True counterexample: the corrected case fails specifically at the absence assertion (one failure, zero errors), while normal execution passes. Fresh collection preserves all 184 selectors; current actual-file selected CI passes 184 selector and 52 executor cases, metadata checks and the unchanged valid-case emitted-rerun observation. Exact subject comparison confirms only this method's assertions changed. Required protection is restored without changing runner behavior, filters or population. Original finding evidence and reviewed subjects are preserved."
+      },
+      "state": "resolved",
       "subjects": [
         {
           "identity": "sha256:467dd9185bb465df7687c55407831ff6993f0117bb76c72003b158cf12506230",
