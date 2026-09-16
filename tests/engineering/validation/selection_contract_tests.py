@@ -266,6 +266,19 @@ class SelectionContractChecks:
                                  {c["id"] for c in new.selected_checks})
                 for check in new.selected_checks:
                     self.assertNotIn("scripts/" + name, check["command"])
+        packaging_groups = (
+            (('adapter_archive_tests.py', 'adapter_contract_tests.py', 'adapter_diagnostics_tests.py', 'adapter_fixture_helpers.py', 'adapter_generation_tests.py', 'adapter_install_tests.py', 'adapter_metadata_tests.py', 'adapter_portability_tests.py', 'adapter_resources_tests.py'), {"adapters.regression", "adapters.drift", "adapters.validate"}),
+            (('npm_fixture_helpers.py', 'npm_recording_tests.py'), {"rigorloop_cli.test", "npm_package_publication.test"}),
+        )
+        for names, expected in packaging_groups:
+            for name in names:
+                with self.subTest(packaging_module=name):
+                    payload = self.select(["tests/engineering/packaging/" + name]).to_json_dict()
+                    self.assertEqual(payload["unclassified_paths"], [])
+                    ids = [check["id"] for check in payload["selected_checks"]]
+                    self.assertEqual(set(ids), expected)
+                    self.assertEqual(len(ids), len(expected))
+        self.assertTrue(self.select(["tests/engineering/packaging/unknown.py"]).to_json_dict()["unclassified_paths"])
         self.assertTrue(self.select(["tests/skill/test-unknown.py"]).to_json_dict()["unclassified_paths"])
         workflow = self.select([".github/workflows/publish-github-packages.yml"])
         self.assertFalse(workflow.to_json_dict()["unclassified_paths"])

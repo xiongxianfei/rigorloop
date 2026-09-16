@@ -104,18 +104,18 @@ CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
     ),
     "adapters.regression": CheckCatalogEntry(
         "adapters.regression",
-        "python tests/engineering/packaging/test-adapter-distribution.py AdapterDistributionTests.test_adapter_generation_creates_independent_packages_and_thin_entrypoints AdapterDistributionTests.test_adapter_generation_drift_check_detects_stale_and_unexpected_files AdapterDistributionTests.test_validate_adapters_cli_rejects_retired_repository_output AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives AdapterDistributionTests.test_validate_adapters_cli_accepts_release_archive_root AdapterDistributionTests.test_current_candidate_metadata_matches_generated_route_only_archives AdapterDistributionTests.test_metadata_unknown_value_profile_fails_before_metadata_reads AdapterDistributionTests.test_distribution_archives_have_independent_complete_resource_inventory AdapterDistributionTests.test_distribution_generation_rejects_source_and_active_output_roots AdapterDistributionTests.test_distribution_generation_preserves_runtime_under_output_parent_and_symlinks AdapterDistributionTests.test_distribution_generated_skill_structure_is_validated_independently AdapterDistributionTests.test_validate_adapter_output_rejects_stale_mapped_resource_hashes AdapterDistributionTests.test_validate_adapter_output_rejects_missing_mapped_resource AdapterDistributionTests.test_validate_adapter_output_rejects_missing_or_malformed_canonical_skills",
+        "python tests/engineering/packaging/test-adapter-distribution.py AdapterGenerationTests.test_adapter_generation_creates_independent_packages_and_thin_entrypoints AdapterGenerationTests.test_adapter_generation_drift_check_detects_stale_and_unexpected_files AdapterContractTests.test_validate_adapters_cli_rejects_retired_repository_output AdapterArchiveTests.test_build_adapter_archives_creates_required_release_archives AdapterInstallTests.test_validate_adapters_cli_accepts_release_archive_root AdapterArchiveTests.test_current_candidate_metadata_matches_generated_route_only_archives AdapterMetadataTests.test_metadata_unknown_value_profile_fails_before_metadata_reads AdapterArchiveTests.test_distribution_archives_have_independent_complete_resource_inventory AdapterGenerationTests.test_distribution_generation_rejects_source_and_active_output_roots AdapterGenerationTests.test_distribution_generation_preserves_runtime_under_output_parent_and_symlinks AdapterArchiveTests.test_distribution_generated_skill_structure_is_validated_independently AdapterResourcesTests.test_validate_adapter_output_rejects_stale_mapped_resource_hashes AdapterResourcesTests.test_validate_adapter_output_rejects_missing_mapped_resource AdapterGenerationTests.test_validate_adapter_output_rejects_missing_or_malformed_canonical_skills",
         "adapters",
         parallel_safe=True,
     ),
     "adapters.drift": CheckCatalogEntry(
         "adapters.drift",
-        "python tests/engineering/packaging/test-adapter-distribution.py AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives",
+        "python tests/engineering/packaging/test-adapter-distribution.py AdapterArchiveTests.test_build_adapter_archives_creates_required_release_archives",
         "adapters",
     ),
     "adapters.validate": CheckCatalogEntry(
         "adapters.validate",
-        "python tests/engineering/packaging/test-adapter-distribution.py AdapterDistributionTests.test_validate_adapters_cli_accepts_release_archive_root",
+        "python tests/engineering/packaging/test-adapter-distribution.py AdapterInstallTests.test_validate_adapters_cli_accepts_release_archive_root",
         "adapters",
     ),
     "change_metadata.regression": CheckCatalogEntry(
@@ -274,9 +274,9 @@ _CASE_ASSESSMENTS = {
     'governed_lifecycle_cli_wrapper.test': '04a6b9ef79282ecce87c3f46709f49dbb0e9850c56b1815ef0840760ff4b439a',
 
     'skills.regression': '8e9e4b2d0536c1705f034523cedefc2dd2032561fe2bba42198c1e36d530b52f',
-    'adapters.regression': '3df2f1d9887bc577ece62ad0781ff80b7a80b5cf478426fe420d6c2dec8d0284',
-    'adapters.drift': '0eef3d14cdd8c9280e049b49f63cc20358392144c0a3bd1ba292dd6d07de110e',
-    'adapters.validate': 'b7c7e9443a554cff8a2649ff0970352b0aa2cd934679dca1d076f8e9b67d2b43',
+    'adapters.regression': '894866ec20322f23c50b3f5202e178d2f26f1031657a8b90b8a9561f538b71c3',
+    'adapters.drift': '5be7cc050dc45688abed2d5f338f8416fc7c4cf7a135f37e81c8a791a98c97d6',
+    'adapters.validate': '5d9cf77cb074c0ce01b5c93626b94a011dc1542b032be5e22f40b1f79d9c13d3',
     'adapters.full_regression': '76e63bd934a8c99f2f14af2f8a5e1ebec4c8bb0c95b7701bd8669c340133d148',
     'release_transaction.regression': 'c645e54564a884f4fccc9053354214dcbdc714b1e55488768f32cfc0799167fa',
     'npm_package_publication.test': '5c5b0982301af7980e3473e7bb08d1b04bacf82d451b174c758d21d79d6cb5a4',
@@ -315,9 +315,9 @@ COVERING_CHECK_IDS = {
     'record_retirement.regression': ('rigorloop_cli.test',),
 }
 COVERAGE_BASES = {
-    'adapters.drift': ('0eef3d14cdd8c9280e049b49f63cc20358392144c0a3bd1ba292dd6d07de110e', 'python-unittest'),
-    'adapters.validate': ('b7c7e9443a554cff8a2649ff0970352b0aa2cd934679dca1d076f8e9b67d2b43', 'python-unittest'),
-    'adapters.regression': ('3df2f1d9887bc577ece62ad0781ff80b7a80b5cf478426fe420d6c2dec8d0284', 'python-unittest'),
+    'adapters.drift': ('5be7cc050dc45688abed2d5f338f8416fc7c4cf7a135f37e81c8a791a98c97d6', 'python-unittest'),
+    'adapters.validate': ('5d9cf77cb074c0ce01b5c93626b94a011dc1542b032be5e22f40b1f79d9c13d3', 'python-unittest'),
+    'adapters.regression': ('894866ec20322f23c50b3f5202e178d2f26f1031657a8b90b8a9561f538b71c3', 'python-unittest'),
     'adapters.full_regression': ('76e63bd934a8c99f2f14af2f8a5e1ebec4c8bb0c95b7701bd8669c340133d148', 'python-unittest'),
     'record_retirement.regression': ('875171555af9d01e6580134dd9b5a9264a897b81677bb92aff09a735eee73065', 'node-test'),
     'rigorloop_cli.test': ('92cc1d98945b4cef969b71643189017536f66108f1b0a0f8813b4b9d8d0598e3', 'node-test'),
@@ -591,7 +591,7 @@ def catalog_command(
         return _join(
             "python",
             "tests/engineering/packaging/test-adapter-distribution.py",
-            "AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives",
+            "AdapterArchiveTests.test_build_adapter_archives_creates_required_release_archives",
         )
     if check_id == "boundary_first.validate":
         args = ["python", "scripts/validate-boundary-first.py", "--check"]
@@ -654,7 +654,7 @@ def catalog_command(
         return _join(
             "python",
             "tests/engineering/packaging/test-adapter-distribution.py",
-            "AdapterDistributionTests.test_validate_adapters_cli_accepts_release_archive_root",
+            "AdapterInstallTests.test_validate_adapters_cli_accepts_release_archive_root",
         )
     if check_id == "change_metadata.validate":
         if not paths:
@@ -2044,6 +2044,15 @@ def _path_category(path: str) -> str | None:
         "scripts/adapter_distribution.py",
         "scripts/build-adapters.py",
         "scripts/test-adapter-distribution.py", "tests/engineering/packaging/test-adapter-distribution.py",
+        "tests/engineering/packaging/adapter_archive_tests.py",
+        "tests/engineering/packaging/adapter_contract_tests.py",
+        "tests/engineering/packaging/adapter_diagnostics_tests.py",
+        "tests/engineering/packaging/adapter_fixture_helpers.py",
+        "tests/engineering/packaging/adapter_generation_tests.py",
+        "tests/engineering/packaging/adapter_install_tests.py",
+        "tests/engineering/packaging/adapter_metadata_tests.py",
+        "tests/engineering/packaging/adapter_portability_tests.py",
+        "tests/engineering/packaging/adapter_resources_tests.py",
         "scripts/validate-adapters.py",
     }:
         return "adapters"
@@ -2187,6 +2196,8 @@ def _path_category(path: str) -> str | None:
         "scripts/npm_package_validation.py",
         "scripts/validate-npm-package.py",
         "scripts/test-npm-package-publication.py", "tests/engineering/packaging/test-npm-package-publication.py",
+        "tests/engineering/packaging/npm_fixture_helpers.py",
+        "tests/engineering/packaging/npm_recording_tests.py",
     }:
         return "rigorloop-cli"
     if path in {"scripts/release_evidence.py", "scripts/release_evidence_tests.py", "tests/engineering/release/release_evidence_tests.py"}:
