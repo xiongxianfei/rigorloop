@@ -1660,6 +1660,502 @@
         }
       ],
       "summary": "C1 ordinary discover_cases before/after matches the explicit95-class-selector map, preserves all seven npm selectors and adds one named packed recording case. AST comparison preserves all95 adapter test methods after normalization of explicit fixture calls; it also preserves all73 ordered recording statements with only declared child cwd normalization. The exact14-case supported adapter subset discovers all supplied selectors exactly once. C1 collection does not substitute for execution.\nFull direct python tests/engineering/packaging/test-adapter-distribution.py passes95; python tests/engineering/packaging/test-npm-package-publication.py passes8 with real npm tarballs, actual installed binaries, both target archives/installations and actual recording/recovery. Actual-file C2 python scripts/select-validation.py --mode explicit and bash scripts/ci.sh --mode explicit --jobs4 cover every changed engineering/record path and pass all selected checks, including selected adapter/native package/npm/selector/executor consumers. Normal direct and isolated selected cases use privately owned mutable fixtures.\nNew-path regression initially reports11 unclassified variants and passes after exact catalog registration. The real tarball omission experiment passes the old focused oracle and fails the new one as intended, zero errors. Initial full execution exposed a function/local-variable fixture-name collision (six variants) and stale command fingerprints; the first selected CI correctly refused stale adapter basis before work. Rename the ordinary path helper to fixture_path and reconcile all three command and coverage identities; two focused regressions then pass, followed by the complete rerun. Original failing logs are preserved in scratch and this summary, not presented as passes. A temporary indentation error during explicit-cwd editing was caught immediately by parsing and fixed before final proof. No failing required result or unresolved protection is waived.\nAn additional ownership probe found the existing real adapter installation case passed while creating one diagnostic file in a private stand-in caller state directory. This observation and blocker origin were recorded before correction. It was then refined into a strict automated no-caller-write regression, also recorded before correction: identical actual-case command, fixture, repository cwd and logging environment, no stage-dependent success predicate; exit1 before correction and exit0 afterward, caller files1 then0. Probe identity is retained in m5-log-isolation-regression and matches the post-fix script bytes. Original reporter resolves the blocker only on this exact proof and the final full adapter/selected CI reruns; npm suite source is unchanged since its passing full8-case run. Prior passing pre-fix adapter/CI logs are kept separately and do not establish current ownership success.\nFinal diff checking found extra terminal blank lines in eight extracted modules; remove them and verify identical parsed ASTs. All executed behavioral source is unchanged; only terminal whitespace differs. Current record structure/reference validation and staged diff checks accompany the commit. Reusable earlier unaffected milestone evidence remains exact-scope historical evidence; changed catalog/selector subjects require independent M5 interaction review and later fresh whole-change review. No public release/hosted success, final broad-smoke result or Verify readiness is claimed by this milestone."
+    },
+    {
+      "actor": {
+        "id": "codex-root",
+        "role": "implement"
+      },
+      "id": "m6-implementation",
+      "procedure": "Assess complete release source, native/generated variants, historical/current inputs, fixture ownership and actual package/Git callers; expose scenario actions and ordinary factories without changing product release behavior.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:dbc1eae25bcf3c6dc0f0874fd1d27329f76a1702cb9718840a908ace3155dbc2",
+          "path": "tests/engineering/release/release_candidate_tests.py"
+        },
+        {
+          "identity": "sha256:3d844d393e1ab58fedc9cd7a849642fe1032b0f6d2962fa63ec967ef50ca9b24",
+          "path": "tests/engineering/release/release_coordination_fixtures.py"
+        },
+        {
+          "identity": "sha256:7c79c52911d9f9dca206b5def10925612af45d126f358b1033ea3201feaf6ead",
+          "path": "tests/engineering/release/release_coordination_tests.py"
+        },
+        {
+          "identity": "sha256:a32097648ca5d66e788092872f51e416d9e11ca50b87c96d3263a8e206942809",
+          "path": "tests/engineering/release/release_evidence_tests.py"
+        },
+        {
+          "identity": "sha256:1e09a3e42df7e23c98eb6b33e0db34afe97e849f2c2a4fdd277d448224a4d349",
+          "path": "tests/engineering/release/release_execution_tests.py"
+        },
+        {
+          "identity": "sha256:72505e2f97ee0af33a171678908b14968fd02c2f42e03403cf7acc900f8780e8",
+          "path": "tests/engineering/release/release_fixture_helpers.py"
+        },
+        {
+          "identity": "sha256:8b5d0c663f0268340d6ecc4bebb873b3c14167e6dedaddd0f1261dba941a0425",
+          "path": "tests/engineering/release/release_identity_tests.py"
+        },
+        {
+          "identity": "sha256:bb092f1a0466d5573bc9f1685135b666023f285415f60eec2ada7910ac227953",
+          "path": "tests/engineering/release/release_preflight_tests.py"
+        },
+        {
+          "identity": "sha256:d618792c5af76ae05cabaa4a63cdc8a5dba52e7d7257399a216cf61c4f4c0659",
+          "path": "tests/engineering/release/release_preparation_tests.py"
+        },
+        {
+          "identity": "sha256:490c7b1f5d7a9eaf050434d470236c2c72fb5ecd3b23f022d48299fd7b2c3805",
+          "path": "tests/engineering/release/release_profile_tests.py"
+        },
+        {
+          "identity": "sha256:87089a1a8ac57df570334e28d6d04f2e0354ffaf9645d75fe20175cf006ab58f",
+          "path": "tests/engineering/release/release_provider_fixtures.py"
+        },
+        {
+          "identity": "sha256:60311fa3a10b2d01aed11393e75d92e68d335bc286faf07d9560872185f1559d",
+          "path": "tests/engineering/release/release_publication_tests.py"
+        },
+        {
+          "identity": "sha256:6b94065f47f1000473225d83c4b88d97a5187fc9d75f8be87c53876068d11015",
+          "path": "tests/engineering/release/release_timing_tests.py"
+        },
+        {
+          "identity": "sha256:8446131071b8f71a8b02ffb6855f616f777cf96f892f809c36490a90dada4f23",
+          "path": "tests/engineering/release/test-release-transaction.py"
+        },
+        {
+          "identity": "sha256:94aec6847913d5566bf1ec5ad4b7a63b7a922f0d0121570e7a1d431506cf1bea",
+          "path": "tests/fixtures/release-transaction/current-version.json"
+        },
+        {
+          "identity": "sha256:1d75b6fda1e2cbddd6c99f18d49b491c4f2d5202098f0650a0f10c19dec10045",
+          "path": "tests/fixtures/release-transaction/literal-audit/generated-current-without-owner.yaml"
+        },
+        {
+          "identity": "sha256:1bf0d232d58dffa73c4a99c0a7a1c50d88f5f8fd46be98fc6d367892dc3c91b1",
+          "path": "tests/fixtures/release-transaction/literal-audit/historical-fixture-without-rationale.yaml"
+        },
+        {
+          "identity": "sha256:f10f142308099b088bfd56a851db85073263aa58a114f53b0e2a728724280c39",
+          "path": "tests/fixtures/release-transaction/literal-audit/invalid-missing-classification.yaml"
+        },
+        {
+          "identity": "sha256:af6ac03596872f58fff484460c762a2f6569abf2f546871584feed1043931d28",
+          "path": "tests/fixtures/release-transaction/literal-audit/invalid-unknown-classification.yaml"
+        },
+        {
+          "identity": "sha256:ac885ccc811d9e5a3eaeddee491c8de71d7b3865cbfb69913742041567fac0e1",
+          "path": "tests/fixtures/release-transaction/literal-audit/unauthorized-new-literal.yaml"
+        },
+        {
+          "identity": "sha256:dc8819431c92247df6eda38f769f4dccea8eeb825f6e8585513d0c68383914a2",
+          "path": "tests/fixtures/release-transaction/literal-audit/valid-baseline.yaml"
+        },
+        {
+          "identity": "sha256:6b70e6b9f7744bf59d080205a9b743fde3dccf22f84703f082636d2be1e3bec6",
+          "path": "tests/fixtures/release-transaction/profiles/invalid-malformed.yaml"
+        },
+        {
+          "identity": "sha256:2e523c9f317c92958bfd4a06ef18aaeb6b0a495e4219c9c74c2d012f933cea01",
+          "path": "tests/fixtures/release-transaction/profiles/invalid-missing-adapter-artifacts.yaml"
+        },
+        {
+          "identity": "sha256:1a050268bb6e65846cbc56c877481b6941f1f504ba095b9b20ebe2d1825cc2f9",
+          "path": "tests/fixtures/release-transaction/profiles/invalid-missing-evidence.yaml"
+        },
+        {
+          "identity": "sha256:823a583f6a7f6843fc4e171e23e2028265fa3a69697cc8e5362b0dfb5e30958e",
+          "path": "tests/fixtures/release-transaction/profiles/invalid-missing-npm-dist-tag.yaml"
+        },
+        {
+          "identity": "sha256:0ec99bc7e3e48f4c6ce62c5a7d5cba93afd6a489eaec0e4756358287142e8c09",
+          "path": "tests/fixtures/release-transaction/profiles/invalid-missing-npm-package.yaml"
+        },
+        {
+          "identity": "sha256:886f9db27d3f5c48fe37647723d1cfb6f197ad19686406aea50ff7ce99b20f6a",
+          "path": "tests/fixtures/release-transaction/profiles/invalid-missing-package-version.yaml"
+        },
+        {
+          "identity": "sha256:453a6980e7047574ee31e41ff561c701101784ea8b8c2c84518cf282b89d7397",
+          "path": "tests/fixtures/release-transaction/profiles/invalid-missing-publication.yaml"
+        },
+        {
+          "identity": "sha256:ea3f2cb1d7254e0effb7a4b76f694220322042f0789478520a984bc4bc8a1474",
+          "path": "tests/fixtures/release-transaction/profiles/invalid-missing-release-tag.yaml"
+        },
+        {
+          "identity": "sha256:9e29eee614c684657d10a1396de3f1e0c91a1a882e7c336602fe86f19b395baf",
+          "path": "tests/fixtures/release-transaction/profiles/invalid-missing-targets.yaml"
+        },
+        {
+          "identity": "sha256:bfeb5de80bc73c482a384c4c416f4fb8deebf4afb8d3eb9540dc6273ff54abc2",
+          "path": "tests/fixtures/release-transaction/profiles/invalid-missing-validation.yaml"
+        },
+        {
+          "identity": "sha256:479cb2deeeef9f7b03f22334acb7b3091f1a4e02018b0445f3d6ffb7b389fe4f",
+          "path": "tests/fixtures/release-transaction/profiles/invalid-special-release-without-rationale.yaml"
+        },
+        {
+          "identity": "sha256:71ce5368588d09ed3147443e08e7e0a41cf26e95f26e894587fdb04533b4d38a",
+          "path": "tests/fixtures/release-transaction/profiles/invalid-unknown-npm-dist-tag.yaml"
+        },
+        {
+          "identity": "sha256:ea4d75dc1e1844bccd2151613ace0aa28214e2ea846b98ced3c35dccb916d27c",
+          "path": "tests/fixtures/release-transaction/profiles/invalid-unknown-release-kind.yaml"
+        },
+        {
+          "identity": "sha256:a2f75710b7c65de13240cbf761810a04d1c168bc721b8aeaf85880488fdef8ff",
+          "path": "tests/fixtures/release-transaction/profiles/invalid-unknown-target.yaml"
+        },
+        {
+          "identity": "sha256:cb3d10fb1f370d2447db6c7dc5a646085bf7d952eb0bb1bbdc5a7be2dab85529",
+          "path": "tests/fixtures/release-transaction/profiles/invalid-wrong-package-version.yaml"
+        },
+        {
+          "identity": "sha256:b92ae3087aff57dff3d29e7426baef57cbd1afe4642124abcf4177fd8d7f9a02",
+          "path": "tests/fixtures/release-transaction/profiles/special-release-with-rationale.yaml"
+        },
+        {
+          "identity": "sha256:9bd744cf3cd24753100e021364c9837585c89f83fda149272ae67f0b1b7ac1a8",
+          "path": "tests/fixtures/release-transaction/profiles/valid-routine-v0.3.5.yaml"
+        },
+        {
+          "identity": "sha256:4a133a5d7f2961206bbcf64dd479884482da242c15bf1b0eed6ca7a12893ebff",
+          "path": "tests/fixtures/release-transaction/surface-inventory/invalid-manual-override-without-rationale.yaml"
+        },
+        {
+          "identity": "sha256:e5cd1bddd2abd622409a5726375c5eb5060031d4a9fad4b9839501ccea10e77a",
+          "path": "tests/fixtures/release-transaction/surface-inventory/invalid-missing-classification.yaml"
+        },
+        {
+          "identity": "sha256:1532e6f517cc2af20e9191dea93defb2d38edefee71248912e8bc95b2566a0a8",
+          "path": "tests/fixtures/release-transaction/surface-inventory/invalid-unknown-classification.yaml"
+        },
+        {
+          "identity": "sha256:cde47c9e16781f2314f43910a5c2f218678648a48f7c375978bc583d2c25a94e",
+          "path": "tests/fixtures/release-transaction/surface-inventory/valid-inventory.yaml"
+        },
+        {
+          "identity": "sha256:968cc22d8073862ee77152865c9bc9bcbe231625ad17c57315e406082c931737",
+          "path": "scripts/lib/validation/validation_selection.py"
+        },
+        {
+          "identity": "sha256:a7cd4a7f7803430797ab62f8aabdf14dc7f49c1b21f3534c8069d80b0cae870a",
+          "path": "tests/engineering/validation/selection_contract_tests.py"
+        },
+        {
+          "identity": "sha256:779e86f05bf64da7f9eb91aa01abeb2e13ddb5f51d4413b6b13c3dbfc8625dbc",
+          "path": "scripts/lib/release/release_transaction.py"
+        },
+        {
+          "identity": "sha256:e6ccfe19fc3fe7c101b3900d9b2f36debb5f3c62acaf79b5721b1ecd6c43d162",
+          "path": "scripts/lib/release/release_candidate.py"
+        },
+        {
+          "identity": "sha256:2375f4e50b8f49bdef84fdee3715a7487c0a72d0a1c13aa87411ca1db71086ba",
+          "path": "scripts/lib/release/release_coordination.py"
+        },
+        {
+          "identity": "sha256:b72520ed6e1f7b7244533dce6856a114def501c19fdb96525365453301ae4e4f",
+          "path": "scripts/lib/release/release_execution.py"
+        },
+        {
+          "identity": "sha256:4d6b854ce2a1f8f9911ecf48765c196a8e2971f5ae7ae80d90d07b56b9017d2e",
+          "path": "scripts/lib/release/release_provider.py"
+        },
+        {
+          "identity": "sha256:4b22736b37ffcd31a5b937fdd390971084dce870e952cf3b3a0dc7e4f83d6238",
+          "path": "scripts/validate-release.py"
+        },
+        {
+          "identity": "sha256:5235bf6e07ad9e57858c15574009a9c39c5d8dc10932d8aba52b9a545c3d98b8",
+          "path": "scripts/release-coordinator.py"
+        },
+        {
+          "identity": "sha256:9f03477a3dc5da070181ed4bc973c5ba4de620c5519510afb541bf25503f63c0",
+          "path": "scripts/ci.sh"
+        },
+        {
+          "identity": "sha256:e0b22cfd2a5a4ad6c1fc97d437b804c2f64260e5b74bb394aa44c58a3ac4a43d",
+          "path": ".github/workflows/release.yml"
+        },
+        {
+          "identity": "sha256:ceae796353aa530ad6992905ae7eeabfe826acc72eba2748f21e3db6605822ae",
+          "path": "tests/engineering/packaging/adapter_fixture_helpers.py"
+        },
+        {
+          "identity": "sha256:d8251aa93ddc616821bd29ecb469c89ffb02a7eeb93979e0902523cfc559ffd5",
+          "path": "tests/engineering/packaging/npm_fixture_helpers.py"
+        },
+        {
+          "identity": "sha256:ee940a03d9c242b8040b86201f0d3d8f0c061cf372ee7c692f35535f9076fe88",
+          "path": "tests/engineering/packaging/test-npm-package-publication.py"
+        },
+        {
+          "identity": "sha256:e83e14f4d96c0654efa24bbeae2c3741792aa1d5371d951acd11285eecb33a5b",
+          "path": "packages/rigorloop/test/cli.test.js"
+        },
+        {
+          "identity": "sha256:04afaab8e5505298350096e4e2a1b324e9ddcba0857383f3f780966bd9ee1a80",
+          "path": "docs/changes/2026-06-29-release-transaction-automation/release-surface-inventory.yaml"
+        },
+        {
+          "identity": "sha256:9859cd5ef43ff2cb1216a03e53b2ef5d45919cca3bf5868dc6d81d87682b43a1",
+          "path": "docs/changes/2026-06-29-release-transaction-automation/release-literal-audit-baseline.yaml"
+        }
+      ],
+      "summary": "Assess all180 M6 scenarios, all27 YAML inputs and current-version.json, and actual callers. Retain original native case identities and one supported aggregate; split its remaining groups into identity6, profile/surface/literal24, preparation25, preflight16, timing9 and public/history19. Retain candidate30 (22 identity, two actual integrations, six current-source qualification), coordination9, execution27 (six approvals, two Git store, nineteen executor) and evidence15 as cohesive existing groups. No case or meaningful parameter is removed, no new runner/framework/TestCase inheritance is added, and helper imports no longer depend on executable test modules.\nOrdinary functions now own fresh repository/prepared-document/timing/public-evidence/identity fixtures and snapshot mechanics. Existing supplied roots remain private TemporaryDirectory contexts; actual integration cases retain immediate cleanup and private npm/log environments. Equivalent prepared-repository builders share one explicit operation returning the pending-document path; callers that need only setup ignore that return. Historical fixtures call ordinary builders instead of constructing another TestCase. Preserve current versus historical grammar: synthetic three-target reports remain readable only by the retained history reader and rejected as current routine profiles; unknown values still fail before consistency. Source/current qualification rejects historical replay before old source readers, verifies selected current profile/version/source commit, and preserves prior receipt on mismatched preparation.\nMove external approvals/publication/hosted coordinator fixtures to two ordinary support modules. They retain fresh provider dictionaries, deep copies at observation boundaries and explicit simulated failures. FixturePublisher's resource-provider inheritance intentionally preserves actual NetworkPublisher closeout/tree validators; it is not test inheritance or borrowed test setup. PackedPublicFixture still installs and invokes an actual candidate npm tarball and actual target archives through substituted network transport. Actual Git CAS, archive/tarball bytes, CLI argparse/environment/output, candidate checks and persisted evidence remain executed. Simulated approval/registry/GitHub observations do not establish hosted/public availability.\nInline twenty assertion-helper scenarios so profile loading, fresh pending-file mutation, preflight invocation and diagnostic checks are visible in the owning case. Seven profile cases retain nine required-field variants, malformed/version/special and unknown-before-consistency outcomes; six pending-evidence cases retain target status/command/missing/duplicate/unknown/projection mutations with an added guard that each mutation changes the fixture; seven preflight cases retain explicit malformed/incomplete/missing/stale/dirty inputs. Pure assert_errors_contain consumes already-observed errors and performs no mutation or validation. Source comparison preserves159 test bodies after normalizing explicit fixture calls; these twenty inlined cases and one actual candidate expectation are the only changed method ASTs.\nStrengthen the actual candidate check expectation to the independent Release-owned three IDs profile, preflight and release-integrity. Production CANDIDATE_CHECKS remains useful for constructing valid identity fixtures but no longer supplies this integration oracle. Controlled evaluation of the actual old/new assertion against a reduced producer set and matching reduced observation shows the old assertion accepting omission and the new one rejecting missing preflight. That experiment proves the focused assertion mechanism only; actual full candidate execution is separate proof.\nRetain valid profile fields, nine missing required fields, malformed/unknown vocabularies and version/special-owner decisions; surface/literal classifications retain explicit rationale and changed-literal ownership. All28 recursive files remain byte-identical, including current-version.json. Its existing release preparation writer/location and candidate allowed-path policy remain unchanged; old three-target bytes are historical/generated data, not permission to widen current targets. Two June29 change-local inventories remain current explicit test inputs. Present tracked dist/adapters/manifest.yaml consumers are preserved; this test initiative does not silently adopt a separate source-cleanup design.\nRetain preparation idempotency/no-publication, user narrative preservation and finalized-versus-partial evidence distinctions; Git tag/dirty-output/metadata/preflight no-write behavior; standalone timing's diagnostic-only interpretation and workflow parity. Retain provider-unavailable/failed smoke/missing/conflicting public identity outcomes, explicit fixture mode, source values instead of copied public literals and historical evidence byte preservation. Evidence tests retain independent rows and valid/missing/inconsistent target-state combinations.\nCandidate/approval/executor scenarios retain wrong nested source, immutable candidate digest and unsafe ZIP identities, denied/changed approvals with zero writes, unknown external state versus absence, lost-response observation before retry, delayed visibility with deterministic waits, Git concurrency, failure before public writes, partial publication continuation, failed smoke/reporting/mirror retries and secret suppression. The long actual candidate integration remains one ordered private scenario because its candidate identity and persisted recovery history must survive those steps. Splitting that sequence into independently rebuilt successes would weaken the required observation.\nEight new source paths now select exactly release_transaction.regression. The supported aggregate command, native adapter, check IDs and fingerprints do not change. Existing Skill/packaging/catalog consumers retain their current references; only actual fixture imports change. Independent selection expectations cover every new path, and unknown release source remains unclassified rather than silently receiving partial proof."
+    },
+    {
+      "actor": {
+        "id": "codex-root",
+        "role": "implement"
+      },
+      "id": "m6-validation",
+      "procedure": "C1 native population and source comparison; eight-path negative/positive selection; controlled candidate-oracle omission; full native180; actual-file C2 all selected checks; record and staged diff validation.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:dbc1eae25bcf3c6dc0f0874fd1d27329f76a1702cb9718840a908ace3155dbc2",
+          "path": "tests/engineering/release/release_candidate_tests.py"
+        },
+        {
+          "identity": "sha256:3d844d393e1ab58fedc9cd7a849642fe1032b0f6d2962fa63ec967ef50ca9b24",
+          "path": "tests/engineering/release/release_coordination_fixtures.py"
+        },
+        {
+          "identity": "sha256:7c79c52911d9f9dca206b5def10925612af45d126f358b1033ea3201feaf6ead",
+          "path": "tests/engineering/release/release_coordination_tests.py"
+        },
+        {
+          "identity": "sha256:a32097648ca5d66e788092872f51e416d9e11ca50b87c96d3263a8e206942809",
+          "path": "tests/engineering/release/release_evidence_tests.py"
+        },
+        {
+          "identity": "sha256:1e09a3e42df7e23c98eb6b33e0db34afe97e849f2c2a4fdd277d448224a4d349",
+          "path": "tests/engineering/release/release_execution_tests.py"
+        },
+        {
+          "identity": "sha256:72505e2f97ee0af33a171678908b14968fd02c2f42e03403cf7acc900f8780e8",
+          "path": "tests/engineering/release/release_fixture_helpers.py"
+        },
+        {
+          "identity": "sha256:8b5d0c663f0268340d6ecc4bebb873b3c14167e6dedaddd0f1261dba941a0425",
+          "path": "tests/engineering/release/release_identity_tests.py"
+        },
+        {
+          "identity": "sha256:bb092f1a0466d5573bc9f1685135b666023f285415f60eec2ada7910ac227953",
+          "path": "tests/engineering/release/release_preflight_tests.py"
+        },
+        {
+          "identity": "sha256:d618792c5af76ae05cabaa4a63cdc8a5dba52e7d7257399a216cf61c4f4c0659",
+          "path": "tests/engineering/release/release_preparation_tests.py"
+        },
+        {
+          "identity": "sha256:490c7b1f5d7a9eaf050434d470236c2c72fb5ecd3b23f022d48299fd7b2c3805",
+          "path": "tests/engineering/release/release_profile_tests.py"
+        },
+        {
+          "identity": "sha256:87089a1a8ac57df570334e28d6d04f2e0354ffaf9645d75fe20175cf006ab58f",
+          "path": "tests/engineering/release/release_provider_fixtures.py"
+        },
+        {
+          "identity": "sha256:60311fa3a10b2d01aed11393e75d92e68d335bc286faf07d9560872185f1559d",
+          "path": "tests/engineering/release/release_publication_tests.py"
+        },
+        {
+          "identity": "sha256:6b94065f47f1000473225d83c4b88d97a5187fc9d75f8be87c53876068d11015",
+          "path": "tests/engineering/release/release_timing_tests.py"
+        },
+        {
+          "identity": "sha256:8446131071b8f71a8b02ffb6855f616f777cf96f892f809c36490a90dada4f23",
+          "path": "tests/engineering/release/test-release-transaction.py"
+        },
+        {
+          "identity": "sha256:94aec6847913d5566bf1ec5ad4b7a63b7a922f0d0121570e7a1d431506cf1bea",
+          "path": "tests/fixtures/release-transaction/current-version.json"
+        },
+        {
+          "identity": "sha256:1d75b6fda1e2cbddd6c99f18d49b491c4f2d5202098f0650a0f10c19dec10045",
+          "path": "tests/fixtures/release-transaction/literal-audit/generated-current-without-owner.yaml"
+        },
+        {
+          "identity": "sha256:1bf0d232d58dffa73c4a99c0a7a1c50d88f5f8fd46be98fc6d367892dc3c91b1",
+          "path": "tests/fixtures/release-transaction/literal-audit/historical-fixture-without-rationale.yaml"
+        },
+        {
+          "identity": "sha256:f10f142308099b088bfd56a851db85073263aa58a114f53b0e2a728724280c39",
+          "path": "tests/fixtures/release-transaction/literal-audit/invalid-missing-classification.yaml"
+        },
+        {
+          "identity": "sha256:af6ac03596872f58fff484460c762a2f6569abf2f546871584feed1043931d28",
+          "path": "tests/fixtures/release-transaction/literal-audit/invalid-unknown-classification.yaml"
+        },
+        {
+          "identity": "sha256:ac885ccc811d9e5a3eaeddee491c8de71d7b3865cbfb69913742041567fac0e1",
+          "path": "tests/fixtures/release-transaction/literal-audit/unauthorized-new-literal.yaml"
+        },
+        {
+          "identity": "sha256:dc8819431c92247df6eda38f769f4dccea8eeb825f6e8585513d0c68383914a2",
+          "path": "tests/fixtures/release-transaction/literal-audit/valid-baseline.yaml"
+        },
+        {
+          "identity": "sha256:6b70e6b9f7744bf59d080205a9b743fde3dccf22f84703f082636d2be1e3bec6",
+          "path": "tests/fixtures/release-transaction/profiles/invalid-malformed.yaml"
+        },
+        {
+          "identity": "sha256:2e523c9f317c92958bfd4a06ef18aaeb6b0a495e4219c9c74c2d012f933cea01",
+          "path": "tests/fixtures/release-transaction/profiles/invalid-missing-adapter-artifacts.yaml"
+        },
+        {
+          "identity": "sha256:1a050268bb6e65846cbc56c877481b6941f1f504ba095b9b20ebe2d1825cc2f9",
+          "path": "tests/fixtures/release-transaction/profiles/invalid-missing-evidence.yaml"
+        },
+        {
+          "identity": "sha256:823a583f6a7f6843fc4e171e23e2028265fa3a69697cc8e5362b0dfb5e30958e",
+          "path": "tests/fixtures/release-transaction/profiles/invalid-missing-npm-dist-tag.yaml"
+        },
+        {
+          "identity": "sha256:0ec99bc7e3e48f4c6ce62c5a7d5cba93afd6a489eaec0e4756358287142e8c09",
+          "path": "tests/fixtures/release-transaction/profiles/invalid-missing-npm-package.yaml"
+        },
+        {
+          "identity": "sha256:886f9db27d3f5c48fe37647723d1cfb6f197ad19686406aea50ff7ce99b20f6a",
+          "path": "tests/fixtures/release-transaction/profiles/invalid-missing-package-version.yaml"
+        },
+        {
+          "identity": "sha256:453a6980e7047574ee31e41ff561c701101784ea8b8c2c84518cf282b89d7397",
+          "path": "tests/fixtures/release-transaction/profiles/invalid-missing-publication.yaml"
+        },
+        {
+          "identity": "sha256:ea3f2cb1d7254e0effb7a4b76f694220322042f0789478520a984bc4bc8a1474",
+          "path": "tests/fixtures/release-transaction/profiles/invalid-missing-release-tag.yaml"
+        },
+        {
+          "identity": "sha256:9e29eee614c684657d10a1396de3f1e0c91a1a882e7c336602fe86f19b395baf",
+          "path": "tests/fixtures/release-transaction/profiles/invalid-missing-targets.yaml"
+        },
+        {
+          "identity": "sha256:bfeb5de80bc73c482a384c4c416f4fb8deebf4afb8d3eb9540dc6273ff54abc2",
+          "path": "tests/fixtures/release-transaction/profiles/invalid-missing-validation.yaml"
+        },
+        {
+          "identity": "sha256:479cb2deeeef9f7b03f22334acb7b3091f1a4e02018b0445f3d6ffb7b389fe4f",
+          "path": "tests/fixtures/release-transaction/profiles/invalid-special-release-without-rationale.yaml"
+        },
+        {
+          "identity": "sha256:71ce5368588d09ed3147443e08e7e0a41cf26e95f26e894587fdb04533b4d38a",
+          "path": "tests/fixtures/release-transaction/profiles/invalid-unknown-npm-dist-tag.yaml"
+        },
+        {
+          "identity": "sha256:ea4d75dc1e1844bccd2151613ace0aa28214e2ea846b98ced3c35dccb916d27c",
+          "path": "tests/fixtures/release-transaction/profiles/invalid-unknown-release-kind.yaml"
+        },
+        {
+          "identity": "sha256:a2f75710b7c65de13240cbf761810a04d1c168bc721b8aeaf85880488fdef8ff",
+          "path": "tests/fixtures/release-transaction/profiles/invalid-unknown-target.yaml"
+        },
+        {
+          "identity": "sha256:cb3d10fb1f370d2447db6c7dc5a646085bf7d952eb0bb1bbdc5a7be2dab85529",
+          "path": "tests/fixtures/release-transaction/profiles/invalid-wrong-package-version.yaml"
+        },
+        {
+          "identity": "sha256:b92ae3087aff57dff3d29e7426baef57cbd1afe4642124abcf4177fd8d7f9a02",
+          "path": "tests/fixtures/release-transaction/profiles/special-release-with-rationale.yaml"
+        },
+        {
+          "identity": "sha256:9bd744cf3cd24753100e021364c9837585c89f83fda149272ae67f0b1b7ac1a8",
+          "path": "tests/fixtures/release-transaction/profiles/valid-routine-v0.3.5.yaml"
+        },
+        {
+          "identity": "sha256:4a133a5d7f2961206bbcf64dd479884482da242c15bf1b0eed6ca7a12893ebff",
+          "path": "tests/fixtures/release-transaction/surface-inventory/invalid-manual-override-without-rationale.yaml"
+        },
+        {
+          "identity": "sha256:e5cd1bddd2abd622409a5726375c5eb5060031d4a9fad4b9839501ccea10e77a",
+          "path": "tests/fixtures/release-transaction/surface-inventory/invalid-missing-classification.yaml"
+        },
+        {
+          "identity": "sha256:1532e6f517cc2af20e9191dea93defb2d38edefee71248912e8bc95b2566a0a8",
+          "path": "tests/fixtures/release-transaction/surface-inventory/invalid-unknown-classification.yaml"
+        },
+        {
+          "identity": "sha256:cde47c9e16781f2314f43910a5c2f218678648a48f7c375978bc583d2c25a94e",
+          "path": "tests/fixtures/release-transaction/surface-inventory/valid-inventory.yaml"
+        },
+        {
+          "identity": "sha256:968cc22d8073862ee77152865c9bc9bcbe231625ad17c57315e406082c931737",
+          "path": "scripts/lib/validation/validation_selection.py"
+        },
+        {
+          "identity": "sha256:a7cd4a7f7803430797ab62f8aabdf14dc7f49c1b21f3534c8069d80b0cae870a",
+          "path": "tests/engineering/validation/selection_contract_tests.py"
+        },
+        {
+          "identity": "sha256:779e86f05bf64da7f9eb91aa01abeb2e13ddb5f51d4413b6b13c3dbfc8625dbc",
+          "path": "scripts/lib/release/release_transaction.py"
+        },
+        {
+          "identity": "sha256:e6ccfe19fc3fe7c101b3900d9b2f36debb5f3c62acaf79b5721b1ecd6c43d162",
+          "path": "scripts/lib/release/release_candidate.py"
+        },
+        {
+          "identity": "sha256:2375f4e50b8f49bdef84fdee3715a7487c0a72d0a1c13aa87411ca1db71086ba",
+          "path": "scripts/lib/release/release_coordination.py"
+        },
+        {
+          "identity": "sha256:b72520ed6e1f7b7244533dce6856a114def501c19fdb96525365453301ae4e4f",
+          "path": "scripts/lib/release/release_execution.py"
+        },
+        {
+          "identity": "sha256:4d6b854ce2a1f8f9911ecf48765c196a8e2971f5ae7ae80d90d07b56b9017d2e",
+          "path": "scripts/lib/release/release_provider.py"
+        },
+        {
+          "identity": "sha256:4b22736b37ffcd31a5b937fdd390971084dce870e952cf3b3a0dc7e4f83d6238",
+          "path": "scripts/validate-release.py"
+        },
+        {
+          "identity": "sha256:5235bf6e07ad9e57858c15574009a9c39c5d8dc10932d8aba52b9a545c3d98b8",
+          "path": "scripts/release-coordinator.py"
+        },
+        {
+          "identity": "sha256:9f03477a3dc5da070181ed4bc973c5ba4de620c5519510afb541bf25503f63c0",
+          "path": "scripts/ci.sh"
+        },
+        {
+          "identity": "sha256:e0b22cfd2a5a4ad6c1fc97d437b804c2f64260e5b74bb394aa44c58a3ac4a43d",
+          "path": ".github/workflows/release.yml"
+        },
+        {
+          "identity": "sha256:ceae796353aa530ad6992905ae7eeabfe826acc72eba2748f21e3db6605822ae",
+          "path": "tests/engineering/packaging/adapter_fixture_helpers.py"
+        },
+        {
+          "identity": "sha256:d8251aa93ddc616821bd29ecb469c89ffb02a7eeb93979e0902523cfc559ffd5",
+          "path": "tests/engineering/packaging/npm_fixture_helpers.py"
+        },
+        {
+          "identity": "sha256:ee940a03d9c242b8040b86201f0d3d8f0c061cf372ee7c692f35535f9076fe88",
+          "path": "tests/engineering/packaging/test-npm-package-publication.py"
+        },
+        {
+          "identity": "sha256:e83e14f4d96c0654efa24bbeae2c3741792aa1d5371d951acd11285eecb33a5b",
+          "path": "packages/rigorloop/test/cli.test.js"
+        },
+        {
+          "identity": "sha256:04afaab8e5505298350096e4e2a1b324e9ddcba0857383f3f780966bd9ee1a80",
+          "path": "docs/changes/2026-06-29-release-transaction-automation/release-surface-inventory.yaml"
+        },
+        {
+          "identity": "sha256:9859cd5ef43ff2cb1216a03e53b2ef5d45919cca3bf5868dc6d81d87682b43a1",
+          "path": "docs/changes/2026-06-29-release-transaction-automation/release-literal-audit-baseline.yaml"
+        }
+      ],
+      "summary": "C1 ordinary discovery before/after preserves exactly180 unique class/method selectors, including all imported groups. AST comparison accounts for all180 methods:159 unchanged after explicit fixture-call normalization,20 expanded operation/helper scenarios,one stronger literal candidate expectation. All recursive release inputs remain unchanged. Native aggregate import and source scan show no borrowed TestCase constructors or fixture imports from executable test modules.\nFull direct python tests/engineering/release/test-release-transaction.py passes180 in125.859s with real Git, actual archive/packed-binary and ordered candidate/retry observations. C2 python scripts/select-validation.py --mode explicit and bash scripts/ci.sh --mode explicit --jobs4 use all17 actual changed files (engineering plus prior review registration), select no unknown paths and pass all five selected checks: change_metadata.regression, change_metadata.validate, release_transaction.regression, selector.regression and validation_execution.regression. Selected execution supplies independent native-case execution in addition to the complete direct entrypoint.\nThe new-path selection case first fails on all eight unclassified new modules and passes after registration, preserving one native scenario with eight named variants. An initial invocation misspelled the existing class as SelectionTests; that loader error is retained separately and is not counted as the negative routing proof. Actual candidate omission assertion evaluation accepts the reduced old producer domain and rejects the omitted preflight under the new independent literal expectation. Neither that synthetic observation nor simulated provider success is claimed as public publication evidence.\nCurrent record/reference validation and staged diff checks accompany the handoff. Shared catalog/candidate subjects supersede M5 reliance only for the changed interaction; preserve that exact historical approval and require M6 interaction review plus the final whole-change review. No final Verify, broad-smoke, hosted success or release readiness is claimed."
     }
   ],
   "schema_version": 3

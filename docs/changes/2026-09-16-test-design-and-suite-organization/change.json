@@ -4,7 +4,7 @@
       "id": "code-reviewer",
       "role": "review"
     },
-    "reason": "M5 complete population organization and real artifact/consumer proof pass. Await independent milestone Code Review before M6 implementation.",
+    "reason": "M6 complete release population and direct/selected proof pass. Await independent M6 review before M7 implementation.",
     "stage": "code-review",
     "status": "in-progress"
   },
@@ -106,6 +106,15 @@
       },
       "path": "docs/changes/2026-09-16-test-design-and-suite-organization/reviews/m4-code-review-corrected.json",
       "reason": "M5 changes shared catalog, selector contract and helper subjects. Preserve exact approved M4 judgment at0853a7ea; M5 reviews the changed interactions and final whole-change assessment remains mandatory.",
+      "value": "stale"
+    },
+    {
+      "actor": {
+        "id": "codex-root",
+        "role": "implement"
+      },
+      "path": "docs/changes/2026-09-16-test-design-and-suite-organization/reviews/m5-code-review.json",
+      "reason": "M6 changes shared selector/catalog and candidate test subjects. Preserve the independent M5 approval at2d1baa47; M6 interaction assessment and fresh final whole-change review are required.",
       "value": "stale"
     }
   ],
@@ -296,6 +305,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-16-test-design-and-suite-organization/reviews/m4-code-review-corrected.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-16-test-design-and-suite-organization/reviews/m5-code-review.json"
     }
   ],
   "schema_version": 3,
@@ -368,7 +381,7 @@
         "TEST-SR-20",
         "VAL-SR-32"
       ],
-      "status": "in-progress"
+      "status": "completed"
     },
     {
       "id": "m6",
@@ -382,7 +395,7 @@
         "TEST-SR-20",
         "VAL-SR-32"
       ],
-      "status": "pending"
+      "status": "in-progress"
     },
     {
       "id": "m7",

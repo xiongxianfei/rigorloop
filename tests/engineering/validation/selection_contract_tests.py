@@ -266,6 +266,14 @@ class SelectionContractChecks:
                                  {c["id"] for c in new.selected_checks})
                 for check in new.selected_checks:
                     self.assertNotIn("scripts/" + name, check["command"])
+        # Release imports and service fixtures keep the full native aggregate.
+        release_modules = ('release_identity_tests.py', 'release_profile_tests.py', 'release_preparation_tests.py', 'release_preflight_tests.py', 'release_timing_tests.py', 'release_publication_tests.py', 'release_provider_fixtures.py', 'release_coordination_fixtures.py')
+        for name in release_modules:
+            with self.subTest(release_module=name):
+                payload = self.select(["tests/engineering/release/" + name]).to_json_dict()
+                self.assertEqual(payload["unclassified_paths"], [])
+                self.assertEqual([check["id"] for check in payload["selected_checks"]], ["release_transaction.regression"])
+        self.assertTrue(self.select(["tests/engineering/release/unknown.py"]).to_json_dict()["unclassified_paths"])
         packaging_groups = (
             (('adapter_archive_tests.py', 'adapter_contract_tests.py', 'adapter_diagnostics_tests.py', 'adapter_fixture_helpers.py', 'adapter_generation_tests.py', 'adapter_install_tests.py', 'adapter_metadata_tests.py', 'adapter_portability_tests.py', 'adapter_resources_tests.py'), {"adapters.regression", "adapters.drift", "adapters.validate"}),
             (('npm_fixture_helpers.py', 'npm_recording_tests.py'), {"rigorloop_cli.test", "npm_package_publication.test"}),
