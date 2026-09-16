@@ -404,7 +404,7 @@ class ReleaseCandidateIntegrationTests(unittest.TestCase):
                 '-c', 'commit.gpgsign=false', 'commit', '--allow-empty', '-m', 'Reviewed source fixture')
             commit, ref = git('rev-parse', 'HEAD'), git('symbolic-ref', 'HEAD')
             from lib.release.release_coordination import prepare_operation, execute_operation, read_evidence, ExecutionError, summary
-            from release_coordination_tests import FixtureHostedServices, invoke_dispatch
+            from release_coordination_fixtures import FixtureHostedServices, invoke_dispatch
             remote = workspace / 'evidence.git'
             subprocess.run(['git', 'init', '--bare', '--quiet', str(remote)], check=True)
             event = {'run_id': 12, 'source_commit': commit, 'source_ref': ref, 'attempt': 1}
@@ -499,7 +499,7 @@ class ReleaseCandidateIntegrationTests(unittest.TestCase):
                 prepare_operation(source, workspace / 'changed', changed_event, settings, services)
             services.facts['run']['head_sha'] = commit
             self.assertEqual(verify_candidate(output, data['candidate_id'])['source_commit'], commit)
-            self.assertEqual({x['id'] for x in data['checks']}, CANDIDATE_CHECKS)
+            self.assertEqual({x['id'] for x in data['checks']}, {'profile', 'preflight', 'release-integrity'})
             self.assertEqual(len(list(output.glob('*.zip'))), 2)
             with tarfile.open(output / data['tarball']) as packed:
                 metadata_bytes = packed.extractfile('package/dist/metadata/adapter-artifacts-v0.5.1.json').read()

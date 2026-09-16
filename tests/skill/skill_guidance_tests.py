@@ -8,7 +8,23 @@ sys.path.insert(0, str(ROOT / "scripts"))
 from lib.validation import skill_validation
 
 
-class SkillGuidanceChecks:
+# Independent published resource selection; Design has its own full procedure.
+RECORDING_RESOURCES = {
+    'code-review': 'references/governed-code-review-recording.md',
+    'delivery-review': 'references/delivery-review-recording-and-settlement.md',
+    'design': 'references/governed-design-authoring.md',
+    'design-review': 'references/design-review-recording-and-settlement.md',
+    'implement': 'references/governed-implementation-recording.md',
+    'plan': 'references/governed-plan-authoring.md',
+    'pr': 'references/governed-pr-readiness.md',
+    'proposal': 'references/governed-proposal-authoring.md',
+    'proposal-review': 'references/proposal-review-recording-and-settlement.md',
+    'route': 'references/governed-lifecycle-routing.md',
+    'verify': 'references/governed-verification-recording.md',
+}
+
+
+class SkillGuidanceTests(unittest.TestCase):
     def test_optional_discovery_canonical_resources_are_portable(self):
         # Archive byte preservation belongs to the independent inventory test.
         expected_resources = {
@@ -35,23 +51,17 @@ class SkillGuidanceChecks:
         names = ("proposal", "proposal-review", "design", "design-review", "plan", "delivery-review",
                  "implement", "code-review", "route", "verify", "bugfix", "ci-maintenance", "pr",
                  "research", "explore", "learn")
-        references = {'route': 'references/governed-lifecycle-routing.md', 'verify': 'references/governed-verification-recording.md', 'pr': 'references/governed-pr-readiness.md', 'design-review': 'references/design-review-recording-and-settlement.md', 'delivery-review': 'references/delivery-review-recording-and-settlement.md', "plan": "references/governed-plan-authoring.md",
-                      "implement": "references/governed-implementation-recording.md",
-                      "code-review": "references/governed-code-review-recording.md",
-                      "design": "references/governed-design-authoring.md",
-                      "proposal": "references/governed-proposal-authoring.md",
-                      "proposal-review": "references/proposal-review-recording-and-settlement.md"}
         for name in names:
             with self.subTest(skill=name):
-                relative = references.get(name, "SKILL.md")
+                relative = RECORDING_RESOURCES.get(name, "SKILL.md")
                 body = (ROOT / "skills" / name / relative).read_text(encoding="utf-8")
                 if relative == "SKILL.md":
                     body = body.split("## Explicit recording\n", 1)[1].split("\n## ", 1)[0]
                 self.assertIn("subject inspect", body)
                 self.assertNotIn("record-store check|record", body)
 
-    # Retained pending an owner-backed replacement for this legacy checklist
-    # drift guard. Phrase presence is not proof of instruction quality.
+    # Structural drift guard for the published Code Review checklist and its
+    # prohibition on automated semantic grading; adequacy remains review-owned.
     def test_code_review_owns_published_skill_semantic_checklist(self) -> None:
         body = (ROOT / "skills" / "code-review" / "SKILL.md").read_text(
             encoding="utf-8"
@@ -96,14 +106,18 @@ class ExplicitRecordingGuidanceTests(unittest.TestCase):
         self.assertTrue(validate_targeted_recording_profile(inline_path, inline.replace("rigorloop context", "record-store check|record", 1)))
 
     def test_explicit_profiles_are_scoped_and_use_model_owned_records(self):
-        # Structural reachability only; the independent M3 walkthrough owns semantics.
+        # Structural reachability only; independent review owns semantic adequacy.
+        self.assertEqual(
+            skill_validation.RECORDING_REFERENCES,
+            {name: path for name, path in RECORDING_RESOURCES.items() if name != "design"},
+        )
         for skill in ("design", "route", "proposal", "proposal-review", "design-review", "plan", "delivery-review", "implement", "code-review", "verify", "bugfix", "ci-maintenance", "pr", "research", "explore", "learn"):
             with self.subTest(skill=skill):
                 text = (ROOT / "skills" / skill / "SKILL.md").read_text(encoding="utf-8")
                 if skill == "design":
                     text = "## Explicit recording\n" + (ROOT / "skills/design/references/governed-design-authoring.md").read_text()
-                if skill in skill_validation.RECORDING_REFERENCES:
-                    text = (ROOT / "skills" / skill / skill_validation.RECORDING_REFERENCES[skill]).read_text()
+                elif skill in RECORDING_RESOURCES:
+                    text = (ROOT / "skills" / skill / RECORDING_RESOURCES[skill]).read_text()
                 self.assertEqual(text.count("## Explicit recording\n"), 1)
                 block = text.split("## Explicit recording\n", 1)[1].split("\n## ", 1)[0]
                 for phrase in ("project has adopted", "rigorloop-records-v3", "project's governing documents", "historical", "expected identities", "does not approve", "rigorloop context", "subject inspect", "targeted", "Do not migrate"):

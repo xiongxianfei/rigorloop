@@ -39,18 +39,39 @@ from lib.validation.validation_selection import (  # noqa: E402
 
 ADAPTER_REGRESSION_COMMAND = (
     "python tests/engineering/packaging/test-adapter-distribution.py "
-    "AdapterDistributionTests.test_adapter_generation_creates_independent_packages_and_thin_entrypoints "
-    "AdapterDistributionTests.test_adapter_generation_drift_check_detects_stale_and_unexpected_files "
-    "AdapterDistributionTests.test_validate_adapters_cli_rejects_retired_repository_output "
-    "AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives "
-    "AdapterDistributionTests.test_validate_adapters_cli_accepts_release_archive_root "
-    "AdapterDistributionTests.test_current_candidate_metadata_matches_generated_route_only_archives AdapterDistributionTests.test_metadata_unknown_value_profile_fails_before_metadata_reads "
-    "AdapterDistributionTests.test_distribution_archives_have_independent_complete_resource_inventory "
-    "AdapterDistributionTests.test_distribution_generation_rejects_source_and_active_output_roots AdapterDistributionTests.test_distribution_generation_preserves_runtime_under_output_parent_and_symlinks AdapterDistributionTests.test_distribution_generated_skill_structure_is_validated_independently "
-    "AdapterDistributionTests.test_validate_adapter_output_rejects_stale_mapped_resource_hashes "
-    "AdapterDistributionTests.test_validate_adapter_output_rejects_missing_mapped_resource "
-    "AdapterDistributionTests.test_validate_adapter_output_rejects_missing_or_malformed_canonical_skills"
+    "AdapterGenerationTests.test_adapter_generation_creates_independent_packages_and_thin_entrypoints "
+    "AdapterGenerationTests.test_adapter_generation_drift_check_detects_stale_and_unexpected_files "
+    "AdapterContractTests.test_validate_adapters_cli_rejects_retired_repository_output "
+    "AdapterArchiveTests.test_build_adapter_archives_creates_required_release_archives "
+    "AdapterInstallTests.test_validate_adapters_cli_accepts_release_archive_root "
+    "AdapterArchiveTests.test_current_candidate_metadata_matches_generated_route_only_archives AdapterMetadataTests.test_metadata_unknown_value_profile_fails_before_metadata_reads "
+    "AdapterArchiveTests.test_distribution_archives_have_independent_complete_resource_inventory "
+    "AdapterGenerationTests.test_distribution_generation_rejects_source_and_active_output_roots AdapterGenerationTests.test_distribution_generation_preserves_runtime_under_output_parent_and_symlinks AdapterArchiveTests.test_distribution_generated_skill_structure_is_validated_independently "
+    "AdapterResourcesTests.test_validate_adapter_output_rejects_stale_mapped_resource_hashes "
+    "AdapterResourcesTests.test_validate_adapter_output_rejects_missing_mapped_resource "
+    "AdapterGenerationTests.test_validate_adapter_output_rejects_missing_or_malformed_canonical_skills"
 )
+
+# Independently named current mode populations: producer omissions must not
+# shrink the catalog oracle. Ordering is part of the invocation contract.
+EXPECTED_MODE_CHECK_IDS = {
+    "broad-smoke": (
+        "current_records.validate", "skills.validate", "skills.regression",
+        "change_metadata.regression", "selector.regression", "validation_execution.regression",
+        "adapters.full_regression", "broad_smoke.adapters.build_archives",
+        "broad_smoke.adapters.validate_archives", "broad_smoke.review_artifacts.changed_roots",
+    ),
+    "main": (
+        "boundary_first.validate", "skills.validate", "skills.regression",
+        "change_metadata.regression", "release_transaction.regression",
+        "readme.validate", "readme.vision_markers", "markdown_readability.regression",
+        "guide_system.regression", "guide_system.validate", "rigorloop_cli.test",
+        "governed_lifecycle_cli_wrapper.test", "adapters.full_regression",
+        "main.adapters.build_archives", "main.adapters.validate_archives",
+        "main.governed_lifecycle_cli.validate",
+    ),
+}
+
 
 EXPECTED_CATALOG = {
     "current_records.validate": "python scripts/validate-governed-lifecycle-cli.py",
@@ -66,8 +87,8 @@ EXPECTED_CATALOG = {
     "skills.validate": "python scripts/validate-skills.py",
     "skills.regression": "python tests/skill/test-skill-validator.py",
     "adapters.regression": ADAPTER_REGRESSION_COMMAND,
-    "adapters.drift": "python tests/engineering/packaging/test-adapter-distribution.py AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives",
-    "adapters.validate": "python tests/engineering/packaging/test-adapter-distribution.py AdapterDistributionTests.test_validate_adapters_cli_accepts_release_archive_root",
+    "adapters.drift": "python tests/engineering/packaging/test-adapter-distribution.py AdapterArchiveTests.test_build_adapter_archives_creates_required_release_archives",
+    "adapters.validate": "python tests/engineering/packaging/test-adapter-distribution.py AdapterInstallTests.test_validate_adapters_cli_accepts_release_archive_root",
     "change_metadata.regression": "python tests/engineering/validation/test-change-metadata-validator.py",
     "change_metadata.validate": "python scripts/validate-change-metadata.py <change.json>...",
     "release.validate": "python scripts/validate-release.py --recorded-source-auto --version <version>",
