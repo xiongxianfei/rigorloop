@@ -1,11 +1,11 @@
 {
   "activity": {
     "owner": {
-      "id": "code-reviewer",
+      "id": "codex-root",
       "role": "route"
     },
-    "reason": "All eight milestones are independently approved and required corrections resolved. Select the distinct fresh whole-change Code Review of the complete final diff and cross-milestone interactions.",
-    "stage": "code-review",
+    "reason": "Fresh independent whole-change Code Review approves the complete delivered engineering subject. All milestones and required concerns are closed. Select distinct final Verify, including immutable PR-range proof and the authorized external PR handoff basis.",
+    "stage": "verify",
     "status": "in-progress"
   },
   "applicability": [
@@ -142,6 +142,15 @@
       },
       "path": "docs/changes/2026-09-16-test-design-and-suite-organization/reviews/m8-code-review.json",
       "reason": "Independent nonauthor assessment of all 169 M8 native cases, six test files and fixture, four-file actual engineering diff, exact 17-subject package and recorded inventory/caller interactions at commit 954d53de39538bae10ecd3350426458992650532. Current approved authority and final corrected proof match inspected subjects; m8-cr-01 is independently satisfied. Applies to M8 milestone only. Fresh whole-change review and Verify remain separate and required.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "code-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-16-test-design-and-suite-organization/reviews/code-review.json",
+      "reason": "Distinct fresh independent whole-change assessment at d81dfdaffc472c8d9a55152d24bda9e899962c00 against main 1195dfb261176d500e319662e2ffad5429cb63be, after all eight milestones and required corrections completed. Exact complete engineering diff, every current test-source module, retained protection, shared fixture/discovery/catalog/product interactions and current integrated proof are adequately assessed with no material correction. Earlier milestone judgments remain bounded historical basis. Supports only the separate Verify gate; no Verify, hosted, PR or completion claim.",
       "value": "current"
     }
   ],
@@ -730,6 +739,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-16-test-design-and-suite-organization/reviews/m8-code-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-16-test-design-and-suite-organization/reviews/code-review.json"
     }
   ],
   "schema_version": 3,
