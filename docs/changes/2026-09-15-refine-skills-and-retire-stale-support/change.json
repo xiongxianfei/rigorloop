@@ -1,0 +1,258 @@
+{
+  "activity": {
+    "owner": {
+      "id": "codex-route",
+      "role": "route"
+    },
+    "reason": "Distinct final Verify saved and read back as successful branch-ready after all four milestones and independent final review. Governed work is complete; user explicitly authorized separate PR submission. Historical drift observations remain unchanged archival facts; current final review and Verify bind exact present subjects.",
+    "stage": "verify",
+    "status": "completed"
+  },
+  "applicability": [
+    {
+      "actor": {
+        "id": "all-skills-proposal-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/proposal-review.json",
+      "reason": "Independent assessment of the exact unchanged proposal and inspected current direction basis. Valid for this scope only; later changes require impact assessment.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-implementer",
+        "role": "implement"
+      },
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/evidence.json",
+      "reason": "Current scoped observation; inspect each check and subjects, not a blanket pass for changed evidence.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "all-skills-design-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/design-review.json",
+      "reason": "Original first-pass judgment and subjects remain unchanged as historical assessment; the CLI subject changed to correct skills-dr-01. Reporter has assessed resolution; use separate current package reassessment design-review-r2 for reliance.",
+      "value": "stale"
+    },
+    {
+      "actor": {
+        "id": "all-skills-design-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/design-review-r2.json",
+      "reason": "Fresh complete package reassessment after independently verified decision-identity correction. Exact current package has no unresolved required Design correction; supports authorized planning only.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "all-skills-delivery-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/delivery-review.json",
+      "reason": "Independent complete assessment of the exact current sole primary-plan package against approved Design R2. No material correction remains; current only for this assessed allocation and authority.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "all-skills-m1-code-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/m1-code-review.json",
+      "reason": "Independent complete M1 assessment of exact frozen engineering164d4bbfe7e129376b99e6e7a54340e396545d58 and approved package/allocation; no unresolved M1 correction. Applies to this milestone only.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "all-skills-m2-code-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/m2-code-review.json",
+      "reason": "Independent complete M2 assessment of exact frozen engineering and current approved authority, complete allocated protective-value groups and current required proof; no unresolved M2 correction.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "all-skills-packaging-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/m3-code-review.json",
+      "reason": "Independent exact frozen M3 scope and actual candidate reassessment; no engineering change since the successful command and archive observations. Milestone scope only.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "all-skills-m4-code-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/m4-code-review.json",
+      "reason": "Independent exact-head M4 assessment plus complete inventory reconciliation; no unresolved M4 correction. Milestone only, subject to separate final whole-change review and Verify.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "all-skills-final-code-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/final-code-review.json",
+      "reason": "Fresh independent complete original-base whole-change assessment of frozen831831935794a9dc30f09aa50b474efcd2e0a02a and current approved authority/integrated proof; all milestones closed and no unresolved required correction. Supports distinct Verify only.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-final-verifier",
+        "role": "verify"
+      },
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/verify-report.json",
+      "reason": "Distinct final assessment of exact reviewed engineering and attributable evidence suffix; complete required local gates and current authority independently inspected.",
+      "value": "current"
+    }
+  ],
+  "blockers": [],
+  "change_id": "2026-09-15-refine-skills-and-retire-stale-support",
+  "contract": "rigorloop-records-v3",
+  "models": [
+    {
+      "id": "skill",
+      "subject": {
+        "identity": "sha256:18f39802c01fda9ff16fa68fd0fce03dafe33f032dc0006f0033095096856bcc",
+        "path": "docs/design/skill/skill.md"
+      }
+    },
+    {
+      "id": "validation",
+      "subject": {
+        "identity": "sha256:46068496c23e3a9e82befbea7d5c0c68242eb0928ddb15ccf431cbd9b52a94a6",
+        "path": "docs/design/engineering/validation.md"
+      }
+    },
+    {
+      "id": "cli",
+      "subject": {
+        "identity": "sha256:46396ee3e8e0327d1ca4ca1485cf9f1802689acfe7fe0ec88e1cd4eddc2c644e",
+        "path": "docs/design/cli/cli.md"
+      }
+    },
+    {
+      "id": "delivery-handoff",
+      "subject": {
+        "identity": "sha256:5a38d6bb26ebdd63527843c5dbf94caeb0c306dcfe89cfb03fc5aced4dd14388",
+        "path": "docs/design/skill/delivery-handoff.md"
+      }
+    }
+  ],
+  "plan": {
+    "identity": "sha256:7b8f0ec8889d36ba01d05812d9aa8223a3dd79e6a10f42c7cef9573542060130",
+    "path": "docs/plans/2026-09-15-refine-skills-and-retire-stale-support.md"
+  },
+  "proposal": {
+    "identity": "sha256:3bf51df8d9be1c016255c493aebe495b5d102fe015237adf099823752967686d",
+    "path": "docs/proposals/2026-09-15-refine-skills-and-retire-stale-support.md"
+  },
+  "records": [
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/proposal-review.json"
+    },
+    {
+      "kind": "evidence",
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/evidence.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/design-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/design-review-r2.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/delivery-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/m1-code-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/m2-code-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/m3-code-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/m4-code-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/final-code-review.json"
+    },
+    {
+      "kind": "verify",
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/verify-report.json"
+    }
+  ],
+  "schema_version": 3,
+  "work": [
+    {
+      "id": "m1",
+      "owner": {
+        "id": "codex-implementer",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "SKL-SR-33",
+        "SKL-SR-34",
+        "SKL-SR-35",
+        "HAND-SR-04",
+        "VAL-SR-29",
+        "VAL-SR-31"
+      ],
+      "status": "completed"
+    },
+    {
+      "id": "m2",
+      "owner": {
+        "id": "codex-implementer",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "CLI-SR-31",
+        "VAL-SR-29",
+        "VAL-SR-30",
+        "VAL-SR-31"
+      ],
+      "status": "completed"
+    },
+    {
+      "id": "m3",
+      "owner": {
+        "id": "codex-implementer",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "VAL-SR-29",
+        "VAL-SR-31",
+        "SKL-SR-33"
+      ],
+      "status": "completed"
+    },
+    {
+      "id": "m4",
+      "owner": {
+        "id": "codex-implementer",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "VAL-SR-29",
+        "VAL-SR-30",
+        "VAL-SR-31"
+      ],
+      "status": "completed"
+    }
+  ]
+}

@@ -1,0 +1,273 @@
+{
+  "assessment_scope": "Governed milestone M4, engineering d45ec32a..7bab3b1fd7ee4ca27a967013f7358c5349ac640c, including complete all-milestone inventory reconciliation and original-base integration evidence. All ten checklist items assessed. Not final whole-change Code Review or Verify.",
+  "change_id": "2026-09-15-refine-skills-and-retire-stale-support",
+  "contributors": [
+    {
+      "id": "codex-implementer",
+      "role": "implement"
+    }
+  ],
+  "findings": [],
+  "id": "m4-code-review",
+  "independence_basis": "Separate nonauthor /root/all_skills_delivery_review independently inspected actual full package population, engineering diff, collection, approved authority and recorded/logged evidence. Reviewer authored only scratch audit notes and formal review; root authored every engineering correction. Prior M1/Delivery review authorship did not author the assessed source. Root remained read-only during formal writer grant.",
+  "judgment": "approved",
+  "limitations": [
+    "Root executed full direct/local/PR/main validation; reviewer independently inspected source, logs and exact recorded evidence and performed native declaration collection, not a second full test run.",
+    "Preparation counts are inventory observations, never successful execution proof. Historical records retain their original subjects and are not retroactively rebound.",
+    "M3 candidate reliance is limited to exact unchanged source inputs. Pre-existing generated-only adapter support migration remains outside this plan and is explicitly not claimed complete.",
+    "A fresh final independent whole-change Code Review and separate Verify remain mandatory before PR readiness. No hosted CI, public publication, customer installation or universal agent-compliance result is claimed."
+  ],
+  "rationale": [
+    "Spec alignment — pass. Reviewed exact M4 diff d45ec32a..7bab3b1fd7ee4ca27a967013f7358c5349ac640c against unchanged registered proposal, four-model Design R2 and primary plan. Current approved Design Review8f385aab6b83ab80bc9f5509c7b59142cbe41eebe6a38dbe9cdafb17f8293ec2 and Delivery Review7907f1a326b120964eec01572acc2fcf56bab9fcb2d103bf05db5323abe0863e retain the same governing model/plan identities. Current M1/M2/M3 approvals were inspected with their limitations. VAL-SR-29/30/31 and TEST-SR-07–10 authorize assessed support maintenance, not broad behavior retirement. Broader inventory context is necessary because M4 expressly closes all-population reconciliation.",
+    "Test coverage — pass. The Verify unknown-outcome test previously used obsolete body and omitted required explanation fields, so rejection was not attributable to outcome. Actual fail-first control returned rejected instead of valid; the repaired current-field control is first accepted by real dry-run then outcome alone is changed and rejected with unchanged store revision. Remaining closed-vocabulary and token-preservation tests remain. Duplicate T11 public success/unsupported-adapter/usage calls have stronger retained counterparts T6/TMAI-003/T4 at the same process boundary; seven exit classes remain directly tested.",
+    "Edge cases — pass. Removed self-thrown EPIPE established no runtime fact; real injected postcommit read guard, saved revision and stale retry conflict remain. Actual filesystem replacement races, old inode writes, parent substitution, third states, four-phase recovery matrices, fault and lost-response composed flows remain intact. Unknown contracts, malformed records and direct/dynamic fixture cases are assessed for protective value rather than deleted by age.",
+    "Error handling — pass. Runtime error paths are unchanged. Fake fault demonstration removed without dropping actual prepublication receipt and no-late-read protections. Stronger Verify test observes product rejection from a valid control. Existing malformed/unknown-before-consistency, unavailable/busy/recovery, permissions, containment and redaction boundaries retain real component/process tests.",
+    "Architecture boundaries — pass. Only test/helper descriptions, dead fixture construction and obsolete historical validator/scenario support are changed in M4. Canonical schema generator remains active and unchanged with exactly four current transport/schema/template sources and byte-parity check. Independently versioned transport v1 and result schemas2/3 are retained correctly rather than mistaken for obsolete storage. No runtime/public API/schema/record ownership change.",
+    "Compatibility — pass. Unreachable OpenCode branch and exclusive test options had no supported-registry path; current two-adapter network install loop remains. Historical v0.5.0 archive identity assertions preserve original bytes. Two historical PR support files are explicitly retired because their ledger and byte/word-budget validation has no live caller or current obligation; all historical assessment/ledger bytes remain untouched and original files are recoverable at original base3c4985f80b242a295116880a5aee9cbbf47b12b0 with exact paths. Actual selection classifies both deleted children as change-records and selects record_retirement.regression; no unknown path or hidden compatibility shim remains.",
+    "Security/privacy — pass. No dependency, authorization, external operation or logging path changes. Retained tests still exercise actual archive trust/containment, private output redaction, permissions, adversarial filesystem topology, lock ownership and source-byte preservation. Removed helper payloads had no callers. Synthetic actor labels remain explicitly nonproof of independent review.",
+    "Derived artifact currency — pass within this milestone. M4 changes no canonical skill, adapter generator, schema, runtime or package inputs. Current M3 approved archive/install proof therefore retains applicability to unchanged inputs; integrated PR/main commands freshly build/validate archives. Schema generator --check passed. No hand-edited generated content, installed customer tree, public publication or release success is inferred.",
+    "Unrelated changes — pass. Complete engineering diff contains ten package test/helper maintenance edits plus the two obsolete historical fixture deletions. Owning evidence records accompany work. Unused model-example imports were fully removed after preliminary comment; author reran direct model-example proof. No new framework, required audit ledger, test-count quota or speculative semantic scoring introduced.",
+    "Validation evidence — pass. Read current m4-implementation, inventory-reconciliation and m4-validation through scoped CLI context, and inspected actual log results: npm --prefix packages/rigorloop test418 passed,0 skipped/failed in26.593s; local selected focused346.66s passed; PR originalbase-to-exacthead selected focused486.28s and boundary passed; main originalbase-to-exacthead1034 checks passed, its executor time142.45s is distinct from aggregate focused368.98s. Schema parity, source whitespace and committed record structure passed. Release preparation observations are isolated fixture proof, not hosted CI. Final record edits require their own validation and later final gate applicability.",
+    "Complete population — pass. Independently read all22 package suite bodies, four helpers, all four allocated recursive fixture files and transitive Design examples; protected-failure account follows. Independently collected native declarations before/after:419→418,22 files, one established duplicate removed and six names corrected, no other disappearance. Collection never counted as passing execution. Programmatic original-base/current plan membership256→253 leaves zero unallocated scripts/tests/package-test files; three earlier whole-file retirements have M2 dispositions. All19 packages, mixins, recursive/temporary fixtures, dynamic declarations, intentionally direct-only Python cases, package/.github callers and current schema generator are accounted for by the reconciled independent M1–M4 body-level records. The only outside-root retirement is the explicit historical PR pair; no unowned remainder found.",
+    "Complete M4 protective-value and transitive fixture account, independently inspected in preparation and reaffirmed at the frozen head. Counts below describe initial discovery, with the single duplicate CLI test removed as established above; proposed descriptions are now corrected, fake EPIPE removed, Verify baseline repaired and other unique mechanisms retained:\n\n\nEach count is collected BEFORE M4 changes, not a retention quota.\n\n| Suite | Cases | Protective value and disposition |\n|---|---:|---|\n| cli.test.js | 56 | Retain actual public process and handcrafted ZIP/metadata/hash fixture protections: exact two-adapter registry and removed flags; help/version/output classes; retired package guards; stateless installs, force conflicts and unrelated writes; official URL allowlist and metadata/archive/tree hash trust ordering; proxy classification/redaction; traversal/symlink/support-file exclusion; original historical archive bytes. Remove only dead/tautological/duplicate items above. |\n| installer-replacement.test.js | 13 | Retain fresh and empty-directory conflicts; detached old inode and late writes; concurrently appearing file/directory; unsafe/symlink/anchor no writes; interrupted partial progress; ancestor swaps and discovery aliases; multi-unit completed/failed/untouched accounting. Real component checkpoints/FS, distinct from CLI tests. |\n| record-retirement.test.js | 24 | Retain retired v1 permutations, archival unparsed YAML discovery, explicit refusal, reserved-residue precedence, retired command x output-format errors before IO/logging and payload privacy. Old version numbers express current rejection obligations. |\n| workflow-context.test.js | 38 | Retain current-v3/schema2 discovery; explicit selection vs unrelated malformed store; no implicit readiness; unknown/mixed/residue rejection; 63/64/65 candidate and 1023/1024/1025 directory bounds; busy/recovery read-only; path/owner/config/symlink checks; 8MiB boundaries; malformed selectors before IO; redaction and archive classification. |\n| cli-observability.test.js | 30 | Retain config/OS defaults and permissions; closed events/types/redaction/sequence/16KiB; rotation and descriptor safety across every mutation; injected fsync/rename/disk/close failures; rollback and lock ownership; deterministic deadlines; actual concurrent processes and SIGKILL complete-line proof. These exercise product sink, not local simulation. |\n| cli-invocation-observability.test.js | 22 | Retain real public terminal outcomes and injected controller failure; severity independent from exit; correlation/lookup; logging noninterference; thresholds and failing sink/stderr; corrupt lookup and privacy; output projections. Dummy historical labels test retained event boundary rather than public support. |\n| result-renderer.test.js | 11 | Retain closed formats, exact schema2 concise object, actionable human bounds, legacy/detailed fact parity, three frozen public cases normalized to current version, nonenumerable authoritative stateChanged, unique next action and terminal fields. |\n| record-store-contract.test.js | 8 | Retain absent vs missing snapshots; exact 1MiB/8MiB and ID/path/registry/write/read bounds; invalid membership/identity/revision; empty selector handling; disjoint reads/writes specific diagnostic. Different independent fixtures and diagnostics justify apparent format overlap. |\n| record-store-format.test.js | 16 | Retain complete fixtures/templates; closed vocabulary before consistency; strict JSON bytes, duplicate keys, depth/scalars; mixed namespaces; typed EntryRef matrix; legal/self/cross-root refs; advanced explicit creation; standalone live/Git validation; generated schema unknown-vocabulary walk paired with independent expected structure; missing-member repair without deletion; unsupported version/contract pairs. |\n| record-store-cli.test.js | 38 | Retain public grammar before input IO; ignored historical env; actual filesystem parent substitution at five methods; late journal and third-state publication; writer subprocess race; create crash/recovery across formats; drift rollback; containment/privacy; missing member repair; exact identities/bounds. Distinct real CLI boundary from engine tests. |\n| record-store-persistence.test.js | 43 | Retain complete vs minimal store fixtures; four phases x two recovery actions; absent creation process; writer locks; journal tampering; symlink/hardlink/ancestor/IO faults; precommit receipt and no postcommit reads; late counterpart ownership; stale recovery identity/third state; epochs/lock ownership; interrupted second recovery and basis drift; shared transport unknowns. |\n| record-store-v3-contract.test.js | 7 | Retain structured multiline narrative/duplicate reasons/empty limitations; required nonblank fields; obsolete dual body/sections rejection; conditional seven-field Git basis; mutable finding versus immutable blocker origin; mixed typed refs; transport2 versus storage3. |\n| record-store-v3-persistence.test.js | 12 | Retain five actual Design-example record bytes and advanced result1; direct current creation; four phases x two actions preserving new explanation fields; unknown journals; basis conflict and third state. Different fixtures/new-field persistence distinguish generic matrix. |\n| record-store-queries.test.js | 31 | Retain all13 kinds and literal filters, summaries/omissions, missing selected vs unselected totals, absent/null, cursor normalization and revision binding, first-item budget, raw subject hashes/escape, observation digest includes current and origin identities, bounded failure receipts, genuine no-late-read and prepublication receipt proof, query subprocess harness, readable multiline without double decoding. Remove fake EPIPE only. |\n| record-store-targeted.test.js | 30 | Retain minimal construction/token preservation, register/applicability, null/snapshot/review origins, failed Verify reopening and actor correction, same finding ID in distinct reviews, unknown vocabulary (repair baseline), overlap/basis immutability, final batch typed refs, historical subjects, no adoption of unregistered bytes, public help before IO, original snapshot in same batch, stale-before-noop, fault recovery, preview no locks. |\n| record-store-v3-mutations.test.js | 12 | Retain operation-specific schema3 errors, no implicit creation, adjacent raw-token preservation, empty/unknown fields, optional basis add/remove only via complete record, findings retained during review replacement, disjoint fields vs overlap, response schema2/3 distinction, basis conflict and explicit applicability. Narrow misleading mixed-store label. |\n| record-store-v3-reads.test.js | 9 | Retain whole/projected exact explanations, absent basis, selector rejection before IO, current finding scope, honest omissions, response schema validation, multiline/literal/order budgets, discovery schema2, dynamic Design request/response validation, origin freshness, nullable plan/proposal. |\n| record-store-v3-adoption.test.js | 10 | Retain real targeted/advanced creation, Verify set/read/stale/noop and standalone validation, four-phase x two-action public combined review/Verify recovery. Composed subprocess boundary exceeds unit coverage. |\n| record-store-adoption.test.js | 2 | Retain composed public multi-actor failed-check/reopen/recovery/independent-review/final-Verify scenario and dense 1MiB bounded receipt/pagination; original failure survives, B-to-C observation changes cursor without store revision; roles alone not independence claims. |\n| record-store-workflow.test.js | 2 | Retain public advanced flow using actual Workflow/CLI model bytes, historical source identities, explicit invalidate/reopen/fail/rereview/complete. Rename misleading markdown helper if desired. |\n| record-store-interactions.test.js | 4 | Retain advanced versus targeted public subprocess comparisons: 24 neighboring findings, Verify correction, applicability stale/current checkpoints, final explanation; same engineering hashes and independently constructed expected full candidates. Scripted fixture, not agent benchmark. |\n| record-store-model-examples.test.js | 1 | Retain independent frozen observation-preimage hashes: same revision/diagnostics with observed B-to-C content changes digest and invalidates continuation. Altered preimage must fail expected digest. |\n\n## Helpers, recursive fixtures and transitive examples\n\nAll four helpers retain a distinct role: record-store-launcher injects real transaction faults without shipped flags; recording-query-launcher isolates internal query process semantics; v3-fixture recursively reads five canonical complete-store examples and clones mutations; record-store-interactions drives actual subprocess scenarios with independent expected state and closed scenario/mode guards.\n\nAllocated fixture bodies read recursively:\n- tests/fixtures/rigorloop-records-v3/records.json: complete five-kind store with matching five-write request, typed refs, resolved findings/blocker origin, failed historical facts alongside eventual completed success. Retain exact bytes for token preservation and storage-only semantics.\n- storage-safety.json: complete top-level kinds but minimal one-manifest creation request with empty registry/applicability, open blocker/null judgment. This is NOT duplicate complete fixture; needed repair/failure/minimal creation paths.\n- package fixtures/observability/public-command-output.json: three frozen public cases; historical 0.5.1 is deliberately replaced by current version in reader, preserving output facts without pinning package version.\n- package fixtures/recording-interactions/README.md: current direct command and four scripted scenarios with explicit non-benchmark limitation. Retain.\n\nRead transitive records/v3-complete-store (five kinds), finding-correction stored/updated pair, review/Verify limitations before/after, Verify-without-evidence and observation-freshness three files; retain as owning Design examples whose explicit synthetic limitations prevent false readiness claims. Read every top-level v3-* JSON request/response. Dynamic read test walks these directories while explicitly excluding two v2-store response files; those remain rejection Design examples, not assumed executed cases. Retain current schema2 query/unknown-command and schema3 new-operation results; those versions are independently scoped, not obsolete stored-format support.\n\n",
+    "Caller/generator reconciliation — pass. Package native glob covers all22 suites; catalog rigorloop_cli.test collects actual Node cases, with record_retirement.regression additionally focused. CI retains direct-only two-worker executor overlap calls. Tag-publication historical runner fallback is intentional selected-tag compatibility. Schema check catalog, selector tests and canonical-to-dist generation retain their active consumers. Earlier query retirement and staged packaging helper retirement are independently approved coupled units; M4 does not restore them. Existing generated-only adapter support migration gap remains recorded baseline debt outside unchanged-release-policy scope, with live support retained.",
+    "First-pass judgment — approved; no material finding or review-resolution needed. This approves M4 and its complete-inventory reconciliation only. Route owns milestone closeout. Fresh independent final whole-change Code Review must still assess integrated interactions, followed by distinct Verify; no branch/PR readiness or automatic lifecycle completion is claimed."
+  ],
+  "reviewer": {
+    "id": "all-skills-m4-code-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:12a38c1809fa0deca17805ca783020c7783934e6c1f91bbb1e7c9fb6c2e4fb2a",
+      "path": ".github/workflows/ci.yml"
+    },
+    {
+      "identity": "sha256:540a4ef7ee36c1234aaa904b6829f356126480eb55722902483bcc9d90528596",
+      "path": ".github/workflows/publish-github-packages.yml"
+    },
+    {
+      "identity": "sha256:e0b22cfd2a5a4ad6c1fc97d437b804c2f64260e5b74bb394aa44c58a3ac4a43d",
+      "path": ".github/workflows/release.yml"
+    },
+    {
+      "identity": "sha256:a15d4f3889629c69f946269da05e32f00161148a07f7de62f01038ced3e28cb9",
+      "path": "AGENTS.md"
+    },
+    {
+      "identity": "sha256:cc1912d5c0cd17b42bfd4a3f705a561b0c2f678045f0659f2406a1ea13e6c5a5",
+      "path": "CONSTITUTION.md"
+    },
+    {
+      "identity": "sha256:df2242f5c28210d0d9c327f4ed261d652711fd46e564ba18b07724fa2049c1ab",
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/evidence.json"
+    },
+    {
+      "identity": "sha256:7907f1a326b120964eec01572acc2fcf56bab9fcb2d103bf05db5323abe0863e",
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/delivery-review.json"
+    },
+    {
+      "identity": "sha256:8f385aab6b83ab80bc9f5509c7b59142cbe41eebe6a38dbe9cdafb17f8293ec2",
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/design-review-r2.json"
+    },
+    {
+      "identity": "sha256:b870c385289bde46d375acb33633fe351650c49b6e3caf7b7c69bfed8da3b367",
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/m1-code-review.json"
+    },
+    {
+      "identity": "sha256:f0e5c93d0288af4cfd26f55fb22e032d0578c51b16506e3af34c5a4dc92bb4f9",
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/m2-code-review.json"
+    },
+    {
+      "identity": "sha256:fd4c4ea5f2429ad4fb930d97ac3d68a5dd3fc958eb247913d0d6ad0b89e3bdf1",
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/m3-code-review.json"
+    },
+    {
+      "identity": "sha256:5431c6263902bb5f0f4e558198781f9437602e417dc79741fc40823001ab7383",
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/proposal-review.json"
+    },
+    {
+      "identity": "sha256:46396ee3e8e0327d1ca4ca1485cf9f1802689acfe7fe0ec88e1cd4eddc2c644e",
+      "path": "docs/design/cli/cli.md"
+    },
+    {
+      "identity": "sha256:8bcdb2872f9b6887212264493f1421a58b91b9b7ab9d12bcd240bcd5a9b5f966",
+      "path": "docs/design/cli/records.md"
+    },
+    {
+      "identity": "sha256:0aec3cfc2bf73424bf08d8c4efb775e4f7b5051b8417e8ebf1c90ada91aedbfa",
+      "path": "docs/design/engineering/packaging.md"
+    },
+    {
+      "identity": "sha256:46068496c23e3a9e82befbea7d5c0c68242eb0928ddb15ccf431cbd9b52a94a6",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:af968c5583c27abb95e9a2b2ac0293deba30c522e72480c6f9aa05066659ae19",
+      "path": "docs/design/skill/assessment.md"
+    },
+    {
+      "identity": "sha256:5a38d6bb26ebdd63527843c5dbf94caeb0c306dcfe89cfb03fc5aced4dd14388",
+      "path": "docs/design/skill/delivery-handoff.md"
+    },
+    {
+      "identity": "sha256:18f39802c01fda9ff16fa68fd0fce03dafe33f032dc0006f0033095096856bcc",
+      "path": "docs/design/skill/skill.md"
+    },
+    {
+      "identity": "sha256:7b8f0ec8889d36ba01d05812d9aa8223a3dd79e6a10f42c7cef9573542060130",
+      "path": "docs/plans/2026-09-15-refine-skills-and-retire-stale-support.md"
+    },
+    {
+      "identity": "sha256:3bf51df8d9be1c016255c493aebe495b5d102fe015237adf099823752967686d",
+      "path": "docs/proposals/2026-09-15-refine-skills-and-retire-stale-support.md"
+    },
+    {
+      "identity": "sha256:6c879a76afc9d6317951ba1dc883b9a5c220ba80df0cdb3b2f94e60363794207",
+      "path": "packages/rigorloop/package.json"
+    },
+    {
+      "identity": "sha256:e17e9af73635f92b089baaa3dd67e6ccd005d4e9b8c1e2c0314c5d5cca60a0b6",
+      "path": "packages/rigorloop/test/cli-invocation-observability.test.js"
+    },
+    {
+      "identity": "sha256:460c8fa7b15469b1f9af09690202a0c59f273362e2c95829270f2ff264efe130",
+      "path": "packages/rigorloop/test/cli-observability.test.js"
+    },
+    {
+      "identity": "sha256:e83e14f4d96c0654efa24bbeae2c3741792aa1d5371d951acd11285eecb33a5b",
+      "path": "packages/rigorloop/test/cli.test.js"
+    },
+    {
+      "identity": "sha256:29143443c9f5013dce0b156ae7e4002abb526aa6081e3a4e79bbc053bab57fda",
+      "path": "packages/rigorloop/test/fixtures/observability/public-command-output.json"
+    },
+    {
+      "identity": "sha256:20e6a6cf9f33a9893ba9378c241ff2ca1ad3394f45bcb7609eb3231fcce2d2d9",
+      "path": "packages/rigorloop/test/fixtures/recording-interactions/README.md"
+    },
+    {
+      "identity": "sha256:da8df34c3fb5bc423b65c19beaa45d25e634b23ab731937c29259a85e0fca420",
+      "path": "packages/rigorloop/test/helpers/record-store-interactions.mjs"
+    },
+    {
+      "identity": "sha256:54c35e54cfb6b71f9680bcc3a4ba4d133d5fa5949cf33d88f76cbfab1c193fa8",
+      "path": "packages/rigorloop/test/helpers/record-store-launcher.mjs"
+    },
+    {
+      "identity": "sha256:05f9756ebb3d4692128b38e5f05c05e6b4de2de1c9d1f3c9cddaf98d64655e90",
+      "path": "packages/rigorloop/test/helpers/recording-query-launcher.mjs"
+    },
+    {
+      "identity": "sha256:420cc141bb3e125443fcf9874d6479512a0d24955b23bbd8b41b51124da3ba0b",
+      "path": "packages/rigorloop/test/helpers/v3-fixture.mjs"
+    },
+    {
+      "identity": "sha256:803fee588fbe5604b16b84b9a67ecc74ae7a6bc2d55899591481ad9de8be8fd0",
+      "path": "packages/rigorloop/test/installer-replacement.test.js"
+    },
+    {
+      "identity": "sha256:14c686d508eec69bb1b4cb0e189924d3e3c93867cca73c5148bc4bbe148de71d",
+      "path": "packages/rigorloop/test/record-retirement.test.js"
+    },
+    {
+      "identity": "sha256:6397c7500e1fab938849f54a05551999a0b0f511e4c7d099dedd76b01d100f08",
+      "path": "packages/rigorloop/test/record-store-adoption.test.js"
+    },
+    {
+      "identity": "sha256:b48ccbb627ecffc7ab603baa6811e66ca6820d61ae87cd2515bf3e78289d965a",
+      "path": "packages/rigorloop/test/record-store-cli.test.js"
+    },
+    {
+      "identity": "sha256:fd98cbbb84e0c2b44d9f5ec460689c93c63b9184b870761609310f19d8d6286b",
+      "path": "packages/rigorloop/test/record-store-contract.test.js"
+    },
+    {
+      "identity": "sha256:6bba4fd98fc77d54f9cd9d51367f55b89544faf01822ab0886568bf40fe42e6b",
+      "path": "packages/rigorloop/test/record-store-format.test.js"
+    },
+    {
+      "identity": "sha256:e1e5ee271c32a7fb2349a797bbc70fab6dfae3ab6524dd76218950b42ed6e850",
+      "path": "packages/rigorloop/test/record-store-interactions.test.js"
+    },
+    {
+      "identity": "sha256:9b54f891d73fc12a17c7bb6e774f4b1c8a77d439fc60128228b81aa1ab0c55a9",
+      "path": "packages/rigorloop/test/record-store-model-examples.test.js"
+    },
+    {
+      "identity": "sha256:2d618fd4edfd8434adccd7a258f631caaf6878ada4572cddc7a74bdb74622383",
+      "path": "packages/rigorloop/test/record-store-persistence.test.js"
+    },
+    {
+      "identity": "sha256:3a5a5881bbc2a77aefcc53b6beef3aedada2d3ed3ba232a7de1052e37d0e9c3c",
+      "path": "packages/rigorloop/test/record-store-queries.test.js"
+    },
+    {
+      "identity": "sha256:d03071552e331cb53ddf02efc13659031ab177918c3ec5e2ce4419a752802e5f",
+      "path": "packages/rigorloop/test/record-store-targeted.test.js"
+    },
+    {
+      "identity": "sha256:979dd6fc4e794bd03969b7423af7b2f15545264a26b203dc77572386831bdac6",
+      "path": "packages/rigorloop/test/record-store-v3-adoption.test.js"
+    },
+    {
+      "identity": "sha256:f6c5724a6f0912c361b0f08712ba71696dc3b2cf5f62aff3318fde808a8a7237",
+      "path": "packages/rigorloop/test/record-store-v3-contract.test.js"
+    },
+    {
+      "identity": "sha256:c01f9f21ba9cf6e8b1539a6d49d743c5ccbc2cf28f07628a04c4fa87b9b27f8b",
+      "path": "packages/rigorloop/test/record-store-v3-mutations.test.js"
+    },
+    {
+      "identity": "sha256:adcd191bb4be6cf5b31e39a9b8780af3a1cfbe960b3175300c6bd5887921c407",
+      "path": "packages/rigorloop/test/record-store-v3-persistence.test.js"
+    },
+    {
+      "identity": "sha256:e8fc32f81d1c0d65e773d059c32fe0010815826354455cef0e85ea6feec694a2",
+      "path": "packages/rigorloop/test/record-store-v3-reads.test.js"
+    },
+    {
+      "identity": "sha256:a279a5ae6312affe664710bcc004b29573f52ee8f51909865ef844340085ff78",
+      "path": "packages/rigorloop/test/record-store-workflow.test.js"
+    },
+    {
+      "identity": "sha256:f1fe37e16c9d468a222ff24dcfeca0f40245eac40e5873ce111210eb98ae1573",
+      "path": "packages/rigorloop/test/result-renderer.test.js"
+    },
+    {
+      "identity": "sha256:056407f7078c31147daaff197a500189a771a0f8825a42cbca8615d1e76820e2",
+      "path": "packages/rigorloop/test/workflow-context.test.js"
+    },
+    {
+      "identity": "sha256:a3ddb46a496499228ce8aeaa02f53f062a208ad9bb9144fd6d70144650575641",
+      "path": "scripts/build-record-store-schema.mjs"
+    },
+    {
+      "identity": "sha256:132a133c71cef31f4aefbb49835c4269c9cd80ba492686e9988b4573e776b9f3",
+      "path": "scripts/lib/validation/validation_execution.py"
+    },
+    {
+      "identity": "sha256:4ff0c3964282dcd004ff906dfdfacb9e5c9c4ef0ede5a2bda9be1e7c71381da4",
+      "path": "scripts/lib/validation/validation_node_adapter.mjs"
+    },
+    {
+      "identity": "sha256:1f4e51ed4390a82f7f3569848808ed114b7ea7e9c73f3a8a07ef46a819b05c59",
+      "path": "scripts/lib/validation/validation_selection.py"
+    },
+    {
+      "identity": "sha256:3a619d70420a2568451b87c2cd008f750794f5a9ff2727cf46d8b4a12ea5ebea",
+      "path": "skills/code-review/SKILL.md"
+    },
+    {
+      "identity": "sha256:dde4b6b431c783ac6b7a642ce7455458d13397a2b24f72cbe0bc7d016a4ed9ab",
+      "path": "tests/fixtures/rigorloop-records-v3/records.json"
+    },
+    {
+      "identity": "sha256:adb156b8e2b196c9e82195b3eac059852ca7a941382fa41e355ff3803bf9ba87",
+      "path": "tests/fixtures/rigorloop-records-v3/storage-safety.json"
+    }
+  ],
+  "summary": "M4 approved: meaningful Verify control restored, dead/duplicate support retired coherently, retained runtime protections and complete population reconciled with passing integrated validation. No material findings.",
+  "target": "code"
+}

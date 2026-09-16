@@ -1,0 +1,198 @@
+{
+  "assessment_scope": "First-pass formal Design Review of the exact registered Skill, Validation, CLI and Delivery Handoff models as one package, against the complete unchanged proposal and accepted proposal-review. Read each model in full and inspected the actual changed sections, prior decision use, selected source procedures, resource validators, query shim/tests, catalog/caller references and PR asset. Assessed all four requested goals, full-inventory completion boundary, cross-owner responsibilities, feasibility, compatibility, preservation and representative normal/exceptional outcomes. This is Design assessment, not the subsequent complete implementation-package or case-by-case support audit.",
+  "change_id": "2026-09-15-refine-skills-and-retire-stale-support",
+  "contributors": [
+    {
+      "id": "codex-design-author",
+      "role": "design"
+    }
+  ],
+  "findings": [
+    {
+      "evidence": "Severity: medium. Scope: artifact-local. Affected artifact ID: cli. Owning stage: design. Location: docs/design/cli/cli.md:807 (new CLI-DEC-07 row), compared with line 751 in Removal and retained dependency map. The new row assigns CLI-DEC-07 to query-helper withdrawal, but line 751 already says CLI-DEC-07 selects a single stored adapter with independent transports and bounded archival header recognition. docs/plans/2026-09-11-retire-v2-record-format.md:61 allocates RF-DEC-08, CLI-DEC-07 to that earlier retirement. git show bd634da5:docs/design/cli/cli.md confirms the prior meaning. No original row need be present in the current decisions table for this stable referenced identity to remain occupied. Structural model checks pass but do not validate this semantic collision.",
+      "id": "skills-dr-01",
+      "owner": {
+        "id": "codex-design-author",
+        "role": "design"
+      },
+      "reporter": {
+        "id": "all-skills-design-reviewer",
+        "role": "review"
+      },
+      "required_outcome": "Preserve CLI-DEC-07 as the original v2-runtime-retirement decision and give query-helper withdrawal a distinct unused stable decision ID. Reconcile current references and provide an unambiguous current description of the preserved decision where needed; do not rewrite historical plans, reviews or judgments to the new meaning. Safe resolution: change only the owning CLI Design decision mapping/necessary current references, retain CLI-SR-31 and intended withdrawal behavior, check all current CLI-DEC references, run the affected model check, and return the revised exact package for independent reassessment. No upstream direction decision is required.",
+      "resolution": {
+        "actor": {
+          "id": "all-skills-design-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [
+          {
+            "id": "design-decision-id-correction",
+            "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/evidence.json"
+          }
+        ],
+        "rationale": "Independently inspected commit 11157599995298c26bb851e2c130f90e58c091ee and exact current CLI model. CLI-DEC-07 now explicitly preserves the original single-v3-adapter, independent-transport and bounded-archive-recognition decision, consistent with its unchanged line-751 reference and v2 retirement plan. Query withdrawal now uses CLI-DEC-08; git grep against pre-correction 4acf350a finds no prior use across docs/skills/scripts/tests/package tests. Only the CLI decision table changed in engineering content; CLI-SR-31, other models and historical plans/judgments are unchanged. Independently ran the CLI model structural check successfully. Required stable-identity preservation and distinct query-retirement meaning are satisfied; no residual risk or deferred work from this finding."
+      },
+      "state": "resolved",
+      "subjects": [
+        {
+          "identity": "sha256:ba79d93d064e42610611fe96e4e770b469a77c3e18491fc9f0fadcfaeefd28fd",
+          "path": "docs/design/cli/cli.md"
+        }
+      ]
+    }
+  ],
+  "id": "design-review",
+  "independence_basis": "Separate nonauthor reviewer agent /root/all_skills_design_review assessed authored commit 7cd3b5ea9ba346fdbb7b0fb7e7e457b753868f5f and its exact four registered models. The root authored the package before delegation and performed only read-only parallel checks during this assessment. This reviewer edited no Design, proposal or implementation; its only repository writes are this assessment and finding.",
+  "judgment": "changes-requested",
+  "limitations": [
+    "Planning must not rely on package approval until the required decision-identity correction receives an applicable independent Design reassessment.",
+    "Complete skill-package and case/script/fixture relevance evidence, exact retirement implementation and concrete proof allocation remain required downstream; this review does not approve unknown deletions or claim that audit complete.",
+    "Source/Design inspection and model structural checks do not demonstrate revised runtime behavior, generated package parity, universal agent compliance, final readiness or external-action authorization."
+  ],
+  "rationale": [
+    "Direction and scope: SKL-SR-33 preserves all 19 packages, and VAL-SR-29 accounts for repository/package tests, fixtures, generated/direct-only cases and all script/support populations, including files outside the listed groups. Retention rows explicitly require current complete-package evidence during delivery; earlier approval, line count and reduced-suite passes cannot close unassessed work. This meets the proposal without pretending the broad implementation audit has already occurred.",
+    "Technical realization: the five selected entrypoints presently expose detailed adopted recording before their central task classification. Four existing local references can receive the complete procedures; Verify adds one local method. The Design preserves native invocation values and makes late-trigger loading, missing/escaped/mixed guidance stops and complete selected-path procedure explicit. It does not introduce a universal layout or a shared cross-skill runtime dependency. The proposed improvement has an observable before/after reading-path criterion rather than a relocation or length target.",
+    "Authority and portability: PR remains a read-only consumer of governed records, unlike author/reviewer/Verify producers. Route retains activity/work ownership, reviewers retain exact-package judgment and durable/formal triggers, and Verify retains scoped versus final classification, success-only rationale and conditional seven-field Git basis. Shared policy adoption, isolated work and customer feature-spec/source authority remain independently applicable. No review gate, schema, permission or external publication boundary changes.",
+    "Consumer adequacy: validate_targeted_recording_profile currently returns early when nonpilot inline Explicit recording is absent; review-placement and guidance tests also key off that heading. SKL-SR-34/35 and the named consumer reconciliation require positive mapped-path checks and negative missing/wrong/escaped/incomplete cases, preventing extraction from silently disabling validation. Existing canonical/archive/install observations retain their distinct boundaries. Exact implementation assertions and commands remain Delivery-owned.",
+    "Selected retirement: source inspection confirms query-change-record.py unconditionally prints unsupported-record-interface and returns 2 without reading a root. Its two RetiredQueryTests protect that path-specific rejection, and the skill fixture asserts its rejection text/no YAML loader. CLI-SR-31 deliberately withdraws that command and structured error promise; removal is not mislabeled equivalent proof. Validation names catalog ID/fingerprint, selectors, command fixtures and helper-path exception for coupled removal, while preserving current CLI/record safety and deleted-path routing. The metadata wrapper has actual delegated validation and error normalization and is correctly retained.",
+    "Test maintenance and risk: TEST-SR-07–10 and VAL-SR-29–31 require each removed/consolidated protection to have established retained detection or explicit owner retirement, including fixtures and real observation boundaries. Unknown protection blocks completion rather than being declared obsolete. The published-skill semantic-checklist guard remains until sufficient independently assessed replacement. Semantic inspection is not universal agent-compliance proof. These requirements are adequate Design inputs for a concrete reviewed allocation.",
+    "Artifact labels and responsibility: HAND-SR-04/HAND-DEC-02 remove the duplicate Explain-change artifact prompt while preserving the successful Verify rationale, core/conditional evidence groups, actual living Design or retained project architecture context, and all external-action prerequisites. The existing PR skeleton substantiates the stale label. Broadened Code Review description reflects its already-owned final whole-change duty without granting a new gate.",
+    "Architecture and examples: all four affected models have an overview, labeled authority/input/output relationships and explicit supporting-view decisions. Their existing necessary views still describe the selected changes: method relocation remains inside published Skill packaging and one retired repository helper does not add a CLI/validation subsystem. No declared example is modified. System composition, Assessment policy and runtime/packaging owners retain their current boundaries; no new detailed owner is needed.",
+    "Required correction: CLI-DEC-07 is newly assigned to query-shim removal at cli.md:807, while the same current model at line 751 and the existing v2 retirement plan at line 61 already use that identity for single stored-adapter/independent-transport/archive-recognition decisions. The latter use is recoverable in commit bd634da5 and predates this round. The new assignment makes one stable identity mean two unrelated decisions and defeats preservation and unambiguous traceability. This is an artifact-local CLI Design defect with a safe correction, not a missing direction-owner decision.",
+    "Assessment applicability and proof limits: the exact unchanged proposal and its complete independent judgment continue to supply direction-level authority. Its earlier Skill/Validation feasibility subject hashes remain historical and are not retargeted to these drafts; this review supplies the current package assessment. Independently ran python scripts/validate-boundary-first.py --check for all four model paths: passed structure/references-only. That result does not detect the semantic decision-identity collision and cannot approve the package. No implementation, packaging, whole-inventory audit or final verification pass is inferred."
+  ],
+  "reviewer": {
+    "id": "all-skills-design-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:18f39802c01fda9ff16fa68fd0fce03dafe33f032dc0006f0033095096856bcc",
+      "path": "docs/design/skill/skill.md"
+    },
+    {
+      "identity": "sha256:46068496c23e3a9e82befbea7d5c0c68242eb0928ddb15ccf431cbd9b52a94a6",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:ba79d93d064e42610611fe96e4e770b469a77c3e18491fc9f0fadcfaeefd28fd",
+      "path": "docs/design/cli/cli.md"
+    },
+    {
+      "identity": "sha256:5a38d6bb26ebdd63527843c5dbf94caeb0c306dcfe89cfb03fc5aced4dd14388",
+      "path": "docs/design/skill/delivery-handoff.md"
+    },
+    {
+      "identity": "sha256:3bf51df8d9be1c016255c493aebe495b5d102fe015237adf099823752967686d",
+      "path": "docs/proposals/2026-09-15-refine-skills-and-retire-stale-support.md"
+    },
+    {
+      "identity": "sha256:5431c6263902bb5f0f4e558198781f9437602e417dc79741fc40823001ab7383",
+      "path": "docs/changes/2026-09-15-refine-skills-and-retire-stale-support/reviews/proposal-review.json"
+    },
+    {
+      "identity": "sha256:cc1912d5c0cd17b42bfd4a3f705a561b0c2f678045f0659f2406a1ea13e6c5a5",
+      "path": "CONSTITUTION.md"
+    },
+    {
+      "identity": "sha256:a15d4f3889629c69f946269da05e32f00161148a07f7de62f01038ced3e28cb9",
+      "path": "AGENTS.md"
+    },
+    {
+      "identity": "sha256:7a88f81f0044f2f9739ca27e9ebfb6cef77628f87b8422a240d9b776a4b921d8",
+      "path": "docs/design/system.md"
+    },
+    {
+      "identity": "sha256:af968c5583c27abb95e9a2b2ac0293deba30c522e72480c6f9aa05066659ae19",
+      "path": "docs/design/skill/assessment.md"
+    },
+    {
+      "identity": "sha256:431b9737cc8e1e9228a3c77f20b8824722f9fff2afcc311a1f3dfe3f0815130f",
+      "path": "docs/plans/2026-09-11-retire-v2-record-format.md"
+    },
+    {
+      "identity": "sha256:b09a3b401fd1b96beba6b20f83331d6ae3b49697a3cd0514ca6b22db862b4698",
+      "path": "skills/design-review/SKILL.md"
+    },
+    {
+      "identity": "sha256:36cb880ffebe096937325f40ab15f0182142514bab266ec23b6d2e08f7e5206d",
+      "path": "skills/design-review/references/design-review-recording-and-settlement.md"
+    },
+    {
+      "identity": "sha256:aa47d716979b176f9ba898407e9e9b78aad13df100d90c063a9a51051d66f787",
+      "path": "skills/delivery-review/SKILL.md"
+    },
+    {
+      "identity": "sha256:3369bbc37d27736ec57500c85e1f1fa6c33fb73e3b4ea96ba6bce8d55a91eb3e",
+      "path": "skills/delivery-review/references/delivery-review-recording-and-settlement.md"
+    },
+    {
+      "identity": "sha256:7ef76959ad5415890fffedead1af6fba55a39c849a8f9531329e855acd418143",
+      "path": "skills/route/SKILL.md"
+    },
+    {
+      "identity": "sha256:9b87caeadf713953a47ec019f6ac1972fe656b09d32bfae83122dd87d4b15b56",
+      "path": "skills/route/references/governed-lifecycle-routing.md"
+    },
+    {
+      "identity": "sha256:71e429d296885eb46f7c7e1903e6cc05b60c79d35e331a3a56d2b945fbaf2ef4",
+      "path": "skills/verify/SKILL.md"
+    },
+    {
+      "identity": "sha256:948e12262daf061361febfba9c3f3bd366576cd3403343fce6d5d50e51643128",
+      "path": "skills/pr/SKILL.md"
+    },
+    {
+      "identity": "sha256:640b6c938ec69cf71537da9adc371b50eb336421527ff9dc2b744768ed3ea83f",
+      "path": "skills/pr/references/governed-pr-readiness.md"
+    },
+    {
+      "identity": "sha256:717f484d26d68ca651976faa2ae26edc776bbded073592138a6a3993cc2b9cd1",
+      "path": "skills/pr/assets/pr-body-skeleton.md"
+    },
+    {
+      "identity": "sha256:4e9596037bb50c69e9af9d502fdd434f8ddb10ad75f8e693ffbf35446821d6dd",
+      "path": "scripts/query-change-record.py"
+    },
+    {
+      "identity": "sha256:854ec86b200da3540a07d9c7df95aea696a114d4e4ff574f213e85c393a44db2",
+      "path": "scripts/validate-change-metadata.py"
+    },
+    {
+      "identity": "sha256:e6fad8644bfbdc8dd82addaf56e38d4c7776169b3cde1d5792cb613aabd8daf7",
+      "path": "scripts/lib/validation/skill_validation.py"
+    },
+    {
+      "identity": "sha256:e0239dc403a6a9f0ea0a2905c8268ebf0d015bd5767cbb7961ed35e5bd883c21",
+      "path": "scripts/lib/validation/validation_selection.py"
+    },
+    {
+      "identity": "sha256:bf1b60484d5191a9524c5033179127310d7e77544a7d877ceb4fbf4c32df1616",
+      "path": "tests/engineering/validation/test-query-change-record.py"
+    },
+    {
+      "identity": "sha256:c0bffcb32c48485fe5c058c3cb1a45e4c5493c22af64fd0193ec4bc66c0c9bfc",
+      "path": "tests/engineering/validation/selection_test_helpers.py"
+    },
+    {
+      "identity": "sha256:284334862a0d9088d4c4709199d7c65ddb212a90461943c2dcfa3b02ceae09c0",
+      "path": "tests/engineering/validation/selection_contract_tests.py"
+    },
+    {
+      "identity": "sha256:a0c007940ce17143256e784b098c01e8f9f265a0299ad537fc29d884e33b0640",
+      "path": "tests/skill/test-skill-validator.py"
+    },
+    {
+      "identity": "sha256:f1b12638b4d14ec457b640bce86b2ca3529943d37280af24067eba55aa5a657a",
+      "path": "tests/skill/skill_guidance_tests.py"
+    },
+    {
+      "identity": "sha256:0d7c97ffe7d8e0728b935e3e18fdfb49dff391660886290442a76681d99b79fb",
+      "path": "tests/engineering/packaging/test-adapter-distribution.py"
+    }
+  ],
+  "summary": "The complete refinement is coherent in scope, selected resource placement and protection-preserving retirement, but the new query-helper decision reuses an existing v2-retirement decision identity and must be corrected before planning relies on this package.",
+  "target": "design"
+}

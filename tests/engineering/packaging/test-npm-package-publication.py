@@ -20,7 +20,6 @@ ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / "scripts"))
 
 from lib.packaging.npm_package_validation import (  # noqa: E402
-    FORBIDDEN_PATH_PATTERNS,
     REQUIRED_PACKAGE_PATHS,
     NpmPackageValidationError,
     inspect_package_tarball,
@@ -303,12 +302,6 @@ class NpmPackagePublicationTests(unittest.TestCase):
         with self.assertRaisesRegex(NpmPackageValidationError, "unapproved runtime dependency"):
             validate_package_policy({"dependencies": {"yaml": "2.8.1"}})
 
-    def test_forbidden_path_patterns_are_explicit(self) -> None:
-        self.assertIn("package/dist/adapters/**", FORBIDDEN_PATH_PATTERNS)
-        self.assertIn("package/**/*.zip", FORBIDDEN_PATH_PATTERNS)
-        self.assertIn("package/.codex/**", FORBIDDEN_PATH_PATTERNS)
-        self.assertIn("package/.agents/**", FORBIDDEN_PATH_PATTERNS)
-        self.assertIn("package/**/*.env", FORBIDDEN_PATH_PATTERNS)
 
     def test_forbidden_path_detection_rejects_root_and_nested_sensitive_files(self) -> None:
         forbidden_paths = [

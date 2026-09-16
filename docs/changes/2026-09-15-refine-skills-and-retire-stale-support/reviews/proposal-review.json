@@ -1,0 +1,109 @@
+{
+  "assessment_scope": "Isolated formal-lifecycle/manual Proposal Review of the complete proposed direction and all four user goals. PRR1G-recorded-context-gated applies: scope_budget_context true, vision_exception_context and standing_artifact_context false. Evaluated all ten specialist dimensions, current vision and Constitution, declared scope treatments and relied-on concrete source claims; no full semantic audit of the future implementation population is claimed.",
+  "change_id": "2026-09-15-refine-skills-and-retire-stale-support",
+  "contributors": [
+    {
+      "id": "codex-proposal-author",
+      "role": "proposal"
+    }
+  ],
+  "findings": [],
+  "id": "proposal-review",
+  "independence_basis": "Separate reviewer agent /root/all_skills_proposal_review independently read the exact proposal and relied-on source evidence. The root author produced the proposal before delegation; this reviewer made no proposal, Design or implementation edits. Parent performed parallel read-only scope/link checks, which do not replace this assessment.",
+  "judgment": "approved",
+  "limitations": [
+    "This review supports direction-level reliance only. Complete skill semantics, case-by-case test/script relevance, exact consumers, retained protection and selected compatibility withdrawals must be established and independently reviewed during Design and Delivery.",
+    "Source inspection establishes feasibility and current candidate behavior; no implementation tests, installed-agent compliance, performance, final verification or branch/PR readiness is claimed.",
+    "This direct review remains isolated: recording creates no automatic downstream handoff, external action permission or lifecycle completion."
+  ],
+  "rationale": [
+    "Challenge — pass. Concrete source inspection confirms Explain-change still appears in the PR body skeleton despite successful Verify owning the final explanation, the validation catalog advertises <change-yaml> although validate-change-metadata.py handles current v3 record sets, and query-change-record.py solely returns unsupported-record-interface. These are credible maintenance candidates, explicitly not automatic deletion authority.",
+    "Goals — pass. The desired result is easier-to-follow current guidance and less unnecessary maintenance while retaining supported outcomes and distinct failure detection. There is no uniform layout, length, test-count or runtime target that would substitute for quality.",
+    "Scope — pass. The enumerated 19 published skills match the actual skills/*/SKILL.md population. All tests and scripts receive relevance assessment, including package tests, generated cases and fixtures; candidate examples do not narrow that commitment. Refinement or justified retention is acceptable for each skill, including recently refined packages.",
+    "Governing principle — pass. Keeping what performs or protects a supported task and removing what no longer does supplies a concise decision rule compatible with current cleanup policy. Preservation, owner decisions and dependency reconciliation make the principle operational without prematurely prescribing deletions.",
+    "Direction — pass. Review current owners and invocation paths, simplify stale or repeated procedure only when the complete reading path improves, and establish surviving obligations and consumers before retirement. The proposed approach directly addresses the challenge while keeping specialist judgment and portable use intact.",
+    "Feasibility — pass. Exactly one embedded Feasibility section provides assessment, existing machinery, concrete basis, constraints and the absence of a known direction blocker. Skill conditional-resource guidance, Assessment independent semantic judgment and Validation protection-preserving maintenance support this approach. Packaging test_distribution_archives_have_independent_complete_resource_inventory exercises emitted member completeness against independently enumerated canonical files. Route, Verify, Design Review and Delivery Review still expose inline Explicit recording sections. These inspections substantiate feasibility without claiming existing instructions defective or future proof passed.",
+    "Material impact — pass. The proposal explicitly identifies broad-change review risk, the cost of extra reference navigation and structured rejection becoming command absence if a shim is removed. tests/engineering/validation/test-query-change-record.py currently checks exit status, diagnostic and preservation of archival input; the catalog still invokes it. validate-change-metadata.py has direct catalog callers and its own unsupported-input handling. Preserving safety and deciding compatibility before removal is therefore a substantive bound, not an unsupported redundancy claim.",
+    "Vision alignment — aligned; dimension pass. The direction preserves durable traceability, inspectable reasoning, independent review, customer-project portability and current obligations, while using recoverable history for truly retired material. Required standing authority exists; no exception or revision is needed.",
+    "Downstream authority — pass. Exact source/test deletion sets, contract amendments, command withdrawal, proof adequacy, delivery sequencing and rollout remain with their existing owners. Slice labels are direction-level scope classifications and candidate grouping; the proposal explicitly leaves detailed allocation to Delivery. No gate, permission or record-format change is approved.",
+    "Requested decision — pass. Approval is specifically for the full-inventory refinement and support-retirement direction under stated bounds; it supports authorized Design only. It does not approve exact removals, implementation, external publication or installation.",
+    "Scope preservation and specialized gate — pass. Every initial goal (all necessary skills, stale descriptions, unnecessary tests, unnecessary scripts) has an in-scope destination. The scope budget distinguishes core work, first-slice candidates, separate implementation slices, same-slice dependencies and exclusions, with explicit boundaries; no goal is hidden in an unowned follow-up. The whole inventory commitment prevents a pilot being mistaken for completion. No material predicate ambiguity or required proposal edit remains."
+  ],
+  "reviewer": {
+    "id": "all-skills-proposal-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:3bf51df8d9be1c016255c493aebe495b5d102fe015237adf099823752967686d",
+      "path": "docs/proposals/2026-09-15-refine-skills-and-retire-stale-support.md"
+    },
+    {
+      "identity": "sha256:3dae6703651fed191fe384a14224254b7791267014a89662d8872c812493e146",
+      "path": "VISION.md"
+    },
+    {
+      "identity": "sha256:cc1912d5c0cd17b42bfd4a3f705a561b0c2f678045f0659f2406a1ea13e6c5a5",
+      "path": "CONSTITUTION.md"
+    },
+    {
+      "identity": "sha256:e1184234b6a5f1a85f3e7b88ef3c699217178aa6257d9569689d1d59fafbf709",
+      "path": "docs/design/skill/skill.md"
+    },
+    {
+      "identity": "sha256:af968c5583c27abb95e9a2b2ac0293deba30c522e72480c6f9aa05066659ae19",
+      "path": "docs/design/skill/assessment.md"
+    },
+    {
+      "identity": "sha256:200d5859395b87e7999e152f44c7d77a1da7d21d85ba028349f4fdd5eb70ed14",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:717f484d26d68ca651976faa2ae26edc776bbded073592138a6a3993cc2b9cd1",
+      "path": "skills/pr/assets/pr-body-skeleton.md"
+    },
+    {
+      "identity": "sha256:e0239dc403a6a9f0ea0a2905c8268ebf0d015bd5767cbb7961ed35e5bd883c21",
+      "path": "scripts/lib/validation/validation_selection.py"
+    },
+    {
+      "identity": "sha256:4e9596037bb50c69e9af9d502fdd434f8ddb10ad75f8e693ffbf35446821d6dd",
+      "path": "scripts/query-change-record.py"
+    },
+    {
+      "identity": "sha256:854ec86b200da3540a07d9c7df95aea696a114d4e4ff574f213e85c393a44db2",
+      "path": "scripts/validate-change-metadata.py"
+    },
+    {
+      "identity": "sha256:bf1b60484d5191a9524c5033179127310d7e77544a7d877ceb4fbf4c32df1616",
+      "path": "tests/engineering/validation/test-query-change-record.py"
+    },
+    {
+      "identity": "sha256:f1b12638b4d14ec457b640bce86b2ca3529943d37280af24067eba55aa5a657a",
+      "path": "tests/skill/skill_guidance_tests.py"
+    },
+    {
+      "identity": "sha256:0d7c97ffe7d8e0728b935e3e18fdfb49dff391660886290442a76681d99b79fb",
+      "path": "tests/engineering/packaging/test-adapter-distribution.py"
+    },
+    {
+      "identity": "sha256:7ef76959ad5415890fffedead1af6fba55a39c849a8f9531329e855acd418143",
+      "path": "skills/route/SKILL.md"
+    },
+    {
+      "identity": "sha256:71e429d296885eb46f7c7e1903e6cc05b60c79d35e331a3a56d2b945fbaf2ef4",
+      "path": "skills/verify/SKILL.md"
+    },
+    {
+      "identity": "sha256:b09a3b401fd1b96beba6b20f83331d6ae3b49697a3cd0514ca6b22db862b4698",
+      "path": "skills/design-review/SKILL.md"
+    },
+    {
+      "identity": "sha256:aa47d716979b176f9ba898407e9e9b78aad13df100d90c063a9a51051d66f787",
+      "path": "skills/delivery-review/SKILL.md"
+    }
+  ],
+  "summary": "The complete-inventory refinement direction is justified, bounded and feasible enough for Design, with preservation and compatibility constraints that prevent deletion by appearance or test count.",
+  "target": "proposal"
+}

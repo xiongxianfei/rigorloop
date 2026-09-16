@@ -734,6 +734,41 @@ class SelectionGitChecks:
         self.assertFalse(payload["blocking_results"])
 
 
+    def test_query_retirement_deletions_and_renames_keep_current_proof(self):
+        retired = ("scripts/query-change-record.py", "tests/engineering/validation/test-query-change-record.py")
+        expected = {"record_retirement.regression", "change_metadata.regression", "selector.regression"}
+        for unknown in (False, True):
+            with self.subTest(unknown=unknown):
+                repo = self.make_git_repo()
+                for path in retired:
+                    target = repo / path
+                    target.parent.mkdir(parents=True, exist_ok=True)
+                    target.write_text("# Retired source\n" * 20)
+                before = "unclassified-query-input.xyz" if unknown else "scripts/test-query-change-record.py"
+                after = "tests/fixtures/documentation-prose/pass/query-retirement.md"
+                (repo / before).parent.mkdir(parents=True, exist_ok=True)
+                (repo / before).write_text("# Renamed input\n" * 20)
+                self.git_output(repo, "add", ".")
+                self.git_output(repo, "commit", "-m", "retirement baseline")
+                base = self.git_output(repo, "rev-parse", "HEAD")
+                for path in retired:
+                    (repo / path).unlink()
+                (repo / after).parent.mkdir(parents=True, exist_ok=True)
+                (repo / before).rename(repo / after)
+                self.git_output(repo, "add", "-A")
+                self.git_output(repo, "commit", "-m", "delete and rename")
+                result = run_selector("--mode", "pr", "--base", base, "--head", "HEAD", cwd=repo)
+                payload = parse_stdout(result)
+                self.assertEqual(set(payload["changed_paths"]), set(retired) | {before, after})
+                self.assertEqual(payload["status"], "blocked" if unknown else "ok", payload)
+                self.assertEqual(set(payload["unclassified_paths"]), {before} if unknown else set())
+                self.assertEqual(result.returncode, 2 if unknown else 0)
+                self.assertTrue(expected <= selected_ids(payload), payload)
+                self.assertNotIn("change_record_query.regression", selected_ids(payload))
+                for check in payload["selected_checks"]:
+                    self.assertNotIn("test-query-change-record.py", check["command"])
+
+
     def test_git_discovery_includes_deleted_and_both_renamed_paths(self):
         # TG-08: actual Git status/ranges, including a renamed unknown source.
         # Neither an unknown deletion nor its known destination may disappear.

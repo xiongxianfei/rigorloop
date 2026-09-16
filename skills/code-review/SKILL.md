@@ -3,7 +3,7 @@ name: code-review
 version: "1.0.0"
 schema-version: skill-readability-v1
 description: >
-  Review an implementation slice against the actual diff, approved design and delivery packages, tests, and validation evidence, then record findings or a clean first-pass review. Use after implement hands off a milestone or when implementation review is requested. Use design-review, delivery-review, verify, or pr for those gates instead.
+  Review a milestone or the final whole change against the actual diff, approved design and delivery packages, tests, and validation evidence, then record findings or a clean first-pass review. Use after implement hands off a milestone, after all milestones for fresh final Code Review, or when implementation review is requested. Use design-review, delivery-review, verify, or pr for those gates instead.
 argument-hint: [branch, diff, plan path, spec path, or feature name]
 ---
 
