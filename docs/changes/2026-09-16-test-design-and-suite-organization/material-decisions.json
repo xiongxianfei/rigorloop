@@ -1,0 +1,51 @@
+{
+  "body": "Design package: validation at docs/design/engineering/validation.md, including its inline source-composition graph, illustrative Python excerpt and scenario contrasts. The prior model identity was sha256:46068496c23e3a9e82befbea7d5c0c68242eb0928ddb15ccf431cbd9b52a94a6. Existing requirement identities and prior scoped retirement decisions are preserved. The package adds practical module/class/helper/fixture responsibilities, composition, naming and split criteria, cleanup, generated-case semantics and full inventory reconciliation. System layout, Engineering tooling, product observation boundaries, Assessment gates and portable test guidance remain unchanged for the reasons stated in Refinement interactions and adoption. Contributor navigation and actual source/caller migrations are allocated downstream; no test implementation was changed. The earlier directory organization, risk-driven pilot and skill refinement plans retain their own judgments; Delivery must reconcile actual completed work and remaining full-scope obligations. The proposal and its review remain unchanged and current; old model reviews are not reused as approval of this revision. The code excerpt is illustrative with omitted helpers/imports and is not executed-product evidence. No complete case inventory, migration completion, runtime improvement or implementation permission is claimed. Hand the entire model, its inline examples and named interactions to independent Design Review.",
+  "change_id": "2026-09-16-test-design-and-suite-organization",
+  "decisions": [
+    {
+      "actor": {
+        "id": "codex-root",
+        "role": "design"
+      },
+      "id": "design-package",
+      "rationale": "The approved proposal is realized by the existing Validation owner. TEST-SR-19/20 define test source and scenario structure; VAL-SR-32 preserves complete inventory scope; VAL-DEC-11 records the composition and framework decision. Other owners retain behavior and operational responsibilities through explicit interaction dispositions.",
+      "source_refs": [
+        {
+          "id": "proposal-review",
+          "path": "docs/changes/2026-09-16-test-design-and-suite-organization/reviews/proposal-review.json"
+        }
+      ],
+      "subjects": [
+        {
+          "identity": "sha256:094d7008c19975ccf293042a7da4faafa99041424c7fd517a0f861020ac7d539",
+          "path": "docs/design/engineering/validation.md"
+        }
+      ]
+    },
+    {
+      "actor": {
+        "id": "codex-root",
+        "role": "plan"
+      },
+      "id": "delivery-allocation",
+      "rationale": "Governed operation create-primary-plan; sole delivery member docs/plans/2026-09-16-test-design-and-suite-organization.md, while docs/plan.md is navigation. Eight ordered independently reviewable implementation slices account for all tests and same-slice consumers: M1/M2 mixed Skill and remaining guidance, M3/M4 domain validators and selector/executor, M5 Packaging, M6 Release, M7 Records and M8 CLI/Installation plus final reconciliation. Complete source/caller and normal collection evidence supports allocation, not completed test adequacy. Retain earlier directory moves, pilot modules, selector split, archive proof, release helpers and absent query shim without rewriting their judgments or claiming the broader support-refinement initiative complete. Every group needs a supported retain/change disposition; unknown protection blocks affected completion; no new behavior retirement is selected. Plan allocates requirements, TG groups, direct/selected/broad commands, recovery and bounded semantic/manual evidence. The approved Design remains unchanged. Fresh independent final whole-change Code Review follows all implementation/corrections, before distinct Verify. No implementation, mutable work initialization, commit or external action occurs in this planning invocation.",
+      "source_refs": [
+        {
+          "id": "design-review",
+          "path": "docs/changes/2026-09-16-test-design-and-suite-organization/reviews/design-review.json"
+        }
+      ],
+      "subjects": [
+        {
+          "identity": "sha256:84f6a4188d0a6901b0cbe5ce9b267bf32e11c6aa8aa6c2b86b1ea5f4aa5ffbdb",
+          "path": "docs/plans/2026-09-16-test-design-and-suite-organization.md"
+        },
+        {
+          "identity": "sha256:094d7008c19975ccf293042a7da4faafa99041424c7fd517a0f861020ac7d539",
+          "path": "docs/design/engineering/validation.md"
+        }
+      ]
+    }
+  ],
+  "schema_version": 3
+}

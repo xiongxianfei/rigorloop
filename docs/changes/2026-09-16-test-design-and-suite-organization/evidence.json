@@ -1,0 +1,306 @@
+{
+  "change_id": "2026-09-16-test-design-and-suite-organization",
+  "checks": [
+    {
+      "actor": {
+        "id": "codex-root",
+        "role": "design"
+      },
+      "id": "design-validation",
+      "procedure": "python scripts/validate-boundary-first.py --check --path docs/design/engineering/validation.md\npython scripts/validate-documentation-prose.py --mode enforce --path docs/design/engineering/validation.md\ngit diff --check\nbash scripts/ci.sh --mode explicit --path docs/design/engineering/validation.md",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:094d7008c19975ccf293042a7da4faafa99041424c7fd517a0f861020ac7d539",
+          "path": "docs/design/engineering/validation.md"
+        }
+      ],
+      "summary": "All listed commands completed successfully. Direct model validation reported passed with structure-and-references-only scope; prose validation reported errors=0 warnings=0 paths=1; whitespace check reported no issues. Selected CI preflight and checks passed: record_store.schema, model.validate, boundary_first.regression, change_metadata.regression and rigorloop_cli.test (the package native test population selected by the catalog). This is actual validation of the Design change and selected existing machinery, not proof of a completed test reorganization or independent semantic approval. No hosted CI, package publication or runtime improvement is claimed."
+    },
+    {
+      "actor": {
+        "id": "codex-root",
+        "role": "plan"
+      },
+      "id": "plan-population-basis",
+      "procedure": "python -B with a stdin script importing discover_cases and discover_node_cases from scripts/lib/validation/validation_execution.py; for sorted Path(\"tests\").rglob(\"test-*.py\"), invoke discover_cases([\"python\", str(path)], owned temporary collection directory, jobs=1, timeout=300); then discover_node_cases([\"npm\", \"test\", \"--prefix\", \"packages/rigorloop\"], owned temporary node directory, jobs=1, timeout=300). Print per-entrypoint case and class counts and per-Node-file counts. TemporaryDirectory owns and removes all collection scratch. Inspect AST class/method declarations, actual imports/registration and commands with rg and bounded reads. C1 in the plan preserves the corresponding reproducible identity-listing procedure using the same adapters.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:84f6a4188d0a6901b0cbe5ce9b267bf32e11c6aa8aa6c2b86b1ea5f4aa5ffbdb",
+          "path": "docs/plans/2026-09-16-test-design-and-suite-organization.md"
+        },
+        {
+          "identity": "sha256:0b027209f70398c0a603fea62bd32774593419b292e7c5ad5687cc07f5671ded",
+          "path": "docs/plan.md"
+        },
+        {
+          "identity": "sha256:094d7008c19975ccf293042a7da4faafa99041424c7fd517a0f861020ac7d539",
+          "path": "docs/design/engineering/validation.md"
+        },
+        {
+          "identity": "sha256:1f4e51ed4390a82f7f3569848808ed114b7ea7e9c73f3a8a07ef46a819b05c59",
+          "path": "scripts/lib/validation/validation_selection.py"
+        },
+        {
+          "identity": "sha256:132a133c71cef31f4aefbb49835c4269c9cd80ba492686e9988b4573e776b9f3",
+          "path": "scripts/lib/validation/validation_execution.py"
+        },
+        {
+          "identity": "sha256:4ff0c3964282dcd004ff906dfdfacb9e5c9c4ef0ede5a2bda9be1e7c71381da4",
+          "path": "scripts/lib/validation/validation_node_adapter.mjs"
+        },
+        {
+          "identity": "sha256:6c879a76afc9d6317951ba1dc883b9a5c220ba80df0cdb3b2f94e60363794207",
+          "path": "packages/rigorloop/package.json"
+        },
+        {
+          "identity": "sha256:12a38c1809fa0deca17805ca783020c7783934e6c1f91bbb1e7c9fb6c2e4fb2a",
+          "path": ".github/workflows/ci.yml"
+        },
+        {
+          "identity": "sha256:b4b995a5046ed0e79f02efba078eb152b40f9aa5afcc8dce8ed6ade2c791fa88",
+          "path": "tests/engineering/packaging/test-adapter-distribution.py"
+        },
+        {
+          "identity": "sha256:c20233722f9c78d00e83d34da64328e3f6692f8b9f1aab7d3aa2d267fbb81ca9",
+          "path": "tests/engineering/packaging/test-npm-package-publication.py"
+        },
+        {
+          "identity": "sha256:b4d96a8cbeb90c265d3359a6f0d47443fd2d534de06dd4fade42dc009201c1a2",
+          "path": "tests/engineering/release/release_candidate_tests.py"
+        },
+        {
+          "identity": "sha256:7ab982ac924eded08a9d414bcacf95b4c0c287a13048ae634b6d58776a354cd3",
+          "path": "tests/engineering/release/release_coordination_tests.py"
+        },
+        {
+          "identity": "sha256:a32097648ca5d66e788092872f51e416d9e11ca50b87c96d3263a8e206942809",
+          "path": "tests/engineering/release/release_evidence_tests.py"
+        },
+        {
+          "identity": "sha256:7e7dac59ac9e0612e4d93b2b9d84d333b61cdc120c5ec9621848c137da82d0f9",
+          "path": "tests/engineering/release/release_execution_tests.py"
+        },
+        {
+          "identity": "sha256:59c7b4eb22a6a2cc92c357f8e4bcc37cbd7c08309aab491e12e279e7d3e9ad18",
+          "path": "tests/engineering/release/release_fixture_helpers.py"
+        },
+        {
+          "identity": "sha256:4e8531fe62efa0fed683ec9e693707414560f5848a5c356aeb0fb437c41d8fbd",
+          "path": "tests/engineering/release/test-release-transaction.py"
+        },
+        {
+          "identity": "sha256:b715a9251509278392d58a62557b2afe67aa63492ea0cae029f9bd4e6bb3c3c6",
+          "path": "tests/engineering/validation/selection_cli_tests.py"
+        },
+        {
+          "identity": "sha256:320635af2debb9dc2f976f820d6390072e2dfddbea9a2e97bea55cb79f1728e0",
+          "path": "tests/engineering/validation/selection_contract_tests.py"
+        },
+        {
+          "identity": "sha256:318f0b659d5b45f93323ccf1e3f091dad75ff4b61c54ea189bde1851c59d017a",
+          "path": "tests/engineering/validation/selection_git_tests.py"
+        },
+        {
+          "identity": "sha256:2e60ccc930d88eb62dab397dfe81a4b5d0b99a217564d82a767c8bdfb70ec449",
+          "path": "tests/engineering/validation/selection_test_helpers.py"
+        },
+        {
+          "identity": "sha256:9d13e5af2fdff369007a13d63c180960e9fe11910be2047c0bead0470991b74d",
+          "path": "tests/engineering/validation/test-boundary-first-reference.py"
+        },
+        {
+          "identity": "sha256:c77947b6b9de79ee781ae84bb6a97664f7439f8b837c7cb7702e065de88e2989",
+          "path": "tests/engineering/validation/test-boundary-first-validation.py"
+        },
+        {
+          "identity": "sha256:da72bcb80d9cf94a16b119957e6162f8bedacd27bbea70be10429b424f9a4193",
+          "path": "tests/engineering/validation/test-change-metadata-validator.py"
+        },
+        {
+          "identity": "sha256:dc10776c0eb29063aa26af888cfeed1b58fe397a573045a7a19e45fc717a3a3a",
+          "path": "tests/engineering/validation/test-documentation-prose-validator.py"
+        },
+        {
+          "identity": "sha256:fe065d545c066d2ebdc8c6facbe773d547adaea93dc79f14292eb81814d0790b",
+          "path": "tests/engineering/validation/test-governed-lifecycle-cli-validator.py"
+        },
+        {
+          "identity": "sha256:504cbe9317427874b32c61edff61ec901be155e619ae4362e95ebe07ff341997",
+          "path": "tests/engineering/validation/test-guide-system-validator.py"
+        },
+        {
+          "identity": "sha256:6235d8e9143bae6ffd5d17d83c817618e960ecdd2472efe80a115614668a9a6d",
+          "path": "tests/engineering/validation/test-markdown-readability-validator.py"
+        },
+        {
+          "identity": "sha256:927ec31f77e468235806dafe9f128771d6374d4cb28ef219b4dc1f11452f764a",
+          "path": "tests/engineering/validation/test-select-validation.py"
+        },
+        {
+          "identity": "sha256:b3bfb43b260bdb22ed6ec01a44259f0adf963b4da85a94f36fb425f8e0c6eb24",
+          "path": "tests/engineering/validation/test-validation-execution.py"
+        },
+        {
+          "identity": "sha256:688f11c193a35df1d5b293a444efdc041c1fd879e0fd693c285abbbf1fe6d1c6",
+          "path": "tests/fixtures/skills/published-design/packaged-script-missing-failure/scripts/check.py"
+        },
+        {
+          "identity": "sha256:688f11c193a35df1d5b293a444efdc041c1fd879e0fd693c285abbbf1fe6d1c6",
+          "path": "tests/fixtures/skills/published-design/packaged-script-resource-map/scripts/validate_output.py"
+        },
+        {
+          "identity": "sha256:688f11c193a35df1d5b293a444efdc041c1fd879e0fd693c285abbbf1fe6d1c6",
+          "path": "tests/fixtures/skills/published-design/packaged-script-valid/scripts/check.py"
+        },
+        {
+          "identity": "sha256:f768f7e0fdfb277b30b6cdaaad398149b0e2fcce1cf496ab16f7cd4ce6800ed8",
+          "path": "tests/skill/review_independence_skill_phrases.py"
+        },
+        {
+          "identity": "sha256:2848fac640355c18e78beae17fc60d6826bd7121caaad4d33cd59809e2a25a63",
+          "path": "tests/skill/skill_cli_tests.py"
+        },
+        {
+          "identity": "sha256:460f8e5b57cb9f3440415497cf6b4f5e6ff117d3fd13a19430cdf45a9dc19ca8",
+          "path": "tests/skill/skill_contract_tests.py"
+        },
+        {
+          "identity": "sha256:c0df8f4cabeff098b08e651d1c27e5e3ea89cb8530d5313b46d9f0cd824d0ea0",
+          "path": "tests/skill/skill_guidance_tests.py"
+        },
+        {
+          "identity": "sha256:1bb93c4b78c889f47feec57eb13bc246754227f92854e238f951a25f9f225c84",
+          "path": "tests/skill/test-skill-validator.py"
+        },
+        {
+          "identity": "sha256:e17e9af73635f92b089baaa3dd67e6ccd005d4e9b8c1e2c0314c5d5cca60a0b6",
+          "path": "packages/rigorloop/test/cli-invocation-observability.test.js"
+        },
+        {
+          "identity": "sha256:460c8fa7b15469b1f9af09690202a0c59f273362e2c95829270f2ff264efe130",
+          "path": "packages/rigorloop/test/cli-observability.test.js"
+        },
+        {
+          "identity": "sha256:e83e14f4d96c0654efa24bbeae2c3741792aa1d5371d951acd11285eecb33a5b",
+          "path": "packages/rigorloop/test/cli.test.js"
+        },
+        {
+          "identity": "sha256:803fee588fbe5604b16b84b9a67ecc74ae7a6bc2d55899591481ad9de8be8fd0",
+          "path": "packages/rigorloop/test/installer-replacement.test.js"
+        },
+        {
+          "identity": "sha256:14c686d508eec69bb1b4cb0e189924d3e3c93867cca73c5148bc4bbe148de71d",
+          "path": "packages/rigorloop/test/record-retirement.test.js"
+        },
+        {
+          "identity": "sha256:6397c7500e1fab938849f54a05551999a0b0f511e4c7d099dedd76b01d100f08",
+          "path": "packages/rigorloop/test/record-store-adoption.test.js"
+        },
+        {
+          "identity": "sha256:b48ccbb627ecffc7ab603baa6811e66ca6820d61ae87cd2515bf3e78289d965a",
+          "path": "packages/rigorloop/test/record-store-cli.test.js"
+        },
+        {
+          "identity": "sha256:fd98cbbb84e0c2b44d9f5ec460689c93c63b9184b870761609310f19d8d6286b",
+          "path": "packages/rigorloop/test/record-store-contract.test.js"
+        },
+        {
+          "identity": "sha256:6bba4fd98fc77d54f9cd9d51367f55b89544faf01822ab0886568bf40fe42e6b",
+          "path": "packages/rigorloop/test/record-store-format.test.js"
+        },
+        {
+          "identity": "sha256:e1e5ee271c32a7fb2349a797bbc70fab6dfae3ab6524dd76218950b42ed6e850",
+          "path": "packages/rigorloop/test/record-store-interactions.test.js"
+        },
+        {
+          "identity": "sha256:9b54f891d73fc12a17c7bb6e774f4b1c8a77d439fc60128228b81aa1ab0c55a9",
+          "path": "packages/rigorloop/test/record-store-model-examples.test.js"
+        },
+        {
+          "identity": "sha256:2d618fd4edfd8434adccd7a258f631caaf6878ada4572cddc7a74bdb74622383",
+          "path": "packages/rigorloop/test/record-store-persistence.test.js"
+        },
+        {
+          "identity": "sha256:3a5a5881bbc2a77aefcc53b6beef3aedada2d3ed3ba232a7de1052e37d0e9c3c",
+          "path": "packages/rigorloop/test/record-store-queries.test.js"
+        },
+        {
+          "identity": "sha256:d03071552e331cb53ddf02efc13659031ab177918c3ec5e2ce4419a752802e5f",
+          "path": "packages/rigorloop/test/record-store-targeted.test.js"
+        },
+        {
+          "identity": "sha256:979dd6fc4e794bd03969b7423af7b2f15545264a26b203dc77572386831bdac6",
+          "path": "packages/rigorloop/test/record-store-v3-adoption.test.js"
+        },
+        {
+          "identity": "sha256:f6c5724a6f0912c361b0f08712ba71696dc3b2cf5f62aff3318fde808a8a7237",
+          "path": "packages/rigorloop/test/record-store-v3-contract.test.js"
+        },
+        {
+          "identity": "sha256:c01f9f21ba9cf6e8b1539a6d49d743c5ccbc2cf28f07628a04c4fa87b9b27f8b",
+          "path": "packages/rigorloop/test/record-store-v3-mutations.test.js"
+        },
+        {
+          "identity": "sha256:adcd191bb4be6cf5b31e39a9b8780af3a1cfbe960b3175300c6bd5887921c407",
+          "path": "packages/rigorloop/test/record-store-v3-persistence.test.js"
+        },
+        {
+          "identity": "sha256:e8fc32f81d1c0d65e773d059c32fe0010815826354455cef0e85ea6feec694a2",
+          "path": "packages/rigorloop/test/record-store-v3-reads.test.js"
+        },
+        {
+          "identity": "sha256:a279a5ae6312affe664710bcc004b29573f52ee8f51909865ef844340085ff78",
+          "path": "packages/rigorloop/test/record-store-workflow.test.js"
+        },
+        {
+          "identity": "sha256:f1fe37e16c9d468a222ff24dcfeca0f40245eac40e5873ce111210eb98ae1573",
+          "path": "packages/rigorloop/test/result-renderer.test.js"
+        },
+        {
+          "identity": "sha256:056407f7078c31147daaff197a500189a771a0f8825a42cbca8615d1e76820e2",
+          "path": "packages/rigorloop/test/workflow-context.test.js"
+        },
+        {
+          "identity": "sha256:da8df34c3fb5bc423b65c19beaa45d25e634b23ab731937c29259a85e0fca420",
+          "path": "packages/rigorloop/test/helpers/record-store-interactions.mjs"
+        },
+        {
+          "identity": "sha256:54c35e54cfb6b71f9680bcc3a4ba4d133d5fa5949cf33d88f76cbfab1c193fa8",
+          "path": "packages/rigorloop/test/helpers/record-store-launcher.mjs"
+        },
+        {
+          "identity": "sha256:05f9756ebb3d4692128b38e5f05c05e6b4de2de1c9d1f3c9cddaf98d64655e90",
+          "path": "packages/rigorloop/test/helpers/recording-query-launcher.mjs"
+        },
+        {
+          "identity": "sha256:420cc141bb3e125443fcf9874d6479512a0d24955b23bbd8b41b51124da3ba0b",
+          "path": "packages/rigorloop/test/helpers/v3-fixture.mjs"
+        }
+      ],
+      "summary": "Normal runner collection succeeded without executing scenario bodies: 13 Python entrypoints, 954 cases; 22 native Node files, 418 cases; 1372 total collected cases. Python counts: Skill 300 (151 in the mixed primary class including seven inherited methods; remaining 149); document/reference/record validation 136; selector 184; executor 52; Packaging 102 (95 adapter, 7 npm); Release 180 including imported groups. Node Records/retirement allocation: 249; CLI/Installation/observability/workflow-context: 169. Counts describe discovery only, not complete parameter partitions or protective-value assessment. Source/import/caller inspection includes mixins, Python subtests, native generated loops, test-only launchers, nested child-suite strings, package globs, catalog subsets, direct CI overlap probes and release/publication callers. All sources are allocated in the plan; detailed group dispositions and before/after execution remain implementation duties. No test or production source changed during this planning invocation."
+    },
+    {
+      "actor": {
+        "id": "codex-root",
+        "role": "plan"
+      },
+      "id": "plan-authoring-validation",
+      "procedure": "python scripts/validate-documentation-prose.py --mode enforce --path docs/plans/2026-09-16-test-design-and-suite-organization.md --path docs/plan.md\ngit diff --check\nbash scripts/ci.sh --mode explicit --path docs/plans/2026-09-16-test-design-and-suite-organization.md --path docs/plan.md --path docs/changes/2026-09-16-test-design-and-suite-organization/change.json",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:84f6a4188d0a6901b0cbe5ce9b267bf32e11c6aa8aa6c2b86b1ea5f4aa5ffbdb",
+          "path": "docs/plans/2026-09-16-test-design-and-suite-organization.md"
+        },
+        {
+          "identity": "sha256:0b027209f70398c0a603fea62bd32774593419b292e7c5ad5687cc07f5671ded",
+          "path": "docs/plan.md"
+        }
+      ],
+      "summary": "Prose validation completed with errors=0 warnings=0 paths=2; whitespace validation passed. Selected CI passed preflight and current_records.validate, change_metadata.regression (all seven cases), change_metadata.validate and guide_system.validate. These are authoring/record/guide checks, not independent Delivery Review, scenario execution for the collected population, implementation or final readiness. Subsequent recording-only changes require current record validation without repeating unaffected semantic sources."
+    }
+  ],
+  "schema_version": 3
+}

@@ -1,0 +1,215 @@
+{
+  "activity": {
+    "owner": {
+      "id": "codex-root",
+      "role": "implement"
+    },
+    "reason": "User explicitly authorized all remaining approved milestones, independent reviews, final Verify, commits/push and PR submission. Begin M1 under the current approved Delivery package; later milestones remain pending their predecessor review.",
+    "stage": "implement",
+    "status": "in-progress"
+  },
+  "applicability": [
+    {
+      "actor": {
+        "id": "proposal-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-16-test-design-and-suite-organization/reviews/proposal-review.json",
+      "reason": "The reviewer independently assessed the complete unchanged proposal against the inspected current authority and bounded source evidence. All proposal criteria are satisfied, no material finding or necessary owner decision remains, and reliance is limited to the declared direction-level scope.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-root",
+        "role": "plan"
+      },
+      "path": "docs/changes/2026-09-16-test-design-and-suite-organization/material-decisions.json",
+      "reason": "Unchanged Design authoring basis and added Plan allocation/discovery/validation basis remain scoped to their exact declared subjects. No implementation or completed inventory adequacy is claimed; independent assessments keep their own authority.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-root",
+        "role": "plan"
+      },
+      "path": "docs/changes/2026-09-16-test-design-and-suite-organization/evidence.json",
+      "reason": "Unchanged Design authoring basis and added Plan allocation/discovery/validation basis remain scoped to their exact declared subjects. No implementation or completed inventory adequacy is claimed; independent assessments keep their own authority.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "design-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-16-test-design-and-suite-organization/reviews/design-review.json",
+      "reason": "Fresh independent assessment of the complete unchanged selected Design package, its inline examples, accepted proposal authority and relevant interactions found the contract coherent and sufficient for authorized delivery planning. No required correction or unresolved necessary decision remains within that assessment scope.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "delivery-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-16-test-design-and-suite-organization/reviews/delivery-review.json",
+      "reason": "The independent assessor reviewed the complete unchanged primary plan against current approved Design and proposal constraints, source/caller feasibility and inspected author evidence. Sequence and proof allocation are jointly sufficient for authorized implementation, with no unresolved material finding or necessary owner decision in the reviewed scope.",
+      "value": "current"
+    }
+  ],
+  "blockers": [],
+  "change_id": "2026-09-16-test-design-and-suite-organization",
+  "contract": "rigorloop-records-v3",
+  "models": [
+    {
+      "id": "validation",
+      "subject": {
+        "identity": "sha256:094d7008c19975ccf293042a7da4faafa99041424c7fd517a0f861020ac7d539",
+        "path": "docs/design/engineering/validation.md"
+      }
+    }
+  ],
+  "plan": {
+    "identity": "sha256:84f6a4188d0a6901b0cbe5ce9b267bf32e11c6aa8aa6c2b86b1ea5f4aa5ffbdb",
+    "path": "docs/plans/2026-09-16-test-design-and-suite-organization.md"
+  },
+  "proposal": {
+    "identity": "sha256:9145c6d412d85e04bc2bbb04f6cfd4c8bf89a314aee59d9a615d59637a38415e",
+    "path": "docs/proposals/2026-09-16-test-design-and-suite-organization.md"
+  },
+  "records": [
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-16-test-design-and-suite-organization/reviews/proposal-review.json"
+    },
+    {
+      "kind": "decisions",
+      "path": "docs/changes/2026-09-16-test-design-and-suite-organization/material-decisions.json"
+    },
+    {
+      "kind": "evidence",
+      "path": "docs/changes/2026-09-16-test-design-and-suite-organization/evidence.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-16-test-design-and-suite-organization/reviews/design-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-16-test-design-and-suite-organization/reviews/delivery-review.json"
+    }
+  ],
+  "schema_version": 3,
+  "work": [
+    {
+      "id": "m1",
+      "owner": {
+        "id": "codex-root",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "docs/plans/2026-09-16-test-design-and-suite-organization.md#m1-separate-the-mixed-skill-validator-group",
+        "TEST-SR-19",
+        "TEST-SR-20",
+        "VAL-SR-32"
+      ],
+      "status": "in-progress"
+    },
+    {
+      "id": "m2",
+      "owner": {
+        "id": "codex-root",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "docs/plans/2026-09-16-test-design-and-suite-organization.md#m2-organize-remaining-skill-contract-and-guidance-tests",
+        "TEST-SR-19",
+        "TEST-SR-20",
+        "VAL-SR-32"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "m3",
+      "owner": {
+        "id": "codex-root",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "docs/plans/2026-09-16-test-design-and-suite-organization.md#m3-assess-document-reference-and-record-validation-suites",
+        "TEST-SR-19",
+        "TEST-SR-20",
+        "VAL-SR-32"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "m4",
+      "owner": {
+        "id": "codex-root",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "docs/plans/2026-09-16-test-design-and-suite-organization.md#m4-refine-selector-and-executor-test-organization",
+        "TEST-SR-19",
+        "TEST-SR-20",
+        "VAL-SR-32"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "m5",
+      "owner": {
+        "id": "codex-root",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "docs/plans/2026-09-16-test-design-and-suite-organization.md#m5-organize-packaging-transformation-and-product-proof",
+        "TEST-SR-19",
+        "TEST-SR-20",
+        "VAL-SR-32"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "m6",
+      "owner": {
+        "id": "codex-root",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "docs/plans/2026-09-16-test-design-and-suite-organization.md#m6-complete-release-fixture-and-scenario-organization",
+        "TEST-SR-19",
+        "TEST-SR-20",
+        "VAL-SR-32"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "m7",
+      "owner": {
+        "id": "codex-root",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "docs/plans/2026-09-16-test-design-and-suite-organization.md#m7-assess-package-records-transactions-and-generated-families",
+        "TEST-SR-19",
+        "TEST-SR-20",
+        "VAL-SR-32"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "m8",
+      "owner": {
+        "id": "codex-root",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "docs/plans/2026-09-16-test-design-and-suite-organization.md#m8-complete-cliinstallation-assessment-and-whole-inventory-reconciliation",
+        "TEST-SR-19",
+        "TEST-SR-20",
+        "VAL-SR-32"
+      ],
+      "status": "pending"
+    }
+  ]
+}
