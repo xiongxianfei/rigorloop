@@ -1,11 +1,13 @@
 import assert from 'node:assert/strict';
-import {test} from 'node:test';
-import {readFileSync} from 'node:fs';
-import {canonicalJSON} from '../dist/lib/recording-observations.js';
-import {digest} from '../dist/lib/record-store-files.js';
+import { test } from 'node:test';
+import { readFileSync } from 'node:fs';
+import { canonicalJSON } from '../dist/lib/recording-observations.js';
+import { digest } from '../dist/lib/record-store-files.js';
 
-const example = path => JSON.parse(readFileSync(
-  new URL('../../../docs/design/cli/examples/' + path, import.meta.url), 'utf8'));
+const example = (path) =>
+  JSON.parse(
+    readFileSync(new URL('../../../docs/design/cli/examples/' + path, import.meta.url), 'utf8'),
+  );
 
 test('model CLI observation examples bind continuation to current observed identities', () => {
   const first = example('observation-freshness/scan-b.json');
