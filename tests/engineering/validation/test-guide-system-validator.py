@@ -33,6 +33,7 @@ validator = load_validator()
 class RouteGuideValidatorTests(unittest.TestCase):
     def setUp(self) -> None:
         self.temp = tempfile.TemporaryDirectory(prefix="route-guide-validator-")
+        self.addCleanup(self.temp.cleanup)
         self.repo = Path(self.temp.name)
         for path in (
             "README.md",
@@ -49,9 +50,6 @@ class RouteGuideValidatorTests(unittest.TestCase):
             target = self.repo / path
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(source, target)
-
-    def tearDown(self) -> None:
-        self.temp.cleanup()
 
     def test_current_workflow_model_cannot_restore_retired_guide_authority(self):
         owner = self.repo / "docs/design/skill/workflow.md"
