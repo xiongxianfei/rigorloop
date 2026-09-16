@@ -351,7 +351,8 @@ class ScriptOutputContractTests(unittest.TestCase):
         output = self.combined_output(result)
 
         self.assertNotEqual(result.returncode, 0)
-        self.assertNotIn('-k "NoSuchTest"', output)
+        self.assertIn("FAILED unittest.loader._FailedTest.NoSuchTest", output)
+        self.assertNotIn("Re-run:", output)
 
     def test_output_contract_json_support_is_not_added_in_first_slice(self) -> None:
         result = self.run_runner("--json")
