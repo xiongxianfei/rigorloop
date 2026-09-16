@@ -4,7 +4,7 @@
       "id": "code-reviewer",
       "role": "review"
     },
-    "reason": "M6 complete release population and direct/selected proof pass. Await independent M6 review before M7 implementation.",
+    "reason": "M7 complete native Records population assessed and required proof passes. Independent M7 review precedes M8 engineering.",
     "stage": "code-review",
     "status": "in-progress"
   },
@@ -116,6 +116,15 @@
       "path": "docs/changes/2026-09-16-test-design-and-suite-organization/reviews/m5-code-review.json",
       "reason": "M6 changes shared selector/catalog and candidate test subjects. Preserve the independent M5 approval at2d1baa47; M6 interaction assessment and fresh final whole-change review are required.",
       "value": "stale"
+    },
+    {
+      "actor": {
+        "id": "code-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-16-test-design-and-suite-organization/reviews/m6-code-review.json",
+      "reason": "Independent nonauthor assessment of all 180 M6 scenarios, 28 recursive inputs, fixture/helper responsibilities and affected actual consumers at a937a578 found settled authority, sufficient exact evidence and no material correction. Fresh reviewer actual-candidate execution also passes with no caller-log writes. Applies to the listed 59 subjects and milestone scope only; M7-M8, integrated whole-change review and Verify remain required.",
+      "value": "current"
     }
   ],
   "blockers": [
@@ -240,6 +249,201 @@
           "path": "tests/engineering/packaging/adapter_resources_tests.py"
         }
       ]
+    },
+    {
+      "evidence": "Native alias version child writes into caller-state stand-in. Exact pre-correction evidence: m7-fixture-reproductions.",
+      "id": "m7-log-isolation",
+      "origin": {
+        "evidence": "Native alias version child writes into caller-state stand-in. Exact pre-correction evidence: m7-fixture-reproductions.",
+        "rationale": "Author-discovered test defect within approved M7; preserve original failed observation and require identity-stable correction proof.",
+        "reporter": {
+          "id": "codex-root",
+          "role": "implement"
+        },
+        "required_outcome": "Same strict native-case probe preserves caller state; privately owned child cwd/log root and normal suite pass.",
+        "subjects": [
+          {
+            "identity": "sha256:b48ccbb627ecffc7ab603baa6811e66ca6820d61ae87cd2515bf3e78289d965a",
+            "path": "packages/rigorloop/test/record-store-cli.test.js"
+          },
+          {
+            "identity": "sha256:e1e5ee271c32a7fb2349a797bbc70fab6dfae3ab6524dd76218950b42ed6e850",
+            "path": "packages/rigorloop/test/record-store-interactions.test.js"
+          },
+          {
+            "identity": "sha256:da8df34c3fb5bc423b65c19beaa45d25e634b23ab731937c29259a85e0fca420",
+            "path": "packages/rigorloop/test/helpers/record-store-interactions.mjs"
+          }
+        ],
+        "supporting_judgment": null
+      },
+      "owner": {
+        "id": "codex-root",
+        "role": "implement"
+      },
+      "reporter": {
+        "id": "codex-root",
+        "role": "implement"
+      },
+      "required_outcome": "Same strict native-case probe preserves caller state; privately owned child cwd/log root and normal suite pass.",
+      "resolution": {
+        "actor": {
+          "id": "codex-root",
+          "role": "implement"
+        },
+        "evidence_refs": [
+          {
+            "id": "m7-validation",
+            "path": "docs/changes/2026-09-16-test-design-and-suite-organization/evidence.json"
+          }
+        ],
+        "rationale": "Original reporter reassesses the unchanged strict reproduction and final normal native/selected execution. Required ownership or independent outcome protection now passes; seeded lost-neighbor is rejected for the intended assertion. Failed origin evidence remains preserved; independent review judgment remains with Code Review."
+      },
+      "state": "resolved",
+      "subjects": [
+        {
+          "identity": "sha256:b48ccbb627ecffc7ab603baa6811e66ca6820d61ae87cd2515bf3e78289d965a",
+          "path": "packages/rigorloop/test/record-store-cli.test.js"
+        },
+        {
+          "identity": "sha256:e1e5ee271c32a7fb2349a797bbc70fab6dfae3ab6524dd76218950b42ed6e850",
+          "path": "packages/rigorloop/test/record-store-interactions.test.js"
+        },
+        {
+          "identity": "sha256:da8df34c3fb5bc423b65c19beaa45d25e634b23ab731937c29259a85e0fca420",
+          "path": "packages/rigorloop/test/helpers/record-store-interactions.mjs"
+        }
+      ]
+    },
+    {
+      "evidence": "Actual interaction setup failure leaves its allocated root behind. Exact pre-correction evidence: m7-fixture-reproductions.",
+      "id": "m7-setup-cleanup",
+      "origin": {
+        "evidence": "Actual interaction setup failure leaves its allocated root behind. Exact pre-correction evidence: m7-fixture-reproductions.",
+        "rationale": "Author-discovered test defect within approved M7; preserve original failed observation and require identity-stable correction proof.",
+        "reporter": {
+          "id": "codex-root",
+          "role": "implement"
+        },
+        "required_outcome": "Same deterministic setup-failure probe observes the original error and no surviving fixture root; normal interactions pass.",
+        "subjects": [
+          {
+            "identity": "sha256:b48ccbb627ecffc7ab603baa6811e66ca6820d61ae87cd2515bf3e78289d965a",
+            "path": "packages/rigorloop/test/record-store-cli.test.js"
+          },
+          {
+            "identity": "sha256:e1e5ee271c32a7fb2349a797bbc70fab6dfae3ab6524dd76218950b42ed6e850",
+            "path": "packages/rigorloop/test/record-store-interactions.test.js"
+          },
+          {
+            "identity": "sha256:da8df34c3fb5bc423b65c19beaa45d25e634b23ab731937c29259a85e0fca420",
+            "path": "packages/rigorloop/test/helpers/record-store-interactions.mjs"
+          }
+        ],
+        "supporting_judgment": null
+      },
+      "owner": {
+        "id": "codex-root",
+        "role": "implement"
+      },
+      "reporter": {
+        "id": "codex-root",
+        "role": "implement"
+      },
+      "required_outcome": "Same deterministic setup-failure probe observes the original error and no surviving fixture root; normal interactions pass.",
+      "resolution": {
+        "actor": {
+          "id": "codex-root",
+          "role": "implement"
+        },
+        "evidence_refs": [
+          {
+            "id": "m7-validation",
+            "path": "docs/changes/2026-09-16-test-design-and-suite-organization/evidence.json"
+          }
+        ],
+        "rationale": "Original reporter reassesses the unchanged strict reproduction and final normal native/selected execution. Required ownership or independent outcome protection now passes; seeded lost-neighbor is rejected for the intended assertion. Failed origin evidence remains preserved; independent review judgment remains with Code Review."
+      },
+      "state": "resolved",
+      "subjects": [
+        {
+          "identity": "sha256:b48ccbb627ecffc7ab603baa6811e66ca6820d61ae87cd2515bf3e78289d965a",
+          "path": "packages/rigorloop/test/record-store-cli.test.js"
+        },
+        {
+          "identity": "sha256:e1e5ee271c32a7fb2349a797bbc70fab6dfae3ab6524dd76218950b42ed6e850",
+          "path": "packages/rigorloop/test/record-store-interactions.test.js"
+        },
+        {
+          "identity": "sha256:da8df34c3fb5bc423b65c19beaa45d25e634b23ab731937c29259a85e0fca420",
+          "path": "packages/rigorloop/test/helpers/record-store-interactions.mjs"
+        }
+      ]
+    },
+    {
+      "evidence": "Original assertion accepts a missing original finding in both real-path observations. Exact pre-correction evidence: m7-fixture-reproductions.",
+      "id": "m7-interaction-oracle",
+      "origin": {
+        "evidence": "Original assertion accepts a missing original finding in both real-path observations. Exact pre-correction evidence: m7-fixture-reproductions.",
+        "rationale": "Author-discovered test defect within approved M7; preserve original failed observation and require identity-stable correction proof.",
+        "reporter": {
+          "id": "codex-root",
+          "role": "implement"
+        },
+        "required_outcome": "Each path independently preserves original24 findings/12checks and unrelated bytes plus its required mutation/read outcome; seeded lost-neighbor observation fails for intended assertion and normal four scenarios pass.",
+        "subjects": [
+          {
+            "identity": "sha256:b48ccbb627ecffc7ab603baa6811e66ca6820d61ae87cd2515bf3e78289d965a",
+            "path": "packages/rigorloop/test/record-store-cli.test.js"
+          },
+          {
+            "identity": "sha256:e1e5ee271c32a7fb2349a797bbc70fab6dfae3ab6524dd76218950b42ed6e850",
+            "path": "packages/rigorloop/test/record-store-interactions.test.js"
+          },
+          {
+            "identity": "sha256:da8df34c3fb5bc423b65c19beaa45d25e634b23ab731937c29259a85e0fca420",
+            "path": "packages/rigorloop/test/helpers/record-store-interactions.mjs"
+          }
+        ],
+        "supporting_judgment": null
+      },
+      "owner": {
+        "id": "codex-root",
+        "role": "implement"
+      },
+      "reporter": {
+        "id": "codex-root",
+        "role": "implement"
+      },
+      "required_outcome": "Each path independently preserves original24 findings/12checks and unrelated bytes plus its required mutation/read outcome; seeded lost-neighbor observation fails for intended assertion and normal four scenarios pass.",
+      "resolution": {
+        "actor": {
+          "id": "codex-root",
+          "role": "implement"
+        },
+        "evidence_refs": [
+          {
+            "id": "m7-validation",
+            "path": "docs/changes/2026-09-16-test-design-and-suite-organization/evidence.json"
+          }
+        ],
+        "rationale": "Original reporter reassesses the unchanged strict reproduction and final normal native/selected execution. Required ownership or independent outcome protection now passes; seeded lost-neighbor is rejected for the intended assertion. Failed origin evidence remains preserved; independent review judgment remains with Code Review."
+      },
+      "state": "resolved",
+      "subjects": [
+        {
+          "identity": "sha256:b48ccbb627ecffc7ab603baa6811e66ca6820d61ae87cd2515bf3e78289d965a",
+          "path": "packages/rigorloop/test/record-store-cli.test.js"
+        },
+        {
+          "identity": "sha256:e1e5ee271c32a7fb2349a797bbc70fab6dfae3ab6524dd76218950b42ed6e850",
+          "path": "packages/rigorloop/test/record-store-interactions.test.js"
+        },
+        {
+          "identity": "sha256:da8df34c3fb5bc423b65c19beaa45d25e634b23ab731937c29259a85e0fca420",
+          "path": "packages/rigorloop/test/helpers/record-store-interactions.mjs"
+        }
+      ]
     }
   ],
   "change_id": "2026-09-16-test-design-and-suite-organization",
@@ -309,6 +513,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-16-test-design-and-suite-organization/reviews/m5-code-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-16-test-design-and-suite-organization/reviews/m6-code-review.json"
     }
   ],
   "schema_version": 3,
@@ -395,7 +603,7 @@
         "TEST-SR-20",
         "VAL-SR-32"
       ],
-      "status": "in-progress"
+      "status": "completed"
     },
     {
       "id": "m7",
@@ -409,7 +617,7 @@
         "TEST-SR-20",
         "VAL-SR-32"
       ],
-      "status": "pending"
+      "status": "in-progress"
     },
     {
       "id": "m8",
