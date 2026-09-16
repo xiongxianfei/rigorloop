@@ -720,6 +720,318 @@
         }
       ],
       "summary": "C1 normal discovery before (M1 current handoff) and after M2: exactly the same300 unique Class.method selectors; no M2 identity mapping needed. Initial pure extraction: all25 classes/123 cases AST-identical, including setup, parameter values and assertions. Subsequent bounded changes are the declared input/oracle/helper refinements, not a count-only preservation claim. Focused20 recording/CI cases passed after fixture/operation separation; strengthened36 cases passed (recording9, CI11, Design7, delivery-copy3, review-copy3, test-policy3). Four owned in-process mutation experiments set one selected production inventory to empty: the corresponding old focused case passed without detecting the omission, while the strengthened case failed by assertion, not by import/setup error. This demonstrates that narrow weakness only; it does not claim the earlier entire suite missed all four hypothetical defects. No product file was mutated and no external service was involved.\nFinal python tests/skill/test-skill-validator.py:300 passed in20.327s. python scripts/validate-skills.py skills: all19 canonical skills passed. New15-path selector family failed before catalog wiring and passed afterward. C2 python scripts/select-validation.py --mode explicit and bash scripts/ci.sh --mode explicit --jobs4 with each of24 actual changed source/record paths completed successfully: Skill300, adapters95, change-metadata regression7 and validation, selector184 and executor52. This re-exercises M1 groups, exact direct entrypoint, isolated discovery/execution, copied-repository consumers and actual adapter observations after shared-source changes. git diff --cached --check passed; explicit current record validation is run after evidence recording. Existing baseline/M1 entries and judgments retain earlier exact identities and scope; the M1 helper correction remains resolved but changed aggregate/guidance/caller subjects require this M2 independent assessment. No final whole-change review or Verify readiness is claimed."
+    },
+    {
+      "actor": {
+        "id": "codex-root",
+        "role": "implement"
+      },
+      "id": "m3-implementation",
+      "procedure": "Assess complete M3 population, fixtures, generated parameters and downstream readers against TG-03; inspect direct operations, independent expectations, real filesystem/Git boundaries and actual diff.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:9d13e5af2fdff369007a13d63c180960e9fe11910be2047c0bead0470991b74d",
+          "path": "tests/engineering/validation/test-boundary-first-reference.py"
+        },
+        {
+          "identity": "sha256:3ef8435f1114964083e229dfdb5aa0e589b4c1026c605bbb78aca08206fd6ea3",
+          "path": "tests/engineering/validation/test-boundary-first-validation.py"
+        },
+        {
+          "identity": "sha256:da72bcb80d9cf94a16b119957e6162f8bedacd27bbea70be10429b424f9a4193",
+          "path": "tests/engineering/validation/test-change-metadata-validator.py"
+        },
+        {
+          "identity": "sha256:dc10776c0eb29063aa26af888cfeed1b58fe397a573045a7a19e45fc717a3a3a",
+          "path": "tests/engineering/validation/test-documentation-prose-validator.py"
+        },
+        {
+          "identity": "sha256:fe065d545c066d2ebdc8c6facbe773d547adaea93dc79f14292eb81814d0790b",
+          "path": "tests/engineering/validation/test-governed-lifecycle-cli-validator.py"
+        },
+        {
+          "identity": "sha256:d87677b73f45099c63a4974a00d8496809f8a584137643881b81eb89dd0643e3",
+          "path": "tests/engineering/validation/test-guide-system-validator.py"
+        },
+        {
+          "identity": "sha256:6235d8e9143bae6ffd5d17d83c817618e960ecdd2472efe80a115614668a9a6d",
+          "path": "tests/engineering/validation/test-markdown-readability-validator.py"
+        },
+        {
+          "identity": "sha256:e0b142e3a1bf323e24b32168f5cbbcf3993b5fbf2348267de60852d60f931a46",
+          "path": "tests/engineering/validation/boundary_command_tests.py"
+        },
+        {
+          "identity": "sha256:7cab157b39d8a5ba9426bfa965af8adb14e25a4582fcab3ded7fc4e68bbfb0f7",
+          "path": "tests/engineering/validation/boundary_handoff_tests.py"
+        },
+        {
+          "identity": "sha256:4aaac4178da3af0f89c90cb44aa49a53e31924ae91a15058515a7c8ab0ecff59",
+          "path": "tests/engineering/validation/boundary_model_tests.py"
+        },
+        {
+          "identity": "sha256:28a13c7cd0c7ea61c7f3a81f9cbfd6c0d6a327f94bd20b048d4af62c86eb4398",
+          "path": "tests/engineering/validation/boundary_path_tests.py"
+        },
+        {
+          "identity": "sha256:079425436882a8d6d2a6e033c50795c50ba14ea58a3e0b9d7fdf3c8954535b7c",
+          "path": "tests/engineering/validation/boundary_structural_tests.py"
+        },
+        {
+          "identity": "sha256:29d610878bd99a8773c1ecba5ebfb553463da33df16a088b1c48ffb39e95eab0",
+          "path": "tests/engineering/validation/boundary_fixture_helpers.py"
+        },
+        {
+          "identity": "sha256:639c0281421e461f9d622fcc7f5f80051aae6ae8dfc07a8e5976e51e0f4d9a09",
+          "path": "scripts/lib/validation/validation_selection.py"
+        },
+        {
+          "identity": "sha256:bb197432567b48a410f0b624c6fa24355e091c339aac1700a8dc43f12bfd8755",
+          "path": "tests/engineering/validation/selection_contract_tests.py"
+        },
+        {
+          "identity": "sha256:952548a58c0f8cc23c959539e698d309a98fe630c10b37a40c44973f56b251cd",
+          "path": "tests/engineering/validation/fixtures/boundary-first/feature-records/complex.md"
+        },
+        {
+          "identity": "sha256:4cb7a204e0280bf57c83e4e13f5bc38c7cd5b7bab1409a9f6403115947934cb1",
+          "path": "tests/engineering/validation/fixtures/boundary-first/feature-records/minimal.md"
+        },
+        {
+          "identity": "sha256:299b88acc292cd9f47174654b8e31f641ac87eb8ec660690cc8134ca825720e5",
+          "path": "tests/engineering/validation/fixtures/boundary-first/feature-records/semantic-omission.md"
+        },
+        {
+          "identity": "sha256:6192fc7f1e4b7e70754c91c457d89ba14d4d957c4f8b270898fb1eee752353a6",
+          "path": "tests/engineering/validation/fixtures/boundary-first/proof-maps/complete.md"
+        },
+        {
+          "identity": "sha256:5a5c80fbc972c5cbd14e44483fbef5ff2a8099e0fbcdaa79c45dd4995dae36eb",
+          "path": "tests/engineering/validation/fixtures/boundary-first/proof-maps/complex-complete.md"
+        },
+        {
+          "identity": "sha256:6907f8fb1ece7847fd2d39bca3f22b9ff32037bb8f8bd708e6c2f83031d9fc6a",
+          "path": "tests/engineering/validation/fixtures/boundary-first/proof-maps/gap.md"
+        },
+        {
+          "identity": "sha256:872b6b2afbda4a75afe1020b55eb9be4d94f25dcbd524c3a50291debe0d34123",
+          "path": "tests/fixtures/documentation-prose/fail/command-and-lifecycle.md"
+        },
+        {
+          "identity": "sha256:0a1d65744e3d3b2ad325905765adc1a7e505ade0db2498126539b59b52959486",
+          "path": "tests/fixtures/documentation-prose/fail/list-item-mechanical-continuation.md"
+        },
+        {
+          "identity": "sha256:26257aa6198ba6e79ee3e1b1b81f6791fe8c6bd331a62577a2b1d588c15b3507",
+          "path": "tests/fixtures/documentation-prose/fail/mechanical-wrap.md"
+        },
+        {
+          "identity": "sha256:406b3f96517da583303158108addd2bd4d5c912c55596f7c58f39ff32bdb4bde",
+          "path": "tests/fixtures/documentation-prose/fail/named-regressions.md"
+        },
+        {
+          "identity": "sha256:d509cd786af602d523441098d37a7a8395ac2e815aa7b822cdd3d248557a0149",
+          "path": "tests/fixtures/documentation-prose/fail/no-hard-break-mechanical-wrap.md"
+        },
+        {
+          "identity": "sha256:fc9a339ee565ec637fed011e25b5d80cbc0ce33b00d79c1a962d2e18a7c6325a",
+          "path": "tests/fixtures/documentation-prose/pass/explicit-hard-break-backslash.md"
+        },
+        {
+          "identity": "sha256:c09153c83d5a0c044b4d07f246babeebb1de0177a07817ff45c35594bd07433d",
+          "path": "tests/fixtures/documentation-prose/pass/explicit-hard-break.md"
+        },
+        {
+          "identity": "sha256:aa3c6b5c5be44947a11fa7edc337e4a40c5629556ff0bf51a3648211b1a5a352",
+          "path": "tests/fixtures/documentation-prose/pass/list-item-nested-structure.md"
+        },
+        {
+          "identity": "sha256:0a88faa26c9353d529f295b7214ec4be57f38ad4af6617f09f62aca6d37e3e38",
+          "path": "tests/fixtures/documentation-prose/pass/list-item-single-line.md"
+        },
+        {
+          "identity": "sha256:5c94a27e9d9c3531808e37425252111b80a7285812cad8b5b5bcb2103ff2e7fc",
+          "path": "tests/fixtures/documentation-prose/pass/list-item-with-fenced-code.md"
+        },
+        {
+          "identity": "sha256:355c58f2496a0713858da666829a8c5ec054bc4ede2b14a03eb643b063d8d87f",
+          "path": "tests/fixtures/documentation-prose/pass/semantic-lines.md"
+        },
+        {
+          "identity": "sha256:61daf1e3ac4c08265b27c6b3ad68b4e06ce1d7dfb7c56648c3bafd8d9d248dda",
+          "path": "tests/fixtures/documentation-prose/pass/structural-exclusions.md"
+        },
+        {
+          "identity": "sha256:e2173fa04305c30a55f833bcc0aeddb6ee0d652b3cce10baa8a5170cbc5989b3",
+          "path": "tests/fixtures/documentation-prose/warn/ambiguous-clause.md"
+        },
+        {
+          "identity": "sha256:dde4b6b431c783ac6b7a642ce7455458d13397a2b24f72cbe0bc7d016a4ed9ab",
+          "path": "tests/fixtures/rigorloop-records-v3/records.json"
+        },
+        {
+          "identity": "sha256:adb156b8e2b196c9e82195b3eac059852ca7a941382fa41e355ff3803bf9ba87",
+          "path": "tests/fixtures/rigorloop-records-v3/storage-safety.json"
+        }
+      ],
+      "summary": "All seven M3 suites and recursive fixture inputs are assessed:136 normal cases. Retain boundary-reference28 as one cohesive projection/manifest/transaction group: independent literal manifest names and byte/digest expectations, real CLI redaction, all known/missing/unknown and symlink input/output topologies, early/middle/late writes and input drift, rollback and retry. Lifecycle helpers acquire private roots and immediately register cleanup. No line quota warrants fragmenting its cohesive transaction proof. Organize boundary-validation61 into structural30, containment/adoption8, handoff7, model grammar12 and real command4 modules; preserve exact class/method selectors and ordinary aggregate. Fresh record factories and read-only tree observation/inventory live in a local helper with no dependency on consuming TestCases. All66 methods (including support) remain present; eight method ASTs change only for the declared containment, inventory or explicit command cwd refinements. Other method bodies, parameter domains and diagnostics are AST-identical.\nStrengthen three containment scenarios: the tested repository and outside targets now occupy one privately owned outer directory. Outside means outside the tested repository, never a fixed filename in the shared temporary parent. Strengthen current default-model commands: independently enumerate24 model paths selected by System composition, reusing the former model-grammar case's literal inventory; production registry values no longer define both fixture population and expected output. Preserve independent unknown/missing/error ordering, accepted historical flat inputs, current model examples, no-write snapshots, privacy and review-required versus failure semantics.\nRetain change-metadata7: one retired-measurement/no-write negative and six current structure/unknown/type/encoding/path/full-set groups. Its opt-in RIGORLOOP_CHANGE_METADATA_FAILURE_FIXTURE adds an intentional eighth failure for M4 wrapper proof; it is an alternate input population, not an omitted normal case. Retain governed CLI6: current versus archived3 and committed snapshot/Git isolation3, including real private repositories, redirects, replacements, missing objects and no unauthorized fetch/write observation. Retain prose14: thirteen immutable pass/fail/warn fixtures, specific severity/reason/line checks, real audit/enforce exit and stream observations and private no-write copy. Retain readability7: private inputs for markers/hard wraps/exclusions/generated placeholders and actual CLI diagnostics. These grammar/wording checks prove structure and precise diagnostics, never semantic adequacy or lifecycle approval.\nRetain guide13 with immediate addCleanup after temporary acquisition, so a copy failure during setUp cannot leave its owned fixture. All six boundary fixture documents, thirteen prose documents and two current Records JSON fixtures remain unchanged. Shared Records readers in Python selector helpers and Node format/contract/CLI/persistence/adoption/workflow/targeted suites retain exact bytes; no shared fixture relocation or generated runtime input contract changed. M4 owns the existing metadata runner/failure-injection consumer. Six new boundary source/helper paths are explicitly classified and asserted by the existing selector family; unknown siblings still reject, commands and case assessment fingerprints stay unchanged. Uncertain protection in M3: none identified; no case/assertion obligation removed, no product validator behavior changed."
+    },
+    {
+      "actor": {
+        "id": "codex-root",
+        "role": "implement"
+      },
+      "id": "m3-validation",
+      "procedure": "C1 normal discover_cases; all seven allocated direct Python suites; controlled owned neighboring-file/setup-failure probes; six-path selector negative/positive; explicit actual-file selection and CI --jobs4; record validation and staged diff check.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:9d13e5af2fdff369007a13d63c180960e9fe11910be2047c0bead0470991b74d",
+          "path": "tests/engineering/validation/test-boundary-first-reference.py"
+        },
+        {
+          "identity": "sha256:3ef8435f1114964083e229dfdb5aa0e589b4c1026c605bbb78aca08206fd6ea3",
+          "path": "tests/engineering/validation/test-boundary-first-validation.py"
+        },
+        {
+          "identity": "sha256:da72bcb80d9cf94a16b119957e6162f8bedacd27bbea70be10429b424f9a4193",
+          "path": "tests/engineering/validation/test-change-metadata-validator.py"
+        },
+        {
+          "identity": "sha256:dc10776c0eb29063aa26af888cfeed1b58fe397a573045a7a19e45fc717a3a3a",
+          "path": "tests/engineering/validation/test-documentation-prose-validator.py"
+        },
+        {
+          "identity": "sha256:fe065d545c066d2ebdc8c6facbe773d547adaea93dc79f14292eb81814d0790b",
+          "path": "tests/engineering/validation/test-governed-lifecycle-cli-validator.py"
+        },
+        {
+          "identity": "sha256:d87677b73f45099c63a4974a00d8496809f8a584137643881b81eb89dd0643e3",
+          "path": "tests/engineering/validation/test-guide-system-validator.py"
+        },
+        {
+          "identity": "sha256:6235d8e9143bae6ffd5d17d83c817618e960ecdd2472efe80a115614668a9a6d",
+          "path": "tests/engineering/validation/test-markdown-readability-validator.py"
+        },
+        {
+          "identity": "sha256:e0b142e3a1bf323e24b32168f5cbbcf3993b5fbf2348267de60852d60f931a46",
+          "path": "tests/engineering/validation/boundary_command_tests.py"
+        },
+        {
+          "identity": "sha256:7cab157b39d8a5ba9426bfa965af8adb14e25a4582fcab3ded7fc4e68bbfb0f7",
+          "path": "tests/engineering/validation/boundary_handoff_tests.py"
+        },
+        {
+          "identity": "sha256:4aaac4178da3af0f89c90cb44aa49a53e31924ae91a15058515a7c8ab0ecff59",
+          "path": "tests/engineering/validation/boundary_model_tests.py"
+        },
+        {
+          "identity": "sha256:28a13c7cd0c7ea61c7f3a81f9cbfd6c0d6a327f94bd20b048d4af62c86eb4398",
+          "path": "tests/engineering/validation/boundary_path_tests.py"
+        },
+        {
+          "identity": "sha256:079425436882a8d6d2a6e033c50795c50ba14ea58a3e0b9d7fdf3c8954535b7c",
+          "path": "tests/engineering/validation/boundary_structural_tests.py"
+        },
+        {
+          "identity": "sha256:29d610878bd99a8773c1ecba5ebfb553463da33df16a088b1c48ffb39e95eab0",
+          "path": "tests/engineering/validation/boundary_fixture_helpers.py"
+        },
+        {
+          "identity": "sha256:639c0281421e461f9d622fcc7f5f80051aae6ae8dfc07a8e5976e51e0f4d9a09",
+          "path": "scripts/lib/validation/validation_selection.py"
+        },
+        {
+          "identity": "sha256:bb197432567b48a410f0b624c6fa24355e091c339aac1700a8dc43f12bfd8755",
+          "path": "tests/engineering/validation/selection_contract_tests.py"
+        },
+        {
+          "identity": "sha256:952548a58c0f8cc23c959539e698d309a98fe630c10b37a40c44973f56b251cd",
+          "path": "tests/engineering/validation/fixtures/boundary-first/feature-records/complex.md"
+        },
+        {
+          "identity": "sha256:4cb7a204e0280bf57c83e4e13f5bc38c7cd5b7bab1409a9f6403115947934cb1",
+          "path": "tests/engineering/validation/fixtures/boundary-first/feature-records/minimal.md"
+        },
+        {
+          "identity": "sha256:299b88acc292cd9f47174654b8e31f641ac87eb8ec660690cc8134ca825720e5",
+          "path": "tests/engineering/validation/fixtures/boundary-first/feature-records/semantic-omission.md"
+        },
+        {
+          "identity": "sha256:6192fc7f1e4b7e70754c91c457d89ba14d4d957c4f8b270898fb1eee752353a6",
+          "path": "tests/engineering/validation/fixtures/boundary-first/proof-maps/complete.md"
+        },
+        {
+          "identity": "sha256:5a5c80fbc972c5cbd14e44483fbef5ff2a8099e0fbcdaa79c45dd4995dae36eb",
+          "path": "tests/engineering/validation/fixtures/boundary-first/proof-maps/complex-complete.md"
+        },
+        {
+          "identity": "sha256:6907f8fb1ece7847fd2d39bca3f22b9ff32037bb8f8bd708e6c2f83031d9fc6a",
+          "path": "tests/engineering/validation/fixtures/boundary-first/proof-maps/gap.md"
+        },
+        {
+          "identity": "sha256:872b6b2afbda4a75afe1020b55eb9be4d94f25dcbd524c3a50291debe0d34123",
+          "path": "tests/fixtures/documentation-prose/fail/command-and-lifecycle.md"
+        },
+        {
+          "identity": "sha256:0a1d65744e3d3b2ad325905765adc1a7e505ade0db2498126539b59b52959486",
+          "path": "tests/fixtures/documentation-prose/fail/list-item-mechanical-continuation.md"
+        },
+        {
+          "identity": "sha256:26257aa6198ba6e79ee3e1b1b81f6791fe8c6bd331a62577a2b1d588c15b3507",
+          "path": "tests/fixtures/documentation-prose/fail/mechanical-wrap.md"
+        },
+        {
+          "identity": "sha256:406b3f96517da583303158108addd2bd4d5c912c55596f7c58f39ff32bdb4bde",
+          "path": "tests/fixtures/documentation-prose/fail/named-regressions.md"
+        },
+        {
+          "identity": "sha256:d509cd786af602d523441098d37a7a8395ac2e815aa7b822cdd3d248557a0149",
+          "path": "tests/fixtures/documentation-prose/fail/no-hard-break-mechanical-wrap.md"
+        },
+        {
+          "identity": "sha256:fc9a339ee565ec637fed011e25b5d80cbc0ce33b00d79c1a962d2e18a7c6325a",
+          "path": "tests/fixtures/documentation-prose/pass/explicit-hard-break-backslash.md"
+        },
+        {
+          "identity": "sha256:c09153c83d5a0c044b4d07f246babeebb1de0177a07817ff45c35594bd07433d",
+          "path": "tests/fixtures/documentation-prose/pass/explicit-hard-break.md"
+        },
+        {
+          "identity": "sha256:aa3c6b5c5be44947a11fa7edc337e4a40c5629556ff0bf51a3648211b1a5a352",
+          "path": "tests/fixtures/documentation-prose/pass/list-item-nested-structure.md"
+        },
+        {
+          "identity": "sha256:0a88faa26c9353d529f295b7214ec4be57f38ad4af6617f09f62aca6d37e3e38",
+          "path": "tests/fixtures/documentation-prose/pass/list-item-single-line.md"
+        },
+        {
+          "identity": "sha256:5c94a27e9d9c3531808e37425252111b80a7285812cad8b5b5bcb2103ff2e7fc",
+          "path": "tests/fixtures/documentation-prose/pass/list-item-with-fenced-code.md"
+        },
+        {
+          "identity": "sha256:355c58f2496a0713858da666829a8c5ec054bc4ede2b14a03eb643b063d8d87f",
+          "path": "tests/fixtures/documentation-prose/pass/semantic-lines.md"
+        },
+        {
+          "identity": "sha256:61daf1e3ac4c08265b27c6b3ad68b4e06ce1d7dfb7c56648c3bafd8d9d248dda",
+          "path": "tests/fixtures/documentation-prose/pass/structural-exclusions.md"
+        },
+        {
+          "identity": "sha256:e2173fa04305c30a55f833bcc0aeddb6ee0d652b3cce10baa8a5170cbc5989b3",
+          "path": "tests/fixtures/documentation-prose/warn/ambiguous-clause.md"
+        },
+        {
+          "identity": "sha256:dde4b6b431c783ac6b7a642ce7455458d13397a2b24f72cbe0bc7d016a4ed9ab",
+          "path": "tests/fixtures/rigorloop-records-v3/records.json"
+        },
+        {
+          "identity": "sha256:adb156b8e2b196c9e82195b3eac059852ca7a941382fa41e355ff3803bf9ba87",
+          "path": "tests/fixtures/rigorloop-records-v3/storage-safety.json"
+        }
+      ],
+      "summary": "C1 normal discovery before/after: identical136 unique selectors across boundary-reference28, boundary-validation61, metadata7, prose14, governed CLI6, guide13 and readability7. All seven exact direct commands python tests/engineering/validation/<allocated filename> passed. Controlled ownership probes run actual test methods with TemporaryDirectory redirected to an owned outer parent: before, each of two containment cases overwrote/deleted a neighboring sentinel; after, both cases pass and preserve that sentinel. Injecting copy2 failure in held guide TestCase left the owned fixture before and removed it after; expected setup error was verified, and baseline probe cleanup was explicit. No public temporary-parent file or product source was touched.\nSix independently named new-module selection variants failed for unclassified paths before catalog wiring, then passed with exact boundary validation/regression commands and no duplicates. An initial mistyped focused selector produced only a loader error and was corrected; it is not counted as negative routing proof. C2 actual12 changed files: selector status ok and all eight selected checks pass with --jobs4, including current boundary validation and61-case regression, guide13/live validation, metadata7/current validation, selector184 and executor52. This covers new isolated module imports, M1/M2 catalog interactions and dynamic metadata callers. AST comparison preserves every non-refined boundary method and all parameter literals. Current-record validation and staged diff check accompany recording. Prior M2 review remains historical exact-subject approval; its two changed catalog/caller members require this slice's interaction assessment. No final whole-change review or Verify outcome is claimed."
     }
   ],
   "schema_version": 3

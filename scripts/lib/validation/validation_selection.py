@@ -2282,6 +2282,12 @@ def _is_boundary_first_surface(path: str) -> bool:
             "scripts/model_layout.py",
             "scripts/validate-boundary-first.py",
             "scripts/test-boundary-first-validation.py", "tests/engineering/validation/test-boundary-first-validation.py",
+            "tests/engineering/validation/boundary_structural_tests.py",
+            "tests/engineering/validation/boundary_path_tests.py",
+            "tests/engineering/validation/boundary_handoff_tests.py",
+            "tests/engineering/validation/boundary_model_tests.py",
+            "tests/engineering/validation/boundary_command_tests.py",
+            "tests/engineering/validation/boundary_fixture_helpers.py",
             "scripts/boundary_first_reference.py",
             "scripts/project-boundary-first-reference.py",
             "scripts/test-boundary-first-reference.py", "tests/engineering/validation/test-boundary-first-reference.py",
@@ -2317,6 +2323,12 @@ def _is_boundary_first_validation_surface(path: str) -> bool:
         "scripts/model_layout.py",
         "scripts/validate-boundary-first.py",
         "scripts/test-boundary-first-validation.py", "tests/engineering/validation/test-boundary-first-validation.py",
+        "tests/engineering/validation/boundary_structural_tests.py",
+        "tests/engineering/validation/boundary_path_tests.py",
+        "tests/engineering/validation/boundary_handoff_tests.py",
+        "tests/engineering/validation/boundary_model_tests.py",
+        "tests/engineering/validation/boundary_command_tests.py",
+        "tests/engineering/validation/boundary_fixture_helpers.py",
     }
 
 

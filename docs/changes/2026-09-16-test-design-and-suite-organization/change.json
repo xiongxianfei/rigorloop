@@ -4,7 +4,7 @@
       "id": "code-reviewer",
       "role": "review"
     },
-    "reason": "M2 complete Skill scope and M1 interactions have current author evidence. Await independent exact-subject assessment; M3 remains pending.",
+    "reason": "M3 complete assessment and proof are ready for independent milestone review; M4 implementation remains pending.",
     "stage": "code-review",
     "status": "in-progress"
   },
@@ -71,6 +71,15 @@
       "path": "docs/changes/2026-09-16-test-design-and-suite-organization/reviews/m1-code-review-corrected.json",
       "reason": "M2 changes aggregate collection, source-path selector coverage and the shared guidance module/phrase support. Retain the approved M1 subject and resolved correction as history; its behavior modules and fixture assertions are otherwise unchanged. Fresh M2 review/proof must assess the affected M1 interactions before current reliance. No prior approval is retargeted.",
       "value": "stale"
+    },
+    {
+      "actor": {
+        "id": "codex-root",
+        "role": "implement"
+      },
+      "path": "docs/changes/2026-09-16-test-design-and-suite-organization/reviews/m2-code-review.json",
+      "reason": "M3 changes two catalog/selector members of the exact M2 subject map. Preserve its original approval; current cross-slice reliance requires M3 review and later final review.",
+      "value": "stale"
     }
   ],
   "blockers": [],
@@ -121,6 +130,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-16-test-design-and-suite-organization/reviews/m1-code-review-corrected.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-16-test-design-and-suite-organization/reviews/m2-code-review.json"
     }
   ],
   "schema_version": 3,
@@ -151,7 +164,7 @@
         "TEST-SR-20",
         "VAL-SR-32"
       ],
-      "status": "in-progress"
+      "status": "completed"
     },
     {
       "id": "m3",
@@ -165,7 +178,7 @@
         "TEST-SR-20",
         "VAL-SR-32"
       ],
-      "status": "pending"
+      "status": "in-progress"
     },
     {
       "id": "m4",

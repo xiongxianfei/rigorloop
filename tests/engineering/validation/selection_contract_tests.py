@@ -153,6 +153,19 @@ class SelectionContractChecks:
                                  {c["id"] for c in new.selected_checks})
                 for check in new.selected_checks:
                     self.assertNotIn("scripts/" + name, check["command"])
+        for name in (
+            "boundary_structural_tests.py", "boundary_path_tests.py",
+            "boundary_handoff_tests.py", "boundary_model_tests.py",
+            "boundary_command_tests.py", "boundary_fixture_helpers.py",
+        ):
+            with self.subTest(module=name):
+                payload = self.select(["tests/engineering/validation/" + name]).to_json_dict()
+                self.assertEqual(payload["unclassified_paths"], [])
+                checks = {check["id"]: check for check in payload["selected_checks"]}
+                self.assertEqual(set(checks), {"boundary_first.validate", "boundary_first.regression"})
+                self.assertEqual(checks["boundary_first.regression"]["command"],
+                                 "python tests/engineering/validation/test-boundary-first-validation.py")
+                self.assertEqual(len(checks), len(payload["selected_checks"]))
         unknown = self.select(["tests/engineering/validation/test-unknown.py"])
         self.assertTrue(unknown.to_json_dict()["unclassified_paths"])
 
