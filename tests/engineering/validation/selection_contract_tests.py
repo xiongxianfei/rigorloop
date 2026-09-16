@@ -180,7 +180,19 @@ class SelectionContractChecks:
 
     def test_split_skill_modules_select_required_consumers(self):
         # Independently named consumers: a helper move must not hide Skill proof.
-        for name in ("skill_contract_tests.py", "skill_cli_tests.py", "skill_guidance_tests.py"):
+        for name in (
+            "skill_contract_tests.py", "skill_cli_tests.py", "skill_guidance_tests.py",
+            "skill_metadata_tests.py",
+            "skill_resource_tests.py",
+            "skill_asset_tests.py",
+            "skill_ci_contract_tests.py",
+            "skill_canonical_tests.py",
+            "skill_portability_tests.py",
+            "skill_project_map_tests.py",
+            "skill_placement_tests.py",
+            "skill_fixture_helpers.py",
+            "skill_guidance_helpers.py",
+        ):
             with self.subTest(module=name):
                 payload = self.select(["tests/skill/" + name]).to_json_dict()
                 self.assertEqual(payload["unclassified_paths"], [])

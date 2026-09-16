@@ -2133,6 +2133,16 @@ def _path_category(path: str) -> str | None:
         "tests/skill/skill_contract_tests.py",
         "tests/skill/skill_cli_tests.py",
         "tests/skill/skill_guidance_tests.py",
+        "tests/skill/skill_metadata_tests.py",
+        "tests/skill/skill_resource_tests.py",
+        "tests/skill/skill_asset_tests.py",
+        "tests/skill/skill_ci_contract_tests.py",
+        "tests/skill/skill_canonical_tests.py",
+        "tests/skill/skill_portability_tests.py",
+        "tests/skill/skill_project_map_tests.py",
+        "tests/skill/skill_placement_tests.py",
+        "tests/skill/skill_fixture_helpers.py",
+        "tests/skill/skill_guidance_helpers.py",
     }:
         return "validator-skills"
     if path in {
