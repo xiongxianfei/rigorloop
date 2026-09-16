@@ -4,7 +4,7 @@
       "id": "code-reviewer",
       "role": "review"
     },
-    "reason": "M3 complete assessment and proof are ready for independent milestone review; M4 implementation remains pending.",
+    "reason": "M4 source organization, bounded rerun correction and full selected/direct proof are complete. Await independent milestone judgment; M5 implementation remains pending.",
     "stage": "code-review",
     "status": "in-progress"
   },
@@ -80,9 +80,68 @@
       "path": "docs/changes/2026-09-16-test-design-and-suite-organization/reviews/m2-code-review.json",
       "reason": "M3 changes two catalog/selector members of the exact M2 subject map. Preserve its original approval; current cross-slice reliance requires M3 review and later final review.",
       "value": "stale"
+    },
+    {
+      "actor": {
+        "id": "codex-root",
+        "role": "implement"
+      },
+      "path": "docs/changes/2026-09-16-test-design-and-suite-organization/reviews/m3-code-review.json",
+      "reason": "M4 changes the catalog and selector subjects in the exact M3 map. Preserve original approval of M3 at its commit; M4 reviews changed interactions and final whole-change review is still required.",
+      "value": "stale"
     }
   ],
-  "blockers": [],
+  "blockers": [
+    {
+      "evidence": "The emitted -k rerun selects zero cases for the explicitly addressable fixture_contract_failure. The added executable regression fails at its intended one-case diagnostic assertion; see m4-rerun-reproduction.",
+      "id": "m4-rerun-defect",
+      "origin": {
+        "evidence": "The emitted -k rerun selects zero cases for the explicitly addressable fixture_contract_failure. The added executable regression fails at its intended one-case diagnostic assertion; see m4-rerun-reproduction.",
+        "rationale": "Author-discovered test-runner defect within approved M4 actionable-rerun proof under VAL-SR-12; this is not an independent review finding.",
+        "reporter": {
+          "id": "codex-root",
+          "role": "implement"
+        },
+        "required_outcome": "Print a scoped command that executes the intended named case, prove the identical regression passes and retain supported filters and failure output behavior.",
+        "subjects": [
+          {
+            "identity": "sha256:06b13b2bb9679508670d5609825e6f7f4dff2337a3564d198825674e0b6e6a26",
+            "path": "tests/engineering/validation/test-select-validation.py"
+          }
+        ],
+        "supporting_judgment": null
+      },
+      "owner": {
+        "id": "codex-root",
+        "role": "implement"
+      },
+      "reporter": {
+        "id": "codex-root",
+        "role": "implement"
+      },
+      "required_outcome": "Print a scoped command that executes the intended named case, prove the identical regression passes and retain supported filters and failure output behavior.",
+      "resolution": {
+        "actor": {
+          "id": "codex-root",
+          "role": "implement"
+        },
+        "evidence_refs": [
+          {
+            "id": "m4-validation",
+            "path": "docs/changes/2026-09-16-test-design-and-suite-organization/evidence.json"
+          }
+        ],
+        "rationale": "Original reporter reassessed the identity-equal executable regression and full surrounding proof. The printed command executes the intended fixture and reproduces its one-case failure; no zero-test substitute remains. Independent milestone judgment remains with Code Review."
+      },
+      "state": "resolved",
+      "subjects": [
+        {
+          "identity": "sha256:06b13b2bb9679508670d5609825e6f7f4dff2337a3564d198825674e0b6e6a26",
+          "path": "tests/engineering/validation/test-select-validation.py"
+        }
+      ]
+    }
+  ],
   "change_id": "2026-09-16-test-design-and-suite-organization",
   "contract": "rigorloop-records-v3",
   "models": [
@@ -134,6 +193,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-16-test-design-and-suite-organization/reviews/m2-code-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-16-test-design-and-suite-organization/reviews/m3-code-review.json"
     }
   ],
   "schema_version": 3,
@@ -178,7 +241,7 @@
         "TEST-SR-20",
         "VAL-SR-32"
       ],
-      "status": "in-progress"
+      "status": "completed"
     },
     {
       "id": "m4",
@@ -192,7 +255,7 @@
         "TEST-SR-20",
         "VAL-SR-32"
       ],
-      "status": "pending"
+      "status": "in-progress"
     },
     {
       "id": "m5",

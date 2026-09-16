@@ -171,7 +171,7 @@ def format_failure_detail(test: unittest.case.TestCase, trace: str) -> str:
         quoted = shlex.quote(test_id)
         if quoted == test_id:
             quoted = f'"{test_id}"'
-        lines.append(f"  Re-run: python tests/engineering/validation/test-select-validation.py -k {quoted}")
+        lines.append(f"  Re-run: python tests/engineering/validation/test-select-validation.py {quoted}")
     return "\n".join(lines)
 
 
@@ -331,10 +331,20 @@ class ScriptOutputContractTests(unittest.TestCase):
         output = self.combined_output(result)
 
         self.assertEqual(result.returncode, 1, msg=output)
-        self.assertIn(
-            'Re-run: python tests/engineering/validation/test-select-validation.py -k "ScriptOutputFixtureTests.fixture_contract_failure"',
-            output,
-        )
+        commands = [line.strip().removeprefix("Re-run: ")
+                    for line in output.splitlines()
+                    if line.strip().startswith("Re-run: ")]
+        self.assertEqual(len(commands), 1, output)
+
+        rerun = subprocess.run(shlex.split(commands[0]), cwd=ROOT,
+                               capture_output=True, text=True)
+
+        rerun_output = self.combined_output(rerun)
+        self.assertEqual(rerun.returncode, 1, rerun_output)
+        self.assertIn("[FAIL] test-select-validation: 1 failed, 0 passed", rerun_output)
+        self.assertIn(f"FAILED {self.FAILING_TEST}", rerun_output)
+        self.assertIn("script output contract fixture failure", rerun_output)
+        self.assertNotIn("0 tests run", rerun_output)
 
     def test_output_contract_unreliable_failure_omits_misleading_scoped_rerun(self) -> None:
         result = self.run_runner("NoSuchTest")

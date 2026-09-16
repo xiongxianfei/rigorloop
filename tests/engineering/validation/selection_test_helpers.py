@@ -52,6 +52,27 @@ ADAPTER_REGRESSION_COMMAND = (
     "AdapterDistributionTests.test_validate_adapter_output_rejects_missing_or_malformed_canonical_skills"
 )
 
+# Independently named current mode populations: producer omissions must not
+# shrink the catalog oracle. Ordering is part of the invocation contract.
+EXPECTED_MODE_CHECK_IDS = {
+    "broad-smoke": (
+        "current_records.validate", "skills.validate", "skills.regression",
+        "change_metadata.regression", "selector.regression", "validation_execution.regression",
+        "adapters.full_regression", "broad_smoke.adapters.build_archives",
+        "broad_smoke.adapters.validate_archives", "broad_smoke.review_artifacts.changed_roots",
+    ),
+    "main": (
+        "boundary_first.validate", "skills.validate", "skills.regression",
+        "change_metadata.regression", "release_transaction.regression",
+        "readme.validate", "readme.vision_markers", "markdown_readability.regression",
+        "guide_system.regression", "guide_system.validate", "rigorloop_cli.test",
+        "governed_lifecycle_cli_wrapper.test", "adapters.full_regression",
+        "main.adapters.build_archives", "main.adapters.validate_archives",
+        "main.governed_lifecycle_cli.validate",
+    ),
+}
+
+
 EXPECTED_CATALOG = {
     "current_records.validate": "python scripts/validate-governed-lifecycle-cli.py",
     "current_records.snapshot": "python scripts/validate-governed-lifecycle-cli.py --revision <head>",

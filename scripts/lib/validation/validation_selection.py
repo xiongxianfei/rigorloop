@@ -2062,6 +2062,11 @@ def _path_category(path: str) -> str | None:
         "tests/engineering/validation/selection_git_tests.py",
         "tests/engineering/validation/selection_cli_tests.py",
         "tests/engineering/validation/selection_test_helpers.py",
+        "tests/engineering/validation/execution_python_adapter_tests.py",
+        "tests/engineering/validation/execution_process_tests.py",
+        "tests/engineering/validation/execution_node_adapter_tests.py",
+        "tests/engineering/validation/execution_catalog_tests.py",
+        "tests/engineering/validation/execution_composition_tests.py",
         "scripts/validate-broad-smoke-classification.py",
         "scripts/validate-readme.py",
     }:

@@ -1032,6 +1032,174 @@
         }
       ],
       "summary": "C1 normal discovery before/after: identical136 unique selectors across boundary-reference28, boundary-validation61, metadata7, prose14, governed CLI6, guide13 and readability7. All seven exact direct commands python tests/engineering/validation/<allocated filename> passed. Controlled ownership probes run actual test methods with TemporaryDirectory redirected to an owned outer parent: before, each of two containment cases overwrote/deleted a neighboring sentinel; after, both cases pass and preserve that sentinel. Injecting copy2 failure in held guide TestCase left the owned fixture before and removed it after; expected setup error was verified, and baseline probe cleanup was explicit. No public temporary-parent file or product source was touched.\nSix independently named new-module selection variants failed for unclassified paths before catalog wiring, then passed with exact boundary validation/regression commands and no duplicates. An initial mistyped focused selector produced only a loader error and was corrected; it is not counted as negative routing proof. C2 actual12 changed files: selector status ok and all eight selected checks pass with --jobs4, including current boundary validation and61-case regression, guide13/live validation, metadata7/current validation, selector184 and executor52. This covers new isolated module imports, M1/M2 catalog interactions and dynamic metadata callers. AST comparison preserves every non-refined boundary method and all parameter literals. Current-record validation and staged diff check accompany recording. Prior M2 review remains historical exact-subject approval; its two changed catalog/caller members require this slice's interaction assessment. No final whole-change review or Verify outcome is claimed."
+    },
+    {
+      "actor": {
+        "id": "codex-root",
+        "role": "implement"
+      },
+      "id": "m4-rerun-reproduction",
+      "procedure": "Run the real explicit intentional failure, execute its emitted rerun, then add and run an automated same-failure regression before changing the formatter.",
+      "result": "failed",
+      "subjects": [
+        {
+          "identity": "sha256:06b13b2bb9679508670d5609825e6f7f4dff2337a3564d198825674e0b6e6a26",
+          "path": "tests/engineering/validation/test-select-validation.py"
+        }
+      ],
+      "summary": "Bounded fix preflight: repository /home/xiongxianfei/data/20260419-rigorloop, change 2026-09-16-test-design-and-suite-organization, approved M4/TG-04 under Validation VAL-SR-12 and migration obligations; user authorizes continuation through PR. Operation fix; command authority current-bounded; write authority governed-scope-bound; governed signal single-governed-candidate. Scope is the existing selector test-only runner and its regression/evidence; no product executor, external service or upstream artifact mutation. Cause test-defect, root-cause support supported, contract basis settled, reproduction reproduced, test feasibility feasible, regression proof failing-automated-test. The explicit failure method does not start with test_, so the printed -k filter cannot discover it. The original explicit invocation exits1 with the named intentional failure, while its printed command exits1 reporting zero tests. Automated proof executes the actual printed argv and requires the original one-case failure and diagnostic. Command: python tests/engineering/validation/test-select-validation.py ScriptOutputContractTests.test_output_contract_reliable_failure_includes_scoped_rerun. Observed before correction: exit1; expected '1 failed, 0 passed' absent because rerun reports '0 tests run'. Proof method AST identity sha256:fa9a1fe5c9b8109a4f2e411fdaa054861315b25655770f3aeea537c5defa7e85; fixture method unchanged, ROOT cwd, normal inherited environment, no injected service. This is expected red proof of the defect, not current readiness evidence. Current action apply-production-correction after this record saves. Preserve proof identity for post-fix validation."
+    },
+    {
+      "actor": {
+        "id": "codex-root",
+        "role": "implement"
+      },
+      "id": "m4-implementation",
+      "procedure": "Assess every selector/executor group, generated variant and real caller against M4/TG-04; inspect complete source, independent expectations, fixture lifetimes and actual diff.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:467dd9185bb465df7687c55407831ff6993f0117bb76c72003b158cf12506230",
+          "path": "tests/engineering/validation/test-select-validation.py"
+        },
+        {
+          "identity": "sha256:29bcab3e3fb762ab3b6fd7b83b9110578dda60eccbf40175ba14d44948117a71",
+          "path": "tests/engineering/validation/selection_contract_tests.py"
+        },
+        {
+          "identity": "sha256:318f0b659d5b45f93323ccf1e3f091dad75ff4b61c54ea189bde1851c59d017a",
+          "path": "tests/engineering/validation/selection_git_tests.py"
+        },
+        {
+          "identity": "sha256:b715a9251509278392d58a62557b2afe67aa63492ea0cae029f9bd4e6bb3c3c6",
+          "path": "tests/engineering/validation/selection_cli_tests.py"
+        },
+        {
+          "identity": "sha256:0f8da4d62c3f8aaa197a73b6ddaf1419cc24a19952b839abe75bafe2bd733a51",
+          "path": "tests/engineering/validation/selection_test_helpers.py"
+        },
+        {
+          "identity": "sha256:31bc9e6cd64750cd18240ee810bb596161ae34212b8a07a2cbb9e6ddff9cb522",
+          "path": "tests/engineering/validation/test-validation-execution.py"
+        },
+        {
+          "identity": "sha256:ab2690653e8c2c6975b4943a6b8dc391a5ad36e05ac8e934294fb5a4c966b734",
+          "path": "tests/engineering/validation/execution_catalog_tests.py"
+        },
+        {
+          "identity": "sha256:75f7d8a09e58d71cb4232c0d6a0b295e91971f9dd4d20dd1f5dcd9170aa81d74",
+          "path": "tests/engineering/validation/execution_composition_tests.py"
+        },
+        {
+          "identity": "sha256:185e782c30cba82b4797e6089be0fed01bab60d9957b183430e5ae4068946a50",
+          "path": "tests/engineering/validation/execution_node_adapter_tests.py"
+        },
+        {
+          "identity": "sha256:8c46af8afde83c86005dbf19de2f655826e447cea41cae844e5c86017cf7fa1a",
+          "path": "tests/engineering/validation/execution_process_tests.py"
+        },
+        {
+          "identity": "sha256:bd94a1e6ac661bc3b88749c2269b29729b1fa35fc81f284c8e5900eb338a602d",
+          "path": "tests/engineering/validation/execution_python_adapter_tests.py"
+        },
+        {
+          "identity": "sha256:51f6110d2e8ed3adecc868f847207d50195883fb54e660152bfc2e6187bc41ad",
+          "path": "scripts/lib/validation/validation_selection.py"
+        },
+        {
+          "identity": "sha256:12a38c1809fa0deca17805ca783020c7783934e6c1f91bbb1e7c9fb6c2e4fb2a",
+          "path": ".github/workflows/ci.yml"
+        },
+        {
+          "identity": "sha256:dde4b6b431c783ac6b7a642ce7455458d13397a2b24f72cbe0bc7d016a4ed9ab",
+          "path": "tests/fixtures/rigorloop-records-v3/records.json"
+        },
+        {
+          "identity": "sha256:adb156b8e2b196c9e82195b3eac059852ca7a941382fa41e355ff3803bf9ba87",
+          "path": "tests/fixtures/rigorloop-records-v3/storage-safety.json"
+        },
+        {
+          "identity": "sha256:da72bcb80d9cf94a16b119957e6162f8bedacd27bbea70be10429b424f9a4193",
+          "path": "tests/engineering/validation/test-change-metadata-validator.py"
+        }
+      ],
+      "summary": "All M4 groups are assessed: 184 normal selector cases and 52 executor cases, including embedded Python/Node child suites and alternate direct callers. Retain selector contract 67, real Git 46, public selector/CI wrapper 61 and output-contract 10. The existing three check mixins plus SelectionFixtures remain a bounded compatibility assembly for the established ValidationSelectionTests selectors. They do not inherit from another TestCase, borrow its setup, own shared mutable roots or introduce a generic framework. Fresh fixture operations acquire an owned directory and immediately attach cleanup to the actual case; immutable command/inventory declarations remain ordinary module values. Contract groups protect exact check/path/command/phase identity, unknown and mixed routing, deletion compatibility, current owners and thin workflow structure. Git groups retain actual staged/unstaged/committed changes, both rename sides, current versus historical inputs, malformed/unknown stores, supporting subjects and tracking/symlink preflight. CLI groups preserve real public command exits, actual argument forwarding and exact revision scope, unknown flags before work, no partial execution, ordered output, decode/large-output failures, unavailable commands, signal/timeout distinctions and required unstarted results.\nStrengthen two supported inventory gaps: independently name all five retired Skill-source deletion paths, and the ordered ten-check broad-smoke and sixteen-check main populations. Production inventories are observed values, never the source of their own full-domain expectations. Normal executor filter cases additionally state their independently known one/two-case selections. Worker discovery already rejected a controlled omitted parent case; this existing safeguard is retained and no missed-defect claim is made for it.\nOrganize executor groups into five direct native TestCase modules: Python adapter 11, actual process scheduler 21, Node adapter 5, catalog 4 and composition 11. All 63 existing methods remain; 60 are AST-identical and three change only for explicit filter expectations or the repository cwd required by two subprocess drivers. The aggregate retains ImmediateFailureRunner and the same public selectors. Private synthetic child files expose conditions/actions and expected markers: imported names, normal filters and dynamic metadata failure population; zero/duplicate/load-error/skip/todo/missing/unknown receipts; Python and Node hooks; native glob/cwd and actual reruns; child resource isolation, bounded rendezvous and reversed order. Real process proof keeps dependency and cycle rejection before launch, nested budgets, serial barriers, fail-fast and independent completion, timeout/interrupt/orphan reaping with unrelated-child preservation, fresh retry, signal versus unavailable distinctions and output-capture errors. Composition retains exact prerequisites, one execution per canonical ID, failed focused gates, separate observations and committed snapshot versus current discovery.\nFix the recorded test-runner defect m4-rerun-defect: a quoted positional selector now reruns the explicitly addressed fixture method, while -k remains a supported user filter. The original printed -k command discovered zero tests because this deliberate failure fixture is not in normal discovery. The strengthened existing case executes the actual printed command and requires the original one-case failure and message. No product runner behavior changes. The intentional extra fixture remains explicitly addressable without joining normal 184-case discovery; the metadata alternate eighth failure likewise remains opt-in and is exercised by its consumers.\nFive new module paths receive exact selector/executor routing with negative-before/positive-after proof. Existing CI two-worker selectors, check commands and fingerprints remain unchanged. Copied CI workspaces explicitly declare their generated children as command units; their fakes prove dispatch/scheduling only, not product validators or final broad-smoke readiness. Persistent Records fixture bytes and their Python/Node consumers are unchanged. No required case or parameter was removed; no unknown protection or temporary serial fallback remains in assessed M4 scope."
+    },
+    {
+      "actor": {
+        "id": "codex-root",
+        "role": "implement"
+      },
+      "id": "m4-validation",
+      "procedure": "C1 normal discovery; both direct suites; exact C3 two-worker command; controlled inventory omissions; executable emitted-rerun regression with unchanged AST identity; five-path routing negative/positive; actual-file C2 selection and CI --jobs4; record validation and staged diff check.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:467dd9185bb465df7687c55407831ff6993f0117bb76c72003b158cf12506230",
+          "path": "tests/engineering/validation/test-select-validation.py"
+        },
+        {
+          "identity": "sha256:29bcab3e3fb762ab3b6fd7b83b9110578dda60eccbf40175ba14d44948117a71",
+          "path": "tests/engineering/validation/selection_contract_tests.py"
+        },
+        {
+          "identity": "sha256:318f0b659d5b45f93323ccf1e3f091dad75ff4b61c54ea189bde1851c59d017a",
+          "path": "tests/engineering/validation/selection_git_tests.py"
+        },
+        {
+          "identity": "sha256:b715a9251509278392d58a62557b2afe67aa63492ea0cae029f9bd4e6bb3c3c6",
+          "path": "tests/engineering/validation/selection_cli_tests.py"
+        },
+        {
+          "identity": "sha256:0f8da4d62c3f8aaa197a73b6ddaf1419cc24a19952b839abe75bafe2bd733a51",
+          "path": "tests/engineering/validation/selection_test_helpers.py"
+        },
+        {
+          "identity": "sha256:31bc9e6cd64750cd18240ee810bb596161ae34212b8a07a2cbb9e6ddff9cb522",
+          "path": "tests/engineering/validation/test-validation-execution.py"
+        },
+        {
+          "identity": "sha256:ab2690653e8c2c6975b4943a6b8dc391a5ad36e05ac8e934294fb5a4c966b734",
+          "path": "tests/engineering/validation/execution_catalog_tests.py"
+        },
+        {
+          "identity": "sha256:75f7d8a09e58d71cb4232c0d6a0b295e91971f9dd4d20dd1f5dcd9170aa81d74",
+          "path": "tests/engineering/validation/execution_composition_tests.py"
+        },
+        {
+          "identity": "sha256:185e782c30cba82b4797e6089be0fed01bab60d9957b183430e5ae4068946a50",
+          "path": "tests/engineering/validation/execution_node_adapter_tests.py"
+        },
+        {
+          "identity": "sha256:8c46af8afde83c86005dbf19de2f655826e447cea41cae844e5c86017cf7fa1a",
+          "path": "tests/engineering/validation/execution_process_tests.py"
+        },
+        {
+          "identity": "sha256:bd94a1e6ac661bc3b88749c2269b29729b1fa35fc81f284c8e5900eb338a602d",
+          "path": "tests/engineering/validation/execution_python_adapter_tests.py"
+        },
+        {
+          "identity": "sha256:51f6110d2e8ed3adecc868f847207d50195883fb54e660152bfc2e6187bc41ad",
+          "path": "scripts/lib/validation/validation_selection.py"
+        },
+        {
+          "identity": "sha256:12a38c1809fa0deca17805ca783020c7783934e6c1f91bbb1e7c9fb6c2e4fb2a",
+          "path": ".github/workflows/ci.yml"
+        },
+        {
+          "identity": "sha256:dde4b6b431c783ac6b7a642ce7455458d13397a2b24f72cbe0bc7d016a4ed9ab",
+          "path": "tests/fixtures/rigorloop-records-v3/records.json"
+        },
+        {
+          "identity": "sha256:adb156b8e2b196c9e82195b3eac059852ca7a941382fa41e355ff3803bf9ba87",
+          "path": "tests/fixtures/rigorloop-records-v3/storage-safety.json"
+        },
+        {
+          "identity": "sha256:da72bcb80d9cf94a16b119957e6162f8bedacd27bbea70be10429b424f9a4193",
+          "path": "tests/engineering/validation/test-change-metadata-validator.py"
+        }
+      ],
+      "summary": "C1 normal discovery before/after preserves exactly 184 selector and 52 executor identities. Full direct commands python tests/engineering/validation/test-select-validation.py and python tests/engineering/validation/test-validation-execution.py pass. C3 ran the actual two-worker command RIGORLOOP_VALIDATION_WORKERS=2 python tests/engineering/validation/test-validation-execution.py ExecutionTests.test_parallel_tasks_actually_overlap_with_bounded_workers CaseAdapterTests.test_normal_and_isolated_fixture_preserve_hooks_population_and_parallelism; both pass with actual jobs=2 overlap and jobs=1 sequential observations, not a timing-only success criterion. C2 explicit selection and CI --jobs4 for all 13 actual changed files pass four checks: metadata regression/validation, selector regression and executor regression. Normal and isolated worker imports, inherited compatibility selectors, embedded generated cases and downstream consumers are exercised.\nThe five new-path routing variants failed as unclassified before catalog wiring and passed afterward. Two in-memory omission experiments passed the earlier focused tests (empty retired-path domain, and removal of a mode-only check from both production catalog and mode membership), then failed strengthened assertions without setup/import errors. A separate injected discovery omission was caught before and after by existing worker validation / added explicit expectations; the initial experiment's assumption that all three omissions would pass was disproved and is not claimed as evidence of a third weakness. No product source was altered by these experiments.\nRerun regression: before formatter correction the unchanged automated proof failed because the emitted command reported zero tests. After correction all ten output-contract tests pass, including actual execution of the printed command with one intended failure. Proof method AST identity remains sha256:fa9a1fe5c9b8109a4f2e411fdaa054861315b25655770f3aeea537c5defa7e85; fixture, command, cwd and environment assumptions match m4-rerun-reproduction. Original failure evidence and blocker origin remain intact. Full surrounding selector/executor and selected CI proof pass. Current record validation and staged diff check accompany the handoff. This is milestone implementation evidence, not fresh whole-change Code Review or final Verify."
     }
   ],
   "schema_version": 3
