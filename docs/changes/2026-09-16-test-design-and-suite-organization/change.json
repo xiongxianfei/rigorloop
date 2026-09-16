@@ -4,7 +4,7 @@
       "id": "code-reviewer",
       "role": "review"
     },
-    "reason": "M4 source organization, bounded rerun correction and full selected/direct proof are complete. Await independent milestone judgment; M5 implementation remains pending.",
+    "reason": "M4 correction proof passes; return exact current subjects to independent reviewer for finding disposition and corrected complete milestone judgment.",
     "stage": "code-review",
     "status": "in-progress"
   },
@@ -88,6 +88,15 @@
       },
       "path": "docs/changes/2026-09-16-test-design-and-suite-organization/reviews/m3-code-review.json",
       "reason": "M4 changes the catalog and selector subjects in the exact M3 map. Preserve original approval of M3 at its commit; M4 reviews changed interactions and final whole-change review is still required.",
+      "value": "stale"
+    },
+    {
+      "actor": {
+        "id": "codex-root",
+        "role": "implement"
+      },
+      "path": "docs/changes/2026-09-16-test-design-and-suite-organization/reviews/m4-code-review.json",
+      "reason": "Bounded m4-cr-01 assertion correction changes the exact selector subject. Preserve first-pass judgment and open finding for original reporter reassessment.",
       "value": "stale"
     }
   ],
@@ -197,6 +206,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-16-test-design-and-suite-organization/reviews/m3-code-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-16-test-design-and-suite-organization/reviews/m4-code-review.json"
     }
   ],
   "schema_version": 3,

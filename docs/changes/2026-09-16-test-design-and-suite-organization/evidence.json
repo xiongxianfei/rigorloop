@@ -1200,6 +1200,82 @@
         }
       ],
       "summary": "C1 normal discovery before/after preserves exactly 184 selector and 52 executor identities. Full direct commands python tests/engineering/validation/test-select-validation.py and python tests/engineering/validation/test-validation-execution.py pass. C3 ran the actual two-worker command RIGORLOOP_VALIDATION_WORKERS=2 python tests/engineering/validation/test-validation-execution.py ExecutionTests.test_parallel_tasks_actually_overlap_with_bounded_workers CaseAdapterTests.test_normal_and_isolated_fixture_preserve_hooks_population_and_parallelism; both pass with actual jobs=2 overlap and jobs=1 sequential observations, not a timing-only success criterion. C2 explicit selection and CI --jobs4 for all 13 actual changed files pass four checks: metadata regression/validation, selector regression and executor regression. Normal and isolated worker imports, inherited compatibility selectors, embedded generated cases and downstream consumers are exercised.\nThe five new-path routing variants failed as unclassified before catalog wiring and passed afterward. Two in-memory omission experiments passed the earlier focused tests (empty retired-path domain, and removal of a mode-only check from both production catalog and mode membership), then failed strengthened assertions without setup/import errors. A separate injected discovery omission was caught before and after by existing worker validation / added explicit expectations; the initial experiment's assumption that all three omissions would pass was disproved and is not claimed as evidence of a third weakness. No product source was altered by these experiments.\nRerun regression: before formatter correction the unchanged automated proof failed because the emitted command reported zero tests. After correction all ten output-contract tests pass, including actual execution of the printed command with one intended failure. Proof method AST identity remains sha256:fa9a1fe5c9b8109a4f2e411fdaa054861315b25655770f3aeea537c5defa7e85; fixture, command, cwd and environment assumptions match m4-rerun-reproduction. Original failure evidence and blocker origin remain intact. Full surrounding selector/executor and selected CI proof pass. Current record validation and staged diff check accompany the handoff. This is milestone implementation evidence, not fresh whole-change Code Review or final Verify."
+    },
+    {
+      "actor": {
+        "id": "codex-root",
+        "role": "implement"
+      },
+      "id": "m4-review-correction",
+      "procedure": "Read durable m4-cr-01; syntax-independent absence plus exact loader diagnostic; actual in-memory counterexample; ten output-contract tests; fresh184normal discovery; actual-file C2 all checks; current record and diff validation.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:47867e67cc4136cc409df1dcb0215898874b629387a9c09705dc17eea53144f3",
+          "path": "tests/engineering/validation/test-select-validation.py"
+        },
+        {
+          "identity": "sha256:29bcab3e3fb762ab3b6fd7b83b9110578dda60eccbf40175ba14d44948117a71",
+          "path": "tests/engineering/validation/selection_contract_tests.py"
+        },
+        {
+          "identity": "sha256:318f0b659d5b45f93323ccf1e3f091dad75ff4b61c54ea189bde1851c59d017a",
+          "path": "tests/engineering/validation/selection_git_tests.py"
+        },
+        {
+          "identity": "sha256:b715a9251509278392d58a62557b2afe67aa63492ea0cae029f9bd4e6bb3c3c6",
+          "path": "tests/engineering/validation/selection_cli_tests.py"
+        },
+        {
+          "identity": "sha256:0f8da4d62c3f8aaa197a73b6ddaf1419cc24a19952b839abe75bafe2bd733a51",
+          "path": "tests/engineering/validation/selection_test_helpers.py"
+        },
+        {
+          "identity": "sha256:31bc9e6cd64750cd18240ee810bb596161ae34212b8a07a2cbb9e6ddff9cb522",
+          "path": "tests/engineering/validation/test-validation-execution.py"
+        },
+        {
+          "identity": "sha256:ab2690653e8c2c6975b4943a6b8dc391a5ad36e05ac8e934294fb5a4c966b734",
+          "path": "tests/engineering/validation/execution_catalog_tests.py"
+        },
+        {
+          "identity": "sha256:75f7d8a09e58d71cb4232c0d6a0b295e91971f9dd4d20dd1f5dcd9170aa81d74",
+          "path": "tests/engineering/validation/execution_composition_tests.py"
+        },
+        {
+          "identity": "sha256:185e782c30cba82b4797e6089be0fed01bab60d9957b183430e5ae4068946a50",
+          "path": "tests/engineering/validation/execution_node_adapter_tests.py"
+        },
+        {
+          "identity": "sha256:8c46af8afde83c86005dbf19de2f655826e447cea41cae844e5c86017cf7fa1a",
+          "path": "tests/engineering/validation/execution_process_tests.py"
+        },
+        {
+          "identity": "sha256:bd94a1e6ac661bc3b88749c2269b29729b1fa35fc81f284c8e5900eb338a602d",
+          "path": "tests/engineering/validation/execution_python_adapter_tests.py"
+        },
+        {
+          "identity": "sha256:51f6110d2e8ed3adecc868f847207d50195883fb54e660152bfc2e6187bc41ad",
+          "path": "scripts/lib/validation/validation_selection.py"
+        },
+        {
+          "identity": "sha256:12a38c1809fa0deca17805ca783020c7783934e6c1f91bbb1e7c9fb6c2e4fb2a",
+          "path": ".github/workflows/ci.yml"
+        },
+        {
+          "identity": "sha256:dde4b6b431c783ac6b7a642ce7455458d13397a2b24f72cbe0bc7d016a4ed9ab",
+          "path": "tests/fixtures/rigorloop-records-v3/records.json"
+        },
+        {
+          "identity": "sha256:adb156b8e2b196c9e82195b3eac059852ca7a941382fa41e355ff3803bf9ba87",
+          "path": "tests/fixtures/rigorloop-records-v3/storage-safety.json"
+        },
+        {
+          "identity": "sha256:da72bcb80d9cf94a16b119957e6162f8bedacd27bbea70be10429b424f9a4193",
+          "path": "tests/engineering/validation/test-change-metadata-validator.py"
+        }
+      ],
+      "summary": "Correct m4-cr-01 without changing test-runner behavior. The existing unreliable loader-failure case now requires its exact FAILED unittest.loader._FailedTest.NoSuchTest diagnostic and absence of any Re-run: marker, independent of command spelling. The reviewer first recorded the counterexample: a private in-memory can_emit_scoped_rerun=True mutation emitted a misleading positional loader rerun while the old assertion passed. After correction, python /tmp/rigorloop-suite-organization-work/probe_m4_correction.py executes that same actual-runner mutation in an owned child and runs the corrected case: one intended assertion failure, zero errors; the failure specifically reports Re-run: unexpectedly found. This controlled negative result is expected proof of protection, not a runtime defect. Normal python tests/engineering/validation/test-select-validation.py ScriptOutputContractTests passes all10, including executable valid-case rerun and supported flags. Fresh normal discovery preserves exactly184selector IDs. Actual-file C2 selection and bash scripts/ci.sh --mode explicit for the changed selector and current review/store records --jobs4 passes all selected checks, including all184isolated selector and52executor cases. The original M4 implementation, generated fixtures, precise scopes and passing direct/C3 proof remain unchanged apart from this assertion correction. No M5 implementation has started; only read-only preparation and scratch transforms exist. Reviewer owns disposition of m4-cr-01 and fresh corrected M4 judgment. Prior evidence/judgment/finding origins remain intact. This is not final whole-change Review or Verify."
     }
   ],
   "schema_version": 3
