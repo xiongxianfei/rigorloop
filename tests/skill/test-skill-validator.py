@@ -279,29 +279,6 @@ def assert_progressive_loading_quick_guide_contract(test_case, skill_body):
     test_case.assertIn("broader-section", skill_body)
 
 
-def assert_progressive_loading_implement_handoff_contract(
-    test_case: unittest.TestCase,
-    skill_body: str,
-) -> None:
-    required_terms = [
-        "Current Handoff Summary",
-        "current milestone section",
-        "validation notes",
-        "do not run broad repository searches to infer milestone state",
-        "stop and report the missing state",
-    ]
-    for term in required_terms:
-        test_case.assertIn(term, skill_body)
-
-    forbidden_first_steps = [
-        "start by searching all docs",
-        "start by searching generated adapter output",
-        "infer current state from broad `rg` output",
-    ]
-    for term in forbidden_first_steps:
-        test_case.assertNotIn(term, skill_body)
-
-
 def assert_progressive_loading_code_review_protected_contracts(
     test_case: unittest.TestCase,
     skill_body: str,
@@ -353,30 +330,6 @@ def iter_published_skill_surfaces_for(skill_name: str) -> list[Path]:
 def has_customer_portable_guard(text: str) -> bool:
     normalized = text.lower()
     return any(term.lower() in normalized for term in CUSTOMER_PORTABLE_ALLOWED_GUARD_TERMS)
-
-
-def assert_requirement_id_covered(test_case: unittest.TestCase, body: str, requirement_number: int) -> None:
-    if f"`R{requirement_number}`" in body:
-        return
-    range_pattern = re.compile(r"`R(?P<start>\d+)`-`R(?P<end>\d+)`")
-    for match in range_pattern.finditer(body):
-        start = int(match.group("start"))
-        end = int(match.group("end"))
-        if start <= requirement_number <= end:
-            return
-    test_case.fail(f"R{requirement_number} is not covered explicitly or by range")
-
-
-def assert_boundary_id_covered(test_case: unittest.TestCase, body: str, boundary_number: int) -> None:
-    if f"`EB{boundary_number}`" in body:
-        return
-    range_pattern = re.compile(r"`EB(?P<start>\d+)`-`EB(?P<end>\d+)`")
-    for match in range_pattern.finditer(body):
-        start = int(match.group("start"))
-        end = int(match.group("end"))
-        if start <= boundary_number <= end:
-            return
-    test_case.fail(f"EB{boundary_number} is not covered explicitly or by range")
 
 
 class SkillValidatorFixtureTests(SkillCliChecks, SkillGuidanceChecks, unittest.TestCase):
@@ -877,6 +830,11 @@ class SkillValidatorFixtureTests(SkillCliChecks, SkillGuidanceChecks, unittest.T
     def test_published_skill_legacy_lint_checks_each_reference_on_mixed_line(self) -> None:
         cases = [
             (
+                "When the project provides the helper, read references/external.md and run scripts/query-change-record.py.",
+                "scripts/query-change-record.py",
+                "references/external.md",
+            ),
+            (
                 "Use the user-provided references/external.md and templates/architecture.md.",
                 "templates/architecture.md",
                 "references/external.md",
@@ -1368,12 +1326,6 @@ class SkillValidatorFixtureTests(SkillCliChecks, SkillGuidanceChecks, unittest.T
             )
 
 
-
-
-
-
-
-
     def test_proposal_family_asset_valid_fixture_passes(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
@@ -1437,7 +1389,7 @@ class SkillValidatorFixtureTests(SkillCliChecks, SkillGuidanceChecks, unittest.T
 
             # Asset fixtures must also carry the current selected recording package.
             for name in ("proposal", "proposal-review"):
-                relative = skill_validation.PILOT_RECORDING_REFERENCES[name]
+                relative = skill_validation.RECORDING_REFERENCES[name]
                 resource = root / name / relative
                 resource.parent.mkdir(parents=True, exist_ok=True)
                 resource.write_bytes((ROOT / "skills" / name / relative).read_bytes())
@@ -1879,19 +1831,6 @@ class SkillValidatorFixtureTests(SkillCliChecks, SkillGuidanceChecks, unittest.T
         ).read_text(encoding="utf-8")
         self.assertIn("approved | changes-requested | blocked | inconclusive", result_skeleton)
         self.assertNotIn("clean-with-notes", result_skeleton)
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     def test_review_family_material_finding_requires_parser_owned_labels(self) -> None:
@@ -2879,10 +2818,11 @@ class SkillValidatorFixtureTests(SkillCliChecks, SkillGuidanceChecks, unittest.T
         for skill in DOWNSTREAM_REVIEW_CLOSEOUT_SKILLS:
             body = (ROOT / "skills" / skill / "SKILL.md").read_text()
             self.assertIn("review-reliance.md", body)
+            relative = skill_validation.RECORDING_REFERENCES.get(skill)
+            if relative is not None:
+                body += (ROOT / "skills" / skill / relative).read_text()
             self.assertIn("does not approve", body)
             self.assertNotIn("review-log.md", body)
-
-
 
 
     def test_review_independence_m3_code_review_pilot_guidance(self) -> None:
@@ -3309,26 +3249,6 @@ Use a full-file or broader-section read when correctness requires surrounding co
         with self.assertRaises(AssertionError):
             assert_progressive_loading_quick_guide_contract(self, missing_label)
 
-
-    def test_progressive_loading_implement_handoff_contract_helper_detects_bounded_state_inspection(self) -> None:
-        valid_skill = """# Implement
-
-## Handoff inspection budget
-
-Start with the active plan's Current Handoff Summary.
-Then read the current milestone section and validation notes.
-For milestone readiness, do not run broad repository searches to infer milestone state.
-If the active plan does not identify the current milestone or next stage, stop and report the missing state.
-"""
-        assert_progressive_loading_implement_handoff_contract(self, valid_skill)
-
-        missing_summary = valid_skill.replace("Current Handoff Summary", "handoff notes")
-        with self.assertRaises(AssertionError):
-            assert_progressive_loading_implement_handoff_contract(self, missing_summary)
-
-        broad_first_step = valid_skill + "\nAgents may start by searching all docs for milestones.\n"
-        with self.assertRaises(AssertionError):
-            assert_progressive_loading_implement_handoff_contract(self, broad_first_step)
 
     def test_progressive_loading_code_review_protected_contract_helper_detects_safety_regression(self) -> None:
         valid_skill = """# Code Review
@@ -3901,10 +3821,6 @@ and result format.
         )
 
 
-    def test_change_record_catalog_m4_query_commands_exist(self) -> None:
-        helper = (ROOT / "scripts/query-change-record.py").read_text()
-        self.assertIn("unsupported", helper.lower())
-        self.assertNotIn("load_yaml", helper)
 
 
     def test_follow_up_ownership_m1_project_map_skill_boundary(self) -> None:
@@ -4889,43 +4805,11 @@ class CiMaintenanceSkillSimplificationTests(unittest.TestCase):
         self.assertIn("sole semantic owner", risk_map)
         self.assertIn("required execution boundary", risk_map)
 
-    def test_create_no_clobber_uses_commit_time_absence(self) -> None:
-        with tempfile.TemporaryDirectory() as temporary:
-            target = Path(temporary) / "ci.yml"
-            target.write_text("concurrent", encoding="utf-8")
-            with self.assertRaises(FileExistsError):
-                descriptor = os.open(target, os.O_WRONLY | os.O_CREAT | os.O_EXCL)
-                os.close(descriptor)
-            self.assertEqual(target.read_text(encoding="utf-8"), "concurrent")
 
-    def test_revise_identity_guard_rejects_concurrent_change(self) -> None:
-        import hashlib
-        with tempfile.TemporaryDirectory() as temporary:
-            target = Path(temporary) / "ci.yml"
-            target.write_text("A", encoding="utf-8")
-            prior = hashlib.sha256(target.read_bytes()).hexdigest()
-            target.write_text("B", encoding="utf-8")
-            current = hashlib.sha256(target.read_bytes()).hexdigest()
-            self.assertNotEqual(prior, current)
-            self.assertEqual(target.read_text(encoding="utf-8"), "B")
-
-    def test_dependency_batch_orders_provider_before_wrapper(self) -> None:
-        dependencies = {"validation-script": set(), "github-workflow": {"validation-script"}}
-        order = []
-        pending = set(dependencies)
-        while pending:
-            ready = sorted(node for node in pending if dependencies[node] <= set(order))
-            self.assertTrue(ready, "atomic-group-required")
-            order.extend(ready)
-            pending.difference_update(ready)
-        self.assertEqual(order, ["validation-script", "github-workflow"])
-
-    def test_atomic_group_cycle_blocks_before_write(self) -> None:
-        dependencies = {"a": {"b"}, "b": {"a"}}
-        ready = [node for node, needs in dependencies.items() if not needs]
-        self.assertEqual(ready, [])
+    def test_write_and_batch_safety_guidance_is_present(self) -> None:
         skill = (self.skill_dir / "SKILL.md").read_text(encoding="utf-8")
-        self.assertIn("blocked-before-write", skill)
+        for phrase in ("Create uses commit-time atomic no-clobber", "Revise replaces only while identity matches", "Providers precede wrappers", "Unsafe states or cycles return `blocked-before-write`"):
+            self.assertIn(phrase, skill)
 
     def test_partial_batch_and_retry_are_exact(self) -> None:
         skill = (self.skill_dir / "SKILL.md").read_text(encoding="utf-8")
@@ -5467,13 +5351,9 @@ class RetireStandaloneTestSpecM3Tests(unittest.TestCase):
                 )
                 self.assertNotIn("a proof-only gap routes to `test-spec`", body)
 
-    def test_standalone_test_spec_skill_is_absent_from_canonical_inventory(self) -> None:
-        self.assertFalse((ROOT / "skills/test-spec").exists())
-
 
 class RetireStandaloneTestSpecM4Tests(unittest.TestCase):
     """RTS TS-012 and TS-016 activation governance coherence."""
-
 
     def test_current_boundary_adoption_is_owned_by_the_selected_project_contract(self):
         source = (ROOT / "templates/shared/boundary-first-compact-scan.md").read_text()
@@ -5699,8 +5579,6 @@ class OptionalDiscoverySkillContractTests(unittest.TestCase):
         self.assertIn("must explicitly adopt", route)
         self.assertIn("does not approve", route)
         self.assertIn("does not advance lifecycle state", route)
-
-
 
 
 class TestPolicyResourceTests(unittest.TestCase):

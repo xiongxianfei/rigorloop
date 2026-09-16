@@ -36,8 +36,6 @@ from lib.validation.validation_selection import (  # noqa: E402
     select_validation,
 )
 
-# Original timing/classification reports retain the retired mirror rows.
-RETIRED_MIRROR_CHECK_IDS = {"broad_smoke.skills.generation_regression", "broad_smoke.skills.drift"}
 
 ADAPTER_REGRESSION_COMMAND = (
     "python tests/engineering/packaging/test-adapter-distribution.py "
@@ -71,8 +69,7 @@ EXPECTED_CATALOG = {
     "adapters.drift": "python tests/engineering/packaging/test-adapter-distribution.py AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives",
     "adapters.validate": "python tests/engineering/packaging/test-adapter-distribution.py AdapterDistributionTests.test_validate_adapters_cli_accepts_release_archive_root",
     "change_metadata.regression": "python tests/engineering/validation/test-change-metadata-validator.py",
-    "change_metadata.validate": "python scripts/validate-change-metadata.py <change-yaml>...",
-    "change_record_query.regression": "python tests/engineering/validation/test-query-change-record.py",
+    "change_metadata.validate": "python scripts/validate-change-metadata.py <change.json>...",
     "release.validate": "python scripts/validate-release.py --recorded-source-auto --version <version>",
     "release_transaction.regression": "python tests/engineering/release/test-release-transaction.py",
     "readme.validate": "python scripts/validate-readme.py README.md",
@@ -336,10 +333,8 @@ class SelectionFixtures:
             "scripts/validate-adapters.py",
             "tests/engineering/validation/test-change-metadata-validator.py",
             "tests/engineering/validation/test-governed-lifecycle-cli-validator.py",
-            "tests/skill/test-skill-validator.py",
             "scripts/validate-governed-lifecycle-cli.py",
             "scripts/validate-change-metadata.py",
-            "scripts/validate-governed-lifecycle-cli.py",
         ]
         for relative_path in child_scripts:
             name = Path(relative_path).name
@@ -517,57 +512,3 @@ raise SystemExit({exit_code})
     def select(self, paths: list[str], *, mode: str = "explicit", **kwargs):
         kwargs.setdefault("preflight_context", self.root_preflight_context)
         return select_validation(SelectionRequest(mode=mode, paths=tuple(paths), repo_root=ROOT, **kwargs))
-
-
-    def assert_registered_change_evidence_routes(self, paths: list[str]) -> None:
-        result = self.select(paths)
-        payload = result.to_json_dict()
-
-        self.assertEqual(result.status, "ok")
-        self.assertFalse(payload["blocking_results"])
-        self.assertFalse(payload["registration_debt"])
-        self.assertTrue(
-            all(
-                classified["category"] == "registered-change-evidence"
-                for classified in payload["classified_paths"]
-            )
-        )
-        self.assertIn("current_records.validate", selected_ids(payload))
-        lifecycle_check = next(
-            check
-            for check in payload["selected_checks"]
-            if check["id"] == "current_records.validate"
-        )
-        self.assertIn(
-            "docs/changes/2026-04-25-example/change.yaml",
-            lifecycle_check["paths"],
-        )
-        for path in paths:
-            self.assertIn(path, lifecycle_check["paths"])
-
-
-    def write_change_with_evidence_deferral(
-        self,
-        *,
-        deferral_fields: dict[str, str],
-        change_id: str = "2026-04-25-deferral",
-        evidence_relative_path: str = "unregistered-evidence.md",
-    ) -> tuple[Path, str]:
-        repo = self.make_git_repo()
-        evidence_path = f"docs/changes/{change_id}/{evidence_relative_path}"
-        change_root = repo / "docs" / "changes" / change_id
-        change_root.mkdir(parents=True, exist_ok=True)
-        evidence_file = change_root / evidence_relative_path
-        evidence_file.parent.mkdir(parents=True, exist_ok=True)
-        evidence_file.write_text("manual evidence\n", encoding="utf-8")
-        field_lines = "\n".join(
-            f"    {field}: {value}"
-            for field, value in deferral_fields.items()
-        )
-        (change_root / "change.yaml").write_text(
-            "change_id: 2026-04-25-deferral\n"
-            "evidence_registration_deferrals:\n"
-            f"  - {field_lines.lstrip()}\n",
-            encoding="utf-8",
-        )
-        return repo, evidence_path

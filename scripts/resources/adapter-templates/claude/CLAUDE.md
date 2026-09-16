@@ -13,7 +13,7 @@ Claude Code uses native Claude Code slash commands for project skills. After cop
 TUI examples:
 
 - `/proposal Evaluate whether this change should be specified.`
-- `/spec Define the observable behavior for this change.`
+- `/design Define the observable behavior for this change.`
 - `/implement Build the approved milestone with tests first.`
 - `/code-review Review the current diff against the approved artifacts.`
 - `/pr Prepare the verified change for pull request review.`

@@ -310,7 +310,7 @@ test("TG-04 drift after replacement restores before bytes and leaves decision ba
   assert.equal(run(root,"inspect").exitCode,0);
 });
 
-test("TG-04 historical creation crash and public recover subprocesses preserve complete/restore in both formats",t=>{
+test("TG-04 current v3 creation crash and public recover subprocesses preserve complete/restore in both formats",t=>{
   const launcher=new URL("./helpers/record-store-launcher.mjs",import.meta.url).pathname;
   for(const format of ["text","json"]) for(const action of ["complete","restore"]) {
     const root=setup(t), r=request();

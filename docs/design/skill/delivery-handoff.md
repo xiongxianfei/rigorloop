@@ -15,6 +15,7 @@ Parent: [Skill](skill.md). [Skill](skill.md) retains shared invocation, evidence
 | HAND-SR-01 | Delivery Handoff MUST distinguish prepare-only, open and draft intent; preparation MUST cause no external mutation and a blocked open/draft MUST NOT be reported as successful preparation. |
 | HAND-SR-02 | External actions MUST be bound to current verified subjects and explicit authority; branch relation, existing PR, refresh and state-transition constraints MUST be checked before each action. |
 | HAND-SR-03 | Retry and result claims MUST reflect exact observed remote/PR/CI state, preserve successful partial effects and stop on ambiguity or drift without force-push, merge or release publication. |
+| HAND-SR-04 | Current PR body guidance MUST cite successful Verify as the owner of final change rationale and MUST NOT require a separate Explain-change artifact. Existing core and conditional traceability groups remain; required architecture/decision context may link to its living Design owner without inventing a standalone ADR. This presentation change grants no readiness or mutation authority. |
 
 ## Architecture Overview
 
@@ -68,6 +69,12 @@ PR reports requested intent, actual operation, actual_external_mutation or none,
 
 Governed-signal classification remains shared with Bugfix under [Skill’s shared interface vocabulary](skill.md#specialist-interface-vocabulary-and-outputs). The [bounded PR CI-repair exception](skill.md#bounded-pr-ci-repair) remains owned by CI maintenance; this model consumes its exact result and Assessment’s continued-reliance judgment without granting repair or external authority. Delivery Handoff covers the PR capability; release publication remains with Engineering Release.
 
+### Current rationale and artifact labels
+
+The [complete refinement round](../../proposals/2026-09-15-refine-skills-and-retire-stale-support.md) removes the obsolete `Explain-change` path prompt from `skills/pr/assets/pr-body-skeleton.md`. The lifecycle group names the successful Verify report and its change rationale once. Architecture and decision context links to the actual governing Design or explicitly retained project source; it must not suggest that a separate architecture document or ADR is a prerequisite. Keep the core body groups and applicable requirement, review, migration, security and release evidence. Retained customer sources remain usable under their own authority.
+
+This corrects presentation under Assessment's existing explanation ownership. It introduces no additional artifact, parser, body schema, section-refresh authority or readiness field. Missing successful Verify or its required Git basis still blocks opening. Historical PR bodies and assessment identities remain unchanged. Skill owns the PR entrypoint's presentation and conditional read-only resource; this model continues to own the external action and output behavior. Existing views require no new node or edge.
+
 ## Context view
 
 ```mermaid
@@ -103,16 +110,17 @@ The specialist contract determines the permitted action and retry, including rea
 | Input domain | HAND-SR-01, HAND-SR-02, HAND-SR-03 | Unknown or ambiguous submission/branch/PR states reject before mutation eligibility. |
 | State/lifecycle | HAND-SR-01, HAND-SR-02, HAND-SR-03 | Prepare-only changes no external state; adequate existing PRs retain their actual state. |
 | Identity/authority | HAND-SR-01, HAND-SR-02, HAND-SR-03 | Missing current Verify identity or refresh/state-transition authority blocks the corresponding action. |
-| Composition/path | HAND-SR-01, HAND-SR-02, HAND-SR-03 | A completed bounded CI repair is consumed only under Assessment’s still-applicable decision basis. |
+| Composition/path | HAND-SR-01, HAND-SR-02, HAND-SR-03, HAND-SR-04 | A completed bounded CI repair is consumed only under Assessment’s still-applicable decision basis. A governed body points to the successful Verify rationale without demanding a second explanation artifact or an unnecessary standalone ADR. |
 | Temporal/retry | HAND-SR-01, HAND-SR-02, HAND-SR-03 | Recheck head/base and authorization before push and host mutation; retries reconcile the observed PR. |
 | Failure/recovery | HAND-SR-01, HAND-SR-02, HAND-SR-03 | A successful external write followed by identity drift is reported as a partial effect, not erased. |
-| Compatibility/migration | HAND-SR-01, HAND-SR-02, HAND-SR-03 | Closed/merged matches do not authorize reopening or duplicate creation; evidence suffix compatibility remains Assessment-owned. |
+| Compatibility/migration | HAND-SR-01, HAND-SR-02, HAND-SR-03, HAND-SR-04 | Closed/merged matches do not authorize reopening or duplicate creation; evidence suffix compatibility remains Assessment-owned. A governed body points to the successful Verify rationale without demanding a second explanation artifact or an unnecessary standalone ADR. |
 | External/environment | HAND-SR-01, HAND-SR-02, HAND-SR-03 | Hosted success requires the exact observed run/head; unavailable host state cannot be fabricated. |
 
 ## Architecture Decisions
 
 | ID | Decision and rationale | Alternatives and consequences |
 | --- | --- | --- |
+| HAND-DEC-02 | Name Verify as the sole current final-rationale artifact in the PR asset and accept architecture context from its actual Design owner. | Retaining a separate Explain-change prompt can invent work for a retired stage. Removing rationale or evidence requirements would weaken review; this change removes only the obsolete duplicate artifact expectation. |
 | HAND-DEC-01 | Give Delivery Handoff one explicit current owner while retaining shared Skill policy and the specialist’s existing authority boundaries. | Keeping unrelated support duties together obscures responsibility. Duplicating their details in Skill would create competing owners; scoped extraction requires reconciled navigation and review. |
 
 ## Quality and limits

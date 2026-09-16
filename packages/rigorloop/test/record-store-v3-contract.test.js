@@ -42,7 +42,7 @@ test('TG-02 v3 finding current fields can change while identity and blockers ret
  const blocker=stored.blockers[0];assert.ok(blocker?.origin);edit(before,'change.json',r=>r.blockers=[blocker]);
  const bad=structuredClone(before);edit(bad,'change.json',r=>r.blockers[0].origin.rationale='rewrite');fail(()=>validateV3Preservation('example-change',before,bad));
 });
-test('TG-02 mixed versions and broken typed references reject reject',()=>{
+test('TG-02 mixed versions and broken typed references reject',()=>{
  const files=fixture();edit(files,'evidence.json',r=>r.schema_version=2);fail(()=>validateV3Set('example-change',files));
  const bad=fixture();edit(bad,'verify-report.json',r=>r.evidence_refs=[{path:prefix+'reviews/final-code-review.json',id:'final-code-review'}]);fail(()=>validateV3Set('example-change',bad));
 });

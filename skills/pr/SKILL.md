@@ -12,18 +12,6 @@ argument-hint: [branch, feature name, plan path, or PR request]
 
 When project authority explicitly adopts Review and Closeout policy, use the packaged application below for shared assessment meaning. It replaces source-local judgment, independence, applicability, concern-disposition and closeout rules in this skill and its conditional resources; retain specialist methods and contract-selected storage procedures. Historical assessments retain their original meaning but grant no current runtime support. Missing or contradictory required guidance stops dependent reliance.
 
-## Explicit recording
-
-Use this profile when the project has adopted the RigorLoop Record Format and explicitly selected the change. Read the project's governing documents. The Workflow model owns coordination, Review and Closeout owns assessment policy, Record Format owns stored shapes, and CLI owns construction and persistence. Current storage uses `rigorloop-records-v3`; historical stores remain unchanged archival evidence. Select the actual record contract; never mix versions within a store. Retired or unknown stored formats are rejected without fallback. Do not migrate or reinterpret historical records; preserve their bytes and meaning as archival evidence. The project need not contain RigorLoop's internal design repository.
-
-Use the contract-selected recording procedures in this skill and its conditional resources. Dispatch primary results by schema_version (2 or 3), then status and operation; a schema-3 error alone does not establish v3 storage. Read scope and omissions before relying on selected content. Retain substantive stage duties, permissions, independent assessment and proof obligations. Historical records grant no current execution authority.
-
-Use `rigorloop context --root PATH --change ID --input - --format json` with explicitly selected kinds/filters and full detail. Expand the selection when needed: omitted content is not evidence of absence. Copy `record_contract` and `revision` into the targeted request's `contract` and `expected_revision`. Use `rigorloop subject inspect --root PATH --path FILE --content full --format json` for the exact engineering basis and mechanical identities; supply relied-on subjects as `reads` with their expected identities.
-
-Make your decision, then use the purpose-specific command's `--help` and submit its targeted operation on stdin. Use `batch` for related explicit updates. Supply semantic values and any required applicability; the CLI constructs registry entries, preserves neighbors and serializes records. Do not reconstruct complete files or invoke historical eligibility first. Preview is optional; normal writes validate. A save does not approve work, establish readiness or select the next actor. Conflict requires rereading and reassessment; busy/recovery-required is not a save. Use explicit `record-store recover` for interrupted storage. Missing or stale evidence prevents reliance, not recording a correction.
-
-Read the final assessment with verify show and the relevant review/evidence/decision basis through selected context or show. Assess current applicability and exact subjects before relying on the report; saved or absent observations do not establish permission. Retain repository/remote/branch and explicit external-action authority checks, but do not require historical lifecycle receipts from this profile. Do not manufacture review or Verify results, mutate workflow decisions, or infer authority to merge or release.
-
 ## Purpose
 
 Open one evidence-grounded pull request. `verify` owns `branch-ready`; this skill owns `pr-body-ready` and `pr-open-ready`. No downstream continuation.
@@ -43,6 +31,8 @@ Public skills operate in customer-project mode by default. Use project-local art
 ## Inputs to read
 
 Resolve repository, remote, branches, evidence, handoff, diff, and matching PR; never use memory. For consolidated gates, consume verify-owned accepted Proposal evidence, approved Design Review ID and exact member map, and approved Delivery Review ID and exact member map. Never reconstruct or reperform those reviews. The exact successful Verify report owns explanation, basis, and authority. Reject missing, stale, new, or competing authoritative rationale. Historical rationale grants no current PR authority.
+
+## Invocation classification
 
 Any explicit change, workflow, owning-change, or governed pointer is a signal. governed signal: `no-governed-signal`, `single-governed-candidate`, or `invalid-or-ambiguous-governed-signal`. The first uses `PR0-portable`; the second loads `PR1-governed`; malformed, stale, conflicting, duplicated, unsafe, escaped, or ambiguous signals stop without portable fallback. Loading grants no authority.
 
@@ -127,6 +117,10 @@ Progress means work that has happened so far. Readiness means the next stage tha
 ## Required-resource safety
 
 A missing, unreadable, escaped, stale, transformed, or mixed-version governed reference must stop before governed readiness judgment. A missing or invalid body asset must stop before body generation and external mutation. The skill must not reconstruct, recall, or partially invent required resource content.
+
+## Recording boundary
+
+For `PR1-governed`, read `references/governed-pr-readiness.md` before relying on stored assessments. This skill consumes records and must not mutate lifecycle state. Loading a method or saving a record grants no approval or continuation. Missing, unreadable, escaped, conflicting or mixed-version required guidance stops dependent work without reconstructing it; untriggered guidance does not block unrelated portable work.
 
 ## Resource map
 

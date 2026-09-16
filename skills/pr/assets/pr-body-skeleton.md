@@ -37,7 +37,7 @@
 - Proposal: <path or not applicable>
 - Owning Designs and affected examples: <path or not applicable>
 - Test spec: <path or not applicable>
-- Architecture / ADRs: <paths or not applicable>
+- Architecture and decisions: <owning Design or retained project source paths, or not applicable>
 - Plan: <path or not applicable>
 
 ## Requirement coverage
@@ -59,8 +59,7 @@
 ## Lifecycle and verification evidence
 
 - Change record: <path>
-- Explain-change: <path>
-- Verify report: <path>
+- Successful Verify report and change rationale: <path>
 
 ## Migration
 

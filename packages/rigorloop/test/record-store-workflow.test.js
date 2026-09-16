@@ -11,7 +11,7 @@ import { validateV3Record } from "../dist/lib/record-format-v3.js";
 // These actors are scenario data, not proof of an actual independent review.
 const author={id:"author",role:"design"}, reviewer={id:"reviewer",role:"review"}, verifier={id:"verifier",role:"verify"};
 const encode=value=>JSON.stringify(value)+"\n";
-const markdown=value=>encode({...value,summary:'Fixture reasoning; actor labels alone do not establish independent review.\n'});
+const withFixtureSummary=value=>encode({...value,summary:'Fixture reasoning; actor labels alone do not establish independent review.\n'});
 
 test("TG-05 actors explicitly invalidate, reopen, report Verify failure, rereview and complete",t=>{
   const root=mkdtempSync(join(tmpdir(),"rigorloop-workflow-"));
@@ -52,7 +52,7 @@ test("TG-05 actors explicitly invalidate, reopen, report Verify failure, rerevie
   const evidence={...fixture.evidence,checks:[{...fixture.evidence.checks[0],subjects:[subject(wf),subject(cli)],result:"passed"}]};
   change.records=[{path:reviewPath,kind:"review"},{path:evidencePath,kind:"evidence"}];
   change.applicability=change.records.map(r=>({path:r.path,value:"current",actor:reviewer,reason:"Explicit fixture assessment"}));
-  save({[reviewPath]:markdown(review),[evidencePath]:encode(evidence)});
+  save({[reviewPath]:withFixtureSummary(review),[evidencePath]:encode(evidence)});
   const oldReview=readFileSync(join(root,reviewPath),"utf8"), oldActivity=structuredClone(change.activity);
 
   // Editing a reviewed model reports drift, but the CLI does not invalidate or route.
@@ -91,7 +91,7 @@ test("TG-05 actors explicitly invalidate, reopen, report Verify failure, rerevie
   review.subjects=[subject(wf),subject(cli)];
   evidence.checks[0]={...evidence.checks[0],subjects:[subject(wf),subject(cli)],result:"passed"};
   change.applicability=change.applicability.map(a=>({...a,value:"current",actor:a.path===reviewPath?reviewer:verifier,reason:"Explicit new assessment"}));
-  save({[reviewPath]:markdown(review),[evidencePath]:encode(evidence)});
+  save({[reviewPath]:withFixtureSummary(review),[evidencePath]:encode(evidence)});
   assert.equal(change.blockers[0].state,"open");
 
   // Only the actor's final replacement closes its blocker and records completion.
@@ -101,7 +101,7 @@ test("TG-05 actors explicitly invalidate, reopen, report Verify failure, rerevie
   change.records.push({path:verifyPath,kind:"verify"});
   change.applicability.push({path:verifyPath,value:"current",actor:verifier,reason:"Explicit successful assessment"});
   const report={...fixture.verify,verifier,subjects:[subject(wf),subject(cli)]};
-  save({[verifyPath]:markdown(report)});
+  save({[verifyPath]:withFixtureSummary(report)});
   assert.equal(JSON.parse(readFileSync(join(root,manifest))).activity.status,"completed");
 });
 

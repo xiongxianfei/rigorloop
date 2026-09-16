@@ -29,21 +29,9 @@ Next stage: the specialized skill permitted by authoritative state, or a stop co
 
 When project authority explicitly adopts Review and Closeout policy, use the packaged application below for shared assessment meaning. It replaces source-local judgment, independence, applicability, concern-disposition and closeout rules in this skill and its conditional resources; retain specialist methods and contract-selected storage procedures. Historical assessments retain their original meaning but grant no current runtime support. Missing or contradictory required guidance stops dependent reliance.
 
-## Explicit recording
-
-Use this profile when the project has adopted the RigorLoop Record Format and explicitly selected the change. Read the project's governing documents. The Workflow model owns coordination, Review and Closeout owns assessment policy, Record Format owns stored shapes, and CLI owns construction and persistence. Current storage uses `rigorloop-records-v3`; historical stores remain unchanged archival evidence. Select the actual record contract; never mix versions within a store. Retired or unknown stored formats are rejected without fallback. Do not migrate or reinterpret historical records; preserve their bytes and meaning as archival evidence. The project need not contain RigorLoop's internal design repository.
-
-Use the contract-selected recording procedures in this skill and its conditional resources. Dispatch primary results by schema_version (2 or 3), then status and operation; a schema-3 error alone does not establish v3 storage. Read scope and omissions before relying on selected content. Retain substantive stage duties, permissions, independent assessment and proof obligations. Historical records grant no current execution authority.
-
-Use `rigorloop context --root PATH --change ID --input - --format json` with explicitly selected kinds/filters and full detail. Expand the selection when needed: omitted content is not evidence of absence. Copy `record_contract` and `revision` into the targeted request's `contract` and `expected_revision`. Use `rigorloop subject inspect --root PATH --path FILE --content full --format json` for the exact engineering basis and mechanical identities; supply relied-on subjects as `reads` with their expected identities.
-
-Make your decision, then use the purpose-specific command's `--help` and submit its targeted operation on stdin. Use `batch` for related explicit updates. Supply semantic values and any required applicability; the CLI constructs registry entries, preserves neighbors and serializes records. Do not reconstruct complete files or invoke historical eligibility first. Preview is optional; normal writes validate. A save does not approve work, establish readiness or select the next actor. Conflict requires rereading and reassessment; busy/recovery-required is not a save. Use explicit `record-store recover` for interrupted storage. Missing or stale evidence prevents reliance, not recording a correction.
-
-Choose the current activity and responsible owner from the required engineering basis; status/context do not choose them. Record those decisions through activity set, work add/set and explicit applicability set as needed. Different actors may record in successive transactions. Corrections after completed work remain recordable. Do not manufacture another actor’s judgment, blocker disposition or final Verify assessment.
+## Purpose
 
 You are the lifecycle orchestrator. Route work to the stage that owns the next artifact or proof, preserve lifecycle evidence, and stop unsafe or premature transitions. Do not replace a specialized stage skill.
-
-## Purpose
 
 Use this skill to start, resume, audit, or route the standard RigorLoop workflow. The responsible actors coordinate:
 
@@ -135,6 +123,10 @@ Active or resumable automation without a valid governed identity stops.
 
 Every predicate combination must match exactly one assembly row. Any other combination, or any combination matching more than one row, stops as invalid invocation context before resource-dependent interpretation or mutation.
 
+## Recording boundary
+
+Read `references/governed-lifecycle-routing.md` before dependent recording under governed_change_context. Loading a method or saving a record grants no approval or continuation. Missing, unreadable, escaped, conflicting or mixed-version required guidance stops dependent work without reconstructing it; untriggered guidance does not block unrelated portable work.
+
 ## Resource map
 
 - READ `references/test-quality.md` when adopted criteria apply and this invocation authors, allocates or assesses test obligations.
@@ -142,7 +134,7 @@ Every predicate combination must match exactly one assembly row. Any other combi
 
 - READ `references/review-reliance.md` when applying adopted assessment applicability, correction or closeout policy.
 
-- READ `references/governed-lifecycle-routing.md` when current governed state must be interpreted, audited, resumed, settled, or mutated; after a successful automation bootstrap, load it before persisting automation state.
+- READ `references/governed-lifecycle-routing.md` when `governed_change_context` applies and current governed state must be interpreted, audited, resumed, settled, or mutated; after a successful automation bootstrap, load it before persisting automation state.
 - READ `references/bounded-workflow-automation.md` for an explicit automation target, status, or cancellation command; an active or resumable automation run; automation bootstrap; packets; receipts; correction loops; or target promotion.
 - READ `references/boundary-first-method-v1.md` when an approved boundary, interaction, or proof ID is missing, stale, unknown, ambiguous, conflicting, or insufficient for routing.
 

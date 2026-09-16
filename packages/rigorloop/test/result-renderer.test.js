@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { rmSync, existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { rmSync, mkdtempSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { spawnSync } from "node:child_process";
@@ -111,12 +111,12 @@ test("T10 exact output fixture preserves retained public commands", (t) => {
   const cli = process.env.RIGORLOOP_COMPATIBILITY_CLI ?? new URL("../dist/bin/rigorloop.js", import.meta.url).pathname;
   // Installer success/conflict/force behavior is exercised by cli.test.js.
   const cases = [
-    ["version-human-success", ["version"], "empty", false],
-    ["unknown-human-failure", ["future-command"], "empty", false],
-    ["unknown-json-failure", ["future-command", "--json"], "empty", true],
+    ["version-human-success", ["version"], false],
+    ["unknown-human-failure", ["future-command"], false],
+    ["unknown-json-failure", ["future-command", "--json"], true],
   ];
   const observed = {};
-  for (const [id, args, projectKind, json] of cases) {
+  for (const [id, args, json] of cases) {
     const project = compatibilityProject(t);
     const child = spawnSync(process.execPath, [cli, ...args], {
       cwd: project,

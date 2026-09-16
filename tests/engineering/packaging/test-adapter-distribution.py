@@ -30,13 +30,10 @@ from lib.packaging.adapter_distribution import (  # noqa: E402
     AdapterDriftEntry,
     OPENCODE_COMMAND_ALIASES,
     POST_CUTOVER_ADAPTER_SKILLS,
-    STAGED_V3_ADAPTER_SKILLS,
-    STAGED_V3_OPENCODE_COMMAND_ALIASES,
     RETIRED_PROGRESSION_SKILLS,
     SUPPORTED_ADAPTERS,
     adapter_archive_name,
     build_adapter_archives,
-    build_staged_v3_adapter_archives,
     collect_adapter_drift,
     collect_adapter_drift_entries,
     collect_skill_reports,
@@ -48,7 +45,6 @@ from lib.packaging.adapter_distribution import (  # noqa: E402
     render_manifest_yaml,
     sync_adapter_output,
     validate_adapter_archives,
-    validate_staged_v3_adapter_archives,
     validate_adapter_artifact_metadata,
     validate_adapter_output,
     validate_clean_install_smoke,
@@ -155,13 +151,11 @@ class AdapterDistributionTests(unittest.TestCase):
                     verify_explanation,
                 )
 
-    def test_staged_v3_archives_omit_explain_change_and_package_complete_verify_resources(self) -> None:
-        self.assertNotIn("explain-change", STAGED_V3_ADAPTER_SKILLS)
-        self.assertNotIn("explain-change", STAGED_V3_OPENCODE_COMMAND_ALIASES)
-        with tempfile.TemporaryDirectory(prefix="staged-v3-adapters-") as temp_dir:
+    def test_current_archives_omit_explain_change_and_package_complete_verify_resources(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="current-adapters-") as temp_dir:
             output = Path(temp_dir)
-            archives = build_staged_v3_adapter_archives("v0.1.6", output)
-            self.assertEqual(validate_staged_v3_adapter_archives("v0.1.6", output), [])
+            archives = build_adapter_archives("v0.1.6", output)
+            self.assertEqual(validate_adapter_archives("v0.1.6", output), [])
             required = {
                 "final-impact-analysis.md",
                 "evidence-applicability.md",
@@ -189,14 +183,14 @@ class AdapterDistributionTests(unittest.TestCase):
                     verify_body,
                 )
 
-    def test_staged_v3_archive_validation_rejects_mixed_explain_change_entrypoint(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="staged-v3-mixed-") as temp_dir:
+    def test_current_archive_validation_rejects_mixed_explain_change_entrypoint(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="current-mixed-") as temp_dir:
             output = Path(temp_dir)
-            archives = build_staged_v3_adapter_archives("v0.1.6", output)
+            archives = build_adapter_archives("v0.1.6", output)
             target = archives[0]
             with zipfile.ZipFile(target, "a") as archive:
                 archive.writestr(".agents/skills/explain-change/SKILL.md", "retired")
-            errors = validate_staged_v3_adapter_archives("v0.1.6", output)
+            errors = validate_adapter_archives("v0.1.6", output)
             self.assertTrue(any("unexpected entries" in error and "explain-change" in error for error in errors))
 
     def copy_fixture_skills(self, target: Path, names: tuple[str, ...]) -> Path:
@@ -402,7 +396,7 @@ class AdapterDistributionTests(unittest.TestCase):
                 skill.write_bytes(original)
 
     def test_distribution_generation_rejects_source_and_active_output_roots(self) -> None:
-        for operation in ("archives", "tree", "staged"):
+        for operation in ("archives", "tree"):
             for destination in ("skills", "skills/nested", ".codex/skills", ".agents/skills", ".claude/skills", ".opencode/skills", "alias"):
                 with self.subTest(operation=operation, destination=destination), tempfile.TemporaryDirectory() as tmp:
                     root = Path(tmp)
@@ -413,8 +407,6 @@ class AdapterDistributionTests(unittest.TestCase):
                     with self.assertRaisesRegex(ValueError, "unsafe output"):
                         if operation == "archives":
                             build_adapter_archives("v1.0.0", root / destination, skills_root=skills)
-                        elif operation == "staged":
-                            build_staged_v3_adapter_archives("v1.0.0", root / destination, skills_root=skills)
                         else:
                             sync_adapter_output("v1.0.0", skills_root=skills, output_root=root / destination)
                     self.assertEqual(before, {path.relative_to(skills): path.read_bytes() for path in skills.rglob("*") if path.is_file()})
@@ -422,7 +414,7 @@ class AdapterDistributionTests(unittest.TestCase):
                         self.assertFalse((root / destination).exists())
 
     def test_distribution_generation_preserves_runtime_under_output_parent_and_symlinks(self) -> None:
-        for operation in ("tree", "archives", "staged"):
+        for operation in ("tree", "archives"):
             for hazard in ("parent", "ancestor", "nested-link", "archive-link", "hard-link", "special-file"):
                 with self.subTest(operation=operation, hazard=hazard), tempfile.TemporaryDirectory() as tmp:
                     root = Path(tmp)
@@ -453,10 +445,8 @@ class AdapterDistributionTests(unittest.TestCase):
                     with self.assertRaisesRegex(ValueError, "unsafe output"):
                         if operation == "tree":
                             sync_adapter_output("v1.0.0", skills_root=skills, output_root=output)
-                        elif operation == "archives":
-                            build_adapter_archives("v1.0.0", output, skills_root=skills)
                         else:
-                            build_staged_v3_adapter_archives("v1.0.0", output, skills_root=skills)
+                            build_adapter_archives("v1.0.0", output, skills_root=skills)
                     self.assertEqual(runtime.read_bytes(), before)
                     self.assertFalse((output / "claude").exists())
 
@@ -2000,7 +1990,7 @@ class AdapterDistributionTests(unittest.TestCase):
         self.assertTrue(report.adapter_decision("claude").included)
 
 
-    def test_manifest_render_records_partial_portability(self) -> None:
+    def test_manifest_render_ignores_retired_target_only_restrictions(self) -> None:
         portable = evaluate_skill(self.fixture("portable-basic"))
         partial = evaluate_skill(self.fixture("partial-portability"))
 
@@ -2869,7 +2859,7 @@ class AdapterDistributionTests(unittest.TestCase):
             self.assertIn("Using RigorLoop skills", text)
             self.assertIn(".claude/skills/", text)
             self.assertIn("native Claude Code slash commands", text)
-            for command in ("/proposal", "/spec", "/implement", "/code-review", "/pr"):
+            for command in ("/proposal", "/design", "/implement", "/code-review", "/pr"):
                 self.assertIn(command, text)
             self.assertNotIn("claude -p", text)
             self.assertNotIn("opencode run --command", text)

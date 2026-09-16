@@ -16,23 +16,9 @@ When the project explicitly adopts Validation-model test criteria, use the selec
 
 When project authority explicitly adopts Review and Closeout policy, use the packaged application below for shared assessment meaning. It replaces source-local judgment, independence, applicability, concern-disposition and closeout rules in this skill and its conditional resources; retain specialist methods and contract-selected storage procedures. Historical assessments retain their original meaning but grant no current runtime support. Missing or contradictory required guidance stops dependent reliance.
 
-## Explicit recording
-
-Use this profile when the project has adopted the RigorLoop Record Format and explicitly selected the change. Read the project's governing documents. The Workflow model owns coordination, Review and Closeout owns assessment policy, Record Format owns stored shapes, and CLI owns construction and persistence. Current storage uses `rigorloop-records-v3`; historical stores remain unchanged archival evidence. Select the actual record contract; never mix versions within a store. Retired or unknown stored formats are rejected without fallback. Do not migrate or reinterpret historical records; preserve their bytes and meaning as archival evidence. The project need not contain RigorLoop's internal design repository.
-
-Use the contract-selected recording procedures in this skill and its conditional resources. Dispatch primary results by schema_version (2 or 3), then status and operation; a schema-3 error alone does not establish v3 storage. Read scope and omissions before relying on selected content. Retain substantive stage duties, permissions, independent assessment and proof obligations. Historical records grant no current execution authority.
-
-Use `rigorloop context --root PATH --change ID --input - --format json` with explicitly selected kinds/filters and full detail. Expand the selection when needed: omitted content is not evidence of absence. Copy `record_contract` and `revision` into the targeted request's `contract` and `expected_revision`. Use `rigorloop subject inspect --root PATH --path FILE --content full --format json` for the exact engineering basis and mechanical identities; supply relied-on subjects as `reads` with their expected identities.
-
-Make your decision, then use the purpose-specific command's `--help` and submit its targeted operation on stdin. Use `batch` for related explicit updates. Supply semantic values and any required applicability; the CLI constructs registry entries, preserves neighbors and serializes records. Do not reconstruct complete files or invoke historical eligibility first. Preview is optional; normal writes validate. A save does not approve work, establish readiness or select the next actor. Conflict requires rereading and reassessment; busy/recovery-required is not a save. Use explicit `record-store recover` for interrupted storage. Missing or stale evidence prevents reliance, not recording a correction.
-
-Assess every required model, delivery, implementation, review and proof subject before reliance. Record failed evidence with evidence record and defects with blocker add; do not fabricate a review or failed success report. After correction and independent rereview, explicitly reassess and disposition your own blocker with blocker set. Only on success use verify record for the final assessment and explanation, and explicitly request activity completion if justified. Downstream consumers retrieve the full report with verify show; decisions show includes shared material-decision narrative.
+## Purpose
 
 Prove that the requested scope, current evidence, implementation, tests, and governing artifacts agree. Verify owns justified final closeout; PR owns the separate external handoff.
-
-For v3 successful Verify, supply nonempty summary and assessment_scope, nonempty rationale and changes arrays, and an explicit limitations array. Changes describes delivered results; rationale explains why referenced evidence supports the conclusion. Keep executions/results in evidence and exact identities in subjects/references. Store no body alongside these fields. Use verify.set only for whole explanation-field replacement; a save grants no approval or renewed applicability. Changed evidence basis requires complete verify.record; missing evidence or a newly discovered defect requires explicit reassessment, failed evidence and the owned blocker as applicable. Review/Verify show --fields is partial context with explicit omissions, not proof of complete assessment. Historical records remain unchanged; any new reassessment uses v3.
-
-## Purpose
 
 Trace current evidence backward through implementation and allocated work to governing SRs and the approved proposal direction.
 
@@ -58,7 +44,9 @@ Run `ci-maintenance` first when hosted workflow automation, validation automatio
 
 Public skills operate in customer-project mode by default. Use project-local instructions, specs, plans, change records, code, tests, validation, and authoritative CLI workflow context when governed. Do not require RigorLoop repository-internal specs, docs, reports, or governance files in customer projects. Use portable defaults where safe without claiming governed placement, and block on ambiguity.
 
-## Requested outcome and target
+## Invocation classification
+
+Classify the requested outcome and, independently, whether adopted recording authority exists: the project selected the supported record contract and exact change for this result. This does not establish governed-final execution.
 
 Classify exactly one requested outcome:
 
@@ -219,7 +207,13 @@ The project's selected contract owns formal adoption and document format. An unm
 
 Confirm contract-to-proof-to-implementation coherence and unresolved-gap closure. Stop verification before readiness claims when evidence is missing or stale, an ID is unknown, or a discovery still requires upstream ownership.
 
+## Recording boundary
+
+Read `references/governed-verification-recording.md` before dependent recording under adopted recording authority. Loading a method or saving a record grants no approval or continuation. Missing, unreadable, escaped, conflicting or mixed-version required guidance stops dependent work without reconstructing it; untriggered guidance does not block unrelated portable work.
+
 ## Resource map
+
+- READ `references/governed-verification-recording.md` when adopted recording authority requires this result to be recorded, including a late trigger, before dependent writes.
 
 - READ `references/test-quality.md` when adopted criteria apply and this invocation authors, allocates or assesses test obligations.
 - READ `references/test-maintenance.md` when adopted criteria apply and this invocation changes tests or assesses test maintenance, removal or its impact.
