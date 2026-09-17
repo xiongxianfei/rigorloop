@@ -1,0 +1,358 @@
+{
+  "assessment_scope": "Final whole-change independent Code Review of 5822e0e6583b50ca645fdb04fbde1d514a9f2177..a8014aef9f6750b2940835f427df412a464fd21d, including all current engineering members and fourteen deleted files with baseline identities, completed M1 and cross-owner integration. Current evidence and approved Design/Delivery packages checked; final Verify and external handoff excluded.",
+  "change_id": "2026-09-17-retire-feature-format-support",
+  "contributors": [
+    {
+      "id": "feature-retirement-design-author",
+      "role": "design"
+    },
+    {
+      "id": "feature-retirement-plan-author",
+      "role": "plan"
+    },
+    {
+      "id": "feature-retirement-implementer",
+      "role": "implement"
+    }
+  ],
+  "findings": [],
+  "id": "feature-retirement-final-code-review",
+  "independence_basis": "Delegated reviewer /root/catalog_admission_design_review authored none of the engineering Designs, plan, executable code, tests or published guidance. Earlier Design assessment was review only. This is a fresh holistic final assessment of the complete actual base-to-HEAD diff and integrated proof, distinct from the other reviewer’s M1 assessment. No engineering edits made.",
+  "judgment": "approved",
+  "limitations": [
+    "Final Code Review approval only: no Verify success, branch/PR readiness, hosted CI, publication or lifecycle completion claim. Route owns progression.",
+    "TG-METHOD is concrete independent artifact/decision assessment, not universal agent-compliance proof or execution by a semantic runner; Authoring catalog cases remain proposed.",
+    "Full local execution reused after exact-subject and proof-scope checks; the final reviewer directly repeated public boundary and workflow-context aggregates, not all unchanged suites. Further engineering changes require appropriate reassessment."
+  ],
+  "rationale": [
+    "1. Spec alignment — pass. Approved feature-retirement-design-review-r2 and delivery-review-r2 remain exact-current: all 23 Design subjects and primary plan match. DES-SR-14/23, VAL-SR-28/35, CLI-SR-32 and DIST-SR-24 align with the selected unsupported-output, validation and resource withdrawal. The proposal’s source-inventory hashes describe pre-implementation feasibility; changed implementation subjects are expected and are not misused as current-code approval. The proposal itself and approved direction remain unchanged.",
+    "2. Test coverage — pass. Inspected actual deletion families and native disposition: boundary 72 to 29 removes feature/proof grammar and adoption-classification obligations; current privacy protection moves to a real model diagnostic. Reference 28 to 26 retains independent exact resource/consumer expectations, unknown-before-consistency failure, missing/escaped paths, drift, rollback and retry on compact-core. Skill 289 to 288 removes exclusive feature-format projection expectation; selector 188 remains reachable with a changed unsupported-input oracle. Deleted builders/static fixtures have no surviving required consumer. Counts document disposition rather than determine adequacy.",
+    "3. Edge cases — pass. Independently executed python tests/engineering/validation/test-boundary-first-validation.py: exit 0, 29 tests. Public feature/proof, missing and symlink variants reject with BFR-UNSUPPORTED-FORMAT and unchanged bytes; patched Path.read_text directly proves no retired-content access. Current malformed/unknown model structure, generic flat paths, containment, privacy and catalog admission remain protected. Inspected actual selector-command execution and Git deletion proof in selection_git_tests; the separate M1 reviewer repeated these real paths and full local evidence covers all 188 selector methods.",
+    "4. Error handling — pass. Lexical specs/ dispatch happens before model parsing and filesystem content access; public JSON preserves empty review_required and nonzero rejection, without adoption demotion. Mixed valid/unsupported selection stays blocked and cannot pass through default models. CLI supported kinds derive from narrowed defaults; schema spec property/owner value removed together. Independently executed node --test packages/rigorloop/test/workflow-context.test.js: exit 0, 39 pass, zero skipped/cancelled/todo. Public spec override rejects before candidates and preserves configuration/customer bytes; retained override controls remain in that suite.",
+    "5. Architecture boundaries — pass. Deletion removes only feature/proof parsing and exclusive methods. Existing model validator keeps its Markdown/table/closed-dimension/diagnostic responsibilities; catalog validation retains its own dispatch. Selector remains an execution-selection owner, CLI remains factual discovery, Packaging retains closed manifest and projection ownership. Compact reasoning keeps four questions, eight dimensions, actual interactions and Design-versus-Plan gap ownership without adding a format, runtime service or mandatory inventory.",
+    "6. Compatibility — pass within the explicit breaking support change. Package README states old feature/proof operations and spec configuration are unsupported and applies the change to newly built artifacts, not historical releases. Existing source interpretation and authorized scoped adoption preserve customer requirements/decisions and original review identities. Existing five archive mappings, examples-prefix routing, generic flat/relocation aliases, other artifact-location kinds, stored-record safety and release/installation permissions remain unchanged. Proven absent historical deletion routes to current checks; present or symlinked input cannot take that exception.",
+    "7. Security/privacy — pass. Unsupported formats are rejected without reading their bytes or mutating project files; current model offending values remain hashed and bounded. Retained reference/model tests preserve containment and symlink rejection and no-outside-write/rollback behavior. No network call, privilege expansion, automatic conversion, historical-record rewrite or publication is added.",
+    "8. Derived artifact currency — pass within local evidence. Inspected one canonical compact-core method, closed manifest and all eight identical projections; two retired canonical resources and three projections are removed. Exact-current TG-METHOD records actual generated Codex/Claude archive and installation observations (136 archive members and 87 inspected files per target), matching canonical bytes and absent retired methods. Native Packaging 95-case execution separately protects real generated archives and packed CLI installation. This establishes local package composition, not hosted installation or registry currency.",
+    "9. Unrelated changes — pass. Whole diff remains one coupled retirement with necessary Designs, catalog accounting, proposal/plan, evidence and release communication. No historical path retirement, unrelated compatibility removal, version bump or record-schema change is hidden in cleanup. All fourteen deleted files remain recoverable at baseline; exact deletion basis: [{\"baseline_identity\": \"sha256:ec8e8239c642bf340c4c8aba2105ae9783bced35230bb5bf6501b7b931e6cc4d\", \"path\": \"skills/delivery-review/references/boundary-first-proof-v1.md\"}, {\"baseline_identity\": \"sha256:7179b4f48e6ba5a1503237f58875f0dc5fe8cdc2c7e77f277c6debee714387b8\", \"path\": \"skills/design-review/references/boundary-first-feature-authoring-v1.md\"}, {\"baseline_identity\": \"sha256:7179b4f48e6ba5a1503237f58875f0dc5fe8cdc2c7e77f277c6debee714387b8\", \"path\": \"skills/design/references/boundary-first-feature-authoring-v1.md\"}, {\"baseline_identity\": \"sha256:7179b4f48e6ba5a1503237f58875f0dc5fe8cdc2c7e77f277c6debee714387b8\", \"path\": \"templates/shared/boundary-first-feature-authoring-v1.md\"}, {\"baseline_identity\": \"sha256:ec8e8239c642bf340c4c8aba2105ae9783bced35230bb5bf6501b7b931e6cc4d\", \"path\": \"templates/shared/boundary-first-proof-v1.md\"}, {\"baseline_identity\": \"sha256:0ddfa8a37d2f30c53b714b94864900bdbb654ba98b05790596395d23e0673e41\", \"path\": \"tests/engineering/validation/boundary_handoff_tests.py\"}, {\"baseline_identity\": \"sha256:28a13c7cd0c7ea61c7f3a81f9cbfd6c0d6a327f94bd20b048d4af62c86eb4398\", \"path\": \"tests/engineering/validation/boundary_path_tests.py\"}, {\"baseline_identity\": \"sha256:079425436882a8d6d2a6e033c50795c50ba14ea58a3e0b9d7fdf3c8954535b7c\", \"path\": \"tests/engineering/validation/boundary_structural_tests.py\"}, {\"baseline_identity\": \"sha256:952548a58c0f8cc23c959539e698d309a98fe630c10b37a40c44973f56b251cd\", \"path\": \"tests/engineering/validation/fixtures/boundary-first/feature-records/complex.md\"}, {\"baseline_identity\": \"sha256:4cb7a204e0280bf57c83e4e13f5bc38c7cd5b7bab1409a9f6403115947934cb1\", \"path\": \"tests/engineering/validation/fixtures/boundary-first/feature-records/minimal.md\"}, {\"baseline_identity\": \"sha256:299b88acc292cd9f47174654b8e31f641ac87eb8ec660690cc8134ca825720e5\", \"path\": \"tests/engineering/validation/fixtures/boundary-first/feature-records/semantic-omission.md\"}, {\"baseline_identity\": \"sha256:6192fc7f1e4b7e70754c91c457d89ba14d4d957c4f8b270898fb1eee752353a6\", \"path\": \"tests/engineering/validation/fixtures/boundary-first/proof-maps/complete.md\"}, {\"baseline_identity\": \"sha256:5a5c80fbc972c5cbd14e44483fbef5ff2a8099e0fbcdaa79c45dd4995dae36eb\", \"path\": \"tests/engineering/validation/fixtures/boundary-first/proof-maps/complex-complete.md\"}, {\"baseline_identity\": \"sha256:6907f8fb1ece7847fd2d39bca3f22b9ff32037bb8f8bd708e6c2f83031d9fc6a\", \"path\": \"tests/engineering/validation/fixtures/boundary-first/proof-maps/gap.md\"}]",
+    "10. Validation evidence — pass. Rechecked all 57 implementation-validation subjects, all 57 disposition subjects and all 28 TG-METHOD subjects against current files; no drift. Actual local execution log ends Selected CI checks passed and Boundary scope passed; owning evidence records 1039 selected rows, including native reference26, Skill288, Packaging95, context39 and selector188, plus projection/default-model checks. Reuse is justified by unchanged proved files, commands/environment and no contradictory evidence; final reviewer additionally ran boundary29 and context39. Final committed record snapshot and final readiness remain Verify-owned.",
+    "Published-skill semantic review — pass. Changed entrypoints and triggered source/model/governed methods agree: unsupported old-format requests and supplied templates leave files unchanged; separately authorized adoption preserves meaning and enters exact Design review before Plan allocation. TG-METHOD independently assesses three concrete authority variants plus stale approval/helper retry and four faulty compact-method alternatives, with actual installed availability and explicit limits. Generic source spec/test-spec nouns do not grant retired output operation; current living Designs and Delivery allocation are explicit operational authority. Description, triggers, stage ownership, prerequisites, stop conditions and claim limits remain coherent.",
+    "Integrated final judgment: completed M1 and resolved Design/Delivery concerns have been reassessed in the whole delivered context. This fresh final review does not substitute M1 approval for holistic assessment and does not alter lifecycle state. No material finding or unresolved implementation decision remains in this scope; route may hand the evidence to distinct Verify."
+  ],
+  "reviewer": {
+    "id": "feature-retirement-final-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:b08e342159f367131963237b00b284dfc052686f112ebab9824457385de42af8",
+      "path": "CONSTITUTION.md"
+    },
+    {
+      "identity": "sha256:4649f4d962792124b6d6f03f5b8c592f7958f3711dc22cd669ecfe201f017069",
+      "path": "docs/changes/2026-09-17-retire-feature-format-support/evidence.json"
+    },
+    {
+      "identity": "sha256:96e179bbe81691f2a0cedead70dfff2b5e381068420759b541c1c6261a8cc113",
+      "path": "docs/changes/2026-09-17-retire-feature-format-support/material-decisions.json"
+    },
+    {
+      "identity": "sha256:b08564346885329a7c9f303da7a977c918987b68698f8961a2eeff61d09afe80",
+      "path": "docs/changes/2026-09-17-retire-feature-format-support/reviews/feature-retirement-delivery-review-r2.json"
+    },
+    {
+      "identity": "sha256:3b839185491f718b20836757cdcc6d89a1b46f2b3216247ad4fe8c72479550e1",
+      "path": "docs/changes/2026-09-17-retire-feature-format-support/reviews/feature-retirement-design-review-r2.json"
+    },
+    {
+      "identity": "sha256:5fbfe6840939a77ec3cd8fa9043a4d4ba8ba03561388bd5b8ffdbaada1e89fd2",
+      "path": "docs/changes/2026-09-17-retire-feature-format-support/reviews/feature-retirement-m1-code-review.json"
+    },
+    {
+      "identity": "sha256:957db8437d7a6f90ed76c0e6541b6ef613047a0518694c341e35fd20e59eedcc",
+      "path": "docs/changes/2026-09-17-retire-feature-format-support/reviews/feature-retirement-proposal-review.json"
+    },
+    {
+      "identity": "sha256:7ae16c1195d46c76e00f68233856f03d989bf7c688a8d0d9006196aa617efaa8",
+      "path": "docs/design/cli/cli.md"
+    },
+    {
+      "identity": "sha256:eb2946c6aab6e8b8494207bbc0cbcae46d2fb706cd1a3f33013dcf3ab764dcfc",
+      "path": "docs/design/engineering/packaging.md"
+    },
+    {
+      "identity": "sha256:f7099080caf0a3cb4d79e2d68361fb6b760260c3530e4f52d688cd07392e37a3",
+      "path": "docs/design/engineering/release/release.md"
+    },
+    {
+      "identity": "sha256:e09382d178369338fe54ca24cb5a865434e10fcb75884d631f942fe20552b9d0",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:edd9ef472bc4ddb26779d9582ee723bda7e994b7915f16842a1fdfa8fb5e14ff",
+      "path": "docs/design/skill/assessment.md"
+    },
+    {
+      "identity": "sha256:fbad604db276a491a1197533c6bd9bb7b930939cff2c26c54ebedfe31fe00bd5",
+      "path": "docs/design/skill/authoring/authoring.md"
+    },
+    {
+      "identity": "sha256:70e2485309e83dfdc5f4175d192b3b1114aa2e0e1716074700250f212d50528e",
+      "path": "docs/design/skill/authoring/design.md"
+    },
+    {
+      "identity": "sha256:7f4dca46594b7c6dd020ebaf63fa816149861c7fc4a720180f142de9c457d091",
+      "path": "docs/design/skill/authoring/test-design/cases/correction-reconciliation.json"
+    },
+    {
+      "identity": "sha256:b2e83fe05600347fd620e5b24be8bdc4569f6ca862557e8e70d209dbb331702c",
+      "path": "docs/design/skill/authoring/test-design/cases/refinement.json"
+    },
+    {
+      "identity": "sha256:02818600850cf2c47adf128820984cba11728ad4023f6cf8ff59beb714e4d6b2",
+      "path": "docs/design/skill/authoring/test-design/cases/scope-handoff.json"
+    },
+    {
+      "identity": "sha256:dbcb7e61db655ecead9529d091bc71a6ae21081087a450ddbdbe1d6d36cfbb47",
+      "path": "docs/design/skill/authoring/test-design/test-cases.json"
+    },
+    {
+      "identity": "sha256:8d5e6dbec8fb06a9648c15921ff324a3da8c2589c927fa0ea05a7e17bf5db146",
+      "path": "docs/design/skill/authoring/test-design/test-design.md"
+    },
+    {
+      "identity": "sha256:2828a3eb7d6fccfc912580ab95e4c4fd5dd38af166ed07727afa13d4941eaa43",
+      "path": "docs/design/skill/skill.md"
+    },
+    {
+      "identity": "sha256:b8cf15dddf0611227860248a6cd92fe6ebb6b4b84ff5f4f0a79aa6a9eef56145",
+      "path": "docs/design/skill/test-design/cases/capability-composition.json"
+    },
+    {
+      "identity": "sha256:b2cd74b3690c17afbf40b62019e607592beaecd86dba3d3885cef9745e9ebea2",
+      "path": "docs/design/skill/test-design/cases/capability-contract.json"
+    },
+    {
+      "identity": "sha256:153c7941dd4c9bec09a8368ff8605d6469c3efa4f5aac1e6e51d42ecdb7c5407",
+      "path": "docs/design/skill/test-design/cases/implementation-handoffs.json"
+    },
+    {
+      "identity": "sha256:3b798f4feda2327f9d7da5793eba11160c259a1ff825914127225cd184302e71",
+      "path": "docs/design/skill/test-design/cases/recording-composition.json"
+    },
+    {
+      "identity": "sha256:839291d455ee3f93f8254e539a5577c6ce36389669ce0e3cd44ec3ced0e116ef",
+      "path": "docs/design/skill/test-design/cases/resource-contract.json"
+    },
+    {
+      "identity": "sha256:872bd368736f46ef828cac1213cccccb803500fa164ef88ecc1393ee470f490c",
+      "path": "docs/design/skill/test-design/test-cases.json"
+    },
+    {
+      "identity": "sha256:62b09ca633c59b1f8f80f7ced683ffd69db8bd3b8d52917a38b5ca12913f80c0",
+      "path": "docs/design/skill/test-design/test-design.md"
+    },
+    {
+      "identity": "sha256:d2f4d246487f9db819ce37a0d839baed9afb5e6480d3cc0dc80a0f7537abff0c",
+      "path": "docs/design/skill/workflow.md"
+    },
+    {
+      "identity": "sha256:7765c817d1b46d43d88a6eb7c58dad2ad6a6a96209a21802830548f67febacba",
+      "path": "docs/design/system.md"
+    },
+    {
+      "identity": "sha256:7f66ebb9f51a66f278fd1a17ca7c422e015335f5344c9ea4769321fab9377bdf",
+      "path": "docs/design/test-design/rules.md"
+    },
+    {
+      "identity": "sha256:39a727c75030cffb62c9b350bf1319855925fab52c00e2f08e073a190796f73d",
+      "path": "docs/plan.md"
+    },
+    {
+      "identity": "sha256:4ad33835d092e6724998869a37469e21e63b01fd290ca02b595ff516d6eb0692",
+      "path": "docs/plans/2026-09-17-retire-feature-format-support.md"
+    },
+    {
+      "identity": "sha256:ebb38f081982da0a3a5b328f0a30bb25b371e380373f3d074d803cc5b56db4f5",
+      "path": "docs/proposals/2026-09-17-retire-feature-format-support.md"
+    },
+    {
+      "identity": "sha256:5ee8e1adf51c5b05c64117b5a23f6e5a65d94e0bf91225ec68044f026baebf5a",
+      "path": "packages/rigorloop/README.md"
+    },
+    {
+      "identity": "sha256:99600ff0ccedd7c99de6ae73f105dde79c0fac455ce69574da5fec315da4594e",
+      "path": "packages/rigorloop/dist/lib/workflow-context.js"
+    },
+    {
+      "identity": "sha256:97235242472fa1c615d3719ccfc140cba33d22576ad1e05f5cacd9994d15f343",
+      "path": "packages/rigorloop/test/workflow-context.test.js"
+    },
+    {
+      "identity": "sha256:d46e5c1e4b936128c62dc426f75341b04791e28a944624ee31922c83e696426f",
+      "path": "schemas/rigorloop-workflow-v1.schema.json"
+    },
+    {
+      "identity": "sha256:0ea3d48254b2fbcf9054ad3b94b3286fb0059d61f40562abf822be475ccdacf7",
+      "path": "scripts/lib/validation/boundary_first_reference.py"
+    },
+    {
+      "identity": "sha256:587085fd63188f18e5eeab88a28afbd02f04e4ca7a4196a96ee80328c2fd77f7",
+      "path": "scripts/lib/validation/boundary_first_validation.py"
+    },
+    {
+      "identity": "sha256:d3e7f8a364ffa54c2d7f75548566d34d5fcab38ab8a49fea11b335bde4a365ab",
+      "path": "scripts/lib/validation/skill_validation.py"
+    },
+    {
+      "identity": "sha256:d21a0ec612a022c0e4f9993b883b4a532c849c6be7c045555ed4c167dd9c053d",
+      "path": "scripts/lib/validation/test_design_validation.py"
+    },
+    {
+      "identity": "sha256:2d99b6f089de68655d7a8a9a2e95de8dc1fa978e2770b11932ea40ad2fa5b01f",
+      "path": "scripts/lib/validation/validation_selection.py"
+    },
+    {
+      "identity": "sha256:fe19865387955cf3354f7aff285e5a67c6fa2260f313e379a4a39eab888276c2",
+      "path": "scripts/resources/boundary-first/boundary-first-resources.yaml"
+    },
+    {
+      "identity": "sha256:0fff9446229d0ff89df144f7f88f4747710f9d2926076b63891601fd58795460",
+      "path": "scripts/validate-boundary-first.py"
+    },
+    {
+      "identity": "sha256:b03d2e1c8b76b0e30862d43dcc1fbeb67cf593e36ca7ab2089f799c3b4bedeea",
+      "path": "skills/code-review/SKILL.md"
+    },
+    {
+      "identity": "sha256:634a4214dc7ce21aea1acefd098f3ece266c38e2bbbfc7e0588a8b0148e476ae",
+      "path": "skills/code-review/references/boundary-first-method-v1.md"
+    },
+    {
+      "identity": "sha256:f30234a227964a14b4e6a0b4684c099c2e5cb1bc6fe2525ace6788b46097014d",
+      "path": "skills/delivery-review/SKILL.md"
+    },
+    {
+      "identity": "sha256:634a4214dc7ce21aea1acefd098f3ece266c38e2bbbfc7e0588a8b0148e476ae",
+      "path": "skills/delivery-review/references/boundary-first-method-v1.md"
+    },
+    {
+      "identity": "sha256:d343f1bbd34df253d276a45478c3a4e4dc20dd3da82a7eef5c447cf97e5c4144",
+      "path": "skills/design-review/SKILL.md"
+    },
+    {
+      "identity": "sha256:634a4214dc7ce21aea1acefd098f3ece266c38e2bbbfc7e0588a8b0148e476ae",
+      "path": "skills/design-review/references/boundary-first-method-v1.md"
+    },
+    {
+      "identity": "sha256:1aa5f23aafe3d6be82ac5b548931ca1a8b0306a72d1f14c74707721aeec28c77",
+      "path": "skills/design/SKILL.md"
+    },
+    {
+      "identity": "sha256:b098b895208405b724733561d381f2357454efe6343225eb6ef56ff15d952ed6",
+      "path": "skills/design/assets/design-skeleton.md"
+    },
+    {
+      "identity": "sha256:5ff3bd5cec3b6ad239ea1fa8676a2fb3cfae1a3ee8fb22876a96112de065727e",
+      "path": "skills/design/references/architecture-view-examples.md"
+    },
+    {
+      "identity": "sha256:634a4214dc7ce21aea1acefd098f3ece266c38e2bbbfc7e0588a8b0148e476ae",
+      "path": "skills/design/references/boundary-first-method-v1.md"
+    },
+    {
+      "identity": "sha256:ffa12a5c57924271705d90e084b99cc49eacfc5fb9cb5e49755653798e1b93d1",
+      "path": "skills/design/references/governed-design-authoring.md"
+    },
+    {
+      "identity": "sha256:f63a5c253fe5ae6d0c45e94de860072f23618b8f47bed55808be08685558244a",
+      "path": "skills/design/references/legacy-source-reconciliation.md"
+    },
+    {
+      "identity": "sha256:3cf7dd9cafb806ff74a0597840922568c7694ceb573b9db02fd3dedd103a17e8",
+      "path": "skills/design/references/model-authoring.md"
+    },
+    {
+      "identity": "sha256:2dd8b4802d65932cdfb4c844b3a3fb468a58716da442c3a1143f5689c414ce08",
+      "path": "skills/design/references/system-composition.md"
+    },
+    {
+      "identity": "sha256:92b7b4ce21ea27d6b7c516c4b4fd9f0af495da69e7b007230969cd0c533509f7",
+      "path": "skills/design/references/technical-design.md"
+    },
+    {
+      "identity": "sha256:b918e45e6c8b169d93d70d3ddfd07c2fb0e26e71e40e2be414cddaa406e2129c",
+      "path": "skills/implement/SKILL.md"
+    },
+    {
+      "identity": "sha256:634a4214dc7ce21aea1acefd098f3ece266c38e2bbbfc7e0588a8b0148e476ae",
+      "path": "skills/implement/references/boundary-first-method-v1.md"
+    },
+    {
+      "identity": "sha256:2ce07158f0a9b1b70ac92076b8fe93e116c81618052420f0768a8932566b1a47",
+      "path": "skills/plan/SKILL.md"
+    },
+    {
+      "identity": "sha256:634a4214dc7ce21aea1acefd098f3ece266c38e2bbbfc7e0588a8b0148e476ae",
+      "path": "skills/plan/references/boundary-first-method-v1.md"
+    },
+    {
+      "identity": "sha256:ba145be7cfe839c64da8f79d36e6f08cf32a9220d5ac548f461e1cf93b6da41a",
+      "path": "skills/route/SKILL.md"
+    },
+    {
+      "identity": "sha256:634a4214dc7ce21aea1acefd098f3ece266c38e2bbbfc7e0588a8b0148e476ae",
+      "path": "skills/route/references/boundary-first-method-v1.md"
+    },
+    {
+      "identity": "sha256:7c9a459721baf39abb1e0cc7d25fb5244c4c445f1251653ca863ca32e0eeb70f",
+      "path": "skills/verify/SKILL.md"
+    },
+    {
+      "identity": "sha256:634a4214dc7ce21aea1acefd098f3ece266c38e2bbbfc7e0588a8b0148e476ae",
+      "path": "skills/verify/references/boundary-first-method-v1.md"
+    },
+    {
+      "identity": "sha256:226cf779d2f410c3ce55a0bcc84a6a7463d12425acf4d2cb815ac1eb8654429b",
+      "path": "skills/verify/references/branch-readiness-verification.md"
+    },
+    {
+      "identity": "sha256:634a4214dc7ce21aea1acefd098f3ece266c38e2bbbfc7e0588a8b0148e476ae",
+      "path": "templates/shared/boundary-first-method-v1.md"
+    },
+    {
+      "identity": "sha256:ed8f8f3d420977be6ec2050a449a792c54446d86f567e5ca743d7ebd06510071",
+      "path": "tests/engineering/validation/boundary_command_tests.py"
+    },
+    {
+      "identity": "sha256:6788a0e6efa9fe9e354a24270a9e146a7243ec966e0c6ba6a4bf30ab66dc5221",
+      "path": "tests/engineering/validation/boundary_fixture_helpers.py"
+    },
+    {
+      "identity": "sha256:3e3aa0594031b879fdaf380587eb6835dcdc8b925ce89e8b840075f6cfdff740",
+      "path": "tests/engineering/validation/boundary_model_tests.py"
+    },
+    {
+      "identity": "sha256:a7f0c04511cb9f567b654690a18f83dea7209deb38809e1548e5c27ea724a418",
+      "path": "tests/engineering/validation/selection_contract_tests.py"
+    },
+    {
+      "identity": "sha256:22ba80963c17bb1798c6957e3f8995525aa91ab765a16dc8fb28812ae4152c05",
+      "path": "tests/engineering/validation/selection_git_tests.py"
+    },
+    {
+      "identity": "sha256:ab79ea61aca1034aba02d6051270425eb38a3b68a1098530e3e771edf6177c4c",
+      "path": "tests/engineering/validation/test-boundary-first-reference.py"
+    },
+    {
+      "identity": "sha256:0f4e5cda3e04d568e21b8a8764ead93f2916aaeeda02a04d173fe73c073d99cd",
+      "path": "tests/engineering/validation/test-boundary-first-validation.py"
+    },
+    {
+      "identity": "sha256:1914ca6022ce1080d49ada7712afb52a09cdefd63a8bc9abbffe88f78d74ac46",
+      "path": "tests/skill/skill_design_resource_tests.py"
+    }
+  ],
+  "summary": "Final whole-change Code Review approved: the bounded retirement is coherent across guidance, resources, validation, CLI discovery and retained safety. All ten checklist dimensions pass; no material findings.",
+  "target": "code"
+}

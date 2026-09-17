@@ -1,11 +1,11 @@
 {
   "activity": {
     "owner": {
-      "id": "feature-retirement-final-reviewer",
-      "role": "review"
+      "id": "feature-retirement-verifier",
+      "role": "verify"
     },
-    "reason": "M1 independently approved in feature-retirement-m1-code-review with no findings and unchanged subjects. All implementation complete; fresh final whole-change Code Review required before Verify.",
-    "stage": "code-review",
+    "reason": "All M1 work completed; fresh feature-retirement-final-code-review approves complete delivered change with no material findings. Distinct final Verify must assess current evidence and exact Git/PR basis.",
+    "stage": "verify",
     "status": "ready"
   },
   "applicability": [
@@ -79,6 +79,15 @@
       },
       "path": "docs/changes/2026-09-17-retire-feature-format-support/reviews/feature-retirement-m1-code-review.json",
       "reason": "Independent complete M1 assessment of exact unchanged engineering and approved Design/Delivery package; permits only milestone closeout by route, not final review or Verify.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "feature-retirement-final-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-17-retire-feature-format-support/reviews/feature-retirement-final-code-review.json",
+      "reason": "Fresh final whole-change independent assessment of the complete delivered engineering diff and exact current approved authority/proof; supports distinct Verify only.",
       "value": "current"
     }
   ],
@@ -197,6 +206,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-17-retire-feature-format-support/reviews/feature-retirement-m1-code-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-17-retire-feature-format-support/reviews/feature-retirement-final-code-review.json"
     }
   ],
   "schema_version": 3,
