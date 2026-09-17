@@ -85,31 +85,43 @@ class ModelRecordTests(unittest.TestCase):
         self.assertEqual(path.read_text(), self.text)
 
     def test_model_unknown_value_marker_and_dimension_fail_closed(self):
-        for text in (
-            self.text.replace("Model validation contract: model-document-v1", "Model validation contract: unknown_value", 1),
-            self.text.replace("| Input domain |", "| unknown_value |", 1),
-        ):
-            with self.subTest(text=text[:50]):
-                codes = {i.code for i in self.check(text)}
-                self.assertTrue(codes & {"BFR-MODEL-CONTRACT", "BFR-MODEL-DIMENSIONS"}, codes)
+        unknown_marker = self.text.replace("Model validation contract: model-document-v1", "Model validation contract: unknown_value", 1)
+        input_row = next(line for line in self.text.splitlines() if line.startswith("| Input domain |"))
+        variants = (
+            ("unknown marker", unknown_marker, "BFR-MODEL-CONTRACT"),
+            ("unknown marker before missing table", unknown_marker.replace("## Requirements", "## Broken requirements", 1), "BFR-MODEL-CONTRACT"),
+            ("unknown dimension", self.text.replace("| Input domain |", "| unknown_value |", 1), "BFR-MODEL-DIMENSIONS"),
+            ("unknown dimension before undeclared reference", self.text.replace(input_row, "| unknown_value | UNKNOWN-SR-01 | Required outcome. |", 1), "BFR-MODEL-DIMENSIONS"),
+        )
+        for label, text, expected in variants:
+            with self.subTest(variant=label):
+                self.assertEqual(self.check(), ())
+                self.assertNotEqual(text, self.text)
+                self.assertEqual([issue.code for issue in self.check(text)], [expected])
+                self.assertEqual(self.path.read_text(encoding="utf-8"), text)
 
     def test_model_missing_duplicate_malformed_tables_and_references_reject(self):
+        input_row = next(line for line in self.text.splitlines() if line.startswith("| Input domain |"))
+        self.assertIn("| WF-SR-02 |", self.text)
         variants = (
-            self.text.replace("Model validation contract: model-document-v1\n", "", 1),
-            self.text + "\nModel validation contract: model-document-v1\n",
-            self.text + "\n## Requirements\n",
-            self.text.replace("| Dimension | Requirement basis |", "| Dimension | unknown_value |", 1),
-            self.text.replace(next(l for l in self.text.splitlines() if l.startswith("| Input domain |")), "| Input domain | not_in_vocabulary |", 1),
-            self.text.replace(next(l for l in self.text.splitlines() if l.startswith("| Input domain |")), "| Input domain | WF-SR-02, WF-SR-02 |", 1),
-            self.text.replace("| State/lifecycle |", "| Input domain |", 1),
-            self.text.replace("| WF-SR-01 |", "| WF-SR-02 |", 1),
-            self.text.replace("| WF-SR-01 |", "| 1-invalid |", 1),
-            self.text.replace("| --- | --- | --- |\n| Input domain", "| bad | --- | --- |\n| Input domain", 1),
-            self.text.replace(next(l for l in self.text.splitlines() if l.startswith("| Input domain |")), "| Input domain | WF-SR-02 | outcome | extra |", 1),
+            ("missing marker", self.text.replace("Model validation contract: model-document-v1\n", "", 1), "BFR-MODEL-CONTRACT"),
+            ("duplicate marker", self.text + "\nModel validation contract: model-document-v1\n", "BFR-MODEL-CONTRACT"),
+            ("duplicate requirements heading", self.text + "\n## Requirements\n", "BFR-MODEL-TABLE"),
+            ("unknown table header", self.text.replace("| Dimension | Requirement basis |", "| Dimension | unknown_value |", 1), "BFR-MODEL-TABLE"),
+            ("undeclared reference", self.text.replace(input_row, "| Input domain | UNKNOWN-SR-01 | Required outcome. |", 1), "BFR-MODEL-REFERENCES"),
+            ("duplicate reference", self.text.replace(input_row, "| Input domain | WF-SR-02, WF-SR-02 | Required outcome. |", 1), "BFR-MODEL-REFERENCES"),
+            ("duplicate dimension", self.text.replace("| State/lifecycle |", "| Input domain |", 1), "BFR-MODEL-DIMENSIONS"),
+            ("duplicate requirement", self.text.replace("| WF-SR-01 |", "| WF-SR-02 |", 1), "BFR-MODEL-REQUIREMENTS"),
+            ("invalid requirement ID", self.text.replace("| WF-SR-01 |", "| 1-invalid |", 1), "BFR-MODEL-REQUIREMENTS"),
+            ("malformed separator", self.text.replace("| --- | --- | --- |\n| Input domain", "| bad | --- | --- |\n| Input domain", 1), "BFR-MODEL-TABLE"),
+            ("extra cell", self.text.replace(input_row, "| Input domain | WF-SR-02 | outcome | extra |", 1), "BFR-MODEL-TABLE"),
         )
-        for index, text in enumerate(variants):
-            with self.subTest(index=index):
-                self.assertTrue(self.check(text))
+        for label, text, expected in variants:
+            with self.subTest(variant=label):
+                self.assertEqual(self.check(), ())
+                self.assertNotEqual(text, self.text)
+                self.assertEqual([issue.code for issue in self.check(text)], [expected])
+                self.assertEqual(self.path.read_text(encoding="utf-8"), text)
 
     def test_model_not_applicable_requires_reason(self):
         row = next(l for l in self.text.splitlines() if l.startswith("| Input domain |"))
