@@ -4,9 +4,9 @@
       "id": "historical-verifier",
       "role": "verify"
     },
-    "reason": "Fresh final whole-change Code Review approved, M1 completed, reporter findings resolved. Distinct final Verify assesses exact engineering, full committed proof and final record snapshot.",
+    "reason": "Final Verify successful; approved review/finding/work state and required proof reconciled. Authorized PR handoff may consume this exact basis.",
     "stage": "verify",
-    "status": "in-progress"
+    "status": "completed"
   },
   "applicability": [
     {
@@ -51,7 +51,7 @@
         "role": "verify"
       },
       "path": "docs/changes/2026-09-17-retire-historical-path-compatibility/evidence.json",
-      "reason": "Exact final engineering hashes verified; fresh full range execution complements correction-specific and unchanged-surface proof.",
+      "reason": "Current exact committed record proof and final engineering comparison; no engineering changes since approved full-range basis.",
       "value": "current"
     },
     {
@@ -79,6 +79,15 @@
       },
       "path": "docs/changes/2026-09-17-retire-historical-path-compatibility/reviews/historical-path-final-code-review.json",
       "reason": "Fresh independent whole-change assessment of complete final engineering and current proof; supports separate Verify, not readiness or completion.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "historical-verifier",
+        "role": "verify"
+      },
+      "path": "docs/changes/2026-09-17-retire-historical-path-compatibility/verify-report.json",
+      "reason": "Distinct final Verify passed for exact reviewed engineering and current committed record basis.",
       "value": "current"
     }
   ],
@@ -162,6 +171,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-17-retire-historical-path-compatibility/reviews/historical-path-final-code-review.json"
+    },
+    {
+      "kind": "verify",
+      "path": "docs/changes/2026-09-17-retire-historical-path-compatibility/verify-report.json"
     }
   ],
   "schema_version": 3,

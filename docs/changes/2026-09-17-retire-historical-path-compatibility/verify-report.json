@@ -1,0 +1,164 @@
+{
+  "assessment_scope": "Distinct workflow-final-verification with Git/PR readiness for complete baseline ddb7eb9e0d4669d360483eac080f8f05fedd5641 to 9f0d40c47d44e48d24c7acb8fd9cd5e1641d3c8a. TG-PATHS, TG-MODELS, TG-MAINTENANCE, TG-GUIDANCE and TG-FINAL-1 assessed. Final engineering identical to4ada6752; later commits contain attributable current-change records only.",
+  "change_id": "2026-09-17-retire-historical-path-compatibility",
+  "changes": [
+    "Removed tool predecessor normalization, retired archive/examples routes, absent model aliases and move replay, legacy document deletion exceptions and obsolete tool/fixture classifiers.",
+    "Preserved explicit current project models including System and portable same-name directory models; rejected generic flat or unknown inputs without substitute or partial-success validation.",
+    "Reconciled owning contracts/published Design guidance and simplified test population while strengthening supported-owner and no-launch rejection proof."
+  ],
+  "evidence_refs": [
+    {
+      "id": "m1-reference-correction",
+      "path": "docs/changes/2026-09-17-retire-historical-path-compatibility/evidence.json"
+    },
+    {
+      "id": "final-committed-range",
+      "path": "docs/changes/2026-09-17-retire-historical-path-compatibility/evidence.json"
+    },
+    {
+      "id": "final-record-snapshot",
+      "path": "docs/changes/2026-09-17-retire-historical-path-compatibility/evidence.json"
+    }
+  ],
+  "limitations": [
+    "Generic flat models and comparisons spanning retired layouts are intentionally unsupported; contributors must use current supported targets/comparison bases. No automatic source conversion.",
+    "Local checks and actual clean-install observations establish current tested behavior and resource availability, not universal agent compliance or hosted CI success. Hosted CI remains unobserved before PR creation; no release/publication/deployment assessment.",
+    "Prior1001-row implementation evidence is reused only for unchanged surfaces; its three corrected subject identities are superseded by current correction/full-range proof. Saved stash and backup ref remain untouched; only primary worktree exists."
+  ],
+  "outcome": "success",
+  "rationale": [
+    "Approved Proposal, exact eight-member Design package and Delivery plan remain applicable; no broader model catalog expansion or new compatibility decision. Current independently approved M1 and fresh final review preserve exact engineering identities; two original material findings resolved by their reporters. M1 completed and blocker query complete with zero blockers.",
+    "TG-PATHS/TG-MODELS have public selector, actual no-launch CI, real Git unstaged/staged/committed endpoint and trusted model-command observations. Full committed range includes authoritative broad_smoke.repo and supplies1272 passed result rows, correction local run232, focused boundary suite29 and canonical skill validation19. Current127-path audit has zero owner/check regressions. Unknown namespace and misleading suffix rejection cover the review-discovered bypass.",
+    "TG-MAINTENANCE follows withdrawn responsibilities:19 exclusive methods removed,11 rewritten,3 added;202 to186 across five inspected modules. Shared containment/privacy/tracking/record/catalog/release safety is retained, no physical fixture deleted, and no per-filename retirement ledger introduced.",
+    "TG-GUIDANCE reconciles all owning Designs and canonical resource; unchanged exact resource identity supports reuse of independently observed real generated archives and packed CLI installations for both supported targets. Full selected package/resource checks pass. No generated product output was hand-edited.",
+    "Final impact: affected runtime selection/admission, documentation/guidance, validation build/package consumption and authority/rejection boundaries are covered by full selected checks and reviews. No dependency, persisted format, network API, release workflow or installation implementation changed: direct source diff contains validation routing/model guards, tests, governing documents/guidance and this change records only. Existing record archival exclusion, actual release wrappers/evidence and customer source authority are affirmatively retained. No automatic migration or publication occurs.",
+    "Fresh immutable final record snapshot passed at9f0d40c4. Subsequent evidence and Verify recording are limited attributable closeout additions; historical approval and proof entries are not retargeted. The full CI basis4ada6752 and final engineering hashes match; evidence-only suffix comparison and upstream reviews support reuse rather than rerunning unchanged suites."
+  ],
+  "review_refs": [
+    {
+      "id": "historical-retirement-proposal-review",
+      "path": "docs/changes/2026-09-17-retire-historical-path-compatibility/reviews/historical-retirement-proposal-review.json"
+    },
+    {
+      "id": "historical-path-design-review-r2",
+      "path": "docs/changes/2026-09-17-retire-historical-path-compatibility/reviews/historical-path-design-review-r2.json"
+    },
+    {
+      "id": "historical-path-delivery-review",
+      "path": "docs/changes/2026-09-17-retire-historical-path-compatibility/reviews/historical-path-delivery-review.json"
+    },
+    {
+      "id": "historical-path-m1-code-review-r2",
+      "path": "docs/changes/2026-09-17-retire-historical-path-compatibility/reviews/historical-path-m1-code-review-r2.json"
+    },
+    {
+      "id": "historical-path-final-code-review",
+      "path": "docs/changes/2026-09-17-retire-historical-path-compatibility/reviews/historical-path-final-code-review.json"
+    }
+  ],
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:4fb4b8957923ad683118f3e88d147152e3b794d15844fe8bbe44115fe6ff69ff",
+      "path": "docs/design/engineering/engineering.md"
+    },
+    {
+      "identity": "sha256:408d11f05ad68f16c5b053cfb95c7c658dc7187a0413b510532bf7109a4bb1b4",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:1b54166e88c557275c7957e38e5269f5968040ba75f382690e83fd66e593fa4b",
+      "path": "docs/design/skill/authoring/design.md"
+    },
+    {
+      "identity": "sha256:3d21d0de8a59c2d3df532a688270138f0764eeea6611dec1e1121f7f174da7ca",
+      "path": "docs/design/skill/workflow.md"
+    },
+    {
+      "identity": "sha256:c1463a2d61f79edb0abcc59db3045efdd003dfa0f63000db2a45fd810700bd7d",
+      "path": "docs/design/system.md"
+    },
+    {
+      "identity": "sha256:1e9f0f91a8780492287c5dac7e71c5952cfe4eb1c78ae812f4598445f8f256a3",
+      "path": "docs/plan.md"
+    },
+    {
+      "identity": "sha256:e0bea2c8f6bd6f6739dd0d0efc9956a90261ed72f8c07dfd60220e087cd1358f",
+      "path": "docs/plans/2026-09-17-retire-historical-path-compatibility.md"
+    },
+    {
+      "identity": "sha256:9d8cb7e51959cc19a7991114e702a59eb4587a2a6a91a81cffa57ef70ce16d48",
+      "path": "docs/proposals/2026-09-17-retire-historical-path-compatibility.md"
+    },
+    {
+      "identity": "sha256:b07271ee234d4e6735bb1fcf04010fdadd0cb80c2188f9959e9472d8510b4f50",
+      "path": "scripts/lib/validation/boundary_first_validation.py"
+    },
+    {
+      "identity": "sha256:e5497376660d99abc84e67618dbcf89bcf41aadac0886570c937d732800a556d",
+      "path": "scripts/lib/validation/model_layout.py"
+    },
+    {
+      "identity": "sha256:f4d05f33a3ffd05af6be5d1b65c2f2f4780461783c9ec581a882ac7e2eb8ae1e",
+      "path": "scripts/lib/validation/validation_execution.py"
+    },
+    {
+      "identity": "sha256:203f504f98f90484dd0c17dc88b249fdb6f4b387a2b920ae54f545c32216eadd",
+      "path": "scripts/lib/validation/validation_selection.py"
+    },
+    {
+      "identity": "sha256:f2eb9c36b036165461b0c9fbd64c08eba5cf4b5d4bbdc3038fccdf6f9934bbe5",
+      "path": "skills/design/references/model-authoring.md"
+    },
+    {
+      "identity": "sha256:a763ac887a897f0f860dcac13f476a75e2aa9881f0c56af9766a9cdecf4ae1d8",
+      "path": "tests/engineering/validation/boundary_model_tests.py"
+    },
+    {
+      "identity": "sha256:0207a499c1fe6184b80d85af019b01ced62a41ba7f700a248b91207a9247be18",
+      "path": "tests/engineering/validation/catalog_admission_tests.py"
+    },
+    {
+      "identity": "sha256:fcc59c3c2c7402d6df13301f1820e9d69780b10fa768d61bc9cfb3efb412bd0d",
+      "path": "tests/engineering/validation/selection_contract_tests.py"
+    },
+    {
+      "identity": "sha256:69214735b87bd7efca2c30628209786b8b15129b9c590e9bbb11cca046ee5d38",
+      "path": "tests/engineering/validation/selection_git_tests.py"
+    },
+    {
+      "identity": "sha256:08f0c3120f925c37b22e51f9b67f8e25c3853389d9e949564e348e1e7ca1df41",
+      "path": "docs/changes/2026-09-17-retire-historical-path-compatibility/reviews/historical-retirement-proposal-review.json"
+    },
+    {
+      "identity": "sha256:dca203200cbf1c1dc98d62eb2c2920eed4266608a872b8d1c1b925761b91c4a5",
+      "path": "docs/changes/2026-09-17-retire-historical-path-compatibility/reviews/historical-path-design-review-r2.json"
+    },
+    {
+      "identity": "sha256:9b82cda651eeb7404df3cb092e88d3524a51c5c6d26f707e920cfdbc3ceac510",
+      "path": "docs/changes/2026-09-17-retire-historical-path-compatibility/reviews/historical-path-delivery-review.json"
+    },
+    {
+      "identity": "sha256:934aeb3b79920772c43d78d36102c305cd84ac78f13c172c7a4b9e95b3ad2cf2",
+      "path": "docs/changes/2026-09-17-retire-historical-path-compatibility/reviews/historical-path-m1-code-review-r2.json"
+    },
+    {
+      "identity": "sha256:d2af920ef8fbca5529f7ac53536fbc1a9789e9e67c9cb044d568de6171f5f35d",
+      "path": "docs/changes/2026-09-17-retire-historical-path-compatibility/reviews/historical-path-final-code-review.json"
+    }
+  ],
+  "summary": "Historical-path compatibility retirement verified and branch-ready against unchanged main. All selected families removed; current declared routing and model admission retain direct protection. M1 and fresh final independent review approved; no unresolved finding.",
+  "verification_basis": {
+    "base_branch": "main",
+    "base_revision": "ddb7eb9e0d4669d360483eac080f8f05fedd5641",
+    "head_branch": "codex/finish-compatibility-retirement",
+    "merge_base_revision": "ddb7eb9e0d4669d360483eac080f8f05fedd5641",
+    "remote_identity": "origin:git@github.com:xiongxianfei/rigorloop.git",
+    "repository_identity": "github.com/xiongxianfei/rigorloop#R_kgDOSGsVUQ",
+    "verified_subject_revision": "9f0d40c47d44e48d24c7acb8fd9cd5e1641d3c8a"
+  },
+  "verifier": {
+    "id": "historical-verifier",
+    "role": "verify"
+  }
+}
