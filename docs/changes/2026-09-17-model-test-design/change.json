@@ -4,9 +4,9 @@
       "id": "focused-final-verifier",
       "role": "verify"
     },
-    "reason": "M1 is completed and distinct focused-final-code-review approved the complete current change with no unresolved material findings. Select final Verify including exact Git/PR handoff basis; publication/merge remains outside scope.",
+    "reason": "Successful current verify-report.json establishes completed focused verification; independent final review approved. Authorized PR handoff remains separately owned.",
     "stage": "verify",
-    "status": "ready"
+    "status": "completed"
   },
   "applicability": [
     {
@@ -83,11 +83,11 @@
     },
     {
       "actor": {
-        "id": "focused-testing-author",
-        "role": "implement"
+        "id": "focused-final-verifier",
+        "role": "verify"
       },
       "path": "docs/changes/2026-09-17-model-test-design/evidence.json",
-      "reason": "Exact frozen focused implementation and current approved proposal/Design/Delivery basis; final review and Verify remain separate.",
+      "reason": "Fresh exact-head final checks plus explicit unchanged-subject reuse of focused-m1-validation; records-only suffix separately assessed.",
       "value": "current"
     },
     {
@@ -106,6 +106,15 @@
       },
       "path": "docs/changes/2026-09-17-model-test-design/reviews/focused-final-code-review.json",
       "reason": "Fresh independent final whole-change assessment after M1 on exact current focused engineering subjects; supports distinct Verify without claiming its outcome.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "focused-final-verifier",
+        "role": "verify"
+      },
+      "path": "docs/changes/2026-09-17-model-test-design/verify-report.json",
+      "reason": "Successful distinct final verification of exact focused engineering subject and current chain, with fresh Git/PR snapshot proof and justified unchanged local suite reuse.",
       "value": "current"
     }
   ],
@@ -243,6 +252,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-17-model-test-design/reviews/focused-final-code-review.json"
+    },
+    {
+      "kind": "verify",
+      "path": "docs/changes/2026-09-17-model-test-design/verify-report.json"
     }
   ],
   "schema_version": 3,
