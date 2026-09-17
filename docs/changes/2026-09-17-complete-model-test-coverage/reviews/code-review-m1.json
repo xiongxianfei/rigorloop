@@ -1,0 +1,45 @@
+{
+  "assessment_scope": "First-pass independent milestone Code Review of M1, Establish complete population and pre-change baseline, at commit f58a6a2c. Primary reviewed artifact is registered evidence m1-population-baseline in the exact evidence.json subject. The approved primary plan and current design-review-final/delivery-review identities are governing reliance, not new implementation claims. Reviewed actual commit scope, native population/caller reconciliation, model-group gap allocation, representative assertions and explicit gap observations, completed baseline logs, measurement limitations and recovery boundary. Earlier Design/proposal/plan changes included in this initial commit retain their separate approvals. This is not final whole-change Code Review or Verify.",
+  "change_id": "2026-09-17-complete-model-test-coverage",
+  "contributors": [
+    {
+      "id": "root-implementer",
+      "role": "implement"
+    }
+  ],
+  "findings": [],
+  "id": "code-review-m1",
+  "independence_basis": "Runtime /root authored and recorded the M1 audit and executed its baselines as root-implementer. Runtime /root/design_review independently inspected the approved plan, model coverage groups, representative actual assertions and callers, native inventory, completed logs, exact source identities and final registered evidence. Its pre-handoff activity was read-only review advice and independent population cross-checking, not authorship of M1 evidence, implementation, fixtures or tests. The reviewer previously assessed the upstream Design and Delivery packages independently and did not author them. No source, plan, activity or work-state edits are part of this review; independence rests on actual work and runtime separation.",
+  "judgment": "approved",
+  "limitations": [
+    "Reviewer inspected author-run results and independently cross-checked populations, logs and identities; the reviewer did not rerun the expensive suites. Temporary inventory/log files are supporting inspection material, while commands, source/environment basis, scope, outcomes and limits are durable in registered M1 evidence.",
+    "M2–M8 remain pending. Complete per-case cost reporting, semantic assessment, identified deterministic gap closure and fixture/case alignment are not established by M1. Existing prepared-candidate and actual operational configurations were not executed and are not represented as passing evidence.",
+    "Approval supports Route considering M1 complete but does not itself change work/activity state. A fresh final whole-change Code Review after all milestones and corrections, then distinct successful Verify, remain required. No branch/PR/release readiness or merge authorization is claimed.",
+    "The reviewed artifact is the exact current evidence container. Later record-only additions may change its byte identity and require explicit bounded reliance assessment; this review does not preapprove subsequent implementation or altered M1 claims."
+  ],
+  "rationale": [
+    "Spec alignment — pass. The complete recorded audit matches approved M1 purpose, requirements and completion criteria. All 24 model owners have group-level allocation, including separate Skill, Authoring and Release strategies, parent interactions and the 16 deterministic Release realization gaps. M3–M8 semantic procedures and conditional real-operation evidence remain open rather than being inferred from grammar tests. CLI inspection confirmed 135 relied-on subject identities, including all approved upstream Design subjects and the unchanged primary plan.",
+    "Test coverage — pass for M1. Existing native discovery reports 894 Python methods from 13 entrypoints and 419 Node cases across 22 files. Independent AST reconciliation includes the inherited Selection*Checks aliases and agrees with native Python discovery. Caller inspection accounts for selected versus composed CI, scoped versus full adapters, direct Node subsets, package callers and prepared-release configurations. No suite was removed or weakened. Counts describe executable identity and invocation scope, not requirement or semantic completeness.",
+    "Edge cases — pass for audit scope. The gap account distinguishes valid-control and defining-fault weaknesses, unknown-first rejection, no-read/no-write observations, public versus helper boundaries, fixture independence, partial state/retry, changed identity and generated/packed consumers. Specific current gaps receive owner milestones. Their allocation is evidence of M1 audit completeness, not proof those future scenarios already pass. The 81 full-adapter cases absent from the explicit selected invocation are explicitly reconciled and covered by the direct full baseline.",
+    "Error handling — pass for M1. The initial directory-level explicit selection was correctly rejected as unclassified without tests launching; the subsequent command uses actual entrypoints. Final local, explicit and full-adapter logs record success. Existing reporting launch-failure zero duration, final-cleanup interval and partial/atomic report weaknesses remain explicit M2 work. No failed run is relabeled as successful or silently removed from the account.",
+    "Architecture and maintainability — pass. This milestone is an audit and baseline, using existing loaders, selectors, callers and governed evidence. It introduces no permanent method-to-scenario ledger, authored catalog refinement, new execution engine or runtime abstraction. Group-level allocation preserves model ownership and keeps structural, executable and semantic proof distinct.",
+    "Backward compatibility — pass for this slice. Git comparison against baseline 1c1fe83e3bbf2e7962b4599f3a50b6a9d94fb5c6 shows no changes under scripts, tests, packages, skills, templates, schemas or .github. Existing direct, selected, composed and prepared-candidate caller distinctions remain acknowledged. No source/test/fixture change or retired compatibility restoration occurred during M1.",
+    "Security and permissions — pass for this slice. The inspected scope is local read-only inventory, existing private test fixtures and baseline execution; no publication, merge, hosted mutation or actual release/incident is claimed. Real operational Release scenarios remain conditionally applicable with later independent disposition required. Source and test code are unchanged, so this review introduces no new executable security boundary.",
+    "Generated artifacts — pass for M1 scope. No canonical skill, generator, adapter or package implementation changed; generated refresh is therefore not required by M1. Existing actual archive, packed CLI and installation boundaries are retained and allocated to M3/M7/M8 where applicable. Direct full-adapter success is baseline regression evidence, not future generated instruction adequacy.",
+    "Unrelated changes — pass. The initial commit includes already approved upstream proposal, Designs and plan plus their records; those exact subjects remain unchanged from prior review. The new M1 work is bounded audit/baseline evidence and workflow registration. No unrelated implementation refactor or test reduction is present. Historical resolved Design finding and its old subjects remain preserved rather than being rewritten.",
+    "Validation evidence — pass with explicit limits. Independently parsed completed logs contain 460/460 local canonical result rows and 1234/1234 explicit rows, the latter comprising 1232 cases and two validators. Full adapter log records 95 tests in 188.202s, OK. Registered counts and per-check populations agree with those logs. Aggregate focused-worker costs 385.97s and 1579.75s are not wall time, and overlapping runs support no performance comparison. The 81 adapter cases absent from isolated selected results retain only direct suite-level timing; M2 must obtain complete comparable isolated measurement before changing relevant suites. Baseline source identities remain current."
+  ],
+  "reviewer": {
+    "id": "milestone-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:fae766c205053d68f213acf96a12d6cf8de3a782b76e73c5ffcea3be7e15ab70",
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/evidence.json"
+    }
+  ],
+  "summary": "M1 establishes a credible complete default executable population, preserves current protection, allocates identified assertion and semantic gaps across all 24 model owners, and records passing pre-change baselines with honest measurement limits. No material M1 finding remains. This approval supports M1 closeout only; M2 must complete comparable isolated timing before product-suite alignment.",
+  "target": "code"
+}

@@ -1,0 +1,89 @@
+{
+  "assessment_scope": "Independent first-pass scoped Code Review during M2 implementation, on the exact seven changed engineering subjects relative to f58a6a2c. This assesses the current timing/reporting diff, tests and a reproduced safety defect against approved M2 and VAL-SR-38. The full instrumented population baseline is still running and its final reconciliation/evidence is not available. This is not the completed M2 milestone gate, final whole-change review or Verify.",
+  "change_id": "2026-09-17-complete-model-test-coverage",
+  "contributors": [
+    {
+      "id": "root-implementer",
+      "role": "implement"
+    }
+  ],
+  "findings": [
+    {
+      "evidence": "Severity: major. Finding scope: implementation-local. Owning stage: implement. Locations: scripts/lib/validation/validation_execution.py:1101, :1275, :1306, :1442. ReportDestination reserves a valid destination before selection. _selected_main later calls reject_collisions on payload changed_paths; rejection raises ValueError but _reported_call catches it and unconditionally calls run.finish, whose _write_mode_result invokes the still-valid owner.publish. Independent public reproduction: create private selected-input.md containing bytes input sentinel plus newline; create a valid local selector fixture with changed_paths=[absolute selected-input.md path], empty selected_checks and otherwise normal required fields; set RIGORLOOP_SELECTOR_FIXTURE to that separate fixture and RIGORLOOP_VALIDATION_RESULT_JSON to selected-input.md; run bash scripts/ci.sh --mode local. Observed exit 4 and diagnostic report destination collides with selected input or owned output, but selected-input.md is replaced by a local-validation JSON envelope (sentinel preservation false). Reproduction script is /tmp/m2-review-late-collision.py for convenient rerun; the complete defining input, command and observation are retained here. The existing constructor-time fixture-collision test cannot reach this finalization path. Other late collision callers use the same owner and require the same preservation guarantee.",
+      "id": "late-report-collision-overwrites-input",
+      "owner": {
+        "id": "root-implementer",
+        "role": "implement"
+      },
+      "reporter": {
+        "id": "milestone-reviewer",
+        "role": "review"
+      },
+      "required_outcome": "Reject every discovered report-path collision without publishing to or otherwise modifying the conflicting input/output. Revoke or suppress publication after a late ownership/collision failure while still safely releasing only this invocation's reservation and temporary files; preserve normal partial reports for controlled failures whose destination remains valid. Add regression proof through the public wrapper with a valid no-collision control followed by a collision revealed by selected scope after reservation, asserting nonzero rejection, exact prior bytes, no worker launch and reservation cleanup. Assess corresponding late plan/scratch collision paths under the same ownership policy. Safe resolution is a bounded implementation/test correction by root-implementer followed by independent exact-subject reassessment. No new product decision is needed because approved VAL-SR-38 already requires preservation.",
+      "resolution": null,
+      "state": "open",
+      "subjects": [
+        {
+          "identity": "sha256:931820c0c51d57b8ccdd203f1d142429b580180d95ac8d0d772b10d631b2fd7b",
+          "path": "scripts/lib/validation/validation_execution.py"
+        },
+        {
+          "identity": "sha256:ca08254642ed173b50eca028bce80a4125ed5c49470e784dbedc7528116e298a",
+          "path": "tests/engineering/validation/execution_reporting_tests.py"
+        }
+      ]
+    }
+  ],
+  "id": "code-review-m2-first-pass",
+  "independence_basis": "Runtime /root authored the M2 implementation, reporting tests and contributor guidance as root-implementer. Runtime /root/design_review independently read the exact current diff, reporting tests and governing plan/Validation contract and reproduced a late report-path collision through the public ci.sh in a private temporary fixture. The reviewer authored no implementation, test, fixture committed to the repository or milestone evidence and made no work/activity changes. Prior upstream Design/Delivery reviews were independent assessments, not authorship.",
+  "judgment": "changes-requested",
+  "limitations": [
+    "This review intentionally stops short of M2 completion judgment. Complete retained-case/configuration cost accounting, final baseline results and normal selected validation must still be assessed after correction.",
+    "The reproduced selector scope is controlled private fixture input. It exposes the actual public wrapper, destination reservation, collision check and final report publication; it does not claim a live user file was damaged.",
+    "No implementation, plan, Design, activity or work state was edited by this reviewer. The first-pass review and finding must remain as history after the original author corrects the defect. Final milestone reassessment requires exact corrected subjects."
+  ],
+  "rationale": [
+    "Spec alignment, edge cases, error handling and data safety — concern. VAL-SR-38 and M2 require selected-input/source/capture collisions to reject while preserving prior bytes. ReportDestination rejects collisions initially before entering report finalization, but late reject_collisions calls do not revoke publication. The public private-fixture reproduction exits 4 with the expected collision diagnostic and then replaces the selected input sentinel with a local-validation report. The failure path violates the exact preservation contract it reports rejecting.",
+    "Test coverage — concern. The current selection-input collision regression passes the destination as RIGORLOOP_SELECTOR_FIXTURE, causing constructor-time rejection. It does not exercise a path first discovered in the selector result or a later selected plan. Existing atomic-replacement, concurrency, worker-failure and interruption cases address different conditions and cannot detect this late-collision overwrite. Add direct public proof of preserved prior bytes and no launch for the late collision, with a valid no-collision control.",
+    "Architecture, compatibility and maintainability — bounded inspection. The implementation extends existing CheckPlan/CheckResult, scheduler, writer and ci.sh rather than creating a second runner. It removes both parent report destinations from worker environments and uses a private prepared-CI handoff. The inspected diff retains legacy broad-smoke envelope fields and native direct suite entrypoints. These observations do not establish complete mode/caller compatibility before final M2 evidence and reassessment.",
+    "Generated-artifact currency and unrelated changes — bounded inspection. No authored skill/template/generator source changes are in this M2 slice; no generated refresh is required solely for reporting. The new reporting test module is imported by the existing aggregate and classified by the selector. Review subjects exclude workflow records and earlier approved Design/plan changes. No unrelated implementation refactor was identified in the inspected slice.",
+    "Validation evidence — limited. Author-reported focused reporting/selector/executor passes are preliminary, and the full instrumented baseline remains pending. The reviewer independently executed the public late-collision reproduction in a private temporary directory: return code 4, collision diagnostic, sentinel preservation false, and a newly serialized JSON envelope at the protected selected-input path. This direct observation is sufficient for the recorded material finding; neither preliminary passing tests nor baseline completion would remove it."
+  ],
+  "reviewer": {
+    "id": "milestone-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:ab25891696f0543db9a9871a0d2e3a8b668d3593d9450b699efe5c1a0d1efd29",
+      "path": "CONTRIBUTING.md"
+    },
+    {
+      "identity": "sha256:79f89c9b2225b8edfcb6a9c0dd10529b4f2cef571b0eacff00a7ff28d6b153d3",
+      "path": "scripts/ci.sh"
+    },
+    {
+      "identity": "sha256:b2a9f62bb5bd9f172d26efc37805b5c834d9719a5f203d9753fb6c01ee9525d8",
+      "path": "scripts/lib/release/release_candidate.py"
+    },
+    {
+      "identity": "sha256:931820c0c51d57b8ccdd203f1d142429b580180d95ac8d0d772b10d631b2fd7b",
+      "path": "scripts/lib/validation/validation_execution.py"
+    },
+    {
+      "identity": "sha256:c5b9ebfc40bf580e54f0ab0fcb4df47b9240ed256f3131ef1b0856ba6a43d880",
+      "path": "scripts/lib/validation/validation_selection.py"
+    },
+    {
+      "identity": "sha256:4ec8cef43ee9f4f658889565f407ca256b975d42acb704fac3043c7eee44ef5a",
+      "path": "tests/engineering/validation/test-validation-execution.py"
+    },
+    {
+      "identity": "sha256:ca08254642ed173b50eca028bce80a4125ed5c49470e784dbedc7528116e298a",
+      "path": "tests/engineering/validation/execution_reporting_tests.py"
+    }
+  ],
+  "summary": "The interim M2 implementation has a material report-destination preservation defect: a collision discovered after reservation rejects the invocation, but failure finalization still publishes over the protected input. Required correction is recorded before any author fix.",
+  "target": "code"
+}

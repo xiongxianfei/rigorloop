@@ -4,9 +4,9 @@
       "id": "milestone-reviewer",
       "role": "review"
     },
-    "reason": "M1 population/assertion/caller audit and baseline evidence recorded. Local460 and explicit1234 rows passed; direct full95 adapter cases passed. Remaining per-case timing limits and M2–M8 gaps explicit. Independent M1 review requested before M2; no suite changes.",
+    "reason": "M2 full native baseline passed with complete population; recorded late collision corrected after failing regression and26 passing reporting tests. Hand complete M2 and exact evidence to independent milestone review and reporter-owned finding reassessment. No next milestone or final readiness yet.",
     "stage": "code-review",
-    "status": "ready"
+    "status": "in-progress"
   },
   "applicability": [
     {
@@ -51,7 +51,7 @@
         "role": "implement"
       },
       "path": "docs/changes/2026-09-17-complete-model-test-coverage/evidence.json",
-      "reason": "Exact current unmodified test and execution basis; applies only to M1 audit and observed baseline limits. M2–M8 protection gaps remain open.",
+      "reason": "Current M2 implementation and corrected reporting proof, with separately identified frozen pre-correction runtime baseline for unchanged product suites. Independent finding reassessment and milestone review still required.",
       "value": "current"
     },
     {
@@ -61,6 +61,24 @@
       },
       "path": "docs/changes/2026-09-17-complete-model-test-coverage/reviews/delivery-review.json",
       "reason": "The complete sole primary plan and its current approved Design/proposal basis were independently inspected at their exact identities. Sequence, traceability, proof, recovery and closeout satisfy the selected scope with no material findings. Applicability is limited to this Delivery package and grants no implementation completion or continuation authority.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "milestone-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/reviews/code-review-m1.json",
+      "reason": "Independent first-pass M1 assessment on exact current evidence, approved upstream basis and unchanged executable sources found no material defect. Applicability covers population/protection audit and bounded baseline completion only; M2–M8, final Code Review and Verify remain required.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "milestone-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/reviews/code-review-m2-first-pass.json",
+      "reason": "Current independent scoped M2 changes-requested assessment on exact pre-correction implementation subjects; full baseline is pending and no milestone/final approval is claimed.",
       "value": "current"
     }
   ],
@@ -269,6 +287,14 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-17-complete-model-test-coverage/reviews/delivery-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/reviews/code-review-m1.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/reviews/code-review-m2-first-pass.json"
     }
   ],
   "schema_version": 3,
@@ -617,7 +643,7 @@
         "WF-SR-18",
         "WF-SR-19"
       ],
-      "status": "ready"
+      "status": "completed"
     },
     {
       "id": "m2",
@@ -715,7 +741,7 @@
         "VAL-SR-37",
         "VAL-SR-38"
       ],
-      "status": "pending"
+      "status": "in-progress"
     },
     {
       "id": "m3",
