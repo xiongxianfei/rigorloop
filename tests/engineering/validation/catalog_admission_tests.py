@@ -45,17 +45,19 @@ class TestDesignAdmissionTests(unittest.TestCase):
         self.assertTrue(all(i['check_id'] == 'BFR-TEST-SHAPE' for i in result['issues']), result)
         self.assertIn('method', result['issues'][0]['message'])
 
-    def test_generic_flat_models_retain_existing_grammar(self):
+    def test_current_portable_model_and_mixed_flat_input(self):
         from catalog_admission_fixture_helpers import model_text, write
-        for model in ('release', 'skill', 'authoring'):
-            with self.subTest(model=model):
-                path = f'docs/design/{model}.md'
-                write(self.root, path, model_text('LOCAL-SR-01'))
-                code, result = self.validate(path)
-                self.assertEqual(code, 0, result)
-                self.assertEqual(result['paths'], [path])
-                write(self.root, path, '# Invalid model\n')
-                self.assertEqual(self.validate(path)[0], 1)
+        current = 'docs/design/sample/sample.md'
+        flat = 'docs/design/sample.md'
+        text = model_text('LOCAL-SR-01')
+        write(self.root, current, text)
+        write(self.root, flat, text)
+        self.assertEqual(self.validate(current)[0], 0)
+        for paths in ((flat,), (current, flat)):
+            code, result = self.validate(*paths)
+            self.assertEqual(code, 1, result)
+            self.assertIn('BFR-MODEL-PATH', str(result))
+            self.assertEqual((self.root/flat).read_text(), text)
 
     def test_structural_unknowns_precede_missing_references(self):
         variants = (

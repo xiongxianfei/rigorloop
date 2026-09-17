@@ -78,10 +78,11 @@ class ModelRecordTests(unittest.TestCase):
             path.write_text(self.text)
             self.assertTrue(validate_model_path(self.root, relative))
 
-    def test_model_flat_historical_path_remains_explicitly_valid(self):
+    def test_model_flat_path_rejects_valid_bytes_without_mutation(self):
         path = self.root / "docs/design/workflow.md"
         path.write_text(self.text)
-        self.assertEqual(validate_model_path(self.root, "docs/design/workflow.md"), ())
+        self.assertEqual([i.code for i in validate_model_path(self.root, "docs/design/workflow.md")], ["BFR-MODEL-PATH"])
+        self.assertEqual(path.read_text(), self.text)
 
     def test_model_unknown_value_marker_and_dimension_fail_closed(self):
         for text in (

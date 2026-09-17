@@ -359,7 +359,7 @@ Workflow remains repository-local guidance and artifacts consumed by supported a
 
 ### Model-centered layout and examples
 
-[Design's document and structural contract](authoring/design.md#model-document-and-structural-contract) owns the retained model-centered layout, model/example distinction, supported historical flat inputs and validation-selection pairing. Its [model-owned example contract](authoring/design.md#model-owned-example-contract), under DES-SR-12/16, is the destination for the complete transferred example obligations and their review handoff; the [historical replacement mappings](authoring/design.md#historical-provenance) retain their source meaning. WF-SR-07/08 consume that convention. Earlier layout moves and their reviewed identities remain historical evidence; this ownership transfer does not replay their approvals or introduce another move.
+[Design's document and structural contract](authoring/design.md#model-document-and-structural-contract) owns the retained model-centered layout, model/example distinction, current declared and portable model targets and validation-selection pairing; generic flat inputs and historical aliases are unsupported. Its [model-owned example contract](authoring/design.md#model-owned-example-contract), under DES-SR-12/16, is the destination for the complete transferred example obligations and their review handoff; the [historical replacement mappings](authoring/design.md#historical-provenance) retain their source meaning. WF-SR-07/08 consume that convention. Earlier layout moves and their reviewed identities remain historical evidence; this ownership transfer does not replay their approvals or introduce another move.
 
 ### Examples
 

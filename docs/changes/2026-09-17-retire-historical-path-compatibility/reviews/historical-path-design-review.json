@@ -1,0 +1,106 @@
+{
+  "assessment_scope": "Design Review of the five submitted engineering members plus the discovered Workflow consumer against approved historical-retirement-proposal-review. Checks current/retired ownership, full-family scope, integration promises and executable feasibility. No implementation or downstream approval is claimed.",
+  "change_id": "2026-09-17-retire-historical-path-compatibility",
+  "contributors": [
+    {
+      "id": "historical-design-author",
+      "role": "design"
+    }
+  ],
+  "findings": [
+    {
+      "evidence": "Major; cross-artifact; Design ownership: Workflow (line362) still explicitly supports historical flat inputs; System (line71) still requires selector accounting for the former Release move; Engineering (line216) retains unqualified old/new-path equivalent selection; Validation acceptance rows retain retired query/deleted-path selection promises. These conflict with new Validation current-path support/retirement and revised Design paragraph348. The Workflow contract is a live consumer outside the original submitted package.",
+      "id": "historical-support-consumer-reconciliation",
+      "owner": {
+        "id": "historical-design-author",
+        "role": "design"
+      },
+      "reporter": {
+        "id": "historical-design-reviewer",
+        "role": "review"
+      },
+      "required_outcome": "Reconcile Workflow and include its exact subject in the reviewed package. Update System former-Release-move and Engineering old/new migration acceptance to distinguish completed historical behavior from current supported ownership. Align Validation acceptance outcomes with retired query/path withdrawal while preserving current owned local/range deletion and both rename endpoints, missing required member failure and mixed unsupported rejection. Keep stable requirement IDs and historical judgments unchanged. Safe resolution is owning Design correction followed by fresh complete Design Review; no new product decision is required.",
+      "resolution": {
+        "actor": {
+          "id": "historical-design-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [],
+        "rationale": "Independently reread corrected Workflow, System, Engineering and all three Validation query/deletion acceptance occurrences. They now consistently distinguish current supported ownership from withdrawn flat/alias/historical replay behavior; Workflow is included in the exact package. No required acceptance remains dependent on historical receiver substitution. Fresh complete review r2 records current applicability without retargeting the original finding or judgment."
+      },
+      "state": "resolved",
+      "subjects": [
+        {
+          "identity": "sha256:04aadd6deab6196b1af4532b4cdcb6ecaa949ead9dc4114f728fc317a8beefc2",
+          "path": "docs/design/system.md"
+        },
+        {
+          "identity": "sha256:92b3c1247d7ffc460e8355695b15f193a82c56e4f917bbda187cd53a3ed12a25",
+          "path": "docs/design/engineering/engineering.md"
+        },
+        {
+          "identity": "sha256:513bf496a51f34cb290968b1b0a6f1f99f494ad3c8c3d7c1f6b2dd4cbe53c063",
+          "path": "docs/design/engineering/validation.md"
+        },
+        {
+          "identity": "sha256:d2f4d246487f9db819ce37a0d839baed9afb5e6480d3cc0dc80a0f7537abff0c",
+          "path": "docs/design/skill/workflow.md"
+        }
+      ]
+    }
+  ],
+  "id": "historical-path-design-review",
+  "independence_basis": "Independent delegated reviewer authored no proposal, Design or guidance subject; current primary branch inspected afresh. Previous review identities are not approval of this changed support contract.",
+  "judgment": "changes-requested",
+  "limitations": [
+    "This records the concrete cross-artifact correction before author edits. A fresh complete package assessment is required after reconciliation; no partial approval or implementation authority is granted.",
+    "Retained actual command wrappers, generic current schema/template ownership, record integrity, live release evidence and current deletion/rename must not be lost when removing predecessor machinery. Detailed consumer inventory and direct proof remain Delivery/implementation duties."
+  ],
+  "rationale": [
+    "Validation now explicitly withdraws historical aliases, legacy-only deletion exceptions and generic flat models while retaining declared paths, portable same-name directories, canonical tools and current-owned deletion/rename. This follows approved direction and preserves merged test-design/catalog and feature-unsupported boundaries. No new runtime component or permanent per-old-file ledger is needed.",
+    "A current consumer remains unreconciled: Workflow Model-centered layout and examples explicitly promises supported historical flat inputs and validation-selection pairing under WF-SR-07/08. Its exact subject is included because the submitted owner-only map omitted that live promise.",
+    "System Repository directory layout still says Git rename/deletion selection must account for the former Release move under planned admission; Engineering tooling migration acceptance says old/new changed paths select the same checks without current-layout qualification. Validation now explicitly rejects historical source-to-receiver replay, so these current acceptance statements need reconciliation or clearly bounded historical attribution.",
+    "Validation acceptance rows also retain unconditional deleted-path/current-owner selection and query-shim deletion selection language despite revised VAL-SR-24/30 and the new current-path boundary. The resulting package cannot yet give one consistent retained-versus-retired oracle to Delivery."
+  ],
+  "reviewer": {
+    "id": "historical-design-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:04aadd6deab6196b1af4532b4cdcb6ecaa949ead9dc4114f728fc317a8beefc2",
+      "path": "docs/design/system.md"
+    },
+    {
+      "identity": "sha256:92b3c1247d7ffc460e8355695b15f193a82c56e4f917bbda187cd53a3ed12a25",
+      "path": "docs/design/engineering/engineering.md"
+    },
+    {
+      "identity": "sha256:513bf496a51f34cb290968b1b0a6f1f99f494ad3c8c3d7c1f6b2dd4cbe53c063",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:1b54166e88c557275c7957e38e5269f5968040ba75f382690e83fd66e593fa4b",
+      "path": "docs/design/skill/authoring/design.md"
+    },
+    {
+      "identity": "sha256:f2eb9c36b036165461b0c9fbd64c08eba5cf4b5d4bbdc3038fccdf6f9934bbe5",
+      "path": "skills/design/references/model-authoring.md"
+    },
+    {
+      "identity": "sha256:d2f4d246487f9db819ce37a0d839baed9afb5e6480d3cc0dc80a0f7537abff0c",
+      "path": "docs/design/skill/workflow.md"
+    },
+    {
+      "identity": "sha256:9d8cb7e51959cc19a7991114e702a59eb4587a2a6a91a81cffa57ef70ce16d48",
+      "path": "docs/proposals/2026-09-17-retire-historical-path-compatibility.md"
+    },
+    {
+      "identity": "sha256:08f0c3120f925c37b22e51f9b67f8e25c3853389d9e949564e348e1e7ca1df41",
+      "path": "docs/changes/2026-09-17-retire-historical-path-compatibility/reviews/historical-retirement-proposal-review.json"
+    }
+  ],
+  "summary": "The selected retirement boundary is feasible, but current consumer and acceptance promises still contradict it. Reconcile those exact owners before relying on the complete package.",
+  "target": "design"
+}

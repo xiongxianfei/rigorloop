@@ -15,6 +15,8 @@ Index policy:
 
 ## Active
 
+- [Historical-path compatibility retirement](plans/2026-09-17-retire-historical-path-compatibility.md) — [owning change](changes/2026-09-17-retire-historical-path-compatibility/change.json).
+
 - [Feature-format support retirement](plans/2026-09-17-retire-feature-format-support.md) — [owning change](changes/2026-09-17-retire-feature-format-support/change.json).
 
 - [Repository tooling organization](plans/2026-09-14-tooling-organization.md) — scoped portable refactor; [evidence](changes/2026-09-14-design-suitability-review/contract-refinement.md).
