@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 from lib.validation.record_store_classification import is_archival_record_store
-from lib.validation.model_layout import PROJECT_MODEL_PATHS, RETIRED_MODEL_PATHS, TEST_DESIGN_PACKAGES
+from lib.validation.model_layout import PROJECT_MODEL_PATHS, TEST_DESIGN_PACKAGES
 
 import json
 import hashlib
@@ -403,24 +403,12 @@ AUTHORITATIVE_ARTIFACT_PREFIXES = (
     "docs/design/",
     "docs/proposals/",
     "docs/plans/",
-    "docs/architecture/",
-    "docs/adr/",
-    "specs/",
     "skills/",
     "schemas/",
     "scripts/",
     "templates/",
 )
 AUTHORITATIVE_ARTIFACT_FILES = frozenset({"AGENTS.md", "CONSTITUTION.md", "VISION.md", "docs/plan.md"})
-
-# Exact user-authorized isolated evidence for the recorder adoption initiative.
-# These are advisory prose, not registered lifecycle reviews or settlement.
-ISOLATED_RECORDING_EVIDENCE = frozenset({
-    "docs/reviews/explicit-recording-and-model-centered-design.md",
-    "docs/reviews/explicit-recording-and-model-centered-design-delivery.md",
-    *(f"docs/implementation/explicit-recording-m{milestone}.md" for milestone in range(1, 5)),
-    *(f"docs/reviews/explicit-recording-m{milestone}-code-review.md" for milestone in range(1, 5)),
-})
 
 
 @dataclass(frozen=True)
@@ -591,7 +579,6 @@ def catalog_command(
     mode: str = "explicit",
     base: str | None = None,
     head: str | None = None,
-    discovered_paths: bool = False,
 ) -> str:
     if mode not in {"local", "explicit", "pr", "main", "release"}:
         raise ValueError(f"unsupported catalog mode: {mode}")
@@ -627,32 +614,9 @@ def catalog_command(
                 models.add(owner)
             elif example:
                 model = example.group(1)
-                models.add(PROJECT_MODEL_PATHS.get(model, f"docs/design/{model}/{model}.md"))
+                models.add(f"docs/design/{model}/{model}.md")
             elif path.startswith("docs/design/"):
-                # Aliases route deleted sources only. Existing files/symlinks must
-                # be checked at their exact path, not hidden by a valid receiver.
-                old = re.fullmatch(r"docs/design/(?P<model>[a-z0-9][a-z0-9-]{0,79})(?:/(?P=model))?\.md", path)
-                absent = not (repo_root / path).exists() and not (repo_root / path).is_symlink()
-                # A discovered move can pair a former leaf with its declared
-                # directory owner. Both endpoints must be in this changed set;
-                # explicit missing inputs and recreated files keep their path.
-                receiver = next((PROJECT_MODEL_PATHS[name] for name in TEST_DESIGN_PACKAGES
-                                 if str(PurePosixPath(PROJECT_MODEL_PATHS[name]).parent)+'.md' == path
-                                 and PROJECT_MODEL_PATHS[name] in paths), None)
-                if receiver and absent and discovered_paths:
-                    models.add(receiver)
-                elif path in RETIRED_MODEL_PATHS and absent:
-                    models.add(PROJECT_MODEL_PATHS[RETIRED_MODEL_PATHS[path]])
-                elif old and absent:
-                    model = old.group("model")
-                    if model == "test":
-                        models.add(PROJECT_MODEL_PATHS["validation"])
-                    elif model == "distribution":
-                        models.update((PROJECT_MODEL_PATHS["packaging"], PROJECT_MODEL_PATHS["installation"]))
-                    else:
-                        models.add(PROJECT_MODEL_PATHS.get(model, path))
-                else:
-                    models.add(path)
+                models.add(path)
         for path in sorted(models):
             args.extend(["--path", path])
         return _join(*args)
@@ -774,17 +738,6 @@ def select_validation(request: SelectionRequest) -> SelectionResult:
             ),
         )
 
-    # Removed legacy source paths retain current owner checks without asking an
-    # explicit-input validator to read absent history.
-    removed = {path for path in changed_paths if _is_lifecycle_path(path) and
-               _proven_prose_deletion(path, repo_root=repo_root,
-                   tracked_deletion=path in preflight_context.tracked_paths)}
-    if removed:
-        _add_check(selected, "governed_lifecycle_cli_wrapper.test",
-                   "Deleted legacy artifacts retain current record discovery and snapshot protection.")
-        boundary = selected.get("boundary_first.validate")
-        if boundary:
-            boundary.paths.difference_update(removed)
     if "current_records.validate" in selected:
         selected["current_records.validate"].paths.clear()
 
@@ -829,7 +782,6 @@ def select_validation(request: SelectionRequest) -> SelectionResult:
         status=status,
         adapter_version=request.adapter_version,
         repo_root=repo_root,
-        discovered_paths=(request.mode in {"pr", "main"} or (request.mode == "local" and not request.paths)),
     )
 
 
@@ -1026,12 +978,6 @@ def _authoritative_path_is_tracked(
     return candidate.is_file() and relative in tracked_paths
 
 
-RETIRED_SPEC_READ_PATHS = frozenset({
-    "scripts/test-fidelity-gate-spec-reads.py",
-    "tests/fixtures/requirement-fidelity-gate/representative-reviews/r26-matrix-pilot/spec-read-log.json",
-})
-
-
 def _git_local_changed_paths(repo_root: Path) -> list[str]:
     # Both rename endpoints need classification; unknown/deleted inputs must
     # not disappear merely because Git found a similar surviving destination.
@@ -1193,14 +1139,6 @@ def _apply_path_selection(
     tracked_deletion: bool,
     support_subject_cache: dict[str, set[str] | None],
 ) -> None:
-    if path.startswith("specs/") and not _proven_prose_deletion(
-        path, repo_root=repo_root, tracked_deletion=tracked_deletion
-    ):
-        blocking_results.append({
-            "code": "unsupported-feature-format", "path": path,
-            "message": "Feature/proof operations are unsupported; use living model documents."
-        })
-
     if category == "tooling-package":
         for check_id in _TOOL_PACKAGE_CHECKS[path]:
             _add_check(selected, check_id, "Changed package initializer requires all descendant consumer checks.")
@@ -1328,15 +1266,6 @@ def _apply_path_selection(
         )
         return
 
-    if category == "architecture-diagram":
-        architecture_doc = _architecture_doc_for_diagram(path)
-        _add_check(
-            selected,
-            "current_records.validate",
-            "Changed architecture diagram requires current record discovery and validation.",
-            path=architecture_doc or path,
-        )
-        return
 
     if category == "plan-index":
         _add_check(
@@ -1418,9 +1347,6 @@ def _apply_path_selection(
         )
         return
 
-    if category == "skill-source-archive":
-        _add_check(selected, "skills.regression", "Retired skill archive paths select current skill protection without reading historical copies.")
-        return
 
     if category == "research-artifact":
         _add_check(
@@ -1438,18 +1364,6 @@ def _apply_path_selection(
         )
         return
 
-    if category == "retired-spec-read":
-        target = repo_root / path
-        if target.exists() or target.is_symlink():
-            blocking_results.append({"code": "retired-spec-read-input", "path": path,
-                                     "message": "Retired spec-read instrumentation must not be recreated without a current contract and catalog entry."})
-        for check_id in ("selector.regression", "skills.regression"):
-            _add_check(selected, check_id,
-                       "Retired fixed-log paths retain current selector and requirement-fidelity protection.")
-        return
-
-    if category == "retired-examples":
-        return
 
     if category == "living-reference/project-map":
         _add_check(
@@ -1507,7 +1421,7 @@ def _apply_path_selection(
         return
 
     if category in {"selector", "ci-wrapper"}:
-        if _tooling_predecessor(path) == "scripts/model_layout.py":
+        if path == "scripts/lib/validation/model_layout.py":
             for check_id in ("guide_system.validate", "guide_system.regression"):
                 _add_check(selected, check_id,
                            "Changed model inventory requires current guide-authority consumer proof.")
@@ -1523,8 +1437,13 @@ def _apply_path_selection(
     if category == "boundary-first":
         return
 
-    if category in {"explicit-recording", "isolated-recording-evidence"}:
-        if _tooling_predecessor(path) in {"scripts/classify-record-store.mjs", "scripts/validate-record-store.mjs", "scripts/record_snapshot_git.mjs", "scripts/record_store_classification.py"}:
+    if category == "explicit-recording":
+        if path in {
+            'scripts/classify-record-store.mjs',
+            'scripts/validate-record-store.mjs',
+            'scripts/lib/validation/record_snapshot_git.mjs',
+            'scripts/lib/validation/record_store_classification.py',
+        }:
             _add_check(selected, "governed_lifecycle_cli_wrapper.test", "Snapshot readers retain exact Git identity, local source and no-write regression proof.")
         for check_id in ("rigorloop_cli.test", "record_store.schema", "model.validate",
                          "boundary_first.regression", "change_metadata.regression"):
@@ -1534,18 +1453,8 @@ def _apply_path_selection(
         if path.startswith("packages/rigorloop/"):
             _add_check(selected, "npm_package_publication.test",
                        "Record-store package paths retain tarball and installed-binary compatibility proof.")
-        if category == "isolated-recording-evidence" and not _proven_prose_deletion(
-            path, repo_root=repo_root, tracked_deletion=tracked_deletion
-        ):
-            _add_check(selected, "documentation_prose.audit",
-                       "Isolated advisory evidence requires prose checks and its underlying model/runtime proof, not formal settlement.", path=path)
         return
 
-    if category == "retired-token-cost":
-        for check_id in ("selector.regression", "adapters.regression", "release_transaction.regression"):
-            _add_check(selected, check_id,
-                       "Retired token-cost paths require retained selector and qualification consumer proof.")
-        return
 
     if category == "adapter-artifact-metadata":
         _add_check(
@@ -1555,104 +1464,6 @@ def _apply_path_selection(
         )
         return
 
-    if category in {"validator-review-artifacts", "review-artifact-fixtures"}:
-        _add_check(selected, "rigorloop_cli.test", "Retired review readers retain current v3 record, reference and finding protection.")
-    if category in {"validator-artifact-lifecycle", "artifact-lifecycle-fixtures"}:
-        _add_check(selected, "release_transaction.regression", "Retired lifecycle readers retain transferred release checklist and actual transaction protection.")
-    if category == "validator-review-artifacts":
-        _add_check(
-            selected,
-            "skills.regression",
-            "Changed review artifact validator requires review artifact regression fixtures.",
-        )
-        return
-
-    if category == "review-artifact-fixtures":
-        _add_check(
-            selected,
-            "skills.regression",
-            "Changed review artifact fixture requires review artifact regression fixtures.",
-        )
-        if path.endswith("/change.yaml"):
-            _add_check(
-                selected,
-                "change_metadata.regression",
-                "Changed review artifact metadata fixture requires change metadata regression fixtures.",
-            )
-        return
-
-    if category == "change-metadata-fixtures":
-        _add_check(
-            selected,
-            "change_metadata.regression",
-            "Changed change metadata fixture requires change metadata regression fixtures.",
-        )
-        return
-
-    if category == "record-retirement":
-        _add_check(
-            selected,
-            "record_retirement.regression",
-            "Removed record surfaces require safe rejection and archival exclusion proof.",
-        )
-        _add_check(
-            selected,
-            "change_metadata.regression",
-            "Removed metadata surfaces require current wrapper regression proof.",
-        )
-        return
-
-    if category == "change-record-query":
-        # Deleted shim paths remain routable; no removed command is executable.
-        for check_id in ("record_retirement.regression", "change_metadata.regression", "selector.regression"):
-            _add_check(selected, check_id,
-                       "Retired query paths require current record safety and deletion-routing proof.", path=path)
-        return
-
-    if category == "workflow-automation":
-        for check_id in ("rigorloop_cli.test", "skills.regression"):
-            _add_check(
-                selected,
-                check_id,
-                "Changed workflow automation tooling requires complete code-state, engine, policy, state, and validator regression proof.",
-            )
-        return
-
-    if category == "validator-artifact-lifecycle":
-        _add_check(
-            selected,
-            "governed_lifecycle_cli_wrapper.test",
-            "Changed artifact lifecycle validator requires current discovery and release regression proof.",
-        )
-        return
-
-    if category == "artifact-lifecycle-fixtures":
-        _add_check(
-            selected,
-            "governed_lifecycle_cli_wrapper.test",
-            "Changed artifact lifecycle fixture requires current discovery and release regression proof.",
-        )
-        return
-
-    if category == "validation-retirement":
-        for check_id in ("governed_lifecycle_cli_wrapper.test", "change_metadata.regression"):
-            _add_check(selected, check_id,
-                       "Retired cache paths require current execution and safe rejection proof.", path=path)
-        return
-
-    if category == "retained-change-fixture":
-        _add_check(
-            selected,
-            "governed_lifecycle_cli_wrapper.test",
-            "Changed retained change fixture rationale requires current discovery and release regression proof.",
-        )
-        _add_check(
-            selected,
-            "current_records.validate",
-            "Changed retained change fixture rationale requires current record discovery and validation.",
-            path=path,
-        )
-        return
 
     if category == "validator-change-metadata":
         _add_check(
@@ -1865,7 +1676,6 @@ def _build_result(
     registration_debt: list[dict[str, Any]] | None = None,
     status: str,
     adapter_version: str = DEFAULT_ADAPTER_VERSION,
-    discovered_paths: bool = False,
 ) -> SelectionResult:
     selected_checks: list[dict[str, Any]] = []
     build_errors: list[dict[str, str]] = []
@@ -1889,7 +1699,6 @@ def _build_result(
                 affected_roots=roots,
                 versions=versions,
                 adapter_version=adapter_version,
-                discovered_paths=discovered_paths,
             )
         except ValueError as exc:
             build_errors.append(
@@ -1938,31 +1747,7 @@ def _build_result(
     )
 
 
-# Exact source relocations (including subsequently retired sources) retain deletion routing.
-_TOOL_PATH_PREDECESSORS = {'scripts/lib/validation/boundary_first_reference.py': 'scripts/boundary_first_reference.py',
- 'scripts/lib/validation/boundary_first_validation.py': 'scripts/boundary_first_validation.py',
- 'scripts/lib/validation/model_layout.py': 'scripts/model_layout.py',
- 'scripts/lib/validation/project_yaml.py': 'scripts/project_yaml.py',
- 'scripts/lib/validation/record_store_classification.py': 'scripts/record_store_classification.py',
- 'scripts/lib/validation/skill_validation.py': 'scripts/skill_validation.py',
- 'scripts/lib/validation/validation_execution.py': 'scripts/validation_execution.py',
- 'scripts/lib/validation/validation_selection.py': 'scripts/validation_selection.py',
- 'scripts/lib/validation/validation_node_adapter.mjs': 'scripts/validation_node_adapter.mjs',
- 'scripts/lib/validation/record_snapshot_git.mjs': 'scripts/record_snapshot_git.mjs',
- 'scripts/lib/packaging/adapter_distribution.py': 'scripts/adapter_distribution.py',
- 'scripts/lib/packaging/npm_package_validation.py': 'scripts/npm_package_validation.py',
- 'scripts/lib/release/release_candidate.py': 'scripts/release_candidate.py',
- 'scripts/lib/release/release_coordination.py': 'scripts/release_coordination.py',
- 'scripts/lib/release/release_evidence.py': 'scripts/release_evidence.py',
- 'scripts/lib/release/release_execution.py': 'scripts/release_execution.py',
- 'scripts/lib/release/release_provider.py': 'scripts/release_provider.py',
- 'scripts/lib/release/release_transaction.py': 'scripts/release_transaction.py',
- 'scripts/resources/boundary-first/boundary-first-resources.yaml': 'scripts/boundary-first-resources.yaml',
- 'scripts/resources/adapter-templates/claude/CLAUDE.md': 'scripts/adapter_templates/claude/CLAUDE.md',
- 'scripts/resources/adapter-templates/codex/AGENTS.md': 'scripts/adapter_templates/codex/AGENTS.md'}
-
-
-# New package initializers affect every descendant consumer, not one predecessor.
+# Package initializers affect every descendant consumer.
 _TOOL_PACKAGE_CHECKS = {'scripts/lib/validation/__init__.py': ('adapters.regression',
                                         'boundary_first.reference_regression',
                                         'boundary_first.regression',
@@ -2002,55 +1787,40 @@ _TOOL_PACKAGE_CHECKS = {'scripts/lib/validation/__init__.py': ('adapters.regress
                              'skills.regression',
                              'validation_execution.regression')}
 
-def _tooling_predecessor(path: str) -> str:
-    return _TOOL_PATH_PREDECESSORS.get(path, path)
-
 
 def _path_category(path: str) -> str | None:
     if path in _TOOL_PACKAGE_CHECKS:
         return "tooling-package"
-    path = _tooling_predecessor(path)
-    parts = path.split("/")
-    if path in ISOLATED_RECORDING_EVIDENCE:
-        return "isolated-recording-evidence"
     if (path.startswith("docs/design/")
-            or path.startswith("tests/fixtures/explicit-recording-v1/")
             or path.startswith("tests/fixtures/rigorloop-records-v3/")
             or path in {"schemas/rigorloop-records-v3.schema.json", "templates/rigorloop-records-v3/records.json",
                         "packages/rigorloop/dist/schemas/rigorloop-records-v3.schema.json",
                         "packages/rigorloop/dist/templates/rigorloop-records-v3/records.json",
                         "packages/rigorloop/dist/lib/record-format-v3.js", "packages/rigorloop/dist/lib/record-format-core.js",
                         "packages/rigorloop/test/helpers/v3-fixture.mjs", "packages/rigorloop/test/helpers/record-store-launcher.mjs",
-                        "packages/rigorloop/dist/lib/record-json.js", "scripts/classify-record-store.mjs", "scripts/record_snapshot_git.mjs", "scripts/record_store_classification.py"}
-            or path in {"schemas/targeted-recording-v1.schema.json", "packages/rigorloop/dist/schemas/targeted-recording-v1.schema.json", "schemas/explicit-recording-v1.schema.json", "scripts/build-record-store-schema.mjs", "scripts/validate-record-store.mjs",
-                        "templates/explicit-recording/records.json", "packages/rigorloop/dist/templates/explicit-recording/records.json",
-                        "packages/rigorloop/dist/schemas/explicit-recording-v1.schema.json"}
+                        "packages/rigorloop/dist/lib/record-json.js", "scripts/classify-record-store.mjs", "scripts/lib/validation/record_snapshot_git.mjs", "scripts/lib/validation/record_store_classification.py"}
+            or path in {
+                'schemas/targeted-recording-v1.schema.json',
+                'packages/rigorloop/dist/schemas/targeted-recording-v1.schema.json',
+                'scripts/build-record-store-schema.mjs',
+                'scripts/validate-record-store.mjs',
+            }
             or (path.startswith("packages/rigorloop/dist/lib/recording-") and path.endswith(".js"))
             or (path.startswith("packages/rigorloop/dist/lib/record-store") and path.endswith(".js"))
             or (path.startswith("packages/rigorloop/test/record-store-") and path.endswith(".test.js"))
-            or path in {"packages/rigorloop/test/helpers/record-store-launcher.mjs", "packages/rigorloop/test/helpers/recording-query-launcher.mjs", "packages/rigorloop/test/helpers/record-store-interactions.mjs", "packages/rigorloop/test/helpers/record-store-tokenize.py", "packages/rigorloop/test/fixtures/recording-interactions/README.md"}):
+            or path in {
+                'packages/rigorloop/test/helpers/record-store-launcher.mjs',
+                'packages/rigorloop/test/helpers/recording-query-launcher.mjs',
+                'packages/rigorloop/test/helpers/record-store-interactions.mjs',
+                'packages/rigorloop/test/fixtures/recording-interactions/README.md',
+            }):
         return "explicit-recording"
-    if path in {"specs/boundary-first-activation.yaml", "scripts/boundary-first-resources.yaml"}:
+    if path == "scripts/resources/boundary-first/boundary-first-resources.yaml":
         return "lifecycle"
     if path == "README.md":
         return "readme"
     if path == ROOT_VISION_PATH:
         return "vision"
-    if path.startswith("tests/fixtures/compact-current-state-v1/"):
-        return "record-retirement"
-    if path in {"scripts/test-compact-current-state-canonical-contract.py",
-                "scripts/test-retirement-ledger.py", "scripts/retirement_ledger.py"}:
-        return "record-retirement"
-    if path == "schemas/compact-current-state-v1.schema.json":
-        return "record-retirement"
-    if path.startswith("tests/fixtures/artifact-lifecycle/"):
-        return "artifact-lifecycle-fixtures"
-    if path.startswith("tests/fixtures/review-artifacts/"):
-        return "review-artifact-fixtures"
-    if path == "tests/fixtures/change-metadata" or path.startswith("tests/fixtures/change-metadata/"):
-        return "change-metadata-fixtures"
-    if path in RETIRED_SPEC_READ_PATHS:
-        return "retired-spec-read"
     if path.startswith("tests/fixtures/documentation-prose/"):
         return "validator-documentation-prose"
     if path.startswith("tests/fixtures/adapters/"):
@@ -2065,52 +1835,51 @@ def _path_category(path: str) -> str | None:
         return "generated-skills"
     if path.startswith("dist/adapters/"):
         return "generated-adapters"
-    if path.startswith("scripts/adapter_templates/") or path in {
-        "scripts/adapter_distribution.py",
-        "scripts/build-adapters.py",
-        "scripts/test-adapter-distribution.py", "tests/engineering/packaging/test-adapter-distribution.py",
-        "tests/engineering/packaging/adapter_archive_tests.py",
-        "tests/engineering/packaging/adapter_contract_tests.py",
-        "tests/engineering/packaging/adapter_diagnostics_tests.py",
-        "tests/engineering/packaging/adapter_fixture_helpers.py",
-        "tests/engineering/packaging/adapter_generation_tests.py",
-        "tests/engineering/packaging/adapter_install_tests.py",
-        "tests/engineering/packaging/adapter_metadata_tests.py",
-        "tests/engineering/packaging/adapter_portability_tests.py",
-        "tests/engineering/packaging/adapter_resources_tests.py",
-        "scripts/validate-adapters.py",
+    if path.startswith("scripts/resources/adapter-templates/") or path in {
+        'scripts/lib/packaging/adapter_distribution.py',
+        'scripts/build-adapters.py',
+        'tests/engineering/packaging/test-adapter-distribution.py',
+        'tests/engineering/packaging/adapter_archive_tests.py',
+        'tests/engineering/packaging/adapter_contract_tests.py',
+        'tests/engineering/packaging/adapter_diagnostics_tests.py',
+        'tests/engineering/packaging/adapter_fixture_helpers.py',
+        'tests/engineering/packaging/adapter_generation_tests.py',
+        'tests/engineering/packaging/adapter_install_tests.py',
+        'tests/engineering/packaging/adapter_metadata_tests.py',
+        'tests/engineering/packaging/adapter_portability_tests.py',
+        'tests/engineering/packaging/adapter_resources_tests.py',
+        'scripts/validate-adapters.py',
     }:
         return "adapters"
-    if _tooling_predecessor(path) == "scripts/model_layout.py":
+    if path == "scripts/lib/validation/model_layout.py":
         return "selector"
     if _is_boundary_first_reference_surface(path) or _is_boundary_first_validation_surface(path):
         return "boundary-first"
     if path in {
-        "scripts/select-validation.py",
-        "scripts/validation_selection.py",
-        "scripts/validation_execution.py",
-        "scripts/validation_node_adapter.mjs",
-        "scripts/test-validation-execution.py", "tests/engineering/validation/test-validation-execution.py",
-        "scripts/test-select-validation.py", "tests/engineering/validation/test-select-validation.py",
-        "tests/engineering/validation/selection_contract_tests.py",
-        "tests/engineering/validation/selection_git_tests.py",
-        "tests/engineering/validation/selection_cli_tests.py",
-        "tests/engineering/validation/selection_test_helpers.py",
-        "tests/engineering/validation/execution_python_adapter_tests.py",
-        "tests/engineering/validation/execution_process_tests.py",
-        "tests/engineering/validation/execution_node_adapter_tests.py",
-        "tests/engineering/validation/execution_catalog_tests.py",
-        "tests/engineering/validation/execution_composition_tests.py",
-        "scripts/validate-broad-smoke-classification.py",
-        "scripts/validate-readme.py",
+        'scripts/select-validation.py',
+        'scripts/lib/validation/validation_selection.py',
+        'scripts/lib/validation/validation_execution.py',
+        'scripts/lib/validation/validation_node_adapter.mjs',
+        'tests/engineering/validation/test-validation-execution.py',
+        'tests/engineering/validation/test-select-validation.py',
+        'tests/engineering/validation/selection_contract_tests.py',
+        'tests/engineering/validation/selection_git_tests.py',
+        'tests/engineering/validation/selection_cli_tests.py',
+        'tests/engineering/validation/selection_test_helpers.py',
+        'tests/engineering/validation/execution_python_adapter_tests.py',
+        'tests/engineering/validation/execution_process_tests.py',
+        'tests/engineering/validation/execution_node_adapter_tests.py',
+        'tests/engineering/validation/execution_catalog_tests.py',
+        'tests/engineering/validation/execution_composition_tests.py',
+        'scripts/validate-readme.py',
     }:
         return "selector"
     if path in {
-        "scripts/validate-markdown-readability.py",
-        "scripts/test-markdown-readability-validator.py", "tests/engineering/validation/test-markdown-readability-validator.py",
+        'scripts/validate-markdown-readability.py',
+        'tests/engineering/validation/test-markdown-readability-validator.py',
     }:
         return "markdown-readability-validator"
-    if path in {"scripts/validate-guide-system.py", "scripts/test-guide-system-validator.py", "tests/engineering/validation/test-guide-system-validator.py"}:
+    if path in {'scripts/validate-guide-system.py', 'tests/engineering/validation/test-guide-system-validator.py'}:
         return "guide-system-validator"
     if path == "scripts/ci.sh":
         return "ci-wrapper"
@@ -2120,126 +1889,72 @@ def _path_category(path: str) -> str | None:
         return "ci-workflow"
     if path == ".github/workflows/release.yml":
         return "release-script"
-    if path in {"scripts/validate-review-artifacts.py", "scripts/review_artifact_validation.py", "scripts/test-review-artifact-validator.py"}:
-        return "validator-review-artifacts"
-    if path in {
-        "scripts/validate-artifact-lifecycle.py",
-        "scripts/artifact_lifecycle_validation.py",
-        "scripts/artifact_lifecycle_contracts.py",
-        "scripts/lifecycle_state_sync.py",
-        "scripts/test-artifact-lifecycle-validator.py",
-    }:
-        return "validator-artifact-lifecycle"
-    if path in {"scripts/validation_cache.py", "scripts/test-validation-cache.py"}:
-        return "validation-retirement"
-    if path in {
-        "scripts/change_metadata_semantics.py", "scripts/project_yaml.py",
-        "scripts/validate-change-metadata.py",
-        "scripts/test-change-metadata-validator.py", "tests/engineering/validation/test-change-metadata-validator.py",
-    }:
+    if path in {'scripts/validate-change-metadata.py', 'tests/engineering/validation/test-change-metadata-validator.py'}:
         return "validator-change-metadata"
     if path in {
-        "scripts/validate-documentation-prose.py",
-        "scripts/test-documentation-prose-validator.py", "tests/engineering/validation/test-documentation-prose-validator.py",
+        'scripts/validate-documentation-prose.py',
+        'tests/engineering/validation/test-documentation-prose-validator.py',
     }:
         return "validator-documentation-prose"
     if path in {
-        "scripts/query-change-record.py",
-        "scripts/test-query-change-record.py", "tests/engineering/validation/test-query-change-record.py",
-    }:
-        return "change-record-query"
-    if path in {
-        "scripts/workflow_code_state.py",
-        "scripts/test-workflow-code-state.py",
-        "scripts/workflow_automation.py",
-        "scripts/test-workflow-automation.py",
-        "scripts/workflow_automation_policy.py",
-        "scripts/test-workflow-automation-policy.py",
-        "scripts/workflow_automation_state.py",
-        "scripts/test-workflow-automation-state.py",
-        "scripts/validate_workflow_automation.py",
-        "scripts/test-validate-workflow-automation.py",
-    }:
-        return "workflow-automation"
-    if path in {
-        # Retired paths stay classifiable for deletion diffs, never executable.
-        "scripts/build-skills.py",
-        "scripts/validate-skills.py",
-        "scripts/skill_validation.py",
-        "scripts/review_independence_skill_phrases.py", "tests/skill/review_independence_skill_phrases.py",
-        "scripts/test-build-skills.py",
-        "scripts/test-skill-validator.py", "tests/skill/test-skill-validator.py",
-        "tests/skill/skill_contract_tests.py",
-        "tests/skill/skill_cli_tests.py",
-        "tests/skill/skill_guidance_tests.py",
-        "tests/skill/skill_metadata_tests.py",
-        "tests/skill/skill_resource_tests.py",
-        "tests/skill/skill_asset_tests.py",
-        "tests/skill/skill_ci_contract_tests.py",
-        "tests/skill/skill_canonical_tests.py",
-        "tests/skill/skill_portability_tests.py",
-        "tests/skill/skill_project_map_tests.py",
-        "tests/skill/skill_placement_tests.py",
-        "tests/skill/skill_fixture_helpers.py",
-        "tests/skill/skill_guidance_helpers.py",
-        "tests/skill/skill_readability_guidance_tests.py",
-        "tests/skill/skill_authority_tests.py",
-        "tests/skill/skill_route_guidance_tests.py",
-        "tests/skill/skill_verify_guidance_tests.py",
-        "tests/skill/skill_pr_guidance_tests.py",
-        "tests/skill/skill_plan_guidance_tests.py",
-        "tests/skill/skill_proposal_guidance_tests.py",
-        "tests/skill/skill_design_resource_tests.py",
-        "tests/skill/skill_vision_guidance_tests.py",
-        "tests/skill/skill_learn_guidance_tests.py",
-        "tests/skill/skill_project_map_guidance_tests.py",
-        "tests/skill/skill_ci_guidance_tests.py",
-        "tests/skill/skill_bugfix_guidance_tests.py",
-        "tests/skill/skill_shared_policy_tests.py",
-        "tests/skill/skill_discovery_guidance_tests.py",
+        'scripts/validate-skills.py',
+        'scripts/lib/validation/skill_validation.py',
+        'tests/skill/review_independence_skill_phrases.py',
+        'tests/skill/test-skill-validator.py',
+        'tests/skill/skill_contract_tests.py',
+        'tests/skill/skill_cli_tests.py',
+        'tests/skill/skill_guidance_tests.py',
+        'tests/skill/skill_metadata_tests.py',
+        'tests/skill/skill_resource_tests.py',
+        'tests/skill/skill_asset_tests.py',
+        'tests/skill/skill_ci_contract_tests.py',
+        'tests/skill/skill_canonical_tests.py',
+        'tests/skill/skill_portability_tests.py',
+        'tests/skill/skill_project_map_tests.py',
+        'tests/skill/skill_placement_tests.py',
+        'tests/skill/skill_fixture_helpers.py',
+        'tests/skill/skill_guidance_helpers.py',
+        'tests/skill/skill_readability_guidance_tests.py',
+        'tests/skill/skill_authority_tests.py',
+        'tests/skill/skill_route_guidance_tests.py',
+        'tests/skill/skill_verify_guidance_tests.py',
+        'tests/skill/skill_pr_guidance_tests.py',
+        'tests/skill/skill_plan_guidance_tests.py',
+        'tests/skill/skill_proposal_guidance_tests.py',
+        'tests/skill/skill_design_resource_tests.py',
+        'tests/skill/skill_vision_guidance_tests.py',
+        'tests/skill/skill_learn_guidance_tests.py',
+        'tests/skill/skill_project_map_guidance_tests.py',
+        'tests/skill/skill_ci_guidance_tests.py',
+        'tests/skill/skill_bugfix_guidance_tests.py',
+        'tests/skill/skill_shared_policy_tests.py',
+        'tests/skill/skill_discovery_guidance_tests.py',
     }:
         return "validator-skills"
-    if path in {
-        "scripts/analyze-codex-jsonl.py",
-        "scripts/measure-skill-tokens.py",
-        "scripts/run-token-cost-benchmarks.py",
-        "scripts/measure-cli-result-bytes.py",
-        "scripts/test-cli-result-measurement.py",
-        "scripts/test-token-cost-measurement.py",
-        "scripts/test-token-cost-report-validation.py",
-        "scripts/validate-token-cost-report.py",
-    }:
-        return "retired-token-cost"
-    if path.startswith("benchmarks/token-cost/"):
-        return "retired-token-cost"
-    if path.startswith("docs/reports/token-cost/"):
-        return "retired-token-cost"
     if path == "packages/rigorloop" or path.startswith("packages/rigorloop/"):
         return "rigorloop-cli"
     if path in {
-        ".github/workflows/publish-github-packages.yml",
-        "scripts/npm_package_validation.py",
-        "scripts/validate-npm-package.py",
-        "scripts/test-npm-package-publication.py", "tests/engineering/packaging/test-npm-package-publication.py",
-        "tests/engineering/packaging/npm_fixture_helpers.py",
-        "tests/engineering/packaging/npm_recording_tests.py",
+        '.github/workflows/publish-github-packages.yml',
+        'scripts/lib/packaging/npm_package_validation.py',
+        'scripts/validate-npm-package.py',
+        'tests/engineering/packaging/test-npm-package-publication.py',
+        'tests/engineering/packaging/npm_fixture_helpers.py',
+        'tests/engineering/packaging/npm_recording_tests.py',
     }:
         return "rigorloop-cli"
-    if path in {"scripts/release_evidence.py", "scripts/release_evidence_tests.py", "tests/engineering/release/release_evidence_tests.py"}:
+    if path in {
+        'scripts/lib/release/release_evidence.py',
+        'scripts/release_evidence.py',
+        'tests/engineering/release/release_evidence_tests.py',
+    }:
         return "release-transaction"
     if path in {
-        "scripts/validate-governed-lifecycle-cli.py",
-        "scripts/test-governed-lifecycle-cli-validator.py", "tests/engineering/validation/test-governed-lifecycle-cli-validator.py",
+        'scripts/validate-governed-lifecycle-cli.py',
+        'tests/engineering/validation/test-governed-lifecycle-cli-validator.py',
     }:
         return "governed-lifecycle-cli-wrapper"
     if path.startswith("docs/reports/adapter-artifacts/releases/") and path.endswith(".yaml"):
         return "adapter-artifact-metadata"
-    if path.startswith("tests/fixtures/token-cost/"):
-        return "retired-token-cost"
-    if path.startswith("docs/examples/"):
-        return "retired-examples"
-    if path in SKILL_SOURCE_ARCHIVE_PATHS:
-        return "skill-source-archive"
     if path.startswith("docs/research/") and path.endswith(".md"):
         return "research-artifact"
     if path == "docs/project-map.md" or (
@@ -2252,8 +1967,6 @@ def _path_category(path: str) -> str | None:
         return "change-records"
     if path in _plan_index_surface_paths():
         return "plan-index"
-    if path.startswith("docs/architecture/") and path.endswith(".mmd"):
-        return "architecture-diagram"
     if _is_learn_artifact_path(path):
         return "learn-artifact"
     if _is_lifecycle_path(path):
@@ -2275,32 +1988,31 @@ def _path_category(path: str) -> str | None:
     if path.startswith("schemas/"):
         return "schemas"
     if path in {
-        "scripts/close-release-publication.py",
-        "scripts/prepare-release.py",
-        "scripts/release-preflight.py",
-        "scripts/release_transaction.py",
-        "scripts/release_candidate.py",
-        "scripts/release_candidate_tests.py", "tests/engineering/release/release_candidate_tests.py",
-        "scripts/release_execution.py",
-        "scripts/release_execution_tests.py", "tests/engineering/release/release_execution_tests.py",
-        "tests/engineering/release/release_fixture_helpers.py",
-        "tests/engineering/release/release_identity_tests.py",
-        "tests/engineering/release/release_profile_tests.py",
-        "tests/engineering/release/release_preparation_tests.py",
-        "tests/engineering/release/release_preflight_tests.py",
-        "tests/engineering/release/release_timing_tests.py",
-        "tests/engineering/release/release_publication_tests.py",
-        "tests/engineering/release/release_provider_fixtures.py",
-        "tests/engineering/release/release_coordination_fixtures.py",
-        "scripts/release_provider.py",
-        "scripts/release_coordination.py",
-        "scripts/release_coordination_tests.py", "tests/engineering/release/release_coordination_tests.py",
-        "scripts/release-coordinator.py",
-        "scripts/test-release-transaction.py", "tests/engineering/release/test-release-transaction.py",
+        'scripts/close-release-publication.py',
+        'scripts/prepare-release.py',
+        'scripts/release-preflight.py',
+        'scripts/lib/release/release_transaction.py',
+        'scripts/lib/release/release_candidate.py',
+        'tests/engineering/release/release_candidate_tests.py',
+        'scripts/lib/release/release_execution.py',
+        'tests/engineering/release/release_execution_tests.py',
+        'tests/engineering/release/release_fixture_helpers.py',
+        'tests/engineering/release/release_identity_tests.py',
+        'tests/engineering/release/release_profile_tests.py',
+        'tests/engineering/release/release_preparation_tests.py',
+        'tests/engineering/release/release_preflight_tests.py',
+        'tests/engineering/release/release_timing_tests.py',
+        'tests/engineering/release/release_publication_tests.py',
+        'tests/engineering/release/release_provider_fixtures.py',
+        'tests/engineering/release/release_coordination_fixtures.py',
+        'scripts/lib/release/release_provider.py',
+        'scripts/lib/release/release_coordination.py',
+        'tests/engineering/release/release_coordination_tests.py',
+        'scripts/release-coordinator.py',
+        'tests/engineering/release/test-release-transaction.py',
     }:
         return "release-transaction"
-    # Keep the retired alias path classified so deletion diffs still select protection.
-    if path in {"scripts/validate-release.py", "scripts/validate-release-ci.py", "scripts/release-verify.sh"}:
+    if path in {'scripts/validate-release.py', 'scripts/release-verify.sh'}:
         return "release-script"
     if path.startswith("scripts/"):
         return "script-unsupported"
@@ -2308,14 +2020,9 @@ def _path_category(path: str) -> str | None:
 
 
 def _is_boundary_first_surface(path: str) -> bool:
-    path = _tooling_predecessor(path)
     return (
-        path == "specs/boundary-first-activation.yaml"
-        or path == "specs/boundary-first-resources.yaml"
-        or path == "scripts/boundary-first-resources.yaml"
-        or path.startswith("templates/shared/boundary-first-")
-        or path == "specs/references/boundary-first-method-v1.md"
-        or (path.startswith("specs/") and path.endswith(".md"))
+        path == "scripts/resources/boundary-first/boundary-first-resources.yaml"
+        or path == "templates/shared/boundary-first-method-v1.md"
         or (
             path.startswith("skills/")
             and (
@@ -2324,78 +2031,57 @@ def _is_boundary_first_surface(path: str) -> bool:
             )
         )
         or path.startswith("dist/adapters/")
-        or path.startswith(("scripts/fixtures/boundary-first/", "tests/engineering/validation/fixtures/boundary-first/"))
         or path
         in {
-            "scripts/boundary_first_validation.py",
-            "scripts/model_layout.py",
-            "scripts/validate-boundary-first.py",
-            "scripts/test-boundary-first-validation.py", "tests/engineering/validation/test-boundary-first-validation.py",
-            "tests/engineering/validation/boundary_structural_tests.py",
-            "tests/engineering/validation/boundary_path_tests.py",
-            "tests/engineering/validation/boundary_handoff_tests.py",
-            "tests/engineering/validation/boundary_model_tests.py",
-            "tests/engineering/validation/catalog_admission_tests.py",
-            "tests/engineering/validation/catalog_admission_fixture_helpers.py",
-            "scripts/lib/validation/test_design_validation.py",
-            "tests/engineering/validation/boundary_command_tests.py",
-            "tests/engineering/validation/boundary_fixture_helpers.py",
-            "scripts/boundary_first_reference.py",
-            "scripts/project-boundary-first-reference.py",
-            "scripts/test-boundary-first-reference.py", "tests/engineering/validation/test-boundary-first-reference.py",
+            'scripts/lib/validation/boundary_first_validation.py',
+            'scripts/lib/validation/model_layout.py',
+            'scripts/validate-boundary-first.py',
+            'tests/engineering/validation/test-boundary-first-validation.py',
+            'tests/engineering/validation/boundary_model_tests.py',
+            'tests/engineering/validation/catalog_admission_tests.py',
+            'tests/engineering/validation/catalog_admission_fixture_helpers.py',
+            'scripts/lib/validation/test_design_validation.py',
+            'tests/engineering/validation/boundary_command_tests.py',
+            'tests/engineering/validation/boundary_fixture_helpers.py',
+            'scripts/lib/validation/boundary_first_reference.py',
+            'scripts/project-boundary-first-reference.py',
+            'tests/engineering/validation/test-boundary-first-reference.py',
         }
     )
 
 
 def _is_boundary_first_reference_surface(path: str) -> bool:
-    path = _tooling_predecessor(path)
     return (
         path in {
-            "specs/boundary-first-resources.yaml",
-            "scripts/boundary-first-resources.yaml",
-            "templates/shared/boundary-first-method-v1.md",
-            "templates/shared/boundary-first-feature-authoring-v1.md",
-            "templates/shared/boundary-first-proof-v1.md",
-            "specs/references/boundary-first-method-v1.md",
+            'scripts/resources/boundary-first/boundary-first-resources.yaml',
+            'templates/shared/boundary-first-method-v1.md',
         }
-        or path.endswith("/references/boundary-first-method-v1.md")
+        or (
+            path.startswith(("skills/", ".codex/skills/", "dist/adapters/"))
+            and path.endswith("/references/boundary-first-method-v1.md")
+        )
         or path
         in {
-            "scripts/boundary_first_reference.py",
-            "scripts/project-boundary-first-reference.py",
-            "scripts/test-boundary-first-reference.py", "tests/engineering/validation/test-boundary-first-reference.py",
+            'scripts/lib/validation/boundary_first_reference.py',
+            'scripts/project-boundary-first-reference.py',
+            'tests/engineering/validation/test-boundary-first-reference.py',
         }
     )
 
 
 def _is_boundary_first_validation_surface(path: str) -> bool:
-    path = _tooling_predecessor(path)
-    return path.startswith(("scripts/fixtures/boundary-first/", "tests/engineering/validation/fixtures/boundary-first/")) or path in {
-        "scripts/boundary_first_validation.py",
-        "scripts/model_layout.py",
-        "scripts/validate-boundary-first.py",
-        "scripts/test-boundary-first-validation.py", "tests/engineering/validation/test-boundary-first-validation.py",
-        "tests/engineering/validation/boundary_structural_tests.py",
-        "tests/engineering/validation/boundary_path_tests.py",
-        "tests/engineering/validation/boundary_handoff_tests.py",
-        "tests/engineering/validation/boundary_model_tests.py",
-        "tests/engineering/validation/catalog_admission_tests.py",
-        "tests/engineering/validation/catalog_admission_fixture_helpers.py",
-        "scripts/lib/validation/test_design_validation.py",
-        "tests/engineering/validation/boundary_command_tests.py",
-        "tests/engineering/validation/boundary_fixture_helpers.py",
+    return path in {
+        'scripts/lib/validation/boundary_first_validation.py',
+        'scripts/lib/validation/model_layout.py',
+        'scripts/validate-boundary-first.py',
+        'tests/engineering/validation/test-boundary-first-validation.py',
+        'tests/engineering/validation/boundary_model_tests.py',
+        'tests/engineering/validation/catalog_admission_tests.py',
+        'tests/engineering/validation/catalog_admission_fixture_helpers.py',
+        'scripts/lib/validation/test_design_validation.py',
+        'tests/engineering/validation/boundary_command_tests.py',
+        'tests/engineering/validation/boundary_fixture_helpers.py',
     }
-
-
-# Retired paths remain classifiable for deletion diffs. This does not require
-# archived files to exist; other archive paths remain unclassified/fail closed.
-SKILL_SOURCE_ARCHIVE_PATHS = frozenset({
-    "docs/archive/skill-model/2026-09-08/README.md",
-    "docs/archive/skill-model/2026-09-08/specs/skill-contract.md",
-    "docs/archive/skill-model/2026-09-08/specs/skill-readability-contract.md",
-    "docs/archive/skill-model/2026-09-08/specs/customer-portable-public-skill-evidence.md",
-    "docs/archive/skill-model/2026-09-08/docs/adr/ADR-20260623-published-skill-resource-integrity.md",
-})
 
 
 def _is_lifecycle_path(path: str) -> bool:
@@ -2403,17 +2089,7 @@ def _is_lifecycle_path(path: str) -> bool:
         return False
     if path.startswith("docs/proposals/") and path.endswith(".md"):
         return True
-    if path.startswith("specs/") and path.endswith(".md"):
-        return True
-    if path.startswith("docs/architecture/") and path.endswith(".md"):
-        return True
-    if path.startswith("docs/adr/") and path.endswith(".md"):
-        return True
     if path.startswith("docs/plans/") and path.endswith(".md"):
-        return True
-    if path.startswith("docs/vision/") and path.endswith(".md"):
-        return True
-    if path.startswith("docs/explain/") and path.endswith(".md"):
         return True
     return False
 
@@ -2424,10 +2100,6 @@ def _is_tier_b_documentation_prose_path(path: str) -> bool:
     if path.startswith("docs/changes/") and path.endswith("/explain-change.md"):
         return True
     return False
-
-
-
-
 
 
 def _is_learn_artifact_path(path: str) -> bool:
@@ -2446,19 +2118,6 @@ def _is_plan_index_migration_proof(path: str) -> bool:
 
 def _plan_index_surface_paths() -> tuple[str, str]:
     return ("docs/plan-archive.md", "docs/plan.md")
-
-
-def _architecture_doc_for_diagram(path: str) -> str | None:
-    parts = path.split("/")
-    if len(parts) < 4 or parts[0] != "docs" or parts[1] != "architecture":
-        return None
-    try:
-        diagrams_index = parts.index("diagrams")
-    except ValueError:
-        return None
-    if diagrams_index <= 2:
-        return None
-    return "/".join([*parts[:diagrams_index], "architecture.md"])
 
 
 def _plan_index_context_paths(changed_paths: tuple[str, ...], repo_root: Path) -> list[str]:
@@ -2561,8 +2220,6 @@ def _vision_skill_in_scope(changed_paths: tuple[str, ...]) -> bool:
             return True
         if path.endswith("/skills/vision/SKILL.md") and path.startswith("dist/adapters/"):
             return True
-        if path.startswith("specs/vision-skill") and path.endswith(".md"):
-            return True
         if (
             "vision-skill" in path
             and path.endswith(".md")
@@ -2588,8 +2245,6 @@ def _readme_has_standalone_marker_block(repo_root: Path) -> bool:
 def _trigger_source_type(path: str) -> str | None:
     if path.startswith("docs/plans/") and path.endswith(".md"):
         return "active_plan"
-    if path.startswith("specs/") and path.endswith(".test.md"):
-        return "test_spec"
     if path.startswith("docs/changes/") and path.endswith("/review-resolution.md"):
         return "review_resolution"
     if path.startswith("docs/releases/") and path.endswith("/release.yaml"):

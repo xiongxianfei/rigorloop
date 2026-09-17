@@ -162,6 +162,8 @@ Local/CI execution, candidate roots and protected release jobs have distinct res
 
 ## Development
 
+Historical-path retirement follows [Validation’s current support boundary](validation.md#current-path-support-and-retirement). ENG-SR-14/16 preserve current commands and consumers by routing canonical paths directly; they do not require indefinite aliases for obsolete internal layouts. All selected retirement families must be reconciled together, while current record integrity, customer source authority and live release evidence remain. Existing architecture views retain their components and relationships; no new runtime or deployment is introduced.
+
 Development applies Skill Workflow, Authoring, Implementation and Assessment. It records which installed or checkout tools performed work and which source/package identities are the candidate. For this repository, `node packages/rigorloop/dist/bin/rigorloop.js` is a checkout entrypoint; its use is not evidence that the candidate CLI is correct. Candidate tests exercise the actual relevant package/record/installation boundary with independent assertions.
 
 The approved proposal and exact affected Designs feed a stable delivery plan and independent Delivery Review. Implementation proceeds through bounded milestones, recording commands actually run and outcomes. A non-final milestone review can permit the next allocated milestone; final whole-change Code Review remains fresh and distinct from Verify. A specification gap returns to Authoring, a test defect to its implementation owner, and an assessor's finding remains with that assessor for disposition.
@@ -211,7 +213,7 @@ Validation owns model, skill, selection, execution and record-validation helpers
 
 Authored adapter templates move to `scripts/resources/adapter-templates/`; the boundary manifest moves to `scripts/resources/boundary-first/`. Required package contents, canonical skill bytes and manifest semantics remain unchanged. Existing shared resources and package-owned Node runtime code stay with their owners. No new generic utilities package, universal CLI, dependency or test ledger is introduced.
 
-Representative migration acceptance under ENG-SR-16 is a stable direct command and a subprocess worker producing their existing result after internal imports move; old/new changed paths select the same required checks; a candidate with changed nested implementation fails source-integrity validation; and real archive/installed-consumer proof resolves relocated resources. Missing code/resources must fail visibly, without fallback to a second implementation. Restore a coherent captured source/caller slice on failure while preserving unrelated work. Independent reviews and concrete delivery allocation precede implementation.
+Representative migration acceptance under ENG-SR-16 is a stable direct command and a subprocess worker producing their existing result after internal imports move; current canonical changed paths select their required checks; historical predecessors have no continuing selection promise; a candidate with changed nested implementation fails source-integrity validation; and real archive/installed-consumer proof resolves relocated resources. Missing code/resources must fail visibly, without fallback to a second implementation. Restore a coherent captured source/caller slice on failure while preserving unrelated work. Independent reviews and concrete delivery allocation precede implementation.
 
 ## Deployment and maintenance
 
