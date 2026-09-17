@@ -147,7 +147,7 @@ def validate_model_record(text: str, path: str) -> tuple[ValidationIssue, ...]:
 
 
 def validate_model_path(root: Path, relative_path: str) -> tuple[ValidationIssue, ...]:
-    if relative_path not in PROJECT_MODEL_PATHS.values() and not re.fullmatch(r"docs/design/(?P<model>[a-z0-9][a-z0-9-]{0,79})(?:/(?P=model))?\.md", relative_path):
+    if relative_path not in PROJECT_MODEL_PATHS.values() and not re.fullmatch(r"docs/design/(?P<model>[a-z0-9][a-z0-9-]{0,79})/(?P=model)\.md", relative_path):
         return (_issue("BFR-MODEL-PATH", "<model-path>", "invalid model path", relative_path),)
     root = root.resolve()
     path = root

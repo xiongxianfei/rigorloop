@@ -25,37 +25,14 @@ from selection_test_helpers import (
 
 
 class SelectionContractChecks:
-    def test_retired_skill_archive_paths_select_current_protection_without_reading_sources(self):
-        # Retained deletion compatibility independently names the five retired
-        # inputs; changing the producer's registry cannot silently skip them.
-        for path in (
-            "docs/archive/skill-model/2026-09-08/README.md",
-            "docs/archive/skill-model/2026-09-08/specs/skill-contract.md",
-            "docs/archive/skill-model/2026-09-08/specs/skill-readability-contract.md",
-            "docs/archive/skill-model/2026-09-08/specs/customer-portable-public-skill-evidence.md",
-            "docs/archive/skill-model/2026-09-08/docs/adr/ADR-20260623-published-skill-resource-integrity.md",
-        ):
-            result = select_validation(SelectionRequest(mode="explicit", paths=(path,), repo_root=ROOT, preflight_context=self.root_preflight_context))
-            self.assertEqual(result.status, "ok", result.blocking_results)
-            checks = {check["id"] for check in result.selected_checks}
-            self.assertIn("skills.regression", checks)
-            self.assertNotIn("current_records.validate", checks)
-            self.assertNotIn("documentation_prose.enforce", checks)
-        unknown = "docs/archive/skill-model/2026-09-08/unknown_value.md"
-        result = select_validation(SelectionRequest(mode="explicit", paths=(unknown,), repo_root=ROOT, preflight_context=self.root_preflight_context))
-        self.assertEqual(result.status, "blocked")
-        self.assertIn(unknown, result.unclassified_paths)
 
 
     def test_explicit_recording_adoption_surfaces_select_real_proof(self):
         paths = (
             "docs/design/cli/cli.md", "docs/design/skill/workflow.md",
-            "schemas/explicit-recording-v1.schema.json",
             "schemas/targeted-recording-v1.schema.json",
             "scripts/build-record-store-schema.mjs",
             "scripts/validate-record-store.mjs",
-            "tests/fixtures/explicit-recording-v1/records.json",
-            "templates/explicit-recording/records.json",
             "schemas/rigorloop-records-v3.schema.json",
             "templates/rigorloop-records-v3/records.json",
             "tests/fixtures/rigorloop-records-v3/records.json",
@@ -80,8 +57,6 @@ class SelectionContractChecks:
                      "packages/rigorloop/dist/lib/record-json.js",
                      "packages/rigorloop/dist/schemas/rigorloop-records-v3.schema.json",
                      "packages/rigorloop/dist/templates/rigorloop-records-v3/records.json",
-                     "packages/rigorloop/dist/templates/explicit-recording/records.json",
-                     "packages/rigorloop/dist/schemas/explicit-recording-v1.schema.json",
                      "packages/rigorloop/test/record-store-cli.test.js",
                      "packages/rigorloop/test/helpers/record-store-launcher.mjs"):
             with self.subTest(path=path):
@@ -112,60 +87,77 @@ class SelectionContractChecks:
         self.assertEqual(self.select(['scripts/lib/unknown/__init__.py']).status, 'blocked')
 
 
-    def test_tooling_module_and_resource_moves_preserve_required_selection(self):
-        # ENG-SR-16: both sides retain check scope, including retired parser deletion paths.
-        destinations = {'scripts/boundary_first_reference.py': 'scripts/lib/validation/boundary_first_reference.py',
-         'scripts/boundary_first_validation.py': 'scripts/lib/validation/boundary_first_validation.py',
-         'scripts/model_layout.py': 'scripts/lib/validation/model_layout.py',
-         'scripts/project_yaml.py': 'scripts/lib/validation/project_yaml.py',
-         'scripts/record_store_classification.py': 'scripts/lib/validation/record_store_classification.py',
-         'scripts/skill_validation.py': 'scripts/lib/validation/skill_validation.py',
-         'scripts/validation_execution.py': 'scripts/lib/validation/validation_execution.py',
-         'scripts/validation_selection.py': 'scripts/lib/validation/validation_selection.py',
-         'scripts/validation_node_adapter.mjs': 'scripts/lib/validation/validation_node_adapter.mjs',
-         'scripts/record_snapshot_git.mjs': 'scripts/lib/validation/record_snapshot_git.mjs',
-         'scripts/adapter_distribution.py': 'scripts/lib/packaging/adapter_distribution.py',
-         'scripts/npm_package_validation.py': 'scripts/lib/packaging/npm_package_validation.py',
-         'scripts/release_candidate.py': 'scripts/lib/release/release_candidate.py',
-         'scripts/release_coordination.py': 'scripts/lib/release/release_coordination.py',
-         'scripts/release_evidence.py': 'scripts/lib/release/release_evidence.py',
-         'scripts/release_execution.py': 'scripts/lib/release/release_execution.py',
-         'scripts/release_provider.py': 'scripts/lib/release/release_provider.py',
-         'scripts/release_transaction.py': 'scripts/lib/release/release_transaction.py',
-         'scripts/boundary-first-resources.yaml': 'scripts/resources/boundary-first/boundary-first-resources.yaml',
-         'scripts/adapter_templates/claude/CLAUDE.md': 'scripts/resources/adapter-templates/claude/CLAUDE.md',
-         'scripts/adapter_templates/codex/AGENTS.md': 'scripts/resources/adapter-templates/codex/AGENTS.md'}
-        for old_path, new_path in destinations.items():
-            with self.subTest(path=new_path):
-                old = self.select([old_path])
-                new = self.select([new_path])
-                self.assertFalse(new.to_json_dict()['unclassified_paths'])
-                self.assertEqual({c['id'] for c in old.selected_checks},
-                                 {c['id'] for c in new.selected_checks})
-        self.assertEqual(self.select(['scripts/lib/validation/unknown.py']).status, 'blocked')
-
-
-    def test_moved_validation_suites_preserve_selection_and_current_commands(self):
-        # TEST-SR-10/17: both sides of relocation retain the same real checks.
-        names = (
-            "test-boundary-first-reference.py", "test-boundary-first-validation.py",
-            "test-change-metadata-validator.py", "test-documentation-prose-validator.py",
-            "test-governed-lifecycle-cli-validator.py", "test-guide-system-validator.py",
-            "test-markdown-readability-validator.py",
-            "test-select-validation.py", "test-validation-execution.py",
+    def test_canonical_tools_select_independent_owner_checks(self):
+        # Current responsibility sets are independent of producer path mappings.
+        records = {'rigorloop_cli.test', 'record_store.schema', 'model.validate',
+                   'boundary_first.regression', 'change_metadata.regression',
+                   'governed_lifecycle_cli_wrapper.test'}
+        groups = (
+            (('scripts/lib/validation/boundary_first_reference.py',),
+             {'boundary_first.validate', 'boundary_first.reference_regression'}),
+            (('scripts/lib/validation/boundary_first_validation.py',),
+             {'boundary_first.validate', 'boundary_first.regression'}),
+            (('scripts/lib/validation/model_layout.py',),
+             {'boundary_first.validate', 'boundary_first.regression', 'selector.regression',
+              'validation_execution.regression', 'guide_system.validate', 'guide_system.regression'}),
+            (('scripts/lib/validation/record_snapshot_git.mjs',
+              'scripts/lib/validation/record_store_classification.py'), records),
+            (('scripts/lib/validation/validation_execution.py',
+              'scripts/lib/validation/validation_selection.py',
+              'scripts/lib/validation/validation_node_adapter.mjs'),
+             {'selector.regression', 'validation_execution.regression'}),
+            (('scripts/lib/validation/skill_validation.py',), {'skills.regression', 'adapters.regression'}),
+            (('scripts/lib/packaging/adapter_distribution.py',
+              'scripts/resources/adapter-templates/codex/AGENTS.md',
+              'scripts/resources/adapter-templates/claude/CLAUDE.md'),
+             {'adapters.regression', 'adapters.drift', 'adapters.validate'}),
+            (('scripts/lib/packaging/npm_package_validation.py',),
+             {'rigorloop_cli.test', 'npm_package_publication.test'}),
+            (tuple('scripts/lib/release/'+name+'.py' for name in
+                   ('release_candidate', 'release_coordination', 'release_evidence',
+                    'release_execution', 'release_provider', 'release_transaction')) + ('scripts/release_evidence.py',),
+             {'release_transaction.regression'}),
+            (('scripts/resources/boundary-first/boundary-first-resources.yaml',),
+             {'boundary_first.validate', 'boundary_first.reference_regression', 'current_records.validate'}),
+            (('scripts/validate-release.py', 'scripts/release-verify.sh'), {'adapters.regression'}),
         )
-        for name in names:
+        for paths, expected in groups:
+            for path in paths:
+                with self.subTest(path=path):
+                    self.assertTrue((ROOT/path).is_file())
+                    result = self.select([path])
+                    self.assertEqual(result.status, 'ok', result.to_json_dict())
+                    self.assertEqual({c['id'] for c in result.selected_checks}, expected)
+
+    def test_unknown_paths_cannot_hide_behind_current_owner(self):
+        for path in ('scripts/unknown-command.py', 'docs/examples/sample.md', 'docs/archive/sample.md'):
+            for paths in ((path,), ('scripts/validate-release.py', path)):
+                with self.subTest(paths=paths):
+                    result = self.select(paths)
+                    self.assertEqual(result.status, 'blocked', result.to_json_dict())
+                    self.assertTrue(any(b['path'] == path for b in result.blocking_results))
+
+    def test_current_validation_suites_select_current_commands(self):
+        # TEST-SR-10/17: current entrypoints retain meaningful consumer checks.
+        expected = {
+            'test-boundary-first-reference.py': {'boundary_first.validate', 'boundary_first.reference_regression'},
+            'test-boundary-first-validation.py': {'boundary_first.validate', 'boundary_first.regression'},
+            'test-change-metadata-validator.py': {'change_metadata.regression'},
+            'test-documentation-prose-validator.py': {'documentation_prose.regression'},
+            'test-governed-lifecycle-cli-validator.py': {'governed_lifecycle_cli_wrapper.test', 'rigorloop_cli.test'},
+            'test-guide-system-validator.py': {'guide_system.regression', 'guide_system.validate'},
+            'test-markdown-readability-validator.py': {'markdown_readability.regression'},
+            'test-select-validation.py': {'selector.regression', 'validation_execution.regression'},
+            'test-validation-execution.py': {'selector.regression', 'validation_execution.regression'},
+        }
+        for name, required in expected.items():
             with self.subTest(name=name):
-                old = self.select(["scripts/" + name])
-                new = self.select(["tests/engineering/validation/" + name])
-                self.assertFalse(new.to_json_dict()["unclassified_paths"])
-                self.assertEqual({c["id"] for c in old.selected_checks},
-                                 {c["id"] for c in new.selected_checks})
-                for check in new.selected_checks:
-                    self.assertNotIn("scripts/" + name, check["command"])
+                result = self.select(['tests/engineering/validation/' + name])
+                self.assertEqual(result.status, 'ok')
+                self.assertEqual({c['id'] for c in result.selected_checks}, required)
+                self.assertTrue(any('tests/engineering/validation/' + name in c['command'] for c in result.selected_checks))
         for name in (
-            "boundary_structural_tests.py", "boundary_path_tests.py",
-            "boundary_handoff_tests.py", "boundary_model_tests.py",
+            "boundary_model_tests.py",
             "boundary_command_tests.py", "boundary_fixture_helpers.py",
         ):
             with self.subTest(module=name):
@@ -246,28 +238,25 @@ class SelectionContractChecks:
                 self.assertEqual(len(checks), len(payload["selected_checks"]))
 
 
-    def test_moved_skill_packaging_and_release_suites_preserve_selection(self):
+    def test_current_skill_packaging_and_release_suites_preserve_selection(self):
         # TEST-SR-17: imported helpers retain their owning suite's selection too.
-        destinations = {
-            "test-skill-validator.py": "tests/skill/",
-            "review_independence_skill_phrases.py": "tests/skill/",
-            "test-adapter-distribution.py": "tests/engineering/packaging/",
-            "test-npm-package-publication.py": "tests/engineering/packaging/",
-            "test-release-transaction.py": "tests/engineering/release/",
-            "release_candidate_tests.py": "tests/engineering/release/",
-            "release_coordination_tests.py": "tests/engineering/release/",
-            "release_execution_tests.py": "tests/engineering/release/",
-            "release_evidence_tests.py": "tests/engineering/release/",
-        }
-        for name, directory in destinations.items():
-            with self.subTest(name=name):
-                old = self.select(["scripts/" + name])
-                new = self.select([directory + name])
-                self.assertFalse(new.to_json_dict()["unclassified_paths"])
-                self.assertEqual({c["id"] for c in old.selected_checks},
-                                 {c["id"] for c in new.selected_checks})
-                for check in new.selected_checks:
-                    self.assertNotIn("scripts/" + name, check["command"])
+        groups = (
+            ('tests/skill/', ('test-skill-validator.py', 'review_independence_skill_phrases.py'),
+             {'skills.regression', 'adapters.regression'}),
+            ('tests/engineering/packaging/', ('test-adapter-distribution.py',),
+             {'adapters.regression', 'adapters.drift', 'adapters.validate'}),
+            ('tests/engineering/packaging/', ('test-npm-package-publication.py',),
+             {'rigorloop_cli.test', 'npm_package_publication.test'}),
+            ('tests/engineering/release/', ('test-release-transaction.py', 'release_candidate_tests.py',
+                'release_coordination_tests.py', 'release_execution_tests.py', 'release_evidence_tests.py'),
+             {'release_transaction.regression'}),
+        )
+        for directory, names, required in groups:
+            for name in names:
+                with self.subTest(name=name):
+                    result = self.select([directory + name])
+                    self.assertEqual(result.status, 'ok')
+                    self.assertEqual({c['id'] for c in result.selected_checks}, required)
         # Release imports and service fixtures keep the full native aggregate.
         release_modules = ('release_identity_tests.py', 'release_profile_tests.py', 'release_preparation_tests.py', 'release_preflight_tests.py', 'release_timing_tests.py', 'release_publication_tests.py', 'release_provider_fixtures.py', 'release_coordination_fixtures.py')
         for name in release_modules:
@@ -321,49 +310,20 @@ class SelectionContractChecks:
             self.assertIn(owner, command)
 
 
-    def test_model_selection_deleted_layout_paths_and_examples_select_current_owner(self):
-        for old, current in (
-            ("docs/design/system/system.md", "docs/design/system.md"),
-            ("docs/design/skill/design.md", "docs/design/skill/authoring/design.md"),
-            ("docs/design/workflow/workflow.md", "docs/design/skill/workflow.md"),
-            ("docs/design/record-format/examples/v3-complete-store/change.json", "docs/design/cli/records.md"),
-            ("docs/design/workflow/examples/correction-cycle.mmd", "docs/design/skill/workflow.md"),
-        ):
-            with self.subTest(old=old):
-                result = self.select([old])
-                command = shlex.split(next(c["command"] for c in result.selected_checks if c["id"] == "model.validate"))
-                self.assertIn(current, command)
-                self.assertNotIn(old, command)
-
-
-    def test_model_selection_deleted_flat_input_selects_current_owner(self):
-        result = self.select(["docs/design/workflow.md"])
-        command = shlex.split(next(c["command"] for c in result.selected_checks if c["id"] == "model.validate"))
-        self.assertNotIn("docs/design/workflow.md", command)
-        self.assertIn("docs/design/skill/workflow.md", command)
-
-
-    def test_compact_contract_surfaces_select_cross_runtime_and_metadata_proof(self) -> None:
-        for path in (
-            "schemas/compact-current-state-v1.schema.json",
-            "tests/fixtures/compact-current-state-v1/schema-records.json",
-            "scripts/test-compact-current-state-canonical-contract.py",
-            "scripts/test-retirement-ledger.py",
-            "scripts/retirement_ledger.py",
-        ):
-            with self.subTest(path=path):
-                result = self.select([path])
-                self.assertEqual(
-                    selected_ids(result.to_json_dict()),
-                    {"record_retirement.regression", "change_metadata.regression"},
-                )
-
-
     def test_deleted_historical_ledger_selects_current_rejection_proof(self) -> None:
         result = self.select(["docs/changes/2026-08-10-published-skill-first-repository-simplification/retirement-ledger.json"])
         self.assertEqual(result.status, "ok", result.blocking_results)
         self.assertEqual(selected_ids(result.to_json_dict()), {"record_retirement.regression"})
 
+
+    def test_model_selection_preserves_requested_identity_without_name_substitution(self):
+        # A matching model ID cannot substitute a different project subject.
+        for path in ('docs/design/workflow/workflow.md', 'docs/design/workflow.md'):
+            with self.subTest(path=path):
+                command = catalog_command('model.validate', paths=(path,), repo_root=ROOT)
+                self.assertIn(path, shlex.split(command))
+        command = catalog_command('model.validate', paths=('docs/design/workflow/examples/sample.md',), repo_root=ROOT)
+        self.assertIn('docs/design/workflow/workflow.md', shlex.split(command))
 
     def test_shared_preflight_context_requires_matching_repository_identity(self) -> None:
         other_root = Path(tempfile.mkdtemp(prefix="validation-selection-preflight-mismatch-"))
@@ -410,7 +370,6 @@ class SelectionContractChecks:
                 "scripts/lib/validation/validation_selection.py",
                 "scripts/lib/validation/validation_node_adapter.mjs",
                 "tests/engineering/validation/test-select-validation.py",
-                "scripts/validate-broad-smoke-classification.py",
             ]
         )
         payload = result.to_json_dict()
@@ -486,7 +445,7 @@ class SelectionContractChecks:
     def test_documentation_prose_tier_c_paths_do_not_select_first_slice_prose_validation(self) -> None:
         result = self.select(
             [
-                "specs/documentation-source-formatting.md",
+                "docs/design/engineering/validation.md",
                 "docs/plans/2026-06-24-semantic-source-line-contract.md",
                 "docs/changes/2026-04-25-example/reviews/code-review-r1.md",
                 "docs/learn/topics/documentation-prose.md",
@@ -624,8 +583,6 @@ class SelectionContractChecks:
     def test_lifecycle_artifact_classes_retain_owned_lifecycle_paths(self) -> None:
         paths = [
             "docs/proposals/2026-07-29-example.md",
-            "docs/architecture/system/example.md",
-            "docs/adr/ADR-20260729-example.md",
             "docs/plans/2026-07-29-example.md",
             "docs/changes/2026-07-29-example/review-resolution.md",
             "docs/changes/2026-07-29-example/change.yaml",
@@ -641,8 +598,6 @@ class SelectionContractChecks:
         self.assertEqual(shlex.split(lifecycle["command"]),
                          ["python", "scripts/validate-governed-lifecycle-cli.py"])
         self.assertIn("record_retirement.regression", selected_ids(payload))
-
-
 
 
     def test_selector_marks_broad_smoke_as_boundary_phase(self) -> None:
@@ -702,7 +657,7 @@ class SelectionContractChecks:
         result = self.select(
             [
                 "docs/changes/2026-04-25-example/review-resolution.md",
-                "specs/rigorloop-workflow.test.md",
+                "docs/plans/example.md",
                 "docs/releases/v0.1.1/release.yaml",
             ]
         )
@@ -864,18 +819,6 @@ class SelectionContractChecks:
                 "checks": {"adapters.regression", "adapters.drift", "adapters.validate"},
             },
             {
-                "path": "scripts/validation_cache.py",
-                "category": "validation-retirement",
-                "status": "ok",
-                "checks": {"governed_lifecycle_cli_wrapper.test", "change_metadata.regression"},
-            },
-            {
-                "path": "scripts/test-validation-cache.py",
-                "category": "validation-retirement",
-                "status": "ok",
-                "checks": {"governed_lifecycle_cli_wrapper.test", "change_metadata.regression"},
-            },
-            {
                 "path": "scripts/validate-skills.py",
                 "category": "validator-skills",
                 "status": "ok",
@@ -900,78 +843,6 @@ class SelectionContractChecks:
                 "checks": {"guide_system.regression", "guide_system.validate"},
             },
             {
-                "path": "scripts/lifecycle_state_sync.py",
-                "category": "validator-artifact-lifecycle",
-                "status": "ok",
-                "checks": {"governed_lifecycle_cli_wrapper.test"},
-            },
-            {
-                "path": "scripts/change_metadata_semantics.py",
-                "category": "validator-change-metadata",
-                "status": "ok",
-                "checks": {"change_metadata.regression"},
-            },
-            {
-                "path": "scripts/query-change-record.py",
-                "category": "change-record-query",
-                "status": "ok",
-                "checks": {"record_retirement.regression", "change_metadata.regression", "selector.regression"},
-            },
-            {
-                "path": "scripts/workflow_automation.py",
-                "category": "workflow-automation",
-                "status": "ok",
-                "checks": {
-                    "rigorloop_cli.test",
-                },
-            },
-            {
-                "path": "scripts/workflow_code_state.py",
-                "category": "workflow-automation",
-                "status": "ok",
-                "checks": {
-                    "rigorloop_cli.test",
-                },
-            },
-            {
-                "path": "scripts/test-workflow-code-state.py",
-                "category": "workflow-automation",
-                "status": "ok",
-                "checks": {
-                    "rigorloop_cli.test",
-                },
-            },
-            {
-                "path": "scripts/workflow_automation_policy.py",
-                "category": "workflow-automation",
-                "status": "ok",
-                "checks": {
-                    "rigorloop_cli.test",
-                },
-            },
-            {
-                "path": "scripts/workflow_automation_state.py",
-                "category": "workflow-automation",
-                "status": "ok",
-                "checks": {
-                    "rigorloop_cli.test",
-                },
-            },
-            {
-                "path": "scripts/validate_workflow_automation.py",
-                "category": "workflow-automation",
-                "status": "ok",
-                "checks": {
-                    "rigorloop_cli.test",
-                },
-            },
-            {
-                "path": "scripts/build-skills.py",
-                "category": "validator-skills",
-                "status": "ok",
-                "checks": {"skills.regression", "adapters.regression"},
-            },
-            {
                 "path": "tests/fixtures/skills/skill-readability/valid-pilot/SKILL.md",
                 "category": "validator-skills",
                 "status": "ok",
@@ -985,12 +856,6 @@ class SelectionContractChecks:
             },
             {
                 "path": "scripts/validate-release.py",
-                "category": "release-script",
-                "status": "ok",
-                "checks": {"adapters.regression"},
-            },
-            {
-                "path": "scripts/validate-release-ci.py",
                 "category": "release-script",
                 "status": "ok",
                 "checks": {"adapters.regression"},
@@ -1026,148 +891,10 @@ class SelectionContractChecks:
                 "checks": {"current_records.validate", "guide_system.validate"},
             },
             {
-                "path": "docs/architecture/system/diagrams/context.mmd",
-                "category": "architecture-diagram",
-                "status": "ok",
-                "checks": {"current_records.validate"},
-            },
-            {
-                "path": "tests/fixtures/artifact-lifecycle/valid-canonical-arc42-architecture/docs/architecture/system/architecture.md",
-                "category": "artifact-lifecycle-fixtures",
-                "status": "ok",
-                "checks": {"governed_lifecycle_cli_wrapper.test"},
-            },
-            {
-                "path": "tests/fixtures/review-artifacts/valid-clean-receipt-root/review-log.md",
-                "category": "review-artifact-fixtures",
-                "status": "ok",
-                "checks": {"skills.regression"},
-            },
-            {
-                "path": "tests/fixtures/review-artifacts/valid-requirement-compression-calibration/reviews/code-review-r1.md",
-                "category": "review-artifact-fixtures",
-                "status": "ok",
-                "checks": {"skills.regression"},
-            },
-            {
-                "path": "tests/fixtures/review-artifacts/valid-clean-receipt-root/change.yaml",
-                "category": "review-artifact-fixtures",
-                "status": "ok",
-                "checks": {"skills.regression", "change_metadata.regression"},
-            },
-            {
-                "path": "tests/fixtures/change-metadata/compact-valid/change.yaml",
-                "category": "change-metadata-fixtures",
-                "status": "ok",
-                "checks": {"change_metadata.regression"},
-            },
-            {
-                "path": "tests/fixtures/change-metadata",
-                "category": "change-metadata-fixtures",
-                "status": "ok",
-                "checks": {"change_metadata.regression"},
-            },
-            {
-                "path": "tests/fixtures/requirement-fidelity-gate/representative-reviews/r26-matrix-pilot/spec-read-log.json",
-                "category": "retired-spec-read",
-                "status": "ok",
-                "checks": {"selector.regression", "skills.regression", "skills.regression"},
-            },
-            {
-                "path": "scripts/test-fidelity-gate-spec-reads.py",
-                "category": "retired-spec-read",
-                "status": "ok",
-                "checks": {"selector.regression", "skills.regression", "skills.regression"},
-            },
-            {
-                "path": "scripts/measure-skill-tokens.py",
-                "category": "retired-token-cost",
-                "status": "ok",
-                "checks": {"selector.regression", "adapters.regression", "release_transaction.regression"},
-            },
-            {
-                "path": "scripts/analyze-codex-jsonl.py",
-                "category": "retired-token-cost",
-                "status": "ok",
-                "checks": {"selector.regression", "adapters.regression", "release_transaction.regression"},
-            },
-            {
-                "path": "scripts/test-token-cost-measurement.py",
-                "category": "retired-token-cost",
-                "status": "ok",
-                "checks": {"selector.regression", "adapters.regression", "release_transaction.regression"},
-            },
-            {
-                "path": "scripts/run-token-cost-benchmarks.py",
-                "category": "retired-token-cost",
-                "status": "ok",
-                "checks": {"selector.regression", "adapters.regression", "release_transaction.regression"},
-            },
-            {
-                "path": 'scripts/measure-cli-result-bytes.py',
-                "category": "retired-token-cost",
-                "status": "ok",
-                "checks": {"selector.regression", "adapters.regression", "release_transaction.regression"},
-            },
-            {
-                "path": 'scripts/test-cli-result-measurement.py',
-                "category": "retired-token-cost",
-                "status": "ok",
-                "checks": {"selector.regression", "adapters.regression", "release_transaction.regression"},
-            },
-            {
-                "path": "scripts/validate-token-cost-report.py",
-                "category": "retired-token-cost",
-                "status": "ok",
-                "checks": {"selector.regression", "adapters.regression", "release_transaction.regression"},
-            },
-            {
-                "path": "scripts/test-token-cost-report-validation.py",
-                "category": "retired-token-cost",
-                "status": "ok",
-                "checks": {"selector.regression", "adapters.regression", "release_transaction.regression"},
-            },
-            {
-                "path": "benchmarks/token-cost/manifest.yaml",
-                "category": "retired-token-cost",
-                "status": "ok",
-                "checks": {"selector.regression", "adapters.regression", "release_transaction.regression"},
-            },
-            {
-                "path": "benchmarks/token-cost/prompts/proposal-short.md",
-                "category": "retired-token-cost",
-                "status": "ok",
-                "checks": {"selector.regression", "adapters.regression", "release_transaction.regression"},
-            },
-            {
-                "path": "benchmarks/token-cost/fixtures/minimal-public-project/AGENTS.md",
-                "category": "retired-token-cost",
-                "status": "ok",
-                "checks": {"selector.regression", "adapters.regression", "release_transaction.regression"},
-            },
-            {
-                "path": "docs/reports/token-cost/2026-05-10-baseline.md",
-                "category": "retired-token-cost",
-                "status": "ok",
-                "checks": {"selector.regression", "adapters.regression", "release_transaction.regression"},
-            },
-            {
-                "path": "docs/reports/token-cost/releases/v0.1.1.yaml",
-                "category": "retired-token-cost",
-                "status": "ok",
-                "checks": {"selector.regression", "adapters.regression", "release_transaction.regression"},
-            },
-            {
                 "path": "docs/reports/adapter-artifacts/releases/v0.1.2.yaml",
                 "category": "adapter-artifact-metadata",
                 "status": "ok",
                 "checks": {"adapters.regression"},
-            },
-            {
-                "path": "docs/reports/token-cost/runs/v0.1.1/proposal-short-run1.analysis.yaml",
-                "category": "retired-token-cost",
-                "status": "ok",
-                "checks": {"selector.regression", "adapters.regression", "release_transaction.regression"},
             },
             {
                 "path": "packages/rigorloop/package.json",
@@ -1192,18 +919,6 @@ class SelectionContractChecks:
                 "category": "governed-lifecycle-cli-wrapper",
                 "status": "ok",
                 "checks": {"rigorloop_cli.test", "governed_lifecycle_cli_wrapper.test"},
-            },
-            {
-                "path": "tests/fixtures/token-cost/sample-codex-session.jsonl",
-                "category": "retired-token-cost",
-                "status": "ok",
-                "checks": {"selector.regression", "adapters.regression", "release_transaction.regression"},
-            },
-            {
-                "path": "tests/fixtures/token-cost/reports/valid-final-pass/v0.1.1.yaml",
-                "category": "retired-token-cost",
-                "status": "ok",
-                "checks": {"selector.regression", "adapters.regression", "release_transaction.regression"},
             },
         ]
 
@@ -1258,26 +973,6 @@ class SelectionContractChecks:
             {"documentation_prose.audit", "markdown_readability.validate"},
             selected_ids(payload),
         )
-
-
-    def test_retired_docs_examples_path_is_known_during_deletion_compatibility(self) -> None:
-        paths = ["docs/examples/README.md"]
-
-        result = self.select(paths)
-        payload = result.to_json_dict()
-
-        self.assertEqual(result.status, "ok")
-        self.assertEqual(payload["unclassified_paths"], [])
-        self.assertEqual(payload["blocking_results"], [])
-        for path in paths:
-            with self.subTest(path=path):
-                self.assertIn(
-                    {"path": path, "category": "retired-examples"},
-                    payload["classified_paths"],
-                )
-
-        self.assertNotIn("current_records.validate", selected_ids(payload))
-        self.assertEqual(payload["selected_checks"], [])
 
 
     def test_follow_up_register_path_selects_static_validation(self) -> None:
@@ -1433,20 +1128,6 @@ class SelectionContractChecks:
         self.assertFalse(payload["blocking_results"])
 
 
-    def test_vision_rationale_path_selects_lifecycle_validation_without_unclassified_block(self) -> None:
-        result = self.select(["docs/vision/strategic-positioning.md"])
-        payload = result.to_json_dict()
-
-        self.assertEqual(result.status, "ok")
-        self.assertIn(
-            {"path": "docs/vision/strategic-positioning.md", "category": "lifecycle"},
-            payload["classified_paths"],
-        )
-        self.assertEqual(payload["unclassified_paths"], [])
-        self.assertIn("current_records.validate", selected_ids(payload))
-        self.assertFalse(payload["blocking_results"])
-
-
     def test_retired_lowercase_root_vision_path_blocks_as_unclassified(self) -> None:
         result = self.select(["vision.md"])
         payload = result.to_json_dict()
@@ -1499,112 +1180,6 @@ class SelectionContractChecks:
         self.assertIn("current_records.validate", selected_ids(payload))
 
 
-    def test_architecture_support_paths_route_without_manual_blocks(self) -> None:
-        result = self.select(
-            [
-                "docs/architecture/system/diagrams/context.mmd",
-                "docs/architecture/system/diagrams/container.mmd",
-                "docs/changes/2026-04-25-example/architecture.md",
-                "docs/changes/2026-04-25-example/diagrams/context.mmd",
-                "tests/fixtures/artifact-lifecycle/valid-canonical-arc42-architecture/docs/architecture/system/architecture.md",
-            ]
-        )
-        payload = result.to_json_dict()
-
-        self.assertEqual(result.status, "ok")
-        self.assertFalse(payload["unclassified_paths"])
-        self.assertFalse(payload["blocking_results"])
-        self.assertIn("current_records.validate", selected_ids(payload))
-        self.assertIn("governed_lifecycle_cli_wrapper.test", selected_ids(payload))
-        lifecycle_check = next(check for check in payload["selected_checks"] if check["id"] == "current_records.validate")
-        self.assertEqual(lifecycle_check["command"], "python scripts/validate-governed-lifecycle-cli.py")
-
-
-    def test_workflow_refactor_surface_set_selects_expected_checks(self) -> None:
-        paths = [
-            "CONSTITUTION.md",
-            "AGENTS.md",
-            "README.md",
-            "docs/workflows.md",
-            "docs/plan.md",
-            "docs/plan-archive.md",
-            "docs/plans/2026-05-03-workflow-refactor.md",
-            "docs/vision/strategic-positioning.md",
-            "docs/proposals/2026-05-01-workflow-refactor.md",
-            "specs/rigorloop-workflow.md",
-            "specs/rigorloop-workflow.test.md",
-            "skills/workflow/SKILL.md",
-            ".codex/skills/workflow/SKILL.md",
-            "dist/adapters/codex/.agents/skills/workflow/SKILL.md",
-            "tests/engineering/validation/test-select-validation.py",
-            "tests/engineering/validation/test-governed-lifecycle-cli-validator.py",
-            "scripts/build-skills.py",
-            "scripts/test-build-skills.py",
-            "tests/skill/test-skill-validator.py",
-            "docs/changes/2026-05-03-workflow-refactor/change.yaml",
-            "docs/changes/2026-05-03-workflow-refactor/explain-change.md",
-            "docs/changes/2026-05-03-workflow-refactor/verify-report.md",
-            "docs/changes/2026-05-03-workflow-refactor/review-log.md",
-            "docs/changes/2026-05-03-workflow-refactor/review-resolution.md",
-        ]
-
-        result = self.select(paths)
-        payload = result.to_json_dict()
-
-        self.assertEqual(result.status, "ok")
-        self.assertEqual(payload["unclassified_paths"], [])
-        self.assertEqual(payload["blocking_results"], [])
-        expected_categories = {
-            "CONSTITUTION.md": "governance",
-            "AGENTS.md": "governance",
-            "README.md": "readme",
-            "docs/workflows.md": "workflow-guidance",
-            "docs/plan.md": "plan-index",
-            "docs/plan-archive.md": "plan-index",
-            "docs/plans/2026-05-03-workflow-refactor.md": "lifecycle",
-            "docs/vision/strategic-positioning.md": "lifecycle",
-            "docs/proposals/2026-05-01-workflow-refactor.md": "lifecycle",
-            "specs/rigorloop-workflow.md": "lifecycle",
-            "specs/rigorloop-workflow.test.md": "lifecycle",
-            "skills/workflow/SKILL.md": "skills",
-            ".codex/skills/workflow/SKILL.md": "generated-skills",
-            "dist/adapters/codex/.agents/skills/workflow/SKILL.md": "generated-adapters",
-            "tests/engineering/validation/test-select-validation.py": "selector",
-            "tests/engineering/validation/test-governed-lifecycle-cli-validator.py": "governed-lifecycle-cli-wrapper",
-            "scripts/build-skills.py": "validator-skills",
-            "scripts/test-build-skills.py": "validator-skills",
-            "tests/skill/test-skill-validator.py": "validator-skills",
-            "docs/changes/2026-05-03-workflow-refactor/change.yaml": "change-records",
-            "docs/changes/2026-05-03-workflow-refactor/explain-change.md": "change-records",
-            "docs/changes/2026-05-03-workflow-refactor/verify-report.md": "change-records",
-            "docs/changes/2026-05-03-workflow-refactor/review-log.md": "change-records",
-            "docs/changes/2026-05-03-workflow-refactor/review-resolution.md": "change-records",
-        }
-        for path, category in expected_categories.items():
-            with self.subTest(path=path):
-                self.assertIn({"path": path, "category": category}, payload["classified_paths"])
-
-        self.assertTrue(
-            {
-                "skills.validate",
-                "skills.regression",
-                "adapters.regression",
-                "adapters.drift",
-                "adapters.validate",
-                "record_retirement.regression",
-                "governed_lifecycle_cli_wrapper.test",
-                "current_records.validate",
-                "guide_system.validate",
-                "readme.validate",
-                "readme.vision_markers",
-                "selector.regression",
-            }.issubset(selected_ids(payload))
-        )
-        self.assertFalse(payload["broad_smoke_required"])
-        lifecycle_check = next(check for check in payload["selected_checks"] if check["id"] == "current_records.validate")
-        self.assertEqual(lifecycle_check["command"], "python scripts/validate-governed-lifecycle-cli.py")
-
-
     def test_broad_smoke_sources_are_attributed(self) -> None:
         temp_root = Path(tempfile.mkdtemp(prefix="validation-selection-broad-smoke-"))
         self.addCleanupTree(temp_root)
@@ -1630,12 +1205,11 @@ class SelectionContractChecks:
         self.assertIn({"type": "active_plan", "path": "docs/plans/active.md"}, sources)
 
 
-    def test_broad_smoke_sources_include_test_spec_and_review_resolution_context(self) -> None:
+    def test_broad_smoke_sources_include_current_plan_and_review_context(self) -> None:
         temp_root = Path(tempfile.mkdtemp(prefix="validation-selection-broad-smoke-"))
         self.addCleanupTree(temp_root)
         context_files = {
             "docs/plans/active.md": "broad_smoke_required: true\n",
-            "specs/example.test.md": "- broad smoke required before final verify\n",
             "docs/changes/example/review-resolution.md": "- broad smoke required by review closeout\n",
         }
         for relative_path, content in context_files.items():
@@ -1658,17 +1232,10 @@ class SelectionContractChecks:
         self.assertIn("broad_smoke.repo", selected_ids(payload))
         sources = payload["broad_smoke"]["sources"]
         self.assertIn({"type": "active_plan", "path": "docs/plans/active.md"}, sources)
-        self.assertIn({"type": "test_spec", "path": "specs/example.test.md"}, sources)
         self.assertIn(
             {"type": "review_resolution", "path": "docs/changes/example/review-resolution.md"},
             sources,
         )
-
-
-    def test_spec_read_retirement_removes_catalog_and_mode_entry(self) -> None:
-        self.assertNotIn("requirement_fidelity.spec_reads", CHECK_CATALOG)
-        for ids in MODE_CHECK_IDS.values():
-            self.assertNotIn("requirement_fidelity.spec_reads", ids)
 
 
     def test_readme_validator_accepts_absent_or_valid_standalone_marker_block(self) -> None:
