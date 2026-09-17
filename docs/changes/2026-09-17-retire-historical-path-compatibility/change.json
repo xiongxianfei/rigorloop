@@ -1,12 +1,12 @@
 {
   "activity": {
     "owner": {
-      "id": "historical-final-reviewer",
-      "role": "review"
+      "id": "historical-verifier",
+      "role": "verify"
     },
-    "reason": "M1 r2 approved and reporter finding resolved. M1 complete; fresh independent whole-change Code Review now required.",
-    "stage": "code-review",
-    "status": "ready"
+    "reason": "Fresh final whole-change Code Review approved, M1 completed, reporter findings resolved. Distinct final Verify assesses exact engineering, full committed proof and final record snapshot.",
+    "stage": "verify",
+    "status": "in-progress"
   },
   "applicability": [
     {
@@ -47,11 +47,11 @@
     },
     {
       "actor": {
-        "id": "historical-implementer",
-        "role": "implement"
+        "id": "historical-verifier",
+        "role": "verify"
       },
       "path": "docs/changes/2026-09-17-retire-historical-path-compatibility/evidence.json",
-      "reason": "Fresh correction proof; prior implementation entry is historical where its subject identities differ.",
+      "reason": "Exact final engineering hashes verified; fresh full range execution complements correction-specific and unchanged-surface proof.",
       "value": "current"
     },
     {
@@ -70,6 +70,15 @@
       },
       "path": "docs/changes/2026-09-17-retire-historical-path-compatibility/reviews/historical-path-m1-code-review-r2.json",
       "reason": "Exact corrected M1 independently reassessed with reporter-proved resolution and current evidence; approval permits only route-owned milestone closeout.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "historical-path-final-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-17-retire-historical-path-compatibility/reviews/historical-path-final-code-review.json",
+      "reason": "Fresh independent whole-change assessment of complete final engineering and current proof; supports separate Verify, not readiness or completion.",
       "value": "current"
     }
   ],
@@ -149,6 +158,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-17-retire-historical-path-compatibility/reviews/historical-path-m1-code-review-r2.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-17-retire-historical-path-compatibility/reviews/historical-path-final-code-review.json"
     }
   ],
   "schema_version": 3,

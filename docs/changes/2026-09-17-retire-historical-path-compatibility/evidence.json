@@ -160,6 +160,86 @@
         }
       ],
       "summary": "Corrected historical-reference-suffix-routing: reference suffix classification now requires canonical skills, local .codex/skills, or generated dist/adapters ownership. Unknown namespace and retired examples companions fail singleton and mixed selection; actual CI stops before any selected check. Regression reproduced five failures before fix; four focused methods passed after fix. bash scripts/ci.sh --mode local exited 0 with 232 passed rows. Earlier unchanged model/guidance proof and original full local evidence retain their limited meaning; final committed PR-range checks remain required. Review exposed a preventable missing namespace-negative scenario, now covered without a historical filename denylist."
+    },
+    {
+      "actor": {
+        "id": "historical-verifier",
+        "role": "verify"
+      },
+      "id": "final-committed-range",
+      "procedure": "bash scripts/ci.sh --mode pr --base ddb7eb9e0d4669d360483eac080f8f05fedd5641 --head 4ada6752c464b83ae1f434aef987c376721ce63e",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:4fb4b8957923ad683118f3e88d147152e3b794d15844fe8bbe44115fe6ff69ff",
+          "path": "docs/design/engineering/engineering.md"
+        },
+        {
+          "identity": "sha256:408d11f05ad68f16c5b053cfb95c7c658dc7187a0413b510532bf7109a4bb1b4",
+          "path": "docs/design/engineering/validation.md"
+        },
+        {
+          "identity": "sha256:1b54166e88c557275c7957e38e5269f5968040ba75f382690e83fd66e593fa4b",
+          "path": "docs/design/skill/authoring/design.md"
+        },
+        {
+          "identity": "sha256:3d21d0de8a59c2d3df532a688270138f0764eeea6611dec1e1121f7f174da7ca",
+          "path": "docs/design/skill/workflow.md"
+        },
+        {
+          "identity": "sha256:c1463a2d61f79edb0abcc59db3045efdd003dfa0f63000db2a45fd810700bd7d",
+          "path": "docs/design/system.md"
+        },
+        {
+          "identity": "sha256:1e9f0f91a8780492287c5dac7e71c5952cfe4eb1c78ae812f4598445f8f256a3",
+          "path": "docs/plan.md"
+        },
+        {
+          "identity": "sha256:e0bea2c8f6bd6f6739dd0d0efc9956a90261ed72f8c07dfd60220e087cd1358f",
+          "path": "docs/plans/2026-09-17-retire-historical-path-compatibility.md"
+        },
+        {
+          "identity": "sha256:9d8cb7e51959cc19a7991114e702a59eb4587a2a6a91a81cffa57ef70ce16d48",
+          "path": "docs/proposals/2026-09-17-retire-historical-path-compatibility.md"
+        },
+        {
+          "identity": "sha256:b07271ee234d4e6735bb1fcf04010fdadd0cb80c2188f9959e9472d8510b4f50",
+          "path": "scripts/lib/validation/boundary_first_validation.py"
+        },
+        {
+          "identity": "sha256:e5497376660d99abc84e67618dbcf89bcf41aadac0886570c937d732800a556d",
+          "path": "scripts/lib/validation/model_layout.py"
+        },
+        {
+          "identity": "sha256:f4d05f33a3ffd05af6be5d1b65c2f2f4780461783c9ec581a882ac7e2eb8ae1e",
+          "path": "scripts/lib/validation/validation_execution.py"
+        },
+        {
+          "identity": "sha256:203f504f98f90484dd0c17dc88b249fdb6f4b387a2b920ae54f545c32216eadd",
+          "path": "scripts/lib/validation/validation_selection.py"
+        },
+        {
+          "identity": "sha256:f2eb9c36b036165461b0c9fbd64c08eba5cf4b5d4bbdc3038fccdf6f9934bbe5",
+          "path": "skills/design/references/model-authoring.md"
+        },
+        {
+          "identity": "sha256:a763ac887a897f0f860dcac13f476a75e2aa9881f0c56af9766a9cdecf4ae1d8",
+          "path": "tests/engineering/validation/boundary_model_tests.py"
+        },
+        {
+          "identity": "sha256:0207a499c1fe6184b80d85af019b01ced62a41ba7f700a248b91207a9247be18",
+          "path": "tests/engineering/validation/catalog_admission_tests.py"
+        },
+        {
+          "identity": "sha256:fcc59c3c2c7402d6df13301f1820e9d69780b10fa768d61bc9cfb3efb412bd0d",
+          "path": "tests/engineering/validation/selection_contract_tests.py"
+        },
+        {
+          "identity": "sha256:69214735b87bd7efca2c30628209786b8b15129b9c590e9bbb11cca046ee5d38",
+          "path": "tests/engineering/validation/selection_git_tests.py"
+        }
+      ],
+      "summary": "Fresh actual committed PR-range execution exited 0: 1272 passed check-result rows, Boundary scope passed, Selected CI checks passed. Full final engineering subject at4ada6752; subsequent0d01a11c adds only M1 reporter disposition, r2 approval and workflow handoff. TG-FINAL-1 integrated selection/execution/current committed records, model/package/resource checks passed. No hosted CI or publication claim. Final review and distinct final assessment still downstream; final records receive fresh committed snapshot validation before PR."
     }
   ],
   "schema_version": 3
