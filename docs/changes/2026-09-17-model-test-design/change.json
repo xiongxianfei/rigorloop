@@ -1,10 +1,10 @@
 {
   "activity": {
     "owner": {
-      "id": "focused-proposal-reviewer",
+      "id": "focused-final-reviewer",
       "role": "review"
     },
-    "reason": "M1 implementation complete with focused-m1-validation: frozen full local CI passed1242rows and all123subjects unchanged; independent milestone assessment required before completion.",
+    "reason": "focused-m1-code-review approved completeM1 with current proof and resolved findings. All implementation complete; select distinct fresh final whole-change Code Review before Verify.",
     "stage": "code-review",
     "status": "ready"
   },
@@ -88,6 +88,15 @@
       },
       "path": "docs/changes/2026-09-17-model-test-design/evidence.json",
       "reason": "Exact frozen focused implementation and current approved proposal/Design/Delivery basis; final review and Verify remain separate.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "focused-code-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-17-model-test-design/reviews/focused-m1-code-review.json",
+      "reason": "Complete current M1 diff assessed against exact approved proposal/Design/Delivery and passing frozen engineering proof; prior material concern independently resolved.",
       "value": "current"
     }
   ],
@@ -217,6 +226,10 @@
     {
       "kind": "evidence",
       "path": "docs/changes/2026-09-17-model-test-design/evidence.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-17-model-test-design/reviews/focused-m1-code-review.json"
     }
   ],
   "schema_version": 3,
@@ -254,7 +267,7 @@
         "DES-SR-26",
         "VAL-SR-35"
       ],
-      "status": "ready"
+      "status": "completed"
     }
   ]
 }
