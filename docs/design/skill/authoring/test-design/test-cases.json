@@ -10,7 +10,7 @@
     "model": "authoring",
     "boundary": "Goal refinement, authorized handoffs and corrections across Proposal, Design and Plan.",
     "entrypoint": "tests/skill/test-skill-validator.py",
-    "coverage_claim": "Twelve distinct proposed review procedures protect refinement, scoped handoffs and corrections across all five AUTH-SR requirements. Concrete compliant and one-fault artifact packets support inspection; no agent run, executable realization or completed independent assessment is claimed. Supporting structure checks retain their narrower scope."
+    "coverage_claim": "Thirteen distinct proposed review procedures protect refinement, scoped handoffs and corrections across all five AUTH-SR requirements. Concrete compliant and one-fault artifact packets support inspection; no agent run, executable realization or completed independent assessment is claimed. Supporting structure checks retain their narrower scope."
   },
   "fixture_rules": {
     "isolation": "Use a fresh private fictional artifact package per case/variant; preserve unaffected files and source identities. Reviews do not mutate production or workflow records.",

@@ -45,7 +45,7 @@ REVIEW_ASSESSMENT_CONSUMERS = frozenset({"proposal-review", "design-review", "de
 
 
 TEST_QUALITY_CONSUMERS = frozenset(['design', 'bugfix', 'ci-maintenance', 'code-review', 'delivery-review', 'design-review', 'implement', 'plan', 'route', 'verify'])
-DESIGN_RESOURCES = frozenset(['references/architecture-view-examples.md', 'assets/design-skeleton.md', 'assets/diagram-styles.mmd', 'references/boundary-first-feature-authoring-v1.md', 'references/boundary-first-method-v1.md', 'references/governed-design-authoring.md', 'references/legacy-source-reconciliation.md', 'references/model-authoring.md', 'references/system-composition.md', 'references/technical-design.md', 'references/test-quality.md'])
+DESIGN_RESOURCES = frozenset(['references/architecture-view-examples.md', 'assets/design-skeleton.md', 'assets/diagram-styles.mmd', 'references/boundary-first-method-v1.md', 'references/governed-design-authoring.md', 'references/legacy-source-reconciliation.md', 'references/model-authoring.md', 'references/system-composition.md', 'references/technical-design.md', 'references/test-quality.md'])
 
 TEST_MAINTENANCE_CONSUMERS = frozenset(['bugfix', 'ci-maintenance', 'code-review', 'delivery-review', 'implement', 'plan', 'route', 'verify'])
 

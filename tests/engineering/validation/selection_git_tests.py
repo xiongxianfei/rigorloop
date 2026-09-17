@@ -397,11 +397,10 @@ class SelectionGitChecks:
         self.assertIn(unknown, result.unclassified_paths)
 
 
-    def test_mixed_skill_and_spec_scope_each_check_to_its_owner(self) -> None:
+    def test_mixed_skill_and_unsupported_spec_blocks_without_losing_skill_checks(self) -> None:
         skill_path = "skills/design/SKILL.md"
         spec_path = "specs/customer-feature.md"
-        # Portable explicitly selected customer contracts remain supported;
-        # this proof must not read a retired repository contract.
+        # Current skill checks remain selected, but feature-format execution blocks.
         repo = self.make_git_repo()
         for path in (skill_path, spec_path):
             target = repo / path
@@ -410,7 +409,8 @@ class SelectionGitChecks:
         self.git_output(repo, "add", ".")
         payload = select_validation(SelectionRequest(mode="explicit", paths=(skill_path, spec_path), repo_root=repo)).to_json_dict()
 
-        self.assertEqual(payload["status"], "ok")
+        self.assertEqual(payload["status"], "blocked")
+        self.assertIn("unsupported-feature-format", {item["code"] for item in payload["blocking_results"]})
         self.assertIn("skills.validate", selected_ids(payload))
         self.assertIn("current_records.validate", selected_ids(payload))
         lifecycle = next(
@@ -425,6 +425,12 @@ class SelectionGitChecks:
             if check["id"] == "boundary_first.validate"
         )
         self.assertEqual(boundary["paths"], [skill_path, spec_path])
+        command = shlex.split(boundary["command"])
+        command[1] = str(ROOT / command[1])
+        executed = subprocess.run(command, cwd=repo, capture_output=True, text=True)
+        self.assertEqual(executed.returncode, 1, executed.stdout + executed.stderr)
+        self.assertEqual(json.loads(executed.stdout)["issues"][0]["check_id"], "BFR-UNSUPPORTED-FORMAT")
+        self.assertEqual((repo / spec_path).read_text(), "# Explicit customer input\n")
 
 
     def test_preflight_blocks_untracked_authoritative_artifact_with_action(self) -> None:
@@ -1102,7 +1108,7 @@ class SelectionGitChecks:
                 SelectionRequest(mode="explicit", paths=(path,), repo_root=repo)
             )
             with self.subTest(path=path):
-                self.assertEqual(result.status, "ok", result.to_json_dict())
+                self.assertEqual(result.status, "blocked" if path.startswith("specs/") else "ok", result.to_json_dict())
                 self.assertIn(
                     "boundary_first.validate",
                     selected_ids(result.to_json_dict()),
@@ -1135,7 +1141,7 @@ class SelectionGitChecks:
                     for check in result.to_json_dict()["selected_checks"]
                     if check["id"] == "boundary_first.validate"
                 )
-                if path in {"specs/feature.md", "specs/feature.test.md"}:
+                if path.startswith("specs/"):
                     self.assertIn(f"--path {path}", command)
                 else:
                     self.assertNotIn("--path", command)

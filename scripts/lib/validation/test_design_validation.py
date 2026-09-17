@@ -17,7 +17,7 @@ import sys
 import tempfile
 from urllib.parse import unquote, urlsplit
 
-from lib.validation.boundary_first_validation import _issue, validate_changed_spec
+from lib.validation.boundary_first_validation import _issue, validate_model_path
 from lib.validation.model_layout import (
     PROJECT_MODEL_PATHS, SHARED_TEST_DESIGN_PATHS, TEST_DESIGN_PACKAGES, test_design_paths,
 )
@@ -432,7 +432,11 @@ def validate_documents(root, requested):
         details.update(test_design_paths(model)[1:])
     issues = []
     for path in sorted(paths - details):
-        issues.extend(validate_changed_spec(root, path))
+        if path.startswith("specs/"):
+            issues.append(_issue("BFR-UNSUPPORTED-FORMAT", path,
+                                 "feature/proof validation is unsupported; use living model documents"))
+        else:
+            issues.extend(validate_model_path(root, path))
     for model in sorted(models):
         issues.extend(validate_catalog(root, model))
     markdown = {path for path in paths & details if path.endswith('.md')}

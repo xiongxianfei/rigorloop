@@ -18,7 +18,7 @@ from boundary_fixture_helpers import (
 
 sys.path.insert(0, str(ROOT / "scripts"))
 
-from lib.validation.boundary_first_validation import validate_changed_spec, validate_model_record
+from lib.validation.boundary_first_validation import validate_model_path, validate_model_record
 
 
 class ModelRecordTests(unittest.TestCase):
@@ -34,14 +34,14 @@ class ModelRecordTests(unittest.TestCase):
 
     def check(self, text=None, relative="docs/design/skill/workflow.md"):
         self.path.write_text(self.text if text is None else text, encoding="utf-8")
-        return validate_changed_spec(self.root, relative)
+        return validate_model_path(self.root, relative)
 
     def test_model_current_files_validate_without_activation_or_change_record(self):
         for relative in EXPECTED_MODEL_PATHS:
             with self.subTest(relative=relative):
                 (self.root / relative).parent.mkdir(parents=True, exist_ok=True)
                 (self.root / relative).write_bytes((ROOT / relative).read_bytes())
-                self.assertEqual(validate_changed_spec(self.root, relative), ())
+                self.assertEqual(validate_model_path(self.root, relative), ())
         self.assertFalse((self.root / "docs/changes").exists())
 
     def test_model_retired_marker_rejects_before_table_checks(self):
@@ -76,12 +76,12 @@ class ModelRecordTests(unittest.TestCase):
             path = self.root / relative
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text(self.text)
-            self.assertTrue(validate_changed_spec(self.root, relative))
+            self.assertTrue(validate_model_path(self.root, relative))
 
     def test_model_flat_historical_path_remains_explicitly_valid(self):
         path = self.root / "docs/design/workflow.md"
         path.write_text(self.text)
-        self.assertEqual(validate_changed_spec(self.root, "docs/design/workflow.md"), ())
+        self.assertEqual(validate_model_path(self.root, "docs/design/workflow.md"), ())
 
     def test_model_unknown_value_marker_and_dimension_fail_closed(self):
         for text in (
@@ -119,19 +119,19 @@ class ModelRecordTests(unittest.TestCase):
     def test_model_unsafe_missing_and_symlink_paths_reject(self):
         self.check()
         for relative in ("docs/design/../workflow.md", "docs/design/nested/workflow.md", "docs/design/UPPER.md", "docs/design/missing.md"):
-            self.assertTrue(validate_changed_spec(self.root, relative))
+            self.assertTrue(validate_model_path(self.root, relative))
         self.path.unlink()
         outside = self.root / "outside.md"
         outside.write_text(self.text, encoding="utf-8")
         self.path.symlink_to(outside)
-        self.assertTrue(validate_changed_spec(self.root, "docs/design/skill/workflow.md"))
+        self.assertTrue(validate_model_path(self.root, "docs/design/skill/workflow.md"))
         self.path.unlink()
         self.path.parent.rmdir()
         other = self.root / "other"
         other.mkdir()
         (other / "workflow.md").write_text(self.text, encoding="utf-8")
         self.path.parent.symlink_to(other, target_is_directory=True)
-        self.assertTrue(validate_changed_spec(self.root, "docs/design/skill/workflow.md"))
+        self.assertTrue(validate_model_path(self.root, "docs/design/skill/workflow.md"))
 
     def test_model_fenced_contract_or_tables_are_not_authority(self):
         self.assertTrue(self.check("```md\n" + self.text + "\n```\n"))
@@ -167,3 +167,12 @@ class ModelRecordTests(unittest.TestCase):
         self.assertEqual(data["validation"], "structure-and-references-only")
         self.assertNotIn("activation", data)
         self.assertEqual(relevant_tree_snapshot(self.root), before)
+
+    def test_model_diagnostic_redacts_unknown_private_value(self):
+        secret = "credential=private-model-marker"
+        issues = validate_model_record(self.text.replace("model-document-v1", secret), "docs/design/fixture.md")
+        self.assertEqual(issues[0].code, "BFR-MODEL-CONTRACT")
+        issue = issues[0].as_dict()
+        self.assertEqual(set(issue), {"check_id", "path", "message", "offending_value", "expected"})
+        self.assertNotIn(secret, json.dumps(issue))
+        self.assertIn("redacted:sha256:", issue["offending_value"])
