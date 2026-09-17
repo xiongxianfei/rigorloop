@@ -4,9 +4,9 @@
       "id": "feature-retirement-verifier",
       "role": "verify"
     },
-    "reason": "All M1 work completed; fresh feature-retirement-final-code-review approves complete delivered change with no material findings. Distinct final Verify must assess current evidence and exact Git/PR basis.",
+    "reason": "Distinct final Verify succeeded with exact current Git/PR basis after approved M1 and final whole-change review; all required work and concerns are complete. Authorized PR handoff is next; no merge or publication authority is implied.",
     "stage": "verify",
-    "status": "ready"
+    "status": "completed"
   },
   "applicability": [
     {
@@ -65,11 +65,11 @@
     },
     {
       "actor": {
-        "id": "feature-retirement-method-reviewer",
-        "role": "review"
+        "id": "feature-retirement-verifier",
+        "role": "verify"
       },
       "path": "docs/changes/2026-09-17-retire-feature-format-support/evidence.json",
-      "reason": "All 28 canonical/plan/catalog subject identities still match the independently assessed package; relevant guidance or projection changes require reassessment. This evidence does not settle M1 or final review.",
+      "reason": "Exact-head final checks and independent unchanged-subject applicability assessment support the current evidence record; relevant later changes require reassessment.",
       "value": "current"
     },
     {
@@ -88,6 +88,15 @@
       },
       "path": "docs/changes/2026-09-17-retire-feature-format-support/reviews/feature-retirement-final-code-review.json",
       "reason": "Fresh final whole-change independent assessment of the complete delivered engineering diff and exact current approved authority/proof; supports distinct Verify only.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "feature-retirement-verifier",
+        "role": "verify"
+      },
+      "path": "docs/changes/2026-09-17-retire-feature-format-support/verify-report.json",
+      "reason": "Successful distinct final Verify of exact engineering subject and complete chain, with fresh committed snapshot and justified unchanged execution reuse.",
       "value": "current"
     }
   ],
@@ -210,6 +219,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-17-retire-feature-format-support/reviews/feature-retirement-final-code-review.json"
+    },
+    {
+      "kind": "verify",
+      "path": "docs/changes/2026-09-17-retire-feature-format-support/verify-report.json"
     }
   ],
   "schema_version": 3,
