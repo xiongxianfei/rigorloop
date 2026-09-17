@@ -18,6 +18,7 @@ import sys
 import tempfile
 import time
 import shutil
+import stat
 
 from lib.validation.validation_selection import (CHECK_CATALOG, MODE_CHECK_IDS, BOUNDARY_CHECK_IDS, DEFAULT_ADAPTER_VERSION, catalog_command,
                                   is_parallel_safe_check, validate_catalog, COVERING_CHECK_IDS, COVERAGE_BASES, command_basis)
@@ -53,6 +54,7 @@ class CheckResult:
     stdout_path: Path | None
     stderr_path: Path | None
     exit_code: int
+    output_bytes: int | None = None
 
 
 def validate_plans(plans, *, jobs):
@@ -263,6 +265,12 @@ def supervise(notice_path, args):
         time.sleep(.01)
 
 
+class ExecutionFailure(RuntimeError):
+    def __init__(self, message, results):
+        super().__init__(message)
+        self.results = results
+
+
 def run_scheduled_checks(plans, *, jobs, timeout_seconds, fail_fast, scratch):
     validate_plans(plans, jobs=jobs)
     if 'RIGORLOOP_VALIDATION_WORKERS' in os.environ:
@@ -281,6 +289,7 @@ def run_scheduled_checks(plans, *, jobs, timeout_seconds, fail_fast, scratch):
     running = {}
     stopped = False
     interrupted = 0
+    failure = None
     previous_handlers = {}
     def interrupt(number, frame):
         nonlocal interrupted
@@ -358,7 +367,7 @@ def run_scheduled_checks(plans, *, jobs, timeout_seconds, fail_fast, scratch):
                             except OSError:
                                 reason += f'; missing {label} capture'
                                 status, code = 'runner error', 4
-                        results[key] = CheckResult(task['plan'], status, reason, now-task['start'], *task['paths'], code)
+                        results[key] = CheckResult(task['plan'], status, reason, time.monotonic()-task['start'], *task['paths'], code)
                         del running[key]
                         if fail_fast and code:
                             stopped = True
@@ -390,6 +399,8 @@ def run_scheduled_checks(plans, *, jobs, timeout_seconds, fail_fast, scratch):
                 # Only this invocation's final writer owns its report destination.
                 # Nested checks may explicitly select a new destination of their own.
                 env.pop('RIGORLOOP_BROAD_SMOKE_RESULT_JSON', None)
+                env.pop('RIGORLOOP_VALIDATION_RESULT_JSON', None)
+                env.pop('RIGORLOOP_CI_PREPARED_RESULT_JSON', None)
                 env['RIGORLOOP_VALIDATION_WORKERS'] = str(demand)
                 env['PYTHONDONTWRITEBYTECODE'] = '1'
                 # Native Node tests cannot create an independent CPU-sized pool.
@@ -401,9 +412,9 @@ def run_scheduled_checks(plans, *, jobs, timeout_seconds, fail_fast, scratch):
                 if args[0] == 'node' and '--test' in args:
                     args.insert(args.index('--test')+1, f'--test-concurrency={demand}')
                 plan.args = args
-                started = time.monotonic()
                 if plan.case_receipt is not None:
                     plan.case_receipt.unlink(missing_ok=True)
+                started = time.monotonic()
                 try:
                     if args[0] in {'python','bash'} and len(args)>1 and args[1].startswith('scripts/') and not Path(args[1]).exists():
                         raise FileNotFoundError(2, 'script missing', args[1])
@@ -415,7 +426,7 @@ def run_scheduled_checks(plans, *, jobs, timeout_seconds, fail_fast, scratch):
                 except OSError as exc:
                     for stream in streams:
                         stream.close()
-                    results[plan.check_id] = CheckResult(plan, 'unavailable',f'command unavailable: {exc.filename}',0,*paths,127)
+                    results[plan.check_id] = CheckResult(plan, 'unavailable',f'command unavailable: {exc.filename}',time.monotonic()-started,*paths,127)
                     if fail_fast:
                         stopped = True
                 else:
@@ -428,6 +439,8 @@ def run_scheduled_checks(plans, *, jobs, timeout_seconds, fail_fast, scratch):
                     break
             if pending or running:
                 time.sleep(.01)
+    except Exception as exc:
+        failure = exc
     finally:
         # Defensive failures retain the same descendant ownership and grace.
         snapshot = _process_snapshot()
@@ -453,8 +466,17 @@ def run_scheduled_checks(plans, *, jobs, timeout_seconds, fail_fast, scratch):
                 time.sleep(.01)
             for stream in task['streams']:
                 stream.close()
+            status, reason, code = task['outcome'] or ('runner error', str(failure or 'scheduler stopped'), 4)
+            if code == 0:
+                status, reason, code = 'runner error', str(failure or 'scheduler stopped'), 4
+            results[task['plan'].check_id] = CheckResult(task['plan'], status, reason,
+                time.monotonic()-task['start'], *task['paths'], code)
         for number, handler in previous_handlers.items():
             signal.signal(number, handler)
+    if failure is not None:
+        for plan in pending:
+            results[plan.check_id] = _not_started(plan, 'scheduler stopped before dispatch')
+        raise ExecutionFailure(str(failure), [results[p.check_id] for p in plans]) from failure
     if len(results) != len(plans):
         raise RuntimeError('missing required task result')
     return [results[p.check_id] for p in plans]
@@ -759,6 +781,12 @@ def node_case_plans(parent, groups, scratch):
     return plans
 
 
+class DiscoveryFailure(ValueError):
+    def __init__(self, message, plans, unexpanded):
+        super().__init__(message)
+        self.plans, self.unexpanded = plans, unexpanded
+
+
 def expand_cases(plans, scratch, *, jobs, timeout):
     """Replace only catalog-adopted suites and rebind all group dependencies."""
     validate_catalog()
@@ -766,16 +794,21 @@ def expand_cases(plans, scratch, *, jobs, timeout):
     groups = {}
     for index, plan in enumerate(plans):
         entry = CHECK_CATALOG.get(plan.check_id)
-        if entry and entry.constraints and entry.constraints.unit == 'python-unittest':
-            owned = scratch/f'suite-{index}'
-            ids = discover_cases(plan.args,owned/'collection',jobs=jobs,timeout=timeout)
-            groups[plan.check_id] = case_plans(plan,ids,owned/'cases')
-        elif entry and entry.constraints and entry.constraints.unit == 'node-test':
-            owned = scratch/f'suite-{index}'
-            population = discover_node_cases(plan.args,owned/'collection',jobs=jobs,timeout=timeout)
-            groups[plan.check_id] = node_case_plans(plan,population,owned/'cases')
-        else:
-            groups[plan.check_id] = [plan]
+        try:
+            if entry and entry.constraints and entry.constraints.unit == 'python-unittest':
+                owned = scratch/f'suite-{index}'
+                ids = discover_cases(plan.args,owned/'collection',jobs=jobs,timeout=timeout)
+                groups[plan.check_id] = case_plans(plan,ids,owned/'cases')
+            elif entry and entry.constraints and entry.constraints.unit == 'node-test':
+                owned = scratch/f'suite-{index}'
+                population = discover_node_cases(plan.args,owned/'collection',jobs=jobs,timeout=timeout)
+                groups[plan.check_id] = node_case_plans(plan,population,owned/'cases')
+            else:
+                groups[plan.check_id] = [plan]
+        except (ValueError, OSError, ExecutionFailure) as exc:
+            known = [p for group in groups.values() for p in group] + list(plans[index:])
+            raise DiscoveryFailure(f'{plan.check_id}: {exc}', known,
+                                   [p.check_id for p in plans[index:]]) from exc
     expanded = [p for group in groups.values() for p in group]
     for plan in expanded:
         plan.dependencies = tuple(p.check_id for old in plan.dependencies for p in groups[old])
@@ -959,35 +992,371 @@ def expand_groups(plans, scratch, *, diagnostic=False):
     return result
 
 
-def _write_mode_result(results, *, mode, jobs, elapsed, code, skip_diff_scoped):
-    destination = os.environ.get('RIGORLOOP_BROAD_SMOKE_RESULT_JSON')
-    if mode != 'broad-smoke' or not destination:
+REPORT_MODES = frozenset({'local', 'explicit', 'pr', 'main', 'broad-smoke', 'release'})
+RESULT_STATUSES = frozenset({'passed', 'exited', 'killed', 'timed out', 'unavailable', 'runner error', 'not started'})
+REPORT_VARIABLES = ('RIGORLOOP_VALIDATION_RESULT_JSON', 'RIGORLOOP_BROAD_SMOKE_RESULT_JSON')
+
+
+def _validate_report_values(mode, results):
+    # Closed values precede path access and all consistency checks.
+    if mode not in REPORT_MODES:
+        raise ValueError(f'unknown validation report mode: {mode}')
+    for result in results:
+        if result.status not in RESULT_STATUSES:
+            raise ValueError(f'unknown validation report status: {result.status}')
+    identities = [r.plan.check_id for r in results]
+    if any(not isinstance(value, str) or not value for value in identities) or len(set(identities)) != len(identities):
+        raise ValueError('duplicate or invalid report check identity')
+
+
+def _validate_durations(limit):
+    if limit is not None and (type(limit) is not int or limit < 0):
+        raise ValueError('durations must be a nonnegative decimal integer')
+
+
+def print_durations(results, limit):
+    """A sorted view of observed workers; never reorder the authoritative rows."""
+    _validate_durations(limit)
+    if limit is None:
         return
-    children = [dict(check_id=r.plan.check_id,command=command_display(r.plan.args),duration_ms=round(r.elapsed_seconds*1000),
+    measured = sorted((r for r in results if r.status != 'not started'),
+                      key=lambda r: (-r.elapsed_seconds, r.plan.check_id))
+    print('Slowest dispatched workers (elapsed includes startup, fixtures and cleanup):')
+    for result in measured[:limit or None]:
+        kind = 'case' if result.plan.case_id is not None else 'check'
+        print(f'{result.elapsed_seconds:.3f}s | {kind} {result.plan.check_id} | {result.status}')
+        print('Re-run: ' + command_display(result.plan.rerun or result.plan.args))
+    unstarted = sum(r.status == 'not started' for r in results)
+    if unstarted:
+        print(f'{unstarted} unstarted workers excluded: unmeasured; required scope is incomplete.')
+
+
+class ReportDestination:
+    """Own a destination through dispatch and atomic publication, without lock stealing."""
+    def __init__(self, mode, *, forbidden=()):
+        _validate_report_values(mode, [])
+        generic = os.environ.get(REPORT_VARIABLES[0])
+        legacy = os.environ.get(REPORT_VARIABLES[1]) if mode == 'broad-smoke' else None
+        self.path = None
+        self.directory_fd = self.lock_fd = None
+        self.lock_name = None
+        self.lock_identity = None
+        self.publication_revoked = False
+        for value in (generic, legacy):
+            if not value:
+                continue
+            supplied = Path(value)
+            if '..' in supplied.parts:
+                raise ValueError('unsafe traversal in report destination')
+            supplied = Path(os.path.abspath(supplied))
+            if any(parent.is_symlink() for parent in (*supplied.parents, supplied)):
+                raise ValueError('report destination or parent is a symlink')
+        if generic and legacy and Path(generic).resolve() != Path(legacy).resolve():
+            raise ValueError('conflicting validation report destinations')
+        destination = generic or legacy
+        if not destination:
+            return
+        path = Path(destination)
+        path = Path(os.path.abspath(path))
+        if not path.parent.is_dir():
+            raise ValueError('report destination parent must already exist')
+        if path.name.endswith('.rigorloop-report.lock') or path.name.startswith('.rigorloop-report-'):
+            raise ValueError('report destination collides with an owned output')
+        self.path = path
+        self.reject_collisions(forbidden)
+        repository = Path(__file__).resolve().parents[3]
+        if path.is_relative_to(repository):
+            relative = path.relative_to(repository)
+            if not relative.parts:
+                raise ValueError('report destination must be an absent or regular single-link file')
+            # Absent source paths are protected too, not only tracked files.
+            if relative.parts[0] in {'scripts', 'tests', 'skills', 'schemas', 'templates', 'packages', 'docs', 'dist', '.git', '.agents', '.github', '.codex'}:
+                raise ValueError('report destination collides with repository source')
+            tracked = subprocess.run(['git', 'ls-files', '--error-unmatch', '--', str(relative)],
+                                     cwd=repository, capture_output=True).returncode == 0
+            if tracked:
+                raise ValueError('report destination collides with repository source')
+        self.directory_fd = os.open(path.anchor, os.O_RDONLY | os.O_DIRECTORY)
+        try:
+            for part in path.parent.parts[1:]:
+                child = os.open(part, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW,
+                                dir_fd=self.directory_fd)
+                os.close(self.directory_fd)
+                self.directory_fd = child
+        except BaseException:
+            self.close()
+            raise
+        try:
+            self._check_target()
+            self.lock_name = '.' + path.name + '.rigorloop-report.lock'
+            try:
+                self.lock_fd = os.open(self.lock_name, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW,
+                                       0o600, dir_fd=self.directory_fd)
+            except FileExistsError as exc:
+                raise ValueError('validation report destination is reserved by another owner') from exc
+            self.lock_identity = os.fstat(self.lock_fd)
+        except BaseException:
+            self.close()
+            raise
+
+    def reject_collisions(self, paths):
+        if self.path is None:
+            return
+        for value in paths:
+            if not value:
+                continue
+            other = Path(value).resolve()
+            if self.path == other or (other.is_dir() and self.path.is_relative_to(other)):
+                self.publication_revoked = True
+                raise ValueError(f'report destination collides with selected input or owned output: {value}')
+
+    def _check_target(self):
+        try:
+            target = os.stat(self.path.name, dir_fd=self.directory_fd, follow_symlinks=False)
+        except FileNotFoundError:
+            return
+        if not stat.S_ISREG(target.st_mode) or target.st_nlink != 1:
+            raise ValueError('report destination must be an absent or regular single-link file')
+
+    def publish(self, payload):
+        if self.publication_revoked:
+            raise ValueError('report publication revoked after destination collision')
+        if self.path is None:
+            return
+        # Serialization precedes temp creation and replacement, preserving old bytes.
+        encoded = (json.dumps(payload, indent=2) + '\n').encode('utf-8')
+        self._check_target()
+        # The parent descriptor pins every operation even if an ancestor is renamed.
+        name = '.rigorloop-report-' + os.urandom(12).hex()
+        descriptor = os.open(name, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW,
+                             0o600, dir_fd=self.directory_fd)
+        try:
+            with os.fdopen(descriptor, 'wb') as handle:
+                handle.write(encoded)
+                handle.flush()
+                os.fsync(handle.fileno())
+            self._check_target()
+            os.replace(name, self.path.name, src_dir_fd=self.directory_fd, dst_dir_fd=self.directory_fd)
+        finally:
+            try:
+                os.unlink(name, dir_fd=self.directory_fd)
+            except FileNotFoundError:
+                pass
+
+    def close(self):
+        if self.lock_fd is not None:
+            try:
+                current = os.stat(self.lock_name, dir_fd=self.directory_fd, follow_symlinks=False)
+                if (current.st_dev, current.st_ino) == (self.lock_identity.st_dev, self.lock_identity.st_ino):
+                    os.unlink(self.lock_name, dir_fd=self.directory_fd)
+            except FileNotFoundError:
+                pass
+            finally:
+                os.close(self.lock_fd)
+                self.lock_fd = None
+        if self.directory_fd is not None:
+            os.close(self.directory_fd)
+            self.directory_fd = None
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *_):
+        self.close()
+
+
+def _output_bytes(result):
+    if result.output_bytes is not None:
+        return result.output_bytes
+    return sum(p.stat().st_size for p in (result.stdout_path, result.stderr_path) if p and p.exists())
+
+
+def _write_mode_result(results, *, mode, jobs, elapsed, code, skip_diff_scoped,
+                       scope=None, report_owner=None, command=None):
+    _validate_report_values(mode, results)
+    if report_owner is None:
+        with ReportDestination(mode) as owner:
+            return _write_mode_result(results, mode=mode, jobs=jobs, elapsed=elapsed, code=code,
+                                      skip_diff_scoped=skip_diff_scoped, scope=scope,
+                                      report_owner=owner, command=command)
+    if report_owner.path is None:
+        return
+    children = [dict(check_id=r.plan.check_id, command=command_display(r.plan.args),
+        duration_ms=max(0, round(r.elapsed_seconds*1000)) if r.status != 'not started' else 0,
+        case_id=r.plan.case_id, started=r.status != 'not started',
+        rerun=command_display(r.plan.rerun or r.plan.args),
         phase='parallel' if r.plan.parallel_safe and jobs>1 else 'sequential',
-        result='passed' if r.exit_code==0 else 'failed',exit_code=r.exit_code,
-        output_bytes=sum(p.stat().st_size for p in (r.stdout_path,r.stderr_path) if p and p.exists()),
-        cache_status='not-applicable',status=r.status,exit_reason=r.exit_reason) for r in results]
-    payload = dict(scenario='broad-smoke-safe-parallelism',
-        command=f'bash scripts/ci.sh --mode broad-smoke '+('--skip-diff-scoped ' if skip_diff_scoped else '')+f'--jobs {jobs}',
-        environment=dict(os=platform.platform(),shell=os.environ.get('SHELL','unknown'),cpu_class=f'{os.cpu_count() or 1} logical CPUs',local_or_ci='ci' if os.environ.get('CI') else 'local'),
+        result='passed' if r.exit_code==0 else 'failed', exit_code=r.exit_code,
+        output_bytes=_output_bytes(r), cache_status='not-applicable', status=r.status,
+        exit_reason=r.exit_reason) for r in results]
+    scope = dict(scope or dict(requested_paths=[], base='', head='',
+        selected_check_ids=[r.plan.check_id for r in results], collection_complete=False,
+        unexpanded_checks=[], limits=['Direct result writer has no selector/discovery receipt.']))
+    expected = scope.get('expected_worker_ids')
+    accounted = (isinstance(expected, list) and len(expected) == len(results)
+                 and set(expected) == {r.plan.check_id for r in results})
+    scope['complete'] = bool(accounted and scope.get('collection_complete') and not scope.get('unexpanded_checks')
+                             and not code and all(r.status == 'passed' and r.exit_code == 0 for r in results))
+    node = subprocess.run(['node', '--version'], text=True, capture_output=True) if shutil.which('node') else None
+    payload = dict(scenario='broad-smoke-safe-parallelism' if mode == 'broad-smoke' else f'{mode}-validation',
+        mode=mode, scope=scope,
+        command=command or f'bash scripts/ci.sh --mode {mode} '+('--skip-diff-scoped ' if skip_diff_scoped else '')+f'--jobs {jobs}',
+        measurement=dict(worker='Monotonic launch attempt through result and owned-process cleanup; excludes queue and discovery.',
+            wall='Monotonic case discovery through scheduled work and owned-process cleanup; excludes selection, preflight and report formatting/I/O.',
+            summed_worker_time='Occupied worker time, not CPU usage, wall time or a speedup estimate.',
+            unstarted='Zero duration with started=false is an unmeasured placeholder.'),
+        environment=dict(os=platform.platform(), shell=os.environ.get('SHELL','unknown'),
+            cpu_class=f'{os.cpu_count() or 1} logical CPUs', local_or_ci='ci' if os.environ.get('CI') else 'local',
+            python=platform.python_version(), node=node.stdout.strip() if node and node.returncode == 0 else None,
+            worker_budget=jobs),
         repository_state=dict(head=_git('rev-parse','HEAD',optional=True),worktree_state='dirty' if _git('status','--short',optional=True) else 'clean'),
         baseline=dict(total_duration_ms=None,child_durations=[]),
-        parallel=dict(jobs=jobs,total_duration_ms=round(elapsed*1000),exit_code=code,child_durations=children),
+        parallel=dict(jobs=jobs,total_duration_ms=max(0,round(elapsed*1000)),exit_code=code,child_durations=children),
         delta=dict(duration_ms=None,percent=None),
-        preservation=dict(child_set_preserved=True,exit_behavior_preserved=code==0,diagnostics_preserved=True,output_order_preserved=True),
+        preservation=dict(child_set_preserved=bool(accounted and scope.get('collection_complete') and not scope.get('unexpanded_checks')),
+            exit_behavior_preserved=scope['complete'],diagnostics_preserved=accounted,output_order_preserved=accounted),
         notes=dict(variance='Current invocation only; historical baseline unavailable by design.',low_confidence_children=[],
             sequential_only_children=[r.plan.check_id for r in results if not r.plan.parallel_safe or jobs==1],default_promotion_decision='assessed_independent_work_uses_shared_budget'))
-    Path(destination).write_text(json.dumps(payload,indent=2)+'\n')
+    report_owner.publish(payload)
 
 
-def composed_main(argv):
+class _ReportingRun:
+    def __init__(self, mode, jobs, *, base='', head='', paths=(), skip=False, durations=None, owner=None):
+        _validate_report_values(mode, [])
+        _validate_durations(durations)
+        if type(jobs) is not int or jobs < 1:
+            raise ValueError('jobs must be a positive integer')
+        if 'RIGORLOOP_VALIDATION_WORKERS' in os.environ:
+            parent = os.environ['RIGORLOOP_VALIDATION_WORKERS']
+            if not parent.isascii() or not parent.isdigit() or int(parent) < 1:
+                raise ValueError('parent worker allocation must be a positive integer')
+            jobs = min(jobs, int(parent))
+        self.mode, self.jobs, self.skip, self.durations, self.owner = mode, jobs, skip, durations, owner
+        self.scope = dict(requested_paths=list(paths), base=base, head=head, selected_check_ids=[],
+                          collection_complete=False, unexpanded_checks=[], limits=[])
+        self.results, self.plans = [], []
+        self.started_at = None
+        self.elapsed = 0
+        self.prepared_payload = None
+        self.selection_recorded = False
+
+    def selected(self, plans):
+        self.plans = plans
+        if not self.selection_recorded:
+            self.scope['selected_check_ids'] = [p.check_id for p in plans]
+            self.selection_recorded = True
+        self.scope['unexpanded_checks'] = [p.check_id for p in plans]
+        self.owner.reject_collisions([value for p in plans for value in p.args if value and not value.startswith('-')])
+
+    def execute(self, plans, scratch, *, timeout, fast):
+        self.owner.reject_collisions([scratch])
+        self.selected(plans)
+        self.started_at = time.monotonic()
+        try:
+            self.plans = expand_cases(plans, scratch, jobs=self.jobs, timeout=timeout)
+        except DiscoveryFailure as exc:
+            self.plans = exc.plans
+            self.scope['unexpanded_checks'] = exc.unexpanded
+            raise
+        self.scope['collection_complete'] = True
+        self.scope['unexpanded_checks'] = []
+        self.scope['expected_worker_ids'] = [p.check_id for p in self.plans]
+        try:
+            self.results = run_scheduled_checks(self.plans, jobs=self.jobs, timeout_seconds=timeout,
+                                                fail_fast=fast, scratch=scratch)
+            if (len(self.results) != len(self.plans)
+                    or {r.plan.check_id for r in self.results} != set(self.scope['expected_worker_ids'])):
+                raise ExecutionFailure('missing or unexpected required worker results', self.results)
+        except ExecutionFailure as exc:
+            self.results = exc.results
+            raise
+        finally:
+            self.elapsed = time.monotonic() - self.started_at
+            for result in self.results:
+                result.output_bytes = _output_bytes(result)
+        return self.results
+
+    def finish(self, code, diagnostic=None):
+        if self.prepared_payload is not None:
+            code = code or self.prepared_payload['parallel']['exit_code']
+            self.prepared_payload['parallel']['exit_code'] = code
+            if code:
+                self.prepared_payload['scope']['complete'] = False
+                self.prepared_payload['preservation']['exit_behavior_preserved'] = False
+            try:
+                self.owner.publish(self.prepared_payload)
+            except (OSError, ValueError, TypeError) as exc:
+                print(f'Validation report publication failed: {exc}', file=sys.stderr)
+                return code or 1
+            return code
+        if diagnostic:
+            self.scope['limits'].append(str(diagnostic))
+        if not self.scope['collection_complete']:
+            self.scope['limits'].append('Selection/preflight or native collection did not complete; undiscovered cases have no fabricated rows.')
+        known = {r.plan.check_id for r in self.results}
+        self.results.extend(_not_started(p, 'invocation stopped before dispatch') for p in self.plans if p.check_id not in known)
+        if self.started_at is not None and not self.elapsed:
+            self.elapsed = time.monotonic() - self.started_at
+        print_durations(self.results, self.durations)
+        try:
+            _write_mode_result(self.results, mode=self.mode, jobs=self.jobs, elapsed=self.elapsed,
+                code=code, skip_diff_scoped=self.skip, scope=self.scope, report_owner=self.owner)
+        except (OSError, ValueError, TypeError) as exc:
+            print(f'Validation report publication failed: {exc}', file=sys.stderr)
+            return code or 1
+        return code
+
+
+def _reported_call(callback, run, *, forbidden=()):
+    owned = run.owner is None
+    if owned:
+        run.owner = ReportDestination(run.mode, forbidden=forbidden)
+    else:
+        run.owner.reject_collisions(forbidden)
+    code, diagnostic, pending = 0, None, None
+    previous_handlers = {}
+    def interrupt(number, frame):
+        raise SystemExit(128 + number)
+    try:
+        for number in (signal.SIGINT, signal.SIGTERM):
+            previous_handlers[number] = signal.signal(number, interrupt)
+        callback(run)
+    except SystemExit as exc:
+        code = exc.code or 0
+    except (Exception, KeyboardInterrupt) as exc:
+        code = next((r.exit_code for r in run.results if r.exit_code),
+                    130 if isinstance(exc, KeyboardInterrupt) else 4)
+        diagnostic, pending = str(exc), exc
+    finally:
+        try:
+            code = run.finish(code, diagnostic)
+        finally:
+            try:
+                if owned:
+                    run.owner.close()
+            finally:
+                for number, handler in previous_handlers.items():
+                    signal.signal(number, handler)
+    if pending is not None:
+        print(f'Invalid validation execution: {pending}', file=sys.stderr)
+    raise SystemExit(code)
+
+def composed_main(argv, *, durations=None, report_owner=None):
+    mode, jobs, timeout, fast, verbose, base, head, skip = argv
+    run = _ReportingRun(mode, int(jobs), base=base, head=head, skip=bool(int(skip)),
+                        durations=durations, owner=report_owner)
+    return _reported_call(lambda session: _composed_main(argv, session), run)
+
+
+def _composed_main(argv, run):
     mode, jobs, timeout, fast, verbose, base, head, skip = argv
     jobs,timeout,fast,verbose,skip = int(jobs),int(timeout),bool(int(fast)),bool(int(verbose)),bool(int(skip))
+    jobs = run.jobs
     with tempfile.TemporaryDirectory(prefix='rigorloop-validation-') as temporary:
         scratch = Path(temporary)
         plans = compose_mode(mode,scratch,base=base,head=head,skip_diff_scoped=skip)
         validate_plans(plans,jobs=jobs)
+        run.selected(plans)
         if mode == 'main':
             print(f'Direct deterministic product and governance gates ({mode})')
         if os.environ.get('RIGORLOOP_CI_DIRECT_DRY_RUN') == '1':
@@ -995,10 +1364,9 @@ def composed_main(argv):
                 print('==> '+(plan.reason or plan.check_id))
                 print('+ '+command_display(plan.args))
             print('[PASS] direct gate graph selected without execution')
+            run.scope['limits'].append('Dry run selected checks without discovery or dispatch.')
             return
-        started = time.monotonic()
-        plans = expand_cases(plans,scratch,jobs=jobs,timeout=timeout)
-        results = run_scheduled_checks(plans,jobs=jobs,timeout_seconds=timeout,fail_fast=fast,scratch=scratch)
+        results = run.execute(plans, scratch, timeout=timeout, fast=fast)
         for result in results:
             if result.exit_code or verbose:
                 label = result.plan.reason or result.plan.check_id
@@ -1015,18 +1383,24 @@ def composed_main(argv):
         code = next((r.exit_code for r in results if r.exit_code),0)
         if code or verbose or mode == "main":
             print_summary(results)
-        _write_mode_result(results,mode=mode,jobs=jobs,elapsed=time.monotonic()-started,code=code,skip_diff_scoped=skip)
         if not code:
-            print(f'[PASS] {mode}: {len(results)} checks passed in {time.monotonic()-started:.2f}s')
+            print(f'[PASS] {mode}: {len(results)} checks passed in {run.elapsed:.2f}s')
         raise SystemExit(code)
 
 
-def selected_main(argv):
+def selected_main(argv, *, durations=None, report_owner=None):
+    run = _ReportingRun(argv[6], int(argv[4]), base=argv[7], head=argv[8], paths=argv[9:],
+                        durations=durations, owner=report_owner)
+    return _reported_call(lambda session: _selected_main(argv, session), run,
+                          forbidden=[argv[0], *argv[9:]])
+
+
+def _selected_main(argv, run):
     selector_output = Path(argv[0])
     selector_exit = int(argv[1])
     timeout_seconds = int(argv[2])
     verbose = bool(int(argv[3]))
-    jobs = int(argv[4])
+    jobs = run.jobs
     fail_fast = bool(int(argv[5]))
     requested_mode, requested_base, requested_head = argv[6:9]
     requested_paths = argv[9:]
@@ -1064,6 +1438,12 @@ def selected_main(argv):
     if requested_mode == "pr" and mode != requested_mode:
         fail("Selector mode does not match requested PR mode")
     status = payload["status"]
+    if status not in {'ok', 'blocked', 'fallback', 'error'}:
+        fail(f"Unsupported selector status: {status}")
+    run.scope['selector_status'] = status
+    run.scope['selection_diagnostics'] = dict(blocking_results=payload['blocking_results'],
+                                             preflight_results=payload['preflight_results'])
+    run.owner.reject_collisions(payload['changed_paths'])
     print(f"Selector mode: {mode}")
     print(f"Selector status: {status}")
     if payload.get("changed_paths"):
@@ -1091,7 +1471,7 @@ def selected_main(argv):
         if diagnostic:
             print('Diagnostic broad smoke: original selector blocker remains unsuccessful.')
             try:
-                composed_main(['broad-smoke',str(jobs),str(timeout_seconds),str(int(fail_fast)),str(int(verbose)),requested_base,requested_head,'1'])
+                _composed_main(['broad-smoke',str(jobs),str(timeout_seconds),str(int(fail_fast)),str(int(verbose)),requested_base,requested_head,'1'], run)
             except (Exception,SystemExit) as exc:
                 print(f'Diagnostic scope completed or blocked: {exc}')
         raise SystemExit(2)
@@ -1112,11 +1492,14 @@ def selected_main(argv):
         fail('selected_checks must be an array')
     validate_catalog()
     if not selected_checks:
+        run.scope['collection_complete'] = True
+        run.scope['expected_worker_ids'] = []
         print("No selected checks to run.")
         raise SystemExit(0)
 
     validate_catalog()
     plans: list[CheckPlan] = []
+    run.plans = plans
     if not isinstance(selected_checks, list):
         fail('selected_checks must be an array')
     for check in selected_checks:
@@ -1176,6 +1559,8 @@ def selected_main(argv):
                 demand=CHECK_CATALOG[check_id].constraints.demand if CHECK_CATALOG[check_id].constraints else 1,
             )
         )
+        run.scope['selected_check_ids'] = [plan.check_id for plan in plans]
+        run.scope['unexpanded_checks'] = list(run.scope['selected_check_ids'])
 
     for plan in plans:
         if not plan.parallel_safe:
@@ -1188,16 +1573,10 @@ def selected_main(argv):
             print("+ " + command_display(plan.args))
 
     boundary_required = any(p.phase == "boundary" for p in plans)
+    run.selected(plans)
     with tempfile.TemporaryDirectory(prefix="rigorloop-validation-") as temporary:
         plans = expand_groups(plans,Path(temporary),diagnostic=diagnostic)
-        plans = expand_cases(plans,Path(temporary),jobs=jobs,timeout=timeout_seconds)
-        results = run_scheduled_checks(
-            plans,
-            jobs=jobs,
-            timeout_seconds=timeout_seconds,
-            fail_fast=fail_fast,
-            scratch=Path(temporary),
-        )
+        results = run.execute(plans, Path(temporary), timeout=timeout_seconds, fast=fail_fast)
 
         print_summary(results, boundary_required=boundary_required)
         print_result_output(results, verbose=verbose)
@@ -1209,3 +1588,68 @@ def selected_main(argv):
             raise SystemExit(failed_results[0].exit_code)
 
         print("Selected CI checks passed.")
+
+
+def ci_main(argv):
+    """Keep shell selection/preparation inside the same report ownership lifetime."""
+    mode, jobs, timeout, fast, verbose, base, head, skip, release, broad, durations, count = argv[:12]
+    paths = argv[12:12+int(count)]
+    original = argv[12+int(count):]
+    limit = None if durations == '' else int(durations)
+    run = _ReportingRun(mode, int(jobs), base=base, head=head, paths=paths,
+                        skip=bool(int(skip)), durations=limit)
+    fixture = os.environ.get('RIGORLOOP_SELECTOR_FIXTURE')
+    argv_file = os.environ.get('RIGORLOOP_CI_SELECTOR_ARGV_FILE')
+
+    def invoke(session):
+        with tempfile.TemporaryDirectory(prefix='rigorloop-ci-selection-') as temporary:
+            scratch = Path(temporary)
+            session.owner.reject_collisions([scratch])
+            if mode in {'pr', 'main'} and os.environ.get('RIGORLOOP_CI_DIRECT_DRY_RUN') != '1' and not fixture:
+                child_report = scratch / 'prepared-result.json'
+                env = os.environ.copy()
+                for key in (*REPORT_VARIABLES, 'RIGORLOOP_CI_PREPARED_RESULT_JSON'):
+                    env.pop(key, None)
+                if session.owner.path is not None:
+                    env['RIGORLOOP_CI_PREPARED_RESULT_JSON'] = str(child_report)
+                result = subprocess.run([sys.executable, 'scripts/release-coordinator.py', 'check-ci', *original], env=env)
+                if result.returncode != 3:
+                    code = result.returncode
+                    if session.owner.path is not None and child_report.is_file():
+                        payload = json.loads(child_report.read_text())
+                        if not isinstance(payload, dict) or payload.get('mode') != mode:
+                            raise ValueError('prepared validation report mode disagrees with invocation')
+                        rows = payload['parallel']['child_durations']
+                        if not isinstance(rows, list) or any(row.get('status') not in RESULT_STATUSES for row in rows):
+                            raise ValueError('unknown prepared validation report status')
+                        payload['preparation'] = dict(requested_mode=mode, requested_paths=list(paths),
+                                                      requested_base=base, requested_head=head)
+                        session.prepared_payload = payload
+                    elif session.owner.path is not None:
+                        session.scope['limits'].append('Prepared validation did not supply its private report; no prepared case observations are available.')
+                        code = code or 1
+                    raise SystemExit(code)
+            if mode in {'main', 'broad-smoke'}:
+                return _composed_main([mode,jobs,timeout,fast,verbose,base,head,skip], session)
+            selector = ['python', 'scripts/select-validation.py', '--mode', mode]
+            for path in paths:
+                selector.extend(['--path', path])
+            for option, value in (('--base', base), ('--head', head), ('--release-version', release)):
+                if value:
+                    selector.extend([option, value])
+            if broad == '1':
+                selector.append('--broad-smoke')
+            if argv_file:
+                Path(argv_file).write_text('\n'.join(selector) + '\n')
+            output = scratch / 'selection.json'
+            if fixture:
+                shutil.copyfile(fixture, output)
+                selector_exit = int(os.environ.get('RIGORLOOP_SELECTOR_FIXTURE_EXIT', '0'))
+            else:
+                env = os.environ.copy()
+                for key in (*REPORT_VARIABLES, 'RIGORLOOP_CI_PREPARED_RESULT_JSON'):
+                    env.pop(key, None)
+                with output.open('wb') as handle:
+                    selector_exit = subprocess.run(selector, stdout=handle, env=env).returncode
+            return _selected_main([str(output),str(selector_exit),timeout,verbose,jobs,fast,mode,base,head,*paths], session)
+    return _reported_call(invoke, run, forbidden=[fixture, argv_file, *paths])

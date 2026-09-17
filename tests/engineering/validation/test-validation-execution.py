@@ -8,6 +8,7 @@ from execution_process_tests import ExecutionTests
 from execution_node_adapter_tests import NodeCaseAdapterTests
 from execution_catalog_tests import CatalogTests
 from execution_composition_tests import CompositionTests
+from execution_reporting_tests import ReportingTests
 
 
 class ImmediateFailureResult(unittest.TextTestResult):

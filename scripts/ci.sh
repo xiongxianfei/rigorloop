@@ -19,6 +19,7 @@ jobs_explicit=0
 timeout_seconds="$DEFAULT_TIMEOUT_SECONDS"
 fail_fast=0
 verbose=0
+durations=""
 paths=()
 
 usage() {
@@ -36,6 +37,7 @@ Execution options:
   --timeout <positive-seconds>    Per-check timeout, default 300 seconds.
   --fail-fast                     Stop launching queued checks after a failure.
   --verbose                       Print successful check output when supported.
+  --durations <nonnegative-int>    Show slowest dispatched workers; 0 shows all.
   --skip-diff-scoped              In broad-smoke mode, skip dirty-worktree review roots and use push-range lifecycle scope.
 
 PR mode runs change-selected checks; main retains the full direct product gates.
@@ -139,6 +141,14 @@ parse_args() {
         validate_positive_integer "$1" "$timeout_seconds"
         shift 2
         ;;
+      --durations)
+        if [[ "$#" -lt 2 || ! "${2:-}" =~ ^[0-9]+$ ]]; then
+          echo "Invalid --durations: expected a nonnegative decimal integer." >&2
+          exit 4
+        fi
+        durations="$2"
+        shift 2
+        ;;
       --fail-fast)
         fail_fast=1
         shift
@@ -162,79 +172,6 @@ parse_args() {
         ;;
     esac
   done
-}
-
-selector_args() {
-  local -n out="$1"
-  out=(python scripts/select-validation.py --mode "$mode")
-
-  local path=""
-  for path in "${paths[@]}"; do
-    out+=(--path "$path")
-  done
-  if [[ -n "$base" ]]; then
-    out+=(--base "$base")
-  fi
-  if [[ -n "$head" ]]; then
-    out+=(--head "$head")
-  fi
-  if [[ -n "$release_version" ]]; then
-    out+=(--release-version "$release_version")
-  fi
-  if [[ "$broad_smoke" -eq 1 ]]; then
-    out+=(--broad-smoke)
-  fi
-}
-
-run_selected_mode() {
-  local -a selector_cmd=()
-  selector_args selector_cmd
-
-  if [[ -n "${RIGORLOOP_CI_SELECTOR_ARGV_FILE:-}" ]]; then
-    printf '%s\n' "${selector_cmd[@]}" >"$RIGORLOOP_CI_SELECTOR_ARGV_FILE"
-  fi
-
-  local selector_output
-  selector_output="$(mktemp)"
-  trap 'rm -f "$selector_output"' RETURN
-
-  local selector_exit=0
-  if [[ -n "${RIGORLOOP_SELECTOR_FIXTURE:-}" ]]; then
-    cp "$RIGORLOOP_SELECTOR_FIXTURE" "$selector_output"
-    selector_exit="${RIGORLOOP_SELECTOR_FIXTURE_EXIT:-0}"
-  else
-    set +e
-    "${selector_cmd[@]}" >"$selector_output"
-    selector_exit=$?
-    set -e
-  fi
-
-  python - "$selector_output" "$selector_exit" "$timeout_seconds" "$verbose" "$jobs" "$fail_fast" "$mode" "$base" "$head" "${paths[@]}" <<'PY'
-import sys
-from pathlib import Path
-sys.path.insert(0, str(Path("scripts").resolve()))
-from lib.validation.validation_execution import selected_main
-try:
-    selected_main(sys.argv[1:])
-except (ValueError, OSError, TypeError, KeyError) as exc:
-    print(f"Invalid validation execution: {exc}", file=sys.stderr)
-    raise SystemExit(4)
-
-PY
-}
-
-run_composed_mode() {
-  python - "$mode" "$jobs" "$timeout_seconds" "$fail_fast" "$verbose" "$base" "$head" "$skip_diff_scoped" <<'PYMODE'
-import sys
-from pathlib import Path
-sys.path.insert(0, str(Path("scripts").resolve()))
-from lib.validation.validation_execution import composed_main
-try:
-    composed_main(sys.argv[1:])
-except (ValueError, OSError, TypeError, KeyError) as exc:
-    print(f"Invalid validation execution: {exc}", file=sys.stderr)
-    raise SystemExit(4)
-PYMODE
 }
 
 parse_args "$@"
@@ -267,29 +204,15 @@ if ! command -v python >/dev/null 2>&1; then
   exit 1
 fi
 
-# Pending release inputs use the same isolated preparation for both runners.
-# Existing dry-run/selector-fixture modes remain non-executing test surfaces.
-if [[ "$mode" == "pr" || "$mode" == "main" ]] && [[ "${RIGORLOOP_CI_DIRECT_DRY_RUN:-}" != "1" && -z "${RIGORLOOP_SELECTOR_FIXTURE:-}" ]]; then
-  ci_preparation_status=0
-  python scripts/release-coordinator.py check-ci "${ci_original_args[@]}" || ci_preparation_status=$?
-  if [[ "$ci_preparation_status" != "3" ]]; then
-    exit "$ci_preparation_status"
-  fi
-fi
-
-case "$mode" in
-  local|explicit|release|pr)
-    run_selected_mode
-    ;;
-  main)
-    run_composed_mode
-    ;;
-  broad-smoke)
-    run_composed_mode
-    ;;
-  *)
-    echo "Unsupported ci.sh mode: $mode" >&2
-    usage >&2
-    exit 4
-    ;;
-esac
+# The existing executor owns reporting before selection or release preparation.
+python - "$mode" "$jobs" "$timeout_seconds" "$fail_fast" "$verbose" "$base" "$head" "$skip_diff_scoped" "$release_version" "$broad_smoke" "$durations" "${#paths[@]}" "${paths[@]}" "${ci_original_args[@]}" <<'PYCI'
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path("scripts").resolve()))
+from lib.validation.validation_execution import ci_main
+try:
+    ci_main(sys.argv[1:])
+except (ValueError, OSError, TypeError, KeyError) as exc:
+    print(f"Invalid validation execution: {exc}", file=sys.stderr)
+    raise SystemExit(4)
+PYCI

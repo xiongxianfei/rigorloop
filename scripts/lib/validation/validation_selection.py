@@ -1871,6 +1871,7 @@ def _path_category(path: str) -> str | None:
         'tests/engineering/validation/execution_node_adapter_tests.py',
         'tests/engineering/validation/execution_catalog_tests.py',
         'tests/engineering/validation/execution_composition_tests.py',
+        'tests/engineering/validation/execution_reporting_tests.py',
         'scripts/validate-readme.py',
     }:
         return "selector"
