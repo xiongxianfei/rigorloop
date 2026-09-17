@@ -27,6 +27,14 @@ from skill_fixture_helpers import (
 )
 
 
+def map_fixture_bytes(root: Path) -> dict[str, bytes]:
+    """Snapshot the private package without deriving expectations from its validator."""
+    return {
+        str(path.relative_to(root)): path.read_bytes()
+        for path in sorted(root.rglob("*")) if path.is_file()
+    }
+
+
 class ProjectMapInputTests(unittest.TestCase):
     maxDiff = None
 
@@ -47,8 +55,13 @@ class ProjectMapInputTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             skill_dir = Path(temporary) / "project-map-contract"
             shutil.copytree(FIXTURES / "project-map-contract" / "valid", skill_dir)
+            self.assertEqual([], project_map_contract_fixture_errors(skill_dir))
+            valid_bytes = map_fixture_bytes(skill_dir)
             mutate(skill_dir)
+            fault_bytes = map_fixture_bytes(skill_dir)
+            self.assertNotEqual(valid_bytes, fault_bytes, "the defining fault must change the input")
             errors = project_map_contract_fixture_errors(skill_dir)
+            self.assertEqual(fault_bytes, map_fixture_bytes(skill_dir))
             assert_contract_errors(self, errors, "project-map contract missing map metadata field 'Baseline'")
 
     def test_project_map_contract_fixture_rejects_missing_mode(self) -> None:
@@ -60,8 +73,13 @@ class ProjectMapInputTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             skill_dir = Path(temporary) / "project-map-contract"
             shutil.copytree(FIXTURES / "project-map-contract" / "valid", skill_dir)
+            self.assertEqual([], project_map_contract_fixture_errors(skill_dir))
+            valid_bytes = map_fixture_bytes(skill_dir)
             mutate(skill_dir)
+            fault_bytes = map_fixture_bytes(skill_dir)
+            self.assertNotEqual(valid_bytes, fault_bytes, "the defining fault must change the input")
             errors = project_map_contract_fixture_errors(skill_dir)
+            self.assertEqual(fault_bytes, map_fixture_bytes(skill_dir))
             assert_contract_errors(self, errors, "project-map contract missing operation 'audit'")
 
     def test_project_map_contract_fixture_requires_skeleton_copy_entry(self) -> None:
@@ -79,8 +97,13 @@ class ProjectMapInputTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             skill_dir = Path(temporary) / "project-map-contract"
             shutil.copytree(FIXTURES / "project-map-contract" / "valid", skill_dir)
+            self.assertEqual([], project_map_contract_fixture_errors(skill_dir))
+            valid_bytes = map_fixture_bytes(skill_dir)
             mutate(skill_dir)
+            fault_bytes = map_fixture_bytes(skill_dir)
+            self.assertNotEqual(valid_bytes, fault_bytes, "the defining fault must change the input")
             errors = project_map_contract_fixture_errors(skill_dir)
+            self.assertEqual(fault_bytes, map_fixture_bytes(skill_dir))
             assert_contract_errors(self, errors, "Resource map entry for 'assets/project-map-skeleton.md' must use literal COPY")
 
     def test_project_map_contract_fixture_rejects_skeleton_hidden_policy(self) -> None:
@@ -95,8 +118,13 @@ class ProjectMapInputTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             skill_dir = Path(temporary) / "project-map-contract"
             shutil.copytree(FIXTURES / "project-map-contract" / "valid", skill_dir)
+            self.assertEqual([], project_map_contract_fixture_errors(skill_dir))
+            valid_bytes = map_fixture_bytes(skill_dir)
             mutate(skill_dir)
+            fault_bytes = map_fixture_bytes(skill_dir)
+            self.assertNotEqual(valid_bytes, fault_bytes, "the defining fault must change the input")
             errors = project_map_contract_fixture_errors(skill_dir)
+            self.assertEqual(fault_bytes, map_fixture_bytes(skill_dir))
             assert_contract_errors(self, errors, "project-map skeleton must not own evidence-ranking or source-rank policy")
 
     def test_project_map_canonical_contract_passes(self) -> None:
@@ -125,11 +153,16 @@ class ProjectMapInputTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             skill_dir = Path(temporary) / "skills" / "project-map"
             shutil.copytree(ROOT / "skills" / "project-map", skill_dir)
+            self.assertEqual([], project_map_contract_fixture_errors(skill_dir))
+            valid_bytes = map_fixture_bytes(skill_dir)
             mutate(skill_dir)
+            fault_bytes = map_fixture_bytes(skill_dir)
+            self.assertNotEqual(valid_bytes, fault_bytes, "the defining fault must change the input")
             metadata, body = skill_validation.load_skill_file(skill_dir / "SKILL.md")
             errors = skill_validation.validate_project_map_contract_fixture(
                 skill_dir / "SKILL.md", metadata, body, diagnostic_subject="contract"
             )
+            self.assertEqual(fault_bytes, map_fixture_bytes(skill_dir))
             assert_contract_errors(self, errors, "project-map contract missing Workflow role")
 
     def test_project_map_canonical_contract_requires_mapped_skeleton(self) -> None:
@@ -140,11 +173,16 @@ class ProjectMapInputTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             skill_dir = Path(temporary) / "skills" / "project-map"
             shutil.copytree(ROOT / "skills" / "project-map", skill_dir)
+            self.assertEqual([], project_map_contract_fixture_errors(skill_dir))
+            valid_bytes = map_fixture_bytes(skill_dir)
             mutate(skill_dir)
+            fault_bytes = map_fixture_bytes(skill_dir)
+            self.assertNotEqual(valid_bytes, fault_bytes, "the defining fault must change the input")
             metadata, body = skill_validation.load_skill_file(skill_dir / "SKILL.md")
             errors = skill_validation.validate_project_map_contract_fixture(
                 skill_dir / "SKILL.md", metadata, body, diagnostic_subject="contract"
             )
+            self.assertEqual(fault_bytes, map_fixture_bytes(skill_dir))
             assert_contract_errors(self, errors, "mapped project-map skeleton asset 'assets/project-map-skeleton.md' must exist")
 
     def test_project_map_canonical_contract_rejects_hidden_skeleton_policy(self) -> None:
@@ -164,11 +202,16 @@ class ProjectMapInputTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             skill_dir = Path(temporary) / "skills" / "project-map"
             shutil.copytree(ROOT / "skills" / "project-map", skill_dir)
+            self.assertEqual([], project_map_contract_fixture_errors(skill_dir))
+            valid_bytes = map_fixture_bytes(skill_dir)
             mutate(skill_dir)
+            fault_bytes = map_fixture_bytes(skill_dir)
+            self.assertNotEqual(valid_bytes, fault_bytes, "the defining fault must change the input")
             metadata, body = skill_validation.load_skill_file(skill_dir / "SKILL.md")
             errors = skill_validation.validate_project_map_contract_fixture(
                 skill_dir / "SKILL.md", metadata, body, diagnostic_subject="contract"
             )
+            self.assertEqual(fault_bytes, map_fixture_bytes(skill_dir))
             assert_contract_errors(self, errors, "project-map skeleton must not own refresh triggers")
 
     def test_project_map_representative_outputs_cover_m3_contract(self) -> None:
