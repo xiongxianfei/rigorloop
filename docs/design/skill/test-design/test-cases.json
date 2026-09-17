@@ -1,0 +1,49 @@
+{
+  "format": "skill-test-catalog-draft",
+  "format_version": 2,
+  "owner": {
+    "model": "skill",
+    "design": "docs/design/skill/skill.md",
+    "test_design": "docs/design/skill/test-design/test-design.md"
+  },
+  "scope": {
+    "model": "skill",
+    "boundary": "Recurring common capability/resource behavior, recording-path contracts, implementation boundaries and cross-capability inputs/handoffs.",
+    "entrypoint": "tests/skill/test-skill-validator.py",
+    "coverage_claim": "Parent scenarios describe recurring behavior and selected interactions, not a requirement-count quota or all Skill-family methods. Scoped rollout, source-transfer and before/after simplification acceptance remain with their owning change. Linked methods establish only their stated boundaries; proposed reviews and partial setup/diagnostic gaps remain explicit."
+  },
+  "fixture_rules": {
+    "isolation": "Each automated variant uses fresh temporary mutable state or read-only authored fixtures; register cleanup immediately. Review uses exact source identities and synthetic counterexamples.",
+    "independent_expectations": "Expected values/diagnostics and allowed decisions come from the owner, not validator lookup tables or production transformations.",
+    "negative_setup": "Validate the same otherwise-valid setup before the defining mutation when claiming fault isolation; disclose absent baseline proof as a realization gap.",
+    "version_roles": "Version and draft-format literals select a current representation or synthetic fixture role; they do not generate historical-version matrices.",
+    "resource_boundary": "Fixture paths belong to the private root; owner/target/test references identify repository source. JSON prose is never an executable command or expression."
+  },
+  "groups": [
+    {
+      "id": "capability-contract",
+      "title": "Shared capability contract",
+      "path": "docs/design/skill/test-design/cases/capability-contract.json"
+    },
+    {
+      "id": "resource-contract",
+      "title": "Resources and source authority",
+      "path": "docs/design/skill/test-design/cases/resource-contract.json"
+    },
+    {
+      "id": "recording-composition",
+      "title": "Portable and governed recording interactions",
+      "path": "docs/design/skill/test-design/cases/recording-composition.json"
+    },
+    {
+      "id": "implementation-handoffs",
+      "title": "Implementation sections and handoffs",
+      "path": "docs/design/skill/test-design/cases/implementation-handoffs.json"
+    },
+    {
+      "id": "capability-composition",
+      "title": "Capability composition and published presentation",
+      "path": "docs/design/skill/test-design/cases/capability-composition.json"
+    }
+  ]
+}

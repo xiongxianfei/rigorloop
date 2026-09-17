@@ -18,7 +18,7 @@ EXPECTED_MODEL_PATHS = (
     'docs/design/cli/installation.md',
     'docs/design/engineering/validation.md',
     'docs/design/engineering/packaging.md',
-    'docs/design/engineering/release.md',
+    'docs/design/engineering/release/release.md',
     'docs/design/skill/skill.md',
     'docs/design/cli/cli.md',
     'docs/design/engineering/engineering.md',

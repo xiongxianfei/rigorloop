@@ -6,6 +6,8 @@ Model validation contract: model-document-v1
 
 Authoring composes Proposal, Design Method and Plan into coherent engineering authorship. It owns their responsibility boundaries, requirement-refinement relationship and correction interfaces. Its children own detailed authoring methods; independent review, workflow state and implementation remain external.
 
+The [test design](test-design/test-design.md) and [case index](test-design/test-cases.json) make these composition obligations concrete. Proposal, Design and Plan retain their detailed methods and local coverage.
+
 ## Context and Scope
 
 [Skill](../skill.md) owns common capability, resource and evidence-access rules. This model owns authoring composition; [Workflow](../workflow.md) owns progression and [Assessment](../assessment.md) owns independent judgments. Published skills realize these contracts; model extraction does not rename invocations, change stored formats or grant execution authority.
@@ -53,14 +55,20 @@ The overview names the owned method and its external inputs and consumers. Detai
 | Child | Owned behavior | Output and receiving owner |
 | --- | --- | --- |
 | [Proposal](proposal.md) | Direction, scope, feasibility and decision request. | Exact proposal for Assessment’s Proposal Review. |
-| [Design Method](design.md) | Required behavior, technical realization, decisions and acceptance intent. | Exact affected model package for Design Review. |
+| [Design Method](design.md) | Required behavior, technical realization, decisions and living test design. | Exact affected model package for Design Review. |
 | [Plan](plan.md) | Implementation milestones, verification allocation and approved-work initialization. | Stable delivery package for Delivery Review; bounded work initialization through CLI/Records. |
 
 ## Shared authoring contract
 
-Apply [Skill’s capability contract](../skill.md#capability-contract), conditional resources and evidence-access rules once at their owner. A child owns the exact output shape and authoring procedure; Authoring owns the relationships between these outputs. Requests and proposals provide need and approved direction; Design owns stable system requirements and conceptual realization; Plan allocates executable work and concrete proof. [Design’s refinement contract](design.md#requirement-refinement-and-delivery-allocation) owns this relationship. This refinement chain introduces no additional document, identifier series or mandatory decomposition level.
+Apply [Skill’s capability contract](../skill.md#capability-contract), conditional resources and evidence-access rules once at their owner. A child owns the exact output shape and authoring procedure; Authoring owns the relationships between these outputs. Requests and proposals provide need and approved direction; Design owns stable requirements, conceptual realization and model-owned living test design; Plan allocates change-specific executable work and proof. [Design’s refinement contract](design.md#requirement-refinement-and-delivery-allocation) owns this relationship. This refinement chain introduces no additional document, identifier series or mandatory decomposition level.
 
 The default flow is Proposal → independent Proposal Review → Design → independent Design Review → Plan → independent Delivery Review. Workflow selects authorized activity and correction, and Assessment determines the judgment and applicability. A direct scoped invocation may start at its authorized child; it does not authorize traversing the entire chain. A technical feasibility issue that changes an approved goal returns to the direction owner; a missing behavior belongs to Design; an allocation gap belongs to Plan. Preserve unaffected work while the owned gap is resolved.
+
+### Living coverage through authoring
+
+The approved Design package carries durable behavior groups, important targets, meaningful scenarios, independent observations, fixture strategy and current/proposed realization links under [Design DES-SR-25/26](design.md#living-test-design). Plan references that intent and adds sequencing, commands, prerequisites and evidence allocation. Moving coverage knowledge solely into a delivery plan loses the Design-owned responsibility. Existing feature-spec/proof contracts and explicitly authorized source reconciliation retain their current scope.
+
+The parent observation is a leaf/parent model package passing through independent Design Review into a delivery plan: integrated coverage remains with its owning model and every affected obligation receives execution allocation. Inspect actual author outputs and handoffs using synthetic models and existing Plan assets; heading/resource checks alone cannot establish semantic correspondence. Design and Plan own their local methods, Assessment owns judgment, System owns shared test-quality rules and Validation owns execution. Their public guidance and consumer references must be reconciled together; no new authoring stage or artifact is introduced.
 
 ## Context view
 
@@ -102,6 +110,12 @@ Observe the composition across sibling outputs and their external owners, includ
 | Failure/recovery | AUTH-SR-03, AUTH-SR-05 | A feasibility conflict returns to the direction owner while unrelated authored work is preserved. |
 | Compatibility/migration | AUTH-SR-04, AUTH-SR-05 | The declared directory move preserves model/requirement identities and historical record subjects; live consumers resolve current owners. |
 | External/environment | AUTH-SR-02, AUTH-SR-05 | Missing packaged resources or project authority stop dependent authorship; installation alone grants no governance adoption. |
+
+### Test design
+
+The [strategy](test-design/test-design.md) defines one synthetic artifact fixture and the boundaries between parent composition, child methods and external assessment. The [catalog](test-design/test-cases.json) owns twelve concrete procedures in refinement, scope-handoff and correction-reconciliation groups, with stable case IDs, conditions, actions and independent expected outcomes. These are detail of model `authoring`; no model or requirement identity changes.
+
+The procedures inspect goal/requirement preservation, durable coverage ownership, adequate downstream allocation, exact review subjects and correction authority. Each compares concrete compliant and faulty artifact/decision packets; named variants preserve separate starting state and diagnostics. They remain proposed independent reviews, not passing executable tests. Existing wording and skeleton checks provide narrower structural evidence. Skill references this detailed parent composition instead of copying its scenarios. [Validation](../../engineering/validation.md#authoring-test-design-admission-contract) defines the five-file admission boundary; actual assessment results remain in evidence.
 
 ## Architecture Decisions
 

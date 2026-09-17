@@ -31,6 +31,10 @@ Current blockers are not recorded in this index.
 
 ## Current plan references
 
+- [Model-owned test design and concise tests](plans/2026-09-17-model-test-design.md) — [owning change](changes/2026-09-17-model-test-design/change.json).
+
+
+
 - [Test design adoption and complete suite organization](plans/2026-09-16-test-design-and-suite-organization.md) — [owning change](changes/2026-09-16-test-design-and-suite-organization/change.json).
 
 - [Complete skill refinement and stale-support retirement](plans/2026-09-15-refine-skills-and-retire-stale-support.md) — [owning change](changes/2026-09-15-refine-skills-and-retire-stale-support/change.json).

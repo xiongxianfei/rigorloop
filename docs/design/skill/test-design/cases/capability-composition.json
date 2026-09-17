@@ -1,0 +1,200 @@
+{
+  "format": "skill-test-cases-draft",
+  "format_version": 2,
+  "owner": {
+    "model": "skill",
+    "design": "docs/design/skill/skill.md",
+    "test_design": "docs/design/skill/test-design/test-design.md"
+  },
+  "scope": {
+    "group": "capability-composition",
+    "title": "Capability composition and published presentation",
+    "boundary": "Support inputs, verified external handoff and complete current specialist reading paths."
+  },
+  "fixtures": [
+    {
+      "id": "review-package",
+      "initial_state": [
+        "Use the Review fixture basis in the strategy plus this case’s concrete facts and counterexample. Resolve every actual instruction and authority claim to the exact current owner/body/triggered resources.",
+        "Materialize a fresh private review packet for each variant. F0/F1/F2, G0/G1/G2 and S0/S1 are synthetic byte-identity labels; an actual assessment records inspected identities.",
+        "Inspect proposed decisions, outputs and prohibited side effects without running an agent or writing production, workflow records, hosted CI or publication state."
+      ],
+      "profile": "docs/design/skill/test-design/test-design.md"
+    }
+  ],
+  "cases": [
+    {
+      "id": "SKL-AR-004",
+      "title": "Support inputs reach their decision owner without adopting decisions",
+      "requirements": [
+        "SKL-SR-04",
+        "SKL-SR-24",
+        "SKL-SR-27",
+        "SKL-SR-29"
+      ],
+      "technique": "walkthrough",
+      "risk": "A supporting finding or context artifact is mistaken for an adopted decision or completed downstream work.",
+      "method": "independent-review",
+      "boundary": "review",
+      "target": {
+        "path": "docs/design/skill/skill.md",
+        "section": "Behavioral submodels"
+      },
+      "given": {
+        "fixture": "review-package",
+        "conditions": [
+          "On separate packets supply an attributed Research finding recommending option B while the direction owner has not adopted B; a Project Foundations context package limiting work to local files; or a Learning follow-up proposing a future retry change with no implementation authorization. Preserve exact producer identities and each input’s limitations.",
+          "Internal Proposal/Design/Plan refinement and handoffs resolve to Authoring’s catalog, including AUTH-RF-001..004 and AUTH-SH-001..004."
+        ]
+      },
+      "when": [
+        "Inspect the receiving Proposal or Workflow decision and proposed next action for each named input. Compare a consumer that calls the research recommendation approved, drops the local-only constraint, or marks the Learning destination implemented."
+      ],
+      "then": [
+        "Proposal receives the attributed finding and leaves direction adoption to its owner. Workflow preserves the applicable project constraint and records/routes the proposed follow-up without claiming destination work completed. Missing or changed producer evidence requires clarification/reassessment; input presence and template instructions supply no downstream authority. Authoring retains its own internal scenarios."
+      ],
+      "realization": {
+        "state": "proposed",
+        "tests": [],
+        "gaps": [
+          "Perform this procedure against the exact selected package and record the independent assessment; text assertions do not establish this outcome."
+        ]
+      },
+      "variants": [
+        {
+          "id": "research",
+          "parameters": {
+            "producer": "Discovery/Research",
+            "receiver": "Proposal decision owner",
+            "input": "option B recommendation not adopted",
+            "expected": "retain evidence and limits; no direction approval"
+          }
+        },
+        {
+          "id": "foundations",
+          "parameters": {
+            "producer": "Vision/Constitution/Project Map",
+            "receiver": "Workflow",
+            "input": "applicable local-only constraint and observed context",
+            "expected": "preserve governance and scope; observations do not grant writes"
+          }
+        },
+        {
+          "id": "learning",
+          "parameters": {
+            "producer": "Learning",
+            "receiver": "Workflow",
+            "input": "unimplemented retry follow-up",
+            "expected": "owned routing with destination work still pending"
+          }
+        }
+      ]
+    },
+    {
+      "id": "SKL-AR-005",
+      "title": "Current presentation preserves specialist decisions and exceptional paths",
+      "requirements": [
+        "SKL-SR-03",
+        "SKL-SR-06",
+        "SKL-SR-18",
+        "SKL-SR-20",
+        "SKL-SR-31",
+        "SKL-SR-34",
+        "SKL-SR-35"
+      ],
+      "technique": "walkthrough",
+      "risk": "A shared presentation obscures a current specialist decision, output or required stop.",
+      "method": "independent-review",
+      "boundary": "review",
+      "target": {
+        "path": "docs/design/skill/skill.md",
+        "section": "Specialist interface vocabulary and outputs"
+      },
+      "given": {
+        "fixture": "review-package",
+        "conditions": [
+          "Choose a currently supported invocation of Route, Verify, PR, Design Review, Delivery Review, Implement or Code Review whose guidance is being assessed. Use that owner’s actual native values and output obligations, all triggered references and the exact current package. These names identify applicable consumers, not a replay of historical rollout rounds."
+        ]
+      },
+      "when": [
+        "For that invocation inspect the normal path and one applicable late-trigger or missing-required-resource counterexample. Compare a proposed common layout that renames a native judgment/status, hides required output in an unreachable reference, or continues after a required resource fails."
+      ],
+      "then": [
+        "The current package retains its specialist vocabulary, usable output, correct reference selection and applicable stops. Reject each changed meaning or unreachable procedure even if its heading exists elsewhere. Scope the conclusion to the assessed invocation/package; full-inventory migration acceptance and before/after improvement claims remain with their owning change."
+      ],
+      "realization": {
+        "state": "proposed",
+        "tests": [],
+        "gaps": [
+          "Perform this procedure against the exact selected package and record the independent assessment; text assertions do not establish this outcome."
+        ]
+      }
+    },
+    {
+      "id": "SKL-AR-006",
+      "title": "Verified identity and external permission both constrain PR handoff",
+      "requirements": [
+        "SKL-SR-04",
+        "SKL-SR-24",
+        "SKL-SR-27",
+        "SKL-SR-29"
+      ],
+      "technique": "walkthrough",
+      "risk": "A successful Verify on one basis is used to publish another basis or perform an unauthorized external write.",
+      "method": "independent-review",
+      "boundary": "review",
+      "target": {
+        "path": "docs/design/skill/skill.md",
+        "section": "Delivery Handoff"
+      },
+      "given": {
+        "fixture": "review-package",
+        "conditions": [
+          "Use an attributable successful Verify for subject S0 and a PR-preparation-only request. Compare an otherwise authorized external-handoff request whose current subject has changed to S1. An authorized S0-to-S0 packet is the positive control. No packet authorizes release publication."
+        ]
+      },
+      "when": [
+        "Inspect the proposed PR content, source/verification identity and external action for each packet. Include a candidate that treats Verify success as external-write permission or silently applies the S0 result to S1."
+      ],
+      "then": [
+        "Preparation-only produces reviewable PR content without an external write. An S1 mismatch requires current reliance/verification to be resolved before claiming verified handoff. Only a matching current basis with explicit external authority may proceed under Delivery Handoff; successful Verify alone never authorizes release publication."
+      ],
+      "realization": {
+        "state": "proposed",
+        "tests": [],
+        "gaps": [
+          "Perform this procedure against the exact selected package and record the independent assessment; text assertions do not establish this outcome."
+        ]
+      },
+      "variants": [
+        {
+          "id": "prepare",
+          "parameters": {
+            "verified": "S0",
+            "current": "S0",
+            "authority": "prepare only",
+            "expected": "draft content; no external mutation"
+          }
+        },
+        {
+          "id": "changed-basis",
+          "parameters": {
+            "verified": "S0",
+            "current": "S1",
+            "authority": "external handoff authorized",
+            "expected": "resolve changed verification basis before handoff"
+          }
+        },
+        {
+          "id": "authorized-current",
+          "parameters": {
+            "verified": "S0",
+            "current": "S0",
+            "authority": "external handoff authorized",
+            "expected": "eligible only under remaining Delivery Handoff prerequisites"
+          }
+        }
+      ]
+    }
+  ]
+}

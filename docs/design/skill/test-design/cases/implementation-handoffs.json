@@ -1,0 +1,361 @@
+{
+  "format": "skill-test-cases-draft",
+  "format_version": 2,
+  "owner": {
+    "model": "skill",
+    "design": "docs/design/skill/skill.md",
+    "test_design": "docs/design/skill/test-design/test-design.md"
+  },
+  "scope": {
+    "group": "implementation-handoffs",
+    "title": "Implementation sections and handoffs",
+    "boundary": "Retain the parent-owned Implement/Bugfix/CI boundaries. Semantic outcomes are review procedures; CI declaration parsing has executable protection."
+  },
+  "fixtures": [
+    {
+      "id": "ci-declaration",
+      "initial_state": [
+        "Use the independent nine-name CI_ASSEMBLIES fixture and an otherwise valid current CI body. Change only the Assemblies declaration."
+      ],
+      "builder": {
+        "path": "tests/skill/skill_contract_tests.py",
+        "symbol": "ci_assembly_input"
+      }
+    },
+    {
+      "id": "review-package",
+      "initial_state": [
+        "Use the Review fixture basis in the strategy plus this case’s concrete facts and counterexample. Resolve every actual instruction and authority claim to the exact current owner/body/triggered resources.",
+        "Materialize a fresh private review packet for each variant. F0/F1/F2, G0/G1/G2 and S0/S1 are synthetic byte-identity labels; an actual assessment records inspected identities.",
+        "Inspect proposed decisions, outputs and prohibited side effects without running an agent or writing production, workflow records, hosted CI or publication state."
+      ],
+      "profile": "docs/design/skill/test-design/test-design.md"
+    }
+  ],
+  "cases": [
+    {
+      "id": "SKL-IH-001",
+      "title": "CI assembly declaration preserves unknown-first admission",
+      "requirements": [
+        "SKL-SR-06",
+        "SKL-SR-14",
+        "SKL-SR-29",
+        "SKL-SR-35"
+      ],
+      "technique": "decision-table",
+      "risk": "A malformed declaration hides an unknown supported action behind a missing/duplicate error.",
+      "method": "automated-test",
+      "boundary": "contract",
+      "target": {
+        "path": "scripts/lib/validation/skill_validation.py",
+        "symbol": "validate_ci_maintenance_contract"
+      },
+      "given": {
+        "fixture": "ci-declaration",
+        "conditions": [
+          "Begin with the valid nine-name table. Combine CIM9-unknown with a duplicate known name and missing required names; also inspect isolated missing and duplicate variants."
+        ]
+      },
+      "when": [
+        "Validate the complete declaration and each malformed table."
+      ],
+      "then": [
+        "The complete table passes; the mixed case returns exactly unknown CI assembly: CIM9-unknown; isolated missing and duplicate cases identify their exact assembly. This does not prove semantic assembly selection."
+      ],
+      "realization": {
+        "state": "existing",
+        "tests": [
+          {
+            "path": "tests/skill/skill_contract_tests.py",
+            "symbol": "CiAssemblyDeclarationTests.test_valid_complete_declaration"
+          },
+          {
+            "path": "tests/skill/skill_contract_tests.py",
+            "symbol": "CiAssemblyDeclarationTests.test_unknown_rejected_before_missing_and_duplicate_checks"
+          },
+          {
+            "path": "tests/skill/skill_contract_tests.py",
+            "symbol": "CiAssemblyDeclarationTests.test_missing_known_assembly_rejected"
+          },
+          {
+            "path": "tests/skill/skill_contract_tests.py",
+            "symbol": "CiAssemblyDeclarationTests.test_duplicate_assembly_rejected"
+          }
+        ],
+        "gaps": []
+      }
+    },
+    {
+      "id": "SKL-IH-002",
+      "title": "Implementation proof hands exact work to independent review",
+      "requirements": [
+        "SKL-SR-04",
+        "SKL-SR-24",
+        "SKL-SR-27",
+        "SKL-SR-29",
+        "SKL-SR-31"
+      ],
+      "technique": "walkthrough",
+      "risk": "Implementation marks its own milestone accepted or skips review after a green local test.",
+      "method": "independent-review",
+      "boundary": "review",
+      "target": {
+        "path": "docs/design/skill/skill.md",
+        "section": "Implement"
+      },
+      "given": {
+        "fixture": "review-package",
+        "conditions": [
+          "Use one approved milestone with named write scope and proof, plus a counterexample whose package lacks a required Design decision."
+        ]
+      },
+      "when": [
+        "Trace proof first, scoped implementation and the proposed handoff to Code Review."
+      ],
+      "then": [
+        "Valid work reports exact changed subjects and actual proof for independent review; the missing decision returns to its owner before dependent implementation. A green check does not close the milestone or replace final whole-change review/Verify."
+      ],
+      "realization": {
+        "state": "proposed",
+        "tests": [],
+        "gaps": [
+          "Perform this procedure against the exact selected package and record the independent assessment; text assertions do not establish this outcome."
+        ]
+      }
+    },
+    {
+      "id": "SKL-IH-003",
+      "title": "Bugfix write scope follows the selected operation",
+      "requirements": [
+        "SKL-SR-04",
+        "SKL-SR-24",
+        "SKL-SR-27",
+        "SKL-SR-29"
+      ],
+      "technique": "walkthrough",
+      "risk": "Diagnosis or proof-authoring silently expands into production correction.",
+      "method": "independent-review",
+      "boundary": "review",
+      "target": {
+        "path": "docs/design/skill/skill.md",
+        "section": "Bugfix"
+      },
+      "given": {
+        "fixture": "review-package",
+        "conditions": [
+          "Use the same synthetic defect: a batch importer commits row 1 before rejecting invalid row 2. A known contract requires an unchanged destination. On fresh requests select diagnose-only, proof-authoring limited to tests, or production correction backed by a failing proof. No external mutation is authorized."
+        ]
+      },
+      "when": [
+        "Inspect proposed files/actions before mutation for each request. Compare diagnosis that edits production, proof-authoring that patches the importer and a production fix offered while the cause or intended behavior is unknown."
+      ],
+      "then": [
+        "Diagnosis changes no tracked or external state. Proof-authoring changes only its authorized tests/fixtures. Production correction needs the known cause/contract and failing automated proof or the documented complete deterministic alternative; unknown behavior returns to Design. Changed implementation hands off to independent Code Review without claiming autonomous continuation."
+      ],
+      "realization": {
+        "state": "proposed",
+        "tests": [],
+        "gaps": [
+          "Perform this procedure against the exact selected package and record the independent assessment; text assertions do not establish this outcome."
+        ]
+      },
+      "variants": [
+        {
+          "id": "diagnose",
+          "parameters": {
+            "operation": "diagnose-only",
+            "allowed": "read-only reproduction/diagnosis; no tracked or external writes"
+          }
+        },
+        {
+          "id": "proof",
+          "parameters": {
+            "operation": "proof-authoring",
+            "allowed": "authorized tests and fixtures only"
+          }
+        },
+        {
+          "id": "fix",
+          "parameters": {
+            "operation": "production correction",
+            "required": "known cause/contract plus failing proof or justified deterministic alternative"
+          }
+        }
+      ]
+    },
+    {
+      "id": "SKL-IH-004",
+      "title": "CI invocation authority is resolved before a write",
+      "requirements": [
+        "SKL-SR-04",
+        "SKL-SR-24",
+        "SKL-SR-27",
+        "SKL-SR-29"
+      ],
+      "technique": "walkthrough",
+      "risk": "Read-only review or incomplete privileged authority becomes permission to mutate a workflow.",
+      "method": "independent-review",
+      "boundary": "review",
+      "target": {
+        "path": "docs/design/skill/skill.md",
+        "section": "CI maintenance"
+      },
+      "given": {
+        "fixture": "review-package",
+        "conditions": [
+          "Use fictional workflow target ci-one.yml at identity F0 with a prepared timeout-only candidate F1. On fresh packets select review, ordinary revision with explicit file-write authority, or privileged revision whose Design omits its credential/runner choices. No external settings or hosted execution are authorized."
+        ]
+      },
+      "when": [
+        "Inspect the proposed allowed writes and prerequisite decision before target mutation. Compare a review that writes F1 and a privileged revision that fills omitted security choices from a generic skeleton."
+      ],
+      "then": [
+        "Review produces findings with F0 unchanged. An authorized ordinary revision may prepare its scoped candidate subject to the separate identity guard. The incomplete privileged revision stops before writing and returns the missing choices to its Design/review owners. Local results do not establish hosted CI or grant external execution."
+      ],
+      "realization": {
+        "state": "proposed",
+        "tests": [],
+        "gaps": [
+          "Perform this procedure against the exact selected package and record the independent assessment; text assertions do not establish this outcome."
+        ]
+      },
+      "variants": [
+        {
+          "id": "review",
+          "parameters": {
+            "operation": "review",
+            "allowed_writes": [],
+            "expected": "read-only findings"
+          }
+        },
+        {
+          "id": "ordinary",
+          "parameters": {
+            "operation": "revise",
+            "authority": "timeout-only local file correction",
+            "expected": "candidate preparation within scope"
+          }
+        },
+        {
+          "id": "privileged",
+          "parameters": {
+            "operation": "revise privileged workflow",
+            "missing": "credential and runner design choices",
+            "expected": "stop before target writes"
+          }
+        }
+      ]
+    },
+    {
+      "id": "SKL-IH-005",
+      "title": "Concurrent CI replacement preserves the newer target",
+      "requirements": [
+        "SKL-SR-04",
+        "SKL-SR-24",
+        "SKL-SR-27",
+        "SKL-SR-29"
+      ],
+      "technique": "walkthrough",
+      "risk": "A prepared revision overwrites a file changed after inspection.",
+      "method": "independent-review",
+      "boundary": "review",
+      "target": {
+        "path": "docs/design/skill/skill.md",
+        "section": "CI maintenance"
+      },
+      "given": {
+        "fixture": "review-package",
+        "conditions": [
+          "Ordinary revision of ci-one.yml is authorized against F0 and candidate F1 is prepared. Before commit another actor replaces the target with F2. Compare an unchanged-F0 control; the target contract supplies identity-guarded replacement."
+        ]
+      },
+      "when": [
+        "Inspect the expected identity, commit decision and resulting target for the F0 and F2 packets. Include a candidate that uses a plain overwrite followed only by readback."
+      ],
+      "then": [
+        "The unchanged control can replace F0 with F1 and verify committed bytes. The drifted target remains exactly F2, the guard reports conflict and retry requires rereading/reassessment. Plain overwrite plus readback does not satisfy concurrency protection; an unavailable guard stops mutation."
+      ],
+      "realization": {
+        "state": "proposed",
+        "tests": [],
+        "gaps": [
+          "Perform this independent decision/artifact walkthrough against exact subjects. Existing structural checks do not establish write authority, concurrency safety or recovery behavior; no workflow write is executed by the catalog."
+        ]
+      }
+    },
+    {
+      "id": "SKL-IH-006",
+      "title": "Interrupted CI changes report partial results before retry",
+      "requirements": [
+        "SKL-SR-04",
+        "SKL-SR-24",
+        "SKL-SR-27",
+        "SKL-SR-29"
+      ],
+      "technique": "walkthrough",
+      "risk": "A two-target partial write is reported as complete or retried against obsolete identities.",
+      "method": "independent-review",
+      "boundary": "review",
+      "target": {
+        "path": "docs/design/skill/skill.md",
+        "section": "CI maintenance"
+      },
+      "given": {
+        "fixture": "review-package",
+        "conditions": [
+          "Two separately identified workflow targets ci-one.yml at F0 and ci-two.yml at G0 have authorized ordered-dependent revisions F1/G1. The declared intermediate state F1/G0 is valid. The first write commits F1; interruption occurs before the second. On retry another actor has changed ci-two.yml to G2."
+        ]
+      },
+      "when": [
+        "Inspect the partial report and the retry packet. Compare a report claiming both targets completed and a retry using the original G0 without rereading current targets."
+      ],
+      "then": [
+        "Report ci-one.yml completed at F1 and ci-two.yml pending; make no atomic-group or complete-success claim. Reassess both current identities and ordering before retry; preserve G2 while resolving its changed basis. No hosted CI pass or external permission is inferred."
+      ],
+      "realization": {
+        "state": "proposed",
+        "tests": [],
+        "gaps": [
+          "Perform this independent decision/artifact walkthrough against exact subjects. Existing structural checks do not establish write authority, concurrency safety or recovery behavior; no workflow write is executed by the catalog."
+        ]
+      }
+    },
+    {
+      "id": "SKL-IH-007",
+      "title": "Bugfix evidence retains the original failing proof identity",
+      "requirements": [
+        "SKL-SR-04",
+        "SKL-SR-24",
+        "SKL-SR-27",
+        "SKL-SR-29"
+      ],
+      "technique": "walkthrough",
+      "risk": "A weakened replacement test is reported as the original regression passing.",
+      "method": "independent-review",
+      "boundary": "review",
+      "target": {
+        "path": "docs/design/skill/skill.md",
+        "section": "Bugfix"
+      },
+      "given": {
+        "fixture": "review-package",
+        "conditions": [
+          "The authorized correction has original failing proof T0 asserting the entire destination remains [(9, retained)] after rejecting row 2. The production fix is prepared. A proposed T1 drops the destination comparison and asserts only nonzero status. T0 and T1 are distinct proof identities."
+        ]
+      },
+      "when": [
+        "Compare a handoff containing an identity-equal T0 rerun with a packet running only T1 but claiming the original regression now passes. Inspect exact proof subjects, actual results and surrounding-check allocation."
+      ],
+      "then": [
+        "Only an observed rerun of the same T0 can support the original-proof-passed claim. T1 is a new basis and its weaker assertion leaves the original preservation outcome unresolved. Report the difference and route correction; do not overwrite T0 evidence or close independent Code Review/Verify from a modified test result."
+      ],
+      "realization": {
+        "state": "proposed",
+        "tests": [],
+        "gaps": [
+          "Perform this procedure against the exact selected package and record the independent assessment; text assertions do not establish this outcome."
+        ]
+      }
+    }
+  ]
+}

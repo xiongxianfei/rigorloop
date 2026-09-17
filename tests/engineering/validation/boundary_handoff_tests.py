@@ -105,7 +105,7 @@ class AdoptionReviewHandoffTests(unittest.TestCase):
     def test_unknown_value_diagnostic_is_not_demoted_to_review(self) -> None:
         issue = validate_changed_spec(self.root, "docs/design/missing.md")[0]
         unknown = type(issue)("unknown_value", issue.path, issue.message, issue.offending_value, issue.expected)
-        with mock.patch.dict(self.main.__globals__, {"validate_changed_spec": lambda root, path: (unknown,)}):
+        with mock.patch("lib.validation.test_design_validation.validate_changed_spec", return_value=(unknown,)):
             code, output = self.run_check("specs/historical.md")
         self.assertEqual(code, 1)
         self.assertEqual(output["issues"][0]["check_id"], "unknown_value")

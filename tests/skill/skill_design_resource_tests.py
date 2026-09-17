@@ -2,13 +2,11 @@
 
 Current Skill contracts own the protected structures, resources and authority.
 Wording checks detect structural drift; independent review assesses semantics.
-Existing class/case selectors remain stable, including historical names.
+Current resource inventory and unknown-first admission are the protected outcomes.
 """
 from __future__ import annotations
 
-import shutil
 import unittest
-import tempfile
 from pathlib import Path
 import sys
 
@@ -16,6 +14,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "scripts"))
 from lib.validation import skill_validation
 from skill_cli_tests import run_validator
+from skill_fixture_helpers import copied_skill
 
 
 # Design Method's Public resource table, independently of validator dispatch.
@@ -35,33 +34,23 @@ EXPECTED_DESIGN_RESOURCES = frozenset({
 
 
 class UnifiedDesignResourceTests(unittest.TestCase):
-    def test_retired_standalone_resources_are_absent_and_cannot_be_reintroduced(self):
-        retired = ("assets/legacy-architecture-skeleton.md", "assets/legacy-adr-skeleton.md",
-                   "references/legacy-technical-authoring.md")
-        for resource in retired:
-            with self.subTest(resource=resource), tempfile.TemporaryDirectory() as tmp:
-                source = ROOT / "skills/design"
-                self.assertFalse((source / resource).exists())
-                root = Path(tmp) / "design"
-                shutil.copytree(source, root)
-                (root / resource).write_text("# Retired standalone output resource\n")
-                result = run_validator(root)
-                self.assertNotEqual(result.returncode, 0)
-                self.assertIn("unknown design resource: " + resource, result.stdout + result.stderr)
-        for name in ("architecture.md", "adr.md"):
-            self.assertFalse((ROOT / "templates" / name).exists())
 
     def test_unknown_design_resource_precedes_missing_resource_consistency(self):
-        with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp) / "design"
-            shutil.copytree(ROOT / "skills/design", root)
-            (root / "references/unrecognized.md").write_text("# Unexpected resource\n")
-            (root / "references/technical-design.md").unlink()
-            result = run_validator(root)
-            self.assertNotEqual(result.returncode, 0)
-            output = result.stdout + result.stderr
-            self.assertLess(output.index("unknown design resource: references/unrecognized.md"),
-                            output.index("required design resource missing: references/technical-design.md"))
+        for missing in (False, True):
+            with self.subTest(missing=missing), copied_skill("design") as root:
+                baseline = run_validator(root)
+                self.assertEqual(baseline.returncode, 0, baseline.stdout + baseline.stderr)
+                (root / "references/unrecognized.md").write_text("# Unexpected resource\n")
+                if missing:
+                    (root / "references/technical-design.md").unlink()
+                result = run_validator(root)
+                self.assertNotEqual(result.returncode, 0)
+                output = result.stdout + result.stderr
+                unknown = "unknown design resource: references/unrecognized.md"
+                self.assertIn(unknown, output)
+                if missing:
+                    self.assertLess(output.index(unknown), output.index(
+                        "required design resource missing: references/technical-design.md"))
 
     def test_complete_package_and_retired_names(self):
         root = ROOT / "skills/design"
@@ -73,9 +62,7 @@ class UnifiedDesignResourceTests(unittest.TestCase):
     def test_missing_each_conditional_design_resource_rejects(self):
         self.assertEqual(skill_validation.DESIGN_RESOURCES, EXPECTED_DESIGN_RESOURCES)
         for resource in sorted(EXPECTED_DESIGN_RESOURCES):
-            with self.subTest(resource=resource), tempfile.TemporaryDirectory() as tmp:
-                root = Path(tmp) / "design"
-                shutil.copytree(ROOT / "skills/design", root)
+            with self.subTest(resource=resource), copied_skill("design") as root:
                 (root / resource).unlink()
                 result = run_validator(root)
                 self.assertNotEqual(result.returncode, 0)
@@ -83,15 +70,6 @@ class UnifiedDesignResourceTests(unittest.TestCase):
                     "required design resource missing: " + resource,
                     result.stdout + result.stderr,
                 )
-
-    def test_unknown_value_design_resource_rejects(self):
-        with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp) / "design"
-            shutil.copytree(ROOT / "skills/design", root)
-            (root / "references/unknown_value.md").write_text("unexpected resource")
-            result = run_validator(root)
-            self.assertNotEqual(result.returncode, 0)
-            self.assertIn("unknown", (result.stdout + result.stderr).lower())
 
     def test_legacy_boundary_projection_keeps_complete_format(self):
         root = ROOT / "skills/design/references"

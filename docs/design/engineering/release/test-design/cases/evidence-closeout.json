@@ -1,0 +1,416 @@
+{
+  "format": "release-test-cases-draft",
+  "format_version": 2,
+  "owner": {
+    "model": "release",
+    "design": "docs/design/engineering/release/release.md",
+    "test_design": "docs/design/engineering/release/test-design/test-design.md"
+  },
+  "scope": {
+    "group": "evidence-closeout",
+    "title": "Evidence and closeout",
+    "boundary": "Actual public-evidence consumption, checklist admission and diagnostic timing. Controlled provider facts are local proof of consumption, not evidence of a real public release."
+  },
+  "fixtures": [
+    {
+      "id": "publication",
+      "initial_state": [
+        "Private prepared v0.3.5 root with codex/claude targets and pending reports. RecordingPublicEvidenceProvider supplies controlled GitHub/npm/smoke observations; snapshot local text files before each fault."
+      ],
+      "builder": {
+        "path": "tests/engineering/release/release_fixture_helpers.py",
+        "symbol": "make_prepared_release"
+      }
+    },
+    {
+      "id": "checklist",
+      "initial_state": [
+        "Private docs/releases/v1.2.3.md containing routine_release_evidence(): synthetic @rigorloop/rigorloop published release, all ten preflight and five applicable registry rows present and satisfactory."
+      ],
+      "builder": {
+        "path": "tests/engineering/release/release_evidence_tests.py",
+        "symbol": "routine_release_evidence"
+      }
+    },
+    {
+      "id": "emergency",
+      "initial_state": [
+        "Private v1.2.3 emergency checklist: manual-2fa path, provenance not used with rationale, status emergency-with-deferred-gate. Only fresh registry install smoke is deferred with owner, rationale, reason, impact, risk, follow-up, deadline and open status."
+      ],
+      "builder": {
+        "path": "tests/engineering/release/release_evidence_tests.py",
+        "symbol": "emergency_release_evidence"
+      }
+    },
+    {
+      "id": "timing",
+      "initial_state": [
+        "Private prepared v0.3.5 root whose profile requires timing. Use valid_timing_text for measured phases; initial preparation produces its own pending skeleton."
+      ],
+      "builder": {
+        "path": "tests/engineering/release/release_fixture_helpers.py",
+        "symbol": "make_prepared_release"
+      }
+    },
+    {
+      "id": "historical-reader",
+      "initial_state": [
+        "Private recorded release fixture with codex/claude/opencode and the historically owned qualified-tree fields. Its bytes are immutable inputs to current evidence readers, not a current executable release recipe."
+      ],
+      "builder": {
+        "path": "tests/engineering/release/release_fixture_helpers.py",
+        "symbol": "make_recorded_release"
+      }
+    },
+    {
+      "id": "execution",
+      "initial_state": [
+        "Sealed v0.5.1 fixture with valid approval and controlled provider facts; execute real executor into real temporary Git evidence."
+      ],
+      "builder": {
+        "path": "tests/engineering/release/release_execution_tests.py",
+        "symbol": "ReleaseExecutorTests.setUp"
+      }
+    }
+  ],
+  "cases": [
+    {
+      "id": "REL-EC-001",
+      "title": "Closeout records independently observed public facts without changing unrelated evidence",
+      "requirements": [
+        "REL-SR-03",
+        "REL-SR-04",
+        "REL-SR-10",
+        "REL-SR-13",
+        "REL-SR-14",
+        "REL-SR-15",
+        "REL-SR-19",
+        "REL-SR-24",
+        "REL-SR-26"
+      ],
+      "technique": "state-transition",
+      "risk": "Closeout fabricates public success, accepts inconsistent observations or overwrites evidence outside the selected release.",
+      "target": {
+        "path": "scripts/lib/release/release_transaction.py",
+        "symbol": "close_release_publication"
+      },
+      "given": {
+        "fixture": "publication",
+        "conditions": [
+          "Use publication with controlled GitHub/npm/smoke facts and snapshots of pending, earlier-release and unrelated files. Vary provider values independently of the generated expectations.",
+          "Use explicit fixture mode only for fixture evidence; historical-reader is a separate immutable input and cannot qualify a current routine profile."
+        ]
+      },
+      "when": [
+        "Run real closeout and the documented public version/target smoke commands.",
+        "Repeat with unavailable facts, failed smoke, wrong serialized command/hash scope or a missing target; establish a successful baseline before corrupting evidence.",
+        "Invoke closeout check mode and inspect the filesystem."
+      ],
+      "then": [
+        "Successful evidence records observed version, intended tag/integrity, asset hashes and both target smoke results; it never substitutes prepared expectations.",
+        "Unavailable facts or failed smoke preserve pending/unrelated bytes and report the failure. Invalid serialized evidence rejects; earlier evidence stays byte-identical.",
+        "Fixture evidence requires explicit mode at function and CLI boundaries. Check mode reports planned output without finalizing it.",
+        "The admitted historical reader does not admit its old target population as a new routine profile."
+      ],
+      "realization": {
+        "state": "partial",
+        "tests": [
+          {
+            "path": "tests/engineering/release/release_publication_tests.py",
+            "symbol": "PublishedEvidenceCloseoutTests.test_close_release_publication_generates_published_evidence_and_validation_passes"
+          },
+          {
+            "path": "tests/engineering/release/release_publication_tests.py",
+            "symbol": "PublishedEvidenceCloseoutTests.test_close_release_publication_fetches_github_release_assets"
+          },
+          {
+            "path": "tests/engineering/release/release_publication_tests.py",
+            "symbol": "PublishedEvidenceCloseoutTests.test_close_release_publication_fetches_npm_registry_metadata"
+          },
+          {
+            "path": "tests/engineering/release/release_publication_tests.py",
+            "symbol": "PublishedEvidenceCloseoutTests.test_close_release_publication_uses_provider_values_not_fixture_literals"
+          },
+          {
+            "path": "tests/engineering/release/release_publication_tests.py",
+            "symbol": "PublishedEvidenceCloseoutTests.test_close_release_publication_runs_public_version_smoke"
+          },
+          {
+            "path": "tests/engineering/release/release_publication_tests.py",
+            "symbol": "PublishedEvidenceCloseoutTests.test_close_release_publication_runs_public_target_init_smoke_for_all_targets"
+          },
+          {
+            "path": "tests/engineering/release/release_publication_tests.py",
+            "symbol": "PublishedEvidenceCloseoutTests.test_close_release_publication_fails_when_public_evidence_unavailable_without_modifying_files"
+          },
+          {
+            "path": "tests/engineering/release/release_publication_tests.py",
+            "symbol": "PublishedEvidenceCloseoutTests.test_close_release_publication_fails_when_npm_metadata_unavailable"
+          },
+          {
+            "path": "tests/engineering/release/release_publication_tests.py",
+            "symbol": "PublishedEvidenceCloseoutTests.test_close_release_publication_fails_when_public_npx_smoke_fails"
+          },
+          {
+            "path": "tests/engineering/release/release_publication_tests.py",
+            "symbol": "PublishedEvidenceCloseoutTests.test_close_release_publication_rejects_manual_public_evidence_in_default_mode"
+          },
+          {
+            "path": "tests/engineering/release/release_publication_tests.py",
+            "symbol": "PublishedEvidenceCloseoutTests.test_close_release_publication_cli_rejects_fixture_evidence_without_fixture_mode"
+          },
+          {
+            "path": "tests/engineering/release/release_publication_tests.py",
+            "symbol": "PublishedEvidenceCloseoutTests.test_public_evidence_fixture_mode_is_explicit"
+          },
+          {
+            "path": "tests/engineering/release/release_publication_tests.py",
+            "symbol": "PublishedEvidenceCloseoutTests.test_close_release_publication_cli_check_reports_without_writing"
+          },
+          {
+            "path": "tests/engineering/release/release_publication_tests.py",
+            "symbol": "PublishedEvidenceCloseoutTests.test_close_release_publication_rejects_npx_y_command_shape"
+          },
+          {
+            "path": "tests/engineering/release/release_publication_tests.py",
+            "symbol": "PublishedEvidenceCloseoutTests.test_validate_published_release_artifacts_rejects_raw_tree_hash"
+          },
+          {
+            "path": "tests/engineering/release/release_publication_tests.py",
+            "symbol": "PublishedEvidenceCloseoutTests.test_validate_published_release_artifacts_rejects_missing_target"
+          },
+          {
+            "path": "tests/engineering/release/release_publication_tests.py",
+            "symbol": "PublishedEvidenceCloseoutTests.test_close_release_publication_does_not_rewrite_historical_release_evidence"
+          },
+          {
+            "path": "tests/engineering/release/release_publication_tests.py",
+            "symbol": "HistoricalReleaseReaderTests.test_owned_three_target_evidence_is_readable_but_not_current_profile"
+          },
+          {
+            "path": "tests/engineering/release/release_publication_tests.py",
+            "symbol": "HistoricalReleaseReaderTests.test_unknown_value_rejects_in_historical_reader"
+          }
+        ],
+        "gaps": [
+          "Closeout check mode reports planned output without finalizing it: The existing case checks the report; add a byte snapshot of all release and unrelated files to establish the complete no-write promise.",
+          "Published evidence rejects wrong command, hash scope and missing target: Add an explicit no-error assertion on the valid baseline within each negative case before mutation; the current negative methods rely on the shared successful fixture."
+        ]
+      },
+      "method": "automated-test",
+      "boundary": "composition"
+    },
+    {
+      "id": "REL-EC-009",
+      "title": "Release evidence distinguishes passed, failed and explicitly deferred duties",
+      "requirements": [
+        "REL-SR-08",
+        "REL-SR-11",
+        "REL-SR-13",
+        "REL-SR-16",
+        "REL-SR-17",
+        "REL-SR-19"
+      ],
+      "technique": "equivalence-partition",
+      "risk": "A checklist labels failed, unobserved or unauthorized deferred work as successful release proof.",
+      "target": {
+        "path": "scripts/lib/release/release_evidence.py",
+        "symbol": "validate_release_evidence_checklist"
+      },
+      "given": {
+        "fixture": "checklist",
+        "conditions": [
+          "Use checklist for ordinary published evidence and emergency only for a separately authorized exception. Start from valid evidence, then mutate a required row/result or exception field independently."
+        ]
+      },
+      "when": [
+        "Validate the real checklist in each state, including missing/duplicate rows, unknown result/status, forbidden pending results, secret-bearing text and incomplete/forbidden emergency deferral."
+      ],
+      "then": [
+        "Complete applicable evidence passes; failed required gates block and no absent/duplicate/unknown row silently passes.",
+        "A permitted deferred duty has exactly one matching record with owner, authority, rationale, impact, risk, follow-up and deadline; registry identity and other nondeferrable duties remain required.",
+        "Secrets reject. A structurally valid exception establishes representation only, never the owner approval assessed by REL-MR-002."
+      ],
+      "realization": {
+        "state": "existing",
+        "tests": [
+          {
+            "path": "tests/engineering/release/release_evidence_tests.py",
+            "symbol": "ReleaseEvidenceTests.test_release_evidence_fixture_passes_lightweight_checklist"
+          },
+          {
+            "path": "tests/engineering/release/release_evidence_tests.py",
+            "symbol": "ReleaseEvidenceTests.test_release_evidence_blocks_missing_routine_gate_item"
+          },
+          {
+            "path": "tests/engineering/release/release_evidence_tests.py",
+            "symbol": "ReleaseEvidenceTests.test_release_evidence_all_states_reject_missing_duplicate_and_unknown_value_rows"
+          },
+          {
+            "path": "tests/engineering/release/release_evidence_tests.py",
+            "symbol": "ReleaseEvidenceTests.test_release_evidence_result_vocabulary_is_state_and_applicability_aware"
+          },
+          {
+            "path": "tests/engineering/release/release_evidence_tests.py",
+            "symbol": "ReleaseEvidenceTests.test_release_evidence_rejects_unknown_value_status"
+          },
+          {
+            "path": "tests/engineering/release/release_evidence_tests.py",
+            "symbol": "ReleaseEvidenceTests.test_release_evidence_allows_complete_emergency_deferral"
+          },
+          {
+            "path": "tests/engineering/release/release_evidence_tests.py",
+            "symbol": "ReleaseEvidenceTests.test_release_evidence_emergency_deferral_must_match_exactly_one_result"
+          },
+          {
+            "path": "tests/engineering/release/release_evidence_tests.py",
+            "symbol": "ReleaseEvidenceTests.test_release_evidence_emergency_deferral_rejects_not_applicable_required_values"
+          },
+          {
+            "path": "tests/engineering/release/release_evidence_tests.py",
+            "symbol": "ReleaseEvidenceTests.test_release_evidence_blocks_emergency_deferral_without_owner"
+          },
+          {
+            "path": "tests/engineering/release/release_evidence_tests.py",
+            "symbol": "ReleaseEvidenceTests.test_release_evidence_emergency_deferral_rejects_unknown_value_status"
+          },
+          {
+            "path": "tests/engineering/release/release_evidence_tests.py",
+            "symbol": "ReleaseEvidenceTests.test_release_evidence_blocks_nondeferrable_registry_verification"
+          },
+          {
+            "path": "tests/engineering/release/release_evidence_tests.py",
+            "symbol": "ReleaseEvidenceTests.test_release_evidence_blocks_secret_bearing_content"
+          }
+        ],
+        "gaps": []
+      },
+      "method": "automated-test",
+      "boundary": "contract"
+    },
+    {
+      "id": "REL-EC-018",
+      "title": "Pending evidence is usable only with exact verified CI context",
+      "requirements": [
+        "REL-SR-08",
+        "REL-SR-10",
+        "REL-SR-12",
+        "REL-SR-17",
+        "REL-SR-19"
+      ],
+      "technique": "decision-table",
+      "risk": "Any CI environment or claimed candidate permits incomplete release evidence.",
+      "target": {
+        "path": "scripts/lib/release/release_evidence.py",
+        "symbol": "validate_paths"
+      },
+      "given": {
+        "fixture": "checklist",
+        "conditions": [
+          "Use current prepared CI proof and a contained regular version-matched evidence file; independently alter the checked revision, proof validity or evidence path/type/version."
+        ]
+      },
+      "when": [
+        "Validate pending-gate admission against the actual selected context."
+      ],
+      "then": [
+        "Only exact verified context admits the intended pending gates.",
+        "Wrong revision, invalid proof and unsafe/mismatched evidence files fail with bounded diagnostics; context failure grants no release success."
+      ],
+      "realization": {
+        "state": "existing",
+        "tests": [
+          {
+            "path": "tests/engineering/release/release_evidence_tests.py",
+            "symbol": "ReleaseEvidenceTests.test_pending_gate_requires_exact_verified_candidate_context"
+          },
+          {
+            "path": "tests/engineering/release/release_evidence_tests.py",
+            "symbol": "ReleaseEvidenceTests.test_prepared_context_rejects_wrong_revision_and_invalid_proof"
+          },
+          {
+            "path": "tests/engineering/release/release_evidence_tests.py",
+            "symbol": "ReleaseEvidenceTests.test_explicit_paths_reject_unknown_missing_escape_symlink_and_wrong_version"
+          }
+        ],
+        "gaps": []
+      },
+      "method": "automated-test",
+      "boundary": "contract"
+    },
+    {
+      "id": "REL-EC-024",
+      "title": "Timing stays truthful diagnostic data and cannot mask release correctness",
+      "requirements": [
+        "REL-SR-03",
+        "REL-SR-18",
+        "REL-SR-19",
+        "REL-SR-24"
+      ],
+      "technique": "state-transition",
+      "risk": "Optional observability becomes a false release gate or its tolerance weakens required correctness.",
+      "target": {
+        "path": "scripts/lib/release/release_execution.py",
+        "symbol": "execute_candidate"
+      },
+      "given": {
+        "fixture": "execution",
+        "conditions": [
+          "Use timing for document checks and execution for the actual publication consequence. Keep release identity/profile valid while timing is absent, pending, malformed or above its advisory duration target; separately invalidate the profile."
+        ]
+      },
+      "when": [
+        "Validate timing representation and run actual execution with controlled providers."
+      ],
+      "then": [
+        "Emitted timing reports measured versus pending/unavailable data honestly; missing fields and unknown values produce their diagnostic errors.",
+        "Absent/malformed/slow timing alone does not suppress otherwise successful publication. No missing duration is invented.",
+        "A malformed release profile still blocks; diagnostic tolerance cannot waive identity or check failures."
+      ],
+      "realization": {
+        "state": "existing",
+        "tests": [
+          {
+            "path": "tests/engineering/release/release_timing_tests.py",
+            "symbol": "ReleaseGateParityAndTimingTests.test_prepare_release_generates_timing_evidence_skeleton"
+          },
+          {
+            "path": "tests/engineering/release/release_timing_tests.py",
+            "symbol": "ReleaseGateParityAndTimingTests.test_release_timing_evidence_validates_required_phases"
+          },
+          {
+            "path": "tests/engineering/release/release_timing_tests.py",
+            "symbol": "ReleaseGateParityAndTimingTests.test_release_timing_missing_when_profile_requires_it_fails"
+          },
+          {
+            "path": "tests/engineering/release/release_timing_tests.py",
+            "symbol": "ReleaseGateParityAndTimingTests.test_release_timing_missing_duration_fails"
+          },
+          {
+            "path": "tests/engineering/release/release_timing_tests.py",
+            "symbol": "ReleaseGateParityAndTimingTests.test_release_timing_unknown_phase_fails"
+          },
+          {
+            "path": "tests/engineering/release/release_timing_tests.py",
+            "symbol": "ReleaseGateParityAndTimingTests.test_release_timing_unknown_result_fails"
+          },
+          {
+            "path": "tests/engineering/release/release_timing_tests.py",
+            "symbol": "ReleaseGateParityAndTimingTests.test_release_timing_duration_over_target_is_warning_only"
+          },
+          {
+            "path": "tests/engineering/release/release_execution_tests.py",
+            "symbol": "ReleaseExecutorTests.test_timing_diagnostic_is_reported_without_changing_publication_success"
+          },
+          {
+            "path": "tests/engineering/release/release_candidate_tests.py",
+            "symbol": "ReleaseCandidateTests.test_absent_timing_is_diagnostic_but_bad_profile_is_not_ignored"
+          }
+        ],
+        "gaps": []
+      },
+      "method": "automated-test",
+      "boundary": "composition"
+    }
+  ]
+}
