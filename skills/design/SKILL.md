@@ -33,10 +33,10 @@ Resolve project authority and existing exact targets first. For a new model, the
 2. Reconcile behavior with technical realization: structure, dependencies, operational flows and constraints. For each living model, draw an Architecture Overview identifying owned responsibilities, external inputs/outputs and meaningful relationships. Evaluate Context, Building Block, Runtime and Deployment views with reasons, and draw each necessary view; keep every material overview element linked to its detailed owner. A feasibility issue that materially changes an approved product goal returns to its direction owner with evidence and alternatives. Implementation convenience cannot authorize weakening that goal.
 3. Identify changed producers, consumers, shared assumptions and system-wide obligations. Reconcile each affected relationship or explain an evidence-backed unaffected disposition. Load only relevant owners and interactions.
 4. Explain how important claims can be assessed. Use walkthroughs, counterexamples and targeted feasibility evidence proportional to uncertainty. Expose assumptions and unresolved decisions. Structural validation alone is neither credibility nor approval.
-5. Define representative realization conditions and observable expected outcomes, including integrated properties that local checks cannot establish. Design owns intent and observation boundaries; Delivery allocates concrete checks, commands, milestones and evidence; implementation supplies fixtures/assertions. Actual results stay in evidence records.
-6. Preserve meaningful decisions and references. Inspect exact completed subjects, including changed relied-on examples and their owners. Hand independent Design Review the reconciled package, relevant interactions, decisions, evidence, assumptions and applicability impacts. The author cannot settle another actor's judgment.
+5. Maintain the owning model's living test design: establish supported outcomes and material risks before mapping the existing suite, then name concrete conditions/actions, independent expected outcomes and realization gaps. Group related variations; retain distinct authority, persistence and recovery observations. Add parent-owned interaction protection where child checks are insufficient. Use the project's shared rules and model-authoring guidance for proportionate sections or a model-owned directory and any explicitly selected catalog. Native discovery owns the method inventory; a new helper or test method alone adds no design case. Design owns intent and observation boundaries; Delivery allocates concrete checks, commands, milestones and evidence; implementation supplies fixtures/assertions. Actual results stay in evidence records.
+6. Preserve meaningful decisions and references. Reconcile changed test-design ownership, case identities, fixture/source links and discovery consumers; retire cases only with the current obligation and its dependencies resolved. Inspect exact completed subjects, including owned test-design files, changed relied-on examples and their owners. Hand independent Design Review the reconciled package, relevant interactions, decisions, evidence, assumptions and applicability impacts. The author cannot settle another actor's judgment.
 
-Scenarios are not an exhaustive test whitelist. Additional cases may derive from justified obligations and hazards; absence from scenarios never authorizes deleting a test. Apply the project's existing Validation test criteria and review policy when adopted.
+Scenarios are not an exhaustive test whitelist. Additional cases may derive from justified obligations and hazards; absence from scenarios never authorizes deleting a test. Apply the project's existing shared test criteria and review policy when adopted.
 
 ## Boundary scan
 
@@ -57,7 +57,7 @@ Write normal Markdown paragraphs with complete sentences. Do not split a sentenc
 
 ## Resource map
 
-- READ `references/model-authoring.md` when creating or revising a living model or its examples.
+- READ `references/model-authoring.md` when creating or revising a living model, its test design or its examples.
 - READ `references/architecture-view-examples.md` when constructing or revising a living-model overview or evaluating supporting views.
 - READ `references/technical-design.md` when significant structure, interfaces, runtime, deployment, trust or quality choices need explanation.
 - READ `references/system-composition.md` when several owners, a shared contract or a system-wide claim is affected.

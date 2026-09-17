@@ -1,0 +1,214 @@
+{
+  "format": "authoring-test-cases-draft",
+  "format_version": 2,
+  "owner": {
+    "model": "authoring",
+    "design": "docs/design/skill/authoring/authoring.md",
+    "test_design": "docs/design/skill/authoring/test-design/test-design.md"
+  },
+  "scope": {
+    "group": "scope-handoff",
+    "title": "Invocation scope and independent handoff",
+    "boundary": "Observe the authorized child, exact review subjects and separation of authored intent from workflow/evidence state."
+  },
+  "fixtures": [
+    {
+      "id": "batch-import-package",
+      "profile": "docs/design/skill/authoring/test-design/test-design.md",
+      "initial_state": [
+        "Use the Synthetic artifact fixture in the strategy as the single source of the proposal, model, test-design, plan and evidence starting facts.",
+        "Instantiate a fresh private copy for each variant. Case-specific changes apply only to the named artifact or authority fact; retain the other facts and original identities.",
+        "Walk through proposed author outputs and handoff decisions without invoking agents, changing workflow records or implementing the fictional importer."
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "id": "AUTH-SH-001",
+      "title": "A direct Plan correction stays inside its authorized scope",
+      "requirements": [
+        "AUTH-SR-01",
+        "AUTH-SR-02",
+        "AUTH-SR-05"
+      ],
+      "technique": "walkthrough",
+      "method": "independent-review",
+      "boundary": "review",
+      "risk": "A bounded correction recreates upstream work or advances the entire authoring chain.",
+      "target": {
+        "path": "docs/design/skill/authoring/authoring.md",
+        "section": "Shared authoring contract"
+      },
+      "given": {
+        "fixture": "batch-import-package",
+        "conditions": [
+          "The proposal and Design D0 are settled; M2 has an old local command label. The fixture project explicitly declares old-batch-check and current-batch-check equivalent for the same batch and destination-preservation observation. The user authorizes only correcting that allocation label. These are fictional command labels, not commands provided by this repository."
+        ]
+      },
+      "when": [
+        "Inspect the proposed Plan diff and handoff. Compare a correct label-only correction with separate outputs that alter IMPORT-SR-02, create a new proposal, self-approve the plan or start implementation."
+      ],
+      "then": [
+        "Only the allocated label and necessary explanation change in Plan. Proposal, D0, scenario identities, protected destination outcome and unrelated work remain unchanged. Report the exact revised plan and required review; reject each unsupported upstream edit or progression claim. No command is executed."
+      ],
+      "realization": {
+        "state": "proposed",
+        "tests": [],
+        "gaps": [
+          "Perform this independent artifact/handoff assessment on the exact selected subjects and record its result. Existing phrase and skeleton checks do not establish this composed outcome."
+        ]
+      }
+    },
+    {
+      "id": "AUTH-SH-002",
+      "title": "Review receives changed case detail with its unchanged owner",
+      "requirements": [
+        "AUTH-SR-04",
+        "AUTH-SR-05"
+      ],
+      "technique": "walkthrough",
+      "method": "independent-review",
+      "boundary": "review",
+      "risk": "An unchanged main model hides a changed relied-on test case from the review package.",
+      "target": {
+        "path": "docs/design/skill/authoring/authoring.md",
+        "section": "Living coverage through authoring"
+      },
+      "given": {
+        "fixture": "batch-import-package",
+        "conditions": [
+          "Keep the main model D0, index and strategy unchanged. Change only case file C0 to C1: IMPORT-TC-02 now observes nonzero status but omits destination preservation. The earlier judgment names D0 and C0."
+        ]
+      },
+      "when": [
+        "Compare a handoff naming only unchanged D0 with one including D0, C1 and the relied-on index/strategy. Inspect the changed expected observation and the applicability explanation."
+      ],
+      "then": [
+        "The complete handoff exposes C1 and its lost preservation observation so the responsible assessment can require correction. D0 sameness and the D0/C0 judgment do not certify C1. Preserve the earlier judgment and identify all relied-on subjects without inventing current approval."
+      ],
+      "realization": {
+        "state": "proposed",
+        "tests": [],
+        "gaps": [
+          "Perform this independent artifact/handoff assessment on the exact selected subjects and record its result. Existing phrase and skeleton checks do not establish this composed outcome."
+        ]
+      }
+    },
+    {
+      "id": "AUTH-SH-003",
+      "title": "Authored intent stays separate from mutable execution results",
+      "requirements": [
+        "AUTH-SR-02",
+        "AUTH-SR-04"
+      ],
+      "technique": "walkthrough",
+      "method": "independent-review",
+      "boundary": "review",
+      "risk": "The next reader mistakes embedded progress or a hypothetical check result for stable approved intent.",
+      "target": {
+        "path": "docs/design/skill/authoring/authoring.md",
+        "section": "Shared authoring contract"
+      },
+      "given": {
+        "fixture": "batch-import-package",
+        "conditions": [
+          "The control Plan allocates checks but contains no run result, current milestone or approval. No execution or review has occurred. Make separate candidate copies containing one unsupported mutable or observed-state claim."
+        ]
+      },
+      "when": [
+        "Inspect each candidate artifact and its proposed status report against the same empty execution/assessment basis. Do not combine faults in one document where the first could hide the others."
+      ],
+      "then": [
+        "The control is an authored allocation only. Keep current milestone and assessment state with their workflow/evidence owners; no such state is established here. Reject a claimed passing run because no observed result exists. Do not manufacture a record to legitimize the injected claim."
+      ],
+      "realization": {
+        "state": "proposed",
+        "tests": [],
+        "gaps": [
+          "Perform this independent artifact/handoff assessment on the exact selected subjects and record its result. Existing phrase and skeleton checks do not establish this composed outcome."
+        ]
+      },
+      "variants": [
+        {
+          "id": "progress",
+          "parameters": {
+            "inject": "current milestone M2 complete",
+            "expected": "no completion state in stable Plan; no completion evidence"
+          }
+        },
+        {
+          "id": "approval",
+          "parameters": {
+            "inject": "Delivery Review approved",
+            "expected": "no invented assessment or embedded current approval"
+          }
+        },
+        {
+          "id": "result",
+          "parameters": {
+            "inject": "current-batch-check passed",
+            "expected": "allocated command is unexecuted; report missing execution evidence"
+          }
+        }
+      ]
+    },
+    {
+      "id": "AUTH-SH-004",
+      "title": "Authorship and persistence cannot supply independent judgment",
+      "requirements": [
+        "AUTH-SR-02",
+        "AUTH-SR-04"
+      ],
+      "technique": "walkthrough",
+      "method": "independent-review",
+      "boundary": "review",
+      "risk": "A successful save is used to self-approve and start the next child.",
+      "target": {
+        "path": "docs/design/skill/authoring/authoring.md",
+        "section": "Runtime view"
+      },
+      "given": {
+        "fixture": "batch-import-package",
+        "conditions": [
+          "An author has produced exact Design package D0/C0. Compare independent packets containing an author-issued approval, a storage success receipt, or an attributable independent approval of D0/C0. None of these packets includes authorization to start Plan."
+        ]
+      },
+      "when": [
+        "For each packet identify the actor, subjects, observed result and proposed next activity. Compare a response that immediately begins Plan solely because the package was saved or assessed."
+      ],
+      "then": [
+        "Authorship and storage do not establish independent approval. The attributable assessment establishes only its judgment/applicability on D0/C0; Workflow still owns any separately authorized continuation. No packet alone starts Plan, changes another actor’s judgment or self-approves."
+      ],
+      "realization": {
+        "state": "proposed",
+        "tests": [],
+        "gaps": [
+          "Perform this independent artifact/handoff assessment on the exact selected subjects and record its result. Existing phrase and skeleton checks do not establish this composed outcome."
+        ]
+      },
+      "variants": [
+        {
+          "id": "author",
+          "parameters": {
+            "basis": "author says approved",
+            "expected": "no independent judgment"
+          }
+        },
+        {
+          "id": "save",
+          "parameters": {
+            "basis": "successful storage receipt",
+            "expected": "persistence only"
+          }
+        },
+        {
+          "id": "independent",
+          "parameters": {
+            "basis": "independent approval bound to D0/C0",
+            "expected": "bounded judgment; no implicit continuation authority"
+          }
+        }
+      ]
+    }
+  ]
+}

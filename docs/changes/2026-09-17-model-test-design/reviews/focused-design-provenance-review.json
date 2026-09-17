@@ -1,0 +1,116 @@
+{
+  "assessment_scope": "Preliminary material finding during independent full focused Design Review against approved focused-proposal-review. This recorded correction concerns the extracted Skill and Release strategies and their claimed focused-change evidence destination. The complete focused Design package has not yet been approved.",
+  "change_id": "2026-09-17-model-test-design",
+  "contributors": [
+    {
+      "id": "focused-testing-author",
+      "role": "design"
+    }
+  ],
+  "findings": [
+    {
+      "evidence": "Medium; cross-artifact; owners Release and Skill; Design stage. Skill strategy Coverage and proof dependencies claims SKL-SR-19/21/22/23/30/32/33 duties, case disposition and complete pending procedures are recorded in 2026-09-17-model-test-design. Release strategy Scope and evidence boundary also claims requirement/case dispositions there. Current material-decisions has executable-test reduction narrative/counts but neither claimed catalog duty/procedure account. Skill main model continues to assign prior pilots/inventory refinement to their original initiatives.",
+      "id": "focused-catalog-disposition-provenance",
+      "owner": {
+        "id": "focused-testing-author",
+        "role": "design"
+      },
+      "reporter": {
+        "id": "focused-design-reviewer",
+        "role": "review"
+      },
+      "required_outcome": "Reconcile current wording with actual ownership and available evidence. Safe path: retain each prior obligation and original owner; describe current catalog as selected recurring coverage, explicitly outside prior rollout/procedure completion. Remove false claims of transferred recorded procedures/dispositions or provide accurately scoped new author-owned accounting without copying/retargeting historical approvals. Ensure Release and Skill do not turn missing scope into completed proof.",
+      "resolution": {
+        "actor": {
+          "id": "focused-design-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [],
+        "rationale": "Reinspected corrected Skill and Release strategies. Skill now names the original requirement/initiative owners and explicitly excludes transfer, settlement or execution of seven scoped duties. Release now confines the focused change reference to executable refinement; future case merges are prospective. No missing historical procedure is claimed recorded and no old approval is retargeted."
+      },
+      "state": "resolved",
+      "subjects": [
+        {
+          "identity": "sha256:a87bc31b098d744479619414bc3437de6bf52e217b320d11a1e3dc0389510934",
+          "path": "docs/design/skill/test-design/test-design.md"
+        },
+        {
+          "identity": "sha256:0a14227a3a9ddf8b7e11657f4eacc2c4cf7d64d61ca6b177ed5c23aa10e62f4a",
+          "path": "docs/design/engineering/release/test-design/test-design.md"
+        },
+        {
+          "identity": "sha256:ca322d25da414374e374876462f09bef32d7b464c77a6749a8f78bdf1d28682a",
+          "path": "docs/changes/2026-09-17-model-test-design/material-decisions.json"
+        }
+      ]
+    },
+    {
+      "evidence": "Medium; artifact-local; Release Design author. Compared origin/main:docs/design/engineering/release.md with relocated docs/design/engineering/release/release.md. Stable REL-SR-20 and REL-SR-21 normative rows are deleted, together with related acceptance references. They govern source-consolidation obligation transfer, current consumers, evidence preservation and scoped proof. The focused proposal authorizes test design/refinement and a reconciled document move, while deferring broader retirement; current focused records contain no explicit requirement transfer/retirement disposition. Excluding one-time duties from a recurring catalog does not remove their governing owner.",
+      "id": "focused-release-requirement-preservation",
+      "owner": {
+        "id": "focused-testing-author",
+        "role": "design"
+      },
+      "reporter": {
+        "id": "focused-design-reviewer",
+        "role": "review"
+      },
+      "required_outcome": "Preserve REL-SR-20 and REL-SR-21 under their original scoped applicability in the relocated owner, with appropriate acceptance/consumer references; keep them outside recurring Release catalog where justified. Alternatively obtain explicit authority and an actual current-owner transfer preserving stable identities before deletion. Do not add perpetual historical regression cases solely to retain these scoped obligations.",
+      "resolution": {
+        "actor": {
+          "id": "focused-design-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [],
+        "rationale": "Compared current Release requirements and acceptance rows with origin/main. Exact REL-SR-20/21 normative rows and original scoped acceptance references are restored. Strategy/index explicitly preserve those source-consolidation duties outside 24 recurring Release duties; no permanent replay matrix was introduced."
+      },
+      "state": "resolved",
+      "subjects": [
+        {
+          "identity": "sha256:2e830020cc99f8aa7520e87df2e2b134cea9f1ab7c937ed7ce35e7f88654f249",
+          "path": "docs/design/engineering/release/release.md"
+        }
+      ]
+    }
+  ],
+  "id": "focused-design-provenance-review",
+  "independence_basis": "Independent delegated reviewer /root/catalog_admission_design_review has not authored or edited any focused Design or catalog subject. This reviewer writes only its own assessment/finding. No earlier branch approval is inherited.",
+  "judgment": "changes-requested",
+  "limitations": [
+    "This is a supported correction recorded before author edits, not complete-package approval. Remaining full focused review and exact-subject reassessment follow correction.",
+    "No implementation or lifecycle settlement is supplied. Earlier admission-only approval on another branch does not apply here."
+  ],
+  "rationale": [
+    "The focused proposal preserves earlier compatibility and confines this initiative to testing. Skill strategy names seven pilot/inventory duties and says their case dispositions and complete pending procedures are recorded in the new owning change. Its current material-decisions contains only executable reduction accounting, with no such procedure/ownership transfer.",
+    "Release strategy likewise points its requirement/case disposition to the new change, while the current record describes executable-method removals and catalog counts. Previously authored catalog consolidation must remain distinguishable from this focused extraction and must not retarget old evidence or imply current closure."
+  ],
+  "reviewer": {
+    "id": "focused-design-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:a87bc31b098d744479619414bc3437de6bf52e217b320d11a1e3dc0389510934",
+      "path": "docs/design/skill/test-design/test-design.md"
+    },
+    {
+      "identity": "sha256:0a14227a3a9ddf8b7e11657f4eacc2c4cf7d64d61ca6b177ed5c23aa10e62f4a",
+      "path": "docs/design/engineering/release/test-design/test-design.md"
+    },
+    {
+      "identity": "sha256:ca322d25da414374e374876462f09bef32d7b464c77a6749a8f78bdf1d28682a",
+      "path": "docs/changes/2026-09-17-model-test-design/material-decisions.json"
+    },
+    {
+      "identity": "sha256:256a57936e1fe3de7b9d7c86045ee281867def8147c59661cc1284e0cb37bbfa",
+      "path": "docs/design/skill/skill.md"
+    },
+    {
+      "identity": "sha256:8c89731cd727c6937c512da99d2ec99d91d0eee361120535d22e5e6776205bca",
+      "path": "docs/proposals/2026-09-17-model-test-design.md"
+    }
+  ],
+  "summary": "Correct inherited catalog disposition/procedure claims that now point to the new focused change without their supporting content.",
+  "target": "design"
+}

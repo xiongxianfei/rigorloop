@@ -1,0 +1,235 @@
+{
+  "format": "release-test-cases-draft",
+  "format_version": 2,
+  "owner": {
+    "model": "release",
+    "design": "docs/design/engineering/release/release.md",
+    "test_design": "docs/design/engineering/release/test-design/test-design.md"
+  },
+  "scope": {
+    "group": "preflight",
+    "title": "Preflight consistency",
+    "boundary": "Actual preflight function and CLI with real private Git repositories; public remote state is unavailable or represented by a local bare remote. No pack/build/smoke/publication proof."
+  },
+  "fixtures": [
+    {
+      "id": "prepared",
+      "initial_state": [
+        "Fresh v0.3.5 prepared release. Snapshot all relative file paths and bytes. Initialize local Git only for variants that claim Git discovery or tag behavior."
+      ],
+      "builder": {
+        "path": "tests/engineering/release/release_fixture_helpers.py",
+        "symbol": "make_prepared_release"
+      }
+    }
+  ],
+  "cases": [
+    {
+      "id": "REL-PF-001",
+      "title": "Preflight remains repeatable, cheap and free of release mutations",
+      "requirements": [
+        "REL-SR-06",
+        "REL-SR-09"
+      ],
+      "technique": "property",
+      "risk": "Diagnostic checking rewrites release artifacts.",
+      "target": {
+        "path": "scripts/lib/release/release_transaction.py",
+        "symbol": "release_preflight"
+      },
+      "given": {
+        "fixture": "prepared",
+        "conditions": [
+          "Use a coherent prepared tree and snapshot artifacts. Observe actual subprocess/provider boundaries without replacing preflight itself."
+        ]
+      },
+      "when": [
+        "Run preflight twice with identical inputs and no requested timing/log output."
+      ],
+      "then": [
+        "Both calls agree and preserve every artifact byte.",
+        "No credentials, pack/build/archive generation, broad tests, public smoke or publication operation is invoked."
+      ],
+      "realization": {
+        "state": "partial",
+        "tests": [
+          {
+            "path": "tests/engineering/release/release_preflight_tests.py",
+            "symbol": "ReleasePreflightTests.test_release_preflight_clean_fixture_is_idempotent_and_side_effect_light"
+          }
+        ],
+        "gaps": [
+          "Preflight never invokes expensive qualification or publication: Existing idempotence tests inspect files and a returned tuple; add command-boundary observation without mocking preflight itself."
+        ]
+      },
+      "method": "automated-test",
+      "boundary": "contract"
+    },
+    {
+      "id": "REL-PF-002",
+      "title": "Actual CLI discovery checks the changed files or reports discovery failure",
+      "requirements": [
+        "REL-SR-06",
+        "REL-SR-07",
+        "REL-SR-19"
+      ],
+      "technique": "equivalence-partition",
+      "risk": "The public command bypasses changed-file detection.",
+      "target": {
+        "path": "scripts/release-preflight.py",
+        "symbol": "main"
+      },
+      "given": {
+        "fixture": "prepared",
+        "conditions": [
+          "Use a real private Git tree and an unauthorized version literal in a changed file; also exercise explicit changed paths and unavailable Git discovery."
+        ]
+      },
+      "when": [
+        "Run the real preflight CLI against clean and changed trees, then with missing discovery."
+      ],
+      "then": [
+        "Clean input succeeds; both explicit and Git-discovered unauthorized literals fail with file/literal/owner guidance.",
+        "Failed change discovery is an error and cannot be represented as an empty clean change set."
+      ],
+      "realization": {
+        "state": "existing",
+        "tests": [
+          {
+            "path": "tests/engineering/release/release_preflight_tests.py",
+            "symbol": "ReleasePreflightTests.test_release_preflight_cli_succeeds_on_clean_fixture"
+          },
+          {
+            "path": "tests/engineering/release/release_preflight_tests.py",
+            "symbol": "ReleasePreflightTests.test_release_preflight_cli_requires_changed_file_or_git_discovery"
+          },
+          {
+            "path": "tests/engineering/release/release_preflight_tests.py",
+            "symbol": "ReleasePreflightTests.test_release_preflight_fails_changed_unauthorized_literal"
+          },
+          {
+            "path": "tests/engineering/release/release_preflight_tests.py",
+            "symbol": "ReleasePreflightTests.test_release_preflight_cli_discovers_changed_unauthorized_literal"
+          }
+        ],
+        "gaps": []
+      },
+      "method": "automated-test",
+      "boundary": "public-command"
+    },
+    {
+      "id": "REL-PF-004",
+      "title": "Preflight rejects an incoherent prepared release",
+      "requirements": [
+        "REL-SR-03",
+        "REL-SR-06"
+      ],
+      "technique": "equivalence-partition",
+      "risk": "A specific local inconsistency escapes cheap preflight and is discovered only after expensive qualification.",
+      "target": {
+        "path": "scripts/lib/release/release_transaction.py",
+        "symbol": "release_preflight"
+      },
+      "given": {
+        "fixture": "prepared",
+        "conditions": [
+          "Start from a valid prepared tree and mutate exactly one prerequisite per run."
+        ]
+      },
+      "when": [
+        "Run preflight after removing/corrupting the profile or required validation/metadata input, mismatching package version or metadata pointer, claiming published target smoke, or leaving release-output debris."
+      ],
+      "then": [
+        "Every mutation produces its attributable prerequisite/consistency diagnostic before expensive qualification; a valid tree passes.",
+        "Preflight leaves all release artifacts unchanged."
+      ],
+      "realization": {
+        "state": "existing",
+        "tests": [
+          {
+            "path": "tests/engineering/release/release_preflight_tests.py",
+            "symbol": "ReleasePreflightTests.test_release_preflight_fails_missing_profile"
+          },
+          {
+            "path": "tests/engineering/release/release_preflight_tests.py",
+            "symbol": "ReleasePreflightTests.test_release_preflight_rejects_malformed_profile"
+          },
+          {
+            "path": "tests/engineering/release/release_preflight_tests.py",
+            "symbol": "ReleasePreflightTests.test_release_preflight_rejects_incomplete_profile"
+          },
+          {
+            "path": "tests/engineering/release/release_preflight_tests.py",
+            "symbol": "ReleasePreflightTests.test_release_preflight_rejects_missing_required_local_input"
+          },
+          {
+            "path": "tests/engineering/release/release_preflight_tests.py",
+            "symbol": "ReleasePreflightTests.test_release_preflight_fails_package_profile_version_mismatch"
+          },
+          {
+            "path": "tests/engineering/release/release_preflight_tests.py",
+            "symbol": "ReleasePreflightTests.test_release_preflight_fails_stale_metadata_pointer"
+          },
+          {
+            "path": "tests/engineering/release/release_preflight_tests.py",
+            "symbol": "ReleasePreflightTests.test_release_preflight_fails_invalid_pending_evidence_shape"
+          },
+          {
+            "path": "tests/engineering/release/release_preflight_tests.py",
+            "symbol": "ReleasePreflightTests.test_release_preflight_fails_dirty_release_output"
+          }
+        ],
+        "gaps": []
+      },
+      "method": "automated-test",
+      "boundary": "contract"
+    },
+    {
+      "id": "REL-PF-013",
+      "title": "Tag observations distinguish a conflict from unavailable remote state",
+      "requirements": [
+        "REL-SR-06",
+        "REL-SR-12"
+      ],
+      "technique": "decision-table",
+      "risk": "Tag lookup misses an immutable name collision.",
+      "target": {
+        "path": "scripts/lib/release/release_transaction.py",
+        "symbol": "release_preflight"
+      },
+      "given": {
+        "fixture": "prepared",
+        "conditions": [
+          "Use private local/bare Git repositories for local and remote tags; use a controlled unavailable remote separately."
+        ]
+      },
+      "when": [
+        "Run preflight with a conflicting local tag, reachable conflicting remote tag and unreachable remote."
+      ],
+      "then": [
+        "Known conflicts block with their source identified; an unavailable remote is explicitly unknown and supplies no clean-public-state assertion.",
+        "Any explicitly allowed local conflict still names its required owner decision."
+      ],
+      "realization": {
+        "state": "existing",
+        "tests": [
+          {
+            "path": "tests/engineering/release/release_preflight_tests.py",
+            "symbol": "ReleasePreflightTests.test_release_preflight_fails_local_tag_conflict"
+          },
+          {
+            "path": "tests/engineering/release/release_preflight_tests.py",
+            "symbol": "ReleasePreflightTests.test_release_preflight_fails_reachable_remote_tag_conflict"
+          },
+          {
+            "path": "tests/engineering/release/release_preflight_tests.py",
+            "symbol": "ReleasePreflightTests.test_release_preflight_reports_unreachable_remote_tag_state"
+          }
+        ],
+        "gaps": []
+      },
+      "method": "automated-test",
+      "boundary": "contract"
+    }
+  ]
+}

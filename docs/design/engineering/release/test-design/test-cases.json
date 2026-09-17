@@ -1,0 +1,59 @@
+{
+  "format": "release-test-catalog-draft",
+  "format_version": 2,
+  "owner": {
+    "model": "release",
+    "design": "docs/design/engineering/release/release.md",
+    "test_design": "docs/design/engineering/release/test-design/test-design.md"
+  },
+  "scope": {
+    "model": "release",
+    "boundary": "Prepare the intended stable release, qualify its exact artifacts, publish with candidate-specific approval, and report or recover honestly.",
+    "entrypoint": "tests/engineering/release/test-release-transaction.py",
+    "coverage_claim": "Outcome-driven scenarios cover the 24 recurring Release requirements; REL-SR-20/21 retain their original scoped source-consolidation obligations outside this recurring catalog. Linked methods provide supporting realization; native discovery owns the full executable inventory and no per-method catalog entry is required. Partial/proposed proof remains explicit. Local fixture and candidate checks do not establish live publication or hosted authorization."
+  },
+  "fixture_rules": {
+    "isolation": "Each executable case and variant owns its temporary root, mutable mappings and logs, with cleanup registered immediately. Review procedures identify their exact reviewed subjects without changing publication state.",
+    "independent_expectations": "Author expected versions, row labels and diagnostics here from Release obligations. Capture preservation baselines before actions. Do not compute expected values with the production transformation.",
+    "negative_setup": "Establish a valid prepared baseline before the defining mutation. Mutation must change the intended field; a rejection caused only by another fixture defect does not realize the case.",
+    "version_roles": "Each group declares synthetic previous/target roles: preparation commonly uses 0.3.4/0.3.5, candidate fixtures 0.5.0/0.5.1, and checklist fixtures 1.2.3. A new release alone does not add cases or require renumbering; real candidate integration uses its actual selected artifacts.",
+    "resource_boundary": "All root-relative paths in given/when/then refer to the private fixture root. Catalog references in owner/target/realization refer to the repository. No public publication is performed."
+  },
+  "groups": [
+    {
+      "id": "profile-input",
+      "title": "Profile and input authority",
+      "path": "docs/design/engineering/release/test-design/cases/profile-input.json"
+    },
+    {
+      "id": "preparation",
+      "title": "Preparation and preservation",
+      "path": "docs/design/engineering/release/test-design/cases/preparation.json"
+    },
+    {
+      "id": "preflight",
+      "title": "Preflight consistency",
+      "path": "docs/design/engineering/release/test-design/cases/preflight.json"
+    },
+    {
+      "id": "candidate-identity",
+      "title": "Candidate and source identity",
+      "path": "docs/design/engineering/release/test-design/cases/candidate-identity.json"
+    },
+    {
+      "id": "approval-recovery",
+      "title": "Approval and recovery",
+      "path": "docs/design/engineering/release/test-design/cases/approval-recovery.json"
+    },
+    {
+      "id": "evidence-closeout",
+      "title": "Evidence and closeout",
+      "path": "docs/design/engineering/release/test-design/cases/evidence-closeout.json"
+    },
+    {
+      "id": "maintenance-review",
+      "title": "Policy and semantic review",
+      "path": "docs/design/engineering/release/test-design/cases/maintenance-review.json"
+    }
+  ]
+}

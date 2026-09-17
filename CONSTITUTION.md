@@ -54,7 +54,7 @@ Optional discovery and learning remain on-demand or periodic under their owning 
 
 ## Validation and evidence
 
-[Validation](docs/design/engineering/validation.md) owns proof quality, maintenance, selection and execution; specialist reviewers judge actual adequacy.
+[System](docs/design/system.md#living-test-design-composition) owns project-wide test-design, proof-quality and test-maintenance rules. Each model owns its coverage intent; parents own additional integrated outcomes. [Validation](docs/design/engineering/validation.md) owns check selection, execution, isolation and reporting under those rules; specialist reviewers judge actual adequacy.
 Tests or other concrete proof SHOULD precede implementation when feasible; bug fixes MUST include regression coverage or an explicit failure reproduction path.
 Contributors MUST run the applicable repository-owned checks, starting with focused validation and resolving failures before advancing dependent work.
 CI SHOULD delegate validation logic to repository-owned scripts.

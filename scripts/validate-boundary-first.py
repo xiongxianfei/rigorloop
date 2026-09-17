@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate current models or explicitly selected feature/proof records."""
+"""Validate current model packages or explicitly selected feature/proof records."""
 
 from __future__ import annotations
 
@@ -7,8 +7,9 @@ import argparse
 import json
 from pathlib import Path
 
-from lib.validation.boundary_first_validation import validate_changed_spec, validate_repository_examples
+from lib.validation.boundary_first_validation import validate_repository_examples
 from lib.validation.model_layout import PROJECT_MODEL_PATHS
+from lib.validation.test_design_validation import validate_documents
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
@@ -18,9 +19,8 @@ def main() -> int:
     args = parser.parse_args()
     root = Path(args.root).resolve()
     paths = sorted(set(args.path or PROJECT_MODEL_PATHS.values()))
-    issues = []
-    for path in paths:
-        issues.extend(validate_changed_spec(root, path))
+    admitted, paths = validate_documents(root, paths)
+    issues = list(admitted)
     examples = ()
     if not args.path:
         examples, example_issues = validate_repository_examples(root)

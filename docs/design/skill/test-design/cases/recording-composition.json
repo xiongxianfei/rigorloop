@@ -1,0 +1,400 @@
+{
+  "format": "skill-test-cases-draft",
+  "format_version": 2,
+  "owner": {
+    "model": "skill",
+    "design": "docs/design/skill/skill.md",
+    "test_design": "docs/design/skill/test-design/test-design.md"
+  },
+  "scope": {
+    "group": "recording-composition",
+    "title": "Portable and governed recording interactions",
+    "boundary": "Executable checks inspect selection and reference structure; Workflow/CLI own operational transitions and writes."
+  },
+  "fixtures": [
+    {
+      "id": "recording-profile",
+      "initial_state": [
+        "Use the independent ten-profile table in recording_profile: route, verify, pr, design-review, delivery-review, plan, implement, code-review, proposal and proposal-review.",
+        "Each temporary body contains Recording boundary, Invocation classification with its profile trigger and the exact READ map. The selected reference contains the complete synthetic primary-contract block.",
+        "Call validate_targeted_recording_profile and require no errors before each one-field mutation."
+      ],
+      "builder": {
+        "path": "tests/skill/skill_contract_tests.py",
+        "symbol": "recording_profile"
+      }
+    },
+    {
+      "id": "review-package",
+      "initial_state": [
+        "Use the Review fixture basis in the strategy plus this case’s concrete facts and counterexample. Resolve every actual instruction and authority claim to the exact current owner/body/triggered resources.",
+        "Materialize a fresh private review packet for each variant. F0/F1/F2, G0/G1/G2 and S0/S1 are synthetic byte-identity labels; an actual assessment records inspected identities.",
+        "Inspect proposed decisions, outputs and prohibited side effects without running an agent or writing production, workflow records, hosted CI or publication state."
+      ],
+      "profile": "docs/design/skill/test-design/test-design.md"
+    }
+  ],
+  "cases": [
+    {
+      "id": "SKL-RX-001",
+      "title": "Removing the body boundary does not bypass recording validation",
+      "requirements": [
+        "SKL-SR-17",
+        "SKL-SR-20",
+        "SKL-SR-31",
+        "SKL-SR-34",
+        "SKL-SR-35"
+      ],
+      "technique": "equivalence-partition",
+      "risk": "Moving recording details allows an early-return validator to skip the selected profile.",
+      "method": "automated-test",
+      "boundary": "contract",
+      "target": {
+        "path": "scripts/lib/validation/skill_validation.py",
+        "symbol": "validate_targeted_recording_profile"
+      },
+      "given": {
+        "fixture": "recording-profile",
+        "conditions": [
+          "Rename only Recording boundary to Unknown boundary."
+        ]
+      },
+      "when": [
+        "Validate every independently listed profile."
+      ],
+      "then": [
+        "The sole diagnostic is missing body recording boundary for the actual skill path."
+      ],
+      "realization": {
+        "state": "existing",
+        "tests": [
+          {
+            "path": "tests/skill/skill_contract_tests.py",
+            "symbol": "RecordingReferenceContractTests.test_missing_recording_boundary_rejects"
+          }
+        ],
+        "gaps": []
+      }
+    },
+    {
+      "id": "SKL-RX-002",
+      "title": "Classification and load triggers are both required",
+      "requirements": [
+        "SKL-SR-16",
+        "SKL-SR-17",
+        "SKL-SR-31",
+        "SKL-SR-34"
+      ],
+      "technique": "equivalence-partition",
+      "risk": "A reference exists but the selected invocation never reaches it.",
+      "method": "automated-test",
+      "boundary": "contract",
+      "target": {
+        "path": "scripts/lib/validation/skill_validation.py",
+        "symbol": "validate_targeted_recording_profile"
+      },
+      "given": {
+        "fixture": "recording-profile",
+        "conditions": [
+          "Replace the exact trigger with unknown_value in either Invocation classification or the map entry, preserving the other."
+        ]
+      },
+      "when": [
+        "Validate both mutations for every listed profile."
+      ],
+      "then": [
+        "Each mutation reports the missing selected-reference body classification/load trigger and names the required trigger."
+      ],
+      "realization": {
+        "state": "existing",
+        "tests": [
+          {
+            "path": "tests/skill/skill_contract_tests.py",
+            "symbol": "RecordingReferenceContractTests.test_missing_classification_trigger_rejects"
+          },
+          {
+            "path": "tests/skill/skill_contract_tests.py",
+            "symbol": "RecordingReferenceContractTests.test_missing_load_trigger_rejects"
+          }
+        ],
+        "gaps": []
+      },
+      "variants": [
+        {
+          "id": "classification",
+          "parameters": {
+            "mutate": "Invocation classification"
+          }
+        },
+        {
+          "id": "load",
+          "parameters": {
+            "mutate": "Resource map trigger"
+          }
+        }
+      ]
+    },
+    {
+      "id": "SKL-RX-003",
+      "title": "An unrelated reference cannot satisfy the selected profile",
+      "requirements": [
+        "SKL-SR-08",
+        "SKL-SR-09",
+        "SKL-SR-17",
+        "SKL-SR-20",
+        "SKL-SR-34",
+        "SKL-SR-35"
+      ],
+      "technique": "equivalence-partition",
+      "risk": "A search finds required words somewhere in the package and accepts a broken load path.",
+      "method": "automated-test",
+      "boundary": "contract",
+      "target": {
+        "path": "scripts/lib/validation/skill_validation.py",
+        "symbol": "validate_targeted_recording_profile"
+      },
+      "given": {
+        "fixture": "recording-profile",
+        "conditions": [
+          "Compare a map selecting unknown_value.md and a missing selected file with a complete unrelated file plus inline profile."
+        ]
+      },
+      "when": [
+        "Validate the selected profile after each independent mutation."
+      ],
+      "then": [
+        "Reject the wrong mapping by its expected resource path; reject the missing selected file even though the required text exists elsewhere."
+      ],
+      "realization": {
+        "state": "existing",
+        "tests": [
+          {
+            "path": "tests/skill/skill_contract_tests.py",
+            "symbol": "RecordingReferenceContractTests.test_wrong_reference_selection_rejects"
+          },
+          {
+            "path": "tests/skill/skill_contract_tests.py",
+            "symbol": "RecordingReferenceContractTests.test_missing_selected_resource_cannot_use_unrelated_or_inline_profile"
+          }
+        ],
+        "gaps": []
+      }
+    },
+    {
+      "id": "SKL-RX-004",
+      "title": "Selected references are contained and decodable",
+      "requirements": [
+        "SKL-SR-08",
+        "SKL-SR-09",
+        "SKL-SR-14",
+        "SKL-SR-17"
+      ],
+      "technique": "equivalence-partition",
+      "risk": "A selected procedure escapes through a symlink or unreadable bytes.",
+      "method": "automated-test",
+      "boundary": "contract",
+      "target": {
+        "path": "scripts/lib/validation/skill_validation.py",
+        "symbol": "validate_targeted_recording_profile"
+      },
+      "given": {
+        "fixture": "recording-profile",
+        "conditions": [
+          "Replace the selected reference by a symlink to outside.md outside the skill, or by invalid UTF-8 bytes ff."
+        ]
+      },
+      "when": [
+        "Validate on fresh baselines for every profile."
+      ],
+      "then": [
+        "The symlink reports selected recording reference escapes skill root; invalid bytes report selected recording reference unreadable with UnicodeDecodeError."
+      ],
+      "realization": {
+        "state": "existing",
+        "tests": [
+          {
+            "path": "tests/skill/skill_contract_tests.py",
+            "symbol": "RecordingReferenceContractTests.test_selected_resource_outside_skill_rejects"
+          },
+          {
+            "path": "tests/skill/skill_contract_tests.py",
+            "symbol": "RecordingReferenceContractTests.test_undecodable_selected_resource_rejects"
+          }
+        ],
+        "gaps": []
+      },
+      "variants": [
+        {
+          "id": "symlink",
+          "parameters": {
+            "fault": "outside-skill symlink"
+          }
+        },
+        {
+          "id": "encoding",
+          "parameters": {
+            "fault": "invalid UTF-8 ff"
+          }
+        }
+      ]
+    },
+    {
+      "id": "SKL-RX-005",
+      "title": "Selected recording procedure retains required structure",
+      "requirements": [
+        "SKL-SR-17",
+        "SKL-SR-26",
+        "SKL-SR-31",
+        "SKL-SR-34"
+      ],
+      "technique": "equivalence-partition",
+      "risk": "A loadable file is assumed to contain the current recording contract.",
+      "method": "automated-test",
+      "boundary": "contract",
+      "target": {
+        "path": "scripts/lib/validation/skill_validation.py",
+        "symbol": "validate_targeted_recording_profile"
+      },
+      "given": {
+        "fixture": "recording-profile",
+        "conditions": [
+          "Remove expected_revision from the selected block or rename its Explicit recording heading."
+        ]
+      },
+      "when": [
+        "Validate every current profile from its passing baseline."
+      ],
+      "then": [
+        "Reject the missing primary contract token or missing Explicit recording profile with exactly the intended diagnostic. Token presence establishes structure only; actual supported-command semantics are assessed in SKL-RX-008."
+      ],
+      "realization": {
+        "state": "existing",
+        "tests": [
+          {
+            "path": "tests/skill/skill_contract_tests.py",
+            "symbol": "RecordingReferenceContractTests.test_missing_primary_token_rejects"
+          },
+          {
+            "path": "tests/skill/skill_contract_tests.py",
+            "symbol": "RecordingReferenceContractTests.test_missing_profile_heading_rejects"
+          }
+        ],
+        "gaps": []
+      }
+    },
+    {
+      "id": "SKL-RX-006",
+      "title": "Portable absence and malformed governed intent differ",
+      "requirements": [
+        "SKL-SR-01",
+        "SKL-SR-05",
+        "SKL-SR-16",
+        "SKL-SR-18",
+        "SKL-SR-25"
+      ],
+      "technique": "walkthrough",
+      "risk": "A malformed governed request silently becomes portable and bypasses required authority.",
+      "method": "independent-review",
+      "boundary": "review",
+      "target": {
+        "path": "docs/design/skill/skill.md",
+        "section": "Capability Contract"
+      },
+      "given": {
+        "fixture": "review-package",
+        "conditions": [
+          "Compare a valid portable proposal in a customer project without the RigorLoop checkout, a valid explicitly governed request, and a governed signal with conflicting or missing authority."
+        ]
+      },
+      "when": [
+        "Walk the classification before reference loading and any proposed record mutation."
+      ],
+      "then": [
+        "Portable output uses supplied/project-local authority and requires no recording CLI; governed work loads the complete supported procedure; malformed governed intent stops dependent work without portable fallback or completion claims."
+      ],
+      "realization": {
+        "state": "proposed",
+        "tests": [],
+        "gaps": [
+          "Perform this procedure against the exact selected package and record the independent assessment; text assertions do not establish this outcome."
+        ]
+      }
+    },
+    {
+      "id": "SKL-RX-007",
+      "title": "Late recording triggers do not arm downstream automation",
+      "requirements": [
+        "SKL-SR-04",
+        "SKL-SR-17",
+        "SKL-SR-25",
+        "SKL-SR-27",
+        "SKL-SR-31",
+        "SKL-SR-34"
+      ],
+      "technique": "walkthrough",
+      "risk": "A manual review becomes automated delivery merely because its finding must be recorded.",
+      "method": "independent-review",
+      "boundary": "review",
+      "target": {
+        "path": "docs/design/skill/skill.md",
+        "section": "Conditional resources"
+      },
+      "given": {
+        "fixture": "review-package",
+        "conditions": [
+          "Start with an isolated manual Code Review with no planned/armed execution. Introduce a material durable finding midway, with valid current recording authority."
+        ]
+      },
+      "when": [
+        "Trace resource selection and the proposed handoff before a record write and after saving it."
+      ],
+      "then": [
+        "Load current recording procedure before the write; preserve isolation and independent review duties. A saved finding grants no milestone closure, implementation continuation or automation. Workflow owns any subsequent routing decision."
+      ],
+      "realization": {
+        "state": "proposed",
+        "tests": [],
+        "gaps": [
+          "Perform this procedure against the exact selected package and record the independent assessment; text assertions do not establish this outcome."
+        ]
+      }
+    },
+    {
+      "id": "SKL-RX-008",
+      "title": "Recording results remain distinct from approval",
+      "requirements": [
+        "SKL-SR-04",
+        "SKL-SR-17",
+        "SKL-SR-26",
+        "SKL-SR-31"
+      ],
+      "technique": "walkthrough",
+      "risk": "A rejected, conflicting or interrupted CLI write is reported as completed or approved.",
+      "method": "independent-review",
+      "boundary": "review",
+      "target": {
+        "path": "docs/design/skill/skill.md",
+        "section": "Runtime View"
+      },
+      "given": {
+        "fixture": "review-package",
+        "conditions": [
+          "Supply supported current CLI context/result examples for saved, conflict and recovery-required, with exact reviewed subject identities."
+        ]
+      },
+      "when": [
+        "Inspect the proposed skill response, reread requirements and recovery handoff against CLI/Records and Workflow owners."
+      ],
+      "then": [
+        "Only saved reports persistence; none of the three establishes approval. Conflict requires fresh basis and reassessment; recovery-required routes to authorized store recovery without a success claim. Detailed atomicity and neighbor-preservation cases stay with CLI/Records."
+      ],
+      "realization": {
+        "state": "proposed",
+        "tests": [],
+        "gaps": [
+          "Perform this procedure against the exact selected package and record the independent assessment; text assertions do not establish this outcome."
+        ]
+      }
+    }
+  ]
+}

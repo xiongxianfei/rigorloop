@@ -1,0 +1,193 @@
+{
+  "format": "authoring-test-cases-draft",
+  "format_version": 2,
+  "owner": {
+    "model": "authoring",
+    "design": "docs/design/skill/authoring/authoring.md",
+    "test_design": "docs/design/skill/authoring/test-design/test-design.md"
+  },
+  "scope": {
+    "group": "refinement",
+    "title": "Goal, requirement and proof refinement",
+    "boundary": "Observe correspondence across the approved direction, owning Design/test design and delivery allocation; do not duplicate child output-format tests."
+  },
+  "fixtures": [
+    {
+      "id": "batch-import-package",
+      "profile": "docs/design/skill/authoring/test-design/test-design.md",
+      "initial_state": [
+        "Use the Synthetic artifact fixture in the strategy as the single source of the proposal, model, test-design, plan and evidence starting facts.",
+        "Instantiate a fresh private copy for each variant. Case-specific changes apply only to the named artifact or authority fact; retain the other facts and original identities.",
+        "Walk through proposed author outputs and handoff decisions without invoking agents, changing workflow records or implementing the fictional importer."
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "id": "AUTH-RF-001",
+      "title": "All-or-nothing direction survives technical realization",
+      "requirements": [
+        "AUTH-SR-01",
+        "AUTH-SR-03"
+      ],
+      "technique": "walkthrough",
+      "method": "independent-review",
+      "boundary": "review",
+      "risk": "A structurally complete Design quietly weakens the approved product outcome.",
+      "target": {
+        "path": "docs/design/skill/authoring/authoring.md",
+        "section": "Shared authoring contract"
+      },
+      "given": {
+        "fixture": "batch-import-package",
+        "conditions": [
+          "The approved proposal requires all-or-nothing import. The valid Design validates the complete batch before writing. Its counterexample writes row (1, alpha) before encountering the empty value in row 2; both Designs otherwise have complete structure and the same requirement labels."
+        ]
+      },
+      "when": [
+        "Trace the two realizations using the identical invalid-middle-row input and initial destination [(9, retained)]. Compare their independently predicted final destinations and the proposed handoff decision."
+      ],
+      "then": [
+        "The valid realization leaves exactly [(9, retained)]. The counterexample leaves [(9, retained), (1, alpha)] and violates IMPORT-SR-02 despite structurally valid documents. Reject its readiness for dependent planning, preserve the approved goal and return any proposed weakening to the direction owner. No importer is executed by this walkthrough."
+      ],
+      "realization": {
+        "state": "proposed",
+        "tests": [],
+        "gaps": [
+          "Perform this independent artifact/handoff assessment on the exact selected subjects and record its result. Existing phrase and skeleton checks do not establish this composed outcome."
+        ]
+      }
+    },
+    {
+      "id": "AUTH-RF-002",
+      "title": "Requirement identities survive work regrouping",
+      "requirements": [
+        "AUTH-SR-01",
+        "AUTH-SR-03",
+        "AUTH-SR-05"
+      ],
+      "technique": "walkthrough",
+      "method": "independent-review",
+      "boundary": "review",
+      "risk": "Reordering milestones silently renumbers requirements or loses a many-to-many allocation.",
+      "target": {
+        "path": "docs/design/skill/authoring/authoring.md",
+        "section": "Shared authoring contract"
+      },
+      "given": {
+        "fixture": "batch-import-package",
+        "conditions": [
+          "Keep the Design identities and IMPORT-SR-01/02 unchanged. Replace M2 by M2a for batch-write implementation and M2b for its destination-preservation proof. On separate candidate copies renumber IMPORT-SR-02 to match M2b or omit that proof allocation."
+        ]
+      },
+      "when": [
+        "Compare requirement-to-work links for the intact split and each one-fault candidate. Resolve the protected outcome rather than compare a count of IDs or milestones."
+      ],
+      "then": [
+        "The intact split still allocates IMPORT-SR-01 input checks and IMPORT-SR-02 batch implementation plus invalid-batch preservation proof. Reject renumbering without an authorized requirement change and reject lost proof allocation even if both IDs still appear elsewhere. Leave the Design and unrelated work unchanged."
+      ],
+      "realization": {
+        "state": "proposed",
+        "tests": [],
+        "gaps": [
+          "Perform this independent artifact/handoff assessment on the exact selected subjects and record its result. Existing phrase and skeleton checks do not establish this composed outcome."
+        ]
+      },
+      "variants": [
+        {
+          "id": "split",
+          "parameters": {
+            "change": "M2 becomes M2a and M2b",
+            "expected": "same requirement IDs and complete allocation"
+          }
+        },
+        {
+          "id": "renumber",
+          "parameters": {
+            "change": "replace IMPORT-SR-02 with a work-order-derived ID",
+            "expected": "restore its stable requirement identity"
+          }
+        },
+        {
+          "id": "omit-proof",
+          "parameters": {
+            "change": "remove M2b preservation observation",
+            "expected": "return missing allocation to Plan"
+          }
+        }
+      ]
+    },
+    {
+      "id": "AUTH-RF-003",
+      "title": "Living coverage remains usable without the delivery plan",
+      "requirements": [
+        "AUTH-SR-01",
+        "AUTH-SR-03",
+        "AUTH-SR-04"
+      ],
+      "technique": "walkthrough",
+      "method": "independent-review",
+      "boundary": "review",
+      "risk": "The only explanation of the rejection scenario disappears when a temporary plan is no longer used.",
+      "target": {
+        "path": "docs/design/skill/authoring/authoring.md",
+        "section": "Living coverage through authoring"
+      },
+      "given": {
+        "fixture": "batch-import-package",
+        "conditions": [
+          "In the control, the model-owned case file C0 retains IMPORT-TC-02: valid baseline, empty middle value, destination [(9, retained)] unchanged, fixture roles and proposed realization. In the fault, move that content only into Plan M2, leaving the model with just the case ID."
+        ]
+      },
+      "when": [
+        "Hide the plan from each reading packet and ask what input, action, expected destination and evidence limit the model establishes. Then restore the plan and inspect its execution allocation."
+      ],
+      "then": [
+        "The control remains sufficient to explain the case and its proposed proof without Plan. The ID-only model fails durable coverage even though the restored plan contains the words. Keep the rationale with the model and let Plan reference it for sequence, supported commands and evidence allocation."
+      ],
+      "realization": {
+        "state": "proposed",
+        "tests": [],
+        "gaps": [
+          "Perform this independent artifact/handoff assessment on the exact selected subjects and record its result. Existing phrase and skeleton checks do not establish this composed outcome."
+        ]
+      }
+    },
+    {
+      "id": "AUTH-RF-004",
+      "title": "Isolated input proof cannot substitute for composed rejection proof",
+      "requirements": [
+        "AUTH-SR-01",
+        "AUTH-SR-03",
+        "AUTH-SR-04"
+      ],
+      "technique": "walkthrough",
+      "method": "independent-review",
+      "boundary": "review",
+      "risk": "A plan accounts for the right requirement ID while allocating checks unable to detect partial writes.",
+      "target": {
+        "path": "docs/design/skill/authoring/authoring.md",
+        "section": "Living coverage through authoring"
+      },
+      "given": {
+        "fixture": "batch-import-package",
+        "conditions": [
+          "The current Design and case C0 require invalid-batch rejection with destination [(9, retained)] unchanged. The candidate M2 allocates only parse_row for each row. The repaired M2 allocates the real batch-write boundary in a private destination fixture; both cite IMPORT-SR-02."
+        ]
+      },
+      "when": [
+        "Apply the same counterexample implementation that commits row 1 before rejecting row 2. Determine which allocated observation would detect the extra (1, alpha) row."
+      ],
+      "then": [
+        "Per-row parser checks cannot detect that partial commit; return the gap to Plan. The repaired allocation observes the pre-action destination and compares the complete post-rejection destination to [(9, retained)]. It must detect the extra row without inventing a passing run or changing the approved no-write outcome."
+      ],
+      "realization": {
+        "state": "proposed",
+        "tests": [],
+        "gaps": [
+          "Perform this independent artifact/handoff assessment on the exact selected subjects and record its result. Existing phrase and skeleton checks do not establish this composed outcome."
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,106 @@
+{
+  "assessment_scope": "Preliminary bounded implementation/scope assessment of historical path behavior against origin/main and the approved focused proposal. This is not final whole-change Code Review; current complete Design and Delivery approvals are pending.",
+  "change_id": "2026-09-17-model-test-design",
+  "contributors": [
+    {
+      "id": "codex-focused-author",
+      "role": "implement"
+    }
+  ],
+  "findings": [
+    {
+      "evidence": "Finding ID: focused-flat-path-compatibility. Severity: major. Locations: validation_selection.catalog_command explicit Release special case; test_design_validation.validate_documents flat-name branch; catalog_admission_tests.test_missing_symlinked_unindexed_and_mixed_inputs_fail old-owner variant. Direct synthetic model_text(EX-SR-01) files at docs/design/{release,skill,authoring}.md pass unchanged validate_changed_spec but fail new validate_documents with BFR-MODEL-PATH. docs/design/arbitrary.md passes both. Explicit selector request for missing docs/design/release.md now retains that path; origin/main maps it to PROJECT_MODEL_PATHS[release]. The focused proposal explicitly defers compatibility retirement.",
+      "id": "focused-flat-path-compatibility",
+      "owner": {
+        "id": "codex-focused-author",
+        "role": "implement"
+      },
+      "reporter": {
+        "id": "focused-proposal-reviewer",
+        "role": "review"
+      },
+      "required_outcome": "Preserve base generic flat-model grammar and historical flat Release alias routing while retaining new exact package admission and the actual docs/design/engineering/release.md move behavior. Narrow conflicting Validation/plan wording so strict explicit-missing rejection applies to newly declared package members and the actual unsupported nested former owner, without silently retiring older supported aliases. Replace the incompatible old-owner test with regression proof for preserved flat documents/aliases and the actual moved path. Safe resolution: Design owner reconciles the scope wording, implementer removes only the newly introduced compatibility restrictions, and independent reviewer reruns direct and existing admission/selector proofs. No new user decision is needed: the user already selected deferral.",
+      "resolution": {
+        "actor": {
+          "id": "focused-proposal-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [],
+        "rationale": "Reporter independently inspected corrected source and tests, narrowed Validation contract, and replacement focused plan Non-goals/TG-INTEGRATION. Generic flat-name rejection and explicit flat Release alias suppression are removed. New valid/invalid flat grammar test preserves all three models without implicit package expansion; actual former nested Release path remains an admission failure and actual move handling remains strict. Independently ran TestDesignAdmissionTests.test_generic_flat_models_retain_existing_grammar and test_missing_symlinked_unindexed_and_mixed_inputs_fail: 2 passed in 3.917s; ValidationSelectionTests.test_release_catalog_move_preserves_endpoints_and_explicit_missing_path and test_release_move_executes_through_trusted_ci_command_boundary: 2 passed in 1.79s. The new plan replaces the conflicting supplemental plans in the focused worktree and explicitly preserves existing flat grammar/aliases. Required outcome is met; original first-pass judgment and subjects remain unchanged."
+      },
+      "state": "resolved",
+      "subjects": [
+        {
+          "identity": "sha256:8c89731cd727c6937c512da99d2ec99d91d0eee361120535d22e5e6776205bca",
+          "path": "docs/proposals/2026-09-17-model-test-design.md"
+        },
+        {
+          "identity": "sha256:d84be1f9f0d18d90c0c9ec9fae03f3ec93c2a75c4964127e90da8405a1a75dfd",
+          "path": "scripts/lib/validation/validation_selection.py"
+        },
+        {
+          "identity": "sha256:c38af6726100aa748bc7fff72eec9f660b2c2292055df707a2389c1c6925a5c9",
+          "path": "scripts/lib/validation/test_design_validation.py"
+        },
+        {
+          "identity": "sha256:1738c70f4ad5cced32f678903b17a6a5c853b7cf7e4ea02c65ea4e111be9ac32",
+          "path": "tests/engineering/validation/catalog_admission_tests.py"
+        },
+        {
+          "identity": "sha256:cf69585ae57a37325bf14b5a44c7d4ddf42a5e9f8093fd0f7514fc5cc8a51b65",
+          "path": "docs/design/engineering/validation.md"
+        },
+        {
+          "identity": "sha256:651fcd236e0d022680e212b04d6fafb9bc570d34e9ee12a363d0e8cb89f88bc6",
+          "path": "docs/plans/2026-09-17-test-design-admission.md"
+        }
+      ]
+    }
+  ],
+  "id": "focused-compatibility-scope-review",
+  "independence_basis": "Independent reviewer /root/focused_proposal_review did not author or edit the inspected proposal, Design, implementation or tests. Parent author owns corrections. This reviewer writes assessment only.",
+  "judgment": "changes-requested",
+  "limitations": [
+    "No final whole-change judgment, Design approval, delivery approval, Verify or PR readiness is supplied. Other changed surfaces remain under review.",
+    "The narrowed reviewer scope is preliminary by explicit instruction while Design/Delivery preparation continues; the finding must be resolved and independently reassessed before final reliance."
+  ],
+  "rationale": [
+    "The focused proposal explicitly preserves retained feature/proof support and historical path handling at the base revision. New flat-name rejection and explicit missing Release-alias suppression change that behavior independently of the actual nested Release move.",
+    "Direct synthetic reproduction using unchanged validate_changed_spec accepts complete valid docs/design/release.md, docs/design/skill.md and docs/design/authoring.md documents. New validate_documents rejects all three with BFR-MODEL-PATH. An arbitrary valid docs/design/arbitrary.md continues to pass both, confirming a newly selected-name restriction rather than existing generic grammar.",
+    "Actual python scripts/select-validation.py --mode explicit --path docs/design/release.md selects model.validate with that absent path. Base catalog_command instead resolves the historical flat Release alias to the declared owner. The actual moved source docs/design/engineering/release.md is a separate identity and can retain strict explicit-missing behavior without removing the older alias.",
+    "Focused native execution passes: 10 admission tests, 25 Skill resource/Design/policy tests, and 34 Release preparation/profile tests. These results do not erase the scope defect; the new old-owner negative test currently encodes the incompatible expectation."
+  ],
+  "reviewer": {
+    "id": "focused-proposal-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:8c89731cd727c6937c512da99d2ec99d91d0eee361120535d22e5e6776205bca",
+      "path": "docs/proposals/2026-09-17-model-test-design.md"
+    },
+    {
+      "identity": "sha256:d84be1f9f0d18d90c0c9ec9fae03f3ec93c2a75c4964127e90da8405a1a75dfd",
+      "path": "scripts/lib/validation/validation_selection.py"
+    },
+    {
+      "identity": "sha256:c38af6726100aa748bc7fff72eec9f660b2c2292055df707a2389c1c6925a5c9",
+      "path": "scripts/lib/validation/test_design_validation.py"
+    },
+    {
+      "identity": "sha256:1738c70f4ad5cced32f678903b17a6a5c853b7cf7e4ea02c65ea4e111be9ac32",
+      "path": "tests/engineering/validation/catalog_admission_tests.py"
+    },
+    {
+      "identity": "sha256:cf69585ae57a37325bf14b5a44c7d4ddf42a5e9f8093fd0f7514fc5cc8a51b65",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:651fcd236e0d022680e212b04d6fafb9bc570d34e9ee12a363d0e8cb89f88bc6",
+      "path": "docs/plans/2026-09-17-test-design-admission.md"
+    }
+  ],
+  "summary": "The extracted admission implementation still retires historical flat model admission outside the focused testing scope.",
+  "target": "code"
+}

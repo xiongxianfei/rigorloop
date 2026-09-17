@@ -1,0 +1,41 @@
+{
+  "assessment_scope": "Formal independent Delivery Review of exactly registered primary plan docs/plans/2026-09-17-model-test-design.md for change 2026-09-17-model-test-design. Governing upstream reviews are focused-proposal-review-r2 and focused-design-review-r2; the complete focused policy, three model catalogs, bounded executable refinement, public skill consumers and admission integration are included.",
+  "change_id": "2026-09-17-model-test-design",
+  "contributors": [
+    {
+      "id": "focused-testing-author",
+      "role": "plan"
+    }
+  ],
+  "findings": [],
+  "id": "focused-delivery-review",
+  "independence_basis": "Independent delegated reviewer admission_delivery_review read the complete focused primary plan and exact current proposal/Design reviews, assessed allocation against governing models/shared rules and inspected executable entrypoints and the current protection-disposition record. Reviewer authored no plan, Design, implementation, fixture or test in the focused worktree. Earlier admission-only assessments are not used as this package approval.",
+  "judgment": "approved",
+  "limitations": [
+    "This approval judges delivery readiness and verification allocation only. It does not approve extracted implementation correctness, completed test deletion proof, passing focused full CI, final Code Review, Verify or PR readiness.",
+    "Compatibility retirement remains expressly deferred on the original initiative; no earlier historical review, broad-branch judgment or passing execution is retargeted.",
+    "Counts in the disposition record are descriptive baselines for accountable review, not coverage quotas or substitute proof. Proposed catalog assessments and unrelated gaps retain their declared state."
+  ],
+  "rationale": [
+    "Requirement-to-proof trace is complete for this scope: System TEST-SR-01–22 and owner transfer map to TG-POLICY/TG-REFINEMENT; DES-SR-25/26 and model coverage ownership map to maintained guidance and all declared catalogs; selected REL-IN/SKL-RC case obligations map to concrete accepted baselines and named faults; VAL-SR-35 maps to TG-ADMISSION/TG-INTEGRATION. Existing future or prior initiative obligations are not silently declared implemented.",
+    "One M1 is a justified coherent slice because source/fixture identities, catalog references, declared model paths and selector admission must agree together. Independent focused proposal/Design/Delivery approval precedes accepting extracted draft implementation; inherited earlier branch success does not waive reconciliation or fresh assessment. Recovery preserves the original retirement worktree and restores only focused owned edits.",
+    "TG-REFINEMENT consumes the complete current protection-disposition body: 19 removed and 5 added method identities, retained unknown-vocabulary rows/path observations, four stronger Skill resource scenarios, strengthened unknown-consumer no-read diagnostics and 13 exclusive fixtures. Allocation explicitly requires reviewed replacement detection, discovery and consumer accounting rather than interpreting the net14 reduction as protection. Actual adequacy remains an implementation Code Review duty.",
+    "Public skill/template/shared-copy obligations have TG-POLICY coverage, with portable policy ownership, exact resource/parity and generated-package checks. Authoring semantic procedures remain proposed; structural tests cannot claim their execution. The plan does not require all disclosed catalog gaps to be filled and preserves native runners without a JSON dispatch authority or additional schema.",
+    "Admission proof allocation is adequate at real boundaries: all declared packages, complete unknown/type checks before references, containment and no-write/no-body observations, imported/generated native identity, semantic-state consistency, Markdown reference links and lexical symlink traversal. Integration explicitly exercises the actual engineering/release.md move through Git discovery, selector, CI wrapper and trusted executor, retaining local explicit missing/recreated rejection and unrelated generic flat/history compatibility.",
+    "The full local selected CI and named native commands provide feasible verification on the focused sources, and exact-revision PR selection/current records are separately required. Relevant correction invalidates proof and requires rerun; record-only reuse needs exact unaffected-basis reasoning. Execution should hold engineering inputs stable during full CI and bind evidence to that run; no previous broad-branch pass is imported.",
+    "M1 completion requires independent milestone assessment and reporter-owned findings disposition. A distinct fresh final whole-change Code Review follows all implementation/corrections and precedes successful Verify and user-authorized PR submission. This avoids treating one milestone pass, catalog structure or record storage as final readiness."
+  ],
+  "reviewer": {
+    "id": "focused-delivery-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:d515dec3b57b9a58abf5b04deaddeae061e684f0f825dcb2951eb2c2aad09a0e",
+      "path": "docs/plans/2026-09-17-model-test-design.md"
+    }
+  ],
+  "summary": "The focused primary plan safely allocates the complete approved testing scope and adequate proof, with compatibility preservation and distinct final review/verification checkpoints. No material Delivery correction is required.",
+  "target": "delivery"
+}

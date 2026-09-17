@@ -17,6 +17,7 @@ from boundary_fixture_helpers import (
 )
 
 sys.path.insert(0, str(ROOT / "scripts"))
+from catalog_admission_fixture_helpers import current_documents
 
 
 
@@ -32,13 +33,10 @@ class CurrentBoundaryCommandTests(unittest.TestCase):
     def test_default_checks_complete_current_model_population_without_specs(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
-            for relative in EXPECTED_MODEL_PATHS:
-                path = root / relative
-                path.parent.mkdir(parents=True, exist_ok=True)
-                path.write_bytes((ROOT / relative).read_bytes())
+            details = current_documents(root)
             code, output = self.run_check(root)
             self.assertEqual(code, 0, output)
-            self.assertEqual(set(output["paths"]), set(EXPECTED_MODEL_PATHS))
+            self.assertEqual(set(output["paths"]), set(EXPECTED_MODEL_PATHS) | details)
             self.assertNotIn("activation", output)
             self.assertNotIn("rollback_release", output)
             (root / "docs/design/system.md").unlink()
@@ -49,10 +47,7 @@ class CurrentBoundaryCommandTests(unittest.TestCase):
     def test_default_checks_owned_examples_and_redacts_parse_failures(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
-            for relative in EXPECTED_MODEL_PATHS:
-                path = root / relative
-                path.parent.mkdir(parents=True, exist_ok=True)
-                path.write_bytes((ROOT / relative).read_bytes())
+            details = current_documents(root)
             example = root / "docs/design/cli/examples/case.json"
             example.parent.mkdir(parents=True)
             example.write_text('{"secret": "private-value"}')

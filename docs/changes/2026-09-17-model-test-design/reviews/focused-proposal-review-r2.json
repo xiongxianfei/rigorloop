@@ -1,0 +1,49 @@
+{
+  "assessment_scope": "Formal lifecycle proposal review, manual; direction-level assessment of challenge, goals, scope, principle, feasibility, vision fit and requested decision for the focused testing extraction. PRR1G assembly with scope_budget_context active; vision_exception_context and standing_artifact_context false.",
+  "change_id": "2026-09-17-model-test-design",
+  "contributors": [
+    {
+      "id": "codex-focused-author",
+      "role": "proposal"
+    }
+  ],
+  "findings": [],
+  "id": "focused-proposal-review-r2",
+  "independence_basis": "Independent delegated reviewer /root/focused_proposal_review inspected the complete proposal and governing direction. Parent /root authored the focused proposal; this reviewer made no proposal, Design, implementation or test edits. Only this review record is authored here.",
+  "judgment": "approved",
+  "limitations": [
+    "This approval establishes direction sufficiency only; it does not approve detailed Design, delivery allocation, extraction correctness, implementation, test adequacy, final verification or PR readiness.",
+    "Existing-branch CI is a feasibility basis only. Fresh exact-package Design/Delivery review, final whole-change Code Review and successful Verify remain required.",
+    "Compatibility-retirement findings remain owned by the separate preserved initiative; this review does not resolve them or expand runtime support."
+  ],
+  "rationale": [
+    "Challenge: pass. Durable coverage intent and comprehensible protection address the observed loss of test rationale in temporary plans and overlapping executable suites. Goals: pass. The proposed outcomes improve traceability and maintainability without treating case-count reduction as correctness.",
+    "Scope: pass. The table classifies common policy and executable refinement as core, three model catalogs as the initial slice, document admission as a dependency, compatibility retirement as a separate proposal, and JSON-driven execution as out of scope. The explicit user choice supports this narrowing; retained feature/proof behavior and historical path handling stay supported. Other models and proposed catalog procedures are not silently claimed complete.",
+    "Governing principle and direction: pass. Supported outcomes and material failures determine retained protection. System ownership, model coverage, concise fixtures and existing native discovery form a coherent direction without requiring a new runner or deciding downstream detailed behavior.",
+    "Feasibility: pass. Exactly one embedded assessment identifies an existing extraction basis, dependencies and fresh review/validation requirements. The original branch evidence record catalog-admission-stable-local-ci reports exit 0 and 1241 result rows with unchanged frozen identities; this supports plausibility only and is not imported as focused-package approval or proof. The dependency on removing contradictory retirement clauses is explicit.",
+    "Material impact and downstream authority: pass. Catalog maintenance, public skill reconciliation and reviewed deletion mapping are disclosed. Detailed Design, Delivery, extraction correctness and fresh verification remain downstream requirements. Requested decision: pass; it approves a bounded direction and defers retirement without declaring completion.",
+    "Vision alignment: aligned. Durable model coverage, traceable protection and independently reviewable evidence advance VISION.md goals while explicitly avoiding unsupported proof claims. Scope-preservation result: pass; user-authorized deferral has a named branch and proposal destination, and all selected testing goals remain visible. Specialized scope-budget gate passes with no ambiguous treatment or hidden mandatory follow-up.",
+    "Reassessment: read the complete current proposal after removal of template metadata. Challenge, goals, scope table, preservation of existing compatibility, direction, one feasibility section, impacts and requested decision retain the same substantive meaning. No new direction decision or material finding is introduced. The original review keeps its original identity and judgment; this is a fresh exact-subject assessment."
+  ],
+  "reviewer": {
+    "id": "focused-proposal-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:c1d196e7f4b410d22b05c65cffac261282652e09a6afccb4b9d00d57f1646465",
+      "path": "docs/proposals/2026-09-17-model-test-design.md"
+    },
+    {
+      "identity": "sha256:3dae6703651fed191fe384a14224254b7791267014a89662d8872c812493e146",
+      "path": "VISION.md"
+    },
+    {
+      "identity": "sha256:b08e342159f367131963237b00b284dfc052686f112ebab9824457385de42af8",
+      "path": "CONSTITUTION.md"
+    }
+  ],
+  "summary": "The current focused proposal remains approved after removal of leading template comments; its direction, boundaries and feasibility remain sufficient for Design.",
+  "target": "proposal"
+}

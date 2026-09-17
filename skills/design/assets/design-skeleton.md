@@ -70,6 +70,16 @@ Model validation contract: model-document-v1
 
 <Material combined hazards and integrated observation boundaries, linked to requirements.>
 
+### Test design
+
+<Name supported outcomes and material risks, then keep proportionate coverage intent here or link owned test-design/test-design.md and the explicitly selected case index. Reference requirements and the project's shared rules rather than duplicate them. Do not require JSON unless the user or project selects it.>
+
+| Group and requirement basis | Risk, target and observation boundary | Conditions, action and independent expected outcome | Fixtures, method and realization gaps |
+| --- | --- | --- | --- |
+| <Coherent behavior and existing requirement IDs.> | <Plausible violation and actual interface or operation observed.> | <Concrete starting facts, defining action and expected values/diagnostics/preserved state.> | <Representative inputs, isolation, real/substituted boundaries, actual test links or review method; distinguish missing protection.> |
+
+<Group related variations while preserving distinct authority, persistence and recovery observations. Several methods may realize one scenario; native discovery owns the method inventory. Parent-owned interaction cases reference child coverage. Explain maintenance of identity, group membership, source links and gaps; keep temporary migration acceptance in its change and results in evidence. If a catalog is selected, define its field/reference contract and validation limits in owned detail. Remove unused scaffold text rather than inventing tests.>
+
 ### Supporting examples
 
 <Optional index: path, purpose, governing requirements, complete/excerpt scope, synthetic identities and starting assumptions. Remove when no example is justified.>

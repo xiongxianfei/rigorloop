@@ -12,7 +12,7 @@ Make repository tooling ownership visible by separating stable commands, interna
 ## Source artifacts
 
 - Proposal: no separate artifact; the user selected and authorized this bounded maintenance direction.
-- Design: [Engineering ENG-SR-16](../design/engineering/engineering.md#repository-tooling-organization), [System](../design/system.md), [Validation](../design/engineering/validation.md), [Packaging](../design/engineering/packaging.md), [Release](../design/engineering/release.md), exact subjects in [Design Review](../changes/2026-09-14-design-suitability-review/reviews/tooling-organization-design-review.md).
+- Design: [Engineering ENG-SR-16](../design/engineering/engineering.md#repository-tooling-organization), [System](../design/system.md), [Validation](../design/engineering/validation.md), [Packaging](../design/engineering/packaging.md), [Release](../design/engineering/release/release.md), exact subjects in [Design Review](../changes/2026-09-14-design-suitability-review/reviews/tooling-organization-design-review.md).
 - Prior-contract test spec: none additionally selected; existing owner requirements and test protections apply.
 
 ## Context and orientation

@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import sys
 from pathlib import Path
-import tempfile
 import unittest
 import subprocess
 
@@ -13,16 +12,29 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 from lib.packaging.adapter_distribution import parse_manifest_yaml
 from lib.release.release_transaction import ReleaseProfileError, prepare_release, validate_pending_release_artifacts
-from release_fixture_helpers import (assert_errors_contain, make_prepared_release, make_release_repo, relative_file_texts)
+from release_fixture_helpers import (assert_errors_contain, prepared_release, release_repo, relative_file_texts)
+
+
+# Required standing-record rows, independently declared by the tests.
+PREFLIGHT_ROWS = (
+    'clean worktree except intentional release artifacts',
+    'release notes or not-required rationale',
+    'generated output current',
+    'tests / selected CI / broad smoke',
+    'package build or pack proof',
+    'package preview',
+    'local packed-install smoke',
+    'no unresolved release blockers',
+    'publish path selected',
+    'evidence path prepared',
+)
 
 
 class PrepareReleaseTests(unittest.TestCase):
     maxDiff = None
 
     def test_approval_driven_preparation_preserves_reviewed_version_and_no_generated_passes(self):
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
-            make_release_repo(root)
+        with release_repo() as root:
             path = root / "docs/releases/v0.3.5.md"
             original = "# Release v0.3.5\n\n## Version Decision\n\n- Version decision: patch\n- Change summary: Reviewed compatibility repair.\n"
             path.parent.mkdir(parents=True, exist_ok=True)
@@ -36,9 +48,7 @@ class PrepareReleaseTests(unittest.TestCase):
             self.assertEqual(path.read_text(), first)
 
     def test_approval_driven_preserves_human_notes_outside_generated_region(self):
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
-            make_release_repo(root)
+        with release_repo() as root:
             notes = root / "docs/releases/v0.3.5/release-notes.md"
             notes.parent.mkdir(parents=True, exist_ok=True)
             human = "# RigorLoop v0.3.5\n\n| Existing result | pass |\n\nHuman example:\nstatus: pass\n"
@@ -50,9 +60,7 @@ class PrepareReleaseTests(unittest.TestCase):
             self.assertEqual(notes.read_bytes(), first)
 
     def test_prepare_release_generates_pending_artifacts_idempotently(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            make_release_repo(root)
+        with release_repo() as root:
             before = relative_file_texts(root)
 
             result = prepare_release("v0.3.5", root=root)
@@ -88,9 +96,7 @@ class PrepareReleaseTests(unittest.TestCase):
         self.assertIn("Version decision: patch", after_first["docs/releases/v0.3.5.md"])
 
     def test_prepare_release_check_accepts_finalized_prepublication_evidence(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            make_release_repo(root)
+        with release_repo() as root:
             prepare_release("v0.3.5", root=root)
 
             metadata_path = root / "packages" / "rigorloop" / "dist" / "metadata" / "adapter-artifacts-v0.3.5.json"
@@ -127,9 +133,7 @@ class PrepareReleaseTests(unittest.TestCase):
         self.assertEqual(finalized["docs/reports/adapter-artifacts/releases/v0.3.5.yaml"], report_text)
 
     def test_prepare_release_check_mode_reports_pending_changes_without_writing(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            make_release_repo(root)
+        with release_repo() as root:
             before = relative_file_texts(root)
 
             with self.assertRaises(ReleaseProfileError) as raised:
@@ -142,9 +146,7 @@ class PrepareReleaseTests(unittest.TestCase):
         self.assertIn("docs/releases/v0.3.5/release.yaml", "\n".join(raised.exception.errors))
 
     def test_generated_pending_release_artifacts_validate_shape(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            make_release_repo(root)
+        with release_repo() as root:
             prepare_release("v0.3.5", root=root)
 
             errors = validate_pending_release_artifacts("v0.3.5", root=root)
@@ -152,9 +154,7 @@ class PrepareReleaseTests(unittest.TestCase):
         self.assertEqual(errors, [])
 
     def test_pending_release_artifacts_reject_incomplete_release_yaml(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            make_prepared_release(root)
+        with prepared_release() as (root, _):
             path = root / "docs" / "releases" / "v0.3.5" / "release.yaml"
             text = path.read_text(encoding="utf-8")
             start = text.index("adapter_paths:\n")
@@ -166,9 +166,7 @@ class PrepareReleaseTests(unittest.TestCase):
         self.assertTrue(any("adapter_paths" in error for error in errors), errors)
 
     def test_pending_release_artifacts_reject_incomplete_standing_record(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            make_prepared_release(root)
+        with prepared_release() as (root, _):
             path = root / "docs" / "releases" / "v0.3.5.md"
             text = path.read_text(encoding="utf-8")
             start = text.index("## Recovery / Rollback Notes\n")
@@ -180,22 +178,8 @@ class PrepareReleaseTests(unittest.TestCase):
         self.assertTrue(any("Recovery / Rollback Notes" in error for error in errors), errors)
 
     def test_pending_standing_record_requires_every_preflight_row(self) -> None:
-        required_rows = (
-            "clean worktree except intentional release artifacts",
-            "release notes or not-required rationale",
-            "generated output current",
-            "tests / selected CI / broad smoke",
-            "package build or pack proof",
-            "package preview",
-            "local packed-install smoke",
-            "no unresolved release blockers",
-            "publish path selected",
-            "evidence path prepared",
-        )
-        for row_name in required_rows:
-            with self.subTest(row_name=row_name), tempfile.TemporaryDirectory() as tmp:
-                root = Path(tmp)
-                make_prepared_release(root)
+        for row_name in PREFLIGHT_ROWS:
+            with self.subTest(row_name=row_name), prepared_release() as (root, _):
                 path = root / "docs" / "releases" / "v0.3.5.md"
                 lines = path.read_text(encoding="utf-8").splitlines()
                 path.write_text(
@@ -208,23 +192,9 @@ class PrepareReleaseTests(unittest.TestCase):
             self.assertTrue(any(row_name in error and "missing" in error for error in errors), errors)
 
     def test_pending_standing_record_rejects_unknown_or_duplicate_preflight_rows(self) -> None:
-        required_rows = (
-            "clean worktree except intentional release artifacts",
-            "release notes or not-required rationale",
-            "generated output current",
-            "tests / selected CI / broad smoke",
-            "package build or pack proof",
-            "package preview",
-            "local packed-install smoke",
-            "no unresolved release blockers",
-            "publish path selected",
-            "evidence path prepared",
-        )
-        for row_name in required_rows:
+        for row_name in PREFLIGHT_ROWS:
             for mutation in ("unknown", "duplicate"):
-                with self.subTest(row_name=row_name, mutation=mutation), tempfile.TemporaryDirectory() as tmp:
-                    root = Path(tmp)
-                    make_prepared_release(root)
+                with self.subTest(row_name=row_name, mutation=mutation), prepared_release() as (root, _):
                     path = root / "docs" / "releases" / "v0.3.5.md"
                     text = path.read_text(encoding="utf-8")
                     original = next(line for line in text.splitlines() if line.startswith(f"| {row_name} |"))
@@ -249,9 +219,7 @@ class PrepareReleaseTests(unittest.TestCase):
         )
         for row_name in registry_rows:
             for mutation in ("missing", "duplicate"):
-                with self.subTest(row_name=row_name, mutation=mutation), tempfile.TemporaryDirectory() as tmp:
-                    root = Path(tmp)
-                    make_prepared_release(root)
+                with self.subTest(row_name=row_name, mutation=mutation), prepared_release() as (root, _):
                     path = root / "docs" / "releases" / "v0.3.5.md"
                     text = path.read_text(encoding="utf-8")
                     original = next(line for line in text.splitlines() if line.startswith(f"| {row_name} |"))
@@ -263,9 +231,7 @@ class PrepareReleaseTests(unittest.TestCase):
                 self.assertTrue(any(row_name in error and "exactly once" in error for error in errors), errors)
 
     def test_pending_release_artifacts_reject_premature_public_status(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            make_prepared_release(root)
+        with prepared_release() as (root, _):
             path = root / "docs" / "releases" / "v0.3.5.md"
             text = path.read_text(encoding="utf-8")
             path.write_text(
@@ -278,9 +244,7 @@ class PrepareReleaseTests(unittest.TestCase):
         self.assertTrue(any("Status" in error and "pending-publication" in error for error in errors), errors)
 
     def test_prepare_release_does_not_preserve_partial_finalized_release_yaml(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            make_release_repo(root)
+        with release_repo() as root:
             prepare_release("v0.3.5", root=root)
             path = root / "docs" / "releases" / "v0.3.5" / "release.yaml"
             text = path.read_text(encoding="utf-8")
@@ -297,9 +261,7 @@ class PrepareReleaseTests(unittest.TestCase):
         self.assertIn("docs/releases/v0.3.5/release.yaml", "\n".join(raised.exception.errors))
 
     def test_prepare_release_does_not_preserve_bogus_finalized_manifest(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            make_release_repo(root)
+        with release_repo() as root:
             prepare_release("v0.3.5", root=root)
             path = root / "docs" / "releases" / "v0.3.5" / "release.yaml"
             text = path.read_text(encoding="utf-8")
@@ -314,9 +276,7 @@ class PrepareReleaseTests(unittest.TestCase):
         self.assertIn("docs/releases/v0.3.5/release.yaml", "\n".join(raised.exception.errors))
 
     def test_prepare_release_does_not_preserve_empty_passing_smoke_evidence(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            make_release_repo(root)
+        with release_repo() as root:
             prepare_release("v0.3.5", root=root)
             path = root / "docs" / "releases" / "v0.3.5" / "release.yaml"
             text = path.read_text(encoding="utf-8")
@@ -336,9 +296,7 @@ class PrepareReleaseTests(unittest.TestCase):
 
     def test_prepare_release_does_not_preserve_whitespace_passing_smoke_fields(self) -> None:
         for field in ("tool_version", "evidence"):
-            with self.subTest(field=field), tempfile.TemporaryDirectory() as tmp:
-                root = Path(tmp)
-                make_release_repo(root)
+            with self.subTest(field=field), release_repo() as root:
                 prepare_release("v0.3.5", root=root)
                 path = root / "docs" / "releases" / "v0.3.5" / "release.yaml"
                 text = path.read_text(encoding="utf-8")
@@ -357,9 +315,7 @@ class PrepareReleaseTests(unittest.TestCase):
             self.assertIn("docs/releases/v0.3.5/release.yaml", "\n".join(raised.exception.errors))
 
     def test_pending_release_artifacts_require_standing_release_record(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            make_prepared_release(root)
+        with prepared_release() as (root, _):
             (root / "docs" / "releases" / "v0.3.5.md").unlink()
 
             errors = validate_pending_release_artifacts("v0.3.5", root=root)
@@ -370,9 +326,7 @@ class PrepareReleaseTests(unittest.TestCase):
         def mutate(text: str) -> str:
             return text.replace('    result: "pending-publication"\n', '    result: "published"\n', 1)
 
-        with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            pending = make_prepared_release(root)
+        with prepared_release() as (root, pending):
             original = pending.read_text(encoding="utf-8")
             changed = (mutate)(original)
             self.assertNotEqual(changed, original, "fixture mutation must change the pending evidence")
@@ -388,9 +342,7 @@ class PrepareReleaseTests(unittest.TestCase):
                 1,
             )
 
-        with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            pending = make_prepared_release(root)
+        with prepared_release() as (root, pending):
             original = pending.read_text(encoding="utf-8")
             changed = (mutate)(original)
             self.assertNotEqual(changed, original, "fixture mutation must change the pending evidence")
@@ -404,9 +356,7 @@ class PrepareReleaseTests(unittest.TestCase):
             end = text.index("\n```", start)
             return text[:start] + text[end:]
 
-        with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            pending = make_prepared_release(root)
+        with prepared_release() as (root, pending):
             original = pending.read_text(encoding="utf-8")
             changed = (mutate)(original)
             self.assertNotEqual(changed, original, "fixture mutation must change the pending evidence")
@@ -420,9 +370,7 @@ class PrepareReleaseTests(unittest.TestCase):
             end = text.index("  claude:\n")
             return text[:end] + text[start:end] + text[end:]
 
-        with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            pending = make_prepared_release(root)
+        with prepared_release() as (root, pending):
             original = pending.read_text(encoding="utf-8")
             changed = (mutate)(original)
             self.assertNotEqual(changed, original, "fixture mutation must change the pending evidence")
@@ -443,9 +391,7 @@ class PrepareReleaseTests(unittest.TestCase):
             )
             return text[:end] + cursor + text[end:]
 
-        with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            pending = make_prepared_release(root)
+        with prepared_release() as (root, pending):
             original = pending.read_text(encoding="utf-8")
             changed = (mutate)(original)
             self.assertNotEqual(changed, original, "fixture mutation must change the pending evidence")
@@ -460,9 +406,7 @@ class PrepareReleaseTests(unittest.TestCase):
                 "| codex | `npx @xiongxianfei/rigorloop@0.3.5 init codex --json` | `0.3.5` | pending publication | pending public archive URL | pending | pending | pending | pending live command output summary | pending | pending | published | live-smoke-pending |",
             )
 
-        with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            pending = make_prepared_release(root)
+        with prepared_release() as (root, pending):
             original = pending.read_text(encoding="utf-8")
             changed = (mutate)(original)
             self.assertNotEqual(changed, original, "fixture mutation must change the pending evidence")
@@ -471,18 +415,13 @@ class PrepareReleaseTests(unittest.TestCase):
         assert_errors_contain(self, errors, 'codex', 'table projection mismatch', 'result')
 
     def test_prepare_release_does_not_publish_or_require_external_state(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            make_release_repo(root)
-
+        with release_repo() as root:
             result = prepare_release("v0.3.5", root=root)
 
         self.assertEqual(result.external_actions, ())
 
     def test_prepare_release_cli_check_succeeds_after_generation(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            make_release_repo(root)
+        with release_repo() as root:
             prepare_release("v0.3.5", root=root)
 
             result = subprocess.run(

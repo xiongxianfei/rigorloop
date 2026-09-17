@@ -1,0 +1,830 @@
+{
+  "change_id": "2026-09-17-model-test-design",
+  "checks": [
+    {
+      "actor": {
+        "id": "focused-testing-author",
+        "role": "implement"
+      },
+      "id": "focused-m1-validation",
+      "procedure": "bash scripts/ci.sh --mode local in isolated codex/model-test-design worktree with all selected subjects frozen. Compare SHA256 of all 123 changed paths, including deletion state, before and after. Focused correction: native TestDesignAdmissionTests.test_generic_flat_models_retain_existing_grammar and ValidationSelectionTests.test_release_catalog_move_preserves_endpoints_and_explicit_missing_path fail before fix; afterward TestDesignAdmissionTests (11 methods) and two actual move/CI composition methods pass. Public python scripts/validate-boundary-first.py --check passes47owner/detail paths. Prose enforcement passes proposal, primary plan and plan index; git diff --check and cached patch hygiene pass.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:016f50b9dcebd278c84510de0386f15314834bf00cd107cbbc717ed5d4a05260",
+          "path": "AGENTS.md"
+        },
+        {
+          "identity": "sha256:b08e342159f367131963237b00b284dfc052686f112ebab9824457385de42af8",
+          "path": "CONSTITUTION.md"
+        },
+        {
+          "identity": "sha256:d44f823cc586a030e8caffac3884846b4ad4ed960ad9747dd416c15feae73f65",
+          "path": "CONTRIBUTING.md"
+        },
+        {
+          "identity": "sha256:11d823616d495a0c40954488f0680d6c3c150da94d88b664f665dc9b7b110746",
+          "path": "README.md"
+        },
+        {
+          "identity": "sha256:0b2554c4f77129d6c13c63608da9bb841766b272fb24d1e986cc2ab5afce535d",
+          "path": "docs/design/engineering/engineering.md"
+        },
+        {
+          "identity": "sha256:71f62f8d192ef1096f7c712911b00cd27138618c96697e9ff242a23e4266eb4f",
+          "path": "docs/design/engineering/packaging.md"
+        },
+        {
+          "identity": "sha256:3884d83d216baa04909173b0577e9f40c42d81843fdb0e1f5011c28aa4796149",
+          "path": "docs/design/engineering/release/release.md"
+        },
+        {
+          "identity": "sha256:29413ca35262641fddf4eb0f23c03809b201bdcdd6871509560a243743e0b838",
+          "path": "docs/design/engineering/release/test-design/cases/approval-recovery.json"
+        },
+        {
+          "identity": "sha256:d1ef0b53f7345493126733aad6e0ebbd31ed95fa55a074b5509c91077aae7b02",
+          "path": "docs/design/engineering/release/test-design/cases/candidate-identity.json"
+        },
+        {
+          "identity": "sha256:3294a288bffa853c567d2130aa6a3452887e1a75427451640716060e9d9e5692",
+          "path": "docs/design/engineering/release/test-design/cases/evidence-closeout.json"
+        },
+        {
+          "identity": "sha256:ca79bb95582b99169d72fe349f3630fc7c03acdeb8e29fc1388ebc4c3fc8da55",
+          "path": "docs/design/engineering/release/test-design/cases/maintenance-review.json"
+        },
+        {
+          "identity": "sha256:a555c08e09eded21e43093c156638377099bf98620227c4bee9bc9dd949699ef",
+          "path": "docs/design/engineering/release/test-design/cases/preflight.json"
+        },
+        {
+          "identity": "sha256:a351dccb489813dfbbdce3b3d9372e5c6edc80b7f31c6321c3f240d4ab0dcb94",
+          "path": "docs/design/engineering/release/test-design/cases/preparation.json"
+        },
+        {
+          "identity": "sha256:ac0b66837d9af57739b99ea41879a913ec2de6140dc250ed759d36b9190ee524",
+          "path": "docs/design/engineering/release/test-design/cases/profile-input.json"
+        },
+        {
+          "identity": "sha256:94ce4b1e879899cb1306a6e27a039c6e5d00d8b90c94213ccb370f1ab9a48a0c",
+          "path": "docs/design/engineering/release/test-design/test-cases.json"
+        },
+        {
+          "identity": "sha256:f54b133a75badd5fc307cdcc8b178f0b165f544d32d12c1ce907ae2a9c52dd16",
+          "path": "docs/design/engineering/release/test-design/test-design.md"
+        },
+        {
+          "identity": "sha256:d395ef73bf53cf392e20dd91f681ca2d926af31ec97b47da0f8e9491cb1dd3e1",
+          "path": "docs/design/engineering/validation.md"
+        },
+        {
+          "identity": "sha256:1bfd64a58945eb4cee053e8771baa0599a8f7d0e037f445801086cbec8b4bf00",
+          "path": "docs/design/skill/assessment.md"
+        },
+        {
+          "identity": "sha256:434d4232d140d5d8692ec0592ceb96e10de2e6dc4f703b916d8e825a7fe3a23e",
+          "path": "docs/design/skill/authoring/authoring.md"
+        },
+        {
+          "identity": "sha256:13fa3e7dc23c59dda49e9a586621d4d6df035a4c06591f1df7dae90009469fcf",
+          "path": "docs/design/skill/authoring/design.md"
+        },
+        {
+          "identity": "sha256:5ba5e475429f99b6a18319777a98c387cc75bac3e6844dc0a6c6357ca652583b",
+          "path": "docs/design/skill/authoring/plan.md"
+        },
+        {
+          "identity": "sha256:7f4dca46594b7c6dd020ebaf63fa816149861c7fc4a720180f142de9c457d091",
+          "path": "docs/design/skill/authoring/test-design/cases/correction-reconciliation.json"
+        },
+        {
+          "identity": "sha256:b2e83fe05600347fd620e5b24be8bdc4569f6ca862557e8e70d209dbb331702c",
+          "path": "docs/design/skill/authoring/test-design/cases/refinement.json"
+        },
+        {
+          "identity": "sha256:c9fc56da4499a13afa689a33891475bad5e91ddbbf86c26410ca28c196b4e0d7",
+          "path": "docs/design/skill/authoring/test-design/cases/scope-handoff.json"
+        },
+        {
+          "identity": "sha256:35fd40fd6f52465f51f335079cb0151fe7d96220ea55b1b8d50329365e3106ec",
+          "path": "docs/design/skill/authoring/test-design/test-cases.json"
+        },
+        {
+          "identity": "sha256:a0009f8d0bc04b1fb137c3184b039a126a79c8029339829d68a98ee1430df008",
+          "path": "docs/design/skill/authoring/test-design/test-design.md"
+        },
+        {
+          "identity": "sha256:256a57936e1fe3de7b9d7c86045ee281867def8147c59661cc1284e0cb37bbfa",
+          "path": "docs/design/skill/skill.md"
+        },
+        {
+          "identity": "sha256:b8cf15dddf0611227860248a6cd92fe6ebb6b4b84ff5f4f0a79aa6a9eef56145",
+          "path": "docs/design/skill/test-design/cases/capability-composition.json"
+        },
+        {
+          "identity": "sha256:b2cd74b3690c17afbf40b62019e607592beaecd86dba3d3885cef9745e9ebea2",
+          "path": "docs/design/skill/test-design/cases/capability-contract.json"
+        },
+        {
+          "identity": "sha256:153c7941dd4c9bec09a8368ff8605d6469c3efa4f5aac1e6e51d42ecdb7c5407",
+          "path": "docs/design/skill/test-design/cases/implementation-handoffs.json"
+        },
+        {
+          "identity": "sha256:3b798f4feda2327f9d7da5793eba11160c259a1ff825914127225cd184302e71",
+          "path": "docs/design/skill/test-design/cases/recording-composition.json"
+        },
+        {
+          "identity": "sha256:839291d455ee3f93f8254e539a5577c6ce36389669ce0e3cd44ec3ced0e116ef",
+          "path": "docs/design/skill/test-design/cases/resource-contract.json"
+        },
+        {
+          "identity": "sha256:872bd368736f46ef828cac1213cccccb803500fa164ef88ecc1393ee470f490c",
+          "path": "docs/design/skill/test-design/test-cases.json"
+        },
+        {
+          "identity": "sha256:b2f0f6fbcc557fba388f60089eae4f1ceebff943463277fc917f7f19e1e976cd",
+          "path": "docs/design/skill/test-design/test-design.md"
+        },
+        {
+          "identity": "sha256:00d18256f4a639fac753edab2d8b203e20cf41632184f6981c44ce9bd14dedd2",
+          "path": "docs/design/skill/workflow.md"
+        },
+        {
+          "identity": "sha256:873e56982d331107c50914a7e1f4f9264a37ad020c5cc7026376c17488c757f1",
+          "path": "docs/design/system.md"
+        },
+        {
+          "identity": "sha256:f478b20a81dcd83066fabf637764c5781d305102938294bdb29dcfd4c4e87192",
+          "path": "docs/design/test-design/README.md"
+        },
+        {
+          "identity": "sha256:7f66ebb9f51a66f278fd1a17ca7c422e015335f5344c9ea4769321fab9377bdf",
+          "path": "docs/design/test-design/rules.md"
+        },
+        {
+          "identity": "sha256:e29292c62efde67524e3d576003df30f396394dd5206d180871f05d3b58cfe65",
+          "path": "docs/plan.md"
+        },
+        {
+          "identity": "sha256:4abdc216a753c038abdbd3e8310ed1a4f8d8974ea6f06af580f87f83dac292fc",
+          "path": "docs/plans/2026-09-12-unified-validation-implementation.md"
+        },
+        {
+          "identity": "sha256:8ecdabdc6a3233609978a3fd3a0f900d6f0f6f9a5038777f49e48add50240304",
+          "path": "docs/plans/2026-09-14-tooling-organization.md"
+        },
+        {
+          "identity": "sha256:66602ff712ac5a31dbe5a3caab3d4cf63589a160b323e1b56525a30222494fae",
+          "path": "docs/plans/2026-09-15-risk-driven-test-redesign.md"
+        },
+        {
+          "identity": "sha256:101e07a879f54a88cf19a7ba213e5e798de89a8de56bbe77a74bc896f0b1b3cb",
+          "path": "docs/plans/2026-09-16-test-design-and-suite-organization.md"
+        },
+        {
+          "identity": "sha256:d515dec3b57b9a58abf5b04deaddeae061e684f0f825dcb2951eb2c2aad09a0e",
+          "path": "docs/plans/2026-09-17-model-test-design.md"
+        },
+        {
+          "identity": "sha256:c1d196e7f4b410d22b05c65cffac261282652e09a6afccb4b9d00d57f1646465",
+          "path": "docs/proposals/2026-09-17-model-test-design.md"
+        },
+        {
+          "identity": "sha256:0d8ee38a20a01fc684086939d5aafa68c24a0ca95127d6e37ec31119f01960c9",
+          "path": "scripts/ci.sh"
+        },
+        {
+          "identity": "sha256:be591b140fc7892eb41c6dd05025bc56453f25f49a24bf7244f86ba5898b02cd",
+          "path": "scripts/lib/release/release_candidate.py"
+        },
+        {
+          "identity": "sha256:800ff1e7a5a91779d269ecdb59318030d669adac2f237bc72f85474e376aed2c",
+          "path": "scripts/lib/validation/model_layout.py"
+        },
+        {
+          "identity": "sha256:a7f5068ca56191861f8911154692f8f4d47188b14e86d6ccc74320028d4fd870",
+          "path": "scripts/lib/validation/test_design_validation.py"
+        },
+        {
+          "identity": "sha256:dfec3b4634c8c02f4846d2eb2a2c1c59b0e99cbc42f75d92a65e4d52e51d692c",
+          "path": "scripts/lib/validation/validation_execution.py"
+        },
+        {
+          "identity": "sha256:d49448c1ce8d457792748f0a13b58d212ffd94c8f421fc315d10439ab06888de",
+          "path": "scripts/lib/validation/validation_selection.py"
+        },
+        {
+          "identity": "sha256:6f6bb4e502c529ec423620c53eda49171dfbf4c3e9f1abd6c65e914476d7da37",
+          "path": "scripts/validate-boundary-first.py"
+        },
+        {
+          "identity": "sha256:613cab39742fde417c98dfad9f98aaa4210cd53f06a7b30e92a5159704d00aea",
+          "path": "skills/bugfix/SKILL.md"
+        },
+        {
+          "identity": "sha256:01950a411225f9a4663e07d04e00db57cde94c25409b887ccffba23ca57bbe74",
+          "path": "skills/bugfix/references/test-maintenance.md"
+        },
+        {
+          "identity": "sha256:b1ff4b8501e384ab52e0af0952c47a19924d902ed2f0bfc211680639ff983878",
+          "path": "skills/bugfix/references/test-quality.md"
+        },
+        {
+          "identity": "sha256:8f6ee79661005fbe427a094b0a33743b0903880c2ec80053d3d64813068458ee",
+          "path": "skills/ci-maintenance/SKILL.md"
+        },
+        {
+          "identity": "sha256:01950a411225f9a4663e07d04e00db57cde94c25409b887ccffba23ca57bbe74",
+          "path": "skills/ci-maintenance/references/test-maintenance.md"
+        },
+        {
+          "identity": "sha256:b1ff4b8501e384ab52e0af0952c47a19924d902ed2f0bfc211680639ff983878",
+          "path": "skills/ci-maintenance/references/test-quality.md"
+        },
+        {
+          "identity": "sha256:c5cd8e9f975d5b1ccbcd78894820141639a8e318ab3cf1c76bd799c85485e5ab",
+          "path": "skills/code-review/SKILL.md"
+        },
+        {
+          "identity": "sha256:01950a411225f9a4663e07d04e00db57cde94c25409b887ccffba23ca57bbe74",
+          "path": "skills/code-review/references/test-maintenance.md"
+        },
+        {
+          "identity": "sha256:b1ff4b8501e384ab52e0af0952c47a19924d902ed2f0bfc211680639ff983878",
+          "path": "skills/code-review/references/test-quality.md"
+        },
+        {
+          "identity": "sha256:60f3512c98373069971b611c7d5589732ec40cd70407097abf44c872b5e427d2",
+          "path": "skills/delivery-review/SKILL.md"
+        },
+        {
+          "identity": "sha256:01950a411225f9a4663e07d04e00db57cde94c25409b887ccffba23ca57bbe74",
+          "path": "skills/delivery-review/references/test-maintenance.md"
+        },
+        {
+          "identity": "sha256:b1ff4b8501e384ab52e0af0952c47a19924d902ed2f0bfc211680639ff983878",
+          "path": "skills/delivery-review/references/test-quality.md"
+        },
+        {
+          "identity": "sha256:d42b6b5243a14a6c4e6dd47a141a1dabf87dd2dbbf1fbaa07c3fdcdc3939e27e",
+          "path": "skills/design-review/SKILL.md"
+        },
+        {
+          "identity": "sha256:b1ff4b8501e384ab52e0af0952c47a19924d902ed2f0bfc211680639ff983878",
+          "path": "skills/design-review/references/test-quality.md"
+        },
+        {
+          "identity": "sha256:6cfea6b2fd5b74803d4a568b5f5aaab8c756de874002ec54a79376a8b37052ea",
+          "path": "skills/design/SKILL.md"
+        },
+        {
+          "identity": "sha256:b098b895208405b724733561d381f2357454efe6343225eb6ef56ff15d952ed6",
+          "path": "skills/design/assets/design-skeleton.md"
+        },
+        {
+          "identity": "sha256:f62dc3c4507a27424672e695ec68f1f81ba27f1f26dd4c5b5abc4f25f671879d",
+          "path": "skills/design/references/model-authoring.md"
+        },
+        {
+          "identity": "sha256:2dd8b4802d65932cdfb4c844b3a3fb468a58716da442c3a1143f5689c414ce08",
+          "path": "skills/design/references/system-composition.md"
+        },
+        {
+          "identity": "sha256:b1ff4b8501e384ab52e0af0952c47a19924d902ed2f0bfc211680639ff983878",
+          "path": "skills/design/references/test-quality.md"
+        },
+        {
+          "identity": "sha256:4af4abf9b2c3834e480dfd6708ca78d926e44649f98a62de98e5d666bf32c05a",
+          "path": "skills/implement/SKILL.md"
+        },
+        {
+          "identity": "sha256:01950a411225f9a4663e07d04e00db57cde94c25409b887ccffba23ca57bbe74",
+          "path": "skills/implement/references/test-maintenance.md"
+        },
+        {
+          "identity": "sha256:b1ff4b8501e384ab52e0af0952c47a19924d902ed2f0bfc211680639ff983878",
+          "path": "skills/implement/references/test-quality.md"
+        },
+        {
+          "identity": "sha256:435dd20135b4e61e0c608099fe229fb23fc42d87d8beeda6d3347821106825c3",
+          "path": "skills/plan/SKILL.md"
+        },
+        {
+          "identity": "sha256:01950a411225f9a4663e07d04e00db57cde94c25409b887ccffba23ca57bbe74",
+          "path": "skills/plan/references/test-maintenance.md"
+        },
+        {
+          "identity": "sha256:b1ff4b8501e384ab52e0af0952c47a19924d902ed2f0bfc211680639ff983878",
+          "path": "skills/plan/references/test-quality.md"
+        },
+        {
+          "identity": "sha256:7ee7161b74939da873168b0c3dffe9af4a2caa1f09f1f8292582183eeab86399",
+          "path": "skills/route/SKILL.md"
+        },
+        {
+          "identity": "sha256:01950a411225f9a4663e07d04e00db57cde94c25409b887ccffba23ca57bbe74",
+          "path": "skills/route/references/test-maintenance.md"
+        },
+        {
+          "identity": "sha256:b1ff4b8501e384ab52e0af0952c47a19924d902ed2f0bfc211680639ff983878",
+          "path": "skills/route/references/test-quality.md"
+        },
+        {
+          "identity": "sha256:719e3781405d82299f2ef4ee3ad141a969bfbf2df23c83c38345ec4b70663f2c",
+          "path": "skills/verify/SKILL.md"
+        },
+        {
+          "identity": "sha256:01950a411225f9a4663e07d04e00db57cde94c25409b887ccffba23ca57bbe74",
+          "path": "skills/verify/references/test-maintenance.md"
+        },
+        {
+          "identity": "sha256:b1ff4b8501e384ab52e0af0952c47a19924d902ed2f0bfc211680639ff983878",
+          "path": "skills/verify/references/test-quality.md"
+        },
+        {
+          "identity": "sha256:01950a411225f9a4663e07d04e00db57cde94c25409b887ccffba23ca57bbe74",
+          "path": "templates/shared/test-maintenance.md"
+        },
+        {
+          "identity": "sha256:b1ff4b8501e384ab52e0af0952c47a19924d902ed2f0bfc211680639ff983878",
+          "path": "templates/shared/test-quality.md"
+        },
+        {
+          "identity": "sha256:32ced1220200a8755f7bdcc200789431ce740667585e3937d6b1b629abc79666",
+          "path": "tests/engineering/release/release_fixture_helpers.py"
+        },
+        {
+          "identity": "sha256:cbe52747c9a4aa4ff6051993001e908fa0dd567ddbd0f9f9455352bb1f65d620",
+          "path": "tests/engineering/release/release_preparation_tests.py"
+        },
+        {
+          "identity": "sha256:1d759b4600a7808088e4bf6691326083482b8b79b6b0fa725635a619d8111b44",
+          "path": "tests/engineering/release/release_profile_tests.py"
+        },
+        {
+          "identity": "sha256:a2aa226c47b4c2c560b90f191bc1dbb28e209ff3f6c23ebeda59ca298b81b58b",
+          "path": "tests/engineering/validation/boundary_command_tests.py"
+        },
+        {
+          "identity": "sha256:67df6a857cc184bf7b828a1cc01da98b39fd0c8a8e86f158f109825fe0732a45",
+          "path": "tests/engineering/validation/boundary_fixture_helpers.py"
+        },
+        {
+          "identity": "sha256:0ddfa8a37d2f30c53b714b94864900bdbb654ba98b05790596395d23e0673e41",
+          "path": "tests/engineering/validation/boundary_handoff_tests.py"
+        },
+        {
+          "identity": "sha256:156481b0448db5ad62a61c0a37488345c1d716b4537b6a160f341734396a4191",
+          "path": "tests/engineering/validation/catalog_admission_fixture_helpers.py"
+        },
+        {
+          "identity": "sha256:2fac149cc7a1be1324aca3df68d48f51d8dec62cf4895352acb9e975f919b079",
+          "path": "tests/engineering/validation/catalog_admission_tests.py"
+        },
+        {
+          "identity": "sha256:574b06229bc0dba40212510ad9e26cdffb54cdc609c0da4898f194f63fb0c8c5",
+          "path": "tests/engineering/validation/selection_contract_tests.py"
+        },
+        {
+          "identity": "sha256:f016a8714a8964f56a71ca86e8b81549ac4580089800c9d1a29bd5f047ab87c9",
+          "path": "tests/engineering/validation/selection_git_tests.py"
+        },
+        {
+          "identity": "sha256:37f387448f8f49c6c15320fbff560fb268318efe43e399d03f1643c9bb5023bc",
+          "path": "tests/engineering/validation/test-boundary-first-validation.py"
+        },
+        {
+          "identity": "sha256:a219d8861fcd0a3a01fc9795a13052aafc062344e070fc199a241467c33e75bc",
+          "path": "tests/skill/skill_design_resource_tests.py"
+        },
+        {
+          "identity": "sha256:11a33e6e80f7c37d3599d5bbc927a87b63c489af2934204c012f42bcf4f527af",
+          "path": "tests/skill/skill_fixture_helpers.py"
+        },
+        {
+          "identity": "sha256:97cf239d9f9f17d4649c15653c0af1825d2a7ad37ea698c9ac0d11d73ee72e18",
+          "path": "tests/skill/skill_resource_tests.py"
+        },
+        {
+          "identity": "sha256:a3895ad5aeaf55e6fdc83e68b75bfe7af41194669375829fd1324ffb1026bda0",
+          "path": "tests/skill/skill_shared_policy_tests.py"
+        }
+      ],
+      "summary": "Full local CI exited0 with 1242 focused result rows and Selected CI checks passed. All123 frozen subjects unchanged during the run. Native selected checks include Release/Skill refinement, boundary/catalog admission, selector/executor composition, package/resource parity and current record validation. Independent preliminary reviewer also executed affected native groups and inspected every removed method/fixture contribution. No hostedCI, semantic execution of proposed review procedures, compatibility retirement or final branch readiness is claimed by this evidence."
+    },
+    {
+      "actor": {
+        "id": "focused-final-verifier",
+        "role": "verify"
+      },
+      "id": "focused-final-verification-checks",
+      "procedure": "Fresh final Verify: python -B scripts/select-validation.py --mode pr --base 7fc1aeb992798ea4e178f57d08439acb08095f7d --head cea6225948766c92d48d8a38cab65fc4d372b32b; python -B scripts/validate-governed-lifecycle-cli.py --revision cea6225948766c92d48d8a38cab65fc4d372b32b; python -B scripts/validate-change-metadata.py docs/changes/2026-09-17-model-test-design/change.json; git diff 7fc1aeb992798ea4e178f57d08439acb08095f7d HEAD --check; git diff --check; git diff --cached --check. Resolved repository with gh repo view xiongxianfei/rigorloop --json id,nameWithOwner,url, Git remote URLs/branch/revisions/merge-base, and git ls-remote origin refs/heads/main. Scoped full CLI context established final verify/ready, completed m1, current required approvals and all reporter dispositions. CLI subject inspection independently matched 107 unique relied-on subjects; frozen-map SHA256/deletion-state comparison checked all123 paths. Read actual full local CI and record-followup logs and compared selected check populations rather than rerunning unchanged engineering suites.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:016f50b9dcebd278c84510de0386f15314834bf00cd107cbbc717ed5d4a05260",
+          "path": "AGENTS.md"
+        },
+        {
+          "identity": "sha256:b08e342159f367131963237b00b284dfc052686f112ebab9824457385de42af8",
+          "path": "CONSTITUTION.md"
+        },
+        {
+          "identity": "sha256:d44f823cc586a030e8caffac3884846b4ad4ed960ad9747dd416c15feae73f65",
+          "path": "CONTRIBUTING.md"
+        },
+        {
+          "identity": "sha256:11d823616d495a0c40954488f0680d6c3c150da94d88b664f665dc9b7b110746",
+          "path": "README.md"
+        },
+        {
+          "identity": "sha256:0b2554c4f77129d6c13c63608da9bb841766b272fb24d1e986cc2ab5afce535d",
+          "path": "docs/design/engineering/engineering.md"
+        },
+        {
+          "identity": "sha256:71f62f8d192ef1096f7c712911b00cd27138618c96697e9ff242a23e4266eb4f",
+          "path": "docs/design/engineering/packaging.md"
+        },
+        {
+          "identity": "sha256:3884d83d216baa04909173b0577e9f40c42d81843fdb0e1f5011c28aa4796149",
+          "path": "docs/design/engineering/release/release.md"
+        },
+        {
+          "identity": "sha256:29413ca35262641fddf4eb0f23c03809b201bdcdd6871509560a243743e0b838",
+          "path": "docs/design/engineering/release/test-design/cases/approval-recovery.json"
+        },
+        {
+          "identity": "sha256:d1ef0b53f7345493126733aad6e0ebbd31ed95fa55a074b5509c91077aae7b02",
+          "path": "docs/design/engineering/release/test-design/cases/candidate-identity.json"
+        },
+        {
+          "identity": "sha256:3294a288bffa853c567d2130aa6a3452887e1a75427451640716060e9d9e5692",
+          "path": "docs/design/engineering/release/test-design/cases/evidence-closeout.json"
+        },
+        {
+          "identity": "sha256:ca79bb95582b99169d72fe349f3630fc7c03acdeb8e29fc1388ebc4c3fc8da55",
+          "path": "docs/design/engineering/release/test-design/cases/maintenance-review.json"
+        },
+        {
+          "identity": "sha256:a555c08e09eded21e43093c156638377099bf98620227c4bee9bc9dd949699ef",
+          "path": "docs/design/engineering/release/test-design/cases/preflight.json"
+        },
+        {
+          "identity": "sha256:a351dccb489813dfbbdce3b3d9372e5c6edc80b7f31c6321c3f240d4ab0dcb94",
+          "path": "docs/design/engineering/release/test-design/cases/preparation.json"
+        },
+        {
+          "identity": "sha256:ac0b66837d9af57739b99ea41879a913ec2de6140dc250ed759d36b9190ee524",
+          "path": "docs/design/engineering/release/test-design/cases/profile-input.json"
+        },
+        {
+          "identity": "sha256:94ce4b1e879899cb1306a6e27a039c6e5d00d8b90c94213ccb370f1ab9a48a0c",
+          "path": "docs/design/engineering/release/test-design/test-cases.json"
+        },
+        {
+          "identity": "sha256:f54b133a75badd5fc307cdcc8b178f0b165f544d32d12c1ce907ae2a9c52dd16",
+          "path": "docs/design/engineering/release/test-design/test-design.md"
+        },
+        {
+          "identity": "sha256:d395ef73bf53cf392e20dd91f681ca2d926af31ec97b47da0f8e9491cb1dd3e1",
+          "path": "docs/design/engineering/validation.md"
+        },
+        {
+          "identity": "sha256:1bfd64a58945eb4cee053e8771baa0599a8f7d0e037f445801086cbec8b4bf00",
+          "path": "docs/design/skill/assessment.md"
+        },
+        {
+          "identity": "sha256:434d4232d140d5d8692ec0592ceb96e10de2e6dc4f703b916d8e825a7fe3a23e",
+          "path": "docs/design/skill/authoring/authoring.md"
+        },
+        {
+          "identity": "sha256:13fa3e7dc23c59dda49e9a586621d4d6df035a4c06591f1df7dae90009469fcf",
+          "path": "docs/design/skill/authoring/design.md"
+        },
+        {
+          "identity": "sha256:5ba5e475429f99b6a18319777a98c387cc75bac3e6844dc0a6c6357ca652583b",
+          "path": "docs/design/skill/authoring/plan.md"
+        },
+        {
+          "identity": "sha256:7f4dca46594b7c6dd020ebaf63fa816149861c7fc4a720180f142de9c457d091",
+          "path": "docs/design/skill/authoring/test-design/cases/correction-reconciliation.json"
+        },
+        {
+          "identity": "sha256:b2e83fe05600347fd620e5b24be8bdc4569f6ca862557e8e70d209dbb331702c",
+          "path": "docs/design/skill/authoring/test-design/cases/refinement.json"
+        },
+        {
+          "identity": "sha256:c9fc56da4499a13afa689a33891475bad5e91ddbbf86c26410ca28c196b4e0d7",
+          "path": "docs/design/skill/authoring/test-design/cases/scope-handoff.json"
+        },
+        {
+          "identity": "sha256:35fd40fd6f52465f51f335079cb0151fe7d96220ea55b1b8d50329365e3106ec",
+          "path": "docs/design/skill/authoring/test-design/test-cases.json"
+        },
+        {
+          "identity": "sha256:a0009f8d0bc04b1fb137c3184b039a126a79c8029339829d68a98ee1430df008",
+          "path": "docs/design/skill/authoring/test-design/test-design.md"
+        },
+        {
+          "identity": "sha256:256a57936e1fe3de7b9d7c86045ee281867def8147c59661cc1284e0cb37bbfa",
+          "path": "docs/design/skill/skill.md"
+        },
+        {
+          "identity": "sha256:b8cf15dddf0611227860248a6cd92fe6ebb6b4b84ff5f4f0a79aa6a9eef56145",
+          "path": "docs/design/skill/test-design/cases/capability-composition.json"
+        },
+        {
+          "identity": "sha256:b2cd74b3690c17afbf40b62019e607592beaecd86dba3d3885cef9745e9ebea2",
+          "path": "docs/design/skill/test-design/cases/capability-contract.json"
+        },
+        {
+          "identity": "sha256:153c7941dd4c9bec09a8368ff8605d6469c3efa4f5aac1e6e51d42ecdb7c5407",
+          "path": "docs/design/skill/test-design/cases/implementation-handoffs.json"
+        },
+        {
+          "identity": "sha256:3b798f4feda2327f9d7da5793eba11160c259a1ff825914127225cd184302e71",
+          "path": "docs/design/skill/test-design/cases/recording-composition.json"
+        },
+        {
+          "identity": "sha256:839291d455ee3f93f8254e539a5577c6ce36389669ce0e3cd44ec3ced0e116ef",
+          "path": "docs/design/skill/test-design/cases/resource-contract.json"
+        },
+        {
+          "identity": "sha256:872bd368736f46ef828cac1213cccccb803500fa164ef88ecc1393ee470f490c",
+          "path": "docs/design/skill/test-design/test-cases.json"
+        },
+        {
+          "identity": "sha256:b2f0f6fbcc557fba388f60089eae4f1ceebff943463277fc917f7f19e1e976cd",
+          "path": "docs/design/skill/test-design/test-design.md"
+        },
+        {
+          "identity": "sha256:00d18256f4a639fac753edab2d8b203e20cf41632184f6981c44ce9bd14dedd2",
+          "path": "docs/design/skill/workflow.md"
+        },
+        {
+          "identity": "sha256:873e56982d331107c50914a7e1f4f9264a37ad020c5cc7026376c17488c757f1",
+          "path": "docs/design/system.md"
+        },
+        {
+          "identity": "sha256:f478b20a81dcd83066fabf637764c5781d305102938294bdb29dcfd4c4e87192",
+          "path": "docs/design/test-design/README.md"
+        },
+        {
+          "identity": "sha256:7f66ebb9f51a66f278fd1a17ca7c422e015335f5344c9ea4769321fab9377bdf",
+          "path": "docs/design/test-design/rules.md"
+        },
+        {
+          "identity": "sha256:e29292c62efde67524e3d576003df30f396394dd5206d180871f05d3b58cfe65",
+          "path": "docs/plan.md"
+        },
+        {
+          "identity": "sha256:4abdc216a753c038abdbd3e8310ed1a4f8d8974ea6f06af580f87f83dac292fc",
+          "path": "docs/plans/2026-09-12-unified-validation-implementation.md"
+        },
+        {
+          "identity": "sha256:8ecdabdc6a3233609978a3fd3a0f900d6f0f6f9a5038777f49e48add50240304",
+          "path": "docs/plans/2026-09-14-tooling-organization.md"
+        },
+        {
+          "identity": "sha256:66602ff712ac5a31dbe5a3caab3d4cf63589a160b323e1b56525a30222494fae",
+          "path": "docs/plans/2026-09-15-risk-driven-test-redesign.md"
+        },
+        {
+          "identity": "sha256:101e07a879f54a88cf19a7ba213e5e798de89a8de56bbe77a74bc896f0b1b3cb",
+          "path": "docs/plans/2026-09-16-test-design-and-suite-organization.md"
+        },
+        {
+          "identity": "sha256:d515dec3b57b9a58abf5b04deaddeae061e684f0f825dcb2951eb2c2aad09a0e",
+          "path": "docs/plans/2026-09-17-model-test-design.md"
+        },
+        {
+          "identity": "sha256:c1d196e7f4b410d22b05c65cffac261282652e09a6afccb4b9d00d57f1646465",
+          "path": "docs/proposals/2026-09-17-model-test-design.md"
+        },
+        {
+          "identity": "sha256:0d8ee38a20a01fc684086939d5aafa68c24a0ca95127d6e37ec31119f01960c9",
+          "path": "scripts/ci.sh"
+        },
+        {
+          "identity": "sha256:be591b140fc7892eb41c6dd05025bc56453f25f49a24bf7244f86ba5898b02cd",
+          "path": "scripts/lib/release/release_candidate.py"
+        },
+        {
+          "identity": "sha256:800ff1e7a5a91779d269ecdb59318030d669adac2f237bc72f85474e376aed2c",
+          "path": "scripts/lib/validation/model_layout.py"
+        },
+        {
+          "identity": "sha256:a7f5068ca56191861f8911154692f8f4d47188b14e86d6ccc74320028d4fd870",
+          "path": "scripts/lib/validation/test_design_validation.py"
+        },
+        {
+          "identity": "sha256:dfec3b4634c8c02f4846d2eb2a2c1c59b0e99cbc42f75d92a65e4d52e51d692c",
+          "path": "scripts/lib/validation/validation_execution.py"
+        },
+        {
+          "identity": "sha256:d49448c1ce8d457792748f0a13b58d212ffd94c8f421fc315d10439ab06888de",
+          "path": "scripts/lib/validation/validation_selection.py"
+        },
+        {
+          "identity": "sha256:6f6bb4e502c529ec423620c53eda49171dfbf4c3e9f1abd6c65e914476d7da37",
+          "path": "scripts/validate-boundary-first.py"
+        },
+        {
+          "identity": "sha256:613cab39742fde417c98dfad9f98aaa4210cd53f06a7b30e92a5159704d00aea",
+          "path": "skills/bugfix/SKILL.md"
+        },
+        {
+          "identity": "sha256:01950a411225f9a4663e07d04e00db57cde94c25409b887ccffba23ca57bbe74",
+          "path": "skills/bugfix/references/test-maintenance.md"
+        },
+        {
+          "identity": "sha256:b1ff4b8501e384ab52e0af0952c47a19924d902ed2f0bfc211680639ff983878",
+          "path": "skills/bugfix/references/test-quality.md"
+        },
+        {
+          "identity": "sha256:8f6ee79661005fbe427a094b0a33743b0903880c2ec80053d3d64813068458ee",
+          "path": "skills/ci-maintenance/SKILL.md"
+        },
+        {
+          "identity": "sha256:01950a411225f9a4663e07d04e00db57cde94c25409b887ccffba23ca57bbe74",
+          "path": "skills/ci-maintenance/references/test-maintenance.md"
+        },
+        {
+          "identity": "sha256:b1ff4b8501e384ab52e0af0952c47a19924d902ed2f0bfc211680639ff983878",
+          "path": "skills/ci-maintenance/references/test-quality.md"
+        },
+        {
+          "identity": "sha256:c5cd8e9f975d5b1ccbcd78894820141639a8e318ab3cf1c76bd799c85485e5ab",
+          "path": "skills/code-review/SKILL.md"
+        },
+        {
+          "identity": "sha256:01950a411225f9a4663e07d04e00db57cde94c25409b887ccffba23ca57bbe74",
+          "path": "skills/code-review/references/test-maintenance.md"
+        },
+        {
+          "identity": "sha256:b1ff4b8501e384ab52e0af0952c47a19924d902ed2f0bfc211680639ff983878",
+          "path": "skills/code-review/references/test-quality.md"
+        },
+        {
+          "identity": "sha256:60f3512c98373069971b611c7d5589732ec40cd70407097abf44c872b5e427d2",
+          "path": "skills/delivery-review/SKILL.md"
+        },
+        {
+          "identity": "sha256:01950a411225f9a4663e07d04e00db57cde94c25409b887ccffba23ca57bbe74",
+          "path": "skills/delivery-review/references/test-maintenance.md"
+        },
+        {
+          "identity": "sha256:b1ff4b8501e384ab52e0af0952c47a19924d902ed2f0bfc211680639ff983878",
+          "path": "skills/delivery-review/references/test-quality.md"
+        },
+        {
+          "identity": "sha256:d42b6b5243a14a6c4e6dd47a141a1dabf87dd2dbbf1fbaa07c3fdcdc3939e27e",
+          "path": "skills/design-review/SKILL.md"
+        },
+        {
+          "identity": "sha256:b1ff4b8501e384ab52e0af0952c47a19924d902ed2f0bfc211680639ff983878",
+          "path": "skills/design-review/references/test-quality.md"
+        },
+        {
+          "identity": "sha256:6cfea6b2fd5b74803d4a568b5f5aaab8c756de874002ec54a79376a8b37052ea",
+          "path": "skills/design/SKILL.md"
+        },
+        {
+          "identity": "sha256:b098b895208405b724733561d381f2357454efe6343225eb6ef56ff15d952ed6",
+          "path": "skills/design/assets/design-skeleton.md"
+        },
+        {
+          "identity": "sha256:f62dc3c4507a27424672e695ec68f1f81ba27f1f26dd4c5b5abc4f25f671879d",
+          "path": "skills/design/references/model-authoring.md"
+        },
+        {
+          "identity": "sha256:2dd8b4802d65932cdfb4c844b3a3fb468a58716da442c3a1143f5689c414ce08",
+          "path": "skills/design/references/system-composition.md"
+        },
+        {
+          "identity": "sha256:b1ff4b8501e384ab52e0af0952c47a19924d902ed2f0bfc211680639ff983878",
+          "path": "skills/design/references/test-quality.md"
+        },
+        {
+          "identity": "sha256:4af4abf9b2c3834e480dfd6708ca78d926e44649f98a62de98e5d666bf32c05a",
+          "path": "skills/implement/SKILL.md"
+        },
+        {
+          "identity": "sha256:01950a411225f9a4663e07d04e00db57cde94c25409b887ccffba23ca57bbe74",
+          "path": "skills/implement/references/test-maintenance.md"
+        },
+        {
+          "identity": "sha256:b1ff4b8501e384ab52e0af0952c47a19924d902ed2f0bfc211680639ff983878",
+          "path": "skills/implement/references/test-quality.md"
+        },
+        {
+          "identity": "sha256:435dd20135b4e61e0c608099fe229fb23fc42d87d8beeda6d3347821106825c3",
+          "path": "skills/plan/SKILL.md"
+        },
+        {
+          "identity": "sha256:01950a411225f9a4663e07d04e00db57cde94c25409b887ccffba23ca57bbe74",
+          "path": "skills/plan/references/test-maintenance.md"
+        },
+        {
+          "identity": "sha256:b1ff4b8501e384ab52e0af0952c47a19924d902ed2f0bfc211680639ff983878",
+          "path": "skills/plan/references/test-quality.md"
+        },
+        {
+          "identity": "sha256:7ee7161b74939da873168b0c3dffe9af4a2caa1f09f1f8292582183eeab86399",
+          "path": "skills/route/SKILL.md"
+        },
+        {
+          "identity": "sha256:01950a411225f9a4663e07d04e00db57cde94c25409b887ccffba23ca57bbe74",
+          "path": "skills/route/references/test-maintenance.md"
+        },
+        {
+          "identity": "sha256:b1ff4b8501e384ab52e0af0952c47a19924d902ed2f0bfc211680639ff983878",
+          "path": "skills/route/references/test-quality.md"
+        },
+        {
+          "identity": "sha256:719e3781405d82299f2ef4ee3ad141a969bfbf2df23c83c38345ec4b70663f2c",
+          "path": "skills/verify/SKILL.md"
+        },
+        {
+          "identity": "sha256:01950a411225f9a4663e07d04e00db57cde94c25409b887ccffba23ca57bbe74",
+          "path": "skills/verify/references/test-maintenance.md"
+        },
+        {
+          "identity": "sha256:b1ff4b8501e384ab52e0af0952c47a19924d902ed2f0bfc211680639ff983878",
+          "path": "skills/verify/references/test-quality.md"
+        },
+        {
+          "identity": "sha256:01950a411225f9a4663e07d04e00db57cde94c25409b887ccffba23ca57bbe74",
+          "path": "templates/shared/test-maintenance.md"
+        },
+        {
+          "identity": "sha256:b1ff4b8501e384ab52e0af0952c47a19924d902ed2f0bfc211680639ff983878",
+          "path": "templates/shared/test-quality.md"
+        },
+        {
+          "identity": "sha256:32ced1220200a8755f7bdcc200789431ce740667585e3937d6b1b629abc79666",
+          "path": "tests/engineering/release/release_fixture_helpers.py"
+        },
+        {
+          "identity": "sha256:cbe52747c9a4aa4ff6051993001e908fa0dd567ddbd0f9f9455352bb1f65d620",
+          "path": "tests/engineering/release/release_preparation_tests.py"
+        },
+        {
+          "identity": "sha256:1d759b4600a7808088e4bf6691326083482b8b79b6b0fa725635a619d8111b44",
+          "path": "tests/engineering/release/release_profile_tests.py"
+        },
+        {
+          "identity": "sha256:a2aa226c47b4c2c560b90f191bc1dbb28e209ff3f6c23ebeda59ca298b81b58b",
+          "path": "tests/engineering/validation/boundary_command_tests.py"
+        },
+        {
+          "identity": "sha256:67df6a857cc184bf7b828a1cc01da98b39fd0c8a8e86f158f109825fe0732a45",
+          "path": "tests/engineering/validation/boundary_fixture_helpers.py"
+        },
+        {
+          "identity": "sha256:0ddfa8a37d2f30c53b714b94864900bdbb654ba98b05790596395d23e0673e41",
+          "path": "tests/engineering/validation/boundary_handoff_tests.py"
+        },
+        {
+          "identity": "sha256:156481b0448db5ad62a61c0a37488345c1d716b4537b6a160f341734396a4191",
+          "path": "tests/engineering/validation/catalog_admission_fixture_helpers.py"
+        },
+        {
+          "identity": "sha256:2fac149cc7a1be1324aca3df68d48f51d8dec62cf4895352acb9e975f919b079",
+          "path": "tests/engineering/validation/catalog_admission_tests.py"
+        },
+        {
+          "identity": "sha256:574b06229bc0dba40212510ad9e26cdffb54cdc609c0da4898f194f63fb0c8c5",
+          "path": "tests/engineering/validation/selection_contract_tests.py"
+        },
+        {
+          "identity": "sha256:f016a8714a8964f56a71ca86e8b81549ac4580089800c9d1a29bd5f047ab87c9",
+          "path": "tests/engineering/validation/selection_git_tests.py"
+        },
+        {
+          "identity": "sha256:37f387448f8f49c6c15320fbff560fb268318efe43e399d03f1643c9bb5023bc",
+          "path": "tests/engineering/validation/test-boundary-first-validation.py"
+        },
+        {
+          "identity": "sha256:a219d8861fcd0a3a01fc9795a13052aafc062344e070fc199a241467c33e75bc",
+          "path": "tests/skill/skill_design_resource_tests.py"
+        },
+        {
+          "identity": "sha256:11a33e6e80f7c37d3599d5bbc927a87b63c489af2934204c012f42bcf4f527af",
+          "path": "tests/skill/skill_fixture_helpers.py"
+        },
+        {
+          "identity": "sha256:97cf239d9f9f17d4649c15653c0af1825d2a7ad37ea698c9ac0d11d73ee72e18",
+          "path": "tests/skill/skill_resource_tests.py"
+        },
+        {
+          "identity": "sha256:a3895ad5aeaf55e6fdc83e68b75bfe7af41194669375829fd1324ffb1026bda0",
+          "path": "tests/skill/skill_shared_policy_tests.py"
+        }
+      ],
+      "summary": "Fresh PR selection passed:126 changed paths,23 checks,no blockers/unclassified inputs,broad_smoke_required=false. Exact committed record snapshot passed:12 current stores validated,170 noncurrent excluded. Current focused metadata and all diff hygiene checks passed. Git tree was clean at verified HEAD; remote main and merge-base equal the pinned base; GitHub repository ID R_kgDOSGsVUQ agrees with both origin transports. All107 relied-on subject identities match; no basis conflicts. All1242 full-local-CI result rows are passed;123 frozen paths changed afterward only at attributable change/decision records. The100 engineering subjects remain identical to execution and distinct final review. Eight prior record checks passed; newly committed final review/routing suffix contains no engineering changes. PR current-record snapshot is the newly required check beyond equivalent allocated local proof. Hosted CI is unobserved."
+    }
+  ],
+  "schema_version": 3
+}
