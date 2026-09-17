@@ -106,14 +106,16 @@
       "given": {
         "fixture": "review-package",
         "conditions": [
-          "Use one approved milestone with named write scope and proof, plus a counterexample whose package lacks a required Design decision."
+          "Use one approved milestone with named write scope and proof, plus a counterexample whose package lacks a required Design decision.",
+          "On fresh packets compare IP0 isolated work, IP1 approved planned work and IP2 planned work with valid armed authority. Add a known missing in-scope fixture/assertion and an unplanned automation request as counterexamples."
         ]
       },
       "when": [
         "Trace proof first, scoped implementation and the proposed handoff to Code Review."
       ],
       "then": [
-        "Valid work reports exact changed subjects and actual proof for independent review; the missing decision returns to its owner before dependent implementation. A green check does not close the milestone or replace final whole-change review/Verify."
+        "Valid work reports exact changed subjects and actual proof for independent review; the missing decision returns to its owner before dependent implementation. A green check does not close the milestone or replace final whole-change review/Verify.",
+        "Handoff is scope-complete: known in-scope defects or missing required proof are corrected before review, or reported as an owned blocker rather than completed work. Core results apply to all profiles, planned fields only to IP1/IP2 and armed fields only to IP2. Unplanned automation rejects; late planned/armed triggers load their complete method without expanding authority."
       ],
       "realization": {
         "state": "proposed",
@@ -143,14 +145,16 @@
       "given": {
         "fixture": "review-package",
         "conditions": [
-          "Use the same synthetic defect: a batch importer commits row 1 before rejecting invalid row 2. A known contract requires an unchanged destination. On fresh requests select diagnose-only, proof-authoring limited to tests, or production correction backed by a failing proof. No external mutation is authorized."
+          "Use the same synthetic defect: a batch importer commits row 1 before rejecting invalid row 2. A known contract requires an unchanged destination. On fresh requests select diagnose-only, proof-authoring limited to tests, or production correction backed by a failing proof. No external mutation is authorized.",
+          "Within the fix request compare feasible but missing automated proof, unresolved test feasibility, conflicting proof, and infeasible automation with a complete deterministic alternative. The alternative supplies the exact inputs, original preserved destination, observed incorrect partial write, assumptions and limits."
         ]
       },
       "when": [
         "Inspect proposed files/actions before mutation for each request. Compare diagnosis that edits production, proof-authoring that patches the importer and a production fix offered while the cause or intended behavior is unknown."
       ],
       "then": [
-        "Diagnosis changes no tracked or external state. Proof-authoring changes only its authorized tests/fixtures. Production correction needs the known cause/contract and failing automated proof or the documented complete deterministic alternative; unknown behavior returns to Design. Changed implementation hands off to independent Code Review without claiming autonomous continuation."
+        "Diagnosis changes no tracked or external state. Proof-authoring changes only its authorized tests/fixtures. Production correction needs the known cause/contract and failing automated proof or the documented complete deterministic alternative; unknown behavior returns to Design. Changed implementation hands off to independent Code Review without claiming autonomous continuation.",
+        "Feasible missing proof selects proof authoring before production mutation; unresolved feasibility selects its resolution; conflicting proof blocks. Only established infeasibility plus the complete independent alternative can replace automated reproduction. The result distinguishes diagnosis-complete, diagnosis-incomplete, fix-applied, routed-to-owner and blocked without reporting intermediate actions as terminal completion."
       ],
       "realization": {
         "state": "proposed",
@@ -303,14 +307,16 @@
       "given": {
         "fixture": "review-package",
         "conditions": [
-          "Two separately identified workflow targets ci-one.yml at F0 and ci-two.yml at G0 have authorized ordered-dependent revisions F1/G1. The declared intermediate state F1/G0 is valid. The first write commits F1; interruption occurs before the second. On retry another actor has changed ci-two.yml to G2."
+          "Two separately identified workflow targets ci-one.yml at F0 and ci-two.yml at G0 have authorized ordered-dependent revisions F1/G1. The declared intermediate state F1/G0 is valid. The first write commits F1; interruption occurs before the second. On retry another actor has changed ci-two.yml to G2.",
+          "In a separate starting packet the same two targets require an atomic group and the environment provides only single-file guards; no safe intermediate state exists."
         ]
       },
       "when": [
         "Inspect the partial report and the retry packet. Compare a report claiming both targets completed and a retry using the original G0 without rereading current targets."
       ],
       "then": [
-        "Report ci-one.yml completed at F1 and ci-two.yml pending; make no atomic-group or complete-success claim. Reassess both current identities and ordering before retry; preserve G2 while resolving its changed basis. No hosted CI pass or external permission is inferred."
+        "Report ci-one.yml completed at F1 and ci-two.yml pending; make no atomic-group or complete-success claim. Reassess both current identities and ordering before retry; preserve G2 while resolving its changed basis. No hosted CI pass or external permission is inferred.",
+        "The atomic-group-required packet blocks before either target is written. Ordinary independent targets and safe ordered-dependent changes do not imply multi-file transaction support."
       ],
       "realization": {
         "state": "proposed",
@@ -356,6 +362,88 @@
           "Perform this procedure against the exact selected package and record the independent assessment; text assertions do not establish this outcome."
         ]
       }
+    },
+    {
+      "id": "SKL-IH-008",
+      "title": "CI classification selects one complete assembly with independent additions",
+      "requirements": [
+        "SKL-SR-04",
+        "SKL-SR-24",
+        "SKL-SR-27",
+        "SKL-SR-29"
+      ],
+      "technique": "walkthrough",
+      "method": "independent-review",
+      "boundary": "review",
+      "realization": {
+        "state": "proposed",
+        "tests": [],
+        "gaps": [
+          "Perform this independent procedure against the actual selected package and concrete decision/output packets; structural checks do not establish semantic selection, authority or hosted observations."
+        ]
+      },
+      "risk": "Combined coverage, structural or privilege conditions select an ordinary path that omits a required resource or authority.",
+      "target": {
+        "path": "docs/design/skill/skill.md",
+        "section": "CI assembly selection and resources"
+      },
+      "given": {
+        "fixture": "review-package",
+        "conditions": [
+          "Use fresh private request packets with exact create/revise/review operation, repository-file target, provider, concern, structural intent and privilege. Every authoring control supplies exact file authority and a declared safe write primitive; approved privilege includes all required Design/review choices.",
+          "Compare ordinary GitHub create, narrow revision, coverage revision, structural revision with and without coverage, privileged create/revise with independent structural/coverage additions, project-native authoring, and narrow/coverage review including external-state targets. Each packet names the actual resources available; no hosted or external settings mutation is authorized.",
+          "Use separate late coverage, structural and privilege additions, an unknown axis value, an external-state authoring request, and a project-native request missing its exact command/write contract."
+        ]
+      },
+      "when": [
+        "Trace the current entrypoint and triggered methods for each packet. Inspect the selected assembly, reached resources, supplied external evidence and proposed permitted writes against the independently declared selection table."
+      ],
+      "then": [
+        "Each valid packet selects exactly one full assembly identity from CIM0–CIM8. Review remains read-only regardless of provider/privilege; project-native authoring selects CIM6 and requires its native contract, without loading GitHub serialization.",
+        "Ordinary create selects CIM2 with risk map and skeleton; narrow/coverage/structural revision selects CIM3/CIM4/CIM5. Coverage adds its risk map independently to structural revision. Approved GitHub privilege selects CIM7/CIM8; revise independently adds coverage and structure resources when triggered.",
+        "Late additions reclassify and load the complete newly required resources before dependent action. Late privilege without exact Design/review stops; unknown values reject before consistency work, and external-state authoring or incomplete native authority cannot become a valid assembly.",
+        "Matching assembly words in a result or passing declaration parsing alone cannot establish unique semantic selection or complete resource reachability."
+      ]
+    },
+    {
+      "id": "SKL-IH-009",
+      "title": "Bounded PR CI repair preserves exact admission and hosted evidence",
+      "requirements": [
+        "SKL-SR-04",
+        "SKL-SR-24",
+        "SKL-SR-27",
+        "SKL-SR-29"
+      ],
+      "technique": "walkthrough",
+      "method": "independent-review",
+      "boundary": "review",
+      "realization": {
+        "state": "proposed",
+        "tests": [],
+        "gaps": [
+          "Perform this independent procedure against the actual selected package and concrete decision/output packets; structural checks do not establish semantic selection, authority or hosted observations."
+        ]
+      },
+      "risk": "A narrow CI repair exception admits changed product behavior or reports a replacement run for a different head as success.",
+      "target": {
+        "path": "docs/design/skill/skill.md",
+        "section": "Bounded PR CI repair"
+      },
+      "given": {
+        "fixture": "review-package",
+        "conditions": [
+          "The compliant packet has already-open PR P, current exact head H0, observed failing hosted run R0 for H0, current applicable Code Review and Verify, no open material finding, already-authoritative check commands and explicit authority for the required file commit and push. The candidate restores only the already-approved workflow command spelling.",
+          "Fresh counterexamples omit one admission prerequisite, change a dependency or product behavior, or present a replacement passing run R1 for H0 after the actual pushed head became H1. Another packet has only local check success and no observed replacement run."
+        ]
+      },
+      "when": [
+        "Inspect admission, allowed correction, selected focused and exact PR checks, proposed commit/push, cumulative changed content, current attribution and the replacement-run/head readback. No real PR, push or hosted operation is performed by this review."
+      ],
+      "then": [
+        "Only the complete authorized restoration packet can use bounded-pr-ci-repair. A missing prerequisite blocks; new product or decision-bearing behavior returns to the earliest applicable owner rather than using the exception.",
+        "The admitted correction runs the required authoritative checks, reports their actual outcomes and observes the replacement hosted run for the actual current pushed head. R1 for H0 cannot prove H1; local-only success reports hosted CI as unobserved.",
+        "Existing assessment/evidence may remain usable only while its decision basis remains unchanged under Assessment. The exception cannot create external permission, alter another owner’s decision, fabricate refreshed Verify or claim completion from unobserved hosted results."
+      ]
     }
   ]
 }
