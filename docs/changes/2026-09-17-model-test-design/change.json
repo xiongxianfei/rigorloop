@@ -1,11 +1,11 @@
 {
   "activity": {
     "owner": {
-      "id": "focused-final-reviewer",
-      "role": "review"
+      "id": "focused-final-verifier",
+      "role": "verify"
     },
-    "reason": "focused-m1-code-review approved completeM1 with current proof and resolved findings. All implementation complete; select distinct fresh final whole-change Code Review before Verify.",
-    "stage": "code-review",
+    "reason": "M1 is completed and distinct focused-final-code-review approved the complete current change with no unresolved material findings. Select final Verify including exact Git/PR handoff basis; publication/merge remains outside scope.",
+    "stage": "verify",
     "status": "ready"
   },
   "applicability": [
@@ -97,6 +97,15 @@
       },
       "path": "docs/changes/2026-09-17-model-test-design/reviews/focused-m1-code-review.json",
       "reason": "Complete current M1 diff assessed against exact approved proposal/Design/Delivery and passing frozen engineering proof; prior material concern independently resolved.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "focused-final-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-17-model-test-design/reviews/focused-final-code-review.json",
+      "reason": "Fresh independent final whole-change assessment after M1 on exact current focused engineering subjects; supports distinct Verify without claiming its outcome.",
       "value": "current"
     }
   ],
@@ -230,6 +239,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-17-model-test-design/reviews/focused-m1-code-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-17-model-test-design/reviews/focused-final-code-review.json"
     }
   ],
   "schema_version": 3,
