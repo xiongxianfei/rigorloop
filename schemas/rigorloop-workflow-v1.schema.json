@@ -13,7 +13,6 @@
       "properties": {
         "change-record": { "$ref": "#/$defs/location" },
         "proposal": { "$ref": "#/$defs/location" },
-        "spec": { "$ref": "#/$defs/location" },
         "architecture": { "$ref": "#/$defs/location" },
         "adr": { "$ref": "#/$defs/location" },
         "plan": { "$ref": "#/$defs/location" },
@@ -34,7 +33,7 @@
       "properties": {
         "path_template": { "type": "string", "minLength": 1 },
         "owner": {
-          "enum": ["workflow", "proposal", "spec", "architecture", "plan", "proposal-review", "design-review", "delivery-review", "code-review", "implement", "verify"]
+          "enum": ["workflow", "proposal", "architecture", "plan", "proposal-review", "design-review", "delivery-review", "code-review", "implement", "verify"]
         }
       }
     }

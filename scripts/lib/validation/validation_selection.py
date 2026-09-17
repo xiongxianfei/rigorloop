@@ -606,12 +606,7 @@ def catalog_command(
         )
     if check_id == "boundary_first.validate":
         args = ["python", "scripts/validate-boundary-first.py", "--check"]
-        spec_paths: set[str] = set()
-        for path in paths:
-            if re.fullmatch(r"specs/[^/]+\.test\.md", path):
-                spec_paths.add(path)
-            elif re.fullmatch(r"specs/[^/]+\.md", path) and path != "specs/README.md":
-                spec_paths.add(path)
+        spec_paths = {path for path in paths if path.startswith("specs/")}
         for path in sorted(spec_paths):
             args.extend(["--path", path])
         return _join(*args)
@@ -1198,6 +1193,14 @@ def _apply_path_selection(
     tracked_deletion: bool,
     support_subject_cache: dict[str, set[str] | None],
 ) -> None:
+    if path.startswith("specs/") and not _proven_prose_deletion(
+        path, repo_root=repo_root, tracked_deletion=tracked_deletion
+    ):
+        blocking_results.append({
+            "code": "unsupported-feature-format", "path": path,
+            "message": "Feature/proof operations are unsupported; use living model documents."
+        })
+
     if category == "tooling-package":
         for check_id in _TOOL_PACKAGE_CHECKS[path]:
             _add_check(selected, check_id, "Changed package initializer requires all descendant consumer checks.")

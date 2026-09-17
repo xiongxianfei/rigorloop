@@ -127,7 +127,6 @@ Read `references/delivery-review-recording-and-settlement.md` before dependent r
 
 - READ `references/requirement-to-delivery-model.md` when tracing approved design into allocated milestones, work, and proof.
 - READ `references/boundary-first-method-v1.md` initially for every `delivery-review` invocation.
-- READ `references/boundary-first-proof-v1.md` after the method reference when the delivery package consumes a `boundary-first-v1` proof map.
 - READ `references/delivery-review-recording-and-settlement.md` for every durable or formal review before recording or settlement.
 - COPY `assets/review-result-skeleton.md` when producing every result. Omit inapplicable groups and unfilled placeholders.
 - COPY `assets/material-finding.md` when a material finding exists, once per finding.

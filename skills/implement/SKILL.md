@@ -199,9 +199,9 @@ Start with the exact approved rows cited for the current decision. Expand approv
 
 Add a scenario only for a distinct outcome or material authority, trust, state, timing, recovery, path, compatibility, external-dependency, incident, or regression hazard. Stop when every applicable boundary and selected interaction has direct proof; do not build a Cartesian inventory.
 
-The project's selected contract owns formal adoption and document format. An unmarked feature requiring an adoption decision goes to Design Review; unknown markers and malformed records fail structural validation. Do not infer adoption from a historical activation snapshot or from installing a skill. Explain concisely when a formal record is required or an upstream gap blocks progress; do not request redundant consent for contract-required work. Structural validation cannot author, repair, or approve semantic content.
+The project's selected contract owns formal adoption and document format. Unknown current model markers and malformed records fail structural validation. Feature/proof operations are unsupported; existing documents may be read as sources, and scoped adoption requires explicit project authority. Do not infer adoption from a historical activation snapshot or from installing a skill. Explain concisely when a formal record is required or an upstream gap blocks progress; do not request redundant consent for contract-required work. Structural validation cannot author, repair, or approve semantic content.
 
-Stop on missing boundary or proof ownership and implement against the approved model and proof map.
+Stop on missing boundary or proof ownership and implement against the approved model and Delivery allocation.
 
 Before changing production behavior, confirm every implemented boundary or selected interaction has an approved owner and proof obligation. Stop implementation before mutation when an owner is absent, an ID is stale or unknown, required proof is missing, or implementation exposes a new boundary that requires an upstream decision.
 

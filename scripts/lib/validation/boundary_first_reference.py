@@ -12,7 +12,7 @@ from typing import Mapping
 METHOD_VERSION = "boundary-first-v1"
 RESOURCE_MANIFEST = Path("scripts/resources/boundary-first/boundary-first-resources.yaml")
 RESOURCE_MANIFEST_SHA256 = (
-    "d7806a57f7cf4d4b6329da679d8b1e96189908833d8fa8337d5be45ae9a8cb18"
+    "fe19865387955cf3354f7aff285e5a67c6fa2260f313e379a4a39eab888276c2"
 )
 CANONICAL_REFERENCE = Path(
     "templates/shared/boundary-first-method-v1.md"
@@ -28,17 +28,12 @@ GOVERNED_SKILLS = (
     "code-review",
     "verify",
 )
-RESOURCE_IDS = ("compact-core", "feature-authoring", "proof")
+RESOURCE_IDS = ("compact-core",)
 RESOURCE_IDENTITY_SHA256 = {
     "compact-core": (
         "89337cf5da8462ad2afa0c50e04fb7233beea7ce030a049fa3a1695fc57ea2d0"
     ),
-    "feature-authoring": (
-        "7179b4f48e6ba5a1503237f58875f0dc5fe8cdc2c7e77f277c6debee714387b8"
-    ),
-    "proof": (
-        "2b1578894cb078139cf5be7f1193784b639aedcdeefe75ff7a083fd1feb974cc"
-    ),
+
 }
 PROJECTION_MODES = frozenset({"check", "write"})
 _TOP_LEVEL_FIELDS = frozenset(
