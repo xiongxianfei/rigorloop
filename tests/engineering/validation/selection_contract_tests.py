@@ -130,7 +130,13 @@ class SelectionContractChecks:
                     self.assertEqual({c['id'] for c in result.selected_checks}, expected)
 
     def test_unknown_paths_cannot_hide_behind_current_owner(self):
-        for path in ('scripts/unknown-command.py', 'docs/examples/sample.md', 'docs/archive/sample.md'):
+        suffix = '/references/boundary-first-method-v1.md'
+        for root in ('skills/design', '.codex/skills/design', 'dist/adapters/codex/.agents/skills/design'):
+            current = self.select([root + suffix])
+            self.assertEqual(current.status, 'ok', current.to_json_dict())
+            self.assertIn('boundary_first.reference_regression', {c['id'] for c in current.selected_checks})
+        for path in ('scripts/unknown-command.py', 'docs/examples/sample.md', 'docs/archive/sample.md',
+                     'docs/examples' + suffix, 'docs/unknown' + suffix):
             for paths in ((path,), ('scripts/validate-release.py', path)):
                 with self.subTest(paths=paths):
                     result = self.select(paths)
