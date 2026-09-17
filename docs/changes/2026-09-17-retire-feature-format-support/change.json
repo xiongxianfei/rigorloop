@@ -1,10 +1,10 @@
 {
   "activity": {
     "owner": {
-      "id": "feature-retirement-code-reviewer",
+      "id": "feature-retirement-final-reviewer",
       "role": "review"
     },
-    "reason": "M1 implementation, 1039 selected local CI rows and separate TG-METHOD independent assessment passed. Exact engineering subjects recorded; independent milestone Code Review is required before M1 completion.",
+    "reason": "M1 independently approved in feature-retirement-m1-code-review with no findings and unchanged subjects. All implementation complete; fresh final whole-change Code Review required before Verify.",
     "stage": "code-review",
     "status": "ready"
   },
@@ -70,6 +70,15 @@
       },
       "path": "docs/changes/2026-09-17-retire-feature-format-support/evidence.json",
       "reason": "All 28 canonical/plan/catalog subject identities still match the independently assessed package; relevant guidance or projection changes require reassessment. This evidence does not settle M1 or final review.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "feature-retirement-code-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-17-retire-feature-format-support/reviews/feature-retirement-m1-code-review.json",
+      "reason": "Independent complete M1 assessment of exact unchanged engineering and approved Design/Delivery package; permits only milestone closeout by route, not final review or Verify.",
       "value": "current"
     }
   ],
@@ -184,6 +193,10 @@
     {
       "kind": "evidence",
       "path": "docs/changes/2026-09-17-retire-feature-format-support/evidence.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-17-retire-feature-format-support/reviews/feature-retirement-m1-code-review.json"
     }
   ],
   "schema_version": 3,
@@ -203,7 +216,7 @@
         "TEST-SR-07",
         "TEST-SR-08"
       ],
-      "status": "in-progress"
+      "status": "completed"
     }
   ]
 }
