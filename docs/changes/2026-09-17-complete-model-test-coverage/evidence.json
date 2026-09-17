@@ -1,0 +1,454 @@
+{
+  "change_id": "2026-09-17-complete-model-test-coverage",
+  "checks": [
+    {
+      "actor": {
+        "id": "root-design-author",
+        "role": "design"
+      },
+      "id": "design-validation",
+      "procedure": "Executed bash scripts/ci.sh --mode explicit with one --path argument for each of the 47 subjects listed here, in this order, followed by --path docs/proposals/2026-09-17-complete-model-test-coverage.md and --path docs/changes/2026-09-17-complete-model-test-coverage/change.json. Repeated after the recorded Skill correction and two Validation editorial fixes. Also ran python scripts/validate-documentation-prose.py --mode enforce with --path for each of the 29 Markdown subjects, scoped python scripts/validate-boundary-first.py --check on corrected models, and git diff --check / git diff --cached --check. A separate read-only agent audited local Markdown links and requirement accounting.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:110df7b4fffe242bead2bd10117f5ee6db5801562f0efda8f24a7c8331ed087b",
+          "path": "docs/design/system.md"
+        },
+        {
+          "identity": "sha256:8911722251a1682515bd08ec150fd74124e63310eeb4dbf2b759d242dd760d69",
+          "path": "docs/design/skill/authoring/authoring.md"
+        },
+        {
+          "identity": "sha256:714b2e0133698fa341fd1a4fe486a02a552c3c548fb85573950adf3620b0e996",
+          "path": "docs/design/skill/authoring/proposal.md"
+        },
+        {
+          "identity": "sha256:dc0dff84a0df7809bddc4a0bac725c906901fb297ba9876730eceb6b9e49b472",
+          "path": "docs/design/skill/authoring/design.md"
+        },
+        {
+          "identity": "sha256:ffcf0e3e2b93976b0d022cfcb8e4541338fa2c6fe48e981e7d70e216ea4bbb0b",
+          "path": "docs/design/skill/authoring/plan.md"
+        },
+        {
+          "identity": "sha256:cee7a85dea2c74104036dce48103266142fb1067868090e4201fc04f69da47b6",
+          "path": "docs/design/skill/project-foundations/project-foundations.md"
+        },
+        {
+          "identity": "sha256:e54c88e392ab21590fd979b90eeef1ab849d76275abd3530492267759a2c6e5d",
+          "path": "docs/design/skill/project-foundations/vision.md"
+        },
+        {
+          "identity": "sha256:bf587c2a747d7bd0e2e1a055a46ef95bd1c2650a0499143e1ca7588974f4200e",
+          "path": "docs/design/skill/project-foundations/constitution.md"
+        },
+        {
+          "identity": "sha256:982cc807e04ac0b6fc347a9cfbcfae49775ff54b2de0513a1a2686dd2d8e77ba",
+          "path": "docs/design/skill/project-foundations/project-map.md"
+        },
+        {
+          "identity": "sha256:03a2bb4b07669d8e30bda713e6391c9ee55e4e4ac45707dca5866e0cc0e87e2d",
+          "path": "docs/design/skill/discovery/discovery.md"
+        },
+        {
+          "identity": "sha256:1bc0b49bafb481e0065e1e695ab124eed7905c7b448dcfe87781de445b4a1ce3",
+          "path": "docs/design/skill/discovery/explore.md"
+        },
+        {
+          "identity": "sha256:027e2eb2b99584cc732bfbf3f4437a37b55026a318216b801a4784c6e736fbea",
+          "path": "docs/design/skill/discovery/research.md"
+        },
+        {
+          "identity": "sha256:4d49d13c28acaa64833f9d41e0c8907f8894fb0dd75e811ba6f5a71fd725a6fc",
+          "path": "docs/design/skill/learning.md"
+        },
+        {
+          "identity": "sha256:166de8eb3ad83b356ded6acd1b64fbc3ba84f8c10350ed0cc98456b7992bcc46",
+          "path": "docs/design/skill/delivery-handoff.md"
+        },
+        {
+          "identity": "sha256:cc22e14330afaa294ab8a632a6eaef32f8ff7e87336564e100f6111a57268f82",
+          "path": "docs/design/skill/workflow.md"
+        },
+        {
+          "identity": "sha256:1b5443261318067a54a9a334221e409a2c6ff716388303eefc31db2eadb7a59c",
+          "path": "docs/design/skill/assessment.md"
+        },
+        {
+          "identity": "sha256:eef562cbc734960620f545db46d42c392611d0ad779d6cb3c1b44fdf84c178fc",
+          "path": "docs/design/cli/records.md"
+        },
+        {
+          "identity": "sha256:a43782b837eb9acaafe8bf774b6d07a1acb2c0826489e0f5fe6ffb30e2039941",
+          "path": "docs/design/cli/installation.md"
+        },
+        {
+          "identity": "sha256:854d3242170e213b5831985fe569f025d4963e0ac46d34661a25900830bf43b0",
+          "path": "docs/design/engineering/validation.md"
+        },
+        {
+          "identity": "sha256:c1e253f0b38f8c5068997287330054ac20959f1a51a5e8b973e53c5b752f8026",
+          "path": "docs/design/engineering/packaging.md"
+        },
+        {
+          "identity": "sha256:6317d3141237242ed76d744e29931d8229567f061931e84075142c61f4cf734f",
+          "path": "docs/design/engineering/release/release.md"
+        },
+        {
+          "identity": "sha256:9635574034989acca7995e8b1946516abeb66b2b94db7bcb758b3a3ecfb8bb22",
+          "path": "docs/design/skill/skill.md"
+        },
+        {
+          "identity": "sha256:5e103570baf94f3860fcadd6804712c26a12c8c04c587fde888daf8f36a3452d",
+          "path": "docs/design/cli/cli.md"
+        },
+        {
+          "identity": "sha256:c3a4e2ca13ccaa43cfa5e278b027b4e0e0d113e50d66e9af101f388c82973cc7",
+          "path": "docs/design/engineering/engineering.md"
+        },
+        {
+          "identity": "sha256:b12f5fb2e7acc9422878976ef0cff73df640055370e938345f857e1683955990",
+          "path": "docs/design/test-design/README.md"
+        },
+        {
+          "identity": "sha256:2c86bd324860b9757f52ed6b52574fa814ef3ac75871e0c3b77d43327800532d",
+          "path": "docs/design/test-design/rules.md"
+        },
+        {
+          "identity": "sha256:7d6165830c81846344328abb8f0057a2ac99aa6e9085c9a707ff36c03b29eba3",
+          "path": "docs/design/engineering/release/test-design/test-design.md"
+        },
+        {
+          "identity": "sha256:94ce4b1e879899cb1306a6e27a039c6e5d00d8b90c94213ccb370f1ab9a48a0c",
+          "path": "docs/design/engineering/release/test-design/test-cases.json"
+        },
+        {
+          "identity": "sha256:ac0b66837d9af57739b99ea41879a913ec2de6140dc250ed759d36b9190ee524",
+          "path": "docs/design/engineering/release/test-design/cases/profile-input.json"
+        },
+        {
+          "identity": "sha256:a351dccb489813dfbbdce3b3d9372e5c6edc80b7f31c6321c3f240d4ab0dcb94",
+          "path": "docs/design/engineering/release/test-design/cases/preparation.json"
+        },
+        {
+          "identity": "sha256:a555c08e09eded21e43093c156638377099bf98620227c4bee9bc9dd949699ef",
+          "path": "docs/design/engineering/release/test-design/cases/preflight.json"
+        },
+        {
+          "identity": "sha256:d1ef0b53f7345493126733aad6e0ebbd31ed95fa55a074b5509c91077aae7b02",
+          "path": "docs/design/engineering/release/test-design/cases/candidate-identity.json"
+        },
+        {
+          "identity": "sha256:29413ca35262641fddf4eb0f23c03809b201bdcdd6871509560a243743e0b838",
+          "path": "docs/design/engineering/release/test-design/cases/approval-recovery.json"
+        },
+        {
+          "identity": "sha256:3294a288bffa853c567d2130aa6a3452887e1a75427451640716060e9d9e5692",
+          "path": "docs/design/engineering/release/test-design/cases/evidence-closeout.json"
+        },
+        {
+          "identity": "sha256:ca79bb95582b99169d72fe349f3630fc7c03acdeb8e29fc1388ebc4c3fc8da55",
+          "path": "docs/design/engineering/release/test-design/cases/maintenance-review.json"
+        },
+        {
+          "identity": "sha256:4a9890543e6f2d8996ce43eac4e884a8cb827687e03cc0891433addb1b2d69ae",
+          "path": "docs/design/skill/test-design/test-design.md"
+        },
+        {
+          "identity": "sha256:872bd368736f46ef828cac1213cccccb803500fa164ef88ecc1393ee470f490c",
+          "path": "docs/design/skill/test-design/test-cases.json"
+        },
+        {
+          "identity": "sha256:b2cd74b3690c17afbf40b62019e607592beaecd86dba3d3885cef9745e9ebea2",
+          "path": "docs/design/skill/test-design/cases/capability-contract.json"
+        },
+        {
+          "identity": "sha256:839291d455ee3f93f8254e539a5577c6ce36389669ce0e3cd44ec3ced0e116ef",
+          "path": "docs/design/skill/test-design/cases/resource-contract.json"
+        },
+        {
+          "identity": "sha256:3b798f4feda2327f9d7da5793eba11160c259a1ff825914127225cd184302e71",
+          "path": "docs/design/skill/test-design/cases/recording-composition.json"
+        },
+        {
+          "identity": "sha256:380b2c2d481a2721c6590b636ab7d6ddcd1dd97b62e8e8e74467b0225e8b8cf9",
+          "path": "docs/design/skill/test-design/cases/implementation-handoffs.json"
+        },
+        {
+          "identity": "sha256:b8cf15dddf0611227860248a6cd92fe6ebb6b4b84ff5f4f0a79aa6a9eef56145",
+          "path": "docs/design/skill/test-design/cases/capability-composition.json"
+        },
+        {
+          "identity": "sha256:f0ff5b7766092d703e323ca26e08bd3d49f3b16ef3e9de08cfa90df2c1f9d325",
+          "path": "docs/design/skill/authoring/test-design/test-design.md"
+        },
+        {
+          "identity": "sha256:dbcb7e61db655ecead9529d091bc71a6ae21081087a450ddbdbe1d6d36cfbb47",
+          "path": "docs/design/skill/authoring/test-design/test-cases.json"
+        },
+        {
+          "identity": "sha256:b2e83fe05600347fd620e5b24be8bdc4569f6ca862557e8e70d209dbb331702c",
+          "path": "docs/design/skill/authoring/test-design/cases/refinement.json"
+        },
+        {
+          "identity": "sha256:02818600850cf2c47adf128820984cba11728ad4023f6cf8ff59beb714e4d6b2",
+          "path": "docs/design/skill/authoring/test-design/cases/scope-handoff.json"
+        },
+        {
+          "identity": "sha256:7f4dca46594b7c6dd020ebaf63fa816149861c7fc4a720180f142de9c457d091",
+          "path": "docs/design/skill/authoring/test-design/cases/correction-reconciliation.json"
+        }
+      ],
+      "summary": "Final corrected-subject CI exited 0: all 459 emitted check/case result rows passed across current_records.validate, record_store.schema, model.validate, boundary_first.regression, change_metadata.regression, change_metadata.validate and rigorloop_cli.test. Worker budget was 4; selection mode explicit. All 29 Markdown subjects passed prose enforcement with zero errors/warnings. Scoped model/catalog checks and whitespace passed. Mechanical audit accounted for all 333 requirement rows across 24 model owners, using inline groups or the three existing packages and explicit historical dispositions. No introduced broken links were found; the one inherited Validation anchor was corrected to the extant owning section. Independent Design Review separately judged the complete package and resolved its first-pass finding. These results establish scoped structural/regression validity of the authored Design, not completed semantic walkthroughs, all-population executable alignment, timing feature implementation, a runtime baseline, performance improvement, final Verify or branch/PR readiness."
+    },
+    {
+      "actor": {
+        "id": "root-plan-author",
+        "role": "plan"
+      },
+      "id": "plan-authoring-validation",
+      "procedure": "Ran bash scripts/ci.sh --mode explicit --path docs/plans/2026-09-17-complete-model-test-coverage.md --path docs/plan.md --path docs/changes/2026-09-17-complete-model-test-coverage/change.json. Ran python scripts/validate-documentation-prose.py --mode enforce --path docs/plans/2026-09-17-complete-model-test-coverage.md --path docs/plan.md; git diff --check and git diff --cached --check. Author inspected the completed plan against the plan/milestone templates, checked all 24 model-owner allocations and eight milestone fields, resolved new plan links through the existing Markdown helper and inspected the new index target, and used CLI subject inspection to compare the unchanged approved Design package and proposal/review basis.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:161f55fc205fce02c5db293fef5a4fbabd98ca10e426fb8c085e6a630bbb5911",
+          "path": "docs/plans/2026-09-17-complete-model-test-coverage.md"
+        },
+        {
+          "identity": "sha256:dbd6ccd66754ab8d3f34bb0fbcc82c5081df3ee7afcab44ef0ca7a3ea140201b",
+          "path": "docs/plan.md"
+        }
+      ],
+      "summary": "Scoped CI exited 0 with 10 passing check/case rows across current_records.validate, change_metadata.regression, change_metadata.validate and guide_system.validate. Prose enforcement returned zero errors/warnings for both Markdown files. New plan links and added navigation target resolve; the plan index retains its pre-existing illustrative YYYY-MM-DD-slug link inside a comment, which is not a new live target. All 24 owners have requirements and proof allocation, eight implementation milestones have dependencies/verification/recovery, and final whole-change Code Review and distinct Verify are allocated. The approved 104-subject Design package and proposal/review basis remain byte-identical. JSON catalogs were not refined; no implementation code, tests or milestone work were created. These are author/structural checks only, not independent Delivery Review or implementation readiness."
+    },
+    {
+      "actor": {
+        "id": "root-implementer",
+        "role": "implement"
+      },
+      "id": "m1-population-baseline",
+      "procedure": "Native collection with validation_execution.discover_cases / discover_node_cases (normal loaders, jobs1, timeout600), source/caller/assertion audit; bash scripts/ci.sh --mode local; bash scripts/ci.sh --mode explicit --jobs 4 --path tests/engineering/packaging/test-adapter-distribution.py --path tests/engineering/packaging/test-npm-package-publication.py --path tests/engineering/release/test-release-transaction.py --path tests/engineering/validation/test-boundary-first-reference.py --path tests/engineering/validation/test-boundary-first-validation.py --path tests/engineering/validation/test-change-metadata-validator.py --path tests/engineering/validation/test-documentation-prose-validator.py --path tests/engineering/validation/test-governed-lifecycle-cli-validator.py --path tests/engineering/validation/test-guide-system-validator.py --path tests/engineering/validation/test-markdown-readability-validator.py --path tests/engineering/validation/test-select-validation.py --path tests/engineering/validation/test-validation-execution.py --path tests/skill/test-skill-validator.py --path packages/rigorloop/test; python tests/engineering/packaging/test-adapter-distribution.py; node scripts/validate-record-store.mjs docs/changes/2026-09-17-complete-model-test-coverage/change.json; git diff --check and git diff --cached --check.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:12a38c1809fa0deca17805ca783020c7783934e6c1f91bbb1e7c9fb6c2e4fb2a",
+          "path": ".github/workflows/ci.yml"
+        },
+        {
+          "identity": "sha256:540a4ef7ee36c1234aaa904b6829f356126480eb55722902483bcc9d90528596",
+          "path": ".github/workflows/publish-github-packages.yml"
+        },
+        {
+          "identity": "sha256:5e103570baf94f3860fcadd6804712c26a12c8c04c587fde888daf8f36a3452d",
+          "path": "docs/design/cli/cli.md"
+        },
+        {
+          "identity": "sha256:a43782b837eb9acaafe8bf774b6d07a1acb2c0826489e0f5fe6ffb30e2039941",
+          "path": "docs/design/cli/installation.md"
+        },
+        {
+          "identity": "sha256:eef562cbc734960620f545db46d42c392611d0ad779d6cb3c1b44fdf84c178fc",
+          "path": "docs/design/cli/records.md"
+        },
+        {
+          "identity": "sha256:c3a4e2ca13ccaa43cfa5e278b027b4e0e0d113e50d66e9af101f388c82973cc7",
+          "path": "docs/design/engineering/engineering.md"
+        },
+        {
+          "identity": "sha256:c1e253f0b38f8c5068997287330054ac20959f1a51a5e8b973e53c5b752f8026",
+          "path": "docs/design/engineering/packaging.md"
+        },
+        {
+          "identity": "sha256:6317d3141237242ed76d744e29931d8229567f061931e84075142c61f4cf734f",
+          "path": "docs/design/engineering/release/release.md"
+        },
+        {
+          "identity": "sha256:7d6165830c81846344328abb8f0057a2ac99aa6e9085c9a707ff36c03b29eba3",
+          "path": "docs/design/engineering/release/test-design/test-design.md"
+        },
+        {
+          "identity": "sha256:854d3242170e213b5831985fe569f025d4963e0ac46d34661a25900830bf43b0",
+          "path": "docs/design/engineering/validation.md"
+        },
+        {
+          "identity": "sha256:1b5443261318067a54a9a334221e409a2c6ff716388303eefc31db2eadb7a59c",
+          "path": "docs/design/skill/assessment.md"
+        },
+        {
+          "identity": "sha256:8911722251a1682515bd08ec150fd74124e63310eeb4dbf2b759d242dd760d69",
+          "path": "docs/design/skill/authoring/authoring.md"
+        },
+        {
+          "identity": "sha256:dc0dff84a0df7809bddc4a0bac725c906901fb297ba9876730eceb6b9e49b472",
+          "path": "docs/design/skill/authoring/design.md"
+        },
+        {
+          "identity": "sha256:ffcf0e3e2b93976b0d022cfcb8e4541338fa2c6fe48e981e7d70e216ea4bbb0b",
+          "path": "docs/design/skill/authoring/plan.md"
+        },
+        {
+          "identity": "sha256:714b2e0133698fa341fd1a4fe486a02a552c3c548fb85573950adf3620b0e996",
+          "path": "docs/design/skill/authoring/proposal.md"
+        },
+        {
+          "identity": "sha256:f0ff5b7766092d703e323ca26e08bd3d49f3b16ef3e9de08cfa90df2c1f9d325",
+          "path": "docs/design/skill/authoring/test-design/test-design.md"
+        },
+        {
+          "identity": "sha256:166de8eb3ad83b356ded6acd1b64fbc3ba84f8c10350ed0cc98456b7992bcc46",
+          "path": "docs/design/skill/delivery-handoff.md"
+        },
+        {
+          "identity": "sha256:03a2bb4b07669d8e30bda713e6391c9ee55e4e4ac45707dca5866e0cc0e87e2d",
+          "path": "docs/design/skill/discovery/discovery.md"
+        },
+        {
+          "identity": "sha256:1bc0b49bafb481e0065e1e695ab124eed7905c7b448dcfe87781de445b4a1ce3",
+          "path": "docs/design/skill/discovery/explore.md"
+        },
+        {
+          "identity": "sha256:027e2eb2b99584cc732bfbf3f4437a37b55026a318216b801a4784c6e736fbea",
+          "path": "docs/design/skill/discovery/research.md"
+        },
+        {
+          "identity": "sha256:4d49d13c28acaa64833f9d41e0c8907f8894fb0dd75e811ba6f5a71fd725a6fc",
+          "path": "docs/design/skill/learning.md"
+        },
+        {
+          "identity": "sha256:bf587c2a747d7bd0e2e1a055a46ef95bd1c2650a0499143e1ca7588974f4200e",
+          "path": "docs/design/skill/project-foundations/constitution.md"
+        },
+        {
+          "identity": "sha256:cee7a85dea2c74104036dce48103266142fb1067868090e4201fc04f69da47b6",
+          "path": "docs/design/skill/project-foundations/project-foundations.md"
+        },
+        {
+          "identity": "sha256:982cc807e04ac0b6fc347a9cfbcfae49775ff54b2de0513a1a2686dd2d8e77ba",
+          "path": "docs/design/skill/project-foundations/project-map.md"
+        },
+        {
+          "identity": "sha256:e54c88e392ab21590fd979b90eeef1ab849d76275abd3530492267759a2c6e5d",
+          "path": "docs/design/skill/project-foundations/vision.md"
+        },
+        {
+          "identity": "sha256:9635574034989acca7995e8b1946516abeb66b2b94db7bcb758b3a3ecfb8bb22",
+          "path": "docs/design/skill/skill.md"
+        },
+        {
+          "identity": "sha256:380b2c2d481a2721c6590b636ab7d6ddcd1dd97b62e8e8e74467b0225e8b8cf9",
+          "path": "docs/design/skill/test-design/cases/implementation-handoffs.json"
+        },
+        {
+          "identity": "sha256:4a9890543e6f2d8996ce43eac4e884a8cb827687e03cc0891433addb1b2d69ae",
+          "path": "docs/design/skill/test-design/test-design.md"
+        },
+        {
+          "identity": "sha256:cc22e14330afaa294ab8a632a6eaef32f8ff7e87336564e100f6111a57268f82",
+          "path": "docs/design/skill/workflow.md"
+        },
+        {
+          "identity": "sha256:110df7b4fffe242bead2bd10117f5ee6db5801562f0efda8f24a7c8331ed087b",
+          "path": "docs/design/system.md"
+        },
+        {
+          "identity": "sha256:b12f5fb2e7acc9422878976ef0cff73df640055370e938345f857e1683955990",
+          "path": "docs/design/test-design/README.md"
+        },
+        {
+          "identity": "sha256:2c86bd324860b9757f52ed6b52574fa814ef3ac75871e0c3b77d43327800532d",
+          "path": "docs/design/test-design/rules.md"
+        },
+        {
+          "identity": "sha256:dbd6ccd66754ab8d3f34bb0fbcc82c5081df3ee7afcab44ef0ca7a3ea140201b",
+          "path": "docs/plan.md"
+        },
+        {
+          "identity": "sha256:161f55fc205fce02c5db293fef5a4fbabd98ca10e426fb8c085e6a630bbb5911",
+          "path": "docs/plans/2026-09-17-complete-model-test-coverage.md"
+        },
+        {
+          "identity": "sha256:010d1570db6dc0fcb349b2fb25e40d6650edcaba729bea092bc99439ba74bcb5",
+          "path": "docs/proposals/2026-09-17-complete-model-test-coverage.md"
+        },
+        {
+          "identity": "sha256:6c879a76afc9d6317951ba1dc883b9a5c220ba80df0cdb3b2f94e60363794207",
+          "path": "packages/rigorloop/package.json"
+        },
+        {
+          "identity": "sha256:0d8ee38a20a01fc684086939d5aafa68c24a0ca95127d6e37ec31119f01960c9",
+          "path": "scripts/ci.sh"
+        },
+        {
+          "identity": "sha256:f4d05f33a3ffd05af6be5d1b65c2f2f4780461783c9ec581a882ac7e2eb8ae1e",
+          "path": "scripts/lib/validation/validation_execution.py"
+        },
+        {
+          "identity": "sha256:4ff0c3964282dcd004ff906dfdfacb9e5c9c4ef0ede5a2bda9be1e7c71381da4",
+          "path": "scripts/lib/validation/validation_node_adapter.mjs"
+        },
+        {
+          "identity": "sha256:203f504f98f90484dd0c17dc88b249fdb6f4b387a2b920ae54f545c32216eadd",
+          "path": "scripts/lib/validation/validation_selection.py"
+        },
+        {
+          "identity": "sha256:4b22736b37ffcd31a5b937fdd390971084dce870e952cf3b3a0dc7e4f83d6238",
+          "path": "scripts/validate-release.py"
+        },
+        {
+          "identity": "sha256:e82442a66755a025315a98fc4f738fdc0432c8659c97721a63352b4565c5046f",
+          "path": "tests/engineering/packaging/test-adapter-distribution.py"
+        },
+        {
+          "identity": "sha256:ee940a03d9c242b8040b86201f0d3d8f0c061cf372ee7c692f35535f9076fe88",
+          "path": "tests/engineering/packaging/test-npm-package-publication.py"
+        },
+        {
+          "identity": "sha256:8446131071b8f71a8b02ffb6855f616f777cf96f892f809c36490a90dada4f23",
+          "path": "tests/engineering/release/test-release-transaction.py"
+        },
+        {
+          "identity": "sha256:ab79ea61aca1034aba02d6051270425eb38a3b68a1098530e3e771edf6177c4c",
+          "path": "tests/engineering/validation/test-boundary-first-reference.py"
+        },
+        {
+          "identity": "sha256:0f4e5cda3e04d568e21b8a8764ead93f2916aaeeda02a04d173fe73c073d99cd",
+          "path": "tests/engineering/validation/test-boundary-first-validation.py"
+        },
+        {
+          "identity": "sha256:da72bcb80d9cf94a16b119957e6162f8bedacd27bbea70be10429b424f9a4193",
+          "path": "tests/engineering/validation/test-change-metadata-validator.py"
+        },
+        {
+          "identity": "sha256:dc10776c0eb29063aa26af888cfeed1b58fe397a573045a7a19e45fc717a3a3a",
+          "path": "tests/engineering/validation/test-documentation-prose-validator.py"
+        },
+        {
+          "identity": "sha256:fe065d545c066d2ebdc8c6facbe773d547adaea93dc79f14292eb81814d0790b",
+          "path": "tests/engineering/validation/test-governed-lifecycle-cli-validator.py"
+        },
+        {
+          "identity": "sha256:d87677b73f45099c63a4974a00d8496809f8a584137643881b81eb89dd0643e3",
+          "path": "tests/engineering/validation/test-guide-system-validator.py"
+        },
+        {
+          "identity": "sha256:6235d8e9143bae6ffd5d17d83c817618e960ecdd2472efe80a115614668a9a6d",
+          "path": "tests/engineering/validation/test-markdown-readability-validator.py"
+        },
+        {
+          "identity": "sha256:47867e67cc4136cc409df1dcb0215898874b629387a9c09705dc17eea53144f3",
+          "path": "tests/engineering/validation/test-select-validation.py"
+        },
+        {
+          "identity": "sha256:31bc9e6cd64750cd18240ee810bb596161ae34212b8a07a2cbb9e6ddff9cb522",
+          "path": "tests/engineering/validation/test-validation-execution.py"
+        },
+        {
+          "identity": "sha256:035d1baf2467725bcd1e593fc3dcf8d9c54fe02f6705f1a39d45ad1e46f7c441",
+          "path": "tests/skill/test-skill-validator.py"
+        }
+      ],
+      "summary": "M1 population and protection audit (implementation evidence; no suite modification).\n\nNative discovery used existing discover_cases and discover_node_cases with their isolated normal loaders, jobs=1, timeout=600. Inspected every tests/**/*.py top-level test method with AST as a cross-check, accounting for SelectionContractChecks/SelectionGitChecks/SelectionCliChecks inherited under ValidationSelectionTests. All 894 declared methods map to native discovery. This cross-check supplements, not replaces, native collection. All13 actual Python entrypoints have catalog callers;419 named Node cases are collected by the native package loader. Generated Node persistence phase/action and target-install registrations remain distinct; Python subtests remain inside their containing worker. Metadata's injected failure fixture is conditional diagnostic protection exercised by its caller, not an extra default passing test. Imported PackedRecordingTests and release/adapter classes are present. No unknown current executable suite was found in inspected callers.\n\nCaller reconciliation: ci.sh local/explicit/PR use selected_main; main/broad-smoke use composed_main; release selected mode retains its profile/preparation requirements. Catalog40 includes scoped adapters.regression versus full adapters.full_regression and direct record_retirement.regression versus full rigorloop_cli.test; coverage allocation must preserve distinct configuration while avoiding counting design links. .github/workflows/ci.yml runs PR/main and direct executor regression; publish-github-packages.yml invokes current npm package suite, retaining old path only for historical selected release tags. validate-release.py verify_prepared_release runs Skill, full adapter and npm suites plus actual candidate validators/packed smoke; these add preparation/packed observation boundaries, not new default native method IDs. Candidate regression fixtures exercise controlled providers without actual publication. Pack fixtures with absent current metadata build private candidate inputs; prepared candidate qualification uses actual supplied bytes and is a different timing scope. All catalog test populations already declare python-unittest or node-test. Native collection and report views cannot by themselves establish semantic coverage.\n\nM2 allocation: no absent default native population discovered, but reconcile full-versus-scoped adapters, direct Node subset and actual release/CI consumers with uniform reports. Existing _write_mode_result is broad-smoke-only, writes directly and has no scoped completeness, case_id, started or rerun metadata. Scheduler excludes queued time, but launch failure records zero and final elapsed uses the poll-loop timestamp before cleanup finishes. Both require measured monotonic intervals. Both report environment variables must be isolated; only legacy is currently removed. All currently required negative ownership/atomicity/concurrency/partial-report observations remain M2 work. Uniform full comparable pre-alignment measurement remains unestablished until M2. Do not label current summed focused worker time wall time or compare overlapping runs as performance gains.\n\nRetained structural proof and limitations: inspected Design resource unknown-plus-missing negatives through actual validator; expected resource domain is independent. Shared policy tests enforce declared copy domains and bytes, while phrase assertions prove wording only. Project Map controlled fixture has positive proof, but individual mutated private fixtures inconsistently establish their own validity: strengthen under M5. Learn tests are wording/profile checks, not observed session/topic writes. CI tests mutate private canonical fixtures and check diagnostics; their grammar does not prove runtime choice of combined/late assembly. Semantic decision packets remain required; no test success closes them.\n\nM3: explicit selection method and independent fixture/oracle example in shared portable test-quality; reconcile declared consumers, model authoring/skeleton and review/allocation/implementation/Verify reading paths. Preserve read-only retained-source boundaries, parent outcomes and unlisted regressions. Inspect actual generated/packed resources; independent compliant/faulty output assessment required.\nM4: all13 Authoring procedures plus Proposal/Design/Plan local groups; atomic batch-import intent and proof survive sibling handoffs, target/operation authority, unknown-first grammar where executable, changed examples, exact initialization/lost-response/recovery decisions. Existing resource/model/CLI mechanics do not prove these semantic choices. Independent fixed artifact/action packets are required.\nM5: all8 Foundations/Discovery/Learning model groups; actual authority/conflict/target/README/map/evidence/option/confirmation/retry scenarios need independent fixed packets. Strengthen same-private-baseline Project Map negatives. Read-only snapshots/wording alone do not prove useful framing, truth or actual topic effects.\nM6: Workflow/Assessment/Skill/Handoff groups including Implement IP0/IP1/IP2, original-proof identity, Bugfix authority, CI nine-assembly declaration versus decision, final-review-before-Verify, exact hosted-repair authority and evidence-only suffix. Follow-up register unknown-status test can return on absence: needs controlled valid register then unknown rejection. Preserve reporter disposition; grammar and PR phrase checks are not semantic execution.\nM7: CLI/Records public receipt under dense diagnostics; preview no-write including private transaction paths; no-read observation; exact rejection precedence; full typed-reference field/target matrix. Current v3 helper accepts invalid-input/unsupported-contract/broken-reference, which does not prove a particular first failure; dedicated typed-reference case only covers Verify evidence→review. Installation real-engine tests retain races, containment, changed originals,3-unit partial state and retry; add public projection and attempted-state-read proof. Shared packed cases receive M8 allocation.\nM8: retain independent inventory/hash and actual archives/tarball/installed runtime. Add packed empty-unit conflicts and unsafe destinations in both targets/modes; lower-level replacement tests are insufficient for that claimed boundary. Preserve generation/check-mode snapshots and qualify generated instruction meaning. Engineering parent authority/source-to-consumer/protection/cost interactions remain final integrated assessment.\n\nRelease M8 deterministic gaps, all inspected against current assertions: REL-IN-001 accepted private control before invalid profile variants; REL-TC-001 actual package/version/unrelated fields/tree delta/pending values/approval timing absence and preservation;005 exact outside-region bytes/positions;008 public prepared and unprepared --check no-write trees;019 accepted finalized controls and defining mutation;027 external boundary observation;029 real interrupted-write recovery matching independent control;030 missing end/nested/mismatched/unknown generated regions reject before writes (current production helper likely needs guard). REL-PF-001 observe no expensive qualification/publication. REL-CI-001 revalidate each restored subject;004 valid seal before manifest mutation. REL-AR-001 unknown binding plus competing mismatch precedence;010 exact6/6/121 visibility exhaustion and observed recovery each boundary;011 public identity changes during smoke;036 authority revoked between writes. REL-EC-001 full check-mode tree and accepted evidence before wrong command/hash/target. All16 deterministic partial/proposed scenario gaps remain required. REL-MR001/002/005 require actual release decision/exception/incident, absent in this test-alignment change; independent assessor must confirm bounded non-applicability, with original ownership and future trigger retained. No live publication authorized or simulated as actual evidence.\n\nAll24 model group allocations follow below. Each includes its current Markdown boundary scenarios and parent interactions, not only named examples. Existing tests are retained while gaps are unresolved. Historical transfers/retirements are checked through live consumer and preservation proof, not replayed old releases. No JSON catalog bytes or native method identities changed during M1. Proof state remains distinct from catalog classifications.\n\nsystem → M1/M3/final: Responsibility and architecture agreement; SYS-SR-01, SYS-SR-02, SYS-SR-10, SYS-SR-11; Intent, coverage and delivery composition; SYS-SR-03, SYS-SR-06, SYS-SR-08; TEST-SR-01–06, TEST-SR-11–16, TEST-SR-18, TEST-SR-21, TEST-SR-23; Published resources and actual consumer agreement; SYS-SR-04, SYS-SR-05, SYS-SR-09; TEST-SR-13; Concurrent correction and honest reliance; SYS-SR-06, SYS-SR-09; Test maintenance and reporting composition; TEST-SR-07–10, TEST-SR-17, TEST-SR-19, TEST-SR-20, TEST-SR-22, TEST-SR-23; Scoped source transfer and current reliance; SYS-SR-07, SYS-SR-12, SYS-SR-13; TEST-SR-14 Basis: docs/design/system.md#test-design.\n\nauthoring → M4: All declared separate Markdown strategy groups, including each explicit realization gap and parent interaction. Basis: docs/design/skill/authoring/authoring.md#test-design.\n\nproposal → M4: Direction and feasibility; PROP-SR-01, PROP-SR-02, PROP-SR-06; Content and conditional gates; PROP-SR-01, PROP-SR-04; Exact target and authority; PROP-SR-03, PROP-SR-06; Recording, retry and history; PROP-SR-05, PROP-SR-06; Portable resource sufficiency; PROP-SR-02, PROP-SR-04 Basis: docs/design/skill/authoring/proposal.md#test-design.\n\ndesign → M3/M4: Coherent engineering owner and credible direction; DES-SR-01, DES-SR-02, DES-SR-03, DES-SR-04, DES-SR-09; Architecture and composition; DES-SR-05, DES-SR-07, DES-SR-08, DES-SR-22; Model grammar; DES-SR-11, DES-SR-19; Examples and exact handoff; DES-SR-08, DES-SR-11, DES-SR-12, DES-SR-16; Meaning and scoped source disposition; DES-SR-06, DES-SR-13, DES-SR-18, DES-SR-20, DES-SR-21; Portable source and output boundary; DES-SR-14, DES-SR-15, DES-SR-17, DES-SR-23, DES-SR-24; Requirement selection and durable proof; DES-SR-10, DES-SR-16, DES-SR-25, DES-SR-26 Basis: docs/design/skill/authoring/design.md#test-design.\n\nplan → M3/M4: Complete proof allocation; PLAN-SR-01, PLAN-SR-02; Stable complete artifacts; PLAN-SR-03, PLAN-SR-06; Target resolution and initialization; PLAN-SR-04, PLAN-SR-05; Retry and changed basis; PLAN-SR-05, PLAN-SR-07; Reachable complete procedure; PLAN-SR-06, PLAN-SR-08 Basis: docs/design/skill/authoring/plan.md#test-design.\n\nproject-foundations → M5: Responsibility and inconsistent evidence — FOUND-SR-01, FOUND-SR-02; Scope and adoption — FOUND-SR-01, FOUND-SR-03; Changed basis and partial completion — FOUND-SR-02, FOUND-SR-03 Basis: docs/design/skill/project-foundations/project-foundations.md#test-design.\n\nvision → M5: Operation and substantive scope — VIS-SR-01, VIS-SR-03; Canonical source, markers and skip — VIS-SR-02, VIS-SR-03; Independent resources and target binding — VIS-SR-01, VIS-SR-03; Write order, interruption and retry — VIS-SR-02, VIS-SR-03 Basis: docs/design/skill/project-foundations/vision.md#test-design.\n\nconstitution → M5: Existing authority and placement — GOV-SR-01, GOV-SR-02; Evidence, conflict and reassessment — GOV-SR-01, GOV-SR-02; Durable principles and complete handoff — GOV-SR-01, GOV-SR-03 Basis: docs/design/skill/project-foundations/constitution.md#test-design.\n\nproject-map → M5: Evidence and freshness — MAP-SR-01, MAP-SR-03; Create, refresh and audit — MAP-SR-02, MAP-SR-03; Area registration and retry — MAP-SR-02, MAP-SR-03; Compatibility and output routing — MAP-SR-01, MAP-SR-02, MAP-SR-03 Basis: docs/design/skill/project-foundations/project-map.md#test-design.\n\ndiscovery → M5: Select the actual uncertainty — DISC-SR-01, DISC-SR-03; Return evidence without adopting the option — DISC-SR-01, DISC-SR-02; Changed framing, resources and scope limits — DISC-SR-02, DISC-SR-03 Basis: docs/design/skill/discovery/discovery.md#test-design.\n\nexplore → M5: Distinct options and evidence — EXP-SR-01, EXP-SR-03; Explicit artifact and resources — EXP-SR-02; Changing framing and decision ownership — EXP-SR-01, EXP-SR-03 Basis: docs/design/skill/discovery/explore.md#test-design.\n\nresearch → M5: Bound the question before collection — RES-SR-01; Evidence quality, conflict and volatility — RES-SR-01, RES-SR-02; Artifact safety and owner return — RES-SR-02, RES-SR-03 Basis: docs/design/skill/discovery/research.md#test-design.\n\nlearning → M5: Frame, collision and repeated invocation — LRN-SR-01, LRN-SR-02; Classification and confirmation — LRN-SR-01, LRN-SR-02; Topic integrity and authority — LRN-SR-01, LRN-SR-02; Owner-bound routes and result recording — LRN-SR-03 Basis: docs/design/skill/learning.md#test-design.\n\ndelivery-handoff → M6: Intent and independent authorities — HAND-SR-01, HAND-SR-02; Verification basis and evidence suffix — HAND-SR-02; Directional branches and exact PR selection — HAND-SR-02, HAND-SR-03; Recheck, partial success and retry — HAND-SR-02, HAND-SR-03; Body rationale, resources and hosted CI — HAND-SR-03, HAND-SR-04 Basis: docs/design/skill/delivery-handoff.md#test-design.\n\nworkflow → M6: Scope, independent approval and continuation; WF-SR-01, WF-SR-02, WF-SR-03, WF-SR-09; Changed basis and correction owner; WF-SR-04, WF-SR-07, WF-SR-08, WF-SR-17; Post-completion failure and disposition; WF-SR-05, WF-SR-06, WF-SR-13; Scoped observations and explicit recording; WF-SR-11, WF-SR-12, WF-SR-14, WF-SR-15; Final-review dependency; WF-SR-09, WF-SR-16; Current support and historical preservation; WF-SR-10, WF-SR-18; Follow-up ownership and resumption; WF-SR-02, WF-SR-19 Basis: docs/design/skill/workflow.md#test-design.\n\nreview-closeout → M6: Scope, separation and judgment precedence; RC-SR-01, RC-SR-02, RC-SR-03, RC-SR-04; Current reliance and record-only changes; RC-SR-05, RC-SR-06, RC-SR-07, RC-SR-15, RC-SR-19; Actionable concerns and correction authority; RC-SR-08, RC-SR-09, RC-SR-10, RC-SR-14; Final whole-change review and successful Verify; RC-SR-11, RC-SR-12, RC-SR-13; Proposal Review and conditional authority; RC-SR-01, RC-SR-03, RC-SR-04, RC-SR-10, RC-SR-17; Design, delivery and implementation adequacy; RC-SR-01, RC-SR-03, RC-SR-10, RC-SR-13, RC-SR-15, RC-SR-17; Portable policy and historical meaning; RC-SR-16, RC-SR-17, RC-SR-18, RC-SR-21; Verify request, item evidence and claim scope; RC-SR-13, RC-SR-18, RC-SR-20, RC-SR-22; Evidence-only suffix and handoff reliance; RC-SR-05, RC-SR-20, RC-SR-23 Basis: docs/design/skill/assessment.md#test-design.\n\nrecord-format → M7: Closed current representation — RF-SR-01, RF-SR-09, RF-SR-11; Registry and typed references — RF-SR-02, RF-SR-08; Finding correction versus blocker origin — RF-SR-03, RF-SR-04, RF-SR-08, RF-SR-13; Correctable incomplete work and faithful reading — RF-SR-03, RF-SR-05, RF-SR-07, RF-SR-10, RF-SR-11; Current consumer agreement and historical preservation — RF-SR-06, RF-SR-08, RF-SR-12, RF-SR-14 Basis: docs/design/cli/records.md#test-design.\n\ninstallation → M7/M8: Admission and truthful dry-run — DIST-SR-02, DIST-SR-11, DIST-SR-15; Trusted acquisition and extraction — DIST-SR-07, DIST-SR-08, DIST-SR-16; Whole-candidate default conflict and bounded force — DIST-SR-10, DIST-SR-12, DIST-SR-13, DIST-SR-15; Containment, race and retained original — DIST-SR-08, DIST-SR-12, DIST-SR-13, DIST-SR-14; Partial failure and retry — DIST-SR-13, DIST-SR-14, DIST-SR-15; Safe network diagnostics and fallback — DIST-SR-07, DIST-SR-15, DIST-SR-16 Basis: docs/design/cli/installation.md#test-design.\n\nvalidation → M2/M8: Document admission and structure; VAL-SR-28, VAL-SR-35; Selection and trusted catalog; VAL-SR-03, VAL-SR-04, VAL-SR-05, VAL-SR-27; Composition, freshness and preparation; VAL-SR-06, VAL-SR-11, VAL-SR-19, VAL-SR-20; Isolation, budgets and cleanup; VAL-SR-01, VAL-SR-02, VAL-SR-07, VAL-SR-10, VAL-SR-17, VAL-SR-22; Native discovery and complete reachability; VAL-SR-12, VAL-SR-14, VAL-SR-21, VAL-SR-29, VAL-SR-32, VAL-SR-37; Failure and result honesty; VAL-SR-08, VAL-SR-09, VAL-SR-10, VAL-SR-12; Scope, adoption and semantic boundaries; VAL-SR-15, VAL-SR-16, VAL-SR-18, VAL-SR-31; Execution cost and rankings; VAL-SR-08, VAL-SR-18, VAL-SR-20, VAL-SR-36, VAL-SR-37; Report ownership and failure; VAL-SR-09, VAL-SR-17, VAL-SR-38; Scoped retirement and maintained detection; VAL-SR-13, VAL-SR-23, VAL-SR-24, VAL-SR-25, VAL-SR-26, VAL-SR-29, VAL-SR-30, VAL-SR-31, VAL-SR-32 Basis: docs/design/engineering/validation.md#test-design.\n\npackaging → M3/M8: Canonical inventory, transforms and resources — DIST-SR-03, DIST-SR-04, DIST-SR-17, DIST-SR-24; Isolated deterministic generation — DIST-SR-04, DIST-SR-05, DIST-SR-21, DIST-SR-22; Archive facts and independent hashing — DIST-SR-06, DIST-SR-09, DIST-SR-21; Packed npm policy and executable completeness — DIST-SR-06, DIST-SR-17, DIST-SR-23; Producer/installer composition — DIST-SR-17, DIST-SR-18, DIST-SR-24; Compatibility communication and source retirement — DIST-SR-19, DIST-SR-20, DIST-SR-22, DIST-SR-24 Basis: docs/design/engineering/packaging.md#test-design.\n\nrelease → M8: All declared separate Markdown strategy groups, including each explicit realization gap and parent interaction. Basis: docs/design/engineering/release/release.md#test-design.\n\nskill → M3/M6: All declared separate Markdown strategy groups, including each explicit realization gap and parent interaction. Basis: docs/design/skill/skill.md#test-design.\n\ncli → M7: Command admission and result domains — CLI-SR-02, CLI-SR-09, CLI-SR-10, CLI-SR-11, CLI-SR-17, CLI-SR-27, CLI-SR-30; Explicit selection and useful reading — CLI-SR-01, CLI-SR-14, CLI-SR-17, CLI-SR-21, CLI-SR-22, CLI-SR-24, CLI-SR-26; Inspected subject and diagnostic freshness — CLI-SR-04, CLI-SR-14, CLI-SR-19, CLI-SR-20; Factual discovery and retired consumers — CLI-SR-10, CLI-SR-18, CLI-SR-23, CLI-SR-28, CLI-SR-31, CLI-SR-32; Generic projection and private diagnostics — CLI-SR-11, CLI-SR-17, CLI-SR-29, CLI-SR-30; Persistence construction, preview and explicit decisions — CLI-SR-03, CLI-SR-07, CLI-SR-12, CLI-SR-13, CLI-SR-16, CLI-SR-25, CLI-SR-26; Atomic composition and retry — CLI-SR-03, CLI-SR-04, CLI-SR-05, CLI-SR-08, CLI-SR-12, CLI-SR-15, CLI-SR-16; Interruption, containment and exact recovery — CLI-SR-04, CLI-SR-05, CLI-SR-06, CLI-SR-09, CLI-SR-26, CLI-SR-27; CLI parent composition — CLI-SR-01, CLI-SR-03, CLI-SR-07, CLI-SR-12, CLI-SR-18, CLI-SR-21, CLI-SR-30 Basis: docs/design/cli/cli.md#test-design.\n\nengineering → M1/M3/M8/final: Development authority and independent closeout — ENG-SR-01, ENG-SR-02, ENG-SR-03, ENG-SR-04, ENG-SR-09, ENG-SR-12; Canonical source to usable products — ENG-SR-01, ENG-SR-06, ENG-SR-07, ENG-SR-11, ENG-SR-16; Complete protective population and attributable cost — ENG-SR-05, ENG-SR-07, ENG-SR-09, ENG-SR-15, ENG-SR-16; Qualification versus publication authority — ENG-SR-06, ENG-SR-07, ENG-SR-08, ENG-SR-09; Retirement, fixture independence and current reliance — ENG-SR-10, ENG-SR-12, ENG-SR-13, ENG-SR-14, ENG-SR-15; Stable tooling and local/CI composition — ENG-SR-05, ENG-SR-09, ENG-SR-16 Basis: docs/design/engineering/engineering.md#test-design.\n\nauthoring separate groups: correction-reconciliation, refinement, scope-handoff. All explicit current gaps allocated as above.\n\nskill separate groups: capability-composition, capability-contract, implementation-handoffs, recording-composition, resource-contract. All explicit current gaps allocated as above.\n\nrelease separate groups: approval-recovery, candidate-identity, evidence-closeout, maintenance-review, preflight, preparation, profile-input. All explicit current gaps allocated as above.\n\nBaseline basis: HEAD 1c1fe83e3bbf2e7962b4599f3a50b6a9d94fb5c6; dirty subject identities attached below, unchanged sources retained at that HEAD. Python 3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]; Node v24.14.1; Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.39. Native collection workers1; local and explicit workers4; direct adapter native sequential suite. Local and explicit executions overlapped for part of their lifetime; no controlled performance comparison is claimed. No suite/source/fixture drift observed against captured source identities.\nNative populations: tests/engineering/packaging/test-adapter-distribution.py: 95; tests/engineering/packaging/test-npm-package-publication.py: 8; tests/engineering/release/test-release-transaction.py: 177; tests/engineering/validation/test-boundary-first-reference.py: 26; tests/engineering/validation/test-boundary-first-validation.py: 29; tests/engineering/validation/test-change-metadata-validator.py: 7; tests/engineering/validation/test-documentation-prose-validator.py: 14; tests/engineering/validation/test-governed-lifecycle-cli-validator.py: 6; tests/engineering/validation/test-guide-system-validator.py: 13; tests/engineering/validation/test-markdown-readability-validator.py: 7; tests/engineering/validation/test-select-validation.py: 172; tests/engineering/validation/test-validation-execution.py: 52; tests/skill/test-skill-validator.py: 288; Node419 across22 native files.\nObserved local exit0:460 canonical result rows passed, aggregate focused worker385.97s (not wall time). Explicit exit0:1234 canonical result rows passed, aggregate focused worker1579.75s; two non-case validators and1232 cases. Per-check counts: {\"adapters.regression\": 14, \"boundary_first.reference_regression\": 26, \"boundary_first.regression\": 29, \"boundary_first.validate\": 1, \"change_metadata.regression\": 7, \"documentation_prose.regression\": 14, \"governed_lifecycle_cli_wrapper.test\": 6, \"guide_system.regression\": 13, \"guide_system.validate\": 1, \"markdown_readability.regression\": 7, \"npm_package_publication.test\": 8, \"release_transaction.regression\": 177, \"rigorloop_cli.test\": 419, \"selector.regression\": 172, \"skills.regression\": 288, \"validation_execution.regression\": 52}. The81 default Python cases absent from explicit results all belong to the full adapter population (95 versus14 selected); full direct adapter result follows. Default unique population1313=894Python+419Node is not the count of any one selected invocation. All other discovered native IDs reconciled to explicit results.\nFull adapter native run: Ran 95 tests in 188.202s / OK\nM1 measurement limit:81 adapter cases have suite-level direct execution cost only, not a uniform isolated per-case measurement. Actual prepared release configurations/operational events were not run. M2 must capture full isolated comparable baseline before changing product suites. This is population/assertion/baseline evidence, not model proof completion, semantic assessment, M2 completion, review approval or PR readiness.\nAn initial directory-level explicit request was blocked as unclassified (no tests launched). Replaced with the actual13 entrypoint file paths above, preserving selector authority rather than bypassing it.\n"
+    }
+  ],
+  "schema_version": 3
+}

@@ -117,6 +117,8 @@ The [strategy](test-design/test-design.md) defines one synthetic artifact fixtur
 
 The procedures inspect goal/requirement preservation, durable coverage ownership, adequate downstream allocation, exact review subjects and correction authority. Each compares concrete compliant and faulty artifact/decision packets; named variants preserve separate starting state and diagnostics. They remain proposed independent reviews, not passing executable tests. Existing wording and skeleton checks provide narrower structural evidence. Skill references this detailed parent composition instead of copying its scenarios. [Validation](../../engineering/validation.md#authoring-test-design-admission-contract) defines the five-file admission boundary; actual assessment results remain in evidence.
 
+Apply [System's selection procedure](../../test-design/rules.md#select-requirements-and-proof) to the five current requirements: AUTH-SR-01/03 govern refinement and correction ownership, AUTH-SR-02 governs invocation bounds and changing prerequisites, AUTH-SR-04 governs exact handoff and stable intent, and AUTH-SR-05 governs consumer/identity preservation. Each is accounted by the named catalog groups with concrete distinct violations. [Proposal](proposal.md#test-design), [Design](design.md#test-design) and [Plan](plan.md#test-design) now provide their local coverage; the parent retains the extra observation that a valid local artifact can still lose an approved goal, required proof or current subject across a sibling handoff. The existing overview and Context/Runtime views already own those transfers; no new deployment or assessment authority is introduced.
+
 ## Architecture Decisions
 
 | ID | Decision and rationale | Alternatives and consequences |
