@@ -1,0 +1,60 @@
+{
+  "assessment_scope": "Interim independent TG-3 synthetic-packet assessment during M3. Exact subject is evidence.json containing m3-original-walkthrough-packet, result inconclusive, with the original packet embedded verbatim and unchanged. Assessed D0/D1, L0/L1/L2 and ordinary/adopted/missing-resource reading-path decisions against the approved plan manual-proof contract and current method. This is neither a defect judgment on canonical guidance nor the complete M3 Code Review; selected CI, full adapter proof and final milestone evidence are still pending.",
+  "change_id": "2026-09-17-complete-model-test-coverage",
+  "contributors": [
+    {
+      "id": "root-implementer",
+      "role": "implement"
+    }
+  ],
+  "findings": [
+    {
+      "evidence": "Severity: major. Finding scope: authored evidence packet. Owning stage: implement (M3 TG-3 proof preparation). Location: evidence entry m3-original-walkthrough-packet, Candidate D0 IMP-SR-01 and Candidate L0 verification allocation. D0 declares all-or-none publication but observes only successful valid A/B and rejection of invalid B before persistence. L0 allocates only valid/invalid partitions plus sentinel preservation. Counterexample: validate A/B completely, write A, then fail during B persistence and leave A. Both described partitions can pass while this failure violates the claimed guarantee. The canonical test-quality worked example explicitly distinguishes controlled failure after the first write attempt with original records preserved and no complete-success result. Its omission prevents D0/L0 from serving as fully compliant controls for that broader claim, independently of their correct invalid-input ordering. Exact original packet was confirmed embedded unchanged in the registered inconclusive evidence before this finding.",
+      "id": "tg3-atomic-failure-proof-gap",
+      "owner": {
+        "id": "root-implementer",
+        "role": "implement"
+      },
+      "reporter": {
+        "id": "milestone-reviewer",
+        "role": "review"
+      },
+      "required_outcome": "Prepare a corrected positive-control packet whose claimed scope and proof allocation agree. For retained all-or-none publication, D0 must include a controlled persistence failure after the first attempted write through the real public/persistence boundary, with independently expected failure, original A/B absence and exact unrelated sentinel preservation; L0 must allocate this proof at the appropriate pre-implementation/regression point and require its actual result before completion. Alternatively, explicitly narrow the synthetic claim and authority to validation rejection without asserting broader failure atomicity. Preserve the original packet/evidence and this finding; add the corrected candidate separately and request independent reassessment. Safe correction belongs to root-implementer as synthetic-packet author; canonical guidance already requires the distinction and needs no change. No new project behavior decision is required.",
+      "resolution": null,
+      "state": "open",
+      "subjects": [
+        {
+          "identity": "sha256:c452c9ec9804e18713cb444a5f53f9db37a8c2cc4fcd0d4f4b1222b8262c8819",
+          "path": "docs/changes/2026-09-17-complete-model-test-coverage/evidence.json"
+        }
+      ]
+    }
+  ],
+  "id": "code-review-m3-first-pass",
+  "independence_basis": "Runtime /root authored the synthetic TG-3 packet as root-implementer and registered its original exact text before correction. Runtime /root/design_review independently inspected that packet, the changed canonical reading path and actual generated Codex/Claude resources without editing guidance, packet, tests or evidence. The assessor derived candidate decisions from the actual requirements and failure mechanisms rather than treating the author rubric as evidence. Prior Design/Delivery and milestone reviews were independent assessments, not authorship.",
+  "judgment": "changes-requested",
+  "limitations": [
+    "No importer runtime was implemented or executed. This is independent artifact reasoning about a synthetic scenario and its specified observations, not evidence of actual persistence, target-agent compliance or live operations.",
+    "The complete M3 milestone review remains pending final engineering/evidence handoff and required command results. This review neither approves M3 nor advances activity/work, final review, Verify or PR readiness.",
+    "Reviewer performed no source, packet, test or workflow-state edits. The exact original evidence subject and finding remain historical after author correction."
+  ],
+  "rationale": [
+    "Positive-control adequacy and spec alignment — concern. D0 requires all records valid before mutation with all-or-none publication, and IMP-SR-02 preserves unrelated bytes. Its success and invalid-second-record observations protect validation ordering, but a writer can validate both records then publish A and fail on B. That implementation passes both described partitions while violating all-or-none publication. L0 allocates only those same partitions and cannot establish the broader guarantee. The shared worked example separately requires controlled failure after the first attempted write, so this is a concrete omitted hazard rather than an invented case-count requirement.",
+    "Independent candidate decisions. D1 returns to Design because immediate per-item publication leaves A after invalid B, contradicting the parent outcome despite unchanged IDs and atomic prose. L1 returns to Plan because parser results cannot observe partial persistence or changed sentinel bytes. L2 cannot delete R-old: the unusual-name behavior remains supported, no equivalent proof or owner retirement exists, and missing catalog membership plus runtime cost supplies no removal authority. D0/L0 are adequate only for their narrower invalid-input-rejection reasoning until the recorded gap is corrected or their synthetic claim explicitly narrowed.",
+    "Reading-path and resource observations. Ordinary living Design test authoring reaches quality via SKILL step5, its unconditional living-test-design resource trigger and model-authoring link; it does not adopt project governance or JSON. Other stage guidance retains explicit adopted-criteria triggers. Missing required guidance stops dependent work and routes a distribution defect rather than reconstruction or implicit approval. Independently compared all29 changed skill members in each actual Codex/Claude ZIP: resource bytes and SKILL bodies match canonical inputs, including legacy-source wording; quality10 and maintenance8 copies match their templates. These are availability/parity observations, not semantic proof of agent compliance.",
+    "Bounded outcome. The canonical seven-step method, persistence example, fixture rules, unlisted-regression preservation and owning-stage routing correctly expose the packet defect. No guidance edit is requested by this finding. Root-implementer owns correction of this authored synthetic evidence packet; no actual project Design or approved primary plan needs rewriting solely to correct the example. Preserve the original packet and this first-pass decision before independently assessing the corrected packet."
+  ],
+  "reviewer": {
+    "id": "milestone-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:c452c9ec9804e18713cb444a5f53f9db37a8c2cc4fcd0d4f4b1222b8262c8819",
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/evidence.json"
+    }
+  ],
+  "summary": "The original TG-3 packet cannot yet serve as a fully compliant positive Design/delivery example: D0 claims all-or-none publication while D0 and L0 cover valid and invalid-input cases only. A controlled persistence failure after an attempted write is a distinct unallocated observation. Canonical guidance correctly identifies that distinction.",
+  "target": "code"
+}

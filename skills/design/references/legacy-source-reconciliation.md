@@ -1,6 +1,6 @@
 # Scoped legacy authoring and authority reconciliation
 
-The project supplies the authoritative legacy requirements, approved decisions, declared format/version and mandatory local templates or schemas. Inspect those sources and exact prior identities before amending them. Missing packaged guidance is a distribution defect; missing or contradictory project authority instead requires its owner. Neither generic guidance nor installing a skill establishes project adoption.
+The project supplies the authoritative legacy requirements, approved decisions, declared format/version and mandatory local templates or schemas. Inspect those sources and exact prior identities before relying on them for explicitly authorized living-model adoption; source inspection does not permit amendment of retired output formats. Missing packaged guidance is a distribution defect; missing or contradictory project authority instead requires its owner. Neither generic guidance nor installing a skill establishes project adoption.
 
 ## Supported output and existing authority
 

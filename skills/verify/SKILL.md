@@ -108,7 +108,7 @@ Evaluate applicable dimensions as `pass`, `concern`, or `block`: requirement and
 
 1. Classify outcome, exact target, execution mode, and resource profile.
 2. Resolve evidence authority and load only triggered resources.
-3. Map requirements or requested checks to tests, changed files, and current evidence.
+3. Map requirements or requested checks to tests, changed files, and current evidence. Under adopted test criteria, use the [selection method](references/test-quality.md#select-requirements-and-proof) to reconcile the current model groups, Delivery allocation, actual case discovery/assertions and independent assessment. Include parent interactions and useful unlisted regressions; an unresolved required observation or an unrun planned method cannot support completeness, regardless of passing counts or lower cost.
 4. Run named targeted proof; for planned initiatives or authoritative triggers, also run the project's broad validation command when required.
 5. Check drift, blockers, claim limits, and the permitted handoff.
 6. Report the verdict and exact commands actually run.

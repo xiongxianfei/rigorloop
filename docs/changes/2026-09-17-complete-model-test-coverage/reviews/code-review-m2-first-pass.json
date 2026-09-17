@@ -20,8 +20,24 @@
         "role": "review"
       },
       "required_outcome": "Reject every discovered report-path collision without publishing to or otherwise modifying the conflicting input/output. Revoke or suppress publication after a late ownership/collision failure while still safely releasing only this invocation's reservation and temporary files; preserve normal partial reports for controlled failures whose destination remains valid. Add regression proof through the public wrapper with a valid no-collision control followed by a collision revealed by selected scope after reservation, asserting nonzero rejection, exact prior bytes, no worker launch and reservation cleanup. Assess corresponding late plan/scratch collision paths under the same ownership policy. Safe resolution is a bounded implementation/test correction by root-implementer followed by independent exact-subject reassessment. No new product decision is needed because approved VAL-SR-38 already requires preservation.",
-      "resolution": null,
-      "state": "open",
+      "resolution": {
+        "actor": {
+          "id": "milestone-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [
+          {
+            "id": "m2-review-supplement",
+            "path": "docs/changes/2026-09-17-complete-model-test-coverage/evidence.json"
+          },
+          {
+            "id": "m2-reporting-baseline",
+            "path": "docs/changes/2026-09-17-complete-model-test-coverage/evidence.json"
+          }
+        ],
+        "rationale": "Reporter independently inspected the exact corrected validation_execution.py sha256:2ab689aba271919db93d869bf466784e9b6ad8e822450678346411727c545502 and reporting tests sha256:1cc995dc6137c3665af6121a0f0f75fdc5bc405a967dd965a0f74a0565edac2b. The four-line correction sets publication_revoked upon any discovered collision and publish refuses before serialization/write; close still removes only the held reservation. The original public reproduction now returns4 with the exact sentinel preserved and no residual lock/temp. The author regression first failed three defining assertions on old code; the complete corrected Reporting26 passed. Reporter independently executed both new regressions through native isolated workers; both passed with exact identity and measured costs in m2-review-supplement. The successful control and retained controlled-failure-report cases show revocation is limited to invalid collision ownership. This directly satisfies the finding; the original review judgment, finding evidence and old subjects remain preserved."
+      },
+      "state": "resolved",
       "subjects": [
         {
           "identity": "sha256:931820c0c51d57b8ccdd203f1d142429b580180d95ac8d0d772b10d631b2fd7b",

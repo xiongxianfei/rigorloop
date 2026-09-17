@@ -234,21 +234,35 @@ class TestPolicyResourceTests(unittest.TestCase):
             self.assertEqual(errors, [f"{skill}: unknown test-policy consumer 'unknown_value'"])
 
     def test_test_policy_missing_and_drifted_resources_reject(self):
-        with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            source = root / "shared"
-            source.mkdir()
-            skill = root / "implement" / "SKILL.md"
-            refs = skill.parent / "references"
-            refs.mkdir(parents=True)
-            for name in ("test-quality", "test-maintenance"):
-                (source / f"{name}.md").write_text("criterion\n")
-            self.assertTrue(skill_validation.validate_test_policy_copies(skill, "implement", source=source))
-            for name in ("test-quality", "test-maintenance"):
-                (refs / f"{name}.md").write_text("criterion\n")
-            self.assertEqual([], skill_validation.validate_test_policy_copies(skill, "implement", source=source))
-            (refs / "test-maintenance.md").write_text("changed\n")
-            self.assertTrue(any("differs" in error for error in skill_validation.validate_test_policy_copies(skill, "implement", source=source)))
+        for name in ("test-quality", "test-maintenance"):
+            for fault in ("missing-copy", "missing-source", "drifted-copy"):
+                with self.subTest(resource=name, fault=fault), tempfile.TemporaryDirectory() as tmp:
+                    root = Path(tmp)
+                    source = root / "shared"
+                    source.mkdir()
+                    skill = root / "implement" / "SKILL.md"
+                    refs = skill.parent / "references"
+                    refs.mkdir(parents=True)
+                    for resource in ("test-quality", "test-maintenance"):
+                        (source / f"{resource}.md").write_text("criterion\n")
+                        (refs / f"{resource}.md").write_text("criterion\n")
+                    self.assertEqual([], skill_validation.validate_test_policy_copies(
+                        skill, "implement", source=source))
+                    canonical = source / f"{name}.md"
+                    local = refs / f"{name}.md"
+                    if fault == "missing-copy":
+                        local.unlink()
+                    elif fault == "missing-source":
+                        canonical.unlink()
+                    else:
+                        local.write_text("changed\n")
+                    expected = (f"{local}: test-policy reference differs from canonical source"
+                                if fault == "drifted-copy" else
+                                f"{local}: test-policy reference is missing (source {canonical})")
+                    self.assertEqual([expected], skill_validation.validate_test_policy_copies(
+                        skill, "implement", source=source))
+                    sibling = "test-maintenance" if name == "test-quality" else "test-quality"
+                    self.assertEqual((refs / f"{sibling}.md").read_bytes(), b"criterion\n")
 
     def test_test_policy_canonical_copies_and_conditional_resources(self):
         self.assertEqual(skill_validation.TEST_QUALITY_CONSUMERS, QUALITY_CONSUMERS)
