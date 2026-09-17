@@ -2056,7 +2056,10 @@ def _is_boundary_first_reference_surface(path: str) -> bool:
             'scripts/resources/boundary-first/boundary-first-resources.yaml',
             'templates/shared/boundary-first-method-v1.md',
         }
-        or path.endswith("/references/boundary-first-method-v1.md")
+        or (
+            path.startswith(("skills/", ".codex/skills/", "dist/adapters/"))
+            and path.endswith("/references/boundary-first-method-v1.md")
+        )
         or path
         in {
             'scripts/lib/validation/boundary_first_reference.py',

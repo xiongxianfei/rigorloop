@@ -1,10 +1,10 @@
 {
   "activity": {
     "owner": {
-      "id": "historical-code-reviewer",
+      "id": "historical-m1-reviewer",
       "role": "review"
     },
-    "reason": "M1 implementation and required local proof complete; independent milestone review required before work completion and separate fresh final review.",
+    "reason": "Reference suffix finding corrected and local CI passed; reporter reassessment required.",
     "stage": "code-review",
     "status": "ready"
   },
@@ -51,7 +51,16 @@
         "role": "implement"
       },
       "path": "docs/changes/2026-09-17-retire-historical-path-compatibility/evidence.json",
-      "reason": "Exact final M1 sources and current local environment; no engineering changes after complete selected pass.",
+      "reason": "Fresh correction proof; prior implementation entry is historical where its subject identities differ.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "historical-path-code-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-17-retire-historical-path-compatibility/reviews/historical-path-m1-code-review.json",
+      "reason": "Exact current implementation assessed independently; concrete reproduced support-boundary defect prevents M1 clean handoff.",
       "value": "current"
     }
   ],
@@ -123,6 +132,10 @@
     {
       "kind": "evidence",
       "path": "docs/changes/2026-09-17-retire-historical-path-compatibility/evidence.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-17-retire-historical-path-compatibility/reviews/historical-path-m1-code-review.json"
     }
   ],
   "schema_version": 3,
@@ -130,7 +143,7 @@
     {
       "id": "m1",
       "owner": {
-        "id": "historical-code-reviewer",
+        "id": "historical-m1-reviewer",
         "role": "review"
       },
       "requirement_refs": [

@@ -1,0 +1,152 @@
+{
+  "assessment_scope": "Independent complete milestone M1 Code Review at implementation commit3385abed6489f76349c11f857da81cba25d0f6a2 against baselineddb7eb9e0d4669d360483eac080f8f05fedd5641. All ten checklist areas, meaningful test reduction, selector/executor composition and generated/installed Design guidance assessed.",
+  "change_id": "2026-09-17-retire-historical-path-compatibility",
+  "contributors": [
+    {
+      "id": "historical-design-author",
+      "role": "design"
+    },
+    {
+      "id": "historical-planner",
+      "role": "plan"
+    },
+    {
+      "id": "historical-implementer",
+      "role": "implement"
+    }
+  ],
+  "findings": [
+    {
+      "evidence": "Severity: major. Location: scripts/lib/validation/validation_selection.py:2059 (_is_boundary_first_reference_surface), consumed by _path_category before namespace rejection. At3385abed, run python scripts/select-validation.py --mode explicit --path docs/examples/references/boundary-first-method-v1.md: status ok, classified boundary-first, no blockers, only boundary_first.reference_regression. Adding --path scripts/validate-release.py still yields ok/no blockers. Run bash scripts/ci.sh --mode explicit --path docs/examples/references/boundary-first-method-v1.md: real wrapper executes reference regression and reports Selected CI checks passed even though the absent unsupported input is never assessed. This violates current-path ownership and unknown/mixed failure requirements. The same global suffix can grant unrelated unknown namespaces ownership.",
+      "id": "historical-reference-suffix-routing",
+      "owner": {
+        "id": "historical-implementer",
+        "role": "implement"
+      },
+      "reporter": {
+        "id": "historical-path-code-reviewer",
+        "role": "review"
+      },
+      "required_outcome": "Restrict reference projection recognition to supported current owning namespaces/exact canonical resources; an arbitrary known-looking suffix cannot establish ownership. Preserve current canonical/generated projection checks and command behavior. Add concise representative suffix-outside-owner and mixed-current no-launch proof through selector/public CI, plus independent positive current-owner variants. Do not introduce a per-retired-name denylist. Implement correction under existing approved Design, rerun affected/full required proof and return exact changed subjects to reporter for disposition and M1 reassessment.",
+      "resolution": null,
+      "state": "open",
+      "subjects": [
+        {
+          "identity": "sha256:2cb98d4aaa1742ece7da461cb4f2314023930613ef22e08305893a9c9ba824eb",
+          "path": "scripts/lib/validation/validation_selection.py"
+        }
+      ]
+    }
+  ],
+  "id": "historical-path-m1-code-review",
+  "independence_basis": "Independent nonauthor inspected actual full M1 diff, approved package and allocation, meaningful changed tests, current source/callers and concrete proof. Reviewer authored only assessment and temporary reproductions, no reviewed engineering. Earlier proposal review supplies no implementation approval.",
+  "judgment": "changes-requested",
+  "limitations": [
+    "No M1 closeout, final whole-change approval, Verify, branch/PR readiness, hosted CI or publication claim.",
+    "Required exact committed PR-range validation remains downstream; recorded local execution is not represented as that run.",
+    "Published-method assessment judges bounded instruction meaning and actual resource availability, not universal agent compliance."
+  ],
+  "rationale": [
+    "Spec alignment — concern. Exact approved historical-path-design-review-r2 (8 members) and historical-path-delivery-review (plan) match. Most implementation follows the narrowed all-family contract, but historical-reference-suffix-routing violates VAL-SR-27/30 and TG-PATHS by accepting unsupported namespaces solely through a reference basename. This requires implementation correction, not a new policy decision.",
+    "Test coverage — concern. Reviewed reductions by responsibility: archive/old examples, obsolete tool/fixture/lifecycle routes, absent model substitutions and Release replay tests were intentionally retired; current canonical owner sets replace circular old/new equivalence. Portable/current symlink, tracking, marker/privacy, record safety and catalog detail remain. The 202 to 186 method change is not adequacy proof. New generic unknown and no-launch cases miss misleading known-resource suffixes; require a compact ownership-boundary regression and retained current projection positives, not a retired-name ledger.",
+    "Edge cases — concern. Reviewer directly ran six native selector methods: canonical_tools_select_independent_owner_checks, model_selection_keeps_unsupported_exact_input, model_selection_rejects_current_portable_symlink, git_discovery_includes_deleted_and_both_renamed_paths, current_model_executes_through_trusted_ci_command_boundary and mixed_unknown_input_stops_real_ci_before_execution (each under ValidationSelectionTests). All six passed. They prove exact flat rejection, current symlink rejection, current unstaged/staged/committed deletion/rename and real trusted-model execution/missing-index failure, but the separately reproduced reference-suffix bypass shows additional outcome-changing classification composition remains unprotected.",
+    "Error handling — concern. Ordinary unknown inputs block with no public-wrapper check launch and exact unsupported flat subjects reach admission. In contrast, an absent docs/examples/references/boundary-first-method-v1.md input returns selector ok with only boundary_first.reference_regression; actual public CI runs reference regressions and reports Selected CI checks passed. Mixed with scripts/validate-release.py also selects successfully. Thus surviving suffix classification can invent successful validation for unsupported input.",
+    "Architecture boundaries — pass apart from the finding. Canonical current tool/test/resource classification replaces predecessor maps in main routing and related boundary helpers; trusted executor caller drops discovered_paths with command builder, retaining exact command comparison. Current model declarations and portable same-name paths remain distinct from catalog packages. Catalog/selector/executor architecture and record/release owners remain unchanged.",
+    "Compatibility — concern limited to the finding. All six intended families are removed from explicit maps/categories, generic flat acceptance is withdrawn and historical source-to-receiver substitution removed. Current System root, portable same-name models, current release wrappers/module, ordinary plans/proposals and current-record archival exclusion retain ownership. The remaining global suffix accepts obsolete or unknown namespaces despite that withdrawal. Old-looking inputs under legitimate current schema/template/package owners remain allowed by their existing contracts; this is different from a suffix granting ownership anywhere.",
+    "Security/privacy — pass for retained inspected surfaces, with integrity impact of the finding retained. Public model checks preserve lexical subjects, path containment, diagnostic redaction and no-write behavior. No source conversion, record-identity rewriting, permission expansion, external operation or publication added. The suffix defect is a validation-integrity failure; no unauthorized write was observed.",
+    "Derived artifact currency — pass within local scope. Reviewer independently built clean adapter archives using build_adapter_archives(v0.3.6,tempdir), then ran validate_clean_install_smoke(v0.3.6,tempdir,skill_names=(design,)) against the real locally packed CLI for both supported targets: errors empty. Current model-authoring resource SHA256 f2eb9c36b036165461b0c9fbd64c08eba5cf4b5d4bbdc3038fccdf6f9934bbe5. This proves actual clean generated/installed Design resources; version is a private fixture label, not release selection. Existing selected archive tests also independently compare complete canonical resource sets.",
+    "Unrelated changes — pass. Scope remains compatibility-only; merged three-model catalogs/test rules and feature-format withdrawal are retained. No physical fixture files deleted in this diff, broader catalog rollout, record version migration or stash restoration. Parent reported 127 current script/test paths with baseline/current status and check-ID parity; independently named current-owner tests corroborate meaningful cases without using that parity as the sole oracle.",
+    "Validation evidence — concern in adequacy, not result attribution. All 17 implementation evidence subjects and exact upstream approval members match. Inspected final local log reports 1001 passed rows/Selected CI checks passed; author records boundary29, all-model checks and19skills and openly discloses intentional red/development failures/interrupted earlier run. Direct reviewer six-method run and clean Design install passed. The positive broad run does not detect the reproduced false-success path, so clean milestone handoff is not justified. Required committed PR-range CI is still explicitly downstream and not claimed.",
+    "Published guidance semantic assessment — pass. Exact changed opening plus complete method context distinguish explicit project-selected layout from portable docs/design/M/M.md; generic flat validation is unsupported while existing source authority/bytes/review identities remain unchanged. A proposed decision to create a supported same-name target under authoring authority is consistent; automatically relocating an existing flat source or retargeting its old review is not. No repository-specific alias registry, automatic adoption or mandatory historical dependency introduced. Source reading and stage-owned Design/Delivery handoffs remain coherent. Assessment is instruction meaning plus installed-resource availability, not target-agent behavioral execution.",
+    "Finding must be corrected and reporter-reassessed before M1 closeout. No implementation or milestone/routing edit made by reviewer. This is complete M1 review against ddb7eb9e0d4669d360483eac080f8f05fedd5641..3385abed6489f76349c11f857da81cba25d0f6a2, not final whole-change approval."
+  ],
+  "reviewer": {
+    "id": "historical-path-code-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:4fb4b8957923ad683118f3e88d147152e3b794d15844fe8bbe44115fe6ff69ff",
+      "path": "docs/design/engineering/engineering.md"
+    },
+    {
+      "identity": "sha256:408d11f05ad68f16c5b053cfb95c7c658dc7187a0413b510532bf7109a4bb1b4",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:1b54166e88c557275c7957e38e5269f5968040ba75f382690e83fd66e593fa4b",
+      "path": "docs/design/skill/authoring/design.md"
+    },
+    {
+      "identity": "sha256:3d21d0de8a59c2d3df532a688270138f0764eeea6611dec1e1121f7f174da7ca",
+      "path": "docs/design/skill/workflow.md"
+    },
+    {
+      "identity": "sha256:c1463a2d61f79edb0abcc59db3045efdd003dfa0f63000db2a45fd810700bd7d",
+      "path": "docs/design/system.md"
+    },
+    {
+      "identity": "sha256:1e9f0f91a8780492287c5dac7e71c5952cfe4eb1c78ae812f4598445f8f256a3",
+      "path": "docs/plan.md"
+    },
+    {
+      "identity": "sha256:e0bea2c8f6bd6f6739dd0d0efc9956a90261ed72f8c07dfd60220e087cd1358f",
+      "path": "docs/plans/2026-09-17-retire-historical-path-compatibility.md"
+    },
+    {
+      "identity": "sha256:9d8cb7e51959cc19a7991114e702a59eb4587a2a6a91a81cffa57ef70ce16d48",
+      "path": "docs/proposals/2026-09-17-retire-historical-path-compatibility.md"
+    },
+    {
+      "identity": "sha256:b07271ee234d4e6735bb1fcf04010fdadd0cb80c2188f9959e9472d8510b4f50",
+      "path": "scripts/lib/validation/boundary_first_validation.py"
+    },
+    {
+      "identity": "sha256:e5497376660d99abc84e67618dbcf89bcf41aadac0886570c937d732800a556d",
+      "path": "scripts/lib/validation/model_layout.py"
+    },
+    {
+      "identity": "sha256:f4d05f33a3ffd05af6be5d1b65c2f2f4780461783c9ec581a882ac7e2eb8ae1e",
+      "path": "scripts/lib/validation/validation_execution.py"
+    },
+    {
+      "identity": "sha256:2cb98d4aaa1742ece7da461cb4f2314023930613ef22e08305893a9c9ba824eb",
+      "path": "scripts/lib/validation/validation_selection.py"
+    },
+    {
+      "identity": "sha256:f2eb9c36b036165461b0c9fbd64c08eba5cf4b5d4bbdc3038fccdf6f9934bbe5",
+      "path": "skills/design/references/model-authoring.md"
+    },
+    {
+      "identity": "sha256:a763ac887a897f0f860dcac13f476a75e2aa9881f0c56af9766a9cdecf4ae1d8",
+      "path": "tests/engineering/validation/boundary_model_tests.py"
+    },
+    {
+      "identity": "sha256:0207a499c1fe6184b80d85af019b01ced62a41ba7f700a248b91207a9247be18",
+      "path": "tests/engineering/validation/catalog_admission_tests.py"
+    },
+    {
+      "identity": "sha256:f3fd178d5e9c16da58cf91f73074b0d2e2e7e5e0ae157805d9748cd057e75e22",
+      "path": "tests/engineering/validation/selection_contract_tests.py"
+    },
+    {
+      "identity": "sha256:706024ee1527db7ea8ceb4b3fb0feb1a36879c798b47c9f1346c03cb4e28b88a",
+      "path": "tests/engineering/validation/selection_git_tests.py"
+    },
+    {
+      "identity": "sha256:dca203200cbf1c1dc98d62eb2c2920eed4266608a872b8d1c1b925761b91c4a5",
+      "path": "docs/changes/2026-09-17-retire-historical-path-compatibility/reviews/historical-path-design-review-r2.json"
+    },
+    {
+      "identity": "sha256:9b82cda651eeb7404df3cb092e88d3524a51c5c6d26f707e920cfdbc3ceac510",
+      "path": "docs/changes/2026-09-17-retire-historical-path-compatibility/reviews/historical-path-delivery-review.json"
+    },
+    {
+      "identity": "sha256:7a0e205c1f665dcf73a70d4e4be9fdc22f090d7a70c9d38666e009b82de4c4a1",
+      "path": "docs/changes/2026-09-17-retire-historical-path-compatibility/evidence.json"
+    }
+  ],
+  "summary": "M1 needs correction: a global boundary-reference suffix still classifies unsupported namespaces as supported and lets real CI report success without validating the input. Other inspected current routing, retained safety and published guidance have no additional material finding.",
+  "target": "code"
+}

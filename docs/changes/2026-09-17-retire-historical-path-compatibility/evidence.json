@@ -80,6 +80,86 @@
         }
       ],
       "summary": "M1 completes all named historical-path families. Canonical current validation/packaging/release paths replace predecessor normalization in classification and boundary/reference predicates; both current release_evidence wrapper/module and live release commands remain. Removed old script/test and retired fixture routes, exact Skill archive set, retired docs/examples no-check, isolated advisory filename set, old document-family deletion exceptions, flat/model-name/example substitutions and Release move inference. Removed the now-unused discovered_paths argument from both command builder and trusted executor. Old spec test/vision trigger readers are gone. There is no historical filename denylist or replacement registry.\n\nModel admission now requires an exact declared project path (including docs/design/system.md) or portable docs/design/M/M.md. Missing/invalid paths keep their exact subject and cannot pass through a receiver. Public structure/reference, symlink, privacy, required-detail and no-write behavior remains. Current Git discovery still includes deletion and both rename endpoints. Current plan/proposal, skill, release-evidence and record-owned deletion protection remains. Generic current schema/template/package namespaces retain their ordinary rules; old-looking names are not globally forbidden.\n\nTest disposition follows Validation's approved support withdrawal and System's shared rules. Nineteen methods whose sole obligation was old-path positive acceptance/retirement routing were removed; eleven methods were rewritten/renamed for current behavior; three distinct tests were added for canonical subject identity, unknown/current mixed routing and actual CI no-launch on unknown input. The five inspected modules total 202 to 186 methods, net 16 fewer. Removed representative table rows cover old token/spec-read/lifecycle/fixture categories without adding per-name negative cases. Moved current suite checks now assert independently named owner check sets rather than compare old/new producer outputs. Shared symlink/tracking fixtures use current targets; actual private Git trees still cover unstaged/staged/committed deletion/rename and unknown companions. Old Release-move replay integration is replaced by real current model execution and missing declared catalog failure through the trusted CI command. No physical fixture files were removed: exclusive historical fixture directories were already absent. Current record rejection/exclusion and live release evidence tests remain.\n\nOne-time audit compared baseline and candidate selection for every current tracked script/test code path (127 paths): same status and selected check IDs for all. Explicit current-path tests independently establish required owner sets; baseline parity is supplementary maintenance evidence, not the sole oracle. Canonical source scan finds no remaining retired maps/constants, predecessor helper or discovered_paths caller. Relevant sources are recoverable at baseline ddb7eb9e0d4669d360483eac080f8f05fedd5641 and are not fetched for runtime operation.\n\nThe five approved owning Designs, Workflow consumer and published model-authoring guidance describe the same narrowed support. No model catalogs expanded; their current links/discovery remain validated. Current records, CLI factual architecture/ADR discovery, installation/release permissions and customer source bytes are unaffected. Packaging checks validate generated current method inclusion without editing active installations. The original stash b253bd256e7c36e0040826e843e2da0a5dff8804 and backup ref remain untouched; only primary checkout is used.\n\nDevelopment observations: initial two new flat/mixed admission tests failed for the intended old acceptance; after implementation all 29 boundary tests passed. First selector run had 9 failures tied to stale old fixtures/expected diagnostics; after corrections a second had 1 remaining old current-record assertion (171 passed), then four affected corrections passed and the final obsolete fixture-prefix check passed. An initial local CI was deliberately interrupted (exit 143) for that last source correction and supplies no readiness evidence. Final validation commands/results are recorded separately below. Exact committed PR-range CI and distinct final review/Verify remain downstream until actually completed.\n\nFinal local results: python tests/engineering/validation/test-boundary-first-validation.py passed 29 tests; python scripts/validate-boundary-first.py --check passed all declared models/examples/detail; python scripts/validate-skills.py passed 19 canonical skills; bash scripts/ci.sh --mode local exited 0 with 1001 passed rows, Selector status ok, no blocking results, boundary scope passed and Selected CI checks passed. The selected run reexecuted the complete current selector and executor populations and package/skill/record checks. git diff --check passed. Actual baseline/candidate routing audit inspected 127 current code paths with zero status/check-ID differences. Logs are local scratch only; these command results and exact subjects are the durable evidence. Hosted CI unobserved and PR-range validation not yet run."
+    },
+    {
+      "actor": {
+        "id": "historical-implementer",
+        "role": "implement"
+      },
+      "id": "m1-reference-correction",
+      "procedure": "Focused reference-ownership and real CI no-launch regression; bash scripts/ci.sh --mode local",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:4fb4b8957923ad683118f3e88d147152e3b794d15844fe8bbe44115fe6ff69ff",
+          "path": "docs/design/engineering/engineering.md"
+        },
+        {
+          "identity": "sha256:408d11f05ad68f16c5b053cfb95c7c658dc7187a0413b510532bf7109a4bb1b4",
+          "path": "docs/design/engineering/validation.md"
+        },
+        {
+          "identity": "sha256:1b54166e88c557275c7957e38e5269f5968040ba75f382690e83fd66e593fa4b",
+          "path": "docs/design/skill/authoring/design.md"
+        },
+        {
+          "identity": "sha256:3d21d0de8a59c2d3df532a688270138f0764eeea6611dec1e1121f7f174da7ca",
+          "path": "docs/design/skill/workflow.md"
+        },
+        {
+          "identity": "sha256:c1463a2d61f79edb0abcc59db3045efdd003dfa0f63000db2a45fd810700bd7d",
+          "path": "docs/design/system.md"
+        },
+        {
+          "identity": "sha256:1e9f0f91a8780492287c5dac7e71c5952cfe4eb1c78ae812f4598445f8f256a3",
+          "path": "docs/plan.md"
+        },
+        {
+          "identity": "sha256:e0bea2c8f6bd6f6739dd0d0efc9956a90261ed72f8c07dfd60220e087cd1358f",
+          "path": "docs/plans/2026-09-17-retire-historical-path-compatibility.md"
+        },
+        {
+          "identity": "sha256:9d8cb7e51959cc19a7991114e702a59eb4587a2a6a91a81cffa57ef70ce16d48",
+          "path": "docs/proposals/2026-09-17-retire-historical-path-compatibility.md"
+        },
+        {
+          "identity": "sha256:b07271ee234d4e6735bb1fcf04010fdadd0cb80c2188f9959e9472d8510b4f50",
+          "path": "scripts/lib/validation/boundary_first_validation.py"
+        },
+        {
+          "identity": "sha256:e5497376660d99abc84e67618dbcf89bcf41aadac0886570c937d732800a556d",
+          "path": "scripts/lib/validation/model_layout.py"
+        },
+        {
+          "identity": "sha256:f4d05f33a3ffd05af6be5d1b65c2f2f4780461783c9ec581a882ac7e2eb8ae1e",
+          "path": "scripts/lib/validation/validation_execution.py"
+        },
+        {
+          "identity": "sha256:203f504f98f90484dd0c17dc88b249fdb6f4b387a2b920ae54f545c32216eadd",
+          "path": "scripts/lib/validation/validation_selection.py"
+        },
+        {
+          "identity": "sha256:f2eb9c36b036165461b0c9fbd64c08eba5cf4b5d4bbdc3038fccdf6f9934bbe5",
+          "path": "skills/design/references/model-authoring.md"
+        },
+        {
+          "identity": "sha256:a763ac887a897f0f860dcac13f476a75e2aa9881f0c56af9766a9cdecf4ae1d8",
+          "path": "tests/engineering/validation/boundary_model_tests.py"
+        },
+        {
+          "identity": "sha256:0207a499c1fe6184b80d85af019b01ced62a41ba7f700a248b91207a9247be18",
+          "path": "tests/engineering/validation/catalog_admission_tests.py"
+        },
+        {
+          "identity": "sha256:fcc59c3c2c7402d6df13301f1820e9d69780b10fa768d61bc9cfb3efb412bd0d",
+          "path": "tests/engineering/validation/selection_contract_tests.py"
+        },
+        {
+          "identity": "sha256:69214735b87bd7efca2c30628209786b8b15129b9c590e9bbb11cca046ee5d38",
+          "path": "tests/engineering/validation/selection_git_tests.py"
+        }
+      ],
+      "summary": "Corrected historical-reference-suffix-routing: reference suffix classification now requires canonical skills, local .codex/skills, or generated dist/adapters ownership. Unknown namespace and retired examples companions fail singleton and mixed selection; actual CI stops before any selected check. Regression reproduced five failures before fix; four focused methods passed after fix. bash scripts/ci.sh --mode local exited 0 with 232 passed rows. Earlier unchanged model/guidance proof and original full local evidence retain their limited meaning; final committed PR-range checks remain required. Review exposed a preventable missing namespace-negative scenario, now covered without a historical filename denylist."
     }
   ],
   "schema_version": 3

@@ -945,7 +945,7 @@ class SelectionGitChecks:
     def test_mixed_unknown_input_stops_real_ci_before_execution(self):
         from selection_test_helpers import run_ci
         result = run_ci('--mode', 'explicit', '--path', 'scripts/validate-release.py',
-                        '--path', 'docs/unknown/sample.md')
+                        '--path', 'docs/unknown/references/boundary-first-method-v1.md')
         self.assertNotEqual(result.returncode, 0)
         self.assertNotIn('Run selected check:', result.stdout+result.stderr)
         self.assertIn('unclassified-path', result.stdout+result.stderr)
