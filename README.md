@@ -379,7 +379,7 @@ Run the repository-owned selector and required checks for your change:
 bash scripts/ci.sh --mode local
 ```
 
-[Contributing](CONTRIBUTING.md#validation-scope) explains scoped and PR-range checks. Packaging changes also use `python scripts/build-adapters.py --check`; release qualification follows the actual prepared-candidate procedure in [Release](docs/design/engineering/release.md).
+[Contributing](CONTRIBUTING.md#validation-scope) explains scoped and PR-range checks. Packaging changes also use `python scripts/build-adapters.py --check`; release qualification follows the actual prepared-candidate procedure in [Release](docs/design/engineering/release/release.md).
 
 ## Repository Layout
 

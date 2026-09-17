@@ -1,13 +1,17 @@
 """Fresh Skill input builders and explicit validator assertion helpers.
 
-Callers own temporary roots, defining mutations and validator invocations.
+Builders accept caller-owned roots; context managers own their temporary roots.
+Callers retain defining mutations and validator invocations.
 Assertions receive observed results and independent expected diagnostics."""
 from __future__ import annotations
 
+from contextlib import contextmanager
 import shutil
+import tempfile
 import textwrap
 from pathlib import Path
 import sys
+from typing import Iterator
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "scripts"))
@@ -156,6 +160,31 @@ def write_resource_integrity_skill(
         resource_path.parent.mkdir(parents=True, exist_ok=True)
         resource_path.write_text(textwrap.dedent(content), encoding="utf-8")
     return skill_dir
+
+
+@contextmanager
+def resource_skill(
+    *,
+    resource_entries: str,
+    resources: dict[str, str] | None = None,
+    body_extra: str = "",
+    skill_name: str = "resource-integrity-fixture",
+) -> Iterator[Path]:
+    """Materialize explicit resource inputs in a fresh, automatically cleaned root."""
+    with tempfile.TemporaryDirectory() as temporary:
+        yield write_resource_integrity_skill(
+            Path(temporary), resource_entries=resource_entries, resources=resources,
+            body_extra=body_extra, skill_name=skill_name,
+        )
+
+
+@contextmanager
+def copied_skill(name: str) -> Iterator[Path]:
+    """Own a private copy of the real package; callers make each defining fault."""
+    with tempfile.TemporaryDirectory() as temporary:
+        root = Path(temporary) / name
+        shutil.copytree(ROOT / "skills" / name, root)
+        yield root
 
 
 def copy_ci_maintenance_fixture(root: Path) -> Path:

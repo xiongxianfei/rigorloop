@@ -1,0 +1,406 @@
+{
+  "format": "release-test-cases-draft",
+  "format_version": 2,
+  "owner": {
+    "model": "release",
+    "design": "docs/design/engineering/release/release.md",
+    "test_design": "docs/design/engineering/release/test-design/test-design.md"
+  },
+  "scope": {
+    "group": "candidate-identity",
+    "title": "Candidate and source identity",
+    "boundary": "Real source/file/Git identity, candidate seals and current qualification admission. Small synthetic archives prove binding rules only; the separately named integration fixture uses real builders, packed CLI and local installs."
+  },
+  "fixtures": [
+    {
+      "id": "candidate",
+      "initial_state": [
+        "Private ReleaseCandidateTests setup with authored 0.5.1 patch intent. candidate() writes synthetic package.tgz/adapter.zip, source=a repeated 40, prepared=b repeated 40, latest channel and three required checks (profile, preflight, release-integrity) passing."
+      ],
+      "builder": {
+        "path": "tests/engineering/release/release_candidate_tests.py",
+        "symbol": "ReleaseCandidateTests.candidate"
+      }
+    },
+    {
+      "id": "current-source",
+      "initial_state": [
+        "Private package.json version 0.5.1, actual validate-release.py main loaded through runpy, and only the current profile/notes added by each case."
+      ],
+      "builder": {
+        "path": "tests/engineering/release/release_candidate_tests.py",
+        "symbol": "CurrentSourceQualificationTests.setUp"
+      }
+    },
+    {
+      "id": "real-build",
+      "initial_state": [
+        "Clone the repository to a private Git root, copy current authored scripts/skills/templates/workflows/tests/model documents and package outputs, and commit them with synthetic 0.5.1 patch intent. Use private npm cache/log directories. Build actual archives/tarball and use local bare Git evidence plus FixtureHostedServices; all publication providers remain local substitutes."
+      ],
+      "builder": {
+        "path": "tests/engineering/release/release_candidate_tests.py",
+        "symbol": "ReleaseCandidateIntegrationTests.setUp"
+      }
+    },
+    {
+      "id": "tag",
+      "initial_state": [
+        "Private Git repository with a committed README and independently captured trusted commit."
+      ],
+      "builder": {
+        "path": "tests/engineering/release/release_fixture_helpers.py",
+        "symbol": "make_tag_identity_repo"
+      }
+    }
+  ],
+  "cases": [
+    {
+      "id": "REL-CI-001",
+      "title": "Qualification binds the exact authored source and runtime inputs",
+      "requirements": [
+        "REL-SR-08",
+        "REL-SR-09",
+        "REL-SR-12",
+        "REL-SR-23"
+      ],
+      "technique": "property",
+      "risk": "Qualification runs or approves different code from the reviewed candidate basis.",
+      "target": {
+        "path": "scripts/lib/release/release_candidate.py",
+        "symbol": "script_identity"
+      },
+      "given": {
+        "fixture": "candidate",
+        "conditions": [
+          "Use real private Git and the candidate fixture. Capture the selected immutable source/range and runtime identity before mutation.",
+          "Independently change nested code/resources or ignored loaded runtime content, restore each change, add bytecode, or symlink an owned module directory."
+        ]
+      },
+      "when": [
+        "Compute and verify source/CI subject identity; attempt preparation with loaded code differing from the selected source."
+      ],
+      "then": [
+        "Authored and loaded runtime changes invalidate the original basis; restoration re-establishes it. Bytecode alone does not change authored identity.",
+        "Symlinked source and mismatched loaded/selected code reject before build; CI resolves one immutable source range."
+      ],
+      "realization": {
+        "state": "partial",
+        "tests": [
+          {
+            "path": "tests/engineering/release/release_candidate_tests.py",
+            "symbol": "ReleaseCandidateTests.test_source_identity_covers_nested_code_resources_and_ignores_bytecode"
+          },
+          {
+            "path": "tests/engineering/release/release_candidate_tests.py",
+            "symbol": "ReleaseCandidateTests.test_source_identity_rejects_symlinked_module_directory"
+          },
+          {
+            "path": "tests/engineering/release/release_candidate_tests.py",
+            "symbol": "ReleaseCandidateTests.test_candidate_rejects_changed_nested_source_before_build"
+          },
+          {
+            "path": "tests/engineering/release/release_candidate_tests.py",
+            "symbol": "ReleaseCandidateTests.test_ci_range_resolves_main_defaults_and_repeated_head_before_preparation"
+          },
+          {
+            "path": "tests/engineering/release/release_candidate_tests.py",
+            "symbol": "ReleaseCandidateTests.test_ci_subject_rejects_changed_runtime_and_source"
+          }
+        ],
+        "gaps": [
+          "CI subject verification includes ignored runtime and checked source: The method verifies the initial subject and restores both mutated files, but does not call ci_subject again after each restoration. Add those calls to demonstrate recovery explicitly."
+        ]
+      },
+      "method": "automated-test",
+      "boundary": "contract"
+    },
+    {
+      "id": "REL-CI-004",
+      "title": "A candidate seal admits only complete, contained and unchanged artifacts",
+      "requirements": [
+        "REL-SR-08",
+        "REL-SR-09",
+        "REL-SR-12",
+        "REL-SR-19",
+        "REL-SR-23",
+        "REL-SR-24"
+      ],
+      "technique": "state-transition",
+      "risk": "A formally sealed descriptor hides changed, unsafe or insufficiently checked publication inputs.",
+      "target": {
+        "path": "scripts/lib/release/release_candidate.py",
+        "symbol": "verify_candidate"
+      },
+      "given": {
+        "fixture": "candidate",
+        "conditions": [
+          "Seal and successfully verify a valid candidate first. Mutate artifact bytes, manifest destination/channel, path/type/size, required check result or evidence ref independently."
+        ]
+      },
+      "when": [
+        "Seal or verify the mutated candidate using its original identity."
+      ],
+      "then": [
+        "Changed bytes or material manifest facts invalidate the old identity.",
+        "Unsafe artifact names, symlinks/nonregular files, boolean sizes, unknown/nonpassing required checks and evidence/source-ref collision reject before publication.",
+        "Neither rebuilding nor a newly computed seal grants the old approval to different bytes."
+      ],
+      "realization": {
+        "state": "partial",
+        "tests": [
+          {
+            "path": "tests/engineering/release/release_candidate_tests.py",
+            "symbol": "ReleaseCandidateTests.test_material_change_invalidates_sealed_candidate"
+          },
+          {
+            "path": "tests/engineering/release/release_candidate_tests.py",
+            "symbol": "ReleaseCandidateTests.test_manifest_change_rejects_old_binding"
+          },
+          {
+            "path": "tests/engineering/release/release_candidate_tests.py",
+            "symbol": "ReleaseCandidateTests.test_candidate_rejects_escaped_or_symlink_artifact"
+          },
+          {
+            "path": "tests/engineering/release/release_candidate_tests.py",
+            "symbol": "ReleaseCandidateTests.test_failed_or_unknown_value_check_cannot_seal"
+          },
+          {
+            "path": "tests/engineering/release/release_candidate_tests.py",
+            "symbol": "ReleaseCandidateTests.test_unknown_value_check_id_is_rejected"
+          },
+          {
+            "path": "tests/engineering/release/release_candidate_tests.py",
+            "symbol": "ReleaseCandidateTests.test_evidence_ref_cannot_overwrite_source_branch"
+          },
+          {
+            "path": "tests/engineering/release/release_candidate_tests.py",
+            "symbol": "ReleaseCandidateTests.test_boolean_artifact_size_is_not_a_valid_identity"
+          }
+        ],
+        "gaps": [
+          "Artifact and manifest edits invalidate an existing seal: The artifact test verifies its baseline; the manifest mutation test does not. Add a successful verify_candidate assertion before its mutation so unrelated invalid setup cannot satisfy rejection."
+        ]
+      },
+      "method": "automated-test",
+      "boundary": "contract"
+    },
+    {
+      "id": "REL-CI-010",
+      "title": "CI preparation cannot fall back to unchecked source or authorize publication",
+      "requirements": [
+        "REL-SR-02",
+        "REL-SR-08",
+        "REL-SR-09",
+        "REL-SR-23"
+      ],
+      "technique": "decision-table",
+      "risk": "A prepared-check failure becomes a signal to validate the wrong subject.",
+      "target": {
+        "path": "scripts/lib/release/release_candidate.py",
+        "symbol": "check_ci"
+      },
+      "given": {
+        "fixture": "candidate",
+        "conditions": [
+          "Use the real isolated CI preparation path; separately introduce a candidate verification failure and an existing release tag."
+        ]
+      },
+      "when": [
+        "Prepare/check the CI subject through its actual entrypoint."
+      ],
+      "then": [
+        "A failed prepared subject fails the command without source-mode fallback.",
+        "An existing public tag can permit isolated CI qualification while blocking release eligibility; CI success confers no publication permission."
+      ],
+      "realization": {
+        "state": "existing",
+        "tests": [
+          {
+            "path": "tests/engineering/release/release_candidate_tests.py",
+            "symbol": "ReleaseCandidateTests.test_prepared_ci_failure_cannot_become_source_mode_sentinel"
+          },
+          {
+            "path": "tests/engineering/release/release_candidate_tests.py",
+            "symbol": "ReleaseCandidateIntegrationTests.test_ci_candidate_preserves_published_tag_without_release_eligibility"
+          }
+        ],
+        "gaps": []
+      },
+      "method": "automated-test",
+      "boundary": "contract"
+    },
+    {
+      "id": "REL-CI-013",
+      "title": "The actual packed candidate carries the qualified metadata and installs",
+      "requirements": [
+        "REL-SR-08",
+        "REL-SR-09",
+        "REL-SR-12",
+        "REL-SR-17",
+        "REL-SR-22",
+        "REL-SR-23",
+        "REL-SR-24"
+      ],
+      "technique": "state-transition",
+      "risk": "Individually valid source, archives and package refer to different subjects.",
+      "target": {
+        "path": "scripts/lib/release/release_candidate.py",
+        "symbol": "prepare_candidate"
+      },
+      "given": {
+        "fixture": "real-build",
+        "conditions": [
+          "Use real-build with actual archive/package builders and the packed CLI. Keep all provider operations local substitutes."
+        ]
+      },
+      "when": [
+        "Build the archives, generate bundled metadata/index, pack, qualify and install both current targets from the exact candidate.",
+        "Repeat qualification with wrong release facts or secret-bearing notes while retaining a good tarball."
+      ],
+      "then": [
+        "Source, archive bytes, bundled metadata/index digests, receipt and installed CLI all describe the same selected candidate; both target installs use those archives.",
+        "Good package bytes cannot conceal inconsistent release facts or secret-bearing notes.",
+        "This proves the Release composition with Packaging/Installation; public registry availability and live installation require separate observed evidence."
+      ],
+      "realization": {
+        "state": "existing",
+        "tests": [
+          {
+            "path": "tests/engineering/release/release_candidate_tests.py",
+            "symbol": "ReleaseCandidateIntegrationTests.test_actual_candidate_build_and_packed_metadata_chain"
+          }
+        ],
+        "gaps": []
+      },
+      "method": "automated-test",
+      "boundary": "composition"
+    },
+    {
+      "id": "REL-CI-016",
+      "title": "Current qualification needs an explicit matching source, profile and receipt",
+      "requirements": [
+        "REL-SR-12",
+        "REL-SR-17",
+        "REL-SR-24",
+        "REL-SR-25",
+        "REL-SR-26"
+      ],
+      "technique": "equivalence-partition",
+      "risk": "Current qualification implicitly executes a retired historical recipe.",
+      "target": {
+        "path": "scripts/validate-release.py",
+        "symbol": "main"
+      },
+      "given": {
+        "fixture": "current-source",
+        "conditions": [
+          "Use current-source with package 0.5.1 and its matching profile, plus a prior receipt snapshot. Select a different supported synthetic version to test admission independently of a newest-version list."
+        ]
+      },
+      "when": [
+        "Qualify matching current input; independently request historical replay, omit the profile, mismatch source/tag/recorded commit or fail preparation. Inspect any resulting receipt."
+      ],
+      "then": [
+        "Matching current inputs are admitted regardless of their numeric fixture version; receipts use portable artifact paths.",
+        "Unsupported replay and missing/mismatched current authority reject before output or verification reliance; failed preparation preserves prior evidence.",
+        "Old production reports cannot supply missing current authority."
+      ],
+      "realization": {
+        "state": "existing",
+        "tests": [
+          {
+            "path": "tests/engineering/release/release_candidate_tests.py",
+            "symbol": "CurrentSourceQualificationTests.test_historical_replay_rejects_before_any_old_source_reader"
+          },
+          {
+            "path": "tests/engineering/release/release_candidate_tests.py",
+            "symbol": "CurrentSourceQualificationTests.test_selected_profile_does_not_admit_mismatched_package_version"
+          },
+          {
+            "path": "tests/engineering/release/release_candidate_tests.py",
+            "symbol": "CurrentSourceQualificationTests.test_missing_current_profile_rejects_before_output_changes"
+          },
+          {
+            "path": "tests/engineering/release/release_candidate_tests.py",
+            "symbol": "CurrentSourceQualificationTests.test_matching_current_source_is_not_a_hardcoded_version_list"
+          },
+          {
+            "path": "tests/engineering/release/release_candidate_tests.py",
+            "symbol": "CurrentSourceQualificationTests.test_explicit_recorded_commit_mismatch_stops_before_verification"
+          },
+          {
+            "path": "tests/engineering/release/release_candidate_tests.py",
+            "symbol": "CurrentSourceQualificationTests.test_missing_or_mismatched_preparation_preserves_prior_receipt"
+          },
+          {
+            "path": "tests/engineering/release/release_candidate_tests.py",
+            "symbol": "ReleaseCandidateTests.test_verification_receipt_uses_portable_artifact_paths"
+          }
+        ],
+        "gaps": []
+      },
+      "method": "automated-test",
+      "boundary": "public-command"
+    },
+    {
+      "id": "REL-CI-022",
+      "title": "Operational entrypoints enforce their selected identity and required gates",
+      "requirements": [
+        "REL-SR-09",
+        "REL-SR-12",
+        "REL-SR-19"
+      ],
+      "technique": "decision-table",
+      "risk": "The hosted tag selects another name or commit from the checked source.",
+      "target": {
+        "path": "scripts/lib/release/release_transaction.py",
+        "symbol": "validate_trusted_release_tag_identity"
+      },
+      "given": {
+        "fixture": "tag",
+        "conditions": [
+          "Use the tag fixture with its independently captured trusted commit and inspect actual release entrypoint composition."
+        ]
+      },
+      "when": [
+        "Exercise matching/mismatching hosted ref, tag commit and checked HEAD; inspect command gate wiring."
+      ],
+      "then": [
+        "Matching selected tag authority succeeds; mismatched names/commits reject.",
+        "The actual entrypoints expose and invoke their required identity and qualification checks. A source inspection does not claim hosted execution or public success."
+      ],
+      "realization": {
+        "state": "existing",
+        "tests": [
+          {
+            "path": "tests/engineering/release/release_identity_tests.py",
+            "symbol": "TrustedReleaseTagIdentityTests.test_accepts_matching_lightweight_and_annotated_tags"
+          },
+          {
+            "path": "tests/engineering/release/release_identity_tests.py",
+            "symbol": "TrustedReleaseTagIdentityTests.test_rejects_mixed_release_and_ref_names"
+          },
+          {
+            "path": "tests/engineering/release/release_identity_tests.py",
+            "symbol": "TrustedReleaseTagIdentityTests.test_rejects_tag_that_does_not_point_at_trusted_commit"
+          },
+          {
+            "path": "tests/engineering/release/release_identity_tests.py",
+            "symbol": "TrustedReleaseTagIdentityTests.test_rejects_missing_hosted_ref_name"
+          },
+          {
+            "path": "tests/engineering/release/release_identity_tests.py",
+            "symbol": "TrustedReleaseTagIdentityTests.test_release_verify_wires_hosted_ref_name_into_identity_check"
+          },
+          {
+            "path": "tests/engineering/release/release_identity_tests.py",
+            "symbol": "DeterministicReleaseGateTests.test_validate_release_cli_names_gate_c_on_failure"
+          }
+        ],
+        "gaps": []
+      },
+      "method": "automated-test",
+      "boundary": "contract"
+    }
+  ]
+}

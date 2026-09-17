@@ -13,7 +13,7 @@ No governed change record is selected. This is a portable plan authorized by the
 - Direction: the user's concrete test-redesign proposal, captured in the scope, milestones and preservation rules below; no separate proposal artifact is selected.
 - Design: [Validation](../design/engineering/validation.md), especially TEST-SR-01–10/15/16/18, VAL-SR-01/02/11/12/14/15/17–22 and VAL-DEC-09.
 - Design assessment: [risk-driven testing Design Review](../changes/2026-09-14-design-suitability-review/reviews/risk-driven-test-design-review.md). Its exact Validation subject is `sha256:200d5859395b87e7999e152f44c7d77a1da7d21d85ba028349f4fdd5eb70ed14`. Later planning authorization comes from the user; this review itself grants no downstream execution permission.
-- Retained owners: [Packaging](../design/engineering/packaging.md), [Release](../design/engineering/release.md), [Installation](../design/cli/installation.md), [Skill](../design/skill/skill.md) and [Assessment](../design/skill/assessment.md).
+- Retained owners: [Packaging](../design/engineering/packaging.md), [Release](../design/engineering/release/release.md), [Installation](../design/cli/installation.md), [Skill](../design/skill/skill.md) and [Assessment](../design/skill/assessment.md).
 - Execution: [CONTRIBUTING](../../CONTRIBUTING.md#validation-scope), the existing selector, executor and suite entrypoints.
 - Prior-contract test spec: none. Earlier test/tooling organization plans retain their own scope and are not overwritten or reapproved.
 

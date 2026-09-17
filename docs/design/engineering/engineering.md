@@ -27,7 +27,7 @@ Inputs are authorized product direction, exact affected contracts, the selected 
 | Development | [Development](#development) | Plan and implement the product using its behaviors, obtain independent assessment and maintain a resumable basis. |
 | Validation | [Validation](validation.md) | Useful proof, isolated execution, bounded concurrency and truthful results without a validation cache. |
 | Packaging | [Packaging](packaging.md) | Reproducible skill archives, CLI package composition and installer metadata. |
-| Release | [Release](release.md) | Candidate qualification, publication authority, observed public identity and recovery. |
+| Release | [Release](release/release.md) | Candidate qualification, publication authority, observed public identity and recovery. |
 
 ## Architecture Overview
 
@@ -37,7 +37,7 @@ Inputs are authorized product direction, exact affected contracts, the selected 
 flowchart TB
     subgraph Owned["Engineering — build and assure both products"]
         Development["Development: allocate and implement reviewed work"]
-        Validation["Validation: protective proof and independent execution"]
+        Validation["Validation: check selection and independent execution"]
         Packaging["Packaging: skill archives and CLI candidate"]
         Release["Release: qualification, publication and observation"]
     end
@@ -168,9 +168,9 @@ The approved proposal and exact affected Designs feed a stable delivery plan and
 
 ## Validation
 
-[Validation](validation.md) is the sole owner of reusable proof criteria and repository check execution. Its [structural graph](validation.md#structural-design-graph) and [invocation flow](validation.md#invocation-flow-graph) explain the internal check pipeline and canonical check composition. Skill capabilities consume the reusable criteria under their applicability; this repository's plan allocates the concrete tests. All workers, nested invocations and independent cases share the declared budget; deterministic summaries expose missing, skipped, failed and interrupted work. No cache restores prior execution as a current pass.
+[System](../system.md#living-test-design-composition) owns shared testing policy. [Validation](validation.md) owns repository check selection, execution, isolation and reporting under that policy. Its [structural graph](validation.md#structural-design-graph) and [invocation flow](validation.md#invocation-flow-graph) explain the internal check pipeline and canonical check composition. Skill capabilities consume System’s reusable criteria under their applicability; this repository's plan allocates the concrete tests. All workers, nested invocations and independent cases share the declared budget; deterministic summaries expose missing, skipped, failed and interrupted work. No cache restores prior execution as a current pass.
 
-For the current refinement, Development allocates the complete remaining automated test inventory in bounded groups under [Validation VAL-SR-19–22](validation.md#requirements). Validation owns canonical check selection and which cases can be consolidated; product owners retain the protected behavior. Assessment judges retained protection and actual isolation. Candidate changes, package-build dependencies and Release freshness obligations remain visible, when focused and broad scopes select the same check once. An unassessed serial remainder cannot become a completed delivery claim.
+For the current refinement, Development allocates the complete remaining automated test inventory in bounded groups under [Validation VAL-SR-19–22](validation.md#requirements). Validation owns canonical check selection and applies System’s criteria when consolidating execution; product owners retain the protected behavior. Assessment judges retained protection and actual isolation. Candidate changes, package-build dependencies and Release freshness obligations remain visible, when focused and broad scopes select the same check once. An unassessed serial remainder cannot become a completed delivery claim.
 
 ## Packaging
 
@@ -178,7 +178,7 @@ For the current refinement, Development allocates the complete remaining automat
 
 ## Release
 
-[Release](release.md) consumes exact package identities, applicable engineering assessments and actual validation. Its preparation and public-observation work is distinct from the implementation candidate used during development. Required external authorization remains separate from Code Review, Verify and any saved status. An uncertain public write is inspected under Release recovery rather than blindly repeated.
+[Release](release/release.md) consumes exact package identities, applicable engineering assessments and actual validation. Its preparation and public-observation work is distinct from the implementation candidate used during development. Required external authorization remains separate from Code Review, Verify and any saved status. An uncertain public write is inspected under Release recovery rather than blindly repeated.
 
 ## Integrated operation and failure
 
@@ -259,6 +259,14 @@ flowchart LR
 ```
 
 This retirement procedure refines Development's existing implementation/proof loop; current source, isolated candidate output and historical Git storage are the existing deployment boundaries. A shallow checkout without the needed historical revision cannot establish recoverability and blocks that deletion until the source is available. A changed file or surprise reader invalidates its prior disposition. Recovery restores the affected source, reader, catalog and fixture slice together; it neither rewrites history nor removes unrelated data. A successful build alone cannot establish semantic preservation or current-evidence adequacy.
+
+### Living test-design adoption
+
+The [focused testing direction](../../proposals/2026-09-17-model-test-design.md) applies [Design's authoring method](../skill/authoring/design.md#living-test-design) and [System’s shared rules](../test-design/rules.md#start-from-supported-outcomes) to Release, the Skill parent and Authoring. Each owns its coverage rationale; parents identify additional interactions. Development reconciles the selected executable groups, generated cases, alternate entrypoints and fixture consumers through Delivery. These packages do not claim adoption across every model or retirement of existing compatibility.
+
+Use existing requirement IDs, semantic group references and test paths. Assess changed groups as retained, strengthened, consolidated, replaced or removed with their remaining failure detection. A plan-only coverage map or an unexplained disappearance cannot establish protection. Actual execution status remains in change records.
+
+The selected guidance includes the Design skill, model-authoring/template changes and necessary review, planning and implementation consumers. Published skills remain independent of this repository's internal paths. Independent review and Verify assess the exact focused package and its integrated consumers.
 
 ### Token-cost feature retirement
 

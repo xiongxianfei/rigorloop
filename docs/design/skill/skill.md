@@ -22,6 +22,8 @@ Subsequent bounded authoring direction: [Design and Plan simplification](../../p
 
 Start with the [submodel inventory](#context-and-scope) and [overview](#architecture-overview), then read the relevant [behavioral submodel](#behavioral-submodels). The detailed [specialist contracts](#remaining-specialist-contracts) follow those summaries. Implementation retains specialist sections here; Authoring, Project Foundations, Discovery, Learning and Delivery Handoff have dedicated model documents.
 
+The [parent test design](test-design/test-design.md) and [case index](test-design/test-cases.json) cover common capability rules, Implementation sections and child interactions. They reference child-owned detail without claiming that every Skill-family test belongs to this parent.
+
 | Task | Detailed contract |
 | --- | --- |
 | Plan an implementation | [Plan](authoring/plan.md) |
@@ -285,7 +287,7 @@ The [Workflow child](workflow.md) owns coordination. Manual invocation produces 
 | `bugfix` | Establish the failing behavior and relevant authority, diagnose the cause and make the bounded correction. | Reproduction/regression evidence and a scoped fix or precise blocker; no widening of external permissions or unrelated refactoring. |
 | `ci-maintenance` | Inspect the actual repository automation contract and coverage, execution, trigger, permission or maintenance defect. | A scoped CI/configuration correction and applicable validation evidence; an unobserved hosted check is not reported as passed. |
 
-All three use the reusable criteria in [Validation](../engineering/validation.md#proof-quality-maintenance-and-evidence). They report commands actually run, preserve user changes and distinguish observation from review approval. Engineering Development defines this repository's invocation allocation; it does not redefine these capability behaviors.
+All three use the shared criteria owned by [System](../system.md#living-test-design-composition). They report commands actually run, preserve user changes and distinguish observation from review approval. Engineering Development defines this repository's invocation allocation; it does not redefine these capability behaviors.
 
 ### Assessment
 
@@ -456,13 +458,13 @@ The recording references preserve the existing profile rather than introducing a
 
 The pilot's canonical bodies, new references, unchanged relied-on assets and shared methods form the assessed packages. The existing `scripts/lib/validation/skill_validation.py` selects proposal-family recording references but otherwise permits an absent inline recording heading to skip profile checking. Its installed-placement and plan-surface helpers also branch on that heading. Reconcile these actual readers with the pilot's selected paths and equivalent layout; removing a heading must neither bypass checks nor select retired placement. Keep non-pilot selection intact. Existing generators and package checks must carry both references with the current resource-path and byte-parity rules; no new transform, manifest schema or installer is selected.
 
-Mechanical proof must distinguish a correctly relocated profile from missing, unreadable, escaped, unmapped, stale or wrongly selected procedure; words in an unrelated file cannot satisfy the selected path. Preserve unknown-value rejection before consistency checks for any affected closed selector. Reconcile incidental wording assertions while keeping their required behavioral protection. [Validation](../engineering/validation.md) remains the owner of check selection and adequacy criteria, including whole changed-set classification; no Markdown or advisory-evidence exception is introduced here.
+Mechanical proof must distinguish a correctly relocated profile from missing, unreadable, escaped, unmapped, stale or wrongly selected procedure; words in an unrelated file cannot satisfy the selected path. Preserve unknown-value rejection before consistency checks for any affected closed selector. Reconcile incidental wording assertions while keeping their required behavioral protection. [System](../system.md#living-test-design-composition) owns shared adequacy criteria and [Validation](../engineering/validation.md) owns check selection, including whole changed-set classification; no Markdown or advisory-evidence exception is introduced here.
 
 Semantic assessment compares the original and revised selected reading paths: can a reader identify the task and authority before recording detail, reach every applicable instruction, perform the specialist task and produce a truthful handoff without resolving competing guidance? A package with a shorter body but additional unnecessary indirection does not establish improvement. Record a concrete before/after explanation and preservation basis for changed skills, or a reasoned retention; this is independent published-skill review under Assessment, not a new runtime benchmark or gate. Delivery allocates concrete checks and observations, including the integrated implement-to-review handoff and package boundaries.
 
 The existing Context, Building Block, Runtime and Deployment views remain necessary: external owners, capability composition and distribution boundaries are unchanged, while the runtime view now makes resource failure explicit. The tables above refine internal instruction placement. No new service, shared runtime dependency, model, public output field or normative example is introduced. The existing proposal-family realization below retains its own scope.
 
-Assessment's RC-SR-01–06/10–18 already own the preserved scope, independence, findings, reliance and closeout outcomes; its model needs no policy amendment for this presentation change. Workflow retains routing and automation authority, CLI/Records retain commands and persistence, and Packaging retains the source-to-candidate contract. Their interfaces and existing examples are unaffected. Validation's existing resource and semantic-assessment criteria govern the required consumer corrections without a new validation policy. Any later change to one of those relationships requires reconciliation with that owner rather than relying on this unaffected disposition.
+Assessment's RC-SR-01–06/10–18 already own the preserved scope, independence, findings, reliance and closeout outcomes; its model needs no policy amendment for this presentation change. Workflow retains routing and automation authority, CLI/Records retain commands and persistence, and Packaging retains the source-to-candidate contract. Their interfaces and existing examples are unaffected. System’s shared test criteria, Validation’s resource checks and Assessment’s semantic-review policy govern the required consumer corrections without a new validation policy. Any later change to one of those relationships requires reconciliation with that owner rather than relying on this unaffected disposition.
 
 ### Inspected pilot and selected before/after outcomes
 
@@ -574,7 +576,7 @@ The [complete refinement proposal](../../proposals/2026-09-15-refine-skills-and-
 | code-review | Refine its description to include both milestone and fresh final whole-change review already required by Assessment. Retain its current operating sequence, recording resource, independent judgment and published-skill checklist. |
 | proposal | Retain selected layout: direction, scope/feasibility and seven-section output precede triggered recording and strategic gates. |
 | proposal-review | Retain selected layout: independent modes, scope/feasibility judgment and conditional recording/gates already have distinct triggers. Preserve first-pass findings and isolated review. |
-| design | Retain current living-model reconciliation and source authority boundary, including feature-spec support and the complete model/technical methods. |
+| design | Apply living-model reconciliation, source authority and model-owned test design through the complete model/technical methods; remove feature-spec/proof authoring and resource triggers under Design. |
 | plan | Retain current authoring/classification sequence and distinct verification methods; preserve one-time work initialization and stable plan authority. |
 | implement | Retain independent isolated/planned/armed classification, proof-first sequence and separate recording selection. |
 | bugfix | Retain diagnosis, bounded fix authority and identity-stable proof; compact inline procedure is not extracted merely for symmetry. |
@@ -598,7 +600,15 @@ Validation must resolve each selected entrypoint's declared recording destinatio
 
 The observable improvement is that an ordinary task reaches its scope and judgment/execution sequence before unrelated persistence construction, while a governed invocation still reaches a complete local recording method. Independent semantic inspection compares these paths and their failure/late-trigger variants against the original package. Structural validity, shorter files or relocation alone cannot establish that result.
 
-The current subsystem/context/building-block/runtime/deployment graphs remain accurate: no capability, authority transfer or deployed service changes. The only new packaged element is Verify's local method under the existing canonical-to-archive-to-install boundary. No example is revised. Workflow and Assessment continue to own stage/assessment meaning; Delivery Handoff owns the artifact-label correction; CLI owns query-helper retirement; Validation owns protection and complete support inventory.
+The current subsystem/context/building-block/runtime/deployment graphs remain accurate: no capability, authority transfer or deployed service changes. The only new packaged element is Verify's local method under the existing canonical-to-archive-to-install boundary. No example is revised. Workflow and Assessment continue to own stage/assessment meaning; Delivery Handoff owns the artifact-label correction; CLI owns query-helper retirement; System owns shared protection criteria; Validation owns the complete support-inventory checks and execution.
+
+### Test design
+
+The [parent strategy](test-design/test-design.md) owns coverage intent, observation boundaries, fixture rules and specific proof dependencies. Its [explicit catalog](test-design/test-cases.json) owns recurring scenarios in five groups: capability contract, resource contract, recording composition, implementation handoffs and capability composition. Scoped rollout, source-transfer and before/after improvement acceptance remains with its owning change, which records the case dispositions and pending procedures. This is detail of the stable `skill` model, with no new model ID. All current requirement identities and applicability remain unchanged.
+
+Mechanical package checks and semantic behavior need different observations. Exact diagnostics, path containment and canonical byte-copy checks can have executable assertions; correct invocation decisions, useful outputs and authority-preserving handoffs require attributable assessment of the complete selected path. Phrase-presence tests cannot establish agent behavior. The catalog distinguishes inspected existing assertions, partial protection and proposed procedures, while actual execution and assessment results remain in evidence.
+
+The catalog covers the parent's shared contracts and interactions. [Validation](../engineering/validation.md#skill-parent-test-design-admission-contract) defines admission for its exact package; implementation allocation and actual results remain in the owning change.
 
 ## Architecture Decisions
 
@@ -642,6 +652,14 @@ Remaining skill adoption retains the existing follow-up identities. The inventor
 ## Capability adoption boundary
 
 The proposal/proposal-review pilot remains bounded by SKL-SR-16–23. Common capability rules, resource integrity and specialist methods remain with their current sections above; the pilot does not establish adoption for every capability. FU-015–018 in the [follow-up register](../../follow-ups.md) retain the remaining families' identities and receiving owners. The [inventory simplification proposal](../../proposals/2026-09-15-skill-simplification.md) and SKL-SR-30–32 supply their new direction and scope without rewriting original approval or marking those follow-ups complete. The entire inventory needs its own justified change or retention evidence; unrelated consolidation is not absorbed into this initiative.
+
+## Living test-design method adoption
+
+Design DES-SR-25/26 owns the changed public method. Implement it in canonical `skills/design/SKILL.md`, `references/model-authoring.md`, related system-composition/test-quality guidance and `assets/design-skeleton.md`: the common procedure requires lasting coverage intent, the reference explains proportional model/parent ownership and the template exposes the section. Detailed case code and current results remain outside the generated Design. Preserve existing supported feature-format amendment methods and their conditional resources.
+
+Reconcile design-review, plan, delivery-review, implement, code-review, verify and route where they consume test intent. Design Review assesses coverage coherence; Delivery Review checks execution allocation; implementation and Code Review reconcile actual cases with the living model; Verify checks the complete current chain. These refinements add no public test-design skill, mandatory agent-run gate or automatic semantic judge. General test-quality and maintenance guidance keeps one canonical source with its existing projections.
+
+Assess actual instructions and output examples with independent specialist review and bounded walkthroughs where necessary. Structural/resource tests protect containment, completeness, discovery and packaging, but cannot establish useful scenario selection or universal agent compliance. A missing supported method remains a defect. Avoid replacing every deleted wording check with another permanent exact-phrase assertion.
 
 ## Historical provenance
 

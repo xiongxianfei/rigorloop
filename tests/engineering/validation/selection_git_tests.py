@@ -1139,3 +1139,97 @@ class SelectionGitChecks:
                     self.assertIn(f"--path {path}", command)
                 else:
                     self.assertNotIn("--path", command)
+
+    def test_release_catalog_move_preserves_endpoints_and_explicit_missing_path(self):
+        from catalog_admission_fixture_helpers import package
+        repo = self.make_git_repo()
+        index = package(repo)
+        current = index['owner']['design']
+        previous = 'docs/design/engineering/release.md'
+        (repo/current).rename(repo/previous)
+        self.git_output(repo, 'add', '.')
+        self.git_output(repo, 'commit', '-m', 'original release location')
+        base = self.git_output(repo, 'rev-parse', 'HEAD')
+        (repo/previous).rename(repo/current)
+        for stage in ('unstaged', 'staged', 'committed'):
+            with self.subTest(stage=stage):
+                if stage == 'staged':
+                    self.git_output(repo, 'add', '-A')
+                elif stage == 'committed':
+                    self.git_output(repo, 'commit', '-m', 'move release owner')
+                arguments = ('--mode', 'pr', '--base', base, '--head', 'HEAD') if stage == 'committed' else ('--mode', 'local')
+                result = run_selector(*arguments, cwd=repo)
+                payload = parse_stdout(result)
+                if stage == 'unstaged':
+                    self.assertEqual({item['code'] for item in payload['blocking_results']}, {'untracked-authoritative-artifacts'})
+                else:
+                    self.assertEqual(result.returncode, 0, payload)
+                self.assertEqual(set(payload['changed_paths']), {previous, current})
+                command = next(check['command'] for check in payload['selected_checks'] if check['id'] == 'model.validate')
+                self.assertIn(current, shlex.split(command))
+                self.assertNotIn(previous, shlex.split(command))
+        explicit = parse_stdout(run_selector('--mode', 'explicit', '--path', previous, cwd=repo))
+        command = next(check['command'] for check in explicit['selected_checks'] if check['id'] == 'model.validate')
+        self.assertIn(previous, shlex.split(command))
+        local_explicit = parse_stdout(run_selector('--mode', 'local', '--path', previous, '--path', current, cwd=repo))
+        command = next(check['command'] for check in local_explicit['selected_checks'] if check['id'] == 'model.validate')
+        self.assertIn(previous, shlex.split(command))
+        # Existing generic flat aliases remain distinct from this actual move.
+        alias = 'docs/design/release.md'
+        historical = parse_stdout(run_selector('--mode', 'explicit', '--path', alias, cwd=repo))
+        command = next(check['command'] for check in historical['selected_checks'] if check['id'] == 'model.validate')
+        self.assertIn(current, shlex.split(command))
+        self.assertNotIn(alias, shlex.split(command))
+        # A recreated old path is never silently substituted with the receiver.
+        (repo/previous).write_text((repo/current).read_text())
+        recreated = parse_stdout(run_selector('--mode', 'local', cwd=repo))
+        command = next(check['command'] for check in recreated['selected_checks'] if check['id'] == 'model.validate')
+        self.assertIn(previous, shlex.split(command))
+
+    def test_document_symlink_keeps_lexical_identity_for_admission(self):
+        repo = self.make_git_repo()
+        (repo/'README.md').write_text('# Valid unrelated target\n')
+        path = 'docs/design/test-design/extra.md'
+        target = repo/path
+        target.parent.mkdir(parents=True)
+        target.symlink_to('../../../README.md')
+        result = run_selector('--mode', 'explicit', '--path', path, cwd=repo)
+        payload = parse_stdout(result)
+        self.assertEqual(payload['changed_paths'], [path])
+        command = next(check['command'] for check in payload['selected_checks'] if check['id'] == 'model.validate')
+        self.assertIn(path, shlex.split(command))
+        self.assertNotIn('README.md', payload['changed_paths'])
+
+    def test_release_move_executes_through_trusted_ci_command_boundary(self):
+        from catalog_admission_fixture_helpers import current_documents
+        from selection_test_helpers import run_ci
+        repo = self.make_git_repo()
+        current_documents(repo)
+        shutil.copytree(ROOT/'scripts', repo/'scripts', dirs_exist_ok=True, ignore=shutil.ignore_patterns('__pycache__'))
+        current = 'docs/design/engineering/release/release.md'
+        previous = 'docs/design/engineering/release.md'
+        (repo/current).rename(repo/previous)
+        self.git_output(repo, 'add', '.')
+        self.git_output(repo, 'commit', '-m', 'before owner move')
+        (repo/previous).rename(repo/current)
+        self.git_output(repo, 'add', '-A')
+        # Limit execution to the owning check while retaining the real selector's
+        # command and changed-path observations. The normal command guard runs.
+        selected = parse_stdout(run_selector('--mode', 'local', cwd=repo))
+        self.assertEqual(selected['status'], 'ok', selected)
+        selected['selected_checks'] = [c for c in selected['selected_checks'] if c['id'] == 'model.validate']
+        fixture = self.write_selector_fixture(selected)
+        result = run_ci('--mode', 'local', '--jobs', '1', '--timeout', '30',
+                        cwd=repo, script=repo/'scripts/ci.sh',
+                        env={'RIGORLOOP_SELECTOR_FIXTURE': str(fixture)})
+        self.assertEqual(result.returncode, 0, result.stdout+result.stderr)
+        self.assertIn('Selected CI checks passed.', result.stdout)
+        explicit = parse_stdout(run_selector('--mode', 'local', '--path', previous, '--path', current, cwd=repo))
+        explicit['selected_checks'] = [c for c in explicit['selected_checks'] if c['id'] == 'model.validate']
+        fixture.write_text(json.dumps(explicit))
+        result = run_ci('--mode', 'local', '--path', previous, '--path', current, '--jobs', '1', '--timeout', '30',
+                        cwd=repo, script=repo/'scripts/ci.sh',
+                        env={'RIGORLOOP_SELECTOR_FIXTURE': str(fixture)})
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('BFR-MODEL-PATH', result.stdout+result.stderr)
+        self.assertNotIn('command does not match catalog', result.stdout+result.stderr)

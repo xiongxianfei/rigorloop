@@ -14,7 +14,7 @@ Plan turns settled engineering requirements and realization into safe implementa
 
 | ID | Required behavior |
 | --- | --- |
-| PLAN-SR-01 | Plan MUST allocate settled requirements and architectural boundaries to milestones with dependencies, scope, proof, commands, completion conditions, evidence and recovery as specified below. |
+| PLAN-SR-01 | Plan MUST consume the approved living test designs and allocate settled requirements and architectural boundaries to milestones with dependencies, scope, executable proof, commands, completion conditions, evidence and recovery. Lasting group rationale, targets, scenarios and fixture strategy remain in the owning Designs; the plan MUST NOT become their sole owner. |
 | PLAN-SR-02 | Plan MUST allocate integrated proof where local checks cannot establish the required behavior and MUST include the independent final whole-change review checkpoint without treating tests as its substitute. |
 | PLAN-SR-03 | Plan and navigation MUST contain stable intent and pointers; actual results, current work status, blockers and routing MUST remain with their owning records. |
 | PLAN-SR-04 | Create, revise and initialize operations MUST resolve exact current targets and authority; malformed or conflicting governed signals MUST stop without portable fallback or cross-owner mutation. |
@@ -48,7 +48,7 @@ The overview names the owned method and its external inputs and consumers. Detai
 
 ## Delivery allocation
 
-Plan owns concrete verification allocation: milestone completion conditions, commands, input prerequisites, proof timing, evidence expectations and side-effect permissions. Allocate integrated checks where local proof cannot establish cross-component, cross-milestone, compatibility, concurrency, recovery, security or authority behavior. Implementation supplies tests and observed results. [Design](design.md#requirement-refinement-and-delivery-allocation) owns the requirement-to-work relationship; [Validation](../../engineering/validation.md) owns proof quality; [Assessment](../assessment.md) owns Delivery Review and final evidence judgments. No one-to-one mapping to test functions or separate test-spec stage is required.
+Plan owns concrete verification allocation: milestone completion conditions, commands, input prerequisites, proof timing, evidence expectations and side-effect permissions. Allocate integrated checks where local proof cannot establish cross-component, cross-milestone, compatibility, concurrency, recovery, security or authority behavior. Implementation supplies tests and observed results. [Design](design.md#requirement-refinement-and-delivery-allocation) owns the requirement-to-work relationship; [System](../../system.md#living-test-design-composition) owns shared proof-quality rules; [Validation](../../engineering/validation.md) owns check execution; [Assessment](../assessment.md) owns Delivery Review and final evidence judgments. No one-to-one mapping to test functions or separate test-spec stage is required.
 
 Under SKL-SR-04/08/10/24/27, planning preserves stable execution intent: each milestone identifies its ID and kind, goal, governing requirements and architecture, affected components, dependencies, implementation scope, tests and proof, validation commands and expected results, completion criteria, required evidence, review handoff, risks and rollback or recovery. Include a commit boundary when applicable. Plans contain no current milestone state, command outcomes, validation progress, blockers, review status, routing or closeout progress. Navigation points to the plan and owning change; it never becomes another state owner.
 
@@ -89,7 +89,7 @@ The three plan assets and specialist resource set remain unchanged. Public descr
 
 The related `design` package is retained. Its entrypoint already selects scope and authority before its six-step reconciliation procedure and loads recording conditionally. The model-authoring reference owns document rules and examples; technical-design owns significant realization reasoning; architecture-view-examples supplies concrete illustrations. Their repeated overview reminders protect different selection and execution points. Legacy references supply separately triggered customer contracts. No identified overlap justifies merging those methods, weakening their triggers or changing Design outputs in this slice. This retention is subject to independent assessment of the complete package, not inferred from its size or prior approval.
 
-Design still hands Design Review the exact affected models and examples, required behavior and realization, decisions, assessment basis, acceptance intent, assumptions and applicability impacts. Plan consumes the currently approved exact Design package and turns its requirements and local/integrated outcomes into stable delivery allocation. Delivery Review still consumes that plan, the approved Design basis and verification allocation. An absent or stale required member stops the first dependent author or reviewer; a shorter handoff cannot omit it. Reviewer procedures and assets require no change because these producer obligations and fields remain intact. Review judgments and workflow transitions remain Assessment- and Workflow-owned.
+Design still hands Design Review the exact affected models and examples, required behavior and realization, decisions, assessment basis, acceptance intent, assumptions and applicability impacts. Plan consumes the currently approved exact Design package and turns its requirements and local/integrated outcomes into stable delivery allocation. Delivery Review still consumes that plan, the approved Design basis and verification allocation. An absent or stale required member stops the first dependent author or reviewer; a shorter handoff cannot omit it. The living-test-design refinement requires dependent reviewer guidance to consume current coverage intent while preserving record formats and review authority. Review judgments and workflow transitions remain Assessment- and Workflow-owned.
 
 ### Consumer reconciliation and acceptance intent
 
@@ -100,6 +100,12 @@ Existing validation must continue to reject unknown values before consistency ch
 Representative assessment follows a portable create/revise request, a valid governed create/revise request, and approved initialization with absent versus existing work. Each must identify task and authority before recording detail, reach all applicable instructions, produce complete output and stop on missing or conflicting basis. Separately assess late resource selection and failed/retried recording without cross-owner mutation. Integrated assessment traces actual Design output through Design Review into Plan, then the actual Plan asset output into Delivery Review; local heading checks cannot prove this correspondence. Delivery allocates concrete proof and independent semantic observation under existing policy; no separate project-use pilot, token score or new recurring gate is required.
 
 Existing Context and Runtime views remain necessary; the runtime view below exposes resource selection before operation. The overview's allocation/output/initialization responsibilities and external edges are unchanged. No additional Building Block diagram is needed: the destination table describes instruction placement within one method. Deployment remains owned by Skill and Packaging because this adds no artifact family or execution environment. Authoring/System composition, Assessment, Workflow, CLI/Records and Packaging retain their existing interfaces and examples; their policy and output contracts are unaffected. A later discovery that changes those interfaces returns to its owner before dependent implementation.
+
+## Living test design and execution allocation
+
+Consume [Design DES-SR-25/26](design.md#living-test-design), [System TEST-SR-21/22](../../system.md#requirements) and the [shared rules](../../test-design/rules.md). A plan references the current model-owned behavior groups and explicit gaps, then allocates implementation slices, concrete commands, input prerequisites, proof timing, evidence and recovery. It can introduce a justified additional test and must route a missing behavioral decision to Design. It must not duplicate every model's durable test table, invent coverage from a planned filename or require a private-function case quota.
+
+Changing supported behavior, coverage ownership or intended observations requires the owning Design update; changing execution timing/commands without altering those obligations stays in Delivery. At completion the model's realization links reflect actual test groups, while observed results stay in records. Review this transfer explicitly when tests move or consolidate. The plan and its three assets retain their existing format and fields; reconcile their instructions and consumers with these responsibilities without creating another normative test-spec asset. The focused application allocates Release, Skill and Authoring catalog/refinement work and its affected consumers; broader model adoption and compatibility retirement remain separate work.
 
 ## Plan assets
 
@@ -113,7 +119,7 @@ Each asset carries template/version, skill, normative status, structural fingerp
 ```mermaid
 flowchart LR
     Design["Settled Design package"] -->|"requirements, realization and acceptance intent"| Plan["Plan authoring"]
-    Validation["Validation"] -->|"proof quality criteria"| Plan
+    System["System test policy"] -->|"proof quality criteria"| Plan
     Authority["Project authority and current change"] -->|"exact target and allowed action"| Plan
     Plan -->|"delivery and verification allocation"| Review["Assessment: Delivery Review"]
     Plan -->|"approved initialization only"| Records["CLI and Records: missing work"]
@@ -137,7 +143,7 @@ flowchart TB
     Current -->|"yes"| Init["Add reviewed missing work once"]
 ```
 
-These branches describe separate authorized invocations. A successful save does not execute the next branch. Creation/revision cannot initialize unreviewed work; initialization cannot alter existing work or derive authority from stale review. Integrated proof and final whole-change review are separately allocated under Assessment and Validation.
+These branches describe separate authorized invocations. A successful save does not execute the next branch. Creation/revision cannot initialize unreviewed work; initialization cannot alter existing work or derive authority from stale review. Integrated proof and final whole-change review are separately allocated under Assessment and System’s testing policy, with execution supplied by Validation.
 
 ## Acceptance intent
 

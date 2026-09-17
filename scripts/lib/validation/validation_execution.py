@@ -519,7 +519,7 @@ def print_result_output(results, *, verbose):
             print('(no captured output)')
 
 
-def unittest_adapter(mode, destination, command, expected=None):
+def unittest_adapter(mode, destination, command, expected=None, *, case_observer=None):
     """Run the original script/main, intercepting only its outer unittest runner.
 
     Collection uses the normal entrypoint, including load_tests and custom name
@@ -542,6 +542,8 @@ def unittest_adapter(mode, destination, command, expected=None):
             raise ValueError('invalid collected case: '+test.id())
         if getattr(sys.modules['__main__'],cls.__name__,None) is not cls:
             raise ValueError('case is not addressable through the normal entrypoint: '+test.id())
+        if case_observer is not None:
+            case_observer(test)
         return name
     def identifiers(suite):
         found = []
@@ -1027,6 +1029,7 @@ def selected_main(argv):
     jobs = int(argv[4])
     fail_fast = bool(int(argv[5]))
     requested_mode, requested_base, requested_head = argv[6:9]
+    requested_paths = argv[9:]
     print(f"Worker budget: {jobs}")
     try:
         payload = json.loads(selector_output.read_text(encoding="utf-8"))
@@ -1142,6 +1145,7 @@ def selected_main(argv):
                 mode=requested_mode,
                 base=requested_base,
                 head=requested_head,
+                discovered_paths=(requested_mode in {"pr", "main"} or (requested_mode == "local" and not requested_paths)),
             )
         except ValueError as exc:
             fail(f"Selected check {check_id} cannot be converted to a trusted command: {exc}")

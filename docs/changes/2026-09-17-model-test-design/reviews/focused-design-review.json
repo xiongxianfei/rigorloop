@@ -1,0 +1,186 @@
+{
+  "assessment_scope": "Complete focused Design contribution for 2026-09-17-model-test-design against origin/main 7fc1aeb992798ea4e178f57d08439acb08095f7d: eleven changed owning models, Constitution policy ownership, System shared rules/navigation, three strategies/indexes and all fifteen JSON groups (42 Release, 37 Skill and 12 Authoring scenarios). Includes cross-owner semantics, requirement preservation, catalog observation/fixture/gap design, current/proposed realization boundaries and admission feasibility. Governing direction is focused-proposal-review on the exact focused proposal.",
+  "change_id": "2026-09-17-model-test-design",
+  "contributors": [
+    {
+      "id": "codex-design-author",
+      "role": "design"
+    },
+    {
+      "id": "focused-testing-author",
+      "role": "design"
+    }
+  ],
+  "findings": [],
+  "id": "focused-design-review",
+  "independence_basis": "Independent delegated reviewer /root/catalog_admission_design_review assessed this focused worktree against origin/main and approved focused-proposal-review. The reviewer authored no Design, catalog, guidance or implementation corrections; parent author corrected the two recorded findings. This assessment is fresh and does not inherit the earlier branch scoped-admission judgment.",
+  "judgment": "approved",
+  "limitations": [
+    "Approval supports authorized Delivery planning for this exact focused Design package. It does not approve implementation correctness, a delivery plan, test-deletion adequacy, successful final Verify, PR readiness or external publication.",
+    "Prior initiative contracts retained in the models keep their original applicability. This review neither settles compatibility retirement or prior source/inventory migrations nor renews historical assessments.",
+    "Catalog existing/partial/proposed states describe intended realization and disclosed gaps. This review did not execute the proposed semantic procedures, fill all automated gaps or certify remote Release observations.",
+    "The complete delivered implementation and extracted skill/template/test consumers require fresh whole-change Code Review and distinct Verify; a passing structural document check does not substitute."
+  ],
+  "rationale": [
+    "Direction and authority are coherent: Constitution/System own shared protective-value rules, Validation owns selection/execution/admission, Design owns lasting coverage, Plan owns allocation, Assessment owns judgments and Workflow owns continuation. Existing TEST-SR-01–20 protections transfer with stable IDs and adjusted links; TEST-SR-21/22 and DES-SR-25/26 make coverage ownership/maintenance explicit without a new stage, universal schema, runner or per-function quota.",
+    "The eleven owners and their affected relationships are consistent with the selected three-package scope. Architecture overviews and declared supporting views retain meaningful owner boundaries; Validation exposes shared policy as an external input, while the current declared-path/runtime admission refinement distinguishes generic model compatibility, actual Release relocation and exact indexed detail. Packaging/Installation/publication boundaries remain external and no user permission is inferred from checks.",
+    "All 91 scenario definitions, fixtures, named variants and realization accounts were assessed for important outcome/failure distinctions. Release retains approval substitution, persistence, uncertainty, partial publication, recovery and actual-artifact composition separately; repeated parser variants can share cases. Skill distinguishes structural package observations from semantic invocation/authority procedures. Authoring uses concrete atomic-import counterexamples with explicit private identities and all twelve semantic procedures proposed. Known missing observations remain visible rather than becoming automatic proof from links or method counts.",
+    "Field/type/version/closed-vocabulary, identity, containment, group membership, requirements, fixture references, callable/section targets and realization rules are implementable through the existing validator/selector. Trusted native discovery supplies test reachability without JSON-directed dispatch. Read-only admission cannot execute linked test methods, grant coverage adequacy or manufacture review results. Authoring explicitly reuses only its declared Skill field contract with local bindings.",
+    "The focused compatibility boundary is preserved: existing feature/proof methods, generic flat model grammar and unrelated historical selector transitions remain governed by their base contracts. The new exact package rules and actual Release move do not become blanket retirement. The two recorded extraction defects are corrected: original scoped duty/evidence ownership is explicit and REL-SR-20/21 plus their acceptance references are restored.",
+    "Public Design guidance and downstream review/planning/implementation consumers have explicit contract duties to consume model-owned coverage while preserving portable resources, project authority, native output vocabularies and semantic-review limits. Required source/package/installed-guidance observations remain allocation duties; the Design does not claim routine agent evaluation or universal instruction compliance.",
+    "Independent structural observation: python scripts/validate-boundary-first.py --check exited 0 with structure-and-references-only status passed, including declared supporting packages. That supports admission/reference coherence only; the semantic judgment above is separate."
+  ],
+  "reviewer": {
+    "id": "focused-design-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:b08e342159f367131963237b00b284dfc052686f112ebab9824457385de42af8",
+      "path": "CONSTITUTION.md"
+    },
+    {
+      "identity": "sha256:0b2554c4f77129d6c13c63608da9bb841766b272fb24d1e986cc2ab5afce535d",
+      "path": "docs/design/engineering/engineering.md"
+    },
+    {
+      "identity": "sha256:71f62f8d192ef1096f7c712911b00cd27138618c96697e9ff242a23e4266eb4f",
+      "path": "docs/design/engineering/packaging.md"
+    },
+    {
+      "identity": "sha256:3884d83d216baa04909173b0577e9f40c42d81843fdb0e1f5011c28aa4796149",
+      "path": "docs/design/engineering/release/release.md"
+    },
+    {
+      "identity": "sha256:29413ca35262641fddf4eb0f23c03809b201bdcdd6871509560a243743e0b838",
+      "path": "docs/design/engineering/release/test-design/cases/approval-recovery.json"
+    },
+    {
+      "identity": "sha256:d1ef0b53f7345493126733aad6e0ebbd31ed95fa55a074b5509c91077aae7b02",
+      "path": "docs/design/engineering/release/test-design/cases/candidate-identity.json"
+    },
+    {
+      "identity": "sha256:3294a288bffa853c567d2130aa6a3452887e1a75427451640716060e9d9e5692",
+      "path": "docs/design/engineering/release/test-design/cases/evidence-closeout.json"
+    },
+    {
+      "identity": "sha256:ca79bb95582b99169d72fe349f3630fc7c03acdeb8e29fc1388ebc4c3fc8da55",
+      "path": "docs/design/engineering/release/test-design/cases/maintenance-review.json"
+    },
+    {
+      "identity": "sha256:a555c08e09eded21e43093c156638377099bf98620227c4bee9bc9dd949699ef",
+      "path": "docs/design/engineering/release/test-design/cases/preflight.json"
+    },
+    {
+      "identity": "sha256:a351dccb489813dfbbdce3b3d9372e5c6edc80b7f31c6321c3f240d4ab0dcb94",
+      "path": "docs/design/engineering/release/test-design/cases/preparation.json"
+    },
+    {
+      "identity": "sha256:ac0b66837d9af57739b99ea41879a913ec2de6140dc250ed759d36b9190ee524",
+      "path": "docs/design/engineering/release/test-design/cases/profile-input.json"
+    },
+    {
+      "identity": "sha256:94ce4b1e879899cb1306a6e27a039c6e5d00d8b90c94213ccb370f1ab9a48a0c",
+      "path": "docs/design/engineering/release/test-design/test-cases.json"
+    },
+    {
+      "identity": "sha256:f54b133a75badd5fc307cdcc8b178f0b165f544d32d12c1ce907ae2a9c52dd16",
+      "path": "docs/design/engineering/release/test-design/test-design.md"
+    },
+    {
+      "identity": "sha256:d395ef73bf53cf392e20dd91f681ca2d926af31ec97b47da0f8e9491cb1dd3e1",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:1bfd64a58945eb4cee053e8771baa0599a8f7d0e037f445801086cbec8b4bf00",
+      "path": "docs/design/skill/assessment.md"
+    },
+    {
+      "identity": "sha256:434d4232d140d5d8692ec0592ceb96e10de2e6dc4f703b916d8e825a7fe3a23e",
+      "path": "docs/design/skill/authoring/authoring.md"
+    },
+    {
+      "identity": "sha256:13fa3e7dc23c59dda49e9a586621d4d6df035a4c06591f1df7dae90009469fcf",
+      "path": "docs/design/skill/authoring/design.md"
+    },
+    {
+      "identity": "sha256:5ba5e475429f99b6a18319777a98c387cc75bac3e6844dc0a6c6357ca652583b",
+      "path": "docs/design/skill/authoring/plan.md"
+    },
+    {
+      "identity": "sha256:7f4dca46594b7c6dd020ebaf63fa816149861c7fc4a720180f142de9c457d091",
+      "path": "docs/design/skill/authoring/test-design/cases/correction-reconciliation.json"
+    },
+    {
+      "identity": "sha256:b2e83fe05600347fd620e5b24be8bdc4569f6ca862557e8e70d209dbb331702c",
+      "path": "docs/design/skill/authoring/test-design/cases/refinement.json"
+    },
+    {
+      "identity": "sha256:c9fc56da4499a13afa689a33891475bad5e91ddbbf86c26410ca28c196b4e0d7",
+      "path": "docs/design/skill/authoring/test-design/cases/scope-handoff.json"
+    },
+    {
+      "identity": "sha256:35fd40fd6f52465f51f335079cb0151fe7d96220ea55b1b8d50329365e3106ec",
+      "path": "docs/design/skill/authoring/test-design/test-cases.json"
+    },
+    {
+      "identity": "sha256:a0009f8d0bc04b1fb137c3184b039a126a79c8029339829d68a98ee1430df008",
+      "path": "docs/design/skill/authoring/test-design/test-design.md"
+    },
+    {
+      "identity": "sha256:256a57936e1fe3de7b9d7c86045ee281867def8147c59661cc1284e0cb37bbfa",
+      "path": "docs/design/skill/skill.md"
+    },
+    {
+      "identity": "sha256:b8cf15dddf0611227860248a6cd92fe6ebb6b4b84ff5f4f0a79aa6a9eef56145",
+      "path": "docs/design/skill/test-design/cases/capability-composition.json"
+    },
+    {
+      "identity": "sha256:b2cd74b3690c17afbf40b62019e607592beaecd86dba3d3885cef9745e9ebea2",
+      "path": "docs/design/skill/test-design/cases/capability-contract.json"
+    },
+    {
+      "identity": "sha256:153c7941dd4c9bec09a8368ff8605d6469c3efa4f5aac1e6e51d42ecdb7c5407",
+      "path": "docs/design/skill/test-design/cases/implementation-handoffs.json"
+    },
+    {
+      "identity": "sha256:3b798f4feda2327f9d7da5793eba11160c259a1ff825914127225cd184302e71",
+      "path": "docs/design/skill/test-design/cases/recording-composition.json"
+    },
+    {
+      "identity": "sha256:839291d455ee3f93f8254e539a5577c6ce36389669ce0e3cd44ec3ced0e116ef",
+      "path": "docs/design/skill/test-design/cases/resource-contract.json"
+    },
+    {
+      "identity": "sha256:872bd368736f46ef828cac1213cccccb803500fa164ef88ecc1393ee470f490c",
+      "path": "docs/design/skill/test-design/test-cases.json"
+    },
+    {
+      "identity": "sha256:b2f0f6fbcc557fba388f60089eae4f1ceebff943463277fc917f7f19e1e976cd",
+      "path": "docs/design/skill/test-design/test-design.md"
+    },
+    {
+      "identity": "sha256:00d18256f4a639fac753edab2d8b203e20cf41632184f6981c44ce9bd14dedd2",
+      "path": "docs/design/skill/workflow.md"
+    },
+    {
+      "identity": "sha256:873e56982d331107c50914a7e1f4f9264a37ad020c5cc7026376c17488c757f1",
+      "path": "docs/design/system.md"
+    },
+    {
+      "identity": "sha256:f478b20a81dcd83066fabf637764c5781d305102938294bdb29dcfd4c4e87192",
+      "path": "docs/design/test-design/README.md"
+    },
+    {
+      "identity": "sha256:7f66ebb9f51a66f278fd1a17ca7c422e015335f5344c9ea4769321fab9377bdf",
+      "path": "docs/design/test-design/rules.md"
+    },
+    {
+      "identity": "sha256:8c89731cd727c6937c512da99d2ec99d91d0eee361120535d22e5e6776205bca",
+      "path": "docs/proposals/2026-09-17-model-test-design.md"
+    }
+  ],
+  "summary": "The corrected focused Design package coherently owns shared testing policy, proportionate model coverage, public authoring/assessment handoffs and exact document admission while preserving existing compatibility and scoped requirements.",
+  "target": "design"
+}

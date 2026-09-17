@@ -16,7 +16,7 @@ Mutable lifecycle state, current milestone state, review status, blockers, routi
 - Spec: [Validation](../design/engineering/validation.md), particularly TEST-SR-19/20, VAL-SR-32, Test script structure, Complete suite organization and their retained requirements.
 - Architecture: Validation's source-composition graph and VAL-DEC-11 within the same model; [System](../design/system.md) retains capability placement. No separate architecture artifact is required.
 - Upstream assessment: [Design Review](../changes/2026-09-16-test-design-and-suite-organization/reviews/design-review.json), member `validation`; Delivery Review must inspect its exact current subject and applicability.
-- Retained behavior owners: [Skill](../design/skill/skill.md), [CLI](../design/cli/cli.md), [Records](../design/cli/records.md), [Installation](../design/cli/installation.md), [Packaging](../design/engineering/packaging.md) and [Release](../design/engineering/release.md). Their existing observations remain required; this plan changes no product behavior.
+- Retained behavior owners: [Skill](../design/skill/skill.md), [CLI](../design/cli/cli.md), [Records](../design/cli/records.md), [Installation](../design/cli/installation.md), [Packaging](../design/engineering/packaging.md) and [Release](../design/engineering/release/release.md). Their existing observations remain required; this plan changes no product behavior.
 - Allocation and assessment: [Plan](../design/skill/authoring/plan.md), [Assessment](../design/skill/assessment.md), Constitution and [contributor validation scope](../../CONTRIBUTING.md#validation-scope).
 - Prior-contract test spec: none separately applicable. No standalone test specification or permanent case ledger is introduced.
 

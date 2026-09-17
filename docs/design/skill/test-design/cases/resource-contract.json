@@ -1,0 +1,470 @@
+{
+  "format": "skill-test-cases-draft",
+  "format_version": 2,
+  "owner": {
+    "model": "skill",
+    "design": "docs/design/skill/skill.md",
+    "test_design": "docs/design/skill/test-design/test-design.md"
+  },
+  "scope": {
+    "group": "resource-contract",
+    "title": "Resources and source authority",
+    "boundary": "Observe local package validators; reference Packaging for archive/hash/install mechanics and use review for load decisions."
+  },
+  "fixtures": [
+    {
+      "id": "mapped-skill",
+      "initial_state": [
+        "Create a fresh temporary package with independently supplied COPY assets/skeleton.md, READ references/guidance.md and RUN scripts/check.py entries.",
+        "Create all three files. The RUN entry names input, output/exit meaning and nonzero failure action. Validate before mutation."
+      ],
+      "builder": {
+        "path": "tests/skill/skill_resource_tests.py",
+        "symbol": "mapped_skill"
+      }
+    },
+    {
+      "id": "policy-copy",
+      "initial_state": [
+        "A private shared source and current consumer contain equal reference bytes. Review uses code-review with review-assessment/review-reliance; test policy uses implement with test-quality/test-maintenance.",
+        "Observe missing, matching and one-byte-drift states without modifying repository resources."
+      ],
+      "reference_test": {
+        "path": "tests/skill/skill_shared_policy_tests.py",
+        "symbol": "ReviewCloseoutResourceTests.test_missing_drifted_and_valid_resources"
+      }
+    },
+    {
+      "id": "review-package",
+      "initial_state": [
+        "Use the Review fixture basis in the strategy plus this case’s concrete facts and counterexample. Resolve every actual instruction and authority claim to the exact current owner/body/triggered resources.",
+        "Materialize a fresh private review packet for each variant. F0/F1/F2, G0/G1/G2 and S0/S1 are synthetic byte-identity labels; an actual assessment records inspected identities.",
+        "Inspect proposed decisions, outputs and prohibited side effects without running an agent or writing production, workflow records, hosted CI or publication state."
+      ],
+      "profile": "docs/design/skill/test-design/test-design.md"
+    }
+  ],
+  "cases": [
+    {
+      "id": "SKL-RC-001",
+      "title": "Resource verbs select their declared directories",
+      "requirements": [
+        "SKL-SR-08",
+        "SKL-SR-14"
+      ],
+      "technique": "equivalence-partition",
+      "risk": "A COPY, READ or RUN instruction receives the wrong kind of content.",
+      "method": "automated-test",
+      "boundary": "public-command",
+      "target": {
+        "path": "scripts/lib/validation/skill_validation.py",
+        "symbol": "validate_skill_tree"
+      },
+      "given": {
+        "fixture": "mapped-skill",
+        "conditions": [
+          "Keep files present while changing only the verb/path pairing."
+        ]
+      },
+      "when": [
+        "Validate the correct triplet, then each wrong pairing on a fresh baseline."
+      ],
+      "then": [
+        "COPY/assets, READ/references and RUN/scripts pass; each wrong pairing reports its required directory."
+      ],
+      "realization": {
+        "state": "existing",
+        "tests": [
+          {
+            "path": "tests/skill/skill_resource_tests.py",
+            "symbol": "SkillResourceMapTests.test_resource_verbs_require_their_declared_directories"
+          }
+        ],
+        "gaps": []
+      },
+      "variants": [
+        {
+          "id": "copy",
+          "parameters": {
+            "instruction": "COPY references/guidance.md",
+            "expected": "assets/"
+          }
+        },
+        {
+          "id": "read",
+          "parameters": {
+            "instruction": "READ assets/skeleton.md",
+            "expected": "references/"
+          }
+        },
+        {
+          "id": "run",
+          "parameters": {
+            "instruction": "RUN assets/skeleton.md",
+            "expected": "scripts/"
+          }
+        }
+      ]
+    },
+    {
+      "id": "SKL-RC-002",
+      "title": "Resource inventory and its map agree in both directions",
+      "requirements": [
+        "SKL-SR-08",
+        "SKL-SR-09",
+        "SKL-SR-11"
+      ],
+      "technique": "equivalence-partition",
+      "risk": "An unlisted shipped file or an absent declared file is accepted as a complete package.",
+      "method": "automated-test",
+      "boundary": "public-command",
+      "target": {
+        "path": "scripts/lib/validation/skill_validation.py",
+        "symbol": "validate_skill_tree"
+      },
+      "given": {
+        "fixture": "mapped-skill",
+        "conditions": [
+          "Build an otherwise valid private package with COPY assets/skeleton.md, READ references/detail.md and RUN scripts/check.py, all present and mapped. The RUN entry has input, exit meaning and failure action. Establish acceptance before each independent variation."
+        ]
+      },
+      "when": [
+        "On fresh copies remove only the Resource map, remove only the references/detail.md entry while retaining its file, or remove only assets/skeleton.md while retaining its mapping. Validate through the real command."
+      ],
+      "then": [
+        "The intact package passes. Missing map reports that packaged resources require a Resource map. A missing entry identifies the unlisted references/detail.md; missing content identifies the declared assets/skeleton.md as absent. A generic failure from unrelated setup cannot satisfy these observations.",
+        "Both directions of agreement are required. A currently untriggered resource or runtime fallback cannot turn missing mapped content into a valid package."
+      ],
+      "realization": {
+        "state": "existing",
+        "tests": [
+          {
+            "path": "tests/skill/skill_resource_tests.py",
+            "symbol": "SkillResourceMapTests.test_resource_inventory_agrees_with_map_in_both_directions"
+          }
+        ],
+        "gaps": []
+      },
+      "variants": [
+        {
+          "id": "map",
+          "parameters": {
+            "remove": "Resource map",
+            "expected": "packaged resources require a Resource map section"
+          }
+        },
+        {
+          "id": "entry",
+          "parameters": {
+            "remove": "READ references/detail.md entry only",
+            "expected": "Resource map must name packaged resource references/detail.md"
+          }
+        },
+        {
+          "id": "content",
+          "parameters": {
+            "remove": "assets/skeleton.md file only",
+            "expected": "mapped resource assets/skeleton.md does not exist in canonical skill source"
+          }
+        }
+      ]
+    },
+    {
+      "id": "SKL-RC-003",
+      "title": "RUN instructions explain failure behavior",
+      "requirements": [
+        "SKL-SR-08"
+      ],
+      "technique": "equivalence-partition",
+      "risk": "A packaged check fails but its consumer has no defined response.",
+      "method": "automated-test",
+      "boundary": "public-command",
+      "target": {
+        "path": "scripts/lib/validation/skill_validation.py",
+        "symbol": "validate_skill_tree"
+      },
+      "given": {
+        "fixture": "mapped-skill",
+        "conditions": [
+          "Keep scripts/check.py, input and result wording valid; remove only its failure-action wording."
+        ]
+      },
+      "when": [
+        "Validate the package."
+      ],
+      "then": [
+        "Reject with packaged script 'scripts/check.py' map entry must describe failure behavior."
+      ],
+      "realization": {
+        "state": "existing",
+        "tests": [
+          {
+            "path": "tests/skill/skill_resource_tests.py",
+            "symbol": "SkillResourceMapTests.test_run_resource_requires_failure_action"
+          }
+        ],
+        "gaps": []
+      }
+    },
+    {
+      "id": "SKL-RC-004",
+      "title": "Mapped paths cannot escape their skill root",
+      "requirements": [
+        "SKL-SR-08",
+        "SKL-SR-09",
+        "SKL-SR-14"
+      ],
+      "technique": "equivalence-partition",
+      "risk": "A mapped dependency reads an absolute or parent-relative resource outside the package.",
+      "method": "automated-test",
+      "boundary": "public-command",
+      "target": {
+        "path": "scripts/lib/validation/skill_validation.py",
+        "symbol": "validate_skill_tree"
+      },
+      "given": {
+        "fixture": "mapped-skill",
+        "conditions": [
+          "Use ../references/escape.md and /tmp/check.py as independent path mutations."
+        ]
+      },
+      "when": [
+        "Validate each package and inspect its containment diagnostic."
+      ],
+      "then": [
+        "Both paths are rejected as outside the skill-root-relative contract; a missing-file message alone is insufficient. Selected-reference symlinks are separately covered by SKL-RX-004."
+      ],
+      "realization": {
+        "state": "existing",
+        "tests": [
+          {
+            "path": "tests/skill/skill_resource_tests.py",
+            "symbol": "SkillResourceMapTests.test_mapped_paths_must_stay_inside_skill_root"
+          }
+        ],
+        "gaps": []
+      },
+      "variants": [
+        {
+          "id": "parent",
+          "parameters": {
+            "path": "../references/escape.md"
+          }
+        },
+        {
+          "id": "absolute",
+          "parameters": {
+            "path": "/tmp/check.py"
+          }
+        }
+      ]
+    },
+    {
+      "id": "SKL-RC-006",
+      "title": "Shared policy projections preserve authoritative bytes",
+      "requirements": [
+        "SKL-SR-06",
+        "SKL-SR-13"
+      ],
+      "technique": "state-transition",
+      "risk": "A packaged policy copy silently diverges from its authored source.",
+      "method": "automated-test",
+      "boundary": "contract",
+      "target": {
+        "path": "scripts/lib/validation/skill_validation.py",
+        "symbol": "validate_review_closeout_copies"
+      },
+      "given": {
+        "fixture": "policy-copy",
+        "conditions": [
+          "Exercise missing, matching and drifted references for both the review and test-policy consumers."
+        ]
+      },
+      "when": [
+        "Read the exact local copy through each policy validator before and after the controlled changes."
+      ],
+      "then": [
+        "Missing fails, matching bytes return no errors, and a changed copy reports differs. Copy validity does not establish policy adoption or a review judgment."
+      ],
+      "realization": {
+        "state": "existing",
+        "tests": [
+          {
+            "path": "tests/skill/skill_shared_policy_tests.py",
+            "symbol": "ReviewCloseoutResourceTests.test_missing_drifted_and_valid_resources"
+          },
+          {
+            "path": "tests/skill/skill_shared_policy_tests.py",
+            "symbol": "TestPolicyResourceTests.test_test_policy_missing_and_drifted_resources_reject"
+          }
+        ],
+        "gaps": []
+      }
+    },
+    {
+      "id": "SKL-RC-007",
+      "title": "Unknown policy consumers precede reference checks",
+      "requirements": [
+        "SKL-SR-06",
+        "SKL-SR-13",
+        "SKL-SR-14"
+      ],
+      "technique": "equivalence-partition",
+      "risk": "An unknown consumer accidentally falls through as a consumer with no required resources.",
+      "method": "automated-test",
+      "boundary": "contract",
+      "target": {
+        "path": "scripts/lib/validation/skill_validation.py",
+        "symbol": "validate_review_closeout_copies"
+      },
+      "given": {
+        "fixture": "policy-copy",
+        "conditions": [
+          "Use consumer unknown_value and a nonexistent skill path for each policy validator."
+        ]
+      },
+      "when": [
+        "Validate the unknown consumer before reading its missing source/copy."
+      ],
+      "then": [
+        "Return only the unknown-consumer diagnostic before any source/copy read; neither an empty success nor extra missing-resource diagnostics satisfy unknown-first admission."
+      ],
+      "realization": {
+        "state": "existing",
+        "tests": [
+          {
+            "path": "tests/skill/skill_shared_policy_tests.py",
+            "symbol": "ReviewCloseoutResourceTests.test_unknown_value_consumer_fails_closed"
+          },
+          {
+            "path": "tests/skill/skill_shared_policy_tests.py",
+            "symbol": "TestPolicyResourceTests.test_unknown_value_test_policy_consumer_fails_closed"
+          }
+        ],
+        "gaps": []
+      },
+      "variants": [
+        {
+          "id": "review",
+          "parameters": {
+            "validator": "validate_review_closeout_copies",
+            "consumer": "unknown_value"
+          }
+        },
+        {
+          "id": "test-policy",
+          "parameters": {
+            "validator": "validate_test_policy_copies",
+            "consumer": "unknown_value"
+          }
+        }
+      ]
+    },
+    {
+      "id": "SKL-RC-008",
+      "title": "Runtime resource triggers and package completeness stay distinct",
+      "requirements": [
+        "SKL-SR-09",
+        "SKL-SR-11"
+      ],
+      "technique": "walkthrough",
+      "risk": "Missing required procedure is invented, or an irrelevant resource blocks an unrelated portable action.",
+      "method": "independent-review",
+      "boundary": "review",
+      "target": {
+        "path": "docs/design/skill/skill.md",
+        "section": "Conditional resources"
+      },
+      "given": {
+        "fixture": "review-package",
+        "conditions": [
+          "Use three fresh invocation packets: required recording reference absent when a governed write is selected; the same reference absent during unrelated authorized portable authorship; and a missing convenience navigation aid whose complete procedure is already loaded."
+        ]
+      },
+      "when": [
+        "Compare the proposed next action and package-validity claim for each packet. Include a candidate that reconstructs the missing required write procedure and one that treats portable success as package completeness."
+      ],
+      "then": [
+        "Stop the governed write before any record mutation and name the missing reference. Allow independently authorized portable work without claiming package integrity. Only the redundant convenience aid permits a disclosed fallback using already loaded complete instructions. All absent mapped files still invalidate the package."
+      ],
+      "realization": {
+        "state": "proposed",
+        "tests": [],
+        "gaps": [
+          "Perform this procedure against the exact selected package and record the independent assessment; text assertions do not establish this outcome."
+        ]
+      }
+    },
+    {
+      "id": "SKL-RC-009",
+      "title": "Output assets carry structure without hidden authority",
+      "requirements": [
+        "SKL-SR-12",
+        "SKL-SR-28"
+      ],
+      "technique": "walkthrough",
+      "risk": "A template silently supplies an approval, trigger or policy that the skill never established.",
+      "method": "independent-review",
+      "boundary": "review",
+      "target": {
+        "path": "docs/design/skill/skill.md",
+        "section": "Common contract details retained by consolidation"
+      },
+      "given": {
+        "fixture": "review-package",
+        "conditions": [
+          "Use the current Plan skeleton with a fictional one-milestone allocation. On separate copies insert an asset-only approved status or an asset-only instruction to start implementation. Keep the governing skill and project authority unchanged."
+        ]
+      },
+      "when": [
+        "Inspect the completed artifact and proposed handoff for the intact asset and each fault separately; trace every claimed approval or next action to actual authority."
+      ],
+      "then": [
+        "The intact asset provides fillable structure and a usable completed draft with no leftover placeholders. Reject an approval or implementation trigger supplied only by the asset; neither exists in the unchanged authority. Plan owns detailed field and metadata checks."
+      ],
+      "realization": {
+        "state": "proposed",
+        "tests": [],
+        "gaps": [
+          "Perform this procedure against the exact selected package and record the independent assessment; text assertions do not establish this outcome."
+        ]
+      }
+    },
+    {
+      "id": "SKL-RC-010",
+      "title": "Package identity evidence supports only its checked boundary",
+      "requirements": [
+        "SKL-SR-10",
+        "SKL-SR-13",
+        "SKL-SR-15"
+      ],
+      "technique": "walkthrough",
+      "risk": "Presence-only evidence is presented as byte parity or permission to install and publish.",
+      "method": "independent-review",
+      "boundary": "review",
+      "target": {
+        "path": "docs/design/skill/skill.md",
+        "section": "Deployment View"
+      },
+      "given": {
+        "fixture": "review-package",
+        "conditions": [
+          "Use a Packaging report identifying canonical/generated/archive/installed paths and hashes; compare a presence-only report, timestamp-only change, byte change and undeclared transformation."
+        ]
+      },
+      "when": [
+        "Inspect the claimed boundaries and delegate actual archive/install mechanisms to Packaging and Installation owners."
+      ],
+      "then": [
+        "Untransformed claims require matching relative paths and raw-byte identity at every claimed boundary; timestamps do not change parity. A transformation requires its declared owner, input/output identity and check. Incomplete evidence cannot establish parity, installation authority or release permission."
+      ],
+      "realization": {
+        "state": "proposed",
+        "tests": [],
+        "gaps": [
+          "Perform this procedure against the exact selected package and record the independent assessment; text assertions do not establish this outcome."
+        ]
+      }
+    }
+  ]
+}

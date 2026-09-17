@@ -2,11 +2,14 @@
 
 from __future__ import annotations
 
+from contextlib import contextmanager
 import sys
 from pathlib import Path
 import shutil
 import json
 import subprocess
+import tempfile
+from typing import Iterator
 
 ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / "scripts"))
@@ -109,6 +112,24 @@ def make_prepared_release(root: Path) -> Path:
     make_release_repo(root)
     prepare_release("v0.3.5", root=root)
     return root / "docs" / "releases" / "v0.3.5" / "npm-publication.md"
+
+
+@contextmanager
+def release_repo() -> Iterator[Path]:
+    """Own a fresh input repository; callers perform the preparation under test."""
+    with tempfile.TemporaryDirectory() as temporary:
+        root = Path(temporary)
+        make_release_repo(root)
+        yield root
+
+
+@contextmanager
+def prepared_release() -> Iterator[tuple[Path, Path]]:
+    """Own a prepared repository and its pending publication evidence."""
+    with tempfile.TemporaryDirectory() as temporary:
+        root = Path(temporary)
+        pending = make_prepared_release(root)
+        yield root, pending
 
 
 def relative_file_texts(root: Path) -> dict[str, str]:

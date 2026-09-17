@@ -11,7 +11,7 @@ import unittest
 ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / "scripts"))
 
-from lib.release.release_transaction import ReleaseProfileError, is_routine_release_profile, load_literal_audit_baseline_file, load_release_profile, load_release_profile_file, load_surface_inventory_file, profile_path_for_tag
+from lib.release.release_transaction import ReleaseProfileError, is_routine_release_profile, load_literal_audit_baseline_file, load_release_profile, load_release_profile_file, load_surface_inventory_file
 from release_fixture_helpers import (CHANGE_ROOT, REQUIRED_PROFILE_FIELD_CASES, literal_audit_fixture, profile_fixture, surface_inventory_fixture)
 
 
@@ -38,12 +38,6 @@ class ReleaseProfileTests(unittest.TestCase):
         self.assertEqual(profile.evidence["timing"], "required")
         self.assertEqual(profile.validation["local_release_verify_required"], True)
         self.assertTrue(is_routine_release_profile(profile))
-
-    def test_profile_path_for_tag_uses_docs_release_profiles(self) -> None:
-        self.assertEqual(
-            profile_path_for_tag("v0.3.5", root=ROOT),
-            ROOT / "docs" / "releases" / "profiles" / "v0.3.5.yaml",
-        )
 
     def test_load_release_profile_reads_docs_release_profiles_by_tag(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -88,26 +82,24 @@ class ReleaseProfileTests(unittest.TestCase):
             load_release_profile_file(profile_fixture('invalid-wrong-package-version.yaml'))
         self.assertIn('package_version 0.3.6 does not match release_tag v0.3.5', "\n".join(raised.exception.errors))
 
-    def test_unknown_release_kind_fails_closed_before_consistency(self) -> None:
-        with self.assertRaises(ReleaseProfileError) as raised:
-            load_release_profile_file(profile_fixture('invalid-unknown-release-kind.yaml'))
-        error = raised.exception
-        self.assertIn('unknown release_kind: preview', "\n".join(raised.exception.errors))
-        self.assertTrue(error.errors[0].endswith("unknown release_kind: preview"))
-
-    def test_unknown_target_fails_closed_before_consistency(self) -> None:
-        with self.assertRaises(ReleaseProfileError) as raised:
-            load_release_profile_file(profile_fixture('invalid-unknown-target.yaml'))
-        error = raised.exception
-        self.assertIn('unknown target: cursor', "\n".join(raised.exception.errors))
-        self.assertTrue(error.errors[0].endswith("unknown target: cursor"))
-
-    def test_unknown_npm_dist_tag_fails_closed_before_consistency(self) -> None:
-        with self.assertRaises(ReleaseProfileError) as raised:
-            load_release_profile_file(profile_fixture('invalid-unknown-npm-dist-tag.yaml'))
-        error = raised.exception
-        self.assertIn('unknown npm_dist_tag: next', "\n".join(raised.exception.errors))
-        self.assertTrue(error.errors[0].endswith("unknown npm_dist_tag: next"))
+    def test_unknown_profile_values_precede_version_consistency(self) -> None:
+        # REL-IN-001: all three vocabularies must reject before consistency.
+        for field, old, new, diagnostic in (
+            ("release_kind", "release_kind: routine", "release_kind: preview", "unknown release_kind: preview"),
+            ("target", "  - claude", "  - cursor", "unknown target: cursor"),
+            ("npm_dist_tag", "npm_dist_tag: latest", "npm_dist_tag: next", "unknown npm_dist_tag: next"),
+        ):
+            with self.subTest(field=field), tempfile.TemporaryDirectory() as tmp:
+                path = Path(tmp) / "v0.3.5.yaml"
+                body = profile_fixture("valid-routine-v0.3.5.yaml").read_text()
+                path.write_text(body)
+                self.assertEqual(load_release_profile_file(path).package_version, "0.3.5")
+                self.assertEqual(body.count(old), 1)
+                self.assertEqual(body.count("package_version: 0.3.5"), 1)
+                path.write_text(body.replace(old, new).replace("package_version: 0.3.5", "package_version: 0.3.6"))
+                with self.assertRaises(ReleaseProfileError) as raised:
+                    load_release_profile_file(path)
+                self.assertTrue(raised.exception.errors[0].endswith(diagnostic), raised.exception.errors)
 
     def test_special_release_without_owner_decision_fails(self) -> None:
         with self.assertRaises(ReleaseProfileError) as raised:

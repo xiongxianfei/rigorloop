@@ -1,0 +1,260 @@
+{
+  "activity": {
+    "owner": {
+      "id": "focused-proposal-reviewer",
+      "role": "review"
+    },
+    "reason": "M1 implementation complete with focused-m1-validation: frozen full local CI passed1242rows and all123subjects unchanged; independent milestone assessment required before completion.",
+    "stage": "code-review",
+    "status": "ready"
+  },
+  "applicability": [
+    {
+      "actor": {
+        "id": "focused-proposal-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-17-model-test-design/reviews/focused-proposal-review.json",
+      "reason": "The complete focused proposal is unchanged at the inspected identity and has been independently assessed against the explicit user scope selection.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "focused-testing-author",
+        "role": "implement"
+      },
+      "path": "docs/changes/2026-09-17-model-test-design/material-decisions.json",
+      "reason": "Exact frozen focused implementation and current approved proposal/Design/Delivery basis; final review and Verify remain separate.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "focused-proposal-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-17-model-test-design/reviews/focused-compatibility-scope-review.json",
+      "reason": "Exact inspected subjects exhibit the reproduced scope defect; final package approval remains separate.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "focused-design-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-17-model-test-design/reviews/focused-design-provenance-review.json",
+      "reason": "Applies to the exact extracted strategy statements and current destination inspected; correction required before reliance.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "focused-design-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-17-model-test-design/reviews/focused-design-review.json",
+      "reason": "Current for the exact corrected complete focused Design contribution and approved direction; two reviewer-owned findings explicitly resolved. No broader initiative or downstream gate approval.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "focused-proposal-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-17-model-test-design/reviews/focused-proposal-review-r2.json",
+      "reason": "Independent complete reread of the current exact proposal; formatting cleanup does not change the supported direction.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "focused-design-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-17-model-test-design/reviews/focused-design-review-r2.json",
+      "reason": "Independent impact reassessment confirms editorial-only upstream subject change, current approved focused-proposal-review-r2 and byte-identical complete Design package. Original review remains unchanged.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "focused-delivery-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-17-model-test-design/reviews/focused-delivery-review.json",
+      "reason": "Independent complete primary-plan assessment against exact current focused-proposal-review-r2 and focused-design-review-r2; current for authorized focused implementation and verification allocation only.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "focused-testing-author",
+        "role": "implement"
+      },
+      "path": "docs/changes/2026-09-17-model-test-design/evidence.json",
+      "reason": "Exact frozen focused implementation and current approved proposal/Design/Delivery basis; final review and Verify remain separate.",
+      "value": "current"
+    }
+  ],
+  "blockers": [],
+  "change_id": "2026-09-17-model-test-design",
+  "contract": "rigorloop-records-v3",
+  "models": [
+    {
+      "id": "engineering",
+      "subject": {
+        "identity": "sha256:0b2554c4f77129d6c13c63608da9bb841766b272fb24d1e986cc2ab5afce535d",
+        "path": "docs/design/engineering/engineering.md"
+      }
+    },
+    {
+      "id": "packaging",
+      "subject": {
+        "identity": "sha256:71f62f8d192ef1096f7c712911b00cd27138618c96697e9ff242a23e4266eb4f",
+        "path": "docs/design/engineering/packaging.md"
+      }
+    },
+    {
+      "id": "release",
+      "subject": {
+        "identity": "sha256:3884d83d216baa04909173b0577e9f40c42d81843fdb0e1f5011c28aa4796149",
+        "path": "docs/design/engineering/release/release.md"
+      }
+    },
+    {
+      "id": "validation",
+      "subject": {
+        "identity": "sha256:d395ef73bf53cf392e20dd91f681ca2d926af31ec97b47da0f8e9491cb1dd3e1",
+        "path": "docs/design/engineering/validation.md"
+      }
+    },
+    {
+      "id": "assessment",
+      "subject": {
+        "identity": "sha256:1bfd64a58945eb4cee053e8771baa0599a8f7d0e037f445801086cbec8b4bf00",
+        "path": "docs/design/skill/assessment.md"
+      }
+    },
+    {
+      "id": "authoring",
+      "subject": {
+        "identity": "sha256:434d4232d140d5d8692ec0592ceb96e10de2e6dc4f703b916d8e825a7fe3a23e",
+        "path": "docs/design/skill/authoring/authoring.md"
+      }
+    },
+    {
+      "id": "design",
+      "subject": {
+        "identity": "sha256:13fa3e7dc23c59dda49e9a586621d4d6df035a4c06591f1df7dae90009469fcf",
+        "path": "docs/design/skill/authoring/design.md"
+      }
+    },
+    {
+      "id": "plan",
+      "subject": {
+        "identity": "sha256:5ba5e475429f99b6a18319777a98c387cc75bac3e6844dc0a6c6357ca652583b",
+        "path": "docs/design/skill/authoring/plan.md"
+      }
+    },
+    {
+      "id": "skill",
+      "subject": {
+        "identity": "sha256:256a57936e1fe3de7b9d7c86045ee281867def8147c59661cc1284e0cb37bbfa",
+        "path": "docs/design/skill/skill.md"
+      }
+    },
+    {
+      "id": "workflow",
+      "subject": {
+        "identity": "sha256:00d18256f4a639fac753edab2d8b203e20cf41632184f6981c44ce9bd14dedd2",
+        "path": "docs/design/skill/workflow.md"
+      }
+    },
+    {
+      "id": "system",
+      "subject": {
+        "identity": "sha256:873e56982d331107c50914a7e1f4f9264a37ad020c5cc7026376c17488c757f1",
+        "path": "docs/design/system.md"
+      }
+    }
+  ],
+  "plan": {
+    "identity": "sha256:d515dec3b57b9a58abf5b04deaddeae061e684f0f825dcb2951eb2c2aad09a0e",
+    "path": "docs/plans/2026-09-17-model-test-design.md"
+  },
+  "proposal": {
+    "identity": "sha256:c1d196e7f4b410d22b05c65cffac261282652e09a6afccb4b9d00d57f1646465",
+    "path": "docs/proposals/2026-09-17-model-test-design.md"
+  },
+  "records": [
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-17-model-test-design/reviews/focused-proposal-review.json"
+    },
+    {
+      "kind": "decisions",
+      "path": "docs/changes/2026-09-17-model-test-design/material-decisions.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-17-model-test-design/reviews/focused-compatibility-scope-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-17-model-test-design/reviews/focused-design-provenance-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-17-model-test-design/reviews/focused-design-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-17-model-test-design/reviews/focused-proposal-review-r2.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-17-model-test-design/reviews/focused-design-review-r2.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-17-model-test-design/reviews/focused-delivery-review.json"
+    },
+    {
+      "kind": "evidence",
+      "path": "docs/changes/2026-09-17-model-test-design/evidence.json"
+    }
+  ],
+  "schema_version": 3,
+  "work": [
+    {
+      "id": "m1",
+      "owner": {
+        "id": "focused-testing-author",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "TEST-SR-01",
+        "TEST-SR-02",
+        "TEST-SR-03",
+        "TEST-SR-04",
+        "TEST-SR-05",
+        "TEST-SR-06",
+        "TEST-SR-07",
+        "TEST-SR-08",
+        "TEST-SR-09",
+        "TEST-SR-10",
+        "TEST-SR-11",
+        "TEST-SR-12",
+        "TEST-SR-13",
+        "TEST-SR-14",
+        "TEST-SR-15",
+        "TEST-SR-16",
+        "TEST-SR-17",
+        "TEST-SR-18",
+        "TEST-SR-19",
+        "TEST-SR-20",
+        "TEST-SR-21",
+        "TEST-SR-22",
+        "DES-SR-25",
+        "DES-SR-26",
+        "VAL-SR-35"
+      ],
+      "status": "ready"
+    }
+  ]
+}
