@@ -184,8 +184,11 @@ class RequirementDeliveryModelM3Tests(unittest.TestCase):
 
 class ReviewCloseoutResourceTests(unittest.TestCase):
     def test_unknown_value_consumer_fails_closed(self):
-        errors = skill_validation.validate_review_closeout_copies(Path("unused/SKILL.md"), "unknown_value")
-        self.assertTrue(any("unknown" in e for e in errors))
+        with tempfile.TemporaryDirectory() as tmp:
+            skill = Path(tmp) / "missing/SKILL.md"
+            with mock.patch.object(Path, "open", side_effect=AssertionError("unexpected resource read")):
+                errors = skill_validation.validate_review_closeout_copies(skill, "unknown_value")
+            self.assertEqual(errors, [f"{skill}: unknown review-closeout consumer 'unknown_value'"])
 
     def test_missing_drifted_and_valid_resources(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -224,8 +227,11 @@ class ReviewCloseoutResourceTests(unittest.TestCase):
 
 class TestPolicyResourceTests(unittest.TestCase):
     def test_unknown_value_test_policy_consumer_fails_closed(self):
-        errors = skill_validation.validate_test_policy_copies(Path("unused/SKILL.md"), "unknown_value")
-        self.assertTrue(any("unknown" in error for error in errors))
+        with tempfile.TemporaryDirectory() as tmp:
+            skill = Path(tmp) / "missing/SKILL.md"
+            with mock.patch.object(Path, "open", side_effect=AssertionError("unexpected resource read")):
+                errors = skill_validation.validate_test_policy_copies(skill, "unknown_value")
+            self.assertEqual(errors, [f"{skill}: unknown test-policy consumer 'unknown_value'"])
 
     def test_test_policy_missing_and_drifted_resources_reject(self):
         with tempfile.TemporaryDirectory() as tmp:

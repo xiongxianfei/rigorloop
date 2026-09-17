@@ -4,6 +4,7 @@
 
 Read [CONSTITUTION.md](CONSTITUTION.md) for authority, quality, review, permissions and cleanup rules.
 Use [System](docs/design/system.md) to find the relevant owning Design; read only the models and retained contracts needed for the task.
+For test design or script changes, use the [System-owned shared test-design rules](docs/design/test-design/rules.md) and the owning model's coverage; [test-design navigation](docs/design/test-design/README.md) locates separate packages.
 Before implementation, read the governing contract, applicable architecture decisions, owning plan and verification allocation, then the files to change.
 Use [docs/project-map.md](docs/project-map.md) only when current for the area; otherwise inspect the sources directly and state the map limitation or refresh it.
 
@@ -37,5 +38,5 @@ bash scripts/ci.sh --mode local
 bash scripts/ci.sh --mode explicit --path PATH
 ```
 
-For packaging or release work, follow the owning [Packaging](docs/design/engineering/packaging.md) and [Release](docs/design/engineering/release.md) checks, including tracked release notes and actual candidate evidence.
+For packaging or release work, follow the owning [Packaging](docs/design/engineering/packaging.md) and [Release](docs/design/engineering/release/release.md) checks, including tracked release notes and actual candidate evidence.
 Report what changed, commands actually run, results and material limitations; reconcile governed records when applicable.

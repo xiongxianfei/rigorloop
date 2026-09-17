@@ -14,7 +14,7 @@ Thanks for contributing.
 
 For review-critical Markdown, break source lines where meaning breaks, not where an editor column counter wraps.
 Keep complete sentences, list items, commands, and lifecycle chains intact when practical; use bullets or other Markdown structure when prose becomes dense.
-[Validation](docs/design/engineering/validation.md) owns source-formatting and proof requirements.
+[System](docs/design/system.md#living-test-design-composition) owns shared test-design and proof-quality rules. [Validation](docs/design/engineering/validation.md) owns source-format checks and validation execution.
 
 Before handing off changed covered prose, run:
 
@@ -38,7 +38,7 @@ python scripts/validate-documentation-prose.py --mode enforce --path README.md -
 
 ## Validation scope
 
-Repository tests live in `tests/skill/` and `tests/engineering/{validation,packaging,release}/`; package tests stay in `packages/rigorloop/test/`. Supported operational commands remain at the `scripts/` root. Reusable implementation belongs in `scripts/lib/{validation,packaging,release}/`, using explicit package imports; authored operational inputs belong in `scripts/resources/`. Keep command arguments and exit behavior stable when moving internal code; update subprocess readers and copied test repositories together. Follow [Validation’s test organization](docs/design/engineering/validation.md#test-sources-groups-and-fixtures) for behavior groups, shared fixtures and evidence selection. Use its [test script structure](docs/design/engineering/validation.md#test-script-structure) and [worked examples](docs/design/engineering/validation.md#worked-authoring-examples) when writing scenarios and reusable setup.
+Repository tests live in `tests/skill/` and `tests/engineering/{validation,packaging,release}/`; package tests stay in `packages/rigorloop/test/`. Supported operational commands remain at the `scripts/` root. Reusable implementation belongs in `scripts/lib/{validation,packaging,release}/`, using explicit package imports; authored operational inputs belong in `scripts/resources/`. Keep command arguments and exit behavior stable when moving internal code; update subprocess readers and copied test repositories together. Follow [Validation’s test organization](docs/design/engineering/validation.md#test-sources-groups-and-fixtures) for behavior groups, shared fixtures and evidence selection. Start from the [shared test-design rules](docs/design/test-design/rules.md), with [script structure](docs/design/test-design/rules.md#test-script-structure) and [worked examples](docs/design/test-design/rules.md#worked-authoring-examples) for scenarios and reusable setup; [test-design navigation](docs/design/test-design/README.md) locates model-owned coverage.
 
 Use `bash scripts/ci.sh --mode local` for checks selected from the working-tree changes, or `--mode explicit --path PATH` for a bounded surface. PR CI uses the same selector with `--mode pr --base SHA --head SHA`; unclassified paths or failed preflight checks block execution. PR validation checks current record stores at the exact head revision; archival stores are excluded without running retired validators. Main CI retains the full direct gate suite, and release validation retains its existing policy.
 

@@ -35,7 +35,7 @@ The [Design model](authoring/design.md#model-document-and-structural-contract) o
 ```mermaid
 flowchart TB
     Subjects["Engineering subjects and evidence"]
-    Methods["Specialist methods and Validation criteria"]
+    Methods["Specialist methods and System test criteria"]
     Authority["User authority and project governance"]
     subgraph Assessment["Assessment — independent judgment and closeout"]
         Scope["Scope and independence<br/>Exact subjects and adequate basis"]
@@ -55,7 +55,7 @@ flowchart TB
     Reliance -->|"explicit applicability and successful Verify explanation"| Records
 ```
 
-Assessment owns the shared policy inside its boundary. [Assessment scopes and consequences](#assessment-scopes-and-consequences) and the [Building Block View](#building-block-view) define judgment and closeout rules; the [Runtime View](#runtime-view) explains their application. [Context and Scope](#context-and-scope) retains specialist method and human authority boundaries, while [Validation](../engineering/validation.md) owns proof criteria. [Workflow](workflow.md) coordinates receiving activities; [Records](../cli/records.md) and [CLI](../cli/cli.md) own representation and persistence. Findings retain stable IDs and current actionable accounts; recording does not establish approval or reliance.
+Assessment owns the shared policy inside its boundary. [Assessment scopes and consequences](#assessment-scopes-and-consequences) and the [Building Block View](#building-block-view) define judgment and closeout rules; the [Runtime View](#runtime-view) explains their application. [Context and Scope](#context-and-scope) retains specialist method and human authority boundaries, while [System](../system.md#living-test-design-composition) owns shared proof criteria and [Validation](../engineering/validation.md) owns execution. [Workflow](workflow.md) coordinates receiving activities; [Records](../cli/records.md) and [CLI](../cli/cli.md) own representation and persistence. Findings retain stable IDs and current actionable accounts; recording does not establish approval or reliance.
 
 ### Supporting-view decisions
 
@@ -98,7 +98,7 @@ These views elaborate the overview at the owning model boundary. Existing detail
 ```mermaid
 flowchart LR
     Authors["Authors and implementers"] -->|"exact subjects and proof"| Assessment["Independent assessors"]
-    Criteria["Specialist and Validation criteria"] -->|"assessment obligations"| Assessment
+    Criteria["Specialist and System test criteria"] -->|"assessment obligations"| Assessment
     Assessment -->|"judgment, findings and reliance limits"| Route["Workflow coordination"]
     Assessment -->|"explicit assessment account"| CLI["Records and CLI"]
     Human["Authorized decision owner"] -->|"scope and exceptions"| Assessment
@@ -258,7 +258,7 @@ This table applies RC-SR-01/03/10–13. It defines scope and decision limits; st
 | Assessment | Complete subject and central question | Consequence of a justified approval | Correction responsibility |
 | --- | --- | --- | --- |
 | Proposal Review | Direction, user intent, bounds, feasibility, and vision fit | Direction is sufficient for authorized Design; no design decisions approved | Proposal author or named direction owner |
-| Design Review | Exact affected model revisions and relevant cross-model relationships, accepted proposal constraints; historical package members remain contract-selected | Coherent design basis for authorized Delivery planning; no plan or implementation approval | Owning model author; multiple owners for a cross-model defect |
+| Design Review | Exact affected model revisions, living test designs, relevant cross-model relationships and accepted proposal constraints; historical package members remain contract-selected | Coherent design basis for authorized Delivery planning; no plan or implementation approval | Owning model author; multiple owners for a cross-model defect |
 | Delivery Review | Exact plan and its verification allocation against approved design, including closeout dependencies | Delivery allocation is adequate for authorized implementation | Plan author for allocation; Design owner for behavioral gaps |
 | Milestone Code Review | Exact implementation slice, its allocated obligations, interactions exposed so far, and proof | Only the named milestone scope is judged; remaining implementation and closeout remain separate | Implementation owner, or upstream author for a contract defect |
 | Final whole-change Code Review | Complete final delivered engineering change, integrated behavior, cross-milestone effects, current governing basis and proof | Whole-change implementation assessment for final Verify to rely on if still applicable | Faulty implementation or upstream subject owner, then reassessment |
@@ -268,6 +268,14 @@ This table applies RC-SR-01/03/10–13. It defines scope and decision limits; st
 A final review may use the same independent reviewer as an earlier milestone review if that reviewer did not author the delivered contributions. Fresh means a newly conducted whole-change assessment after the required implementation/correction boundary, not merely a new timestamp, role name, or replayed milestone verdict. The plan identifies a separate closeout checkpoint even for one implementation milestone. Targeted final-review corrections require renewed assessment of the integrated result; they do not permit replacing the final assessment with a finding-only receipt.
 
 Record every formal review, including clean and isolated outcomes, before reliance or review-driven fixes. A clean result needs a justified no-finding conclusion, not a quota of findings or positive notes. If recording fails, retain the supported judgment, report the blocker and recovery action, and do not claim formal completion. Late reconstruction discloses timing, evidence and fidelity limits. Corrections require the applicable independent reassessment; the original judgment never approves work it did not assess. Isolation limits continuation, not recording. Specialist independence and automation limits retain their declared scope.
+
+### Assessment of living test design
+
+Apply Design DES-SR-25/26 and System TEST-SR-21/22 within existing assessments. Design Review checks that each affected responsibility has proportionate groups, important targets, meaningful scenarios, independent expected observations, fixture/dependency strategy, accurate current/proposed locations and owned integrated coverage. A heading, function list or generated table is insufficient; a guidance-only model may use a justified review/walkthrough method. Resolve contradictory support promises, duplicated authority and hidden coverage gaps with their owning author.
+
+Delivery Review checks complete execution allocation against that lasting intent, within the selected changed-model scope. Code Review checks actual assertions, fixture isolation, discovery, consumers and updated realization links. Verify assesses the complete chain and required observations. Unlisted but justified regression or property tests remain valid; no per-function trace record or mandatory testing layer is introduced. Test consolidation requires identified retained observations for every affected current obligation.
+
+Design/Delivery/Code Review and Verify guidance must expose these checks without adding a review kind or record field. This refines their assessment basis within the existing scope/independence/reliance rules. Source inspection, packaging checks and independent semantic assessment retain distinct claims; no routine agent-compliance test or automatic semantic approval is added.
 
 ### Engineering scope and record-only changes
 

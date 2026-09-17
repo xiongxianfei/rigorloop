@@ -1,0 +1,140 @@
+{
+  "format": "release-test-cases-draft",
+  "format_version": 2,
+  "owner": {
+    "model": "release",
+    "design": "docs/design/engineering/release/release.md",
+    "test_design": "docs/design/engineering/release/test-design/test-design.md"
+  },
+  "scope": {
+    "group": "maintenance-review",
+    "title": "Policy and semantic review",
+    "boundary": "Requirement duties that need attributable source inspection or an authorized owner decision. These procedures are review cases, not fabricated executable test methods."
+  },
+  "fixtures": [
+    {
+      "id": "review-package",
+      "initial_state": [
+        "Exact release source/candidate, reviewed version intent, relevant engineering assessments and publication observations for the selected routine, exception or incident decision. Record actual reviewed subject identities and assessment limits."
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "id": "REL-MR-001",
+      "title": "Routine eligibility has already approved engineering decisions",
+      "requirements": [
+        "REL-SR-01",
+        "REL-SR-02",
+        "REL-SR-03",
+        "REL-SR-22"
+      ],
+      "technique": "walkthrough",
+      "risk": "Technical green checks substitute for an unresolved engineering or policy decision.",
+      "target": {
+        "path": "docs/design/engineering/release/release.md",
+        "section": "Requirements"
+      },
+      "given": {
+        "fixture": "review-package",
+        "conditions": [
+          "Select one ordinary release with recorded version intent and supported current population.",
+          "For counterexamples remove the version decision, introduce an unresolved contract-breaking change, or request a special release outside routine tooling."
+        ]
+      },
+      "when": [
+        "Trace package/source changes to the existing engineering decision and version intent.",
+        "Assess normal and counterexample packages before approving publication."
+      ],
+      "then": [
+        "The supported package identifies its prior decisions and source/version without inventing a release-time engineering decision.",
+        "Missing/unresolved authority blocks readiness; a special release records the separate owner decision and is not represented as supported routine execution."
+      ],
+      "realization": {
+        "state": "proposed",
+        "tests": [],
+        "gaps": [
+          "Routine eligibility has already approved engineering decisions: Perform and record this assessment for the actual release package; synthetic parser tests cannot establish its engineering authority."
+        ]
+      },
+      "method": "independent-review",
+      "boundary": "review"
+    },
+    {
+      "id": "REL-MR-002",
+      "title": "Exceptional authentication and emergency deferrals have bounded authority",
+      "requirements": [
+        "REL-SR-11",
+        "REL-SR-16",
+        "REL-SR-17"
+      ],
+      "technique": "walkthrough",
+      "risk": "An exception checklist normalizes unsupported or unauthorized routine publication.",
+      "target": {
+        "path": "docs/design/engineering/release/release.md",
+        "section": "Requirements"
+      },
+      "given": {
+        "fixture": "review-package",
+        "conditions": [
+          "Assess an exceptional manual authentication or emergency release package with synthetic credential references only; compare missing approval, missing rationale/follow-up and attempted deferral of registry identity verification."
+        ]
+      },
+      "when": [
+        "Identify the owner authorization, fallback reason, exact deferred duty, accepted risk and follow-up deadline.",
+        "Check the selected mechanism retains required publication identity and secret protections."
+      ],
+      "then": [
+        "Accept only an explicitly authorized exception with all required fields and nondeferrable duties retained.",
+        "Reject every missing-authority or forbidden-deferral counterexample; no synthetic case authorizes contacting release services."
+      ],
+      "realization": {
+        "state": "proposed",
+        "tests": [],
+        "gaps": [
+          "Exceptional authentication and emergency deferrals have bounded authority: Assess the actual exception and authority if one is requested; current local command tests prove only their narrower OIDC and representation boundaries."
+        ]
+      },
+      "method": "independent-review",
+      "boundary": "review"
+    },
+    {
+      "id": "REL-MR-005",
+      "title": "Recovery from bad published contents preserves the failed public history",
+      "requirements": [
+        "REL-SR-14",
+        "REL-SR-15",
+        "REL-SR-16"
+      ],
+      "technique": "walkthrough",
+      "risk": "A successful retry hides incorrect published contents or silently rewrites release history.",
+      "target": {
+        "path": "docs/design/engineering/release/release.md",
+        "section": "Requirements"
+      },
+      "given": {
+        "fixture": "review-package",
+        "conditions": [
+          "A published immutable version has incorrect contents or failed public verification. Compare a proposed fix-forward/new version, dist-tag correction or deprecation against a request to republish the same version or erase the failed evidence."
+        ]
+      },
+      "when": [
+        "Inspect the actual public identity and failure record, proposed recovery scope and owner decision.",
+        "Require recorded recovery outcomes and remaining follow-up before considering the incident resolved."
+      ],
+      "then": [
+        "Admitted recovery preserves the prior identity and failure history, names the chosen correction and records its actual outcome.",
+        "Overwriting the published version, fabricating a prior pass or deleting failed evidence is rejected. No catalog fixture itself executes a public correction."
+      ],
+      "realization": {
+        "state": "proposed",
+        "tests": [],
+        "gaps": [
+          "Recovery from bad published contents preserves the failed public history: Apply this procedure to the actual incident and its authorized recovery; executor retry tests do not establish fix-forward or deprecation policy decisions."
+        ]
+      },
+      "method": "independent-review",
+      "boundary": "review"
+    }
+  ]
+}

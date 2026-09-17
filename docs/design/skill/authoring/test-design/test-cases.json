@@ -1,0 +1,39 @@
+{
+  "format": "authoring-test-catalog-draft",
+  "format_version": 2,
+  "owner": {
+    "model": "authoring",
+    "design": "docs/design/skill/authoring/authoring.md",
+    "test_design": "docs/design/skill/authoring/test-design/test-design.md"
+  },
+  "scope": {
+    "model": "authoring",
+    "boundary": "Goal refinement, authorized handoffs and corrections across Proposal, Design and Plan.",
+    "entrypoint": "tests/skill/test-skill-validator.py",
+    "coverage_claim": "Twelve distinct proposed review procedures protect refinement, scoped handoffs and corrections across all five AUTH-SR requirements. Concrete compliant and one-fault artifact packets support inspection; no agent run, executable realization or completed independent assessment is claimed. Supporting structure checks retain their narrower scope."
+  },
+  "fixture_rules": {
+    "isolation": "Use a fresh private fictional artifact package per case/variant; preserve unaffected files and source identities. Reviews do not mutate production or workflow records.",
+    "independent_expectations": "Expected decisions derive from AUTH-SR-01..05 and the explicit approved synthetic goal, not the candidate output or a phrase lookup.",
+    "negative_setup": "Start from the strategy's coherent baseline, apply only the named artifact/authority fault and inspect both the compliant and counterexample handoff.",
+    "version_roles": "D0/D1 are synthetic subject-identity labels; actual evidence records real inspected identities. They introduce no stored-format compatibility or historical replay.",
+    "resource_boundary": "Synthetic artifact labels and paths are private fixture inputs. Owner/review target references are current repository files. JSON descriptions have no execution authority."
+  },
+  "groups": [
+    {
+      "id": "refinement",
+      "title": "Goal, requirement and proof refinement",
+      "path": "docs/design/skill/authoring/test-design/cases/refinement.json"
+    },
+    {
+      "id": "scope-handoff",
+      "title": "Invocation scope and independent handoff",
+      "path": "docs/design/skill/authoring/test-design/cases/scope-handoff.json"
+    },
+    {
+      "id": "correction-reconciliation",
+      "title": "Owned correction and consumer reconciliation",
+      "path": "docs/design/skill/authoring/test-design/cases/correction-reconciliation.json"
+    }
+  ]
+}

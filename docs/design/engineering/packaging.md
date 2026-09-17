@@ -41,7 +41,7 @@ flowchart TB
     Metadata -->|"artifact identity and provenance"| Release
 ```
 
-Packaging owns candidate generation and representation inside the boundary. The [Building Block View](#building-block-view) and [stable representations](#stable-representations) own transforms, artifacts and metadata; [Runtime and deployment](#runtime-and-deployment) owns isolated generation. [Skill](../skill/skill.md) and [CLI](../cli/cli.md) retain product behavior. [Validation](validation.md), [Installation](../cli/installation.md) and [Release](release.md) respectively check, install and publish under their own contracts. Candidate metadata records facts; generation neither fabricates successful checks nor grants publication authority.
+Packaging owns candidate generation and representation inside the boundary. The [Building Block View](#building-block-view) and [stable representations](#stable-representations) own transforms, artifacts and metadata; [Runtime and deployment](#runtime-and-deployment) owns isolated generation. [Skill](../skill/skill.md) and [CLI](../cli/cli.md) retain product behavior. [Validation](validation.md), [Installation](../cli/installation.md) and [Release](release/release.md) respectively check, install and publish under their own contracts. Candidate metadata records facts; generation neither fabricates successful checks nor grants publication authority.
 
 ### Supporting-view decisions
 
@@ -167,7 +167,7 @@ Generate the supported inventory into temporary or explicitly selected output; v
 
 ## Product compatibility and proof
 
-Packaging owns generation, metadata, archive representation and integrity. [Installation](../cli/installation.md) owns acquisition and destination writes; [Release](release.md) owns publication and public candidate evidence. Retired source IDs and historical approvals do not restore OpenCode generation, a local mirror producer or managed project-state installation.
+Packaging owns generation, metadata, archive representation and integrity. [Installation](../cli/installation.md) owns acquisition and destination writes; [Release](release/release.md) owns publication and public candidate evidence. Retired source IDs and historical approvals do not restore OpenCode generation, a local mirror producer or managed project-state installation.
 
 Proof uses real temporary filesystem, archive and metadata paths, independent hash oracles and real packed installation. Do not mock a validator into success. Automated network checks use safe external substitutes while preserving the actual acquisition and validation boundary. Preserve wrong-archive, missing-metadata, traversal/symlink, size/count/hash, unknown-field/value, destination-conflict, partial-failure, proxy-privacy and unsupported-target outcomes. Archive/tree work remains linear and must not read unrelated roots.
 

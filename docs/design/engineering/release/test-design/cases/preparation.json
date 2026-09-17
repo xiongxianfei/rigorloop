@@ -1,0 +1,571 @@
+{
+  "format": "release-test-cases-draft",
+  "format_version": 2,
+  "owner": {
+    "model": "release",
+    "design": "docs/design/engineering/release/release.md",
+    "test_design": "docs/design/engineering/release/test-design/test-design.md"
+  },
+  "scope": {
+    "group": "preparation",
+    "title": "Preparation and preservation",
+    "boundary": "Local release projections, preservation and honest readiness through the real preparation function and CLI. Field-level parser variations stay in executable tests."
+  },
+  "fixtures": [
+    {
+      "id": "unprepared",
+      "builder": {
+        "path": "tests/engineering/release/release_fixture_helpers.py",
+        "symbol": "make_release_repo"
+      },
+      "profile": "tests/fixtures/release-transaction/profiles/valid-routine-v0.3.5.yaml",
+      "facts": {
+        "previous_package_version": "0.3.4",
+        "target_package_version": "0.3.5",
+        "target_tag": "v0.3.5",
+        "package": "@xiongxianfei/rigorloop",
+        "dist_tag": "latest",
+        "targets": [
+          "codex",
+          "claude"
+        ]
+      },
+      "initial_state": [
+        "Previous-version package and README; current profile; release-notes human prefix/suffix around a stale generated region; an immutable earlier release.yaml; existing release index and copied adapter manifest. Current release.yaml, standing record, npm publication report and timing document are absent."
+      ],
+      "expected_changed_paths": [
+        "docs/releases/v0.3.5/npm-publication.md",
+        "docs/releases/v0.3.5/release-notes.md",
+        "docs/releases/v0.3.5.md",
+        "docs/releases/v0.3.5/release.yaml",
+        "docs/releases/v0.3.5/timing.yaml",
+        "docs/reports/adapter-artifacts/releases/v0.3.5.yaml",
+        "packages/rigorloop/README.md",
+        "packages/rigorloop/dist/metadata/releases.json",
+        "packages/rigorloop/package.json",
+        "tests/fixtures/release-transaction/current-version.json"
+      ]
+    },
+    {
+      "id": "prepared",
+      "extends": "unprepared",
+      "builder": {
+        "path": "tests/engineering/release/release_fixture_helpers.py",
+        "symbol": "make_prepared_release"
+      },
+      "initial_state": [
+        "Run ordinary prepare_release(v0.3.5) once; establish validate_pending_release_artifacts returns [] before a negative case mutation. Capture literal facts independently for REL-TC-001."
+      ]
+    },
+    {
+      "id": "finalized-local",
+      "extends": "prepared",
+      "reference_test": {
+        "path": "tests/engineering/release/release_preparation_tests.py",
+        "symbol": "PrepareReleaseTests.test_prepare_release_check_accepts_finalized_prepublication_evidence"
+      },
+      "initial_state": [
+        "Write packages/rigorloop/dist/metadata/adapter-artifacts-v0.3.5.json containing {} followed by a newline.",
+        "In release.yaml, set manifest_version from the independently read fixture adapter manifest; replace pending results/required gate fields with pass. Keep smoke tool versions and evidence nonempty.",
+        "In the adapter report, set source_commit to 0123456789abcdef0123456789abcdef01234567, date to 2026-08-06, each pending sha256 to 64 a characters and pending results to pass.",
+        "Run normal and approval-driven preparation as in the reference test, capture the resulting complete tree, and require check=True succeeds before applying a negative variant."
+      ],
+      "limitation": "Synthetic finalized local evidence tests format/preservation only; it is not actual qualification, smoke or publication evidence."
+    }
+  ],
+  "cases": [
+    {
+      "id": "REL-TC-001",
+      "title": "Prepare correct release projections without manufacturing observed results",
+      "requirements": [
+        "REL-SR-03",
+        "REL-SR-04",
+        "REL-SR-05",
+        "REL-SR-18",
+        "REL-SR-22",
+        "REL-SR-24"
+      ],
+      "technique": "state-transition",
+      "risk": "Preparation silently changes unrelated content, projects the wrong version, or generates a false qualification/publication pass.",
+      "target": {
+        "path": "scripts/lib/release/release_transaction.py",
+        "symbol": "prepare_release"
+      },
+      "given": {
+        "fixture": "unprepared",
+        "conditions": [
+          "Use unprepared with independent target version 0.3.5 and the ten expected changed paths. Set package name to @example/previous-name; add x-test-preserved={\"enabled\":true,\"values\":[1,2]}. Snapshot the parsed package object.",
+          "Exercise ordinary and approval-driven preparation separately. For approval-driven input, pre-create the standing record with Version decision: patch and Change summary: Reviewed compatibility repair.",
+          "Approval-driven timing starts absent or contains exactly # existing diagnostic evidence\\ncreated_at: pending\\n. This deliberately incomplete document tests preservation, not format acceptance."
+        ]
+      },
+      "when": [
+        "Prepare v0.3.5 through the real planner and writes, then inspect actual file paths, content and generated pending facts."
+      ],
+      "then": [
+        "Package name is @xiongxianfei/rigorloop and version is 0.3.5; README names 0.3.5 and latest, and the complete supplied version-decision text survives. Removing only name/version from both parsed package objects leaves equal remaining keys and values; formatting is outside this assertion.",
+        "For ordinary preparation, the actual created/modified path set equals the ten independently declared expected_changed_paths, with no deletions or unreported writes. Approval-driven mode neither creates nor modifies timing.yaml and omits it from changed_paths.",
+        "npm-publication.md retains Status: pending-publication and published: false; codex/claude smoke results remain pending-publication. Approval-driven evidence contains no generated pass assertion or invented duration."
+      ],
+      "realization": {
+        "state": "partial",
+        "tests": [
+          {
+            "path": "tests/engineering/release/release_preparation_tests.py",
+            "symbol": "PrepareReleaseTests.test_prepare_release_generates_pending_artifacts_idempotently"
+          },
+          {
+            "path": "tests/engineering/release/release_preparation_tests.py",
+            "symbol": "PrepareReleaseTests.test_approval_driven_preparation_preserves_reviewed_version_and_no_generated_passes"
+          },
+          {
+            "path": "tests/engineering/release/release_preparation_tests.py",
+            "symbol": "PrepareReleaseTests.test_generated_pending_release_artifacts_validate_shape"
+          }
+        ],
+        "gaps": [
+          "Write the profile package version: The existing test checks changed paths and repeatability but never reads the resulting package version.",
+          "Set profile-owned identity and preserve unrelated package metadata: No existing preparation test observes package-field preservation or profile-name replacement.",
+          "Generate exactly the selected local preparation surfaces: The existing test checks the reported changed_paths but does not compare them with the actual first-call filesystem diff.",
+          "Generated pending evidence has a valid pending shape: The existing test checks only errors == []; assert the pending values independently so producer and validator cannot agree on fabricated success.",
+          "Approval-driven preparation does not invent timing measurements: The approval-driven branch explicitly skips new timing output, but no preparation test asserts absence.",
+          "Approval-driven preparation preserves existing timing bytes: The branch preserves existing timing files, but no preparation test observes that behavior."
+        ]
+      },
+      "method": "automated-test",
+      "boundary": "contract"
+    },
+    {
+      "id": "REL-TC-003",
+      "title": "Repeated preparation preserves a coherent prepared or finalized tree",
+      "requirements": [
+        "REL-SR-04",
+        "REL-SR-05",
+        "REL-SR-24"
+      ],
+      "technique": "property",
+      "risk": "Repeated generation changes files or reports changes despite identical inputs.",
+      "target": {
+        "path": "scripts/lib/release/release_transaction.py",
+        "symbol": "prepare_release"
+      },
+      "given": {
+        "fixture": "unprepared",
+        "conditions": [
+          "Prepare an ordinary tree and separately use the finalized-local fixture with successfully checked complete evidence. Snapshot complete relative path/byte maps."
+        ]
+      },
+      "when": [
+        "Repeat preparation with unchanged inputs for each tree."
+      ],
+      "then": [
+        "The complete tree remains byte-identical and changed_paths is empty; finalized evidence is not reset to pending."
+      ],
+      "realization": {
+        "state": "existing",
+        "tests": [
+          {
+            "path": "tests/engineering/release/release_preparation_tests.py",
+            "symbol": "PrepareReleaseTests.test_prepare_release_generates_pending_artifacts_idempotently"
+          },
+          {
+            "path": "tests/engineering/release/release_preparation_tests.py",
+            "symbol": "PrepareReleaseTests.test_prepare_release_check_accepts_finalized_prepublication_evidence"
+          }
+        ],
+        "gaps": []
+      },
+      "method": "automated-test",
+      "boundary": "contract"
+    },
+    {
+      "id": "REL-TC-005",
+      "title": "Preparation preserves human narrative and immutable earlier evidence",
+      "requirements": [
+        "REL-SR-04",
+        "REL-SR-24"
+      ],
+      "technique": "property",
+      "risk": "Replacing a generated region consumes nearby human text or rewrites an earlier release file.",
+      "target": {
+        "path": "scripts/lib/release/release_transaction.py",
+        "symbol": "prepare_release"
+      },
+      "given": {
+        "fixture": "unprepared",
+        "conditions": [
+          "Place exact human prefix/suffix bytes, including a literal pass example, around generated regions. Snapshot earlier release evidence."
+        ]
+      },
+      "when": [
+        "Prepare the new release using real file writes."
+      ],
+      "then": [
+        "Human bytes and their positions outside generated regions remain unchanged; earlier release evidence is byte-identical.",
+        "A human pass example does not become generated proof or select a different planning branch."
+      ],
+      "realization": {
+        "state": "partial",
+        "tests": [
+          {
+            "path": "tests/engineering/release/release_preparation_tests.py",
+            "symbol": "PrepareReleaseTests.test_prepare_release_generates_pending_artifacts_idempotently"
+          },
+          {
+            "path": "tests/engineering/release/release_preparation_tests.py",
+            "symbol": "PrepareReleaseTests.test_approval_driven_preserves_human_notes_outside_generated_region"
+          }
+        ],
+        "gaps": [
+          "Preserve human narrative and earlier release evidence: Existing narrative assertions check substring presence; compare exact outside-region bytes and their positions."
+        ]
+      },
+      "method": "automated-test",
+      "boundary": "contract"
+    },
+    {
+      "id": "REL-TC-008",
+      "title": "Check mode reports readiness without changing files through function or CLI",
+      "requirements": [
+        "REL-SR-05",
+        "REL-SR-19"
+      ],
+      "technique": "state-transition",
+      "risk": "A diagnostic check writes files or accepts an unprepared tree.",
+      "target": {
+        "path": "scripts/lib/release/release_transaction.py",
+        "symbol": "prepare_release"
+      },
+      "given": {
+        "fixture": "unprepared",
+        "conditions": [
+          "Use one unprepared and one successfully prepared tree; snapshot every relative path and byte sequence before each check."
+        ]
+      },
+      "when": [
+        "Invoke prepare_release with check=True and the actual prepare-release CLI --check on each tree."
+      ],
+      "then": [
+        "Unprepared input rejects with the planned updates and unsuccessful CLI status; prepared input reports no changes and CLI success.",
+        "Both success and rejection preserve the complete tree. Check success establishes local preparation only."
+      ],
+      "realization": {
+        "state": "partial",
+        "tests": [
+          {
+            "path": "tests/engineering/release/release_preparation_tests.py",
+            "symbol": "PrepareReleaseTests.test_prepare_release_check_mode_reports_pending_changes_without_writing"
+          },
+          {
+            "path": "tests/engineering/release/release_preparation_tests.py",
+            "symbol": "PrepareReleaseTests.test_prepare_release_cli_check_succeeds_after_generation"
+          }
+        ],
+        "gaps": [
+          "The public CLI check reports a prepared no-op: The existing CLI case checks status and output, but needs an independent before/after tree comparison.",
+          "The public CLI check rejects an unprepared tree without writes: The existing rejection case calls the function only; add an actual CLI invocation to observe exit and dispatch."
+        ]
+      },
+      "method": "automated-test",
+      "boundary": "public-command"
+    },
+    {
+      "id": "REL-TC-011",
+      "title": "Pending evidence is complete, unambiguous and cannot claim publication",
+      "requirements": [
+        "REL-SR-05",
+        "REL-SR-13",
+        "REL-SR-15",
+        "REL-SR-24"
+      ],
+      "technique": "equivalence-partition",
+      "risk": "Structurally plausible generated evidence hides missing proof or claims an unobserved publication.",
+      "target": {
+        "path": "scripts/lib/release/release_transaction.py",
+        "symbol": "validate_pending_release_artifacts"
+      },
+      "given": {
+        "fixture": "prepared",
+        "conditions": [
+          "Use a successfully validated prepared tree. Independently remove a required section/row/target, duplicate a row, insert an unknown result, claim publication or disagree between readable and structured smoke facts."
+        ]
+      },
+      "when": [
+        "Validate pending artifacts after each single mutation; keep all unrelated facts valid."
+      ],
+      "then": [
+        "The valid pending tree passes without any implied public result.",
+        "Missing standing record, adapter/recovery sections, required preflight/registry rows or selected-target smoke rejects; duplicate, extra-target and unknown-result rows reject.",
+        "A published claim in pending evidence, wrong command serialization or disagreement between text and structured facts rejects with the responsible field identified."
+      ],
+      "realization": {
+        "state": "existing",
+        "tests": [
+          {
+            "path": "tests/engineering/release/release_preparation_tests.py",
+            "symbol": "PrepareReleaseTests.test_pending_release_artifacts_reject_incomplete_release_yaml"
+          },
+          {
+            "path": "tests/engineering/release/release_preparation_tests.py",
+            "symbol": "PrepareReleaseTests.test_pending_release_artifacts_reject_incomplete_standing_record"
+          },
+          {
+            "path": "tests/engineering/release/release_preparation_tests.py",
+            "symbol": "PrepareReleaseTests.test_pending_standing_record_requires_every_preflight_row"
+          },
+          {
+            "path": "tests/engineering/release/release_preparation_tests.py",
+            "symbol": "PrepareReleaseTests.test_pending_standing_record_rejects_unknown_or_duplicate_preflight_rows"
+          },
+          {
+            "path": "tests/engineering/release/release_preparation_tests.py",
+            "symbol": "PrepareReleaseTests.test_pending_standing_record_rejects_missing_or_duplicate_registry_rows"
+          },
+          {
+            "path": "tests/engineering/release/release_preparation_tests.py",
+            "symbol": "PrepareReleaseTests.test_pending_release_artifacts_reject_premature_public_status"
+          },
+          {
+            "path": "tests/engineering/release/release_preparation_tests.py",
+            "symbol": "PrepareReleaseTests.test_pending_release_artifacts_require_standing_release_record"
+          },
+          {
+            "path": "tests/engineering/release/release_preparation_tests.py",
+            "symbol": "PrepareReleaseTests.test_pending_release_artifacts_reject_target_result_published"
+          },
+          {
+            "path": "tests/engineering/release/release_preparation_tests.py",
+            "symbol": "PrepareReleaseTests.test_pending_release_artifacts_reject_npx_y_command_shape"
+          },
+          {
+            "path": "tests/engineering/release/release_preparation_tests.py",
+            "symbol": "PrepareReleaseTests.test_pending_release_artifacts_reject_missing_target_row"
+          },
+          {
+            "path": "tests/engineering/release/release_preparation_tests.py",
+            "symbol": "PrepareReleaseTests.test_pending_release_artifacts_reject_duplicate_target_row"
+          },
+          {
+            "path": "tests/engineering/release/release_preparation_tests.py",
+            "symbol": "PrepareReleaseTests.test_pending_release_artifacts_reject_unknown_target_row"
+          },
+          {
+            "path": "tests/engineering/release/release_preparation_tests.py",
+            "symbol": "PrepareReleaseTests.test_pending_release_artifacts_reject_table_projection_mismatch"
+          }
+        ],
+        "gaps": []
+      },
+      "method": "automated-test",
+      "boundary": "contract"
+    },
+    {
+      "id": "REL-TC-019",
+      "title": "Invalid finalized-looking evidence is scheduled for correction",
+      "requirements": [
+        "REL-SR-04",
+        "REL-SR-05",
+        "REL-SR-24"
+      ],
+      "technique": "equivalence-partition",
+      "risk": "A pass token makes the planner preserve malformed evidence, or an unrelated fixture defect causes a misleading rejection.",
+      "target": {
+        "path": "scripts/lib/release/release_transaction.py",
+        "symbol": "prepare_release"
+      },
+      "given": {
+        "fixture": "finalized-local",
+        "conditions": [
+          "For each variant, establish that check mode succeeds before the defining mutation; capture the mutated tree before the failing check."
+        ]
+      },
+      "when": [
+        "Call prepare_release(\"v0.3.5\", root=case_root, check=True)."
+      ],
+      "then": [
+        "Raise ReleaseProfileError with prepare-release would update and docs/releases/v0.3.5/release.yaml.",
+        "The mutated tree remains byte-for-byte unchanged by check mode."
+      ],
+      "realization": {
+        "state": "partial",
+        "tests": [
+          {
+            "path": "tests/engineering/release/release_preparation_tests.py",
+            "symbol": "PrepareReleaseTests.test_prepare_release_does_not_preserve_partial_finalized_release_yaml"
+          },
+          {
+            "path": "tests/engineering/release/release_preparation_tests.py",
+            "symbol": "PrepareReleaseTests.test_prepare_release_does_not_preserve_bogus_finalized_manifest"
+          },
+          {
+            "path": "tests/engineering/release/release_preparation_tests.py",
+            "symbol": "PrepareReleaseTests.test_prepare_release_does_not_preserve_empty_passing_smoke_evidence"
+          },
+          {
+            "path": "tests/engineering/release/release_preparation_tests.py",
+            "symbol": "PrepareReleaseTests.test_prepare_release_does_not_preserve_whitespace_passing_smoke_fields"
+          }
+        ],
+        "gaps": [
+          "Invalid finalized-looking evidence is scheduled for correction: Existing negative fixtures do not prove a successful finalized baseline before mutation; several hardcode manifest v0.1.5. Start from finalized-local, isolate the fault and compare bytes after the check."
+        ]
+      },
+      "variants": [
+        {
+          "id": "missing-adapter-paths",
+          "parameters": {
+            "mutation": "Remove adapter_paths, preserving the following instruction_entrypoints section."
+          }
+        },
+        {
+          "id": "invalid-manifest",
+          "parameters": {
+            "mutation": "Set manifest_version to bogus."
+          }
+        },
+        {
+          "id": "empty-smoke-evidence",
+          "parameters": {
+            "mutation": "Set the codex passing smoke evidence field to an empty string."
+          }
+        },
+        {
+          "id": "blank-tool-version",
+          "parameters": {
+            "mutation": "Set the first passing smoke tool_version to three spaces."
+          }
+        },
+        {
+          "id": "blank-smoke-evidence",
+          "parameters": {
+            "mutation": "Set the first passing smoke evidence field to three spaces."
+          }
+        }
+      ],
+      "method": "automated-test",
+      "boundary": "contract"
+    },
+    {
+      "id": "REL-TC-027",
+      "title": "Local preparation makes no external operation",
+      "requirements": [
+        "REL-SR-05"
+      ],
+      "technique": "property",
+      "risk": "The result reports no external actions even though preparation performs a process or network call.",
+      "target": {
+        "path": "scripts/lib/release/release_transaction.py",
+        "symbol": "prepare_release"
+      },
+      "given": {
+        "fixture": "unprepared",
+        "conditions": [
+          "Use the real planner and filesystem writes. Install fail-on-call spies at subprocess.run, subprocess.Popen, urllib.request.urlopen and socket.create_connection for the duration of the call. Record each attempted call before failing."
+        ]
+      },
+      "when": [
+        "Call prepare_release(\"v0.3.5\", root=case_root)."
+      ],
+      "then": [
+        "Preparation succeeds, result.external_actions == (), and every spy call log is empty.",
+        "No Git tag, push, GitHub release operation or npm lookup/publish is invoked through those boundaries."
+      ],
+      "realization": {
+        "state": "partial",
+        "tests": [
+          {
+            "path": "tests/engineering/release/release_preparation_tests.py",
+            "symbol": "PrepareReleaseTests.test_prepare_release_does_not_publish_or_require_external_state"
+          }
+        ],
+        "gaps": [
+          "Local preparation makes no external operation: The existing test asserts only the returned external_actions tuple. Observe external call boundaries; a self-reported empty tuple is insufficient. This boundary list must track any newly introduced process/network client."
+        ]
+      },
+      "method": "automated-test",
+      "boundary": "contract"
+    },
+    {
+      "id": "REL-TC-029",
+      "title": "Rerun repairs a partial local write without claiming readiness",
+      "requirements": [
+        "REL-SR-04",
+        "REL-SR-05",
+        "REL-SR-24"
+      ],
+      "technique": "fault-injection",
+      "risk": "An interrupted preparation leaves mixed versions that are later mistaken for a complete release.",
+      "target": {
+        "path": "scripts/lib/release/release_transaction.py",
+        "symbol": "prepare_release"
+      },
+      "given": {
+        "fixture": "unprepared",
+        "conditions": [
+          "Prepare a separate fresh control tree normally and capture its expected completed file set.",
+          "In the case tree, intercept Path.write_text only for docs/releases/v0.3.5/release.yaml and raise OSError(\"injected preparation write failure\") before writing that file. Delegate every other write to the real filesystem."
+        ]
+      },
+      "when": [
+        "Call prepare_release(\"v0.3.5\", root=case_root).",
+        "After the raised error, remove the fault and inspect the partial tree before retry.",
+        "Call validate_pending_release_artifacts(\"v0.3.5\", root=case_root).",
+        "Call prepare_release(\"v0.3.5\", root=case_root).",
+        "Call prepare_release(\"v0.3.5\", root=case_root, check=True)."
+      ],
+      "then": [
+        "The first call raises the injected OSError; it does not return a success result.",
+        "At interruption, package.json has version 0.3.5 while release.yaml is absent; rollback of earlier writes is not assumed.",
+        "Validation of the partial tree returns a missing pending release artifact diagnostic naming release.yaml.",
+        "The retry produces the same relative paths and bytes as the normal control tree; independently assert package version 0.3.5 and pending publication facts as in REL-TC-001.",
+        "Final check mode reports no changed_paths. No public release readiness or executed-check pass is inferred from successful local preparation."
+      ],
+      "realization": {
+        "state": "proposed",
+        "tests": [],
+        "gaps": [
+          "Rerun repairs a partial local write without claiming readiness: Add the exact write-boundary injection and recovery assertions; no existing preparation method exercises this interruption."
+        ]
+      },
+      "method": "automated-test",
+      "boundary": "contract"
+    },
+    {
+      "id": "REL-TC-030",
+      "title": "Malformed generated regions stop preparation before writes",
+      "requirements": [
+        "REL-SR-04",
+        "REL-SR-05",
+        "REL-SR-19"
+      ],
+      "technique": "equivalence-partition",
+      "risk": "Malformed region matching overwrites human content or generates a partially trusted release.",
+      "target": {
+        "path": "scripts/lib/release/release_transaction.py",
+        "symbol": "prepare_release"
+      },
+      "given": {
+        "fixture": "unprepared",
+        "conditions": [
+          "Start from a valid generated region; independently remove its end marker, nest another region, mismatch namespace/surface or introduce an unknown surface. Snapshot all files after mutation."
+        ]
+      },
+      "when": [
+        "Run real preparation for each malformed-region variant."
+      ],
+      "then": [
+        "Reject the defining marker defect before any file mutation; retain the complete malformed input for diagnosis."
+      ],
+      "realization": {
+        "state": "proposed",
+        "tests": [],
+        "gaps": [
+          "A missing generated-region end marker stops before writes: The source explicitly rejects this malformed region, but the preparation module has no corresponding boundary test.",
+          "Generated regions reject nesting mismatched namespace and unknown surfaces: No linked Release method establishes nesting or unknown-surface rejection. The inspected replacement helper searches only a known start prefix and matching end; implement and test the contract at preparation before relying on this protection."
+        ]
+      },
+      "method": "automated-test",
+      "boundary": "contract"
+    }
+  ]
+}

@@ -1,0 +1,531 @@
+{
+  "format": "skill-test-cases-draft",
+  "format_version": 2,
+  "owner": {
+    "model": "skill",
+    "design": "docs/design/skill/skill.md",
+    "test_design": "docs/design/skill/test-design/test-design.md"
+  },
+  "scope": {
+    "group": "capability-contract",
+    "title": "Shared capability contract",
+    "boundary": "Metadata and command behavior have executable observations; capability choice, useful outputs and evidence judgment need review."
+  },
+  "fixtures": [
+    {
+      "id": "minimal-skill",
+      "initial_state": [
+        "A private skill directory has name/description frontmatter, one title and Expected output. It has no resources or readability opt-in.",
+        "For negative variants validate the unchanged baseline first, then alter only the named field."
+      ],
+      "reference_test": {
+        "path": "tests/skill/skill_metadata_tests.py",
+        "symbol": "SkillMetadataTests.test_valid_skill_passes"
+      }
+    },
+    {
+      "id": "readability-skill",
+      "initial_state": [
+        "A private readable package explicitly selects schema-version skill-readability-v1, version 1.0.0, a complete Workflow role and fillable Output skeleton.",
+        "Validate before each named mutation; no historical skill version is selected."
+      ],
+      "reference_test": {
+        "path": "tests/skill/skill_metadata_tests.py",
+        "symbol": "SkillMetadataTests.test_skill_readability_valid_fixture_passes"
+      }
+    },
+    {
+      "id": "command-environment",
+      "initial_state": [
+        "Run the trusted skill-validator command in a fresh temporary working directory with an isolated PATH, synthetic runtime trap scripts and no RigorLoop checkout prerequisites in that directory."
+      ],
+      "reference_test": {
+        "path": "tests/skill/skill_cli_tests.py",
+        "symbol": "SkillCliTests.test_gate_a_command_has_no_target_runtime_dependency"
+      }
+    },
+    {
+      "id": "review-package",
+      "initial_state": [
+        "Use the Review fixture basis in the strategy plus this case’s concrete facts and counterexample. Resolve every actual instruction and authority claim to the exact current owner/body/triggered resources.",
+        "Materialize a fresh private review packet for each variant. F0/F1/F2, G0/G1/G2 and S0/S1 are synthetic byte-identity labels; an actual assessment records inspected identities.",
+        "Inspect proposed decisions, outputs and prohibited side effects without running an agent or writing production, workflow records, hosted CI or publication state."
+      ],
+      "profile": "docs/design/skill/test-design/test-design.md"
+    }
+  ],
+  "cases": [
+    {
+      "id": "SKL-CC-001",
+      "title": "Minimal portable package needs no artificial resource section",
+      "requirements": [
+        "SKL-SR-02",
+        "SKL-SR-03",
+        "SKL-SR-08",
+        "SKL-SR-14"
+      ],
+      "technique": "equivalence-partition",
+      "risk": "A universal layout rejects a legitimate package with no resources.",
+      "method": "automated-test",
+      "boundary": "public-command",
+      "target": {
+        "path": "scripts/lib/validation/skill_validation.py",
+        "symbol": "validate_skill_tree"
+      },
+      "given": {
+        "fixture": "minimal-skill",
+        "conditions": [
+          "Keep the valid-basic fixture free of packaged resources and readability opt-in."
+        ]
+      },
+      "when": [
+        "Invoke the public validator on that package."
+      ],
+      "then": [
+        "Exit zero with a canonical-integrity result; no resource-map or absent-resource section is required."
+      ],
+      "realization": {
+        "state": "existing",
+        "tests": [
+          {
+            "path": "tests/skill/skill_metadata_tests.py",
+            "symbol": "SkillMetadataTests.test_valid_skill_passes"
+          }
+        ],
+        "gaps": []
+      }
+    },
+    {
+      "id": "SKL-CC-002",
+      "title": "Required common fields have attributable diagnostics",
+      "requirements": [
+        "SKL-SR-02",
+        "SKL-SR-03",
+        "SKL-SR-14"
+      ],
+      "technique": "equivalence-partition",
+      "risk": "A malformed entrypoint is accepted or rejected only for an unrelated fixture defect.",
+      "method": "automated-test",
+      "boundary": "public-command",
+      "target": {
+        "path": "scripts/lib/validation/skill_validation.py",
+        "symbol": "validate_skill_tree"
+      },
+      "given": {
+        "fixture": "minimal-skill",
+        "conditions": [
+          "Start from one passing package for each independently named omission."
+        ]
+      },
+      "when": [
+        "Remove only the named field or heading, then invoke validation."
+      ],
+      "then": [
+        "Exit nonzero and identify the missing name, description, single top-level title or Expected output section."
+      ],
+      "realization": {
+        "state": "partial",
+        "tests": [
+          {
+            "path": "tests/skill/skill_metadata_tests.py",
+            "symbol": "SkillMetadataTests.test_missing_name_fails"
+          },
+          {
+            "path": "tests/skill/skill_metadata_tests.py",
+            "symbol": "SkillMetadataTests.test_missing_description_fails"
+          },
+          {
+            "path": "tests/skill/skill_metadata_tests.py",
+            "symbol": "SkillMetadataTests.test_missing_title_fails"
+          },
+          {
+            "path": "tests/skill/skill_metadata_tests.py",
+            "symbol": "SkillMetadataTests.test_missing_expected_output_fails"
+          }
+        ],
+        "gaps": [
+          "Existing negative fixtures assert the intended diagnostics, but these methods do not establish the same passing fixture before each omission."
+        ]
+      },
+      "variants": [
+        {
+          "id": "name",
+          "parameters": {
+            "remove": "name",
+            "diagnostic": "name: missing required field"
+          }
+        },
+        {
+          "id": "description",
+          "parameters": {
+            "remove": "description",
+            "diagnostic": "description: missing required field"
+          }
+        },
+        {
+          "id": "title",
+          "parameters": {
+            "remove": "top-level title",
+            "diagnostic": "expected exactly one top-level # title"
+          }
+        },
+        {
+          "id": "output",
+          "parameters": {
+            "remove": "Expected output",
+            "diagnostic": "missing required '## Expected output' section"
+          }
+        }
+      ]
+    },
+    {
+      "id": "SKL-CC-003",
+      "title": "Readability vocabulary rejects unknown values before consistency",
+      "requirements": [
+        "SKL-SR-03",
+        "SKL-SR-06",
+        "SKL-SR-14"
+      ],
+      "technique": "equivalence-partition",
+      "risk": "An unknown schema or stage is treated as an absent optional rule.",
+      "method": "automated-test",
+      "boundary": "contract",
+      "target": {
+        "path": "scripts/lib/validation/skill_validation.py",
+        "symbol": "validate_readability_contract"
+      },
+      "given": {
+        "fixture": "readability-skill",
+        "conditions": [
+          "Use the valid-pilot representation. For schema precedence combine an unknown schema with a missing Output skeleton; for the stage partition change only the stage."
+        ]
+      },
+      "when": [
+        "Validate the baseline, apply the selected fault, and inspect the diagnostic set."
+      ],
+      "then": [
+        "Unknown schema reports schema-version must be 'skill-readability-v1' before attempting that schema's internal consistency checks.",
+        "Unknown workflow stage is rejected with its closed-vocabulary diagnostic."
+      ],
+      "realization": {
+        "state": "partial",
+        "tests": [
+          {
+            "path": "tests/skill/skill_metadata_tests.py",
+            "symbol": "SkillMetadataTests.test_skill_readability_invalid_schema_version_fails"
+          },
+          {
+            "path": "tests/skill/skill_metadata_tests.py",
+            "symbol": "SkillMetadataTests.test_skill_readability_invalid_stage_fails"
+          }
+        ],
+        "gaps": [
+          "Existing fixtures cover unknown values, but do not exercise the competing schema inconsistency and exact early-return observation."
+        ]
+      },
+      "variants": [
+        {
+          "id": "schema",
+          "parameters": {
+            "schema-version": "unknown_value",
+            "remove": "Output skeleton"
+          }
+        },
+        {
+          "id": "stage",
+          "parameters": {
+            "stage": "unknown_value"
+          }
+        }
+      ]
+    },
+    {
+      "id": "SKL-CC-004",
+      "title": "Output aid has fillable structure",
+      "requirements": [
+        "SKL-SR-03",
+        "SKL-SR-12"
+      ],
+      "technique": "equivalence-partition",
+      "risk": "A skill passes with no usable output shape.",
+      "method": "automated-test",
+      "boundary": "contract",
+      "target": {
+        "path": "scripts/lib/validation/skill_validation.py",
+        "symbol": "validate_readability_contract"
+      },
+      "given": {
+        "fixture": "readability-skill",
+        "conditions": [
+          "Keep the role and metadata valid; remove the Output skeleton or replace its placeholders with fixed example text."
+        ]
+      },
+      "when": [
+        "Validate each isolated mutation."
+      ],
+      "then": [
+        "Reject a missing skeleton and reject a skeleton with no fillable placeholders. This check says nothing about the completeness of an emitted artifact."
+      ],
+      "realization": {
+        "state": "partial",
+        "tests": [
+          {
+            "path": "tests/skill/skill_metadata_tests.py",
+            "symbol": "SkillMetadataTests.test_skill_readability_missing_output_skeleton_fails"
+          },
+          {
+            "path": "tests/skill/skill_metadata_tests.py",
+            "symbol": "SkillMetadataTests.test_skill_readability_output_skeleton_without_placeholder_fails"
+          }
+        ],
+        "gaps": [
+          "The separate negative fixtures do not prove a single valid baseline before each defining mutation."
+        ]
+      }
+    },
+    {
+      "id": "SKL-CC-005",
+      "title": "Description limit is a real ordered boundary",
+      "requirements": [
+        "SKL-SR-02",
+        "SKL-SR-14"
+      ],
+      "technique": "boundary-values",
+      "risk": "Only an obviously overlong description is tested, leaving the allowed edge ambiguous.",
+      "method": "automated-test",
+      "boundary": "public-command",
+      "target": {
+        "path": "scripts/lib/validation/skill_validation.py",
+        "symbol": "validate_skill_tree"
+      },
+      "given": {
+        "fixture": "minimal-skill",
+        "conditions": [
+          "Use otherwise identical published-design packages with descriptions of 1023, 1024 and 1025 characters."
+        ]
+      },
+      "when": [
+        "Run the public validator for each length."
+      ],
+      "then": [
+        "Accept 1023 and 1024; reject 1025 with description must be 1024 characters or fewer."
+      ],
+      "realization": {
+        "state": "partial",
+        "tests": [
+          {
+            "path": "tests/skill/skill_metadata_tests.py",
+            "symbol": "SkillMetadataTests.test_published_design_description_too_long_fails"
+          }
+        ],
+        "gaps": [
+          "The linked method tests an overlong fixture; just-below and at-limit acceptance are not asserted there."
+        ]
+      },
+      "variants": [
+        {
+          "id": "below",
+          "parameters": {
+            "characters": 1023,
+            "accepted": true
+          }
+        },
+        {
+          "id": "at",
+          "parameters": {
+            "characters": 1024,
+            "accepted": true
+          }
+        },
+        {
+          "id": "above",
+          "parameters": {
+            "characters": 1025,
+            "accepted": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "SKL-CC-006",
+      "title": "Generated mirrors cannot become authored authority",
+      "requirements": [
+        "SKL-SR-13",
+        "SKL-SR-14"
+      ],
+      "technique": "equivalence-partition",
+      "risk": "A validator result from generated output substitutes for canonical source validation.",
+      "method": "automated-test",
+      "boundary": "public-command",
+      "target": {
+        "path": "scripts/lib/validation/skill_validation.py",
+        "symbol": "validate_skill_tree"
+      },
+      "given": {
+        "fixture": "command-environment",
+        "conditions": [
+          "Select the repository generated .codex/skills path as an authored-source input."
+        ]
+      },
+      "when": [
+        "Invoke the public canonical validator."
+      ],
+      "then": [
+        "Reject with generated output path must not be used as authored source of truth."
+      ],
+      "realization": {
+        "state": "existing",
+        "tests": [
+          {
+            "path": "tests/skill/skill_metadata_tests.py",
+            "symbol": "SkillMetadataTests.test_generated_output_path_is_rejected"
+          }
+        ],
+        "gaps": []
+      }
+    },
+    {
+      "id": "SKL-CC-007",
+      "title": "Canonical integrity does not invoke target agents",
+      "requirements": [
+        "SKL-SR-14",
+        "SKL-SR-15"
+      ],
+      "technique": "property",
+      "risk": "A structural check silently executes an installed target agent or needs it to pass.",
+      "method": "automated-test",
+      "boundary": "public-command",
+      "target": {
+        "path": "scripts/lib/validation/skill_validation.py",
+        "symbol": "validate_skill_tree"
+      },
+      "given": {
+        "fixture": "command-environment",
+        "conditions": [
+          "Use the real proposal and proposal-review package paths. Compare a PATH without target tools and one with trap executables."
+        ]
+      },
+      "when": [
+        "Run validation from the temporary directory with the trusted Python executable."
+      ],
+      "then": [
+        "Both runs succeed with two one-skill results and empty stderr; the target-invoked marker never appears. This demonstrates tool independence, not agent behavior."
+      ],
+      "realization": {
+        "state": "existing",
+        "tests": [
+          {
+            "path": "tests/skill/skill_cli_tests.py",
+            "symbol": "SkillCliTests.test_gate_a_command_has_no_target_runtime_dependency"
+          }
+        ],
+        "gaps": []
+      }
+    },
+    {
+      "id": "SKL-CC-008",
+      "title": "Descriptions distinguish a capability and its near misses",
+      "requirements": [
+        "SKL-SR-02",
+        "SKL-SR-03",
+        "SKL-SR-24",
+        "SKL-SR-27"
+      ],
+      "technique": "walkthrough",
+      "risk": "Discovery metadata routes a request into a neighboring capability with different authority.",
+      "method": "independent-review",
+      "boundary": "review",
+      "target": {
+        "path": "docs/design/skill/skill.md",
+        "section": "Context and Scope"
+      },
+      "given": {
+        "fixture": "review-package",
+        "conditions": [
+          "On separate requests ask to draft a direction, revise a settled Design, independently review that Design, or prepare a PR description. The user has not authorized publishing or implementing the outputs. Use the current description alone for initial selection."
+        ]
+      },
+      "when": [
+        "Compare the selected capability and proposed output for each request with the complete body and required aid. Include a candidate that selects Design authorship for the independent-review request."
+      ],
+      "then": [
+        "The requests resolve to Proposal, Design, Design Review and PR preparation respectively. The authorship-for-review candidate fails the independent-judgment boundary; none of the four requests grants publication or automatic implementation. Detailed artifact completeness stays with its child owner."
+      ],
+      "realization": {
+        "state": "proposed",
+        "tests": [],
+        "gaps": [
+          "Perform this procedure against the exact selected package and record the independent assessment; text assertions do not establish this outcome."
+        ]
+      }
+    },
+    {
+      "id": "SKL-CC-009",
+      "title": "Bounded evidence expands when the claim needs it",
+      "requirements": [
+        "SKL-SR-07"
+      ],
+      "technique": "walkthrough",
+      "risk": "A short excerpt hides conflicting authority and is still reported as sufficient.",
+      "method": "independent-review",
+      "boundary": "review",
+      "target": {
+        "path": "docs/design/skill/skill.md",
+        "section": "Evidence access and proportional effort"
+      },
+      "given": {
+        "fixture": "review-package",
+        "conditions": [
+          "A synthetic request asks whether the complete workflow permits writes. The first packet excerpts only an Inspect job with read-only permissions; the available full file also contains a Deploy job with write permission. A control packet contains the complete one-job read-only workflow."
+        ]
+      },
+      "when": [
+        "Inspect evidence selection and the proposed whole-workflow conclusion for each packet. Compare a report claiming read-only operation from the first excerpt with one that obtains the complete relevant job/permission context."
+      ],
+      "then": [
+        "Expand the incomplete packet before making the whole-workflow claim and report the omitted Deploy write permission. The complete one-job control supports the bounded read-only conclusion without unrelated file reads. A concise report that hides the material write permission fails the observation; output caps cannot suppress findings or actual command failures."
+      ],
+      "realization": {
+        "state": "proposed",
+        "tests": [],
+        "gaps": [
+          "Perform this procedure against the exact selected package and record the independent assessment; text assertions do not establish this outcome."
+        ]
+      }
+    },
+    {
+      "id": "SKL-CC-010",
+      "title": "Evidence requests and examples remain public-safe",
+      "requirements": [
+        "SKL-SR-15"
+      ],
+      "technique": "walkthrough",
+      "risk": "A skill demands raw credentials or machine-local private state to establish a claim.",
+      "method": "independent-review",
+      "boundary": "review",
+      "target": {
+        "path": "docs/design/skill/skill.md",
+        "section": "Quality Requirements"
+      },
+      "given": {
+        "fixture": "review-package",
+        "conditions": [
+          "Use a fictional failed check report with error code E_CONFIG, relevant key timeout_seconds, a TOKEN_PLACEHOLDER value and an unrelated home-directory value. The latter two are unnecessary to reproduce the reported missing-key fault."
+        ]
+      },
+      "when": [
+        "Compare a proposed request for E_CONFIG and the redacted relevant configuration with one requesting the entire environment or embedding TOKEN_PLACEHOLDER in the report as if it were required evidence."
+      ],
+      "then": [
+        "Only the relevant safe configuration and diagnostic are requested or reported; the full environment and credential value are omitted. All fixture values are synthetic. Stored role labels and successful package checks grant no execution authority."
+      ],
+      "realization": {
+        "state": "proposed",
+        "tests": [],
+        "gaps": [
+          "Perform this procedure against the exact selected package and record the independent assessment; text assertions do not establish this outcome."
+        ]
+      }
+    }
+  ]
+}

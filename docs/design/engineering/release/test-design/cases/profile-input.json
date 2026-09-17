@@ -1,0 +1,311 @@
+{
+  "format": "release-test-cases-draft",
+  "format_version": 2,
+  "owner": {
+    "model": "release",
+    "design": "docs/design/engineering/release/release.md",
+    "test_design": "docs/design/engineering/release/test-design/test-design.md"
+  },
+  "scope": {
+    "group": "profile-input",
+    "title": "Profile and input authority",
+    "boundary": "Profile/inventory/literal parsers and the reviewed-version resolver. Parsing a special profile does not authorize routine execution."
+  },
+  "fixtures": [
+    {
+      "id": "profile",
+      "initial_state": [
+        "Fresh copy of tests/fixtures/release-transaction/profiles/valid-routine-v0.3.5.yaml: routine, v0.3.5 / 0.3.5, @xiongxianfei/rigorloop, latest, codex/claude, required artifacts/publication/evidence/checks."
+      ]
+    },
+    {
+      "id": "inventory",
+      "initial_state": [
+        "Fresh copy of tests/fixtures/release-transaction/surface-inventory/valid-inventory.yaml; the selected runtime inventory also exists at docs/changes/2026-06-29-release-transaction-automation/release-surface-inventory.yaml."
+      ]
+    },
+    {
+      "id": "literal",
+      "initial_state": [
+        "Fresh copy of tests/fixtures/release-transaction/literal-audit/valid-baseline.yaml; the selected runtime baseline is docs/changes/2026-06-29-release-transaction-automation/release-literal-audit-baseline.yaml."
+      ]
+    },
+    {
+      "id": "intent",
+      "initial_state": [
+        "Private package version 0.5.1 and docs/releases/v0.5.1.md with Version decision: patch and Change summary: Fix candidate integrity checks. Provider previous version is independently supplied as 0.5.0."
+      ],
+      "builder": {
+        "path": "tests/engineering/release/release_candidate_tests.py",
+        "symbol": "ReleaseCandidateTests.setUp"
+      }
+    }
+  ],
+  "cases": [
+    {
+      "id": "REL-IN-001",
+      "title": "Admit an explicit supported profile and reject ambiguous release identity",
+      "requirements": [
+        "REL-SR-01",
+        "REL-SR-02",
+        "REL-SR-03",
+        "REL-SR-19"
+      ],
+      "technique": "equivalence-partition",
+      "risk": "A default, unsupported value or exception decision authorizes the wrong routine release.",
+      "target": {
+        "path": "scripts/lib/release/release_transaction.py",
+        "symbol": "load_release_profile"
+      },
+      "given": {
+        "fixture": "profile",
+        "conditions": [
+          "Use the valid routine profile with package version 0.3.5, tag v0.3.5, latest channel and codex/claude targets. Start every mutation from this valid baseline."
+        ]
+      },
+      "when": [
+        "Resolve the tag-owned profile and load it directly and by tag.",
+        "Independently remove or corrupt the profile, remove a required field, mismatch the version, or introduce an unsupported closed value. Pair an unknown channel/target/kind with a version mismatch to observe rejection precedence.",
+        "Parse a special profile with an explicit exception decision and assess routine eligibility."
+      ],
+      "then": [
+        "The valid input resolves to docs/releases/profiles/v0.3.5.yaml and retains its declared package, version, targets and required safeguards.",
+        "Missing/malformed input identifies its path or field; unknown values reject before consistency diagnostics. No defaults silently authorize a different release.",
+        "Special classification remains outside routine automation even with an owner decision."
+      ],
+      "realization": {
+        "state": "partial",
+        "tests": [
+          {
+            "path": "tests/engineering/release/release_profile_tests.py",
+            "symbol": "ReleaseProfileTests.test_valid_routine_profile_loads_source_of_truth_fields"
+          },
+          {
+            "path": "tests/engineering/release/release_profile_tests.py",
+            "symbol": "ReleaseProfileTests.test_load_release_profile_reads_docs_release_profiles_by_tag"
+          },
+          {
+            "path": "tests/engineering/release/release_profile_tests.py",
+            "symbol": "ReleaseProfileTests.test_missing_profile_path_fails_with_named_path"
+          },
+          {
+            "path": "tests/engineering/release/release_profile_tests.py",
+            "symbol": "ReleaseProfileTests.test_malformed_profile_fails_with_path_context"
+          },
+          {
+            "path": "tests/engineering/release/release_profile_tests.py",
+            "symbol": "ReleaseProfileTests.test_missing_required_profile_fields_fail_with_named_field"
+          },
+          {
+            "path": "tests/engineering/release/release_profile_tests.py",
+            "symbol": "ReleaseProfileTests.test_package_version_must_match_release_tag"
+          },
+          {
+            "path": "tests/engineering/release/release_profile_tests.py",
+            "symbol": "ReleaseProfileTests.test_special_release_without_owner_decision_fails"
+          },
+          {
+            "path": "tests/engineering/release/release_profile_tests.py",
+            "symbol": "ReleaseProfileTests.test_special_release_with_owner_decision_is_not_routine"
+          },
+          {
+            "path": "tests/engineering/release/release_profile_tests.py",
+            "symbol": "ReleaseProfileTests.test_unknown_profile_values_precede_version_consistency"
+          }
+        ],
+        "gaps": [
+          "Unknown kind, target and channel now start from accepted private profiles and compete with an explicit version mismatch. The remaining missing-field, malformed, version-mismatch and special-decision methods use standalone fixtures rather than establishing the same accepted private baseline before each mutation."
+        ]
+      },
+      "method": "automated-test",
+      "boundary": "contract"
+    },
+    {
+      "id": "REL-IN-006",
+      "title": "Preparation ownership distinguishes generated, human and historical material",
+      "requirements": [
+        "REL-SR-04",
+        "REL-SR-19"
+      ],
+      "technique": "equivalence-partition",
+      "risk": "Live inventory consumption disappears while isolated parser fixtures still pass.",
+      "target": {
+        "path": "scripts/lib/release/release_transaction.py",
+        "symbol": "load_surface_inventory_file"
+      },
+      "given": {
+        "fixture": "inventory",
+        "conditions": [
+          "Use the selected surface inventory and valid fixture; mutate one ownership classification or override rationale at a time."
+        ]
+      },
+      "when": [
+        "Load the selected inventory and resolve its declared surfaces; repeat with missing/unknown classification or an unexplained override."
+      ],
+      "then": [
+        "Resolve the independently declared paths to generated, human-checked and immutable-history ownership.",
+        "Reject missing/unknown ownership and unexplained overrides rather than allowing a write."
+      ],
+      "realization": {
+        "state": "existing",
+        "tests": [
+          {
+            "path": "tests/engineering/release/release_profile_tests.py",
+            "symbol": "ReleaseSurfaceInventoryTests.test_valid_surface_inventory_classifies_release_surfaces"
+          },
+          {
+            "path": "tests/engineering/release/release_profile_tests.py",
+            "symbol": "ReleaseSurfaceInventoryTests.test_change_local_surface_inventory_artifact_loads"
+          },
+          {
+            "path": "tests/engineering/release/release_profile_tests.py",
+            "symbol": "ReleaseSurfaceInventoryTests.test_unknown_surface_classification_fails_closed"
+          },
+          {
+            "path": "tests/engineering/release/release_profile_tests.py",
+            "symbol": "ReleaseSurfaceInventoryTests.test_surface_inventory_missing_classification_fails_with_surface_context"
+          },
+          {
+            "path": "tests/engineering/release/release_profile_tests.py",
+            "symbol": "ReleaseSurfaceInventoryTests.test_manual_override_without_rationale_fails"
+          }
+        ],
+        "gaps": []
+      },
+      "method": "automated-test",
+      "boundary": "contract"
+    },
+    {
+      "id": "REL-IN-008",
+      "title": "Literal ownership distinguishes existing drift from unauthorized changes",
+      "requirements": [
+        "REL-SR-07",
+        "REL-SR-19"
+      ],
+      "technique": "equivalence-partition",
+      "risk": "Drift is silently accepted or the live resource path is orphaned.",
+      "target": {
+        "path": "scripts/lib/release/release_transaction.py",
+        "symbol": "load_literal_audit_baseline_file"
+      },
+      "given": {
+        "fixture": "literal",
+        "conditions": [
+          "Use the actual selected baseline and a fresh literal fixture; distinguish current generated, historical and unauthorized literals."
+        ]
+      },
+      "when": [
+        "Read the baseline, inspect unchanged drift, then introduce unknown classification, missing ownership or unexplained historical classification."
+      ],
+      "then": [
+        "Existing classified drift is reported; generated values identify their owner and historical values retain their rationale.",
+        "Unknown or incomplete classification rejects with an attributable diagnostic; a historical version literal alone grants no release support."
+      ],
+      "realization": {
+        "state": "existing",
+        "tests": [
+          {
+            "path": "tests/engineering/release/release_profile_tests.py",
+            "symbol": "LiteralAuditBaselineTests.test_valid_literal_audit_baseline_reports_baseline_drift"
+          },
+          {
+            "path": "tests/engineering/release/release_profile_tests.py",
+            "symbol": "LiteralAuditBaselineTests.test_change_local_literal_audit_baseline_artifact_loads"
+          },
+          {
+            "path": "tests/engineering/release/release_profile_tests.py",
+            "symbol": "LiteralAuditBaselineTests.test_literal_audit_unknown_classification_fails_closed"
+          },
+          {
+            "path": "tests/engineering/release/release_profile_tests.py",
+            "symbol": "LiteralAuditBaselineTests.test_literal_audit_missing_classification_fails_with_entry_context"
+          },
+          {
+            "path": "tests/engineering/release/release_profile_tests.py",
+            "symbol": "LiteralAuditBaselineTests.test_changed_unauthorized_current_literal_fails"
+          },
+          {
+            "path": "tests/engineering/release/release_profile_tests.py",
+            "symbol": "LiteralAuditBaselineTests.test_historical_literal_requires_rationale"
+          },
+          {
+            "path": "tests/engineering/release/release_profile_tests.py",
+            "symbol": "LiteralAuditBaselineTests.test_generated_current_literal_requires_profile_or_generated_region_owner"
+          }
+        ],
+        "gaps": []
+      },
+      "method": "automated-test",
+      "boundary": "contract"
+    },
+    {
+      "id": "REL-IN-010",
+      "title": "Resolve reviewed version intent without inventing a release decision",
+      "requirements": [
+        "REL-SR-02",
+        "REL-SR-03",
+        "REL-SR-15",
+        "REL-SR-22",
+        "REL-SR-23"
+      ],
+      "technique": "equivalence-partition",
+      "risk": "The numeric increment supplies invented engineering intent.",
+      "target": {
+        "path": "scripts/lib/release/release_candidate.py",
+        "symbol": "derive_release_inputs"
+      },
+      "given": {
+        "fixture": "intent",
+        "conditions": [
+          "Use package 0.5.1, reviewed patch rationale and provider version 0.5.0. Run malformed intent and publication-state alternatives independently."
+        ]
+      },
+      "when": [
+        "Resolve version intent and derive the routine profile.",
+        "Repeat with missing/unknown decision, inconsistent increment, already-published unchanged source and changed source without new version intent.",
+        "Validate the same intent in offline CI without provider eligibility observations."
+      ],
+      "then": [
+        "The supported patch derives 0.5.1/latest and retains the reviewed rationale.",
+        "Missing or inconsistent intent stops; already-published unchanged work reports no-op, while changed source needs a new version decision.",
+        "Offline intent validity supplies no public eligibility or publication authority."
+      ],
+      "realization": {
+        "state": "existing",
+        "tests": [
+          {
+            "path": "tests/engineering/release/release_candidate_tests.py",
+            "symbol": "ReleaseCandidateTests.test_reviewed_version_input_and_derived_profile"
+          },
+          {
+            "path": "tests/engineering/release/release_candidate_tests.py",
+            "symbol": "ReleaseCandidateTests.test_missing_version_decision_is_exception_not_inferred_from_number"
+          },
+          {
+            "path": "tests/engineering/release/release_candidate_tests.py",
+            "symbol": "ReleaseCandidateTests.test_unknown_value_version_decision_rejected"
+          },
+          {
+            "path": "tests/engineering/release/release_candidate_tests.py",
+            "symbol": "ReleaseCandidateTests.test_duplicate_version_is_noop_without_new_candidate"
+          },
+          {
+            "path": "tests/engineering/release/release_candidate_tests.py",
+            "symbol": "ReleaseCandidateTests.test_version_increment_must_agree_with_reviewed_decision"
+          },
+          {
+            "path": "tests/engineering/release/release_candidate_tests.py",
+            "symbol": "ReleaseCandidateTests.test_ci_intent_checks_do_not_claim_public_version_eligibility"
+          },
+          {
+            "path": "tests/engineering/release/release_candidate_tests.py",
+            "symbol": "ReleaseCandidateTests.test_ci_intent_unknown_value_decision_fails_closed"
+          }
+        ],
+        "gaps": []
+      },
+      "method": "automated-test",
+      "boundary": "contract"
+    }
+  ]
+}

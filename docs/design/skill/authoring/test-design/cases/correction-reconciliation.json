@@ -1,0 +1,222 @@
+{
+  "format": "authoring-test-cases-draft",
+  "format_version": 2,
+  "owner": {
+    "model": "authoring",
+    "design": "docs/design/skill/authoring/authoring.md",
+    "test_design": "docs/design/skill/authoring/test-design/test-design.md"
+  },
+  "scope": {
+    "group": "correction-reconciliation",
+    "title": "Owned correction and consumer reconciliation",
+    "boundary": "Observe correction ownership, stale basis, current references and stopped dependent work without reviving historical support."
+  },
+  "fixtures": [
+    {
+      "id": "batch-import-package",
+      "profile": "docs/design/skill/authoring/test-design/test-design.md",
+      "initial_state": [
+        "Use the Synthetic artifact fixture in the strategy as the single source of the proposal, model, test-design, plan and evidence starting facts.",
+        "Instantiate a fresh private copy for each variant. Case-specific changes apply only to the named artifact or authority fact; retain the other facts and original identities.",
+        "Walk through proposed author outputs and handoff decisions without invoking agents, changing workflow records or implementing the fictional importer."
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "id": "AUTH-CR-001",
+      "title": "Each gap returns to its actual responsibility owner",
+      "requirements": [
+        "AUTH-SR-01",
+        "AUTH-SR-03",
+        "AUTH-SR-05"
+      ],
+      "technique": "walkthrough",
+      "method": "independent-review",
+      "boundary": "review",
+      "risk": "The receiving author silently invents behavior or weakens an upstream goal to finish its artifact.",
+      "target": {
+        "path": "docs/design/skill/authoring/authoring.md",
+        "section": "Shared authoring contract"
+      },
+      "given": {
+        "fixture": "batch-import-package",
+        "conditions": [
+          "Start from separate copies of the same settled proposal, D0/C0 and draft Plan. Introduce only one of the three named feasibility, behavior or allocation gaps; keep the unrelated authorized wording correction complete."
+        ]
+      },
+      "when": [
+        "Inspect the gap description, proposed receiving owner, dependent handoff decision and preserved artifact identities. Compare a candidate that invents missing behavior or weakens the atomic goal to complete Plan."
+      ],
+      "then": [
+        "An append-only store that cannot roll back a later invalid row conflicts with the atomic goal: return evidence/options to the direction owner while preserving that goal. An omitted duplicate-ID rule returns to Design without deciding acceptance in Plan. Missing invalid-batch proof allocation returns to Plan. Block only dependent work; preserve unaffected subjects and the independently authorized correction."
+      ],
+      "realization": {
+        "state": "proposed",
+        "tests": [],
+        "gaps": [
+          "Perform this independent artifact/handoff assessment on the exact selected subjects and record its result. Existing phrase and skeleton checks do not establish this composed outcome."
+        ]
+      },
+      "variants": [
+        {
+          "id": "direction",
+          "parameters": {
+            "gap": "proposed append-only store cannot preserve all-or-nothing rejection",
+            "owner": "direction decision owner",
+            "preserve": "approved atomic goal; no dependent Plan readiness"
+          }
+        },
+        {
+          "id": "behavior",
+          "parameters": {
+            "gap": "remove only the duplicate-ID rule from IMPORT-SR-01",
+            "owner": "Design",
+            "preserve": "no inferred duplicate acceptance/rejection"
+          }
+        },
+        {
+          "id": "allocation",
+          "parameters": {
+            "gap": "remove only M2 destination-preservation proof",
+            "owner": "Plan",
+            "preserve": "Design no-write outcome and case C0"
+          }
+        }
+      ]
+    },
+    {
+      "id": "AUTH-CR-002",
+      "title": "Changed upstream basis is reassessed before handoff",
+      "requirements": [
+        "AUTH-SR-02",
+        "AUTH-SR-03",
+        "AUTH-SR-05"
+      ],
+      "technique": "walkthrough",
+      "method": "independent-review",
+      "boundary": "review",
+      "risk": "A plan is handed off against a newer Design using an older approval and unnoticed assumptions.",
+      "target": {
+        "path": "docs/design/skill/authoring/authoring.md",
+        "section": "Runtime view"
+      },
+      "given": {
+        "fixture": "batch-import-package",
+        "conditions": [
+          "Plan starts from D0/C0. Before handoff, current Design becomes D1: rejection must preserve both destination rows and an accompanying index file whose baseline is I0. Existing allocation observes only rows. The prior assessment still names D0; compare an unchanged-D0 control."
+        ]
+      },
+      "when": [
+        "Inspect the final basis comparison and proposed allocation. For D1 compare a candidate reusing the D0 judgment with a response exposing the added index-preservation obligation and routing current reliance to Assessment."
+      ],
+      "then": [
+        "The D0 control retains its original basis. D1 requires reassessment of the added I0 preservation observation before dependent handoff is called ready. Preserve the original D0 judgment and unrelated work; do not retarget its identity or declare unrelated old evidence universally invalid."
+      ],
+      "realization": {
+        "state": "proposed",
+        "tests": [],
+        "gaps": [
+          "Perform this independent artifact/handoff assessment on the exact selected subjects and record its result. Existing phrase and skeleton checks do not establish this composed outcome."
+        ]
+      }
+    },
+    {
+      "id": "AUTH-CR-003",
+      "title": "A current artifact move reconciles live references without retargeting history",
+      "requirements": [
+        "AUTH-SR-04",
+        "AUTH-SR-05"
+      ],
+      "technique": "walkthrough",
+      "method": "independent-review",
+      "boundary": "review",
+      "risk": "The main owner moves successfully while its consumers break or old reviews are rewritten to look current.",
+      "target": {
+        "path": "docs/design/skill/authoring/authoring.md",
+        "section": "Acceptance intent"
+      },
+      "given": {
+        "fixture": "batch-import-package",
+        "conditions": [
+          "An explicit current move changes private model path importer/importer.md to domains/importer/importer.md and moves its test-design case file alongside it. Keep model ID importer, IMPORT-SR-01/02 and IMPORT-TC-01/02. The fixture has a Plan consumer, parent link, case index and original review R0 naming the old subject paths/identities."
+        ]
+      },
+      "when": [
+        "Compare an intact move map with separate candidates leaving the Plan link old, leaving the case index old, or rewriting R0 to the new paths. Inspect current resolution and original R0 bytes."
+      ],
+      "then": [
+        "Current Plan, parent and case index resolve the new owner and cases with stable IDs; unrelated files and R0 remain unchanged. Each stale live reference or rewritten historical judgment prevents reliance on that candidate move. Reconcile current consumers without creating a historical-path reader or a permanent alias."
+      ],
+      "realization": {
+        "state": "proposed",
+        "tests": [],
+        "gaps": [
+          "Perform this independent artifact/handoff assessment on the exact selected subjects and record its result. Existing phrase and skeleton checks do not establish this composed outcome."
+        ]
+      }
+    },
+    {
+      "id": "AUTH-CR-004",
+      "title": "Missing required basis stops only its dependent authoring",
+      "requirements": [
+        "AUTH-SR-02",
+        "AUTH-SR-04",
+        "AUTH-SR-05"
+      ],
+      "technique": "walkthrough",
+      "method": "independent-review",
+      "boundary": "review",
+      "risk": "An incomplete required Design or packaged method is reconstructed from memory, while unrelated authorized work is discarded.",
+      "target": {
+        "path": "docs/design/skill/authoring/authoring.md",
+        "section": "Runtime view"
+      },
+      "given": {
+        "fixture": "batch-import-package",
+        "conditions": [
+          "For the next Plan allocation, exactly one required prerequisite is unavailable or conflicting. On every packet, an independent wording-only correction has complete separate authority and inputs."
+        ]
+      },
+      "when": [
+        "Trace the prerequisite for the dependent allocation and inspect the proposed partial-work report. Compare reconstruction from memory, portable fallback for conflicting governed intent, and cancellation of all unrelated work."
+      ],
+      "then": [
+        "An unreadable relied-on C0 returns to Design; a missing triggered method returns to its package maintainer; conflicting project authority returns to the project decision owner. Stop the dependent allocation before inventing content or claiming readiness. Preserve and allow independently authorized unaffected work. An installed package supplies neither missing authority nor missing artifact contents."
+      ],
+      "realization": {
+        "state": "proposed",
+        "tests": [],
+        "gaps": [
+          "Perform this independent artifact/handoff assessment on the exact selected subjects and record its result. Existing phrase and skeleton checks do not establish this composed outcome."
+        ]
+      },
+      "variants": [
+        {
+          "id": "design-basis",
+          "parameters": {
+            "missing": "relied-on case file C0",
+            "owner": "Design",
+            "expected": "no dependent allocation until current case detail is available"
+          }
+        },
+        {
+          "id": "package",
+          "parameters": {
+            "missing": "triggered Plan authoring method",
+            "owner": "package maintainer",
+            "expected": "no reconstruction from memory"
+          }
+        },
+        {
+          "id": "authority",
+          "parameters": {
+            "conflict": "two current project authorities disagree on the permitted target",
+            "owner": "project decision owner",
+            "expected": "no portable fallback or target write"
+          }
+        }
+      ]
+    }
+  ]
+}

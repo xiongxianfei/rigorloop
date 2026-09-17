@@ -12,6 +12,8 @@ from selection_test_helpers import (
     ROOT,
     SelectionRequest,
     catalog_command,
+    run_selector,
+    parse_stdout,
     normalize_path,
     select_validation,
     selected_ids,
@@ -1805,3 +1807,13 @@ class SelectionContractChecks:
         normalized = normalize_path(str(outside), repo_root=temp_root)
         self.assertFalse(normalized.ok)
         self.assertEqual(normalized.blocking_code, "outside-repository-path")
+
+    def test_catalog_admission_sources_select_their_regression_owner(self):
+        for path in ('scripts/lib/validation/test_design_validation.py',
+                     'tests/engineering/validation/catalog_admission_tests.py',
+                     'tests/engineering/validation/catalog_admission_fixture_helpers.py'):
+            with self.subTest(path=path):
+                result = run_selector('--mode', 'explicit', '--path', path)
+                payload = parse_stdout(result)
+                self.assertIn('boundary_first.regression', selected_ids(payload), payload)
+                self.assertFalse(any(item.get('code') == 'manual-routing-required' for item in payload['blocking_results']))

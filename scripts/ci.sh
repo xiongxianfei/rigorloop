@@ -209,7 +209,7 @@ run_selected_mode() {
     set -e
   fi
 
-  python - "$selector_output" "$selector_exit" "$timeout_seconds" "$verbose" "$jobs" "$fail_fast" "$mode" "$base" "$head" <<'PY'
+  python - "$selector_output" "$selector_exit" "$timeout_seconds" "$verbose" "$jobs" "$fail_fast" "$mode" "$base" "$head" "${paths[@]}" <<'PY'
 import sys
 from pathlib import Path
 sys.path.insert(0, str(Path("scripts").resolve()))

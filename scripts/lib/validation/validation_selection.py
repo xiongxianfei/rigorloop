@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 from lib.validation.record_store_classification import is_archival_record_store
-from lib.validation.model_layout import PROJECT_MODEL_PATHS, RETIRED_MODEL_PATHS
+from lib.validation.model_layout import PROJECT_MODEL_PATHS, RETIRED_MODEL_PATHS, TEST_DESIGN_PACKAGES
 
 import json
 import hashlib
@@ -561,6 +561,16 @@ def normalize_path(raw_path: str, *, repo_root: Path | str) -> NormalizedPath:
             message="path is outside the repository",
         )
 
+    # Document admission must see lexical identities, including symlinked detail.
+    lexical = candidate if candidate.is_absolute() else root / candidate
+    try:
+        requested = lexical.relative_to(root).as_posix()
+    except ValueError:
+        requested = relative.as_posix()
+    package_owners = {PROJECT_MODEL_PATHS[name] for name in TEST_DESIGN_PACKAGES} | {PROJECT_MODEL_PATHS['system']}
+    detail_directories = ('docs/design/test-design/', *(package['directory']+'/' for package in TEST_DESIGN_PACKAGES.values()))
+    if requested in package_owners or requested.startswith(detail_directories):
+        return NormalizedPath(True, path=requested)
     return NormalizedPath(True, path=PurePosixPath(relative.as_posix()).as_posix())
 
 
@@ -581,6 +591,7 @@ def catalog_command(
     mode: str = "explicit",
     base: str | None = None,
     head: str | None = None,
+    discovered_paths: bool = False,
 ) -> str:
     if mode not in {"local", "explicit", "pr", "main", "release"}:
         raise ValueError(f"unsupported catalog mode: {mode}")
@@ -627,7 +638,15 @@ def catalog_command(
                 # be checked at their exact path, not hidden by a valid receiver.
                 old = re.fullmatch(r"docs/design/(?P<model>[a-z0-9][a-z0-9-]{0,79})(?:/(?P=model))?\.md", path)
                 absent = not (repo_root / path).exists() and not (repo_root / path).is_symlink()
-                if path in RETIRED_MODEL_PATHS and absent:
+                # A discovered move can pair a former leaf with its declared
+                # directory owner. Both endpoints must be in this changed set;
+                # explicit missing inputs and recreated files keep their path.
+                receiver = next((PROJECT_MODEL_PATHS[name] for name in TEST_DESIGN_PACKAGES
+                                 if str(PurePosixPath(PROJECT_MODEL_PATHS[name]).parent)+'.md' == path
+                                 and PROJECT_MODEL_PATHS[name] in paths), None)
+                if receiver and absent and discovered_paths:
+                    models.add(receiver)
+                elif path in RETIRED_MODEL_PATHS and absent:
                     models.add(PROJECT_MODEL_PATHS[RETIRED_MODEL_PATHS[path]])
                 elif old and absent:
                     model = old.group("model")
@@ -815,6 +834,7 @@ def select_validation(request: SelectionRequest) -> SelectionResult:
         status=status,
         adapter_version=request.adapter_version,
         repo_root=repo_root,
+        discovered_paths=(request.mode in {"pr", "main"} or (request.mode == "local" and not request.paths)),
     )
 
 
@@ -1842,6 +1862,7 @@ def _build_result(
     registration_debt: list[dict[str, Any]] | None = None,
     status: str,
     adapter_version: str = DEFAULT_ADAPTER_VERSION,
+    discovered_paths: bool = False,
 ) -> SelectionResult:
     selected_checks: list[dict[str, Any]] = []
     build_errors: list[dict[str, str]] = []
@@ -1865,6 +1886,7 @@ def _build_result(
                 affected_roots=roots,
                 versions=versions,
                 adapter_version=adapter_version,
+                discovered_paths=discovered_paths,
             )
         except ValueError as exc:
             build_errors.append(
@@ -2310,6 +2332,9 @@ def _is_boundary_first_surface(path: str) -> bool:
             "tests/engineering/validation/boundary_path_tests.py",
             "tests/engineering/validation/boundary_handoff_tests.py",
             "tests/engineering/validation/boundary_model_tests.py",
+            "tests/engineering/validation/catalog_admission_tests.py",
+            "tests/engineering/validation/catalog_admission_fixture_helpers.py",
+            "scripts/lib/validation/test_design_validation.py",
             "tests/engineering/validation/boundary_command_tests.py",
             "tests/engineering/validation/boundary_fixture_helpers.py",
             "scripts/boundary_first_reference.py",
@@ -2351,6 +2376,9 @@ def _is_boundary_first_validation_surface(path: str) -> bool:
         "tests/engineering/validation/boundary_path_tests.py",
         "tests/engineering/validation/boundary_handoff_tests.py",
         "tests/engineering/validation/boundary_model_tests.py",
+        "tests/engineering/validation/catalog_admission_tests.py",
+        "tests/engineering/validation/catalog_admission_fixture_helpers.py",
+        "scripts/lib/validation/test_design_validation.py",
         "tests/engineering/validation/boundary_command_tests.py",
         "tests/engineering/validation/boundary_fixture_helpers.py",
     }
