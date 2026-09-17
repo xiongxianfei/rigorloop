@@ -1,0 +1,138 @@
+{
+  "assessment_scope": "Independent first-pass M4 diff/packet review during implementation, not milestone or final approval. Reviewed complete boundary_model_tests.py, all84 actual candidate trees in manifest sha256:b915727ceaa186f797b5f78ac3db295047299fd184bd91b3a198029790f06ffd, registered m4-authoring-alignment supporting data sha256:8ac77d702754c38955149935d53371373a79eacd5956ad2122324dd83aa310c1, approved Design/Delivery basis and all29 semantic group decisions below. Author supplied successful759-result selected CI; this record does not settle activity/work.",
+  "change_id": "2026-09-17-complete-model-test-coverage",
+  "contributors": [
+    {
+      "id": "root-implementer",
+      "role": "implement"
+    }
+  ],
+  "findings": [
+    {
+      "evidence": "Severity P2; exact m4-authoring-alignment packet baseline_files.plan.md and plan-missing-field/plan-placeholder candidates. The supposed control is a custom14-line document, lacking the required full Plan skeleton and repeated milestone fields/decision row. The two negatives replace nearly the entire Plan with two lines. Current Plan Test design Stable complete artifacts (PLAN-SR-03/06) explicitly requires fresh outputs from all three normative assets and independently checked required fields. Canonical asset/fingerprint tests establish template integrity, not this emitted output. Consequently the procedure has no compliant emitted-artifact control and cannot distinguish a defining missing field or placeholder from an already incomplete baseline.",
+      "id": "plan-emitted-artifact-control-gap",
+      "owner": {
+        "id": "root-implementer",
+        "role": "implement"
+      },
+      "reporter": {
+        "id": "milestone-reviewer",
+        "role": "review"
+      },
+      "required_outcome": "Preserve this original packet. Supply a complete scoped filled Plan output using the existing three assets, with every applicable field filled or explicitly justified, then fresh single-field/placeholder variants and independent complete-output assessment; keep mutable-state negatives distinct. Alternatively obtain an explicit justified allocation disposition from the owning Plan authority without claiming this proof complete. No new validator, catalog or fictional importer execution is required.",
+      "resolution": null,
+      "state": "open",
+      "subjects": [
+        {
+          "identity": "sha256:ea2e56ab60090c6b15558b58e871a8ad12a6098bbe0c723edf6ca23be4e4c3d1",
+          "path": "docs/changes/2026-09-17-complete-model-test-coverage/evidence.json"
+        }
+      ]
+    },
+    {
+      "evidence": "Severity P2; exact packet baseline_files.importer/importer.md Architecture overview necessity table. It marks Context and Building Block necessary and points both only to the overview (shown above); only Runtime has a separate supporting diagram. DES-SR-22 explicitly requires each necessary view and prohibits using the overview as its substitute. Therefore the baseline is structurally valid but not a compliant semantic architecture control. The unowned-store/undrawn-runtime/wrong-edge/child-only faults remain discernible but cannot establish a valid-versus-one-fault complete-model comparison from this baseline.",
+      "id": "design-supporting-view-control-gap",
+      "owner": {
+        "id": "root-implementer",
+        "role": "implement"
+      },
+      "reporter": {
+        "id": "milestone-reviewer",
+        "role": "review"
+      },
+      "required_outcome": "Preserve original evidence, provide actual adequate necessary Context and Building Block views (or a justified correct necessity disposition under the governing contract), maintain one current owner and consistency with overview/runtime, and reconstruct/reassess affected complete candidates. Do not weaken DES-SR-22 or treat model grammar success as semantic approval.",
+      "resolution": null,
+      "state": "open",
+      "subjects": [
+        {
+          "identity": "sha256:ea2e56ab60090c6b15558b58e871a8ad12a6098bbe0c723edf6ca23be4e4c3d1",
+          "path": "docs/changes/2026-09-17-complete-model-test-coverage/evidence.json"
+        }
+      ]
+    },
+    {
+      "evidence": "Severity P2; exact packet target-portable-create and target-portable-revise candidates are tagged PLAN-target but their facts and responses explicitly select and author a proposal. The conflicting-primary and late-governed generic packets are likewise Proposal actions. Plan Test design Target resolution and initialization requires an absent portable Plan create, exact governed Plan revise, and separately approved initialization; valid/invalid initialization packets exist but do not supply the missing Plan authoring actions. Shared generic target rules and Proposal choices cannot by themselves demonstrate Plan-specific write/navigation/evidence boundaries.",
+      "id": "plan-target-action-scope-gap",
+      "owner": {
+        "id": "root-implementer",
+        "role": "implement"
+      },
+      "reporter": {
+        "id": "milestone-reviewer",
+        "role": "review"
+      },
+      "required_outcome": "Preserve the original packet and add concrete Plan-specific portable-create and exact governed-revise action/output packets under explicit target/basis/authority facts, including the permitted Plan/navigation or author-evidence write set and forbidden work/routing changes; independently assess them alongside existing initialization variants. Alternatively record an honest scoped gap with its approved allocation owner. Do not invent CLI or agent-runtime execution.",
+      "resolution": null,
+      "state": "open",
+      "subjects": [
+        {
+          "identity": "sha256:ea2e56ab60090c6b15558b58e871a8ad12a6098bbe0c723edf6ca23be4e4c3d1",
+          "path": "docs/changes/2026-09-17-complete-model-test-coverage/evidence.json"
+        }
+      ]
+    }
+  ],
+  "id": "code-review-m4-first-pass",
+  "independence_basis": "Runtime /root authored the changed model tests, synthetic84-case packet and evidence under root-implementer. Runtime /root/design_review authored none of the engineering, candidate artifacts, supplied responses or author evidence. Reviewer independently inspected complete baseline files and all actual per-case changes/responses, checked all1014 final files against exact manifests, compared original81 candidates unchanged, followed actual canonical and generated resource paths, derived candidate decisions from the governing contracts, and identified these gaps before correction. No reviewer source/packet/plan/activity/work edit occurred.",
+  "judgment": "changes-requested",
+  "limitations": [
+    "This is a first-pass correction record while M4 remains in-progress. It does not approve M4, advance work, authorize M5 or replace full milestone/final Code Review or Verify.",
+    "Synthetic artifact/action walkthroughs assess stated choices and complete supplied outputs under explicit fixture facts. They do not execute an importer, author agent, schema3 workflow, actual writes, or runtime strategic-predicate/Plan-meaning validator.",
+    "The approved original Authoring work-split procedure is assessed for stable identity and retained observation allocation only. Its compact Plan fixture is not being approved as a complete executable delivery plan.",
+    "Full corrected package and affected procedures require independent reassessment. Original evidence/subjects and first-pass judgment must remain preserved; no retroactive favorable claim applies to this packet."
+  ],
+  "rationale": [
+    "Spec alignment and test coverage — changes requested. Approved M4/TG4 and current Plan/Design test groups require actual independent compliant/faulty outputs. The recorded observations below establish many distinctions, but the three finding scopes remain missing or invalid controls. A group label or passing model grammar cannot establish semantic completeness.",
+    "Actual diff, edge/error behavior and preservation — no material source defect found. The two existing model-test methods preserve all native identities, start each fault from a passing fresh private model, assert the input differs, assert the exact one owning diagnostic and compare stored fault bytes unchanged. Full-width undeclared/duplicate references now reach REFERENCES instead of being masked by TABLE. Unknown marker/missing-table and unknown dimension/undeclared-reference pairs preserve closed-value precedence. No validator or supported behavior is changed.",
+    "Architecture, compatibility, security and unrelated changes — source scope is bounded. No new runtime, catalog schema, dependency, authority, format migration or regression retirement occurs. Canonical resources and prior approved Design/Delivery identities are unchanged. The fictional importer explicitly selects validation rejection, excluding storage-outage/concurrent-writer guarantees; it claims no execution or real workflow authority. Packet control defects are evidence defects, not defects in unchanged canonical requirements.",
+    "Generated resources — bounded actual inspection passed. Reviewer opened both current M3 Codex/Claude v1.0.0 archives and compared12 relevant Proposal/Plan members per target, including both entrypoints, complete governed procedures, strategic gates, Proposal skeleton, all three Plan assets, and applicable proof/allocation methods. Resource bytes and entrypoint bodies match canonical. This supports reachable current methods, not target-agent execution or actual filesystem omission execution.",
+    "Validation evidence — author records red two wrong-diagnostic assertions, focused corrected methods passing0.034s, boundary29 passing21.240s and selected CI759 passing (boundary validator1, boundary29, Skill288, adapters14, Node419, npm8). Reviewer inspected the changed assertions and final CI success; no broad rerun is justified for this packet-only assessment. Structural/asset tests do not validate emitted Proposal structure, strategic meaning or complete emitted Plan content. Those decisions are independently made below.",
+    "Exact evidence — final84-case manifest and every1014 actual file matched identities; original81 case descriptions and subject hashes are unchanged. Registered durable reproduction data equals the inspected packet text and baseline. Old R0 is changed only by the deliberate history-rebind fault. Neighbor files retain original bytes. No first-pass record or original candidate is repaired by this review.",
+    "AUTH-RF-001 — The validate-complete-before-write control preserves original [(9, retained)] on invalid middle row; per-row-commit leaves (1, alpha) and is rejected despite stable IDs and headings. Bounded validation-rejection guarantee only; no IO atomicity claimed.",
+    "AUTH-RF-002 — work-split preserves IMPORT-SR-02 across implementation and destination proof; work-renumber invents work-derived requirement identity and fails; work-proof-omitted leaves no observation able to detect partial persistence and returns to Plan. Split identity/allocation assessment does not approve its entire delivery artifact.",
+    "AUTH-RF-003 — With Plan hidden, baseline C0 retains valid and invalid-middle-row input/action/whole-destination oracle plus fixture/evidence limits. coverage-only-in-plan cannot explain proof from model-owned content and fails durable coverage.",
+    "AUTH-RF-004 — parser-only cannot distinguish a batch implementation that commits row1 then rejects row2. Whole destination equality after rejection in control can; allocation gap belongs to Plan.",
+    "AUTH-SH-001 — command-label-only is within stipulated equivalence and sole authorized Plan correction. label-plus-goal and label-plus-proposal exceed it; label-self-approval assumes reviewer and execution authority. Preserve settled upstream subjects and history.",
+    "AUTH-SH-002 — Both changed-C1 artifacts weaken/conflict over the rejection oracle. Incomplete parent-only handoff wrongly reuses old approval. Exact handoff correctly includes changed C1 and unchanged D0, preserves R0 and requests correction/current review; that action is acceptable without approving C1 content.",
+    "AUTH-SH-003 — stable-progress, stable-approval and stable-result each put mutable/unsupported facts in Plan and claim results absent execution/assessment; reject each independently.",
+    "AUTH-SH-004 — Author approval and save receipt establish no independent judgment. Independent exact-subject approval still lacks continuation authority in supplied facts. All three Begin Plan responses reject; judgment-bounded correctly separates assessment from routing.",
+    "AUTH-SH-005 — legacy-output correctly preserves old sources and explains unsupported output. legacy-template wrongly treats a supplied old-format template as permission and converts implicitly. legacy-adoption is bounded by explicit current-owner transfer, stable IDs and preserved source/history; no companion test-spec or inferred deletion.",
+    "AUTH-CR-001 — feasibility-conflict makes full validation before append impossible under supplied dependency; return constraints/alternatives to direction owner without goal weakening and stop only dependent Plan. duplicate-rule-missing requires Design resolution; Plan cannot invent acceptance.",
+    "AUTH-CR-002 — upstream-index-changed adds a distinct preservation observation and invalidates reliance on row-only allocation/old D0 review; proposed reassessment is correct. upstream-index-ignored incorrectly approves D1 with old evidence.",
+    "AUTH-CR-003 — move-complete preserves stable IDs and R0 bytes and reconciles Plan/parent/index links to existing current paths. move-stale-plan and move-stale-index leave live links broken; move-history-rebound changes original judgment subjects and rejects even when current links resolve.",
+    "AUTH-CR-004 — missing-basis/package/authority correctly identify Design/package/decision-owner prerequisite and preserve independently authorized unrelated work. missing-global-stop either overblocks that work or reconstructs missing coverage, both invalid.",
+    "PROP-direction — Control preserves the exact invalid-input direction and bounded feasibility assumption; partial-goal/deferred-goal silently weaken or defer it. evidence-unavailable exposes actual lack of basis and requires assumption/blocker; no invented investigation.",
+    "PROP-content — Manual emitted-proposal inspection: control has seven ordered required sections. Missing, duplicated, extra-level-two and misordered variants each fail the structural contract. Combined gates retain permitted optional impact position and both independent intent/scope treatments plus later vision exception. mystery_gate is outside the four closed predicates; reject before inventing procedure. No runtime emitted-proposal/predicate validator is claimed.",
+    "PROP-target — Accept only stipulated absent portable create/exact revise write sets; reject collision/conflicting primary/escape/malformed-governed fallback. Late valid governed signal requires reclassification and complete procedure before further writes. Packets are proposed actions, not executed storage. Added proposal-unknown-operation correctly rejects replace-arbitrary-file before resolving its also-conflicting target; target resolution cannot invent operation authority.",
+    "PROP-recording — Conflict requires current P1 reread/reassessment; lost response plus actual reread confirmation permits saved-fact report only; recovery-required preserves receipt and uses authorized recovery without success claim. Historical proposal/judgment remains unchanged.",
+    "PROP-resources — Read actual canonical Proposal SKILL, complete strategic/governed refs and skeleton, independently compared their actual Codex/Claude archive bodies. PA0 has no unrelated method prerequisite; triggered missing method stops. Combined governed/gated and standing-artifact additions pending final packet. Added final cases independently inspected: proposal-governed-gated correctly applies both intent/scope gates and complete governed recording under stipulated exact create authority; standing-artifact-stop correctly blocks non-bootstrap substantive work without VISION. All original81 trees remain byte-identical in final84-case packet.",
+    "DES-coherence — Derived partial-write state independently. One importer owns sequence and real-boundary expected state, while child correctness alone cannot establish it. Material realization infeasibility returns direction decision, never silently weakens.",
+    "DES-architecture — Four faulty outputs reject: unowned store node, missing necessary Runtime diagram, user bypass-validation edge, and child-only proof. Baseline also marks Context/Building Block necessary but substitutes overview; valid-control defect must be corrected before this group is complete.",
+    "DES-examples — Unindexed relied-on example has no proper owning declaration; changed neighbor violates independent preservation invariant; E1 partial row changes require exact example+parent handoff and renewed assessment. The correct handoff does not approve faulty E1. Complete JSON shape is separately covered by actual existing Node tests.",
+    "DES-source-disposition — Filename-only mapping and whole-repo claim fail because decisions, failure constraints and unresolved obligations are lost. Meaning-map proposed action places selected requirement/decision/consequence/oracle in named current owners, reconciles consumers and preserves original subjects/unmigrated responsibility. Actual move packet verifies current links/history distinction.",
+    "DES-source-output — Bounded legacy feature/proof action choices assess source preservation, explicit adoption and unsupported-format limits; existing canonical/installed architecture withdrawal and resource tests supply the related supported-resource surface. No installer or agent execution claimed.",
+    "DES-selection — Reject cheap-valid-only claimed completion because invalid/rejection outcome is absent; reject dropping R-old solely for cost/catalog absence. Accept semantic-obligation independent artifact procedure rather than fake Python phrase success. Baseline C0 is bounded coverage/transfer control, not imported runtime proof.",
+    "PLAN-allocation — Correct allocation names real private destination and complete independent rows, prerequisite validation, failure meaning/recovery, independent reviews and final whole-change checkpoint; parser-only and omitted proof cannot detect partial commits. Semantic responsibility gets an actual independent procedure.",
+    "PLAN-artifacts — Stable-state negatives correctly reject current results/approval/progress. However baseline custom14-line Plan is not filled output of three normative assets, and missing-field/placeholder variants erase nearly whole artifact rather than one controlled fault. Required valid emitted-artifact control remains absent.",
+    "PLAN-target — Initialization responses distinguish current exact approved absent-work M1/M2 from stale review, existing work, conflicting registration and unknown operation. Unknown operation rejects without consistency inference. Proposal-only portable target packets do not directly establish Plan-specific create/revise; explicit Plan packets or gap disposition needed.",
+    "PLAN-retry — Confirmed lost-response reread means no duplicate additions. Changed order/completion requires authorized replan/review while preserving history. recovery-required retains receipt, stops dependent writes and does not repair another owner work.",
+    "PLAN-resources — Read canonical Plan SKILL/full governed reference and assets, matched12 relevant Proposal/Plan resource/member bodies in both actual adapter archives. Task/authority precedes record detail, late adopted proof trigger loads method, initialization remains separately authorized; missing/incompatible reference blocks dependent work. Synthetic omission facts are actor-decision assessment, not physical runtime missing-file execution."
+  ],
+  "reviewer": {
+    "id": "milestone-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:0ea90ec1f0654c57129ad389013b66089b8f81bd9fa86fd491420b2cde66bb25",
+      "path": "tests/engineering/validation/boundary_model_tests.py"
+    },
+    {
+      "identity": "sha256:ea2e56ab60090c6b15558b58e871a8ad12a6098bbe0c723edf6ca23be4e4c3d1",
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/evidence.json"
+    }
+  ],
+  "summary": "M4 model-reference test repair is sound, but three bounded semantic proof gaps prevent milestone completion: no complete valid filled-Plan-asset control, necessary Design supporting views replaced by the overview, and Proposal-only actions mapped to Plan create/revise coverage. Preserve this original packet and correct or explicitly dispose these gaps under the approved allocation before full M4 reassessment.",
+  "target": "code"
+}

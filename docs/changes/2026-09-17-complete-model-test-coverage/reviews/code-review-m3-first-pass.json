@@ -20,8 +20,20 @@
         "role": "review"
       },
       "required_outcome": "Prepare a corrected positive-control packet whose claimed scope and proof allocation agree. For retained all-or-none publication, D0 must include a controlled persistence failure after the first attempted write through the real public/persistence boundary, with independently expected failure, original A/B absence and exact unrelated sentinel preservation; L0 must allocate this proof at the appropriate pre-implementation/regression point and require its actual result before completion. Alternatively, explicitly narrow the synthetic claim and authority to validation rejection without asserting broader failure atomicity. Preserve the original packet/evidence and this finding; add the corrected candidate separately and request independent reassessment. Safe correction belongs to root-implementer as synthetic-packet author; canonical guidance already requires the distinction and needs no change. No new project behavior decision is required.",
-      "resolution": null,
-      "state": "open",
+      "resolution": {
+        "actor": {
+          "id": "milestone-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [
+          {
+            "id": "m3-guidance-validation",
+            "path": "docs/changes/2026-09-17-complete-model-test-coverage/evidence.json"
+          }
+        ],
+        "rationale": "Reporter independently read the complete revised TG-3 packet embedded verbatim in m3-guidance-validation, packet sha256:5ec9b5369c1d9a48888355a3a9c858473756d10f96d52954b4434e7c5ec166d2, and compared it with the unchanged original m3-original-walkthrough-packet. Revised hypothetical P0 explicitly declares original-state restoration after attempted persistence failure. D0 now validates the whole batch, stages it within one real Store transaction, commits only on complete success, and aborts on a failed write. Its distinct failure partition observes the first A write attempt, faults the second write, inspects no A/B committed plus exact Z bytes, and requires named nonzero failure without complete-success output. The real transaction/write/abort boundary stays observed rather than delegated to a fake store. L0 now allocates both invalid-input and post-attempt persistence-failure proof with independent original snapshots and valid controls before implementation completion. This removes the counterexample gap without relying on headings or IDs. The assessor accepts these as proposed synthetic Design/Delivery controls only; no importer execution or actual project direction change is claimed. Original packet, inconclusive status, first-pass judgment and evidence remain preserved; actual corrected candidate decisions are recorded in code-review-m3."
+      },
+      "state": "resolved",
       "subjects": [
         {
           "identity": "sha256:c452c9ec9804e18713cb444a5f53f9db37a8c2cc4fcd0d4f4b1222b8262c8819",

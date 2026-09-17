@@ -1,0 +1,182 @@
+{
+  "assessment_scope": "Complete independent M3 milestone Code Review at a7a2dc39 against38362125: all33 changed engineering subjects, the governing approved Design/Delivery allocation, exact original/revised packet evidence, source-to-generated reading paths, resource tests and actual command results. Reviewed method uses, stage triggers, Design authoring/skeleton, shared quality10/maintenance8 projections, maintenance and unsupported-output boundaries, and independently inspected29 changed skill members per generated target. This is M3 only; M4–M8 and final whole-change Code Review/Verify remain separate.",
+  "change_id": "2026-09-17-complete-model-test-coverage",
+  "contributors": [
+    {
+      "id": "core-guidance-author",
+      "role": "implement"
+    },
+    {
+      "id": "root-implementer",
+      "role": "implement"
+    }
+  ],
+  "findings": [],
+  "id": "code-review-m3",
+  "independence_basis": "Runtime /root/design_skill_core authored shared templates/copies, eight stage instructions and Design model-authoring/skeleton under core-guidance-author. Runtime /root authored resource-test strengthening, legacy-source introduction, synthetic packets, generation, validation and evidence under root-implementer. Runtime /root/design_review authored none of those subjects: it independently inspected the changed reading paths and actual archive members, assessed the original packet, recorded its material gap before correction, and reassessed the revised packet. Reviewer candidate decisions are actual independent artifact assessment, not restatement of the author rubric. The reviewer made no source, packet, tests, plan, Design, activity or work edits.",
+  "judgment": "approved",
+  "limitations": [
+    "The TG-3 packet is synthetic. No importer was implemented or executed, and no universal target-agent compliance, live hosted behavior, release or incident resolution is established. Candidate acceptance concerns the bounded proposed artifact logic and allocation.",
+    "Original m3-original-walkthrough-packet remains inconclusive historical input. Current reliance uses the exact revised packet and this independent judgment; additive evidence-container changes do not retroactively approve the original. Later relevant packet/method changes require reassessment.",
+    "Required owner-family assertion/fixture/semantic alignment for M4–M8 remains pending. Actual generated adapter parity here does not replace M8 package qualification or the final integrated proof.",
+    "Reviewer inspected attributable author-run logs and independently inspected archive bytes and packet semantics; no broad suite rerun was necessary after record-only packet correction. M3 approval does not mutate work/activity or establish final Code Review, successful Verify or PR readiness."
+  ],
+  "rationale": [
+    "Spec alignment — pass. The seven-step method starts with every current obligation in selected scope, including section-owned and parent interactions, then derives violation/consequence, justified depth, evidence type, representative partitions, independent expected observations/fixtures and a stopping rationale. It accounts for sufficient proof, explicit gaps or bounded owner dispositions without treating a gap as satisfied. Design retains intent, Plan allocates proof, implementation realizes assertions and assessors decide adequacy. Markdown remains sufficient; JSON and catalogs require explicit selection. This faithfully realizes M3 and the approved TEST/DES/PLAN/SKL obligations.",
+    "Test coverage — pass for this milestone. Existing resource case identities are retained. Each missing Design resource now has its own passing copied-skill control before deletion. Shared-quality/maintenance missing-copy, missing-source and drift cases each start from a fresh passing fixture, assert the exact intended single diagnostic and preserve the sibling bytes. These tests establish resource availability/domain/parity, not the meaning of the method. The separate TG-3 assessment below supplies the required concrete semantic judgment; no new phrase-count or test-whitelist claim substitutes for it.",
+    "Edge cases and error handling — pass. Ordinary Design living-test authoring reaches quality through step5, its explicit unconditional method trigger, model-authoring link and skeleton. This does not adopt project-wide governance. Other stage consumers retain adopted-criteria triggers and owning-stage correction routes. Missing/unreadable triggered guidance stops dependent reliance and routes a package defect; shorter main instructions cannot reconstruct it or imply approval. Untriggered resources do not block unrelated portable work. Cost, low frequency, absent scenario rows and passing remaining suites cannot retire required protection.",
+    "Architecture and maintainability — pass. One shared template body is copied byte-for-byte into the declared10 quality and8 maintenance consumers; stage text references that method rather than duplicating its body. Existing group-level prose/table shapes, many-to-many realization and native method discovery remain. Parent interaction observations complement child guarantees, fresh mutable resources keep independent cases isolated, and actual execution stays in evidence. No new schema, ledger, runner, case-count target or governance owner is introduced.",
+    "Backward compatibility — pass. Canonical guidance and Design Review now consistently treat retained feature/proof and standalone architecture/ADR material as read-only source, with separately authorized living-model adoption. The legacy introduction no longer implies amending retired outputs. These bounded corrections align already approved DES-SR-14/23/24 and do not retire any newly supported behavior. Existing resource/validator shapes and native case identities remain; neither installing the skill nor reading an old template grants adoption or format-output authority.",
+    "Security and permissions — pass for guidance scope. Instructions preserve independent authority, prohibition of implicit approval and current evidence ownership. Fixture guidance retains real persistence/process/archive boundaries when required and explicitly exposes what a substitute cannot prove. The synthetic P0 authorizes example Design/delivery allocation only; all candidate decisions below grant no implementation, publication or regression-retirement authority. No external write or live provider operation was part of this assessment.",
+    "Generated-artifact currency — pass. Independently opened actual Codex/Claude v1.0.0 archives, checked unique members and compared all29 changed skill members in each: resource bytes and SKILL bodies agree with canonical sources, including corrected legacy prose. Codex archive sha256:b010e09769624a11b356586894cd74489f5c3123192fcc96d42a997d85c3b15d; Claude sha256:1bf5d0cb0b483e4bb90f39ff2b05d110a7d8f5e2feeb4713c7596ac1cf14ae3f. The author42 enumerated resource observations also identify shared copies and Design entry/reference/asset bytes. This establishes actual generated content and reading paths, not installed target-agent behavior; packed npm qualification remains M8.",
+    "Unrelated changes — pass. The33 engineering paths contain the shared methods/copies, eight relevant stage consumers, Design supporting guidance/skeleton and two strengthened resource-test files. Runtime validators, schema/catalog JSON, selector membership and generated tracked output were not edited. Concurrent record additions preserve prior milestone claims and are distinguished from engineering changes. The original incomplete TG-3 packet remains unchanged and inconclusive, rather than being rewritten into a passing result.",
+    "Validation evidence — pass with stated limits. Independently parsed final selected CI log:477 canonical results, all passed, comprising Skill288, Selector172, scoped adapter14 and3 validators; required boundary scope passed. Full direct adapter log:95 tests,288.288s,OK. Author evidence additionally records seven focused resource cases, guide validation, all19 canonical skills, prose and whitespace checks. Runs overlapped, so timing is not a controlled performance comparison. No engineering source changed after those passes; only the corrected packet and evidence were added. Structural successes support their actual shape/resource/regression claims, not semantic completeness by themselves.",
+    "TG-3 actual independent assessment — pass on corrected packet sha256:5ec9b5369c1d9a48888355a3a9c858473756d10f96d52954b4434e7c5ec166d2. D0 is acceptable as a proposed bounded Design control: the synthetic authority now explicitly includes persistence-failure restoration, and its one batch transaction plus three observations cover valid publication, invalid-second-item rejection and a reached second-write failure after the first attempt. Literal prior Z bytes and independently expected A/B presence/absence discriminate partial state; observing real abort avoids a fake rollback oracle. D1 is rejected and returns to Design because per-item commits leave A after invalid B, violating IMP-SR-01 despite identical headings, IDs and atomic wording. L0 is acceptable as proposed delivery allocation: it requires current independent Design approval, failing public proofs for both defining faults, fresh valid controls/original snapshots, implementation and independent diff/result handoff, while preserving R-old. L1 is rejected and returns to Plan: parser returns cannot observe missing/partial persisted records or sentinel mutation, so they cannot complete IMP-SR-01/02. L2 is rejected for removal: R-old still protects supported unusual-name behavior; absent catalog membership and cost prove neither equivalence nor authorized retirement. Retain it under the implementation/test-maintenance owner until sufficient replacement or governing retirement exists. These are assessor-derived artifact judgments, not importer execution or author-rubric evidence.",
+    "Correction and closeout — pass. The initial all-or-none positive control lacked the post-attempt persistence-failure partition/allocation. It was durably recorded as changes-requested before author correction. The revised packet makes the hypothetical guarantee, real transaction mechanism, exact failure observation and L0 execution point explicit; reporter resolution preserves original evidence/subjects. No canonical guidance change was needed because that method already exposed the omitted hazard. This approval supports M3 milestone closeout only."
+  ],
+  "reviewer": {
+    "id": "milestone-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:fca2672dd550d8a3ea4e2a4aa90af1e80d9f189bcd8c7f4e557cf5c6321f2820",
+      "path": "skills/bugfix/references/test-maintenance.md"
+    },
+    {
+      "identity": "sha256:6b32800ac819d2e5ed00ef5010b66dfc8c5426b2482952749944e6f339880c72",
+      "path": "skills/bugfix/references/test-quality.md"
+    },
+    {
+      "identity": "sha256:fca2672dd550d8a3ea4e2a4aa90af1e80d9f189bcd8c7f4e557cf5c6321f2820",
+      "path": "skills/ci-maintenance/references/test-maintenance.md"
+    },
+    {
+      "identity": "sha256:6b32800ac819d2e5ed00ef5010b66dfc8c5426b2482952749944e6f339880c72",
+      "path": "skills/ci-maintenance/references/test-quality.md"
+    },
+    {
+      "identity": "sha256:c7ade87e5d2583f1c2b2b9636a74aeeb3f47c69c3e549b02e96c163ecf99e349",
+      "path": "skills/code-review/SKILL.md"
+    },
+    {
+      "identity": "sha256:fca2672dd550d8a3ea4e2a4aa90af1e80d9f189bcd8c7f4e557cf5c6321f2820",
+      "path": "skills/code-review/references/test-maintenance.md"
+    },
+    {
+      "identity": "sha256:6b32800ac819d2e5ed00ef5010b66dfc8c5426b2482952749944e6f339880c72",
+      "path": "skills/code-review/references/test-quality.md"
+    },
+    {
+      "identity": "sha256:842845259e245bde036bbdd03749aa0e3a76ead842f48da481d28b7f842f95d6",
+      "path": "skills/delivery-review/SKILL.md"
+    },
+    {
+      "identity": "sha256:fca2672dd550d8a3ea4e2a4aa90af1e80d9f189bcd8c7f4e557cf5c6321f2820",
+      "path": "skills/delivery-review/references/test-maintenance.md"
+    },
+    {
+      "identity": "sha256:6b32800ac819d2e5ed00ef5010b66dfc8c5426b2482952749944e6f339880c72",
+      "path": "skills/delivery-review/references/test-quality.md"
+    },
+    {
+      "identity": "sha256:1297166a0d872d31048e3c4a498ce7270a8882cb4c8471fda87eb743877dacd7",
+      "path": "skills/design-review/SKILL.md"
+    },
+    {
+      "identity": "sha256:6b32800ac819d2e5ed00ef5010b66dfc8c5426b2482952749944e6f339880c72",
+      "path": "skills/design-review/references/test-quality.md"
+    },
+    {
+      "identity": "sha256:0935b367274831589ed3ccf09f3df373658348b79c8c959b2a1502637a09f3d5",
+      "path": "skills/design/SKILL.md"
+    },
+    {
+      "identity": "sha256:3ae35a52029b78c60a3d4cff9d689ba7e709013a91cb3250262254e009ef908d",
+      "path": "skills/design/assets/design-skeleton.md"
+    },
+    {
+      "identity": "sha256:52c93239264aa2272796d67786aadcdfa5ed64a7ba1790890d93fdeb904effcb",
+      "path": "skills/design/references/legacy-source-reconciliation.md"
+    },
+    {
+      "identity": "sha256:4b6038d12b8f025a142b164a61ed19cd11d767bd7e433e78dffe95944411757c",
+      "path": "skills/design/references/model-authoring.md"
+    },
+    {
+      "identity": "sha256:6b32800ac819d2e5ed00ef5010b66dfc8c5426b2482952749944e6f339880c72",
+      "path": "skills/design/references/test-quality.md"
+    },
+    {
+      "identity": "sha256:c65a04a84a6fe5cb78bef4b9ada601e37882f373da31f302393fcd334491aadf",
+      "path": "skills/implement/SKILL.md"
+    },
+    {
+      "identity": "sha256:fca2672dd550d8a3ea4e2a4aa90af1e80d9f189bcd8c7f4e557cf5c6321f2820",
+      "path": "skills/implement/references/test-maintenance.md"
+    },
+    {
+      "identity": "sha256:6b32800ac819d2e5ed00ef5010b66dfc8c5426b2482952749944e6f339880c72",
+      "path": "skills/implement/references/test-quality.md"
+    },
+    {
+      "identity": "sha256:a01643ea263f1df1c0259ca16324117fe589cf6d5e9318d5853d673e48d226cd",
+      "path": "skills/plan/SKILL.md"
+    },
+    {
+      "identity": "sha256:fca2672dd550d8a3ea4e2a4aa90af1e80d9f189bcd8c7f4e557cf5c6321f2820",
+      "path": "skills/plan/references/test-maintenance.md"
+    },
+    {
+      "identity": "sha256:6b32800ac819d2e5ed00ef5010b66dfc8c5426b2482952749944e6f339880c72",
+      "path": "skills/plan/references/test-quality.md"
+    },
+    {
+      "identity": "sha256:951805525ea528bd44385548488b8bb890cfee9963528d4bdbad87e2a66e2908",
+      "path": "skills/route/SKILL.md"
+    },
+    {
+      "identity": "sha256:fca2672dd550d8a3ea4e2a4aa90af1e80d9f189bcd8c7f4e557cf5c6321f2820",
+      "path": "skills/route/references/test-maintenance.md"
+    },
+    {
+      "identity": "sha256:6b32800ac819d2e5ed00ef5010b66dfc8c5426b2482952749944e6f339880c72",
+      "path": "skills/route/references/test-quality.md"
+    },
+    {
+      "identity": "sha256:d4c904a58ebfd6adecafbc10b3aae4855203d9c94d70c26ef10b298e2aba850f",
+      "path": "skills/verify/SKILL.md"
+    },
+    {
+      "identity": "sha256:fca2672dd550d8a3ea4e2a4aa90af1e80d9f189bcd8c7f4e557cf5c6321f2820",
+      "path": "skills/verify/references/test-maintenance.md"
+    },
+    {
+      "identity": "sha256:6b32800ac819d2e5ed00ef5010b66dfc8c5426b2482952749944e6f339880c72",
+      "path": "skills/verify/references/test-quality.md"
+    },
+    {
+      "identity": "sha256:fca2672dd550d8a3ea4e2a4aa90af1e80d9f189bcd8c7f4e557cf5c6321f2820",
+      "path": "templates/shared/test-maintenance.md"
+    },
+    {
+      "identity": "sha256:6b32800ac819d2e5ed00ef5010b66dfc8c5426b2482952749944e6f339880c72",
+      "path": "templates/shared/test-quality.md"
+    },
+    {
+      "identity": "sha256:466ad54edd65cb46d849ae42cde7611b33344116ed3048d33182eaa0aa7ce18f",
+      "path": "tests/skill/skill_design_resource_tests.py"
+    },
+    {
+      "identity": "sha256:f07515d8c69b442ae8851175801d47c135eeb68c8a3e75d01835c8d5f0259ab7",
+      "path": "tests/skill/skill_shared_policy_tests.py"
+    },
+    {
+      "identity": "sha256:9444e54f26984da116bdbafb704077c14c00084f8227d9707f0e1f2cb4a211b2",
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/evidence.json"
+    }
+  ],
+  "summary": "M3 makes the approved requirement/proof selection method reachable through ordinary Design authoring and adopted stage consumers, preserves required detection and honest evidence boundaries, and carries it faithfully into both actual generated adapters. Strengthened resource tests and completed validation pass. The original synthetic packet gap is independently resolved; the corrected TG-3 candidates receive explicit bounded decisions. No material M3 finding remains.",
+  "target": "code"
+}
