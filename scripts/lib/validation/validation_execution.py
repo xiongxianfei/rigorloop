@@ -1145,7 +1145,6 @@ def selected_main(argv):
                 mode=requested_mode,
                 base=requested_base,
                 head=requested_head,
-                discovered_paths=(requested_mode in {"pr", "main"} or (requested_mode == "local" and not requested_paths)),
             )
         except ValueError as exc:
             fail(f"Selected check {check_id} cannot be converted to a trusted command: {exc}")

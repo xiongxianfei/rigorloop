@@ -1,0 +1,150 @@
+{
+  "assessment_scope": "Fresh independent FINAL whole-change Code Review of ddb7eb9e0d4669d360483eac080f8f05fedd5641..0d01a11c64be79f996e2072809b25d504bbe72d0, engineering fixed at4ada6752c464b83ae1f434aef987c376721ce63e, plus current registered final-committed-range evidence. Completed M1 and suffix correction assessed together across selector, command builder, trusted executor, model admission, tests and guidance. No Verify or lifecycle-completion claim.",
+  "change_id": "2026-09-17-retire-historical-path-compatibility",
+  "contributors": [
+    {
+      "id": "historical-design-author",
+      "role": "design"
+    },
+    {
+      "id": "historical-planner",
+      "role": "plan"
+    },
+    {
+      "id": "historical-implementer",
+      "role": "implement"
+    }
+  ],
+  "findings": [],
+  "id": "historical-path-final-code-review",
+  "independence_basis": "Independent delegated nonauthor /root/catalog_admission_design_review reviewed the complete final base-to-HEAD diff and composed behavior afresh. Earlier Design review was assessment only; no reviewed Design, plan, source, test or guidance was authored by this reviewer. M1 review and its reporter resolution inform but do not replace this separate whole-change assessment.",
+  "judgment": "approved",
+  "limitations": [
+    "Final whole-change Code Review only; no final Verify success, branch/PR readiness, hosted CI, lifecycle completion or publication claim. Current final-record snapshot remains Verify-owned.",
+    "Reused broad execution and clean-install observations after exact scope/identity checks; final reviewer directly repeated five selected native methods, not every unchanged suite. Further engineering changes require appropriate reassessment.",
+    "Published guidance assessment establishes bounded method meaning and actual resource availability, not universal agent compliance. Historical reviews retain original subjects and are not retargeted by this approval."
+  ],
+  "rationale": [
+    "1. Spec alignment — pass. Exact approved proposal, historical-path-design-review-r2 and historical-path-delivery-review remain applicable to the delivered compatibility-only scope. All six selected historical families and generic flat admission are withdrawn; exact System declarations and portable same-name model directories remain. Earlier Design consumer contradictions and M1 suffix finding have reporter-owned resolutions. No broader model catalog rollout or reopening of merged feature-format work occurred.",
+    "2. Test coverage — pass. Inspected changed method bodies, parameter rows, native disposition and fixtures. Nineteen old positive acceptance/deletion-routing methods retire under explicit owner decision; eleven are rewritten and three new observations added, totaling202 to186 methods across the five modules. Independent expected current check sets replace old/new producer equivalence. Current symlink/tracking/privacy/marker/catalog detail and real command/Git observations survive; no physical fixture files are removed. Counts support accounting only, not adequacy. The misleading-suffix counterexample now has supported namespace controls and unknown singleton/mixed rejection without a per-old-file ledger.",
+    "3. Edge cases — pass. Final reviewer directly ran five native ValidationSelectionTests methods: test_canonical_tools_select_independent_owner_checks, test_unknown_paths_cannot_hide_behind_current_owner, test_git_discovery_includes_deleted_and_both_renamed_paths, test_current_model_executes_through_trusted_ci_command_boundary and test_mixed_unknown_input_stops_real_ci_before_execution. Exit0, five passed in4.37seconds. These observe real unstaged/staged/committed deletion/rename endpoints, known-plus-unknown failure, trusted model execution and missing required catalog failure, and no public check launch for misleading unknown input.",
+    "4. Error handling — pass. Unknown historical namespaces now classify unsuccessfully instead of receiving substitute checks or empty success. Generic flat documents preserve exact requested identity and reject even with valid bytes; missing supported required subjects cannot be hidden by receivers. The suffix predicate requires skills/, .codex/skills/ or dist/adapters/ ownership, with separate exact canonical resources. Removed discovered_paths argument is reconciled in both builder and executor trusted reconstruction. Unknown input stays blocked before execution, including mixed selection.",
+    "5. Architecture boundaries — pass. Direct canonical routing replaces predecessor maps in main classification and boundary/reference/validation predicates; model declarations remain the owner of exact repository paths. Generic portable examples resolve their own same-name owner instead of relocated name substitution. Current release wrappers and internal modules remain distinct routed consumers. Catalog/selector/executor, model parser, packaging and record safety retain their existing responsibilities; no blacklist registry, alternate runner or new runtime component is introduced.",
+    "6. Compatibility — pass for the explicit withdrawal. Removed archive/examples categories, absent aliases, historical move pairing, old tool/fixture and document routes and obsolete spec trigger readers match approved scope. Current proposals/plans, skills, record-owned paths, release evidence and ordinary supported Git deletion/rename retain their checks. Current generic schema/template/package namespaces are not forbidden by old-looking literals. CLI factual architecture/ADR locations, record-format archival rejection/exclusion, release permissions and installation contracts are unchanged. Saved workspace/history and prior assessment identities remain intact.",
+    "7. Security/privacy — pass. Lexical unsupported model paths fail before content parsing; retained containment, symlink, diagnostic hashing and no-mutation observations remain. No historical fetch for runtime authority, automatic source relocation/conversion, record rewrite, expanded permission or external publication is added. Real no-launch negative proof protects selection integrity rather than merely asserting a status field.",
+    "8. Derived artifact currency — pass within observed local scope. M1 independent reviewer built real clean archives and installed Design through the packed CLI for both supported targets with no errors. Canonical model-authoring SHA256 f2eb9c36b036165461b0c9fbd64c08eba5cf4b5d4bbdc3038fccdf6f9934bbe5 is unchanged since that observation; subsequent correction changes only selector/tests. Current full-range selected proof also exercises package/resource checks. Reuse therefore applies to unchanged generated/installed availability, without claiming hosted installation or target-agent compliance.",
+    "9. Unrelated changes — pass. Complete25-file final diff consists of affected Designs/guidance, proposal/plan/navigation, four production validation files, four test files and governed records. Three selected model catalogs and common testing policy remain unchanged; no unrelated release/API migration or stash restoration. Removed historical recognition is not a removal of current record rejection. Source scan found no remaining predecessor/retired-model/archive/isolated-evidence constants or discovered_paths callers in scripts/tests.",
+    "10. Validation evidence — pass. Current m1-reference-correction and final-committed-range subjects each match all17 engineering members. Earlier m1-implementation differs only at the three corrected selector/test files; its full1001-row result is reused only for unaffected surfaces, while fresh232-row correction proof and1272-row committed PR-range proof cover the final implementation. Inspected /tmp/historical-pr-ci.log ends Boundary scope passed and Selected CI checks passed; final-committed-range records exit0 at engineering4ada6752. Reviewer git diff --check passes and targeted five-method run above supplies additional direct proof. No remaining relevant evidence conflict identified.",
+    "Published guidance — pass. Complete model-authoring context keeps explicit project declarations and portable same-name targets distinct from unsupported generic flat validation. A supplied old source stays project-owned; no automatic relocation or retargeted approval follows. Necessary model/test intent, source interpretation, exact handoff and stage-owned authority remain. Independent installed-resource observation supports availability, while semantic review judges the instructions without pretending phrase matching establishes universal behavior.",
+    "Integrated final judgment: current path selection, trusted command reconstruction, exact model/catalog admission and generated guidance compose consistently after the complete retirement and suffix correction. M1 is completed and its material finding resolved by its reporter. This distinct final review has no required correction; route may hand its exact evidence to Verify. No lifecycle state changed by reviewer."
+  ],
+  "reviewer": {
+    "id": "historical-path-final-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:b08e342159f367131963237b00b284dfc052686f112ebab9824457385de42af8",
+      "path": "CONSTITUTION.md"
+    },
+    {
+      "identity": "sha256:aa984a751854641dd91c4a61f664aa5623a011e3c2f49004353f421893d67f0a",
+      "path": "docs/changes/2026-09-17-retire-historical-path-compatibility/evidence.json"
+    },
+    {
+      "identity": "sha256:9b82cda651eeb7404df3cb092e88d3524a51c5c6d26f707e920cfdbc3ceac510",
+      "path": "docs/changes/2026-09-17-retire-historical-path-compatibility/reviews/historical-path-delivery-review.json"
+    },
+    {
+      "identity": "sha256:dca203200cbf1c1dc98d62eb2c2920eed4266608a872b8d1c1b925761b91c4a5",
+      "path": "docs/changes/2026-09-17-retire-historical-path-compatibility/reviews/historical-path-design-review-r2.json"
+    },
+    {
+      "identity": "sha256:934aeb3b79920772c43d78d36102c305cd84ac78f13c172c7a4b9e95b3ad2cf2",
+      "path": "docs/changes/2026-09-17-retire-historical-path-compatibility/reviews/historical-path-m1-code-review-r2.json"
+    },
+    {
+      "identity": "sha256:099cf67cd5d02e49bcd862485edda91cf12d811cff4472ab10ccf30b9c18c1a3",
+      "path": "docs/changes/2026-09-17-retire-historical-path-compatibility/reviews/historical-path-m1-code-review.json"
+    },
+    {
+      "identity": "sha256:08f0c3120f925c37b22e51f9b67f8e25c3853389d9e949564e348e1e7ca1df41",
+      "path": "docs/changes/2026-09-17-retire-historical-path-compatibility/reviews/historical-retirement-proposal-review.json"
+    },
+    {
+      "identity": "sha256:4fb4b8957923ad683118f3e88d147152e3b794d15844fe8bbe44115fe6ff69ff",
+      "path": "docs/design/engineering/engineering.md"
+    },
+    {
+      "identity": "sha256:408d11f05ad68f16c5b053cfb95c7c658dc7187a0413b510532bf7109a4bb1b4",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:1b54166e88c557275c7957e38e5269f5968040ba75f382690e83fd66e593fa4b",
+      "path": "docs/design/skill/authoring/design.md"
+    },
+    {
+      "identity": "sha256:3d21d0de8a59c2d3df532a688270138f0764eeea6611dec1e1121f7f174da7ca",
+      "path": "docs/design/skill/workflow.md"
+    },
+    {
+      "identity": "sha256:c1463a2d61f79edb0abcc59db3045efdd003dfa0f63000db2a45fd810700bd7d",
+      "path": "docs/design/system.md"
+    },
+    {
+      "identity": "sha256:7f66ebb9f51a66f278fd1a17ca7c422e015335f5344c9ea4769321fab9377bdf",
+      "path": "docs/design/test-design/rules.md"
+    },
+    {
+      "identity": "sha256:1e9f0f91a8780492287c5dac7e71c5952cfe4eb1c78ae812f4598445f8f256a3",
+      "path": "docs/plan.md"
+    },
+    {
+      "identity": "sha256:e0bea2c8f6bd6f6739dd0d0efc9956a90261ed72f8c07dfd60220e087cd1358f",
+      "path": "docs/plans/2026-09-17-retire-historical-path-compatibility.md"
+    },
+    {
+      "identity": "sha256:9d8cb7e51959cc19a7991114e702a59eb4587a2a6a91a81cffa57ef70ce16d48",
+      "path": "docs/proposals/2026-09-17-retire-historical-path-compatibility.md"
+    },
+    {
+      "identity": "sha256:b07271ee234d4e6735bb1fcf04010fdadd0cb80c2188f9959e9472d8510b4f50",
+      "path": "scripts/lib/validation/boundary_first_validation.py"
+    },
+    {
+      "identity": "sha256:e5497376660d99abc84e67618dbcf89bcf41aadac0886570c937d732800a556d",
+      "path": "scripts/lib/validation/model_layout.py"
+    },
+    {
+      "identity": "sha256:f4d05f33a3ffd05af6be5d1b65c2f2f4780461783c9ec581a882ac7e2eb8ae1e",
+      "path": "scripts/lib/validation/validation_execution.py"
+    },
+    {
+      "identity": "sha256:203f504f98f90484dd0c17dc88b249fdb6f4b387a2b920ae54f545c32216eadd",
+      "path": "scripts/lib/validation/validation_selection.py"
+    },
+    {
+      "identity": "sha256:f2eb9c36b036165461b0c9fbd64c08eba5cf4b5d4bbdc3038fccdf6f9934bbe5",
+      "path": "skills/design/references/model-authoring.md"
+    },
+    {
+      "identity": "sha256:a763ac887a897f0f860dcac13f476a75e2aa9881f0c56af9766a9cdecf4ae1d8",
+      "path": "tests/engineering/validation/boundary_model_tests.py"
+    },
+    {
+      "identity": "sha256:0207a499c1fe6184b80d85af019b01ced62a41ba7f700a248b91207a9247be18",
+      "path": "tests/engineering/validation/catalog_admission_tests.py"
+    },
+    {
+      "identity": "sha256:fcc59c3c2c7402d6df13301f1820e9d69780b10fa768d61bc9cfb3efb412bd0d",
+      "path": "tests/engineering/validation/selection_contract_tests.py"
+    },
+    {
+      "identity": "sha256:69214735b87bd7efca2c30628209786b8b15129b9c590e9bbb11cca046ee5d38",
+      "path": "tests/engineering/validation/selection_git_tests.py"
+    }
+  ],
+  "summary": "Final whole-change Code Review approved: all selected historical-path families retire coherently while current canonical routing, model/catalog safety, record protection and published guidance remain. No material findings; all ten checklist dimensions pass.",
+  "target": "code"
+}

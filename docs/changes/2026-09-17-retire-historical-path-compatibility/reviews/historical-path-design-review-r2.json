@@ -1,0 +1,70 @@
+{
+  "assessment_scope": "Fresh complete Design Review of System, Engineering, Validation, Design authoring, Workflow and portable model-authoring guidance against historical-retirement-proposal-review. Includes all selected historical families, generic-flat withdrawal, supported current routing and producer/consumer feasibility at baseline ddb7eb9e. No implementation assessment or authorization.",
+  "change_id": "2026-09-17-retire-historical-path-compatibility",
+  "contributors": [
+    {
+      "id": "historical-design-author",
+      "role": "design"
+    }
+  ],
+  "findings": [],
+  "id": "historical-path-design-review-r2",
+  "independence_basis": "Independent delegated reviewer authored no proposal, Design or guidance subject; current primary branch inspected afresh. Previous review identities are not approval of this changed support contract.",
+  "judgment": "approved",
+  "limitations": [
+    "Design approval supports authorized Delivery planning only. Implementation, test adequacy over the actual diff, current branch/range execution, final Code Review and Verify remain separate duties.",
+    "Feasibility inspection is not an exhaustive implementation consumer inventory. Every named family and newly found live consumer must be reconciled before deletion; current wrappers, generic supported ownership, stored-record exclusion/safety, release evidence and other CLI location kinds are not implicitly retired.",
+    "Historical reviews remain on their original subjects. This review neither approves broader catalog rollout nor supplies merge, release or publication permission."
+  ],
+  "rationale": [
+    "Approved direction is preserved across all selected families: exact Skill archive mappings, retired examples prefix, historical model/relocation and source-to-receiver substitutions, generic flat models, obsolete tooling/resource/fixture paths, and legacy-only deletion exceptions. Existing merged test rules/catalogs/admission and feature-format rejection remain; no named retirement family is silently deferred or replaced by a permanent per-filename denylist.",
+    "Current support is precise and coherent: exact System declarations including docs/design/system.md and portable docs/design/M/M.md remain accepted; generic flat inputs fail whether present or absent. Declared examples, shared guidance and catalog packages keep their real owner and missing/unsafe detail failures. The command builder retains exact requested subjects instead of replacing an absent alias with a valid current model. Source interpretation preserves customer authority/bytes without automatic conversion or retargeted reviews.",
+    "Local and range Git discovery must retain deletions and both rename endpoints under supported current ownership. Current proposals/plans, declared models/detail, portable current sources and live release evidence retain protective selection. Missing required models or indexed detail fail. Historical source-to-receiver replay and unsupported companions cannot disappear behind a successful subset/default-model run; selection, command construction and execution must agree. The distinction between ordinary current deletion and arbitrary pre-retirement comparisons is sufficient for bounded Delivery allocation.",
+    "Feasibility is supported by the existing model_layout declarations, model validator, catalog_command and selector architecture. Inspection found predecessor normalization feeding category, boundary/reference/validation predicates and broad selection; those consumers require direct canonical identity reconciliation. RETIRED_MODEL_PATHS, absent-name/test/distribution substitutions and special historical move pairing are separable from current ownership. Existing public commands and real Git tests supply appropriate proof boundaries. Live release wrappers, record validation and supported generic schema/template ownership are retained; an old-looking literal alone is not retired behavior.",
+    "Reporter reassessment resolves historical-support-consumer-reconciliation: Workflow explicitly consumes current declared/portable targets and withdraws generic flat/alias support; System explicitly ends former Release-move replay; Engineering migration acceptance now requires canonical paths and disclaims predecessor promises; Validation Input, Composition and Compatibility rows now reject unsupported query paths and qualify ordinary deletion protection by current ownership. Workflow is now an exact reviewed package member. Stable requirement identities and historical judgments are preserved.",
+    "Architecture and ownership remain coherent. Validation owns accepted input/routing, System owns exact repository layout and shared proof policy, Design owns portable authoring convention, Workflow consumes that convention, Engineering reconciles tooling and consumers. Existing overview and supporting views retain the same components, interfaces, deployment and authority boundaries; no new service, schema, runtime state or alternate runner is needed.",
+    "Test intent supplies concrete independent outcomes: public model admission, current canonical tool-to-check mapping, actual local/range deletion/rename and executed command results, mixed unsupported failure, preserved containment/markers/current-record integrity, and meaningful retained release/package protection. Group-level disposition and actual discovery replace historical-only proof without case-count targets. Delivery still owns exact removal inventory, proof-first sequence, commands, integration range and coherent recovery.",
+    "Author structural validation reports the five owning models plus System shared detail passed; reviewer git diff --check passed. These narrow observations do not establish implementation or semantic completeness by themselves. Current CLI obsolete-query guidance delegates routing to VAL-SR-30 rather than independently promising a legacy route, so no additional CLI contract edit is required for this Design scope. No other material current support contradiction was identified."
+  ],
+  "reviewer": {
+    "id": "historical-design-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:c1463a2d61f79edb0abcc59db3045efdd003dfa0f63000db2a45fd810700bd7d",
+      "path": "docs/design/system.md"
+    },
+    {
+      "identity": "sha256:4fb4b8957923ad683118f3e88d147152e3b794d15844fe8bbe44115fe6ff69ff",
+      "path": "docs/design/engineering/engineering.md"
+    },
+    {
+      "identity": "sha256:408d11f05ad68f16c5b053cfb95c7c658dc7187a0413b510532bf7109a4bb1b4",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:1b54166e88c557275c7957e38e5269f5968040ba75f382690e83fd66e593fa4b",
+      "path": "docs/design/skill/authoring/design.md"
+    },
+    {
+      "identity": "sha256:f2eb9c36b036165461b0c9fbd64c08eba5cf4b5d4bbdc3038fccdf6f9934bbe5",
+      "path": "skills/design/references/model-authoring.md"
+    },
+    {
+      "identity": "sha256:3d21d0de8a59c2d3df532a688270138f0764eeea6611dec1e1121f7f174da7ca",
+      "path": "docs/design/skill/workflow.md"
+    },
+    {
+      "identity": "sha256:9d8cb7e51959cc19a7991114e702a59eb4587a2a6a91a81cffa57ef70ce16d48",
+      "path": "docs/proposals/2026-09-17-retire-historical-path-compatibility.md"
+    },
+    {
+      "identity": "sha256:08f0c3120f925c37b22e51f9b67f8e25c3853389d9e949564e348e1e7ca1df41",
+      "path": "docs/changes/2026-09-17-retire-historical-path-compatibility/reviews/historical-retirement-proposal-review.json"
+    }
+  ],
+  "summary": "Complete historical-path retirement Design package approved after reconciliation of current consumer and acceptance promises; no remaining material Design findings.",
+  "target": "design"
+}

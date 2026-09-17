@@ -28,11 +28,6 @@ PROJECT_MODEL_PATHS = {
     "engineering": "docs/design/engineering/engineering.md"
 }
 
-# Selection aliases for absent retired paths only, never accepted model locations.
-RETIRED_MODEL_PATHS = {
-    "docs/design/skill/design.md": "design",
-}
-
 # Exact supporting-document declarations, not prefix-based model authority.
 SHARED_TEST_DESIGN_PATHS = (
     'docs/design/test-design/README.md',

@@ -1,0 +1,41 @@
+{
+  "assessment_scope": "Formal independent Delivery Review of sole primary plan docs/plans/2026-09-17-retire-historical-path-compatibility.md under historical-path-design-review-r2 and historical-retirement-proposal-review. Covers every selected historical routing family, generic-flat withdrawal, retained current ownership, M1 sequencing/removal protection, commands, semantic guidance, actual Git/executor integration, recovery and distinct final gates. Compatibility-only scope; no broader catalog adoption.",
+  "change_id": "2026-09-17-retire-historical-path-compatibility",
+  "contributors": [
+    {
+      "id": "historical-planner",
+      "role": "plan"
+    }
+  ],
+  "findings": [],
+  "id": "historical-path-delivery-review",
+  "independence_basis": "Independent delegated reviewer /root/admission_delivery_review read the complete exact primary plan, governing current support boundary and complete approved upstream review/member map, and inspected current command/selector/test entrypoints. Reviewer authored no proposal, Design, plan, guidance, implementation or tests for this change; only this assessment record is written.",
+  "judgment": "approved",
+  "limitations": [
+    "This approves only the exact Delivery allocation for authorized implementation. It does not claim implementation correctness, completed deletion inventory, executed future validation, final readiness or PR readiness.",
+    "Implementation and independent Code Reviews must demonstrate every family disposition, canonical consumer continuity and retained failure observation; unknown protective value remains a stop, not permission to delete.",
+    "Actual committed PR-range CI and fresh current-record snapshot remain required by this plan. Hosted CI, publication, merge and broader catalog rollout are outside this review authority."
+  ],
+  "rationale": [
+    "Authority and package identity pass. Current change links exactly this primary plan and is at delivery-review/ready with no blockers. Every approved Design-r2 subject matches; its original consumer-reconciliation finding is reporter-resolved. The proposal preserves the user-selected all-family scope, saved stash and merged testing/feature-retirement outcomes. No historical review is reused as current engineering approval.",
+    "Requirements and architecture trace pass. VAL-SR-24/27/28/30/35, Engineering current-command duties, shared TEST-SR maintenance rules and Design/Workflow source authority allocate to one M1 and named TG-PATHS, TG-MODELS, TG-MAINTENANCE, TG-GUIDANCE and TG-FINAL-1. Catalog/selector/executor ownership remains unchanged. The plan explicitly reaches boundary/reference/broad-smoke helpers as well as the main classifier, preserves live release wrappers/module and release evidence, and distinguishes dead exact routes from legitimate generic current schemas/templates/package ownership.",
+    "Sequencing and removal protection pass. Establish canonical positive and unsupported rejection proof first, replace every predecessor consumer before removing normalization, port shared safety to supported fixtures, then remove only exclusive historical families. Ordinary native discovery, meaningful parameter rows, actual imports/catalog/copy callers and family-level disposition must be reconciled. Uncertain protection blocks deletion; old-looking parser/record fixtures are not automatically retired. This is a proportional complete slice, not a case-count quota or a partial family rollout.",
+    "Boundary proof passes. Independent current-tool command expectations protect against circular predecessor-based oracles. Real unstaged/staged/committed Git deletion and rename endpoints, mixed unknown inputs and a no-launch public wrapper observation expose successful-subset and lost-endpoint defects. Public model and selected-command proof distinguishes the retained portable same-name and explicit System paths from flat, absent, symlinked and mixed invalid input without receiver substitution. Required catalog detail deletion remains unsuccessful until declaration ownership is reconciled.",
+    "Published guidance allocation passes. TG-GUIDANCE separately checks explicit project layout, same-name default and unsupported flat target semantics, no automatic relocation, preserved customer bytes and original review identity. It calls for independent meaning assessment and actual clean generated/installed inclusion under current packaging checks, with structural versus semantic limits. This covers the changed model-authoring method without a new framework or repository-specific published retirement registry.",
+    "Execution feasibility and integration pass. All five distinct named executable paths exist, direct native selector/model aggregates provide filterable groups, validate-boundary-first accepts --check, validate-skills defaults to canonical skills, and ci.sh supports local and PR base/head modes. The plan requires actual complete local CI and actual committed PR-range CI, current snapshot and tracked-artifact preflight; it does not mistake selection output or collection for executed proof. Both positive current-model execution and blocked mixed input cross the trusted command boundary. Inspection and git diff --check passed; no future test execution is asserted.",
+    "Recovery, scope and closeout pass. Coherent restore from the named baseline or implementation commit preserves unrelated work/stash and forbids ignore/synthetic-success recovery. Current record format/exclusion, installation permissions, release authorization and CLI architecture/ADR discovery are explicitly unaffected. Independent M1 review is followed by fresh whole-change Code Review and distinct Verify; source changes require affected fresh proof, while records-only closeout does not retarget engineering judgments. No material sequencing, allocation, feasibility or owner-decision gap remains."
+  ],
+  "reviewer": {
+    "id": "historical-delivery-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:e0bea2c8f6bd6f6739dd0d0efc9956a90261ed72f8c07dfd60220e087cd1358f",
+      "path": "docs/plans/2026-09-17-retire-historical-path-compatibility.md"
+    }
+  ],
+  "summary": "The complete historical-path retirement plan safely couples canonical routing, unsupported-model behavior, test cleanup and published guidance with adequate current-path and integration proof. No material Delivery findings.",
+  "target": "delivery"
+}

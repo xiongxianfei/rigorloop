@@ -1,0 +1,47 @@
+{
+  "assessment_scope": "Proposal direction only for 2026-09-17-retire-historical-path-compatibility at baseline ddb7eb9e0d4669d360483eac080f8f05fedd5641; all ten core dimensions and broad-scope preservation, with read-only implementation/stash feasibility inspection.",
+  "change_id": "2026-09-17-retire-historical-path-compatibility",
+  "contributors": [
+    {
+      "id": "historical-retirement-proposal-author",
+      "role": "proposal"
+    }
+  ],
+  "findings": [],
+  "id": "historical-retirement-proposal-review",
+  "independence_basis": "Independent reviewer did not author or edit this proposal. Inspected complete exact proposal and user-selected scope, current governance/vision, bounded source feasibility, and independently reproduced saved-tree comparison without applying the stash. Earlier reviews concerned different exact work and supply no approval here.",
+  "judgment": "approved",
+  "limitations": [
+    "Does not approve current detailed Design amendments, Delivery allocation, implementation, test adequacy, final verification or PR/release readiness.",
+    "Source inspection establishes bounded feasibility, not exhaustive consumer inventory or proof that future current deletion/rename routing is correct; those are required downstream work.",
+    "Broader catalog expansion remains a separately identified follow-up under the present stated scope; a later material user scope change requires reassessment."
+  ],
+  "rationale": [
+    "Classification: formal-lifecycle/manual, PRR1G-recorded-context-gated. scope_budget_context true because resumed saved work crosses several historical-path families and overlaps two completed initiatives; vision_exception_context and standing_artifact_context false. Complete proposal read independently; no reviewed content authored or edited by reviewer.",
+    "Challenge — pass. The proposal identifies ongoing maintenance of obsolete layouts and the coupling between current source locations and predecessor-based routing. It distinguishes the remaining operational obligation from already merged test refinement and feature withdrawal, so restoring saved work is not mistaken for resuming only unfinished behavior.",
+    "Goals — pass. Outcomes are withdrawal of all named historical-path promises, direct current-owner selection, justified removal of exclusive maintenance and preservation of meaningful safety/current behavior. No test-count or source-line quota substitutes for behavior.",
+    "Scope — pass. Five archive mappings, old examples prefix, absent model/relocation substitutions, generic flat model acceptance, predecessor tooling/resources and legacy document deletion exceptions are all core. Current declared paths including docs/design/system.md, portable model-directory format, current additions/deletions/both rename endpoints, live release evidence and record integrity are explicitly retained. Historical source-to-receiver move pairing is included rather than silently preserved. Same-slice Design/guidance/consumer reconciliation is visible. PR199/PR200 work is preserved, not reimplemented. Broader catalog adoption is explicitly a separate-proposal follow-up under model owners, not a hidden exception to a named retirement family.",
+    "Governing principle — pass. Current validation follows current declared ownership and retired layouts carry no continuing operational support promise. This is independent of helper/API design and compatible with recoverable historical provenance.",
+    "Direction — pass. Reconcile current routing before withdrawing predecessor machinery, keep unknown/unsupported mixed inputs visibly unsuccessful, preserve ordinary Git discovery and avoid permanent per-filename negative inventories. These bounds prevent deleting aliases from silently suppressing required checks without prematurely specifying the implementation.",
+    "Feasibility — pass. Exactly one embedded Feasibility section gives assessment, concrete basis, constraints and blockers. At baseline ddb7eb9e0d4669d360483eac080f8f05fedd5641 independently inspected selection: _TOOL_PATH_PREDECESSORS/_tooling_predecessor feed live categories; five Skill archive names; docs/examples/ accepted no-check; RETIRED_MODEL_PATHS and generic absent substitutions including test/distribution; discovered source-to-receiver pairing; _proven_prose_deletion lifecycle substitution and retired tool categories. validate_model_path accepts optional same-name directory and therefore generic flat files alongside declared paths. Existing model/selector owners can support the narrowed contract without new subsystem. Shared helper removal/current integration execution are disclosed constraints, not ignored risks.",
+    "Saved-work feasibility — pass. Independently compared stash b253bd256e7c36e0040826e843e2da0a5dff8804 against its first parent to collect changed endpoints, then compared tree blob IDs with current baseline: 131 status entries,132 distinct endpoints,60 identical,14 absent in both,38 different,20 stash-only. The stash-only set is exactly16 old change/review/evidence records,2 superseded scoped plans,1 old proposal and1 retired handoff module. This corroborates selective continuation; saved bytes remain untouched and old review subjects are not current authority.",
+    "Material impact — pass. Breaking generic-flat acceptance and ranges spanning obsolete layouts is explicit. Supported current targets/comparison basis, no automatic rewrite, preserved history and coherent rollback are disclosed. Proposal does not withdraw ordinary current-source Git handling or weaken unknown-path failure to make its own integration pass.",
+    "Vision alignment: aligned. A smaller current operational contract with durable current evidence and recoverable retired history fits VISION.md and Constitution cleanup/compatibility principles. No standing artifact is missing and no vision exception is required.",
+    "Downstream authority — pass. Existing Validation still explicitly requires historical routing and generic flat admission; proposal acknowledges reconciliation in System/Validation/Authoring before implementation rather than presenting this direction approval as overriding approved Design. Detailed accepted current paths, unknown/deletion behavior, transitive consumers, safe sequencing/removal inventory, actual selected commands and integration-range proof remain Design/Delivery duties with independent gates.",
+    "Requested decision — pass. Approval is limited to the selected challenge/goals/scope/principle/direction/feasibility and disclosed impact; it supports authorized Design authorship only. All named retirement families are required to complete in this initiative. Milestone review, fresh whole-change review and distinct Verify remain required. No automatic continuation or external mutation authority arises from this review.",
+    "Scope preservation — pass with no material findings. User-selected all-family retirement is fully visible; merged work and unrelated APIs/record formats/publication are explicitly excluded for stated reasons. Optional broader catalog expansion is not necessary to assess this bounded direction. If the user changes that scope, assess the revised proposal rather than treating this approval as an expansion."
+  ],
+  "reviewer": {
+    "id": "historical-retirement-proposal-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:9d8cb7e51959cc19a7991114e702a59eb4587a2a6a91a81cffa57ef70ce16d48",
+      "path": "docs/proposals/2026-09-17-retire-historical-path-compatibility.md"
+    }
+  ],
+  "summary": "The complete named historical-path withdrawal is valuable, explicitly breaking, bounded and feasible enough for Design. Ordinary current deletion and unknown-input safety remain required; merged testing and feature-retirement outcomes are preserved. No material findings.",
+  "target": "proposal"
+}

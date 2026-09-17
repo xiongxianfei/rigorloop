@@ -1,6 +1,6 @@
 # Living-model authoring
 
-Keep one current normative Design per coherent responsibility. Use `docs/design/M/M.md`, where directory and filename share stable model ID M; model-owned examples live under its `examples/` directory. An explicitly selected existing historical flat model may be revised in place under project authority; do not create a flat copy, silently relocate it or retarget an assessment. Model paths cannot point into examples or arbitrary extra normative nesting. Reject unsafe or ambiguous targets.
+Keep one current normative Design per coherent responsibility. Use `docs/design/M/M.md`, where directory and filename share stable model ID M; model-owned examples live under its `examples/` directory. An explicit project layout may declare different exact targets. Generic flat model paths are unsupported; preserve existing source authority and bytes rather than silently relocating a document or retargeting an assessment. Model paths cannot point into examples or arbitrary extra normative nesting. Reject unsafe or ambiguous targets.
 
 ## Contract and structure
 

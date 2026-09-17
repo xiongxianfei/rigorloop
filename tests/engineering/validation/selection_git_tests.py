@@ -231,13 +231,13 @@ class SelectionGitChecks:
                 self.assertIn(old, command)
 
 
-    def test_model_selection_validates_present_historical_flat_input(self):
+    def test_model_selection_keeps_unsupported_exact_input(self):
         repo = self.make_git_repo()
         for owner in ("docs/design/skill/workflow.md", "docs/design/cli/cli.md", "docs/design/cli/records.md"):
             (repo / owner).parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(ROOT / owner, repo / owner)
         flat = "docs/design/workflow.md"
-        (repo / flat).write_text("# Invalid historical model\n")
+        (repo / flat).write_text((ROOT / "docs/design/skill/workflow.md").read_text())
         subprocess.run(["git", "add", "."], cwd=repo, check=True, capture_output=True)
         selected = select_validation(SelectionRequest(mode="explicit", paths=(flat,), repo_root=repo))
         command = shlex.split(next(c["command"] for c in selected.selected_checks if c["id"] == "model.validate"))
@@ -246,14 +246,14 @@ class SelectionGitChecks:
         command[1] = str(ROOT / command[1])
         checked = subprocess.run(command, cwd=repo, capture_output=True, text=True)
         self.assertNotEqual(checked.returncode, 0, checked.stdout)
-        self.assertIn(flat, checked.stdout + checked.stderr)
+        self.assertIn("BFR-MODEL-PATH", checked.stdout + checked.stderr)
 
 
-    def test_model_selection_rejects_historical_flat_symlink(self):
+    def test_model_selection_rejects_current_portable_symlink(self):
         for dangling in (False, True):
             with self.subTest(dangling=dangling):
                 repo = self.make_git_repo()
-                flat = repo / "docs/design/workflow.md"
+                flat = repo / "docs/design/sample/sample.md"
                 flat.parent.mkdir(parents=True)
                 target = repo / "target.md"
                 if not dangling:
@@ -264,48 +264,9 @@ class SelectionGitChecks:
                 self.assertEqual(result.status, "blocked", result.to_json_dict())
 
 
-    def test_deleted_isolated_prose_keeps_proof_without_reading_deleted_file(self):
-        path = "docs/reviews/explicit-recording-m3-code-review.md"
-        for committed in (False, True):
-            with self.subTest(committed=committed):
-                repo = self.make_git_repo()
-                file = repo / path
-                file.parent.mkdir(parents=True)
-                file.write_text("# Historical review\n")
-                subprocess.run(["git", "add", "."], cwd=repo, check=True, capture_output=True)
-                subprocess.run(["git", "commit", "-m", "historical review"], cwd=repo, check=True, capture_output=True)
-                file.unlink()
-                if committed:
-                    subprocess.run(["git", "commit", "-am", "remove unsupported review location"], cwd=repo, check=True, capture_output=True)
-                selected = select_validation(SelectionRequest(mode="explicit", paths=(path,), repo_root=repo))
-                checks = {c["id"]: c for c in selected.selected_checks}
-                self.assertNotIn("documentation_prose.audit", checks)
-                self.assertTrue({"model.validate", "rigorloop_cli.test"} <= checks.keys())
-
-
-    def test_proven_lifecycle_deletion_keeps_regression_without_reading_absent_file(self):
-        for path in ("specs/rigorloop-cli-lockfile.md", "docs/adr/ADR-20260516-rigorloop-cli-lockfile.md"):
-            for committed in (False, True):
-                with self.subTest(path=path, committed=committed):
-                    repo = self.make_git_repo()
-                    file = repo / path
-                    file.parent.mkdir(parents=True)
-                    file.write_text("# Retired contract\n")
-                    subprocess.run(["git", "add", "."], cwd=repo, check=True, capture_output=True)
-                    subprocess.run(["git", "commit", "-m", "old contract"], cwd=repo, check=True, capture_output=True)
-                    file.unlink()
-                    if committed:
-                        subprocess.run(["git", "commit", "-am", "remove contract"], cwd=repo, check=True, capture_output=True)
-                    result = select_validation(SelectionRequest(mode="explicit", paths=(path,), repo_root=repo))
-                    checks = {c["id"]: c for c in result.selected_checks}
-                    self.assertIn("current_records.validate", checks)
-                    self.assertNotIn(path, shlex.split(checks["current_records.validate"]["command"]))
-                    self.assertIn("governed_lifecycle_cli_wrapper.test", checks)
-
-
     def test_plan_index_does_not_reintroduce_proven_deleted_lifecycle_inputs(self):
         repo = self.make_git_repo()
-        path = "specs/rigorloop-cli-lockfile.md"
+        path = "docs/plans/example.md"
         file = repo / path
         file.parent.mkdir(parents=True)
         file.write_text("# Retired contract\n")
@@ -318,14 +279,14 @@ class SelectionGitChecks:
         file.unlink()
         result = select_validation(SelectionRequest(mode="explicit", paths=(path, "docs/plan.md"), repo_root=repo))
         checks = {c["id"]: c for c in result.selected_checks}
-        self.assertIn("governed_lifecycle_cli_wrapper.test", checks)
+        self.assertIn("current_records.validate", checks)
         args = shlex.split(checks["current_records.validate"]["command"])
         self.assertNotIn(path, args)
         self.assertIn("guide_system.validate", checks)
 
 
-    def test_unproven_missing_or_present_lifecycle_input_is_not_suppressed(self):
-        path = "specs/rigorloop-cli-lockfile.md"
+    def test_unsupported_document_remains_rejected_when_missing_or_present(self):
+        path = "specs/customer-feature.md"
         for kind in ("missing", "present", "dangling-symlink"):
             with self.subTest(kind=kind):
                 repo = self.make_git_repo()
@@ -339,13 +300,12 @@ class SelectionGitChecks:
                     subprocess.run(["git", "add", "."], cwd=repo, check=True, capture_output=True)
                 result = select_validation(SelectionRequest(mode="explicit", paths=(path,), repo_root=repo))
                 checks = {c["id"]: c for c in result.selected_checks}
-                self.assertTrue(result.status == "blocked" or
-                                any(path in shlex.split(check["command"]) for check in checks.values()))
+                self.assertEqual(result.status, "blocked", result.to_json_dict())
 
 
-    def test_retired_author_deletion_keeps_package_proof_without_auditing_absent_source(self):
+    def test_current_skill_deletion_keeps_package_proof_without_auditing_absent_source(self):
         repo = self.make_git_repo()
-        path = "skills/spec/SKILL.md"
+        path = "skills/sample/SKILL.md"
         file = repo / path
         file.parent.mkdir(parents=True)
         file.write_text("# Historical author\n")
@@ -358,19 +318,6 @@ class SelectionGitChecks:
         self.assertTrue({"skills.validate", "skills.regression", "adapters.drift"} <= checks)
 
 
-    def test_missing_unproven_or_present_isolated_prose_retains_audit(self):
-        path = "docs/reviews/explicit-recording-m3-code-review.md"
-        repo = self.make_git_repo()
-        for present in (False, True):
-            if present:
-                (repo / path).parent.mkdir(parents=True)
-                (repo / path).write_text("# Explicit review input\n")
-                subprocess.run(["git", "add", "."], cwd=repo, check=True, capture_output=True)
-            selected = select_validation(SelectionRequest(mode="explicit", paths=(path,), repo_root=repo))
-            check = next(c for c in selected.selected_checks if c["id"] == "documentation_prose.audit")
-            self.assertIn(path, shlex.split(check["command"]))
-
-
     def test_model_selection_retains_authoritative_tracking_preflight(self):
         repo = self.make_git_repo()
         path = repo / "docs/design/skill/workflow.md"
@@ -378,23 +325,6 @@ class SelectionGitChecks:
         path.write_text("# Model fixture\n")
         result = select_validation(SelectionRequest(mode="explicit", paths=("docs/design/skill/workflow.md",), repo_root=repo))
         self.assertIn("untracked-authoritative-artifacts", {item.get("code") for item in result.blocking_results})
-
-
-    def test_isolated_recording_evidence_selects_proof_without_formal_settlement(self):
-        repo = self.make_git_repo()
-        for path in ("docs/implementation/explicit-recording-m4.md", "docs/reviews/explicit-recording-m3-code-review.md"):
-            (repo / path).parent.mkdir(parents=True, exist_ok=True)
-            (repo / path).write_text("# Present historical evidence fixture\n")
-            subprocess.run(["git", "add", "."], cwd=repo, check=True, capture_output=True)
-            result = select_validation(SelectionRequest(mode="explicit", paths=(path,), repo_root=repo))
-            self.assertNotIn(path, result.unclassified_paths)
-            checks = {check["id"] for check in result.selected_checks}
-            self.assertTrue({"documentation_prose.audit", "model.validate", "rigorloop_cli.test"} <= checks)
-            self.assertNotIn("current_records.validate", checks)
-        unknown = "docs/reviews/unknown_value.md"
-        result = select_validation(SelectionRequest(mode="explicit", paths=(unknown,), repo_root=ROOT,
-                                                   preflight_context=self.root_preflight_context))
-        self.assertIn(unknown, result.unclassified_paths)
 
 
     def test_mixed_skill_and_unsupported_spec_blocks_without_losing_skill_checks(self) -> None:
@@ -410,26 +340,11 @@ class SelectionGitChecks:
         payload = select_validation(SelectionRequest(mode="explicit", paths=(skill_path, spec_path), repo_root=repo)).to_json_dict()
 
         self.assertEqual(payload["status"], "blocked")
-        self.assertIn("unsupported-feature-format", {item["code"] for item in payload["blocking_results"]})
+        self.assertIn("unclassified-path", {item["code"] for item in payload["blocking_results"]})
         self.assertIn("skills.validate", selected_ids(payload))
-        self.assertIn("current_records.validate", selected_ids(payload))
-        lifecycle = next(
-            check
-            for check in payload["selected_checks"]
-            if check["id"] == "current_records.validate"
-        )
-        self.assertEqual(lifecycle["command"], "python scripts/validate-governed-lifecycle-cli.py")
-        boundary = next(
-            check
-            for check in payload["selected_checks"]
-            if check["id"] == "boundary_first.validate"
-        )
-        self.assertEqual(boundary["paths"], [skill_path, spec_path])
-        command = shlex.split(boundary["command"])
-        command[1] = str(ROOT / command[1])
-        executed = subprocess.run(command, cwd=repo, capture_output=True, text=True)
-        self.assertEqual(executed.returncode, 1, executed.stdout + executed.stderr)
-        self.assertEqual(json.loads(executed.stdout)["issues"][0]["check_id"], "BFR-UNSUPPORTED-FORMAT")
+        self.assertEqual(payload['unclassified_paths'], [spec_path])
+        boundary = next(c for c in payload['selected_checks'] if c['id'] == 'boundary_first.validate')
+        self.assertEqual(boundary['paths'], [skill_path])
         self.assertEqual((repo / spec_path).read_text(), "# Explicit customer input\n")
 
 
@@ -500,7 +415,7 @@ class SelectionGitChecks:
 
     def test_preflight_passes_directory_when_its_authoritative_contents_are_tracked(self) -> None:
         repo = self.make_git_repo()
-        fixture = repo / "scripts" / "fixtures" / "boundary-first" / "activation"
+        fixture = repo / "scripts" / "resources" / "boundary-first"
         fixture.mkdir(parents=True)
         (fixture / "unknown-state.yaml").write_text("state: unknown\n", encoding="utf-8")
         subprocess.run(["git", "add", "."], cwd=repo, check=True)
@@ -508,7 +423,7 @@ class SelectionGitChecks:
         result = select_validation(
             SelectionRequest(
                 mode="explicit",
-                paths=("scripts/fixtures/boundary-first/activation",),
+                paths=("scripts/resources/boundary-first",),
                 repo_root=repo,
             )
         )
@@ -522,7 +437,7 @@ class SelectionGitChecks:
         mixed = select_validation(
             SelectionRequest(
                 mode="explicit",
-                paths=("scripts/fixtures/boundary-first/activation",),
+                paths=("scripts/resources/boundary-first",),
                 repo_root=repo,
             )
         )
@@ -536,7 +451,7 @@ class SelectionGitChecks:
         for case in ("empty", "only-untracked", "symlink"):
             with self.subTest(case=case):
                 repo = self.make_git_repo()
-                fixture = repo / "scripts" / "fixtures" / "boundary-first" / "activation"
+                fixture = repo / "scripts" / "resources" / "boundary-first"
                 if case == "symlink":
                     target = repo / "fixture-target"
                     target.mkdir()
@@ -551,7 +466,7 @@ class SelectionGitChecks:
                 result = select_validation(
                     SelectionRequest(
                         mode="explicit",
-                        paths=("scripts/fixtures/boundary-first/activation",),
+                        paths=("scripts/resources/boundary-first",),
                         repo_root=repo,
                     )
                 )
@@ -568,8 +483,8 @@ class SelectionGitChecks:
 
     def test_preflight_blocks_tracked_file_replaced_by_untracked_directory(self) -> None:
         repo = self.make_git_repo()
-        fixture = repo / "specs" / "tracked.md"
-        fixture.parent.mkdir()
+        fixture = repo / "docs" / "design" / "sample" / "sample.md"
+        fixture.parent.mkdir(parents=True)
         fixture.write_text("# tracked\n", encoding="utf-8")
         subprocess.run(["git", "add", "."], cwd=repo, check=True)
         subprocess.run(["git", "commit", "-qm", "track artifact"], cwd=repo, check=True)
@@ -580,7 +495,7 @@ class SelectionGitChecks:
         result = select_validation(
             SelectionRequest(
                 mode="explicit",
-                paths=("specs/tracked.md",),
+                paths=("docs/design/sample/sample.md",),
                 repo_root=repo,
             )
         )
@@ -740,48 +655,13 @@ class SelectionGitChecks:
         self.assertFalse(payload["blocking_results"])
 
 
-    def test_query_retirement_deletions_and_renames_keep_current_proof(self):
-        retired = ("scripts/query-change-record.py", "tests/engineering/validation/test-query-change-record.py")
-        expected = {"record_retirement.regression", "change_metadata.regression", "selector.regression"}
-        for unknown in (False, True):
-            with self.subTest(unknown=unknown):
-                repo = self.make_git_repo()
-                for path in retired:
-                    target = repo / path
-                    target.parent.mkdir(parents=True, exist_ok=True)
-                    target.write_text("# Retired source\n" * 20)
-                before = "unclassified-query-input.xyz" if unknown else "scripts/test-query-change-record.py"
-                after = "tests/fixtures/documentation-prose/pass/query-retirement.md"
-                (repo / before).parent.mkdir(parents=True, exist_ok=True)
-                (repo / before).write_text("# Renamed input\n" * 20)
-                self.git_output(repo, "add", ".")
-                self.git_output(repo, "commit", "-m", "retirement baseline")
-                base = self.git_output(repo, "rev-parse", "HEAD")
-                for path in retired:
-                    (repo / path).unlink()
-                (repo / after).parent.mkdir(parents=True, exist_ok=True)
-                (repo / before).rename(repo / after)
-                self.git_output(repo, "add", "-A")
-                self.git_output(repo, "commit", "-m", "delete and rename")
-                result = run_selector("--mode", "pr", "--base", base, "--head", "HEAD", cwd=repo)
-                payload = parse_stdout(result)
-                self.assertEqual(set(payload["changed_paths"]), set(retired) | {before, after})
-                self.assertEqual(payload["status"], "blocked" if unknown else "ok", payload)
-                self.assertEqual(set(payload["unclassified_paths"]), {before} if unknown else set())
-                self.assertEqual(result.returncode, 2 if unknown else 0)
-                self.assertTrue(expected <= selected_ids(payload), payload)
-                self.assertNotIn("change_record_query.regression", selected_ids(payload))
-                for check in payload["selected_checks"]:
-                    self.assertNotIn("test-query-change-record.py", check["command"])
-
-
     def test_git_discovery_includes_deleted_and_both_renamed_paths(self):
         # TG-08: actual Git status/ranges, including a renamed unknown source.
         # Neither an unknown deletion nor its known destination may disappear.
         for unknown in (False, True):
             with self.subTest(unknown=unknown):
                 repo = self.make_git_repo()
-                deleted = 'specs/retired.md'
+                deleted = 'docs/plans/removed.md'
                 before = 'unknown-input.xyz' if unknown else 'tests/fixtures/adapters/old/SKILL.md'
                 after = 'tests/fixtures/adapters/new/SKILL.md'
                 unknown_deleted = 'unknown-deleted.xyz'
@@ -813,123 +693,7 @@ class SelectionGitChecks:
                         if unknown:
                             self.assertNotEqual(result.returncode, 0)
                         else:
-                            self.assertIn('governed_lifecycle_cli_wrapper.test', selected_ids(payload))
-
-
-    def test_pr_mode_routes_spec_read_retirement_deletions(self) -> None:
-        repo = self.make_git_repo()
-        base = self.git_output(repo, "rev-parse", "HEAD")
-        script = repo / "scripts" / "test-fidelity-gate-spec-reads.py"
-        script.parent.mkdir(parents=True)
-        script.write_text("print('spec read proof')\n", encoding="utf-8")
-        fixture = (
-            repo
-            / "tests"
-            / "fixtures"
-            / "requirement-fidelity-gate"
-            / "representative-reviews"
-            / "r26-matrix-pilot"
-            / "spec-read-log.json"
-        )
-        fixture.parent.mkdir(parents=True)
-        fixture.write_text("{}\n", encoding="utf-8")
-        subprocess.run(["git", "add", "."], cwd=repo, check=True, capture_output=True, text=True)
-        subprocess.run(
-            ["git", "commit", "-m", "add requirement fidelity spec-read proof"],
-            cwd=repo,
-            check=True,
-            capture_output=True,
-            text=True,
-        )
-        base = self.git_output(repo, "rev-parse", "HEAD")
-        script.unlink()
-        fixture.unlink()
-        subprocess.run(["git", "add", "-u"], cwd=repo, check=True, capture_output=True)
-        subprocess.run(["git", "commit", "-m", "retire fixed read log"], cwd=repo, check=True, capture_output=True)
-        head = self.git_output(repo, "rev-parse", "HEAD")
-
-        result = run_selector("--mode", "pr", "--base", base, "--head", head, cwd=repo)
-        self.assertEqual(result.returncode, 0, msg=result.stderr + result.stdout)
-        payload = parse_stdout(result)
-
-        self.assertEqual(payload["status"], "ok")
-        self.assertEqual(
-            payload["changed_paths"],
-            [
-                "scripts/test-fidelity-gate-spec-reads.py",
-                "tests/fixtures/requirement-fidelity-gate/representative-reviews/r26-matrix-pilot/spec-read-log.json",
-            ],
-        )
-        self.assertIn(
-            {"path": "scripts/test-fidelity-gate-spec-reads.py", "category": "retired-spec-read"},
-            payload["classified_paths"],
-        )
-        self.assertIn(
-            {
-                "path": "tests/fixtures/requirement-fidelity-gate/representative-reviews/r26-matrix-pilot/spec-read-log.json",
-                "category": "retired-spec-read",
-            },
-            payload["classified_paths"],
-        )
-        self.assertNotIn("requirement_fidelity.spec_reads", selected_ids(payload))
-        self.assertTrue({"selector.regression", "skills.regression", "skills.regression"}.issubset(selected_ids(payload)))
-        self.assertEqual(payload["unclassified_paths"], [])
-        self.assertFalse(payload["blocking_results"])
-
-
-    def test_spec_read_retirement_local_unstaged_and_staged_deletions(self) -> None:
-        paths = ["scripts/test-fidelity-gate-spec-reads.py",
-                 "tests/fixtures/requirement-fidelity-gate/representative-reviews/r26-matrix-pilot/spec-read-log.json"]
-        repo = self.make_git_repo()
-        for path in paths:
-            target = repo / path
-            target.parent.mkdir(parents=True, exist_ok=True)
-            target.write_text("retired fixture\n", encoding="utf-8")
-        subprocess.run(["git", "add", "."], cwd=repo, check=True, capture_output=True)
-        subprocess.run(["git", "commit", "-m", "baseline instrumentation"], cwd=repo, check=True, capture_output=True)
-        for path in paths:
-            (repo / path).unlink()
-        for staged in (False, True):
-            with self.subTest(staged=staged):
-                if staged:
-                    subprocess.run(["git", "add", "-u"], cwd=repo, check=True, capture_output=True)
-                payload = parse_stdout(run_selector("--mode", "local", cwd=repo))
-                self.assertEqual(payload["status"], "ok")
-                self.assertEqual(set(payload["changed_paths"]), set(paths))
-                self.assertTrue({"selector.regression", "skills.regression", "skills.regression"}.issubset(selected_ids(payload)))
-                self.assertNotIn("requirement_fidelity.spec_reads", selected_ids(payload))
-
-
-    def test_spec_read_retirement_recreated_file_and_symlink_block(self) -> None:
-        paths = ["scripts/test-fidelity-gate-spec-reads.py",
-                 "tests/fixtures/requirement-fidelity-gate/representative-reviews/r26-matrix-pilot/spec-read-log.json"]
-        for path in paths:
-            for kind in ("file", "symlink"):
-                with self.subTest(path=path, kind=kind):
-                    repo = self.make_git_repo()
-                    target = repo / path
-                    target.parent.mkdir(parents=True, exist_ok=True)
-                    if kind == "file":
-                        target.write_text("recreated obsolete input\n", encoding="utf-8")
-                    else:
-                        target.symlink_to(repo / "missing-target")
-                    result = run_selector("--mode", "explicit", "--path", path, cwd=repo)
-                    payload = parse_stdout(result)
-                    self.assertEqual(payload["status"], "blocked")
-                    self.assertTrue(payload["blocking_results"])
-                    self.assertNotIn("requirement_fidelity.spec_reads", selected_ids(payload))
-                    self.assertTrue(target.exists() or target.is_symlink())
-
-
-    def test_spec_read_retirement_unknown_sibling_and_mixed_paths_block(self) -> None:
-        repo = self.make_git_repo()
-        unknown = "tests/fixtures/requirement-fidelity-gate/representative-reviews/new-review/spec-read-log.json"
-        for paths in ([unknown], ["scripts/test-fidelity-gate-spec-reads.py", unknown]):
-            args = [value for path in paths for value in ("--path", path)]
-            payload = parse_stdout(run_selector("--mode", "explicit", *args, cwd=repo))
-            self.assertEqual(payload["status"], "blocked")
-            self.assertIn(unknown, payload["unclassified_paths"])
-            self.assertNotIn("requirement_fidelity.spec_reads", selected_ids(payload))
+                            self.assertIn('current_records.validate', selected_ids(payload))
 
 
     def test_pr_mode_routes_readme_without_unclassified_block(self) -> None:
@@ -1069,21 +833,14 @@ class SelectionGitChecks:
     def test_boundary_first_surfaces_select_boundary_validation(self) -> None:
         repo = self.make_git_repo()
         paths = (
-            "specs/boundary-first-activation.yaml",
-            "specs/boundary-first-resources.yaml",
             "scripts/resources/boundary-first/boundary-first-resources.yaml",
             "templates/shared/boundary-first-method-v1.md",
-            "templates/shared/boundary-first-feature-authoring-v1.md",
-            "templates/shared/boundary-first-proof-v1.md",
-            "specs/feature.md",
-            "specs/feature.test.md",
             "skills/design/references/boundary-first-method-v1.md",
             "dist/adapters/manifest.yaml",
             "scripts/lib/validation/boundary_first_reference.py",
             "scripts/project-boundary-first-reference.py",
             "tests/engineering/validation/test-boundary-first-reference.py",
             "scripts/lib/validation/boundary_first_validation.py",
-            "scripts/fixtures/boundary-first/feature-records/minimal.md",
         )
         for path in paths:
             target = repo / path
@@ -1108,18 +865,15 @@ class SelectionGitChecks:
                 SelectionRequest(mode="explicit", paths=(path,), repo_root=repo)
             )
             with self.subTest(path=path):
-                self.assertEqual(result.status, "blocked" if path.startswith("specs/") else "ok", result.to_json_dict())
+                self.assertEqual(result.status, "ok", result.to_json_dict())
                 self.assertIn(
                     "boundary_first.validate",
                     selected_ids(result.to_json_dict()),
                 )
                 if path in {
-                    "specs/boundary-first-resources.yaml",
-                    "scripts/resources/boundary-first/boundary-first-resources.yaml",
+                            "scripts/resources/boundary-first/boundary-first-resources.yaml",
                     "templates/shared/boundary-first-method-v1.md",
-                    "templates/shared/boundary-first-feature-authoring-v1.md",
-                    "templates/shared/boundary-first-proof-v1.md",
-                    "skills/design/references/boundary-first-method-v1.md",
+                                    "skills/design/references/boundary-first-method-v1.md",
                     "scripts/lib/validation/boundary_first_reference.py",
                     "scripts/project-boundary-first-reference.py",
                     "tests/engineering/validation/test-boundary-first-reference.py",
@@ -1130,8 +884,7 @@ class SelectionGitChecks:
                     )
                 if path in {
                     "scripts/lib/validation/boundary_first_validation.py",
-                    "scripts/fixtures/boundary-first/feature-records/minimal.md",
-                }:
+                        }:
                     self.assertIn(
                         "boundary_first.regression",
                         selected_ids(result.to_json_dict()),
@@ -1141,56 +894,8 @@ class SelectionGitChecks:
                     for check in result.to_json_dict()["selected_checks"]
                     if check["id"] == "boundary_first.validate"
                 )
-                if path.startswith("specs/"):
-                    self.assertIn(f"--path {path}", command)
-                else:
-                    self.assertNotIn("--path", command)
+                self.assertNotIn("--path", command)
 
-    def test_release_catalog_move_preserves_endpoints_and_explicit_missing_path(self):
-        from catalog_admission_fixture_helpers import package
-        repo = self.make_git_repo()
-        index = package(repo)
-        current = index['owner']['design']
-        previous = 'docs/design/engineering/release.md'
-        (repo/current).rename(repo/previous)
-        self.git_output(repo, 'add', '.')
-        self.git_output(repo, 'commit', '-m', 'original release location')
-        base = self.git_output(repo, 'rev-parse', 'HEAD')
-        (repo/previous).rename(repo/current)
-        for stage in ('unstaged', 'staged', 'committed'):
-            with self.subTest(stage=stage):
-                if stage == 'staged':
-                    self.git_output(repo, 'add', '-A')
-                elif stage == 'committed':
-                    self.git_output(repo, 'commit', '-m', 'move release owner')
-                arguments = ('--mode', 'pr', '--base', base, '--head', 'HEAD') if stage == 'committed' else ('--mode', 'local')
-                result = run_selector(*arguments, cwd=repo)
-                payload = parse_stdout(result)
-                if stage == 'unstaged':
-                    self.assertEqual({item['code'] for item in payload['blocking_results']}, {'untracked-authoritative-artifacts'})
-                else:
-                    self.assertEqual(result.returncode, 0, payload)
-                self.assertEqual(set(payload['changed_paths']), {previous, current})
-                command = next(check['command'] for check in payload['selected_checks'] if check['id'] == 'model.validate')
-                self.assertIn(current, shlex.split(command))
-                self.assertNotIn(previous, shlex.split(command))
-        explicit = parse_stdout(run_selector('--mode', 'explicit', '--path', previous, cwd=repo))
-        command = next(check['command'] for check in explicit['selected_checks'] if check['id'] == 'model.validate')
-        self.assertIn(previous, shlex.split(command))
-        local_explicit = parse_stdout(run_selector('--mode', 'local', '--path', previous, '--path', current, cwd=repo))
-        command = next(check['command'] for check in local_explicit['selected_checks'] if check['id'] == 'model.validate')
-        self.assertIn(previous, shlex.split(command))
-        # Existing generic flat aliases remain distinct from this actual move.
-        alias = 'docs/design/release.md'
-        historical = parse_stdout(run_selector('--mode', 'explicit', '--path', alias, cwd=repo))
-        command = next(check['command'] for check in historical['selected_checks'] if check['id'] == 'model.validate')
-        self.assertIn(current, shlex.split(command))
-        self.assertNotIn(alias, shlex.split(command))
-        # A recreated old path is never silently substituted with the receiver.
-        (repo/previous).write_text((repo/current).read_text())
-        recreated = parse_stdout(run_selector('--mode', 'local', cwd=repo))
-        command = next(check['command'] for check in recreated['selected_checks'] if check['id'] == 'model.validate')
-        self.assertIn(previous, shlex.split(command))
 
     def test_document_symlink_keeps_lexical_identity_for_admission(self):
         repo = self.make_git_repo()
@@ -1206,36 +911,41 @@ class SelectionGitChecks:
         self.assertIn(path, shlex.split(command))
         self.assertNotIn('README.md', payload['changed_paths'])
 
-    def test_release_move_executes_through_trusted_ci_command_boundary(self):
+    def test_current_model_executes_through_trusted_ci_command_boundary(self):
         from catalog_admission_fixture_helpers import current_documents
         from selection_test_helpers import run_ci
         repo = self.make_git_repo()
         current_documents(repo)
         shutil.copytree(ROOT/'scripts', repo/'scripts', dirs_exist_ok=True, ignore=shutil.ignore_patterns('__pycache__'))
         current = 'docs/design/engineering/release/release.md'
-        previous = 'docs/design/engineering/release.md'
-        (repo/current).rename(repo/previous)
         self.git_output(repo, 'add', '.')
-        self.git_output(repo, 'commit', '-m', 'before owner move')
-        (repo/previous).rename(repo/current)
-        self.git_output(repo, 'add', '-A')
-        # Limit execution to the owning check while retaining the real selector's
-        # command and changed-path observations. The normal command guard runs.
+        self.git_output(repo, 'commit', '-m', 'current declared documents')
+        with (repo/current).open('a') as file:
+            file.write('\nCurrent model edit.\n')
         selected = parse_stdout(run_selector('--mode', 'local', cwd=repo))
         self.assertEqual(selected['status'], 'ok', selected)
         selected['selected_checks'] = [c for c in selected['selected_checks'] if c['id'] == 'model.validate']
         fixture = self.write_selector_fixture(selected)
-        result = run_ci('--mode', 'local', '--jobs', '1', '--timeout', '30',
-                        cwd=repo, script=repo/'scripts/ci.sh',
-                        env={'RIGORLOOP_SELECTOR_FIXTURE': str(fixture)})
+        def execute():
+            return run_ci('--mode', 'local', '--jobs', '1', '--timeout', '30',
+                          cwd=repo, script=repo/'scripts/ci.sh',
+                          env={'RIGORLOOP_SELECTOR_FIXTURE': str(fixture)})
+        result = execute()
         self.assertEqual(result.returncode, 0, result.stdout+result.stderr)
         self.assertIn('Selected CI checks passed.', result.stdout)
-        explicit = parse_stdout(run_selector('--mode', 'local', '--path', previous, '--path', current, cwd=repo))
-        explicit['selected_checks'] = [c for c in explicit['selected_checks'] if c['id'] == 'model.validate']
-        fixture.write_text(json.dumps(explicit))
-        result = run_ci('--mode', 'local', '--path', previous, '--path', current, '--jobs', '1', '--timeout', '30',
-                        cwd=repo, script=repo/'scripts/ci.sh',
-                        env={'RIGORLOOP_SELECTOR_FIXTURE': str(fixture)})
+        (repo/'docs/design/engineering/release/test-design/test-cases.json').unlink()
+        selected = parse_stdout(run_selector('--mode', 'local', cwd=repo))
+        selected['selected_checks'] = [c for c in selected['selected_checks'] if c['id'] == 'model.validate']
+        fixture.write_text(json.dumps(selected))
+        result = execute()
         self.assertNotEqual(result.returncode, 0)
-        self.assertIn('BFR-MODEL-PATH', result.stdout+result.stderr)
+        self.assertIn('BFR-TEST-READ', result.stdout+result.stderr)
         self.assertNotIn('command does not match catalog', result.stdout+result.stderr)
+
+    def test_mixed_unknown_input_stops_real_ci_before_execution(self):
+        from selection_test_helpers import run_ci
+        result = run_ci('--mode', 'explicit', '--path', 'scripts/validate-release.py',
+                        '--path', 'docs/unknown/references/boundary-first-method-v1.md')
+        self.assertNotEqual(result.returncode, 0)
+        self.assertNotIn('Run selected check:', result.stdout+result.stderr)
+        self.assertIn('unclassified-path', result.stdout+result.stderr)

@@ -1,0 +1,200 @@
+{
+  "activity": {
+    "owner": {
+      "id": "historical-verifier",
+      "role": "verify"
+    },
+    "reason": "Final Verify successful; approved review/finding/work state and required proof reconciled. Authorized PR handoff may consume this exact basis.",
+    "stage": "verify",
+    "status": "completed"
+  },
+  "applicability": [
+    {
+      "actor": {
+        "id": "historical-retirement-proposal-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-17-retire-historical-path-compatibility/reviews/historical-retirement-proposal-review.json",
+      "reason": "Complete exact proposal independently assessed against current user-selected all-family scope and concrete baseline feasibility; direction approval only.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "historical-design-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-17-retire-historical-path-compatibility/reviews/historical-path-design-review.json",
+      "reason": "Current submitted retirement package has contradictory live consumer/acceptance promises; author correction required.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "historical-design-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-17-retire-historical-path-compatibility/reviews/historical-path-design-review-r2.json",
+      "reason": "Complete corrected six-member engineering package independently assessed against exact approved direction; supports Delivery planning only.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "historical-delivery-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-17-retire-historical-path-compatibility/reviews/historical-path-delivery-review.json",
+      "reason": "Independent complete first-pass Delivery assessment of exact current primary plan against current approved historical-path Design package; no material findings.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "historical-verifier",
+        "role": "verify"
+      },
+      "path": "docs/changes/2026-09-17-retire-historical-path-compatibility/evidence.json",
+      "reason": "Current exact committed record proof and final engineering comparison; no engineering changes since approved full-range basis.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "historical-path-code-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-17-retire-historical-path-compatibility/reviews/historical-path-m1-code-review.json",
+      "reason": "Exact current implementation assessed independently; concrete reproduced support-boundary defect prevents M1 clean handoff.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "historical-path-code-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-17-retire-historical-path-compatibility/reviews/historical-path-m1-code-review-r2.json",
+      "reason": "Exact corrected M1 independently reassessed with reporter-proved resolution and current evidence; approval permits only route-owned milestone closeout.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "historical-path-final-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-17-retire-historical-path-compatibility/reviews/historical-path-final-code-review.json",
+      "reason": "Fresh independent whole-change assessment of complete final engineering and current proof; supports separate Verify, not readiness or completion.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "historical-verifier",
+        "role": "verify"
+      },
+      "path": "docs/changes/2026-09-17-retire-historical-path-compatibility/verify-report.json",
+      "reason": "Distinct final Verify passed for exact reviewed engineering and current committed record basis.",
+      "value": "current"
+    }
+  ],
+  "blockers": [],
+  "change_id": "2026-09-17-retire-historical-path-compatibility",
+  "contract": "rigorloop-records-v3",
+  "models": [
+    {
+      "id": "system",
+      "subject": {
+        "identity": "sha256:c1463a2d61f79edb0abcc59db3045efdd003dfa0f63000db2a45fd810700bd7d",
+        "path": "docs/design/system.md"
+      }
+    },
+    {
+      "id": "engineering",
+      "subject": {
+        "identity": "sha256:4fb4b8957923ad683118f3e88d147152e3b794d15844fe8bbe44115fe6ff69ff",
+        "path": "docs/design/engineering/engineering.md"
+      }
+    },
+    {
+      "id": "validation",
+      "subject": {
+        "identity": "sha256:408d11f05ad68f16c5b053cfb95c7c658dc7187a0413b510532bf7109a4bb1b4",
+        "path": "docs/design/engineering/validation.md"
+      }
+    },
+    {
+      "id": "design",
+      "subject": {
+        "identity": "sha256:1b54166e88c557275c7957e38e5269f5968040ba75f382690e83fd66e593fa4b",
+        "path": "docs/design/skill/authoring/design.md"
+      }
+    },
+    {
+      "id": "workflow",
+      "subject": {
+        "identity": "sha256:3d21d0de8a59c2d3df532a688270138f0764eeea6611dec1e1121f7f174da7ca",
+        "path": "docs/design/skill/workflow.md"
+      }
+    }
+  ],
+  "plan": {
+    "identity": "sha256:e0bea2c8f6bd6f6739dd0d0efc9956a90261ed72f8c07dfd60220e087cd1358f",
+    "path": "docs/plans/2026-09-17-retire-historical-path-compatibility.md"
+  },
+  "proposal": {
+    "identity": "sha256:9d8cb7e51959cc19a7991114e702a59eb4587a2a6a91a81cffa57ef70ce16d48",
+    "path": "docs/proposals/2026-09-17-retire-historical-path-compatibility.md"
+  },
+  "records": [
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-17-retire-historical-path-compatibility/reviews/historical-retirement-proposal-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-17-retire-historical-path-compatibility/reviews/historical-path-design-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-17-retire-historical-path-compatibility/reviews/historical-path-design-review-r2.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-17-retire-historical-path-compatibility/reviews/historical-path-delivery-review.json"
+    },
+    {
+      "kind": "evidence",
+      "path": "docs/changes/2026-09-17-retire-historical-path-compatibility/evidence.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-17-retire-historical-path-compatibility/reviews/historical-path-m1-code-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-17-retire-historical-path-compatibility/reviews/historical-path-m1-code-review-r2.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-17-retire-historical-path-compatibility/reviews/historical-path-final-code-review.json"
+    },
+    {
+      "kind": "verify",
+      "path": "docs/changes/2026-09-17-retire-historical-path-compatibility/verify-report.json"
+    }
+  ],
+  "schema_version": 3,
+  "work": [
+    {
+      "id": "m1",
+      "owner": {
+        "id": "historical-implementer",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "VAL-SR-24",
+        "VAL-SR-27",
+        "VAL-SR-28",
+        "VAL-SR-30",
+        "VAL-SR-35",
+        "ENG-SR-14",
+        "ENG-SR-16"
+      ],
+      "status": "completed"
+    }
+  ]
+}
