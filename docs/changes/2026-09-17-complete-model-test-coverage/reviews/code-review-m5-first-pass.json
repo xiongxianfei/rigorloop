@@ -1,0 +1,79 @@
+{
+  "assessment_scope": "Explicit independent interim M5/TG5 Foundations packet review during implementation. Exact m5-foundations-packet manifest sha256:a3adde351db55130afec82a70d5e3d52180f0efb11ca972d886dd07b5ecb5a8b and supporting data sha256:41f57203cc15080f569f846ebdedff32a6e5a680dc752c40c0104184757a14d3;78 cases/14 groups. Fresh scoped CLI reads confirm m5 in-progress and unchanged approved Design/Delivery/Plan. Discovery/Learning and the complete M5 source/evidence gate are excluded from this judgment.",
+  "change_id": "2026-09-17-complete-model-test-coverage",
+  "contributors": [
+    {
+      "id": "root-implementer",
+      "role": "implement"
+    },
+    {
+      "id": "core-guidance-author",
+      "role": "implement"
+    }
+  ],
+  "findings": [
+    {
+      "evidence": "Finding ID: map-registration-positive-control-gap. Severity: major. Location: registered m5-foundations-packet, map-area-create-control/candidate/docs/project-map.md lines61–65 and candidate/docs/project-map/importer.md; inherited by map-registration-interrupted, map-exact-registration-retry and map-registration-idempotent. The new importer row is separated from the normative Area maps table by a blank line, so it is ordinary text rather than a registration row in that table. The transaction says the importer links to storage with storage detail owned there, but the actual importer map has no storage-map link or overlap ownership statement and repeats the same Store detail. The canonical maintenance reference requires table-owned registration plus explicit overlap/detail ownership and cross-link, and MAP-registration requires a valid final reciprocal pair. Therefore claimed clean completion/idempotent success are not valid positive controls, even though intended hashes and partial byte effects match.",
+      "id": "map-registration-positive-control-gap",
+      "owner": {
+        "id": "root-implementer",
+        "role": "implement"
+      },
+      "reporter": {
+        "id": "milestone-reviewer",
+        "role": "review"
+      },
+      "required_outcome": "Preserve the original recorded packet. Have the author supply a complete compliant root/area positive control: insert the exact new row inside the existing registration table, preserve the storage row/map, and make actual overlap ownership and the link to sibling detail explicit in the area artifact without duplicating owned detail. Regenerate the retained transaction identities and every affected interruption/retry/negative variant consistently; keep one defining fault distinct from the valid control and record the correction under a new exact evidence subject. Independent review must reassess final reciprocal content, ordered action/identity checks and preserved neighbors. An explicit honest allocation gap disposition is an alternative if the owning plan authority chooses it. No canonical behavior, runtime validator or catalog change is required.",
+      "resolution": null,
+      "state": "open",
+      "subjects": [
+        {
+          "identity": "sha256:9a721146b916eb80bd6c7c2c03f483a4ef3cdc3c3281dfc8a8d76f53831c1025",
+          "path": "docs/changes/2026-09-17-complete-model-test-coverage/evidence.json"
+        }
+      ]
+    }
+  ],
+  "id": "code-review-m5-first-pass",
+  "independence_basis": "Core-guidance-author (/root/design_skill_core) authored the78-case Foundations packet; root-implementer (/root) integrated and recorded its evidence. Reviewer /root/design_review authored none of these subjects. Reviewer read every complete baseline and actual before/candidate difference, proposed result and recovery facts, independently checked all2660 materialized file hashes and exact registered reproduction data, and derived decisions from the owning contracts before consulting author labels. No source, packet, activity, work or plan change is made by this review.",
+  "judgment": "changes-requested",
+  "limitations": [
+    "This is not milestone approval, final whole-change review, Verify or PR readiness; no activity/work state is changed.",
+    "Synthetic proposed decisions and literal candidate outputs establish only the stated manual review boundary. No target agent, filesystem operation, governed CLI adoption, hosted environment or external experiment is executed.",
+    "The original packet and historical approvals must remain unchanged. Corrected controls and affected dependent variants require exact independent reassessment."
+  ],
+  "rationale": [
+    "Spec alignment and test coverage — concern. MAP-SR-02/03 and approved M5/TG5 require a valid complete area-first registration/retry control, literal expected registration and known overlap ownership. The intended outcomes are sound, but actual positive artifacts contradict those premises; the finding prevents closing this group.",
+    "Edge cases and error handling — concern limited to the inherited positive artifact. Interrupted state has the area only; exact retry changes only root and idempotent retry changes no bytes. Changed-root and unrelated-area controls correctly stop, registration-first and ambiguous-overlap candidates are rejectable. Those state distinctions remain useful but do not prove compliant completed registration while the intended final root/area pair is malformed.",
+    "Architecture boundaries — pass for canonical method. Project Map owns observed orientation; root owns registration; sibling owns its detail. No behavior or owner change is required. Compatibility — pass within scope: historical maps and original adoption evidence retain their original meaning, without migration, new lifecycle prerequisite or current authority inferred from historical success.",
+    "Security/privacy and unrelated changes — pass within this synthetic scope. Proposed effects remain private artifact/action inputs, preserve neighboring project bytes, expose unauthorized governance/direction mutations as faults, and execute no network, policy adoption or target agent. No production change is part of this packet finding.",
+    "Derived artifact currency — bounded pass for reviewer basis. All packet method copies match current source identities; complete reproduction equals registered data. The separately supplied fresh adapter observations are not needed to establish this finding and do not turn these decisions into agent-execution proof.",
+    "Validation evidence — adequate for this interim changes-requested result. The reviewer independently read actual artifacts and all2660 recorded file identities. Passing source/package checks cannot validate a root table row or semantic overlap by themselves. No new automated validator or broad rerun is demanded; full M5 validation and remaining model assessment remain downstream of this scoped record.",
+    "VIS-operation — accept the six operation/assembly controls and complete new-source establishment within supplied owner authority. Reject establishment over an existing canonical source, unauthorized unsettled audience change and late strategic reclassification ignored. Editorial and substantive scope remain distinct; skip grants no marker/synchronization claim.",
+    "VIS-markers — accept exact canonical projection with outside bytes preserved and zero-write idempotence. Accept stops for missing/duplicate/nested/reversed markers without insertion authority. Reject independent README direction, outside-byte mutation and skip falsely reported as synchronized.",
+    "VIS-resources — reject four unknown classification/result values before consistency inference and reject output when its selected README reference is unavailable. Required resources follow actual assembly; their absence is not permission to reconstruct a method.",
+    "VIS-recovery — accept source-first interrupted states and exact retained-manifest retry only for matching pending README bytes. Changed pending identity stops without overwrite; lost manifest cannot authorize completion. These are inspected proposed sequences with prepared literal bytes, not observed filesystem transactions.",
+    "GOV-principles — accept the narrow AGENTS-only test-evidence principle while retaining all unrelated rule families; reject forced competing Constitution, removal of independent review, temporary deadline as permanent policy and duplicated implementation procedure.",
+    "GOV-authority — accept exact governed target and malformed-identity/changed-basis stops; reject malformed-governed portable fallback. Existing project conventions remain authoritative and installed guidance creates no adoption.",
+    "GOV-evidence — accept reporting conflict between observed practice and policy with unavailable evidence disclosed; reject changing higher-authority approval rules to bless practice or inventing confirmation from unavailable evidence.",
+    "MAP-evidence — accept bounded current local orientation, partial broad orientation with deployment gap and read-only stale audit after changed source. Reject configured command reported executed/passed, unavailable deployment as established and materially changed cited flow called current.",
+    "MAP-operations — accept absent root creation, read-only missing/stale audit and explicit create-existing/refresh-absent stops. Reject audit repair and continuing the simple assembly after known late coordination. Missing maintenance guidance correctly blocks dependent refresh.",
+    "MAP-compatibility — reject unknown operation/scope/freshness/status/next-stage values, historical auto-rewrite and converting an orientation risk to approved implementation. Accept read-only historical inspection with a limited current-reliance account.",
+    "FOUND-conflict — accept map-only reporting of observed network behavior conflicting with offline Vision/governance, returning the behavior issue to Design and any repositioning to direction ownership. Reject map-driven Vision edits or implementation treated as authority; unavailable source limits the audit.",
+    "FOUND-adoption — accept isolated AGENTS-only area audit without creating missing optional foundations or repairing registration. Reject unrequested Vision/Constitution creation and mandatory sequential adoption.",
+    "FOUND-partial — accept source/rationale completion with pending README and explicitly stale consumer assumptions, no unauthorized map write. Reject global completion while README is pending and Vision-driven map rebaselining without its owner."
+  ],
+  "reviewer": {
+    "id": "milestone-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:9a721146b916eb80bd6c7c2c03f483a4ef3cdc3c3281dfc8a8d76f53831c1025",
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/evidence.json"
+    }
+  ],
+  "summary": "The M5 Foundations semantic packet has one material positive-control gap in MAP-registration. Its new root registration is outside the normative table and its importer map does not contain the claimed overlap ownership/link. Preserve this first packet and correct the complete area/retry controls before reliance. Canonical guidance is consistent; this is an interim packet review, not M5 completion.",
+  "target": "code"
+}

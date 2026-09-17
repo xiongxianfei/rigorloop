@@ -20,8 +20,20 @@
         "role": "review"
       },
       "required_outcome": "Preserve this original packet. Supply a complete scoped filled Plan output using the existing three assets, with every applicable field filled or explicitly justified, then fresh single-field/placeholder variants and independent complete-output assessment; keep mutable-state negatives distinct. Alternatively obtain an explicit justified allocation disposition from the owning Plan authority without claiming this proof complete. No new validator, catalog or fictional importer execution is required.",
-      "resolution": null,
-      "state": "open",
+      "resolution": {
+        "actor": {
+          "id": "milestone-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [
+          {
+            "id": "m4-authoring-correction",
+            "path": "docs/changes/2026-09-17-complete-model-test-coverage/evidence.json"
+          }
+        ],
+        "rationale": "Independently read the entire corrected137-line baseline Plan and its actual emitted variants against the unchanged three normative assets. The full skeleton, two complete milestones and decision row are filled with bounded allocation, concrete independent observations, proof prerequisites/timing, evidence, recovery and final review. Missing-field removes only M2 Required evidence and placeholder replaces only its command; both now expose their defining contract defect from a complete control. Separate mutable-state negatives remain. Command names and owner pointer are explicitly fictional inputs, not executions or runtime records. The required complete emitted-artifact assessment is now performed and recorded in code-review-m4. Original evidence and first-pass judgment are preserved; exact corrected manifest and decisions are recorded in code-review-m4."
+      },
+      "state": "resolved",
       "subjects": [
         {
           "identity": "sha256:ea2e56ab60090c6b15558b58e871a8ad12a6098bbe0c723edf6ca23be4e4c3d1",
@@ -41,8 +53,20 @@
         "role": "review"
       },
       "required_outcome": "Preserve original evidence, provide actual adequate necessary Context and Building Block views (or a justified correct necessity disposition under the governing contract), maintain one current owner and consistency with overview/runtime, and reconstruct/reassess affected complete candidates. Do not weaken DES-SR-22 or treat model grammar success as semantic approval.",
-      "resolution": null,
-      "state": "open",
+      "resolution": {
+        "actor": {
+          "id": "milestone-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [
+          {
+            "id": "m4-authoring-correction",
+            "path": "docs/changes/2026-09-17-complete-model-test-coverage/evidence.json"
+          }
+        ],
+        "rationale": "Independently read the corrected full importer model and every affected architecture/move variant. Necessary Context and Building Block views now have distinct actual diagrams and owning prose; the overview points to them and the existing Runtime sequence. Caller, direction authority, destination, Input, Store and parent invocation order are coherent. Deployment is explicitly and proportionately unnecessary under the bounded local guarantee. Four faulty variants still each expose the intended ownership/view/edge/composition failure. Model grammar is not used as the semantic oracle. Original evidence and first-pass judgment are preserved; exact corrected manifest and decisions are recorded in code-review-m4."
+      },
+      "state": "resolved",
       "subjects": [
         {
           "identity": "sha256:ea2e56ab60090c6b15558b58e871a8ad12a6098bbe0c723edf6ca23be4e4c3d1",
@@ -62,8 +86,20 @@
         "role": "review"
       },
       "required_outcome": "Preserve the original packet and add concrete Plan-specific portable-create and exact governed-revise action/output packets under explicit target/basis/authority facts, including the permitted Plan/navigation or author-evidence write set and forbidden work/routing changes; independently assess them alongside existing initialization variants. Alternatively record an honest scoped gap with its approved allocation owner. Do not invent CLI or agent-runtime execution.",
-      "resolution": null,
-      "state": "open",
+      "resolution": {
+        "actor": {
+          "id": "milestone-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [
+          {
+            "id": "m4-authoring-correction",
+            "path": "docs/changes/2026-09-17-complete-model-test-coverage/evidence.json"
+          }
+        ],
+        "rationale": "Independently inspected the two added Plan-specific complete action/output packets. Portable create targets an actually absent new-plan.md, emits the complete Plan and relative navigation, preserves the old Plan/upstream/history/neighbor, and proposes no record mutation. Governed revise carries exact original Plan/read hashes, an actual pre-revision copy, stipulated current agreeing authority/revision, and only equivalent command-label changes with authorized author evidence. Its write set excludes work, routing, review approval and fallback creation. Original Proposal actions no longer claim Plan group coverage; initialization remains separately assessed. These are bounded proposed decisions, with no agent or CLI execution claim. Original evidence and first-pass judgment are preserved; exact corrected manifest and decisions are recorded in code-review-m4."
+      },
+      "state": "resolved",
       "subjects": [
         {
           "identity": "sha256:ea2e56ab60090c6b15558b58e871a8ad12a6098bbe0c723edf6ca23be4e4c3d1",

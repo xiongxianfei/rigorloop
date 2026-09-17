@@ -1,10 +1,10 @@
 {
   "activity": {
     "owner": {
-      "id": "independent-design-reviewer",
+      "id": "milestone-reviewer",
       "role": "review"
     },
-    "reason": "M4 corrected86-case packet supplied as separate evidence with original first-pass findings preserved. Actual model fixture fix and759-result scoped CI unchanged. Request same-M4 independent correction assessment; no readiness or later work completion claimed.",
+    "reason": "M5 implementation and exact correction packet ready for independent full milestone review. Native12/scoped305 results and actual archives passed; original finding preserved for reporter-owned disposition. All27semanticgroups materialized and independently assessed except final corrected MAP sequence reassessment. No approval, M6 execution or final readiness inferred.",
     "stage": "code-review",
     "status": "ready"
   },
@@ -51,7 +51,7 @@
         "role": "implement"
       },
       "path": "docs/changes/2026-09-17-complete-model-test-coverage/evidence.json",
-      "reason": "Exact corrective packet supplied for same-M4 independent assessment; does not claim approval or next-stage readiness.",
+      "reason": "Exact corrective subjects for same-M5 assessment; no milestone approval claimed.",
       "value": "current"
     },
     {
@@ -114,7 +114,25 @@
         "role": "review"
       },
       "path": "docs/changes/2026-09-17-complete-model-test-coverage/reviews/code-review-m4-first-pass.json",
-      "reason": "Exact interim first-pass M4 changes-requested assessment; open packet-control and Plan-target proof gaps require author correction and independent reassessment. This is not milestone readiness.",
+      "reason": "Original changes-requested judgment and exact packet subjects remain historical evidence. All three findings are independently resolved using separate corrected evidence; code-review-m4 assesses the corrected whole milestone and supplies current reliance.",
+      "value": "stale"
+    },
+    {
+      "actor": {
+        "id": "milestone-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/reviews/code-review-m4.json",
+      "reason": "Independent complete M4 review of exact source, corrected semantic packet, original evidence and unchanged applicable validation. Three original findings are resolved; no material M4 issue remains. This is not final whole-change readiness.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "milestone-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/reviews/code-review-m5-first-pass.json",
+      "reason": "Exact interim changes-requested assessment of preserved original M5 Foundations packet; open MAP-registration control gap prevents reliance on that sequence.",
       "value": "current"
     }
   ],
@@ -347,6 +365,14 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-17-complete-model-test-coverage/reviews/code-review-m4-first-pass.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/reviews/code-review-m4.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/reviews/code-review-m5-first-pass.json"
     }
   ],
   "schema_version": 3,
@@ -982,7 +1008,7 @@
         "PROP-SR-05",
         "PROP-SR-06"
       ],
-      "status": "in-progress"
+      "status": "completed"
     },
     {
       "id": "m5",
@@ -1016,7 +1042,7 @@
         "VIS-SR-02",
         "VIS-SR-03"
       ],
-      "status": "pending"
+      "status": "in-progress"
     },
     {
       "id": "m6",
