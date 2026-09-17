@@ -6,6 +6,8 @@ Use this guidance for changes to tests or assessment of their maintenance impact
 
 Distinguish retain, strengthen, consolidate, replace and remove. Identify the candidate scope, governing obligation, failure detection, boundary and justified diagnostic value. Compare its contribution with retained or replacement proof. Runtime cost, age, similar names, missing labels, coverage numbers or a passing remaining suite alone do not establish redundancy.
 
+Use the selection method in [test-quality](test-quality.md#select-requirements-and-proof) to reassess the affected behavior group, including parent interactions. An unlisted regression remains protected; neither a scenario catalog nor path-selected execution is an exhaustive account of required detection. Preserve unknown protection while its owner resolves the obligation. A change to selection, discovery or shared fixtures must not silently remove a still-required observation.
+
 For removal or consolidation, explain why no required distinct protection is lost. Establish and assess replacement protection before relying on a reduced suite. If the behavior is intentionally retired, identify the governing owner's explicit decision and its scope; deleting a test cannot retire compatibility. Use existing group-level review and evidence rationale, not a mandatory per-test ledger.
 
 When protection is unknown, retain it while investigating or strengthening its basis. Do not suppress a failing or flaky test solely to obtain green validation. Assess its cause and contractual relevance. Any permitted quarantine needs an authorized owner, tracked follow-up, affected claim limits, and alternative protection or explicit residual-risk treatment under the governing contract.
@@ -13,6 +15,8 @@ When protection is unknown, retain it while investigating or strengthening its b
 ## Prove the remaining protection
 
 Inspect fixtures, alternate callers, supported versions, runner discovery, selectors and generated output where changes affect detection. Account for removed or renamed cases and their meaningful parameter partitions. Execute proof at the affected boundary; a smaller discovery count or an accidentally omitted test directory is not successful cleanup. Check surrounding tests when a shared fixture or helper changes.
+
+Use comparable measured worker scope and environment to locate expensive setup or repeated work. A worker measurement can include imports, fixtures, execution and cleanup; it does not by itself identify which part is wasteful. Try a smaller realistic fixture or independently materialized immutable inputs where the failure mechanism remains observable. For example, atomic-import rejection still needs a private store with known prior records and assertions that no partial import remains; replacing it with parser-only proof loses the persistence guarantee even if it runs faster.
 
 A failing-before/passing-after reproduction or focused mutation may demonstrate replacement detection when feasible; otherwise inspect the exact counterexample mechanism and execute relevant proof. Independent review judges whether the basis suffices. Restore lost tests or repair replacement proof when equivalence fails; preserve contradictory results and route the correction.
 

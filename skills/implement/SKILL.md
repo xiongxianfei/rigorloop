@@ -95,6 +95,7 @@ If a formal workflow-managed delivery package lacks recorded, approved, current 
 
 ### Tests and validation
 
+- Under adopted test criteria, use the [selection method](references/test-quality.md#select-requirements-and-proof) to realize allocated model groups with concrete conditions, fresh realistic fixtures, independent assertions and required public or integrated observations. Inspect existing assertions and native discovery; preserve useful unlisted regressions and reconcile changed realization links. Route missing behavior or allocation to its owner instead of treating a passing or cheaper suite as sufficient protection.
 - Write or update tests or deterministic proof first when feasible.
 - Confirm expected failure for new behavior or regression coverage when feasible.
 - Implement the minimum scope-complete change, rerun narrow proof, then refactor only within scope.
