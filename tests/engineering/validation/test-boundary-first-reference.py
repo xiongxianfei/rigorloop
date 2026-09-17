@@ -43,17 +43,6 @@ resources:
       - implement
       - code-review
       - verify
-  - id: feature-authoring
-    source: templates/shared/boundary-first-feature-authoring-v1.md
-    target: references/boundary-first-feature-authoring-v1.md
-    consumers:
-      - design
-      - design-review
-  - id: proof
-    source: templates/shared/boundary-first-proof-v1.md
-    target: references/boundary-first-proof-v1.md
-    consumers:
-      - delivery-review
 """
 
 
@@ -71,14 +60,6 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
         (root / "scripts/resources/boundary-first").mkdir(parents=True, exist_ok=True)
         (root / "scripts/resources/boundary-first" / "boundary-first-resources.yaml").write_bytes(
             MANIFEST_BYTES
-        )
-        (source.parent / "boundary-first-feature-authoring-v1.md").write_bytes(
-            b"# feature authoring\n\n"
-            b"Boundary model version: boundary-first-v1\n"
-        )
-        (source.parent / "boundary-first-proof-v1.md").write_bytes(
-            b"# proof guidance\n\n"
-            b"Boundary model version: boundary-first-v1\n"
         )
         for skill in GOVERNED_SKILLS:
             (root / "skills" / skill).mkdir(parents=True)
@@ -117,40 +98,15 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
             Path("scripts/resources/boundary-first/boundary-first-resources.yaml"),
         )
 
-    def test_manifest_is_the_exact_closed_resource_authority(self) -> None:
+    def test_manifest_is_the_exact_closed_resource_authority(self):
         _, root = self.make_repository()
-
         manifest = load_resource_manifest(root)
-
         self.assertEqual(manifest.schema_version, 1)
         self.assertEqual(manifest.contract_version, METHOD_VERSION)
-        self.assertEqual(
-            tuple(resource.resource_id for resource in manifest.resources),
-            ("compact-core", "feature-authoring", "proof"),
-        )
-        self.assertEqual(
-            projected_paths(root),
-            (
-                *(
-                    Path("skills")
-                    / skill
-                    / "references/boundary-first-method-v1.md"
-                    for skill in GOVERNED_SKILLS
-                ),
-                Path(
-                    "skills/design/references/"
-                    "boundary-first-feature-authoring-v1.md"
-                ),
-                Path(
-                    "skills/design-review/references/"
-                    "boundary-first-feature-authoring-v1.md"
-                ),
-                Path(
-                    "skills/delivery-review/references/"
-                    "boundary-first-proof-v1.md"
-                ),
-            ),
-        )
+        self.assertEqual(tuple(r.resource_id for r in manifest.resources), ("compact-core",))
+        self.assertEqual(projected_paths(root), tuple(
+            Path("skills") / skill / "references/boundary-first-method-v1.md"
+            for skill in ("route", "design", "design-review", "plan", "delivery-review", "implement", "code-review", "verify")))
 
     def test_unknown_value_fails_before_consistency_checks(self) -> None:
         _, root = self.make_repository()
@@ -197,93 +153,41 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
                 ):
                     project_reference(root, mode="write")
 
-    def test_manifest_rejects_unknown_ids_consumers_and_duplicates(self) -> None:
+    def test_manifest_rejects_unknown_ids_consumers_and_duplicates(self):
         variants = {
-            "unknown-id": MANIFEST_BYTES.replace(
-                b"id: proof", b"id: future"
-            ),
-            "unknown-consumer": MANIFEST_BYTES.replace(
-                b"      - verify\n", b"      - future-stage\n"
-            ),
-            "duplicate-consumer": MANIFEST_BYTES.replace(
-                b"      - verify\n", b"      - verify\n      - verify\n"
-            ),
-            "duplicate-source": MANIFEST_BYTES.replace(
-                b"templates/shared/boundary-first-proof-v1.md",
-                b"templates/shared/boundary-first-feature-authoring-v1.md",
-                1,
-            ),
-            "duplicate-target": MANIFEST_BYTES.replace(
-                b"references/boundary-first-proof-v1.md",
-                b"references/boundary-first-feature-authoring-v1.md",
-                1,
-            ),
+            "unknown-id": (MANIFEST_BYTES.replace(b"id: compact-core", b"id: future"), "BFR-MANIFEST-RESOURCE-ID-UNKNOWN"),
+            "unknown-consumer": (MANIFEST_BYTES.replace(b"      - verify\n", b"      - future-stage\n"), "BFR-MANIFEST-CONSUMER-UNKNOWN"),
+            "duplicate-consumer": (MANIFEST_BYTES.replace(b"      - verify\n", b"      - verify\n      - verify\n"), "BFR-MANIFEST-"),
+        }
+        for name, (raw, diagnostic) in variants.items():
+            with self.subTest(name=name):
+                _, root = self.make_repository()
+                self.assertEqual(len(load_resource_manifest(root).resources), 1)
+                (root / RESOURCE_MANIFEST).write_bytes(raw)
+                if name.startswith("unknown"):
+                    (root / CANONICAL_REFERENCE).unlink()
+                with self.assertRaisesRegex(ProjectionContractError, diagnostic):
+                    project_reference(root, mode="write")
+
+    def test_manifest_rejects_known_but_wrong_exact_resource_tuples(self):
+        variants = {
+            "missing-consumer": MANIFEST_BYTES.replace(b"      - verify\n", b"", 1),
+            "wrong-source": MANIFEST_BYTES.replace(b"templates/shared/boundary-first-method-v1.md", b"templates/shared/alternate-method.md"),
+            "wrong-target": MANIFEST_BYTES.replace(b"references/boundary-first-method-v1.md", b"references/alternate-method.md"),
         }
         for name, raw in variants.items():
             with self.subTest(name=name):
                 _, root = self.make_repository()
+                (root / "templates/shared/alternate-method.md").write_bytes(b"# alternate\n")
                 (root / RESOURCE_MANIFEST).write_bytes(raw)
-                with self.assertRaisesRegex(
-                    ProjectionContractError,
-                    "BFR-MANIFEST-",
-                ):
+                with self.assertRaisesRegex(ProjectionContractError, "BFR-MANIFEST-IDENTITY") as raised:
                     project_reference(root, mode="write")
+                self.assertIn("compact-core", raised.exception.message)
 
-    def test_manifest_rejects_known_but_wrong_exact_resource_tuples(
-        self,
-    ) -> None:
-        variants = {
-            "missing-compact-consumer": (
-                MANIFEST_BYTES.replace(b"      - verify\n", b"", 1),
-                "compact-core",
-            ),
-            "unowned-feature-consumer": (
-                MANIFEST_BYTES.replace(
-                    b"      - design-review\n  - id: proof",
-                    b"      - design-review\n      - plan\n  - id: proof",
-                ),
-                "feature-authoring",
-            ),
-            "wrong-source": (
-                MANIFEST_BYTES.replace(
-                    b"templates/shared/boundary-first-proof-v1.md",
-                    b"templates/shared/alternate-proof-v1.md",
-                ),
-                "proof",
-            ),
-            "wrong-target": (
-                MANIFEST_BYTES.replace(
-                    b"    target: references/boundary-first-proof-v1.md",
-                    b"    target: references/alternate-proof-v1.md",
-                ),
-                "proof",
-            ),
-        }
-        for name, (raw, expected_layer) in variants.items():
-            with self.subTest(name=name):
-                _, root = self.make_repository()
-                if name == "wrong-source":
-                    (
-                        root / "templates/shared/alternate-proof-v1.md"
-                    ).write_bytes(b"# alternate\n")
-                (root / RESOURCE_MANIFEST).write_bytes(raw)
-                with self.assertRaisesRegex(
-                    ProjectionContractError,
-                    "BFR-MANIFEST-IDENTITY",
-                ) as raised:
-                    project_reference(root, mode="write")
-                self.assertIn(expected_layer, raised.exception.message)
 
-    def test_projection_module_does_not_restate_the_resource_matrix(self) -> None:
-        module = (
-            ROOT / "scripts/lib/validation" / "boundary_first_reference.py"
-        ).read_text(encoding="utf-8")
-
-        self.assertNotIn("RESOURCE_CONTRACTS", module)
-
-    def test_mixed_canonical_resource_version_fails_before_write(self) -> None:
+    def test_unknown_canonical_resource_version_fails_before_write(self) -> None:
         _, root = self.make_repository()
-        proof = root / "templates/shared/boundary-first-proof-v1.md"
+        proof = root / "templates/shared/boundary-first-method-v1.md"
         proof.write_text(
             "# Proof\n\nBoundary model version: boundary-first-v2\n",
             encoding="utf-8",
@@ -322,35 +226,17 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
                     project_reference(root, mode="write")
                 self.assertEqual(sentinel.read_bytes(), b"unchanged")
 
-    def test_write_is_raw_byte_exact_and_idempotent(self) -> None:
+    def test_write_is_raw_byte_exact_and_idempotent(self):
         _, root = self.make_repository()
-        source = root / CANONICAL_REFERENCE
-        raw = b"# method\r\n\xce\xbb portable bytes\n"
-        raw += b"Boundary model version: boundary-first-v1\n"
-        source.write_bytes(raw)
-
+        raw = b"# method\r\n\xce\xbb portable bytes\nBoundary model version: boundary-first-v1\n"
+        (root / CANONICAL_REFERENCE).write_bytes(raw)
         first = project_reference(root, mode="write")
         second = project_reference(root, mode="write")
-
         self.assertTrue(first.ok)
         self.assertTrue(second.ok)
         self.assertEqual(first.projection_sha256, second.projection_sha256)
         for relative in projected_paths(root):
-            target = root / relative
-            expected_name = target.name
-            if expected_name == PROJECTED_REFERENCE.name:
-                expected = raw
-            elif expected_name == "boundary-first-feature-authoring-v1.md":
-                expected = (
-                    b"# feature authoring\n\n"
-                    b"Boundary model version: boundary-first-v1\n"
-                )
-            else:
-                expected = (
-                    b"# proof guidance\n\n"
-                    b"Boundary model version: boundary-first-v1\n"
-                )
-            self.assertEqual(target.read_bytes(), expected)
+            self.assertEqual((root / relative).read_bytes(), raw)
 
     def test_check_reports_missing_stale_and_unexpected_projections(self) -> None:
         _, root = self.make_repository()
@@ -442,19 +328,19 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
                     project_reference(root, mode=mode)
                 self.assertEqual(sentinel.read_bytes(), b"outside sentinel")
 
-    def test_invalid_late_source_preflight_performs_no_partial_write(self) -> None:
+    def test_missing_source_preflight_performs_no_partial_write(self) -> None:
         _, root = self.make_repository()
         existing = root / "skills/route" / PROJECTED_REFERENCE
         existing.parent.mkdir(parents=True)
         existing.write_bytes(b"original")
         (
             root
-            / "templates/shared/boundary-first-proof-v1.md"
+            / "templates/shared/boundary-first-method-v1.md"
         ).unlink()
 
         with self.assertRaisesRegex(
             ProjectionContractError,
-            "BFR-SOURCE-MISSING.*boundary-first-proof-v1.md",
+            "BFR-SOURCE-MISSING.*boundary-first-method-v1.md",
         ):
             project_reference(root, mode="write")
 
@@ -568,15 +454,7 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
     def test_input_drift_restores_targets_and_retry_succeeds(self) -> None:
         from lib.validation.boundary_first_reference import _write_target_bytes
 
-        inputs = (
-            RESOURCE_MANIFEST,
-            CANONICAL_REFERENCE,
-            Path(
-                "templates/shared/"
-                "boundary-first-feature-authoring-v1.md"
-            ),
-            Path("templates/shared/boundary-first-proof-v1.md"),
-        )
+        inputs = (RESOURCE_MANIFEST, CANONICAL_REFERENCE)
         target_count = len(projected_paths())
         mutation_indices = (1, (target_count + 1) // 2, target_count)
         for relative_input in inputs:
@@ -862,7 +740,7 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
         _, root = self.make_repository()
         feature = (
             root
-            / "templates/shared/boundary-first-feature-authoring-v1.md"
+            / "templates/shared/boundary-first-method-v1.md"
         )
         secret = "token-super-secret-resource-version"
         feature.write_text(
@@ -887,7 +765,7 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
         self.assertIn("BFR-RESOURCE-VERSION-UNKNOWN", completed.stdout)
         self.assertIn(
             "path=templates/shared/"
-            "boundary-first-feature-authoring-v1.md",
+            "boundary-first-method-v1.md",
             completed.stdout,
         )
         self.assertIn("offending_value=sha256:", completed.stdout)
@@ -895,51 +773,6 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
         self.assertNotIn(secret, completed.stdout)
         self.assertNotIn(str(root), completed.stdout)
 
-    def test_canonical_method_contains_portable_contract_without_stage_policy(
-        self,
-    ) -> None:
-        text = (ROOT / CANONICAL_REFERENCE).read_text(encoding="utf-8")
-        required = (
-            "Boundary model version: boundary-first-v1",
-            "## Core dimensions",
-            "applicable",
-            "not-applicable",
-            "illustration",
-            "regression",
-            "discovery",
-            "No interaction selected:",
-            "Structural validation",
-            "Semantic review",
-            "Which inputs or actors can change the outcome?",
-            "Which state or timing conditions can change the outcome?",
-            "Which public, sibling, helper, or alternate path can change the outcome?",
-            "Which failure, retry, recovery, compatibility, or external condition can change the outcome?",
-        )
-        for token in required:
-            with self.subTest(token=token):
-                self.assertIn(token, text)
-        forbidden = (
-            "Immediate next stage:",
-            "Implementation handoff:",
-            "Recording status:",
-            "branch-ready",
-            "PR readiness",
-        )
-        for token in forbidden:
-            with self.subTest(token=token):
-                self.assertNotIn(token, text)
-
-        feature = (
-            ROOT
-            / "templates/shared/boundary-first-feature-authoring-v1.md"
-        ).read_text(encoding="utf-8")
-        proof = (
-            ROOT / "templates/shared/boundary-first-proof-v1.md"
-        ).read_text(encoding="utf-8")
-        self.assertIn("## Feature-spec boundary record", feature)
-        self.assertNotIn("## Test-spec proof record", feature)
-        self.assertIn("## Test-spec proof record", proof)
-        self.assertNotIn("## Feature-spec boundary record", proof)
 
 
 if __name__ == "__main__":

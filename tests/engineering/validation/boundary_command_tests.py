@@ -8,12 +8,15 @@ import json
 import subprocess
 import tempfile
 import unittest
+import io
+import runpy
+from contextlib import redirect_stdout
+from unittest.mock import patch
 
 from boundary_fixture_helpers import (
     EXPECTED_MODEL_PATHS,
     ROOT,
-    valid_feature,
-    valid_proof,
+    relevant_tree_snapshot,
 )
 
 sys.path.insert(0, str(ROOT / "scripts"))
@@ -71,12 +74,37 @@ class CurrentBoundaryCommandTests(unittest.TestCase):
             self.assertEqual(code, 1)
             self.assertTrue(output["issues"])
 
-    def test_explicit_customer_grammar_does_not_require_repository_activation(self):
+    def test_feature_inputs_reject_without_adoption_or_mutation(self):
+        for variant in ("feature", "proof", "missing", "symlink"):
+            with self.subTest(variant=variant), tempfile.TemporaryDirectory() as temporary:
+                root = Path(temporary)
+                (root / "specs").mkdir()
+                outside = root / "private.txt"
+                outside.write_bytes(b"private source contents")
+                path = "specs/feature.test.md" if variant == "proof" else "specs/feature.md"
+                target = root / path
+                if variant == "symlink":
+                    target.symlink_to(outside)
+                elif variant != "missing":
+                    target.write_bytes(b"boundary_contract: boundary-first-v1\nprivate source contents")
+                before = relevant_tree_snapshot(root)
+                code, output = self.run_check(root, path)
+                self.assertEqual(code, 1, output)
+                self.assertEqual(output["status"], "failed")
+                self.assertEqual(output["review_required"], [])
+                self.assertEqual([i["check_id"] for i in output["issues"]], ["BFR-UNSUPPORTED-FORMAT"])
+                self.assertNotIn("private source contents", json.dumps(output))
+                self.assertEqual(relevant_tree_snapshot(root), before)
+                self.assertEqual(outside.read_bytes(), b"private source contents")
+
+    def test_feature_rejection_does_not_read_contents(self):
+        main = runpy.run_path(str(ROOT / "scripts/validate-boundary-first.py"))["main"]
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             (root / "specs").mkdir()
-            (root / "specs/feature.md").write_text(valid_feature())
-            (root / "specs/feature.test.md").write_text(valid_proof())
-            code, output = self.run_check(root, "specs/feature.test.md")
-            self.assertEqual(code, 0, output)
-            self.assertEqual(output["status"], "passed")
+            (root / "specs/feature.md").write_text("# private feature")
+            output = io.StringIO()
+            with patch.object(sys, "argv", ["check", "--root", str(root), "--path", "specs/feature.md"]), redirect_stdout(output), patch.object(Path, "read_text", side_effect=AssertionError("retired content read")) as read:
+                self.assertEqual(main(), 1)
+            read.assert_not_called()
+            self.assertEqual(json.loads(output.getvalue())["issues"][0]["check_id"], "BFR-UNSUPPORTED-FORMAT")

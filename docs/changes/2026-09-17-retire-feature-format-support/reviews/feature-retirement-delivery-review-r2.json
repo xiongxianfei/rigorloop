@@ -1,0 +1,39 @@
+{
+  "assessment_scope": "Formal independent Delivery Review of the sole primary plan docs/plans/2026-09-17-retire-feature-format-support.md under feature-retirement-design-review-r2 and approved proposal. Covers M1 sequencing, retained versus retired protections, command feasibility, method/resource integration, recovery and final review dependencies.",
+  "change_id": "2026-09-17-retire-feature-format-support",
+  "contributors": [
+    {
+      "id": "feature-retirement-plan-author",
+      "role": "plan"
+    }
+  ],
+  "findings": [],
+  "id": "feature-retirement-delivery-review-r2",
+  "independence_basis": "Delegated independent reviewer /root/admission_delivery_review read the complete primary plan and approved Design basis, inspected current commands, test aggregates, projection checks and authority. Reviewer authored no plan, Design, implementation or tests; only this review and its finding are written. Parent read-only observations were independently checked against source.",
+  "judgment": "approved",
+  "limitations": [
+    "This approves only the exact primary-plan allocation for authorized implementation; it does not claim code correctness, executed future proof, final readiness or PR readiness.",
+    "Detailed deletion lists and actual replacement detection remain implementation/evidence responsibilities under the plan; final reviewers must assess every removed protective family and surviving discovery.",
+    "AUTH-SH-005 and compact-core assessment are future independent evidence obligations; this approval does not turn proposed catalog procedures into completed execution."
+  ],
+  "rationale": [
+    "Requirement trace and scope: current approved Design subjects match their identities and the earlier Authoring accounting concern is reporter-resolved. The one coupled M1 appropriately reconciles advertised methods, projection inventory, validator dispatch, CLI spec withdrawal and exclusive tests before shipping. No separate feature/proof contract or proof map is consumed. Historical routing, generic aliases, other location kinds and record safety remain outside retirement.",
+    "Sequencing and recovery: expected unsupported/no-read and config rejection proof precedes implementation; current privacy/model protection is separated before retiring fixtures. Unknown protective value blocks deletion, group-level removal accounting and actual discovery are required, and coherent rollback names the recoverable baseline while preserving customer and historical bytes. This avoids both automatic deletion by filename and unnecessary per-test ledgers.",
+    "Allocated validation is concrete at appropriate boundaries: public old-format rejection plus direct no-read observation; current models/catalogs and actual selector/executor Git selection; CLI unknown spec kind before discovery with retained-kind control; independent reduced manifest oracle, unknown-first safety and actual archive/packed installation for both targets. All nine named command paths exist, --check flags exist, and native boundary and packaging entrypoints collect their actual groups. No future command execution is claimed.",
+    "Reporter reassessment: the revised TG-METHOD retains AUTH-SH-005 and separately assigns independent compact-core assessment of the four-question scan, all eight dimensions, actual composed hazards and correct upstream ownership. Its stale-authority/helper-retry living-model packet and omitted-authority, invented-record, Cartesian and wrong-owner counterexamples can distinguish weakened guidance. Canonical and actual generated/installed availability are inspected; observations are recorded with explicit semantic limits and refreshed after relevant changes. This resolves compact-method-proof-allocation without introducing phrase quotas or a semantic runner. The complete allocation remains coherent with TG-RESOURCES integrity checks.",
+    "Closeout is sound: selected full local integration with honest reuse, release communication without publication authority, independent M1 review, fresh final whole-change Code Review and distinct Verify remain separate. Exact committed PR selection/current-record snapshot and hosted/local limits are allocated. No other material allocation or authority gap was identified."
+  ],
+  "reviewer": {
+    "id": "feature-retirement-delivery-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:4ad33835d092e6724998869a37469e21e63b01fd290ca02b595ff516d6eb0692",
+      "path": "docs/plans/2026-09-17-retire-feature-format-support.md"
+    }
+  ],
+  "summary": "The complete revised retirement delivery package safely allocates the coupled withdrawal and adequate retained-protection proof, including concrete independent compact-method assessment.",
+  "target": "delivery"
+}

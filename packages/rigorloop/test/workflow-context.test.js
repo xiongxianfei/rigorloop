@@ -394,3 +394,20 @@ for (const shape of ['archive', 'noncurrent', 'current', 'mixed', 'residue'])
     assert.equal(explicit.exitCode, 2);
     assert.equal(explicit.result.errors[0].code, 'invalid-input');
   });
+
+test('retired spec locations reject through public context without rewriting project input', (t) => {
+  const root = setup(t);
+  assert.equal(Object.hasOwn(context(root).result.locations, 'spec'), false);
+  const configuration = 'schema_version: 1\nartifact_locations:\n  spec:\n    path_template: specs/<slug>.md\n';
+  writeFileSync(join(root, 'rigorloop.workflow.yaml'), configuration);
+  mkdirSync(join(root, 'specs'));
+  writeFileSync(join(root, 'specs/customer.md'), '# Private original\n');
+  const result = spawnSync(process.execPath, [cli, 'workflow-context', '--format', 'json'], {cwd: root, encoding: 'utf8'});
+  assert.equal(result.status, 2, result.stdout + result.stderr);
+  const output = JSON.parse(result.stdout);
+  assert.equal(output.status, 'rejected');
+  assert.equal(output.errors[0].code, 'invalid-input');
+  assert.deepEqual(output.candidates, []);
+  assert.equal(readFileSync(join(root, 'rigorloop.workflow.yaml'), 'utf8'), configuration);
+  assert.equal(readFileSync(join(root, 'specs/customer.md'), 'utf8'), '# Private original\n');
+});

@@ -17,7 +17,6 @@ export const BUNDLED_WORKFLOW_DEFAULTS = Object.freeze({
   artifact_locations: Object.freeze({
     "change-record": Object.freeze({ path_template: "docs/changes/<change-id>/change.json", owner: "workflow" }),
     proposal: Object.freeze({ path_template: "docs/proposals/<change-id>.md", owner: "proposal" }),
-    spec: Object.freeze({ path_template: "specs/<slug>.md", owner: "spec" }),
     architecture: Object.freeze({ path_template: "docs/architecture/<change-id>.md", owner: "architecture" }),
     adr: Object.freeze({ path_template: "docs/adr", owner: "architecture" }),
     plan: Object.freeze({ path_template: "docs/plans/<change-id>.md", owner: "plan" }),
@@ -33,7 +32,7 @@ export const BUNDLED_WORKFLOW_DEFAULTS = Object.freeze({
 
 const SUPPORTED_KINDS=new Set(Object.keys(BUNDLED_WORKFLOW_DEFAULTS.artifact_locations));
 const EXPECTED_OWNERS=Object.fromEntries(Object.entries(BUNDLED_WORKFLOW_DEFAULTS.artifact_locations).map(([k,v])=>[k,v.owner]));
-const RECORD_KINDS=new Set([...SUPPORTED_KINDS].filter(k=>!['proposal','spec','architecture','adr','plan'].includes(k)));
+const RECORD_KINDS=new Set([...SUPPORTED_KINDS].filter(k=>!['proposal','architecture','adr','plan'].includes(k)));
 function diagnostic(code,invariant,path=null){
  code=code==='RL_CONTEXT_PATH_UNSAFE'?'unsafe-path':code.startsWith('RL_CONTEXT_')?'invalid-input':code;
  return {code,path,message:`Workflow context: ${code}.`};

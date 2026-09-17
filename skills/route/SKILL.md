@@ -155,9 +155,9 @@ Start with the exact approved rows cited for the current decision. Expand approv
 
 Add a scenario only for a distinct outcome or material authority, trust, state, timing, recovery, path, compatibility, external-dependency, incident, or regression hazard. Stop when every applicable boundary and selected interaction has direct proof; do not build a Cartesian inventory.
 
-The project's selected contract owns formal adoption and document format. An unmarked feature requiring an adoption decision goes to Design Review; unknown markers and malformed records fail structural validation. Do not infer adoption from a historical activation snapshot or from installing a skill. Explain concisely when a formal record is required or an upstream gap blocks progress; do not request redundant consent for contract-required work. Structural validation cannot author, repair, or approve semantic content.
+The project's selected contract owns formal adoption and document format. Unknown current model markers and malformed records fail structural validation. Feature/proof operations are unsupported; existing documents may be read as sources, and scoped adoption requires explicit project authority. Do not infer adoption from a historical activation snapshot or from installing a skill. Explain concisely when a formal record is required or an upstream gap blocks progress; do not request redundant consent for contract-required work. Structural validation cannot author, repair, or approve semantic content.
 
-Route the method, locate governing artifacts, and stop on missing applicable ownership. For an adopting change, identify the approved feature boundary record and proof map before routing downstream. Stop routing and name the owning upstream stage when ownership is absent or an identity is invalid.
+Route the method, locate governing artifacts, and stop on missing applicable ownership. Identify the approved living Design and Delivery allocation before routing downstream. Stop routing and name the owning upstream stage when ownership is absent or an identity is invalid.
 
 ## Lifecycle overview
 
@@ -244,7 +244,6 @@ docs/changes/<change-id>/reviews/<review-id>.json
 docs/changes/<change-id>/evidence.json
 docs/changes/<change-id>/material-decisions.json
 docs/changes/<change-id>/verify-report.json
-specs/slug.md
 docs/learn/sessions/YYYY-MM-DD-slug.md
 ```
 

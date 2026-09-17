@@ -13,12 +13,12 @@ AUTH-RF-003/004 rely on [Design's living coverage contract](../design.md#living-
 | Group | Cases | Distinct failures to expose |
 | --- | ---: | --- |
 | [Refinement](cases/refinement.json) | 4 | Weakened approved goal; identities lost through work regrouping; coverage rationale stranded in a plan; isolated checks substituted for composed proof. |
-| [Scope and handoff](cases/scope-handoff.json) | 4 | Direct correction expands scope; changed case detail is omitted from review; mutable results enter stable artifacts; saving or authorship substitutes for independent judgment. |
+| [Scope and handoff](cases/scope-handoff.json) | 5 | Direct correction expands scope; changed case detail is omitted from review; mutable results enter stable artifacts; saving or authorship substitutes for independent judgment; retired output bypasses source/adoption authority. |
 | [Correction and reconciliation](cases/correction-reconciliation.json) | 4 | A gap reaches the wrong owner; a changed upstream basis is ignored; live references or historical subjects are damaged during a move; missing prerequisites cause invented dependent work. |
 
-All **12 cases** are proposed independent-review procedures and collectively reference all five parent requirements. They have no executable realization links. That is a statement of the selected observation method and pending assessment, not a claim that no prior review occurred or that 12 automated tests need to be written. Case counts and requirement references establish accounting only.
+All **13 cases** are proposed independent-review procedures and collectively reference all five parent requirements. They have no executable realization links. That is a statement of the selected observation method and pending assessment, not a claim that no prior review occurred or that 13 automated tests need to be written. Case counts and requirement references establish accounting only.
 
-Keep these twelve scenarios because their failure boundaries differ. Weakening the approved outcome, losing a requirement identity, stranding coverage in Plan and allocating an insufficient observation require different corrections. Likewise, a case omitted from the review package differs from a basis that changes during authoring; artifact-location reconciliation differs from missing required input. Related decision alternatives use named variants with one defining fault. Do not combine these outcomes merely to reduce the count, or turn each variant into another mandatory case.
+Keep these thirteen scenarios because their failure boundaries differ. Weakening the approved outcome, losing a requirement identity, stranding coverage in Plan and allocating an insufficient observation require different corrections. Likewise, a case omitted from the review package differs from a basis that changes during authoring; artifact-location reconciliation differs from missing required input. Related decision alternatives use named variants with one defining fault. Do not combine these outcomes merely to reduce the count, or turn each variant into another mandatory case.
 
 ## Synthetic artifact fixture
 
@@ -47,7 +47,7 @@ Present the compliant control and the specified faulty candidate under the same 
 
 The reviewer records the exact source/fixture/output identities, observations, counterexample disposition and limits through the existing Assessment/evidence owner. Authoring this catalog is not executing those reviews. A synthetic walkthrough cannot establish target-agent runtime behavior; a future evaluation harness would require an explicit environment, authority, reproducibility and evidence design.
 
-Existing [authority checks](../../../../../tests/skill/skill_authority_tests.py) inspect authoring instructions for prohibited settlement wording and artifact assets for mutable-status headings. Existing [shared refinement checks](../../../../../tests/skill/skill_shared_policy_tests.py) inspect responsibility statements, traceability fields and the lack of added lifecycle authority. They provide useful structural support but do not establish the twelve composed outcomes, so they are not linked as executable realization of these cases. Their detailed mechanical ownership remains with Skill and the child methods.
+Existing [authority checks](../../../../../tests/skill/skill_authority_tests.py) inspect authoring instructions for prohibited settlement wording and artifact assets for mutable-status headings. Existing [shared refinement checks](../../../../../tests/skill/skill_shared_policy_tests.py) inspect responsibility statements, traceability fields and the lack of added lifecycle authority. They provide useful structural support but do not establish the thirteen composed outcomes, so they are not linked as executable realization of these cases. Their detailed mechanical ownership remains with Skill and the child methods.
 
 The native aggregate remains [test-skill-validator.py](../../../../../tests/skill/test-skill-validator.py). This review-only catalog has no executable case population to compare with its full discovery count. Do not generate Python tests that merely assert the JSON's own expected text, invent a test method for a manual review, or delete existing unlinked regressions. If executable coverage is later added, link its real callable and verify trusted native discovery at that time.
 
@@ -71,8 +71,10 @@ All other field constraints are unchanged from the explicitly referenced contrac
 
 ## Validation and maintenance
 
-Author checks parse the index and groups, resolve declared ownership and shared contract, check fields/closed values/unique IDs/fixtures/requirements/section targets, and verify local links. Main-model and prose validation still apply. Independent assessment decides semantic sufficiency; author checks do not perform the twelve reviews.
+Author checks parse the index and groups, resolve declared ownership and shared contract, check fields/closed values/unique IDs/fixtures/requirements/section targets, and verify local links. Main-model and prose validation still apply. Independent assessment decides semantic sufficiency; author checks do not perform the thirteen reviews.
 
 [Validation](../../../engineering/validation.md#authoring-test-design-admission-contract) defines admission for the strategy, index and three groups. A passing main-model check does not establish catalog admission. Implementation allocation and observed tooling limitations are recorded in the [owning change](../../../../changes/2026-09-17-model-test-design/change.json).
 
 Maintain cases when a goal, requirement relationship, scope, observation, fixture or responsibility changes. Preserve case identities through moves and update affected current references without rewriting historical approval subjects. Keep detailed child rules with Proposal, Design and Plan; keep Skill's broader interactions referenced rather than copied. Delivery allocates any future proof implementation, while actual results and judgments remain in evidence.
+
+Feature-format withdrawal adds AUTH-SH-005 at the existing scope/handoff boundary: source authority survives, unsupported output preserves files, and separately authorized adoption hands living-model intent to Plan. It remains a proposed independent-review procedure, not an executed semantic test.

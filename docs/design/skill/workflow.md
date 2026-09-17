@@ -14,7 +14,7 @@ Original composition adoption: [three-model reconciliation](../../changes/2026-0
 
 The current recording population is v3. [Retirement coordination](#retired-format-dependency-protection) preserves the dependency disposition and owning change; the operational guidance below no longer carries a v2 continuation profile.
 
-For this repository’s [complete source retirement](../../changes/2026-09-14-retire-specs-and-stale-tests/source-disposition.md), current responsibilities are self-contained in the owning Designs. Original source-transfer inventories remain recoverable through [Historical provenance](#historical-provenance); their instructions to retain or amend legacy specs, architecture, activation state or retired engines are historical and superseded by this complete retirement. Source-qualified IDs and original judgments keep their original meaning; provenance is not a runtime input or current approval. Customer feature contracts and explicit portable resources remain supported under their own project authority.
+For this repository’s [complete source retirement](../../changes/2026-09-14-retire-specs-and-stale-tests/source-disposition.md), current responsibilities are self-contained in the owning Designs. Original source-transfer inventories remain recoverable through [Historical provenance](#historical-provenance); their instructions to retain or amend legacy specs, architecture, activation state or retired engines are historical and superseded by this complete retirement. Source-qualified IDs and original judgments keep their original meaning; provenance is not a runtime input or current approval. Customer source documents retain their project-owned authority and historical meaning. Current RigorLoop output and format support follow Design; source interpretation does not authorize retired feature/proof operations or automatic conversion.
 
 ## Introduction and Goals
 
@@ -371,7 +371,7 @@ The diagram shows actor decisions only. Storage details are in the [CLI examples
 
 ### Model validation and proof mapping
 
-[Design DES-SR-09/10/11/12/16/19](authoring/design.md#model-document-and-structural-contract) owns the `model-document-v1` model-document mapping: requirement/scenario tables, closed values, path/reference checks, example pairing, historical feature-format preservation and the grandfathered-spec semantic-review handoff. This anchor remains an explicit replacement reference for WF-SR-07/08/09 consumers, not a second normative definition.
+[Design DES-SR-09/10/11/12/16/19](authoring/design.md#model-document-and-structural-contract) owns the `model-document-v1` model-document mapping: requirement/scenario tables, closed values, path/reference checks, example pairing, source-authority preservation and unsupported feature/proof operations; the grandfathered-spec adoption handoff is retired. This anchor remains an explicit replacement reference for WF-SR-07/08/09 consumers, not a second normative definition.
 
 Each model owns durable test-design intent and realization links; Delivery owns change-specific proof execution allocation. Workflow coordinates both in the review handoff and receiving activities. System TEST-SR-01–13 owns shared protective-value and maintenance criteria; specialists assess actual plans/tests/evidence under Review and Closeout. No marker, structural pass, selector result or saved review independently selects continuation or proves test adequacy.
 
@@ -478,7 +478,7 @@ The prerequisite local dependency disposition belongs to the owning retirement e
 
 Workflow consumes Design DES-SR-25/26 and System TEST-SR-21/22. A current Design package includes lasting coverage intent and explicit gaps; Plan allocates executable proof without becoming its sole historical home. Missing intended behavior, observation boundary or model ownership returns to Design; missing commands, timing or milestone allocation returns to Plan; faulty fixtures/assertions return to implementation. Assessment retains judgments and applicability, and CLI remains storage-only.
 
-Current proposal/model/plan/record placement, supported feature/proof methods and their routing remain unchanged. Coverage handoffs use existing activities and record formats; this refinement adds no workflow stage or execution authority.
+Current proposal/model/plan/record placement remains unchanged. The subsequent feature-format retirement withdraws feature/proof methods and the CLI spec location; Workflow must not route a retired-format operation as supported work. Coverage handoffs use existing activities and record formats; this refinement adds no workflow stage or execution authority.
 
 ## Historical provenance
 

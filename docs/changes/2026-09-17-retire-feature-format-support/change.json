@@ -1,0 +1,209 @@
+{
+  "activity": {
+    "owner": {
+      "id": "feature-retirement-code-reviewer",
+      "role": "review"
+    },
+    "reason": "M1 implementation, 1039 selected local CI rows and separate TG-METHOD independent assessment passed. Exact engineering subjects recorded; independent milestone Code Review is required before M1 completion.",
+    "stage": "code-review",
+    "status": "ready"
+  },
+  "applicability": [
+    {
+      "actor": {
+        "id": "feature-retirement-proposal-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-17-retire-feature-format-support/reviews/feature-retirement-proposal-review.json",
+      "reason": "Complete exact proposal independently assessed against user-selected direction, current governance/vision and concrete bounded feasibility evidence.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "feature-retirement-author",
+        "role": "design"
+      },
+      "path": "docs/changes/2026-09-17-retire-feature-format-support/material-decisions.json",
+      "reason": "Exact authored Design package for fresh independent assessment.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "feature-retirement-design-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-17-retire-feature-format-support/reviews/feature-retirement-design-review.json",
+      "reason": "Exact retirement Design package assessed with required cross-artifact catalog correction; no downstream approval.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "feature-retirement-design-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-17-retire-feature-format-support/reviews/feature-retirement-design-review-r2.json",
+      "reason": "Exact complete retirement Design package reassessed after the recorded cross-artifact correction; approved for Delivery planning only.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "feature-retirement-delivery-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-17-retire-feature-format-support/reviews/feature-retirement-delivery-review.json",
+      "reason": "Current independent first-pass Delivery assessment with one supported plan-local proof allocation finding.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "feature-retirement-delivery-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-17-retire-feature-format-support/reviews/feature-retirement-delivery-review-r2.json",
+      "reason": "Fresh complete Delivery assessment after reporter-verified compact-method proof correction; prior review retains its original judgment and subject.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "feature-retirement-method-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-17-retire-feature-format-support/evidence.json",
+      "reason": "All 28 canonical/plan/catalog subject identities still match the independently assessed package; relevant guidance or projection changes require reassessment. This evidence does not settle M1 or final review.",
+      "value": "current"
+    }
+  ],
+  "blockers": [],
+  "change_id": "2026-09-17-retire-feature-format-support",
+  "contract": "rigorloop-records-v3",
+  "models": [
+    {
+      "id": "system",
+      "subject": {
+        "identity": "sha256:7765c817d1b46d43d88a6eb7c58dad2ad6a6a96209a21802830548f67febacba",
+        "path": "docs/design/system.md"
+      }
+    },
+    {
+      "id": "authoring",
+      "subject": {
+        "identity": "sha256:fbad604db276a491a1197533c6bd9bb7b930939cff2c26c54ebedfe31fe00bd5",
+        "path": "docs/design/skill/authoring/authoring.md"
+      }
+    },
+    {
+      "id": "design",
+      "subject": {
+        "identity": "sha256:70e2485309e83dfdc5f4175d192b3b1114aa2e0e1716074700250f212d50528e",
+        "path": "docs/design/skill/authoring/design.md"
+      }
+    },
+    {
+      "id": "workflow",
+      "subject": {
+        "identity": "sha256:d2f4d246487f9db819ce37a0d839baed9afb5e6480d3cc0dc80a0f7537abff0c",
+        "path": "docs/design/skill/workflow.md"
+      }
+    },
+    {
+      "id": "review-closeout",
+      "subject": {
+        "identity": "sha256:edd9ef472bc4ddb26779d9582ee723bda7e994b7915f16842a1fdfa8fb5e14ff",
+        "path": "docs/design/skill/assessment.md"
+      }
+    },
+    {
+      "id": "validation",
+      "subject": {
+        "identity": "sha256:e09382d178369338fe54ca24cb5a865434e10fcb75884d631f942fe20552b9d0",
+        "path": "docs/design/engineering/validation.md"
+      }
+    },
+    {
+      "id": "packaging",
+      "subject": {
+        "identity": "sha256:eb2946c6aab6e8b8494207bbc0cbcae46d2fb706cd1a3f33013dcf3ab764dcfc",
+        "path": "docs/design/engineering/packaging.md"
+      }
+    },
+    {
+      "id": "release",
+      "subject": {
+        "identity": "sha256:f7099080caf0a3cb4d79e2d68361fb6b760260c3530e4f52d688cd07392e37a3",
+        "path": "docs/design/engineering/release/release.md"
+      }
+    },
+    {
+      "id": "skill",
+      "subject": {
+        "identity": "sha256:2828a3eb7d6fccfc912580ab95e4c4fd5dd38af166ed07727afa13d4941eaa43",
+        "path": "docs/design/skill/skill.md"
+      }
+    },
+    {
+      "id": "cli",
+      "subject": {
+        "identity": "sha256:7ae16c1195d46c76e00f68233856f03d989bf7c688a8d0d9006196aa617efaa8",
+        "path": "docs/design/cli/cli.md"
+      }
+    }
+  ],
+  "plan": {
+    "identity": "sha256:4ad33835d092e6724998869a37469e21e63b01fd290ca02b595ff516d6eb0692",
+    "path": "docs/plans/2026-09-17-retire-feature-format-support.md"
+  },
+  "proposal": {
+    "identity": "sha256:ebb38f081982da0a3a5b328f0a30bb25b371e380373f3d074d803cc5b56db4f5",
+    "path": "docs/proposals/2026-09-17-retire-feature-format-support.md"
+  },
+  "records": [
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-17-retire-feature-format-support/reviews/feature-retirement-proposal-review.json"
+    },
+    {
+      "kind": "decisions",
+      "path": "docs/changes/2026-09-17-retire-feature-format-support/material-decisions.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-17-retire-feature-format-support/reviews/feature-retirement-design-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-17-retire-feature-format-support/reviews/feature-retirement-design-review-r2.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-17-retire-feature-format-support/reviews/feature-retirement-delivery-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-17-retire-feature-format-support/reviews/feature-retirement-delivery-review-r2.json"
+    },
+    {
+      "kind": "evidence",
+      "path": "docs/changes/2026-09-17-retire-feature-format-support/evidence.json"
+    }
+  ],
+  "schema_version": 3,
+  "work": [
+    {
+      "id": "m1",
+      "owner": {
+        "id": "feature-retirement-implementer",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "DES-SR-14",
+        "DES-SR-23",
+        "VAL-SR-28",
+        "CLI-SR-32",
+        "DIST-SR-24",
+        "TEST-SR-07",
+        "TEST-SR-08"
+      ],
+      "status": "in-progress"
+    }
+  ]
+}

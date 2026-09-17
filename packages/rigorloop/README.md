@@ -95,7 +95,7 @@ rigorloop logs path [--format human|json]
 rigorloop logs show <invocation-id> [--format human|json]
 ```
 
-`workflow-context` returns factual schema-2 discovery, never eligibility, an authoritative next stage or implicit change selection. It reports validated v3 stores, excludes v2 archives by bounded manifest and supporting-record headers, and excludes unrelated YAML-only archives without running legacy validators. Malformed or ambiguous stores and private transaction residue remain explicit errors. Explicit targets avoid unrelated enumeration. Limits are inclusive: 1,024 directories, 64 candidates and an 8 MiB response budget. Exceeding a bound reports incomplete scope and limit-exceeded without silent truncation. An optional root `rigorloop.workflow.yaml` may override supported artifact locations; retired record-slot overrides, unsafe paths and invalid configuration fail closed. Use primary context/show for complete selected current-record content.
+`workflow-context` returns factual schema-2 discovery, never eligibility, an authoritative next stage or implicit change selection. It reports validated v3 stores, excludes v2 archives by bounded manifest and supporting-record headers, and excludes unrelated YAML-only archives without running legacy validators. Malformed or ambiguous stores and private transaction residue remain explicit errors. Explicit targets avoid unrelated enumeration. Limits are inclusive: 1,024 directories, 64 candidates and an 8 MiB response budget. Exceeding a bound reports incomplete scope and limit-exceeded without silent truncation. The `spec` artifact location and configuration kind are no longer supported. A configuration retaining that override fails with `invalid-input`; remove it only as an explicit project configuration edit. Other location kinds retain their current behavior. An optional root `rigorloop.workflow.yaml` may override supported artifact locations; retired record-slot overrides, unsafe paths and invalid configuration fail closed. Use primary context/show for complete selected current-record content.
 
 ## Local CLI logs and concise results
 
@@ -144,3 +144,7 @@ https://github.com/xiongxianfei/rigorloop
 ## Upgrading retired authoring skills
 
 The current package contains `design` and `route`; `spec`, `architecture` and `workflow` are retired. Candidates or installed inventories containing retired entries stop with exact-path diagnostics. `--force` replaces only current candidate skills and cannot delete unrelated retired entries. Inspect and preserve old content separately before reconciling those entries; the installer provides no migration or state-repair procedure. Historical release archives retain their original inventories.
+
+## Feature-format support change
+
+Current skills author living Designs with model-owned test intent and Delivery allocation. Feature-spec amendments and companion test-spec/proof-map operations are no longer supported. Existing documents remain readable sources under project authority; installation does not convert or delete them. A project requiring the old output can use another tool or explicitly authorize scoped adoption into living Designs. This compatibility change applies to the next artifact built from these sources, not to previously released archives.

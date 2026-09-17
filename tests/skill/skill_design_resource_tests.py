@@ -22,7 +22,6 @@ EXPECTED_DESIGN_RESOURCES = frozenset({
     "assets/design-skeleton.md",
     "assets/diagram-styles.mmd",
     "references/architecture-view-examples.md",
-    "references/boundary-first-feature-authoring-v1.md",
     "references/boundary-first-method-v1.md",
     "references/governed-design-authoring.md",
     "references/legacy-source-reconciliation.md",
@@ -71,14 +70,6 @@ class UnifiedDesignResourceTests(unittest.TestCase):
                     result.stdout + result.stderr,
                 )
 
-    def test_legacy_boundary_projection_keeps_complete_format(self):
-        root = ROOT / "skills/design/references"
-        for name in ("boundary-first-method-v1.md", "boundary-first-feature-authoring-v1.md"):
-            self.assertEqual((root / name).read_bytes(), (ROOT / "templates/shared" / name).read_bytes())
-        body = (root / "boundary-first-feature-authoring-v1.md").read_text()
-        headings = ("## Boundary model", "## Boundary definitions", "## Selected interactions", "## Example ownership")
-        positions = [body.index(h) for h in headings]
-        self.assertEqual(positions, sorted(positions))
 
     def test_governed_recording_stays_conditional_and_readable(self):
         root = ROOT / "skills/design"

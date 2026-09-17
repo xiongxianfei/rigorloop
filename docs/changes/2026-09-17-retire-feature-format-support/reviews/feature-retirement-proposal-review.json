@@ -1,0 +1,74 @@
+{
+  "assessment_scope": "Formal lifecycle/manual independent Proposal Review for 2026-09-17-retire-feature-format-support at merged baseline 5822e0e6. Assesses direction sufficiency, initial-intent preservation, compatibility dispositions and embedded feasibility, not detailed Design or deletion approval. PRR1G assembly; scope_budget_context true, vision_exception_context and standing_artifact_context false.",
+  "change_id": "2026-09-17-retire-feature-format-support",
+  "contributors": [
+    {
+      "id": "feature-retirement-author",
+      "role": "proposal"
+    }
+  ],
+  "findings": [],
+  "id": "feature-retirement-proposal-review",
+  "independence_basis": "Independent delegated reviewer /root/focused_proposal_review inspected the complete new proposal and standing authority plus bounded implementation evidence. Parent author prepared this proposal. Reviewer authored no proposal, Design, implementation or test changes; only this assessment record is written. Earlier focused-testing approvals are not reused as retirement approval.",
+  "judgment": "approved",
+  "limitations": [
+    "This approval establishes direction sufficiency for authorized Design reconciliation only. It does not approve detailed contracts, exact deletion lists, implementation, tests, final verification or PR readiness.",
+    "Current feature/proof support remains until reviewed coherent implementation; this proposal and review do not mutate customer artifacts, rewrite historical evidence or authorize publication/version selection.",
+    "Design must reconcile transitive packaged methods and CLI spec-location/configuration consumers, specify proportionate unsupported-input and no-write behavior, and preserve current compact/model/catalog/record safety. Delivery and later reviews must prove those boundaries.",
+    "Historical path/window retirement and unrelated compatibility families remain with the preserved original initiative. No exhaustive compatibility inventory or execution of the future reduced suite is claimed."
+  ],
+  "rationale": [
+    "Challenge and goals: pass. The currently published feature amendment/proof-map methods and accepted structural formats create real ongoing maintenance beyond the selected living-Design workflow. The goals address the user request to stop specs support and simplify tests by retiring actual accepted behavior and its exclusive costs together, while preserving meaningful current-model proof.",
+    "Scope and scope-budget gate: pass. The proposal separates feature/proof operation, structural dispatch and advertised spec location from source interpretation, compact boundary reasoning, generic record inspection, record safety and current model/catalog validation. The five archive paths, examples-prefix handling, flat aliases and tooling-path transitions remain supported in this slice with a named original-initiative follow-up. Synthetic versions/names are correctly classified as fixture values rather than compatibility promises. No hidden wholesale removal of historical directories or old-looking tests is authorized.",
+    "Principle and direction: pass. Current outcomes govern retained support; retirement reconciles exclusive instructions, generated resource distribution, dispatch and test maintenance. Unsupported-operation explanation and unchanged customer files preserve authority. Scoped adoption may transfer requirements to living Designs only with project authority; the installed package cannot silently convert customer artifacts.",
+    "Feasibility: pass. Exactly one embedded assessment identifies concrete mechanisms, constraints and no known Design blocker. Bounded source inspection confirms validate_feature_record, validate_proof_map and accepted specs dispatch alongside surviving model validation; the native aggregate separates feature/path/adoption/model/command/catalog groups. The resource manifest independently declares compact-core, feature-authoring and proof; the CLI bundles a spec artifact location. These facts support targeted removal and coherent consumer reconciliation without a new subsystem. This evidence is plausibility, not a completed exhaustive deletion inventory.",
+    "Material impact and vision alignment: pass; aligned. The proposal explicitly discloses withdrawal of a previously supported customer workflow, release communication and the living-Design alternative, retaining historical judgments and prohibiting automatic customer-file changes. This supports the vision of durable traceability and understandable current reliance while preserving recoverable history. References to specifications in the vision describe engineering artifacts, not a permanent promise of this specific companion format.",
+    "Downstream authority and requested decision: pass. Design retains precise accepted population, diagnostics, source interpretation and failure/no-write behavior; Delivery retains exact deletion scope, proof allocation and recovery. Release version/publication remain separately owned. Proposal approval supplies neither implementation permission nor proof that the broader compatibility program is complete.",
+    "Scope-preservation result: pass. The initial no-specs direction, bold removal of obsolete tests, durable model coverage and preserved original workspace are visible. Deferral of independent historical change-range policy is explicit and justified. No missing owner decision prevents judgment of this selected feature-format direction."
+  ],
+  "reviewer": {
+    "id": "feature-retirement-proposal-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:ebb38f081982da0a3a5b328f0a30bb25b371e380373f3d074d803cc5b56db4f5",
+      "path": "docs/proposals/2026-09-17-retire-feature-format-support.md"
+    },
+    {
+      "identity": "sha256:b08e342159f367131963237b00b284dfc052686f112ebab9824457385de42af8",
+      "path": "CONSTITUTION.md"
+    },
+    {
+      "identity": "sha256:3dae6703651fed191fe384a14224254b7791267014a89662d8872c812493e146",
+      "path": "VISION.md"
+    },
+    {
+      "identity": "sha256:6cfea6b2fd5b74803d4a568b5f5aaab8c756de874002ec54a79376a8b37052ea",
+      "path": "skills/design/SKILL.md"
+    },
+    {
+      "identity": "sha256:b55874a5f7d9c3af9cb9cbd66fbc7939f7aba30c3ba54931d8f251f923bf5426",
+      "path": "scripts/lib/validation/boundary_first_validation.py"
+    },
+    {
+      "identity": "sha256:d49448c1ce8d457792748f0a13b58d212ffd94c8f421fc315d10439ab06888de",
+      "path": "scripts/lib/validation/validation_selection.py"
+    },
+    {
+      "identity": "sha256:69fed2db6cdcd10109d9a74b92e025700725a1448bd67d13e73da1a345d49072",
+      "path": "packages/rigorloop/dist/lib/workflow-context.js"
+    },
+    {
+      "identity": "sha256:d7806a57f7cf4d4b6329da679d8b1e96189908833d8fa8337d5be45ae9a8cb18",
+      "path": "scripts/resources/boundary-first/boundary-first-resources.yaml"
+    },
+    {
+      "identity": "sha256:37f387448f8f49c6c15320fbff560fb268318efe43e399d03f1643c9bb5023bc",
+      "path": "tests/engineering/validation/test-boundary-first-validation.py"
+    }
+  ],
+  "summary": "The bounded withdrawal of feature-spec and companion proof-format operations is clear, feasible and aligned with the selected living-Design direction, with customer impact and retained compatibility explicitly bounded.",
+  "target": "proposal"
+}

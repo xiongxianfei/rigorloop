@@ -177,7 +177,7 @@
         "For each packet identify the actor, subjects, observed result and proposed next activity. Compare a response that immediately begins Plan solely because the package was saved or assessed."
       ],
       "then": [
-        "Authorship and storage do not establish independent approval. The attributable assessment establishes only its judgment/applicability on D0/C0; Workflow still owns any separately authorized continuation. No packet alone starts Plan, changes another actor’s judgment or self-approves."
+        "Authorship and storage do not establish independent approval. The attributable assessment establishes only its judgment/applicability on D0/C0; Workflow still owns any separately authorized continuation. No packet alone starts Plan, changes another actor\u2019s judgment or self-approves."
       ],
       "realization": {
         "state": "proposed",
@@ -209,6 +209,42 @@
           }
         }
       ]
+    },
+    {
+      "id": "AUTH-SH-005",
+      "title": "Retired output stops while authorized source adoption preserves meaning",
+      "requirements": [
+        "AUTH-SR-01",
+        "AUTH-SR-02",
+        "AUTH-SR-05"
+      ],
+      "technique": "walkthrough",
+      "method": "independent-review",
+      "boundary": "review",
+      "risk": "A feature/proof request silently rewrites customer sources or reintroduces retired output through a supplied template.",
+      "target": {
+        "path": "docs/design/skill/authoring/authoring.md",
+        "section": "Shared authoring contract"
+      },
+      "given": {
+        "fixture": "batch-import-package",
+        "conditions": [
+          "Add a customer-owned feature source F0 and companion proof source P0, with stable requirement and earlier review identities. The user requests an amendment in that format; no adoption is authorized. Separately supply an old-format template, then a control request explicitly authorizing scoped transfer of the applicable requirements into the fixture living Design."
+        ]
+      },
+      "when": [
+        "Compare the proposed response and exact file changes for the unsupported request, template variant and authorized adoption control. Trace the response through Design into the proposed Plan handoff."
+      ],
+      "then": [
+        "Unsupported requests explain the output boundary and leave F0, P0, existing Designs and records unchanged; no substitute Design or adoption-classification procedure is invented. A template supplies no support authority. The authorized control preserves requirement and decision meaning in the selected living owner, preserves original source/review identities, and hands current model-owned proof intent to Plan without creating a companion test-spec."
+      ],
+      "realization": {
+        "state": "proposed",
+        "tests": [],
+        "gaps": [
+          "Independently assess the exact guidance and proposed artifact/handoff decisions; deterministic resource checks do not prove agent compliance."
+        ]
+      }
     }
   ]
 }

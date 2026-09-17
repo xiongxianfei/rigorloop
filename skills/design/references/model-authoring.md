@@ -18,7 +18,7 @@ Every model needs an Architecture Overview with a concise graph. Orient readers 
 
 For Context, Building Block, Runtime and Deployment, record whether the view is necessary, why, and where its detail belongs. Draw each necessary view. The overview may summarize these views, but cannot replace a necessary supporting view or become duplicate detailed authority. Resolve every material element and relationship to an owning section or model. Parents own child composition; child contracts own their internals. Reuse diagrams by reference and preserve anchors.
 
-Keep decisions proportional: a small leaf still needs an overview, but may have a bounded reason for no deployment diagram. Reassess view necessity when relevant interfaces, behavior or environment change. Existing source authority and the separately retained feature-spec contract remain applicable; installation does not convert documents or adopt project governance. Standalone architecture/ADR output is outside this authoring method.
+Keep decisions proportional: a small leaf still needs an overview, but may have a bounded reason for no deployment diagram. Reassess view necessity when relevant interfaces, behavior or environment change. Existing source authority remains applicable; feature/proof operation is unsupported and scoped adoption requires project authority; installation does not convert documents or adopt project governance. Standalone architecture/ADR output is outside this authoring method.
 
 ## Decisions and references
 
