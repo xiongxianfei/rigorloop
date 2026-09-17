@@ -28,8 +28,20 @@
         "role": "review"
       },
       "required_outcome": "Restrict reference projection recognition to supported current owning namespaces/exact canonical resources; an arbitrary known-looking suffix cannot establish ownership. Preserve current canonical/generated projection checks and command behavior. Add concise representative suffix-outside-owner and mixed-current no-launch proof through selector/public CI, plus independent positive current-owner variants. Do not introduce a per-retired-name denylist. Implement correction under existing approved Design, rerun affected/full required proof and return exact changed subjects to reporter for disposition and M1 reassessment.",
-      "resolution": null,
-      "state": "open",
+      "resolution": {
+        "actor": {
+          "id": "historical-path-code-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [
+          {
+            "id": "m1-reference-correction",
+            "path": "docs/changes/2026-09-17-retire-historical-path-compatibility/evidence.json"
+          }
+        ],
+        "rationale": "Reporter inspected exact namespace guard and meaningful positive/negative regression correction at4ada6752; independently reran four native methods and original singleton/mixed actual public CI reproductions. Both original bypasses now exit2/unclassified-path before any selected check; supported canonical/generated projection controls pass. All17 correction evidence subjects match and fresh affected local CI reports232 passed rows. Original reviewed subjects/judgment preserved; no per-filename blacklist or new owner decision."
+      },
+      "state": "resolved",
       "subjects": [
         {
           "identity": "sha256:2cb98d4aaa1742ece7da461cb4f2314023930613ef22e08305893a9c9ba824eb",
