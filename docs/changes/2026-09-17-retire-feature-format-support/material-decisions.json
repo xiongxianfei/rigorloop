@@ -1,0 +1,111 @@
+{
+  "body": "Retire DES-SR-14/23 feature/proof operation and VAL-SR-28 accepted grammar; revise DIST-SR-24 resource population to compact-core; CLI-SR-32 withdraws spec discovery/config kind. Preserve source reading/adoption authority, compact reasoning, current model/catalog safety, other CLI locations and all stored-record/installation contracts. AUTH-SH-005 makes the changed Authoring boundary concrete without claiming execution. Other catalog groups retain their current boundary and resource integrity. Repeated model-introduction statements are reconciled consumers, not independent new responsibilities. All changed Design subjects and complete Skill/Authoring package references are handed to independent Design Review. No old approval is retargeted; current-model/prose/catalog checks passed; implementation and Delivery remain separate.",
+  "change_id": "2026-09-17-retire-feature-format-support",
+  "decisions": [
+    {
+      "actor": {
+        "id": "feature-retirement-author",
+        "role": "design"
+      },
+      "id": "bounded-feature-support-withdrawal",
+      "rationale": "Apply independently approved feature-format direction atop merged PR199; preserve the original staged retirement workspace and separately retained historical change-range support.",
+      "source_refs": [
+        {
+          "id": "feature-retirement-proposal-review",
+          "path": "docs/changes/2026-09-17-retire-feature-format-support/reviews/feature-retirement-proposal-review.json"
+        }
+      ],
+      "subjects": [
+        {
+          "identity": "sha256:7ae16c1195d46c76e00f68233856f03d989bf7c688a8d0d9006196aa617efaa8",
+          "path": "docs/design/cli/cli.md"
+        },
+        {
+          "identity": "sha256:eb2946c6aab6e8b8494207bbc0cbcae46d2fb706cd1a3f33013dcf3ab764dcfc",
+          "path": "docs/design/engineering/packaging.md"
+        },
+        {
+          "identity": "sha256:f7099080caf0a3cb4d79e2d68361fb6b760260c3530e4f52d688cd07392e37a3",
+          "path": "docs/design/engineering/release/release.md"
+        },
+        {
+          "identity": "sha256:e09382d178369338fe54ca24cb5a865434e10fcb75884d631f942fe20552b9d0",
+          "path": "docs/design/engineering/validation.md"
+        },
+        {
+          "identity": "sha256:edd9ef472bc4ddb26779d9582ee723bda7e994b7915f16842a1fdfa8fb5e14ff",
+          "path": "docs/design/skill/assessment.md"
+        },
+        {
+          "identity": "sha256:fbad604db276a491a1197533c6bd9bb7b930939cff2c26c54ebedfe31fe00bd5",
+          "path": "docs/design/skill/authoring/authoring.md"
+        },
+        {
+          "identity": "sha256:70e2485309e83dfdc5f4175d192b3b1114aa2e0e1716074700250f212d50528e",
+          "path": "docs/design/skill/authoring/design.md"
+        },
+        {
+          "identity": "sha256:7f4dca46594b7c6dd020ebaf63fa816149861c7fc4a720180f142de9c457d091",
+          "path": "docs/design/skill/authoring/test-design/cases/correction-reconciliation.json"
+        },
+        {
+          "identity": "sha256:b2e83fe05600347fd620e5b24be8bdc4569f6ca862557e8e70d209dbb331702c",
+          "path": "docs/design/skill/authoring/test-design/cases/refinement.json"
+        },
+        {
+          "identity": "sha256:02818600850cf2c47adf128820984cba11728ad4023f6cf8ff59beb714e4d6b2",
+          "path": "docs/design/skill/authoring/test-design/cases/scope-handoff.json"
+        },
+        {
+          "identity": "sha256:dbcb7e61db655ecead9529d091bc71a6ae21081087a450ddbdbe1d6d36cfbb47",
+          "path": "docs/design/skill/authoring/test-design/test-cases.json"
+        },
+        {
+          "identity": "sha256:8d5e6dbec8fb06a9648c15921ff324a3da8c2589c927fa0ea05a7e17bf5db146",
+          "path": "docs/design/skill/authoring/test-design/test-design.md"
+        },
+        {
+          "identity": "sha256:2828a3eb7d6fccfc912580ab95e4c4fd5dd38af166ed07727afa13d4941eaa43",
+          "path": "docs/design/skill/skill.md"
+        },
+        {
+          "identity": "sha256:b8cf15dddf0611227860248a6cd92fe6ebb6b4b84ff5f4f0a79aa6a9eef56145",
+          "path": "docs/design/skill/test-design/cases/capability-composition.json"
+        },
+        {
+          "identity": "sha256:b2cd74b3690c17afbf40b62019e607592beaecd86dba3d3885cef9745e9ebea2",
+          "path": "docs/design/skill/test-design/cases/capability-contract.json"
+        },
+        {
+          "identity": "sha256:153c7941dd4c9bec09a8368ff8605d6469c3efa4f5aac1e6e51d42ecdb7c5407",
+          "path": "docs/design/skill/test-design/cases/implementation-handoffs.json"
+        },
+        {
+          "identity": "sha256:3b798f4feda2327f9d7da5793eba11160c259a1ff825914127225cd184302e71",
+          "path": "docs/design/skill/test-design/cases/recording-composition.json"
+        },
+        {
+          "identity": "sha256:839291d455ee3f93f8254e539a5577c6ce36389669ce0e3cd44ec3ced0e116ef",
+          "path": "docs/design/skill/test-design/cases/resource-contract.json"
+        },
+        {
+          "identity": "sha256:872bd368736f46ef828cac1213cccccb803500fa164ef88ecc1393ee470f490c",
+          "path": "docs/design/skill/test-design/test-cases.json"
+        },
+        {
+          "identity": "sha256:62b09ca633c59b1f8f80f7ced683ffd69db8bd3b8d52917a38b5ca12913f80c0",
+          "path": "docs/design/skill/test-design/test-design.md"
+        },
+        {
+          "identity": "sha256:d2f4d246487f9db819ce37a0d839baed9afb5e6480d3cc0dc80a0f7537abff0c",
+          "path": "docs/design/skill/workflow.md"
+        },
+        {
+          "identity": "sha256:7765c817d1b46d43d88a6eb7c58dad2ad6a6a96209a21802830548f67febacba",
+          "path": "docs/design/system.md"
+        }
+      ]
+    }
+  ],
+  "schema_version": 3
+}

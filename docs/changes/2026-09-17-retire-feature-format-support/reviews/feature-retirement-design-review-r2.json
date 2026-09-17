@@ -1,0 +1,127 @@
+{
+  "assessment_scope": "Independent Design Review of feature/proof operation retirement under feature-retirement-proposal-review: ten affected living owners, complete Skill and Authoring strategy/index/group packages, current no-read unsupported behavior, compact-core preservation, CLI spec-only location withdrawal and explicitly retained historical path compatibility. No implementation change is assessed as completed.",
+  "change_id": "2026-09-17-retire-feature-format-support",
+  "contributors": [
+    {
+      "id": "feature-retirement-design-author",
+      "role": "design"
+    }
+  ],
+  "findings": [],
+  "id": "feature-retirement-design-review-r2",
+  "independence_basis": "Independent delegated reviewer /root/catalog_admission_design_review assessed the new retirement worktree and exact approved proposal; reviewer edited no proposal, Design, catalog or implementation subject. Prior focused-testing/admission approvals are not inherited for this support withdrawal.",
+  "judgment": "approved",
+  "limitations": [
+    "This approves only the exact complete Design package for Delivery planning; it does not claim implementation, executed semantic case coverage, final verification, branch readiness or PR readiness.",
+    "Exact deletion lists, production/skill/resource changes, retained discovery behavior, current safety proof, unsupported no-read observations and release communication remain Delivery/implementation responsibilities.",
+    "The five Skill-archive deletion mappings, old examples routing, generic flat/relocation aliases, other location kinds, record safety and installation/release authorization remain outside retirement; this review does not permit their removal."
+  ],
+  "rationale": [
+    "The accepted support boundary follows approved direction: feature/proof authoring and grammar/adoption classification retire; source interpretation and explicitly authorized scoped living-model adoption survive without rewriting customer files or historical judgment subjects. AUTH-SH-005 supplies a concrete unsupported/template/adoption comparison and remains proposed.",
+    "Validation defines attributable BFR-UNSUPPORTED-FORMAT failure for present/missing/malformed/symlinked specs inputs before content reads, retains model-marker/containment/catalog checks and empty review_required envelope compatibility, and preserves existing discovered absent-deletion routing separately from unsupported explicit/present inputs. Shared parser utilities need not retire with feature-only functions.",
+    "Packaging explicitly retains compact-core with eight consumers, four-question scan, eight risk dimensions and actual-interaction reasoning while removing feature/proof schema resources and triggers. CLI-SR-32 withdraws only spec default/config kind with invalid-input exit2 before discovery; other location kinds and version domains remain. No new service, schema or runtime authority is introduced.",
+    "Reporter reassessment confirms the Authoring owner, index coverage claim and strategy consistently describe thirteen proposed procedures, with five scope/handoff cases and the retired-output/adoption hazard. Existing IDs and all case bodies are preserved; AUTH-SH-005 has no executable links and remains proposed. Direct JSON inspection observed thirteen proposed cases and zero executable links; git diff --check passed.",
+    "The full package preserves current model/catalog validation, shared parsing, source interpretation and explicit customer adoption authority. Other location kinds, historical Git deletion routing and generic flat/relocation aliases remain supported. No contradictory current Design consumer was found; exact format-exclusive deletion and transitive guidance reconciliation remain bounded Delivery obligations."
+  ],
+  "reviewer": {
+    "id": "feature-retirement-design-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:7ae16c1195d46c76e00f68233856f03d989bf7c688a8d0d9006196aa617efaa8",
+      "path": "docs/design/cli/cli.md"
+    },
+    {
+      "identity": "sha256:eb2946c6aab6e8b8494207bbc0cbcae46d2fb706cd1a3f33013dcf3ab764dcfc",
+      "path": "docs/design/engineering/packaging.md"
+    },
+    {
+      "identity": "sha256:f7099080caf0a3cb4d79e2d68361fb6b760260c3530e4f52d688cd07392e37a3",
+      "path": "docs/design/engineering/release/release.md"
+    },
+    {
+      "identity": "sha256:e09382d178369338fe54ca24cb5a865434e10fcb75884d631f942fe20552b9d0",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:edd9ef472bc4ddb26779d9582ee723bda7e994b7915f16842a1fdfa8fb5e14ff",
+      "path": "docs/design/skill/assessment.md"
+    },
+    {
+      "identity": "sha256:fbad604db276a491a1197533c6bd9bb7b930939cff2c26c54ebedfe31fe00bd5",
+      "path": "docs/design/skill/authoring/authoring.md"
+    },
+    {
+      "identity": "sha256:70e2485309e83dfdc5f4175d192b3b1114aa2e0e1716074700250f212d50528e",
+      "path": "docs/design/skill/authoring/design.md"
+    },
+    {
+      "identity": "sha256:7f4dca46594b7c6dd020ebaf63fa816149861c7fc4a720180f142de9c457d091",
+      "path": "docs/design/skill/authoring/test-design/cases/correction-reconciliation.json"
+    },
+    {
+      "identity": "sha256:b2e83fe05600347fd620e5b24be8bdc4569f6ca862557e8e70d209dbb331702c",
+      "path": "docs/design/skill/authoring/test-design/cases/refinement.json"
+    },
+    {
+      "identity": "sha256:02818600850cf2c47adf128820984cba11728ad4023f6cf8ff59beb714e4d6b2",
+      "path": "docs/design/skill/authoring/test-design/cases/scope-handoff.json"
+    },
+    {
+      "identity": "sha256:dbcb7e61db655ecead9529d091bc71a6ae21081087a450ddbdbe1d6d36cfbb47",
+      "path": "docs/design/skill/authoring/test-design/test-cases.json"
+    },
+    {
+      "identity": "sha256:8d5e6dbec8fb06a9648c15921ff324a3da8c2589c927fa0ea05a7e17bf5db146",
+      "path": "docs/design/skill/authoring/test-design/test-design.md"
+    },
+    {
+      "identity": "sha256:2828a3eb7d6fccfc912580ab95e4c4fd5dd38af166ed07727afa13d4941eaa43",
+      "path": "docs/design/skill/skill.md"
+    },
+    {
+      "identity": "sha256:b8cf15dddf0611227860248a6cd92fe6ebb6b4b84ff5f4f0a79aa6a9eef56145",
+      "path": "docs/design/skill/test-design/cases/capability-composition.json"
+    },
+    {
+      "identity": "sha256:b2cd74b3690c17afbf40b62019e607592beaecd86dba3d3885cef9745e9ebea2",
+      "path": "docs/design/skill/test-design/cases/capability-contract.json"
+    },
+    {
+      "identity": "sha256:153c7941dd4c9bec09a8368ff8605d6469c3efa4f5aac1e6e51d42ecdb7c5407",
+      "path": "docs/design/skill/test-design/cases/implementation-handoffs.json"
+    },
+    {
+      "identity": "sha256:3b798f4feda2327f9d7da5793eba11160c259a1ff825914127225cd184302e71",
+      "path": "docs/design/skill/test-design/cases/recording-composition.json"
+    },
+    {
+      "identity": "sha256:839291d455ee3f93f8254e539a5577c6ce36389669ce0e3cd44ec3ced0e116ef",
+      "path": "docs/design/skill/test-design/cases/resource-contract.json"
+    },
+    {
+      "identity": "sha256:872bd368736f46ef828cac1213cccccb803500fa164ef88ecc1393ee470f490c",
+      "path": "docs/design/skill/test-design/test-cases.json"
+    },
+    {
+      "identity": "sha256:62b09ca633c59b1f8f80f7ced683ffd69db8bd3b8d52917a38b5ca12913f80c0",
+      "path": "docs/design/skill/test-design/test-design.md"
+    },
+    {
+      "identity": "sha256:d2f4d246487f9db819ce37a0d839baed9afb5e6480d3cc0dc80a0f7537abff0c",
+      "path": "docs/design/skill/workflow.md"
+    },
+    {
+      "identity": "sha256:7765c817d1b46d43d88a6eb7c58dad2ad6a6a96209a21802830548f67febacba",
+      "path": "docs/design/system.md"
+    },
+    {
+      "identity": "sha256:ebb38f081982da0a3a5b328f0a30bb25b371e380373f3d074d803cc5b56db4f5",
+      "path": "docs/proposals/2026-09-17-retire-feature-format-support.md"
+    }
+  ],
+  "summary": "The complete bounded feature-format retirement Design package is coherent; Authoring coverage accounting now includes all thirteen proposed procedures.",
+  "target": "design"
+}

@@ -6,15 +6,9 @@ The project supplies the authoritative legacy requirements, approved decisions, 
 
 Read existing architecture documents and ADRs as source material, preserving their exact identity, applicable requirements and decision history. This skill does not create, rebuild or amend those standalone formats. If the project requires that output, explain the unsupported request and leave project files unchanged; the project owner may authorize scoped adoption into living Designs or choose another authoring tool. Do not recreate a retired procedure from a supplied template or history. Source inspection and installation grant no migration authority.
 
-## Retained feature-spec amendments
+## Retained feature and proof sources
 
-For a retained feature specification, retain its document contract and stable IDs. Classify an amendment as non-substantive historical, substantive historical requiring its existing feature-format adoption, or new-profile-only preserving the historical remainder. An unknown or stale classification prevents reliance. Structural success with a review-required observation is not a semantic classification or approval.
-
-For substantive retained feature work, READ `references/boundary-first-method-v1.md` and `references/boundary-first-feature-authoring-v1.md`. The complete conditional procedures are installed with this skill. Retain normative requirements, scope/non-goals, examples, edges and compatibility. Existing complete boundary blocks retain their IDs; never remove or convert them implicitly. Adoption requires unique ordered anchors for the four contiguous sections or an authorized full rewrite. Missing, duplicated, incomplete or misplaced blocks/anchors require correction or owner resolution before reliance. Approved deactivation/supersession requires impact traceability.
-
-Capability state controls formal adoption: `pending` never claims active adoption; after activation, new behavior-changing specs adopt automatically under that retained contract. Grandfathered non-substantive revisions remain valid, and independent Design Review must block an undecidable substantive-revision classification. Do not request redundant consent for contract-required adoption. Living-model work uses its model convention rather than creating a feature-format block.
-
-
+Feature specifications and companion test-spec/proof maps are readable source material, not supported creation, amendment or format-validation targets. Preserve their applicable requirements, decision meaning and exact source/review identities. If the requested output must remain in that format, explain that RigorLoop supports living Designs and Delivery allocation, leave project files unchanged and return the choice of another tool or explicitly authorized scoped adoption to the project owner. Do not create a substitute Design, invent an adoption classification or reconstruct the retired format procedure from a supplied template. Installation and source inspection do not authorize conversion.
 
 ## Explicitly approved consolidation
 
@@ -24,4 +18,4 @@ For architecture/ADR source adoption, preserve relevant goals/constraints, conte
 
 Keep stable links or explicit replacement mappings. Do not rewrite historical approvals, review rounds or released evidence to claim assessment of a new subject. After authorized adoption, current navigation and consumers point to the replacement owner. Fully superseded sources leave the current authoritative set using approved archival/removal mechanics; mixed documents clearly retain unmigrated responsibilities. Withdrawal of an old skill name alone does not retire its documents.
 
-New work uses the unified author. A scoped feature-spec amendment or authorized adoption must not force repository-wide migration, silently relocate a responsibility or create duplicate current owners. Assign remaining consolidation to explicit later work; unchanged legacy documents and historical reviews are not blanket deletion targets.
+New work uses the unified author. A scoped living-model change or authorized adoption must not force repository-wide migration, silently relocate a responsibility or create duplicate current owners. Assign remaining consolidation to explicit later work; unchanged legacy documents and historical reviews are not blanket deletion targets.

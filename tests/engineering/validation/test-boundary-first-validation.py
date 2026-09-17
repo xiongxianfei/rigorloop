@@ -3,9 +3,6 @@
 
 import unittest
 
-from boundary_structural_tests import BoundaryFirstStructuralTests
-from boundary_path_tests import BoundaryFirstActivationTests
-from boundary_handoff_tests import AdoptionReviewHandoffTests
 from boundary_model_tests import ModelRecordTests
 from catalog_admission_tests import TestDesignAdmissionTests
 from boundary_command_tests import CurrentBoundaryCommandTests

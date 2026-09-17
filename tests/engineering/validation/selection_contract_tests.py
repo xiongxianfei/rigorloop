@@ -624,8 +624,6 @@ class SelectionContractChecks:
     def test_lifecycle_artifact_classes_retain_owned_lifecycle_paths(self) -> None:
         paths = [
             "docs/proposals/2026-07-29-example.md",
-            "specs/example.md",
-            "specs/example.test.md",
             "docs/architecture/system/example.md",
             "docs/adr/ADR-20260729-example.md",
             "docs/plans/2026-07-29-example.md",

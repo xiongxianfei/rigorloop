@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate current model packages or explicitly selected feature/proof records."""
+"""Validate current model packages and owned examples."""
 
 from __future__ import annotations
 
@@ -25,18 +25,12 @@ def main() -> int:
     if not args.path:
         examples, example_issues = validate_repository_examples(root)
         issues.extend(example_issues)
-    # This one diagnostic is a semantic obligation, not a structural error.
-    # All other (including unknown) diagnostics continue to fail closed.
-    review_required = [
-        {**issue.as_dict(), "owner": "design-review"}
-        for issue in issues if issue.code == "BFR-ADOPTION-REVIEW"
-    ]
-    issues = [issue for issue in issues if issue.code != "BFR-ADOPTION-REVIEW"]
+    review_required = []
     if issues:
         print(json.dumps({"status": "failed", "issues": [issue.as_dict() for issue in issues], "review_required": review_required}, sort_keys=True))
         return 1
     output = {
-        "status": "review-required" if review_required else "passed",
+        "status": "passed",
         "validation": "structure-and-references-only",
         "review_required": review_required,
         "paths": paths,

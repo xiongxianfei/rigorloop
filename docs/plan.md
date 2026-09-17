@@ -15,6 +15,8 @@ Index policy:
 
 ## Active
 
+- [Feature-format support retirement](plans/2026-09-17-retire-feature-format-support.md) — [owning change](changes/2026-09-17-retire-feature-format-support/change.json).
+
 - [Repository tooling organization](plans/2026-09-14-tooling-organization.md) — scoped portable refactor; [evidence](changes/2026-09-14-design-suitability-review/contract-refinement.md).
 
 - [Cleanup integration and local commit](plans/2026-09-14-cleanup-integration-and-commit.md) — [owning change](changes/2026-09-13-current-design-repository-cleanup/change.json).

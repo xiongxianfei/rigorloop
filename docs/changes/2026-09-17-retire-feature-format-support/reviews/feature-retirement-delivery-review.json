@@ -1,0 +1,68 @@
+{
+  "assessment_scope": "Formal independent Delivery Review of the sole primary plan docs/plans/2026-09-17-retire-feature-format-support.md under feature-retirement-design-review-r2 and approved proposal. Covers M1 sequencing, retained versus retired protections, command feasibility, method/resource integration, recovery and final review dependencies.",
+  "change_id": "2026-09-17-retire-feature-format-support",
+  "contributors": [
+    {
+      "id": "feature-retirement-plan-author",
+      "role": "plan"
+    }
+  ],
+  "findings": [
+    {
+      "evidence": "Medium; artifact-local; affected artifact primary-plan docs/plans/2026-09-17-retire-feature-format-support.md, TG-METHOD/TG-RESOURCES; owning stage Plan. Design authoring/design.md:198 explicitly retains four-question scan, eight risk dimensions, actual-interaction reasoning and upstream-gap ownership. M1 rewrites compact reasoning and the existing canonical-method test mixes retired grammar with phrase assertions. TG-METHOD concretely assesses only AUTH-SH-005 request/template/adoption variants; TG-RESOURCES names inventory and integrity. Those observations can pass even if preserved reasoning is substantively weakened.",
+      "id": "compact-method-proof-allocation",
+      "owner": {
+        "id": "feature-retirement-plan-author",
+        "role": "plan"
+      },
+      "reporter": {
+        "id": "feature-retirement-delivery-reviewer",
+        "role": "review"
+      },
+      "required_outcome": "Add bounded independent semantic assessment of the revised compact-core method to TG-METHOD or an equivalent allocated group. Name retained scan/dimensions/interaction/gap-ownership expectations, exact canonical and generated/installed subject observations, responsible independent assessor, recorded rationale and honest limits. Explain that removal of obsolete phrase/implementation assertions requires this retained semantic protection alongside resource integrity; no phrase quota or universal agent-compliance claim. Safe correction: Plan author updates allocation, then reporter reassesses the exact revised package. No new Design decision needed.",
+      "resolution": {
+        "actor": {
+          "id": "feature-retirement-delivery-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [],
+        "rationale": "Independently inspected revised TG-METHOD and reassessed the complete primary plan. The named packet, concrete method counterexamples, preserved scan/dimension/interaction/gap-ownership obligations, canonical plus generated/installed scope, independent assessor, recorded observations and refresh/claim limits satisfy the required outcome. No implementation or test execution is inferred."
+      },
+      "state": "resolved",
+      "subjects": [
+        {
+          "identity": "sha256:b8930dc6098445ec21f0a00fa16ea95910b1f8f0a7d95645602bd3cb810139b7",
+          "path": "docs/plans/2026-09-17-retire-feature-format-support.md"
+        }
+      ]
+    }
+  ],
+  "id": "feature-retirement-delivery-review",
+  "independence_basis": "Delegated independent reviewer /root/admission_delivery_review read the complete primary plan and approved Design basis, inspected current commands, test aggregates, projection checks and authority. Reviewer authored no plan, Design, implementation or tests; only this review and its finding are written. Parent read-only observations were independently checked against source.",
+  "judgment": "changes-requested",
+  "limitations": [
+    "This is Delivery assessment only, not implementation approval while the finding remains open; no code correctness, executed future suite, final readiness or PR readiness is claimed.",
+    "Detailed deletion lists and actual replacement detection remain implementation/evidence responsibilities under the plan; final reviewers must assess every removed protective family and surviving discovery.",
+    "The correction belongs to Plan, not upstream behavioral redesign: approved compact-method requirements already identify the retained outcome."
+  ],
+  "rationale": [
+    "Requirement trace and scope: current approved Design subjects match their identities and the earlier Authoring accounting concern is reporter-resolved. The one coupled M1 appropriately reconciles advertised methods, projection inventory, validator dispatch, CLI spec withdrawal and exclusive tests before shipping. No separate feature/proof contract or proof map is consumed. Historical routing, generic aliases, other location kinds and record safety remain outside retirement.",
+    "Sequencing and recovery: expected unsupported/no-read and config rejection proof precedes implementation; current privacy/model protection is separated before retiring fixtures. Unknown protective value blocks deletion, group-level removal accounting and actual discovery are required, and coherent rollback names the recoverable baseline while preserving customer and historical bytes. This avoids both automatic deletion by filename and unnecessary per-test ledgers.",
+    "Allocated validation is concrete at appropriate boundaries: public old-format rejection plus direct no-read observation; current models/catalogs and actual selector/executor Git selection; CLI unknown spec kind before discovery with retained-kind control; independent reduced manifest oracle, unknown-first safety and actual archive/packed installation for both targets. All nine named command paths exist, --check flags exist, and native boundary and packaging entrypoints collect their actual groups. No future command execution is claimed.",
+    "AUTH-SH-005 allocation correctly distinguishes unsupported and template requests from separately authorized source adoption, records independent proposed-decision observations and disclaims universal agent compliance. However, the rewritten compact method retains a distinct semantic obligation under DES-SR-23 and Design building-block content: four-question scan, eight dimensions, actual interactions and upstream-gap ownership. TG-METHOD only concretely allocates output/adoption comparison; inventory/parity and phrase checks cannot demonstrate preserved reasoning. The recorded plan-local finding requires this missing proof allocation.",
+    "Closeout is sound: selected full local integration with honest reuse, release communication without publication authority, independent M1 review, fresh final whole-change Code Review and distinct Verify remain separate. Exact committed PR selection/current-record snapshot and hosted/local limits are allocated. No other material allocation or authority gap was identified."
+  ],
+  "reviewer": {
+    "id": "feature-retirement-delivery-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:b8930dc6098445ec21f0a00fa16ea95910b1f8f0a7d95645602bd3cb810139b7",
+      "path": "docs/plans/2026-09-17-retire-feature-format-support.md"
+    }
+  ],
+  "summary": "The coupled retirement sequence and most proof allocations are adequate; explicitly allocate semantic preservation assessment for the rewritten compact boundary method before implementation.",
+  "target": "delivery"
+}

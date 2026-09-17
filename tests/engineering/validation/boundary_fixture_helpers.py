@@ -1,9 +1,8 @@
-"""Fresh portable records and read-only expectations for boundary scenarios."""
+"""Current model inventory and read-only boundary expectations."""
 
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
-FIXTURES = ROOT / "tests/engineering/validation/fixtures/boundary-first"
 
 # Independent inventory selected by System's current model composition.
 EXPECTED_MODEL_PATHS = (
@@ -49,70 +48,3 @@ def relevant_tree_snapshot(root: Path) -> dict[str, bytes]:
             elif path.is_dir():
                 snapshot[relative] = b"directory"
     return snapshot
-
-
-def valid_feature() -> str:
-    dimensions = [
-        "| input-domain | applicable | FIX-R001 | BND-INPUT-001 | - |",
-        "| state-lifecycle | not-applicable | - | - | No state exists. |",
-        "| identity-authority | not-applicable | - | - | No authority exists. |",
-        "| composition-path | not-applicable | - | - | One path exists. |",
-        "| temporal-retry | not-applicable | - | - | No retry exists. |",
-        "| failure-recovery | not-applicable | - | - | No mutation exists. |",
-        "| compatibility-migration | not-applicable | - | - | No history exists. |",
-        "| external-environment | not-applicable | - | - | No dependency exists. |",
-    ]
-    return "\n".join(
-        [
-            "# Fixture",
-            "",
-            "## Status",
-            "",
-            "approved",
-            "boundary_contract: boundary-first-v1",
-            "",
-            "## Boundary model",
-            "",
-            "Boundary model version: boundary-first-v1",
-            "Boundary model scope: FIX-R001",
-            "",
-            "| Dimension ID | Applicability | Governing requirement IDs | Boundary IDs | Non-applicability rationale |",
-            "| --- | --- | --- | --- | --- |",
-            *dimensions,
-            "",
-            "## Boundary definitions",
-            "",
-            "| Boundary ID | Dimension ID | Governing requirement IDs | Partitions or transitions | Invariants | Outcomes | Owner requirement ID |",
-            "| --- | --- | --- | --- | --- | --- | --- |",
-            "| BND-INPUT-001 | input-domain | FIX-R001 | present, missing, unknown | known values only | accept, reject | FIX-R001 |",
-            "",
-            "## Selected interactions",
-            "",
-            "No interaction selected: Only one boundary is applicable.",
-            "",
-            "## Example ownership",
-            "",
-            "| Example ID | Classification | Governing requirement IDs | Boundary IDs | Regression ID | Discovery gap ID |",
-            "| --- | --- | --- | --- | --- | --- |",
-            "| FIX-E001 | illustration | FIX-R001 | BND-INPUT-001 | - | - |",
-            "",
-        ]
-    )
-
-
-def valid_proof() -> str:
-    return "\n".join(
-        [
-            "# Fixture proof",
-            "",
-            "Boundary model version: boundary-first-v1",
-            "Boundary model scope: FIX-R001",
-            "",
-            "## Proof map",
-            "",
-            "| Proof obligation ID | Coverage state | Governing requirement IDs | Boundary or interaction IDs | Test case IDs | Proof level | Automation mode | Command IDs | Evidence artifact | Required milestone | Manual procedure IDs | Uncovered gap ID |",
-            "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |",
-            "| PRF-001 | covered | FIX-R001 | BND-INPUT-001 | T1 | unit | automated | CMD1 | fixture-evidence | M3 | - | - |",
-            "",
-        ]
-    )

@@ -3,7 +3,7 @@ name: design
 version: "1.0.0"
 schema-version: skill-readability-v1
 description: >
-  Create or revise living Designs that reconcile required behavior, technical realization, decisions and acceptance intent. Use for living-Design authorship, retained feature-spec amendments and source reconciliation before independent Design Review.
+  Create or revise living Designs that reconcile required behavior, technical realization, decisions and acceptance intent. Use for living-Design authorship and source reconciliation before independent Design Review.
 argument-hint: [approved direction, affected model, or authorized design correction]
 ---
 
@@ -16,7 +16,7 @@ argument-hint: [approved direction, affected model, or authorized design correct
 - upstream: approved direction or an explicitly authorized scoped correction
 - downstream: independent design-review, then plan under current review authority
 - summary: Reconcile the smallest justified set of owning engineering contracts.
-- ownership: Author affected Designs, authorized feature-spec amendments and author-owned evidence.
+- ownership: Author affected Designs and author-owned evidence.
 - must_not_claim: review approval, implementation permission, final verification, publication or customer adoption.
 
 ## Scope and authority
@@ -25,7 +25,7 @@ Select responsibility owners before selecting files. A model is a coherent respo
 
 Classify the invocation before mutation. With no governed signal, use an explicit safe target or the living-model default below without lifecycle claims. An explicit change identity, structured owning-change reference or workflow-managed context is a governed signal even when malformed. Require one safe, agreeing current identity and load the governed procedure. Missing, stale, conflicting, escaped or malformed governed signals stop dependent authoring; do not fall back to portable mode.
 
-Resolve project authority and existing exact targets first. For a new model, the portable default is `docs/design/M/M.md`, with matching stable model ID M. Creation requires an absent target; revision requires the existing intended target. Never overwrite another responsibility or infer project policy from an installed skill. Existing sources keep their declared authority unless scoped adoption is explicitly authorized. Architecture and decision outputs use living Designs. Requests to create, rebuild or amend a standalone architecture document or ADR are unsupported: explain the output boundary, leave project files unchanged and return the format/adoption decision to the project owner. A supplied old-format template does not change this boundary.
+Resolve project authority and existing exact targets first. For a new model, the portable default is `docs/design/M/M.md`, with matching stable model ID M. Creation requires an absent target; revision requires the existing intended target. Never overwrite another responsibility or infer project policy from an installed skill. Existing sources keep their declared authority unless scoped adoption is explicitly authorized. Architecture and decision outputs use living Designs. Requests to create, rebuild or amend a feature specification, companion proof map, standalone architecture document or ADR are unsupported: explain the output boundary, leave project files unchanged and return the format/adoption decision to the project owner. A supplied old-format template does not change this boundary.
 
 ## Reconciliation procedure
 
@@ -47,7 +47,7 @@ Before a behavior-changing decision, and when cited boundaries or interactions m
 3. Which public, sibling, helper or alternate path can change the outcome?
 4. Which failure, retry, recovery, compatibility or external condition can change the outcome?
 
-Do not wait for the user to name the method. The scan alone does not create another record, identifier series or exhaustive scenario inventory. Living models use their model-owned scenario table; retained feature records use the conditional legacy method. Unknown ownership or an unowned normative outcome stops the affected decision.
+Do not wait for the user to name the method. The scan alone does not create another record, identifier series or exhaustive scenario inventory. Living models use their model-owned scenario table. Retained feature/proof documents are source inputs, not supported output or a second validation format. Unknown ownership or an unowned normative outcome stops the affected decision.
 
 A pre-implementation verification-allocation gap routes to `plan`. Historical contracts grant no current progression authority.
 
@@ -61,9 +61,8 @@ Write normal Markdown paragraphs with complete sentences. Do not split a sentenc
 - READ `references/architecture-view-examples.md` when constructing or revising a living-model overview or evaluating supporting views.
 - READ `references/technical-design.md` when significant structure, interfaces, runtime, deployment, trust or quality choices need explanation.
 - READ `references/system-composition.md` when several owners, a shared contract or a system-wide claim is affected.
-- READ `references/legacy-source-reconciliation.md` when reading retained architecture/ADR sources, amending a retained feature specification or performing explicitly authorized scoped adoption.
-- READ `references/boundary-first-method-v1.md` when interpreting or authoring a retained feature-format boundary record.
-- READ `references/boundary-first-feature-authoring-v1.md` for a substantive amendment remaining under that feature format, after its compact method.
+- READ `references/legacy-source-reconciliation.md` when reading retained feature/proof or architecture/ADR sources or performing explicitly authorized scoped adoption.
+- READ `references/boundary-first-method-v1.md` when current boundary/scenario intent or interaction reasoning is missing, ambiguous or insufficient.
 - READ `references/governed-design-authoring.md` when one valid governed change is explicitly selected; validate authority before writing.
 - READ `references/test-quality.md` when adopted criteria apply to verification intent.
 - COPY `assets/design-skeleton.md` when creating a living model. Fill its stable engineering sections and required tables; remove placeholders and inapplicable optional sections.
@@ -84,4 +83,4 @@ Handoff: <independent Design Review subject set or bounded owning-stage blocker>
 
 ## Expected output
 
-Produce the owning Designs or explicitly scoped retained feature-spec amendments and a truthful exact-subject handoff. Include affected examples alongside their owners even when parent text is unchanged; an earlier model-only approval cannot establish current assessment of an edited relied-on example. Mechanical identities and selection support the responsible actor's applicability judgment; they do not automatically invalidate reviews or add a gate. Keep mutable workflow state and actual results out of Design.
+Produce the owning Designs and a truthful exact-subject handoff. Include affected examples alongside their owners even when parent text is unchanged; an earlier model-only approval cannot establish current assessment of an edited relied-on example. Mechanical identities and selection support the responsible actor's applicability judgment; they do not automatically invalidate reviews or add a gate. Keep mutable workflow state and actual results out of Design.

@@ -3,8 +3,8 @@ name: design-review
 version: "1.0.0"
 schema-version: skill-readability-v1
 description: >
-  Independently assess the exact affected Designs, retained feature-spec amendments, examples and interactions against approved direction before delivery planning. Use design-review for design coherence and package authority; use design for authorship.
-argument-hint: [change ID, affected Design package, or authorized feature-spec amendment]
+  Independently assess the exact affected Designs, examples and interactions against approved direction before delivery planning. Use design-review for design coherence and package authority; use design for authorship.
+argument-hint: [change ID, affected Design package, or authorized source reconciliation]
 ---
 
 # Design review
@@ -67,7 +67,7 @@ Next stage: `route` may send an approved package to plan authoring; otherwise ro
 
 Resolve the governed change, then obtain the package with the scoped primary context and exact subject inspection described above. Read each complete affected model and scoped legacy member, relied-on examples, relevant shared-contract owners and interactions, and accepted proposal evidence and accepted Proposal Review ID identified by the context. Expand for material missing or contradictory evidence; a whole-repository load is not the default. Read project governance and prior review or resolution evidence only when they affect the judgment.
 
-Retained architecture documents and ADRs may supply source authority and preservation evidence; they are not supported Design-authored outputs. Distinguish those inputs from living-Design output members and retained feature-spec amendments. A package requiring standalone architecture/ADR authoring returns to the direction/project owner; historical approval or a supplied template cannot re-enable that output.
+Retained architecture documents and ADRs may supply source authority and preservation evidence; they are not supported Design-authored outputs. Distinguish those inputs from living-Design output members. A package requiring feature/proof or standalone architecture/ADR authoring returns to the direction/project owner; historical approval or a supplied template cannot re-enable that output.
 
 The package member map identifies each affected owner and its exact path/subject, including retained legacy contracts and relied-on examples. Use an explicit stable order appropriate to that selected set; no fixed architecture/specification/ADR tuple is required. Use CLI subject inspection for exact identities; do not calculate an aggregate package revision.
 
@@ -134,7 +134,6 @@ Read `references/design-review-recording-and-settlement.md` before dependent rec
 
 - READ `references/requirement-to-delivery-model.md` when tracing proposal direction into system requirements and architecture realization.
 - READ `references/boundary-first-method-v1.md` when the selected legacy contract has boundary records or a relied-on boundary identity needs interpretation.
-- READ `references/boundary-first-feature-authoring-v1.md` after the method reference when judging specification boundary completeness and example ownership.
 - READ `references/design-review-recording-and-settlement.md` for every durable or formal review before recording or settlement.
 - COPY `assets/review-result-skeleton.md` when producing every result. Omit inapplicable groups and unfilled placeholders.
 - COPY `assets/material-finding.md` when a material finding exists, once per finding.

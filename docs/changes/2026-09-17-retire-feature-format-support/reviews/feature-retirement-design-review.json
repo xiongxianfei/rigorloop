@@ -1,0 +1,167 @@
+{
+  "assessment_scope": "Independent Design Review of feature/proof operation retirement under feature-retirement-proposal-review: ten affected living owners, complete Skill and Authoring strategy/index/group packages, current no-read unsupported behavior, compact-core preservation, CLI spec-only location withdrawal and explicitly retained historical path compatibility. No implementation change is assessed as completed.",
+  "change_id": "2026-09-17-retire-feature-format-support",
+  "contributors": [
+    {
+      "id": "feature-retirement-design-author",
+      "role": "design"
+    }
+  ],
+  "findings": [
+    {
+      "evidence": "Medium; cross-artifact; affected owner Authoring plus strategy/index/scope-handoff detail; owning stage Design. scope-handoff.json adds AUTH-SH-005, yielding13 total cases and5 in that group. Authoring Test design still says twelve; index scope.coverage_claim says Twelve; strategy group count says4 and repeatedly claims12/twelve procedures. The appended paragraph acknowledging SH005 does not reconcile these standing accounts.",
+      "id": "authoring-retirement-case-accounting",
+      "owner": {
+        "id": "feature-retirement-design-author",
+        "role": "design"
+      },
+      "reporter": {
+        "id": "feature-retirement-design-reviewer",
+        "role": "review"
+      },
+      "required_outcome": "Reconcile the owner, index coverage claim and strategy group/population/proof-limit descriptions with all13 proposed procedures, including the unsupported-output/adoption responsibility. Preserve all existing case IDs and keep SH005 proposed with no executable links; no numerical quota or automated-test claim is needed.",
+      "resolution": {
+        "actor": {
+          "id": "feature-retirement-design-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [],
+        "rationale": "Independently re-read corrected Authoring owner/index/strategy and unchanged SH-005. All now account for thirteen proposed procedures, five in scope-handoff, with explicit unsupported-output/adoption risk and no automated semantic coverage claim. JSON observation confirms thirteen proposed cases and zero executable links. The original finding and judgment remain historical evidence; the fresh complete package receives a separate review."
+      },
+      "state": "resolved",
+      "subjects": [
+        {
+          "identity": "sha256:3a19b0bb81d4bf3e1536e85795f67d986fbaf7962020d6fca4449fcfc5942032",
+          "path": "docs/design/skill/authoring/authoring.md"
+        },
+        {
+          "identity": "sha256:02818600850cf2c47adf128820984cba11728ad4023f6cf8ff59beb714e4d6b2",
+          "path": "docs/design/skill/authoring/test-design/cases/scope-handoff.json"
+        },
+        {
+          "identity": "sha256:35fd40fd6f52465f51f335079cb0151fe7d96220ea55b1b8d50329365e3106ec",
+          "path": "docs/design/skill/authoring/test-design/test-cases.json"
+        },
+        {
+          "identity": "sha256:9bac5752a50c8711fa2c8ecf804968c33f9f23d991a96010746a47af8c0f403e",
+          "path": "docs/design/skill/authoring/test-design/test-design.md"
+        }
+      ]
+    }
+  ],
+  "id": "feature-retirement-design-review",
+  "independence_basis": "Independent delegated reviewer /root/catalog_admission_design_review assessed the new retirement worktree and exact approved proposal; reviewer edited no proposal, Design, catalog or implementation subject. Prior focused-testing/admission approvals are not inherited for this support withdrawal.",
+  "judgment": "changes-requested",
+  "limitations": [
+    "Approval is withheld pending the recorded catalog reconciliation. The correction does not require inventing automated semantic realization; all thirteen procedures remain proposed.",
+    "This review is Design assessment only. Exact deletion lists, production/skill changes, discovery preservation, current safety proof and unsupported no-read observations remain Delivery/implementation responsibilities.",
+    "The five Skill-archive deletion mappings, old examples routing, generic flat/relocation aliases, other location kinds, record safety and installation/release authorization remain outside retirement; this review does not permit their removal."
+  ],
+  "rationale": [
+    "The accepted support boundary follows approved direction: feature/proof authoring and grammar/adoption classification retire; source interpretation and explicitly authorized scoped living-model adoption survive without rewriting customer files or historical judgment subjects. AUTH-SH-005 supplies a concrete unsupported/template/adoption comparison and remains proposed.",
+    "Validation defines attributable BFR-UNSUPPORTED-FORMAT failure for present/missing/malformed/symlinked specs inputs before content reads, retains model-marker/containment/catalog checks and empty review_required envelope compatibility, and preserves existing discovered absent-deletion routing separately from unsupported explicit/present inputs. Shared parser utilities need not retire with feature-only functions.",
+    "Packaging explicitly retains compact-core with eight consumers, four-question scan, eight risk dimensions and actual-interaction reasoning while removing feature/proof schema resources and triggers. CLI-SR-32 withdraws only spec default/config kind with invalid-input exit2 before discovery; other location kinds and version domains remain. No new service, schema or runtime authority is introduced.",
+    "The authoring coverage account contradicts its actual group after AUTH-SH-005 addition: owner/index/strategy retain twelve-procedure claims and scope-handoff remains four. This violates the selected living-coverage reconciliation requirement and can omit the new behavior from manual proof allocation even though structural JSON admission passes."
+  ],
+  "reviewer": {
+    "id": "feature-retirement-design-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:7ae16c1195d46c76e00f68233856f03d989bf7c688a8d0d9006196aa617efaa8",
+      "path": "docs/design/cli/cli.md"
+    },
+    {
+      "identity": "sha256:eb2946c6aab6e8b8494207bbc0cbcae46d2fb706cd1a3f33013dcf3ab764dcfc",
+      "path": "docs/design/engineering/packaging.md"
+    },
+    {
+      "identity": "sha256:f7099080caf0a3cb4d79e2d68361fb6b760260c3530e4f52d688cd07392e37a3",
+      "path": "docs/design/engineering/release/release.md"
+    },
+    {
+      "identity": "sha256:e09382d178369338fe54ca24cb5a865434e10fcb75884d631f942fe20552b9d0",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:edd9ef472bc4ddb26779d9582ee723bda7e994b7915f16842a1fdfa8fb5e14ff",
+      "path": "docs/design/skill/assessment.md"
+    },
+    {
+      "identity": "sha256:3a19b0bb81d4bf3e1536e85795f67d986fbaf7962020d6fca4449fcfc5942032",
+      "path": "docs/design/skill/authoring/authoring.md"
+    },
+    {
+      "identity": "sha256:70e2485309e83dfdc5f4175d192b3b1114aa2e0e1716074700250f212d50528e",
+      "path": "docs/design/skill/authoring/design.md"
+    },
+    {
+      "identity": "sha256:7f4dca46594b7c6dd020ebaf63fa816149861c7fc4a720180f142de9c457d091",
+      "path": "docs/design/skill/authoring/test-design/cases/correction-reconciliation.json"
+    },
+    {
+      "identity": "sha256:b2e83fe05600347fd620e5b24be8bdc4569f6ca862557e8e70d209dbb331702c",
+      "path": "docs/design/skill/authoring/test-design/cases/refinement.json"
+    },
+    {
+      "identity": "sha256:02818600850cf2c47adf128820984cba11728ad4023f6cf8ff59beb714e4d6b2",
+      "path": "docs/design/skill/authoring/test-design/cases/scope-handoff.json"
+    },
+    {
+      "identity": "sha256:35fd40fd6f52465f51f335079cb0151fe7d96220ea55b1b8d50329365e3106ec",
+      "path": "docs/design/skill/authoring/test-design/test-cases.json"
+    },
+    {
+      "identity": "sha256:9bac5752a50c8711fa2c8ecf804968c33f9f23d991a96010746a47af8c0f403e",
+      "path": "docs/design/skill/authoring/test-design/test-design.md"
+    },
+    {
+      "identity": "sha256:2828a3eb7d6fccfc912580ab95e4c4fd5dd38af166ed07727afa13d4941eaa43",
+      "path": "docs/design/skill/skill.md"
+    },
+    {
+      "identity": "sha256:b8cf15dddf0611227860248a6cd92fe6ebb6b4b84ff5f4f0a79aa6a9eef56145",
+      "path": "docs/design/skill/test-design/cases/capability-composition.json"
+    },
+    {
+      "identity": "sha256:b2cd74b3690c17afbf40b62019e607592beaecd86dba3d3885cef9745e9ebea2",
+      "path": "docs/design/skill/test-design/cases/capability-contract.json"
+    },
+    {
+      "identity": "sha256:153c7941dd4c9bec09a8368ff8605d6469c3efa4f5aac1e6e51d42ecdb7c5407",
+      "path": "docs/design/skill/test-design/cases/implementation-handoffs.json"
+    },
+    {
+      "identity": "sha256:3b798f4feda2327f9d7da5793eba11160c259a1ff825914127225cd184302e71",
+      "path": "docs/design/skill/test-design/cases/recording-composition.json"
+    },
+    {
+      "identity": "sha256:839291d455ee3f93f8254e539a5577c6ce36389669ce0e3cd44ec3ced0e116ef",
+      "path": "docs/design/skill/test-design/cases/resource-contract.json"
+    },
+    {
+      "identity": "sha256:872bd368736f46ef828cac1213cccccb803500fa164ef88ecc1393ee470f490c",
+      "path": "docs/design/skill/test-design/test-cases.json"
+    },
+    {
+      "identity": "sha256:62b09ca633c59b1f8f80f7ced683ffd69db8bd3b8d52917a38b5ca12913f80c0",
+      "path": "docs/design/skill/test-design/test-design.md"
+    },
+    {
+      "identity": "sha256:d2f4d246487f9db819ce37a0d839baed9afb5e6480d3cc0dc80a0f7537abff0c",
+      "path": "docs/design/skill/workflow.md"
+    },
+    {
+      "identity": "sha256:7765c817d1b46d43d88a6eb7c58dad2ad6a6a96209a21802830548f67febacba",
+      "path": "docs/design/system.md"
+    },
+    {
+      "identity": "sha256:ebb38f081982da0a3a5b328f0a30bb25b371e380373f3d074d803cc5b56db4f5",
+      "path": "docs/proposals/2026-09-17-retire-feature-format-support.md"
+    }
+  ],
+  "summary": "The bounded support withdrawal is coherent, but the Authoring catalog account must include its newly added thirteenth procedure consistently.",
+  "target": "design"
+}
