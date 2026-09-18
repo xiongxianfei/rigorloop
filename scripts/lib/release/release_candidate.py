@@ -472,6 +472,22 @@ def ci_arguments(argv: list[str], root: Path):
 
 
 def check_ci(argv: list[str], root: Path) -> int:
+    """Keep reporting private to the final prepared validation invocation.
+
+    The outer CI executor owns its destination throughout preparation. Its
+    private handoff path is not a report destination for preparation children.
+    Restore the caller's environment even when admission or preparation fails.
+    """
+    keys = ('RIGORLOOP_CI_PREPARED_RESULT_JSON',
+            'RIGORLOOP_VALIDATION_RESULT_JSON', 'RIGORLOOP_BROAD_SMOKE_RESULT_JSON')
+    saved = {key: os.environ.pop(key) for key in keys if key in os.environ}
+    try:
+        return _check_ci(argv, root, prepared_report=saved.get('RIGORLOOP_CI_PREPARED_RESULT_JSON'))
+    finally:
+        os.environ.update(saved)
+
+
+def _check_ci(argv: list[str], root: Path, *, prepared_report: str | None = None) -> int:
     """Compose existing CI on an isolated prepared package. 3 means source mode."""
     import tarfile
     args, argv = ci_arguments(argv, root)
@@ -524,6 +540,8 @@ def check_ci(argv: list[str], root: Path) -> int:
         print('CI checks prepared source ' + data['prepared_commit'] + ' from ' + head
               + '; candidate ' + data['candidate_id'] + '; no publication authority.', flush=True)
         env = dict(os.environ, RIGORLOOP_CI_CANDIDATE=str(output), RIGORLOOP_CI_WORKSPACE=str(source))
+        if prepared_report is not None:
+            env['RIGORLOOP_VALIDATION_RESULT_JSON'] = prepared_report
         # Snapshot readers must inspect C, not the pending authored record in S.
         # C descends from S; the unchanged base keeps all source-change selection.
         argv[argv.index('--head') + 1] = data['prepared_commit']

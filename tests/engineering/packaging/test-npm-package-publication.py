@@ -5,10 +5,12 @@ from __future__ import annotations
 
 import json
 import os
+import stat
 import subprocess
 import tarfile
 import tempfile
 import unittest
+import zipfile
 from pathlib import Path
 
 from npm_fixture_helpers import (
@@ -45,6 +47,24 @@ EXPECTED_RUNTIME_PATHS = frozenset({
     "package/dist/metadata/adapter-artifacts-v0.3.4.json",
     "package/dist/metadata/releases.json",
 })
+
+
+def project_snapshot(root: Path) -> dict:
+    """Observe all entries without following destination symlinks."""
+    result = {}
+    def visit(path):
+        mode = path.lstat().st_mode
+        relative = path.relative_to(root).as_posix()
+        if stat.S_ISLNK(mode):
+            result[relative] = (mode, os.readlink(path))
+        elif stat.S_ISDIR(mode):
+            result[relative] = (mode,)
+            for child in sorted(path.iterdir()):
+                visit(child)
+        else:
+            result[relative] = (mode, path.read_bytes())
+    visit(root)
+    return result
 
 
 class NpmPackagePublicationTests(unittest.TestCase):
@@ -238,6 +258,57 @@ class NpmPackagePublicationTests(unittest.TestCase):
                     self.assertEqual(init_payload["command"], "init")
                     self.assert_default_target_install(target_project, target)
                     self.assert_no_state_files(target_project)
+
+                with self.subTest(target=target, mode="empty-unit-default-and-force"):
+                    conflict_project = Path(project_temp) / f"empty-{target}"
+                    unit = conflict_project / TARGET_SKILL_ROOTS[target] / "design"
+                    unit.mkdir(parents=True)
+                    sentinels = {"rigorloop.yaml": b"preserve state\r\n",
+                                 "rigorloop.lock": b"preserve lock\x00",
+                                 "unrelated.txt": b"user data\n"}
+                    for name, content in sentinels.items():
+                        (conflict_project / name).write_bytes(content)
+                    before = project_snapshot(conflict_project)
+                    command = [str(bin_path), "init", target, "--from-archive", str(archive), "--json"]
+                    conflict = run_command(command, cwd=conflict_project)
+                    self.assertEqual(conflict.returncode, 5, conflict.stdout + conflict.stderr)
+                    self.assertEqual(json.loads(conflict.stdout)["blockers"][0]["code"], "destination-conflict")
+                    self.assertEqual(project_snapshot(conflict_project), before)
+                    forced = run_command([*command, "--force"], cwd=conflict_project)
+                    self.assertEqual(forced.returncode, 0, forced.stdout + forced.stderr)
+                    # Compare every installed member with the actual immutable ZIP;
+                    # archive inventory/parity has its separate canonical oracle.
+                    prefix = TARGET_SKILL_ROOTS[target].as_posix() + "/"
+                    with zipfile.ZipFile(archive) as zipped:
+                        expected = {name: zipped.read(name) for name in zipped.namelist()
+                                    if name.startswith(prefix) and not name.endswith("/")}
+                    actual = {path.relative_to(conflict_project).as_posix(): path.read_bytes()
+                              for path in (conflict_project / TARGET_SKILL_ROOTS[target]).rglob("*")
+                              if path.is_file()}
+                    self.assertEqual(actual, expected)
+                    for name, content in sentinels.items():
+                        self.assertEqual((conflict_project / name).read_bytes(), content)
+
+                with self.subTest(target=target, mode="unsafe-unit-default-and-force"):
+                    unsafe_project = Path(project_temp) / f"unsafe-{target}"
+                    victim = Path(project_temp) / f"outside-{target}"
+                    victim.mkdir()
+                    (victim / "keep.md").write_bytes(b"outside destination\r\n")
+                    unsafe_unit = unsafe_project / TARGET_SKILL_ROOTS[target] / "design"
+                    unsafe_unit.parent.mkdir(parents=True)
+                    unsafe_unit.symlink_to(victim, target_is_directory=True)
+                    (unsafe_project / "rigorloop.yaml").write_bytes(b"keep state")
+                    before = project_snapshot(unsafe_project)
+                    victim_before = project_snapshot(victim)
+                    for options in ([], ["--force"]):
+                        rejected = run_command(
+                            [str(bin_path), "init", target, "--from-archive", str(archive), "--json", *options],
+                            cwd=unsafe_project,
+                        )
+                        self.assertEqual(rejected.returncode, 5, rejected.stdout + rejected.stderr)
+                        self.assertEqual(json.loads(rejected.stdout)["blockers"][0]["code"], "unsafe-destination")
+                        self.assertEqual(project_snapshot(unsafe_project), before)
+                        self.assertEqual(project_snapshot(victim), victim_before)
 
                 with self.subTest(target=target, mode="removed-write-state"):
                     state_project = Path(project_temp) / f"state-{target}"

@@ -91,6 +91,7 @@ class NetworkPublisher(NetworkPublicEvidenceProvider):
     def __init__(self):
         super().__init__(github_repository=SOURCE_REPOSITORY)
         self.installed = {}
+        self.installed_v1 = {}
 
     def wait_for_visibility(self, attempt: int):
         import time
@@ -204,7 +205,7 @@ class NetworkPublisher(NetworkPublicEvidenceProvider):
             run(['gh', 'release', 'upload', candidate['tag'], '--repo', SOURCE_REPOSITORY, str(path)], Path(temporary))
 
     def run_public_npx_smoke(self, *, command: str, cwd: Path) -> PublicSmokeResult:
-        from lib.packaging.adapter_distribution import _normalized_tree_hash_bytes, _tree_hash_for_rows
+        from lib.packaging.adapter_distribution import _normalized_tree_hash_bytes
         with tempfile.TemporaryDirectory(prefix='rigorloop-fresh-npx-') as cache:
             env = dict(os.environ, npm_config_cache=cache, npm_config_yes='true', npm_config_registry='https://registry.npmjs.org/')
             result = subprocess.run(command.split(), cwd=cwd, env=env, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=600)
@@ -229,16 +230,30 @@ class NetworkPublisher(NetworkPublicEvidenceProvider):
                     elif path.is_file():
                         name = path.relative_to(root).as_posix()
                         rows.append((name, hashlib.sha256(_normalized_tree_hash_bytes(name, path.read_bytes())).hexdigest()))
-                self.installed[relative] = {'tree_sha256': _tree_hash_for_rows(rows), 'file_count': len(rows)}
+                self.record_installed_rows(relative, rows)
             summary = 'public init ' + target + (' completed' if code == 0 else ' failed')
         return PublicSmokeResult(command, code, result.stdout, '', summary)
 
+    def record_installed_rows(self, relative: str, rows: list[tuple[str, str]]):
+        from lib.packaging.adapter_distribution import _tree_hash_for_rows
+        # The fresh installation disappears before metadata comparison. Retain
+        # each representation explicitly; verification selects one, never falls back.
+        self.installed[relative] = {'tree_sha256': _tree_hash_for_rows(rows, algorithm='rigorloop-tree-hash-v2'), 'file_count': len(rows)}
+        self.installed_v1[relative] = {'tree_sha256': _tree_hash_for_rows(rows), 'file_count': len(rows)}
+
     def verify_smoke_identity(self, candidate: dict, output: Path):
+        from lib.packaging.adapter_distribution import TREE_HASH_ALGORITHMS
         metadata = json.loads((output / f"adapter-artifacts-{candidate['tag']}.json").read_text())
         for artifact in metadata['artifacts']:
+            algorithm = artifact.get('tree_hash_algorithm', 'rigorloop-tree-hash-v1')
+            if algorithm not in TREE_HASH_ALGORITHMS:
+                raise ExecutionError(f'unknown tree hash algorithm: {algorithm}')
+        for artifact in metadata['artifacts']:
+            algorithm = artifact.get('tree_hash_algorithm', 'rigorloop-tree-hash-v1')
+            installed = self.installed_v1 if algorithm == 'rigorloop-tree-hash-v1' else self.installed
             if 'install_roots' in artifact:
                 for key, root in artifact['install_roots'].items():
-                    if self.installed.get(root) != artifact['root_hashes'][key]:
+                    if installed.get(root) != artifact['root_hashes'][key]:
                         raise ExecutionError('public installed tree differs from approved archive')
-            elif self.installed.get(artifact['install_root']) != {'tree_sha256': artifact['tree_sha256'], 'file_count': artifact['file_count']}:
+            elif installed.get(artifact['install_root']) != {'tree_sha256': artifact['tree_sha256'], 'file_count': artifact['file_count']}:
                 raise ExecutionError('public installed tree differs from approved archive')

@@ -319,3 +319,19 @@ class CiAssemblyDeclarationTests(unittest.TestCase):
         path, metadata, body = ci_assembly_input(declaration=example + table)
         errors = skill_validation.validate_ci_maintenance_contract(path, metadata, body)
         self.assertEqual(errors, [])
+
+
+class WorkflowRoleStageTests(unittest.TestCase):
+    def test_empty_stage_rejects_before_role_consistency(self):
+        # An explicitly empty value is not any member of the closed stage set.
+        path = ROOT / "tests/fixtures/skills/skill-readability/valid-pilot/SKILL.md"
+        metadata, body = skill_validation.load_skill_file(path)
+        self.assertEqual([], skill_validation.validate_readability_contract(path, metadata, body))
+        for role in ("valid-pilot", "another-skill"):
+            with self.subTest(role=role):
+                candidate = replace_once(body, "stage: authoring", "stage: ")
+                if role != "valid-pilot":
+                    candidate = replace_once(candidate, "role_name: valid-pilot", f"role_name: {role}")
+                errors = skill_validation.validate_readability_contract(path, metadata, candidate)
+                assert_diagnostic(self, errors, path,
+                    "workflow role stage must be one of authoring, execution, handoff, periodic, review, support, verification")

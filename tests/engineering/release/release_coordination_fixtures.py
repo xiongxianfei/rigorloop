@@ -88,7 +88,7 @@ class PackedPublicFixture(FixturePublisher):
     def run_public_npx_smoke(self, *, command, cwd):
         import tempfile, subprocess, hashlib
         from lib.release.release_transaction import PublicSmokeResult, _target_install_roots
-        from lib.packaging.adapter_distribution import _tree_hash_for_rows, _normalized_tree_hash_bytes
+        from lib.packaging.adapter_distribution import _normalized_tree_hash_bytes
         target = command.split()[-1]
         if self.fail_smoke:
             # Still execute the real package: ask its actual CLI to reject an
@@ -104,8 +104,8 @@ class PackedPublicFixture(FixturePublisher):
         if target != 'version' and result.returncode == 0:
             for name in _target_install_roots(target):
                 root = cwd / name
-                rows = [(p.relative_to(root).as_posix(), hashlib.sha256(_normalized_tree_hash_bytes(p.name, p.read_bytes())).hexdigest()) for p in root.rglob('*') if p.is_file()]
-                self.installed[name] = {'tree_sha256': _tree_hash_for_rows(rows), 'file_count': len(rows)}
+                rows = [(p.relative_to(root).as_posix(), hashlib.sha256(_normalized_tree_hash_bytes(p.name, p.read_bytes())).hexdigest()) for p in root.rglob('*') if p.is_file() and not p.is_symlink()]
+                self.record_installed_rows(name, rows)
         return PublicSmokeResult(command, result.returncode, result.stdout, '', 'actual packed CLI ' + target + ' through substituted public transport')
 
 

@@ -41,6 +41,8 @@ If key files are absent, infer carefully from the repo and document assumptions.
 
 ## Artifact choices
 
+Resolve the authorized target from exact user and project guidance, authoritative CLI workflow context when governed, then a safe portable default. When governed context is selected, missing, malformed, conflicting or ambiguous identity stops dependent output without portable fallback. Reassess a materially changed governing basis before writing; preserve unrelated artifacts and report the responsible owner’s blocker.
+
 Prefer this structure:
 
 ```text
