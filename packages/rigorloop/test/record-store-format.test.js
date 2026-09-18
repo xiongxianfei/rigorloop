@@ -59,8 +59,8 @@ test('TG-01 v3 complete fixtures and packaged templates validate without mutatio
 test('TG-01 unknown_value closed vocabularies fail before consistency', () => {
   const f = fixture();
   const cases = [
-    ['change', (x) => (x.contract = 'unknown_value')],
-    ['change', (x) => (x.schema_version = 99)],
+    ['change', (x) => (x.contract = 'unknown_value'), 'unsupported-contract'],
+    ['change', (x) => (x.schema_version = 99), 'unsupported-contract'],
     ['change', (x) => (x.activity.stage = 'unknown_value')],
     ['change', (x) => (x.activity.status = 'unknown_value')],
     ['change', (x) => (x.activity.owner.role = 'unknown_value')],
@@ -71,16 +71,42 @@ test('TG-01 unknown_value closed vocabularies fail before consistency', () => {
     ['review', (x) => (x.findings[0].state = 'unknown_value')],
     ['evidence', (x) => (x.checks[0].result = 'unknown_value')],
     ['verify', (x) => (x.outcome = 'unknown_value')],
-    ['request', (x) => (x.schema_version = 1)],
+    ['request', (x) => (x.schema_version = 1), 'unsupported-contract'],
     ['review', (x) => (x.reviewer.role = 'unknown_value')],
   ];
-  for (const [kind, mutate] of cases) {
+  assert.doesNotThrow(() => validateV3Set('example', files()));
+  for (const [kind, mutate, expectedCode = 'invalid-input'] of cases) {
     const value = structuredClone(f[kind]);
+    assert.doesNotThrow(() => validateV3Record(kind, value));
     mutate(value);
-    assert.throws(
-      () => validateV3Record(kind, value),
-      (e) => ['invalid-input', 'unsupported-contract'].includes(e.recordStoreCode),
-    );
+    reject(() => validateV3Record(kind, value), expectedCode);
+    if (kind === 'request') {
+      value.reads = [{ path: value.writes[0].path, expected_identity: null }];
+      reject(() => validateV3Record(kind, value), expectedCode);
+      value.schema_version = 2;
+      assert.throws(() => validateV3Record(kind, value), /read\/write path overlap/);
+      continue;
+    }
+    // A real dangling reference is a competing consistency fault. Restoring
+    // only the unknown value must expose it, proving the earlier rejection.
+    const map = files();
+    const path = kind === 'change' ? root + 'change.json'
+      : f.change.records.find((record) => record.kind === kind).path;
+    map[path] = encode(value);
+    const verifyPath = root + 'verify-report.json';
+    const verification = JSON.parse(map[verifyPath]);
+    verification.evidence_refs = [{ path: root + 'evidence.json', id: 'missing-check' }];
+    map[verifyPath] = encode(verification);
+    const before = structuredClone(map);
+    reject(() => validateV3Set('example', map), expectedCode);
+    assert.deepEqual(map, before);
+    map[path] = encode(f[kind]);
+    if (kind === 'verify') {
+      const restored = JSON.parse(map[path]);
+      restored.evidence_refs = verification.evidence_refs;
+      map[path] = encode(restored);
+    }
+    reject(() => validateV3Set('example', map), 'broken-reference');
   }
   reject(() => validateV3Record('unknown_value', {}));
   assert.ok(RECORDS_V3_SCHEMA.$defs.origin);
@@ -164,21 +190,36 @@ test('TG-01 every EntryRef field resolves only its permitted collection', () => 
   const reviewPath = root + 'reviews/design-review.json',
     ev = root + 'evidence.json';
   const cases = [
-    ['review', (r) => r.findings[0].resolution.evidence_refs, reviewPath],
-    ['change', (r) => r.blockers[0].resolution.evidence_refs, root + 'change.json'],
-    ['verify', (r) => r.evidence_refs, root + 'verify-report.json'],
-    ['verify', (r) => r.review_refs, root + 'verify-report.json'],
-    ['decisions', (r) => r.decisions[0].source_refs, root + 'material-decisions.json'],
+    ['review', (r) => r.findings[0].resolution.evidence_refs, reviewPath,
+      { path: ev, id: 'check-1' }, { path: reviewPath, id: 'design-review' }],
+    ['change', (r) => r.blockers[0].resolution.evidence_refs, root + 'change.json',
+      { path: ev, id: 'check-1' }, { path: reviewPath, id: 'design-review' }],
+    ['verify', (r) => r.evidence_refs, root + 'verify-report.json',
+      { path: ev, id: 'check-1' }, { path: reviewPath, id: 'design-review' }],
+    ['verify', (r) => r.review_refs, root + 'verify-report.json',
+      { path: reviewPath, id: 'design-review' }, { path: reviewPath, id: 'finding-1' }],
+    ['decisions', (r) => r.decisions[0].source_refs, root + 'material-decisions.json',
+      { path: ev, id: 'check-1' }, { path: root + 'verify-report.json', id: 'example' }],
   ];
-  for (const [kind, refs, path] of cases) {
-    const f = fixture(),
-      map = files(),
-      r = f[kind];
+  for (const [kind, refs, path, valid, wrongClass] of cases) {
+    const map = files();
+    const accepted = fixture()[kind];
+    refs(accepted).splice(0, refs(accepted).length, valid);
+    map[path] = encode(accepted);
     assert.doesNotThrow(() => validateV3Set('example', map));
-    const list = refs(r);
-    list.splice(0, list.length, { path: ev, id: 'missing' });
-    map[path] = encode(r);
-    reject(() => validateV3Set('example', map), 'broken-reference');
+    for (const bad of [
+      { path: valid.path, id: 'missing' },
+      { path: root + 'reviews/unregistered.json', id: 'unregistered' },
+      wrongClass,
+    ]) {
+      const candidate = structuredClone(map);
+      const record = structuredClone(accepted);
+      refs(record).splice(0, refs(record).length, bad);
+      candidate[path] = encode(record);
+      const before = structuredClone(candidate);
+      reject(() => validateV3Set('example', candidate), 'broken-reference');
+      assert.deepEqual(candidate, before);
+    }
   }
   const f = files(),
     v = fixture().verify;
@@ -215,6 +256,19 @@ test('TG-01 source references cover manifest collections review root findings ch
     map[root + 'material-decisions.json'] = encode(d);
     reject(() => validateV3Set('example', map), 'broken-reference');
   }
+  const sameId = files();
+  const evidence = fixture().evidence;
+  evidence.checks.push({ ...structuredClone(evidence.checks[0]), id: 'design-review' });
+  sameId[root + 'evidence.json'] = encode(evidence);
+  const decision = fixture().decisions;
+  decision.decisions[0].source_refs = [
+    { path: root + 'evidence.json', id: 'design-review' },
+    { path: root + 'reviews/design-review.json', id: 'design-review' },
+  ];
+  sameId[root + 'material-decisions.json'] = encode(decision);
+  const before = structuredClone(sameId);
+  assert.doesNotThrow(() => validateV3Set('example', sameId));
+  assert.deepEqual(sameId, before);
 });
 
 test('TG-01 registry applicability duplicates and final candidate references', () => {
@@ -222,8 +276,10 @@ test('TG-01 registry applicability duplicates and final candidate references', (
     (c) => c.applicability.pop(),
     (c) => (c.records[0].kind = 'evidence'),
     (c) => c.records.push(c.records[0]),
+    (c) => c.applicability.push(structuredClone(c.applicability[0])),
   ]) {
     const c = fixture().change;
+    assert.doesNotThrow(() => validateV3Record('change', c));
     mutate(c);
     reject(() => validateV3Record('change', c));
   }
@@ -287,11 +343,13 @@ test('TG-01 unknown_value regression reaches every stored and request vocabulary
       let target = candidate;
       for (const key of path.slice(0, -1)) target = target[key];
       target[path.at(-1)] = 'unknown_value';
-      assert.throws(
-        () => validateV3Record(kind, candidate),
-        (e) => ['invalid-input', 'unsupported-contract'].includes(e.recordStoreCode),
-        `${kind}.${path.join('.')}`,
-      );
+      const expectedCode = path.length === 1 &&
+        (path[0] === 'schema_version' || path[0] === 'contract')
+        ? 'unsupported-contract' : 'invalid-input';
+      assert.throws(() => validateV3Record(kind, candidate), (error) => {
+        assert.equal(error.recordStoreCode, expectedCode, `${kind}.${path.join('.')}: ${error.message}`);
+        return true;
+      });
       covered.add(kind + '.' + path.join('.'));
     }
     if (schema.type === 'object')
@@ -300,8 +358,10 @@ test('TG-01 unknown_value regression reaches every stored and request vocabulary
     if (schema.type === 'array')
       value.forEach((entry, index) => walk(schema.items, entry, [...path, index], kind));
   }
-  for (const [kind, value] of Object.entries(cases))
+  for (const [kind, value] of Object.entries(cases)) {
+    assert.doesNotThrow(() => validateV3Record(kind, value));
     walk(RECORDS_V3_SCHEMA.$defs[kind], value, [], kind);
+  }
   assert.ok(covered.size > 35);
 });
 

@@ -9,6 +9,7 @@ import {
   mkdtempSync,
   readFileSync,
   readdirSync,
+  readlinkSync,
   rmSync,
   symlinkSync,
   writeFileSync,
@@ -53,6 +54,91 @@ function tempProject(t) {
 
 function listProject(root) {
   return readdirSync(root, { recursive: true }).sort();
+}
+
+function projectSnapshot(root) {
+  const entries = [];
+  function visit(path = "") {
+    const absolute = join(root, path);
+    const info = lstatSync(absolute);
+    if (info.isSymbolicLink()) {
+      entries.push([path, "link", info.mode, readlinkSync(absolute)]);
+    } else if (info.isDirectory()) {
+      entries.push([path, "directory", info.mode]);
+      for (const name of readdirSync(absolute).sort()) visit(path ? `${path}/${name}` : name);
+    } else {
+      assert.ok(info.isFile(), `Unexpected fixture type: ${path}`);
+      entries.push([path, "file", info.mode, readFileSync(absolute).toString("base64")]);
+    }
+  }
+  visit();
+  return entries;
+}
+
+// Instrument the real child process, before its named node:fs imports bind.
+// Probe files live outside the project whose preservation is being observed.
+function installationProbe(t, { statePaths = [], archivePath, failAfterPublish } = {}) {
+  const directory = tempProject(t);
+  const eventsPath = join(directory, "events.jsonl");
+  const preload = join(directory, "installation-probe.mjs");
+  writeFileSync(eventsPath, "");
+  writeFileSync(preload, `import fs from "node:fs";
+import { syncBuiltinESMExports } from "node:module";
+import { resolve, join } from "node:path";
+import { fileURLToPath } from "node:url";
+const statePaths = new Set(${JSON.stringify(statePaths)});
+const archivePath = ${JSON.stringify(archivePath ?? null)};
+const failAfterPublish = ${JSON.stringify(failAfterPublish ?? null)};
+const append = fs.appendFileSync;
+const readlink = fs.readlinkSync;
+const emit = event => append(${JSON.stringify(eventsPath)}, JSON.stringify(event) + "\\n");
+function pathOf(value) {
+  if (typeof value === "number") value = "/proc/self/fd/" + value;
+  if (value instanceof URL) value = fileURLToPath(value);
+  if (Buffer.isBuffer(value)) value = value.toString();
+  if (typeof value !== "string") return null;
+  const path = resolve(value);
+  const anchored = /^\\/proc\\/self\\/fd\\/(\\d+)(?:\\/(.*))?$/.exec(path);
+  if (!anchored) return path;
+  return join(readlink("/proc/self/fd/" + anchored[1]), anchored[2] ?? "");
+}
+function guard(method, value) {
+  const path = pathOf(value);
+  if (statePaths.has(path) || (path === archivePath && /^(read|open|createReadStream)/.test(method))) {
+    emit({ kind: "forbidden-access", method, path });
+    throw Error("Installation attempted forbidden fixture access");
+  }
+}
+for (const method of ["readFileSync", "openSync", "readSync", "statSync", "lstatSync", "accessSync", "existsSync", "realpathSync", "readlinkSync", "createReadStream", "readFile", "open", "read", "stat", "lstat", "access", "exists", "realpath", "readlink"]) {
+  const original = fs[method];
+  fs[method] = function (...args) { guard(method, args[0]); return original.apply(this, args); };
+}
+for (const method of ["readFile", "open", "stat", "lstat", "access", "realpath", "readlink"]) {
+  const original = fs.promises[method];
+  fs.promises[method] = async function (...args) { guard(method, args[0]); return original.apply(this, args); };
+}
+const link = fs.linkSync;
+fs.linkSync = function (...args) {
+  const destination = pathOf(args[1]);
+  const result = link.apply(this, args);
+  if (destination === failAfterPublish) {
+    emit({ kind: "published-fault", path: destination });
+    throw Error("Controlled failure after actual second-unit publication");
+  }
+  return result;
+};
+globalThis.fetch = async function () {
+  emit({ kind: "acquisition-attempt" });
+  throw Error("Unexpected installation acquisition");
+};
+syncBuiltinESMExports();
+emit({ kind: "loaded" });
+`);
+  return {
+    env: { NODE_OPTIONS: `--import ${preload}` },
+    reset() { writeFileSync(eventsPath, ""); },
+    events() { return readFileSync(eventsPath, "utf8").trim().split("\n").filter(Boolean).map(JSON.parse); },
+  };
 }
 
 function readProjectFile(root, path) {
@@ -1733,8 +1819,12 @@ for (const [target, installRoot] of [
     const args = ["init", target, "--from-archive", `./${fixture.archiveName}`, "--json"];
     writeFileSync(join(cwd, "rigorloop.yaml"), "not: [yaml");
     symlinkSync(join(cwd, "missing-state-target"), join(cwd, "rigorloop.lock"));
-    let result = runCliWithBundledMetadata(t, args, cwd, fixture.metadata);
+    const probe = installationProbe(t, {
+      statePaths: [join(cwd, "rigorloop.yaml"), join(cwd, "rigorloop.lock")],
+    });
+    let result = runCliWithBundledMetadata(t, args, cwd, fixture.metadata, { env: probe.env });
     assert.equal(result.status, 0, result.stdout + result.stderr);
+    assert.deepEqual(probe.events(), [{ kind: "loaded" }], "fresh install inspected state");
     const first = fixture.entries.find(
       (e) => e.name.startsWith(`${installRoot}/`) && !e.directory,
     ).name;
@@ -1742,17 +1832,190 @@ for (const [target, installRoot] of [
     writeFileSync(join(cwd, unit, "obsolete.txt"), "local edit");
     mkdirSync(join(cwd, installRoot, "unrelated"));
     writeFileSync(join(cwd, installRoot, "unrelated", "keep"), "keep");
-    result = runCliWithBundledMetadata(t, args, cwd, fixture.metadata);
+    const beforeConflict = projectSnapshot(cwd);
+    probe.reset();
+    result = runCliWithBundledMetadata(t, args, cwd, fixture.metadata, { env: probe.env });
     assert.equal(result.status, 5, result.stdout + result.stderr);
     assert.ok(JSON.parse(result.stdout).blockers.some((b) => b.path === unit));
-    result = runCliWithBundledMetadata(t, [...args, "--force"], cwd, fixture.metadata);
+    assert.deepEqual(probe.events(), [{ kind: "loaded" }], "conflict inspected state");
+    assert.deepEqual(projectSnapshot(cwd), beforeConflict);
+    probe.reset();
+    result = runCliWithBundledMetadata(t, [...args, "--force"], cwd, fixture.metadata, { env: probe.env });
     assert.equal(result.status, 0, result.stdout + result.stderr);
+    assert.deepEqual(probe.events(), [{ kind: "loaded" }], "force inspected state");
     assert.equal(existsSync(join(cwd, unit, "obsolete.txt")), false);
     assert.equal(readFileSync(join(cwd, installRoot, "unrelated", "keep"), "utf8"), "keep");
     assert.equal(readFileSync(join(cwd, "rigorloop.yaml"), "utf8"), "not: [yaml");
     assert.ok(lstatSync(join(cwd, "rigorloop.lock")).isSymbolicLink());
+    assert.equal(readlinkSync(join(cwd, "rigorloop.lock")), join(cwd, "missing-state-target"));
     assert.ok(JSON.parse(result.stdout).retained.length > 0);
   });
+
+  test(`DIST dry-run observes no acquisition or project mutation: ${target}`, (t) => {
+    // Network/default and local/force retain both acquisition boundaries without
+    // multiplying equivalent archive-verification scenarios.
+    for (const local of [false, true]) {
+      const cwd = tempProject(t);
+      const fixture = fixtureArchive(cwd, {
+        adapter: target,
+        installRoot,
+        metadata(metadata) {
+          metadata.artifacts[0].skill_names = ["proposal", "verify"];
+          return metadata;
+        },
+      });
+      mkdirSync(join(cwd, installRoot, "proposal"), { recursive: true });
+      writeFileSync(join(cwd, installRoot, "proposal", "local.md"), "preserve local change");
+      mkdirSync(join(cwd, installRoot, "unrelated"));
+      writeFileSync(join(cwd, installRoot, "unrelated", "keep"), "unrelated");
+      writeFileSync(join(cwd, "rigorloop.yaml"), "malformed: [");
+      symlinkSync(join(cwd, "missing-state"), join(cwd, "rigorloop.lock"));
+      const probe = installationProbe(t, {
+        archivePath: fixture.archivePath,
+        statePaths: [join(cwd, "rigorloop.yaml"), join(cwd, "rigorloop.lock")],
+      });
+      const before = projectSnapshot(cwd);
+      const args = ["init", target, "--dry-run", ...(local ? ["--from-archive", fixture.archivePath, "--force"] : ["--json"])];
+      const result = runCliWithBundledMetadata(t, args, cwd, fixture.metadata, { env: probe.env });
+      assert.equal(result.status, 0, result.stdout + result.stderr);
+      assert.deepEqual(probe.events(), [{ kind: "loaded" }], "dry-run acquired an archive or inspected state");
+      assert.deepEqual(projectSnapshot(cwd), before, "dry-run changed private project content");
+      if (local) {
+        assert.equal(result.stderr, "");
+        assert.match(result.stdout, /archive verification and complete destination preflight are unperformed/);
+        assert.ok(result.stdout.includes(`replace: ${installRoot}/proposal`));
+        assert.ok(result.stdout.includes(`create: ${installRoot}/verify`));
+        assert.match(result.stdout, /Local changes within replaced skill directories will be lost/);
+      } else {
+        const output = parseJsonResult(result);
+        assert.equal(output.status, "success");
+        assert.deepEqual(output.preliminary_conflicts, [`${installRoot}/proposal`]);
+        assert.deepEqual(output.completed, []);
+        assert.deepEqual(output.retained, []);
+        assert.deepEqual(output.unperformed_checks, ["archive acquisition", "archive verification", "complete candidate preflight"]);
+        assert.deepEqual(output.actions.map(({ path, action, status }) => ({ path, action, status })), [
+          { path: `${installRoot}/proposal`, action: "conflict", status: "planned" },
+          { path: `${installRoot}/verify`, action: "create", status: "planned" },
+        ]);
+        assert.equal(output.state_files.action, "skipped");
+      }
+    }
+  });
+
+  for (const format of ["json", "human"]) {
+    test(`DIST public partial installation and retry preserve actual state: ${target} ${format}`, (t) => {
+      const cwd = tempProject(t);
+      const first = `${installRoot}/a`;
+      const partial = `${installRoot}/design`;
+      const untouched = `${installRoot}/z`;
+      const entries = [
+        { name: `${first}/SKILL.md`, bytes: Buffer.from("first\n") },
+        { name: `${partial}/SKILL.md`, bytes: Buffer.from("second\n") },
+        { name: `${partial}/resource.md`, bytes: Buffer.from("resource\n") },
+        { name: `${untouched}/SKILL.md`, bytes: Buffer.from("last\n") },
+      ];
+      const fixture = fixtureArchive(cwd, { adapter: target, installRoot, entries });
+      const packageFixture = fixturePackage(t, { metadata: fixture.metadata });
+      mkdirSync(join(cwd, partial), { recursive: true });
+      writeFileSync(join(cwd, partial, "old.md"), "retained original\n");
+      mkdirSync(join(cwd, installRoot, "unrelated"));
+      writeFileSync(join(cwd, installRoot, "unrelated", "keep"), "unrelated\n");
+      writeFileSync(join(cwd, "rigorloop.yaml"), "invalid: [");
+      symlinkSync(join(cwd, "missing-state"), join(cwd, "rigorloop.lock"));
+      const statePaths = [join(cwd, "rigorloop.yaml"), join(cwd, "rigorloop.lock")];
+      const fault = installationProbe(t, { statePaths, failAfterPublish: join(cwd, partial, "SKILL.md") });
+      const args = ["init", target, "--from-archive", fixture.archivePath, ...(format === "json" ? ["--json"] : [])];
+      const result = runCli([...args, "--force"], { cwd, cliPath: packageFixture.cliPath, env: fault.env });
+      assert.equal(result.status, 5, result.stdout + result.stderr);
+      assert.deepEqual(fault.events(), [
+        { kind: "loaded" },
+        { kind: "published-fault", path: join(cwd, partial, "SKILL.md") },
+      ]);
+      let output;
+      if (format === "json") {
+        output = parseJsonResult(result);
+        assert.equal(output.schema_version, 1);
+        assert.equal(output.command, "init");
+        assert.equal(output.status, "blocked");
+        assert.equal(output.blockers[0].code, "partial-installation-failed");
+        assert.match(output.blockers[0].next_action, /Preserve partial files and retained originals/);
+      } else {
+        assert.equal(result.stdout, "");
+        const lines = result.stderr.trim().split("\n");
+        assert.deepEqual(lines.slice(0, -1), ["Controlled failure after actual second-unit publication"]);
+        output = JSON.parse(lines.at(-1));
+      }
+      assert.deepEqual(output.completed, [first]);
+      assert.equal(output.failed, partial);
+      assert.deepEqual(output.untouched, [untouched]);
+      assert.equal(readProjectFile(cwd, `${first}/SKILL.md`), "first\n");
+      assert.equal(readProjectFile(cwd, `${partial}/SKILL.md`), "second\n");
+      assert.deepEqual(readdirSync(join(cwd, partial)), ["SKILL.md"]);
+      assert.equal(existsSync(join(cwd, untouched)), false);
+      assert.equal(output.retained.length, 1);
+      assert.equal(output.retained[0].path, partial);
+      const backup = output.retained[0].backup;
+      assert.equal(resolve(backup), backup);
+      assert.ok(backup.startsWith(`${cwd}/.rigorloop-install-retained-`));
+      assert.ok(!backup.slice(cwd.length).includes("/skills/"));
+      assert.deepEqual(readdirSync(backup), ["old.md"]);
+      assert.equal(readFileSync(join(backup, "old.md"), "utf8"), "retained original\n");
+      // The injected error follows the real hardlink, before scratch unlink.
+      // Preserve that allowed private candidate as well as the retained original.
+      const retention = resolve(backup, "..");
+      const retainedBeforeRetry = projectSnapshot(retention);
+      const staged = readdirSync(retention).filter(name => name.startsWith("candidate-"));
+      assert.equal(staged.length, 1);
+      assert.equal(readFileSync(join(retention, staged[0]), "utf8"), "second\n");
+      assert.equal(lstatSync(join(retention, staged[0])).ino, lstatSync(join(cwd, partial, "SKILL.md")).ino);
+
+      const retryProbe = installationProbe(t, { statePaths });
+      const beforeRetry = projectSnapshot(cwd);
+      const retry = runCli(args, { cwd, cliPath: packageFixture.cliPath, env: retryProbe.env });
+      assert.equal(retry.status, 5, retry.stdout + retry.stderr);
+      assert.deepEqual(retryProbe.events(), [{ kind: "loaded" }]);
+      if (format === "json") {
+        const rejected = parseJsonResult(retry);
+        assert.deepEqual(rejected.blockers.map(({ code, path }) => ({ code, path })), [
+          { code: "destination-conflict", path: first },
+          { code: "destination-conflict", path: partial },
+        ]);
+      } else {
+        assert.match(retry.stderr, /Installation stopped: destination skills already exist/);
+        assert.ok(retry.stderr.includes(first));
+        assert.ok(retry.stderr.includes(partial));
+      }
+      assert.deepEqual(projectSnapshot(cwd), beforeRetry);
+      retryProbe.reset();
+      const forced = runCli([...args, "--force"], { cwd, cliPath: packageFixture.cliPath, env: retryProbe.env });
+      assert.equal(forced.status, 0, forced.stdout + forced.stderr);
+      assert.deepEqual(retryProbe.events(), [{ kind: "loaded" }]);
+      for (const entry of entries) assert.equal(readProjectFile(cwd, entry.name), entry.bytes.toString());
+      assert.deepEqual(readdirSync(join(cwd, partial)).sort(), ["SKILL.md", "resource.md"]);
+      assert.equal(readProjectFile(cwd, `${installRoot}/unrelated/keep`), "unrelated\n");
+      assert.equal(readProjectFile(cwd, "rigorloop.yaml"), "invalid: [");
+      assert.equal(readlinkSync(join(cwd, "rigorloop.lock")), join(cwd, "missing-state"));
+      assert.deepEqual(projectSnapshot(retention), retainedBeforeRetry);
+      if (format === "json") {
+        const completed = parseJsonResult(forced);
+        assert.equal(completed.status, "success");
+        assert.deepEqual(completed.completed, [first, partial, untouched]);
+        assert.deepEqual(completed.actions.map(({ path, action }) => ({ path, action })), [
+          { path: first, action: "replace" },
+          { path: partial, action: "replace" },
+          { path: untouched, action: "create" },
+        ]);
+        assert.deepEqual(completed.retained.map(({ path }) => path), [first, partial]);
+        assert.equal(completed.state_files.action, "skipped");
+      } else {
+        assert.equal(forced.stderr, "");
+        assert.ok(forced.stdout.includes(`replace: ${first}`));
+        assert.ok(forced.stdout.includes(`replace: ${partial}`));
+        assert.ok(forced.stdout.includes(`create: ${untouched}`));
+        assert.match(forced.stdout, /Local changes within replaced skill directories will be lost/);
+      }
+    });
+  }
 }
 test("DIST retired state flag and OpenCode reject even with force before acquisition", (t) => {
   for (const args of [

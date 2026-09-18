@@ -798,6 +798,7 @@ test('TG-04 primary result closed vocabularies reject unknown_value and nested e
 
 test('TG-04 dense failed evidence remains recordable after completion with bounded receipt', async (t) => {
   const { primaryReceiptPreparer } = await import('../dist/lib/recording-result.js');
+  const { spawnSync } = await import('node:child_process');
   const root = setup(t, 0),
     f = fixture();
   f.evidence.checks = Array.from({ length: 1500 }, (_, i) => ({
@@ -826,6 +827,62 @@ test('TG-04 dense failed evidence remains recordable after completion with bound
     page.scope.observation_identity,
     output.result.observation_summary.observation_identity,
   );
+
+  // The engine control above cannot observe dispatch or final stdout delivery.
+  const before = executeRecordStore({ root, changeId: 'example', operation: 'inspect' });
+  const check = { ...f.evidence.checks[0], id: 'public-check', summary: 'Public failed check.' };
+  const { id, ...values } = check;
+  const publicCall = (words, input) => {
+    const child = spawnSync(
+      process.execPath,
+      [new URL('../dist/bin/rigorloop.js', import.meta.url).pathname, ...words,
+        '--root', root, '--change', 'example', '--format', 'json',
+        ...(input ? ['--input', '-'] : [])],
+      { cwd: root, encoding: 'utf8', input: input ? enc(input) : undefined,
+        env: { ...process.env, RIGORLOOP_FILE_LOG: 'off' },
+        timeout: 30000, maxBuffer: 2 * 1024 * 1024 },
+    );
+    assert.equal(child.error, undefined);
+    assert.equal(child.status, 0, child.stderr || child.stdout);
+    assert.equal(child.stderr, '');
+    const result = JSON.parse(child.stdout);
+    validatePrimaryResult(result);
+    assert.equal(child.stdout, enc(result));
+    return { result, bytes: Buffer.byteLength(child.stdout) };
+  };
+  const saved = publicCall(['evidence', 'record', id], {
+    schema_version: 1, interface: 'targeted-recording-v1', contract: 'rigorloop-records-v3',
+    change_id: 'example', expected_revision: before.revision, reads: [],
+    operation: { op: 'evidence.record', target: { id }, values },
+  });
+  assert.equal(saved.result.schema_version, 3);
+  assert.equal(saved.result.operation, 'evidence.record');
+  assert.equal(saved.result.status, 'saved');
+  assert.equal(saved.result.claim, 'storage-only');
+  assert.deepEqual(saved.result.changed, [{ kind: 'evidence', target: { id } }]);
+  assert.ok(saved.bytes < 512 * 1024);
+  assert.equal(saved.result.observation_summary.scope, 'registered-snapshot');
+  assert.equal(saved.result.observation_summary.by_code['failed-evidence'], 1501);
+  assert.equal(saved.result.observation_summary.details_included, false);
+  assert.equal('observations' in saved.result, false);
+  const after = executeRecordStore({ root, changeId: 'example', operation: 'inspect' });
+  assert.equal(saved.result.revision, after.revision);
+  assert.notEqual(after.revision, before.revision);
+  for (const previous of before.snapshot.records) {
+    const next = after.snapshot.records.find((r) => r.path === previous.path);
+    if (previous.path === ep)
+      assert.deepEqual(JSON.parse(next.content), { ...f.evidence, checks: [...f.evidence.checks, check] });
+    else assert.equal(next.content, previous.content, previous.path);
+  }
+  const shown = publicCall(['evidence', 'show', id]).result;
+  assert.deepEqual(shown.data.items[0].fields, check);
+  const publicPage = publicCall(['observations', 'show', '--limit', '5',
+    '--expected-revision', saved.result.revision,
+    '--expected-observations', saved.result.observation_summary.observation_identity]).result;
+  assert.equal(publicPage.scope.returned, 5);
+  assert.equal(publicPage.scope.complete, false);
+  assert.equal(publicPage.scope.total, saved.result.observation_summary.total);
+  assert.equal(publicPage.scope.observation_identity, saved.result.observation_summary.observation_identity);
 });
 
 test('TG-04 preview and unchanged receipts retain correct revisions; invalid rendering never publishes', async (t) => {

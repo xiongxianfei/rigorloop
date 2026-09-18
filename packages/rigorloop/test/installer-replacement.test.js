@@ -13,6 +13,7 @@ import {
   writeSync,
   readdirSync,
   readlinkSync,
+  lstatSync,
 } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -241,6 +242,13 @@ test('configured discovery alias and missing child below an alias reject before 
 test('mid-publication failure reports completed failed and untouched units and preserves retry conflicts', (t) => {
   const root = fixture(t);
   old(root);
+  writeFileSync(join(root, 'unrelated.txt'), 'preserve');
+  function snapshot(path) {
+    const info = lstatSync(path);
+    return info.isDirectory()
+      ? ['directory', info.mode, readdirSync(path).sort().map(name => [name, snapshot(join(path, name))])]
+      : ['file', info.mode, readFileSync(path).toString('base64')];
+  }
   const candidate = [
     { path: '.agents/skills/a/SKILL.md', content: Buffer.from('first') },
     ...files,
@@ -266,14 +274,37 @@ test('mid-publication failure reports completed failed and untouched units and p
   assert.deepEqual(stopped.completed, ['.agents/skills/a']);
   assert.equal(stopped.failed, unit);
   assert.deepEqual(stopped.untouched, ['.agents/skills/z']);
+  assert.equal(readFileSync(join(root, '.agents/skills/a/SKILL.md'), 'utf8'), 'first');
   assert.equal(readFileSync(join(root, files[0].path), 'utf8'), 'new');
   assert.equal(existsSync(join(root, unit, 'resource.md')), false);
   assert.equal(existsSync(join(root, '.agents/skills/z')), false);
-  assert.equal(readFileSync(join(stopped.retained[0].backup, 'old.md'), 'utf8'), 'old');
+  assert.equal(stopped.retained.length, 1);
+  assert.equal(stopped.retained[0].path, unit);
+  const backup = stopped.retained[0].backup;
+  assert.ok(backup.startsWith(`${root}/.rigorloop-install-retained-`));
+  assert.ok(!backup.slice(root.length).includes('/skills/'));
+  assert.deepEqual(readdirSync(backup), ['old.md']);
+  assert.equal(readFileSync(join(backup, 'old.md'), 'utf8'), 'old');
+  const retainedBeforeRetry = snapshot(backup);
   writeFileSync(join(root, files[0].path), 'independent');
+  const beforeRetry = snapshot(root);
   assert.throws(
     () => installCandidate({ projectRoot: root, files: candidate }),
-    (e) => e.conflicts.includes(unit),
+    (e) => {
+      assert.equal(e.code, 'destination-conflict');
+      assert.deepEqual(e.conflicts, ['.agents/skills/a', unit]);
+      return true;
+    },
   );
+  assert.deepEqual(snapshot(root), beforeRetry);
   assert.equal(readFileSync(join(root, files[0].path), 'utf8'), 'independent');
+  const retried = installCandidate({ projectRoot: root, files: candidate, force: true });
+  assert.deepEqual(retried.completed, ['.agents/skills/a', unit, '.agents/skills/z']);
+  assert.deepEqual(retried.conflicts, ['.agents/skills/a', unit]);
+  assert.deepEqual(retried.retained.map(({ path }) => path), ['.agents/skills/a', unit]);
+  for (const file of candidate) assert.deepEqual(readFileSync(join(root, file.path)), file.content);
+  assert.deepEqual(readdirSync(join(root, unit)).sort(), ['SKILL.md', 'resource.md']);
+  assert.equal(readFileSync(join(retried.retained[1].backup, 'SKILL.md'), 'utf8'), 'independent');
+  assert.equal(readFileSync(join(root, 'unrelated.txt'), 'utf8'), 'preserve');
+  assert.deepEqual(snapshot(backup), retainedBeforeRetry);
 });
