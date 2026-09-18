@@ -191,21 +191,38 @@ class ReviewCloseoutResourceTests(unittest.TestCase):
             self.assertEqual(errors, [f"{skill}: unknown review-closeout consumer 'unknown_value'"])
 
     def test_missing_drifted_and_valid_resources(self):
-        with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            source = root / "source"
-            source.mkdir()
-            skill = root / "skills" / "code-review" / "SKILL.md"
-            skill.parent.mkdir(parents=True)
-            for name in ("review-assessment", "review-reliance"):
-                (source / (name + ".md")).write_text(name)
-            self.assertTrue(skill_validation.validate_review_closeout_copies(skill, "code-review", source=source))
-            (skill.parent / "references").mkdir()
-            for name in ("review-assessment", "review-reliance"):
-                shutil.copyfile(source / (name + ".md"), skill.parent / "references" / (name + ".md"))
-            self.assertEqual([], skill_validation.validate_review_closeout_copies(skill, "code-review", source=source))
-            (skill.parent / "references" / "review-assessment.md").write_text("drift")
-            self.assertTrue(any("differs" in e for e in skill_validation.validate_review_closeout_copies(skill, "code-review", source=source)))
+        for name in ("review-assessment", "review-reliance"):
+            for fault in ("missing-copy", "missing-source", "drift"):
+                with self.subTest(resource=name, fault=fault), tempfile.TemporaryDirectory() as tmp:
+                    root = Path(tmp)
+                    source = root / "source"
+                    source.mkdir()
+                    skill = root / "skills" / "code-review" / "SKILL.md"
+                    references = skill.parent / "references"
+                    references.mkdir(parents=True)
+                    for resource in ("review-assessment", "review-reliance"):
+                        (source / f"{resource}.md").write_bytes((resource + "\n").encode())
+                        shutil.copyfile(source / f"{resource}.md", references / f"{resource}.md")
+                    self.assertEqual([], skill_validation.validate_review_closeout_copies(
+                        skill, "code-review", source=source))
+                    before = {p.relative_to(root): p.read_bytes() for p in root.rglob("*") if p.is_file()}
+                    local = references / f"{name}.md"
+                    canonical = source / f"{name}.md"
+                    if fault == "missing-copy":
+                        local.unlink()
+                    elif fault == "missing-source":
+                        canonical.unlink()
+                    else:
+                        local.write_bytes(local.read_bytes() + b"drift\n")
+                    expected = (f"{local}: review-closeout reference differs from canonical source"
+                                if fault == "drift" else
+                                f"{local}: review-closeout reference is missing (source {canonical})")
+                    fault_tree = {p.relative_to(root): p.read_bytes() for p in root.rglob("*") if p.is_file()}
+                    self.assertNotEqual(before, fault_tree)
+                    self.assertEqual([expected], skill_validation.validate_review_closeout_copies(
+                        skill, "code-review", source=source))
+                    self.assertEqual(fault_tree,
+                        {p.relative_to(root): p.read_bytes() for p in root.rglob("*") if p.is_file()})
 
     def test_all_selected_consumers_carry_exact_resources(self):
         self.assertEqual(skill_validation.REVIEW_CLOSEOUT_CONSUMERS, REVIEW_CONSUMERS)
