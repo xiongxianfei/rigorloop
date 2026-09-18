@@ -1,0 +1,159 @@
+{
+  "assessment_scope": "Interim independent M8 inspection of Packaging generated-only assertion reconciliation and scoped semantic/operational applicability. This is neither a complete M8 implementation review nor an approval of unfinished Release, hashing, packed composition or final measurements.",
+  "change_id": "2026-09-17-complete-model-test-coverage",
+  "contributors": [
+    {
+      "id": "root-implementer",
+      "role": "implement"
+    }
+  ],
+  "findings": [
+    {
+      "evidence": "Finding ID: packaging-stale-source-assertions. Severity: major within M8 proof alignment. Location: tests/engineering/packaging/adapter_contract_tests.py:180–279. test_public_adapter_support_surface_only_tracks_readme_and_manifest requires exactly the two legacy tracked files; public docs/root guidance/artifact metadata tests require dist/adapters/README.md and headings; test_adapter_manifest_remains_metadata_only reads the tracked manifest. Current Packaging DIST-SR-21/22 and its test-design section require generated-candidate truth, current public consumer guidance and reconciliation of stale assertions. These passing string/path checks can neither demonstrate the isolated candidate nor detect incorrect current package guidance. Original tracked-reader migration debt is independently acknowledged, so its existence cannot be misreported as already retired.",
+      "id": "packaging-stale-source-assertions",
+      "owner": {
+        "id": "root-implementer",
+        "role": "implement"
+      },
+      "reporter": {
+        "id": "milestone-reviewer",
+        "role": "review"
+      },
+      "required_outcome": "Align the applicable assertions with actual current isolated generated manifests and the maintained public consumer contract, with valid controls and defining drift/invalid observations as needed. Preserve useful no-generated-fragment/no-active-installation-write/current-target/metadata protections and account for every retained or replaced native case. Distinguish any intentionally retained legacy reader checks as current migration-debt observations rather than evidence of generated-only adoption. Safe resolution: revise the bounded tests/fixtures and their claim scope under the existing M8 allocation, validate relevant consumers, and retain tracked files/live readers until their separate coherent Packaging-owned migration is authorized and assessed; do not weaken protection to make deletion or a green result appear complete.",
+      "resolution": {
+        "actor": {
+          "id": "milestone-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [
+          {
+            "id": "m8-complete-alignment",
+            "path": "docs/changes/2026-09-17-complete-model-test-coverage/evidence.json"
+          }
+        ],
+        "rationale": "Independent reassessment confirms all seven retained native cases now inspect current consumer guidance or actual isolated generated metadata, with exact valid/missing/stale controls and preservation. Existing root-link/tracked-reader observations are explicitly migration debt, not generated-only adoption. Current source and complete final1362-native run are bound by m8-complete-alignment. Original finding evidence/subjects and first-pass judgment remain unchanged; this is the reporter disposition of the correction."
+      },
+      "state": "resolved",
+      "subjects": [
+        {
+          "identity": "sha256:4cfe9a23939cc8e01302b11d3eb93aa5d61bbdeaf5f71762eafd4e80ac79eac0",
+          "path": "tests/engineering/packaging/adapter_contract_tests.py"
+        },
+        {
+          "identity": "sha256:c1e253f0b38f8c5068997287330054ac20959f1a51a5e8b973e53c5b752f8026",
+          "path": "docs/design/engineering/packaging.md"
+        },
+        {
+          "identity": "sha256:161f55fc205fce02c5db293fef5a4fbabd98ca10e426fb8c085e6a630bbb5911",
+          "path": "docs/plans/2026-09-17-complete-model-test-coverage.md"
+        },
+        {
+          "identity": "sha256:21c87a060ede232bb84527e517ff089d6225396ac3224032e8d143e4a74b2817",
+          "path": "docs/changes/2026-09-17-complete-model-test-coverage/m6-historical-reliance.md"
+        }
+      ]
+    }
+  ],
+  "id": "code-review-m8-packaging-first-pass",
+  "independence_basis": "Reviewer /root/design_review did not author the Packaging Design, approved M8 allocation, retained adapter assertions or their source implementation. Root requested a bounded independent applicability/assertion audit before correction. This record contains reviewer assessment only and precedes any repair to the identified test surface. Other M8 implementation is in progress and is not assessed here.",
+  "judgment": "changes-requested",
+  "limitations": [
+    "Scoped first-pass review only. Full M8 implementation, independent hash partition audit, Release deterministic repairs, actual packed unsafe/empty destinations, complete suite/timing reconciliation and final lifecycle gates remain outside this record.",
+    "Existing source migration debt and historical judgments are preserved. The finding does not authorize deleting tracked support, altering current runtime behavior, choosing a release version or publishing.",
+    "M3/M5 archive semantic reliance is limited to exactly reviewed current guidance and declared transformations, not target-agent execution or a new whole-product qualification."
+  ],
+  "rationale": [
+    "Applicable gap: Packaging test design explicitly allocates reconciliation of obsolete path/heading assertions, and M8 requires actual owner-group proof. adapter_contract_tests.py lines180–279 require a tracked dist/adapters README/manifest and its headings/links, including an exact two-file tracked inventory and manifest read from the repository. They do not inspect the isolated generated manifest or complete current packages/rigorloop/README.md consumer guidance. These assertions entrench the retained migration surface as a positive requirement and are not sufficient proof of DIST-SR-21/22 current generated-only behavior.",
+    "Preservation boundary: M6 historical reliance and the original complete-refinement Verify explicitly retain live dist/adapters readers and leave their coherent migration to Packaging. Current build-adapters --check still calls the tracked support-drift reader and its no-output path still synchronizes tracked output. Those are acknowledged adoption debt, not evidence that migration already happened. The present finding requires truthful proof alignment and retained useful protections, not deletion of those files, unilateral source migration or a broadened publication change.",
+    "REL-MR-001 operational applicability: its given state is an actual ordinary release with recorded version intent and reviewed source. This test-alignment/PR change selects no publishable version, profile/candidate approval or publication action. Therefore no actual routine release-authority assessment is presently executable or passed. The release owner must apply it to the exact future prepared package/version and reject missing/unresolved engineering authority before publication; deterministic eligibility guards remain independently required now.",
+    "REL-MR-002 operational applicability: no manual-authentication or emergency-deferral request is selected. No approval, secret-bearing credential use or deferred duty is invented. An actual requested exception requires its approving owner, reason, accepted risk, exact deferred duty, deadline/follow-up and retained nondeferrable identity/evidence/registry verification. Local OIDC/representation fixtures cannot supply that permission or settle the future exception.",
+    "REL-MR-005 operational applicability: no actual bad immutable publication or authorized public recovery is selected. Local uncertain-write/recovery tests remain applicable deterministic obligations but are not fix-forward/deprecation authority. A real incident must retain its public identity/failure, select an owner-approved correction and record actual outcomes before closure. No live operation is performed merely to obtain a test duration.",
+    "Packaging semantic/compatibility reliance: this branch changes canonical instructional methods in M3 and Constitution guidance in M5, so generated reading-path and approved transformation semantics are applicable. Their independent reviews inspected the actual changed Codex/Claude archive members, unchanged resources/bodies and Claude metadata projection under exact scoped evidence. M6 does not change canonical generated guidance. Those findings may be reused only for identical current content; final M8 artifact/source identity and actual packed installation still require their own proof. No newly supported target/resource/format withdrawal is introduced by those clarification changes. Original retirements and compatibility statements keep their own judgments and pending adoption limits; a new removal or changed baseline would trigger exact live-consumer, retained-duty/proof, public-guide and version-owner assessment.",
+    "No operational procedure is marked passed from absence, no catalog row is rewritten, and no deterministic M8 gap is waived by these conditional dispositions. Full M8 assessment remains pending actual corrected assertions, artifact/runtime evidence and final population reconciliation."
+  ],
+  "reviewer": {
+    "id": "milestone-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:4cfe9a23939cc8e01302b11d3eb93aa5d61bbdeaf5f71762eafd4e80ac79eac0",
+      "path": "tests/engineering/packaging/adapter_contract_tests.py"
+    },
+    {
+      "identity": "sha256:69b6aba12a686b6a18eea016037f0fc90733d4e15450d261b5cb69b65b2586fc",
+      "path": "tests/engineering/packaging/adapter_generation_tests.py"
+    },
+    {
+      "identity": "sha256:016bba889f4aecad94db38cf89db1bfcc2e22690d9b5ba6ba2b0257a5d8e1d20",
+      "path": "scripts/build-adapters.py"
+    },
+    {
+      "identity": "sha256:d261b723bf793fdbd85acb15438b997dced864b6e348a46e1cdaa5e683b38ec9",
+      "path": "scripts/lib/packaging/adapter_distribution.py"
+    },
+    {
+      "identity": "sha256:5ee8e1adf51c5b05c64117b5a23f6e5a65d94e0bf91225ec68044f026baebf5a",
+      "path": "packages/rigorloop/README.md"
+    },
+    {
+      "identity": "sha256:4fce0874a119e0e42d15b5323550d896ff7a1e9c095996a53e621068615c3d82",
+      "path": "dist/adapters/README.md"
+    },
+    {
+      "identity": "sha256:d7eb732f1528bbf7b1b57e3623a334716fb152e8747bc5ab2b3c7bc3969aa415",
+      "path": "dist/adapters/manifest.yaml"
+    },
+    {
+      "identity": "sha256:016f50b9dcebd278c84510de0386f15314834bf00cd107cbbc717ed5d4a05260",
+      "path": "AGENTS.md"
+    },
+    {
+      "identity": "sha256:c1e253f0b38f8c5068997287330054ac20959f1a51a5e8b973e53c5b752f8026",
+      "path": "docs/design/engineering/packaging.md"
+    },
+    {
+      "identity": "sha256:6317d3141237242ed76d744e29931d8229567f061931e84075142c61f4cf734f",
+      "path": "docs/design/engineering/release/release.md"
+    },
+    {
+      "identity": "sha256:7d6165830c81846344328abb8f0057a2ac99aa6e9085c9a707ff36c03b29eba3",
+      "path": "docs/design/engineering/release/test-design/test-design.md"
+    },
+    {
+      "identity": "sha256:ca79bb95582b99169d72fe349f3630fc7c03acdeb8e29fc1388ebc4c3fc8da55",
+      "path": "docs/design/engineering/release/test-design/cases/maintenance-review.json"
+    },
+    {
+      "identity": "sha256:161f55fc205fce02c5db293fef5a4fbabd98ca10e426fb8c085e6a630bbb5911",
+      "path": "docs/plans/2026-09-17-complete-model-test-coverage.md"
+    },
+    {
+      "identity": "sha256:21c87a060ede232bb84527e517ff089d6225396ac3224032e8d143e4a74b2817",
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/m6-historical-reliance.md"
+    },
+    {
+      "identity": "sha256:b191197622f7a64448e9af2d5eacec51e589c3eeb27744975cc47d2efb7bde3a",
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/reviews/code-review-m3.json"
+    },
+    {
+      "identity": "sha256:a3ce8a75f2c8cce670641025099513fb71ceea4971728a4e19e1ae29d9ea5d10",
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/reviews/code-review-m5.json"
+    },
+    {
+      "identity": "sha256:65abba727d9ac8aba981ca181f7757ad7a2c296179e548124ba70156e3276e34",
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/reviews/code-review-m6.json"
+    },
+    {
+      "identity": "sha256:79fcd103043f5f6057f3d8e1885e56e92aa7ce843fe48064ee5cd33a9af86459",
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/reviews/delivery-review.json"
+    },
+    {
+      "identity": "sha256:e4bf6206ea1fd97ccc7413317f7dc89bfdbba55c00d9251c755efa42b3bfa486",
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/reviews/design-review-final.json"
+    }
+  ],
+  "summary": "One applicable M8 proof-alignment gap remains in retained Packaging assertions: mandatory legacy tracked-file and heading checks do not establish the current generated candidate/public consumer contract. The separately acknowledged generated-only source migration is not silently authorized or claimed complete.",
+  "target": "code"
+}

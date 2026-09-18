@@ -83,6 +83,8 @@ Use a broader-section read when a narrow excerpt cannot establish the semantic r
 
 Produce a routing decision, authoritative current-stage assessment, blockers or assumptions, and the next valid skill or stop condition. Do not replace the downstream artifact.
 
+When adopted test criteria affect routing, use the [selection method](references/test-quality.md#select-requirements-and-proof) to identify the gap's owner. Missing or contradictory outcomes and observation intent return to Design; missing proof allocation returns to Plan; defective fixtures, assertions or discovery return to implementation or correction. Responsible reviewers judge adequacy and current evidence. Preserve parent-interaction obligations and useful unlisted regressions while routing; selected checks, catalog membership and timing do not authorize dropping protection or declaring completion.
+
 ## Optional discovery routing
 
 Explore expands the decision space. Research reduces decision-relevant uncertainty. Neither skill owns the supported decision.

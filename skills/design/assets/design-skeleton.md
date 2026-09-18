@@ -72,13 +72,13 @@ Model validation contract: model-document-v1
 
 ### Test design
 
-<Name supported outcomes and material risks, then keep proportionate coverage intent here or link owned test-design/test-design.md and the explicitly selected case index. Reference requirements and the project's shared rules rather than duplicate them. Do not require JSON unless the user or project selects it.>
+<Apply the selected requirement-and-proof method: account for every current requirement and section-owned responsibility in scope, including parent interactions. Keep proportionate group reasoning here or link owned test-design/test-design.md and any explicitly selected case index. Reference requirements and the project's shared rules rather than duplicate them. Markdown alone is sufficient; do not require JSON unless the user or project selects it.>
 
 | Group and requirement basis | Risk, target and observation boundary | Conditions, action and independent expected outcome | Fixtures, method and realization gaps |
 | --- | --- | --- | --- |
-| <Coherent behavior and existing requirement IDs.> | <Plausible violation and actual interface or operation observed.> | <Concrete starting facts, defining action and expected values/diagnostics/preserved state.> | <Representative inputs, isolation, real/substituted boundaries, actual test links or review method; distinguish missing protection.> |
+| <Coherent behavior and existing requirement IDs or justified obligation.> | <Plausible violation, consequence, justified depth and actual interface or operation observed.> | <Concrete starting facts, defining action and independently expected values/diagnostics/preserved state.> | <Minimal realistic inputs, fresh mutable resources/cleanup, real/substituted boundaries, inspected test links or proposed review method; distinguish missing protection.> |
 
-<Group related variations while preserving distinct authority, persistence and recovery observations. Several methods may realize one scenario; native discovery owns the method inventory. Parent-owned interaction cases reference child coverage. Explain maintenance of identity, group membership, source links and gaps; keep temporary migration acceptance in its change and results in evidence. If a catalog is selected, define its field/reference contract and validation limits in owned detail. Remove unused scaffold text rather than inventing tests.>
+<Group equivalent variations while preserving distinct authority, persistence and recovery observations. Explain which faulty candidate the group detects and why another variation would add no distinct detection or useful diagnosis. Account for uncovered obligations and bounded owner dispositions; an unresolved required observation prevents a completeness claim. Several methods may realize one scenario; native discovery owns the method inventory and useful unlisted regressions remain protected. Parent-owned interactions reference child coverage and add the failures that can pass both children. Explain maintenance of identity, group membership, source links and gaps; keep temporary migration acceptance in its change and results in evidence. If a catalog is selected, define its field/reference contract and validation limits in owned detail. Remove unused scaffold text rather than inventing tests.>
 
 ### Supporting examples
 

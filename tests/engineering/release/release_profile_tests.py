@@ -18,6 +18,23 @@ from release_fixture_helpers import (CHANGE_ROOT, REQUIRED_PROFILE_FIELD_CASES, 
 class ReleaseProfileTests(unittest.TestCase):
     maxDiff = None
 
+    def accepted_private_profile(self, root: Path, version: str = "0.3.5") -> tuple[Path, str]:
+        path = root / f"v{version}.yaml"
+        body = profile_fixture("valid-routine-v0.3.5.yaml").read_text().replace("0.3.5", version)
+        path.write_text(body)
+        (root / "neighbor.txt").write_text("Preserve unrelated profile input.\n")
+        profile = load_release_profile_file(path)
+        self.assertEqual(profile.release_tag, "v" + version)
+        self.assertEqual(profile.package_version, version)
+        self.assertEqual(profile.targets, ("codex", "claude"))
+        self.assertTrue(is_routine_release_profile(profile))
+        return path, body
+
+    @staticmethod
+    def profile_files(root: Path) -> dict[str, bytes]:
+        return {path.relative_to(root).as_posix(): path.read_bytes()
+                for path in root.rglob("*") if path.is_file()}
+
     def test_valid_routine_profile_loads_source_of_truth_fields(self) -> None:
         profile = load_release_profile_file(profile_fixture("valid-routine-v0.3.5.yaml"))
 
@@ -55,32 +72,65 @@ class ReleaseProfileTests(unittest.TestCase):
         self.assertEqual(profile.release_tag, "v0.3.5")
 
     def test_missing_profile_path_fails_with_named_path(self) -> None:
-        missing_path = profile_fixture("does-not-exist.yaml")
-
-        with self.assertRaises(ReleaseProfileError) as raised:
-            load_release_profile_file(missing_path)
-
-        self.assertIn("release profile not found", "\n".join(raised.exception.errors))
-        self.assertIn("does-not-exist.yaml", str(raised.exception))
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            path, _ = self.accepted_private_profile(root)
+            path.unlink()
+            before = self.profile_files(root)
+            with self.assertRaises(ReleaseProfileError) as raised:
+                load_release_profile_file(path)
+            self.assertEqual(raised.exception.errors, [f"release profile not found: {path}"])
+            self.assertIn(str(path), str(raised.exception))
+            self.assertEqual(self.profile_files(root), before)
 
     def test_missing_required_profile_fields_fail_with_named_field(self) -> None:
-        for fixture_name, field_name in REQUIRED_PROFILE_FIELD_CASES:
-            with self.subTest(field=field_name):
+        for _, field_name in REQUIRED_PROFILE_FIELD_CASES:
+            with self.subTest(field=field_name), tempfile.TemporaryDirectory() as tmp:
+                root = Path(tmp)
+                # The owning contract retains implicit latest only for v0.3.5/v0.3.6.
+                # Preserve the existing non-legacy missing-channel partition.
+                version = "0.4.0" if field_name == "npm_dist_tag" else "0.3.5"
+                path, body = self.accepted_private_profile(root, version)
+                lines = body.splitlines(keepends=True)
+                starts = [i for i, line in enumerate(lines) if line.startswith(field_name + ":")]
+                self.assertEqual(len(starts), 1)
+                start = starts[0]
+                end = next((i for i in range(start + 1, len(lines))
+                            if lines[i].strip() and not lines[i].startswith(" ")), len(lines))
+                path.write_text("".join(lines[:start] + lines[end:]))
+                before = self.profile_files(root)
                 with self.assertRaises(ReleaseProfileError) as raised:
-                    load_release_profile_file(profile_fixture(fixture_name))
-                self.assertIn(f'release profile missing required field: {field_name}', "\n".join(raised.exception.errors))
+                    load_release_profile_file(path)
+                self.assertEqual(raised.exception.errors,
+                                 [f"release profile missing required field: {field_name}"])
+                self.assertEqual(self.profile_files(root), before)
 
     def test_malformed_profile_fails_with_path_context(self) -> None:
-        with self.assertRaises(ReleaseProfileError) as raised:
-            load_release_profile_file(profile_fixture('invalid-malformed.yaml'))
-        error = raised.exception
-        self.assertIn('could not parse release profile', "\n".join(raised.exception.errors))
-        self.assertIn("invalid-malformed.yaml", str(error))
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            path, body = self.accepted_private_profile(root)
+            self.assertEqual(body.count("release_kind: routine"), 1)
+            path.write_text(body.replace("release_kind: routine", "release_kind routine"))
+            before = self.profile_files(root)
+            with self.assertRaises(ReleaseProfileError) as raised:
+                load_release_profile_file(path)
+            self.assertEqual(raised.exception.errors,
+                             ["could not parse release profile: line 2 is missing ':'"])
+            self.assertIn(str(path), str(raised.exception))
+            self.assertEqual(self.profile_files(root), before)
 
     def test_package_version_must_match_release_tag(self) -> None:
-        with self.assertRaises(ReleaseProfileError) as raised:
-            load_release_profile_file(profile_fixture('invalid-wrong-package-version.yaml'))
-        self.assertIn('package_version 0.3.6 does not match release_tag v0.3.5', "\n".join(raised.exception.errors))
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            path, body = self.accepted_private_profile(root)
+            self.assertEqual(body.count("package_version: 0.3.5"), 1)
+            path.write_text(body.replace("package_version: 0.3.5", "package_version: 0.3.6"))
+            before = self.profile_files(root)
+            with self.assertRaises(ReleaseProfileError) as raised:
+                load_release_profile_file(path)
+            self.assertEqual(raised.exception.errors,
+                             ["package_version 0.3.6 does not match release_tag v0.3.5"])
+            self.assertEqual(self.profile_files(root), before)
 
     def test_unknown_profile_values_precede_version_consistency(self) -> None:
         # REL-IN-001: all three vocabularies must reject before consistency.
@@ -102,9 +152,22 @@ class ReleaseProfileTests(unittest.TestCase):
                 self.assertTrue(raised.exception.errors[0].endswith(diagnostic), raised.exception.errors)
 
     def test_special_release_without_owner_decision_fails(self) -> None:
-        with self.assertRaises(ReleaseProfileError) as raised:
-            load_release_profile_file(profile_fixture('invalid-special-release-without-rationale.yaml'))
-        self.assertIn('special release requires owner_decision', "\n".join(raised.exception.errors))
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            path, body = self.accepted_private_profile(root)
+            special = body.replace("release_kind: routine", "release_kind: special")
+            decision = 'owner_decision: "Fixture owner decision for a special release path."\n'
+            path.write_text(special + decision)
+            accepted = load_release_profile_file(path)
+            self.assertEqual(accepted.release_kind, "special")
+            self.assertEqual(accepted.owner_decision, "Fixture owner decision for a special release path.")
+            self.assertFalse(is_routine_release_profile(accepted))
+            path.write_text(special)
+            before = self.profile_files(root)
+            with self.assertRaises(ReleaseProfileError) as raised:
+                load_release_profile_file(path)
+            self.assertEqual(raised.exception.errors, ["special release requires owner_decision"])
+            self.assertEqual(self.profile_files(root), before)
 
     def test_special_release_with_owner_decision_is_not_routine(self) -> None:
         profile = load_release_profile_file(profile_fixture("special-release-with-rationale.yaml"))

@@ -77,6 +77,8 @@ Evaluate this exact trace for every applicable requirement and architecture risk
 
 `requirement -> architectural boundary -> implementation milestone -> required proof -> validation command or manual evidence`
 
+Under adopted test criteria, apply the [selection method](references/test-quality.md#select-requirements-and-proof) to the plan's consumption of model-owned groups. Check that every affected requirement and parent interaction has feasible proof at the right boundary, realistic fixture prerequisites, independent expected observations and an allocated execution or assessment point. A parser check cannot discharge a persistence guarantee. Preserve justified unlisted regressions and distinguish proposed proof from inspected existing assertions; neither low cost nor a catalog link establishes adequacy.
+
 Reject or request correction for missing SR allocation, unsafe or overly broad sequencing, unreviewable milestones, insufficient milestone or change-level verification, proof at the wrong boundary, architecture risk without validation, compatibility or migration work without evidence, unrealistic proof, and verification that requires a different implementation order than the plan. Milestone completion must not be treated as complete-change correctness. Under adopted policy, check the named final whole-change Code Review checkpoint and its implementation/correction dependencies separately from integrated proof groups, as required by the packaged closeout application.
 
 Route the correction to `plan` when verification allocation is missing or inadequate; route missing observable behavior to `design`. Do not author the correction, accept a standalone test-spec substitute, or defer material pre-implementation coverage to final Verify.

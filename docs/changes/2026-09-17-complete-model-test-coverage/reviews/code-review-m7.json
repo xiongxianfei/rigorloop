@@ -1,0 +1,124 @@
+{
+  "assessment_scope": "Complete governed M7 milestone review of committed eeef5ac1 against 320f619f: eight changed native test files and the exact bound m7-public-proof.md evidence, including one actual current-store interaction. Applies all nine CLI, five Records and six Installation coverage groups through M1 retained-proof allocation plus the strengthened observations assessed here. Approved Design Review design-review-final and Delivery Review delivery-review exact member maps remain current. This is not final whole-change Code Review, Verify, M8 packed-boundary completion or PR approval.",
+  "change_id": "2026-09-17-complete-model-test-coverage",
+  "contributors": [
+    {
+      "id": "root-implementer",
+      "role": "implement"
+    },
+    {
+      "id": "core-guidance-author",
+      "role": "implement"
+    },
+    {
+      "id": "support-packet-author",
+      "role": "implement"
+    }
+  ],
+  "findings": [],
+  "id": "code-review-m7",
+  "independence_basis": "Root-implementer (/root) authored record-format test alignment, integration and registered evidence. Core-guidance-author (/root/design_skill_core) authored the four CLI test changes, controlled faults and actual-store walkthrough; support-packet-author (/root/catalog_necessity) authored Installation test alignment and controlled faults. Reviewer /root/design_review authored none of those targets. It independently inspected the actual eight-file diff, necessary complete fixtures and surrounding runtime boundaries, governing Designs/Plan, original and strengthened proof, all walkthrough states and received values, then assessed the result. Its only repository mutation is this independent review record; it does not change implementation, work or activity.",
+  "judgment": "approved",
+  "limitations": [
+    "Approval is M7-only; M8, fresh independent final whole-change Code Review, successful distinct Verify and PR handoff remain. Packed empty/unsafe installation expansion and fresh full adapter qualification are not claimed complete here.",
+    "The walkthrough CLI calls and checker results actually executed, but its engineering review/Verify judgments, actor labels and completion states are supplied exercise inputs. This assessment is an independent reader judgment of those concrete records, not a target-agent execution, authenticated actor audit or independent target engineering review. No Git/hosted/publication result is claimed.",
+    "Preview counters observe existing RecordFiles mutation methods, not all operating-system syscalls. Snapshots establish path/type/mode/file bytes/symlink targets, not atime/ctime or arbitrary transient changes outside that boundary. Existing external-writer and platform limits remain.",
+    "Recorded durations describe the named invocation and occupied workers with its jobs4 environment; they are not operation latency, speedup or the complete final population measurement. No unnecessary rerun was used to replace exact recorded evidence.",
+    "Retained M1 and historical findings/reviews keep their original subjects and meaning. Current applicability of this milestone does not renew historical approvals or settle broader adoption/Packaging debt."
+  ],
+  "rationale": [
+    "Spec alignment and complete allocation — pass. The unchanged approved Plan M7/TG-7 and owning CLI-SR-01–32, RF-SR-01–14 and Installation requirements select the actual persistence, data and acquisition boundaries. M1 identified public dense receipts, private preview effects, no-read assertions, diagnostic precedence, complete typed references and public partial installation as concrete gaps. The diff closes those observations without adding production behavior, stored vocabulary, catalogs, runners or a second test authority. Existing groups remain retained; shared packed empty/unsafe-destination expansion and fresh full adapter qualification are explicitly M8 work.",
+    "Records closed representation and typed references — pass. Actual complete valid stores precede defining faults; copied blocker current resolution now names the receiving check while immutable origin is untouched. The original control and its origin rewrite both actually failed broken-reference, explaining the former false positive. Corrected origin mutation requires invalid-input. Unknown schema/contract/member/enum faults produce the intended exact code before a separately reachable reference or read/write-overlap fault; restoring only the unknown exposes the competing failure. Recursive vocabulary occurrences retain accepted baselines. Every one of the five EntryRef fields has admitted targets, missing ID, unregistered path and wrong existing target class; decision sources retain all seven allowed classes. Duplicate applicability rejects, while the same ID in different files remains unambiguous and accepted. Independent object maps remain unchanged on failure.",
+    "CLI command admission, selection and diagnostic freshness — pass. Existing valid-root controls actually reach the observed filesystem boundary before malformed or unknown selectors are tested. Invalid selectors return the exact early result domain, exit and error before counted repository/stdin access, including swallowed-access sensitivity. The dense shared-engine control is supplemented by actual public evidence record/show/observations subprocesses: 1501 failed checks persist, child exit and single JSON stdout are successful and bounded, exact records and neighbors match, and separately paged diagnostics retain the saved observation identity. Existing query ordering, budgets, completeness, missing-container and cursor/subject freshness cases remain in the full native run; the walkthrough independently confirms literal narrative and projection fidelity.",
+    "CLI persistence construction, atomic composition/retry and exact recovery — pass within retained plus strengthened proof. Preview compares complete private path/type/mode/file/symlink maps immediately before any later inspect and counts RecordFiles mkdir/write/remove/removeDirectory/sync attempts. A real saved mutation proves the counter is live. Both existing-store update and absent-store creation retain the complete tree with no transaction/reservation attempts; candidate and observed revisions remain distinct. The intentional transient write/remove mutant passes the former revision-only assertion and fails the new effect assertion. Existing targeted/advanced concurrency, stale reads, final-candidate references, interrupted publication, exact complete/restore and containment cases are unchanged and retained in the complete425-case native run; no general exclusion of external writers or whole-operation rollback is inferred.",
+    "Installation admission/dry-run, default conflict/force and partial retry — pass. The actual child CLI preload records attempted state/acquisition calls before throwing and has an observed loaded marker. Both target controls exercise malformed state and a dangling lock link without reading either. Dry-run covers representative network/default JSON and local/force human paths, observes no archive acquisition or state inspection, preserves the whole project map and distinguishes preliminary from unperformed verification. Four target/format partial cases use real archives and the real engine: unit a completes, design fails after an actual hardlink publication, z stays absent and detached originals remain outside discovery. Public exit/status and completed/failed/untouched/retained fields match independently inspected bytes and inode relation. Default retry preserves the exact complete partial state and conflicts; separately authorized force completes selected units while retaining originals and unrelated state. The engine regression also preserves a late independent retained-file edit.",
+    "Installation trust/extraction, containment/races and network diagnostic/fallback groups — pass for the unchanged M7 allocation. M1 inspected existing real archive verification, trust metadata, traversal/symlink rejection, anchored replacement races, late original writes, safe diagnostic projection and local fallback assertions. No producer, verifier, installer or error renderer changed. Their native cases remain in the exact full run, and real npm-package consumer tests cover existing packed composition. The new fixture-package partial cases make no npm-pack qualification claim; the separately identified packed empty-unit and unsafe-destination variants remain M8. Representative composition does not assert a Cartesian platform/network matrix.",
+    "Independent current-store semantic decisions — pass. Read complete initial, failed, corrected-finding and final states, all16 real public receipts/requests and three checker observations against the supplied authority. Actual checker A passes; B fails max_attempts >=1, while timeout_ms1000 is already valid; C passes the same integer/bound checks under a distinct byte identity. Reject the initial F1 timeout account. The explicit same-ID correction states the real max_attempts problem; its eventual resolved state has the Review reporter disposition referencing check-c. Finding history is not an immutable origin contract. B1 current account concerns C but copied origin remains exactly the actual B failure, original required outcome and reporter rationale. B1 stays open with null resolution, and only its Verify reporter can disposition it. A supplied approved current review, completed activity and successful storage-only receipts do not close B1 or establish current readiness.",
+    "Faithful reading, consumer agreement and historical limits — pass. Independently compared each full finding/blocker/check/Verify/decisions/review read with its actual stored object and container identity. Summary fields equal their full counterparts and report exactly the omitted fields, including blocker origin and resolution. Multiline decisions body is preserved. All Verify bytes remain exactly A, applicability is stale, and absent verification_basis is reported explicitly. Its reference to a mutable same-ID review does not retarget its own A subjects or renew its judgment. Native subject changes, failed evidence and inconsistent completed claim appear as observations while storage remains usable. Final queries leave stored regular-file bytes identical. Current-v3 consumer agreement and historical preservation use the retained adoption/retirement and packed tests; no retired reader, migration or replay is introduced.",
+    "Architecture, compatibility and security/privacy — pass. Test ownership respects CLI dispatch, shared publisher, Records values and Installation acquisition/per-unit replacement boundaries. Fresh private roots, independent expected bytes, real subprocess/archive/engine behavior and explicit failure checkpoints preserve meaningful effects. Counters are restored and fixtures are case-owned. Existing logging/privacy and unsupported-format protections are unchanged; the controlled state/network probes do not grant external access or new permissions. Semantic reviewer/verifier labels in the walkthrough are supplied inputs, not authenticated actors or evidence of independent target review.",
+    "Derived currency and unrelated changes — pass for M7. Exact eight final test hashes and35 walkthrough source identities match current committed sources; all90 manifest file hashes and91 durable literals match independently inspected packet files. Full/summary results, immutable origins and check inputs/outputs reconcile. Bound proof logs equal the actual captured logs. Production, schema, catalogs, canonical instruction and adapter producer bytes are unchanged from the M6 base. Other committed changes are owning M7 evidence/routing and the separately approved M6 review closeout, not hidden implementation. Earlier generated-source reliance keeps its original scope; final complete artifact qualification remains M8.",
+    "Validation evidence and sensitivity — pass on exact recorded subjects. The owner ran node format/v3-contract tests23 passed, final vocabulary control1 passed, four core cases passed3918.682401ms and nine Installation cases passed1400.445108ms. RIGORLOOP_VALIDATION_RESULT_JSON=/tmp/m7-selected-ci.json bash scripts/ci.sh --mode explicit --jobs 4 --path packages/rigorloop/test produced425Node plus8 actual npm-package cases. Independently verified the exact433 unique expected workers all started and passed with exit0, report hash f35f5d7857b22a8891cab50c54888b311e0abf8fe40effe1a6acdbac6affa8ea, wall98.802s and summed occupied-worker333.978s. Seven intentional private production-copy mutations fail at intended assertions; the four core mutants also pass the original weaker tests. These are sensitivity demonstrations, not seven product defects. Original native IDs remain; CLI55→61 adds exactly two dry-run and four partial target/format cases, replacement13 unchanged. M8 will reconcile the final complete population and attributable costs.",
+    "First-pass outcome — all ten applicable checklist categories are satisfied for this milestone with the evidence and limits above. No new material finding or correction is required. Existing root-reported M6 blockers are already resolved by their owner; this review closes no other actor concern. Independent manual judgments supplement executed storage/checker evidence without converting those receipts into workflow approval. Return this applicable M7 approval to Route for milestone closeout and M8 allocation; no work/activity mutation or final readiness claim is made."
+  ],
+  "reviewer": {
+    "id": "milestone-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:0288316508292040c24ec56d64d8856eccbdee3db7d29db476ada2a0037287e6",
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/m7-public-proof.md"
+    },
+    {
+      "identity": "sha256:e7ff2cc034561893561adafc21ca03d6e9ac7cbb6502b2697d525343912fae15",
+      "path": "packages/rigorloop/test/cli.test.js"
+    },
+    {
+      "identity": "sha256:b9188d953b708f95fb9ced4cce32d094a40576535eaad9d0c05459f5ccd93611",
+      "path": "packages/rigorloop/test/installer-replacement.test.js"
+    },
+    {
+      "identity": "sha256:f77a5179a5b2e6e4575890c95d29d3877657342c8f3bff5c6154c0d3c635cc24",
+      "path": "packages/rigorloop/test/record-store-cli.test.js"
+    },
+    {
+      "identity": "sha256:19d50dd20b46feefa69284c2cad8e5b74f35ef5193cc36d7d46a3333edff32ef",
+      "path": "packages/rigorloop/test/record-store-format.test.js"
+    },
+    {
+      "identity": "sha256:c6409e3792fb359df94c5423617765ef3544fae023e23016eb81ba6e643350ca",
+      "path": "packages/rigorloop/test/record-store-queries.test.js"
+    },
+    {
+      "identity": "sha256:bab5e1120e231103b0e3ff8bae9181d2d407037d81dc962da18ed16dc8cbc0df",
+      "path": "packages/rigorloop/test/record-store-targeted.test.js"
+    },
+    {
+      "identity": "sha256:61da42d81111b187883f4ebecdadcfd6076f70529b7ac277406ae12ae0a68211",
+      "path": "packages/rigorloop/test/record-store-v3-contract.test.js"
+    },
+    {
+      "identity": "sha256:2375090848ad0b27255d2cf24a1f5c35a9a1f61e03d69dcba367011e9b1b0957",
+      "path": "packages/rigorloop/test/record-store-v3-reads.test.js"
+    },
+    {
+      "identity": "sha256:5e103570baf94f3860fcadd6804712c26a12c8c04c587fde888daf8f36a3452d",
+      "path": "docs/design/cli/cli.md"
+    },
+    {
+      "identity": "sha256:eef562cbc734960620f545db46d42c392611d0ad779d6cb3c1b44fdf84c178fc",
+      "path": "docs/design/cli/records.md"
+    },
+    {
+      "identity": "sha256:a43782b837eb9acaafe8bf774b6d07a1acb2c0826489e0f5fe6ffb30e2039941",
+      "path": "docs/design/cli/installation.md"
+    },
+    {
+      "identity": "sha256:161f55fc205fce02c5db293fef5a4fbabd98ca10e426fb8c085e6a630bbb5911",
+      "path": "docs/plans/2026-09-17-complete-model-test-coverage.md"
+    },
+    {
+      "identity": "sha256:1adea2a89d5aff9d3cb88aaac38bf4fa05dabcfdcf24f36656dece99fa61c266",
+      "path": "packages/rigorloop/dist/bin/rigorloop.js"
+    },
+    {
+      "identity": "sha256:770cee8be82303a55c28e7bad84f12386889236ac2762b5c783bfb31a2e02104",
+      "path": "packages/rigorloop/dist/lib/record-format-core.js"
+    },
+    {
+      "identity": "sha256:343b516ff34de23990f9897faa19e4a0f127fbfff9a0c814039140138280efb6",
+      "path": "packages/rigorloop/dist/lib/record-store.js"
+    },
+    {
+      "identity": "sha256:36dfb447364e3407f3ab59d6bd1b35243a0cab116d20d71fc0b159db98d3b6ec",
+      "path": "packages/rigorloop/dist/lib/installer-replacement.js"
+    },
+    {
+      "identity": "sha256:5fdb94c4d5bbe98245f444b98c4ba878dec3e9c636bea5b5526fa22c9adebace",
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/evidence.json"
+    }
+  ],
+  "summary": "M7 closes the allocated CLI, Records and Installation proof gaps with valid controls, exact rejection and preservation observations, real public receipts and partial-installation evidence. The independent actual-store reading identifies corrected F1, retained B1 origin and unresolved reporter authority without treating stored approval or prior Verify as current readiness. No material M7 finding remains.",
+  "target": "code"
+}

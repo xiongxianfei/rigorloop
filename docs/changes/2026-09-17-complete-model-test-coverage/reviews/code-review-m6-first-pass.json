@@ -1,0 +1,151 @@
+{
+  "assessment_scope": "Independent explicit interim M6/TG6 packet assessment: all54 Bugfix/CI pairs (22 Bugfix,32 CI) for SKL-IH-003/004/005/006/007/008. Bound compact reproduction SHA256 25f30842cc81c503ae64f6c7a0fcf1e5180614be03dc2e5c8f48ced3caa5c8dc. Current scoped CLI confirms m6 in-progress and m7/m8 pending; approved Design/Delivery and Plan identities remain unchanged. Workflow/Assessment, Delivery Handoff/bounded PR repair and final whole-M6 judgment are excluded and remain pending.",
+  "change_id": "2026-09-17-complete-model-test-coverage",
+  "contributors": [
+    {
+      "id": "root-implementer",
+      "role": "implement"
+    },
+    {
+      "id": "support-packet-author",
+      "role": "implement"
+    }
+  ],
+  "findings": [
+    {
+      "evidence": "Finding ID: bugfix-complete-control-contract-gap. Severity: major. Location: m6-bugfix-ci-packet, bug-production-fix-complete/control/src/importer.py and tests/test_importer.py; reused corrected source/T0 in CI baselines. Supplied complete importer/importer.md IMPORT-SR-01 requires nonempty values and duplicate-ID rejection; C0 specifically rejects an empty middle value and preserves unusual valid values. The purported corrected source only checks integer ID and string type, then extends the destination, accepting empty strings and duplicate IDs. T0 uses null in a two-row input and lacks those defining partitions. Thus the complete-fix control and complete-coverage claims are not valid even though stipulated null-input pre/post outcomes are coherent.",
+      "id": "bugfix-complete-control-contract-gap",
+      "owner": {
+        "id": "root-implementer",
+        "role": "implement"
+      },
+      "reporter": {
+        "id": "milestone-reviewer",
+        "role": "review"
+      },
+      "required_outcome": "Preserve the frozen packet. Supply a complete implementation/proof baseline consistent with the exact adopted Design and coverage, retaining nonempty/duplicate distinctions, full invalid-batch preservation and valid/unusual-value acceptance. Make only the intended partial-write defect in the broken baseline and preserve the original T0 identity within each red/post-fix scenario. Rebuild dependent Bugfix/CI controls and literal identities as new evidence; independently reassess actual source and assertions before accepting complete-fix/coverage. An honest explicitly authorized narrower fixture contract is an alternative, but cannot silently contradict the reused Design. No production repository behavior or catalog change is required.",
+      "resolution": {
+        "actor": {
+          "id": "milestone-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [
+          {
+            "id": "m6-bugfix-ci-corrected-packet",
+            "path": "docs/changes/2026-09-17-complete-model-test-coverage/evidence.json"
+          }
+        ],
+        "rationale": "The complete corrected importer now validates integer IDs, nonempty strings and duplicate IDs before any destination extension. Complete T0 retains three valid rows, all defining invalid partitions, whole prior destination and embedded-space R-old. The broken control retains the intended incremental-write defect only; each red/post-fix scenario keeps its original command/test/fixture/input/environment identity. Independently inspected all22 Bugfix and32 dependent CI pairs, reconstructed162 trees and verified4051 files. Actual source/assertions and exact supplied observations now match the adopted full Design; no importer command was executed by this semantic assessment. Original finding evidence/subjects and first-pass judgment retain their meaning; this is the reporter disposition of the separate correction."
+      },
+      "state": "resolved",
+      "subjects": [
+        {
+          "identity": "sha256:c604f2574872f3cf6c70b269e7ab4b256ca2d749564ff73b184664c79264026d",
+          "path": "docs/changes/2026-09-17-complete-model-test-coverage/m6-bugfix-ci-packet.md"
+        }
+      ]
+    },
+    {
+      "evidence": "Finding ID: bugfix-receiving-output-control-gap. Severity: major. Location: Bugfix control-decision.json outputs, notably bug-missing-contract, bug-conflicting-contract, bug-behavior-change, bug-unknown-cause, bug-proof-identity-* and bug-postfix-pending. Routed controls select route-owner/routed-to-owner yet report next_owner none. Blocked/proof-mismatched/pending controls inherit empty blockers, unexecuted_checks and uncertainty without identifying the actual stop or missing original proof; unknown cause similarly reports no uncertainty. The full Bugfix completion contract requires these actual facts and receiving owner. The artifacts therefore do not constitute complete conforming outputs merely because the selected action label is correct.",
+      "id": "bugfix-receiving-output-control-gap",
+      "owner": {
+        "id": "root-implementer",
+        "role": "implement"
+      },
+      "reporter": {
+        "id": "milestone-reviewer",
+        "role": "review"
+      },
+      "required_outcome": "Preserve original responses. Author complete operation-specific control outputs that identify Design/contract owner for routed behavior, actual proof/authority blockers, unresolved cause, pending/unexecuted original checks and next responsible owner while retaining correct zero-write/intermediate/terminal claims. Derive each field from that case facts and exact effects; do not use generic empty defaults to claim conformance. Reassess all affected control/fault pairs against the unchanged Bugfix result contract. No new engine, lifecycle mutation or automated policy classifier is required.",
+      "resolution": {
+        "actor": {
+          "id": "milestone-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [
+          {
+            "id": "m6-bugfix-ci-corrected-packet",
+            "path": "docs/changes/2026-09-17-complete-model-test-coverage/evidence.json"
+          }
+        ],
+        "rationale": "Independently reassessed the complete case-specific outputs. Missing/conflicting/new behavior names Noor/Design; feasibility, unknown cause, original-proof mismatch, failed and pending proof identify their actual owner, blocker/uncertainty and unexecuted work. Terminal versus intermediate states match supplied actions; none invents self-review, Verify or customer execution. The generic empty defaults no longer support false completion. Original finding evidence/subjects and first-pass judgment retain their meaning; this is the reporter disposition of the separate correction."
+      },
+      "state": "resolved",
+      "subjects": [
+        {
+          "identity": "sha256:c604f2574872f3cf6c70b269e7ab4b256ca2d749564ff73b184664c79264026d",
+          "path": "docs/changes/2026-09-17-complete-model-test-coverage/m6-bugfix-ci-packet.md"
+        }
+      ]
+    },
+    {
+      "evidence": "Finding ID: ci-coherent-authority-control-gap. Severity: major. Location: ci-CIM1, ci-privilege-coverage-structure, ci-batch-partial/retry/atomic/cycle and ci-no-project-command facts/control artifacts. CIM1 targets automation/checks.json but expected_identity and control prior_identity are workflow SHA758887d7..., while actual native JSON is SHA97de8d02.... Privilege/combined and batch controls retain a request limited to timeout10-to12 with ordinary local authority while actual proposed changes alter events/privilege or the provider input interface. ci-no-project-command removes part of ci-authority.md but leaves commands.md, the existing workflows, native contract and actual project script supplying permitted command sources; it does not establish its claimed absent authoritative command. These are contradictory prerequisites, so the intended candidate assembly/command/partial fault is not isolated against a valid complete control.",
+      "id": "ci-coherent-authority-control-gap",
+      "owner": {
+        "id": "root-implementer",
+        "role": "implement"
+      },
+      "reporter": {
+        "id": "milestone-reviewer",
+        "role": "review"
+      },
+      "required_outcome": "Preserve the original subset and rebuild CI controls from coherent exact inputs: bind each actual target/hash, state complete current request/write/structure/privilege scope matching the proposed file effects, and make the missing-command case truly lack a reliable permitted command source (or expose a specific conflicting/stale source with its correct stop). Keep provider/assembly/resource distinctions, explicit batch manifest/safe-intermediate and stop/partial/retry observations separate. Record new literal evidence and reassess every affected group, including truthful blocker/identity reporting; no canonical CI behavior, new runner or external execution is required.",
+      "resolution": {
+        "actor": {
+          "id": "milestone-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [
+          {
+            "id": "m6-bugfix-ci-corrected-packet",
+            "path": "docs/changes/2026-09-17-complete-model-test-coverage/evidence.json"
+          }
+        ],
+        "rationale": "All affected current target identities match literal native/workflow files. Complete requests now grant the exact structural/privileged/batch effect under independent scoped authority. The command-negative includes a current attributable withdrawal of all older command sources, so it no longer mistakes a remaining script for absent command authority. Nine assemblies, late/combined triggers, no-clobber/identity/guard checks and partial/retry/atomic/cycle sequences were independently reassessed with coherent controls and preserved faulty siblings. Original finding evidence/subjects and first-pass judgment retain their meaning; this is the reporter disposition of the separate correction."
+      },
+      "state": "resolved",
+      "subjects": [
+        {
+          "identity": "sha256:c604f2574872f3cf6c70b269e7ab4b256ca2d749564ff73b184664c79264026d",
+          "path": "docs/changes/2026-09-17-complete-model-test-coverage/m6-bugfix-ci-packet.md"
+        }
+      ]
+    }
+  ],
+  "id": "code-review-m6-first-pass",
+  "independence_basis": "Support-packet-author (/root/catalog_necessity) authored the frozen Bugfix/CI candidates; root-implementer (/root) integrated and recorded exact evidence. Reviewer /root/design_review authored none of the source, candidates, methods or evidence. Reviewer independently read complete applicable Bugfix/CI methods, all complete baseline artifacts and every actual before/control/candidate delta, facts, proposed responses and actions for all54 pairs, and reconstructed/checked all3969 artifact/metadata identities. Author labels were not the semantic oracle. Root and author separately flagged the incomplete importer; this review corroborates it from literal source and governing artifacts and identifies additional control problems.",
+  "judgment": "changes-requested",
+  "limitations": [
+    "Not a milestone approval, final whole-change Code Review, Verify, branch/PR readiness or continuation decision. No activity or work is changed.",
+    "Synthetic facts/actions and candidate outputs provide independent manual assessment only. No real target-agent, command, persistence transaction, hosted CI or external effect is executed.",
+    "All original packet bytes and first-pass meaning must remain preserved. Corrected controls and affected dependent variants need new exact evidence and independent reassessment; the remaining M6 families are not yet assessed by this result."
+  ],
+  "rationale": [
+    "Spec alignment and test coverage — concern. Current Skill Bugfix/CI contracts and approved M6 allocation require coherent actual controls before comparing one defining fault. Candidate mutations generally target meaningful authority/proof/resource distinctions, but their full source/output/authority controls contain supported contradictions. Named findings prevent semantic completion; materialization success is not semantic acceptance.",
+    "Edge cases and error handling — concern within these controls. The packet includes feasible/unresolved/conflicting proof, unknown cause/values, changed T0 test/command/fixture/input/environment, failed/pending post-fix results, complete/incomplete alternatives, nine CI assemblies and combined/late triggers, concurrent/no-clobber/unsupported-guard/idempotent and partial/retry/atomic/cycle scenarios. Those partitions are useful; missing required output blockers/owners and inconsistent exact inputs prevent treating every control as conforming.",
+    "Architecture boundaries and compatibility — pass for unchanged canonical methods, concern for candidate realization. Bugfix separates diagnosis/proof/correction from owner decisions and independent review. CI distinguishes semantic risk placement, provider serialization, local safe-write admission and bounded repair. The observed problems require fixture/output corrections, not a new operation, runtime, schema, catalog, workflow gate or weakened Design.",
+    "Security/privacy and unrelated changes — bounded pass. These are private synthetic artifact/action packets. No target agent, real command, Git/host operation, customer write or external authority is established. No authoring approval follows from a file hash or stipulated supplied observation. Neighbor and historical bytes remain unchanged.",
+    "Derived artifact currency — pass for exact packet/source identity only. All21 source basis identities and45 literal blobs matched; every162 before/control/candidate tree reconstructed and all3969 file/metadata hashes matched. Registered Markdown contains the exact compact JSON data. This proves reproducibility of the review basis, not behavior correctness or target-agent execution.",
+    "Validation evidence — sufficient for this changes-requested result. The independent source/output review directly supports all three findings. Earlier read-only engineering review found no material concern in the exact three-file stage/metadata/resource diff; native evidence records46 focused and302 selected passes with stable37 method identities. Those checks are structurally bounded and cannot cure semantic fixture defects. No broad rerun or new runtime validator is requested.",
+    "Bugfix actual decisions: diagnosis authorizes no production write; feasible missing/alternative proof requires proof authoring; unresolved feasibility resolves before correction; conflicting proof/invalid authority/unknown value blocks; missing/conflicting/new behavior routes to Design; unknown cause continues diagnosis; original T0 mismatches cannot prove original success; failed or pending checks prevent fix-applied; a genuinely complete alternative is admissible only with established infeasibility and scoped result. Candidate self-review/Verify and outage claims are rejected. Full success/control output acceptance remains withheld for findings below.",
+    "CI actual decisions: review precedes authoring; native provider stays CIM6; creation, structural replacement, coverage and privilege select distinct combined resources; late facts require reclassification before action. External authoring, missing current methods/contract/privileged authority and unknown axes stop. Ordinary authoring does not execute validation. Identity conflict, absent safe primitive and no-clobber collision block without overwrite; readback is not a concurrency guard. Idempotent same-basis success makes no write. Partial provider success remains partial; retry rereads the complete graph; atomic-group/cycle without safe realization stops before any write. These independent decisions do not approve the inconsistent complete controls named below.",
+    "Historical reliance remains scoped: original approvals and original v2 policy/pilot observations are provenance only. Broader FU015–018 adoption and Packaging debt remain open. This interim judgment neither reenacts completed retirement nor changes historical subjects or meanings."
+  ],
+  "reviewer": {
+    "id": "milestone-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:c604f2574872f3cf6c70b269e7ab4b256ca2d749564ff73b184664c79264026d",
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/m6-bugfix-ci-packet.md"
+    },
+    {
+      "identity": "sha256:fae83fcaf884b3e06cc09ae4baf49875bab90f099d1446aeca8437c68614023a",
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/evidence.json"
+    }
+  ],
+  "summary": "The frozen M6 Bugfix/CI packet has three material control gaps: incomplete importer behavior/proof, incomplete Bugfix receiving outputs, and contradictory CI target/authority/command inputs. Preserve this original packet and supply corrected exact controls before relying on its semantic assessment. This is an interim packet review, not M6 completion.",
+  "target": "code"
+}

@@ -1,0 +1,83 @@
+{
+  "assessment_scope": "Interim first-pass assessment of all63 new pairs:47 Delivery Handoff/evidence-suffix and16 bounded PR CI-repair, manifest bef9d45e43d738d074dadb43ef57d7c1516dd5feb2b33111dde90236a75b5578 and compact SHA256 440abfe0f84dd8b82009e858872d12b5d712b7b9bd4a992726262e14320a2ac1. Exact registered m6-handoff-repair-packet only; original/corrected Bugfix/CI54 and pending core corrections remain separately assessed. No complete M6 or whole-change judgment.",
+  "change_id": "2026-09-17-complete-model-test-coverage",
+  "contributors": [
+    {
+      "id": "root-implementer",
+      "role": "implement"
+    },
+    {
+      "id": "support-packet-author",
+      "role": "implement"
+    }
+  ],
+  "findings": [
+    {
+      "evidence": "Finding ID: handoff-repair-authority-control-gap. Severity: major. Location: hand-title-only, hand-before-host-body, hand-blocked-open-keeps-intent and repair-missing-file-authority/commit-authority/push-authority facts and control results within the exact packet. hand-title-only and hand-before-host-body retain an exact request explicitly saying no refresh authority, but their independent fields assert title/full refresh; the title control actually updates. hand-blocked-open-keeps-intent retains the exact request that ordinary push and creation are explicitly authorized, while its fields deny both and its purported compliant output says no current authority. Repair missing-commit and missing-push likewise inherit a request explicitly authorizing commit and ordinary push but deny the respective authority in fields; the file-authority variant still requests the exact repair while declaring no file-write authority. No supplied later withdrawal or precedence fact resolves these conflicts. Draft variants also retain an open request while declaring draft without explicit clarifying authority. Thus these are not clean missing-authority or authorized-refresh controls; copied classifications cannot override contradictory actual input silently.",
+      "id": "handoff-repair-authority-control-gap",
+      "owner": {
+        "id": "root-implementer",
+        "role": "implement"
+      },
+      "reporter": {
+        "id": "milestone-reviewer",
+        "role": "review"
+      },
+      "required_outcome": "Preserve the frozen original packet and review. For each affected purported compliant control, provide one coherent current request and independently scoped authorities, or explicit attributable later withdrawal/clarification with order and precedence. Make absent-authority variants actually lack that permission and allowed title/full-refresh and draft variants have the necessary matching current authority. If deliberately testing contradictory inputs instead, the expected decision must stop for that conflict and the intended missing-authority/allowed-action outcome still needs a valid control. Audit the same inherited authority/request defaults across the63 pairs; do not normalize away deliberate faulty sibling effects. Reconstruct and reassess complete affected inputs, actions, body preservation and output claims. Safe resolution owner: root-implementer with support-packet-author; no new product or contract decision is required.",
+      "resolution": {
+        "actor": {
+          "id": "milestone-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [
+          {
+            "id": "m6-handoff-repair-authority-corrected-packet",
+            "path": "docs/changes/2026-09-17-complete-model-test-coverage/evidence.json"
+          }
+        ],
+        "rationale": "Independently verified exactlyeight facts.json changes, solely their literal current requests; every action, result, body and before/control/candidate tree remains unchanged. Title/full replacement now has matching explicit scope; blocked open explicitly withholds push/create while retaining desired intent; both draft cases have explicit draft authority without existing-PR conversion; repair file/commit/push permissions are separately withheld. Complete63-family request/action/result assessment preserves the original defining faults and independently expected decisions. Reconstructed189 trees, reproduced315 metadata/results and checked8262 files; original packet/review remain preserved. Original finding evidence/subjects and first-pass judgment retain their meaning; this is the reporter disposition of the separate correction."
+      },
+      "state": "resolved",
+      "subjects": [
+        {
+          "identity": "sha256:b527c85baa29fee92bcfb43c6261015fb36da780f61f9339c9a0d77c628c195b",
+          "path": "docs/changes/2026-09-17-complete-model-test-coverage/m6-handoff-repair-packet.md"
+        }
+      ]
+    }
+  ],
+  "id": "code-review-m6-handoff-first-pass",
+  "independence_basis": "Support-packet-author (/root/catalog_necessity) authored the frozen candidate controls; root-implementer (/root) integrated and registered their reproduction evidence. Reviewer /root/design_review authored neither. Reviewer independently decoded all115 text and96 object references, verified62 literal blobs, reconstructed189 complete before/control/candidate trees, reproduced315 metadata/result files and checked8262 actual file identities. All21 source identities match. Complete actual new artifacts, each candidate delta and all proposed actions/results were inspected against the complete applicable PR/CI methods, governing Handoff/Assessment/Skill test design and approved M6 allocation. Author expectations are not the semantic oracle.",
+  "judgment": "changes-requested",
+  "limitations": [
+    "Interim M6 changes-requested; no milestone closeout, final whole-change Code Review, Verify, branch/PR readiness, work/activity transition or external authority.",
+    "All proof results, Git relationships, host observations and proposed actions are synthetic supplied facts. Independent inspection proves the concrete semantic decisions only; no target-agent run, actual GitHub/remote operation, customer workflow, CLI schema conformance or importer execution is established.",
+    "Preserve this original63-pair packet and its first-pass meaning. Correct purported compliant premises/results, while retaining intentionally faulty sibling actions and claims as negative candidates."
+  ],
+  "rationale": [
+    "Intent/authority: prepare-only performs no external mutation and reports prepared-not-opened; blocked open retains its requested intent. Existing adequate draft/open states survive absent matching transition authority; refresh and release permissions remain separate. Unknown classification stops before eligibility. Title-only refresh must preserve literal body. The intended distinctions are sound, but the finding prevents acceptance of controls whose exact request grants authority that their fields deny, or denies the refresh their control performs. Explicit draft authority should be coherent with the supplied request rather than inferred from an inconsistent label.",
+    "Directional branches and exact PR selection: the independently inspected commit relations permit ordinary authorized push for absent/remote-ancestor, require none for same, and stop local-ancestor/diverged/ambiguous. Exact open/draft PRs are reused, while closed/merged/multiple/base-mismatched observations stop. The faulty force/overwrite/duplicate/reopen actions are rejected. No merge or publication permission follows from branch readiness.",
+    "Rechecks and recovery: before-push base drift stops without effects; pre-mutation body drift requires reclassification before replacement; post-push base drift preserves the observed push but blocks further readiness. Lost creation response requires exact PR reread/reuse, not a duplicate. Missing final readback cannot support a URL or successful post-state claim even when creation response indicates a partial effect. These decisions depend on supplied ordered facts, not executed host calls.",
+    "Verify basis and suffix: the actual seven-value Verify basis is consumed unchanged. Missing full basis or one required field blocks opening; other Git observations cannot manufacture Verify-owned values. No suffix and attributable current evidence-only suffixes can qualify across multiple commits, merges and a fully reverted intermediate product edit when the inspected cumulative final meaning and proof basis remain unchanged. Mixed final product changes, cross-change evidence, unknown attribution, stale references, substantive route decisions, unknown classification and nonancestor graphs invalidate reliance. Paths, filenames, topology and contributor names alone do not prove applicability.",
+    "Body/resources and hosted evidence: inspected full core/governed PR groups use the successful Verify rationale once, and retain applicable security/privacy content. Unfilled placeholders, omitted triggered groups and demands for a duplicate explanation artifact are rejected. Missing selected body/governed resources stop dependent work without reconstruction. Actual hosted state is reported as passed/failed/pending/unavailable/unobserved/not-applicable only under exact supplied run/head and explicit owner policy; an old-head pass cannot replace current facts. Local proof does not establish hosted success. The local PrivateFileStore proof source reaches a real temporary destination and covers full row domain, successful full import and R-old, but this packet does not execute it.",
+    "Bounded repair: admission requires the exact already-open PR, current failing head, still-current independent review/Verify basis, no material concern, reliable commands and each necessary authority. A one-path command spelling restoration may preserve the assessors' unchanged product judgment without retargeting Verify; the complete-exact faulty candidate changes verified revision and invents readiness, so it is rejected. Missing PR/head/review/Verify, current finding or withdrawn command stops before write. New dependency/runtime behavior returns to its owning Design/implementation activity. Missing authority variants need the premise correction identified below. After eligible repair, failed focused proof permits only truthful local partial state and blocks commit/push; old-head hosted pass or local-only pass cannot establish required replacement observation. Even a completed exact repair grants no new review, Verify or lifecycle judgment.",
+    "Checklist: spec alignment, test coverage, permissions and validation adequacy have the bounded authority-control concern; all63 complete cases were assessed without omitting an unassessable member. Edge, error, retry and partial-effect observations otherwise distinguish the named hazards. Architecture/ownership, compatibility and unrelated-change checks show no canonical or production defect requiring expansion. Derived packet currency is directly established by independent reconstruction and exact source identities; no installed/archive/external execution is claimed. Original history, useful regression coverage and pending broader adoption remain intact. The correction can be confined to new candidate/evidence subjects without changing public vocabulary, runtime, catalogs or prior judgments."
+  ],
+  "reviewer": {
+    "id": "milestone-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:b527c85baa29fee92bcfb43c6261015fb36da780f61f9339c9a0d77c628c195b",
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/m6-handoff-repair-packet.md"
+    },
+    {
+      "identity": "sha256:f60d051bbb52ba3e6c46560ccac1f84b74cf251811326bff3a43bceeb7fc2ef5",
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/evidence.json"
+    }
+  ],
+  "summary": "The complete Handoff/suffix/repair packet supports most intended semantic distinctions, but several purportedly valid authority controls contradict their own explicit requests. Reconcile those concrete premises and reassess the affected pairs before claiming this coverage complete.",
+  "target": "code"
+}

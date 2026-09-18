@@ -1,0 +1,69 @@
+{
+  "assessment_scope": "Complete independent M2 milestone Code Review at commit38362125 against f58a6a2c, approved primary plan and current Validation VAL-SR-36–38/VAL-DEC-12 under design-review-final and delivery-review. Assessed all seven changed engineering subjects, native/caller preservation, result identity/completeness, measurement intervals, all-mode/legacy/prepared handoff, safe report ownership, failure and correction tests, complete author baseline and reviewer supplement. Earlier approved Design/plan work and M1 claims are governing reliance, not new implementation. This is M2 review, not final whole-change Code Review or Verify.",
+  "change_id": "2026-09-17-complete-model-test-coverage",
+  "contributors": [
+    {
+      "id": "root-implementer",
+      "role": "implement"
+    }
+  ],
+  "findings": [],
+  "id": "code-review-m2",
+  "independence_basis": "Runtime /root authored all seven M2 engineering subjects and author baseline/evidence as root-implementer. Runtime /root/design_review independently inspected the complete diff relative to f58a6a2c, governing Design/Delivery allocation, tests and callers, recorded the first-pass defect before correction, reran its private public reproduction, and independently measured the two added tests using existing native adapter/scheduler/reporting components. Reviewer-owned measurement and finding disposition are verification activities, not implementation authorship. No product source, tests, plan, Designs, activity or work state was edited by the reviewer. Actual runtime separation and work performed establish independence; prior upstream reviews were also assessments rather than authorship.",
+  "judgment": "approved",
+  "limitations": [
+    "M3–M8 requirement-selection guidance, fixture/assertion alignment and deterministic/semantic proof gaps remain open; timing and baseline success do not establish model semantic adequacy.",
+    "Prepared release handoff is assessed using controlled preparation/coordinator fixtures; no live candidate qualification, provider operation, publication or incident evidence is claimed. Conditional operations retain M8 applicability and existing authority.",
+    "The full baseline and two-case supplement have different exact code/scope/time bases. All current cases have attributable observed costs, but there is no single corrected-code full-baseline invocation or speedup claim. Full baseline product cases are unchanged; rerunning all suites solely for the four-line report revocation is not required.",
+    "This approval supports Route considering M2 complete; reviewer does not mutate work/activity. M1/M2 reviews cannot substitute for fresh final whole-change Code Review and distinct successful Verify before PR readiness."
+  ],
+  "rationale": [
+    "Spec alignment — pass. Existing CheckPlan/CheckResult, native expansion, scheduler and report envelope realize approved M2 without a new runner or authored catalog refinement. All modes use the generic opt-in destination; broad-smoke retains its alias and scenario/envelope. Duration ranking is an additional stable result view; omitted ranking keeps ordinary behavior. Reporting scope distinguishes requested selection, known/discovered work, incomplete collection and prepared-source execution.",
+    "Test coverage — pass. Independently reconciled 1343 baseline rows:1337 native cases plus6 non-case checks, all started/passed, unique identities equal the expected worker set. All1313 M1 native cases appear exactly once, including all95 adapters;24 reporting additions explain the baseline increase. Existing catalog coverage allocation accounts for scoped/full adapters and direct/full Node callers without changing ordinary selected membership. Two later reporting additions passed as isolated reviewer workers with costs5888ms and257ms, bringing current accounted native population to1339. No retained product case or direct entrypoint disappeared.",
+    "Edge cases — pass. Focused reporting proof covers unknown mode/status and invalid duration values, alias agreement/conflict, stable ranking/ties and unsuccessful rows, unstarted dependencies, missing-command attempt cost, timeout and handled interruption, partial collection without invented identities, selection errors, concurrent reservation, invalid destination types and selected-input collisions. Final-capture clock injection proves the measurement extends beyond the earlier poll timestamp. Actual short-lived workers and native case receipts complement deterministic arithmetic.",
+    "Error handling — pass. Controlled failures retain nonzero selection/execution precedence, known results and incomplete scope. Report serialization/replacement failure preserves prior bytes and turns success into exit1 without erasing an existing worker exit7. Prepared coordinator/child handoff retains nonzero outer or child status and actual prepared subject, and missing private report cannot imply success. Worker failures, timeout and unstarted dependencies remain explicit rather than receiving fabricated free successful durations.",
+    "Architecture and maintainability — pass. The shell now delegates selection/preparation and reporting lifetime to the existing executor, enabling reservation before work and one final writer. Private native discovery and shared-budget scheduling remain the execution path; the new reporting tests are imported by the existing aggregate and have an explicit selector classification. No persistent benchmark cache, scenario-driven execution engine or permanent method ledger is introduced.",
+    "Backward compatibility — pass within assessed mode/caller scope. Existing selector172 and full pre-correction executor76 cases passed in the complete baseline; existing legacy report readers and package/native suites passed. Canonical per-row IDs, command/status/exit/phase, child_durations, cache label and null historical baseline/delta fields remain. Both generic and legacy destinations are removed from children while unrelated environment and bounded nested workers remain. Prepared producer/consumer tests retain requested versus prepared source and native direct Python/Node behavior; no live release or provider action is claimed.",
+    "Security and preservation — pass after required correction. Report admission rejects unsafe traversal, symlink/nonregular/multiple-link targets, absent parents, source/input/capture ownership conflicts and active destination reservations. Publication serializes first, uses an owned sibling temporary and pinned parent descriptor, then atomic replacement; cleanup identifies the owned lock. First-pass late collision previously allowed an overwrite; the exact corrected guard now irrevocably prevents publication after such collision. Independent public reproduction and native regression measurements prove preserved bytes and cleanup. The finding is reporter-resolved without altering its original evidence.",
+    "Generated-artifact currency — pass for M2 scope. No authored skills/templates/generator or authored test-design catalog changed. The baseline exercised actual private adapter archive build/validation and existing packed npm/installed CLI suites. The four-line report guard and two additional reporting tests do not change generated consumer content; post-correction targeted safety proof is appropriate, and no retroactive generated-output claim is made.",
+    "Unrelated changes and current reliance — pass. Engineering diff is limited to reporting, wrapper/preparation integration, test-module routing/import and contributor guidance. The seven baseline dirty-source identities remain exact apart from the disclosed execution guard and reporting test additions. All original M1 evidence entries are semantically identical in the additive evidence container; the old code-review-m1 subject identity is preserved and relied on only for unchanged M1 claims. Upstream Design/Delivery package identities are unchanged. Prior first-pass M2 judgment remains historical and is superseded by this separate exact corrected review.",
+    "Validation evidence — pass with bounded intervals. Author full baseline exit0:1343 rows, execution wall538.762s, summed worker1822.312s, jobs4; independently parsed report confirms exact counts, statuses, native membership and arithmetic. Invocation wall546.516s is separately bounded. Corrected Reporting26 passed53.109s; independent supplementary native run passed2 cases with wall6.294s and summed worker6.145s. The full baseline predates the collision correction; it proves unchanged product population/cost only. Current correction proof is the red-to-green regression and independent rerun/supplement. No performance gain, CPU usage or identical cross-scope comparison is inferred."
+  ],
+  "reviewer": {
+    "id": "milestone-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:ab25891696f0543db9a9871a0d2e3a8b668d3593d9450b699efe5c1a0d1efd29",
+      "path": "CONTRIBUTING.md"
+    },
+    {
+      "identity": "sha256:79f89c9b2225b8edfcb6a9c0dd10529b4f2cef571b0eacff00a7ff28d6b153d3",
+      "path": "scripts/ci.sh"
+    },
+    {
+      "identity": "sha256:b2a9f62bb5bd9f172d26efc37805b5c834d9719a5f203d9753fb6c01ee9525d8",
+      "path": "scripts/lib/release/release_candidate.py"
+    },
+    {
+      "identity": "sha256:2ab689aba271919db93d869bf466784e9b6ad8e822450678346411727c545502",
+      "path": "scripts/lib/validation/validation_execution.py"
+    },
+    {
+      "identity": "sha256:c5b9ebfc40bf580e54f0ab0fcb4df47b9240ed256f3131ef1b0856ba6a43d880",
+      "path": "scripts/lib/validation/validation_selection.py"
+    },
+    {
+      "identity": "sha256:4ec8cef43ee9f4f658889565f407ca256b975d42acb704fac3043c7eee44ef5a",
+      "path": "tests/engineering/validation/test-validation-execution.py"
+    },
+    {
+      "identity": "sha256:1cc995dc6137c3665af6121a0f0f75fdc5bc405a967dd965a0f74a0565edac2b",
+      "path": "tests/engineering/validation/execution_reporting_tests.py"
+    }
+  ],
+  "summary": "M2 supplies attributable native-case timing, optional duration ranking and owned cross-mode JSON reporting through the existing executor. Complete retained-case baseline accounting and the bounded post-correction supplement cover all1339 current native cases. The recorded late-collision preservation defect is independently resolved. No material M2 finding remains; M3–M8 and final whole-change review/Verify remain required.",
+  "target": "code"
+}

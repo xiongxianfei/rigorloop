@@ -1,0 +1,118 @@
+{
+  "assessment_scope": "Supplemental first-pass M6 core packet assessment:124 candidates across7 Workflow and8 owned Assessment groups plus common Skill/IP0/IP1/IP2 interactions. Manifest d138c3b8f9457756c7e0dd8534cc7ef2b2d9e4d20fa7b29c300c27b66fa1a821; compact SHA256 83ab6750309e7def90aa18ca4ef5d241ae37be67761cca5a64ec75f9a564ea05. Actual packet inspection supports the bounded findings and decisions below. Complete milestone judgment additionally requires remaining Handoff/native/historical integration and corrected controls; no full M6 gate approval.",
+  "change_id": "2026-09-17-complete-model-test-coverage",
+  "contributors": [
+    {
+      "id": "root-implementer",
+      "role": "implement"
+    },
+    {
+      "id": "core-guidance-author",
+      "role": "implement"
+    }
+  ],
+  "findings": [
+    {
+      "evidence": "Finding ID: core-wrong-path-fixture-evidence-gap. Severity: major. Location: rc-code-broken-fixture before/tests/test_importer.py, facts.md, candidate-result.md. This purported compliant review says an absent fixture-missing.json raises FileNotFoundError before import_rows, and F1 repeats that evidence. Actual test imports unittest/import_rows, assigns destination=None, then calls import_rows([(1,\"alpha\"),(2,\"\"),(3,\"gamma\")], destination) under assertRaises(Exception). It never reads a fixture file. The actual importer rejects the empty value with ValueError before destination.extend. The oracle lacks destination observation, but the claimed missing-file/wrong-path event is not present. Independently checked fixture-coherence manifestations: rc-reliance-new-failure and rc-final-proof-failed keep actual source SHA256 b64fd1ab9eb77b30a1f4791534cacd0e65c5e0e517f02041f615f302cb5b5ba1 while their failed import trace names different source 2121aaa810408d4c01d193d3cdcdec5ecad0e07a21205dfb85f91338ebebc6a3. This supports rejecting current reliance as mismatched/conflicting, not the claimed same-current-source failure. rc-unlisted-regression actual before test has valid-batch, invalid-middle, embedded-space and row-domain methods; candidate retains only the first two, deleting both R-old and row-domain despite its single-loss description.",
+      "id": "core-wrong-path-fixture-evidence-gap",
+      "owner": {
+        "id": "root-implementer",
+        "role": "implement"
+      },
+      "reporter": {
+        "id": "milestone-reviewer",
+        "role": "review"
+      },
+      "required_outcome": "Preserve original bytes. Supply a real defining setup action that produces the intended wrong-path failure and corresponding exact finding, or truthfully revise the candidate account to the actual broad-oracle/invalid-destination gap. Keep a valid reached-action/full-destination control and explicitly independent expected observation, with fixture/setup error separate from target rejection. Reassess actual complete test, facts, observations and finding; do not treat author labels as the oracle. Reconcile exact failure source/test/environment with the actual candidate and previous reliance; alternatively narrow the stated condition honestly to identity mismatch/conflicting evidence. For the unlisted-regression negative, preserve unrelated row-domain protection so the single selected deletion is R-old, or explicitly assess all actual lost obligations with suitable controls. Do not count a rejection reached for a different hazard as direct evidence of the named condition.",
+      "resolution": {
+        "actor": {
+          "id": "milestone-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [
+          {
+            "id": "m6-core-corrected-packet",
+            "path": "docs/changes/2026-09-17-complete-model-test-coverage/evidence.json"
+          }
+        ],
+        "rationale": "The actual bad test now reads the absent sibling fixture-missing.json inside broad Exception before import_rows, with a separate complete valid reached-action control and independently specified full destination. Its finding names that exact setup error. Current failure variants now bind the actual unchanged source/test and concrete missing runner configuration; they establish unstarted required proof rather than an importer mutation, preserving prior pass separately. The R-old candidate deletes only embedded-space acceptance; valid-batch, invalid-middle and row-domain tests remain unchanged. All complete affected artifacts, facts and proposed observations were reread; no synthetic result is represented as executed. Original finding evidence/subjects and first-pass judgment retain their meaning; this is the reporter disposition of the separate correction."
+      },
+      "state": "resolved",
+      "subjects": [
+        {
+          "identity": "sha256:6343239c975aae6956b0ec4eb53e03eb948a0c1f3550ab9d39aa08fc7a6fd18f",
+          "path": "docs/changes/2026-09-17-complete-model-test-coverage/m6-core-packet.md"
+        }
+      ]
+    },
+    {
+      "evidence": "Finding ID: core-scope-specific-output-control-gap. Severity: major. Location: purported compliant core candidate-result.md controls. rc-portable-local requests isolated advisory review with no governed store but reports Next stage: final-closeout and Recording status: recorded. rc-recording-failure correctly reports save conflict but retains final-closeout. rc-unlisted-regression F1 describes deletion of embedded-space acceptance, yet locates the invalid-middle test and requires invalid-input destination proof. rc-proposal-scope-loss/vision-conflict and rc-delivery-parser-only likewise reuse an implementation test location/invalid-input proof outcome for proposal direction/Plan allocation findings. Stopped impl-stop-* controls claim Tests added or updated (and planned variants a successful handoff commit/implementation-proof.json) despite unchanged candidate trees and no such evidence. Invalid Proposal/Verify controls retain unrelated alignment, blocker or invocation defaults despite rejected classification. These are operative claim/correction mismatches, beyond cosmetic wording. rc-final-success proposes governed-final success returning to Route but emits Next owner: isolated stop. rc-proposal-vision-conflict omits the triggered specialized-gate result group as well as its selected gate method. Portable missing-input siblings retain a different governed/planned context from the isolated positive control, so their recording/isolation classification must be assessed explicitly rather than inferred from the family label.",
+      "id": "core-scope-specific-output-control-gap",
+      "owner": {
+        "id": "root-implementer",
+        "role": "implement"
+      },
+      "reporter": {
+        "id": "milestone-reviewer",
+        "role": "review"
+      },
+      "required_outcome": "Produce operation-specific complete outputs for each affected compliant control, keeping judgment, exact scope, recorded status, actual performed work, finding location/required outcome, receiving owner and allowed next action mutually consistent. Advisory or failed-recording results must remain stopped; Proposal/Delivery findings must name the actual proposal decision/Plan allocation correction, and R-old must require the distinct valid-value protection. Stop results must omit performed-work/commit claims not supported by their supplied trees/events and not classify unknown invocations as valid. Audit shared generated defaults across the affected family for the same leak. Retain each deliberately faulty sibling and its defining unsafe action/claim; no requirement to make negative candidates compliant. Reassess complete corrected results, not just status labels. Keep actual selected scope/context and the final result handoff consistent; make any changed recording context explicit in the sibling control account. Fill the triggered Proposal specialized-gate group using the current vision decision and owner, without granting downstream continuation.",
+      "resolution": {
+        "actor": {
+          "id": "milestone-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [
+          {
+            "id": "m6-core-corrected-packet",
+            "path": "docs/changes/2026-09-17-complete-model-test-coverage/evidence.json"
+          }
+        ],
+        "rationale": "Complete corrected outputs align scope, actual work, judgment, recording, receiving owner and allowed next action. Portable advisory controls perform no durable operation; missing-input siblings use the same explicit isolated context. Failed recording blocks reliance and continuation. Proposal and Delivery F1 locate actual direction/allocation, R-old requires distinct valid-value coverage, and stopped Implement reports no new test/proof/commit. The missing assertion stays an owned M2 implementation task. Unknown Proposal/Verify invocation reports preflight only. Governed final Verify returns its result to Route; current vision conflict fills its selected gate and owner decision. All39 changed cases were independently assessed against full earlier bodies, and85 cases remain byte-identical; intended faulty candidate effects are preserved. Original finding evidence/subjects and first-pass judgment retain their meaning; this is the reporter disposition of the separate correction."
+      },
+      "state": "resolved",
+      "subjects": [
+        {
+          "identity": "sha256:6343239c975aae6956b0ec4eb53e03eb948a0c1f3550ab9d39aa08fc7a6fd18f",
+          "path": "docs/changes/2026-09-17-complete-model-test-coverage/m6-core-packet.md"
+        }
+      ]
+    }
+  ],
+  "id": "code-review-m6-core-controls-first-pass",
+  "independence_basis": "Core-guidance-author (/root/design_skill_core) authored the frozen124 candidates; root-implementer (/root) integrated evidence. Reviewer /root/design_review authored none. Reviewer independently reconstructed all7737 actual file/metadata identities and full trees, read complete new source/test/evidence/authority artifacts, all new candidate differences and full proposed actions/results, and compared every original Workflow file identity. Exactly28 original cases are byte-identical; rc-current-finding-account changes only the intended missing-assertion source and corresponding subjects. Complete applicable parent skills and the relevant specialist procedures govern the reported findings. This supplemental first-pass account adds supported findings after the earlier two-candidate bounded review without rewriting that original inspection history. Authors supplied possible concerns, but actual decisions below follow independently inspected bytes and contract triggers.",
+  "judgment": "changes-requested",
+  "limitations": [
+    "Changes-requested; no M6 closeout, final Code Review, Verify, branch/PR readiness or activity/work transition.",
+    "Preserve the first bounded core review and original124-candidate packet. Deliberately faulty action/result contradictions remain negative tests; corrections apply to controls and inherited unrelated faults, not by homogenizing all candidates.",
+    "Resource selection and output adequacy are semantic procedure assessments. No target-agent execution, CLI persistence, real importer transaction, Git/hosted observation or universal compliance is established."
+  ],
+  "rationale": [
+    "RC-adequacy — accept the substantive distinction between complete Design intent, parser-only Delivery allocation and direct Code proof, but withhold the broken-fixture positive finding: its test never reads the file claimed to fail. The preserved R-old embedded-space outcome is distinct and deletion loses protection, but its emitted required outcome currently addresses invalid-input preservation instead. Passing catalogs/green broad exceptions do not cure these control flaws.",
+    "RC-judgment/portable — the intended precedence is authority/independence blocker before insufficient basis before supported actionable defect, with optional style alone permitting bounded approval. Findings survive blocked/inconclusive judgments. Actual portable and failed-recording outputs must stop their scope; their inherited final-closeout fields cannot be accepted merely because the action prose says isolated or conflict. Missing resource/subject/independence remain distinct conditions; no customer checkout/Git/remote prerequisite is invented.",
+    "RC-proposal — accept none/manual, advisory-durable/manual, formal/manual and separately supported formal/automated mode distinctions and reject unknown or invalid pairs before dependent interpretation. Proposed automated phases separate initial risk discovery from evidence and provide no continuation. Scope-loss and vision-conflict are distinct, but current Vision absence, missing triggered gates and copied implementation finding fields require correction. Invalid-mode controls cannot simultaneously claim successful alignment or an unrelated owner-vision blocker.",
+    "RC-reliance — preserve same-meaning editorial applicability when exact basis/evidence remain sufficient; changed decision-bearing source, new failure and explicit fresh-run policy require responsible reassessment. Author cannot renew another reviewer or retarget its subject. Some negative facts carry conflicting source identities, so they demonstrate insufficient/conflicting current reliance rather than an independently executed same-subject failure.",
+    "RC-final/verify — full final success needs current closed work/concerns, independent whole-change review, required broad/direct outcomes and source/generated currency; reject unrun required proof, conflicting failure or stale generated bytes. Branch readiness additionally emits seven resolved immutable values; the missing-basis negative omits a required result field although separate Git observations still contain the merge-base value, so it demonstrates incomplete normalized output, not proof that no merge-base evidence exists. Scoped and boundary profiles remain bounded; local/stale/pending/skipped/unknown evidence cannot establish the wider required success. Synthetic final observations do not prove commands or hosted CI ran.",
+    "Implementation profiles — complete positive IP0/IP1/IP2 fixtures supply actual full code/tests, ordered red-before-code and unchanged-proof green observations, integer/nonempty/duplicate partitions, complete destination outcomes and R-old. Planned and armed authority are independent of recording; late valid events reclassify before dependent action. Reject conversational unplanned arm, stale/unknown identities, initial review bias, unclassified/forbidden/nonshrinking correction and green-proof milestone closeout. Stopped controls need truthful no-mutation output fields. Missing test assertions within an allocated implementation slice must be distinguished from missing upstream proof ownership; the current generic stop text must not imply an unowned upstream decision when proof authoring is the available correction.",
+    "Common Skill groups — accept responsibility-based discovery before owned work; reject author/reviewer substitution. Read full relevant workflow before global permission claims; request only relevant redacted diagnostics. Method assets supply structure, never approval or implementation start. Missing triggered installed recording resource stops dependent work; unrelated portable operation and redundant navigation have distinct limits. Actual four-copy parity requires bytes/paths; timestamp alone is irrelevant and declared transformations require exact input/output/rule. These private-copy inspections are not archive/install executions. Foundations/Research/Learning producers retain provenance, limits and adoption owners; no receiver promotion or rewrite.",
+    "Workflow and concern correction — prior exact28 unchanged cases retain code-review-m6-workflow-first-pass decisions/limits. The corrected rc-current-finding-account actually removes full destination equality in before/candidate test while retaining F1 identity/required outcome and B1 origin; its reporter-owned wording correction is now supportable, pending the final recorded disposition. No original bytes or judgment are rewritten.",
+    "Architecture, compatibility, permissions, unrelated changes and validation — no canonical/runtime/catalog defect indicated by these packet findings. All changes can be isolated to new corrected candidate/evidence subjects; source methods and original history remain. Independent reproduction7737 confirms exact literal scope; it does not execute any synthetic proof or authorize lifecycle/external action."
+  ],
+  "reviewer": {
+    "id": "milestone-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:6343239c975aae6956b0ec4eb53e03eb948a0c1f3550ab9d39aa08fc7a6fd18f",
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/m6-core-packet.md"
+    },
+    {
+      "identity": "sha256:cf7a3b12d9ed2678c63b9808a8abd3b89d13c161a8cd2c514a80302dc9b4f702",
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/evidence.json"
+    }
+  ],
+  "summary": "The actual wrong-path fixture does not produce the failure described in its finding, and several purportedly compliant results retain unrelated scope, continuation or correction fields. Correct the exact controls and triggered reading paths before relying on full core semantic coverage.",
+  "target": "code"
+}

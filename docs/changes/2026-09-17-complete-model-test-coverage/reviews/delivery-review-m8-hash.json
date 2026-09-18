@@ -1,0 +1,49 @@
+{
+  "assessment_scope": "Complete primary-plan Delivery Review with a bounded M8 correction, primary artifact docs/plans/2026-09-17-complete-model-test-coverage.md at sha256:f45401105ccbb569d321ad090c96a8a271c24197a4d727d3e993bb32e2b4022d. Upstream current Design Review design-review-m8-hash at sha256:375195c4ff4d8cc88d221ce1f6d516a04ec49d01a9f8a706f0972f18e5b087c4 binds the complete104-member package. The Design review is a relied-on authority subject, not a second primary-plan member. Earlier delivery-review sha256:79fcd103043f5f6057f3d8e1885e56e92aa7ce843fe48064ee5cd33a9af86459 retains its original exact Plan judgment and stale current applicability; this record supplies new current allocation authority without reapproving completed implementation.",
+  "change_id": "2026-09-17-complete-model-test-coverage",
+  "contributors": [
+    {
+      "id": "root-plan-author",
+      "role": "plan"
+    },
+    {
+      "id": "root-design-author",
+      "role": "design"
+    }
+  ],
+  "findings": [],
+  "id": "delivery-review-m8-hash",
+  "independence_basis": "Root /root authored the original Plan and the exact M8 hash-allocation amendment; reviewer /root/design_review authored none of the Plan or Design. It read the complete328-line revised primary Plan and independently assessed sequencing, scope, proof, compatibility and recovery using the separately recorded current Design Review. Prior independent Delivery assessment supplies only the explicitly unchanged allocation context; no old judgment is retargeted.",
+  "judgment": "approved",
+  "limitations": [
+    "This is current Design-to-delivery allocation approval, not implementation completion, Code Review, Verify, branch readiness or PR/release permission.",
+    "Actual v2/legacy regression, candidate composition and final population/runtime evidence remain M8 implementation obligations. No original red proof or historical approval is rewritten.",
+    "The earlier full Plan assessment is reused only for unchanged, affirmatively unaffected allocation; the entire revised primary Plan was reread and the new hash risk and proof order assessed independently."
+  ],
+  "rationale": [
+    "Complete trace — pass. All24 model rows, original M1–M8 requirements, parent interactions, generated consumers and change-level protection/runtime duties remain allocated. The new DIST-SR-09/DIST-DEC-07 trace is Packaging representation and Installation/Release consumption → M8 → TG-8 independent representation, legacy controls and actual candidate qualification → named adapter/npm/Release/native entrypoints and scoped CI. No catalog edit, method quota or absent operational event waives required proof.",
+    "Authority and order — pass. The new allocation explicitly requires independent exact Packaging and Plan review before dependent hash implementation. Current design-review-m8-hash supplies the complete revised Design package; the old Design ID named as original source context cannot substitute for this current successor. Within M8, preserve original red evidence and valid controls, implement the new producer/metadata/consumer slice, qualify the exact candidate, and only then present milestone proof. Earlier reviewed milestones retain their original subjects, and changed shared dependencies require affected reassessment rather than inferred unchanged approval.",
+    "Compatibility and intermediate states — pass. New v2 output is limited to newly built candidates; legacy metadata and verifier behavior stay v1. Producer, bundled metadata, installer and current public-smoke selector are qualified together, avoiding an allegedly ready mixed candidate. Unknown algorithms reject and historical missing-field meaning remains governed by the approved owner. Independent v1 controls include previously agreeing unusual names, while new v2 expected rows cover mixed case, punctuation and non-ASCII. These are reviewable local changes within the existing M8 boundary, not a new release workflow or compatibility retirement.",
+    "Proof adequacy and actual boundary — pass. TG-8 and its explicit new bullet bind independent expected manifests/hashes, actual ZIP and packed CLI consumption, current metadata-selected smoke, legacy prefix/normalization/regular-file correction and rejection paths. The broader Plan still requires both supported targets, empty-unit conflicts/unsafe destinations in both modes, real candidate identity, changed authority, uncertain writes, retry and durable-reporting failure. A helper result cannot substitute for the packed or provider boundary. Original failure identity and intended fault sensitivity remain required under the shared proof rules.",
+    "Recovery, security and feasibility — pass. Rollback restores the complete owned candidate/consumer slice, preserves earlier evidence and does not rewrite published identities or user state. Temporary/private roots, immutable trusted metadata, unknown-value admission and symlink containment remain explicit requirements. Existing entrypoints can exercise both algorithm branches and real local artifacts without new tooling, Unicode tables or live service access. Whole-suite runtime reporting remains the existing executor responsibility and no engineering-time estimate or speedup is invented.",
+    "Full Plan consistency — pass. Baseline and measurement precedence, method adoption, independent semantic packets, implementation milestone reviews, native caller reconciliation, explicit dirty-source identity, complete protection and final product composition remain unchanged and mutually compatible. Required semantic/operational applicability still names conditions, authority, observations and future owners; absent MR001/002/005 events are not passes. The existing no-compatibility-retirement and no-publication scope agrees with preserving v1 while adding v2. The user’s later through-PR authorization is separate from the original stable non-goal and does not create release authority.",
+    "Final closeout and current limits — pass. The Plan retains a fresh independent final whole-change Code Review after all implementation/corrections and before distinct successful Verify. TG-FINAL-1/2/3 do not replace that checkpoint. M8 and current blockers/findings remain unfinished until implementation proof and independent review; this approval settles allocation only. No material Delivery finding is required. Return the result to Route without reviewer work/activity edits."
+  ],
+  "reviewer": {
+    "id": "milestone-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:f45401105ccbb569d321ad090c96a8a271c24197a4d727d3e993bb32e2b4022d",
+      "path": "docs/plans/2026-09-17-complete-model-test-coverage.md"
+    },
+    {
+      "identity": "sha256:375195c4ff4d8cc88d221ce1f6d516a04ec49d01a9f8a706f0972f18e5b087c4",
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/reviews/design-review-m8-hash.json"
+    }
+  ],
+  "summary": "The revised primary Plan safely allocates the approved v2 hash correction within M8, preserves v1 compatibility and requires coordinated real candidate/consumer proof before completion. Original milestone and final whole-change review/Verify dependencies remain intact.",
+  "target": "delivery"
+}

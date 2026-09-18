@@ -316,7 +316,21 @@ test('TG-04 exact revision/write/read preconditions and stale retry', (t) => {
   assert.equal(run(root, 'record', same).result.status, 'conflict');
 });
 
-test('ER-M2-001 malformed selectors produce truthful safe rejections before IO', () => {
+test('ER-M2-001 malformed selectors produce truthful safe rejections before IO', (t) => {
+  const root = setup(t), accesses = [], methods = ['lstatSync', 'statSync', 'openSync',
+    'readFileSync', 'readdirSync', 'realpathSync', 'accessSync', 'readlinkSync'];
+  const originals = Object.fromEntries(methods.map((name) => [name, fs[name]]));
+  for (const name of methods) fs[name] = function (...values) {
+    if (typeof values[0] === 'string' && (values[0] === root || values[0].startsWith(root + '/')))
+      accesses.push({ method: name, path: values[0] });
+    return originals[name](...values);
+  };
+  syncBuiltinESMExports();
+  try {
+  const control = run(root, 'inspect');
+  assert.equal(control.result.status, 'inspected');
+  assert.ok(accesses.length > 0, 'accepted control reaches the observed filesystem boundary');
+  accesses.length = 0;
   for (const [argv, op, id, format] of [
     [['inspect', '--format', 'json'], 'inspect', null, 'json'],
     [['unknown_value', '--change', 'example', '--format', 'json'], null, 'example', 'json'],
@@ -335,15 +349,26 @@ test('ER-M2-001 malformed selectors produce truthful safe rejections before IO',
       'text',
     ],
   ]) {
-    const result = executeRecordStoreCli(argv, {
-      readInput: () => assert.fail('must not read stdin'),
+    let inputReads = 0;
+    const result = executeRecordStoreCli([...argv, '--root', root,
+      ...(['check', 'record'].includes(argv[0]) ? ['--input', '-'] : [])], {
+      readInput: () => { inputReads++; return JSON.stringify(request()); },
     });
+    assert.equal(inputReads, 0);
+    assert.deepEqual(accesses, [], JSON.stringify(argv));
     assert.equal(result.exitCode, 2);
+    assert.equal(result.result.status, 'rejected');
+    assert.equal(result.result.errors.length, 1);
+    assert.equal(result.result.errors[0].code, 'invalid-input');
     assert.equal(result.format, format);
     assert.equal(result.result.operation, op);
     assert.equal(result.result.change_id, id);
     validateAdvancedResult(result.result);
     assert.equal(JSON.stringify(result).includes('../secret'), false);
+  }
+  } finally {
+    for (const name of methods) fs[name] = originals[name];
+    syncBuiltinESMExports();
   }
 });
 

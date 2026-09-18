@@ -35,6 +35,8 @@ Current blockers are not recorded in this index.
 
 ## Current plan references
 
+- [Complete model test coverage and execution cost](plans/2026-09-17-complete-model-test-coverage.md) — [owning change](changes/2026-09-17-complete-model-test-coverage/change.json).
+
 - [Model-owned test design and concise tests](plans/2026-09-17-model-test-design.md) — [owning change](changes/2026-09-17-model-test-design/change.json).
 
 

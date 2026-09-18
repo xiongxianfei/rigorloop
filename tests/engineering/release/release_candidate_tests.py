@@ -211,13 +211,18 @@ class ReleaseCandidateTests(unittest.TestCase):
                         inputs={'ci_only': True}, tool_identity=script_identity(self.root / 'scripts'),
                         tarball='package.tgz', files={p.name: file_identity(p) for p in output.iterdir()})
             seal_candidate(output, data)
-            ci_subject(output, self.root, commit)
-            for path in [runtime, test]:
+            accepted = ci_subject(output, self.root, commit)
+            for path, diagnostic in [(runtime, 'CI runtime differs from packed candidate'),
+                                     (test, 'CI source differs from prepared source')]:
                 original = path.read_bytes()
                 path.write_text('modified after preparation')
-                with self.subTest(path=path.name), self.assertRaises(CandidateError):
-                    ci_subject(output, self.root, commit)
+                with self.subTest(path=path.name):
+                    with self.assertRaises(CandidateError) as raised:
+                        ci_subject(output, self.root, commit)
+                    self.assertEqual(str(raised.exception), diagnostic)
+                    self.assertEqual(path.read_text(), 'modified after preparation')
                 path.write_bytes(original)
+                self.assertEqual(ci_subject(output, self.root, commit), accepted)
 
     def test_material_change_invalidates_sealed_candidate(self):
         manifest = self.candidate()
@@ -228,11 +233,15 @@ class ReleaseCandidateTests(unittest.TestCase):
 
     def test_manifest_change_rejects_old_binding(self):
         manifest = self.candidate()
+        self.assertEqual(verify_candidate(self.root, manifest['candidate_id']), manifest)
         p = self.root / 'candidate.json'
         data = json.loads(p.read_text()); data['channel'] = 'next'
         p.write_text(json.dumps(data))
-        with self.assertRaises(CandidateError):
+        before = {path.name: path.read_bytes() for path in self.root.iterdir() if path.is_file()}
+        with self.assertRaises(CandidateError) as raised:
             verify_candidate(self.root, manifest['candidate_id'])
+        self.assertEqual(str(raised.exception), 'candidate identity changed')
+        self.assertEqual({path.name: path.read_bytes() for path in self.root.iterdir() if path.is_file()}, before)
 
     def test_candidate_rejects_escaped_or_symlink_artifact(self):
         manifest = self.candidate()

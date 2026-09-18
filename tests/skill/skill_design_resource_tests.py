@@ -62,6 +62,8 @@ class UnifiedDesignResourceTests(unittest.TestCase):
         self.assertEqual(skill_validation.DESIGN_RESOURCES, EXPECTED_DESIGN_RESOURCES)
         for resource in sorted(EXPECTED_DESIGN_RESOURCES):
             with self.subTest(resource=resource), copied_skill("design") as root:
+                baseline = run_validator(root)
+                self.assertEqual(baseline.returncode, 0, baseline.stdout + baseline.stderr)
                 (root / resource).unlink()
                 result = run_validator(root)
                 self.assertNotEqual(result.returncode, 0)

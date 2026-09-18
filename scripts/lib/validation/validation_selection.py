@@ -1871,6 +1871,7 @@ def _path_category(path: str) -> str | None:
         'tests/engineering/validation/execution_node_adapter_tests.py',
         'tests/engineering/validation/execution_catalog_tests.py',
         'tests/engineering/validation/execution_composition_tests.py',
+        'tests/engineering/validation/execution_reporting_tests.py',
         'scripts/validate-readme.py',
     }:
         return "selector"
@@ -2003,6 +2004,7 @@ def _path_category(path: str) -> str | None:
         'tests/engineering/release/release_preflight_tests.py',
         'tests/engineering/release/release_timing_tests.py',
         'tests/engineering/release/release_publication_tests.py',
+        'tests/engineering/release/release_provider_tests.py',
         'tests/engineering/release/release_provider_fixtures.py',
         'tests/engineering/release/release_coordination_fixtures.py',
         'scripts/lib/release/release_provider.py',

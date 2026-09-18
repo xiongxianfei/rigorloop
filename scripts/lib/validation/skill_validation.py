@@ -2022,6 +2022,11 @@ def _validate_readability_workflow_role(
 
     errors: list[str] = []
     fields = _parse_colon_fields(section)
+    stage = fields.get("stage")
+    if stage is not None and stage not in READABILITY_STAGE_VALUES:
+        allowed = ", ".join(sorted(READABILITY_STAGE_VALUES))
+        return [f"{path}: workflow role stage must be one of {allowed}"]
+
     missing_fields = sorted(READABILITY_REQUIRED_ROLE_FIELDS - fields.keys())
     for field in missing_fields:
         errors.append(f"{path}: Workflow role missing required field '{field}'")
@@ -2032,11 +2037,6 @@ def _validate_readability_workflow_role(
         errors.append(
             f"{path}: workflow role role_name must match skill name '{expected_name}'"
         )
-
-    stage = fields.get("stage")
-    if stage and stage not in READABILITY_STAGE_VALUES:
-        allowed = ", ".join(sorted(READABILITY_STAGE_VALUES))
-        errors.append(f"{path}: workflow role stage must be one of {allowed}")
 
     summary = fields.get("summary")
     if summary is not None and summary.count("\n") >= 2:

@@ -87,7 +87,7 @@ Use the explicit user path first, then authoritative CLI workflow context, the a
 Evaluate each item as `pass`, `concern`, or `block` and cite concrete evidence:
 
 1. Spec alignment: approved scope, requirements, examples, and non-goals.
-2. Test coverage: changed behavior, regressions, and named failure paths.
+2. Test coverage: changed behavior, regressions, and named failure paths. Under adopted test criteria, apply the [selection method](references/test-quality.md#select-requirements-and-proof) to the actual assertions, fixture state, native discovery and observation boundaries. Check requirement and parent-interaction protection against plausible defects, preserve useful unlisted regressions, and distinguish inspected realization from gaps. Counts, timings and links cannot establish adequacy or justify lost protection.
 3. Edge cases: boundary, state, timing, retry, recovery, and alternate paths.
 4. Error handling: invalid states, partial failure, permissions, and fallback.
 5. Architecture boundaries: components, ownership, interfaces, and ADRs.

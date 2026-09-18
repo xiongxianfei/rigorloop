@@ -6,6 +6,9 @@ Structural wording checks do not establish instruction quality.
 from __future__ import annotations
 
 import unittest
+from contextlib import contextmanager
+import shutil
+import tempfile
 from pathlib import Path
 import sys
 
@@ -19,6 +22,28 @@ from skill_fixture_helpers import (
 )
 
 
+@contextmanager
+def metadata_fixture(relative):
+    """Private valid input; each case keeps its defining mutation visible."""
+    with tempfile.TemporaryDirectory() as temporary:
+        target = Path(temporary) / Path(relative).name
+        shutil.copytree(FIXTURES / relative, target)
+        yield target / "SKILL.md"
+
+
+def replace_fixture_text(path, old, new):
+    before = path.read_text(encoding="utf-8")
+    if before.count(old) != 1 or old == new:
+        raise AssertionError("mutation must change exactly one defining input")
+    path.write_text(before.replace(old, new, 1), encoding="utf-8")
+
+
+def assert_exact_rejection(case, result, path, diagnostic):
+    case.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+    case.assertEqual((result.stdout + result.stderr).strip(),
+                     f"Gate A (canonical skill integrity): {path}: {diagnostic}")
+
+
 class SkillMetadataTests(unittest.TestCase):
     maxDiff = None
 
@@ -27,20 +52,40 @@ class SkillMetadataTests(unittest.TestCase):
         assert_validation_passes(self, result)
 
     def test_missing_name_fails(self) -> None:
-        result = run_validator(FIXTURES / "missing-name")
-        assert_validation_fails(self, result, "name: missing required field")
+        with metadata_fixture('valid-basic') as path:
+            assert_validation_passes(self, run_validator(path.parent))
+            replace_fixture_text(path, 'name: valid-basic\n', '')
+            fault_bytes = path.read_bytes()
+            result = run_validator(path.parent)
+            assert_exact_rejection(self, result, path, 'name: missing required field')
+            self.assertEqual(path.read_bytes(), fault_bytes)
 
     def test_missing_description_fails(self) -> None:
-        result = run_validator(FIXTURES / "missing-description")
-        assert_validation_fails(self, result, "description: missing required field")
+        with metadata_fixture('valid-basic') as path:
+            assert_validation_passes(self, run_validator(path.parent))
+            replace_fixture_text(path, 'description: >\n  Valid fixture skill for first-release structural validation tests.\n', '')
+            fault_bytes = path.read_bytes()
+            result = run_validator(path.parent)
+            assert_exact_rejection(self, result, path, 'description: missing required field')
+            self.assertEqual(path.read_bytes(), fault_bytes)
 
     def test_missing_title_fails(self) -> None:
-        result = run_validator(FIXTURES / "missing-title")
-        assert_validation_fails(self, result, "expected exactly one top-level # title")
+        with metadata_fixture('valid-basic') as path:
+            assert_validation_passes(self, run_validator(path.parent))
+            replace_fixture_text(path, '# Valid basic fixture\n', '')
+            fault_bytes = path.read_bytes()
+            result = run_validator(path.parent)
+            assert_exact_rejection(self, result, path, 'expected exactly one top-level # title, found 0')
+            self.assertEqual(path.read_bytes(), fault_bytes)
 
     def test_missing_expected_output_fails(self) -> None:
-        result = run_validator(FIXTURES / "missing-expected-output")
-        assert_validation_fails(self, result, "missing required '## Expected output' section")
+        with metadata_fixture('valid-basic') as path:
+            assert_validation_passes(self, run_validator(path.parent))
+            replace_fixture_text(path, '## Expected output', '## Other output')
+            fault_bytes = path.read_bytes()
+            result = run_validator(path.parent)
+            assert_exact_rejection(self, result, path, "missing required '## Expected output' section")
+            self.assertEqual(path.read_bytes(), fault_bytes)
 
     def test_missing_skill_file_fails(self) -> None:
         result = run_validator(FIXTURES / "missing-skill-file")
@@ -59,32 +104,71 @@ class SkillMetadataTests(unittest.TestCase):
         assert_validation_passes(self, result)
 
     def test_skill_readability_missing_version_fails(self) -> None:
-        result = run_validator(FIXTURES / "skill-readability/missing-version")
-        assert_validation_fails(self, result, "version: missing required readability contract field")
+        with metadata_fixture('skill-readability/valid-pilot') as path:
+            assert_validation_passes(self, run_validator(path.parent))
+            replace_fixture_text(path, 'version: 0.0.0-test\n', '')
+            fault_bytes = path.read_bytes()
+            result = run_validator(path.parent)
+            assert_exact_rejection(self, result, path, 'version: missing required readability contract field')
+            self.assertEqual(path.read_bytes(), fault_bytes)
 
     def test_skill_readability_invalid_schema_version_fails(self) -> None:
-        result = run_validator(FIXTURES / "skill-readability/invalid-schema-version")
-        assert_validation_fails(self, result, "schema-version must be 'skill-readability-v1'")
+        with metadata_fixture("skill-readability/valid-pilot") as path:
+            assert_validation_passes(self, run_validator(path.parent))
+            replace_fixture_text(path, "schema-version: skill-readability-v1", "schema-version: unknown_value")
+            # Unknown schema must reject before the competing role consistency fault.
+            replace_fixture_text(path, "role_name: valid-pilot", "role_name: another-skill")
+            result = run_validator(path.parent)
+            assert_exact_rejection(self, result, path, "schema-version must be 'skill-readability-v1'")
 
     def test_skill_readability_missing_workflow_role_fails(self) -> None:
-        result = run_validator(FIXTURES / "skill-readability/missing-workflow-role")
-        assert_validation_fails(self, result, "missing required '## Workflow role' section")
+        with metadata_fixture('skill-readability/valid-pilot') as path:
+            assert_validation_passes(self, run_validator(path.parent))
+            replace_fixture_text(path, '## Workflow role', '## Other role')
+            fault_bytes = path.read_bytes()
+            result = run_validator(path.parent)
+            assert_exact_rejection(self, result, path, "missing required '## Workflow role' section")
+            self.assertEqual(path.read_bytes(), fault_bytes)
 
     def test_skill_readability_missing_workflow_role_field_fails(self) -> None:
-        result = run_validator(FIXTURES / "skill-readability/missing-workflow-role-field")
-        assert_validation_fails(self, result, "Workflow role missing required field 'downstream'")
+        with metadata_fixture('skill-readability/valid-pilot') as path:
+            assert_validation_passes(self, run_validator(path.parent))
+            replace_fixture_text(path, '- downstream: review\n', '')
+            fault_bytes = path.read_bytes()
+            result = run_validator(path.parent)
+            assert_exact_rejection(self, result, path, "Workflow role missing required field 'downstream'")
+            self.assertEqual(path.read_bytes(), fault_bytes)
 
     def test_skill_readability_invalid_stage_fails(self) -> None:
-        result = run_validator(FIXTURES / "skill-readability/invalid-stage")
-        assert_validation_fails(self, result, "workflow role stage must be one of")
+        for role in ("valid-pilot", "another-skill"):
+            with self.subTest(role=role), metadata_fixture("skill-readability/valid-pilot") as path:
+                assert_validation_passes(self, run_validator(path.parent))
+                replace_fixture_text(path, "stage: authoring", "stage: unknown_value")
+                if role != "valid-pilot":
+                    replace_fixture_text(path, "role_name: valid-pilot", f"role_name: {role}")
+                fault_bytes = path.read_bytes()
+                result = run_validator(path.parent)
+                assert_exact_rejection(self, result, path,
+                    "workflow role stage must be one of authoring, execution, handoff, periodic, review, support, verification")
+                self.assertEqual(path.read_bytes(), fault_bytes)
 
     def test_skill_readability_missing_output_skeleton_fails(self) -> None:
-        result = run_validator(FIXTURES / "skill-readability/missing-output-skeleton")
-        assert_validation_fails(self, result, "missing required '## Output skeleton' section")
+        with metadata_fixture('skill-readability/valid-pilot') as path:
+            assert_validation_passes(self, run_validator(path.parent))
+            replace_fixture_text(path, '## Output skeleton', '## Other skeleton')
+            fault_bytes = path.read_bytes()
+            result = run_validator(path.parent)
+            assert_exact_rejection(self, result, path, "missing required '## Output skeleton' section")
+            self.assertEqual(path.read_bytes(), fault_bytes)
 
     def test_skill_readability_output_skeleton_without_placeholder_fails(self) -> None:
-        result = run_validator(FIXTURES / "skill-readability/output-skeleton-without-placeholder")
-        assert_validation_fails(self, result, "Output skeleton must include fillable placeholders")
+        with metadata_fixture('skill-readability/valid-pilot') as path:
+            assert_validation_passes(self, run_validator(path.parent))
+            replace_fixture_text(path, 'Title: <title>\n\n## Status\n\n<draft|accepted>', 'Title: Fixed\n\n## Status\n\ndraft')
+            fault_bytes = path.read_bytes()
+            result = run_validator(path.parent)
+            assert_exact_rejection(self, result, path, 'Output skeleton must include fillable placeholders')
+            self.assertEqual(path.read_bytes(), fault_bytes)
 
     def test_skill_readability_required_internal_reference_fails(self) -> None:
         result = run_validator(FIXTURES / "skill-readability/required-internal-reference")
@@ -95,8 +179,16 @@ class SkillMetadataTests(unittest.TestCase):
         assert_validation_fails(self, result, "duplicate closed enum block")
 
     def test_published_design_description_too_long_fails(self) -> None:
-        result = run_validator(FIXTURES / "published-design/description-too-long")
-        assert_validation_fails(self, result, "description must be 1024 characters or fewer")
+        for size in (1023, 1024, 1025):
+            with self.subTest(characters=size), metadata_fixture("valid-basic") as path:
+                assert_validation_passes(self, run_validator(path.parent))
+                replace_fixture_text(path,
+                    "Valid fixture skill for first-release structural validation tests.", "x" * size)
+                result = run_validator(path.parent)
+                if size <= 1024:
+                    assert_validation_passes(self, result)
+                else:
+                    assert_exact_rejection(self, result, path, "description must be 1024 characters or fewer")
 
     def test_published_design_when_to_use_cannot_replace_description(self) -> None:
         result = run_validator(FIXTURES / "published-design/when-to-use-replaces-description")
