@@ -1,0 +1,99 @@
+{
+  "assessment_scope": "Complete M6 milestone at320f619f againstcfb32182: five changed native engineering files, registered validation and historical account,124 corrected core candidates plus22 Bugfix,32 CI,47 Handoff/suffix and16 bounded CI-repair pairs. Core manifest d56ecfcc933bd611bb968f1af461ec669f4eb34cf0d70570ff5e622ed4f1fa09, compact506cf07d072e63035293a4f1eeb8beeffdbe5a04a8bfb8adc2e3a131030e0fc0; corrected Handoff63 manifest34b7cd755dc667831222fbd235d986eb1faa20404317b15a5a3b95ca7fecee38, compactb510de1a4538701e97eef94255ec8b203bf9d51e267eae7b81daa00663df897b. Complete Bugfix/CI54 retains its separately bound corrected basis. Milestone scope only; M7/M8 and final integrated gates remain outstanding.",
+  "change_id": "2026-09-17-complete-model-test-coverage",
+  "contributors": [
+    {
+      "id": "root-implementer",
+      "role": "implement"
+    },
+    {
+      "id": "core-guidance-author",
+      "role": "implement"
+    },
+    {
+      "id": "support-packet-author",
+      "role": "implement"
+    }
+  ],
+  "findings": [],
+  "id": "code-review-m6",
+  "independence_basis": "Root-implementer (/root) authored native source/tests, integration and author evidence. Core-guidance-author (/root/design_skill_core) authored124 core candidates and corrections; support-packet-author (/root/catalog_necessity) authored117 companion pairs and corrections/historical account. Reviewer /root/design_review authored none of those subjects. It independently inspected full relevant methods, actual source/test diff, complete supplied artifacts/actions/results, historical records and scoped logs; reconstructed all final literal packet trees; recorded eight findings before author fixes; and independently reassessed all affected corrections. Its writes are limited to review/finding/applicability evidence, with no source, Plan, Design, work or activity mutation.",
+  "judgment": "approved",
+  "limitations": [
+    "Approval is M6-only. M7/M8, final complete-suite/runtime reconciliation, fresh independent whole-change Code Review, distinct successful Verify and PR handoff remain with their owners. Reviewer does not advance work/activity.",
+    "Native commands above actually executed on the recorded source basis; semantic packet proof, actions, receipt, Git, hosted and destination observations are synthetic supplied facts. Independent manual assessment of241 concrete candidates is neither target-agent execution nor universal skill/CLI/runtime conformance. No real external operation is claimed.",
+    "New failure packet demonstrates missing runner setup and absent current required proof, not importer failure. Native file preservation snapshots do not establish directory metadata, symlink or transient-write invariants. No actual I/O rollback guarantee is added to the scoped importer fixture.",
+    "Original failed controls, red proof, prior review identities and historical judgments remain preserved with original meaning. Shared evidence-container additions/dispositions do not retroactively approve original controls or renew historical evidence. Original check passes establish only their named structural/reconstruction scope; corrected exact packets and this judgment supply current semantic reliance.",
+    "Existing open broader-adoption follow-ups and Packaging debt are not closed. Unchanged canonical archive observations do not replace M8 full candidate qualification or hosted CI evidence."
+  ],
+  "rationale": [
+    "Spec alignment — pass. Current approved Design review e4bf6206ea1fd97ccc7413317f7dc89bfdbba55c00d9251c755efa42b3bfa486, Delivery review79fcd103043f5f6057f3d8e1885e56e92aa7ce843fe48064ee5cd33a9af86459 and Plan161f55fc205fce02c5db293fef5a4fbabd98ca10e426fb8c085e6a630bbb5911 retain exact subjects. M6 covers allocated Skill/Workflow/Assessment/Handoff outcomes without editing public vocabulary, canonical skills, Design, Plan or authored JSON catalogs. The earlier Design/Delivery judgments authorize only their own scope, not this implementation verdict.",
+    "Test coverage — pass. Eleven existing metadata negatives start from their own accepted private fixture, mutate the defining field once, require exact diagnostics and preserve input bytes. Description length covers1023/1024 accepted and1025 rejected. Unknown schema/stage compete with role mismatch; the minimal stage guard rejects any present unsupported value, including empty, before role consistency while preserving missing-field handling. The new empty-stage native case has two meaningful subtests and is imported once; original37 metadata/shared-policy method identities/order remain. Six resource faults cover missing source/copy/drift for both assessment references with valid controls and exact rejection. These snapshots observe complete regular-file path/byte maps, not symlink/directory metadata or transient attempts. No unlisted regression is removed.",
+    "Validation and actual native evidence — pass for current subjects. Exact nonempty-stage test/fixture/command failed before guard correction and passed after; the separately recorded empty-stage regression preserves its test/fixture/command across red/green. Final focused command selecting ReviewCloseoutResourceTests, SkillMetadataTests, CiAssemblyDeclarationTests, RecordingReferenceContractTests and WorkflowRoleStageTests passed47 in5.490s. Final explicit CI jobs4 over allfive native paths passed303 rows (Skill289 plus adapters14). Current source hashes exactly match m6-empty-stage-correction. Earlier46/302 evidence retains its earlier truthy-guard scope and is not silently retargeted. Worker sum194.92s is not wall time or speedup. One added native case makes the current union1340; M8 owns final exhaustive cost/population reconciliation. No unnecessary broad rerun was performed by this reviewer.",
+    "WF-scope/basis — pass. Isolated work returns without implementation; an author cannot relabel itself independent to start M2. Current Plan intent and mutable work remain separate. Changed child/example meaning triggers conservative applicability restriction and sibling-consumer reassessment even if parent bytes match. Withdrawn/conflicting behavior routes to Design, missing persistence-proof allocation to Plan, missing allocated assertion to implementation. Omitted pending-owner lists do not override actual required ownership.",
+    "WF-recording/final-review — pass. Omitted required subjects/rationale cause scoped read expansion before reliance. Saved receipt is persistence only; conflict requires fresh basis, recovery-required requires supported recovery. Neither closes findings, completes work nor passes Verify. Complete current independent whole-change review precedes distinct Verify even for one documentation-only milestone; stale final reliance after correction is rejected. Workflow routing controls do not independently adjudicate all final product proof.",
+    "WF-postcomplete/RC-concerns/followups — pass. Verify failure/B1, Route reopen, implementation repair, independent F1 reassessment, reporter-owned B1 disposition and required final gates retain their actors/order. Reject repairer/unrelated-reviewer closure, deleted F1, rewritten origin and silent deferral. Corrected current F1 evidence now matches the actual missing assertion while preserving F1/B1 identities. Already-owned atomicity stays M2; accepted ownerless capacity may enter the optional register, unaccepted ideas do not become commitments, and unknown status rejects. Explicit owner-authorized transfer to one Plan preserves reciprocal provenance and avoids duplicate active ownership.",
+    "RC-adequacy/judgment/portable — pass after correction. Complete atomic Design differs from parser-only Delivery allocation; source assertions and public destination observations determine Code proof. The wrong-path setup now exists literally and has an independent reached-action/full-destination control. R-old embedded-space acceptance is separately protected despite missing catalog membership or cost. Judgment orders necessary authority before insufficient basis before actionable correction, retaining supported findings; optional style alone permits bounded approval. Portable isolation needs no invented Git/store prerequisite, and current actual independence/resources/subjects remain required. Non-formal advisory output performs no durable operation; failed requested recording stops reliance and continuation.",
+    "RC-proposal — pass. None/manual, advisory-durable/manual and formal/manual retain distinct effects; supported formal automated phases separate initial risk discovery from evidence and do not arm continuation implicitly. Unknown or invalid pairs stop before alignment/subject decisions. Scope-loss now supplies actual current Vision and points its finding to proposal direction; vision conflict loads the actual conditional gate, names the unresolved owner choice and cannot self-authorize an exception. Triggered finding and recording resources are selected before their proposed use.",
+    "RC-reliance/final/verify — pass. Same-meaning editorial correction can retain exact unaffected basis without mandatory rerun; substantive source, relevant new failure or explicit freshness requirement needs owned reassessment. Original subjects are never retargeted. Current failure fixtures now bind actual source/test and demonstrate missing runner setup/unstarted required checks, not fictional importer mutation. Governed final success requires current closed work/concerns, whole-change review, actual required outcomes and source/derived currency. Scoped and boundary profiles remain bounded. Configured, skipped, pending, stale, unknown and local-only evidence cannot satisfy broader or hosted obligations; branch readiness needs allseven immutable Verify-owned values. Unknown invocation stops preflight without inventing a valid mode.",
+    "Skill common/resource/consumer groups — pass. Responsibility-based discovery precedes the owned method; author and reviewer roles cannot substitute. Permission conclusions require full relevant instruction context, and diagnostic requests remain bounded/redacted. Assets and recording supply no approval or arming. Triggered missing installed resources stop dependent operation; unrelated portable work remains possible. Four-copy parity needs actual corresponding bytes/paths or explicit transformations, not timestamps. These supplied private-copy decisions retain their limits. Foundations, Research and Learning provenance/uncertainty/adoption owners survive receiving handoff without promotion or rewrite.",
+    "Implementation profiles SKL-IH-002/SKL-AR-005 — pass. Concrete IP0/IP1/IP2 controls retain complete row-domain and destination proof, ordered original red-before-code and unchanged-proof green observations, valid batch and R-old. Planned, armed and recording contexts are independent, including late reclassification. Reject conversational/unplanned arm, stale/unknown identity, biased initial review, unsupported/nonshrinking/forbidden correction and green proof used to close work. Stopped results truthfully report no new test/evidence/commit; the already-allocated missing assertion stays with the implementation owner rather than becoming an invented upstream decision.",
+    "Bugfix SKL-IH-003/SKL-AR-006 — pass. Diagnosis grants no production mutation; feasible missing/alternative proof returns to proof authoring, unresolved feasibility resolves first, conflicting proof or authority blocks, missing/conflicting/new behavior routes to Design, unknown cause continues diagnosis. Original T0 command/test/fixture/input/environment mismatches cannot prove original success. Failed/pending original checks cannot report fix-applied. A complete alternative needs established infeasibility and scoped observations. Corrected full control now covers integer/nonempty/duplicate rejection, entire prior destination, valid rows and unusual valid values; complete outputs name actual blockers, uncertainty, unexecuted checks and receiver. Reject self-review/Verify and unproved outage claims.",
+    "CI SKL-IH-004 through009/SKL-AR-006 — pass. Review versus authoring, native provider, nine assemblies, coverage/structure/privilege and late triggers select the appropriate actual resources. Current target/hash/complete authority are coherent; a present command source is not falsely absent, and explicit withdrawal is respected. Missing methods/contract/privilege and unknown axes stop. Safe identity/no-clobber primitives are required; readback is not a concurrency guard, unsupported atomic group/cycle stops before effects, and idempotent same-basis needs no write. Partial provider success remains partial; retry rereads the complete graph. Ordinary authoring does not execute validation or acquire external permission.",
+    "Handoff intent/relations/retry — pass. Corrected literal requests distinguish open/draft/prepare-only and separate push/create/refresh/transition permissions. Title-only preserves body; blocked open retains intent; adequate existing PR state survives absent conversion authority. Independent Git relations permit only ordinary eligible directional push, exact PR matching prevents duplicate/reopen/overwrite, and before-push/pre-mutation/post-push drift requires ordered reclassification. Lost response retries reconcile exact remote state. Partial effects remain reported, while absent final readback cannot support URL/readiness. No merge, release or unauthorized state change follows from this assessment.",
+    "Handoff Verify/suffix/body/host and bounded repair — pass. Consume exact seven-field current Verify basis, never reconstruct missing values from Git/prose. Cumulative current attributable evidence-only suffix may span multiple commits/merges or reverted intermediate edits without inventing a one-child rule; final product/mixed/cross-change/stale/unknown/nonancestor/decision-bearing changes invalidate reliance. Complete body uses Verify rationale once and triggered groups/resources; placeholders and duplicate-rationale requirements reject. Hosted states need truthful exact run/head and owner policy. Repair requires current open PR/failing head/review/Verify/no material concern/commands and each independent authority, restores only approved behavior, and preserves original assessment basis without new judgment. Failed local proof stops commit/push; old-head/local-only success cannot establish replacement hosted observation. Successful repair does not retarget Verify or claim lifecycle/readiness.",
+    "Historical coverage — pass within original scopes. Independently inspected attributed pilot, inventory, policy, simplification/refinement and retirement records and17 retained identities/commits. Original proposal-pair observation does not prove all-inventory or target-agent execution; later all19 work has its own assessment. Actual selected-store inspection differs from owner-confirmed baseline. V2 material stays inert provenance, surviving duties transfer to current owners, and Git recoverability supports retired sources. FU015–018 and Packaging migration debt remain open. No historical replay, new runtime reader, universal adoption or renewed old approval is inferred.",
+    "Edge/error/security/architecture/compatibility — pass for the complete milestone. Actual source guard matches existing closed-vocabulary policy and no broader global validator failfast is claimed. Native fixtures are fresh and bounded. Semantic cases preserve role/record/host boundaries, exact authority, independent observations and partial/recovery limits. These literal packets contain no actual external execution or customer permission. Original evidence, neighbors, historical judgments and negative candidates remain; corrections change the defective controls rather than weakening required outcomes.",
+    "Derived currency, unrelated changes and evidence integrity — pass within M6. All124 final core cases reconstruct248 trees/7783 files with126 matching methods;39 changed cases and85 unchanged are independently accounted. Bugfix/CI54 reconstruct162 trees/4051 files. Handoff63 reconstruct189 trees/8262 files and315 metadata/results; onlyeight request strings differ from their original assessed generation. Corrected bound Markdown embeds the exact inspected payloads. M6 changes no canonical skill/resource/adapter bytes, so earlier M3/M5 packaged reading-path observations retain their limited unchanged-source applicability; M8 still owns full final packed-product qualification. Other committed paths are owning evidence/state/reviews, including preceding M5 closeout records; no hidden engineering expansion.",
+    "Correction and complete-scope judgment — all eight reporter-owned findings are resolved against separate exact corrected subjects. Five original changes-requested reviews retain their original subjects, judgments and first-pass rationale; only explicit current finding disposition and applicability change. Corrected controls now support the actual decisions above. Mechanical reconstruction alone never supplied these semantic judgments. No unresolved material M6 concern remains, and no broader lifecycle approval is implied."
+  ],
+  "reviewer": {
+    "id": "milestone-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:483aaa2bba98520b79c241374a10470f0aac4ada5cd97a07021cf05122222558",
+      "path": "scripts/lib/validation/skill_validation.py"
+    },
+    {
+      "identity": "sha256:e58932987b4dcbdd71cf208c3364561434b5be5628a8ea771661dcaac08a5c3b",
+      "path": "tests/skill/skill_metadata_tests.py"
+    },
+    {
+      "identity": "sha256:970b72cd22c3e5e1f6c5d176f93900d98056e7d507d47e3536c573274b07eb79",
+      "path": "tests/skill/skill_shared_policy_tests.py"
+    },
+    {
+      "identity": "sha256:2461f24a9aa0b458364176d49886bcc373f52744d7aa70196897578dd5f61714",
+      "path": "tests/skill/skill_contract_tests.py"
+    },
+    {
+      "identity": "sha256:3bb00c227929ed2c5dbeef030be4a165fb0fce51eb88e2f9ded73a9ca33ff977",
+      "path": "tests/skill/test-skill-validator.py"
+    },
+    {
+      "identity": "sha256:9d2bc8be5b7ca46fc58e4729564ebee2e6a51cb55dd901cac70189c6d7504bb5",
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/m6-core-corrected-packet.md"
+    },
+    {
+      "identity": "sha256:27d150b8159589a26d9b27439a3a8ee12ac2eac86eb48531ee1490d781587e86",
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/m6-bugfix-ci-corrected-packet.md"
+    },
+    {
+      "identity": "sha256:17188f4ea78790fee90a6daf7968fffbaa13f5f5b9a1f4f1774a06fbd39b4d6f",
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/m6-handoff-repair-authority-corrected-packet.md"
+    },
+    {
+      "identity": "sha256:21c87a060ede232bb84527e517ff089d6225396ac3224032e8d143e4a74b2817",
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/m6-historical-reliance.md"
+    },
+    {
+      "identity": "sha256:0723781b921f9ec4ae94365b56c70d4740ba49cb43d75284221742668984ee79",
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/evidence.json"
+    }
+  ],
+  "summary": "M6 strengthens real Skill metadata/resource negatives and fixes unknown or empty stage rejection before workflow-role consistency. Independent assessment covers the complete241-candidate Skill/Workflow/Assessment/Handoff package and scoped historical reliance. All eight recorded packet findings are corrected and reporter-resolved; the committed native basis matches passing final focused/scoped proof. No material M6 concern remains.",
+  "target": "code"
+}

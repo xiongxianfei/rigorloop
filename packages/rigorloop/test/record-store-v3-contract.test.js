@@ -24,10 +24,11 @@ const edit = (files, path, fn) => {
   fn(value);
   files[prefix + path] = encode(value);
 };
-const fail = (fn) =>
-  assert.throws(fn, (e) =>
-    ['invalid-input', 'unsupported-contract', 'broken-reference'].includes(e.recordStoreCode),
-  );
+const fail = (fn, expectedCode = 'invalid-input') =>
+  assert.throws(fn, (e) => {
+    assert.equal(e.recordStoreCode, expectedCode, e.message);
+    return true;
+  });
 test('TG-01 complete v3 store and standalone design examples conform without narrative conversion', () => {
   assert.equal(validateV3Set('example-change', fixture()).size, 5);
   for (const path of [
@@ -124,7 +125,11 @@ test('TG-02 v3 finding current fields can change while identity and blockers ret
   ).change;
   const blocker = stored.blockers[0];
   assert.ok(blocker?.origin);
+  blocker.resolution.evidence_refs = [
+    { path: prefix + 'evidence.json', id: 'rendering-and-preservation' },
+  ];
   edit(before, 'change.json', (r) => (r.blockers = [blocker]));
+  assert.doesNotThrow(() => validateV3Set('example-change', before));
   const bad = structuredClone(before);
   edit(bad, 'change.json', (r) => (r.blockers[0].origin.rationale = 'rewrite'));
   fail(() => validateV3Preservation('example-change', before, bad));
@@ -132,7 +137,7 @@ test('TG-02 v3 finding current fields can change while identity and blockers ret
 test('TG-02 mixed versions and broken typed references reject', () => {
   const files = fixture();
   edit(files, 'evidence.json', (r) => (r.schema_version = 2));
-  fail(() => validateV3Set('example-change', files));
+  fail(() => validateV3Set('example-change', files), 'unsupported-contract');
   const bad = fixture();
   edit(
     bad,
@@ -142,7 +147,7 @@ test('TG-02 mixed versions and broken typed references reject', () => {
         { path: prefix + 'reviews/final-code-review.json', id: 'final-code-review' },
       ]),
   );
-  fail(() => validateV3Set('example-change', bad));
+  fail(() => validateV3Set('example-change', bad), 'broken-reference');
 });
 test('TG-02 advanced request schema remains 2 while v3 stored schema is 3', () => {
   const files = fixture(),
@@ -161,7 +166,7 @@ test('TG-02 advanced request schema remains 2 while v3 stored schema is 3', () =
   assert.equal(requestFormat(request), V3_FORMAT);
   validateV3Record('request', request);
   validateV3Creation(request, false);
-  fail(() => validateV3Record('request', { ...request, schema_version: 3 }));
-  fail(() => requestFormat({ ...request, contract: 'unknown_value' }));
+  fail(() => validateV3Record('request', { ...request, schema_version: 3 }), 'unsupported-contract');
+  fail(() => requestFormat({ ...request, contract: 'unknown_value' }), 'unsupported-contract');
   fail(() => validateV3Creation(request, true));
 });

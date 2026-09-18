@@ -24,8 +24,20 @@
         "role": "review"
       },
       "required_outcome": "Preserve the original packet and first-pass assessment. Supply corrected exact candidates selecting and reading each required complete recording reference before the proposed durable operation, or explicitly narrow the candidate to isolated advisory judgment without a recorded claim. Keep the substantive Design/Delivery verdict separate from persistence and continuation, and retain explicit synthetic/execution limits. Independently reassess the corrected selected paths and complete resulting outputs. No canonical guidance, runtime validator, JSON catalog or workflow-state change is required. Include every actually triggered specialized gate/finding aid before its proposed result; resolve missing current Vision before claiming alignment, or truthfully report the required evidence/authority gap. Preserve untriggered-resource portability and invalid-classification stops; do not force final-readiness assets into scoped Verify. This supplements the original two-candidate reading-path evidence without changing its original meaning.",
-      "resolution": null,
-      "state": "open",
+      "resolution": {
+        "actor": {
+          "id": "milestone-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [
+          {
+            "id": "m6-core-corrected-packet",
+            "path": "docs/changes/2026-09-17-complete-model-test-coverage/evidence.json"
+          }
+        ],
+        "rationale": "Design and Delivery positive recording controls now select their complete local recording references before the proposed durable operation. Proposal/Delivery findings select their actual finding aids; vision conflict selects conditional gates and states the unresolved owner decision. Scope-loss supplies exact current Vision and distinguishes its high-level fit from the actual proposal scope defect. Invalid classification stops do not invoke dependent interpretation, and untriggered final-readiness assets remain unnecessary for scoped Verify. Independently checked actual methods, ordered actions and complete corrected outputs, without inferring real persistence from supplied observations. Original finding evidence/subjects and first-pass judgment retain their meaning; this is the reporter disposition of the separate correction."
+      },
+      "state": "resolved",
       "subjects": [
         {
           "identity": "sha256:6343239c975aae6956b0ec4eb53e03eb948a0c1f3550ab9d39aa08fc7a6fd18f",

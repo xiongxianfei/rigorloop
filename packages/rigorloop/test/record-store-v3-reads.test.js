@@ -9,6 +9,8 @@ import { validateMutationRequest } from '../dist/lib/recording-construction.js';
 import { validatePrimaryResult } from '../dist/lib/recording-contract.js';
 import { executeWorkflowContext } from '../dist/lib/workflow-context.js';
 import { fixture, changeId, prefix, encode } from './helpers/v3-fixture.mjs';
+import fs from 'node:fs';
+import { syncBuiltinESMExports } from 'node:module';
 const reviewPath = prefix + 'reviews/final-code-review.json',
   verifyPath = prefix + 'verify-report.json';
 function setup(t, edit = () => {}) {
@@ -89,7 +91,21 @@ test('TG-05 complete and projected assessments retain identity applicability and
   assert.equal('verification_basis' in item(v).fields, false);
   assert.deepEqual(read(root, 'verify').result.scope.absent_fields, ['verification_basis']);
 });
-test('TG-05 unknown_value projection selectors fail closed before repository access', () => {
+test('TG-05 unknown_value projection selectors fail closed before repository access', (t) => {
+  const { root } = setup(t), accesses = [];
+  const methods = ['lstatSync', 'statSync', 'openSync', 'readFileSync', 'readdirSync',
+    'realpathSync', 'accessSync', 'readlinkSync'];
+  const originals = Object.fromEntries(methods.map((name) => [name, fs[name]]));
+  for (const name of methods) fs[name] = function (...values) {
+    if (typeof values[0] === 'string' && (values[0] === root || values[0].startsWith(root + '/')))
+      accesses.push({ method: name, path: values[0] });
+    return originals[name](...values);
+  };
+  syncBuiltinESMExports();
+  try {
+  assert.equal(read(root, 'review', ['--fields', 'summary']).result.status, 'inspected');
+  assert.ok(accesses.length > 0, 'accepted projection reaches the observed filesystem boundary');
+  accesses.length = 0;
   for (const flags of [
     ['--fields', 'unknown_value'],
     ['--fields', 'summary,summary'],
@@ -99,14 +115,29 @@ test('TG-05 unknown_value projection selectors fail closed before repository acc
     ['--fields', 'changes'],
     ['--fields', 'summary', '--fields', 'rationale'],
   ]) {
-    const r = read('/missing', 'review', flags);
+    const r = read(root, 'review', flags);
+    assert.deepEqual(accesses, [], JSON.stringify(flags));
+    assert.equal(r.exitCode, 2);
+    assert.equal(r.result.status, 'rejected');
     assert.equal(r.result.schema_version, 2);
+    assert.equal(r.result.errors.length, 1);
     assert.equal(r.result.errors[0].code, 'invalid-input');
   }
-  assert.equal(
-    read('/missing', 'context', ['--fields', 'summary']).result.errors[0].code,
-    'invalid-input',
-  );
+  let inputReads = 0;
+  const context = executeRecordingQueryCli(['context', '--input', '-', '--root', root,
+    '--change', changeId, '--format', 'json', '--fields', 'summary'], {
+    readInput: () => { inputReads++; return encode({ schema_version: 1,
+      select: [{ kind: 'review', where: {} }] }); },
+  });
+  assert.equal(context.result.errors[0].code, 'invalid-input');
+  assert.equal(context.result.schema_version, 2);
+  assert.equal(context.exitCode, 2);
+  assert.equal(inputReads, 0);
+  assert.deepEqual(accesses, []);
+  } finally {
+    for (const name of methods) fs[name] = originals[name];
+    syncBuiltinESMExports();
+  }
 });
 test('TG-05 v3 findings have exact full and summary shapes; context explanation omissions are honest', (t) => {
   const finding = {

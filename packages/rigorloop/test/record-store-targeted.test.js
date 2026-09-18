@@ -9,11 +9,16 @@ import {
   writeFileSync,
   unlinkSync,
   existsSync,
+  readdirSync,
+  lstatSync,
+  readlinkSync,
+  symlinkSync,
 } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { executeRecordStore } from '../dist/lib/record-store.js';
 import { executeRecordingMutationCli } from '../dist/lib/recording-mutation-cli.js';
+import { RecordFiles } from '../dist/lib/record-store-files.js';
 const f = JSON.parse(
   readFileSync(
     new URL('../../../tests/fixtures/rigorloop-records-v3/records.json', import.meta.url),
@@ -985,11 +990,75 @@ test('TG-05 preview creates no locks and invalid preparation leaves authoritativ
   ];
   const epoch = join(root, '.rigorloop/record-store/example/epoch'),
     old = readFileSync(epoch);
-  assert.equal(
-    executeRecordingMutationCli([...args, '--dry-run'], { input: encode(request) }).result.status,
-    'valid',
-  );
+  function tree(directory) {
+    const entries = {};
+    function visit(path) {
+      const absolute = join(directory, path), stat = lstatSync(absolute);
+      const entry = { mode: stat.mode & 0o7777 };
+      if (stat.isSymbolicLink()) Object.assign(entry, { kind: 'symlink', target: readlinkSync(absolute) });
+      else if (stat.isDirectory()) {
+        entry.kind = 'directory';
+        for (const name of readdirSync(absolute).sort()) visit(join(path, name));
+      } else {
+        assert.equal(stat.isFile(), true, path);
+        Object.assign(entry, { kind: 'file', bytes: readFileSync(absolute).toString('base64') });
+      }
+      entries[path] = entry;
+    }
+    visit('');
+    return entries;
+  }
+  function observeEffects(directory, action) {
+    const attempts = [];
+    const methods = ['mkdir', 'write', 'remove', 'removeDirectory', 'sync'];
+    const originals = Object.fromEntries(methods.map((name) => [name, RecordFiles.prototype[name]]));
+    for (const name of methods) RecordFiles.prototype[name] = function (...values) {
+      if (this.root === directory) attempts.push({ method: name, path: values[0] });
+      return originals[name].apply(this, values);
+    };
+    let result;
+    try {
+      result = action();
+    } finally {
+      for (const name of methods) RecordFiles.prototype[name] = originals[name];
+    }
+    return { result, attempts };
+  }
+  const control = rootFor(t);
+  const controlWrite = observeEffects(control, () => mutate(control, operation));
+  assert.equal(controlWrite.result.status, 'saved');
+  assert.ok(controlWrite.attempts.some((attempt) => attempt.method === 'write'),
+    'a real mutation reaches the counted write boundary');
+  function previewWithoutEffects(directory, argv, input) {
+    writeFileSync(join(directory, 'unrelated.txt'), 'untouched neighbor\n');
+    symlinkSync('unrelated.txt', join(directory, 'unrelated-link'));
+    const beforeTree = tree(directory);
+    const { result, attempts } = observeEffects(directory, () =>
+      executeRecordingMutationCli([...argv, '--dry-run'], { input: encode(input) }).result);
+    // Observe immediately: a subsequent inspect or rejected write is not part of preview.
+    assert.deepEqual(tree(directory), beforeTree);
+    assert.deepEqual(attempts, [], 'preview must not attempt reservation, staging or publication');
+    assert.equal(result.status, 'valid');
+    assert.equal(result.claim, 'storage-only');
+    assert.equal(result.revision, input.expected_revision);
+    assert.notEqual(result.candidate_revision, result.revision);
+  }
+  previewWithoutEffects(root, args, request);
   assert.deepEqual(readFileSync(epoch), old);
+
+  const absent = rootFor(t, false);
+  assert.equal(existsSync(join(absent, '.rigorloop')), false);
+  assert.equal(existsSync(join(absent, prefix)), false);
+  previewWithoutEffects(absent, ['change', 'create', '--root', absent, '--change', 'example',
+    '--input', '-', '--format', 'json'], {
+    schema_version: 1, interface: 'targeted-recording-v1', contract: 'rigorloop-records-v3',
+    change_id: 'example', expected_revision: null, reads: [],
+    operation: { op: 'change.create', target: {}, values: {
+      ...values(f.change, ['proposal', 'models', 'activity', 'plan']), work: [], blockers: [],
+    } },
+  });
+  assert.equal(existsSync(join(absent, '.rigorloop')), false);
+  assert.equal(existsSync(join(absent, prefix)), false);
   const rejected = executeRecordingMutationCli(args, {
     input: encode(request),
     fault: (p) => (p === 'before-result' ? 'fail' : undefined),

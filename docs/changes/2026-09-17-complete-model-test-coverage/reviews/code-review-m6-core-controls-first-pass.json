@@ -24,8 +24,20 @@
         "role": "review"
       },
       "required_outcome": "Preserve original bytes. Supply a real defining setup action that produces the intended wrong-path failure and corresponding exact finding, or truthfully revise the candidate account to the actual broad-oracle/invalid-destination gap. Keep a valid reached-action/full-destination control and explicitly independent expected observation, with fixture/setup error separate from target rejection. Reassess actual complete test, facts, observations and finding; do not treat author labels as the oracle. Reconcile exact failure source/test/environment with the actual candidate and previous reliance; alternatively narrow the stated condition honestly to identity mismatch/conflicting evidence. For the unlisted-regression negative, preserve unrelated row-domain protection so the single selected deletion is R-old, or explicitly assess all actual lost obligations with suitable controls. Do not count a rejection reached for a different hazard as direct evidence of the named condition.",
-      "resolution": null,
-      "state": "open",
+      "resolution": {
+        "actor": {
+          "id": "milestone-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [
+          {
+            "id": "m6-core-corrected-packet",
+            "path": "docs/changes/2026-09-17-complete-model-test-coverage/evidence.json"
+          }
+        ],
+        "rationale": "The actual bad test now reads the absent sibling fixture-missing.json inside broad Exception before import_rows, with a separate complete valid reached-action control and independently specified full destination. Its finding names that exact setup error. Current failure variants now bind the actual unchanged source/test and concrete missing runner configuration; they establish unstarted required proof rather than an importer mutation, preserving prior pass separately. The R-old candidate deletes only embedded-space acceptance; valid-batch, invalid-middle and row-domain tests remain unchanged. All complete affected artifacts, facts and proposed observations were reread; no synthetic result is represented as executed. Original finding evidence/subjects and first-pass judgment retain their meaning; this is the reporter disposition of the separate correction."
+      },
+      "state": "resolved",
       "subjects": [
         {
           "identity": "sha256:6343239c975aae6956b0ec4eb53e03eb948a0c1f3550ab9d39aa08fc7a6fd18f",
@@ -45,8 +57,20 @@
         "role": "review"
       },
       "required_outcome": "Produce operation-specific complete outputs for each affected compliant control, keeping judgment, exact scope, recorded status, actual performed work, finding location/required outcome, receiving owner and allowed next action mutually consistent. Advisory or failed-recording results must remain stopped; Proposal/Delivery findings must name the actual proposal decision/Plan allocation correction, and R-old must require the distinct valid-value protection. Stop results must omit performed-work/commit claims not supported by their supplied trees/events and not classify unknown invocations as valid. Audit shared generated defaults across the affected family for the same leak. Retain each deliberately faulty sibling and its defining unsafe action/claim; no requirement to make negative candidates compliant. Reassess complete corrected results, not just status labels. Keep actual selected scope/context and the final result handoff consistent; make any changed recording context explicit in the sibling control account. Fill the triggered Proposal specialized-gate group using the current vision decision and owner, without granting downstream continuation.",
-      "resolution": null,
-      "state": "open",
+      "resolution": {
+        "actor": {
+          "id": "milestone-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [
+          {
+            "id": "m6-core-corrected-packet",
+            "path": "docs/changes/2026-09-17-complete-model-test-coverage/evidence.json"
+          }
+        ],
+        "rationale": "Complete corrected outputs align scope, actual work, judgment, recording, receiving owner and allowed next action. Portable advisory controls perform no durable operation; missing-input siblings use the same explicit isolated context. Failed recording blocks reliance and continuation. Proposal and Delivery F1 locate actual direction/allocation, R-old requires distinct valid-value coverage, and stopped Implement reports no new test/proof/commit. The missing assertion stays an owned M2 implementation task. Unknown Proposal/Verify invocation reports preflight only. Governed final Verify returns its result to Route; current vision conflict fills its selected gate and owner decision. All39 changed cases were independently assessed against full earlier bodies, and85 cases remain byte-identical; intended faulty candidate effects are preserved. Original finding evidence/subjects and first-pass judgment retain their meaning; this is the reporter disposition of the separate correction."
+      },
+      "state": "resolved",
       "subjects": [
         {
           "identity": "sha256:6343239c975aae6956b0ec4eb53e03eb948a0c1f3550ab9d39aa08fc7a6fd18f",

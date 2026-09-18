@@ -24,8 +24,20 @@
         "role": "review"
       },
       "required_outcome": "Preserve the frozen packet. Supply a complete implementation/proof baseline consistent with the exact adopted Design and coverage, retaining nonempty/duplicate distinctions, full invalid-batch preservation and valid/unusual-value acceptance. Make only the intended partial-write defect in the broken baseline and preserve the original T0 identity within each red/post-fix scenario. Rebuild dependent Bugfix/CI controls and literal identities as new evidence; independently reassess actual source and assertions before accepting complete-fix/coverage. An honest explicitly authorized narrower fixture contract is an alternative, but cannot silently contradict the reused Design. No production repository behavior or catalog change is required.",
-      "resolution": null,
-      "state": "open",
+      "resolution": {
+        "actor": {
+          "id": "milestone-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [
+          {
+            "id": "m6-bugfix-ci-corrected-packet",
+            "path": "docs/changes/2026-09-17-complete-model-test-coverage/evidence.json"
+          }
+        ],
+        "rationale": "The complete corrected importer now validates integer IDs, nonempty strings and duplicate IDs before any destination extension. Complete T0 retains three valid rows, all defining invalid partitions, whole prior destination and embedded-space R-old. The broken control retains the intended incremental-write defect only; each red/post-fix scenario keeps its original command/test/fixture/input/environment identity. Independently inspected all22 Bugfix and32 dependent CI pairs, reconstructed162 trees and verified4051 files. Actual source/assertions and exact supplied observations now match the adopted full Design; no importer command was executed by this semantic assessment. Original finding evidence/subjects and first-pass judgment retain their meaning; this is the reporter disposition of the separate correction."
+      },
+      "state": "resolved",
       "subjects": [
         {
           "identity": "sha256:c604f2574872f3cf6c70b269e7ab4b256ca2d749564ff73b184664c79264026d",
@@ -45,8 +57,20 @@
         "role": "review"
       },
       "required_outcome": "Preserve original responses. Author complete operation-specific control outputs that identify Design/contract owner for routed behavior, actual proof/authority blockers, unresolved cause, pending/unexecuted original checks and next responsible owner while retaining correct zero-write/intermediate/terminal claims. Derive each field from that case facts and exact effects; do not use generic empty defaults to claim conformance. Reassess all affected control/fault pairs against the unchanged Bugfix result contract. No new engine, lifecycle mutation or automated policy classifier is required.",
-      "resolution": null,
-      "state": "open",
+      "resolution": {
+        "actor": {
+          "id": "milestone-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [
+          {
+            "id": "m6-bugfix-ci-corrected-packet",
+            "path": "docs/changes/2026-09-17-complete-model-test-coverage/evidence.json"
+          }
+        ],
+        "rationale": "Independently reassessed the complete case-specific outputs. Missing/conflicting/new behavior names Noor/Design; feasibility, unknown cause, original-proof mismatch, failed and pending proof identify their actual owner, blocker/uncertainty and unexecuted work. Terminal versus intermediate states match supplied actions; none invents self-review, Verify or customer execution. The generic empty defaults no longer support false completion. Original finding evidence/subjects and first-pass judgment retain their meaning; this is the reporter disposition of the separate correction."
+      },
+      "state": "resolved",
       "subjects": [
         {
           "identity": "sha256:c604f2574872f3cf6c70b269e7ab4b256ca2d749564ff73b184664c79264026d",
@@ -66,8 +90,20 @@
         "role": "review"
       },
       "required_outcome": "Preserve the original subset and rebuild CI controls from coherent exact inputs: bind each actual target/hash, state complete current request/write/structure/privilege scope matching the proposed file effects, and make the missing-command case truly lack a reliable permitted command source (or expose a specific conflicting/stale source with its correct stop). Keep provider/assembly/resource distinctions, explicit batch manifest/safe-intermediate and stop/partial/retry observations separate. Record new literal evidence and reassess every affected group, including truthful blocker/identity reporting; no canonical CI behavior, new runner or external execution is required.",
-      "resolution": null,
-      "state": "open",
+      "resolution": {
+        "actor": {
+          "id": "milestone-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [
+          {
+            "id": "m6-bugfix-ci-corrected-packet",
+            "path": "docs/changes/2026-09-17-complete-model-test-coverage/evidence.json"
+          }
+        ],
+        "rationale": "All affected current target identities match literal native/workflow files. Complete requests now grant the exact structural/privileged/batch effect under independent scoped authority. The command-negative includes a current attributable withdrawal of all older command sources, so it no longer mistakes a remaining script for absent command authority. Nine assemblies, late/combined triggers, no-clobber/identity/guard checks and partial/retry/atomic/cycle sequences were independently reassessed with coherent controls and preserved faulty siblings. Original finding evidence/subjects and first-pass judgment retain their meaning; this is the reporter disposition of the separate correction."
+      },
+      "state": "resolved",
       "subjects": [
         {
           "identity": "sha256:c604f2574872f3cf6c70b269e7ab4b256ca2d749564ff73b184664c79264026d",

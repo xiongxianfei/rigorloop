@@ -24,8 +24,20 @@
         "role": "review"
       },
       "required_outcome": "Preserve the frozen original packet and review. For each affected purported compliant control, provide one coherent current request and independently scoped authorities, or explicit attributable later withdrawal/clarification with order and precedence. Make absent-authority variants actually lack that permission and allowed title/full-refresh and draft variants have the necessary matching current authority. If deliberately testing contradictory inputs instead, the expected decision must stop for that conflict and the intended missing-authority/allowed-action outcome still needs a valid control. Audit the same inherited authority/request defaults across the63 pairs; do not normalize away deliberate faulty sibling effects. Reconstruct and reassess complete affected inputs, actions, body preservation and output claims. Safe resolution owner: root-implementer with support-packet-author; no new product or contract decision is required.",
-      "resolution": null,
-      "state": "open",
+      "resolution": {
+        "actor": {
+          "id": "milestone-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [
+          {
+            "id": "m6-handoff-repair-authority-corrected-packet",
+            "path": "docs/changes/2026-09-17-complete-model-test-coverage/evidence.json"
+          }
+        ],
+        "rationale": "Independently verified exactlyeight facts.json changes, solely their literal current requests; every action, result, body and before/control/candidate tree remains unchanged. Title/full replacement now has matching explicit scope; blocked open explicitly withholds push/create while retaining desired intent; both draft cases have explicit draft authority without existing-PR conversion; repair file/commit/push permissions are separately withheld. Complete63-family request/action/result assessment preserves the original defining faults and independently expected decisions. Reconstructed189 trees, reproduced315 metadata/results and checked8262 files; original packet/review remain preserved. Original finding evidence/subjects and first-pass judgment retain their meaning; this is the reporter disposition of the separate correction."
+      },
+      "state": "resolved",
       "subjects": [
         {
           "identity": "sha256:b527c85baa29fee92bcfb43c6261015fb36da780f61f9339c9a0d77c628c195b",

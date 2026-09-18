@@ -24,8 +24,20 @@
         "role": "review"
       },
       "required_outcome": "Preserve this original packet. Supply a new exact positive control whose current finding correction is true of the inspected artifact: either include the intended missing-assertion test state and matching current evidence, or make a different truthful bounded wording correction while retaining F1 identity/required outcome and B1 immutable origin. Keep current-field editability separate from historical/origin rewriting; assess actual before/candidate bytes, reporter, rationale and changed fields. Independently rereview the affected RC-concerns group with the corrected literal evidence. No canonical policy, workflow stage, runtime validator or catalog change is required.",
-      "resolution": null,
-      "state": "open",
+      "resolution": {
+        "actor": {
+          "id": "milestone-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [
+          {
+            "id": "m6-core-corrected-packet",
+            "path": "docs/changes/2026-09-17-complete-model-test-coverage/evidence.json"
+          }
+        ],
+        "rationale": "The complete rc-current-finding-account actually removes the whole-destination assertion in the current test state and binds corresponding subjects, making the reporter correction truthful. F1 identity/required outcome and B1 immutable origin remain unchanged. This correction was inspected in the original full core and confirmed byte-identical in the final corrected124 package; the other28 original Workflow cases retain exact bytes. Original29-case evidence and its rejected control remain preserved; no historical judgment is retargeted. Original finding evidence/subjects and first-pass judgment retain their meaning; this is the reporter disposition of the separate correction."
+      },
+      "state": "resolved",
       "subjects": [
         {
           "identity": "sha256:0b76f613667b036bc2e4dd80e219180d1579c06701919b30088e63281ad491e7",

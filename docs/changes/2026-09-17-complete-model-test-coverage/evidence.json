@@ -2816,6 +2816,86 @@
         }
       ],
       "summary": "63 Handoff/suffix/repair pairs retain their original group allocation. Root independently decoded full117 supporting generation, checked12313 actual file/metadata hashes and all351 complete before/control/candidate trees. Direct original/corrected comparison independently proves exactlyeight facts.json files differ, each solely in its request string; all other case files, trees, actions, outputs and defining faulty siblings are byte-identical, including all corrected54 Bugfix/CI cases. Read the eight literal replacements: explicit title/body refresh, blocked-open permission limits, draft intent and separately withheld file/commit/push authorities now agree with the existing independent fields. The bound new63-only payload includes exact authority correction account and remaining-request audit. Original first-pass packet/review remain preserved; reporter-owned disposition and independent adequacy remain pending. Payload SHA256 b510de1a4538701e97eef94255ec8b203bf9d51e267eae7b81daa00663df897b. Synthetic results are supplied premises, not actual target-agent/CLI/importer/host execution or universal compliance. No production, canonical instruction, native test or catalog source changed in this correction."
+    },
+    {
+      "actor": {
+        "id": "root-implementer",
+        "role": "implement"
+      },
+      "id": "m7-public-alignment",
+      "procedure": "Strengthen accepted private controls, exact diagnostics, counted access/mutation and real public receipts/partial publication; run focused cases and the complete selected CLI/npm suites; inspect literal actual-store proof for independent semantic review.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:0288316508292040c24ec56d64d8856eccbdee3db7d29db476ada2a0037287e6",
+          "path": "docs/changes/2026-09-17-complete-model-test-coverage/m7-public-proof.md"
+        },
+        {
+          "identity": "sha256:e7ff2cc034561893561adafc21ca03d6e9ac7cbb6502b2697d525343912fae15",
+          "path": "packages/rigorloop/test/cli.test.js"
+        },
+        {
+          "identity": "sha256:b9188d953b708f95fb9ced4cce32d094a40576535eaad9d0c05459f5ccd93611",
+          "path": "packages/rigorloop/test/installer-replacement.test.js"
+        },
+        {
+          "identity": "sha256:f77a5179a5b2e6e4575890c95d29d3877657342c8f3bff5c6154c0d3c635cc24",
+          "path": "packages/rigorloop/test/record-store-cli.test.js"
+        },
+        {
+          "identity": "sha256:19d50dd20b46feefa69284c2cad8e5b74f35ef5193cc36d7d46a3333edff32ef",
+          "path": "packages/rigorloop/test/record-store-format.test.js"
+        },
+        {
+          "identity": "sha256:c6409e3792fb359df94c5423617765ef3544fae023e23016eb81ba6e643350ca",
+          "path": "packages/rigorloop/test/record-store-queries.test.js"
+        },
+        {
+          "identity": "sha256:bab5e1120e231103b0e3ff8bae9181d2d407037d81dc962da18ed16dc8cbc0df",
+          "path": "packages/rigorloop/test/record-store-targeted.test.js"
+        },
+        {
+          "identity": "sha256:61da42d81111b187883f4ebecdadcfd6076f70529b7ac277406ae12ae0a68211",
+          "path": "packages/rigorloop/test/record-store-v3-contract.test.js"
+        },
+        {
+          "identity": "sha256:2375090848ad0b27255d2cf24a1f5c35a9a1f61e03d69dcba367011e9b1b0957",
+          "path": "packages/rigorloop/test/record-store-v3-reads.test.js"
+        },
+        {
+          "identity": "sha256:5e103570baf94f3860fcadd6804712c26a12c8c04c587fde888daf8f36a3452d",
+          "path": "docs/design/cli/cli.md"
+        },
+        {
+          "identity": "sha256:eef562cbc734960620f545db46d42c392611d0ad779d6cb3c1b44fdf84c178fc",
+          "path": "docs/design/cli/records.md"
+        },
+        {
+          "identity": "sha256:a43782b837eb9acaafe8bf774b6d07a1acb2c0826489e0f5fe6ffb30e2039941",
+          "path": "docs/design/cli/installation.md"
+        },
+        {
+          "identity": "sha256:161f55fc205fce02c5db293fef5a4fbabd98ca10e426fb8c085e6a630bbb5911",
+          "path": "docs/plans/2026-09-17-complete-model-test-coverage.md"
+        },
+        {
+          "identity": "sha256:1adea2a89d5aff9d3cb88aaac38bf4fa05dabcfdcf24f36656dece99fa61c266",
+          "path": "packages/rigorloop/dist/bin/rigorloop.js"
+        },
+        {
+          "identity": "sha256:770cee8be82303a55c28e7bad84f12386889236ac2762b5c783bfb31a2e02104",
+          "path": "packages/rigorloop/dist/lib/record-format-core.js"
+        },
+        {
+          "identity": "sha256:343b516ff34de23990f9897faa19e4a0f127fbfff9a0c814039140138280efb6",
+          "path": "packages/rigorloop/dist/lib/record-store.js"
+        },
+        {
+          "identity": "sha256:36dfb447364e3407f3ab59d6bd1b35243a0cab116d20d71fc0b159db98d3b6ec",
+          "path": "packages/rigorloop/dist/lib/installer-replacement.js"
+        }
+      ],
+      "summary": "Eight test files; no production/schema/catalog/instruction changes.23 root format cases passed, then final vocabulary control1passed; core4passed and Installation9passed. Full selected CI passed433 (425Node+8realnpm-package), wall98.802s/sumworkers333.978s, jobs4. All final test subject hashes match. Six added native cases, all previous IDs retained; complete known native population now1346, to be independently reconciled in M8. Root directly reproduced the old blocker fixture false positive: both original control and origin rewrite failed broken-reference; normalized current resolution now gives accepted baseline and intended invalid-input preservation failure while original origin remains. Unknown values precede a separately reachable consistency fault; all five typed-ref fields, seven decision target classes, duplicate applicability and same-ID/different-file acceptance are protected. Actual public dense1501failedchecks save returns bounded storage-only success, faithful retrieval and matching observation identity. Complete preview snapshots include private paths and counted mutation attempts with real saved positive control. Valid-root selector controls expose premature access. Real archives and childfs fault establish partial completed/failed/untouched/retained output, default retry preservation and explicitly forced recovery for both targets/formats; counted state/acquisition guards have loaded markers. Seven isolated copied-production mutations are detected at intended assertions; four core mutants also pass the former weaker assertions. These are intentional proof probes, not seven discovered production defects. Bound supporting data includes exact logs/literals/identities and one complete actual-store walkthrough:16realpublicCLIcalls,3realchecker outcomes A-pass/B-fail/C-pass,91literal files/90manifesthashes/35sourceidentities independently checked by root. F1 current correction/disposition remains distinct from B1 copied immutable B-origin/open reporter concern/current C; prior Verify bytes unchanged with stale applicability and no Gitbasis. Actor engineering judgments are supplied exercise data. Independent semantic assessment, milestone approval, fresh final review and Verify remain required. Unchanged detailed logging/concurrency/recovery/trust/retirement native protection retained; M8 owns fresh fulladapters and packedempty/unsafe expansion. No hosted CI/publication or speedup claimed."
     }
   ],
   "schema_version": 3

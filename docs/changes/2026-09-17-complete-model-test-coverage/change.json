@@ -4,7 +4,7 @@
       "id": "milestone-reviewer",
       "role": "review"
     },
-    "reason": "M6 implementation and all recorded packet corrections supplied for independent milestone review. Final executable basis passed47 focused and303 scoped rows; exact current source hashes match that proof. Complete241 semantic candidates (124 core and117 companion) and historical scoped-reliance account supplied with original findings/evidence preserved. The reviewer must independently reassess corrections and disposition its concerns before M6 completion or M7 implementation. No final readiness claimed.",
+    "reason": "M7 proof alignment implemented in eight native test files. Full selected CLI/native npm package proof passed433, source hashes remain exact, all prior native IDs retained with six additional Installation cases. Bound literal actual-store walkthrough and independent failure-sensitivity proof supplied. Independent full milestone review and semantic assessment remain required before M7 completion/M8. No final readiness claimed.",
     "stage": "code-review",
     "status": "ready"
   },
@@ -51,7 +51,7 @@
         "role": "implement"
       },
       "path": "docs/changes/2026-09-17-complete-model-test-coverage/evidence.json",
-      "reason": "Current exact correction evidence for independent M6 reassessment; no approval or milestone completion claimed.",
+      "reason": "Exact current M7 tests and executed/public supporting proof for independent milestone review; prior evidence retains its original scope.",
       "value": "current"
     },
     {
@@ -150,8 +150,8 @@
         "role": "review"
       },
       "path": "docs/changes/2026-09-17-complete-model-test-coverage/reviews/code-review-m6-first-pass.json",
-      "reason": "Interim exact frozen M6 Bugfix/CI packet assessment has three required control corrections; no whole-M6 approval.",
-      "value": "current"
+      "reason": "Original changes-requested assessment remains first-pass history on exact original subjects. Reporter has resolved its concern against separate corrected evidence; code-review-m6 supplies current complete milestone reliance without approving the original defective control.",
+      "value": "stale"
     },
     {
       "actor": {
@@ -159,8 +159,8 @@
         "role": "review"
       },
       "path": "docs/changes/2026-09-17-complete-model-test-coverage/reviews/code-review-m6-workflow-first-pass.json",
-      "reason": "Exact interim frozen Workflow packet assessment with one required current-evidence control correction; no whole-M6 approval.",
-      "value": "current"
+      "reason": "Original changes-requested assessment remains first-pass history on exact original subjects. Reporter has resolved its concern against separate corrected evidence; code-review-m6 supplies current complete milestone reliance without approving the original defective control.",
+      "value": "stale"
     },
     {
       "actor": {
@@ -168,8 +168,8 @@
         "role": "review"
       },
       "path": "docs/changes/2026-09-17-complete-model-test-coverage/reviews/code-review-m6-core-first-pass.json",
-      "reason": "Exact interim full-core packet finding for two missing durable-review reading prerequisites; remaining semantic assessment is pending.",
-      "value": "current"
+      "reason": "Original changes-requested assessment remains first-pass history on exact original subjects. Reporter has resolved its concern against separate corrected evidence; code-review-m6 supplies current complete milestone reliance without approving the original defective control.",
+      "value": "stale"
     },
     {
       "actor": {
@@ -177,8 +177,8 @@
         "role": "review"
       },
       "path": "docs/changes/2026-09-17-complete-model-test-coverage/reviews/code-review-m6-core-controls-first-pass.json",
-      "reason": "Supplemental original-core first-pass semantic controls assessment with required corrections; not complete M6 approval.",
-      "value": "current"
+      "reason": "Original changes-requested assessment remains first-pass history on exact original subjects. Reporter has resolved its concern against separate corrected evidence; code-review-m6 supplies current complete milestone reliance without approving the original defective control.",
+      "value": "stale"
     },
     {
       "actor": {
@@ -186,7 +186,16 @@
         "role": "review"
       },
       "path": "docs/changes/2026-09-17-complete-model-test-coverage/reviews/code-review-m6-handoff-first-pass.json",
-      "reason": "Exact interim63-pair first-pass assessment requires coherent authority controls; no complete M6 approval.",
+      "reason": "Original changes-requested assessment remains first-pass history on exact original subjects. Reporter has resolved its concern against separate corrected evidence; code-review-m6 supplies current complete milestone reliance without approving the original defective control.",
+      "value": "stale"
+    },
+    {
+      "actor": {
+        "id": "milestone-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/reviews/code-review-m6.json",
+      "reason": "Independent complete M6 assessment of committed native basis, all241 corrected semantic candidates and scoped historical evidence. Eight findings reporter-resolved; approval limited to this milestone.",
       "value": "current"
     }
   ],
@@ -630,6 +639,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-17-complete-model-test-coverage/reviews/code-review-m6-handoff-first-pass.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/reviews/code-review-m6.json"
     }
   ],
   "schema_version": 3,
@@ -1390,7 +1403,7 @@
         "WF-SR-18",
         "WF-SR-19"
       ],
-      "status": "in-progress"
+      "status": "completed"
     },
     {
       "id": "m7",
@@ -1456,7 +1469,7 @@
         "RF-SR-13",
         "RF-SR-14"
       ],
-      "status": "pending"
+      "status": "in-progress"
     },
     {
       "id": "m8",
