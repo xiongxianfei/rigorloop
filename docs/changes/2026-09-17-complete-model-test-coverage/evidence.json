@@ -3184,6 +3184,34 @@
         }
       ],
       "summary": "M8 complete current-source proof: 1362 native +6 non-case checks all passed, complete scope; all M1 IDs retained, no M2 full-baseline removals,16 M8 additions. Wall559.484s / sumworkers1913.045s, not speedup. Supporting artifacts bind exact per-case timing/rerun/status, rawreport, complete source/environment/baseline and group-level proof. Actual fulladapters, npm pack/install and Release candidate/provider composition retained; marker and hash red/green plus safe partialfailure/retry, unknownfirst, explicitv1/v2compatibility and scoped conditional applicability. All original subjects retained in earlier evidence. Supplemental Design/Delivery approvals govern v2. No authored catalog rewrite, live publication, hosted CI or final readiness claimed."
+    },
+    {
+      "actor": {
+        "id": "root-verifier",
+        "role": "verify"
+      },
+      "id": "final-verification-checks",
+      "procedure": "bash scripts/ci.sh --mode local; git diff --check; git diff --cached --check; node scripts/validate-record-store.mjs docs/changes/2026-09-17-complete-model-test-coverage/change.json; exact 1142-source hash and complete 1,368-row comparison against current subject",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:62a3304dfa013c69d09424ffe6c8b495415fcc4bd6da409b30905eb6ab9cdfee",
+          "path": "docs/changes/2026-09-17-complete-model-test-coverage/final-verification-proof.md"
+        },
+        {
+          "identity": "sha256:08f2bdace7221995f3b08e7307369d7b11d0a537cc9fae7e196db77bc161de45",
+          "path": "docs/changes/2026-09-17-complete-model-test-coverage/reviews/code-review-final.json"
+        },
+        {
+          "identity": "sha256:649920588d7950ecf61c88dc3238552526191ebb2cc56358ddd88d5e0c9f6ba3",
+          "path": "docs/changes/2026-09-17-complete-model-test-coverage/m8-validation-basis.json"
+        },
+        {
+          "identity": "sha256:d1f69b374a54925ad048685ec757e88b7ad6532addc22771619c5913e3a4b34b",
+          "path": "docs/changes/2026-09-17-complete-model-test-coverage/m8-validation-results.json"
+        }
+      ],
+      "summary": "Distinct final verification reuses exact unchanged complete source qualification, checks all original native identities retained, and directly observes final local seven native tests + one record validation. Current 104-member Design / revised Delivery / fresh whole-change Review chain, all eight milestones/16findings/4blockers reconciled. Literal local log, impact and evidence applicability retained in final-verification-proof.md. Initial empty-local-scope rejection disclosed; no hosted CI or live publication claim."
     }
   ],
   "schema_version": 3

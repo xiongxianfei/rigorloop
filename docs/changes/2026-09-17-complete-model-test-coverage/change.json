@@ -4,9 +4,9 @@
       "id": "root-verifier",
       "role": "verify"
     },
-    "reason": "Fresh independent whole-change Code Review approved the final engineering change after all milestone corrections. Proceed to distinct final Verify of the entire authority, requirement, proof and review chain and exact Git/PR basis. User separately authorized submitting a PR; no merge or release authority.",
+    "reason": "Distinct final Verify succeeded on its exact recorded Git and engineering basis after all eight milestones, required corrections and fresh independent whole-change Code Review. Governed delivery is complete. User explicitly authorized proceeding through PR submission; optional PR handoff consumes the successful report and may add only attributable final verification/workflow evidence. No merge, release or publication authority.",
     "stage": "verify",
-    "status": "ready"
+    "status": "completed"
   },
   "applicability": [
     {
@@ -47,11 +47,11 @@
     },
     {
       "actor": {
-        "id": "root-implementer",
-        "role": "implement"
+        "id": "root-verifier",
+        "role": "verify"
       },
       "path": "docs/changes/2026-09-17-complete-model-test-coverage/evidence.json",
-      "reason": "Exact frozen final M8 implementation and complete actual population qualification; independent M8 and whole-change review and distinct Verify remain required.",
+      "reason": "Exact final reviewed engineering subject and attributable closeout evidence; no code/test/design/plan change since complete qualification.",
       "value": "current"
     },
     {
@@ -250,6 +250,15 @@
       },
       "path": "docs/changes/2026-09-17-complete-model-test-coverage/reviews/code-review-final.json",
       "reason": "Fresh independent holistic Code Review after all M1–M8 work and corrections, covering exact complete delivered branch, current approved Design/Delivery, integrated native/semantic proof and explicit residual limits. Separate Verify remains required.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "root-verifier",
+        "role": "verify"
+      },
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/verify-report.json",
+      "reason": "Distinct whole-change readiness assessment of exact committed subject and current independently approved authority/proof; only attributable final verification/workflow evidence may follow.",
       "value": "current"
     }
   ],
@@ -907,6 +916,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-17-complete-model-test-coverage/reviews/code-review-final.json"
+    },
+    {
+      "kind": "verify",
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/verify-report.json"
     }
   ],
   "schema_version": 3,
