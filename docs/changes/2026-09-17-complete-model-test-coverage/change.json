@@ -1,11 +1,11 @@
 {
   "activity": {
     "owner": {
-      "id": "milestone-reviewer",
-      "role": "review"
+      "id": "root-verifier",
+      "role": "verify"
     },
-    "reason": "M8 scope-complete implementation and approved hash correction: complete1362native+6noncase run passed, allM1 andM2 identities retained, generated per-case costs and exactmeasurementbasis registered; original red/green proof preserved and rootblockersresolved. Independent fullM8 review and Packaging reporter disposition required before completion; fresh final whole-change review and Verify remain distinct.",
-    "stage": "code-review",
+    "reason": "Fresh independent whole-change Code Review approved the final engineering change after all milestone corrections. Proceed to distinct final Verify of the entire authority, requirement, proof and review chain and exact Git/PR basis. User separately authorized submitting a PR; no merge or release authority.",
+    "stage": "verify",
     "status": "ready"
   },
   "applicability": [
@@ -213,8 +213,8 @@
         "role": "review"
       },
       "path": "docs/changes/2026-09-17-complete-model-test-coverage/reviews/code-review-m8-packaging-first-pass.json",
-      "reason": "Scoped first-pass M8 Packaging proof gap, recorded before author correction; conditional operational applicability is explicit and grants no release approval.",
-      "value": "current"
+      "reason": "Original changes-requested Packaging review remains first-pass history on its original subjects. Its reporter resolved the independently assessed correction; code-review-m8 supplies current full milestone reliance without approving the stale original assertions.",
+      "value": "stale"
     },
     {
       "actor": {
@@ -232,6 +232,24 @@
       },
       "path": "docs/changes/2026-09-17-complete-model-test-coverage/reviews/delivery-review-m8-hash.json",
       "reason": "Independent complete revised primary-plan assessment against current design-review-m8-hash. New M8 compatibility/proof allocation and unchanged full sequencing are adequate; implementation and final gates remain separate.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "milestone-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/reviews/code-review-m8.json",
+      "reason": "Independent full M8 assessment on dbbc9df5: complete implementation, approved v2 amendment, exact integrated proof and population/cost reconciliation. Packaging finding reporter-resolved; scope remains milestone only.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "milestone-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/reviews/code-review-final.json",
+      "reason": "Fresh independent holistic Code Review after all M1–M8 work and corrections, covering exact complete delivered branch, current approved Design/Delivery, integrated native/semantic proof and explicit residual limits. Separate Verify remains required.",
       "value": "current"
     }
   ],
@@ -881,6 +899,14 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-17-complete-model-test-coverage/reviews/delivery-review-m8-hash.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/reviews/code-review-m8.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/reviews/code-review-final.json"
     }
   ],
   "schema_version": 3,
@@ -1808,7 +1834,7 @@
         "VAL-SR-37",
         "VAL-SR-38"
       ],
-      "status": "in-progress"
+      "status": "completed"
     }
   ]
 }

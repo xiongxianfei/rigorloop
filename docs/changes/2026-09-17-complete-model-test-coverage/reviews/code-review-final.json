@@ -1,0 +1,586 @@
+{
+  "assessment_scope": "Complete branch from 1c1fe83e3bbf2e7962b4599f3a50b6a9d94fb5c6 through dbbc9df5, plus current M8 review/workflow evidence:152 tracked changed paths,107 outside docs/changes, and the newly recorded M8 review. Includes all24 model owners, shared rules/navigation, approved source catalog amendment before the later catalog freeze, proposal/Plan, canonical/projection resources, all changed runtime/test/helper files and exact durable corrected/historical evidence. Current Design Review design-review-m8-hash has104 exact members; Delivery Review delivery-review-m8-hash binds the revised Plan and current Design authority. This judgment is final whole-change Code Review, not another milestone verdict, Verify, hosted CI observation, PR readiness or lifecycle completion.",
+  "change_id": "2026-09-17-complete-model-test-coverage",
+  "contributors": [
+    {
+      "id": "root-design-author",
+      "role": "design"
+    },
+    {
+      "id": "design-skill-core-author",
+      "role": "design"
+    },
+    {
+      "id": "design-skill-support-author",
+      "role": "design"
+    },
+    {
+      "id": "design-cli-engineering-author",
+      "role": "design"
+    },
+    {
+      "id": "root-plan-author",
+      "role": "plan"
+    },
+    {
+      "id": "root-implementer",
+      "role": "implement"
+    },
+    {
+      "id": "core-guidance-author",
+      "role": "implement"
+    },
+    {
+      "id": "support-packet-author",
+      "role": "implement"
+    }
+  ],
+  "findings": [],
+  "id": "code-review-final",
+  "independence_basis": "Reviewer /root/design_review authored none of the delivered proposal, living Designs, plan, canonical instructions, runtime code, native tests, fixtures or author evidence. Root and delegated design/implementation actors listed here authored those targets. This is a new final whole-change assessment, after every milestone and correction, of the complete delivered branch and interactions. It uses the reviewer’s previously completed independent full subject/packet inspections where exact unchanged scope remains sufficient, freshly reexamines integrated runtime/reporting/consumer boundaries and current proof, and reaches the holistic judgment below. Prior reviewer-authored assessment records are evidence of scoped judgments and dispositions, not targets being independently self-approved. Only this final review record and its required registration are written.",
+  "judgment": "approved",
+  "limitations": [
+    "Fresh final whole-change Code Review is complete; distinct final Verify and separately authorized PR handoff are still required. No hosted check, remote operation, publication, merge or release is claimed by this review.",
+    "Semantic packet actions, Git/host facts and actor judgments are supplied controlled inputs assessed independently. They are not execution by a target agent, authenticated external approvals or proof of all possible instruction following. Native CLI/checker/filesystem/archive/package operations are actual only where their evidence says so.",
+    "File snapshots and instrumentation prove their named boundaries, not arbitrary operating-system transient effects or metadata beyond the observed map. Current compatibility retains existing platform assumptions. V1 historical behavior is preserved, including its original scope; v2 defines deterministic current candidate behavior.",
+    "Single-run jobs4 elapsed costs include startup/fixtures/cleanup and do not isolate CPU time or demonstrate optimization gains. Unavailable comparable baseline cells remain empty. Cost never waives required protection.",
+    "Historical failed evidence, original reviews, broader adoption follow-ups and tracked-support migration debt retain their owners and meanings. Current integrated proof does not renew unrelated historical approvals or preapprove future operational events."
+  ],
+  "rationale": [
+    "Direction and complete requirement allocation — pass. The delivered hierarchy addresses the four approved outcomes together: explain which requirements/risks need proof, complete model-owned test design, align actual fixtures/assertions, and measure executable case cost. System owns the selection/maintenance rules; all24 owning models account for their actual requirements and section responsibilities, with parent interactions and explicit gaps/dispositions. The selection method begins with supported outcomes and plausible violations, then independent observations and realistic fixtures; native discovery supplies executable inventory rather than deciding intended coverage. The plan allocates the entire hierarchy through M1–M8 and TG-FINAL-1/2/3. Neither case totals nor cheaper execution waive protection.",
+    "Current authority and change scope — pass. Current approved design-review-m8-hash identity375195c4ff4d8cc88d221ce1f6d516a04ec49d01a9f8a706f0972f18e5b087c4 and delivery-review-m8-hash identity844a9f3194e718d125729c43faee6a50e89b8cc9c064640ef0fe1758fcde9d2e retain exact subjects. The only later normative correction is explicitly approved DIST-DEC-07 v2 compatibility and its delivery allocation. Original proposal/Design/Delivery judgments keep their historical scopes; the supplemental judgments explicitly account for unchanged members. Catalog authoring ceased at the user-selected Markdown implementation plan; native references remained frozen during M1–M8. The later user authorization through PR supersedes the original plan’s handoff non-goal, without granting merge, release or publication.",
+    "TG-FINAL-2 guidance-to-proof chain — pass. Shared quality/maintenance sources and all10/8 declared copies remain byte-equal. Ordinary Design authoring reaches the complete method without implicitly adopting project governance or JSON. Triggered resources, Design skeleton, supporting-view reasoning, Plan proof allocation and independent review/Verify instructions agree. Actual generated Codex/Claude members were independently inspected under M3/M5; complete current adapters, npm payload and installed binary now provide fresh product observations. Canonical phrase/grammar tests supply bounded structure and resource-presence evidence; the independent concrete artifact/action assessments establish the separately claimed semantic decisions. A generated copy or successful parser never substitutes for those judgments.",
+    "Authoring and support model composition — pass. Complete corrected M4 controls preserve the atomic-import goal across Proposal, Design and all three actual Plan assets, with distinct necessary views, proof allocation, target authority and recovery. Faulty weakening, parser-only proof, assumed approval and wrong artifact effects are rejected. Foundations/Discovery/Learning controls retain exact source authority, marker and neighbor preservation, matching registration/ownership/order, stale-map decisions, distinct options, evidence-qualified conclusions, topic confirmation and route-result-only effects. Parent selection and receiving-owner boundaries are assessed alongside children. Corrected semantic controls retain complete outputs and independently expected decisions; original failed controls remain historical. These bounded assessments support guidance claims, not universal target-agent runtime conformance.",
+    "Workflow, Assessment and Handoff integration — pass. Complete M6 concrete packets distinguish storage success from actual approval, current evidence from stale favorable history, author from reporter, and isolated/advisory operation from governed continuation. Implementation/Bugfix/CI profiles preserve original-proof identity, feasibility, exact command/authority and partial/retry/atomic-group limits. Handoff packets use exact branch/Verify basis, independently granted file/commit/push/create effects, truthful partial state and hosted observations; evidence-only suffixes do not reinterpret product changes. Corrected controls now match real supplied code/assertions, selected reading paths and literal authority. M7’s actual public-store walkthrough separately proves real record construction/reading, corrected F1, immutable B1 origin and unresolved reporter authority. The combined evidence does not mistake synthetic actor labels or storage receipts for real workflow approval.",
+    "Executable assertion and fixture adequacy — pass. Across native model grammar, Skill metadata/resources, Records, CLI, Installation and Release, defining negatives now begin from accepted private controls, mutate the intended condition, require exact diagnostics or observable effects and preserve the required state. Real process/Git/filesystem/archive/persistence boundaries remain where they expose the protected failure. Unlisted tests remain reachable; no broad exception or unrelated setup failure is accepted as the claimed negative. Focused private mutants demonstrate additional sensitivity for CLI no-read/preview/partial reporting and Release precedence/visibility/authority/final identity. These demonstrations are bounded supplemental evidence, not a count-based adequacy metric or additional production defects.",
+    "Runtime corrections and compatibility — pass. Skill workflow-role validation now rejects present unknown or empty stage values before role consistency without claiming global validator failfast. Release validates known generated-region vocabulary and complete marker pairing before the planned writes; actual partial-write failure/retry remains separately truthful, not an invented operation-wide rollback. Packaging candidates explicitly use v2 raw UTF-8 path order and prefix with unchanged text normalization and independent regular-file counts. Historical v1/missing metadata retains its original verifier behavior and published identities. New producer, bundled metadata, actual packed CLI and current public filesystem observer agree; unknown/empty values reject before consistency and a wrong digest never falls back. Legacy profile observation restores its settled v1 normalization/prefix/membership.",
+    "Reporting and prepared-release interaction — pass. The single existing CI executor now owns the report destination before selection/preparation, strips parent report variables from children and hands only a private path to the final prepared validation child. Actual prepared subject/scope and child failure remain in the adopted report; outer success cannot erase failure. Destination reservations, anchored paths, owned temporary files and atomic replacement protect prior bytes. A late selected-input/plan/scratch collision revokes publication and prevents dispatch; its independently recorded first-pass defect is corrected by identity-bound proof. Cancellation, timeout, unavailable launch, partial collection and unstarted dependencies retain truthful status/cost. Ranking is only a view and does not reorder authoritative results or change selected scope. This cross-milestone path stays valid with v2 candidate preparation and the expanded native population.",
+    "CLI/Records/Installation and product interaction — pass. Complete typed-reference and vocabulary controls require accepted current stores and exact rejection precedence. Public dense receipt/query results remain bounded and faithful. Preview observes current storage effects; invalid selectors prove no repository/stdin read at the claimed boundary. Real installation cases retain whole-unit conflict/force, containment/race protection and truthful late partial outcomes; default retry preserves actual partial state and explicit force completes authorized units without erasing retained originals. M8 extends those observations through the actual npm-packed consumer for both targets’ empty and unsafe units, with complete ZIP-member and outside-state comparisons. Helper-only proof is not used to claim the packed boundary.",
+    "TG-FINAL-1 retained protection and caller coverage — pass. The complete final run contains1368 unique expected results,1362 native cases and six non-case checks, all actually started/passed with exit0 and complete collection. Independently reconciled every1313 M1 native ID across all13 Python entrypoints and22 Node files, plus every1343 M2 full-baseline row; none is lost. All meaningful newly required partitions have owning assertions or independent semantic observations. The final caller union includes full adapters, actual npm-package tests, Release candidates, selector/executor and broad artifact composition. Original exact unchanged proof is reused only for its scoped obligation, while the full current-source run supersedes earlier executable observations on changed helpers, tests and public consumers.",
+    "TG-FINAL-3 execution cost and limits — pass. Every CSV row agrees with its actual final duration, start/status, native/check identity and exact rerun command; paired baseline durations match the original report. Twenty-five rows added since the M2 full run have empty unavailable comparable baseline cells, including two separately measured late M2 cases. Final wall559.484s and occupied-worker sum1913.045s at jobs4 are distinguished from baseline538.762s/1822.312s and end-to-end invocation time. Source identity, Python/Node/OS/shell and worker budget are explicit. Changed assertions, added protection and uncontrolled single-run load/cache variation preclude a speedup claim. No duration is invented for semantic judgment or conditional public operations; no additional full serial benchmark is needed because this alignment did not replace discovery or shared isolation.",
+    "Triggered CI maintenance assessment — reviewed, pass. Requested/actual operation review; ordinary-infrastructure; project-validation-automation/project-native-other-provider; ordinary-workflow-context; coverage/performance concerns; preserve-existing-structure; CIM1-coverage-review. Read the exact risk-to-check map plus already applied quality/maintenance/reliance resources. Reporting/executor/selector changes map to existing execution/selection suites and full native composition; Skill/doc/resource changes map to structural/prose plus actual generated parity; runtime/package/release changes map to public native and packed/candidate checks; governed record changes map to current-set validation. Commands come from the approved Plan, Validation contract and existing ci.sh/native entrypoints. No path filter, cache, permission, credential, workflow event or hosted configuration changed. No unmapped changed surface or intentionally deferred applicable local check remains. Hosted CI is not observed; this review performs no authoring, repair, push or remote mutation.",
+    "Current evidence, concerns and unrelated scope — pass. Freshly checked all1142 measured source identities and both approved member maps against current bytes. All20 M8 final engineering hashes, durable1368-row report/log, CSV and supporting red/green evidence retain their exact basis; earlier complete packet inspections remain applicable to unchanged corrected subjects. Current full CLI selection reports all16 findings and four blockers resolved by their appropriate reporter/owner, and all eight work items completed. Original failed observations and changes-requested reviews preserve meaning with scoped applicability; parent evidence-container updates do not retarget earlier approvals. Required local CI subsequently passed seven native metadata regressions plus current-set validation on the three changed M8 review/workflow paths; it supplements, not replaces, the full source run. No dependency/lockfile/toolchain change, unrelated source refactor or public state mutation is hidden in the diff.",
+    "Residual applicability and final judgment — pass within explicit bounds. REL-MR-001/002/005 are untriggered actual release/exception/incident duties, independently dispositioned with their future owners, exact authority requirements and observation triggers; absence is not a pass. Broader adoption follow-ups and acknowledged tracked-support reader migration remain open and are not required runtime claims of this bounded alignment. Native snapshots/counters and provider fixtures retain their stated filesystem/transport limits. All applicable final review checklist categories, full allocated model groups and cross-milestone interactions are satisfied; no new material finding or implementation milestone remains. Final Code Review closeout is approved and returns to Route for distinct Verify. Only successful Verify can establish its own final explanation and handoff basis; this review does not claim branch, PR, release or lifecycle readiness."
+  ],
+  "reviewer": {
+    "id": "milestone-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:ab25891696f0543db9a9871a0d2e3a8b668d3593d9450b699efe5c1a0d1efd29",
+      "path": "CONTRIBUTING.md"
+    },
+    {
+      "identity": "sha256:5e103570baf94f3860fcadd6804712c26a12c8c04c587fde888daf8f36a3452d",
+      "path": "docs/design/cli/cli.md"
+    },
+    {
+      "identity": "sha256:a43782b837eb9acaafe8bf774b6d07a1acb2c0826489e0f5fe6ffb30e2039941",
+      "path": "docs/design/cli/installation.md"
+    },
+    {
+      "identity": "sha256:eef562cbc734960620f545db46d42c392611d0ad779d6cb3c1b44fdf84c178fc",
+      "path": "docs/design/cli/records.md"
+    },
+    {
+      "identity": "sha256:c3a4e2ca13ccaa43cfa5e278b027b4e0e0d113e50d66e9af101f388c82973cc7",
+      "path": "docs/design/engineering/engineering.md"
+    },
+    {
+      "identity": "sha256:691551f89d65a2f8a38ce57f68098c12841ecf902f8078a97d861e3466190670",
+      "path": "docs/design/engineering/packaging.md"
+    },
+    {
+      "identity": "sha256:6317d3141237242ed76d744e29931d8229567f061931e84075142c61f4cf734f",
+      "path": "docs/design/engineering/release/release.md"
+    },
+    {
+      "identity": "sha256:7d6165830c81846344328abb8f0057a2ac99aa6e9085c9a707ff36c03b29eba3",
+      "path": "docs/design/engineering/release/test-design/test-design.md"
+    },
+    {
+      "identity": "sha256:854d3242170e213b5831985fe569f025d4963e0ac46d34661a25900830bf43b0",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:1b5443261318067a54a9a334221e409a2c6ff716388303eefc31db2eadb7a59c",
+      "path": "docs/design/skill/assessment.md"
+    },
+    {
+      "identity": "sha256:8911722251a1682515bd08ec150fd74124e63310eeb4dbf2b759d242dd760d69",
+      "path": "docs/design/skill/authoring/authoring.md"
+    },
+    {
+      "identity": "sha256:dc0dff84a0df7809bddc4a0bac725c906901fb297ba9876730eceb6b9e49b472",
+      "path": "docs/design/skill/authoring/design.md"
+    },
+    {
+      "identity": "sha256:ffcf0e3e2b93976b0d022cfcb8e4541338fa2c6fe48e981e7d70e216ea4bbb0b",
+      "path": "docs/design/skill/authoring/plan.md"
+    },
+    {
+      "identity": "sha256:714b2e0133698fa341fd1a4fe486a02a552c3c548fb85573950adf3620b0e996",
+      "path": "docs/design/skill/authoring/proposal.md"
+    },
+    {
+      "identity": "sha256:f0ff5b7766092d703e323ca26e08bd3d49f3b16ef3e9de08cfa90df2c1f9d325",
+      "path": "docs/design/skill/authoring/test-design/test-design.md"
+    },
+    {
+      "identity": "sha256:166de8eb3ad83b356ded6acd1b64fbc3ba84f8c10350ed0cc98456b7992bcc46",
+      "path": "docs/design/skill/delivery-handoff.md"
+    },
+    {
+      "identity": "sha256:03a2bb4b07669d8e30bda713e6391c9ee55e4e4ac45707dca5866e0cc0e87e2d",
+      "path": "docs/design/skill/discovery/discovery.md"
+    },
+    {
+      "identity": "sha256:1bc0b49bafb481e0065e1e695ab124eed7905c7b448dcfe87781de445b4a1ce3",
+      "path": "docs/design/skill/discovery/explore.md"
+    },
+    {
+      "identity": "sha256:027e2eb2b99584cc732bfbf3f4437a37b55026a318216b801a4784c6e736fbea",
+      "path": "docs/design/skill/discovery/research.md"
+    },
+    {
+      "identity": "sha256:4d49d13c28acaa64833f9d41e0c8907f8894fb0dd75e811ba6f5a71fd725a6fc",
+      "path": "docs/design/skill/learning.md"
+    },
+    {
+      "identity": "sha256:bf587c2a747d7bd0e2e1a055a46ef95bd1c2650a0499143e1ca7588974f4200e",
+      "path": "docs/design/skill/project-foundations/constitution.md"
+    },
+    {
+      "identity": "sha256:cee7a85dea2c74104036dce48103266142fb1067868090e4201fc04f69da47b6",
+      "path": "docs/design/skill/project-foundations/project-foundations.md"
+    },
+    {
+      "identity": "sha256:982cc807e04ac0b6fc347a9cfbcfae49775ff54b2de0513a1a2686dd2d8e77ba",
+      "path": "docs/design/skill/project-foundations/project-map.md"
+    },
+    {
+      "identity": "sha256:e54c88e392ab21590fd979b90eeef1ab849d76275abd3530492267759a2c6e5d",
+      "path": "docs/design/skill/project-foundations/vision.md"
+    },
+    {
+      "identity": "sha256:9635574034989acca7995e8b1946516abeb66b2b94db7bcb758b3a3ecfb8bb22",
+      "path": "docs/design/skill/skill.md"
+    },
+    {
+      "identity": "sha256:380b2c2d481a2721c6590b636ab7d6ddcd1dd97b62e8e8e74467b0225e8b8cf9",
+      "path": "docs/design/skill/test-design/cases/implementation-handoffs.json"
+    },
+    {
+      "identity": "sha256:4a9890543e6f2d8996ce43eac4e884a8cb827687e03cc0891433addb1b2d69ae",
+      "path": "docs/design/skill/test-design/test-design.md"
+    },
+    {
+      "identity": "sha256:cc22e14330afaa294ab8a632a6eaef32f8ff7e87336564e100f6111a57268f82",
+      "path": "docs/design/skill/workflow.md"
+    },
+    {
+      "identity": "sha256:110df7b4fffe242bead2bd10117f5ee6db5801562f0efda8f24a7c8331ed087b",
+      "path": "docs/design/system.md"
+    },
+    {
+      "identity": "sha256:b12f5fb2e7acc9422878976ef0cff73df640055370e938345f857e1683955990",
+      "path": "docs/design/test-design/README.md"
+    },
+    {
+      "identity": "sha256:2c86bd324860b9757f52ed6b52574fa814ef3ac75871e0c3b77d43327800532d",
+      "path": "docs/design/test-design/rules.md"
+    },
+    {
+      "identity": "sha256:dbd6ccd66754ab8d3f34bb0fbcc82c5081df3ee7afcab44ef0ca7a3ea140201b",
+      "path": "docs/plan.md"
+    },
+    {
+      "identity": "sha256:f45401105ccbb569d321ad090c96a8a271c24197a4d727d3e993bb32e2b4022d",
+      "path": "docs/plans/2026-09-17-complete-model-test-coverage.md"
+    },
+    {
+      "identity": "sha256:010d1570db6dc0fcb349b2fb25e40d6650edcaba729bea092bc99439ba74bcb5",
+      "path": "docs/proposals/2026-09-17-complete-model-test-coverage.md"
+    },
+    {
+      "identity": "sha256:9b4fc71b418adb8d0b60328d0bd2d8577900f5fbc6f60f927f5a0c42b66e9dfa",
+      "path": "packages/rigorloop/dist/bin/rigorloop.js"
+    },
+    {
+      "identity": "sha256:f816d3b4f3d0856d7072e525a755a22b502c3088ab3d5387bf85ba17d4bc930e",
+      "path": "packages/rigorloop/test/cli.test.js"
+    },
+    {
+      "identity": "sha256:b9188d953b708f95fb9ced4cce32d094a40576535eaad9d0c05459f5ccd93611",
+      "path": "packages/rigorloop/test/installer-replacement.test.js"
+    },
+    {
+      "identity": "sha256:f77a5179a5b2e6e4575890c95d29d3877657342c8f3bff5c6154c0d3c635cc24",
+      "path": "packages/rigorloop/test/record-store-cli.test.js"
+    },
+    {
+      "identity": "sha256:19d50dd20b46feefa69284c2cad8e5b74f35ef5193cc36d7d46a3333edff32ef",
+      "path": "packages/rigorloop/test/record-store-format.test.js"
+    },
+    {
+      "identity": "sha256:c6409e3792fb359df94c5423617765ef3544fae023e23016eb81ba6e643350ca",
+      "path": "packages/rigorloop/test/record-store-queries.test.js"
+    },
+    {
+      "identity": "sha256:bab5e1120e231103b0e3ff8bae9181d2d407037d81dc962da18ed16dc8cbc0df",
+      "path": "packages/rigorloop/test/record-store-targeted.test.js"
+    },
+    {
+      "identity": "sha256:61da42d81111b187883f4ebecdadcfd6076f70529b7ac277406ae12ae0a68211",
+      "path": "packages/rigorloop/test/record-store-v3-contract.test.js"
+    },
+    {
+      "identity": "sha256:2375090848ad0b27255d2cf24a1f5c35a9a1f61e03d69dcba367011e9b1b0957",
+      "path": "packages/rigorloop/test/record-store-v3-reads.test.js"
+    },
+    {
+      "identity": "sha256:79f89c9b2225b8edfcb6a9c0dd10529b4f2cef571b0eacff00a7ff28d6b153d3",
+      "path": "scripts/ci.sh"
+    },
+    {
+      "identity": "sha256:82ae9adfc16d8e3c6f2c78c2ba2810ce0281ba21eb7e120248dab62f382ea7f9",
+      "path": "scripts/lib/packaging/adapter_distribution.py"
+    },
+    {
+      "identity": "sha256:b2a9f62bb5bd9f172d26efc37805b5c834d9719a5f203d9753fb6c01ee9525d8",
+      "path": "scripts/lib/release/release_candidate.py"
+    },
+    {
+      "identity": "sha256:8054d3176cdc3c7618ea7946f5bbe1d38a9cb51c0d0d074d0694dbdfa0bd5567",
+      "path": "scripts/lib/release/release_provider.py"
+    },
+    {
+      "identity": "sha256:41b1e57b6578b820d0be4edfa711175a981027c59037357ab2747d630083eb76",
+      "path": "scripts/lib/release/release_transaction.py"
+    },
+    {
+      "identity": "sha256:483aaa2bba98520b79c241374a10470f0aac4ada5cd97a07021cf05122222558",
+      "path": "scripts/lib/validation/skill_validation.py"
+    },
+    {
+      "identity": "sha256:2ab689aba271919db93d869bf466784e9b6ad8e822450678346411727c545502",
+      "path": "scripts/lib/validation/validation_execution.py"
+    },
+    {
+      "identity": "sha256:c5b9ebfc40bf580e54f0ab0fcb4df47b9240ed256f3131ef1b0856ba6a43d880",
+      "path": "scripts/lib/validation/validation_selection.py"
+    },
+    {
+      "identity": "sha256:fca2672dd550d8a3ea4e2a4aa90af1e80d9f189bcd8c7f4e557cf5c6321f2820",
+      "path": "skills/bugfix/references/test-maintenance.md"
+    },
+    {
+      "identity": "sha256:6b32800ac819d2e5ed00ef5010b66dfc8c5426b2482952749944e6f339880c72",
+      "path": "skills/bugfix/references/test-quality.md"
+    },
+    {
+      "identity": "sha256:fca2672dd550d8a3ea4e2a4aa90af1e80d9f189bcd8c7f4e557cf5c6321f2820",
+      "path": "skills/ci-maintenance/references/test-maintenance.md"
+    },
+    {
+      "identity": "sha256:6b32800ac819d2e5ed00ef5010b66dfc8c5426b2482952749944e6f339880c72",
+      "path": "skills/ci-maintenance/references/test-quality.md"
+    },
+    {
+      "identity": "sha256:c7ade87e5d2583f1c2b2b9636a74aeeb3f47c69c3e549b02e96c163ecf99e349",
+      "path": "skills/code-review/SKILL.md"
+    },
+    {
+      "identity": "sha256:fca2672dd550d8a3ea4e2a4aa90af1e80d9f189bcd8c7f4e557cf5c6321f2820",
+      "path": "skills/code-review/references/test-maintenance.md"
+    },
+    {
+      "identity": "sha256:6b32800ac819d2e5ed00ef5010b66dfc8c5426b2482952749944e6f339880c72",
+      "path": "skills/code-review/references/test-quality.md"
+    },
+    {
+      "identity": "sha256:4ac51848aaaf9b088aeb9e42e01ae2ba09068d4a9d451d54504e6d522e2a367f",
+      "path": "skills/constitution/SKILL.md"
+    },
+    {
+      "identity": "sha256:842845259e245bde036bbdd03749aa0e3a76ead842f48da481d28b7f842f95d6",
+      "path": "skills/delivery-review/SKILL.md"
+    },
+    {
+      "identity": "sha256:fca2672dd550d8a3ea4e2a4aa90af1e80d9f189bcd8c7f4e557cf5c6321f2820",
+      "path": "skills/delivery-review/references/test-maintenance.md"
+    },
+    {
+      "identity": "sha256:6b32800ac819d2e5ed00ef5010b66dfc8c5426b2482952749944e6f339880c72",
+      "path": "skills/delivery-review/references/test-quality.md"
+    },
+    {
+      "identity": "sha256:1297166a0d872d31048e3c4a498ce7270a8882cb4c8471fda87eb743877dacd7",
+      "path": "skills/design-review/SKILL.md"
+    },
+    {
+      "identity": "sha256:6b32800ac819d2e5ed00ef5010b66dfc8c5426b2482952749944e6f339880c72",
+      "path": "skills/design-review/references/test-quality.md"
+    },
+    {
+      "identity": "sha256:0935b367274831589ed3ccf09f3df373658348b79c8c959b2a1502637a09f3d5",
+      "path": "skills/design/SKILL.md"
+    },
+    {
+      "identity": "sha256:3ae35a52029b78c60a3d4cff9d689ba7e709013a91cb3250262254e009ef908d",
+      "path": "skills/design/assets/design-skeleton.md"
+    },
+    {
+      "identity": "sha256:52c93239264aa2272796d67786aadcdfa5ed64a7ba1790890d93fdeb904effcb",
+      "path": "skills/design/references/legacy-source-reconciliation.md"
+    },
+    {
+      "identity": "sha256:4b6038d12b8f025a142b164a61ed19cd11d767bd7e433e78dffe95944411757c",
+      "path": "skills/design/references/model-authoring.md"
+    },
+    {
+      "identity": "sha256:6b32800ac819d2e5ed00ef5010b66dfc8c5426b2482952749944e6f339880c72",
+      "path": "skills/design/references/test-quality.md"
+    },
+    {
+      "identity": "sha256:c65a04a84a6fe5cb78bef4b9ada601e37882f373da31f302393fcd334491aadf",
+      "path": "skills/implement/SKILL.md"
+    },
+    {
+      "identity": "sha256:fca2672dd550d8a3ea4e2a4aa90af1e80d9f189bcd8c7f4e557cf5c6321f2820",
+      "path": "skills/implement/references/test-maintenance.md"
+    },
+    {
+      "identity": "sha256:6b32800ac819d2e5ed00ef5010b66dfc8c5426b2482952749944e6f339880c72",
+      "path": "skills/implement/references/test-quality.md"
+    },
+    {
+      "identity": "sha256:a01643ea263f1df1c0259ca16324117fe589cf6d5e9318d5853d673e48d226cd",
+      "path": "skills/plan/SKILL.md"
+    },
+    {
+      "identity": "sha256:fca2672dd550d8a3ea4e2a4aa90af1e80d9f189bcd8c7f4e557cf5c6321f2820",
+      "path": "skills/plan/references/test-maintenance.md"
+    },
+    {
+      "identity": "sha256:6b32800ac819d2e5ed00ef5010b66dfc8c5426b2482952749944e6f339880c72",
+      "path": "skills/plan/references/test-quality.md"
+    },
+    {
+      "identity": "sha256:951805525ea528bd44385548488b8bb890cfee9963528d4bdbad87e2a66e2908",
+      "path": "skills/route/SKILL.md"
+    },
+    {
+      "identity": "sha256:fca2672dd550d8a3ea4e2a4aa90af1e80d9f189bcd8c7f4e557cf5c6321f2820",
+      "path": "skills/route/references/test-maintenance.md"
+    },
+    {
+      "identity": "sha256:6b32800ac819d2e5ed00ef5010b66dfc8c5426b2482952749944e6f339880c72",
+      "path": "skills/route/references/test-quality.md"
+    },
+    {
+      "identity": "sha256:d4c904a58ebfd6adecafbc10b3aae4855203d9c94d70c26ef10b298e2aba850f",
+      "path": "skills/verify/SKILL.md"
+    },
+    {
+      "identity": "sha256:fca2672dd550d8a3ea4e2a4aa90af1e80d9f189bcd8c7f4e557cf5c6321f2820",
+      "path": "skills/verify/references/test-maintenance.md"
+    },
+    {
+      "identity": "sha256:6b32800ac819d2e5ed00ef5010b66dfc8c5426b2482952749944e6f339880c72",
+      "path": "skills/verify/references/test-quality.md"
+    },
+    {
+      "identity": "sha256:fca2672dd550d8a3ea4e2a4aa90af1e80d9f189bcd8c7f4e557cf5c6321f2820",
+      "path": "templates/shared/test-maintenance.md"
+    },
+    {
+      "identity": "sha256:6b32800ac819d2e5ed00ef5010b66dfc8c5426b2482952749944e6f339880c72",
+      "path": "templates/shared/test-quality.md"
+    },
+    {
+      "identity": "sha256:4dc2c876c89322591550cd9ca1c078310d5a9773a370ac610b44dec68ef7614b",
+      "path": "tests/engineering/packaging/adapter_archive_tests.py"
+    },
+    {
+      "identity": "sha256:b03fe9fffc3350dc4038ed1e34afc1b015df0ba2731efe7d0e327c7d4ef57817",
+      "path": "tests/engineering/packaging/adapter_contract_tests.py"
+    },
+    {
+      "identity": "sha256:6c5e018084f5116ed82ced7b3c1945bd1711e344d344ba5983347b4f3bd78ecc",
+      "path": "tests/engineering/packaging/adapter_metadata_tests.py"
+    },
+    {
+      "identity": "sha256:6f5cc53e1b57fc1691891340f1d15880dcfef3db41c3506226096cb3760b5556",
+      "path": "tests/engineering/packaging/test-npm-package-publication.py"
+    },
+    {
+      "identity": "sha256:6967cfa955805e45e7c51f1da9280860237a7f129018f4948031542286ee73b1",
+      "path": "tests/engineering/release/release_candidate_tests.py"
+    },
+    {
+      "identity": "sha256:fbf4eb6cc9d86ea1ffce8188681e77615f23e1ab308ab8a7f6dea76edc5d2730",
+      "path": "tests/engineering/release/release_coordination_fixtures.py"
+    },
+    {
+      "identity": "sha256:58733ade8bcfd25c8a419cce330ad86cc6dfcf2a53f2cc22eea0d32c7925d2fe",
+      "path": "tests/engineering/release/release_execution_tests.py"
+    },
+    {
+      "identity": "sha256:ea6291b7de3107b140b6c1a70756932759c809dc44c5f5caee635acab64c454b",
+      "path": "tests/engineering/release/release_fixture_helpers.py"
+    },
+    {
+      "identity": "sha256:7dbe787b4147b8950d281581ca4976cc8505d0e155fc4c0edab11fb243f8afb3",
+      "path": "tests/engineering/release/release_preflight_tests.py"
+    },
+    {
+      "identity": "sha256:1008f6e6d57f30dd47d1235cd419e23cd959bb8c28ef7b7d7aa85dfb9f33ade7",
+      "path": "tests/engineering/release/release_preparation_tests.py"
+    },
+    {
+      "identity": "sha256:51fb517ef17d9eaa956e61b88aa6f67d066d1196e291ab76ac07b574584a6e41",
+      "path": "tests/engineering/release/release_profile_tests.py"
+    },
+    {
+      "identity": "sha256:7ad08a3a28879dcc8c61db1d29b20522da2821f0391dd3a574641899e15ac10c",
+      "path": "tests/engineering/release/release_provider_fixtures.py"
+    },
+    {
+      "identity": "sha256:4befc55419a9f1f237cade6ccf40b4e42ce24c0a3e13cf6c522ac5dabeab78f1",
+      "path": "tests/engineering/release/release_provider_tests.py"
+    },
+    {
+      "identity": "sha256:09618b3d5549e55d31745096f793dee6e9805a312c3548d42e8c67c75b113521",
+      "path": "tests/engineering/release/release_publication_tests.py"
+    },
+    {
+      "identity": "sha256:0ca006a103b2b651991b8f67f135d826cae979020ebac5d2f0b1ae56e445e9b5",
+      "path": "tests/engineering/release/test-release-transaction.py"
+    },
+    {
+      "identity": "sha256:0ea90ec1f0654c57129ad389013b66089b8f81bd9fa86fd491420b2cde66bb25",
+      "path": "tests/engineering/validation/boundary_model_tests.py"
+    },
+    {
+      "identity": "sha256:1cc995dc6137c3665af6121a0f0f75fdc5bc405a967dd965a0f74a0565edac2b",
+      "path": "tests/engineering/validation/execution_reporting_tests.py"
+    },
+    {
+      "identity": "sha256:4ec8cef43ee9f4f658889565f407ca256b975d42acb704fac3043c7eee44ef5a",
+      "path": "tests/engineering/validation/test-validation-execution.py"
+    },
+    {
+      "identity": "sha256:2461f24a9aa0b458364176d49886bcc373f52744d7aa70196897578dd5f61714",
+      "path": "tests/skill/skill_contract_tests.py"
+    },
+    {
+      "identity": "sha256:466ad54edd65cb46d849ae42cde7611b33344116ed3048d33182eaa0aa7ce18f",
+      "path": "tests/skill/skill_design_resource_tests.py"
+    },
+    {
+      "identity": "sha256:e58932987b4dcbdd71cf208c3364561434b5be5628a8ea771661dcaac08a5c3b",
+      "path": "tests/skill/skill_metadata_tests.py"
+    },
+    {
+      "identity": "sha256:b223fd288ee6769fd23cd84fd6051b5790c2fd0a5a193c3a85397abd11e8812c",
+      "path": "tests/skill/skill_project_map_tests.py"
+    },
+    {
+      "identity": "sha256:970b72cd22c3e5e1f6c5d176f93900d98056e7d507d47e3536c573274b07eb79",
+      "path": "tests/skill/skill_shared_policy_tests.py"
+    },
+    {
+      "identity": "sha256:3bb00c227929ed2c5dbeef030be4a165fb0fce51eb88e2f9ded73a9ca33ff977",
+      "path": "tests/skill/test-skill-validator.py"
+    },
+    {
+      "identity": "sha256:1560d897931bf68a5741b249462e8d94ed20bb8440e18e48aeb80601007367fd",
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/evidence.json"
+    },
+    {
+      "identity": "sha256:5b4f4b51fb12d52bd95bdb4a6de8d4eac42eb879e40a4656f5957d16df013dab",
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/m5-discovery-learning-packet.md"
+    },
+    {
+      "identity": "sha256:9996bea3ae2b70bcc3c4fa10bcb9c114398f936f64b5d2e015f818369a3fdc95",
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/m5-foundations-correction.md"
+    },
+    {
+      "identity": "sha256:27d150b8159589a26d9b27439a3a8ee12ac2eac86eb48531ee1490d781587e86",
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/m6-bugfix-ci-corrected-packet.md"
+    },
+    {
+      "identity": "sha256:c604f2574872f3cf6c70b269e7ab4b256ca2d749564ff73b184664c79264026d",
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/m6-bugfix-ci-packet.md"
+    },
+    {
+      "identity": "sha256:9d2bc8be5b7ca46fc58e4729564ebee2e6a51cb55dd901cac70189c6d7504bb5",
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/m6-core-corrected-packet.md"
+    },
+    {
+      "identity": "sha256:6343239c975aae6956b0ec4eb53e03eb948a0c1f3550ab9d39aa08fc7a6fd18f",
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/m6-core-packet.md"
+    },
+    {
+      "identity": "sha256:17188f4ea78790fee90a6daf7968fffbaa13f5f5b9a1f4f1774a06fbd39b4d6f",
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/m6-handoff-repair-authority-corrected-packet.md"
+    },
+    {
+      "identity": "sha256:b527c85baa29fee92bcfb43c6261015fb36da780f61f9339c9a0d77c628c195b",
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/m6-handoff-repair-packet.md"
+    },
+    {
+      "identity": "sha256:21c87a060ede232bb84527e517ff089d6225396ac3224032e8d143e4a74b2817",
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/m6-historical-reliance.md"
+    },
+    {
+      "identity": "sha256:0b76f613667b036bc2e4dd80e219180d1579c06701919b30088e63281ad491e7",
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/m6-workflow-first-packet.md"
+    },
+    {
+      "identity": "sha256:0288316508292040c24ec56d64d8856eccbdee3db7d29db476ada2a0037287e6",
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/m7-public-proof.md"
+    },
+    {
+      "identity": "sha256:c5c8f3d247cc87f43821644494fc434aaed196d269b062f86989c5c92faeba2f",
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/m8-case-costs.csv"
+    },
+    {
+      "identity": "sha256:16710f66ce6effc20c607c5131c189921b058aa0d1d4b02d219ba0fdfe6dd038",
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/m8-completion-proof.md"
+    },
+    {
+      "identity": "sha256:2b3a3dd7fe979fd1df632ca08ffd62bf63086950631a9b89ab9cb39674fa3132",
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/m8-generated-region-red.md"
+    },
+    {
+      "identity": "sha256:939e04d4384d42249391c25384ad57019227cd1c3e8ae2702e61117ef75b8e1a",
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/m8-hash-gap.md"
+    },
+    {
+      "identity": "sha256:e7f65d87b2f477635ce971ad22a68e62f82bec13aded112c0beec8d19b1194c7",
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/m8-provider-hash-red.md"
+    },
+    {
+      "identity": "sha256:0918b9101e3a02768e226c9e7e9a267fdb28dc4299f326dc9f19cba0642e5da0",
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/m8-v2-regression.md"
+    },
+    {
+      "identity": "sha256:649920588d7950ecf61c88dc3238552526191ebb2cc56358ddd88d5e0c9f6ba3",
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/m8-validation-basis.json"
+    },
+    {
+      "identity": "sha256:d1f69b374a54925ad048685ec757e88b7ad6532addc22771619c5913e3a4b34b",
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/m8-validation-results.json"
+    },
+    {
+      "identity": "sha256:fcb72cb274b085023f31120881f969e478049276af986bf17ed7bc2774419ee1",
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/material-decisions.json"
+    }
+  ],
+  "summary": "Fresh final whole-change Code Review approves the complete delivered design, guidance, test/fixture alignment and execution-cost reporting against the current Design and Delivery packages. Integrated reporting, semantic/structural proof and producer-to-consumer boundaries are coherent; all baseline protection is retained. All16 findings and four blockers have reporter-owned resolutions. No material finding or implementation milestone remains. Distinct final Verify is still required before PR handoff.",
+  "target": "code"
+}

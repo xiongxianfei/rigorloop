@@ -20,8 +20,20 @@
         "role": "review"
       },
       "required_outcome": "Align the applicable assertions with actual current isolated generated manifests and the maintained public consumer contract, with valid controls and defining drift/invalid observations as needed. Preserve useful no-generated-fragment/no-active-installation-write/current-target/metadata protections and account for every retained or replaced native case. Distinguish any intentionally retained legacy reader checks as current migration-debt observations rather than evidence of generated-only adoption. Safe resolution: revise the bounded tests/fixtures and their claim scope under the existing M8 allocation, validate relevant consumers, and retain tracked files/live readers until their separate coherent Packaging-owned migration is authorized and assessed; do not weaken protection to make deletion or a green result appear complete.",
-      "resolution": null,
-      "state": "open",
+      "resolution": {
+        "actor": {
+          "id": "milestone-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [
+          {
+            "id": "m8-complete-alignment",
+            "path": "docs/changes/2026-09-17-complete-model-test-coverage/evidence.json"
+          }
+        ],
+        "rationale": "Independent reassessment confirms all seven retained native cases now inspect current consumer guidance or actual isolated generated metadata, with exact valid/missing/stale controls and preservation. Existing root-link/tracked-reader observations are explicitly migration debt, not generated-only adoption. Current source and complete final1362-native run are bound by m8-complete-alignment. Original finding evidence/subjects and first-pass judgment remain unchanged; this is the reporter disposition of the correction."
+      },
+      "state": "resolved",
       "subjects": [
         {
           "identity": "sha256:4cfe9a23939cc8e01302b11d3eb93aa5d61bbdeaf5f71762eafd4e80ac79eac0",
