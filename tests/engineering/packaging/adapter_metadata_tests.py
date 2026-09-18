@@ -5,9 +5,11 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 import importlib.util
+import hashlib
 import json
 import tempfile
 import unittest
+import zipfile
 from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -20,6 +22,34 @@ from adapter_fixture_helpers import (copy_fixture_skills, fixture_path, write_ad
 
 class AdapterMetadataTests(unittest.TestCase):
     maxDiff = None
+
+    def test_tree_hash_versions_preserve_empty_and_legacy_oracles_and_reject_unknown_before_access(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            archive = Path(tmp) / "empty.zip"
+            with zipfile.ZipFile(archive, "w"):
+                pass
+            for algorithm in ("rigorloop-tree-hash-v1", "rigorloop-tree-hash-v2"):
+                self.assertEqual(adapter_distribution_module._archive_root_hash(
+                    archive, ".agents/skills", algorithm=algorithm),
+                    (hashlib.sha256((algorithm + "\n").encode()).hexdigest(), 0))
+            self.assertEqual(adapter_distribution_module._archive_root_hash(archive, ".agents/skills"),
+                             (hashlib.sha256(b"rigorloop-tree-hash-v1\n").hexdigest(), 0))
+            # This previously agreeing Unicode order must not silently become
+            # raw UTF-8 order under the existing v1 identifier.
+            digest = hashlib.sha256(b"content").hexdigest()
+            rows = [("t.md", digest), ("ß.md", digest)]
+            expected = hashlib.sha256((f"rigorloop-tree-hash-v1\nß.md\t{digest}\nt.md\t{digest}\n").encode()).hexdigest()
+            self.assertEqual(adapter_distribution_module._tree_hash_for_rows(rows), expected)
+            for unknown in ("", "unknown_value", None):
+                with self.subTest(algorithm=unknown), patch.object(
+                    adapter_distribution_module.zipfile, "ZipFile", side_effect=AssertionError("archive accessed")
+                ) as opened:
+                    with self.assertRaisesRegex(ValueError, "unknown tree hash algorithm"):
+                        adapter_distribution_module._archive_root_hash(
+                            Path(tmp) / "absent.zip", ".agents/skills", algorithm=unknown)
+                    with self.assertRaisesRegex(ValueError, "unknown tree hash algorithm"):
+                        adapter_distribution_module._tree_hash_for_rows(rows, algorithm=unknown)
+                    opened.assert_not_called()
 
     def test_default_adapter_version_requires_current_metadata_at_operation(self):
         with tempfile.TemporaryDirectory() as tmp:

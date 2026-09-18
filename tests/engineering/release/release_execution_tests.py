@@ -77,9 +77,23 @@ class ReleaseApprovalTests(unittest.TestCase):
         with self.assertRaises(ExecutionError): validate_approval(self.candidate, self.binding, self.facts)
 
     def test_unknown_value_approval_field_rejects_before_consistency(self):
-        self.binding['unknown_value'] = 'must-not-be-retained'
-        with self.assertRaisesRegex(ExecutionError, 'binding field'):
-            validate_approval(self.candidate, self.binding, self.facts)
+        accepted = validate_approval(self.candidate, self.binding, self.facts)
+        self.assertEqual(accepted['candidate_id'], self.candidate['candidate_id'])
+        self.assertEqual(accepted['reviewer_id'], 2)
+        candidate, facts = copy.deepcopy(self.candidate), copy.deepcopy(self.facts)
+        binding = dict(self.binding, unknown_value='must-not-be-retained', candidate_id='f' * 64)
+        self.assertNotEqual(binding['candidate_id'], candidate['candidate_id'])
+        before = copy.deepcopy(binding)
+        with self.assertRaises(ExecutionError) as raised:
+            validate_approval(candidate, binding, facts)
+        self.assertEqual(str(raised.exception), 'unknown or missing approval binding field')
+        self.assertEqual(binding, before)
+        binding.pop('unknown_value')
+        with self.assertRaises(ExecutionError) as raised:
+            validate_approval(candidate, binding, facts)
+        self.assertEqual(str(raised.exception), 'approval candidate mismatch')
+        self.assertEqual(candidate, self.candidate)
+        self.assertEqual(facts, self.facts)
 
 
 class ReleaseEvidenceStoreTests(unittest.TestCase):
@@ -181,6 +195,165 @@ class ReleaseExecutorTests(unittest.TestCase):
         with GitEvidence(str(self.remote), self.candidate['evidence_ref']) as evidence:
             evidence.refresh()
             return read_execution_state(evidence.read('docs/releases/v0.5.1.md'))
+
+    def accepted_execution_inputs(self):
+        from lib.release.release_candidate import verify_candidate
+        self.assertEqual(verify_candidate(self.output, self.binding['candidate_id']), self.candidate)
+        approval = validate_approval(self.candidate, self.binding, self.approvals.fetch(self.binding))
+        self.assertEqual(approval['candidate_id'], self.candidate['candidate_id'])
+        self.assertEqual(approval['reviewer_id'], 2)
+        self.assertEqual(self.publisher.states, {'tag': None, 'github': None, 'npm': None})
+        self.assertEqual(self.publisher.writes, [])
+
+    def sealed_input_bytes(self):
+        return {name: (self.output / name).read_bytes()
+                for name in [*self.candidate['files'], 'candidate.json']}
+
+    def assert_visibility_exhaustion_and_recovery(self, boundary, limit, prior_boundaries):
+        self.accepted_execution_inputs()
+        before = self.sealed_input_bytes()
+        observe = self.publisher.observe
+        counts = {'total': 0, 'after_write': 0}
+        waits = []
+        hidden = True
+
+        def delayed(selected, candidate):
+            actual = observe(selected, candidate)
+            if selected == boundary:
+                counts['total'] += 1
+                if actual is not None and hidden:
+                    counts['after_write'] += 1
+                    return None
+            return actual
+
+        self.publisher.observe = delayed
+        self.publisher.wait_for_visibility = waits.append
+        with self.assertRaises(ExecutionError) as raised:
+            self.execute()
+        self.assertEqual(str(raised.exception),
+                         f'Required {boundary} outcome unavailable or conflicting; inspect before recovery.')
+        self.assertEqual(counts, {'total': limit + 1, 'after_write': limit})
+        self.assertEqual(waits, list(range(limit - 1)))
+        self.assertEqual(self.publisher.writes, [*prior_boundaries, boundary])
+        self.assertIsNotNone(self.publisher.states[boundary])
+        failed = self.stored()
+        self.assertEqual(failed['status'], 'uncertain-publication')
+        self.assertFalse(failed['active'])
+        self.assertEqual(failed['uncertain_write'], boundary)
+        self.assertEqual(set(failed['observations']), set(prior_boundaries))
+        self.assertEqual([(e['boundary'], e['result']) for e in failed['events'][-2:]],
+                         [(boundary, 'absent'), (boundary, 'incomplete')])
+        self.assertEqual(self.sealed_input_bytes(), before)
+
+        # Only visibility changes; the provider retains the already committed write.
+        committed = copy.deepcopy(self.publisher.states[boundary])
+        hidden = False
+        recovered = self.execute()
+        self.assertEqual(recovered['status'], 'completed')
+        self.assertFalse(recovered['active'])
+        self.assertNotIn('uncertain_write', recovered)
+        self.assertEqual(self.publisher.writes, ['tag', 'github', 'npm'])
+        self.assertEqual(self.publisher.states[boundary], committed)
+        self.assertGreater(counts['total'], limit + 1)
+        self.assertEqual(waits, list(range(limit - 1)))
+        self.assertEqual(recovered['events'][:len(failed['events'])], failed['events'])
+        self.assertEqual(recovered['observations']['tag']['commit'], self.candidate['prepared_commit'])
+        self.assertEqual(recovered['observations']['npm']['dist_tag'], self.candidate['version'])
+        self.assertEqual(self.stored(), recovered)
+        self.assertEqual(self.sealed_input_bytes(), before)
+
+    def test_tag_visibility_exhaustion_recovers_without_republication(self):
+        self.assert_visibility_exhaustion_and_recovery('tag', 6, [])
+
+    def test_github_visibility_exhaustion_recovers_without_republication(self):
+        self.assert_visibility_exhaustion_and_recovery('github', 6, ['tag'])
+
+    def test_npm_visibility_exhaustion_recovers_without_republication(self):
+        self.assert_visibility_exhaustion_and_recovery('npm', 121, ['tag', 'github'])
+
+    def test_public_identity_changed_during_smoke_blocks_closeout_until_reobserved(self):
+        self.accepted_execution_inputs()
+        before = self.sealed_input_bytes()
+        smoke = self.publisher.run_public_npx_smoke
+        commands = []
+
+        def drift(*, command, cwd):
+            result = smoke(command=command, cwd=cwd)
+            self.assertEqual(result.exit_code, 0)
+            commands.append(command)
+            if command.endswith(' init claude'):
+                self.assertEqual(self.publisher.writes, ['tag', 'github', 'npm'])
+                self.publisher.states['npm']['dist_tag'] = '0.5.0'
+            return result
+
+        self.publisher.run_public_npx_smoke = drift
+        with self.assertRaises(ExecutionError) as raised:
+            self.execute()
+        self.assertEqual(str(raised.exception),
+                         'Required public-smoke outcome unavailable or conflicting; inspect before recovery.')
+        self.assertEqual(str(raised.exception.__cause__), 'public identity changed during closeout')
+        self.assertEqual(len(commands), 3)
+        self.assertTrue(commands[-1].endswith(' init claude'))
+        failed = self.stored()
+        self.assertEqual(failed['status'], 'failed-after-publication')
+        self.assertFalse(failed['active'])
+        self.assertNotIn('uncertain_write', failed)
+        self.assertEqual(failed['events'][-1]['boundary'], 'public-smoke')
+        self.assertEqual(failed['events'][-1]['result'], 'incomplete')
+        self.assertFalse(any(e['boundary'] == 'public-smoke' and e['result'] == 'pass'
+                             for e in failed['events']))
+        self.assertEqual(self.publisher.writes, ['tag', 'github', 'npm'])
+        self.assertEqual(self.publisher.states['npm']['dist_tag'], '0.5.0')
+        # This is a final public reread failure, not a failing smoke or installed tree.
+        self.publisher.verify_smoke_identity(self.candidate, self.output)
+        self.assertEqual(self.sealed_input_bytes(), before)
+        self.publisher.states['npm']['dist_tag'] = self.candidate['version']
+        self.publisher.run_public_npx_smoke = smoke
+        recovered = self.execute()
+        self.assertEqual(recovered['status'], 'completed')
+        self.assertFalse(recovered['active'])
+        self.assertEqual(recovered['events'][:len(failed['events'])], failed['events'])
+        self.assertEqual(recovered['observations']['npm']['dist_tag'], self.candidate['version'])
+        self.assertEqual(self.publisher.writes, ['tag', 'github', 'npm'])
+        self.assertEqual(self.stored(), recovered)
+        self.assertEqual(self.sealed_input_bytes(), before)
+
+    def test_provider_approval_revoked_after_tag_prevents_later_boundaries(self):
+        self.accepted_execution_inputs()
+        before = self.sealed_input_bytes()
+        fetch, observe = self.approvals.fetch, self.publisher.observe
+        authority_states, observed_boundaries = [], []
+
+        def revoked(binding):
+            facts = fetch(binding)
+            if self.publisher.states['tag'] is not None:
+                facts['approvals'][0]['state'] = 'rejected'
+            authority_states.append(facts['approvals'][0]['state'])
+            return facts
+
+        def observed(boundary, candidate):
+            observed_boundaries.append(boundary)
+            return observe(boundary, candidate)
+
+        self.approvals.fetch, self.publisher.observe = revoked, observed
+        with self.assertRaises(ExecutionError) as raised:
+            self.execute()
+        self.assertEqual(str(raised.exception),
+                         'Required github outcome unavailable or conflicting; inspect before recovery.')
+        self.assertEqual(str(raised.exception.__cause__), 'missing, rejected or unknown provider approval')
+        self.assertEqual(authority_states, ['approved', 'approved', 'rejected'])
+        self.assertEqual(observed_boundaries, ['tag', 'tag'])
+        self.assertEqual(self.publisher.writes, ['tag'])
+        self.assertEqual(self.publisher.states, {
+            'tag': {'commit': self.candidate['prepared_commit']}, 'github': None, 'npm': None})
+        failed = self.stored()
+        self.assertEqual(failed['status'], 'failed-after-publication')
+        self.assertFalse(failed['active'])
+        self.assertNotIn('uncertain_write', failed)
+        self.assertEqual(failed['observations'], {'tag': {'commit': self.candidate['prepared_commit']}})
+        self.assertEqual((failed['events'][-1]['boundary'], failed['events'][-1]['result']),
+                         ('github', 'incomplete'))
+        self.assertEqual(self.sealed_input_bytes(), before)
 
     def test_one_approval_path_persists_and_duplicate_never_republishes(self):
         self.assertEqual(self.execute()['status'], 'completed')

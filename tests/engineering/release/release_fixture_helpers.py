@@ -7,6 +7,8 @@ import sys
 from pathlib import Path
 import shutil
 import json
+import os
+import stat
 import subprocess
 import tempfile
 from typing import Iterator
@@ -22,6 +24,17 @@ from release_provider_fixtures import RecordingPublicEvidenceProvider
 FIXTURES = ROOT / "tests/fixtures/release-transaction"
 PROFILE_FIXTURES = FIXTURES / "profiles"
 CHANGE_ROOT = ROOT / "docs/changes/2026-06-29-release-transaction-automation"
+
+
+def relative_tree(root: Path) -> dict[str, tuple]:
+    """Observe every entry without following links or interpreting file contents."""
+    entries = {}
+    for path in sorted(root.rglob("*")):
+        mode = path.lstat().st_mode
+        kind = stat.S_IFMT(mode)
+        content = os.readlink(path) if stat.S_ISLNK(mode) else path.read_bytes() if stat.S_ISREG(mode) else None
+        entries[path.relative_to(root).as_posix()] = (kind, stat.S_IMODE(mode), content)
+    return entries
 
 def approval_fixture():
     """Return independently owned candidate, binding and inspected provider facts."""
