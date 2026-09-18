@@ -2004,6 +2004,7 @@ def _path_category(path: str) -> str | None:
         'tests/engineering/release/release_preflight_tests.py',
         'tests/engineering/release/release_timing_tests.py',
         'tests/engineering/release/release_publication_tests.py',
+        'tests/engineering/release/release_provider_tests.py',
         'tests/engineering/release/release_provider_fixtures.py',
         'tests/engineering/release/release_coordination_fixtures.py',
         'scripts/lib/release/release_provider.py',
