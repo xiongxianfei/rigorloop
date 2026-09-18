@@ -23,6 +23,69 @@ class AdapterArchiveTests(unittest.TestCase):
     def setUp(self):
         configure_adapter_case(self.addCleanup)
 
+    def test_tree_hash_representation_has_independent_order_normalization_and_count(self):
+        # These are the contract's literal manifest order and normalized bytes,
+        # deliberately unlike ZIP insertion order or locale/casefold ordering.
+        normalized = (("Z.md", b"Z\nkeep  \n"), ("a-b.md", b"dash\n"),
+                      ("a.md", b"A\n"), ("a_b.md", b"underscore\n"),
+                      ("binary.bin", b"\xef\xbb\xbf\x00\r\n\xff"),
+                      ("e\u0301.md", b"decomposed\n"), ("t.md", b"t\n"),
+                      ("ß.md", b"sharp\n"), ("é.md", b"composed\n"), ("İ.md", b"dot\n"))
+        manifest = b"rigorloop-tree-hash-v2\n" + b"".join(
+            name.encode() + b"\t" + hashlib.sha256(content).hexdigest().encode() + b"\n"
+            for name, content in normalized)
+        expected = (hashlib.sha256(manifest).hexdigest(), 10)
+        for order in (tuple(range(10)), tuple(reversed(range(10)))):
+            with self.subTest(order=order), tempfile.TemporaryDirectory() as tmp:
+                archive_path = Path(tmp) / "tree.zip"
+                with zipfile.ZipFile(archive_path, "w") as archive:
+                    archive.writestr("outside.md", b"not in the install root")
+                    archive.writestr(".agents/skills/empty/", b"")
+                    link = zipfile.ZipInfo(".agents/skills/linked.md")
+                    link.create_system = 3
+                    link.external_attr = 0o120777 << 16
+                    archive.writestr(link, b"outside.md")
+                    for index in order:
+                        name, content = normalized[index]
+                        if name == "Z.md":
+                            content = b"\xef\xbb\xbfZ\r\nkeep  \r"
+                        archive.writestr(".agents/skills/" + name, content)
+                self.assertEqual(adapter_distribution_module._archive_root_hash(
+                    archive_path, ".agents/skills", algorithm="rigorloop-tree-hash-v2"), expected)
+                # A changed regular file must change the digest, not its count.
+                with zipfile.ZipFile(archive_path, "w") as archive:
+                    for name, content in normalized:
+                        archive.writestr(".agents/skills/" + name,
+                                         content + b"changed" if name == "a.md" else content)
+                changed = adapter_distribution_module._archive_root_hash(archive_path, ".agents/skills", algorithm="rigorloop-tree-hash-v2")
+                self.assertNotEqual(changed[0], expected[0])
+                self.assertEqual(changed[1], expected[1])
+
+    def test_public_tree_hash_uses_same_representation_and_excludes_symlinks(self):
+        from lib.release.release_transaction import _tree_hash_and_file_count
+        normalized = (("a.md", b"A\n"), ("binary.bin", b"\xef\xbb\xbf\x00\r\n\xff"),
+                      ("Z.md", b"Z\nkeep  \n"))
+        manifest = b"rigorloop-tree-hash-v1\n" + b"".join(
+            name.encode() + b"\t" + hashlib.sha256(content).hexdigest().encode() + b"\n"
+            for name, content in normalized)
+        expected = (hashlib.sha256(manifest).hexdigest(), 3)
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp) / "installed"
+            root.mkdir()
+            for name, content in reversed(normalized):
+                (root / name).write_bytes(b"\xef\xbb\xbfZ\r\nkeep  \r" if name == "Z.md" else content)
+            (root / "empty").mkdir()
+            outside = Path(tmp) / "outside"
+            outside.write_bytes(b"unrelated")
+            (root / "linked.md").symlink_to(outside)
+            self.assertEqual(_tree_hash_and_file_count(root), expected)
+            outside.write_bytes(b"outside changed")
+            self.assertEqual(_tree_hash_and_file_count(root), expected)
+            (root / "a.md").write_bytes(b"changed\n")
+            changed = _tree_hash_and_file_count(root)
+            self.assertNotEqual(changed[0], expected[0])
+            self.assertEqual(changed[1], expected[1])
+
     def test_current_candidate_metadata_matches_generated_route_only_archives(self) -> None:
         version = "v0.5.1"
         with tempfile.TemporaryDirectory(prefix="route-candidate-") as temp_dir:

@@ -1,0 +1,466 @@
+{
+  "assessment_scope": "Supplemental Design Review of the complete current104-subject/24-model package. Packaging is the sole changed original member; its full contents and affected Installation/CLI/Release interfaces were reassessed. The other103 subjects match the original independently approved design-review-final member map exactly and retain affirmative unaffected scope as explained here. Upstream proposal-review remains current. This new review establishes current cumulative Design authority; original design-review-final keeps its original subjects/judgment and stale current applicability. The revised Plan is a separate Delivery judgment, not a Design package member.",
+  "change_id": "2026-09-17-complete-model-test-coverage",
+  "contributors": [
+    {
+      "id": "root-design-author",
+      "role": "design"
+    },
+    {
+      "id": "design-skill-core-author",
+      "role": "design"
+    },
+    {
+      "id": "design-skill-support-author",
+      "role": "design"
+    },
+    {
+      "id": "design-cli-engineering-author",
+      "role": "design"
+    }
+  ],
+  "findings": [],
+  "id": "design-review-m8-hash",
+  "independence_basis": "Root /root authored the exact Packaging DIST-SR-09/DIST-DEC-07 amendment under root-design-author. This reviewer /root/design_review authored no model, Plan or implementation subject. It previously independently reviewed the complete104-subject Design package, and now read the complete amended Packaging owner, actual comparator incompatibility evidence and affected unchanged CLI/Installation/Release interactions. Read-only review consultation rejected unsafe v1 reinterpretation; the owner selected and authored the exact new algorithm and compatibility contract. Current judgment is independent and does not retarget the original approval.",
+  "judgment": "approved",
+  "limitations": [
+    "Design approval covers the exact104 subjects here, not code correctness, completed M8 proof, final review/Verify or publication. Revised allocation requires a separate current Delivery Review.",
+    "Historical v1 verification retains its existing behavior and limitations; v2 does not retroactively repair old ambiguous metadata or permit trying multiple hashes until one matches.",
+    "Root implementation blockers and the separate Packaging assertion finding retain their owners and required correction proof. No findings or activity/work states are changed by this save."
+  ],
+  "rationale": [
+    "Approved direction — pass. The proposal retains all four outcomes: complete requirement/test selection, all-model Design, adequate actual proof and attributable case cost. The audit exposed a concrete admitted-resource integrity failure, so settling its owner contract is a necessary correction for the selected proof work. A new algorithm identifier plus preserved legacy verification resolves the defect without retiring compatibility, inventing a new delivery platform, altering catalog JSON or authorizing publication.",
+    "Current cumulative package reliance — pass. Original design-review-final identity sha256:e4bf6206ea1fd97ccc7413317f7dc89bfdbba55c00d9251c755efa42b3bfa486 independently assessed all104 subjects and24 model owners. Mechanical comparison finds only Packaging changed; all103 others, including shared test rules, retained catalogs and examples, are byte-identical. This is not approval by hashes alone: the amendment changes only shared tree representation/version selection inside the existing Packaging artifact boundary. It does not change Skill/test-selection, record shapes, reporting, installation mutation rules, Release authority/recovery, model ownership or the original examples. Direct affected consumer requirements continue to defer representation to Packaging. Their earlier assessment is therefore applicable to those unchanged surfaces; the exact amended package receives this new judgment.",
+    "Technical decision and feasibility — pass. Producer case folding and installer locale collation disagree for a-b.md/a_b.md. Existing Unicode inputs such as ß.md/t.md can agree under v1 yet change under ASCII-fold ordering, so preserving only current canonical archive fingerprints would not establish compatibility. DIST-DEC-07 chooses v2, raw UTF-8 path-byte comparison, case sensitivity and an explicit v2 manifest prefix. This is implementable in both languages without locale/Unicode folding tables. Normalization, raw binary bytes, regular-file membership and independent count duties remain. The decision records why silent v1 correction is unsafe and why new candidate digests intentionally differ.",
+    "Compatibility, migration and recovery — pass. Current candidates must declare v2; missing algorithm fields retain their historical v1 meaning, explicit v1 keeps the existing verifier path, and unknown values reject. Previously accepted v1 metadata/fixtures and published archive bytes are not recomputed. Existing v1 producer/verifier disagreements remain visible historical limitations rather than an accept-either-digest fallback. An older CLI rejects v2; new metadata and consuming CLI are built and qualified together. Failed transition restores the coherent pre-transition candidate and never overwrites published identity. This adds algorithm support without removing the admitted legacy path or choosing a public release version.",
+    "Cross-owner consistency — pass. Packaging remains sole owner of shared representation. Installation DIST-SR-07 consumes trusted package/index metadata including the selected algorithm; rejection and filesystem safety remain separate, including no symlink authorization from hash exclusion. CLI owns actual dispatch/consumer errors without a competing exact hash rule. Release consumes exact approved candidate identities and actual public observations under REL-SR-08/09/13/19/23/24; the amendment distinguishes retained v1 legacy-profile observation from current immutable-candidate smoke selected by artifact metadata. No parsed profile, local hash, saved evidence or new algorithm grants release authority.",
+    "Proof and failure intent — pass. The amended hashing group requires independent literal rows and digests across reversed insertion, case, punctuation, non-ASCII, text LF/BOM, binary bytes, excluded directories/symlinks and changed regular files. New producer-to-actual-packed-consumer agreement is distinct from retained v1 compatibility, old-consumer rejection and unknown-algorithm failure. Candidate metadata cannot fabricate executed validation. Prefix/normalization/membership defects in the legacy observer receive their own correction while historical evidence stays unchanged. These observations distinguish the original defect from incidental setup failure and give Delivery a concrete, bounded allocation.",
+    "Architecture and views — pass. Complete Packaging overview and all four necessary supporting diagrams still describe source inputs, descriptors, generation, factual metadata, isolated candidate output, Validation, Installation and separately authorized Release. Version selection changes a representation within those existing edges; it adds no component, actor, deployment location or authority. Requirements and stable representation identify the exact new invariant, and detailed ownership agrees with the graphs. No diagram churn or separate architecture artifact is necessary.",
+    "Scope/preservation — pass. Existing generated-only migration debt, current resource semantics, active-installation separation, historical source-retirement judgments and external permissions retain their limits. The existing Packaging assertion finding is not automatically closed by this Design amendment; its test correction needs independent implementation review. Root-owned m8-hash-representation also remains open pending implementation and proof. Structural/prose checks support document integrity only. No material Design finding is required for this exact amended package."
+  ],
+  "reviewer": {
+    "id": "milestone-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:110df7b4fffe242bead2bd10117f5ee6db5801562f0efda8f24a7c8331ed087b",
+      "path": "docs/design/system.md"
+    },
+    {
+      "identity": "sha256:8911722251a1682515bd08ec150fd74124e63310eeb4dbf2b759d242dd760d69",
+      "path": "docs/design/skill/authoring/authoring.md"
+    },
+    {
+      "identity": "sha256:714b2e0133698fa341fd1a4fe486a02a552c3c548fb85573950adf3620b0e996",
+      "path": "docs/design/skill/authoring/proposal.md"
+    },
+    {
+      "identity": "sha256:dc0dff84a0df7809bddc4a0bac725c906901fb297ba9876730eceb6b9e49b472",
+      "path": "docs/design/skill/authoring/design.md"
+    },
+    {
+      "identity": "sha256:ffcf0e3e2b93976b0d022cfcb8e4541338fa2c6fe48e981e7d70e216ea4bbb0b",
+      "path": "docs/design/skill/authoring/plan.md"
+    },
+    {
+      "identity": "sha256:cee7a85dea2c74104036dce48103266142fb1067868090e4201fc04f69da47b6",
+      "path": "docs/design/skill/project-foundations/project-foundations.md"
+    },
+    {
+      "identity": "sha256:e54c88e392ab21590fd979b90eeef1ab849d76275abd3530492267759a2c6e5d",
+      "path": "docs/design/skill/project-foundations/vision.md"
+    },
+    {
+      "identity": "sha256:bf587c2a747d7bd0e2e1a055a46ef95bd1c2650a0499143e1ca7588974f4200e",
+      "path": "docs/design/skill/project-foundations/constitution.md"
+    },
+    {
+      "identity": "sha256:982cc807e04ac0b6fc347a9cfbcfae49775ff54b2de0513a1a2686dd2d8e77ba",
+      "path": "docs/design/skill/project-foundations/project-map.md"
+    },
+    {
+      "identity": "sha256:03a2bb4b07669d8e30bda713e6391c9ee55e4e4ac45707dca5866e0cc0e87e2d",
+      "path": "docs/design/skill/discovery/discovery.md"
+    },
+    {
+      "identity": "sha256:1bc0b49bafb481e0065e1e695ab124eed7905c7b448dcfe87781de445b4a1ce3",
+      "path": "docs/design/skill/discovery/explore.md"
+    },
+    {
+      "identity": "sha256:027e2eb2b99584cc732bfbf3f4437a37b55026a318216b801a4784c6e736fbea",
+      "path": "docs/design/skill/discovery/research.md"
+    },
+    {
+      "identity": "sha256:4d49d13c28acaa64833f9d41e0c8907f8894fb0dd75e811ba6f5a71fd725a6fc",
+      "path": "docs/design/skill/learning.md"
+    },
+    {
+      "identity": "sha256:166de8eb3ad83b356ded6acd1b64fbc3ba84f8c10350ed0cc98456b7992bcc46",
+      "path": "docs/design/skill/delivery-handoff.md"
+    },
+    {
+      "identity": "sha256:cc22e14330afaa294ab8a632a6eaef32f8ff7e87336564e100f6111a57268f82",
+      "path": "docs/design/skill/workflow.md"
+    },
+    {
+      "identity": "sha256:1b5443261318067a54a9a334221e409a2c6ff716388303eefc31db2eadb7a59c",
+      "path": "docs/design/skill/assessment.md"
+    },
+    {
+      "identity": "sha256:eef562cbc734960620f545db46d42c392611d0ad779d6cb3c1b44fdf84c178fc",
+      "path": "docs/design/cli/records.md"
+    },
+    {
+      "identity": "sha256:a43782b837eb9acaafe8bf774b6d07a1acb2c0826489e0f5fe6ffb30e2039941",
+      "path": "docs/design/cli/installation.md"
+    },
+    {
+      "identity": "sha256:854d3242170e213b5831985fe569f025d4963e0ac46d34661a25900830bf43b0",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:691551f89d65a2f8a38ce57f68098c12841ecf902f8078a97d861e3466190670",
+      "path": "docs/design/engineering/packaging.md"
+    },
+    {
+      "identity": "sha256:6317d3141237242ed76d744e29931d8229567f061931e84075142c61f4cf734f",
+      "path": "docs/design/engineering/release/release.md"
+    },
+    {
+      "identity": "sha256:9635574034989acca7995e8b1946516abeb66b2b94db7bcb758b3a3ecfb8bb22",
+      "path": "docs/design/skill/skill.md"
+    },
+    {
+      "identity": "sha256:5e103570baf94f3860fcadd6804712c26a12c8c04c587fde888daf8f36a3452d",
+      "path": "docs/design/cli/cli.md"
+    },
+    {
+      "identity": "sha256:c3a4e2ca13ccaa43cfa5e278b027b4e0e0d113e50d66e9af101f388c82973cc7",
+      "path": "docs/design/engineering/engineering.md"
+    },
+    {
+      "identity": "sha256:b12f5fb2e7acc9422878976ef0cff73df640055370e938345f857e1683955990",
+      "path": "docs/design/test-design/README.md"
+    },
+    {
+      "identity": "sha256:2c86bd324860b9757f52ed6b52574fa814ef3ac75871e0c3b77d43327800532d",
+      "path": "docs/design/test-design/rules.md"
+    },
+    {
+      "identity": "sha256:7d6165830c81846344328abb8f0057a2ac99aa6e9085c9a707ff36c03b29eba3",
+      "path": "docs/design/engineering/release/test-design/test-design.md"
+    },
+    {
+      "identity": "sha256:94ce4b1e879899cb1306a6e27a039c6e5d00d8b90c94213ccb370f1ab9a48a0c",
+      "path": "docs/design/engineering/release/test-design/test-cases.json"
+    },
+    {
+      "identity": "sha256:ac0b66837d9af57739b99ea41879a913ec2de6140dc250ed759d36b9190ee524",
+      "path": "docs/design/engineering/release/test-design/cases/profile-input.json"
+    },
+    {
+      "identity": "sha256:a351dccb489813dfbbdce3b3d9372e5c6edc80b7f31c6321c3f240d4ab0dcb94",
+      "path": "docs/design/engineering/release/test-design/cases/preparation.json"
+    },
+    {
+      "identity": "sha256:a555c08e09eded21e43093c156638377099bf98620227c4bee9bc9dd949699ef",
+      "path": "docs/design/engineering/release/test-design/cases/preflight.json"
+    },
+    {
+      "identity": "sha256:d1ef0b53f7345493126733aad6e0ebbd31ed95fa55a074b5509c91077aae7b02",
+      "path": "docs/design/engineering/release/test-design/cases/candidate-identity.json"
+    },
+    {
+      "identity": "sha256:29413ca35262641fddf4eb0f23c03809b201bdcdd6871509560a243743e0b838",
+      "path": "docs/design/engineering/release/test-design/cases/approval-recovery.json"
+    },
+    {
+      "identity": "sha256:3294a288bffa853c567d2130aa6a3452887e1a75427451640716060e9d9e5692",
+      "path": "docs/design/engineering/release/test-design/cases/evidence-closeout.json"
+    },
+    {
+      "identity": "sha256:ca79bb95582b99169d72fe349f3630fc7c03acdeb8e29fc1388ebc4c3fc8da55",
+      "path": "docs/design/engineering/release/test-design/cases/maintenance-review.json"
+    },
+    {
+      "identity": "sha256:4a9890543e6f2d8996ce43eac4e884a8cb827687e03cc0891433addb1b2d69ae",
+      "path": "docs/design/skill/test-design/test-design.md"
+    },
+    {
+      "identity": "sha256:872bd368736f46ef828cac1213cccccb803500fa164ef88ecc1393ee470f490c",
+      "path": "docs/design/skill/test-design/test-cases.json"
+    },
+    {
+      "identity": "sha256:b2cd74b3690c17afbf40b62019e607592beaecd86dba3d3885cef9745e9ebea2",
+      "path": "docs/design/skill/test-design/cases/capability-contract.json"
+    },
+    {
+      "identity": "sha256:839291d455ee3f93f8254e539a5577c6ce36389669ce0e3cd44ec3ced0e116ef",
+      "path": "docs/design/skill/test-design/cases/resource-contract.json"
+    },
+    {
+      "identity": "sha256:3b798f4feda2327f9d7da5793eba11160c259a1ff825914127225cd184302e71",
+      "path": "docs/design/skill/test-design/cases/recording-composition.json"
+    },
+    {
+      "identity": "sha256:380b2c2d481a2721c6590b636ab7d6ddcd1dd97b62e8e8e74467b0225e8b8cf9",
+      "path": "docs/design/skill/test-design/cases/implementation-handoffs.json"
+    },
+    {
+      "identity": "sha256:b8cf15dddf0611227860248a6cd92fe6ebb6b4b84ff5f4f0a79aa6a9eef56145",
+      "path": "docs/design/skill/test-design/cases/capability-composition.json"
+    },
+    {
+      "identity": "sha256:f0ff5b7766092d703e323ca26e08bd3d49f3b16ef3e9de08cfa90df2c1f9d325",
+      "path": "docs/design/skill/authoring/test-design/test-design.md"
+    },
+    {
+      "identity": "sha256:dbcb7e61db655ecead9529d091bc71a6ae21081087a450ddbdbe1d6d36cfbb47",
+      "path": "docs/design/skill/authoring/test-design/test-cases.json"
+    },
+    {
+      "identity": "sha256:b2e83fe05600347fd620e5b24be8bdc4569f6ca862557e8e70d209dbb331702c",
+      "path": "docs/design/skill/authoring/test-design/cases/refinement.json"
+    },
+    {
+      "identity": "sha256:02818600850cf2c47adf128820984cba11728ad4023f6cf8ff59beb714e4d6b2",
+      "path": "docs/design/skill/authoring/test-design/cases/scope-handoff.json"
+    },
+    {
+      "identity": "sha256:7f4dca46594b7c6dd020ebaf63fa816149861c7fc4a720180f142de9c457d091",
+      "path": "docs/design/skill/authoring/test-design/cases/correction-reconciliation.json"
+    },
+    {
+      "identity": "sha256:dec79163d59fb9e8a8b935cab6fc7763185d0f33b284c5764df03b7c9e6796b7",
+      "path": "docs/design/cli/examples/README.md"
+    },
+    {
+      "identity": "sha256:9bdb8d360f0cc4ec935620cd4c7b632df4e8e0a265674c9f064088995aef7c95",
+      "path": "docs/design/cli/examples/observation-freshness/README.md"
+    },
+    {
+      "identity": "sha256:1d22534396a88cb3f3edb8d19be15cc37b8fe77b458ac2344e9627816094cca8",
+      "path": "docs/design/cli/examples/observation-freshness/expected.json"
+    },
+    {
+      "identity": "sha256:4fde512f9fd9c9b25502d1e983bb9a22382812ac726af6af32e040f7c3ff8222",
+      "path": "docs/design/cli/examples/observation-freshness/scan-b.json"
+    },
+    {
+      "identity": "sha256:d271716355c2d96bd1110c24f37e01de1bfb2a53d011a2f2a884bbebda2b9593",
+      "path": "docs/design/cli/examples/observation-freshness/scan-c.json"
+    },
+    {
+      "identity": "sha256:520f9a576c30b1401906b2151f17b168e70a9abf3c939da41b4d270cada0a6d0",
+      "path": "docs/design/cli/examples/records/README.md"
+    },
+    {
+      "identity": "sha256:25682f7b9cef0c0a85f4123a36792a281cb78d4270805df9b70a6c0164f4c224",
+      "path": "docs/design/cli/examples/records/v3-complete-store/README.md"
+    },
+    {
+      "identity": "sha256:6dde70e3cfe5d98bd2adfbef63f8ba11c6e7f33f82ed43f23cc06ecfaef3de18",
+      "path": "docs/design/cli/examples/records/v3-complete-store/change.json"
+    },
+    {
+      "identity": "sha256:b04252e754560e4d9e69f62bd1013f546051bf7dea603b15b5fe019c05f4579c",
+      "path": "docs/design/cli/examples/records/v3-complete-store/evidence.json"
+    },
+    {
+      "identity": "sha256:317d54c95b1eb05e19852be20bd193f765a1514446794848149a43464def4551",
+      "path": "docs/design/cli/examples/records/v3-complete-store/material-decisions.json"
+    },
+    {
+      "identity": "sha256:edff4ef7ce625a817047f979c27235f443005f11b18d177d7b02b78c88314775",
+      "path": "docs/design/cli/examples/records/v3-complete-store/reviews/final-code-review.json"
+    },
+    {
+      "identity": "sha256:f35a2863075b2a1688ae1130dd310d728d78de994da6ec4e809d67d2f8f2ecf8",
+      "path": "docs/design/cli/examples/records/v3-complete-store/verify-report.json"
+    },
+    {
+      "identity": "sha256:29457ded3761783e9def2cfdadf30ea990fe1af55257b4617bc9c00126e27e6c",
+      "path": "docs/design/cli/examples/records/v3-finding-correction/README.md"
+    },
+    {
+      "identity": "sha256:c70b1cc46c1a3ecbfc49e4dba1f694c2a3ed992652cda40e7d58aa6c1b43f7a3",
+      "path": "docs/design/cli/examples/records/v3-finding-correction/stored-review.json"
+    },
+    {
+      "identity": "sha256:f34998232a1ef52b2ffb444f79a66705a1da5530490328d7102ea322897557fe",
+      "path": "docs/design/cli/examples/records/v3-finding-correction/updated-review.json"
+    },
+    {
+      "identity": "sha256:238c7be9f06c47a6ada365c974a092bbfd17b41fc479d2b43fd015c665796758",
+      "path": "docs/design/cli/examples/records/v3-review-limitations-update/README.md"
+    },
+    {
+      "identity": "sha256:0a613a0439f4895028df96120e5d375a38d41e3d8223ed04522054118fbdc77a",
+      "path": "docs/design/cli/examples/records/v3-review-limitations-update/after.json"
+    },
+    {
+      "identity": "sha256:c70b1cc46c1a3ecbfc49e4dba1f694c2a3ed992652cda40e7d58aa6c1b43f7a3",
+      "path": "docs/design/cli/examples/records/v3-review-limitations-update/before.json"
+    },
+    {
+      "identity": "sha256:a49052ab501285bcdae2c0e1b3d388fbf2bb9ca3df8ab80d695da00b3c8c7d3c",
+      "path": "docs/design/cli/examples/records/v3-verify-limitations-update/README.md"
+    },
+    {
+      "identity": "sha256:7b143a6b26d1b8b3db90f42f66915f065bf8e341f2a98ea69ea88d3d806227ec",
+      "path": "docs/design/cli/examples/records/v3-verify-limitations-update/after.json"
+    },
+    {
+      "identity": "sha256:57b19025fc02ca889012295cdc09ddbf0d83a452bafcf38260b88d8bcd05b40e",
+      "path": "docs/design/cli/examples/records/v3-verify-limitations-update/before.json"
+    },
+    {
+      "identity": "sha256:4598cfe6e111925f02bb7da60167587512c28ae78b497cf215fba2a22b983508",
+      "path": "docs/design/cli/examples/records/v3-verify-without-evidence/README.md"
+    },
+    {
+      "identity": "sha256:99940ecf563be59427e1a4b56f7da9348949ebde8c84507192ba8793dcbf3bd3",
+      "path": "docs/design/cli/examples/records/v3-verify-without-evidence/verify-report.json"
+    },
+    {
+      "identity": "sha256:f4bd6a92c07d69f06efc9336eb678e241888d20541fbaf2bd115e1153543a469",
+      "path": "docs/design/cli/examples/v3-assessment-update-errors/README.md"
+    },
+    {
+      "identity": "sha256:795080cf9a9b63fd44a77ec745ca7d10995e2bf173581df9534e3b4f395a7ccb",
+      "path": "docs/design/cli/examples/v3-assessment-update-errors/invalid-change-selector-response.json"
+    },
+    {
+      "identity": "sha256:41b6e86f475fa7f278f706e0d094a6cc454f68f11de2ad34429b80acb273cfe5",
+      "path": "docs/design/cli/examples/v3-assessment-update-errors/mixed-store-response.json"
+    },
+    {
+      "identity": "sha256:e47f464a85d7f13b895dfc90d84b55fe24f823844db7f147d83657a8f6be7f6a",
+      "path": "docs/design/cli/examples/v3-assessment-update-errors/review-invalid-arguments-response.json"
+    },
+    {
+      "identity": "sha256:4f3259cd2229ac7f2b664abcec27968e7bf736f8e45801db42ce64849ce920c5",
+      "path": "docs/design/cli/examples/v3-assessment-update-errors/review-missing-store-response.json"
+    },
+    {
+      "identity": "sha256:98d88a8763a15d25b1d0acfd5081c3d7f515b48d4c7c4e7a288ad3ec108b9eba",
+      "path": "docs/design/cli/examples/v3-assessment-update-errors/review-v2-store-response.json"
+    },
+    {
+      "identity": "sha256:0578d2152a2330a0bd5787659551494df819f273dc53db3be5fdceabfcdebb1d",
+      "path": "docs/design/cli/examples/v3-assessment-update-errors/unknown-command-response.json"
+    },
+    {
+      "identity": "sha256:a802cb3c67f2ac861614be88e55e8f4e6f6dfca57eaca2aec292288cfe419899",
+      "path": "docs/design/cli/examples/v3-assessment-update-errors/unknown-store-response.json"
+    },
+    {
+      "identity": "sha256:886ab0361fe5924b26f0275ec09410f916fdfc0eb788a0d60f93671fc2ab5a52",
+      "path": "docs/design/cli/examples/v3-assessment-update-errors/verify-invalid-arguments-response.json"
+    },
+    {
+      "identity": "sha256:803c307a1ae75ba0cc8114bdc6a2c9b01bc95a8d30f063abc53e13f753fe56fb",
+      "path": "docs/design/cli/examples/v3-assessment-update-errors/verify-missing-store-response.json"
+    },
+    {
+      "identity": "sha256:46c9c2554c54833d9881e8157c88987315b9dedb0eb2aaf12b2ec9353fa4d215",
+      "path": "docs/design/cli/examples/v3-assessment-update-errors/verify-v2-store-response.json"
+    },
+    {
+      "identity": "sha256:9c72b798118812582b3189718f9da989340d805a8f880ca898bd0438146de55b",
+      "path": "docs/design/cli/examples/v3-complete-assessment-recording/README.md"
+    },
+    {
+      "identity": "sha256:70f8883af05d13ef49e52b18209189b63f9c60a5cf381b076aeaeadd91aaad88",
+      "path": "docs/design/cli/examples/v3-complete-assessment-recording/review-record-request.json"
+    },
+    {
+      "identity": "sha256:f84b71e306ec3cc8211e151184e912f1edec7b875a206cebf82dde865644dc3e",
+      "path": "docs/design/cli/examples/v3-complete-assessment-recording/review-record-saved-response.json"
+    },
+    {
+      "identity": "sha256:bcb83a7e18c18e7759d37ef713f167b6f1180dd984ff07d705a06554fcee6d55",
+      "path": "docs/design/cli/examples/v3-complete-assessment-recording/verify-record-request.json"
+    },
+    {
+      "identity": "sha256:8cb57d08879331bb8a520c820f73cadb08711783baae852d33c70e6f198c06de",
+      "path": "docs/design/cli/examples/v3-complete-assessment-recording/verify-record-saved-response.json"
+    },
+    {
+      "identity": "sha256:da6db0d17fff62c7a8ea7e1a34ab7ea45d7be96e289e817bbb4b5819ed7fcecf",
+      "path": "docs/design/cli/examples/v3-finding-correction/README.md"
+    },
+    {
+      "identity": "sha256:905ba67b50a06114325bbabaa7c939005a096473ace379cd00cfe37b2a01bd93",
+      "path": "docs/design/cli/examples/v3-finding-correction/request.json"
+    },
+    {
+      "identity": "sha256:26c1d3d2d2cab351801c76ada6428ea8ada951631304dcc97ddbd08d74b56a0e",
+      "path": "docs/design/cli/examples/v3-finding-correction/saved-response.json"
+    },
+    {
+      "identity": "sha256:8489f5ec5e7329011de4660cbcf6877b988fbb8c2d70107ae90dd3cebbb88975",
+      "path": "docs/design/cli/examples/v3-finding-correction/show-response.json"
+    },
+    {
+      "identity": "sha256:0f7e7559a9c199eb4326ecede6ebdf67dd1418970d1609e5fe37b066b062537a",
+      "path": "docs/design/cli/examples/v3-finding-correction/summary-request.json"
+    },
+    {
+      "identity": "sha256:3e39f4d99e7b3589613c78f7e23e528dd6ffbd006f81651f69d8297911c30dc3",
+      "path": "docs/design/cli/examples/v3-finding-correction/summary-response.json"
+    },
+    {
+      "identity": "sha256:735a74388932c2dec2d9a5050d30de43c2f4ce0bef6651f12e4ba6d9bd43e50c",
+      "path": "docs/design/cli/examples/v3-review-limitations-update/README.md"
+    },
+    {
+      "identity": "sha256:9f134ab8c53f99183053f3a0331871a70570690f93c6420e523aa61a2f5d8640",
+      "path": "docs/design/cli/examples/v3-review-limitations-update/set-request.json"
+    },
+    {
+      "identity": "sha256:3a4f87555fbb0b3dcc8239941ca02442e2e85a6c436a74f4954150c758e2d05e",
+      "path": "docs/design/cli/examples/v3-review-limitations-update/set-saved-response.json"
+    },
+    {
+      "identity": "sha256:6d436ffddc2da5286f804f82a2e9190e2a376e2d28387cfaf7520d75581c2d5b",
+      "path": "docs/design/cli/examples/v3-review-limitations-update/set-stale-response.json"
+    },
+    {
+      "identity": "sha256:c322d81e1248a8316bcb281457838054ac001baf30783b6c9d5bca979988c2e6",
+      "path": "docs/design/cli/examples/v3-review-limitations-update/set-unchanged-response.json"
+    },
+    {
+      "identity": "sha256:c73be0db141370e7e5c5fefd34d8c338c0141bcc27a9111a41784918f4464d96",
+      "path": "docs/design/cli/examples/v3-review-limitations-update/show-fields-response.json"
+    },
+    {
+      "identity": "sha256:3a4a63ff341043e76d4d13306c17f08c4722770a0fef87c622aae90f7a9c30c5",
+      "path": "docs/design/cli/examples/v3-verify-limitations-update/README.md"
+    },
+    {
+      "identity": "sha256:07e459967b641a8bceb4edf801ce13567ccdfbd00f30977e5931b6ec588dec33",
+      "path": "docs/design/cli/examples/v3-verify-limitations-update/set-request.json"
+    },
+    {
+      "identity": "sha256:21f4098320b9f237c659717044ba08ff5ac7d49a716b9eb76576839d6ff36ca2",
+      "path": "docs/design/cli/examples/v3-verify-limitations-update/set-saved-response.json"
+    },
+    {
+      "identity": "sha256:e50326ce049b621467f317ab97415af8519efcb27db9c4f30c51c6b4ba2f300b",
+      "path": "docs/design/cli/examples/v3-verify-limitations-update/show-absent-basis-response.json"
+    },
+    {
+      "identity": "sha256:4c3047582f62c83ed9d9b87849916a4d444d381abca9c701e7843140df52aa27",
+      "path": "docs/design/cli/examples/v3-verify-limitations-update/show-fields-response.json"
+    },
+    {
+      "identity": "sha256:2a42da7884e3aeff0020f814fcb36b98f88ad80fc385a8f52a2b5ddaf4aa0ca9",
+      "path": "docs/design/skill/examples/workflow/correction-cycle.mmd"
+    }
+  ],
+  "summary": "The complete current Design package remains coherent with the bounded Packaging v2 hash correction. Exact UTF-8 byte ordering receives a new identifier, while historical v1 verification and immutable published identities remain preserved. New candidates require coordinated producer, metadata, CLI and public-observation qualification.",
+  "target": "design"
+}

@@ -13,8 +13,8 @@ import unittest
 ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / "scripts"))
 
-from lib.packaging.adapter_distribution import sync_adapter_output
-from adapter_fixture_helpers import (load_validate_release_module)
+from lib.packaging.adapter_distribution import sync_adapter_output, collect_adapter_drift_entries, validate_adapter_output
+from adapter_fixture_helpers import copy_fixture_skills, load_validate_release_module
 
 
 class AdapterContractTests(unittest.TestCase):
@@ -178,24 +178,19 @@ class AdapterContractTests(unittest.TestCase):
         self.assertNotIn("opencode run --command", text)
 
     def test_public_docs_describe_adapter_support_and_generated_boundaries(self) -> None:
-        docs = {
-            "README.md": (ROOT / "README.md").read_text(encoding="utf-8"),
-            "dist/adapters/README.md": (ROOT / "dist" / "adapters" / "README.md").read_text(encoding="utf-8"),
-            "AGENTS.md": (ROOT / "AGENTS.md").read_text(encoding="utf-8"),
-            "release-notes.md": (
-                ROOT / "docs" / "releases" / "v0.1.0" / "release-notes.md"
-            ).read_text(encoding="utf-8"),
-        }
-        combined = "\n".join(docs.values()).lower()
-
-        for term in ("codex", "claude", "opencode", "dist/adapters", ".codex/skills"):
-            self.assertIn(term, combined)
-        self.assertIn("ordinary contributors do not need all supported tools", combined)
-        self.assertIn("external tool contracts", combined)
-        self.assertIn("before changing release claims", combined)
-        self.assertIn("skills/", combined)
-        self.assertNotIn("marketplace package", combined)
-        self.assertNotIn("package-manager distribution", combined)
+        guide = (ROOT / "packages/rigorloop/README.md").read_text(encoding="utf-8")
+        contributor = (ROOT / "README.md").read_text(encoding="utf-8")
+        self.assertIn("Release archives remain verified GitHub release artifacts", guide)
+        self.assertIn("they are not bundled into the npm package", guide)
+        self.assertIn("npm is the CLI delivery channel", guide)
+        for target in ("codex", "claude"):
+            self.assertIn(f"init {target}", guide)
+        self.assertIn("OpenCode is unsupported", guide)
+        self.assertIn("`skills/` is the only authored skill source", contributor)
+        self.assertIn("Ordinary contributors do not need all supported tools", contributor)
+        self.assertIn("external tool contracts", contributor)
+        self.assertIn("before changing release claims", contributor)
+        self.assertNotIn("marketplace package", guide)
 
     def test_public_adapter_support_surface_only_tracks_readme_and_manifest(self) -> None:
         result = subprocess.run(
@@ -211,39 +206,47 @@ class AdapterContractTests(unittest.TestCase):
         )
         tracked = result.stdout.splitlines()
 
-        self.assertEqual(
-            tracked,
-            [
-                "dist/adapters/README.md",
-                "dist/adapters/manifest.yaml",
-            ],
-        )
+        # The native identity is retained. These two files are tolerated current
+        # migration debt, not required candidate inputs or generated-only proof.
+        legacy_support = {"dist/adapters/README.md", "dist/adapters/manifest.yaml"}
+        self.assertEqual(set(tracked) - legacy_support, set())
         self.assertFalse(any("/skills/" in path for path in tracked), tracked)
         self.assertFalse(any(path.endswith(("AGENTS.md", "CLAUDE.md")) for path in tracked), tracked)
         self.assertFalse(any("/commands/" in path for path in tracked), tracked)
 
     def test_public_adapter_readme_documents_archive_install_contract(self) -> None:
-        text = (ROOT / "dist/adapters/README.md").read_text(encoding="utf-8")
-        for required in ("skills/", "support matrix", "release archives", "rigorloop-adapter-codex-<version>.zip", "rigorloop-adapter-claude-<version>.zip", ".agents/skills/", ".claude/skills/", "--force", "--from-archive", "--dry-run", "outside skill discovery", "project `rigorloop.yaml` and `rigorloop.lock`"):
+        text = (ROOT / "packages/rigorloop/README.md").read_text(encoding="utf-8")
+        for required in ("rigorloop init codex|claude", ".agents/skills/", ".claude/skills/",
+                         "rigorloop init codex --dry-run --json",
+                         "rigorloop init claude --from-archive ./rigorloop-adapter-claude-<version>.zip --json",
+                         "rigorloop init codex --force", "outside skill discovery",
+                         "even if empty or identical", "lists the conflicts and installs nothing",
+                         "Shared parent directories and unrelated skills are preserved",
+                         "Partial failure reports what completed, what failed and what remains untouched",
+                         "does not read or write `rigorloop.yaml` or `rigorloop.lock`"):
             self.assertIn(required, text)
         self.assertNotIn("rigorloop-adapter-opencode-<version>.zip", text)
-        self.assertIn("Historical archives and evidence remain unchanged", text)
+        self.assertNotIn("init opencode", text)
+        self.assertIn("Historical release archives retain their original inventories", text)
 
     def test_root_guidance_points_to_adapter_install_contract_surface(self) -> None:
+        """Observe retained root-link migration debt, not generated-only adoption."""
         agents = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
         constitution = (ROOT / "CONSTITUTION.md").read_text(encoding="utf-8")
         self.assertIn("dist/adapters/README.md", agents)
         self.assertIn("docs/design/engineering/packaging.md", agents)
         self.assertIn("docs/design/system.md", constitution)
         self.assertTrue((ROOT / "dist/adapters/README.md").is_file())
+        self.assertTrue((ROOT / "packages/rigorloop/README.md").is_file())
 
     def test_adapter_readme_records_adapter_artifact_metadata_location(self) -> None:
-        text = (ROOT / "dist" / "adapters" / "README.md").read_text(encoding="utf-8")
-
+        text = (ROOT / "packages/rigorloop/README.md").read_text(encoding="utf-8")
+        # Public consumers need the trust location and local-archive rule; an old
+        # maintainer-report heading is not evidence for current installation.
         self.assertNotIn("docs/workflows.md", text)
-        self.assertIn("Adapter artifact metadata", text)
-        self.assertIn("`docs/reports/adapter-artifacts/releases/<version>.yaml`", text)
-        self.assertIn("support matrix", text)
+        self.assertIn("Package-bundled trusted metadata identifies the official archive", text)
+        self.assertIn("uses the same trusted metadata and verification for a local copy", text)
+        self.assertIn("does not accept a substitute trust root", text)
 
     def test_contributor_docs_keep_codex_runtime_local_and_untracked(self) -> None:
         docs = {
@@ -252,7 +255,7 @@ class AdapterContractTests(unittest.TestCase):
 
         for path, text in docs.items():
             with self.subTest(path=path):
-                self.assertIn("dist/adapters/README.md", text)
+                self.assertIn("packages/rigorloop/README.md", text)
                 self.assertIn("release archives", text.lower())
                 self.assertIn("`.codex/skills/`", text)
                 self.assertIn("untracked", text)
@@ -266,18 +269,46 @@ class AdapterContractTests(unittest.TestCase):
                 self.assertNotIn("MUST NOT be hand-edited or tracked", text)
 
     def test_adapter_manifest_remains_metadata_only(self) -> None:
-        manifest_path = ROOT / "dist" / "adapters" / "manifest.yaml"
-        manifest = manifest_path.read_text(encoding="utf-8")
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            skills = copy_fixture_skills(root, ("portable-basic",))
+            output = root / "candidate"
+            active = root / "project/.agents/skills/local/SKILL.md"
+            active.parent.mkdir(parents=True)
+            active.write_bytes(b"Unrelated active installation.\n")
+            def files(directory):
+                return {p.relative_to(directory): p.read_bytes()
+                        for p in directory.rglob("*") if p.is_file()}
+            source_before, active_before = files(skills), files(root / "project")
+            sync_adapter_output("v9.8.7", skills_root=skills, output_root=output)
+            self.assertEqual(validate_adapter_output("v9.8.7", skills_root=skills, output_root=output), [])
+            manifest_path = output / "manifest.yaml"
+            manifest = manifest_path.read_text(encoding="utf-8")
+            self.assertEqual(manifest, "version: v9.8.7\nskills:\n  portable-basic:\n"
+                             "    portable: true\n    adapters: [codex, claude]\n")
+            self.assertEqual(files(skills), source_before)
+            self.assertEqual(files(root / "project"), active_before)
+            self.assertFalse((output / "opencode").exists())
+            self.assertFalse((root / "dist/adapters").exists())
 
-        self.assertIn("version:", manifest)
-        self.assertIn("skills:", manifest)
-        self.assertNotIn("command_aliases:", manifest)
-        self.assertNotIn("# ", manifest)
-        self.assertNotIn("## ", manifest)
-        self.assertNotIn("description:", manifest)
-        self.assertNotIn("argument-hint:", manifest)
-        self.assertNotIn("When to use", manifest)
-        self.assertNotIn("How to use", manifest)
+            for mutation, diagnostic in (
+                (None, "generated adapter manifest is missing"),
+                (manifest.replace("version: v9.8.7", "version: v9.8.8"),
+                 "generated adapter manifest version mismatch: expected v9.8.7, found v9.8.8"),
+            ):
+                with self.subTest(mutation="missing" if mutation is None else "stale"):
+                    manifest_path.write_text(manifest)
+                    self.assertEqual(collect_adapter_drift_entries("v9.8.7", skills_root=skills,
+                                                                  output_root=output), ())
+                    if mutation is None:
+                        manifest_path.unlink()
+                    else:
+                        manifest_path.write_text(mutation)
+                    before = files(root)
+                    drift = collect_adapter_drift_entries("v9.8.7", skills_root=skills, output_root=output)
+                    self.assertEqual([(e.category, e.path, e.detail) for e in drift],
+                                     [("manifest-error", manifest_path, diagnostic)])
+                    self.assertEqual(files(root), before)
 
     def test_generated_adapter_archives_are_not_committed(self) -> None:
         result = subprocess.run(

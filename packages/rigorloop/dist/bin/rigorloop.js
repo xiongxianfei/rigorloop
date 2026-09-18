@@ -508,7 +508,7 @@ function validateMetadata(metadata, info, descriptor) {
   if (!isNonEmptyString(artifact.archive) || !isNonEmptyString(artifact.url) || !isSha256(artifact.sha256) || !Number.isInteger(artifact.size_bytes) || artifact.size_bytes < 0) {
     return { error: { code: "metadata-invalid", message: `${descriptor.displayName} adapter artifact metadata is incomplete.` } };
   }
-  if (artifact.tree_hash_algorithm && artifact.tree_hash_algorithm !== "rigorloop-tree-hash-v1") {
+  if (artifact.tree_hash_algorithm !== undefined && !["rigorloop-tree-hash-v1", "rigorloop-tree-hash-v2"].includes(artifact.tree_hash_algorithm)) {
     return { error: { code: "metadata-invalid", message: "Unsupported tree hash algorithm in adapter metadata." } };
   }
   if (artifact.install_roots || artifact.root_hashes) {
@@ -624,7 +624,7 @@ function isArchiveSupportEntry(name) {
   return name === "AGENTS.md" || name === "CLAUDE.md";
 }
 
-function fileRowsForTreeRoot(entries, installRoot) {
+function fileRowsForTreeRoot(entries, installRoot, algorithm) {
   return entries
     .filter((entry) => !entry.directory && entry.name.startsWith(`${installRoot}/`))
     .map((entry) => {
@@ -632,18 +632,21 @@ function fileRowsForTreeRoot(entries, installRoot) {
       const bytes = relativePath.endsWith(".md") ? normalizeText(entry.bytes) : entry.bytes;
       return [relativePath, sha256(bytes)];
     })
-    .sort(([left], [right]) => left.localeCompare(right));
+    .sort(([left], [right]) => algorithm === "rigorloop-tree-hash-v2"
+      ? Buffer.compare(Buffer.from(left, "utf8"), Buffer.from(right, "utf8"))
+      : left.localeCompare(right));
 }
 
 
 function rootHashesForEntries(entries, descriptor, artifact) {
+  const algorithm = artifact.tree_hash_algorithm ?? "rigorloop-tree-hash-v1";
   return Object.fromEntries(
     Object.entries(rootsForArtifact(descriptor, artifact)).map(([role, root]) => {
-      const rows = fileRowsForTreeRoot(entries, root);
+      const rows = fileRowsForTreeRoot(entries, root, algorithm);
       return [
         role,
         {
-          tree_sha256: treeHashForRows(rows),
+          tree_sha256: treeHashForRows(rows, algorithm),
           file_count: rows.length,
         },
       ];
@@ -651,8 +654,12 @@ function rootHashesForEntries(entries, descriptor, artifact) {
   );
 }
 
-function treeHashForRows(rows) {
-  const manifest = `rigorloop-tree-hash-v1\n${rows.map(([path, hash]) => `${path}\t${hash}`).join("\n")}\n`;
+function treeHashForRows(rows, algorithm) {
+  // Preserve the historical verifier exactly; v2 specifies byte ordering and
+  // one terminating newline per row, including the empty-manifest case.
+  const manifest = algorithm === "rigorloop-tree-hash-v2"
+    ? `${algorithm}\n${rows.map(([path, hash]) => `${path}\t${hash}\n`).join("")}`
+    : `rigorloop-tree-hash-v1\n${rows.map(([path, hash]) => `${path}\t${hash}`).join("\n")}\n`;
   return sha256(Buffer.from(manifest, "utf8"));
 }
 

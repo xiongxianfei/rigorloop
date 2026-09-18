@@ -6,6 +6,7 @@ from __future__ import annotations
 import json
 import hashlib
 import os
+import re
 import subprocess
 import tempfile
 import urllib.error
@@ -29,6 +30,10 @@ SUPPORTED_TARGETS = frozenset(ROUTINE_TARGETS)
 HISTORICAL_TARGETS = ("codex", "claude", "opencode")
 NPM_DIST_TAGS = frozenset(("latest",))
 LEGACY_IMPLICIT_LATEST_PROFILES = frozenset(("v0.3.5", "v0.3.6"))
+GENERATED_REGION_SURFACES = frozenset((
+    "release-metadata", "adapter-artifact-expectations", "pending-npm-publication",
+    "published-npm-publication", "target-init-smoke", "current-version-fixtures", "timing-evidence",
+))
 REQUIRED_VALUE = "required"
 RELEASE_VALIDATION_KEYS = frozenset(
     (
@@ -948,15 +953,16 @@ def _public_install_root_evidence(target: str, cwd: Path) -> tuple[str | None, s
 
 
 def _tree_hash_and_file_count(root: Path) -> tuple[str, int]:
+    from lib.packaging.adapter_distribution import _normalized_tree_hash_bytes, _tree_hash_for_rows
+
     rows: list[tuple[str, str]] = []
     for path in sorted(root.rglob("*")):
-        if not path.is_file():
+        if path.is_symlink() or not path.is_file():
             continue
         relative = path.relative_to(root).as_posix()
-        digest = hashlib.sha256(path.read_bytes()).hexdigest()
+        digest = hashlib.sha256(_normalized_tree_hash_bytes(relative, path.read_bytes())).hexdigest()
         rows.append((relative, digest))
-    manifest = "".join(f"{relative}\t{digest}\n" for relative, digest in rows)
-    return hashlib.sha256(manifest.encode("utf-8")).hexdigest(), len(rows)
+    return _tree_hash_for_rows(rows), len(rows)
 
 
 def _public_smoke_output_value(smoke: PublicSmokeResult, key: str) -> str | None:
@@ -1977,6 +1983,7 @@ def _replace_or_append_generated_region(
     profile: ReleaseProfile,
     generated: str,
 ) -> str:
+    _validate_generated_regions(text, profile)
     start_prefix = f"<!-- rigorloop:generated:start release-transaction surface={surface} "
     end = _generated_region_end(surface)
     start_index = text.find(start_prefix)
@@ -1990,6 +1997,46 @@ def _replace_or_append_generated_region(
     if end_index < len(text) and text[end_index:end_index + 1] == "\n":
         end_index += 1
     return text[:start_index] + generated + text[end_index:]
+
+
+def _validate_generated_regions(text: str, profile: ReleaseProfile) -> None:
+    prefix = "<!-- rigorloop:generated:"
+    positions = [match.start() for match in re.finditer(re.escape(prefix), text)]
+    markers = []
+    for index, start in enumerate(positions):
+        limit = positions[index + 1] if index + 1 < len(positions) else len(text)
+        end = text.find("-->", start + len(prefix), limit)
+        body = text[start + len(prefix):end if end != -1 else limit]
+        markers.append((body, end != -1))
+
+    # Validate the closed vocabulary across all markers before pair consistency.
+    for body, _ in markers:
+        surface = re.search(r"(?:^|\s)surface=(\S+)", body)
+        if surface and surface.group(1) not in GENERATED_REGION_SURFACES:
+            raise ReleaseProfileError(profile.path, [f"generated region unknown surface: {surface.group(1)}"])
+
+    opened = None
+    for body, terminated in markers:
+        marker = re.fullmatch(r"(start|end) (\S+) surface=(\S+)(?: profile=(\S+))? ", body)
+        if not terminated or marker is None:
+            raise ReleaseProfileError(profile.path, ["generated region malformed marker"])
+        direction, namespace, surface, profile_path = marker.groups()
+        if namespace != "release-transaction":
+            raise ReleaseProfileError(profile.path, ["generated region namespace must be release-transaction"])
+        if direction == "start":
+            if profile_path is None:
+                raise ReleaseProfileError(profile.path, [f"generated region {surface} missing profile"])
+            if opened is not None:
+                raise ReleaseProfileError(profile.path, ["generated region nested markers are not allowed"])
+            opened = surface
+        else:
+            if profile_path is not None:
+                raise ReleaseProfileError(profile.path, [f"generated region {surface} end marker must not specify profile"])
+            if opened != surface:
+                raise ReleaseProfileError(profile.path, [f"generated region end surface {surface} does not match start {opened}"])
+            opened = None
+    if opened is not None:
+        raise ReleaseProfileError(profile.path, [f"generated region {opened} missing end marker"])
 
 
 def _generated_region_start(surface: str, profile: ReleaseProfile) -> str:

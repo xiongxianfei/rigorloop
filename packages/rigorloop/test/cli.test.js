@@ -1809,6 +1809,55 @@ test("T34 archive verification failures use exit code 3", (t) => {
   assert.equal(JSON.parse(tree.stdout).errors[0].code, "tree-hash-mismatch");
 });
 
+test("DIST independent tree representation and unknown algorithm precedence", (t) => {
+  for (const [target, root] of [["codex", ".agents/skills"], ["claude", ".claude/skills"]]) {
+    for (const algorithm of ["rigorloop-tree-hash-v2", "rigorloop-tree-hash-v1", undefined]) {
+      const cwd = tempProject(t);
+      // Literal manifest order, independent of both hashing implementations.
+      // V1 preserves a previously agreeing Unicode pair; v2 covers the formerly
+      // divergent punctuation, case ties and unnormalized Unicode byte order.
+      const names = algorithm === "rigorloop-tree-hash-v2"
+        ? ["A.md", "Z.md", "a-b.md", "a.md", "a_b.md", "c.bin", "e\u0301.md", "t.md", "ß.md", "é.md", "İ.md"]
+        : ["ß.md", "t.md"];
+      const normalized = names.map(name => [`proposal/${name}`, name === "c.bin"
+        ? Buffer.from([0xef, 0xbb, 0xbf, 0, 13, 10, 255]) : Buffer.from("Text\nkeep  \n")]);
+      const selected = algorithm ?? "rigorloop-tree-hash-v1";
+      const expected = sha256(Buffer.from(`${selected}\n` + normalized
+        .map(([path, bytes]) => `${path}\t${sha256(bytes)}\n`).join("")));
+      const fixture = fixtureArchive(cwd, { adapter: target, installRoot: root,
+        entries: [...normalized].reverse().map(([path, bytes]) => ({ name: `${root}/${path}`,
+          bytes: path.endsWith(".md") ? Buffer.from("\ufeffText\r\nkeep  \r") : bytes })),
+        metadata(metadata) {
+          metadata.artifacts[0].tree_sha256 = expected;
+          metadata.artifacts[0].file_count = normalized.length;
+          if (algorithm === undefined) delete metadata.artifacts[0].tree_hash_algorithm;
+          else metadata.artifacts[0].tree_hash_algorithm = algorithm;
+          return metadata;
+        },
+      });
+      const args = ["init", target, "--from-archive", `./${fixture.archiveName}`, "--force", "--json"];
+      const valid = runCliWithBundledMetadata(t, args, cwd, fixture.metadata);
+      assert.equal(valid.status, 0, valid.stdout + valid.stderr);
+      for (const [path, bytes] of normalized) assert.deepEqual(readFileSync(join(cwd, root, path)), bytes);
+      const before = projectSnapshot(cwd);
+      for (const unknownValue of ["unknown_value", ""]) {
+        const invalid = structuredClone(fixture.metadata);
+        invalid.artifacts[0].tree_hash_algorithm = unknownValue;
+        invalid.artifacts[0].tree_sha256 = "0".repeat(64);
+        const unknown = runCliWithBundledMetadata(t, args, cwd, invalid);
+        assert.equal(unknown.status, 3, unknown.stdout + unknown.stderr);
+        assert.equal(JSON.parse(unknown.stdout).errors[0].code, "metadata-invalid");
+        assert.equal(JSON.parse(unknown.stdout).errors[0].message, "Unsupported tree hash algorithm in adapter metadata.");
+        invalid.artifacts[0].tree_hash_algorithm = selected;
+        const inconsistent = runCliWithBundledMetadata(t, args, cwd, invalid);
+        assert.equal(inconsistent.status, 3, inconsistent.stdout + inconsistent.stderr);
+        assert.equal(JSON.parse(inconsistent.stdout).errors[0].code, "tree-hash-mismatch");
+        assert.deepEqual(projectSnapshot(cwd), before);
+      }
+    }
+  }
+});
+
 for (const [target, installRoot] of [
   ["codex", ".agents/skills"],
   ["claude", ".claude/skills"],

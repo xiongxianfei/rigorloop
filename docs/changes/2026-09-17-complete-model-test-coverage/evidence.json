@@ -2896,6 +2896,294 @@
         }
       ],
       "summary": "Eight test files; no production/schema/catalog/instruction changes.23 root format cases passed, then final vocabulary control1passed; core4passed and Installation9passed. Full selected CI passed433 (425Node+8realnpm-package), wall98.802s/sumworkers333.978s, jobs4. All final test subject hashes match. Six added native cases, all previous IDs retained; complete known native population now1346, to be independently reconciled in M8. Root directly reproduced the old blocker fixture false positive: both original control and origin rewrite failed broken-reference; normalized current resolution now gives accepted baseline and intended invalid-input preservation failure while original origin remains. Unknown values precede a separately reachable consistency fault; all five typed-ref fields, seven decision target classes, duplicate applicability and same-ID/different-file acceptance are protected. Actual public dense1501failedchecks save returns bounded storage-only success, faithful retrieval and matching observation identity. Complete preview snapshots include private paths and counted mutation attempts with real saved positive control. Valid-root selector controls expose premature access. Real archives and childfs fault establish partial completed/failed/untouched/retained output, default retry preservation and explicitly forced recovery for both targets/formats; counted state/acquisition guards have loaded markers. Seven isolated copied-production mutations are detected at intended assertions; four core mutants also pass the former weaker assertions. These are intentional proof probes, not seven discovered production defects. Bound supporting data includes exact logs/literals/identities and one complete actual-store walkthrough:16realpublicCLIcalls,3realchecker outcomes A-pass/B-fail/C-pass,91literal files/90manifesthashes/35sourceidentities independently checked by root. F1 current correction/disposition remains distinct from B1 copied immutable B-origin/open reporter concern/current C; prior Verify bytes unchanged with stale applicability and no Gitbasis. Actor engineering judgments are supplied exercise data. Independent semantic assessment, milestone approval, fresh final review and Verify remain required. Unchanged detailed logging/concurrency/recovery/trust/retirement native protection retained; M8 owns fresh fulladapters and packedempty/unsafe expansion. No hosted CI/publication or speedup claimed."
+    },
+    {
+      "actor": {
+        "id": "root-implementer",
+        "role": "implement"
+      },
+      "id": "m8-generated-region-red",
+      "procedure": "python -m unittest discover -s tests/engineering/release -p release_preparation_tests.py -k malformed_generated -v",
+      "result": "failed",
+      "subjects": [
+        {
+          "identity": "sha256:2b3a3dd7fe979fd1df632ca08ffd62bf63086950631a9b89ab9cb39674fa3132",
+          "path": "docs/changes/2026-09-17-complete-model-test-coverage/m8-generated-region-red.md"
+        },
+        {
+          "identity": "sha256:779e86f05bf64da7f9eb91aa01abeb2e13ddb5f51d4413b6b13c3dbfc8625dbc",
+          "path": "scripts/lib/release/release_transaction.py"
+        },
+        {
+          "identity": "sha256:6317d3141237242ed76d744e29931d8229567f061931e84075142c61f4cf734f",
+          "path": "docs/design/engineering/release/release.md"
+        },
+        {
+          "identity": "sha256:7d6165830c81846344328abb8f0057a2ac99aa6e9085c9a707ff36c03b29eba3",
+          "path": "docs/design/engineering/release/test-design/test-design.md"
+        },
+        {
+          "identity": "sha256:161f55fc205fce02c5db293fef5a4fbabd98ca10e426fb8c085e6a630bbb5911",
+          "path": "docs/plans/2026-09-17-complete-model-test-coverage.md"
+        }
+      ],
+      "summary": "Five accepted-control malformed marker variants; four fail the intended ReleaseProfileError-not-raised assertion before production correction. Exact frozen tests/helpers/production and red log are bound supporting evidence. Correction within existing REL-TC030 marker contract; exact original proof and surrounding release checks required."
+    },
+    {
+      "actor": {
+        "id": "root-implementer",
+        "role": "implement"
+      },
+      "id": "m8-hash-gap",
+      "procedure": "node --test --test-name-pattern='DIST independent tree' packages/rigorloop/test/cli.test.js; python tests/engineering/packaging/test-adapter-distribution.py AdapterArchiveTests.test_tree_hash_representation_has_independent_order_normalization_and_count AdapterArchiveTests.test_public_tree_hash_uses_same_representation_and_excludes_symlinks",
+      "result": "failed",
+      "subjects": [
+        {
+          "identity": "sha256:939e04d4384d42249391c25384ad57019227cd1c3e8ae2702e61117ef75b8e1a",
+          "path": "docs/changes/2026-09-17-complete-model-test-coverage/m8-hash-gap.md"
+        },
+        {
+          "identity": "sha256:c1e253f0b38f8c5068997287330054ac20959f1a51a5e8b973e53c5b752f8026",
+          "path": "docs/design/engineering/packaging.md"
+        },
+        {
+          "identity": "sha256:161f55fc205fce02c5db293fef5a4fbabd98ca10e426fb8c085e6a630bbb5911",
+          "path": "docs/plans/2026-09-17-complete-model-test-coverage.md"
+        },
+        {
+          "identity": "sha256:61088e148de0f83999f82ce0af6a386cb08d12f53b2b811e462530dac68d8016",
+          "path": "tests/engineering/packaging/adapter_archive_tests.py"
+        },
+        {
+          "identity": "sha256:721dde6e3dc1b5e31358b09f33123ca096d8378f0439e631cd75277fe4a1f12c",
+          "path": "packages/rigorloop/test/cli.test.js"
+        },
+        {
+          "identity": "sha256:d261b723bf793fdbd85acb15438b997dced864b6e348a46e1cdaa5e683b38ec9",
+          "path": "scripts/lib/packaging/adapter_distribution.py"
+        },
+        {
+          "identity": "sha256:063be82719be22979d28c8412a05d094530c1889d20dc240d81b61abb5dec916",
+          "path": "scripts/lib/release/release_transaction.py"
+        },
+        {
+          "identity": "sha256:1adea2a89d5aff9d3cb88aaac38bf4fa05dabcfdcf24f36656dece99fa61c266",
+          "path": "packages/rigorloop/dist/bin/rigorloop.js"
+        }
+      ],
+      "summary": "Observed actual public archive rejection for admitted hyphen/underscore filenames; producer casefold and CLI locale order disagree. Initial mixed-case raw-codepoint expectation is not sufficient contract authority. Public filesystem also omits prefix/normalization and follows symlink. Bound original logs and source identities preserved; resolve exact compatibility rule in owning Design before dependent fix."
+    },
+    {
+      "actor": {
+        "id": "root-implementer",
+        "role": "implement"
+      },
+      "id": "m8-v2-red",
+      "procedure": "node --test --test-name-pattern='DIST independent tree' packages/rigorloop/test/cli.test.js; python tests/engineering/packaging/test-adapter-distribution.py AdapterArchiveTests.test_tree_hash_representation_has_independent_order_normalization_and_count AdapterArchiveTests.test_public_tree_hash_uses_same_representation_and_excludes_symlinks",
+      "result": "failed",
+      "subjects": [
+        {
+          "identity": "sha256:0918b9101e3a02768e226c9e7e9a267fdb28dc4299f326dc9f19cba0642e5da0",
+          "path": "docs/changes/2026-09-17-complete-model-test-coverage/m8-v2-regression.md"
+        },
+        {
+          "identity": "sha256:4dc2c876c89322591550cd9ca1c078310d5a9773a370ac610b44dec68ef7614b",
+          "path": "tests/engineering/packaging/adapter_archive_tests.py"
+        },
+        {
+          "identity": "sha256:f816d3b4f3d0856d7072e525a755a22b502c3088ab3d5387bf85ba17d4bc930e",
+          "path": "packages/rigorloop/test/cli.test.js"
+        },
+        {
+          "identity": "sha256:1adea2a89d5aff9d3cb88aaac38bf4fa05dabcfdcf24f36656dece99fa61c266",
+          "path": "packages/rigorloop/dist/bin/rigorloop.js"
+        },
+        {
+          "identity": "sha256:d261b723bf793fdbd85acb15438b997dced864b6e348a46e1cdaa5e683b38ec9",
+          "path": "scripts/lib/packaging/adapter_distribution.py"
+        },
+        {
+          "identity": "sha256:063be82719be22979d28c8412a05d094530c1889d20dc240d81b61abb5dec916",
+          "path": "scripts/lib/release/release_transaction.py"
+        },
+        {
+          "identity": "sha256:691551f89d65a2f8a38ce57f68098c12841ecf902f8078a97d861e3466190670",
+          "path": "docs/design/engineering/packaging.md"
+        },
+        {
+          "identity": "sha256:f45401105ccbb569d321ad090c96a8a271c24197a4d727d3e993bb32e2b4022d",
+          "path": "docs/plans/2026-09-17-complete-model-test-coverage.md"
+        },
+        {
+          "identity": "sha256:375195c4ff4d8cc88d221ce1f6d516a04ec49d01a9f8a706f0972f18e5b087c4",
+          "path": "docs/changes/2026-09-17-complete-model-test-coverage/reviews/design-review-m8-hash.json"
+        },
+        {
+          "identity": "sha256:844a9f3194e718d125729c43faee6a50e89b8cc9c064640ef0fe1758fcde9d2e",
+          "path": "docs/changes/2026-09-17-complete-model-test-coverage/reviews/delivery-review-m8-hash.json"
+        }
+      ],
+      "summary": "Identity-bound pre-correction v2 producer/CLI and v1 public-observer regressions. CLI rejects newalgorithm before writes, producer has noalgorithmargument, legacyobservation fails expectednormalizedprefix/count. Exact newproof follows independently approved newalgorithm decision; earlierambiguousv1proof notretargeted. Counterexample andcompatibilitycoverage bound supportingMarkdown."
+    },
+    {
+      "actor": {
+        "id": "root-implementer",
+        "role": "implement"
+      },
+      "id": "m8-provider-hash-red",
+      "procedure": "python -m unittest discover -s tests/engineering/release -p release_provider_tests.py -v",
+      "result": "failed",
+      "subjects": [
+        {
+          "identity": "sha256:e7f65d87b2f477635ce971ad22a68e62f82bec13aded112c0beec8d19b1194c7",
+          "path": "docs/changes/2026-09-17-complete-model-test-coverage/m8-provider-hash-red.md"
+        },
+        {
+          "identity": "sha256:4befc55419a9f1f237cade6ccf40b4e42ce24c0a3e13cf6c522ac5dabeab78f1",
+          "path": "tests/engineering/release/release_provider_tests.py"
+        },
+        {
+          "identity": "sha256:0ca006a103b2b651991b8f67f135d826cae979020ebac5d2f0b1ae56e445e9b5",
+          "path": "tests/engineering/release/test-release-transaction.py"
+        },
+        {
+          "identity": "sha256:4d6b854ce2a1f8f9911ecf48765c196a8e2971f5ae7ae80d90d07b56b9017d2e",
+          "path": "scripts/lib/release/release_provider.py"
+        },
+        {
+          "identity": "sha256:d261b723bf793fdbd85acb15438b997dced864b6e348a46e1cdaa5e683b38ec9",
+          "path": "scripts/lib/packaging/adapter_distribution.py"
+        },
+        {
+          "identity": "sha256:063be82719be22979d28c8412a05d094530c1889d20dc240d81b61abb5dec916",
+          "path": "scripts/lib/release/release_transaction.py"
+        },
+        {
+          "identity": "sha256:691551f89d65a2f8a38ce57f68098c12841ecf902f8078a97d861e3466190670",
+          "path": "docs/design/engineering/packaging.md"
+        }
+      ],
+      "summary": "Four methods, real NetworkPublisher/private filesystem and external subprocess substitution. V1/missing-v1 controls accepted; v2two-target failure, wrong-digest nonrejection and three explicit unknown/empty/null diagnostics establish approved correction need. Symlink safety remains enforced. Bound exact tests/log/sourceidentities before Python production change; original tests must pass unchanged."
+    },
+    {
+      "actor": {
+        "id": "root-implementer",
+        "role": "implement"
+      },
+      "id": "m8-complete-alignment",
+      "procedure": "bash scripts/ci.sh --mode explicit --jobs 4 --broad-smoke --durations 20 --path tests/engineering/packaging/test-adapter-distribution.py --path tests/engineering/packaging/test-npm-package-publication.py --path tests/engineering/release/test-release-transaction.py --path tests/engineering/validation/test-boundary-first-reference.py --path tests/engineering/validation/test-boundary-first-validation.py --path tests/engineering/validation/test-change-metadata-validator.py --path tests/engineering/validation/test-documentation-prose-validator.py --path tests/engineering/validation/test-governed-lifecycle-cli-validator.py --path tests/engineering/validation/test-guide-system-validator.py --path tests/engineering/validation/test-markdown-readability-validator.py --path tests/engineering/validation/test-select-validation.py --path tests/engineering/validation/test-validation-execution.py --path tests/skill/test-skill-validator.py --path packages/rigorloop/test",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:c5c8f3d247cc87f43821644494fc434aaed196d269b062f86989c5c92faeba2f",
+          "path": "docs/changes/2026-09-17-complete-model-test-coverage/m8-case-costs.csv"
+        },
+        {
+          "identity": "sha256:d1f69b374a54925ad048685ec757e88b7ad6532addc22771619c5913e3a4b34b",
+          "path": "docs/changes/2026-09-17-complete-model-test-coverage/m8-validation-results.json"
+        },
+        {
+          "identity": "sha256:649920588d7950ecf61c88dc3238552526191ebb2cc56358ddd88d5e0c9f6ba3",
+          "path": "docs/changes/2026-09-17-complete-model-test-coverage/m8-validation-basis.json"
+        },
+        {
+          "identity": "sha256:16710f66ce6effc20c607c5131c189921b058aa0d1d4b02d219ba0fdfe6dd038",
+          "path": "docs/changes/2026-09-17-complete-model-test-coverage/m8-completion-proof.md"
+        },
+        {
+          "identity": "sha256:9b4fc71b418adb8d0b60328d0bd2d8577900f5fbc6f60f927f5a0c42b66e9dfa",
+          "path": "packages/rigorloop/dist/bin/rigorloop.js"
+        },
+        {
+          "identity": "sha256:f816d3b4f3d0856d7072e525a755a22b502c3088ab3d5387bf85ba17d4bc930e",
+          "path": "packages/rigorloop/test/cli.test.js"
+        },
+        {
+          "identity": "sha256:82ae9adfc16d8e3c6f2c78c2ba2810ce0281ba21eb7e120248dab62f382ea7f9",
+          "path": "scripts/lib/packaging/adapter_distribution.py"
+        },
+        {
+          "identity": "sha256:8054d3176cdc3c7618ea7946f5bbe1d38a9cb51c0d0d074d0694dbdfa0bd5567",
+          "path": "scripts/lib/release/release_provider.py"
+        },
+        {
+          "identity": "sha256:41b1e57b6578b820d0be4edfa711175a981027c59037357ab2747d630083eb76",
+          "path": "scripts/lib/release/release_transaction.py"
+        },
+        {
+          "identity": "sha256:4dc2c876c89322591550cd9ca1c078310d5a9773a370ac610b44dec68ef7614b",
+          "path": "tests/engineering/packaging/adapter_archive_tests.py"
+        },
+        {
+          "identity": "sha256:b03fe9fffc3350dc4038ed1e34afc1b015df0ba2731efe7d0e327c7d4ef57817",
+          "path": "tests/engineering/packaging/adapter_contract_tests.py"
+        },
+        {
+          "identity": "sha256:6c5e018084f5116ed82ced7b3c1945bd1711e344d344ba5983347b4f3bd78ecc",
+          "path": "tests/engineering/packaging/adapter_metadata_tests.py"
+        },
+        {
+          "identity": "sha256:6f5cc53e1b57fc1691891340f1d15880dcfef3db41c3506226096cb3760b5556",
+          "path": "tests/engineering/packaging/test-npm-package-publication.py"
+        },
+        {
+          "identity": "sha256:6967cfa955805e45e7c51f1da9280860237a7f129018f4948031542286ee73b1",
+          "path": "tests/engineering/release/release_candidate_tests.py"
+        },
+        {
+          "identity": "sha256:fbf4eb6cc9d86ea1ffce8188681e77615f23e1ab308ab8a7f6dea76edc5d2730",
+          "path": "tests/engineering/release/release_coordination_fixtures.py"
+        },
+        {
+          "identity": "sha256:58733ade8bcfd25c8a419cce330ad86cc6dfcf2a53f2cc22eea0d32c7925d2fe",
+          "path": "tests/engineering/release/release_execution_tests.py"
+        },
+        {
+          "identity": "sha256:ea6291b7de3107b140b6c1a70756932759c809dc44c5f5caee635acab64c454b",
+          "path": "tests/engineering/release/release_fixture_helpers.py"
+        },
+        {
+          "identity": "sha256:7dbe787b4147b8950d281581ca4976cc8505d0e155fc4c0edab11fb243f8afb3",
+          "path": "tests/engineering/release/release_preflight_tests.py"
+        },
+        {
+          "identity": "sha256:1008f6e6d57f30dd47d1235cd419e23cd959bb8c28ef7b7d7aa85dfb9f33ade7",
+          "path": "tests/engineering/release/release_preparation_tests.py"
+        },
+        {
+          "identity": "sha256:51fb517ef17d9eaa956e61b88aa6f67d066d1196e291ab76ac07b574584a6e41",
+          "path": "tests/engineering/release/release_profile_tests.py"
+        },
+        {
+          "identity": "sha256:7ad08a3a28879dcc8c61db1d29b20522da2821f0391dd3a574641899e15ac10c",
+          "path": "tests/engineering/release/release_provider_fixtures.py"
+        },
+        {
+          "identity": "sha256:09618b3d5549e55d31745096f793dee6e9805a312c3548d42e8c67c75b113521",
+          "path": "tests/engineering/release/release_publication_tests.py"
+        },
+        {
+          "identity": "sha256:0ca006a103b2b651991b8f67f135d826cae979020ebac5d2f0b1ae56e445e9b5",
+          "path": "tests/engineering/release/test-release-transaction.py"
+        },
+        {
+          "identity": "sha256:4befc55419a9f1f237cade6ccf40b4e42ce24c0a3e13cf6c522ac5dabeab78f1",
+          "path": "tests/engineering/release/release_provider_tests.py"
+        },
+        {
+          "identity": "sha256:691551f89d65a2f8a38ce57f68098c12841ecf902f8078a97d861e3466190670",
+          "path": "docs/design/engineering/packaging.md"
+        },
+        {
+          "identity": "sha256:6317d3141237242ed76d744e29931d8229567f061931e84075142c61f4cf734f",
+          "path": "docs/design/engineering/release/release.md"
+        },
+        {
+          "identity": "sha256:f45401105ccbb569d321ad090c96a8a271c24197a4d727d3e993bb32e2b4022d",
+          "path": "docs/plans/2026-09-17-complete-model-test-coverage.md"
+        }
+      ],
+      "summary": "M8 complete current-source proof: 1362 native +6 non-case checks all passed, complete scope; all M1 IDs retained, no M2 full-baseline removals,16 M8 additions. Wall559.484s / sumworkers1913.045s, not speedup. Supporting artifacts bind exact per-case timing/rerun/status, rawreport, complete source/environment/baseline and group-level proof. Actual fulladapters, npm pack/install and Release candidate/provider composition retained; marker and hash red/green plus safe partialfailure/retry, unknownfirst, explicitv1/v2compatibility and scoped conditional applicability. All original subjects retained in earlier evidence. Supplemental Design/Delivery approvals govern v2. No authored catalog rewrite, live publication, hosted CI or final readiness claimed."
     }
   ],
   "schema_version": 3

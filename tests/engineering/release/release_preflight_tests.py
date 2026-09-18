@@ -3,10 +3,12 @@
 from __future__ import annotations
 
 import sys
+from contextlib import ExitStack
 from pathlib import Path
 import shutil
 import tempfile
 import unittest
+from unittest.mock import patch
 import json
 import subprocess
 
@@ -14,7 +16,7 @@ ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / "scripts"))
 
 from lib.release.release_transaction import release_preflight
-from release_fixture_helpers import (PROFILE_FIXTURES, assert_errors_contain, init_release_git_fixture, make_prepared_release, relative_file_texts)
+from release_fixture_helpers import (PROFILE_FIXTURES, assert_errors_contain, init_release_git_fixture, make_prepared_release, relative_file_texts, relative_tree)
 
 
 class ReleasePreflightTests(unittest.TestCase):
@@ -24,14 +26,38 @@ class ReleasePreflightTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             make_prepared_release(root)
-            before = relative_file_texts(root)
+            init_release_git_fixture(root)
+            before = relative_tree(root)
+            allowed = (
+                ("git", "-C", str(root), "show-ref", "--verify", "--quiet", "refs/tags/v0.3.5"),
+                ("git", "-C", str(root), "remote", "get-url", "origin"),
+            )
+            attempts = {name: [] for name in ("subprocess.run", "subprocess.Popen", "urllib.request.urlopen", "socket.create_connection")}
 
-            first = release_preflight("v0.3.5", root=root)
-            second = release_preflight("v0.3.5", root=root)
-            after = relative_file_texts(root)
+            def observe(boundary, delegate=None):
+                def guarded(*args, **kwargs):
+                    command = tuple(args[0]) if delegate else args
+                    attempts[boundary].append(command)
+                    if delegate and command in allowed:
+                        return delegate(*args, **kwargs)
+                    raise AssertionError(f"unexpected preflight boundary: {boundary} {command}")
+                return guarded
+
+            with ExitStack() as stack:
+                for boundary, delegate in (("subprocess.run", subprocess.run), ("subprocess.Popen", subprocess.Popen), ("urllib.request.urlopen", None), ("socket.create_connection", None)):
+                    stack.enter_context(patch(boundary, side_effect=observe(boundary, delegate)))
+                first = release_preflight("v0.3.5", root=root)
+                self.assertEqual(relative_tree(root), before)
+                second = release_preflight("v0.3.5", root=root)
+            after = relative_tree(root)
+            self.assertEqual(attempts["subprocess.run"], list(allowed) * 2)
+            self.assertEqual(attempts["subprocess.Popen"], list(allowed) * 2)
+            self.assertEqual(attempts["urllib.request.urlopen"], [])
+            self.assertEqual(attempts["socket.create_connection"], [])
 
         self.assertEqual(first.errors, ())
         self.assertEqual(second.errors, ())
+        self.assertEqual(first, second)
         self.assertEqual(before, after)
         self.assertEqual(first.external_actions, ())
 

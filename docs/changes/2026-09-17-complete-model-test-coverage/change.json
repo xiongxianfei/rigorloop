@@ -4,7 +4,7 @@
       "id": "milestone-reviewer",
       "role": "review"
     },
-    "reason": "M7 proof alignment implemented in eight native test files. Full selected CLI/native npm package proof passed433, source hashes remain exact, all prior native IDs retained with six additional Installation cases. Bound literal actual-store walkthrough and independent failure-sensitivity proof supplied. Independent full milestone review and semantic assessment remain required before M7 completion/M8. No final readiness claimed.",
+    "reason": "M8 scope-complete implementation and approved hash correction: complete1362native+6noncase run passed, allM1 andM2 identities retained, generated per-case costs and exactmeasurementbasis registered; original red/green proof preserved and rootblockersresolved. Independent fullM8 review and Packaging reporter disposition required before completion; fresh final whole-change review and Verify remain distinct.",
     "stage": "code-review",
     "status": "ready"
   },
@@ -38,12 +38,12 @@
     },
     {
       "actor": {
-        "id": "design-package-reviewer",
-        "role": "review"
+        "id": "root-design-author",
+        "role": "design"
       },
       "path": "docs/changes/2026-09-17-complete-model-test-coverage/reviews/design-review-final.json",
-      "reason": "The complete current 104-subject package, approved proposal and governing authority were independently assessed, including the exact authored corrections and their interactions. The sole first-pass finding is resolved by its reporter. Applicability is limited to Design-package reliance and does not imply implementation completion or continuation permission.",
-      "value": "current"
+      "reason": "Packaging hash representation amended for explicit v2 compatibility after actual producer/installer disagreement. Earlier exact 104-subject judgment preserved; unrelated model assessments retain scoped historical reliance, current amended owner requires supplemental independent review.",
+      "value": "stale"
     },
     {
       "actor": {
@@ -51,17 +51,17 @@
         "role": "implement"
       },
       "path": "docs/changes/2026-09-17-complete-model-test-coverage/evidence.json",
-      "reason": "Exact current M7 tests and executed/public supporting proof for independent milestone review; prior evidence retains its original scope.",
+      "reason": "Exact frozen final M8 implementation and complete actual population qualification; independent M8 and whole-change review and distinct Verify remain required.",
       "value": "current"
     },
     {
       "actor": {
-        "id": "delivery-package-reviewer",
-        "role": "review"
+        "id": "root-design-author",
+        "role": "design"
       },
       "path": "docs/changes/2026-09-17-complete-model-test-coverage/reviews/delivery-review.json",
-      "reason": "The complete sole primary plan and its current approved Design/proposal basis were independently inspected at their exact identities. Sequence, traceability, proof, recovery and closeout satisfy the selected scope with no material findings. Applicability is limited to this Delivery package and grants no implementation completion or continuation authority.",
-      "value": "current"
+      "reason": "Plan M8 now explicitly allocates v2 compatibility/new-candidate coordinated qualification and retained v1 controls. Earlier plan judgment preserved; current amended plan requires independent supplemental Delivery Review before dependent implementation.",
+      "value": "stale"
     },
     {
       "actor": {
@@ -196,6 +196,42 @@
       },
       "path": "docs/changes/2026-09-17-complete-model-test-coverage/reviews/code-review-m6.json",
       "reason": "Independent complete M6 assessment of committed native basis, all241 corrected semantic candidates and scoped historical evidence. Eight findings reporter-resolved; approval limited to this milestone.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "milestone-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/reviews/code-review-m7.json",
+      "reason": "Independent complete M7 assessment of exact committed native tests, bound actual-store proof and retained group allocation. Approval is limited to M7; M8 and final lifecycle gates remain.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "milestone-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/reviews/code-review-m8-packaging-first-pass.json",
+      "reason": "Scoped first-pass M8 Packaging proof gap, recorded before author correction; conditional operational applicability is explicit and grants no release approval.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "milestone-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/reviews/design-review-m8-hash.json",
+      "reason": "New complete current-package judgment: exact revised Packaging and affected interfaces reassessed;103 unchanged members retain explicitly bounded prior assessment. Original Design review is not retargeted.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "milestone-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/reviews/delivery-review-m8-hash.json",
+      "reason": "Independent complete revised primary-plan assessment against current design-review-m8-hash. New M8 compatibility/proof allocation and unchanged full sequencing are adequate; implementation and final gates remain separate.",
       "value": "current"
     }
   ],
@@ -377,6 +413,192 @@
           "path": "docs/plans/2026-09-17-complete-model-test-coverage.md"
         }
       ]
+    },
+    {
+      "evidence": "Actual red regression: missing end rejected but nested, namespace mismatch, surface mismatch and unknown surface accepted. Release stable generated Markdown representation expressly rejects these inputs.",
+      "id": "m8-generated-region-validation",
+      "origin": {
+        "evidence": "Actual red regression: missing end rejected but nested, namespace mismatch, surface mismatch and unknown surface accepted. Release stable generated Markdown representation expressly rejects these inputs.",
+        "rationale": "Supported implementation defect within approved M8, not new behavior.",
+        "reporter": {
+          "id": "root-implementer",
+          "role": "implement"
+        },
+        "required_outcome": "Validate complete generated markers and reject malformed regions before any preparation write; reject unknown surfaces before consistency; preserve human content and rerun exact frozen original proof plus selected Release validation.",
+        "subjects": [
+          {
+            "identity": "sha256:2b3a3dd7fe979fd1df632ca08ffd62bf63086950631a9b89ab9cb39674fa3132",
+            "path": "docs/changes/2026-09-17-complete-model-test-coverage/m8-generated-region-red.md"
+          },
+          {
+            "identity": "sha256:779e86f05bf64da7f9eb91aa01abeb2e13ddb5f51d4413b6b13c3dbfc8625dbc",
+            "path": "scripts/lib/release/release_transaction.py"
+          },
+          {
+            "identity": "sha256:6317d3141237242ed76d744e29931d8229567f061931e84075142c61f4cf734f",
+            "path": "docs/design/engineering/release/release.md"
+          },
+          {
+            "identity": "sha256:7d6165830c81846344328abb8f0057a2ac99aa6e9085c9a707ff36c03b29eba3",
+            "path": "docs/design/engineering/release/test-design/test-design.md"
+          },
+          {
+            "identity": "sha256:161f55fc205fce02c5db293fef5a4fbabd98ca10e426fb8c085e6a630bbb5911",
+            "path": "docs/plans/2026-09-17-complete-model-test-coverage.md"
+          }
+        ],
+        "supporting_judgment": null
+      },
+      "owner": {
+        "id": "root-implementer",
+        "role": "implement"
+      },
+      "reporter": {
+        "id": "root-implementer",
+        "role": "implement"
+      },
+      "required_outcome": "Validate complete generated markers and reject malformed regions before any preparation write; reject unknown surfaces before consistency; preserve human content and rerun exact frozen original proof plus selected Release validation.",
+      "resolution": {
+        "actor": {
+          "id": "root-implementer",
+          "role": "implement"
+        },
+        "evidence_refs": [
+          {
+            "id": "m8-complete-alignment",
+            "path": "docs/changes/2026-09-17-complete-model-test-coverage/evidence.json"
+          }
+        ],
+        "rationale": "Original frozen marker proof passes after bounded prewrite validation; complete final Release population passes on current source, preservation/retry and known/unknown controls retained."
+      },
+      "state": "resolved",
+      "subjects": [
+        {
+          "identity": "sha256:2b3a3dd7fe979fd1df632ca08ffd62bf63086950631a9b89ab9cb39674fa3132",
+          "path": "docs/changes/2026-09-17-complete-model-test-coverage/m8-generated-region-red.md"
+        },
+        {
+          "identity": "sha256:779e86f05bf64da7f9eb91aa01abeb2e13ddb5f51d4413b6b13c3dbfc8625dbc",
+          "path": "scripts/lib/release/release_transaction.py"
+        },
+        {
+          "identity": "sha256:6317d3141237242ed76d744e29931d8229567f061931e84075142c61f4cf734f",
+          "path": "docs/design/engineering/release/release.md"
+        },
+        {
+          "identity": "sha256:7d6165830c81846344328abb8f0057a2ac99aa6e9085c9a707ff36c03b29eba3",
+          "path": "docs/design/engineering/release/test-design/test-design.md"
+        },
+        {
+          "identity": "sha256:161f55fc205fce02c5db293fef5a4fbabd98ca10e426fb8c085e6a630bbb5911",
+          "path": "docs/plans/2026-09-17-complete-model-test-coverage.md"
+        }
+      ]
+    },
+    {
+      "evidence": "Independent real archive and public CLI disagree on a-b.md/a_b.md; actual filesystem helper violates normalization/prefix/membership.",
+      "id": "m8-hash-representation",
+      "origin": {
+        "evidence": "Independent real archive and public CLI disagree on a-b.md/a_b.md; actual filesystem helper violates normalization/prefix/membership.",
+        "rationale": "Concrete producer/consumer gap under DIST-SR09; no speculative comparator correction.",
+        "reporter": {
+          "id": "root-implementer",
+          "role": "implement"
+        },
+        "required_outcome": "Packaging owner settles deterministic total ordering with explicit compatibility, independent Design/Delivery assessment before implementation; then producer, installer and public observation agree on independent fixture rows, preserve established compatible archive hashes and unknown-algorithm rejection.",
+        "subjects": [
+          {
+            "identity": "sha256:939e04d4384d42249391c25384ad57019227cd1c3e8ae2702e61117ef75b8e1a",
+            "path": "docs/changes/2026-09-17-complete-model-test-coverage/m8-hash-gap.md"
+          },
+          {
+            "identity": "sha256:c1e253f0b38f8c5068997287330054ac20959f1a51a5e8b973e53c5b752f8026",
+            "path": "docs/design/engineering/packaging.md"
+          },
+          {
+            "identity": "sha256:161f55fc205fce02c5db293fef5a4fbabd98ca10e426fb8c085e6a630bbb5911",
+            "path": "docs/plans/2026-09-17-complete-model-test-coverage.md"
+          },
+          {
+            "identity": "sha256:61088e148de0f83999f82ce0af6a386cb08d12f53b2b811e462530dac68d8016",
+            "path": "tests/engineering/packaging/adapter_archive_tests.py"
+          },
+          {
+            "identity": "sha256:721dde6e3dc1b5e31358b09f33123ca096d8378f0439e631cd75277fe4a1f12c",
+            "path": "packages/rigorloop/test/cli.test.js"
+          },
+          {
+            "identity": "sha256:d261b723bf793fdbd85acb15438b997dced864b6e348a46e1cdaa5e683b38ec9",
+            "path": "scripts/lib/packaging/adapter_distribution.py"
+          },
+          {
+            "identity": "sha256:063be82719be22979d28c8412a05d094530c1889d20dc240d81b61abb5dec916",
+            "path": "scripts/lib/release/release_transaction.py"
+          },
+          {
+            "identity": "sha256:1adea2a89d5aff9d3cb88aaac38bf4fa05dabcfdcf24f36656dece99fa61c266",
+            "path": "packages/rigorloop/dist/bin/rigorloop.js"
+          }
+        ],
+        "supporting_judgment": null
+      },
+      "owner": {
+        "id": "root-implementer",
+        "role": "implement"
+      },
+      "reporter": {
+        "id": "root-implementer",
+        "role": "implement"
+      },
+      "required_outcome": "Packaging owner settles deterministic total ordering with explicit compatibility, independent Design/Delivery assessment before implementation; then producer, installer and public observation agree on independent fixture rows, preserve established compatible archive hashes and unknown-algorithm rejection.",
+      "resolution": {
+        "actor": {
+          "id": "root-implementer",
+          "role": "implement"
+        },
+        "evidence_refs": [
+          {
+            "id": "m8-complete-alignment",
+            "path": "docs/changes/2026-09-17-complete-model-test-coverage/evidence.json"
+          }
+        ],
+        "rationale": "Exact supplemental Design/Delivery approved v2 compatibility; same final root/provider red tests pass after coordinated producer/CLI/public-observer repair; independentv1controls, nofallback/unknownfirst and actual packed/currentcandidate proof all pass in complete current-source run."
+      },
+      "state": "resolved",
+      "subjects": [
+        {
+          "identity": "sha256:939e04d4384d42249391c25384ad57019227cd1c3e8ae2702e61117ef75b8e1a",
+          "path": "docs/changes/2026-09-17-complete-model-test-coverage/m8-hash-gap.md"
+        },
+        {
+          "identity": "sha256:c1e253f0b38f8c5068997287330054ac20959f1a51a5e8b973e53c5b752f8026",
+          "path": "docs/design/engineering/packaging.md"
+        },
+        {
+          "identity": "sha256:161f55fc205fce02c5db293fef5a4fbabd98ca10e426fb8c085e6a630bbb5911",
+          "path": "docs/plans/2026-09-17-complete-model-test-coverage.md"
+        },
+        {
+          "identity": "sha256:61088e148de0f83999f82ce0af6a386cb08d12f53b2b811e462530dac68d8016",
+          "path": "tests/engineering/packaging/adapter_archive_tests.py"
+        },
+        {
+          "identity": "sha256:721dde6e3dc1b5e31358b09f33123ca096d8378f0439e631cd75277fe4a1f12c",
+          "path": "packages/rigorloop/test/cli.test.js"
+        },
+        {
+          "identity": "sha256:d261b723bf793fdbd85acb15438b997dced864b6e348a46e1cdaa5e683b38ec9",
+          "path": "scripts/lib/packaging/adapter_distribution.py"
+        },
+        {
+          "identity": "sha256:063be82719be22979d28c8412a05d094530c1889d20dc240d81b61abb5dec916",
+          "path": "scripts/lib/release/release_transaction.py"
+        },
+        {
+          "identity": "sha256:1adea2a89d5aff9d3cb88aaac38bf4fa05dabcfdcf24f36656dece99fa61c266",
+          "path": "packages/rigorloop/dist/bin/rigorloop.js"
+        }
+      ]
     }
   ],
   "change_id": "2026-09-17-complete-model-test-coverage",
@@ -518,7 +740,7 @@
     {
       "id": "packaging",
       "subject": {
-        "identity": "sha256:c1e253f0b38f8c5068997287330054ac20959f1a51a5e8b973e53c5b752f8026",
+        "identity": "sha256:691551f89d65a2f8a38ce57f68098c12841ecf902f8078a97d861e3466190670",
         "path": "docs/design/engineering/packaging.md"
       }
     },
@@ -552,7 +774,7 @@
     }
   ],
   "plan": {
-    "identity": "sha256:161f55fc205fce02c5db293fef5a4fbabd98ca10e426fb8c085e6a630bbb5911",
+    "identity": "sha256:f45401105ccbb569d321ad090c96a8a271c24197a4d727d3e993bb32e2b4022d",
     "path": "docs/plans/2026-09-17-complete-model-test-coverage.md"
   },
   "proposal": {
@@ -643,6 +865,22 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-17-complete-model-test-coverage/reviews/code-review-m6.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/reviews/code-review-m7.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/reviews/code-review-m8-packaging-first-pass.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/reviews/design-review-m8-hash.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/reviews/delivery-review-m8-hash.json"
     }
   ],
   "schema_version": 3,
@@ -1469,7 +1707,7 @@
         "RF-SR-13",
         "RF-SR-14"
       ],
-      "status": "in-progress"
+      "status": "completed"
     },
     {
       "id": "m8",
@@ -1570,7 +1808,7 @@
         "VAL-SR-37",
         "VAL-SR-38"
       ],
-      "status": "pending"
+      "status": "in-progress"
     }
   ]
 }
