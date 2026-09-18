@@ -3236,6 +3236,30 @@
         }
       ],
       "summary": "PR202 run35298853602 head1a5fa08e684c068f0fda6a561ab65a2eec865388 failed before dispatch: unclassified-path tests/engineering/release/release_provider_tests.py. Existing Release aggregate imports this module, but its explicit selector registry omitted the path. Settled VAL-SR-03/05/15 and existing owner mapping require release_transaction.regression. Extended existing selection regression with this actual module; all other assertions and unknown.py rejection retained. Exact local command exit1: [FAIL] test-select-validation: 1 failed, 0 passed in 0.73s\n\nFAILED ValidationSelectionTests.test_current_skill_packaging_and_release_suites_preserve_selection (release_module='release_provider_tests.py')\n  + []\n  tests/engineering/validation/selection_contract_tests.py:271\n. Feasible automated proof; no production correction yet. Bounded PR CI repair restores one existing check mapping; no requirements, runtime product, permissions, workflow or dependency change. Earlier explicit aggregate run tested contents but did not prove full changed-path admission; prior readiness does not claim hosted success."
+    },
+    {
+      "actor": {
+        "id": "root-ci-repair",
+        "role": "support"
+      },
+      "id": "ci-provider-path-green",
+      "procedure": "python tests/engineering/validation/test-select-validation.py ValidationSelectionTests.test_current_skill_packaging_and_release_suites_preserve_selection; python scripts/select-validation.py --mode explicit --path tests/engineering/release/release_provider_tests.py; bash scripts/ci.sh --mode pr --base 1c1fe83e3bbf2e7962b4599f3a50b6a9d94fb5c6 --head 568a5af7475f62d4a88e879875fed03d7544d8db --timeout 600",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:6a215c1e0f4d8d49e429c59f1737f6e18b32de32f40b3502ced6065f07b49c5c",
+          "path": "scripts/lib/validation/validation_selection.py"
+        },
+        {
+          "identity": "sha256:d2aa1a206a2225806ad50f8084321063005f47d8c4de7a764ca699bffbd55e4c",
+          "path": "tests/engineering/validation/selection_contract_tests.py"
+        },
+        {
+          "identity": "sha256:4befc55419a9f1f237cade6ccf40b4e42ce24c0a3e13cf6c522ac5dabeab78f1",
+          "path": "tests/engineering/release/release_provider_tests.py"
+        }
+      ],
+      "summary": "Bounded PR202 CI repair: add the existing release_provider_tests.py path to the release-transaction category, selecting only existing release_transaction.regression. No check/command, requirement, runtime product, dependency, workflow trigger or permission change. Exact original regression file and provider input unchanged across red/green; focused command now exit0, 1case passed0.66s. Direct selector now statusok, emptyblockers, exactly release_transaction.regression. All other Release modules were checked and already registered; unknown.py still rejects. Exact workflow PR command passed against committed source 568a5af7475f62d4a88e879875fed03d7544d8db and its isolated prepared release snapshot: 1310 rows, 1296 native, complete scope, no failed/unstarted result, elapsed 448.420s. The authoritative PR-mode path, including preparation and complete branch admission, now passes; this closes the reproduced registration defect. Replacement hosted execution remains pending push and will be observed separately, never inferred from this local pass. Prior review and Verify retain exact original subjects and judgments; this narrow automation registration repair restores their approved check ownership and introduces no new decision basis. No test-speed optimization is included."
     }
   ],
   "schema_version": 3

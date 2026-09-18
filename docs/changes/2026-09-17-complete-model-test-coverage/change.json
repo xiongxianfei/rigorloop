@@ -51,7 +51,7 @@
         "role": "support"
       },
       "path": "docs/changes/2026-09-17-complete-model-test-coverage/evidence.json",
-      "reason": "Exact original CI rejection and unchanged-source regression before bounded selector registration correction.",
+      "reason": "Exact repaired selector and identical proof inputs; actual local PR-mode validation. Hosted replacement result is separately pending and required before claiming CI fixed remotely.",
       "value": "current"
     },
     {
@@ -663,8 +663,20 @@
         "role": "support"
       },
       "required_outcome": "Explicitly register release_provider_tests.py to the existing Release aggregate, retain unknown-path rejection and all checks, pass identical regression and authoritative PR-mode command, then observe replacement hosted CI.",
-      "resolution": null,
-      "state": "open",
+      "resolution": {
+        "actor": {
+          "id": "root-ci-repair",
+          "role": "support"
+        },
+        "evidence_refs": [
+          {
+            "id": "ci-provider-path-green",
+            "path": "docs/changes/2026-09-17-complete-model-test-coverage/evidence.json"
+          }
+        ],
+        "rationale": "The missing mapping is restored with unchanged check semantics; identical regression and exact full PR-mode preparation/selection/execution pass. Root cause is corrected. External replacement CI observation remains the final handoff step and is not claimed by this local correction record."
+      },
+      "state": "resolved",
       "subjects": [
         {
           "identity": "sha256:c5b9ebfc40bf580e54f0ab0fcb4df47b9240ed256f3131ef1b0856ba6a43d880",
