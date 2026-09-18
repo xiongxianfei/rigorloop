@@ -1,0 +1,74 @@
+{
+  "assessment_scope": "Independent interim M6/TG6 Workflow subset assessment:29 candidates/all7 WF groups and overlapping RC-concerns/final/portable/reliance and SKL recording/history. Manifest5471052b4ccd92568d382f72442bee80ade700b89d104cbcb7e581515d58b943; exact compact data 39ed29c518cf46d25b369a4710c939d83c65fb30d16da709d6be844b673eb9ed. Not the complete M6 or final whole-change review. Other Assessment/Skill/Handoff families and current executable corrections remain pending.",
+  "change_id": "2026-09-17-complete-model-test-coverage",
+  "contributors": [
+    {
+      "id": "root-implementer",
+      "role": "implement"
+    },
+    {
+      "id": "core-guidance-author",
+      "role": "implement"
+    }
+  ],
+  "findings": [
+    {
+      "evidence": "Finding ID: workflow-current-finding-evidence-control-gap. Severity: major. Location: m6-workflow-first-packet / rc-current-finding-account, candidate/reviews/concerns.json, candidate-action.json and before/candidate tests/test_importer.py. The requested action is to correct R's current F1 wording after inspecting the actual assertion; candidate evidence says tests/test_importer.py omitted full destination equality after the expected ValueError and its action calls that the missing current comparison. Both actual test files have SHA256 b5be1429ca011df38df98c29f88f5113c3cf215e0a4cdbb925110c9015208a0b and contain self.assertEqual(destination, before) immediately after that exception check. The case inherits the defective implementation but not a defective assertion. Reporter authority to edit current fields cannot make this inaccurate account compliant.",
+      "id": "workflow-current-finding-evidence-control-gap",
+      "owner": {
+        "id": "root-implementer",
+        "role": "implement"
+      },
+      "reporter": {
+        "id": "milestone-reviewer",
+        "role": "review"
+      },
+      "required_outcome": "Preserve this original packet. Supply a new exact positive control whose current finding correction is true of the inspected artifact: either include the intended missing-assertion test state and matching current evidence, or make a different truthful bounded wording correction while retaining F1 identity/required outcome and B1 immutable origin. Keep current-field editability separate from historical/origin rewriting; assess actual before/candidate bytes, reporter, rationale and changed fields. Independently rereview the affected RC-concerns group with the corrected literal evidence. No canonical policy, workflow stage, runtime validator or catalog change is required.",
+      "resolution": null,
+      "state": "open",
+      "subjects": [
+        {
+          "identity": "sha256:0b76f613667b036bc2e4dd80e219180d1579c06701919b30088e63281ad491e7",
+          "path": "docs/changes/2026-09-17-complete-model-test-coverage/m6-workflow-first-packet.md"
+        }
+      ]
+    }
+  ],
+  "id": "code-review-m6-workflow-first-pass",
+  "independence_basis": "Core-guidance-author (/root/design_skill_core) authored the frozen Workflow candidates and root-implementer (/root) integrated/recorded evidence. Reviewer /root/design_review authored none. Reviewer read the complete relevant Route/recording/reliance methods and current finding/result contracts, actual reused M4 baseline and added source/proof/context/review inputs, all29 candidate differences, full proposed actions and results, and independently reconstructed1757 file/metadata identities. The false current-evidence correction was identified from actual test bytes independently of the author labels. This review edits no implementation, candidate, plan, activity or work.",
+  "judgment": "changes-requested",
+  "limitations": [
+    "Changes-requested for this exact frozen subset only; no M6 closeout, final Code Review, Verify, branch/PR readiness or activity/work transition.",
+    "The original packet, first-pass judgment and evidence must remain. A corrected positive control with truthful actual assertion state requires independent reassessment; later complete implementation/Verify proof sufficiency remains separately assessed.",
+    "Supplied reviews, observations, receipts and proposed actions are synthetic facts, not actual target-agent, CLI, filesystem, command or hosted executions."
+  ],
+  "rationale": [
+    "Spec alignment, test coverage and error handling — concern at the named positive control. Current finding fields are editable by their reporter with truthful rationale; editability does not permit a false new account. rc-current-finding-account proposes a missing current assertion that exists in its complete test, so this cannot demonstrate an acceptable current-evidence correction. Unchanged canonical policy needs no correction.",
+    "WF-scope — accept isolated Design return without implementation and independently approved exact Design routing to Delivery Review when that gate is absent. Reject starting M2 from an author relabeling itself independent after saving. Stable Plan remains intent and current progress remains separately owned.",
+    "WF-basis — accept conservative restriction/reassessment of W1 example and its sibling consumers, preserving W0 approval identity. Accept Design for withdrawn/conflicting behavior, Plan for missing/conflicting persistence-proof allocation and implementation for actual removed destination assertion, even when the earlier pending list omitted the owner. These packets include contradictory current clauses rather than wholly erased former intent; both still require the named owner. Reject unassessed W0 reuse merely because parent bytes match.",
+    "WF-postcomplete/RC-concerns — accept the ordered proposed sequence: Verify records failure/B1; Route reopens owner without Plan rewrite; C repairs; R independently reassesses/resolves F1; V rechecks and dispositions B1; final review and distinct Verify remain required. Reject repairer or unrelated reviewer closing B1, deletion of F1, rewritten B1 origin and silent deferral of required destination preservation. Current-finding wording control is withheld for the supported finding.",
+    "WF-recording — accept expansion of omitted review subjects/rationale and normal Verify/material-decision reads before reliance. Saved evidence establishes only persistence; conflict requires fresh context and recovery-required requires supported recovery. Reject saved receipt implicitly completing work/closing B1/passing Verify. Simplified fixture receipts are explicitly semantic observations, not claimed runtime envelopes or executable CLI conformance.",
+    "WF-final-review — accept only sending a complete current package with stipulated independent whole-change CR-FINAL to distinct Verify. Reject successful Verify without that assessment, stale final reliance after a correction and waiver for one documentation-only milestone. This routing control does not adjudicate all final proof sufficiency or issue readiness. The apparent old-batch-check/current-batch-check label difference is explicitly covered by authority.md equivalence for the same complete destination observation; it is not a supported material finding.",
+    "WF-historical — accept scoped historical provenance with unchanged original judgment identities, executed selected-store inventory distinguished from the earlier owner-confirmed baseline, v3 current operation and still-open FU015–018/Packaging ownership. Reject converting historical v2 approval to current approval or closing all-family adoption from a pilot. Historical note was independently checked against17 retained hashes/commits and pertinent current/archived closure scopes in the earlier read-only assessment; no historical replay or renewed approval.",
+    "WF-followups — accept keeping already-owned atomicity work with M2, accepted ownerless capacity work in the optional register and an unaccepted dashboard idea outside commitments. Reject unknown queued-maybe status. Accept the supplied O-authorized sole capacity-plan ownership with register changed to planned/provenance and reciprocal source/destination references; no duplicate active work or execution authorization is inferred.",
+    "Architecture, compatibility, security/privacy and unrelated changes — pass within this subset. Route coordinates explicit owners, Assessment retains judgment/disposition, and CLI retains persistence. Original historical fixture bytes and unrelated neighbor are preserved. Only proposed private candidate effects occur; no network, target agent, store transaction, command execution or customer adoption. New substantive authority is not inferred from fixture availability.",
+    "Derived identity and validation evidence — sufficient for this interim judgment. All29 cases/1757 recorded files and all58 before/candidate trees matched literal reproduction; selected current methods matched recorded hashes. Exact registered Markdown embeds the unchanged compact data. This is reproducible manual semantic assessment, not a runtime policy test or substitute for executable persistence proof. The separate new blank-stage engineering correction is outside these unchanged packet subjects and will need final M6 reassessment."
+  ],
+  "reviewer": {
+    "id": "milestone-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:0b76f613667b036bc2e4dd80e219180d1579c06701919b30088e63281ad491e7",
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/m6-workflow-first-packet.md"
+    },
+    {
+      "identity": "sha256:0b7c524705101b70680820beb1f56c86be1731db6fd1b906e04042d2697ffaaf",
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/evidence.json"
+    }
+  ],
+  "summary": "The frozen Workflow packet supports its scoped routing distinctions, but its purportedly compliant current-finding correction falsely describes a missing assertion that is present in the actual test. Preserve the original packet and correct this evidence-control state before relying on RC-concerns coverage.",
+  "target": "code"
+}

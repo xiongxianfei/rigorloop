@@ -1,0 +1,69 @@
+{
+  "assessment_scope": "Bounded interim M6 core packet review of rc-design-atomic-control and rc-delivery-parser-only recording claims and selected reading paths. Exact manifest d138c3b8f9457756c7e0dd8534cc7ef2b2d9e4d20fa7b29c300c27b66fa1a821; raw reproduction SHA256 83ab6750309e7def90aa18ca4ef5d241ae37be67761cca5a64ec75f9a564ea05. This is not a complete124-candidate, milestone or whole-change judgment.",
+  "change_id": "2026-09-17-complete-model-test-coverage",
+  "contributors": [
+    {
+      "id": "root-implementer",
+      "role": "implement"
+    },
+    {
+      "id": "core-guidance-author",
+      "role": "implement"
+    }
+  ],
+  "findings": [
+    {
+      "evidence": "Finding ID: core-durable-review-reading-path-gap. Severity: major. Location: m6-core-packet rc-design-atomic-control and rc-delivery-parser-only, method-inputs.json / selected_methods and candidate-result.md. Both outputs say Recording status: recorded. The Design selection omits skills/design-review/references/design-review-recording-and-settlement.md; Delivery omits skills/delivery-review/references/delivery-review-recording-and-settlement.md. Their canonical parent Invocation classification, Isolation and recording, Recording boundary and Resource map require each mapped procedure before durable/formal recording. Shared method files exist, but the exact selected reading paths do not load them. Thus these claimed compliant durable outputs have an unmet triggered prerequisite. Supplemental current evidence: rc-proposal-vision-conflict expressly asks an unresolved current vision exception but selected_methods omits conditional-proposal-gates.md; emitted Delivery and Proposal material findings omit their mandatory material-finding asset. rc-proposal-scope-loss asks comparison against current Vision and claims aligned, but the complete before tree has no VISION.md. Scoped Verify asset omission is NOT a defect: its canonical COPY trigger is final-readiness recording only.",
+      "id": "core-durable-review-reading-path-gap",
+      "owner": {
+        "id": "root-implementer",
+        "role": "implement"
+      },
+      "reporter": {
+        "id": "milestone-reviewer",
+        "role": "review"
+      },
+      "required_outcome": "Preserve the original packet and first-pass assessment. Supply corrected exact candidates selecting and reading each required complete recording reference before the proposed durable operation, or explicitly narrow the candidate to isolated advisory judgment without a recorded claim. Keep the substantive Design/Delivery verdict separate from persistence and continuation, and retain explicit synthetic/execution limits. Independently reassess the corrected selected paths and complete resulting outputs. No canonical guidance, runtime validator, JSON catalog or workflow-state change is required. Include every actually triggered specialized gate/finding aid before its proposed result; resolve missing current Vision before claiming alignment, or truthfully report the required evidence/authority gap. Preserve untriggered-resource portability and invalid-classification stops; do not force final-readiness assets into scoped Verify. This supplements the original two-candidate reading-path evidence without changing its original meaning.",
+      "resolution": null,
+      "state": "open",
+      "subjects": [
+        {
+          "identity": "sha256:6343239c975aae6956b0ec4eb53e03eb948a0c1f3550ab9d39aa08fc7a6fd18f",
+          "path": "docs/changes/2026-09-17-complete-model-test-coverage/m6-core-packet.md"
+        }
+      ]
+    }
+  ],
+  "id": "code-review-m6-core-first-pass",
+  "independence_basis": "Core-guidance-author (/root/design_skill_core) authored the frozen core candidates and root-implementer (/root) integrated/recorded evidence. Reviewer /root/design_review authored none. Independently compared the two named full candidate outputs/actions, exact selected method lists, actual baseline artifacts and canonical parent/recording procedures. The author flagged a possible omission, but reviewer independently established the required trigger and consequence from current skill contracts. Reviewer independently reconstructed all124 cases/7737 file identities; substantive assessment of the remaining full core is still ongoing. No implementation, candidate, plan, work or activity edit by reviewer.",
+  "judgment": "changes-requested",
+  "limitations": [
+    "No full M6 approval, final Code Review, Verify, branch/PR readiness or workflow advancement.",
+    "This is an interim supported finding on two exact candidates. Additional core and handoff assessment remains pending; earlier recorded M6 findings retain their own states and original subjects.",
+    "Packet actions and observations are synthetic supplied inputs, not executed target-agent, command, CLI persistence or hosted operations."
+  ],
+  "rationale": [
+    "Spec alignment and resource loading — concern. Both Design Review and Delivery Review require their mapped recording references before any durable/formal recording, including late triggers. The candidate outputs each report Recording status: recorded, but their exact method-inputs lists omit design-review-recording-and-settlement.md and delivery-review-recording-and-settlement.md respectively. Presence in the shared source dictionary is not evidence those mapped methods were selected/read before the dependent action.",
+    "Substantive assessment remains distinct: the complete atomic Design can support its selected contract, while the Delivery variant reallocates destination preservation to row syntax and warrants a Plan correction. Those bounded behavioral decisions do not discharge the omitted recording preflight. No missing canonical resource or defective canonical skill rule was found.",
+    "Test adequacy and evidence limits — the positive/compliant output must implement the complete triggered procedure, or explicitly stay advisory without the durable recording claim. The fixed output is still a supplied synthetic candidate; loading a reference alone does not prove any CLI write, authenticate independence or authorize continuation.",
+    "Architecture, compatibility, permissions and unrelated changes — pass for the bounded issue. Assessment owns judgment and mapped procedures retain contract-selected storage; no production/runtime/catalog change is needed. The required safe resolution can preserve all original packet bytes and first-pass meaning. This review does not mutate routing or external state.",
+    "Identity/reproduction — all7737 file/metadata identities and before/candidate trees were independently reconciled; exact registered Markdown embeds the unchanged compact reproduction. These mechanical checks support the bounded reading-path finding only and do not substitute for the still-running whole-core semantic review."
+  ],
+  "reviewer": {
+    "id": "milestone-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:6343239c975aae6956b0ec4eb53e03eb948a0c1f3550ab9d39aa08fc7a6fd18f",
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/m6-core-packet.md"
+    },
+    {
+      "identity": "sha256:cf7a3b12d9ed2678c63b9808a8abd3b89d13c161a8cd2c514a80302dc9b4f702",
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/evidence.json"
+    }
+  ],
+  "summary": "The Design and Delivery candidate outputs claim durable recording while omitting their required recording procedures from the selected reading paths. Preserve the frozen packet and correct those paths or narrow the recording claims before treating these outputs as compliant.",
+  "target": "code"
+}

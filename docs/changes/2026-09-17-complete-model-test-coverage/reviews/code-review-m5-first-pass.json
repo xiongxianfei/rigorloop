@@ -24,8 +24,20 @@
         "role": "review"
       },
       "required_outcome": "Preserve the original recorded packet. Have the author supply a complete compliant root/area positive control: insert the exact new row inside the existing registration table, preserve the storage row/map, and make actual overlap ownership and the link to sibling detail explicit in the area artifact without duplicating owned detail. Regenerate the retained transaction identities and every affected interruption/retry/negative variant consistently; keep one defining fault distinct from the valid control and record the correction under a new exact evidence subject. Independent review must reassess final reciprocal content, ordered action/identity checks and preserved neighbors. An explicit honest allocation gap disposition is an alternative if the owning plan authority chooses it. No canonical behavior, runtime validator or catalog change is required.",
-      "resolution": null,
-      "state": "open",
+      "resolution": {
+        "actor": {
+          "id": "milestone-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [
+          {
+            "id": "m5-foundations-correction",
+            "path": "docs/changes/2026-09-17-complete-model-test-coverage/evidence.json"
+          }
+        ],
+        "rationale": "Independently inspected the full corrected root and importer maps and all8 affected registration/interruption/retry/idempotent/fault candidates. The importer row is inside the normative table; actual importer prose defines the handoff overlap, gives storage its implementation detail and links to storage.md instead of duplicating that detail. The original sibling/row and neighboring files remain byte-identical. Retained transaction identities consistently bind the new final root/area content. Exact retry changes root only; completed retry is zero-write; changed root/unrelated area stop; ambiguous ownership is now a defining actual-artifact fault; registration-before-area is separately rejectable. Verified all2660 corrected file hashes and exact bound reproduction data; other70 cases are unchanged. The required valid control and independent affected-sequence assessment are supplied. Original packet/first-pass judgment retain their historical meaning; no retroactive approval or real filesystem/agent execution is claimed."
+      },
+      "state": "resolved",
       "subjects": [
         {
           "identity": "sha256:9a721146b916eb80bd6c7c2c03f483a4ef3cdc3c3281dfc8a8d76f53831c1025",

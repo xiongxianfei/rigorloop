@@ -4,7 +4,7 @@
       "id": "milestone-reviewer",
       "role": "review"
     },
-    "reason": "M5 implementation and exact correction packet ready for independent full milestone review. Native12/scoped305 results and actual archives passed; original finding preserved for reporter-owned disposition. All27semanticgroups materialized and independently assessed except final corrected MAP sequence reassessment. No approval, M6 execution or final readiness inferred.",
+    "reason": "M6 implementation and all recorded packet corrections supplied for independent milestone review. Final executable basis passed47 focused and303 scoped rows; exact current source hashes match that proof. Complete241 semantic candidates (124 core and117 companion) and historical scoped-reliance account supplied with original findings/evidence preserved. The reviewer must independently reassess corrections and disposition its concerns before M6 completion or M7 implementation. No final readiness claimed.",
     "stage": "code-review",
     "status": "ready"
   },
@@ -51,7 +51,7 @@
         "role": "implement"
       },
       "path": "docs/changes/2026-09-17-complete-model-test-coverage/evidence.json",
-      "reason": "Exact corrective subjects for same-M5 assessment; no milestone approval claimed.",
+      "reason": "Current exact correction evidence for independent M6 reassessment; no approval or milestone completion claimed.",
       "value": "current"
     },
     {
@@ -132,11 +132,244 @@
         "role": "review"
       },
       "path": "docs/changes/2026-09-17-complete-model-test-coverage/reviews/code-review-m5-first-pass.json",
-      "reason": "Exact interim changes-requested assessment of preserved original M5 Foundations packet; open MAP-registration control gap prevents reliance on that sequence.",
+      "reason": "Original changes-requested judgment and exact original packet remain historical first-pass evidence. Reporter independently resolved the control gap against separate correction; code-review-m5 supplies current complete-milestone reliance without approving original faulty controls.",
+      "value": "stale"
+    },
+    {
+      "actor": {
+        "id": "milestone-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/reviews/code-review-m5.json",
+      "reason": "Independent complete M5 review of exact source, corrected Foundations and unchanged Discovery/Learning packets, actual archives and applicable validation. All27 groups assessed and original finding resolved; milestone-only approval.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "milestone-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/reviews/code-review-m6-first-pass.json",
+      "reason": "Interim exact frozen M6 Bugfix/CI packet assessment has three required control corrections; no whole-M6 approval.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "milestone-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/reviews/code-review-m6-workflow-first-pass.json",
+      "reason": "Exact interim frozen Workflow packet assessment with one required current-evidence control correction; no whole-M6 approval.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "milestone-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/reviews/code-review-m6-core-first-pass.json",
+      "reason": "Exact interim full-core packet finding for two missing durable-review reading prerequisites; remaining semantic assessment is pending.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "milestone-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/reviews/code-review-m6-core-controls-first-pass.json",
+      "reason": "Supplemental original-core first-pass semantic controls assessment with required corrections; not complete M6 approval.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "milestone-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/reviews/code-review-m6-handoff-first-pass.json",
+      "reason": "Exact interim63-pair first-pass assessment requires coherent authority controls; no complete M6 approval.",
       "value": "current"
     }
   ],
-  "blockers": [],
+  "blockers": [
+    {
+      "evidence": "Actual public validator red proof m6-stage-unknown-red reports role-name consistency before unknown-stage rejection. Single supported implementation defect under settled contract.",
+      "id": "m6-unknown-stage-precedence",
+      "origin": {
+        "evidence": "Actual public validator red proof m6-stage-unknown-red reports role-name consistency before unknown-stage rejection. Single supported implementation defect under settled contract.",
+        "rationale": "Actual pre-fix failing regression and approved M6 unknown-value-first alignment; no formal review judgment supplies this finding.",
+        "reporter": {
+          "id": "root-implementer",
+          "role": "implement"
+        },
+        "required_outcome": "Reject unknown workflow stage before role consistency, rerun identity-equal regression and relevant surrounding checks, then obtain independent M6 review. Preserve valid stages and all required field/output checks.",
+        "subjects": [
+          {
+            "identity": "sha256:d3e7f8a364ffa54c2d7f75548566d34d5fcab38ab8a49fea11b335bde4a365ab",
+            "path": "scripts/lib/validation/skill_validation.py"
+          },
+          {
+            "identity": "sha256:e58932987b4dcbdd71cf208c3364561434b5be5628a8ea771661dcaac08a5c3b",
+            "path": "tests/skill/skill_metadata_tests.py"
+          },
+          {
+            "identity": "sha256:a7cf00c8f09438c6427c3f7b030843e246fe854d81c85548c7dbb15848d1366d",
+            "path": "tests/fixtures/skills/skill-readability/valid-pilot/SKILL.md"
+          },
+          {
+            "identity": "sha256:9635574034989acca7995e8b1946516abeb66b2b94db7bcb758b3a3ecfb8bb22",
+            "path": "docs/design/skill/skill.md"
+          },
+          {
+            "identity": "sha256:016f50b9dcebd278c84510de0386f15314834bf00cd107cbbc717ed5d4a05260",
+            "path": "AGENTS.md"
+          },
+          {
+            "identity": "sha256:161f55fc205fce02c5db293fef5a4fbabd98ca10e426fb8c085e6a630bbb5911",
+            "path": "docs/plans/2026-09-17-complete-model-test-coverage.md"
+          }
+        ],
+        "supporting_judgment": null
+      },
+      "owner": {
+        "id": "root-implementer",
+        "role": "implement"
+      },
+      "reporter": {
+        "id": "root-implementer",
+        "role": "implement"
+      },
+      "required_outcome": "Reject unknown workflow stage before role consistency, rerun identity-equal regression and relevant surrounding checks, then obtain independent M6 review. Preserve valid stages and all required field/output checks.",
+      "resolution": {
+        "actor": {
+          "id": "root-implementer",
+          "role": "implement"
+        },
+        "evidence_refs": [
+          {
+            "id": "m6-native-alignment",
+            "path": "docs/changes/2026-09-17-complete-model-test-coverage/evidence.json"
+          }
+        ],
+        "rationale": "Reporter verified minimal stage-first correction with original identity-equal regression and focused46/scoped302 passing checks. Original red evidence and blocker origin retained. Independent milestone review still required and not claimed by this disposition."
+      },
+      "state": "resolved",
+      "subjects": [
+        {
+          "identity": "sha256:d3e7f8a364ffa54c2d7f75548566d34d5fcab38ab8a49fea11b335bde4a365ab",
+          "path": "scripts/lib/validation/skill_validation.py"
+        },
+        {
+          "identity": "sha256:e58932987b4dcbdd71cf208c3364561434b5be5628a8ea771661dcaac08a5c3b",
+          "path": "tests/skill/skill_metadata_tests.py"
+        },
+        {
+          "identity": "sha256:a7cf00c8f09438c6427c3f7b030843e246fe854d81c85548c7dbb15848d1366d",
+          "path": "tests/fixtures/skills/skill-readability/valid-pilot/SKILL.md"
+        },
+        {
+          "identity": "sha256:9635574034989acca7995e8b1946516abeb66b2b94db7bcb758b3a3ecfb8bb22",
+          "path": "docs/design/skill/skill.md"
+        },
+        {
+          "identity": "sha256:016f50b9dcebd278c84510de0386f15314834bf00cd107cbbc717ed5d4a05260",
+          "path": "AGENTS.md"
+        },
+        {
+          "identity": "sha256:161f55fc205fce02c5db293fef5a4fbabd98ca10e426fb8c085e6a630bbb5911",
+          "path": "docs/plans/2026-09-17-complete-model-test-coverage.md"
+        }
+      ]
+    },
+    {
+      "evidence": "Actual new WorkflowRoleStageTests red proof shows empty stage accepted or role consistency alone. Skill explicitly limits stage to seven named values.",
+      "id": "m6-empty-stage-rejection",
+      "origin": {
+        "evidence": "Actual new WorkflowRoleStageTests red proof shows empty stage accepted or role consistency alone. Skill explicitly limits stage to seven named values.",
+        "rationale": "Actual isolated red proof under the existing closed stage contract; no new behavior decision or prior review approval inferred.",
+        "reporter": {
+          "id": "root-implementer",
+          "role": "implement"
+        },
+        "required_outcome": "Reject a present empty stage before role consistency; retain missing-stage required-field handling, original unknown-stage regression and valid-stage behavior; rerun exact proof and scoped checks before independent review.",
+        "subjects": [
+          {
+            "identity": "sha256:79d00cb90f84bee59e30b38a5b6488266c51bd2f9cf1339073fb34c0008e7538",
+            "path": "scripts/lib/validation/skill_validation.py"
+          },
+          {
+            "identity": "sha256:2461f24a9aa0b458364176d49886bcc373f52744d7aa70196897578dd5f61714",
+            "path": "tests/skill/skill_contract_tests.py"
+          },
+          {
+            "identity": "sha256:3bb00c227929ed2c5dbeef030be4a165fb0fce51eb88e2f9ded73a9ca33ff977",
+            "path": "tests/skill/test-skill-validator.py"
+          },
+          {
+            "identity": "sha256:a7cf00c8f09438c6427c3f7b030843e246fe854d81c85548c7dbb15848d1366d",
+            "path": "tests/fixtures/skills/skill-readability/valid-pilot/SKILL.md"
+          },
+          {
+            "identity": "sha256:9635574034989acca7995e8b1946516abeb66b2b94db7bcb758b3a3ecfb8bb22",
+            "path": "docs/design/skill/skill.md"
+          },
+          {
+            "identity": "sha256:161f55fc205fce02c5db293fef5a4fbabd98ca10e426fb8c085e6a630bbb5911",
+            "path": "docs/plans/2026-09-17-complete-model-test-coverage.md"
+          }
+        ],
+        "supporting_judgment": null
+      },
+      "owner": {
+        "id": "root-implementer",
+        "role": "implement"
+      },
+      "reporter": {
+        "id": "root-implementer",
+        "role": "implement"
+      },
+      "required_outcome": "Reject a present empty stage before role consistency; retain missing-stage required-field handling, original unknown-stage regression and valid-stage behavior; rerun exact proof and scoped checks before independent review.",
+      "resolution": {
+        "actor": {
+          "id": "root-implementer",
+          "role": "implement"
+        },
+        "evidence_refs": [
+          {
+            "id": "m6-empty-stage-correction",
+            "path": "docs/changes/2026-09-17-complete-model-test-coverage/evidence.json"
+          }
+        ],
+        "rationale": "Reporter verified exact red/green proof and scoped303 checks. Present blank stage now rejects before role consistency; original proof and missing-field behavior retained. Independent milestone review remains required."
+      },
+      "state": "resolved",
+      "subjects": [
+        {
+          "identity": "sha256:79d00cb90f84bee59e30b38a5b6488266c51bd2f9cf1339073fb34c0008e7538",
+          "path": "scripts/lib/validation/skill_validation.py"
+        },
+        {
+          "identity": "sha256:2461f24a9aa0b458364176d49886bcc373f52744d7aa70196897578dd5f61714",
+          "path": "tests/skill/skill_contract_tests.py"
+        },
+        {
+          "identity": "sha256:3bb00c227929ed2c5dbeef030be4a165fb0fce51eb88e2f9ded73a9ca33ff977",
+          "path": "tests/skill/test-skill-validator.py"
+        },
+        {
+          "identity": "sha256:a7cf00c8f09438c6427c3f7b030843e246fe854d81c85548c7dbb15848d1366d",
+          "path": "tests/fixtures/skills/skill-readability/valid-pilot/SKILL.md"
+        },
+        {
+          "identity": "sha256:9635574034989acca7995e8b1946516abeb66b2b94db7bcb758b3a3ecfb8bb22",
+          "path": "docs/design/skill/skill.md"
+        },
+        {
+          "identity": "sha256:161f55fc205fce02c5db293fef5a4fbabd98ca10e426fb8c085e6a630bbb5911",
+          "path": "docs/plans/2026-09-17-complete-model-test-coverage.md"
+        }
+      ]
+    }
+  ],
   "change_id": "2026-09-17-complete-model-test-coverage",
   "contract": "rigorloop-records-v3",
   "models": [
@@ -373,6 +606,30 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-17-complete-model-test-coverage/reviews/code-review-m5-first-pass.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/reviews/code-review-m5.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/reviews/code-review-m6-first-pass.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/reviews/code-review-m6-workflow-first-pass.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/reviews/code-review-m6-core-first-pass.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/reviews/code-review-m6-core-controls-first-pass.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-17-complete-model-test-coverage/reviews/code-review-m6-handoff-first-pass.json"
     }
   ],
   "schema_version": 3,
@@ -1042,7 +1299,7 @@
         "VIS-SR-02",
         "VIS-SR-03"
       ],
-      "status": "in-progress"
+      "status": "completed"
     },
     {
       "id": "m6",
@@ -1133,7 +1390,7 @@
         "WF-SR-18",
         "WF-SR-19"
       ],
-      "status": "pending"
+      "status": "in-progress"
     },
     {
       "id": "m7",
