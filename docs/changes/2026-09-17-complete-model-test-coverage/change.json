@@ -47,11 +47,11 @@
     },
     {
       "actor": {
-        "id": "root-verifier",
-        "role": "verify"
+        "id": "root-ci-repair",
+        "role": "support"
       },
       "path": "docs/changes/2026-09-17-complete-model-test-coverage/evidence.json",
-      "reason": "Exact final reviewed engineering subject and attributable closeout evidence; no code/test/design/plan change since complete qualification.",
+      "reason": "Exact original CI rejection and unchanged-source regression before bounded selector registration correction.",
       "value": "current"
     },
     {
@@ -624,6 +624,59 @@
         {
           "identity": "sha256:1adea2a89d5aff9d3cb88aaac38bf4fa05dabcfdcf24f36656dece99fa61c266",
           "path": "packages/rigorloop/dist/bin/rigorloop.js"
+        }
+      ]
+    },
+    {
+      "evidence": "PR202 run35298853602 head1a5fa08e684c068f0fda6a561ab65a2eec865388 failed before dispatch: unclassified-path tests/engineering/release/release_provider_tests.py. Existing Release aggregate imports this module, but its explicit selector registry omitted the path. Settled VAL-SR-03/05/15 and existing owner mapping require release_transaction.regression. Extended existing selection regression with this actual module; all other assertions and unknown.py rejection retained. Exact local command exit1: [FAIL] test-select-validation: 1 failed, 0 passed in 0.73s\n\nFAILED ValidationSelectionTests.test_current_skill_packaging_and_release_suites_preserve_selection (release_module='release_provider_tests.py')\n  + []\n  tests/engineering/validation/selection_contract_tests.py:271\n. Feasible automated proof; no production correction yet. Bounded PR CI repair restores one existing check mapping; no requirements, runtime product, permissions, workflow or dependency change. Earlier explicit aggregate run tested contents but did not prove full changed-path admission; prior readiness does not claim hosted success.",
+      "id": "ci-provider-path-registration",
+      "origin": {
+        "evidence": "PR202 run35298853602 head1a5fa08e684c068f0fda6a561ab65a2eec865388 failed before dispatch: unclassified-path tests/engineering/release/release_provider_tests.py. Existing Release aggregate imports this module, but its explicit selector registry omitted the path. Settled VAL-SR-03/05/15 and existing owner mapping require release_transaction.regression. Extended existing selection regression with this actual module; all other assertions and unknown.py rejection retained. Exact local command exit1: [FAIL] test-select-validation: 1 failed, 0 passed in 0.73s\n\nFAILED ValidationSelectionTests.test_current_skill_packaging_and_release_suites_preserve_selection (release_module='release_provider_tests.py')\n  + []\n  tests/engineering/validation/selection_contract_tests.py:271\n. Feasible automated proof; no production correction yet. Bounded PR CI repair restores one existing check mapping; no requirements, runtime product, permissions, workflow or dependency change. Earlier explicit aggregate run tested contents but did not prove full changed-path admission; prior readiness does not claim hosted success.",
+        "rationale": "Exact failed hosted run and automated reproduction establish missing approved CI check registration. User requested fixing CI on the existing PR; bounded repair only.",
+        "reporter": {
+          "id": "root-ci-repair",
+          "role": "support"
+        },
+        "required_outcome": "Explicitly register release_provider_tests.py to the existing Release aggregate, retain unknown-path rejection and all checks, pass identical regression and authoritative PR-mode command, then observe replacement hosted CI.",
+        "subjects": [
+          {
+            "identity": "sha256:c5b9ebfc40bf580e54f0ab0fcb4df47b9240ed256f3131ef1b0856ba6a43d880",
+            "path": "scripts/lib/validation/validation_selection.py"
+          },
+          {
+            "identity": "sha256:d2aa1a206a2225806ad50f8084321063005f47d8c4de7a764ca699bffbd55e4c",
+            "path": "tests/engineering/validation/selection_contract_tests.py"
+          },
+          {
+            "identity": "sha256:4befc55419a9f1f237cade6ccf40b4e42ce24c0a3e13cf6c522ac5dabeab78f1",
+            "path": "tests/engineering/release/release_provider_tests.py"
+          }
+        ],
+        "supporting_judgment": null
+      },
+      "owner": {
+        "id": "root-ci-repair",
+        "role": "support"
+      },
+      "reporter": {
+        "id": "root-ci-repair",
+        "role": "support"
+      },
+      "required_outcome": "Explicitly register release_provider_tests.py to the existing Release aggregate, retain unknown-path rejection and all checks, pass identical regression and authoritative PR-mode command, then observe replacement hosted CI.",
+      "resolution": null,
+      "state": "open",
+      "subjects": [
+        {
+          "identity": "sha256:c5b9ebfc40bf580e54f0ab0fcb4df47b9240ed256f3131ef1b0856ba6a43d880",
+          "path": "scripts/lib/validation/validation_selection.py"
+        },
+        {
+          "identity": "sha256:d2aa1a206a2225806ad50f8084321063005f47d8c4de7a764ca699bffbd55e4c",
+          "path": "tests/engineering/validation/selection_contract_tests.py"
+        },
+        {
+          "identity": "sha256:4befc55419a9f1f237cade6ccf40b4e42ce24c0a3e13cf6c522ac5dabeab78f1",
+          "path": "tests/engineering/release/release_provider_tests.py"
         }
       ]
     }

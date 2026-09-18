@@ -264,7 +264,7 @@ class SelectionContractChecks:
                     self.assertEqual(result.status, 'ok')
                     self.assertEqual({c['id'] for c in result.selected_checks}, required)
         # Release imports and service fixtures keep the full native aggregate.
-        release_modules = ('release_identity_tests.py', 'release_profile_tests.py', 'release_preparation_tests.py', 'release_preflight_tests.py', 'release_timing_tests.py', 'release_publication_tests.py', 'release_provider_fixtures.py', 'release_coordination_fixtures.py')
+        release_modules = ('release_identity_tests.py', 'release_profile_tests.py', 'release_preparation_tests.py', 'release_preflight_tests.py', 'release_timing_tests.py', 'release_publication_tests.py', 'release_provider_tests.py', 'release_provider_fixtures.py', 'release_coordination_fixtures.py')
         for name in release_modules:
             with self.subTest(release_module=name):
                 payload = self.select(["tests/engineering/release/" + name]).to_json_dict()

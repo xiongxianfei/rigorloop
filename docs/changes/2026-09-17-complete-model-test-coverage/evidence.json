@@ -3212,6 +3212,30 @@
         }
       ],
       "summary": "Distinct final verification reuses exact unchanged complete source qualification, checks all original native identities retained, and directly observes final local seven native tests + one record validation. Current 104-member Design / revised Delivery / fresh whole-change Review chain, all eight milestones/16findings/4blockers reconciled. Literal local log, impact and evidence applicability retained in final-verification-proof.md. Initial empty-local-scope rejection disclosed; no hosted CI or live publication claim."
+    },
+    {
+      "actor": {
+        "id": "root-ci-repair",
+        "role": "support"
+      },
+      "id": "ci-provider-path-red",
+      "procedure": "python tests/engineering/validation/test-select-validation.py ValidationSelectionTests.test_current_skill_packaging_and_release_suites_preserve_selection",
+      "result": "failed",
+      "subjects": [
+        {
+          "identity": "sha256:c5b9ebfc40bf580e54f0ab0fcb4df47b9240ed256f3131ef1b0856ba6a43d880",
+          "path": "scripts/lib/validation/validation_selection.py"
+        },
+        {
+          "identity": "sha256:d2aa1a206a2225806ad50f8084321063005f47d8c4de7a764ca699bffbd55e4c",
+          "path": "tests/engineering/validation/selection_contract_tests.py"
+        },
+        {
+          "identity": "sha256:4befc55419a9f1f237cade6ccf40b4e42ce24c0a3e13cf6c522ac5dabeab78f1",
+          "path": "tests/engineering/release/release_provider_tests.py"
+        }
+      ],
+      "summary": "PR202 run35298853602 head1a5fa08e684c068f0fda6a561ab65a2eec865388 failed before dispatch: unclassified-path tests/engineering/release/release_provider_tests.py. Existing Release aggregate imports this module, but its explicit selector registry omitted the path. Settled VAL-SR-03/05/15 and existing owner mapping require release_transaction.regression. Extended existing selection regression with this actual module; all other assertions and unknown.py rejection retained. Exact local command exit1: [FAIL] test-select-validation: 1 failed, 0 passed in 0.73s\n\nFAILED ValidationSelectionTests.test_current_skill_packaging_and_release_suites_preserve_selection (release_module='release_provider_tests.py')\n  + []\n  tests/engineering/validation/selection_contract_tests.py:271\n. Feasible automated proof; no production correction yet. Bounded PR CI repair restores one existing check mapping; no requirements, runtime product, permissions, workflow or dependency change. Earlier explicit aggregate run tested contents but did not prove full changed-path admission; prior readiness does not claim hosted success."
     }
   ],
   "schema_version": 3
