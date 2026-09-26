@@ -18,6 +18,16 @@ An AR expresses what an architectural element must satisfy.
 It is not merely a record that an allocation occurred.
 Requirement containment is the IR → SR → AR tree defined in the models.
 
+## Requirement analysis artifacts
+
+| Concept | Meaning |
+| --- | --- |
+| Scenario | Concrete stakeholder-visible situation used during Initial Requirement analysis to describe how a needed capability is exercised, including actor, context, trigger, flow, and expected outcome. |
+
+A Scenario is analysis context rather than a durable system capability.
+An IR can confirm multiple Scenarios, and multiple Scenarios can exercise the same durable Feature over that Feature's lifetime.
+Scenario Analysis can reveal candidate system behavior, but a Function becomes part of the authoritative System Design when confirmed through System Requirement analysis.
+
 ## System and architecture assets
 
 These assets describe the system's capabilities, behavior, and architectural responsibilities.
@@ -25,8 +35,8 @@ Requirements shape their evolution across Changes and Baselines without becoming
 
 | Concept | Meaning |
 | --- | --- |
-| Feature | Durable product-visible or stakeholder-visible capability; describes what valuable capability exists. |
-| Function | Durable logical system behavior; describes what the system does, independently from physical software structure wherever practical. |
+| Feature | Durable product-visible or stakeholder-visible capability confirmed from Initial Requirement and Scenario Analysis; describes what valuable capability exists across multiple Scenarios and Changes. |
+| Function | Durable logical system behavior confirmed through System Requirement analysis; describes what the system does, independently from physical software structure wherever practical. |
 | Module | Durable architectural unit of responsibility, potentially owning behavior, data or state, interfaces, dependencies, technical policies, and implementation scope. |
 | Interface | Explicit interaction contract between architectural elements, potentially defining operations, messages, data structures, protocols, failures, and compatibility. |
 | Realization | Code, configuration, or another implementation artifact that realizes the design; distinct from the design asset it implements. |

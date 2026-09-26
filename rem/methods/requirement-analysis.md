@@ -13,7 +13,24 @@ Record material unknowns and avoid manufacturing thresholds, stakeholders, or ap
 
 The IR statement expresses who needs what outcome and why it matters, with relevant scope and conditions.
 The analysis supports that statement; What explains the problem and desired outcome, while the other questions establish its basis and context.
-Keep provisional assumptions distinct from established constraints, and retain unresolved questions from any part of the analysis.
+Keep provisional assumptions distinct from established constraints, and assess unresolved issues from any part of the analysis using the open-question rule below.
+
+After the initial 5W2H analysis is coherent enough to reason about stakeholder use, apply [Scenario Analysis](scenario-analysis.md).
+The IR confirms the stakeholder-visible Feature and the Scenarios used to analyze that capability.
+Scenario Analysis may expose candidate logical behavior, but Functions are confirmed through SR analysis rather than by the Scenario alone.
+
+## Keep one consequential open question
+
+Each IR and SR may retain at most one open question; retain none when the available sources and analysis settle the need or obligation.
+A valuable question identifies a specific unresolved decision or missing evidence that materially affects the requirement's meaning, scope, derivation, or acceptance.
+Make clear what answer or evidence would resolve it. Do not manufacture a question solely to populate a field or ask for detail that does not affect an engineering decision.
+
+Resolve what can be established from the available sources before selecting the question that matters most.
+If several independent issues remain, continue the analysis and resolve them before treating the record as sufficiently defined; decompose a mixed need or obligation only when its engineering meaning justifies separate requirements.
+Do not concatenate independent questions into one entry or conceal unresolved issues to meet the limit.
+The supporting analysis must remain candid about uncertainty, and dependent decisions remain provisional until their basis is settled.
+
+This limit applies to IRs and SRs. The representation may keep an empty or single-item list; its schema can check cardinality and nonblank content, while engineering review judges the question's value.
 
 ## Name the initial requirement
 
@@ -51,7 +68,7 @@ The analysis method does not prescribe a directory structure or require an extra
 
 ## Derive system requirements
 
-Translate each initial need into independently assessable system obligations.
+Translate each initial need and its supported Scenarios into independently assessable system obligations.
 State the required outcome and the relevant conditions, then describe observable acceptance criteria.
 Apply 5W2H to each SR's system obligation, using the parent IR as context and answering at the system level.
 Resolve or explicitly retain gaps in actors, scope, timing, quality, and quantities.
@@ -64,6 +81,21 @@ Use implementation-independent language unless the implementation itself is requ
 An acceptance criterion describes what an assessment should observe.
 It does not claim that verification has occurred or that the requirement is satisfied.
 Give each SR a name that identifies its specific obligation; a clear outcome phrase or precise noun phrase is appropriate.
+
+For each SR, identify the logical behavior required to satisfy the obligation and confirm the corresponding Function or Functions in System Design.
+Reuse an existing Function when it already represents the required behavior.
+Do not create a Function merely to mirror the requirement tree; SR-to-Function relationships may be many-to-many.
+
+Before recording `SR confirms Function`, apply the [Function definition criteria](../models/system-design.md#function-definition):
+
+1. Name the behavior and its engineering subject, adding the condition needed to distinguish it from related Functions.
+2. Define the inputs and selected state, applicable conditions, behavior, outputs, and material failure outcomes.
+3. Compare neighboring Functions to make each responsibility and handoff clear; resolving an entity and retrieving its definition should not silently describe the same operation under different names.
+4. Check that the name matches the actual behavior and scope, that "current" identifies a selected model state, and that "supported" refers to a declared profile or conditions.
+5. Confirm the Function from the SR only when its behavior is grounded in that obligation; identify any remaining requirement gap rather than implying it is already covered.
+
+For example, "Check entity identity presence and uniqueness" identifies the intended checks more clearly than "Check identities."
+This review refines System Design behavior without prescribing Module allocation, record fields, or a 5W2H template for the Function.
 
 ## Derive allocated requirements
 

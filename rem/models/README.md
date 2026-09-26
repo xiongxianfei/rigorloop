@@ -6,7 +6,7 @@ The [principles](../principles/README.md) govern these models; [methods](../meth
 | Domain | Primary content | Owning model |
 | --- | --- | --- |
 | Requirement Analysis | IR → SR → AR | [Requirements](requirements.md) |
-| System Design | Feature → Function | [System Design](system-design.md) |
+| System Design | IR → Feature, Scenario → Feature, SR → Function, Feature → Function | [System Design](system-design.md) |
 | Architecture Design | Function → Module, AR → Module, Module ↔ Interface | [Architecture Design](architecture-design.md) |
 | Operational Support | Metamodel, representation, validation, and maintenance | [Operational Support](operational-support.md) |
 
@@ -14,8 +14,11 @@ The [principles](../principles/README.md) govern these models; [methods](../meth
 flowchart TD
     IR[Initial Requirement] -->|decomposition| SR[System Requirement]
     SR -->|derivation and allocation| AR[Allocated Requirement]
-    SR -->|constrains| FEAT[Feature]
-    SR -->|constrains| FUNC[Function]
+    IR -->|confirms| FEAT[Feature]
+    IR -->|confirms| SCN[Scenario]
+    SCN -->|exercises| FEAT
+    SCN -->|informs| SR
+    SR -->|confirms| FUNC[Function]
     FEAT -->|realizedBy| FUNC
     AR -->|constrains| FUNC
     AR -->|allocatedTo| MOD[Module]

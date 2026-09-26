@@ -19,8 +19,9 @@ Those choices do not change what a Requirement, Function, or Module means.
 Each project representation defines how stable identity, display name, and physical location are recorded and related.
 Keep one authoritative source for identity and name, and derive any repeated storage labels from those sources.
 Readable labels help people navigate the model without making the labels themselves entity identities.
+[Principle 16](../principles/README.md) governs the clarity of the engineering name and definition; the representation profile governs how that name appears in storage.
 
-A filesystem representation may combine a stable identity and a readable title in a directory name.
+A filesystem representation may combine a stable identity and a normalized readable title in a directory or filename, such as an ID followed by a title slug.
 Such a representation defines title normalization, label consistency, and collision handling.
 Another implementation may expose the same identity and name through a database or another storage interface.
 REM does not require directories or a particular filename pattern.
