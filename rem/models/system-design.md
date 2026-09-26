@@ -1,7 +1,8 @@
 # System Design model
 
-System Design describes what stakeholder-visible capabilities exist and what logical behavior realizes them.
-The [concept definitions](../concepts/README.md#system-and-architecture-assets) distinguish Features and Functions from Requirements. [Scenario](../concepts/README.md#requirement-analysis-entities) is a first-class governed Requirement Analysis entity whose identity, lifecycle, and relationships are owned by the [Scenario model](scenarios.md).
+System Design describes durable stakeholder-visible capabilities and the durable logical behavior that realizes them.
+The [concept definitions](../concepts/README.md#system-and-architecture-assets) distinguish Features and Functions from Requirements.
+The [Scenario model](scenarios.md) defines the governed stakeholder situations that exercise Features.
 
 ```text
 IR ── confirms ──────> Feature
@@ -10,60 +11,89 @@ SR ── confirms ──────> Function
 Feature ─realizedBy──> Function
 ```
 
-A Feature is durable and may be exercised by many governed Scenarios and evolve under many Requirements and Changes.
-An IR confirms the stakeholder-visible Feature established through requirement and scenario analysis.
-A Function is durable logical behavior; SR analysis confirms the Functions required by the system obligations.
-A Function may realize several Features and is not contained exclusively by one Feature.
-Requirements shape these assets through explicit relationships rather than becoming their parents.
+Requirements shape durable system assets without becoming their containment hierarchy.
+
+## Feature relationships
+
+A Feature is a durable stakeholder-visible capability.
+Before Initial Requirement analysis is considered complete, each Feature confirmed by that IR MUST be exercised by at least one confirmed Scenario owned by the same IR.
+A Feature may be confirmed or affected by several IRs over time, each contributing its own analysis context and Scenarios.
+
+One Feature may be exercised by many Scenarios.
+Each confirmed Scenario has exactly one primary Feature, as defined by the [Scenario model](scenarios.md).
+
+A Feature may exist before all of its Functions are known.
+Once System Design for the Feature is considered complete, it MUST be realized by at least one confirmed Function.
+
+## Function relationships
+
+A Function is durable logical behavior.
+An approved SR MUST confirm at least one Function that carries the behavior required by that obligation.
+A Function may be confirmed by several SRs and may realize several Features.
+Do not create one Function per SR merely to preserve symmetry.
+
+```text
+SR 1 ─┐
+SR 2 ─┼── confirms ──> Function A
+SR 3 ─┘
+
+Feature X ─┐
+Feature Y ─┼── realizedBy ──> Function A
+```
+
+When an SR is primarily a quality or constraint obligation, confirm the Function or Functions whose behavior is governed by that requirement rather than inventing a synthetic quality Function.
 
 ## Clear names and boundaries
 
 [Principle 16](../principles/README.md) requires understandable, distinguishable engineering definitions.
 A Feature or Function name identifies its engineering purpose and subject, distinguishes neighboring assets, and agrees with its description and scope.
 Prefer an action and subject, adding a condition when it carries a meaningful distinction; an equally clear noun phrase is acceptable.
-Do not depend on a broad label such as "management" or "processing" to explain the asset's responsibility.
 
 For example, "Inspect engineering definitions and their rationale" identifies a stakeholder capability, while "Resolve engineering entity by stable ID" identifies a logical behavior.
-"Check entity identity presence and uniqueness" makes the check's scope explicit, and "Retrieve engineering definition from selected model state" distinguishes retrieval from identity resolution.
-These are naming examples, not prescribed assets or implementation choices.
-
-Define "current" relative to the selected engineering model state, with that state identifiable to readers.
-When using "supported," identify the applicable profile or declared conditions rather than hiding an undefined behavior boundary behind the word.
-Review related definitions together so the handoff between their responsibilities is understandable from current authoritative information.
+Do not depend on broad labels such as "management" or "processing" to explain responsibility.
 
 ## Feature definition
 
-A Feature definition should explain:
+A Feature definition SHOULD explain:
 
 - who uses or benefits from the capability;
 - what that participant can do or understand;
 - why the capability is valuable;
-- the capability's included scope and its boundary with neighboring Features.
+- the capability's included scope and boundary with neighboring Features.
 
-The description should explain the durable capability across its Scenarios, not merely list Functions or repeat one scenario's flow.
-For example, "Author and revise engineering definitions" can distinguish a capability for changing definitions from a capability for inspecting them.
-State the actual supported scope so the name does not imply that all related authoring activities are already provided.
+The description explains the durable capability across its Scenarios, not merely one Scenario flow or a list of Functions.
+A Feature remains meaningful even if internal architecture is replaced.
 
 ## Function definition
 
-A Function SHOULD have clear inputs, outputs, and behavior.
-Explain the input subjects and state, applicable preconditions, the logical behavior performed, the resulting outputs, and meaningful failure or incomplete outcomes.
-Make its responsibility distinguishable from neighboring Functions: checking identity presence and uniqueness, resolving one entity, retrieving its definition, and presenting its meaning are different behaviors.
-State where this Function's responsibility ends and what information it supplies for subsequent behavior; reuse authoritative definitions rather than copying their contracts.
-Keep the logical behavior independent of physical software structure wherever practical.
+A Function MUST have a responsibility boundary clear enough for architectural allocation.
+Its definition SHOULD state:
 
-A Function SHOULD have an accountable architectural responsibility unless the architecture deliberately leaves it unallocated.
-Allocation is owned by the [Architecture Design model](architecture-design.md).
-Implementation references identify realization without replacing the logical definition.
+- logical behavior and subject;
+- inputs and relevant state;
+- applicable conditions or preconditions;
+- outputs;
+- material failure or incomplete outcomes;
+- where responsibility ends and another Function begins.
 
-These definition criteria do not require Features or Functions to use the requirement 5W2H template or extend the IR/SR/Scenario open-question policy to System Design assets.
-The project representation selects fields and storage conventions through [Operational Support](operational-support.md).
+Keep Function semantics independent of Module, process, package, service, transport, persistence technology, or deployment structure wherever practical.
+
+Every active Function MUST have exactly one accountable primary Module before architecture allocation is considered complete.
+A Function MAY use supporting Modules.
+The [Architecture Design model](architecture-design.md) owns those allocation rules.
+
+## Development method
+
+Use [Scenario Analysis](../methods/scenario-analysis.md) to confirm Features and discover candidate behavior.
+Use [Functional Analysis](../methods/functional-analysis.md) to confirm Functions from SR obligations and reconcile Feature-to-Function relationships.
+
+Scenario Analysis does not make candidate behavior authoritative.
+Functional Analysis does not allocate Modules.
 
 ## Evolution
 
-New requirements may add Functions or change existing behavior while preserving the Feature's identity.
+New requirements may add Functions or change existing behavior while preserving Feature identity.
 Current assets describe the resulting current system directly.
-Changes explain the transitions, and historical states retain their own meanings.
+Changes explain transitions, and historical states retain their original meanings.
 
-A Feature-to-Function relationship is authored once; the opposite navigation view is derived.
-The project representation chooses its storage direction without creating two independently maintained facts.
+Feature-to-Function and SR-to-Function relationships are each authored once; inverse navigation views are derived.

@@ -1,0 +1,36 @@
+{
+  "id": "MOD-007",
+  "type": "module",
+  "title": "Engineering verification and assurance",
+  "status": "draft",
+  "description": "Keep verification definitions, actual observations, evidence applicability, criterion coverage, and scoped engineering judgments distinguishable and traceable.",
+  "responsibilities": [
+    "Retain criterion-based verification definitions and actual observations with provenance.",
+    "Assess applicability and coverage, including contradictions and reassessment after changes.",
+    "Record the scope and basis of an authorized engineering judgment."
+  ],
+  "owned_state": [
+    "Verification definitions, evidence records, applicability/coverage assessments, and scoped judgments as engineering content; raw persistence and authority remain separate responsibilities."
+  ],
+  "scope": {
+    "includes": [
+      "Verification and assurance information and assessments."
+    ],
+    "excludes": [
+      "Inventing observations from planned tests, treating schema success as satisfaction, or conferring judgment authority."
+    ]
+  },
+  "provides": [],
+  "consumes": [],
+  "design_limits": [
+    "This is a proposed responsibility boundary only. IR-004 ARs and evidence execution, storage, and authority interfaces remain deferred.",
+    "No test runner, runtime verification, or satisfaction claim is introduced by this architecture map."
+  ],
+  "sources": [
+    {
+      "source": "SRC-ARCHITECTURE-PILOT",
+      "locator": "MOD-007",
+      "basis": "Analyst-proposed responsibility boundary derived from the existing Function landscape. Assigned Functions remain authoritative for behavior; this record describes target architecture, not observed implementation."
+    }
+  ]
+}

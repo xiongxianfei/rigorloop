@@ -1,0 +1,75 @@
+{
+  "id": "FUNC-068",
+  "type": "function",
+  "title": "Assess release preflight and qualification",
+  "status": "draft",
+  "description": "Assess readiness at the explicitly selected cheap-preflight or full-qualification boundary. It preserves their different side effects and proof scope and consumes existing package, validation, and assurance contracts rather than defining independent correctness.",
+  "inputs": [
+    "Selected release profile/source/candidate and requested assessment scope.",
+    "Required inputs, current projections, actual artifact/check observations, and applicable freshness/deferral decisions."
+  ],
+  "preconditions": [],
+  "outputs": [
+    "Scoped preflight or qualification findings and actual observed results.",
+    "Missing, failed, stale, contradicted, unperformed, deferred, or unsupported obligations that limit readiness."
+  ],
+  "behavior": [
+    "Use side-effect-light preflight for profile/version/pointer/literal/pending-evidence/input/output/tag defects without credentials or full artifact/public checks.",
+    "Reject unauthorized changed current literals, retain baseline drift and historical classifications, and preserve unknown remote state as uncertainty.",
+    "For full qualification, assess the exact candidate's required notes, source state, package preview, packed-consumer, archive, security, recovery, and authentication/provenance obligations through their existing owners.",
+    "Apply evidence applicability/freshness and explicit owner deferrals; keep nondeferable duties and required fresh public observations intact.",
+    "Report readiness only for established scope without making assessment a publication authorization."
+  ],
+  "failure_behavior": [
+    {
+      "condition": "Required support is missing, stale, conflicting, or failed.",
+      "outcome": "Identify the blocking obligation and prevent a readiness claim."
+    },
+    {
+      "condition": "Only cheap preflight, dry-run, source checks, or cached inapplicable evidence is available.",
+      "outcome": "Retain that limited observation without claiming full candidate qualification."
+    },
+    {
+      "condition": "A deferral lacks its required basis or attempts to waive a nondeferable duty.",
+      "outcome": "Reject reliance on the deferral and report the unmet obligation."
+    }
+  ],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-06",
+      "basis": "Logical behavior derived from the identified published-product contracts for IR-010; existing source details and compatibility/adoption limits remain applicable."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-07",
+      "basis": "Logical behavior derived from the identified published-product contracts for IR-010; existing source details and compatibility/adoption limits remain applicable."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-08",
+      "basis": "Logical behavior derived from the identified published-product contracts for IR-010; existing source details and compatibility/adoption limits remain applicable."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-09",
+      "basis": "Logical behavior derived from the identified published-product contracts for IR-010; existing source details and compatibility/adoption limits remain applicable."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-16",
+      "basis": "Logical behavior derived from the identified published-product contracts for IR-010; existing source details and compatibility/adoption limits remain applicable."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-19",
+      "basis": "Logical behavior derived from the identified published-product contracts for IR-010; existing source details and compatibility/adoption limits remain applicable."
+    },
+    {
+      "source": "SRC-PUBLISHED-PRODUCTS",
+      "locator": "FUNC-068",
+      "basis": "Assign MOD-015 as the proposed accountable primary responsibility after Functional Analysis. Current product source contracts retain detailed behavior authority; allocation is not runtime adoption or complete AR coverage."
+    }
+  ],
+  "allocated_to": "MOD-015"
+}

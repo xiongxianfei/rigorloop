@@ -31,12 +31,17 @@
       "outcome": "Retain both attributable states and identify the correction; do not silently rewrite the earlier provenance."
     }
   ],
-  "unallocated_reason": "Architectural responsibility is deliberately deferred until the logical requirements and system design are reconciled. This Function establishes behavior, not a Module, Interface, implementation, or verification result.",
   "sources": [
     {
       "source": "SRC-COMPLETE-ANALYSIS",
       "locator": "FUNC-023",
       "basis": "SR-023 confirms controlled transition history under IR-003. SR-007 constrains authority, and SR-006 owns the separate activity-specific resumption context."
+    },
+    {
+      "source": "SRC-ARCHITECTURE-PILOT",
+      "locator": "FUNC-023",
+      "basis": "Propose MOD-006 as the single accountable architectural responsibility for the existing behavior. This allocation preserves the Function definition and does not establish implementation or completed interface/AR coverage outside the IR-001 pilot."
     }
-  ]
+  ],
+  "allocated_to": "MOD-006"
 }

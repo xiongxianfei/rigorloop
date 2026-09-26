@@ -1,0 +1,46 @@
+{
+  "id": "FUNC-047",
+  "type": "function",
+  "title": "Recover exact interrupted record transactions",
+  "status": "draft",
+  "description": "Resolve an explicitly selected supported interrupted publication by completing its prepared candidate or restoring its verified before-state. Recovery preserves the supplied engineering decisions exactly and never reconstructs them by replaying operations against new state.",
+  "inputs": [
+    "Explicit change, transaction and expected-recovery identity with requested restore or complete action.",
+    "Supported private journal, exact verified before/candidate snapshots, observed targets, and declared read-set identities."
+  ],
+  "preconditions": [],
+  "outputs": [
+    "Verified restored or completed storage result, or an explicit safe recovery stop.",
+    "Retained recoverability for another interrupted attempt, with refreshed recovery identity when available."
+  ],
+  "behavior": [
+    "Validate journal/version, snapshots, containment and explicit expected recovery identity before mutation; reject unsupported retired or mixed recovery selectors.",
+    "At observed checks, require each target to match recorded before or candidate bytes/absence; never overwrite a third state.",
+    "Complete only the exact prepared candidate with current declared read basis; restore only verified before content while leaving external read subjects untouched.",
+    "Protect acknowledged committed success from rollback; restoration of initial creation removes only transaction-created content and empty created directories.",
+    "Keep recovery repeatable after interruption and clean private snapshots only after verified terminal recovery; those snapshots are mechanical recovery state rather than engineering evidence."
+  ],
+  "failure_behavior": [
+    {
+      "condition": "Evidence is missing, corrupt, tampered, incompatible, or a target has an unknown third state.",
+      "outcome": "Stop without guessed repair or foreign-content overwrite, preserving available recovery context."
+    },
+    {
+      "condition": "Completion basis drifts or recovery is interrupted again.",
+      "outcome": "Report the corresponding safe stop/recovery-required state; do not silently choose restoration or synthesize a new decision."
+    }
+  ],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-CLI",
+      "locator": "docs/design/cli/cli.md#CLI-SR-05, CLI-SR-06, CLI-SR-09, CLI-SR-26, CLI-SR-27, CLI-SR-28; docs/design/cli/records.md#RF-SR-04, RF-SR-08, RF-SR-14",
+      "basis": "Functional Analysis of the IR-008 system obligations confirms this distinct published command/record responsibility. The retained CLI/Record Format contract supplies exact public operations and limits; logical behavior is defined before Module allocation."
+    },
+    {
+      "source": "SRC-PUBLISHED-PRODUCTS",
+      "locator": "FUNC-047",
+      "basis": "Assign MOD-011 as the proposed accountable primary responsibility after Functional Analysis. Current product source contracts retain detailed behavior authority; allocation is not runtime adoption or complete AR coverage."
+    }
+  ],
+  "allocated_to": "MOD-011"
+}

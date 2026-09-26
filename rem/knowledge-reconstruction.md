@@ -60,7 +60,7 @@ REM distinguishes:
 - [Initial Requirement (IR)](concepts/README.md#requirements) — the initial durable expression of the need.
 - [System Requirement (SR)](concepts/README.md#requirements) — the durable system-level obligation derived from the IR.
 - [Allocated Requirement (AR)](concepts/README.md#requirements) — the durable lower-level obligation derived from an SR and allocated to architecture.
-- [Scenario](concepts/README.md#requirement-analysis-entities) — a first-class governed black-box stakeholder situation with stable identity and lifecycle.
+- [Scenario](concepts/README.md#requirement-analysis-entities) — a first-class governed stakeholder-visible situation with stable identity, lifecycle, one owning IR, and one primary Feature.
 - [Feature](concepts/README.md#system-and-architecture-assets) — the durable stakeholder-visible capability.
 - [Function](concepts/README.md#system-and-architecture-assets) — the durable logical system behavior.
 
@@ -79,7 +79,7 @@ The requirement reasoning is governed primarily by the [REM principles](principl
 
 ### Models
 
-The [Requirement model](models/requirements.md) makes the requirement hierarchy normative, while the [Scenario model](models/scenarios.md) owns governed Scenario identity, lifecycle, and cross-domain Scenario relationships:
+The [Requirement model](models/requirements.md) makes the requirement hierarchy normative:
 
 ```text
 IR
@@ -87,24 +87,21 @@ IR
     └── AR
 ```
 
-Cross-domain traceability is divided by authoritative owner:
+The [Scenario model](models/scenarios.md) owns Scenario identity, lifecycle, black-box boundaries, and Scenario cardinalities.
+The [System Design model](models/system-design.md) owns durable Feature and Function relationships.
+The [Architecture Design model](models/architecture-design.md) owns Function/AR allocation to Modules and Module interaction through Interfaces.
+
+Together they define the core traceability:
 
 ```text
-Scenario model:
+IR ── confirms ──────> Feature
 IR ── confirms ──────> Scenario
 Scenario ─exercises──> Feature
 Scenario ─informs────> SR
-
-System Design model:
-IR ── confirms ──────> Feature
 SR ── confirms ──────> Function
-
-Architecture Design model:
-AR ── allocatedTo ───> Module
+Function ─primaryModule──> Module
+AR ── allocatedTo ──────> Module
 ```
-
-The [System Design model](models/system-design.md) owns the durable Feature and Function relationships.
-The [Architecture Design model](models/architecture-design.md) owns allocation to Modules and interaction through Interfaces.
 
 ### Methods
 
@@ -141,8 +138,9 @@ IR
                                    └── confirms → Function
 ```
 
-Scenario Analysis creates and governs first-class stakeholder-visible Scenario entities and confirms the durable Feature those situations exercise.
-It may reveal candidate behavior, but the corresponding Function becomes authoritative through SR analysis.
+Scenario Analysis creates and maintains first-class governed Scenario entities and confirms the durable Feature they exercise.
+It may reveal candidate behavior, but [Functional Analysis](methods/functional-analysis.md) confirms the corresponding Function only after SR obligations are sufficiently clear.
+[Architecture Allocation](methods/architecture-allocation.md) then assigns accountable Module responsibility.
 
 ### Why REM is built this way
 
@@ -150,7 +148,7 @@ This separation allows:
 
 - the IR to preserve stakeholder need and context;
 - the Feature to remain durable while Scenarios change;
-- Scenarios to preserve concrete stakeholder-use context with stable identity and lifecycle without becoming product architecture;
+- Scenarios to explain concrete stakeholder use without becoming product architecture;
 - SRs to turn stakeholder situations into assessable system obligations;
 - Functions to describe logical behavior independently from the requirement text;
 - ARs to allocate lower-level obligations without turning Modules into requirement categories.
@@ -195,11 +193,11 @@ The SR establishes what the system must satisfy.
 The Function expresses the behavior the system performs to satisfy that obligation.
 
 Principle 16 connects naming to engineering meaning.
-The [System Design model](models/system-design.md#clear-names-and-boundaries) defines the Feature and Function clarity criteria; [Scenario Analysis](methods/scenario-analysis.md#1-confirm-the-stakeholder-goal-and-feature) applies them to capabilities, and [Requirement Analysis](methods/requirement-analysis.md#derive-system-requirements) applies them before an SR confirms a Function.
+The [System Design model](models/system-design.md#clear-names-and-boundaries) defines Feature and Function clarity criteria. [Scenario Analysis](methods/scenario-analysis.md#step-1--confirm-or-reuse-the-feature) applies them to capabilities, [Requirement Analysis](methods/requirement-analysis.md#derive-system-requirements) derives the SR obligations, and [Functional Analysis](methods/functional-analysis.md) confirms the Functions those SRs require.
 The [Operational Support model](models/operational-support.md#naming-and-location) separately owns representation choices such as deriving filenames from an ID and title.
 
-The [Requirement Analysis method](methods/requirement-analysis.md#derive-system-requirements) currently supplies the entry point for confirming Functions from SRs.
-A dedicated general Functional Analysis method has not yet been authored in the current REM package; that is a visible method gap rather than an implicit procedure.
+[Requirement Analysis](methods/requirement-analysis.md#derive-system-requirements) owns SR derivation.
+[Functional Analysis](methods/functional-analysis.md) owns confirmation and boundary definition of Functions from those SRs and reconciliation of Feature realization.
 
 ---
 
@@ -230,8 +228,8 @@ Functional allocation and requirement allocation answer different questions:
 
 Reviewing them together helps detect architecture that performs behavior without owning its obligations, or owns obligations without the behavior, state, policy, or interfaces required to satisfy them.
 
-The current [Requirement Analysis method](methods/requirement-analysis.md#derive-allocated-requirements) defines how ARs are derived.
-The current REM package does not yet contain a standalone Architecture Design procedure beyond the structural [Architecture Design model](models/architecture-design.md); that gap should remain explicit until such a Method is authored.
+[Requirement Analysis](methods/requirement-analysis.md#derive-allocated-requirements) defines how AR obligations are derived.
+[Architecture Allocation](methods/architecture-allocation.md) owns Function and AR allocation to Modules and Interface identification.
 
 ---
 
@@ -337,22 +335,22 @@ When a reader asks why REM contains a particular rule, follow the links in this 
 ### Example: Why does REM keep Feature separate from Scenario?
 
 1. Read [Scenario](concepts/README.md#requirement-analysis-entities) and [Feature](concepts/README.md#system-and-architecture-assets).
-2. Read Principles 3, 10, and 17 in [Principles](principles/README.md).
-3. Read the [Scenario model](models/scenarios.md) and [System Design model](models/system-design.md).
-4. Read [Scenario Analysis](methods/scenario-analysis.md).
+2. Read Principle 3 in [Principles](principles/README.md).
+3. Read the [System Design model](models/system-design.md).
+4. Read the [Scenario model](models/scenarios.md) and [Scenario Analysis](methods/scenario-analysis.md).
 
 ### Example: Why does SR confirm Function while AR allocates to Module?
 
 1. Read [SR, AR, Function, and Module](concepts/README.md).
 2. Read Principles 5–7 in [Principles](principles/README.md).
 3. Read the [Requirement model](models/requirements.md), [System Design model](models/system-design.md), and [Architecture Design model](models/architecture-design.md).
-4. Read the SR and AR procedures in [Requirement Analysis](methods/requirement-analysis.md).
+4. Read [Requirement Analysis](methods/requirement-analysis.md), [Functional Analysis](methods/functional-analysis.md), and [Architecture Allocation](methods/architecture-allocation.md).
 
 ### Example: Why must a Feature or Function name explain its purpose?
 
 1. Read Principle 16 in [Principles](principles/README.md).
 2. Read the naming and definition criteria in the [System Design model](models/system-design.md#clear-names-and-boundaries).
-3. Follow the Feature procedure in [Scenario Analysis](methods/scenario-analysis.md#1-confirm-the-stakeholder-goal-and-feature) or the Function procedure in [Requirement Analysis](methods/requirement-analysis.md#derive-system-requirements).
+3. Follow the Feature procedure in [Scenario Analysis](methods/scenario-analysis.md#step-1--confirm-or-reuse-the-feature), the Function procedure in [Functional Analysis](methods/functional-analysis.md), or the allocation procedure in [Architecture Allocation](methods/architecture-allocation.md).
 4. Read [Operational Support](models/operational-support.md#naming-and-location) for the separate question of how a project represents that name in directories, filenames, or other storage.
 
 This is the intended role of this file: it tells the reader which authoritative knowledge to follow rather than restating that knowledge here.
@@ -406,12 +404,16 @@ For Requirement Analysis specifically:
                     │
                     ▼
           [Requirement model]
+           [Scenario model]
           [System Design model]
+       [Architecture Design model]
                     │
                     ▼
                [5W2H]
           [Scenario Analysis]
         [Requirement Analysis]
+         [Functional Analysis]
+      [Architecture Allocation]
 ```
 
 Those links, rather than this file alone, define REM.

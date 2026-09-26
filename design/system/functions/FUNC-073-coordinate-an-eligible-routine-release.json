@@ -1,0 +1,56 @@
+{
+  "id": "FUNC-073",
+  "type": "function",
+  "title": "Coordinate an eligible routine release",
+  "status": "draft",
+  "description": "Coordinate the existing release responsibilities for supported reviewed input around one exact prepared-candidate approval. The coordinator supplies bounded sequencing and result continuity, not a new general workflow policy or product decision.",
+  "inputs": [
+    "Eligible reviewed release intent and established supported configuration.",
+    "Preparation, qualification, candidate, authorization, publication, public observation, and reporting results from their authoritative owners."
+  ],
+  "preconditions": [],
+  "outputs": [
+    "Prepared candidate for one normal maintainer approval and subsequent attributable operation results.",
+    "Precise intervention request or retained failure/uncertainty when supported progression cannot continue."
+  ],
+  "behavior": [
+    "Derive supported profiles, notes, and projections from authoritative reviewed intent without duplicate manual entry.",
+    "Coordinate preparation and exact-candidate qualification before presenting its approval summary.",
+    "After applicable approval, continue covered publication, public observation, and durable reporting against the same retained subject.",
+    "Reuse existing authority and evidence semantics; an unchanged satisfactory recheck does not create redundant approval work.",
+    "Stop for ambiguous engineering/version choices, unsupported populations, missing setup, mismatched candidates, or uncertain writes and preserve each owner's actual disposition."
+  ],
+  "failure_behavior": [
+    {
+      "condition": "The operation needs a new product decision or lacks an established prerequisite.",
+      "outcome": "Return a precise owner intervention rather than inventing a value or expanding supported automation."
+    },
+    {
+      "condition": "A stage fails, becomes stale, or reports an uncertain external effect.",
+      "outcome": "Stop dependent progression and retain the responsible stage's correction/recovery meaning without manufacturing a successful handoff."
+    }
+  ],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-22",
+      "basis": "Logical behavior derived from the identified published-product contracts for IR-010; existing source details and compatibility/adoption limits remain applicable."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-23",
+      "basis": "Logical behavior derived from the identified published-product contracts for IR-010; existing source details and compatibility/adoption limits remain applicable."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-24",
+      "basis": "Logical behavior derived from the identified published-product contracts for IR-010; existing source details and compatibility/adoption limits remain applicable."
+    },
+    {
+      "source": "SRC-PUBLISHED-PRODUCTS",
+      "locator": "FUNC-073",
+      "basis": "Assign MOD-015 as the proposed accountable primary responsibility after Functional Analysis. Current product source contracts retain detailed behavior authority; allocation is not runtime adoption or complete AR coverage."
+    }
+  ],
+  "allocated_to": "MOD-015"
+}

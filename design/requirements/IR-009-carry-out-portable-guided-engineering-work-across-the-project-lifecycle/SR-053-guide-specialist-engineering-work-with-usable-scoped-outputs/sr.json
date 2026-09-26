@@ -1,0 +1,86 @@
+{
+  "id": "SR-053",
+  "type": "system-requirement",
+  "title": "Guide specialist engineering work with usable scoped outputs",
+  "status": "draft",
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-03",
+      "basis": "Derives the stated common Skills-product obligation while preserving the cited clause population and retained specialist or package-owner detail; this draft is not source retirement or runtime adoption."
+    },
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-04",
+      "basis": "Derives the stated common Skills-product obligation while preserving the cited clause population and retained specialist or package-owner detail; this draft is not source retirement or runtime adoption."
+    },
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-12",
+      "basis": "Derives the stated common Skills-product obligation while preserving the cited clause population and retained specialist or package-owner detail; this draft is not source retirement or runtime adoption."
+    },
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-24",
+      "basis": "Derives the stated common Skills-product obligation while preserving the cited clause population and retained specialist or package-owner detail; this draft is not source retirement or runtime adoption."
+    },
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-27",
+      "basis": "Derives the stated common Skills-product obligation while preserving the cited clause population and retained specialist or package-owner detail; this draft is not source retirement or runtime adoption."
+    },
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-29",
+      "basis": "Derives the stated common Skills-product obligation while preserving the cited clause population and retained specialist or package-owner detail; this draft is not source retirement or runtime adoption."
+    }
+  ],
+  "statement": "The system shall guide each invoked engineering capability through its current specialist procedure and produce or assess the complete applicable output with explicit scope, evidence, stops, and claim limits, preserving the specialist behavioral owner and project authority.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "A common checklist or empty template can hide the actual reasoning, failure handling, and usable result required by a specialist activity.",
+      "desired_outcome": "The requested activity yields the appropriate usable artifact, scoped correction, assessment, or explanation, or a precise supported stop."
+    },
+    "why": {
+      "rationale": "Guidance must preserve the differences between engineering disciplines while remaining usable to a person or agent."
+    },
+    "who": {
+      "stakeholders": [
+        "Participants invoking published engineering capabilities",
+        "Project decision owners and reviewers",
+        "Published guidance maintainers"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "While carrying out an authorized specialist activity and preparing its bounded result."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "The selected capability path in the participant's project context."
+      ]
+    },
+    "how": {
+      "approach": "Apply the specialist-owned procedure, required evidence, output shape, failure disposition, and handoff. Reuse model-authoring guidance when the task is within the adopted REM profile and reuse authority and assurance behavior where applicable; do not replace specialist rules with a universal procedure."
+    },
+    "how_much": {
+      "scope": "All published capability families. This common obligation preserves the detailed currently supported authoring, implementation, assessment, foundations, discovery, learning, and handoff contracts; their individual requirement tables and closed classifications remain at existing owners pending migration. Newly drafted REM entity authoring is not automatic adoption by published commands or skills, and currently retired public output formats remain retired until deliberately changed."
+    }
+  },
+  "acceptance_criteria": [
+    "An invoked activity identifies its specialist owner, sufficient inputs, scoped procedure, required usable output, material failure disposition, and next local handoff.",
+    "Artifact output contains all applicable required groups and no unfilled placeholders; a structural aid does not introduce hidden policy, judgments, or mutable lifecycle state.",
+    "Implementation, diagnosis, review, and external handoff retain their distinct mutation and evidence boundaries; guidance for one activity does not silently execute another.",
+    "An unsupported output format or unresolved adoption boundary is reported explicitly; the REM target model does not itself authorize retired feature, proof, or standalone architecture operations.",
+    "Reported results distinguish produced work, partial or blocked scope, observations, judgments, and remaining obligations rather than presenting progress as approved completion."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "confirms": [
+    "FUNC-053",
+    "FUNC-032",
+    "FUNC-033"
+  ]
+}

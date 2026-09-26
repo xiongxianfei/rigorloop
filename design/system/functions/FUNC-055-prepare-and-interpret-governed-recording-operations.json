@@ -1,0 +1,56 @@
+{
+  "id": "FUNC-055",
+  "type": "function",
+  "title": "Prepare and interpret governed recording operations",
+  "status": "draft",
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-17",
+      "basis": "Defines common invocation or composition behavior required by IR-009 while preserving the detailed specialist owner and shared existing authority, context, and assurance responsibilities."
+    },
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-25",
+      "basis": "Defines common invocation or composition behavior required by IR-009 while preserving the detailed specialist owner and shared existing authority, context, and assurance responsibilities."
+    },
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-26",
+      "basis": "Defines common invocation or composition behavior required by IR-009 while preserving the detailed specialist owner and shared existing authority, context, and assurance responsibilities."
+    },
+    {
+      "source": "SRC-PUBLISHED-PRODUCTS",
+      "locator": "FUNC-055",
+      "basis": "Assign MOD-012 as the proposed accountable primary responsibility after Functional Analysis. Current product source contracts retain detailed behavior authority; allocation is not runtime adoption or complete AR coverage."
+    }
+  ],
+  "description": "Translate an applicable capability recording obligation into supported explicit operations and interpret their observed results. Persistent record semantics remain with the CLI/Records contract; this behavior owns the invoking participant's scope and explicit decisions.",
+  "inputs": [
+    "Prepared governed invocation, required recording purpose, authorized destination, and current supported procedure.",
+    "Inspected scoped context, relevant read or revision identity, explicit actor decisions, and operation responses."
+  ],
+  "preconditions": [],
+  "outputs": [
+    "Supported recording request with exact scope and explicit actor-owned decisions.",
+    "Observed successful, failed, conflicted, or interrupted result with applicable next action and unchanged authority meaning."
+  ],
+  "behavior": [
+    "Inspect authoritative context through the supported scoped interface before preparing a write.",
+    "Use supported commands, selectors, request shapes, destination identities, and applicable concurrency basis; supply the actor's engineering decisions explicitly.",
+    "Inspect each actual operation result and distinguish persistence success from assessment approval, authority, or completed workflow.",
+    "For conflict, interruption, or changed basis, follow the owning recovery procedure with fresh relevant context, preserving current and historical records.",
+    "Keep ordinary portable outputs outside recording unless their actual governed or durable trigger applies; never synthesize governed completion from an unrecorded result."
+  ],
+  "failure_behavior": [
+    {
+      "condition": "Required CLI support, current procedure, scope, or authorization is unavailable.",
+      "outcome": "Stop the dependent recording path with its actual unmet prerequisite, preserving portable output only where the selected contract independently permits it."
+    },
+    {
+      "condition": "A write conflicts, is interrupted, or returns an unexpected result.",
+      "outcome": "Report the observed state and follow the current recovery contract; do not overwrite by assumption or claim an unobserved success."
+    }
+  ],
+  "allocated_to": "MOD-012"
+}

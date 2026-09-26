@@ -1,0 +1,90 @@
+{
+  "id": "SR-056",
+  "type": "system-requirement",
+  "title": "Preserve guidance meaning and evidence quality across reading paths",
+  "status": "draft",
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-01",
+      "basis": "Derives the stated common Skills-product obligation while preserving the cited clause population and retained specialist or package-owner detail; this draft is not source retirement or runtime adoption."
+    },
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-06",
+      "basis": "Derives the stated common Skills-product obligation while preserving the cited clause population and retained specialist or package-owner detail; this draft is not source retirement or runtime adoption."
+    },
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-07",
+      "basis": "Derives the stated common Skills-product obligation while preserving the cited clause population and retained specialist or package-owner detail; this draft is not source retirement or runtime adoption."
+    },
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-14",
+      "basis": "Derives the stated common Skills-product obligation while preserving the cited clause population and retained specialist or package-owner detail; this draft is not source retirement or runtime adoption."
+    },
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-15",
+      "basis": "Derives the stated common Skills-product obligation while preserving the cited clause population and retained specialist or package-owner detail; this draft is not source retirement or runtime adoption."
+    },
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-18",
+      "basis": "Derives the stated common Skills-product obligation while preserving the cited clause population and retained specialist or package-owner detail; this draft is not source retirement or runtime adoption."
+    },
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-35",
+      "basis": "Derives the stated common Skills-product obligation while preserving the cited clause population and retained specialist or package-owner detail; this draft is not source retirement or runtime adoption."
+    }
+  ],
+  "statement": "The system shall present sufficient authoritative guidance and evidence for each selected activity while preserving rule coverage, specialist meaning, source applicability, privacy, and observable claim limits across concise entrypoints and conditionally loaded resources.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Shortened or duplicated guidance can change a rule, hide required evidence, expose private environment information, or imply stronger assurance than its checks establish.",
+      "desired_outcome": "Participants can find and apply the complete current rule and required evidence without reconciling competing policy copies or relying on unsafe disclosure."
+    },
+    "why": {
+      "rationale": "Clarity and concise presentation are useful only when engineering obligations and supported conclusions remain intact."
+    },
+    "who": {
+      "stakeholders": [
+        "Participants invoking published engineering capabilities",
+        "Project decision owners and reviewers",
+        "Published guidance maintainers"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "When reading instructions, selecting evidence, producing results, or refining a published reading path."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "The selected capability path in the participant's project context."
+      ]
+    },
+    "how": {
+      "approach": "Keep the owning rule and its applicability identifiable, use bounded summaries and excerpts when sufficient, and obtain complete subjects where the decision requires them. Preserve current vocabulary and distinguish examples and structural aids from policy. Explain meaningful evidence gaps and protect private information."
+    },
+    "how_much": {
+      "scope": "Current invoked guidance and result meaning. Mechanical package conformance, package-wide refinement assessments, and historical pilot adoption remain separately owned obligations; structure, fewer words, static counts, or target invocation success do not establish semantic quality, universal compliance, or customer adoption."
+    }
+  },
+  "acceptance_criteria": [
+    "Each applicable rule can be located at its authoritative owner, and an intentional reminder agrees with that owner; historical policies or copied aids do not establish conflicting current authority.",
+    "A decision that requires a complete subject receives that subject; summaries, output caps, or conditional loading do not remove required coverage, failure information, or obtainable material details.",
+    "Required closed values preserve their current owning spelling and membership; an unknown value is not interpreted as a supported fallback.",
+    "Guidance, examples, and results do not require secrets, credentials, raw private environment data, or unrelated machine-local information.",
+    "Results distinguish mechanical conformance, observed capability outcomes, and engineering judgment, preserving their actual scope and evidence limits."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "confirms": [
+    "FUNC-052",
+    "FUNC-053"
+  ]
+}

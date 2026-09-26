@@ -1,0 +1,59 @@
+{
+  "id": "AR-008",
+  "type": "allocated-requirement",
+  "title": "Retain decision reasoning and its definition association",
+  "status": "draft",
+  "statement": "The Engineering model storage Module shall retain recorded decision context, chosen outcome, rationale, alternatives, and consequences with their definition association and basis, keeping still-applicable reasoning accessible from current content and exposing missing or unresolved associations.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Reasoning can disappear with a Change record or be incorrectly reused after a definition evolves.",
+      "desired_outcome": "Readers can access the recorded reasoning relied on by the selected definition without invented explanations."
+    },
+    "why": {
+      "rationale": "SR-005 requires durable, accessible, applicable recorded reasoning independently of its originating Change explanation."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineering model authors and readers",
+        "Maintainers of MOD-001"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "Decision reasoning is explicitly supplied for a selected definition.",
+        "That reasoning remains relied on after the originating Change explanation leaves current working material."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "IF-001 retain_rationale and retrieve_rationale."
+      ]
+    },
+    "how": {
+      "approach": "Preserve supplied reasoning and state-scoped associations, and retrieve them through current authoritative references with separate availability and applicability results."
+    },
+    "how_much": {
+      "scope": "Recorded decision reasoning still relied upon by current definitions; unrelated historical rationale and unrecorded justification cannot fill a gap."
+    }
+  },
+  "acceptance_criteria": [
+    "After retention and a new session, all recorded decision details and their association basis can be retrieved through the selected definition.",
+    "Removing the originating Change explanation from current working material does not remove reasoning still relied on by current definitions.",
+    "Missing details, failed retention, or unresolved associations remain explicit and do not receive a complete accessible-reasoning result.",
+    "A changed definition state does not silently acquire a prior association; the retained association basis and selected state remain distinguishable."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "allocated_to": "MOD-001",
+  "constrains": [
+    "FUNC-006"
+  ],
+  "sources": [
+    {
+      "source": "SRC-ARCHITECTURE-PILOT",
+      "locator": "AR-008",
+      "basis": "Derived from SR-005 for the proposed MOD-001 responsibility and IR-001 scenario walkthrough. Acceptance criteria are intended observations, not executed verification or an approval."
+    }
+  ]
+}

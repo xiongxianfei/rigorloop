@@ -355,8 +355,11 @@ class CurrentEngineeringModelTests(unittest.TestCase):
     def setUpClass(cls):
         requirements = ROOT / "design/requirements"
         paths = list(requirements.rglob("ir.json")) + list(requirements.rglob("sr.json"))
+        paths += list(requirements.rglob("AR-*.json"))
         for prefix, directory in PROFILES.values():
             paths += list((ROOT / "design" / directory).glob(f"{prefix}-*.json"))
+        paths += list((ROOT / "design/architecture/modules").glob("MOD-*.json"))
+        paths += list((ROOT / "design/architecture/interfaces").glob("IF-*.json"))
         cls.records = [
             (path, json.loads(path.read_text(encoding="utf-8"))) for path in sorted(paths)
         ]
@@ -392,6 +395,9 @@ class CurrentEngineeringModelTests(unittest.TestCase):
             "scenario": {"exercises": {"feature"}, "informs": {"system-requirement"}},
             "feature": {"realized_by": {"function"}},
             "function": {"allocated_to": {"module"}},
+            "allocated-requirement": {"allocated_to": {"module"}, "constrains": {"function"}},
+            "module": {"provides": {"interface"}, "consumes": {"interface"}},
+            "interface": {},
         }
         for _, record in self.records:
             for relation, target_types in compatible[record["type"]].items():
@@ -406,6 +412,8 @@ class CurrentEngineeringModelTests(unittest.TestCase):
     def test_current_names_and_requirement_containment_match_the_profile(self):
         ir_directories = {path.parent for path, record in self.records
                           if record["type"] == "initial-requirement"}
+        sr_directories = {path.parent for path, record in self.records
+                          if record["type"] == "system-requirement"}
         requirements = ROOT / "design/requirements"
         for path, record in self.records:
             with self.subTest(entity=record["id"]):
@@ -418,6 +426,9 @@ class CurrentEngineeringModelTests(unittest.TestCase):
                 elif record["type"] == "system-requirement":
                     self.assertIn(path.parent.parent, ir_directories)
                     self.assertEqual(path.parent.name, label)
+                elif record["type"] == "allocated-requirement":
+                    self.assertIn(path.parent, sr_directories)
+                    self.assertEqual(path.name, label + ".json")
                 else:
                     self.assertEqual(path.name, label + ".json")
 

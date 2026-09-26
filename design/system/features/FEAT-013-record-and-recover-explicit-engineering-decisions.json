@@ -1,0 +1,33 @@
+{
+  "id": "FEAT-013",
+  "type": "feature",
+  "title": "Record and recover explicit engineering decisions",
+  "status": "draft",
+  "description": "Engineers and agents can record their chosen engineering decisions through narrow operations, bounded batches, or advanced exact replacements, preserve neighboring information, and recover interrupted publication without assigning the command engineering authority.",
+  "scope": {
+    "includes": [
+      "Explicit current-format creation, targeted edits, complete replacement, validation and non-writing preview.",
+      "Preservation of actor meaning, exact target boundaries, review findings, blocker origins, and supplied applicability.",
+      "Fresh coherent durable transactions and explicit exact recovery."
+    ],
+    "excludes": [
+      "Automatic workflow progression, supplied-decision approval, implied permission, or arbitrary engineering-document edits.",
+      "Legacy record conversion, automatic recovery on reads, or a transaction over all repository edits."
+    ]
+  },
+  "realized_by": [
+    "FUNC-040",
+    "FUNC-044",
+    "FUNC-045",
+    "FUNC-046",
+    "FUNC-047",
+    "FUNC-048"
+  ],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-CLI",
+      "locator": "docs/design/cli/cli.md#CLI-SR-02, CLI-SR-03, CLI-SR-04, CLI-SR-05, CLI-SR-06, CLI-SR-07, CLI-SR-12, CLI-SR-13, CLI-SR-15, CLI-SR-16; docs/design/cli/records.md#RF-SR-03, RF-SR-04, RF-SR-13",
+      "basis": "IR-008 Scenario Analysis identifies this durable user-visible capability across current published command use; it remains distinct from the required safety obligations and their implementation."
+    }
+  ]
+}

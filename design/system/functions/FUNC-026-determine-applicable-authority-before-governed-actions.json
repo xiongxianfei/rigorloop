@@ -32,12 +32,17 @@
       "outcome": "Withhold the uncovered action while preserving recognition of the grant for any still-covered scope."
     }
   ],
-  "unallocated_reason": "Architectural responsibility is deliberately deferred until the logical requirements and system design are reconciled. This Function establishes behavior, not a Module, Interface, implementation, or verification result.",
   "sources": [
     {
       "source": "SRC-COMPLETE-ANALYSIS",
       "locator": "FUNC-026",
       "basis": "Existing SR-007 confirms authority enforcement under IR-003. It uses the selected project policy rather than establishing a universal approval workflow."
+    },
+    {
+      "source": "SRC-ARCHITECTURE-PILOT",
+      "locator": "FUNC-026",
+      "basis": "Propose MOD-006 as the single accountable architectural responsibility for the existing behavior. This allocation preserves the Function definition and does not establish implementation or completed interface/AR coverage outside the IR-001 pilot."
     }
-  ]
+  ],
+  "allocated_to": "MOD-006"
 }

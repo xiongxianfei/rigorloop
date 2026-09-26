@@ -1,0 +1,47 @@
+{
+  "id": "FUNC-045",
+  "type": "function",
+  "title": "Construct lossless candidates from explicit record edits",
+  "status": "draft",
+  "description": "Build complete candidate bytes from a bounded ordered set of targeted actor-supplied record decisions against one coherent before-state. Preserve all unselected meaning and bytes while generating only necessary representation bookkeeping; construction itself does not publish.",
+  "inputs": [
+    "One coherent supported before-state and explicit target operation or bounded batch.",
+    "Actor-supplied mutable values, required new-record applicability, and preview or actual-execution intent."
+  ],
+  "preconditions": [],
+  "outputs": [
+    "Complete candidate bytes and explicit target effects, including necessary registration/bookkeeping.",
+    "A valid non-writing candidate preview or named missing-input, overlap, preservation, target, or shape rejection."
+  ],
+  "behavior": [
+    "Use only closed purpose-specific operations and exact targets; fill metadata, deterministic paths, containers and registry entries mechanically without inventing semantic inputs.",
+    "Replace only selected value spans and necessary local syntax, preserve omitted fields/entries/narrative/formatting, and make no byte edit for semantically unchanged values.",
+    "Require declared applicability when creating a supporting record, preserve it when legitimately omitted on existing content, and distinguish missing registered content from absence.",
+    "Apply ordered operations to one candidate; allow final references to newly introduced objects, reject overlapping/duplicate assignments, and preserve the declared separations between assessment/findings and decision/shared narrative.",
+    "Retain complete Review findings, ID-only finding preservation and immutable blocker origin; preserve the distinction between full Verify replacement and narrow explanation updates, including optional-basis removal.",
+    "Validate the final candidate and expose candidate effects in preview without transaction files, reservations, or a saved claim; actual execution must rebuild under fresh checked state."
+  ],
+  "failure_behavior": [
+    {
+      "condition": "A decision/input is missing, a set target is absent, creation would overwrite unregistered content, or named edits overlap.",
+      "outcome": "Reject the candidate with the precise safe reason and no partial publication or synthesized actor decision."
+    },
+    {
+      "condition": "The source representation cannot be preserved as required or final references/content are invalid.",
+      "outcome": "Reject rather than canonicalize unrelated existing bytes, publish an intermediate state, or make all actors supply unrelated simultaneous decisions."
+    }
+  ],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-CLI",
+      "locator": "docs/design/cli/cli.md#CLI-SR-03, CLI-SR-12, CLI-SR-13, CLI-SR-15, CLI-SR-16, CLI-SR-25, CLI-SR-26; docs/design/cli/records.md#RF-SR-08, RF-SR-10, RF-SR-13",
+      "basis": "Functional Analysis of the IR-008 system obligations confirms this distinct published command/record responsibility. The retained CLI/Record Format contract supplies exact public operations and limits; logical behavior is defined before Module allocation."
+    },
+    {
+      "source": "SRC-PUBLISHED-PRODUCTS",
+      "locator": "FUNC-045",
+      "basis": "Assign MOD-011 as the proposed accountable primary responsibility after Functional Analysis. Current product source contracts retain detailed behavior authority; allocation is not runtime adoption or complete AR coverage."
+    }
+  ],
+  "allocated_to": "MOD-011"
+}

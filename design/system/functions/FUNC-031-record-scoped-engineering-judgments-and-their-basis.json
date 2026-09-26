@@ -36,12 +36,17 @@
       "outcome": "Keep the conclusion separate from the applicable authority requirement."
     }
   ],
-  "unallocated_reason": "Architectural responsibility is deliberately deferred until the logical requirements and system design are reconciled. This Function establishes behavior, not a Module, Interface, implementation, or verification result.",
   "sources": [
     {
       "source": "SRC-COMPLETE-ANALYSIS",
       "locator": "FUNC-031",
       "basis": "SR-028 and SR-029 confirm scoped judgment and preserved reassessment history under IR-004. SR-007 independently owns execution authority."
+    },
+    {
+      "source": "SRC-ARCHITECTURE-PILOT",
+      "locator": "FUNC-031",
+      "basis": "Propose MOD-007 as the single accountable architectural responsibility for the existing behavior. This allocation preserves the Function definition and does not establish implementation or completed interface/AR coverage outside the IR-001 pilot."
     }
-  ]
+  ],
+  "allocated_to": "MOD-007"
 }

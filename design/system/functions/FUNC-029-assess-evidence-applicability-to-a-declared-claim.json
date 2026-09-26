@@ -36,12 +36,17 @@
       "outcome": "Expose the missing judgment basis and do not present reuse as justified."
     }
   ],
-  "unallocated_reason": "Architectural responsibility is deliberately deferred until the logical requirements and system design are reconciled. This Function establishes behavior, not a Module, Interface, implementation, or verification result.",
   "sources": [
     {
       "source": "SRC-COMPLETE-ANALYSIS",
       "locator": "FUNC-029",
       "basis": "SR-027 and SR-029 confirm evidence-applicability analysis and reassessment under IR-004. Change impact relationships may be reused from the traceability capability without duplicating its ownership."
+    },
+    {
+      "source": "SRC-ARCHITECTURE-PILOT",
+      "locator": "FUNC-029",
+      "basis": "Propose MOD-007 as the single accountable architectural responsibility for the existing behavior. This allocation preserves the Function definition and does not establish implementation or completed interface/AR coverage outside the IR-001 pilot."
     }
-  ]
+  ],
+  "allocated_to": "MOD-007"
 }

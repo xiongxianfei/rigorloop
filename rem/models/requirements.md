@@ -1,7 +1,7 @@
 # Requirement model
 
-The [concepts](../concepts/README.md) distinguish the initial need, system obligation, and allocated obligation.
-The [requirement-analysis method](../methods/requirement-analysis.md) develops those three levels.
+The [concepts](../concepts/README.md#requirements) distinguish the Initial Requirement, System Requirement, and Allocated Requirement.
+The [Requirement Analysis method](../methods/requirement-analysis.md) develops those three levels.
 
 ```text
 IR
@@ -17,37 +17,60 @@ IR
 - Each SR MUST have exactly one IR parent.
 - Each AR MUST have exactly one SR parent.
 - Requirement parentage MUST be acyclic.
-- An IR or SR may be developed before its children are known; an SR need not have ARs immediately.
+- An IR or SR MAY exist before its children are known.
+- An SR MAY have zero AR children while architectural allocation is not yet established.
 
 These parent relationships are exclusive: an SR cannot belong to several IRs, and an AR cannot belong to several SRs.
 An IR may have multiple SR children, and an SR may have multiple AR children.
 Source references and other relationships do not establish additional parents.
 
 IR-to-SR decomposition converts an initial need into system-level obligations.
-SR-to-AR derivation allocates lower-level obligations to architectural responsibility.
+SR-to-AR derivation creates lower-level obligations assigned to architectural responsibility.
 An AR is a durable requirement, not a record that an allocation event occurred.
+
+## Requirement quality
+
+An approved SR MUST be stated so that satisfaction can be assessed through defined verification criteria.
+An approved AR MUST likewise be assessable at its allocated architectural scope.
+Draft requirements may retain explicit unknowns while analysis is incomplete.
+
+An SR SHOULD avoid prescribing implementation unless that implementation is itself a required constraint.
+An AR may be more architecture-specific because its purpose is to state the obligation assigned to a Module, but it still states what must be satisfied rather than implementation steps.
 
 ## Cross-domain relationships
 
 | Source | Relationship | Target | Meaning |
 | --- | --- | --- | --- |
-| IR | confirms | Feature | Initial Requirement analysis confirms the durable stakeholder-visible capability needed to address the initial need |
-| SR | confirms | Function | System Requirement analysis confirms the logical behavior needed to satisfy the system obligation |
+| IR | confirms | Feature | Initial Requirement analysis confirms the durable stakeholder-visible capability needed to address the need |
+| IR | confirms | Scenario | Initial Requirement analysis confirms a governed stakeholder situation relevant to the need |
+| Scenario | exercises | Feature | The Scenario describes one concrete way the stakeholder uses or experiences the Feature |
+| Scenario | informs | SR | Scenario Analysis exposes system obligations needed to support the Scenario |
+| SR | confirms | Function | System Requirement analysis confirms the logical behavior that carries the system obligation |
 | SR | constrains | Feature or Function | The obligation may additionally limit or shape capability or behavior |
-| AR | constrains | Function | An allocated obligation constrains logical behavior |
-| AR | allocatedTo | Module | Architecture is responsible for satisfying the allocated obligation |
+| AR | constrains | Function | The allocated obligation may constrain logical behavior owned by the allocated architecture |
+| AR | allocatedTo | Module | Exactly one Module is accountable for satisfying the allocated obligation |
 | Requirement | verifiedBy | Verification | An assessment determines whether the obligation is satisfied |
 
 Cross-domain references may be many-to-many without changing the single-parent requirement hierarchy.
-The first-class [Scenario model](scenarios.md) owns `IR → Scenario → Feature/SR` relationships and Scenario lifecycle.
-A Feature or Function is a durable System Design asset; a Scenario is a governed Requirement Analysis entity.
-Scenario Analysis may identify candidate behavior, but the `SR confirms Function` relationship records authoritative Function confirmation.
+The [Scenario model](scenarios.md) owns Scenario identity, lifecycle, and cardinality.
+The [System Design model](system-design.md) owns Feature and Function relationships.
+The [Architecture Design model](architecture-design.md) owns allocation cardinalities.
+
+A confirmed Scenario does not directly confirm a Function.
+It informs SR analysis; the `SR confirms Function` relationship records authoritative logical-behavior confirmation.
+
 References for related concerns do not create additional containment or derivation parents.
 Do not duplicate one obligation merely to place it under several parents.
 
-Every active AR SHOULD identify the architectural responsibility for satisfying it.
-Exact allocation cardinalities remain an [open refinement](../README.md#open-refinements).
-An SR SHOULD avoid prescribing implementation unless that implementation is itself a required constraint.
+## SR-to-AR completeness
+
+An SR MAY remain system-level without ARs while architecture has not yet been allocated.
+When lower-level architectural responsibility is required, derive one or more ARs.
+
+Architectural allocation for an SR is complete only when every lower-level obligation required to satisfy that SR is covered by an AR allocated to one accountable Module.
+Do not create an AR merely to fill the tree.
+
+If one lower-level obligation spans several Modules, decompose it into separate ARs under the same SR rather than assigning one AR to several Modules.
 
 ## Identity and content
 
@@ -56,7 +79,6 @@ An IR states the initial need.
 An SR or AR states the obligation and the conditions needed to assess satisfaction.
 Analysis, rationale, and provenance support the requirement without becoming substitutes for its statement.
 The statement is the authoritative need or obligation; What explains its problem and desired outcome as part of the supporting analysis.
-The selected representation records all seven answers without duplicating semantic facts and distinguishes assumptions, constraints, and unresolved questions.
 
 | Property | Meaning | Effect of change |
 | --- | --- | --- |
@@ -72,10 +94,7 @@ Parentage is authored once.
 If a representation uses physical containment as its authoritative parent relation, it derives the parent view from that containment.
 Another representation may author an explicit parent reference instead.
 
-Renaming a containing directory while keeping the same parent identity preserves requirement parentage.
-Moving an SR to a different IR, or an AR to a different SR, changes its parentage when location represents containment.
-That move requires reconsidering the derivation and affected obligations; it is not merely a readability edit.
+Moving an SR to a different IR, or an AR to a different SR, changes semantic parentage and requires reconsidering derivation and affected obligations.
 Requirement identities do not encode their current parent and are not renumbered solely because a parent changes.
 
-Identity persists across evolution of the same requirement; revision and evidence applicability remain distinct concerns.
-Requirement satisfaction, approval, and implementation status must not be inferred from the presence of the requirement file.
+Requirement satisfaction, approval, implementation, and evidence applicability remain distinct concerns and MUST NOT be inferred from the presence of a requirement definition.

@@ -1,0 +1,46 @@
+{
+  "id": "FUNC-044",
+  "type": "function",
+  "title": "Validate registered recording candidates and preservation rules",
+  "status": "draft",
+  "description": "Assess a complete current-format recording candidate against closed record shape, registry/reference, and prior-state preservation rules. Distinguish mechanical admissibility from substantive adequacy so explicit corrections remain recordable.",
+  "inputs": [
+    "Complete candidate manifest and registered supporting records under the explicit supported contract.",
+    "Coherent prior records when finding-ID, blocker-origin, or update-preservation rules apply."
+  ],
+  "preconditions": [],
+  "outputs": [
+    "A structurally admissible complete candidate or safe rule-specific rejection.",
+    "Separate factual observations of changed subjects, failed evidence, or inconsistent recorded claims without rewritten decisions."
+  ],
+  "behavior": [
+    "Reject unknown record/field/vocabulary/version input, duplicate keys/IDs, invalid encoding and missing required values before dependent reference or preservation checks.",
+    "Validate every registered record's path, kind, change identity and explicit record-level applicability, and resolve field-specific EntryRefs against the final combined candidate with disjoint referenceable IDs.",
+    "Preserve complete immutable blocker origins; preserve existing Review finding IDs while permitting explicit valid correction of non-ID current fields and retaining full findings during assessment-only edits.",
+    "Apply the exact Review/Verify explanation and optional complete verification_basis shapes without parsing prose for decisions, requiring Git universally, or equating metadata with authentic authority.",
+    "Keep structural errors separate from observations of external subject drift, failed evidence and contradictory claims; do not gate a valid correction on stage eligibility or assessment adequacy."
+  ],
+  "failure_behavior": [
+    {
+      "condition": "A candidate contains an unknown/mixed contract, invalid shape/reference, or preservation violation.",
+      "outcome": "Reject before publication with safe diagnostic context; do not normalize a retired record or guess a reference."
+    },
+    {
+      "condition": "Engineering adequacy or reliance is unsettled despite a structurally valid candidate.",
+      "outcome": "Keep the supplied decision and distinct observation; do not fabricate approval or reject a correction solely to enforce workflow progression."
+    }
+  ],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-CLI",
+      "locator": "docs/design/cli/cli.md#CLI-SR-02, CLI-SR-07, CLI-SR-26; docs/design/cli/records.md#RF-SR-01, RF-SR-02, RF-SR-03, RF-SR-04, RF-SR-05, RF-SR-08, RF-SR-09, RF-SR-10, RF-SR-11, RF-SR-13",
+      "basis": "Functional Analysis of the IR-008 system obligations confirms this distinct published command/record responsibility. The retained CLI/Record Format contract supplies exact public operations and limits; logical behavior is defined before Module allocation."
+    },
+    {
+      "source": "SRC-PUBLISHED-PRODUCTS",
+      "locator": "FUNC-044",
+      "basis": "Assign MOD-011 as the proposed accountable primary responsibility after Functional Analysis. Current product source contracts retain detailed behavior authority; allocation is not runtime adoption or complete AR coverage."
+    }
+  ],
+  "allocated_to": "MOD-011"
+}

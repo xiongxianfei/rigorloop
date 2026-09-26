@@ -1,0 +1,55 @@
+{
+  "id": "FUNC-062",
+  "type": "function",
+  "title": "Assess packed CLI completeness",
+  "status": "draft",
+  "description": "Assess the actual emitted CLI package and its clean-consumer behavior against the existing package policy. It supplies attributable qualification observations rather than accepting source configuration as proof of the packed product.",
+  "inputs": [
+    "Actual CLI tarball, declared runtime inclusion/exclusion policy, and bundled trust metadata.",
+    "Selected real target archives and prepared clean-consumer assessment conditions."
+  ],
+  "preconditions": [],
+  "outputs": [
+    "Packed-member, executable, dependency/hook, metadata, and installed-consumer observations.",
+    "Missing, forbidden, unsafe, unperformed, or incomplete package qualification findings."
+  ],
+  "behavior": [
+    "Inspect actual members, executable entrypoint, public/license metadata, required runtime files, and bundled trust inputs.",
+    "Reject forbidden contents, secrets, missing runtime dependencies, unjustified hooks, or consumer generation/hidden acquisition.",
+    "Exercise the actual packed binary in a clean consumer context without repository-only imports.",
+    "Assess producer-to-packed-installer composition for the selected targets and required conflict, replacement, preservation, and safety partitions.",
+    "Return observed scope and remaining gaps for general evidence retention and release qualification."
+  ],
+  "failure_behavior": [
+    {
+      "condition": "A required runtime input is absent or a forbidden member or hook is present.",
+      "outcome": "Report the package defect and prevent qualification."
+    },
+    {
+      "condition": "Only a source checkout, mocked pass, helper, or dry-run is available.",
+      "outcome": "Report the unassessed packed-consumer boundary rather than claiming composed product proof."
+    },
+    {
+      "condition": "An actual candidate check cannot complete.",
+      "outcome": "Retain obtained observations and identify the incomplete scope."
+    }
+  ],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-PACKAGING",
+      "locator": "docs/design/engineering/packaging.md#DIST-SR-18",
+      "basis": "Logical behavior derived from the identified published-product contracts for IR-010; existing source details and compatibility/adoption limits remain applicable."
+    },
+    {
+      "source": "SRC-PUBLISHED-PACKAGING",
+      "locator": "docs/design/engineering/packaging.md#DIST-SR-23",
+      "basis": "Logical behavior derived from the identified published-product contracts for IR-010; existing source details and compatibility/adoption limits remain applicable."
+    },
+    {
+      "source": "SRC-PUBLISHED-PRODUCTS",
+      "locator": "FUNC-062",
+      "basis": "Assign MOD-013 as the proposed accountable primary responsibility after Functional Analysis. Current product source contracts retain detailed behavior authority; allocation is not runtime adoption or complete AR coverage."
+    }
+  ],
+  "allocated_to": "MOD-013"
+}

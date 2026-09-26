@@ -1,0 +1,82 @@
+{
+  "id": "SR-067",
+  "type": "system-requirement",
+  "title": "Select compatible release identity and supported execution scope",
+  "status": "draft",
+  "statement": "The system shall identify each release attempt's reviewed source, release type, version rationale, package, tag, channel, supported targets, and applicable execution profile, rejecting unsupported or conflicting selections without overwriting an existing publication.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "A routine operation can silently introduce product decisions or apply an old release recipe to a different candidate.",
+      "desired_outcome": "Maintainers know the exact product and compatibility decision being released and which selected path can legitimately handle it."
+    },
+    "why": {
+      "rationale": "Version and support compatibility are public product obligations, not consequences inferred from a successful build."
+    },
+    "who": {
+      "stakeholders": [
+        "Release maintainers",
+        "Users affected by public compatibility changes"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "Before release preparation or publication and when support is added or withdrawn."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "Existing reviewed product decisions, selected source/profile, and observed external version conflicts."
+      ]
+    },
+    "how": {
+      "approach": "Apply the retained patch/minor/major and stable/prerelease policy to the recorded compatibility decision. Routine publication introduces no new engineering or publish-mechanics decision; routine automation admits only its separately supported population. Require a precise owner intervention for ambiguity or special handling. Qualify selected current source or an explicit candidate, not hardcoded historical production reports or retired bootstrap recipes. Keep historical target/evidence meanings unchanged."
+    },
+    "how_much": {
+      "scope": "The existing Release profile and Distribution support-transition scope. A generally allowed prerelease or approved special change does not make it supported by stable-only routine automation. Support withdrawal is a compatibility break requiring its applicable version decision. This definition neither selects a new release nor certifies that a source transition has completed adoption."
+    }
+  },
+  "acceptance_criteria": [
+    "An attempt identifies release type, justified version, reviewed source commit/branch, package, tag, channel, target population, and applicable profile before publication.",
+    "No-change and already-published attempts report their no-op, conflict, or recovery meaning without overwriting a version; an unsupported population stops with a specific owner decision rather than being relabeled routine.",
+    "Public compatibility withdrawals are disclosed and feed the major-version decision; old artifacts and historical target populations remain unchanged.",
+    "Current qualification rejects unsupported historical replay before generation or publication and does not require retired production reports, generators, bootstrap recipes, or activation ledgers as current inputs."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "confirms": [
+    "FUNC-066"
+  ],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-01",
+      "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. Version and support compatibility are public product obligations, not consequences inferred from a successful build. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-02",
+      "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. Version and support compatibility are public product obligations, not consequences inferred from a successful build. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-03",
+      "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. Version and support compatibility are public product obligations, not consequences inferred from a successful build. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-25",
+      "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. Version and support compatibility are public product obligations, not consequences inferred from a successful build. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-26",
+      "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. Version and support compatibility are public product obligations, not consequences inferred from a successful build. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#Distribution support transition",
+      "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. Version and support compatibility are public product obligations, not consequences inferred from a successful build. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
+    }
+  ]
+}

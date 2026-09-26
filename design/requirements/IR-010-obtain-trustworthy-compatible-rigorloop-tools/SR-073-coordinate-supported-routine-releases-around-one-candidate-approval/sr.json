@@ -1,0 +1,66 @@
+{
+  "id": "SR-073",
+  "type": "system-requirement",
+  "title": "Coordinate supported routine releases around one candidate approval",
+  "status": "draft",
+  "statement": "The system shall coordinate preparation, qualification, publication, public verification, and durable reporting for an eligible already-reviewed release so approving the prepared candidate is the sole normal maintainer action, while stopping for unsupported decisions or unavailable prerequisites.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "A nominally automated release can still require copying identities across files or manually coordinating every helper and result.",
+      "desired_outcome": "The maintainer reviews one concrete candidate and supported execution completes the agreed release stages or reports the precise unresolved exception."
+    },
+    "why": {
+      "rationale": "Existing routine coordination promises remove repeated manual bookkeeping without removing engineering decisions, evidence, or publication authority."
+    },
+    "who": {
+      "stakeholders": [
+        "Maintainers conducting supported routine releases"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "For a release eligible under the existing adopted routine automation path."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "The bounded release coordinator and its existing preparation, validation, publication, observation, and reporting owners."
+      ]
+    },
+    "how": {
+      "approach": "Derive profiles, notes, and generated evidence from authoritative reviewed inputs and coordinate the existing behaviors. Present the immutable candidate and its real qualification results at the existing candidate-specific approval boundary. Continue covered stages within that authorization, preserving failure and recovery states. Return ambiguous version/product decisions, unsupported special handling, missing setup, or unavailable dependencies to the responsible owner with a specific intervention request."
+    },
+    "how_much": {
+      "scope": "The existing supported routine release population and selected approval-driven operation, not a new general workflow engine or new public CLI command. Established credentials and protection are setup prerequisites. Routine automation cannot infer a product decision, fabricate a pass, create authority, or silently broaden the supported population."
+    }
+  },
+  "acceptance_criteria": [
+    "For eligible reviewed inputs and established setup, the maintainer receives a prepared qualified candidate for one approval without assembling profiles, copying hashes, fabricating results, or manually invoking each helper.",
+    "After applicable approval, supported preparation/qualification/publication/observation/reporting responsibilities compose against the same candidate and their actual outcomes remain durable.",
+    "Missing or conflicting version intent, unknown approved scope, unavailable prerequisites, or unsupported special-release handling stops the affected operation with a precise intervention request rather than guessing.",
+    "An unchanged candidate with a fresh satisfactory recheck does not require redundant approval, while changed identity, contradictory evidence, or uncertain external writes follow their respective requalification or recovery boundaries."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "confirms": [
+    "FUNC-073"
+  ],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-22",
+      "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. Existing routine coordination promises remove repeated manual bookkeeping without removing engineering decisions, evidence, or publication authority. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-23",
+      "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. Existing routine coordination promises remove repeated manual bookkeeping without removing engineering decisions, evidence, or publication authority. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-24",
+      "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. Existing routine coordination promises remove repeated manual bookkeeping without removing engineering decisions, evidence, or publication authority. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
+    }
+  ]
+}

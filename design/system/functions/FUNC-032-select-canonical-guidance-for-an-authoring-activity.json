@@ -31,12 +31,17 @@
       "outcome": "Identify affected owners and the unresolved conflict without inventing a new authoritative rule."
     }
   ],
-  "unallocated_reason": "Architectural allocation is deliberately deferred until Module responsibilities are designed; this draft claims no Module ownership or implementation.",
   "sources": [
     {
       "source": "SRC-COMPLETE-ANALYSIS",
       "locator": "FUNC-032",
       "basis": "SR-032 requires identifiable canonical guidance and version applicability for human and agent authors."
+    },
+    {
+      "source": "SRC-ARCHITECTURE-PILOT",
+      "locator": "FUNC-032",
+      "basis": "Propose MOD-008 as the single accountable architectural responsibility for the existing behavior. This allocation preserves the Function definition and does not establish implementation or completed interface/AR coverage outside the IR-001 pilot."
     }
-  ]
+  ],
+  "allocated_to": "MOD-008"
 }

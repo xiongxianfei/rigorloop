@@ -1,0 +1,46 @@
+{
+  "id": "FUNC-049",
+  "type": "function",
+  "title": "Retain and inspect private invocation diagnostics",
+  "status": "draft",
+  "description": "Retain bounded allowlisted diagnostic events for the published observed invocation path and support read-only lookup by exact invocation identity. This diagnostic behavior remains separate from command semantics, authoritative records, and engineering evidence.",
+  "inputs": [
+    "Declared observed invocation family, safe semantic outcome metadata, explicit diagnostic configuration and event timing.",
+    "Private owned logging root and an optional exact invocation lookup request."
+  ],
+  "preconditions": [],
+  "outputs": [
+    "Recorded, disabled, or degraded diagnostic state without changed semantic result.",
+    "Available matching supported events or bounded not-found, unavailable, corrupt-entry, or unsupported-event diagnostics."
+  ],
+  "behavior": [
+    "Attempt the contract-defined start/completion events with closed schemas, families and severities; preserve valid event boundaries under admitted concurrency and interruption.",
+    "Project only allowlisted metadata; exclude payloads, raw arguments, secrets, environment and identity/path disclosures prohibited by the retained privacy contract.",
+    "Apply declared ownership, containment and restrictive-access checks; perform finite lock attempts and bounded rotation only on owned names, never steal unverifiable locks or repair unsafe permissions.",
+    "Keep logging failure/disablement from changing command behavior, repository bytes, recovery, semantic stdout or exit. Dedicated recording interfaces retain their existing boundary.",
+    "Inspect only the exact invocation across bounded retained files, ignore unsupported/corrupt lines through safe warnings without raw content, and never rerun a command or assert that absence means it never occurred."
+  ],
+  "failure_behavior": [
+    {
+      "condition": "Logging path, permissions, lock, clock, event size or I/O prevents valid recording.",
+      "outcome": "Degrade diagnostics with the bounded nonrecursive warning required by the declared configuration; preserve command semantics."
+    },
+    {
+      "condition": "Lookup input is invalid, events are absent/expired, or retained lines are unavailable/corrupt/unsupported.",
+      "outcome": "Return the distinct safe lookup outcome and available matching events only; do not expose raw lines or create workflow authority."
+    }
+  ],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-CLI",
+      "locator": "docs/design/cli/cli.md#CLI-SR-29, CLI-SR-30, CLI-SR-11",
+      "basis": "Functional Analysis of the IR-008 system obligations confirms this distinct published command/record responsibility. The retained CLI/Record Format contract supplies exact public operations and limits; logical behavior is defined before Module allocation."
+    },
+    {
+      "source": "SRC-PUBLISHED-PRODUCTS",
+      "locator": "FUNC-049",
+      "basis": "Assign MOD-010 as the proposed accountable primary responsibility after Functional Analysis. Current product source contracts retain detailed behavior authority; allocation is not runtime adoption or complete AR coverage."
+    }
+  ],
+  "allocated_to": "MOD-010"
+}

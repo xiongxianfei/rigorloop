@@ -1,125 +1,114 @@
 # Scenario model
 
-Scenario Analysis belongs to Requirement Analysis, but Scenario is a first-class governed REM entity.
-The [Scenario concept](../concepts/README.md#requirement-analysis-entities) defines its meaning; the [Scenario Analysis method](../methods/scenario-analysis.md) explains how engineers create and refine Scenarios.
+Scenarios are first-class governed REM entities used during Initial Requirement analysis.
+They describe stakeholder-observable situations in which a durable Feature is exercised.
+The [Scenario concept](../concepts/README.md#requirement-analysis-entities) defines their meaning; [Scenario Analysis](../methods/scenario-analysis.md) defines how to develop and maintain them.
 
-## Purpose
+## Identity and ownership
 
-A Scenario preserves one concrete stakeholder-observable situation in which a durable Feature is exercised.
-It provides stable analysis context for deriving System Requirements without becoming a Requirement, Function, architecture element, or verification case.
+Every Scenario has a stable identity independent of its title, wording, or physical location.
+A Scenario has exactly one owning IR.
+The owning IR establishes the requirement-analysis context in which the Scenario was confirmed.
 
-## Clear Scenario names
+A confirmed Scenario exercises exactly one primary Feature.
+That primary Feature MUST be one of the Features confirmed by the Scenario's owning IR.
+Several Scenarios may exercise the same Feature, and a Feature may remain active after one or more Scenarios become obsolete.
 
-A Scenario's title identifies its stakeholder-visible goal or action and subject, adding the condition that distinguishes the situation when needed.
-Readers should be able to distinguish neighboring Scenarios from their titles, with the goal, context, and outcomes supplying the complete meaning.
-For example, "Retrieve a saved definition in a later session" distinguishes retrieval from saving or revising that definition; "Normal path" does not identify the engineering situation.
+```text
+IR ── confirms ──> Scenario ── exercises ──> Feature
+```
 
-The title describes the stakeholder situation rather than internal design, a generic Feature name, or the Scenario's lifecycle state.
-Refine the title when it is vague or no longer agrees with the content, using the [identity continuity rules](#identity-continuity) to decide whether the engineering meaning still represents the same Scenario.
-[Operational Support](operational-support.md#naming-and-location) governs readable storage labels derived from the identity and title; REM does not prescribe a filename.
+If one stakeholder journey appears to require several primary Features, split it into focused Scenarios unless the method later defines a separate Journey concept.
+Do not weaken Scenario identity by turning it into an unbounded container for several unrelated capabilities.
 
-## Identity and lifecycle
+## Black-box boundary
 
-Every Scenario has stable identity independent of its name or physical location.
-A project representation selects the concrete identity syntax; `SCN-001` is illustrative rather than mandated by REM.
+A Scenario describes the system from the stakeholder boundary.
+It MAY define:
 
-The Scenario lifecycle is:
+- actor;
+- goal;
+- context;
+- trigger;
+- preconditions;
+- stakeholder/system interaction;
+- expected outcome;
+- alternative outcomes;
+- failure outcomes;
+- recovery outcome where stakeholder-visible recovery matters.
+
+A Scenario MUST NOT define internal architecture or realization, including:
+
+- Module allocation;
+- Interface or API design;
+- internal Function call sequences;
+- persistence schemas;
+- implementation classes, packages, crates, or services;
+- algorithms, threads, queues, or deployment topology;
+- specific implementation technology unless that technology is itself an explicit stakeholder-facing requirement.
+
+A useful quality check is:
+
+> Would this Scenario remain meaningful if the internal implementation were completely replaced?
+
+If not, the Scenario contains design detail that belongs later.
+
+## Relationship to System Requirements
+
+Scenario Analysis uses stakeholder situations to expose system obligations.
+A Scenario may inform zero or more SRs while analysis is still incomplete.
+Before an IR's Scenario Analysis is considered complete, every confirmed Scenario MUST either:
+
+1. inform at least one SR; or
+2. have an explicit analysis conclusion explaining why it introduces no additional system obligation.
+
+```text
+Scenario ── informs ──> SR
+```
+
+One Scenario may inform several SRs.
+One SR may be informed by several Scenarios.
+These are traceability relationships, not containment.
+
+A Scenario does not own a Function.
+Scenario Analysis may identify candidate behavior, but the [Requirement model](requirements.md) records `SR confirms Function` as the authoritative confirmation of logical behavior.
+
+## Lifecycle
+
+The universal Scenario lifecycle is:
 
 ```text
 draft → confirmed → obsolete
 ```
 
-- **draft** — the stakeholder situation is still being analyzed and may be incomplete.
-- **confirmed** — the Scenario has a clear actor, goal, context, trigger, black-box interaction and outcomes; its primary Feature is established and the Scenario is accepted as current requirement-analysis knowledge.
-- **obsolete** — the Scenario no longer describes a current supported stakeholder situation. Historical Baselines preserve its previous meaning.
+- **draft** — analysis is incomplete or unsettled; relationships may still change.
+- **confirmed** — the Scenario has a clear black-box stakeholder meaning, one owning IR, one primary Feature, and sufficient downstream obligation analysis.
+- **obsolete** — the Scenario no longer represents a supported stakeholder situation, while its historical meaning remains recoverable through configuration history.
 
-An obsolete Scenario MAY identify a replacement Scenario. A replacement does not rewrite the previous Scenario's historical meaning.
+Obsolete does not mean that the Feature is obsolete.
+Retiring or replacing a Scenario does not change the Feature's identity by itself.
 
-## Ownership and cardinality
+## Cardinalities and invariants
 
-The canonical relationships are:
+For a confirmed Scenario:
 
-```text
-IR ── confirms ──> Scenario ── exercises ──> Feature
-                         │
-                         └── informs ──> SR
-```
+| Relationship | Cardinality | Rule |
+| --- | ---: | --- |
+| owning IR | exactly 1 | Scenario analysis belongs to one Initial Requirement context |
+| primary Feature | exactly 1 | The Feature must be confirmed by the owning IR and is the stakeholder-visible capability exercised by the Scenario |
+| informed SRs | 1..* or explicit no-new-obligation conclusion | Scenario analysis must close its downstream obligation question |
 
-Rules:
+Additional descriptive references MAY exist when a project profile needs them, but they do not change these universal relationships.
 
-1. Every Scenario belongs to exactly one owning IR.
-2. An IR may confirm multiple Scenarios.
-3. A confirmed Scenario exercises exactly one primary Feature.
-4. Multiple Scenarios may exercise the same Feature.
-5. A Scenario may inform multiple SRs.
-6. An SR may be informed by multiple Scenarios.
-7. Scenario-to-SR relationships do not change the single-parent `IR → SR → AR` requirement tree.
-8. A Scenario MUST NOT own or allocate a Module or Interface.
-9. A Scenario MUST NOT be used as a Verification result or Evidence.
+## Scenario quality
 
-During drafting, Feature or SR relationships may be incomplete. Before Requirement Analysis is considered complete for the IR, every confirmed Scenario must be accounted for by the resulting SR set or by an explicit analysis conclusion that it introduces no additional system obligation.
-Each Scenario follows the [single consequential open-question rule](../methods/requirement-analysis.md#keep-one-consequential-open-question); absence of a recorded question does not establish Scenario confirmation or analysis completeness.
+A confirmed Scenario is acceptable when:
 
-## Black-box content
-
-A confirmed Scenario describes at least:
-
-- **actor** — stakeholder or external role pursuing the goal;
-- **goal** — stakeholder-visible outcome;
-- **context** — relevant situation or operating condition;
-- **trigger** — event or need that starts the Scenario;
-- **preconditions** — externally meaningful conditions already true;
-- **interaction** — stakeholder/system actions and observable responses;
-- **expected outcome** — successful stakeholder-visible result;
-- **alternative or failure outcomes** — materially different observable results when relevant.
-
-The Scenario boundary excludes internal solution design. It MUST NOT prescribe:
-
-- Functions as internal call steps;
-- Modules or architectural allocation;
-- Interfaces or APIs;
-- database schemas or internal state representation;
-- source files, classes, crates, packages, or services;
-- algorithms, threads, queues, protocols, or implementation technology.
-
-A stakeholder-observable channel or constraint may be stated when the IR actually requires it, but the Scenario records the observable requirement rather than an internal implementation mechanism.
-When the product models engineering information, its stakeholder interactions may refer to Requirements, Functions, Modules, or Interfaces as the information being authored or inspected. This does not allocate the product's internal behavior or prescribe how the product implements that interaction.
-
-## Identity continuity
-
-A Scenario keeps its identity when wording, detail, or externally equivalent interaction is refined without changing the stakeholder situation it represents.
-
-Create a new Scenario when the change materially changes the Scenario's engineering meaning, such as a different stakeholder goal, a different primary Feature, or a materially distinct situation that exposes different system obligations.
-
-Do not split Scenarios merely because implementation steps differ.
-
-## Relationship to Feature
-
-Feature is the durable stakeholder-visible capability; Scenario is one governed situation exercising that capability.
-The Feature can remain active while individual Scenarios are introduced, changed, or made obsolete.
-
-```text
-Feature: Engineering Knowledge Search
-
-├── Scenario: find a known entity by identifier
-├── Scenario: search without knowing the identifier
-└── Scenario: discover related engineering context
-```
-
-## Relationship to SR and Function
-
-Scenario Analysis reveals candidate system obligations.
-System Requirement analysis decides which obligations become SRs.
-SR analysis then confirms the logical Functions required by those obligations.
-
-```text
-Scenario
-    │ reveals obligations
-    ▼
-   SR
-    │ confirms behavior
-    ▼
-Function
-```
-
-A Scenario does not directly make a Function authoritative.
+- the actor and stakeholder goal are clear;
+- the context and trigger distinguish the situation;
+- preconditions are stated where material;
+- interaction is externally observable and solution-independent;
+- expected, alternative, and failure outcomes are sufficient to expose materially different obligations;
+- its primary Feature remains a durable capability rather than a restatement of the Scenario;
+- downstream SR traceability is complete or intentionally concluded;
+- no Module, Interface, or implementation design is smuggled into the black-box description.

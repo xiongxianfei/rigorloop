@@ -1,0 +1,72 @@
+{
+  "id": "SR-065",
+  "type": "system-requirement",
+  "title": "Install verified units within explicit safe replacement boundaries",
+  "status": "draft",
+  "statement": "The system shall install only verified candidate units after complete destination preflight, stop on every existing candidate-unit conflict by default, and permit complete replacement only under explicit applicable force authority while preserving unrelated content and reporting partial effects.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Overlay updates, partial default installs, unsafe paths, or concurrent changes can destroy local work or leave misleading installed state.",
+      "desired_outcome": "Users obtain the intended complete units or an honest bounded failure without implicit replacement of other skills or project state."
+    },
+    "why": {
+      "rationale": "Installation must respect the user's explicit replacement choice and remain safe when the filesystem changes or an operation fails."
+    },
+    "who": {
+      "stakeholders": [
+        "Project users installing or replacing skills"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "After archive verification and before any installed-unit mutation, including retries."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "Verified candidate unit destinations, their ancestors, and any retained originals outside discovery roots."
+      ]
+    },
+    "how": {
+      "approach": "Preflight all units and report all default conflicts, including empty and identical destinations, before changing any. Force replaces selected whole units rather than overlaying them, never shared parents or unrelated units. Preserve containment and link protection in both modes, detect changed destination bases, use no-clobber publication, and retain detached originals outside discovery roots. Stop on unsafe capability or partial failure, report completed/failed/untouched units, and require a fresh explicit replacement decision on retry."
+    },
+    "how_much": {
+      "scope": "Installation's exact destination, anchored filesystem, original-retention, and partial-retry contract remains authoritative. Project-root state is neither read for admission nor changed. No managed upgrade, automatic restoration, retired-skill cleanup, whole-project replacement, exclusion of all concurrent writers, or automatic filesystem-wide rollback is promised."
+    }
+  },
+  "acceptance_criteria": [
+    "Without force, any existing candidate unit, including identical or empty content, produces the complete discovered conflict set and prevents changes to every candidate unit.",
+    "An authorized force request replaces only conflicting candidate units completely, including obsolete files, and installs absent units while preserving unrelated skills, shared parents, and project-root state.",
+    "Unsafe or inaccessible destinations, links, unsupported required safety primitives, or changed preflight bases block in both modes; a newly appearing destination is not silently acquired as another force replacement.",
+    "Detached originals remain outside skill discovery after success or failure. A failure identifies completed, failed, detached, partial, retained-original, and untouched scope without claiming rollback or success.",
+    "Retry repeats verification and preflight; current partial or completed units conflict by default, and retained originals do not authorize restoration or further replacement."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "confirms": [
+    "FUNC-064"
+  ],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-INSTALLATION",
+      "locator": "docs/design/cli/installation.md#DIST-SR-10",
+      "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. Installation must respect the user's explicit replacement choice and remain safe when the filesystem changes or an operation fails. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-INSTALLATION",
+      "locator": "docs/design/cli/installation.md#DIST-SR-12",
+      "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. Installation must respect the user's explicit replacement choice and remain safe when the filesystem changes or an operation fails. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-INSTALLATION",
+      "locator": "docs/design/cli/installation.md#DIST-SR-13",
+      "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. Installation must respect the user's explicit replacement choice and remain safe when the filesystem changes or an operation fails. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-INSTALLATION",
+      "locator": "docs/design/cli/installation.md#DIST-SR-14",
+      "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. Installation must respect the user's explicit replacement choice and remain safe when the filesystem changes or an operation fails. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
+    }
+  ]
+}

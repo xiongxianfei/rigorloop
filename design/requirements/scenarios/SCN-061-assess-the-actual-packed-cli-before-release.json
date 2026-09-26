@@ -1,0 +1,74 @@
+{
+  "id": "SCN-061",
+  "type": "scenario",
+  "title": "Assess the actual packed CLI before release",
+  "status": "confirmed",
+  "actor": "A maintainer reviewing the candidate users would install",
+  "goal": "Determine whether the exact packed CLI is complete and works at its declared clean-consumer boundary.",
+  "context": "Source tests have run, but those observations do not establish the contents or behavior of the emitted package.",
+  "trigger": "The maintainer selects the actual CLI artifact and corresponding target archives for qualification.",
+  "preconditions": [
+    "The candidate package, selected archives, trusted metadata, and applicable package policy are identifiable."
+  ],
+  "interaction": [
+    {
+      "actor": "Maintainer",
+      "action": "Requests assessment of the exact emitted package and its supported installed-consumer behavior."
+    },
+    {
+      "actor": "System",
+      "action": "Reports actual member, executable, metadata, dependency, and clean-consumer observations with their artifact identities."
+    },
+    {
+      "actor": "Maintainer",
+      "action": "Reviews successful, unsuccessful, and unassessed package obligations against that candidate."
+    }
+  ],
+  "expected_outcome": "The assessment establishes what the actual candidate supports and exposes defects or missing proof without treating the source checkout or a dry-run as equivalent evidence.",
+  "alternatives": [
+    {
+      "condition": "A forbidden member, missing runtime resource, or broken packed executable is observed.",
+      "outcome": "The candidate is reported unqualified with the actual defect and scope."
+    },
+    {
+      "condition": "A required packed installation conflict or safety case fails.",
+      "outcome": "The composed product remains unqualified even if isolated builders or helpers passed."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "The actual tarball, trusted archive inputs, or required clean-consumer observations cannot be obtained.",
+      "outcome": "The system identifies the unassessed boundary and cannot complete qualification."
+    },
+    {
+      "condition": "A summary substitutes source-tree checks for actual package observations.",
+      "outcome": "The mismatch is exposed and the qualification claim cannot be relied on."
+    }
+  ],
+  "exercises": [
+    "FEAT-018"
+  ],
+  "informs": [
+    "SR-062",
+    "SR-063",
+    "SR-026",
+    "SR-027"
+  ],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-PACKAGING",
+      "locator": "docs/design/engineering/packaging.md#DIST-SR-18",
+      "basis": "IR-010 owns this stakeholder situation. It exercises the selected published-product capability while preserving the source contract's observable success and adverse outcomes."
+    },
+    {
+      "source": "SRC-PUBLISHED-PACKAGING",
+      "locator": "docs/design/engineering/packaging.md#DIST-SR-23",
+      "basis": "IR-010 owns this stakeholder situation. It exercises the selected published-product capability while preserving the source contract's observable success and adverse outcomes."
+    },
+    {
+      "source": "SRC-PUBLISHED-PRODUCTS",
+      "locator": "SCN-061; design/requirements/published-products.md#review-and-validation",
+      "basis": "Independent review and author reconciliation confirmed this stakeholder situation, primary Feature, and SR coverage as current analysis knowledge. This does not approve requirements or establish implemented behavior or satisfaction."
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "id": "FEAT-015",
+  "type": "feature",
+  "title": "Select and invoke portable engineering capabilities",
+  "status": "draft",
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-02",
+      "basis": "IR-009 establishes this durable Skills-product capability; existing generic Functions are reused without changing their definitions or requirement parentage."
+    },
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-05",
+      "basis": "IR-009 establishes this durable Skills-product capability; existing generic Functions are reused without changing their definitions or requirement parentage."
+    },
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-08",
+      "basis": "IR-009 establishes this durable Skills-product capability; existing generic Functions are reused without changing their definitions or requirement parentage."
+    },
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-25",
+      "basis": "IR-009 establishes this durable Skills-product capability; existing generic Functions are reused without changing their definitions or requirement parentage."
+    }
+  ],
+  "description": "Participants can identify an appropriate published engineering capability and prepare its project-portable invocation with sufficient context, applicable authority, and complete triggered resources.",
+  "scope": {
+    "includes": [
+      "Capability discovery using purpose, triggers, exclusions, and behavioral owner.",
+      "Portable or governed invocation preparation in the participant's project.",
+      "Conditionally required evidence and resource access, explicit prerequisites, and safe stops."
+    ],
+    "excludes": [
+      "Installing or generating capability packages.",
+      "Performing an entire project lifecycle merely because a capability was selected.",
+      "Claiming package integrity from one successful invocation."
+    ]
+  },
+  "realized_by": [
+    "FUNC-050",
+    "FUNC-051",
+    "FUNC-052",
+    "FUNC-026"
+  ]
+}

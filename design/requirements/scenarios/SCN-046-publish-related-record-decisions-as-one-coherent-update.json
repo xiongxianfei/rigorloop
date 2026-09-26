@@ -1,0 +1,78 @@
+{
+  "id": "SCN-046",
+  "type": "scenario",
+  "title": "Publish related record decisions as one coherent update",
+  "status": "confirmed",
+  "actor": "An engineering agent recording a set of related explicit decisions",
+  "goal": "Publish the supplied related decisions together so subsequent readers can rely on a coherent recorded state.",
+  "context": "The update introduces a new supporting record and a related reference with explicitly chosen applicability; intermediate content would be incomplete.",
+  "trigger": "The agent submits one bounded batch against an observed revision.",
+  "preconditions": [
+    "The operations are explicitly supplied, within one selected current-format change, and have no conflicting target assignments.",
+    "Expected revision and relevant subject identities come from the actor's actual inspected basis."
+  ],
+  "interaction": [
+    {
+      "actor": "Engineering agent",
+      "action": "Submits the related explicit operations with required applicability and expected state."
+    },
+    {
+      "actor": "System",
+      "action": "Accepts the complete combined candidate only if its final references, preservation rules, and freshness conditions hold."
+    },
+    {
+      "actor": "System",
+      "action": "Publishes the related recorded decisions coherently or returns an explicit conflict, busy, rejection, or recoverable interruption outcome."
+    },
+    {
+      "actor": "Engineering agent",
+      "action": "Uses the returned storage receipt and current reads to distinguish committed work from a retry that requires reassessment."
+    }
+  ],
+  "expected_outcome": "All requested decisions are durably committed before saved is reported; readers receive a coherent state and the agent does not infer workflow approval from publication.",
+  "alternatives": [
+    {
+      "condition": "An identical candidate is submitted against a freshly checked current revision.",
+      "outcome": "The result is unchanged with no duplicate entry or semantic increment."
+    },
+    {
+      "condition": "Requested diagnostic detail exceeds the ordinary receipt.",
+      "outcome": "The result retains a fitting storage receipt and exposes omitted detail without turning a successful publication into rejection."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "A previous success response was lost and the agent retries using the old revision.",
+      "outcome": "The system returns conflict rather than duplicating entries or silently accepting stale decision basis."
+    },
+    {
+      "condition": "A competing writer or observed external basis change invalidates the expected state.",
+      "outcome": "The system reports busy or conflict and preserves the coherent winning work."
+    },
+    {
+      "condition": "Publication is interrupted.",
+      "outcome": "The system exposes recovery-required instead of saved or a usable mixed state; explicit recovery is a separate request."
+    }
+  ],
+  "exercises": [
+    "FEAT-013"
+  ],
+  "informs": [
+    "SR-042",
+    "SR-043",
+    "SR-044",
+    "SR-046"
+  ],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-CLI",
+      "locator": "docs/design/cli/cli.md#CLI-SR-04, CLI-SR-05, CLI-SR-08, CLI-SR-12, CLI-SR-15, CLI-SR-20; docs/design/cli/records.md#RF-SR-02",
+      "basis": "IR-008 owns this black-box published-product situation. It exercises one durable Feature and informs the named system obligations; draft status leaves confirmation to semantic review and does not claim runtime verification."
+    },
+    {
+      "source": "SRC-PUBLISHED-PRODUCTS",
+      "locator": "SCN-046; design/requirements/published-products.md#review-and-validation",
+      "basis": "Independent review and author reconciliation confirmed this stakeholder situation, primary Feature, and SR coverage as current analysis knowledge. This does not approve requirements or establish implemented behavior or satisfaction."
+    }
+  ]
+}

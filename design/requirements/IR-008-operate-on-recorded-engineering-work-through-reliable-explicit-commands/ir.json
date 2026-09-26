@@ -1,0 +1,68 @@
+{
+  "id": "IR-008",
+  "type": "initial-requirement",
+  "title": "Operate on recorded engineering work through reliable explicit commands",
+  "status": "draft",
+  "statement": "Engineers and engineering agents need a reliable command-line interface for inspecting recorded work, recording explicitly chosen engineering decisions, and recovering interrupted updates without losing information or mistaking mechanical command success for engineering authority.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Published command behavior, record preservation, and failure outcomes are not explicit in the initial REM model; broad knowledge and change capabilities alone do not explain how callers safely operate on the delivered recording interface.",
+      "desired_outcome": "Callers can select useful recorded context, supply their own decisions, obtain faithful bounded outcomes, and recover interruption under the published command contract."
+    },
+    "why": {
+      "rationale": "Automation and people depend on predictable commands, precise selection, preserved neighboring work, and outcomes that separate storage success from approval."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineers and reviewers operating on recorded engineering work",
+        "Engineering agents acting on explicit actor decisions",
+        "Maintainers and consumers of the published command-line interface"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "When selecting a command, inspecting project facts or exact recorded work, preparing or saving a decision, retrying or recovering an interrupted operation, and investigating an invocation."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "The published local command-line interface and its supported registered change stores, explicit repository subjects, and private diagnostic state."
+      ]
+    },
+    "how": {
+      "approach": "Derive obligations from the current CLI and Record Format contracts while preserving their exact versions, public operations, closed vocabularies, limits, and preservation rules at their existing authoritative sources. Use black-box Scenarios and logical Functions to expose previously missing product capabilities."
+    },
+    "how_much": {
+      "scope": "Covers current CLI command admission, discovery, selected reads, explicit recording, transaction recovery, result projection, and local diagnostics. Installation content and policy remain separately owned; only its generic command/result integration is included. This records current v3 workflow-store capabilities, not support for operating on the new REM design JSON, a replacement workflow decision engine, or a completed contract migration."
+    }
+  },
+  "assumptions": [
+    "Selected local storage and the existing execution environment are accessible; no new platform-support, hosting, disaster-recovery, or performance promise is introduced."
+  ],
+  "constraints": [
+    "The CLI does not grant permission, choose workflow progression, or infer actor decisions from role labels, record shape, or command success.",
+    "Current docs/design/cli contracts remain authoritative for detailed behavior and independent version domains until explicitly reconciled by a controlled migration."
+  ],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-CLI",
+      "locator": "docs/design/cli/cli.md#CLI-SR-01, CLI-SR-03, CLI-SR-05, CLI-SR-06, CLI-SR-11, CLI-SR-29, CLI-SR-30; docs/design/cli/records.md#RF-SR-01, RF-SR-03, RF-SR-06",
+      "basis": "Recognizes the published command-line product need and mechanical safety obligations not fully expressed by the initial seven IRs; this is analytical representation, not runtime adoption of REM or approval transfer."
+    }
+  ],
+  "confirms": [
+    "FEAT-012",
+    "FEAT-013",
+    "FEAT-014",
+    "SCN-041",
+    "SCN-042",
+    "SCN-043",
+    "SCN-044",
+    "SCN-045",
+    "SCN-046",
+    "SCN-047",
+    "SCN-048",
+    "SCN-049"
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "id": "SR-044",
+  "type": "system-requirement",
+  "title": "Publish record updates with fresh basis and coherent durable outcomes",
+  "status": "draft",
+  "statement": "The system shall publish structurally valid explicit record replacements as one coherent durable transaction after checking expected revision, target identities, and declared decision-basis identities under writer exclusion, with contained writes, safe stale retries, and no usable mixed state.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Competing writers, stale decisions, or partial publication can lose work or leave a reader with a combination of states that never existed coherently.",
+      "desired_outcome": "A successful save identifies fully committed requested bytes; conflict, contention, and interruption remain explicit without overwriting an observed incompatible state."
+    },
+    "why": {
+      "rationale": "Reliable mechanical publication is necessary even when the stored engineering judgment is incomplete, adverse, or awaiting review."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineers and reviewers operating on recorded engineering work",
+        "Engineering agents acting on explicit actor decisions",
+        "Maintainers and consumers of the published command-line interface"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "During initial creation, targeted or advanced record publication, batch publication, repeated submissions, and concurrent supported reads/writes."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "The exact allowed write set of one selected change, declared contained decision-basis subjects, and private transaction state."
+      ]
+    },
+    "how": {
+      "approach": "Use the same validation, containment, identity, writer-exclusion, and recoverable publication protections across every supported writer. Check revision before no-op recognition, prepare recovery before authoritative replacement, and report saved only after durable commitment with the required observed read-set checks."
+    },
+    "how_much": {
+      "scope": "Preserves the published local save-safety boundary. CLI writers coordinate; outside edits are protected at observed identity checks only. An exact-target outside edit after the final check can be overwritten; no atomic exclusion of all external writers, platform expansion, or disaster-recovery service is promised."
+    }
+  },
+  "acceptance_criteria": [
+    "Every write names its expected revision, target set and identities, and declared decision-basis identities. Observed mismatches produce conflict requiring reread and a new actor decision, with no silent refresh or merge.",
+    "Competing CLI writers cannot overwrite one another. Supported readers obtain coherent before/after records or busy/recovery-required, never a usable mixed snapshot; saved means all requested replacement bytes are durably committed.",
+    "Primary, advanced, helper, creation, and recovery paths share path containment and protection against observed ancestor substitution. Cross-change writes, traversal, symlink escape, hard-linked authoritative targets, unsupported paths, and unexpected overwrite are rejected.",
+    "A fresh identical candidate returns unchanged only after current preconditions pass. A lost-response retry with the old revision conflicts even if the earlier save succeeded; no retry duplicates entries, increments semantic state, or creates new approval.",
+    "Observed decision-basis drift is checked before publication and again before commitment is reported. Drift after replacement triggers safe restoration or recovery-required, retaining the documented external-edit timing limitation.",
+    "All-or-none batch publication validates the complete final candidate and creates recovery information before replacement. Incomplete publication is explicitly recoverable and unavailable as coherent current state."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-CLI",
+      "locator": "docs/design/cli/cli.md#CLI-SR-03, CLI-SR-04, CLI-SR-05, CLI-SR-08, CLI-SR-09, CLI-SR-12, CLI-SR-15, CLI-SR-16; docs/design/cli/records.md#RF-SR-08",
+      "basis": "Derives this bounded published-product obligation from IR-008 and the named current CLI/Record Format contracts. Detailed schemas, command catalogs, limits and completed-retirement dispositions remain at those owners; this record does not transfer approval or implement REM-record operations."
+    }
+  ],
+  "confirms": [
+    "FUNC-046"
+  ]
+}

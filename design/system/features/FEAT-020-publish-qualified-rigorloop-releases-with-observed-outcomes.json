@@ -1,0 +1,69 @@
+{
+  "id": "FEAT-020",
+  "type": "feature",
+  "title": "Publish qualified RigorLoop releases with observed outcomes",
+  "status": "draft",
+  "description": "Product maintainers can prepare a compatible version, assess and approve the exact candidate, and carry its supported publication through actual public observations and durable closeout. Routine coordination reduces manual bookkeeping while preserving explicit decisions, authorization, immutable identity, and recovery after uncertain or failed effects.",
+  "scope": {
+    "includes": [
+      "Supported release identity, compatibility decisions, profile-owned preparation, and exact candidate qualification.",
+      "Candidate-bound authorization and publication using retained artifacts and the supported authentication/provenance path.",
+      "Fresh public observations, durable version-scoped reporting, and authorized failure/recovery disposition.",
+      "Existing routine coordination with one normal candidate approval and precise exceptions."
+    ],
+    "excludes": [
+      "New release policies, unsupported automation populations, automatic approval, or fabricated public success.",
+      "Overwriting published versions, blind uncertain-write retries, or historical evidence rewriting.",
+      "Treating preparation, package checks, or local smoke as proof of public availability."
+    ]
+  },
+  "realized_by": [
+    "FUNC-066",
+    "FUNC-067",
+    "FUNC-068",
+    "FUNC-069",
+    "FUNC-070",
+    "FUNC-071",
+    "FUNC-072",
+    "FUNC-073",
+    "FUNC-023",
+    "FUNC-026",
+    "FUNC-027",
+    "FUNC-028",
+    "FUNC-029",
+    "FUNC-030",
+    "FUNC-031"
+  ],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-02",
+      "basis": "IR-010 establishes this stakeholder-visible published-product capability. This draft models existing selected obligations, not observed publication or installation success."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-08",
+      "basis": "IR-010 establishes this stakeholder-visible published-product capability. This draft models existing selected obligations, not observed publication or installation success."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-13",
+      "basis": "IR-010 establishes this stakeholder-visible published-product capability. This draft models existing selected obligations, not observed publication or installation success."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-22",
+      "basis": "IR-010 establishes this stakeholder-visible published-product capability. This draft models existing selected obligations, not observed publication or installation success."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-23",
+      "basis": "IR-010 establishes this stakeholder-visible published-product capability. This draft models existing selected obligations, not observed publication or installation success."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-24",
+      "basis": "IR-010 establishes this stakeholder-visible published-product capability. This draft models existing selected obligations, not observed publication or installation success."
+    }
+  ]
+}

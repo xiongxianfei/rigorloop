@@ -1,0 +1,73 @@
+{
+  "id": "SCN-045",
+  "type": "scenario",
+  "title": "Record a discovered problem after work was marked complete",
+  "status": "confirmed",
+  "actor": "An engineer who discovers a problem in previously completed work",
+  "goal": "Record the newly observed problem and its explicitly supplied basis without silently changing prior engineering decisions.",
+  "context": "The change currently records completed activity, and a newly failed check or changed subject contradicts that recorded state.",
+  "trigger": "The engineer decides to record a blocker and supporting evidence.",
+  "preconditions": [
+    "The engineer explicitly selects the change and provides current expected state and the problem's required actor-supplied values."
+  ],
+  "interaction": [
+    {
+      "actor": "Engineer",
+      "action": "Supplies the observed evidence and a new blocker with its required basis and explicit applicability where a new supporting record is needed."
+    },
+    {
+      "actor": "System",
+      "action": "Checks the complete recording candidate and preserves the supplied current problem and original blocker basis without deriving a new stage or approval."
+    },
+    {
+      "actor": "System",
+      "action": "Returns the storage outcome and separately labeled observations about the conflicting recorded state."
+    },
+    {
+      "actor": "Engineer",
+      "action": "Uses the recorded facts to decide the subsequent governed action separately."
+    }
+  ],
+  "expected_outcome": "The problem and its basis are recordable despite contradictory completed-work claims, while previous activity, review judgment, and unrelated content remain unchanged unless explicitly edited.",
+  "alternatives": [
+    {
+      "condition": "The relevant evidence record already exists.",
+      "outcome": "The explicit update preserves its current applicability when legitimately omitted and retains other checks."
+    },
+    {
+      "condition": "An existing Review finding needs correction instead of a new change-level blocker.",
+      "outcome": "An explicit finding correction retains its stable ID and updates valid current fields without fabricating an immutable origin snapshot."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "The candidate lacks required semantic input or contains an invalid internal reference or a blocker-origin rewrite.",
+      "outcome": "The system rejects the structural or preservation violation without inventing missing evidence or a favorable judgment."
+    },
+    {
+      "condition": "The selected state changed before publication.",
+      "outcome": "The system reports conflict and requires the engineer to reread and decide again."
+    }
+  ],
+  "exercises": [
+    "FEAT-013"
+  ],
+  "informs": [
+    "SR-042",
+    "SR-043",
+    "SR-044",
+    "SR-046"
+  ],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-CLI",
+      "locator": "docs/design/cli/cli.md#CLI-SR-02, CLI-SR-07, CLI-SR-12, CLI-SR-26; docs/design/cli/records.md#RF-SR-03, RF-SR-04, RF-SR-05, RF-SR-13",
+      "basis": "IR-008 owns this black-box published-product situation. It exercises one durable Feature and informs the named system obligations; draft status leaves confirmation to semantic review and does not claim runtime verification."
+    },
+    {
+      "source": "SRC-PUBLISHED-PRODUCTS",
+      "locator": "SCN-045; design/requirements/published-products.md#review-and-validation",
+      "basis": "Independent review and author reconciliation confirmed this stakeholder situation, primary Feature, and SR coverage as current analysis knowledge. This does not approve requirements or establish implemented behavior or satisfaction."
+    }
+  ]
+}

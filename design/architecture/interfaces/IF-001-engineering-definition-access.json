@@ -1,0 +1,177 @@
+{
+  "id": "IF-001",
+  "type": "interface",
+  "title": "Engineering definition access",
+  "status": "draft",
+  "description": "State-scoped access to retained engineering definitions, identity resolution, and recorded rationale. The storage provider reports what was actually retained or retrieved; consumers preserve those result distinctions.",
+  "operations": [
+    {
+      "name": "retain_definition",
+      "purpose": "Retain an explicitly supplied new definition or supported same-entity revision.",
+      "inputs": [
+        "Selected model and expected base state, intended subject, and explicit save request.",
+        "Complete supplied candidate content including stable identity, type, and applicable profile; for a revision, the resolved original subject.",
+        "Applicable authority/disposition context for the requested operation."
+      ],
+      "preconditions": [
+        "The requested save is within the caller's applicable authority; this interface does not create approval or permission."
+      ],
+      "outputs": [
+        "Confirmed retained subject and resulting state, or the known invalid, unsupported, stale-state, failed, or incomplete retention outcome with affected scope."
+      ],
+      "behavior": [
+        "Check that the candidate is supported by the declared profile and use IF-002 identity findings over the complete required candidate scope before representing it as accepted.",
+        "Bind checking to the candidate and base state that are actually retained. Reject or re-evaluate a changed base or candidate; do not reuse a stale identity conclusion.",
+        "Retain the supplied identity, type, and authored content independently of the caller session. An existing subject may only be updated under its preserved identity; a distinct subject cannot take that identity.",
+        "Return confirmed success only when the requested retention is established. A partial or indeterminate effect remains explicitly incomplete; do not promise rollback or advise blind retry."
+      ],
+      "failure_behavior": [
+        {
+          "condition": "The profile is unavailable, unsupported, or inconsistent with the selected state.",
+          "outcome": "Report unsupported or unavailable interpretation without accepting the candidate under a substitute profile."
+        },
+        {
+          "condition": "Identity is missing, duplicated, unresolved, or checked only over incomplete scope.",
+          "outcome": "Return the findings and scope without accepting an unchecked candidate as valid."
+        },
+        {
+          "condition": "The selected base, candidate, or applicable authority no longer matches the request.",
+          "outcome": "Report the mismatch and require a newly justified request; do not silently overwrite intervening work."
+        },
+        {
+          "condition": "Retention fails or its complete effects cannot be established.",
+          "outcome": "Identify known effects and the unresolved scope; do not report a confirmed save."
+        }
+      ]
+    },
+    {
+      "name": "resolve_entity",
+      "purpose": "Resolve a stable identity within an explicitly selected model state.",
+      "inputs": [
+        "Requested identity and selected model state."
+      ],
+      "preconditions": [],
+      "outputs": [
+        "A unique entity reference with selected state, or distinct absent, ambiguous, unsupported, unavailable, incomplete, or failed resolution outcome."
+      ],
+      "behavior": [
+        "Use the selected state's declared profile to interpret identity-bearing content.",
+        "Return a unique reference only when the inspected scope supports that conclusion. Distinct entities sharing an identity remain ambiguous even when names or locations differ.",
+        "Report absence only after the required selected scope was completely inspected."
+      ],
+      "failure_behavior": [
+        {
+          "condition": "The identity or state is missing or the model cannot be adequately inspected.",
+          "outcome": "Identify the invalid or incomplete selection; do not fabricate absence or a unique match."
+        },
+        {
+          "condition": "Interpretation is unsupported or access fails.",
+          "outcome": "Preserve unsupported/failed distinctions and affected scope without switching state."
+        }
+      ]
+    },
+    {
+      "name": "retrieve_definition",
+      "purpose": "Obtain authoritative recorded content of an identified definition in a selected state.",
+      "inputs": [
+        "Resolved subject and selected model state.",
+        "Requested definition scope."
+      ],
+      "preconditions": [],
+      "outputs": [
+        "Recorded identity, type, authored content, authoritative references, declared profile, selected state, and explicit retrieval/completeness outcome.",
+        "The interpretation context or resolvable selected-state/profile references to its governing definitions, with unavailable interpretation context explicitly identified."
+      ],
+      "behavior": [
+        "Acquire the selected state's raw content and declaration, then use IF-002 interpretation with that exact state and available profile context.",
+        "Return direct authoritative content without replaying Changes or private conversation history.",
+        "Keep requested subject, selected state, returned scope, and unavailable portions explicit.",
+        "Preserve access to the governing definitions returned by IF-002 so consumers can inspect how the selected content was interpreted, not merely its profile name."
+      ],
+      "failure_behavior": [
+        {
+          "condition": "The subject or selected state is unavailable.",
+          "outcome": "Report unavailability without substituting another state or entity."
+        },
+        {
+          "condition": "The declared representation is unsupported, access fails, or only a portion is obtained.",
+          "outcome": "Return the known portion and its unsupported, failed, or incomplete outcome; never label it a complete interpreted definition."
+        }
+      ]
+    },
+    {
+      "name": "retain_rationale",
+      "purpose": "Retain recorded decision reasoning and its association with a selected definition.",
+      "inputs": [
+        "Selected definition and state, recorded association basis, and explicit retention request.",
+        "Recorded decision context, chosen outcome, rationale, considered alternatives, and consequences.",
+        "Applicable authority for the retention request."
+      ],
+      "preconditions": [],
+      "outputs": [
+        "Retained reasoning reference, association and resulting state, or explicit missing, unresolved, failed, or incomplete outcome."
+      ],
+      "behavior": [
+        "Preserve supplied reasoning and its association without filling gaps or certifying the decision.",
+        "Bind the association to the selected definition state; changed identity-stable content does not automatically renew applicability.",
+        "Keep still-relied-on reasoning accessible from the current model independently of whether the originating Change explanation remains in current working material.",
+        "Check the selected definition/state at retention; report a mismatch rather than silently associating reasoning with an intervening revision."
+      ],
+      "failure_behavior": [
+        {
+          "condition": "Required reasoning details or the association basis are missing.",
+          "outcome": "Identify the missing or unresolved scope without inventing rationale or a confirmed current association."
+        },
+        {
+          "condition": "The state changes, authority is inapplicable, or retention/access cannot be confirmed.",
+          "outcome": "Report the mismatch or known failure and partial effects without claiming complete accessible reasoning."
+        }
+      ]
+    },
+    {
+      "name": "retrieve_rationale",
+      "purpose": "Retrieve the reasoning associated with a selected definition without inventing current applicability.",
+      "inputs": [
+        "Selected definition and model state.",
+        "Recorded current decision associations and requested reasoning scope."
+      ],
+      "preconditions": [],
+      "outputs": [
+        "Available recorded decision details, association basis, subject/state, and separate availability, completeness, and applicability outcomes."
+      ],
+      "behavior": [
+        "Follow recorded associations for the selected definition, retaining the state to which each basis refers.",
+        "Return an explicit missing or unresolved result where reasoning or applicability cannot be established.",
+        "Do not replace current reasoning with unrelated historical material or infer that no reasoning is needed from an empty retrieval."
+      ],
+      "failure_behavior": [
+        {
+          "condition": "An association is missing, refers to another state without an applicable basis, or cannot be interpreted.",
+          "outcome": "Expose the association/applicability gap without relabeling the reasoning as current."
+        },
+        {
+          "condition": "Reasoning is unavailable, incomplete, unsupported, or fails to load.",
+          "outcome": "Preserve the specific reasoning outcome separately from definition completeness."
+        }
+      ]
+    }
+  ],
+  "consistency_rules": [
+    "Every outcome carries the requested subject and selected state, or explicitly identifies why they could not be established. Identity alone never designates a revision.",
+    "A consumer must not merge successful results from different selected states into one complete current account. Changed selections require a new consistent request or an explicit incomplete result.",
+    "The storage provider owns the final acceptance check for retained content; preliminary caller checks do not override changed-state or identity conflicts.",
+    "Incomplete or indeterminate writes expose known effects. This contract selects no transaction technology and does not promise rollback or exactly-once execution."
+  ],
+  "compatibility_rules": [
+    "Interpret content according to the profile declared by the selected state; unknown profiles or kinds receive explicit unsupported outcomes.",
+    "Consumers must preserve state, completeness, ambiguity, and applicability distinctions. A contract change that removes or changes one requires coordinated provider/consumer revision.",
+    "This logical contract chooses no transport, encoding, database, or callable runtime API. Operation names identify proposed behavior only."
+  ],
+  "sources": [
+    {
+      "source": "SRC-ARCHITECTURE-PILOT",
+      "locator": "IF-001",
+      "basis": "Derive the storage/authoring/context boundary from SR-001 through SR-005 and FUNC-001/003/004/005/006/007, retaining shared profile interpretation from SR-012. State binding makes the identity and outcome obligations coherent across the proposed Modules."
+    }
+  ]
+}

@@ -1,0 +1,79 @@
+{
+  "id": "SR-052",
+  "type": "system-requirement",
+  "title": "Select complete resources for the invoked engineering path",
+  "status": "draft",
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-07",
+      "basis": "Derives the stated common Skills-product obligation while preserving the cited clause population and retained specialist or package-owner detail; this draft is not source retirement or runtime adoption."
+    },
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-08",
+      "basis": "Derives the stated common Skills-product obligation while preserving the cited clause population and retained specialist or package-owner detail; this draft is not source retirement or runtime adoption."
+    },
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-09",
+      "basis": "Derives the stated common Skills-product obligation while preserving the cited clause population and retained specialist or package-owner detail; this draft is not source retirement or runtime adoption."
+    },
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-11",
+      "basis": "Derives the stated common Skills-product obligation while preserving the cited clause population and retained specialist or package-owner detail; this draft is not source retirement or runtime adoption."
+    },
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-12",
+      "basis": "Derives the stated common Skills-product obligation while preserving the cited clause population and retained specialist or package-owner detail; this draft is not source retirement or runtime adoption."
+    }
+  ],
+  "statement": "The system shall identify the evidence and mapped resources required by the selected capability path, make their complete applicable procedure available before dependent work, and stop that work on missing or inconsistent required content without making untriggered resources runtime prerequisites.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "A selected reading path can omit a transitive rule, resource, or usable output shape even while its entrypoint is present.",
+      "desired_outcome": "The participant receives the complete resources needed for the current task and an actionable stop when the selected procedure cannot be supported."
+    },
+    "why": {
+      "rationale": "A compact entrypoint must remain executable and understandable under ordinary and exceptional conditions."
+    },
+    "who": {
+      "stakeholders": [
+        "Participants invoking published engineering capabilities",
+        "Project decision owners and reviewers",
+        "Published guidance maintainers"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "When preparing an invocation and whenever a late resource, evidence, or recording trigger appears."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "The selected capability path in the participant's project context."
+      ]
+    },
+    "how": {
+      "approach": "Resolve declared load/use conditions, distinguish supplied project evidence from package resources, verify selected resource availability and consistency, and expose required script inputs, result meaning, and failure action. Preserve the exact COPY/assets, READ/references, and RUN/scripts package mapping contract at its current owner."
+    },
+    "how_much": {
+      "scope": "The currently invoked path and its transitive required procedure. Package-wide resource completeness and byte parity remain separate conformance obligations, including untriggered resources; a successful portable invocation does not certify a broken package. A fallback is limited to a disclosed redundant convenience resource whose complete needed contract is already loaded."
+    }
+  },
+  "acceptance_criteria": [
+    "The selected path supplies every required normative method, output structure, and transitive procedure before it is used; absent mandatory content produces a bounded stop rather than reconstruction from memory or examples.",
+    "Untriggered resources are not loaded or treated as invocation prerequisites, while the result does not turn that local success into a package-integrity claim.",
+    "A newly triggered resource is selected and read before dependent work, including after invocation reclassification; missing, escaped, contradictory, stale, or mixed-version required content prevents dependent reliance.",
+    "Mapped script use identifies accepted inputs, result or exit meaning, and the action on failure. Resource selection distinguishes packaged paths from project-local paths and negative examples.",
+    "A convenience fallback is disclosed and preserves the entire needed contract already available in loaded instructions; it never excuses missing required methods or establishes package validity."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "confirms": [
+    "FUNC-052"
+  ]
+}

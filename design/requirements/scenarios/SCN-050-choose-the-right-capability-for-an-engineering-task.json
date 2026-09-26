@@ -1,0 +1,61 @@
+{
+  "id": "SCN-050",
+  "type": "scenario",
+  "title": "Choose the right capability for an engineering task",
+  "status": "confirmed",
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-02",
+      "basis": "Draft black-box stakeholder situation for IR-009 common Skills-product behavior. The Scenario awaits independent semantic review and does not claim detailed specialist clause migration or runtime evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-24",
+      "basis": "Draft black-box stakeholder situation for IR-009 common Skills-product behavior. The Scenario awaits independent semantic review and does not claim detailed specialist clause migration or runtime evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-PRODUCTS",
+      "locator": "SCN-050; design/requirements/published-products.md#review-and-validation",
+      "basis": "Independent review and author reconciliation confirmed this stakeholder situation, primary Feature, and SR coverage as current analysis knowledge. This does not approve requirements or establish implemented behavior or satisfaction."
+    }
+  ],
+  "actor": "An engineer planning a bounded task",
+  "goal": "Identify a supported capability whose scope matches the intended engineering outcome.",
+  "context": "Several published capabilities have neighboring purposes, and the engineer has not yet invoked one.",
+  "trigger": "The engineer needs help investigating a proposed change.",
+  "preconditions": [],
+  "interaction": [
+    {
+      "actor": "Engineer",
+      "action": "Describes the intended outcome and available project context."
+    },
+    {
+      "actor": "System",
+      "action": "Presents applicable capabilities, their purposes, triggers, relevant near misses, and behavioral owners."
+    },
+    {
+      "actor": "Engineer",
+      "action": "Selects the capability matching the task or supplies the missing distinction."
+    }
+  ],
+  "expected_outcome": "The engineer can choose an appropriate supported capability and understand what its invocation covers.",
+  "alternatives": [
+    {
+      "condition": "The engineer already knows the public capability name.",
+      "outcome": "The system explains its applicability and relevant exclusions before detailed work."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "The request is too ambiguous or outside the supported inventory.",
+      "outcome": "The system identifies the missing distinction or unsupported scope without beginning an unrelated activity."
+    }
+  ],
+  "exercises": [
+    "FEAT-015"
+  ],
+  "informs": [
+    "SR-050"
+  ]
+}

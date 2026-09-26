@@ -1,0 +1,74 @@
+{
+  "id": "FUNC-066",
+  "type": "function",
+  "title": "Select release identity and execution eligibility",
+  "status": "draft",
+  "description": "Resolve an attempt's public identity and admitted release path from existing reviewed product decisions and selected source/profile. It does not infer a new version decision, broaden routine automation, or execute publication.",
+  "inputs": [
+    "Reviewed source and approved product/compatibility decisions, proposed package/version/channel, and declared supported population.",
+    "Selected release profile and available external identity observations."
+  ],
+  "preconditions": [],
+  "outputs": [
+    "Identified release attempt and supported routine or explicitly exceptional handling boundary.",
+    "No-op, duplicate/conflict, unsupported selection, or owner-intervention result."
+  ],
+  "behavior": [
+    "Identify release type, justified version, source, package, tag/channel, targets, and applicable profile.",
+    "Apply retained version/compatibility policy including support withdrawals and distinguish general routine publication from the narrower supported automation population.",
+    "Reject new unresolved product/publish-mechanics decisions, malformed or unsupported profiles, and inadmissible historical replay.",
+    "Use available public identity facts to report duplicate/no-op/conflict meaning without overwriting or inventing publication."
+  ],
+  "failure_behavior": [
+    {
+      "condition": "Version rationale, reviewed scope, profile, or prerequisite selection is missing or contradictory.",
+      "outcome": "Identify the precise decision needed and withhold eligibility."
+    },
+    {
+      "condition": "The request exceeds supported routine handling or relies on retired production recipes.",
+      "outcome": "Stop before generation/publication and name the unsupported scope."
+    },
+    {
+      "condition": "An existing public identity conflicts with the intended attempt.",
+      "outcome": "Report the conflict or recovery need without overwrite."
+    }
+  ],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-01",
+      "basis": "Logical behavior derived from the identified published-product contracts for IR-010; existing source details and compatibility/adoption limits remain applicable."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-02",
+      "basis": "Logical behavior derived from the identified published-product contracts for IR-010; existing source details and compatibility/adoption limits remain applicable."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-03",
+      "basis": "Logical behavior derived from the identified published-product contracts for IR-010; existing source details and compatibility/adoption limits remain applicable."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-25",
+      "basis": "Logical behavior derived from the identified published-product contracts for IR-010; existing source details and compatibility/adoption limits remain applicable."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-26",
+      "basis": "Logical behavior derived from the identified published-product contracts for IR-010; existing source details and compatibility/adoption limits remain applicable."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#Distribution support transition",
+      "basis": "Logical behavior derived from the identified published-product contracts for IR-010; existing source details and compatibility/adoption limits remain applicable."
+    },
+    {
+      "source": "SRC-PUBLISHED-PRODUCTS",
+      "locator": "FUNC-066",
+      "basis": "Assign MOD-015 as the proposed accountable primary responsibility after Functional Analysis. Current product source contracts retain detailed behavior authority; allocation is not runtime adoption or complete AR coverage."
+    }
+  ],
+  "allocated_to": "MOD-015"
+}

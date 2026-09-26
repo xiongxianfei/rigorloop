@@ -1,0 +1,57 @@
+{
+  "id": "FEAT-019",
+  "type": "feature",
+  "title": "Install verified skills for a selected supported target",
+  "status": "draft",
+  "description": "Project users can inspect an installation plan, acquire a trusted compatible skill archive, and install or explicitly replace its complete target units while preserving unrelated work. They receive honest conflict, safety, and partial-effect information; installation does not adopt governance or manage project state.",
+  "scope": {
+    "includes": [
+      "Supported target selection, trusted network or local archive acquisition, and integrity verification.",
+      "Nonmutating preliminary plans, complete destination conflict checks, and explicitly authorized whole-unit replacement.",
+      "Path/concurrency protection, retained originals, safe diagnostics, and bounded failure/retry outcomes."
+    ],
+    "excludes": [
+      "Automatic managed upgrades, project-state creation or migration, and cleanup of unrelated or retired installed skills.",
+      "Inferring replacement or workflow authority from package validity or installation.",
+      "Making the CLI a prerequisite for individual portable skill use."
+    ]
+  },
+  "realized_by": [
+    "FUNC-063",
+    "FUNC-064",
+    "FUNC-065",
+    "FUNC-026"
+  ],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-INSTALLATION",
+      "locator": "docs/design/cli/installation.md#DIST-SR-02",
+      "basis": "IR-010 establishes this stakeholder-visible published-product capability. This draft models existing selected obligations, not observed publication or installation success."
+    },
+    {
+      "source": "SRC-PUBLISHED-INSTALLATION",
+      "locator": "docs/design/cli/installation.md#DIST-SR-07",
+      "basis": "IR-010 establishes this stakeholder-visible published-product capability. This draft models existing selected obligations, not observed publication or installation success."
+    },
+    {
+      "source": "SRC-PUBLISHED-INSTALLATION",
+      "locator": "docs/design/cli/installation.md#DIST-SR-10",
+      "basis": "IR-010 establishes this stakeholder-visible published-product capability. This draft models existing selected obligations, not observed publication or installation success."
+    },
+    {
+      "source": "SRC-PUBLISHED-INSTALLATION",
+      "locator": "docs/design/cli/installation.md#DIST-SR-13",
+      "basis": "IR-010 establishes this stakeholder-visible published-product capability. This draft models existing selected obligations, not observed publication or installation success."
+    },
+    {
+      "source": "SRC-PUBLISHED-INSTALLATION",
+      "locator": "docs/design/cli/installation.md#DIST-SR-14",
+      "basis": "IR-010 establishes this stakeholder-visible published-product capability. This draft models existing selected obligations, not observed publication or installation success."
+    },
+    {
+      "source": "SRC-PUBLISHED-INSTALLATION",
+      "locator": "docs/design/cli/installation.md#DIST-SR-15",
+      "basis": "IR-010 establishes this stakeholder-visible published-product capability. This draft models existing selected obligations, not observed publication or installation success."
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "id": "MOD-010",
+  "type": "module",
+  "title": "Engineering command interface",
+  "status": "draft",
+  "description": "Interpret supported public command requests and present their actual scoped outcomes through the declared request, result, help, and exit contracts.",
+  "responsibilities": [
+    "Admit commands, versions, selectors, and explicit inputs under the selected public contract.",
+    "Dispatch operational-record requests to their persistence contract and installation requests to the installation contract without making engineering judgments.",
+    "Present bounded observations, diagnostics, omitted-detail access, and exit outcomes without hiding actual side effects or sensitive information.",
+    "Select recorded changes and requested record projections under literal public query rules; preserve complete-source and omission distinctions and handle bounded private invocation diagnostics under the owning CLI contract."
+  ],
+  "owned_state": [
+    "Admitted command context, rendered results, and optional bounded private invocation diagnostics under the current logging contract; authoritative project records and installation destinations have separate owners."
+  ],
+  "scope": {
+    "includes": [
+      "Published command admission, scoped access, dispatch, results, and diagnostics."
+    ],
+    "excludes": [
+      "Inferring authoritative workflow decisions, accepting REM authoring JSON as current operational records, granting authority, or treating successful parsing as a committed update."
+    ]
+  },
+  "provides": [
+    "IF-004"
+  ],
+  "consumes": [
+    "IF-003",
+    "IF-006"
+  ],
+  "design_limits": [
+    "Existing CLI public envelopes, version domains, selectors, and exceptional command behavior remain specified by docs/design/cli/cli.md; the new logical Interfaces summarize responsibility and preserve that authority.",
+    "Detailed AR derivation and realization mapping for this product extension remain deferred. The draft does not change any public command or package."
+  ],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-PRODUCTS",
+      "locator": "MOD-010",
+      "basis": "Proposed responsibility derived from the published-product source inventory. Existing Designs retain their detailed contracts; this allocation is not a runtime migration or approval."
+    }
+  ]
+}

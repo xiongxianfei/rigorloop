@@ -1,0 +1,56 @@
+{
+  "id": "FEAT-016",
+  "type": "feature",
+  "title": "Carry out guided specialist engineering work",
+  "status": "draft",
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-03",
+      "basis": "IR-009 establishes this durable Skills-product capability; existing generic Functions are reused without changing their definitions or requirement parentage."
+    },
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-04",
+      "basis": "IR-009 establishes this durable Skills-product capability; existing generic Functions are reused without changing their definitions or requirement parentage."
+    },
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-24",
+      "basis": "IR-009 establishes this durable Skills-product capability; existing generic Functions are reused without changing their definitions or requirement parentage."
+    },
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-27",
+      "basis": "IR-009 establishes this durable Skills-product capability; existing generic Functions are reused without changing their definitions or requirement parentage."
+    },
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-29",
+      "basis": "IR-009 establishes this durable Skills-product capability; existing generic Functions are reused without changing their definitions or requirement parentage."
+    }
+  ],
+  "description": "People and engineering agents can use applicable specialist guidance to produce or assess scoped engineering results across authoring, implementation, assessment, foundations, discovery, learning, and delivery preparation while preserving each activity's contract.",
+  "scope": {
+    "includes": [
+      "Complete specialist procedure, usable output shape, material failure disposition, and explicit claim limits.",
+      "Project governance, sufficient evidence, and privacy-safe reporting.",
+      "Reuse of adopted REM model-authoring guidance and shared authority and assurance responsibilities."
+    ],
+    "excludes": [
+      "A universal procedure that replaces specialist reasoning.",
+      "Automatic adoption of the REM target model by current published outputs.",
+      "Permission for downstream or external actions inferred from generated artifacts or judgments."
+    ]
+  },
+  "realized_by": [
+    "FUNC-053",
+    "FUNC-052",
+    "FUNC-032",
+    "FUNC-033",
+    "FUNC-026",
+    "FUNC-028",
+    "FUNC-029",
+    "FUNC-031"
+  ]
+}

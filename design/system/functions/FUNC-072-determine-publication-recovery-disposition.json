@@ -1,0 +1,70 @@
+{
+  "id": "FUNC-072",
+  "type": "function",
+  "title": "Determine publication recovery disposition",
+  "status": "draft",
+  "description": "Relate a failed or uncertain attempt to authoritative external state and a supported authorized recovery action while preserving public history and failure evidence. It distinguishes recovery decisions from an automatic retry.",
+  "inputs": [
+    "Attempt identity, failure phase, known external effects, and retained candidate/evidence.",
+    "Available authoritative registry/tag/asset state and applicable owner recovery or deferral decisions."
+  ],
+  "preconditions": [],
+  "outputs": [
+    "Before/during-uncertain/after-publication disposition and required further inspection.",
+    "Supported authorized correction or retry basis, retained failed evidence, and open follow-up."
+  ],
+  "behavior": [
+    "Establish what is known about external effects before choosing any retry or correction.",
+    "Distinguish no successful write from uncertain and failed-after-publication outcomes.",
+    "Preserve published versions and original evidence; select only applicable fix-forward, channel correction, deprecation, or explicit follow-up within authority.",
+    "Retain complete exceptional-deferral ownership/risk/limits and nondeferable duties until disposition.",
+    "Do not turn lost reporting, unavailable public evidence, or duplicate events into authority to republish."
+  ],
+  "failure_behavior": [
+    {
+      "condition": "Authoritative external state is unavailable after an uncertain write.",
+      "outcome": "Keep the attempt uncertain and withhold blind retry."
+    },
+    {
+      "condition": "A proposed recovery would overwrite a published version or erase evidence.",
+      "outcome": "Reject that action and identify the supported correction boundary."
+    },
+    {
+      "condition": "Required recovery authority or exception basis is missing.",
+      "outcome": "Record the precise unresolved decision and preserve failed/open status."
+    }
+  ],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-14",
+      "basis": "Logical behavior derived from the identified published-product contracts for IR-010; existing source details and compatibility/adoption limits remain applicable."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-15",
+      "basis": "Logical behavior derived from the identified published-product contracts for IR-010; existing source details and compatibility/adoption limits remain applicable."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-16",
+      "basis": "Logical behavior derived from the identified published-product contracts for IR-010; existing source details and compatibility/adoption limits remain applicable."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-23",
+      "basis": "Logical behavior derived from the identified published-product contracts for IR-010; existing source details and compatibility/adoption limits remain applicable."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-24",
+      "basis": "Logical behavior derived from the identified published-product contracts for IR-010; existing source details and compatibility/adoption limits remain applicable."
+    },
+    {
+      "source": "SRC-PUBLISHED-PRODUCTS",
+      "locator": "FUNC-072",
+      "basis": "Assign MOD-015 as the proposed accountable primary responsibility after Functional Analysis. Current product source contracts retain detailed behavior authority; allocation is not runtime adoption or complete AR coverage."
+    }
+  ],
+  "allocated_to": "MOD-015"
+}

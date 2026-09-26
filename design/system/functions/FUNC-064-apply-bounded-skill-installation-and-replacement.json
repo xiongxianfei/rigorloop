@@ -1,0 +1,68 @@
+{
+  "id": "FUNC-064",
+  "type": "function",
+  "title": "Apply bounded skill installation and replacement",
+  "status": "draft",
+  "description": "Apply verified candidate units within the user-authorized destination and replacement scope. It owns full preflight, safe scoped writes, preservation of unrelated content and detached originals, and honest partial-effect reporting; it does not manage project state or automatic upgrades.",
+  "inputs": [
+    "Verified staged candidate, declared target roots and installation units.",
+    "Actual destination state and applicable normal or explicit whole-unit force request."
+  ],
+  "preconditions": [
+    "Candidate trust and staging are established before installed-unit mutation."
+  ],
+  "outputs": [
+    "Installed or replaced units and verified active-candidate outcome.",
+    "Blocked conflicts or safety conditions, known partial effects, untouched units, and retained-original locations."
+  ],
+  "behavior": [
+    "Preflight every candidate unit and its actual path safety before writing; default conflicts include identical and empty existing units and stop the entire installation.",
+    "For applicable force, replace complete selected units and remove their obsolete contents without replacing shared parents or unrelated units.",
+    "Preserve the existing anchored-path, link, changed-basis, and no-clobber guarantees in both modes; reject platforms unable to support the required safe operation.",
+    "Keep detached originals outside discovery roots after success or failure and never treat them as active skills or automatic restoration authority.",
+    "Verify candidate hashes/counts and report actual effects; stop further writes on failure and require fresh verification/preflight and explicit replacement choice on retry.",
+    "Leave project-root state uninterpreted and unchanged; do not perform managed upgrades, retired-skill cleanup, or whole-project replacement."
+  ],
+  "failure_behavior": [
+    {
+      "condition": "Any unit conflicts without force or a destination is unsafe/inaccessible.",
+      "outcome": "Report the full discovered conflicts or safety boundary and stop before installed-unit changes."
+    },
+    {
+      "condition": "A destination or inspected basis changes during the operation.",
+      "outcome": "Stop without overwriting the new destination; preserve detached originals and identify known effects."
+    },
+    {
+      "condition": "Application or final verification only partly succeeds.",
+      "outcome": "Report completed, failed, partial, detached, and untouched units without claiming rollback or complete installation."
+    }
+  ],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-INSTALLATION",
+      "locator": "docs/design/cli/installation.md#DIST-SR-10",
+      "basis": "Logical behavior derived from the identified published-product contracts for IR-010; existing source details and compatibility/adoption limits remain applicable."
+    },
+    {
+      "source": "SRC-PUBLISHED-INSTALLATION",
+      "locator": "docs/design/cli/installation.md#DIST-SR-12",
+      "basis": "Logical behavior derived from the identified published-product contracts for IR-010; existing source details and compatibility/adoption limits remain applicable."
+    },
+    {
+      "source": "SRC-PUBLISHED-INSTALLATION",
+      "locator": "docs/design/cli/installation.md#DIST-SR-13",
+      "basis": "Logical behavior derived from the identified published-product contracts for IR-010; existing source details and compatibility/adoption limits remain applicable."
+    },
+    {
+      "source": "SRC-PUBLISHED-INSTALLATION",
+      "locator": "docs/design/cli/installation.md#DIST-SR-14",
+      "basis": "Logical behavior derived from the identified published-product contracts for IR-010; existing source details and compatibility/adoption limits remain applicable."
+    },
+    {
+      "source": "SRC-PUBLISHED-PRODUCTS",
+      "locator": "FUNC-064",
+      "basis": "Assign MOD-014 as the proposed accountable primary responsibility after Functional Analysis. Current product source contracts retain detailed behavior authority; allocation is not runtime adoption or complete AR coverage."
+    }
+  ],
+  "allocated_to": "MOD-014"
+}

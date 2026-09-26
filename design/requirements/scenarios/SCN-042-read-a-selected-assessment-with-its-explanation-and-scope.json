@@ -1,0 +1,68 @@
+{
+  "id": "SCN-042",
+  "type": "scenario",
+  "title": "Read a selected assessment with its explanation and scope",
+  "status": "confirmed",
+  "actor": "A reviewer preparing to assess recorded engineering work",
+  "goal": "Obtain the requested recorded assessment and its explanation with enough scope and state information to understand what was read.",
+  "context": "The reviewer needs one selected assessment rather than all records and unrelated diagnostic detail.",
+  "trigger": "The reviewer requests the selected Review or Verify report, optionally naming admitted fields.",
+  "preconditions": [
+    "The change and intended assessment are explicitly selected."
+  ],
+  "interaction": [
+    {
+      "actor": "Reviewer",
+      "action": "Requests the complete selected assessment, or explicitly chooses an allowed field projection."
+    },
+    {
+      "actor": "System",
+      "action": "Returns the recorded fields with identities, contract, revision, applicability, selected scope, omissions, and optional-member absence as applicable."
+    },
+    {
+      "actor": "Reviewer",
+      "action": "Reads the supplied explanation in the requested human or machine projection and independently judges whether further information is needed."
+    }
+  ],
+  "expected_outcome": "The reviewer receives the requested recorded meaning without unrelated bodies, invented reasoning, hidden omissions, or a claim that retrieval completeness establishes assessment adequacy.",
+  "alternatives": [
+    {
+      "condition": "The reviewer deliberately selects only limitations.",
+      "outcome": "The result contains the selected field and explicit omissions while retaining the required identity and applicability context."
+    },
+    {
+      "condition": "An optional verification basis is absent in a readable report.",
+      "outcome": "The result distinguishes absence from omission or unavailability without inventing not-applicable or successful readiness."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "The selected registered report is missing, malformed, unsafe, unreadable, or outside the supported format.",
+      "outcome": "The system reports the specific condition rather than suggesting an empty or nonexistent assessment."
+    },
+    {
+      "condition": "The requested content cannot fit the permitted output bound.",
+      "outcome": "The system reports a read limit before partial output and explains available selection or budget choices."
+    }
+  ],
+  "exercises": [
+    "FEAT-012"
+  ],
+  "informs": [
+    "SR-040",
+    "SR-041",
+    "SR-046"
+  ],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-CLI",
+      "locator": "docs/design/cli/cli.md#CLI-SR-14, CLI-SR-17, CLI-SR-21, CLI-SR-22, CLI-SR-24, CLI-SR-26; docs/design/cli/records.md#RF-SR-07, RF-SR-10",
+      "basis": "IR-008 owns this black-box published-product situation. It exercises one durable Feature and informs the named system obligations; draft status leaves confirmation to semantic review and does not claim runtime verification."
+    },
+    {
+      "source": "SRC-PUBLISHED-PRODUCTS",
+      "locator": "SCN-042; design/requirements/published-products.md#review-and-validation",
+      "basis": "Independent review and author reconciliation confirmed this stakeholder situation, primary Feature, and SR coverage as current analysis knowledge. This does not approve requirements or establish implemented behavior or satisfaction."
+    }
+  ]
+}
