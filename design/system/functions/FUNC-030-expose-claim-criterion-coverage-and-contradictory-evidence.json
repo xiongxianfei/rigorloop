@@ -1,0 +1,46 @@
+{
+  "id": "FUNC-030",
+  "type": "function",
+  "title": "Expose claim criterion coverage and contradictory evidence",
+  "status": "draft",
+  "description": "Builds a bounded view of applicable observations, uncovered criteria, and material contradictory evidence for a declared engineering claim. It supplies transparent assessment inputs rather than replacing engineering interpretation with a mechanical passing status.",
+  "inputs": [
+    "Declared claim scope, exact subject state, and requirement criterion basis.",
+    "Evidence applicability assessments, actual observations, and recorded contradiction dispositions."
+  ],
+  "preconditions": [
+    "The claim's included criteria and subject basis are identified; unavailable support is represented explicitly."
+  ],
+  "outputs": [
+    "Per-criterion support, missing or inapplicable observations, and unresolved material contradictions.",
+    "Scope requiring further verification or judgment, including support affected by changed bases."
+  ],
+  "behavior": [
+    "Account for every criterion included in the declared claim and associate available applicable observations without fabricating missing results.",
+    "Expose contrary observations and their recorded disposition; keep unresolved material contradictions visible even when favorable results also exist.",
+    "Separate supported portions from gaps and show which affected verification remains unperformed after changes.",
+    "Bound mechanical conclusions to the available recorded support; leave semantic sufficiency to the accountable judgment."
+  ],
+  "failure_behavior": [
+    {
+      "condition": "Criterion coverage or evidence applicability is incomplete.",
+      "outcome": "Identify the uncovered or uncertain scope and prevent it from appearing fully supported."
+    },
+    {
+      "condition": "Material contradictory evidence has no adequate recorded disposition.",
+      "outcome": "Keep the conflict visible and the affected support unresolved rather than choosing the favorable observation."
+    },
+    {
+      "condition": "Changed criteria or subject basis invalidate the current coverage view.",
+      "outcome": "Identify the need to rebuild coverage against the new basis without inheriting the earlier conclusion."
+    }
+  ],
+  "unallocated_reason": "Architectural responsibility is deliberately deferred until the logical requirements and system design are reconciled. This Function establishes behavior, not a Module, Interface, implementation, or verification result.",
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "FUNC-030",
+      "basis": "SR-028 and SR-029 confirm explicit criterion coverage, contradiction handling, and changed-state reassessment under IR-004."
+    }
+  ]
+}

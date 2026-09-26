@@ -1,0 +1,62 @@
+{
+  "id": "SCN-033",
+  "type": "scenario",
+  "title": "Select authoring guidance after a profile change",
+  "status": "confirmed",
+  "actor": "An author resuming model work under a different declared profile version",
+  "goal": "Identify the guidance that applies to the selected profile and avoid relying on obsolete authoring rules.",
+  "context": "The author has previously used guidance whose applicability may differ from the profile now selected for the project.",
+  "trigger": "The author resumes an activity after the profile selection changes.",
+  "preconditions": [
+    "The selected profile version and requested activity are identifiable."
+  ],
+  "interaction": [
+    {
+      "actor": "Author",
+      "action": "Identifies the selected profile and requests guidance for the resumed activity."
+    },
+    {
+      "actor": "System",
+      "action": "Presents applicable canonical sources and distinguishes previously used guidance that is superseded, incompatible, or unavailable."
+    },
+    {
+      "actor": "Author",
+      "action": "Requests an explanation of the rule relevant to the intended edit."
+    },
+    {
+      "actor": "System",
+      "action": "Explains the selected rule and any required profile or representation decision that remains unresolved."
+    }
+  ],
+  "expected_outcome": "The author can identify applicable guidance and its versions without mistaking guidance selection for migration, approval, or support for an undeclared format.",
+  "alternatives": [
+    {
+      "condition": "The previous guidance remains applicable.",
+      "outcome": "The system identifies the matching scope and applicable version basis."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "The selected version has no available authoritative guidance.",
+      "outcome": "The system reports the unsupported scope instead of silently substituting another version."
+    },
+    {
+      "condition": "Two sources conflict for the selected activity.",
+      "outcome": "The system identifies the conflict and prevents a false claim that the authoring rule is settled."
+    }
+  ],
+  "exercises": [
+    "FEAT-010"
+  ],
+  "informs": [
+    "SR-032",
+    "SR-033"
+  ],
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "SCN-033",
+      "basis": "Analyzes IR-006 through a distinct stakeholder goal within the selected initial authoring profile; the owning IR records Scenario ownership. Accepted as current requirement-analysis knowledge after independent coverage and clarity review: one owning IR and primary Feature, observable goal and interactions, classified outcomes, and applicable SR coverage. This confirms analysis only, not requirement approval, implementation, or satisfaction."
+    }
+  ]
+}

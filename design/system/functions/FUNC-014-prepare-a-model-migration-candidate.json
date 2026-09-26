@@ -1,0 +1,50 @@
+{
+  "id": "FUNC-014",
+  "type": "function",
+  "title": "Prepare a model migration candidate",
+  "status": "draft",
+  "description": "Transform an identified source model into a reviewable target-profile candidate using an explicit mapping, preserving source interpretation and exposing semantic changes, conformance results, and consumer compatibility limits.",
+  "inputs": [
+    "Identified source model state and source/target profile definitions.",
+    "Explicit source-to-target mapping with recorded intentional semantic changes.",
+    "Declared current consumers and applicable compatibility criteria."
+  ],
+  "preconditions": [],
+  "outputs": [
+    "Identified migration candidate related to its source and mapping.",
+    "Transformation report, target conformance results, consumer-reconciliation results, and adoption-readiness limitations."
+  ],
+  "behavior": [
+    "Check that the mapping applies to the identified source and target profiles.",
+    "Preserve entity identities and authoritative relationship meaning for representational transformations.",
+    "Record supplied intentional semantic changes and identify content not covered unambiguously by the mapping.",
+    "Assess the target candidate against its declared rules and reconcile declared consumers, reporting unassessed portions.",
+    "Keep source states and historical interpretation unchanged and leave adoption to controlled change authority."
+  ],
+  "failure_behavior": [
+    {
+      "condition": "A mapping is incomplete, ambiguous, or does not match the selected profiles.",
+      "outcome": "Identify unmapped content or mismatched selection; do not silently discard or invent definitions."
+    },
+    {
+      "condition": "Transformation creates conflicting identities, references, or target-rule violations.",
+      "outcome": "Report the affected candidate subjects and withhold readiness for adoption."
+    },
+    {
+      "condition": "A required consumer check cannot complete.",
+      "outcome": "Keep the candidate explicitly unresolved for adoption and expose the unassessed consumer."
+    },
+    {
+      "condition": "Candidate preparation fails or is abandoned.",
+      "outcome": "Preserve the source state and report that no completed migration candidate has been established."
+    }
+  ],
+  "unallocated_reason": "Architectural allocation is deliberately deferred until Module responsibilities are designed; this draft claims no Module ownership or implementation.",
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "FUNC-014",
+      "basis": "IR-005 / SR-015 confirms explicit migration-candidate preparation, reusing SR-012 interpretation and SR-013 conformance checking."
+    }
+  ]
+}

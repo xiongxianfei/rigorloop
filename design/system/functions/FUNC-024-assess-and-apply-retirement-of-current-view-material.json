@@ -1,0 +1,48 @@
+{
+  "id": "FUNC-024",
+  "type": "function",
+  "title": "Assess and apply retirement of current-view material",
+  "status": "draft",
+  "description": "Determines whether a proposed removal can preserve recoverable historical meaning and current dependencies, and records or carries out the permitted current-view retirement within its authorized scope. It does not treat current-view cleanup as release of retained history.",
+  "inputs": [
+    "Proposed material-removal scope and reason.",
+    "Retained recovery basis, active reliance, surviving obligations and consumers, and their proposed dispositions.",
+    "Applicable retention policy and authorization for the proposed action."
+  ],
+  "preconditions": [
+    "The candidate material and selected project are identified."
+  ],
+  "outputs": [
+    "Retirement readiness or identified unmet recovery, dependency, or authority conditions.",
+    "Recorded disposition and current-view removal outcome when the action is applicable and authorized."
+  ],
+  "behavior": [
+    "Assess whether original content and meaning are recoverable and whether unretained work would be lost.",
+    "Identify active work, unresolved findings, current evidence, obligations, and consumers requiring retention, transfer, replacement, or explicit retirement.",
+    "Require reconciliation of surviving current reliance and applicable authorization before removing the material from the working view.",
+    "Record the disposition, recovery basis, affected scope, and actual outcome; preserve current operation without dependence on fetching retired definitions.",
+    "Treat release of retained history as a separate controlled retention-policy decision rather than an age-based consequence of cleanup."
+  ],
+  "failure_behavior": [
+    {
+      "condition": "Historical recoverability or reconciliation of current reliance is unestablished.",
+      "outcome": "Withhold removal and identify the missing recovery basis or surviving dependency."
+    },
+    {
+      "condition": "Authority is absent or the proposal would discard active or unresolved material without coherent replacement.",
+      "outcome": "Withhold the affected action and identify the specific boundary or unresolved reliance."
+    },
+    {
+      "condition": "Removal only partly completes.",
+      "outcome": "Report actual affected scope and remaining inconsistencies without claiming completed cleanup."
+    }
+  ],
+  "unallocated_reason": "Architectural responsibility is deliberately deferred until the logical requirements and system design are reconciled. This Function establishes behavior, not a Module, Interface, implementation, or verification result.",
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "FUNC-024",
+      "basis": "SR-024 confirms dependency-safe retirement under IR-003. SR-007 constrains destructive actions and policy changes; retained historical content is provided by the Baseline capability."
+    }
+  ]
+}

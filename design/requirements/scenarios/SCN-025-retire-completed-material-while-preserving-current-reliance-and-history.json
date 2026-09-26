@@ -1,0 +1,71 @@
+{
+  "id": "SCN-025",
+  "type": "scenario",
+  "title": "Retire completed material while preserving current reliance and history",
+  "status": "confirmed",
+  "actor": "A maintainer cleaning the current engineering working view",
+  "goal": "Remove material no longer needed in the current view while keeping surviving obligations usable and original history recoverable.",
+  "context": "Completed or retired records clutter the current view, but some consumers or unresolved work may still rely on them.",
+  "trigger": "The maintainer proposes a defined cleanup scope.",
+  "preconditions": [
+    "The candidate material and applicable retention policy are identified."
+  ],
+  "interaction": [
+    {
+      "actor": "Maintainer",
+      "action": "Identifies the proposed removals, their recovery basis, and proposed treatment of surviving obligations and consumers."
+    },
+    {
+      "actor": "System",
+      "action": "Reports historical recoverability, current reliance, unresolved dependencies, and applicable authority for the removal."
+    },
+    {
+      "actor": "Maintainer",
+      "action": "Resolves remaining dependencies and requests the authorized removal when its conditions are met."
+    },
+    {
+      "actor": "System",
+      "action": "Reports the actual removal disposition and retained recovery basis, or the condition that prevents removal."
+    }
+  ],
+  "expected_outcome": "Only material whose original meaning is recoverable and whose current dependencies are reconciled leaves the working view; current engineering operation remains coherent.",
+  "alternatives": [
+    {
+      "condition": "A surviving obligation remains valid under another current owner.",
+      "outcome": "Its responsibility and current references are reconciled before the retired representation is removed."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "Active work, unresolved findings, or currently relied-upon evidence still depends on the material without a coherent replacement.",
+      "outcome": "Removal is withheld and the surviving reliance is identified."
+    },
+    {
+      "condition": "Original content is uncommitted or otherwise lacks a retained recovery basis.",
+      "outcome": "The system identifies the unretained content and does not claim cleanup is historically recoverable."
+    },
+    {
+      "condition": "The proposed destructive action lacks applicable authorization.",
+      "outcome": "The action is withheld at the specific policy boundary."
+    },
+    {
+      "condition": "The proposal concerns releasing retained history itself.",
+      "outcome": "The system identifies the need for the separate retention-policy decision and surviving-dependency review instead of applying ordinary current-view cleanup."
+    }
+  ],
+  "exercises": [
+    "FEAT-007"
+  ],
+  "informs": [
+    "SR-024",
+    "SR-007",
+    "SR-020"
+  ],
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "SCN-025",
+      "basis": "IR-003 owns cleanup and retention. SR-024 derives retirement conditions, SR-020 provides a retained recovery basis, and SR-007 governs destructive authority. Accepted as current requirement-analysis knowledge after independent coverage and clarity review: one owning IR and primary Feature, observable goal and interactions, classified outcomes, and applicable SR coverage. This confirms analysis only, not requirement approval, implementation, or satisfaction."
+    }
+  ]
+}

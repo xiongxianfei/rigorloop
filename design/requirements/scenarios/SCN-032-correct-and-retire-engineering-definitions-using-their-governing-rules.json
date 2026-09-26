@@ -1,0 +1,72 @@
+{
+  "id": "SCN-032",
+  "type": "scenario",
+  "title": "Correct and retire engineering definitions using their governing rules",
+  "status": "confirmed",
+  "actor": "A model maintainer addressing an authoring finding",
+  "goal": "Understand the governing rule and prepare a correct bounded revision or retirement without losing entity meaning or current obligations.",
+  "context": "A review or validation finding identifies an inadequate definition, name, or relationship in the selected model state.",
+  "trigger": "The maintainer requests a correction path for the identified finding.",
+  "preconditions": [
+    "The affected definition, finding, selected profile, and current model state are identifiable."
+  ],
+  "interaction": [
+    {
+      "actor": "Maintainer",
+      "action": "Supplies the affected definition and finding and requests the applicable correction guidance."
+    },
+    {
+      "actor": "System",
+      "action": "Explains the governing rule, expected correction outcome, related obligations, and required checks or authority."
+    },
+    {
+      "actor": "Maintainer",
+      "action": "Selects a supported correction or retirement and prepares the proposed change."
+    },
+    {
+      "actor": "System",
+      "action": "Identifies how to assess the proposed result and which unresolved dependencies prevent reliance."
+    }
+  ],
+  "expected_outcome": "The maintainer can explain and prepare a correction that preserves identity and parentage where appropriate, resolves affected references, and disposes of surviving obligations before a governed retirement.",
+  "alternatives": [
+    {
+      "condition": "The issue is an identity-preserving rename.",
+      "outcome": "Guidance explains readable naming, reference reconciliation, and unchanged identity and parentage."
+    },
+    {
+      "condition": "The issue is a wrongly typed or unresolved reference.",
+      "outcome": "Guidance links the diagnostic to its owning rule and explains a checkable correction."
+    },
+    {
+      "condition": "The definition should be retired.",
+      "outcome": "Guidance identifies surviving obligations, recoverable historical meaning, and the separate controlled adoption decision."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "The finding cannot be connected to a governing rule or affected subject.",
+      "outcome": "The system exposes the missing basis and does not assert a correct fix."
+    },
+    {
+      "condition": "A proposed correction requires unresolved reassignment or authority.",
+      "outcome": "The system identifies the dependency and does not describe the proposal as authorized or complete."
+    }
+  ],
+  "exercises": [
+    "FEAT-010"
+  ],
+  "informs": [
+    "SR-033",
+    "SR-003",
+    "SR-024",
+    "SR-007"
+  ],
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "SCN-032",
+      "basis": "Analyzes IR-006 through a distinct stakeholder goal within the selected initial authoring profile; the owning IR records Scenario ownership. Accepted as current requirement-analysis knowledge after independent coverage and clarity review: one owning IR and primary Feature, observable goal and interactions, classified outcomes, and applicable SR coverage. This confirms analysis only, not requirement approval, implementation, or satisfaction."
+    }
+  ]
+}

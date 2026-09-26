@@ -1,0 +1,58 @@
+{
+  "id": "SR-037",
+  "type": "system-requirement",
+  "title": "Prepare accountable improvements for controlled adoption",
+  "status": "draft",
+  "statement": "The system shall support turning a supported lesson into an improvement proposal that identifies the affected guidance, checks, or artifacts, the responsible owner, applicable situations, intended behavior, and observable success and adverse-effect criteria before adoption through controlled change.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "A lesson can lead to vague action or an unreviewed rule change with no owner or way to assess its effect.",
+      "desired_outcome": "Decision owners receive a bounded, attributable proposal that can be reviewed, adopted, revised, or rejected through the existing change controls."
+    },
+    "why": {
+      "rationale": "A concrete improvement and assessment intent connect retained knowledge to accountable changes in engineering practice."
+    },
+    "who": {
+      "stakeholders": [
+        "Lesson authors",
+        "Owners of affected guidance, checks, or artifacts",
+        "Change decision owners"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "After a lesson is sufficiently supported to propose an improvement and before that improvement is adopted."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "Governed changes to project engineering practice."
+      ]
+    },
+    "how": {
+      "approach": "Derive the proposal from the supported mechanism and applicability, identify its current authoritative subjects and accountable owner, and specify the expected changed behavior and potential adverse effects. Pass the proposal and assessment criteria to controlled change. Keep proposal, adoption, and observed effectiveness distinct."
+    },
+    "how_much": {
+      "scope": "Covers preparing an improvement and preserving its association to the governed adoption decision. IR-003 owns change control and authority; this requirement neither grants adoption permission nor prescribes a separate lesson or improvement schema."
+    }
+  },
+  "acceptance_criteria": [
+    "Before adoption, an improvement proposal identifies its supporting lesson, failure mechanism, applicable situations, affected subjects, responsible owner, intended behavior, and observable success/adverse-effect criteria.",
+    "If a responsible owner, applicable subject, or assessable criterion is missing, identify the gap and do not describe the proposal as ready for adoption.",
+    "Record a proposed improvement as proposed until the applicable controlled-change decision establishes adoption; rejection or required revision is visible without rewriting the original finding.",
+    "Adoption retains a traceable connection to the lesson and affected baseline while leaving effectiveness unassessed until applicable observations exist."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "SR-037",
+      "basis": "Derived from IR-007 and its declared initial authoring scope; the acceptance criteria describe assessment intent, not observed results."
+    }
+  ],
+  "confirms": [
+    "FUNC-037"
+  ]
+}

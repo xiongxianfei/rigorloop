@@ -1,0 +1,79 @@
+{
+  "id": "SCN-028",
+  "type": "scenario",
+  "title": "Judge a claim against applicable observations and uncovered criteria",
+  "status": "confirmed",
+  "actor": "A reviewer assessing requirement satisfaction or engineering readiness",
+  "goal": "Determine and record exactly what the available applicable evidence supports and what remains unestablished.",
+  "context": "An engineering claim has been proposed using observations that may be incomplete, stale, or contradictory.",
+  "trigger": "The reviewer evaluates the claim before relying on its conclusion.",
+  "preconditions": [
+    "The claim's intended subject state, criterion basis, and scope are identified."
+  ],
+  "interaction": [
+    {
+      "actor": "Reviewer",
+      "action": "Selects the claim and offered observations and reviews their assessment bases."
+    },
+    {
+      "actor": "System",
+      "action": "Presents evidence applicability, per-criterion support, missing observations, and unresolved material contradictions."
+    },
+    {
+      "actor": "Reviewer",
+      "action": "Records the engineering conclusion, reasoning, supported scope, limitations, and disposition of material contradictions."
+    },
+    {
+      "actor": "System",
+      "action": "Presents the judgment with its accountable source and basis, identifying any unsupported satisfaction assertion."
+    }
+  ],
+  "expected_outcome": "The recorded conclusion is traceable to applicable evidence and criterion coverage; unsupported scope and unresolved contradictions remain visible rather than becoming a blanket passing judgment.",
+  "alternatives": [
+    {
+      "condition": "Every included criterion has applicable support and material contradictions are resolved with recorded reasoning.",
+      "outcome": "The reviewer can record a supported conclusion for the declared scope."
+    },
+    {
+      "condition": "Only a narrower portion of the proposed claim is supported.",
+      "outcome": "The judgment names that narrower scope and leaves the remaining portion unestablished."
+    },
+    {
+      "condition": "A material contrary observation remains unresolved.",
+      "outcome": "The affected claim remains unestablished even when other observations are favorable."
+    },
+    {
+      "condition": "A project decision owner accepts a tradeoff or exception.",
+      "outcome": "That decision remains distinct from observed requirement satisfaction and from any separate execution authorization."
+    },
+    {
+      "condition": "A proposed favorable conclusion conceals an uncovered criterion or unresolved material contradiction.",
+      "outcome": "The system identifies the inconsistency and retains the affected claim as unestablished."
+    },
+    {
+      "condition": "Applicable observations do not cover part of the declared criteria.",
+      "outcome": "The assessment identifies that scope as unestablished with the missing support explicit; recognizing the gap is a valid assessment outcome."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "The accountable judging participant or reasoning required to record the proposed judgment is unavailable.",
+      "outcome": "The system identifies the incomplete judgment basis and does not fabricate an accountable engineering conclusion."
+    }
+  ],
+  "exercises": [
+    "FEAT-009"
+  ],
+  "informs": [
+    "SR-027",
+    "SR-028",
+    "SR-007"
+  ],
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "SCN-028",
+      "basis": "IR-004 owns claim assessment under SR-027 and SR-028. Cross-IR SR-007 keeps conclusions and accepted tradeoffs separate from execution authorization. Accepted as current requirement-analysis knowledge after independent coverage and clarity review: one owning IR and primary Feature, observable goal and interactions, classified outcomes, and applicable SR coverage. This confirms analysis only, not requirement approval, implementation, or satisfaction."
+    }
+  ]
+}

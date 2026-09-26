@@ -1,0 +1,63 @@
+{
+  "id": "SR-008",
+  "type": "system-requirement",
+  "title": "Author engineering relationships once and derive inverse views",
+  "status": "draft",
+  "statement": "The system shall represent each governed requirement-parent or typed cross-domain relationship through one authoritative fact and provide consistent forward and reverse views of that fact within the selected model state. If the relationship change cannot complete or its selected state changes before completion, the system shall report the known outcome and affected scope without claiming a completed accepted change.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Independently authored forward and reverse relationships can disagree about responsibility or parentage.",
+      "desired_outcome": "Readers see the same relationship meaning from either endpoint without maintaining a duplicate fact."
+    },
+    "why": {
+      "rationale": "IR-002 requires explicit traceability and derived inverse views while preserving the single-parent requirement tree."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineers and model authors",
+        "Architects, reviewers, and engineering agents"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "When an author creates, changes, or removes a relationship and a participant inspects either endpoint."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "Within one selected project model state and its declared relationship profile."
+      ]
+    },
+    "how": {
+      "approach": "Use the authoritative parent representation selected by the profile and explicitly typed cross-domain facts. Present inverse navigation as a derived view. Validate the proposed relationship against declared endpoint types and cardinalities before accepting it as a valid fact."
+    },
+    "how_much": {
+      "scope": "Covers relationship authorship and inverse consistency for declared relationship types. It does not prescribe a storage direction, duplicate parent fields, or establish satisfaction from a link. Mechanically checking the whole model belongs to IR-005."
+    }
+  },
+  "acceptance_criteria": [
+    "Create a compatible typed relationship once; views from both endpoints identify the same relationship, entities, direction, and selected state without a separately authored inverse.",
+    "After replacing or removing the authoritative relationship, neither current endpoint view presents its old inverse as a surviving fact.",
+    "Derive SR and AR parent navigation from the declared single authoritative containment representation; a second independently maintained parent is not required.",
+    "For an unknown relationship type, incompatible endpoint, ambiguous identity, or forbidden cardinality, report the invalid proposal and do not present it as an accepted relationship.",
+    "Keep relationship observations tied to the selected state; inspecting a newer state does not rewrite the relationship meaning recorded in an older state.",
+    "When an edit is interrupted, cannot complete, or encounters a changed selected state, report the known relationship outcome and affected scope without claiming a completed accepted change; do not silently treat observations from different states as one completed edit."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "SR-008",
+      "basis": "Derived from IR-002 and its selected initial-profile scope: IR-002 requires explicit traceability and derived inverse views while preserving the single-parent requirement tree."
+    }
+  ],
+  "confirms": [
+    "FUNC-008",
+    "FUNC-003"
+  ],
+  "constrains": [
+    "FUNC-009"
+  ]
+}

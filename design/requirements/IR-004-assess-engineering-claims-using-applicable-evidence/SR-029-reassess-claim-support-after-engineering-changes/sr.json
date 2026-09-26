@@ -1,0 +1,59 @@
+{
+  "id": "SR-029",
+  "type": "system-requirement",
+  "title": "Reassess claim support after engineering changes",
+  "status": "draft",
+  "statement": "The system shall identify the need to reassess evidence applicability and repeat affected verification when a claimed subject, governing criterion, or relevant assessment condition changes, while preserving earlier observations and judgments against their original basis.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "An engineering Change can leave an earlier satisfaction claim appearing current even though its supporting assessment no longer addresses the changed subject or obligation.",
+      "desired_outcome": "Participants know which relied-upon claim support needs reassessment and can distinguish historical conclusions from newly established support."
+    },
+    "why": {
+      "rationale": "IR-004 explicitly requires applicability reassessment and repetition of affected verification after changes rather than inheritance from stable identity."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineers changing assessed subjects",
+        "Verification engineers and reviewers reassessing affected claims"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "After changes to the subject, governing criterion, or relevant conditions of a relied-upon engineering claim."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "Affected claim support and its recorded subject, criterion, evidence, and judgment relationships."
+      ]
+    },
+    "how": {
+      "approach": "Identify changed claim bases and affected support through recorded dependencies. Reassess applicability, mark insufficiently supported current conclusions as unestablished, and identify affected verification that must be repeated. Treat scheduled checks as plans until actual observations are recorded. Preserve earlier evidence and judgments with their historical basis; a new assessment yields new current support rather than rewriting old observations."
+    },
+    "how_much": {
+      "scope": "Changes within the governed scope and explicit assessment dependencies. The system exposes unresolved impact or applicability when dependencies are incomplete. This obligation defines required reassessment behavior without prescribing automatic execution, CI triggers, or an unrestricted inference engine."
+    }
+  },
+  "acceptance_criteria": [
+    "Changing an assessed subject or acceptance criterion makes the affected earlier support subject to applicability reassessment and identifies verification that requires repetition.",
+    "Planning a repeated check does not restore current satisfaction; the affected scope remains unestablished until applicable observations and a justified conclusion support it.",
+    "New observations and a revised judgment retain their own assessed basis, while the earlier observation and judgment remain inspectable against their original state.",
+    "When incomplete dependencies prevent determining which support is affected, the uncertainty and potentially affected scope are visible rather than treated as unaffected."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "confirms": [
+    "FUNC-029",
+    "FUNC-030",
+    "FUNC-031"
+  ],
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "SR-029",
+      "basis": "Derived from IR-004: IR-004 explicitly requires applicability reassessment and repetition of affected verification after changes rather than inheritance from stable identity. The criteria describe intended observable behavior, not executed verification."
+    }
+  ]
+}

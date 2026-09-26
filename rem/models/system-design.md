@@ -1,7 +1,7 @@
 # System Design model
 
 System Design describes what stakeholder-visible capabilities exist and what logical behavior realizes them.
-The [concept definitions](../concepts/README.md#system-and-architecture-assets) distinguish Features and Functions from Requirements, while [Scenario](../concepts/README.md#requirement-analysis-artifacts) remains an Initial Requirement analysis artifact.
+The [concept definitions](../concepts/README.md#system-and-architecture-assets) distinguish Features and Functions from Requirements. [Scenario](../concepts/README.md#requirement-analysis-entities) is a first-class governed Requirement Analysis entity whose identity, lifecycle, and relationships are owned by the [Scenario model](scenarios.md).
 
 ```text
 IR ── confirms ──────> Feature
@@ -10,7 +10,7 @@ SR ── confirms ──────> Function
 Feature ─realizedBy──> Function
 ```
 
-A Feature is durable and may be exercised by many Scenarios and evolve under many Requirements and Changes.
+A Feature is durable and may be exercised by many governed Scenarios and evolve under many Requirements and Changes.
 An IR confirms the stakeholder-visible Feature established through requirement and scenario analysis.
 A Function is durable logical behavior; SR analysis confirms the Functions required by the system obligations.
 A Function may realize several Features and is not contained exclusively by one Feature.
@@ -56,7 +56,7 @@ A Function SHOULD have an accountable architectural responsibility unless the ar
 Allocation is owned by the [Architecture Design model](architecture-design.md).
 Implementation references identify realization without replacing the logical definition.
 
-These definition criteria do not require Features or Functions to use the requirement 5W2H template or extend the IR/SR open-question policy to System Design assets.
+These definition criteria do not require Features or Functions to use the requirement 5W2H template or extend the IR/SR/Scenario open-question policy to System Design assets.
 The project representation selects fields and storage conventions through [Operational Support](operational-support.md).
 
 ## Evolution

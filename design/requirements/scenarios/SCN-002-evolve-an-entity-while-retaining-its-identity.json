@@ -1,0 +1,82 @@
+{
+  "id": "SCN-002",
+  "type": "scenario",
+  "title": "Evolve an entity while retaining its identity",
+  "status": "confirmed",
+  "actor": "An engineer maintaining an existing engineering definition",
+  "goal": "Revise the same engineering entity while retaining its stable identity and the meaning of existing identity-based references.",
+  "context": "Existing references designate an entity whose name, location, or definition needs to change within the same governed model.",
+  "trigger": "The engineer proposes a supported rename, move, or edit of the same entity.",
+  "preconditions": [
+    "The existing entity has an explicit identity and is unambiguously identifiable in the selected model state.",
+    "The proposed operation evolves that entity rather than splitting, merging, replacing, or reusing a retired identity.",
+    "A location change in this scenario preserves the entity's semantic containment parent when physical placement represents parentage."
+  ],
+  "interaction": [
+    {
+      "actor": "Engineer",
+      "action": "Identifies the entity and selected model state and requests a supported name, location, or definition change for that same entity."
+    },
+    {
+      "actor": "System",
+      "action": "Reports the revision outcome and presents the revised name, location, or definition with the preserved entity identity and resulting state."
+    },
+    {
+      "actor": "Engineer",
+      "action": "Requests the revised entity using an existing identity-based reference."
+    },
+    {
+      "actor": "System",
+      "action": "Presents the same entity in the resulting state without claiming that its content revision, approval, or evidence applicability is unchanged."
+    }
+  ],
+  "expected_outcome": "The engineer can evolve the same entity without breaking its identity-based designation or implying that earlier approval or evidence automatically applies to its changed definition.",
+  "alternatives": [
+    {
+      "condition": "Different entities share a display name but have distinct identities.",
+      "outcome": "Identity-based selection continues to distinguish them; matching names alone do not create an identity conflict."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "The proposed state assigns the same identity to distinct entities, even at different locations or with different types.",
+      "outcome": "The identity conflict is reported and the proposed state is not represented as valid or unambiguous."
+    },
+    {
+      "condition": "The request changes the entity's identity or requires an unsupported split, merge, replacement, or retirement reuse.",
+      "outcome": "The request is identified as outside the supported same-entity revision and is not silently performed as a rename or edit."
+    },
+    {
+      "condition": "A proposed move would place an SR under another IR or an AR under another SR.",
+      "outcome": "The move is identified as a semantic parentage change requiring reconsidered derivation and applicable change authority, rather than an ordinary location edit in this scenario."
+    },
+    {
+      "condition": "The requested revision fails or its complete outcome cannot be confirmed.",
+      "outcome": "The system reports the known outcome and affected scope without claiming that the complete revision succeeded."
+    }
+  ],
+  "exercises": [
+    "FEAT-002"
+  ],
+  "informs": [
+    "SR-002",
+    "SR-003"
+  ],
+  "sources": [
+    {
+      "source": "SRC-IR-001-SCENARIO-ANALYSIS",
+      "locator": "SCN-002",
+      "basis": "Applies IR-001's durable identity need to SR-002's unambiguous identity and SR-003's supported evolution of the same entity."
+    },
+    {
+      "source": "SRC-SCENARIO-MODEL-REFINEMENT",
+      "locator": "SCN-002",
+      "basis": "Preserves SCN-002 as same-entity revision under SR-002 and SR-003, including visible identity conflicts and the distinction between location edits and semantic reparenting. Internal checking and resolution steps are replaced by observable outcomes."
+    },
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "SCN-002",
+      "basis": "Accepted as current requirement-analysis knowledge after independent coverage and clarity review: one owning IR and primary Feature, observable goal and interactions, classified outcomes, and applicable SR coverage. This confirms analysis only, not requirement approval, implementation, or satisfaction."
+    }
+  ]
+}

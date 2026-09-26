@@ -1,0 +1,47 @@
+{
+  "id": "FUNC-031",
+  "type": "function",
+  "title": "Record scoped engineering judgments and their basis",
+  "status": "draft",
+  "description": "Retains an accountable engineering conclusion together with its exact claim scope, evidence basis, reasoning, and limitations. It distinguishes recorded semantic judgment from mechanical coverage, accepted tradeoffs, and execution authority.",
+  "inputs": [
+    "Proposed judgment, accountable participant or source, reasoning, exact subject state, and claim criteria and scope.",
+    "Applicable evidence, criterion coverage, contradiction dispositions, and unresolved gaps."
+  ],
+  "preconditions": [
+    "The proposed conclusion and its scope are identifiable."
+  ],
+  "outputs": [
+    "Recorded engineering judgment with its supporting basis, limitations, and accountable source.",
+    "Explicit unestablished or narrower supported scope where the evidence does not justify the full claim."
+  ],
+  "behavior": [
+    "Retain the conclusion, judging participant or accountable source, reasoning, exact claim basis, and references to supporting and contrary evidence.",
+    "Do not present full satisfaction as established when required criterion support is missing or a material contradiction remains unresolved.",
+    "Allow a narrower supported conclusion only with explicit included and excluded scope; distinguish an accepted exception or tradeoff from observed satisfaction.",
+    "After reassessment, record the new judgment against its new basis while keeping earlier conclusions attributable to their historical state.",
+    "Keep permission to execute governed actions outside the judgment and do not convert mechanical coverage into an unstated semantic conclusion."
+  ],
+  "failure_behavior": [
+    {
+      "condition": "A proposed satisfaction conclusion exceeds evidence scope or conceals an unresolved gap or contradiction.",
+      "outcome": "Identify the inconsistency and leave the affected claim unestablished rather than recording unsupported satisfaction as current truth."
+    },
+    {
+      "condition": "The judgment lacks accountable provenance or reasoning.",
+      "outcome": "Expose the incomplete judgment basis without supplying an invented engineering decision."
+    },
+    {
+      "condition": "A conclusion is offered as authorization for a governed action.",
+      "outcome": "Keep the conclusion separate from the applicable authority requirement."
+    }
+  ],
+  "unallocated_reason": "Architectural responsibility is deliberately deferred until the logical requirements and system design are reconciled. This Function establishes behavior, not a Module, Interface, implementation, or verification result.",
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "FUNC-031",
+      "basis": "SR-028 and SR-029 confirm scoped judgment and preserved reassessment history under IR-004. SR-007 independently owns execution authority."
+    }
+  ]
+}

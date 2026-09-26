@@ -1,0 +1,58 @@
+{
+  "id": "SR-026",
+  "type": "system-requirement",
+  "title": "Retain actual verification observations and execution state",
+  "status": "draft",
+  "statement": "The system shall retain identifiable observed verification results with their method, exact assessed subject and state, assessment conditions, provenance, and supporting evidence, distinguishing completed observations from planned, unperformed, interrupted, or failed assessment activity.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "A planned check, partial execution, or untraceable result can be presented as if it were actual complete proof.",
+      "desired_outcome": "A participant can inspect what actually happened, under which assessment basis, and which intended observations remain absent."
+    },
+    "why": {
+      "rationale": "IR-004 defines Evidence as actual observations and forbids treating plans or the existence of a test as proof."
+    },
+    "who": {
+      "stakeholders": [
+        "Verification engineers recording results",
+        "Reviewers and decision owners relying on observations"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "When verification is performed, interrupted, fails to execute, or is inspected later."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "The execution occurrence, its verification definition and exact assessed state, and retained supporting evidence."
+      ]
+    },
+    "how": {
+      "approach": "Associate each observed result with its assessment occurrence, applicable verification definition and criterion basis, exact subject state, actual conditions, source or observing participant, and supporting evidence. Preserve negative and contradictory observations. Record partial scope, inability to assess, or unavailable support explicitly. Do not convert an execution failure into either a passing result or an unsupported conclusion that the requirement itself failed."
+    },
+    "how_much": {
+      "scope": "Actual observations within the declared assessment scope. Evidence may come from automated or human techniques; no universal evidence medium, observation duration, numerical confidence, or passing threshold is introduced. History and retention follow IR-003."
+    }
+  },
+  "acceptance_criteria": [
+    "A recorded observation identifies what was observed, its assessment occurrence and method, exact subject state, conditions, provenance, and supporting evidence needed to inspect the result.",
+    "A planned or unperformed check contains no claimed execution observations; an interrupted check identifies observations actually obtained and the scope that remains unassessed.",
+    "An inability to perform the technique is distinguishable from an observed failure of an acceptance criterion; neither is silently converted into a passing result.",
+    "Conflicting or failing observations retain their content and provenance rather than being overwritten by a later favorable observation.",
+    "Unavailable supporting evidence or incomplete provenance is reported as a limit on reliance on that result."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "confirms": [
+    "FUNC-028"
+  ],
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "SR-026",
+      "basis": "Derived from IR-004: IR-004 defines Evidence as actual observations and forbids treating plans or the existence of a test as proof. The criteria describe intended observable behavior, not executed verification."
+    }
+  ]
+}

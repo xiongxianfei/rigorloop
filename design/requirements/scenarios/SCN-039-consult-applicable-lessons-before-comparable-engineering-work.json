@@ -1,0 +1,66 @@
+{
+  "id": "SCN-039",
+  "type": "scenario",
+  "title": "Consult applicable lessons before comparable engineering work",
+  "status": "confirmed",
+  "actor": "An engineer or engineering agent preparing an activity",
+  "goal": "Understand relevant prior learning and the current improvement disposition before undertaking comparable work.",
+  "context": "The project retains lessons with stated contexts, but their applicability and adoption status differ.",
+  "trigger": "The participant prepares work that may encounter a previously observed failure mechanism.",
+  "preconditions": [
+    "The planned activity and its material context are identifiable."
+  ],
+  "interaction": [
+    {
+      "actor": "Participant",
+      "action": "Describes the planned work and requests relevant retained lessons."
+    },
+    {
+      "actor": "System",
+      "action": "Presents matching lessons with their supporting mechanism, applicability basis, exclusions, and current improvement disposition."
+    },
+    {
+      "actor": "Participant",
+      "action": "Examines differences between the planned context and the recorded conditions."
+    },
+    {
+      "actor": "System",
+      "action": "Identifies unresolved applicability and distinguishes proposed recommendations from adopted current practice."
+    }
+  ],
+  "expected_outcome": "The participant can use relevant learning with its limits understood and without treating every recommendation as an authorized rule.",
+  "alternatives": [
+    {
+      "condition": "No relevant lesson is found within the available scope.",
+      "outcome": "The system reports no match and the examined scope without claiming absence of all possible lessons."
+    },
+    {
+      "condition": "A material exclusion makes a candidate lesson inapplicable.",
+      "outcome": "The system explains the exclusion instead of recommending unconditional application."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "Lesson sources or current adoption disposition are unavailable.",
+      "outcome": "The system identifies the unavailable information and does not report an adopted instruction."
+    },
+    {
+      "condition": "The work context is too incomplete to assess relevance.",
+      "outcome": "The system reports unresolved applicability rather than an unsupported recommendation."
+    }
+  ],
+  "exercises": [
+    "FEAT-011"
+  ],
+  "informs": [
+    "SR-036",
+    "SR-007"
+  ],
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "SCN-039",
+      "basis": "Analyzes IR-007 through a distinct stakeholder goal within the selected initial authoring profile; the owning IR records Scenario ownership. Accepted as current requirement-analysis knowledge after independent coverage and clarity review: one owning IR and primary Feature, observable goal and interactions, classified outcomes, and applicable SR coverage. This confirms analysis only, not requirement approval, implementation, or satisfaction."
+    }
+  ]
+}

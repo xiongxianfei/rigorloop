@@ -1,0 +1,63 @@
+{
+  "id": "SR-015",
+  "type": "system-requirement",
+  "title": "Prepare explicit model migrations without rewriting history",
+  "status": "draft",
+  "statement": "The system shall prepare a new current-model candidate from an identified source state and explicit source-to-target profile mapping, preserving stable identities and engineering meaning unless an intentional semantic change is recorded, and report target conformance and consumer-reconciliation results before adoption.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Changing representation rules can silently change model meaning, break references, or reinterpret historical decisions.",
+      "desired_outcome": "Maintainers can review an attributable migration candidate, its intentional changes, and remaining incompatibilities while the source remains recoverable."
+    },
+    "why": {
+      "rationale": "IR-005 selects explicit reviewed mappings, preserved meaning or recorded semantic change, and checked current references and consumers before profile adoption."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineers and model authors",
+        "Architects, reviewers, and engineering agents"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "When a maintainer proposes moving the current model from one declared profile to another."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "Between identified source and target profiles for a selected project model state."
+      ]
+    },
+    "how": {
+      "approach": "Apply a supplied mapping to a candidate state; retain the source state and applicable rules. Preserve identities and meanings for representational transformations, report intentional semantic changes and unmapped content, and assess target rules plus declared current consumers. Keep candidate preparation separate from controlled adoption."
+    },
+    "how_much": {
+      "scope": "Covers migration analysis and candidate production, including fail-safe incomplete results. It does not guarantee universal historical parser compatibility, invent unmapped decisions, or authorize profile adoption; controlled change and baseline recovery belong to IR-003."
+    }
+  },
+  "acceptance_criteria": [
+    "Given a complete mapping and compatible source, produce an identifiable target candidate and a report relating it to the source state and both profiles.",
+    "For an identity-preserving representation change, retain entity IDs and equivalent authoritative relationships; flag each intentional semantic change with its supplied basis instead of treating it as a cosmetic rename.",
+    "For unknown source content, ambiguous mapping, conflicting target identities, or failed transformation, report the affected subjects and unresolved candidate status without silently dropping or inventing content.",
+    "Report target validation and declared consumer compatibility, including unassessed consumers; unresolved required checks prevent a claim that the candidate is ready for adoption.",
+    "Preparing or abandoning a candidate leaves the retained source and historical interpretation unchanged; candidate creation does not itself adopt the target profile."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "SR-015",
+      "basis": "Derived from IR-005 and its selected initial-profile scope: IR-005 selects explicit reviewed mappings, preserved meaning or recorded semantic change, and checked current references and consumers before profile adoption."
+    }
+  ],
+  "confirms": [
+    "FUNC-014"
+  ],
+  "constrains": [
+    "FUNC-012",
+    "FUNC-013",
+    "FUNC-002"
+  ]
+}

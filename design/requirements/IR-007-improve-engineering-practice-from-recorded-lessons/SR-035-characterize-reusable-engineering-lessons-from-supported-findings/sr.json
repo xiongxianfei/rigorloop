@@ -1,0 +1,58 @@
+{
+  "id": "SR-035",
+  "type": "system-requirement",
+  "title": "Characterize reusable engineering lessons from supported findings",
+  "status": "draft",
+  "statement": "The system shall support selecting and characterizing reusable lessons from engineering failures and review findings, distinguishing observed facts from inferred causes and recording the supporting sources, failure mechanism, applicability, and limits of the lesson.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "An isolated finding can be generalized into a rule without evidence of its cause or relevance outside the original event.",
+      "desired_outcome": "Maintainers can distinguish supported reusable knowledge from a local correction or an unconfirmed causal hypothesis."
+    },
+    "why": {
+      "rationale": "Improvements must address a justified mechanism within a stated context rather than perpetuating unsupported explanations."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineers and engineering agents reporting failures",
+        "Reviewers",
+        "Maintainers responsible for engineering practice"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "After a finding suggests recurrence, reusable guidance or control weakness, or a single high-consequence failure with broader applicability."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "Learning from governed project work and its attributable observations."
+      ]
+    },
+    "how": {
+      "approach": "Associate the finding with its observations and original context, record causal interpretations explicitly as inferences, and assess whether the finding meets the declared reuse criteria. Preserve uncertainty and identify applicable situations and counterconditions. Keep a local correction with its Change when no reusable implication is supported."
+    },
+    "how_much": {
+      "scope": "Covers selection and characterization of lessons, without requiring one for every defect or establishing a new mandatory lesson record format. Preservation is governed by IR-001; evidence authenticity and applicability by IR-004."
+    }
+  },
+  "acceptance_criteria": [
+    "For a supplied finding, distinguish observations and their sources from an inferred cause; an unproven hypothesis remains labeled and does not become an observed fact.",
+    "Record why a recurring failure, reusable guidance/control weakness, or high-consequence broadly relevant event justifies a retained lesson, together with its mechanism and applicability limits.",
+    "For a local correction without reusable implications, record that disposition with the owning Change instead of presenting it as a generally applicable lesson.",
+    "When evidence is missing or contradicts the proposed cause, expose the unsupported inference and prevent a conclusive lesson claim on that basis."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "SR-035",
+      "basis": "Derived from IR-007 and its declared initial authoring scope; the acceptance criteria describe assessment intent, not observed results."
+    }
+  ],
+  "confirms": [
+    "FUNC-035"
+  ]
+}

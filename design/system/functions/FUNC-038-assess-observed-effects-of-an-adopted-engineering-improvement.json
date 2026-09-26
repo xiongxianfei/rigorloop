@@ -1,0 +1,44 @@
+{
+  "id": "FUNC-038",
+  "type": "function",
+  "title": "Assess observed effects of an adopted engineering improvement",
+  "status": "draft",
+  "description": "Compare observations of an adopted improvement with its success and adverse-effect criteria, keeping triggering reproduction separate from later comparable use and reassessing conclusions when the context changes. Assurance behaviors own the underlying evidence and applicable judgments.",
+  "inputs": [
+    "Adopted improvement, its triggering mechanism, applicability conditions, and assessment criteria.",
+    "Triggering-situation observations when reproducible and observations from later comparable work.",
+    "Recorded recurrence, confusion or burden, and material context changes."
+  ],
+  "preconditions": [
+    "The improvement version and assessment context are identifiable, or the assessment remains incomplete."
+  ],
+  "outputs": [
+    "Context-bounded observations of recurrence, intended behavior, and adverse effects.",
+    "Effectiveness assessment or explicit unassessed/reassessment-needed state with its reasons."
+  ],
+  "behavior": [
+    "Assess the triggering situation when reproducible and report nonreproducibility otherwise.",
+    "Identify the next comparable activity after adoption and assess the recorded intended behavior, recurrence, and adverse effects.",
+    "Leave effectiveness unassessed when no comparable activity has occurred, regardless of adoption or a successful triggering reproduction.",
+    "Preserve contradictory and incomplete observations and restrict conclusions to observed contexts.",
+    "On recurrence or material context change, require a fresh applicable assessment without rewriting the previous observation or bounded conclusion."
+  ],
+  "failure_behavior": [
+    {
+      "condition": "No comparable opportunity or insufficient observations are available.",
+      "outcome": "Report effectiveness unassessed and identify the missing basis; elapsed time is not substituted for evidence."
+    },
+    {
+      "condition": "The context differs materially or observations conflict.",
+      "outcome": "Expose the limit or contradiction and request reassessment rather than asserting continued effectiveness."
+    }
+  ],
+  "unallocated_reason": "Architectural allocation is deliberately deferred until Module responsibilities are designed; this draft claims no Module ownership or implementation.",
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "FUNC-038",
+      "basis": "SR-038 defines the opportunity-based improvement assessment and reassessment behavior; IR-004 owns evidence applicability and judgment."
+    }
+  ]
+}

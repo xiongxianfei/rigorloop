@@ -1,0 +1,78 @@
+{
+  "id": "IR-007",
+  "type": "initial-requirement",
+  "title": "Improve engineering practice from recorded lessons",
+  "status": "draft",
+  "statement": "Engineering teams and project maintainers need to turn lessons from engineering failures and review findings into applicable improvements to guidance, checks, or artifacts so that subsequent work benefits from what was learned.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "A recorded failure or review finding can remain isolated from the guidance, checks, and artifacts used in later work.",
+      "desired_outcome": "Reusable findings inform adopted improvements whose applicability and effect on subsequent engineering work can be assessed."
+    },
+    "why": {
+      "rationale": "Retaining an account of a mistake does not by itself change future practice. Teams need to act on supported lessons and assess whether the resulting changes help."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineers and engineering agents performing work",
+        "Reviewers identifying recurring problems",
+        "Project maintainers and decision owners responsible for engineering practice"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "After an engineering failure or review finding reveals a reusable lesson, when relevant future work is prepared, and when an adopted improvement is assessed.",
+        "Select a retained lesson when a supported finding reveals a recurring failure, a reusable weakness in guidance or controls, or a single high-consequence failure with broader applicability. An isolated local correction without reusable implications remains with its owning Change."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "Within the project's governed engineering guidance, checks, artifacts, and the work to which a lesson applies."
+      ]
+    },
+    "how": {
+      "approach": "Distinguish observations from inferred causes, record the lesson and its applicability, identify an improvement and its responsible owner, adopt it through controlled change, and assess its effect on later work. Before adopting an improvement, record the failure mechanism, applicable situations, intended changed behavior, responsible owner, and observable success and adverse-effect criteria. Verify the correction against the triggering scenario when reproducible, then assess its use during the next comparable engineering activity. Record whether the mechanism recurred, whether the intended behavior was observed, and any new confusion or burden. Adoption or a period without comparable work is not evidence of effectiveness."
+    },
+    "how_much": {
+      "scope": "Covers supported lessons and their use in improving engineering practice. IR-001 owns preservation of the underlying knowledge; IR-003 owns controlled adoption of changes; IR-004 owns evidence supporting claims of improvement. This need does not require automatic policy changes, a lesson for every local correction, or a guarantee that failures never recur. The initial authoring profile uses an opportunity-based observation period: assess effectiveness when the next comparable activity occurs, and reassess on a subsequent recurrence or material context change. If no comparable activity has occurred, record effectiveness as unassessed. Conclusions remain bounded to the observed activities; there is no universal calendar period, sample count, or guarantee of permanent improvement."
+    }
+  },
+  "assumptions": [],
+  "constraints": [],
+  "sources": [
+    {
+      "source": "SRC-VISION",
+      "locator": "Principles: Durable lessons",
+      "basis": "The vision commits to turning failures into improved guidance, checks, or artifacts that influence later engineering work."
+    },
+    {
+      "source": "SRC-CONSTITUTION",
+      "locator": "Documentation and governance maintenance",
+      "basis": "The existing Constitution calls for durable reusable lessons rather than relying on conversation memory; no existing learning contract is replaced."
+    },
+    {
+      "source": "SRC-REQUIREMENT-EXPANSION",
+      "locator": "IR-007: Improve engineering practice from recorded lessons",
+      "basis": "The user authorized drafting the proposed need for learning and improvement as an additional IR."
+    },
+    {
+      "source": "SRC-QUESTION-RESOLUTION",
+      "locator": "IR-007",
+      "basis": "Resolution of the recorded questions for the initial RigorLoop authoring profile under the user's instruction to solve them; the source register preserves the original questions and rationale."
+    },
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "IR-007",
+      "basis": "Complete the draft IR-to-SR and Scenario/Feature/Function analysis for the existing declared scope; preserve the original need and separate draft analysis from implementation, approval, and satisfaction."
+    }
+  ],
+  "confirms": [
+    "FEAT-011",
+    "SCN-035",
+    "SCN-036",
+    "SCN-037",
+    "SCN-038",
+    "SCN-039"
+  ]
+}

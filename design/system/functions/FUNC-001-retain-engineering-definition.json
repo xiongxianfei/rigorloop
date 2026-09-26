@@ -1,0 +1,47 @@
+{
+  "id": "FUNC-001",
+  "type": "function",
+  "title": "Retain engineering definition",
+  "status": "draft",
+  "description": "Preserve an explicitly supplied engineering definition accepted by the selected authoring profile so later sessions can retrieve its identity, type, and authored content. This behavior retains the supplied content; defining a revision to an existing entity belongs to the revision behavior.",
+  "inputs": [
+    "The selected governed model and intended state.",
+    "The entity identity, type, authored definition, and explicit request to save it."
+  ],
+  "preconditions": [
+    "The entity representation is supported and its identity is acceptable within the selected model.",
+    "The request has identified the definition and scope to retain."
+  ],
+  "outputs": [
+    "The retained definition with its subject and resulting model state identifiable.",
+    "An explicit retention outcome describing success or the known failure or incomplete scope."
+  ],
+  "behavior": [
+    "Retain the explicitly supplied identity, entity type, and authored content independently of private conversation or authoring-session state.",
+    "Report a successful save only when retention of the requested definition is confirmed.",
+    "Make the saved definition available to later sessions while it remains in the retained governed scope, subject to the current-reliance and retirement boundaries in IR-001 and SR-001."
+  ],
+  "failure_behavior": [
+    {
+      "condition": "The record is unsupported or its identity is missing or conflicts with a distinct entity.",
+      "outcome": "Identify the unsupported or invalid input rather than representing it as an accepted saved definition."
+    },
+    {
+      "condition": "The save fails or retention cannot be fully confirmed.",
+      "outcome": "Report the known outcome and affected scope without claiming that the complete requested definition was saved."
+    }
+  ],
+  "unallocated_reason": "Architectural allocation is deliberately deferred until Module responsibilities are designed; this draft claims no Module ownership or implementation.",
+  "sources": [
+    {
+      "source": "SRC-IR-001-SCENARIO-ANALYSIS",
+      "locator": "FUNC-001",
+      "basis": "SR-001 requires explicitly saved definitions to survive the originating session, within IR-001's retained-model boundaries."
+    },
+    {
+      "source": "SRC-ASSET-CLARITY-REFINEMENT",
+      "locator": "FUNC-001",
+      "basis": "Apply the user-selected clarity and naming rule to this existing asset; refine its name and explanation without changing its identity, capability scope, or typed relationships."
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "id": "SCN-006",
+  "type": "scenario",
+  "title": "Record decision rationale for a current engineering definition",
+  "status": "confirmed",
+  "actor": "An engineer or architect recording a decision on which a current definition relies",
+  "goal": "Retain the actual decision reasoning and its association with the current engineering definition so later readers can understand that reliance.",
+  "context": "A current engineering definition relies on a decision whose context, alternatives, and consequences would otherwise remain in the authoring session.",
+  "trigger": "The author needs the recorded basis of the decision to remain accessible from the current engineering model.",
+  "preconditions": [
+    "The selected current entity definition and model state are identifiable.",
+    "The author has actual recorded decision context, chosen outcome, rationale, considered alternatives, and consequences to retain."
+  ],
+  "interaction": [
+    {
+      "actor": "Author",
+      "action": "Identifies the current definition that relies on the decision and supplies its recorded reasoning and the basis for that association."
+    },
+    {
+      "actor": "System",
+      "action": "Reports the retained reasoning and its association with the identified definition, or identifies the missing details, unresolved association, or failed retention."
+    },
+    {
+      "actor": "Author",
+      "action": "Requests the reasoning associated with the selected current definition."
+    },
+    {
+      "actor": "System",
+      "action": "Presents the recorded decision context, outcome, rationale, alternatives, consequences, and association basis with any incomplete scope explicit."
+    }
+  ],
+  "expected_outcome": "The actual recorded reasoning remains accessible from the current definition for later readers, including when explanation of the originating Change is outside current working material; recording does not certify the decision or prove applicability to every later revision.",
+  "alternatives": [],
+  "failures": [
+    {
+      "condition": "Relevant decision reasoning was never recorded or required recorded details are missing.",
+      "outcome": "The system identifies the missing reasoning rather than inventing it or claiming complete decision context."
+    },
+    {
+      "condition": "The association between the reasoning and the selected current definition cannot be established.",
+      "outcome": "The system identifies the unresolved association and does not present the reasoning as an established basis for current reliance."
+    },
+    {
+      "condition": "Reasoning retention fails or accessibility through the current definition cannot be confirmed.",
+      "outcome": "The system reports the known failure or incomplete scope without claiming that the complete reasoning is retained and accessible."
+    }
+  ],
+  "exercises": [
+    "FEAT-002"
+  ],
+  "informs": [
+    "SR-005"
+  ],
+  "sources": [
+    {
+      "source": "SRC-SCENARIO-MODEL-REFINEMENT",
+      "locator": "SCN-006",
+      "basis": "Extracts the independently valuable recording goal previously embedded in SCN-003. IR-001 and SR-005 already require retained decision reasoning accessible from the current definition; no new capability or obligation is introduced."
+    },
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "SCN-006",
+      "basis": "Accepted as current requirement-analysis knowledge after independent coverage and clarity review: one owning IR and primary Feature, observable goal and interactions, classified outcomes, and applicable SR coverage. This confirms analysis only, not requirement approval, implementation, or satisfaction."
+    }
+  ]
+}

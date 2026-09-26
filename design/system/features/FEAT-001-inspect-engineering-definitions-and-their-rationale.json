@@ -1,0 +1,36 @@
+{
+  "id": "FEAT-001",
+  "type": "feature",
+  "title": "Inspect engineering definitions and their rationale",
+  "status": "draft",
+  "description": "Engineers, reviewers, and engineering agents can inspect retained engineering definitions and their applicable recorded decision rationale in a selected model state, so they can understand the current engineering meaning and its basis without the originating conversation or replaying Changes.",
+  "scope": {
+    "includes": [
+      "Select an engineering entity by its stable identity within one governed project model.",
+      "Obtain and understand its retained current definition and associated recorded decision rationale.",
+      "Recognize the selected subject and state, definition completeness, and gaps in the associated reasoning."
+    ],
+    "excludes": [
+      "Creating or revising engineering definitions.",
+      "General full-text search, graph impact analysis, federated models, or a particular user interface.",
+      "Reconstructing historical baselines or treating displayed reasoning as evidence of requirement satisfaction."
+    ]
+  },
+  "realized_by": [
+    "FUNC-003",
+    "FUNC-004",
+    "FUNC-007"
+  ],
+  "sources": [
+    {
+      "source": "SRC-IR-001-SCENARIO-ANALYSIS",
+      "locator": "FEAT-001",
+      "basis": "IR-001 establishes the durable capability to inspect current engineering knowledge; SR-001, SR-002, SR-004, and SR-005 define its initial retention, identity, understanding, and rationale obligations."
+    },
+    {
+      "source": "SRC-ASSET-CLARITY-REFINEMENT",
+      "locator": "FEAT-001",
+      "basis": "Apply the user-selected clarity and naming rule to this existing asset; refine its name and explanation without changing its identity, capability scope, or typed relationships."
+    }
+  ]
+}

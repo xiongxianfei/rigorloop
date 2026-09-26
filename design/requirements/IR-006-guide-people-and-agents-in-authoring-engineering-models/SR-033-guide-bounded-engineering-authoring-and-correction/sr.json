@@ -1,0 +1,62 @@
+{
+  "id": "SR-033",
+  "type": "system-requirement",
+  "title": "Guide bounded engineering authoring and correction",
+  "status": "draft",
+  "statement": "The system shall guide people and agents through the declared model-authoring activities using applicable canonical methods, explaining the governing rules and distinguishing supported edits, unresolved engineering decisions, and actions requiring separate authority.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Formally valid fields do not explain how to derive an obligation, express behavior, allocate responsibility, or correct a finding.",
+      "desired_outcome": "Authors can produce and explain coherent engineering definitions without relying on the originating conversation."
+    },
+    "why": {
+      "rationale": "Guidance must support engineering judgment across entity boundaries rather than treating a filled form as a correct design."
+    },
+    "who": {
+      "stakeholders": [
+        "Human and agent model authors",
+        "Reviewers and maintainers correcting definitions"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "When creating, refining, relating, renaming, retiring, or correcting definitions in a declared authoring activity."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "Requirement Analysis, System Design, and Architecture Design activities supported by the selected profile."
+      ]
+    },
+    "how": {
+      "approach": "Explain the activity inputs, steps, expected semantic outcome, and applicable checks. Use 5W2H for requirements; preserve the single-parent requirement tree; analyze black-box Scenarios; distinguish capabilities from logical behavior and architectural responsibility. Relate identifiable diagnostics to their owning rules. Where clarification is necessary, expose only the highest-value unresolved question at a time without concealing uncertainty or inventing an answer."
+    },
+    "how_much": {
+      "scope": "Covers guidance for IR/SR/AR, Scenario, Feature/Function, Module/Interface, typed relationships, naming, retirement, and correction. Representation rules must exist before records are claimed conformant. Guidance may explain architecture analysis before its record formats exist, but cannot claim those formats are implemented. Validation, retention, historical recovery, and authorization remain with their existing requirements."
+    }
+  },
+  "acceptance_criteria": [
+    "Given a prepared need, guidance explains all seven 5W2H answers, one IR parent per SR and one SR parent per AR, and how black-box Scenarios inform obligations without becoming requirements or internal call sequences.",
+    "For Feature and Function authoring, explain stakeholder capability versus logical behavior and the clarity criteria for names, scope, inputs, outputs, and failure outcomes.",
+    "For architecture authoring, explain consistent Function and AR allocation to an accountable Module and an Interface interaction with explicit provider and consumer; identify unavailable representation formats before claiming conformance.",
+    "Given a wrongly typed or unresolved reference, identify the diagnostic, owning rule, affected definition, and a correction path whose result is subject to the applicable checks.",
+    "For a rename, explain identity preservation, unchanged requirement parentage, and reconciliation of current references; for retirement, explain disposition of current obligations and preservation of recoverable historical meaning.",
+    "Distinguish an analysis question from a confirmed decision and an authoring recommendation from execution or adoption authority; a valid record or completed example is not presented as requirement satisfaction."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "SR-033",
+      "basis": "Derived from IR-006 and its declared initial authoring scope; the acceptance criteria describe assessment intent, not observed results."
+    }
+  ],
+  "confirms": [
+    "FUNC-033"
+  ],
+  "constrains": [
+    "FEAT-010"
+  ]
+}

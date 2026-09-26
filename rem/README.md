@@ -12,7 +12,7 @@ This directory is the living home of the proposed method, reorganized from the u
 Refine the relevant document here as methodological decisions become clearer.
 The method describes reusable engineering practice; its application to RigorLoop is being drafted separately under `design/`.
 
-The selected authoring rules apply all seven 5W2H questions to every IR, SR, and AR, give IRs clear names, and limit each IR and SR to at most one consequential open question.
+The selected authoring rules apply all seven 5W2H questions to every IR, SR, and AR, give IRs clear names, and limit each IR, SR, and Scenario to at most one consequential open question, asking the highest-value unresolved question one at a time.
 Those rules are recorded in [Requirement Analysis](methods/requirement-analysis.md).
 [Principle 16](principles/README.md) extends the clarity commitment across engineering definitions; the [System Design model](models/system-design.md#clear-names-and-boundaries) defines its application to Features and Functions.
 RigorLoop's separate application draft selects readable IR and SR directory names and structured seven-part analysis with self-contained schemas as representation conventions.
@@ -38,13 +38,13 @@ Reference that owner when another document needs the rule instead of creating an
 | Activity | Current method | Application |
 | --- | --- | --- |
 | Analyze requirements | [5W2H](methods/5w2h.md) | Account for every question at each IR, SR, and AR level |
-| Analyze stakeholder scenarios | [Scenario Analysis](methods/scenario-analysis.md) | Name and define the durable Feature, confirm Scenarios, and expose candidate behavior |
+| Analyze stakeholder scenarios | [Scenario Analysis](methods/scenario-analysis.md) | Create governed black-box Scenarios with stable identity/lifecycle, confirm the durable Feature, and expose candidate obligations |
 | Name an IR | [IR naming](methods/requirement-analysis.md#name-the-initial-requirement) | Name the concrete need or desired outcome and its subject |
 | Derive system obligations and behavior | [Requirement Analysis](methods/requirement-analysis.md#derive-system-requirements) | Separate assessable obligations from the initial need and confirm Functions with clear names and behavior boundaries |
 | Allocate responsibility | [Architecture model](models/architecture-design.md) | Allocate Functions and ARs independently and assess their consistency |
 | Evolve and assess the model | [Engineering cycle](methods/README.md#engineering-cycle) | Iterate between need, design, realization, evidence, and baseline decisions |
 
-Requirement Analysis and Scenario Analysis currently have detailed procedures here.
+Requirement Analysis and Scenario Analysis currently have detailed procedures here. Scenario is now a first-class governed Requirement Analysis entity; its identity, lifecycle, and relationship rules are defined in the [Scenario model](models/scenarios.md).
 The cycle and allocation rules establish direction for later method refinement without claiming a complete workflow implementation.
 
 ## Method boundaries

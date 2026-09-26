@@ -1,0 +1,60 @@
+{
+  "id": "SR-009",
+  "type": "system-requirement",
+  "title": "Traverse selected engineering relationships with explicit completeness",
+  "status": "draft",
+  "statement": "The system shall let a participant traverse requirement parentage and declared typed relationships in either direction within one selected project model state, and distinguish complete results for the requested scope from limited or incomplete exploration.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Navigation may hide broken links or silently stop, making a partial relationship view look complete.",
+      "desired_outcome": "Participants can inspect connected obligations and responsibilities and understand the limits of the returned paths."
+    },
+    "why": {
+      "rationale": "IR-002 selects starting entities, relationship types, direction, state, and optional limits as the traversal scope."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineers and model authors",
+        "Architects, reviewers, and engineering agents"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "When a participant requests ancestors, descendants, responsibility paths, or related engineering entities."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "Within the selected project and model state; no continuation across projects or baseline boundaries."
+      ]
+    },
+    "how": {
+      "approach": "Identify the requested scope and return reachable entities and typed paths in that scope. Terminate cycles without repeated traversal of the same state. Identify requested limits and any unresolved references, interruptions, or resource limitations that restrict the result."
+    },
+    "how_much": {
+      "scope": "Covers full reachability within the selected relationship scope and explicitly limited exploration. It adds no implicit depth limit, result cap, response-time target, or user-interface prescription."
+    }
+  },
+  "acceptance_criteria": [
+    "Given a finite connected model and no requested limit, return all reachable entities within the selected types and direction, including valid requirement ancestor and descendant paths.",
+    "Changing only the traversal direction exposes the corresponding incoming relationships derived from the same authored facts.",
+    "For a cyclic cross-domain graph, terminate and report reachable entities without treating the cycle as a requirement-parent cycle or repeatedly processing the same traversal state.",
+    "For an explicit depth or result limit, identify that limit and distinguish completion within the requested boundary from unrestricted reachability.",
+    "For a missing reference, interrupted read, or resource limit, identify the affected scope and incomplete outcome; do not report a complete empty result.",
+    "Reject an unresolved start, unknown relationship type, unsupported direction, or selection spanning models or baselines with an actionable scope diagnostic."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "SR-009",
+      "basis": "Derived from IR-002 and its selected initial-profile scope: IR-002 selects starting entities, relationship types, direction, state, and optional limits as the traversal scope."
+    }
+  ],
+  "confirms": [
+    "FUNC-009",
+    "FUNC-003"
+  ]
+}

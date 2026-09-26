@@ -1,0 +1,64 @@
+{
+  "id": "SCN-021",
+  "type": "scenario",
+  "title": "Recover an earlier baseline with its original engineering meaning",
+  "status": "confirmed",
+  "actor": "A maintainer recovering a retained engineering state",
+  "goal": "Obtain the selected earlier state exactly as recorded and know whether recovery is complete.",
+  "context": "The maintainer needs an earlier engineering basis for investigation or an authorized recovery action.",
+  "trigger": "The maintainer selects a retained Baseline to recover.",
+  "preconditions": [
+    "The selected Baseline identity and its recorded scope are known.",
+    "Applicable authorization is available for any requested action that would affect active work."
+  ],
+  "interaction": [
+    {
+      "actor": "Maintainer",
+      "action": "Requests recovery of the identified retained Baseline."
+    },
+    {
+      "actor": "System",
+      "action": "Provides the recovered content with its original identities, relationships, rules, provenance, and included scope, or identifies unavailable portions."
+    },
+    {
+      "actor": "Maintainer",
+      "action": "Inspects the recovery result and its completeness before relying on the state."
+    }
+  ],
+  "expected_outcome": "The recovered result reproduces the selected intact retained Baseline without changing its authoritative content or historical meaning, and the maintainer sees its actual completeness.",
+  "alternatives": [
+    {
+      "condition": "Current architectural responsibility differs from that in the selected Baseline.",
+      "outcome": "The recovered state retains its original allocation and decision meaning."
+    },
+    {
+      "condition": "The Baseline includes references to external material that was never retained.",
+      "outcome": "The result identifies that boundary and does not claim recovery of the external content."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "The selected content or interpretation rules are inaccessible, damaged, or incomplete.",
+      "outcome": "The system reports incomplete or unavailable recovery and its affected scope."
+    },
+    {
+      "condition": "The requested operation would overwrite active work without applicable authorization.",
+      "outcome": "The system withholds that action and identifies the unmet decision boundary."
+    }
+  ],
+  "exercises": [
+    "FEAT-006"
+  ],
+  "informs": [
+    "SR-020",
+    "SR-022",
+    "SR-007"
+  ],
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "SCN-021",
+      "basis": "IR-003 owns faithful recovery; SR-020 and SR-022 cover historical state identity and recovery, while existing SR-007 governs any destructive adoption rather than granting authority through recovery. Accepted as current requirement-analysis knowledge after independent coverage and clarity review: one owning IR and primary Feature, observable goal and interactions, classified outcomes, and applicable SR coverage. This confirms analysis only, not requirement approval, implementation, or satisfaction."
+    }
+  ]
+}

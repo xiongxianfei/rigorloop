@@ -1,0 +1,68 @@
+{
+  "id": "SCN-037",
+  "type": "scenario",
+  "title": "Assess an improvement during the next comparable activity",
+  "status": "confirmed",
+  "actor": "An improvement owner observing subsequent engineering work",
+  "goal": "Determine the observed effect of an adopted improvement against its intended behavior and possible adverse effects, or identify that effectiveness remains unassessed when no comparable activity has occurred.",
+  "context": "An improvement has been adopted with assessment criteria; adoption alone has not established effectiveness.",
+  "trigger": "The triggering situation can be reproduced or a subsequent comparable activity occurs.",
+  "preconditions": [
+    "The adopted improvement, applicability context, and success/adverse-effect criteria are identifiable."
+  ],
+  "interaction": [
+    {
+      "actor": "Owner",
+      "action": "Supplies observations of the triggering situation when reproducible and identifies whether comparable later work has occurred."
+    },
+    {
+      "actor": "System",
+      "action": "Distinguishes the triggering result from the later opportunity and identifies missing or noncomparable observations."
+    },
+    {
+      "actor": "Owner",
+      "action": "Provides recurrence, intended behavior, confusion, or burden observed during the next comparable activity."
+    },
+    {
+      "actor": "System",
+      "action": "Reports the context-bounded assessment with contradictory evidence, incomplete scope, and unassessed effectiveness explicit."
+    }
+  ],
+  "expected_outcome": "The assessment states what was observed during a comparable opportunity and what remains unassessed without interpreting elapsed time as proof.",
+  "alternatives": [
+    {
+      "condition": "The triggering situation cannot be reproduced.",
+      "outcome": "That limit is recorded while the next comparable activity remains the opportunity for observing practical effects."
+    },
+    {
+      "condition": "No comparable activity has yet occurred.",
+      "outcome": "Effectiveness remains unassessed even when adoption or a triggering reproduction succeeded."
+    },
+    {
+      "condition": "The mechanism recurs or a new adverse effect appears.",
+      "outcome": "The report retains the unsuccessful or mixed result and calls for review instead of presenting success."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "Observations lack an applicable context or cannot support the criteria.",
+      "outcome": "The system identifies the insufficient basis rather than claiming improvement."
+    }
+  ],
+  "exercises": [
+    "FEAT-011"
+  ],
+  "informs": [
+    "SR-038",
+    "SR-026",
+    "SR-027",
+    "SR-028"
+  ],
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "SCN-037",
+      "basis": "Analyzes IR-007 through a distinct stakeholder goal within the selected initial authoring profile; the owning IR records Scenario ownership. Accepted as current requirement-analysis knowledge after independent coverage and clarity review: one owning IR and primary Feature, observable goal and interactions, classified outcomes, and applicable SR coverage. This confirms analysis only, not requirement approval, implementation, or satisfaction."
+    }
+  ]
+}

@@ -7,7 +7,7 @@ They apply the [principles](../principles/README.md) to the structures defined b
 | --- | --- | --- |
 | [5W2H](5w2h.md) | Analyze each IR, SR, and AR and expose missing information | Attributed answers, explicit unknowns, and a bounded understanding of the need or obligation |
 | [Requirement Analysis](requirement-analysis.md) | Develop and name IRs, derive SRs, confirm Functions, and later allocate ARs | Clear requirements and confirmed logical behavior with explicit boundaries |
-| [Scenario Analysis](scenario-analysis.md) | Analyze stakeholder-visible situations for an IR, name and define the durable Feature, and expose candidate behavior | Confirmed Scenarios and a clearly scoped Feature plus candidate behavior for SR analysis |
+| [Scenario Analysis](scenario-analysis.md) | Create and govern black-box stakeholder Scenarios for an IR, confirm the durable Feature, and expose candidate system obligations | First-class Scenarios with stable identity/lifecycle, a confirmed Feature, and traceable inputs to SR analysis |
 
 5W2H is required at every requirement level in the selected requirement-authoring method.
 Every question needs an answer, an explicit unknown, or justified non-applicability at that level.
@@ -18,7 +18,7 @@ Other methods can be added when their purpose, inputs, steps, outputs, and limit
 ## Engineering cycle
 
 1. Analyze the initial need with [5W2H](5w2h.md) and establish an IR.
-2. Apply [Scenario Analysis](scenario-analysis.md) to confirm stakeholder-visible Scenarios and the durable Feature.
+2. Apply [Scenario Analysis](scenario-analysis.md) to create or refine governed stakeholder-visible Scenarios and confirm the durable Feature.
 3. Derive system obligations as SRs and confirm the required logical Functions.
 4. Allocate Functions to architectural Modules.
 5. Derive ARs from SRs and allocate their lower-level obligations to architectural responsibility.

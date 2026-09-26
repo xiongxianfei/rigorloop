@@ -1,0 +1,42 @@
+{
+  "id": "FUNC-027",
+  "type": "function",
+  "title": "Retain criterion-based verification definitions",
+  "status": "draft",
+  "description": "Records how identified requirement criteria will be assessed against an exact subject state. It keeps the verification technique, conditions, and expected observations distinct from execution occurrences and actual evidence.",
+  "inputs": [
+    "Requirement and acceptance-criterion basis and intended claim scope.",
+    "Assessed subject and state, technique, conditions, expected observations, and authoring provenance."
+  ],
+  "preconditions": [
+    "The governed requirement and intended assessment scope are identified."
+  ],
+  "outputs": [
+    "Identifiable verification definition with its criterion and subject basis.",
+    "Explicit missing or unbound assessment context that prevents treating the definition as complete."
+  ],
+  "behavior": [
+    "Retain the criterion basis, exact subject state, technique, conditions, expected observations, and scope supplied by the verification author.",
+    "Identify missing subject binding, conditions, or expected outcomes instead of implying that incomplete instructions define a complete assessment.",
+    "Preserve the revised definition's basis when it changes so previous observations remain attributable to the definition actually used.",
+    "Return the definition as planned method information without producing an execution result or satisfaction conclusion."
+  ],
+  "failure_behavior": [
+    {
+      "condition": "A referenced criterion or assessed subject state cannot be identified.",
+      "outcome": "Expose the unresolved basis and prevent a claim of complete assessment definition for that scope."
+    },
+    {
+      "condition": "A method definition is offered as observed proof without execution evidence.",
+      "outcome": "Identify the missing observations and retain the distinction between method and evidence."
+    }
+  ],
+  "unallocated_reason": "Architectural responsibility is deliberately deferred until the logical requirements and system design are reconciled. This Function establishes behavior, not a Module, Interface, implementation, or verification result.",
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "FUNC-027",
+      "basis": "SR-025 confirms verification-definition behavior under IR-004; observation recording belongs to FUNC-028."
+    }
+  ]
+}

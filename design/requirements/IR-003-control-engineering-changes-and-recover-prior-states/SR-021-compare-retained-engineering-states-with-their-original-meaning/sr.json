@@ -1,0 +1,57 @@
+{
+  "id": "SR-021",
+  "type": "system-requirement",
+  "title": "Compare retained engineering states with their original meaning",
+  "status": "draft",
+  "statement": "The system shall compare two identified retained engineering states and expose additions, modifications, removals, and unchanged identities within the selected scope, using the interpretation rules applicable to each state and identifying any limits on the comparison.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "A difference in physical location or display name can be mistaken for a new entity, while a changed rule can make a seemingly unchanged record mean something different.",
+      "desired_outcome": "A participant can distinguish changes to identity, definition, relationship, and governing interpretation and understand the completeness of the comparison."
+    },
+    "why": {
+      "rationale": "IR-003 requires comparison of engineering states without rewriting the decisions or meaning of either state."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineers assessing a Change",
+        "Reviewers investigating historical differences"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "When two retained states are compared for review, investigation, or recovery planning."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "Selected comparable scope within two identifiable retained engineering states."
+      ]
+    },
+    "how": {
+      "approach": "Select both states and scope explicitly. Match governed entities by stable identity, expose changed content and typed relationships, and distinguish additions and removals from naming or location changes. Include differences in applicable rules and retain both interpretation bases. Mark unavailable content or incompatible interpretation as a comparison limitation rather than assuming equality."
+    },
+    "how_much": {
+      "scope": "Recorded content and relationships within the selected scope, including interpretation and provenance differences when they affect meaning. No automatic semantic equivalence judgment, performance target, or comparison of unrecorded work is required."
+    }
+  },
+  "acceptance_criteria": [
+    "Comparing states in which the same entity was renamed or moved reports a change to the same identity; a distinct new identity is reported as an addition.",
+    "A changed obligation, relationship target, retirement state, or applicable rule is identifiable with the before and after states and their interpretation bases.",
+    "Comparing identical selected content reports no recorded difference within that scope without making a broader satisfaction or approval claim.",
+    "When either state or a required portion cannot be interpreted or retrieved, the comparison identifies that limitation and does not report the unknown portion as unchanged."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "confirms": [
+    "FUNC-021"
+  ],
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "SR-021",
+      "basis": "Derived from IR-003: IR-003 requires comparison of engineering states without rewriting the decisions or meaning of either state. The criteria describe intended observable behavior, not executed verification."
+    }
+  ]
+}

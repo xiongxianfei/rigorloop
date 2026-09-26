@@ -1,0 +1,63 @@
+{
+  "id": "SCN-035",
+  "type": "scenario",
+  "title": "Distinguish a reusable lesson from a local correction",
+  "status": "confirmed",
+  "actor": "A reviewer or maintainer analyzing an engineering failure",
+  "goal": "Identify whether a supported finding justifies reusable learning and distinguish its observations, inferred cause, and applicability.",
+  "context": "A failure or review finding has been recorded with some observations and a proposed explanation.",
+  "trigger": "The maintainer considers whether the finding should change later engineering practice.",
+  "preconditions": [
+    "The finding and original activity context are identifiable."
+  ],
+  "interaction": [
+    {
+      "actor": "Maintainer",
+      "action": "Supplies the observations, their sources, and the proposed causal explanation."
+    },
+    {
+      "actor": "System",
+      "action": "Presents the observed basis separately from inferences and identifies the proposed mechanism, reuse basis, and applicability limits."
+    },
+    {
+      "actor": "Maintainer",
+      "action": "Assesses recurrence, reusable weaknesses, or broader consequences and records the lesson or local-correction disposition."
+    },
+    {
+      "actor": "System",
+      "action": "Reports the supported characterization and remaining evidence or applicability limits."
+    }
+  ],
+  "expected_outcome": "A justified reusable lesson or a local-correction disposition is explicit, without treating a hypothesis as observed fact.",
+  "alternatives": [
+    {
+      "condition": "The finding has no reusable implications.",
+      "outcome": "It remains a local correction associated with its governing work instead of becoming a general lesson."
+    },
+    {
+      "condition": "A single high-consequence event has supported broader applicability.",
+      "outcome": "The lesson records that reuse basis without claiming recurrence."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "The proposed cause lacks support or conflicts with observations.",
+      "outcome": "The system exposes the contradiction or uncertainty and prevents a conclusive causal lesson claim."
+    }
+  ],
+  "exercises": [
+    "FEAT-011"
+  ],
+  "informs": [
+    "SR-035",
+    "SR-026",
+    "SR-027"
+  ],
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "SCN-035",
+      "basis": "Analyzes IR-007 through a distinct stakeholder goal within the selected initial authoring profile; the owning IR records Scenario ownership. Accepted as current requirement-analysis knowledge after independent coverage and clarity review: one owning IR and primary Feature, observable goal and interactions, classified outcomes, and applicable SR coverage. This confirms analysis only, not requirement approval, implementation, or satisfaction."
+    }
+  ]
+}

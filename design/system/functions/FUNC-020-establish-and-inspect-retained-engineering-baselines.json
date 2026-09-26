@@ -1,0 +1,46 @@
+{
+  "id": "FUNC-020",
+  "type": "function",
+  "title": "Establish and inspect retained engineering baselines",
+  "status": "draft",
+  "description": "Establishes or retrieves an identifiable retained engineering state with its declared scope, authoritative content, interpretation basis, and provenance. It preserves the meaning of that state while later Changes evolve; it does not compare states or authorize adoption of a historical state.",
+  "inputs": [
+    "Request to establish or inspect a Baseline within a selected governed project.",
+    "Declared scope and authoritative definitions, relationships, interpretation rules, provenance, and any included realization or assurance material."
+  ],
+  "preconditions": [
+    "The selected project and applicable retention and coherence rules are identifiable."
+  ],
+  "outputs": [
+    "Identified Baseline and its declared retained content and interpretation basis.",
+    "Explicit account of unresolved coherence, unavailable content, or external references outside retained content."
+  ],
+  "behavior": [
+    "Associate the selected scope with an unambiguous Baseline identity and retain its authoritative content and provenance according to the applicable policy.",
+    "Check whether content and applicable rules establish the declared coherent state; expose omissions or conflicts instead of establishing an unsupported completeness claim.",
+    "Return the selected Baseline with its original definitions, relationship facts, rules, and provenance, even when current states have changed.",
+    "Distinguish actually retained material from external references, and preserve the included realization and assurance scope as declared."
+  ],
+  "failure_behavior": [
+    {
+      "condition": "Required content or interpretation rules are missing or conflicting.",
+      "outcome": "Identify the affected scope and withhold a claim that the selected collection is a complete coherent Baseline."
+    },
+    {
+      "condition": "The requested retained state is unavailable.",
+      "outcome": "Report its unavailability without substituting the current state or another Baseline."
+    },
+    {
+      "condition": "A requested retention action cannot be completed.",
+      "outcome": "Report what was retained and what remains unconfirmed; do not assert complete preservation."
+    }
+  ],
+  "unallocated_reason": "Architectural responsibility is deliberately deferred until the logical requirements and system design are reconciled. This Function establishes behavior, not a Module, Interface, implementation, or verification result.",
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "FUNC-020",
+      "basis": "SR-020 confirms the logical behavior for identifiable coherent Baselines and preserved historical content under IR-003."
+    }
+  ]
+}

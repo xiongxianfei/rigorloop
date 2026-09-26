@@ -1,0 +1,38 @@
+{
+  "id": "FEAT-002",
+  "type": "feature",
+  "title": "Author and revise engineering definitions",
+  "status": "draft",
+  "description": "Engineers and engineering agents can explicitly save and revise engineering definitions accepted by the selected authoring profile, preserving entity identities and recording the decision reasoning needed for later participants to understand the resulting definitions.",
+  "scope": {
+    "includes": [
+      "Explicitly save supported entity definitions within one selected governed model.",
+      "Check entity identities and revise the name, location, or definition of the same entity without changing its identity.",
+      "Retain recorded decision reasoning and its association with the current definition that relies on it."
+    ],
+    "excludes": [
+      "The complete authoring guidance and activity coverage described by IR-006.",
+      "Identity treatment for splits, merges, replacements, or reuse after retirement.",
+      "Change approval, historical baseline recovery, storage hosting, or a particular editing interface."
+    ]
+  },
+  "realized_by": [
+    "FUNC-001",
+    "FUNC-002",
+    "FUNC-003",
+    "FUNC-005",
+    "FUNC-006"
+  ],
+  "sources": [
+    {
+      "source": "SRC-IR-001-SCENARIO-ANALYSIS",
+      "locator": "FEAT-002",
+      "basis": "IR-001 and SR-001, SR-002, SR-003, and SR-005 establish the initial authoring capability for saved definitions, stable identity, supported revision, and retained reasoning; this is a bounded slice of the durable Feature."
+    },
+    {
+      "source": "SRC-ASSET-CLARITY-REFINEMENT",
+      "locator": "FEAT-002",
+      "basis": "Apply the user-selected clarity and naming rule to this existing asset; refine its name and explanation without changing its identity, capability scope, or typed relationships."
+    }
+  ]
+}

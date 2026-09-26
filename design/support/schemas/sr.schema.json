@@ -1,0 +1,303 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RigorLoop System Requirement",
+  "description": "Draft authoring profile with explicit 5W2H analysis and snake_case record keys. Cross-file integrity and engineering adequacy require separate checks.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "type",
+    "title",
+    "status",
+    "statement",
+    "analysis",
+    "acceptance_criteria",
+    "assumptions",
+    "constraints",
+    "sources"
+  ],
+  "properties": {
+    "confirms": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^(?:FUNC)-[0-9]+$",
+        "not": {
+          "pattern": "\\s"
+        }
+      },
+      "description": "Logical Functions established through SR analysis; does not record approval or implementation."
+    },
+    "constrains": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^(?:FEAT|FUNC)-[0-9]+$",
+        "not": {
+          "pattern": "\\s"
+        }
+      },
+      "description": "Optional typed links shaping system assets, distinct from textual constraints."
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^SR-[0-9]+$",
+      "not": {
+        "pattern": "\\s"
+      }
+    },
+    "type": {
+      "type": "string",
+      "const": "system-requirement",
+      "description": "The entity kind; filenames and identifier prefixes must agree with it."
+    },
+    "title": {
+      "type": "string",
+      "pattern": "\\S"
+    },
+    "status": {
+      "type": "string",
+      "const": "draft",
+      "description": "Only the initial draft lifecycle state is defined by this profile."
+    },
+    "statement": {
+      "type": "string",
+      "pattern": "\\S",
+      "description": "The authoritative system obligation, supported by the analysis."
+    },
+    "analysis": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "method",
+        "what",
+        "why",
+        "who",
+        "when",
+        "where",
+        "how",
+        "how_much"
+      ],
+      "properties": {
+        "method": {
+          "type": "string",
+          "const": "5W2H"
+        },
+        "what": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "problem",
+            "desired_outcome"
+          ],
+          "properties": {
+            "problem": {
+              "type": "string",
+              "pattern": "\\S",
+              "description": "The problem or gap being analyzed."
+            },
+            "desired_outcome": {
+              "type": "string",
+              "pattern": "\\S",
+              "description": "The intended outcome in context; explain rather than duplicate the authoritative statement."
+            }
+          }
+        },
+        "why": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "rationale"
+          ],
+          "properties": {
+            "rationale": {
+              "type": "string",
+              "pattern": "\\S",
+              "description": "Why the need or obligation matters."
+            },
+            "value": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "description": "Additional benefits, when useful to distinguish from the rationale."
+            }
+          }
+        },
+        "who": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "stakeholders"
+          ],
+          "properties": {
+            "stakeholders": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "description": "Participants with a stake in the need or obligation."
+            },
+            "affected_users": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "description": "Specific affected user groups, when useful to distinguish from the stakeholders."
+            }
+          }
+        },
+        "when": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "conditions"
+          ],
+          "properties": {
+            "conditions": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "description": "Applicable triggers, conditions, or lifecycle stages."
+            },
+            "frequency": {
+              "type": "string",
+              "pattern": "\\S",
+              "description": "An established frequency when relevant; omit when inapplicable or unresolved. Assess consequential uncertainty using the requirement-analysis method."
+            }
+          }
+        },
+        "where": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "contexts"
+          ],
+          "properties": {
+            "contexts": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "description": "Applicable engineering contexts, environments, or boundaries."
+            }
+          }
+        },
+        "how": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "approach"
+          ],
+          "properties": {
+            "approach": {
+              "type": "string",
+              "pattern": "\\S",
+              "description": "Approach at the requirement's level. Record additional imposed restrictions in top-level constraints."
+            }
+          }
+        },
+        "how_much": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "scope"
+          ],
+          "properties": {
+            "scope": {
+              "type": "string",
+              "pattern": "\\S",
+              "description": "Coverage, extent, and exclusions of the need or obligation."
+            },
+            "scale": {
+              "type": "string",
+              "pattern": "\\S",
+              "description": "An established scale when relevant; do not invent targets to fill the field."
+            },
+            "limits": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "description": "Established quantitative bounds, each authored once without duplication in constraints."
+            }
+          }
+        }
+      }
+    },
+    "acceptance_criteria": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "pattern": "\\S"
+      },
+      "description": "Observable expected outcomes, not execution evidence."
+    },
+    "assumptions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "\\S"
+      },
+      "description": "Provisional premises relied upon in the analysis. An empty list records no additional assumptions; it does not establish certainty."
+    },
+    "constraints": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "\\S"
+      },
+      "description": "Additional imposed restrictions with a basis in sources. Store each restriction once; keep scope boundaries and quantitative limits in their designated analysis fields."
+    },
+    "open_questions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "\\S"
+      },
+      "description": "Optional single consequential unresolved question requiring a decision or evidence. Omit this field when none remains. Ask one question at a time; do not bundle independent questions. Engineering review assesses relevance and completeness.",
+      "maxItems": 1,
+      "minItems": 1
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "source",
+          "locator",
+          "basis"
+        ],
+        "properties": {
+          "source": {
+            "type": "string",
+            "pattern": "\\S"
+          },
+          "locator": {
+            "type": "string",
+            "pattern": "\\S"
+          },
+          "basis": {
+            "type": "string",
+            "pattern": "\\S"
+          }
+        }
+      }
+    }
+  }
+}

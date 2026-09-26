@@ -6,6 +6,7 @@ The [principles](../principles/README.md) govern these models; [methods](../meth
 | Domain | Primary content | Owning model |
 | --- | --- | --- |
 | Requirement Analysis | IR → SR → AR | [Requirements](requirements.md) |
+| Scenario Analysis | IR → Scenario → Feature; Scenario → SR | [Scenarios](scenarios.md) |
 | System Design | IR → Feature, Scenario → Feature, SR → Function, Feature → Function | [System Design](system-design.md) |
 | Architecture Design | Function → Module, AR → Module, Module ↔ Interface | [Architecture Design](architecture-design.md) |
 | Operational Support | Metamodel, representation, validation, and maintenance | [Operational Support](operational-support.md) |
@@ -33,6 +34,8 @@ flowchart TD
 
 The requirement branch has containment semantics; the cross-domain relationships form a graph.
 The diagram illustrates common paths and does not require every entity to have every displayed relationship.
+
+Scenario is a first-class governed Requirement Analysis entity. Its stable identity, lifecycle, black-box boundary, and cardinalities are defined in the [Scenario model](scenarios.md).
 
 ## Assurance
 

@@ -1,0 +1,45 @@
+{
+  "id": "FUNC-009",
+  "type": "function",
+  "title": "Traverse selected engineering relationships",
+  "status": "draft",
+  "description": "Return entities and typed paths reachable from selected starting entities under explicit relationship and direction choices. The result describes connectivity and its limits; impact judgment is a separate behavior.",
+  "inputs": [
+    "Selected project model state and starting entity references.",
+    "Requested relationship types, traversal direction, and any explicit depth or result limits."
+  ],
+  "preconditions": [],
+  "outputs": [
+    "Reachable entities and supporting typed paths with the exact selected scope.",
+    "Completion within requested scope, explicit limitation, or incomplete outcome with reasons."
+  ],
+  "behavior": [
+    "Validate the model-state selection, starting references, relationship types, direction, and requested limits.",
+    "Follow authoritative and derived inverse relationships according to the requested scope.",
+    "Include all reachable entities within that scope when no limitation interrupts exploration.",
+    "Terminate cross-domain cycles without repeatedly processing the same traversal state.",
+    "Distinguish fully explored requested boundaries from incomplete results and from unrestricted reachability."
+  ],
+  "failure_behavior": [
+    {
+      "condition": "The start, type, direction, or selected state is unresolved or unsupported.",
+      "outcome": "Return an actionable scope diagnostic without silently substituting a different selection."
+    },
+    {
+      "condition": "A traversed reference is missing or ambiguous.",
+      "outcome": "Report the affected path and incomplete scope, retaining usable observations as partial."
+    },
+    {
+      "condition": "An interruption or resource limit prevents completion.",
+      "outcome": "Return explicit incomplete status and the known limit; never report unqualified empty or complete reachability."
+    }
+  ],
+  "unallocated_reason": "Architectural allocation is deliberately deferred until Module responsibilities are designed; this draft claims no Module ownership or implementation.",
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "FUNC-009",
+      "basis": "IR-002 / SR-009 confirms scoped traversal; SR-008, SR-010, and SR-011 constrain its fact consistency and downstream interpretation."
+    }
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "id": "SCN-038",
+  "type": "scenario",
+  "title": "Reassess a lesson after recurrence or a material context change",
+  "status": "confirmed",
+  "actor": "A maintainer reconsidering previously assessed engineering practice",
+  "goal": "Determine whether a previous lesson and improvement conclusion still apply after new circumstances challenge them, or identify unassessed applicability when suitable new observations are unavailable.",
+  "context": "An earlier conclusion was bounded to observed activities, and a recurrence or material context change may invalidate its current use.",
+  "trigger": "A relevant failure recurs or the applicability context changes materially.",
+  "preconditions": [
+    "The earlier lesson, improvement, observations, and bounded conclusion remain identifiable."
+  ],
+  "interaction": [
+    {
+      "actor": "Maintainer",
+      "action": "Reports the recurrence or changed context and identifies the earlier conclusion being reconsidered."
+    },
+    {
+      "actor": "System",
+      "action": "Presents the prior applicability basis, new differences, and the need for a fresh assessment."
+    },
+    {
+      "actor": "Maintainer",
+      "action": "Supplies new observations against the applicable criteria or records that assessment opportunities are unavailable."
+    },
+    {
+      "actor": "System",
+      "action": "Reports the revised context-bounded disposition while preserving the earlier observations and their original meaning."
+    }
+  ],
+  "expected_outcome": "Current reliance is reconsidered using the new context, without rewriting prior evidence or extending old conclusions beyond their basis.",
+  "alternatives": [
+    {
+      "condition": "No suitable new observation is available.",
+      "outcome": "The current conclusion remains unassessed or pending reassessment for the changed context."
+    },
+    {
+      "condition": "New observations contradict the previous conclusion.",
+      "outcome": "The contradiction remains visible and requires reassessment rather than silently replacing historical results."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "The original basis or new contextual difference cannot be established.",
+      "outcome": "The system exposes the gap and does not reaffirm unchanged applicability."
+    }
+  ],
+  "exercises": [
+    "FEAT-011"
+  ],
+  "informs": [
+    "SR-036",
+    "SR-038",
+    "SR-029"
+  ],
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "SCN-038",
+      "basis": "Analyzes IR-007 through a distinct stakeholder goal within the selected initial authoring profile; the owning IR records Scenario ownership. Accepted as current requirement-analysis knowledge after independent coverage and clarity review: one owning IR and primary Feature, observable goal and interactions, classified outcomes, and applicable SR coverage. This confirms analysis only, not requirement approval, implementation, or satisfaction."
+    }
+  ]
+}

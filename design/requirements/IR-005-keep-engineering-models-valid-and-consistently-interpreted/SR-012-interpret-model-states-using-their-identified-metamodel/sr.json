@@ -1,0 +1,60 @@
+{
+  "id": "SR-012",
+  "type": "system-requirement",
+  "title": "Interpret model states using their identified metamodel",
+  "status": "draft",
+  "statement": "The system shall identify the governing metamodel and representation profile for a selected engineering state and interpret that state using those identified rules, reporting missing, unsupported, or inconsistent rule selections instead of silently applying another profile.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "The same retained content can acquire a different meaning when a reader silently applies the latest rules.",
+      "desired_outcome": "Readers can determine which definitions and conventions govern the selected state and when interpretation is unsupported."
+    },
+    "why": {
+      "rationale": "IR-005 requires consistent meaning and retains each baseline with the metamodel and rules applicable to it."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineers and model authors",
+        "Architects, reviewers, and engineering agents"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "When reading, checking, authoring, or migrating a selected current or historical model state."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "Across governed entities and the Operational Support definitions identified by the selected state."
+      ]
+    },
+    "how": {
+      "approach": "Make the selected metamodel and profile identifiable with their entity, relationship, identity, naming, lifecycle, and validity rules. Interpret supported content under that selection, preserving the difference between current authoring rules and retained historical interpretation."
+    },
+    "how_much": {
+      "scope": "Covers attributable rule selection and interpretation. The current implementation need not accept every historical format; unavailable historical interpretation is an explicit result. Storage and version-control technology remain replaceable."
+    }
+  },
+  "acceptance_criteria": [
+    "For a supported selected state, identify its metamodel and profile and make the governing definitions available alongside interpretation results.",
+    "Select two states governed by different retained profiles; each result identifies its own governing rules rather than relabeling both with the current profile.",
+    "For a missing, ambiguous, unavailable, or unsupported profile, report the specific interpretation limit without asserting conformance under a substitute.",
+    "A current authoring action identifies the selected target profile; the existence of a newer profile does not silently adopt it for an existing state."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "SR-012",
+      "basis": "Derived from IR-005 and its selected initial-profile scope: IR-005 requires consistent meaning and retains each baseline with the metamodel and rules applicable to it."
+    }
+  ],
+  "confirms": [
+    "FUNC-012"
+  ],
+  "constrains": [
+    "FUNC-004"
+  ]
+}

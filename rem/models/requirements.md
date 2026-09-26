@@ -32,9 +32,6 @@ An AR is a durable requirement, not a record that an allocation event occurred.
 | Source | Relationship | Target | Meaning |
 | --- | --- | --- | --- |
 | IR | confirms | Feature | Initial Requirement analysis confirms the durable stakeholder-visible capability needed to address the initial need |
-| IR | confirms | Scenario | Initial Requirement analysis confirms a stakeholder-visible usage situation relevant to the need |
-| Scenario | exercises | Feature | The Scenario describes one concrete way the stakeholder uses or experiences the Feature |
-| Scenario | informs | SR | Scenario Analysis helps expose the system obligations needed to support the scenario |
 | SR | confirms | Function | System Requirement analysis confirms the logical behavior needed to satisfy the system obligation |
 | SR | constrains | Feature or Function | The obligation may additionally limit or shape capability or behavior |
 | AR | constrains | Function | An allocated obligation constrains logical behavior |
@@ -42,8 +39,9 @@ An AR is a durable requirement, not a record that an allocation event occurred.
 | Requirement | verifiedBy | Verification | An assessment determines whether the obligation is satisfied |
 
 Cross-domain references may be many-to-many without changing the single-parent requirement hierarchy.
-A Feature or Function is a durable System Design asset; a Scenario is an IR analysis artifact.
-Scenario Analysis may identify candidate Functions, but the `SR confirms Function` relationship records their authoritative confirmation.
+The first-class [Scenario model](scenarios.md) owns `IR → Scenario → Feature/SR` relationships and Scenario lifecycle.
+A Feature or Function is a durable System Design asset; a Scenario is a governed Requirement Analysis entity.
+Scenario Analysis may identify candidate behavior, but the `SR confirms Function` relationship records authoritative Function confirmation.
 References for related concerns do not create additional containment or derivation parents.
 Do not duplicate one obligation merely to place it under several parents.
 

@@ -1,0 +1,82 @@
+{
+  "id": "IR-004",
+  "type": "initial-requirement",
+  "title": "Assess engineering claims using applicable evidence",
+  "status": "draft",
+  "statement": "Reviewers and project decision owners need to assess engineering claims using identifiable verification methods and applicable observed evidence so they can distinguish demonstrated satisfaction from assumptions, plans, and unresolved gaps.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Plans, test definitions, and observations from an inapplicable state can be mistaken for proof of the claim currently being assessed.",
+      "desired_outcome": "Decision owners can distinguish demonstrated satisfaction within the assessed scope from assumptions, unperformed checks, and unresolved evidence gaps."
+    },
+    "why": {
+      "rationale": "The existence of a test, a recorded decision, or an unchanged entity identity does not establish that a requirement is satisfied in the state being assessed."
+    },
+    "who": {
+      "stakeholders": [
+        "Reviewers and verification engineers",
+        "Project decision owners",
+        "Engineers and maintainers"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "Applies whenever requirement satisfaction, readiness, or another engineering conclusion is asserted or reassessed after change."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "Across obligations, Verification, Evidence, and Judgment for the engineering states being assessed."
+      ]
+    },
+    "how": {
+      "approach": "For each claimed outcome, identify the applicable requirement and acceptance criteria, the exact assessed subject and state, the selected verification technique, its conditions and expected observations, and the actual result with supporting evidence. Evidence is sufficient only when every criterion within the claim has applicable supporting observations and any material contradictory evidence has been addressed. Missing, stale, or conflicting evidence leaves the affected claim unestablished; a narrower supported claim may identify its explicit scope. Inspect structure mechanically where possible and use recorded engineering review for semantic judgments. After a subject or governing criterion changes, reassess evidence applicability and repeat affected verification rather than inheriting satisfaction from a stable identity."
+    },
+    "how_much": {
+      "scope": "Covers the separation of obligations, verification definitions, observed evidence, and judgments, including their applicability to assessed revisions. It does not require every verification technique to be automated or prescribe CI or a test framework. Applicable proof depends on the claimed outcome and its acceptance conditions. No universal test count, coverage percentage, or numerical confidence threshold is established. The initial authoring profile uses criterion coverage and applicability as its sufficiency rule. It does not require a universal number of tests, review votes, elapsed observation time, or a numerical confidence score. Recording this rule does not establish that any draft requirement has been verified."
+    }
+  },
+  "assumptions": [],
+  "constraints": [],
+  "sources": [
+    {
+      "source": "SRC-REM",
+      "locator": "Sections 26, 27, 35, and 42",
+      "basis": "Verification methods, actual observations, and evidence supporting engineering claims."
+    },
+    {
+      "source": "SRC-VISION",
+      "locator": "Human-understandable AI work; What would prove this wrong",
+      "basis": "Inspectable proof and explicit limits on what remains to be judged."
+    },
+    {
+      "source": "SRC-SYSTEM",
+      "locator": "SYS-SR-06",
+      "basis": "Related existing separation of current truth, mutable work state, judgments, proof, and history."
+    },
+    {
+      "source": "SRC-REM-REFINEMENT",
+      "locator": "Requirement Analysis: Analyze the initial need; Name the initial requirement",
+      "basis": "Required 5W2H analysis and a clearer IR name, preserving the existing identity and need statement."
+    },
+    {
+      "source": "SRC-QUESTION-RESOLUTION",
+      "locator": "IR-004",
+      "basis": "Resolution of the recorded questions for the initial RigorLoop authoring profile under the user's instruction to solve them; the source register preserves the original questions and rationale."
+    },
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "IR-004",
+      "basis": "Complete the existing bounded initial need through the linked draft Scenarios, Features, and single-parent SR decomposition. Preserve the original statement, 5W2H scope, assumptions, and prior source history; author relationship facts once."
+    }
+  ],
+  "confirms": [
+    "FEAT-008",
+    "FEAT-009",
+    "SCN-026",
+    "SCN-027",
+    "SCN-028",
+    "SCN-029"
+  ]
+}

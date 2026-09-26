@@ -1,0 +1,89 @@
+{
+  "id": "SR-007",
+  "type": "system-requirement",
+  "title": "Preserve human authority over governed decisions",
+  "status": "draft",
+  "statement": "The system shall require applicable authorization before performing governed actions reserved by project policy for human decision, and shall not treat recorded evidence, review results, or suggested next actions as substitutes for that authorization.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "A favorable assessment or recorded next action can be mistaken for authorization to perform a decision-sensitive action outside the actor's granted scope.",
+      "desired_outcome": "Governed actions respect the project's human decision boundaries and applicable prior grants, independently of whether assessments or suggested actions are present."
+    },
+    "why": {
+      "rationale": "Engineering evidence can support a decision without granting authority to make it, and automated progression must respect the project's decision owners."
+    },
+    "who": {
+      "stakeholders": [
+        "Project decision owners granting or withholding authority",
+        "Engineers and engineering agents acting within authorized scope",
+        "Reviewers supplying assessments rather than execution permission"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "Before a governed action subject to a project-defined human decision boundary, including after work resumes or its scope changes."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "At the project's decision boundaries for controlled engineering changes."
+      ]
+    },
+    "how": {
+      "approach": "Determine the action's governing policy, decision owner, and applicable authorization. For the initial RigorLoop authoring profile, retain human authority for accepting new scope beyond the existing mandate, changing governing policy, accepting project-level tradeoffs reserved to the decision owner, and release decisions. External mutations and destructive actions require explicit applicable authorization under the existing Constitution. A decision owner may authorize a defined action or delegate a bounded class of actions with its subject, scope, conditions, and limits; the grant remains applicable until completed, revoked, superseded, or invalidated by a relevant scope or condition change. Carry out covered authoring, implementation, verification, or correction work without demanding fresh confirmation for every step or resumed session. Escalate the particular boundary when an action exceeds the grant or conflicts with governing policy, and distinguish assessment results from authority."
+    },
+    "how_much": {
+      "scope": "Applies to governed actions reserved by the project's selected policy for human decision. The initial profile uses this repository's existing authority rules; other projects retain their selected policies, and future profile expansion requires controlled change. An existing applicable authorization may cover subsequent actions within its scope; a new confirmation is not required merely because a session or participant changes. Delegation cannot override higher-authority rules, transfer a decision the policy makes nondelegable, or substitute for required independent assessment. This obligation does not prescribe a universal approval workflow, require human approval for every engineering action, or mandate skills or a particular execution host."
+    }
+  },
+  "acceptance_criteria": [
+    "For an action that the selected project policy reserves for human decision, the system does not perform the action when applicable authorization is absent and identifies the unmet decision boundary.",
+    "When a valid prior authorization covers the proposed action and remains applicable, the system recognizes that grant without requiring another confirmation solely because work resumed in a new session.",
+    "A passing verification result, favorable review, recorded next action, or authorization for a different scope does not by itself authorize the proposed action.",
+    "For the selected initial profile, an action accepting scope beyond the mandate, changing governing policy, accepting a reserved project-level tradeoff, or making a release decision identifies the governing policy and applicable human authorization before execution. An external mutation or destructive action has explicit authorization covering that action.",
+    "A bounded standing delegation permits covered actions across successive steps and sessions without repeated confirmation. A revoked or superseded grant, an exceeded scope, or an unmet condition prevents reliance on that delegation for the affected action and identifies the specific unmet authority boundary.",
+    "A delegation that conflicts with a higher-authority rule or an expressly nondelegable decision is not treated as permission, and a grant to perform work does not waive required independent assessment."
+  ],
+  "assumptions": [],
+  "constraints": [
+    "Apply the existing Constitution's authority order and approved owning contracts, subject to higher-priority runtime and direct user instructions; this draft does not establish a new authority policy."
+  ],
+  "sources": [
+    {
+      "source": "SRC-VISION",
+      "locator": "Who it is for; What it refuses to be",
+      "basis": "The vision retains human approval of scope, tradeoffs, and release decisions and rejects autonomous merge or replacement of engineering judgment."
+    },
+    {
+      "source": "SRC-CONSTITUTION",
+      "locator": "Authority and ownership; Security and permissions",
+      "basis": "Existing instructions distinguish recording, assessment, and execution authority and require actors to respect authorized scope; the full contracts retain their existing owners."
+    },
+    {
+      "source": "SRC-REQUIREMENT-EXPANSION",
+      "locator": "IR-003 expansion: Preserve human decision authority",
+      "basis": "Drafted under IR-003 as an interpretation of the user's instruction to create all proposed needs, using the proposed authority need and its suggested parent."
+    },
+    {
+      "source": "SRC-QUESTION-RESOLUTION",
+      "locator": "SR-007",
+      "basis": "Applies the existing authority policy to decision classes and bounded standing delegation without creating a universal approval gate."
+    },
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "SR-007",
+      "basis": "Preserve this existing IR-003 obligation and its acceptance criteria; confirm FUNC-026 as the logical behavior derived from it during the complete analysis pass."
+    }
+  ],
+  "confirms": [
+    "FUNC-026"
+  ],
+  "constrains": [
+    "FUNC-022",
+    "FUNC-023",
+    "FUNC-024",
+    "FUNC-025",
+    "FUNC-031"
+  ]
+}

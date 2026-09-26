@@ -1,0 +1,65 @@
+{
+  "id": "SCN-024",
+  "type": "scenario",
+  "title": "Determine whether a proposed action is already authorized",
+  "status": "confirmed",
+  "actor": "An engineer or engineering agent acting within project authority",
+  "goal": "Proceed with a covered action or identify the particular decision boundary that prevents it.",
+  "context": "A participant is ready to perform a governed action, possibly after resumption or a scope change.",
+  "trigger": "The participant proposes the next action against the current project policy and recorded grants.",
+  "preconditions": [
+    "The proposed action, subject, scope, and conditions are identified."
+  ],
+  "interaction": [
+    {
+      "actor": "Participant",
+      "action": "Presents the proposed action and the existing authorization believed to cover it."
+    },
+    {
+      "actor": "System",
+      "action": "Identifies the applicable policy, decision owner, and whether the recorded grant covers the action under its conditions and limits."
+    },
+    {
+      "actor": "Participant",
+      "action": "Continues covered work or takes the identified unmet boundary to its decision owner before the reserved action."
+    }
+  ],
+  "expected_outcome": "Applicable existing authority is respected across sessions, and an uncovered reserved action remains withheld without mistaking a favorable assessment for permission.",
+  "alternatives": [
+    {
+      "condition": "A bounded standing delegation still covers the subject, scope, and conditions.",
+      "outcome": "The action can proceed without redundant confirmation for this step or session."
+    },
+    {
+      "condition": "A favorable assessment or next-action suggestion exists but no applicable grant does.",
+      "outcome": "The system reports the unmet authority boundary rather than treating the assessment or suggestion as permission."
+    },
+    {
+      "condition": "A grant has been revoked, superseded, completed, or exceeded.",
+      "outcome": "The system identifies why it no longer authorizes the affected action."
+    },
+    {
+      "condition": "A delegation conflicts with higher authority or an expressly nondelegable decision.",
+      "outcome": "The system rejects reliance on that delegation for the conflicting action."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "The applicable policy, decision owner, or required authorization basis is missing or conflicting.",
+      "outcome": "The reserved action remains withheld and the unresolved boundary is identified."
+    }
+  ],
+  "exercises": [
+    "FEAT-007"
+  ],
+  "informs": [
+    "SR-007"
+  ],
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "SCN-024",
+      "basis": "IR-003 owns project authority; existing SR-007 already covers applicable prior grants, human decision boundaries, standing delegation, and separation of assessment from permission. Accepted as current requirement-analysis knowledge after independent coverage and clarity review: one owning IR and primary Feature, observable goal and interactions, classified outcomes, and applicable SR coverage. This confirms analysis only, not requirement approval, implementation, or satisfaction."
+    }
+  ]
+}

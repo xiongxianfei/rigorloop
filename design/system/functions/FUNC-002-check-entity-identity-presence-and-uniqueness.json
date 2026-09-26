@@ -1,0 +1,46 @@
+{
+  "id": "FUNC-002",
+  "type": "function",
+  "title": "Check entity identity presence and uniqueness",
+  "status": "draft",
+  "description": "Check that every entity in a declared candidate model scope has an explicit nonempty identity and that distinct entities have distinct identities. Report identity presence and uniqueness separately from broader model-format or reference validation.",
+  "inputs": [
+    "The selected governed model state or proposed resulting state.",
+    "The entity definitions and declared scope whose identities are to be checked."
+  ],
+  "preconditions": [],
+  "outputs": [
+    "Identity findings identifying missing identities or identities shared by distinct entities.",
+    "The checked scope and whether identity checking is complete for that scope."
+  ],
+  "behavior": [
+    "Check that each entity has an explicit nonempty identity.",
+    "Compare identities across the declared model scope independently of display names, entity types, and physical locations.",
+    "Report any identity assigned to distinct entities as a conflict in the candidate state.",
+    "Allow equal display names when identities remain distinct.",
+    "Report a model-wide identity conclusion only when the complete governed scope needed for that conclusion has been checked."
+  ],
+  "failure_behavior": [
+    {
+      "condition": "An entity definition cannot be inspected or part of the declared model scope is unavailable.",
+      "outcome": "Report the incomplete check and available findings without claiming model-wide uniqueness."
+    },
+    {
+      "condition": "An identity is absent or assigned to distinct entities.",
+      "outcome": "Identify the offending definitions and report the candidate state as invalid for identity purposes."
+    }
+  ],
+  "unallocated_reason": "Architectural allocation is deliberately deferred until Module responsibilities are designed; this draft claims no Module ownership or implementation.",
+  "sources": [
+    {
+      "source": "SRC-IR-001-SCENARIO-ANALYSIS",
+      "locator": "FUNC-002",
+      "basis": "SR-002 requires explicit identities and rejection of duplicate identities within one governed model, independently of name, type, and location."
+    },
+    {
+      "source": "SRC-ASSET-CLARITY-REFINEMENT",
+      "locator": "FUNC-002",
+      "basis": "Apply the user-selected clarity and naming rule to this existing asset; refine its name and explanation without changing its identity, capability scope, or typed relationships."
+    }
+  ]
+}

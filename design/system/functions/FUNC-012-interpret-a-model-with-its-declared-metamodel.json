@@ -1,0 +1,44 @@
+{
+  "id": "FUNC-012",
+  "type": "function",
+  "title": "Interpret a model with its declared metamodel",
+  "status": "draft",
+  "description": "Identify the metamodel and representation profile governing a selected engineering state and expose its supported entity and relationship meaning. This establishes interpretation context, not a conformance judgment.",
+  "inputs": [
+    "Selected engineering model state and its declared metamodel/profile identity.",
+    "Available retained metamodel and representation definitions."
+  ],
+  "preconditions": [],
+  "outputs": [
+    "Identifiable interpretation context and governing entity, relationship, identity, naming, lifecycle, and validity definitions.",
+    "Explicit unavailable, ambiguous, or unsupported interpretation outcome."
+  ],
+  "behavior": [
+    "Resolve the rule selection declared by the chosen state rather than substituting the newest profile.",
+    "Associate interpreted content with that selected metamodel and profile.",
+    "Make governing definitions available for subsequent authorship, checking, and migration.",
+    "Retain the distinction between current authoring selection and historical interpretation."
+  ],
+  "failure_behavior": [
+    {
+      "condition": "The selected state does not identify one governing profile.",
+      "outcome": "Report the absent or ambiguous rule selection without inventing it."
+    },
+    {
+      "condition": "The retained profile is unavailable or unsupported by the current interpreter.",
+      "outcome": "Report the limit and preserve the original profile designation without claiming conformance under another profile."
+    },
+    {
+      "condition": "Content declares conflicting rule selections.",
+      "outcome": "Identify the conflict and withhold unqualified interpretation for the affected scope."
+    }
+  ],
+  "unallocated_reason": "Architectural allocation is deliberately deferred until Module responsibilities are designed; this draft claims no Module ownership or implementation.",
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "FUNC-012",
+      "basis": "IR-005 / SR-012 confirms attributable model interpretation; SR-013 and SR-015 reuse this context for checks and migration."
+    }
+  ]
+}

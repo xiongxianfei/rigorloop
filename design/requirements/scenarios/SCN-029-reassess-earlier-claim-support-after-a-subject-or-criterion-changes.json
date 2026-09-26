@@ -1,0 +1,67 @@
+{
+  "id": "SCN-029",
+  "type": "scenario",
+  "title": "Reassess earlier claim support after a subject or criterion changes",
+  "status": "confirmed",
+  "actor": "An engineer or reviewer responsible for a changed assessed subject",
+  "goal": "Identify which previous support needs reassessment and establish any new conclusion against the changed basis.",
+  "context": "A requirement criterion, engineering subject, or relevant condition has changed since a recorded assessment.",
+  "trigger": "The participant needs to know whether an earlier satisfaction claim still has applicable support.",
+  "preconditions": [
+    "The changed subject or criterion and the earlier claim and assessment bases are identifiable."
+  ],
+  "interaction": [
+    {
+      "actor": "Participant",
+      "action": "Identifies the changed basis and requests reassessment of affected claim support."
+    },
+    {
+      "actor": "System",
+      "action": "Presents evidence applicability differences, affected criteria, verification requiring repetition, and uncertain impact caused by missing dependencies."
+    },
+    {
+      "actor": "Participant",
+      "action": "Obtains the affected observations and records an appropriately scoped engineering judgment against the new basis."
+    },
+    {
+      "actor": "System",
+      "action": "Presents the new support separately from the historical observations and conclusions."
+    }
+  ],
+  "expected_outcome": "Current reliance is based on the changed subject and criteria; any unsupported portion remains unestablished until applicable observations and a justified judgment address it, while historical evidence keeps its original meaning.",
+  "alternatives": [
+    {
+      "condition": "The change leaves some criterion support applicable with a recorded engineering basis.",
+      "outcome": "The reassessment identifies that scope and its rationale while keeping other affected verification explicit."
+    },
+    {
+      "condition": "Repeated verification is planned but has not run.",
+      "outcome": "The affected scope remains unestablished and the plan is not presented as new evidence."
+    },
+    {
+      "condition": "New observations remain incomplete or materially contradictory.",
+      "outcome": "The revised claim stays unestablished for the affected scope; earlier favorable results are not silently carried forward."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "Missing dependencies or assessment bases prevent determining the affected scope.",
+      "outcome": "The system exposes the uncertainty and potentially affected support rather than assuming no impact."
+    }
+  ],
+  "exercises": [
+    "FEAT-009"
+  ],
+  "informs": [
+    "SR-027",
+    "SR-028",
+    "SR-029"
+  ],
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "SCN-029",
+      "basis": "IR-004 owns changed-state reassessment. SR-027 governs applicability, SR-028 governs scoped conclusions, and SR-029 derives reassessment and repeat-verification obligations without rewriting historical evidence. Accepted as current requirement-analysis knowledge after independent coverage and clarity review: one owning IR and primary Feature, observable goal and interactions, classified outcomes, and applicable SR coverage. This confirms analysis only, not requirement approval, implementation, or satisfaction."
+    }
+  ]
+}

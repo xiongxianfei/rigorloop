@@ -1,0 +1,63 @@
+{
+  "id": "SCN-036",
+  "type": "scenario",
+  "title": "Prepare a lesson-based improvement for controlled adoption",
+  "status": "confirmed",
+  "actor": "A maintainer responsible for an affected engineering practice",
+  "goal": "Turn supported learning into an accountable improvement whose adoption can be decided through the project's change controls.",
+  "context": "A lesson identifies a reusable mechanism, but guidance, checks, or artifacts have not yet been changed.",
+  "trigger": "The responsible maintainer proposes an improvement.",
+  "preconditions": [
+    "The supported lesson, applicability conditions, and affected engineering subjects are identifiable."
+  ],
+  "interaction": [
+    {
+      "actor": "Maintainer",
+      "action": "Provides the proposed changed behavior, affected subjects, accountable owner, and observable success and adverse-effect criteria."
+    },
+    {
+      "actor": "System",
+      "action": "Presents the proposal and identifies missing scope, ownership, or assessment details."
+    },
+    {
+      "actor": "Decision owner",
+      "action": "Records an authorized adoption, revision, or rejection decision through the applicable controlled-change process."
+    },
+    {
+      "actor": "System",
+      "action": "Reports the governing disposition and connection to the lesson and affected baseline, keeping effectiveness unassessed until observations support it."
+    }
+  ],
+  "expected_outcome": "A concrete proposal receives a traceable controlled disposition without a lesson, draft, or recommendation granting adoption authority.",
+  "alternatives": [
+    {
+      "condition": "The decision owner requests revision or rejects the proposal.",
+      "outcome": "The recorded disposition remains visible and the original finding keeps its historical meaning."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "A responsible owner or observable criterion is missing.",
+      "outcome": "The system identifies the gap and does not present the proposal as ready for adoption."
+    },
+    {
+      "condition": "The applicable authority or controlled-change decision is missing.",
+      "outcome": "The improvement remains proposed or unresolved rather than reported adopted."
+    }
+  ],
+  "exercises": [
+    "FEAT-011"
+  ],
+  "informs": [
+    "SR-037",
+    "SR-023",
+    "SR-007"
+  ],
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "SCN-036",
+      "basis": "Analyzes IR-007 through a distinct stakeholder goal within the selected initial authoring profile; the owning IR records Scenario ownership. Accepted as current requirement-analysis knowledge after independent coverage and clarity review: one owning IR and primary Feature, observable goal and interactions, classified outcomes, and applicable SR coverage. This confirms analysis only, not requirement approval, implementation, or satisfaction."
+    }
+  ]
+}

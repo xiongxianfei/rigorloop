@@ -1,0 +1,57 @@
+{
+  "id": "SCN-011",
+  "type": "scenario",
+  "title": "Read a retained model under its original governing rules",
+  "status": "confirmed",
+  "actor": "Model reviewer",
+  "goal": "Understand a selected retained model using the rules that governed that state.",
+  "context": "The current authoring profile has changed since the selected model state was retained.",
+  "trigger": "The reviewer needs to inspect historical engineering meaning.",
+  "preconditions": [
+    "The retained state identifies its applicable metamodel and profile."
+  ],
+  "interaction": [
+    {
+      "actor": "Model reviewer",
+      "action": "Selects the retained model state."
+    },
+    {
+      "actor": "System",
+      "action": "Identifies the governing metamodel and representation profile for that state."
+    },
+    {
+      "actor": "System",
+      "action": "Presents the supported interpretation and the applicable rule definitions, or the specific interpretation limit."
+    }
+  ],
+  "expected_outcome": "The reviewer understands the selected state under its applicable rules without silently substituting current conventions.",
+  "alternatives": [
+    {
+      "condition": "The selected state uses the current supported profile.",
+      "outcome": "The system identifies and uses that profile without implying a migration occurred."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "The declared historical profile is unavailable or unsupported.",
+      "outcome": "The system identifies the unsupported interpretation instead of applying a newer profile."
+    },
+    {
+      "condition": "The state has missing or conflicting profile selection.",
+      "outcome": "The system reports the ambiguity and does not claim a single authoritative interpretation."
+    }
+  ],
+  "exercises": [
+    "FEAT-004"
+  ],
+  "informs": [
+    "SR-012"
+  ],
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "SCN-011",
+      "basis": "IR-005 analysis establishes this stakeholder situation and its selected profile boundaries; the linked SRs account for its outcomes without creating a second requirement parent. Accepted as current requirement-analysis knowledge after independent coverage and clarity review: one owning IR and primary Feature, observable goal and interactions, classified outcomes, and applicable SR coverage. This confirms analysis only, not requirement approval, implementation, or satisfaction."
+    }
+  ]
+}
