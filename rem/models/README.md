@@ -8,7 +8,7 @@ The [principles](../principles/README.md) govern these models; [methods](../meth
 | Requirement Analysis | IR → SR → AR | [Requirements](requirements.md) |
 | Scenario Analysis | IR → Scenario → Feature; Scenario → SR | [Scenarios](scenarios.md) |
 | System Design | IR → Feature; SR → Function; Feature → Function | [System Design](system-design.md) |
-| Architecture Design | Function → Module; AR → Module; Module ↔ Interface | [Architecture Design](architecture-design.md) |
+| Architecture Design | Function/AR allocation, Module/Interface contracts, state/data ownership, and subordinate physical/software realization semantics | [Architecture Design](architecture-design.md) |
 | Operational Support | Metamodel, representation, validation, and maintenance | [Operational Support](operational-support.md) |
 
 ```mermaid
@@ -25,6 +25,8 @@ flowchart TD
     FUNC -->|primaryModule| MOD
     FUNC -->|supportingModule 0..*| SMOD[Supporting Module]
     MOD -->|provides or consumes| IF[Interface]
+    MOD -->|owns realization view| RV[Software/runtime/data/deployment/technology view]
+    IF -->|owns realization view| IRV[Interface realization view]
     MOD -->|realizedBy| IMPL[Implementation]
     FUNC -->|realizedBy| IMPL
     SR -->|verifiedBy| VER[Verification]
@@ -34,6 +36,7 @@ flowchart TD
 
 The requirement branch has containment semantics; Scenario, System Design, Architecture, and Assurance relationships form a typed graph.
 The diagram illustrates common paths and does not require every entity to have every optional relationship.
+The realization-view nodes are subordinate architecture information, not first-class governed REM entities.
 
 ## Core cardinalities
 

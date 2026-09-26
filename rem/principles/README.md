@@ -1,6 +1,6 @@
 # REM principles
 
-These are the seventeen governing principles of the proposed [RigorLoop Engineering Method](../README.md).
+These are the eighteen governing principles of the proposed [RigorLoop Engineering Method](../README.md).
 [Concepts](../concepts/README.md) define the terms; [models](../models/README.md) own relationship constraints; [methods](../methods/README.md) explain their application.
 
 1. **Separate requirements from system assets.**
@@ -35,6 +35,11 @@ These are the seventeen governing principles of the proposed [RigorLoop Engineer
     A tool-independent method requires controlled, recoverable engineering history without prescribing a particular technology.
 16. **Make engineering definitions clear and distinguishable.**
     Each definition has a meaningful name and a precise purpose and scope that readers can understand using current authoritative information. Its name identifies the engineering purpose and subject, distinguishes neighboring definitions, and agrees with the definition's actual scope.
+17. **Keep Scenarios governed, black-box, and stakeholder-observable.**
+   Scenarios preserve concrete stakeholder situations with stable identity and lifecycle while avoiding internal Functions, Modules, Interfaces, or implementation sequences; they inform SR analysis rather than replacing system design.
+18. **Separate logical architecture from physical/software realization.**
+   Modules and Interfaces remain the durable first-class architecture assets. Material software structures, runtime/process boundaries, persistence mechanisms, deployment choices, interaction mechanisms, and technology selections are governed as subordinate realization information owned by those assets. Architecture views are derived from authoritative semantic outputs and must not become a second source of truth.
+   Separating realization facets in storage preserves their owner and logical meaning; it does not by itself create new identities or independent lifecycles.
 
 ## Applying the principles
 
@@ -43,6 +48,7 @@ These are the seventeen governing principles of the proposed [RigorLoop Engineer
 The [Scenario model](../models/scenarios.md) applies Principle 17 to Scenario identity, lifecycle, cardinality, and black-box boundaries.
 [Functional Analysis](../methods/functional-analysis.md) confirms Functions from SR obligations without mirroring the requirement tree.
 [Architecture Allocation](../methods/architecture-allocation.md) assigns one accountable primary Module per Function and exactly one Module per AR.
+[Architecture Design](../methods/architecture-design.md) applies Principle 18 by preserving logical Module/Interface meaning while defining the material physical/software realization as subordinate architecture views.
 The [System Design model](../models/system-design.md#clear-names-and-boundaries) applies Principle 16 to Feature and Function names and definitions.
 Prefer an action and its subject, adding a condition when it distinguishes the intended meaning; semantic clarity matters more than a rigid grammatical pattern.
 An entity's stable identity remains independent of its wording.
