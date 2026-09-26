@@ -1,6 +1,6 @@
 # REM principles
 
-These are the fifteen governing principles of the proposed [RigorLoop Engineering Method](../README.md).
+These are the sixteen governing principles of the proposed [RigorLoop Engineering Method](../README.md).
 [Concepts](../concepts/README.md) define the terms; [models](../models/README.md) own relationship constraints; [methods](../methods/README.md) explain their application.
 
 1. **Separate requirements from system assets.**
@@ -8,7 +8,7 @@ These are the fifteen governing principles of the proposed [RigorLoop Engineerin
 2. **Keep the durable requirement hierarchy IR → SR → AR.**
    Initial needs, system obligations, and allocated obligations have distinct meanings and containment levels.
 3. **Model durable capabilities and behavior as Features and Functions.**
-   These assets evolve across requirements and Changes.
+   IR analysis confirms stakeholder-visible Features, SR analysis confirms logical Functions, and these assets evolve across requirements and Changes. Scenarios provide usage context but do not replace the durable Feature.
 4. **Model durable architectural structure as Modules and Interfaces.**
    Modules express responsibility; Interfaces express interaction contracts.
 5. **Allocate System Requirements through Allocated Requirements.**
@@ -33,9 +33,14 @@ These are the fifteen governing principles of the proposed [RigorLoop Engineerin
     Operational Support defines valid structures, relationships, lifecycle, and maintenance rules.
 15. **Keep configuration-management technology replaceable while preserving engineering semantics.**
     A tool-independent method requires controlled, recoverable engineering history without prescribing a particular technology.
+16. **Make engineering definitions clear and distinguishable.**
+    Each definition has a meaningful name and a precise purpose and scope that readers can understand using current authoritative information. Its name identifies the engineering purpose and subject, distinguishes neighboring definitions, and agrees with the definition's actual scope.
 
 ## Applying the principles
 
 [Requirement analysis](../methods/requirement-analysis.md) owns the selected 5W2H method and clear IR naming guidance.
-An IR's display name should communicate its need while its stable identity remains independent of that wording.
-These application rules refine how authors work; they do not add another canonical principle or replace the models' explicit requirement levels.
+[Scenario Analysis](../methods/scenario-analysis.md) develops stakeholder-visible Scenarios, confirms the durable Feature needed by the IR, and identifies candidate behavior for later confirmation through SR analysis.
+The [System Design model](../models/system-design.md#clear-names-and-boundaries) applies Principle 16 to Feature and Function names and definitions.
+Prefer an action and its subject, adding a condition when it distinguishes the intended meaning; semantic clarity matters more than a rigid grammatical pattern.
+An entity's stable identity remains independent of its wording.
+[Operational Support](../models/operational-support.md#naming-and-location) owns representation conventions such as deriving readable filenames from identities and titles; Principle 16 does not impose a filesystem layout.
