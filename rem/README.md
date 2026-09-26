@@ -41,10 +41,12 @@ Reference that owner when another document needs the rule instead of creating an
 | Analyze stakeholder scenarios | [Scenario Analysis](methods/scenario-analysis.md) | Confirm the durable Feature and governed black-box Scenarios; expose candidate obligations |
 | Derive system obligations | [Requirement Analysis](methods/requirement-analysis.md#derive-system-requirements) | Create verifiable SRs under one IR and hand behavior questions to Functional Analysis |
 | Confirm logical behavior | [Functional Analysis](methods/functional-analysis.md) | Confirm durable Functions from SRs and reconcile Feature realization |
-| Allocate architecture | [Architecture Allocation](methods/architecture-allocation.md) | Allocate one primary Module per Function and exactly one Module per AR; identify Interfaces |
+| Allocate logical architecture | [Architecture Allocation](methods/architecture-allocation.md) | Allocate one primary Module per Function and exactly one Module per AR; identify logical Interfaces |
+| Complete architecture design | [Architecture Design](methods/architecture-design.md) | Produce semantic Module/Interface architecture outputs, state/data ownership, and material subordinate physical/software realization without prescribing storage |
 | Evolve and assess the model | [Engineering cycle](methods/README.md#engineering-cycle) | Iterate between need, design, realization, evidence, and baseline decisions |
 
-The current core now has explicit procedures from Initial Requirement through architectural allocation.
+The current core now has explicit procedures from Initial Requirement through logical allocation and physical/software architecture realization.
+The [Architecture Design model](models/architecture-design.md#organizing-subordinate-facets) explains how material realization facets remain subordinate to Modules and Interfaces when represented separately, with aggregate views derived from their authoritative information.
 Verification and the broader universal engineering concerns remain later refinements.
 
 ## Method boundaries

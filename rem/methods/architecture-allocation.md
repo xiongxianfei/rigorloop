@@ -1,6 +1,7 @@
 # Architecture Allocation method
 
 Use Architecture Allocation after Functions and architectural responsibilities are sufficiently understood to assign behavior and lower-level obligations to Modules.
+Architecture Allocation establishes the logical responsibility model; it does not by itself select services, processes, datastores, deployment units, protocols, or implementation technologies.
 The [Architecture Design model](../models/architecture-design.md) owns allocation cardinalities and Interface relationships.
 
 ## Purpose
@@ -93,3 +94,5 @@ Architecture Allocation is complete enough for realization when:
 - every Interface has exactly one provider Module;
 - unresolved ownership or interaction gaps are explicit;
 - allocations describe responsibility rather than merely mirroring the current code layout.
+
+After logical allocation is coherent, use [Architecture Design](architecture-design.md#design-the-physicalsoftware-realization) to define the material physical/software realization as subordinate Module and Interface views.

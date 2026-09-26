@@ -203,23 +203,44 @@ The [Operational Support model](models/operational-support.md#naming-and-locatio
 
 ## 4. Architecture Design
 
-REM Architecture Design is built from the [Module and Interface concepts](concepts/README.md#system-and-architecture-assets), the allocation [Principles](principles/README.md), and the [Architecture Design model](models/architecture-design.md).
+REM Architecture Design is built from the [Module, Interface, and architecture-realization concepts](concepts/README.md#system-and-architecture-assets), the allocation and logical/physical separation [Principles](principles/README.md), the [Architecture Design model](models/architecture-design.md), and the [Architecture Allocation](methods/architecture-allocation.md) and [Architecture Design](methods/architecture-design.md) methods.
 
-Two engineering paths converge on architecture:
+Architecture has two coupled semantic layers:
 
 ```text
-Function ── allocatedTo ──> Module
-AR ──────── allocatedTo ──> Module
-                              ↕
-                           Interface
+Logical architecture
+  Function ── primaryModule ──> Module
+  AR ──────── allocatedTo ────> Module
+                                   ↕
+                                Interface
+  significant state/data ─────> Module authority
+
+Physical/software realization
+  subordinate to Module / Interface
+  ├── software realization
+  ├── runtime realization
+  ├── persistence realization
+  ├── deployment realization
+  ├── Interface realization
+  └── technology rationale
 ```
 
 The Function says what logical behavior must occur.
 The AR says what lower-level obligation the architecture must satisfy.
-The Module owns architectural responsibility.
-The Interface defines significant interactions between Modules.
+The Module owns architectural responsibility and significant state/data authority.
+The Interface owns a significant logical interaction contract.
+Subordinate realization information explains how those responsibilities and contracts are concretely realized without introducing new universal entity classes.
 
-### Why REM keeps the allocations separate
+### Why REM keeps logical and physical architecture separate
+
+REM needs architecture to remain understandable when implementation technologies change.
+A Module is therefore not synonymous with a service, process, package, datastore, deployment unit, or source directory.
+Likewise, an Interface is not synonymous with HTTP, a queue, a function call, or another concrete transport.
+
+The physical/software realization is still architecture when its consequences are material—for example when it changes lifecycle, isolation, failure boundaries, state authority, deployment/recovery, compatibility, significant qualities, or future evolution.
+Incidental implementation choices remain implementation detail.
+
+### Why REM keeps the two allocations separate
 
 Functional allocation and requirement allocation answer different questions:
 
@@ -228,8 +249,21 @@ Functional allocation and requirement allocation answer different questions:
 
 Reviewing them together helps detect architecture that performs behavior without owning its obligations, or owns obligations without the behavior, state, policy, or interfaces required to satisfy them.
 
+### What Architecture Design must produce
+
+The [Architecture Design model](models/architecture-design.md#architecture-semantic-outputs) defines semantic outputs rather than filenames or documents.
+These include Module definitions, Function and AR allocations, Interface definitions, significant state/data ownership, and material software/runtime/persistence/deployment/Interface-realization/technology information where relevant.
+Derived logical, runtime, datastore, deployment, or technology views help review but do not own the underlying facts.
+
+The model's [subordinate-facet rules](models/architecture-design.md#organizing-subordinate-facets) allow logical definitions and material realization concerns to be represented separately while retaining one accountable owner.
+Module facets may organize software, runtime, persistence, deployment, and technology information; Interface facets may organize interaction, representation, and technology information.
+Their presence depends on material content, and their absence cannot stand in for a completion assessment.
+Attributed observations, proposed choices, and material deferrals remain distinguishable; shared technology rationale is authored once and referenced by its consumers.
+Operational Support chooses storage and naming conventions without turning these facets into universal entity types or making aggregate views authoritative.
+
 [Requirement Analysis](methods/requirement-analysis.md#derive-allocated-requirements) defines how AR obligations are derived.
-[Architecture Allocation](methods/architecture-allocation.md) owns Function and AR allocation to Modules and Interface identification.
+[Architecture Allocation](methods/architecture-allocation.md) establishes logical Function/AR responsibility and identifies Interfaces.
+[Architecture Design](methods/architecture-design.md) completes state/data ownership, material physical/software realization, architecture review, and completion assessment without prescribing a storage format.
 
 ---
 

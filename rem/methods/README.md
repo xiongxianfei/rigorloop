@@ -9,7 +9,8 @@ They apply the [principles](../principles/README.md) to the structures defined b
 | [Requirement Analysis](requirement-analysis.md) | Establish IRs, derive SRs, and derive ARs | Clear normative requirements with explicit parentage and assessment intent |
 | [Scenario Analysis](scenario-analysis.md) | Develop governed stakeholder-visible situations and confirm the durable Feature | First-class Scenarios, a durable Feature, and candidate obligations/behavior |
 | [Functional Analysis](functional-analysis.md) | Confirm logical Functions from SR obligations and reconcile Feature realization | Durable Functions with clear logical boundaries and explicit SR/Feature traceability |
-| [Architecture Allocation](architecture-allocation.md) | Allocate Functions and ARs to Modules and identify Interfaces | Accountable architectural responsibility with reconciled requirement/behavior allocation |
+| [Architecture Allocation](architecture-allocation.md) | Allocate Functions and ARs to Modules and identify logical Interfaces | Accountable logical architectural responsibility with reconciled requirement/behavior allocation |
+| [Architecture Design](architecture-design.md) | Develop the complete logical architecture and its material physical/software realization | Semantic Module/Interface outputs, state/data ownership, material subordinate realization information, explicit deferrals, and derived review views |
 
 5W2H is required at every requirement level in the selected requirement-authoring method.
 Every question needs an answer, an explicit unknown, or justified non-applicability at that level.
@@ -26,11 +27,12 @@ They link to the authoritative knowledge and explain how engineers produce infor
 4. Use [Functional Analysis](functional-analysis.md) to confirm the logical Functions required by the SRs and realize the Feature.
 5. Establish or refine Module responsibility and use [Architecture Allocation](architecture-allocation.md) to allocate each Function to one primary Module.
 6. Derive ARs from SRs and allocate each AR to exactly one accountable Module; reconcile AR and Function allocation.
-7. Define or refine architecturally significant Interfaces.
-8. Realize the design in code, configuration, or other implementation.
-9. Apply Verification to the Requirements and capture actual Evidence.
-10. Review the complete engineering result and the conclusions supported by that evidence.
-11. Establish the new Baseline through the project's controlled-change process.
+7. Define or refine architecturally significant Interfaces and establish significant state/data ownership.
+8. Use [Architecture Design](architecture-design.md#design-the-physicalsoftware-realization) to define only material software, runtime, persistence, deployment, Interface-realization, and technology decisions as subordinate Module/Interface information.
+9. Realize the architecture in code, configuration, infrastructure, and other implementation artifacts.
+10. Apply Verification to the Requirements and capture actual Evidence.
+11. Review the complete engineering result and the conclusions supported by that evidence.
+12. Establish the new Baseline through the project's controlled-change process.
 
 The cycle is iterative, not a one-way waterfall.
 Architecture may expose missing obligations, implementation may expose missing behavior, and verification may require design correction.

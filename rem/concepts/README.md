@@ -43,9 +43,26 @@ Requirements shape their evolution across Changes and Baselines without becoming
 | Module | Durable architectural unit of responsibility, potentially owning behavior, data or state, interfaces, dependencies, technical policies, and implementation scope. |
 | Interface | Explicit interaction contract between architectural elements, potentially defining operations, messages, data structures, protocols, failures, and compatibility. |
 | Realization | Code, configuration, or another implementation artifact that realizes the design; distinct from the design asset it implements. |
+| Architecture realization view | Subordinate architecture information, owned by a Module or Interface, describing material physical/software realization without creating another first-class REM asset. |
+| Software realization | Subordinate view of the software units or implementation structures that realize a Module responsibility. |
+| Runtime realization | Subordinate view of material execution, process, lifecycle, scaling, isolation, concurrency, or resource boundaries. |
+| Persistence realization | Subordinate view of how architecturally significant state or data is retained, including authority, derivation, consistency, recovery, or lifecycle implications. |
+| Deployment realization | Subordinate view of material packaging, placement, isolation, target, or external runtime dependencies. |
+| Interaction realization | Subordinate Interface view of the concrete mechanism, binding, addressing, and realization-specific interaction guarantees. |
+| Representation realization | Subordinate Interface view of material encoding or exchanged data representation choices. |
+| Technology rationale | Attributable reasoning for a technology choice whose consequences are architecturally material, including driver, consequences, significant alternatives, and revisit conditions. |
+| Architecture view | Derived presentation of authoritative architecture information for a particular concern, such as logical structure, interaction, runtime, persistence, deployment, or technology. |
 
 A Feature is not a Requirement, and a Module is not a requirement category or merely a grouping label.
 Functional responsibility and allocated requirement responsibility meet at architecture.
+
+Modules and Interfaces are the first-class governed Architecture Design assets in the REM core.
+A Module may own software, runtime, persistence, deployment, and technology realization information; an Interface may own interaction, representation, and technology realization information.
+Those realization facets are semantic outputs of Architecture Design, not universal entity classes.
+Services, libraries, processes, datastores, deployment units, deployment targets, protocols, and technology choices do not acquire independent REM identity merely because they appear in those views.
+A project may structure or locally identify subordinate realization information for tooling, but storage structure does not change its REM meaning or promote it to a first-class entity.
+Those facets remain governed under their owner when represented separately; the [Architecture Design model](../models/architecture-design.md#organizing-subordinate-facets) owns the rules for that separation.
+Architecture views are derived presentations and do not own facts that belong to Module, Interface, Requirement, Function, or realization information.
 
 ## Engineering model and its support
 

@@ -44,6 +44,10 @@ Maintain the metamodel through controlled changes with explicit compatibility an
 Preserve historical meaning when entity representations or relationship conventions change.
 A baseline's interpretation must remain attributable to the metamodel and conventions applicable to it.
 
+Analysis walkthroughs may support engineering work without becoming additional authoritative design assets.
+Before retiring such material, place any unique current conclusion or derivation with its owning requirement or design definition, and derive explanatory views from those owners.
+Retain review and validation records with their assessed scope and historical meaning; do not mix them into current definitions or retarget an earlier review when its supporting document is reorganized.
+
 ## Method and application boundary
 
 REM methods define reusable analysis procedures such as 5W2H.
