@@ -1,0 +1,112 @@
+{
+  "id": "IR-010",
+  "type": "initial-requirement",
+  "title": "Obtain trustworthy compatible RigorLoop tools",
+  "status": "draft",
+  "statement": "Project users need to obtain compatible, complete RigorLoop command-line tooling and portable skills without losing unrelated work, and product maintainers need to deliver identifiable qualified versions whose public availability and limitations can be established from actual evidence.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Correct engineering guidance and behavior are unusable when distributed artifacts are incomplete, incompatible, untrusted, unsafe to install, or merely assumed to have been published.",
+      "desired_outcome": "Users can acquire and use identifiable compatible product artifacts, while maintainers can produce, qualify, publish, and inspect those exact artifacts under existing authority and recovery rules."
+    },
+    "why": {
+      "rationale": "The published CLI and skills are product delivery surfaces. Their artifact integrity, installation effects, version compatibility, and observed availability require obligations beyond generic model authoring, change authority, and evidence storage."
+    },
+    "who": {
+      "stakeholders": [
+        "Project users installing and using published RigorLoop tooling",
+        "Maintainers preparing and publishing RigorLoop releases",
+        "Reviewers and decision owners assessing artifact compatibility, qualification, and release authority"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "When a product candidate is built or qualified, a user plans or performs installation, a compatible version is released, or an uncertain or failed operation is investigated.",
+        "When supported targets, package contents, artifact formats, or public behavior change, before affected compatibility and publication claims are made."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "The boundary from canonical product sources through candidate CLI packages and target skill archives to installed customer tooling and externally published artifacts."
+      ]
+    },
+    "how": {
+      "approach": "Generate faithful candidates from canonical sources, preserve artifact identities and trusted metadata, qualify the actual packed product, and install only verified candidate units under explicit destination rules. Select release scope and compatibility from existing reviewed decisions, prepare and qualify the exact candidate, apply its publication authorization, observe public results, and preserve failure and recovery evidence. Reuse IR-003 authority and provenance and IR-004 evidence/applicability rather than treating generation, approval, or a local check as publication."
+    },
+    "how_much": {
+      "scope": "The existing Packaging, CLI Installation, and Release Designs define the selected RigorLoop product profile and detailed formats. Their current two-target direction is Codex and Claude Code; historical three-target records retain their original scope, and adoption is not inferred from these new drafts. The npm CLI and separately versioned skill archives remain distinct artifacts. Individual portable skill use does not acquire a CLI prerequisite; the selected CLI installation method does. No automatic managed upgrade, project-state migration, unsupported target, new release workflow, new distribution service, public availability SLA, or storage-disaster guarantee is introduced. This analysis does not inspect a registry, publish, install, or claim that every selected source design is already implemented."
+    }
+  },
+  "assumptions": [
+    "Publication destinations, credentials, and release protection required by the selected supported path are established prerequisites; missing setup stops the affected operation rather than authorizing a substitute."
+  ],
+  "constraints": [],
+  "confirms": [
+    "FEAT-018",
+    "FEAT-019",
+    "FEAT-020",
+    "SCN-060",
+    "SCN-061",
+    "SCN-062",
+    "SCN-063",
+    "SCN-064",
+    "SCN-065",
+    "SCN-066",
+    "SCN-067",
+    "SCN-068",
+    "SCN-069"
+  ],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-PACKAGING",
+      "locator": "docs/design/engineering/packaging.md#DIST-SR-03",
+      "basis": "Existing product candidate, public archive, and executable completeness needs justify this IR without making their implementation choices requirements of REM itself."
+    },
+    {
+      "source": "SRC-PUBLISHED-PACKAGING",
+      "locator": "docs/design/engineering/packaging.md#DIST-SR-06",
+      "basis": "Existing product candidate, public archive, and executable completeness needs justify this IR without making their implementation choices requirements of REM itself."
+    },
+    {
+      "source": "SRC-PUBLISHED-PACKAGING",
+      "locator": "docs/design/engineering/packaging.md#DIST-SR-23",
+      "basis": "Existing product candidate, public archive, and executable completeness needs justify this IR without making their implementation choices requirements of REM itself."
+    },
+    {
+      "source": "SRC-PUBLISHED-INSTALLATION",
+      "locator": "docs/design/cli/installation.md#DIST-SR-07",
+      "basis": "Existing trusted acquisition and safe scoped installation duties protect users obtaining the product."
+    },
+    {
+      "source": "SRC-PUBLISHED-INSTALLATION",
+      "locator": "docs/design/cli/installation.md#DIST-SR-10",
+      "basis": "Existing trusted acquisition and safe scoped installation duties protect users obtaining the product."
+    },
+    {
+      "source": "SRC-PUBLISHED-INSTALLATION",
+      "locator": "docs/design/cli/installation.md#DIST-SR-14",
+      "basis": "Existing trusted acquisition and safe scoped installation duties protect users obtaining the product."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-02",
+      "basis": "Existing controlled delivery and observed public availability duties justify maintainer-facing scope; source applicability and transition qualifications remain explicit."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-13",
+      "basis": "Existing controlled delivery and observed public availability duties justify maintainer-facing scope; source applicability and transition qualifications remain explicit."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-22",
+      "basis": "Existing controlled delivery and observed public availability duties justify maintainer-facing scope; source applicability and transition qualifications remain explicit."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#Distribution support transition",
+      "basis": "Existing controlled delivery and observed public availability duties justify maintainer-facing scope; source applicability and transition qualifications remain explicit."
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "id": "FUNC-063",
+  "type": "function",
+  "title": "Acquire and verify an installation candidate",
+  "status": "draft",
+  "description": "Admit a supported install-only request and obtain a safely staged archive whose identity matches compatible package-bundled trusted metadata. Local archive input changes acquisition, not the trust root.",
+  "inputs": [
+    "Requested target, version selection, supported options, and trusted official or explicit local archive source.",
+    "Package-bundled artifact metadata and its release index."
+  ],
+  "preconditions": [],
+  "outputs": [
+    "Verified staged candidate with target, release, permitted roots, inventory, and integrity basis.",
+    "Explicit unsupported-request, missing-metadata, acquisition, archive-integrity, or extraction failure."
+  ],
+  "behavior": [
+    "Reject missing/unknown/retired targets and removed state-writing or adapter syntax before acquisition, extraction, or writes.",
+    "Verify compatible bundled metadata against its release index before trusting archive identity.",
+    "Acquire only the selected trusted official resource or explicitly supplied archive, and verify filename, target, release, digest, and size before extraction.",
+    "Reject unsafe paths, unsupported links, and out-of-root members; keep the permitted package support entrypoint outside installed scope.",
+    "Verify candidate tree identities and counts under the supported current or historical representation without reading unrelated project state."
+  ],
+  "failure_behavior": [
+    {
+      "condition": "The request selects retired or unsupported behavior, even through a pinned or local archive.",
+      "outcome": "Reject before side effects and identify the supported form."
+    },
+    {
+      "condition": "Compatible bundled metadata or archive integrity cannot be established.",
+      "outcome": "Stop without accepting supplied metadata as an alternative trust root."
+    },
+    {
+      "condition": "An archive member violates containment or declared inventory.",
+      "outcome": "Reject the candidate before any installed-unit mutation."
+    }
+  ],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-INSTALLATION",
+      "locator": "docs/design/cli/installation.md#DIST-SR-02",
+      "basis": "Logical behavior derived from the identified published-product contracts for IR-010; existing source details and compatibility/adoption limits remain applicable."
+    },
+    {
+      "source": "SRC-PUBLISHED-INSTALLATION",
+      "locator": "docs/design/cli/installation.md#DIST-SR-07",
+      "basis": "Logical behavior derived from the identified published-product contracts for IR-010; existing source details and compatibility/adoption limits remain applicable."
+    },
+    {
+      "source": "SRC-PUBLISHED-INSTALLATION",
+      "locator": "docs/design/cli/installation.md#DIST-SR-08",
+      "basis": "Logical behavior derived from the identified published-product contracts for IR-010; existing source details and compatibility/adoption limits remain applicable."
+    },
+    {
+      "source": "SRC-PUBLISHED-INSTALLATION",
+      "locator": "docs/design/cli/installation.md#DIST-SR-11",
+      "basis": "Logical behavior derived from the identified published-product contracts for IR-010; existing source details and compatibility/adoption limits remain applicable."
+    },
+    {
+      "source": "SRC-PUBLISHED-PRODUCTS",
+      "locator": "FUNC-063",
+      "basis": "Assign MOD-014 as the proposed accountable primary responsibility after Functional Analysis. Current product source contracts retain detailed behavior authority; allocation is not runtime adoption or complete AR coverage."
+    }
+  ],
+  "allocated_to": "MOD-014"
+}

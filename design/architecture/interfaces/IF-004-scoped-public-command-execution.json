@@ -1,0 +1,55 @@
+{
+  "id": "IF-004",
+  "type": "interface",
+  "title": "Scoped public command execution",
+  "status": "draft",
+  "description": "The public command contract consumed by a user or skill-guided participant: explicit requests yield actual bounded observations and side-effect outcomes without conferring engineering decisions.",
+  "operations": [
+    {
+      "name": "execute_public_request",
+      "purpose": "Execute one admitted public command within its declared command-family scope.",
+      "inputs": [
+        "Supported command family, version domain, explicit selectors and actor-supplied arguments or request.",
+        "Applicable project context and authority for any requested side effect."
+      ],
+      "preconditions": [],
+      "outputs": [
+        "The command family's declared human or structured result, exit outcome, diagnostics, omitted-detail access where applicable, and accurate mutation or no-mutation disposition."
+      ],
+      "behavior": [
+        "Reject unknown commands, unsupported versions, malformed selectors, and invalid modes under the family-specific early-error contract.",
+        "Dispatch record operations through IF-003 and installation through IF-006 while preserving each operation's exact allowed effects.",
+        "Keep recorded values separate from observations and bounded advice. Preserve conflict, unchanged, failed, partial, and committed outcomes rather than converting them to workflow judgments.",
+        "Protect private diagnostic content and provide the supported route to materially omitted detail; output bounds cannot hide failures or make a valid correction unrecordable.",
+        "Permit standalone skills to avoid command use; governed recording uses an explicit supported request, not implicit installation or inferred state changes."
+      ],
+      "failure_behavior": [
+        {
+          "condition": "The requested operation is unknown, unsupported, malformed, or outside its admitted scope.",
+          "outcome": "Return the applicable family-specific error without downstream side effects; do not guess a corrected request."
+        },
+        {
+          "condition": "The selected operation reports conflict, incomplete effects, failed access, or required recovery.",
+          "outcome": "Preserve that actual result and its safe next decision boundary without asserting successful progression or silently repeating a mutation."
+        }
+      ]
+    }
+  ],
+  "consistency_rules": [
+    "The command result must reflect actual effects. A completed write cannot be reported as an unperformed plan or a rejected operation because optional reporting was incomplete.",
+    "Scope and authority remain attributable to the supplied request; a skill, role label, or successful command is not a new authorization.",
+    "Human and machine-facing outcomes retain the owning command family's distinctions and exit behavior."
+  ],
+  "compatibility_rules": [
+    "The current CLI Design owns literal names, flags, envelopes, output contracts, and supported versions. This Interface does not create another RPC or network protocol.",
+    "Skill-guided consumers must use supported command contracts and cannot assume new REM model operations exist.",
+    "Public contract changes must reconcile all invoking skill guidance, examples, and affected consumers before adoption."
+  ],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-PRODUCTS",
+      "locator": "IF-004",
+      "basis": "Connect common guided invocation to the public command responsibility without weakening CLI ownership or making every skill depend on CLI; see SRC-PUBLISHED-CLI and SRC-PUBLISHED-SKILLS."
+    }
+  ]
+}

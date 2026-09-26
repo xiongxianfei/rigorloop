@@ -1,0 +1,89 @@
+{
+  "id": "SCN-060",
+  "type": "scenario",
+  "title": "Build a faithful candidate from reviewed product sources",
+  "status": "confirmed",
+  "actor": "A product maintainer preparing a distributable candidate",
+  "goal": "Obtain complete supported artifacts whose contents and metadata faithfully represent the declared canonical sources.",
+  "context": "Reviewed skill and CLI changes need candidate artifacts before qualification or publication.",
+  "trigger": "The maintainer requests a candidate for an identified version and supported target population.",
+  "preconditions": [
+    "Canonical input, version, target selection, and a safe output location are identifiable."
+  ],
+  "interaction": [
+    {
+      "actor": "Maintainer",
+      "action": "Requests candidate generation from the declared sources and target selection."
+    },
+    {
+      "actor": "System",
+      "action": "Provides the generated artifact inventory, declared transformations, source identity, metadata, and known incomplete or excluded scope."
+    },
+    {
+      "actor": "Maintainer",
+      "action": "Inspects the candidate and its actual qualification findings before relying on it."
+    }
+  ],
+  "expected_outcome": "The maintainer obtains attributable faithful candidate artifacts in isolated output, with required resources present and actual qualification distinct from generated intent.",
+  "alternatives": [
+    {
+      "condition": "The same declared input is generated again in another safe location.",
+      "outcome": "Equivalent declared content and deterministic metadata are produced without changing source or installed tooling."
+    },
+    {
+      "condition": "An optional combined archive is requested for the supported population.",
+      "outcome": "Its inventory contains only the selected supported targets and remains attributable to the separate artifact facts."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "Required resources, approved transformations, package inputs, or compatible target definitions are missing.",
+      "outcome": "The system identifies the defect and does not report a complete supported candidate."
+    },
+    {
+      "condition": "The output is unspecified for persistent generation, overlaps source or active roots, or is unsafe.",
+      "outcome": "Generation stops before writes and explains the safe-output requirement."
+    }
+  ],
+  "exercises": [
+    "FEAT-018"
+  ],
+  "informs": [
+    "SR-060",
+    "SR-061",
+    "SR-062",
+    "SR-063"
+  ],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-PACKAGING",
+      "locator": "docs/design/engineering/packaging.md#DIST-SR-03",
+      "basis": "IR-010 owns this stakeholder situation. It exercises the selected published-product capability while preserving the source contract's observable success and adverse outcomes."
+    },
+    {
+      "source": "SRC-PUBLISHED-PACKAGING",
+      "locator": "docs/design/engineering/packaging.md#DIST-SR-04",
+      "basis": "IR-010 owns this stakeholder situation. It exercises the selected published-product capability while preserving the source contract's observable success and adverse outcomes."
+    },
+    {
+      "source": "SRC-PUBLISHED-PACKAGING",
+      "locator": "docs/design/engineering/packaging.md#DIST-SR-05",
+      "basis": "IR-010 owns this stakeholder situation. It exercises the selected published-product capability while preserving the source contract's observable success and adverse outcomes."
+    },
+    {
+      "source": "SRC-PUBLISHED-PACKAGING",
+      "locator": "docs/design/engineering/packaging.md#DIST-SR-06",
+      "basis": "IR-010 owns this stakeholder situation. It exercises the selected published-product capability while preserving the source contract's observable success and adverse outcomes."
+    },
+    {
+      "source": "SRC-PUBLISHED-PACKAGING",
+      "locator": "docs/design/engineering/packaging.md#DIST-SR-23",
+      "basis": "IR-010 owns this stakeholder situation. It exercises the selected published-product capability while preserving the source contract's observable success and adverse outcomes."
+    },
+    {
+      "source": "SRC-PUBLISHED-PRODUCTS",
+      "locator": "SCN-060; design/requirements/published-products.md#review-and-validation",
+      "basis": "Independent review and author reconciliation confirmed this stakeholder situation, primary Feature, and SR coverage as current analysis knowledge. This does not approve requirements or establish implemented behavior or satisfaction."
+    }
+  ]
+}

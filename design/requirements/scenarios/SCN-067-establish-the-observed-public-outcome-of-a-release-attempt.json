@@ -1,0 +1,90 @@
+{
+  "id": "SCN-067",
+  "type": "scenario",
+  "title": "Establish the observed public outcome of a release attempt",
+  "status": "confirmed",
+  "actor": "A maintainer or reviewer closing a publication attempt",
+  "goal": "Determine and record what is actually available publicly and which required consumer observations remain failed or unavailable.",
+  "context": "Local qualification and an attempted publication do not yet establish successful public delivery.",
+  "trigger": "The participant requests public observation or retries incomplete closeout.",
+  "preconditions": [
+    "The attempted release identity and required public checks are known."
+  ],
+  "interaction": [
+    {
+      "actor": "Participant",
+      "action": "Selects the release attempt for public closeout."
+    },
+    {
+      "actor": "System",
+      "action": "Presents observed registry/version/channel/integrity, public artifact, and required fresh consumer results with their exact basis."
+    },
+    {
+      "actor": "System",
+      "action": "Reports durable closeout or the specific failed, unavailable, or incomplete reporting scope without changing the candidate or republishing."
+    }
+  ],
+  "expected_outcome": "The participant can distinguish observed public success from failed or unavailable outcomes and inspect durable evidence without confusing local or generated expectations with public proof.",
+  "alternatives": [
+    {
+      "condition": "A public smoke result fails or a required external observation is unavailable.",
+      "outcome": "The affected closeout remains failed-after-publication or pending with the gap explicit; accurate reporting is a valid observation outcome."
+    },
+    {
+      "condition": "Timing is unavailable while mandatory observations are complete.",
+      "outcome": "The report identifies the diagnostic limit without treating missing duration alone as publication failure."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "Known public facts cannot be recorded durably or their artifact basis cannot be established.",
+      "outcome": "Closeout remains explicitly incomplete and does not authorize another publication."
+    },
+    {
+      "condition": "The report presents generated expectations or local checks as actual public observations.",
+      "outcome": "The unsupported public-success claim is identified and cannot establish closeout."
+    }
+  ],
+  "exercises": [
+    "FEAT-020"
+  ],
+  "informs": [
+    "SR-071",
+    "SR-072",
+    "SR-026",
+    "SR-027",
+    "SR-028"
+  ],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-10",
+      "basis": "IR-010 owns this stakeholder situation. It exercises the selected published-product capability while preserving the source contract's observable success and adverse outcomes."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-13",
+      "basis": "IR-010 owns this stakeholder situation. It exercises the selected published-product capability while preserving the source contract's observable success and adverse outcomes."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-14",
+      "basis": "IR-010 owns this stakeholder situation. It exercises the selected published-product capability while preserving the source contract's observable success and adverse outcomes."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-18",
+      "basis": "IR-010 owns this stakeholder situation. It exercises the selected published-product capability while preserving the source contract's observable success and adverse outcomes."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-24",
+      "basis": "IR-010 owns this stakeholder situation. It exercises the selected published-product capability while preserving the source contract's observable success and adverse outcomes."
+    },
+    {
+      "source": "SRC-PUBLISHED-PRODUCTS",
+      "locator": "SCN-067; design/requirements/published-products.md#review-and-validation",
+      "basis": "Independent review and author reconciliation confirmed this stakeholder situation, primary Feature, and SR coverage as current analysis knowledge. This does not approve requirements or establish implemented behavior or satisfaction."
+    }
+  ]
+}

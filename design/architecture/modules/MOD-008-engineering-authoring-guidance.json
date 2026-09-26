@@ -1,0 +1,36 @@
+{
+  "id": "MOD-008",
+  "type": "module",
+  "title": "Engineering authoring guidance",
+  "status": "draft",
+  "description": "Select and explain applicable canonical authoring guidance and assess it against prepared semantic authoring outcomes.",
+  "responsibilities": [
+    "Select guidance applicable to the activity and declared profile.",
+    "Explain bounded authoring and correction steps without replacing canonical rules.",
+    "Assess prepared authoring tasks using their observable semantic outcomes."
+  ],
+  "owned_state": [
+    "Guidance applicability selections and prepared task assessment context; canonical rules and actual evidence retain their respective authorities."
+  ],
+  "scope": {
+    "includes": [
+      "Guided authoring, correction, and assessment of guidance usefulness."
+    ],
+    "excludes": [
+      "Duplicating canonical metamodel rules, autonomous approval, or manufacturing successful task evidence."
+    ]
+  },
+  "provides": [],
+  "consumes": [],
+  "design_limits": [
+    "This is a proposed responsibility boundary only. IR-006 ARs and metamodel, authoring, and assurance interfaces remain deferred.",
+    "No skill or agent integration is selected by assigning this responsibility."
+  ],
+  "sources": [
+    {
+      "source": "SRC-ARCHITECTURE-PILOT",
+      "locator": "MOD-008",
+      "basis": "Analyst-proposed responsibility boundary derived from the existing Function landscape. Assigned Functions remain authoritative for behavior; this record describes target architecture, not observed implementation."
+    }
+  ]
+}

@@ -32,12 +32,17 @@
       "outcome": "Withhold that action and identify the unmet authorization boundary; retrieval of recovery information does not supply the grant."
     }
   ],
-  "unallocated_reason": "Architectural responsibility is deliberately deferred until the logical requirements and system design are reconciled. This Function establishes behavior, not a Module, Interface, implementation, or verification result.",
   "sources": [
     {
       "source": "SRC-COMPLETE-ANALYSIS",
       "locator": "FUNC-022",
       "basis": "SR-022 confirms faithful recovery under IR-003, with SR-007 constraining any destructive adoption of the recovered state."
+    },
+    {
+      "source": "SRC-ARCHITECTURE-PILOT",
+      "locator": "FUNC-022",
+      "basis": "Propose MOD-005 as the single accountable architectural responsibility for the existing behavior. This allocation preserves the Function definition and does not establish implementation or completed interface/AR coverage outside the IR-001 pilot."
     }
-  ]
+  ],
+  "allocated_to": "MOD-005"
 }

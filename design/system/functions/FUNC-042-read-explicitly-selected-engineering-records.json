@@ -1,0 +1,47 @@
+{
+  "id": "FUNC-042",
+  "type": "function",
+  "title": "Read explicitly selected engineering records",
+  "status": "draft",
+  "description": "Retrieve recorded values from a coherent supported registered change snapshot according to exact actor selection. Preserve each query's content, scope, absence, and continuation contract without evaluating readiness or changing records.",
+  "inputs": [
+    "Selected supported change identity and explicit status/context/show/advanced-inspection request.",
+    "Selection filters, requested complete or allowed projection detail, output budget, and any expected revision/cursor."
+  ],
+  "preconditions": [],
+  "outputs": [
+    "Selected records, complete explanations or requested projections with actual record contract, revision, identities, applicability where specified, and exact scope.",
+    "Known counts, omissions, optional absence, missing paths, continuation, or explicit structural/I/O/conflict/recovery outcomes."
+  ],
+  "behavior": [
+    "Resolve authority from the declared registry and obtain a coherent snapshot or an explicit busy/recovery-required outcome.",
+    "Apply literal filters with declared combination, deduplication and ordering; never infer relevance, add stage-selected records, or derive a next action.",
+    "Return complete selected Verify and shared material-decision explanation without unrelated bodies; preserve Review/findings differences and explicitly requested field selection with omission/absence metadata.",
+    "Distinguish no entry, unregistered optional record, registered missing content, unknown selected total, unreadability and malformation; do not infer a contract for an absent or invalid store.",
+    "Bind pagination to normalized selection and observed revision, return only whole admissible items, and reject oversized first items or changed/invalid continuation without partial content.",
+    "Supply raw selected values and exact scope to result projection; no renderer/projection becomes a second authoritative record or modifies stored bytes."
+  ],
+  "failure_behavior": [
+    {
+      "condition": "The expected revision/cursor no longer identifies the requested coherent selection.",
+      "outcome": "Report conflict or invalid continuation without selected items; require a fresh actor choice."
+    },
+    {
+      "condition": "Selected data is unavailable, unsafe, malformed, unsupported, or exceeds the declared complete-output bounds.",
+      "outcome": "Return the specific missing/incomplete/rejected outcome without substituting empty success, truncating content, or performing recovery."
+    }
+  ],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-CLI",
+      "locator": "docs/design/cli/cli.md#CLI-SR-01, CLI-SR-14, CLI-SR-21, CLI-SR-22, CLI-SR-24; docs/design/cli/records.md#RF-SR-07, RF-SR-10",
+      "basis": "Functional Analysis of the IR-008 system obligations confirms this distinct published command/record responsibility. The retained CLI/Record Format contract supplies exact public operations and limits; logical behavior is defined before Module allocation."
+    },
+    {
+      "source": "SRC-PUBLISHED-PRODUCTS",
+      "locator": "FUNC-042",
+      "basis": "Assign MOD-010 as the proposed accountable primary responsibility after Functional Analysis. Current product source contracts retain detailed behavior authority; allocation is not runtime adoption or complete AR coverage."
+    }
+  ],
+  "allocated_to": "MOD-010"
+}

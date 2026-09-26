@@ -13,10 +13,11 @@ Apply the [requirement-analysis method](../../rem/methods/requirement-analysis.m
 
 ## Analysis coverage
 
-The connected analysis is complete for the declared initial scope of the seven IRs below: 32 SRs, 11 Features, 33 Functions, and 35 Scenarios.
-The IR/SR/Feature/Function records remain `draft`; the reviewed Scenarios are `confirmed` as current analysis knowledge.
-This is a bounded definition and coverage review, not requirement approval, implementation, satisfaction, or a complete migration of the existing repository contracts.
-The [completion method](../../rem/methods/requirement-analysis.md#complete-an-irs-system-level-analysis) and [derivation source](sources.md#src-complete-analysis) explain the scope.
+The current draft contains 10 IRs, 61 SRs, 20 Features, 63 Functions, and 62 Scenarios.
+The original seven-IR engineering-model analysis is extended by [published-product coverage](published-products.md): explicit CLI operations, portable guided engineering activities, and trustworthy compatible tool distribution.
+IRs, SRs, Features, and Functions retain `draft` status; 62 Scenarios are `confirmed` as reviewed analysis knowledge.
+These are bounded definition and coverage conclusions, not requirement approval, implemented behavior, or a complete migration of existing product contracts.
+Current [Requirement Analysis](../../rem/methods/requirement-analysis.md), [Scenario Analysis](../../rem/methods/scenario-analysis.md), and [Functional Analysis](../../rem/methods/functional-analysis.md) define the method; the source register distinguishes each derivation pass.
 
 | IR | Need | SRs | Scenarios | Features |
 | --- | --- | ---: | ---: | ---: |
@@ -27,10 +28,13 @@ The [completion method](../../rem/methods/requirement-analysis.md#complete-an-ir
 | [IR-005](IR-005-keep-engineering-models-valid-and-consistently-interpreted/ir.json) | Keep engineering models valid and consistently interpreted | 4 | 4 | 2 |
 | [IR-006](IR-006-guide-people-and-agents-in-authoring-engineering-models/ir.json) | Guide people and agents in authoring engineering models | 3 | 5 | 1 |
 | [IR-007](IR-007-improve-engineering-practice-from-recorded-lessons/ir.json) | Improve engineering practice from recorded lessons | 4 | 5 | 1 |
+| [IR-008](IR-008-operate-on-recorded-engineering-work-through-reliable-explicit-commands/ir.json) | Operate on recorded engineering work through reliable explicit commands | 8 | 9 | 3 |
+| [IR-009](IR-009-carry-out-portable-guided-engineering-work-across-the-project-lifecycle/ir.json) | Carry out portable guided engineering work across the project lifecycle | 7 | 8 | 3 |
+| [IR-010](IR-010-obtain-trustworthy-compatible-rigorloop-tools/ir.json) | Obtain trustworthy compatible RigorLoop tools | 14 | 10 | 3 |
 
-These counts and navigation tables are derived from the JSON records; the records own identities, containment, and relationships.
-Each IR and SR records all seven 5W2H answers, with observable acceptance criteria on SRs and a source basis for the selected scope.
-The [Scenario index](scenarios/README.md) shows each situation's owner, primary Feature, and SR coverage. The [Feature](../system/features/README.md) and [Function](../system/functions/README.md) indexes expose logical realization.
+Counts and navigation are derived from the JSON records; those records own identities, containment, and relationships.
+Every requirement records all seven 5W2H answers, and SRs define observable acceptance criteria and attributable scope.
+The [Scenario index](scenarios/README.md), [Features](../system/features/README.md), and [Functions](../system/functions/README.md) expose the connected model.
 
 ## System requirements
 
@@ -71,11 +75,44 @@ SR-014 is a constraint on existing assessment behavior; it does not create an ar
 | [SR-036](IR-007-improve-engineering-practice-from-recorded-lessons/SR-036-present-applicable-lessons-when-preparing-engineering-work/sr.json) | IR-007 | Present applicable lessons when preparing engineering work |
 | [SR-037](IR-007-improve-engineering-practice-from-recorded-lessons/SR-037-prepare-accountable-improvements-for-controlled-adoption/sr.json) | IR-007 | Prepare accountable improvements for controlled adoption |
 | [SR-038](IR-007-improve-engineering-practice-from-recorded-lessons/SR-038-assess-improvement-effects-at-comparable-opportunities/sr.json) | IR-007 | Assess improvement effects at comparable opportunities |
+| [SR-040](IR-008-operate-on-recorded-engineering-work-through-reliable-explicit-commands/SR-040-preserve-explicit-command-admission-and-independent-interface-contracts/sr.json) | IR-008 | Preserve explicit command admission and independent interface contracts |
+| [SR-041](IR-008-operate-on-recorded-engineering-work-through-reliable-explicit-commands/SR-041-return-coherent-explicitly-selected-engineering-records-and-subject-identities/sr.json) | IR-008 | Return coherent explicitly selected engineering records and subject identities |
+| [SR-042](IR-008-operate-on-recorded-engineering-work-through-reliable-explicit-commands/SR-042-enforce-the-current-registered-record-contract-without-inventing-decisions/sr.json) | IR-008 | Enforce the current registered record contract without inventing decisions |
+| [SR-043](IR-008-operate-on-recorded-engineering-work-through-reliable-explicit-commands/SR-043-construct-lossless-updates-from-explicit-engineering-decisions/sr.json) | IR-008 | Construct lossless updates from explicit engineering decisions |
+| [SR-044](IR-008-operate-on-recorded-engineering-work-through-reliable-explicit-commands/SR-044-publish-record-updates-with-fresh-basis-and-coherent-durable-outcomes/sr.json) | IR-008 | Publish record updates with fresh basis and coherent durable outcomes |
+| [SR-045](IR-008-operate-on-recorded-engineering-work-through-reliable-explicit-commands/SR-045-recover-interrupted-record-transactions-without-guessing-or-replaying-decisions/sr.json) | IR-008 | Recover interrupted record transactions without guessing or replaying decisions |
+| [SR-046](IR-008-operate-on-recorded-engineering-work-through-reliable-explicit-commands/SR-046-return-bounded-faithful-command-outcomes-and-selected-explanations/sr.json) | IR-008 | Return bounded faithful command outcomes and selected explanations |
+| [SR-047](IR-008-operate-on-recorded-engineering-work-through-reliable-explicit-commands/SR-047-keep-local-command-diagnostics-private-and-semantically-independent/sr.json) | IR-008 | Keep local command diagnostics private and semantically independent |
+| [SR-050](IR-009-carry-out-portable-guided-engineering-work-across-the-project-lifecycle/SR-050-expose-distinct-published-engineering-capabilities/sr.json) | IR-009 | Expose distinct published engineering capabilities |
+| [SR-051](IR-009-carry-out-portable-guided-engineering-work-across-the-project-lifecycle/SR-051-prepare-project-portable-engineering-invocations/sr.json) | IR-009 | Prepare project-portable engineering invocations |
+| [SR-052](IR-009-carry-out-portable-guided-engineering-work-across-the-project-lifecycle/SR-052-select-complete-resources-for-the-invoked-engineering-path/sr.json) | IR-009 | Select complete resources for the invoked engineering path |
+| [SR-053](IR-009-carry-out-portable-guided-engineering-work-across-the-project-lifecycle/SR-053-guide-specialist-engineering-work-with-usable-scoped-outputs/sr.json) | IR-009 | Guide specialist engineering work with usable scoped outputs |
+| [SR-054](IR-009-carry-out-portable-guided-engineering-work-across-the-project-lifecycle/SR-054-coordinate-engineering-handoffs-using-applicable-work-and-assessment-state/sr.json) | IR-009 | Coordinate engineering handoffs using applicable work and assessment state |
+| [SR-055](IR-009-carry-out-portable-guided-engineering-work-across-the-project-lifecycle/SR-055-separate-portable-output-from-governed-recording/sr.json) | IR-009 | Separate portable output from governed recording |
+| [SR-056](IR-009-carry-out-portable-guided-engineering-work-across-the-project-lifecycle/SR-056-preserve-guidance-meaning-and-evidence-quality-across-reading-paths/sr.json) | IR-009 | Preserve guidance meaning and evidence quality across reading paths |
+| [SR-060](IR-010-obtain-trustworthy-compatible-rigorloop-tools/SR-060-produce-faithful-supported-product-candidates/sr.json) | IR-010 | Produce faithful supported product candidates |
+| [SR-061](IR-010-obtain-trustworthy-compatible-rigorloop-tools/SR-061-generate-candidates-deterministically-outside-active-installations/sr.json) | IR-010 | Generate candidates deterministically outside active installations |
+| [SR-062](IR-010-obtain-trustworthy-compatible-rigorloop-tools/SR-062-bind-artifact-metadata-to-actual-candidate-bytes/sr.json) | IR-010 | Bind artifact metadata to actual candidate bytes |
+| [SR-063](IR-010-obtain-trustworthy-compatible-rigorloop-tools/SR-063-qualify-the-actual-executable-cli-package/sr.json) | IR-010 | Qualify the actual executable CLI package |
+| [SR-064](IR-010-obtain-trustworthy-compatible-rigorloop-tools/SR-064-acquire-and-verify-a-supported-installation-candidate/sr.json) | IR-010 | Acquire and verify a supported installation candidate |
+| [SR-065](IR-010-obtain-trustworthy-compatible-rigorloop-tools/SR-065-install-verified-units-within-explicit-safe-replacement-boundaries/sr.json) | IR-010 | Install verified units within explicit safe replacement boundaries |
+| [SR-066](IR-010-obtain-trustworthy-compatible-rigorloop-tools/SR-066-report-installation-plans-and-outcomes-without-exposing-private-data/sr.json) | IR-010 | Report installation plans and outcomes without exposing private data |
+| [SR-067](IR-010-obtain-trustworthy-compatible-rigorloop-tools/SR-067-select-compatible-release-identity-and-supported-execution-scope/sr.json) | IR-010 | Select compatible release identity and supported execution scope |
+| [SR-068](IR-010-obtain-trustworthy-compatible-rigorloop-tools/SR-068-prepare-release-projections-from-one-authoritative-profile/sr.json) | IR-010 | Prepare release projections from one authoritative profile |
+| [SR-069](IR-010-obtain-trustworthy-compatible-rigorloop-tools/SR-069-qualify-the-exact-prepared-release-candidate/sr.json) | IR-010 | Qualify the exact prepared release candidate |
+| [SR-070](IR-010-obtain-trustworthy-compatible-rigorloop-tools/SR-070-publish-only-the-authorized-immutable-candidate/sr.json) | IR-010 | Publish only the authorized immutable candidate |
+| [SR-071](IR-010-obtain-trustworthy-compatible-rigorloop-tools/SR-071-record-observed-public-release-outcomes-and-bounded-closeout/sr.json) | IR-010 | Record observed public release outcomes and bounded closeout |
+| [SR-072](IR-010-obtain-trustworthy-compatible-rigorloop-tools/SR-072-recover-publication-failures-without-overwriting-public-history/sr.json) | IR-010 | Recover publication failures without overwriting public history |
+| [SR-073](IR-010-obtain-trustworthy-compatible-rigorloop-tools/SR-073-coordinate-supported-routine-releases-around-one-candidate-approval/sr.json) | IR-010 | Coordinate supported routine releases around one candidate approval |
 
-No AR or Module allocation is claimed. Functions explicitly defer allocation until architectural responsibilities are designed.
+The [architecture model](../architecture/README.md) proposes primary Module allocations for the 63 Functions. Ten ARs remain from the first detailed pilot: nine beneath IR-001's five SRs, plus shared interpretation AR-010 beneath SR-012 in IR-005. Product-specific AR expansion remains deferred.
+Remaining SR allocation work is deferred; draft allocation does not establish implementation or satisfaction.
 The [original question resolutions](sources.md#src-question-resolution) remain the selected scope basis; the decomposition adds assessable obligations and logical behavior without inventing new service targets or authority policy.
 
 ## Review outcome
+
+This system-level analysis review describes the subject retained at repository revision `5cf0c7b6`, before architectural allocations were added.
+The [architecture review](../architecture/README.md#review-and-validation) describes the later initial allocation work. The [published-product review](published-products.md#review-and-validation) identifies the subsequent extended model, preservation checks, and its limits.
 
 The review covered the seven IR needs, their SR acceptance outcomes, Feature boundaries, Scenario goals and outcomes, and Function inputs, behavior, outputs, and failures.
 Independent review groups covered IR-001, IR-002/005, IR-003/004, and IR-006/007, followed by cross-domain reconciliation.
@@ -93,7 +130,7 @@ The requirement suite passed 13 tests; the system/model suite passed 18 tests, c
 Semantic coverage was reviewed separately; graph connectivity and passing schemas do not establish requirement satisfaction.
 CI was not run, and the existing repository contracts retain authority over current product behavior.
 
-Review subject digest: `ac16ae4d585d0ef5544ef91cbcdde40897e40dcf61be6c604eb13e654dc09461`. This SHA-256 covers the sorted repository-relative paths and SHA-256 content digests of the 118 entity JSON records under `design/`, excluding schemas; later content changes require reconsidering review applicability.
+Review subject digest: `ac16ae4d585d0ef5544ef91cbcdde40897e40dcf61be6c604eb13e654dc09461`. This SHA-256 covers the sorted repository-relative paths and SHA-256 content digests of the 118 entity JSON records under `design/` at `5cf0c7b6`, excluding schemas. It is retained as the identity of that earlier review subject, not relabeled as a digest of the later architecture draft.
 
 ## File placement
 
@@ -104,11 +141,12 @@ requirements/
 └── IR-001-preserve-engineering-knowledge-across-sessions/
     ├── ir.json
     └── SR-001-retain-engineering-definitions-across-sessions/
-        └── sr.json
+        ├── sr.json
+        └── AR-001-retain-accepted-definitions-beyond-the-authoring-session.json
 ```
 
-This excerpt shows the selected naming convention using existing draft records.
-The index above lists all current IRs and SRs; no AR records exist yet.
+This excerpt shows the selected naming convention using current records.
+The index above lists all IRs and SRs; the [architecture convergence view](../architecture/README.md#requirement-and-function-convergence) lists the ten ARs and their derived parents and allocations.
 
 ## Directory naming
 
@@ -246,7 +284,19 @@ An AR is allocated to a [Module](../architecture/modules/README.md) and may cons
 
 Author the requirement's references separately from its parentage.
 Derive inverse asset lists from those references.
-The current IR and SR schemas define the cross-domain references above; an AR record shape remains to be defined with architecture allocation.
+The current IR, SR, and [AR schema](../support/schemas/ar.schema.json) define the cross-domain references above.
+
+### Allocated requirement records
+
+An AR uses `<AR-ID>-<full-title-slug>.json` directly within the directory containing its sole parent `sr.json`.
+Its stable ID is independent of its parent and title; do not encode parentage in the identity or add a duplicate parent field.
+The conceptual `SR derives AR` relationship is represented by this authoritative containment, with no separately authored SR child list.
+
+The AR shape retains the requirement fields described above: identity, title, draft status, authoritative statement, structured seven-part 5W2H analysis, acceptance criteria, assumptions, constraints, and sources.
+Its `type` is `allocated-requirement`. It requires one scalar `allocated_to` Module ID and may include unique `constrains` Function IDs.
+An AR does not use SR's `confirms` field. An optional `open_questions` field contains exactly one consequential nonblank question when needed and is omitted otherwise.
+Create an AR when its accountable architectural boundary is known; do not invent a lower-level requirement to fill a tree level.
+The [Architecture Design method](../../rem/methods/architecture-design.md#derive-allocated-requirements) guides derivation and checks the composed AR obligations against the parent SR.
 
 Requirements should state observable acceptance criteria and eventually link to applicable verification definitions.
 Requirement text alone does not establish satisfaction or supply execution evidence.

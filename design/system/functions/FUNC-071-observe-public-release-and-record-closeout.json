@@ -1,0 +1,80 @@
+{
+  "id": "FUNC-071",
+  "type": "function",
+  "title": "Observe public release and record closeout",
+  "status": "draft",
+  "description": "Observe actual public artifacts and required fresh consumer behavior, then retain version-scoped outcomes separately from sealed candidate inputs. It does not infer public success from generation or local qualification.",
+  "inputs": [
+    "Attempted release identity, candidate/approval/publication facts, and required public observation contract.",
+    "Actual registry/assets/installed-consumer observations, permitted diagnostic timing, and known unavailable evidence."
+  ],
+  "preconditions": [],
+  "outputs": [
+    "Durable version-scoped closeout with public identity, check outcomes, actual event facts, limitations, and follow-up.",
+    "Explicit unavailable, failed-after-publication, partial reporting, or still-pending closeout state."
+  ],
+  "behavior": [
+    "Observe registry version/channel/integrity, hosted artifact identities, and required fresh public CLI/version/target-install results.",
+    "Preserve exact candidate and approval attribution, separate policy/expectations from observed results, and use the retained evidence formats and routing.",
+    "Make closeout rerunnable without changing sealed inputs or repeating publication.",
+    "When required public evidence is unavailable, expose the gap and leave pending records and unrelated files unchanged except requested logs.",
+    "Collect available phase-duration diagnostics automatically; keep missing timing nonblocking, malformed emitted timing a diagnostic defect, and identity/outcome evidence mandatory."
+  ],
+  "failure_behavior": [
+    {
+      "condition": "Public identity or required fresh smoke is unavailable or failed.",
+      "outcome": "Report the specific unavailable or failed-after-publication scope without inventing successful closeout."
+    },
+    {
+      "condition": "Durable reporting fails after a public write.",
+      "outcome": "Report incomplete closeout and preserve the known publication basis; do not republish to repair reporting."
+    },
+    {
+      "condition": "Timing is unavailable or malformed.",
+      "outcome": "Report the diagnostic limit without substituting fabricated durations or masking mandatory publication evidence."
+    }
+  ],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-10",
+      "basis": "Logical behavior derived from the identified published-product contracts for IR-010; existing source details and compatibility/adoption limits remain applicable."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-13",
+      "basis": "Logical behavior derived from the identified published-product contracts for IR-010; existing source details and compatibility/adoption limits remain applicable."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-14",
+      "basis": "Logical behavior derived from the identified published-product contracts for IR-010; existing source details and compatibility/adoption limits remain applicable."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-17",
+      "basis": "Logical behavior derived from the identified published-product contracts for IR-010; existing source details and compatibility/adoption limits remain applicable."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-18",
+      "basis": "Logical behavior derived from the identified published-product contracts for IR-010; existing source details and compatibility/adoption limits remain applicable."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-19",
+      "basis": "Logical behavior derived from the identified published-product contracts for IR-010; existing source details and compatibility/adoption limits remain applicable."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-24",
+      "basis": "Logical behavior derived from the identified published-product contracts for IR-010; existing source details and compatibility/adoption limits remain applicable."
+    },
+    {
+      "source": "SRC-PUBLISHED-PRODUCTS",
+      "locator": "FUNC-071",
+      "basis": "Assign MOD-015 as the proposed accountable primary responsibility after Functional Analysis. Current product source contracts retain detailed behavior authority; allocation is not runtime adoption or complete AR coverage."
+    }
+  ],
+  "allocated_to": "MOD-015"
+}

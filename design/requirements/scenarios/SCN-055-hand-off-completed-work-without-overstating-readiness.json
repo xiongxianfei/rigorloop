@@ -1,0 +1,74 @@
+{
+  "id": "SCN-055",
+  "type": "scenario",
+  "title": "Hand off completed work without overstating readiness",
+  "status": "confirmed",
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-03",
+      "basis": "Draft black-box stakeholder situation for IR-009 common Skills-product behavior. The Scenario awaits independent semantic review and does not claim detailed specialist clause migration or runtime evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-04",
+      "basis": "Draft black-box stakeholder situation for IR-009 common Skills-product behavior. The Scenario awaits independent semantic review and does not claim detailed specialist clause migration or runtime evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-27",
+      "basis": "Draft black-box stakeholder situation for IR-009 common Skills-product behavior. The Scenario awaits independent semantic review and does not claim detailed specialist clause migration or runtime evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-PRODUCTS",
+      "locator": "SCN-055; design/requirements/published-products.md#review-and-validation",
+      "basis": "Independent review and author reconciliation confirmed this stakeholder situation, primary Feature, and SR coverage as current analysis knowledge. This does not approve requirements or establish implemented behavior or satisfaction."
+    }
+  ],
+  "actor": "A participant completing or resuming engineering work",
+  "goal": "Understand the correct receiving activity, its inputs, and any unmet prerequisites.",
+  "context": "A local task has a recorded or supplied outcome and the project workflow defines downstream obligations.",
+  "trigger": "The participant requests the next handoff.",
+  "preconditions": [],
+  "interaction": [
+    {
+      "actor": "Participant",
+      "action": "Provides the local result and current work context."
+    },
+    {
+      "actor": "System",
+      "action": "Identifies applicable workflow prerequisites, current subjects, assessment basis, outstanding findings, and authority."
+    },
+    {
+      "actor": "System",
+      "action": "Presents the receiving owner, next activity, exact inputs, and any required correction or decision."
+    }
+  ],
+  "expected_outcome": "The participant can route the work to the correct owner with its actual readiness and continuation limits explicit.",
+  "alternatives": [
+    {
+      "condition": "A material finding requires correction before progression.",
+      "outcome": "The system identifies the corrective owner and required reassessment as the next handoff."
+    },
+    {
+      "condition": "The request covers an isolated activity only.",
+      "outcome": "The system reports the local handoff without executing the next activity."
+    },
+    {
+      "condition": "Current state or required evidence is missing, stale, contradictory, or inaccessible.",
+      "outcome": "The system identifies the missing basis and withholds unsupported readiness or completion claims."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "Available information cannot identify the applicable workflow responsibility or a usable next decision even after known gaps are disclosed.",
+      "outcome": "The system reports that the handoff cannot yet be determined and does not invent a receiving owner or claim a completed handoff."
+    }
+  ],
+  "exercises": [
+    "FEAT-017"
+  ],
+  "informs": [
+    "SR-054"
+  ]
+}

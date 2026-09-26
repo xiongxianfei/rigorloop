@@ -1,0 +1,61 @@
+{
+  "id": "FUNC-054",
+  "type": "function",
+  "title": "Determine an applicable engineering handoff",
+  "status": "draft",
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-03",
+      "basis": "Defines common invocation or composition behavior required by IR-009 while preserving the detailed specialist owner and shared existing authority, context, and assurance responsibilities."
+    },
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-04",
+      "basis": "Defines common invocation or composition behavior required by IR-009 while preserving the detailed specialist owner and shared existing authority, context, and assurance responsibilities."
+    },
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-27",
+      "basis": "Defines common invocation or composition behavior required by IR-009 while preserving the detailed specialist owner and shared existing authority, context, and assurance responsibilities."
+    },
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-29",
+      "basis": "Defines common invocation or composition behavior required by IR-009 while preserving the detailed specialist owner and shared existing authority, context, and assurance responsibilities."
+    },
+    {
+      "source": "SRC-PUBLISHED-PRODUCTS",
+      "locator": "FUNC-054",
+      "basis": "Assign MOD-012 as the proposed accountable primary responsibility after Functional Analysis. Current product source contracts retain detailed behavior authority; allocation is not runtime adoption or complete AR coverage."
+    }
+  ],
+  "description": "Determine the next responsible engineering activity and its prerequisites from current work, workflow policy, and assessment state. This Function interprets progression; work-context retention, authority decisions, and evidence judgments remain with their existing Functions.",
+  "inputs": [
+    "Requested outcome, invocation scope, and recorded activity-specific context.",
+    "Applicable workflow and assessment rules, current subject identities, findings, judgments, and authorization basis."
+  ],
+  "preconditions": [],
+  "outputs": [
+    "Scoped handoff identifying the receiving owner, actual subjects and outputs, outstanding obligations, and next applicable activity.",
+    "Blocked or corrective disposition when prerequisites do not support continuation."
+  ],
+  "behavior": [
+    "Identify the requested local or broader outcome and current activity under the selected project workflow.",
+    "Use current work context and applicable assessment basis to identify prerequisites, required independence, unresolved findings, and correction ownership.",
+    "Keep progress, local task completion, readiness, governed closeout, and external handoff distinguishable.",
+    "Prepare the appropriate receiving activity and its inputs; preserve isolated invocation limits unless broader progression is authorized.",
+    "Apply the common authority decision before continuation and do not infer it from a persisted record or favorable judgment."
+  ],
+  "failure_behavior": [
+    {
+      "condition": "Required context, subject identity, or assessment basis is missing, stale, inaccessible, or contradictory.",
+      "outcome": "Identify the responsible next correction or decision and withhold an unsupported readiness claim."
+    },
+    {
+      "condition": "The next activity exceeds current authorization.",
+      "outcome": "Report its prerequisite or handoff without executing the uncovered action."
+    }
+  ],
+  "allocated_to": "MOD-012"
+}

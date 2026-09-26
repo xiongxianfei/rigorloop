@@ -1,0 +1,67 @@
+{
+  "id": "SCN-051",
+  "type": "scenario",
+  "title": "Start portable work in a customer project",
+  "status": "confirmed",
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-05",
+      "basis": "Draft black-box stakeholder situation for IR-009 common Skills-product behavior. The Scenario awaits independent semantic review and does not claim detailed specialist clause migration or runtime evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-25",
+      "basis": "Draft black-box stakeholder situation for IR-009 common Skills-product behavior. The Scenario awaits independent semantic review and does not claim detailed specialist clause migration or runtime evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-PRODUCTS",
+      "locator": "SCN-051; design/requirements/published-products.md#review-and-validation",
+      "basis": "Independent review and author reconciliation confirmed this stakeholder situation, primary Feature, and SR coverage as current analysis knowledge. This does not approve requirements or establish implemented behavior or satisfaction."
+    }
+  ],
+  "actor": "A contributor using an engineering agent in a customer project",
+  "goal": "Start an authorized specialist task with the project's own context and a safe output target.",
+  "context": "The project does not contain RigorLoop repository-internal designs or governed change records.",
+  "trigger": "The contributor invokes a supported portable engineering capability.",
+  "preconditions": [],
+  "interaction": [
+    {
+      "actor": "Contributor",
+      "action": "Supplies the requested outcome, relevant project instructions, and an authorized output target."
+    },
+    {
+      "actor": "System",
+      "action": "Identifies the capability scope, project-local inputs, applicable authority, and triggered resources."
+    },
+    {
+      "actor": "System",
+      "action": "Explains the portable procedure and any actual unmet prerequisite."
+    }
+  ],
+  "expected_outcome": "The contributor can begin the supported portable task without manufacturing RigorLoop internals or requiring CLI recording.",
+  "alternatives": [
+    {
+      "condition": "The project already supplies an unambiguous authorized default target.",
+      "outcome": "The system uses that target within its existing authority."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "The target or project authority is ambiguous.",
+      "outcome": "The system identifies the unresolved boundary and stops dependent action."
+    },
+    {
+      "condition": "A governed signal is malformed or conflicting.",
+      "outcome": "The system reports the conflict without silently falling back to ungoverned writes."
+    }
+  ],
+  "exercises": [
+    "FEAT-015"
+  ],
+  "informs": [
+    "SR-051",
+    "SR-052",
+    "SR-055"
+  ]
+}

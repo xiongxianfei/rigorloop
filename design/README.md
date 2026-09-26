@@ -22,21 +22,23 @@ design/
 │   ├── modules/                 Architectural responsibility
 │   └── interfaces/              Interaction contracts
 └── support/
-    └── schemas/                 Self-contained requirement and system-design schemas
+    └── schemas/                 Self-contained model authoring schemas
 ```
 
-## Initial scope
+## Current scope
 
-The [requirements index](requirements/README.md) records the completed analysis for the declared initial scope of seven IRs: 32 SRs, 11 Features, 33 Functions, and 35 Scenarios.
-The model covers durable knowledge, traceability, controlled changes, assurance, model conformance, authoring guidance, and learning, with shared responsibilities explicitly reused.
-Each Scenario has one owning IR, an explicit stakeholder goal, observable interactions, and one primary Feature. The 35 reviewed Scenarios are `confirmed` as current analysis knowledge.
+The [requirements index](requirements/README.md) records 10 IRs, 61 SRs, 20 Features, 63 Functions, and 62 Scenarios.
+The original seven-IR analysis covers durable knowledge, traceability, controlled changes, assurance, model conformance, authoring guidance, and learning.
+The [published-product extension](requirements/published-products.md) adds explicit CLI operations, portable guided engineering activities, and trustworthy compatible tooling distribution, with shared responsibilities reused.
+Each Scenario has one owning IR, an explicit stakeholder goal, observable interactions, and one primary Feature. The 62 reviewed Scenarios are `confirmed` as current analysis knowledge.
 IRs, SRs, Features, and Functions retain `draft` status; analysis completion does not approve them or establish implementation or satisfaction.
-Architecture collections still contain guidance only, and each Function explicitly records why allocation is deferred.
-No existing contract has been migrated or retired.
-The [review outcome](requirements/README.md#review-outcome) identifies the assessed scope, resolved findings, model digest, and focused validation results.
+The [architecture draft](architecture/README.md) proposes 15 Modules and assigns one accountable primary Module to each Function.
+Its first detailed example covers IR-001 with nine ARs and two Interfaces, plus one shared interpretation AR under SR-012 in IR-005. Four further Interfaces connect the proposed command, record, guidance, packaging, installation, and release responsibilities. Further Interfaces and ARs remain explicitly deferred.
+The extension maps 130 numbered obligations in six existing product contracts. Their detailed authority remains retained; no source is retired or declared fully migrated.
+The [system-analysis review](requirements/README.md#review-outcome) and [first architecture review](architecture/README.md#review-and-validation) retain their earlier subjects. The [published-product review](requirements/published-products.md#review-and-validation) identifies the extended model and its checks.
 
 Requirement records use the JSON authoring shape described in their index, including seven structured 5W2H analysis objects, explicit assumptions and constraints, and one consequential open question only when needed.
-Self-contained IR, SR, Scenario, Feature, and Function schemas define the current draft shapes under [Operational Support](support/README.md).
+Eight self-contained schemas define IR, SR, AR, Scenario, Feature, Function, Module, and Interface records under [Operational Support](support/README.md).
 Broader metamodel rules and runtime tooling integration remain to be designed.
 
 The [existing System design](../docs/design/system.md) and its contracts govern existing behavior during migration.
@@ -53,4 +55,4 @@ An entity's identity remains stable when its display name or location changes.
 
 Current entity definitions belong in this model.
 Change records explain their evolution, and verification evidence supports claims about specific assessed states.
-Operational Support defines the draft shapes and the ownership of their cross-domain references; broader lifecycle, architecture, and maintenance rules remain to be developed.
+Operational Support defines the draft shapes and ownership of cross-domain references; broader lifecycle, remaining architecture interactions, and maintenance rules remain to be developed.

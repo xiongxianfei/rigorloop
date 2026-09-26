@@ -1,0 +1,63 @@
+{
+  "id": "SCN-048",
+  "type": "scenario",
+  "title": "Choose a supported command using its declared usage",
+  "status": "confirmed",
+  "actor": "An engineer learning the published command-line interface",
+  "goal": "Identify a supported operation and its required explicit inputs and output meaning before operating on project work.",
+  "context": "The engineer needs to use the delivered CLI without guessing retired aliases or mixing transport and stored-record versions.",
+  "trigger": "The engineer requests command help or package version.",
+  "preconditions": [
+    "The delivered executable is available in the supported environment."
+  ],
+  "interaction": [
+    {
+      "actor": "Engineer",
+      "action": "Requests general or operation-specific help and package version as needed."
+    },
+    {
+      "actor": "System",
+      "action": "Shows the supported command catalog or bounded operation contract, required selectors, examples, and the relevant outcome limits."
+    },
+    {
+      "actor": "Engineer",
+      "action": "Selects the intended supported command and supplies explicit inputs under that command's contract."
+    }
+  ],
+  "expected_outcome": "The engineer can choose a valid explicit command without repository mutation, an inferred target, or the mistaken belief that a storage result grants approval.",
+  "alternatives": [
+    {
+      "condition": "The engineer requests an implemented command through a supported generic projection.",
+      "outcome": "The output preserves its declared usage and safe-continuation meaning in that projection."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "The engineer requests an unknown or withdrawn command or supplies ambiguous usage.",
+      "outcome": "The system returns the owning interface's safe actionable rejection instead of legacy fallback or fabricated selector values."
+    },
+    {
+      "condition": "A client assumes one version or exit vocabulary applies to all command families.",
+      "outcome": "The declared result domain exposes that mismatch; unsupported response versions are not silently reinterpreted."
+    }
+  ],
+  "exercises": [
+    "FEAT-014"
+  ],
+  "informs": [
+    "SR-040",
+    "SR-046"
+  ],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-CLI",
+      "locator": "docs/design/cli/cli.md#CLI-SR-10, CLI-SR-17, CLI-SR-27, CLI-SR-30, CLI-SR-31",
+      "basis": "IR-008 owns this black-box published-product situation. It exercises one durable Feature and informs the named system obligations; draft status leaves confirmation to semantic review and does not claim runtime verification."
+    },
+    {
+      "source": "SRC-PUBLISHED-PRODUCTS",
+      "locator": "SCN-048; design/requirements/published-products.md#review-and-validation",
+      "basis": "Independent review and author reconciliation confirmed this stakeholder situation, primary Feature, and SR coverage as current analysis knowledge. This does not approve requirements or establish implemented behavior or satisfaction."
+    }
+  ]
+}

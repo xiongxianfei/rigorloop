@@ -1,0 +1,58 @@
+{
+  "id": "AR-003",
+  "type": "allocated-requirement",
+  "title": "Check candidate identities over an explicit model scope",
+  "status": "draft",
+  "statement": "The Engineering model conformance Module shall report missing identities and identities shared by distinct entities in a supplied candidate model, and shall claim model-wide identity uniqueness only after inspecting the complete required scope.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "A partial or name-based check can accept conflicting engineering identities.",
+      "desired_outcome": "Identity findings establish the inspected candidate scope and expose missing or conflicting identities."
+    },
+    "why": {
+      "rationale": "SR-002 assigns uniqueness to entity identities independently of names, types, and locations."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineering model authors and readers",
+        "Maintainers of MOD-003"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "A candidate model or definition change requires identity checking."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "IF-002 check_candidate_identities."
+      ]
+    },
+    "how": {
+      "approach": "Compare explicit identities across the supplied candidate view and return state-bound findings and completeness separately."
+    },
+    "how_much": {
+      "scope": "Identity presence and uniqueness only; broader conformance, engineering adequacy, and approval are separate conclusions."
+    }
+  },
+  "acceptance_criteria": [
+    "An entity with no nonblank identity is identified as invalid for identity purposes.",
+    "Distinct entities with the same identity are reported as a conflict even when their names, types, or locations differ.",
+    "Equal names with distinct identities are permitted.",
+    "Unavailable portions produce an incomplete result rather than model-wide uniqueness; findings identify the inspected candidate state."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "allocated_to": "MOD-003",
+  "constrains": [
+    "FUNC-002"
+  ],
+  "sources": [
+    {
+      "source": "SRC-ARCHITECTURE-PILOT",
+      "locator": "AR-003",
+      "basis": "Derived from SR-002 for the proposed MOD-003 responsibility and IR-001 scenario walkthrough. Acceptance criteria are intended observations, not executed verification or an approval."
+    }
+  ]
+}

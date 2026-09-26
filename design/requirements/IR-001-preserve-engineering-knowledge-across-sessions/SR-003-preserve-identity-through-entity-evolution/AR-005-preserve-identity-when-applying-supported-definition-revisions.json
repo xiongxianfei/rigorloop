@@ -1,0 +1,58 @@
+{
+  "id": "AR-005",
+  "type": "allocated-requirement",
+  "title": "Preserve identity when applying supported definition revisions",
+  "status": "draft",
+  "statement": "The Engineering model authoring Module shall preserve the resolved entity identity through supported same-entity name, location, and definition revisions, submitting the explicit candidate and base state for checked retention and reporting the actual resulting outcome.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "A rename or move can accidentally replace identity or alter semantic containment.",
+      "desired_outcome": "Supported revisions evolve the same entity while existing identity references keep their designation."
+    },
+    "why": {
+      "rationale": "SR-003 separates stable identity from changing labels, locations, and authored content."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineering model authors and readers",
+        "Maintainers of MOD-002"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "An authorized same-entity rename, location change, or definition edit is requested."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "The authoring responsibility using IF-001 and IF-002."
+      ]
+    },
+    "how": {
+      "approach": "Resolve the original subject, form the same-identity candidate, check its identity conditions, and submit it with the expected base to retention."
+    },
+    "how_much": {
+      "scope": "Same-entity edits within the governed model and preserved containment parentage; splits, merges, identity reuse, and semantic reparenting are outside this operation."
+    }
+  },
+  "acceptance_criteria": [
+    "For supported name, location, and definition changes, the retained result has the original identity and existing identity references designate it.",
+    "A proposed identity replacement, conflicting target, unsupported split/merge, or containment-parent change receives an explicit unsupported/conflict outcome rather than a successful same-entity revision.",
+    "A changed base state or candidate must be reconciled before using previous findings; do not overwrite an intervening definition using stale selection.",
+    "Incomplete or failed retention is reported with known effects; preservation of identity does not renew approval or evidence applicability."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "allocated_to": "MOD-002",
+  "constrains": [
+    "FUNC-005"
+  ],
+  "sources": [
+    {
+      "source": "SRC-ARCHITECTURE-PILOT",
+      "locator": "AR-005",
+      "basis": "Derived from SR-003 for the proposed MOD-002 responsibility and IR-001 scenario walkthrough. Acceptance criteria are intended observations, not executed verification or an approval."
+    }
+  ]
+}

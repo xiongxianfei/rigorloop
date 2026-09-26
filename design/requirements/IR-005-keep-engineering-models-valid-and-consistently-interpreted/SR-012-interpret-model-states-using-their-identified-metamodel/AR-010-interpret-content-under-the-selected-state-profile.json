@@ -1,0 +1,59 @@
+{
+  "id": "AR-010",
+  "type": "allocated-requirement",
+  "title": "Interpret content under the selected state profile",
+  "status": "draft",
+  "statement": "The Engineering model conformance Module shall interpret supplied engineering content under the profile declared by its selected state, preserving subject and scope and reporting missing, unsupported, incompatible, or incomplete interpretation without silent migration or profile substitution.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Using today's rules on retained content can change its original meaning or produce false completeness.",
+      "desired_outcome": "Storage and authoring can rely on interpretation attributed to the actual selected state and declared profile."
+    },
+    "why": {
+      "rationale": "SR-012 is a shared prerequisite for the IR-001 retrieval slice and retains its single parent under IR-005."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineering model authors and readers",
+        "Maintainers of MOD-003"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "Selected-state content requires interpretation before retention or retrieval is reported as understood."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "IF-002 interpret_model_content."
+      ]
+    },
+    "how": {
+      "approach": "Interpret supplied raw content, acquisition scope, and declaration with available authoritative profile definitions; avoid recursive interpreted retrieval."
+    },
+    "how_much": {
+      "scope": "The shared interpretation responsibility used by the pilot; this AR does not complete all IR-005 architecture or define migration tooling."
+    }
+  },
+  "acceptance_criteria": [
+    "The same retained state is interpreted using its declared profile even if a newer profile exists.",
+    "Missing declarations, unavailable definitions, unsupported constructs, or incompatibilities produce explicit interpretation limits instead of a substitute current-profile interpretation.",
+    "Partial acquisition or failed interpretation cannot yield a complete-model result; the returned findings identify subject, state, profile, and inspected scope.",
+    "Interpretation does not modify the retained source or confer approval, conformance beyond its checked rules, or satisfaction.",
+    "Results identify the selected profile and provide its governing entity, field, relationship, cardinality, identity, naming, lifecycle, and validity definitions or resolvable state-bound references alongside the interpreted content; unavailable governing context is reported explicitly."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "allocated_to": "MOD-003",
+  "constrains": [
+    "FUNC-012"
+  ],
+  "sources": [
+    {
+      "source": "SRC-ARCHITECTURE-PILOT",
+      "locator": "AR-010",
+      "basis": "Derived from SR-012 for the proposed MOD-003 responsibility and IR-001 scenario walkthrough. Acceptance criteria are intended observations, not executed verification or an approval."
+    }
+  ]
+}

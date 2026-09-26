@@ -1,0 +1,147 @@
+{
+  "id": "IF-003",
+  "type": "interface",
+  "title": "Operational record access and publication",
+  "status": "draft",
+  "description": "Coherent access to the published operational-record store, exact candidate construction and checking, atomic publication, and explicit transaction recovery. Public command syntax remains owned by CLI.",
+  "operations": [
+    {
+      "name": "inspect_records",
+      "purpose": "Read a selected coherent snapshot and its bounded observations.",
+      "inputs": [
+        "Explicit store, record selectors, requested scope, and supported stored/transport contract."
+      ],
+      "preconditions": [],
+      "outputs": [
+        "Recorded values and snapshot/revision identity where independently established, separately labeled observations and diagnostics, and explicit absent, unavailable, busy, recovery-required, or incomplete outcomes with the owning result contract's null/omission distinctions."
+      ],
+      "behavior": [
+        "Return only the selected scope; preserve explicit distinctions between recorded decisions and observations.",
+        "Do not modify records, recover an interrupted transaction, or invent authoritative next-stage/approval/applicability values during inspection.",
+        "Report a coherent supported snapshot or explicit inability to obtain one; a mixed view cannot be reported usable."
+      ],
+      "failure_behavior": [
+        {
+          "condition": "Input or selected records are unsupported, unavailable, unsafe, or incoherent.",
+          "outcome": "Return the applicable diagnostic and bounded observations without mutation, automatic migration, or implicit recovery."
+        }
+      ]
+    },
+    {
+      "name": "inspect_declared_subjects",
+      "purpose": "Observe exact identities and optional full content for explicitly selected safe project subjects.",
+      "inputs": [
+        "Explicit repository root and distinct contained subject paths.",
+        "Identity-only or full-content selection with the current public count and output bounds."
+      ],
+      "preconditions": [],
+      "outputs": [
+        "One coherent observed subject set with exact byte identities and the same inspected content when requested, or explicit expected absence and the applicable safe failure outcome."
+      ],
+      "behavior": [
+        "Inspect only supplied safe paths without executing content, inferring stage dependencies, or selecting an authoritative decision basis.",
+        "Compute identity from the same observed bytes returned as content; preserve explicit expected absence rather than inventing a non-null stored subject.",
+        "Return the observations for explicit caller use. A later mutation must compare the supplied expectation without silently refreshing it."
+      ],
+      "failure_behavior": [
+        {
+          "condition": "Observed changes prevent a coherent subject set.",
+          "outcome": "Report conflict without a partial subject set and preserve the owning contract's observed-check limit for outside edits."
+        },
+        {
+          "condition": "A subject is unsafe, symlinked, unreadable, nonregular, or too large for requested complete output.",
+          "outcome": "Reject safely without execution or truncated full content; identity-only access is not proof of sufficient engineering context."
+        }
+      ]
+    },
+    {
+      "name": "prepare_record_candidate",
+      "purpose": "Validate explicit record changes and construct their exact complete candidate.",
+      "inputs": [
+        "Selected coherent snapshot, expected revision/identities and decision-basis identities.",
+        "Explicit target set and actor-supplied edits or complete advanced replacements under the selected operation contract."
+      ],
+      "preconditions": [],
+      "outputs": [
+        "Exact candidate bytes, explicit changed targets and preservation basis, structural findings, and applicable bounded diagnostic/receipt context."
+      ],
+      "behavior": [
+        "Validate current record kinds, closed vocabulary, versions, identities, references, and target safety before authoritative publication.",
+        "Preserve unnamed content and omitted decisions; do not fill semantic defaults, normalize unrelated bytes, or rewrite historical review subjects.",
+        "Candidate preparation and structural validity do not establish engineering permission, progression, or satisfaction."
+      ],
+      "failure_behavior": [
+        {
+          "condition": "An input is invalid, unsupported, unsafe, or cannot preserve required content.",
+          "outcome": "Reject that candidate before any authoritative write and expose the actionable cause."
+        }
+      ]
+    },
+    {
+      "name": "publish_record_candidate",
+      "purpose": "Publish the exact candidate subject to the current safety and receipt contract.",
+      "inputs": [
+        "Exact validated candidate bytes and targets, expected snapshot revision, identities, and applicable decision-basis identities.",
+        "Operation context sufficient to prepare the required prepublication storage receipt."
+      ],
+      "preconditions": [],
+      "outputs": [
+        "Durable committed or unchanged result with applicable receipt, or explicit conflict, busy, recovery-required, or failed outcome describing actual known effects."
+      ],
+      "behavior": [
+        "Exclude competing supported writers and recheck the declared basis at the contract-defined boundaries; observed mismatches reject rather than merge stale decisions.",
+        "Publish related replacements as one logical transaction. Supported readers see a coherent before/after snapshot or busy/recovery-required result, not a usable mixed state.",
+        "Prepare the required bounded storage receipt before publication; diagnostic volume cannot prevent valid correction or relabel a committed publication as rejected output.",
+        "Preserve the existing external-editor race and recovery boundaries: do not claim atomic exclusion of arbitrary external edits beyond observed checks."
+      ],
+      "failure_behavior": [
+        {
+          "condition": "Basis changes, targets conflict, or required checks/receipt cannot be established before publication.",
+          "outcome": "Reject or report conflict before treating the candidate as committed."
+        },
+        {
+          "condition": "Publication is interrupted or effects cannot be conclusively determined.",
+          "outcome": "Report the actual known transaction state and recovery requirement; do not retry or claim all requested bytes committed without that basis."
+        }
+      ]
+    },
+    {
+      "name": "recover_record_transaction",
+      "purpose": "Apply explicitly selected recovery to a recognized interrupted operational transaction.",
+      "inputs": [
+        "Identified retained transaction evidence, selected recovery operation, and applicable current store basis."
+      ],
+      "preconditions": [],
+      "outputs": [
+        "A coherent recovered state and attributable actual result, or explicit unsupported, ambiguous, changed-basis, or failed recovery outcome."
+      ],
+      "behavior": [
+        "Use the current CLI recovery contract and known retained evidence; inspection alone cannot initiate recovery.",
+        "Preserve unrelated state and original record meaning. Conflicting or ambiguous evidence must not become guessed replacement content."
+      ],
+      "failure_behavior": [
+        {
+          "condition": "The retained recovery basis is missing, incompatible, changed, or ambiguous.",
+          "outcome": "Report the unresolved scope and required action without inventing or silently forcing recovery."
+        }
+      ]
+    }
+  ],
+  "consistency_rules": [
+    "Results identify the requested scope and any store, snapshot, revision, or subject identity that was actually established. Preserve the owning public contract's null, omission, absent-store, and error distinctions when that basis is unavailable; never invent an identity. Established identity, revision, assessment subject, and diagnostic observation identity remain distinct.",
+    "All public guarantees in CLI-SR-01\u201307/20 and the remaining applicable CLI/Record Format clauses continue to govern. This logical boundary does not weaken their exact transaction or preservation rules.",
+    "The caller supplies substantive decisions. Mechanical validity and a successful save grant no approval, progression, or satisfaction."
+  ],
+  "compatibility_rules": [
+    "Current v3 stored records and each command family's independently versioned transport are interpreted under their existing contracts; unknown or retired inputs are rejected before mutation.",
+    "The new REM JSON authoring profile is not an accepted operational stored format by virtue of this Interface.",
+    "Changing this contract requires coherent CLI consumer, persistence, and evidence/recovery reconciliation; prior subjects retain their original meaning."
+  ],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-PRODUCTS",
+      "locator": "IF-003",
+      "basis": "Derive MOD-010/MOD-011 cooperation from CLI and Record Format obligations identified in SRC-PUBLISHED-CLI; exact source contracts remain authoritative."
+    }
+  ]
+}

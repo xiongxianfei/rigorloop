@@ -1,0 +1,77 @@
+{
+  "id": "SR-060",
+  "type": "system-requirement",
+  "title": "Produce faithful supported product candidates",
+  "status": "draft",
+  "statement": "The system shall derive the supported skill archives and CLI package candidate from canonical authored product sources and declared target transformations, preserving complete intended behavior, required resources, and an accurate supported inventory.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "A generated package can omit a required resource or silently alter instructions while appearing to represent the authored product.",
+      "desired_outcome": "Users and reviewers can identify a complete candidate whose target adaptations preserve the selected product behavior."
+    },
+    "why": {
+      "rationale": "Faithful portable distribution connects authored product meaning to the artifact a user actually obtains."
+    },
+    "who": {
+      "stakeholders": [
+        "Product maintainers",
+        "Users of supported agent targets"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "When generating a candidate or changing a target transformation or included resource."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "Canonical sources, target descriptors, generated inventory, and actual candidate artifacts."
+      ]
+    },
+    "how": {
+      "approach": "Apply declared inclusion and transformation rules to canonical skills and CLI inputs. Preserve untransformed resource paths and bytes and complete transitive resource coverage. Record exclusions with reasons instead of shipping unsupported dependencies. Derive support manifests in candidate output and keep the selected target population consistent across package metadata and public guidance."
+    },
+    "how_much": {
+      "scope": "The existing Packaging profile owns exact target roots, archive names, entrypoint rules, projection manifests, and transformation semantics. The selected current direction has Codex and Claude Code targets; old OpenCode evidence is historical, not current install eligibility. This obligation does not introduce a target or claim completed adoption."
+    }
+  },
+  "acceptance_criteria": [
+    "The candidate inventory agrees with canonical sources and declared inclusion/transform rules; required mapped and transitive resources are present, and untransformed content retains its skill-relative path and raw bytes.",
+    "Declared transformations preserve selected skill behavior; unsupported fields or runtime dependencies reject or have an explicit exclusion reason rather than silently losing behavior.",
+    "Generated support manifests agree with the candidate version and actual inventory and do not use a tracked generated manifest as source truth.",
+    "Candidates and current guidance agree on the selected supported targets and omit retired target output, wrappers, exclusive resources, and permission-broadening instructions. Historical records are not rewritten."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "confirms": [
+    "FUNC-060"
+  ],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-PACKAGING",
+      "locator": "docs/design/engineering/packaging.md#DIST-SR-03",
+      "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. Faithful portable distribution connects authored product meaning to the artifact a user actually obtains. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-PACKAGING",
+      "locator": "docs/design/engineering/packaging.md#DIST-SR-04",
+      "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. Faithful portable distribution connects authored product meaning to the artifact a user actually obtains. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-PACKAGING",
+      "locator": "docs/design/engineering/packaging.md#DIST-SR-17",
+      "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. Faithful portable distribution connects authored product meaning to the artifact a user actually obtains. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-PACKAGING",
+      "locator": "docs/design/engineering/packaging.md#DIST-SR-21",
+      "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. Faithful portable distribution connects authored product meaning to the artifact a user actually obtains. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-PACKAGING",
+      "locator": "docs/design/engineering/packaging.md#DIST-SR-24",
+      "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. Faithful portable distribution connects authored product meaning to the artifact a user actually obtains. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
+    }
+  ]
+}

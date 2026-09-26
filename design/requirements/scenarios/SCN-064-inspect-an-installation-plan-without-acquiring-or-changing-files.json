@@ -1,0 +1,78 @@
+{
+  "id": "SCN-064",
+  "type": "scenario",
+  "title": "Inspect an installation plan without acquiring or changing files",
+  "status": "confirmed",
+  "actor": "A project user evaluating an installation or replacement",
+  "goal": "Understand the planned destination scope, preliminary conflicts, and checks that have not yet run without downloading or modifying the project.",
+  "context": "The user needs to assess the consequence of installation before allowing its actual effects.",
+  "trigger": "The user requests a dry-run for the selected supported target.",
+  "preconditions": [
+    "A supported target request and available bundled inventory identify the preliminary scope."
+  ],
+  "interaction": [
+    {
+      "actor": "User",
+      "action": "Requests a nonmutating plan, including any intended force choice."
+    },
+    {
+      "actor": "System",
+      "action": "Reports planned units, preliminary conflicts and replacements, and which archive or destination checks remain unperformed."
+    },
+    {
+      "actor": "User",
+      "action": "Uses the bounded plan to decide whether to request a real installation."
+    }
+  ],
+  "expected_outcome": "The user obtains an honest preliminary plan without acquisition, extraction, or project mutation and cannot mistake it for verified installed success.",
+  "alternatives": [
+    {
+      "condition": "The plan includes explicit force.",
+      "outcome": "The result describes whole-unit replacement and its local-change consequences without performing it."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "The request uses a removed target, adapter syntax, or state-writing option.",
+      "outcome": "It rejects before acquisition or mutation even in dry-run mode."
+    },
+    {
+      "condition": "The available inventory cannot establish the planned scope.",
+      "outcome": "The system reports that limit rather than presenting a complete verified plan."
+    }
+  ],
+  "exercises": [
+    "FEAT-019"
+  ],
+  "informs": [
+    "SR-064",
+    "SR-066"
+  ],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-INSTALLATION",
+      "locator": "docs/design/cli/installation.md#DIST-SR-02",
+      "basis": "IR-010 owns this stakeholder situation. It exercises the selected published-product capability while preserving the source contract's observable success and adverse outcomes."
+    },
+    {
+      "source": "SRC-PUBLISHED-INSTALLATION",
+      "locator": "docs/design/cli/installation.md#DIST-SR-11",
+      "basis": "IR-010 owns this stakeholder situation. It exercises the selected published-product capability while preserving the source contract's observable success and adverse outcomes."
+    },
+    {
+      "source": "SRC-PUBLISHED-INSTALLATION",
+      "locator": "docs/design/cli/installation.md#DIST-SR-15",
+      "basis": "IR-010 owns this stakeholder situation. It exercises the selected published-product capability while preserving the source contract's observable success and adverse outcomes."
+    },
+    {
+      "source": "SRC-PUBLISHED-INSTALLATION",
+      "locator": "docs/design/cli/installation.md#DIST-SR-16",
+      "basis": "IR-010 owns this stakeholder situation. It exercises the selected published-product capability while preserving the source contract's observable success and adverse outcomes."
+    },
+    {
+      "source": "SRC-PUBLISHED-PRODUCTS",
+      "locator": "SCN-064; design/requirements/published-products.md#review-and-validation",
+      "basis": "Independent review and author reconciliation confirmed this stakeholder situation, primary Feature, and SR coverage as current analysis knowledge. This does not approve requirements or establish implemented behavior or satisfaction."
+    }
+  ]
+}

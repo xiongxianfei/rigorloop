@@ -1,0 +1,62 @@
+{
+  "id": "SR-041",
+  "type": "system-requirement",
+  "title": "Return coherent explicitly selected engineering records and subject identities",
+  "status": "draft",
+  "statement": "The system shall provide read-only project discovery, actor-selected record queries, and explicitly selected subject inspection with coherent identities, accurate scope and completeness, and observable absence or failure, without deriving relevance, workflow authority, or a recovery action.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Broad or inferred reads can conceal missing selected information, combine different states, or be mistaken for authoritative progression advice.",
+      "desired_outcome": "Callers obtain the requested recorded content or subject identity with enough state and scope information to decide their next action explicitly."
+    },
+    "why": {
+      "rationale": "Useful scoped information reduces accidental dependence on unrelated records, stale pages, or an inferred next stage."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineers and reviewers operating on recorded engineering work",
+        "Engineering agents acting on explicit actor decisions",
+        "Maintainers and consumers of the published command-line interface"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "When an actor discovers current changes, reads status/context/show or advanced inspection, pages selected results, or inspects explicit engineering subjects."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "Supported current change stores and actor-selected contained repository subjects; bounded project discovery is not an atomic cross-change snapshot."
+      ]
+    },
+    "how": {
+      "approach": "Use explicit filters and the declared complete/default and projection contracts. Read one coherent registered snapshot, expose its actual contract and revision, retain selected report explanations and applicability, and bind continuation to the selection and state. Classify current/archive candidates structurally, and inspect content and identity from the same observed bytes."
+    },
+    "how_much": {
+      "scope": "Current published read populations, selector namespaces, ordering, byte/count bounds, and archive-classification rules remain defined in the retained CLI contract. No directory discovery grants record authority, no retired records become operational input, and no query performs recovery."
+    }
+  },
+  "acceptance_criteria": [
+    "Status, context, show, and inspect preserve their exact scope, selected content, counts, omitted fields, missing paths, contract, revision, and continuation meanings; complete means retrieval scope only, not engineering adequacy.",
+    "Full selected Verify and material-decisions reads expose the complete recorded explanation and applicability without requiring unrelated record bodies. Review/Verify field projections show exact selection, omissions, and optional-member absence without altering storage.",
+    "Absent, unregistered, registered-missing, malformed, unsafe, and unreadable records remain distinguishable; missing selected content cannot become an empty successful collection or an inferred stored contract.",
+    "Pagination deduplicates and orders the declared selection; changed revision, different selection, or invalid/nonmember cursor rejects or conflicts without partial items. Byte/count overflow does not silently truncate rationale, return partial items, or create a nonprogressing page.",
+    "Subject inspection returns identity and requested content from the same observed bytes, reports expected absence explicitly, and returns no partial subject set on an observed change that prevents coherence.",
+    "Discovery reports only coherent current candidates, bounded exclusions, errors, and completeness. Ambiguous or malformed current residue and interrupted transactions remain visible; no sole candidate is automatically selected and no stage, readiness, or archival approval is inferred."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-CLI",
+      "locator": "docs/design/cli/cli.md#CLI-SR-01, CLI-SR-14, CLI-SR-19, CLI-SR-21, CLI-SR-22, CLI-SR-23, CLI-SR-24, CLI-SR-28, CLI-SR-32; docs/design/cli/records.md#RF-SR-02, RF-SR-07",
+      "basis": "Derives this bounded published-product obligation from IR-008 and the named current CLI/Record Format contracts. Detailed schemas, command catalogs, limits and completed-retirement dispositions remain at those owners; this record does not transfer approval or implement REM-record operations."
+    }
+  ],
+  "confirms": [
+    "FUNC-041",
+    "FUNC-042",
+    "FUNC-043"
+  ]
+}

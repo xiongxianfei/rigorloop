@@ -1,0 +1,72 @@
+{
+  "id": "SR-062",
+  "type": "system-requirement",
+  "title": "Bind artifact metadata to actual candidate bytes",
+  "status": "draft",
+  "statement": "The system shall describe each candidate artifact using factual source, generator, version, target, inventory, integrity, and observed-validation information that agrees with the actual artifact bytes and the selected compatibility representation.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Self-asserted metadata or a mismatched digest chain can make the wrong archive appear trustworthy.",
+      "desired_outcome": "Consumers can verify the exact candidate and distinguish artifact facts, generated expectations, and observed checks."
+    },
+    "why": {
+      "rationale": "The archive producer, installer, and release operation must agree on the artifact identity they exchange."
+    },
+    "who": {
+      "stakeholders": [
+        "Package and release maintainers",
+        "Users acquiring verified artifacts"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "When candidate metadata is generated, consumed, or qualified."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "Versioned target archives, npm-bundled metadata, release indexes, and their consumer verification boundary."
+      ]
+    },
+    "how": {
+      "approach": "Derive inventory, size, checksums, tree hashes, file counts, and source/generator identity from actual artifacts. Preserve the specified current tree-hash representation and its retained historical verification path; reject unknown algorithms before consistency checks. Keep validation intent separate from actual observed results and bind package-bundled metadata to its release index."
+    },
+    "how_much": {
+      "scope": "Packaging owns exact regular-file membership, text normalization, UTF-8 ordering, hash rows, metadata fields, and versioned archive representation. Current v2 and historical v1 meanings remain distinct, including the historical meaning of a missing algorithm field. Hash exclusion does not authorize unsafe path writes."
+    }
+  },
+  "acceptance_criteria": [
+    "Artifact names, target/version, archive members, checksums, tree hashes, counts, and recorded source/generator facts agree with the inspected candidate bytes.",
+    "An unknown integrity algorithm rejects; current candidates use the declared current representation while historical trusted metadata retains its specified verification meaning without recomputation or rewriting.",
+    "A generated descriptor does not mark an unexecuted check as passed; actual validation observations identify their subject and result.",
+    "Installer-consumed bundled metadata matches the trusted release index; a changed archive, index, or metadata invalidates the prior integrity chain."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "confirms": [
+    "FUNC-061"
+  ],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-PACKAGING",
+      "locator": "docs/design/engineering/packaging.md#DIST-SR-06",
+      "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. The archive producer, installer, and release operation must agree on the artifact identity they exchange. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-PACKAGING",
+      "locator": "docs/design/engineering/packaging.md#DIST-SR-09",
+      "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. The archive producer, installer, and release operation must agree on the artifact identity they exchange. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-PACKAGING",
+      "locator": "docs/design/engineering/packaging.md#DIST-SR-18",
+      "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. The archive producer, installer, and release operation must agree on the artifact identity they exchange. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-PACKAGING",
+      "locator": "docs/design/engineering/packaging.md#DIST-SR-21",
+      "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. The archive producer, installer, and release operation must agree on the artifact identity they exchange. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
+    }
+  ]
+}

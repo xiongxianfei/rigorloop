@@ -1,0 +1,70 @@
+{
+  "id": "FUNC-067",
+  "type": "function",
+  "title": "Prepare profile-owned release projections",
+  "status": "draft",
+  "description": "Derive only the permitted release projections and pending evidence from one authoritative profile and source, preserving human and historical material. Preparation remains separate from registry selection, qualification, and publication.",
+  "inputs": [
+    "Complete selected release profile and identified source.",
+    "Surface ownership, generated-region, literal-classification, and pending-evidence rules."
+  ],
+  "preconditions": [],
+  "outputs": [
+    "Reviewable deterministic release projections and permitted prepared-source differences.",
+    "Explicit malformed input, forbidden semantic edit, interrupted preparation, or ownership finding."
+  ],
+  "behavior": [
+    "Classify generated, human-authored/profile-checked, and historical immutable surfaces using retained ownership rules.",
+    "Generate declared current projections and fixture data while preserving narrative, historical observations, and test logic.",
+    "Keep repeated facts owned once and distinguish expectations from actual observed results.",
+    "Remain idempotent for the same complete basis without publishing, creating/pushing tags, hosted releases, or querying registry publication state.",
+    "Expose partial preparation and manual overrides for assessment rather than treating them as ready."
+  ],
+  "failure_behavior": [
+    {
+      "condition": "Required profile or representation fields are absent, unknown, or malformed.",
+      "outcome": "Reject the affected preparation and identify the source defect."
+    },
+    {
+      "condition": "An output would alter unapproved narrative, test logic, or historical evidence.",
+      "outcome": "Stop and return the semantic change to its engineering owner."
+    },
+    {
+      "condition": "Preparation is interrupted or outputs disagree with their current basis.",
+      "outcome": "Report incomplete preparation and require reconciliation before reliance."
+    }
+  ],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-03",
+      "basis": "Logical behavior derived from the identified published-product contracts for IR-010; existing source details and compatibility/adoption limits remain applicable."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-04",
+      "basis": "Logical behavior derived from the identified published-product contracts for IR-010; existing source details and compatibility/adoption limits remain applicable."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-05",
+      "basis": "Logical behavior derived from the identified published-product contracts for IR-010; existing source details and compatibility/adoption limits remain applicable."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-19",
+      "basis": "Logical behavior derived from the identified published-product contracts for IR-010; existing source details and compatibility/adoption limits remain applicable."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-24",
+      "basis": "Logical behavior derived from the identified published-product contracts for IR-010; existing source details and compatibility/adoption limits remain applicable."
+    },
+    {
+      "source": "SRC-PUBLISHED-PRODUCTS",
+      "locator": "FUNC-067",
+      "basis": "Assign MOD-015 as the proposed accountable primary responsibility after Functional Analysis. Current product source contracts retain detailed behavior authority; allocation is not runtime adoption or complete AR coverage."
+    }
+  ],
+  "allocated_to": "MOD-015"
+}

@@ -1,0 +1,57 @@
+{
+  "id": "AR-006",
+  "type": "allocated-requirement",
+  "title": "Expose current authoritative content without history replay",
+  "status": "draft",
+  "statement": "The Engineering model storage Module shall expose the selected current definition and its recorded authoritative references directly from current engineering content, without requiring reconstruction from historical Changes or private conversations.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "A current definition spread only across change deltas cannot be independently understood.",
+      "desired_outcome": "Presentation can access a self-contained current definition and the references it requires."
+    },
+    "why": {
+      "rationale": "SR-004 requires current understanding to start from current authoritative information."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineering model authors and readers",
+        "Maintainers of MOD-001"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "A reader requests the current definition after one or more engineering changes."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "IF-001 retrieve_definition and retrieval of its required references in the same selected state."
+      ]
+    },
+    "how": {
+      "approach": "Return authoritative current content and references with explicit completeness, retaining state consistency across related retrievals."
+    },
+    "how_much": {
+      "scope": "Required current definition context; optional history is additional explanation rather than a substitute source."
+    }
+  },
+  "acceptance_criteria": [
+    "A definition evolved through several Changes is retrievable with its authoritative references without reading or replaying those Changes.",
+    "Missing required current content or references is exposed as a limitation instead of reconstructed as an asserted current fact.",
+    "Optional historical material being absent does not itself make an otherwise complete current definition unavailable."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "allocated_to": "MOD-001",
+  "constrains": [
+    "FUNC-004"
+  ],
+  "sources": [
+    {
+      "source": "SRC-ARCHITECTURE-PILOT",
+      "locator": "AR-006",
+      "basis": "Derived from SR-004 for the proposed MOD-001 responsibility and IR-001 scenario walkthrough. Acceptance criteria are intended observations, not executed verification or an approval."
+    }
+  ]
+}

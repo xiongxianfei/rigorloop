@@ -1,0 +1,77 @@
+{
+  "id": "IR-009",
+  "type": "initial-requirement",
+  "title": "Carry out portable guided engineering work across the project lifecycle",
+  "status": "draft",
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-05",
+      "basis": "The published Skills product provides distinct portable engineering capabilities across project lifecycle activities; this need restores that product scope to the REM draft without migrating every specialist clause or adopting new output formats."
+    },
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-24",
+      "basis": "The published Skills product provides distinct portable engineering capabilities across project lifecycle activities; this need restores that product scope to the REM draft without migrating every specialist clause or adopting new output formats."
+    },
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-25",
+      "basis": "The published Skills product provides distinct portable engineering capabilities across project lifecycle activities; this need restores that product scope to the REM draft without migrating every specialist clause or adopting new output formats."
+    },
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-27",
+      "basis": "The published Skills product provides distinct portable engineering capabilities across project lifecycle activities; this need restores that product scope to the REM draft without migrating every specialist clause or adopting new output formats."
+    }
+  ],
+  "statement": "People working with engineering agents need discoverable and usable guidance for carrying out bounded engineering activities across a project lifecycle, so they can produce the appropriate artifacts, corrections, assessments, and handoffs under their own project authority without depending on RigorLoop repository internals.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Model-authoring guidance alone does not cover choosing a capability, investigating a project, implementing or repairing software, assessing work, and coordinating the resulting handoff in a customer project.",
+      "desired_outcome": "People can select an applicable engineering capability and use its project-portable instructions, resources, and specialist output contract to complete or explicitly stop the requested activity."
+    },
+    "why": {
+      "rationale": "A reusable engineering method needs usable specialist guidance at the point of work while preserving local governance and the differences between making an artifact, judging it, and authorizing another action."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineers and maintainers using engineering agents",
+        "Reviewers and project decision owners",
+        "Maintainers of published engineering guidance"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "When selecting, starting, resuming, correcting, reviewing, or handing off an engineering activity."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "Customer projects using published capabilities, including projects without RigorLoop-specific internal documents or CLI recording."
+      ]
+    },
+    "how": {
+      "approach": "Provide distinct capability descriptions, resolve project context and authority, select applicable resources, guide the requested specialist procedure, and report usable outputs and remaining limits. Use the supported CLI procedure only when governed recording applies. Existing authority, work-context, evidence, model-authoring, and learning responsibilities remain shared rather than copied into this need."
+    },
+    "how_much": {
+      "scope": "The current published inventory has 19 capabilities covering workflow, authoring, implementation and repair, assessment, foundations, discovery, learning, and delivery handoff. This draft models their common invocation and composition behavior; detailed specialist contracts remain authoritative at their existing owners pending clause-level migration. Package generation, installation, and release are separate product responsibilities. The new REM authoring model is a target proposal and does not automatically re-enable retired public feature or standalone architecture outputs."
+    }
+  },
+  "assumptions": [],
+  "constraints": [],
+  "confirms": [
+    "FEAT-015",
+    "FEAT-016",
+    "FEAT-017",
+    "SCN-050",
+    "SCN-051",
+    "SCN-052",
+    "SCN-053",
+    "SCN-054",
+    "SCN-055",
+    "SCN-056",
+    "SCN-057"
+  ]
+}

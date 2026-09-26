@@ -1,0 +1,39 @@
+{
+  "id": "MOD-015",
+  "type": "module",
+  "title": "Product release coordination",
+  "status": "draft",
+  "description": "Coordinate eligible product releases around an exact qualified candidate, applicable publication authority, observed external identity, and recoverable reporting outcomes.",
+  "responsibilities": [
+    "Determine eligible release identity and prepare profile-owned projections without inventing upstream version or compatibility decisions.",
+    "Qualify and retain a candidate, bind publication authority to it, and perform only its authorized publication steps.",
+    "Observe actual public outcomes, retain durable closeout, and select recovery from known external state rather than blindly repeating uncertain writes."
+  ],
+  "owned_state": [
+    "Release preparation context, retained candidate references, qualification/authorization associations, and publication observations and closeout records; source product definitions and registry state remain distinct authorities."
+  ],
+  "scope": {
+    "includes": [
+      "Routine release coordination, preparation, qualification, publication, observation, and recovery within the current Release contract."
+    ],
+    "excludes": [
+      "Novel product decisions inside routine publication, approval inferred from a test pass, mutable release identities, claiming public success from local generation, or republishing to repair lost reporting."
+    ]
+  },
+  "provides": [],
+  "consumes": [
+    "IF-005"
+  ],
+  "design_limits": [
+    "Existing Release owns channels, exact candidate identity, authorization, external-write failure classes, and closeout. This draft does not approve or execute a release.",
+    "Shared authority/evidence Functions retain MOD-006/MOD-007 ownership; detailed collaboration Interfaces and ARs are deferred.",
+    "Realization mapping and full migration of source-specific maintenance obligations remain separate work."
+  ],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-PRODUCTS",
+      "locator": "MOD-015",
+      "basis": "Proposed responsibility derived from the published-product source inventory. Existing Designs retain their detailed contracts; this allocation is not a runtime migration or approval."
+    }
+  ]
+}

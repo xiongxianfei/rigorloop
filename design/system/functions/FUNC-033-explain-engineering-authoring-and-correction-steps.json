@@ -34,12 +34,17 @@
       "outcome": "Explain the available conceptual guidance and the unsupported or separately authorized action without claiming conformance or permission."
     }
   ],
-  "unallocated_reason": "Architectural allocation is deliberately deferred until Module responsibilities are designed; this draft claims no Module ownership or implementation.",
   "sources": [
     {
       "source": "SRC-COMPLETE-ANALYSIS",
       "locator": "FUNC-033",
       "basis": "SR-033 establishes bounded, explainable authoring and correction guidance across the declared REM activities."
+    },
+    {
+      "source": "SRC-ARCHITECTURE-PILOT",
+      "locator": "FUNC-033",
+      "basis": "Propose MOD-008 as the single accountable architectural responsibility for the existing behavior. This allocation preserves the Function definition and does not establish implementation or completed interface/AR coverage outside the IR-001 pilot."
     }
-  ]
+  ],
+  "allocated_to": "MOD-008"
 }

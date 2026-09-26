@@ -1,0 +1,67 @@
+{
+  "id": "FUNC-052",
+  "type": "function",
+  "title": "Resolve resources for a selected capability path",
+  "status": "draft",
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-06",
+      "basis": "Defines common invocation or composition behavior required by IR-009 while preserving the detailed specialist owner and shared existing authority, context, and assurance responsibilities."
+    },
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-07",
+      "basis": "Defines common invocation or composition behavior required by IR-009 while preserving the detailed specialist owner and shared existing authority, context, and assurance responsibilities."
+    },
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-08",
+      "basis": "Defines common invocation or composition behavior required by IR-009 while preserving the detailed specialist owner and shared existing authority, context, and assurance responsibilities."
+    },
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-09",
+      "basis": "Defines common invocation or composition behavior required by IR-009 while preserving the detailed specialist owner and shared existing authority, context, and assurance responsibilities."
+    },
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-11",
+      "basis": "Defines common invocation or composition behavior required by IR-009 while preserving the detailed specialist owner and shared existing authority, context, and assurance responsibilities."
+    },
+    {
+      "source": "SRC-PUBLISHED-PRODUCTS",
+      "locator": "FUNC-052",
+      "basis": "Assign MOD-012 as the proposed accountable primary responsibility after Functional Analysis. Current product source contracts retain detailed behavior authority; allocation is not runtime adoption or complete AR coverage."
+    }
+  ],
+  "description": "Select and make available the complete evidence and resource procedure required by the current capability path. This behavior handles invocation dependencies; package-wide build parity and conformance assessment remain separate.",
+  "inputs": [
+    "Prepared invocation, current path conditions, and any newly discovered triggers.",
+    "Resource map, specialist evidence contract, available project evidence, and packaged resources."
+  ],
+  "preconditions": [],
+  "outputs": [
+    "Selected complete procedure and output resources with their applicability, ownership, and use conditions.",
+    "Explicit missing, inconsistent, or unsafe required resource and stopped dependent scope."
+  ],
+  "behavior": [
+    "Distinguish project evidence from packaged resources and evaluate each declared load/use condition, including transitive obligations.",
+    "Make selected content readable, contained, current, and consistent before dependent use; do not require untriggered resources at runtime.",
+    "Preserve COPY/assets, READ/references, and RUN/scripts meaning and expose script inputs, results, and failure actions under the existing package contract.",
+    "Use scoped evidence when sufficient, obtaining complete subjects when the judgment or behavior-changing decision requires them; keep material omitted detail obtainable.",
+    "On a late trigger, select the additional complete procedure before dependent action rather than inferring it from examples or memory.",
+    "Allow only a disclosed redundant-convenience fallback when the entire needed contract is already loaded; keep invocation success separate from package integrity."
+  ],
+  "failure_behavior": [
+    {
+      "condition": "Required normative content, output structure, or a transitive resource is missing, escaped, stale, inconsistent, or incompatible.",
+      "outcome": "Identify the missing dependency and stop the affected work without inventing procedure."
+    },
+    {
+      "condition": "An untriggered resource is absent.",
+      "outcome": "Do not block unrelated portable work solely for that absence; do not certify the package as valid."
+    }
+  ],
+  "allocated_to": "MOD-012"
+}

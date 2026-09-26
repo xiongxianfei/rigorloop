@@ -1,0 +1,58 @@
+{
+  "id": "AR-009",
+  "type": "allocated-requirement",
+  "title": "Present applicable rationale separately from definition completeness",
+  "status": "draft",
+  "statement": "The Engineering context and traceability Module shall present only recorded reasoning with an applicable association to the selected definition as its current rationale, exposing missing, incomplete, or unresolved reasoning separately from definition completeness.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "A complete definition may be confused with a complete explanation, or unrelated reasoning may be displayed as its basis.",
+      "desired_outcome": "A reader sees the available definition, the actual recorded reasoning, and any association or explanation gap."
+    },
+    "why": {
+      "rationale": "SR-005 requires accessible applicable reasoning and forbids presenting unrecorded or unrelated explanations as the current basis."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineering model authors and readers",
+        "Maintainers of MOD-004"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "A reader inspects a definition and its decision context, including after that definition evolves."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "Context presentation consuming IF-001 definition and rationale results."
+      ]
+    },
+    "how": {
+      "approach": "Use the selected definition's recorded association and basis, preserving state, availability, completeness, and applicability distinctions."
+    },
+    "how_much": {
+      "scope": "Recorded reasoning for the selected definition; presentation does not certify a decision or establish requirement satisfaction."
+    }
+  },
+  "acceptance_criteria": [
+    "Applicable recorded decision details are presented with their association basis.",
+    "A complete definition with missing rationale remains visible as a complete definition with a separate reasoning gap.",
+    "Reasoning associated with another state is not silently relabeled as current; unresolved applicability is explicit.",
+    "No rationale obtained is not presented as proof that no rationale is required, and missing reasoning is never invented."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "allocated_to": "MOD-004",
+  "constrains": [
+    "FUNC-007"
+  ],
+  "sources": [
+    {
+      "source": "SRC-ARCHITECTURE-PILOT",
+      "locator": "AR-009",
+      "basis": "Derived from SR-005 for the proposed MOD-004 responsibility and IR-001 scenario walkthrough. Acceptance criteria are intended observations, not executed verification or an approval."
+    }
+  ]
+}

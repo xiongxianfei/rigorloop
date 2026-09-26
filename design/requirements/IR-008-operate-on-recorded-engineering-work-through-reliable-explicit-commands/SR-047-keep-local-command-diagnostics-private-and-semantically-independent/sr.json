@@ -1,0 +1,59 @@
+{
+  "id": "SR-047",
+  "type": "system-requirement",
+  "title": "Keep local command diagnostics private and semantically independent",
+  "status": "draft",
+  "statement": "The system shall retain and inspect bounded private local diagnostics for the declared observed command path without allowing logging configuration or availability to change semantic command behavior, authoritative repository state, stdout results, or exit status.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Logging can leak sensitive inputs, corrupt records under contention, or become an accidental condition for command success or engineering authority.",
+      "desired_outcome": "An operator can inspect the available diagnostics for one invocation while ordinary commands remain semantically reliable when logging is recorded, disabled, degraded, or interrupted."
+    },
+    "why": {
+      "rationale": "Diagnostic usefulness must not compromise confidentiality, local safety, or the independence of engineering recording and decisions."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineers and reviewers operating on recorded engineering work",
+        "Engineering agents acting on explicit actor decisions",
+        "Maintainers and consumers of the published command-line interface"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "At the declared observed invocation boundary, during bounded event writes or rotation, and when an operator requests a log directory or exact invocation events."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "The private platform user-state logging root or explicit configured root, outside governed records and limited to the declared owned log names."
+      ]
+    },
+    "how": {
+      "approach": "Use allowlisted event projections, closed families/severities, bounded whole-event writes, private containment and access rules, finite rotation/lock attempts, and exact-invocation read-only lookup. Apply the current diagnostic contract without wrapping dedicated recording interfaces in a new generic envelope."
+    },
+    "how_much": {
+      "scope": "Current generic/discovery observed path only; primary recording, advanced record-store, and retired-command dispatch retain their dedicated boundaries. Exact event, rotation, lock, ownership, and privacy limits remain in the retained Local diagnostic logging contract; no daemon, network log service, or authority-bearing audit ledger is introduced."
+    }
+  },
+  "acceptance_criteria": [
+    "Observed invocations attempt bounded start/completion events with declared identities, timing, family, severity, and sequence; interruption may leave a start only, and diagnostic clock failures do not change command meaning.",
+    "Events exclude raw arguments/requests/bodies, request-derived hashes, secrets, arbitrary environment, remotes, usernames/hosts, and absolute repository paths; unsafe controls and oversized input cannot enter logs through truncation or raw error echoes.",
+    "Only declared owned names within a verified private root are created, rotated, or read. Unsafe permissions/paths, observed substitution, exhausted or unverifiable locks, and I/O failure degrade without repairing permissions, stealing locks, or changing repository bytes.",
+    "Recorded, disabled, and degraded logging preserve command results, semantic exit, transaction/recovery behavior, and stdout. Invalid closed logging vocabulary rejects at its declared admission boundary without echoing raw values.",
+    "Exact invocation lookup scans only bounded retained log files, returns only matching supported events, distinguishes not-found/unavailable/corrupt-entry outcomes, and reports unsupported or corrupt lines without returning raw content, rerunning a command, or manufacturing workflow evidence."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-CLI",
+      "locator": "docs/design/cli/cli.md#CLI-SR-11, CLI-SR-29, CLI-SR-30",
+      "basis": "Derives this bounded published-product obligation from IR-008 and the named current CLI/Record Format contracts. Detailed schemas, command catalogs, limits and completed-retirement dispositions remain at those owners; this record does not transfer approval or implement REM-record operations."
+    }
+  ],
+  "confirms": [
+    "FUNC-049"
+  ]
+}

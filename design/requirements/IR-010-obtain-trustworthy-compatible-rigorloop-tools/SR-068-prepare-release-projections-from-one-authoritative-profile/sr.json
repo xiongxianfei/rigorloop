@@ -1,0 +1,89 @@
+{
+  "id": "SR-068",
+  "type": "system-requirement",
+  "title": "Prepare release projections from one authoritative profile",
+  "status": "draft",
+  "statement": "The system shall prepare reviewable release projections deterministically from the selected complete profile and source, preserving authored narrative and historical records, and shall expose cheap completeness or ownership defects without publishing or manufacturing observed success.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Duplicated version values and generated success assertions can make a prepared release incoherent or falsely qualified.",
+      "desired_outcome": "Maintainers receive a reproducible candidate basis whose generated expectations, human content, and historical facts are distinguishable."
+    },
+    "why": {
+      "rationale": "One authoritative profile and explicit projection ownership prevent competing release identities and preparation from masquerading as publication."
+    },
+    "who": {
+      "stakeholders": [
+        "Release maintainers",
+        "Reviewers inspecting generated candidate changes"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "When a supported release is prepared, checked, interrupted, or resumed."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "Selected release profile, controlled generated regions, human-authored material, immutable historical evidence, and local preflight results."
+      ]
+    },
+    "how": {
+      "approach": "Classify surfaces by their source authority and derive only permitted current projections and fixture data. Preserve narrative outside declared regions, never generate test logic, and treat unexpected semantic edits as engineering changes. Make preparation idempotent and nonpublishing; it does not query registry publication state. Use side-effect-light preflight for profile/version/pointer/literal/evidence/input/output/tag consistency and reject unknown closed values or malformed representation."
+    },
+    "how_much": {
+      "scope": "The existing profile, generated-region, literal-classification, pending-evidence, and preflight representations remain owned by Release. Preflight does not require credentials or substitute for artifact construction, full checks, or public smoke. Remote unavailability is uncertainty, not a pass; requested diagnostic logs are the limited write exception."
+    }
+  },
+  "acceptance_criteria": [
+    "The same complete profile and source produce the same permitted projections; generated regions are identifiable, current facts have owners, human narrative and historical evidence remain unchanged, and generated expectations never become observed passes.",
+    "Preparation does not publish, create/push tags, create hosted releases, or query registry publication state; interrupted preparation remains unready until its actual outputs are reconciled.",
+    "Preflight exposes missing/malformed profile values, version/pointer mismatches, unauthorized new current literals, invalid pending evidence, missing inputs, conflicting outputs/tags, and unsupported representations without performing full release checks.",
+    "Baseline drift remains reported until disposition, historical literals retain explicit classification, and ambiguous or unavailable remote state is not reported as clear.",
+    "Unknown closed values or broken generated-region boundaries reject; a justified manual override stays visible for assessment rather than silently becoming a new source of truth."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "confirms": [
+    "FUNC-067",
+    "FUNC-068"
+  ],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-03",
+      "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. One authoritative profile and explicit projection ownership prevent competing release identities and preparation from masquerading as publication. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-04",
+      "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. One authoritative profile and explicit projection ownership prevent competing release identities and preparation from masquerading as publication. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-05",
+      "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. One authoritative profile and explicit projection ownership prevent competing release identities and preparation from masquerading as publication. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-06",
+      "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. One authoritative profile and explicit projection ownership prevent competing release identities and preparation from masquerading as publication. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-07",
+      "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. One authoritative profile and explicit projection ownership prevent competing release identities and preparation from masquerading as publication. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-19",
+      "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. One authoritative profile and explicit projection ownership prevent competing release identities and preparation from masquerading as publication. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-24",
+      "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. One authoritative profile and explicit projection ownership prevent competing release identities and preparation from masquerading as publication. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
+    }
+  ]
+}

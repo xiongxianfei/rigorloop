@@ -1,0 +1,96 @@
+{
+  "id": "SCN-066",
+  "type": "scenario",
+  "title": "Approve and publish one exact qualified candidate",
+  "status": "confirmed",
+  "actor": "A maintainer authorized to approve a supported routine release",
+  "goal": "Authorize the concrete qualified product once and have its supported publication stages operate on that same candidate.",
+  "context": "Required preparation and candidate checks have produced a retained release subject with known source, artifacts, version, and destinations.",
+  "trigger": "The maintainer reviews the candidate approval summary.",
+  "preconditions": [
+    "The candidate and its applicable qualification evidence are identifiable.",
+    "The supported publication setup and decision owner are established."
+  ],
+  "interaction": [
+    {
+      "actor": "System",
+      "action": "Presents the exact candidate, material source/artifact differences, version/channel, destinations, required checks, and limits."
+    },
+    {
+      "actor": "Maintainer",
+      "action": "Approves that candidate and its stated publication actions within applicable authority."
+    },
+    {
+      "actor": "System",
+      "action": "Reports the actual publication attempt and subsequent public verification/closeout outcomes against the same retained subject."
+    }
+  ],
+  "expected_outcome": "Supported routine release proceeds from one applicable candidate approval without manual hash copying or repeated stage approval, preserving exact identity and actual outcomes.",
+  "alternatives": [
+    {
+      "condition": "The unchanged candidate receives a fresh satisfactory recheck.",
+      "outcome": "Existing applicable approval remains usable without a redundant confirmation."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "Candidate bytes, source, configuration, destinations, or required evidence change materially or become invalid.",
+      "outcome": "Publication stops until affected requalification and applicable authorization address the new subject."
+    },
+    {
+      "condition": "A conflicting public tag/artifact, missing authentication prerequisite, or unavailable authorization is found.",
+      "outcome": "The operation stops without overwrite or unapproved fallback."
+    },
+    {
+      "condition": "An external write is uncertain.",
+      "outcome": "Known effects are recorded and public state must be inspected before any retry."
+    },
+    {
+      "condition": "A requested special release lies outside routine automation.",
+      "outcome": "Its need for an explicit supported owner disposition is reported rather than relabeling it routine."
+    }
+  ],
+  "exercises": [
+    "FEAT-020"
+  ],
+  "informs": [
+    "SR-069",
+    "SR-070",
+    "SR-071",
+    "SR-072",
+    "SR-073",
+    "SR-007"
+  ],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-11",
+      "basis": "IR-010 owns this stakeholder situation. It exercises the selected published-product capability while preserving the source contract's observable success and adverse outcomes."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-12",
+      "basis": "IR-010 owns this stakeholder situation. It exercises the selected published-product capability while preserving the source contract's observable success and adverse outcomes."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-22",
+      "basis": "IR-010 owns this stakeholder situation. It exercises the selected published-product capability while preserving the source contract's observable success and adverse outcomes."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-23",
+      "basis": "IR-010 owns this stakeholder situation. It exercises the selected published-product capability while preserving the source contract's observable success and adverse outcomes."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-24",
+      "basis": "IR-010 owns this stakeholder situation. It exercises the selected published-product capability while preserving the source contract's observable success and adverse outcomes."
+    },
+    {
+      "source": "SRC-PUBLISHED-PRODUCTS",
+      "locator": "SCN-066; design/requirements/published-products.md#review-and-validation",
+      "basis": "Independent review and author reconciliation confirmed this stakeholder situation, primary Feature, and SR coverage as current analysis knowledge. This does not approve requirements or establish implemented behavior or satisfaction."
+    }
+  ]
+}

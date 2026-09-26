@@ -1,0 +1,66 @@
+{
+  "id": "SR-066",
+  "type": "system-requirement",
+  "title": "Report installation plans and outcomes without exposing private data",
+  "status": "draft",
+  "statement": "The system shall present nonmutating preliminary installation plans and distinguish blocked, planned, actual, and partial outcomes with actionable supported diagnostics while excluding private environment and credential information.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "A dry-run can be mistaken for verified installation, or an error report can expose secrets while hiding unperformed checks.",
+      "desired_outcome": "Users can decide what an installation would affect and understand what actually happened without sensitive diagnostics or false completion."
+    },
+    "why": {
+      "rationale": "Planning and honest limited results support safe user choice without manufacturing package verification or installation evidence."
+    },
+    "who": {
+      "stakeholders": [
+        "Users planning or diagnosing installation"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "When installation help, dry-run, verification, conflict handling, or actual operation results are presented."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "Human-readable and structured CLI outcomes, destination planning, and bounded network diagnostics."
+      ]
+    },
+    "how": {
+      "approach": "Use bundled inventory for preliminary dry-run checks without downloading, extracting, or changing project files. Distinguish those checks from full verified-archive preflight and preserve existing result envelopes, exit classes, conflict and force warnings, and actual-effect reporting. Use only the declared safe network/proxy fields and closed values, without extra probes or a new proxy dispatcher."
+    },
+    "how_much": {
+      "scope": "Installation's existing public result/exit contract and privacy vocabulary. Results do not claim state writes; no raw credentials, private hosts/users, headers, proxy values, or machine-local archive paths enter public diagnostics or durable generated material."
+    }
+  },
+  "acceptance_criteria": [
+    "Dry-run describes candidate destinations, potential conflicts, and explicit whole-unit replacement scope without acquisition, extraction, or project mutation; unperformed verification remains visible.",
+    "Human and structured results preserve the supported envelopes and exit distinctions and separate planned replacements from actual or partial effects.",
+    "Help and replacement results identify that local modifications inside replaced skill directories will be lost, without implying shared-parent or unrelated-state replacement.",
+    "Network diagnostics contain only allowed bounded public fields and variable names, identify uncertainty honestly, and retain verified local-archive fallback without exposing secrets or performing additional probes."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "confirms": [
+    "FUNC-065"
+  ],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-INSTALLATION",
+      "locator": "docs/design/cli/installation.md#DIST-SR-13",
+      "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. Planning and honest limited results support safe user choice without manufacturing package verification or installation evidence. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-INSTALLATION",
+      "locator": "docs/design/cli/installation.md#DIST-SR-15",
+      "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. Planning and honest limited results support safe user choice without manufacturing package verification or installation evidence. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-INSTALLATION",
+      "locator": "docs/design/cli/installation.md#DIST-SR-16",
+      "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. Planning and honest limited results support safe user choice without manufacturing package verification or installation evidence. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
+    }
+  ]
+}

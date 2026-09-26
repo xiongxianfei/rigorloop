@@ -1,0 +1,85 @@
+{
+  "id": "SCN-069",
+  "type": "scenario",
+  "title": "Prepare an approved support withdrawal for release",
+  "status": "confirmed",
+  "actor": "A maintainer preparing an already-reviewed product compatibility change",
+  "goal": "Prepare the approved support change for delivery with an appropriate version decision and accurate public scope while preserving the meaning of prior releases.",
+  "context": "An approved change withdraws a target or public behavior; the current source and retained historical populations differ.",
+  "trigger": "The maintainer prepares the corresponding compatible release identity and candidate.",
+  "preconditions": [
+    "The support change and its engineering decision are recorded; the supported publication path is identified or its limit is explicit."
+  ],
+  "interaction": [
+    {
+      "actor": "Maintainer",
+      "action": "Selects the reviewed support withdrawal and its public version/compatibility rationale."
+    },
+    {
+      "actor": "System",
+      "action": "Presents the affected current package, target, guidance, candidate, and smoke population and the historical records that retain their original meaning."
+    },
+    {
+      "actor": "Maintainer",
+      "action": "Reviews the consistent candidate and public compatibility explanation before the separate publication approval."
+    }
+  ],
+  "expected_outcome": "The prepared candidate scope and public compatibility explanation agree, prior versions and evidence retain their original identities, and the supported publication path or outstanding handling decision is explicit before separate approval. Preparation does not itself establish publication or readiness.",
+  "alternatives": [
+    {
+      "condition": "The approved breaking source change fits general routine publication but not the narrower supported routine automation population.",
+      "outcome": "The system identifies the required explicit handling decision without silently declaring automation support."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "A current consumer, package input, or required candidate check still assumes the retired population.",
+      "outcome": "The candidate remains unqualified until the affected source/consumer slice is reconciled."
+    },
+    {
+      "condition": "The attempt treats support withdrawal as an unacknowledged compatible patch or rewrites old evidence.",
+      "outcome": "The incompatible decision is identified and publication readiness is withheld."
+    }
+  ],
+  "exercises": [
+    "FEAT-020"
+  ],
+  "informs": [
+    "SR-060",
+    "SR-062",
+    "SR-067",
+    "SR-069"
+  ],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-01",
+      "basis": "IR-010 owns this stakeholder situation. It exercises the selected published-product capability while preserving the source contract's observable success and adverse outcomes."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-02",
+      "basis": "IR-010 owns this stakeholder situation. It exercises the selected published-product capability while preserving the source contract's observable success and adverse outcomes."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-03",
+      "basis": "IR-010 owns this stakeholder situation. It exercises the selected published-product capability while preserving the source contract's observable success and adverse outcomes."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-23",
+      "basis": "IR-010 owns this stakeholder situation. It exercises the selected published-product capability while preserving the source contract's observable success and adverse outcomes."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#Distribution support transition",
+      "basis": "IR-010 owns this stakeholder situation. It exercises the selected published-product capability while preserving the source contract's observable success and adverse outcomes."
+    },
+    {
+      "source": "SRC-PUBLISHED-PRODUCTS",
+      "locator": "SCN-069; design/requirements/published-products.md#review-and-validation",
+      "basis": "Independent review and author reconciliation confirmed this stakeholder situation, primary Feature, and SR coverage as current analysis knowledge. This does not approve requirements or establish implemented behavior or satisfaction."
+    }
+  ]
+}

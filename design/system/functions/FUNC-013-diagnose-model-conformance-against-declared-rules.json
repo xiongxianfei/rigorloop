@@ -40,12 +40,17 @@
       "outcome": "Identify the engineering-review boundary without fabricating a mechanical conclusion."
     }
   ],
-  "unallocated_reason": "Architectural allocation is deliberately deferred until Module responsibilities are designed; this draft claims no Module ownership or implementation.",
   "sources": [
     {
       "source": "SRC-COMPLETE-ANALYSIS",
       "locator": "FUNC-013",
       "basis": "IR-005 / SR-013 confirms mechanically decidable model diagnostics; SR-014 constrains the meaning and scope of resulting assessments."
+    },
+    {
+      "source": "SRC-ARCHITECTURE-PILOT",
+      "locator": "FUNC-013",
+      "basis": "Propose MOD-003 as the single accountable architectural responsibility for the existing behavior. This allocation preserves the Function definition and does not establish implementation or completed interface/AR coverage outside the IR-001 pilot."
     }
-  ]
+  ],
+  "allocated_to": "MOD-003"
 }

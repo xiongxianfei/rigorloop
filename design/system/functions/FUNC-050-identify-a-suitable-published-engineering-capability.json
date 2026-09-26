@@ -1,0 +1,49 @@
+{
+  "id": "FUNC-050",
+  "type": "function",
+  "title": "Identify a suitable published engineering capability",
+  "status": "draft",
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-02",
+      "basis": "Defines common invocation or composition behavior required by IR-009 while preserving the detailed specialist owner and shared existing authority, context, and assurance responsibilities."
+    },
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-24",
+      "basis": "Defines common invocation or composition behavior required by IR-009 while preserving the detailed specialist owner and shared existing authority, context, and assurance responsibilities."
+    },
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-35",
+      "basis": "Defines common invocation or composition behavior required by IR-009 while preserving the detailed specialist owner and shared existing authority, context, and assurance responsibilities."
+    },
+    {
+      "source": "SRC-PUBLISHED-PRODUCTS",
+      "locator": "FUNC-050",
+      "basis": "Assign MOD-012 as the proposed accountable primary responsibility after Functional Analysis. Current product source contracts retain detailed behavior authority; allocation is not runtime adoption or complete AR coverage."
+    }
+  ],
+  "description": "Match a requested engineering outcome to the public capability inventory and explain its supported scope and relevant alternatives. This behavior identifies task fit; it does not authorize or perform the selected activity.",
+  "inputs": [
+    "Requested engineering outcome and available task context.",
+    "Current public capability descriptions, supported responsibility boundaries, and behavioral owners."
+  ],
+  "preconditions": [],
+  "outputs": [
+    "Applicable capability and task-fit explanation, or an explicit ambiguous or unsupported request."
+  ],
+  "behavior": [
+    "Compare the requested outcome with published purposes, triggers, and important near misses.",
+    "Identify the current public capability name, behavioral owner, supported output, and relevant exclusion or neighboring capability.",
+    "Expose an ambiguous or unsupported fit rather than choosing an unrelated capability or claiming deterministic agent selection."
+  ],
+  "failure_behavior": [
+    {
+      "condition": "The request or capability inventory does not support a clear selection.",
+      "outcome": "Identify the missing distinction or unsupported scope without executing a capability."
+    }
+  ],
+  "allocated_to": "MOD-012"
+}

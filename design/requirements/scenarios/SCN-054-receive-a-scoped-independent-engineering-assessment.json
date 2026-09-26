@@ -1,0 +1,81 @@
+{
+  "id": "SCN-054",
+  "type": "scenario",
+  "title": "Receive a scoped independent engineering assessment",
+  "status": "confirmed",
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-04",
+      "basis": "Draft black-box stakeholder situation for IR-009 common Skills-product behavior. The Scenario awaits independent semantic review and does not claim detailed specialist clause migration or runtime evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-07",
+      "basis": "Draft black-box stakeholder situation for IR-009 common Skills-product behavior. The Scenario awaits independent semantic review and does not claim detailed specialist clause migration or runtime evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-27",
+      "basis": "Draft black-box stakeholder situation for IR-009 common Skills-product behavior. The Scenario awaits independent semantic review and does not claim detailed specialist clause migration or runtime evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-29",
+      "basis": "Draft black-box stakeholder situation for IR-009 common Skills-product behavior. The Scenario awaits independent semantic review and does not claim detailed specialist clause migration or runtime evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-PRODUCTS",
+      "locator": "SCN-054; design/requirements/published-products.md#review-and-validation",
+      "basis": "Independent review and author reconciliation confirmed this stakeholder situation, primary Feature, and SR coverage as current analysis knowledge. This does not approve requirements or establish implemented behavior or satisfaction."
+    }
+  ],
+  "actor": "A change author requesting an independent assessor",
+  "goal": "Receive an assessment of exact engineering work and applicable evidence with a justified conclusion and any actionable findings.",
+  "context": "The author has prepared identifiable work for a selected review or verification activity.",
+  "trigger": "The author requests that activity under the project's assessment rules.",
+  "preconditions": [],
+  "interaction": [
+    {
+      "actor": "Author",
+      "action": "Supplies the requested assessment scope, exact subjects, and relevant evidence."
+    },
+    {
+      "actor": "System",
+      "action": "Explains the applicable specialist method, independence requirements, evidence needs, and claim limits."
+    },
+    {
+      "actor": "Assessor",
+      "action": "Examines the complete required subjects and records the scoped conclusion, findings, and basis."
+    },
+    {
+      "actor": "System",
+      "action": "Presents the conclusion and next responsible action without treating persistence or test success as independent approval."
+    }
+  ],
+  "expected_outcome": "The author receives an attributable assessment whose scope, evidence basis, conclusion, and next action are understandable.",
+  "alternatives": [
+    {
+      "condition": "The evidence supports an unfavorable conclusion or actionable finding.",
+      "outcome": "The result explains that conclusion and responsible correction within the assessed scope."
+    },
+    {
+      "condition": "The authorized request is isolated advisory review.",
+      "outcome": "The result remains bounded to that review without claiming governed completion or starting a downstream activity."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "Required independence provenance or a material subject is unavailable.",
+      "outcome": "The system identifies the missing basis and does not claim a completed independent assessment."
+    }
+  ],
+  "exercises": [
+    "FEAT-016"
+  ],
+  "informs": [
+    "SR-053",
+    "SR-054",
+    "SR-056"
+  ]
+}

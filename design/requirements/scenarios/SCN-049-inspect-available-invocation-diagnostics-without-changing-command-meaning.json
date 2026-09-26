@@ -1,0 +1,68 @@
+{
+  "id": "SCN-049",
+  "type": "scenario",
+  "title": "Inspect available invocation diagnostics without changing command meaning",
+  "status": "confirmed",
+  "actor": "An engineer investigating a command invocation",
+  "goal": "Obtain the available bounded diagnostic account for one invocation or an explicit explanation that it is unavailable, without rerunning the command or treating logs as engineering evidence.",
+  "context": "The engineer has an invocation identity from the declared observed command path and wants to understand available local diagnostics.",
+  "trigger": "The engineer requests the exact invocation's retained events.",
+  "preconditions": [
+    "The supplied invocation identity follows the published lookup contract."
+  ],
+  "interaction": [
+    {
+      "actor": "Engineer",
+      "action": "Requests diagnostics for the exact invocation identity."
+    },
+    {
+      "actor": "System",
+      "action": "Returns only matching supported events from the bounded retained log set, or safely distinguishes missing, unavailable, corrupt, or unsupported content."
+    },
+    {
+      "actor": "Engineer",
+      "action": "Uses diagnostic information to investigate while retaining the original semantic command result and independently governed engineering records."
+    }
+  ],
+  "expected_outcome": "The engineer understands the available diagnostic scope without disclosure of raw sensitive input, implicit command replay, or changed recorded authority.",
+  "alternatives": [
+    {
+      "condition": "File logging was disabled, events expired, or no matching retained event exists.",
+      "outcome": "The system reports not-found without claiming that the invocation never occurred."
+    },
+    {
+      "condition": "Unrelated retained lines are corrupt or use an unsupported event schema.",
+      "outcome": "The result exposes bounded safe warnings without raw lines or unsupported interpretation."
+    },
+    {
+      "condition": "Diagnostic writing or lookup is degraded.",
+      "outcome": "The diagnostic limitation is visible while the underlying command's original result, repository changes, and semantic exit remain unchanged."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "Lookup configuration or identity is invalid or the selected logging path is unsafe.",
+      "outcome": "The system rejects or reports unavailability without following unsafe paths, exposing raw input, or repairing permissions."
+    }
+  ],
+  "exercises": [
+    "FEAT-014"
+  ],
+  "informs": [
+    "SR-040",
+    "SR-046",
+    "SR-047"
+  ],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-CLI",
+      "locator": "docs/design/cli/cli.md#CLI-SR-29, CLI-SR-30, CLI-SR-11",
+      "basis": "IR-008 owns this black-box published-product situation. It exercises one durable Feature and informs the named system obligations; draft status leaves confirmation to semantic review and does not claim runtime verification."
+    },
+    {
+      "source": "SRC-PUBLISHED-PRODUCTS",
+      "locator": "SCN-049; design/requirements/published-products.md#review-and-validation",
+      "basis": "Independent review and author reconciliation confirmed this stakeholder situation, primary Feature, and SR coverage as current analysis knowledge. This does not approve requirements or establish implemented behavior or satisfaction."
+    }
+  ]
+}

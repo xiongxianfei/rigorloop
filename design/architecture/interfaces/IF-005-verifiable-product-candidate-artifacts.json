@@ -1,0 +1,54 @@
+{
+  "id": "IF-005",
+  "type": "interface",
+  "title": "Verifiable product candidate artifacts",
+  "status": "draft",
+  "description": "Faithful product artifacts and attributable metadata exchanged between production, release qualification, and verified installation, with candidate checks and published trust kept distinct.",
+  "operations": [
+    {
+      "name": "provide_product_candidate",
+      "purpose": "Supply an identified product candidate with its complete inventory and integrity basis.",
+      "inputs": [
+        "Selected canonical source identity, declared supported target/product population, version/profile, and authorized transformations.",
+        "Actual production and validation observations, with unperformed or failed checks explicit."
+      ],
+      "preconditions": [],
+      "outputs": [
+        "Identified artifact set and member inventory, declared transformation/source identities, exact integrity metadata and algorithm/version domain, and actual validation scope/results."
+      ],
+      "behavior": [
+        "Preserve canonical behavior and untransformed resources across the selected candidate; declare transformations and reject incomplete or unsupported content.",
+        "Generate outside canonical sources and active installation roots; production does not perform installation or customer state adoption.",
+        "Keep artifact bytes, file inventory, hash algorithm, counts, target/release identity, and metadata mutually consistent.",
+        "Provide only actual validation observations. The release consumer qualifies the exact retained candidate, and the installer establishes trust using its package-bundled metadata/release-index contract before accepting supplied bytes."
+      ],
+      "failure_behavior": [
+        {
+          "condition": "Inventory, transformation, dependency, metadata, or actual validation is missing, inconsistent, unsupported, or failed.",
+          "outcome": "Expose the affected candidate and block reliance on it as qualified or verified; do not synthesize passing metadata."
+        },
+        {
+          "condition": "The selected artifact or algorithm is incompatible with its consumer.",
+          "outcome": "Reject incompatible consumption and retain the original identity; do not silently fall back or rewrite historical artifacts."
+        }
+      ]
+    }
+  ],
+  "consistency_rules": [
+    "Candidate production, qualified release, public availability, and verified installation are separate states; this artifact boundary cannot substitute one for another.",
+    "An installer must not trust an arbitrary local archive merely because it has a plausible filename or accompanying caller-provided metadata.",
+    "Retained artifact identities remain immutable across release authorization, public observation, and recovery; no false latest-version or publication claim follows from local production."
+  ],
+  "compatibility_rules": [
+    "Packaging, Installation, and Release retain their exact current targets, archive layouts, algorithms, bundled metadata/release-index trust rules, and independently versioned compatibility domains.",
+    "A new hash/metadata contract requires coordinated producer and consumer qualification; earlier published identities and supported historical verifier meanings are preserved.",
+    "The Interface is an artifact contract and does not prescribe a live package service or new acquisition endpoint."
+  ],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-PRODUCTS",
+      "locator": "IF-005",
+      "basis": "Connect package production to release and installation using SRC-PUBLISHED-PACKAGING, SRC-PUBLISHED-INSTALLATION, and SRC-PUBLISHED-RELEASE; retain separate qualification, trust, and authority boundaries."
+    }
+  ]
+}

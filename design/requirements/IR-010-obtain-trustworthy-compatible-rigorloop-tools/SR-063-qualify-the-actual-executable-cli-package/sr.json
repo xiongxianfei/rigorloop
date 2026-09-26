@@ -1,0 +1,62 @@
+{
+  "id": "SR-063",
+  "type": "system-requirement",
+  "title": "Qualify the actual executable CLI package",
+  "status": "draft",
+  "statement": "The system shall produce and qualify a complete self-contained CLI package with the declared executable, runtime inputs, public metadata, and trusted installation metadata, excluding forbidden content and consumer-side generation or hidden acquisition.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "A source checkout can run correctly while the published tarball omits runtime data or depends on repository-only files.",
+      "desired_outcome": "A clean consumer can execute the actual packed CLI and its supported installation path without repository internals or installation-time product generation."
+    },
+    "why": {
+      "rationale": "The published executable is the user-visible artifact, so source configuration alone cannot establish package completeness."
+    },
+    "who": {
+      "stakeholders": [
+        "CLI users",
+        "Product maintainers and package reviewers"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "Before a CLI candidate is accepted for publication."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "The actual packed npm artifact and a clean consumer installation of those bytes."
+      ]
+    },
+    "how": {
+      "approach": "Inspect actual packed members against the explicit inclusion and exclusion policy. Require the single public binary, required built runtime, license/public metadata, and bundled trust data. Reject unjustified runtime dependencies, hooks, forbidden files, secrets, and missing runtime inputs. Exercise the packed CLI against real generated target archives under the composed proof contract."
+    },
+    "how_much": {
+      "scope": "The retained npm content/dependency policy and supported executable contract, not a new runtime framework. Packaging owns exact file lists and hook constraints; external registry publication proof remains a later Release responsibility."
+    }
+  },
+  "acceptance_criteria": [
+    "Inspecting the actual tarball confirms the declared single binary, required runtime and trusted metadata, matching public/license metadata, and absence of forbidden repository, test, secret, archive-copy, installation, and temporary contents.",
+    "A fresh consumer can execute the packed binary without repository imports, consumer generation, hidden network/credential use, or an unapproved runtime dependency or install hook.",
+    "Qualification exercises actual packed-CLI installation with generated archives and trusted metadata for each selected target, including conflicts, force replacement, preservation, and unsafe destinations; helper or dry-run success alone is insufficient.",
+    "Any missing required member, forbidden inclusion, unusable executable, or package/metadata mismatch prevents qualification."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "confirms": [
+    "FUNC-062"
+  ],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-PACKAGING",
+      "locator": "docs/design/engineering/packaging.md#DIST-SR-18",
+      "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. The published executable is the user-visible artifact, so source configuration alone cannot establish package completeness. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-PACKAGING",
+      "locator": "docs/design/engineering/packaging.md#DIST-SR-23",
+      "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. The published executable is the user-visible artifact, so source configuration alone cannot establish package completeness. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
+    }
+  ]
+}

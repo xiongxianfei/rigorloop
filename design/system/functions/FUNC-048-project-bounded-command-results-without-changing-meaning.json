@@ -1,0 +1,46 @@
+{
+  "id": "FUNC-048",
+  "type": "function",
+  "title": "Project bounded command results without changing meaning",
+  "status": "draft",
+  "description": "Render an actual command outcome and explicitly selected recorded values through the correct human or machine projection while preserving scope, identities, narrative and storage-only meaning. Provide bounded receipt and observation-detail behavior independent of diagnostic volume.",
+  "inputs": [
+    "Admitted operation/result domain, actual semantic/storage outcome, and selected values with scope and identities.",
+    "Requested format/detail, applicable byte budget, and observations with revision and exact observed-subject basis."
+  ],
+  "preconditions": [],
+  "outputs": [
+    "Faithful versioned bounded output and matching semantic exit, or a safe pre-output failure for a read that cannot fit.",
+    "Guaranteed publication receipt, explicit omitted diagnostic/detail scope, and current observation identity for separate detail retrieval."
+  ],
+  "behavior": [
+    "Select the owning family's result schema and preserve its operation/outcome/exit distinctions; available selectors remain accurate and invalid raw values are not echoed.",
+    "Render equivalent decoded selected data in text and JSON, preserving multiline text, Unicode, literal escapes, collection order, optional absence and projection metadata without inventing a second report.",
+    "Size the guaranteed storage receipt before publication; diagnostic expansion and optional detail omission cannot block an admissible correction or reverse a completed save into rejected output.",
+    "Bind diagnostic detail to revision plus actual observed subject basis and observations; report changes as conflict even if diagnosis wording and record revision are unchanged.",
+    "Separate observations from errors, persistence from engineering approval, and retrieval completeness from assessment adequacy. Keep generic concise/detailed semantics and recording/discovery domains distinct."
+  ],
+  "failure_behavior": [
+    {
+      "condition": "A selected read or rendered output exceeds its allowed bound.",
+      "outcome": "Fail before partial output with guidance to narrow selection or use an admitted budget/projection; never silently truncate required rationale."
+    },
+    {
+      "condition": "Optional diagnostics/details exceed the guaranteed receipt or current observation state changes.",
+      "outcome": "Expose explicit omissions with safe bounded summaries, or conflict on detail retrieval; never claim replay of a historical observation or change saved status."
+    }
+  ],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-CLI",
+      "locator": "docs/design/cli/cli.md#CLI-SR-11, CLI-SR-14, CLI-SR-17, CLI-SR-20, CLI-SR-21, CLI-SR-24, CLI-SR-26, CLI-SR-27, CLI-SR-30; docs/design/cli/records.md#RF-SR-07, RF-SR-10",
+      "basis": "Functional Analysis of the IR-008 system obligations confirms this distinct published command/record responsibility. The retained CLI/Record Format contract supplies exact public operations and limits; logical behavior is defined before Module allocation."
+    },
+    {
+      "source": "SRC-PUBLISHED-PRODUCTS",
+      "locator": "FUNC-048",
+      "basis": "Assign MOD-010 as the proposed accountable primary responsibility after Functional Analysis. Current product source contracts retain detailed behavior authority; allocation is not runtime adoption or complete AR coverage."
+    }
+  ],
+  "allocated_to": "MOD-010"
+}

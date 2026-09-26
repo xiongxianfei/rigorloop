@@ -1,0 +1,69 @@
+{
+  "id": "SCN-056",
+  "type": "scenario",
+  "title": "Record a governed activity through the supported procedure",
+  "status": "confirmed",
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-25",
+      "basis": "Draft black-box stakeholder situation for IR-009 common Skills-product behavior. The Scenario awaits independent semantic review and does not claim detailed specialist clause migration or runtime evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-26",
+      "basis": "Draft black-box stakeholder situation for IR-009 common Skills-product behavior. The Scenario awaits independent semantic review and does not claim detailed specialist clause migration or runtime evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-PRODUCTS",
+      "locator": "SCN-056; design/requirements/published-products.md#review-and-validation",
+      "basis": "Independent review and author reconciliation confirmed this stakeholder situation, primary Feature, and SR coverage as current analysis knowledge. This does not approve requirements or establish implemented behavior or satisfaction."
+    }
+  ],
+  "actor": "An authorized participant completing an activity with a recording obligation",
+  "goal": "Persist the required scoped engineering result and understand the observed recording outcome.",
+  "context": "The project requires a governed record for the current activity and has a supported recording procedure.",
+  "trigger": "The participant submits an explicit result for its authorized record destination.",
+  "preconditions": [],
+  "interaction": [
+    {
+      "actor": "Participant",
+      "action": "Provides the activity scope, authorized destination, and explicit engineering decisions."
+    },
+    {
+      "actor": "System",
+      "action": "Presents the applicable recording prerequisites and scoped current context for inspection."
+    },
+    {
+      "actor": "Participant",
+      "action": "Submits the supported recording operation with its required identity and revision basis."
+    },
+    {
+      "actor": "System",
+      "action": "Reports the observed result and any conflict or recovery action, keeping persistence distinct from approval and continuation authority."
+    }
+  ],
+  "expected_outcome": "The required scoped result is recorded with an observable outcome and without granting authority beyond the existing project basis.",
+  "alternatives": [
+    {
+      "condition": "The initial write conflicts and the current recovery procedure can safely reconcile it.",
+      "outcome": "The participant reassesses fresh context and completes the permitted recording with an explicit resulting identity."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "Required procedure, CLI support, or authority is unavailable.",
+      "outcome": "The system stops dependent recording and identifies the actual unmet prerequisite."
+    },
+    {
+      "condition": "An interrupted or unexpected operation leaves the outcome unestablished.",
+      "outcome": "The system reports the observed uncertainty and supported recovery path without claiming success or overwriting by assumption."
+    }
+  ],
+  "exercises": [
+    "FEAT-017"
+  ],
+  "informs": [
+    "SR-055"
+  ]
+}

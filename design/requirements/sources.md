@@ -1,6 +1,6 @@
 # Sources for the initial requirement drafts
 
-This register records the basis of the seven draft IRs, their system-level decomposition, and the connected Features, Scenarios, and Functions. Earlier sections preserve the successive drafting decisions; the current completion pass is recorded under [SRC-COMPLETE-ANALYSIS](#src-complete-analysis).
+This register records the basis of ten draft IRs, their decomposition, and the connected system and architecture model. Earlier sections preserve successive drafting decisions, including the [seven-IR analysis](#src-complete-analysis) and [first architecture pilot](#src-architecture-pilot). The current extension is recorded under [SRC-PUBLISHED-PRODUCTS](#src-published-products).
 Each JSON `sources` entry names a source below and locates the relevant passage or existing requirement.
 The accompanying `basis` explains how that material informed the draft.
 
@@ -304,7 +304,7 @@ No new SR identity was needed for this bounded example. The other IRs and SR-006
 | FUNC-007 | Presenting current context includes access to associated reasoning and must distinguish definition completeness from reasoning availability. |
 
 The JSON records own current relationships and behavior; these tables preserve the drafting rationale rather than serving as a second relationship registry.
-Every Function explicitly defers Module allocation. Modules, Interfaces, ARs, runtime realization, and verification evidence are outside this first System Design slice.
+At that first System Design slice, every Function explicitly deferred Module allocation. Modules, Interfaces, ARs, runtime realization, and verification evidence were outside its scope.
 At that drafting stage, an empty `open_questions` list recorded that no additional question remained for the bounded draft; it did not establish complete RigorLoop coverage, approval, or satisfaction.
 The [current authoring profile](README.md#record-content-and-schemas) now omits the field when no question remains and permits exactly one consequential question when present.
 
@@ -340,13 +340,13 @@ The original source entries and record-level source references above preserve th
 
 The primary Features follow those goals: inspection or authoring. The Scenario JSON records own the actual Feature and SR links; this table records the reasoning for preserving or introducing their identities.
 Review found the material obligations of these six situations represented in the existing five SRs, including explicit incomplete and failed outcomes, so no additional SR was derived for this refinement.
-The seven Function and two Feature definitions, all existing SR definitions, and the other IRs retain their content. Architecture allocation remains deferred.
+At that Scenario refinement, the seven Function and two Feature definitions, all existing SR definitions, and the other IRs retained their content. Architecture allocation remained deferred.
 At that refinement, all six Scenarios remained `draft`; the representation change did not itself confirm their lifecycle state or establish complete IR analysis, requirement approval, implementation, or verification evidence.
 
 ## SRC-COMPLETE-ANALYSIS
 
 Source: the user's instruction to finish all IR/SR/Feature/Function analysis, following the agreed connected analysis of Features, Scenarios, system obligations, and logical behavior under the refined REM.
-The [Requirement Analysis completion criteria](../../rem/methods/requirement-analysis.md#complete-an-irs-system-level-analysis) define this pass; the [Scenario Analysis method](../../rem/methods/scenario-analysis.md) supplies the stakeholder situations and outcome review.
+The [Requirement Analysis completion criteria](../../rem/methods/requirement-analysis.md#reconcile-and-review) define this pass; the [Scenario Analysis method](../../rem/methods/scenario-analysis.md) supplies the stakeholder situations and outcome review.
 
 The scope is the seven existing IRs and the initial authoring-profile decisions already recorded under [SRC-QUESTION-RESOLUTION](#src-question-resolution).
 Locators under this source are the stable IDs of the authored or reconciled records. Their individual `basis` entries identify the parent need, existing obligation, or capability boundary that justifies the content.
@@ -371,3 +371,73 @@ Requirements and System Design assets retain `draft` status under their current 
 Independent semantic reviews covered all seven IRs and their connected definitions. After correction and closure of the reported coverage, interpretation, and outcome-classification findings, the 35 Scenarios were accepted as `confirmed` current analysis knowledge under the Scenario lifecycle.
 The first IR-001 definitions preserve their engineering meanings; FUNC-004 now explicitly uses the profile declared by the selected state, and SR-012 constrains that interpretation. SR-001 and SR-005 now reference the derived IR-003 recovery and provenance responsibilities in present tense.
 The [requirements index](README.md) records the scoped review outcome and the direct checks actually performed for the authored model.
+
+## SRC-ARCHITECTURE-PILOT
+
+Source: the user's instruction to proceed with the proposed responsibility-based architecture method, a responsibility map across the 33 Functions, and an IR-001 architecture example with supporting schemas.
+The [Architecture Design method](../../rem/methods/architecture-design.md) describes the reusable procedure; the [architecture index](../architecture/README.md) records its application, bounded walkthrough, review, and remaining scope.
+
+The starting definition model is retained at repository revision `5cf0c7b6`: seven IRs, 32 SRs, 11 Features, 33 Functions, and 35 confirmed Scenarios.
+This source records analyst-derived target architecture. It does not describe observed runtime Modules, transfer existing contract authority, or claim approval, implementation, or requirement satisfaction.
+Locators are the stable IDs of the affected entities; each record explains its derivation or allocation basis.
+
+The map proposes nine Module responsibilities across all existing Functions. Function definitions retain their identities, behavior, inputs, outputs, failure conditions, and prior provenance; their draft allocation replaces the previous explicit deferral.
+The detailed pilot covers SR-001 through SR-005 using nine ARs, and the shared declared-profile interpretation responsibility using AR-010 beneath SR-012 in its original IR-005 tree.
+Sharing this responsibility does not create a second parent SR or move SR-012 into IR-001.
+The two Interfaces describe storage access and model interpretation/identity checking. Module-owned participation and Function/AR-owned allocations are authoritative; navigation tables derive their inverse views.
+
+### Architecture choices and limits
+
+- Group content custody and state-scoped access separately from preparing revisions, interpreting rules, and presenting engineering context. This prevents an authoring edit, a structural finding, and an explanatory view from becoming competing sources of current truth.
+- Assign one accountable Module per Function and per AR in this draft profile. Collaborating responsibilities use explicit Interfaces; an SR may derive several independently allocated ARs.
+- Supply raw state/profile material to interpretation so interpreted retrieval does not depend recursively on itself. Bind identity findings and writes to the same candidate and selected basis, and keep all related reads attributable to a consistent selected state.
+- Preserve incomplete, unsupported, unavailable, ambiguous, stale, and failed outcomes where their meaning affects reliance. Neither structural interpretation nor successful retention confers approval or evidence applicability.
+- Reuse full-title filenames and containment-based requirement parentage. AR analysis uses the existing seven-part 5W2H convention, with an optional single consequential question; Module and Interface content uses architecture-specific fields.
+
+Interfaces and ARs for the remaining IRs are deferred in the Module definitions, including baseline establishment, change authority, assurance, guidance, and learning interactions.
+The pilot assumes an identifiable selected state and an already applicable authority context. It defines how requests/results preserve those limits but does not implement the deferred authority or baseline services.
+No storage technology, language, transport, deployment layout, performance target, or runtime adoption is selected.
+
+## SRC-PUBLISHED-PRODUCTS
+
+Source: the user's instruction to analyze the published CLI and skills coverage and proceed with the proposed reconciliation of requirements, system capabilities, and architectural responsibilities.
+The [published-product coverage analysis](published-products.md) defines the inspected population, source-qualified obligation dispositions, remaining scope, and bounded review results.
+It follows the current Requirement Analysis, Scenario Analysis, Functional Analysis, and Architecture Allocation methods in `rem/`.
+
+The sources below are existing repository contracts at `5cf0c7b6`, inspected for their obligations and declared adoption boundaries. The task does not invoke a skill, inspect public registries, execute publication or installation, or assert the version currently available to customers.
+New requirements, system assets, and architecture records are analyst-derived drafts. The 27 new Scenarios were confirmed after independent review and author reconciliation; that accepts analysis knowledge, not product behavior or requirement satisfaction. A correspondence to a source requirement preserves a traceable basis but does not migrate its complete contract, approve a replacement, or retire its current owner.
+The original seven IRs cover engineering-model responsibilities; the extension adds distinct user needs for explicit command operations, portable guided engineering activities, and trustworthy compatible tooling distribution.
+Existing authority, evidence, authoring, and learning responsibilities are reused where their meaning matches. Detailed source guarantees remain applicable until an explicit adoption reconciles them.
+Two prior records receive bounded reconciliation: IR-006 reflects current schema availability, and SR-014 confirms the existing Functions governed by its constraint obligation under refined Functional Analysis. Their original need, obligation, acceptance criteria, and earlier source entries remain intact.
+
+## SRC-PUBLISHED-CLI
+
+Sources: [CLI](../../docs/design/cli/cli.md) and [Record Format](../../docs/design/cli/records.md) at `5cf0c7b6`.
+Source-qualified locators identify the path and `CLI-SR-*` or `RF-SR-*` obligation; these namespaces retain their original identities.
+The contracts govern the published command boundary and current operational records, including version dispatch, bounded observations, exact candidate construction, write safety, recovery, and diagnostics.
+They do not imply that the current CLI reads or writes the new REM JSON records.
+
+## SRC-PUBLISHED-SKILLS
+
+Source: [Skill](../../docs/design/skill/skill.md) at `5cf0c7b6`, including its named specialist owners and applicability limits.
+Source-qualified `SKL-SR-*` locators retain the identity of each common product obligation.
+The analysis reads these contracts and inventories canonical capability paths; no `SKILL.md` instructions are invoked.
+The common capability contract and current specialist Designs retain detailed behavior authority. New REM authoring proposals do not automatically extend the outputs supported by installed skills.
+
+## SRC-PUBLISHED-PACKAGING
+
+Source: [Packaging](../../docs/design/engineering/packaging.md) at `5cf0c7b6`.
+Its source-qualified `DIST-SR-*` obligations cover canonical inventory, faithful transformations, generation isolation, compatible artifacts and integrity metadata, and the packed CLI boundary.
+An authored package expectation is not evidence that generation or qualification ran.
+
+## SRC-PUBLISHED-INSTALLATION
+
+Source: [Installation](../../docs/design/cli/installation.md) at `5cf0c7b6`.
+Its source-qualified `DIST-SR-*` obligations cover trusted acquisition, supported targets, destination scope, replacement authority, integrity, partial-failure behavior, and private diagnostics.
+An installed package does not adopt a project's workflow state or grant engineering authority.
+
+## SRC-PUBLISHED-RELEASE
+
+Source: [Release](../../docs/design/engineering/release/release.md) at `5cf0c7b6`.
+Its source-qualified `REL-SR-*` obligations cover compatibility/version decisions, exact candidate qualification, publication authority, external observations, recovery, and durable reporting.
+Source-declared transitions and historical examples retain their original applicability. This design analysis neither executes a release nor changes publication permission.

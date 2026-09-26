@@ -1,0 +1,79 @@
+{
+  "id": "SR-051",
+  "type": "system-requirement",
+  "title": "Prepare project-portable engineering invocations",
+  "status": "draft",
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-05",
+      "basis": "Derives the stated common Skills-product obligation while preserving the cited clause population and retained specialist or package-owner detail; this draft is not source retirement or runtime adoption."
+    },
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-15",
+      "basis": "Derives the stated common Skills-product obligation while preserving the cited clause population and retained specialist or package-owner detail; this draft is not source retirement or runtime adoption."
+    },
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-16",
+      "basis": "Derives the stated common Skills-product obligation while preserving the cited clause population and retained specialist or package-owner detail; this draft is not source retirement or runtime adoption."
+    },
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-31",
+      "basis": "Derives the stated common Skills-product obligation while preserving the cited clause population and retained specialist or package-owner detail; this draft is not source retirement or runtime adoption."
+    },
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-34",
+      "basis": "Derives the stated common Skills-product obligation while preserving the cited clause population and retained specialist or package-owner detail; this draft is not source retirement or runtime adoption."
+    }
+  ],
+  "statement": "The system shall establish the requested capability scope, applicable project authority, sufficient project-local inputs, and a safe target before dependent engineering work, supporting authorized portable invocation without requiring unavailable RigorLoop repository internals.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Guidance written for its own repository can impose missing internal paths or infer unsafe targets in another project.",
+      "desired_outcome": "The requested activity has a bounded, applicable project context and target, or an explicit unresolved prerequisite."
+    },
+    "why": {
+      "rationale": "Portability must preserve customer governance and existing authorization rather than exchanging them for repository-specific defaults."
+    },
+    "who": {
+      "stakeholders": [
+        "Participants invoking published engineering capabilities",
+        "Project decision owners and reviewers",
+        "Published guidance maintainers"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "Before artifact generation, judgment, mutation, or handoff, and when a new material condition changes invocation scope."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "The selected capability path in the participant's project context."
+      ]
+    },
+    "how": {
+      "approach": "Classify the requested outcome and project context, inspect relevant supplied or project-local authority and evidence, choose an already authorized portable target when one is clear, and reuse the common authority decision behavior for reserved actions."
+    },
+    "how_much": {
+      "scope": "Common invocation preparation across published capabilities. Missing repository-specific internals are not a customer defect. Specialist command, write, privileged, and external-action classifications remain at their existing detailed owners; this draft adds no universal approval prompt or automatic fallback for malformed governed signals."
+    }
+  },
+  "acceptance_criteria": [
+    "In a customer project without RigorLoop internal designs, plans, or change records, an otherwise sufficient authorized portable invocation can proceed using its supported local inputs and target.",
+    "The prepared context identifies the requested outcome, subject, applicable project authority, target, and relevant capability mode before dependent action.",
+    "If target, authority, or an essential input is ambiguous, conflicting, or unavailable, the system identifies that exact gap and stops dependent action instead of inventing a target or bypassing project rules.",
+    "A valid prior grant remains usable within its scope through the existing authority behavior; installation, package validity, and stored status do not supply execution authority."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "confirms": [
+    "FUNC-051",
+    "FUNC-026"
+  ]
+}

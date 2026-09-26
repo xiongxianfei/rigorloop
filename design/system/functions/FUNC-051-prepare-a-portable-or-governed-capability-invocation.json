@@ -1,0 +1,52 @@
+{
+  "id": "FUNC-051",
+  "type": "function",
+  "title": "Prepare a portable or governed capability invocation",
+  "status": "draft",
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-05",
+      "basis": "Defines common invocation or composition behavior required by IR-009 while preserving the detailed specialist owner and shared existing authority, context, and assurance responsibilities."
+    },
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-25",
+      "basis": "Defines common invocation or composition behavior required by IR-009 while preserving the detailed specialist owner and shared existing authority, context, and assurance responsibilities."
+    },
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-34",
+      "basis": "Defines common invocation or composition behavior required by IR-009 while preserving the detailed specialist owner and shared existing authority, context, and assurance responsibilities."
+    },
+    {
+      "source": "SRC-PUBLISHED-PRODUCTS",
+      "locator": "FUNC-051",
+      "basis": "Assign MOD-012 as the proposed accountable primary responsibility after Functional Analysis. Current product source contracts retain detailed behavior authority; allocation is not runtime adoption or complete AR coverage."
+    }
+  ],
+  "description": "Resolve a selected capability's project context, requested outcome, safe target, and applicable invocation mode before dependent work. Common authority judgment remains with the existing authorization behavior.",
+  "inputs": [
+    "Selected capability and requested outcome, subject, scope, and target context.",
+    "Applicable project instructions, supplied evidence, current governed signals, and available authorization basis."
+  ],
+  "preconditions": [],
+  "outputs": [
+    "Bounded invocation context with portable or governed obligations and required prerequisites.",
+    "Explicit unresolved context, authority, or target boundary when preparation cannot complete."
+  ],
+  "behavior": [
+    "Use applicable project-local or supplied context without requiring RigorLoop internal repository documents for portable work.",
+    "Identify a safe authorized target or report ambiguity; establish actual scope and inputs before a dependent action.",
+    "Distinguish portable operation from governed or durable recording triggers under the selected specialist contract, including malformed signals and late triggers.",
+    "Use the common authority result for reserved actions and preserve valid existing grants within their limits.",
+    "Reclassify before newly dependent work when scope, authority, or recording conditions materially change."
+  ],
+  "failure_behavior": [
+    {
+      "condition": "A required target, project policy, or governed signal is missing, conflicting, or ambiguous.",
+      "outcome": "Stop the dependent action with the exact unresolved boundary; do not silently downgrade to portable writes."
+    }
+  ],
+  "allocated_to": "MOD-012"
+}

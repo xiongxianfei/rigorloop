@@ -1,0 +1,59 @@
+{
+  "id": "SR-042",
+  "type": "system-requirement",
+  "title": "Enforce the current registered record contract without inventing decisions",
+  "status": "draft",
+  "statement": "The system shall validate current registered recording candidates against the closed v3 record contract and applicable preservation rules, resolving references in the complete candidate while keeping structural validity separate from engineering judgment and preserving actor-supplied meaning.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "A superficially valid update can contain ambiguous references, mixed formats, rewritten concern history, or inferred approval and applicability.",
+      "desired_outcome": "Only structurally admissible, explicitly authored record candidates proceed, and correction remains possible when substantive work is incomplete or observations contradict a recorded claim."
+    },
+    "why": {
+      "rationale": "Preserving both record meaning and the ability to report problems prevents mechanical validation from fabricating authority or blocking necessary correction."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineers and reviewers operating on recorded engineering work",
+        "Engineering agents acting on explicit actor decisions",
+        "Maintainers and consumers of the published command-line interface"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "When checking or publishing a targeted or advanced candidate and when validating exact prepared recovery states."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "The manifest-declared complete candidate for one selected v3 change and its registered supporting records, with prior state supplied for preservation checks."
+      ]
+    },
+    "how": {
+      "approach": "Validate closed types/versions first, then candidate registration, identity, applicability and field-specific reference rules. Preserve Review finding IDs and immutable change-blocker origins under their different contracts; treat supplied assessments and conditional verification basis as recorded facts rather than authenticated conclusions."
+    },
+    "how_much": {
+      "scope": "Current v3 stored shapes, identifiers, vocabularies, narrative fields, reference namespaces, and preservation rules remain authoritative in Record Format. Historical stores are retained evidence only. Model-conformance behavior for the new REM entity JSON is a separate responsibility."
+    }
+  },
+  "acceptance_criteria": [
+    "Unknown fields or vocabularies, duplicate keys or identities, missing required values, unsupported encodings/versions, mixed stores, dual report representations, and malformed current records reject before authoritative writes.",
+    "Every registered supporting record has matching kind/change identity and exactly one explicit record-level applicability declaration; extra physical files gain no authority. EntryRefs resolve exactly one field-compatible object in the same complete candidate, with disjoint referenceable IDs and no cross-change fallback.",
+    "Actor-supplied status, subjects, applicability, narrative order, provenance, and decisions are preserved. Failed evidence, completed activity, stale external subjects, or absent conditional verification basis alone do not prohibit a structurally sound correction or establish approval.",
+    "Review finding IDs cannot be removed or renamed; explicit correction may change valid non-ID current fields. Full Review recording and explanation updates preserve complete findings. Change-level blocker origins retain their complete original basis unchanged for their lifetime.",
+    "Review/Verify use their closed explanation fields; the optional Verify basis is either absent or complete and never inferred from prose, required universally, or resolved as a Git instruction. Exact source shape and reliance policy remain distinct."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-CLI",
+      "locator": "docs/design/cli/cli.md#CLI-SR-02, CLI-SR-07, CLI-SR-26, CLI-SR-27; docs/design/cli/records.md#RF-SR-01, RF-SR-02, RF-SR-03, RF-SR-04, RF-SR-05, RF-SR-08, RF-SR-09, RF-SR-10, RF-SR-11, RF-SR-13",
+      "basis": "Derives this bounded published-product obligation from IR-008 and the named current CLI/Record Format contracts. Detailed schemas, command catalogs, limits and completed-retirement dispositions remain at those owners; this record does not transfer approval or implement REM-record operations."
+    }
+  ],
+  "confirms": [
+    "FUNC-044"
+  ]
+}
