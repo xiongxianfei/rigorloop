@@ -1,0 +1,82 @@
+{
+  "id": "IR-002",
+  "type": "initial-requirement",
+  "title": "Trace engineering obligations and responsibilities",
+  "status": "draft",
+  "statement": "Engineers, architects, and reviewers need to trace how initial needs relate to system obligations, capabilities, logical behavior, architectural responsibilities, realization, and assurance so they can assess consistency and the effects of proposed changes.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Obligations, capabilities, behavior, architecture, and assurance can become disconnected, leaving their relationships and affected responsibilities unclear.",
+      "desired_outcome": "Participants can follow the engineering relationships needed to identify responsibility, assess consistency, and investigate the effects of a proposed change."
+    },
+    "why": {
+      "rationale": "Disconnected engineering information makes it difficult to discover affected responsibilities, missing allocations, and unsupported conclusions."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineers and architects",
+        "Reviewers",
+        "Maintainers and engineering agents"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "Applies when developing the model, reviewing its consistency, investigating a problem, or assessing the impact of a proposed change."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "Across requirement parentage and cross-domain engineering relationships within the governed model."
+      ]
+    },
+    "how": {
+      "approach": "Use explicit typed relationships with single-parent requirement containment and graph references across domains. Derive inverse views from the authored facts. SR derivation must distinguish relationship integrity, navigation, allocation consistency, and impact assessment. For the initial authoring profile, a traversal selects its starting entities, relationship types, direction, and model state. Required views include requirement ancestors and descendants, forward and reverse responsibility paths, and affected entities reached through the declared relationship scope. Cycles terminate without repeatedly processing the same traversal state. Requested depth or result limits are explicit, and any resource limit, missing reference, interruption, or truncation prevents an unqualified completeness claim."
+    },
+    "how_much": {
+      "scope": "Covers meaningful requirement parentage and typed cross-domain relationships, including forward and reverse understanding. It does not make relationship presence evidence of requirement satisfaction or prescribe a graph database or user interface. The relationship families are described by REM; this initial need does not establish a quantitative performance target. Traversal is confined to the selected project model and baseline; cross-project and cross-baseline continuation are excluded from this initial profile. There is no implicit depth or result-count cutoff and no elapsed-time service target. Full reachability within the requested scope and explicitly limited exploration are distinguishable results.",
+      "scale": "Use the single-project model scope and capacity policy defined by IR-001 analysis.how_much.scale; this requirement adds no separately maintained model-size target."
+    }
+  },
+  "assumptions": [],
+  "constraints": [],
+  "sources": [
+    {
+      "source": "SRC-REM",
+      "locator": "Sections 8, 17, 28, 29, 30, and 34",
+      "basis": "Strict requirement parentage, converging allocations, and typed graph traceability."
+    },
+    {
+      "source": "SRC-VISION",
+      "locator": "What makes this different; Traceable from idea to verified change",
+      "basis": "Inspectable traceability from intent through realization and proof."
+    },
+    {
+      "source": "SRC-SYSTEM",
+      "locator": "SYS-SR-03",
+      "basis": "Related existing traceability obligation; its full contract has not been migrated."
+    },
+    {
+      "source": "SRC-REM-REFINEMENT",
+      "locator": "Requirement Analysis: Analyze the initial need; Name the initial requirement",
+      "basis": "Required 5W2H analysis and a clearer IR name, preserving the existing identity and need statement."
+    },
+    {
+      "source": "SRC-QUESTION-RESOLUTION",
+      "locator": "IR-002",
+      "basis": "Resolution of the recorded questions for the initial RigorLoop authoring profile under the user's instruction to solve them; the source register preserves the original questions and rationale."
+    },
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "IR-002",
+      "basis": "Complete this existing IR through governed black-box Scenarios, independently assessable SR obligations, and bounded shared Features and Functions. Preserve the need statement and selected scope; all records remain draft, with architectural allocation and implementation assessment deferred."
+    }
+  ],
+  "confirms": [
+    "FEAT-003",
+    "SCN-007",
+    "SCN-008",
+    "SCN-009",
+    "SCN-010"
+  ]
+}

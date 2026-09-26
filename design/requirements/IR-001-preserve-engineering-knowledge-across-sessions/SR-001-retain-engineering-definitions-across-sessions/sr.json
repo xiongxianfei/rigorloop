@@ -1,0 +1,82 @@
+{
+  "id": "SR-001",
+  "type": "system-requirement",
+  "title": "Retain engineering definitions across sessions",
+  "status": "draft",
+  "statement": "The system shall retain explicitly saved engineering entity definitions for current reliance and retrieval in later sessions independently of the originating conversation or authoring process. Retrieval shall identify the selected subject and model state and explicitly report unavailable, unsupported, incomplete, or failed outcomes.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "An explicitly saved entity definition may be inaccessible to later readers if retrieval still depends on the originating authoring process or its private session state.",
+      "desired_outcome": "A fresh session can retrieve the saved definition from the selected retained model state with its identity, type, and authored content intact, or identify the requested information that could not be retrieved."
+    },
+    "why": {
+      "rationale": "Current engineering knowledge must remain available after the original author or agent stops working."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineers and engineering agents saving definitions",
+        "Readers resuming work in a later session"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "After an entity definition has been explicitly saved and the originating authoring session has ended, while the information remains in the governed scope.",
+        "Apply IR-001's current-reliance retention rule; retention ends only through the controlled disposition described under IR-003."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "In the retained governed engineering model, accessible to a fresh authoring session."
+      ]
+    },
+    "how": {
+      "approach": "Retain saved identity, entity type, and authored content under the parent IR retention policy. Retrieve from an identifiable selected model state independently of the originating conversation, agent memory, or authoring process; distinguish complete content from unavailable, unsupported, incomplete, or failed outcomes."
+    },
+    "how_much": {
+      "scope": "Applies to explicitly saved information while it remains in the governed scope. It does not claim preservation of unsaved conversations, unlimited retention, or recovery from storage loss; retained-baseline recovery is addressed under IR-003. Apply IR-001's retrieval service boundary and IR-003's selected retained-baseline recovery boundary. These answer the parent retention and scale dependency without introducing separate numerical guarantees.",
+      "scale": "Use the initial authoring profile's model scope and capacity policy in IR-001 analysis.how_much.scale; there is no independent size target for this SR."
+    }
+  },
+  "acceptance_criteria": [
+    "After saving a supported entity definition, close the originating authoring process. In a fresh session using the retained governed model, retrieve the same identity, entity type, and authored content when no intervening change has occurred.",
+    "A reader with access to the retained model can retrieve the saved definition without access to the originating chat transcript, agent memory, or private authoring-session state.",
+    "A saved definition still needed for current reliance remains retrievable when its authoring session ends or time passes; removal from current scope follows a recorded disposition that preserves surviving obligations and required history.",
+    "When a retained definition cannot be completely retrieved, the outcome identifies the unavailable or incomplete scope instead of reporting a complete definition.",
+    "For a requested identity in a selected retained model state, the retrieval outcome identifies both the requested subject and the selected state. A stable entity identity alone is not presented as a revision or state identifier.",
+    "When retrieval cannot interpret the selected model representation or fails while accessing it, the outcome distinguishes unsupported interpretation or failed access from an absent entity and does not report success or silently substitute a different state."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "sources": [
+    {
+      "source": "SRC-REM",
+      "locator": "Sections 3, 5, and 31",
+      "basis": "Durable engineering knowledge and directly understandable current assets."
+    },
+    {
+      "source": "SRC-VISION",
+      "locator": "Pitch; Resumable across sessions and agents",
+      "basis": "Project artifacts remain usable beyond their originating conversation."
+    },
+    {
+      "source": "SRC-QUESTION-RESOLUTION",
+      "locator": "SR-001",
+      "basis": "Resolution of the recorded questions for the initial RigorLoop authoring profile under the user's instruction to solve them; the source register preserves the original questions and rationale."
+    },
+    {
+      "source": "SRC-IR-001-SCENARIO-ANALYSIS",
+      "locator": "SR-001",
+      "basis": "Apply the renewed REM Scenario Analysis method to the existing IR-001 need; preserve requirement identities and reconcile scenario outcomes with obligations and logical behavior. Confirmation records draft analysis, not approval, implementation, or satisfaction."
+    },
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "SR-001",
+      "basis": "Reconcile the existing IR-001 boundary with the now-derived recovery and historical provenance obligations under IR-003; preserve the original obligation, acceptance criteria, and identity."
+    }
+  ],
+  "confirms": [
+    "FUNC-001",
+    "FUNC-004"
+  ]
+}

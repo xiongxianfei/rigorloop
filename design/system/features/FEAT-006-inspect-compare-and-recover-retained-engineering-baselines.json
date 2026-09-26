@@ -1,0 +1,31 @@
+{
+  "id": "FEAT-006",
+  "type": "feature",
+  "title": "Inspect, compare, and recover retained engineering baselines",
+  "status": "draft",
+  "description": "Engineers, reviewers, and maintainers can identify retained coherent engineering states, understand how selected states differ, and recover an available retained state with its original content and meaning. The capability supports historical understanding and recovery decisions without tying them to a particular configuration-management technology.",
+  "scope": {
+    "includes": [
+      "Establish an identifiable retained Baseline with declared scope, applicable interpretation rules, and provenance.",
+      "Inspect and compare selected retained states, preserving original identity and meaning.",
+      "Recover an intact retained Baseline and distinguish complete recovery from gaps or unavailable content."
+    ],
+    "excludes": [
+      "Authorization to overwrite active work or release retained history.",
+      "Automatic recovery of unsaved work, unavailable external content, or destroyed retained storage.",
+      "A required configuration-management product or elapsed recovery-time target."
+    ]
+  },
+  "realized_by": [
+    "FUNC-020",
+    "FUNC-021",
+    "FUNC-022"
+  ],
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "FEAT-006",
+      "basis": "IR-003 and SR-020 through SR-022 establish historical state identification, comparison, and faithful recovery as one durable stakeholder capability distinct from controlled Change execution."
+    }
+  ]
+}

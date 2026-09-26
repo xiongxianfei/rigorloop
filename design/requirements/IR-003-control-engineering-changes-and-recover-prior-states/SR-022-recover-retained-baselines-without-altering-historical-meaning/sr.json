@@ -1,0 +1,60 @@
+{
+  "id": "SR-022",
+  "type": "system-requirement",
+  "title": "Recover retained baselines without altering historical meaning",
+  "status": "draft",
+  "statement": "The system shall reproduce the recorded authoritative content, identities, relationships, interpretation rules, and provenance of an available intact retained Baseline when recovery is declared complete, and shall explicitly report unavailable, incomplete, or failed recovery.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Recovery can silently substitute current content or rules for the historical state, losing the engineering meaning the participant intended to restore.",
+      "desired_outcome": "A participant obtains the selected state with its original meaning and can distinguish complete recovery from known missing or unavailable content."
+    },
+    "why": {
+      "rationale": "IR-003 explicitly requires recovery with zero loss or alteration relative to the selected intact retained Baseline."
+    },
+    "who": {
+      "stakeholders": [
+        "Maintainers recovering prior states",
+        "Reviewers inspecting an exact historical engineering basis"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "On demand when a participant selects an available intact retained Baseline for recovery."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "The scope recorded by the selected retained Baseline."
+      ]
+    },
+    "how": {
+      "approach": "Identify the requested Baseline and declared retained scope, reproduce its authoritative content together with the interpretation and provenance needed to preserve its meaning, and report the recovered state and completeness. Do not retarget historical relationships to current owners. Recovery availability does not authorize replacing active work; any destructive adoption remains subject to SR-007."
+    },
+    "how_much": {
+      "scope": "Recovery from intact accessible retained storage. Complete recovery permits zero loss or alteration relative to the selected Baseline. There is no elapsed recovery-time commitment, storage-disaster guarantee, preservation of unsaved work, or guarantee of unavailable external content."
+    }
+  },
+  "acceptance_criteria": [
+    "Recovering an intact retained Baseline reproduces all authoritative content in its declared scope, including original identities, relationships, interpretation rules, and provenance, without substituting later definitions.",
+    "If an earlier requirement was allocated to one architectural responsibility and a later state changes that allocation, the recovered earlier state retains the original allocation and decision meaning.",
+    "Missing, inaccessible, uninterpretable, or partially recovered content is identified with its affected scope; the result is not reported as complete.",
+    "Material outside the selected Baseline, including later unsaved work and external content not retained with it, is not implied to have been recovered.",
+    "A request to recover a Baseline alone does not authorize overwriting active work or performing another action reserved by the selected project policy."
+  ],
+  "assumptions": [
+    "The selected retained Baseline and its applicable interpretation rules remain intact and accessible."
+  ],
+  "constraints": [],
+  "confirms": [
+    "FUNC-022"
+  ],
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "SR-022",
+      "basis": "Derived from IR-003: IR-003 explicitly requires recovery with zero loss or alteration relative to the selected intact retained Baseline. The criteria describe intended observable behavior, not executed verification."
+    }
+  ]
+}

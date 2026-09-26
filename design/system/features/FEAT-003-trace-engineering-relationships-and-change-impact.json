@@ -1,0 +1,32 @@
+{
+  "id": "FEAT-003",
+  "type": "feature",
+  "title": "Trace engineering relationships and change impact",
+  "status": "draft",
+  "description": "Engineers, architects, and reviewers can record and follow explicit engineering relationships, inspect architectural responsibility, and investigate possible change impact with the supporting paths and limits visible.",
+  "scope": {
+    "includes": [
+      "Author authoritative typed relationships and inspect their derived inverse views.",
+      "Navigate requirement parentage and cross-domain relationships within a selected project model state.",
+      "Inspect declared allocation gaps and inconsistencies and relationship-based potential impact."
+    ],
+    "excludes": [
+      "Unrecorded dependency inference, cross-project or cross-baseline traversal, and a particular visualization technology.",
+      "Engineering approval or satisfaction inferred from relationship presence."
+    ]
+  },
+  "realized_by": [
+    "FUNC-003",
+    "FUNC-008",
+    "FUNC-009",
+    "FUNC-010",
+    "FUNC-011"
+  ],
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "FEAT-003",
+      "basis": "IR-002 and its Scenario/SR analysis establish this bounded stakeholder capability; it remains draft analysis, not an implemented feature claim."
+    }
+  ]
+}

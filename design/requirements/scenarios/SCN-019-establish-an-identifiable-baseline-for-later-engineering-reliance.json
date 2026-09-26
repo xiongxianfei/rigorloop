@@ -1,0 +1,66 @@
+{
+  "id": "SCN-019",
+  "type": "scenario",
+  "title": "Establish an identifiable baseline for later engineering reliance",
+  "status": "confirmed",
+  "actor": "An engineer responsible for retaining an engineering state",
+  "goal": "Establish a coherent identifiable state whose declared content and interpretation can be inspected later.",
+  "context": "A body of engineering work is ready to be retained as a reference state while future work continues.",
+  "trigger": "The engineer needs an identifiable Baseline for subsequent review, comparison, or recovery.",
+  "preconditions": [
+    "The intended governed scope and its authoritative engineering material are identified.",
+    "The project's applicable interpretation rules and retention policy are available."
+  ],
+  "interaction": [
+    {
+      "actor": "Engineer",
+      "action": "Identifies the state to retain, its declared scope, and included engineering material."
+    },
+    {
+      "actor": "System",
+      "action": "Presents the proposed Baseline identity, retained scope, applicable rules, provenance, and any missing or conflicting content."
+    },
+    {
+      "actor": "Engineer",
+      "action": "Requests establishment of the coherent state within the applicable authority."
+    },
+    {
+      "actor": "System",
+      "action": "Reports the retained Baseline and its included content, or the exact scope that could not be established."
+    }
+  ],
+  "expected_outcome": "The engineer can refer later participants to an identifiable retained Baseline whose original definitions, relationships, rules, and provenance remain distinguishable from later work.",
+  "alternatives": [
+    {
+      "condition": "Some supporting external material is referenced but is outside the retained scope.",
+      "outcome": "The Baseline distinguishes those references from content it can actually recover."
+    },
+    {
+      "condition": "Realization or assurance material is included in the declared scope.",
+      "outcome": "The retained-state description identifies that material and its original basis with the engineering definitions."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "Required authoritative content or applicable interpretation rules are unavailable or conflicting.",
+      "outcome": "The system identifies the gap and does not claim to have established a complete coherent Baseline."
+    },
+    {
+      "condition": "Retention does not complete for all declared content.",
+      "outcome": "The system reports what was retained and what remains unconfirmed."
+    }
+  ],
+  "exercises": [
+    "FEAT-006"
+  ],
+  "informs": [
+    "SR-020"
+  ],
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "SCN-019",
+      "basis": "IR-003 owns this situation; SR-020 derives coherent Baseline identity, scope, preservation, interpretation, and provenance obligations. Accepted as current requirement-analysis knowledge after independent coverage and clarity review: one owning IR and primary Feature, observable goal and interactions, classified outcomes, and applicable SR coverage. This confirms analysis only, not requirement approval, implementation, or satisfaction."
+    }
+  ]
+}

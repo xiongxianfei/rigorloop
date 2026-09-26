@@ -1,0 +1,66 @@
+{
+  "id": "SCN-010",
+  "type": "scenario",
+  "title": "Investigate possible impact of a proposed engineering change",
+  "status": "confirmed",
+  "actor": "Change author",
+  "goal": "Identify connected engineering subjects that may need attention because of a proposed change.",
+  "context": "A change author is assessing a proposal against one current project model.",
+  "trigger": "The author selects one or more entities expected to change.",
+  "preconditions": [
+    "The selected model state and change subjects are identifiable."
+  ],
+  "interaction": [
+    {
+      "actor": "Change author",
+      "action": "Selects the proposed change subjects and relationship scope for impact exploration."
+    },
+    {
+      "actor": "System",
+      "action": "Presents potentially affected entities with supporting paths and exploration limits."
+    },
+    {
+      "actor": "Change author",
+      "action": "Inspects why each entity may need review."
+    },
+    {
+      "actor": "System",
+      "action": "Keeps the result labeled as potential impact and identifies unassessed areas."
+    }
+  ],
+  "expected_outcome": "The author has an explainable, bounded list of possible impacts for engineering review.",
+  "alternatives": [
+    {
+      "condition": "No entities are reachable in the completely explored requested scope.",
+      "outcome": "The system reports no relationship-based impact in that scope without claiming the change has no effects."
+    },
+    {
+      "condition": "The author deliberately limits exploration.",
+      "outcome": "The result states the requested limit and supports a correspondingly bounded review."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "A change subject is missing or the selected scope cannot be fully inspected.",
+      "outcome": "The system identifies the unresolved subject or incomplete scope and does not claim full impact coverage."
+    },
+    {
+      "condition": "A result belongs to a different state or scope.",
+      "outcome": "The system reports the mismatch and does not use it as the selected impact assessment."
+    }
+  ],
+  "exercises": [
+    "FEAT-003"
+  ],
+  "informs": [
+    "SR-009",
+    "SR-011"
+  ],
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "SCN-010",
+      "basis": "IR-002 analysis establishes this stakeholder situation and its selected profile boundaries; the linked SRs account for its outcomes without creating a second requirement parent. Accepted as current requirement-analysis knowledge after independent coverage and clarity review: one owning IR and primary Feature, observable goal and interactions, classified outcomes, and applicable SR coverage. This confirms analysis only, not requirement approval, implementation, or satisfaction."
+    }
+  ]
+}

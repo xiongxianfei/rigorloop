@@ -1,0 +1,59 @@
+{
+  "id": "SR-014",
+  "type": "system-requirement",
+  "title": "Separate model conformance results from engineering judgments",
+  "status": "draft",
+  "statement": "The system shall distinguish mechanically established model-conformance results from supplied engineering-review judgments when presenting an assessment, identify each subject, scope, and basis, and prevent a structural result from being presented as requirement approval, design adequacy, or requirement satisfaction.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "A passing schema or relationship check can be mistaken for evidence that the model is meaningful, complete, or implemented correctly.",
+      "desired_outcome": "Participants understand what a result establishes and which conclusions still require engineering assessment."
+    },
+    "why": {
+      "rationale": "IR-005 assigns clarity, derivation, allocation adequacy, assumptions, and evidence adequacy to engineering review rather than mechanical conformance."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineers and model authors",
+        "Architects, reviewers, and engineering agents"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "When presenting a model-conformance result alone or alongside a supplied engineering-review judgment."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "Within assessment of the selected engineering model and its declared rules."
+      ]
+    },
+    "how": {
+      "approach": "Label the kind, subjects, governing rules, and assessed scope of each result. Keep supplied engineering judgments attributable to their review basis and separate from mechanical findings. Expose a review need where the rules cannot decide adequacy, without manufacturing a positive or negative judgment."
+    },
+    "how_much": {
+      "scope": "Covers presentation and interpretation of model-assessment outcomes, including supplied judgments; it does not create or approve those judgments. Review authority and controlled adoption belong to IR-003; evidence-backed satisfaction and its applicability belong to IR-004. This obligation constrains existing assessment behavior without introducing a separate Function merely to mirror this SR."
+    }
+  },
+  "acceptance_criteria": [
+    "A successful mechanical result states which rules and state were checked and does not report the requirement approved, implemented, or satisfied.",
+    "Present two structurally valid definitions with different clarity or unsupported reasoning; leave adequacy to identified engineering review rather than inferring it from structural success.",
+    "When a supplied review judgment accompanies a mechanical result, preserve its identified subject and basis and present it distinctly from the mechanical observation; do not infer or fabricate review approval.",
+    "An allocation result needing semantic review is not silently promoted to a mechanically established conflict or a confirmed adequate design."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "SR-014",
+      "basis": "Derived from IR-005 and its selected initial-profile scope: IR-005 assigns clarity, derivation, allocation adequacy, assumptions, and evidence adequacy to engineering review rather than mechanical conformance."
+    }
+  ],
+  "constrains": [
+    "FEAT-004",
+    "FUNC-013",
+    "FUNC-010"
+  ]
+}

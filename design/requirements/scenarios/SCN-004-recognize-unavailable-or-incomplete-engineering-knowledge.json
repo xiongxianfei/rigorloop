@@ -1,0 +1,97 @@
+{
+  "id": "SCN-004",
+  "type": "scenario",
+  "title": "Recognize unavailable or incomplete engineering knowledge",
+  "status": "confirmed",
+  "actor": "A reader relying on a selected engineering definition",
+  "goal": "Recognize which information about the selected engineering subject and state is available, and which definition or reasoning gaps limit reliance on it.",
+  "context": "The selected entity or its associated current information cannot be completely retrieved or interpreted within the supported model scope.",
+  "trigger": "The reader requests a current definition and its applicable recorded rationale.",
+  "preconditions": [
+    "The request identifies the intended entity and model state or exposes that selection as unresolved."
+  ],
+  "interaction": [
+    {
+      "actor": "Reader",
+      "action": "Identifies the intended entity and selected model state and requests its current definition and applicable recorded rationale."
+    },
+    {
+      "actor": "System",
+      "action": "Reports the subject and state addressed, the information available, and any unavailable, unsupported, incomplete, or failed retrieval scope."
+    },
+    {
+      "actor": "System",
+      "action": "Separately identifies definition completeness and the availability or applicability of associated decision reasoning."
+    },
+    {
+      "actor": "Reader",
+      "action": "Identifies the remaining gap and can distinguish available content from information that cannot support current reliance."
+    }
+  ],
+  "expected_outcome": "The reader knows which subject and state were addressed and what remains unknown; the system does not invent missing content, substitute another entity or state, or label a partial result complete.",
+  "alternatives": [
+    {
+      "condition": "The selected model state or retained definition is inaccessible.",
+      "outcome": "The result reports unavailability for the requested scope rather than asserting that the entity does not exist."
+    },
+    {
+      "condition": "The record's entity type or representation cannot be interpreted by the supported profile.",
+      "outcome": "The result identifies the unsupported content and makes no claim that a valid complete definition was obtained."
+    },
+    {
+      "condition": "Only part of the definition or a required current definition reference can be obtained.",
+      "outcome": "The retrieved portion remains identifiable, and the definition is reported as incomplete for the requested scope."
+    },
+    {
+      "condition": "The definition is complete but its associated recorded rationale is unavailable or incomplete.",
+      "outcome": "The complete definition remains usable as a definition while its decision context is explicitly incomplete."
+    },
+    {
+      "condition": "The retrieval attempt fails before completeness can be established.",
+      "outcome": "The result reports failure and the scope, if any, actually obtained without claiming complete retrieval."
+    },
+    {
+      "condition": "The intended entity or selected model state cannot be established from the request.",
+      "outcome": "The system identifies the unresolved selection, allowing the reader to recognize that no particular subject or state has been established."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "The system provides no usable outcome identifying the requested or unresolved subject, state, and affected scope.",
+      "outcome": "The reader cannot determine what was addressed or what remains unknown; the diagnostic goal has not been achieved."
+    },
+    {
+      "condition": "A partial or unsupported result is presented as complete, missing rationale is concealed, or another entity or state is silently substituted.",
+      "outcome": "The reader is given a misleading account and cannot reliably distinguish known content from gaps; the diagnostic goal has failed."
+    },
+    {
+      "condition": "Definition completeness and reasoning availability are combined into an undifferentiated result.",
+      "outcome": "The reader cannot tell whether the definition is usable or only its decision context is incomplete, limiting the diagnostic goal."
+    }
+  ],
+  "exercises": [
+    "FEAT-001"
+  ],
+  "informs": [
+    "SR-001",
+    "SR-004",
+    "SR-005"
+  ],
+  "sources": [
+    {
+      "source": "SRC-IR-001-SCENARIO-ANALYSIS",
+      "locator": "SCN-004",
+      "basis": "Makes IR-001's declared retrieval boundaries explicit in the retention, current-definition, and rationale obligations of SR-001, SR-004, and SR-005."
+    },
+    {
+      "source": "SRC-SCENARIO-MODEL-REFINEMENT",
+      "locator": "SCN-004",
+      "basis": "Preserves SCN-004 as recognition of incomplete knowledge under SR-001, SR-004, and SR-005. Honest diagnostics for underlying retrieval failures are successful variants of this goal; absent or misleading diagnostic responses are Scenario failures."
+    },
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "SCN-004",
+      "basis": "Accepted as current requirement-analysis knowledge after independent coverage and clarity review: one owning IR and primary Feature, observable goal and interactions, classified outcomes, and applicable SR coverage. This confirms analysis only, not requirement approval, implementation, or satisfaction."
+    }
+  ]
+}

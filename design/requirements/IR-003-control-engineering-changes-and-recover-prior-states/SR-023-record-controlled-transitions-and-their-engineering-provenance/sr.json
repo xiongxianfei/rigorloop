@@ -1,0 +1,58 @@
+{
+  "id": "SR-023",
+  "type": "system-requirement",
+  "title": "Record controlled transitions and their engineering provenance",
+  "status": "draft",
+  "statement": "The system shall retain each governed Change as an identifiable transition with its scope, initiating basis, affected engineering subjects, recorded decisions, and resulting state, distinguishing proposed or incomplete work from an established transition between Baselines.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "A final state alone hides why it changed, while a proposed action can be mistaken for an adopted engineering decision.",
+      "desired_outcome": "Participants can explain an established transition from its recorded basis and recognize unfinished work without reconstructing a private conversation."
+    },
+    "why": {
+      "rationale": "IR-003 separates current definitions, Change history, and configuration history and requires controlled transitions with provenance."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineers carrying out Changes",
+        "Reviewers and project decision owners inspecting transitions"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "When a Change is proposed, revised, adopted, corrected, or inspected after completion."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "The governed Change and its referenced before and after engineering states."
+      ]
+    },
+    "how": {
+      "approach": "Identify the Change, its initiating needs or source basis, intended scope, affected subjects and revisions, actor and decision provenance, and actual disposition. Associate an established transition with its before and resulting Baselines and the applicable decision basis. Preserve the difference between proposals, assessments, authorizations, and adopted outcomes. Current definitions remain directly understandable without replaying these records."
+    },
+    "how_much": {
+      "scope": "Recorded transitions within one governed project. This does not prescribe branch, review-host, or approval technology; SR-007 determines applicable authority. Actual verification evidence is governed by IR-004 and is referenced at its owner rather than copied or implied by completion labels."
+    }
+  },
+  "acceptance_criteria": [
+    "An established Change identifies its originating and resulting Baselines, affected subjects, initiating basis, adopted outcome, and recorded actor and decision provenance.",
+    "A proposed or interrupted Change remains distinguishable from an established transition and does not claim a resulting Baseline or decision that has not been recorded.",
+    "When a Change is corrected or superseded, the prior recorded decision and state remain attributable to their original basis instead of appearing to have always reflected the correction.",
+    "Reading the current engineering model does not require replaying Changes to obtain its current definitions; inspecting the Change explains the transition and its recorded provenance.",
+    "Assessment results and suggested actions are identifiable as such and do not become authorization merely because they appear in the Change history."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "confirms": [
+    "FUNC-023"
+  ],
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "SR-023",
+      "basis": "Derived from IR-003: IR-003 separates current definitions, Change history, and configuration history and requires controlled transitions with provenance. The criteria describe intended observable behavior, not executed verification."
+    }
+  ]
+}

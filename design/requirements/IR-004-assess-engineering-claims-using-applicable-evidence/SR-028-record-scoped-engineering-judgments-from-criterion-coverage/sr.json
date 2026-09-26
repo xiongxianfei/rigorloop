@@ -1,0 +1,59 @@
+{
+  "id": "SR-028",
+  "type": "system-requirement",
+  "title": "Record scoped engineering judgments from criterion coverage",
+  "status": "draft",
+  "statement": "The system shall make an engineering judgment traceable to its declared claim scope, requirement criteria, applicable supporting and contradictory evidence, unresolved gaps, and recorded reasoning, and shall not present satisfaction as established where a required criterion lacks support or a material contradiction remains unresolved.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "A favorable summary can conceal uncovered criteria, conflicting observations, or a decision whose scope exceeds the available evidence.",
+      "desired_outcome": "A decision owner can understand what the evidence supports, what remains unestablished, and which conclusion requires engineering judgment."
+    },
+    "why": {
+      "rationale": "IR-004 selects criterion coverage and applicability as its sufficiency rule and distinguishes mechanical inspection from semantic engineering judgment."
+    },
+    "who": {
+      "stakeholders": [
+        "Reviewers forming engineering judgments",
+        "Project decision owners using scoped conclusions"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "When satisfaction, readiness, or another engineering conclusion is asserted or reassessed."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "The exact subject, state, criteria, and scope declared by the engineering claim."
+      ]
+    },
+    "how": {
+      "approach": "Account for every criterion in the claim, identify applicable observations and gaps, and preserve material contradictory evidence with its disposition or unresolved status. Record the judging participant or accountable source, conclusion, scope, and rationale. Allow a narrower supported claim only when its boundaries and excluded criteria remain explicit. Mechanical coverage checks expose support and inconsistencies; they do not supply unstated semantic judgments or action authority."
+    },
+    "how_much": {
+      "scope": "Claims within explicitly stated criterion and subject scope. No universal test count, coverage percentage, confidence score, or review-vote threshold is required. Judgment is separate from the authorization governed by SR-007 and does not itself execute a governed action."
+    }
+  },
+  "acceptance_criteria": [
+    "A reviewer can trace each criterion within a satisfaction claim to applicable observations and inspect the judgment's subject state, scope, author or accountable source, and reasoning.",
+    "A missing applicable observation or unresolved material contradictory observation leaves the affected claim unestablished and is visible in its coverage and judgment.",
+    "A narrower supported conclusion names its supported scope and excludes the unsupported portion without presenting the entire requirement or broader readiness claim as satisfied.",
+    "A mechanical check reporting complete references or passing labels does not substitute for a recorded semantic conclusion that the evidence supports the criteria.",
+    "A judgment does not confer execution authority, and a permitted exception or accepted tradeoff is not mislabeled as observed requirement satisfaction."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "confirms": [
+    "FUNC-030",
+    "FUNC-031"
+  ],
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "SR-028",
+      "basis": "Derived from IR-004: IR-004 selects criterion coverage and applicability as its sufficiency rule and distinguishes mechanical inspection from semantic engineering judgment. The criteria describe intended observable behavior, not executed verification."
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "id": "FUNC-032",
+  "type": "function",
+  "title": "Select canonical guidance for an authoring activity",
+  "status": "draft",
+  "description": "Identify and present the canonical authoring sources applicable to an activity and declared profile version, preserving the same engineering meaning for human and agent use. Selection explains applicability; it does not interpret or migrate the model itself.",
+  "inputs": [
+    "Requested authoring activity and participant context.",
+    "Declared method/profile version and available canonical guidance with its owning sources."
+  ],
+  "preconditions": [
+    "The activity and selected profile are supplied or their absence can be reported."
+  ],
+  "outputs": [
+    "Applicable guidance owners and source versions, with rationale and worked-example navigation.",
+    "Explicit unavailable, superseded, incompatible, or ambiguous guidance context."
+  ],
+  "behavior": [
+    "Match the declared activity and profile with their canonical guidance owners.",
+    "Present concepts, methods, required rules, and illustrative examples with their roles distinguished.",
+    "Preserve normative meaning across human and agent presentations, identifying source versions.",
+    "Disclose guidance that is unavailable or no longer applicable after a profile change; do not silently choose an incompatible substitute."
+  ],
+  "failure_behavior": [
+    {
+      "condition": "The requested activity or profile version is unknown.",
+      "outcome": "Identify the missing selection and do not claim that guidance is applicable."
+    },
+    {
+      "condition": "Canonical guidance is missing or conflicting.",
+      "outcome": "Identify affected owners and the unresolved conflict without inventing a new authoritative rule."
+    }
+  ],
+  "unallocated_reason": "Architectural allocation is deliberately deferred until Module responsibilities are designed; this draft claims no Module ownership or implementation.",
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "FUNC-032",
+      "basis": "SR-032 requires identifiable canonical guidance and version applicability for human and agent authors."
+    }
+  ]
+}

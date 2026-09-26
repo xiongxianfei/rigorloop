@@ -1,0 +1,77 @@
+{
+  "id": "IR-005",
+  "type": "initial-requirement",
+  "title": "Keep engineering models valid and consistently interpreted",
+  "status": "draft",
+  "statement": "Engineers, reviewers, and engineering agents need explicit, consistent rules for interpreting engineering models and identifying invalid model content so they can maintain and use engineering information with a shared understanding of its meaning.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Participants can apply incompatible interpretations or validity rules to the same engineering content when the governing metamodel is unclear.",
+      "desired_outcome": "Authors, readers, and reviewers can interpret governed content against identifiable common rules and understand where it departs from those rules."
+    },
+    "why": {
+      "rationale": "When participants apply different meanings or validity rules to the same model, they can accept incompatible definitions, overlook broken relationships, or draw conclusions from information they interpret differently."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineers and model authors",
+        "Reviewers and model maintainers",
+        "Engineering agents using or maintaining the model"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "Applies when defining model rules, authoring or interpreting model content, checking a proposed engineering state, and changing the rules under which existing content is interpreted."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "Across governed requirements, system design, and architecture design, and the Operational Support definitions that govern their representation and interpretation."
+      ]
+    },
+    "how": {
+      "approach": "Define an explicit metamodel for entity meaning, fields, relationships, identity, and lifecycle rules. In the initial authoring profile, automated checks cover mechanically decidable rules for record shape, required values and closed vocabularies, identity uniqueness, naming and containment agreement, single-parent acyclic requirement hierarchy, typed reference resolution, and explicitly defined lifecycle transitions. Engineering review assesses need validity, clarity, derivation, allocation coherence beyond mechanical rules, assumption justification, and evidence adequacy. Both forms of assessment report their scope; passing one does not stand in for the other. The authoring schemas and focused model checks assess only their documented structural scope; they do not establish a complete product implementation of these obligations."
+    },
+    "how_much": {
+      "scope": "Covers model meaning, structural and semantic validity rules, and consistent interpretation of governed content. The relationship needs belong to IR-002; this need concerns the rules used to represent and assess their validity. Conformance to model rules does not establish that product requirements are satisfied; assessment of engineering claims using evidence belongs to IR-004. The need does not prescribe a schema language, storage format, or validation tool. The initial authoring profile interprets each retained baseline with the metamodel and rules identified by that baseline. Current authoring targets one explicitly selected profile; it does not promise that the current parser accepts every historical format. A format change uses an explicit, reviewed mapping to a new current state, preserves identity and meaning or records an intentional semantic change, and checks current references and consumers before adoption. Historical content remains unchanged and interpretable through its retained rules; an unsupported historical profile is reported rather than silently reinterpreted."
+    }
+  },
+  "assumptions": [],
+  "constraints": [],
+  "sources": [
+    {
+      "source": "SRC-REM",
+      "locator": "Sections 20, 21, 22, and 35",
+      "basis": "Operational Support governs the metamodel, representation, validation, lifecycle, and engineering-model invariants."
+    },
+    {
+      "source": "SRC-VISION",
+      "locator": "Who it is for; What it commits to",
+      "basis": "Existing project intent values explicit requirements, architectural consistency, and engineering information that participants can validate and review."
+    },
+    {
+      "source": "SRC-REQUIREMENT-EXPANSION",
+      "locator": "IR-005: Keep engineering models valid and consistently interpreted",
+      "basis": "The user authorized drafting this initial need as part of the expanded requirement inventory; the record remains a draft."
+    },
+    {
+      "source": "SRC-QUESTION-RESOLUTION",
+      "locator": "IR-005",
+      "basis": "Resolution of the recorded questions for the initial RigorLoop authoring profile under the user's instruction to solve them; the source register preserves the original questions and rationale."
+    },
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "IR-005",
+      "basis": "Complete this existing IR through governed black-box Scenarios, independently assessable SR obligations, and bounded shared Features and Functions. Preserve the need statement and selected scope; all records remain draft, with architectural allocation and implementation assessment deferred."
+    }
+  ],
+  "confirms": [
+    "FEAT-004",
+    "FEAT-005",
+    "SCN-011",
+    "SCN-012",
+    "SCN-013",
+    "SCN-014"
+  ]
+}

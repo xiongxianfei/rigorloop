@@ -1,0 +1,42 @@
+{
+  "id": "FUNC-023",
+  "type": "function",
+  "title": "Record controlled change transitions and provenance",
+  "status": "draft",
+  "description": "Retains the identity, scope, basis, decisions, affected subjects, and disposition of a governed Change. It relates an established transition to its before and resulting Baselines while keeping proposed work distinct from adopted outcomes.",
+  "inputs": [
+    "Change identity, intended scope, initiating needs or source basis, and affected subjects and revisions.",
+    "Recorded actions, participants, decisions, assessment references, applicable authorization, and available before and resulting states."
+  ],
+  "preconditions": [
+    "The Change and its governing project context are identifiable."
+  ],
+  "outputs": [
+    "Current Change description and provenance with proposed, incomplete, established, or superseded outcomes distinguishable.",
+    "Traceable before and resulting Baselines for an established transition, or explicit missing transition context."
+  ],
+  "behavior": [
+    "Retain the Change's initiating basis, scope, affected subjects and revisions, responsible actors, decisions, and actual disposition.",
+    "Associate an established transition with identifiable before and resulting Baselines and the applicable decision basis.",
+    "Keep assessment references and suggested actions distinguishable from authorizations and adopted decisions.",
+    "Preserve earlier decisions and transitions when later corrections or supersession are recorded; leave current definitions directly understandable at their owners."
+  ],
+  "failure_behavior": [
+    {
+      "condition": "A proposed established transition lacks its before state, resulting state, or recorded decision basis.",
+      "outcome": "Expose the missing basis and retain the transition as incomplete rather than inventing an adopted outcome."
+    },
+    {
+      "condition": "A correction conflicts with an earlier recorded decision or history.",
+      "outcome": "Retain both attributable states and identify the correction; do not silently rewrite the earlier provenance."
+    }
+  ],
+  "unallocated_reason": "Architectural responsibility is deliberately deferred until the logical requirements and system design are reconciled. This Function establishes behavior, not a Module, Interface, implementation, or verification result.",
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "FUNC-023",
+      "basis": "SR-023 confirms controlled transition history under IR-003. SR-007 constrains authority, and SR-006 owns the separate activity-specific resumption context."
+    }
+  ]
+}

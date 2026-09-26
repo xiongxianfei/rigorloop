@@ -1,0 +1,66 @@
+{
+  "id": "SR-003",
+  "type": "system-requirement",
+  "title": "Preserve identity through entity evolution",
+  "status": "draft",
+  "statement": "The system shall preserve an existing entity's identity when its display name, physical location, or definition is changed as an evolution of that same entity.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Renaming, moving, or editing an existing entity can sever references if its identity is tied to its presentation or location.",
+      "desired_outcome": "Readers and tools can continue to designate the same engineering subject across supported edits while treating revision and evidence applicability separately."
+    },
+    "why": {
+      "rationale": "References should continue to designate the same engineering subject when its presentation or definition evolves."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineers and engineering agents evolving entity definitions",
+        "Readers and tools relying on existing identity-based references"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "When a supported rename, location change, or definition edit evolves the same existing entity."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "Within the same governed engineering model, including supported moves between physical locations."
+      ]
+    },
+    "how": {
+      "approach": "Preserve the entity identity through the supported edit and keep identity-based references designating that entity."
+    },
+    "how_much": {
+      "scope": "This requirement does not determine identity treatment for entity splits, merges, replacements, or reuse after retirement. Preserved entity identity does not imply an unchanged revision, renewed approval, or continued applicability of previous evidence; those concerns belong to controlled evolution and assessment. Identity preservation does not authorize a change of requirement parentage: a move to a different IR or SR parent is a semantic model change whose derivation must be reconsidered under the applicable change policy."
+    }
+  },
+  "acceptance_criteria": [
+    "After a supported display-name change, the entity retains its identity and existing identity-based references still designate that entity.",
+    "After a supported location change within the same governed model, the entity retains its identity and remains identifiable through that identity.",
+    "After a supported edit to the definition of the same entity, the entity retains its identity."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "sources": [
+    {
+      "source": "SRC-REM",
+      "locator": "Sections 13, 31, 35, and 42",
+      "basis": "Durable evolving assets and identity independent of name and location."
+    },
+    {
+      "source": "SRC-DESIGN",
+      "locator": "DES-SR-11",
+      "basis": "Related existing distinction between stable identity and changed assessed subjects; this does not transfer its full scope."
+    },
+    {
+      "source": "SRC-IR-001-SCENARIO-ANALYSIS",
+      "locator": "SR-003",
+      "basis": "Apply the renewed REM Scenario Analysis method to the existing IR-001 need; preserve requirement identities and reconcile scenario outcomes with obligations and logical behavior. Confirmation records draft analysis, not approval, implementation, or satisfaction."
+    }
+  ],
+  "confirms": [
+    "FUNC-005"
+  ]
+}

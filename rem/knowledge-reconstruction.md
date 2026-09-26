@@ -60,7 +60,7 @@ REM distinguishes:
 - [Initial Requirement (IR)](concepts/README.md#requirements) — the initial durable expression of the need.
 - [System Requirement (SR)](concepts/README.md#requirements) — the durable system-level obligation derived from the IR.
 - [Allocated Requirement (AR)](concepts/README.md#requirements) — the durable lower-level obligation derived from an SR and allocated to architecture.
-- [Scenario](concepts/README.md#requirement-analysis-artifacts) — a concrete stakeholder-visible situation used to analyze how a capability is exercised.
+- [Scenario](concepts/README.md#requirement-analysis-entities) — a first-class governed black-box stakeholder situation with stable identity and lifecycle.
 - [Feature](concepts/README.md#system-and-architecture-assets) — the durable stakeholder-visible capability.
 - [Function](concepts/README.md#system-and-architecture-assets) — the durable logical system behavior.
 
@@ -79,7 +79,7 @@ The requirement reasoning is governed primarily by the [REM principles](principl
 
 ### Models
 
-The [Requirement model](models/requirements.md) makes the requirement hierarchy normative:
+The [Requirement model](models/requirements.md) makes the requirement hierarchy normative, while the [Scenario model](models/scenarios.md) owns governed Scenario identity, lifecycle, and cross-domain Scenario relationships:
 
 ```text
 IR
@@ -87,14 +87,19 @@ IR
     └── AR
 ```
 
-It also defines the cross-domain traceability:
+Cross-domain traceability is divided by authoritative owner:
 
 ```text
-IR ── confirms ──────> Feature
+Scenario model:
 IR ── confirms ──────> Scenario
 Scenario ─exercises──> Feature
 Scenario ─informs────> SR
+
+System Design model:
+IR ── confirms ──────> Feature
 SR ── confirms ──────> Function
+
+Architecture Design model:
 AR ── allocatedTo ───> Module
 ```
 
@@ -136,7 +141,7 @@ IR
                                    └── confirms → Function
 ```
 
-Scenario Analysis identifies stakeholder-visible situations and the durable Feature those situations exercise.
+Scenario Analysis creates and governs first-class stakeholder-visible Scenario entities and confirms the durable Feature those situations exercise.
 It may reveal candidate behavior, but the corresponding Function becomes authoritative through SR analysis.
 
 ### Why REM is built this way
@@ -145,7 +150,7 @@ This separation allows:
 
 - the IR to preserve stakeholder need and context;
 - the Feature to remain durable while Scenarios change;
-- Scenarios to explain concrete stakeholder use without becoming product architecture;
+- Scenarios to preserve concrete stakeholder-use context with stable identity and lifecycle without becoming product architecture;
 - SRs to turn stakeholder situations into assessable system obligations;
 - Functions to describe logical behavior independently from the requirement text;
 - ARs to allocate lower-level obligations without turning Modules into requirement categories.
@@ -190,7 +195,7 @@ The SR establishes what the system must satisfy.
 The Function expresses the behavior the system performs to satisfy that obligation.
 
 Principle 16 connects naming to engineering meaning.
-The [System Design model](models/system-design.md#clear-names-and-boundaries) defines the Feature and Function clarity criteria; [Scenario Analysis](methods/scenario-analysis.md#confirm-the-feature) applies them to capabilities, and [Requirement Analysis](methods/requirement-analysis.md#derive-system-requirements) applies them before an SR confirms a Function.
+The [System Design model](models/system-design.md#clear-names-and-boundaries) defines the Feature and Function clarity criteria; [Scenario Analysis](methods/scenario-analysis.md#1-confirm-the-stakeholder-goal-and-feature) applies them to capabilities, and [Requirement Analysis](methods/requirement-analysis.md#derive-system-requirements) applies them before an SR confirms a Function.
 The [Operational Support model](models/operational-support.md#naming-and-location) separately owns representation choices such as deriving filenames from an ID and title.
 
 The [Requirement Analysis method](methods/requirement-analysis.md#derive-system-requirements) currently supplies the entry point for confirming Functions from SRs.
@@ -331,9 +336,9 @@ When a reader asks why REM contains a particular rule, follow the links in this 
 
 ### Example: Why does REM keep Feature separate from Scenario?
 
-1. Read [Scenario](concepts/README.md#requirement-analysis-artifacts) and [Feature](concepts/README.md#system-and-architecture-assets).
-2. Read Principle 3 in [Principles](principles/README.md).
-3. Read the [System Design model](models/system-design.md).
+1. Read [Scenario](concepts/README.md#requirement-analysis-entities) and [Feature](concepts/README.md#system-and-architecture-assets).
+2. Read Principles 3, 10, and 17 in [Principles](principles/README.md).
+3. Read the [Scenario model](models/scenarios.md) and [System Design model](models/system-design.md).
 4. Read [Scenario Analysis](methods/scenario-analysis.md).
 
 ### Example: Why does SR confirm Function while AR allocates to Module?
@@ -347,7 +352,7 @@ When a reader asks why REM contains a particular rule, follow the links in this 
 
 1. Read Principle 16 in [Principles](principles/README.md).
 2. Read the naming and definition criteria in the [System Design model](models/system-design.md#clear-names-and-boundaries).
-3. Follow the Feature procedure in [Scenario Analysis](methods/scenario-analysis.md#confirm-the-feature) or the Function procedure in [Requirement Analysis](methods/requirement-analysis.md#derive-system-requirements).
+3. Follow the Feature procedure in [Scenario Analysis](methods/scenario-analysis.md#1-confirm-the-stakeholder-goal-and-feature) or the Function procedure in [Requirement Analysis](methods/requirement-analysis.md#derive-system-requirements).
 4. Read [Operational Support](models/operational-support.md#naming-and-location) for the separate question of how a project represents that name in directories, filenames, or other storage.
 
 This is the intended role of this file: it tells the reader which authoritative knowledge to follow rather than restating that knowledge here.

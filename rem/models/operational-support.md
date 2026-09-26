@@ -12,7 +12,7 @@ It SHOULD also specify validation, lifecycle, authoring, retirement, migration, 
 
 REM supplies common semantics; an implementation profile selects their concrete representation.
 For example, a profile may use JSON records, filesystem containment, and a version-control repository.
-Those choices do not change what a Requirement, Function, or Module means.
+Those choices do not change what a Requirement, Scenario, Function, or Module means.
 
 ## Naming and location
 
@@ -23,6 +23,9 @@ Readable labels help people navigate the model without making the labels themsel
 
 A filesystem representation may combine a stable identity and a normalized readable title in a directory or filename, such as an ID followed by a title slug.
 Such a representation defines title normalization, label consistency, and collision handling.
+For example, a JSON profile may choose `<ID>-<title-slug>.json` for Scenarios, Features, and Functions: the record's `id` and `title` are authoritative, and the filename is derived from them.
+The slug is not a separately authored name or identity. A title refinement changes the derived filename while relationships continue to use the stable ID.
+This filename convention is a representation choice, not a REM requirement.
 Another implementation may expose the same identity and name through a database or another storage interface.
 REM does not require directories or a particular filename pattern.
 
@@ -36,7 +39,7 @@ Changing a storage convention also requires reconciliation of the tools and cons
 
 ## Validation and maintenance
 
-Structural checks assess representation, containment, identity, and reference integrity.
+Structural checks assess representation, containment, identity, lifecycle, and reference integrity. Scenario validation includes one owning IR, stable identity, valid lifecycle state, and the black-box relationship constraints defined by the Scenario model.
 Engineering assessment determines whether obligations, behavior, allocation, and proof are coherent and adequate.
 A structurally valid model can still contain incomplete reasoning or unsupported claims.
 

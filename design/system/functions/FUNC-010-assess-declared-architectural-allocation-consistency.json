@@ -1,0 +1,45 @@
+{
+  "id": "FUNC-010",
+  "type": "function",
+  "title": "Assess declared architectural allocation consistency",
+  "status": "draft",
+  "description": "Compare the declared architectural responsibilities of applicable Allocated Requirements and constrained Functions under identified allocation rules, exposing factual violations, explicit deferrals, and questions requiring engineering review.",
+  "inputs": [
+    "Selected model state with AR, Function, and Module identities and allocation/constraint relationships.",
+    "Declared allocation and consistency rules, including permitted deferrals."
+  ],
+  "preconditions": [],
+  "outputs": [
+    "Findings with subject identities, allocation paths, rule basis, and assessed scope.",
+    "Distinguished consistent, violated, deferred, incomplete, or engineering-review-needed conclusions."
+  ],
+  "behavior": [
+    "Identify the applicable ARs, Functions, constraints, and accountable allocations in the selected scope.",
+    "Expose absent or unresolved responsibilities and preserve explicit permitted deferrals.",
+    "Compare converging responsibilities under the selected rules; do not assume every Function and AR pair must share one Module.",
+    "Associate each mechanically established conflict with its deciding rule and supporting paths.",
+    "Present undecidable allocation adequacy as a review need rather than manufactured consistency or conflict."
+  ],
+  "failure_behavior": [
+    {
+      "condition": "The architecture or needed constraint relation is absent.",
+      "outcome": "Report the unassessed or incomplete scope rather than complete architectural consistency."
+    },
+    {
+      "condition": "An allocation endpoint is unresolved or of the wrong type.",
+      "outcome": "Identify the broken responsibility path and prevent reliance on it as a confirmed allocation."
+    },
+    {
+      "condition": "No declared rule decides whether differing responsibilities are acceptable.",
+      "outcome": "Expose the difference for engineering review without claiming a mechanical violation."
+    }
+  ],
+  "unallocated_reason": "Architectural allocation is deliberately deferred until Module responsibilities are designed; this draft claims no Module ownership or implementation.",
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "FUNC-010",
+      "basis": "IR-002 / SR-010 confirms allocation assessment; IR-005 / SR-014 constrains the boundary between factual conformance and engineering judgment."
+    }
+  ]
+}

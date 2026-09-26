@@ -1,0 +1,45 @@
+{
+  "id": "FUNC-011",
+  "type": "function",
+  "title": "Report possible change impact",
+  "status": "draft",
+  "description": "Relate a proposed changed-entity selection to potentially affected engineering entities using declared influence scope and traversal results. Explain each possible impact without claiming a proven behavioral consequence.",
+  "inputs": [
+    "Selected model state and identities of entities proposed to change.",
+    "Declared relationship types and influence directions, optional exploration limits, and scoped traversal results."
+  ],
+  "preconditions": [],
+  "outputs": [
+    "Potentially affected entities, each with a supporting path from a selected change subject.",
+    "Impact scope, limitations, uncovered areas, and explicit interpretation as potential impact."
+  ],
+  "behavior": [
+    "Keep the change subject, model state, and relationship scope identifiable.",
+    "Use returned reachable entities and supporting typed paths to explain potential impact.",
+    "Carry incomplete traversal, missing links, and requested limits into the result.",
+    "Distinguish no reachable entity in a complete selected scope from an assertion that the change has no effects.",
+    "Leave actual consequence, required action, and evidence applicability judgments to their responsible assessments."
+  ],
+  "failure_behavior": [
+    {
+      "condition": "A proposed changed entity is missing or ambiguous.",
+      "outcome": "Report the unresolved subject and do not manufacture a starting impact path."
+    },
+    {
+      "condition": "Traversal results belong to a different state or scope.",
+      "outcome": "Reject those results for this assessment and identify the mismatch."
+    },
+    {
+      "condition": "Relationship coverage or traversal is incomplete.",
+      "outcome": "Present only bounded potential impact with the uncovered scope visible; do not claim full impact coverage."
+    }
+  ],
+  "unallocated_reason": "Architectural allocation is deliberately deferred until Module responsibilities are designed; this draft claims no Module ownership or implementation.",
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "FUNC-011",
+      "basis": "IR-002 / SR-011 confirms explainable relationship-based potential impact using SR-009 traversal semantics."
+    }
+  ]
+}

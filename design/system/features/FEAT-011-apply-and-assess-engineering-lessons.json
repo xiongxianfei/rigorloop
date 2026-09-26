@@ -1,0 +1,38 @@
+{
+  "id": "FEAT-011",
+  "type": "feature",
+  "title": "Apply and assess engineering lessons",
+  "status": "draft",
+  "description": "Engineers, reviewers, and maintainers can derive reusable learning from supported findings, consult applicable lessons for future work, prepare accountable improvements, and assess their observed effects. Proposed learning remains distinct from governed adoption and from evidence that an improvement helps.",
+  "scope": {
+    "includes": [
+      "Characterize lessons while separating observation, inference, mechanism, and applicability.",
+      "Identify relevant lessons and improvement dispositions when preparing comparable work.",
+      "Prepare improvements with accountable owners and observable success/adverse-effect criteria for controlled adoption.",
+      "Assess triggering situations and later comparable activities, and reassess after recurrence or context change."
+    ],
+    "excludes": [
+      "Automatic policy changes or authority conferred by a lesson.",
+      "A mandatory lesson for every isolated correction or a new required lesson storage format.",
+      "Guaranteed prevention of recurrence or universal effectiveness conclusions from a bounded observation."
+    ]
+  },
+  "realized_by": [
+    "FUNC-035",
+    "FUNC-036",
+    "FUNC-037",
+    "FUNC-038",
+    "FUNC-023",
+    "FUNC-026",
+    "FUNC-028",
+    "FUNC-029",
+    "FUNC-031"
+  ],
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "FEAT-011",
+      "basis": "IR-007 establishes learning and improvement as a durable capability, reusing IR-003 controlled transition/authority and IR-004 observations/applicability/judgment behaviors."
+    }
+  ]
+}

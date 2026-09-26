@@ -1,0 +1,65 @@
+{
+  "id": "SCN-013",
+  "type": "scenario",
+  "title": "Distinguish structural conformance from engineering adequacy",
+  "status": "confirmed",
+  "actor": "Engineering reviewer",
+  "goal": "Understand what a passing structural check does and does not establish before judging a model.",
+  "context": "A candidate model has a passing mechanical result but still needs engineering assessment.",
+  "trigger": "The reviewer is asked whether the candidate is ready for an engineering decision.",
+  "preconditions": [
+    "The selected candidate and the mechanical result subjects are identifiable."
+  ],
+  "interaction": [
+    {
+      "actor": "Engineering reviewer",
+      "action": "Inspects the check result and its rule coverage."
+    },
+    {
+      "actor": "System",
+      "action": "Identifies the assessed state, rules, and remaining semantic-review boundary."
+    },
+    {
+      "actor": "Engineering reviewer",
+      "action": "Reviews clarity, derivation, assumptions, or allocation adequacy and supplies the review judgment with its subject and basis."
+    },
+    {
+      "actor": "System",
+      "action": "Presents that judgment distinctly from the mechanical result and its limited conclusion."
+    }
+  ],
+  "expected_outcome": "The reviewer can rely on structural facts without confusing them with engineering approval or satisfaction.",
+  "alternatives": [
+    {
+      "condition": "The model is structurally valid but its rationale is unsupported.",
+      "outcome": "The review identifies the unsupported reasoning as an engineering issue rather than contradicting the valid structural observation."
+    },
+    {
+      "condition": "An allocation mismatch has no decisive mechanical rule.",
+      "outcome": "The assessment identifies the matter for architectural review without inventing a rule-based violation."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "The structural result omits its model state or assessed rules.",
+      "outcome": "The system identifies insufficient assessment context; the reviewer cannot rely on an unqualified conformance claim."
+    },
+    {
+      "condition": "A structural pass is presented as requirement satisfaction.",
+      "outcome": "The unsupported conclusion is identified and requires correction before reliance."
+    }
+  ],
+  "exercises": [
+    "FEAT-004"
+  ],
+  "informs": [
+    "SR-014"
+  ],
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "SCN-013",
+      "basis": "IR-005 analysis establishes this stakeholder situation and its selected profile boundaries; the linked SRs account for its outcomes without creating a second requirement parent. Accepted as current requirement-analysis knowledge after independent coverage and clarity review: one owning IR and primary Feature, observable goal and interactions, classified outcomes, and applicable SR coverage. This confirms analysis only, not requirement approval, implementation, or satisfaction."
+    }
+  ]
+}

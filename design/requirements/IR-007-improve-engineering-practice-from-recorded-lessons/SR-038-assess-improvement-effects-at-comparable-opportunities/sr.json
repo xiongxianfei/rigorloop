@@ -1,0 +1,59 @@
+{
+  "id": "SR-038",
+  "type": "system-requirement",
+  "title": "Assess improvement effects at comparable opportunities",
+  "status": "draft",
+  "statement": "The system shall support assessing an adopted improvement against its triggering situation when reproducible and during the next comparable engineering activity, recording recurrence, intended behavior, adverse effects, and the observation context, with reassessment after recurrence or material context change.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Adoption, a single passing reproduction, or elapsed time can be mistaken for proof that an improvement works in later practice.",
+      "desired_outcome": "Effectiveness conclusions remain limited to actual comparable observations and are reconsidered when their basis changes."
+    },
+    "why": {
+      "rationale": "Opportunity-based assessment tests both the intended correction and its effect on real subsequent work without promising permanent prevention."
+    },
+    "who": {
+      "stakeholders": [
+        "Improvement owners",
+        "Reviewers observing subsequent work",
+        "Maintainers assessing engineering practice"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "At a reproducible triggering situation, the next comparable activity after adoption, and subsequent recurrence or material context change."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "The adopted improvement and the governed work contexts to which its recorded applicability extends."
+      ]
+    },
+    "how": {
+      "approach": "Apply the recorded success and adverse-effect criteria to identifiable observations. Distinguish triggering-situation reproduction from later comparable use. Record nonreproducibility, absent comparable opportunities, unsupported comparisons, and mixed results explicitly. Preserve previous context-bounded conclusions when a fresh assessment is required."
+    },
+    "how_much": {
+      "scope": "Covers the selected opportunity-based observation period: no universal calendar duration, sample count, pass-rate target, or permanent-effectiveness guarantee. Evidence and judgment authority reuse IR-004. Lack of comparable work leaves effectiveness unassessed."
+    }
+  },
+  "acceptance_criteria": [
+    "When the triggering situation is reproducible, record the correction outcome for the adopted version; when it is not, identify that limit without inventing a reproduction result.",
+    "At the next comparable activity, record whether the mechanism recurred, the intended behavior occurred, and new confusion or burden appeared, with the activity context and applicable criteria.",
+    "If no comparable activity has occurred, report effectiveness unassessed even if the improvement was adopted or its triggering reproduction passed.",
+    "Contradictory or incomplete observations remain visible; conclusions identify the observed scope and do not assert that failures can never recur.",
+    "After recurrence or material context change, mark the prior conclusion as needing reassessment for the new context, preserving the original observation and bounded conclusion."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "SR-038",
+      "basis": "Derived from IR-007 and its declared initial authoring scope; the acceptance criteria describe assessment intent, not observed results."
+    }
+  ],
+  "confirms": [
+    "FUNC-038"
+  ]
+}

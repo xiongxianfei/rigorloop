@@ -1,0 +1,161 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RigorLoop Function",
+  "description": "Draft RigorLoop authoring profile. Schema validity does not establish relationship resolution, engineering adequacy, approval, or implementation.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "type",
+    "title",
+    "status",
+    "description",
+    "inputs",
+    "preconditions",
+    "outputs",
+    "behavior",
+    "failure_behavior",
+    "sources"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^(?:FUNC)-[0-9]+$",
+      "not": {
+        "pattern": "\\s"
+      }
+    },
+    "type": {
+      "type": "string",
+      "const": "function"
+    },
+    "title": {
+      "type": "string",
+      "pattern": "\\S",
+      "description": "Readable name identifying the engineering purpose and subject and distinguishing neighboring assets. The repository derives the filename suffix from the full title; clarity and filename agreement require checks beyond this schema."
+    },
+    "status": {
+      "type": "string",
+      "const": "draft"
+    },
+    "description": {
+      "type": "string",
+      "pattern": "\\S",
+      "description": "Explain the logical action and its boundary relative to neighboring behaviors; inputs, state, outputs, and failures provide the operational detail."
+    },
+    "inputs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "pattern": "\\S"
+      }
+    },
+    "preconditions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "\\S"
+      }
+    },
+    "outputs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "pattern": "\\S"
+      }
+    },
+    "behavior": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "pattern": "\\S"
+      }
+    },
+    "failure_behavior": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "condition",
+          "outcome"
+        ],
+        "properties": {
+          "condition": {
+            "type": "string",
+            "pattern": "\\S"
+          },
+          "outcome": {
+            "type": "string",
+            "pattern": "\\S"
+          }
+        }
+      }
+    },
+    "allocated_to": {
+      "type": "string",
+      "pattern": "^(?:MOD)-[0-9]+$",
+      "not": {
+        "pattern": "\\s"
+      },
+      "description": "One accountable Module in this draft profile; wider REM allocation cardinalities remain open."
+    },
+    "unallocated_reason": {
+      "type": "string",
+      "pattern": "\\S",
+      "description": "Explicit reason and limits for deliberately deferred allocation. Exactly one allocation representation is required."
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "source",
+          "locator",
+          "basis"
+        ],
+        "properties": {
+          "source": {
+            "type": "string",
+            "pattern": "\\S"
+          },
+          "locator": {
+            "type": "string",
+            "pattern": "\\S"
+          },
+          "basis": {
+            "type": "string",
+            "pattern": "\\S"
+          }
+        }
+      }
+    }
+  },
+  "oneOf": [
+    {
+      "required": [
+        "allocated_to"
+      ],
+      "not": {
+        "required": [
+          "unallocated_reason"
+        ]
+      }
+    },
+    {
+      "required": [
+        "unallocated_reason"
+      ],
+      "not": {
+        "required": [
+          "allocated_to"
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "id": "FUNC-036",
+  "type": "function",
+  "title": "Select lessons applicable to planned engineering work",
+  "status": "draft",
+  "description": "Present retained lessons whose recorded conditions relate to a stated upcoming activity, together with exclusions, uncertainty, and the authoritative disposition of associated improvements. It does not confer current policy authority on a lesson.",
+  "inputs": [
+    "Planned activity and its material engineering context.",
+    "Available retained lessons with their applicability conditions and source basis.",
+    "Current authoritative adoption disposition of associated improvements when present."
+  ],
+  "preconditions": [
+    "The selected work context and available lesson scope are identifiable or reported incomplete."
+  ],
+  "outputs": [
+    "Relevant lessons with explicit applicability reasoning and current improvement disposition.",
+    "Inapplicable, unresolved, unavailable, or no-match outcomes distinguished."
+  ],
+  "behavior": [
+    "Compare declared work conditions with the recorded lesson conditions and exclusions.",
+    "Present the supporting mechanism and limits that make a lesson relevant or uncertain.",
+    "Distinguish proposed, adopted, rejected, and superseded improvement dispositions as reported by the governing change information.",
+    "Identify material context differences requiring reassessment rather than universalizing the original conclusion."
+  ],
+  "failure_behavior": [
+    {
+      "condition": "Work context is insufficient or lesson sources cannot be accessed.",
+      "outcome": "Report unresolved applicability or unavailable scope distinctly from no relevant lessons."
+    },
+    {
+      "condition": "Improvement adoption disposition cannot be established.",
+      "outcome": "Show the disposition gap and do not present the lesson as an adopted instruction."
+    }
+  ],
+  "unallocated_reason": "Architectural allocation is deliberately deferred until Module responsibilities are designed; this draft claims no Module ownership or implementation.",
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "FUNC-036",
+      "basis": "SR-036 requires useful context-dependent lesson access while preserving the distinction between learning and adopted policy."
+    }
+  ]
+}

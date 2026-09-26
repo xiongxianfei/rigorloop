@@ -16,21 +16,25 @@ The analysis supports that statement; What explains the problem and desired outc
 Keep provisional assumptions distinct from established constraints, and assess unresolved issues from any part of the analysis using the open-question rule below.
 
 After the initial 5W2H analysis is coherent enough to reason about stakeholder use, apply [Scenario Analysis](scenario-analysis.md).
-The IR confirms the stakeholder-visible Feature and the Scenarios used to analyze that capability.
+Scenario is a first-class governed Requirement Analysis entity with the identity and lifecycle defined by the [Scenario model](../models/scenarios.md).
+The IR confirms the stakeholder-visible Feature and owns the governed Scenarios used to analyze that capability.
 Scenario Analysis may expose candidate logical behavior, but Functions are confirmed through SR analysis rather than by the Scenario alone.
 
 ## Keep one consequential open question
 
-Each IR and SR may retain at most one open question; retain none when the available sources and analysis settle the need or obligation.
-A valuable question identifies a specific unresolved decision or missing evidence that materially affects the requirement's meaning, scope, derivation, or acceptance.
+Each IR, SR, and Scenario may retain at most one open question; retain none when the available sources and analysis settle the need, obligation, or stakeholder situation.
+A valuable question identifies a specific unresolved decision or missing evidence that materially affects meaning, scope, derivation, acceptance, or a stakeholder-visible outcome.
 Make clear what answer or evidence would resolve it. Do not manufacture a question solely to populate a field or ask for detail that does not affect an engineering decision.
 
 Resolve what can be established from the available sources before selecting the question that matters most.
-If several independent issues remain, continue the analysis and resolve them before treating the record as sufficiently defined; decompose a mixed need or obligation only when its engineering meaning justifies separate requirements.
+When clarification is needed, ask only that highest-value question at a time. Incorporate the answer into the authoritative analysis before selecting another question, if one remains necessary.
+If several independent issues remain, continue the analysis and resolve them before treating the record as sufficiently defined; decompose a mixed need, obligation, or stakeholder situation only when its engineering meaning justifies separate entities.
 Do not concatenate independent questions into one entry or conceal unresolved issues to meet the limit.
-The supporting analysis must remain candid about uncertainty, and dependent decisions remain provisional until their basis is settled.
+The supporting analysis must remain candid about uncertainty, and dependent decisions remain provisional until their basis is settled. Do not fabricate an answer to remove a question.
 
-This limit applies to IRs and SRs. The representation may keep an empty or single-item list; its schema can check cardinality and nonblank content, while engineering review judges the question's value.
+Having no recorded open question does not establish completeness, confirmation, or approval.
+This rule applies to IRs, SRs, and Scenarios; it does not introduce open-question fields for Features or Functions.
+Operational Support selects the storage representation. Structural validation can check cardinality and nonblank content; engineering review judges the question's value and whether independent issues have been bundled or hidden.
 
 ## Name the initial requirement
 
@@ -82,9 +86,10 @@ An acceptance criterion describes what an assessment should observe.
 It does not claim that verification has occurred or that the requirement is satisfied.
 Give each SR a name that identifies its specific obligation; a clear outcome phrase or precise noun phrase is appropriate.
 
-For each SR, identify the logical behavior required to satisfy the obligation and confirm the corresponding Function or Functions in System Design.
+For each SR, identify whether it requires logical behavior, constrains existing behavior or capability, or does both.
+Confirm the corresponding Function or Functions when the obligation requires behavior; record `constrains` relationships for quality, policy, or other restrictions on existing Features or Functions.
 Reuse an existing Function when it already represents the required behavior.
-Do not create a Function merely to mirror the requirement tree; SR-to-Function relationships may be many-to-many.
+Do not invent a Function merely to give every SR a behavior or to mirror the requirement tree; SR-to-Function relationships may be many-to-many.
 
 Before recording `SR confirms Function`, apply the [Function definition criteria](../models/system-design.md#function-definition):
 
@@ -116,3 +121,22 @@ When using existing contracts, preserve their identities and distinguish related
 
 The output is a requirement draft with explicit analysis and assessment intent.
 Approval, implementation, and satisfaction remain separate decisions and observations.
+
+## Complete an IR's system-level analysis
+
+Complete the connected analysis for the IR's declared scope when:
+
+1. Its name, need, seven-part analysis, assumptions, sources, and boundaries agree.
+2. Material stakeholder situations have distinct black-box Scenarios and the necessary durable Features are defined or intentionally reused.
+3. Each material obligation from the IR, its constraints, and its Scenario outcomes is accounted for by an assessable SR or an explicit analysis conclusion explaining existing coverage or exclusion from the declared scope.
+4. Each SR has exactly one IR parent, a supported derivation, observable acceptance criteria, and the Function confirmation or constraint relationships needed to explain its design effect.
+5. Feature scope is realized by defined logical Functions, and each Function's behavior is justified by requirements rather than invented to complete a diagram.
+6. Neighboring IRs and shared assets have been reconciled without duplicating obligations or silently broadening capability scope. A cross-IR reference does not give an SR a second parent.
+7. Identities, naming, containment, typed references, and source attribution are consistent, and no unresolved decision prevents reliable interpretation of the claimed scope.
+
+Derive coverage views from the authoritative relationships. Review the actual obligations, outcomes, and behavior: a connected graph alone cannot establish semantic coverage.
+An IR's analysis can expose a genuinely new need; record it explicitly instead of claiming the existing inventory is universally complete.
+
+Analysis completion is a bounded review conclusion. It does not automatically approve Requirements or assets, establish implementation or satisfaction, or assign architecture.
+Apply Scenario confirmation through its own lifecycle criteria. Operational Support defines any additional lifecycle states; do not invent a status merely to label an analysis pass complete.
+Functions may retain an explicit reason for deferred allocation while Module responsibilities and ARs are developed in Architecture Design.

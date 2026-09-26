@@ -1,0 +1,78 @@
+{
+  "id": "SR-005",
+  "type": "system-requirement",
+  "title": "Retain applicable decision rationale",
+  "status": "draft",
+  "statement": "The system shall retain the recorded reasoning for engineering decisions on which current entity definitions rely and make that reasoning accessible from the current model. When required reasoning cannot be retrieved for the selected definition, the system shall identify the gap without presenting unrecorded or unrelated reasoning as its basis.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Keeping a chosen definition without the recorded decision context can hide the alternatives, tradeoffs, and consequences on which current work relies.",
+      "desired_outcome": "A later reader can retrieve the recorded reasoning relevant to a current definition even when the originating Change explanation is outside current working material."
+    },
+    "why": {
+      "rationale": "Retaining a chosen design without its applicable reasoning prevents later engineers from understanding its constraints and tradeoffs."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineers and architects recording decision reasoning",
+        "Reviewers, maintainers, and engineering agents relying on current decisions"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "While current entity definitions rely on a recorded decision, including after its originating Change explanation leaves current working material."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "Accessible from the current engineering model through the entity definitions that rely on the decision."
+      ]
+    },
+    "how": {
+      "approach": "Retain the recorded decision context, chosen outcome, rationale, considered alternatives, and consequences, and make those details retrievable from the current model. Keep the recorded association to the definition and its applicable state identifiable, and distinguish unavailable required reasoning from a missing optional historical explanation. Access does not certify the reasoning or the decision."
+    },
+    "how_much": {
+      "scope": "Covers preservation and access to explicitly recorded reasoning needed for current reliance. It does not invent missing reasoning, certify the decision, require a separate decision file, or replace the historical provenance obligations under IR-003."
+    }
+  },
+  "acceptance_criteria": [
+    "Record a decision's context, chosen outcome, rationale, considered alternatives, and consequences, and associate it with a current entity definition. A later reader can retrieve those recorded details from the current model.",
+    "When explanation of the Change that introduced that decision is moved out of current working material, the decision's still-applicable reasoning remains available through the current model.",
+    "When recorded reasoning required to understand a selected current definition is missing or unavailable, identify that gap while retaining access to any available definition; do not invent rationale or report complete explanatory context.",
+    "When a selected definition evolves, present only reasoning whose recorded association applies to that definition, or identify an unresolved applicability gap. A rationale associated with another state is not silently relabeled as current."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "sources": [
+    {
+      "source": "SRC-REM",
+      "locator": "Sections 5 and 31",
+      "basis": "Durable engineering knowledge and understandable current definitions."
+    },
+    {
+      "source": "SRC-VISION",
+      "locator": "Pitch; Human-understandable AI work",
+      "basis": "Preserve why engineering choices were made and make reasoning visible."
+    },
+    {
+      "source": "SRC-DESIGN",
+      "locator": "DES-SR-06 and DES-SR-21",
+      "basis": "Related existing decision-context and current-reliance obligations; their full scope remains with the existing owner."
+    },
+    {
+      "source": "SRC-IR-001-SCENARIO-ANALYSIS",
+      "locator": "SR-005",
+      "basis": "Apply the renewed REM Scenario Analysis method to the existing IR-001 need; preserve requirement identities and reconcile scenario outcomes with obligations and logical behavior. Confirmation records draft analysis, not approval, implementation, or satisfaction."
+    },
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "SR-005",
+      "basis": "Reconcile the existing IR-001 boundary with the now-derived recovery and historical provenance obligations under IR-003; preserve the original obligation, acceptance criteria, and identity."
+    }
+  ],
+  "confirms": [
+    "FUNC-006",
+    "FUNC-007"
+  ]
+}

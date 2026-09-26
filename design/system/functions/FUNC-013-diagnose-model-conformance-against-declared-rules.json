@@ -1,0 +1,51 @@
+{
+  "id": "FUNC-013",
+  "type": "function",
+  "title": "Diagnose model conformance against declared rules",
+  "status": "draft",
+  "description": "Assess mechanically checkable rules for an identified model state and report violations and unassessed scope. The behavior distinguishes structural results from judgments about engineering meaning or requirement satisfaction.",
+  "inputs": [
+    "Selected model state and resolved metamodel/profile rules.",
+    "Requested assessment scope; prior-state and decision inputs when transition rules require them.",
+    "Supplied engineering-review judgments when presented alongside mechanical results, with identified subjects and bases."
+  ],
+  "preconditions": [],
+  "outputs": [
+    "Rule-scoped results identifying subjects, violated rules, and actionable diagnostic context.",
+    "Assessed rule families, model state, interpretation context, and incomplete or unsupported checks."
+  ],
+  "behavior": [
+    "Check shape, required values, and known closed-vocabulary values before dependent consistency rules.",
+    "Reuse identity checks and assess declared naming, requirement containment, acyclicity, typed-reference resolution, and cardinalities.",
+    "Assess declared lifecycle transitions only with the required prior-state and decision context.",
+    "Report concrete violations separately from unsupported checks, unassessed scope, and engineering-review needs.",
+    "Describe the result as conformance to assessed rules; do not turn structural success into approval, semantic adequacy, or satisfaction.",
+    "When supplied engineering-review judgments accompany a result, preserve their subject and basis and present them separately from the mechanically established findings without inventing approval."
+  ],
+  "failure_behavior": [
+    {
+      "condition": "Rule interpretation is missing or unsupported.",
+      "outcome": "Report the unavailable assessment basis instead of using a substitute profile."
+    },
+    {
+      "condition": "Prior-state or decision context for a transition is absent.",
+      "outcome": "Mark that transition unassessed while retaining independently valid state-only observations."
+    },
+    {
+      "condition": "The model cannot be completely inspected or a check is interrupted.",
+      "outcome": "Return an incomplete result with affected scope; do not report full conformance."
+    },
+    {
+      "condition": "A question depends on clarity, derivation adequacy, or evidence judgment.",
+      "outcome": "Identify the engineering-review boundary without fabricating a mechanical conclusion."
+    }
+  ],
+  "unallocated_reason": "Architectural allocation is deliberately deferred until Module responsibilities are designed; this draft claims no Module ownership or implementation.",
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "FUNC-013",
+      "basis": "IR-005 / SR-013 confirms mechanically decidable model diagnostics; SR-014 constrains the meaning and scope of resulting assessments."
+    }
+  ]
+}

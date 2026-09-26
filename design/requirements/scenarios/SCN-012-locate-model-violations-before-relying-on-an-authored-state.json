@@ -1,0 +1,71 @@
+{
+  "id": "SCN-012",
+  "type": "scenario",
+  "title": "Locate model violations before relying on an authored state",
+  "status": "confirmed",
+  "actor": "Model author",
+  "goal": "Identify mechanically checkable defects and unassessed scope in a proposed model.",
+  "context": "An author has changed governed definitions and relationships.",
+  "trigger": "The author requests a conformance check before review.",
+  "preconditions": [
+    "A selected model state and target profile can be identified."
+  ],
+  "interaction": [
+    {
+      "actor": "Model author",
+      "action": "Selects the model state and assessment scope."
+    },
+    {
+      "actor": "System",
+      "action": "Returns rule-specific diagnostics with affected subjects and the checked scope."
+    },
+    {
+      "actor": "Model author",
+      "action": "Inspects invalid values, identities, parentage, names, references, cardinalities, or transitions identified in the result."
+    },
+    {
+      "actor": "System",
+      "action": "Separates violations from unavailable checks and explains the limits of structural conformance."
+    }
+  ],
+  "expected_outcome": "The author knows which mechanically established defects need correction and what has not been assessed.",
+  "alternatives": [
+    {
+      "condition": "The complete requested mechanical scope conforms.",
+      "outcome": "The system reports conformance to those rules without asserting engineering adequacy or approval."
+    },
+    {
+      "condition": "A lifecycle transition cannot be assessed without its previous state.",
+      "outcome": "The system marks that transition unassessed while preserving valid state-only observations."
+    },
+    {
+      "condition": "The model contains an unknown closed-vocabulary value or duplicate identity.",
+      "outcome": "The system identifies the concrete violation rather than interpreting it as a supported alternative."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "The selected profile cannot be interpreted or the check is interrupted.",
+      "outcome": "The system returns the unavailable or incomplete assessment scope rather than a successful check."
+    },
+    {
+      "condition": "A reported diagnostic does not identify its subject or deciding rule.",
+      "outcome": "The result is insufficient for dependable correction and must be clarified before reliance."
+    }
+  ],
+  "exercises": [
+    "FEAT-004"
+  ],
+  "informs": [
+    "SR-012",
+    "SR-013",
+    "SR-014"
+  ],
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "SCN-012",
+      "basis": "IR-005 analysis establishes this stakeholder situation and its selected profile boundaries; the linked SRs account for its outcomes without creating a second requirement parent. Accepted as current requirement-analysis knowledge after independent coverage and clarity review: one owning IR and primary Feature, observable goal and interactions, classified outcomes, and applicable SR coverage. This confirms analysis only, not requirement approval, implementation, or satisfaction."
+    }
+  ]
+}

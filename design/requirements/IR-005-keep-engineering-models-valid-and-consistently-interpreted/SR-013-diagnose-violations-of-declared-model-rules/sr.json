@@ -1,0 +1,63 @@
+{
+  "id": "SR-013",
+  "type": "system-requirement",
+  "title": "Diagnose violations of declared model rules",
+  "status": "draft",
+  "statement": "The system shall assess a selected engineering model against its declared mechanically checkable rules and report actionable violations, unsupported checks, and incomplete assessment scope with the affected subjects and governing rules identifiable.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Shape-valid records can still have duplicate identities, conflicting containment, unresolved references, or invalid state transitions.",
+      "desired_outcome": "Authors can distinguish a valid assessed scope from concrete violations and from portions that could not be checked."
+    },
+    "why": {
+      "rationale": "IR-005 explicitly separates automated record, identity, naming, hierarchy, reference, and lifecycle checks from engineering review."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineers and model authors",
+        "Architects, reviewers, and engineering agents"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "When checking an authored or proposed engineering state against the selected profile."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "Across the selected model and the previous state when a declared transition rule requires it."
+      ]
+    },
+    "how": {
+      "approach": "Check record shape, required values, closed vocabularies, identity uniqueness, naming agreement, exclusive acyclic requirement parentage, typed reference resolution, declared cardinalities, and lifecycle transitions for which the necessary state is available. Report subjects, violated rules, and assessment limits; unknown vocabulary is invalid before dependent consistency checks."
+    },
+    "how_much": {
+      "scope": "Covers only rules declared as mechanically decidable by the selected profile. A state-only check cannot claim a transition was authorized or valid without its required prior-state and authority inputs."
+    }
+  },
+  "acceptance_criteria": [
+    "For a missing required value, unknown property or closed-vocabulary value, or invalid shape, identify the affected record and rule rather than treating it as a supported variant.",
+    "For duplicate identities, mismatched derived names, multiple or incompatible requirement parents, requirement-parent cycles, and unresolved or wrongly typed references, identify the affected subjects and specific violation.",
+    "Apply declared relationship cardinalities, including exactly one owning IR per Scenario, independently from filename or display-name similarity.",
+    "For a lifecycle transition rule, assess the supplied prior and proposed states and required decision input; when a needed input is unavailable, report the transition unassessed rather than passed.",
+    "Return the checked model state, profile, assessed rule families, violations, and unassessed scope; an interrupted check cannot yield an unqualified success."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "SR-013",
+      "basis": "Derived from IR-005 and its selected initial-profile scope: IR-005 explicitly separates automated record, identity, naming, hierarchy, reference, and lifecycle checks from engineering review."
+    }
+  ],
+  "confirms": [
+    "FUNC-013",
+    "FUNC-002"
+  ],
+  "constrains": [
+    "FUNC-008",
+    "FUNC-012"
+  ]
+}

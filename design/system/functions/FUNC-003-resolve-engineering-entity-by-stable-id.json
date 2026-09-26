@@ -1,0 +1,53 @@
+{
+  "id": "FUNC-003",
+  "type": "function",
+  "title": "Resolve engineering entity by stable ID",
+  "status": "draft",
+  "description": "Identify the unique engineering entity designated by a stable ID in a selected governed model state and return its reference. Retrieving the referenced definition is a separate behavior.",
+  "inputs": [
+    "The requested entity identity.",
+    "The selected governed model and state in which to resolve it."
+  ],
+  "preconditions": [],
+  "outputs": [
+    "A reference to the uniquely identified entity with the selected model state.",
+    "An explicit unresolved outcome when no unique designation can be established."
+  ],
+  "behavior": [
+    "Resolve the supplied identity within the selected model state rather than using a display name as a substitute.",
+    "Return the entity reference when exactly one entity is established for that identity.",
+    "Distinguish no matching identity in an inspected scope from ambiguity or inability to inspect the selected scope.",
+    "Keep identity and selected state distinct; a stable identity alone does not designate a particular revision."
+  ],
+  "failure_behavior": [
+    {
+      "condition": "The requested identity is empty or the selected model state is unresolved.",
+      "outcome": "Identify the missing selection without inventing an identity or state."
+    },
+    {
+      "condition": "No entity has the requested identity in the completely inspected selected scope.",
+      "outcome": "Report no matching entity for that identity and state."
+    },
+    {
+      "condition": "Distinct entities share the requested identity.",
+      "outcome": "Report ambiguity without choosing one entity based on name or location."
+    },
+    {
+      "condition": "The selected model state cannot be sufficiently inspected.",
+      "outcome": "Report the unavailable or incomplete resolution scope rather than a false no-match or unique-match result."
+    }
+  ],
+  "unallocated_reason": "Architectural allocation is deliberately deferred until Module responsibilities are designed; this draft claims no Module ownership or implementation.",
+  "sources": [
+    {
+      "source": "SRC-IR-001-SCENARIO-ANALYSIS",
+      "locator": "FUNC-003",
+      "basis": "SR-002 requires identity-based references to designate the intended entity unambiguously within the governed model."
+    },
+    {
+      "source": "SRC-ASSET-CLARITY-REFINEMENT",
+      "locator": "FUNC-003",
+      "basis": "Apply the user-selected clarity and naming rule to this existing asset; refine its name and explanation without changing its identity, capability scope, or typed relationships."
+    }
+  ]
+}

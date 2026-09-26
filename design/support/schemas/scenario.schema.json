@@ -1,0 +1,238 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RigorLoop Scenario",
+  "description": "RigorLoop profile for a governed stakeholder-observable Scenario. Schema validation checks content shape, lifecycle vocabulary, and primary-Feature cardinality; ownership, relationship resolution, lifecycle transitions, and engineering adequacy require separate checks.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "type",
+    "title",
+    "status",
+    "actor",
+    "goal",
+    "context",
+    "trigger",
+    "preconditions",
+    "interaction",
+    "expected_outcome",
+    "alternatives",
+    "failures",
+    "exercises",
+    "informs",
+    "sources"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^(?:SCN)-[0-9]+$",
+      "not": {
+        "pattern": "\\s"
+      }
+    },
+    "type": {
+      "type": "string",
+      "const": "scenario"
+    },
+    "title": {
+      "type": "string",
+      "pattern": "\\S",
+      "description": "Readable name identifying the stakeholder goal and distinguishing situation. The repository derives the filename suffix from the full title; clarity and filename agreement require checks beyond this schema."
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "confirmed",
+        "obsolete"
+      ],
+      "description": "Lifecycle state of Scenario analysis, not implementation or requirement satisfaction. A schema check does not authorize a transition."
+    },
+    "actor": {
+      "type": "string",
+      "pattern": "\\S"
+    },
+    "goal": {
+      "type": "string",
+      "pattern": "\\S",
+      "description": "The single stakeholder-visible outcome pursued by the actor."
+    },
+    "context": {
+      "type": "string",
+      "pattern": "\\S"
+    },
+    "trigger": {
+      "type": "string",
+      "pattern": "\\S"
+    },
+    "preconditions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "\\S"
+      }
+    },
+    "interaction": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "actor",
+          "action"
+        ],
+        "properties": {
+          "actor": {
+            "type": "string",
+            "pattern": "\\S"
+          },
+          "action": {
+            "type": "string",
+            "pattern": "\\S"
+          }
+        }
+      },
+      "description": "Stakeholder actions and observable system responses in order; no internal design or Function call sequence."
+    },
+    "expected_outcome": {
+      "type": "string",
+      "pattern": "\\S"
+    },
+    "alternatives": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "condition",
+          "outcome"
+        ],
+        "properties": {
+          "condition": {
+            "type": "string",
+            "pattern": "\\S"
+          },
+          "outcome": {
+            "type": "string",
+            "pattern": "\\S"
+          }
+        }
+      },
+      "description": "Different observable paths that still achieve the stated Scenario goal."
+    },
+    "failures": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "condition",
+          "outcome"
+        ],
+        "properties": {
+          "condition": {
+            "type": "string",
+            "pattern": "\\S"
+          },
+          "outcome": {
+            "type": "string",
+            "pattern": "\\S"
+          }
+        }
+      },
+      "description": "Conditions preventing or limiting the Scenario goal, with the observable outcome or required handling. Correct handling does not make the desired goal achieved."
+    },
+    "exercises": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^(?:FEAT)-[0-9]+$",
+        "not": {
+          "pattern": "\\s"
+        }
+      },
+      "maxItems": 1,
+      "description": "The one primary Feature. May be empty during drafting; confirmed and obsolete records retain exactly one primary Feature."
+    },
+    "informs": {
+      "type": "array",
+      "description": "SRs informed by this Scenario. May be empty while system obligations are still being derived.",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^(?:SR)-[0-9]+$",
+        "not": {
+          "pattern": "\\s"
+        }
+      }
+    },
+    "coverage_note": {
+      "type": "string",
+      "pattern": "\\S",
+      "description": "Optional explicit SR-analysis conclusion explaining why no additional obligation is needed. It is analysis, not verification evidence."
+    },
+    "open_questions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "\\S"
+      },
+      "minItems": 1,
+      "maxItems": 1,
+      "description": "Optional single consequential unresolved question requiring a decision or evidence. Omit this field when none remains. Ask one question at a time; do not bundle independent questions. Engineering review assesses relevance and completeness."
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "source",
+          "locator",
+          "basis"
+        ],
+        "properties": {
+          "source": {
+            "type": "string",
+            "pattern": "\\S"
+          },
+          "locator": {
+            "type": "string",
+            "pattern": "\\S"
+          },
+          "basis": {
+            "type": "string",
+            "pattern": "\\S"
+          }
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "required": [
+          "status"
+        ],
+        "properties": {
+          "status": {
+            "enum": [
+              "confirmed",
+              "obsolete"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "exercises": {
+            "minItems": 1
+          }
+        }
+      }
+    }
+  ]
+}

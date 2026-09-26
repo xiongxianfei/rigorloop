@@ -1,0 +1,57 @@
+{
+  "id": "SR-020",
+  "type": "system-requirement",
+  "title": "Identify and preserve coherent engineering baselines",
+  "status": "draft",
+  "statement": "The system shall identify each retained Baseline and preserve its declared engineering scope, authoritative content, applicable interpretation rules, and provenance so participants can distinguish that state from subsequent changes.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "An unlabeled collection of current files cannot establish which engineering state was retained or what interpretation and scope belong to it.",
+      "desired_outcome": "A participant can select a retained state and understand exactly what is included, how its content is interpreted, and what lies outside its recoverable scope."
+    },
+    "why": {
+      "rationale": "IR-003 requires identifiable coherent states whose historical meaning remains available under the retention policy."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineers establishing baselines",
+        "Maintainers and reviewers relying on retained states"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "When a Baseline is established, inspected, or retained while later Changes proceed."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "The declared governed scope of each retained Baseline."
+      ]
+    },
+    "how": {
+      "approach": "Associate a stable Baseline identity with its scope and authoritative requirement and asset definitions, relationship facts, metamodel and rules, and source provenance. Identify any included realization or assurance material. Preserve the selected historical content when later states evolve, and distinguish external references from content actually retained. Report missing required content or unresolved interpretation rather than describing an incomplete collection as a coherent recoverable Baseline."
+    },
+    "how_much": {
+      "scope": "One governed project and its declared retained Baselines. Coherence is assessed against the rules applicable to that state; this obligation does not approve its engineering decisions, require a particular storage technology, or promise recovery of unavailable external material. Retention release is governed by SR-024 and the selected policy."
+    }
+  },
+  "acceptance_criteria": [
+    "For a retained Baseline, a participant can identify its unique identity, declared scope, authoritative definitions and relationships, applicable metamodel and rules, and source provenance, including which realization or assurance material is included.",
+    "After a later Change modifies a definition, relationship, or rule, inspecting the earlier Baseline still returns its original content and original interpretation basis.",
+    "When an external item is only referenced, the Baseline identifies the reference and does not claim that the external content is retained or recoverable.",
+    "When required content or applicable interpretation rules are missing or conflicting, the affected scope is reported and the collection is not represented as a complete coherent Baseline."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "confirms": [
+    "FUNC-020"
+  ],
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "SR-020",
+      "basis": "Derived from IR-003: IR-003 requires identifiable coherent states whose historical meaning remains available under the retention policy. The criteria describe intended observable behavior, not executed verification."
+    }
+  ]
+}

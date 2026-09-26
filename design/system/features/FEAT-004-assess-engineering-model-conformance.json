@@ -1,0 +1,30 @@
+{
+  "id": "FEAT-004",
+  "type": "feature",
+  "title": "Assess engineering model conformance",
+  "status": "draft",
+  "description": "Model authors and reviewers can determine which rules govern a selected model, identify mechanically checkable violations, and understand the scope and limits of a conformance result before relying on the model.",
+  "scope": {
+    "includes": [
+      "Identify the selected metamodel and representation profile, including retained historical selections.",
+      "Check declared record, identity, naming, containment, reference, cardinality, and lifecycle rules.",
+      "Report actionable diagnostics and distinguish conformance from engineering-review conclusions."
+    ],
+    "excludes": [
+      "Automatic proof of requirement satisfaction, semantic adequacy, or approval.",
+      "Support for every historical representation by the current interpreter."
+    ]
+  },
+  "realized_by": [
+    "FUNC-002",
+    "FUNC-012",
+    "FUNC-013"
+  ],
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "FEAT-004",
+      "basis": "IR-005 and its Scenario/SR analysis establish this bounded stakeholder capability; it remains draft analysis, not an implemented feature claim."
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "id": "FUNC-026",
+  "type": "function",
+  "title": "Determine applicable authority before governed actions",
+  "status": "draft",
+  "description": "Determines whether a proposed governed action is covered by applicable project policy and authorization, including bounded standing delegation. It preserves human decision boundaries without requiring repeated permission for actions already covered by a valid grant.",
+  "inputs": [
+    "Proposed action, subject, scope, conditions, and acting participant.",
+    "Applicable project policy, decision owners, and recorded grants including conditions, limits, revocation, completion, or supersession."
+  ],
+  "preconditions": [
+    "The proposed action and selected project context are identifiable."
+  ],
+  "outputs": [
+    "Applicable authorization basis or the specific unmet decision boundary.",
+    "Action permitted within the grant or withheld from execution pending the required decision."
+  ],
+  "behavior": [
+    "Identify whether policy reserves the action for a human decision and assess the applicable owner, grant, scope, conditions, and limits.",
+    "Recognize a valid prior grant or bounded standing delegation across sessions and covered steps without treating a resumed session as reason for new approval.",
+    "Reject reliance on an expired-by-completion, revoked, superseded, out-of-scope, conditionally invalid, or higher-authority-conflicting grant.",
+    "Withhold a governed action when its required authorization is absent and identify the particular decision needed.",
+    "Keep evidence, favorable assessments, next-action suggestions, and permission for other work separate from authority; do not let delegation waive required independent assessment."
+  ],
+  "failure_behavior": [
+    {
+      "condition": "Governing policy, required owner, or applicable grant is missing or conflicting.",
+      "outcome": "Identify the unresolved authority boundary and do not perform the reserved action."
+    },
+    {
+      "condition": "The proposed action exceeds a prior grant or a relevant condition has changed.",
+      "outcome": "Withhold the uncovered action while preserving recognition of the grant for any still-covered scope."
+    }
+  ],
+  "unallocated_reason": "Architectural responsibility is deliberately deferred until the logical requirements and system design are reconciled. This Function establishes behavior, not a Module, Interface, implementation, or verification result.",
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "FUNC-026",
+      "basis": "Existing SR-007 confirms authority enforcement under IR-003. It uses the selected project policy rather than establishing a universal approval workflow."
+    }
+  ]
+}

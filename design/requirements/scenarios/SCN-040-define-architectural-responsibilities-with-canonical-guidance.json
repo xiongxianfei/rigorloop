@@ -1,0 +1,62 @@
+{
+  "id": "SCN-040",
+  "type": "scenario",
+  "title": "Define architectural responsibilities with canonical guidance",
+  "status": "confirmed",
+  "actor": "An architect or engineering agent preparing architectural definitions",
+  "goal": "Understand and express consistent architectural responsibilities and interaction contracts using the governing authoring rules.",
+  "context": "Logical behavior and lower-level obligations are known, but the author needs guidance to assign responsibility and explain interactions in the engineering model.",
+  "trigger": "The author begins architectural analysis for the selected scope.",
+  "preconditions": [
+    "The behavior, obligations, selected profile, and available conceptual guidance are identifiable."
+  ],
+  "interaction": [
+    {
+      "actor": "Author",
+      "action": "Supplies the behavior and obligations being analyzed and requests guidance for defining responsibility and interaction contracts."
+    },
+    {
+      "actor": "System",
+      "action": "Explains the applicable concepts, consistency rules, and worked examples, identifying which representation formats are available."
+    },
+    {
+      "actor": "Author",
+      "action": "Presents proposed architectural definitions and requests an explanation of their responsibility and interaction consistency."
+    },
+    {
+      "actor": "System",
+      "action": "Explains the governing rules, expected semantic outcomes, and unresolved responsibility or representation limits."
+    }
+  ],
+  "expected_outcome": "The author can explain the consistency of behavioral and requirement responsibility and identify interaction providers and consumers; conceptual guidance does not imply that undeclared record formats or runtime authoring support exist.",
+  "alternatives": [
+    {
+      "condition": "The selected profile has no declared architecture record format.",
+      "outcome": "Conceptual analysis can proceed with that support limit explicit, while any claim of record conformance remains deferred."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "The supplied behavior, obligations, or responsibility decisions are materially incomplete.",
+      "outcome": "The system identifies the unresolved dependency and does not present an arbitrary responsibility assignment as settled."
+    },
+    {
+      "condition": "Required conceptual guidance is unavailable or conflicting.",
+      "outcome": "The system identifies the missing owner or conflict instead of inventing an authoritative architecture rule."
+    }
+  ],
+  "exercises": [
+    "FEAT-010"
+  ],
+  "informs": [
+    "SR-032",
+    "SR-033"
+  ],
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "SCN-040",
+      "basis": "IR-006 includes architectural authoring guidance. This stakeholder situation concerns architectural subjects being authored, not internal design of the RigorLoop system, and preserves the declared limit on unavailable representation formats. Accepted as current requirement-analysis knowledge after independent coverage and clarity review: one owning IR and primary Feature, observable goal and interactions, classified outcomes, and applicable SR coverage. This confirms analysis only, not requirement approval, implementation, or satisfaction."
+    }
+  ]
+}

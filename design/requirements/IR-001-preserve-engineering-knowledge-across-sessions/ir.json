@@ -1,0 +1,98 @@
+{
+  "id": "IR-001",
+  "type": "initial-requirement",
+  "title": "Preserve engineering knowledge across sessions",
+  "status": "draft",
+  "statement": "Engineers, reviewers, and engineering agents need current engineering knowledge and its still-applicable reasoning to remain available and understandable beyond the conversations, tools, and authoring sessions that produced it.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Engineering context can disappear when definitions and decision reasoning depend on conversations, private memory, or an individual authoring session.",
+      "desired_outcome": "Later participants can understand the current engineering model and its applicable reasoning without access to the original authoring session."
+    },
+    "why": {
+      "rationale": "People must be able to resume engineering work and understand the current system without relying on the memory or private context of the original author."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineers and architects",
+        "Reviewers and maintainers",
+        "Engineering agents acting for project participants"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "Applies throughout requirements analysis, design, implementation, verification, and maintenance within the project's governed engineering scope.",
+        "In the initial authoring profile, retain current definitions, still-applicable reasoning, and unresolved work for as long as current engineering reliance needs them. Retirement follows IR-003's preservation policy rather than a fixed age-based expiry."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "Within the project's governed engineering information, as it is authored and relied on across sessions."
+      ]
+    },
+    "how": {
+      "approach": "Retain current definitions and decision reasoning under stable identities; derive system obligations beneath this IR and use Scenario Analysis to establish the capabilities and concrete situations supported by the need. In the initial authoring profile, retrieval identifies the selected subject and state and returns the recorded content or an explicit unavailable, unsupported, incomplete, or failed outcome. A partial result must not be represented as a complete definition."
+    },
+    "how_much": {
+      "scope": "Covers retained current definitions, stable entity identity, and reasoning needed to understand current engineering decisions. Historical reconstruction belongs to IR-003; relationship analysis belongs to IR-002; judgments of satisfaction belong to IR-004. Coverage is the governed engineering scope. Qualitative durability does not imply unlimited retention, crash recovery, or a numerical service target. The initial authoring profile makes no elapsed-time commitment for retrieval; its acceptance concerns correct retained content, identifiable scope, and accurate failure or completeness reporting.",
+      "scale": "The initial authoring profile covers one selected finite governed project model at a time. It defines no fixed entity-count maximum, large-model capacity guarantee, or federated model service. An operation may claim completeness only for the declared scope it actually processed; resource limits and partial results must be explicit."
+    }
+  },
+  "assumptions": [
+    "The project's governed storage and the configuration history selected for retention remain accessible; this authoring profile does not supply a storage-hosting or backup service."
+  ],
+  "constraints": [],
+  "sources": [
+    {
+      "source": "SRC-REM",
+      "locator": "Sections 3, 5, 30, 31, and 35",
+      "basis": "Initial needs, durable assets, stable identity, and understandable current state."
+    },
+    {
+      "source": "SRC-VISION",
+      "locator": "Pitch; Resumable across sessions and agents; What it commits to",
+      "basis": "Durable project artifacts and current understanding independent of conversation history."
+    },
+    {
+      "source": "SRC-REM-REFINEMENT",
+      "locator": "Requirement Analysis: Analyze the initial need; Name the initial requirement",
+      "basis": "Required 5W2H analysis and a clearer IR name, preserving the existing identity and need statement."
+    },
+    {
+      "source": "SRC-CONSTITUTION",
+      "locator": "Repository cleanup and historical retention",
+      "basis": "Current reliance and unresolved work remain available; retirement requires recoverability and reconciliation rather than a fixed expiry."
+    },
+    {
+      "source": "SRC-QUESTION-RESOLUTION",
+      "locator": "IR-001",
+      "basis": "Resolution of the recorded questions for the initial RigorLoop authoring profile under the user's instruction to solve them; the source register preserves the original questions and rationale."
+    },
+    {
+      "source": "SRC-IR-001-SCENARIO-ANALYSIS",
+      "locator": "IR-001",
+      "basis": "Apply the renewed REM Scenario Analysis method to the existing IR-001 need; preserve requirement identities and reconcile scenario outcomes with obligations and logical behavior. Confirmation records draft analysis, not approval, implementation, or satisfaction."
+    },
+    {
+      "source": "SRC-SCENARIO-MODEL-REFINEMENT",
+      "locator": "IR-001",
+      "basis": "Apply the refined governed Scenario model to this IR. Preserve the four original stakeholder situations and make their embedded author-save and author-record-rationale goals explicit as two additional owned Scenarios; preserve the existing need and SR decomposition."
+    },
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "IR-001",
+      "basis": "Review the existing five SRs, six Scenarios, two Features, and seven Functions against the declared need and adjacent IRs. No additional obligation is needed for this scope; selected-state interpretation is reconciled through SR-012 without changing the need."
+    }
+  ],
+  "confirms": [
+    "FEAT-001",
+    "FEAT-002",
+    "SCN-001",
+    "SCN-002",
+    "SCN-003",
+    "SCN-004",
+    "SCN-005",
+    "SCN-006"
+  ]
+}

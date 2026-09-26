@@ -1,0 +1,65 @@
+{
+  "id": "SCN-027",
+  "type": "scenario",
+  "title": "Record what actually happened during a verification assessment",
+  "status": "confirmed",
+  "actor": "A verification engineer recording an assessment result",
+  "goal": "Preserve actual observations and their exact basis so another participant can inspect the result and its limits.",
+  "context": "A planned assessment has been attempted against an identified engineering state.",
+  "trigger": "The assessor has observations, an execution interruption, or a failure to execute to record.",
+  "preconditions": [
+    "The assessment occurrence, intended method, and assessed subject state are identifiable."
+  ],
+  "interaction": [
+    {
+      "actor": "Assessor",
+      "action": "Supplies the actual conditions, execution state, observations, supporting evidence, and their provenance."
+    },
+    {
+      "actor": "System",
+      "action": "Presents the recorded observations and identifies unperformed, partial, inaccessible, or failed assessment scope."
+    },
+    {
+      "actor": "Assessor",
+      "action": "Checks that the record distinguishes actual criterion outcomes from expected observations and failures to perform the technique."
+    }
+  ],
+  "expected_outcome": "Later reviewers can inspect what happened and the assessment basis, including negative observations and the scope for which no observation was obtained.",
+  "alternatives": [
+    {
+      "condition": "The assessment stops after some observations were obtained.",
+      "outcome": "The record preserves those observations and identifies the unassessed remainder."
+    },
+    {
+      "condition": "The technique could not execute successfully.",
+      "outcome": "The record states that inability without inventing either a passing result or an observed criterion failure."
+    },
+    {
+      "condition": "A later observation conflicts with an earlier one.",
+      "outcome": "Both observations remain attributable to their original conditions and states."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "The exact assessed state, provenance, or supporting evidence is unavailable.",
+      "outcome": "The system identifies the missing basis and limits reliance on the result."
+    },
+    {
+      "condition": "Only a plan or expected result is supplied as if it were an observation.",
+      "outcome": "The system identifies the absence of actual evidence and does not claim that verification occurred."
+    }
+  ],
+  "exercises": [
+    "FEAT-008"
+  ],
+  "informs": [
+    "SR-026"
+  ],
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "SCN-027",
+      "basis": "IR-004 owns observed evidence; SR-026 derives actual execution state, observation provenance, and explicit partial or unavailable outcomes. Accepted as current requirement-analysis knowledge after independent coverage and clarity review: one owning IR and primary Feature, observable goal and interactions, classified outcomes, and applicable SR coverage. This confirms analysis only, not requirement approval, implementation, or satisfaction."
+    }
+  ]
+}

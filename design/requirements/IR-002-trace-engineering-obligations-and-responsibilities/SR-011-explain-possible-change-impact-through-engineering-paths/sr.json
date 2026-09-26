@@ -1,0 +1,61 @@
+{
+  "id": "SR-011",
+  "type": "system-requirement",
+  "title": "Explain possible change impact through engineering paths",
+  "status": "draft",
+  "statement": "The system shall identify entities potentially affected by a proposed change using explicitly selected relationship scope in one model state, and associate each reported impact with its supporting path while stating uncertainty and traversal limits.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "An impact list without its relation to the proposed change can hide omissions or be mistaken for proven behavioral effects.",
+      "desired_outcome": "A participant can inspect why an entity may require review and distinguish potential impact from a confirmed consequence."
+    },
+    "why": {
+      "rationale": "IR-002 requires assessable effects of proposed changes while limiting graph analysis to declared relationships and one selected state."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineers and model authors",
+        "Architects, reviewers, and engineering agents"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "When a participant investigates the possible effects of changing selected engineering entities."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "Within the selected project model state and relationship scope."
+      ]
+    },
+    "how": {
+      "approach": "Use the changed-entity selection and declared influence directions to expose reachable entities and a supporting typed path for each. Carry through missing-reference, requested-limit, and interruption diagnostics and identify uncovered domains. Leave the effect judgment to the responsible engineering assessment."
+    },
+    "how_much": {
+      "scope": "Covers relationship-based potential impact. It does not infer unrecorded dependencies, predict code behavior, approve a change, or establish the required verification set by graph reachability alone."
+    }
+  },
+  "acceptance_criteria": [
+    "For each potentially affected entity, present the selected change subject and at least one supporting typed path in the selected state.",
+    "Respect the requested relationship types and influence directions; do not silently broaden the selected scope or include unrelated entities as established impact.",
+    "Where no entity is reachable in a fully assessed scope, report no relationship-based impact in that scope without claiming the change has no real-world effects.",
+    "Carry limited or incomplete traversal status into the impact result and identify the omitted or unresolved scope.",
+    "Label the result as potential impact for review; a reachable Evidence or Implementation reference does not establish invalidation or behavior change by itself."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "SR-011",
+      "basis": "Derived from IR-002 and its selected initial-profile scope: IR-002 requires assessable effects of proposed changes while limiting graph analysis to declared relationships and one selected state."
+    }
+  ],
+  "confirms": [
+    "FUNC-011"
+  ],
+  "constrains": [
+    "FUNC-009"
+  ]
+}
