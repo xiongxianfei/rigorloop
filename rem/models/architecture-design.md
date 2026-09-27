@@ -143,33 +143,6 @@ Its governed meaning is owned by the Module or Interface definition that contain
 A project MAY use structured subordinate records and local identifiers for validation or tooling.
 Aggregate runtime, datastore, deployment, or technology diagrams SHOULD be derived from the authoritative Module and Interface realization information rather than maintained as a second source of truth.
 
-### Organizing subordinate facets
-
-A representation MAY separate the logical Module or Interface definition from its material realization facets.
-This separates concerns without introducing new architecture entities or moving logical authority into realization records.
-
-| Owner | Possible realization facets |
-| --- | --- |
-| Module | Software, runtime, persistence, deployment, technology |
-| Interface | Interaction, representation, technology |
-
-These are useful organization choices, not a mandatory set of records for every owner.
-Create a facet only when it contains material information or an explicit material deferral.
-Its absence does not establish that the concern was assessed, resolved, or inapplicable; completion is assessed against the declared architecture scope.
-
-Subordinate facets inherit their owner's identity, lifecycle, and baseline context unless the project deliberately governs a different arrangement.
-When containment already identifies the owner, do not independently author a duplicate ownership relationship.
-Separating records does not require an additional global identity or independent lifecycle for each facet.
-
-Distinguish attributed observations of an existing realization from proposed choices and unresolved decisions within the relevant facet.
-An observed implementation mapping does not approve a target choice or prove that the logical contract is satisfied.
-Record each material technology choice and its rationale once; other affected facets reference that authoritative decision instead of reproducing it.
-Shared software, runtime, or deployment mappings may span Modules without creating independently maintained copies of the same fact.
-
-Logical, dependency, runtime, persistence, deployment, and technology views derive from the authoritative definitions, relationships, and facets.
-A view may select and explain those facts for its audience, but a new architectural decision belongs with its accountable Module or Interface.
-The [Operational Support model](operational-support.md) governs the selected representation and its validation rather than prescribing storage through these semantic rules.
-
 ## Logical-to-physical consistency
 
 Physical/software realization MUST preserve the logical architecture rather than silently redefine it.
@@ -202,6 +175,31 @@ For each Module, architecture review SHOULD consider together:
 An unexplained missing responsibility, conflicting owner, or incompatible Interface is a design issue even when a diagram can be rendered.
 
 Use [Architecture Allocation](../methods/architecture-allocation.md) to assign and reconcile these responsibilities.
+
+## Generated 4+1 architecture views
+
+REM standardizes five architecture-view kinds using the classic 4+1 names: **Logical**, **Process**, **Development**, **Physical**, and **Scenario**.
+These are generated projections of the authoritative semantic architecture, not independent models or authored sources of truth.
+Use the [4+1 Architecture View method](../methods/architecture-views.md) to construct them.
+
+| View | Primary concern | Typical authoritative inputs |
+| --- | --- | --- |
+| Logical | Responsibilities, behavior, obligations, logical collaboration, and state/data authority | Feature/Function context, Function/AR allocation, Module definitions, Interfaces, state/data ownership |
+| Process | Runtime behavior, execution boundaries, concurrency, lifecycle, communication, isolation, and failure boundaries | Module runtime realization and runtime-significant Interface realization |
+| Development | Static software organization used for development/build/maintenance | Module software realization, implementation/source/package mappings, material software dependencies |
+| Physical | Deployment, placement, connectivity, persistence placement, and infrastructure topology | Module deployment/persistence realization, external runtime dependencies, concrete connectivity |
+| Scenario | End-to-end architecture participation for one governed stakeholder Scenario | Scenario → SR/Function/AR → Module/Interface plus relevant realization |
+
+A view MAY simplify presentation, for example by collapsing an Interface into a labeled Module-to-Module edge, provided the underlying Interface and authoritative relationship remain discoverable.
+A view MUST NOT invent or independently maintain architecture facts.
+
+The Scenario View is the `+1` cross-view validation slice.
+The canonical Scenario remains black-box and stakeholder-observable; the generated view derives internal architecture participation without adding those internal steps to the Scenario definition.
+Important Scenarios SHOULD be used to test whether the other four views form a coherent end-to-end explanation of the architecture.
+
+A generated Semantic graph or equivalent read model MAY normalize authoritative REM entities, relationships, and subordinate realization information for projection.
+Generated realization nodes may use local handles for deterministic traversal, but such handles do not create new first-class REM entities.
+Generated nodes and edges SHOULD retain provenance to the authoritative REM owner from which they were derived.
 
 ## Realization and history
 

@@ -98,7 +98,7 @@ For a confirmed Scenario:
 | primary Feature | exactly 1 | The Feature must be confirmed by the owning IR and is the stakeholder-visible capability exercised by the Scenario |
 | informed SRs | 1..* or explicit no-new-obligation conclusion | Scenario analysis must close its downstream obligation question |
 
-Additional descriptive references MAY exist when a project profile needs them, but they do not change these universal relationships.
+Additional descriptive references MAY exist when a project implementation needs them, but they do not change these universal relationships.
 
 ## Scenario quality
 

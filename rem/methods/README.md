@@ -11,6 +11,7 @@ They apply the [principles](../principles/README.md) to the structures defined b
 | [Functional Analysis](functional-analysis.md) | Confirm logical Functions from SR obligations and reconcile Feature realization | Durable Functions with clear logical boundaries and explicit SR/Feature traceability |
 | [Architecture Allocation](architecture-allocation.md) | Allocate Functions and ARs to Modules and identify logical Interfaces | Accountable logical architectural responsibility with reconciled requirement/behavior allocation |
 | [Architecture Design](architecture-design.md) | Develop the complete logical architecture and its material physical/software realization | Semantic Module/Interface outputs, state/data ownership, material subordinate realization information, explicit deferrals, and derived review views |
+| [4+1 Architecture Views](architecture-views.md) | Generate standard architecture projections for comprehension and cross-view validation | Logical, Process, Development, Physical, and Scenario views derived from authoritative REM knowledge |
 
 5W2H is required at every requirement level in the selected requirement-authoring method.
 Every question needs an answer, an explicit unknown, or justified non-applicability at that level.
@@ -29,10 +30,11 @@ They link to the authoritative knowledge and explain how engineers produce infor
 6. Derive ARs from SRs and allocate each AR to exactly one accountable Module; reconcile AR and Function allocation.
 7. Define or refine architecturally significant Interfaces and establish significant state/data ownership.
 8. Use [Architecture Design](architecture-design.md#design-the-physicalsoftware-realization) to define only material software, runtime, persistence, deployment, Interface-realization, and technology decisions as subordinate Module/Interface information.
-9. Realize the architecture in code, configuration, infrastructure, and other implementation artifacts.
-10. Apply Verification to the Requirements and capture actual Evidence.
-11. Review the complete engineering result and the conclusions supported by that evidence.
-12. Establish the new Baseline through the project's controlled-change process.
+9. Use [4+1 Architecture Views](architecture-views.md) to generate Logical, Process, Development, Physical, and Scenario projections and reconcile gaps discovered across them.
+10. Realize the architecture in code, configuration, infrastructure, and other implementation artifacts.
+11. Apply Verification to the Requirements and capture actual Evidence.
+12. Review the complete engineering result and the conclusions supported by that evidence.
+13. Establish the new Baseline through the project's controlled-change process.
 
 The cycle is iterative, not a one-way waterfall.
 Architecture may expose missing obligations, implementation may expose missing behavior, and verification may require design correction.
