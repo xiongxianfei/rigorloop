@@ -255,15 +255,10 @@ The [Architecture Design model](models/architecture-design.md#architecture-seman
 These include Module definitions, Function and AR allocations, Interface definitions, significant state/data ownership, and material software/runtime/persistence/deployment/Interface-realization/technology information where relevant.
 Derived logical, runtime, datastore, deployment, or technology views help review but do not own the underlying facts.
 
-The model's [subordinate-facet rules](models/architecture-design.md#organizing-subordinate-facets) allow logical definitions and material realization concerns to be represented separately while retaining one accountable owner.
-Module facets may organize software, runtime, persistence, deployment, and technology information; Interface facets may organize interaction, representation, and technology information.
-Their presence depends on material content, and their absence cannot stand in for a completion assessment.
-Attributed observations, proposed choices, and material deferrals remain distinguishable; shared technology rationale is authored once and referenced by its consumers.
-Operational Support chooses storage and naming conventions without turning these facets into universal entity types or making aggregate views authoritative.
-
 [Requirement Analysis](methods/requirement-analysis.md#derive-allocated-requirements) defines how AR obligations are derived.
 [Architecture Allocation](methods/architecture-allocation.md) establishes logical Function/AR responsibility and identifies Interfaces.
 [Architecture Design](methods/architecture-design.md) completes state/data ownership, material physical/software realization, architecture review, and completion assessment without prescribing a storage format.
+[4+1 Architecture Views](methods/architecture-views.md) then generates the classic Logical, Process, Development, Physical, and Scenario projections from the same authoritative REM knowledge for comprehension and cross-view validation.
 
 ---
 
@@ -380,6 +375,17 @@ When a reader asks why REM contains a particular rule, follow the links in this 
 3. Read the [Requirement model](models/requirements.md), [System Design model](models/system-design.md), and [Architecture Design model](models/architecture-design.md).
 4. Read [Requirement Analysis](methods/requirement-analysis.md), [Functional Analysis](methods/functional-analysis.md), and [Architecture Allocation](methods/architecture-allocation.md).
 
+
+### Why does REM use classic 4+1 architecture views?
+
+1. Read the [Architecture View and Semantic graph concepts](concepts/README.md#system-and-architecture-assets).
+2. Read Principles 18 and 19 in [Principles](principles/README.md).
+3. Read the generated 4+1 projection rules in the [Architecture Design model](models/architecture-design.md#generated-41-architecture-views).
+4. Read [4+1 Architecture Views](methods/architecture-views.md) to see how Logical, Process, Development, Physical, and Scenario views are generated from one authoritative semantic model.
+5. Read the [Scenario model](models/scenarios.md) to see why the Scenario View derives internal architecture participation without changing the black-box Scenario itself.
+
+REM uses 4+1 for generated comprehension and validation, not to create five independently authored architecture models.
+
 ### Example: Why must a Feature or Function name explain its purpose?
 
 1. Read Principle 16 in [Principles](principles/README.md).
@@ -448,6 +454,8 @@ For Requirement Analysis specifically:
         [Requirement Analysis]
          [Functional Analysis]
       [Architecture Allocation]
+       [Architecture Design]
+       [4+1 Architecture Views]
 ```
 
 Those links, rather than this file alone, define REM.

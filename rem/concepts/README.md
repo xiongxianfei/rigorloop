@@ -48,10 +48,9 @@ Requirements shape their evolution across Changes and Baselines without becoming
 | Runtime realization | Subordinate view of material execution, process, lifecycle, scaling, isolation, concurrency, or resource boundaries. |
 | Persistence realization | Subordinate view of how architecturally significant state or data is retained, including authority, derivation, consistency, recovery, or lifecycle implications. |
 | Deployment realization | Subordinate view of material packaging, placement, isolation, target, or external runtime dependencies. |
-| Interaction realization | Subordinate Interface view of the concrete mechanism, binding, addressing, and realization-specific interaction guarantees. |
-| Representation realization | Subordinate Interface view of material encoding or exchanged data representation choices. |
 | Technology rationale | Attributable reasoning for a technology choice whose consequences are architecturally material, including driver, consequences, significant alternatives, and revisit conditions. |
-| Architecture view | Derived presentation of authoritative architecture information for a particular concern, such as logical structure, interaction, runtime, persistence, deployment, or technology. |
+| Architecture view | Derived presentation of authoritative architecture information for a particular concern. REM standardizes the classic 4+1 view kinds: Logical, Process, Development, Physical, and Scenario. |
+| Semantic graph | Generated typed graph/read model derived from authoritative REM entities, relationships, and subordinate realization information for traversal, query, and view generation; it is not an independent source of truth. |
 
 A Feature is not a Requirement, and a Module is not a requirement category or merely a grouping label.
 Functional responsibility and allocated requirement responsibility meet at architecture.
@@ -61,8 +60,10 @@ A Module may own software, runtime, persistence, deployment, and technology real
 Those realization facets are semantic outputs of Architecture Design, not universal entity classes.
 Services, libraries, processes, datastores, deployment units, deployment targets, protocols, and technology choices do not acquire independent REM identity merely because they appear in those views.
 A project may structure or locally identify subordinate realization information for tooling, but storage structure does not change its REM meaning or promote it to a first-class entity.
-Those facets remain governed under their owner when represented separately; the [Architecture Design model](../models/architecture-design.md#organizing-subordinate-facets) owns the rules for that separation.
-Architecture views are derived presentations and do not own facts that belong to Module, Interface, Requirement, Function, or realization information.
+Architecture views are derived presentations and do not own facts that belong to Module, Interface, Requirement, Function, Scenario, or realization information.
+REM uses the classic 4+1 names—Logical, Process, Development, Physical, and Scenario—for standard architecture projections.
+The Scenario View is generated from a governed black-box Scenario and relevant downstream architecture; it does not add internal architecture steps to the Scenario entity itself.
+A Semantic graph may normalize the authoritative model for graph traversal and projection, but every generated fact should remain attributable to its authoritative source.
 
 ## Engineering model and its support
 

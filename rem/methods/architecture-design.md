@@ -61,9 +61,9 @@ When the walkthrough exposes missing system behavior or a new obligation, return
 
 ## Allocate Functions and define Interfaces
 
-Assign an accountable Module to each Function within the declared architecture scope, following the selected profile's cardinality rules.
+Assign an accountable Module to each Function within the declared architecture scope, following the Architecture Design model's cardinality rules.
 Leave a Function explicitly deferred when its accountable boundary is not sufficiently understood; a placeholder Module does not resolve that uncertainty.
-Cooperation with another Module is expressed through a contract rather than an additional accountable allocation in the single-owner profile.
+Cooperation with another Module is expressed through a contract rather than an additional accountable allocation under REM's single-primary-owner rule.
 
 For each architecturally important interaction, define an Interface using the [Interface definition criteria](../models/architecture-design.md#interfaces).
 Explain the service or exchange, inputs, outputs, applicable state and preconditions, and meaningful failure or incomplete outcomes.
@@ -136,18 +136,6 @@ Where material, record:
 Do not assign a global REM identity to every service, process, datastore, deployment unit, or technology.
 Treat them as structured subordinate information owned by the Module or Interface unless a later REM refinement demonstrates that independent identity is required.
 
-### Organize realization under its owner
-
-Use the [subordinate-facet rules](../models/architecture-design.md#organizing-subordinate-facets) when organizing the selected representation.
-Keep logical responsibilities, state authority, and interaction contracts in the Module and Interface definitions.
-Separate software, runtime, persistence, deployment, interaction, representation, or technology information only when that separation helps readers understand material architecture.
-Do not create empty records to make every owner look complete.
-
-For existing realization, identify the source and assessed state that support each observation.
-For proposed realization, explain the choice and its architectural basis without presenting it as implemented behavior.
-Keep unresolved material choices explicit under their owner even when no current realization exists; a missing facet is not a completion judgment.
-When moving information between representations, preserve its owner, meaning, attribution, and historical applicability, and reconcile dependent references and views.
-
 ### Choose technologies last enough to preserve reasoning
 
 Do not start architecture by selecting products or frameworks.
@@ -162,11 +150,9 @@ For each material technology choice, retain enough rationale to answer:
 - what condition would justify revisiting it.
 
 The rationale may be stored in the owning Module or Interface realization view or in an attributable decision record when the reasoning deserves independent review.
-Author that rationale once and reference it from other affected facets, including across Modules or Interfaces when a decision is shared.
 
 ### Derive physical views
 
-Logical and dependency views derive from the authoritative definitions and relationships.
 Runtime topology, datastore topology, deployment topology, and technology inventories are useful views, but they SHOULD be generated or derived from the authoritative Module and Interface realization information.
 Do not create independently maintained copies of the same physical relationships.
 
@@ -190,6 +176,23 @@ IF-engineering-query
 ```
 
 The example describes subordinate views, not new first-class REM entities.
+
+## Generate and use the 4+1 architecture views
+
+After enough logical and physical/software architecture exists to support useful projection, apply the [4+1 Architecture View method](architecture-views.md).
+Generate the classic **Logical**, **Process**, **Development**, **Physical**, and **Scenario** views from the authoritative REM knowledge or from a generated Semantic graph derived from that knowledge.
+
+Do not separately author the same architectural facts in the views.
+Use the views to improve comprehension and expose missing or contradictory architecture:
+
+- Logical: responsibility, allocation, Interface, and state/data-authority gaps;
+- Process: runtime, lifecycle, communication, isolation, scaling, concurrency, or failure-boundary gaps;
+- Development: software-organization and implementation-mapping gaps;
+- Physical: deployment, persistence-placement, connectivity, and external-runtime gaps;
+- Scenario: end-to-end gaps revealed by tracing a governed Scenario through obligations, Functions, Modules, Interfaces, and relevant realization.
+
+When a view exposes a gap, update the authoritative Requirement, Function, Module, Interface, allocation, state/data ownership, or realization information and regenerate the affected views.
+Do not repair only the generated projection.
 
 ## Reconcile and review the architecture
 
@@ -250,7 +253,8 @@ Architecture Design is complete enough for the declared scope when:
 8. physical/software realization preserves rather than silently changes logical responsibilities, contracts, and state authority;
 9. every material technology decision is attributable to an architectural need or constraint and records enough rationale to revisit it;
 10. traceability to governing Functions, SRs, ARs, and Scenarios remains intact;
-11. unresolved decisions are visible and do not masquerade as completed architecture.
+11. the applicable Logical, Process, Development, Physical, and Scenario views can be generated from the same authoritative architecture without semantic contradiction;
+12. unresolved decisions are visible and do not masquerade as completed architecture.
 
 Logical Module/Interface definitions, allocations, and state/data ownership are architecture truth.
 Subordinate realization information explains how that truth is made concrete.

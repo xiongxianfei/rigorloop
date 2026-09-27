@@ -43,10 +43,10 @@ Reference that owner when another document needs the rule instead of creating an
 | Confirm logical behavior | [Functional Analysis](methods/functional-analysis.md) | Confirm durable Functions from SRs and reconcile Feature realization |
 | Allocate logical architecture | [Architecture Allocation](methods/architecture-allocation.md) | Allocate one primary Module per Function and exactly one Module per AR; identify logical Interfaces |
 | Complete architecture design | [Architecture Design](methods/architecture-design.md) | Produce semantic Module/Interface architecture outputs, state/data ownership, and material subordinate physical/software realization without prescribing storage |
+| Generate architecture views | [4+1 Architecture Views](methods/architecture-views.md) | Generate classic Logical, Process, Development, Physical, and Scenario projections from authoritative REM knowledge |
 | Evolve and assess the model | [Engineering cycle](methods/README.md#engineering-cycle) | Iterate between need, design, realization, evidence, and baseline decisions |
 
-The current core now has explicit procedures from Initial Requirement through logical allocation and physical/software architecture realization.
-The [Architecture Design model](models/architecture-design.md#organizing-subordinate-facets) explains how material realization facets remain subordinate to Modules and Interfaces when represented separately, with aggregate views derived from their authoritative information.
+The current core now has explicit procedures from Initial Requirement through logical allocation, physical/software architecture realization, and generated 4+1 architecture views.
 Verification and the broader universal engineering concerns remain later refinements.
 
 ## Method boundaries
@@ -58,7 +58,7 @@ RigorLoop provides a reference implementation; its current technology choices do
 ## Open refinements
 
 - REM conformance levels and which invariants are mandatory for partial adoption still need a dedicated definition.
-- The universal method defines semantic relationships, but each project profile still needs to choose the canonical serialized field names and physical representation.
+- The universal method defines semantic relationships; each project still needs representation/tool choices through Operational Support and its chosen implementation.
 - Verification has conceptual and model coverage but does not yet have a dedicated universal REM method.
 
 These open items do not weaken the tightened Requirements → Scenario/Feature → Function → Architecture semantics.
