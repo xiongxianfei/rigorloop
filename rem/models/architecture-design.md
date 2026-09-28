@@ -7,7 +7,10 @@ REM keeps two coupled views:
 
 ```text
 Logical architecture
-  Function / AR → Module ↔ Interface
+  Function / AR → Module
+  Module ── contains ──> Module
+  Module ↔ Interface
+  parent boundary ── exposes descendant Interface when required
 
 Physical/software realization
   subordinate properties of those Modules and Interfaces
@@ -36,6 +39,8 @@ A Function MAY involve zero or more supporting Modules.
 The primary Module owns the architectural responsibility for the Function.
 Supporting Modules may contribute required behavior or services without becoming co-owners of the Function.
 
+Allocate the Function to the lowest Module in the containment hierarchy that can coherently own the complete behavior. Parent Modules receive derived roll-up visibility over descendant allocations but do not become additional owners merely because they contain the accountable Module. A Function MAY be allocated directly to a parent when the behavior genuinely belongs to that broader responsibility boundary.
+
 If no single Module can own the Function coherently, reconsider the Function boundary or Module boundaries rather than leaving responsibility ambiguous.
 
 ## AR allocation cardinality
@@ -48,6 +53,20 @@ Do not assign one AR to several Modules to avoid deciding responsibility.
 This convergence does not require every AR to pair one-to-one with a Function.
 An AR may govern state, quality, policy, data, or another architectural responsibility.
 
+Allocate the AR to the lowest Module in the containment hierarchy that can coherently own the complete obligation. Parent Modules receive derived roll-up visibility over descendant ARs but are not additional allocated owners. An AR MAY be allocated directly to a parent when the obligation applies to the broader parent boundary itself.
+
+## Module hierarchy and encapsulation
+
+A Module MAY contain zero or more child Modules. A Module MAY have at most one parent Module. Containment MUST be acyclic, so each connected containment structure forms a tree and the complete architecture forms a forest of Module trees.
+
+A parent Module is a first-class architectural responsibility with its own purpose, scope, lifecycle, state/data authority, allocations, Interfaces, and realization where applicable. It MUST NOT exist merely as a navigation folder or visual grouping. Each child Module refines part of the parent's broader responsibility while retaining independent stable identity. Moving a Module to a different parent changes current architecture containment but does not by itself change the Module's identity.
+
+REM does not prescribe a universal maximum Module-containment depth. Architecture SHOULD remain shallow enough that each level expresses a meaningful responsibility decomposition rather than implementation structure. A project implementation MAY impose a stricter supported depth as an Operational Support or representation rule, provided that restriction is not presented as universal REM semantics.
+
+A parent Module is an encapsulation boundary. An Interface provided by a descendant is internal to the nearest containing parent boundary unless the Interface is explicitly exposed through that boundary. If the same child-provided contract must be visible beyond additional ancestors, exposure MUST continue through the intervening parent boundaries without skipping them. Exposure preserves the descendant provider and the Interface identity; it does not create a wrapper Interface automatically.
+
+If the broader parent responsibility genuinely owns the external contract, the parent SHOULD provide an Interface in its own right rather than presenting a child-owned contract as parent-owned.
+
 ## Modules
 
 A Module is a meaningful architectural responsibility boundary and may own:
@@ -59,7 +78,7 @@ A Module is a meaningful architectural responsibility boundary and may own:
 - dependencies;
 - realization scope.
 
-Module boundaries SHOULD be justified by responsibility and evolution rather than copied mechanically from current source directories, packages, processes, or deployment units.
+Module boundaries SHOULD be justified by responsibility and evolution rather than copied mechanically from current source directories, packages, processes, or deployment units. Parent-child decomposition SHOULD likewise reflect responsibility refinement and encapsulation rather than organization charts or filesystem convenience.
 
 ## Interfaces
 
@@ -71,7 +90,19 @@ An Interface MAY have zero or more consumer Modules.
 An Interface may describe operations, messages, data structures, inputs, outputs, protocols, failure semantics, and compatibility constraints.
 Architecturally significant cross-Module interactions SHOULD be explicit Interfaces.
 
+An Interface covers a cohesive interaction needed by its consumers. A Module MAY provide several Interfaces, and one Interface MAY contain several related operations. Its scope need not cover the provider's entire responsibility or correspond one-to-one with a child Module. Separate contracts when their purpose, authority, failure guarantees, or independent evolution differ materially; explain their cooperation where needed.
+
+The provider is the Module accountable for the contract: its promised outcomes, failures, consistency, and compatibility. Provider ownership is distinct from the behavior or implementation that realizes the contract. A parent MAY provide an Interface whose behavior is realized through child responsibilities. Those children retain their Function/AR allocations and state authority without becoming additional providers. A child's implementation contribution alone does not create a `consumes` relationship either.
+
+Choose the provider from the scope of contract accountability. Do not infer it from source-code location, directory containment, or the Module that executes an operation. Explain how the accountable boundary is realized through its contributing responsibilities and material realization information. Containment alone does not establish that every descendant implements every parent Interface; a tool needs explicit supporting facts before projecting that relationship.
+
 An Interface can describe an internal interaction and need not be a network API.
+
+When its provider is a contained Module, an Interface is internal to that containment boundary by default. A consumer outside the provider's containing parent may use the Interface only when the contract is explicitly exposed through that parent boundary. If the consumer lies beyond additional ancestors, every intervening provider-side parent boundary MUST expose the same Interface. Exposure does not alter provider/consumer identity, imply runtime call direction, or create a second contract.
+
+Architecture review SHOULD distinguish Interfaces owned directly by a parent Module from descendant Interfaces merely exposed through that parent boundary.
+
+A parent-provided Interface needs no exposure through its own provider. If that provider is itself contained and the contract crosses higher boundaries, the normal ancestor-exposure rules still apply. Moving contract accountability is a controlled model change: preserve identity when the same contract continues, reconcile provider participation and exposure, and retain the earlier state's meaning.
 
 ## Architecture semantic outputs
 
@@ -81,9 +112,10 @@ For the declared architecture scope, the authoritative information is organized 
 | Semantic output | Purpose | Primary owner | Expected when |
 | --- | --- | --- | --- |
 | Module definition | Defines accountable responsibility, purpose, owned state/data, policies, exclusions, and dependencies | Module | For every in-scope Module |
+| Module containment | Defines parent-child responsibility refinement and encapsulation boundaries | Module hierarchy relationship | When a Module is decomposed into child Modules |
 | Function allocation | Identifies the one accountable primary Module and any supporting Modules for logical behavior | Function relationship | For every active in-scope Function |
 | AR allocation | Identifies the one Module accountable for a lower-level allocated obligation | AR relationship | For every active in-scope AR |
-| Interface definition | Defines a significant logical interaction contract and its provider/consumers | Interface | When cross-Module interaction is architecturally significant |
+| Interface definition and exposure | Defines a significant logical interaction contract, provider/consumers, and any parent boundaries through which a descendant-provided contract is intentionally exposed | Interface | When cross-Module interaction is architecturally significant |
 | State/data ownership | States which Module owns meaning and permitted mutation of significant information | Module | When state/data authority matters to correctness or evolution |
 | Software realization | Explains the software structures that materially realize a Module | Module realization view | When software structure matters architecturally |
 | Runtime realization | Explains significant execution/process, lifecycle, scaling, isolation, concurrency, or resource boundaries | Module realization view | When runtime boundaries materially affect architecture |
@@ -143,6 +175,18 @@ Its governed meaning is owned by the Module or Interface definition that contain
 A project MAY use structured subordinate records and local identifiers for validation or tooling.
 Aggregate runtime, datastore, deployment, or technology diagrams SHOULD be derived from the authoritative Module and Interface realization information rather than maintained as a second source of truth.
 
+## Public-entry discoverability
+
+An architecturally relevant public entry identifies how a participant accesses a capability: for example, a command, endpoint, or published procedure. Record its readable name, purpose, authoritative contract, and relevant source realization under the responsible Module or Interface. Such entries are subordinate realization information, not new first-class entities merely because they are named or grouped for navigation.
+
+Separate observed existence and published meaning from analyzed correspondence to the engineering model. A source artifact or supported command name does not establish that an installed product works, that a proposed Function is completely realized, or that every specialist obligation has been translated. Preserve the source's applicability, the mapping rationale, and any unmapped scope.
+
+A public entry may guide a participant in performing a Function, invoke behavior, or contribute to realizing behavior. State the particular contribution and its basis. One entry may relate to several Functions across Modules; several entries may contribute to the same Function. These references do not replace Function allocation or establish execution order. A shared invocation Module may catalog procedures whose specialist behavior remains accountable elsewhere.
+
+Derive Feature context from existing Feature-to-Function relationships and architectural responsibility from existing Function allocation, retaining an explicit unallocated disposition. Author only the additional public-entry correspondence. Exact syntax, protocol, procedural detail, and failure guarantees retain their owning contract rather than becoming a second catalog specification.
+
+The Logical view may expose these mappings as expandable navigation beneath the responsible boundary. Navigation groups are presentation aids; they do not create Module containment, Interface ownership, or permission to execute. Other inventories of the same entries should derive from, or link to, this authoritative mapping.
+
 ## Logical-to-physical consistency
 
 Physical/software realization MUST preserve the logical architecture rather than silently redefine it.
@@ -165,14 +209,16 @@ If a realization choice exposes a new system obligation or invalidates a Functio
 
 For each Module, architecture review SHOULD consider together:
 
+- its parent and child Modules, if any, and whether the decomposition refines responsibility coherently;
 - Functions for which it is primary;
 - Functions it supports;
 - ARs allocated to it;
 - state and data it owns;
 - policies it must enforce;
-- Interfaces it provides or consumes.
+- Interfaces it provides or consumes;
+- descendant Interfaces it exposes through its boundary.
 
-An unexplained missing responsibility, conflicting owner, or incompatible Interface is a design issue even when a diagram can be rendered.
+An unexplained missing responsibility, conflicting owner, encapsulation bypass, skipped exposure boundary, or incompatible Interface is a design issue even when a diagram can be rendered.
 
 Use [Architecture Allocation](../methods/architecture-allocation.md) to assign and reconcile these responsibilities.
 
@@ -184,7 +230,7 @@ Use the [4+1 Architecture View method](../methods/architecture-views.md) to cons
 
 | View | Primary concern | Typical authoritative inputs |
 | --- | --- | --- |
-| Logical | Responsibilities, behavior, obligations, logical collaboration, and state/data authority | Feature/Function context, Function/AR allocation, Module definitions, Interfaces, state/data ownership |
+| Logical | Hierarchical responsibilities, behavior, obligations, logical collaboration, encapsulation, and state/data authority | Module containment, exposed/internal Interfaces, Feature/Function context, Function/AR allocation, Module definitions, state/data ownership |
 | Process | Runtime behavior, execution boundaries, concurrency, lifecycle, communication, isolation, and failure boundaries | Module runtime realization and runtime-significant Interface realization |
 | Development | Static software organization used for development/build/maintenance | Module software realization, implementation/source/package mappings, material software dependencies |
 | Physical | Deployment, placement, connectivity, persistence placement, and infrastructure topology | Module deployment/persistence realization, external runtime dependencies, concrete connectivity |
@@ -197,9 +243,9 @@ The Scenario View is the `+1` cross-view validation slice.
 The canonical Scenario remains black-box and stakeholder-observable; the generated view derives internal architecture participation without adding those internal steps to the Scenario definition.
 Important Scenarios SHOULD be used to test whether the other four views form a coherent end-to-end explanation of the architecture.
 
-A generated Semantic graph or equivalent read model MAY normalize authoritative REM entities, relationships, and subordinate realization information for projection.
+A generated **4+1 Architecture View Graph** MAY normalize authoritative REM entities, Module containment, Interface exposure, allocation relationships, and subordinate realization information for projection. It is a derived, non-authoritative architecture read model, not a general replacement for the REM engineering model.
 Generated realization nodes may use local handles for deterministic traversal, but such handles do not create new first-class REM entities.
-Generated nodes and edges SHOULD retain provenance to the authoritative REM owner from which they were derived.
+Generated nodes and edges SHOULD retain provenance to the authoritative REM owner from which they were derived. Logical projections SHOULD begin at the highest useful in-scope Module level and reveal contained Modules, internal Interfaces, Functions, ARs, and state/data authority progressively.
 
 ## Realization and history
 

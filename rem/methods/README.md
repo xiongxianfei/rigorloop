@@ -9,9 +9,9 @@ They apply the [principles](../principles/README.md) to the structures defined b
 | [Requirement Analysis](requirement-analysis.md) | Establish IRs, derive SRs, and derive ARs | Clear normative requirements with explicit parentage and assessment intent |
 | [Scenario Analysis](scenario-analysis.md) | Develop governed stakeholder-visible situations and confirm the durable Feature | First-class Scenarios, a durable Feature, and candidate obligations/behavior |
 | [Functional Analysis](functional-analysis.md) | Confirm logical Functions from SR obligations and reconcile Feature realization | Durable Functions with clear logical boundaries and explicit SR/Feature traceability |
-| [Architecture Allocation](architecture-allocation.md) | Allocate Functions and ARs to Modules and identify logical Interfaces | Accountable logical architectural responsibility with reconciled requirement/behavior allocation |
-| [Architecture Design](architecture-design.md) | Develop the complete logical architecture and its material physical/software realization | Semantic Module/Interface outputs, state/data ownership, material subordinate realization information, explicit deferrals, and derived review views |
-| [4+1 Architecture Views](architecture-views.md) | Generate standard architecture projections for comprehension and cross-view validation | Logical, Process, Development, Physical, and Scenario views derived from authoritative REM knowledge |
+| [Architecture Allocation](architecture-allocation.md) | Establish/refine Module hierarchy, allocate Functions and ARs to the lowest coherent accountable Modules, and identify/expose logical Interfaces | Accountable hierarchical architectural responsibility with reconciled requirement/behavior allocation and explicit encapsulation |
+| [Architecture Design](architecture-design.md) | Develop the complete hierarchical logical architecture and its material physical/software realization | Semantic Module containment, Interface/exposure, state/data ownership, material subordinate realization information, explicit deferrals, and derived review views |
+| [4+1 Architecture Views](architecture-views.md) | Generate and assess standard architecture projections for comprehension and cross-view validation | Traceable Logical, Process, Development, Physical, and Scenario presentations with assessed semantic fidelity and intended reading tasks |
 
 5W2H is required at every requirement level in the selected requirement-authoring method.
 Every question needs an answer, an explicit unknown, or justified non-applicability at that level.
@@ -26,11 +26,11 @@ They link to the authoritative knowledge and explain how engineers produce infor
 2. Apply [Scenario Analysis](scenario-analysis.md) to confirm the durable Feature and first-class stakeholder Scenarios.
 3. Derive system obligations as SRs through [Requirement Analysis](requirement-analysis.md).
 4. Use [Functional Analysis](functional-analysis.md) to confirm the logical Functions required by the SRs and realize the Feature.
-5. Establish or refine Module responsibility and use [Architecture Allocation](architecture-allocation.md) to allocate each Function to one primary Module.
-6. Derive ARs from SRs and allocate each AR to exactly one accountable Module; reconcile AR and Function allocation.
-7. Define or refine architecturally significant Interfaces and establish significant state/data ownership.
+5. Establish or refine the Module responsibility hierarchy and use [Architecture Allocation](architecture-allocation.md) to allocate each Function to one primary Module, normally the lowest coherent accountable Module.
+6. Derive ARs from SRs and allocate each AR to exactly one accountable Module, normally the lowest coherent accountable Module; reconcile AR and Function allocation without duplicating ownership on ancestors.
+7. Define or refine architecturally significant Interfaces, explicitly expose descendant-provided contracts through parent boundaries when needed, and establish significant state/data ownership.
 8. Use [Architecture Design](architecture-design.md#design-the-physicalsoftware-realization) to define only material software, runtime, persistence, deployment, Interface-realization, and technology decisions as subordinate Module/Interface information.
-9. Use [4+1 Architecture Views](architecture-views.md) to generate Logical, Process, Development, Physical, and Scenario projections and reconcile gaps discovered across them.
+9. Use [4+1 Architecture Views](architecture-views.md) to derive and render Logical, Process, Development, Physical, and Scenario projections, assess their meaning and intended reading tasks, and reconcile findings with their responsible owners.
 10. Realize the architecture in code, configuration, infrastructure, and other implementation artifacts.
 11. Apply Verification to the Requirements and capture actual Evidence.
 12. Review the complete engineering result and the conclusions supported by that evidence.

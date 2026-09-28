@@ -11,7 +11,7 @@ Start with the current IRs, SRs, Features, Functions, governed Scenarios, applic
 Identify whether the work describes existing architecture, proposes target architecture, or changes an established boundary.
 Existing implementation is evidence about what exists; it does not automatically determine the intended architecture or transfer approval to a proposal.
 
-Produce the semantic architecture outputs defined by the [Architecture Design model](../models/architecture-design.md#architecture-semantic-outputs): coherent Module responsibilities, justified Function and AR allocations, explicit Interface contracts, state/data ownership where material, and only the physical/software realization information needed to understand significant architectural consequences.
+Produce the semantic architecture outputs defined by the [Architecture Design model](../models/architecture-design.md#architecture-semantic-outputs): coherent hierarchical Module responsibilities, justified Function and AR allocations, explicit Interface contracts and exposure across encapsulation boundaries, state/data ownership where material, and only the physical/software realization information needed to understand significant architectural consequences.
 Record the scope of the analysis, remaining logical or realization deferrals, and the conclusions supported by review.
 A bounded first example may establish only part of the architecture; it must not imply that the remaining system has been allocated or implemented.
 
@@ -25,8 +25,8 @@ For each Function, identify:
 - the decisions, policies, or retained information for which someone must be accountable;
 - the cooperation needed to produce its outputs and distinguish failure or incomplete outcomes.
 
-Group these responsibilities into candidate Modules, comparing related Functions across Features and IRs.
-Do not reproduce the Feature hierarchy or assume one Module per Function, SR, source package, or user interface.
+Group these responsibilities into candidate top-level Modules, comparing related Functions across Features and IRs. Decompose a candidate into child Modules only when the child responsibilities refine a broader parent responsibility with meaningful ownership, policy, state, evolution, or collaboration boundaries.
+Do not reproduce the Feature hierarchy or assume one Module per Function, SR, source package, organizational team, or user interface.
 Shared behavior may serve several Features without acquiring several accountable owners.
 
 An exploratory responsibility map records proposed boundaries and allocation candidates with an explicit status.
@@ -35,14 +35,16 @@ Explain which decisions remain provisional instead of treating every candidate a
 
 ## Define coherent Module boundaries
 
-For each candidate, use the [Module definition criteria](../models/architecture-design.md#modules) to explain its purpose, responsibilities, owned information or state, exclusions, and cooperation.
+For each candidate, use the [Module definition criteria](../models/architecture-design.md#modules) and [Module hierarchy rules](../models/architecture-design.md#module-hierarchy-and-encapsulation) to explain its purpose, responsibilities, owned information or state, exclusions, cooperation, and relationship to any parent or child Modules.
 Group behavior when it enforces closely related rules over the same authoritative information or must coordinate to maintain a meaningful invariant.
 Separate responsibilities when they have distinct authority, independent policies or evolution, or a contract that readers can explain and assess.
-Treat these as engineering reasons to compare alternatives, not a numeric formula for producing a fixed number of Modules.
+Treat these as engineering reasons to compare alternatives, not a numeric formula for producing a fixed number of Modules or hierarchy levels. REM does not prescribe a maximum Module depth; keep decomposing only while each level expresses durable architectural responsibility rather than implementation detail.
 
 Distinguish the Module accountable for the meaning and permitted changes of information from a Module providing retention or transport.
 If both participate, identify their respective duties and the contract between them; do not call both the unrestricted owner of the same state.
 If a proposed Function spans unclear boundaries, refine the boundary or the logical behavior on its merits rather than hiding the uncertainty behind shared accountability.
+
+A parent Module must remain meaningful as an architectural boundary in its own right; do not introduce it only to make a directory or diagram easier to browse. Its children refine portions of its responsibility, and descendant allocations should roll up for comprehension rather than being copied onto the parent.
 
 Name each Module for its responsibility and subject, and compare the name with neighboring Modules.
 Document significant boundary choices and their basis in the authoritative definitions or their supported sources; a separate decision document is useful only when the reasoning needs it.
@@ -61,11 +63,12 @@ When the walkthrough exposes missing system behavior or a new obligation, return
 
 ## Allocate Functions and define Interfaces
 
-Assign an accountable Module to each Function within the declared architecture scope, following the Architecture Design model's cardinality rules.
+Assign an accountable Module to each Function within the declared architecture scope, following the Architecture Design model's cardinality and hierarchy rules. Prefer the lowest Module that can coherently own the complete Function; use parent allocation only when the behavior belongs to the parent boundary itself.
 Leave a Function explicitly deferred when its accountable boundary is not sufficiently understood; a placeholder Module does not resolve that uncertainty.
 Cooperation with another Module is expressed through a contract rather than an additional accountable allocation under REM's single-primary-owner rule.
 
 For each architecturally important interaction, define an Interface using the [Interface definition criteria](../models/architecture-design.md#interfaces).
+Apply [consumer Scenario contract derivation](architecture-allocation.md#derive-a-contract-from-a-consumer-scenario) to decide reuse, refinement, or a new cohesive contract. A provider need not expose its entire responsibility through one Interface; each selected contract must explain the consumer outcome it supports and the Scenario scope that remains elsewhere.
 Explain the service or exchange, inputs, outputs, applicable state and preconditions, and meaningful failure or incomplete outcomes.
 Include consistency, authority, compatibility, ordering, or retry behavior where the obligations require them.
 Do not invent transaction semantics, protocols, performance targets, or technology constraints merely to fill a template.
@@ -73,12 +76,17 @@ If a material guarantee remains undecided, retain that uncertainty and do not cl
 
 Identify the providing and consuming Modules using the model's authoritative relationship direction.
 Check that a consumer receives enough information to fulfill its responsibility and that the provider can deliver the promised outcomes.
+
+Choose the provider by contract accountability before considering implementation location. When a parent owns the external promise, record that parent as provider and explain the contributing child behavior through its retained allocations and material realization. Check ordinary and failure outcomes across those contributions; do not infer a second provider or child consumption from implementation participation.
+
+When an Interface is provided by a contained Module, treat it as internal to the nearest parent boundary by default. If a consumer lies outside that boundary, explicitly expose the same Interface through the parent. Continue exposure through each additional provider ancestor that the contract must cross; do not skip a boundary. Exposure retains the child provider and contract identity. If the parent genuinely owns the external contract, define a parent-provided Interface instead of disguising the child contract as parent-owned.
+
 An Interface may be a logical in-process contract; it need not imply a network service or separately deployed component.
 
 ## Derive allocated requirements
 
 For each SR in the selected architecture scope, determine the lower-level obligations needed from the responsible Modules.
-Create an AR only when its accountable boundary is known well enough to state and assess that obligation.
+Create an AR only when its accountable boundary is known well enough to state and assess that obligation. Allocate it to the lowest Module that can coherently own the complete obligation; parent roll-up is derived from containment rather than represented as duplicate allocation.
 Follow [Requirement Analysis](requirement-analysis.md#derive-allocated-requirements): retain exactly one parent SR, apply all seven [5W2H](5w2h.md) questions at the allocated level, and state observable acceptance criteria.
 
 Explain what the Module must satisfy, under which conditions, and why that obligation follows from the parent SR and the supported architecture choice.
@@ -180,19 +188,19 @@ The example describes subordinate views, not new first-class REM entities.
 ## Generate and use the 4+1 architecture views
 
 After enough logical and physical/software architecture exists to support useful projection, apply the [4+1 Architecture View method](architecture-views.md).
-Generate the classic **Logical**, **Process**, **Development**, **Physical**, and **Scenario** views from the authoritative REM knowledge or from a generated Semantic graph derived from that knowledge.
+Generate the classic **Logical**, **Process**, **Development**, **Physical**, and **Scenario** views from the authoritative REM knowledge or from the derived **4+1 Architecture View Graph**.
 
 Do not separately author the same architectural facts in the views.
 Use the views to improve comprehension and expose missing or contradictory architecture:
 
-- Logical: responsibility, allocation, Interface, and state/data-authority gaps;
+- Logical: hierarchy, responsibility, allocation, encapsulation/exposure, Interface, and state/data-authority gaps;
 - Process: runtime, lifecycle, communication, isolation, scaling, concurrency, or failure-boundary gaps;
 - Development: software-organization and implementation-mapping gaps;
 - Physical: deployment, persistence-placement, connectivity, and external-runtime gaps;
 - Scenario: end-to-end gaps revealed by tracing a governed Scenario through obligations, Functions, Modules, Interfaces, and relevant realization.
 
-When a view exposes a gap, update the authoritative Requirement, Function, Module, Interface, allocation, state/data ownership, or realization information and regenerate the affected views.
-Do not repair only the generated projection.
+When a view exposes an architecture gap, update the authoritative Requirement, Function, Module, Interface, allocation, state/data ownership, or realization information and regenerate the affected views.
+Use the Architecture Views method's [correction ownership](architecture-views.md#correction-ownership) for projection, presentation, and maintenance findings.
 
 ## Reconcile and review the architecture
 
@@ -205,11 +213,11 @@ Feature → Function → Module
 
 Within the declared scope, assess whether:
 
-1. Each Module's name, purpose, responsibilities, state authority, and exclusions agree and distinguish it from its neighbors.
+1. Each Module's name, purpose, responsibilities, state authority, and exclusions agree and distinguish it from its neighbors; parent-child containment refines responsibility coherently and every parent remains meaningful in its own right.
 2. Each allocated Function has accountable responsibility, justified behavior, and the inputs and contracts needed to perform it.
 3. Each AR has one parent SR, a supported derivation, a responsible Module, complete seven-part analysis, and assessable acceptance criteria.
 4. Function allocations and AR obligations agree without requiring artificial one-to-one pairings.
-5. Interfaces connect compatible responsibilities, including the outcomes needed for Scenario failure and incomplete cases.
+5. Interfaces connect compatible responsibilities, including the outcomes needed for Scenario failure and incomplete cases; descendant-provided Interfaces cross parent boundaries only through explicit continuous exposure.
 6. The composed responsibilities address the selected SRs and Scenarios, with remaining gaps and allocation deferrals visible.
 7. Stable identity, naming, typed references, authoritative relationship direction, and source attribution remain consistent.
 8. Logical architecture is distinguished from its physical/software realization, and realization choices do not silently redefine Module or Interface meaning.
@@ -228,10 +236,10 @@ The owning [Architecture Design model](../models/architecture-design.md#architec
 
 For the declared scope, architecture review SHOULD be able to answer from authoritative information:
 
-- What Modules exist, what does each own, and what is explicitly outside each boundary?
+- What Modules exist, which Modules contain which children, what does each own, and what is explicitly outside each boundary?
 - Which Module is primarily accountable for every active Function in scope, and which Modules support it?
 - Which Module is accountable for every active AR in scope?
-- Which architecturally significant interactions are Interfaces, who provides them, and who consumes them?
+- Which architecturally significant interactions are Interfaces, who provides them, who consumes them, and which descendant contracts are intentionally exposed through parent boundaries?
 - Who owns the meaning and permitted mutation of significant state/data?
 - Which software structures materially realize each Module?
 - Which runtime/process boundaries materially affect lifecycle, scaling, isolation, failure, concurrency, or resources?
@@ -243,18 +251,19 @@ For the declared scope, architecture review SHOULD be able to answer from author
 
 Architecture Design is complete enough for the declared scope when:
 
-1. every active Function in scope has exactly one accountable primary Module;
-2. every active AR in scope is allocated to exactly one Module;
-3. significant cross-Module interactions have explicit Interface contracts;
-4. significant state/data has clear logical authority and permitted mutation;
-5. Module purposes, responsibilities, exclusions, and dependencies are mutually coherent;
-6. governed Scenario walkthroughs expose no unexplained responsibility or interaction gaps;
-7. material software, runtime, persistence, deployment, Interface-realization, and technology decisions are recorded or explicitly deferred;
-8. physical/software realization preserves rather than silently changes logical responsibilities, contracts, and state authority;
-9. every material technology decision is attributable to an architectural need or constraint and records enough rationale to revisit it;
-10. traceability to governing Functions, SRs, ARs, and Scenarios remains intact;
-11. the applicable Logical, Process, Development, Physical, and Scenario views can be generated from the same authoritative architecture without semantic contradiction;
-12. unresolved decisions are visible and do not masquerade as completed architecture.
+1. Module containment in scope is acyclic, every parent/child relationship represents genuine responsibility refinement, and parent encapsulation is explicit;
+2. every active Function in scope has exactly one accountable primary Module, normally the lowest coherent Module;
+3. every active AR in scope is allocated to exactly one Module, normally the lowest coherent Module;
+4. significant cross-Module interactions have explicit Interface contracts and descendant-provided contracts crossing parent boundaries have continuous explicit exposure;
+5. significant state/data has clear logical authority and permitted mutation;
+6. Module purposes, responsibilities, exclusions, dependencies, and containment relationships are mutually coherent;
+7. governed Scenario walkthroughs expose no unexplained responsibility, encapsulation, or interaction gaps;
+8. material software, runtime, persistence, deployment, Interface-realization, and technology decisions are recorded or explicitly deferred;
+9. physical/software realization preserves rather than silently changes logical responsibilities, contracts, containment, and state authority;
+10. every material technology decision is attributable to an architectural need or constraint and records enough rationale to revisit it;
+11. traceability to governing Functions, SRs, ARs, and Scenarios remains intact;
+12. the applicable Logical, Process, Development, Physical, and Scenario views can be generated from the same authoritative architecture without semantic contradiction;
+13. unresolved decisions are visible and do not masquerade as completed architecture.
 
 Logical Module/Interface definitions, allocations, and state/data ownership are architecture truth.
 Subordinate realization information explains how that truth is made concrete.
