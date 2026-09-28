@@ -211,8 +211,10 @@ Architecture has two coupled semantic layers:
 Logical architecture
   Function ── primaryModule ──> Module
   AR ──────── allocatedTo ────> Module
+  Module ───── contains ───────> Module
                                    ↕
                                 Interface
+  parent boundary ── exposes descendant Interface when required
   significant state/data ─────> Module authority
 
 Physical/software realization
@@ -227,8 +229,8 @@ Physical/software realization
 
 The Function says what logical behavior must occur.
 The AR says what lower-level obligation the architecture must satisfy.
-The Module owns architectural responsibility and significant state/data authority.
-The Interface owns a significant logical interaction contract.
+The Module owns architectural responsibility and significant state/data authority. A parent Module may contain child Modules that refine that responsibility; the parent remains a real encapsulation boundary rather than a visual group. Function and AR allocation normally target the lowest coherent accountable Module, while parent roll-up is derived.
+The Interface owns a significant logical interaction contract. A descendant-provided Interface remains internal to its containing Module boundary unless explicitly exposed through that boundary and any additional provider ancestors it must cross.
 Subordinate realization information explains how those responsibilities and contracts are concretely realized without introducing new universal entity classes.
 
 ### Why REM keeps logical and physical architecture separate
@@ -252,11 +254,11 @@ Reviewing them together helps detect architecture that performs behavior without
 ### What Architecture Design must produce
 
 The [Architecture Design model](models/architecture-design.md#architecture-semantic-outputs) defines semantic outputs rather than filenames or documents.
-These include Module definitions, Function and AR allocations, Interface definitions, significant state/data ownership, and material software/runtime/persistence/deployment/Interface-realization/technology information where relevant.
+These include Module definitions and containment, Function and AR allocations, Interface definitions and exposure across parent boundaries, significant state/data ownership, and material software/runtime/persistence/deployment/Interface-realization/technology information where relevant.
 Derived logical, runtime, datastore, deployment, or technology views help review but do not own the underlying facts.
 
 [Requirement Analysis](methods/requirement-analysis.md#derive-allocated-requirements) defines how AR obligations are derived.
-[Architecture Allocation](methods/architecture-allocation.md) establishes logical Function/AR responsibility and identifies Interfaces.
+[Architecture Allocation](methods/architecture-allocation.md) establishes Module containment, logical Function/AR responsibility, Interface contracts, and required exposure through encapsulation boundaries.
 [Architecture Design](methods/architecture-design.md) completes state/data ownership, material physical/software realization, architecture review, and completion assessment without prescribing a storage format.
 [4+1 Architecture Views](methods/architecture-views.md) then generates the classic Logical, Process, Development, Physical, and Scenario projections from the same authoritative REM knowledge for comprehension and cross-view validation.
 
@@ -378,13 +380,23 @@ When a reader asks why REM contains a particular rule, follow the links in this 
 
 ### Why does REM use classic 4+1 architecture views?
 
-1. Read the [Architecture View and Semantic graph concepts](concepts/README.md#system-and-architecture-assets).
+1. Read the [Architecture View and 4+1 Architecture View Graph concepts](concepts/README.md#system-and-architecture-assets).
 2. Read Principles 18 and 19 in [Principles](principles/README.md).
 3. Read the generated 4+1 projection rules in the [Architecture Design model](models/architecture-design.md#generated-41-architecture-views).
 4. Read [4+1 Architecture Views](methods/architecture-views.md) to see how Logical, Process, Development, Physical, and Scenario views are generated from one authoritative semantic model.
 5. Read the [Scenario model](models/scenarios.md) to see why the Scenario View derives internal architecture participation without changing the black-box Scenario itself.
 
 REM uses 4+1 for generated comprehension and validation, not to create five independently authored architecture models.
+
+### Example: Why can a Module contain Modules?
+
+1. Read the [Module, Module containment, Interface, and Interface exposure concepts](concepts/README.md#system-and-architecture-assets).
+2. Read Principles 4, 8, 9, 10, and 20 in [Principles](principles/README.md).
+3. Read [Module hierarchy and encapsulation](models/architecture-design.md#module-hierarchy-and-encapsulation) in the Architecture Design model.
+4. Read [Architecture Allocation](methods/architecture-allocation.md#establish-or-refine-the-module-hierarchy) for lowest-coherent allocation and boundary exposure.
+5. Read the [Logical View](methods/architecture-views.md#logical-view) to see how parent Modules are shown first and child responsibilities are progressively disclosed.
+
+REM does not prescribe a universal maximum hierarchy depth. A project or implementation may impose a shallower supported depth as a representation constraint without changing REM's hierarchy semantics.
 
 ### Example: Why must a Feature or Function name explain its purpose?
 

@@ -1,7 +1,7 @@
 # RigorLoop Engineering Method
 
 RigorLoop Engineering Method (REM) is a tool-independent, model-based engineering methodology.
-Requirements express what must be satisfied; System Design describes capabilities and behavior; Architecture Design assigns responsibility.
+Requirements express what must be satisfied; System Design describes capabilities and behavior; Architecture Design assigns responsibility through hierarchical Modules, encapsulated Interfaces, and material realization.
 Operational Support defines how the engineering model is represented, governed, validated, and maintained.
 
 Implementation realizes the design, verification produces evidence, and controlled Changes evolve identifiable Baselines.
@@ -41,9 +41,9 @@ Reference that owner when another document needs the rule instead of creating an
 | Analyze stakeholder scenarios | [Scenario Analysis](methods/scenario-analysis.md) | Confirm the durable Feature and governed black-box Scenarios; expose candidate obligations |
 | Derive system obligations | [Requirement Analysis](methods/requirement-analysis.md#derive-system-requirements) | Create verifiable SRs under one IR and hand behavior questions to Functional Analysis |
 | Confirm logical behavior | [Functional Analysis](methods/functional-analysis.md) | Confirm durable Functions from SRs and reconcile Feature realization |
-| Allocate logical architecture | [Architecture Allocation](methods/architecture-allocation.md) | Allocate one primary Module per Function and exactly one Module per AR; identify logical Interfaces |
-| Complete architecture design | [Architecture Design](methods/architecture-design.md) | Produce semantic Module/Interface architecture outputs, state/data ownership, and material subordinate physical/software realization without prescribing storage |
-| Generate architecture views | [4+1 Architecture Views](methods/architecture-views.md) | Generate classic Logical, Process, Development, Physical, and Scenario projections from authoritative REM knowledge |
+| Allocate logical architecture | [Architecture Allocation](methods/architecture-allocation.md) | Establish/refine Module hierarchy, allocate one primary Module per Function and exactly one Module per AR, and identify/expose logical Interfaces |
+| Complete architecture design | [Architecture Design](methods/architecture-design.md) | Produce hierarchical Module/Interface architecture outputs, encapsulation boundaries, state/data ownership, and material subordinate physical/software realization without prescribing storage |
+| Generate architecture views | [4+1 Architecture Views](methods/architecture-views.md) | Derive classic Logical, Process, Development, Physical, and Scenario views, assess semantic fidelity and reading tasks, and maintain identifiable, regenerable presentations |
 | Evolve and assess the model | [Engineering cycle](methods/README.md#engineering-cycle) | Iterate between need, design, realization, evidence, and baseline decisions |
 
 The current core now has explicit procedures from Initial Requirement through logical allocation, physical/software architecture realization, and generated 4+1 architecture views.
@@ -52,7 +52,7 @@ Verification and the broader universal engineering concerns remain later refinem
 ## Method boundaries
 
 REM does not mandate JSON, directory layouts, Git, Rust, a web application, a CLI, or a CI service.
-A project selects a representation and tools through Operational Support while preserving REM's engineering semantics.
+A project selects a representation and tools through Operational Support while preserving REM's engineering semantics. REM defines hierarchical Module containment and encapsulation but does not prescribe a universal hierarchy-depth limit; an implementation such as RigorLoop may impose a practical supported depth as implementation policy.
 RigorLoop provides a reference implementation; its current technology choices do not become universal method requirements.
 
 ## Open refinements
