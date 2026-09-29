@@ -66,6 +66,7 @@ These are the twenty-one governing principles of the proposed [RigorLoop Enginee
 16. **Make engineering definitions clear and distinguishable.**
 
     Each definition has a meaningful name and a precise purpose and scope that readers can understand using current authoritative information. Its name identifies the engineering purpose and subject, distinguishes neighboring definitions, and agrees with the definition's actual scope.
+    Present engineering meaning first. Stable identities support traceability; readers should not need to interpret identifiers to understand a responsibility or contract.
 
 17. **Keep Scenarios governed, black-box, and stakeholder-observable.**
 
@@ -77,9 +78,10 @@ These are the twenty-one governing principles of the proposed [RigorLoop Enginee
 
 19. **Generate architecture views from one authoritative semantic model.**
 
-    REM uses the classic 4+1 view names—Logical, Process, Development, Physical, and Scenario—as generated projections of authoritative REM knowledge. Views may select, collapse, or emphasize information for comprehension, but they must preserve semantic meaning and provenance and must not become a second source of truth.
+    Use complementary architecture views to address distinct concerns. REM adopts the five 4+1 concerns through its [documented adaptation](../methods/architecture-views.md#adoption-and-adaptation-in-rem): Logical, Process, Development, Physical, and Scenario. Derive them from authoritative engineering knowledge and choose presentations that make their concerns understandable. Views may select, collapse, or emphasize information for comprehension, but they must preserve semantic meaning, ownership, and provenance and must not become a second source of truth.
     Keep authoritative knowledge, semantic projection, and rendered presentation distinct. Identify the source state and derivation rules so views remain traceable and regenerable.
     Present one useful responsibility level at a time with navigable detail. Assess both semantic fidelity and the intended reading tasks in the rendered view; a complete generated inventory alone does not establish comprehension.
+    Visible labels may shorten canonical names when their meaning remains faithful and unambiguous in context. Keep full names and stable identities accessible through detail or reference without requiring their repetition throughout a diagram. Presentation labels do not create new identities or change authoritative definitions or relationships.
 
 20. **Preserve encapsulation through Module hierarchy.**
 

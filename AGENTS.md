@@ -19,6 +19,7 @@ Use [docs/project-map.md](docs/project-map.md) only when current for the area; o
 ## Editing conventions
 
 - Make the smallest complete change, preserve user work and avoid unrelated refactors.
+- For internal refactors, update all affected consumers and delete obsolete code and paths in the same change. Do not add or retain compatibility layers, deprecated shims, or dual-write logic for obsolete internals. Preserve compatibility required by agreed external contracts, including public interfaces and data migrations.
 - Follow [System's directory layout](docs/design/system.md#repository-directory-layout); preserve stable model IDs and declared example ownership.
 - Edit canonical sources in `docs/`, `skills/`, `schemas/`, `scripts/` and `templates/`; `skills/` is the only authored skill source.
 - Keep architecture and ADR scaffolds in `templates/`. Use `skills/plan/assets/plan-skeleton.md` for plans; do not create duplicate scaffolds or overwrite an unrelated initiative's plan.

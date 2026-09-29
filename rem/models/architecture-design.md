@@ -156,6 +156,7 @@ A Module realization view may describe, when relevant:
 - persistence mechanisms or datastores used to realize state owned or used by the Module;
 - packaging or deployment units and significant deployment targets;
 - implementation paths or artifact mappings;
+- test groups assessing the responsibility, their observation boundaries, fixtures and execution dependencies;
 - material technology selections and their rationale;
 - significant external runtime dependencies.
 
@@ -171,6 +172,8 @@ An Interface realization view may describe, when relevant:
 These items are subordinate architecture information.
 REM does not require stable global identities or independent lifecycles for a service, process, datastore, deployment unit, protocol, or technology choice merely because it appears in a realization view.
 Its governed meaning is owned by the Module or Interface definition that contains or references it.
+
+Test organization is supporting realization information: the containing Module identifies the responsibility assessed by its test groups. It does not acquire ownership of shared execution tooling, and test code does not become an implementation of the behavior it assesses. Reference the actual coverage and execution owners, preserve material gaps, and keep test definitions separate from observed Verification Evidence. See the [Development View's test architecture](../methods/architecture-views.md#test-architecture).
 
 A project MAY use structured subordinate records and local identifiers for validation or tooling.
 Aggregate runtime, datastore, deployment, or technology diagrams SHOULD be derived from the authoritative Module and Interface realization information rather than maintained as a second source of truth.
@@ -224,23 +227,27 @@ Use [Architecture Allocation](../methods/architecture-allocation.md) to assign a
 
 ## Generated 4+1 architecture views
 
-REM standardizes five architecture-view kinds using the classic 4+1 names: **Logical**, **Process**, **Development**, **Physical**, and **Scenario**.
-These are generated projections of the authoritative semantic architecture, not independent models or authored sources of truth.
-Use the [4+1 Architecture View method](../methods/architecture-views.md) to construct them.
+REM adopts five architecture-view kinds using the classic 4+1 names: **Logical**, **Process**, **Development**, **Physical**, and **Scenario**.
+The method distinguishes the [original 4+1 approach](../methods/architecture-views.md#origin-and-reference) from [REM's adoption and adaptation](../methods/architecture-views.md#adoption-and-adaptation-in-rem).
+Under REM, these views are generated projections of authoritative engineering knowledge, not independent models or authored sources of truth.
+Use the [4+1 Architecture View method](../methods/architecture-views.md) to construct them; the mappings below describe REM's application.
 
 | View | Primary concern | Typical authoritative inputs |
 | --- | --- | --- |
 | Logical | Hierarchical responsibilities, behavior, obligations, logical collaboration, encapsulation, and state/data authority | Module containment, exposed/internal Interfaces, Feature/Function context, Function/AR allocation, Module definitions, state/data ownership |
 | Process | Runtime behavior, execution boundaries, concurrency, lifecycle, communication, isolation, and failure boundaries | Module runtime realization and runtime-significant Interface realization |
-| Development | Static software organization used for development/build/maintenance | Module software realization, implementation/source/package mappings, material software dependencies |
+| Development | Static software organization used for development/build/testing/maintenance | Module software realization, source/package mappings, material dependencies, test groups and supporting infrastructure |
 | Physical | Deployment, placement, connectivity, persistence placement, and infrastructure topology | Module deployment/persistence realization, external runtime dependencies, concrete connectivity |
 | Scenario | End-to-end architecture participation for one governed stakeholder Scenario | Scenario → SR/Function/AR → Module/Interface plus relevant realization |
+
+The optional [Logical reading perspectives](../methods/architecture-views.md#logical-reading-perspectives) organize questions within the Logical View. They do not add architecture-view kinds or require separate pages; each project selects its presentation under Operational Support.
 
 A view MAY simplify presentation, for example by collapsing an Interface into a labeled Module-to-Module edge, provided the underlying Interface and authoritative relationship remain discoverable.
 A view MUST NOT invent or independently maintain architecture facts.
 
 The Scenario View is the `+1` cross-view validation slice.
 The canonical Scenario remains black-box and stakeholder-observable; the generated view derives internal architecture participation without adding those internal steps to the Scenario definition.
+Its [outcome walkthroughs](../methods/architecture-views.md#outcome-walkthroughs) connect expected, alternative and failure outcomes to selected existing obligations and source-backed architecture details. Reading selections, established coverage and applicable execution evidence remain distinct.
 Important Scenarios SHOULD be used to test whether the other four views form a coherent end-to-end explanation of the architecture.
 
 A generated **4+1 Architecture View Graph** MAY normalize authoritative REM entities, Module containment, Interface exposure, allocation relationships, and subordinate realization information for projection. It is a derived, non-authoritative architecture read model, not a general replacement for the REM engineering model.
