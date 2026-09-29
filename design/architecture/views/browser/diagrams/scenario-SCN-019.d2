@@ -1,0 +1,85 @@
+# Generated from canonical REM records; do not edit.
+# Source identity: 2cf8f01cf8087e0b226dbd431d6452970b13954a16b84408d91173987708417e
+# Traceability, not execution order. Requirement and behavior sets are collapsed by their exact accountable Module; arrows summarize the selected authored relationships. Dashed Modules provide contract context without receiving behavior allocations. The traceability details and source links below retain the selected entities and their authored basis.
+vars: {d2-config: {layout-engine: elk}}
+direction: down
+scenario: "Establish an identifiable\nbaseline for later\nengineering reliance" {
+  link: "#scenario/SCN-019"
+  tooltip: "Establish an identifiable baseline for later engineering reliance (SCN-019)"
+  style.fill: "#E9F4EE"
+  style.stroke: "#7C8FA9"
+  style.font-color: "#23334A"
+  style.font-size: 17
+  style.border-radius: 6
+}
+requirements: "System obligations\n1 selected requirements" {
+  link: "#scenario/SCN-019"
+  tooltip: "Identify and preserve coherent engineering baselines (SR-020)"
+  style.fill: "#FFF5DB"
+  style.stroke: "#7C8FA9"
+  style.font-color: "#23334A"
+  style.font-size: 17
+  style.border-radius: 6
+}
+scenario -> requirements: "informs" {
+  style.stroke: "#667A96"
+  style.fill: "#FFFFFF"
+  style.font-size: 13
+}
+m_4d4f442d30303566756e6374696f6e73: "1 Function" {
+  link: "#scenario/SCN-019"
+  tooltip: "Establish and inspect retained engineering baselines (FUNC-020)"
+  style.fill: "#ECF3FF"
+  style.stroke: "#7C8FA9"
+  style.font-color: "#23334A"
+  style.font-size: 17
+  style.border-radius: 6
+}
+requirements -> m_4d4f442d30303566756e6374696f6e73: "confirms" {
+  style.stroke: "#667A96"
+  style.fill: "#FFFFFF"
+  style.font-size: 13
+}
+m_4d4f442d30303566756e6374696f6e73 -> m_4d4f442d303035: "allocated to" {
+  style.stroke: "#667A96"
+  style.fill: "#FFFFFF"
+  style.font-size: 13
+}
+m_4d4f442d303035: "Engineering baseline\nmanagement" {
+  link: "#module/MOD-005"
+  tooltip: "Engineering baseline management (MOD-005)"
+  style.fill: "#ECF3FF"
+  style.stroke: "#7C8FA9"
+  style.font-color: "#23334A"
+  style.font-size: 17
+  style.border-radius: 6
+}
+m_4d4f442d303136: "Engineering model management" {
+  link: "#module/MOD-016"
+  tooltip: "Engineering model management (MOD-016)"
+  style.fill: "#F3F6FA"
+  style.stroke: "#7C8FA9"
+  style.font-color: "#23334A"
+  style.font-size: 17
+  style.border-radius: 6
+  style.stroke-dash: 3
+}
+m_49462d303037: "Engineering state content\nand interpretation" {
+  link: "#interface/IF-007"
+  tooltip: "Engineering state content and interpretation (IF-007)"
+  style.fill: "#E9F4EE"
+  style.stroke: "#7C8FA9"
+  style.font-color: "#23334A"
+  style.font-size: 17
+  style.border-radius: 6
+}
+m_4d4f442d303035 -> m_49462d303037: "consumes" {
+  style.stroke: "#667A96"
+  style.fill: "#FFFFFF"
+  style.font-size: 13
+}
+m_4d4f442d303136 -> m_49462d303037: "provides" {
+  style.stroke: "#667A96"
+  style.fill: "#FFFFFF"
+  style.font-size: 13
+}

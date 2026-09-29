@@ -1,0 +1,42 @@
+{
+  "id": "MOD-006",
+  "type": "module",
+  "title": "Engineering change control",
+  "status": "draft",
+  "description": "Control transitions and current-view retirement using applicable authority, recorded provenance, and activity-specific resumption context.",
+  "responsibilities": [
+    "Record controlled transitions and their provenance.",
+    "Determine applicable authority and preserve explicit human decision boundaries.",
+    "Assess retirement dependencies and retain the context required to resume work.",
+    "Contribute FUNC-026 authority assessment to MOD-017's IF-009 contract, relating an explicit action and subject to attributable applicable grants and policy without creating a decision, permission, or executed action."
+  ],
+  "owned_state": [
+    "Change transition records, resumption context, and recorded authority/disposition references; external decision authority itself is not owned or invented by the module."
+  ],
+  "scope": {
+    "includes": [
+      "Controlled changes, authority assessment, retirement disposition, and resumption."
+    ],
+    "excludes": [
+      "Automatic approval from a model edit, redefining governing policy, or claiming evidence-based satisfaction."
+    ]
+  },
+  "provides": [],
+  "consumes": [],
+  "design_limits": [
+    "IF-009 defines the selected action-authority contract for release coordination, with this Module supplying authority analysis. IR-003 ARs and detailed baseline, change-record storage, and wider assurance interactions remain deferred.",
+    "Applicable authority remains distinct from supplied approval records, actual execution, and evidence sufficiency. This contract analysis introduces no executable authorization service or automated approval."
+  ],
+  "sources": [
+    {
+      "source": "SRC-ARCHITECTURE-PILOT",
+      "locator": "MOD-006",
+      "basis": "Analyst-proposed responsibility boundary derived from the existing Function landscape. Assigned Functions remain authoritative for behavior; this record describes target architecture, not observed implementation."
+    },
+    {
+      "source": "SRC-BOUNDARY-CONTRACTS",
+      "locator": "MOD-006; SCN-019, SCN-053, SCN-066 selected collaboration analysis",
+      "basis": "Derive consumer-focused parent contracts for selected-state inspection, adopted-REM authoring guidance, applicable action authority, and evidence applicability. Preserve child behavior/state authority, existing Function/AR allocations, and earlier contract guarantees. The selected contracts refine prior blanket deferrals; remaining retention, wider collaboration, AR, and realization gaps stay explicit. This is draft design analysis, not implemented or satisfied behavior."
+    }
+  ]
+}

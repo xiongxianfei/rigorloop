@@ -1,0 +1,67 @@
+# Generated from explicit REM realization facts; do not edit.
+# Source identity: 2cf8f01cf8087e0b226dbd431d6452970b13954a16b84408d91173987708417e
+# Edges are recorded conditional calls, not invocation sequence.
+vars: { d2-config: { layout-engine: elk } }
+direction: down
+
+n_657865637574696f6e3a303a4d4f442d303130: "CLI process\nNode.js" {
+  link: "#process/MOD-010"
+  tooltip: "These are conditional in-process dispatch paths: recording requests use the record-store implementation, while supported init requests use installation. The arrows do not prescribe sequence or imply that both paths run for every invocation.; IF-004 remains owned by MOD-018 and IF-006 by MOD-019. MOD-010 and MOD-014 implement their assigned behavior; execution co-location does not transfer contract ownership or make logical Modules separate services.; The entrypoint uses JavaScript ES modules and direct calls/imports. This source mapping supplies no measured execution, minimum Node version, agent-host runtime, or all-platform qualification."
+  style.fill: "#F6F9FF"
+  style.stroke: "#93A9C6"
+  style.font-size: 18
+  style.border-radius: 9
+  n_4d4f442d303130: "Engineering command interface" {
+    link: "#module/MOD-010"
+    tooltip: "Engineering command interface (MOD-010)"
+    style.fill: "#ECF3FF"
+    style.stroke: "#597390"
+    style.font-color: "#24364A"
+    style.font-size: 16
+    style.border-radius: 7
+  }
+  n_4d4f442d303131: "Operational record persistence" {
+    link: "#module/MOD-011"
+    tooltip: "Operational record persistence (MOD-011)"
+    style.fill: "#ECF3FF"
+    style.stroke: "#597390"
+    style.font-color: "#24364A"
+    style.font-size: 16
+    style.border-radius: 7
+  }
+  n_4d4f442d303134: "Verified skill installation" {
+    link: "#module/MOD-014"
+    tooltip: "Verified skill installation (MOD-014)"
+    style.fill: "#ECF3FF"
+    style.stroke: "#597390"
+    style.font-color: "#24364A"
+    style.font-size: 16
+    style.border-radius: 7
+  }
+  n_49462d303034: "Entry contract\nScoped public command\nexecution" {
+    link: "#interface/IF-004"
+    tooltip: "Scoped public command execution (IF-004); entry contract declared for this execution context"
+    style.fill: "#F0F7F4"
+    style.stroke: "#597390"
+    style.font-color: "#24364A"
+    style.font-size: 16
+    style.border-radius: 7
+    style.stroke-dash: 3
+  }
+  n_4d4f442d303130 -> n_4d4f442d303131: "Operational\nrecord access\nand publication" {
+    link: "#interface/IF-003"
+    tooltip: "Operational record access and publication (IF-003); conditional call"
+    style.stroke: "#526C8A"
+    style.font-color: "#344D67"
+    style.fill: "#FFFFFF"
+    style.font-size: 14
+  }
+  n_4d4f442d303130 -> n_4d4f442d303134: "Verified skill\ninstallation\nexecution" {
+    link: "#interface/IF-006"
+    tooltip: "Verified skill installation execution (IF-006); conditional call"
+    style.stroke: "#526C8A"
+    style.font-color: "#344D67"
+    style.fill: "#FFFFFF"
+    style.font-size: 14
+  }
+}

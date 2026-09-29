@@ -1,0 +1,68 @@
+{
+  "id": "AR-022",
+  "type": "allocated-requirement",
+  "title": "Recover only exact verified operational record transactions",
+  "status": "draft",
+  "statement": "The Operational record persistence Module shall recover an explicitly selected current-format transaction only by completing its verified exact prepared candidate or restoring its verified before-state, preserving unknown target states, acknowledged commitment, and available recoverability.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "A stale or damaged recovery record can cause guessed replacement, replay of old semantic operations, or destruction of outside work.",
+      "desired_outcome": "Recovery produces the selected verified storage state or an explicit safe stop while keeping unrelated content and historical meaning intact."
+    },
+    "why": {
+      "rationale": "SR-045 makes recovery an exact byte-preserving transaction operation rather than a new engineering decision or general rollback facility."
+    },
+    "who": {
+      "stakeholders": [
+        "Actors resolving an interrupted recorded update",
+        "Consumers relying on acknowledged saved results",
+        "Maintainers of MOD-011"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "The caller explicitly selects restore or complete with the transaction and expected recovery identity.",
+        "Recovery is interrupted, repeated, or encounters changed targets or unavailable private data."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "IF-003 recovery of one selected current operational-record transaction.",
+        "Its private journal and verified before/candidate snapshots; external decision-basis subjects remain read-only."
+      ]
+    },
+    "how": {
+      "approach": "Validate the supported journal, exact snapshots, current recovery identity, containment, and observed target states under the shared protection boundary. Apply only the selected supported action, preserve repeatability until a verified terminal outcome, and never rerun semantic edits."
+    },
+    "how_much": {
+      "scope": "Current v3 transaction recovery, including initial creation with absent before-state. Retired, mixed, or unknown formats have no conversion or compatibility repair. The same observed external-editor race limit as publication applies; this does not provide historical-baseline restoration or an atomic guard against arbitrary outside edits."
+    }
+  },
+  "acceptance_criteria": [
+    "Before mutation, require the explicit transaction and expected-recovery identity to match a recognized current journal and verified exact snapshots. Missing, corrupt, tampered, unsupported, retired, or mixed recovery information returns the safe recovery stop without guessed repair, conversion, or cleanup of unrecognized state.",
+    "Use the same containment, selected-change target, identity, and supported-writer protections as publication. At each required observed target check, accept only the recorded before or candidate bytes or absence; a third state stops recovery without overwrite.",
+    "Complete publishes only the exact verified prepared candidate and requires the declared decision-basis inputs still to match. Restore uses only verified before bytes and leaves external read-set files untouched. Neither action reruns targeted operations against a new snapshot or manufactures a decision, origin, or approval.",
+    "A transaction whose journal records committed state permits completion/cleanup but not restoration of the before-state, including when the success response was lost and the caller never observed it. Restoring uncommitted initial creation removes only transaction-created files and empty transaction-created directories, preserving preexisting or externally added content.",
+    "Another interruption preserves available recovery information and allows a later explicitly selected attempt with the refreshed recovery identity. Cleanup of private snapshots occurs only after a verified terminal recovery outcome; these snapshots never become workflow evidence.",
+    "Return the established recovered outcome or the specific stop and remaining recovery state. Unknown identities remain unavailable, and neither a failure to observe a terminal outcome nor retired historical bytes authorizes a fallback repair."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "allocated_to": "MOD-011",
+  "constrains": [
+    "FUNC-047"
+  ],
+  "sources": [
+    {
+      "source": "SRC-CLI-ALLOCATION",
+      "locator": "AR-022",
+      "basis": "Derived from SR-045 for the proposed MOD-011 responsibility. Allocates SR-045 exact recovery, foreign-content preservation, acknowledged-commit limits, interruption, and retirement outcomes to FUNC-047. AR-023 owns explicit public selection and non-recovery command dispatch. These criteria specify intended observations, not executed product evidence or an adoption of the REM authoring format by the CLI."
+    },
+    {
+      "source": "SRC-PUBLISHED-CLI",
+      "locator": "docs/design/cli/cli.md#CLI-SR-05, CLI-SR-06, CLI-SR-09, CLI-SR-10, CLI-SR-26, CLI-SR-27, CLI-SR-28; docs/design/cli/records.md#RF-SR-04, RF-SR-06, RF-SR-08, RF-SR-12, RF-SR-14",
+      "basis": "Retains the named current CLI and Record Format obligations at this allocated responsibility boundary. Their detailed formats, supported versions, limits, and observed external-edit boundaries remain authoritative; no runtime behavior or public contract is changed by this draft."
+    }
+  ]
+}

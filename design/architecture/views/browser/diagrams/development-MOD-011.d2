@@ -1,0 +1,92 @@
+# Generated from canonical REM records; do not edit.
+# Source identity: 2cf8f01cf8087e0b226dbd431d6452970b13954a16b84408d91173987708417e
+# Static mappings from accountable Modules and contracts to implementation sources. Production arrows mean declared inputs and candidate outputs, not software dependencies or evidence that a build ran. Open an owner to inspect its complete mapping.
+vars: {d2-config: {layout-engine: elk}}
+direction: down
+owner: "Operational record\npersistence" {
+  link: "#development/MOD-011"
+  tooltip: "Operational record persistence (MOD-011)"
+  style.fill: "#ECF3FF"
+  style.stroke: "#7C8FA9"
+  style.font-color: "#23334A"
+  style.font-size: 17
+  style.border-radius: 6
+}
+g0: "Implementation sources" {
+  link: "#development/MOD-011"
+  tooltip: "Implementation sources"
+  style.fill: "#F8FAFD"
+  style.stroke: "#7C8FA9"
+  style.font-color: "#23334A"
+  style.font-size: 17
+  style.border-radius: 6
+  grid-columns: 2
+  f0: "packages/rigorloop/dist/lib/\nrecord-store.js" {
+    link: "#development/MOD-011"
+    tooltip: "Store, withRecordSnapshot, executeTargetedStore, and executeRecordStore coordinate snapshots, validation, writer exclusion, receipt preparation, publication, and exact journal recovery."
+    style.fill: "#FFFFFF"
+    style.stroke: "#7C8FA9"
+    style.font-color: "#23334A"
+    style.font-size: 14
+    style.border-radius: 6
+  }
+  f1: "packages/rigorloop/dist/lib/\nrecord-store-files.js" {
+    link: "#development/MOD-011"
+    tooltip: "RecordFiles implements guarded reads and hashes, exclusive creation, temporary-file replacement, directory/file synchronization, and bounded removal."
+    style.fill: "#FFFFFF"
+    style.stroke: "#7C8FA9"
+    style.font-color: "#23334A"
+    style.font-size: 14
+    style.border-radius: 6
+  }
+  f2: "packages/rigorloop/dist/lib/\nrecording-construction.js" {
+    link: "#development/MOD-011"
+    tooltip: "constructMutation transforms an explicit request and supplied before-state into complete candidate writes and effects using source-span edits; the caller supplies stored content and Store performs publication."
+    style.fill: "#FFFFFF"
+    style.stroke: "#7C8FA9"
+    style.font-color: "#23334A"
+    style.font-size: 14
+    style.border-radius: 6
+  }
+  f3: "packages/rigorloop/dist/lib/\nrecord-store-format.js" {
+    link: "#development/MOD-011"
+    tooltip: "Selects the supported stored format independently of advanced transport schemas and dispatches candidate/preservation validation."
+    style.fill: "#FFFFFF"
+    style.stroke: "#7C8FA9"
+    style.font-color: "#23334A"
+    style.font-size: 14
+    style.border-radius: 6
+  }
+  f4: "packages/rigorloop/dist/lib/\nrecord-format-v3.js" {
+    link: "#development/MOD-011"
+    tooltip: "Loads the stored v3 JSON schema and supplies record, set, and preservation validators through createRecordFormat."
+    style.fill: "#FFFFFF"
+    style.stroke: "#7C8FA9"
+    style.font-color: "#23334A"
+    style.font-size: 14
+    style.border-radius: 6
+  }
+  f5: "packages/rigorloop/dist/lib/\nrecording-observations.js" {
+    link: "#development/MOD-011"
+    tooltip: "Builds factual observations and identities from the supplied record set and reader."
+    style.fill: "#FFFFFF"
+    style.stroke: "#7C8FA9"
+    style.font-color: "#23334A"
+    style.font-size: 14
+    style.border-radius: 6
+  }
+  f6: "packages/rigorloop/dist/lib/\nrecording-query-cli.js" {
+    link: "#development/MOD-011"
+    tooltip: "The inspectSubjects helper uses RecordFiles reads/hashes for declared subjects; admission and result selection in the same file belong to MOD-010."
+    style.fill: "#FFFFFF"
+    style.stroke: "#7C8FA9"
+    style.font-color: "#23334A"
+    style.font-size: 14
+    style.border-radius: 6
+  }
+}
+owner -> g0: "source mapping" {
+  style.stroke: "#667A96"
+  style.fill: "#FFFFFF"
+  style.font-size: 13
+}

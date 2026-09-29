@@ -1,0 +1,44 @@
+{
+  "id": "MOD-005",
+  "type": "module",
+  "title": "Engineering baseline management",
+  "status": "draft",
+  "description": "Identify, preserve, compare, and recover coherent retained engineering states with their original governing meaning.",
+  "responsibilities": [
+    "Establish identifiable baselines and expose their recorded content and governing profile.",
+    "Compare retained states and recover selected content without rewriting historical meaning.",
+    "Consume IF-007 to inspect the requested state, declared membership, original interpretation, and content gaps before composing a Baseline claim. Keep obtained material distinct from confirmed retained material and identify unconfirmed scope."
+  ],
+  "owned_state": [
+    "Baseline identities, retained-state membership, and recovery/comparison selections; content custody and change authorization have separate owners."
+  ],
+  "scope": {
+    "includes": [
+      "Engineering baseline establishment, inspection, comparison, and recovery."
+    ],
+    "excludes": [
+      "Granting recovery permission, redefining historical semantics, or guaranteeing recovery after retained storage is destroyed."
+    ]
+  },
+  "provides": [],
+  "consumes": [
+    "IF-007"
+  ],
+  "design_limits": [
+    "IF-007 now defines content and interpretation inspection from Engineering model management for SCN-019. Complete IR-003 AR derivation, content-retention confirmation, change-authority cooperation, and comparison/recovery contracts remain deferred.",
+    "Inspection success does not establish durable retention. Baseline establishment requires confirmed retention for the declared scope; partial or unavailable retention must remain unconfirmed in the reported outcome. Separately owned realization/assurance material needs its own acquisition and retention basis.",
+    "The IR-001 pilot assumes an already identifiable accessible state; this bounded Interface analysis does not implement Baseline establishment or recovery."
+  ],
+  "sources": [
+    {
+      "source": "SRC-ARCHITECTURE-PILOT",
+      "locator": "MOD-005",
+      "basis": "Analyst-proposed responsibility boundary derived from the existing Function landscape. Assigned Functions remain authoritative for behavior; this record describes target architecture, not observed implementation."
+    },
+    {
+      "source": "SRC-BOUNDARY-CONTRACTS",
+      "locator": "MOD-005; SCN-019, SCN-053, SCN-066 selected collaboration analysis",
+      "basis": "Derive consumer-focused parent contracts for selected-state inspection, adopted-REM authoring guidance, applicable action authority, and evidence applicability. Preserve child behavior/state authority, existing Function/AR allocations, and earlier contract guarantees. The selected contracts refine prior blanket deferrals; remaining retention, wider collaboration, AR, and realization gaps stay explicit. This is draft design analysis, not implemented or satisfied behavior."
+    }
+  ]
+}

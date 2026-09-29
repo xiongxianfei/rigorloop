@@ -1,0 +1,98 @@
+# Generated from canonical REM records; do not edit.
+# Source identity: 2cf8f01cf8087e0b226dbd431d6452970b13954a16b84408d91173987708417e
+# Arrows show consumer -> provider; they do not show execution order.
+vars: {
+  d2-config: {
+    layout-engine: elk
+  }
+}
+direction: down
+
+m_4d4f442d303138: "Engineering operations" {
+  link: "#module/MOD-018"
+  tooltip: "Engineering operations (MOD-018)"
+  style.fill: "#ECF3FF"
+  style.stroke: "#426898"
+  style.font-color: "#23334A"
+  style.font-size: 18
+  style.border-radius: 8
+  m_4d4f442d303130: "Engineering command\ninterface" {
+    link: "#module/MOD-010"
+    tooltip: "Engineering command interface (MOD-010)"
+    style.fill: "#ECF3FF"
+    style.stroke: "#426898"
+    style.font-color: "#23334A"
+    style.font-size: 18
+    style.border-radius: 8
+  }
+  m_4d4f442d303131: "Operational record\npersistence" {
+    link: "#module/MOD-011"
+    tooltip: "Operational record persistence (MOD-011)"
+    style.fill: "#ECF3FF"
+    style.stroke: "#426898"
+    style.font-color: "#23334A"
+    style.font-size: 18
+    style.border-radius: 8
+  }
+  m_4d4f442d303132: "Published engineering\ncapability guidance" {
+    link: "#module/MOD-012"
+    tooltip: "Published engineering capability guidance (MOD-012)"
+    style.fill: "#ECF3FF"
+    style.stroke: "#426898"
+    style.font-color: "#23334A"
+    style.font-size: 18
+    style.border-radius: 8
+  }
+}
+m_4d4f442d303137: "Engineering governance" {
+  link: "#module/MOD-017"
+  tooltip: "Engineering governance (MOD-017)"
+  style.fill: "#F6F8FB"
+  style.stroke: "#8292A9"
+  style.font-color: "#23334A"
+  style.font-size: 18
+  style.border-radius: 8
+  style.stroke-dash: 3
+}
+m_4d4f442d303139: "Product delivery" {
+  link: "#module/MOD-019"
+  tooltip: "Product delivery (MOD-019)"
+  style.fill: "#F6F8FB"
+  style.stroke: "#8292A9"
+  style.font-color: "#23334A"
+  style.font-size: 18
+  style.border-radius: 8
+  style.stroke-dash: 3
+}
+m_4d4f442d303138.m_4d4f442d303130 -> m_4d4f442d303138.m_4d4f442d303131: "Operational record\naccess and\npublication" {
+  link: "#interface/IF-003"
+  tooltip: "Operational record access and publication (IF-003)"
+  style.stroke: "#667A96"
+  style.font-color: "#34445B"
+  style.fill: "#FFFFFF"
+  style.font-size: 14
+}
+m_4d4f442d303138.m_4d4f442d303132 -> m_4d4f442d303138: "Scoped public\ncommand execution" {
+  link: "#interface/IF-004"
+  tooltip: "Scoped public command execution (IF-004)"
+  style.stroke: "#667A96"
+  style.font-color: "#34445B"
+  style.fill: "#FFFFFF"
+  style.font-size: 14
+}
+m_4d4f442d303138.m_4d4f442d303130 -> m_4d4f442d303139: "Verified skill\ninstallation\nexecution" {
+  link: "#interface/IF-006"
+  tooltip: "Verified skill installation execution (IF-006)"
+  style.stroke: "#667A96"
+  style.font-color: "#34445B"
+  style.fill: "#FFFFFF"
+  style.font-size: 14
+}
+m_4d4f442d303138.m_4d4f442d303132 -> m_4d4f442d303137: "Engineering\nauthoring guidance" {
+  link: "#interface/IF-008"
+  tooltip: "Applicable engineering authoring guidance (IF-008)"
+  style.stroke: "#667A96"
+  style.font-color: "#34445B"
+  style.fill: "#FFFFFF"
+  style.font-size: 14
+}

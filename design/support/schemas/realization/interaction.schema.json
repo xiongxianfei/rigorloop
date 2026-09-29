@@ -1,0 +1,548 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RigorLoop Interaction realization",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "observed": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sources"
+      ],
+      "properties": {
+        "bindings": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "path",
+              "role"
+            ],
+            "properties": {
+              "path": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "role": {
+                "type": "string",
+                "pattern": "\\S"
+              }
+            }
+          }
+        },
+        "mechanism": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "pattern": "\\S"
+          }
+        },
+        "addressing": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "pattern": "\\S"
+          }
+        },
+        "failure_compatibility": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "pattern": "\\S"
+          }
+        },
+        "sources": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "source",
+              "locator",
+              "basis"
+            ],
+            "properties": {
+              "source": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "locator": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "basis": {
+                "type": "string",
+                "pattern": "\\S"
+              }
+            }
+          }
+        },
+        "public_entries": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "name",
+              "group",
+              "purpose",
+              "source_path",
+              "contract",
+              "operation"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "group": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "purpose": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "source_path": {
+                "type": "string",
+                "pattern": "\\S",
+                "description": "Exact repository-relative source file; local semantic checks enforce containment and existence without reading skill instructions."
+              },
+              "contract": {
+                "type": "string",
+                "pattern": "^[^#\\s]+\\.md(?:#[^#\\s]+)?$",
+                "not": {
+                  "pattern": "\\s"
+                },
+                "description": "Repository-relative Markdown contract path with an optional heading fragment."
+              },
+              "operation": {
+                "type": "string",
+                "pattern": "\\S",
+                "description": "Name of the logical operation on the owning Interface."
+              }
+            }
+          },
+          "description": "Observed public names and sources; Function correspondence is a separate proposed claim. Display groups do not create architectural ownership."
+        },
+        "sequences": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "name",
+              "operation",
+              "participants",
+              "preconditions",
+              "steps",
+              "outcome",
+              "failures",
+              "constraints"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "operation": {
+                "type": "string",
+                "pattern": "^[a-z]+(?:_[a-z]+)*$",
+                "not": {
+                  "pattern": "\\s"
+                }
+              },
+              "participants": {
+                "type": "array",
+                "minItems": 1,
+                "uniqueItems": true,
+                "items": {
+                  "type": "string",
+                  "pattern": "^MOD-[0-9]+$",
+                  "not": {
+                    "pattern": "\\s"
+                  }
+                }
+              },
+              "preconditions": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "string",
+                  "pattern": "\\S"
+                }
+              },
+              "steps": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "name",
+                    "participant",
+                    "action"
+                  ],
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "pattern": "\\S"
+                    },
+                    "participant": {
+                      "type": "string",
+                      "pattern": "^MOD-[0-9]+$",
+                      "not": {
+                        "pattern": "\\s"
+                      }
+                    },
+                    "action": {
+                      "type": "string",
+                      "pattern": "\\S"
+                    },
+                    "branches": {
+                      "type": "array",
+                      "minItems": 1,
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": [
+                          "condition",
+                          "steps",
+                          "outcome"
+                        ],
+                        "properties": {
+                          "condition": {
+                            "type": "string",
+                            "pattern": "\\S"
+                          },
+                          "steps": {
+                            "type": "array",
+                            "minItems": 1,
+                            "items": {
+                              "type": "object",
+                              "additionalProperties": false,
+                              "required": [
+                                "name",
+                                "participant",
+                                "action"
+                              ],
+                              "properties": {
+                                "name": {
+                                  "type": "string",
+                                  "pattern": "\\S"
+                                },
+                                "participant": {
+                                  "type": "string",
+                                  "pattern": "^MOD-[0-9]+$",
+                                  "not": {
+                                    "pattern": "\\s"
+                                  }
+                                },
+                                "action": {
+                                  "type": "string",
+                                  "pattern": "\\S"
+                                }
+                              }
+                            }
+                          },
+                          "outcome": {
+                            "type": "string",
+                            "pattern": "\\S"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "outcome": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "failures": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "condition",
+                    "outcome",
+                    "effects"
+                  ],
+                  "properties": {
+                    "condition": {
+                      "type": "string",
+                      "pattern": "\\S"
+                    },
+                    "outcome": {
+                      "type": "string",
+                      "pattern": "\\S"
+                    },
+                    "effects": {
+                      "type": "array",
+                      "minItems": 1,
+                      "items": {
+                        "type": "string",
+                        "pattern": "\\S"
+                      }
+                    }
+                  }
+                }
+              },
+              "constraints": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "string",
+                  "pattern": "\\S"
+                }
+              }
+            }
+          },
+          "description": "Source-observed ordered interactions for an operation of the containing Interface. Steps are conditional on successful completion of preceding main steps. Every optional branch is a terminal alternative: execute its flat ordered steps and return its outcome without resuming the main sequence. Failure cases retain effect and uncertainty bounds. Local step names are subordinate labels, not engineering identities or presentation edges."
+        },
+        "artifact_acquisition": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "name",
+            "execution",
+            "participant",
+            "artifact",
+            "sources",
+            "constraints"
+          ],
+          "properties": {
+            "name": {
+              "type": "string",
+              "pattern": "\\S"
+            },
+            "execution": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "owner",
+                "name"
+              ],
+              "properties": {
+                "owner": {
+                  "type": "string",
+                  "pattern": "^MOD-[0-9]+$",
+                  "not": {
+                    "pattern": "\\s"
+                  }
+                },
+                "name": {
+                  "type": "string",
+                  "pattern": "\\S"
+                }
+              }
+            },
+            "participant": {
+              "type": "string",
+              "pattern": "^MOD-[0-9]+$",
+              "not": {
+                "pattern": "\\s"
+              }
+            },
+            "artifact": {
+              "type": "string",
+              "pattern": "\\S"
+            },
+            "sources": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "name",
+                  "transport",
+                  "address",
+                  "conditions"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "pattern": "\\S"
+                  },
+                  "transport": {
+                    "type": "string",
+                    "pattern": "\\S"
+                  },
+                  "address": {
+                    "type": "string",
+                    "pattern": "\\S"
+                  },
+                  "conditions": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                      "type": "string",
+                      "pattern": "\\S"
+                    }
+                  }
+                }
+              }
+            },
+            "constraints": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "pattern": "\\S"
+              }
+            }
+          },
+          "description": "Source-observed artifact acquisition alternatives for the containing Interface, bound to an existing execution participant. Transport/address are qualified descriptions and templates, not observed endpoints or a network topology. A selected HTTPS URL does not assert every redirect or proxy hop."
+        }
+      },
+      "minProperties": 2
+    },
+    "proposed": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "choice",
+          "rationale",
+          "alternatives",
+          "consequences",
+          "revisit_when"
+        ],
+        "properties": {
+          "choice": {
+            "type": "string",
+            "pattern": "\\S"
+          },
+          "rationale": {
+            "type": "string",
+            "pattern": "\\S"
+          },
+          "alternatives": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "pattern": "\\S"
+            }
+          },
+          "consequences": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "pattern": "\\S"
+            }
+          },
+          "revisit_when": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "pattern": "\\S"
+            }
+          },
+          "public_entry_mappings": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "entry",
+                "functions",
+                "limits"
+              ],
+              "properties": {
+                "entry": {
+                  "type": "string",
+                  "pattern": "\\S"
+                },
+                "functions": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "function",
+                      "relation",
+                      "contribution"
+                    ],
+                    "properties": {
+                      "function": {
+                        "type": "string",
+                        "pattern": "^FUNC-[0-9]+$",
+                        "not": {
+                          "pattern": "\\s"
+                        }
+                      },
+                      "relation": {
+                        "type": "string",
+                        "enum": [
+                          "guides",
+                          "invokes",
+                          "realizes"
+                        ]
+                      },
+                      "contribution": {
+                        "type": "string",
+                        "pattern": "\\S"
+                      }
+                    }
+                  }
+                },
+                "limits": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "pattern": "\\S"
+                  }
+                }
+              },
+              "anyOf": [
+                {
+                  "properties": {
+                    "functions": {
+                      "minItems": 1
+                    }
+                  }
+                },
+                {
+                  "properties": {
+                    "limits": {
+                      "minItems": 1
+                    }
+                  }
+                }
+              ]
+            },
+            "description": "Reasoned proposed Function correspondence for observed entries, with explicit unmapped scope. Does not establish implementation conformance or transfer Function allocation."
+          }
+        }
+      }
+    },
+    "deferred": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "pattern": "\\S"
+      }
+    }
+  },
+  "minProperties": 1,
+  "description": "Optional subordinate architecture facet, owned by directory containment. Observed facts require attribution; proposals retain reasoning and limits. The file has no independent engineering identity or lifecycle. Shape validation does not establish architectural adequacy or implementation conformance."
+}

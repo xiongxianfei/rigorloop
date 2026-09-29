@@ -1,0 +1,65 @@
+# Generated from canonical REM records; do not edit.
+# Source identity: 2cf8f01cf8087e0b226dbd431d6452970b13954a16b84408d91173987708417e
+# Static mappings from accountable Modules and contracts to implementation sources. Production arrows mean declared inputs and candidate outputs, not software dependencies or evidence that a build ran. Open an owner to inspect its complete mapping.
+vars: {d2-config: {layout-engine: elk}}
+direction: down
+owner: "Operational record access\nand publication" {
+  link: "#development/IF-003"
+  tooltip: "Operational record access and publication (IF-003)"
+  style.fill: "#ECF3FF"
+  style.stroke: "#7C8FA9"
+  style.font-color: "#23334A"
+  style.font-size: 17
+  style.border-radius: 6
+}
+g0: "Contract implementation\nbindings" {
+  link: "#development/IF-003"
+  tooltip: "Contract implementation bindings"
+  style.fill: "#F8FAFD"
+  style.stroke: "#7C8FA9"
+  style.font-color: "#23334A"
+  style.font-size: 17
+  style.border-radius: 6
+  grid-columns: 1
+  f0: "packages/rigorloop/dist/lib/\nrecord-store.js" {
+    link: "#development/IF-003"
+    tooltip: "withRecordSnapshot supplies checked state to primary readers; executeRecordStore serves advanced inspect/check/record/recover; executeTargetedStore invokes construction and receipt preparation within the selected preview or execution path."
+    style.fill: "#FFFFFF"
+    style.stroke: "#7C8FA9"
+    style.font-color: "#23334A"
+    style.font-size: 14
+    style.border-radius: 6
+  }
+  f1: "packages/rigorloop/dist/lib/\nrecording-construction.js" {
+    link: "#development/IF-003"
+    tooltip: "constructMutation realizes the pure candidate-construction part of prepare_record_candidate."
+    style.fill: "#FFFFFF"
+    style.stroke: "#7C8FA9"
+    style.font-color: "#23334A"
+    style.font-size: 14
+    style.border-radius: 6
+  }
+  f2: "packages/rigorloop/dist/lib/\nrecording-result.js" {
+    link: "#development/IF-003"
+    tooltip: "primaryReceiptPreparer receives guarded candidate/storage facts and returns the prepared command-owned receipt."
+    style.fill: "#FFFFFF"
+    style.stroke: "#7C8FA9"
+    style.font-color: "#23334A"
+    style.font-size: 14
+    style.border-radius: 6
+  }
+  f3: "packages/rigorloop/dist/lib/\nrecording-query-cli.js" {
+    link: "#development/IF-003"
+    tooltip: "inspectSubjects and its RecordFiles reader realize the declared-subject observation part; the logical operation does not have a dedicated exported function with the same name."
+    style.fill: "#FFFFFF"
+    style.stroke: "#7C8FA9"
+    style.font-color: "#23334A"
+    style.font-size: 14
+    style.border-radius: 6
+  }
+}
+owner -> g0: "source mapping" {
+  style.stroke: "#667A96"
+  style.fill: "#FFFFFF"
+  style.font-size: 13
+}

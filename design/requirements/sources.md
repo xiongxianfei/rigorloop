@@ -1,12 +1,23 @@
 # Sources for the initial requirement drafts
 
-This register records the basis of ten draft IRs, their decomposition, and the connected system and architecture model. Earlier sections preserve successive drafting decisions, including the [seven-IR analysis](#src-complete-analysis) and [first architecture pilot](#src-architecture-pilot). The current extension is recorded under [SRC-PUBLISHED-PRODUCTS](#src-published-products).
+This register records the basis of ten draft IRs, their decomposition, and the connected system and architecture model. Earlier sections preserve successive drafting decisions, including the [seven-IR analysis](#src-complete-analysis), [first architecture pilot](#src-architecture-pilot), and [published-product extension](#src-published-products). The current CLI allocation is recorded under [SRC-CLI-ALLOCATION](#src-cli-allocation).
+The current Module containment and exposure refinement is recorded under [SRC-MODULE-HIERARCHY](#src-module-hierarchy).
 Each JSON `sources` entry names a source below and locates the relevant passage or existing requirement.
 The accompanying `basis` explains how that material informed the draft.
 
 SRC-VISION, SRC-CONSTITUTION, SRC-SYSTEM, and SRC-DESIGN were read at commit `9b4fbc05b1c95e486bc0c24a35db6edf68e18a48`.
 The links below navigate to working-tree files; the commit and repository-relative path identify the drafting basis.
 These source references do not rename, replace, or migrate obligations from the existing approved contracts.
+
+## SRC-MODULE-HIERARCHY
+
+Source: the user's proposed four-parent Module decomposition and nested `modules/` representation, followed by authorization to apply the refined REM architecture rules. The living [Module hierarchy and encapsulation model](../../rem/models/architecture-design.md#module-hierarchy-and-encapsulation) defines responsibility containment, single accountable allocation, and continuous provider-side Interface exposure.
+
+The four draft parents compose the existing responsibilities: MOD-016 contains MOD-001–004; MOD-017 contains MOD-005–009; MOD-018 contains MOD-010–012; MOD-019 contains MOD-013–015. Their definitions explain broader integration responsibility and exclusions without taking ownership of child-held state or duplicating direct allocations. The distinction between MOD-008's semantic model-authoring guidance and MOD-012's published invocation procedures remains explicit.
+
+IF-004 is exposed through MOD-018 to preserve its existing public user/agent command boundary, supported by its logical contract and attributed local-process realization. MOD-010 remains its provider. IF-006 is exposed through MOD-019 because its provider MOD-014 and consumer MOD-010 are in different parent trees. Consumer-side MOD-018 does not acquire an exposure declaration. Other declared collaborations remain internal to their respective parent trees; missing governance/specialist cooperation remains deferred.
+
+Filesystem containment authors parentage once. The Interface `exposed_through` field authors visibility once; provider and consumer declarations remain on their actual Modules. The [hierarchy migration record](../../docs/changes/2026-09-26-rem-architecture-refinement/module-hierarchy.md) identifies the inspected scope and later check results. This refinement does not approve requirements, expand AR coverage, change stored operational formats, or establish product behavior.
 
 ## SRC-REM
 
@@ -410,6 +421,81 @@ The original seven IRs cover engineering-model responsibilities; the extension a
 Existing authority, evidence, authoring, and learning responsibilities are reused where their meaning matches. Detailed source guarantees remain applicable until an explicit adoption reconciles them.
 Two prior records receive bounded reconciliation: IR-006 reflects current schema availability, and SR-014 confirms the existing Functions governed by its constraint obligation under refined Functional Analysis. Their original need, obligation, acceptance criteria, and earlier source entries remain intact.
 
+## SRC-CLI-ALLOCATION
+
+Source: the user's instruction to proceed with the next architecture pass after committing the reviewed published-product draft.
+Repository revision `9055b3c0` retains that 247-entity starting subject and the refined REM methods used here.
+The pass derives allocated obligations from IR-008's SR-040 through SR-047, walks through SCN-041 through SCN-049, and reconciles MOD-010/MOD-011 with IF-003/IF-004.
+SR-040 through SR-047 retain the 44 criterion-level contribution arguments in their own attributed `sources` entries. Each entry identifies the unchanged parent criterion position, its allocated contributors, and the reasoning for their cooperation. These are allocation-analysis conclusions, not additional obligations, containment edges, or satisfaction evidence.
+The [acceptance-contribution view](../architecture/views/browser/index.html#contributions) derives its rows from those entries; the [cooperation view](../architecture/views/browser/index.html#cooperation) summarizes the existing Module, Interface, and AR contracts. One-based criterion positions are navigation within the analyzed definitions, not stable identities; changes to the criteria require explicit reconciliation of their analysis.
+The [retained review record](../../docs/changes/2026-09-26-rem-architecture-refinement/architecture-review.md#review-and-validation) preserves earlier review subjects and actual validation results separately from the current model.
+
+Each AR has one containment parent SR and one accountable Module. Requirements remain draft, and acceptance criteria describe intended observations rather than executed verification evidence.
+The current CLI and Record Format contracts below continue to own exact public names, versions, stored shapes, bounds, and safety guarantees. This architectural derivation does not implement, adopt, weaken, or retire them, and does not expand supported operating-system or external-editor guarantees.
+The source-qualified product inventory remains the earlier coverage baseline; current allocation results do not retarget its review subject.
+
+## SRC-CLI-REALIZATION
+
+Source: the user's instruction to proceed after rereading refined REM Architecture Design, which includes material physical/software realization beneath Modules and Interfaces.
+The [architecture method](../../rem/methods/architecture-design.md#design-the-physicalsoftware-realization) and [realization model](../../rem/models/architecture-design.md#architecture-realization-views) govern this pass. The user's in-progress REM refinements are retained unchanged.
+The [application profile](../support/README.md#subordinate-realization-views) defines the optional representation. Canonical owner-contained facets record the bounded mapping and its limits; the [runtime view](../architecture/views/browser/index.html#process) summarizes the selected physical arrangement.
+
+MOD-010/MOD-011 and IF-003/IF-004 distinguish attributed source observations from draft choices and deferred qualification. No new requirement, logical allocation, Module, Interface, or public format is introduced.
+Proposed choices retain the shared CLI runtime, filesystem record protocol, and existing command-family boundaries for the declared needs, with alternatives, consequences, and revisit conditions. Those choices are engineering analysis, not observations of conformance or approval of a release.
+The original inline-realization pass performed author self-review and focused structural validation; its retained result does not extend the earlier independent logical review to the then-new realization information. Later review subjects retain their own scope in the supporting review record.
+
+## SRC-CLI-SOURCE
+
+Source: selected repository implementation files at commit `9055b3c037b2034dd2ad82c79370ee993e138e0d`, inspected for the CLI realization pass.
+The observed views' repository-relative `software_units` and `bindings` paths locate the source artifacts; their `role` and source `locator` text identify relevant symbols. At inspection, the mapped files matched that commit byte-for-byte.
+
+The inspected boundary includes [package metadata](../../packages/rigorloop/package.json), the [executable](../../packages/rigorloop/dist/bin/rigorloop.js), primary/advanced command adapters, discovery and diagnostics, [the record engine](../../packages/rigorloop/dist/lib/record-store.js), [filesystem operations](../../packages/rigorloop/dist/lib/record-store-files.js), [candidate construction](../../packages/rigorloop/dist/lib/recording-construction.js), and format/result/observation helpers named in the views.
+The current [CLI](../../docs/design/cli/cli.md) and [Record Format](../../docs/design/cli/records.md) remain behavior authorities. Where source and intended behavior differ, source inspection does not amend those obligations.
+
+This is a bounded source inspection, not a complete dependency inventory, executed runtime test, installed-artifact observation, or public-registry observation. It establishes no minimum runtime version or expanded platform support. The package manifest omits an `engines` declaration; qualification must use the retained support contracts and actual candidate evidence.
+The [recorded help discrepancy](published-products.md#observed-realization-discrepancy) remains unresolved implementation work.
+
+## SRC-ARCHITECTURE-DIRECTORIES
+
+Source: the user's proposed owner-directory architecture layout and instruction to refine it.
+The [application profile](../support/README.md#subordinate-realization-views) records the selected representation: stable-ID/title directories, logical `module.json` or `interface.json`, optional owned realization facets, and derived aggregate views.
+REM retains tool-independent ownership and materiality principles; this filesystem and JSON representation belongs to RigorLoop's draft authoring profile.
+
+The retained [directory-migration result](../../docs/changes/2026-09-26-rem-architecture-refinement/architecture-review.md#directory-profile-migration) records preservation of all 21 logical architecture identities, their definitions and typed relationships, and every observation, proposed choice, source attribution, and deferral from the four inline realization views.
+Containment supplies facet ownership without new entity identities or duplicated owner references. The [views](../architecture/views/README.md) summarize authoritative definitions and facet content.
+Current production formats, runtime behavior, requirement parentage, prior review subjects, and source revision attribution remain unchanged. Migration checks and review apply to the new representation; they do not establish runtime satisfaction or broaden an earlier approval.
+
+## SRC-PARENT-INTERFACE-OWNERSHIP
+
+Source: the user's clarification that parent contract ownership must be distinguished from child implementation responsibility, followed by the instruction to refine the model.
+The [ownership refinement record](../../docs/changes/2026-09-26-rem-architecture-refinement/parent-interface-ownership.md) records the bounded contract review, migration, and checks.
+
+MOD-018 Engineering operations now provides IF-004 as its public command contract; MOD-019 Product delivery provides IF-006 as its installation contract. MOD-010 and MOD-014 retain their existing behavioral responsibilities, state, and Function/AR allocations. MOD-011 retains record cooperation. Consumers, Interface operation guarantees, identities, and realization observations are preserved. No child consumption or duplicate provider is introduced to stand for implementation.
+
+This decision supersedes the provider/exposure choice in SRC-MODULE-HIERARCHY for IF-004/IF-006. Earlier source entries and supporting records retain their original design meaning. `exposed_through` remains available for genuinely child-owned contracts crossing ancestor boundaries; directly parent-owned contracts do not expose themselves. Existing allocations and explicit Module explanations support this bounded contribution account, without asserting a general machine-readable Interface-to-child realization relationship. Source bindings and draft architecture do not establish runtime conformance or implementation adoption.
+
+## SRC-BOUNDARY-CONTRACTS
+
+Source: the user's authorization to analyze parent-boundary contracts from existing Scenarios, beginning with SCN-019 and applying the same method to guidance and release cooperation.
+The [bounded contract record](../../docs/changes/2026-09-26-rem-architecture-refinement/boundary-contracts.md) identifies the scope, remaining gaps, review, and direct checks.
+
+SCN-019/SR-020 motivates IF-007, provided by MOD-016 and consumed by MOD-005: state-consistent content and original interpretation inspection. Existing FUNC-004/FUNC-012 and IF-001/IF-002 contribute the content/interpretation behavior; FUNC-020 retains the complete Baseline responsibility. Inspection does not confirm retention, authorize establishment, or acquire separately owned material automatically.
+
+SCN-053's adopted-REM authoring alternative and SR-032/033/053/056 motivate IF-008, provided by MOD-017 and consumed by MOD-012. MOD-008/FUNC-032/033 supply guidance selection and explanation; MOD-012/FUNC-053 retains specialist composition. Broader specialist procedures, authority decisions, usefulness assessment, and runtime integration retain their own scope.
+
+SCN-066 with SR-007, SR-025–029, and SR-069/070 motivates separate IF-009 action-authority and IF-010 evidence-applicability contracts, provided by MOD-017 and consumed by MOD-015. MOD-006/FUNC-026 supplies authority assessment; MOD-007/FUNC-029/030 supplies evidence analysis with existing definition/observation/judgment context. MOD-015 retains release qualification, sealing, publication, and actual outcome responsibility. Authority and evidence cannot substitute for each other. Release-specific source clauses keep their original source-qualified meaning under SRC-PUBLISHED-RELEASE.
+
+The current contract definitions and Module relationships refine earlier blanket collaboration deferrals. Existing Interface guarantees, requirement parentage, Scenario content, Function/AR allocations, and realization observations remain unchanged. Per-Scenario view selection is a bounded explanatory scope; it does not assert an execution sequence or complete end-to-end coverage. No new public executable API, storage technology, approval, or satisfaction claim is established.
+
+## SRC-PUBLIC-ENTRIES
+
+- Origin: the user's request to make public commands and skills discoverable in the Logical view and subsequent instruction to refine the canonical mappings and generated navigation.
+- Analysis record: [Public entry discovery](../../docs/changes/2026-09-26-rem-architecture-refinement/public-entry-discovery.md).
+- Inspected source population: supported CLI command declarations and the retained CLI/Installation contracts; canonical `skills/*/SKILL.md` filenames and the retained Skill hierarchy. Skill contents are neither read nor invoked for this refinement.
+- Observation scope: public entry existence and purpose in the inspected repository sources. This does not qualify an installed package, public registry release, or runtime outcome. Inspection on 2026-09-28 used source contracts and product sources unchanged from `1b96ed18f3be08c0d3701b5cce25954af5c1c913`; skill observation covers filenames only. Proposed REM correspondence uses the separately identified working design subject in the supporting record.
+- Proposed correspondence: role-qualified references from public entries to existing REM Functions. Features and accountable Modules are derived from current relationships; detailed specialist obligations and unmapped scope remain explicit.
+- Representation: IF-004's interaction facet owns the command catalog; MOD-012's software facet owns the skill catalog. The Logical view and published skill inventory derive from those sources. Earlier source observations and review subjects retain their original applicability.
+
 ## SRC-PUBLISHED-CLI
 
 Sources: [CLI](../../docs/design/cli/cli.md) and [Record Format](../../docs/design/cli/records.md) at `5cf0c7b6`.
@@ -441,3 +527,50 @@ An installed package does not adopt a project's workflow state or grant engineer
 Source: [Release](../../docs/design/engineering/release/release.md) at `5cf0c7b6`.
 Its source-qualified `REL-SR-*` obligations cover compatibility/version decisions, exact candidate qualification, publication authority, external observations, recovery, and durable reporting.
 Source-declared transitions and historical examples retain their original applicability. This design analysis neither executes a release nor changes publication permission.
+
+## SRC-PRODUCT-REALIZATION
+
+Source: the user's authorization to establish a coherent initial five-view set, including skill/CLI production and installation. Static inspection on 2026-09-28 used the following tracked sources, unchanged from `33f56fe84ff730d7bd48900cef32170fd0682412`:
+
+- [Adapter build entrypoint](../../scripts/build-adapters.py) and [shared adapter production](../../scripts/lib/packaging/adapter_distribution.py): explicit-output archive production, supported descriptors, selected transformations/resources, archive layouts, and hashes.
+- [Candidate composition](../../scripts/lib/release/release_candidate.py): isolated prepared checkout, archive validation before metadata composition, package metadata overlay, and `npm pack` invocation. Release retains candidate qualification, sealing, and publication responsibilities in this shared source file.
+- [Package manifest](../../packages/rigorloop/package.json): package allowlist, existing JavaScript runtime, executable mapping, and dependencies. There is no command-code compilation or generation script in this manifest.
+- [CLI installation helpers](../../packages/rigorloop/dist/bin/rigorloop.js), [target descriptors](../../packages/rigorloop/dist/lib/adapters.js), [destination installation](../../packages/rigorloop/dist/lib/installer-replacement.js), and [official URL checks](../../packages/rigorloop/dist/lib/official-archive-url.js): selected invocation, trusted acquisition, in-process execution, exact destination units, and retained-original placement.
+
+MOD-013 owns the subordinate production mappings; MOD-014 owns installation software, runtime, and deployment observations; IF-006 records its process binding. The source-to-output paths in MOD-013's software facet describe inspected production code. Output paths are candidate-relative templates, not observed files. Canonical skill directory and template names come from generator declarations and filesystem inventory; no `SKILL.md` content was read or invoked.
+
+[Packaging](../../docs/design/engineering/packaging.md), [Installation](../../docs/design/cli/installation.md), and [Release](../../docs/design/engineering/release/release.md) retain behavioral authority. Source observations do not adopt REM generation, transfer Interface ownership, or change Function/AR allocations. Earlier provenance entries retain their original meaning and scope.
+
+One bounded source/contract discrepancy remains explicit: Packaging DIST-SR-22 requires rejection when neither `--check` nor `--output-dir` is selected, while the inspected `build-adapters.py` still defaults to `sync_adapter_output`. The mapped production route uses explicit isolated output; this task does not change or execute the discrepant path. The installer also visibly relies on descriptor-relative `/proc/self/fd` operations and same-filesystem placement; static inspection supplies no broader platform qualification.
+
+No archive or npm package was built, validated, installed, or published in this pass. Archive contents, reproducibility, instruction semantics, runtime compatibility, destination safety, and release readiness need applicable executable and independent evidence; none follows from an authored architecture facet.
+
+## SRC-RECORD-PROCESS
+
+Source: the user's authorized Process-view refinement for record publication and recovery. Static inspection on 2026-09-28 used the following tracked source and contract files, each verified unchanged from `33f56fe84ff730d7bd48900cef32170fd0682412`:
+
+- [Record store](../../packages/rigorloop/dist/lib/record-store.js): `snapshot`, `candidate`, `acquire`, `loadJournal`, `known`, `publish`, `prepareResult`, `record`, `recover`, `executeRecordStore`, and `executeTargetedStore` establish the observed successful order, terminal preview/no-change alternatives, exact recovery selection, and reader/writer coordination.
+- [Filesystem boundary](../../packages/rigorloop/dist/lib/record-store-files.js): guarded byte access, identity checks, exclusive lock creation, replacement, and directory cleanup supply the inspected storage mechanisms; their presence is not durability or platform proof.
+- [Primary receipt preparation](../../packages/rigorloop/dist/lib/recording-result.js), [targeted mutation adapter](../../packages/rigorloop/dist/lib/recording-mutation-cli.js), and [advanced command adapter](../../packages/rigorloop/dist/lib/record-store-cli.js) establish callback ownership, bounded preparation before publication, explicit selectors, and result/error mapping.
+- [CLI](../../docs/design/cli/cli.md#save-safety-and-recovery-boundary) and [Records](../../docs/design/cli/records.md#requirements) retain behavior authority, including storage-only claims, preview/no-op distinctions, receipt preparation, current v3 preservation, observed-check concurrency limits, and exact before/candidate recovery.
+
+IF-003's interaction facet records publication and recovery sequences. MOD-011's runtime facet records the private journal lifecycle and its coordination constraints. Their ordered steps and guarded transitions come from the inspected implementation and retained contracts, not from SCN-046/SCN-047 participation or inferred workflow order. Main publication describes targeted changed writes and identifies advanced-path differences. Recovery main steps describe `complete`; the verified `restore` branch is terminal.
+
+Only `prepared` and `committed` are stored journal phases. Journal absence alone does not establish reader availability or cleanup success. Preview performs no private transaction writes; actual execution can change private lock/epoch data before a later rejection or unchanged result. Unknown target bytes, untrusted recovery evidence, interrupted cleanup, and lost responses remain qualified outcomes rather than inferred success or rollback.
+
+No product command, save, recovery, fault injection, or platform verification was executed. Logical records, allocations, Interface ownership, Scenario definitions, and earlier source entries retain their original meaning. These source observations do not establish requirement satisfaction, universal crash safety, exclusion of external editors between observed checks, or permission to perform the documented operations.
+
+## SRC-PHYSICAL-REALIZATION
+
+Source: the user's authorized Physical-view refinement for consumer deployment, storage boundaries, and producer placement. Static inspection on 2026-09-28 used the following tracked files, each verified byte-for-byte unchanged from `33f56fe84ff730d7bd48900cef32170fd0682412`:
+
+- [Package manifest](../../packages/rigorloop/package.json) and [CLI entrypoint](../../packages/rigorloop/dist/bin/rigorloop.js): executable/package mapping, package-relative trusted metadata, `archiveWorkForInit`, initial source selection, in-memory acquisition, and the executable wrapper's conditional diagnostic admission.
+- [Record store](../../packages/rigorloop/dist/lib/record-store.js) and [filesystem boundary](../../packages/rigorloop/dist/lib/record-store-files.js): explicitly selected project/change scope, authoritative registered paths, and private lock/epoch/journal addressing. Existing Process observations retain publication and recovery behavior.
+- [Installation replacement](../../packages/rigorloop/dist/lib/installer-replacement.js) and [official archive URL validation](../../packages/rigorloop/dist/lib/official-archive-url.js): working-directory-relative selected destinations, private retention outside discovery roots, same-device checks before detachment, and the declared official initial HTTPS address. The alternative explicit local ZIP still depends on trusted bundled metadata.
+- [Diagnostic configuration](../../packages/rigorloop/dist/lib/log-config.js) and [diagnostic sink](../../packages/rigorloop/dist/lib/log-sink.js): independent user-state defaults or explicit absolute directory, retained file names, rotation, guarded append, and explicit lookup. An override is not assumed to remain outside the selected project.
+- [Candidate preparation](../../scripts/lib/release/release_candidate.py) and [adapter distribution](../../scripts/lib/packaging/adapter_distribution.py): reviewed source commit, temporary prepared checkout, selected candidate output, and explicit generation containment checks. Source, workspace, and output are production roles, not inferred hosts or deployment transfers.
+- [CLI](../../docs/design/cli/cli.md), [Installation](../../docs/design/cli/installation.md), and [Packaging](../../docs/design/engineering/packaging.md) retain behavioral authority and qualify the inspected implementation observations.
+
+MOD-010 owns the one consumer package/execution binding, its per-participant storage accesses, and diagnostic placement. MOD-011 owns the separation of authoritative records and private coordination. MOD-013 owns source/workspace/output placement. MOD-014 owns the conditional installation/retention constraints. IF-006 owns the qualified official/local acquisition alternatives, while MOD-019 remains its logical provider and MOD-014 its installer participant. Existing placements and the single CLI process are referenced by exact owner and local name; no duplicate allocation, process, or shared-host assertion is introduced.
+
+The record root, installation working directory, and diagnostic root remain independent selectors. A local acquisition source is not automatically linked to this repository's candidate outputs. No consumer host, running process, remote release, package installation, network path, archive bytes, or storage safety was observed by executing the product. No `SKILL.md` contents were read or invoked. These source facts neither qualify platform compatibility nor establish requirement satisfaction, deployment availability, agent-host execution, or successful delivery. All earlier provenance entries and source/contract discrepancies retain their original scope.

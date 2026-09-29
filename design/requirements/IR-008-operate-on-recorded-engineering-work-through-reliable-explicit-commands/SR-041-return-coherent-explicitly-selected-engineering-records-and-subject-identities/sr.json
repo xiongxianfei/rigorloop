@@ -52,6 +52,36 @@
       "source": "SRC-PUBLISHED-CLI",
       "locator": "docs/design/cli/cli.md#CLI-SR-01, CLI-SR-14, CLI-SR-19, CLI-SR-21, CLI-SR-22, CLI-SR-23, CLI-SR-24, CLI-SR-28, CLI-SR-32; docs/design/cli/records.md#RF-SR-02, RF-SR-07",
       "basis": "Derives this bounded published-product obligation from IR-008 and the named current CLI/Record Format contracts. Detailed schemas, command catalogs, limits and completed-retirement dispositions remain at those owners; this record does not transfer approval or implement REM-record operations."
+    },
+    {
+      "source": "SRC-CLI-ALLOCATION",
+      "locator": "SR-041 AC1; allocated contributors: AR-013, AR-014",
+      "basis": "Exact query scope and metadata derived from coherent registered state"
+    },
+    {
+      "source": "SRC-CLI-ALLOCATION",
+      "locator": "SR-041 AC2; allocated contributors: AR-013, AR-014",
+      "basis": "Complete selected narrative/applicability and field projections with explicit omission/absence; storage remains unchanged"
+    },
+    {
+      "source": "SRC-CLI-ALLOCATION",
+      "locator": "SR-041 AC3; allocated contributors: AR-014, AR-013",
+      "basis": "Provider preserves exact availability; consumer preserves those distinctions in each specific command outcome"
+    },
+    {
+      "source": "SRC-CLI-ALLOCATION",
+      "locator": "SR-041 AC4; allocated contributors: AR-013, AR-014",
+      "basis": "Query ordering/cursor/whole-item limits and selection binding to coherent state identity"
+    },
+    {
+      "source": "SRC-CLI-ALLOCATION",
+      "locator": "SR-041 AC5; allocated contributors: AR-015",
+      "basis": "Same-byte subject identity/content, explicit absence and no partial incoherent subject set; public receipt still composes with SR-046"
+    },
+    {
+      "source": "SRC-CLI-ALLOCATION",
+      "locator": "SR-041 AC6; allocated contributors: AR-013, AR-014",
+      "basis": "Exact candidate classification and visible interrupted/malformed state without automatic selection or cross-change atomicity claim"
     }
   ],
   "confirms": [

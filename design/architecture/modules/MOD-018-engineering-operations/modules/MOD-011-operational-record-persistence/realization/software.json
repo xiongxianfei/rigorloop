@@ -1,0 +1,223 @@
+{
+  "observed": {
+    "software_units": [
+      {
+        "path": "packages/rigorloop/dist/lib/record-store.js",
+        "role": "Store, withRecordSnapshot, executeTargetedStore, and executeRecordStore coordinate snapshots, validation, writer exclusion, receipt preparation, publication, and exact journal recovery."
+      },
+      {
+        "path": "packages/rigorloop/dist/lib/record-store-files.js",
+        "role": "RecordFiles implements guarded reads and hashes, exclusive creation, temporary-file replacement, directory/file synchronization, and bounded removal."
+      },
+      {
+        "path": "packages/rigorloop/dist/lib/recording-construction.js",
+        "role": "constructMutation transforms an explicit request and supplied before-state into complete candidate writes and effects using source-span edits; the caller supplies stored content and Store performs publication."
+      },
+      {
+        "path": "packages/rigorloop/dist/lib/record-store-format.js",
+        "role": "Selects the supported stored format independently of advanced transport schemas and dispatches candidate/preservation validation."
+      },
+      {
+        "path": "packages/rigorloop/dist/lib/record-format-v3.js",
+        "role": "Loads the stored v3 JSON schema and supplies record, set, and preservation validators through createRecordFormat."
+      },
+      {
+        "path": "packages/rigorloop/dist/lib/recording-observations.js",
+        "role": "Builds factual observations and identities from the supplied record set and reader."
+      },
+      {
+        "path": "packages/rigorloop/dist/lib/recording-query-cli.js",
+        "role": "The inspectSubjects helper uses RecordFiles reads/hashes for declared subjects; admission and result selection in the same file belong to MOD-010."
+      }
+    ],
+    "sources": [
+      {
+        "source": "SRC-CLI-SOURCE",
+        "locator": "packages/rigorloop/dist/lib/record-store.js Store, executeTargetedStore, executeRecordStore, withRecordSnapshot; record-store-files.js RecordFiles; remaining software_units at 9055b3c0",
+        "basis": "Static inspection identifies transaction mechanisms, format dispatch, construction, and physical co-location; it does not execute fault, durability, preservation, or recovery verification."
+      },
+      {
+        "source": "SRC-CLI-SOURCE",
+        "locator": "docs/design/cli/cli.md#save-safety-and-recovery-boundary; docs/design/cli/records.md#test-design; docs/design/cli/examples/records/v3-complete-store/change.json; packages/rigorloop/test/helpers/record-store-launcher.mjs; packages/rigorloop/test/helpers/v3-fixture.mjs; packages/rigorloop/test/record-store-cli.test.js; packages/rigorloop/test/record-store-format.test.js; packages/rigorloop/test/record-store-persistence.test.js; packages/rigorloop/test/record-store-v3-adoption.test.js; packages/rigorloop/test/record-store-v3-contract.test.js; packages/rigorloop/test/record-store-v3-persistence.test.js; tests/fixtures/rigorloop-records-v3/records.json; tests/fixtures/rigorloop-records-v3/storage-safety.json; packages/rigorloop/package.json; scripts/ci.sh; scripts/select-validation.py; scripts/lib/validation/validation_selection.py; scripts/lib/validation/validation_execution.py; scripts/lib/validation/validation_node_adapter.mjs",
+        "basis": "Static inspection of retained test-design contracts, current test sources, fixture helpers and execution callers identifies these bounded test groups and dependencies. No mapped product suite or CI was executed, no skill instructions were read, and source organization is not coverage, passing evidence or a transfer of Verification/Evidence responsibility."
+      }
+    ],
+    "test_groups": [
+      {
+        "name": "Stored record invariants and preservation",
+        "contract": "docs/design/cli/records.md#test-design",
+        "test_sources": [
+          {
+            "path": "packages/rigorloop/test/record-store-v3-contract.test.js",
+            "role": "Checks current record shapes, reference sets and preservation rules."
+          },
+          {
+            "path": "packages/rigorloop/test/record-store-format.test.js",
+            "role": "Checks stored-format selection independently of transport versions."
+          }
+        ],
+        "observation_boundary": "Stored-format and complete-candidate validation over fresh five-kind records and deliberately malformed inputs; this group concerns data meaning rather than filesystem publication.",
+        "fixtures": [
+          {
+            "path": "packages/rigorloop/test/helpers/v3-fixture.mjs",
+            "role": "Loads the retained complete five-kind example into fresh file-content maps."
+          },
+          {
+            "path": "docs/design/cli/examples/records/v3-complete-store/change.json",
+            "role": "Registered manifest in the complete-store example consumed by the v3 fixture factory."
+          },
+          {
+            "path": "tests/fixtures/rigorloop-records-v3/records.json",
+            "role": "Shared current record values used by contract and preservation cases."
+          }
+        ],
+        "execution": {
+          "owner_contract": "docs/design/engineering/validation.md",
+          "selection": [
+            {
+              "path": "scripts/select-validation.py",
+              "role": "Optional public path-selection entrypoint for the repository-owned checks containing this group; direct native invocation does not call it."
+            },
+            {
+              "path": "scripts/lib/validation/validation_selection.py",
+              "role": "Declares the applicable catalog commands and path-selection rules; selects existing checks rather than establishing this group's coverage."
+            }
+          ],
+          "runners": [
+            {
+              "path": "scripts/lib/validation/validation_execution.py",
+              "role": "When selected through the repository wrapper, admits and schedules this group's existing native suite with isolated case execution and attributed results."
+            },
+            {
+              "path": "scripts/lib/validation/validation_node_adapter.mjs",
+              "role": "Adapts native Node test discovery and execution for repository-selected package cases; it does not own the product behavior under test."
+            }
+          ],
+          "entrypoints": [
+            {
+              "path": "packages/rigorloop/package.json",
+              "role": "The test script invokes native Node test discovery across package-owned test files; rigorloop_cli.test selects this existing package suite."
+            },
+            {
+              "path": "scripts/ci.sh",
+              "role": "Optional repository validation wrapper that selects and dispatches the relevant existing catalog checks; recorded as a dependency, not invoked by this architecture mapping."
+            }
+          ]
+        },
+        "required_artifacts": [
+          "Current record-format modules and bundled v3 schema/template bytes.",
+          "A valid complete candidate before each defining malformed or preservation variation."
+        ],
+        "limits": [
+          "This attributed source organization identifies available test mechanisms; it establishes neither complete requirement coverage nor a passing execution.",
+          "Shared selection and execution tooling retains its Validation contract owner. Its REM Module allocation remains unresolved; this group does not allocate it to the assessed Module or to MOD-007.",
+          "The retained Records owner identifies diagnostic-precedence and typed-reference matrix alignment work; this mapping does not close it.",
+          "Mechanical schema or preservation observations do not assess the engineering adequacy of a stored review or Verify judgment."
+        ]
+      },
+      {
+        "name": "Guarded publication and exact recovery",
+        "contract": "docs/design/cli/cli.md#save-safety-and-recovery-boundary",
+        "test_sources": [
+          {
+            "path": "packages/rigorloop/test/record-store-persistence.test.js",
+            "role": "Checks guarded publication, contention, interruption and recovery with real private files and subprocesses."
+          },
+          {
+            "path": "packages/rigorloop/test/record-store-v3-persistence.test.js",
+            "role": "Checks current-format store publication and preservation through the advanced adapter."
+          },
+          {
+            "path": "packages/rigorloop/test/record-store-cli.test.js",
+            "role": "Checks public record/recover outcomes, injected process interruption and affected-file preservation."
+          },
+          {
+            "path": "packages/rigorloop/test/record-store-v3-adoption.test.js",
+            "role": "Checks public v3 creation, named updates and interrupted targeted-batch recovery across current command and store paths."
+          }
+        ],
+        "observation_boundary": "The shared store and public advanced adapter operate on real private filesystems; controlled faults, competing processes and before/after bytes expose transaction and recovery behavior.",
+        "fixtures": [
+          {
+            "path": "packages/rigorloop/test/helpers/record-store-launcher.mjs",
+            "role": "Runs the real dispatcher with a test-only fault callback that terminates at selected publication checkpoints."
+          },
+          {
+            "path": "packages/rigorloop/test/helpers/v3-fixture.mjs",
+            "role": "Provides fresh current-format complete stores for v3 publication cases."
+          },
+          {
+            "path": "tests/fixtures/rigorloop-records-v3/records.json",
+            "role": "Shared record content cloned into private transaction roots."
+          },
+          {
+            "path": "tests/fixtures/rigorloop-records-v3/storage-safety.json",
+            "role": "Independent storage-safety request and record inputs for public adapter checks."
+          }
+        ],
+        "execution": {
+          "owner_contract": "docs/design/engineering/validation.md",
+          "selection": [
+            {
+              "path": "scripts/select-validation.py",
+              "role": "Optional public path-selection entrypoint for the repository-owned checks containing this group; direct native invocation does not call it."
+            },
+            {
+              "path": "scripts/lib/validation/validation_selection.py",
+              "role": "Declares the applicable catalog commands and path-selection rules; selects existing checks rather than establishing this group's coverage."
+            }
+          ],
+          "runners": [
+            {
+              "path": "scripts/lib/validation/validation_execution.py",
+              "role": "When selected through the repository wrapper, admits and schedules this group's existing native suite with isolated case execution and attributed results."
+            },
+            {
+              "path": "scripts/lib/validation/validation_node_adapter.mjs",
+              "role": "Adapts native Node test discovery and execution for repository-selected package cases; it does not own the product behavior under test."
+            }
+          ],
+          "entrypoints": [
+            {
+              "path": "packages/rigorloop/package.json",
+              "role": "The test script invokes native Node test discovery across package-owned test files; rigorloop_cli.test selects this existing package suite."
+            },
+            {
+              "path": "scripts/ci.sh",
+              "role": "Optional repository validation wrapper that selects and dispatches the relevant existing catalog checks; recorded as a dependency, not invoked by this architecture mapping."
+            }
+          ]
+        },
+        "required_artifacts": [
+          "Current executable/store/filesystem/format modules and bundled schemas.",
+          "Private writable filesystems with supported process, link and anchored-file operations; tests create journals and snapshots as temporary state."
+        ],
+        "limits": [
+          "This attributed source organization identifies available test mechanisms; it establishes neither complete requirement coverage nor a passing execution.",
+          "Shared selection and execution tooling retains its Validation contract owner. Its REM Module allocation remains unresolved; this group does not allocate it to the assessed Module or to MOD-007.",
+          "Checkpoint faults and observed-check guards do not prove power-loss durability or atomic exclusion of every external writer.",
+          "CLI owns public transport and execution-safety contract details; the shared test files do not merge logical command and persistence ownership."
+        ]
+      }
+    ]
+  },
+  "proposed": [
+    {
+      "choice": "Keep candidate construction without filesystem authority and prepare the bounded public receipt inside the store-controlled candidate execution.",
+      "rationale": "SR-043 and SR-044 distinguish nonwriting preview from a fresh execution, while SR-046 requires a fitting receipt before authoritative replacement.",
+      "alternatives": [
+        "Reusing preview bytes as publication authority or preparing receipts only after writing would fail to preserve the selected freshness and outcome boundaries."
+      ],
+      "consequences": [
+        "The caller supplies construction and receipt callbacks, but the store controls their candidate context and publication timing. Source-file co-location does not transfer logical ownership.",
+        "Construction without write authority is an architectural constraint, not a claim that JavaScript callbacks run in a capability sandbox."
+      ],
+      "revisit_when": [
+        "The execution mechanism changes, requiring these freshness, authority, and receipt guarantees to be re-established."
+      ]
+    }
+  ],
+  "deferred": [
+    "Assess any extraction of the shared subject-observation helper as a later implementation change; this mapping does not require one file per Module."
+  ]
+}

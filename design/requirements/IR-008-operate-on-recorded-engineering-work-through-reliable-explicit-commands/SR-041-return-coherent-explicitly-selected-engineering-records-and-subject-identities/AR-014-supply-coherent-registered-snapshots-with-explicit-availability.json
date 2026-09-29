@@ -1,0 +1,62 @@
+{
+  "id": "AR-014",
+  "type": "allocated-requirement",
+  "title": "Supply coherent registered snapshots with explicit availability",
+  "status": "draft",
+  "statement": "The Operational record persistence Module shall supply recorded values and availability facts from the selected registered store with a coherent state identity when established, preserving missing, invalid, inaccessible, busy, and recovery-required distinctions without returning a usable mixed snapshot.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "A query cannot give trustworthy contract, revision, or completeness information when its supporting reads combine different states or conceal missing registered content.",
+      "desired_outcome": "The command Module receives enough exact state and availability information to produce an honest selected read."
+    },
+    "why": {
+      "rationale": "SR-041 depends on a coherent source of records; MOD-011 owns this state and IF-003 even though MOD-010 is primary for logical query behavior."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineers and agents supplying explicit command requests",
+        "Maintainers of MOD-011 and its Interface consumers"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "A command requests a selected store snapshot or current-candidate facts while records may be absent, malformed, concurrently changing, or interrupted."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "The IF-003 read boundary for one selected operational store and its manifest-declared authoritative records."
+      ]
+    },
+    "how": {
+      "approach": "Resolve registered authority, observe state and content coherently under the retained reader safety contract, and return distinct availability and transaction-attention outcomes for selection by the consumer."
+    },
+    "how_much": {
+      "scope": "One operational store per coherent snapshot. Physical discovery does not register extra files, and the read boundary provides no atomic snapshot across all discovered changes."
+    }
+  },
+  "acceptance_criteria": [
+    "When a coherent supported snapshot is established, its recorded contract, revision, identities, and returned values describe that same observed state, including when the command selects no items or only a projection.",
+    "A supporting file gains authority only through valid manifest registration with matching record identity; extra physical files cannot silently enter the snapshot as registered records.",
+    "No entry, unregistered optional content, registered-but-missing content, malformed or unsafe content, and read failure remain distinguishable to the consumer. Selected missing content is not represented as an empty authoritative record.",
+    "Concurrent or interrupted state cannot produce a usable mixture of before and candidate records; the reader returns the applicable coherent state, busy, conflict, or recovery-required result under the retained contract and performs no recovery.",
+    "No record contract or revision is invented for an absent or invalid store. An established state identity and independently unavailable selected content retain the distinctions required by the specific read contract.",
+    "Reads leave authoritative records, transaction material, actor decisions, and historical content unchanged; factual observations remain separate from recorded values."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "allocated_to": "MOD-011",
+  "sources": [
+    {
+      "source": "SRC-CLI-ALLOCATION",
+      "locator": "SR-041 / AR-014; MOD-011",
+      "basis": "Derive this draft lower-level obligation from the containing SR at the selected command or operational-record responsibility boundary. Allocation and acceptance criteria are design claims for review, not implementation, requirement approval, or satisfaction evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-CLI",
+      "locator": "docs/design/cli/cli.md#CLI-SR-01, CLI-SR-04, CLI-SR-05, CLI-SR-14, CLI-SR-21, CLI-SR-22, CLI-SR-23; docs/design/cli/records.md#RF-SR-02, RF-SR-07",
+      "basis": "Preserve the applicable current public and stored-record guarantees at this accountable boundary. The named source retains exact schemas, operation tables, classifications, limits, and historical adoption obligations; this allocation neither replaces those details nor accepts REM authoring JSON as operational records."
+    }
+  ]
+}

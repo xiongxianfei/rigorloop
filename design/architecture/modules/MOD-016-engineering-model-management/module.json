@@ -1,0 +1,44 @@
+{
+  "id": "MOD-016",
+  "type": "module",
+  "title": "Engineering model management",
+  "status": "draft",
+  "description": "Account for coherent engineering definitions across authoring, interpretation, retention, and contextual retrieval within a selected governed model state.",
+  "responsibilities": [
+    "Compose definition authoring, storage, conformance, and traceability responsibilities so identity, selected-state context, and governing model interpretation retain one coherent meaning across their interactions.",
+    "Maintain the architectural boundary between current engineering definitions and the governance decisions or operational records that use them.",
+    "Keep definition-access and model-interpretation cooperation explicit within this boundary while preserving the exact child responsible for each behavior, obligation, and information set.",
+    "Provide IF-007 as the accountable selected-state content and interpretation contract for Governance Baseline analysis, composing MOD-001 definition access and MOD-003 interpretation without granting authority or claiming retention."
+  ],
+  "owned_state": [],
+  "scope": {
+    "includes": [
+      "Engineering definition lifecycle, typed model relationships, interpretation, conformance findings, and retrieval of engineering context."
+    ],
+    "excludes": [
+      "Baseline/change authority, assurance judgments, published invocation procedures, operational record transaction protocols, and product delivery.",
+      "A second owner of child-held model data or a replacement for each child's directly allocated Functions, ARs, and Interfaces."
+    ]
+  },
+  "provides": [
+    "IF-007"
+  ],
+  "consumes": [],
+  "design_limits": [
+    "Existing IR-001 and shared SR-012 architecture remains the detailed definition example. IF-007 adds the bounded SCN-019 inspection collaboration; remaining model-management interactions and AR coverage retain their child-owned deferrals.",
+    "IF-007 serves MOD-005 across the Governance boundary. Internal IF-001/IF-002 retain their providers and are not exposed wholesale. Retention confirmation, broader Operations access, and other cross-boundary contracts remain to be analyzed.",
+    "No direct parent Function, AR, persistent state, or physical realization is introduced. Coherent inspection does not establish a complete retained Baseline or whole-model conformance."
+  ],
+  "sources": [
+    {
+      "source": "SRC-MODULE-HIERARCHY",
+      "locator": "MOD-016; children MOD-001, MOD-002, MOD-003, MOD-004",
+      "basis": "Proposed parent responsibility derived from the existing child definitions and the user-selected containment structure. The parent owns the stated composition boundary; child definitions, direct allocations, state authority, and contracts retain their identities and meaning. This is draft architecture, not implementation adoption or satisfaction."
+    },
+    {
+      "source": "SRC-BOUNDARY-CONTRACTS",
+      "locator": "MOD-016; SCN-019, SCN-053, SCN-066 selected collaboration analysis",
+      "basis": "Derive consumer-focused parent contracts for selected-state inspection, adopted-REM authoring guidance, applicable action authority, and evidence applicability. Preserve child behavior/state authority, existing Function/AR allocations, and earlier contract guarantees. The selected contracts refine prior blanket deferrals; remaining retention, wider collaboration, AR, and realization gaps stay explicit. This is draft design analysis, not implemented or satisfied behavior."
+    }
+  ]
+}

@@ -1,0 +1,207 @@
+# Generated from canonical REM records; do not edit.
+# Source identity: 2cf8f01cf8087e0b226dbd431d6452970b13954a16b84408d91173987708417e
+# Each outcome opens its exact selected obligations and accountable responsibilities. The arrows summarize this reading selection, not execution order, causal flow, complete coverage or satisfaction. Broader Scenario traceability remains in the detail.
+vars: {d2-config: {layout-engine: elk}}
+direction: down
+outcomes: "Selected outcome accountability" {
+  link: "#scenario/SCN-046"
+  tooltip: "Selected outcome accountability"
+  style.fill: "#FFFFFF"
+  style.stroke: "#7C8FA9"
+  style.font-color: "#23334A"
+  style.font-size: 17
+  style.border-radius: 6
+  grid-columns: 2
+  o0: "Expected outcome" {
+    link: "#scenario/SCN-046/outcome/expected"
+    tooltip: "Expected outcome"
+    style.fill: "#FFFFFF"
+    style.stroke: "#7C8FA9"
+    style.font-color: "#23334A"
+    style.font-size: 17
+    style.border-radius: 6
+    outcome: "Coherent durable publication" {
+      link: "#scenario/SCN-046/outcome/expected"
+      tooltip: "All requested decisions are durably committed before saved is reported; readers receive a coherent state and the agent does not infer workflow approval from publication."
+      style.fill: "#E9F4EE"
+      style.stroke: "#7C8FA9"
+      style.font-color: "#23334A"
+      style.font-size: 17
+      style.border-radius: 6
+    }
+    accountability: "Engineering command interface\nOperational record persistence" {
+      link: "#scenario/SCN-046/outcome/expected"
+      tooltip: "Selected allocated-obligation owners: MOD-010, MOD-011"
+      style.fill: "#ECF3FF"
+      style.stroke: "#7C8FA9"
+      style.font-color: "#23334A"
+      style.font-size: 17
+      style.border-radius: 6
+    }
+    outcome -> accountability: "selected accountability" {
+      style.stroke: "#667A96"
+      style.fill: "#FFFFFF"
+      style.font-size: 13
+    }
+  }
+  o1: "Alternative outcome" {
+    link: "#scenario/SCN-046/outcome/alternative-0"
+    tooltip: "Alternative outcome"
+    style.fill: "#FFFFFF"
+    style.stroke: "#7C8FA9"
+    style.font-color: "#23334A"
+    style.font-size: 17
+    style.border-radius: 6
+    outcome: "Fresh identical candidate\nremains unchanged" {
+      link: "#scenario/SCN-046/outcome/alternative-0"
+      tooltip: "The result is unchanged with no duplicate entry or semantic increment."
+      style.fill: "#FFF5DB"
+      style.stroke: "#7C8FA9"
+      style.font-color: "#23334A"
+      style.font-size: 17
+      style.border-radius: 6
+    }
+    accountability: "Operational record persistence" {
+      link: "#scenario/SCN-046/outcome/alternative-0"
+      tooltip: "Selected allocated-obligation owners: MOD-011"
+      style.fill: "#ECF3FF"
+      style.stroke: "#7C8FA9"
+      style.font-color: "#23334A"
+      style.font-size: 17
+      style.border-radius: 6
+    }
+    outcome -> accountability: "selected accountability" {
+      style.stroke: "#667A96"
+      style.fill: "#FFFFFF"
+      style.font-size: 13
+    }
+  }
+  o2: "Alternative outcome" {
+    link: "#scenario/SCN-046/outcome/alternative-1"
+    tooltip: "Alternative outcome"
+    style.fill: "#FFFFFF"
+    style.stroke: "#7C8FA9"
+    style.font-color: "#23334A"
+    style.font-size: 17
+    style.border-radius: 6
+    outcome: "Fitting receipt with explicit\nomitted detail" {
+      link: "#scenario/SCN-046/outcome/alternative-1"
+      tooltip: "The result retains a fitting storage receipt and exposes omitted detail without turning a successful publication into rejection."
+      style.fill: "#FFF5DB"
+      style.stroke: "#7C8FA9"
+      style.font-color: "#23334A"
+      style.font-size: 17
+      style.border-radius: 6
+    }
+    accountability: "Engineering command interface\nOperational record persistence" {
+      link: "#scenario/SCN-046/outcome/alternative-1"
+      tooltip: "Selected allocated-obligation owners: MOD-010, MOD-011"
+      style.fill: "#ECF3FF"
+      style.stroke: "#7C8FA9"
+      style.font-color: "#23334A"
+      style.font-size: 17
+      style.border-radius: 6
+    }
+    outcome -> accountability: "selected accountability" {
+      style.stroke: "#667A96"
+      style.fill: "#FFFFFF"
+      style.font-size: 13
+    }
+  }
+  o3: "Failure outcome" {
+    link: "#scenario/SCN-046/outcome/failure-0"
+    tooltip: "Failure outcome"
+    style.fill: "#FFFFFF"
+    style.stroke: "#7C8FA9"
+    style.font-color: "#23334A"
+    style.font-size: 17
+    style.border-radius: 6
+    outcome: "Lost-response retry conflicts\non stale revision" {
+      link: "#scenario/SCN-046/outcome/failure-0"
+      tooltip: "The system returns conflict rather than duplicating entries or silently accepting stale decision basis."
+      style.fill: "#F7EDEE"
+      style.stroke: "#7C8FA9"
+      style.font-color: "#23334A"
+      style.font-size: 17
+      style.border-radius: 6
+    }
+    accountability: "Engineering command interface\nOperational record persistence" {
+      link: "#scenario/SCN-046/outcome/failure-0"
+      tooltip: "Selected allocated-obligation owners: MOD-010, MOD-011"
+      style.fill: "#ECF3FF"
+      style.stroke: "#7C8FA9"
+      style.font-color: "#23334A"
+      style.font-size: 17
+      style.border-radius: 6
+    }
+    outcome -> accountability: "selected accountability" {
+      style.stroke: "#667A96"
+      style.fill: "#FFFFFF"
+      style.font-size: 13
+    }
+  }
+  o4: "Failure outcome" {
+    link: "#scenario/SCN-046/outcome/failure-1"
+    tooltip: "Failure outcome"
+    style.fill: "#FFFFFF"
+    style.stroke: "#7C8FA9"
+    style.font-color: "#23334A"
+    style.font-size: 17
+    style.border-radius: 6
+    outcome: "Competing writer or changed\nbasis stops publication" {
+      link: "#scenario/SCN-046/outcome/failure-1"
+      tooltip: "The system reports busy or conflict and preserves the coherent winning work."
+      style.fill: "#F7EDEE"
+      style.stroke: "#7C8FA9"
+      style.font-color: "#23334A"
+      style.font-size: 17
+      style.border-radius: 6
+    }
+    accountability: "Operational record persistence" {
+      link: "#scenario/SCN-046/outcome/failure-1"
+      tooltip: "Selected allocated-obligation owners: MOD-011"
+      style.fill: "#ECF3FF"
+      style.stroke: "#7C8FA9"
+      style.font-color: "#23334A"
+      style.font-size: 17
+      style.border-radius: 6
+    }
+    outcome -> accountability: "selected accountability" {
+      style.stroke: "#667A96"
+      style.fill: "#FFFFFF"
+      style.font-size: 13
+    }
+  }
+  o5: "Failure outcome" {
+    link: "#scenario/SCN-046/outcome/failure-2"
+    tooltip: "Failure outcome"
+    style.fill: "#FFFFFF"
+    style.stroke: "#7C8FA9"
+    style.font-color: "#23334A"
+    style.font-size: 17
+    style.border-radius: 6
+    outcome: "Interrupted publication\nrequires explicit recovery" {
+      link: "#scenario/SCN-046/outcome/failure-2"
+      tooltip: "The system exposes recovery-required instead of saved or a usable mixed state; explicit recovery is a separate request."
+      style.fill: "#F7EDEE"
+      style.stroke: "#7C8FA9"
+      style.font-color: "#23334A"
+      style.font-size: 17
+      style.border-radius: 6
+    }
+    accountability: "Engineering command interface\nOperational record persistence" {
+      link: "#scenario/SCN-046/outcome/failure-2"
+      tooltip: "Selected allocated-obligation owners: MOD-010, MOD-011"
+      style.fill: "#ECF3FF"
+      style.stroke: "#7C8FA9"
+      style.font-color: "#23334A"
+      style.font-size: 17
+      style.border-radius: 6
+    }
+    outcome -> accountability: "selected accountability" {
+      style.stroke: "#667A96"
+      style.fill: "#FFFFFF"
+      style.font-size: 13
+    }
+  }
+}

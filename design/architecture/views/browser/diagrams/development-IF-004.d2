@@ -1,0 +1,65 @@
+# Generated from canonical REM records; do not edit.
+# Source identity: 2cf8f01cf8087e0b226dbd431d6452970b13954a16b84408d91173987708417e
+# Static mappings from accountable Modules and contracts to implementation sources. Production arrows mean declared inputs and candidate outputs, not software dependencies or evidence that a build ran. Open an owner to inspect its complete mapping.
+vars: {d2-config: {layout-engine: elk}}
+direction: down
+owner: "Scoped public command\nexecution" {
+  link: "#development/IF-004"
+  tooltip: "Scoped public command execution (IF-004)"
+  style.fill: "#ECF3FF"
+  style.stroke: "#7C8FA9"
+  style.font-color: "#23334A"
+  style.font-size: 17
+  style.border-radius: 6
+}
+g0: "Contract implementation\nbindings" {
+  link: "#development/IF-004"
+  tooltip: "Contract implementation bindings"
+  style.fill: "#F8FAFD"
+  style.stroke: "#7C8FA9"
+  style.font-color: "#23334A"
+  style.font-size: 17
+  style.border-radius: 6
+  grid-columns: 1
+  f0: "packages/rigorloop/dist/bin/\nrigorloop.js" {
+    link: "#development/IF-004"
+    tooltip: "The rigorloop executable wrapper consumes argv, calls main/dispatchMain, writes selected stdout/stderr, and sets process.exitCode."
+    style.fill: "#FFFFFF"
+    style.stroke: "#7C8FA9"
+    style.font-color: "#23334A"
+    style.font-size: 14
+    style.border-radius: 6
+  }
+  f1: "packages/rigorloop/dist/lib/\nrecording-cli.js" {
+    link: "#development/IF-004"
+    tooltip: "executeRecordingCli selects primary query or mutation handling."
+    style.fill: "#FFFFFF"
+    style.stroke: "#7C8FA9"
+    style.font-color: "#23334A"
+    style.font-size: 14
+    style.border-radius: 6
+  }
+  f2: "packages/rigorloop/dist/lib/\nrecord-store-cli.js" {
+    link: "#development/IF-004"
+    tooltip: "executeRecordStoreCli parses the separate advanced command and reads bounded stdin where required."
+    style.fill: "#FFFFFF"
+    style.stroke: "#7C8FA9"
+    style.font-color: "#23334A"
+    style.font-size: 14
+    style.border-radius: 6
+  }
+  f3: "packages/rigorloop/dist/lib/\nrecording-result.js" {
+    link: "#development/IF-004"
+    tooltip: "serializePrimary and renderPrimary provide bounded JSON and human-readable recording results; primaryReceiptPreparer prepares mutation output before storage publication."
+    style.fill: "#FFFFFF"
+    style.stroke: "#7C8FA9"
+    style.font-color: "#23334A"
+    style.font-size: 14
+    style.border-radius: 6
+  }
+}
+owner -> g0: "source mapping" {
+  style.stroke: "#667A96"
+  style.fill: "#FFFFFF"
+  style.font-size: 13
+}

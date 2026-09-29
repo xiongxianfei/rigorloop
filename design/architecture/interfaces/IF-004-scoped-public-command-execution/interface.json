@@ -1,0 +1,82 @@
+{
+  "id": "IF-004",
+  "type": "interface",
+  "title": "Scoped public command execution",
+  "status": "draft",
+  "description": "The public command contract consumed by a user or skill-guided participant: explicit requests yield actual bounded observations and side-effect outcomes without conferring engineering decisions.",
+  "operations": [
+    {
+      "name": "execute_public_request",
+      "purpose": "Execute one admitted public command within its declared command-family scope.",
+      "inputs": [
+        "Supported command family, version domain, explicit selectors and actor-supplied arguments or request.",
+        "Applicable project context and authority for any requested side effect."
+      ],
+      "preconditions": [],
+      "outputs": [
+        "The command family's declared human or structured result, exit outcome, diagnostics, omitted-detail access where applicable, and accurate mutation or no-mutation disposition."
+      ],
+      "behavior": [
+        "Reject unknown commands, unsupported versions, malformed selectors, and invalid modes under the family-specific early-error contract.",
+        "Dispatch record operations through IF-003 and installation through IF-006 while preserving each operation's exact allowed effects.",
+        "Keep recorded values separate from observations and bounded advice. Preserve conflict, unchanged, failed, partial, and committed outcomes rather than converting them to workflow judgments.",
+        "Protect private diagnostic content and provide the supported route to materially omitted detail; output bounds cannot hide failures or make a valid correction unrecordable.",
+        "Permit standalone skills to avoid command use; governed recording uses an explicit supported request, not implicit installation or inferred state changes.",
+        "Honor each family's help/version and invalid-input ordering before repository or stdin access where required, including independent early-error response versions. Omit unavailable identities instead of inventing a validated stored contract.",
+        "Perform discovery as bounded factual observation and record queries as literal actor selection. Never auto-select a sole candidate, hide malformed current residue as retired history, or broaden selection from a skill label.",
+        "Preserve full versus selected content, optional absence, deliberate omissions, count scope, and separate selection/observation-detail continuation identities. Serialize complete bounded human or machine output before emitting it; do not silently truncate narrative or create a nonprogressing page.",
+        "For mutations, use IF-003's fresh execution under writer exclusion, obtain its exact guarded candidate and bounded storage facts, and serialize the mandatory public receipt before replacement. Establish readiness applicable to that same operation/candidate/format; preserve the published bound with optional diagnostic omission rather than rejecting an admissible correction. No preview is an executable transaction, and no new wire token or callback mechanism is implied.",
+        "Preview preserves the intended candidate and bounded result while remaining non-writing and non-reserving. Recovery uses explicit transaction identity and complete/restore selection; retries never invent renewed decision basis or replay an old mutation implicitly.",
+        "Keep private invocation diagnostics bounded and independent of semantic results, stdout, authoritative repository bytes, and transaction/recovery behavior. Validate closed logging options at the declared admission boundary, protect owned paths and sensitive input, and expose exact-ID lookup as read-only diagnosis rather than command replay or workflow evidence."
+      ],
+      "failure_behavior": [
+        {
+          "condition": "The requested operation is unknown, unsupported, malformed, or outside its admitted scope.",
+          "outcome": "Return the applicable family-specific error without downstream side effects; do not guess a corrected request."
+        },
+        {
+          "condition": "The selected operation reports conflict, incomplete effects, failed access, or required recovery.",
+          "outcome": "Preserve that actual result and its safe next decision boundary without asserting successful progression or silently repeating a mutation."
+        }
+      ]
+    }
+  ],
+  "consistency_rules": [
+    "The command result must reflect actual effects. A completed write cannot be reported as an unperformed plan or a rejected operation because optional reporting was incomplete.",
+    "Scope and authority remain attributable to the supplied request; a skill, role label, or successful command is not a new authorization.",
+    "Human and machine-facing outcomes retain the owning command family's distinctions and exit behavior.",
+    "Public result domains remain independent of stored v3 and of generic/discovery/advanced interfaces. In particular, unsupported or unavailable stored content cannot justify a fabricated validated revision or a guessed response version."
+  ],
+  "compatibility_rules": [
+    "The current CLI Design owns literal names, flags, envelopes, output contracts, and supported versions. This Interface does not create another RPC or network protocol.",
+    "Skill-guided consumers must use supported command contracts and cannot assume new REM model operations exist.",
+    "Public contract changes must reconcile all invoking skill guidance, examples, and affected consumers before adoption."
+  ],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-PRODUCTS",
+      "locator": "IF-004",
+      "basis": "Connect common guided invocation to the public command responsibility without weakening CLI ownership or making every skill depend on CLI; see SRC-PUBLISHED-CLI and SRC-PUBLISHED-SKILLS."
+    },
+    {
+      "source": "SRC-CLI-ALLOCATION",
+      "locator": "IF-004; design/requirements/sources.md#src-cli-allocation",
+      "basis": "Reconcile IR-008 acceptance outcomes and its allocated obligations with explicit command/persistence cooperation, preserving existing CLI/Record Format authority and external-edit limits. The refinement supplies no new executable or public wire format."
+    },
+    {
+      "source": "SRC-CLI-REALIZATION",
+      "locator": "IF-004; design/requirements/sources.md#src-cli-realization",
+      "basis": "Apply refined REM Architecture Design through subordinate observed and proposed views. Preserve the logical allocation, existing public contracts, and draft status; source mapping is not executed satisfaction evidence."
+    },
+    {
+      "source": "SRC-MODULE-HIERARCHY",
+      "locator": "IF-004; exposure through MOD-018",
+      "basis": "The existing public command contract and local process binding serve external users and agents. Expose the same contract through Engineering operations; MOD-010 remains the sole provider and MOD-012 remains its declared Module consumer."
+    },
+    {
+      "source": "SRC-PARENT-INTERFACE-OWNERSHIP",
+      "locator": "IF-004; design/requirements/sources.md#src-parent-interface-ownership",
+      "basis": "Refine contract accountability: MOD-018 provides IF-004 and MOD-019 provides IF-006. MOD-010 and MOD-014 retain their behavioral allocations and state responsibilities. This supersedes the provider/exposure choice recorded by SRC-MODULE-HIERARCHY without changing Interface guarantees, consumers, Function/AR allocations, or realization observations. Earlier source entries retain their prior design meaning; this draft refinement supplies no runtime adoption or satisfaction evidence."
+    }
+  ]
+}

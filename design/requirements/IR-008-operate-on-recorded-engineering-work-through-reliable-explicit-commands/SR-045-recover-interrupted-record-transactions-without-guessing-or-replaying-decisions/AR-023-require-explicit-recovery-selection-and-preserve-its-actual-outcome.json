@@ -1,0 +1,69 @@
+{
+  "id": "AR-023",
+  "type": "allocated-requirement",
+  "title": "Require explicit recovery selection and preserve its actual outcome",
+  "status": "draft",
+  "statement": "The Engineering command interface Module shall request transaction recovery only for an explicitly admitted current recovery operation and shall preserve the selected action, supplied recovery identity, and actual persistence outcome without automatic repair or replay.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "A command adapter can turn inspection into an implicit mutation or hide an unresolved recovery state behind a generic successful response.",
+      "desired_outcome": "The actor controls whether to restore or complete, receives the true storage result, and can make a later decision using newly inspected state."
+    },
+    "why": {
+      "rationale": "SR-045 requires explicit recovery ownership at the command boundary as well as exact recovery mechanics inside persistence."
+    },
+    "who": {
+      "stakeholders": [
+        "Actors choosing how to resolve interrupted work",
+        "Consumers of command and recovery results",
+        "Maintainers of MOD-010"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "A recovery command is submitted or an ordinary command encounters interrupted transaction state.",
+        "A recovery result is unavailable, interrupted, rejected, or requires another explicit attempt."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "IF-004 public request admission and reporting.",
+        "MOD-010 invocation of IF-003 recover_record_transaction."
+      ]
+    },
+    "how": {
+      "approach": "Validate the explicit change, transaction, expected recovery identity, and restore/complete action under the existing command contract. Forward only that admitted request, then project the actual returned outcome without adding a semantic decision."
+    },
+    "how_much": {
+      "scope": "Current explicit advanced recovery and commands that can encounter its state. Ordinary inspection, check, preview, discovery, and diagnostic lookup remain non-recovering; no background completion, automatic retry, legacy handler, or general historical rollback is added."
+    }
+  },
+  "acceptance_criteria": [
+    "Recovery dispatch requires one supported explicit action and the declared change, transaction, and expected-recovery selectors. Missing, ambiguous, invalid, or unsupported input rejects at the owning admission boundary without inventing selectors or choosing an action.",
+    "Only the admitted recovery operation invokes IF-003 recovery. Ordinary reads, check, preview, discovery, and diagnostic lookup do not complete, restore, or clean an interrupted transaction; they preserve the applicable busy or recovery-required observation.",
+    "Pass the actor-selected action and recovery expectation unchanged. Do not silently refresh a stale expectation, change complete into restore, replay targeted semantic operations, or select a compatibility handler for retired or mixed state.",
+    "Report the actual verified restored/completed state or the actual stop, conflict, unsupported, busy, or recovery-required result under the current recovery result contract, retaining only established identities and safe diagnostics. A response does not imply a workflow decision or a general rollback of acknowledged success.",
+    "After interruption or a stale recovery expectation, expose available refreshed recovery identity and the explicit reinspection/selection boundary without automatically resubmitting. Preserve source historical bytes and unsupported status when the requested recovery format is retired."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "allocated_to": "MOD-010",
+  "constrains": [
+    "FUNC-040",
+    "FUNC-042",
+    "FUNC-048"
+  ],
+  "sources": [
+    {
+      "source": "SRC-CLI-ALLOCATION",
+      "locator": "AR-023",
+      "basis": "Derived from SR-045 for the proposed MOD-010 responsibility. Allocates the command-side portion of SR-045, especially criterion 5 and explicit action/reporting across criteria 1 through 4. MOD-011 remains the sole owner of FUNC-047 and actual transaction recovery through AR-022. These criteria specify intended observations, not executed product evidence or an adoption of the REM authoring format by the CLI."
+    },
+    {
+      "source": "SRC-PUBLISHED-CLI",
+      "locator": "docs/design/cli/cli.md#CLI-SR-05, CLI-SR-06, CLI-SR-09, CLI-SR-10, CLI-SR-11, CLI-SR-27, CLI-SR-28; docs/design/cli/records.md#RF-SR-06, RF-SR-12, RF-SR-14",
+      "basis": "Retains the named current CLI and Record Format obligations at this allocated responsibility boundary. Their detailed formats, supported versions, limits, and observed external-edit boundaries remain authoritative; no runtime behavior or public contract is changed by this draft."
+    }
+  ]
+}

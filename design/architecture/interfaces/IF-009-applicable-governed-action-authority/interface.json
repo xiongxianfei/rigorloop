@@ -1,0 +1,74 @@
+{
+  "id": "IF-009",
+  "type": "interface",
+  "title": "Applicable governed-action authority",
+  "status": "draft",
+  "description": "A scoped assessment of whether an identified governed action is covered by the selected policy and applicable authorization, preserving the distinction between an existing grant, supporting evidence, and execution.",
+  "operations": [
+    {
+      "name": "assess_action_authority",
+      "purpose": "Identify the applicable authority basis and covered scope, or the particular unmet decision boundary, before the consumer performs the proposed action.",
+      "inputs": [
+        "Proposed action, exact subject and state, acting participant, intended scope, relevant conditions, and selected project context.",
+        "Applicable policy and decision owners, and attributable authorization or bounded delegation with its subject, scope, conditions, limits, completion, revocation, and supersession state; unavailable or conflicting basis is explicit.",
+        "For release consumption, the retained candidate identity including reviewed/prepared source, final artifacts, version/channel, destinations, configuration and publication path, together with the candidate-specific approval basis and any material changes affecting reliance."
+      ],
+      "preconditions": [
+        "The proposed action and selected project context are identifiable; missing authorization is an assessed outcome rather than an assumed satisfied precondition."
+      ],
+      "outputs": [
+        "Attributable applicable policy, decision owner and grant basis, with the precise covered and uncovered action scope, conditions and limits.",
+        "The specific absent, conflicting, invalidated or unresolved authority boundary that prevents the consumer from relying on a grant for the reserved action."
+      ],
+      "behavior": [
+        "Determine whether the selected policy reserves the action for a human decision and whether its required owner, grant, scope, conditions and limits cover the proposed subject and participant. Do not impose a universal approval gate on every engineering action.",
+        "Recognize an applicable prior grant or bounded standing delegation across covered steps and resumed sessions. For the supported release case, one applicable candidate approval covers its stated publication actions; a fresh satisfactory recheck of the unchanged candidate does not by itself require another confirmation.",
+        "Identify completion, revocation, supersession, exceeded scope, changed conditions or conflict with higher authority that prevents reliance. Preserve recognition of any still-covered scope rather than silently broadening or discarding the grant.",
+        "For a materially changed release subject, report that the earlier candidate-specific approval no longer covers the changed subject; the release consumer must address affected requalification and obtain applicable authorization before publication.",
+        "Keep favorable reviews, passing checks, engineering judgments and suggested next actions distinct from permission. Authorization does not waive independent assessment, failed or stale required evidence, explicit fresh checks, or an expressly nondelegable policy boundary.",
+        "Report the existing authority basis or unmet boundary without creating a grant, impersonating a decision owner, or executing the proposed action. A duplicate event or uncertain earlier external write supplies no fresh authority or permission to repeat publication."
+      ],
+      "failure_behavior": [
+        {
+          "condition": "Governing policy, the required decision owner, grant provenance or relevant applicability information is missing, contradictory or unresolved.",
+          "outcome": "Expose the unresolved basis and withhold a favorable authority conclusion for the affected reserved action; the consumer must not proceed on invented permission."
+        },
+        {
+          "condition": "The action or exact candidate is outside the grant, a relevant condition has changed, the grant is completed, revoked or superseded, or delegation conflicts with higher authority.",
+          "outcome": "Identify the uncovered subject, action or condition and the necessary decision boundary; preserve any separately still-covered scope without approving the changed action."
+        },
+        {
+          "condition": "A favorable assessment, permission for other work, duplicate event, or proposed unsupported fallback is offered as publication authority.",
+          "outcome": "Reject that substitution and retain the exact candidate and permitted execution-path boundary."
+        }
+      ]
+    }
+  ],
+  "consistency_rules": [
+    "The authority conclusion is bound to the assessed action, subject, policy, grant and conditions. A relevant change requires reassessment; the conclusion is not a transferable permission token for other subjects.",
+    "An applicable authorization and adequate evidence are independent prerequisites where the governing policy requires both. IF-010 supplies evidence-support analysis without granting authority, and IF-009 supplies no release qualification or satisfaction claim.",
+    "The consumer retains its actual execution safeguards and outcome responsibility. This contract neither changes immutable candidate identity nor authorizes overwrite, blind retry, an unsupported release path or a special release relabeled as routine."
+  ],
+  "compatibility_rules": [
+    "The selected project policy and existing Constitution retain authority ordering and decision ownership. This draft introduces no new approval workflow, permission persistence format or executable authorization service.",
+    "The existing Release contract retains exact candidate binding, one applicable routine approval, supported authentication/publication paths and recovery duties; this Interface cannot relax them.",
+    "Changes to authority interpretation require controlled reconciliation of provider and consumers. Earlier grants and recorded assessments retain their original subject, scope and conditions rather than being rewritten to fit a later action."
+  ],
+  "sources": [
+    {
+      "source": "SRC-BOUNDARY-CONTRACTS",
+      "locator": "SCN-066; IF-009; MOD-017; MOD-015",
+      "basis": "Derive the selected Product delivery consumption of Engineering governance authority from the exact-candidate approval Scenario. MOD-017 owns the contract; MOD-006 contributes FUNC-026. This is draft collaboration analysis, not a grant, runtime adoption, complete AR coverage or publication evidence."
+    },
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "SR-007; FUNC-026",
+      "basis": "Preserve selected-policy authority, applicable prior grants and bounded delegation, specific unmet boundaries, and the separation between assessments and execution permission."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-12; REL-SR-22; REL-SR-23; REL-SR-24; SR-070; FUNC-070",
+      "basis": "Apply the existing exact-candidate publication authority, one normal approval, changed-subject invalidation, unchanged satisfactory recheck, duplicate-event and truthful recorded-basis guarantees without introducing a new release mechanism."
+    }
+  ]
+}

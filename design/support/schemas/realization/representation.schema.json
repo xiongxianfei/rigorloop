@@ -1,0 +1,112 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RigorLoop Representation realization",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "observed": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sources"
+      ],
+      "properties": {
+        "representation": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "pattern": "\\S"
+          }
+        },
+        "sources": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "source",
+              "locator",
+              "basis"
+            ],
+            "properties": {
+              "source": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "locator": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "basis": {
+                "type": "string",
+                "pattern": "\\S"
+              }
+            }
+          }
+        }
+      },
+      "minProperties": 2
+    },
+    "proposed": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "choice",
+          "rationale",
+          "alternatives",
+          "consequences",
+          "revisit_when"
+        ],
+        "properties": {
+          "choice": {
+            "type": "string",
+            "pattern": "\\S"
+          },
+          "rationale": {
+            "type": "string",
+            "pattern": "\\S"
+          },
+          "alternatives": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "pattern": "\\S"
+            }
+          },
+          "consequences": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "pattern": "\\S"
+            }
+          },
+          "revisit_when": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "pattern": "\\S"
+            }
+          }
+        }
+      }
+    },
+    "deferred": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "pattern": "\\S"
+      }
+    }
+  },
+  "minProperties": 1,
+  "description": "Optional subordinate architecture facet, owned by directory containment. Observed facts require attribution; proposals retain reasoning and limits. The file has no independent engineering identity or lifecycle. Shape validation does not establish architectural adequacy or implementation conformance."
+}

@@ -1,0 +1,29 @@
+{
+  "observed": {
+    "technologies": [
+      "The inspected adapter selects rigorloop-records-v3, whose manifest and supporting records declare schema version 3. SHA-256 byte identities and synchronous Node filesystem calls support the storage protocol. This operational JSON format is independent of the new design/ authoring schemas."
+    ],
+    "sources": [
+      {
+        "source": "SRC-CLI-SOURCE",
+        "locator": "packages/rigorloop/dist/lib/record-store.js Store, executeTargetedStore, executeRecordStore, withRecordSnapshot; record-store-files.js RecordFiles; remaining software_units at 9055b3c0",
+        "basis": "Static inspection identifies transaction mechanisms, format dispatch, construction, and physical co-location; it does not execute fault, durability, preservation, or recovery verification."
+      }
+    ]
+  },
+  "proposed": [
+    {
+      "choice": "Retain registered filesystem JSON records and exact before/candidate journaling for the current operational contract.",
+      "rationale": "SR-042 through SR-045 require compatible records, byte preservation, fresh publication, and exact explicit recovery; the existing store provides a concrete design basis.",
+      "alternatives": [
+        "A transactional database could provide a different transaction boundary, but would require an explicit record, identity, recovery, and historical migration design."
+      ],
+      "consequences": [
+        "Keep the retained external-editor and filesystem support limits. Multiple-file coherence is a store protocol, not an assertion that one filesystem rename publishes the entire record set."
+      ],
+      "revisit_when": [
+        "Measured workload, remote concurrency, or platform limitations make the current protocol inadequate and a compatible migration can be specified."
+      ]
+    }
+  ]
+}

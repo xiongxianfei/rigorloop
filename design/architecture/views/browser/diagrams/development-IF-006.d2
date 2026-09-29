@@ -1,0 +1,47 @@
+# Generated from canonical REM records; do not edit.
+# Source identity: 2cf8f01cf8087e0b226dbd431d6452970b13954a16b84408d91173987708417e
+# Static mappings from accountable Modules and contracts to implementation sources. Production arrows mean declared inputs and candidate outputs, not software dependencies or evidence that a build ran. Open an owner to inspect its complete mapping.
+vars: {d2-config: {layout-engine: elk}}
+direction: down
+owner: "Verified skill installation\nexecution" {
+  link: "#development/IF-006"
+  tooltip: "Verified skill installation execution (IF-006)"
+  style.fill: "#ECF3FF"
+  style.stroke: "#7C8FA9"
+  style.font-color: "#23334A"
+  style.font-size: 17
+  style.border-radius: 6
+}
+g0: "Contract implementation\nbindings" {
+  link: "#development/IF-006"
+  tooltip: "Contract implementation bindings"
+  style.fill: "#F8FAFD"
+  style.stroke: "#7C8FA9"
+  style.font-color: "#23334A"
+  style.font-size: 17
+  style.border-radius: 6
+  grid-columns: 1
+  f0: "packages/rigorloop/dist/bin/\nrigorloop.js" {
+    link: "#development/IF-006"
+    tooltip: "dispatchMain admits init and calls handleInit; handleInit performs installation through archiveWorkForInit and installCandidate and returns the selected command result. This shared entry point binds the existing IF-006 behavior without adding another public command catalog."
+    style.fill: "#FFFFFF"
+    style.stroke: "#7C8FA9"
+    style.font-color: "#23334A"
+    style.font-size: 14
+    style.border-radius: 6
+  }
+  f1: "packages/rigorloop/dist/lib/\ninstaller-replacement.js" {
+    link: "#development/IF-006"
+    tooltip: "installCandidate implements the candidate-unit destination boundary invoked by handleInit; returned or thrown completion/retention facts shape its public result."
+    style.fill: "#FFFFFF"
+    style.stroke: "#7C8FA9"
+    style.font-color: "#23334A"
+    style.font-size: 14
+    style.border-radius: 6
+  }
+}
+owner -> g0: "source mapping" {
+  style.stroke: "#667A96"
+  style.fill: "#FFFFFF"
+  style.font-size: 13
+}

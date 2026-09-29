@@ -1,0 +1,42 @@
+{
+  "id": "MOD-007",
+  "type": "module",
+  "title": "Engineering verification and assurance",
+  "status": "draft",
+  "description": "Keep verification definitions, actual observations, evidence applicability, criterion coverage, and scoped engineering judgments distinguishable and traceable.",
+  "responsibilities": [
+    "Retain criterion-based verification definitions and actual observations with provenance.",
+    "Assess applicability and coverage, including contradictions and reassessment after changes.",
+    "Record the scope and basis of an authorized engineering judgment.",
+    "Contribute evidence applicability and criterion-coverage analysis through FUNC-029/FUNC-030 to MOD-017's IF-010 contract. Verification definitions, actual observations, and scoped judgments retain their respective owners and recorded provenance; analysis does not execute checks or create judgments."
+  ],
+  "owned_state": [
+    "Verification definitions, evidence records, applicability/coverage assessments, and scoped judgments as engineering content; raw persistence and authority remain separate responsibilities."
+  ],
+  "scope": {
+    "includes": [
+      "Verification and assurance information and assessments."
+    ],
+    "excludes": [
+      "Inventing observations from planned tests, treating schema success as satisfaction, or conferring judgment authority."
+    ]
+  },
+  "provides": [],
+  "consumes": [],
+  "design_limits": [
+    "IF-010 defines supplied claim/evidence applicability and coverage for release coordination. IR-004 ARs and verification execution, evidence storage, broader authority cooperation, and physical realization remain deferred.",
+    "Neither an Interface response nor its existence establishes verification execution, release qualification, authority, or requirement satisfaction."
+  ],
+  "sources": [
+    {
+      "source": "SRC-ARCHITECTURE-PILOT",
+      "locator": "MOD-007",
+      "basis": "Analyst-proposed responsibility boundary derived from the existing Function landscape. Assigned Functions remain authoritative for behavior; this record describes target architecture, not observed implementation."
+    },
+    {
+      "source": "SRC-BOUNDARY-CONTRACTS",
+      "locator": "MOD-007; SCN-019, SCN-053, SCN-066 selected collaboration analysis",
+      "basis": "Derive consumer-focused parent contracts for selected-state inspection, adopted-REM authoring guidance, applicable action authority, and evidence applicability. Preserve child behavior/state authority, existing Function/AR allocations, and earlier contract guarantees. The selected contracts refine prior blanket deferrals; remaining retention, wider collaboration, AR, and realization gaps stay explicit. This is draft design analysis, not implemented or satisfied behavior."
+    }
+  ]
+}

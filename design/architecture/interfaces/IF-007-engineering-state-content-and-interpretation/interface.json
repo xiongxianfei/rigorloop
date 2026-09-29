@@ -1,0 +1,78 @@
+{
+  "id": "IF-007",
+  "type": "interface",
+  "title": "Engineering state content and interpretation",
+  "status": "draft",
+  "description": "Read-only access to authoritative engineering content and its original interpretation basis for an explicitly selected state and declared membership. Engineering model management provides the composed contract to Baseline management through its storage and conformance responsibilities; acquisition results do not establish Baseline retention or approval.",
+  "operations": [
+    {
+      "name": "inspect_engineering_state_content",
+      "purpose": "Supply state-consistent engineering content, governing interpretation definitions, and explicit acquisition limits for Baseline analysis or inspection.",
+      "inputs": [
+        "Selected project/model state, caller-declared membership, and requested definition, relationship, and provenance scope.",
+        "Any known state/profile context and applicable access context. The caller need not already possess the selected state's declared profile or governing definitions.",
+        "Declared included realization or assurance material and supporting external references whose availability must be distinguished from obtained engineering content, when applicable."
+      ],
+      "preconditions": [
+        "The request identifies the selected state and declared scope to inspect. It does not ask this operation to select a Baseline, establish retention, or grant access or change authority."
+      ],
+      "outputs": [
+        "Available authoritative definitions, stable identities, relationship facts, and recorded provenance bound to the selected state and inspected membership.",
+        "The selected state's recorded profile declaration and accessible original governing interpretation definitions, with any missing, unsupported, conflicting, or unavailable interpretation context identified.",
+        "Separate declared, acquired, interpreted, and unresolved scopes, including known conflicts and complete, incomplete, unsupported, unavailable, or failed acquisition/interpretation outcomes.",
+        "Explicit distinction between actual obtained material, references to external or separately owned material, and content whose availability could not be established."
+      ],
+      "behavior": [
+        "Obtain the requested authoritative engineering content and its recorded state/profile declaration through MOD-001's definition-access responsibility. Use MOD-003's interpretation responsibility with that exact state and declaration; IF-001 and IF-002 remain internal cooperation contracts.",
+        "Resolve the governing definitions applicable to the selected state from its recorded basis. Preserve the original interpretation even when newer content, allocations, relationships, or rules exist; never substitute the current profile for an unavailable historical one.",
+        "Keep the requested membership and acquired scope explicit. Report a complete acquisition only for the declared scope actually obtained, and complete interpretation only for the scope actually understood under its applicable rules.",
+        "Bind all returned content, references, and interpretation context to the selected state. Do not merge individually successful reads from different states into one supposedly complete account; expose any unresolved state consistency instead.",
+        "Return recorded provenance and authoritative relationship facts without inventing missing reasoning, changing historical responsibility, or treating provenance as engineering approval.",
+        "Identify included realization and assurance material within the declared scope. Return material only where access and supported interpretation are established; identify separately owned or unsupported content and external references without silently including them in a completeness claim or promising their recovery.",
+        "Preserve detected identity, content, or interpretation conflicts and the scope in which they were observed. Successful retrieval or interpretation does not imply that every conformance rule or engineering-coherence criterion has been assessed.",
+        "Return inspection information without creating or modifying content, Baseline identity, membership, or retention state. MOD-005 retains responsibility for the Baseline claim, applicable authority, and confirmation of actual preservation; successful acquisition supplies no retention confirmation."
+      ],
+      "failure_behavior": [
+        {
+          "condition": "The requested state or declared membership is missing, ambiguous, or unavailable.",
+          "outcome": "Identify the unresolved selection and affected scope without choosing another state or treating incomplete access as confirmed absence."
+        },
+        {
+          "condition": "The original profile declaration or governing definitions are missing, unsupported, conflicting, or inaccessible.",
+          "outcome": "Return the known content and precise interpretation gap where available, without applying a replacement profile or claiming a complete interpreted state."
+        },
+        {
+          "condition": "Required content cannot be acquired, only part is obtained, or separately owned material cannot be accessed or interpreted within the supported scope.",
+          "outcome": "Distinguish actual obtained material, external references, unavailable portions, and unconfirmed scope. Do not label the declared collection complete or recoverable."
+        },
+        {
+          "condition": "The state basis changes during acquisition or the returned content and interpretation cannot be bound to one selected state.",
+          "outcome": "Report the mismatch and affected scope; withhold a complete consistent result rather than silently retrying against or substituting another state."
+        },
+        {
+          "condition": "Inspection detects conflicting identities, authoritative content, or rule associations.",
+          "outcome": "Preserve the concrete findings and their state/scope basis. The consumer must not treat the inspection as proof of a complete coherent Baseline."
+        }
+      ]
+    }
+  ],
+  "consistency_rules": [
+    "Every result identifies the requested state, declared membership, obtained content, interpretation basis, and unresolved portions, or explains why a part of that basis could not be established. Stable entity identity alone does not designate a revision.",
+    "Acquisition completeness, interpretation completeness, structural conformance, engineering coherence, authority, and actual retention are distinct conclusions. MOD-005 must preserve those distinctions when establishing or reporting a Baseline.",
+    "Referenced external or separately owned content is not reported as acquired or preserved solely because its reference resolves or appears in the selected state.",
+    "The operation performs no retention. Missing retention confirmation or a later partial retention outcome must remain explicit in the Baseline-management cooperation; this read result cannot convert either into successful preservation.",
+    "Historical content and its original rules retain their meaning. Current ownership, rules, or decisions cannot be used to rewrite an earlier state's interpretation."
+  ],
+  "compatibility_rules": [
+    "Preserve the existing IF-001 and IF-002 state, scope, interpretation, and completeness distinctions when composing their contributions. This external contract does not expose every internal operation or expand those operations' guarantees.",
+    "The consumer must preserve all incomplete, unsupported, conflicting, and unavailable outcomes. Changes to their meaning or to selected-state binding require coordinated provider/consumer revision.",
+    "This draft chooses no storage technology, snapshot transaction, wire format, callable runtime API, or retention mechanism. Detailed retention confirmation, change-authority cooperation, and acquisition of separately owned realization/assurance material remain explicit later architecture work."
+  ],
+  "sources": [
+    {
+      "source": "SRC-BOUNDARY-CONTRACTS",
+      "locator": "SCN-019; SR-020; FUNC-004, FUNC-012, FUNC-020; IF-001, IF-002",
+      "basis": "Derive MOD-016's external content/interpretation contract for MOD-005 from the information needed to inspect a proposed or retained Baseline. MOD-001/FUNC-004 and MOD-003/FUNC-012 contribute existing retrieval and interpretation behavior through internal IF-001/IF-002; MOD-005/FUNC-020 retains Baseline identity, membership, coherence and preservation responsibilities. This bounded draft covers ordinary, missing/conflicting, external-reference, and historical-meaning acquisition outcomes. It preserves the separate unresolved need for actual retention confirmation, partial-retention reporting, and applicable authority, without claiming implementation, approval, complete SCN-019 coverage, or satisfaction."
+    }
+  ]
+}

@@ -1,0 +1,73 @@
+{
+  "id": "AR-027",
+  "type": "allocated-requirement",
+  "title": "Record bounded private diagnostics without changing command semantics",
+  "status": "draft",
+  "statement": "The Engineering command interface Module shall record only bounded allowlisted private invocation diagnostics on the declared observed path, preserving command semantics, repository state, stdout, and exit behavior when logging is recorded, disabled, degraded, or interrupted.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "A logger can leak raw inputs, damage local state, or become an accidental prerequisite for a successful command.",
+      "desired_outcome": "Available diagnostic events remain useful and private while logging failure or configuration cannot alter the underlying semantic result."
+    },
+    "why": {
+      "rationale": "SR-047 assigns optional diagnostics a non-authoritative role and requires bounded handling of local I/O, privacy, and contention failures."
+    },
+    "who": {
+      "stakeholders": [
+        "Operators investigating command behavior",
+        "Users whose inputs and local context must remain private",
+        "Maintainers of MOD-010"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "An invocation on the declared observed generic/discovery path reaches minimum logger initialization.",
+        "Event writing, clock access, path checks, permissions, locking, or rotation fails or is interrupted."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "The private platform user-state logging root or explicitly configured contained root.",
+        "Only current contract-owned event and rotation names, outside governed operational records."
+      ]
+    },
+    "how": {
+      "approach": "Project allowlisted safe event metadata, use closed event/family/severity definitions, and apply bounded whole-event writing, private-path validation, rotation, and lock attempts. Keep diagnostic state and any safe warning independent of semantic execution and result rendering."
+    },
+    "how_much": {
+      "scope": "Only the current declared observed command path. Primary recording, advanced record-store, and rejected retired commands retain dedicated interfaces and bypass the generic observed wrapper. Existing private-root, restrictive-access, and owned-name rules remain applicable; no daemon, network logging, authoritative audit ledger, or atomic defense against same-user/privileged pathname replacement is added.",
+      "limits": [
+        "The retained logging contract bounds each encoded event to 16 KiB.",
+        "Rotate before an append would exceed 5 MiB and retain the active file plus four archives.",
+        "Lock attempts are bounded to ten and 1,000 ms total per event."
+      ]
+    }
+  },
+  "acceptance_criteria": [
+    "For an observed invocation reaching minimum initialization, attempt the current start and completion events with valid independent invocation identity, timing, closed family/severity, and sequence; completion carries the actual status, exit, and nonnegative duration. Interruption may leave start only, and clock failure degrades diagnostics without changing command meaning.",
+    "Events contain only allowlisted metadata. Exclude raw arguments, requests or bodies, request-derived hashes, credentials, arbitrary environment, remotes, usernames/hostnames, absolute repository paths, and the source-prohibited stack traces. Normalize or reject control injection; an oversize event becomes a bounded safe error event rather than a truncation of sensitive input.",
+    "Create or rotate only declared owned names within a verified private root using the source restrictive-access rules. Unsafe existing permissions, symlink/non-file/identity/containment failures, observed ancestor substitution, or I/O failure degrade before the unsafe mutation, without permission repair or mutation of governed repository bytes.",
+    "Preserve whole supported JSONL events under admitted concurrency and bounded rotation. Exhausted, stale, or unverifiable locks degrade without stealing or removing the lock; no operation escapes the owned root or extends into unbounded traversal.",
+    "Recorded, disabled, and degraded logging leave semantic stdout, result, exit, repository mutation, and transaction/recovery behavior unchanged. Apply the current option/environment precedence and reject unknown closed logging values at their declared pre-dispatch boundary without echoing raw input.",
+    "Unless console logging is off, a degraded invocation emits only the contract-defined bounded nonrecursive unavailable warning; structured observed projections retain diagnostic state. Do not duplicate an ordinary semantic result as a console event or apply generic envelopes to dedicated recording interfaces."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "allocated_to": "MOD-010",
+  "constrains": [
+    "FUNC-049"
+  ],
+  "sources": [
+    {
+      "source": "SRC-CLI-ALLOCATION",
+      "locator": "AR-027",
+      "basis": "Derived from SR-047 for the proposed MOD-010 responsibility. Allocates SR-047 criteria 1 through 4 to MOD-010/FUNC-049. AR-028 separately allocates read-only exact invocation lookup, using the same privacy and owned-root boundary. These criteria specify intended observations, not executed product evidence or an adoption of the REM authoring format by the CLI."
+    },
+    {
+      "source": "SRC-PUBLISHED-CLI",
+      "locator": "docs/design/cli/cli.md#CLI-SR-11, CLI-SR-29, CLI-SR-30; docs/design/cli/cli.md#local-diagnostic-logging",
+      "basis": "Retains the named current CLI and Record Format obligations at this allocated responsibility boundary. Their detailed formats, supported versions, limits, and observed external-edit boundaries remain authoritative; no runtime behavior or public contract is changed by this draft."
+    }
+  ]
+}

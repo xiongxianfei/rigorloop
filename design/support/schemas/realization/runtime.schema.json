@@ -1,0 +1,299 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RigorLoop Runtime realization",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "observed": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sources"
+      ],
+      "properties": {
+        "runtime": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "pattern": "\\S"
+          }
+        },
+        "sources": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "source",
+              "locator",
+              "basis"
+            ],
+            "properties": {
+              "source": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "locator": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "basis": {
+                "type": "string",
+                "pattern": "\\S"
+              }
+            }
+          }
+        },
+        "execution": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "name",
+            "environment",
+            "modules",
+            "entry_interfaces",
+            "calls",
+            "constraints"
+          ],
+          "properties": {
+            "name": {
+              "type": "string",
+              "pattern": "\\S"
+            },
+            "environment": {
+              "type": "string",
+              "pattern": "\\S"
+            },
+            "modules": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "pattern": "^MOD-[0-9]+$",
+                "not": {
+                  "pattern": "\\s"
+                }
+              }
+            },
+            "entry_interfaces": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "pattern": "^IF-[0-9]+$",
+                "not": {
+                  "pattern": "\\s"
+                }
+              }
+            },
+            "calls": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "caller",
+                  "callee",
+                  "interface"
+                ],
+                "properties": {
+                  "caller": {
+                    "type": "string",
+                    "pattern": "^MOD-[0-9]+$",
+                    "not": {
+                      "pattern": "\\s"
+                    }
+                  },
+                  "callee": {
+                    "type": "string",
+                    "pattern": "^MOD-[0-9]+$",
+                    "not": {
+                      "pattern": "\\s"
+                    }
+                  },
+                  "interface": {
+                    "type": "string",
+                    "pattern": "^IF-[0-9]+$",
+                    "not": {
+                      "pattern": "\\s"
+                    }
+                  }
+                }
+              }
+            },
+            "constraints": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "pattern": "\\S"
+              }
+            }
+          },
+          "description": "One observed process boundary and conditional implementation bindings, authored beneath its accountable Module. Module references identify co-located responsibilities; Interface references retain their logical provider. Calls do not assert execution order, concurrency, or that every call occurs for each request."
+        },
+        "lifecycles": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "name",
+              "states",
+              "transitions",
+              "constraints"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "states": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "name",
+                    "meaning"
+                  ],
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "pattern": "\\S"
+                    },
+                    "meaning": {
+                      "type": "string",
+                      "pattern": "\\S"
+                    }
+                  }
+                }
+              },
+              "transitions": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "from",
+                    "to",
+                    "trigger",
+                    "guards",
+                    "effects"
+                  ],
+                  "properties": {
+                    "from": {
+                      "type": "string",
+                      "pattern": "\\S"
+                    },
+                    "to": {
+                      "type": "string",
+                      "pattern": "\\S"
+                    },
+                    "trigger": {
+                      "type": "string",
+                      "pattern": "\\S"
+                    },
+                    "guards": {
+                      "type": "array",
+                      "minItems": 1,
+                      "items": {
+                        "type": "string",
+                        "pattern": "\\S"
+                      }
+                    },
+                    "effects": {
+                      "type": "array",
+                      "minItems": 1,
+                      "items": {
+                        "type": "string",
+                        "pattern": "\\S"
+                      }
+                    }
+                  }
+                }
+              },
+              "constraints": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "string",
+                  "pattern": "\\S"
+                }
+              }
+            }
+          },
+          "description": "Source-observed states and guarded transitions of Module-owned runtime coordination. Named states are local and must be distinguished from actual stored discriminators in their meanings. Unknown or untrusted state receives no inferred transition. These are behavioral facts, not workflow approval states or graphic nodes."
+        }
+      },
+      "minProperties": 2
+    },
+    "proposed": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "choice",
+          "rationale",
+          "alternatives",
+          "consequences",
+          "revisit_when"
+        ],
+        "properties": {
+          "choice": {
+            "type": "string",
+            "pattern": "\\S"
+          },
+          "rationale": {
+            "type": "string",
+            "pattern": "\\S"
+          },
+          "alternatives": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "pattern": "\\S"
+            }
+          },
+          "consequences": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "pattern": "\\S"
+            }
+          },
+          "revisit_when": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "pattern": "\\S"
+            }
+          }
+        }
+      }
+    },
+    "deferred": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "pattern": "\\S"
+      }
+    }
+  },
+  "minProperties": 1,
+  "description": "Optional subordinate architecture facet, owned by directory containment. Observed facts require attribution; proposals retain reasoning and limits. The file has no independent engineering identity or lifecycle. Shape validation does not establish architectural adequacy or implementation conformance."
+}

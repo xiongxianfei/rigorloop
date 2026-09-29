@@ -1,0 +1,48 @@
+{
+  "id": "MOD-019",
+  "type": "module",
+  "title": "Product delivery",
+  "status": "draft",
+  "description": "Account for trustworthy product delivery by preserving candidate identity, compatibility, integrity, and applicable execution authority across package production, installation, and release coordination.",
+  "responsibilities": [
+    "Compose candidate production, verified installation, and release coordination so downstream actions refer to the actual selected candidate and its applicable qualification.",
+    "Keep package integrity, installation destination effects, publication authority, and observed release outcomes distinct while preserving their end-to-end relationship.",
+    "Provide IF-006 as the accountable installation contract for Product delivery. MOD-014 retains acquisition, verification, bounded destination changes, and outcome behavior; candidate production and release responsibilities retain their own boundaries."
+  ],
+  "owned_state": [],
+  "scope": {
+    "includes": [
+      "Product candidate construction and integrity, compatible bounded installation, release qualification/publication, and recovery of delivery outcomes."
+    ],
+    "excludes": [
+      "Engineering decision governance, published activity methods, operational record persistence, and a change to product behavior merely from hierarchy adoption.",
+      "Duplicate ownership of candidate artifacts, installed state, or release facts already assigned to a child."
+    ]
+  },
+  "provides": [
+    "IF-006"
+  ],
+  "consumes": [],
+  "design_limits": [
+    "MOD-019 provides IF-006 directly to MOD-010. MOD-014 retains its installation Functions and state authority; IF-005 remains internal to candidate production, installation, and release cooperation.",
+    "MOD-015 consumes Governance IF-009 authority and IF-010 evidence-applicability support for SCN-066. Release qualification, publication, actual public observations, IR-010 AR derivation, further Interfaces, and physical qualification remain separately accountable work.",
+    "Contract analysis adds no direct parent Function, AR, persistent state, or new physical realization. Detailed IF-006 implementation mapping remains deferred."
+  ],
+  "sources": [
+    {
+      "source": "SRC-MODULE-HIERARCHY",
+      "locator": "MOD-019; children MOD-013, MOD-014, MOD-015",
+      "basis": "Proposed parent responsibility derived from the existing child definitions and the user-selected containment structure. The parent owns the stated composition boundary; child definitions, direct allocations, state authority, and contracts retain their identities and meaning. This is draft architecture, not implementation adoption or satisfaction."
+    },
+    {
+      "source": "SRC-PARENT-INTERFACE-OWNERSHIP",
+      "locator": "MOD-019; design/requirements/sources.md#src-parent-interface-ownership",
+      "basis": "Refine contract accountability: MOD-018 provides IF-004 and MOD-019 provides IF-006. MOD-010 and MOD-014 retain their behavioral allocations and state responsibilities. This supersedes the provider/exposure choice recorded by SRC-MODULE-HIERARCHY without changing Interface guarantees, consumers, Function/AR allocations, or realization observations. Earlier source entries retain their prior design meaning; this draft refinement supplies no runtime adoption or satisfaction evidence."
+    },
+    {
+      "source": "SRC-BOUNDARY-CONTRACTS",
+      "locator": "MOD-019; SCN-019, SCN-053, SCN-066 selected collaboration analysis",
+      "basis": "Derive consumer-focused parent contracts for selected-state inspection, adopted-REM authoring guidance, applicable action authority, and evidence applicability. Preserve child behavior/state authority, existing Function/AR allocations, and earlier contract guarantees. The selected contracts refine prior blanket deferrals; remaining retention, wider collaboration, AR, and realization gaps stay explicit. This is draft design analysis, not implemented or satisfied behavior."
+    }
+  ]
+}

@@ -1,0 +1,96 @@
+{
+  "id": "IF-008",
+  "type": "interface",
+  "title": "Applicable engineering authoring guidance",
+  "status": "draft",
+  "description": "The Engineering governance contract for selecting and explaining canonical engineering authoring guidance within a declared adopted REM profile. Published capability guidance consumes this contract for the model-authoring branch of a bounded specialist activity; other specialist procedures retain their own owners and support boundaries.",
+  "operations": [
+    {
+      "name": "select_applicable_authoring_guidance",
+      "purpose": "Identify which canonical sources and versions govern the requested model-authoring activity and explain their applicability.",
+      "inputs": [
+        "Requested authoring activity, participant context, and the project's declared adopted method/profile version.",
+        "Available canonical guidance with identifiable owners and source versions, including previously selected guidance when its applicability is being reconsidered."
+      ],
+      "preconditions": [],
+      "outputs": [
+        "Applicable canonical owners and source versions, selection rationale, and navigation to the relevant concepts, methods, rules, and worked examples.",
+        "Explicit unavailable, superseded, incompatible, ambiguous, or inapplicable guidance context, including the affected scope and missing selection or responsible source owner."
+      ],
+      "behavior": [
+        "Match the requested activity and declared profile version to their canonical guidance owners; preserve the distinction between governing rules and illustrative explanations or examples.",
+        "Keep the selected source version and applicability basis identifiable across human and agent presentations without changing the governing meaning.",
+        "After a profile change, disclose previously used material that is incompatible, superseded, or unavailable instead of silently applying it or substituting a different version.",
+        "For an activity outside the adopted REM model-authoring scope, explain that this contract is inapplicable and leave the selected specialist procedure with its existing owner.",
+        "Identify missing or conflicting guidance and its responsible owner. Selecting guidance neither interprets or migrates the engineering model nor establishes project adoption or permission to edit it."
+      ],
+      "failure_behavior": [
+        {
+          "condition": "The requested activity or adopted profile version is missing or unknown.",
+          "outcome": "Identify the missing selection and affected scope without claiming that an authoring method is applicable."
+        },
+        {
+          "condition": "The selected activity or version has no available authoritative guidance, or its governing sources conflict.",
+          "outcome": "Report the unavailable scope or conflicting owners and versions; leave the dependent rule selection unresolved instead of inventing a rule or choosing an incompatible substitute."
+        }
+      ]
+    },
+    {
+      "name": "explain_authoring_or_correction",
+      "purpose": "Explain the semantic steps, governing rules, expected outcomes, and correction paths for the selected model-authoring activity within its supported scope.",
+      "inputs": [
+        "Requested activity, applicable canonical guidance selection and source versions, and author-provided engineering context.",
+        "Existing definitions and identifiable review or validation findings when a correction is requested.",
+        "Declared representation support, known authority limits, and unresolved engineering decisions relevant to the requested activity."
+      ],
+      "preconditions": [],
+      "outputs": [
+        "Activity-specific guidance that explains governing rules, semantic authoring or correction steps, expected outcomes, and applicable checks with their authoritative sources.",
+        "Explicit unfinished scope, unresolved decisions, unsupported representations or operations, separately authorized actions, and the responsible next clarification or correction."
+      ],
+      "behavior": [
+        "Use the applicable canonical method to explain the requested requirement, Scenario, system, architecture, relationship, naming, retirement, or correction activity; preserve each activity's distinct engineering meaning.",
+        "Relate a supplied finding to its identifiable diagnostic, owning rule, affected definition, and a correction whose result remains subject to the applicable checks.",
+        "Provide sufficient governing content and source navigation for the requested decision; concise explanations must not hide required rules, failure conditions, or obtainable material detail. Distinguish normative rules from examples and structural aids.",
+        "When a material engineering decision is unresolved, explain the dependency and the highest-value clarification needed at that time without concealing other uncertainty or supplying an invented answer.",
+        "Explain available conceptual guidance when a representation is unsupported or an action requires separate authority, while leaving the dependent action unperformed and avoiding conformance or permission claims.",
+        "Keep recommendations distinct from edits, conformant records, approved changes, verification observations, and satisfied requirements. Published capability guidance retains execution, artifact/output composition, actual scope reporting, and local handoff under the applicable specialist contract.",
+        "Preserve source applicability, current authoritative vocabulary, and privacy limits. Do not require secrets, credentials, raw private environment data, or unrelated machine-local information to explain the method."
+      ],
+      "failure_behavior": [
+        {
+          "condition": "Applicable guidance, required subject context, or a material engineering decision is unavailable or conflicting.",
+          "outcome": "Identify the affected unfinished scope and responsible clarification or correction owner; keep dependent conclusions unsettled while explaining only the supported scope."
+        },
+        {
+          "condition": "The requested format or operation is retired, unsupported, or not adopted, or the requested action lacks established applicable authority.",
+          "outcome": "Explain the support or authority boundary and any available conceptual guidance. Leave the dependent action unperformed without reviving a retired operation, claiming format conformance, or deciding authority through guidance."
+        }
+      ]
+    }
+  ],
+  "consistency_rules": [
+    "Guidance selection and explanation refer to the same applicable activity, profile, and identifiable canonical source versions. A changed or unresolved selection must remain visible rather than silently mixing incompatible rules.",
+    "Human and agent presentations preserve the same governing meaning. Canonical rules remain at their owning sources; guidance does not create a competing policy copy or turn an example into authority.",
+    "An explanation is not artifact mutation, model interpretation or migration, adoption, an authority determination, independent assessment, or requirement satisfaction. Partial and blocked guidance must remain distinguishable from a complete usable specialist result.",
+    "The contract covers the adopted REM model-authoring alternative in SCN-053. It does not substitute a universal procedure for the full set of published specialist activities or establish successful capability execution."
+  ],
+  "compatibility_rules": [
+    "The declared adopted profile and its canonical owners govern the supported activities, representations, rule vocabulary, and applicable versions. Unknown or incompatible context cannot be treated as a supported fallback.",
+    "A published capability consumer must preserve source applicability, required rule coverage, privacy, stop conditions, and claim limits when composing the explanation into its own specialist output and handoff.",
+    "This logical contract introduces no agent runtime, transport, public command, wire format, automatic model migration, or installed-skill adoption. Detailed published specialist contracts retain their existing authority and support boundaries.",
+    "Guidance usefulness assessment, action-authority decisions, and assurance judgments have separate responsibilities; defining this contract does not complete their collaboration or allocated-requirement analysis."
+  ],
+  "sources": [
+    {
+      "source": "SRC-BOUNDARY-CONTRACTS",
+      "locator": "SCN-053; SR-053; SR-056; FUNC-053",
+      "basis": "Derive the Governance-to-published-capability interaction for the Scenario's adopted REM model-authoring alternative. Preserve specialist ownership, usable scoped output, source applicability, supported stops, and the distinction between partial work and completion; this does not define every published specialist protocol."
+    },
+    {
+      "source": "SRC-BOUNDARY-CONTRACTS",
+      "locator": "SR-032; SR-033; FUNC-032; FUNC-033; MOD-008",
+      "basis": "Derive selection and explanation operations from the existing canonical authoring guidance behavior. MOD-008 retains those Function allocations and semantic responsibilities while MOD-017 accounts for this external contract. Neither this ownership nor consumption by MOD-012 creates new authority, runtime realization, or satisfaction evidence."
+    }
+  ]
+}
