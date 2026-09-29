@@ -1,0 +1,31 @@
+{
+  "id": "FEAT-005",
+  "type": "feature",
+  "title": "Migrate engineering models between declared profiles",
+  "status": "draft",
+  "description": "Model maintainers can prepare and assess an explicit representation migration candidate while retaining the source interpretation and exposing intentional semantic changes and compatibility limits.",
+  "scope": {
+    "includes": [
+      "Apply a supplied source-to-target mapping to an identifiable candidate.",
+      "Preserve identity and meaning or identify intentional semantic changes.",
+      "Assess target model rules and declared consumer compatibility before controlled adoption."
+    ],
+    "excludes": [
+      "Automatic approval or adoption of a candidate.",
+      "Silent reinterpretation of historical states or universal format conversion."
+    ]
+  },
+  "realized_by": [
+    "FUNC-002",
+    "FUNC-012",
+    "FUNC-013",
+    "FUNC-014"
+  ],
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "FEAT-005",
+      "basis": "IR-005 and its Scenario/SR analysis establish this bounded stakeholder capability; it remains draft analysis, not an implemented feature claim."
+    }
+  ]
+}

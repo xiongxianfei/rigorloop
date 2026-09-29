@@ -1,0 +1,48 @@
+{
+  "id": "FUNC-034",
+  "type": "function",
+  "title": "Assess authoring guidance against prepared task outcomes",
+  "status": "draft",
+  "description": "Organize and interpret a guidance assessment against predefined semantic tasks for a stated participant group and profile. It distinguishes usability findings from generic conformance checks and leaves evidence retention and applicability to the assurance behaviors.",
+  "inputs": [
+    "Guidance/profile versions, participant group, prepared task inputs, expected semantic outcomes, and applicable checks.",
+    "Observed task outputs, rule explanations, check results, ambiguities, and additional assistance."
+  ],
+  "preconditions": [
+    "Assessment criteria and participant context are explicit before successful performance is claimed."
+  ],
+  "outputs": [
+    "Task-specific successful, unsuccessful, or unassessed outcomes with attributable observations.",
+    "Guidance findings, extra-help dependencies, and limits of the assessed scope."
+  ],
+  "behavior": [
+    "Identify the expected authoring outcome and applicable rules for each prepared task.",
+    "Compare actual outcomes and check results with the expected semantic result and the participant's ability to explain the governing rule without conversation-only context.",
+    "Record ambiguities, incorrect results, and additional assistance alongside successful observations.",
+    "Distinguish participant groups and versions, and identify unperformed or unsupported activities.",
+    "Provide bounded outcomes for assurance assessment without asserting population-wide usability."
+  ],
+  "failure_behavior": [
+    {
+      "condition": "Expected outcomes, observations, or applicable checks are absent.",
+      "outcome": "Identify the missing basis and leave the task unassessed rather than reporting success."
+    },
+    {
+      "condition": "The task depends on an unavailable representation or undocumented assistance.",
+      "outcome": "Report the support limit or assistance finding explicitly; do not silently count a conformant independent completion."
+    }
+  ],
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "FUNC-034",
+      "basis": "SR-034 requires observable assessment of guidance using prepared semantic tasks and declared participant contexts."
+    },
+    {
+      "source": "SRC-ARCHITECTURE-PILOT",
+      "locator": "FUNC-034",
+      "basis": "Propose MOD-008 as the single accountable architectural responsibility for the existing behavior. This allocation preserves the Function definition and does not establish implementation or completed interface/AR coverage outside the IR-001 pilot."
+    }
+  ],
+  "allocated_to": "MOD-008"
+}

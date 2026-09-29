@@ -1,0 +1,58 @@
+{
+  "id": "AR-002",
+  "type": "allocated-requirement",
+  "title": "Retrieve definitions with explicit state and completeness",
+  "status": "draft",
+  "statement": "The Engineering model storage Module shall retrieve retained definition content for the requested subject and selected model state, identifying its profile and scope and distinguishing complete, incomplete, unsupported, unavailable, and failed outcomes.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "An identity without a state or a partial result labeled complete misrepresents retained knowledge.",
+      "desired_outcome": "Consumers can distinguish what was retrieved and interpreted from what remains unavailable."
+    },
+    "why": {
+      "rationale": "SR-001 requires usable later-session retrieval and explicit limits at the content boundary."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineering model authors and readers",
+        "Maintainers of MOD-001"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "An identified definition is requested in a selected retained state."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "IF-001 retrieve_definition with IF-002 interpretation."
+      ]
+    },
+    "how": {
+      "approach": "Acquire raw content and the selected state's declaration; interpret it with the applicable profile and return recorded content and qualified outcomes."
+    },
+    "how_much": {
+      "scope": "Supported definition content in the requested scope. Other revisions must not be silently substituted."
+    }
+  },
+  "acceptance_criteria": [
+    "A complete result contains the requested identity, type, recorded content, authoritative references, selected state, and profile.",
+    "Unsupported interpretation, unavailable content, partial retrieval, and access failure remain distinguishable and identify affected scope.",
+    "An unavailable selected state does not result in successful retrieval from another state.",
+    "Retrieval in a fresh session requires neither the originating conversation nor authoring-process memory."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "allocated_to": "MOD-001",
+  "constrains": [
+    "FUNC-004"
+  ],
+  "sources": [
+    {
+      "source": "SRC-ARCHITECTURE-PILOT",
+      "locator": "AR-002",
+      "basis": "Derived from SR-001 for the proposed MOD-001 responsibility and IR-001 scenario walkthrough. Acceptance criteria are intended observations, not executed verification or an approval."
+    }
+  ]
+}

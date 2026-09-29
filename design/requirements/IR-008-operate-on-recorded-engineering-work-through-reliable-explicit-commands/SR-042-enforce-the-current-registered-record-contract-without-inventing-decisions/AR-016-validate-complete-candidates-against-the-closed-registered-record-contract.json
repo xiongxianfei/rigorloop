@@ -1,0 +1,65 @@
+{
+  "id": "AR-016",
+  "type": "allocated-requirement",
+  "title": "Validate complete candidates against the closed registered record contract",
+  "status": "draft",
+  "statement": "The Operational record persistence Module shall validate each complete current recording candidate against closed record shapes, manifest registration, explicit applicability, and field-compatible reference rules before publication, without inferring missing representation or decisions.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "A candidate can appear readable while carrying unknown vocabulary, ambiguous identities, incomplete registration, or references that resolve differently for different consumers.",
+      "desired_outcome": "All supported candidate entry paths obtain one structurally admissible final representation or a precise safe rejection."
+    },
+    "why": {
+      "rationale": "SR-042 requires closed current-record validity; MOD-011 owns the complete candidate and shared validation responsibility."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineers and agents supplying explicit command requests",
+        "Maintainers of MOD-011 and its Interface consumers"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "A targeted candidate, advanced replacement, or prepared recovery state requires current-record structural validation."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "The shared IF-003 validation boundary for one selected change and its complete manifest-declared candidate."
+      ]
+    },
+    "how": {
+      "approach": "Reject unknown or malformed shapes before dependent reference checks, then validate matching identities, registry/applicability completeness, and exact field-specific references against the final candidate."
+    },
+    "how_much": {
+      "scope": "The current v3 record, explanation, and conditional-basis shapes. This is operational-record validation, not the REM entity metamodel or workflow-adequacy assessment."
+    }
+  },
+  "acceptance_criteria": [
+    "Unknown fields or closed-vocabulary values, duplicate keys or identities, missing required values, invalid encodings or versions, mixed stores, body/dual assessment representations, and malformed current records reject before authoritative writes.",
+    "Each manifest-registered supporting record has matching kind and change identity plus exactly one explicit record-level applicability declaration; an extra physical file contributes no authority.",
+    "Every EntryRef resolves exactly one field-compatible object within the same complete candidate and the declared disjoint referenceable-ID namespaces. Missing, ambiguous, wrong-kind, or cross-change fallback targets reject.",
+    "Combined batch references may resolve to explicitly introduced entries in the complete final candidate; incomplete intermediate construction is not a workflow gate or a reason to invent other actors' decisions.",
+    "Review and Verify use their required closed explanation fields. Optional verification_basis is either absent or a complete allowed object; null, partial, or unknown members reject, while absence alone remains structurally valid.",
+    "Targeted construction, advanced replacement, and current recovery apply the same structural obligations; validator success does not authorize publication or establish engineering approval."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "allocated_to": "MOD-011",
+  "sources": [
+    {
+      "source": "SRC-CLI-ALLOCATION",
+      "locator": "SR-042 / AR-016; MOD-011",
+      "basis": "Derive this draft lower-level obligation from the containing SR at the selected command or operational-record responsibility boundary. Allocation and acceptance criteria are design claims for review, not implementation, requirement approval, or satisfaction evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-CLI",
+      "locator": "docs/design/cli/cli.md#CLI-SR-02, CLI-SR-12, CLI-SR-15, CLI-SR-27; docs/design/cli/records.md#RF-SR-01, RF-SR-02, RF-SR-08, RF-SR-09, RF-SR-11",
+      "basis": "Preserve the applicable current public and stored-record guarantees at this accountable boundary. The named source retains exact schemas, operation tables, classifications, limits, and historical adoption obligations; this allocation neither replaces those details nor accepts REM authoring JSON as operational records."
+    }
+  ],
+  "constrains": [
+    "FUNC-044"
+  ]
+}

@@ -1,0 +1,67 @@
+{
+  "id": "SCN-007",
+  "type": "scenario",
+  "title": "Apply a relationship change and inspect both endpoint views",
+  "status": "confirmed",
+  "actor": "Model author",
+  "goal": "Apply an explicit relationship creation, revision, or removal and understand its result consistently from both endpoints.",
+  "context": "The author has identified governed entities and an intended creation, revision, or removal of their engineering relationship.",
+  "trigger": "The author needs to change how an obligation relates to the behavior it constrains.",
+  "preconditions": [
+    "A selected current model state and governing relationship profile are available."
+  ],
+  "interaction": [
+    {
+      "actor": "Model author",
+      "action": "Selects the two entities, relationship meaning, and proposed change."
+    },
+    {
+      "actor": "System",
+      "action": "Reports the accepted relationship change or explains why the proposal cannot be accepted."
+    },
+    {
+      "actor": "Model author",
+      "action": "Inspects the resulting relationship state from each endpoint."
+    },
+    {
+      "actor": "System",
+      "action": "Presents the resulting relationship or its removal consistently from both endpoints, with the selected state identifiable."
+    }
+  ],
+  "expected_outcome": "The author understands the accepted creation, revision, or removal consistently from both endpoint views without separately maintaining an inverse fact.",
+  "alternatives": [
+    {
+      "condition": "An existing relationship is revised or removed.",
+      "outcome": "Both endpoint views reflect the revised authoritative fact in the selected current state."
+    },
+    {
+      "condition": "The relationship is requirement parentage.",
+      "outcome": "The profile-selected containment establishes one parent and supports both parent and child navigation."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "An endpoint or relationship type is invalid or ambiguous.",
+      "outcome": "The system identifies the invalid proposal and does not present it as an accepted relationship."
+    },
+    {
+      "condition": "The selected state changes before the operation completes.",
+      "outcome": "The system reports the changed selection and does not claim a completed relationship edit."
+    }
+  ],
+  "exercises": [
+    "FEAT-003"
+  ],
+  "informs": [
+    "SR-008",
+    "SR-009",
+    "SR-013"
+  ],
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "SCN-007",
+      "basis": "IR-002 analysis establishes this stakeholder situation and its selected profile boundaries; the linked SRs account for its outcomes without creating a second requirement parent. Accepted as current requirement-analysis knowledge after independent coverage and clarity review: one owning IR and primary Feature, observable goal and interactions, classified outcomes, and applicable SR coverage. This confirms analysis only, not requirement approval, implementation, or satisfaction."
+    }
+  ]
+}

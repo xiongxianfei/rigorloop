@@ -1,0 +1,49 @@
+{
+  "id": "FUNC-037",
+  "type": "function",
+  "title": "Formulate an accountable engineering improvement proposal",
+  "status": "draft",
+  "description": "Turn a supported lesson into a bounded proposal with an owner, affected subjects, intended behavior, and assessment criteria suitable for controlled change. Adoption authority and the actual transition are delegated to the existing change behaviors.",
+  "inputs": [
+    "Supported lesson mechanism, evidence basis, and applicability limits.",
+    "Affected guidance, checks, or artifacts and their responsible owners.",
+    "Proposed behavior change and observable success/adverse-effect criteria."
+  ],
+  "preconditions": [
+    "A supported basis for the improvement is identifiable; unresolved proposal details remain explicit."
+  ],
+  "outputs": [
+    "An attributable improvement proposal and its assessment intent.",
+    "Missing-owner, subject, scope, or criterion findings that prevent readiness for adoption."
+  ],
+  "behavior": [
+    "Relate the proposed change to the supported mechanism and applicable situations.",
+    "Identify current affected subjects and the responsible owner.",
+    "Make intended behavior, success criteria, and adverse-effect criteria explicit before adoption.",
+    "Supply the proposal to controlled change and retain the reference to its governing decision and baseline when reported.",
+    "Keep proposed adoption and assessed effectiveness distinct; do not manufacture permission from a recommendation."
+  ],
+  "failure_behavior": [
+    {
+      "condition": "The owner, affected subject, or observable assessment criterion is missing.",
+      "outcome": "Identify the deficiency and do not describe the proposal as ready for adoption."
+    },
+    {
+      "condition": "No governing adoption decision is available.",
+      "outcome": "Leave the improvement proposed or unresolved without reporting an adopted change."
+    }
+  ],
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "FUNC-037",
+      "basis": "SR-037 requires accountable improvement proposals whose adoption uses IR-003 controlled-change and authority obligations."
+    },
+    {
+      "source": "SRC-ARCHITECTURE-PILOT",
+      "locator": "FUNC-037",
+      "basis": "Propose MOD-009 as the single accountable architectural responsibility for the existing behavior. This allocation preserves the Function definition and does not establish implementation or completed interface/AR coverage outside the IR-001 pilot."
+    }
+  ],
+  "allocated_to": "MOD-009"
+}

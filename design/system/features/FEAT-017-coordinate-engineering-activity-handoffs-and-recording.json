@@ -1,0 +1,51 @@
+{
+  "id": "FEAT-017",
+  "type": "feature",
+  "title": "Coordinate engineering activity handoffs and recording",
+  "status": "draft",
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-04",
+      "basis": "IR-009 establishes this durable Skills-product capability; existing generic Functions are reused without changing their definitions or requirement parentage."
+    },
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-25",
+      "basis": "IR-009 establishes this durable Skills-product capability; existing generic Functions are reused without changing their definitions or requirement parentage."
+    },
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-26",
+      "basis": "IR-009 establishes this durable Skills-product capability; existing generic Functions are reused without changing their definitions or requirement parentage."
+    },
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-27",
+      "basis": "IR-009 establishes this durable Skills-product capability; existing generic Functions are reused without changing their definitions or requirement parentage."
+    }
+  ],
+  "description": "Participants can understand the next responsible engineering activity and prepare its inputs, prerequisites, and required governed records while preserving isolated use, review independence, and actual continuation authority.",
+  "scope": {
+    "includes": [
+      "Scope-aware handoffs and corrective routing using current context and applicable assessment basis.",
+      "Conditional governed recording through the supported procedure and truthful operation outcomes.",
+      "Distinguishing local progress, readiness, governed completion, and authorized external handoff."
+    ],
+    "excludes": [
+      "Storage-format implementation or a new record version.",
+      "Automatic continuation after an isolated invocation.",
+      "Renewing stale evidence or granting authority merely by recording a result."
+    ]
+  },
+  "realized_by": [
+    "FUNC-054",
+    "FUNC-055",
+    "FUNC-051",
+    "FUNC-052",
+    "FUNC-025",
+    "FUNC-026",
+    "FUNC-029",
+    "FUNC-031"
+  ]
+}

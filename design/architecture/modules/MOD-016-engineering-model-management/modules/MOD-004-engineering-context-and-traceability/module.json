@@ -1,0 +1,38 @@
+{
+  "id": "MOD-004",
+  "type": "module",
+  "title": "Engineering context and traceability",
+  "status": "draft",
+  "description": "Compose understandable engineering context and explain relationship paths, responsibility gaps, and possible change impact without authoring competing model facts.",
+  "responsibilities": [
+    "Present current definitions and applicable recorded rationale with distinct completeness and applicability outcomes.",
+    "Traverse declared relationship scope and derive reverse views from authoritative edges.",
+    "Explain allocation gaps and possible impact with the paths and limits supporting the conclusion."
+  ],
+  "owned_state": [
+    "Derived presentation and traversal results tied to their source state and scope; no separately authoritative copy of engineering relationships."
+  ],
+  "scope": {
+    "includes": [
+      "Current context presentation, relationship navigation, allocation analysis, and possible-impact reporting."
+    ],
+    "excludes": [
+      "Definition mutation, invented rationale, approval judgments, or treating graph reachability as proof of impact or satisfaction."
+    ]
+  },
+  "provides": [],
+  "consumes": [
+    "IF-001"
+  ],
+  "design_limits": [
+    "IF-001 supports the IR-001 presentation slice. Traversal and impact interfaces for IR-002 remain deferred.",
+    "Rendering technology and delivery surfaces remain undecided; the contract concerns observable meaning and diagnostics."
+  ],
+  "sources": [
+    {
+      "source": "SRC-ARCHITECTURE-PILOT",
+      "locator": "MOD-004",
+      "basis": "Analyst-proposed responsibility boundary derived from the existing Function landscape. Assigned Functions remain authoritative for behavior; this record describes target architecture, not observed implementation."
+    }
+  ]
+}

@@ -1,0 +1,85 @@
+{
+  "id": "SCN-053",
+  "type": "scenario",
+  "title": "Produce a usable result through specialist guidance",
+  "status": "confirmed",
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-03",
+      "basis": "Draft black-box stakeholder situation for IR-009 common Skills-product behavior. The Scenario awaits independent semantic review and does not claim detailed specialist clause migration or runtime evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-04",
+      "basis": "Draft black-box stakeholder situation for IR-009 common Skills-product behavior. The Scenario awaits independent semantic review and does not claim detailed specialist clause migration or runtime evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-12",
+      "basis": "Draft black-box stakeholder situation for IR-009 common Skills-product behavior. The Scenario awaits independent semantic review and does not claim detailed specialist clause migration or runtime evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-24",
+      "basis": "Draft black-box stakeholder situation for IR-009 common Skills-product behavior. The Scenario awaits independent semantic review and does not claim detailed specialist clause migration or runtime evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-29",
+      "basis": "Draft black-box stakeholder situation for IR-009 common Skills-product behavior. The Scenario awaits independent semantic review and does not claim detailed specialist clause migration or runtime evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-PRODUCTS",
+      "locator": "SCN-053; design/requirements/published-products.md#review-and-validation",
+      "basis": "Independent review and author reconciliation confirmed this stakeholder situation, primary Feature, and SR coverage as current analysis knowledge. This does not approve requirements or establish implemented behavior or satisfaction."
+    }
+  ],
+  "actor": "An engineer carrying out a bounded specialist task",
+  "goal": "Produce a usable result that preserves the selected specialist contract and project authority.",
+  "context": "The capability, task scope, applicable inputs, and authorization are established.",
+  "trigger": "The engineer starts the requested authoring, implementation, foundations, discovery, or learning activity.",
+  "preconditions": [],
+  "interaction": [
+    {
+      "actor": "Engineer",
+      "action": "Supplies the selected task and its authoritative inputs."
+    },
+    {
+      "actor": "System",
+      "action": "Guides the applicable specialist procedure, preserving required evidence and stop conditions."
+    },
+    {
+      "actor": "Engineer",
+      "action": "Provides the resulting artifact or observed work for the requested scoped assessment."
+    },
+    {
+      "actor": "System",
+      "action": "Reports the usable result, actual scope, remaining findings, and local handoff using the applicable output shape."
+    }
+  ],
+  "expected_outcome": "The requested bounded result is usable and clearly distinguishes completed work from unsupported claims or remaining obligations.",
+  "alternatives": [
+    {
+      "condition": "The task is model authoring within an adopted REM profile.",
+      "outcome": "The system uses the canonical REM authoring methods while retaining the same project authority and claim limits."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "A required subject, method, or authorization is unavailable or conflicting.",
+      "outcome": "The system reports the unfinished scope and responsible next action instead of presenting a complete result."
+    },
+    {
+      "condition": "The requested output is retired or not adopted by the current capability.",
+      "outcome": "The system explains the support boundary and leaves the dependent operation unperformed."
+    }
+  ],
+  "exercises": [
+    "FEAT-016"
+  ],
+  "informs": [
+    "SR-053",
+    "SR-056"
+  ]
+}

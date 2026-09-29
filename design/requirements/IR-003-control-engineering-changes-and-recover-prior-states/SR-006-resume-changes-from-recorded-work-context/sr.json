@@ -1,0 +1,79 @@
+{
+  "id": "SR-006",
+  "type": "system-requirement",
+  "title": "Resume changes from recorded work context",
+  "status": "draft",
+  "statement": "The system shall make the recorded scope, current work state, responsible participants, outstanding findings or blockers, and next action of an in-progress Change retrievable by another authorized participant without dependence on the originating conversation or agent session.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "A new participant may have access to engineering definitions but lack the recorded state, ownership, outstanding issues, or next action needed to resume an interrupted Change.",
+      "desired_outcome": "An authorized participant can determine what remains to be done from the retained Change context and can recognize gaps without treating a suggested action as permission."
+    },
+    "why": {
+      "rationale": "Preserving engineering definitions alone does not tell a new participant what work remains or how to continue a controlled Change."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineers and engineering agents handing off or resuming work",
+        "Reviewers and project decision owners responsible for outstanding decisions"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "When work on an in-progress Change is interrupted or handed to another participant, while the recorded context remains in the governed scope."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "In the current authoritative Change context and the current engineering records it references."
+      ]
+    },
+    "how": {
+      "approach": "Retain the common resumption context with the Change and reference each activity's authoritative subjects and applicable basis revisions. Authoring context identifies affected definitions, derivation sources, decisions made, unresolved analysis, and proposed edits. Implementation context identifies the governing requirements and design, assigned work, changed realization, completed and remaining work, and relevant verification obligations. Verification context identifies the requirements and exact subjects assessed, assessment procedure and conditions, planned checks, actual execution state, observed results or failures, evidence locations, and remaining checks. Review context identifies the exact reviewed subjects, governing review basis, findings and their disposition or correction owner, unresolved decisions, and the next review or correction action. Reference facts at their authoritative owner rather than maintaining independent copies. Distinguish intended verification from observed evidence, and expose missing, conflicting, stale, or inapplicable context explicitly without inventing an action or authority."
+    },
+    "how_much": {
+      "scope": "Covers explicitly recorded Change context within the retained governed scope. The common resumption set is the scope, work state, responsible participants, outstanding findings or blockers, and next action. The initial RigorLoop authoring profile defines additional context for authoring, implementation, verification, and review of a Change within one governed project; the applicable activity determines which context is needed. A field that is inapplicable to an activity is identified as such with a reason rather than populated with invented work or evidence. These definitions specify intended support and do not claim that every activity has an implemented record format. IR-001 owns durability of engineering definitions; this obligation addresses continuity of controlled work. It does not preserve unsaved conversation state or make a suggested next action authorize execution."
+    }
+  },
+  "acceptance_criteria": [
+    "Record the scope, work state, responsible participants, outstanding findings or blockers, and next action for a Change, then close the originating session. Another authorized participant can retrieve those recorded details and their authoritative references without the original conversation or agent memory.",
+    "When a resumption item is missing or conflicting, a reader can identify that gap or conflict from the returned context; the system does not present an inferred value as an established fact.",
+    "When a next action is recorded but its required authorization is absent, retrieving the resumption context does not grant that authorization.",
+    "For each supported activity, record its applicable context: authoring subjects and derivation decisions; implementation contract, assigned work, and changed realization; verification subjects, procedure, execution state, and evidence; or review subjects, findings, disposition, and correction responsibility. A different authorized participant can retrieve these facts through their authoritative references and identify the relevant basis revisions and next action.",
+    "When verification is planned but has not run, the resumed context identifies that state and does not present planned checks as observed evidence. When retained evidence or a review applies to a different subject revision, its recorded basis remains identifiable rather than being silently presented as current.",
+    "When activity-specific information is inapplicable, the context states the reason. When it is required but unavailable, the context identifies the gap and the responsible participant or decision needed without fabricating the missing result."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "sources": [
+    {
+      "source": "SRC-VISION",
+      "locator": "Resumable across sessions and agents; What it commits to",
+      "basis": "Current authoritative records carry task state so another participant can continue from the artifacts."
+    },
+    {
+      "source": "SRC-REM",
+      "locator": "Sections 23 and 31",
+      "basis": "A Change controls engineering evolution, while current state remains understandable without replaying history."
+    },
+    {
+      "source": "SRC-REQUIREMENT-EXPANSION",
+      "locator": "IR-003 expansion: Resume interrupted work",
+      "basis": "Drafted under IR-003 as an interpretation of the user's instruction to create all proposed needs, using the proposed continuity need and its suggested parent."
+    },
+    {
+      "source": "SRC-QUESTION-RESOLUTION",
+      "locator": "SR-006",
+      "basis": "Defines activity-specific resumption context and observable acceptance outcomes for authoring, implementation, verification, and review within the initial profile."
+    },
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "SR-006",
+      "basis": "Preserve this existing IR-003 obligation and its acceptance criteria; confirm FUNC-025 as the logical behavior derived from it during the complete analysis pass."
+    }
+  ],
+  "confirms": [
+    "FUNC-025"
+  ]
+}

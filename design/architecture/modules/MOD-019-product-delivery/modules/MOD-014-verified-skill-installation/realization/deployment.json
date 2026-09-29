@@ -1,0 +1,100 @@
+{
+  "observed": {
+    "packaging": [
+      "The installer is part of the same npm CLI package. Its metadata directory and releases.json trust index are resolved relative to the installed executable, while target skill destinations are resolved from the invoking project working directory.",
+      "The codex target selects .agents/skills and the claude target selects .claude/skills. Only candidate child units beneath the selected root are installed or replaced; support entrypoints outside those roots are excluded from installed files.",
+      "installCandidate keeps detached originals and transient candidate files in a private .rigorloop-install-retained-{random} directory beneath the selected project, outside skill discovery roots. It requires same-filesystem placement and reports retained paths rather than silently discarding originals.",
+      "The inspected installer pins directory descriptors through /proc/self/fd by default, uses O_DIRECTORY and O_NOFOLLOW, and rejects unavailable descriptor-relative operations or cross-filesystem placement. These are observed implementation dependencies, not a general cross-platform support claim."
+    ],
+    "sources": [
+      {
+        "source": "SRC-PRODUCT-REALIZATION",
+        "locator": "packages/rigorloop/dist/bin/rigorloop.js metadataDirectory, releaseIndexPath, handleInit, inspectArchive; packages/rigorloop/dist/lib/adapters.js; packages/rigorloop/dist/lib/installer-replacement.js installCandidate at 33f56fe84ff730d7bd48900cef32170fd0682412",
+        "basis": "Static inspection of unchanged tracked source establishes the described implementation path, not an executed build, passing qualification, installed artifact, public release, or permission to perform those operations. Skill instructions were neither read nor invoked."
+      },
+      {
+        "source": "SRC-PHYSICAL-REALIZATION",
+        "locator": "packages/rigorloop/dist/lib/installer-replacement.js installCandidate retention discovery checks, pinned directory devices, original rename and candidate hard links at 33f56fe84ff730d7bd48900cef32170fd0682412",
+        "basis": "Static inspection records existing package, runtime, selected filesystem, and artifact-source relationships with their conditions. It does not observe a deployed host, execute a product operation, inspect a published package, or qualify installation, storage safety, platform support, remote availability, or network topology. Existing logical ownership and earlier source observations remain unchanged."
+      }
+    ],
+    "placements": [
+      {
+        "name": "Selected target skill units",
+        "location": "Invocation project filesystem",
+        "modules": [
+          "MOD-014"
+        ],
+        "paths": [
+          ".agents/skills/{skill}/",
+          ".claude/skills/{skill}/"
+        ],
+        "constraints": [
+          "Paths are relative to the invocation working directory and are alternatives selected by codex or claude. Only the verified candidate units beneath the selected target root are written or explicitly replaced.",
+          "Package support entrypoints outside the selected skill roots and unrelated project files are not installed or replaced. The templates are not observations of an installed candidate."
+        ]
+      },
+      {
+        "name": "Retained installation originals",
+        "location": "Invocation project filesystem",
+        "modules": [
+          "MOD-014"
+        ],
+        "paths": [
+          ".rigorloop-install-retained-{random}/"
+        ],
+        "constraints": [
+          "The private directory is outside skill discovery roots and contains retained originals and transient candidate files. Existing-source inspection supplies no whole-project rollback promise.",
+          "The implementation requires descriptor-relative /proc/self/fd operations and same-filesystem placement; no broader platform support is inferred."
+        ]
+      }
+    ],
+    "location_constraints": [
+      {
+        "name": "Retained originals stay outside skill discovery",
+        "relation": "disjoint",
+        "placements": [
+          {
+            "owner": "MOD-014",
+            "facet": "deployment",
+            "name": "Selected target skill units"
+          },
+          {
+            "owner": "MOD-014",
+            "facet": "deployment",
+            "name": "Retained installation originals"
+          }
+        ],
+        "conditions": [
+          "For real installation, installCandidate creates a private retention directory beneath the invoking project and rejects overlap with supported and retained discovery roots.",
+          "The relation compares the selected target unit scope and retention scope; their common project context does not merge them or authorize replacement of shared parents."
+        ],
+        "rationale": "Original content and transient candidate bytes must not become discoverable skill instructions or overwrite unrelated target units."
+      },
+      {
+        "name": "Installation targets and retention use one filesystem",
+        "relation": "same-filesystem",
+        "placements": [
+          {
+            "owner": "MOD-014",
+            "facet": "deployment",
+            "name": "Selected target skill units"
+          },
+          {
+            "owner": "MOD-014",
+            "facet": "deployment",
+            "name": "Retained installation originals"
+          }
+        ],
+        "conditions": [
+          "Before detaching an original, installCandidate compares the selected target parent device with the pinned retention directory device and rejects cross-filesystem placement.",
+          "The relation applies to the active target selected for that invocation. Descriptor-relative operations and destination safety checks still apply; no general platform compatibility is inferred."
+        ],
+        "rationale": "The inspected replacement mechanism uses guarded rename and hard-link publication with retained originals, requiring same-filesystem placement."
+      }
+    ]
+  },
+  "deferred": [
+    "Supported operating systems and actual candidate installation require platform-specific proof. The existing physical mapping does not add platform guarantees or authorize changes to active installations."
+  ]
+}

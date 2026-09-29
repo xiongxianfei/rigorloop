@@ -1,0 +1,74 @@
+{
+  "id": "SR-070",
+  "type": "system-requirement",
+  "title": "Publish only the authorized immutable candidate",
+  "status": "draft",
+  "statement": "The system shall bind publication to applicable authorization for the exact qualified candidate, source, version/channel, destinations, and execution path, and shall stop on material changes, conflicting external identities, or unmet authentication and evidence requirements.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Approval of one candidate can be incorrectly reused for changed bytes, a different source, or a duplicate external write.",
+      "desired_outcome": "The external operation publishes only the reviewed and authorized product identity with truthful authentication and provenance."
+    },
+    "why": {
+      "rationale": "An artifact check and a favorable assessment do not grant publication permission or permit an altered publication subject."
+    },
+    "who": {
+      "stakeholders": [
+        "Project release decision owners",
+        "Release maintainers"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "Immediately before and during each publication attempt."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "The retained candidate, authorization record, supported publication provider, tag, registry, and asset destinations."
+      ]
+    },
+    "how": {
+      "approach": "Apply the existing candidate-specific authority and authentication/provenance policy, preferring trusted publishing where supported and honoring stricter profile requirements. Recheck bound source/artifacts/configuration, applicable evidence, external conflicts, and authority before writes. Publish retained qualified bytes without rebuilding from a mutable source. Material changes require affected requalification and a new applicable approval; an unchanged satisfactorily rechecked candidate need not acquire redundant approval."
+    },
+    "how_much": {
+      "scope": "Existing approved publication paths only. General manual fallback prose cannot override a profile requiring trusted publication; bounded token/2FA fallback needs its specific authority and does not waive checks. Serializing a workflow is neither a distributed publication lock nor permission to retry an uncertain write. Credentials and private environment data must not enter artifacts, evidence, or diagnostics."
+    }
+  },
+  "acceptance_criteria": [
+    "The actual tag, registry, and asset operations match the authorized source, artifact identities, version/channel, destinations, and path; mismatched or changed inputs stop rather than being silently substituted.",
+    "Publication uses retained checked artifact bytes, and a conflicting existing tag or public artifact blocks without overwrite or an independent unguarded fallback publisher.",
+    "Authorization alone does not waive stale, incomplete, or failed required evidence, and passing checks do not create authorization.",
+    "The selected authentication and provenance policy is preserved; secret-bearing package contents or diagnostics block the unsafe operation.",
+    "Duplicate events do not confer fresh authority or duplicate writes; uncertain external outcomes are inspected under the recovery requirement."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "confirms": [
+    "FUNC-069",
+    "FUNC-070"
+  ],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-11",
+      "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. An artifact check and a favorable assessment do not grant publication permission or permit an altered publication subject. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-12",
+      "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. An artifact check and a favorable assessment do not grant publication permission or permit an altered publication subject. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-17",
+      "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. An artifact check and a favorable assessment do not grant publication permission or permit an altered publication subject. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-23",
+      "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. An artifact check and a favorable assessment do not grant publication permission or permit an altered publication subject. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
+    }
+  ]
+}

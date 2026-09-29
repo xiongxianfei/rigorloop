@@ -1,0 +1,64 @@
+{
+  "id": "FUNC-061",
+  "type": "function",
+  "title": "Derive artifact integrity metadata",
+  "status": "draft",
+  "description": "Describe generated artifacts using their actual bytes and the retained identity/hash representations. This behavior produces factual metadata and trusted-chain inputs; it does not fabricate verification observations or grant trust to an arbitrary supplied archive.",
+  "inputs": [
+    "Actual candidate artifacts and inventory, source/generator identity, requested release and target.",
+    "Selected metadata and integrity representation, official acquisition identity, and actual available validation observations."
+  ],
+  "preconditions": [],
+  "outputs": [
+    "Artifact metadata with source, version/target, filename, size, hashes, counts, roots, and attributable validation state.",
+    "Candidate metadata/index integrity relationships or explicit unsupported/inconsistent representation findings."
+  ],
+  "behavior": [
+    "Derive artifact and tree identities from actual candidate bytes using the specified normalization, membership, ordering, and counting rules.",
+    "Keep current v2 generation and retained historical v1 verification semantics distinct; reject unknown algorithms.",
+    "Associate exact metadata bytes with their consuming release index and CLI package inputs without self-referential digests.",
+    "Keep generated expectations distinct from performed checks and preserve the actual observed validation basis."
+  ],
+  "failure_behavior": [
+    {
+      "condition": "Actual bytes, inventory, version, or declared target disagree with the metadata basis.",
+      "outcome": "Report the mismatch and withhold a coherent trusted-candidate descriptor."
+    },
+    {
+      "condition": "A selected algorithm or representation is unknown.",
+      "outcome": "Reject the unsupported value before dependent consistency checks."
+    },
+    {
+      "condition": "Required artifact content or observed result is unavailable.",
+      "outcome": "Expose the incomplete fact or unperformed check rather than inventing identity or validation success."
+    }
+  ],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-PACKAGING",
+      "locator": "docs/design/engineering/packaging.md#DIST-SR-06",
+      "basis": "Logical behavior derived from the identified published-product contracts for IR-010; existing source details and compatibility/adoption limits remain applicable."
+    },
+    {
+      "source": "SRC-PUBLISHED-PACKAGING",
+      "locator": "docs/design/engineering/packaging.md#DIST-SR-09",
+      "basis": "Logical behavior derived from the identified published-product contracts for IR-010; existing source details and compatibility/adoption limits remain applicable."
+    },
+    {
+      "source": "SRC-PUBLISHED-PACKAGING",
+      "locator": "docs/design/engineering/packaging.md#DIST-SR-18",
+      "basis": "Logical behavior derived from the identified published-product contracts for IR-010; existing source details and compatibility/adoption limits remain applicable."
+    },
+    {
+      "source": "SRC-PUBLISHED-PACKAGING",
+      "locator": "docs/design/engineering/packaging.md#DIST-SR-21",
+      "basis": "Logical behavior derived from the identified published-product contracts for IR-010; existing source details and compatibility/adoption limits remain applicable."
+    },
+    {
+      "source": "SRC-PUBLISHED-PRODUCTS",
+      "locator": "FUNC-061",
+      "basis": "Assign MOD-013 as the proposed accountable primary responsibility after Functional Analysis. Current product source contracts retain detailed behavior authority; allocation is not runtime adoption or complete AR coverage."
+    }
+  ],
+  "allocated_to": "MOD-013"
+}

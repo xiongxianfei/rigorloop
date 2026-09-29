@@ -1,0 +1,91 @@
+{
+  "id": "SR-046",
+  "type": "system-requirement",
+  "title": "Return bounded faithful command outcomes and selected explanations",
+  "status": "draft",
+  "statement": "The system shall return operation-specific bounded outcomes whose human and machine forms preserve the same recorded meaning, selected scope, and failure distinctions, with safe diagnostics and a fitting publication receipt independent of diagnostic volume.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Large diagnostics, unreadable narrative encoding, or misleading success and completeness labels can hide a saved correction or cause callers to infer approval.",
+      "desired_outcome": "Callers can understand the exact command result and selected explanations without sensitive error echoes, partial output, or semantic dependence on log lookup."
+    },
+    "why": {
+      "rationale": "An automation result must support safe continuation while preserving the actor-authored evidence and reasoning needed for engineering judgment."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineers and reviewers operating on recorded engineering work",
+        "Engineering agents acting on explicit actor decisions",
+        "Maintainers and consumers of the published command-line interface"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "For successful, unchanged, preview, rejected, conflicting, busy, recovery-required, and generic command outcomes, and for explicit observation-detail retrieval."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "Each published result/projection domain, its selected records, bounded receipt, and separately requested observations."
+      ]
+    },
+    "how": {
+      "approach": "Project the actual outcome through the owning versioned result contract; preserve decoded multiline narrative, literal escapes and order. Guarantee the mandatory storage receipt before publication, summarize excess observations explicitly, and bind retrievable detail to both record revision and observed subject/diagnostic identity."
+    },
+    "how_much": {
+      "scope": "Current family-specific outcome/exit meanings and bounded result schemas remain authoritative in CLI. Mechanical detail is opt-in; logs are not a prerequisite for understanding the semantic result. This adds no alternative authoritative assessment or cached report."
+    }
+  },
+  "acceptance_criteria": [
+    "Saved, unchanged, preview, rejected, conflict, busy, and recovery-required outcomes retain their exact operation/version/exit meanings and available identities. A recording receipt claims persistence only; errors and observations remain distinct and never echo arbitrary payloads or secrets.",
+    "Text and JSON preserve equivalent selected fields, state, omissions, optional absence, and decoded narrative, including paragraphs, code, Unicode, literal backslash sequences, and ordered arrays. Budget failure occurs before output rather than emitting truncated content.",
+    "Every admissible mutation has a prepublication mandatory receipt that fits independently of diagnostic volume. Excess optional details are explicitly omitted; increasing diagnostics cannot reject a sound correction or turn completed publication into rejected output.",
+    "Observation summaries disclose omitted detail and count scope. Detail continuation binds revision plus actual observed subject basis and diagnostics, so subject drift conflicts even when record bytes and diagnostic text are unchanged; current detail is not promised historical replay.",
+    "Full and projected Review/Verify explanations derive from the stored fields without inventing rationale, conflating absence with not-applicable, changing applicability, or claiming that retrieval completeness proves an adequate assessment.",
+    "Generic concise and detailed projections retain the same semantic exit, mutations, and safe-continuation facts; recording and discovery retain their separate result contracts."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-CLI",
+      "locator": "docs/design/cli/cli.md#CLI-SR-07, CLI-SR-11, CLI-SR-14, CLI-SR-17, CLI-SR-20, CLI-SR-21, CLI-SR-22, CLI-SR-24, CLI-SR-26, CLI-SR-27, CLI-SR-29, CLI-SR-30; docs/design/cli/records.md#RF-SR-03, RF-SR-07, RF-SR-10",
+      "basis": "Derives this bounded published-product obligation from IR-008 and the named current CLI/Record Format contracts. Detailed schemas, command catalogs, limits and completed-retirement dispositions remain at those owners; this record does not transfer approval or implement REM-record operations."
+    },
+    {
+      "source": "SRC-CLI-ALLOCATION",
+      "locator": "SR-046 AC1: faithful family outcome/version/exit/identity; storage-only claims and safe diagnostics; allocated contributors: AR-024 AC1, 7; AR-026 AC4, 5",
+      "basis": "SCN-041, SCN-044 through SCN-049; FUNC-048 with actual FUNC-046/047 facts IF-003 returns actual effects and available identities; IF-004 preserves each owning result contract rather than normalizing them into one envelope."
+    },
+    {
+      "source": "SRC-CLI-ALLOCATION",
+      "locator": "SR-046 AC2: equivalent decoded text/JSON with scope and absence; pre-output read budget failure; allocated contributors: AR-024 AC2, 3; AR-025 AC1, 4 for mutation receipt serialization",
+      "basis": "SCN-042, SCN-048; FUNC-042/048 IF-004 selects actual format and projection; read overflow fails before partial output. Mutation diagnostic overflow uses the separate guaranteed receipt rule."
+    },
+    {
+      "source": "SRC-CLI-ALLOCATION",
+      "locator": "SR-046 AC3: fitting receipt before mutation, independent of diagnostics and later output failure; allocated contributors: AR-025 AC1 through 5; AR-026 AC1, 3 through 5",
+      "basis": "SCN-046 diagnostic-detail alternative; FUNC-048 prepares output and FUNC-046 publishes IF-003 must expose exact candidate facts before publication and honor readiness bound to operation/candidate/format; MOD-010 owns serialization and source output limits. No callback, token, transport schema, or co-owned Function is prescribed."
+    },
+    {
+      "source": "SRC-CLI-ALLOCATION",
+      "locator": "SR-046 AC4: honest summary counts/scope; continuation binds revision plus actual observed subject/diagnostic basis; allocated contributors: AR-024 AC5, 6; AR-026 AC1, 2",
+      "basis": "SCN-046 omitted-detail alternative and SCN-042 selected-scope understanding; FUNC-042/048 IF-003 must expose attributable observation facts including actual complete source-defined subject basis; IF-004 continuation checks the resulting identity before returning detail. These Scenarios expose the stakeholder need but do not individually enumerate every cursor/hash boundary. Source CLI-SR-20 retains exact algorithm/limits; no historical replay or atomic external snapshot claim."
+    },
+    {
+      "source": "SRC-CLI-ALLOCATION",
+      "locator": "SR-046 AC5: actual stored Review/Verify explanation, no invented rationale/applicability/adequacy; allocated contributors: AR-024 AC2, 4",
+      "basis": "SCN-042; FUNC-042/048 IF-003 supplies selected recorded facts and availability; IF-004 derives presentation without becoming a second authority."
+    },
+    {
+      "source": "SRC-CLI-ALLOCATION",
+      "locator": "SR-046 AC6: generic projections preserve exits/effects/safe continuation; recording/discovery stay distinct; allocated contributors: AR-024 AC1, 7; AR-025 AC5 where reporting follows mutation",
+      "basis": "SCN-041, SCN-048; FUNC-048 IF-004 owns independent public result domains. Logs are never necessary to recover omitted semantic continuation facts."
+    }
+  ],
+  "confirms": [
+    "FUNC-048",
+    "FUNC-042"
+  ]
+}

@@ -292,7 +292,11 @@ print(name + '-stderr', file=sys.stderr)
     def test_interrupt_reaps_started_processes_and_retains_unfinished_results(self):
         pid_file = self.root / 'owned-pid'
         result_file = self.root / 'results'
-        body = f'import os,time,pathlib; pathlib.Path({str(pid_file)!r}).write_text(str(os.getpid())); time.sleep(20)'
+        # Existence is the readiness signal. Publish it only after the complete
+        # PID has been written; otherwise SIGTERM can leave an empty file.
+        body = (f'import os,time,pathlib; p=pathlib.Path({str(pid_file)!r}); '
+                'ready=p.with_suffix(".pending"); ready.write_text(str(os.getpid())); '
+                'ready.replace(p); time.sleep(20)')
         driver = ("import sys,json; from pathlib import Path; sys.path.insert(0,'scripts'); "
                   "from lib.validation.validation_execution import CheckPlan,run_scheduled_checks; "
                   f"p=CheckPlan('owned','fixture',[sys.executable,'-c',{body!r}],None,'focused',True); "
@@ -304,11 +308,13 @@ print(name + '-stderr', file=sys.stderr)
             while not pid_file.exists() and time.monotonic()<deadline:
                 time.sleep(.01)
             self.assertTrue(pid_file.exists())
+            child_pid = int(pid_file.read_text())
+            self.assertGreater(child_pid, 0)
             process.send_signal(signal.SIGTERM)
             process.wait(timeout=7)
             self.assertEqual(result_file.read_text(), '[143]')
             with self.assertRaises(ProcessLookupError):
-                os.kill(int(pid_file.read_text()),0)
+                os.kill(child_pid,0)
         finally:
             if process.poll() is None:
                 process.kill()

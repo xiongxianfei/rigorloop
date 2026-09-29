@@ -1,0 +1,60 @@
+{
+  "id": "SR-034",
+  "type": "system-requirement",
+  "title": "Assess guidance using semantic authoring outcomes",
+  "status": "draft",
+  "statement": "The system shall support assessment of authoring guidance with prepared task inputs and expected semantic outcomes for the declared participant groups, recording the produced outcome, applicable check results, explanation of governing rules, ambiguities, and additional help required.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "A readable guide can still cause incorrect engineering definitions or require undocumented assistance.",
+      "desired_outcome": "Maintainers can identify which guidance works for the intended activities and which gaps require correction."
+    },
+    "why": {
+      "rationale": "Usability and semantic correctness require observed task outcomes rather than the existence of documentation."
+    },
+    "who": {
+      "stakeholders": [
+        "Guidance maintainers",
+        "Human authors new to REM",
+        "Experienced authors and reviewers",
+        "Engineering agents"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "When assessing guidance for initial use or a material change in the guidance or applicable profile."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "Prepared authoring assessments within the declared project profile and supported activity scope."
+      ]
+    },
+    "how": {
+      "approach": "Identify the participant group, guidance and profile versions, supplied inputs, expected semantic outcomes, and applicable checks before assessment. Record actual results and whether the participant explains the governing rule without the originating conversation. Report incorrect results, ambiguities, unsupported activities, and extra assistance; leave unobserved tasks unassessed."
+    },
+    "how_much": {
+      "scope": "Covers qualitative task outcomes across requirement derivation, Scenario/system definition, consistent architectural allocation and interactions, naming, reference correction, and retirement. It sets no invented time limit, pass rate, population size, or claim of general usability. Evidence capture and claim applicability reuse IR-004."
+    }
+  },
+  "acceptance_criteria": [
+    "An assessment identifies its participant group, guidance/profile versions, prepared inputs, expected outcome, and applicable checks before a result is judged.",
+    "Prepared tasks include IR 5W2H and SR parentage, black-box Scenario and Feature/Function distinctions, consistent AR/Function allocation, explicit Interface interaction, identity-preserving rename, reference correction, and retirement with surviving obligations addressed.",
+    "A task is reported successful only when its expected semantic outcome is produced, applicable checks pass, and the governing rule can be explained from the canonical guidance without the originating conversation.",
+    "Record incorrect outcomes, unresolved ambiguities, and additional assistance alongside successful results; identify unavailable authoring formats and unperformed tasks rather than reporting them passed.",
+    "A report distinguishes results for new authors, experienced authors/reviewers, and agents and limits conclusions to the observed tasks and stated versions."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "SR-034",
+      "basis": "Derived from IR-006 and its declared initial authoring scope; the acceptance criteria describe assessment intent, not observed results."
+    }
+  ],
+  "confirms": [
+    "FUNC-034"
+  ]
+}

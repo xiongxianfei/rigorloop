@@ -1,0 +1,61 @@
+{
+  "id": "FUNC-069",
+  "type": "function",
+  "title": "Seal a qualified immutable release candidate",
+  "status": "draft",
+  "description": "Bind the exact reviewed/prepared source, generated build inputs, artifacts, profile, configuration, and observed qualification into a retained candidate identity suitable for specific approval and later execution.",
+  "inputs": [
+    "Reviewed source, permitted prepared-source changes, profile and notes.",
+    "Actual archives, derived bundled metadata/index, packed CLI bytes, selected destinations/path/configuration, and qualification evidence."
+  ],
+  "preconditions": [],
+  "outputs": [
+    "Immutable retained candidate set and concise exact-identity approval summary.",
+    "Mismatch, incomplete dependency, unexpected change, or stale qualification findings."
+  ],
+  "behavior": [
+    "Preserve the distinction between reviewed source and permitted deterministic prepared source and expose their allowed differences.",
+    "Bind archive bytes before their generated metadata/index and consuming CLI package; create outer candidate identity only after final artifacts and checks exist.",
+    "Exclude self-referential digest inputs and keep later public observations outside sealed candidate content.",
+    "Expose every material identity, destination, execution path, qualification limit, and required approval subject.",
+    "Invalidate affected candidate reliance when source, overlay, artifact, metadata, configuration, or other material input changes."
+  ],
+  "failure_behavior": [
+    {
+      "condition": "Candidate dependencies or observed checks do not refer to the same final artifact basis.",
+      "outcome": "Withhold a qualified sealed-candidate claim and identify the mismatch."
+    },
+    {
+      "condition": "Unexplained source/overlay changes or missing final bytes remain.",
+      "outcome": "Return the incomplete or unsupported candidate for correction before approval."
+    }
+  ],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-08",
+      "basis": "Logical behavior derived from the identified published-product contracts for IR-010; existing source details and compatibility/adoption limits remain applicable."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-12",
+      "basis": "Logical behavior derived from the identified published-product contracts for IR-010; existing source details and compatibility/adoption limits remain applicable."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-23",
+      "basis": "Logical behavior derived from the identified published-product contracts for IR-010; existing source details and compatibility/adoption limits remain applicable."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-24",
+      "basis": "Logical behavior derived from the identified published-product contracts for IR-010; existing source details and compatibility/adoption limits remain applicable."
+    },
+    {
+      "source": "SRC-PUBLISHED-PRODUCTS",
+      "locator": "FUNC-069",
+      "basis": "Assign MOD-015 as the proposed accountable primary responsibility after Functional Analysis. Current product source contracts retain detailed behavior authority; allocation is not runtime adoption or complete AR coverage."
+    }
+  ],
+  "allocated_to": "MOD-015"
+}

@@ -1,0 +1,67 @@
+# Generated from explicit REM realization facts; do not edit.
+# Source identity: 2cf8f01cf8087e0b226dbd431d6452970b13954a16b84408d91173987708417e
+# Source-observed journal states and guarded transitions. Arrows describe eligible changes, not a mandatory sequence. Absence of a retained journal is distinct from the prepared and committed journal phases. Guards, effects, and coordination limits remain attached to their source records; this diagram is not crash, concurrency, or recovery verification.
+vars: { d2-config: { layout-engine: elk } }
+direction: down
+
+n_6c6966656379636c653a30: "Record journal coordination" {
+  link: "#process/lifecycle/coordination"
+  style.fill: "#F6F9FF"
+  style.stroke: "#93A9C6"
+  style.font-size: 18
+  n_4e6f2072657461696e6564206a6f75726e616c: "No retained journal" {
+    link: "#process/lifecycle/coordination"
+    tooltip: "journal.json is absent; this is physical absence, not a stored phase. A writer lock may still exist, and absence alone does not make a reader snapshot available or establish cleanup success."
+    style.fill: "#EEF6F1"
+    style.stroke: "#597390"
+    style.font-color: "#24364A"
+    style.font-size: 16
+    style.border-radius: 7
+  }
+  n_5072657061726564206a6f75726e616c: "Prepared journal" {
+    link: "#process/lifecycle/coordination"
+    tooltip: "A validated retained journal has phase=prepared and exact before/candidate evidence. Targets may match a mixture of retained before and candidate values during an unfinished transaction; that mixture is not usable current state."
+    style.fill: "#EEF6F1"
+    style.stroke: "#597390"
+    style.font-color: "#24364A"
+    style.font-size: 16
+    style.border-radius: 7
+  }
+  n_436f6d6d6974746564206a6f75726e616c: "Committed journal" {
+    link: "#process/lifecycle/coordination"
+    tooltip: "A validated retained journal has phase=committed. Every target must match its candidate identity; before-state targets are inconsistent. Only verified completion/cleanup is admissible, never restore."
+    style.fill: "#EEF6F1"
+    style.stroke: "#597390"
+    style.font-color: "#24364A"
+    style.font-size: 16
+    style.border-radius: 7
+  }
+  n_4e6f2072657461696e6564206a6f75726e616c -> n_5072657061726564206a6f75726e616c: "Changed publication\nretains its recovery\nbasis." {
+    style.stroke: "#526C8A"
+    style.font-color: "#344D67"
+    style.fill: "#FFFFFF"
+    style.font-size: 14
+    tooltip: "Changed publication retains its recovery basis.\nGuards: The writer owns exclusion and the current candidate, before-set, expected revision, targets, and declared reads have passed their applicable checks.; The bounded successful-publication receipt has been prepared; unchanged and preview paths have already terminated.\nEffects: Write exact before/candidate snapshots, identities, write/read sets, transaction ID, and created-directory tracking as phase=prepared before any authoritative replacement."
+  }
+  n_5072657061726564206a6f75726e616c -> n_436f6d6d6974746564206a6f75726e616c: "Changed publication or\nexplicit complete\nfinishes the exact\ncandidate." {
+    style.stroke: "#526C8A"
+    style.font-color: "#344D67"
+    style.fill: "#FFFFFF"
+    style.font-size: 14
+    tooltip: "Changed publication or explicit complete finishes the exact candidate.\nGuards: Ownership and known target checks remain valid, all candidate identities have been observed, and the declared read basis has been rechecked after publication.; Recovery additionally verifies the exact requested journal identity; unknown target bytes or an untrusted journal block transition.\nEffects: Persist phase=committed with the retained transaction evidence. Subsequent failure cannot authorize before-state restoration."
+  }
+  n_5072657061726564206a6f75726e616c -> n_4e6f2072657461696e6564206a6f75726e616c: "Explicit restore or a\nguarded precommit error\npath finishes\nrestoration." {
+    style.stroke: "#526C8A"
+    style.font-color: "#344D67"
+    style.fill: "#FFFFFF"
+    style.font-size: 14
+    tooltip: "Explicit restore or a guarded precommit error path finishes restoration.\nGuards: Exact retained before bytes are verified and each target remains in its known before/candidate set at observed checks.; Restoration and permitted created-directory cleanup complete under owned exclusion.\nEffects: Remove the exact retained journal, then release the owned lock. Explicit restore returns recovered; safe automatic restoration reports the original publication failure."
+  }
+  n_436f6d6d6974746564206a6f75726e616c -> n_4e6f2072657461696e6564206a6f75726e616c: "Successful publication\ncleanup or explicit\ncomplete cleanup\nfinishes." {
+    style.stroke: "#526C8A"
+    style.font-color: "#344D67"
+    style.fill: "#FFFFFF"
+    style.font-size: 14
+    tooltip: "Successful publication cleanup or explicit complete cleanup finishes.\nGuards: The exact committed candidate is verified; an explicit recovery complete also verifies current journal identity and its declared read basis.; The writer still owns exclusion; cleanup succeeds without guessing target or journal state.\nEffects: Remove the retained journal, then release the lock and return the already prepared saved or recovered receipt. Missing output delivery does not undo commitment."
+  }
+}

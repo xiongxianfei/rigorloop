@@ -1,0 +1,63 @@
+{
+  "id": "FUNC-007",
+  "type": "function",
+  "title": "Present current engineering definition and applicable rationale",
+  "status": "draft",
+  "description": "Present a retrieved engineering definition together with its applicable recorded decision reasoning, so the reader can understand its current meaning in the selected model state. Keep definition completeness, reasoning availability, and unresolved applicability distinguishable.",
+  "inputs": [
+    "The selected entity identity and current model state.",
+    "The retrieved definition and its authoritative references, including any associations with recorded decision reasoning.",
+    "The available recorded basis and retrieval outcomes for the associated current information."
+  ],
+  "preconditions": [
+    "The requested subject and state, or the inability to establish them, are explicit."
+  ],
+  "outputs": [
+    "The current engineering definition in a form that exposes its meaning and authoritative references.",
+    "The associated recorded decision context, chosen outcome, rationale, alternatives, and consequences where available and applicable.",
+    "Separate indications of definition completeness and decision-context availability, including identifiable gaps or unresolved applicability."
+  ],
+  "behavior": [
+    "Identify the selected entity and state and expose the current definition's engineering meaning without requiring reconstruction from historical Changes.",
+    "Access the associated recorded reasoning through current authoritative references, preserving its content and applicability basis.",
+    "Distinguish complete current definitions from missing required definition content and distinguish available rationale from missing, incomplete, or inapplicable reasoning.",
+    "When no applicable rationale is recorded, state that no such recorded rationale was obtained rather than inferring that none is needed.",
+    "Keep optional historical explanation separate from information required for current understanding, and do not present retained reasoning as proof of requirement satisfaction."
+  ],
+  "failure_behavior": [
+    {
+      "condition": "The selected definition or a required current definition reference is unavailable, unsupported, incomplete, or failed.",
+      "outcome": "Identify the affected subject, state, and gap without representing the available portion as a complete definition."
+    },
+    {
+      "condition": "The definition is complete but associated rationale is unavailable or incomplete.",
+      "outcome": "Present the complete definition with the decision-context gap explicit; unavailable rationale does not by itself make the definition incomplete."
+    },
+    {
+      "condition": "The recorded reasoning's applicability to the selected definition cannot be established.",
+      "outcome": "Expose its recorded basis and unresolved applicability without silently treating it as current rationale."
+    },
+    {
+      "condition": "Optional historical explanation is unavailable while required current information is complete.",
+      "outcome": "Preserve the complete current account and identify only the optional historical material as unavailable."
+    }
+  ],
+  "sources": [
+    {
+      "source": "SRC-IR-001-SCENARIO-ANALYSIS",
+      "locator": "FUNC-007",
+      "basis": "SR-004 requires understandable current definitions, and SR-005 requires access to the recorded reasoning supporting current reliance; their retrieval gaps must remain distinguishable."
+    },
+    {
+      "source": "SRC-ASSET-CLARITY-REFINEMENT",
+      "locator": "FUNC-007",
+      "basis": "Apply the user-selected clarity and naming rule to this existing asset; refine its name and explanation without changing its identity, capability scope, or typed relationships."
+    },
+    {
+      "source": "SRC-ARCHITECTURE-PILOT",
+      "locator": "FUNC-007",
+      "basis": "Propose MOD-004 as the single accountable architectural responsibility for the existing behavior. This allocation preserves the Function definition and does not establish implementation or completed interface/AR coverage outside the IR-001 pilot."
+    }
+  ],
+  "allocated_to": "MOD-004"
+}

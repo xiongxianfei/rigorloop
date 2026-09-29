@@ -1,0 +1,97 @@
+{
+  "id": "IR-003",
+  "type": "initial-requirement",
+  "title": "Control engineering changes and recover prior states",
+  "status": "draft",
+  "statement": "Project decision owners, engineers, and maintainers need to evolve coherent engineering states through controlled changes while preserving the ability to identify, compare, and recover retained prior states and understand their original decisions and provenance.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Changes can obscure earlier engineering states and their provenance, while interruptions can separate unfinished work from its context and decision authority.",
+      "desired_outcome": "Participants can identify and compare retained states, recover them with their original meaning, and continue controlled work with its recorded context and applicable authority."
+    },
+    "why": {
+      "rationale": "A current model alone cannot explain how it came to exist, establish what an earlier assessment examined, or support reliable recovery of a previous engineering state. Controlled work also needs continuity after interruptions and respect for the project's decision authority."
+    },
+    "who": {
+      "stakeholders": [
+        "Project decision owners",
+        "Engineers and architects",
+        "Maintainers and reviewers",
+        "Engineering agents acting within project authority"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "Applies when changes are proposed, assessed, adopted, corrected, or retired, and when a retained baseline is inspected or recovered. It also applies when in-progress work is interrupted, resumed, or handed to another participant.",
+        "Retain active work, unresolved findings, applicable decisions, and evidence needed for current reliance until resolved or coherently replaced. Retained baselines have no automatic age-based expiry; release of retained material is a separate controlled retention-policy decision that first resolves surviving dependencies."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "Across Changes, Baselines, configuration management, and provenance in the governed engineering environment."
+      ]
+    },
+    "how": {
+      "approach": "Identify coherent Baselines, control transitions, and preserve recoverable states and their provenance under the selected retention policy. In the initial authoring profile, a retained baseline identifies its governed requirement and asset definitions, relationship facts, applicable metamodel and rules, source provenance, and any realization or assurance material included in its declared scope. References alone do not claim recovery of unavailable external content. On-demand recovery selects an intact retained baseline and reproduces its recorded authoritative content and meaning; unavailable or incomplete recovery is reported explicitly. Keep current work context available for resumption and distinguish project decision authority from assessment results and suggested actions; SR-006 and SR-007 elaborate these obligations."
+    },
+    "how_much": {
+      "scope": "Covers Changes, Baselines, configuration management, revision provenance, and historical meaning under the project's retention policy. It does not require permanent working-tree copies, a particular version-control technology, or a specific external handoff service. Recovery applies to retained states. It also covers continuity of recorded in-progress work and human decision authority under the selected project policy, without requiring a new confirmation for every already-authorized action. Completed historical material may leave the current working view only after its original meaning is recoverable and current dependencies are reconciled. The initial authoring profile includes recovery from an available intact retained baseline, with no elapsed recovery-time commitment or storage-disaster recovery guarantee. Unsaved or unrecorded work and destruction of the retained storage are outside that guarantee.",
+      "limits": [
+        "Zero loss or alteration of the selected baseline's recorded authoritative content, identities, relationships, and provenance in a recovery declared complete. This bound is relative to that baseline, not to later unrecorded work."
+      ]
+    }
+  },
+  "assumptions": [
+    "The selected retained baseline and its applicable interpretation rules remain intact and accessible through the project's configuration-management arrangement."
+  ],
+  "constraints": [],
+  "sources": [
+    {
+      "source": "SRC-REM",
+      "locator": "Sections 23, 24, 25, 31, and 32",
+      "basis": "Controlled transitions, identifiable baselines, recoverable states, and historical integrity."
+    },
+    {
+      "source": "SRC-VISION",
+      "locator": "What it commits to; What it refuses to be",
+      "basis": "Recoverable retired material and independence from a particular platform."
+    },
+    {
+      "source": "SRC-CONSTITUTION",
+      "locator": "Repository cleanup and historical retention",
+      "basis": "Related existing preservation and retention constraints; no retirement policy change is proposed here."
+    },
+    {
+      "source": "SRC-REM-REFINEMENT",
+      "locator": "Requirement Analysis: Analyze the initial need; Name the initial requirement",
+      "basis": "Required 5W2H analysis and a clearer IR name, preserving the existing identity and need statement."
+    },
+    {
+      "source": "SRC-REQUIREMENT-EXPANSION",
+      "locator": "IR-003 expansion: Resume interrupted work; IR-003 expansion: Preserve human decision authority",
+      "basis": "The two proposed needs are drafted under controlled change as SR-006 and SR-007, interpreting the user's instruction to create all proposed needs; this parent placement remains a draft engineering judgment."
+    },
+    {
+      "source": "SRC-QUESTION-RESOLUTION",
+      "locator": "IR-003",
+      "basis": "Resolution of the recorded questions for the initial RigorLoop authoring profile under the user's instruction to solve them; the source register preserves the original questions and rationale."
+    },
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "IR-003",
+      "basis": "Complete the existing bounded initial need through the linked draft Scenarios, Features, and single-parent SR decomposition. Preserve the original statement, 5W2H scope, assumptions, and prior source history; author relationship facts once."
+    }
+  ],
+  "confirms": [
+    "FEAT-006",
+    "FEAT-007",
+    "SCN-019",
+    "SCN-020",
+    "SCN-021",
+    "SCN-022",
+    "SCN-023",
+    "SCN-024",
+    "SCN-025"
+  ]
+}

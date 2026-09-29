@@ -1,0 +1,66 @@
+{
+  "id": "SCN-020",
+  "type": "scenario",
+  "title": "Understand what changed between two retained engineering states",
+  "status": "confirmed",
+  "actor": "A reviewer investigating an engineering Change",
+  "goal": "Distinguish recorded changes between two selected states without confusing renamed entities with new identities or applying current meaning to old records.",
+  "context": "The reviewer needs to understand the effect of a Change using the retained before and after states.",
+  "trigger": "The reviewer selects two engineering states for comparison.",
+  "preconditions": [
+    "The two state identities and requested comparison scope are known."
+  ],
+  "interaction": [
+    {
+      "actor": "Reviewer",
+      "action": "Requests a comparison of the two identified retained states within a stated scope."
+    },
+    {
+      "actor": "System",
+      "action": "Presents additions, removals, and changes to definitions, relationships, names or locations, together with the original interpretation bases."
+    },
+    {
+      "actor": "Reviewer",
+      "action": "Inspects the reported differences and any unavailable or uncertain portion of the comparison."
+    }
+  ],
+  "expected_outcome": "The reviewer can explain the recorded differences within the available scope and distinguish continuing identities from added or removed entities.",
+  "alternatives": [
+    {
+      "condition": "An entity has the same identity but a different title or location.",
+      "outcome": "The comparison identifies the changed presentation of the same entity."
+    },
+    {
+      "condition": "The selected states have identical content within the requested scope.",
+      "outcome": "The comparison reports no recorded difference for that scope without implying broader equivalence or approval."
+    },
+    {
+      "condition": "Governing interpretation rules changed between the states.",
+      "outcome": "The comparison exposes the rule change and both original bases."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "A requested state or portion cannot be retrieved or interpreted.",
+      "outcome": "The system marks the comparison incomplete for that portion rather than showing it as unchanged."
+    },
+    {
+      "condition": "Recorded identities are ambiguous.",
+      "outcome": "The system exposes the ambiguity rather than inventing entity continuity."
+    }
+  ],
+  "exercises": [
+    "FEAT-006"
+  ],
+  "informs": [
+    "SR-020",
+    "SR-021"
+  ],
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "SCN-020",
+      "basis": "IR-003 owns historical comparison; SR-020 provides identifiable original states and SR-021 derives comparison semantics and limits. Accepted as current requirement-analysis knowledge after independent coverage and clarity review: one owning IR and primary Feature, observable goal and interactions, classified outcomes, and applicable SR coverage. This confirms analysis only, not requirement approval, implementation, or satisfaction."
+    }
+  ]
+}

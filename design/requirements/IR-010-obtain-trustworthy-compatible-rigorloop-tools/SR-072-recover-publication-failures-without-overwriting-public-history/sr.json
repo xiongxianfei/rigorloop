@@ -1,0 +1,77 @@
+{
+  "id": "SR-072",
+  "type": "system-requirement",
+  "title": "Recover publication failures without overwriting public history",
+  "status": "draft",
+  "statement": "The system shall distinguish failure before, during uncertain, and after publication; inspect authoritative external state before retrying an uncertain write; and preserve the original published identities and failed evidence while applying only an authorized recovery disposition.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Blind retries or a fabricated rollback can duplicate publication, overwrite history, or hide a partial external success.",
+      "desired_outcome": "Maintainers know what happened and can choose a supported fix-forward, channel correction, deprecation, or follow-up without erasing the original outcome."
+    },
+    "why": {
+      "rationale": "A failed or uncertain publication is an engineering state requiring evidence and authority, not permission to repeat external mutations."
+    },
+    "who": {
+      "stakeholders": [
+        "Release maintainers",
+        "Decision owners approving exceptional recovery"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "When publication or post-publication observation fails or has an uncertain outcome."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "External registry/tag/asset state, retained candidate identity, and durable failure/recovery evidence."
+      ]
+    },
+    "how": {
+      "approach": "Record known effects and the before/during/after-publication phase. Inspect public state before a possible retry, preserve immutable versions, and use only supported authorized correction or deprecation paths. Keep failed evidence and unrelated state intact. Exceptional deferrals remain owned and open until completed or explicitly dispositioned; unavailable observations do not justify a retry or false success."
+    },
+    "how_much": {
+      "scope": "Existing release recovery and exception policy. No version overwrite, silent erasure, automatic rollback of public history, new staged-publication route, or guarantee that all remote writes are reversible is introduced."
+    }
+  },
+  "acceptance_criteria": [
+    "A prepublication failure records no successful publish; an uncertain write records uncertainty and inspects authoritative external state before any retry.",
+    "A post-publication failure remains identified as such with public identity and known effects retained; it is not reclassified as no publication.",
+    "Recovery never overwrites a published version or erases failed evidence and records any authorized fix-forward, channel correction, deprecation, or follow-up outcome.",
+    "Exceptional deferrals retain their complete owner/risk/follow-up basis and do not waive nondeferable evidence, privacy, identity, public verification, or recovery obligations."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "confirms": [
+    "FUNC-072"
+  ],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-14",
+      "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. A failed or uncertain publication is an engineering state requiring evidence and authority, not permission to repeat external mutations. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-15",
+      "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. A failed or uncertain publication is an engineering state requiring evidence and authority, not permission to repeat external mutations. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-16",
+      "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. A failed or uncertain publication is an engineering state requiring evidence and authority, not permission to repeat external mutations. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-23",
+      "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. A failed or uncertain publication is an engineering state requiring evidence and authority, not permission to repeat external mutations. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-24",
+      "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. A failed or uncertain publication is an engineering state requiring evidence and authority, not permission to repeat external mutations. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
+    }
+  ]
+}

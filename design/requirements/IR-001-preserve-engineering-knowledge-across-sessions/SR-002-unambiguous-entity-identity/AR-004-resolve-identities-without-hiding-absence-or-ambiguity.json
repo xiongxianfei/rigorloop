@@ -1,0 +1,58 @@
+{
+  "id": "AR-004",
+  "type": "allocated-requirement",
+  "title": "Resolve identities without hiding absence or ambiguity",
+  "status": "draft",
+  "statement": "The Engineering model storage Module shall resolve a requested identity to a unique entity reference in the selected model state only when the inspected scope establishes uniqueness, and shall distinguish absence, ambiguity, and inability to inspect that scope.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "An arbitrary match or false absence can misdirect every dependent engineering relationship.",
+      "desired_outcome": "A caller obtains an unambiguous state-scoped designation or an honest unresolved outcome."
+    },
+    "why": {
+      "rationale": "SR-002 requires identity-based designation to distinguish entities regardless of display labels."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineering model authors and readers",
+        "Maintainers of MOD-001"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "A caller requests an entity by its stable identity."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "IF-001 resolve_entity."
+      ]
+    },
+    "how": {
+      "approach": "Resolve interpreted identity-bearing content in the selected state and qualify the result by inspection scope."
+    },
+    "how_much": {
+      "scope": "One selected governed model/state at a time; no display-name fallback or cross-state substitution."
+    }
+  },
+  "acceptance_criteria": [
+    "A unique match returns its stable identity reference and selected state.",
+    "No match in completely inspected scope returns absence; multiple matching entities return ambiguity without selecting one.",
+    "Unavailable, unsupported, partial, or failed inspection does not return a false absence or unique match.",
+    "Changing display names or physical locations does not change the identity-based designation of the same entity."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "allocated_to": "MOD-001",
+  "constrains": [
+    "FUNC-003"
+  ],
+  "sources": [
+    {
+      "source": "SRC-ARCHITECTURE-PILOT",
+      "locator": "AR-004",
+      "basis": "Derived from SR-002 for the proposed MOD-001 responsibility and IR-001 scenario walkthrough. Acceptance criteria are intended observations, not executed verification or an approval."
+    }
+  ]
+}

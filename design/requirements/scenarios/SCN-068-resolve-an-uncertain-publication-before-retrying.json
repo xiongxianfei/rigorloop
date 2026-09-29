@@ -1,0 +1,97 @@
+{
+  "id": "SCN-068",
+  "type": "scenario",
+  "title": "Resolve an uncertain publication before retrying",
+  "status": "confirmed",
+  "actor": "A release maintainer investigating a failed or uncertain attempt",
+  "goal": "Establish the known external outcome and a supported authorized recovery disposition without overwriting a published version or erasing failure history.",
+  "context": "An external write or subsequent verification/reporting failed, so blindly repeating the release could duplicate or conflict with public state.",
+  "trigger": "The maintainer investigates the attempt before deciding on recovery.",
+  "preconditions": [
+    "The attempted candidate, intended public identity, and known effects are identifiable."
+  ],
+  "interaction": [
+    {
+      "actor": "Maintainer",
+      "action": "Selects the failed or uncertain attempt and requests its public-state and recovery assessment."
+    },
+    {
+      "actor": "System",
+      "action": "Presents observed external identity, known failure phase, retained evidence, and unresolved uncertainty."
+    },
+    {
+      "actor": "Maintainer",
+      "action": "Selects the supported authorized correction, retry basis, or explicit follow-up."
+    },
+    {
+      "actor": "System",
+      "action": "Reports the actual recovery disposition while preserving prior public identity and failed evidence."
+    }
+  ],
+  "expected_outcome": "Any supported recovery follows inspected external state and applicable authority, with before/during/after-publication meanings and unresolved follow-up preserved.",
+  "alternatives": [
+    {
+      "condition": "Public state confirms that the intended version already exists with the expected identity.",
+      "outcome": "The attempt proceeds to the applicable observation or reporting correction rather than publishing the version again."
+    },
+    {
+      "condition": "A correction requires a new version, channel adjustment, or deprecation.",
+      "outcome": "The chosen supported action has its own applicable authority and recorded outcome."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "External state remains unavailable after an uncertain write.",
+      "outcome": "The attempt remains uncertain and blind retry is withheld."
+    },
+    {
+      "condition": "The proposed recovery would overwrite a version, erase evidence, or lacks required authority.",
+      "outcome": "The action is rejected at the specific recovery boundary."
+    },
+    {
+      "condition": "An exceptional deferral lacks its owner/risk/follow-up basis or attempts to waive a nondeferable duty.",
+      "outcome": "The unresolved duty remains explicit and cannot be hidden by a successful recovery label."
+    }
+  ],
+  "exercises": [
+    "FEAT-020"
+  ],
+  "informs": [
+    "SR-070",
+    "SR-071",
+    "SR-072",
+    "SR-007"
+  ],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-14",
+      "basis": "IR-010 owns this stakeholder situation. It exercises the selected published-product capability while preserving the source contract's observable success and adverse outcomes."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-15",
+      "basis": "IR-010 owns this stakeholder situation. It exercises the selected published-product capability while preserving the source contract's observable success and adverse outcomes."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-16",
+      "basis": "IR-010 owns this stakeholder situation. It exercises the selected published-product capability while preserving the source contract's observable success and adverse outcomes."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-23",
+      "basis": "IR-010 owns this stakeholder situation. It exercises the selected published-product capability while preserving the source contract's observable success and adverse outcomes."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-24",
+      "basis": "IR-010 owns this stakeholder situation. It exercises the selected published-product capability while preserving the source contract's observable success and adverse outcomes."
+    },
+    {
+      "source": "SRC-PUBLISHED-PRODUCTS",
+      "locator": "SCN-068; design/requirements/published-products.md#review-and-validation",
+      "basis": "Independent review and author reconciliation confirmed this stakeholder situation, primary Feature, and SR coverage as current analysis knowledge. This does not approve requirements or establish implemented behavior or satisfaction."
+    }
+  ]
+}

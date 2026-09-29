@@ -1,0 +1,41 @@
+{
+  "observed": {
+    "persistence": [
+      "Command selection and rendering use transient process state. Eligible invocation diagnostics use the location selected by log-config.js; its defaults are user-local state/log directories, with an explicit directory override. Primary/advanced recording and retired-command admission bypass runObservedCli at the entry point."
+    ],
+    "sources": [
+      {
+        "source": "SRC-CLI-SOURCE",
+        "locator": "packages/rigorloop/package.json; packages/rigorloop/dist/bin/rigorloop.js main, dispatchMain, executable wrapper; the software_units paths at 9055b3c0",
+        "basis": "Static package and source inspection establishes this bounded mapping and dispatch structure, not a packed artifact, registry version, or executed outcome."
+      },
+      {
+        "source": "SRC-PHYSICAL-REALIZATION",
+        "locator": "packages/rigorloop/dist/lib/log-config.js defaultLogDirectory, resolveLogConfig; log-sink.js LOG_NAMES, appendDiagnosticEvent, readRetainedLogs; packages/rigorloop/dist/bin/rigorloop.js main and executable wrapper at 33f56fe84ff730d7bd48900cef32170fd0682412",
+        "basis": "Static inspection records existing package, runtime, selected filesystem, and artifact-source relationships with their conditions. It does not observe a deployed host, execute a product operation, inspect a published package, or qualify installation, storage safety, platform support, remote availability, or network topology. Existing logical ownership and earlier source observations remain unchanged."
+      }
+    ],
+    "placements": [
+      {
+        "name": "Local invocation diagnostics",
+        "location": "Resolved user-state log directory",
+        "modules": [
+          "MOD-010"
+        ],
+        "paths": [
+          "rigorloop.jsonl",
+          "rigorloop.1.jsonl",
+          "rigorloop.2.jsonl",
+          "rigorloop.3.jsonl",
+          "rigorloop.4.jsonl"
+        ],
+        "constraints": [
+          "Paths are relative to resolveLogConfig's selected directory. Defaults are XDG_STATE_HOME/rigorloop/logs or ~/.local/state/rigorloop/logs on the non-Windows/non-macOS branch, ~/Library/Logs/RigorLoop on macOS, and LOCALAPPDATA/RigorLoop/Logs with a home-directory fallback on Windows. These are inspected path selections, not cross-platform qualification.",
+          "An explicit absolute RIGORLOOP_LOG_DIR can select another containment root; the default user-state placement does not establish that every override lies outside the project. The source also uses an owned rotation lock beneath the selected root.",
+          "Only eligible observed invocations attempt diagnostic appends. Primary and advanced recording paths and retired-command admission bypass the generic logger. Explicit log lookup reads bounded retained files without rerunning the recorded command; logging may be disabled or degraded.",
+          "Diagnostic files are not authoritative operational records, recovery evidence, workflow approval, or a persistent agent runtime."
+        ]
+      }
+    ]
+  }
+}

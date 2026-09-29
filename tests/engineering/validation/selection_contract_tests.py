@@ -26,6 +26,64 @@ from selection_test_helpers import (
 
 class SelectionContractChecks:
 
+    def test_rem_surfaces_select_model_tests_and_fail_closed_freshness_checks(self):
+        required = {"rem.requirements", "rem.system", "rem.architecture", "rem.projection",
+                    "rem.browser", "rem.inventory_current", "rem.browser_current", "rem.browser_syntax"}
+        # One input from each authored/generated boundary must protect the same
+        # coherent model, including direct edits to replaceable browser output.
+        paths = (
+            "rem/methods/architecture-views.md", "design/README.md",
+            "design/requirements/published-products.md", "design/system/functions/README.md",
+            "design/support/schemas/interface.schema.json",
+            "design/architecture/views/browser/index.html",
+            "design/architecture/views/browser/diagrams/scenario-SCN-046.svg",
+            "scripts/lib/rem_architecture_scenarios.py",
+            "scripts/resources/rem-architecture-browser/viewer.js",
+            "scripts/render-rem-product-inventory.py",
+            "tests/engineering/validation/architecture_browser_tests.py",
+        )
+        for path in paths:
+            with self.subTest(path=path):
+                result = select_validation(SelectionRequest(mode="explicit", paths=(path,), repo_root=ROOT,
+                                            preflight_context=self.root_preflight_context))
+                self.assertEqual(result.status, "ok", result.blocking_results)
+                self.assertEqual({check["id"] for check in result.selected_checks}, required)
+                self.assertFalse(result.broad_smoke_required)
+        for path in (".github/workflows/ci.yml", "scripts/lib/__init__.py"):
+            result = select_validation(SelectionRequest(mode="explicit", paths=(path,), repo_root=ROOT,
+                                        preflight_context=self.root_preflight_context))
+            self.assertTrue(required <= {check["id"] for check in result.selected_checks})
+        self.assertTrue(required <= set(MODE_CHECK_IDS["main"]))
+        self.assertEqual(CHECK_CATALOG["rem.browser_current"].command_template,
+                         "python scripts/render-rem-architecture-browser.py --check")
+
+    def test_rem_neighbors_do_not_gain_unchecked_execution_or_documentation_exemptions(self):
+        for path in ("rem/run.py", "design/architecture/execute.sh", "design/unknown.json",
+                     "scripts/lib/rem_architecture_unknown.py",
+                     "scripts/resources/rem-architecture-browser/extra.js"):
+            with self.subTest(path=path):
+                result = select_validation(SelectionRequest(mode="explicit", paths=(path,), repo_root=ROOT,
+                                            preflight_context=self.root_preflight_context))
+                self.assertEqual(result.status, "blocked")
+                self.assertTrue(any(block["code"] in {"unclassified-path", "manual-routing-required"}
+                                    for block in result.blocking_results))
+                self.assertNotIn("rem.browser_current", {c["id"] for c in result.selected_checks})
+
+    def test_rem_ci_provisions_pinned_dependencies_without_weakening_required_checks(self):
+        # Inspect this repository-owned literal block using the standard library;
+        # the selector suite must not depend on ambient YAML packages.
+        workflow = (ROOT / ".github/workflows/ci.yml").read_text()
+        provision = workflow.split("      - name: Install REM schema and diagram dependencies\n", 1)[1]
+        provision = provision.split("      - name:", 1)[0]
+        self.assertNotIn("continue-on-error:", provision)
+        self.assertNotIn("        if:", provision)
+        self.assertIn("jsonschema==4.10.3", provision)
+        self.assertIn("/v0.9.0/d2-v0.9.0-linux-amd64.tar.gz", provision)
+        self.assertIn("5669ddc46b99e942cc96078f4a4e36d5e62103348f4c05179ede27802fdd87a9", provision)
+        self.assertLess(provision.index("sha256sum --check --strict"), provision.index("tar -xzf"))
+        self.assertIn('>> "$GITHUB_PATH"', provision)
+
+
 
     def test_explicit_recording_adoption_surfaces_select_real_proof(self):
         paths = (

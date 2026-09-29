@@ -1,0 +1,68 @@
+# Generated from explicit REM realization facts; do not edit.
+# Source identity: 2cf8f01cf8087e0b226dbd431d6452970b13954a16b84408d91173987708417e
+# Source-observed physical relationships. Names identify recorded packages, execution contexts, and placement locations; location text does not identify a machine or establish connectivity. Select a placement for exact paths and constraints. This is not deployment or artifact qualification. Role arrows do not depict processing order, artifact promotion, or public delivery. Producer workspaces and candidate outputs remain separate from consumer deployment.
+vars: { d2-config: { layout-engine: elk } }
+direction: down
+
+n_70726f64756365723a4d4f442d303133: "Product package production" {
+  link: "#module/MOD-013"
+  tooltip: "Product package production (MOD-013)"
+  style.fill: "#FFF5DB"
+  style.stroke: "#597390"
+  style.font-color: "#24364A"
+  style.font-size: 16
+  style.border-radius: 7
+}
+n_706c6163656d656e743a4d4f442d3031333a6465706c6f796d656e743a526576696577656420736f7572636520636865636b6f7574: "Reviewed source checkout\n\nSelected source\nrepository checkout" {
+  link: "#physical/MOD-013"
+  tooltip: "Reviewed source checkout; location: Selected source repository checkout; relative paths: skills/; scripts/resources/adapter-templates/; packages/rigorloop/"
+  style.fill: "#EEF6F1"
+  style.stroke: "#597390"
+  style.font-color: "#24364A"
+  style.font-size: 16
+  style.border-radius: 7
+}
+n_70726f64756365723a4d4f442d303133 -> n_706c6163656d656e743a4d4f442d3031333a6465706c6f796d656e743a526576696577656420736f7572636520636865636b6f7574: "source location" {
+  style.stroke: "#526C8A"
+  style.font-color: "#344D67"
+  style.fill: "#FFFFFF"
+  style.font-size: 14
+}
+n_706c6163656d656e743a4d4f442d3031333a6465706c6f796d656e743a5072657061726564207061636b61676520776f726b7370616365: "Prepared package\nworkspace\n\nTemporary candidate\ncheckout" {
+  link: "#physical/MOD-013"
+  tooltip: "Prepared package workspace; location: Temporary candidate checkout; relative paths: packages/rigorloop/; packages/rigorloop/dist/metadata/"
+  style.fill: "#EEF6F1"
+  style.stroke: "#597390"
+  style.font-color: "#24364A"
+  style.font-size: 16
+  style.border-radius: 7
+}
+n_70726f64756365723a4d4f442d303133 -> n_706c6163656d656e743a4d4f442d3031333a6465706c6f796d656e743a5072657061726564207061636b61676520776f726b7370616365: "workspace location" {
+  style.stroke: "#526C8A"
+  style.font-color: "#344D67"
+  style.fill: "#FFFFFF"
+  style.font-size: 14
+}
+n_706c6163656d656e743a4d4f442d3031333a6465706c6f796d656e743a50726f647563742063616e64696461746520617274696661637473: "Product candidate\nartifacts\n\nExplicit candidate\noutput directory" {
+  link: "#physical/MOD-013"
+  tooltip: "Product candidate artifacts; location: Explicit candidate output directory; relative paths: rigorloop-adapter-codex-{release}.zip; rigorloop-adapter-claude-{release}.zip; xiongxianfei-rigorloop-{version}.tgz; adapter-artifacts-{release}.json; archive-proof-{release}.json"
+  style.fill: "#EEF6F1"
+  style.stroke: "#597390"
+  style.font-color: "#24364A"
+  style.font-size: 16
+  style.border-radius: 7
+}
+n_70726f64756365723a4d4f442d303133 -> n_706c6163656d656e743a4d4f442d3031333a6465706c6f796d656e743a50726f647563742063616e64696461746520617274696661637473: "output location" {
+  style.stroke: "#526C8A"
+  style.font-color: "#344D67"
+  style.fill: "#FFFFFF"
+  style.font-size: 14
+}
+n_706c6163656d656e743a4d4f442d3031333a6465706c6f796d656e743a526576696577656420736f7572636520636865636b6f7574 -- n_706c6163656d656e743a4d4f442d3031333a6465706c6f796d656e743a50726f647563742063616e64696461746520617274696661637473: "disjoint locations" {
+  tooltip: "Candidate output remains outside the source checkout; Candidate generation must preserve its selected canonical source and earlier candidate evidence; source and output roles remain separate.; prepare_candidate resolves the output path, rejects output within the selected source checkout, and rejects any preexisting nonempty output.; The source checkout is the selected reviewed repository input. The output location is the candidate destination, not a public registry, installation root, or remote release observation."
+  style.stroke: "#987335"
+  style.font-color: "#725321"
+  style.fill: "#FFFFFF"
+  style.stroke-dash: 3
+  style.font-size: 14
+}

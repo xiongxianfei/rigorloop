@@ -1,0 +1,70 @@
+{
+  "id": "SCN-009",
+  "type": "scenario",
+  "title": "Review converging requirement and function responsibilities",
+  "status": "confirmed",
+  "actor": "Architect",
+  "goal": "Determine which declared architectural allocations agree, conflict, or still require review.",
+  "context": "An architect reviews requirement responsibility alongside the Functions intended to realize it.",
+  "trigger": "An allocation review is needed before relying on the proposed architecture.",
+  "preconditions": [
+    "A selected model state and its declared allocation rules are identifiable."
+  ],
+  "interaction": [
+    {
+      "actor": "Architect",
+      "action": "Selects the requirements and Functions whose architectural responsibilities need review."
+    },
+    {
+      "actor": "System",
+      "action": "Presents their declared Module responsibilities, applicable constraint paths, and allocation rules."
+    },
+    {
+      "actor": "System",
+      "action": "Identifies missing responsibilities, rule-based conflicts, declared deferrals, and questions needing engineering review."
+    },
+    {
+      "actor": "Architect",
+      "action": "Inspects each finding and its basis before making an architectural judgment."
+    }
+  ],
+  "expected_outcome": "The architect can distinguish established allocation findings from incomplete modeling and unresolved engineering judgment.",
+  "alternatives": [
+    {
+      "condition": "Some Functions are deliberately unallocated under a permitted draft rule.",
+      "outcome": "The system exposes the reason and deferred scope without inventing Module ownership."
+    },
+    {
+      "condition": "Different Modules carry related responsibilities and no rule forbids that arrangement.",
+      "outcome": "The system presents the difference for review without asserting a mechanical conflict."
+    },
+    {
+      "condition": "The model contains no architectural allocation yet.",
+      "outcome": "The system reports the unassessed scope so the architect knows allocation consistency has not been established."
+    },
+    {
+      "condition": "A declared allocation violates an explicit consistency rule.",
+      "outcome": "The system identifies the conflicting entities, paths, and rule so the architect can distinguish the established violation from matters requiring judgment."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "An allocation reference is unresolved.",
+      "outcome": "The system identifies the broken path and limits the assessment."
+    }
+  ],
+  "exercises": [
+    "FEAT-003"
+  ],
+  "informs": [
+    "SR-010",
+    "SR-014"
+  ],
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "SCN-009",
+      "basis": "IR-002 analysis establishes this stakeholder situation and its selected profile boundaries; the linked SRs account for its outcomes without creating a second requirement parent. Accepted as current requirement-analysis knowledge after independent coverage and clarity review: one owning IR and primary Feature, observable goal and interactions, classified outcomes, and applicable SR coverage. This confirms analysis only, not requirement approval, implementation, or satisfaction."
+    }
+  ]
+}

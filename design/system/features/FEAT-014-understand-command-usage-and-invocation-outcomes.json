@@ -1,0 +1,30 @@
+{
+  "id": "FEAT-014",
+  "type": "feature",
+  "title": "Understand command usage and invocation outcomes",
+  "status": "draft",
+  "description": "Command-line users can identify supported operations and their input/output contracts, understand safe bounded outcomes in a suitable projection, and inspect available private invocation diagnostics without mistaking command or logging success for engineering approval.",
+  "scope": {
+    "includes": [
+      "Operation-specific help, package version, generic result conventions and actionable safe usage errors.",
+      "Faithful bounded result projection with independent public version/exit domains.",
+      "Private bounded diagnostic retention, configuration, and exact invocation lookup."
+    ],
+    "excludes": [
+      "Installation content policy or release publication authority, which retain their own owners.",
+      "A workflow decision engine, permanent audit-evidence service, or a requirement to inspect logs before safely continuing."
+    ]
+  },
+  "realized_by": [
+    "FUNC-040",
+    "FUNC-048",
+    "FUNC-049"
+  ],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-CLI",
+      "locator": "docs/design/cli/cli.md#CLI-SR-11, CLI-SR-17, CLI-SR-20, CLI-SR-29, CLI-SR-30",
+      "basis": "IR-008 Scenario Analysis identifies this durable user-visible capability across current published command use; it remains distinct from the required safety obligations and their implementation."
+    }
+  ]
+}

@@ -1,0 +1,104 @@
+{
+  "id": "SCN-065",
+  "type": "scenario",
+  "title": "Prepare a concrete release candidate for review",
+  "status": "confirmed",
+  "actor": "A release maintainer preparing reviewed product work",
+  "goal": "Obtain an identifiable qualified candidate and concise review basis without manual duplication of release facts or publication side effects.",
+  "context": "The product changes and compatibility decision have been reviewed, but the actual release candidate has not yet been established.",
+  "trigger": "The maintainer or supported routine operation selects the reviewed release intent.",
+  "preconditions": [
+    "The intended version/source, supported profile, and required local inputs are identified."
+  ],
+  "interaction": [
+    {
+      "actor": "Maintainer",
+      "action": "Supplies or selects the existing reviewed release and version decision."
+    },
+    {
+      "actor": "System",
+      "action": "Presents prepared profile-owned outputs, scope and ownership diagnostics, and actual qualification results for the exact candidate."
+    },
+    {
+      "actor": "System",
+      "action": "Provides the retained candidate identity and approval summary when the required non-deferred obligations are established."
+    }
+  ],
+  "expected_outcome": "The maintainer receives a reviewable exact candidate whose actual checks, generated expectations, permitted source differences, and remaining limits are explicit; no preparation action publishes it.",
+  "alternatives": [
+    {
+      "condition": "Preparation is rerun on the same complete basis.",
+      "outcome": "The same permitted projections are produced while human narrative and historical observations remain intact."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "Version intent, profile, required artifact, current literal ownership, or qualification evidence is missing or conflicting.",
+      "outcome": "The system reports the precise defect and does not request approval of a falsely ready candidate."
+    },
+    {
+      "condition": "The request requires unsupported historical replay or a new unresolved product/publish-mechanics decision.",
+      "outcome": "It stops before generation or publication at the named owner boundary."
+    },
+    {
+      "condition": "An already published unchanged version is selected.",
+      "outcome": "The attempt is identified as a no-op, duplicate, or recovery case without overwriting publication."
+    }
+  ],
+  "exercises": [
+    "FEAT-020"
+  ],
+  "informs": [
+    "SR-067",
+    "SR-068",
+    "SR-069",
+    "SR-073"
+  ],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-01",
+      "basis": "IR-010 owns this stakeholder situation. It exercises the selected published-product capability while preserving the source contract's observable success and adverse outcomes."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-02",
+      "basis": "IR-010 owns this stakeholder situation. It exercises the selected published-product capability while preserving the source contract's observable success and adverse outcomes."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-04",
+      "basis": "IR-010 owns this stakeholder situation. It exercises the selected published-product capability while preserving the source contract's observable success and adverse outcomes."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-05",
+      "basis": "IR-010 owns this stakeholder situation. It exercises the selected published-product capability while preserving the source contract's observable success and adverse outcomes."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-06",
+      "basis": "IR-010 owns this stakeholder situation. It exercises the selected published-product capability while preserving the source contract's observable success and adverse outcomes."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-08",
+      "basis": "IR-010 owns this stakeholder situation. It exercises the selected published-product capability while preserving the source contract's observable success and adverse outcomes."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-22",
+      "basis": "IR-010 owns this stakeholder situation. It exercises the selected published-product capability while preserving the source contract's observable success and adverse outcomes."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-25",
+      "basis": "IR-010 owns this stakeholder situation. It exercises the selected published-product capability while preserving the source contract's observable success and adverse outcomes."
+    },
+    {
+      "source": "SRC-PUBLISHED-PRODUCTS",
+      "locator": "SCN-065; design/requirements/published-products.md#review-and-validation",
+      "basis": "Independent review and author reconciliation confirmed this stakeholder situation, primary Feature, and SR coverage as current analysis knowledge. This does not approve requirements or establish implemented behavior or satisfaction."
+    }
+  ]
+}

@@ -1,0 +1,270 @@
+# Generated from canonical REM records; do not edit.
+# Source identity: 2cf8f01cf8087e0b226dbd431d6452970b13954a16b84408d91173987708417e
+# Static mappings from accountable Modules and contracts to implementation sources. Production arrows mean declared inputs and candidate outputs, not software dependencies or evidence that a build ran. Open an owner to inspect its complete mapping.
+vars: {d2-config: {layout-engine: elk}}
+direction: down
+owner: "Product package production" {
+  link: "#development/MOD-013"
+  tooltip: "Product package production (MOD-013)"
+  style.fill: "#ECF3FF"
+  style.stroke: "#7C8FA9"
+  style.font-color: "#23334A"
+  style.font-size: 17
+  style.border-radius: 6
+}
+g0: "Implementation sources" {
+  link: "#development/MOD-013"
+  tooltip: "Implementation sources"
+  style.fill: "#F8FAFD"
+  style.stroke: "#7C8FA9"
+  style.font-color: "#23334A"
+  style.font-size: 17
+  style.border-radius: 6
+  grid-columns: 1
+  f0: "scripts/build-adapters.py" {
+    link: "#development/MOD-013"
+    tooltip: "The explicit --output-dir branch of main calls build_adapter_archives for a selected version; --check uses a temporary candidate. The remaining default-sync behavior is a recorded conformance gap."
+    style.fill: "#FFFFFF"
+    style.stroke: "#7C8FA9"
+    style.font-color: "#23334A"
+    style.font-size: 14
+    style.border-radius: 6
+  }
+  f1: "scripts/lib/packaging/\nadapter_distribution.py" {
+    link: "#development/MOD-013"
+    tooltip: "Supported target descriptors, expected_adapter_files, render_skill_for_adapter, resource copying, build_adapter_archives, and archive/hash helpers turn canonical skill sources into target archives. They package existing instructions; they do not synthesize instructions from REM."
+    style.fill: "#FFFFFF"
+    style.stroke: "#7C8FA9"
+    style.font-color: "#23334A"
+    style.font-size: 14
+    style.border-radius: 6
+  }
+  f2: "scripts/lib/release/\nrelease_candidate.py" {
+    link: "#development/MOD-013"
+    tooltip: "prepare_candidate orchestrates archive generation/validation, write_archive_metadata, and npm pack in an isolated prepared checkout. These production operations contribute to MOD-013; release-intent admission, qualification, candidate sealing, and publication coordination remain MOD-015 responsibilities in the shared implementation file."
+    style.fill: "#FFFFFF"
+    style.stroke: "#7C8FA9"
+    style.font-color: "#23334A"
+    style.font-size: 14
+    style.border-radius: 6
+  }
+  f3: "packages/rigorloop/package.json" {
+    link: "#development/MOD-013"
+    tooltip: "Declares the npm package name, existing dist/ payload, public README and license, one rigorloop executable, and yaml dependency. Its scripts contain no command-code compilation or generation step."
+    style.fill: "#FFFFFF"
+    style.stroke: "#7C8FA9"
+    style.font-color: "#23334A"
+    style.font-size: 14
+    style.border-radius: 6
+  }
+}
+owner -> g0: "source mapping" {
+  style.stroke: "#667A96"
+  style.fill: "#FFFFFF"
+  style.font-size: 13
+}
+g1p0: "Skill archive production" {
+  link: "#development/MOD-013"
+  tooltip: "Skill archive production"
+  style.fill: "#F8FAFD"
+  style.stroke: "#7C8FA9"
+  style.font-color: "#23334A"
+  style.font-size: 17
+  style.border-radius: 6
+  inputs: "Source inputs" {
+    link: "#development/MOD-013"
+    tooltip: "Source inputs"
+    style.fill: "#FFFFFF"
+    style.stroke: "#7C8FA9"
+    style.font-color: "#23334A"
+    style.font-size: 17
+    style.border-radius: 6
+    grid-columns: 1
+    f0: "skills" {
+      link: "#development/MOD-013"
+      tooltip: "Canonical authored skill directories and their assets, references, and scripts. This pass inspected directory names and the generator, not SKILL.md contents."
+      style.fill: "#F3F6FA"
+      style.stroke: "#7C8FA9"
+      style.font-color: "#23334A"
+      style.font-size: 14
+      style.border-radius: 6
+    }
+    f1: "scripts/resources/adapter-templates" {
+      link: "#development/MOD-013"
+      tooltip: "Canonical thin target entrypoint templates selected by the codex and claude descriptors."
+      style.fill: "#F3F6FA"
+      style.stroke: "#7C8FA9"
+      style.font-color: "#23334A"
+      style.font-size: 14
+      style.border-radius: 6
+    }
+    f2: "scripts/lib/packaging/\nadapter_distribution.py" {
+      link: "#development/MOD-013"
+      tooltip: "Supported target inventory, inclusion/transform rules, deterministic ZIP layout, and requested-version handling used by the wrapper."
+      style.fill: "#F3F6FA"
+      style.stroke: "#7C8FA9"
+      style.font-color: "#23334A"
+      style.font-size: 14
+      style.border-radius: 6
+    }
+  }
+  outputs: "Candidate output layouts" {
+    link: "#development/MOD-013"
+    tooltip: "Candidate output layouts"
+    style.fill: "#FFFFFF"
+    style.stroke: "#7C8FA9"
+    style.font-color: "#23334A"
+    style.font-size: 17
+    style.border-radius: 6
+    grid-columns: 1
+    f0: "rigorloop-adapter-codex-{release}.zip" {
+      link: "#development/MOD-013"
+      tooltip: "Relative to the explicitly selected candidate output directory; {release} is the supplied archive version. Members include the Codex support entrypoint and .agents/skills/{skill}/ instruction/resource trees. This is a declared source-derived layout, not an existing or qualified artifact."
+      style.fill: "#FFF5DB"
+      style.stroke: "#7C8FA9"
+      style.font-color: "#23334A"
+      style.font-size: 14
+      style.border-radius: 6
+    }
+    f1: "rigorloop-adapter-claude-{release}.zip" {
+      link: "#development/MOD-013"
+      tooltip: "Relative to the same candidate output directory; members include the Claude Code support entrypoint and .claude/skills/{skill}/ instruction/resource trees. This is a declared source-derived layout, not an existing or qualified artifact."
+      style.fill: "#FFF5DB"
+      style.stroke: "#7C8FA9"
+      style.font-color: "#23334A"
+      style.font-size: 14
+      style.border-radius: 6
+    }
+  }
+  transform: "scripts/build-adapters.py" {
+    link: "#development/MOD-013"
+    tooltip: "With an explicit isolated --output-dir and selected --version, main calls build_adapter_archives. The shared helper validates canonical inventory, applies declared frontmatter transformations, copies selected resources, renders target entrypoints, and writes one ZIP per supported target. Candidate generation does not install or publish."
+    style.fill: "#E9F4EE"
+    style.stroke: "#7C8FA9"
+    style.font-color: "#23334A"
+    style.font-size: 14
+    style.border-radius: 6
+  }
+  inputs -> transform: "inputs" {
+    style.stroke: "#667A96"
+    style.fill: "#FFFFFF"
+    style.font-size: 13
+  }
+  transform -> outputs: "candidate outputs" {
+    style.stroke: "#667A96"
+    style.fill: "#FFFFFF"
+    style.font-size: 13
+  }
+}
+owner -> g1p0: "production responsibility" {
+  style.stroke: "#667A96"
+  style.fill: "#FFFFFF"
+  style.font-size: 13
+}
+g1p1: "CLI candidate composition" {
+  link: "#development/MOD-013"
+  tooltip: "CLI candidate composition"
+  style.fill: "#F8FAFD"
+  style.stroke: "#7C8FA9"
+  style.font-color: "#23334A"
+  style.font-size: 17
+  style.border-radius: 6
+  inputs: "Source inputs" {
+    link: "#development/MOD-013"
+    tooltip: "Source inputs"
+    style.fill: "#FFFFFF"
+    style.stroke: "#7C8FA9"
+    style.font-color: "#23334A"
+    style.font-size: 17
+    style.border-radius: 6
+    grid-columns: 1
+    f0: "packages/rigorloop" {
+      link: "#development/MOD-013"
+      tooltip: "Canonical package.json, README.md, LICENSE, existing dist/ JavaScript runtime, and bundled metadata inputs selected by the package allowlist. The CLI source is packaged, not generated from REM."
+      style.fill: "#F3F6FA"
+      style.stroke: "#7C8FA9"
+      style.font-color: "#23334A"
+      style.font-size: 14
+      style.border-radius: 6
+    }
+    f1: "scripts/lib/packaging/\nadapter_distribution.py" {
+      link: "#development/MOD-013"
+      tooltip: "Archive-production and hash definitions used by the candidate coordinator. At execution, the coordinator also consumes the actual target ZIP bytes produced by Skill archive production; candidate ZIPs are outputs, not canonical repository inputs."
+      style.fill: "#F3F6FA"
+      style.stroke: "#7C8FA9"
+      style.font-color: "#23334A"
+      style.font-size: 14
+      style.border-radius: 6
+    }
+    f2: "scripts/validate-adapters.py" {
+      link: "#development/MOD-013"
+      tooltip: "The candidate coordinator runs this archive validator successfully before calling write_archive_metadata; source inspection does not assert that validation ran for this architecture pass."
+      style.fill: "#F3F6FA"
+      style.stroke: "#7C8FA9"
+      style.font-color: "#23334A"
+      style.font-size: 14
+      style.border-radius: 6
+    }
+  }
+  outputs: "Candidate output layouts" {
+    link: "#development/MOD-013"
+    tooltip: "Candidate output layouts"
+    style.fill: "#FFFFFF"
+    style.stroke: "#7C8FA9"
+    style.font-color: "#23334A"
+    style.font-size: 17
+    style.border-radius: 6
+    grid-columns: 1
+    f0: "xiongxianfei-rigorloop-{version}.tgz" {
+      link: "#development/MOD-013"
+      tooltip: "Relative to the selected candidate output directory; the filename is supplied by npm pack for @xiongxianfei/rigorloop. Its package/ tree contains the selected existing runtime and candidate dist/metadata overlay, with rigorloop mapped to dist/bin/rigorloop.js. No artifact was produced in this pass."
+      style.fill: "#FFF5DB"
+      style.stroke: "#7C8FA9"
+      style.font-color: "#23334A"
+      style.font-size: 14
+      style.border-radius: 6
+    }
+    f1: "adapter-artifacts-{release}.json" {
+      link: "#development/MOD-013"
+      tooltip: "Relative to the candidate output directory; write_archive_metadata also copies the same metadata bytes into dist/metadata/ within the isolated package tree and updates that tree's releases.json trust index before packing."
+      style.fill: "#FFF5DB"
+      style.stroke: "#7C8FA9"
+      style.font-color: "#23334A"
+      style.font-size: 14
+      style.border-radius: 6
+    }
+    f2: "archive-proof-{release}.json" {
+      link: "#development/MOD-013"
+      tooltip: "Relative to the candidate output directory; write_archive_metadata records the source commit, archive identities, and archive-validation result for the preceding validated candidate sequence. The helper is not independent verification or public-release evidence; this pass does not execute or approve it."
+      style.fill: "#FFF5DB"
+      style.stroke: "#7C8FA9"
+      style.font-color: "#23334A"
+      style.font-size: 14
+      style.border-radius: 6
+    }
+  }
+  transform: "scripts/lib/release/\nrelease_candidate.py" {
+    link: "#development/MOD-013"
+    tooltip: "prepare_candidate uses an isolated prepared checkout, builds and validates target ZIPs, calls write_archive_metadata to overlay archive facts and their trusted index in the candidate package, then invokes npm pack --json --ignore-scripts --pack-destination on packages/rigorloop. Packaging steps are mapped here; Release retains selection, qualification, sealing, and publication decisions."
+    style.fill: "#E9F4EE"
+    style.stroke: "#7C8FA9"
+    style.font-color: "#23334A"
+    style.font-size: 14
+    style.border-radius: 6
+  }
+  inputs -> transform: "inputs" {
+    style.stroke: "#667A96"
+    style.fill: "#FFFFFF"
+    style.font-size: 13
+  }
+  transform -> outputs: "candidate outputs" {
+    style.stroke: "#667A96"
+    style.fill: "#FFFFFF"
+    style.font-size: 13
+  }
+}
+owner -> g1p1: "production responsibility" {
+  style.stroke: "#667A96"
+  style.fill: "#FFFFFF"
+  style.font-size: 13
+}

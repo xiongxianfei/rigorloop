@@ -1,0 +1,52 @@
+{
+  "id": "FUNC-029",
+  "type": "function",
+  "title": "Assess evidence applicability to a declared claim",
+  "status": "draft",
+  "description": "Relates an observation's original assessment basis to the exact basis of a declared claim and records applicability, mismatch, or uncertainty. It also identifies applicability reassessment needed when claim subjects or criteria change.",
+  "inputs": [
+    "Declared claim subject and state, criterion basis, scope, and relevant conditions.",
+    "Recorded evidence and its original subject, criteria, conditions, scope, and provenance.",
+    "Any recorded engineering applicability judgment or identified change to the claim basis."
+  ],
+  "preconditions": [
+    "The proposed claim and offered evidence are identifiable, with missing basis treated as an explicit assessment gap."
+  ],
+  "outputs": [
+    "Evidence applicability assessment, concrete mismatches or unknowns, and recorded rationale and provenance.",
+    "Affected verification requiring reassessment or repetition after a basis change."
+  ],
+  "behavior": [
+    "Compare recorded subject state, criterion basis, scope, and relevant conditions without treating identity or a passing label as proof of applicability.",
+    "Expose mismatches and missing context, retaining engineering judgments about continued applicability with their scope and source.",
+    "After a relevant basis change, identify affected support and required reassessment or verification repetition; disclose uncertain impact when dependency information is incomplete.",
+    "Preserve original evidence and earlier applicability judgments rather than editing them to match the new claim."
+  ],
+  "failure_behavior": [
+    {
+      "condition": "A relevant basis or dependency is missing or ambiguous.",
+      "outcome": "Return an explicit applicability or impact gap rather than a favorable applicability assumption."
+    },
+    {
+      "condition": "Evidence applies only to an earlier state or materially different conditions.",
+      "outcome": "Identify the mismatch and prevent silent use as support for the changed claim."
+    },
+    {
+      "condition": "A continued-applicability conclusion lacks its engineering rationale or assessed scope.",
+      "outcome": "Expose the missing judgment basis and do not present reuse as justified."
+    }
+  ],
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "FUNC-029",
+      "basis": "SR-027 and SR-029 confirm evidence-applicability analysis and reassessment under IR-004. Change impact relationships may be reused from the traceability capability without duplicating its ownership."
+    },
+    {
+      "source": "SRC-ARCHITECTURE-PILOT",
+      "locator": "FUNC-029",
+      "basis": "Propose MOD-007 as the single accountable architectural responsibility for the existing behavior. This allocation preserves the Function definition and does not establish implementation or completed interface/AR coverage outside the IR-001 pilot."
+    }
+  ],
+  "allocated_to": "MOD-007"
+}

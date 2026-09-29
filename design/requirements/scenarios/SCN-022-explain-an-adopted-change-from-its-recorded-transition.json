@@ -1,0 +1,58 @@
+{
+  "id": "SCN-022",
+  "type": "scenario",
+  "title": "Explain an adopted change from its recorded transition",
+  "status": "confirmed",
+  "actor": "An engineer or reviewer inspecting an adopted engineering Change",
+  "goal": "Understand which engineering state changed, why it changed, and what decision and provenance support the resulting state.",
+  "context": "The original participants or conversation are no longer available, but the Change and engineering states are retained.",
+  "trigger": "A participant needs to explain an adopted transition or a later correction to it.",
+  "preconditions": [
+    "The Change identity is known and its recorded scope is within the governed project."
+  ],
+  "interaction": [
+    {
+      "actor": "Participant",
+      "action": "Requests the Change's adopted outcome, initiating basis, affected subjects, and before and resulting states."
+    },
+    {
+      "actor": "System",
+      "action": "Presents the recorded transition, decision basis, actor provenance, and assessment and authorization references as distinct kinds of information."
+    },
+    {
+      "actor": "Participant",
+      "action": "Uses those records to explain the transition while reading the current definitions directly from the selected model."
+    }
+  ],
+  "expected_outcome": "The participant can attribute the adopted transition to its original states and recorded reasoning without treating a proposal, assessment, or suggestion as an adopted decision.",
+  "alternatives": [
+    {
+      "condition": "A later Change corrected the earlier outcome.",
+      "outcome": "Both transitions remain attributable to their original decisions and engineering states."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "A claimed established transition lacks its originating state, resulting state, or decision basis.",
+      "outcome": "The system exposes the missing provenance and does not present an invented transition as established."
+    },
+    {
+      "condition": "The selected Change is still proposed or incomplete.",
+      "outcome": "The system shows its actual disposition and missing transition basis without inventing an established resulting state."
+    }
+  ],
+  "exercises": [
+    "FEAT-007"
+  ],
+  "informs": [
+    "SR-023",
+    "SR-004"
+  ],
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "SCN-022",
+      "basis": "IR-003 owns Change provenance under SR-023. Cross-IR SR-004 retains current-definition readability without history replay; this reference does not create another requirement parent. Accepted as current requirement-analysis knowledge after independent coverage and clarity review: one owning IR and primary Feature, observable goal and interactions, classified outcomes, and applicable SR coverage. This confirms analysis only, not requirement approval, implementation, or satisfaction."
+    }
+  ]
+}

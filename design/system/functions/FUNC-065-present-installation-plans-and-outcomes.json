@@ -1,0 +1,56 @@
+{
+  "id": "FUNC-065",
+  "type": "function",
+  "title": "Present installation plans and outcomes",
+  "status": "draft",
+  "description": "Present bounded preliminary plans and actual installation results through the existing human/structured contract, preserving unperformed checks, conflict and replacement distinctions, and private-data restrictions.",
+  "inputs": [
+    "Admitted request, bundled inventory, selected destination and explicit force intent.",
+    "Available acquisition, preflight, installation, and safe network diagnostic facts."
+  ],
+  "preconditions": [],
+  "outputs": [
+    "Nonmutating preliminary plan or actual blocked/completed/partial result with supported exit meaning.",
+    "Actionable bounded diagnostics and explicit checks not performed."
+  ],
+  "behavior": [
+    "For dry-run, describe destinations and preliminary conflicts/replacements from bundled information without acquisition, extraction, or project mutation.",
+    "Keep preliminary checks separate from full archive-verified preflight and preserve actual replacement/partial-effect distinctions.",
+    "Explain whole-unit force scope and loss of local modifications inside replaced units without suggesting unrelated replacement.",
+    "Preserve the retained result envelopes, exit classes, safe proxy variable names/status values, and verified local-archive fallback.",
+    "Exclude credentials, raw proxy values, private hosts/users, headers, environment dumps, and machine-local archive paths; do not add network probes or a proxy dispatcher."
+  ],
+  "failure_behavior": [
+    {
+      "condition": "Information needed for complete preflight or installation has not been obtained.",
+      "outcome": "Report its unperformed scope rather than a verified plan or success."
+    },
+    {
+      "condition": "Network capability or failure cause is uncertain.",
+      "outcome": "Use the permitted unknown status and bounded observed facts instead of guessing or exposing private details."
+    }
+  ],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-INSTALLATION",
+      "locator": "docs/design/cli/installation.md#DIST-SR-13",
+      "basis": "Logical behavior derived from the identified published-product contracts for IR-010; existing source details and compatibility/adoption limits remain applicable."
+    },
+    {
+      "source": "SRC-PUBLISHED-INSTALLATION",
+      "locator": "docs/design/cli/installation.md#DIST-SR-15",
+      "basis": "Logical behavior derived from the identified published-product contracts for IR-010; existing source details and compatibility/adoption limits remain applicable."
+    },
+    {
+      "source": "SRC-PUBLISHED-INSTALLATION",
+      "locator": "docs/design/cli/installation.md#DIST-SR-16",
+      "basis": "Logical behavior derived from the identified published-product contracts for IR-010; existing source details and compatibility/adoption limits remain applicable."
+    },
+    {
+      "source": "SRC-PUBLISHED-PRODUCTS",
+      "locator": "FUNC-065",
+      "basis": "Assign MOD-014 as the proposed accountable primary responsibility after Functional Analysis. Current product source contracts retain detailed behavior authority; allocation is not runtime adoption or complete AR coverage."
+    }
+  ],
+  "allocated_to": "MOD-014"
+}

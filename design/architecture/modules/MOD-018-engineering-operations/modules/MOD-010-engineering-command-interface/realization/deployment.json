@@ -1,0 +1,140 @@
+{
+  "observed": {
+    "packaging": [
+      "packages/rigorloop/package.json declares one npm package and a rigorloop executable mapped to dist/bin/rigorloop.js. MOD-011 code is included in the same dist/ package tree; package production and release remain other Modules' responsibilities."
+    ],
+    "sources": [
+      {
+        "source": "SRC-CLI-SOURCE",
+        "locator": "packages/rigorloop/package.json; packages/rigorloop/dist/bin/rigorloop.js main, dispatchMain, executable wrapper; the software_units paths at 9055b3c0",
+        "basis": "Static package and source inspection establishes this bounded mapping and dispatch structure, not a packed artifact, registry version, or executed outcome."
+      },
+      {
+        "source": "SRC-PRODUCT-REALIZATION",
+        "locator": "packages/rigorloop/package.json; packages/rigorloop/dist/bin/rigorloop.js dispatchMain, handleInit, archiveWorkForInit; packages/rigorloop/dist/lib/installer-replacement.js installCandidate at 33f56fe84ff730d7bd48900cef32170fd0682412",
+        "basis": "Static inspection joins the existing command/record-store process mapping with the installation implementation in the same executable. References describe conditional implementation bindings and package placement; they do not change logical Interface ownership, assert a process run, or qualify a built/installed package or platform."
+      },
+      {
+        "source": "SRC-PHYSICAL-REALIZATION",
+        "locator": "packages/rigorloop/package.json bin and files; packages/rigorloop/dist/bin/rigorloop.js metadataDirectory, handleInit, main and dispatchMain; record-store.js Store constructor; installer-replacement.js installCandidate; log-config.js and log-sink.js at 33f56fe84ff730d7bd48900cef32170fd0682412",
+        "basis": "Static inspection records existing package, runtime, selected filesystem, and artifact-source relationships with their conditions. It does not observe a deployed host, execute a product operation, inspect a published package, or qualify installation, storage safety, platform support, remote availability, or network topology. Existing logical ownership and earlier source observations remain unchanged."
+      }
+    ],
+    "placements": [
+      {
+        "name": "CLI runtime package",
+        "location": "CLI package root",
+        "modules": [
+          "MOD-010",
+          "MOD-011",
+          "MOD-014"
+        ],
+        "paths": [
+          "dist/bin/rigorloop.js",
+          "dist/lib/",
+          "dist/metadata/",
+          "package.json"
+        ],
+        "constraints": [
+          "Paths are relative to the CLI package root selected by npm installation or the source package directory. The package manifest maps the rigorloop binary to dist/bin/rigorloop.js; no installation is performed by this architecture pass.",
+          "The same package contains command, record-store, and installer implementations plus bundled metadata. Co-packaging does not merge their architectural accountability; package production and release remain separately owned."
+        ]
+      }
+    ],
+    "physical_bindings": [
+      {
+        "name": "Consumer CLI package and selected storage",
+        "execution": {
+          "owner": "MOD-010",
+          "name": "CLI process"
+        },
+        "package": {
+          "owner": "MOD-010",
+          "facet": "deployment",
+          "name": "CLI runtime package"
+        },
+        "accesses": [
+          {
+            "participant": "MOD-011",
+            "placement": {
+              "owner": "MOD-011",
+              "facet": "persistence",
+              "name": "Registered operational records"
+            },
+            "mode": "read-write",
+            "purpose": "Inspect registered operational records and publish or recover explicitly selected record changes.",
+            "conditions": [
+              "The command selects its project root explicitly. Queries and preview only read authoritative bytes; admitted writes and recovery use the current transaction protocol.",
+              "This access concerns current registered operational records. It does not establish that the CLI reads or writes the REM design tree."
+            ]
+          },
+          {
+            "participant": "MOD-011",
+            "placement": {
+              "owner": "MOD-011",
+              "facet": "persistence",
+              "name": "Record transaction metadata"
+            },
+            "mode": "read-write",
+            "purpose": "Inspect reader gates and retained recovery state; maintain owned lock, epoch, and journal during actual publication or recovery.",
+            "conditions": [
+              "The private paths use the same explicitly selected root and change as the record operation. Preview does not create private transaction data.",
+              "Journal/lock lifecycle and exact recovery guarantees remain in the Process view; a physical access edge is not a sequence or proof of durable effects."
+            ]
+          },
+          {
+            "participant": "MOD-014",
+            "placement": {
+              "owner": "MOD-014",
+              "facet": "deployment",
+              "name": "Selected target skill units"
+            },
+            "mode": "read-write",
+            "purpose": "Preflight selected target units and perform verified creation or explicitly permitted whole-unit replacement.",
+            "conditions": [
+              "Installation uses the invoking working directory. codex and claude select alternative target roots; their units are not both installed by every request.",
+              "Dry-run performs only its admitted preliminary inspection; real writes require candidate verification, destination safety, and applicable explicit replacement permission."
+            ]
+          },
+          {
+            "participant": "MOD-014",
+            "placement": {
+              "owner": "MOD-014",
+              "facet": "deployment",
+              "name": "Retained installation originals"
+            },
+            "mode": "read-write",
+            "purpose": "Stage candidate files and preserve detached originals outside target discovery while performing an admitted installation.",
+            "conditions": [
+              "This placement participates in real installation after preflight. Dry-run does not create it.",
+              "The installer reports retained originals and actual partial scope; the binding does not promise cleanup, whole-project rollback, or unconditional replacement."
+            ]
+          },
+          {
+            "participant": "MOD-010",
+            "placement": {
+              "owner": "MOD-010",
+              "facet": "persistence",
+              "name": "Local invocation diagnostics"
+            },
+            "mode": "read-write",
+            "purpose": "Append bounded diagnostics for eligible invocations and read the selected retained invocation on explicit log lookup.",
+            "conditions": [
+              "Primary/advanced recording and retired-command admission bypass the generic logging wrapper; other eligible commands may have file logging disabled or degraded.",
+              "The configured log root is selected independently of the record --root and installation working directory. This aggregate access describes distinct append and lookup paths, not a requirement that each invocation reads and writes logs."
+            ]
+          }
+        ],
+        "constraints": [
+          "The package mapping references the existing CLI package placement, while execution references the one existing Node.js process. A package is an artifact, not a process or host; its contained logical responsibilities remain separately allocated.",
+          "Each access names the responsible execution participant. Sharing one process does not imply that installation reads operational records or that every command accesses every placement.",
+          "The record command's selected project, installation working directory, and diagnostic root are independent address selections. Similar names neither equate them nor place them on different hosts.",
+          "The CLI resolves bundled metadata relative to its executable/package tree. The runtime mapping supplies no minimum Node version, installed-artifact observation, agent-host execution, or hardware topology."
+        ]
+      }
+    ]
+  },
+  "deferred": [
+    "Installation destination placement and candidate production are recorded under MOD-014 and MOD-013. Actual artifact contents, installed behavior, and release qualification remain unproved by this source mapping."
+  ]
+}

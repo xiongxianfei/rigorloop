@@ -1,0 +1,75 @@
+{
+  "id": "SCN-008",
+  "type": "scenario",
+  "title": "Follow responsibility paths within a selected model state",
+  "status": "confirmed",
+  "actor": "Engineer",
+  "goal": "Understand how a selected engineering entity relates to obligations and responsibilities.",
+  "context": "An engineer investigates a governed entity in one project state.",
+  "trigger": "The engineer needs to inspect ancestors, descendants, or cross-domain responsibility paths.",
+  "preconditions": [
+    "The engineer can select a model state and starting entity."
+  ],
+  "interaction": [
+    {
+      "actor": "Engineer",
+      "action": "Selects a starting entity, relationship types, direction, and any requested limits."
+    },
+    {
+      "actor": "System",
+      "action": "Presents related entities and the typed paths connecting them within that scope."
+    },
+    {
+      "actor": "Engineer",
+      "action": "Changes direction to inspect the corresponding incoming relationships."
+    },
+    {
+      "actor": "System",
+      "action": "Presents the reverse view with its scope and any limits visible."
+    }
+  ],
+  "expected_outcome": "The engineer understands the available responsibility paths and whether exploration is complete for the requested scope.",
+  "alternatives": [
+    {
+      "condition": "The selected cross-domain relationships contain a cycle.",
+      "outcome": "The system finishes exploration without repeating the cycle indefinitely and retains the relevant connections."
+    },
+    {
+      "condition": "The engineer requests a bounded depth or result count.",
+      "outcome": "The system identifies the boundary and distinguishes bounded exploration from unrestricted reachability."
+    },
+    {
+      "condition": "A fully inspected scope has no related entities.",
+      "outcome": "The system reports no relationships in that specific scope."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "A starting entity or encountered reference is missing or ambiguous.",
+      "outcome": "The system identifies the unresolved entity or path and any incomplete scope."
+    },
+    {
+      "condition": "The model is unavailable, exploration is interrupted, or a resource limit is reached.",
+      "outcome": "The system exposes the limitation and does not claim complete reachability."
+    },
+    {
+      "condition": "The requested scope spans projects or baselines.",
+      "outcome": "The system reports that the selection is outside the declared traversal profile."
+    }
+  ],
+  "exercises": [
+    "FEAT-003"
+  ],
+  "informs": [
+    "SR-002",
+    "SR-008",
+    "SR-009"
+  ],
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "SCN-008",
+      "basis": "IR-002 analysis establishes this stakeholder situation and its selected profile boundaries; the linked SRs account for its outcomes without creating a second requirement parent. Accepted as current requirement-analysis knowledge after independent coverage and clarity review: one owning IR and primary Feature, observable goal and interactions, classified outcomes, and applicable SR coverage. This confirms analysis only, not requirement approval, implementation, or satisfaction."
+    }
+  ]
+}

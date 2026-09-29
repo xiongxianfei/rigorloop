@@ -1,0 +1,60 @@
+{
+  "id": "AR-001",
+  "type": "allocated-requirement",
+  "title": "Retain accepted definitions beyond the authoring session",
+  "status": "draft",
+  "statement": "The Engineering model storage Module shall retain each accepted supplied definition with its identity, type, and authored content independently of the originating session, and shall report a confirmed save only when the requested retention is established.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "A save acknowledgement without retained content would break later-session reliance.",
+      "desired_outcome": "A later reader can obtain the accepted definition while it remains within retained governed scope."
+    },
+    "why": {
+      "rationale": "SR-001 requires durable current reliance; the content custody boundary must establish what was actually saved."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineering model authors and readers",
+        "Maintainers of MOD-001"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "An explicitly authorized save of a supported definition is requested.",
+        "The originating session ends or time passes without an intervening content change."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "The IF-001 retain_definition boundary and retained content in the selected governed model."
+      ]
+    },
+    "how": {
+      "approach": "Check the candidate/profile/identity against the applicable selected state through IF-002 and retain supplied content through IF-001, preserving explicit outcome scope."
+    },
+    "how_much": {
+      "scope": "Accepted definitions in the selected model; current reliance and retirement remain governed by IR-003. No retention duration, transaction mechanism, or disaster-recovery service is introduced."
+    }
+  },
+  "acceptance_criteria": [
+    "After a confirmed save, end the authoring session and retrieve the same identity, type, and content from another session without the originating private context.",
+    "A still-relied-on accepted definition remains available after session termination or elapsed time; removal requires the applicable disposition rather than implicit session cleanup.",
+    "A missing or duplicate identity, unsupported profile, or incomplete required candidate check cannot receive an accepted-save result.",
+    "If the base or candidate changes between checking and retention, reject or re-evaluate it; an earlier check cannot justify retaining a different candidate.",
+    "If retention fails or effects are indeterminate, identify known effects and unresolved scope without reporting confirmed complete retention."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "allocated_to": "MOD-001",
+  "constrains": [
+    "FUNC-001"
+  ],
+  "sources": [
+    {
+      "source": "SRC-ARCHITECTURE-PILOT",
+      "locator": "AR-001",
+      "basis": "Derived from SR-001 for the proposed MOD-001 responsibility and IR-001 scenario walkthrough. Acceptance criteria are intended observations, not executed verification or an approval."
+    }
+  ]
+}

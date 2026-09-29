@@ -1,0 +1,58 @@
+{
+  "id": "SR-036",
+  "type": "system-requirement",
+  "title": "Present applicable lessons when preparing engineering work",
+  "status": "draft",
+  "statement": "The system shall allow participants preparing engineering work to identify retained lessons relevant to the stated activity and context, with the recorded basis and limits of applicability and the current disposition of any associated improvement.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Retained lessons have little effect when authors cannot relate them to the next activity or distinguish a proposal from adopted practice.",
+      "desired_outcome": "Participants can understand relevant prior learning and decide how it applies to the work they are preparing."
+    },
+    "why": {
+      "rationale": "Learning must be accessible at a useful decision point without converting every past recommendation into current policy."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineers and engineering agents preparing work",
+        "Reviewers",
+        "Practice maintainers"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "When preparing comparable work or reassessing a lesson after a material context change."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "The selected project activity and available retained lessons, with their recorded applicability conditions."
+      ]
+    },
+    "how": {
+      "approach": "Compare the stated work context with recorded lesson conditions, show the supporting reasoning and exclusions, and distinguish applicable, inapplicable, and unresolved cases. Present the associated improvement disposition from current authoritative change information rather than inferring adoption from the existence of a lesson."
+    },
+    "how_much": {
+      "scope": "Covers context-based use of lessons within one governed project, not automatic policy adoption, exhaustive prediction of all failures, or unrestricted search of external knowledge."
+    }
+  },
+  "acceptance_criteria": [
+    "For a comparable activity within a lesson's stated conditions, identify the lesson, its supported mechanism, applicability basis, and associated improvement disposition.",
+    "When a stated exclusion or material context difference applies, disclose that difference and avoid presenting the lesson as an unconditional instruction.",
+    "When context is insufficient, distinguish unresolved applicability from a known lack of relevant lessons; identify unavailable lesson sources separately from no match.",
+    "A proposed or rejected improvement remains visibly distinct from an adopted current rule, and consulting a lesson grants no authority to change the model."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "SR-036",
+      "basis": "Derived from IR-007 and its declared initial authoring scope; the acceptance criteria describe assessment intent, not observed results."
+    }
+  ],
+  "confirms": [
+    "FUNC-036"
+  ]
+}

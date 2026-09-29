@@ -1,0 +1,72 @@
+{
+  "id": "SR-061",
+  "type": "system-requirement",
+  "title": "Generate candidates deterministically outside active installations",
+  "status": "draft",
+  "statement": "The system shall generate equivalent product candidate contents from identical declared inputs in isolated temporary or explicitly selected safe output locations, without mutating canonical sources or active installations.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "A build can unexpectedly install or overwrite user tooling or derive future candidates from generated copies.",
+      "desired_outcome": "Maintainers can inspect reproducible candidate output while authored sources and active installations remain intact."
+    },
+    "why": {
+      "rationale": "Candidate production and user-authorized installation have different responsibility and mutation boundaries."
+    },
+    "who": {
+      "stakeholders": [
+        "Product maintainers",
+        "Project users whose installed files must remain intact"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "When building or checking a product candidate."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "Canonical source, isolated package output, and supported or existing skill discovery roots."
+      ]
+    },
+    "how": {
+      "approach": "Use the existing canonical-input generation path. Check output containment before writes; reject overlap with source or active installation roots and unsafe paths. Check mode generates and validates temporary output. Persistent output requires explicit safe selection. Keep existing runtime mirrors outside authored input and build cleanup."
+    },
+    "how_much": {
+      "scope": "Candidate contents and declared deterministic metadata for identical inputs, not a promise that observation timestamps are identical. Exact command options and retired producer handling remain in Packaging. No build action grants installation or cleanup authority."
+    }
+  },
+  "acceptance_criteria": [
+    "Identical declared inputs produce equivalent declared candidate contents and deterministic metadata in separate safe output locations.",
+    "Check mode succeeds without a tracked adapter manifest by generating a fresh isolated candidate and does not change source or installed roots.",
+    "An unspecified persistent destination, source/output overlap, active-root overlap, or unsafe containment rejects before writes with corrective information.",
+    "Existing runtime directories are not deleted, synchronized, or treated as authored input by build/check operations."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "confirms": [
+    "FUNC-060"
+  ],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-PACKAGING",
+      "locator": "docs/design/engineering/packaging.md#DIST-SR-04",
+      "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. Candidate production and user-authorized installation have different responsibility and mutation boundaries. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-PACKAGING",
+      "locator": "docs/design/engineering/packaging.md#DIST-SR-05",
+      "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. Candidate production and user-authorized installation have different responsibility and mutation boundaries. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-PACKAGING",
+      "locator": "docs/design/engineering/packaging.md#DIST-SR-21",
+      "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. Candidate production and user-authorized installation have different responsibility and mutation boundaries. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-PACKAGING",
+      "locator": "docs/design/engineering/packaging.md#DIST-SR-22",
+      "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. Candidate production and user-authorized installation have different responsibility and mutation boundaries. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
+    }
+  ]
+}

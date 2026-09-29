@@ -1,0 +1,68 @@
+{
+  "id": "AR-013",
+  "type": "allocated-requirement",
+  "title": "Return exactly selected records and factual discovery context",
+  "status": "draft",
+  "statement": "The Engineering command interface Module shall apply only the actor-selected query or declared discovery scope, preserve complete selected meaning and accurate scope metadata, and report unavailable or incoherent content without inferring relevance, a selected change, workflow authority, or recovery.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Even a valid snapshot becomes misleading if command selection adds inferred records, hides omissions, or presents unavailable content as an empty result.",
+      "desired_outcome": "A caller can distinguish the requested recorded information from excluded, omitted, unavailable, or unobserved information."
+    },
+    "why": {
+      "rationale": "SR-041 assigns meaning to explicit selection and discovery; MOD-010 owns those query rules and their public presentation."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineers and agents supplying explicit command requests",
+        "Maintainers of MOD-010 and its Interface consumers"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "A caller requests current-work discovery, status, context, show, advanced inspection, a field projection, or continuation of an explicit query."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "IF-004 query presentation using IF-003 snapshots and availability facts; workflow-context discovery within its declared project-local scope."
+      ]
+    },
+    "how": {
+      "approach": "Apply the retained literal filters, ordering, projection, and cursor rules to coherent supplied records; classify current candidates under the exact discovery rules and preserve storage failures as distinct outcomes."
+    },
+    "how_much": {
+      "scope": "Supported selectors, complete/default reads, named Review/Verify projections, and bounded discovery and pagination. Retrieval completeness is not engineering adequacy; discovery is not an atomic cross-change snapshot."
+    }
+  },
+  "acceptance_criteria": [
+    "Status, context, show, and inspect return their specified content, counts, exact scope, omissions, missing paths, actual contract and established revision; no content is selected merely because it appears relevant to a stage.",
+    "Full selected Verify and material-decisions reads include the complete recorded explanation and applicability without unrelated bodies. Review/Verify field selection preserves the declared identity metadata and distinguishes omitted fields from optional-member absence without changing storage.",
+    "Absent or unregistered optional content, registered-missing content, malformed content, unsafe paths, and read failures retain their different outcomes. An unknown selected total cannot become zero, and an absent or invalid store cannot gain an inferred contract.",
+    "Filters compose, deduplicate, and order exactly as the retained query contract specifies. Continuation is bound to normalized selection and revision; changed revision, different selection, invalid tokens, or nonmember cursors reject or conflict without partial items.",
+    "Byte/count bounds return only whole admissible items or the declared failure; an oversized first item cannot be truncated or yield a nonprogressing page, and unknown missing content cannot be hidden behind a continuation token.",
+    "Discovery exposes coherent current candidates, bounded archival exclusions, ambiguity, malformed current residue, interruption attention, and completeness under the exact classifier. A sole candidate is not automatically selected and archival classification implies no approval.",
+    "An explicit change selection avoids enumeration of unrelated candidates; discovery or query never recovers a transaction, mutates records, or computes authoritative readiness, applicability, or a next activity."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "allocated_to": "MOD-010",
+  "sources": [
+    {
+      "source": "SRC-CLI-ALLOCATION",
+      "locator": "SR-041 / AR-013; MOD-010",
+      "basis": "Derive this draft lower-level obligation from the containing SR at the selected command or operational-record responsibility boundary. Allocation and acceptance criteria are design claims for review, not implementation, requirement approval, or satisfaction evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-CLI",
+      "locator": "docs/design/cli/cli.md#CLI-SR-01, CLI-SR-14, CLI-SR-21, CLI-SR-22, CLI-SR-23, CLI-SR-24, CLI-SR-28, CLI-SR-32; docs/design/cli/records.md#RF-SR-02, RF-SR-07",
+      "basis": "Preserve the applicable current public and stored-record guarantees at this accountable boundary. The named source retains exact schemas, operation tables, classifications, limits, and historical adoption obligations; this allocation neither replaces those details nor accepts REM authoring JSON as operational records."
+    }
+  ],
+  "constrains": [
+    "FUNC-041",
+    "FUNC-042",
+    "FUNC-048"
+  ]
+}

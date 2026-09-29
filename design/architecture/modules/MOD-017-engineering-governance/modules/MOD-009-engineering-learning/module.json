@@ -1,0 +1,36 @@
+{
+  "id": "MOD-009",
+  "type": "module",
+  "title": "Engineering learning",
+  "status": "draft",
+  "description": "Turn supported findings into applicable reusable lessons and accountable improvement proposals, then assess observed effects at comparable opportunities.",
+  "responsibilities": [
+    "Characterize reusable lessons with their supporting findings and limits.",
+    "Select applicable lessons for planned work and formulate accountable improvements.",
+    "Assess observed improvement effects, including recurrence or unresolved effectiveness."
+  ],
+  "owned_state": [
+    "Lesson definitions, applicability context, improvement proposals, and effect-assessment context; controlled adoption and evidence judgments remain separately owned."
+  ],
+  "scope": {
+    "includes": [
+      "Reusable learning and preparation and assessment of engineering improvements."
+    ],
+    "excludes": [
+      "Treating every local correction as a reusable lesson, automatic adoption, or unsupported effectiveness claims."
+    ]
+  },
+  "provides": [],
+  "consumes": [],
+  "design_limits": [
+    "This is a proposed responsibility boundary only. IR-007 ARs and finding, assurance, and change-control interfaces remain deferred.",
+    "No learning policy or implementation is adopted merely by recording this draft boundary."
+  ],
+  "sources": [
+    {
+      "source": "SRC-ARCHITECTURE-PILOT",
+      "locator": "MOD-009",
+      "basis": "Analyst-proposed responsibility boundary derived from the existing Function landscape. Assigned Functions remain authoritative for behavior; this record describes target architecture, not observed implementation."
+    }
+  ]
+}

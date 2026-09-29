@@ -1,0 +1,51 @@
+{
+  "id": "MOD-012",
+  "type": "module",
+  "title": "Published engineering capability guidance",
+  "status": "draft",
+  "description": "Expose portable engineering capabilities and guide their bounded invocation, specialist procedure, handoff, and optional governed recording without replacing project authority or specialist contracts.",
+  "responsibilities": [
+    "Identify task fit, prepare applicable project context, and resolve resources needed by the selected invocation.",
+    "Guide the selected specialist activity and determine an applicable handoff using its governing inputs, limits, and assessments.",
+    "Prepare explicit recording operations and interpret actual command outcomes when governed recording is selected.",
+    "Consume IF-008 for the adopted-REM model-authoring branch of specialist guidance. Preserve governing source applicability and unresolved scope while retaining published invocation, specialist work, output presentation, and handoff responsibilities."
+  ],
+  "owned_state": [
+    "Published capability descriptions and procedural composition at the common invocation boundary; specialist methods, project state, authority, and evidence retain their own owners."
+  ],
+  "scope": {
+    "includes": [
+      "Capability selection, portable invocation, conditional resource/evidence access, bounded specialist guidance, handoffs, and governed command use."
+    ],
+    "excludes": [
+      "A hosted agent runtime, silently expanded invocation scope, package qualification from one successful invocation, mechanical record publication, or universal adoption of REM into installed skills."
+    ]
+  },
+  "provides": [],
+  "consumes": [
+    "IF-004",
+    "IF-008"
+  ],
+  "design_limits": [
+    "MOD-008 retains semantic authoring guidance behavior under MOD-017's IF-008 contract; MOD-006/007/009 retain shared authority, assurance, and learning meanings. Consuming guidance does not duplicate these responsibilities.",
+    "SCN-053's adopted-REM authoring branch has an explicit guidance boundary. Specialist child Designs retain their complete clauses; wider specialist cooperation, authority/assurance handoffs, ARs, and complete specialist skill-to-Function realization remain deferred.",
+    "The current published capability output scope is not expanded by the new REM drafts. Actor-facing instruction packages remain distinct from agent execution and any public API."
+  ],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-PRODUCTS",
+      "locator": "MOD-012",
+      "basis": "Proposed responsibility derived from the published-product source inventory. Existing Designs retain their detailed contracts; this allocation is not a runtime migration or approval."
+    },
+    {
+      "source": "SRC-BOUNDARY-CONTRACTS",
+      "locator": "MOD-012; SCN-019, SCN-053, SCN-066 selected collaboration analysis",
+      "basis": "Derive consumer-focused parent contracts for selected-state inspection, adopted-REM authoring guidance, applicable action authority, and evidence applicability. Preserve child behavior/state authority, existing Function/AR allocations, and earlier contract guarantees. The selected contracts refine prior blanket deferrals; remaining retention, wider collaboration, AR, and realization gaps stay explicit. This is draft design analysis, not implemented or satisfied behavior."
+    },
+    {
+      "source": "SRC-PUBLIC-ENTRIES",
+      "locator": "MOD-012 realization/software.json public entries and proposed Function correspondence",
+      "basis": "The catalog records public skill names and partial proposed contributions without changing Function allocation, specialist contract ownership, published output support, or runtime qualification. Complete specialist realization remains deferred."
+    }
+  ]
+}

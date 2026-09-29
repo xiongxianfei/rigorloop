@@ -1,0 +1,52 @@
+{
+  "id": "FUNC-028",
+  "type": "function",
+  "title": "Retain actual verification observations and provenance",
+  "status": "draft",
+  "description": "Records what occurred in an identifiable verification assessment with its actual basis and supporting evidence. It distinguishes incomplete execution and inability to assess from both positive and negative criterion observations.",
+  "inputs": [
+    "Assessment occurrence, verification definition and criterion basis, and exact subject state.",
+    "Actual conditions, observing participant or source, execution state, observed results, and supporting evidence."
+  ],
+  "preconditions": [
+    "The recording identifies the assessment occurrence and can distinguish supplied observations from intended future checks."
+  ],
+  "outputs": [
+    "Identifiable observed evidence with its original assessment basis and provenance.",
+    "Known unperformed, incomplete, failed-to-execute, or unavailable evidence scope."
+  ],
+  "behavior": [
+    "Retain observed outcomes with their exact subject, method, criterion, conditions, occurrence, and observing source.",
+    "Record only actual observations as evidence and identify planned or unperformed checks separately.",
+    "Preserve negative or contradictory observations and distinguish failure to execute a technique from an observed failure to satisfy a criterion.",
+    "Identify inaccessible supporting evidence or missing provenance as a limitation on reliance.",
+    "Keep earlier observations attributable to their original basis when later assessments supply new results."
+  ],
+  "failure_behavior": [
+    {
+      "condition": "The supposed result contains only a plan, expected observation, or passing label without actual supporting observations.",
+      "outcome": "Identify the missing evidence and do not present an executed result as established."
+    },
+    {
+      "condition": "An assessment was interrupted or its evidence could not be retained fully.",
+      "outcome": "Preserve known observations and disclose the unassessed or unavailable scope."
+    },
+    {
+      "condition": "Observation provenance or exact assessed state is unresolved.",
+      "outcome": "Record the uncertainty and prevent silent reliance on an invented basis."
+    }
+  ],
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "FUNC-028",
+      "basis": "SR-026 confirms observed-evidence retention under IR-004; applicability and judgments are separate FUNC-029 and FUNC-031 responsibilities."
+    },
+    {
+      "source": "SRC-ARCHITECTURE-PILOT",
+      "locator": "FUNC-028",
+      "basis": "Propose MOD-007 as the single accountable architectural responsibility for the existing behavior. This allocation preserves the Function definition and does not establish implementation or completed interface/AR coverage outside the IR-001 pilot."
+    }
+  ],
+  "allocated_to": "MOD-007"
+}

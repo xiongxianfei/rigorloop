@@ -1,0 +1,50 @@
+{
+  "id": "FUNC-033",
+  "type": "function",
+  "title": "Explain engineering authoring and correction steps",
+  "status": "draft",
+  "description": "Explain the semantic steps, governing rules, expected outcomes, and correction paths for the selected authoring activity. This behavior helps participants reason about definitions; record retention, validation execution, and permission decisions have separate owners.",
+  "inputs": [
+    "Selected activity, applicable canonical guidance, and author-provided engineering context.",
+    "Existing definitions and identifiable review or validation findings when correction is requested.",
+    "Known authority limits and declared representation support."
+  ],
+  "preconditions": [
+    "Applicable guidance is identifiable, or its absence is exposed before a conformance claim."
+  ],
+  "outputs": [
+    "Activity-specific guidance with rule explanations, expected semantic outcomes, and applicable checks.",
+    "Explicit unresolved decisions, unsupported representation scope, and actions requiring separate authority."
+  ],
+  "behavior": [
+    "Explain requirement analysis and single-parent derivation, black-box Scenario analysis, system capability and behavior definitions, and architecture responsibility as appropriate to the requested activity.",
+    "For architecture tasks, explain consistent AR/Function allocation and explicit interaction providers/consumers without implying that undeclared record formats exist.",
+    "Connect naming, relationship, correction, and retirement steps to their canonical rules and current affected definitions.",
+    "Explain identifiable diagnostics and how a proposed correction can be checked without treating the diagnostic itself as an editing authorization.",
+    "Select one consequential clarification at a time when necessary, retaining uncertainty and refraining from invented answers.",
+    "Distinguish a recommendation, a conformant record, an approved change, and a satisfied requirement."
+  ],
+  "failure_behavior": [
+    {
+      "condition": "Required context or an engineering decision is unresolved.",
+      "outcome": "Describe the dependency and the highest-value clarification needed; do not present dependent conclusions as settled."
+    },
+    {
+      "condition": "A record type has no declared authoring representation or an action exceeds authority.",
+      "outcome": "Explain the available conceptual guidance and the unsupported or separately authorized action without claiming conformance or permission."
+    }
+  ],
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "FUNC-033",
+      "basis": "SR-033 establishes bounded, explainable authoring and correction guidance across the declared REM activities."
+    },
+    {
+      "source": "SRC-ARCHITECTURE-PILOT",
+      "locator": "FUNC-033",
+      "basis": "Propose MOD-008 as the single accountable architectural responsibility for the existing behavior. This allocation preserves the Function definition and does not establish implementation or completed interface/AR coverage outside the IR-001 pilot."
+    }
+  ],
+  "allocated_to": "MOD-008"
+}

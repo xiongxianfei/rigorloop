@@ -1,0 +1,33 @@
+{
+  "id": "FEAT-007",
+  "type": "feature",
+  "title": "Control and resume engineering changes",
+  "status": "draft",
+  "description": "Engineers, maintainers, and project decision owners can carry controlled work across sessions, inspect the provenance of proposed and established transitions, and determine whether an action fits its applicable authority. They can retire material from the current working view only after current reliance and historical recoverability are addressed.",
+  "scope": {
+    "includes": [
+      "Record Change scope, before and resulting states, decision basis, provenance, and current disposition.",
+      "Record and retrieve activity-specific context for authoring, implementation, verification, and review handoffs.",
+      "Apply existing project authority and bounded prior grants without demanding redundant confirmation.",
+      "Assess current reliance and recoverability before removing completed or retired material."
+    ],
+    "excludes": [
+      "Creating a universal approval workflow or granting authority through assessments and next-action suggestions.",
+      "Recovering unsaved private conversation state.",
+      "Overwriting historical meaning or using cleanup as automatic retention expiry."
+    ]
+  },
+  "realized_by": [
+    "FUNC-023",
+    "FUNC-024",
+    "FUNC-025",
+    "FUNC-026"
+  ],
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "FEAT-007",
+      "basis": "IR-003, existing SR-006 and SR-007, and SR-023 and SR-024 establish controlled evolution, resumption, authority, and dependency-safe retirement."
+    }
+  ]
+}

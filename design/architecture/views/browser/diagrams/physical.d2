@@ -1,0 +1,84 @@
+# Generated from explicit REM realization facts; do not edit.
+# Source identity: 2cf8f01cf8087e0b226dbd431d6452970b13954a16b84408d91173987708417e
+# Source-observed physical relationships. Names identify recorded packages, execution contexts, and placement locations; location text does not identify a machine or establish connectivity. Select a placement for exact paths and constraints. This is not deployment or artifact qualification. Storage and isolation shows every recorded state access; Consumer deployment expands archive inputs and installation destinations.
+vars: { d2-config: { layout-engine: elk } }
+direction: right
+
+n_706c6163656d656e743a4d4f442d3031303a6465706c6f796d656e743a434c492072756e74696d65207061636b616765: "CLI runtime package\n\nCLI package root" {
+  link: "#physical/MOD-010"
+  tooltip: "CLI runtime package; location: CLI package root; relative paths: dist/bin/rigorloop.js; dist/lib/; dist/metadata/; package.json"
+  style.fill: "#EEF6F1"
+  style.stroke: "#597390"
+  style.font-color: "#24364A"
+  style.font-size: 16
+  style.border-radius: 7
+}
+n_657865637574696f6e3a4d4f442d3031303a434c492070726f63657373: "CLI process\nNode.js" {
+  link: "#process/MOD-010"
+  tooltip: "These are conditional in-process dispatch paths: recording requests use the record-store implementation, while supported init requests use installation. The arrows do not prescribe sequence or imply that both paths run for every invocation.; IF-004 remains owned by MOD-018 and IF-006 by MOD-019. MOD-010 and MOD-014 implement their assigned behavior; execution co-location does not transfer contract ownership or make logical Modules separate services.; The entrypoint uses JavaScript ES modules and direct calls/imports. This source mapping supplies no measured execution, minimum Node version, agent-host runtime, or all-platform qualification."
+  style.fill: "#ECF3FF"
+  style.stroke: "#597390"
+  style.font-color: "#24364A"
+  style.font-size: 16
+  style.border-radius: 7
+}
+n_706c6163656d656e743a4d4f442d3031303a6465706c6f796d656e743a434c492072756e74696d65207061636b616765 -> n_657865637574696f6e3a4d4f442d3031303a434c492070726f63657373: "supplies\nimplementation" {
+  style.stroke: "#526C8A"
+  style.font-color: "#344D67"
+  style.fill: "#FFFFFF"
+  style.font-size: 14
+}
+n_70726f64756365723a4d4f442d303133: "Product package production" {
+  link: "#module/MOD-013"
+  tooltip: "Product package production (MOD-013)"
+  style.fill: "#FFF5DB"
+  style.stroke: "#597390"
+  style.font-color: "#24364A"
+  style.font-size: 16
+  style.border-radius: 7
+}
+n_706c6163656d656e743a4d4f442d3031333a6465706c6f796d656e743a526576696577656420736f7572636520636865636b6f7574: "Reviewed source checkout\n\nSelected source\nrepository checkout" {
+  link: "#physical/MOD-013"
+  tooltip: "Reviewed source checkout; location: Selected source repository checkout; relative paths: skills/; scripts/resources/adapter-templates/; packages/rigorloop/"
+  style.fill: "#EEF6F1"
+  style.stroke: "#597390"
+  style.font-color: "#24364A"
+  style.font-size: 16
+  style.border-radius: 7
+}
+n_70726f64756365723a4d4f442d303133 -> n_706c6163656d656e743a4d4f442d3031333a6465706c6f796d656e743a526576696577656420736f7572636520636865636b6f7574: "source location" {
+  style.stroke: "#526C8A"
+  style.font-color: "#344D67"
+  style.fill: "#FFFFFF"
+  style.font-size: 14
+}
+n_706c6163656d656e743a4d4f442d3031333a6465706c6f796d656e743a5072657061726564207061636b61676520776f726b7370616365: "Prepared package\nworkspace\n\nTemporary candidate\ncheckout" {
+  link: "#physical/MOD-013"
+  tooltip: "Prepared package workspace; location: Temporary candidate checkout; relative paths: packages/rigorloop/; packages/rigorloop/dist/metadata/"
+  style.fill: "#EEF6F1"
+  style.stroke: "#597390"
+  style.font-color: "#24364A"
+  style.font-size: 16
+  style.border-radius: 7
+}
+n_70726f64756365723a4d4f442d303133 -> n_706c6163656d656e743a4d4f442d3031333a6465706c6f796d656e743a5072657061726564207061636b61676520776f726b7370616365: "workspace location" {
+  style.stroke: "#526C8A"
+  style.font-color: "#344D67"
+  style.fill: "#FFFFFF"
+  style.font-size: 14
+}
+n_706c6163656d656e743a4d4f442d3031333a6465706c6f796d656e743a50726f647563742063616e64696461746520617274696661637473: "Product candidate\nartifacts\n\nExplicit candidate\noutput directory" {
+  link: "#physical/MOD-013"
+  tooltip: "Product candidate artifacts; location: Explicit candidate output directory; relative paths: rigorloop-adapter-codex-{release}.zip; rigorloop-adapter-claude-{release}.zip; xiongxianfei-rigorloop-{version}.tgz; adapter-artifacts-{release}.json; archive-proof-{release}.json"
+  style.fill: "#EEF6F1"
+  style.stroke: "#597390"
+  style.font-color: "#24364A"
+  style.font-size: 16
+  style.border-radius: 7
+}
+n_70726f64756365723a4d4f442d303133 -> n_706c6163656d656e743a4d4f442d3031333a6465706c6f796d656e743a50726f647563742063616e64696461746520617274696661637473: "output location" {
+  style.stroke: "#526C8A"
+  style.font-color: "#344D67"
+  style.fill: "#FFFFFF"
+  style.font-size: 14
+}

@@ -1,0 +1,76 @@
+{
+  "id": "SCN-001",
+  "type": "scenario",
+  "title": "Retrieve a saved definition in a later session",
+  "status": "confirmed",
+  "actor": "An engineer or engineering agent continuing another participant's work",
+  "goal": "Obtain the saved engineering definition in a later session without access to the originating conversation or private authoring state.",
+  "context": "A governed project's engineering definition must remain available after its author stops working.",
+  "trigger": "A later participant needs to inspect a definition saved in an earlier session.",
+  "preconditions": [
+    "The definition uses a supported entity type and belongs to the selected governed model.",
+    "The retained model remains accessible, and no intervening edit changes the saved definition.",
+    "The author explicitly saved the entity identity, type, and authored definition, and received confirmation of retention for the selected model state.",
+    "The originating conversation and authoring process have ended."
+  ],
+  "interaction": [
+    {
+      "actor": "Later participant",
+      "action": "Identifies the retained model state and requests the saved entity definition by its stable identity."
+    },
+    {
+      "actor": "System",
+      "action": "Returns the recorded definition with its identity, type, selected model state, and completeness identifiable."
+    },
+    {
+      "actor": "Later participant",
+      "action": "Inspects the saved content without access to the originating conversation, agent memory, or private session state."
+    }
+  ],
+  "expected_outcome": "The later participant obtains the same saved identity, type, and authored content without the originating conversation, agent memory, or private session state.",
+  "alternatives": [
+    {
+      "condition": "An intervening edit changed the definition before the later participant selected the current state.",
+      "outcome": "Retrieval identifies the selected state and its recorded definition rather than presenting the earlier content as current."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "The author never saved the definition or retention was not confirmed.",
+      "outcome": "The system does not claim that unsaved or unconfirmed content was retained."
+    },
+    {
+      "condition": "The selected state contains no entity with the requested identity.",
+      "outcome": "The result identifies the requested identity and state and reports no matching entity instead of substituting a similarly named entity."
+    },
+    {
+      "condition": "The requested retained definition is unavailable, unsupported, incomplete, or cannot be retrieved.",
+      "outcome": "The system identifies the requested subject and state and reports the available scope and remaining gap rather than claiming complete retrieval."
+    }
+  ],
+  "exercises": [
+    "FEAT-001"
+  ],
+  "informs": [
+    "SR-001",
+    "SR-002",
+    "SR-004"
+  ],
+  "sources": [
+    {
+      "source": "SRC-IR-001-SCENARIO-ANALYSIS",
+      "locator": "SCN-001",
+      "basis": "Derives a cross-session stakeholder situation from IR-001 and the retention, identity, and current-definition obligations in SR-001, SR-002, and SR-004."
+    },
+    {
+      "source": "SRC-SCENARIO-MODEL-REFINEMENT",
+      "locator": "SCN-001",
+      "basis": "Preserves SCN-001 as later-session retrieval under IR-001 and SR-001, SR-002, and SR-004. Prior author-saving setup is a precondition and is separately represented by SCN-005; interaction records observable requests and responses."
+    },
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "SCN-001",
+      "basis": "Accepted as current requirement-analysis knowledge after independent coverage and clarity review: one owning IR and primary Feature, observable goal and interactions, classified outcomes, and applicable SR coverage. This confirms analysis only, not requirement approval, implementation, or satisfaction."
+    }
+  ]
+}

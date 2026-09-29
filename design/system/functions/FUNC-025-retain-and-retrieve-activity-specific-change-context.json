@@ -1,0 +1,48 @@
+{
+  "id": "FUNC-025",
+  "type": "function",
+  "title": "Retain and retrieve activity-specific change context",
+  "status": "draft",
+  "description": "Records and presents the authoritative work context needed to resume a governed Change across sessions or participants. It identifies missing, conflicting, stale, and inapplicable details instead of inferring private conversation state or permission.",
+  "inputs": [
+    "Change identity and supported activity: authoring, implementation, verification, or review.",
+    "Recorded scope, state, responsible participants, findings or blockers, next action, and authoritative activity-specific references and basis revisions."
+  ],
+  "preconditions": [
+    "The Change is within the declared governed scope and the recording or retrieving participant is authorized for the requested context."
+  ],
+  "outputs": [
+    "Retrievable common and activity-specific resumption context with its authoritative references.",
+    "Explicit missing, conflicting, stale, or inapplicable context and the next recorded action without an implied authority grant."
+  ],
+  "behavior": [
+    "Retain the common scope, work state, responsible participants, outstanding findings or blockers, and next action.",
+    "For authoring, retain affected definitions, derivation sources, decisions, unresolved analysis, and proposed edits; for implementation, retain the governing contract, assigned work, changed realization, remaining work, and verification obligations.",
+    "For verification, retain exact assessed subjects, procedure, conditions, execution state, observations, evidence, and remaining checks; for review, retain reviewed subjects, basis, findings, disposition, correction responsibility, and next review or correction action.",
+    "Reference facts at their authoritative owners and preserve applicable revisions instead of maintaining independently authored copies.",
+    "Expose unavailable or stale basis, distinguish planned verification from evidence, and explain inapplicable context without fabricating missing results."
+  ],
+  "failure_behavior": [
+    {
+      "condition": "Required context is missing, conflicting, stale, or inaccessible.",
+      "outcome": "Return the known context with explicit gaps and the recorded responsible participant or decision needed; do not invent a next action or result."
+    },
+    {
+      "condition": "A suggested next action lacks applicable authorization.",
+      "outcome": "Keep the suggestion distinguishable from authority and identify the unmet boundary before execution."
+    }
+  ],
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "FUNC-025",
+      "basis": "Existing SR-006 confirms this activity-specific resumption behavior under IR-003. Its full recorded activity coverage and acceptance criteria remain unchanged."
+    },
+    {
+      "source": "SRC-ARCHITECTURE-PILOT",
+      "locator": "FUNC-025",
+      "basis": "Propose MOD-006 as the single accountable architectural responsibility for the existing behavior. This allocation preserves the Function definition and does not establish implementation or completed interface/AR coverage outside the IR-001 pilot."
+    }
+  ],
+  "allocated_to": "MOD-006"
+}

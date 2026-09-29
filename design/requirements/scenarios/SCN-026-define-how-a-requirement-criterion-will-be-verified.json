@@ -1,0 +1,57 @@
+{
+  "id": "SCN-026",
+  "type": "scenario",
+  "title": "Define how a requirement criterion will be verified",
+  "status": "confirmed",
+  "actor": "A verification engineer preparing an assessment",
+  "goal": "Make clear what observation would assess the selected criterion against an exact engineering state.",
+  "context": "An engineering claim needs a defined assessment before evidence can be collected.",
+  "trigger": "The engineer selects a requirement criterion and intended claim scope for verification.",
+  "preconditions": [
+    "The requirement criterion and intended assessed subject are identifiable."
+  ],
+  "interaction": [
+    {
+      "actor": "Engineer",
+      "action": "Supplies the criterion basis, exact subject state, selected technique, conditions, and expected observations."
+    },
+    {
+      "actor": "System",
+      "action": "Presents the verification definition and identifies any missing subject binding, condition, or criterion context."
+    },
+    {
+      "actor": "Engineer",
+      "action": "Reviews the definition as the method to be performed, distinct from any future execution observations."
+    }
+  ],
+  "expected_outcome": "A later assessor can understand the intended criterion, exact subject state, technique, conditions, and expected observations without mistaking the plan for evidence.",
+  "alternatives": [
+    {
+      "condition": "The appropriate technique is human inspection or review.",
+      "outcome": "The definition records its conditions and expected observations without requiring automated execution."
+    },
+    {
+      "condition": "The criterion basis or intended assessed state changes before execution.",
+      "outcome": "The revised definition is attributable to its new basis and does not rewrite any earlier assessment basis."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "The criterion, subject state, condition, or expected observation is missing or ambiguous.",
+      "outcome": "The system identifies the incomplete definition rather than implying that a complete assessment has been specified."
+    }
+  ],
+  "exercises": [
+    "FEAT-008"
+  ],
+  "informs": [
+    "SR-025"
+  ],
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "SCN-026",
+      "basis": "IR-004 owns the distinction between requirement, Verification, and Evidence; SR-025 derives the verification-definition obligations. Accepted as current requirement-analysis knowledge after independent coverage and clarity review: one owning IR and primary Feature, observable goal and interactions, classified outcomes, and applicable SR coverage. This confirms analysis only, not requirement approval, implementation, or satisfaction."
+    }
+  ]
+}

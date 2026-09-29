@@ -1,0 +1,83 @@
+{
+  "id": "SR-069",
+  "type": "system-requirement",
+  "title": "Qualify the exact prepared release candidate",
+  "status": "draft",
+  "statement": "The system shall qualify the exact prepared source and product artifacts against every applicable non-deferred release obligation before requesting routine approval, retaining actual applicable evidence and rejecting stale, incomplete, contradictory, or mismatched candidate support.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "A passing source-tree check or a newly rebuilt artifact can be substituted for the product the maintainer is asked to approve.",
+      "desired_outcome": "The approval subject is a concrete qualified candidate with inspectable artifact identities and honest remaining limits."
+    },
+    "why": {
+      "rationale": "Release readiness must compose packaging, installed-consumer, security, and release evidence against the same candidate."
+    },
+    "who": {
+      "stakeholders": [
+        "Release reviewers and maintainers"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "Before candidate approval and at the applicable execution safeguards."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "Reviewed source, permitted prepared source changes, generated artifact inputs, actual tarball/archives, and the sealed candidate evidence."
+      ]
+    },
+    "how": {
+      "approach": "Preserve the reviewed source and permitted prepared-commit distinction. Build archives, derive the exact metadata/index consumed by the CLI, pack that input, and qualify the resulting artifacts before sealing their outer candidate identity. Check required notes, source state, package preview, local packed installation, selected validation, archive integrity, security, recovery, authentication/provenance path, and unresolved blockers under the profile. Apply evidence freshness rules and explicit deferral policy; no local or cached result replaces mandatory fresh public proof."
+    },
+    "how_much": {
+      "scope": "The existing release verification and immutable-candidate contracts, including the public-qualification obligations that remain for later observation. Emergency deferrals are explicit owner decisions outside ordinary routine automation; nondeferable identity, evidence, privacy, public verification, and recovery duties remain. No new test count or independent definition of package correctness is introduced."
+    }
+  },
+  "acceptance_criteria": [
+    "The approval summary binds reviewed/prepared source, allowed generated changes, actual CLI/archive bytes, profile, destination, configuration, and required observed checks to one candidate.",
+    "Required package preview and smoke concern the actual packed candidate and selected archives rather than a source checkout; missing contents, forbidden inclusions, stale evidence, or unresolved blockers prevent readiness.",
+    "Generated metadata and index precede the consuming CLI package, and outer artifact identities do not create self-referential digest inputs; later observations do not modify sealed inputs.",
+    "All applicable non-deferred checks pass with evidence applicable to the exact candidate; any exceptional deferral has its required owner, rationale, accepted risk, follow-up, and limit and cannot waive nondeferable duties.",
+    "Local and hosted release checks use their existing shared command ownership; preflight, dry-run, structural validity, or package-only success is not treated as full release or public proof."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "confirms": [
+    "FUNC-068",
+    "FUNC-069"
+  ],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-08",
+      "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. Release readiness must compose packaging, installed-consumer, security, and release evidence against the same candidate. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-09",
+      "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. Release readiness must compose packaging, installed-consumer, security, and release evidence against the same candidate. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-12",
+      "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. Release readiness must compose packaging, installed-consumer, security, and release evidence against the same candidate. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-16",
+      "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. Release readiness must compose packaging, installed-consumer, security, and release evidence against the same candidate. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-23",
+      "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. Release readiness must compose packaging, installed-consumer, security, and release evidence against the same candidate. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-24",
+      "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. Release readiness must compose packaging, installed-consumer, security, and release evidence against the same candidate. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
+    }
+  ]
+}

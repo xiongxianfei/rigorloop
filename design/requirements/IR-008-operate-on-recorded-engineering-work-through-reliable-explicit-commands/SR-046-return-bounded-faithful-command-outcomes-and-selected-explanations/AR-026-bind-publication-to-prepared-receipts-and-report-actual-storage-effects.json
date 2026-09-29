@@ -1,0 +1,69 @@
+{
+  "id": "AR-026",
+  "type": "allocated-requirement",
+  "title": "Bind publication to prepared receipts and report actual storage effects",
+  "status": "draft",
+  "statement": "The Operational record persistence Module shall supply exact candidate and observed-state facts for receipt preparation, publish only with applicable prepublication readiness for those facts, and return the actual known storage outcome without allowing reporting limitations to misrepresent commitment.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "A command renderer cannot guarantee truthful bounded output if persistence publishes a different candidate or hides the resulting transaction state.",
+      "desired_outcome": "The prepared public receipt and actual storage operation refer to the same subject, and the command receives reliable facts for saved, unchanged, conflict, interruption, or recovery outcomes."
+    },
+    "why": {
+      "rationale": "SR-046 receipt safety requires cooperation at the mutation boundary while keeping output-contract ownership in MOD-010 and byte/commitment ownership in MOD-011."
+    },
+    "who": {
+      "stakeholders": [
+        "Command adapters preparing safe storage receipts",
+        "Actors relying on truthful transaction outcomes",
+        "Maintainers of MOD-011"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "Candidate preparation supplies facts to the command Module.",
+        "An admitted publication crosses the authoritative mutation boundary.",
+        "Publication or explicit recovery establishes a terminal result or leaves interrupted or indeterminate effects."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "IF-003 candidate preparation and publication interaction with MOD-010.",
+        "Actual storage and recovery outcomes for the selected operational-record transaction."
+      ]
+    },
+    "how": {
+      "approach": "Expose exact candidate identity/revision, changed-target and attributable observation facts before publication; verify their correspondence to command-side receipt readiness without owning its renderer. Preserve known committed, unchanged, failed, and recovery-required state in the resulting storage facts."
+    },
+    "how_much": {
+      "scope": "MOD-011 supplies storage and observed-basis facts and enforces the prepublication condition; MOD-010 retains FUNC-048 and the public output limits/serialization. No extra rendering Function, mandatory callback, new public protocol, or inferred approval is introduced."
+    }
+  },
+  "acceptance_criteria": [
+    "For new publication, start afresh under supported-writer exclusion, reread and check the current state, and reconstruct targeted edits or admit advanced supplied bytes through the common complete-candidate validation boundary. Supply the resulting exact candidate, changed targets, available state identities, and attributable observations for MOD-010 receipt preparation before mutation; outside-guard preparation or preview is not this publication basis. For explicit recovery, verify and use the exact retained before/candidate bytes for the selected action and supply those exact outcome facts without reconstructing or replaying semantic edits. In both cases, preserve candidate/current scope and unavailable-versus-established identity distinctions.",
+    "Observation facts identify the actual source-defined observed subject basis and diagnostics of the selected scan. They do not substitute historical expected subject hashes, a partial request read set, or observations reconstructed from a different selected state; unavailable or unsafe basis remains explicit.",
+    "Before authoritative publication, ensure the mandatory receipt readiness applies to the exact operation, candidate, format, and required facts supplied for that attempt. A changed candidate or stale basis cannot reuse earlier readiness; known nonmatching or unavailable readiness stops before publication while preserving the source guarantee that diagnostic volume alone cannot make an admissible correction unrecordable.",
+    "Return saved only for the actual durably committed candidate, unchanged only after its current preconditions pass, and conflict, busy, failed, or recovery-required when those are the actual known outcomes. Supply available identities and transaction context without inventing a coherent snapshot or presenting a partially published changed list as a saved result.",
+    "Postcommit optional-detail, renderer, or output-delivery failure cannot change the storage disposition into rejected or authorize rollback of acknowledged success. Preserve exact recovery and lost-response facts for explicit caller reconciliation; do not rerun a semantic update to manufacture a cleaner receipt."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "allocated_to": "MOD-011",
+  "constrains": [
+    "FUNC-046",
+    "FUNC-047"
+  ],
+  "sources": [
+    {
+      "source": "SRC-CLI-ALLOCATION",
+      "locator": "AR-026",
+      "basis": "Derived from SR-046 for the proposed MOD-011 responsibility. Allocates the persistence contribution to SR-046 criteria 1, 3, and 4. AR-025 remains the sole public receipt preparation owner; AR-021 and AR-022 establish the underlying committed and recovered facts consumed here. These criteria specify intended observations, not executed product evidence or an adoption of the REM authoring format by the CLI."
+    },
+    {
+      "source": "SRC-PUBLISHED-CLI",
+      "locator": "docs/design/cli/cli.md#CLI-SR-05, CLI-SR-06, CLI-SR-08, CLI-SR-11, CLI-SR-20, CLI-SR-26; docs/design/cli/records.md#RF-SR-08",
+      "basis": "Retains the named current CLI and Record Format obligations at this allocated responsibility boundary. Their detailed formats, supported versions, limits, and observed external-edit boundaries remain authoritative; no runtime behavior or public contract is changed by this draft."
+    }
+  ]
+}

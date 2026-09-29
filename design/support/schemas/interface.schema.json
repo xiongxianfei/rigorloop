@@ -1,0 +1,182 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RigorLoop Interface",
+  "description": "Draft architecture authoring profile. Shape validation does not establish relationship resolution, architectural adequacy, approval, or implementation.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "type",
+    "title",
+    "status",
+    "description",
+    "operations",
+    "consistency_rules",
+    "compatibility_rules",
+    "sources"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^IF-[0-9]+$",
+      "not": {
+        "pattern": "\\s"
+      }
+    },
+    "type": {
+      "type": "string",
+      "const": "interface"
+    },
+    "title": {
+      "type": "string",
+      "pattern": "\\S"
+    },
+    "status": {
+      "type": "string",
+      "const": "draft"
+    },
+    "description": {
+      "type": "string",
+      "pattern": "\\S"
+    },
+    "exposed_through": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^MOD-[0-9]+$",
+        "not": {
+          "pattern": "\\s"
+        }
+      },
+      "description": "Strict provider ancestors that explicitly expose this Interface. Omit when no exposure is declared. Semantic validation checks provider ancestry, continuous exposure, and required consumer access; exposure does not add a provider."
+    },
+    "operations": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "purpose",
+          "inputs",
+          "preconditions",
+          "outputs",
+          "behavior",
+          "failure_behavior"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$",
+            "not": {
+              "pattern": "\\s"
+            }
+          },
+          "purpose": {
+            "type": "string",
+            "pattern": "\\S"
+          },
+          "inputs": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "\\S"
+            },
+            "minItems": 1
+          },
+          "preconditions": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "\\S"
+            }
+          },
+          "outputs": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "\\S"
+            },
+            "minItems": 1
+          },
+          "behavior": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "\\S"
+            },
+            "minItems": 1
+          },
+          "failure_behavior": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "condition",
+                "outcome"
+              ],
+              "properties": {
+                "condition": {
+                  "type": "string",
+                  "pattern": "\\S"
+                },
+                "outcome": {
+                  "type": "string",
+                  "pattern": "\\S"
+                }
+              }
+            }
+          }
+        }
+      },
+      "description": "Operation names are unique within one Interface; a focused authoring check verifies name uniqueness beyond this schema."
+    },
+    "consistency_rules": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "\\S"
+      },
+      "minItems": 1
+    },
+    "compatibility_rules": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "\\S"
+      },
+      "minItems": 1
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "source",
+          "locator",
+          "basis"
+        ],
+        "properties": {
+          "source": {
+            "type": "string",
+            "pattern": "\\S"
+          },
+          "locator": {
+            "type": "string",
+            "pattern": "\\S"
+          },
+          "basis": {
+            "type": "string",
+            "pattern": "\\S"
+          }
+        }
+      }
+    }
+  }
+}

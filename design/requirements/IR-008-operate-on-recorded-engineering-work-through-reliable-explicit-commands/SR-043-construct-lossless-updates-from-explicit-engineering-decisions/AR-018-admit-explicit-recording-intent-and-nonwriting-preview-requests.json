@@ -1,0 +1,65 @@
+{
+  "id": "AR-018",
+  "type": "allocated-requirement",
+  "title": "Admit explicit recording intent and nonwriting preview requests",
+  "status": "draft",
+  "statement": "The Engineering command interface Module shall require explicit actor decisions and the declared revision, subject basis, and target selection for recording requests, pass the selected targeted or advanced intent unchanged to persistence, and distinguish preview from execution without inventing inputs or authority.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "A public adapter can undermine lossless construction by defaulting an actor decision, changing target interpretation, or presenting a preview as an authorized save.",
+      "desired_outcome": "The persistence boundary receives an unambiguous requested edit or explicit complete replacement with its original decision basis and preview intent."
+    },
+    "why": {
+      "rationale": "SR-043 requires explicit semantic inputs and equivalent nonwriting preview; MOD-010 owns their public admission and outcome meaning while MOD-011 constructs candidates."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineers and agents supplying explicit command requests",
+        "Maintainers of MOD-010 and its Interface consumers"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "A caller invokes a targeted mutation or batch, requests its dry-run preview, or uses advanced exact replacement."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "IF-004 recording admission and the IF-003 construction, preview, and publication handoff."
+      ]
+    },
+    "how": {
+      "approach": "Validate the selected public request shape and command/operation agreement, retain explicit decisions and expectations, and dispatch preview and actual execution through their corresponding persistence paths."
+    },
+    "how_much": {
+      "scope": "The closed targeted mutation catalog, bounded ordered batches, and advanced complete-byte requests; no arbitrary patch language, cross-change batch, delete operation, or automatic decision generation."
+    }
+  },
+  "acceptance_criteria": [
+    "A request supplies its required semantic fields and exact selectors; missing decisions reject with the named required field without defaults, interactive invention, or calling another actor. Callers do not have to build registry entries, deterministic paths, or serialization scaffolding.",
+    "The command, operation, change identity, contract, expected revision, and declared subject read identities agree under their owning request rules. Null revision is admitted only for current creation and null read identity only for expected absence; the adapter does not refresh a supplied expectation.",
+    "A targeted batch admits only the bounded ordered catalog and exact targets, while advanced replacement retains complete explicit candidate bytes. Unsupported operations, arbitrary patches, cross-change edits, and creation inside a batch reject.",
+    "Every targeted mutation admits its declared dry-run form and passes preview intent without requesting publication, reservation, or recovery. Its result identifies the candidate effects as a preview and never as a saved update.",
+    "Actual execution does not reuse preview as a reservation, approval, or freshness guarantee; it sends the explicit request through the fresh checked execution boundary and preserves conflict or missing-input outcomes for the actor."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "allocated_to": "MOD-010",
+  "sources": [
+    {
+      "source": "SRC-CLI-ALLOCATION",
+      "locator": "SR-043 / AR-018; MOD-010",
+      "basis": "Derive this draft lower-level obligation from the containing SR at the selected command or operational-record responsibility boundary. Allocation and acceptance criteria are design claims for review, not implementation, requirement approval, or satisfaction evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-CLI",
+      "locator": "docs/design/cli/cli.md#CLI-SR-03, CLI-SR-12, CLI-SR-15, CLI-SR-16, CLI-SR-25, CLI-SR-26; docs/design/cli/records.md#RF-SR-02, RF-SR-03",
+      "basis": "Preserve the applicable current public and stored-record guarantees at this accountable boundary. The named source retains exact schemas, operation tables, classifications, limits, and historical adoption obligations; this allocation neither replaces those details nor accepts REM authoring JSON as operational records."
+    }
+  ],
+  "constrains": [
+    "FUNC-040",
+    "FUNC-048"
+  ]
+}

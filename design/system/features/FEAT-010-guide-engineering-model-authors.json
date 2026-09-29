@@ -1,0 +1,35 @@
+{
+  "id": "FEAT-010",
+  "type": "feature",
+  "title": "Guide engineering model authors",
+  "status": "draft",
+  "description": "People and engineering agents can find applicable canonical guidance, understand and carry out bounded model-authoring activities, correct findings, and assess whether that guidance supports the intended semantic outcomes. The capability connects authoring practice to the selected REM profile without replacing the author's judgment or granting change authority.",
+  "scope": {
+    "includes": [
+      "Applicable concepts, methods, rules, rationale, and worked examples for new and experienced authors and agents.",
+      "Guidance for requirements, Scenarios, system and architecture definitions, relationships, naming, correction, and retirement.",
+      "Identification of unsupported formats, unresolved decisions, and authority boundaries.",
+      "Assessment with prepared tasks, observed semantic results, applicable checks, rule explanations, and extra-help findings."
+    ],
+    "excludes": [
+      "The underlying save/revise capability represented by FEAT-002.",
+      "Executing model validation, profile migration, change adoption, or historical recovery as part of guidance.",
+      "A particular editing interface, agent host, or automatic generation of a correct engineering model."
+    ]
+  },
+  "realized_by": [
+    "FUNC-032",
+    "FUNC-033",
+    "FUNC-034",
+    "FUNC-028",
+    "FUNC-029",
+    "FUNC-031"
+  ],
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "FEAT-010",
+      "basis": "IR-006 establishes understandable human/agent authoring guidance and its semantic usability assessment; IR-004 assurance behaviors provide observation, applicability, and judgment support without duplicating their obligations."
+    }
+  ]
+}

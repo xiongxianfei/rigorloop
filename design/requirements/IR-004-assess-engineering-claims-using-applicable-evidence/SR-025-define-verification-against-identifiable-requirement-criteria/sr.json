@@ -1,0 +1,57 @@
+{
+  "id": "SR-025",
+  "type": "system-requirement",
+  "title": "Define verification against identifiable requirement criteria",
+  "status": "draft",
+  "statement": "The system shall retain a verification definition that identifies its requirement and acceptance criteria, assessed subject and state, selected technique, conditions, and expected observations, without treating that definition as executed verification or evidence.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "An unscoped test or review plan cannot show which obligation and exact subject it would assess.",
+      "desired_outcome": "A reviewer can determine what a planned assessment is intended to establish and distinguish its method from actual observations."
+    },
+    "why": {
+      "rationale": "IR-004 requires identifiable verification methods and a clear separation between obligations, verification definitions, observed evidence, and judgments."
+    },
+    "who": {
+      "stakeholders": [
+        "Verification engineers defining assessments",
+        "Reviewers interpreting planned verification"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "When verification is defined or revised before an engineering claim is assessed."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "The requirement criteria and exact subject state addressed by the selected verification definition."
+      ]
+    },
+    "how": {
+      "approach": "Retain the relevant requirement and criterion basis, exact assessed subject and state, verification technique, assessment conditions, expected observations, and intended claim scope. Allow test, analysis, inspection, demonstration, review, or measurement as appropriate. Keep any unbound subject state or missing conditions explicit until they are supplied rather than implying an executable complete method."
+    },
+    "how_much": {
+      "scope": "Verification definitions for the declared claim scope. This does not require an automated technique, prescribe a test framework or CI, or impose a universal number of checks. The profile records assessment meaning; architectural realization of assurance records is deferred."
+    }
+  },
+  "acceptance_criteria": [
+    "A reviewer can identify the requirement criteria and their basis, assessed subject and state, selected technique, conditions, expected observations, and intended claim scope from a complete verification definition.",
+    "A definition with a missing subject state, condition, or criterion remains visibly incomplete for that scope and cannot be presented as a completed observation.",
+    "Changing the criterion basis or expected observation preserves the distinction between the revised definition and earlier observations made using an older definition.",
+    "A retained test file, review checklist, or verification definition with no execution observations does not establish that any criterion has been satisfied."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "confirms": [
+    "FUNC-027"
+  ],
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "SR-025",
+      "basis": "Derived from IR-004: IR-004 requires identifiable verification methods and a clear separation between obligations, verification definitions, observed evidence, and judgments. The criteria describe intended observable behavior, not executed verification."
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "id": "FEAT-018",
+  "type": "feature",
+  "title": "Produce reproducible RigorLoop product candidates",
+  "status": "draft",
+  "description": "Product maintainers can produce and inspect faithful supported skill archives and a complete executable CLI package with attributable metadata, reproducible declared contents, and actual packed-consumer qualification. The capability preserves authored meaning while separating candidate production from installation and public release.",
+  "scope": {
+    "includes": [
+      "Canonical-source and declared-target generation with complete resources and faithful transformations.",
+      "Isolated deterministic candidate output and factual artifact integrity metadata.",
+      "Actual CLI package content and clean-consumer assessment with observed scope."
+    ],
+    "excludes": [
+      "Installing into active user roots as a build side effect.",
+      "Adding agent targets, altering public behavior, or publishing without the relevant reviewed decisions.",
+      "Treating generated expectations as executed proof."
+    ]
+  },
+  "realized_by": [
+    "FUNC-060",
+    "FUNC-061",
+    "FUNC-062",
+    "FUNC-028",
+    "FUNC-029"
+  ],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-PACKAGING",
+      "locator": "docs/design/engineering/packaging.md#DIST-SR-03",
+      "basis": "IR-010 establishes this stakeholder-visible published-product capability. This draft models existing selected obligations, not observed publication or installation success."
+    },
+    {
+      "source": "SRC-PUBLISHED-PACKAGING",
+      "locator": "docs/design/engineering/packaging.md#DIST-SR-06",
+      "basis": "IR-010 establishes this stakeholder-visible published-product capability. This draft models existing selected obligations, not observed publication or installation success."
+    },
+    {
+      "source": "SRC-PUBLISHED-PACKAGING",
+      "locator": "docs/design/engineering/packaging.md#DIST-SR-18",
+      "basis": "IR-010 establishes this stakeholder-visible published-product capability. This draft models existing selected obligations, not observed publication or installation success."
+    },
+    {
+      "source": "SRC-PUBLISHED-PACKAGING",
+      "locator": "docs/design/engineering/packaging.md#DIST-SR-23",
+      "basis": "IR-010 establishes this stakeholder-visible published-product capability. This draft models existing selected obligations, not observed publication or installation success."
+    }
+  ]
+}

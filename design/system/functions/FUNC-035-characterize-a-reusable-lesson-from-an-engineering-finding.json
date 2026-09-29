@@ -1,0 +1,48 @@
+{
+  "id": "FUNC-035",
+  "type": "function",
+  "title": "Characterize a reusable lesson from an engineering finding",
+  "status": "draft",
+  "description": "Distinguish the observed basis, inferred mechanism, reuse rationale, and applicability limits of a proposed engineering lesson. This behavior decides how the finding is characterized without asserting that an improvement has been adopted or effective.",
+  "inputs": [
+    "Identifiable failure or review finding and its attributable observations.",
+    "Proposed causal explanation, original activity context, and candidate reusable implications."
+  ],
+  "preconditions": [
+    "The finding can be identified, with missing evidence explicitly reportable."
+  ],
+  "outputs": [
+    "A characterized lesson candidate with observations, inferences, support, and applicability limits distinguished.",
+    "A local-correction disposition or an unresolved-support finding when reuse is not justified."
+  ],
+  "behavior": [
+    "Keep observed facts and their sources separate from causal interpretation.",
+    "Assess reuse against recurring failures, reusable weaknesses, or a high-consequence event with broader applicability.",
+    "Record the proposed mechanism, supporting basis, relevant situations, and exclusions.",
+    "Keep unsupported causes provisional and contradictions visible.",
+    "Return findings without reusable implications to their owning Change as local corrections without manufacturing lessons."
+  ],
+  "failure_behavior": [
+    {
+      "condition": "Observation sources are missing or undermine the proposed cause.",
+      "outcome": "Expose the support gap and preserve the hypothesis as unconfirmed."
+    },
+    {
+      "condition": "No reusable implication is established.",
+      "outcome": "Report a local-correction disposition instead of claiming a general rule."
+    }
+  ],
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "FUNC-035",
+      "basis": "SR-035 requires supported lesson selection, separation of observations and inferences, and explicit applicability."
+    },
+    {
+      "source": "SRC-ARCHITECTURE-PILOT",
+      "locator": "FUNC-035",
+      "basis": "Propose MOD-009 as the single accountable architectural responsibility for the existing behavior. This allocation preserves the Function definition and does not establish implementation or completed interface/AR coverage outside the IR-001 pilot."
+    }
+  ],
+  "allocated_to": "MOD-009"
+}

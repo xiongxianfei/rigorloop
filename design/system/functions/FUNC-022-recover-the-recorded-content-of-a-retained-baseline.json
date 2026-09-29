@@ -1,0 +1,48 @@
+{
+  "id": "FUNC-022",
+  "type": "function",
+  "title": "Recover the recorded content of a retained baseline",
+  "status": "draft",
+  "description": "Reproduces the selected intact retained Baseline and reports fidelity and completeness against that state. It returns recovered content and its original meaning; selecting recovery does not itself authorize destructive replacement of current work.",
+  "inputs": [
+    "Identity of the retained Baseline to recover and its declared scope.",
+    "Available retained authoritative content, interpretation rules, and provenance."
+  ],
+  "preconditions": [
+    "The target Baseline and recovery scope are identified.",
+    "Any action affecting active work has applicable authorization under the project policy."
+  ],
+  "outputs": [
+    "Recovered engineering state identified by its original Baseline and scope.",
+    "Completeness and fidelity outcome identifying unavailable, partial, or failed portions."
+  ],
+  "behavior": [
+    "Recover authoritative definitions, identities, relationship facts, interpretation rules, provenance, and included realization or assurance content from the selected state.",
+    "Preserve historical responsibility, decisions, and references rather than updating them to current owners or meanings.",
+    "Compare the recovered result with the selected retained content and declare complete recovery only when no recorded authoritative content is lost or altered.",
+    "Report exclusions such as unretained external content and later unsaved work separately from retained scope."
+  ],
+  "failure_behavior": [
+    {
+      "condition": "Retained content or its interpretation basis is inaccessible, incomplete, or inconsistent.",
+      "outcome": "Identify the affected portion and do not claim complete recovery."
+    },
+    {
+      "condition": "An intended adoption would overwrite active work without applicable authority.",
+      "outcome": "Withhold that action and identify the unmet authorization boundary; retrieval of recovery information does not supply the grant."
+    }
+  ],
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "FUNC-022",
+      "basis": "SR-022 confirms faithful recovery under IR-003, with SR-007 constraining any destructive adoption of the recovered state."
+    },
+    {
+      "source": "SRC-ARCHITECTURE-PILOT",
+      "locator": "FUNC-022",
+      "basis": "Propose MOD-005 as the single accountable architectural responsibility for the existing behavior. This allocation preserves the Function definition and does not establish implementation or completed interface/AR coverage outside the IR-001 pilot."
+    }
+  ],
+  "allocated_to": "MOD-005"
+}

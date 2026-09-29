@@ -1,0 +1,78 @@
+{
+  "id": "SCN-003",
+  "type": "scenario",
+  "title": "Understand the current definition and applicable decision rationale",
+  "status": "confirmed",
+  "actor": "A reviewer or maintainer investigating why a current engineering definition has its present form",
+  "goal": "Understand the selected current definition and the recorded decision reasoning on which it still relies.",
+  "context": "An entity has evolved through several Changes, and its current definition still relies on recorded engineering decisions.",
+  "trigger": "A later reviewer needs to understand the current definition and the reasoning still applicable to it.",
+  "preconditions": [
+    "The selected model state identifies the current entity definition.",
+    "The author previously recorded decision context, chosen outcome, rationale, considered alternatives, and consequences and associated that reasoning with the definition that relies on it.",
+    "The entity has evolved through Changes; the selected current definition and its still-applicable reasoning are retained, and the originating authoring session has ended."
+  ],
+  "interaction": [
+    {
+      "actor": "Reviewer",
+      "action": "Identifies the entity and selected current model state and asks to understand its definition and the reasoning supporting current reliance."
+    },
+    {
+      "actor": "System",
+      "action": "Presents the current definition, its authoritative source references, and the associated recorded decision context, outcome, rationale, alternatives, consequences, and applicability basis."
+    },
+    {
+      "actor": "Reviewer",
+      "action": "Explains the current engineering meaning and recorded decision basis from that information without reconstructing the definition from historical Changes or the originating conversation."
+    }
+  ],
+  "expected_outcome": "The reviewer understands both the entity's current meaning and its still-applicable recorded reasoning, even when explanation of the originating Change is outside current working material.",
+  "alternatives": [
+    {
+      "condition": "Optional historical explanation is unavailable, while the definition and all required current information remain available.",
+      "outcome": "The current definition and recorded rationale needed for current reliance remain understandable."
+    },
+    {
+      "condition": "A later Change supersedes earlier reasoning, and the recorded reasoning applicable to the selected current definition remains available.",
+      "outcome": "The reviewer understands the applicable reasoning and can distinguish its basis from the earlier decision; old reasoning is not silently presented as applicable."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "Applicable reasoning was not recorded or cannot be retrieved.",
+      "outcome": "The system exposes the reasoning gap and preserves the distinction between a complete definition and incomplete decision context."
+    },
+    {
+      "condition": "Only previously recorded reasoning that is inapplicable to the selected definition is available, or its current applicability cannot be established.",
+      "outcome": "The system exposes the recorded basis and the gap in applicable reasoning without silently treating the old reasoning as current rationale."
+    },
+    {
+      "condition": "The selected definition or information required to understand it cannot be completely obtained.",
+      "outcome": "The system identifies the incomplete definition scope separately from the availability of its decision rationale."
+    }
+  ],
+  "exercises": [
+    "FEAT-001"
+  ],
+  "informs": [
+    "SR-004",
+    "SR-005"
+  ],
+  "sources": [
+    {
+      "source": "SRC-IR-001-SCENARIO-ANALYSIS",
+      "locator": "SCN-003",
+      "basis": "Combines IR-001's retained knowledge and reasoning need with SR-004's current-state understanding and SR-005's recorded decision rationale."
+    },
+    {
+      "source": "SRC-SCENARIO-MODEL-REFINEMENT",
+      "locator": "SCN-003",
+      "basis": "Preserves SCN-003 as understanding current definitions and applicable reasoning under SR-004 and SR-005. Recording that reasoning is a precondition and is separately represented by SCN-006; the interaction remains observable at the stakeholder boundary."
+    },
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "SCN-003",
+      "basis": "Accepted as current requirement-analysis knowledge after independent coverage and clarity review: one owning IR and primary Feature, observable goal and interactions, classified outcomes, and applicable SR coverage. This confirms analysis only, not requirement approval, implementation, or satisfaction."
+    }
+  ]
+}

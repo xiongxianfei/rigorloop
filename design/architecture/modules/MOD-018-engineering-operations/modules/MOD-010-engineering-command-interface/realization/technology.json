@@ -1,0 +1,29 @@
+{
+  "observed": {
+    "technologies": [
+      "Node.js built-ins supply process I/O, paths, cryptographic identities, and filesystem access. The package declares the yaml dependency used by recording-result.js for human presentation; stored operational records remain JSON. The manifest does not declare a minimum Node version."
+    ],
+    "sources": [
+      {
+        "source": "SRC-CLI-SOURCE",
+        "locator": "packages/rigorloop/package.json; packages/rigorloop/dist/bin/rigorloop.js main, dispatchMain, executable wrapper; the software_units paths at 9055b3c0",
+        "basis": "Static package and source inspection establishes this bounded mapping and dispatch structure, not a packed artifact, registry version, or executed outcome."
+      }
+    ]
+  },
+  "proposed": [
+    {
+      "choice": "Retain the Node.js ESM command adapter and MOD-011 within one CLI package and invocation process for this scope.",
+      "rationale": "IR-008 requires local explicit commands and coherent storage, with no established need for an independently deployed service. The existing implementation supplies concrete paths for that allocation.",
+      "alternatives": [
+        "A separate persistence service or a new implementation language would introduce protocol, deployment, and compatibility work without a demonstrated requirement in this scope."
+      ],
+      "consequences": [
+        "Logical responsibilities remain distinct even where software units are shared; process failure can affect both, and packaging together does not grant the command adapter storage or engineering-decision authority."
+      ],
+      "revisit_when": [
+        "Remote clients, independent scaling, process isolation, or measured runtime constraints establish a need for another execution boundary."
+      ]
+    }
+  ]
+}

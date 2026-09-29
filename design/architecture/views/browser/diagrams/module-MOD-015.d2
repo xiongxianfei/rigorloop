@@ -1,0 +1,64 @@
+# Generated from canonical REM records; do not edit.
+# Source identity: 2cf8f01cf8087e0b226dbd431d6452970b13954a16b84408d91173987708417e
+# Arrows show consumer -> provider; they do not show execution order.
+vars: {
+  d2-config: {
+    layout-engine: elk
+  }
+}
+direction: down
+
+m_4d4f442d303135: "Product release coordination" {
+  link: "#module/MOD-015"
+  tooltip: "Product release coordination (MOD-015)"
+  style.fill: "#ECF3FF"
+  style.stroke: "#426898"
+  style.font-color: "#23334A"
+  style.font-size: 18
+  style.border-radius: 8
+  width: 420
+}
+m_4d4f442d303133: "Product package production" {
+  link: "#module/MOD-013"
+  tooltip: "Product package production (MOD-013)"
+  style.fill: "#F6F8FB"
+  style.stroke: "#8292A9"
+  style.font-color: "#23334A"
+  style.font-size: 18
+  style.border-radius: 8
+  style.stroke-dash: 3
+}
+m_4d4f442d303137: "Engineering governance" {
+  link: "#module/MOD-017"
+  tooltip: "Engineering governance (MOD-017)"
+  style.fill: "#F6F8FB"
+  style.stroke: "#8292A9"
+  style.font-color: "#23334A"
+  style.font-size: 18
+  style.border-radius: 8
+  style.stroke-dash: 3
+}
+m_4d4f442d303135 -> m_4d4f442d303133: "Verifiable product\ncandidate\nartifacts" {
+  link: "#interface/IF-005"
+  tooltip: "Verifiable product candidate artifacts (IF-005)"
+  style.stroke: "#667A96"
+  style.font-color: "#34445B"
+  style.fill: "#FFFFFF"
+  style.font-size: 14
+}
+m_4d4f442d303135 -> m_4d4f442d303137: "Governed-action\nauthority" {
+  link: "#interface/IF-009"
+  tooltip: "Applicable governed-action authority (IF-009)"
+  style.stroke: "#667A96"
+  style.font-color: "#34445B"
+  style.fill: "#FFFFFF"
+  style.font-size: 14
+}
+m_4d4f442d303135 -> m_4d4f442d303137: "Claim evidence\napplicability and\ncoverage" {
+  link: "#interface/IF-010"
+  tooltip: "Claim evidence applicability and coverage (IF-010)"
+  style.stroke: "#667A96"
+  style.font-color: "#34445B"
+  style.fill: "#FFFFFF"
+  style.font-size: 14
+}

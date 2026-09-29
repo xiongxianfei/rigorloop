@@ -1,0 +1,88 @@
+{
+  "id": "SR-071",
+  "type": "system-requirement",
+  "title": "Record observed public release outcomes and bounded closeout",
+  "status": "draft",
+  "statement": "The system shall establish release closeout from actual public artifact, registry, and required fresh installed-product observations, preserving version-scoped evidence and explicit unavailable, failed, or incomplete outcomes without modifying the approved candidate.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Local success or generated expectations can be recorded as proof that users can obtain the intended public version.",
+      "desired_outcome": "Maintainers and users can inspect which exact version is publicly available, what was observed, and what remains unresolved."
+    },
+    "why": {
+      "rationale": "Public delivery requires observations at the public boundary and durable attribution separate from immutable candidate inputs."
+    },
+    "who": {
+      "stakeholders": [
+        "Release maintainers",
+        "Reviewers assessing public availability"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "After an attempted publication and when closeout is retried."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "Public registry and release assets, fresh consumer observations, and existing version-scoped release evidence."
+      ]
+    },
+    "how": {
+      "approach": "Observe the public version/channel/integrity, hosted assets, and required fresh public version and target-install smoke. Preserve the source, candidate, approval, publication event, observations, and failure/follow-up basis in existing release evidence, distinct from generated intent. Make closeout rerunnable and leave pending evidence unchanged when required public information is unavailable apart from requested logs. Collect available duration diagnostics automatically without inventing times or using their absence as publication failure."
+    },
+    "how_much": {
+      "scope": "Existing Release evidence fields, routing, public-smoke representations, and freshness policy. Actual required identity and outcome evidence remains mandatory. Timing is diagnostic: malformed emitted timing is a format defect, while missing timing alone does not block an otherwise supported outcome. No registry observation is performed by authoring this requirement."
+    }
+  },
+  "acceptance_criteria": [
+    "Closeout observes the intended public version/channel and exposed integrity, actual public assets, and required fresh installed CLI/target behavior before marking those results passed; local build results alone are insufficient.",
+    "Durable version-scoped evidence identifies exact source/candidate/approval, required checks, publication event/path, public observations, and recovery/follow-up without credentials or private context.",
+    "Unavailable required public evidence stays explicit and pending records are not turned into passes; failed public verification remains failed-after-publication until an applicable disposition.",
+    "Rerunning closeout does not alter sealed candidate inputs or publish again; missing reporting after a public write remains incomplete closeout.",
+    "Available phase durations are collected as observations; unavailable timing is reported honestly and cannot alone invalidate publication, while malformed emitted closed values remain a diagnostic error."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "confirms": [
+    "FUNC-071"
+  ],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-10",
+      "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. Public delivery requires observations at the public boundary and durable attribution separate from immutable candidate inputs. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-13",
+      "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. Public delivery requires observations at the public boundary and durable attribution separate from immutable candidate inputs. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-14",
+      "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. Public delivery requires observations at the public boundary and durable attribution separate from immutable candidate inputs. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-17",
+      "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. Public delivery requires observations at the public boundary and durable attribution separate from immutable candidate inputs. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-18",
+      "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. Public delivery requires observations at the public boundary and durable attribution separate from immutable candidate inputs. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-19",
+      "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. Public delivery requires observations at the public boundary and durable attribution separate from immutable candidate inputs. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-24",
+      "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. Public delivery requires observations at the public boundary and durable attribution separate from immutable candidate inputs. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
+    }
+  ]
+}

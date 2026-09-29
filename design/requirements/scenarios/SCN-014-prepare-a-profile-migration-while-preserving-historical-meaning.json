@@ -1,0 +1,75 @@
+{
+  "id": "SCN-014",
+  "type": "scenario",
+  "title": "Prepare a profile migration while preserving historical meaning",
+  "status": "confirmed",
+  "actor": "Model maintainer",
+  "goal": "Obtain a reviewable migration candidate with its meaning and compatibility consequences visible.",
+  "context": "The project intends to adopt a revised model representation profile.",
+  "trigger": "A maintainer has an explicit mapping from the existing profile to the proposed one.",
+  "preconditions": [
+    "The source model, source and target profiles, supplied mapping, and declared current consumers are identifiable."
+  ],
+  "interaction": [
+    {
+      "actor": "Model maintainer",
+      "action": "Selects the source state, target profile, and proposed mapping."
+    },
+    {
+      "actor": "System",
+      "action": "Provides a migration candidate and a report of preserved identities, intentional semantic changes, and unmapped content."
+    },
+    {
+      "actor": "System",
+      "action": "Reports target conformance and declared consumer compatibility, including unassessed areas."
+    },
+    {
+      "actor": "Model maintainer",
+      "action": "Reviews the candidate and report before seeking controlled adoption."
+    }
+  ],
+  "expected_outcome": "The maintainer can assess an attributable candidate while the source and historical interpretation remain intact.",
+  "alternatives": [
+    {
+      "condition": "The change only alters representation.",
+      "outcome": "Entity identities and engineering meaning remain equivalent while the target representation changes."
+    },
+    {
+      "condition": "The mapping intentionally changes engineering meaning.",
+      "outcome": "The report identifies the supplied semantic-change basis for explicit review."
+    },
+    {
+      "condition": "After obtaining and reviewing a migration candidate, the maintainer abandons it.",
+      "outcome": "The source state and applicable historical rules remain unchanged."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "The mapping is ambiguous, incomplete, or incompatible with the selected profiles.",
+      "outcome": "The system exposes the unresolved mapping and does not silently drop or invent model content."
+    },
+    {
+      "condition": "The candidate violates target rules or a required consumer cannot be reconciled.",
+      "outcome": "The system identifies the unresolved compatibility and does not claim the candidate ready for adoption."
+    },
+    {
+      "condition": "Preparation fails.",
+      "outcome": "The system reports failure while preserving the source and refrains from reporting a completed candidate."
+    }
+  ],
+  "exercises": [
+    "FEAT-005"
+  ],
+  "informs": [
+    "SR-012",
+    "SR-013",
+    "SR-015"
+  ],
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "SCN-014",
+      "basis": "IR-005 analysis establishes this stakeholder situation and its selected profile boundaries; the linked SRs account for its outcomes without creating a second requirement parent. Accepted as current requirement-analysis knowledge after independent coverage and clarity review: one owning IR and primary Feature, observable goal and interactions, classified outcomes, and applicable SR coverage. This confirms analysis only, not requirement approval, implementation, or satisfaction."
+    }
+  ]
+}

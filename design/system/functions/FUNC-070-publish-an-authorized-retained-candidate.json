@@ -1,0 +1,67 @@
+{
+  "id": "FUNC-070",
+  "type": "function",
+  "title": "Publish an authorized retained candidate",
+  "status": "draft",
+  "description": "Perform the selected external publication using retained qualified bytes and applicable exact-candidate authorization. It preserves provider identity, authentication/provenance, conflict, and uncertain-write boundaries.",
+  "inputs": [
+    "Retained sealed candidate and its actual qualified artifacts.",
+    "Applicable candidate-specific authorization, supported publication path and credentials, and fresh external conflict/evidence basis."
+  ],
+  "preconditions": [
+    "Applicable policy permits the selected execution path; absence is reported rather than bypassed."
+  ],
+  "outputs": [
+    "Attributable attempted publication and actual known provider outcomes.",
+    "Blocked mismatch/authority/authentication/conflict or uncertain/partial write requiring recovery assessment."
+  ],
+  "behavior": [
+    "Check candidate, source/tag, version/channel, destinations, configuration, evidence, and authority against the approved subject before writes.",
+    "Use the selected trusted publishing or specifically authorized fallback while preserving stricter profile requirements and honest provenance.",
+    "Publish retained artifacts without regeneration from a mutable working basis; reject conflicting public identities and unguarded alternate trigger paths.",
+    "Suppress secrets and private environment details in commands, artifacts, and durable outcomes.",
+    "Record known effects and stop on uncertainty instead of treating workflow serialization or a duplicate event as permission to repeat publication."
+  ],
+  "failure_behavior": [
+    {
+      "condition": "Authorization is absent, candidate identity changed, or required support is stale or failed.",
+      "outcome": "Withhold publication and identify the unmet boundary."
+    },
+    {
+      "condition": "Public tag/artifact identity conflicts or the supported authentication path is unavailable.",
+      "outcome": "Stop without overwrite, silent fallback, or a new unapproved path."
+    },
+    {
+      "condition": "An external write has an uncertain or partial outcome.",
+      "outcome": "Record known effects and transfer to external-state inspection before any retry."
+    }
+  ],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-11",
+      "basis": "Logical behavior derived from the identified published-product contracts for IR-010; existing source details and compatibility/adoption limits remain applicable."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-12",
+      "basis": "Logical behavior derived from the identified published-product contracts for IR-010; existing source details and compatibility/adoption limits remain applicable."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-17",
+      "basis": "Logical behavior derived from the identified published-product contracts for IR-010; existing source details and compatibility/adoption limits remain applicable."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-23",
+      "basis": "Logical behavior derived from the identified published-product contracts for IR-010; existing source details and compatibility/adoption limits remain applicable."
+    },
+    {
+      "source": "SRC-PUBLISHED-PRODUCTS",
+      "locator": "FUNC-070",
+      "basis": "Assign MOD-015 as the proposed accountable primary responsibility after Functional Analysis. Current product source contracts retain detailed behavior authority; allocation is not runtime adoption or complete AR coverage."
+    }
+  ],
+  "allocated_to": "MOD-015"
+}

@@ -1,0 +1,62 @@
+{
+  "id": "SCN-031",
+  "type": "scenario",
+  "title": "Derive clear requirements and system definitions with canonical guidance",
+  "status": "confirmed",
+  "actor": "An engineer new to REM or an engineering agent assisting that engineer",
+  "goal": "Produce and explain a coherent draft need, its obligations, stakeholder situations, and logical capability definitions from prepared project context.",
+  "context": "The participant knows basic engineering practice but needs REM-specific guidance without the originating conversation.",
+  "trigger": "The participant begins analysis of a supplied stakeholder need.",
+  "preconditions": [
+    "The need, selected project profile, and available authoring formats are identifiable."
+  ],
+  "interaction": [
+    {
+      "actor": "Author",
+      "action": "Requests guidance for deriving requirements and explaining their associated capabilities and stakeholder situations."
+    },
+    {
+      "actor": "System",
+      "action": "Presents the applicable canonical methods, rules, source versions, and worked examples."
+    },
+    {
+      "actor": "Author",
+      "action": "Provides draft definitions and identifies any uncertainty encountered."
+    },
+    {
+      "actor": "System",
+      "action": "Explains the applicable semantic distinctions and correction steps, identifying unsupported conclusions and the highest-value clarification when necessary."
+    }
+  ],
+  "expected_outcome": "The author can produce and explain seven-part requirement analysis, single-parent derivation, black-box situations, and distinct Feature/Function definitions within the supported profile.",
+  "alternatives": [
+    {
+      "condition": "The author is an experienced reviewer or an agent.",
+      "outcome": "The system provides the same governing meaning and source versions in guidance suited to that participant."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "Essential need context or an applicable method is unavailable.",
+      "outcome": "The system identifies the gap and leaves dependent analysis provisional rather than inventing a requirement."
+    },
+    {
+      "condition": "A desired record format is undeclared.",
+      "outcome": "The system explains the conceptual activity and support limit without claiming a conformant record."
+    }
+  ],
+  "exercises": [
+    "FEAT-010"
+  ],
+  "informs": [
+    "SR-032",
+    "SR-033"
+  ],
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "SCN-031",
+      "basis": "Analyzes IR-006 through a distinct stakeholder goal within the selected initial authoring profile; the owning IR records Scenario ownership. Accepted as current requirement-analysis knowledge after independent coverage and clarity review: one owning IR and primary Feature, observable goal and interactions, classified outcomes, and applicable SR coverage. This confirms analysis only, not requirement approval, implementation, or satisfaction."
+    }
+  ]
+}

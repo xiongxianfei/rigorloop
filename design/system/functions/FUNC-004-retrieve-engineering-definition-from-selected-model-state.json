@@ -1,0 +1,66 @@
+{
+  "id": "FUNC-004",
+  "type": "function",
+  "title": "Retrieve engineering definition from selected model state",
+  "status": "draft",
+  "description": "Obtain the recorded content of an already identified engineering definition from the selected model state, using the profile declared for the selected model state to interpret it and report completeness. The result supplies the definition for subsequent presentation of its meaning and associated rationale.",
+  "inputs": [
+    "The resolved entity identity and selected governed model state.",
+    "The scope of the requested definition and access to its retained authoritative content.",
+    "The profile declared by the selected state and its available interpretation context."
+  ],
+  "preconditions": [
+    "The request unambiguously identifies the entity and state whose definition is needed."
+  ],
+  "outputs": [
+    "The retrieved identity, entity type, authored definition, and current authoritative references for the selected state.",
+    "The retrieved scope and an explicit complete, incomplete, unsupported, unavailable, or failed outcome."
+  ],
+  "behavior": [
+    "Obtain the retained definition directly from the selected model state without requiring the originating conversation or authoring process.",
+    "For a request for the current definition, obtain its current authoritative content rather than presenting historical deltas as that definition.",
+    "Preserve the recorded identity, type, and authored content in the result, with the selected state identifiable.",
+    "Report completeness only for the definition scope actually obtained and understood under the supported representation."
+  ],
+  "failure_behavior": [
+    {
+      "condition": "The selected definition or model state is unavailable.",
+      "outcome": "Identify the unavailable subject and state without substituting another entity or revision."
+    },
+    {
+      "condition": "The entity type or representation is unsupported.",
+      "outcome": "Identify the unsupported content without claiming that it was interpreted as a complete definition."
+    },
+    {
+      "condition": "Only part of the requested definition can be obtained.",
+      "outcome": "Identify the returned portion and missing scope and report the definition as incomplete."
+    },
+    {
+      "condition": "Retrieval fails before the requested scope can be established.",
+      "outcome": "Report failure and any scope already obtained without a complete-retrieval claim."
+    }
+  ],
+  "sources": [
+    {
+      "source": "SRC-IR-001-SCENARIO-ANALYSIS",
+      "locator": "FUNC-004",
+      "basis": "SR-001 requires later retrieval of retained definitions, and SR-004 requires current definitions to be available without reconstruction from history."
+    },
+    {
+      "source": "SRC-ASSET-CLARITY-REFINEMENT",
+      "locator": "FUNC-004",
+      "basis": "Apply the user-selected clarity and naming rule to this existing asset; refine its name and explanation without changing its identity, capability scope, or typed relationships."
+    },
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "FUNC-004",
+      "basis": "Reconcile SR-001/SR-004 retrieval with SR-012: interpretation uses the selected state's declared profile, which need not be the current authoring profile. Preserve the original retrieval responsibility and unsupported-content outcome."
+    },
+    {
+      "source": "SRC-ARCHITECTURE-PILOT",
+      "locator": "FUNC-004",
+      "basis": "Propose MOD-001 as the single accountable architectural responsibility for the existing behavior. This allocation preserves the Function definition and does not establish implementation or completed interface/AR coverage outside the IR-001 pilot."
+    }
+  ],
+  "allocated_to": "MOD-001"
+}

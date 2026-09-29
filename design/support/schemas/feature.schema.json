@@ -1,0 +1,108 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RigorLoop Feature",
+  "description": "Draft RigorLoop authoring profile. Schema validity does not establish relationship resolution, engineering adequacy, approval, or implementation.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "type",
+    "title",
+    "status",
+    "description",
+    "scope",
+    "realized_by",
+    "sources"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^(?:FEAT)-[0-9]+$",
+      "not": {
+        "pattern": "\\s"
+      }
+    },
+    "type": {
+      "type": "string",
+      "const": "feature"
+    },
+    "title": {
+      "type": "string",
+      "pattern": "\\S",
+      "description": "Readable name identifying the engineering purpose and subject and distinguishing neighboring assets. The repository derives the filename suffix from the full title; clarity and filename agreement require checks beyond this schema."
+    },
+    "status": {
+      "type": "string",
+      "const": "draft"
+    },
+    "description": {
+      "type": "string",
+      "pattern": "\\S",
+      "description": "Explain who can achieve what useful capability and outcome within the declared scope."
+    },
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "includes",
+        "excludes"
+      ],
+      "properties": {
+        "includes": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "pattern": "\\S"
+          }
+        },
+        "excludes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "\\S"
+          }
+        }
+      }
+    },
+    "realized_by": {
+      "type": "array",
+      "description": "Functions realizing the capability. May be empty before SR analysis confirms the logical behavior.",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^(?:FUNC)-[0-9]+$",
+        "not": {
+          "pattern": "\\s"
+        }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "source",
+          "locator",
+          "basis"
+        ],
+        "properties": {
+          "source": {
+            "type": "string",
+            "pattern": "\\S"
+          },
+          "locator": {
+            "type": "string",
+            "pattern": "\\S"
+          },
+          "basis": {
+            "type": "string",
+            "pattern": "\\S"
+          }
+        }
+      }
+    }
+  }
+}

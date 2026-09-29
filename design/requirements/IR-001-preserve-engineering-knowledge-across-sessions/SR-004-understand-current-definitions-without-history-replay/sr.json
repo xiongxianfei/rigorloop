@@ -1,0 +1,73 @@
+{
+  "id": "SR-004",
+  "type": "system-requirement",
+  "title": "Understand current definitions without history replay",
+  "status": "draft",
+  "statement": "The system shall make each current governed entity's definition understandable from current authoritative engineering information without requiring reconstruction from Change history or prior conversations.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "A sequence of historical deltas can leave readers unable to determine an entity's current meaning without reconstructing its evolution.",
+      "desired_outcome": "Readers can explain the entity's current engineering meaning from its present definition and current authoritative references."
+    },
+    "why": {
+      "rationale": "A current model must support inspection and continuation directly, even when earlier changes are numerous or stored separately."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineers, reviewers, and maintainers reading current definitions",
+        "Engineering agents resuming work from the current model"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "When determining an entity's current meaning, including after several Changes or when optional historical explanation is unavailable."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "In the current engineering model and its current authoritative references."
+      ]
+    },
+    "how": {
+      "approach": "Maintain an understandable current definition that readers can obtain and interpret without reconstructing it from Change history. Present the current definition with its authoritative context for the selected state, identifying any required current information that is unavailable separately from optional historical explanation."
+    },
+    "how_much": {
+      "scope": "Current authoritative references may be followed; this does not require copying all related definitions into one file. A Change record or historical delta alone is insufficient as the current definition."
+    }
+  },
+  "acceptance_criteria": [
+    "For an entity evolved through several Changes, a reader can obtain its current definition from the current model without replaying those Changes.",
+    "Using the entity's current definition and its current authoritative references, a reader can explain its obligation, capability, behavior, architectural responsibility, or other engineering meaning as appropriate to its type.",
+    "When optional historical explanation is unavailable but all required current information is present, the reader can still determine the entity's current definition.",
+    "When required current information is unavailable, identify the affected context and present any available definition with that limitation; do not present partial context as complete or replace it with an inferred reconstruction from history."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "sources": [
+    {
+      "source": "SRC-REM",
+      "locator": "Sections 3, 13, and 31",
+      "basis": "Durable current assets remain understandable without replaying their evolution."
+    },
+    {
+      "source": "SRC-VISION",
+      "locator": "What it commits to; What would prove this wrong",
+      "basis": "Current reliance is understandable from current artifacts."
+    },
+    {
+      "source": "SRC-DESIGN",
+      "locator": "DES-SR-21",
+      "basis": "Related existing current-reliance obligation; no replacement or complete migration is claimed."
+    },
+    {
+      "source": "SRC-IR-001-SCENARIO-ANALYSIS",
+      "locator": "SR-004",
+      "basis": "Apply the renewed REM Scenario Analysis method to the existing IR-001 need; preserve requirement identities and reconcile scenario outcomes with obligations and logical behavior. Confirmation records draft analysis, not approval, implementation, or satisfaction."
+    }
+  ],
+  "confirms": [
+    "FUNC-004",
+    "FUNC-007"
+  ]
+}

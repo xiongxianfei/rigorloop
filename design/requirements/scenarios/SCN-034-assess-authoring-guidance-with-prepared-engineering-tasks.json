@@ -1,0 +1,68 @@
+{
+  "id": "SCN-034",
+  "type": "scenario",
+  "title": "Assess authoring guidance with prepared engineering tasks",
+  "status": "confirmed",
+  "actor": "A guidance maintainer observing a human or agent participant",
+  "goal": "Determine how the selected guidance supports expected semantic authoring outcomes and identify gaps or extra help required.",
+  "context": "Guidance is ready for assessment, but its usability has not been established by the existence of documentation or schemas.",
+  "trigger": "The maintainer prepares tasks for a declared participant group.",
+  "preconditions": [
+    "Guidance/profile versions, participant group, prepared inputs, expected outcomes, and applicable checks are identified."
+  ],
+  "interaction": [
+    {
+      "actor": "Maintainer",
+      "action": "Provides prepared requirement, Scenario/system, architecture-allocation, naming, correction, and retirement tasks with their expected outcomes."
+    },
+    {
+      "actor": "Participant",
+      "action": "Performs the supported tasks using the canonical guidance and explains the governing rules."
+    },
+    {
+      "actor": "Maintainer",
+      "action": "Supplies actual outputs, observed explanations, check results, ambiguities, and additional assistance."
+    },
+    {
+      "actor": "System",
+      "action": "Reports task outcomes and guidance findings with observed scope and unavailable or unperformed activities explicit."
+    }
+  ],
+  "expected_outcome": "The maintainer obtains a bounded assessment that distinguishes successful semantic outcomes from incorrect, unsupported, assisted, or unassessed activities.",
+  "alternatives": [
+    {
+      "condition": "An architecture authoring format is unavailable.",
+      "outcome": "The report separates conceptual guidance observations from unperformed conformance tasks without claiming implemented format support."
+    },
+    {
+      "condition": "An outcome appears structurally valid but has incorrect meaning or an unexplained rule.",
+      "outcome": "The task is reported unsuccessful or incomplete rather than passed from structure alone."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "Prepared criteria or actual observations are missing.",
+      "outcome": "The system identifies the missing assessment basis and does not report success."
+    },
+    {
+      "condition": "An assessment report presents a semantically incorrect or unsupported task outcome as successful.",
+      "outcome": "The misleading conclusion is identified for correction before reliance; the report must preserve the actual task result and its limits."
+    }
+  ],
+  "exercises": [
+    "FEAT-010"
+  ],
+  "informs": [
+    "SR-034",
+    "SR-026",
+    "SR-027",
+    "SR-028"
+  ],
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "SCN-034",
+      "basis": "Analyzes IR-006 through a distinct stakeholder goal within the selected initial authoring profile; the owning IR records Scenario ownership. Accepted as current requirement-analysis knowledge after independent coverage and clarity review: one owning IR and primary Feature, observable goal and interactions, classified outcomes, and applicable SR coverage. This confirms analysis only, not requirement approval, implementation, or satisfaction."
+    }
+  ]
+}

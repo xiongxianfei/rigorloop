@@ -1,0 +1,47 @@
+{
+  "id": "FUNC-021",
+  "type": "function",
+  "title": "Compare selected retained engineering states",
+  "status": "draft",
+  "description": "Produces an inspectable comparison of two identified retained states within explicit scope. It distinguishes changes to identity, content, relationships, and interpretation without automatically judging semantic equivalence or approval.",
+  "inputs": [
+    "Two identified retained engineering states and selected comparison scope.",
+    "Each state's authoritative content, identity and relationship facts, and applicable interpretation basis."
+  ],
+  "preconditions": [
+    "Both comparison targets and the requested scope are identified, even if some content proves unavailable."
+  ],
+  "outputs": [
+    "Before and after differences by stable entity identity and relationship, including additions and removals.",
+    "Applicable interpretation differences and explicit limits or incomplete portions of the comparison."
+  ],
+  "behavior": [
+    "Match entities by stable identity rather than display name or storage location.",
+    "Identify additions, removals, changed definitions, changed relationships, and naming or location changes for continuing identities.",
+    "Expose relevant changes to metamodel, rules, and provenance with both original bases intact.",
+    "Bound any no-difference conclusion to the available content and declared comparison scope."
+  ],
+  "failure_behavior": [
+    {
+      "condition": "One state or part of its scope cannot be obtained or interpreted.",
+      "outcome": "Identify the unavailable comparison portion rather than reporting it as unchanged."
+    },
+    {
+      "condition": "Identities are ambiguous or the interpretation bases cannot be related confidently.",
+      "outcome": "Expose the ambiguity and retain the original bases without inventing identity continuity or semantic equivalence."
+    }
+  ],
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "FUNC-021",
+      "basis": "SR-021 confirms state comparison under IR-003. Stable identity is reused from IR-001; comparison does not create a second identity policy."
+    },
+    {
+      "source": "SRC-ARCHITECTURE-PILOT",
+      "locator": "FUNC-021",
+      "basis": "Propose MOD-005 as the single accountable architectural responsibility for the existing behavior. This allocation preserves the Function definition and does not establish implementation or completed interface/AR coverage outside the IR-001 pilot."
+    }
+  ],
+  "allocated_to": "MOD-005"
+}

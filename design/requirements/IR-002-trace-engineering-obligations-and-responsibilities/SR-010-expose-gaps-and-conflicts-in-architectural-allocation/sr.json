@@ -1,0 +1,61 @@
+{
+  "id": "SR-010",
+  "type": "system-requirement",
+  "title": "Expose gaps and conflicts in architectural allocation",
+  "status": "draft",
+  "statement": "The system shall expose missing, unresolved, or inconsistent declared allocations between applicable Allocated Requirements, constrained Functions, and accountable Modules, using the selected model state and declared allocation rules, while distinguishing unresolved review questions from mechanically established violations.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Requirement responsibility and functional responsibility can appear connected while assigning incompatible or missing architectural accountability.",
+      "desired_outcome": "An architect can locate allocation gaps or conflicts and see their requirement, Function, Module, and rule basis."
+    },
+    "why": {
+      "rationale": "IR-002 and REM require requirement allocation and functional allocation to remain mutually consistent without reducing engineering judgment to link presence."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineers and model authors",
+        "Architects, reviewers, and engineering agents"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "When reviewing declared responsibility for Functions and active Allocated Requirements."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "Across the selected requirement, system-design, and architecture relationships in one model state."
+      ]
+    },
+    "how": {
+      "approach": "Compare applicable requirement-to-Function constraints and their declared Module responsibilities under the selected metamodel. Identify absent or unresolved allocation and explicit exceptions. Only label a mismatch a violation where the declared rule establishes that conclusion; otherwise expose the different responsibilities for engineering review."
+    },
+    "how_much": {
+      "scope": "Covers inspectable allocation findings and their limits. It does not invent Module ownership, assume every pair must share one Module, prove architectural adequacy, or create ARs automatically."
+    }
+  },
+  "acceptance_criteria": [
+    "For an active AR or Function lacking a required allocation under the selected rule, identify the entity and the missing responsibility; retain a declared permitted deferral as visible deferral rather than invented allocation.",
+    "For an AR constraining a Function, show both applicable allocation paths and identify the rule used to assess their agreement.",
+    "When allocations violate an explicit consistency rule, report the affected identities and rule; when responsibility differs without a decisive rule, report the need for engineering review instead of asserting a violation.",
+    "When architecture or relevant constraints are not yet modeled, state the unassessed or incomplete scope rather than reporting complete consistency.",
+    "Distinguish a mechanically consistent allocation set from an engineering judgment that the architecture satisfies its requirements."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "SR-010",
+      "basis": "Derived from IR-002 and its selected initial-profile scope: IR-002 and REM require requirement allocation and functional allocation to remain mutually consistent without reducing engineering judgment to link presence."
+    }
+  ],
+  "confirms": [
+    "FUNC-010"
+  ],
+  "constrains": [
+    "FUNC-009"
+  ]
+}

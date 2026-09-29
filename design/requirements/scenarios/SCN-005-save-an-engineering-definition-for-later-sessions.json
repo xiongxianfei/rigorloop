@@ -1,0 +1,68 @@
+{
+  "id": "SCN-005",
+  "type": "scenario",
+  "title": "Save an engineering definition for later sessions",
+  "status": "confirmed",
+  "actor": "An engineer or engineering agent authoring an engineering definition",
+  "goal": "Explicitly save an identifiable engineering definition so its recorded content can be retrieved after the authoring session ends.",
+  "context": "The author has developed a definition within one governed project model and needs the work to remain available to later participants.",
+  "trigger": "The author decides to retain the definition beyond the current session.",
+  "preconditions": [
+    "The author has the entity identity, type, and authored content to save.",
+    "The selected governed model and the intended scope of the save are identifiable."
+  ],
+  "interaction": [
+    {
+      "actor": "Author",
+      "action": "Identifies the governed model and supplies the entity identity, type, and authored definition with an explicit request to save it."
+    },
+    {
+      "actor": "System",
+      "action": "Reports whether the requested definition was retained, identifying the saved entity and resulting model state or the known failure or incomplete scope."
+    },
+    {
+      "actor": "Author",
+      "action": "Uses the reported outcome to distinguish content confirmed as saved from work whose retention is unconfirmed before ending the session."
+    }
+  ],
+  "expected_outcome": "The author receives confirmation identifying the retained entity, type, content, and model state, so later participants can retrieve that saved definition without the originating conversation or private session state.",
+  "alternatives": [
+    {
+      "condition": "Another entity has the same display name but a different identity.",
+      "outcome": "The system distinguishes the entities by identity; the matching name alone does not prevent saving the intended definition."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "The submitted identity is missing or conflicts with a distinct entity in the selected model.",
+      "outcome": "The system reports the missing identity or conflict and does not present the proposed state as valid or unambiguous."
+    },
+    {
+      "condition": "The entity type or representation is outside the declared supported authoring profile.",
+      "outcome": "The system reports the unsupported content and does not claim that it was accepted as a supported saved definition."
+    },
+    {
+      "condition": "Saving fails or retention of the complete requested definition cannot be confirmed.",
+      "outcome": "The system reports the known outcome and affected scope without claiming complete retention."
+    }
+  ],
+  "exercises": [
+    "FEAT-002"
+  ],
+  "informs": [
+    "SR-001",
+    "SR-002"
+  ],
+  "sources": [
+    {
+      "source": "SRC-SCENARIO-MODEL-REFINEMENT",
+      "locator": "SCN-005",
+      "basis": "Extracts the independently valuable author-saving goal previously embedded in SCN-001. IR-001 and SR-001 already require explicit retention for later sessions, and SR-002 already requires unambiguous entity identity; no new capability or obligation is introduced."
+    },
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "SCN-005",
+      "basis": "Accepted as current requirement-analysis knowledge after independent coverage and clarity review: one owning IR and primary Feature, observable goal and interactions, classified outcomes, and applicable SR coverage. This confirms analysis only, not requirement approval, implementation, or satisfaction."
+    }
+  ]
+}

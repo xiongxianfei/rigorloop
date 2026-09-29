@@ -1,0 +1,32 @@
+{
+  "id": "FEAT-009",
+  "type": "feature",
+  "title": "Assess evidence supporting engineering claims",
+  "status": "draft",
+  "description": "Reviewers and project decision owners can determine which observations apply to a stated engineering claim, see coverage and contradictory evidence for its criteria, and record a scoped judgment with explicit gaps and reasoning. They can reassess that support after changes without rewriting earlier evidence or mistaking a conclusion for permission to act.",
+  "scope": {
+    "includes": [
+      "Assess evidence applicability to the claimed subject, criteria, scope, and conditions.",
+      "Expose coverage, missing observations, and unresolved material contradictions.",
+      "Record accountable judgments and narrower supported conclusions with explicit boundaries.",
+      "Reassess current support and identify affected verification after engineering changes."
+    ],
+    "excludes": [
+      "Inferring semantic adequacy from mechanical checks alone.",
+      "Authorizing governed actions through passing assessments.",
+      "Universal numerical confidence, test-count, coverage-percentage, or review-vote requirements."
+    ]
+  },
+  "realized_by": [
+    "FUNC-029",
+    "FUNC-030",
+    "FUNC-031"
+  ],
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "FEAT-009",
+      "basis": "IR-004 and SR-027 through SR-029 establish applicability, coverage-based judgments, and reassessment as a durable capability independent of verification technology."
+    }
+  ]
+}

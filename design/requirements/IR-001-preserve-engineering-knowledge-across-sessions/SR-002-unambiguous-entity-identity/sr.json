@@ -1,0 +1,64 @@
+{
+  "id": "SR-002",
+  "type": "system-requirement",
+  "title": "Unambiguous entity identity",
+  "status": "draft",
+  "statement": "The system shall identify every governed engineering entity by an explicit identity that distinguishes it from every other entity in the same governed engineering model.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Display names or physical locations can be ambiguous, and duplicate identities can make an engineering reference designate more than one entity.",
+      "desired_outcome": "An identity-based reference unambiguously designates one entity within the governed model, including when several entities share a display name."
+    },
+    "why": {
+      "rationale": "Names alone cannot reliably distinguish entities or support durable references."
+    },
+    "who": {
+      "stakeholders": [
+        "Authors creating governed engineering entities",
+        "Reviewers and tools checking model integrity",
+        "Readers and tools resolving identity-based references"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "When entities enter a governed model and when their identities are used to distinguish or reference them."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "Within one governed engineering model, across entity names, types, and locations."
+      ]
+    },
+    "how": {
+      "approach": "Require an explicit nonempty identity for each accepted entity, reject duplicate identities for distinct entities, and resolve references by identity independently of display names."
+    },
+    "how_much": {
+      "scope": "Uniqueness applies within one governed engineering model. It does not require globally unique identities across independent projects or make an entity identity identify a particular content revision."
+    }
+  },
+  "acceptance_criteria": [
+    "Every entity accepted into a governed model has an explicit, nonempty identity.",
+    "A candidate model containing two distinct entities with the same identity is reported as invalid, even if their names, types, or locations differ.",
+    "Two entities may share a display name while retaining distinct identities, and an identity-based reference unambiguously identifies its intended entity.",
+    "An identity lookup that matches no entity reports that absence. A lookup encountering multiple entities with the requested identity reports ambiguity and does not arbitrarily select one entity."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "sources": [
+    {
+      "source": "SRC-REM",
+      "locator": "Sections 30, 35, and 42",
+      "basis": "Stable identities and references independent of display naming and location."
+    },
+    {
+      "source": "SRC-IR-001-SCENARIO-ANALYSIS",
+      "locator": "SR-002",
+      "basis": "Apply the renewed REM Scenario Analysis method to the existing IR-001 need; preserve requirement identities and reconcile scenario outcomes with obligations and logical behavior. Confirmation records draft analysis, not approval, implementation, or satisfaction."
+    }
+  ],
+  "confirms": [
+    "FUNC-002",
+    "FUNC-003"
+  ]
+}

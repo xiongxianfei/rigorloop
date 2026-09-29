@@ -1,0 +1,98 @@
+{
+  "id": "SCN-062",
+  "type": "scenario",
+  "title": "Install supported skills into an available destination",
+  "status": "confirmed",
+  "actor": "A project user obtaining RigorLoop skills for a supported target",
+  "goal": "Install complete verified skills into the selected target location without changing unrelated project content.",
+  "context": "The project has selected a supported skill target and its candidate destination units are absent.",
+  "trigger": "The user requests installation of a compatible version.",
+  "preconditions": [
+    "The target and requested version/source are identified and the user has applicable installation authority."
+  ],
+  "interaction": [
+    {
+      "actor": "User",
+      "action": "Selects the supported target and requests installation from the trusted official source."
+    },
+    {
+      "actor": "System",
+      "action": "Identifies the verified candidate and reports complete destination preflight or the blocking condition."
+    },
+    {
+      "actor": "System",
+      "action": "Reports the actual installed units and verified result, or known partial effects and untouched scope."
+    }
+  ],
+  "expected_outcome": "The selected verified units are installed completely, unrelated skills and project state remain unchanged, and the user can distinguish completion from partial failure.",
+  "alternatives": [
+    {
+      "condition": "Unrelated skills or project-root state files already exist.",
+      "outcome": "They are preserved and their presence or contents do not determine installation admission."
+    },
+    {
+      "condition": "The user explicitly selects a local archive instead of network acquisition.",
+      "outcome": "The same bundled trusted metadata, compatible version, archive integrity, and extraction checks apply; the local file supplies no alternative trust root."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "The target or option is unsupported, or a pinned version would restore a retired target.",
+      "outcome": "The request rejects before acquisition or writes with the supported form identified."
+    },
+    {
+      "condition": "Trusted metadata, archive integrity, extraction containment, or destination safety cannot be established.",
+      "outcome": "Installation stops at the identified boundary without claiming installed success."
+    },
+    {
+      "condition": "A unit appears or changes after preflight or installation only partly completes.",
+      "outcome": "The system stops, preserves known effects, and reports completed, partial, and untouched units without overwriting new work."
+    }
+  ],
+  "exercises": [
+    "FEAT-019"
+  ],
+  "informs": [
+    "SR-064",
+    "SR-065",
+    "SR-066",
+    "SR-007"
+  ],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-INSTALLATION",
+      "locator": "docs/design/cli/installation.md#DIST-SR-02",
+      "basis": "IR-010 owns this stakeholder situation. It exercises the selected published-product capability while preserving the source contract's observable success and adverse outcomes."
+    },
+    {
+      "source": "SRC-PUBLISHED-INSTALLATION",
+      "locator": "docs/design/cli/installation.md#DIST-SR-07",
+      "basis": "IR-010 owns this stakeholder situation. It exercises the selected published-product capability while preserving the source contract's observable success and adverse outcomes."
+    },
+    {
+      "source": "SRC-PUBLISHED-INSTALLATION",
+      "locator": "docs/design/cli/installation.md#DIST-SR-08",
+      "basis": "IR-010 owns this stakeholder situation. It exercises the selected published-product capability while preserving the source contract's observable success and adverse outcomes."
+    },
+    {
+      "source": "SRC-PUBLISHED-INSTALLATION",
+      "locator": "docs/design/cli/installation.md#DIST-SR-12",
+      "basis": "IR-010 owns this stakeholder situation. It exercises the selected published-product capability while preserving the source contract's observable success and adverse outcomes."
+    },
+    {
+      "source": "SRC-PUBLISHED-INSTALLATION",
+      "locator": "docs/design/cli/installation.md#DIST-SR-14",
+      "basis": "IR-010 owns this stakeholder situation. It exercises the selected published-product capability while preserving the source contract's observable success and adverse outcomes."
+    },
+    {
+      "source": "SRC-PUBLISHED-INSTALLATION",
+      "locator": "docs/design/cli/installation.md#DIST-SR-15",
+      "basis": "IR-010 owns this stakeholder situation. It exercises the selected published-product capability while preserving the source contract's observable success and adverse outcomes."
+    },
+    {
+      "source": "SRC-PUBLISHED-PRODUCTS",
+      "locator": "SCN-062; design/requirements/published-products.md#review-and-validation",
+      "basis": "Independent review and author reconciliation confirmed this stakeholder situation, primary Feature, and SR coverage as current analysis knowledge. This does not approve requirements or establish implemented behavior or satisfaction."
+    }
+  ]
+}

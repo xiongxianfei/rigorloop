@@ -1,0 +1,65 @@
+{
+  "id": "AR-012",
+  "type": "allocated-requirement",
+  "title": "Enforce the operational stored contract without historical reinterpretation",
+  "status": "draft",
+  "statement": "The Operational record persistence Module shall accept only the declared current v3 stored contract for operational record access, candidate validation, publication, and recovery, and reject retired, unknown, mixed, or cross-version input without conversion, fallback, or historical-byte modification.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "An operational reader or recovery path can silently restore withdrawn stored-format support even when command admission rejects it.",
+      "desired_outcome": "Every persistence entry path enforces the same current stored boundary while historical content retains its original meaning."
+    },
+    "why": {
+      "rationale": "SR-040 requires stored-contract rejection behind public dispatch; MOD-011 owns the records and recovery state that must enforce it."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineers and agents supplying explicit command requests",
+        "Maintainers of MOD-011 and its Interface consumers"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "A current store, creation candidate, replacement, or recovery journal reaches an operational-record entry point."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "The IF-003 operational-record boundary and the selected store, candidates, and recovery material it governs."
+      ]
+    },
+    "how": {
+      "approach": "Check explicit stored discriminators and the applicable journal contract before operational interpretation; keep this selection independent from public transport and document versions."
+    },
+    "how_much": {
+      "scope": "The exact current and retired stored populations named in CLI and Record Format. Bounded archive recognition for discovery remains classification, not a historical record validator or operational reader."
+    }
+  },
+  "acceptance_criteria": [
+    "A new operational store identifies contract rigorloop-records-v3 on its change manifest; that manifest and every registered supporting record use stored schema_version 3. Supporting records are not required to repeat the manifest's contract field, and a transport or model-document version never substitutes for the applicable stored discriminator.",
+    "Retired or unknown contracts, unsupported stored versions, mixed registered records, and cross-version replacements receive their declared safe rejection with no authoritative write, conversion, fallback reader, or inferred renewed authority.",
+    "An unsupported or retired journal cannot trigger recovery or operational continuation; inspection and rejected access do not alter historical bytes, identities, or meaning.",
+    "The same stored support boundary applies to targeted candidates, advanced complete-byte replacements, and explicit recovery, while independently supported transport and shared-definition versions remain usable under their own contracts."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "allocated_to": "MOD-011",
+  "sources": [
+    {
+      "source": "SRC-CLI-ALLOCATION",
+      "locator": "SR-040 / AR-012; MOD-011",
+      "basis": "Derive this draft lower-level obligation from the containing SR at the selected command or operational-record responsibility boundary. Allocation and acceptance criteria are design claims for review, not implementation, requirement approval, or satisfaction evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-CLI",
+      "locator": "docs/design/cli/cli.md#CLI-SR-10, CLI-SR-27, CLI-SR-28; docs/design/cli/records.md#RF-SR-01, RF-SR-06, RF-SR-09, RF-SR-12, RF-SR-14",
+      "basis": "Preserve the applicable current public and stored-record guarantees at this accountable boundary. The named source retains exact schemas, operation tables, classifications, limits, and historical adoption obligations; this allocation neither replaces those details nor accepts REM authoring JSON as operational records."
+    }
+  ],
+  "constrains": [
+    "FUNC-044",
+    "FUNC-046",
+    "FUNC-047"
+  ]
+}

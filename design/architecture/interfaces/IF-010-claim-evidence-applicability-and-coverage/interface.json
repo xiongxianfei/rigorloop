@@ -1,0 +1,83 @@
+{
+  "id": "IF-010",
+  "type": "interface",
+  "title": "Claim evidence applicability and coverage",
+  "status": "draft",
+  "description": "A bounded assessment of actual evidence against an exact engineering claim, exposing criterion support, applicability limits, contradictions and recorded judgment basis without producing observations, semantic decisions or execution authority.",
+  "operations": [
+    {
+      "name": "assess_claim_support",
+      "purpose": "Supply inspectable evidence applicability and criterion coverage for the declared claim, including the limits of existing scoped judgments and the verification or reassessment still needed.",
+      "inputs": [
+        "Declared claim, exact subject and state, requirement and acceptance-criterion basis, included scope and relevant assessment conditions, with missing basis explicit.",
+        "Verification definitions and actual observations, each with its original method, subject, criteria, execution state, conditions, occurrence, accountable source and supporting evidence; planned, unavailable and incomplete observations remain distinguishable.",
+        "Existing applicability judgments, contradiction dispositions and scoped engineering judgments with their rationale and provenance, together with identified changes to the claim basis and incomplete dependency information.",
+        "Applicable freshness requirements and explicit owner-recorded deferrals and their limits. For release consumption, the exact retained candidate and required qualification basis supplied by Product release coordination remain identifiable, with later public obligations distinguished from prepublication support."
+      ],
+      "preconditions": [
+        "The proposed claim and offered evidence are identifiable; unresolved subject, criterion or condition binding remains an explicit assessment gap."
+      ],
+      "outputs": [
+        "Attributable per-criterion applicability and coverage: available applicable observations, concrete mismatches, unknowns, missing or unavailable support, and material contradictory evidence with its recorded disposition.",
+        "Existing scoped judgment basis, reasoning and limits, including unsupported portions and unresolved contradictions that prevent reliance on a broader satisfaction claim.",
+        "Support affected by changed subjects, criteria or conditions, with required applicability reassessment or verification repetition and any uncertainty about the affected scope."
+      ],
+      "behavior": [
+        "Compare each observation's original subject state, criterion basis, scope and relevant conditions against the declared claim. An unchanged identifier, retained test definition or passing label is not sufficient evidence of applicability.",
+        "Account for every included criterion, expose missing or inapplicable observations, and retain unperformed, interrupted and failed-to-execute assessment states separately from observed criterion failure.",
+        "Keep contrary observations and their recorded disposition visible alongside favorable evidence. Missing required support or an unresolved material contradiction leaves the affected claim unestablished.",
+        "Expose the reasoning, accountable source and limits of supplied engineering judgments without creating an unstated semantic conclusion from mechanical coverage. A narrower supported judgment names excluded scope; an accepted exception or tradeoff is not observed satisfaction.",
+        "After relevant changes, identify affected support and necessary reassessment or verification repetition. Incomplete dependencies remain visible as uncertainty; preserve original evidence and prior judgments against their historical basis.",
+        "Apply the supplied governing freshness and deferral requirements to reliance on evidence. For release consumption, required stale, incomplete, failed, contradictory or mismatched support remains blocking despite applicable approval; local, cached or preflight results cannot replace explicitly required fresh public observations.",
+        "Keep owner-recorded deferrals attributable with their rationale, accepted risk, follow-up and limits. An unapproved deferral, or one that purports to waive a nondeferable duty, does not supply the missing support. Any question of applicable permission remains separate under IF-009.",
+        "Return the bounded assessment and its provenance without executing verification, inventing observations or judgments, sealing a candidate, declaring full release qualification, authorizing publication or claiming public success."
+      ],
+      "failure_behavior": [
+        {
+          "condition": "Claim or observation binding, provenance, dependencies or supporting evidence is absent, inaccessible or ambiguous.",
+          "outcome": "Identify the concrete applicability or coverage gap and potentially affected scope; do not assume a favorable basis or fabricate missing evidence."
+        },
+        {
+          "condition": "Required evidence is stale, applies to an earlier or different basis, contains failed observations, is incomplete, or conflicts materially with other evidence without an adequate disposition.",
+          "outcome": "Keep the affected support unresolved or adverse and identify required reassessment, repetition or accountable disposition. Existing approval does not convert it into adequate release support."
+        },
+        {
+          "condition": "A planned check, generated expectation, pass label, accepted exception or out-of-scope judgment is offered as actual complete support.",
+          "outcome": "Expose the unsupported substitution and preserve the distinction between definitions, observations, engineering judgment and authority."
+        },
+        {
+          "condition": "A required fresh public observation has not occurred, or a deferral lacks its required basis or attempts to waive a nondeferable obligation.",
+          "outcome": "Report the outstanding obligation under its applicable stage and retain the limit on the claim; do not infer public success or reclassify the missing proof as satisfied."
+        }
+      ]
+    }
+  ],
+  "consistency_rules": [
+    "Verification definitions, observations, applicability assessments, criterion coverage, semantic judgments and execution authority retain distinct meanings and original attributable bases.",
+    "Coverage is scoped to the declared claim and included criteria. Prepublication qualification and later public verification remain distinct claims; absence of a later observation is never a fabricated current pass or an invented requirement to publish before candidate approval.",
+    "MOD-015 retains release-specific requirement selection, qualification, immutable candidate sealing, publication and external outcome reporting. This assessment supplies one input to those responsibilities; IF-005 artifact supply and IF-006 installation keep their existing contracts.",
+    "Favorable evidence support does not establish applicable authorization. A valid authority assessment under IF-009 does not waive missing, adverse, stale or contradictory required support."
+  ],
+  "compatibility_rules": [
+    "The existing assurance and Release contracts retain evidence meaning, exact identity, applicability, freshness, deferral and nondeferable duties. This draft prescribes no new evidence format, runner, persistence service or release qualification engine.",
+    "Changes to criterion or subject interpretation require explicit reassessment of affected support and reconciliation with consumers; prior evidence and judgments remain inspectable against their original basis.",
+    "This selected collaboration does not complete all assurance storage, execution, judgment-authoring, governance or release interactions, AR derivation, or runtime conformance."
+  ],
+  "sources": [
+    {
+      "source": "SRC-BOUNDARY-CONTRACTS",
+      "locator": "SCN-066; IF-010; MOD-017; MOD-015",
+      "basis": "Derive the selected Product delivery consumption of Engineering governance evidence-support analysis separately from authority. MOD-007 contributes FUNC-029 and FUNC-030; FUNC-027, FUNC-028 and FUNC-031 retain verification-definition, observation and judgment responsibilities. The consumer retains release qualification and actual execution."
+    },
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "SR-025; SR-026; SR-027; SR-028; SR-029; FUNC-027; FUNC-028; FUNC-029; FUNC-030; FUNC-031",
+      "basis": "Preserve planned-versus-observed evidence, exact applicability, per-criterion coverage, unresolved contradictions, scoped accountable judgment and reassessment after change without fabricating observations or semantic decisions."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "docs/design/engineering/release/release.md#REL-SR-08; REL-SR-09; REL-SR-23; REL-SR-24; SR-069; SR-070; FUNC-069; FUNC-070",
+      "basis": "Preserve exact-candidate qualification support, mandatory applicable non-deferred checks, explicit freshness, independent authority, changed-basis invalidation and separation of generated expectations from actual results. Release-specific sealing, publication and public verification remain consumer-owned."
+    }
+  ]
+}

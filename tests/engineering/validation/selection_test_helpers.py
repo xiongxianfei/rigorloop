@@ -69,11 +69,22 @@ EXPECTED_MODE_CHECK_IDS = {
         "governed_lifecycle_cli_wrapper.test", "adapters.full_regression",
         "main.adapters.build_archives", "main.adapters.validate_archives",
         "main.governed_lifecycle_cli.validate",
+        "rem.requirements", "rem.system", "rem.architecture", "rem.projection",
+        "rem.browser", "rem.inventory_current", "rem.browser_current", "rem.browser_syntax",
     ),
 }
 
 
 EXPECTED_CATALOG = {
+    'rem.requirements': 'python tests/engineering/validation/requirement_schema_tests.py',
+    'rem.system': 'python tests/engineering/validation/system_design_schema_tests.py',
+    'rem.architecture': 'python tests/engineering/validation/architecture_schema_tests.py',
+    'rem.projection': 'python tests/engineering/validation/architecture_view_tests.py',
+    'rem.browser': 'python tests/engineering/validation/architecture_browser_tests.py',
+    'rem.inventory_current': 'python scripts/render-rem-product-inventory.py --check',
+    'rem.browser_current': 'python scripts/render-rem-architecture-browser.py --check',
+    'rem.browser_syntax': 'node --check scripts/resources/rem-architecture-browser/viewer.js',
+
     "current_records.validate": "python scripts/validate-governed-lifecycle-cli.py",
     "current_records.snapshot": "python scripts/validate-governed-lifecycle-cli.py --revision <head>",
     "release_evidence.validate": "python scripts/release_evidence.py <path>...",

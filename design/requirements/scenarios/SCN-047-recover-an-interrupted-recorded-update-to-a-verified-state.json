@@ -1,0 +1,73 @@
+{
+  "id": "SCN-047",
+  "type": "scenario",
+  "title": "Recover an interrupted recorded update to a verified state",
+  "status": "confirmed",
+  "actor": "An engineer responsible for an interrupted recording operation",
+  "goal": "Complete the exact prepared update or restore its verified prior state without overwriting unrelated work or inventing new decisions.",
+  "context": "A previous supported write was interrupted and the change cannot be used as a coherent current snapshot.",
+  "trigger": "The engineer obtains the available transaction identity and explicitly chooses completion or restoration.",
+  "preconditions": [
+    "The engineer supplies the selected change, transaction, expected recovery identity, and supported recovery action."
+  ],
+  "interaction": [
+    {
+      "actor": "Engineer",
+      "action": "Explicitly requests completion of the prepared update or restoration of its verified prior state."
+    },
+    {
+      "actor": "System",
+      "action": "Checks available recovery information, the observed targets, and any freshness conditions required by the selected action."
+    },
+    {
+      "actor": "System",
+      "action": "Returns the verified recovered result or an explicit safe stop while preserving foreign content and the supported recovery boundary."
+    },
+    {
+      "actor": "Engineer",
+      "action": "Reads the resulting coherent state before relying on the restored or completed work."
+    }
+  ],
+  "expected_outcome": "The selected exact recovery outcome is established and attributable, without replaying semantic operations against newer content or rolling back acknowledged success.",
+  "alternatives": [
+    {
+      "condition": "The engineer chooses restoration of an uncommitted initial creation.",
+      "outcome": "Only transaction-created content and empty created directories are removed; preexisting or externally added content remains."
+    },
+    {
+      "condition": "The transaction already records acknowledged commitment.",
+      "outcome": "Only supported completion/cleanup is available; saved success is not rolled back."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "Recovery information is missing, tampered, unsupported, or a target has an unrecognized third state.",
+      "outcome": "The system stops without guessed repair, conversion, or overwrite of the foreign state."
+    },
+    {
+      "condition": "Completion basis changed or recovery is interrupted again.",
+      "outcome": "The system reports the bounded stop or remaining recovery state and permits an explicit later attempt with refreshed recovery identity."
+    }
+  ],
+  "exercises": [
+    "FEAT-013"
+  ],
+  "informs": [
+    "SR-040",
+    "SR-044",
+    "SR-045",
+    "SR-046"
+  ],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-CLI",
+      "locator": "docs/design/cli/cli.md#CLI-SR-05, CLI-SR-06, CLI-SR-09, CLI-SR-26, CLI-SR-27; docs/design/cli/records.md#RF-SR-08, RF-SR-14",
+      "basis": "IR-008 owns this black-box published-product situation. It exercises one durable Feature and informs the named system obligations; draft status leaves confirmation to semantic review and does not claim runtime verification."
+    },
+    {
+      "source": "SRC-PUBLISHED-PRODUCTS",
+      "locator": "SCN-047; design/requirements/published-products.md#review-and-validation",
+      "basis": "Independent review and author reconciliation confirmed this stakeholder situation, primary Feature, and SR coverage as current analysis knowledge. This does not approve requirements or establish implemented behavior or satisfaction."
+    }
+  ]
+}

@@ -1,0 +1,85 @@
+{
+  "id": "SR-040",
+  "type": "system-requirement",
+  "title": "Preserve explicit command admission and independent interface contracts",
+  "status": "draft",
+  "statement": "The system shall admit only explicitly selected supported command operations and inputs under their declared interface contracts, preserve independent version and outcome domains, and reject unsupported or ambiguous input at the required boundary without inventing selectors or operational support.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Callers can accidentally invoke withdrawn commands, mix transport versions with stored versions, or supply ambiguous selectors that would direct unintended work.",
+      "desired_outcome": "Each invocation has one understood public operation, exact input contract, and accurate response domain before dependent work begins."
+    },
+    "why": {
+      "rationale": "Predictable admission prevents an automation client from acting on an unintended operation or fabricated contract selection."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineers and reviewers operating on recorded engineering work",
+        "Engineering agents acting on explicit actor decisions",
+        "Maintainers and consumers of the published command-line interface"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "For public command selection, help/version requests, targeted and advanced operations, workflow-context configuration, and generic command use."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "Published command surfaces and their separately owned request, result, stored-record, document, configuration, and diagnostic version domains."
+      ]
+    },
+    "how": {
+      "approach": "Apply each command family's closed grammar and required selectors, validating unknown vocabulary before dependent consistency work. Preserve the current version-dispatch and early-error tables, bounded command help, generic projection/exit contracts, v3-only stored support, and explicit withdrawal boundaries in the retained CLI and Record Format owners."
+    },
+    "how_much": {
+      "scope": "All current public command families and the exact declared retired set. Generic installation outcomes remain governed by Installation. This does not reintroduce compact, lifecycle, new-change, the withdrawn query shim, the spec configuration kind, or a REM-record CLI."
+    }
+  },
+  "acceptance_criteria": [
+    "Recognized commands disclose operation-specific help without repository access when the contract requires it; help/version accurately identify supported commands and the delivered package.",
+    "Unknown or duplicate flags, extra positionals, missing or contradictory selectors, unsupported operations, and unknown configuration kinds reject before filesystem or stdin access where the owning command requires that order; rejected raw values are not echoed.",
+    "Primary requests, primary result versions including review.set/verify.set early errors, advanced requests/results, workflow-context, generic projections, and stored v3 remain independently versioned according to the retained dispatch tables.",
+    "Retired and unknown stored contracts, mixed-version stores, unsupported journals, and cross-version replacements receive the declared safe rejection with no conversion, fallback, implicit recovery, or historical-byte rewrite.",
+    "Generic human/JSON projection, quiet/debug/color behavior, semantic exit classes, and recording-specific outcome/exit classes retain their distinct published meanings."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-CLI",
+      "locator": "docs/design/cli/cli.md#CLI-SR-02, CLI-SR-10, CLI-SR-17, CLI-SR-18, CLI-SR-27, CLI-SR-28, CLI-SR-30, CLI-SR-31, CLI-SR-32; docs/design/cli/records.md#RF-SR-01, RF-SR-06, RF-SR-09, RF-SR-12, RF-SR-14",
+      "basis": "Derives this bounded published-product obligation from IR-008 and the named current CLI/Record Format contracts. Detailed schemas, command catalogs, limits and completed-retirement dispositions remain at those owners; this record does not transfer approval or implement REM-record operations."
+    },
+    {
+      "source": "SRC-CLI-ALLOCATION",
+      "locator": "SR-040 AC1; allocated contributors: AR-011",
+      "basis": "Operation-specific help without prohibited repository access, accurate supported package/command identity"
+    },
+    {
+      "source": "SRC-CLI-ALLOCATION",
+      "locator": "SR-040 AC2; allocated contributors: AR-011",
+      "basis": "Closed grammar, selector validation order, unknown configuration and safe diagnostics"
+    },
+    {
+      "source": "SRC-CLI-ALLOCATION",
+      "locator": "SR-040 AC3; allocated contributors: AR-011, AR-012",
+      "basis": "Independent public/transport dispatch plus separate operational stored contract; IF-003 must not infer stored identity from response version"
+    },
+    {
+      "source": "SRC-CLI-ALLOCATION",
+      "locator": "SR-040 AC4; allocated contributors: AR-012, AR-011",
+      "basis": "Persistence rejects unsupported stores/journals and cross-version material; command boundary preserves exact rejection and withdrawn dispatch"
+    },
+    {
+      "source": "SRC-CLI-ALLOCATION",
+      "locator": "SR-040 AC5; allocated contributors: AR-011",
+      "basis": "Generic and recording-specific presentation and exit domains remain distinct; detailed actual-outcome reporting composes with SR-046"
+    }
+  ],
+  "confirms": [
+    "FUNC-040",
+    "FUNC-048"
+  ]
+}

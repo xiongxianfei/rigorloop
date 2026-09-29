@@ -1,0 +1,50 @@
+{
+  "id": "FUNC-008",
+  "type": "function",
+  "title": "Author typed engineering relationships",
+  "status": "draft",
+  "description": "Create, revise, or remove one authoritative relationship fact in a selected candidate model and expose consistent endpoint views. Resolving identities and assessing the whole model are separate shared behaviors.",
+  "inputs": [
+    "Selected candidate model state and governing relationship profile.",
+    "Requested relationship operation, type, and endpoint identities."
+  ],
+  "preconditions": [],
+  "outputs": [
+    "Accepted relationship change with its authoritative fact and selected state.",
+    "Derived forward and reverse views or a diagnostic for a rejected or incomplete request."
+  ],
+  "behavior": [
+    "Interpret the requested type and endpoints using the selected profile and uniquely resolved entities.",
+    "Use the profile-selected authoritative containment representation for requirement parents and the selected authoritative representation for cross-domain facts.",
+    "Check declared endpoint types and cardinalities before accepting the proposed fact.",
+    "Derive opposite endpoint views from the accepted fact and reconcile them when it changes or is removed.",
+    "Preserve previous-state meanings and do not treat relationship authorship as approval or satisfaction."
+  ],
+  "failure_behavior": [
+    {
+      "condition": "An endpoint is missing or ambiguous, or a type is unknown.",
+      "outcome": "Reject the proposal with the unresolved endpoint or unsupported type identified."
+    },
+    {
+      "condition": "The proposed fact violates declared parentage or cardinality.",
+      "outcome": "Report the specific conflict without accepting a second authoritative representation."
+    },
+    {
+      "condition": "The operation cannot complete or the selected candidate changed.",
+      "outcome": "Report failure or a changed selection; do not claim a complete accepted relationship change."
+    }
+  ],
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "FUNC-008",
+      "basis": "IR-002 / SR-008 requires one authored relationship fact and consistent inverse views; SR-013 constrains the governing mechanical checks."
+    },
+    {
+      "source": "SRC-ARCHITECTURE-PILOT",
+      "locator": "FUNC-008",
+      "basis": "Propose MOD-002 as the single accountable architectural responsibility for the existing behavior. This allocation preserves the Function definition and does not establish implementation or completed interface/AR coverage outside the IR-001 pilot."
+    }
+  ],
+  "allocated_to": "MOD-002"
+}

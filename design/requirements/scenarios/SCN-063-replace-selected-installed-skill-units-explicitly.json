@@ -1,0 +1,96 @@
+{
+  "id": "SCN-063",
+  "type": "scenario",
+  "title": "Replace selected installed skill units explicitly",
+  "status": "confirmed",
+  "actor": "A project user replacing conflicting destination skills",
+  "goal": "Replace only the selected candidate units with the verified complete version while preserving unrelated work and retained originals.",
+  "context": "Some candidate skill destinations already exist, possibly with local changes or obsolete files.",
+  "trigger": "The user decides whether to replace the reported existing units.",
+  "preconditions": [
+    "The requested target and candidate can be verified and the intended replacement scope is identifiable."
+  ],
+  "interaction": [
+    {
+      "actor": "User",
+      "action": "Requests installation and reviews the reported existing-unit conflicts."
+    },
+    {
+      "actor": "System",
+      "action": "Identifies every discovered candidate conflict and explains the complete-unit replacement scope and loss of local modifications within it."
+    },
+    {
+      "actor": "User",
+      "action": "Explicitly authorizes force replacement of the selected candidate units."
+    },
+    {
+      "actor": "System",
+      "action": "Reports actual replaced and installed units, retained originals, and any safety or partial-failure limits."
+    }
+  ],
+  "expected_outcome": "Explicitly selected whole units are replaced from verified content without overlay leftovers or unrelated replacement, and the user receives an honest account of retained originals and effects.",
+  "alternatives": [
+    {
+      "condition": "A candidate destination exists with identical bytes or is empty.",
+      "outcome": "It is still reported as a default conflict and requires the same explicit replacement choice."
+    },
+    {
+      "condition": "Some units are absent while others conflict.",
+      "outcome": "Default installation changes none of them; an applicable force request can replace conflicting units and install absent ones."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "Force was not authorized for existing candidate units.",
+      "outcome": "The full conflict set is reported and no candidate unit is changed."
+    },
+    {
+      "condition": "A link, unsafe ancestor, changed preflight basis, unsupported safety primitive, or newly appearing destination is detected.",
+      "outcome": "The operation stops even under force; no additional replacement is silently authorized."
+    },
+    {
+      "condition": "Replacement or verification fails after some effects.",
+      "outcome": "Completed, failed, detached, partial, and untouched scope and retained-original locations are reported; retry requires fresh verification/preflight and explicit replacement choice."
+    }
+  ],
+  "exercises": [
+    "FEAT-019"
+  ],
+  "informs": [
+    "SR-065",
+    "SR-066",
+    "SR-007"
+  ],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-INSTALLATION",
+      "locator": "docs/design/cli/installation.md#DIST-SR-10",
+      "basis": "IR-010 owns this stakeholder situation. It exercises the selected published-product capability while preserving the source contract's observable success and adverse outcomes."
+    },
+    {
+      "source": "SRC-PUBLISHED-INSTALLATION",
+      "locator": "docs/design/cli/installation.md#DIST-SR-12",
+      "basis": "IR-010 owns this stakeholder situation. It exercises the selected published-product capability while preserving the source contract's observable success and adverse outcomes."
+    },
+    {
+      "source": "SRC-PUBLISHED-INSTALLATION",
+      "locator": "docs/design/cli/installation.md#DIST-SR-13",
+      "basis": "IR-010 owns this stakeholder situation. It exercises the selected published-product capability while preserving the source contract's observable success and adverse outcomes."
+    },
+    {
+      "source": "SRC-PUBLISHED-INSTALLATION",
+      "locator": "docs/design/cli/installation.md#DIST-SR-14",
+      "basis": "IR-010 owns this stakeholder situation. It exercises the selected published-product capability while preserving the source contract's observable success and adverse outcomes."
+    },
+    {
+      "source": "SRC-PUBLISHED-INSTALLATION",
+      "locator": "docs/design/cli/installation.md#DIST-SR-15",
+      "basis": "IR-010 owns this stakeholder situation. It exercises the selected published-product capability while preserving the source contract's observable success and adverse outcomes."
+    },
+    {
+      "source": "SRC-PUBLISHED-PRODUCTS",
+      "locator": "SCN-063; design/requirements/published-products.md#review-and-validation",
+      "basis": "Independent review and author reconciliation confirmed this stakeholder situation, primary Feature, and SR coverage as current analysis knowledge. This does not approve requirements or establish implemented behavior or satisfaction."
+    }
+  ]
+}

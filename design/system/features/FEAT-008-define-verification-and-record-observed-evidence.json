@@ -1,0 +1,30 @@
+{
+  "id": "FEAT-008",
+  "type": "feature",
+  "title": "Define verification and record observed evidence",
+  "status": "draft",
+  "description": "Verification engineers and reviewers can specify how a requirement criterion will be assessed and preserve what actually happened during that assessment. They can distinguish expected observations, actual results, incomplete execution, and unavailable support before drawing an engineering conclusion.",
+  "scope": {
+    "includes": [
+      "Define requirement criteria, exact assessed subject state, technique, conditions, and expected observations.",
+      "Record identifiable assessment occurrences and actual observations with supporting evidence and provenance.",
+      "Keep plans, unperformed checks, partial assessments, failures to execute, and observed criterion failures distinguishable."
+    ],
+    "excludes": [
+      "Automatically selecting all verification techniques or requiring CI.",
+      "Claiming satisfaction from a definition or result label alone.",
+      "Replacing evidence-applicability review or accountable engineering judgments."
+    ]
+  },
+  "realized_by": [
+    "FUNC-027",
+    "FUNC-028"
+  ],
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "FEAT-008",
+      "basis": "IR-004 and SR-025 and SR-026 establish the distinct method and observation responsibilities needed before claim support can be judged."
+    }
+  ]
+}

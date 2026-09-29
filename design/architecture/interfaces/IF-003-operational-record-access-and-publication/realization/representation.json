@@ -1,0 +1,14 @@
+{
+  "observed": {
+    "representation": [
+      "Snapshot state is passed as path-to-content mappings with format, reader, and revision context; candidate construction returns an advanced request plus changed targets/effects. Record transport objects, exact source text, and result objects retain their existing distinct schemas."
+    ],
+    "sources": [
+      {
+        "source": "SRC-CLI-SOURCE",
+        "locator": "packages/rigorloop/dist/lib/record-store.js prepareResult, record, recover, executeRecordStore, withRecordSnapshot, executeTargetedStore; the remaining bindings at 9055b3c0",
+        "basis": "The concrete call and callback structure supports an operation-to-code mapping. Public/storage contracts remain authoritative, and source inspection alone is not runtime assurance."
+      }
+    ]
+  }
+}

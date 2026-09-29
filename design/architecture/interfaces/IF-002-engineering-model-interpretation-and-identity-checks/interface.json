@@ -1,0 +1,85 @@
+{
+  "id": "IF-002",
+  "type": "interface",
+  "title": "Engineering model interpretation and identity checks",
+  "status": "draft",
+  "description": "Interpret supplied state-scoped model content under its declared profile and assess identity presence and uniqueness over an explicitly supplied candidate scope. These operations do not retain content or authorize changes.",
+  "operations": [
+    {
+      "name": "interpret_model_content",
+      "purpose": "Interpret content using the profile declared for its selected model state.",
+      "inputs": [
+        "Selected model/state identity and raw content with its acquisition scope and completeness.",
+        "The state's declared profile identity and available authoritative profile definitions."
+      ],
+      "preconditions": [],
+      "outputs": [
+        "Interpreted content and declared profile with state/scope/completeness, or explicit missing, unsupported, incompatible, incomplete, or failed interpretation.",
+        "Identifiable governing interpretation context: applicable entity, field, relationship, cardinality, identity, naming, lifecycle, and validity definitions, directly available or through resolvable references bound to the selected state and profile."
+      ],
+      "behavior": [
+        "Use the supplied declaration and applicable profile definitions without silently applying the newest profile.",
+        "Interpret identities, record kinds, and authoritative references only within the understood supplied scope.",
+        "Preserve incomplete acquisition limits in the result; successful interpretation of a portion does not establish full-state completeness.",
+        "Make this operation independent of IF-001 interpreted retrieval; raw content and its declaration are supplied by the caller.",
+        "Expose the governing definitions alongside interpretation results. A profile label without accessible rules does not establish an inspectable interpretation context; report unavailable context explicitly."
+      ],
+      "failure_behavior": [
+        {
+          "condition": "The declaration is absent, definitions unavailable, or a rule/type unsupported.",
+          "outcome": "Identify the interpretation gap without changing profiles or migrating the source."
+        },
+        {
+          "condition": "The content/profile association is inconsistent or interpretation fails.",
+          "outcome": "Return the affected subject/state/scope and do not claim a complete valid interpretation."
+        }
+      ]
+    },
+    {
+      "name": "check_candidate_identities",
+      "purpose": "Determine identity presence and uniqueness in a supplied candidate model scope.",
+      "inputs": [
+        "Candidate model state and its base-state identity.",
+        "Interpreted entity definitions forming the proposed resulting view (including the replacement of the same existing subject where applicable), declared profile, required scope, and explicit completeness of that supplied view."
+      ],
+      "preconditions": [],
+      "outputs": [
+        "Missing-identity and duplicate-identity findings with affected definitions, checked state/scope, and complete or incomplete identity-check outcome."
+      ],
+      "behavior": [
+        "Require an explicit nonblank identity on every inspected entity.",
+        "Compare identities across distinct entities regardless of names, kinds, and locations; equal display names with different identities are permitted.",
+        "Report model-wide uniqueness only after the complete required candidate scope is inspected.",
+        "Return findings bound to the actual supplied candidate/state; the retaining caller must establish that the same candidate remains applicable at the point of retention.",
+        "An update replaces the original occurrence of the same subject in the candidate view; distinct entities must not be omitted or treated as that replacement to conceal duplicate identities."
+      ],
+      "failure_behavior": [
+        {
+          "condition": "A required part of the candidate view is missing or uninterpretable.",
+          "outcome": "Report incomplete checking and known findings without a model-wide validity conclusion."
+        },
+        {
+          "condition": "Identity is absent or shared by distinct entities.",
+          "outcome": "Identify the conflicting records and reject identity validity for that candidate."
+        }
+      ]
+    }
+  ],
+  "consistency_rules": [
+    "The operation result identifies the supplied subject, profile, state, and inspected scope. It cannot be reused as a conclusion about a different candidate or revision.",
+    "Interpretation and identity-check findings are structural results, distinct from requirement satisfaction, semantic adequacy, and applicable authority.",
+    "No call obtains its own inputs by recursively requesting interpreted retrieval from IF-001; consumers provide the raw or interpreted candidate views specified by the operation."
+  ],
+  "compatibility_rules": [
+    "Support is explicit for the profile declared by the subject state. Unsupported constructs receive a diagnostic rather than a fallback interpretation.",
+    "Changes to interpretation or identity-result meaning require reassessing both storage and authoring consumers and preserving historical-state meaning.",
+    "The contract chooses no parser, schema implementation, wire format, or migration mechanism."
+  ],
+  "sources": [
+    {
+      "source": "SRC-ARCHITECTURE-PILOT",
+      "locator": "IF-002",
+      "basis": "Derive the conformance boundary from SR-002/FUNC-002 and shared SR-012/FUNC-012; preserve SR-014 separation of structural findings and judgments. Supplied scope avoids circular interpretation dependencies."
+    }
+  ]
+}

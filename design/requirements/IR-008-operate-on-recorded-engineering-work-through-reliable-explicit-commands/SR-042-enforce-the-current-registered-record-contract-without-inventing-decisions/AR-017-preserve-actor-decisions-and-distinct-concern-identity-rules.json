@@ -1,0 +1,65 @@
+{
+  "id": "AR-017",
+  "type": "allocated-requirement",
+  "title": "Preserve actor decisions and distinct concern identity rules",
+  "status": "draft",
+  "statement": "The Operational record persistence Module shall enforce the applicable prior-state preservation rules without altering actor-supplied meaning or treating engineering observations as structural approval, while distinguishing current Review finding identity from immutable change-blocker origin.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "A structurally shaped replacement can erase a finding, rewrite a blocker's original basis, or silently turn a mechanical observation into a new assessment.",
+      "desired_outcome": "Explicit corrections remain possible while retained concern identity, original blocker basis, and actor-owned decisions stay attributable."
+    },
+    "why": {
+      "rationale": "SR-042 separates structural validity from judgment and requires different preservation rules for findings and blockers; MOD-011 owns the prior/candidate comparison."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineers and agents supplying explicit command requests",
+        "Maintainers of MOD-011 and its Interface consumers"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "A candidate changes assessments, explanation values, findings, or blockers, or contains failed evidence, completed activity, or historical subject drift."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "IF-003 validation against the coherent prior records and complete candidate for the same selected change."
+      ]
+    },
+    "how": {
+      "approach": "Compare only the preservation invariants applicable to the declared operation, retaining supplied decisions and separating recorded assertions from current mechanical observations."
+    },
+    "how_much": {
+      "scope": "Actor-supplied subjects, applicability, narrative, provenance, status, decisions, finding IDs, blocker origin, and conditional Verify basis under the retained v3 contract."
+    }
+  },
+  "acceptance_criteria": [
+    "Actor-supplied status, subjects, applicability, provenance, explanation collection order and multiline meaning survive validation unchanged; neither a renderer nor validation creates another authoritative report.",
+    "Existing Review finding IDs cannot be removed or renamed, and finding origin/basis snapshots are not admitted. Explicit valid correction may change any permitted non-ID current field without implicitly changing the Review assessment.",
+    "Full Review recording and explanation-only updates preserve all complete existing findings, while explicit finding operations follow their own mutable-field rules.",
+    "Every existing change-level blocker retains its complete original Origin unchanged throughout its lifetime, including after disposition; current judgments and concern-field edits cannot replace its supporting basis.",
+    "Failed evidence, completed activity, historical external-subject drift, or absent optional verification_basis alone does not reject a structurally sound correction. Invalid internal references and failed explicitly declared freshness checks retain their independent rejection or conflict rules.",
+    "Recorded roles, matching hashes, supplied judgments, or a successful validation do not establish approval, independence, applicability, or completion. Verify-basis necessity remains a reliance decision at its current owner and is never inferred from prose or treated as a Git instruction."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "allocated_to": "MOD-011",
+  "sources": [
+    {
+      "source": "SRC-CLI-ALLOCATION",
+      "locator": "SR-042 / AR-017; MOD-011",
+      "basis": "Derive this draft lower-level obligation from the containing SR at the selected command or operational-record responsibility boundary. Allocation and acceptance criteria are design claims for review, not implementation, requirement approval, or satisfaction evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-CLI",
+      "locator": "docs/design/cli/cli.md#CLI-SR-07, CLI-SR-26; docs/design/cli/records.md#RF-SR-03, RF-SR-04, RF-SR-05, RF-SR-08, RF-SR-10, RF-SR-11, RF-SR-13",
+      "basis": "Preserve the applicable current public and stored-record guarantees at this accountable boundary. The named source retains exact schemas, operation tables, classifications, limits, and historical adoption obligations; this allocation neither replaces those details nor accepts REM authoring JSON as operational records."
+    }
+  ],
+  "constrains": [
+    "FUNC-044"
+  ]
+}

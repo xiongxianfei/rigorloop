@@ -1,0 +1,89 @@
+{
+  "id": "IR-006",
+  "type": "initial-requirement",
+  "title": "Guide people and agents in authoring engineering models",
+  "status": "draft",
+  "statement": "People and engineering agents need understandable guidance for creating, refining, relating, and retiring engineering definitions so they can author and maintain engineering models that express the intended needs, behavior, and responsibilities.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Knowing which fields and relationships exist does not tell an author how to analyze a need, develop an engineering definition, or correct an inadequate one.",
+      "desired_outcome": "People and agents can use the applicable methods to produce understandable engineering definitions and identify information that still needs analysis or judgment."
+    },
+    "why": {
+      "rationale": "Model rules alone do not explain how to investigate a need, choose the appropriate engineering concept, develop a clear definition, or resolve a gap. Without usable authoring guidance, participants can produce formally valid records that fail to communicate the engineering intent."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineers and other model authors",
+        "Model maintainers and reviewers",
+        "Engineering agents assisting with authoring"
+      ],
+      "affected_users": [
+        "Authors who understand basic engineering practice but are new to REM",
+        "Experienced REM authors and reviewers looking up applicable rules",
+        "Engineering agents authoring or reviewing within an authorized scope"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "Applies when participants learn the model, begin an authoring activity, refine existing definitions, address review or validation findings, and adapt their authoring practice after the method changes."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "Within the supported authoring activities for Requirement Analysis, System Design, and Architecture Design, using the applicable methods and model rules maintained by Operational Support."
+      ]
+    },
+    "how": {
+      "approach": "Use the same canonical engineering concepts, methods, and rules for people and agents. Human guidance provides concise rationale, worked examples, and navigation to the applicable owner. Agent guidance uses those same sources with deterministic record formats, identifiable validation diagnostics, and the authority context for the requested activity; it does not require a particular agent host or skill. Assess guidance with prepared task inputs and expected semantic outcomes: create an IR with all seven 5W2H answers and derive an SR with exactly one IR parent; analyze a black-box Scenario and distinguish a Feature from its logical Functions; allocate an AR and a Function consistently to a Module; define an Interface with an explicit provider and consumer; rename a requirement while preserving its identity and parentage and reconciling current references; identify and correct a wrongly typed or unresolved reference; and retire a definition while transferring current obligations and preserving recoverable historical meaning. A task passes when its intended outcome is produced using the stated inputs and canonical guidance, applicable checks pass, and the participant can explain the governing rule without relying on the originating conversation. Record incorrect outcomes, unresolved ambiguities, and additional help needed as findings. These are assessment conditions to apply as the relevant authoring formats become available, not observations that guidance has already passed an assessment."
+    },
+    "how_much": {
+      "scope": "The initial RigorLoop authoring profile covers one governed project's baseline-oriented model authoring: IR, SR, and AR analysis and derivation; black-box Scenario analysis; Feature and Function definition; Module and Interface definition; and relationship authoring, naming, retirement, and correction of review or validation findings. It supports the participant groups listed under Who. Representation rules for an entity type must be defined before creating records claimed to conform to that type; draft IR, SR, AR, Scenario, Feature, Function, Module, and Interface schemas now define record shapes. These schemas do not establish runtime authoring support or successful guidance assessment. Broader authoring support can be introduced through controlled profile evolution. Preserving authored knowledge belongs to IR-001, and authority for adopting changes or recovering prior states belongs to IR-003. Authoring guidance informs those activities without itself granting approval or establishing requirement satisfaction. The need does not prescribe an editing interface, automation mechanism, or agent provider."
+    }
+  },
+  "assumptions": [
+    "Initial guidance assumes participants have basic engineering knowledge; it teaches REM concepts and authoring practice rather than serving as general engineering education."
+  ],
+  "constraints": [],
+  "sources": [
+    {
+      "source": "SRC-REM",
+      "locator": "Sections 22 and 33",
+      "basis": "Operational Support defines authoring and maintenance rules, and the engineering cycle describes the activities through which requirements and designs are developed and refined."
+    },
+    {
+      "source": "SRC-VISION",
+      "locator": "Durable lessons; Who it is for",
+      "basis": "Existing project intent includes improving guidance from engineering lessons and supporting contributors, maintainers, and teams working with engineering agents."
+    },
+    {
+      "source": "SRC-REQUIREMENT-EXPANSION",
+      "locator": "IR-006: Guide people and agents in authoring engineering models",
+      "basis": "The user authorized drafting this initial need as part of the expanded requirement inventory; the record remains a draft."
+    },
+    {
+      "source": "SRC-QUESTION-RESOLUTION",
+      "locator": "IR-006",
+      "basis": "Selects the initial authoring activities, participant support, and observable assessment outcomes; these are draft profile decisions rather than usability evidence."
+    },
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "IR-006",
+      "basis": "Complete the draft IR-to-SR and Scenario/Feature/Function analysis for the existing declared scope; preserve the original need and separate draft analysis from implementation, approval, and satisfaction."
+    },
+    {
+      "source": "SRC-PUBLISHED-PRODUCTS",
+      "locator": "IR-006; current authoring-schema availability",
+      "basis": "Reconcile the current analysis with the eight available authoring schemas introduced through the initial architecture pilot. The need, assessment conditions, runtime-support limits, and historical analysis remain unchanged."
+    }
+  ],
+  "confirms": [
+    "FEAT-010",
+    "SCN-031",
+    "SCN-032",
+    "SCN-033",
+    "SCN-034",
+    "SCN-040"
+  ]
+}

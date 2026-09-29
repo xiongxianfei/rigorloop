@@ -1,0 +1,39 @@
+{
+  "id": "MOD-002",
+  "type": "module",
+  "title": "Engineering model authoring",
+  "status": "draft",
+  "description": "Determine supported changes to engineering definitions and authored relationships while preserving entity identity and the meaning of containment.",
+  "responsibilities": [
+    "Prepare same-entity revisions and explain unsupported identity or parentage changes.",
+    "Author relationship facts once and preserve their intended endpoints when preparing a resulting model state.",
+    "Submit an explicit revision candidate for checked retention and report its actual outcome."
+  ],
+  "owned_state": [
+    "Proposed definition and relationship edits while an authoring operation is being prepared; retained content belongs to Engineering model storage."
+  ],
+  "scope": {
+    "includes": [
+      "Supported same-entity edits and typed relationship authoring."
+    ],
+    "excludes": [
+      "Independent copies of stored definitions, authoritative inverse relationship lists, semantic reparenting disguised as a rename, or change approval."
+    ]
+  },
+  "provides": [],
+  "consumes": [
+    "IF-001",
+    "IF-002"
+  ],
+  "design_limits": [
+    "The IR-001 pilot covers FUNC-005 through IF-001 and IF-002. Relationship-edit contracts for FUNC-008 remain to be designed with IR-002.",
+    "Actor-facing command or presentation adapters are not designed here. Any adoption into an engineering baseline remains subject to the separately governed change authority."
+  ],
+  "sources": [
+    {
+      "source": "SRC-ARCHITECTURE-PILOT",
+      "locator": "MOD-002",
+      "basis": "Analyst-proposed responsibility boundary derived from the existing Function landscape. Assigned Functions remain authoritative for behavior; this record describes target architecture, not observed implementation."
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "id": "FUNC-053",
+  "type": "function",
+  "title": "Guide a bounded specialist engineering activity",
+  "status": "draft",
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-03",
+      "basis": "Defines common invocation or composition behavior required by IR-009 while preserving the detailed specialist owner and shared existing authority, context, and assurance responsibilities."
+    },
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-04",
+      "basis": "Defines common invocation or composition behavior required by IR-009 while preserving the detailed specialist owner and shared existing authority, context, and assurance responsibilities."
+    },
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-12",
+      "basis": "Defines common invocation or composition behavior required by IR-009 while preserving the detailed specialist owner and shared existing authority, context, and assurance responsibilities."
+    },
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-24",
+      "basis": "Defines common invocation or composition behavior required by IR-009 while preserving the detailed specialist owner and shared existing authority, context, and assurance responsibilities."
+    },
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-27",
+      "basis": "Defines common invocation or composition behavior required by IR-009 while preserving the detailed specialist owner and shared existing authority, context, and assurance responsibilities."
+    },
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-29",
+      "basis": "Defines common invocation or composition behavior required by IR-009 while preserving the detailed specialist owner and shared existing authority, context, and assurance responsibilities."
+    },
+    {
+      "source": "SRC-PUBLISHED-PRODUCTS",
+      "locator": "FUNC-053",
+      "basis": "Assign MOD-012 as the proposed accountable primary responsibility after Functional Analysis. Current product source contracts retain detailed behavior authority; allocation is not runtime adoption or complete AR coverage."
+    }
+  ],
+  "description": "Apply the selected specialist procedure to an authorized activity and explain or produce its scoped usable result. This Function composes the public engineering guidance contract without replacing the specialist methods or duplicating model-authoring, authority, or evidence judgments.",
+  "inputs": [
+    "Prepared invocation and complete applicable specialist instructions, resources, and project evidence.",
+    "Existing artifacts or implementation subjects, relevant findings, and applicable authority and assessment results."
+  ],
+  "preconditions": [],
+  "outputs": [
+    "Usable specialist artifact, correction, assessment explanation, or supported partial or blocked result.",
+    "Actual changed scope, observations, remaining obligations, and the local handoff or limit."
+  ],
+  "behavior": [
+    "Follow the specialist-owned procedure and applicable project policy for the requested activity; keep authoring, execution, assessment, support, and external handoff duties distinct.",
+    "For adopted REM model authoring, use existing canonical method-selection and authoring/correction behavior; do not treat REM draft definitions as runtime adoption.",
+    "Use the complete applicable output shape, fill required groups, omit inapplicable groups, and leave no unfilled placeholders; do not turn structural aids into policy or mutable state owners.",
+    "Preserve specialist mutation, identity, recovery, independence, and evidence rules rather than substituting a common checklist.",
+    "Use current authoritative vocabulary and privacy-safe evidence, distinguish actual observations from judgments, and report scope and claim limits.",
+    "Identify the local receiving activity without assuming permission to execute it."
+  ],
+  "failure_behavior": [
+    {
+      "condition": "Essential authority, procedure, subject, or evidence is unavailable or conflicts.",
+      "outcome": "Report the affected unfinished scope and responsible decision or correction owner without inventing an output or claiming completion."
+    },
+    {
+      "condition": "The requested artifact or operation is not supported by the current adopted contract.",
+      "outcome": "Explain the support or adoption gap; do not revive a retired format or operation."
+    }
+  ],
+  "allocated_to": "MOD-012"
+}

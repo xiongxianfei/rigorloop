@@ -1,0 +1,68 @@
+{
+  "id": "AR-020",
+  "type": "allocated-requirement",
+  "title": "Admit record publication only against a fresh contained basis",
+  "status": "draft",
+  "statement": "The Operational record persistence Module shall admit record publication only for the explicit allowed target set after checking the supplied revision, target identities, declared decision basis, and complete candidate under the common supported-writer exclusion and containment rules.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "A validated candidate can become stale before publication, and an adapter-specific write path can bypass protection of other work.",
+      "desired_outcome": "All supported writers make the same bounded freshness and target-safety decision against the state actually used for publication."
+    },
+    "why": {
+      "rationale": "SR-044 requires conflict detection and safe retry before any candidate can become authoritative; preview or earlier structural success cannot reserve a state."
+    },
+    "who": {
+      "stakeholders": [
+        "Actors recording explicit engineering decisions",
+        "Consumers of coherent operational records",
+        "Maintainers of MOD-011"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "A primary, advanced, helper, initial-creation, or batch writer requests publication.",
+        "A candidate is repeated after preview, contention, or a lost response."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "The selected change and its exact allowed authoritative target set at IF-003 publication admission.",
+        "Explicitly declared contained decision-basis subjects, which remain outside the write set."
+      ]
+    },
+    "how": {
+      "approach": "Use one supported-writer exclusion and candidate-validation boundary. Check supplied expectations and safe path identities without refreshing them, then recognize a no-op only after current preconditions hold."
+    },
+    "how_much": {
+      "scope": "Current supported operational-record writers and explicitly selected basis subjects. Protect observed ancestor substitution and unsafe authoritative targets without claiming atomic exclusion of arbitrary external editors. No arbitrary repository write, semantic merge, or new platform guarantee is introduced."
+    }
+  },
+  "acceptance_criteria": [
+    "Before replacing authoritative bytes, require the supplied expected revision, exact target set and target identities, and declared decision-basis identities to agree with the observed selected state under supported-writer exclusion. A mismatch returns conflict without silent refresh, merge, or publication; the actor must reread and decide again.",
+    "A competing supported CLI writer cannot pass unnoticed through an independent adapter path. Primary, advanced, helper, creation, and batch writers use the same exclusion and protection boundary; contention returns the applicable busy or conflict outcome.",
+    "Reject cross-change or unsupported targets, traversal, symlink escape, observed ancestor substitution, hard-linked authoritative targets, and unexpected overwrite before the affected write. Registry content cannot expand the selected-change allowlist, and an existing directory is not silently adopted as an absent creation root.",
+    "Validate the complete final candidate rather than requiring every intermediate batch edit to be independently complete. The actual write starts afresh under supported-writer exclusion, rereads and checks the current state, and reconstructs targeted edits against that state or admits supplied advanced replacement bytes through the same complete-candidate validation boundary before receipt serialization and replacement. A preview or earlier check provides neither a reservation nor reusable publication authority for its candidate.",
+    "Check expected revision before no-op recognition. A fresh identical candidate returns unchanged without rewriting bytes; a lost-response retry with the old revision conflicts even if the earlier publication succeeded. Repetition cannot duplicate an entry, increment a semantic state, or confer new approval.",
+    "Decision-basis files are checked immediately before publication without substituting newly observed identities for the actor expectations. Those files are not added to the mutation set; subsequent commitment checks and interrupted effects follow the durable-publication and recovery obligations."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "allocated_to": "MOD-011",
+  "constrains": [
+    "FUNC-046"
+  ],
+  "sources": [
+    {
+      "source": "SRC-CLI-ALLOCATION",
+      "locator": "AR-020",
+      "basis": "Derived from SR-044 for the proposed MOD-011 responsibility. Allocates SR-044 acceptance criteria 1, 3, and 4, and the admission portions of criteria 2, 5, and 6 to FUNC-046. AR-021 owns durable publication and AR-022 applies the same protection boundary to explicit recovery. These criteria specify intended observations, not executed product evidence or an adoption of the REM authoring format by the CLI."
+    },
+    {
+      "source": "SRC-PUBLISHED-CLI",
+      "locator": "docs/design/cli/cli.md#CLI-SR-03, CLI-SR-04, CLI-SR-08, CLI-SR-09, CLI-SR-12, CLI-SR-15, CLI-SR-16; docs/design/cli/records.md#RF-SR-08",
+      "basis": "Retains the named current CLI and Record Format obligations at this allocated responsibility boundary. Their detailed formats, supported versions, limits, and observed external-edit boundaries remain authoritative; no runtime behavior or public contract is changed by this draft."
+    }
+  ]
+}

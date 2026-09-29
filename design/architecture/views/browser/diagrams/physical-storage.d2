@@ -1,0 +1,160 @@
+# Generated from explicit REM realization facts; do not edit.
+# Source identity: 2cf8f01cf8087e0b226dbd431d6452970b13954a16b84408d91173987708417e
+# Source-observed physical relationships. Names identify recorded packages, execution contexts, and placement locations; location text does not identify a machine or establish connectivity. Select a placement for exact paths and constraints. This is not deployment or artifact qualification. Arrows preserve each access's participant and mode; a shared process does not grant every participant access to every placement. Dashed undirected links are explicit location constraints.
+vars: { d2-config: { layout-engine: elk } }
+direction: down
+
+n_706c6163656d656e743a4d4f442d3031303a6465706c6f796d656e743a434c492072756e74696d65207061636b616765: "CLI runtime package\n\nCLI package root" {
+  link: "#physical/MOD-010"
+  tooltip: "CLI runtime package; location: CLI package root; relative paths: dist/bin/rigorloop.js; dist/lib/; dist/metadata/; package.json"
+  style.fill: "#EEF6F1"
+  style.stroke: "#597390"
+  style.font-color: "#24364A"
+  style.font-size: 16
+  style.border-radius: 7
+}
+n_657865637574696f6e3a4d4f442d3031303a434c492070726f63657373: "CLI process\nNode.js" {
+  link: "#process/MOD-010"
+  style.fill: "#F6F9FF"
+  style.stroke: "#93A9C6"
+  style.font-size: 18
+  style.border-radius: 9
+  label.near: top-left
+  n_4d4f442d303130: "Engineering command\ninterface" {
+    link: "#module/MOD-010"
+    tooltip: "Engineering command interface (MOD-010)"
+    style.fill: "#ECF3FF"
+    style.stroke: "#597390"
+    style.font-color: "#24364A"
+    style.font-size: 16
+    style.border-radius: 7
+  }
+  n_4d4f442d303131: "Operational record\npersistence" {
+    link: "#module/MOD-011"
+    tooltip: "Operational record persistence (MOD-011)"
+    style.fill: "#ECF3FF"
+    style.stroke: "#597390"
+    style.font-color: "#24364A"
+    style.font-size: 16
+    style.border-radius: 7
+  }
+  n_4d4f442d303134: "Verified skill\ninstallation" {
+    link: "#module/MOD-014"
+    tooltip: "Verified skill installation (MOD-014)"
+    style.fill: "#ECF3FF"
+    style.stroke: "#597390"
+    style.font-color: "#24364A"
+    style.font-size: 16
+    style.border-radius: 7
+  }
+}
+n_706c6163656d656e743a4d4f442d3031303a6465706c6f796d656e743a434c492072756e74696d65207061636b616765 -> n_657865637574696f6e3a4d4f442d3031303a434c492070726f63657373: "supplies\nimplementation" {
+  style.stroke: "#526C8A"
+  style.font-color: "#344D67"
+  style.fill: "#FFFFFF"
+  style.font-size: 14
+}
+n_706c6163656d656e743a4d4f442d3031313a70657273697374656e63653a52656769737465726564206f7065726174696f6e616c207265636f726473: "Registered operational\nrecords\n\nSelected project\nfilesystem" {
+  link: "#physical/MOD-011"
+  tooltip: "Registered operational records; location: Selected project filesystem; relative paths: docs/changes/{change_id}/"
+  style.fill: "#EEF6F1"
+  style.stroke: "#597390"
+  style.font-color: "#24364A"
+  style.font-size: 16
+  style.border-radius: 7
+}
+n_657865637574696f6e3a4d4f442d3031303a434c492070726f63657373.n_4d4f442d303131 -> n_706c6163656d656e743a4d4f442d3031313a70657273697374656e63653a52656769737465726564206f7065726174696f6e616c207265636f726473: "reads\nand\nwrites" {
+  style.stroke: "#526C8A"
+  style.font-color: "#344D67"
+  style.fill: "#FFFFFF"
+  style.font-size: 14
+  tooltip: "Inspect registered operational records and publish or recover explicitly selected record changes.\nConditions: The command selects its project root explicitly. Queries and preview only read authoritative bytes; admitted writes and recovery use the current transaction protocol.; This access concerns current registered operational records. It does not establish that the CLI reads or writes the REM design tree."
+}
+n_706c6163656d656e743a4d4f442d3031313a70657273697374656e63653a5265636f7264207472616e73616374696f6e206d65746164617461: "Record transaction\nmetadata\n\nSelected project\nfilesystem" {
+  link: "#physical/MOD-011"
+  tooltip: "Record transaction metadata; location: Selected project filesystem; relative paths: .rigorloop/record-store/{change_id}/lock; .rigorloop/record-store/{change_id}/epoch; .rigorloop/record-store/{change_id}/journal.json"
+  style.fill: "#EEF6F1"
+  style.stroke: "#597390"
+  style.font-color: "#24364A"
+  style.font-size: 16
+  style.border-radius: 7
+}
+n_657865637574696f6e3a4d4f442d3031303a434c492070726f63657373.n_4d4f442d303131 -> n_706c6163656d656e743a4d4f442d3031313a70657273697374656e63653a5265636f7264207472616e73616374696f6e206d65746164617461: "reads\nand\nwrites" {
+  style.stroke: "#526C8A"
+  style.font-color: "#344D67"
+  style.fill: "#FFFFFF"
+  style.font-size: 14
+  tooltip: "Inspect reader gates and retained recovery state; maintain owned lock, epoch, and journal during actual publication or recovery.\nConditions: The private paths use the same explicitly selected root and change as the record operation. Preview does not create private transaction data.; Journal/lock lifecycle and exact recovery guarantees remain in the Process view; a physical access edge is not a sequence or proof of durable effects."
+}
+n_706c6163656d656e743a4d4f442d3031343a6465706c6f796d656e743a53656c65637465642074617267657420736b696c6c20756e697473: "Selected target skill\nunits\n\nInvocation project\nfilesystem" {
+  link: "#physical/MOD-014"
+  tooltip: "Selected target skill units; location: Invocation project filesystem; relative paths: .agents/skills/{skill}/; .claude/skills/{skill}/"
+  style.fill: "#EEF6F1"
+  style.stroke: "#597390"
+  style.font-color: "#24364A"
+  style.font-size: 16
+  style.border-radius: 7
+}
+n_657865637574696f6e3a4d4f442d3031303a434c492070726f63657373.n_4d4f442d303134 -> n_706c6163656d656e743a4d4f442d3031343a6465706c6f796d656e743a53656c65637465642074617267657420736b696c6c20756e697473: "reads\nand\nwrites" {
+  style.stroke: "#526C8A"
+  style.font-color: "#344D67"
+  style.fill: "#FFFFFF"
+  style.font-size: 14
+  tooltip: "Preflight selected target units and perform verified creation or explicitly permitted whole-unit replacement.\nConditions: Installation uses the invoking working directory. codex and claude select alternative target roots; their units are not both installed by every request.; Dry-run performs only its admitted preliminary inspection; real writes require candidate verification, destination safety, and applicable explicit replacement permission."
+}
+n_706c6163656d656e743a4d4f442d3031343a6465706c6f796d656e743a52657461696e656420696e7374616c6c6174696f6e206f726967696e616c73: "Retained installation\noriginals\n\nInvocation project\nfilesystem" {
+  link: "#physical/MOD-014"
+  tooltip: "Retained installation originals; location: Invocation project filesystem; relative paths: .rigorloop-install-retained-{random}/"
+  style.fill: "#EEF6F1"
+  style.stroke: "#597390"
+  style.font-color: "#24364A"
+  style.font-size: 16
+  style.border-radius: 7
+}
+n_657865637574696f6e3a4d4f442d3031303a434c492070726f63657373.n_4d4f442d303134 -> n_706c6163656d656e743a4d4f442d3031343a6465706c6f796d656e743a52657461696e656420696e7374616c6c6174696f6e206f726967696e616c73: "reads\nand\nwrites" {
+  style.stroke: "#526C8A"
+  style.font-color: "#344D67"
+  style.fill: "#FFFFFF"
+  style.font-size: 14
+  tooltip: "Stage candidate files and preserve detached originals outside target discovery while performing an admitted installation.\nConditions: This placement participates in real installation after preflight. Dry-run does not create it.; The installer reports retained originals and actual partial scope; the binding does not promise cleanup, whole-project rollback, or unconditional replacement."
+}
+n_706c6163656d656e743a4d4f442d3031303a70657273697374656e63653a4c6f63616c20696e766f636174696f6e20646961676e6f7374696373: "Local invocation\ndiagnostics\n\nResolved user-state log\ndirectory" {
+  link: "#physical/MOD-010"
+  tooltip: "Local invocation diagnostics; location: Resolved user-state log directory; relative paths: rigorloop.jsonl; rigorloop.1.jsonl; rigorloop.2.jsonl; rigorloop.3.jsonl; rigorloop.4.jsonl"
+  style.fill: "#EEF6F1"
+  style.stroke: "#597390"
+  style.font-color: "#24364A"
+  style.font-size: 16
+  style.border-radius: 7
+}
+n_657865637574696f6e3a4d4f442d3031303a434c492070726f63657373.n_4d4f442d303130 -> n_706c6163656d656e743a4d4f442d3031303a70657273697374656e63653a4c6f63616c20696e766f636174696f6e20646961676e6f7374696373: "reads\nand\nwrites" {
+  style.stroke: "#526C8A"
+  style.font-color: "#344D67"
+  style.fill: "#FFFFFF"
+  style.font-size: 14
+  tooltip: "Append bounded diagnostics for eligible invocations and read the selected retained invocation on explicit log lookup.\nConditions: Primary/advanced recording and retired-command admission bypass the generic logging wrapper; other eligible commands may have file logging disabled or degraded.; The configured log root is selected independently of the record --root and installation working directory. This aggregate access describes distinct append and lookup paths, not a requirement that each invocation reads and writes logs."
+}
+n_706c6163656d656e743a4d4f442d3031313a70657273697374656e63653a52656769737465726564206f7065726174696f6e616c207265636f726473 -- n_706c6163656d656e743a4d4f442d3031313a70657273697374656e63653a5265636f7264207472616e73616374696f6e206d65746164617461: "disjoint locations" {
+  tooltip: "Authoritative records and private transaction state remain separate; Private locks, epochs, and journals coordinate storage and exact recovery without becoming registered engineering records or workflow authority.; The record operation has selected and validated one project root and change. Current source addresses authoritative files under docs/changes/{change_id} and private coordination under .rigorloop/record-store/{change_id}.; Disjoint describes those declared path-containment scopes; it does not assert different devices, users, hosts, or immunity from all filesystem aliases."
+  style.stroke: "#987335"
+  style.font-color: "#725321"
+  style.fill: "#FFFFFF"
+  style.stroke-dash: 3
+  style.font-size: 14
+}
+n_706c6163656d656e743a4d4f442d3031343a6465706c6f796d656e743a53656c65637465642074617267657420736b696c6c20756e697473 -- n_706c6163656d656e743a4d4f442d3031343a6465706c6f796d656e743a52657461696e656420696e7374616c6c6174696f6e206f726967696e616c73: "disjoint locations" {
+  tooltip: "Retained originals stay outside skill discovery; Original content and transient candidate bytes must not become discoverable skill instructions or overwrite unrelated target units.; For real installation, installCandidate creates a private retention directory beneath the invoking project and rejects overlap with supported and retained discovery roots.; The relation compares the selected target unit scope and retention scope; their common project context does not merge them or authorize replacement of shared parents."
+  style.stroke: "#987335"
+  style.font-color: "#725321"
+  style.fill: "#FFFFFF"
+  style.stroke-dash: 3
+  style.font-size: 14
+}
+n_706c6163656d656e743a4d4f442d3031343a6465706c6f796d656e743a53656c65637465642074617267657420736b696c6c20756e697473 -- n_706c6163656d656e743a4d4f442d3031343a6465706c6f796d656e743a52657461696e656420696e7374616c6c6174696f6e206f726967696e616c73: "same filesystem" {
+  tooltip: "Installation targets and retention use one filesystem; The inspected replacement mechanism uses guarded rename and hard-link publication with retained originals, requiring same-filesystem placement.; Before detaching an original, installCandidate compares the selected target parent device with the pinned retention directory device and rejects cross-filesystem placement.; The relation applies to the active target selected for that invocation. Descriptor-relative operations and destination safety checks still apply; no general platform compatibility is inferred."
+  style.stroke: "#987335"
+  style.font-color: "#725321"
+  style.fill: "#FFFFFF"
+  style.stroke-dash: 3
+  style.font-size: 14
+}

@@ -1,0 +1,68 @@
+{
+  "id": "AR-021",
+  "type": "allocated-requirement",
+  "title": "Publish exact record candidates as coherent durable transactions",
+  "status": "draft",
+  "statement": "The Operational record persistence Module shall publish each admitted exact record candidate as one recoverable logical transaction, expose only coherent states to supported readers, and report saved only after all requested replacement bytes are durably committed and required decision-basis checks hold.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Replacing related records separately or reporting success before commitment can leave readers relying on an intermediate state or a decision made on a changed basis.",
+      "desired_outcome": "A saved result identifies the complete durable candidate; interrupted or indeterminate publication remains recoverable and is unavailable as coherent current state."
+    },
+    "why": {
+      "rationale": "SR-044 ties the meaning of publication success to the entire requested byte set and the observed basis, not to progress through individual writes."
+    },
+    "who": {
+      "stakeholders": [
+        "Actors publishing related recorded decisions",
+        "Concurrent supported readers",
+        "Maintainers of MOD-011"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "A freshness-checked candidate is ready for initial creation, replacement, or batch publication.",
+        "Publication is interrupted or the declared basis changes at a required commitment check."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "The selected change publication boundary provided by IF-003.",
+        "Private exact before/candidate transaction state outside governed engineering authority."
+      ]
+    },
+    "how": {
+      "approach": "Prepare verified recovery information before replacement, publish the combined candidate under the shared exclusion, recheck the declared basis before reporting commitment, and expose the actual terminal or recovery-required state."
+    },
+    "how_much": {
+      "scope": "One selected change and its exact admitted replacement set. Supported readers receive coherent before/after state or explicit busy/recovery-required. Outside edits are covered only at observed identity checks; an exact-target edit after the final check and before replacement may be overwritten under the retained source boundary."
+    }
+  },
+  "acceptance_criteria": [
+    "Before any authoritative replacement, retain sufficient private before/candidate bytes and identities, exact write/read sets, and transaction state to restore the verified before-state or complete the exact candidate. At most one unfinished transaction is admitted for the selected change.",
+    "Publish the complete validated batch as one logical transaction. No intermediate batch candidate or partially replaced set is exposed to supported readers as usable current state; readers receive a coherent before/after snapshot or explicit busy/recovery-required.",
+    "Return saved only when all requested replacement bytes are durably committed. A committed result identifies the actual resulting revision and affected identities without implying a new engineering approval or semantic side effect.",
+    "Recheck the declared decision-basis identities before reporting commitment. Observed drift after replacement triggers restoration when verified safe, otherwise recovery-required; do not report saved merely because replacement has started or finished.",
+    "An interrupted or indeterminate publication retains sufficient recoverability and reports recovery-required rather than an apparently successful mixed state. The resulting transaction and recovery identities are reported only where actually established.",
+    "Preserve the source external-edit limit for both final checks and replacement. Drift after the final check is an ordinary later external edit; neither the transaction mechanism nor its result promises atomic exclusion of arbitrary outside writers."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "allocated_to": "MOD-011",
+  "constrains": [
+    "FUNC-046"
+  ],
+  "sources": [
+    {
+      "source": "SRC-CLI-ALLOCATION",
+      "locator": "AR-021",
+      "basis": "Derived from SR-044 for the proposed MOD-011 responsibility. Allocates the commitment, coherent-read, read-basis recheck, and prepared-recovery contributions to all SR-044 publication paths through FUNC-046 and IF-003. AR-020 supplies safe admission and AR-022 defines explicit recovery. These criteria specify intended observations, not executed product evidence or an adoption of the REM authoring format by the CLI."
+    },
+    {
+      "source": "SRC-PUBLISHED-CLI",
+      "locator": "docs/design/cli/cli.md#CLI-SR-04, CLI-SR-05, CLI-SR-06, CLI-SR-09, CLI-SR-12, CLI-SR-15; docs/design/cli/records.md#RF-SR-08",
+      "basis": "Retains the named current CLI and Record Format obligations at this allocated responsibility boundary. Their detailed formats, supported versions, limits, and observed external-edit boundaries remain authoritative; no runtime behavior or public contract is changed by this draft."
+    }
+  ]
+}

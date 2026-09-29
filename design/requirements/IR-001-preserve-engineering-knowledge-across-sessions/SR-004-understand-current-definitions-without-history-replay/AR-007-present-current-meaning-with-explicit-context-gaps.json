@@ -1,0 +1,58 @@
+{
+  "id": "AR-007",
+  "type": "allocated-requirement",
+  "title": "Present current meaning with explicit context gaps",
+  "status": "draft",
+  "statement": "The Engineering context and traceability Module shall present the selected current definition and its authoritative references in a form that exposes its engineering meaning, while distinguishing missing required context from unavailable optional history.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Correctly retrieved fields can still be presented as a misleading complete or history-dependent account.",
+      "desired_outcome": "A reader can explain the entity's current meaning and recognize the exact limits of the available account."
+    },
+    "why": {
+      "rationale": "SR-004 requires understandable current information, not merely a successful content fetch."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineering model authors and readers",
+        "Maintainers of MOD-004"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "A reader inspects a current engineering definition."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "The context presentation responsibility consuming IF-001."
+      ]
+    },
+    "how": {
+      "approach": "Compose the definition and required referenced content for one selected state; preserve individual retrieval outcomes and explain gaps."
+    },
+    "how_much": {
+      "scope": "Meaning and current-context completeness for the selected entity; no particular UI or rendering technology is prescribed."
+    }
+  },
+  "acceptance_criteria": [
+    "Using the presented content and current authoritative references, a reader can explain the entity's obligation, capability, behavior, or responsibility as appropriate to its type.",
+    "Required missing context is identified while available content remains visible; partial context is not labeled complete.",
+    "Unavailable optional historical explanation is shown separately and does not prevent understanding a complete current definition.",
+    "Results from different selected states are not silently merged into a complete current account."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "allocated_to": "MOD-004",
+  "constrains": [
+    "FUNC-007"
+  ],
+  "sources": [
+    {
+      "source": "SRC-ARCHITECTURE-PILOT",
+      "locator": "AR-007",
+      "basis": "Derived from SR-004 for the proposed MOD-004 responsibility and IR-001 scenario walkthrough. Acceptance criteria are intended observations, not executed verification or an approval."
+    }
+  ]
+}

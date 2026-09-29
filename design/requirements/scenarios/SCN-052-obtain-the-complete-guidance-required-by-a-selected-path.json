@@ -1,0 +1,76 @@
+{
+  "id": "SCN-052",
+  "type": "scenario",
+  "title": "Obtain the complete guidance required by a selected path",
+  "status": "confirmed",
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-07",
+      "basis": "Draft black-box stakeholder situation for IR-009 common Skills-product behavior. The Scenario awaits independent semantic review and does not claim detailed specialist clause migration or runtime evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-08",
+      "basis": "Draft black-box stakeholder situation for IR-009 common Skills-product behavior. The Scenario awaits independent semantic review and does not claim detailed specialist clause migration or runtime evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-09",
+      "basis": "Draft black-box stakeholder situation for IR-009 common Skills-product behavior. The Scenario awaits independent semantic review and does not claim detailed specialist clause migration or runtime evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "docs/design/skill/skill.md#SKL-SR-11",
+      "basis": "Draft black-box stakeholder situation for IR-009 common Skills-product behavior. The Scenario awaits independent semantic review and does not claim detailed specialist clause migration or runtime evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-PRODUCTS",
+      "locator": "SCN-052; design/requirements/published-products.md#review-and-validation",
+      "basis": "Independent review and author reconciliation confirmed this stakeholder situation, primary Feature, and SR coverage as current analysis knowledge. This does not approve requirements or establish implemented behavior or satisfaction."
+    }
+  ],
+  "actor": "A participant preparing a specialist activity",
+  "goal": "Obtain complete applicable procedure and output guidance before relying on it.",
+  "context": "The selected capability has conditional resources and the task has specific evidence needs.",
+  "trigger": "The participant enters a path whose required procedure is held in a mapped resource.",
+  "preconditions": [],
+  "interaction": [
+    {
+      "actor": "Participant",
+      "action": "Provides the task conditions and available evidence."
+    },
+    {
+      "actor": "System",
+      "action": "Identifies and presents the triggered guidance, required output structure, and transitive procedure."
+    },
+    {
+      "actor": "System",
+      "action": "Explains the available resource scope, script-use conditions when applicable, and any unmet dependency."
+    }
+  ],
+  "expected_outcome": "The participant has the complete applicable guidance needed to carry out the selected path.",
+  "alternatives": [
+    {
+      "condition": "A resource has no applicable trigger for this invocation.",
+      "outcome": "The task proceeds without loading it or treating it as a runtime prerequisite; no package-validity conclusion is implied."
+    },
+    {
+      "condition": "A redundant convenience aid is unavailable but its complete needed contract is already loaded.",
+      "outcome": "The system discloses the bounded fallback and supplies the complete applicable procedure."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "Required content is missing, escaped, incompatible, stale, or contradictory.",
+      "outcome": "The system identifies the affected dependency and stops the dependent task without reconstructing rules from memory."
+    }
+  ],
+  "exercises": [
+    "FEAT-015"
+  ],
+  "informs": [
+    "SR-052",
+    "SR-056"
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "id": "SR-064",
+  "type": "system-requirement",
+  "title": "Acquire and verify a supported installation candidate",
+  "status": "draft",
+  "statement": "The system shall reject unsupported installation requests before acquisition or mutation and shall acquire, verify, and safely stage a selected target archive only against compatible package-bundled trusted metadata.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "A user-supplied archive, retired target, or hostile member path can bypass artifact trust or installation boundaries.",
+      "desired_outcome": "Installation begins only with an identified supported candidate whose archive and extracted contents satisfy the retained trust and containment rules."
+    },
+    "why": {
+      "rationale": "Users must be able to obtain tooling without trusting arbitrary metadata or exposing their project to unsafe extraction."
+    },
+    "who": {
+      "stakeholders": [
+        "Users installing supported skills",
+        "Maintainers supplying trusted artifacts"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "When a real network or local-archive installation is requested."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "CLI request admission, trusted archive acquisition, verification, and isolated staging."
+      ]
+    },
+    "how": {
+      "approach": "Reject unknown or retired targets and removed syntax/state-writing options before network, extraction, or writes. Verify package-bundled metadata against its release index, then use only the trusted official source or explicit local archive. Check filename, target, compatible release, digest, declared size, supported hash algorithm, roots, tree hashes, and counts. Reject unsafe member paths and unsupported links; never install an out-of-root package support entrypoint."
+    },
+    "how_much": {
+      "scope": "The existing install-only Codex/Claude direction and retained historical metadata verification rules. A pinned old archive cannot restore a retired target. Local archives change acquisition location, not the trust root. Exact metadata and extraction representations remain owned by Installation and Packaging."
+    }
+  },
+  "acceptance_criteria": [
+    "Unsupported or missing targets, retired OpenCode aliases, removed adapter syntax, and write-state requests reject before acquisition, extraction, or filesystem mutation, including local, pinned, and dry-run forms.",
+    "Missing or incompatible bundled trusted metadata blocks installation; metadata supplied beside a local archive does not replace the bundled trust root.",
+    "Wrong filename, target, release, digest, or declared size rejects before extraction, and hostile or out-of-root members reject before installation.",
+    "The staged candidate inventory, tree hashes, and file counts agree with trusted metadata; unrelated project content is outside candidate verification."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "confirms": [
+    "FUNC-063"
+  ],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-INSTALLATION",
+      "locator": "docs/design/cli/installation.md#DIST-SR-02",
+      "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. Users must be able to obtain tooling without trusting arbitrary metadata or exposing their project to unsafe extraction. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-INSTALLATION",
+      "locator": "docs/design/cli/installation.md#DIST-SR-07",
+      "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. Users must be able to obtain tooling without trusting arbitrary metadata or exposing their project to unsafe extraction. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-INSTALLATION",
+      "locator": "docs/design/cli/installation.md#DIST-SR-08",
+      "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. Users must be able to obtain tooling without trusting arbitrary metadata or exposing their project to unsafe extraction. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-INSTALLATION",
+      "locator": "docs/design/cli/installation.md#DIST-SR-11",
+      "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. Users must be able to obtain tooling without trusting arbitrary metadata or exposing their project to unsafe extraction. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "id": "SR-032",
+  "type": "system-requirement",
+  "title": "Select applicable canonical authoring guidance",
+  "status": "draft",
+  "statement": "The system shall make the canonical concepts, methods, rules, and worked examples applicable to a requested authoring activity and declared profile version identifiable to human and agent authors, including their owning sources and any unavailable or incompatible guidance.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Authors can apply outdated or unrelated instructions without recognizing a mismatch with the model they are editing.",
+      "desired_outcome": "An author can identify which guidance applies, why it applies, and where its authoritative explanation resides."
+    },
+    "why": {
+      "rationale": "People and agents need one engineering meaning across presentation forms and profile changes."
+    },
+    "who": {
+      "stakeholders": [
+        "New REM authors with basic engineering knowledge",
+        "Experienced model maintainers and reviewers",
+        "Engineering agents"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "When beginning an authoring activity or using guidance after the selected profile changes."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "Authoring within one governed project and its declared method and model profile."
+      ]
+    },
+    "how": {
+      "approach": "Identify the requested activity and selected profile, present applicable canonical owners with rationale and worked examples, and distinguish unavailable, superseded, and incompatible material. Human and agent presentations preserve the same normative meaning and disclose the applicable source version."
+    },
+    "how_much": {
+      "scope": "Covers locating and explaining applicable guidance for requirements, Scenarios, system and architecture definitions, relationships, naming, correction, and retirement. Interpretation and migration of profiles are owned by IR-005; selecting guidance does not migrate a model or make unsupported authoring formats available."
+    }
+  },
+  "acceptance_criteria": [
+    "For the same activity and profile, a human and an agent can identify the same governing definitions, rules, and source versions despite different presentations.",
+    "Given an authoring activity, provide its owning guidance, a relevant worked example, and the reason that guidance applies; distinguish required rules from explanatory examples.",
+    "After a profile selection changes, identify guidance that applies to the selected version and flag previously used incompatible or superseded material instead of silently applying it.",
+    "When the activity, profile version, or applicable guidance cannot be identified, report the missing context and unsupported scope without claiming an applicable authoring method."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "sources": [
+    {
+      "source": "SRC-COMPLETE-ANALYSIS",
+      "locator": "SR-032",
+      "basis": "Derived from IR-006 and its declared initial authoring scope; the acceptance criteria describe assessment intent, not observed results."
+    }
+  ],
+  "confirms": [
+    "FUNC-032"
+  ]
+}

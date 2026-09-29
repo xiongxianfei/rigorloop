@@ -1,0 +1,74 @@
+{
+  "observed": {
+    "bindings": [
+      {
+        "path": "packages/rigorloop/dist/bin/rigorloop.js",
+        "role": "dispatchMain admits init and calls handleInit; handleInit performs installation through archiveWorkForInit and installCandidate and returns the selected command result. This shared entry point binds the existing IF-006 behavior without adding another public command catalog."
+      },
+      {
+        "path": "packages/rigorloop/dist/lib/installer-replacement.js",
+        "role": "installCandidate implements the candidate-unit destination boundary invoked by handleInit; returned or thrown completion/retention facts shape its public result."
+      }
+    ],
+    "mechanism": [
+      "The command-interface implementation calls installation helpers inside the same Node process. No separate RPC or network service between MOD-010 and MOD-014 is observed; outbound archive acquisition is a different interaction with the selected artifact source."
+    ],
+    "addressing": [
+      "rigorloop init codex and rigorloop init claude select the supported target; optional --from-archive selects an explicit compatible local ZIP. --force selects scoped replacement and --dry-run selects preliminary inspection under the existing Installation contract. The canonical public entries remain recorded once under IF-004."
+    ],
+    "failure_compatibility": [
+      "handleInit preserves unsupported-target and removed-option rejection, metadata/archive failure, destination-conflict outcomes, planned versus actual effects, and partial completed/retained/failed scope. Force does not bypass installer safety checks; this inspection is not a complete failure-mode qualification.",
+      "MOD-019 remains the sole IF-006 provider and MOD-010 its recorded consumer; MOD-014 realizes installation behavior. Sharing a JavaScript entrypoint does not duplicate contract ownership or alter Function allocation."
+    ],
+    "sources": [
+      {
+        "source": "SRC-PRODUCT-REALIZATION",
+        "locator": "packages/rigorloop/dist/bin/rigorloop.js dispatchMain, handleInit, archiveWorkForInit; packages/rigorloop/dist/lib/installer-replacement.js installCandidate at 33f56fe84ff730d7bd48900cef32170fd0682412",
+        "basis": "Static inspection of unchanged tracked source establishes the described implementation path, not an executed build, passing qualification, installed artifact, public release, or permission to perform those operations. Skill instructions were neither read nor invoked."
+      },
+      {
+        "source": "SRC-PHYSICAL-REALIZATION",
+        "locator": "packages/rigorloop/dist/bin/rigorloop.js loadVerifiedBundledMetadata, archiveWorkForInit, fetchBytes and inspectArchive; packages/rigorloop/dist/lib/official-archive-url.js expectedArchiveUrl and validateOfficialArchiveUrl at 33f56fe84ff730d7bd48900cef32170fd0682412",
+        "basis": "Static inspection records existing package, runtime, selected filesystem, and artifact-source relationships with their conditions. It does not observe a deployed host, execute a product operation, inspect a published package, or qualify installation, storage safety, platform support, remote availability, or network topology. Existing logical ownership and earlier source observations remain unchanged."
+      }
+    ],
+    "artifact_acquisition": {
+      "name": "Verified skill archive acquisition",
+      "execution": {
+        "owner": "MOD-010",
+        "name": "CLI process"
+      },
+      "participant": "MOD-014",
+      "artifact": "Compatible target skill archive selected by trusted bundled metadata",
+      "sources": [
+        {
+          "name": "Official release archive",
+          "transport": "HTTPS",
+          "address": "https://github.com/xiongxianfei/rigorloop/releases/download/{release}/rigorloop-adapter-{target}-{release}.zip",
+          "conditions": [
+            "Real installation without --from-archive loads and verifies package-bundled metadata, selects the compatible target/release, validates the exact official initial URL, and fetches those archive bytes.",
+            "The address is a source-declared template. It does not establish current release availability, deployed artifact identity, every redirect/proxy hop, or network/platform qualification."
+          ]
+        },
+        {
+          "name": "Explicit local archive",
+          "transport": "Local filesystem",
+          "address": "<explicit --from-archive path>",
+          "conditions": [
+            "Real installation with --from-archive resolves the explicitly supplied archive from the invoking working-directory context and checks its name/release against trusted bundled metadata before inspecting bytes.",
+            "The supplied ZIP is an alternative source of bytes, not a substitute metadata trust root. It is not automatically linked to this repository's candidate output placement."
+          ]
+        }
+      ],
+      "constraints": [
+        "Both alternatives supply candidate bytes to the existing CLI process. inspectArchive parses and verifies them in memory before destination installation; this observation creates no persistent archive cache placement.",
+        "Dry-run performs no archive acquisition or verification and cannot be shown following either acquisition edge as completed work.",
+        "MOD-019 remains the IF-006 contract provider and MOD-014 the contributing installer. Physical execution participation does not transfer Interface ownership or Function allocation.",
+        "No remote archive was accessed and no local ZIP was read or installed for this architecture task. Asset distribution and agent-host skill execution remain separately qualified concerns."
+      ]
+    }
+  },
+  "deferred": [
+    "Actual packed-command execution, public acquisition, complete exit/envelope compatibility, and destination recovery proof remain under the existing CLI and Installation owners."
+  ]
+}
