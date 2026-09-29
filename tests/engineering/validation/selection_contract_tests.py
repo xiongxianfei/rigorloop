@@ -70,17 +70,18 @@ class SelectionContractChecks:
                 self.assertNotIn("rem.browser_current", {c["id"] for c in result.selected_checks})
 
     def test_rem_ci_provisions_pinned_dependencies_without_weakening_required_checks(self):
-        import yaml
-        workflow = yaml.safe_load((ROOT / ".github/workflows/ci.yml").read_text())
-        steps = workflow["jobs"]["ci"]["steps"]
-        provision = next(step for step in steps if step.get("name") == "Install REM schema and diagram dependencies")
-        self.assertNotIn("continue-on-error", provision)
-        self.assertNotIn("if", provision)
-        self.assertIn("jsonschema==4.10.3", provision["run"])
-        self.assertIn("/v0.9.0/d2-v0.9.0-linux-amd64.tar.gz", provision["run"])
-        self.assertIn("5669ddc46b99e942cc96078f4a4e36d5e62103348f4c05179ede27802fdd87a9", provision["run"])
-        self.assertLess(provision["run"].index("sha256sum --check --strict"), provision["run"].index("tar -xzf"))
-        self.assertIn('>> "$GITHUB_PATH"', provision["run"])
+        # Inspect this repository-owned literal block using the standard library;
+        # the selector suite must not depend on ambient YAML packages.
+        workflow = (ROOT / ".github/workflows/ci.yml").read_text()
+        provision = workflow.split("      - name: Install REM schema and diagram dependencies\n", 1)[1]
+        provision = provision.split("      - name:", 1)[0]
+        self.assertNotIn("continue-on-error:", provision)
+        self.assertNotIn("        if:", provision)
+        self.assertIn("jsonschema==4.10.3", provision)
+        self.assertIn("/v0.9.0/d2-v0.9.0-linux-amd64.tar.gz", provision)
+        self.assertIn("5669ddc46b99e942cc96078f4a4e36d5e62103348f4c05179ede27802fdd87a9", provision)
+        self.assertLess(provision.index("sha256sum --check --strict"), provision.index("tar -xzf"))
+        self.assertIn('>> "$GITHUB_PATH"', provision)
 
 
 
