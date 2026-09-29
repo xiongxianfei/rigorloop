@@ -43,11 +43,13 @@ Reference that owner when another document needs the rule instead of creating an
 | Confirm logical behavior | [Functional Analysis](methods/functional-analysis.md) | Confirm durable Functions from SRs and reconcile Feature realization |
 | Allocate logical architecture | [Architecture Allocation](methods/architecture-allocation.md) | Establish/refine Module hierarchy, allocate one primary Module per Function and exactly one Module per AR, and identify/expose logical Interfaces |
 | Complete architecture design | [Architecture Design](methods/architecture-design.md) | Produce hierarchical Module/Interface architecture outputs, encapsulation boundaries, state/data ownership, and material subordinate physical/software realization without prescribing storage |
-| Generate architecture views | [4+1 Architecture Views](methods/architecture-views.md) | Derive classic Logical, Process, Development, Physical, and Scenario views, assess semantic fidelity and reading tasks, and maintain identifiable, regenerable presentations |
+| Generate architecture views | [4+1 Architecture Views](methods/architecture-views.md) | Apply REM's adaptation of Logical, Process, Development, Physical, and Scenario views, assess semantic fidelity and reading tasks, and maintain identifiable, regenerable presentations |
 | Evolve and assess the model | [Engineering cycle](methods/README.md#engineering-cycle) | Iterate between need, design, realization, evidence, and baseline decisions |
 
 The current core now has explicit procedures from Initial Requirement through logical allocation, physical/software architecture realization, and generated 4+1 architecture views.
 Verification and the broader universal engineering concerns remain later refinements.
+
+For architecture-view rationale, start with the [original 4+1 approach](methods/architecture-views.md#origin-and-reference), then read [REM's adoption and adaptation](methods/architecture-views.md#adoption-and-adaptation-in-rem). The optional [Logical reading perspectives](methods/architecture-views.md#logical-reading-perspectives) guide comprehension within the Logical View; they do not add standard views or prescribe repository pages.
 
 ## Method boundaries
 

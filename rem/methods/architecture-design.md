@@ -195,7 +195,7 @@ Use the views to improve comprehension and expose missing or contradictory archi
 
 - Logical: hierarchy, responsibility, allocation, encapsulation/exposure, Interface, and state/data-authority gaps;
 - Process: runtime, lifecycle, communication, isolation, scaling, concurrency, or failure-boundary gaps;
-- Development: software-organization and implementation-mapping gaps;
+- Development: software organization, implementation mappings, and test organization or execution-ownership gaps;
 - Physical: deployment, persistence-placement, connectivity, and external-runtime gaps;
 - Scenario: end-to-end gaps revealed by tracing a governed Scenario through obligations, Functions, Modules, Interfaces, and relevant realization.
 

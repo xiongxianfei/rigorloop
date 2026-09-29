@@ -112,3 +112,9 @@ A confirmed Scenario is acceptable when:
 - its primary Feature remains a durable capability rather than a restatement of the Scenario;
 - downstream SR traceability is complete or intentionally concluded;
 - no Module, Interface, or implementation design is smuggled into the black-box description.
+
+## Architecture walkthroughs
+
+The [Scenario View (+1)](../methods/architecture-views.md#scenario-view-1) projects architectural context for an existing Scenario. Its [outcome walkthroughs](../methods/architecture-views.md#outcome-walkthroughs) retain the Scenario's full expected, alternative and failure outcomes, then select relevant obligations and architecture details from their own sources.
+
+The Scenario remains the stakeholder situation; the walkthrough is a derived reading of related engineering knowledge. Selecting architectural or test context does not confirm complete outcome coverage, executed behavior or applicable evidence. Missing explanations remain explicit without rewriting the Scenario to match the available implementation.

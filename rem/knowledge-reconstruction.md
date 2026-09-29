@@ -260,7 +260,9 @@ Derived logical, runtime, datastore, deployment, or technology views help review
 [Requirement Analysis](methods/requirement-analysis.md#derive-allocated-requirements) defines how AR obligations are derived.
 [Architecture Allocation](methods/architecture-allocation.md) establishes Module containment, logical Function/AR responsibility, Interface contracts, and required exposure through encapsulation boundaries.
 [Architecture Design](methods/architecture-design.md) completes state/data ownership, material physical/software realization, architecture review, and completion assessment without prescribing a storage format.
-[4+1 Architecture Views](methods/architecture-views.md) then generates the classic Logical, Process, Development, Physical, and Scenario projections from the same authoritative REM knowledge for comprehension and cross-view validation.
+[4+1 Architecture Views](methods/architecture-views.md) then generates Logical, Process, Development, Physical, and Scenario projections from the same authoritative REM knowledge for comprehension and cross-view validation.
+
+To understand this choice, distinguish the [original 4+1 approach](methods/architecture-views.md#origin-and-reference), [REM's adoption and adaptation](methods/architecture-views.md#adoption-and-adaptation-in-rem), and a project's presentation of those views. The method owns that distinction. Its six optional [Logical reading perspectives](methods/architecture-views.md#logical-reading-perspectives) help organize questions within one view; they are neither additional standard 4+1 views nor a prescribed set of pages. A repository's diagrams and navigation remain presentation choices rather than the origin of REM's architecture semantics.
 
 ---
 
@@ -379,6 +381,8 @@ When a reader asks why REM contains a particular rule, follow the links in this 
 
 
 ### Why does REM use classic 4+1 architecture views?
+
+Start with the [origin and reference](methods/architecture-views.md#origin-and-reference), then distinguish [REM's adoption and adaptation](methods/architecture-views.md#adoption-and-adaptation-in-rem) from the original framework. The method is the authoritative explanation of that distinction.
 
 1. Read the [Architecture View and 4+1 Architecture View Graph concepts](concepts/README.md#system-and-architecture-assets).
 2. Read Principles 18 and 19 in [Principles](principles/README.md).

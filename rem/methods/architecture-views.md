@@ -7,6 +7,35 @@ The [Architecture Design model](../models/architecture-design.md) owns Module, I
 The [Scenario model](../models/scenarios.md) owns Scenario identity, lifecycle, and black-box stakeholder meaning.
 This method does not create a second authoritative architecture model; the 4+1 Architecture View Graph is a derived, replaceable read model.
 
+## Origin and reference
+
+REM adopts the five-view framework introduced by Philippe Kruchten in *Architectural Blueprints—The “4+1” View Model of Software Architecture*, published in *IEEE Software*, volume 12, issue 6, November 1995, pages 42–50.
+See the [author-deposited manuscript](https://arxiv.org/pdf/2006.04975) and [publication DOI](https://doi.org/10.1109/52.469759). The author's manuscript was deposited in arXiv in 2020; the publication and method date from 1995.
+
+Kruchten distinguishes Logical, Process, Development, and Physical concerns, with selected use cases or Scenarios as the `+1` perspective that helps discover, illustrate, and validate the architecture.
+His Logical examples use object-oriented abstractions while allowing other forms, including data-oriented models.
+REM's responsibility-based Module/Interface projection below is an explicit adaptation of that concern.
+
+## Adoption and adaptation in REM
+
+Keep the original framework, REM's engineering rules, and a project's presentation choices distinguishable.
+
+| Original concern | REM interpretation and authoritative inputs |
+| --- | --- |
+| Logical: abstractions supporting functionality | Module responsibilities and containment, Interface contracts, Feature/Function context, Function/AR allocation, and state/data authority |
+| Process: execution, concurrency, and synchronization | Module runtime and Interface realization information about execution boundaries, lifecycle, communication, and failure behavior |
+| Development: static software organization | Module software realization, source/package mappings, material build dependencies, and test organization |
+| Physical: software mapping onto hardware and distribution | Deployment and persistence realization, placement, connectivity, and significant external infrastructure |
+| Scenarios (+1): selected situations that connect and assess the four views | Existing governed stakeholder Scenarios and derived architecture participation across the other views |
+
+REM adds governed entity types, stable identities, explicit ownership and allocation, one authoritative representation of each semantic fact, provenance, and regenerable projections.
+Those are REM rules; adopting 4+1 alone does not prescribe them.
+REM keeps the canonical Scenario black-box and derives internal architecture participation separately; graph reachability does not establish execution order or requirement satisfaction.
+
+A project's Operational Support selects representation, tools, and presentation resources under these rules.
+Browser pages, diagrams, reading levels, labels, and navigation are presentation choices; they are neither additional 4+1 view kinds nor first-class REM entities.
+The [Logical reading perspectives](#logical-reading-perspectives) are optional REM guidance for organizing comprehension within one view, not a subdivision prescribed by Kruchten's paper.
+
 ## Purpose
 
 The 4+1 views help humans and agents understand one architecture from several concerns without independently maintaining several descriptions of the same facts.
@@ -125,9 +154,36 @@ A simplified Module-to-Module edge MAY be rendered for readability when it is de
 
 Show recorded collaboration limits beside the overview to distinguish undeveloped contracts from architectural independence. An isolated Module or a missing edge does not establish that no collaboration is needed. Summarize known gaps from their authoritative owners; do not invent Interface edges to complete the picture. Allocation and Interface counts describe modeled content and MUST NOT be presented as proof of completeness or satisfaction.
 
+### Logical reading perspectives
+
+A Logical presentation MAY separate or combine the following reading perspectives to answer its readers' questions while preserving the responsibility overview and progressive disclosure.
+They are optional presentations of the Logical concern, not six additional architecture-view kinds, owning models, mandatory pages, or mandatory diagrams.
+
+| Reading perspective | Reader's question | Selected information |
+| --- | --- | --- |
+| Architecture overview | What are the major responsibilities? | Highest useful Module boundaries and significant visible Interfaces |
+| Public capabilities | What can a participant use? | Public entry names, purposes, contracts, and attributed Function correspondence |
+| Module structure | How is this responsibility divided? | Selected Module, immediate children, responsibilities, exclusions, and state/data ownership |
+| Collaboration | How do these responsibilities interact? | Named Interfaces, exact providers/consumers, and declared boundary exposure |
+| Interface contract | What does this interaction promise? | Operations, inputs, outputs, guarantees, failures, and compatibility |
+| Behavior and requirement allocation | What behavior and obligations belong here? | Feature/Function context, accountable Modules, and direct versus descendant AR allocations |
+
+Readers SHOULD be able to move between an entry, its relevant behavior, its accountable responsibilities, and its contracts using the recorded relationships.
+These navigation paths do not imply an execution sequence or transfer responsibility to the entry's catalog owner.
+Select and combine perspectives for the intended concern rather than requiring a fixed number of screens or one complete diagram.
+
+A production responsibility and its logical artifact contract may appear here when modeled.
+Concrete source files, generators, transformations, and build/package dependencies belong in the Development View; runtime execution and physical placement retain their respective view concerns.
+Missing production mappings must be resolved with their authoritative owners before a view can present them as established facts.
+
 ### Public-entry navigation
 
 When readers need to discover available public capabilities, provide a compact entry index alongside the logical responsibility overview. Expand command, procedure, or other entry groups beneath their owning boundary; expose purpose, logical correspondence, accountable responsibilities, and the detailed contract before incidental implementation detail. Keep the initial Module/Interface diagram focused on architecture.
+
+Related public capabilities MAY share a presentation grouping or reading level.
+Grouping MUST NOT establish Module containment, Interface ownership, dependency, or execution order.
+A visual layer is not an architectural layer unless the authoritative model separately establishes the relevant responsibility and relationships.
+An implementation chooses its actual capability categories; REM does not require any particular public product form.
 
 Apply the [public-entry realization model](../models/architecture-design.md#public-entry-discoverability): observe existing names and source contracts, analyze role-qualified Function correspondence, then derive Feature and Module context from their existing relationships. Distinguish observed availability in inspected source from proposed correspondence and runtime qualification. An entry may involve responsibilities outside its catalog's containing Module; preserve those exact allocations.
 
@@ -160,7 +216,7 @@ A library or simple system may have a minimal Process View when runtime boundari
 
 The Development View answers:
 
-> How is the architecture realized in the static organization of software used for development, build, and maintenance?
+> How is the architecture realized in the static organization of software used for development, build, testing, and maintenance?
 
 Prefer these semantic inputs:
 
@@ -168,10 +224,23 @@ Prefer these semantic inputs:
 - implementation/source/package mappings;
 - applications, libraries, services, workers, adapters, jobs, or other software units when material;
 - build/package dependencies that matter architecturally;
-- concrete Interface implementation/binding relationships where useful.
+- concrete Interface implementation/binding relationships where useful;
+- test groups and the responsibilities or contracts they assess;
+- test observation boundaries, including material substitutions and their limits;
+- fixtures, test helpers, selection catalogs, runners, entrypoints, and build or installed artifacts required by those groups.
 
 The Development View MUST NOT redefine Module boundaries or parent-child containment from current package or source layout.
 It shows how hierarchical logical responsibility is realized by software organization, including deliberate many-to-many mappings when they exist.
+
+### Test architecture
+
+The Development View SHOULD explain the static organization of the test system when it is material to understanding or maintaining the architecture. Show coherent behavior groups and their dependencies, rather than an inventory of every test case. Make it possible to find the assessed responsibility, governing coverage contract, test sources, fixture/support sources, and execution entrypoints.
+
+A test group **assesses** a responsibility; it does not thereby **implement** that responsibility. Keep the owner of the protected behavior, the owner of shared test execution tooling, and the owner of evidence assessment distinct. Recording tests alongside a Module's realization provides subject context without assigning all referenced fixtures, runners, or CI infrastructure to that Module. Shared dependencies should be referenced where used and described at their authoritative owner. A missing architectural allocation for execution tooling remains an explicit gap until responsibility analysis resolves it.
+
+Record observation boundaries and material limits, including substituted dependencies and required artifacts. A direct source test, a public command test, and an installed-product test observe different boundaries. A source path, test catalog entry, or coverage mapping alone establishes neither adequate coverage nor passing execution.
+
+Use the other concerns for complementary information: Process explains material scheduling, concurrency, isolation, timeouts and cleanup; Physical explains execution environments and infrastructure. Verification defines the assessment, Evidence records actual observations, and the resulting judgment retains its scope. Static test dependency arrows must not imply runtime order, requirement satisfaction, or an executed test result.
 
 ## Physical View
 
@@ -219,6 +288,27 @@ SR
 
 The Scenario View MAY overlay relevant Logical, Process, Development, or Physical details when they help explain how the scenario is satisfied.
 
+### Outcome walkthroughs
+
+Organize a Scenario walkthrough around its expected outcome and its material alternative and failure outcomes. Begin with the stakeholder situation and full observable outcome, then explain the relevant obligations, accountable responsibilities, collaboration contracts and realization. Keep broad traceability available as supporting detail. An outcome with incomplete architectural explanation must remain visible.
+
+An outcome walkthrough SHOULD make these questions answerable:
+
+- Which existing SR or AR criteria are relevant to this outcome, and what is their analysis basis?
+- Which Modules hold the selected allocations, and which Modules provide the applicable Interface contracts?
+- Which recorded Process interactions or lifecycle details help explain the outcome and its failure boundaries?
+- Which Development software mappings and Physical placements apply within the selected scope?
+- Which test organization is relevant context, what outcome-specific coverage has actually been established, and what applicable evidence exists?
+- Which connections or explanations remain unselected, incomplete or unresolved?
+
+Operational Support MAY define a bounded reading profile selecting canonical outcomes, criteria and realization references. The profile supplies explanatory scope; it does not create requirements, allocations, execution order or assurance claims. Resolve substantive outcome text, criteria, responsibilities and realization details from their authoritative sources. Short display labels may aid navigation but must retain access to the complete canonical meaning and source attribution. Validate selected references and their scope before generating the view.
+
+Scenario records remain stakeholder-facing. Do not embed internal architecture in them to support presentation. New guarantees, responsibilities or interactions discovered during walkthrough analysis belong with the appropriate requirement or architecture owner before the view relies on them.
+
+Test groups selected through a responsibility or a source contract are contextual test organization. Establish an outcome-specific coverage argument before presenting them as verifying that outcome; actual execution evidence and its applicability require their separate assessment. Missing evidence in a bounded projection means none is linked there, not that no evidence exists elsewhere. Similarly, an unselected realization detail is a reading gap, not proof that the architecture lacks it.
+
+### Participation and consistency
+
 Reachability establishes relevant participation, not execution order. An SR or Feature may cover behavior beyond one Scenario, so a reachable Function is not automatically a step in that Scenario. Generate internal sequencing, concurrency, and placement only from sufficient authoritative architecture information. Prose-only realization may support an attributed explanation while leaving a more detailed diagram deferred.
 
 When an allocated child participates beneath a parent-owned contract, a Scenario projection MAY show the declared ancestor contract as boundary context. Preserve the exact provider and source relationship, and keep that context separate from allocated behavior. An ancestor's `provides` relationship alone does not establish that its Interface executes in the Scenario or that every descendant realizes it.
@@ -258,7 +348,13 @@ Choose a presentation tool for the intended reading environment. A browser view 
 
 Show one useful responsibility level at a time. Keep public-entry catalogs, complete allocation inventories, and provenance outside the initial diagram. A reader SHOULD be able to select a Module or Interface, understand its responsibility or contract, follow its children or collaborators, and return to the previous context. Diagram simplification MUST retain discoverable exact relationship owners and recorded scope limits.
 
-Assess readability in the rendered presentation. Inspect label size, edge distinction, navigation, and representative narrow and wide displays. Structural validity, successful generation, and complete reference links do not by themselves establish human comprehension. Retain a detailed text reference where useful, but do not require readers to traverse that inventory to understand the architectural overview.
+Lead visible labels with meaningful names. A diagram SHOULD explain Module responsibilities and Interface contracts without requiring readers to interpret stable identifiers. Identifiers need not appear beside every label.
+
+A presentation MAY shorten a canonical name when the resulting label remains faithful and unambiguous within the selected view. Preserve the words needed to distinguish neighboring responsibilities and contracts; if shortening creates ambiguity, restore meaningful context. An identifier alone does not resolve unclear engineering meaning. A presentation label MUST retain its mapping to the canonical entity and MUST NOT redefine its identity, scope, ownership, or relationships.
+
+Keep the full canonical name and stable identity available in linked details or an equivalent reference. Interactive views SHOULD also expose them on hover and keyboard focus, with detail navigation usable without hovering. When search is available, it SHOULD accept canonical names and stable identifiers as well as any shortened visible labels. Static views SHOULD provide attributable references that allow the same identity lookup without interactive controls.
+
+Assess readability in the rendered presentation. Inspect label meaning and ambiguity, size, edge distinction, navigation, and representative narrow and wide displays. Verify that readers can understand visible names and reach full names, stable identities, and exact contract owners. Structural validity, successful generation, and complete reference links do not by themselves establish human comprehension. Retain a detailed text reference where useful, but do not require readers to traverse that inventory to understand the architectural overview.
 
 Choose representative tasks for the declared audience and concern.
 For example, a reader of a Logical view should be able to locate an accountable Module, distinguish its children from surrounding context, understand an Interface's purpose and exact provider/consumers, follow an allocation, and reach the authoritative source.
@@ -299,7 +395,7 @@ The 4+1 view set is sufficiently generated for a declared architecture scope whe
 
 - the Logical View explains the Module hierarchy from the highest useful level, primary responsibilities, allocations, encapsulation/exposure, significant Interfaces, and state/data authority;
 - the Process View exposes material runtime/execution concerns where applicable;
-- the Development View maps material software organization back to the logical architecture;
+- the Development View maps material software and test organization back to the logical architecture, preserving assessed subjects and execution ownership;
 - the Physical View exposes material deployment/persistence placement where applicable;
 - important confirmed Scenarios have Scenario Views that trace through relevant obligations, behavior, architecture, and realization;
 - displayed relationships preserve authoritative REM meaning and provenance;
