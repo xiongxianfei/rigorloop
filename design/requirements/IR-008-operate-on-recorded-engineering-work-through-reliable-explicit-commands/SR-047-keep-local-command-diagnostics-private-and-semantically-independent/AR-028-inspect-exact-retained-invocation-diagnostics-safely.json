@@ -1,0 +1,67 @@
+{
+  "id": "AR-028",
+  "type": "allocated-requirement",
+  "title": "Inspect exact retained invocation diagnostics safely",
+  "status": "draft",
+  "statement": "The Engineering command interface Module shall inspect only the explicitly requested invocation within bounded retained owned log files, return matching supported events and safe availability diagnostics, and leave semantic command execution and governed state unchanged.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Diagnostic lookup can expose unrelated or unsupported content, silently rerun a command, or misrepresent absent logs as proof that an invocation never occurred.",
+      "desired_outcome": "An operator sees the available bounded account of the selected invocation and its limitations without new execution, private-data leakage, or implied engineering evidence."
+    },
+    "why": {
+      "rationale": "SR-047 criterion 5 makes exact lookup a read-only diagnostic capability whose usefulness does not confer authority or erase absence uncertainty."
+    },
+    "who": {
+      "stakeholders": [
+        "Operators inspecting an exact invocation",
+        "Users sharing a private logging environment",
+        "Maintainers of MOD-010"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "An actor requests the resolved log directory or events for an exact invocation ID.",
+        "Requested events are absent, expired, unavailable, corrupt, or in an unsupported schema."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "The current declared owned active/rotated log set inside the verified private logging root.",
+        "The public log-inspection result under IF-004, separate from workflow records and recovery."
+      ]
+    },
+    "how": {
+      "approach": "Validate the exact lookup selector and safe root, scan only bounded retained owned files, select supported matching events, and report safe line-level limitations without exposing raw content or interpreting unknown schemas."
+    },
+    "how_much": {
+      "scope": "Read-only directory reporting and exact invocation lookup across the retained active file and four archives defined by the logging contract. No search across unrelated files, command replay, implicit record recovery, repair, archive expansion, or claim that local logs constitute review, workflow, or approval evidence."
+    }
+  },
+  "acceptance_criteria": [
+    "Validate the exact invocation identity under the current contract before lookup. Directory reporting returns the resolved logging location without creating governed state; event lookup examines only declared bounded retained owned files through the same private-path and access checks as logging.",
+    "Return only matching supported events for the requested invocation. Do not include the lookup invocation's own events, interpret unknown event schemas, or read and return unrelated raw lines.",
+    "Distinguish not-found, unavailable, and corrupt-entry outcomes using safe bounded diagnostics. Not-found does not distinguish never-recorded from expired; corrupt or unsupported lines yield bounded warnings without raw content while supported matching events remain available as permitted.",
+    "Unsafe paths, unverifiable access, or read failure report the declared unavailability or rejection without following unsafe paths, repairing permissions, altering log history, or exposing invalid raw input.",
+    "Lookup does not rerun the original command, perform record recovery, modify authoritative repository state, or manufacture workflow evidence. Its diagnostic failure does not change the original command's semantic result or exit; safe continuation cannot depend on log availability."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "allocated_to": "MOD-010",
+  "constrains": [
+    "FUNC-049"
+  ],
+  "sources": [
+    {
+      "source": "SRC-CLI-ALLOCATION",
+      "locator": "AR-028",
+      "basis": "Derived from SR-047 for the proposed MOD-010 responsibility. Allocates SR-047 criterion 5 and the lookup contributions to privacy, containment, and semantic independence in criteria 2 through 4. AR-027 owns bounded event production and its shared private-root policy. These criteria specify intended observations, not executed product evidence or an adoption of the REM authoring format by the CLI."
+    },
+    {
+      "source": "SRC-PUBLISHED-CLI",
+      "locator": "docs/design/cli/cli.md#CLI-SR-29, CLI-SR-30; docs/design/cli/cli.md#local-diagnostic-logging",
+      "basis": "Retains the named current CLI and Record Format obligations at this allocated responsibility boundary. Their detailed formats, supported versions, limits, and observed external-edit boundaries remain authoritative; no runtime behavior or public contract is changed by this draft."
+    }
+  ]
+}

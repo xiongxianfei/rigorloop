@@ -1,0 +1,119 @@
+# Generated from explicit REM realization facts; do not edit.
+# Source identity: 2cf8f01cf8087e0b226dbd431d6452970b13954a16b84408d91173987708417e
+# Source-observed physical relationships. Names identify recorded packages, execution contexts, and placement locations; location text does not identify a machine or establish connectivity. Select a placement for exact paths and constraints. This is not deployment or artifact qualification. This scope selects installation accesses and the recorded archive-input alternatives. Only the installer is expanded inside the runtime; other participants and state accesses remain in Storage and isolation. No producer-to-consumer delivery is asserted.
+vars: { d2-config: { layout-engine: elk } }
+direction: down
+
+n_706c6163656d656e743a4d4f442d3031303a6465706c6f796d656e743a434c492072756e74696d65207061636b616765: "CLI runtime package\n\nCLI package root" {
+  link: "#physical/MOD-010"
+  tooltip: "CLI runtime package; location: CLI package root; relative paths: dist/bin/rigorloop.js; dist/lib/; dist/metadata/; package.json"
+  style.fill: "#EEF6F1"
+  style.stroke: "#597390"
+  style.font-color: "#24364A"
+  style.font-size: 16
+  style.border-radius: 7
+}
+n_657865637574696f6e3a4d4f442d3031303a434c492070726f63657373: "CLI process\nNode.js" {
+  link: "#process/MOD-010"
+  style.fill: "#F6F9FF"
+  style.stroke: "#93A9C6"
+  style.font-size: 18
+  style.border-radius: 9
+  label.near: top-left
+  n_4d4f442d303134: "Verified skill\ninstallation" {
+    link: "#module/MOD-014"
+    tooltip: "Verified skill installation (MOD-014)"
+    style.fill: "#ECF3FF"
+    style.stroke: "#597390"
+    style.font-color: "#24364A"
+    style.font-size: 16
+    style.border-radius: 7
+  }
+}
+n_706c6163656d656e743a4d4f442d3031303a6465706c6f796d656e743a434c492072756e74696d65207061636b616765 -> n_657865637574696f6e3a4d4f442d3031303a434c492070726f63657373: "supplies\nimplementation" {
+  style.stroke: "#526C8A"
+  style.font-color: "#344D67"
+  style.fill: "#FFFFFF"
+  style.font-size: 14
+}
+n_706c6163656d656e743a4d4f442d3031343a6465706c6f796d656e743a53656c65637465642074617267657420736b696c6c20756e697473: "Selected target skill\nunits\n\nInvocation project\nfilesystem" {
+  link: "#physical/MOD-014"
+  tooltip: "Selected target skill units; location: Invocation project filesystem; relative paths: .agents/skills/{skill}/; .claude/skills/{skill}/"
+  style.fill: "#EEF6F1"
+  style.stroke: "#597390"
+  style.font-color: "#24364A"
+  style.font-size: 16
+  style.border-radius: 7
+}
+n_657865637574696f6e3a4d4f442d3031303a434c492070726f63657373.n_4d4f442d303134 -> n_706c6163656d656e743a4d4f442d3031343a6465706c6f796d656e743a53656c65637465642074617267657420736b696c6c20756e697473: "reads\nand\nwrites" {
+  style.stroke: "#526C8A"
+  style.font-color: "#344D67"
+  style.fill: "#FFFFFF"
+  style.font-size: 14
+  tooltip: "Preflight selected target units and perform verified creation or explicitly permitted whole-unit replacement.\nConditions: Installation uses the invoking working directory. codex and claude select alternative target roots; their units are not both installed by every request.; Dry-run performs only its admitted preliminary inspection; real writes require candidate verification, destination safety, and applicable explicit replacement permission."
+}
+n_706c6163656d656e743a4d4f442d3031343a6465706c6f796d656e743a52657461696e656420696e7374616c6c6174696f6e206f726967696e616c73: "Retained installation\noriginals\n\nInvocation project\nfilesystem" {
+  link: "#physical/MOD-014"
+  tooltip: "Retained installation originals; location: Invocation project filesystem; relative paths: .rigorloop-install-retained-{random}/"
+  style.fill: "#EEF6F1"
+  style.stroke: "#597390"
+  style.font-color: "#24364A"
+  style.font-size: 16
+  style.border-radius: 7
+}
+n_657865637574696f6e3a4d4f442d3031303a434c492070726f63657373.n_4d4f442d303134 -> n_706c6163656d656e743a4d4f442d3031343a6465706c6f796d656e743a52657461696e656420696e7374616c6c6174696f6e206f726967696e616c73: "reads\nand\nwrites" {
+  style.stroke: "#526C8A"
+  style.font-color: "#344D67"
+  style.fill: "#FFFFFF"
+  style.font-size: 14
+  tooltip: "Stage candidate files and preserve detached originals outside target discovery while performing an admitted installation.\nConditions: This placement participates in real installation after preflight. Dry-run does not create it.; The installer reports retained originals and actual partial scope; the binding does not promise cleanup, whole-project rollback, or unconditional replacement."
+}
+n_6163717569736974696f6e3a49462d303036: "Compatible target skill\narchive selected by trusted\nbundled metadata" {
+  link: "#physical/consumer"
+  tooltip: "Verified skill archive acquisition; Both alternatives supply candidate bytes to the existing CLI process. inspectArchive parses and verifies them in memory before destination installation; this observation creates no persistent archive cache placement.; Dry-run performs no archive acquisition or verification and cannot be shown following either acquisition edge as completed work.; MOD-019 remains the IF-006 contract provider and MOD-014 the contributing installer. Physical execution participation does not transfer Interface ownership or Function allocation.; No remote archive was accessed and no local ZIP was read or installed for this architecture task. Asset distribution and agent-host skill execution remain separately qualified concerns."
+  style.fill: "#FFF5DB"
+  style.stroke: "#597390"
+  style.font-color: "#24364A"
+  style.font-size: 16
+  style.border-radius: 7
+}
+n_6163717569736974696f6e3a49462d3030363a736f757263653a30: "Official release archive\n\nHTTPS" {
+  link: "#physical/consumer"
+  tooltip: "Source address: https://github.com/xiongxianfei/rigorloop/releases/download/{release}/rigorloop-adapter-{target}-{release}.zip; Real installation without --from-archive loads and verifies package-bundled metadata, selects the compatible target/release, validates the exact official initial URL, and fetches those archive bytes.; The address is a source-declared template. It does not establish current release availability, deployed artifact identity, every redirect/proxy hop, or network/platform qualification."
+  style.fill: "#F4F1F9"
+  style.stroke: "#597390"
+  style.font-color: "#24364A"
+  style.font-size: 16
+  style.border-radius: 7
+  style.stroke-dash: 3
+}
+n_6163717569736974696f6e3a49462d3030363a736f757263653a30 -> n_6163717569736974696f6e3a49462d303036: "alternative\ninput" {
+  style.stroke: "#526C8A"
+  style.font-color: "#344D67"
+  style.fill: "#FFFFFF"
+  style.font-size: 14
+  style.stroke-dash: 3
+}
+n_6163717569736974696f6e3a49462d3030363a736f757263653a31: "Explicit local archive\n\nLocal filesystem" {
+  link: "#physical/consumer"
+  tooltip: "Source address: <explicit --from-archive path>; Real installation with --from-archive resolves the explicitly supplied archive from the invoking working-directory context and checks its name/release against trusted bundled metadata before inspecting bytes.; The supplied ZIP is an alternative source of bytes, not a substitute metadata trust root. It is not automatically linked to this repository's candidate output placement."
+  style.fill: "#F4F1F9"
+  style.stroke: "#597390"
+  style.font-color: "#24364A"
+  style.font-size: 16
+  style.border-radius: 7
+  style.stroke-dash: 3
+}
+n_6163717569736974696f6e3a49462d3030363a736f757263653a31 -> n_6163717569736974696f6e3a49462d303036: "alternative\ninput" {
+  style.stroke: "#526C8A"
+  style.font-color: "#344D67"
+  style.fill: "#FFFFFF"
+  style.font-size: 14
+  style.stroke-dash: 3
+}
+n_6163717569736974696f6e3a49462d303036 -> n_657865637574696f6e3a4d4f442d3031303a434c492070726f63657373.n_4d4f442d303134: "candidate input" {
+  style.stroke: "#526C8A"
+  style.font-color: "#344D67"
+  style.fill: "#FFFFFF"
+  style.font-size: 14
+}

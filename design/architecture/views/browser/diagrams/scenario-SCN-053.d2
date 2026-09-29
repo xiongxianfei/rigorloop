@@ -1,0 +1,113 @@
+# Generated from canonical REM records; do not edit.
+# Source identity: 2cf8f01cf8087e0b226dbd431d6452970b13954a16b84408d91173987708417e
+# Traceability, not execution order. Requirement and behavior sets are collapsed by their exact accountable Module; arrows summarize the selected authored relationships. Dashed Modules provide contract context without receiving behavior allocations. The traceability details and source links below retain the selected entities and their authored basis.
+vars: {d2-config: {layout-engine: elk}}
+direction: down
+scenario: "Produce a usable result\nthrough specialist guidance" {
+  link: "#scenario/SCN-053"
+  tooltip: "Produce a usable result through specialist guidance (SCN-053)"
+  style.fill: "#E9F4EE"
+  style.stroke: "#7C8FA9"
+  style.font-color: "#23334A"
+  style.font-size: 17
+  style.border-radius: 6
+}
+requirements: "System obligations\n2 selected requirements" {
+  link: "#scenario/SCN-053"
+  tooltip: "Guide specialist engineering work with usable scoped outputs (SR-053)\nPreserve guidance meaning and evidence quality across reading paths (SR-056)"
+  style.fill: "#FFF5DB"
+  style.stroke: "#7C8FA9"
+  style.font-color: "#23334A"
+  style.font-size: 17
+  style.border-radius: 6
+}
+scenario -> requirements: "informs" {
+  style.stroke: "#667A96"
+  style.fill: "#FFFFFF"
+  style.font-size: 13
+}
+m_4d4f442d30303866756e6374696f6e73: "2 Functions" {
+  link: "#scenario/SCN-053"
+  tooltip: "Select canonical guidance for an authoring activity (FUNC-032)\nExplain engineering authoring and correction steps (FUNC-033)"
+  style.fill: "#ECF3FF"
+  style.stroke: "#7C8FA9"
+  style.font-color: "#23334A"
+  style.font-size: 17
+  style.border-radius: 6
+}
+requirements -> m_4d4f442d30303866756e6374696f6e73: "confirms" {
+  style.stroke: "#667A96"
+  style.fill: "#FFFFFF"
+  style.font-size: 13
+}
+m_4d4f442d30303866756e6374696f6e73 -> m_4d4f442d303038: "allocated to" {
+  style.stroke: "#667A96"
+  style.fill: "#FFFFFF"
+  style.font-size: 13
+}
+m_4d4f442d30313266756e6374696f6e73: "2 Functions" {
+  link: "#scenario/SCN-053"
+  tooltip: "Resolve resources for a selected capability path (FUNC-052)\nGuide a bounded specialist engineering activity (FUNC-053)"
+  style.fill: "#ECF3FF"
+  style.stroke: "#7C8FA9"
+  style.font-color: "#23334A"
+  style.font-size: 17
+  style.border-radius: 6
+}
+requirements -> m_4d4f442d30313266756e6374696f6e73: "confirms" {
+  style.stroke: "#667A96"
+  style.fill: "#FFFFFF"
+  style.font-size: 13
+}
+m_4d4f442d30313266756e6374696f6e73 -> m_4d4f442d303132: "allocated to" {
+  style.stroke: "#667A96"
+  style.fill: "#FFFFFF"
+  style.font-size: 13
+}
+m_4d4f442d303038: "Engineering authoring\nguidance" {
+  link: "#module/MOD-008"
+  tooltip: "Engineering authoring guidance (MOD-008)"
+  style.fill: "#ECF3FF"
+  style.stroke: "#7C8FA9"
+  style.font-color: "#23334A"
+  style.font-size: 17
+  style.border-radius: 6
+}
+m_4d4f442d303132: "Published engineering\ncapability guidance" {
+  link: "#module/MOD-012"
+  tooltip: "Published engineering capability guidance (MOD-012)"
+  style.fill: "#ECF3FF"
+  style.stroke: "#7C8FA9"
+  style.font-color: "#23334A"
+  style.font-size: 17
+  style.border-radius: 6
+}
+m_4d4f442d303137: "Engineering governance" {
+  link: "#module/MOD-017"
+  tooltip: "Engineering governance (MOD-017)"
+  style.fill: "#F3F6FA"
+  style.stroke: "#7C8FA9"
+  style.font-color: "#23334A"
+  style.font-size: 17
+  style.border-radius: 6
+  style.stroke-dash: 3
+}
+m_49462d303038: "Engineering authoring\nguidance" {
+  link: "#interface/IF-008"
+  tooltip: "Applicable engineering authoring guidance (IF-008)"
+  style.fill: "#E9F4EE"
+  style.stroke: "#7C8FA9"
+  style.font-color: "#23334A"
+  style.font-size: 17
+  style.border-radius: 6
+}
+m_4d4f442d303132 -> m_49462d303038: "consumes" {
+  style.stroke: "#667A96"
+  style.fill: "#FFFFFF"
+  style.font-size: 13
+}
+m_4d4f442d303137 -> m_49462d303038: "provides" {
+  style.stroke: "#667A96"
+  style.fill: "#FFFFFF"
+  style.font-size: 13
+}

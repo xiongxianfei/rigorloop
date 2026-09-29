@@ -1,0 +1,305 @@
+{
+  "observed": {
+    "software_units": [
+      {
+        "path": "packages/rigorloop/dist/bin/rigorloop.js",
+        "role": "main and dispatchMain admit and dispatch commands and select final output; the executable wrapper applies the command-specific logging boundary."
+      },
+      {
+        "path": "packages/rigorloop/dist/lib/recording-cli.js",
+        "role": "Routes primary recording requests to query or mutation command adapters."
+      },
+      {
+        "path": "packages/rigorloop/dist/lib/recording-query-cli.js",
+        "role": "Owns public query admission, literal selection, pagination, and projection. Its inspectSubjects helper also hosts the MOD-011 subject-observation role."
+      },
+      {
+        "path": "packages/rigorloop/dist/lib/recording-mutation-cli.js",
+        "role": "Admits targeted recording intent and connects construction and receipt callbacks to the store."
+      },
+      {
+        "path": "packages/rigorloop/dist/lib/record-store-cli.js",
+        "role": "Admits the advanced inspect/check/record/recover command envelope and dispatches to executeRecordStore."
+      },
+      {
+        "path": "packages/rigorloop/dist/lib/recording-result.js",
+        "role": "Serializes primary results and prepares fitting mutation receipts; its observation helpers cooperate with MOD-011."
+      },
+      {
+        "path": "packages/rigorloop/dist/lib/workflow-context.js",
+        "role": "Implements bounded current-work discovery behind its own public contract."
+      },
+      {
+        "path": "packages/rigorloop/dist/lib/cli-observability.js",
+        "role": "Wraps eligible command execution with bounded diagnostic events and deferred rendering."
+      },
+      {
+        "path": "packages/rigorloop/dist/lib/log-config.js",
+        "role": "Resolves platform default or explicitly overridden diagnostic directories and validates logging vocabulary."
+      },
+      {
+        "path": "packages/rigorloop/dist/lib/log-sink.js",
+        "role": "appendDiagnosticEvent and readRetainedLogs manage the owned bounded diagnostic files and their guarded read/write paths."
+      },
+      {
+        "path": "packages/rigorloop/dist/lib/log-inspection.js",
+        "role": "findInvocationEvents validates and selects the exact invocation from supported retained events, preserving corruption and unavailability outcomes."
+      },
+      {
+        "path": "packages/rigorloop/package.json",
+        "role": "Declares the package entry point, included files, ESM format, and external dependencies."
+      }
+    ],
+    "sources": [
+      {
+        "source": "SRC-CLI-SOURCE",
+        "locator": "packages/rigorloop/package.json; packages/rigorloop/dist/bin/rigorloop.js main, dispatchMain, executable wrapper; the software_units paths at 9055b3c0",
+        "basis": "Static package and source inspection establishes this bounded mapping and dispatch structure, not a packed artifact, registry version, or executed outcome."
+      },
+      {
+        "source": "SRC-CLI-SOURCE",
+        "locator": "docs/design/cli/cli.md#generic-commands-and-local-observability; docs/design/cli/cli.md#test-design; packages/rigorloop/test/cli-invocation-observability.test.js; packages/rigorloop/test/cli-observability.test.js; packages/rigorloop/test/fixtures/observability/public-command-output.json; packages/rigorloop/test/helpers/record-store-interactions.mjs; packages/rigorloop/test/helpers/recording-query-launcher.mjs; packages/rigorloop/test/helpers/v3-fixture.mjs; packages/rigorloop/test/record-store-cli.test.js; packages/rigorloop/test/record-store-interactions.test.js; packages/rigorloop/test/record-store-queries.test.js; packages/rigorloop/test/record-store-targeted.test.js; packages/rigorloop/test/record-store-v3-mutations.test.js; packages/rigorloop/test/record-store-v3-reads.test.js; packages/rigorloop/test/result-renderer.test.js; packages/rigorloop/test/workflow-context.test.js; tests/fixtures/rigorloop-records-v3/records.json; tests/fixtures/rigorloop-records-v3/storage-safety.json; packages/rigorloop/package.json; scripts/ci.sh; scripts/select-validation.py; scripts/lib/validation/validation_selection.py; scripts/lib/validation/validation_execution.py; scripts/lib/validation/validation_node_adapter.mjs",
+        "basis": "Static inspection of retained test-design contracts, current test sources, fixture helpers and execution callers identifies these bounded test groups and dependencies. No mapped product suite or CI was executed, no skill instructions were read, and source organization is not coverage, passing evidence or a transfer of Verification/Evidence responsibility."
+      }
+    ],
+    "test_groups": [
+      {
+        "name": "Command admission and selected reading",
+        "contract": "docs/design/cli/cli.md#test-design",
+        "test_sources": [
+          {
+            "path": "packages/rigorloop/test/record-store-cli.test.js",
+            "role": "Exercises public advanced record command admission, result shape and subprocess behavior."
+          },
+          {
+            "path": "packages/rigorloop/test/record-store-v3-reads.test.js",
+            "role": "Checks current record selection and projection through the supported recording interface."
+          },
+          {
+            "path": "packages/rigorloop/test/record-store-queries.test.js",
+            "role": "Checks selected reads, declared-subject identities, pagination and observation freshness."
+          },
+          {
+            "path": "packages/rigorloop/test/workflow-context.test.js",
+            "role": "Checks bounded current-work discovery and supported configuration handling."
+          }
+        ],
+        "observation_boundary": "Package command adapters and representative actual Node CLI subprocesses against private current record stores; source assertions inspect returned selection, result domains and stored bytes.",
+        "fixtures": [
+          {
+            "path": "packages/rigorloop/test/helpers/v3-fixture.mjs",
+            "role": "Loads a fresh current five-kind store from the retained complete-store example."
+          },
+          {
+            "path": "packages/rigorloop/test/helpers/recording-query-launcher.mjs",
+            "role": "Test-only query subprocess harness for JSON and text boundary observations."
+          },
+          {
+            "path": "tests/fixtures/rigorloop-records-v3/storage-safety.json",
+            "role": "Current small record/request population copied into private command roots."
+          }
+        ],
+        "execution": {
+          "owner_contract": "docs/design/engineering/validation.md",
+          "selection": [
+            {
+              "path": "scripts/select-validation.py",
+              "role": "Optional public path-selection entrypoint for the repository-owned checks containing this group; direct native invocation does not call it."
+            },
+            {
+              "path": "scripts/lib/validation/validation_selection.py",
+              "role": "Declares the applicable catalog commands and path-selection rules; selects existing checks rather than establishing this group's coverage."
+            }
+          ],
+          "runners": [
+            {
+              "path": "scripts/lib/validation/validation_execution.py",
+              "role": "When selected through the repository wrapper, admits and schedules this group's existing native suite with isolated case execution and attributed results."
+            },
+            {
+              "path": "scripts/lib/validation/validation_node_adapter.mjs",
+              "role": "Adapts native Node test discovery and execution for repository-selected package cases; it does not own the product behavior under test."
+            }
+          ],
+          "entrypoints": [
+            {
+              "path": "packages/rigorloop/package.json",
+              "role": "The test script invokes native Node test discovery across package-owned test files; rigorloop_cli.test selects this existing package suite."
+            },
+            {
+              "path": "scripts/ci.sh",
+              "role": "Optional repository validation wrapper that selects and dispatches the relevant existing catalog checks; recorded as a dependency, not invoked by this architecture mapping."
+            }
+          ]
+        },
+        "required_artifacts": [
+          "Node runtime and installed package runtime dependencies.",
+          "Current dist/ command modules, bundled record schemas and templates; private project roots are constructed by the tests."
+        ],
+        "limits": [
+          "This attributed source organization identifies available test mechanisms; it establishes neither complete requirement coverage nor a passing execution.",
+          "Shared selection and execution tooling retains its Validation contract owner. Its REM Module allocation remains unresolved; this group does not allocate it to the assessed Module or to MOD-007.",
+          "The CLI contract retains command-family and diagnostic-load alignment work; these selected source links do not certify every public variant."
+        ]
+      },
+      {
+        "name": "Private diagnostics and result presentation",
+        "contract": "docs/design/cli/cli.md#generic-commands-and-local-observability",
+        "test_sources": [
+          {
+            "path": "packages/rigorloop/test/cli-observability.test.js",
+            "role": "Checks bounded diagnostic events, private log paths and diagnostic failures."
+          },
+          {
+            "path": "packages/rigorloop/test/cli-invocation-observability.test.js",
+            "role": "Checks invocation-level diagnostic wrapping and public command behavior."
+          },
+          {
+            "path": "packages/rigorloop/test/result-renderer.test.js",
+            "role": "Checks supported human and JSON result presentation."
+          }
+        ],
+        "observation_boundary": "Diagnostic runtime functions and real public invocations using private log directories; returned semantic status is inspected separately from diagnostic persistence.",
+        "fixtures": [
+          {
+            "path": "packages/rigorloop/test/fixtures/observability/public-command-output.json",
+            "role": "Independent expected command-output fixture used by invocation observations."
+          }
+        ],
+        "execution": {
+          "owner_contract": "docs/design/engineering/validation.md",
+          "selection": [
+            {
+              "path": "scripts/select-validation.py",
+              "role": "Optional public path-selection entrypoint for the repository-owned checks containing this group; direct native invocation does not call it."
+            },
+            {
+              "path": "scripts/lib/validation/validation_selection.py",
+              "role": "Declares the applicable catalog commands and path-selection rules; selects existing checks rather than establishing this group's coverage."
+            }
+          ],
+          "runners": [
+            {
+              "path": "scripts/lib/validation/validation_execution.py",
+              "role": "When selected through the repository wrapper, admits and schedules this group's existing native suite with isolated case execution and attributed results."
+            },
+            {
+              "path": "scripts/lib/validation/validation_node_adapter.mjs",
+              "role": "Adapts native Node test discovery and execution for repository-selected package cases; it does not own the product behavior under test."
+            }
+          ],
+          "entrypoints": [
+            {
+              "path": "packages/rigorloop/package.json",
+              "role": "The test script invokes native Node test discovery across package-owned test files; rigorloop_cli.test selects this existing package suite."
+            },
+            {
+              "path": "scripts/ci.sh",
+              "role": "Optional repository validation wrapper that selects and dispatches the relevant existing catalog checks; recorded as a dependency, not invoked by this architecture mapping."
+            }
+          ]
+        },
+        "required_artifacts": [
+          "Node runtime and the current command/result/logging modules.",
+          "Invocation-owned diagnostic directories and controlled clocks or filesystem faults supplied by the test sources."
+        ],
+        "limits": [
+          "This attributed source organization identifies available test mechanisms; it establishes neither complete requirement coverage nor a passing execution.",
+          "Shared selection and execution tooling retains its Validation contract owner. Its REM Module allocation remains unresolved; this group does not allocate it to the assessed Module or to MOD-007.",
+          "Controlled local failures do not establish platform-wide permission behavior or a general logging availability guarantee."
+        ]
+      },
+      {
+        "name": "Public recording interaction composition",
+        "contract": "docs/design/cli/cli.md#test-design",
+        "test_sources": [
+          {
+            "path": "packages/rigorloop/test/record-store-interactions.test.js",
+            "role": "Drives selected inspect, explicit correction and final-read interactions through current command paths."
+          },
+          {
+            "path": "packages/rigorloop/test/record-store-targeted.test.js",
+            "role": "Checks targeted candidate construction and preservation at the command/store cooperation boundary."
+          },
+          {
+            "path": "packages/rigorloop/test/record-store-v3-mutations.test.js",
+            "role": "Checks current review, Verify and finding mutation admission and outcomes."
+          }
+        ],
+        "observation_boundary": "Explicit actor-supplied decisions pass through the targeted interface and shared store in private roots; interaction observations compare selected changes, untouched neighbors and storage-only results.",
+        "fixtures": [
+          {
+            "path": "packages/rigorloop/test/helpers/record-store-interactions.mjs",
+            "role": "Constructs isolated interaction populations and invokes actual current recording paths."
+          },
+          {
+            "path": "tests/fixtures/rigorloop-records-v3/records.json",
+            "role": "Shared immutable current-record input cloned before interaction mutations."
+          },
+          {
+            "path": "packages/rigorloop/test/helpers/v3-fixture.mjs",
+            "role": "Provides current-format complete-store input to v3 mutation groups."
+          }
+        ],
+        "execution": {
+          "owner_contract": "docs/design/engineering/validation.md",
+          "selection": [
+            {
+              "path": "scripts/select-validation.py",
+              "role": "Optional public path-selection entrypoint for the repository-owned checks containing this group; direct native invocation does not call it."
+            },
+            {
+              "path": "scripts/lib/validation/validation_selection.py",
+              "role": "Declares the applicable catalog commands and path-selection rules; selects existing checks rather than establishing this group's coverage."
+            }
+          ],
+          "runners": [
+            {
+              "path": "scripts/lib/validation/validation_execution.py",
+              "role": "When selected through the repository wrapper, admits and schedules this group's existing native suite with isolated case execution and attributed results."
+            },
+            {
+              "path": "scripts/lib/validation/validation_node_adapter.mjs",
+              "role": "Adapts native Node test discovery and execution for repository-selected package cases; it does not own the product behavior under test."
+            }
+          ],
+          "entrypoints": [
+            {
+              "path": "packages/rigorloop/package.json",
+              "role": "The test script invokes native Node test discovery across package-owned test files; rigorloop_cli.test selects this existing package suite."
+            },
+            {
+              "path": "scripts/ci.sh",
+              "role": "Optional repository validation wrapper that selects and dispatches the relevant existing catalog checks; recorded as a dependency, not invoked by this architecture mapping."
+            }
+          ]
+        },
+        "required_artifacts": [
+          "Current package executable, record/store modules, record schemas and templates.",
+          "Private mutable stores and independently captured before-state bytes constructed per test."
+        ],
+        "limits": [
+          "This attributed source organization identifies available test mechanisms; it establishes neither complete requirement coverage nor a passing execution.",
+          "Shared selection and execution tooling retains its Validation contract owner. Its REM Module allocation remains unresolved; this group does not allocate it to the assessed Module or to MOD-007.",
+          "Package-native interaction checks do not establish packed-artifact completeness; the separate Packaging group retains that composition.",
+          "Recorded actor labels and successful storage do not establish approval, reviewer independence or requirement satisfaction."
+        ]
+      }
+    ]
+  },
+  "proposed": [
+    {
+      "choice": "Retain command-specific public result and diagnostic adapters around the shared runtime.",
+      "rationale": "SR-040, SR-046, and SR-047 preserve independently versioned results and require diagnostics to remain semantically independent.",
+      "alternatives": [
+        "A universal result/logging wrapper would need an explicit compatibility redesign because recording and generic commands have different admission and output contracts."
+      ],
+      "consequences": [
+        "Keep recording exclusions and pre-publication receipt preparation explicit. Installation dispatch still needs its IR-010 analysis."
+      ],
+      "revisit_when": [
+        "A separately approved public-contract migration reconciles all affected command domains."
+      ]
+    }
+  ]
+}

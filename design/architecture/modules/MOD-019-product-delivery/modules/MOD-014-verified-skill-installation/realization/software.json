@@ -1,0 +1,159 @@
+{
+  "observed": {
+    "software_units": [
+      {
+        "path": "packages/rigorloop/dist/bin/rigorloop.js",
+        "role": "handleInit, archiveWorkForInit, loadVerifiedBundledMetadata, validateMetadata, and inspectArchive select the target, acquire and verify candidate bytes, invoke installCandidate, and prepare truthful planned/actual installation results. General command dispatch remains MOD-010 responsibility in this shared file."
+      },
+      {
+        "path": "packages/rigorloop/dist/lib/adapters.js",
+        "role": "The closed codex/claude descriptor map defines supported target names, .agents/skills or .claude/skills placement, and target archive naming."
+      },
+      {
+        "path": "packages/rigorloop/dist/lib/installer-replacement.js",
+        "role": "candidateUnits and installCandidate preflight exact candidate units, preserve unrelated units, require explicit force for conflicts, publish verified files, and return completed/retained/failed scope. The descriptor-relative filesystem mechanism has explicit capability requirements."
+      },
+      {
+        "path": "packages/rigorloop/dist/lib/official-archive-url.js",
+        "role": "Validates the selected official archive URL before network acquisition; a locally supplied ZIP still uses the package-bundled metadata trust basis."
+      }
+    ],
+    "sources": [
+      {
+        "source": "SRC-PRODUCT-REALIZATION",
+        "locator": "packages/rigorloop/dist/bin/rigorloop.js installation helpers; packages/rigorloop/dist/lib/adapters.js; packages/rigorloop/dist/lib/installer-replacement.js; packages/rigorloop/dist/lib/official-archive-url.js at 33f56fe84ff730d7bd48900cef32170fd0682412",
+        "basis": "Static inspection of unchanged tracked source establishes the described implementation path, not an executed build, passing qualification, installed artifact, public release, or permission to perform those operations. Skill instructions were neither read nor invoked."
+      },
+      {
+        "source": "SRC-PRODUCT-REALIZATION",
+        "locator": "docs/design/cli/installation.md#destination-conflicts-and-explicit-replacement; docs/design/cli/installation.md#test-design; packages/rigorloop/test/cli.test.js; packages/rigorloop/test/installer-replacement.test.js; packages/rigorloop/package.json; scripts/ci.sh; scripts/select-validation.py; scripts/lib/validation/validation_selection.py; scripts/lib/validation/validation_execution.py; scripts/lib/validation/validation_node_adapter.mjs",
+        "basis": "Static inspection of retained test-design contracts, current test sources, fixture helpers and execution callers identifies these bounded test groups and dependencies. No mapped product suite or CI was executed, no skill instructions were read, and source organization is not coverage, passing evidence or a transfer of Verification/Evidence responsibility."
+      }
+    ],
+    "test_groups": [
+      {
+        "name": "Verified acquisition and installation admission",
+        "contract": "docs/design/cli/installation.md#test-design",
+        "test_sources": [
+          {
+            "path": "packages/rigorloop/test/cli.test.js",
+            "role": "Exercises supported installation dispatch, local/network archive admission, trust metadata, dry-run and controlled acquisition diagnostics."
+          }
+        ],
+        "observation_boundary": "Actual command dispatch and archive verifier with private package/project roots, real small ZIPs and controlled network responses; tests distinguish preliminary dry-run checks from installed bytes.",
+        "fixtures": [
+          {
+            "path": "packages/rigorloop/test/cli.test.js",
+            "role": "Inline fixtureArchive and fixturePackage builders create independently varied archives, metadata and private CLI copies; test-only instrumentation detects selected forbidden reads."
+          }
+        ],
+        "execution": {
+          "owner_contract": "docs/design/engineering/validation.md",
+          "selection": [
+            {
+              "path": "scripts/select-validation.py",
+              "role": "Optional public path-selection entrypoint for the repository-owned checks containing this group; direct native invocation does not call it."
+            },
+            {
+              "path": "scripts/lib/validation/validation_selection.py",
+              "role": "Declares the applicable catalog commands and path-selection rules; selects existing checks rather than establishing this group's coverage."
+            }
+          ],
+          "runners": [
+            {
+              "path": "scripts/lib/validation/validation_execution.py",
+              "role": "When selected through the repository wrapper, admits and schedules this group's existing native suite with isolated case execution and attributed results."
+            },
+            {
+              "path": "scripts/lib/validation/validation_node_adapter.mjs",
+              "role": "Adapts native Node test discovery and execution for repository-selected package cases; it does not own the product behavior under test."
+            }
+          ],
+          "entrypoints": [
+            {
+              "path": "packages/rigorloop/package.json",
+              "role": "The test script invokes native Node test discovery across package-owned test files; rigorloop_cli.test selects this existing package suite."
+            },
+            {
+              "path": "scripts/ci.sh",
+              "role": "Optional repository validation wrapper that selects and dispatches the relevant existing catalog checks; recorded as a dependency, not invoked by this architecture mapping."
+            }
+          ]
+        },
+        "required_artifacts": [
+          "Node runtime, current package executable, archive verification helpers and bundled metadata format.",
+          "Private ZIP inputs and corresponding metadata/index fixtures generated by this group."
+        ],
+        "limits": [
+          "This attributed source organization identifies available test mechanisms; it establishes neither complete requirement coverage nor a passing execution.",
+          "Shared selection and execution tooling retains its Validation contract owner. Its REM Module allocation remains unresolved; this group does not allocate it to the assessed Module or to MOD-007.",
+          "Controlled provider responses establish local acquisition decisions, not public endpoint availability or unrestricted network behavior.",
+          "Actual emitted npm/ZIP producer-consumer compatibility remains in Packaging's separate packed-candidate group."
+        ]
+      },
+      {
+        "name": "Bounded replacement and partial failure",
+        "contract": "docs/design/cli/installation.md#destination-conflicts-and-explicit-replacement",
+        "test_sources": [
+          {
+            "path": "packages/rigorloop/test/installer-replacement.test.js",
+            "role": "Exercises installCandidate against real directories, symlinks, open handles, checkpoints, concurrent destination changes and partial failures."
+          }
+        ],
+        "observation_boundary": "The replacement engine receives a verified candidate file set and mutates selected skill units in a private filesystem; active destinations, unrelated sentinels and retained originals are inspected separately.",
+        "fixtures": [
+          {
+            "path": "packages/rigorloop/test/installer-replacement.test.js",
+            "role": "Inline fixture and old-unit builders create fresh destination trees; local candidate byte arrays are independent of archive acquisition."
+          }
+        ],
+        "execution": {
+          "owner_contract": "docs/design/engineering/validation.md",
+          "selection": [
+            {
+              "path": "scripts/select-validation.py",
+              "role": "Optional public path-selection entrypoint for the repository-owned checks containing this group; direct native invocation does not call it."
+            },
+            {
+              "path": "scripts/lib/validation/validation_selection.py",
+              "role": "Declares the applicable catalog commands and path-selection rules; selects existing checks rather than establishing this group's coverage."
+            }
+          ],
+          "runners": [
+            {
+              "path": "scripts/lib/validation/validation_execution.py",
+              "role": "When selected through the repository wrapper, admits and schedules this group's existing native suite with isolated case execution and attributed results."
+            },
+            {
+              "path": "scripts/lib/validation/validation_node_adapter.mjs",
+              "role": "Adapts native Node test discovery and execution for repository-selected package cases; it does not own the product behavior under test."
+            }
+          ],
+          "entrypoints": [
+            {
+              "path": "packages/rigorloop/package.json",
+              "role": "The test script invokes native Node test discovery across package-owned test files; rigorloop_cli.test selects this existing package suite."
+            },
+            {
+              "path": "scripts/ci.sh",
+              "role": "Optional repository validation wrapper that selects and dispatches the relevant existing catalog checks; recorded as a dependency, not invoked by this architecture mapping."
+            }
+          ]
+        },
+        "required_artifacts": [
+          "Current installer-replacement module and Node filesystem/process support.",
+          "Private writable destination roots, supported anchored operations and independently specified candidate files."
+        ],
+        "limits": [
+          "This attributed source organization identifies available test mechanisms; it establishes neither complete requirement coverage nor a passing execution.",
+          "Shared selection and execution tooling retains its Validation contract owner. Its REM Module allocation remains unresolved; this group does not allocate it to the assessed Module or to MOD-007.",
+          "Direct replacement checks bypass archive acquisition and public CLI result projection.",
+          "The contract permits bounded per-unit preservation and partial completion; this group does not promise whole-operation rollback or certification on every platform."
+        ]
+      }
+    ]
+  },
+  "deferred": [
+    "Installed-byte qualification, adversarial filesystem/race proof, runtime compatibility, complete diagnostic behavior, and public acquisition evidence remain with Installation and its applicable verification."
+  ]
+}

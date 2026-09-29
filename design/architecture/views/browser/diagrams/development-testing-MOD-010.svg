@@ -1,0 +1,373 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" data-d2-version="v0.9.0" preserveAspectRatio="xMinYMin meet" viewBox="0 0 989 1703"><svg class="d2-3570588223 d2-svg" width="989" height="1703" viewBox="-17 -34 989 1703"><rect x="-17" y="-34" width="989" height="1703" rx="0" fill="#FFFFFF" class=" fill-N7" stroke-width="0" /><style type="text/css"><![CDATA[
+.d2-3570588223 .text {
+	font-family: "d2-3570588223-font-regular";
+}
+@font-face {
+	font-family: d2-3570588223-font-regular;
+	src: url("data:application/font-woff;base64,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");
+}
+.appendix-icon {
+	filter: drop-shadow(0px 0px 32px rgba(31, 36, 58, 0.1));
+}
+.d2-3570588223 .text-bold {
+	font-family: "d2-3570588223-font-bold";
+}
+@font-face {
+	font-family: d2-3570588223-font-bold;
+	src: url("data:application/font-woff;base64,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");
+}
+.d2-3570588223 .text-italic {
+	font-family: "d2-3570588223-font-italic";
+}
+@font-face {
+	font-family: d2-3570588223-font-italic;
+	src: url("data:application/font-woff;base64,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");
+}]]></style><style type="text/css"><![CDATA[.shape {
+  shape-rendering: geometricPrecision;
+  stroke-linejoin: round;
+}
+.connection {
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.blend {
+  mix-blend-mode: multiply;
+  opacity: 0.5;
+}
+
+		.d2-3570588223 .fill-N2{fill:#676C7E;}
+		.d2-3570588223 .fill-N7{fill:#FFFFFF;}
+		.d2-3570588223 .stroke-B2{stroke:#0D32B2;}.appendix text.text{fill:#0A0F25}.md{--color-fg-default:#0A0F25;--color-fg-muted:#676C7E;--color-fg-subtle:#9499AB;--color-canvas-default:#FFFFFF;--color-canvas-subtle:#EEF1F8;--color-border-default:#0D32B2;--color-border-muted:#0D32B2;--color-neutral-muted:#EEF1F8;--color-accent-fg:#0D32B2;--color-accent-emphasis:#0D32B2;--color-attention-subtle:#676C7E;--color-danger-fg:red;}.light-code{display: block}.dark-code{display: none}]]></style><a href="../index.html#development/testing-MOD-010" xlink:href="../index.html#development/testing-MOD-010"><g class="Z3JvdXBz"><g class="shape" ><rect x="12" y="12" width="914" height="1628" rx="6" stroke="#7C8FA9" fill="#FFFFFF" style="stroke-width:2;" /></g><text x="469" y="34" fill="#23334A" class="text" style="text-anchor:middle;font-size:17px">Recorded test groups</text><title>Recorded test groups</title></g></a><a href="../index.html#development/testing-MOD-010" xlink:href="../index.html#development/testing-MOD-010"><g class="Z3JvdXBzLmcw"><g class="shape" ><rect x="72" y="72" width="794" height="476" rx="6" stroke="#7C8FA9" fill="#FFFFFF" style="stroke-width:2;" /></g><text x="469" y="94" fill="#23334A" class="text" style="text-anchor:middle;font-size:17px">Assessment and dependencies</text><title>Assessment and dependencies</title></g></a><a href="../index.html#development/testing-MOD-010" xlink:href="../index.html#development/testing-MOD-010"><g class="Z3JvdXBzLmcx"><g class="shape" ><rect x="72" y="588" width="794" height="476" rx="6" stroke="#7C8FA9" fill="#FFFFFF" style="stroke-width:2;" /></g><text x="469" y="610" fill="#23334A" class="text" style="text-anchor:middle;font-size:17px">Assessment and dependencies</text><title>Assessment and dependencies</title></g></a><a href="../index.html#development/testing-MOD-010" xlink:href="../index.html#development/testing-MOD-010"><g class="Z3JvdXBzLmcy"><g class="shape" ><rect x="72" y="1104" width="794" height="476" rx="6" stroke="#7C8FA9" fill="#FFFFFF" style="stroke-width:2;" /></g><text x="469" y="1126" fill="#23334A" class="text" style="text-anchor:middle;font-size:17px">Assessment and dependencies</text><title>Assessment and dependencies</title></g></a><a href="../index.html#development/testing-MOD-010" xlink:href="../index.html#development/testing-MOD-010"><g class="Z3JvdXBzLmcwLmdyb3Vw"><g class="shape" ><rect x="336" y="162" width="298" height="84" rx="6" stroke="#7C8FA9" fill="#E9F4EE" style="stroke-width:2;" /></g><text x="485" y="201.5" fill="#23334A" class="text-bold" style="text-anchor:middle;font-size:17px"><tspan x="485" dy="0">Command admission and</tspan><tspan x="485" dy="19.5">selected reading</tspan></text><title>Package command adapters and representative actual Node CLI subprocesses against private current record stores; source assertions inspect returned selection, result domains and stored bytes.</title></g></a><a href="../index.html#module/MOD-010" xlink:href="../index.html#module/MOD-010"><g class="Z3JvdXBzLmcwLnN1YmplY3Q="><g class="shape" ><rect x="142" y="363" width="349" height="67" rx="6" stroke="#7C8FA9" fill="#ECF3FF" style="stroke-width:2;" /></g><text x="316.5" y="402.5" fill="#23334A" class="text-bold" style="text-anchor:middle;font-size:17px">Engineering command interface</text><title>Engineering command interface (MOD-010)</title></g></a><a href="../index.html#development/testing-MOD-010" xlink:href="../index.html#development/testing-MOD-010"><g class="Z3JvdXBzLmcwLmRlcGVuZGVuY2llcw=="><g class="shape" ><rect x="511" y="363" width="285" height="135" rx="6" stroke="#7C8FA9" fill="#FFF5DB" style="stroke-width:2;stroke-dasharray:6.000000,5.919384;" /></g><text x="653.5" y="402.5" fill="#23334A" class="text-bold" style="text-anchor:middle;font-size:17px"><tspan x="653.5" dy="0">Static dependencies</tspan><tspan x="653.5" dy="18">Test sources: 4</tspan><tspan x="653.5" dy="18">Fixtures: 3</tspan><tspan x="653.5" dy="18">Execution references: 6</tspan><tspan x="653.5" dy="18">Required artifacts: 2</tspan></text><title>Recorded dependencies; execution tooling retains its existing contract owner.</title></g></a><a href="../index.html#development/testing-MOD-010" xlink:href="../index.html#development/testing-MOD-010"><g class="Z3JvdXBzLmcxLmdyb3Vw"><g class="shape" ><rect x="343" y="678" width="284" height="84" rx="6" stroke="#7C8FA9" fill="#E9F4EE" style="stroke-width:2;" /></g><text x="485" y="717.5" fill="#23334A" class="text-bold" style="text-anchor:middle;font-size:17px"><tspan x="485" dy="0">Private diagnostics and</tspan><tspan x="485" dy="19.5">result presentation</tspan></text><title>Diagnostic runtime functions and real public invocations using private log directories; returned semantic status is inspected separately from diagnostic persistence.</title></g></a><a href="../index.html#module/MOD-010" xlink:href="../index.html#module/MOD-010"><g class="Z3JvdXBzLmcxLnN1YmplY3Q="><g class="shape" ><rect x="142" y="879" width="349" height="67" rx="6" stroke="#7C8FA9" fill="#ECF3FF" style="stroke-width:2;" /></g><text x="316.5" y="918.5" fill="#23334A" class="text-bold" style="text-anchor:middle;font-size:17px">Engineering command interface</text><title>Engineering command interface (MOD-010)</title></g></a><a href="../index.html#development/testing-MOD-010" xlink:href="../index.html#development/testing-MOD-010"><g class="Z3JvdXBzLmcxLmRlcGVuZGVuY2llcw=="><g class="shape" ><rect x="511" y="879" width="285" height="135" rx="6" stroke="#7C8FA9" fill="#FFF5DB" style="stroke-width:2;stroke-dasharray:6.000000,5.919384;" /></g><text x="653.5" y="918.5" fill="#23334A" class="text-bold" style="text-anchor:middle;font-size:17px"><tspan x="653.5" dy="0">Static dependencies</tspan><tspan x="653.5" dy="18">Test sources: 3</tspan><tspan x="653.5" dy="18">Fixtures: 1</tspan><tspan x="653.5" dy="18">Execution references: 6</tspan><tspan x="653.5" dy="18">Required artifacts: 2</tspan></text><title>Recorded dependencies; execution tooling retains its existing contract owner.</title></g></a><a href="../index.html#development/testing-MOD-010" xlink:href="../index.html#development/testing-MOD-010"><g class="Z3JvdXBzLmcyLmdyb3Vw"><g class="shape" ><rect x="325" y="1194" width="319" height="84" rx="6" stroke="#7C8FA9" fill="#E9F4EE" style="stroke-width:2;" /></g><text x="484.5" y="1233.5" fill="#23334A" class="text-bold" style="text-anchor:middle;font-size:17px"><tspan x="484.5" dy="0">Public recording interaction</tspan><tspan x="484.5" dy="19.5">composition</tspan></text><title>Explicit actor-supplied decisions pass through the targeted interface and shared store in private roots; interaction observations compare selected changes, untouched neighbors and storage-only results.</title></g></a><a href="../index.html#module/MOD-010" xlink:href="../index.html#module/MOD-010"><g class="Z3JvdXBzLmcyLnN1YmplY3Q="><g class="shape" ><rect x="142" y="1395" width="349" height="67" rx="6" stroke="#7C8FA9" fill="#ECF3FF" style="stroke-width:2;" /></g><text x="316.5" y="1434.5" fill="#23334A" class="text-bold" style="text-anchor:middle;font-size:17px">Engineering command interface</text><title>Engineering command interface (MOD-010)</title></g></a><a href="../index.html#development/testing-MOD-010" xlink:href="../index.html#development/testing-MOD-010"><g class="Z3JvdXBzLmcyLmRlcGVuZGVuY2llcw=="><g class="shape" ><rect x="511" y="1395" width="285" height="135" rx="6" stroke="#7C8FA9" fill="#FFF5DB" style="stroke-width:2;stroke-dasharray:6.000000,5.919384;" /></g><text x="653.5" y="1434.5" fill="#23334A" class="text-bold" style="text-anchor:middle;font-size:17px"><tspan x="653.5" dy="0">Static dependencies</tspan><tspan x="653.5" dy="18">Test sources: 3</tspan><tspan x="653.5" dy="18">Fixtures: 3</tspan><tspan x="653.5" dy="18">Execution references: 6</tspan><tspan x="653.5" dy="18">Required artifacts: 2</tspan></text><title>Recorded dependencies; execution tooling retains its existing contract owner.</title></g></a><g class="Z3JvdXBzLmcwLihncm91cCAtJmd0OyBzdWJqZWN0KVswXQ=="><marker id="mk-d2-3570588223-3446170533" markerWidth="10" markerHeight="12" refX="7" refY="6" viewBox="0 0 10 12" orient="auto" markerUnits="userSpaceOnUse"> <polygon points="0,0 10,6 0,12" fill="#667A96" class="connection" stroke-width="2" /> </marker><path d="M 435.333008 248 L 435.333008 359" stroke="#667A96" fill="none" class="connection" style="stroke-width:2;" marker-end="url(#mk-d2-3570588223-3446170533)" mask="url(#d2-3570588223)" /><rect x="408" y="293" width="54" height="23" rx="10" fill="#FFFFFF" /><text x="435" y="309" fill="#676C7E" class="text-italic fill-N2" style="text-anchor:middle;font-size:13px">assesses</text></g><g class="Z3JvdXBzLmcwLihncm91cCAtJmd0OyBkZXBlbmRlbmNpZXMpWzBd"><path d="M 534.666016 248 L 534.666016 359" stroke="#667A96" fill="none" class="connection" style="stroke-width:2;stroke-dasharray:6.000000,5.919384;" marker-end="url(#mk-d2-3570588223-3446170533)" mask="url(#d2-3570588223)" /><rect x="509" y="293" width="52" height="23" rx="10" fill="#FFFFFF" /><text x="535" y="309" fill="#676C7E" class="text-italic fill-N2" style="text-anchor:middle;font-size:13px">requires</text></g><g class="Z3JvdXBzLmcxLihncm91cCAtJmd0OyBzdWJqZWN0KVswXQ=="><path d="M 437.665985 764 L 437.665985 875" stroke="#667A96" fill="none" class="connection" style="stroke-width:2;" marker-end="url(#mk-d2-3570588223-3446170533)" mask="url(#d2-3570588223)" /><rect x="411" y="809" width="54" height="23" rx="10" fill="#FFFFFF" /><text x="438" y="825" fill="#676C7E" class="text-italic fill-N2" style="text-anchor:middle;font-size:13px">assesses</text></g><g class="Z3JvdXBzLmcxLihncm91cCAtJmd0OyBkZXBlbmRlbmNpZXMpWzBd"><path d="M 532.333008 764 L 532.333008 875" stroke="#667A96" fill="none" class="connection" style="stroke-width:2;stroke-dasharray:6.000000,5.919384;" marker-end="url(#mk-d2-3570588223-3446170533)" mask="url(#d2-3570588223)" /><rect x="506" y="809" width="52" height="23" rx="10" fill="#FFFFFF" /><text x="532" y="825" fill="#676C7E" class="text-italic fill-N2" style="text-anchor:middle;font-size:13px">requires</text></g><g class="Z3JvdXBzLmcyLihncm91cCAtJmd0OyBzdWJqZWN0KVswXQ=="><path d="M 431.833008 1280 L 431.833008 1391" stroke="#667A96" fill="none" class="connection" style="stroke-width:2;" marker-end="url(#mk-d2-3570588223-3446170533)" mask="url(#d2-3570588223)" /><rect x="405" y="1325" width="54" height="23" rx="10" fill="#FFFFFF" /><text x="432" y="1341" fill="#676C7E" class="text-italic fill-N2" style="text-anchor:middle;font-size:13px">assesses</text></g><g class="Z3JvdXBzLmcyLihncm91cCAtJmd0OyBkZXBlbmRlbmNpZXMpWzBd"><path d="M 538.166016 1280 L 538.166016 1391" stroke="#667A96" fill="none" class="connection" style="stroke-width:2;stroke-dasharray:6.000000,5.919384;" marker-end="url(#mk-d2-3570588223-3446170533)" mask="url(#d2-3570588223)" /><rect x="512" y="1325" width="52" height="23" rx="10" fill="#FFFFFF" /><text x="538" y="1341" fill="#676C7E" class="text-italic fill-N2" style="text-anchor:middle;font-size:13px">requires</text></g><g transform="translate(910 -4)" class="appendix-icon"><title>Recorded test groups</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3427_35082111-d2-3570588223-M5ZG65LQOM)">
+<path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
+<path d="M16 26C21.5228 26 26 21.5228 26 16C26 10.4772 21.5228 6 16 6C10.4772 6 6 10.4772 6 16C6 21.5228 10.4772 26 16 26Z" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16 19.998V15.998" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16 12H16.0098" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_3427_35082111-d2-3570588223-M5ZG65LQOM">
+<rect width="32" height="32" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+</g><g transform="translate(878 -4)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3440_35088111-d2-3570588223-M5ZG65LQOM)">
+<path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
+<path d="M14.3909 16.7965C14.7364 17.2584 15.1772 17.6406 15.6834 17.9171C16.1896 18.1938 16.7494 18.3582 17.3248 18.3993C17.9001 18.4405 18.4777 18.3575 19.0181 18.1559C19.5586 17.9543 20.0492 17.6389 20.4571 17.2309L22.8708 14.8173C23.6036 14.0586 24.0089 13.0425 23.9998 11.9877C23.9906 10.933 23.5676 9.92404 22.8217 9.17821C22.0759 8.43237 21.067 8.00931 20.0123 8.00015C18.9575 7.99098 17.9413 8.39644 17.1827 9.1292L15.7988 10.505" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M17.609 15.1874C17.2635 14.7255 16.8227 14.3433 16.3165 14.0667C15.8103 13.7902 15.2505 13.6257 14.6752 13.5845C14.0998 13.5433 13.5223 13.6263 12.9819 13.8279C12.4414 14.0295 11.9506 14.345 11.5428 14.753L9.1292 17.1666C8.39644 17.9252 7.99098 18.9414 8.00015 19.9962C8.00931 21.0509 8.43237 22.0598 9.17821 22.8056C9.92405 23.5515 10.933 23.9745 11.9877 23.9837C13.0425 23.9928 14.0586 23.5875 14.8173 22.8547L16.193 21.4788" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_3440_35088111-d2-3570588223-M5ZG65LQOM">
+<rect width="32" height="32" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+</g><g transform="translate(850 56)" class="appendix-icon"><title>Assessment and dependencies</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3427_35082111-d2-3570588223-M5ZG65LQOMXGOMA)">
+<path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
+<path d="M16 26C21.5228 26 26 21.5228 26 16C26 10.4772 21.5228 6 16 6C10.4772 6 6 10.4772 6 16C6 21.5228 10.4772 26 16 26Z" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16 19.998V15.998" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16 12H16.0098" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_3427_35082111-d2-3570588223-M5ZG65LQOMXGOMA">
+<rect width="32" height="32" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+</g><g transform="translate(818 56)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3440_35088111-d2-3570588223-M5ZG65LQOMXGOMA)">
+<path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
+<path d="M14.3909 16.7965C14.7364 17.2584 15.1772 17.6406 15.6834 17.9171C16.1896 18.1938 16.7494 18.3582 17.3248 18.3993C17.9001 18.4405 18.4777 18.3575 19.0181 18.1559C19.5586 17.9543 20.0492 17.6389 20.4571 17.2309L22.8708 14.8173C23.6036 14.0586 24.0089 13.0425 23.9998 11.9877C23.9906 10.933 23.5676 9.92404 22.8217 9.17821C22.0759 8.43237 21.067 8.00931 20.0123 8.00015C18.9575 7.99098 17.9413 8.39644 17.1827 9.1292L15.7988 10.505" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M17.609 15.1874C17.2635 14.7255 16.8227 14.3433 16.3165 14.0667C15.8103 13.7902 15.2505 13.6257 14.6752 13.5845C14.0998 13.5433 13.5223 13.6263 12.9819 13.8279C12.4414 14.0295 11.9506 14.345 11.5428 14.753L9.1292 17.1666C8.39644 17.9252 7.99098 18.9414 8.00015 19.9962C8.00931 21.0509 8.43237 22.0598 9.17821 22.8056C9.92405 23.5515 10.933 23.9745 11.9877 23.9837C13.0425 23.9928 14.0586 23.5875 14.8173 22.8547L16.193 21.4788" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_3440_35088111-d2-3570588223-M5ZG65LQOMXGOMA">
+<rect width="32" height="32" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+</g><g transform="translate(850 572)" class="appendix-icon"><title>Assessment and dependencies</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3427_35082111-d2-3570588223-M5ZG65LQOMXGOMI)">
+<path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
+<path d="M16 26C21.5228 26 26 21.5228 26 16C26 10.4772 21.5228 6 16 6C10.4772 6 6 10.4772 6 16C6 21.5228 10.4772 26 16 26Z" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16 19.998V15.998" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16 12H16.0098" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_3427_35082111-d2-3570588223-M5ZG65LQOMXGOMI">
+<rect width="32" height="32" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+</g><g transform="translate(818 572)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3440_35088111-d2-3570588223-M5ZG65LQOMXGOMI)">
+<path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
+<path d="M14.3909 16.7965C14.7364 17.2584 15.1772 17.6406 15.6834 17.9171C16.1896 18.1938 16.7494 18.3582 17.3248 18.3993C17.9001 18.4405 18.4777 18.3575 19.0181 18.1559C19.5586 17.9543 20.0492 17.6389 20.4571 17.2309L22.8708 14.8173C23.6036 14.0586 24.0089 13.0425 23.9998 11.9877C23.9906 10.933 23.5676 9.92404 22.8217 9.17821C22.0759 8.43237 21.067 8.00931 20.0123 8.00015C18.9575 7.99098 17.9413 8.39644 17.1827 9.1292L15.7988 10.505" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M17.609 15.1874C17.2635 14.7255 16.8227 14.3433 16.3165 14.0667C15.8103 13.7902 15.2505 13.6257 14.6752 13.5845C14.0998 13.5433 13.5223 13.6263 12.9819 13.8279C12.4414 14.0295 11.9506 14.345 11.5428 14.753L9.1292 17.1666C8.39644 17.9252 7.99098 18.9414 8.00015 19.9962C8.00931 21.0509 8.43237 22.0598 9.17821 22.8056C9.92405 23.5515 10.933 23.9745 11.9877 23.9837C13.0425 23.9928 14.0586 23.5875 14.8173 22.8547L16.193 21.4788" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_3440_35088111-d2-3570588223-M5ZG65LQOMXGOMI">
+<rect width="32" height="32" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+</g><g transform="translate(850 1088)" class="appendix-icon"><title>Assessment and dependencies</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3427_35082111-d2-3570588223-M5ZG65LQOMXGOMQ)">
+<path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
+<path d="M16 26C21.5228 26 26 21.5228 26 16C26 10.4772 21.5228 6 16 6C10.4772 6 6 10.4772 6 16C6 21.5228 10.4772 26 16 26Z" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16 19.998V15.998" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16 12H16.0098" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_3427_35082111-d2-3570588223-M5ZG65LQOMXGOMQ">
+<rect width="32" height="32" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+</g><g transform="translate(818 1088)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3440_35088111-d2-3570588223-M5ZG65LQOMXGOMQ)">
+<path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
+<path d="M14.3909 16.7965C14.7364 17.2584 15.1772 17.6406 15.6834 17.9171C16.1896 18.1938 16.7494 18.3582 17.3248 18.3993C17.9001 18.4405 18.4777 18.3575 19.0181 18.1559C19.5586 17.9543 20.0492 17.6389 20.4571 17.2309L22.8708 14.8173C23.6036 14.0586 24.0089 13.0425 23.9998 11.9877C23.9906 10.933 23.5676 9.92404 22.8217 9.17821C22.0759 8.43237 21.067 8.00931 20.0123 8.00015C18.9575 7.99098 17.9413 8.39644 17.1827 9.1292L15.7988 10.505" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M17.609 15.1874C17.2635 14.7255 16.8227 14.3433 16.3165 14.0667C15.8103 13.7902 15.2505 13.6257 14.6752 13.5845C14.0998 13.5433 13.5223 13.6263 12.9819 13.8279C12.4414 14.0295 11.9506 14.345 11.5428 14.753L9.1292 17.1666C8.39644 17.9252 7.99098 18.9414 8.00015 19.9962C8.00931 21.0509 8.43237 22.0598 9.17821 22.8056C9.92405 23.5515 10.933 23.9745 11.9877 23.9837C13.0425 23.9928 14.0586 23.5875 14.8173 22.8547L16.193 21.4788" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_3440_35088111-d2-3570588223-M5ZG65LQOMXGOMQ">
+<rect width="32" height="32" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+</g><g transform="translate(618 146)" class="appendix-icon"><title>Package command adapters and representative actual Node CLI subprocesses against private current record stores; source assertions inspect returned selection, result domains and stored bytes.</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3427_35082111-d2-3570588223-M5ZG65LQOMXGOMBOM5ZG65LQ)">
+<path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
+<path d="M16 26C21.5228 26 26 21.5228 26 16C26 10.4772 21.5228 6 16 6C10.4772 6 6 10.4772 6 16C6 21.5228 10.4772 26 16 26Z" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16 19.998V15.998" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16 12H16.0098" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_3427_35082111-d2-3570588223-M5ZG65LQOMXGOMBOM5ZG65LQ">
+<rect width="32" height="32" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+</g><g transform="translate(586 146)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3440_35088111-d2-3570588223-M5ZG65LQOMXGOMBOM5ZG65LQ)">
+<path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
+<path d="M14.3909 16.7965C14.7364 17.2584 15.1772 17.6406 15.6834 17.9171C16.1896 18.1938 16.7494 18.3582 17.3248 18.3993C17.9001 18.4405 18.4777 18.3575 19.0181 18.1559C19.5586 17.9543 20.0492 17.6389 20.4571 17.2309L22.8708 14.8173C23.6036 14.0586 24.0089 13.0425 23.9998 11.9877C23.9906 10.933 23.5676 9.92404 22.8217 9.17821C22.0759 8.43237 21.067 8.00931 20.0123 8.00015C18.9575 7.99098 17.9413 8.39644 17.1827 9.1292L15.7988 10.505" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M17.609 15.1874C17.2635 14.7255 16.8227 14.3433 16.3165 14.0667C15.8103 13.7902 15.2505 13.6257 14.6752 13.5845C14.0998 13.5433 13.5223 13.6263 12.9819 13.8279C12.4414 14.0295 11.9506 14.345 11.5428 14.753L9.1292 17.1666C8.39644 17.9252 7.99098 18.9414 8.00015 19.9962C8.00931 21.0509 8.43237 22.0598 9.17821 22.8056C9.92405 23.5515 10.933 23.9745 11.9877 23.9837C13.0425 23.9928 14.0586 23.5875 14.8173 22.8547L16.193 21.4788" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_3440_35088111-d2-3570588223-M5ZG65LQOMXGOMBOM5ZG65LQ">
+<rect width="32" height="32" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+</g><g transform="translate(475 347)" class="appendix-icon"><title>Engineering command interface (MOD-010)</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3427_35082111-d2-3570588223-M5ZG65LQOMXGOMBOON2WE2TFMN2A)">
+<path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
+<path d="M16 26C21.5228 26 26 21.5228 26 16C26 10.4772 21.5228 6 16 6C10.4772 6 6 10.4772 6 16C6 21.5228 10.4772 26 16 26Z" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16 19.998V15.998" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16 12H16.0098" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_3427_35082111-d2-3570588223-M5ZG65LQOMXGOMBOON2WE2TFMN2A">
+<rect width="32" height="32" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+</g><g transform="translate(443 347)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3440_35088111-d2-3570588223-M5ZG65LQOMXGOMBOON2WE2TFMN2A)">
+<path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
+<path d="M14.3909 16.7965C14.7364 17.2584 15.1772 17.6406 15.6834 17.9171C16.1896 18.1938 16.7494 18.3582 17.3248 18.3993C17.9001 18.4405 18.4777 18.3575 19.0181 18.1559C19.5586 17.9543 20.0492 17.6389 20.4571 17.2309L22.8708 14.8173C23.6036 14.0586 24.0089 13.0425 23.9998 11.9877C23.9906 10.933 23.5676 9.92404 22.8217 9.17821C22.0759 8.43237 21.067 8.00931 20.0123 8.00015C18.9575 7.99098 17.9413 8.39644 17.1827 9.1292L15.7988 10.505" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M17.609 15.1874C17.2635 14.7255 16.8227 14.3433 16.3165 14.0667C15.8103 13.7902 15.2505 13.6257 14.6752 13.5845C14.0998 13.5433 13.5223 13.6263 12.9819 13.8279C12.4414 14.0295 11.9506 14.345 11.5428 14.753L9.1292 17.1666C8.39644 17.9252 7.99098 18.9414 8.00015 19.9962C8.00931 21.0509 8.43237 22.0598 9.17821 22.8056C9.92405 23.5515 10.933 23.9745 11.9877 23.9837C13.0425 23.9928 14.0586 23.5875 14.8173 22.8547L16.193 21.4788" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_3440_35088111-d2-3570588223-M5ZG65LQOMXGOMBOON2WE2TFMN2A">
+<rect width="32" height="32" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+</g><g transform="translate(780 347)" class="appendix-icon"><title>Recorded dependencies; execution tooling retains its existing contract owner.</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3427_35082111-d2-3570588223-M5ZG65LQOMXGOMBOMRSXAZLOMRSW4Y3JMVZQ)">
+<path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
+<path d="M16 26C21.5228 26 26 21.5228 26 16C26 10.4772 21.5228 6 16 6C10.4772 6 6 10.4772 6 16C6 21.5228 10.4772 26 16 26Z" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16 19.998V15.998" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16 12H16.0098" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_3427_35082111-d2-3570588223-M5ZG65LQOMXGOMBOMRSXAZLOMRSW4Y3JMVZQ">
+<rect width="32" height="32" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+</g><g transform="translate(748 347)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3440_35088111-d2-3570588223-M5ZG65LQOMXGOMBOMRSXAZLOMRSW4Y3JMVZQ)">
+<path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
+<path d="M14.3909 16.7965C14.7364 17.2584 15.1772 17.6406 15.6834 17.9171C16.1896 18.1938 16.7494 18.3582 17.3248 18.3993C17.9001 18.4405 18.4777 18.3575 19.0181 18.1559C19.5586 17.9543 20.0492 17.6389 20.4571 17.2309L22.8708 14.8173C23.6036 14.0586 24.0089 13.0425 23.9998 11.9877C23.9906 10.933 23.5676 9.92404 22.8217 9.17821C22.0759 8.43237 21.067 8.00931 20.0123 8.00015C18.9575 7.99098 17.9413 8.39644 17.1827 9.1292L15.7988 10.505" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M17.609 15.1874C17.2635 14.7255 16.8227 14.3433 16.3165 14.0667C15.8103 13.7902 15.2505 13.6257 14.6752 13.5845C14.0998 13.5433 13.5223 13.6263 12.9819 13.8279C12.4414 14.0295 11.9506 14.345 11.5428 14.753L9.1292 17.1666C8.39644 17.9252 7.99098 18.9414 8.00015 19.9962C8.00931 21.0509 8.43237 22.0598 9.17821 22.8056C9.92405 23.5515 10.933 23.9745 11.9877 23.9837C13.0425 23.9928 14.0586 23.5875 14.8173 22.8547L16.193 21.4788" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_3440_35088111-d2-3570588223-M5ZG65LQOMXGOMBOMRSXAZLOMRSW4Y3JMVZQ">
+<rect width="32" height="32" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+</g><g transform="translate(611 662)" class="appendix-icon"><title>Diagnostic runtime functions and real public invocations using private log directories; returned semantic status is inspected separately from diagnostic persistence.</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3427_35082111-d2-3570588223-M5ZG65LQOMXGOMJOM5ZG65LQ)">
+<path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
+<path d="M16 26C21.5228 26 26 21.5228 26 16C26 10.4772 21.5228 6 16 6C10.4772 6 6 10.4772 6 16C6 21.5228 10.4772 26 16 26Z" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16 19.998V15.998" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16 12H16.0098" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_3427_35082111-d2-3570588223-M5ZG65LQOMXGOMJOM5ZG65LQ">
+<rect width="32" height="32" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+</g><g transform="translate(579 662)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3440_35088111-d2-3570588223-M5ZG65LQOMXGOMJOM5ZG65LQ)">
+<path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
+<path d="M14.3909 16.7965C14.7364 17.2584 15.1772 17.6406 15.6834 17.9171C16.1896 18.1938 16.7494 18.3582 17.3248 18.3993C17.9001 18.4405 18.4777 18.3575 19.0181 18.1559C19.5586 17.9543 20.0492 17.6389 20.4571 17.2309L22.8708 14.8173C23.6036 14.0586 24.0089 13.0425 23.9998 11.9877C23.9906 10.933 23.5676 9.92404 22.8217 9.17821C22.0759 8.43237 21.067 8.00931 20.0123 8.00015C18.9575 7.99098 17.9413 8.39644 17.1827 9.1292L15.7988 10.505" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M17.609 15.1874C17.2635 14.7255 16.8227 14.3433 16.3165 14.0667C15.8103 13.7902 15.2505 13.6257 14.6752 13.5845C14.0998 13.5433 13.5223 13.6263 12.9819 13.8279C12.4414 14.0295 11.9506 14.345 11.5428 14.753L9.1292 17.1666C8.39644 17.9252 7.99098 18.9414 8.00015 19.9962C8.00931 21.0509 8.43237 22.0598 9.17821 22.8056C9.92405 23.5515 10.933 23.9745 11.9877 23.9837C13.0425 23.9928 14.0586 23.5875 14.8173 22.8547L16.193 21.4788" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_3440_35088111-d2-3570588223-M5ZG65LQOMXGOMJOM5ZG65LQ">
+<rect width="32" height="32" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+</g><g transform="translate(475 863)" class="appendix-icon"><title>Engineering command interface (MOD-010)</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3427_35082111-d2-3570588223-M5ZG65LQOMXGOMJOON2WE2TFMN2A)">
+<path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
+<path d="M16 26C21.5228 26 26 21.5228 26 16C26 10.4772 21.5228 6 16 6C10.4772 6 6 10.4772 6 16C6 21.5228 10.4772 26 16 26Z" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16 19.998V15.998" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16 12H16.0098" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_3427_35082111-d2-3570588223-M5ZG65LQOMXGOMJOON2WE2TFMN2A">
+<rect width="32" height="32" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+</g><g transform="translate(443 863)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3440_35088111-d2-3570588223-M5ZG65LQOMXGOMJOON2WE2TFMN2A)">
+<path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
+<path d="M14.3909 16.7965C14.7364 17.2584 15.1772 17.6406 15.6834 17.9171C16.1896 18.1938 16.7494 18.3582 17.3248 18.3993C17.9001 18.4405 18.4777 18.3575 19.0181 18.1559C19.5586 17.9543 20.0492 17.6389 20.4571 17.2309L22.8708 14.8173C23.6036 14.0586 24.0089 13.0425 23.9998 11.9877C23.9906 10.933 23.5676 9.92404 22.8217 9.17821C22.0759 8.43237 21.067 8.00931 20.0123 8.00015C18.9575 7.99098 17.9413 8.39644 17.1827 9.1292L15.7988 10.505" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M17.609 15.1874C17.2635 14.7255 16.8227 14.3433 16.3165 14.0667C15.8103 13.7902 15.2505 13.6257 14.6752 13.5845C14.0998 13.5433 13.5223 13.6263 12.9819 13.8279C12.4414 14.0295 11.9506 14.345 11.5428 14.753L9.1292 17.1666C8.39644 17.9252 7.99098 18.9414 8.00015 19.9962C8.00931 21.0509 8.43237 22.0598 9.17821 22.8056C9.92405 23.5515 10.933 23.9745 11.9877 23.9837C13.0425 23.9928 14.0586 23.5875 14.8173 22.8547L16.193 21.4788" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_3440_35088111-d2-3570588223-M5ZG65LQOMXGOMJOON2WE2TFMN2A">
+<rect width="32" height="32" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+</g><g transform="translate(780 863)" class="appendix-icon"><title>Recorded dependencies; execution tooling retains its existing contract owner.</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3427_35082111-d2-3570588223-M5ZG65LQOMXGOMJOMRSXAZLOMRSW4Y3JMVZQ)">
+<path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
+<path d="M16 26C21.5228 26 26 21.5228 26 16C26 10.4772 21.5228 6 16 6C10.4772 6 6 10.4772 6 16C6 21.5228 10.4772 26 16 26Z" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16 19.998V15.998" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16 12H16.0098" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_3427_35082111-d2-3570588223-M5ZG65LQOMXGOMJOMRSXAZLOMRSW4Y3JMVZQ">
+<rect width="32" height="32" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+</g><g transform="translate(748 863)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3440_35088111-d2-3570588223-M5ZG65LQOMXGOMJOMRSXAZLOMRSW4Y3JMVZQ)">
+<path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
+<path d="M14.3909 16.7965C14.7364 17.2584 15.1772 17.6406 15.6834 17.9171C16.1896 18.1938 16.7494 18.3582 17.3248 18.3993C17.9001 18.4405 18.4777 18.3575 19.0181 18.1559C19.5586 17.9543 20.0492 17.6389 20.4571 17.2309L22.8708 14.8173C23.6036 14.0586 24.0089 13.0425 23.9998 11.9877C23.9906 10.933 23.5676 9.92404 22.8217 9.17821C22.0759 8.43237 21.067 8.00931 20.0123 8.00015C18.9575 7.99098 17.9413 8.39644 17.1827 9.1292L15.7988 10.505" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M17.609 15.1874C17.2635 14.7255 16.8227 14.3433 16.3165 14.0667C15.8103 13.7902 15.2505 13.6257 14.6752 13.5845C14.0998 13.5433 13.5223 13.6263 12.9819 13.8279C12.4414 14.0295 11.9506 14.345 11.5428 14.753L9.1292 17.1666C8.39644 17.9252 7.99098 18.9414 8.00015 19.9962C8.00931 21.0509 8.43237 22.0598 9.17821 22.8056C9.92405 23.5515 10.933 23.9745 11.9877 23.9837C13.0425 23.9928 14.0586 23.5875 14.8173 22.8547L16.193 21.4788" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_3440_35088111-d2-3570588223-M5ZG65LQOMXGOMJOMRSXAZLOMRSW4Y3JMVZQ">
+<rect width="32" height="32" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+</g><g transform="translate(628 1178)" class="appendix-icon"><title>Explicit actor-supplied decisions pass through the targeted interface and shared store in private roots; interaction observations compare selected changes, untouched neighbors and storage-only results.</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3427_35082111-d2-3570588223-M5ZG65LQOMXGOMROM5ZG65LQ)">
+<path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
+<path d="M16 26C21.5228 26 26 21.5228 26 16C26 10.4772 21.5228 6 16 6C10.4772 6 6 10.4772 6 16C6 21.5228 10.4772 26 16 26Z" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16 19.998V15.998" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16 12H16.0098" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_3427_35082111-d2-3570588223-M5ZG65LQOMXGOMROM5ZG65LQ">
+<rect width="32" height="32" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+</g><g transform="translate(596 1178)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3440_35088111-d2-3570588223-M5ZG65LQOMXGOMROM5ZG65LQ)">
+<path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
+<path d="M14.3909 16.7965C14.7364 17.2584 15.1772 17.6406 15.6834 17.9171C16.1896 18.1938 16.7494 18.3582 17.3248 18.3993C17.9001 18.4405 18.4777 18.3575 19.0181 18.1559C19.5586 17.9543 20.0492 17.6389 20.4571 17.2309L22.8708 14.8173C23.6036 14.0586 24.0089 13.0425 23.9998 11.9877C23.9906 10.933 23.5676 9.92404 22.8217 9.17821C22.0759 8.43237 21.067 8.00931 20.0123 8.00015C18.9575 7.99098 17.9413 8.39644 17.1827 9.1292L15.7988 10.505" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M17.609 15.1874C17.2635 14.7255 16.8227 14.3433 16.3165 14.0667C15.8103 13.7902 15.2505 13.6257 14.6752 13.5845C14.0998 13.5433 13.5223 13.6263 12.9819 13.8279C12.4414 14.0295 11.9506 14.345 11.5428 14.753L9.1292 17.1666C8.39644 17.9252 7.99098 18.9414 8.00015 19.9962C8.00931 21.0509 8.43237 22.0598 9.17821 22.8056C9.92405 23.5515 10.933 23.9745 11.9877 23.9837C13.0425 23.9928 14.0586 23.5875 14.8173 22.8547L16.193 21.4788" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_3440_35088111-d2-3570588223-M5ZG65LQOMXGOMROM5ZG65LQ">
+<rect width="32" height="32" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+</g><g transform="translate(475 1379)" class="appendix-icon"><title>Engineering command interface (MOD-010)</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3427_35082111-d2-3570588223-M5ZG65LQOMXGOMROON2WE2TFMN2A)">
+<path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
+<path d="M16 26C21.5228 26 26 21.5228 26 16C26 10.4772 21.5228 6 16 6C10.4772 6 6 10.4772 6 16C6 21.5228 10.4772 26 16 26Z" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16 19.998V15.998" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16 12H16.0098" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_3427_35082111-d2-3570588223-M5ZG65LQOMXGOMROON2WE2TFMN2A">
+<rect width="32" height="32" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+</g><g transform="translate(443 1379)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3440_35088111-d2-3570588223-M5ZG65LQOMXGOMROON2WE2TFMN2A)">
+<path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
+<path d="M14.3909 16.7965C14.7364 17.2584 15.1772 17.6406 15.6834 17.9171C16.1896 18.1938 16.7494 18.3582 17.3248 18.3993C17.9001 18.4405 18.4777 18.3575 19.0181 18.1559C19.5586 17.9543 20.0492 17.6389 20.4571 17.2309L22.8708 14.8173C23.6036 14.0586 24.0089 13.0425 23.9998 11.9877C23.9906 10.933 23.5676 9.92404 22.8217 9.17821C22.0759 8.43237 21.067 8.00931 20.0123 8.00015C18.9575 7.99098 17.9413 8.39644 17.1827 9.1292L15.7988 10.505" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M17.609 15.1874C17.2635 14.7255 16.8227 14.3433 16.3165 14.0667C15.8103 13.7902 15.2505 13.6257 14.6752 13.5845C14.0998 13.5433 13.5223 13.6263 12.9819 13.8279C12.4414 14.0295 11.9506 14.345 11.5428 14.753L9.1292 17.1666C8.39644 17.9252 7.99098 18.9414 8.00015 19.9962C8.00931 21.0509 8.43237 22.0598 9.17821 22.8056C9.92405 23.5515 10.933 23.9745 11.9877 23.9837C13.0425 23.9928 14.0586 23.5875 14.8173 22.8547L16.193 21.4788" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_3440_35088111-d2-3570588223-M5ZG65LQOMXGOMROON2WE2TFMN2A">
+<rect width="32" height="32" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+</g><g transform="translate(780 1379)" class="appendix-icon"><title>Recorded dependencies; execution tooling retains its existing contract owner.</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3427_35082111-d2-3570588223-M5ZG65LQOMXGOMROMRSXAZLOMRSW4Y3JMVZQ)">
+<path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
+<path d="M16 26C21.5228 26 26 21.5228 26 16C26 10.4772 21.5228 6 16 6C10.4772 6 6 10.4772 6 16C6 21.5228 10.4772 26 16 26Z" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16 19.998V15.998" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16 12H16.0098" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_3427_35082111-d2-3570588223-M5ZG65LQOMXGOMROMRSXAZLOMRSW4Y3JMVZQ">
+<rect width="32" height="32" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+</g><g transform="translate(748 1379)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3440_35088111-d2-3570588223-M5ZG65LQOMXGOMROMRSXAZLOMRSW4Y3JMVZQ)">
+<path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
+<path d="M14.3909 16.7965C14.7364 17.2584 15.1772 17.6406 15.6834 17.9171C16.1896 18.1938 16.7494 18.3582 17.3248 18.3993C17.9001 18.4405 18.4777 18.3575 19.0181 18.1559C19.5586 17.9543 20.0492 17.6389 20.4571 17.2309L22.8708 14.8173C23.6036 14.0586 24.0089 13.0425 23.9998 11.9877C23.9906 10.933 23.5676 9.92404 22.8217 9.17821C22.0759 8.43237 21.067 8.00931 20.0123 8.00015C18.9575 7.99098 17.9413 8.39644 17.1827 9.1292L15.7988 10.505" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M17.609 15.1874C17.2635 14.7255 16.8227 14.3433 16.3165 14.0667C15.8103 13.7902 15.2505 13.6257 14.6752 13.5845C14.0998 13.5433 13.5223 13.6263 12.9819 13.8279C12.4414 14.0295 11.9506 14.345 11.5428 14.753L9.1292 17.1666C8.39644 17.9252 7.99098 18.9414 8.00015 19.9962C8.00931 21.0509 8.43237 22.0598 9.17821 22.8056C9.92405 23.5515 10.933 23.9745 11.9877 23.9837C13.0425 23.9928 14.0586 23.5875 14.8173 22.8547L16.193 21.4788" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_3440_35088111-d2-3570588223-M5ZG65LQOMXGOMROMRSXAZLOMRSW4Y3JMVZQ">
+<rect width="32" height="32" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+</g><mask id="d2-3570588223" maskUnits="userSpaceOnUse" x="-17" y="-34" width="989" height="1703">
+<rect x="-17" y="-34" width="989" height="1703" fill="white"></rect>
+<rect x="410" y="296" width="50" height="17" fill="black"></rect>
+<rect x="511" y="296" width="48" height="17" fill="black"></rect>
+<rect x="413" y="812" width="50" height="17" fill="black"></rect>
+<rect x="508" y="812" width="48" height="17" fill="black"></rect>
+<rect x="407" y="1328" width="50" height="17" fill="black"></rect>
+<rect x="514" y="1328" width="48" height="17" fill="black"></rect>
+</mask></svg></svg>

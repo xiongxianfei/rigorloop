@@ -52,6 +52,36 @@
       "source": "SRC-PUBLISHED-CLI",
       "locator": "docs/design/cli/cli.md#CLI-SR-03, CLI-SR-04, CLI-SR-05, CLI-SR-08, CLI-SR-09, CLI-SR-12, CLI-SR-15, CLI-SR-16; docs/design/cli/records.md#RF-SR-08",
       "basis": "Derives this bounded published-product obligation from IR-008 and the named current CLI/Record Format contracts. Detailed schemas, command catalogs, limits and completed-retirement dispositions remain at those owners; this record does not transfer approval or implement REM-record operations."
+    },
+    {
+      "source": "SRC-CLI-ALLOCATION",
+      "locator": "SR-044 AC1: explicit revision, targets, identities and declared basis; conflict rather than refresh/merge; allocated contributors: AR-020 AC1, 6",
+      "basis": "SCN-043, SCN-044, SCN-046; FUNC-046 compares caller-supplied expectations IF-003 `publish_record_candidate` consumes exact candidate/basis; actor selection and subject acquisition remain with SR-040/041 allocations."
+    },
+    {
+      "source": "SRC-CLI-ALLOCATION",
+      "locator": "SR-044 AC2: competing writers, coherent reads, saved means durable exact bytes; allocated contributors: AR-020 AC2; AR-021 AC2, 3",
+      "basis": "SCN-046; FUNC-046 owns exclusion and actual publication IF-003 publication and inspection must expose coherent before/after or busy/recovery-required, never mixed usable state."
+    },
+    {
+      "source": "SRC-CLI-ALLOCATION",
+      "locator": "SR-044 AC3: every path shares containment and rejects unsafe writes; allocated contributors: AR-020 AC2, 3; shared AR-022 AC2 for the recovery path",
+      "basis": "SCN-044, SCN-046, SCN-047; FUNC-046/047 IF-003 publication/recovery share the same selected-change safety boundary. AR-022 retains SR-045 as its sole parent; its reuse here does not duplicate that obligation. Observed external-edit timing limits remain."
+    },
+    {
+      "source": "SRC-CLI-ALLOCATION",
+      "locator": "SR-044 AC4: fresh no-op versus stale lost-response retry; no semantic increments; allocated contributors: AR-020 AC5",
+      "basis": "SCN-044, SCN-046; FUNC-046 IF-003 returns unchanged only after current expectations pass; IF-004 reporting preserves conflict instead of retrying or inventing authority."
+    },
+    {
+      "source": "SRC-CLI-ALLOCATION",
+      "locator": "SR-044 AC5: basis checks before publication and before commitment; restoration or recovery after observed drift; allocated contributors: AR-020 AC6; AR-021 AC4, 6",
+      "basis": "SCN-043, SCN-046; FUNC-046 IF-003 checks declared basis at both source-defined boundaries. No atomic protection from all external edits is promised."
+    },
+    {
+      "source": "SRC-CLI-ALLOCATION",
+      "locator": "SR-044 AC6: complete batch candidate, recovery information first, no usable incomplete publication; allocated contributors: AR-020 AC4; AR-021 AC1, 2, 5",
+      "basis": "SCN-046, SCN-047; FUNC-046 IF-003 prepare/publication composition uses one complete candidate and prepared exact before/candidate state; recovery itself follows AR-022."
     }
   ],
   "confirms": [

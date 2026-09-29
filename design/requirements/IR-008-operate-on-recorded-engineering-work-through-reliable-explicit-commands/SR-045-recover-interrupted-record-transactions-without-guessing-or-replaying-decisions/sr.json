@@ -51,6 +51,31 @@
       "source": "SRC-PUBLISHED-CLI",
       "locator": "docs/design/cli/cli.md#CLI-SR-05, CLI-SR-06, CLI-SR-09, CLI-SR-10, CLI-SR-26, CLI-SR-27, CLI-SR-28; docs/design/cli/records.md#RF-SR-04, RF-SR-06, RF-SR-08, RF-SR-12, RF-SR-14",
       "basis": "Derives this bounded published-product obligation from IR-008 and the named current CLI/Record Format contracts. Detailed schemas, command catalogs, limits and completed-retirement dispositions remain at those owners; this record does not transfer approval or implement REM-record operations."
+    },
+    {
+      "source": "SRC-CLI-ALLOCATION",
+      "locator": "SR-045 AC1: missing/tampered/unsupported recovery and third state stop; allocated contributors: AR-022 AC1, 2, 6; AR-023 AC1, 3, 4",
+      "basis": "SCN-047; FUNC-047 verifies storage, FUNC-040/048 admit and report IF-004 supplies explicit selectors/action; IF-003 validates current journal/snapshots and reports established stop context. No guessed repair or legacy handler."
+    },
+    {
+      "source": "SRC-CLI-ALLOCATION",
+      "locator": "SR-045 AC2: exact complete with fresh reads or verified restore; no invented decisions; allocated contributors: AR-022 AC3; AR-023 AC3",
+      "basis": "SCN-047; FUNC-047 IF-003 recovery consumes exact prepared candidate/before snapshots, never replays targeted operations or changes external basis files."
+    },
+    {
+      "source": "SRC-CLI-ALLOCATION",
+      "locator": "SR-045 AC3: acknowledged commit cannot roll back; creation restore preserves other content; allocated contributors: AR-022 AC4; AR-023 AC4",
+      "basis": "SCN-047 alternatives; FUNC-047 IF-003 checks journal committed state even if the caller lost the success response, and transaction-created membership; IF-004 cannot label an unsupported rollback successful."
+    },
+    {
+      "source": "SRC-CLI-ALLOCATION",
+      "locator": "SR-045 AC4: interruption/retry with refreshed identity; terminal private cleanup is not evidence; allocated contributors: AR-022 AC5, 6; AR-023 AC5",
+      "basis": "SCN-047 failure/retry boundary; FUNC-047/048 IF-003 returns actual recovery identity where available; IF-004 requires later explicit selection, with no automatic retry."
+    },
+    {
+      "source": "SRC-CLI-ALLOCATION",
+      "locator": "SR-045 AC5: no implicit recovery in reads/check/preview/discovery/log lookup; retired history remains untouched; allocated contributors: AR-023 AC2, 3, 5; AR-022 AC1, 6",
+      "basis": "SCN-041, SCN-044 preview, SCN-047, SCN-049; FUNC-040/042/048 dispatch boundary IF-004 admits recovery explicitly; IF-003 inspection/check do not repair. The command Module's dispatch obligation covers all listed ordinary paths, including its discovery/log Functions."
     }
   ],
   "confirms": [

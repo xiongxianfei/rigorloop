@@ -51,6 +51,31 @@
       "source": "SRC-PUBLISHED-CLI",
       "locator": "docs/design/cli/cli.md#CLI-SR-11, CLI-SR-29, CLI-SR-30",
       "basis": "Derives this bounded published-product obligation from IR-008 and the named current CLI/Record Format contracts. Detailed schemas, command catalogs, limits and completed-retirement dispositions remain at those owners; this record does not transfer approval or implement REM-record operations."
+    },
+    {
+      "source": "SRC-CLI-ALLOCATION",
+      "locator": "SR-047 AC1: bounded start/completion event identity/timing/sequence; interruption/clock handling; allocated contributors: AR-027 AC1, 4",
+      "basis": "SCN-049 available/degraded diagnostic account; FUNC-049 MOD-010 internal diagnostic responsibility behind IF-004; no separate Module or cross-Module Interface is needed for currently co-owned logging."
+    },
+    {
+      "source": "SRC-CLI-ALLOCATION",
+      "locator": "SR-047 AC2: exclude raw/private content; reject injection/oversize safely; allocated contributors: AR-027 AC2; AR-028 AC2, 3, 4 for lookup",
+      "basis": "SCN-049; FUNC-049 IF-004 log inspection projects safe supported events/warnings, not raw retained lines or invalid selectors. Exact event schema and allowlist stay source-owned."
+    },
+    {
+      "source": "SRC-CLI-ALLOCATION",
+      "locator": "SR-047 AC3: owned names/private root; containment/permissions/locks/I/O degrade without unsafe repairs; allocated contributors: AR-027 AC3, 4; AR-028 AC1, 4",
+      "basis": "SCN-049 degraded/unsafe-path outcomes; FUNC-049 Private local state remains outside MOD-011 governed records. Current source exact permissions/names and bounded attempts remain applicable; no universal atomic pathname defense."
+    },
+    {
+      "source": "SRC-CLI-ALLOCATION",
+      "locator": "SR-047 AC4: logging state preserves semantics; closed invalid vocabulary rejects correctly; allocated contributors: AR-027 AC5, 6; AR-028 AC5",
+      "basis": "SCN-049; FUNC-049 with FUNC-040 admission IF-004 retains owning public result domain and safe admission outcome. Primary and advanced recording retain their dedicated observed-path exclusions."
+    },
+    {
+      "source": "SRC-CLI-ALLOCATION",
+      "locator": "SR-047 AC5: bounded exact lookup, safe missing/unavailable/corrupt distinction, no replay/evidence; allocated contributors: AR-028 AC1 through 5",
+      "basis": "SCN-049; FUNC-049 IF-004 log inspection remains bounded read-only selection with only supported matching events. Not-found does not prove an invocation never occurred."
     }
   ],
   "confirms": [

@@ -1,0 +1,49 @@
+{
+  "id": "MOD-014",
+  "type": "module",
+  "title": "Verified skill installation",
+  "status": "draft",
+  "description": "Acquire and validate an explicitly selected compatible skill candidate and apply only the permitted destination-unit changes with truthful plans, conflicts, outcomes, and recovery limits.",
+  "responsibilities": [
+    "Verify trusted package metadata, archive identity, extraction boundaries, and candidate completeness before relying on content.",
+    "Preflight all selected destination units and apply only authorized creation or replacement while preserving unrelated content.",
+    "Distinguish preliminary dry-run information, complete preflight, actual effects, conflicts, partial failure, and privacy-safe diagnostics.",
+    "Realize the installation behavior of IF-006 under MOD-019 contract accountability. Candidate verification, destination effects, and result preparation remain this Module's behavior and state responsibility without making it a second Interface provider."
+  ],
+  "owned_state": [
+    "Transient verified candidate staging and the explicitly selected installed units affected by a request; no managed project-state adoption or whole-project ownership."
+  ],
+  "scope": {
+    "includes": [
+      "Supported target installation and explicitly scoped replacement under the existing Installation contract."
+    ],
+    "excludes": [
+      "Automatic upgrades, managed-state creation, bypassing integrity with force, replacing shared installation parents, or granting workflow authority."
+    ]
+  },
+  "provides": [],
+  "consumes": [
+    "IF-005"
+  ],
+  "design_limits": [
+    "Current Installation rules retain the exact supported targets, trusted acquisition channels, conflict units, flags, diagnostics, and per-unit partial-failure guarantees.",
+    "Source-attributed implementation, invocation, and placement mappings are recorded in subordinate realization facets and IF-006 interaction. This draft does not promise whole-project atomic rollback or platform qualification; ARs and complete implementation conformance remain deferred."
+  ],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-PRODUCTS",
+      "locator": "MOD-014",
+      "basis": "Proposed responsibility derived from the published-product source inventory. Existing Designs retain their detailed contracts; this allocation is not a runtime migration or approval."
+    },
+    {
+      "source": "SRC-PARENT-INTERFACE-OWNERSHIP",
+      "locator": "MOD-014; design/requirements/sources.md#src-parent-interface-ownership",
+      "basis": "Refine contract accountability: MOD-018 provides IF-004 and MOD-019 provides IF-006. MOD-010 and MOD-014 retain their behavioral allocations and state responsibilities. This supersedes the provider/exposure choice recorded by SRC-MODULE-HIERARCHY without changing Interface guarantees, consumers, Function/AR allocations, or realization observations. Earlier source entries retain their prior design meaning; this draft refinement supplies no runtime adoption or satisfaction evidence."
+    },
+    {
+      "source": "SRC-PRODUCT-REALIZATION",
+      "locator": "MOD-014 subordinate realization facets; design/requirements/sources.md#src-product-realization",
+      "basis": "The user authorized an initial coherent five-view set. Record bounded source observations and remaining qualification gaps beneath the existing accountable Module; preserve its requirements, Functions, Interface ownership, and previous source meanings."
+    }
+  ]
+}

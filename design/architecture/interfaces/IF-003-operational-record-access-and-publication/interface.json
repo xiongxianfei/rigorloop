@@ -1,0 +1,184 @@
+{
+  "id": "IF-003",
+  "type": "interface",
+  "title": "Operational record access and publication",
+  "status": "draft",
+  "description": "Coherent access to the published operational-record store, exact candidate construction and checking, atomic publication, and explicit transaction recovery. Public command syntax remains owned by CLI.",
+  "operations": [
+    {
+      "name": "inspect_records",
+      "purpose": "Read a selected coherent snapshot and its bounded observations.",
+      "inputs": [
+        "Explicit store and actor-selected record scope, selected operation/transport contract, and supplied revision/continuation expectations when applicable. The caller need not already know the observed stored contract.",
+        "Read intent distinguishing current coherent record retrieval from bounded observation-detail retrieval; the caller retains public selection and projection policy."
+      ],
+      "preconditions": [],
+      "outputs": [
+        "Recorded values, observed stored contract, and snapshot/revision identity established from the same checked snapshot, separately labeled observations and diagnostics, and explicit absent, unavailable, busy, recovery-required, or incomplete outcomes. Preserve the owning result contract's null/omission distinctions when no validated stored contract or revision is available.",
+        "For diagnostic detail, the observation identity and bounded scan facts needed to preserve current revision, actual observed subject identities including absence, and deterministic diagnostic scope; request-only mutation reads are a separate freshness basis."
+      ],
+      "behavior": [
+        "Return only the selected scope; preserve explicit distinctions between recorded decisions and observations.",
+        "Do not modify records, recover an interrupted transaction, or invent authoritative next-stage/approval/applicability values during inspection.",
+        "Report a coherent supported snapshot or explicit inability to obtain one; a mixed view cannot be reported usable.",
+        "Read the complete required registered basis for a coherent snapshot without granting authority to extra physical files. Return selected recorded values and applicability from that same snapshot; preserve full supplied explanations and optional-member absence for the caller's projection.",
+        "Preserve a stable checked snapshot for literal selection, counts, and continuation. Changed revision or invalid continuation cannot return partial selected items; unavailable selected content cannot become known absence or an empty successful collection.",
+        "For observation detail, recompute the complete current observation identity from the selected registered state, schema-declared subjects observed once each, and deterministic diagnostics. Observe authoritative subject paths from the same snapshot bytes; unsafe or unreadable external subjects remain errors rather than null absence. Changing an observed subject invalidates detail continuation even if record bytes and displayed diagnostics stay unchanged. No historical detail replay or atomic exclusion of arbitrary outside edits is promised."
+      ],
+      "failure_behavior": [
+        {
+          "condition": "Input or selected records are unsupported, unavailable, unsafe, or incoherent.",
+          "outcome": "Return the applicable diagnostic and bounded observations without mutation, automatic migration, or implicit recovery."
+        }
+      ]
+    },
+    {
+      "name": "inspect_declared_subjects",
+      "purpose": "Observe exact identities and optional full content for explicitly selected safe project subjects.",
+      "inputs": [
+        "Explicit repository root and distinct contained subject paths.",
+        "Identity-only or full-content selection with the current public count and output bounds."
+      ],
+      "preconditions": [],
+      "outputs": [
+        "One coherent observed subject set with exact byte identities and the same inspected content when requested, or explicit expected absence and the applicable safe failure outcome."
+      ],
+      "behavior": [
+        "Inspect only supplied safe paths without executing content, inferring stage dependencies, or selecting an authoritative decision basis.",
+        "Compute identity from the same observed bytes returned as content; preserve explicit expected absence rather than inventing a non-null stored subject.",
+        "Return the observations for explicit caller use. A later mutation must compare the supplied expectation without silently refreshing it."
+      ],
+      "failure_behavior": [
+        {
+          "condition": "Observed changes prevent a coherent subject set.",
+          "outcome": "Report conflict without a partial subject set and preserve the owning contract's observed-check limit for outside edits."
+        },
+        {
+          "condition": "A subject is unsafe, symlinked, unreadable, nonregular, or too large for requested complete output.",
+          "outcome": "Reject safely without execution or truncated full content; identity-only access is not proof of sufficient engineering context."
+        }
+      ]
+    },
+    {
+      "name": "prepare_record_candidate",
+      "purpose": "Validate explicit record changes and construct their exact complete candidate.",
+      "inputs": [
+        "Selected coherent snapshot, expected revision/identities and decision-basis identities.",
+        "Explicit target set and actor-supplied edits or complete advanced replacements under the selected operation contract."
+      ],
+      "preconditions": [],
+      "outputs": [
+        "Exact candidate bytes, explicit changed targets and preservation basis, structural findings, and applicable bounded diagnostic/receipt context.",
+        "The exact candidate identity/revision, changed targets, and bounded storage and observation facts needed by MOD-010 to prepare the public receipt, without introducing an authoritative candidate record or reservation."
+      ],
+      "behavior": [
+        "Validate current record kinds, closed vocabulary, versions, identities, references, and target safety before authoritative publication.",
+        "Preserve unnamed content and omitted decisions; do not fill semantic defaults, normalize unrelated bytes, or rewrite historical review subjects.",
+        "Candidate preparation and structural validity do not establish engineering permission, progression, or satisfaction.",
+        "Resolve closed fields, supported stored versions, duplicate keys/identities, typed references, and applicable preservation rules over the complete combined candidate. A well-formed correction is not refused merely because recorded work is complete, evidence failed, or external subjects drifted.",
+        "For targeted updates preserve source bytes outside explicit semantic edits and necessary adjacent syntax or registry bookkeeping. Reject duplicate or overlapping assignments while retaining the declared composition of separate assessment, finding, and applicability edits; advanced complete replacements retain their own explicit contract.",
+        "Preserve finding identities, immutable blocker origins, omitted semantic values, and exact explicit full-replacement versus narrow-update rules. Do not manufacture missing registered content, overwrite unregistered files as new records, infer verification basis, or confuse reference validity with engineering reliance.",
+        "The construction phase has no filesystem write capability. Checking and preview create no authoritative, lock, reservation, or transaction files. Preview uses a coherent read and the same construction/validation logic, but a real write starts afresh under writer exclusion, rereads and checks its snapshot, reconstructs against that exact basis, and repeats all checks; preview bytes are not an executable transaction or authority."
+      ],
+      "failure_behavior": [
+        {
+          "condition": "An input is invalid, unsupported, unsafe, or cannot preserve required content.",
+          "outcome": "Reject that candidate before any authoritative write and expose the actionable cause."
+        }
+      ]
+    },
+    {
+      "name": "publish_record_candidate",
+      "purpose": "Publish the exact candidate subject to the current safety and receipt contract.",
+      "inputs": [
+        "Explicit targeted operations or complete advanced replacement bytes, selected targets, expected revision/target identities, and explicitly declared decision-basis identities. A preview result is not a substitute for these inputs.",
+        "MOD-010's selected operation, public output contract, and format. During the guarded execution, public receipt readiness must be established for the exact reconstructed candidate before replacement; this logical cooperation prescribes no token, stored field, or callback mechanism."
+      ],
+      "preconditions": [],
+      "outputs": [
+        "Durable committed or unchanged result with applicable receipt, or explicit conflict, busy, recovery-required, or failed outcome describing actual known effects."
+      ],
+      "behavior": [
+        "Begin real execution by obtaining writer exclusion, reading a coherent snapshot, and checking expected revision and declared basis. Reconstruct targeted edits against that exact snapshot using the non-writing construction phase, or admit advanced supplied bytes through the same complete-candidate validation boundary. Never execute previously previewed bytes without this fresh guarded process.",
+        "Under the existing writer-exclusion and containment boundary, recheck the expected revision, exact target identities, declared basis, and observed ancestor safety. Observed mismatches conflict rather than silently refresh, merge, or overwrite a newer decision.",
+        "Publish related replacements as one logical transaction. Before replacement retain verified before/candidate content and transaction identity sufficient for exact recovery. Supported readers receive coherent before/after state or busy/recovery-required, never a usable mixed state.",
+        "Supply the exact guarded candidate and bounded storage facts to MOD-010's public receipt preparation before replacement, and require readiness for that same operation and candidate. MOD-010 owns public serialization and its bounds; no amount of optional diagnostic detail may reject an otherwise admissible correction. Actual terminal result facts retain the selected bounded format.",
+        "Report saved only after all requested bytes are durably committed and the required decision-basis checks succeed. Observed basis drift after replacement triggers safe restoration or recovery-required; known partial or indeterminate effects cannot become saved.",
+        "Report unchanged only after fresh preconditions pass and preserve the existing bytes. A lost-response retry with an old expected revision conflicts even if the candidate equals the current stored content.",
+        "Preserve the retained external-editor timing limit for save and recovery: supported writers coordinate, while arbitrary outside changes are detected at observed checks. An edit after the final target check may be overwritten; this is not a broader operating-system atomicity promise.",
+        "A completed publication retains its committed result if subsequent rendering, output delivery, or optional diagnostics fail; do not relabel it rejected or roll it back to repair reporting."
+      ],
+      "failure_behavior": [
+        {
+          "condition": "Basis changes, targets conflict, or required checks/receipt cannot be established before publication.",
+          "outcome": "Return the applicable rejection or conflict without publication. An unexpected prepublication rendering failure is an implementation fault, not an admissible diagnostic-overflow policy."
+        },
+        {
+          "condition": "Publication is interrupted or effects cannot be conclusively determined.",
+          "outcome": "Report the actual known transaction state and recovery requirement; do not retry or claim all requested bytes committed without that basis."
+        }
+      ]
+    },
+    {
+      "name": "recover_record_transaction",
+      "purpose": "Apply explicitly selected recovery to a recognized interrupted operational transaction.",
+      "inputs": [
+        "Explicitly identified retained transaction, current expected-recovery identity, and selected complete or restore action under the supported recovery contract.",
+        "Applicable current target/read identities and output context sufficient for the actual bounded recovery result; no semantic edit replay is requested."
+      ],
+      "preconditions": [],
+      "outputs": [
+        "A coherent recovered state and attributable actual result, or explicit unsupported, ambiguous, changed-basis, or failed recovery outcome."
+      ],
+      "behavior": [
+        "Verify the supported journal, its manifest identity and exact before/candidate snapshots before any recovery writes. Each target must match before or candidate bytes, including absence; an observed third state stops recovery without overwrite.",
+        "Complete publishes the exact prepared candidate only after unchanged declared reads and verified snapshots are established. Restore uses verified before snapshots and never changes external decision-basis files or recalculates engineering decisions.",
+        "A committed transaction permits completion/cleanup only, not rollback of acknowledged saved success. Restoration of initial creation removes only transaction-created files and empty created directories, preserving preexisting or externally added content.",
+        "Recovery shares the publication writer-exclusion, containment, before/after-reader, and external-edit boundaries. If interrupted again it remains recoverable; a further explicit attempt uses the refreshed recovery identity rather than an assumed unchanged token.",
+        "Remove private recovery snapshots only after a verified terminal outcome. Ordinary read, check, preview, discovery, and diagnostics perform no implicit recovery; snapshots are storage bookkeeping rather than workflow evidence."
+      ],
+      "failure_behavior": [
+        {
+          "condition": "The retained recovery basis is missing, incompatible, changed, or ambiguous.",
+          "outcome": "Report the unresolved scope and required action without inventing or silently forcing recovery."
+        },
+        {
+          "condition": "A journal or snapshot is missing, tampered, unsupported or mixed, or a target has an observed foreign third state.",
+          "outcome": "Stop without guessed repair, conversion, or overwriting unrelated content; expose the bounded unresolved recovery state."
+        },
+        {
+          "condition": "Required completion reads changed or another recovery interruption prevents a terminal result.",
+          "outcome": "Preserve the remaining recoverable state and actual safe outcome. Do not replay edits, assume cleanup succeeded, or claim acknowledged commitment can be restored away."
+        }
+      ]
+    }
+  ],
+  "consistency_rules": [
+    "Results identify the requested scope and any store, snapshot, revision, or subject identity that was actually established. Preserve the owning public contract's null, omission, absent-store, and error distinctions when that basis is unavailable; never invent an identity. Established identity, revision, assessment subject, and diagnostic observation identity remain distinct.",
+    "All public guarantees in CLI-SR-01–07/20 and the remaining applicable CLI/Record Format clauses continue to govern. This logical boundary does not weaken their exact transaction or preservation rules.",
+    "The caller supplies substantive decisions. Mechanical validity and a successful save grant no approval, progression, or satisfaction.",
+    "MOD-010 owns public envelopes, rendering and selection; MOD-011 supplies coherent state and actual effect facts and enforces the prepublication safety boundary. Public receipt readiness must cover that same candidate without giving either Module authority over engineering decisions."
+  ],
+  "compatibility_rules": [
+    "Current v3 stored records and each command family's independently versioned transport are interpreted under their existing contracts; unknown or retired inputs are rejected before mutation.",
+    "The new REM JSON authoring profile is not an accepted operational stored format by virtue of this Interface.",
+    "Changing this contract requires coherent CLI consumer, persistence, and evidence/recovery reconciliation; prior subjects retain their original meaning."
+  ],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-PRODUCTS",
+      "locator": "IF-003",
+      "basis": "Derive MOD-010/MOD-011 cooperation from CLI and Record Format obligations identified in SRC-PUBLISHED-CLI; exact source contracts remain authoritative."
+    },
+    {
+      "source": "SRC-CLI-ALLOCATION",
+      "locator": "IF-003; design/requirements/sources.md#src-cli-allocation",
+      "basis": "Reconcile IR-008 acceptance outcomes and its allocated obligations with explicit command/persistence cooperation, preserving existing CLI/Record Format authority and external-edit limits. The refinement supplies no new executable or public wire format."
+    },
+    {
+      "source": "SRC-CLI-REALIZATION",
+      "locator": "IF-003; design/requirements/sources.md#src-cli-realization",
+      "basis": "Apply refined REM Architecture Design through subordinate observed and proposed views. Preserve the logical allocation, existing public contracts, and draft status; source mapping is not executed satisfaction evidence."
+    }
+  ]
+}

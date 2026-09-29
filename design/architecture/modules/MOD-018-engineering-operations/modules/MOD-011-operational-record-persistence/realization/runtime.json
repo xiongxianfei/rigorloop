@@ -1,0 +1,96 @@
+{
+  "observed": {
+    "runtime": [
+      "Runs synchronously inside the CLI process described by MOD-010. RecordFiles.withParent temporarily changes the process working directory within a synchronous guarded section and restores it; this realization depends on that non-yielding execution model."
+    ],
+    "sources": [
+      {
+        "source": "SRC-CLI-SOURCE",
+        "locator": "packages/rigorloop/dist/lib/record-store.js Store, executeTargetedStore, executeRecordStore, withRecordSnapshot; record-store-files.js RecordFiles; remaining software_units at 9055b3c0",
+        "basis": "Static inspection identifies transaction mechanisms, format dispatch, construction, and physical co-location; it does not execute fault, durability, preservation, or recovery verification."
+      },
+      {
+        "source": "SRC-RECORD-PROCESS",
+        "locator": "packages/rigorloop/dist/lib/record-store.js Store.gate, snapshot, candidate, acquire, loadJournal, known, publish, prepareResult, record, recover, executeRecordStore, executeTargetedStore; record-store-files.js RecordFiles; recording-result.js primaryReceiptPreparer and preparePrimaryReceipt; recording-mutation-cli.js and record-store-cli.js at 33f56fe84ff730d7bd48900cef32170fd0682412",
+        "basis": "Static source inspection records conditional operation order, terminal alternatives, coordination guards, and exact recovery boundaries under the current CLI/Records contracts. No product operation, failure injection, transaction recovery, platform test, or requirement verification was executed; source order is not inferred from Scenario traceability."
+      }
+    ],
+    "lifecycles": [
+      {
+        "name": "Record journal coordination",
+        "states": [
+          {
+            "name": "No retained journal",
+            "meaning": "journal.json is absent; this is physical absence, not a stored phase. A writer lock may still exist, and absence alone does not make a reader snapshot available or establish cleanup success."
+          },
+          {
+            "name": "Prepared journal",
+            "meaning": "A validated retained journal has phase=prepared and exact before/candidate evidence. Targets may match a mixture of retained before and candidate values during an unfinished transaction; that mixture is not usable current state."
+          },
+          {
+            "name": "Committed journal",
+            "meaning": "A validated retained journal has phase=committed. Every target must match its candidate identity; before-state targets are inconsistent. Only verified completion/cleanup is admissible, never restore."
+          }
+        ],
+        "transitions": [
+          {
+            "from": "No retained journal",
+            "to": "Prepared journal",
+            "trigger": "Changed publication retains its recovery basis.",
+            "guards": [
+              "The writer owns exclusion and the current candidate, before-set, expected revision, targets, and declared reads have passed their applicable checks.",
+              "The bounded successful-publication receipt has been prepared; unchanged and preview paths have already terminated."
+            ],
+            "effects": [
+              "Write exact before/candidate snapshots, identities, write/read sets, transaction ID, and created-directory tracking as phase=prepared before any authoritative replacement."
+            ]
+          },
+          {
+            "from": "Prepared journal",
+            "to": "Committed journal",
+            "trigger": "Changed publication or explicit complete finishes the exact candidate.",
+            "guards": [
+              "Ownership and known target checks remain valid, all candidate identities have been observed, and the declared read basis has been rechecked after publication.",
+              "Recovery additionally verifies the exact requested journal identity; unknown target bytes or an untrusted journal block transition."
+            ],
+            "effects": [
+              "Persist phase=committed with the retained transaction evidence. Subsequent failure cannot authorize before-state restoration."
+            ]
+          },
+          {
+            "from": "Prepared journal",
+            "to": "No retained journal",
+            "trigger": "Explicit restore or a guarded precommit error path finishes restoration.",
+            "guards": [
+              "Exact retained before bytes are verified and each target remains in its known before/candidate set at observed checks.",
+              "Restoration and permitted created-directory cleanup complete under owned exclusion."
+            ],
+            "effects": [
+              "Remove the exact retained journal, then release the owned lock. Explicit restore returns recovered; safe automatic restoration reports the original publication failure."
+            ]
+          },
+          {
+            "from": "Committed journal",
+            "to": "No retained journal",
+            "trigger": "Successful publication cleanup or explicit complete cleanup finishes.",
+            "guards": [
+              "The exact committed candidate is verified; an explicit recovery complete also verifies current journal identity and its declared read basis.",
+              "The writer still owns exclusion; cleanup succeeds without guessing target or journal state."
+            ],
+            "effects": [
+              "Remove the retained journal, then release the lock and return the already prepared saved or recovered receipt. Missing output delivery does not undo commitment."
+            ]
+          }
+        ],
+        "constraints": [
+          "prepared and committed are the only stored journal phases. No retained journal is a descriptive absence state; malformed, missing-when-required, stale, or unknown journal/target data is a rejection condition, not a new phase or an automatic repair transition.",
+          "A live writer lock makes the reader gate busy; a malformed/dead-owner lock or any retained journal makes it recovery-required. Even after journal removal, an unreleased lock keeps readers gated.",
+          "Without lock or retained journal, snapshot still checks gate/epoch and record revision before and after observation. Observed interference produces conflict rather than a usable mixed snapshot.",
+          "Writer and recovery exclusion update private lock/epoch coordination before authoritative effects. Preview uses the nonwriting snapshot path; unchanged execution may have private coordination effects but creates no journal.",
+          "An interruption can leave the same retained phase with partial or unknown effects. There is no inferred success/cleanup transition. Recovery validates the current evidence and observed target identities before selecting an admitted path.",
+          "This lifecycle describes storage coordination only. It does not prescribe engineering workflow stages, approvals, Scenario execution order, a new process/service, or stronger external-editor exclusion than the retained contract."
+        ]
+      }
+    ]
+  }
+}

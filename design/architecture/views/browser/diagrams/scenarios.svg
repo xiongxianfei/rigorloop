@@ -1,0 +1,410 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" data-d2-version="v0.9.0" preserveAspectRatio="xMinYMin meet" viewBox="0 0 1078 1153"><svg class="d2-3385113918 d2-svg" width="1078" height="1153" viewBox="-17 -34 1078 1153"><rect x="-17" y="-34" width="1078" height="1153" rx="0" fill="#FFFFFF" class=" fill-N7" stroke-width="0" /><style type="text/css"><![CDATA[
+.d2-3385113918 .text {
+	font-family: "d2-3385113918-font-regular";
+}
+@font-face {
+	font-family: d2-3385113918-font-regular;
+	src: url("data:application/font-woff;base64,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");
+}
+.appendix-icon {
+	filter: drop-shadow(0px 0px 32px rgba(31, 36, 58, 0.1));
+}
+.d2-3385113918 .text-bold {
+	font-family: "d2-3385113918-font-bold";
+}
+@font-face {
+	font-family: d2-3385113918-font-bold;
+	src: url("data:application/font-woff;base64,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");
+}]]></style><style type="text/css"><![CDATA[.shape {
+  shape-rendering: geometricPrecision;
+  stroke-linejoin: round;
+}
+.connection {
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.blend {
+  mix-blend-mode: multiply;
+  opacity: 0.5;
+}
+
+		.d2-3385113918 .fill-N7{fill:#FFFFFF;}
+		.d2-3385113918 .stroke-B2{stroke:#0D32B2;}.appendix text.text{fill:#0A0F25}.md{--color-fg-default:#0A0F25;--color-fg-muted:#676C7E;--color-fg-subtle:#9499AB;--color-canvas-default:#FFFFFF;--color-canvas-subtle:#EEF1F8;--color-border-default:#0D32B2;--color-border-muted:#0D32B2;--color-neutral-muted:#EEF1F8;--color-accent-fg:#0D32B2;--color-accent-emphasis:#0D32B2;--color-attention-subtle:#676C7E;--color-danger-fg:red;}.light-code{display: block}.dark-code{display: none}]]></style><a href="../index.html#scenarios" xlink:href="../index.html#scenarios"><g class="d2Fsa3Rocm91Z2hz"><g class="shape" ><rect x="12" y="12" width="1003" height="1078" rx="6" stroke="#7C8FA9" fill="#FFFFFF" style="stroke-width:2;" /></g><text x="513.5" y="34" fill="#23334A" class="text" style="text-anchor:middle;font-size:17px"><tspan x="513.5" dy="0">Selected Scenario</tspan><tspan x="513.5" dy="19.5">responsibilities</tspan></text><title>Selected Scenario responsibilities</title></g></a><a href="../index.html#scenario/SCN-019" xlink:href="../index.html#scenario/SCN-019"><g class="d2Fsa3Rocm91Z2hzLm1fNTM0MzRlMmQzMDMxMzk="><g class="shape" ><rect x="72" y="72" width="397" height="210" rx="6" stroke="#7C8FA9" fill="#E9F4EE" style="stroke-width:2;" /></g><text x="270.5" y="94" fill="#23334A" class="text" style="text-anchor:middle;font-size:17px"><tspan x="270.5" dy="0">Establish an identifiable</tspan><tspan x="270.5" dy="18.666667">baseline for later</tspan><tspan x="270.5" dy="18.666667">engineering reliance</tspan></text><title>Establish an identifiable baseline for later engineering reliance (SCN-019)</title></g></a><a href="../index.html#scenario/SCN-046" xlink:href="../index.html#scenario/SCN-046"><g class="d2Fsa3Rocm91Z2hzLm1fNTM0MzRlMmQzMDM0MzY="><g class="shape" ><rect x="72" y="322" width="397" height="334" rx="6" stroke="#7C8FA9" fill="#E9F4EE" style="stroke-width:2;" /></g><text x="270.5" y="344" fill="#23334A" class="text" style="text-anchor:middle;font-size:17px"><tspan x="270.5" dy="0">Publish related record</tspan><tspan x="270.5" dy="18.666667">decisions as one coherent</tspan><tspan x="270.5" dy="18.666667">update</tspan></text><title>Publish related record decisions as one coherent update (SCN-046)</title></g></a><a href="../index.html#scenario/SCN-047" xlink:href="../index.html#scenario/SCN-047"><g class="d2Fsa3Rocm91Z2hzLm1fNTM0MzRlMmQzMDM0Mzc="><g class="shape" ><rect x="72" y="696" width="397" height="334" rx="6" stroke="#7C8FA9" fill="#E9F4EE" style="stroke-width:2;" /></g><text x="270.5" y="718" fill="#23334A" class="text" style="text-anchor:middle;font-size:17px"><tspan x="270.5" dy="0">Recover an interrupted</tspan><tspan x="270.5" dy="18.666667">recorded update to a</tspan><tspan x="270.5" dy="18.666667">verified state</tspan></text><title>Recover an interrupted recorded update to a verified state (SCN-047)</title></g></a><a href="../index.html#scenario/SCN-053" xlink:href="../index.html#scenario/SCN-053"><g class="d2Fsa3Rocm91Z2hzLm1fNTM0MzRlMmQzMDM1MzM="><g class="shape" ><rect x="509" y="72" width="446" height="459" rx="6" stroke="#7C8FA9" fill="#E9F4EE" style="stroke-width:2;" /></g><text x="732" y="94" fill="#23334A" class="text" style="text-anchor:middle;font-size:17px"><tspan x="732" dy="0">Produce a usable result</tspan><tspan x="732" dy="19.5">through specialist guidance</tspan></text><title>Produce a usable result through specialist guidance (SCN-053)</title></g></a><a href="../index.html#scenario/SCN-066" xlink:href="../index.html#scenario/SCN-066"><g class="d2Fsa3Rocm91Z2hzLm1fNTM0MzRlMmQzMDM2MzY="><g class="shape" ><rect x="509" y="571" width="446" height="459" rx="6" stroke="#7C8FA9" fill="#E9F4EE" style="stroke-width:2;" /></g><text x="732" y="593" fill="#23334A" class="text" style="text-anchor:middle;font-size:17px"><tspan x="732" dy="0">Approve and publish one</tspan><tspan x="732" dy="19.5">exact qualified candidate</tspan></text><title>Approve and publish one exact qualified candidate (SCN-066)</title></g></a><a href="../index.html#module/MOD-005" xlink:href="../index.html#module/MOD-005"><g class="d2Fsa3Rocm91Z2hzLm1fNTM0MzRlMmQzMDMxMzkubV80ZDRmNDQyZDMwMzAzNQ=="><g class="shape" ><rect x="132" y="138" width="266" height="84" rx="6" stroke="#7C8FA9" fill="#ECF3FF" style="stroke-width:2;" /></g><text x="265" y="177.5" fill="#23334A" class="text-bold" style="text-anchor:middle;font-size:17px"><tspan x="265" dy="0">Engineering baseline</tspan><tspan x="265" dy="19.5">management</tspan></text><title>Engineering baseline management (MOD-005)</title></g></a><a href="../index.html#module/MOD-010" xlink:href="../index.html#module/MOD-010"><g class="d2Fsa3Rocm91Z2hzLm1fNTM0MzRlMmQzMDM0MzYubV80ZDRmNDQyZDMwMzEzMA=="><g class="shape" ><rect x="132" y="388" width="277" height="84" rx="6" stroke="#7C8FA9" fill="#ECF3FF" style="stroke-width:2;" /></g><text x="270.5" y="427.5" fill="#23334A" class="text-bold" style="text-anchor:middle;font-size:17px"><tspan x="270.5" dy="0">Engineering command</tspan><tspan x="270.5" dy="19.5">interface</tspan></text><title>Engineering command interface (MOD-010)</title></g></a><a href="../index.html#module/MOD-011" xlink:href="../index.html#module/MOD-011"><g class="d2Fsa3Rocm91Z2hzLm1fNTM0MzRlMmQzMDM0MzYubV80ZDRmNDQyZDMwMzEzMQ=="><g class="shape" ><rect x="132" y="512" width="277" height="84" rx="6" stroke="#7C8FA9" fill="#ECF3FF" style="stroke-width:2;" /></g><text x="270.5" y="551.5" fill="#23334A" class="text-bold" style="text-anchor:middle;font-size:17px"><tspan x="270.5" dy="0">Operational record</tspan><tspan x="270.5" dy="19.5">persistence</tspan></text><title>Operational record persistence (MOD-011)</title></g></a><a href="../index.html#module/MOD-010" xlink:href="../index.html#module/MOD-010"><g class="d2Fsa3Rocm91Z2hzLm1fNTM0MzRlMmQzMDM0MzcubV80ZDRmNDQyZDMwMzEzMA=="><g class="shape" ><rect x="132" y="762" width="277" height="84" rx="6" stroke="#7C8FA9" fill="#ECF3FF" style="stroke-width:2;" /></g><text x="270.5" y="801.5" fill="#23334A" class="text-bold" style="text-anchor:middle;font-size:17px"><tspan x="270.5" dy="0">Engineering command</tspan><tspan x="270.5" dy="19.5">interface</tspan></text><title>Engineering command interface (MOD-010)</title></g></a><a href="../index.html#module/MOD-011" xlink:href="../index.html#module/MOD-011"><g class="d2Fsa3Rocm91Z2hzLm1fNTM0MzRlMmQzMDM0MzcubV80ZDRmNDQyZDMwMzEzMQ=="><g class="shape" ><rect x="132" y="886" width="277" height="84" rx="6" stroke="#7C8FA9" fill="#ECF3FF" style="stroke-width:2;" /></g><text x="270.5" y="925.5" fill="#23334A" class="text-bold" style="text-anchor:middle;font-size:17px"><tspan x="270.5" dy="0">Operational record</tspan><tspan x="270.5" dy="19.5">persistence</tspan></text><title>Operational record persistence (MOD-011)</title></g></a><a href="../index.html#module/MOD-008" xlink:href="../index.html#module/MOD-008"><g class="d2Fsa3Rocm91Z2hzLm1fNTM0MzRlMmQzMDM1MzMubV80ZDRmNDQyZDMwMzAzOA=="><g class="shape" ><rect x="569" y="132" width="278" height="84" rx="6" stroke="#7C8FA9" fill="#ECF3FF" style="stroke-width:2;" /></g><text x="708" y="171.5" fill="#23334A" class="text-bold" style="text-anchor:middle;font-size:17px"><tspan x="708" dy="0">Engineering authoring</tspan><tspan x="708" dy="19.5">guidance</tspan></text><title>Engineering authoring guidance (MOD-008)</title></g></a><a href="../index.html#module/MOD-012" xlink:href="../index.html#module/MOD-012"><g class="d2Fsa3Rocm91Z2hzLm1fNTM0MzRlMmQzMDM1MzMubV80ZDRmNDQyZDMwMzEzMg=="><g class="shape" ><rect x="569" y="256" width="278" height="84" rx="6" stroke="#7C8FA9" fill="#ECF3FF" style="stroke-width:2;" /></g><text x="708" y="295.5" fill="#23334A" class="text-bold" style="text-anchor:middle;font-size:17px"><tspan x="708" dy="0">Published engineering</tspan><tspan x="708" dy="19.5">capability guidance</tspan></text><title>Published engineering capability guidance (MOD-012)</title></g></a><a href="../index.html#module/MOD-006" xlink:href="../index.html#module/MOD-006"><g class="d2Fsa3Rocm91Z2hzLm1fNTM0MzRlMmQzMDM2MzYubV80ZDRmNDQyZDMwMzAzNg=="><g class="shape" ><rect x="569" y="631" width="326" height="67" rx="6" stroke="#7C8FA9" fill="#ECF3FF" style="stroke-width:2;" /></g><text x="732" y="670.5" fill="#23334A" class="text-bold" style="text-anchor:middle;font-size:17px">Engineering change control</text><title>Engineering change control (MOD-006)</title></g></a><a href="../index.html#module/MOD-015" xlink:href="../index.html#module/MOD-015"><g class="d2Fsa3Rocm91Z2hzLm1fNTM0MzRlMmQzMDM2MzYubV80ZDRmNDQyZDMwMzEzNQ=="><g class="shape" ><rect x="569" y="738" width="326" height="67" rx="6" stroke="#7C8FA9" fill="#ECF3FF" style="stroke-width:2;" /></g><text x="732" y="777.5" fill="#23334A" class="text-bold" style="text-anchor:middle;font-size:17px">Product release coordination</text><title>Product release coordination (MOD-015)</title></g></a><g transform="translate(999 -4)" class="appendix-icon"><title>Selected Scenario responsibilities</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3427_35082111-d2-3385113918-O5QWY23UNBZG65LHNBZQ)">
+<path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
+<path d="M16 26C21.5228 26 26 21.5228 26 16C26 10.4772 21.5228 6 16 6C10.4772 6 6 10.4772 6 16C6 21.5228 10.4772 26 16 26Z" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16 19.998V15.998" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16 12H16.0098" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_3427_35082111-d2-3385113918-O5QWY23UNBZG65LHNBZQ">
+<rect width="32" height="32" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+</g><g transform="translate(967 -4)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3440_35088111-d2-3385113918-O5QWY23UNBZG65LHNBZQ)">
+<path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
+<path d="M14.3909 16.7965C14.7364 17.2584 15.1772 17.6406 15.6834 17.9171C16.1896 18.1938 16.7494 18.3582 17.3248 18.3993C17.9001 18.4405 18.4777 18.3575 19.0181 18.1559C19.5586 17.9543 20.0492 17.6389 20.4571 17.2309L22.8708 14.8173C23.6036 14.0586 24.0089 13.0425 23.9998 11.9877C23.9906 10.933 23.5676 9.92404 22.8217 9.17821C22.0759 8.43237 21.067 8.00931 20.0123 8.00015C18.9575 7.99098 17.9413 8.39644 17.1827 9.1292L15.7988 10.505" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M17.609 15.1874C17.2635 14.7255 16.8227 14.3433 16.3165 14.0667C15.8103 13.7902 15.2505 13.6257 14.6752 13.5845C14.0998 13.5433 13.5223 13.6263 12.9819 13.8279C12.4414 14.0295 11.9506 14.345 11.5428 14.753L9.1292 17.1666C8.39644 17.9252 7.99098 18.9414 8.00015 19.9962C8.00931 21.0509 8.43237 22.0598 9.17821 22.8056C9.92405 23.5515 10.933 23.9745 11.9877 23.9837C13.0425 23.9928 14.0586 23.5875 14.8173 22.8547L16.193 21.4788" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_3440_35088111-d2-3385113918-O5QWY23UNBZG65LHNBZQ">
+<rect width="32" height="32" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+</g><g transform="translate(453 56)" class="appendix-icon"><title>Establish an identifiable baseline for later engineering reliance (SCN-019)</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3427_35082111-d2-3385113918-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGMYTGOI)">
+<path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
+<path d="M16 26C21.5228 26 26 21.5228 26 16C26 10.4772 21.5228 6 16 6C10.4772 6 6 10.4772 6 16C6 21.5228 10.4772 26 16 26Z" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16 19.998V15.998" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16 12H16.0098" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_3427_35082111-d2-3385113918-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGMYTGOI">
+<rect width="32" height="32" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+</g><g transform="translate(421 56)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3440_35088111-d2-3385113918-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGMYTGOI)">
+<path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
+<path d="M14.3909 16.7965C14.7364 17.2584 15.1772 17.6406 15.6834 17.9171C16.1896 18.1938 16.7494 18.3582 17.3248 18.3993C17.9001 18.4405 18.4777 18.3575 19.0181 18.1559C19.5586 17.9543 20.0492 17.6389 20.4571 17.2309L22.8708 14.8173C23.6036 14.0586 24.0089 13.0425 23.9998 11.9877C23.9906 10.933 23.5676 9.92404 22.8217 9.17821C22.0759 8.43237 21.067 8.00931 20.0123 8.00015C18.9575 7.99098 17.9413 8.39644 17.1827 9.1292L15.7988 10.505" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M17.609 15.1874C17.2635 14.7255 16.8227 14.3433 16.3165 14.0667C15.8103 13.7902 15.2505 13.6257 14.6752 13.5845C14.0998 13.5433 13.5223 13.6263 12.9819 13.8279C12.4414 14.0295 11.9506 14.345 11.5428 14.753L9.1292 17.1666C8.39644 17.9252 7.99098 18.9414 8.00015 19.9962C8.00931 21.0509 8.43237 22.0598 9.17821 22.8056C9.92405 23.5515 10.933 23.9745 11.9877 23.9837C13.0425 23.9928 14.0586 23.5875 14.8173 22.8547L16.193 21.4788" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_3440_35088111-d2-3385113918-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGMYTGOI">
+<rect width="32" height="32" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+</g><g transform="translate(453 306)" class="appendix-icon"><title>Publish related record decisions as one coherent update (SCN-046)</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3427_35082111-d2-3385113918-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2DGNQ)">
+<path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
+<path d="M16 26C21.5228 26 26 21.5228 26 16C26 10.4772 21.5228 6 16 6C10.4772 6 6 10.4772 6 16C6 21.5228 10.4772 26 16 26Z" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16 19.998V15.998" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16 12H16.0098" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_3427_35082111-d2-3385113918-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2DGNQ">
+<rect width="32" height="32" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+</g><g transform="translate(421 306)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3440_35088111-d2-3385113918-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2DGNQ)">
+<path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
+<path d="M14.3909 16.7965C14.7364 17.2584 15.1772 17.6406 15.6834 17.9171C16.1896 18.1938 16.7494 18.3582 17.3248 18.3993C17.9001 18.4405 18.4777 18.3575 19.0181 18.1559C19.5586 17.9543 20.0492 17.6389 20.4571 17.2309L22.8708 14.8173C23.6036 14.0586 24.0089 13.0425 23.9998 11.9877C23.9906 10.933 23.5676 9.92404 22.8217 9.17821C22.0759 8.43237 21.067 8.00931 20.0123 8.00015C18.9575 7.99098 17.9413 8.39644 17.1827 9.1292L15.7988 10.505" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M17.609 15.1874C17.2635 14.7255 16.8227 14.3433 16.3165 14.0667C15.8103 13.7902 15.2505 13.6257 14.6752 13.5845C14.0998 13.5433 13.5223 13.6263 12.9819 13.8279C12.4414 14.0295 11.9506 14.345 11.5428 14.753L9.1292 17.1666C8.39644 17.9252 7.99098 18.9414 8.00015 19.9962C8.00931 21.0509 8.43237 22.0598 9.17821 22.8056C9.92405 23.5515 10.933 23.9745 11.9877 23.9837C13.0425 23.9928 14.0586 23.5875 14.8173 22.8547L16.193 21.4788" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_3440_35088111-d2-3385113918-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2DGNQ">
+<rect width="32" height="32" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+</g><g transform="translate(453 680)" class="appendix-icon"><title>Recover an interrupted recorded update to a verified state (SCN-047)</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3427_35082111-d2-3385113918-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2DGNY)">
+<path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
+<path d="M16 26C21.5228 26 26 21.5228 26 16C26 10.4772 21.5228 6 16 6C10.4772 6 6 10.4772 6 16C6 21.5228 10.4772 26 16 26Z" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16 19.998V15.998" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16 12H16.0098" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_3427_35082111-d2-3385113918-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2DGNY">
+<rect width="32" height="32" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+</g><g transform="translate(421 680)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3440_35088111-d2-3385113918-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2DGNY)">
+<path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
+<path d="M14.3909 16.7965C14.7364 17.2584 15.1772 17.6406 15.6834 17.9171C16.1896 18.1938 16.7494 18.3582 17.3248 18.3993C17.9001 18.4405 18.4777 18.3575 19.0181 18.1559C19.5586 17.9543 20.0492 17.6389 20.4571 17.2309L22.8708 14.8173C23.6036 14.0586 24.0089 13.0425 23.9998 11.9877C23.9906 10.933 23.5676 9.92404 22.8217 9.17821C22.0759 8.43237 21.067 8.00931 20.0123 8.00015C18.9575 7.99098 17.9413 8.39644 17.1827 9.1292L15.7988 10.505" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M17.609 15.1874C17.2635 14.7255 16.8227 14.3433 16.3165 14.0667C15.8103 13.7902 15.2505 13.6257 14.6752 13.5845C14.0998 13.5433 13.5223 13.6263 12.9819 13.8279C12.4414 14.0295 11.9506 14.345 11.5428 14.753L9.1292 17.1666C8.39644 17.9252 7.99098 18.9414 8.00015 19.9962C8.00931 21.0509 8.43237 22.0598 9.17821 22.8056C9.92405 23.5515 10.933 23.9745 11.9877 23.9837C13.0425 23.9928 14.0586 23.5875 14.8173 22.8547L16.193 21.4788" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_3440_35088111-d2-3385113918-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2DGNY">
+<rect width="32" height="32" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+</g><g transform="translate(939 56)" class="appendix-icon"><title>Produce a usable result through specialist guidance (SCN-053)</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3427_35082111-d2-3385113918-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2TGMY)">
+<path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
+<path d="M16 26C21.5228 26 26 21.5228 26 16C26 10.4772 21.5228 6 16 6C10.4772 6 6 10.4772 6 16C6 21.5228 10.4772 26 16 26Z" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16 19.998V15.998" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16 12H16.0098" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_3427_35082111-d2-3385113918-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2TGMY">
+<rect width="32" height="32" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+</g><g transform="translate(907 56)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3440_35088111-d2-3385113918-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2TGMY)">
+<path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
+<path d="M14.3909 16.7965C14.7364 17.2584 15.1772 17.6406 15.6834 17.9171C16.1896 18.1938 16.7494 18.3582 17.3248 18.3993C17.9001 18.4405 18.4777 18.3575 19.0181 18.1559C19.5586 17.9543 20.0492 17.6389 20.4571 17.2309L22.8708 14.8173C23.6036 14.0586 24.0089 13.0425 23.9998 11.9877C23.9906 10.933 23.5676 9.92404 22.8217 9.17821C22.0759 8.43237 21.067 8.00931 20.0123 8.00015C18.9575 7.99098 17.9413 8.39644 17.1827 9.1292L15.7988 10.505" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M17.609 15.1874C17.2635 14.7255 16.8227 14.3433 16.3165 14.0667C15.8103 13.7902 15.2505 13.6257 14.6752 13.5845C14.0998 13.5433 13.5223 13.6263 12.9819 13.8279C12.4414 14.0295 11.9506 14.345 11.5428 14.753L9.1292 17.1666C8.39644 17.9252 7.99098 18.9414 8.00015 19.9962C8.00931 21.0509 8.43237 22.0598 9.17821 22.8056C9.92405 23.5515 10.933 23.9745 11.9877 23.9837C13.0425 23.9928 14.0586 23.5875 14.8173 22.8547L16.193 21.4788" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_3440_35088111-d2-3385113918-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2TGMY">
+<rect width="32" height="32" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+</g><g transform="translate(939 555)" class="appendix-icon"><title>Approve and publish one exact qualified candidate (SCN-066)</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3427_35082111-d2-3385113918-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM3DGNQ)">
+<path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
+<path d="M16 26C21.5228 26 26 21.5228 26 16C26 10.4772 21.5228 6 16 6C10.4772 6 6 10.4772 6 16C6 21.5228 10.4772 26 16 26Z" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16 19.998V15.998" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16 12H16.0098" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_3427_35082111-d2-3385113918-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM3DGNQ">
+<rect width="32" height="32" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+</g><g transform="translate(907 555)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3440_35088111-d2-3385113918-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM3DGNQ)">
+<path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
+<path d="M14.3909 16.7965C14.7364 17.2584 15.1772 17.6406 15.6834 17.9171C16.1896 18.1938 16.7494 18.3582 17.3248 18.3993C17.9001 18.4405 18.4777 18.3575 19.0181 18.1559C19.5586 17.9543 20.0492 17.6389 20.4571 17.2309L22.8708 14.8173C23.6036 14.0586 24.0089 13.0425 23.9998 11.9877C23.9906 10.933 23.5676 9.92404 22.8217 9.17821C22.0759 8.43237 21.067 8.00931 20.0123 8.00015C18.9575 7.99098 17.9413 8.39644 17.1827 9.1292L15.7988 10.505" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M17.609 15.1874C17.2635 14.7255 16.8227 14.3433 16.3165 14.0667C15.8103 13.7902 15.2505 13.6257 14.6752 13.5845C14.0998 13.5433 13.5223 13.6263 12.9819 13.8279C12.4414 14.0295 11.9506 14.345 11.5428 14.753L9.1292 17.1666C8.39644 17.9252 7.99098 18.9414 8.00015 19.9962C8.00931 21.0509 8.43237 22.0598 9.17821 22.8056C9.92405 23.5515 10.933 23.9745 11.9877 23.9837C13.0425 23.9928 14.0586 23.5875 14.8173 22.8547L16.193 21.4788" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_3440_35088111-d2-3385113918-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM3DGNQ">
+<rect width="32" height="32" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+</g><g transform="translate(382 122)" class="appendix-icon"><title>Engineering baseline management (MOD-005)</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3427_35082111-d2-3385113918-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGMYTGOJONVPTIZBUMY2DIMTEGMYDGMBTGU)">
+<path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
+<path d="M16 26C21.5228 26 26 21.5228 26 16C26 10.4772 21.5228 6 16 6C10.4772 6 6 10.4772 6 16C6 21.5228 10.4772 26 16 26Z" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16 19.998V15.998" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16 12H16.0098" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_3427_35082111-d2-3385113918-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGMYTGOJONVPTIZBUMY2DIMTEGMYDGMBTGU">
+<rect width="32" height="32" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+</g><g transform="translate(350 122)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3440_35088111-d2-3385113918-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGMYTGOJONVPTIZBUMY2DIMTEGMYDGMBTGU)">
+<path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
+<path d="M14.3909 16.7965C14.7364 17.2584 15.1772 17.6406 15.6834 17.9171C16.1896 18.1938 16.7494 18.3582 17.3248 18.3993C17.9001 18.4405 18.4777 18.3575 19.0181 18.1559C19.5586 17.9543 20.0492 17.6389 20.4571 17.2309L22.8708 14.8173C23.6036 14.0586 24.0089 13.0425 23.9998 11.9877C23.9906 10.933 23.5676 9.92404 22.8217 9.17821C22.0759 8.43237 21.067 8.00931 20.0123 8.00015C18.9575 7.99098 17.9413 8.39644 17.1827 9.1292L15.7988 10.505" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M17.609 15.1874C17.2635 14.7255 16.8227 14.3433 16.3165 14.0667C15.8103 13.7902 15.2505 13.6257 14.6752 13.5845C14.0998 13.5433 13.5223 13.6263 12.9819 13.8279C12.4414 14.0295 11.9506 14.345 11.5428 14.753L9.1292 17.1666C8.39644 17.9252 7.99098 18.9414 8.00015 19.9962C8.00931 21.0509 8.43237 22.0598 9.17821 22.8056C9.92405 23.5515 10.933 23.9745 11.9877 23.9837C13.0425 23.9928 14.0586 23.5875 14.8173 22.8547L16.193 21.4788" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_3440_35088111-d2-3385113918-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGMYTGOJONVPTIZBUMY2DIMTEGMYDGMBTGU">
+<rect width="32" height="32" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+</g><g transform="translate(393 372)" class="appendix-icon"><title>Engineering command interface (MOD-010)</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3427_35082111-d2-3385113918-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2DGNRONVPTIZBUMY2DIMTEGMYDGMJTGA)">
+<path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
+<path d="M16 26C21.5228 26 26 21.5228 26 16C26 10.4772 21.5228 6 16 6C10.4772 6 6 10.4772 6 16C6 21.5228 10.4772 26 16 26Z" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16 19.998V15.998" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16 12H16.0098" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_3427_35082111-d2-3385113918-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2DGNRONVPTIZBUMY2DIMTEGMYDGMJTGA">
+<rect width="32" height="32" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+</g><g transform="translate(361 372)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3440_35088111-d2-3385113918-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2DGNRONVPTIZBUMY2DIMTEGMYDGMJTGA)">
+<path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
+<path d="M14.3909 16.7965C14.7364 17.2584 15.1772 17.6406 15.6834 17.9171C16.1896 18.1938 16.7494 18.3582 17.3248 18.3993C17.9001 18.4405 18.4777 18.3575 19.0181 18.1559C19.5586 17.9543 20.0492 17.6389 20.4571 17.2309L22.8708 14.8173C23.6036 14.0586 24.0089 13.0425 23.9998 11.9877C23.9906 10.933 23.5676 9.92404 22.8217 9.17821C22.0759 8.43237 21.067 8.00931 20.0123 8.00015C18.9575 7.99098 17.9413 8.39644 17.1827 9.1292L15.7988 10.505" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M17.609 15.1874C17.2635 14.7255 16.8227 14.3433 16.3165 14.0667C15.8103 13.7902 15.2505 13.6257 14.6752 13.5845C14.0998 13.5433 13.5223 13.6263 12.9819 13.8279C12.4414 14.0295 11.9506 14.345 11.5428 14.753L9.1292 17.1666C8.39644 17.9252 7.99098 18.9414 8.00015 19.9962C8.00931 21.0509 8.43237 22.0598 9.17821 22.8056C9.92405 23.5515 10.933 23.9745 11.9877 23.9837C13.0425 23.9928 14.0586 23.5875 14.8173 22.8547L16.193 21.4788" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_3440_35088111-d2-3385113918-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2DGNRONVPTIZBUMY2DIMTEGMYDGMJTGA">
+<rect width="32" height="32" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+</g><g transform="translate(393 496)" class="appendix-icon"><title>Operational record persistence (MOD-011)</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3427_35082111-d2-3385113918-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2DGNRONVPTIZBUMY2DIMTEGMYDGMJTGE)">
+<path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
+<path d="M16 26C21.5228 26 26 21.5228 26 16C26 10.4772 21.5228 6 16 6C10.4772 6 6 10.4772 6 16C6 21.5228 10.4772 26 16 26Z" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16 19.998V15.998" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16 12H16.0098" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_3427_35082111-d2-3385113918-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2DGNRONVPTIZBUMY2DIMTEGMYDGMJTGE">
+<rect width="32" height="32" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+</g><g transform="translate(361 496)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3440_35088111-d2-3385113918-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2DGNRONVPTIZBUMY2DIMTEGMYDGMJTGE)">
+<path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
+<path d="M14.3909 16.7965C14.7364 17.2584 15.1772 17.6406 15.6834 17.9171C16.1896 18.1938 16.7494 18.3582 17.3248 18.3993C17.9001 18.4405 18.4777 18.3575 19.0181 18.1559C19.5586 17.9543 20.0492 17.6389 20.4571 17.2309L22.8708 14.8173C23.6036 14.0586 24.0089 13.0425 23.9998 11.9877C23.9906 10.933 23.5676 9.92404 22.8217 9.17821C22.0759 8.43237 21.067 8.00931 20.0123 8.00015C18.9575 7.99098 17.9413 8.39644 17.1827 9.1292L15.7988 10.505" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M17.609 15.1874C17.2635 14.7255 16.8227 14.3433 16.3165 14.0667C15.8103 13.7902 15.2505 13.6257 14.6752 13.5845C14.0998 13.5433 13.5223 13.6263 12.9819 13.8279C12.4414 14.0295 11.9506 14.345 11.5428 14.753L9.1292 17.1666C8.39644 17.9252 7.99098 18.9414 8.00015 19.9962C8.00931 21.0509 8.43237 22.0598 9.17821 22.8056C9.92405 23.5515 10.933 23.9745 11.9877 23.9837C13.0425 23.9928 14.0586 23.5875 14.8173 22.8547L16.193 21.4788" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_3440_35088111-d2-3385113918-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2DGNRONVPTIZBUMY2DIMTEGMYDGMJTGE">
+<rect width="32" height="32" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+</g><g transform="translate(393 746)" class="appendix-icon"><title>Engineering command interface (MOD-010)</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3427_35082111-d2-3385113918-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2DGNZONVPTIZBUMY2DIMTEGMYDGMJTGA)">
+<path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
+<path d="M16 26C21.5228 26 26 21.5228 26 16C26 10.4772 21.5228 6 16 6C10.4772 6 6 10.4772 6 16C6 21.5228 10.4772 26 16 26Z" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16 19.998V15.998" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16 12H16.0098" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_3427_35082111-d2-3385113918-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2DGNZONVPTIZBUMY2DIMTEGMYDGMJTGA">
+<rect width="32" height="32" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+</g><g transform="translate(361 746)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3440_35088111-d2-3385113918-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2DGNZONVPTIZBUMY2DIMTEGMYDGMJTGA)">
+<path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
+<path d="M14.3909 16.7965C14.7364 17.2584 15.1772 17.6406 15.6834 17.9171C16.1896 18.1938 16.7494 18.3582 17.3248 18.3993C17.9001 18.4405 18.4777 18.3575 19.0181 18.1559C19.5586 17.9543 20.0492 17.6389 20.4571 17.2309L22.8708 14.8173C23.6036 14.0586 24.0089 13.0425 23.9998 11.9877C23.9906 10.933 23.5676 9.92404 22.8217 9.17821C22.0759 8.43237 21.067 8.00931 20.0123 8.00015C18.9575 7.99098 17.9413 8.39644 17.1827 9.1292L15.7988 10.505" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M17.609 15.1874C17.2635 14.7255 16.8227 14.3433 16.3165 14.0667C15.8103 13.7902 15.2505 13.6257 14.6752 13.5845C14.0998 13.5433 13.5223 13.6263 12.9819 13.8279C12.4414 14.0295 11.9506 14.345 11.5428 14.753L9.1292 17.1666C8.39644 17.9252 7.99098 18.9414 8.00015 19.9962C8.00931 21.0509 8.43237 22.0598 9.17821 22.8056C9.92405 23.5515 10.933 23.9745 11.9877 23.9837C13.0425 23.9928 14.0586 23.5875 14.8173 22.8547L16.193 21.4788" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_3440_35088111-d2-3385113918-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2DGNZONVPTIZBUMY2DIMTEGMYDGMJTGA">
+<rect width="32" height="32" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+</g><g transform="translate(393 870)" class="appendix-icon"><title>Operational record persistence (MOD-011)</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3427_35082111-d2-3385113918-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2DGNZONVPTIZBUMY2DIMTEGMYDGMJTGE)">
+<path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
+<path d="M16 26C21.5228 26 26 21.5228 26 16C26 10.4772 21.5228 6 16 6C10.4772 6 6 10.4772 6 16C6 21.5228 10.4772 26 16 26Z" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16 19.998V15.998" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16 12H16.0098" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_3427_35082111-d2-3385113918-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2DGNZONVPTIZBUMY2DIMTEGMYDGMJTGE">
+<rect width="32" height="32" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+</g><g transform="translate(361 870)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3440_35088111-d2-3385113918-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2DGNZONVPTIZBUMY2DIMTEGMYDGMJTGE)">
+<path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
+<path d="M14.3909 16.7965C14.7364 17.2584 15.1772 17.6406 15.6834 17.9171C16.1896 18.1938 16.7494 18.3582 17.3248 18.3993C17.9001 18.4405 18.4777 18.3575 19.0181 18.1559C19.5586 17.9543 20.0492 17.6389 20.4571 17.2309L22.8708 14.8173C23.6036 14.0586 24.0089 13.0425 23.9998 11.9877C23.9906 10.933 23.5676 9.92404 22.8217 9.17821C22.0759 8.43237 21.067 8.00931 20.0123 8.00015C18.9575 7.99098 17.9413 8.39644 17.1827 9.1292L15.7988 10.505" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M17.609 15.1874C17.2635 14.7255 16.8227 14.3433 16.3165 14.0667C15.8103 13.7902 15.2505 13.6257 14.6752 13.5845C14.0998 13.5433 13.5223 13.6263 12.9819 13.8279C12.4414 14.0295 11.9506 14.345 11.5428 14.753L9.1292 17.1666C8.39644 17.9252 7.99098 18.9414 8.00015 19.9962C8.00931 21.0509 8.43237 22.0598 9.17821 22.8056C9.92405 23.5515 10.933 23.9745 11.9877 23.9837C13.0425 23.9928 14.0586 23.5875 14.8173 22.8547L16.193 21.4788" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_3440_35088111-d2-3385113918-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2DGNZONVPTIZBUMY2DIMTEGMYDGMJTGE">
+<rect width="32" height="32" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+</g><g transform="translate(831 116)" class="appendix-icon"><title>Engineering authoring guidance (MOD-008)</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3427_35082111-d2-3385113918-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2TGMZONVPTIZBUMY2DIMTEGMYDGMBTHA)">
+<path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
+<path d="M16 26C21.5228 26 26 21.5228 26 16C26 10.4772 21.5228 6 16 6C10.4772 6 6 10.4772 6 16C6 21.5228 10.4772 26 16 26Z" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16 19.998V15.998" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16 12H16.0098" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_3427_35082111-d2-3385113918-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2TGMZONVPTIZBUMY2DIMTEGMYDGMBTHA">
+<rect width="32" height="32" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+</g><g transform="translate(799 116)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3440_35088111-d2-3385113918-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2TGMZONVPTIZBUMY2DIMTEGMYDGMBTHA)">
+<path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
+<path d="M14.3909 16.7965C14.7364 17.2584 15.1772 17.6406 15.6834 17.9171C16.1896 18.1938 16.7494 18.3582 17.3248 18.3993C17.9001 18.4405 18.4777 18.3575 19.0181 18.1559C19.5586 17.9543 20.0492 17.6389 20.4571 17.2309L22.8708 14.8173C23.6036 14.0586 24.0089 13.0425 23.9998 11.9877C23.9906 10.933 23.5676 9.92404 22.8217 9.17821C22.0759 8.43237 21.067 8.00931 20.0123 8.00015C18.9575 7.99098 17.9413 8.39644 17.1827 9.1292L15.7988 10.505" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M17.609 15.1874C17.2635 14.7255 16.8227 14.3433 16.3165 14.0667C15.8103 13.7902 15.2505 13.6257 14.6752 13.5845C14.0998 13.5433 13.5223 13.6263 12.9819 13.8279C12.4414 14.0295 11.9506 14.345 11.5428 14.753L9.1292 17.1666C8.39644 17.9252 7.99098 18.9414 8.00015 19.9962C8.00931 21.0509 8.43237 22.0598 9.17821 22.8056C9.92405 23.5515 10.933 23.9745 11.9877 23.9837C13.0425 23.9928 14.0586 23.5875 14.8173 22.8547L16.193 21.4788" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_3440_35088111-d2-3385113918-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2TGMZONVPTIZBUMY2DIMTEGMYDGMBTHA">
+<rect width="32" height="32" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+</g><g transform="translate(831 240)" class="appendix-icon"><title>Published engineering capability guidance (MOD-012)</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3427_35082111-d2-3385113918-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2TGMZONVPTIZBUMY2DIMTEGMYDGMJTGI)">
+<path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
+<path d="M16 26C21.5228 26 26 21.5228 26 16C26 10.4772 21.5228 6 16 6C10.4772 6 6 10.4772 6 16C6 21.5228 10.4772 26 16 26Z" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16 19.998V15.998" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16 12H16.0098" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_3427_35082111-d2-3385113918-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2TGMZONVPTIZBUMY2DIMTEGMYDGMJTGI">
+<rect width="32" height="32" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+</g><g transform="translate(799 240)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3440_35088111-d2-3385113918-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2TGMZONVPTIZBUMY2DIMTEGMYDGMJTGI)">
+<path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
+<path d="M14.3909 16.7965C14.7364 17.2584 15.1772 17.6406 15.6834 17.9171C16.1896 18.1938 16.7494 18.3582 17.3248 18.3993C17.9001 18.4405 18.4777 18.3575 19.0181 18.1559C19.5586 17.9543 20.0492 17.6389 20.4571 17.2309L22.8708 14.8173C23.6036 14.0586 24.0089 13.0425 23.9998 11.9877C23.9906 10.933 23.5676 9.92404 22.8217 9.17821C22.0759 8.43237 21.067 8.00931 20.0123 8.00015C18.9575 7.99098 17.9413 8.39644 17.1827 9.1292L15.7988 10.505" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M17.609 15.1874C17.2635 14.7255 16.8227 14.3433 16.3165 14.0667C15.8103 13.7902 15.2505 13.6257 14.6752 13.5845C14.0998 13.5433 13.5223 13.6263 12.9819 13.8279C12.4414 14.0295 11.9506 14.345 11.5428 14.753L9.1292 17.1666C8.39644 17.9252 7.99098 18.9414 8.00015 19.9962C8.00931 21.0509 8.43237 22.0598 9.17821 22.8056C9.92405 23.5515 10.933 23.9745 11.9877 23.9837C13.0425 23.9928 14.0586 23.5875 14.8173 22.8547L16.193 21.4788" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_3440_35088111-d2-3385113918-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2TGMZONVPTIZBUMY2DIMTEGMYDGMJTGI">
+<rect width="32" height="32" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+</g><g transform="translate(879 615)" class="appendix-icon"><title>Engineering change control (MOD-006)</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3427_35082111-d2-3385113918-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM3DGNRONVPTIZBUMY2DIMTEGMYDGMBTGY)">
+<path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
+<path d="M16 26C21.5228 26 26 21.5228 26 16C26 10.4772 21.5228 6 16 6C10.4772 6 6 10.4772 6 16C6 21.5228 10.4772 26 16 26Z" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16 19.998V15.998" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16 12H16.0098" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_3427_35082111-d2-3385113918-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM3DGNRONVPTIZBUMY2DIMTEGMYDGMBTGY">
+<rect width="32" height="32" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+</g><g transform="translate(847 615)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3440_35088111-d2-3385113918-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM3DGNRONVPTIZBUMY2DIMTEGMYDGMBTGY)">
+<path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
+<path d="M14.3909 16.7965C14.7364 17.2584 15.1772 17.6406 15.6834 17.9171C16.1896 18.1938 16.7494 18.3582 17.3248 18.3993C17.9001 18.4405 18.4777 18.3575 19.0181 18.1559C19.5586 17.9543 20.0492 17.6389 20.4571 17.2309L22.8708 14.8173C23.6036 14.0586 24.0089 13.0425 23.9998 11.9877C23.9906 10.933 23.5676 9.92404 22.8217 9.17821C22.0759 8.43237 21.067 8.00931 20.0123 8.00015C18.9575 7.99098 17.9413 8.39644 17.1827 9.1292L15.7988 10.505" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M17.609 15.1874C17.2635 14.7255 16.8227 14.3433 16.3165 14.0667C15.8103 13.7902 15.2505 13.6257 14.6752 13.5845C14.0998 13.5433 13.5223 13.6263 12.9819 13.8279C12.4414 14.0295 11.9506 14.345 11.5428 14.753L9.1292 17.1666C8.39644 17.9252 7.99098 18.9414 8.00015 19.9962C8.00931 21.0509 8.43237 22.0598 9.17821 22.8056C9.92405 23.5515 10.933 23.9745 11.9877 23.9837C13.0425 23.9928 14.0586 23.5875 14.8173 22.8547L16.193 21.4788" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_3440_35088111-d2-3385113918-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM3DGNRONVPTIZBUMY2DIMTEGMYDGMBTGY">
+<rect width="32" height="32" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+</g><g transform="translate(879 722)" class="appendix-icon"><title>Product release coordination (MOD-015)</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3427_35082111-d2-3385113918-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM3DGNRONVPTIZBUMY2DIMTEGMYDGMJTGU)">
+<path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
+<path d="M16 26C21.5228 26 26 21.5228 26 16C26 10.4772 21.5228 6 16 6C10.4772 6 6 10.4772 6 16C6 21.5228 10.4772 26 16 26Z" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16 19.998V15.998" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16 12H16.0098" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_3427_35082111-d2-3385113918-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM3DGNRONVPTIZBUMY2DIMTEGMYDGMJTGU">
+<rect width="32" height="32" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+</g><g transform="translate(847 722)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3440_35088111-d2-3385113918-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM3DGNRONVPTIZBUMY2DIMTEGMYDGMJTGU)">
+<path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
+<path d="M14.3909 16.7965C14.7364 17.2584 15.1772 17.6406 15.6834 17.9171C16.1896 18.1938 16.7494 18.3582 17.3248 18.3993C17.9001 18.4405 18.4777 18.3575 19.0181 18.1559C19.5586 17.9543 20.0492 17.6389 20.4571 17.2309L22.8708 14.8173C23.6036 14.0586 24.0089 13.0425 23.9998 11.9877C23.9906 10.933 23.5676 9.92404 22.8217 9.17821C22.0759 8.43237 21.067 8.00931 20.0123 8.00015C18.9575 7.99098 17.9413 8.39644 17.1827 9.1292L15.7988 10.505" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M17.609 15.1874C17.2635 14.7255 16.8227 14.3433 16.3165 14.0667C15.8103 13.7902 15.2505 13.6257 14.6752 13.5845C14.0998 13.5433 13.5223 13.6263 12.9819 13.8279C12.4414 14.0295 11.9506 14.345 11.5428 14.753L9.1292 17.1666C8.39644 17.9252 7.99098 18.9414 8.00015 19.9962C8.00931 21.0509 8.43237 22.0598 9.17821 22.8056C9.92405 23.5515 10.933 23.9745 11.9877 23.9837C13.0425 23.9928 14.0586 23.5875 14.8173 22.8547L16.193 21.4788" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_3440_35088111-d2-3385113918-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM3DGNRONVPTIZBUMY2DIMTEGMYDGMJTGU">
+<rect width="32" height="32" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+</g><mask id="d2-3385113918" maskUnits="userSpaceOnUse" x="-17" y="-34" width="1078" height="1153">
+<rect x="-17" y="-34" width="1078" height="1153" fill="white"></rect>
+
+</mask></svg></svg>

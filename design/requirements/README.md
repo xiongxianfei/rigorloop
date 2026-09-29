@@ -105,8 +105,9 @@ SR-014 is a constraint on existing assessment behavior; it does not create an ar
 | [SR-072](IR-010-obtain-trustworthy-compatible-rigorloop-tools/SR-072-recover-publication-failures-without-overwriting-public-history/sr.json) | IR-010 | Recover publication failures without overwriting public history |
 | [SR-073](IR-010-obtain-trustworthy-compatible-rigorloop-tools/SR-073-coordinate-supported-routine-releases-around-one-candidate-approval/sr.json) | IR-010 | Coordinate supported routine releases around one candidate approval |
 
-The [architecture model](../architecture/README.md) proposes primary Module allocations for the 63 Functions. Ten ARs remain from the first detailed pilot: nine beneath IR-001's five SRs, plus shared interpretation AR-010 beneath SR-012 in IR-005. Product-specific AR expansion remains deferred.
-Remaining SR allocation work is deferred; draft allocation does not establish implementation or satisfaction.
+The [architecture model](../architecture/README.md) proposes primary Module allocations for the 63 Functions. Its 28 ARs comprise ten from the first detailed pilot—nine beneath IR-001 and shared interpretation AR-010 beneath SR-012 in IR-005—and 18 beneath IR-008's SR-040 through SR-047.
+The [CLI cooperation view](../architecture/views/browser/index.html#cooperation) summarizes how those product obligations relate to their Scenarios, Functions, Modules, and Interfaces. Allocation for the remaining SRs is deferred; draft allocation does not establish implementation or satisfaction.
+The [parent-boundary cooperation view](../architecture/views/browser/index.html#scenarios) adds selected Interface contributions for SCN-019, SCN-053, and SCN-066. These contracts preserve the existing Scenario and requirement definitions and introduce no new ARs or allocation changes. State acquisition, guidance, authority, and evidence support each retain their declared limits; their existence does not establish complete Scenario satisfaction.
 The [original question resolutions](sources.md#src-question-resolution) remain the selected scope basis; the decomposition adds assessable obligations and logical behavior without inventing new service targets or authority policy.
 
 ## Review outcome
@@ -146,7 +147,7 @@ requirements/
 ```
 
 This excerpt shows the selected naming convention using current records.
-The index above lists all IRs and SRs; the [architecture convergence view](../architecture/README.md#requirement-and-function-convergence) lists the ten ARs and their derived parents and allocations.
+The index above lists all IRs and SRs; the [architecture convergence view](../architecture/README.md#requirement-and-function-convergence) lists the 28 ARs and their derived parents and allocations.
 
 ## Directory naming
 
@@ -234,6 +235,7 @@ Ask the most consequential unresolved question first and resolve it before askin
 Omit irrelevant optional fields. If an optional detail is unknown, omit it and assess whether it raises the consequential open question.
 For an unknown required answer, state that it remains unresolved and follow the same question-selection rule without pretending that other unresolved issues are settled.
 Each entry in the nonempty `sources` list contains `source`, `locator`, and `basis`.
+Attributed allocation analysis may use these existing fields to identify an acceptance-criterion position, its contributing ARs, and the reasoning for their cooperation. The CLI example retains 44 such arguments on SR-040 through SR-047 under [SRC-CLI-ALLOCATION](sources.md#src-cli-allocation). These entries preserve analysis provenance; they do not add obligations, duplicate containment relationships, or establish satisfaction. Criterion positions refer to the unchanged analyzed lists and require reconciliation if those criteria change.
 Objects reject undeclared fields, and the schemas reject unsupported record types, lifecycle states, or analysis methods.
 
 `analysis.what` explains the problem and desired outcome without copying the requirement statement.

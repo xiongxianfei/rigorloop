@@ -1,0 +1,68 @@
+{
+  "id": "AR-025",
+  "type": "allocated-requirement",
+  "title": "Prepare fitting publication receipts before authoritative mutation",
+  "status": "draft",
+  "statement": "The Engineering command interface Module shall serialize the required public storage receipt for an admitted publication before authoritative mutation, using exact candidate facts and the selected operation and format, with mandatory output guaranteed to fit independently of optional diagnostic volume.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Rendering after publication can discover an avoidable overflow or misreport a successful write as a rejected operation.",
+      "desired_outcome": "Every admissible correction has a fitting mandatory receipt before commitment, and optional detail cannot change the truth of the eventual storage outcome."
+    },
+    "why": {
+      "rationale": "SR-046 makes bounded receipt preparation a prerequisite of publication while forbidding diagnostic volume from becoming a new eligibility rule for a structurally valid correction."
+    },
+    "who": {
+      "stakeholders": [
+        "Actors submitting corrections to diagnostic-heavy stores",
+        "Consumers of mutation receipts",
+        "Maintainers of MOD-010"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "An admitted candidate is prepared for publication in a selected command-family format.",
+        "Optional diagnostics or mechanical details exceed the space remaining beyond mandatory output.",
+        "Output delivery fails after an actual committed save."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "MOD-010 public rendering responsibility at IF-004.",
+        "Candidate facts and publication readiness exchanged with MOD-011 through IF-003."
+      ]
+    },
+    "how": {
+      "approach": "Use exact supplied candidate/revision/target and bounded observation facts to serialize the family-specific mandatory receipt before publication. Bind readiness to that same candidate, operation, and format; summarize or explicitly omit optional detail rather than rejecting an admissible correction."
+    },
+    "how_much": {
+      "scope": "The source-defined mandatory receipt reserve and total mutation limits apply to their owning public families. MOD-010 owns the output contract and serialization; MOD-011 owns actual candidate and commitment facts. No new transport token, callback, wire schema, or persistent receipt ledger is required."
+    }
+  },
+  "acceptance_criteria": [
+    "Before publication, obtain the exact operation facts from guarded persistence execution: new targeted publication reconstructs and validates against the freshly checked state, advanced publication validates supplied complete bytes, and recovery uses the verified exact retained before/candidate state for the selected action without semantic replay. Serialize the mandatory public receipt in the selected format for that same operation, exact content, changed targets, and applicable revision/observation facts; changed content or format requires renewed preparation, and a preview receipt cannot authorize the later write.",
+    "For every structurally admissible mutation, mandatory receipt content fits its source-defined reserved bound independently of the number of admitted diagnostic occurrences. A primary receipt carries the required common fields, identity/revision, changed targets, and at most the bounded observation summary; diagnostic bodies and optional effect expansion do not enter that guarantee.",
+    "When optional detail cannot fit beside the guaranteed receipt, return the defined explicit omission and bounded summary with the supported route to current diagnostic detail. More observations cannot block a sound correction or silently discard a required safe-continuation fact.",
+    "Provide persistence only readiness established for the exact selected operation/candidate/format before authoritative publication. Unexpected serialization failure stops before writing as an implementation failure, not a supported diagnostic-overflow rejection policy.",
+    "Project the actual terminal storage result returned by persistence. Once saved or unchanged is established, later renderer or stdout-delivery failure cannot be reported as a storage rejection; retain the source transport/lost-response boundary and require normal fresh-state handling for a later retry."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "allocated_to": "MOD-010",
+  "constrains": [
+    "FUNC-048"
+  ],
+  "sources": [
+    {
+      "source": "SRC-CLI-ALLOCATION",
+      "locator": "AR-025",
+      "basis": "Derived from SR-046 for the proposed MOD-010 responsibility. Allocates SR-046 criterion 3 and the rendering contribution to criteria 1, 2, and 6 solely to MOD-010/FUNC-048. AR-026 supplies exact storage facts, honors bound readiness before mutation, and returns the actual commitment disposition. These criteria specify intended observations, not executed product evidence or an adoption of the REM authoring format by the CLI."
+    },
+    {
+      "source": "SRC-PUBLISHED-CLI",
+      "locator": "docs/design/cli/cli.md#CLI-SR-11, CLI-SR-17, CLI-SR-20, CLI-SR-30",
+      "basis": "Retains the named current CLI and Record Format obligations at this allocated responsibility boundary. Their detailed formats, supported versions, limits, and observed external-edit boundaries remain authoritative; no runtime behavior or public contract is changed by this draft."
+    }
+  ]
+}

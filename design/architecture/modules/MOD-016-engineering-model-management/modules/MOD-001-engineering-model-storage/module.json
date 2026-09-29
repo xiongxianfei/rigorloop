@@ -1,0 +1,46 @@
+{
+  "id": "MOD-001",
+  "type": "module",
+  "title": "Engineering model storage",
+  "status": "draft",
+  "description": "Retain and retrieve authoritative engineering content and its recorded identity and decision associations in an explicitly selected model state.",
+  "responsibilities": [
+    "Retain supplied definitions and decision reasoning independently of the originating session.",
+    "Resolve identities and retrieve content with explicit state, scope, interpretation, and completeness outcomes.",
+    "Enforce the state and identity conditions at the point where a supplied candidate becomes retained content.",
+    "Contribute selected-state authoritative definition, relationship, and recorded provenance access to MOD-016's IF-007 inspection contract through the existing IF-001 boundary; no Baseline retention confirmation is implied by a read."
+  ],
+  "owned_state": [
+    "Retained authored definitions, stable identities, and recorded decision reasoning and associations within a selected model state. This is content custody; domain meaning remains with the relevant definition owner."
+  ],
+  "scope": {
+    "includes": [
+      "Definition access, supported content retention, identity resolution, and retained rationale access."
+    ],
+    "excludes": [
+      "Choosing revisions, interpreting metamodel rules, granting authority, managing baseline history, or judging decision correctness."
+    ]
+  },
+  "provides": [
+    "IF-001"
+  ],
+  "consumes": [
+    "IF-002"
+  ],
+  "design_limits": [
+    "IF-001 and IF-002 define the IR-001 content boundary. Storage technology and physical layout are undecided.",
+    "The caller supplies an identifiable selected state and applicable authority. Baseline selection and change-control interfaces remain outside this pilot; no independent authorization is inferred."
+  ],
+  "sources": [
+    {
+      "source": "SRC-ARCHITECTURE-PILOT",
+      "locator": "MOD-001",
+      "basis": "Analyst-proposed responsibility boundary derived from the existing Function landscape. Assigned Functions remain authoritative for behavior; this record describes target architecture, not observed implementation."
+    },
+    {
+      "source": "SRC-BOUNDARY-CONTRACTS",
+      "locator": "MOD-001; SCN-019, SCN-053, SCN-066 selected collaboration analysis",
+      "basis": "Derive consumer-focused parent contracts for selected-state inspection, adopted-REM authoring guidance, applicable action authority, and evidence applicability. Preserve child behavior/state authority, existing Function/AR allocations, and earlier contract guarantees. The selected contracts refine prior blanket deferrals; remaining retention, wider collaboration, AR, and realization gaps stay explicit. This is draft design analysis, not implemented or satisfied behavior."
+    }
+  ]
+}

@@ -13,6 +13,8 @@ import unittest
 
 from jsonschema import Draft202012Validator
 
+from architecture_schema_tests import architecture_paths
+
 
 ROOT = Path(__file__).resolve().parents[3]
 PROFILES = {
@@ -358,8 +360,8 @@ class CurrentEngineeringModelTests(unittest.TestCase):
         paths += list(requirements.rglob("AR-*.json"))
         for prefix, directory in PROFILES.values():
             paths += list((ROOT / "design" / directory).glob(f"{prefix}-*.json"))
-        paths += list((ROOT / "design/architecture/modules").glob("MOD-*.json"))
-        paths += list((ROOT / "design/architecture/interfaces").glob("IF-*.json"))
+        architecture, _ = architecture_paths(ROOT / "design/architecture")
+        paths += architecture
         cls.records = [
             (path, json.loads(path.read_text(encoding="utf-8"))) for path in sorted(paths)
         ]
@@ -397,7 +399,7 @@ class CurrentEngineeringModelTests(unittest.TestCase):
             "function": {"allocated_to": {"module"}},
             "allocated-requirement": {"allocated_to": {"module"}, "constrains": {"function"}},
             "module": {"provides": {"interface"}, "consumes": {"interface"}},
-            "interface": {},
+            "interface": {"exposed_through": {"module"}},
         }
         for _, record in self.records:
             for relation, target_types in compatible[record["type"]].items():
@@ -414,6 +416,8 @@ class CurrentEngineeringModelTests(unittest.TestCase):
                           if record["type"] == "initial-requirement"}
         sr_directories = {path.parent for path, record in self.records
                           if record["type"] == "system-requirement"}
+        module_directories = {path.parent for path, record in self.records
+                              if record["type"] == "module"}
         requirements = ROOT / "design/requirements"
         for path, record in self.records:
             with self.subTest(entity=record["id"]):
@@ -429,6 +433,17 @@ class CurrentEngineeringModelTests(unittest.TestCase):
                 elif record["type"] == "allocated-requirement":
                     self.assertIn(path.parent, sr_directories)
                     self.assertEqual(path.name, label + ".json")
+                elif record["type"] in ("module", "interface"):
+                    kind = record["type"]
+                    collection = path.parent.parent
+                    top_level = ROOT / "design/architecture" / f"{kind}s"
+                    if kind == "module" and collection != top_level:
+                        self.assertEqual(collection.name, "modules")
+                        self.assertIn(collection.parent, module_directories)
+                    else:
+                        self.assertEqual(collection, top_level)
+                    self.assertEqual(path.parent.name, label)
+                    self.assertEqual(path.name, f"{kind}.json")
                 else:
                     self.assertEqual(path.name, label + ".json")
 

@@ -1,0 +1,243 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RigorLoop Persistence realization",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "observed": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sources"
+      ],
+      "properties": {
+        "persistence": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "pattern": "\\S"
+          }
+        },
+        "sources": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "source",
+              "locator",
+              "basis"
+            ],
+            "properties": {
+              "source": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "locator": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "basis": {
+                "type": "string",
+                "pattern": "\\S"
+              }
+            }
+          }
+        },
+        "placements": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "name",
+              "location",
+              "modules",
+              "paths",
+              "constraints"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "location": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "modules": {
+                "type": "array",
+                "minItems": 1,
+                "uniqueItems": true,
+                "items": {
+                  "type": "string",
+                  "pattern": "^MOD-[0-9]+$",
+                  "not": {
+                    "pattern": "\\s"
+                  }
+                }
+              },
+              "paths": {
+                "type": "array",
+                "minItems": 1,
+                "uniqueItems": true,
+                "items": {
+                  "type": "string",
+                  "pattern": "\\S"
+                }
+              },
+              "constraints": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "string",
+                  "pattern": "\\S"
+                }
+              }
+            }
+          },
+          "description": "Named source-observed placements of implementation or owned data, with Module accountability and qualified location/path templates. Paths are not evidence of existing artifacts or platform support. Separate placements do not assert transfer, network communication, or physical-host separation."
+        },
+        "location_constraints": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "name",
+              "relation",
+              "placements",
+              "conditions",
+              "rationale"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "relation": {
+                "type": "string",
+                "enum": [
+                  "disjoint",
+                  "same-filesystem"
+                ]
+              },
+              "placements": {
+                "type": "array",
+                "minItems": 2,
+                "maxItems": 2,
+                "uniqueItems": true,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "owner",
+                    "facet",
+                    "name"
+                  ],
+                  "properties": {
+                    "owner": {
+                      "type": "string",
+                      "pattern": "^MOD-[0-9]+$",
+                      "not": {
+                        "pattern": "\\s"
+                      }
+                    },
+                    "facet": {
+                      "type": "string",
+                      "enum": [
+                        "deployment",
+                        "persistence"
+                      ]
+                    },
+                    "name": {
+                      "type": "string",
+                      "pattern": "\\S"
+                    }
+                  }
+                }
+              },
+              "conditions": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "string",
+                  "pattern": "\\S"
+                }
+              },
+              "rationale": {
+                "type": "string",
+                "pattern": "\\S"
+              }
+            }
+          },
+          "description": "Conditional pairwise location constraints. Disjoint means declared containment scopes do not overlap; same-filesystem means the inspected operation requires both selected placements on one filesystem. Neither relation transfers data or asserts machine identity. References remain exact owner/facet/name selections."
+        }
+      },
+      "minProperties": 2
+    },
+    "proposed": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "choice",
+          "rationale",
+          "alternatives",
+          "consequences",
+          "revisit_when"
+        ],
+        "properties": {
+          "choice": {
+            "type": "string",
+            "pattern": "\\S"
+          },
+          "rationale": {
+            "type": "string",
+            "pattern": "\\S"
+          },
+          "alternatives": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "pattern": "\\S"
+            }
+          },
+          "consequences": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "pattern": "\\S"
+            }
+          },
+          "revisit_when": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "pattern": "\\S"
+            }
+          }
+        }
+      }
+    },
+    "deferred": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "pattern": "\\S"
+      }
+    }
+  },
+  "minProperties": 1,
+  "description": "Optional subordinate architecture facet, owned by directory containment. Observed facts require attribution; proposals retain reasoning and limits. The file has no independent engineering identity or lifecycle. Shape validation does not establish architectural adequacy or implementation conformance."
+}

@@ -1,0 +1,66 @@
+{
+  "id": "AR-011",
+  "type": "allocated-requirement",
+  "title": "Admit supported commands under independent public contracts",
+  "status": "draft",
+  "statement": "The Engineering command interface Module shall admit only explicitly selected supported command requests, apply their own help, selector, version, projection, and exit contracts, and reject unsupported or ambiguous input before the dependent access prohibited by that contract.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Ambiguous admission or a response version inferred from unvalidated input can direct a caller to the wrong operation or contract.",
+      "desired_outcome": "A caller receives the selected command contract or its declared safe rejection before dependent work proceeds."
+    },
+    "why": {
+      "rationale": "SR-040 requires predictable public admission and independent version domains; MOD-010 owns that public interpretation boundary."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineers and agents supplying explicit command requests",
+        "Maintainers of MOD-010 and its Interface consumers"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "A caller selects a public command, requests its help or package version, or supplies command flags, configuration, and request input."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "The IF-004 public-command boundary, including dispatch to IF-003 operational records and the separately owned IF-006 installation contract."
+      ]
+    },
+    "how": {
+      "approach": "Recognize the command and validate its closed selectors before dependent access, then preserve its specific request and response domain through dispatch and presentation."
+    },
+    "how_much": {
+      "scope": "Current public command families, their required early-error behavior, and the exact retired command/configuration set. Detailed installation mutations remain with Installation."
+    }
+  },
+  "acceptance_criteria": [
+    "Recognized operation-specific help discloses that operation and common safety fields without repository access where required; package version/help identify the delivered supported interface rather than advertise withdrawn operations.",
+    "Unknown or duplicate flags, extra positionals, absent or contradictory required selectors, unsupported operations, and unknown configuration kinds reject at their declared boundary before filesystem or stdin access where required; invalid raw values are not echoed or replaced with invented selectors.",
+    "Recognized review.set and verify.set return response schema 3 even on early selector, request, and store failures. Other primary operations retain the documented before-validation and after-validation dispatch; untrusted contract values or nested batch operations cannot select that response version.",
+    "Primary request/result, advanced request/result, workflow-context, generic projection, and stored-record versions remain independent. Failure responses expose no inferred record_contract and include a revision only when a coherent snapshot revision was established.",
+    "Generic human/JSON output, quiet/debug/color behavior and semantic exits preserve their published meanings; primary recording, advanced record-store, and workflow-context results retain their separate envelopes and exit distinctions.",
+    "Withdrawn command families, the removed query-shim interface, and the retired spec configuration kind acquire no fallback or advertised operational support; rejecting an override does not rewrite configuration or invoke discovery."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "allocated_to": "MOD-010",
+  "sources": [
+    {
+      "source": "SRC-CLI-ALLOCATION",
+      "locator": "SR-040 / AR-011; MOD-010",
+      "basis": "Derive this draft lower-level obligation from the containing SR at the selected command or operational-record responsibility boundary. Allocation and acceptance criteria are design claims for review, not implementation, requirement approval, or satisfaction evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-CLI",
+      "locator": "docs/design/cli/cli.md#CLI-SR-02, CLI-SR-10, CLI-SR-17, CLI-SR-18, CLI-SR-27, CLI-SR-28, CLI-SR-30, CLI-SR-31, CLI-SR-32; docs/design/cli/records.md#RF-SR-14",
+      "basis": "Preserve the applicable current public and stored-record guarantees at this accountable boundary. The named source retains exact schemas, operation tables, classifications, limits, and historical adoption obligations; this allocation neither replaces those details nor accepts REM authoring JSON as operational records."
+    }
+  ],
+  "constrains": [
+    "FUNC-040",
+    "FUNC-048"
+  ]
+}

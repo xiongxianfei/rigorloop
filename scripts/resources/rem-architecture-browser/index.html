@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>RigorLoop · Architecture</title>
+  <style>{{STYLE}}</style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to architecture content</a>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Architecture navigation">
+      <a class="brand" href="#overview"><span class="brand-mark" aria-hidden="true">R</span><span>RigorLoop<small>Architecture explorer</small></span></a>
+      <form id="search-form" class="global-search" role="search">
+        <label for="global-search">Find a name or identifier</label>
+        <div class="search-field"><input id="global-search" type="search" placeholder="Module, command, skill…" autocomplete="off"><button type="submit" aria-label="Search architecture">↵</button></div>
+      </form>
+      <nav id="navigation" aria-label="Architecture pages"></nav>
+      <div class="sidebar-footer"><a href="../README.md">About these architecture views ↗</a><span>Generated from the engineering model. Each view links its canonical sources and scope.</span></div>
+    </aside>
+    <main id="main" tabindex="-1"><noscript><h1>Architecture explorer</h1><p>Enable JavaScript to navigate the five architecture views, CLI cooperation, and acceptance contributions in this offline browser. No network service is required. The <a href="../README.md">architecture views guide</a> explains generation and the canonical sources.</p></noscript></main>
+  </div>
+  <script id="architecture-model" type="application/json">{{MODEL_JSON}}</script>
+  <div id="architecture-diagrams" hidden>{{DIAGRAMS}}</div>
+  <script>{{SCRIPT}}</script>
+</body>
+</html>

@@ -1,0 +1,121 @@
+{
+  "observed": {
+    "packaging": [
+      "The explicit build-adapters.py --output-dir branch writes codex and claude ZIP candidates beneath the selected output directory. _validate_generation_output rejects overlap with canonical skills, active skill roots, symlinked destinations, and other unsafe output contents.",
+      "release_candidate.prepare_candidate rejects nonempty candidate output and output inside the source checkout. It uses a temporary prepared checkout for package metadata overlays and directs ZIPs, the npm tarball, and candidate metadata into the separate selected output root.",
+      "The npm manifest includes existing dist/, package.json, README.md, and LICENSE and maps rigorloop to dist/bin/rigorloop.js. The candidate coordinator packs with --ignore-scripts; its source invocation neither establishes the observed contents of a tarball nor proves consumer installation."
+    ],
+    "sources": [
+      {
+        "source": "SRC-PRODUCT-REALIZATION",
+        "locator": "scripts/lib/packaging/adapter_distribution.py _validate_generation_output, build_adapter_archives; scripts/lib/release/release_candidate.py prepare_candidate; packages/rigorloop/package.json at 33f56fe84ff730d7bd48900cef32170fd0682412",
+        "basis": "Static inspection of unchanged tracked source establishes the described implementation path, not an executed build, passing qualification, installed artifact, public release, or permission to perform those operations. Skill instructions were neither read nor invoked."
+      },
+      {
+        "source": "SRC-PHYSICAL-REALIZATION",
+        "locator": "scripts/lib/release/release_candidate.py prepare_candidate; scripts/lib/packaging/adapter_distribution.py _validate_generation_output and build_adapter_archives; packages/rigorloop/package.json at 33f56fe84ff730d7bd48900cef32170fd0682412",
+        "basis": "Static inspection records existing package, runtime, selected filesystem, and artifact-source relationships with their conditions. It does not observe a deployed host, execute a product operation, inspect a published package, or qualify installation, storage safety, platform support, remote availability, or network topology. Existing logical ownership and earlier source observations remain unchanged."
+      }
+    ],
+    "placements": [
+      {
+        "name": "Prepared package workspace",
+        "location": "Temporary candidate checkout",
+        "modules": [
+          "MOD-013"
+        ],
+        "paths": [
+          "packages/rigorloop/",
+          "packages/rigorloop/dist/metadata/"
+        ],
+        "constraints": [
+          "Paths are relative to the temporary prepared checkout created by prepare_candidate. Candidate metadata overlays are applied there; no active skill installation is a build destination."
+        ]
+      },
+      {
+        "name": "Product candidate artifacts",
+        "location": "Explicit candidate output directory",
+        "modules": [
+          "MOD-013"
+        ],
+        "paths": [
+          "rigorloop-adapter-codex-{release}.zip",
+          "rigorloop-adapter-claude-{release}.zip",
+          "xiongxianfei-rigorloop-{version}.tgz",
+          "adapter-artifacts-{release}.json",
+          "archive-proof-{release}.json"
+        ],
+        "constraints": [
+          "Paths are candidate-relative templates from the existing production paths. They do not assert an existing build, successful validation, upload, or public availability.",
+          "The release candidate coordinator requires an empty output outside the source checkout. Canonical sources and active skill roots remain excluded by generation safety checks."
+        ]
+      },
+      {
+        "name": "Reviewed source checkout",
+        "location": "Selected source repository checkout",
+        "modules": [
+          "MOD-013"
+        ],
+        "paths": [
+          "skills/",
+          "scripts/resources/adapter-templates/",
+          "packages/rigorloop/"
+        ],
+        "constraints": [
+          "Paths are relative to the source checkout supplied to prepare_candidate and bound to its selected exact source commit. They identify canonical production inputs, not generated skills or package output.",
+          "MOD-013 is responsible for selecting faithful production inputs; this placement does not give it ownership of every skill, command behavior, or source file.",
+          "Only source inventory and producer implementation were inspected; no skill instructions were read or invoked."
+        ]
+      }
+    ],
+    "production_placement": {
+      "source": {
+        "owner": "MOD-013",
+        "facet": "deployment",
+        "name": "Reviewed source checkout"
+      },
+      "workspace": {
+        "owner": "MOD-013",
+        "facet": "deployment",
+        "name": "Prepared package workspace"
+      },
+      "output": {
+        "owner": "MOD-013",
+        "facet": "deployment",
+        "name": "Product candidate artifacts"
+      },
+      "constraints": [
+        "prepare_candidate observes an exact selected source commit, creates a temporary prepared checkout, and directs candidate artifacts into explicitly selected output. These are producer contexts; they do not represent a running consumer installation.",
+        "These references distinguish source, preparation, and output roles without asserting three hosts or three runtime processes. Build transformations and output membership remain authored in software.production_paths.",
+        "The inspected builder validates allowed output containment and rejects canonical/active-skill overlap; qualification and publication remain separate Release responsibilities. No edge from candidate output to an installed consumer is implied."
+      ]
+    },
+    "location_constraints": [
+      {
+        "name": "Candidate output remains outside the source checkout",
+        "relation": "disjoint",
+        "placements": [
+          {
+            "owner": "MOD-013",
+            "facet": "deployment",
+            "name": "Reviewed source checkout"
+          },
+          {
+            "owner": "MOD-013",
+            "facet": "deployment",
+            "name": "Product candidate artifacts"
+          }
+        ],
+        "conditions": [
+          "prepare_candidate resolves the output path, rejects output within the selected source checkout, and rejects any preexisting nonempty output.",
+          "The source checkout is the selected reviewed repository input. The output location is the candidate destination, not a public registry, installation root, or remote release observation."
+        ],
+        "rationale": "Candidate generation must preserve its selected canonical source and earlier candidate evidence; source and output roles remain separate."
+      }
+    ]
+  },
+  "deferred": [
+    "Publication channels and their observed availability remain Release-owned. A candidate output path does not imply upload, installation, registry availability, or approval.",
+    "No hardware topology, minimum runtime version, or additional platform support is inferred from these local source paths."
+  ]
+}

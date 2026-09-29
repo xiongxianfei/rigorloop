@@ -51,6 +51,31 @@
       "source": "SRC-PUBLISHED-CLI",
       "locator": "docs/design/cli/cli.md#CLI-SR-02, CLI-SR-10, CLI-SR-17, CLI-SR-18, CLI-SR-27, CLI-SR-28, CLI-SR-30, CLI-SR-31, CLI-SR-32; docs/design/cli/records.md#RF-SR-01, RF-SR-06, RF-SR-09, RF-SR-12, RF-SR-14",
       "basis": "Derives this bounded published-product obligation from IR-008 and the named current CLI/Record Format contracts. Detailed schemas, command catalogs, limits and completed-retirement dispositions remain at those owners; this record does not transfer approval or implement REM-record operations."
+    },
+    {
+      "source": "SRC-CLI-ALLOCATION",
+      "locator": "SR-040 AC1; allocated contributors: AR-011",
+      "basis": "Operation-specific help without prohibited repository access, accurate supported package/command identity"
+    },
+    {
+      "source": "SRC-CLI-ALLOCATION",
+      "locator": "SR-040 AC2; allocated contributors: AR-011",
+      "basis": "Closed grammar, selector validation order, unknown configuration and safe diagnostics"
+    },
+    {
+      "source": "SRC-CLI-ALLOCATION",
+      "locator": "SR-040 AC3; allocated contributors: AR-011, AR-012",
+      "basis": "Independent public/transport dispatch plus separate operational stored contract; IF-003 must not infer stored identity from response version"
+    },
+    {
+      "source": "SRC-CLI-ALLOCATION",
+      "locator": "SR-040 AC4; allocated contributors: AR-012, AR-011",
+      "basis": "Persistence rejects unsupported stores/journals and cross-version material; command boundary preserves exact rejection and withdrawn dispatch"
+    },
+    {
+      "source": "SRC-CLI-ALLOCATION",
+      "locator": "SR-040 AC5; allocated contributors: AR-011",
+      "basis": "Generic and recording-specific presentation and exit domains remain distinct; detailed actual-outcome reporting composes with SR-046"
     }
   ],
   "confirms": [

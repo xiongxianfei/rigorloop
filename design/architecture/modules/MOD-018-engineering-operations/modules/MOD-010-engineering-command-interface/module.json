@@ -1,0 +1,57 @@
+{
+  "id": "MOD-010",
+  "type": "module",
+  "title": "Engineering command interface",
+  "status": "draft",
+  "description": "Interpret supported public command requests and present their actual scoped outcomes through the declared request, result, help, and exit contracts.",
+  "responsibilities": [
+    "Admit commands, versions, selectors, and explicit inputs under the selected public contract.",
+    "Dispatch operational-record requests to their persistence contract and installation requests to the installation contract without making engineering judgments.",
+    "Present bounded observations, diagnostics, omitted-detail access, and exit outcomes without hiding actual side effects or sensitive information.",
+    "Select recorded changes and requested record projections under literal public query rules; preserve complete-source and omission distinctions and handle bounded private invocation diagnostics under the owning CLI contract.",
+    "Prepare the mandatory bounded public receipt from exact candidate/storage facts before publication, and preserve the actual committed, unchanged, conflict, preview, or recovery outcome through reporting failures.",
+    "Realize the command behavior of IF-004 under MOD-018 contract accountability, composing IF-003 record services and IF-006 installation services. This behavioral responsibility does not create a second Interface provider."
+  ],
+  "owned_state": [
+    "Admitted command context, rendered results, and optional bounded private invocation diagnostics under the current logging contract; authoritative project records and installation destinations have separate owners."
+  ],
+  "scope": {
+    "includes": [
+      "Published command admission, scoped access, dispatch, results, and diagnostics."
+    ],
+    "excludes": [
+      "Inferring authoritative workflow decisions, accepting REM authoring JSON as current operational records, granting authority, or treating successful parsing as a committed update."
+    ]
+  },
+  "provides": [],
+  "consumes": [
+    "IF-003",
+    "IF-006"
+  ],
+  "design_limits": [
+    "Existing CLI public envelopes, version domains, selectors, and exceptional command behavior remain specified by docs/design/cli/cli.md; the new logical Interfaces summarize responsibility and preserve that authority.",
+    "IR-008 SR-040 through SR-047 have draft allocated obligations and a reviewed logical composition through IF-003/IF-004. The subordinate realization records a bounded source inspection and proposed choices; installation dispatch under IR-010/IF-006, implementation qualification, and public adoption remain separate work."
+  ],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-PRODUCTS",
+      "locator": "MOD-010",
+      "basis": "Proposed responsibility derived from the published-product source inventory. Existing Designs retain their detailed contracts; this allocation is not a runtime migration or approval."
+    },
+    {
+      "source": "SRC-CLI-ALLOCATION",
+      "locator": "MOD-010; design/requirements/sources.md#src-cli-allocation",
+      "basis": "Allocate the published CLI obligations while preserving this primary responsibility boundary. Receipt cooperation, state custody, and explicit recovery do not expand engineering authority or change runtime behavior."
+    },
+    {
+      "source": "SRC-CLI-REALIZATION",
+      "locator": "MOD-010; design/requirements/sources.md#src-cli-realization",
+      "basis": "Apply refined REM Architecture Design through subordinate observed and proposed views. Preserve the logical allocation, existing public contracts, and draft status; source mapping is not executed satisfaction evidence."
+    },
+    {
+      "source": "SRC-PARENT-INTERFACE-OWNERSHIP",
+      "locator": "MOD-010; design/requirements/sources.md#src-parent-interface-ownership",
+      "basis": "Refine contract accountability: MOD-018 provides IF-004 and MOD-019 provides IF-006. MOD-010 and MOD-014 retain their behavioral allocations and state responsibilities. This supersedes the provider/exposure choice recorded by SRC-MODULE-HIERARCHY without changing Interface guarantees, consumers, Function/AR allocations, or realization observations. Earlier source entries retain their prior design meaning; this draft refinement supplies no runtime adoption or satisfaction evidence."
+    }
+  ]
+}

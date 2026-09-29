@@ -1,0 +1,42 @@
+{
+  "id": "MOD-008",
+  "type": "module",
+  "title": "Engineering authoring guidance",
+  "status": "draft",
+  "description": "Select and explain applicable canonical authoring guidance and assess it against prepared semantic authoring outcomes.",
+  "responsibilities": [
+    "Select guidance applicable to the activity and declared profile.",
+    "Explain bounded authoring and correction steps without replacing canonical rules.",
+    "Assess prepared authoring tasks using their observable semantic outcomes.",
+    "Contribute canonical guidance selection and authoring/correction explanation through FUNC-032/FUNC-033 to MOD-017's IF-008 contract. Preserve adopted profile applicability, source meaning, examples versus rules, and unsupported scope for MOD-012's specialist composition."
+  ],
+  "owned_state": [
+    "Guidance applicability selections and prepared task assessment context; canonical rules and actual evidence retain their respective authorities."
+  ],
+  "scope": {
+    "includes": [
+      "Guided authoring, correction, and assessment of guidance usefulness."
+    ],
+    "excludes": [
+      "Duplicating canonical metamodel rules, autonomous approval, or manufacturing successful task evidence."
+    ]
+  },
+  "provides": [],
+  "consumes": [],
+  "design_limits": [
+    "IF-008 defines the adopted-REM authoring branch of guidance cooperation with MOD-012. IR-006 ARs, guidance usefulness assessment under FUNC-034, and broader metamodel/authoring/assurance interactions remain deferred.",
+    "Contract selection does not adopt REM for a project, interpret or migrate its model, authorize mutation, or define all published specialist procedures."
+  ],
+  "sources": [
+    {
+      "source": "SRC-ARCHITECTURE-PILOT",
+      "locator": "MOD-008",
+      "basis": "Analyst-proposed responsibility boundary derived from the existing Function landscape. Assigned Functions remain authoritative for behavior; this record describes target architecture, not observed implementation."
+    },
+    {
+      "source": "SRC-BOUNDARY-CONTRACTS",
+      "locator": "MOD-008; SCN-019, SCN-053, SCN-066 selected collaboration analysis",
+      "basis": "Derive consumer-focused parent contracts for selected-state inspection, adopted-REM authoring guidance, applicable action authority, and evidence applicability. Preserve child behavior/state authority, existing Function/AR allocations, and earlier contract guarantees. The selected contracts refine prior blanket deferrals; remaining retention, wider collaboration, AR, and realization gaps stay explicit. This is draft design analysis, not implemented or satisfied behavior."
+    }
+  ]
+}

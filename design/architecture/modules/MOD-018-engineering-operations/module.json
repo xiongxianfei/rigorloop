@@ -1,0 +1,49 @@
+{
+  "id": "MOD-018",
+  "type": "module",
+  "title": "Engineering operations",
+  "status": "draft",
+  "description": "Account for usable engineering activity guidance and explicit command interactions whose recorded outcomes preserve the supplied decisions, selected scope, and actual storage effects.",
+  "responsibilities": [
+    "Compose published capability guidance, command admission/presentation, and operational record persistence into an understandable invocation and recording boundary.",
+    "Preserve the distinction between actor-supplied engineering decisions, command-owned public results, and store-owned publication or recovery facts across that boundary.",
+    "Provide IF-004 as the accountable public command contract for Engineering operations. Compose MOD-010 command behavior and MOD-011 record cooperation to meet that contract, while Product delivery owns the installation contract."
+  ],
+  "owned_state": [],
+  "scope": {
+    "includes": [
+      "Portable capability invocation guidance and handoffs, public command interaction, explicit operational record reads/writes/recovery, and bounded invocation diagnostics."
+    ],
+    "excludes": [
+      "Authority to invent or approve engineering decisions, governance assessment policy, REM definition storage, and qualification or execution of product delivery responsibilities.",
+      "Production hosting or a new agent execution service; the name describes engineering activity support."
+    ]
+  },
+  "provides": [
+    "IF-004"
+  ],
+  "consumes": [],
+  "design_limits": [
+    "MOD-018 provides IF-004 directly. MOD-010 retains command admission, dispatch, presentation, receipt, and diagnostic behavior under its existing Function and AR allocations; MOD-011 retains record publication and recovery. IF-003 remains internal to this subtree.",
+    "IF-006 is provided by MOD-019 Product delivery and consumed by MOD-010. MOD-014 retains installation behavior within Product delivery; no exposure or second provider is introduced for these directly parent-owned contracts.",
+    "IR-008 retains its bounded CLI allocation and realization. MOD-012 consumes IF-008 for adopted-REM authoring guidance; wider specialist, authority/assurance, handoff, AR, and realization scope remain deferred.",
+    "Contract ownership adds no direct parent Function, AR, persistent state, or new physical realization. Child behavior and source observations retain their existing scope."
+  ],
+  "sources": [
+    {
+      "source": "SRC-MODULE-HIERARCHY",
+      "locator": "MOD-018; children MOD-010, MOD-011, MOD-012",
+      "basis": "Proposed parent responsibility derived from the existing child definitions and the user-selected containment structure. The parent owns the stated composition boundary; child definitions, direct allocations, state authority, and contracts retain their identities and meaning. This is draft architecture, not implementation adoption or satisfaction."
+    },
+    {
+      "source": "SRC-PARENT-INTERFACE-OWNERSHIP",
+      "locator": "MOD-018; design/requirements/sources.md#src-parent-interface-ownership",
+      "basis": "Refine contract accountability: MOD-018 provides IF-004 and MOD-019 provides IF-006. MOD-010 and MOD-014 retain their behavioral allocations and state responsibilities. This supersedes the provider/exposure choice recorded by SRC-MODULE-HIERARCHY without changing Interface guarantees, consumers, Function/AR allocations, or realization observations. Earlier source entries retain their prior design meaning; this draft refinement supplies no runtime adoption or satisfaction evidence."
+    },
+    {
+      "source": "SRC-BOUNDARY-CONTRACTS",
+      "locator": "MOD-018; SCN-019, SCN-053, SCN-066 selected collaboration analysis",
+      "basis": "Derive consumer-focused parent contracts for selected-state inspection, adopted-REM authoring guidance, applicable action authority, and evidence applicability. Preserve child behavior/state authority, existing Function/AR allocations, and earlier contract guarantees. The selected contracts refine prior blanket deferrals; remaining retention, wider collaboration, AR, and realization gaps stay explicit. This is draft design analysis, not implemented or satisfied behavior."
+    }
+  ]
+}
