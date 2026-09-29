@@ -51,7 +51,7 @@ The tightened REM core establishes:
 - AR parent SR: exactly 1;
 - confirmed Scenario owning IR: exactly 1;
 - confirmed Scenario primary Feature: exactly 1;
-- approved SR confirmed Functions: at least 1;
+- approved SR confirmed Functions: at least 1 before its System Design is complete;
 - active Function primary Module: exactly 1 before allocation is complete;
 - active Function supporting Modules: 0..*;
 - active AR allocated Module: exactly 1;

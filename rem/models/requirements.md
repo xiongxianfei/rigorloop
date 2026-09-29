@@ -34,6 +34,11 @@ An approved SR MUST be stated so that satisfaction can be assessed through defin
 An approved AR MUST likewise be assessable at its allocated architectural scope.
 Draft requirements may retain explicit unknowns while analysis is incomplete.
 
+Requirement approval establishes an assessable obligation as a basis for design; it does not require completed Function design or AR allocation.
+Missing downstream design MUST remain explicit without being treated, by itself, as a requirement-validity failure.
+The [System Design model](system-design.md#function-relationships) owns Function coverage required for design completeness; architectural allocation has its own completeness conditions below.
+Requirement validity, design completeness, and demonstrated satisfaction are distinct claims.
+
 An SR SHOULD avoid prescribing implementation unless that implementation is itself a required constraint.
 An AR may be more architecture-specific because its purpose is to state the obligation assigned to a Module, but it still states what must be satisfied rather than implementation steps.
 

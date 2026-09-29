@@ -84,8 +84,9 @@ An acceptance criterion describes what an assessment should observe.
 It does not claim that verification has occurred or that the requirement is satisfied.
 Give each SR a name that identifies its specific obligation; a clear outcome phrase or precise noun phrase is appropriate.
 
-For each approved SR, identify the logical behavior required to satisfy the obligation and use [Functional Analysis](functional-analysis.md) to confirm the corresponding Function or Functions in System Design.
-Every approved SR must confirm at least one relevant Function.
+After accepting the requirement basis, use [Functional Analysis](functional-analysis.md) to identify the logical behavior required to satisfy each approved SR and confirm its corresponding Functions in System Design.
+Requirement approval does not require those Functions or architectural allocations to be complete. Record remaining design obligations explicitly.
+Before System Design for an approved SR is considered complete, it must confirm at least one relevant Function under the [System Design model](../models/system-design.md#function-relationships).
 Reuse an existing Function when it already represents the required behavior.
 Do not create a Function merely to mirror the requirement tree; SR-to-Function relationships may be many-to-many.
 
