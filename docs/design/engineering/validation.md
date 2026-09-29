@@ -683,3 +683,12 @@ System TEST-SR-01–23 apply to all rows. A renamed test group combined with a m
 ## Historical provenance
 
 Completed source-transfer mappings and original adoption handoffs are recoverable at `38a3042e63c7c2462ecf8ffed29f4ac0cbb8923f:docs/design/engineering/validation.md`. Their source-qualified IDs and judgments retain their original scope; they do not supply current approval or operational inputs. Current behavior and proof obligations are specified in this Design and its named owners.
+
+
+## REM model and generated-view validation
+
+The manual REM adoption adds `rem/` method Markdown and the structured `design/requirements/`, `design/system/`, `design/architecture/` and `design/support/` model. Their supported document/data/view formats and the exact REM generator, helper, browser-resource and test paths select the existing requirements, system, architecture, projection and browser suites. The same selection checks inventory/browser freshness and JavaScript syntax. All eight checks also run in main mode. Unsupported neighboring executables and unknown tooling paths continue to block selection; these directories are not blanket documentation exemptions.
+
+CI installs the tested JSON Schema dependency and D2 0.9.0, verifying the published Linux amd64 archive digest before extraction. Generated-view checking is mandatory and read-only: a missing or wrong compiler, invalid model, missing output or stale artifact fails the check. Optional compiler skips inside isolated browser tests cannot make the full REM selection pass without its required freshness check. Local execution must make D2 0.9.0 available on PATH for the catalog command.
+
+This adoption leaves current-record validation and historical classification intact. Removing tracked `docs/changes/` records and reconciling their consumers is a separate, subsequent refactor; no future removal is assumed by present selection.

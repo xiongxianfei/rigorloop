@@ -267,6 +267,40 @@ for _mode_prefix in ('broad_smoke','main'):
     _key = _mode_prefix + '.adapters.build_archives'
     CHECK_CATALOG[_key] = replace(CHECK_CATALOG[_key],dependencies=('skills.validate',))
 
+# REM model checks use the existing catalog and executor. Canonical inputs are
+# shared read-only; each regression owns its temporary fixture tree.
+REM_CHECK_COMMANDS = {
+    "rem.requirements": "python tests/engineering/validation/requirement_schema_tests.py",
+    "rem.system": "python tests/engineering/validation/system_design_schema_tests.py",
+    "rem.architecture": "python tests/engineering/validation/architecture_schema_tests.py",
+    "rem.projection": "python tests/engineering/validation/architecture_view_tests.py",
+    "rem.browser": "python tests/engineering/validation/architecture_browser_tests.py",
+    "rem.inventory_current": "python scripts/render-rem-product-inventory.py --check",
+    "rem.browser_current": "python scripts/render-rem-architecture-browser.py --check",
+    "rem.browser_syntax": "node --check scripts/resources/rem-architecture-browser/viewer.js",
+}
+for _key, _command in REM_CHECK_COMMANDS.items():
+    CHECK_CATALOG[_key] = CheckCatalogEntry(
+        _key, _command, "rem", label="REM: " + _key.removeprefix("rem."), modes=("main",))
+
+REM_TOOL_PATHS = frozenset({
+    "scripts/render-rem-architecture-browser.py", "scripts/render-rem-product-inventory.py",
+    "scripts/lib/rem_architecture_browser.py", "scripts/lib/rem_architecture_model.py",
+    "scripts/lib/rem_architecture_physical.py", "scripts/lib/rem_architecture_process.py",
+    "scripts/lib/rem_architecture_realization_diagrams.py", "scripts/lib/rem_architecture_scenario_diagrams.py",
+    "scripts/lib/rem_architecture_scenarios.py", "scripts/lib/rem_architecture_test_diagrams.py",
+    "scripts/lib/rem_architecture_testing.py",
+    "scripts/resources/rem-architecture-browser/index.html",
+    "scripts/resources/rem-architecture-browser/viewer.css",
+    "scripts/resources/rem-architecture-browser/viewer.js",
+    "tests/engineering/validation/requirement_schema_tests.py",
+    "tests/engineering/validation/system_design_schema_tests.py",
+    "tests/engineering/validation/architecture_schema_tests.py",
+    "tests/engineering/validation/architecture_view_tests.py",
+    "tests/engineering/validation/architecture_browser_tests.py",
+})
+
+
 # Audited initial case population: normal loaders, fresh process per case, owned
 # temporary Git/record fixtures, process-local environment and sequential child
 # validation. Selector wrapper probes obey their allocated nested worker budget.
@@ -400,6 +434,8 @@ BOUNDARY_CHECK_IDS = frozenset(
     }
 )
 AUTHORITATIVE_ARTIFACT_PREFIXES = (
+    "design/",
+    "rem/",
     "docs/design/",
     "docs/proposals/",
     "docs/plans/",
@@ -1139,6 +1175,12 @@ def _apply_path_selection(
     tracked_deletion: bool,
     support_subject_cache: dict[str, set[str] | None],
 ) -> None:
+    if category == "rem":
+        for check_id in REM_CHECK_COMMANDS:
+            _add_check(selected, check_id,
+                       "Changed REM knowledge, model, tooling or output requires model and generated-view validation.")
+        return
+
     if category == "tooling-package":
         for check_id in _TOOL_PACKAGE_CHECKS[path]:
             _add_check(selected, check_id, "Changed package initializer requires all descendant consumer checks.")
@@ -1499,6 +1541,9 @@ def _apply_path_selection(
         return
 
     if category in {"ci-workflow", "templates"}:
+        if category == "ci-workflow":
+            for check_id in REM_CHECK_COMMANDS:
+                _add_check(selected, check_id, "Changed CI provisioning must exercise required REM checks.")
         _add_check(
             selected,
             "selector.regression",
@@ -1788,7 +1833,15 @@ _TOOL_PACKAGE_CHECKS = {'scripts/lib/validation/__init__.py': ('adapters.regress
                              'validation_execution.regression')}
 
 
+_TOOL_PACKAGE_CHECKS["scripts/lib/__init__.py"] += tuple(REM_CHECK_COMMANDS)
+
 def _path_category(path: str) -> str | None:
+    if (path in REM_TOOL_PATHS
+            or (path.startswith("rem/") and path.endswith(".md"))
+            or path == "design/README.md"
+            or (path.startswith(("design/requirements/", "design/system/", "design/architecture/", "design/support/"))
+                and path.endswith((".md", ".json", ".html", ".d2", ".svg", ".sha256")))):
+        return "rem"
     if path in _TOOL_PACKAGE_CHECKS:
         return "tooling-package"
     if (path.startswith("docs/design/")
