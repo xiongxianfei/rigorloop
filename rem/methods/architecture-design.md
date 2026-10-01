@@ -46,7 +46,9 @@ If a proposed Function spans unclear boundaries, refine the boundary or the logi
 
 A parent Module must remain meaningful as an architectural boundary in its own right; do not introduce it only to make a directory or diagram easier to browse. Its children refine portions of its responsibility, and descendant allocations should roll up for comprehension rather than being copied onto the parent.
 
-Name each Module for its responsibility and subject, and compare the name with neighboring Modules.
+Apply the [Module naming criteria](../models/architecture-design.md#module-names-and-identity) to the complete affected neighborhood. Read the parent and child names together, then check each name outside the tree: its definition should make the responsibility, subject, and distinction from collaborators clear. For example, repeated names such as “Engineering model storage” and “Engineering model authoring” may be clearer as “Model storage” and “Model authoring” when those names still identify the responsibility unambiguously. Do not shorten a name until its subject becomes unclear.
+
+Before renaming, decide whether this is a wording change or a responsibility/decomposition change. For wording alone, retain stable identity and existing relationships, reconcile current references and representation labels, and regenerate affected views. If a clearer name exposes overlapping or missing responsibilities, resolve that design issue explicitly; do not move allocations or reshape the hierarchy merely to make names look consistent.
 Document significant boundary choices and their basis in the authoritative definitions or their supported sources; a separate decision document is useful only when the reasoning needs it.
 
 ## Walk through a bounded Scenario set
@@ -83,21 +85,11 @@ When an Interface is provided by a contained Module, treat it as internal to the
 
 An Interface may be a logical in-process contract; it need not imply a network service or separately deployed component.
 
-## Derive allocated requirements
+## Derive and allocate requirements with architectural context
 
-For each SR in the selected architecture scope, determine the lower-level obligations needed from the responsible Modules.
-Create an AR only when its accountable boundary is known well enough to state and assess that obligation. Allocate it to the lowest Module that can coherently own the complete obligation; parent roll-up is derived from containment rather than represented as duplicate allocation.
-Follow [Requirement Analysis](requirement-analysis.md#derive-allocated-requirements): retain exactly one parent SR, apply all seven [5W2H](5w2h.md) questions at the allocated level, and state observable acceptance criteria.
+Once Module responsibilities are coherent enough to make lower-level accountability meaningful, use [Architecture Allocation](architecture-allocation.md#derive-and-allocate-ars) to derive/refine the necessary ARs and allocate each to exactly one accountable Module. Apply the [Requirement Analysis AR rules](requirement-analysis.md#formulate-allocated-requirements-with-architectural-context) so the result remains a real verifiable requirement rather than an allocation placeholder.
 
-Explain what the Module must satisfy, under which conditions, and why that obligation follows from the parent SR and the supported architecture choice.
-Distinguish a derived architectural obligation from a new system need; an AR must not silently introduce a broader unsupported product commitment.
-Several independent Module obligations can produce several ARs under one SR.
-An AR may concern behavior, state integrity, a policy, an interaction guarantee, or a quality constraint; do not invent a matching Function for each AR.
-
-When an AR constrains a Function, check the Function's behavior and accountable allocation against that obligation.
-If satisfying an SR requires cooperation, make the separate responsibilities and necessary Interface guarantees explicit.
-Assess the composed obligations against the SR's acceptance criteria; individually plausible ARs do not establish system-level coverage.
-Where obligations cannot yet be allocated, identify the deferred SR scope rather than manufacturing an AR or declaring the SR fully allocated.
+Architecture Design MUST keep the composed AR obligations consistent with their parent SR, Function allocation, Module boundaries, state/data authority, Interface guarantees, and encapsulation. Where the architecture cannot yet support a justified allocation, retain the affected SR scope as deferred and revisit the responsible Requirement or System Design decision rather than manufacturing an AR.
 
 ## Establish state and data ownership
 
@@ -267,7 +259,7 @@ Architecture Design is complete enough for the declared scope when:
 
 Logical Module/Interface definitions, allocations, and state/data ownership are architecture truth.
 Subordinate realization information explains how that truth is made concrete.
-Derived diagrams, inventories, and topology views are presentations and MUST NOT become independent sources of the same facts.
+Authoritative knowledge includes [authored architecture explanations](../models/architecture-design.md#authored-architecture-explanations) with declared ownership. Derived diagrams, inventories, and topology views present that knowledge and MUST NOT become independent sources of the same facts.
 
 ## Iterate and preserve meaning
 

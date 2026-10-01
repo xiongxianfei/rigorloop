@@ -1,13 +1,21 @@
 # Requirement Analysis method
 
-Use this method to turn an initial need into a clear IR, verifiable system obligations, and allocated obligations.
+Use this method to reconcile an incoming Raw Requirement (RR) with current requirement knowledge, establish or refine clear IRs and verifiable SRs, and formulate ARs only when architecture is understood enough to make allocation meaningful.
 The [requirement model](../models/requirements.md) owns hierarchy and relationship rules.
-The method is independent of any skill, command, file format, or workflow host.
-Apply all seven [5W2H](5w2h.md) questions at each requirement level, recording an answer, explicit unknown, or justified non-applicability for each.
+The method is independent of any skill, command, file format, review stage, or workflow host.
+Apply all seven [5W2H](5w2h.md) questions at each durable requirement level, recording an answer, explicit unknown, or justified non-applicability for each.
 
-## Analyze the initial need
+## Analyze the RR against current needs
 
-Apply [5W2H](5w2h.md) to every IR.
+Start from the actual incoming source: a request, proposal, issue, incident, observation, or equivalent RR. Preserve its wording or attributable source well enough that later reasoning can be traced without treating the RR itself as an approved requirement.
+
+Before creating an IR, inspect the applicable current IRs, SRs, governed Scenarios, Features, and known constraints. Separate the underlying need from a suggested solution, implementation preference, or proposed architecture. Determine whether each material part of the RR is already covered, refines an existing need or obligation, establishes a distinct durable need, contains several independent needs, or remains unresolved/conflicting on the available basis.
+
+Do not create a new IR or SR merely because a new RR exists. Reuse an existing requirement when its meaning and scope already cover the need; refine it while preserving identity when the same requirement evolves; create a new IR only for a distinct durable need. Record a no-change, unresolved, or conflict disposition when that is the truthful result.
+
+## Establish or refine the initial requirement
+
+Apply [5W2H](5w2h.md) to every IR created or materially refined by the analysis.
 Use existing project intent and stakeholder evidence as inputs, while distinguishing needs from current implementation choices.
 Record material unknowns and avoid manufacturing thresholds, stakeholders, or approval.
 
@@ -70,7 +78,7 @@ The analysis method does not prescribe a directory structure or require an extra
 
 ## Derive system requirements
 
-Translate each initial need and its supported Scenarios into independently assessable system obligations.
+Translate each reconciled IR and its supported Scenarios into independently assessable system obligations.
 State the required outcome and the relevant conditions, then describe observable acceptance criteria.
 Apply 5W2H to each SR's system obligation, using the parent IR as context and answering at the system level.
 Resolve or explicitly retain gaps in actors, scope, timing, quality, and quantities.
@@ -94,18 +102,13 @@ The SR remains the normative obligation.
 Functional Analysis owns the behavior boundary, Feature-to-Function reconciliation, and Function quality criteria.
 Requirement Analysis must not allocate Modules while deriving the SR.
 
-## Derive allocated requirements
+## Formulate allocated requirements with architectural context
 
-Develop ARs when architectural responsibilities are understood sufficiently to make the allocation meaningful.
-For each AR, state the lower-level obligation, retain exactly one parent SR, and allocate the AR to exactly one accountable Module.
-Apply 5W2H to that allocated obligation, including its responsible parties, operating conditions, boundaries, and limits.
-Check it against the Functions, state, policies, and Interfaces assigned to that responsibility.
+AR formulation is not a prerequisite for System Design. Develop or refine ARs only after architectural responsibilities are understood sufficiently to make the lower-level obligation and its accountable boundary meaningful. In the normal REM engineering cycle, [Architecture Allocation](architecture-allocation.md) provides that context and invokes these requirement-quality rules while deriving and allocating ARs.
 
-If one lower-level obligation would require several accountable Modules, decompose it into separate ARs under the same parent SR.
-Do not create an AR merely to fill a tree level or invent a Module to finish a worksheet.
-Use [Architecture Allocation](architecture-allocation.md) to reconcile AR allocation with Function allocation.
-An allocation change can require requirement refinement; preserve the historical meaning of previous states.
-Give each AR a name that makes its allocated obligation understandable within the architectural context.
+For each AR, state the lower-level obligation, retain exactly one parent SR, and allocate the AR to exactly one accountable Module. Apply 5W2H to that allocated obligation, including its responsible parties, operating conditions, boundaries, and limits. Check it against the Functions, state, policies, Interfaces, and encapsulation boundary assigned to that responsibility.
+
+If one lower-level obligation would require several accountable Modules, decompose it into separate ARs under the same parent SR. Do not create an AR merely to fill a tree level or invent a Module to finish a worksheet. Reconcile AR allocation with Function allocation through [Architecture Allocation](architecture-allocation.md). An allocation change can expose a missing or incorrect SR and require requirement refinement; preserve the historical meaning of previous states. Give each AR a name that makes its allocated obligation understandable within the architectural context.
 
 ## Reconcile and review
 

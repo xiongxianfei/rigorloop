@@ -1,6 +1,6 @@
 # REM principles
 
-These are the twenty-one governing principles of the proposed [RigorLoop Engineering Method](../README.md).
+These are the twenty-two governing principles of the proposed [RigorLoop Engineering Method](../README.md).
 [Concepts](../concepts/README.md) define the terms; [models](../models/README.md) own relationship constraints; [methods](../methods/README.md) explain their application.
 
 1. **Separate requirements from system assets.**
@@ -79,8 +79,9 @@ These are the twenty-one governing principles of the proposed [RigorLoop Enginee
 19. **Generate architecture views from one authoritative semantic model.**
 
     Use complementary architecture views to address distinct concerns. REM adopts the five 4+1 concerns through its [documented adaptation](../methods/architecture-views.md#adoption-and-adaptation-in-rem): Logical, Process, Development, Physical, and Scenario. Derive them from authoritative engineering knowledge and choose presentations that make their concerns understandable. Views may select, collapse, or emphasize information for comprehension, but they must preserve semantic meaning, ownership, and provenance and must not become a second source of truth.
-    Keep authoritative knowledge, semantic projection, and rendered presentation distinct. Identify the source state and derivation rules so views remain traceable and regenerable.
+    Keep authoritative knowledge, semantic projection, and rendered presentation distinct. Knowledge may include structured facts and authored explanations under their declared owners; rendering an owning explanation does not create another source of architecture truth. Identify the source state and derivation rules so views remain traceable and regenerable.
     Present one useful responsibility level at a time with navigable detail. Assess both semantic fidelity and the intended reading tasks in the rendered view; a complete generated inventory alone does not establish comprehension.
+    For the Process View, select model kinds by runtime concern rather than visual preference: use runtime topology as the primary whole-system projection when runtime concerns are material, and use interaction, lifecycle, control-flow, timing, or formal-concurrency models only when authoritative runtime information supports those concerns. At a focused Module or operation scope, select the explanation that answers the concern without requiring an additional topology diagram. Never infer execution order from Logical Module/Interface reachability.
     Visible labels may shorten canonical names when their meaning remains faithful and unambiguous in context. Keep full names and stable identities accessible through detail or reference without requiring their repetition throughout a diagram. Presentation labels do not create new identities or change authoritative definitions or relationships.
 
 20. **Preserve encapsulation through Module hierarchy.**
@@ -92,9 +93,13 @@ These are the twenty-one governing principles of the proposed [RigorLoop Enginee
 
     A reader should be able to trace a public entry's name and purpose to its logical behavior, accountable responsibilities, and realization. Record the mapping once and derive navigable views. A public command, procedure, or other entry does not automatically require its own Feature, Module, or Interface. Distinguish observed entry existence from proposed behavioral correspondence, preserve incomplete mappings, and never infer ownership or satisfaction from catalog placement.
 
+22. **Reconcile incoming requests before creating requirements.**
+
+    Treat a request, proposal, issue, incident, observation, or other RR as analysis input rather than an approved requirement. Compare it with current IRs, SRs, Scenarios, Features, and known constraints before creating new durable definitions. Reuse or refine existing requirements when their meaning fits, create new requirements only when a distinct durable need or obligation is justified, and retain explicit provenance, conflict, uncertainty, or no-change dispositions.
+
 ## Applying the principles
 
-[Requirement analysis](../methods/requirement-analysis.md) owns the selected 5W2H method and clear IR naming guidance.
+[Requirement analysis](../methods/requirement-analysis.md) applies Principle 22 by reconciling each RR with current requirement knowledge before reusing, refining, or creating IRs and SRs; it also owns the selected 5W2H method and clear IR naming guidance.
 [Scenario Analysis](../methods/scenario-analysis.md) develops first-class stakeholder-visible Scenarios, confirms the durable Feature needed by the IR, and identifies candidate behavior for later confirmation through SR analysis.
 The [Scenario model](../models/scenarios.md) applies Principle 17 to Scenario identity, lifecycle, cardinality, and black-box boundaries.
 [Functional Analysis](../methods/functional-analysis.md) confirms Functions from SR obligations without mirroring the requirement tree.
