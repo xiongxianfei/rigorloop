@@ -3,7 +3,7 @@
   "type": "allocated-requirement",
   "title": "Bind publication to prepared receipts and report actual storage effects",
   "status": "draft",
-  "statement": "The Operational record persistence Module shall supply exact candidate and observed-state facts for receipt preparation, publish only with applicable prepublication readiness for those facts, and return the actual known storage outcome without allowing reporting limitations to misrepresent commitment.",
+  "statement": "The Work record storage Module shall supply exact candidate and observed-state facts for receipt preparation, publish only with applicable prepublication readiness for those facts, and return the actual known storage outcome without allowing reporting limitations to misrepresent commitment.",
   "analysis": {
     "method": "5W2H",
     "what": {

@@ -38,6 +38,11 @@ class SelectionContractChecks:
             "design/architecture/views/browser/index.html",
             "design/architecture/views/browser/diagrams/scenario-SCN-046.svg",
             "scripts/lib/rem_architecture_scenarios.py",
+            "scripts/lib/rem_authored_views.py",
+            "tests/engineering/validation/browser-toolchain/package-lock.json",
+            "design/architecture/modules/MOD-004/browser-views.toml",
+            "design/architecture/views/browser/diagrams/authored-MOD-004-process-proposed-sequence-test.d2",
+            "tests/engineering/validation/architecture_browser_ui_checks.cjs",
             "scripts/resources/rem-architecture-browser/viewer.js",
             "scripts/render-rem-product-inventory.py",
             "tests/engineering/validation/architecture_browser_tests.py",
@@ -82,6 +87,11 @@ class SelectionContractChecks:
         self.assertIn("5669ddc46b99e942cc96078f4a4e36d5e62103348f4c05179ede27802fdd87a9", provision)
         self.assertLess(provision.index("sha256sum --check --strict"), provision.index("tar -xzf"))
         self.assertIn('>> "$GITHUB_PATH"', provision)
+        self.assertIn('npm ci --prefix "$rem_tools/browser-tests" --ignore-scripts', provision)
+        self.assertIn('chrome@149.0.7827.55', provision)
+        self.assertIn('REM_PUPPETEER=', provision)
+        self.assertIn('REM_CHROMIUM=', provision)
+        self.assertNotIn('continue-on-error', provision)
 
 
 

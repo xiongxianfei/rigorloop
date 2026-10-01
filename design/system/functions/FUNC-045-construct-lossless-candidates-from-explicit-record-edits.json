@@ -3,32 +3,27 @@
   "type": "function",
   "title": "Construct lossless candidates from explicit record edits",
   "status": "draft",
-  "description": "Build complete candidate bytes from a bounded ordered set of targeted actor-supplied record decisions against one coherent before-state. Preserve all unselected meaning and bytes while generating only necessary representation bookkeeping; construction itself does not publish.",
+  "description": "Actors can supply a bounded meaningful edit or batch and see exactly its intended candidate effects without hidden semantic changes. This logical behavior has the scope and limits of SR-043; retained v3 realization facets require reconciliation before replacement-store adoption.",
   "inputs": [
-    "One coherent supported before-state and explicit target operation or bounded batch.",
-    "Actor-supplied mutable values, required new-record applicability, and preview or actual-execution intent."
+    "Explicit supported operation, selected project/Change and expected coherent state.",
+    "Actor-supplied candidate or verified recovery basis, with declared subject and artifact identities."
   ],
   "preconditions": [],
   "outputs": [
-    "Complete candidate bytes and explicit target effects, including necessary registration/bookkeeping.",
-    "A valid non-writing candidate preview or named missing-input, overlap, preservation, target, or shape rejection."
+    "Exact attributable result or explicit conflict, unavailability, rejection or recovery-required outcome."
   ],
   "behavior": [
-    "Use only closed purpose-specific operations and exact targets; fill metadata, deterministic paths, containers and registry entries mechanically without inventing semantic inputs.",
-    "Replace only selected value spans and necessary local syntax, preserve omitted fields/entries/narrative/formatting, and make no byte edit for semantically unchanged values.",
-    "Require declared applicability when creating a supporting record, preserve it when legitimately omitted on existing content, and distinguish missing registered content from absence.",
-    "Apply ordered operations to one candidate; allow final references to newly introduced objects, reject overlapping/duplicate assignments, and preserve the declared separations between assessment/findings and decision/shared narrative.",
-    "Retain complete Review findings, ID-only finding preservation and immutable blocker origin; preserve the distinction between full Verify replacement and narrow explanation updates, including optional-basis removal.",
-    "Validate the final candidate and expose candidate effects in preview without transaction files, reservations, or a saved claim; actual execution must rebuild under fresh checked state."
+    "The actor supplies required semantic inputs; the tool constructs identities and storage bookkeeping without requiring directories, manifests or database fields from callers.",
+    "Only explicitly selected semantic values and necessary mechanical metadata change. Omitted fields, ordered entries, narrative content, original subject identities and unrelated records remain equal; exact retained evidence payloads keep their content identity. Physical database bytes are not a semantic preservation oracle.",
+    "A bounded ordered batch constructs one final candidate; valid references to newly introduced entries resolve there. Duplicate or overlapping semantic assignments reject even if equal, while explicitly separate assessment/finding and decision/body spans retain their declared composition rules.",
+    "A new or corrected assessment preserves prior judgments and complete finding history. Under an immutable-attempt contract, corrected explanation or verification content is a new explicitly linked successor with its own supplied fields; omission does not erase the predecessor or silently change its applicability, actors, subjects or judgment. Narrow current-account updates cannot rewrite assessment cores.",
+    "Preview validates the same intended semantic candidate without authoritative writes, persistent reservations or a saved claim. Execution checks freshness again and does not treat preview as authority.",
+    "Unavailable known records or occupied destinations cannot be treated as empty creation targets. Explicit restoration remains subject to its own supported operation and normal integrity, authority and conflict checks."
   ],
   "failure_behavior": [
     {
-      "condition": "A decision/input is missing, a set target is absent, creation would overwrite unregistered content, or named edits overlap.",
-      "outcome": "Reject the candidate with the precise safe reason and no partial publication or synthesized actor decision."
-    },
-    {
-      "condition": "The source representation cannot be preserved as required or final references/content are invalid.",
-      "outcome": "Reject rather than canonicalize unrelated existing bytes, publish an intermediate state, or make all actors supply unrelated simultaneous decisions."
+      "condition": "The requested candidate, expected state or recovery basis cannot be established safely.",
+      "outcome": "Return the corresponding bounded rejection, conflict or recovery condition without invented decisions, silent merge or unrelated overwrite."
     }
   ],
   "sources": [
@@ -41,6 +36,16 @@
       "source": "SRC-PUBLISHED-PRODUCTS",
       "locator": "FUNC-045",
       "basis": "Assign MOD-011 as the proposed accountable primary responsibility after Functional Analysis. Current product source contracts retain detailed behavior authority; allocation is not runtime adoption or complete AR coverage."
+    },
+    {
+      "source": "SRC-LOCAL-OPERATIONAL-ANALYSIS",
+      "locator": "FUNC-045",
+      "basis": "Draft derivation from the refined IRs and RR proposal; no approval, implementation or satisfaction claim."
+    },
+    {
+      "source": "SRC-WORKFLOW-CONTRACTS",
+      "locator": "FUNC-045",
+      "basis": "Reconcile the refined existing requirement with successor workflow recording while keeping attributed observed v3 realization unchanged."
     }
   ],
   "allocated_to": "MOD-011"

@@ -162,7 +162,8 @@
   "compatibility_rules": [
     "Current v3 stored records and each command family's independently versioned transport are interpreted under their existing contracts; unknown or retired inputs are rejected before mutation.",
     "The new REM JSON authoring profile is not an accepted operational stored format by virtue of this Interface.",
-    "Changing this contract requires coherent CLI consumer, persistence, and evidence/recovery reconciliation; prior subjects retain their original meaning."
+    "Changing this contract requires coherent CLI consumer, persistence, and evidence/recovery reconciliation; prior subjects retain their original meaning.",
+    "File/journal-specific steps describe the current v3 adapter. The proposed v4 Module-owned contract supplies typed identities, immutable attempts and per-Change atomic publication for its supported adapter; it preserves before/committed-state truth and never imports historical v3 through an automatic runtime fallback. Coordinated adoption must implement and prove that versioned boundary before reliance."
   ],
   "sources": [
     {
@@ -179,6 +180,11 @@
       "source": "SRC-CLI-REALIZATION",
       "locator": "IF-003; design/requirements/sources.md#src-cli-realization",
       "basis": "Apply refined REM Architecture Design through subordinate observed and proposed views. Preserve the logical allocation, existing public contracts, and draft status; source mapping is not executed satisfaction evidence."
+    },
+    {
+      "source": "SRC-WORKFLOW-CONTRACTS",
+      "locator": "IF-003; versioned v4 semantic boundary",
+      "basis": "Preserve current v3 guarantees and source-attributed realization while specifying the successor record contract explicitly; no implementation or backend qualification is inferred."
     }
   ]
 }

@@ -6,7 +6,8 @@
   "description": "Apply verified candidate units within the user-authorized destination and replacement scope. It owns full preflight, safe scoped writes, preservation of unrelated content and detached originals, and honest partial-effect reporting; it does not manage project state or automatic upgrades.",
   "inputs": [
     "Verified staged candidate, declared target roots and installation units.",
-    "Actual destination state and applicable normal or explicit whole-unit force request."
+    "Actual destination state and applicable normal or explicit whole-unit force request.",
+    "Separately authorized supported workflow replacement scope, including its exact obsolete units when applicable."
   ],
   "preconditions": [
     "Candidate trust and staging are established before installed-unit mutation."
@@ -16,12 +17,13 @@
     "Blocked conflicts or safety conditions, known partial effects, untouched units, and retained-original locations."
   ],
   "behavior": [
-    "Preflight every candidate unit and its actual path safety before writing; default conflicts include identical and empty existing units and stop the entire installation.",
+    "Preflight every selected candidate and explicitly authorized obsolete unit and its actual path safety before writing; default conflicts include identical and empty existing units and stop the entire installation.",
     "For applicable force, replace complete selected units and remove their obsolete contents without replacing shared parents or unrelated units.",
     "Preserve the existing anchored-path, link, changed-basis, and no-clobber guarantees in both modes; reject platforms unable to support the required safe operation.",
     "Keep detached originals outside discovery roots after success or failure and never treat them as active skills or automatic restoration authority.",
     "Verify candidate hashes/counts and report actual effects; stop further writes on failure and require fresh verification/preflight and explicit replacement choice on retry.",
-    "Leave project-root state uninterpreted and unchanged; do not perform managed upgrades, retired-skill cleanup, or whole-project replacement."
+    "Leave project-root state uninterpreted and unchanged; do not perform automatic upgrades, arbitrary retired-skill cleanup, or whole-project replacement.",
+    "Under an explicitly supported workflow replacement contract, detach only the separately authorized obsolete units outside discovery, retain their originals, and require observed absence before claiming coherent candidate installation. Ordinary force does not grant this retirement scope."
   ],
   "failure_behavior": [
     {
@@ -62,6 +64,11 @@
       "source": "SRC-PUBLISHED-PRODUCTS",
       "locator": "FUNC-064",
       "basis": "Assign MOD-014 as the proposed accountable primary responsibility after Functional Analysis. Current product source contracts retain detailed behavior authority; allocation is not runtime adoption or complete AR coverage."
+    },
+    {
+      "source": "SRC-WORKFLOW-CONTRACTS",
+      "locator": "FUNC-064; refined SR-065 and AR-042",
+      "basis": "Requirement-first workflow boundary refinement. Existing identities and historical judgments retain their original scope; this target contract is not implemented or adopted behavior."
     }
   ],
   "allocated_to": "MOD-014"

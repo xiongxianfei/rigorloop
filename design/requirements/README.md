@@ -13,33 +13,39 @@ Apply the [requirement-analysis method](../../rem/methods/requirement-analysis.m
 
 ## Analysis coverage
 
-The current draft contains 10 IRs, 61 SRs, 20 Features, 63 Functions, and 62 Scenarios.
+The current draft contains 10 IRs, 76 SRs, 22 Features, 73 Functions, and 80 Scenarios.
 The original seven-IR engineering-model analysis is extended by [published-product coverage](published-products.md): explicit CLI operations, portable guided engineering activities, and trustworthy compatible tool distribution.
-IRs, SRs, Features, and Functions retain `draft` status; 62 Scenarios are `confirmed` as reviewed analysis knowledge.
+IRs, SRs, Features, and Functions retain `draft` status; 70 Scenarios are confirmed, including eight assessed workflow and five customer-browser Scenarios; five revised and five local-history Scenarios remain draft.
 These are bounded definition and coverage conclusions, not requirement approval, implemented behavior, or a complete migration of existing product contracts.
 Current [Requirement Analysis](../../rem/methods/requirement-analysis.md), [Scenario Analysis](../../rem/methods/scenario-analysis.md), and [Functional Analysis](../../rem/methods/functional-analysis.md) define the method; the source register distinguishes each derivation pass.
 
 | IR | Need | SRs | Scenarios | Features |
 | --- | --- | ---: | ---: | ---: |
 | [IR-001](IR-001-preserve-engineering-knowledge-across-sessions/ir.json) | Preserve engineering knowledge across sessions | 5 | 6 | 2 |
-| [IR-002](IR-002-trace-engineering-obligations-and-responsibilities/ir.json) | Trace engineering obligations and responsibilities | 4 | 4 | 1 |
-| [IR-003](IR-003-control-engineering-changes-and-recover-prior-states/ir.json) | Control engineering changes and recover prior states | 7 | 7 | 2 |
+| [IR-002](IR-002-trace-engineering-obligations-and-responsibilities/ir.json) | Trace engineering obligations and responsibilities | 8 | 8 | 2 |
+| [IR-003](IR-003-control-engineering-changes-and-recover-prior-states/ir.json) | Control engineering changes and recover prior states | 11 | 11 | 3 |
 | [IR-004](IR-004-assess-engineering-claims-using-applicable-evidence/ir.json) | Assess engineering claims using applicable evidence | 5 | 4 | 2 |
 | [IR-005](IR-005-keep-engineering-models-valid-and-consistently-interpreted/ir.json) | Keep engineering models valid and consistently interpreted | 4 | 4 | 2 |
 | [IR-006](IR-006-guide-people-and-agents-in-authoring-engineering-models/ir.json) | Guide people and agents in authoring engineering models | 3 | 5 | 1 |
 | [IR-007](IR-007-improve-engineering-practice-from-recorded-lessons/ir.json) | Improve engineering practice from recorded lessons | 4 | 5 | 1 |
-| [IR-008](IR-008-operate-on-recorded-engineering-work-through-reliable-explicit-commands/ir.json) | Operate on recorded engineering work through reliable explicit commands | 8 | 9 | 3 |
-| [IR-009](IR-009-carry-out-portable-guided-engineering-work-across-the-project-lifecycle/ir.json) | Carry out portable guided engineering work across the project lifecycle | 7 | 8 | 3 |
-| [IR-010](IR-010-obtain-trustworthy-compatible-rigorloop-tools/ir.json) | Obtain trustworthy compatible RigorLoop tools | 14 | 10 | 3 |
+| [IR-008](IR-008-operate-on-recorded-engineering-work-through-reliable-explicit-commands/ir.json) | Operate on recorded engineering work through reliable explicit commands | 9 | 10 | 3 |
+| [IR-009](IR-009-carry-out-portable-guided-engineering-work-across-the-project-lifecycle/ir.json) | Carry out portable guided engineering work across the project lifecycle | 12 | 16 | 3 |
+| [IR-010](IR-010-obtain-trustworthy-compatible-rigorloop-tools/ir.json) | Obtain trustworthy compatible RigorLoop tools | 15 | 11 | 3 |
 
 Counts and navigation are derived from the JSON records; those records own identities, containment, and relationships.
 Every requirement records all seven 5W2H answers, and SRs define observable acceptance criteria and attributable scope.
 The [Scenario index](scenarios/README.md), [Features](../system/features/README.md), and [Functions](../system/functions/README.md) expose the connected model.
 
+## Local operational-history refinement
+
+The [local operational-history analysis](sources.md#src-local-operational-analysis) treats the proposal as RR input and refines IR-003 and IR-008 without adding an IR. It adds five draft Scenarios (SCN-070–074), five SRs (SR-074–078), FEAT-021 and four unallocated Functions (FUNC-074–077), and reconciles continuing records. Five materially revised Scenarios return to draft pending reassessment; earlier confirmation remains evidence only for their original subjects. SR-042–045 no longer use old allocation arguments as current coverage claims. Existing ARs and realization facets still require architectural reconciliation before adoption.
+
 ## System requirements
 
 A shared SR retains exactly one IR parent even when Scenarios owned by other IRs use it.
 SR-014 is a constraint on existing assessment behavior; it does not create an artificial Function.
+
+The [requirement-first workflow analysis](workflow-refactor.md) refines IR-009, adds SR-079–083 and SCN-075–082, and reconciles shared guidance and assessment criteria. The [source register](sources.md#src-workflow-requirement-review) identifies the author-assessed requirement basis and SCN-075–082 confirmation under the Constitution exception. The [integrated design](../architecture/README.md#requirement-first-workflow-composition) now supplies Function and AR proposals; detailed boundary design, integrated review and coordinated adoption remain outstanding; no independent review or product activation is claimed.
 
 | SR | Parent | System obligation |
 | --- | --- | --- |
@@ -104,8 +110,18 @@ SR-014 is a constraint on existing assessment behavior; it does not create an ar
 | [SR-071](IR-010-obtain-trustworthy-compatible-rigorloop-tools/SR-071-record-observed-public-release-outcomes-and-bounded-closeout/sr.json) | IR-010 | Record observed public release outcomes and bounded closeout |
 | [SR-072](IR-010-obtain-trustworthy-compatible-rigorloop-tools/SR-072-recover-publication-failures-without-overwriting-public-history/sr.json) | IR-010 | Recover publication failures without overwriting public history |
 | [SR-073](IR-010-obtain-trustworthy-compatible-rigorloop-tools/SR-073-coordinate-supported-routine-releases-around-one-candidate-approval/sr.json) | IR-010 | Coordinate supported routine releases around one candidate approval |
+| [SR-074](IR-003-control-engineering-changes-and-recover-prior-states/SR-074-create-coherent-recoverable-operational-backups/sr.json) | IR-003 | Create coherent recoverable operational backups |
+| [SR-075](IR-003-control-engineering-changes-and-recover-prior-states/SR-075-restore-operational-history-without-changing-its-original-meaning/sr.json) | IR-003 | Restore operational history without changing its original meaning |
+| [SR-076](IR-003-control-engineering-changes-and-recover-prior-states/SR-076-transfer-retained-operational-work-with-explicit-project-association/sr.json) | IR-003 | Transfer retained operational work with explicit project association |
+| [SR-077](IR-003-control-engineering-changes-and-recover-prior-states/SR-077-migrate-operational-records-with-explicit-preservation-and-disposition/sr.json) | IR-003 | Migrate operational records with explicit preservation and disposition |
+| [SR-078](IR-008-operate-on-recorded-engineering-work-through-reliable-explicit-commands/SR-078-query-retained-change-history-by-selected-engineering-subject/sr.json) | IR-008 | Query retained change history by selected engineering subject |
+| [SR-079](IR-009-carry-out-portable-guided-engineering-work-across-the-project-lifecycle/SR-079-reconcile-incoming-requests-with-existing-requirement-owners/sr.json) | IR-009 | Reconcile incoming requests with existing requirement owners |
+| [SR-080](IR-009-carry-out-portable-guided-engineering-work-across-the-project-lifecycle/SR-080-establish-the-reviewed-requirement-basis-before-dependent-design/sr.json) | IR-009 | Establish the reviewed requirement basis before dependent design |
+| [SR-081](IR-009-carry-out-portable-guided-engineering-work-across-the-project-lifecycle/SR-081-preserve-distinct-authoring-ownership-and-integrated-design-assessment/sr.json) | IR-009 | Preserve distinct authoring ownership and integrated design assessment |
+| [SR-082](IR-009-carry-out-portable-guided-engineering-work-across-the-project-lifecycle/SR-082-require-one-whole-change-review-gate-after-checked-implementation/sr.json) | IR-009 | Require one whole-change review gate after checked implementation |
+| [SR-083](IR-009-carry-out-portable-guided-engineering-work-across-the-project-lifecycle/SR-083-adopt-replacement-workflow-contracts-without-reinterpreting-history/sr.json) | IR-009 | Adopt replacement workflow contracts without reinterpreting history |
 
-The [architecture model](../architecture/README.md) proposes primary Module allocations for the 63 Functions. Its 28 ARs comprise ten from the first detailed pilot—nine beneath IR-001 and shared interpretation AR-010 beneath SR-012 in IR-005—and 18 beneath IR-008's SR-040 through SR-047.
+The [architecture model](../architecture/README.md) retains primary Module allocations for 64 Functions; four local-history Functions await allocation. Its 51 ARs comprise ten from the first detailed pilot—nine beneath IR-001 and shared interpretation AR-010 beneath SR-012 in IR-005—and 18 beneath IR-008's SR-040 through SR-047, plus 14 workflow ARs beneath SR-079–083.
 The [CLI cooperation view](../architecture/views/browser/index.html#cooperation) summarizes how those product obligations relate to their Scenarios, Functions, Modules, and Interfaces. Allocation for the remaining SRs is deferred; draft allocation does not establish implementation or satisfaction.
 The [parent-boundary cooperation view](../architecture/views/browser/index.html#scenarios) adds selected Interface contributions for SCN-019, SCN-053, and SCN-066. These contracts preserve the existing Scenario and requirement definitions and introduce no new ARs or allocation changes. State acquisition, guidance, authority, and evidence support each retain their declared limits; their existence does not establish complete Scenario satisfaction.
 The [original question resolutions](sources.md#src-question-resolution) remain the selected scope basis; the decomposition adds assessable obligations and logical behavior without inventing new service targets or authority policy.
@@ -235,7 +251,7 @@ Ask the most consequential unresolved question first and resolve it before askin
 Omit irrelevant optional fields. If an optional detail is unknown, omit it and assess whether it raises the consequential open question.
 For an unknown required answer, state that it remains unresolved and follow the same question-selection rule without pretending that other unresolved issues are settled.
 Each entry in the nonempty `sources` list contains `source`, `locator`, and `basis`.
-Attributed allocation analysis may use these existing fields to identify an acceptance-criterion position, its contributing ARs, and the reasoning for their cooperation. The CLI example retains 44 such arguments on SR-040 through SR-047 under [SRC-CLI-ALLOCATION](sources.md#src-cli-allocation). These entries preserve analysis provenance; they do not add obligations, duplicate containment relationships, or establish satisfaction. Criterion positions refer to the unchanged analyzed lists and require reconciliation if those criteria change.
+Attributed allocation analysis may use these existing fields to identify an acceptance-criterion position, its contributing ARs, and the reasoning for their cooperation. The original CLI example recorded 44 arguments; arguments for changed SR-042–045 criteria now use [historical allocation provenance](sources.md#src-cli-allocation-before-local-store), while unchanged criterion contributions remain under SRC-CLI-ALLOCATION. These entries preserve analysis provenance; they do not add obligations, duplicate containment relationships, or establish satisfaction. Criterion positions refer to the unchanged analyzed lists and require reconciliation if those criteria change.
 Objects reject undeclared fields, and the schemas reject unsupported record types, lifecycle states, or analysis methods.
 
 `analysis.what` explains the problem and desired outcome without copying the requirement statement.
@@ -302,3 +318,11 @@ The [Architecture Design method](../../rem/methods/architecture-design.md#derive
 
 Requirements should state observable acceptance criteria and eventually link to applicable verification definitions.
 Requirement text alone does not establish satisfaction or supply execution evidence.
+
+## Customer browser proposal
+
+The [customer architecture browser analysis](published-products.md#customer-architecture-browser-analysis) records the scoped JSON refinement, SR-084–088, SCN-083–087 and FEAT-022. The [source register](sources.md#src-customer-browser-requirements) identifies the requirement basis and its explicit downstream design limits; counts above include these records.
+
+## Definition and assessment ownership
+
+IRs, SRs, ARs, Scenarios and their supporting analysis define current engineering meaning. Source-register entries retain concise provenance and the rationale needed to understand that meaning. Review judgments, findings, exact assessed-subject identities and executed-check history belong to operational records under the [Constitution](../../CONSTITUTION.md#documentation-and-governance-maintenance). A document-based review is not a Requirements submodel. Moving its record does not change requirement meaning, Scenario confirmation or the subjects originally assessed.

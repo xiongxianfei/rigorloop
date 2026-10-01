@@ -424,6 +424,10 @@ Embedded rationale can reach the existing per-record size limit; the CLI must re
 
 Stored format: versioned durable data contract. Finding: current review problem account with immutable ID. Concern: change-level blocker with current fields and retained origin. Origin: immutable original basis for a blocker. Applicability: actor-declared usability of an entire supporting record. Subject identity: digest of the exact assessed file bytes. Transport: transient CLI request or response, independently versioned.
 
+## Planned requirement-first workflow contract
+
+The [Module-owned successor contract](../../../design/architecture/modules/MOD-018-engineering-operations/modules/MOD-011-operational-record-persistence/README.md) defines the proposed replacement boundary. It is design input for coordinated implementation and adoption; the current runtime contract above remains version-specific and is not silently reinterpreted. Historical bytes and assessments retain their original meaning. The scoped repository analysis exception does not activate this product behavior.
+
 ## Historical provenance
 
 Completed source-transfer mappings and original adoption handoffs are recoverable at `38a3042e63c7c2462ecf8ffed29f4ac0cbb8923f:docs/design/cli/records.md`. Their source-qualified IDs and judgments retain their original scope; they do not supply current approval or operational inputs. Current behavior and proof obligations are specified in this Design and its named owners.

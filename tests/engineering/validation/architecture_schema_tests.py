@@ -62,7 +62,12 @@ def architecture_paths(root):
             if not isinstance(record.get("id"), str) or not isinstance(record.get("title"), str):
                 raise ValueError(f"Invalid logical owner identity or title: {record_path}")
             slug = re.sub(r"[^a-z0-9]+", "-", record["title"].lower()).strip("-")
-            if not slug or owner.name != f'{record["id"]}-{slug}':
+            if not slug:
+                raise ValueError(f"Invalid logical owner identity or title: {record_path}")
+            if kind == "module":
+                if not re.fullmatch(re.escape(record["id"]) + r"-[a-z0-9]+(?:-[a-z0-9]+)*", owner.name):
+                    raise ValueError(f"Owner directory does not match identity and retained slug: {owner}")
+            elif owner.name != f'{record["id"]}-{slug}':
                 raise ValueError(f"Owner directory does not match identity and title: {owner}")
             if record["id"] in identities:
                 raise ValueError(f"Duplicate architecture identity: {record['id']}")
@@ -1247,17 +1252,42 @@ class ArchitectureDirectoryTests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, reason):
                     architecture_paths(root)
 
+    def test_module_title_refinement_preserves_parent_child_and_facet_paths(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            module, interface = self.make_layout(root)
+            child = module.parent / "modules/MOD-2-child/module.json"
+            child.parent.mkdir(parents=True)
+            child_record = architecture_fixture("module")
+            child_record.update(id="MOD-2", title="Refined child responsibility")
+            child.write_text(json.dumps(child_record))
+            record = json.loads(module.read_text())
+            record["title"] = "Refined parent responsibility"
+            module.write_text(json.dumps(record))
+            facet = self.write_facet(module, "runtime.json", "runtime")
+            records, facets = architecture_paths(root)
+            self.assertEqual(set(records), {module, child, interface})
+            self.assertEqual(facets, [facet])
+
     def test_owner_name_record_name_and_kind_must_match_the_declared_profile(self):
-        for case, reason in (("directory", "Owner directory does not match identity and title"),
+        for case, reason in (("directory", "Owner directory does not match identity and retained slug"),
+                             ("empty_slug", "Owner directory does not match identity and retained slug"),
+                             ("malformed_slug", "Owner directory does not match identity and retained slug"),
+                             ("interface_title", "Owner directory does not match identity and title"),
                              ("filename", "Missing logical owner"),
                              ("kind", "Wrong logical owner type"),
                              ("nonobject", "Wrong logical owner type"),
                              ("missing_title", "Invalid logical owner identity or title")):
             with self.subTest(case=case), tempfile.TemporaryDirectory() as temporary:
                 root = Path(temporary)
-                module, _ = self.make_layout(root)
-                if case == "directory":
-                    module.parent.rename(module.parent.with_name("MOD-1-shortened-title"))
+                module, interface = self.make_layout(root)
+                if case in ("directory", "empty_slug", "malformed_slug"):
+                    target = {"directory":"MOD-2-retain-engineering-definitions", "empty_slug":"MOD-1-", "malformed_slug":"MOD-1-bad--slug"}[case]
+                    module.parent.rename(module.parent.with_name(target))
+                elif case == "interface_title":
+                    record = json.loads(interface.read_text())
+                    record["title"] = "Changed Interface contract"
+                    interface.write_text(json.dumps(record))
                 elif case == "filename":
                     module.rename(module.with_name("definition.json"))
                 elif case == "nonobject":

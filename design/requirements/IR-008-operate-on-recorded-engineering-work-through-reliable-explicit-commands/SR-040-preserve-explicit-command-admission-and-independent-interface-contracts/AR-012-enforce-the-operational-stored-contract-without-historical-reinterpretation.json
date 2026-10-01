@@ -3,7 +3,7 @@
   "type": "allocated-requirement",
   "title": "Enforce the operational stored contract without historical reinterpretation",
   "status": "draft",
-  "statement": "The Operational record persistence Module shall accept only the declared current v3 stored contract for operational record access, candidate validation, publication, and recovery, and reject retired, unknown, mixed, or cross-version input without conversion, fallback, or historical-byte modification.",
+  "statement": "The Work record storage Module shall accept only the declared current v3 stored contract for operational record access, candidate validation, publication, and recovery, and reject retired, unknown, mixed, or cross-version input without conversion, fallback, or historical-byte modification.",
   "analysis": {
     "method": "5W2H",
     "what": {

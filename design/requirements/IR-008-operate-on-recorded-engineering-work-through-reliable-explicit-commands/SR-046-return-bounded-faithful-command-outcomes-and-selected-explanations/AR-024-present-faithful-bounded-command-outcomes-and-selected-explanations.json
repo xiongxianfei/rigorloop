@@ -3,7 +3,7 @@
   "type": "allocated-requirement",
   "title": "Present faithful bounded command outcomes and selected explanations",
   "status": "draft",
-  "statement": "The Engineering command interface Module shall project actual command outcomes and selected recorded explanations into the owning bounded human or machine result contract without changing their meaning, scope, availability, diagnostic identity, or semantic exit.",
+  "statement": "The Command handling Module shall project actual command outcomes and selected recorded explanations into the owning bounded human or machine result contract without changing their meaning, scope, availability, diagnostic identity, or semantic exit.",
   "analysis": {
     "method": "5W2H",
     "what": {

@@ -28,6 +28,11 @@
       "source": "SRC-PUBLISHED-SKILLS",
       "locator": "docs/design/skill/skill.md#SKL-SR-29",
       "basis": "IR-009 establishes this durable Skills-product capability; existing generic Functions are reused without changing their definitions or requirement parentage."
+    },
+    {
+      "source": "SRC-REQUIREMENT-FIRST-WORKFLOW",
+      "locator": "FEAT-016",
+      "basis": "User-selected requirement-first workflow and one mandatory whole-change Code Review gate. Proposed requirement analysis only; existing product contracts remain active until coordinated adoption. No new Function, AR, implementation or approval is inferred."
     }
   ],
   "description": "People and engineering agents can use applicable specialist guidance to produce or assess scoped engineering results across authoring, implementation, assessment, foundations, discovery, learning, and delivery preparation while preserving each activity's contract.",
@@ -35,7 +40,8 @@
     "includes": [
       "Complete specialist procedure, usable output shape, material failure disposition, and explicit claim limits.",
       "Project governance, sufficient evidence, and privacy-safe reporting.",
-      "Reuse of adopted REM model-authoring guidance and shared authority and assurance responsibilities."
+      "Reuse of adopted REM model-authoring guidance and shared authority and assurance responsibilities.",
+      "Requirement-first authoring and independent requirement assessment, distinct logical and architectural design with integrated assessment, and advisory versus whole-change review scope under the adopted workflow."
     ],
     "excludes": [
       "A universal procedure that replaces specialist reasoning.",

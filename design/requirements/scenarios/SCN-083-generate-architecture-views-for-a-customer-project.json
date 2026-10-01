@@ -1,0 +1,59 @@
+{
+  "id": "SCN-083",
+  "type": "scenario",
+  "title": "Generate architecture views for a customer project",
+  "status": "confirmed",
+  "actor": "Customer model author",
+  "goal": "Obtain attributable architecture views for the selected project.",
+  "context": "The author has a supported customer model using its own identities.",
+  "trigger": "The author needs to inspect or share the architecture.",
+  "preconditions": [
+    "The selected scope and any available project or artifact identity are explicitly identified."
+  ],
+  "interaction": [
+    {
+      "actor": "Customer model author",
+      "action": "Selects the project, declared profile and intended output."
+    },
+    {
+      "actor": "System",
+      "action": "Presents generated view entry points, selected-state identity and any missing optional detail."
+    },
+    {
+      "actor": "Customer model author",
+      "action": "Navigates a view and requests its source explanation."
+    },
+    {
+      "actor": "System",
+      "action": "Shows the selected definition, relationships and provenance without project-specific assumptions."
+    }
+  ],
+  "expected_outcome": "The author can inspect the selected customer architecture without requiring RigorLoop project content.",
+  "alternatives": [
+    {
+      "condition": "Optional runtime details are absent.",
+      "outcome": "The Process entry reports the missing detail without inventing sequence."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "The profile is unsupported.",
+      "outcome": "The selection is diagnosed and no successful snapshot is published."
+    }
+  ],
+  "exercises": [
+    "FEAT-022"
+  ],
+  "informs": [
+    "SR-084",
+    "SR-085",
+    "SR-012"
+  ],
+  "sources": [
+    {
+      "source": "SRC-CUSTOMER-BROWSER-REQUIREMENTS",
+      "locator": "SCN-083; confirmed as requirement-analysis knowledge by the scoped author assessment, not independent review or executed product proof.",
+      "basis": "User-requested reusable customer architecture browser; requirement-level author analysis. Current records remain draft; no implemented, published or independently approved behavior is claimed."
+    }
+  ]
+}

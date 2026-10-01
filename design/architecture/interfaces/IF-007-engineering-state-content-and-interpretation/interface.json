@@ -3,7 +3,7 @@
   "type": "interface",
   "title": "Engineering state content and interpretation",
   "status": "draft",
-  "description": "Read-only access to authoritative engineering content and its original interpretation basis for an explicitly selected state and declared membership. Engineering model management provides the composed contract to Baseline management through its storage and conformance responsibilities; acquisition results do not establish Baseline retention or approval.",
+  "description": "Read-only access to authoritative engineering content and its original interpretation basis for an explicitly selected state and declared membership. Project model provides the composed contract to Baseline management through its storage and conformance responsibilities; acquisition results do not establish Baseline retention or approval.",
   "operations": [
     {
       "name": "inspect_engineering_state_content",

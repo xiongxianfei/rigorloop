@@ -232,6 +232,10 @@ The assertion and fixture audit must establish the no-read/no-write and public p
 
 The former combined ownership decision is replaced by an explicit package-producer/installer-consumer interface. All retained replacement steps and negative outcomes remain obligations. Force replacement can remove local changes inside selected units, and its help/results must describe that scope. Retained originals are outside discovery roots; they are not a new eligibility ledger or automatic recovery service.
 
+## Planned requirement-first workflow contract
+
+The [Module-owned successor contract](../../../design/architecture/modules/MOD-019-product-delivery/modules/MOD-014-verified-skill-installation/README.md) defines the proposed replacement boundary. It is design input for coordinated implementation and adoption; the current runtime contract above remains version-specific and is not silently reinterpreted. Historical bytes and assessments retain their original meaning. The scoped repository analysis exception does not activate this product behavior.
+
 ## Historical provenance
 
 Completed source-transfer mappings and original adoption handoffs are recoverable at `38a3042e63c7c2462ecf8ffed29f4ac0cbb8923f:docs/design/cli/installation.md`. Their source-qualified IDs and judgments retain their original scope; they do not supply current approval or operational inputs. Current behavior and proof obligations are specified in this Design and its named owners.

@@ -3,11 +3,11 @@
   "type": "system-requirement",
   "title": "Construct lossless updates from explicit engineering decisions",
   "status": "draft",
-  "statement": "The system shall construct complete recording candidates from explicitly targeted actor decisions while preserving omitted content and unrelated bytes, composing only compatible requested edits, and offering equivalent non-writing preview without requiring callers to build storage scaffolding.",
+  "statement": "The system shall construct complete recording candidates from explicitly targeted actor decisions while preserving omitted semantic content, identities and unrelated records, composing only compatible requested edits, and offering equivalent non-writing preview without requiring callers to build storage scaffolding.",
   "analysis": {
     "method": "5W2H",
     "what": {
-      "problem": "Whole-file reconstruction and implicit defaults can overwrite neighboring decisions, refresh reviewed subjects, or make a narrow correction depend on unrelated actor decisions.",
+      "problem": "Reconstructing storage representations or inferring defaults can overwrite neighboring decisions or refresh assessment bases without an actor decision.",
       "desired_outcome": "Actors can supply a bounded meaningful edit or batch and see exactly its intended candidate effects without hidden semantic changes."
     },
     "why": {
@@ -22,7 +22,7 @@
     },
     "when": {
       "conditions": [
-        "For purpose-specific mutations, batch construction, non-writing previews, and comparisons with advanced complete-byte replacement."
+        "During explicit targeted or complete record updates, batch preparation and non-writing previews."
       ]
     },
     "where": {
@@ -31,22 +31,24 @@
       ]
     },
     "how": {
-      "approach": "Use the retained closed targeted-operation catalog to replace only named values and necessary syntax or registration bookkeeping. Require explicit applicability on new supporting records, validate the combined final candidate, reject overlap, and keep complete and narrow assessment semantics distinct."
+      "approach": "Construct the complete candidate from explicitly supplied edits, generating only mechanical storage metadata. Preserve omitted records, values, narrative, ordering and identities; require new-record applicability and validate final references. Preserve exact external evidence bytes where their digest is part of retained identity."
     },
     "how_much": {
-      "scope": "All targeted operations, creation, narrow explanation edits, explicit finding/blocker corrections, and bounded batch composition. Advanced replacement supplies complete exact candidate bytes rather than targeted edits. No arbitrary repository patch, implicit delete, cross-change batch, semantic default, or automatic retry merge is introduced."
+      "scope": "Explicit targeted and complete record updates and bounded batch composition. Operational serialization is implementation-owned; preserved semantic narrative and ordered values are not permission to rewrite original evidence artifacts. No arbitrary repository patch, implicit deletion, cross-Change batch or automatic retry merge is introduced."
     }
   },
   "acceptance_criteria": [
-    "Required semantic inputs are supplied by the actor and missing inputs identify the required field; mechanical record metadata, containers, deterministic paths, and registry entries need not be authored by the caller.",
-    "Only named values and necessary adjacent syntax/bookkeeping change. Omitted fields, entry order, unrelated narrative, existing whitespace, and semantically unchanged values retain their bytes; new files follow the retained encoding contract.",
+    "The actor supplies required semantic inputs; the tool constructs identities and storage bookkeeping without requiring directories, manifests or database fields from callers.",
+    "Only explicitly selected semantic values and necessary mechanical metadata change. Omitted fields, ordered entries, narrative content, original subject identities and unrelated records remain equal; exact retained evidence payloads keep their content identity. Physical database bytes are not a semantic preservation oracle.",
     "A bounded ordered batch constructs one final candidate; valid references to newly introduced entries resolve there. Duplicate or overlapping semantic assignments reject even if equal, while explicitly separate assessment/finding and decision/body spans retain their declared composition rules.",
-    "Full Review recording preserves findings; explanation set changes only selected explanation fields. Full Verify replacement removes omitted optional verification_basis, while narrow edits cannot remove or refresh it or silently change applicability, actors, subjects, or judgment.",
-    "Preview constructs and validates the same intended candidate without publication, transaction files, reservation, or saved claim. Actual execution repeats freshness checks and does not treat preview as authority.",
-    "Registered missing content and existing unregistered files cannot be treated as empty creation targets. Advanced explicit restoration remains subject to exact content and all normal safety requirements."
+    "A new or corrected assessment preserves prior judgments and complete finding history. Under an immutable-attempt contract, corrected explanation or verification content is a new explicitly linked successor with its own supplied fields; omission does not erase the predecessor or silently change its applicability, actors, subjects or judgment. Narrow current-account updates cannot rewrite assessment cores.",
+    "Preview validates the same intended semantic candidate without authoritative writes, persistent reservations or a saved claim. Execution checks freshness again and does not treat preview as authority.",
+    "Unavailable known records or occupied destinations cannot be treated as empty creation targets. Explicit restoration remains subject to its own supported operation and normal integrity, authority and conflict checks."
   ],
   "assumptions": [],
-  "constraints": [],
+  "constraints": [
+    "This draft replacement-store requirement does not activate a new runtime contract. Existing ARs and realization facets retain their v3 scope and require explicit architecture reconciliation before adoption; historical contribution arguments do not prove the revised criteria."
+  ],
   "sources": [
     {
       "source": "SRC-PUBLISHED-CLI",
@@ -54,34 +56,44 @@
       "basis": "Derives this bounded published-product obligation from IR-008 and the named current CLI/Record Format contracts. Detailed schemas, command catalogs, limits and completed-retirement dispositions remain at those owners; this record does not transfer approval or implement REM-record operations."
     },
     {
-      "source": "SRC-CLI-ALLOCATION",
+      "source": "SRC-CLI-ALLOCATION-BEFORE-LOCAL-STORE",
       "locator": "SR-043 AC1; allocated contributors: AR-018, AR-019",
       "basis": "Adapter requires actor semantic decisions; persistence constructs only mechanical metadata/registry/scaffolding"
     },
     {
-      "source": "SRC-CLI-ALLOCATION",
+      "source": "SRC-CLI-ALLOCATION-BEFORE-LOCAL-STORE",
       "locator": "SR-043 AC2; allocated contributors: AR-019",
       "basis": "Only named values/necessary adjacent syntax change; unselected and no-op source bytes preserved; new-file encoding retained"
     },
     {
-      "source": "SRC-CLI-ALLOCATION",
+      "source": "SRC-CLI-ALLOCATION-BEFORE-LOCAL-STORE",
       "locator": "SR-043 AC3; allocated contributors: AR-018, AR-019, AR-016",
       "basis": "Bounded admitted batch, deterministic complete candidate, overlap rejection and final reference validation"
     },
     {
-      "source": "SRC-CLI-ALLOCATION",
+      "source": "SRC-CLI-ALLOCATION-BEFORE-LOCAL-STORE",
       "locator": "SR-043 AC4; allocated contributors: AR-019, AR-017",
       "basis": "Full Review versus explicit finding edits; complete Verify replacement versus narrow explanation updates"
     },
     {
-      "source": "SRC-CLI-ALLOCATION",
+      "source": "SRC-CLI-ALLOCATION-BEFORE-LOCAL-STORE",
       "locator": "SR-043 AC5; allocated contributors: AR-018, AR-019",
       "basis": "Honest nonwriting preview and pure construction; actual-execution freshness and publication require the SR-044 allocated executor obligations"
     },
     {
-      "source": "SRC-CLI-ALLOCATION",
+      "source": "SRC-CLI-ALLOCATION-BEFORE-LOCAL-STORE",
       "locator": "SR-043 AC6; allocated contributors: AR-019, AR-016",
       "basis": "Missing registered content is unavailable, unregistered existing files cannot be creation targets; explicit advanced restoration still crosses shared validation and SR-044 safety"
+    },
+    {
+      "source": "SRC-LOCAL-OPERATIONAL-ANALYSIS",
+      "locator": "SR-043",
+      "basis": "Refines the proposed operational representation and safety boundary. Prior allocation contribution arguments retain their original v3 criterion subjects under the historical source marker."
+    },
+    {
+      "source": "SRC-WORKFLOW-CONTRACTS",
+      "locator": "SR-043; immutable assessment correction and explicit commit boundary",
+      "basis": "Refine the existing IR-008 obligation for v4 without rewriting historical v3 meaning: preserve original assessments, actor decisions and truthful commitment rather than requiring in-place explanation mutation or rollback after commit. Author-assessed under the scoped Constitution exception; not runtime adoption."
     }
   ],
   "confirms": [

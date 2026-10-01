@@ -43,7 +43,7 @@ Multi-file, risky, ambiguous, architecture-affecting or migration-heavy work MUS
 Plans carry stable intent; the owning change record and stage-owned evidence carry mutable progress, decisions and closeout.
 
 Required proposal, Design and delivery reviews MUST precede reliance on their respective packages.
-Reviewers MUST independently assess the exact work they approve and MUST NOT edit and approve the same subject.
+Review assessments MUST identify the exact subjects, findings, basis and limitations of their conclusions.
 Formal reviews MUST leave durable evidence, including clean outcomes; material findings MUST record evidence, required outcomes and a safe resolution path or explicit decision need before driving fixes.
 Governed completion MUST include milestone reviews where applicable, fresh independent whole-change Code Review after all implementation and corrections, and distinct successful final Verify.
 Only successful Verify owns the final explanation and closeout assessment; a save, milestone review, merge or PR MUST NOT substitute for required gates.
@@ -51,6 +51,8 @@ Only successful Verify owns the final explanation and closeout assessment; a sav
 Manual skill invocations MAY produce isolated work without claiming full workflow completion; isolation does not waive review recording.
 Automation MUST stay within its authorized scope and continue through required downstream stages when that authorization applies.
 Optional discovery and learning remain on-demand or periodic under their owning contracts.
+
+For the current [requirement-first workflow refactor](design/requirements/workflow-refactor.md), analysis and review MAY proceed as document-based work without governed CLI recording or a separate reviewer. This explicit project exception overrides conflicting workflow and assessment procedures for that scope. Documented assessments MUST report actual authorship and MUST NOT claim independent review when performed by the author. Governed record discovery is not a prerequisite for this work; implementation completion and external handoff remain subject to their applicable requirements. For this document-based scope, retain review documents in private project-local operational storage under `.rigorloop/artifacts/reviews/`, with original assessment bytes and source-base/identity information preserved when relocated. The exception changes recording procedure, not information ownership; it does not adopt SQLite or migrate other supported record contracts.
 
 ## Validation and evidence
 
@@ -75,6 +77,7 @@ Security-sensitive changes and changes to review or release boundaries MUST foll
 ## Documentation and governance maintenance
 
 Each responsibility SHOULD have one current normative owner; entry guides MUST link to detailed contracts instead of reproducing their procedures or migration histories.
+Current engineering definitions, supporting analysis, applicable rationale and concise provenance belong to their owning model. Assessment judgments, findings, exact reviewed-subject identities and execution results MUST remain operational records; they MUST NOT be authored as review dossiers under `design/`. Current model meaning MUST remain understandable without access to local operational history. A provenance summary does not substitute for the original assessment when relying on approval.
 Governance changes MUST reconcile affected guidance and consumers, or explicitly document why they are unaffected or who owns deferred reconciliation.
 Constitution amendments MUST make changed principles explicit; shortening a document MUST NOT silently discard a surviving obligation or broaden historical approval.
 Durable reusable lessons SHOULD be captured through the learning process rather than left only in chat.

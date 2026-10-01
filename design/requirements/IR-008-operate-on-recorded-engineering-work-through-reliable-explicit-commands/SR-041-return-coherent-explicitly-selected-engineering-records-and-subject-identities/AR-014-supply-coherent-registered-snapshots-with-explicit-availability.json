@@ -3,7 +3,7 @@
   "type": "allocated-requirement",
   "title": "Supply coherent registered snapshots with explicit availability",
   "status": "draft",
-  "statement": "The Operational record persistence Module shall supply recorded values and availability facts from the selected registered store with a coherent state identity when established, preserving missing, invalid, inaccessible, busy, and recovery-required distinctions without returning a usable mixed snapshot.",
+  "statement": "The Work record storage Module shall supply recorded values and availability facts from the selected registered store with a coherent state identity when established, preserving missing, invalid, inaccessible, busy, and recovery-required distinctions without returning a usable mixed snapshot.",
   "analysis": {
     "method": "5W2H",
     "what": {

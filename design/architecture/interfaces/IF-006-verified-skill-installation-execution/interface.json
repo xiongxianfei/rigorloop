@@ -10,7 +10,8 @@
       "purpose": "Plan or perform the requested installation under the current target and replacement contract.",
       "inputs": [
         "Explicit supported target and release/source selection, requested mode, and exact installation destination context.",
-        "Applicable replacement permission and the package-bundled trusted artifact metadata basis."
+        "Applicable replacement permission and the package-bundled trusted artifact metadata basis.",
+        "Separately selected supported workflow replacement contract and exact obsolete-unit scope, when requested."
       ],
       "preconditions": [],
       "outputs": [
@@ -20,7 +21,7 @@
         "Reject unsupported targets, modes, and removed state-writing options before prohibited acquisition or target effects.",
         "For real installation, acquire the selected trusted candidate under IF-005 and validate integrity, extraction boundaries, and inventory before destination writes.",
         "Preflight every selected destination unit. Without explicit replacement permission, an existing unit is a conflict even if its bytes match; preserve shared parents and unrelated files.",
-        "Recheck applicable destination conditions and apply only supported creation or full-unit replacement; force does not bypass integrity, path, symlink, or race protections.",
+        "Recheck applicable destination conditions and apply only supported creation, full-unit replacement or separately authorized bounded retirement; force does not bypass integrity, path, symlink, or race protections.",
         "A dry run performs only its declared preliminary checks without downloading, extracting, or changing project files. Real partial failures identify actual completed units and remaining work without promising whole-project rollback.",
         "Do not create managed state, perform an automatic upgrade, or adopt a workflow as a side effect of installing files."
       ],
@@ -37,14 +38,15 @@
     }
   ],
   "consistency_rules": [
-    "Preflight and mutation scope are the candidate's explicitly selected units, never the shared installation parent or unrelated project content.",
+    "Preflight and mutation cover the candidate units plus any separately authorized supported obsolete-unit set; never the shared installation parent or unrelated project content.",
     "Package verification is distinct from destination authorization and from actual installed-byte verification.",
     "The result preserves planned, blocked, partial, and actual effects. Declared dry-run checks never stand in for archive-verified preflight."
   ],
   "compatibility_rules": [
     "The existing Installation Design owns exact supported targets, flags, trusted channels, destination units, diagnostic envelopes, and retry rules.",
     "The command consumer must preserve all installation outcomes and cannot broaden force into arbitrary overwrite permission.",
-    "This draft introduces no managed upgrade mechanism or new target support."
+    "This draft introduces no managed upgrade mechanism or new target support.",
+    "The proposed MOD-014 workflow replacement extension refines SR-065 for explicit obsolete-unit retirement; its new flag/profile requires coordinated implementation. Ordinary force and current installed behavior retain their existing limits until adoption."
   ],
   "sources": [
     {
@@ -61,6 +63,11 @@
       "source": "SRC-PARENT-INTERFACE-OWNERSHIP",
       "locator": "IF-006; design/requirements/sources.md#src-parent-interface-ownership",
       "basis": "Refine contract accountability: MOD-018 provides IF-004 and MOD-019 provides IF-006. MOD-010 and MOD-014 retain their behavioral allocations and state responsibilities. This supersedes the provider/exposure choice recorded by SRC-MODULE-HIERARCHY without changing Interface guarantees, consumers, Function/AR allocations, or realization observations. Earlier source entries retain their prior design meaning; this draft refinement supplies no runtime adoption or satisfaction evidence."
+    },
+    {
+      "source": "SRC-WORKFLOW-CONTRACTS",
+      "locator": "IF-006; explicit retirement scope and per-unit effects",
+      "basis": "Requirement-first workflow boundary refinement. Existing identities and historical judgments retain their original scope; this target contract is not implemented or adopted behavior."
     }
   ]
 }

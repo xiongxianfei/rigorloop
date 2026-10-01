@@ -1,0 +1,61 @@
+{
+  "id": "AR-033",
+  "type": "allocated-requirement",
+  "title": "Explain distinct requirement and design authorship",
+  "status": "draft",
+  "statement": "The Authoring guidance Module shall explain distinct requirement and design authorship within its accountable boundary so that SR-081 can be satisfied without transferring another owner's decisions or state authority.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "The SR-081 obligation crosses guidance, governance or publication boundaries; an unowned contribution can make a locally valid step appear sufficient for the whole workflow.",
+      "desired_outcome": "Keep IR/SR and stakeholder intent, logical Functions, and Module/Interface/AR realization under their respective authoring methods."
+    },
+    "why": {
+      "rationale": "MOD-008 owns the behavior or state needed for this contribution; separating it preserves one accountable owner while allowing the parent SR to compose several contributors."
+    },
+    "who": {
+      "stakeholders": [
+        "Participants relying on Authoring guidance",
+        "Authors, reviewers and project decision owners"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "When the selected requirement-first workflow exercises SR-081 or reassesses its affected basis."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "The MOD-008 responsibility boundary and its declared logical Interfaces."
+      ]
+    },
+    "how": {
+      "approach": "Apply the allocated criteria through the constrained Functions and explicit contract inputs/outcomes; preserve actual actor decisions, subject identity and known limitations."
+    },
+    "how_much": {
+      "scope": "This allocated contribution to SR-081; other contributors, independent assessment, physical recording implementation and product activation remain distinct."
+    }
+  },
+  "acceptance_criteria": [
+    "Keep IR/SR and stakeholder intent, logical Functions, and Module/Interface/AR realization under their respective authoring methods.",
+    "Explain allocation and applicable 4+1 methods without introducing separate technique approvals or substituting delivery tasks for ARs."
+  ],
+  "assumptions": [
+    "The selected project contract, scope and required counterpart contributions are identifiable; absence is reported rather than inferred."
+  ],
+  "constraints": [
+    "This draft allocation neither activates replacement runtime contracts nor proves implementation or satisfaction."
+  ],
+  "allocated_to": "MOD-008",
+  "constrains": [
+    "FUNC-032",
+    "FUNC-033"
+  ],
+  "sources": [
+    {
+      "source": "SRC-WORKFLOW-DESIGN",
+      "locator": "SR-081; AR-033",
+      "basis": "Draft integrated design from the accepted requirement-first basis. This defines target responsibility and cooperation, not installed capability, design approval, runtime evidence or SQLite adoption."
+    }
+  ]
+}

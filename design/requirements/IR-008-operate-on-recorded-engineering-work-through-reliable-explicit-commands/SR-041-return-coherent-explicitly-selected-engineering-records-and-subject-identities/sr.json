@@ -34,7 +34,7 @@
       "approach": "Use explicit filters and the declared complete/default and projection contracts. Read one coherent registered snapshot, expose its actual contract and revision, retain selected report explanations and applicability, and bind continuation to the selection and state. Classify current/archive candidates structurally, and inspect content and identity from the same observed bytes."
     },
     "how_much": {
-      "scope": "Current published read populations, selector namespaces, ordering, byte/count bounds, and archive-classification rules remain defined in the retained CLI contract. No directory discovery grants record authority, no retired records become operational input, and no query performs recovery."
+      "scope": "Current published read populations, selector namespaces, ordering, byte/count bounds, and archive-classification rules remain defined in the retained CLI contract. No directory discovery grants record authority, no retired records become operational input, and no query performs recovery. The local operational-history extension adds the criteria attributed to SRC-LOCAL-OPERATIONAL-ANALYSIS; retained product contracts and old allocation evidence do not establish implementation or coverage of that extension."
     }
   },
   "acceptance_criteria": [
@@ -43,7 +43,8 @@
     "Absent, unregistered, registered-missing, malformed, unsafe, and unreadable records remain distinguishable; missing selected content cannot become an empty successful collection or an inferred stored contract.",
     "Pagination deduplicates and orders the declared selection; changed revision, different selection, or invalid/nonmember cursor rejects or conflicts without partial items. Byte/count overflow does not silently truncate rationale, return partial items, or create a nonprogressing page.",
     "Subject inspection returns identity and requested content from the same observed bytes, reports expected absence explicitly, and returns no partial subject set on an observed change that prevents coherence.",
-    "Discovery reports only coherent current candidates, bounded exclusions, errors, and completeness. Ambiguous or malformed current residue and interrupted transactions remain visible; no sole candidate is automatically selected and no stage, readiness, or archival approval is inferred."
+    "Discovery reports only coherent current candidates, bounded exclusions, errors, and completeness. Ambiguous or malformed current residue and interrupted transactions remain visible; no sole candidate is automatically selected and no stage, readiness, or archival approval is inferred.",
+    "A missing operational store is reported as unavailable history, distinct from an available store with no matching records; reads never initialize, import or restore a store implicitly."
   ],
   "assumptions": [],
   "constraints": [],
@@ -82,6 +83,11 @@
       "source": "SRC-CLI-ALLOCATION",
       "locator": "SR-041 AC6; allocated contributors: AR-013, AR-014",
       "basis": "Exact candidate classification and visible interrupted/malformed state without automatic selection or cross-change atomicity claim"
+    },
+    {
+      "source": "SRC-LOCAL-OPERATIONAL-ANALYSIS",
+      "locator": "SR-041",
+      "basis": "Draft derivation from the refined IRs and RR proposal; no approval, implementation or satisfaction claim."
     }
   ],
   "confirms": [

@@ -1,0 +1,64 @@
+{
+  "id": "AR-038",
+  "type": "allocated-requirement",
+  "title": "Reconcile bounded workflow adoption and recovery",
+  "status": "draft",
+  "statement": "The Change control Module shall reconcile bounded workflow adoption and recovery within its accountable boundary so that SR-083 can be satisfied without transferring another owner's decisions or state authority.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "The SR-083 obligation crosses guidance, governance or publication boundaries; an unowned contribution can make a locally valid step appear sufficient for the whole workflow.",
+      "desired_outcome": "Prepare explicit dispositions for every affected active Change and dependency within the selected scope, retaining original review meanings."
+    },
+    "why": {
+      "rationale": "MOD-006 owns the behavior or state needed for this contribution; separating it preserves one accountable owner while allowing the parent SR to compose several contributors."
+    },
+    "who": {
+      "stakeholders": [
+        "Participants relying on Change control",
+        "Authors, reviewers and project decision owners"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "When the selected requirement-first workflow exercises SR-083 or reassesses its affected basis."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "The MOD-006 responsibility boundary and its declared logical Interfaces."
+      ]
+    },
+    "how": {
+      "approach": "Apply the allocated criteria through the constrained Functions and explicit contract inputs/outcomes; preserve actual actor decisions, subject identity and known limitations."
+    },
+    "how_much": {
+      "scope": "This allocated contribution to SR-083; other contributors, independent assessment, physical recording implementation and product activation remain distinct."
+    }
+  },
+  "acceptance_criteria": [
+    "Prepare explicit dispositions for every affected active Change and dependency within the selected scope, retaining original review meanings.",
+    "Require coherent consumer/recording support and a fresh adoption basis; interrupted or partial transition reports actual active authority and preserves recoverable work.",
+    "Keep database migration prerequisites separate and prohibit removal of relied-on historical material without retained identity and resolved dependencies."
+  ],
+  "assumptions": [
+    "The selected project contract, scope and required counterpart contributions are identifiable; absence is reported rather than inferred."
+  ],
+  "constraints": [
+    "This draft allocation neither activates replacement runtime contracts nor proves implementation or satisfaction."
+  ],
+  "allocated_to": "MOD-006",
+  "constrains": [
+    "FUNC-078",
+    "FUNC-023",
+    "FUNC-024",
+    "FUNC-025"
+  ],
+  "sources": [
+    {
+      "source": "SRC-WORKFLOW-DESIGN",
+      "locator": "SR-083; AR-038",
+      "basis": "Draft integrated design from the accepted requirement-first basis. This defines target responsibility and cooperation, not installed capability, design approval, runtime evidence or SQLite adoption."
+    }
+  ]
+}

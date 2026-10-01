@@ -55,6 +55,7 @@ Requirements shape their evolution across Changes and Baselines without becoming
 | Interface | Explicit interaction contract between architectural elements, potentially defining operations, messages, data structures, protocols, failures, and compatibility. |
 | Interface exposure | Explicit declaration that an Interface provided by a contained Module may cross one or more parent Module encapsulation boundaries; exposure preserves the Interface and provider identities rather than creating a wrapper contract automatically. |
 | Realization | Code, configuration, or another implementation artifact that realizes the design; distinct from the design asset it implements. |
+| Technical model | Owned architecture design of the intended implementation: components, responsibilities, contracts, relationships, data authority and material technology choices. Its structural projection is a Logical reading perspective; components retain explicit mappings to accountable Modules and Interfaces. |
 | Architecture realization view | Subordinate architecture information, owned by a Module or Interface, describing material physical/software realization without creating another first-class REM asset. |
 | Software realization | Subordinate view of the software units or implementation structures that realize a Module responsibility. |
 | Runtime realization | Subordinate view of material execution, process, lifecycle, scaling, isolation, concurrency, synchronization, communication, resource, failure, ordering, retry, or recovery semantics where architecturally significant. |
@@ -77,6 +78,7 @@ Those realization facets are semantic outputs of Architecture Design, not univer
 Services, libraries, processes, datastores, deployment units, deployment targets, protocols, and technology choices do not acquire independent REM identity merely because they appear in those views.
 A project may structure or locally identify subordinate realization information for tooling, but storage structure does not change its REM meaning or promote it to a first-class entity.
 Architecture views are derived presentations and do not own facts that belong to Module, Interface, Requirement, Function, Scenario, or realization information.
+The [technical model](../models/architecture-design.md#technical-model) is subordinate architecture knowledge. Its Logical technical-structure presentation and its Development, Process and Physical projections select different concerns without creating additional engineering entities or duplicated authority.
 REM uses the classic 4+1 names—Logical, Process, Development, Physical, and Scenario—for standard architecture projections.
 The Scenario View is generated from a governed black-box Scenario and relevant downstream architecture; it does not add internal architecture steps to the Scenario entity itself.
 A 4+1 Architecture View Graph may normalize the authoritative architecture for graph traversal and projection, but every generated fact must remain attributable to its authoritative source and the graph must remain fully replaceable by regeneration.

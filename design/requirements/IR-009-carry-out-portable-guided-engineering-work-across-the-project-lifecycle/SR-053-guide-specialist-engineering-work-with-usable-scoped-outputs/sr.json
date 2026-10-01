@@ -33,6 +33,11 @@
       "source": "SRC-PUBLISHED-SKILLS",
       "locator": "docs/design/skill/skill.md#SKL-SR-29",
       "basis": "Derives the stated common Skills-product obligation while preserving the cited clause population and retained specialist or package-owner detail; this draft is not source retirement or runtime adoption."
+    },
+    {
+      "source": "SRC-REQUIREMENT-FIRST-WORKFLOW",
+      "locator": "SR-053",
+      "basis": "User-selected requirement-first workflow and one mandatory whole-change Code Review gate. Proposed requirement analysis only; existing product contracts remain active until coordinated adoption. No new Function, AR, implementation or approval is inferred."
     }
   ],
   "statement": "The system shall guide each invoked engineering capability through its current specialist procedure and produce or assess the complete applicable output with explicit scope, evidence, stops, and claim limits, preserving the specialist behavioral owner and project authority.",
@@ -66,7 +71,7 @@
       "approach": "Apply the specialist-owned procedure, required evidence, output shape, failure disposition, and handoff. Reuse model-authoring guidance when the task is within the adopted REM profile and reuse authority and assurance behavior where applicable; do not replace specialist rules with a universal procedure."
     },
     "how_much": {
-      "scope": "All published capability families. This common obligation preserves the detailed currently supported authoring, implementation, assessment, foundations, discovery, learning, and handoff contracts; their individual requirement tables and closed classifications remain at existing owners pending migration. Newly drafted REM entity authoring is not automatic adoption by published commands or skills, and currently retired public output formats remain retired until deliberately changed."
+      "scope": "All published capability families. This common obligation preserves the detailed currently supported authoring, implementation, assessment, foundations, discovery, learning, and handoff contracts; their individual requirement tables and closed classifications remain at existing owners pending migration. Newly drafted REM entity authoring is not automatic adoption by published commands or skills, and currently retired public output formats remain retired until deliberately changed. The requirement-first workflow extension is draft; existing Function/AR and product-contract coverage must be reassessed before its adoption."
     }
   },
   "acceptance_criteria": [
@@ -74,7 +79,8 @@
     "Artifact output contains all applicable required groups and no unfilled placeholders; a structural aid does not introduce hidden policy, judgments, or mutable lifecycle state.",
     "Implementation, diagnosis, review, and external handoff retain their distinct mutation and evidence boundaries; guidance for one activity does not silently execute another.",
     "An unsupported output format or unresolved adoption boundary is reported explicitly; the REM target model does not itself authorize retired feature, proof, or standalone architecture operations.",
-    "Reported results distinguish produced work, partial or blocked scope, observations, judgments, and remaining obligations rather than presenting progress as approved completion."
+    "Reported results distinguish produced work, partial or blocked scope, observations, judgments, and remaining obligations rather than presenting progress as approved completion.",
+    "Under the adopted requirement-first workflow, specialist outputs are the scoped engineering model changes or justified reuse conclusions: Requirement Analysis authors requirements, System Design logical behavior, and Architecture Design accountable realization and ARs. A skill invocation does not require a duplicate standalone report or ownership of another authoring stage."
   ],
   "assumptions": [],
   "constraints": [],

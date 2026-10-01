@@ -151,7 +151,19 @@ For each material technology choice, retain enough rationale to answer:
 
 The rationale may be stored in the owning Module or Interface realization view or in an attributable decision record when the reasoning deserves independent review.
 
-### Derive physical views
+### Author the technical model
+
+Use the [technical-model contract](../models/architecture-design.md#technical-model) to make the selected architectural implementation explicit before organizing its presentation.
+
+1. Identify the governing responsibilities, Functions, ARs and existing Interfaces. Reuse their identities and ownership.
+2. Define the necessary technical components, each component's responsibility/exclusions and its realization mappings. Name coherent roles before attaching technology choices; do not introduce a Module for every executable or dependency.
+3. Define or reference the connecting contracts: participants, requests/results or data representation, guarantees, compatibility and material failures. State who owns and may mutate each significant state or artifact.
+4. Record material technology choices with rationale, alternatives and consequences. Expose unresolved mappings and distinguish design intent from implementation observations.
+5. Walk through a normal interaction and material failure or incompatible-input cases to assess the composition. Draw Technical structure within Logical; use Development for source/package/build organization, Process for execution and Physical for placement. These projections reuse the same owned facts.
+
+Start with prose, component/contract tables and attributable diagrams at existing owners. Refine structured realization records when their semantics and tooling need are settled; the method does not require a new schema, standalone technical-model document or implementation before design.
+
+### Derive realization views
 
 Runtime topology, datastore topology, deployment topology, and technology inventories are useful views, but they SHOULD be generated or derived from the authoritative Module and Interface realization information.
 Do not create independently maintained copies of the same physical relationships.
@@ -185,7 +197,7 @@ Generate the classic **Logical**, **Process**, **Development**, **Physical**, an
 Do not separately author the same architectural facts in the views.
 Use the views to improve comprehension and expose missing or contradictory architecture:
 
-- Logical: hierarchy, responsibility, allocation, encapsulation/exposure, Interface, and state/data-authority gaps;
+- Logical: hierarchy, responsibility, allocation, encapsulation/exposure, Interface, technical-component/contract mapping, and state/data-authority gaps;
 - Process: runtime, lifecycle, communication, isolation, scaling, concurrency, or failure-boundary gaps;
 - Development: software organization, implementation mappings, and test organization or execution-ownership gaps;
 - Physical: deployment, persistence-placement, connectivity, and external-runtime gaps;

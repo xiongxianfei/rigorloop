@@ -147,7 +147,12 @@ class Model:
                     raise ValueError(f"{relative}: missing title")
                 if kind in ("module", "interface"):
                     slug = re.sub(r"[^a-z0-9]+", "-", data["title"].lower()).strip("-")
-                    if path.parent.name != f"{identity}-{slug}":
+                    if not slug:
+                        raise ValueError(f"{relative}: title has no descriptive name")
+                    if kind == "module":
+                        if not re.fullmatch(re.escape(identity) + r"-[a-z0-9]+(?:-[a-z0-9]+)*", path.parent.name):
+                            raise ValueError(f"{relative}: owner directory does not match identity and retained slug")
+                    elif path.parent.name != f"{identity}-{slug}":
                         raise ValueError(f"{relative}: owner directory does not match identity and title")
                 if kind == "module" and ({"parent_module", "children"} & set(data)):
                     raise ValueError(f"{relative}: duplicate authored Module containment")

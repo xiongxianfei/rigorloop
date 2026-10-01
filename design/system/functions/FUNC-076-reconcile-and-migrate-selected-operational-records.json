@@ -1,0 +1,45 @@
+{
+  "id": "FUNC-076",
+  "type": "function",
+  "title": "Reconcile and migrate selected operational records",
+  "status": "draft",
+  "description": "Translate only supported selected source records with explicit preservation and disposition; migration is distinct from restoring an already supported backup.",
+  "inputs": [
+    "Selected original records, formats and content identities",
+    "Explicit disposition and supported target contract",
+    "Expected destination state"
+  ],
+  "preconditions": [
+    "The requested scope and applicable action authority are explicit."
+  ],
+  "outputs": [
+    "Coherent migrated scope with original-source provenance",
+    "Archival exclusions and unresolved dependency/conflict report"
+  ],
+  "behavior": [
+    "Before publication, migration identifies selected source content and identities and classifies each record as supported for import, retained archival evidence, or blocked pending disposition; counts alone do not establish semantic equivalence.",
+    "Imported records preserve stable identities, actor decisions, unresolved findings, relationships, original subject identities and assessment meaning; source format, original location and content identity remain attributable.",
+    "Unsupported historical formats remain archival and do not acquire runtime support or renewed approval; active work that depends on them blocks activation until a responsible disposition is recorded.",
+    "Required original bytes, uncommitted source content and required artifacts remain recoverable. Migrating records does not itself authorize source deletion; SR-024 governs retirement.",
+    "Changed source identity, interruption, conflicting destination content or an invalid final reference prevents partial activation and preserves sources and unrelated destination work. A retry cannot duplicate already imported identities or silently merge conflicts.",
+    "Activation identifies one authoritative operational destination and reconciles current readers and writers; no permanent dual-write or silent legacy fallback is established."
+  ],
+  "failure_behavior": [
+    {
+      "condition": "Required source, interpretation or scope integrity cannot be established.",
+      "outcome": "Report the specific gap without claiming completeness, inventing decisions or mutating unrelated work."
+    },
+    {
+      "condition": "Selected source or destination changes before a mutating operation can complete.",
+      "outcome": "Preserve established work and report conflict or interruption; no silent overwrite or automatic semantic merge."
+    }
+  ],
+  "unallocated_reason": "The local operational-history extension is draft system analysis. Module/Interface and AR allocation are deferred to Architecture Allocation; existing v3 facets do not establish realization of this behavior.",
+  "sources": [
+    {
+      "source": "SRC-LOCAL-OPERATIONAL-ANALYSIS",
+      "locator": "FUNC-076",
+      "basis": "Draft derivation from the refined IRs and RR proposal; no approval, implementation or satisfaction claim."
+    }
+  ]
+}

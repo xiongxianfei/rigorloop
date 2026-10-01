@@ -1,0 +1,64 @@
+{
+  "id": "AR-049",
+  "type": "allocated-requirement",
+  "title": "Qualify complete browser product resources",
+  "status": "draft",
+  "statement": "The Package production Module shall qualify complete browser product resources within its accountable browser contribution to SR-088, retaining the stated limits of collaborating owners.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "A locally successful browser step can hide missing ownership or an invalid cross-boundary conclusion.",
+      "desired_outcome": "Qualify complete browser product resources."
+    },
+    "why": {
+      "rationale": "MOD-013 owns the behavior necessary for the selected SR-088 criteria; the SR remains the system-wide obligation."
+    },
+    "who": {
+      "stakeholders": [
+        "Customer authors and readers",
+        "Product maintainers and reviewers"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "When generating, reading, recovering or qualifying the selected browser scope."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "MOD-013 and its declared browser cooperation contracts."
+      ]
+    },
+    "how": {
+      "approach": "Apply the constrained Functions and preserve source, output, qualification and authority distinctions at the boundary."
+    },
+    "how_much": {
+      "scope": "Contribution to SR-088 criteria 1, 2, 3, 4, 5, 6. Other Module contributions and final product qualification remain distinct."
+    }
+  },
+  "acceptance_criteria": [
+    "The candidate inventory identifies generator, supported profile definitions, projection and reading resources, relevant licenses and all required generation/runtime dependencies, bound to actual artifact identity.",
+    "In a clean declared generation environment, the acquired candidate generates views for a minimal customer project without the RigorLoop source checkout, undeclared build steps or hidden downloads.",
+    "Qualification includes reading a copied output offline in the declared browser environment; dependency and profile incompatibilities produce explicit diagnostics rather than a false successful result.",
+    "Acquisition or update verifies the selected artifact through the declared trust/integrity mechanism and preserves customer engineering definitions, unrelated files and existing shared snapshots; failed operations report actual effects and recovery limits.",
+    "Generator, profile, reading environment and dependency compatibility are declared and assessed together for each supported configuration; unsupported configurations are not implied by a generic download.",
+    "The reusable tool artifact and RigorLoop reference-documentation snapshot have separately identifiable content and qualification. A hosted sample or successful local build does not establish customer-tool support or public availability."
+  ],
+  "assumptions": [],
+  "constraints": [
+    "Draft allocation; does not establish implemented browser support or requirement satisfaction."
+  ],
+  "allocated_to": "MOD-013",
+  "constrains": [
+    "FUNC-060",
+    "FUNC-061",
+    "FUNC-083"
+  ],
+  "sources": [
+    {
+      "source": "SRC-CUSTOMER-BROWSER-DESIGN",
+      "locator": "AR-049; SR-088 criteria 1, 2, 3, 4, 5, 6",
+      "basis": "System and Architecture Design from SR-084–088 and refined SR-060; proposed responsibility, contract and realization only. No implementation, platform qualification or product availability is established."
+    }
+  ]
+}

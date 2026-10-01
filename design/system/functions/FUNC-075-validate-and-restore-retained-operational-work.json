@@ -1,0 +1,47 @@
+{
+  "id": "FUNC-075",
+  "type": "function",
+  "title": "Validate and restore retained operational work",
+  "status": "draft",
+  "description": "Validate and restore a retained scope, including transfer into another environment; backup creation and migration interpretation are separate behaviors.",
+  "inputs": [
+    "Selected retained backup and declared project identity",
+    "Authorized destination and expected destination state"
+  ],
+  "preconditions": [
+    "The requested scope and applicable action authority are explicit."
+  ],
+  "outputs": [
+    "Validated restoration or transfer result with retained identities and declared scope",
+    "Explicit incompatibility, conflict, unavailable or interrupted outcome"
+  ],
+  "behavior": [
+    "With the original store unavailable and a valid complete backup accessible, restore reproduces the selected records, finding dispositions, subjects and revisions, decisions, provenance and required artifact content in the declared project scope.",
+    "Wrong-project input, unsupported interpretation, corrupted content or missing required artifacts is rejected before destination activation; source backup and unrelated destination content remain unchanged.",
+    "Restored reviews and verification results retain their original subject identities and applicability; neither restoration nor a different current engineering revision renews approval or evidence freshness.",
+    "An occupied or changed destination causes an explicit conflict unless a separately authorized safe replacement is supported; restoration never silently merges divergent histories or overwrites newer work.",
+    "An interrupted restoration exposes no partially restored state as complete or ready for resumption; retry identifies the actual destination state and preserves existing usable content.",
+    "When no usable backup exists, restoration reports unavailable and does not initialize an empty history as successful recovery.",
+    "A different project identity, divergent existing history or reused record identity with different content causes a conflict and leaves both histories intact; project-name similarity does not establish identity.",
+    "Excluded records or artifacts are visible before reliance, and the receiving result does not claim completeness outside the declared transferable scope.",
+    "Transfer leaves the source usable, does not change engineering-model files, and does not silently refresh assessments to the destination checkout revision."
+  ],
+  "failure_behavior": [
+    {
+      "condition": "Required source, interpretation or scope integrity cannot be established.",
+      "outcome": "Report the specific gap without claiming completeness, inventing decisions or mutating unrelated work."
+    },
+    {
+      "condition": "Selected source or destination changes before a mutating operation can complete.",
+      "outcome": "Preserve established work and report conflict or interruption; no silent overwrite or automatic semantic merge."
+    }
+  ],
+  "unallocated_reason": "The local operational-history extension is draft system analysis. Module/Interface and AR allocation are deferred to Architecture Allocation; existing v3 facets do not establish realization of this behavior.",
+  "sources": [
+    {
+      "source": "SRC-LOCAL-OPERATIONAL-ANALYSIS",
+      "locator": "FUNC-075",
+      "basis": "Draft derivation from the refined IRs and RR proposal; no approval, implementation or satisfaction claim."
+    }
+  ]
+}

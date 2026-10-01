@@ -33,14 +33,16 @@
       "approach": "Identify changed claim bases and affected support through recorded dependencies. Reassess applicability, mark insufficiently supported current conclusions as unestablished, and identify affected verification that must be repeated. Treat scheduled checks as plans until actual observations are recorded. Preserve earlier evidence and judgments with their historical basis; a new assessment yields new current support rather than rewriting old observations."
     },
     "how_much": {
-      "scope": "Changes within the governed scope and explicit assessment dependencies. The system exposes unresolved impact or applicability when dependencies are incomplete. This obligation defines required reassessment behavior without prescribing automatic execution, CI triggers, or an unrestricted inference engine."
+      "scope": "Changes within the governed scope and explicit assessment dependencies. The system exposes unresolved impact or applicability when dependencies are incomplete. This obligation defines required reassessment behavior without prescribing automatic execution, CI triggers, or an unrestricted inference engine. The requirement-first workflow extension is draft; existing Function/AR and product-contract coverage must be reassessed before its adoption."
     }
   },
   "acceptance_criteria": [
     "Changing an assessed subject or acceptance criterion makes the affected earlier support subject to applicability reassessment and identifies verification that requires repetition.",
     "Planning a repeated check does not restore current satisfaction; the affected scope remains unestablished until applicable observations and a justified conclusion support it.",
     "New observations and a revised judgment retain their own assessed basis, while the earlier observation and judgment remain inspectable against their original state.",
-    "When incomplete dependencies prevent determining which support is affected, the uncertainty and potentially affected scope are visible rather than treated as unaffected."
+    "When incomplete dependencies prevent determining which support is affected, the uncertainty and potentially affected scope are visible rather than treated as unaffected.",
+    "Correction reassessment examines the changes and affected interactions and explicitly preserves only still-applicable prior support. It establishes adequate coverage for the current claim without automatically rereading unchanged files or repeating unaffected checks.",
+    "Bookkeeping changes or evidence-collection retries alone do not automatically invalidate an engineering approval; changed meaning, subject, criterion, conditions or contradictory evidence require an applicability decision before renewed reliance."
   ],
   "assumptions": [],
   "constraints": [],
@@ -54,6 +56,11 @@
       "source": "SRC-COMPLETE-ANALYSIS",
       "locator": "SR-029",
       "basis": "Derived from IR-004: IR-004 explicitly requires applicability reassessment and repetition of affected verification after changes rather than inheritance from stable identity. The criteria describe intended observable behavior, not executed verification."
+    },
+    {
+      "source": "SRC-REQUIREMENT-FIRST-WORKFLOW",
+      "locator": "SR-029",
+      "basis": "User-selected requirement-first workflow and one mandatory whole-change Code Review gate. Proposed requirement analysis only; existing product contracts remain active until coordinated adoption. No new Function, AR, implementation or approval is inferred."
     }
   ]
 }

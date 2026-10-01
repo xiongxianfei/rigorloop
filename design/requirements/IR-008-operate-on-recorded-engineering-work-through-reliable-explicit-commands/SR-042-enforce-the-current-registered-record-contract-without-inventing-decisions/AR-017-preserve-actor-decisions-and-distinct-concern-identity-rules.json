@@ -3,7 +3,7 @@
   "type": "allocated-requirement",
   "title": "Preserve actor decisions and distinct concern identity rules",
   "status": "draft",
-  "statement": "The Operational record persistence Module shall enforce the applicable prior-state preservation rules without altering actor-supplied meaning or treating engineering observations as structural approval, while distinguishing current Review finding identity from immutable change-blocker origin.",
+  "statement": "The Work record storage Module shall enforce the applicable prior-state preservation rules without altering actor-supplied meaning or treating engineering observations as structural approval, while distinguishing current Review finding identity from immutable change-blocker origin.",
   "analysis": {
     "method": "5W2H",
     "what": {

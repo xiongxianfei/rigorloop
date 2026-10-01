@@ -3,12 +3,13 @@
   "type": "feature",
   "title": "Produce reproducible RigorLoop product candidates",
   "status": "draft",
-  "description": "Product maintainers can produce and inspect faithful supported skill archives and a complete executable CLI package with attributable metadata, reproducible declared contents, and actual packed-consumer qualification. The capability preserves authored meaning while separating candidate production from installation and public release.",
+  "description": "Product maintainers can produce and inspect faithful supported skill archives and a complete executable CLI package and reusable architecture browser resources with attributable metadata, reproducible declared contents, and actual packed-consumer qualification. The capability preserves authored meaning while separating candidate production from installation and public release.",
   "scope": {
     "includes": [
       "Canonical-source and declared-target generation with complete resources and faithful transformations.",
       "Isolated deterministic candidate output and factual artifact integrity metadata.",
-      "Actual CLI package content and clean-consumer assessment with observed scope."
+      "Actual CLI package content and clean-consumer assessment with observed scope.",
+      "Actual browser-candidate resource completeness and independent customer generation/offline-reading qualification."
     ],
     "excludes": [
       "Installing into active user roots as a build side effect.",
@@ -21,7 +22,8 @@
     "FUNC-061",
     "FUNC-062",
     "FUNC-028",
-    "FUNC-029"
+    "FUNC-029",
+    "FUNC-083"
   ],
   "sources": [
     {
@@ -43,6 +45,16 @@
       "source": "SRC-PUBLISHED-PACKAGING",
       "locator": "docs/design/engineering/packaging.md#DIST-SR-23",
       "basis": "IR-010 establishes this stakeholder-visible published-product capability. This draft models existing selected obligations, not observed publication or installation success."
+    },
+    {
+      "source": "SRC-CUSTOMER-BROWSER-REQUIREMENTS",
+      "locator": "FEAT-018",
+      "basis": "User-requested reusable customer architecture browser; requirement-level author analysis. Current records remain draft; no implemented, published or independently approved behavior is claimed."
+    },
+    {
+      "source": "SRC-CUSTOMER-BROWSER-DESIGN",
+      "locator": "FEAT-018",
+      "basis": "System and Architecture Design from SR-084\u2013088 and refined SR-060; proposed responsibility, contract and realization only. No implementation, platform qualification or product availability is established."
     }
   ]
 }

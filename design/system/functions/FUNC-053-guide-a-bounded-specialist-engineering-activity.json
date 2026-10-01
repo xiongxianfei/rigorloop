@@ -38,6 +38,11 @@
       "source": "SRC-PUBLISHED-PRODUCTS",
       "locator": "FUNC-053",
       "basis": "Assign MOD-012 as the proposed accountable primary responsibility after Functional Analysis. Current product source contracts retain detailed behavior authority; allocation is not runtime adoption or complete AR coverage."
+    },
+    {
+      "source": "SRC-WORKFLOW-DESIGN",
+      "locator": "FUNC-053",
+      "basis": "Draft integrated design from the accepted requirement-first basis. This defines target responsibility and cooperation, not installed capability, design approval, runtime evidence or SQLite adoption."
     }
   ],
   "description": "Apply the selected specialist procedure to an authorized activity and explain or produce its scoped usable result. This Function composes the public engineering guidance contract without replacing the specialist methods or duplicating model-authoring, authority, or evidence judgments.",
@@ -56,7 +61,11 @@
     "Use the complete applicable output shape, fill required groups, omit inapplicable groups, and leave no unfilled placeholders; do not turn structural aids into policy or mutable state owners.",
     "Preserve specialist mutation, identity, recovery, independence, and evidence rules rather than substituting a common checklist.",
     "Use current authoritative vocabulary and privacy-safe evidence, distinguish actual observations from judgments, and report scope and claim limits.",
-    "Identify the local receiving activity without assuming permission to execute it."
+    "Identify the local receiving activity without assuming permission to execute it.",
+    "For requirement analysis, interpret RR against existing IR/SR owners and produce justified reuse or scoped model changes with stakeholder Feature/Scenario analysis. Preserve unsupported or conflicting request portions.",
+    "For System Design, reconcile logical Functions and Feature/SR relationships; for Architecture Design, allocate responsibility, Interfaces, realization and ARs without redefining stakeholder obligations.",
+    "Compose the applicable requirement, integrated design, delivery, advisory, whole-change review or Verify method with its exact subjects and actor-supplied judgment. Shared applicability and authority meanings remain with Governance.",
+    "During implementation, complete the authorized work and required checks, retain blockers and known-defect disposition, and report milestone progress or whole-scope readiness without manufacturing milestone approval."
   ],
   "failure_behavior": [
     {

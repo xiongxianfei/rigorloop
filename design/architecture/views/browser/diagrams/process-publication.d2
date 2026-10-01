@@ -1,12 +1,12 @@
 # Generated from explicit REM realization facts; do not edit.
-# Source identity: 2cf8f01cf8087e0b226dbd431d6452970b13954a16b84408d91173987708417e
+# Source identity: 3b423207b261cd33066f4517d60da462b029232e9d9a626120e9b455a4b27e5a
 # Source-observed control flow for the selected record operation. Solid arrows follow the recorded main-step order; dashed paths are conditional terminal alternatives and never rejoin. Failures are listed separately because their records do not identify a single triggering step. Scroll vertically to follow the remaining stages and terminal alternatives. This source projection is not an executed transaction or durability result.
 vars: { d2-config: { layout-engine: elk } }
 direction: down
 
-n_6d61696e3a30: "Admit explicit request\n\nEngineering command interface" {
+n_6d61696e3a30: "Admit explicit request\n\nCommand handling" {
   link: "#process/interaction/publication"
-  tooltip: "Admit explicit request; Engineering command interface (MOD-010); The mutation adapter validates request transport and selectors, then calls executeTargetedStore with construction and receipt-preparation callbacks. It does not infer missing decisions."
+  tooltip: "Admit explicit request; Command handling (MOD-010); The mutation adapter validates request transport and selectors, then calls executeTargetedStore with construction and receipt-preparation callbacks. It does not infer missing decisions."
   style.fill: "#ECF3FF"
   style.stroke: "#597390"
   style.font-color: "#24364A"
@@ -30,9 +30,9 @@ n_6d61696e3a30 -> n_6272616e63683a303a303a636f6e646974696f6e: "terminal alternat
   style.font-size: 14
   style.stroke-dash: 3
 }
-n_6272616e63683a303a303a737465703a30: "Inspect preview snapshot\n\nOperational record persistence" {
+n_6272616e63683a303a303a737465703a30: "Inspect preview snapshot\n\nWork record storage" {
   link: "#process/interaction/publication"
-  tooltip: "Inspect preview snapshot; Operational record persistence (MOD-011); Use the gated coherent snapshot path without acquiring the writer lock; construct the candidate from explicit intent and validate structure, preservation, expected revision, target identities, and declared read basis."
+  tooltip: "Inspect preview snapshot; Work record storage (MOD-011); Use the gated coherent snapshot path without acquiring the writer lock; construct the candidate from explicit intent and validate structure, preservation, expected revision, target identities, and declared read basis."
   style.fill: "#EEF6F1"
   style.stroke: "#597390"
   style.font-color: "#24364A"
@@ -46,9 +46,9 @@ n_6272616e63683a303a303a636f6e646974696f6e -> n_6272616e63683a303a303a737465703a
   style.font-size: 14
   style.stroke-dash: 3
 }
-n_6272616e63683a303a303a737465703a31: "Prepare preview receipt\n\nEngineering command interface" {
+n_6272616e63683a303a303a737465703a31: "Prepare preview receipt\n\nCommand handling" {
   link: "#process/interaction/publication"
-  tooltip: "Prepare preview receipt; Engineering command interface (MOD-010); The bounded receipt callback serializes valid with both inspected before revision and candidate revision; candidate changed targets and observations are not saved effects."
+  tooltip: "Prepare preview receipt; Command handling (MOD-010); The bounded receipt callback serializes valid with both inspected before revision and candidate revision; candidate changed targets and observations are not saved effects."
   style.fill: "#ECF3FF"
   style.stroke: "#597390"
   style.font-color: "#24364A"
@@ -62,9 +62,9 @@ n_6272616e63683a303a303a737465703a30 -> n_6272616e63683a303a303a737465703a31 {
   style.font-size: 14
   style.stroke-dash: 3
 }
-n_6272616e63683a303a303a737465703a32: "Recheck preview coherence\n\nOperational record persistence" {
+n_6272616e63683a303a303a737465703a32: "Recheck preview coherence\n\nWork record storage" {
   link: "#process/interaction/publication"
-  tooltip: "Recheck preview coherence; Operational record persistence (MOD-011); The snapshot wrapper repeats gate/epoch and record revision checks before returning the prepared preview. It creates no reservation, journal, or transaction lock/epoch."
+  tooltip: "Recheck preview coherence; Work record storage (MOD-011); The snapshot wrapper repeats gate/epoch and record revision checks before returning the prepared preview. It creates no reservation, journal, or transaction lock/epoch."
   style.fill: "#EEF6F1"
   style.stroke: "#597390"
   style.font-color: "#24364A"
@@ -95,9 +95,9 @@ n_6272616e63683a303a303a737465703a32 -> n_6272616e63683a303a303a6f7574636f6d65 {
   style.font-size: 14
   style.stroke-dash: 3
 }
-n_6d61696e3a31: "Inspect coherent before-state\n\nOperational record persistence" {
+n_6d61696e3a31: "Inspect coherent before-state\n\nWork record storage" {
   link: "#process/interaction/publication"
-  tooltip: "Inspect coherent before-state; Operational record persistence (MOD-011); Read the selected registered v3 record set through snapshot. Reader gates reject a live writer or retained transaction attention; gate/epoch and record revision checks exclude a mixed snapshot presented as usable."
+  tooltip: "Inspect coherent before-state; Work record storage (MOD-011); Read the selected registered v3 record set through snapshot. Reader gates reject a live writer or retained transaction attention; gate/epoch and record revision checks exclude a mixed snapshot presented as usable."
   style.fill: "#EEF6F1"
   style.stroke: "#597390"
   style.font-color: "#24364A"
@@ -110,9 +110,9 @@ n_6d61696e3a30 -> n_6d61696e3a31 {
   style.fill: "#FFFFFF"
   style.font-size: 14
 }
-n_6d61696e3a32: "Acquire writer exclusion\n\nOperational record persistence" {
+n_6d61696e3a32: "Acquire writer exclusion\n\nWork record storage" {
   link: "#process/interaction/publication"
-  tooltip: "Acquire writer exclusion; Operational record persistence (MOD-011); Create the private directory when necessary, exclusively create the writer lock with an ownership token, and update the epoch. Competing CLI writers are excluded; these private effects precede authoritative publication."
+  tooltip: "Acquire writer exclusion; Work record storage (MOD-011); Create the private directory when necessary, exclusively create the writer lock with an ownership token, and update the epoch. Competing CLI writers are excluded; these private effects precede authoritative publication."
   style.fill: "#EEF6F1"
   style.stroke: "#597390"
   style.font-color: "#24364A"
@@ -125,9 +125,9 @@ n_6d61696e3a31 -> n_6d61696e3a32 {
   style.fill: "#FFFFFF"
   style.font-size: 14
 }
-n_6d61696e3a33: "Construct and recheck candidate\n\nOperational record persistence" {
+n_6d61696e3a33: "Construct and recheck candidate\n\nWork record storage" {
   link: "#process/interaction/publication"
-  tooltip: "Construct and recheck candidate; Operational record persistence (MOD-011); Require no retained journal, reread the before-set under exclusion, compare its revision with the initial snapshot, construct the lossless complete candidate, and validate the expected revision, target identities, declared reads, references, and preservation rules. No declared identity is silently refreshed."
+  tooltip: "Construct and recheck candidate; Work record storage (MOD-011); Require no retained journal, reread the before-set under exclusion, compare its revision with the initial snapshot, construct the lossless complete candidate, and validate the expected revision, target identities, declared reads, references, and preservation rules. No declared identity is silently refreshed."
   style.fill: "#EEF6F1"
   style.stroke: "#597390"
   style.font-color: "#24364A"
@@ -140,9 +140,9 @@ n_6d61696e3a32 -> n_6d61696e3a33 {
   style.fill: "#FFFFFF"
   style.font-size: 14
 }
-n_6d61696e3a34: "Prepare bounded receipt\n\nEngineering command interface" {
+n_6d61696e3a34: "Prepare bounded receipt\n\nCommand handling" {
   link: "#process/interaction/publication"
-  tooltip: "Prepare bounded receipt; Engineering command interface (MOD-010); Store.record determines whether candidate bytes changed and invokes the command-owned primary receipt callback before journal creation or target replacement. Serialize the storage result and bounded diagnostic summary; optional details may be explicitly omitted. A prepared saved receipt remains private until commit succeeds."
+  tooltip: "Prepare bounded receipt; Command handling (MOD-010); Store.record determines whether candidate bytes changed and invokes the command-owned primary receipt callback before journal creation or target replacement. Serialize the storage result and bounded diagnostic summary; optional details may be explicitly omitted. A prepared saved receipt remains private until commit succeeds."
   style.fill: "#ECF3FF"
   style.stroke: "#597390"
   style.font-color: "#24364A"
@@ -172,9 +172,9 @@ n_6d61696e3a34 -> n_6272616e63683a343a303a636f6e646974696f6e: "terminal alternat
   style.font-size: 14
   style.stroke-dash: 3
 }
-n_6272616e63683a343a303a737465703a30: "Release unchanged writer\n\nOperational record persistence" {
+n_6272616e63683a343a303a737465703a30: "Release unchanged writer\n\nWork record storage" {
   link: "#process/interaction/publication"
-  tooltip: "Release unchanged writer; Operational record persistence (MOD-011); Release the owned lock and return the already prepared unchanged receipt. Do not create a journal or replace authoritative files; lock/epoch setup may already have occurred."
+  tooltip: "Release unchanged writer; Work record storage (MOD-011); Release the owned lock and return the already prepared unchanged receipt. Do not create a journal or replace authoritative files; lock/epoch setup may already have occurred."
   style.fill: "#EEF6F1"
   style.stroke: "#597390"
   style.font-color: "#24364A"
@@ -205,9 +205,9 @@ n_6272616e63683a343a303a737465703a30 -> n_6272616e63683a343a303a6f7574636f6d65 {
   style.font-size: 14
   style.stroke-dash: 3
 }
-n_6d61696e3a35: "Persist prepared journal\n\nOperational record persistence" {
+n_6d61696e3a35: "Persist prepared journal\n\nWork record storage" {
   link: "#process/interaction/publication"
-  tooltip: "Persist prepared journal; Operational record persistence (MOD-011); Retain exact before and candidate bytes/identities, declared writes and reads, transaction identity, and created-directory tracking in a phase=prepared journal under owned exclusion. Retention precedes authoritative replacement."
+  tooltip: "Persist prepared journal; Work record storage (MOD-011); Retain exact before and candidate bytes/identities, declared writes and reads, transaction identity, and created-directory tracking in a phase=prepared journal under owned exclusion. Retention precedes authoritative replacement."
   style.fill: "#EEF6F1"
   style.stroke: "#597390"
   style.font-color: "#24364A"
@@ -220,9 +220,9 @@ n_6d61696e3a34 -> n_6d61696e3a35 {
   style.fill: "#FFFFFF"
   style.font-size: 14
 }
-n_6d61696e3a36: "Publish exact candidate bytes\n\nOperational record persistence" {
+n_6d61696e3a36: "Publish exact candidate bytes\n\nWork record storage" {
   link: "#process/interaction/publication"
-  tooltip: "Publish exact candidate bytes; Operational record persistence (MOD-011); Recheck declared read identities, recognize every target as its recorded before or candidate value, and publish only declared candidate writes through guarded filesystem operations. Repeat ownership, known-state, and target checks during replacement; verify all candidate identities afterward."
+  tooltip: "Publish exact candidate bytes; Work record storage (MOD-011); Recheck declared read identities, recognize every target as its recorded before or candidate value, and publish only declared candidate writes through guarded filesystem operations. Repeat ownership, known-state, and target checks during replacement; verify all candidate identities afterward."
   style.fill: "#EEF6F1"
   style.stroke: "#597390"
   style.font-color: "#24364A"
@@ -235,9 +235,9 @@ n_6d61696e3a35 -> n_6d61696e3a36 {
   style.fill: "#FFFFFF"
   style.font-size: 14
 }
-n_6d61696e3a37: "Persist committed phase\n\nOperational record persistence" {
+n_6d61696e3a37: "Persist committed phase\n\nWork record storage" {
   link: "#process/interaction/publication"
-  tooltip: "Persist committed phase; Operational record persistence (MOD-011); Recheck the declared read basis after replacement and before commitment, then durably rewrite the journal with phase=committed. Failures do not expose the prepared saved receipt as successful publication."
+  tooltip: "Persist committed phase; Work record storage (MOD-011); Recheck the declared read basis after replacement and before commitment, then durably rewrite the journal with phase=committed. Failures do not expose the prepared saved receipt as successful publication."
   style.fill: "#EEF6F1"
   style.stroke: "#597390"
   style.font-color: "#24364A"
@@ -250,9 +250,9 @@ n_6d61696e3a36 -> n_6d61696e3a37 {
   style.fill: "#FFFFFF"
   style.font-size: 14
 }
-n_6d61696e3a38: "Clean up and return receipt\n\nOperational record persistence" {
+n_6d61696e3a38: "Clean up and return receipt\n\nWork record storage" {
   link: "#process/interaction/publication"
-  tooltip: "Clean up and return receipt; Operational record persistence (MOD-011); After commitment, remove the exact retained journal, release owned exclusion, and return the previously prepared receipt for command output. Cleanup failure remains transaction attention; it is not an authorized rollback of committed content."
+  tooltip: "Clean up and return receipt; Work record storage (MOD-011); After commitment, remove the exact retained journal, release owned exclusion, and return the previously prepared receipt for command output. Cleanup failure remains transaction attention; it is not an authorized rollback of committed content."
   style.fill: "#EEF6F1"
   style.stroke: "#597390"
   style.font-color: "#24364A"

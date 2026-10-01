@@ -3,7 +3,7 @@
   "type": "allocated-requirement",
   "title": "Retain decision reasoning and its definition association",
   "status": "draft",
-  "statement": "The Engineering model storage Module shall retain recorded decision context, chosen outcome, rationale, alternatives, and consequences with their definition association and basis, keeping still-applicable reasoning accessible from current content and exposing missing or unresolved associations.",
+  "statement": "The Definition storage Module shall retain recorded decision context, chosen outcome, rationale, alternatives, and consequences with their definition association and basis, keeping still-applicable reasoning accessible from current content and exposing missing or unresolved associations.",
   "analysis": {
     "method": "5W2H",
     "what": {

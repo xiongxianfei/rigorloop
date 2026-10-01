@@ -7,11 +7,11 @@
   "analysis": {
     "method": "5W2H",
     "what": {
-      "problem": "Published command behavior, record preservation, and failure outcomes are not explicit in the initial REM model; broad knowledge and change capabilities alone do not explain how callers safely operate on the delivered recording interface.",
-      "desired_outcome": "Callers can select useful recorded context, supply their own decisions, obtain faithful bounded outcomes, and recover interruption under the published command contract."
+      "problem": "Published command behavior, record preservation, and failure outcomes are not explicit in the initial REM model; broad knowledge and change capabilities alone do not explain how callers safely operate on the delivered recording interface. Callers should not have to navigate operational storage files or manage manifests to obtain context or record decisions; separate local history also needs explicit availability and recovery outcomes.",
+      "desired_outcome": "Callers can select useful recorded context, supply their own decisions, obtain faithful bounded outcomes, and recover interruption under the published command contract. This includes bounded project-local operational queries and explicit backup, restoration and transfer requests without conflating those operations with engineering decisions."
     },
     "why": {
-      "rationale": "Automation and people depend on predictable commands, precise selection, preserved neighboring work, and outcomes that separate storage success from approval."
+      "rationale": "Automation and people depend on predictable commands, precise selection, preserved neighboring work, and outcomes that separate storage success from approval. The same responsibility applies when multiple local agents share operational records and when storage realization changes."
     },
     "who": {
       "stakeholders": [
@@ -22,23 +22,25 @@
     },
     "when": {
       "conditions": [
-        "When selecting a command, inspecting project facts or exact recorded work, preparing or saving a decision, retrying or recovering an interrupted operation, and investigating an invocation."
+        "When selecting a command, inspecting project facts or exact recorded work, preparing or saving a decision, retrying or recovering an interrupted operation, and investigating an invocation.",
+        "When several local agents inspect or update the same project work, when history is absent or unavailable, and when explicitly creating, restoring, transferring or migrating operational backups."
       ]
     },
     "where": {
       "contexts": [
-        "The published local command-line interface and its supported registered change stores, explicit repository subjects, and private diagnostic state."
+        "The published local command-line interface, selected project operational records and retained evidence artifacts, explicit engineering subjects, backup/restore destinations, and private diagnostics; initially one checkout and one user with one or more local agents."
       ]
     },
     "how": {
-      "approach": "Derive obligations from the current CLI and Record Format contracts while preserving their exact versions, public operations, closed vocabularies, limits, and preservation rules at their existing authoritative sources. Use black-box Scenarios and logical Functions to expose previously missing product capabilities."
+      "approach": "Derive explicit, bounded inspection and recording obligations from the retained CLI and Record Format contracts and the local operational-history need. Preserve actor-supplied meaning, project and subject identity, reference integrity, stale-write protection, coherent publication and faithful outcomes while reconciling representation-specific behavior through controlled migration. Callers select engineering meaning without constructing storage scaffolding. Expose absence, incomplete scope and incompatible recovery inputs explicitly; do not silently initialize over missing history or infer approval. IR-003 owns backup content, retention and restoration meaning; this IR owns their reliable explicit command interface."
     },
     "how_much": {
-      "scope": "Covers current CLI command admission, discovery, selected reads, explicit recording, transaction recovery, result projection, and local diagnostics. Installation content and policy remain separately owned; only its generic command/result integration is included. This records current v3 workflow-store capabilities, not support for operating on the new REM design JSON, a replacement workflow decision engine, or a completed contract migration."
+      "scope": "Covers command admission, discovery, selected reads, explicit recording, concurrent local access, transaction recovery, result projection and private diagnostics, extended to supported operational backup, restoration, transfer and migration commands. SR-040–047 and new SR-078 express the revised draft operational obligations. Existing ARs, Interfaces and realization observations retain their v3 scope and require downstream architecture reconciliation before replacement-store adoption; their prior assessments do not establish coverage of the extension. Installation content and policy remain separately owned. The scope does not introduce command support for editing REM design JSON, a workflow decision engine, hosted services, distributed history merging or new platform/performance guarantees. Database transaction recovery and backup restoration remain distinct operations; a fresh engineering checkout alone supplies no operational-history availability claim."
     }
   },
   "assumptions": [
-    "Selected local storage and the existing execution environment are accessible; no new platform-support, hosting, disaster-recovery, or performance promise is introduced."
+    "The selected local execution environment and destination storage support the requested operation; unavailable sources or destinations require explicit outcomes.",
+    "Operational restoration relies on the usable-backup scope and retention assumptions owned by IR-003. No hosted backup or recovery of destroyed copies is implied."
   ],
   "constraints": [
     "The CLI does not grant permission, choose workflow progression, or infer actor decisions from role labels, record shape, or command success.",
@@ -49,6 +51,16 @@
       "source": "SRC-PUBLISHED-CLI",
       "locator": "docs/design/cli/cli.md#CLI-SR-01, CLI-SR-03, CLI-SR-05, CLI-SR-06, CLI-SR-11, CLI-SR-29, CLI-SR-30; docs/design/cli/records.md#RF-SR-01, RF-SR-03, RF-SR-06",
       "basis": "Recognizes the published command-line product need and mechanical safety obligations not fully expressed by the initial seven IRs; this is analytical representation, not runtime adoption of REM or approval transfer."
+    },
+    {
+      "source": "SRC-LOCAL-OPERATIONAL-RECORDS",
+      "locator": "IR-008",
+      "basis": "User-requested RR/proposal analysis selects refinement of existing needs rather than a new IR. Extends local operational-history and command scope while preserving identity; draft analysis does not adopt SQLite, approve requirements, or establish downstream coverage."
+    },
+    {
+      "source": "SRC-LOCAL-OPERATIONAL-ANALYSIS",
+      "locator": "IR-008",
+      "basis": "Draft derivation from the refined IRs and RR proposal; no approval, implementation or satisfaction claim."
     }
   ],
   "confirms": [
@@ -63,6 +75,7 @@
     "SCN-046",
     "SCN-047",
     "SCN-048",
-    "SCN-049"
+    "SCN-049",
+    "SCN-074"
   ]
 }

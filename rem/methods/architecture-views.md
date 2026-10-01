@@ -22,7 +22,7 @@ Keep the original framework, REM's engineering rules, and a project's presentati
 
 | Original concern | REM interpretation and authoritative inputs |
 | --- | --- |
-| Logical: abstractions supporting functionality | Module responsibilities and containment, Interface contracts, Feature/Function context, Function/AR allocation, and state/data authority |
+| Logical: abstractions supporting functionality | Module responsibilities and containment, Interface contracts, allocations and state/data authority, plus technical components/contracts and their explicit realization mappings |
 | Process: execution, concurrency, and synchronization | Module runtime and Interface realization information about execution boundaries, lifecycle, communication, and failure behavior |
 | Development: static software organization | Module software realization, source/package mappings, material build dependencies, and test organization |
 | Physical: software mapping onto hardware and distribution | Deployment and persistence realization, placement, connectivity, and significant external infrastructure |
@@ -160,7 +160,7 @@ Architectural adequacy remains an engineering judgment against the applicable ob
 
 The Logical View answers:
 
-> What architectural responsibilities exist, what behavior and obligations do they own, and how do they collaborate logically?
+> What architectural responsibilities and technical components exist, what contracts connect them, and how do the components realize the accountable responsibilities?
 
 Prefer these semantic inputs:
 
@@ -169,6 +169,7 @@ Prefer these semantic inputs:
 - AR-to-Module allocation;
 - Module definitions, responsibilities, exclusions, dependencies, and significant state/data ownership;
 - logical Interfaces and their providers/consumers.
+- the owned technical model's component responsibilities, contracts, state/artifact authority, realization mappings and relevant technology annotations.
 
 The Logical View SHOULD begin with the highest useful in-scope Module level so a reader can understand the major responsibility boundaries before seeing lower-level detail. Show parent Modules and the significant Interfaces visible at that level first; reveal child Modules and internal Interfaces when the reader drills into a parent. Functions, ARs, Features, and state/data ownership SHOULD be progressively disclosed only after the relevant Module context is understood.
 
@@ -176,7 +177,7 @@ A parent Module boundary SHOULD hide descendant-internal Interfaces by default. 
 
 Label directly parent-provided contracts as provided by that parent. Keep contract ownership distinct from child behavior and exposed child-owned contracts. Views MUST NOT infer Interface implementation by every child from containment alone.
 
-Physical technologies, process boundaries, deployment targets, and source paths SHOULD be hidden by default unless needed to explain a logical constraint.
+Begin with responsibilities and contracts. Technical structure MAY then expose selected components and technology choices that explain their realization. Runtime process boundaries, deployment targets and source paths retain their Process, Physical and Development concerns; do not infer them from a component box.
 
 A simplified Module-to-Module edge MAY be rendered for readability when it is derived from an Interface, provided the underlying Interface remains discoverable and the simplification does not change the contract meaning.
 
@@ -185,11 +186,12 @@ Show recorded collaboration limits beside the overview to distinguish undevelope
 ### Logical reading perspectives
 
 A Logical presentation MAY separate or combine the following reading perspectives to answer its readers' questions while preserving the responsibility overview and progressive disclosure.
-They are optional presentations of the Logical concern, not six additional architecture-view kinds, owning models, mandatory pages, or mandatory diagrams.
+They are optional presentations of the Logical concern, not additional architecture-view kinds, owning models, mandatory pages, or mandatory diagrams.
 
 | Reading perspective | Reader's question | Selected information |
 | --- | --- | --- |
 | Architecture overview | What are the major responsibilities? | Highest useful Module boundaries and significant visible Interfaces |
+| Technical structure | Which components and contracts realize those responsibilities? | Owned technical model: component boundaries, meaningful dependencies, data/artifact authority, technology annotations and explicit Module/Interface mappings |
 | Public capabilities | What can a participant use? | Public entry names, purposes, contracts, and attributed Function correspondence |
 | Module structure | How is this responsibility divided? | Selected Module, immediate children, responsibilities, exclusions, and state/data ownership |
 | Collaboration | How do these responsibilities interact? | Named Interfaces, exact providers/consumers, and declared boundary exposure |
@@ -201,7 +203,7 @@ These navigation paths do not imply an execution sequence or transfer responsibi
 Select and combine perspectives for the intended concern rather than requiring a fixed number of screens or one complete diagram.
 
 A production responsibility and its logical artifact contract may appear here when modeled.
-Concrete source files, generators, transformations, and build/package dependencies belong in the Development View; runtime execution and physical placement retain their respective view concerns.
+The technical model may show a generator as a component with an input/output contract. Its source units, build transformations and package dependencies belong in Development; runtime execution and physical placement retain their respective view concerns. Classify the relationship by the question it answers, rather than assigning every diagram containing a software component or technology name to Development.
 Missing production mappings must be resolved with their authoritative owners before a view can present them as established facts.
 
 ### Public-entry navigation
@@ -316,6 +318,9 @@ Prefer these semantic inputs:
 
 The Development View MUST NOT redefine Module boundaries or parent-child containment from current package or source layout.
 It shows how hierarchical logical responsibility is realized by software organization, including deliberate many-to-many mappings when they exist.
+Its component names may match the Logical technical structure, but its relationships explain source units, package dependencies, builds and maintenance. A component-and-contract overview belongs to Logical; source organization is more than a filename inventory and can be designed before files exist. Keep these projections attributable to one technical design instead of maintaining competing component definitions.
+
+Development describes intended software organization independently of implementation progress. Its design can be authored and reviewed before source files, builds or tests exist. Keep software units, material dependencies, build/resource relationships and test architecture grounded in the governing requirements and architectural decisions. Existing source mappings and observed behavior provide supporting traceability and conformance information; they do not automatically define or approve the intended design. Preserve their qualification and any divergence. A design-oriented presentation should lead with the design and rationale, with implementation references available separately; missing references do not invalidate a design, and references alone do not fill a design gap. This design/observation distinction applies across all five views.
 
 ### Test architecture
 

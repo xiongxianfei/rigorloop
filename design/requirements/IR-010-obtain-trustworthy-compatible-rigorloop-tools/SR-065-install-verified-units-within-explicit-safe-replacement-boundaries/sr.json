@@ -3,7 +3,7 @@
   "type": "system-requirement",
   "title": "Install verified units within explicit safe replacement boundaries",
   "status": "draft",
-  "statement": "The system shall install only verified candidate units after complete destination preflight, stop on every existing candidate-unit conflict by default, and permit complete replacement only under explicit applicable force authority while preserving unrelated content and reporting partial effects.",
+  "statement": "The system shall install only verified candidate units after complete destination preflight, stop on every existing candidate-unit conflict by default, and permit complete replacement only under explicit applicable force authority while preserving unrelated content and reporting partial effects. Separately authorized workflow replacement may also retire an explicitly bounded set of obsolete installed units, with complete preflight, original retention and truthful per-unit effects.",
   "analysis": {
     "method": "5W2H",
     "what": {
@@ -29,18 +29,19 @@
       ]
     },
     "how": {
-      "approach": "Preflight all units and report all default conflicts, including empty and identical destinations, before changing any. Force replaces selected whole units rather than overlaying them, never shared parents or unrelated units. Preserve containment and link protection in both modes, detect changed destination bases, use no-clobber publication, and retain detached originals outside discovery roots. Stop on unsafe capability or partial failure, report completed/failed/untouched units, and require a fresh explicit replacement decision on retry."
+      "approach": "Preflight all units and report all default conflicts, including empty and identical destinations, before changing any. Force replaces selected whole units rather than overlaying them, never shared parents or unrelated units. Preserve containment and link protection in both modes, detect changed destination bases, use no-clobber publication, and retain detached originals outside discovery roots. Stop on unsafe capability or partial failure, report completed/failed/untouched units, and require a fresh explicit replacement decision on retry. For explicitly selected workflow replacement, include the supported obsolete-unit set in complete preflight and retention; ordinary force never implies this extra scope."
     },
     "how_much": {
-      "scope": "Installation's exact destination, anchored filesystem, original-retention, and partial-retry contract remains authoritative. Project-root state is neither read for admission nor changed. No managed upgrade, automatic restoration, retired-skill cleanup, whole-project replacement, exclusion of all concurrent writers, or automatic filesystem-wide rollback is promised."
+      "scope": "Installation's exact destination, anchored filesystem, original-retention, and partial-retry contract remains authoritative. Project-root state is neither read for admission nor changed. No managed upgrade, automatic restoration, automatic retired-skill cleanup, whole-project replacement, exclusion of all concurrent writers, or automatic filesystem-wide rollback is promised."
     }
   },
   "acceptance_criteria": [
     "Without force, any existing candidate unit, including identical or empty content, produces the complete discovered conflict set and prevents changes to every candidate unit.",
-    "An authorized force request replaces only conflicting candidate units completely, including obsolete files, and installs absent units while preserving unrelated skills, shared parents, and project-root state.",
+    "An ordinary authorized force request replaces only conflicting candidate units completely, including obsolete files, and installs absent units while preserving unrelated skills, shared parents, and project-root state.",
     "Unsafe or inaccessible destinations, links, unsupported required safety primitives, or changed preflight bases block in both modes; a newly appearing destination is not silently acquired as another force replacement.",
     "Detached originals remain outside skill discovery after success or failure. A failure identifies completed, failed, detached, partial, retained-original, and untouched scope without claiming rollback or success.",
-    "Retry repeats verification and preflight; current partial or completed units conflict by default, and retained originals do not authorize restoration or further replacement."
+    "Retry repeats verification and preflight; current partial or completed units conflict by default, and retained originals do not authorize restoration or further replacement.",
+    "A supported workflow replacement request separately identifies and authorizes its bounded obsolete-unit retirement scope. Ordinary force does not authorize removal of noncandidate units. Preflight covers all selected units before mutation; originals remain outside discovery, unrelated content is preserved, and partial effects never imply workflow activation."
   ],
   "assumptions": [],
   "constraints": [],
@@ -67,6 +68,11 @@
       "source": "SRC-PUBLISHED-INSTALLATION",
       "locator": "docs/design/cli/installation.md#DIST-SR-14",
       "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. Installation must respect the user's explicit replacement choice and remain safe when the filesystem changes or an operation fails. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
+    },
+    {
+      "source": "SRC-WORKFLOW-CONTRACTS",
+      "locator": "SR-065; explicit workflow replacement only",
+      "basis": "Requirement-first workflow boundary refinement. Existing identities and historical judgments retain their original scope; this target contract is not implemented or adopted behavior."
     }
   ]
 }

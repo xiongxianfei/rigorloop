@@ -3,7 +3,7 @@
   "type": "allocated-requirement",
   "title": "Recover only exact verified operational record transactions",
   "status": "draft",
-  "statement": "The Operational record persistence Module shall recover an explicitly selected current-format transaction only by completing its verified exact prepared candidate or restoring its verified before-state, preserving unknown target states, acknowledged commitment, and available recoverability.",
+  "statement": "The Work record storage Module shall recover an explicitly selected current-format transaction only by completing its verified exact prepared candidate or restoring its verified before-state, preserving unknown target states, acknowledged commitment, and available recoverability.",
   "analysis": {
     "method": "5W2H",
     "what": {

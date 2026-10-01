@@ -21,7 +21,8 @@
     "Identify active work, unresolved findings, current evidence, obligations, and consumers requiring retention, transfer, replacement, or explicit retirement.",
     "Require reconciliation of surviving current reliance and applicable authorization before removing the material from the working view.",
     "Record the disposition, recovery basis, affected scope, and actual outcome; preserve current operation without dependence on fetching retired definitions.",
-    "Treat release of retained history as a separate controlled retention-policy decision rather than an age-based consequence of cleanup."
+    "Treat release of retained history as a separate controlled retention-policy decision rather than an age-based consequence of cleanup.",
+    "Before retiring operational source files, current consumers and required evidence must have a coherent replacement or explicit disposition, and original content required for historical reliance remains recoverable. A successful import alone does not authorize deletion."
   ],
   "failure_behavior": [
     {
@@ -47,6 +48,11 @@
       "source": "SRC-ARCHITECTURE-PILOT",
       "locator": "FUNC-024",
       "basis": "Propose MOD-006 as the single accountable architectural responsibility for the existing behavior. This allocation preserves the Function definition and does not establish implementation or completed interface/AR coverage outside the IR-001 pilot."
+    },
+    {
+      "source": "SRC-LOCAL-OPERATIONAL-ANALYSIS",
+      "locator": "FUNC-024",
+      "basis": "Draft derivation from the refined IRs and RR proposal; no approval, implementation or satisfaction claim."
     }
   ],
   "allocated_to": "MOD-006"

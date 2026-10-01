@@ -3,7 +3,7 @@
   "type": "allocated-requirement",
   "title": "Retrieve definitions with explicit state and completeness",
   "status": "draft",
-  "statement": "The Engineering model storage Module shall retrieve retained definition content for the requested subject and selected model state, identifying its profile and scope and distinguishing complete, incomplete, unsupported, unavailable, and failed outcomes.",
+  "statement": "The Definition storage Module shall retrieve retained definition content for the requested subject and selected model state, identifying its profile and scope and distinguishing complete, incomplete, unsupported, unavailable, and failed outcomes.",
   "analysis": {
     "method": "5W2H",
     "what": {

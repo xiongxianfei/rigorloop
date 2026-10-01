@@ -666,7 +666,9 @@ class ArchitectureViewProjectionTests(unittest.TestCase):
         self.assertEqual(parent["functions"], [])
         self.assertEqual(parent["allocated_requirements"], [])
         self.assertEqual(len(parent["subtree_functions"]), 16)
-        self.assertEqual(len(parent["subtree_allocated_requirements"]), 18)
+        self.assertEqual(parent["subtree_allocated_requirements"],
+                         [f"AR-{i:03}" for i in range(11, 29)] +
+                         ["AR-030", "AR-032", "AR-034", "AR-037", "AR-039", "AR-040", "AR-051"])
         self.assertIn("FUNC-046", projected["modules"]["MOD-011"]["functions"])
         self.assertIn("FUNC-046", parent["subtree_functions"])
         self.assertEqual(snapshot(root), before)
@@ -675,8 +677,12 @@ class ArchitectureViewProjectionTests(unittest.TestCase):
         projected = self.projected(self.fixture())
         collaboration = projected["overview_collaborations"]
         self.assertEqual({item["interface"] for item in collaboration},
-                         {"IF-006", "IF-007", "IF-008", "IF-009", "IF-010"})
-        self.assertEqual(len(collaboration), 5)
+                         {"IF-006", "IF-007", "IF-008", "IF-009", "IF-010", "IF-011", "IF-012"})
+        self.assertEqual(len(collaboration), 9)
+        self.assertEqual({(item["interface"], item["consumer"], item["provider"])
+                          for item in collaboration if item["consumer"] == "MOD-012"},
+                         {(identity, "MOD-012", "MOD-017")
+                          for identity in ("IF-008", "IF-009", "IF-010", "IF-011")})
         self.assertTrue(all(item["consumer_boundary"] in projected["roots"] and
                             item["provider_boundary"] in projected["roots"] for item in collaboration))
         self.assertEqual(projected["interfaces"]["IF-004"]["provider"], "MOD-018")
@@ -700,10 +706,23 @@ class ArchitectureViewProjectionTests(unittest.TestCase):
         self.write_record(path, module)
         projected = self.projected(root)
         self.assertIn(limit, projected["records"]["MOD-017"]["data"]["design_limits"])
-        for identity in ("MOD-005", "MOD-006", "MOD-012", "MOD-013", "MOD-014", "MOD-015"):
+        for identity in ("MOD-005", "MOD-009"):
             self.assertEqual(projected["modules"][identity]["allocated_requirements"], [])
             self.assertEqual(projected["modules"][identity]["subtree_allocated_requirements"], [])
-        self.assertEqual(projected["modules"]["MOD-017"]["subtree_allocated_requirements"], [])
+        for identity, allocated in {
+            "MOD-006": ["AR-035", "AR-038"],
+            "MOD-007": ["AR-031", "AR-036"],
+            "MOD-008": ["AR-029", "AR-033"],
+            "MOD-012": ["AR-030", "AR-032", "AR-034", "AR-037", "AR-039"],
+            "MOD-013": ["AR-041", "AR-049"],
+            "MOD-015": ["AR-050"],
+            "MOD-014": ["AR-042"],
+        }.items():
+            self.assertEqual(projected["modules"][identity]["allocated_requirements"], allocated)
+            self.assertEqual(projected["modules"][identity]["subtree_allocated_requirements"], allocated)
+        self.assertEqual(projected["modules"]["MOD-017"]["allocated_requirements"], [])
+        self.assertEqual(projected["modules"]["MOD-017"]["subtree_allocated_requirements"],
+                         ["AR-029", "AR-031", "AR-033", "AR-035", "AR-036", "AR-038"])
         self.assertEqual(projected["records"]["MOD-017"]["data"]["owned_state"], [])
 
     def test_deeper_hierarchy_and_direct_parent_allocation_are_supported(self):
@@ -731,16 +750,26 @@ class ArchitectureViewProjectionTests(unittest.TestCase):
         module = json.loads(path.read_text())
         module["title"] = "Retained engineering definition repository"
         self.write_record(path, module)
-        path.parent.rename(path.parent.with_name("MOD-001-retained-engineering-definition-repository"))
+        retained_path = path.relative_to(root).as_posix()
         path = self.entity_path(root, "FUNC-001")
         function = json.loads(path.read_text())
         function["allocated_to"] = "MOD-002"
         self.write_record(path, function)
         after = self.projected(root)
         self.assertEqual(after["records"]["MOD-001"]["data"]["title"], module["title"])
+        self.assertEqual(after["records"]["MOD-001"]["path"], retained_path)
         self.assertNotIn("FUNC-001", after["modules"]["MOD-001"]["functions"])
         self.assertIn("FUNC-001", after["modules"]["MOD-002"]["functions"])
         self.assertNotEqual(before["source_digest"], after["source_digest"])
+
+    def test_retained_module_paths_still_reject_wrong_identity_and_malformed_suffix(self):
+        for dirname in ("MOD-999-definition-storage", "MOD-001-", "MOD-001-invalid--suffix"):
+            with self.subTest(directory=dirname):
+                root = self.fixture()
+                path = self.entity_path(root, "MOD-001")
+                path.parent.rename(path.parent.with_name(dirname))
+                with self.assertRaisesRegex(ValueError, "owner directory does not match identity and retained slug"):
+                    Model(root)
 
     def test_supported_obsolete_scenario_and_explicit_allocation_gap_are_preserved(self):
         root = self.fixture()
@@ -848,10 +877,19 @@ class ArchitectureViewProjectionTests(unittest.TestCase):
                     for index, source in enumerate(record["sources"])
                     if source["source"] == "SRC-CLI-ALLOCATION"}
         contributions = projected["cli_contributions"]
-        self.assertEqual(len(expected), 44)
-        self.assertEqual(len(contributions), 44)
+        historical = {(record["id"], index): source
+                      for path in (root / "design/requirements").rglob("sr.json")
+                      for record in [json.loads(path.read_text())]
+                      for index, source in enumerate(record["sources"])
+                      if source["source"] == "SRC-CLI-ALLOCATION-BEFORE-LOCAL-STORE"}
+        self.assertTrue(expected, "Fixture must exercise current contribution projection")
+        self.assertTrue(historical, "Fixture must distinguish retained history from current coverage")
+        self.assertEqual(len(contributions), len(expected))
         actual = {(item["requirement"], int(item["source_pointer"].split("/")[-1])): item for item in contributions}
         self.assertEqual(set(actual), set(expected))
+        self.assertTrue(set(actual).isdisjoint(historical))
+        for (identity, index), source in historical.items():
+            self.assertEqual(projected["records"][identity]["data"]["sources"][index], source)
         for key, source in expected.items():
             item = actual[key]
             self.assertEqual((item["locator"], item["basis"]), (source["locator"], source["basis"]))

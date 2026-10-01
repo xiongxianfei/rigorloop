@@ -1,0 +1,64 @@
+{
+  "id": "SR-075",
+  "type": "system-requirement",
+  "title": "Restore operational history without changing its original meaning",
+  "status": "draft",
+  "statement": "The system shall restore an explicitly selected compatible operational backup into an authorized destination only after validating its project association, integrity, interpretation and required artifact coverage, preserving record identities, relationships and original assessment meaning and distinguishing complete restoration from failure.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Loss of a local operational store can erase resumption context; an apparently successful restore can silently omit evidence or renew old judgments.",
+      "desired_outcome": "An authorized participant can recover the declared retained work and identify every limitation before relying on it."
+    },
+    "why": {
+      "rationale": "The refined IR-003 need requires this independently assessable outcome while preserving historical meaning and current work."
+    },
+    "who": {
+      "stakeholders": [
+        "Project maintainers and authorized engineers",
+        "Engineering agents acting for the user",
+        "Reviewers relying on retained evidence"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "When restoring retained operational work, including after loss of the original store."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "Selected project operational records, retained evidence and explicitly selected local source or destination scope."
+      ]
+    },
+    "how": {
+      "approach": "Use explicit scope and state identities, preserve original meaning and unrelated work, and report complete, unavailable, conflicting or failed outcomes according to the criteria below. Physical storage, commands and allocation remain downstream decisions."
+    },
+    "how_much": {
+      "scope": "One selected project and declared finite operational scope; no hosted storage, automatic history merging, recovery of destroyed copies, or numerical performance/recovery guarantee. Current-model understanding remains owned by SR-004/005."
+    }
+  },
+  "acceptance_criteria": [
+    "With the original store unavailable and a valid complete backup accessible, restore reproduces the selected records, finding dispositions, subjects and revisions, decisions, provenance and required artifact content in the declared project scope.",
+    "Wrong-project input, unsupported interpretation, corrupted content or missing required artifacts is rejected before destination activation; source backup and unrelated destination content remain unchanged.",
+    "Restored reviews and verification results retain their original subject identities and applicability; neither restoration nor a different current engineering revision renews approval or evidence freshness.",
+    "An occupied or changed destination causes an explicit conflict unless a separately authorized safe replacement is supported; restoration never silently merges divergent histories or overwrites newer work.",
+    "An interrupted restoration exposes no partially restored state as complete or ready for resumption; retry identifies the actual destination state and preserves existing usable content.",
+    "When no usable backup exists, restoration reports unavailable and does not initialize an empty history as successful recovery."
+  ],
+  "assumptions": [
+    "Required retained source material and supported interpretation information are accessible; failure of that premise is reported explicitly."
+  ],
+  "constraints": [
+    "A successful storage operation grants no engineering approval or action authority."
+  ],
+  "confirms": [
+    "FUNC-075"
+  ],
+  "sources": [
+    {
+      "source": "SRC-LOCAL-OPERATIONAL-ANALYSIS",
+      "locator": "SR-075",
+      "basis": "Draft derivation from the refined IRs and RR proposal; no approval, implementation or satisfaction claim."
+    }
+  ]
+}

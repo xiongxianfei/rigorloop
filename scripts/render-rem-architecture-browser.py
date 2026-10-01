@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate the offline 4+1 architecture browser with D2 + ELK diagrams.
+"""Generate the offline 4+1 browser with D2 (ELK projections, Dagre authored views).
 
 Install D2 0.9.0 separately, then use --d2 PATH if it is not on PATH.
 Reading the generated page requires only a browser, with no network or server.
@@ -10,21 +10,23 @@ from concurrent.futures import ThreadPoolExecutor
 import hashlib
 import html
 import json
+import os
 from pathlib import Path
 import re
 import subprocess
 import sys
 import xml.etree.ElementTree as ET
 
-from lib.rem_architecture_browser import build_model, diagram_sources
+from lib.rem_architecture_browser import build_model, diagram_sources, web_capabilities
 from lib.rem_architecture_model import Model
+from lib.rem_authored_views import read_authored_topics, compile_authored_topics
 
 
 SCRIPTS = Path(__file__).resolve().parent
 ASSETS = SCRIPTS / "resources/rem-architecture-browser"
 OUTPUT = Path("design/architecture/views/browser")
 D2_VERSION = "v0.9.0"
-DIAGRAM_NAME = (r"(?:overview|module-[A-Za-z0-9-]+|process|development|physical|scenarios|"
+DIAGRAM_NAME = (r"(?:authored-MOD-[0-9]+-[a-z0-9-]+|overview|module-[A-Za-z0-9-]+|process|development|physical|scenarios|"
                 r"(?:process|development|physical)-(?:MOD|IF)-[0-9]+|scenario-SCN-[0-9]+|"
                 r"process-(?:publication|recovery|coordination)|physical-(?:consumer|storage|production)|"
                 r"development-testing(?:-MOD-[0-9]+)?)")
@@ -33,11 +35,11 @@ def digest(content):
     return hashlib.sha256(content).hexdigest()
 
 
-def compile_svg(d2, name, source):
+def compile_svg(d2, name, source, layout="elk"):
     spacing = ["--elk-nodeNodeBetweenLayers=30", "--elk-edgeNodeBetweenLayers=35",
-               "--elk-padding=[top=90,left=70,bottom=50,right=70]"]
+               "--elk-padding=[top=90,left=70,bottom=50,right=70]"] if layout == "elk" else []
     result = subprocess.run(
-        [d2, "--layout=elk", "--theme=0", "--pad=28", "--no-xml-tag",
+        [d2, "--layout=" + layout, "--theme=0", "--pad=28", "--no-xml-tag",
          "--salt=" + name, "--timeout=45", *spacing, "-", "-"],
         input=source, text=True, capture_output=True, timeout=60,
     )
@@ -53,6 +55,8 @@ def compile_svg(d2, name, source):
 def render(model, d2):
     # Resolve every selected reading scope before invoking a compiler or writing.
     projected = build_model(model)
+    projected["web_capabilities"] = web_capabilities(model)
+    topics = read_authored_topics(model)
     version = subprocess.run([d2, "--version"], text=True, capture_output=True, timeout=10)
     if version.returncode or version.stdout.strip() != D2_VERSION:
         raise ValueError(f"D2 {D2_VERSION} is required; received {version.stdout.strip()!r}")
@@ -69,6 +73,9 @@ def render(model, d2):
         return match.group(1) + "<title>" + html.escape(f"{title} ({identity})") + "</title>"
     svgs = {name: re.sub(r'(<a\b[^>]*\b(?:xlink:)?href="#interface/([^"]+)"[^>]*>)',
                          interface_title, svg) for name, svg in svgs.items()}
+    # Dagre keeps feedback paths readable in authored decision flows; derived
+    # structural projections retain ELK. Both use the same pinned D2 binary.
+    projected["authored_topics"], authored_outputs = compile_authored_topics(topics, lambda name, source: compile_svg(d2, name, source, "dagre"))
     data = json.dumps(projected, ensure_ascii=False, separators=(",", ":"))
     # Script elements are raw text even when their type is application/json.
     data = data.replace("<", "\\u003c").replace(">", "\\u003e").replace("&", "\\u0026")
@@ -85,7 +92,7 @@ def render(model, d2):
             raise ValueError(f"Browser template requires exactly one {key} placeholder")
     page = re.sub(r"\{\{(MODEL_JSON|DIAGRAMS|STYLE|SCRIPT)\}\}",
                   lambda match: replacements[match.group(1)], template)
-    outputs = {"index.html": page.encode()}
+    outputs = {"index.html": page.encode(), **authored_outputs}
     for name, source in sources.items():
         outputs[f"diagrams/{name}.d2"] = source.encode()
         # Standalone SVGs return to the viewer; inline templates keep hash routes.
@@ -94,6 +101,8 @@ def render(model, d2):
         outputs[f"diagrams/{name}.svg"] = svg.encode()
     manifest = ["# Generated browser artifacts; not canonical engineering records.",
                 f"# Source SHA-256: {model.digest}", f"# D2 {D2_VERSION}; ELK layout"]
+    if topics:
+        manifest.append("# Authored topics: D2; Dagre layout; qualified source digests embedded in HTML")
     manifest += [f"{digest(content)}  {name}" for name, content in sorted(outputs.items())]
     outputs["manifest.sha256"] = ("\n".join(manifest) + "\n").encode()
     return outputs
@@ -102,14 +111,14 @@ def render(model, d2):
 def obsolete_diagrams(directory, outputs):
     """Only this generator's strictly named diagram files can be retired."""
     return [path for path in sorted((directory / "diagrams").glob("*"))
-            if re.fullmatch(DIAGRAM_NAME + r"\.(?:d2|svg)", path.name)
+            if re.fullmatch(DIAGRAM_NAME + r"\.(?:d2|mmd|svg)", path.name)
             and path.relative_to(directory).as_posix() not in outputs]
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, default=SCRIPTS.parent)
-    parser.add_argument("--d2", default="d2", help="path to D2 0.9.0")
+    parser.add_argument("--d2", default=os.environ.get("REM_D2", "d2"), help="path to D2 0.9.0")
     parser.add_argument("--check", action="store_true", help="regenerate and compare without writes")
     args = parser.parse_args()
     try:

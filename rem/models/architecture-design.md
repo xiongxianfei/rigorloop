@@ -3,7 +3,7 @@
 Architecture Design assigns accountable responsibility to Modules, defines architecturally significant interactions through Interfaces, and records the material physical/software realization needed to make that logical architecture implementable.
 The [concept definitions](../concepts/README.md#system-and-architecture-assets) explain these architectural assets and the subordinate architecture realization view.
 
-REM keeps two coupled views:
+REM keeps two coupled bodies of authoritative information:
 
 ```text
 Logical architecture
@@ -18,6 +18,26 @@ Physical/software realization
 
 Modules and Interfaces remain the first-class governed architecture entities.
 Physical/software realization details do not become independent REM entities by default.
+The technical model below explains the selected component structure within that realization. Its structural presentation is a Logical reading perspective; Development, Process and Physical select other concerns from the same owned design.
+
+## Technical model
+
+A technical model describes the intended architectural implementation through components, their responsibilities, contracts, relationships, data authority and material technology choices. It makes the responsibility architecture implementable while retaining the accountable Modules, Interfaces and Function/AR allocations. It can be authored before code exists; implementation observations retain their separate qualification.
+
+| Element | Required meaning when material |
+| --- | --- |
+| Component | A coherent technical responsibility, its scope and exclusions, and its mapping to the Modules/Functions it realizes |
+| Contract | The interaction's participants, inputs/outputs or representation, guarantees, failures and compatibility; reference an existing Interface or detailed owner where applicable |
+| Relationship | An explicit meaning such as uses, realizes, produces, consumes or embeds; containment means technical composition, not automatically Module containment or process membership |
+| Data and artifact authority | Who interprets, produces, mutates or only reads each significant input, state or output |
+| Technology decision | The selected technology, governing need, alternatives, consequences and revisit conditions |
+| Qualification and limits | Intended design versus observed implementation, unresolved mappings and the constraints needed to assess the composition |
+
+One component may realize contributions from several Modules, and one Module may be realized by several components. Preserve those mappings explicitly; co-location does not transfer Function or AR accountability. A component, library or technology label does not acquire first-class REM identity merely by appearing in the technical model. Local names suffice unless a project has a justified identity contract.
+
+The Technical structure perspective of the Logical View presents components and their contracts with relevant technology annotations. Development presents their organization into source units, packages, build resources and tests. Process presents independently executing participants and their interactions; Physical presents artifact placement and deployment constraints. Reuse the same authoritative relationships and distinguish each diagram's edge meanings. A technology list alone does not establish a technical model, and a structural dependency does not establish execution order.
+
+Author the model with proportionate prose, component/contract tables and diagrams at the existing Module or Interface owner. Cross-owner composition references the participating owners rather than moving their authority into a convenient executable or document. Structured realization fields may be added when their semantics and tooling need are settled; no new entity class, universal schema, standalone document or sixth view is required.
 
 ## Allocation
 
@@ -154,6 +174,7 @@ Rendered diagrams and browser pages present this knowledge under the [Architectu
 ## Architecture realization views
 
 Each in-scope Module and Interface MAY carry an architecture realization view.
+Here, the retained term “realization view” denotes owner-held architecture information, including the technical model. It is not a separately authoritative generated 4+1 presentation.
 The view records material physical/software choices whose consequences cross implementation units, affect runtime/deployment/state/quality behavior, constrain future evolution, or are needed to understand how the logical architecture is realized.
 
 A realization detail is architecture-significant when at least one of the following is true:
@@ -251,7 +272,7 @@ Use the [4+1 Architecture View method](../methods/architecture-views.md) to cons
 
 | View | Primary concern | Typical authoritative inputs |
 | --- | --- | --- |
-| Logical | Hierarchical responsibilities, behavior, obligations, logical collaboration, encapsulation, and state/data authority | Module containment, exposed/internal Interfaces, Feature/Function context, Function/AR allocation, Module definitions, state/data ownership |
+| Logical | Hierarchical responsibilities, contracts and technical component structure, with explicit realization mappings | Module containment, Interfaces, Feature/Function context, Function/AR allocation, state/data ownership and the owned technical model |
 | Process | Runtime topology plus concern-specific interaction, lifecycle, control-flow, timing, or formal-concurrency projections | Module runtime realization and runtime-significant Interface realization; authoritative ordering/state/timing facts where applicable |
 | Development | Static software organization used for development/build/testing/maintenance | Module software realization, source/package mappings, material dependencies, test groups and supporting infrastructure |
 | Physical | Deployment, placement, connectivity, persistence placement, and infrastructure topology | Module deployment/persistence realization, external runtime dependencies, concrete connectivity |

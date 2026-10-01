@@ -3,7 +3,7 @@
   "type": "allocated-requirement",
   "title": "Require explicit recovery selection and preserve its actual outcome",
   "status": "draft",
-  "statement": "The Engineering command interface Module shall request transaction recovery only for an explicitly admitted current recovery operation and shall preserve the selected action, supplied recovery identity, and actual persistence outcome without automatic repair or replay.",
+  "statement": "The Command handling Module shall request transaction recovery only for an explicitly admitted current recovery operation and shall preserve the selected action, supplied recovery identity, and actual persistence outcome without automatic repair or replay.",
   "analysis": {
     "method": "5W2H",
     "what": {

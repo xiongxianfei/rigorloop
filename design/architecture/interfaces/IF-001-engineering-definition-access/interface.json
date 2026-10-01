@@ -154,6 +154,29 @@
           "outcome": "Preserve the specific reasoning outcome separately from definition completeness."
         }
       ]
+    },
+    {
+      "name": "capture_model_selection",
+      "purpose": "Supply an immutable content-bound model selection for customer view generation.",
+      "inputs": [
+        "Selected immutable project state/export, profile identifier and explicit member/supporting-content scope."
+      ],
+      "preconditions": [
+        "The caller identifies an immutable source basis; an ordinary mutable checkout without established capture consistency is not admitted."
+      ],
+      "outputs": [
+        "Captured members and digests, source selection identity, included rationale and separate optional-content gaps."
+      ],
+      "behavior": [
+        "Capture declared model content without model edits, operational-history export or unrelated workspace traversal.",
+        "Bind membership, bytes and profile to the selected immutable basis and reject unestablished coherence."
+      ],
+      "failure_behavior": [
+        {
+          "condition": "The selected basis changes, a required member cannot be obtained, or paths escape the permitted scope.",
+          "outcome": "Report the exact gap and withhold coherent capture; do not silently substitute another state."
+        }
+      ]
     }
   ],
   "consistency_rules": [
@@ -172,6 +195,11 @@
       "source": "SRC-ARCHITECTURE-PILOT",
       "locator": "IF-001",
       "basis": "Derive the storage/authoring/context boundary from SR-001 through SR-005 and FUNC-001/003/004/005/006/007, retaining shared profile interpretation from SR-012. State binding makes the identity and outcome obligations coherent across the proposed Modules."
+    },
+    {
+      "source": "SRC-CUSTOMER-BROWSER-DESIGN",
+      "locator": "IF-001",
+      "basis": "System and Architecture Design from SR-084\u2013088 and refined SR-060; proposed responsibility, contract and realization only. No implementation, platform qualification or product availability is established."
     }
   ]
 }

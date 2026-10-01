@@ -1,0 +1,14 @@
+# Presentation identity and selectors; descriptions remain in the owning README.
+version = 1
+kind = "web"
+id = "architecture-browser"
+title = "Architecture browser"
+feature = "FEAT-022"
+source = "README.md"
+related = ["SR-085", "SR-086", "SR-088", "SCN-084"]
+
+[sections]
+purpose = "browser-purpose"
+access = "browser-access"
+interactions = "browser-interactions"
+limits = "browser-limits"

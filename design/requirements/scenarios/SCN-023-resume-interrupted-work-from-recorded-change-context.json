@@ -2,10 +2,10 @@
   "id": "SCN-023",
   "type": "scenario",
   "title": "Resume interrupted work from recorded change context",
-  "status": "confirmed",
+  "status": "draft",
   "actor": "An authorized engineer or engineering agent taking over an in-progress Change",
   "goal": "Determine the recorded work state, outstanding issues, applicable basis, and next action without the originating conversation.",
-  "context": "A Change was interrupted or handed to another participant during authoring, implementation, verification, or review.",
+  "context": "A Change was interrupted or handed to another participant during authoring, implementation, verification, or review. Recorded context may have been restored from a retained backup into an environment with a newer engineering definition.",
   "trigger": "The new participant begins the assigned activity in another session.",
   "preconditions": [
     "The Change and intended activity are identified.",
@@ -48,6 +48,10 @@
     {
       "condition": "The next action exceeds the applicable authorization.",
       "outcome": "The system identifies the specific unmet decision boundary before that action can proceed."
+    },
+    {
+      "condition": "Restored assessment subjects differ from current subjects.",
+      "outcome": "The original basis remains visible, and resumption does not silently renew evidence applicability or authority."
     }
   ],
   "exercises": [
@@ -62,6 +66,11 @@
       "source": "SRC-COMPLETE-ANALYSIS",
       "locator": "SCN-023",
       "basis": "IR-003 owns this scenario, elaborating existing SR-006 activity-specific resumption and SR-007 continuity of bounded authority without altering those obligations. Accepted as current requirement-analysis knowledge after independent coverage and clarity review: one owning IR and primary Feature, observable goal and interactions, classified outcomes, and applicable SR coverage. This confirms analysis only, not requirement approval, implementation, or satisfaction."
+    },
+    {
+      "source": "SRC-LOCAL-OPERATIONAL-ANALYSIS",
+      "locator": "SCN-023",
+      "basis": "Draft derivation from the refined IRs and RR proposal; no approval, implementation or satisfaction claim."
     }
   ]
 }

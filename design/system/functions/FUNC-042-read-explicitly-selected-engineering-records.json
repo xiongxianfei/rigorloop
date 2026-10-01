@@ -19,7 +19,8 @@
     "Return complete selected Verify and shared material-decision explanation without unrelated bodies; preserve Review/findings differences and explicitly requested field selection with omission/absence metadata.",
     "Distinguish no entry, unregistered optional record, registered missing content, unknown selected total, unreadability and malformation; do not infer a contract for an absent or invalid store.",
     "Bind pagination to normalized selection and observed revision, return only whole admissible items, and reject oversized first items or changed/invalid continuation without partial content.",
-    "Supply raw selected values and exact scope to result projection; no renderer/projection becomes a second authoritative record or modifies stored bytes."
+    "Supply raw selected values and exact scope to result projection; no renderer/projection becomes a second authoritative record or modifies stored bytes.",
+    "A missing operational store is reported as unavailable history, distinct from an available store with no matching records; reads never initialize, import or restore a store implicitly."
   ],
   "failure_behavior": [
     {
@@ -41,6 +42,11 @@
       "source": "SRC-PUBLISHED-PRODUCTS",
       "locator": "FUNC-042",
       "basis": "Assign MOD-010 as the proposed accountable primary responsibility after Functional Analysis. Current product source contracts retain detailed behavior authority; allocation is not runtime adoption or complete AR coverage."
+    },
+    {
+      "source": "SRC-LOCAL-OPERATIONAL-ANALYSIS",
+      "locator": "FUNC-042",
+      "basis": "Draft derivation from the refined IRs and RR proposal; no approval, implementation or satisfaction claim."
     }
   ],
   "allocated_to": "MOD-010"

@@ -498,6 +498,23 @@
           ]
         }
       ]
+    },
+    {
+      "choice": "Replace proposal/proposal-review and combined design with requirement-analysis/requirement-review, system-design and architecture-design.",
+      "rationale": "Three distinct authoring responsibilities and one integrated Design Review realize the accepted requirement basis through existing Functions, not one Module per skill.",
+      "alternatives": [
+        "Keep parallel old authoring entrypoints.",
+        "Create one Module and one mandatory review per method."
+      ],
+      "consequences": [
+        "Reconcile route, plan, delivery-review, implement, code-review and verify plus conditional resources, examples and templates as one coherent inventory.",
+        "Keep methods canonical in rem/; distribute generated versioned resources for selective loading rather than independently maintaining duplicate manuals.",
+        "Proposed names are target entrypoints, not additions to the observed public catalog.",
+        "The successor MOD-010/011 contracts define proposed v2/v4 operations and capability checks. Skills must not invoke them before actual implementation and adapter availability."
+      ],
+      "revisit_when": [
+        "Detailed skill contracts or reviewed method ownership require a different entrypoint boundary."
+      ]
     }
   ],
   "deferred": [

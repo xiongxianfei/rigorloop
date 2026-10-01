@@ -247,6 +247,10 @@ Check the actual selected sources, complete consumer sets, containment, absent/e
 
 This reuses the existing shared-source → skill projection → candidate graph and isolated output deployment. The choice avoids a new skill, alternate archive tree or Git fetch in ordinary builds. A partial move, stale manifest or missing copy blocks affected generation; rollback restores source, manifest, readers and package checks together. Initial relocation can be assessed by exact old/new byte equality plus complete resource boundary proof, without a token metric or target-agent execution.
 
+## Planned requirement-first workflow contract
+
+The [Module-owned successor contract](../../../design/architecture/modules/MOD-019-product-delivery/modules/MOD-013-product-package-production/README.md) defines the proposed replacement boundary. It is design input for coordinated implementation and adoption; the current runtime contract above remains version-specific and is not silently reinterpreted. Historical bytes and assessments retain their original meaning. The scoped repository analysis exception does not activate this product behavior.
+
 ## Historical provenance
 
 Completed source-transfer mappings and original adoption handoffs are recoverable at `38a3042e63c7c2462ecf8ffed29f4ac0cbb8923f:docs/design/engineering/packaging.md`. Their source-qualified IDs and judgments retain their original scope; they do not supply current approval or operational inputs. Current behavior and proof obligations are specified in this Design and its named owners.

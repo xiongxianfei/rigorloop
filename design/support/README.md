@@ -78,7 +78,7 @@ Text is nonblank, objects reject undeclared fields, and `null` is unsupported th
 
 ## Architecture and allocated-requirement records
 
-[Modules](../architecture/modules/README.md) begin at `design/architecture/modules/<MOD-ID>-<title-slug>/module.json`. Children live recursively in their parent's `modules/<MOD-ID>-<title-slug>/module.json` collection.
+[Modules](../architecture/modules/README.md) begin at `design/architecture/modules/<MOD-ID>-<retained-slug>/module.json`. Children live recursively in their parent's `modules/<MOD-ID>-<retained-slug>/module.json` collection.
 Each records its `description`, nonempty `responsibilities`, `owned_state`, and `scope.includes` / `scope.excludes`.
 The required `provides` and `consumes` lists reference Interfaces through unique stable IDs; they may be empty.
 `owned_state` may be empty for a Module that owns no enduring state. Nonempty `design_limits` records the scope of the proposed design and any deferred contract detail.
@@ -92,7 +92,7 @@ Operation names must be unique within the Interface; the focused check below enf
 Provider and consumer views are derived from Module references, never repeated in Interface fields. Each of the ten current Interfaces has one provider and at least one consumer. Refined REM requires exactly one provider and allows zero or more consumers; the stronger current consumer-count check is a property of this authored model, beyond the individual-record JSON Schema.
 `provides` identifies the Module accountable for the Interface contract. A parent may own that contract while its children retain the Functions and ARs that realize the behavior. Implementation location does not create another provider; child realization does not by itself add a `consumes` relationship. The existing allocations and responsibility definitions describe those contributions without adding a duplicate realization relationship.
 
-Module parentage is authored once by directory containment. Top-level Modules have no Module parent; every nested Module has one enclosing Module. Each enclosing owner must have a valid `module.json`, and every level uses the same identity/title naming rules. Do not add `parent_module`, `children`, or copied descendant allocations to JSON. Discover nested Modules only through the named `modules/` collections and reject unsupported JSON placement, missing owners, repeated identities, and symbolic-link containment. The current representation has four Module trees and imposes no additional fixed depth limit.
+Module parentage is authored once by directory containment. Top-level Modules have no Module parent; every nested Module has one enclosing Module. Each enclosing owner must have a valid `module.json`, and every level uses the same identity and retained-directory naming rules. Do not add `parent_module`, `children`, or copied descendant allocations to JSON. Discover nested Modules only through the named `modules/` collections and reject unsupported JSON placement, missing owners, repeated identities, and symbolic-link containment. The current representation has four Module trees and imposes no additional fixed depth limit.
 
 An Interface may author `exposed_through`, a nonempty array of unique Module IDs. Omit it when no parent exposure is declared. Every exposure target must be a strict ancestor of the Interface's single provider. Exposure through a higher ancestor requires exposure through every intervening provider ancestor. For each declared consumer, every provider-side parent whose subtree excludes that consumer must expose the Interface. A consumer parent's ancestry does not itself create an exposure requirement. Exposure for an external actor may be declared even when no Module consumer crosses that boundary.
 
@@ -141,7 +141,7 @@ architecture/
         └── manifest.sha256
 ```
 
-The `id` and `title` in the logical record govern stable identity and the descriptive directory name. Containment determines the facet's owner. Do not repeat an owner ID, add a global entity ID/type/status, or embed a second inline `realization` in the logical JSON.
+The logical record owns stable `id` and readable `title`. A Module directory retains its ID-prefixed descriptive suffix when the title changes; Interface directories retain title-derived naming. Containment determines the facet's owner. Do not repeat an owner ID, add a global entity ID/type/status, or embed a second inline `realization` in the logical JSON.
 Facet content inherits the owning record's lifecycle and attributed design basis. The owning definition remains authoritative for logical responsibility, state authority, operations, and typed relationships.
 
 | Owner | Optional facet | Material content and schema |
@@ -276,7 +276,8 @@ RigorLoop applies REM's [optional Logical reading perspectives](../../rem/method
 | Reading perspective | RigorLoop presentation |
 | --- | --- |
 | Architecture overview | Parent responsibility diagram, Module cards, and recorded scope limits |
-| Public capabilities | Commands and Skills catalogs grouped under the same navigation heading, with individual entry details |
+| Technical structure | Registered Logical component-and-contract diagrams beneath the selected Module's responsibility overview; MOD-004 supplies the browser example with technologies and explicit realization ownership in its source |
+| Public capabilities | Commands and Skills catalogs with individual entry details; the explicitly bound Architecture browser page is defined by MOD-004's owning reading design |
 | Module structure | Module page, immediate child cards, and responsibility/state/scope details |
 | Collaboration | Scoped diagram and named Interface list on the overview or selected Module page |
 | Interface contract | Interface detail page with exact owners, operations, guarantees, failures, and compatibility |
@@ -284,7 +285,9 @@ RigorLoop applies REM's [optional Logical reading perspectives](../../rem/method
 
 The shared **Public capabilities** grouping is a reading level, not an additional Module or architectural dependency layer. The Commands catalog remains owned by IF-004's interaction facet under MOD-018's public-contract accountability; MOD-010 retains its allocated command behavior. The Skills catalog remains owned by MOD-012's software facet, with specialist Functions retaining their actual accountable Modules. Grouping the catalogs does not require every skill to invoke a command, establish execution order, or change published product support.
 
-Product production remains a separate responsibility within Product delivery. The Logical view exposes MOD-013's candidate-production Functions and IF-005 artifact contract. Its software realization now records bounded canonical-source, transformation, and candidate-output mappings for the Development view; deployment observations explain production and installation placement in the Physical view. These declarations describe building from canonical skill and CLI sources; they do not establish automatic synthesis of new skill instructions or command implementations from REM entities. Observed source behavior, proposed choices, deferred conformance, and unperformed product qualification remain distinct.
+The [Architecture browser capability design](../architecture/modules/MOD-016-engineering-model-management/modules/MOD-004-engineering-context-and-traceability/README.md#architecture-browser-as-a-public-capability) defines a distinct web reading destination to this grouping. Its explicit binding, availability limits and source composition belong to MOD-004; it is not another `observed.public_entries` command or skill. This design does not extend the admitted entity/facet schemas or establish customer-tool availability. The generated catalogues remain Commands and Skills; a supplied web binding adds its separate capability description under the same navigation heading.
+
+Product production remains a separate responsibility within Packaging and distribution. The Logical view exposes MOD-013's candidate-production Functions and IF-005 artifact contract. Its software realization now records bounded canonical-source, transformation, and candidate-output mappings for the Development view; deployment observations explain production and installation placement in the Physical view. These declarations describe building from canonical skill and CLI sources; they do not establish automatic synthesis of new skill instructions or command implementations from REM entities. Observed source behavior, proposed choices, deferred conformance, and unperformed product qualification remain distinct.
 
 Browser Module routes show one level of child responsibility and relevant collaboration, with breadcrumbs and ordinary browser history. Interface routes show exact providers, consumers, operations, and contract details. Allocations, realization, and provenance are secondary disclosures. Logical navigation also exposes CLI cooperation and all 44 attributed acceptance-contribution arguments. Cooperation walkthroughs cover SCN-041 through SCN-049 and retain their selected obligations and failure boundaries; they are explanations of contract responsibilities, not observed runtime sequences. Canonical JSON remains separately reachable. Empty allocation text distinguishes a leaf from a parent with actual descendant allocations; an empty `owned_state` list reports only the absence of directly recorded state.
 
@@ -304,9 +307,9 @@ The title must identify the engineering purpose and subject, distinguish the ent
 Scenario titles describe a stakeholder goal and situation; Feature titles describe a stakeholder capability; Function titles describe a logical action. Prefer action plus subject and add conditions when they distinguish the meaning.
 Module titles identify a cohesive architectural responsibility; Interface titles identify the interaction contract; AR titles identify the allocated obligation.
 
-For Scenario, Feature, Function, and AR records, use `<ID>-<title-slug>.json`. For Modules and Interfaces, use `<ID>-<title-slug>/module.json` or `<ID>-<title-slug>/interface.json`.
+For Scenario, Feature, Function, and AR records, use `<ID>-<title-slug>.json`. For Modules, use `<MOD-ID>-<retained-slug>/module.json`; for Interfaces, use `<IF-ID>-<title-slug>/interface.json`.
 The JSON `id` owns stable identity and `title` owns the readable name. Derive the suffix using the same [full-title normalization](../requirements/README.md#directory-naming) as IR and SR directory names.
-Preserve all title words; do not maintain a separate `slug` or abbreviate the suffix independently.
+For a new Module, derive the initial directory suffix from its full title. Retain that suffix when refining the title so existing paths, containment and source links remain stable. The retained suffix must contain lowercase letters/digits separated by single hyphens, and its ID prefix must match the record. Other entity kinds continue to require the current full-title suffix. Do not add a `slug` field or a second display-name field.
 
 For example:
 
@@ -318,7 +321,7 @@ architecture/modules/MOD-016-engineering-model-management/modules/MOD-001-engine
 architecture/interfaces/IF-001-engineering-definition-access/interface.json
 ```
 
-A title change requires renaming the corresponding filename or owner directory and reconciling current path-based links and consumers. Move all subordinate facets with their owner directory.
+Module title changes preserve the existing owner directory and all subordinate paths; reconcile current readable references and regenerate views. For other entity kinds, a title change still requires renaming the corresponding filename or owner directory and reconciling current path-based links and consumers. Move all subordinate facets with an owner directory when a move is required.
 Keep the entity ID and ID-based relationships unchanged when the same entity is renamed.
 Check the destination before renaming; a collision or unsupported filename must be resolved without overwriting another record, truncating the title silently, or generating a replacement ID.
 Historical paths retain the meaning of their original states.
@@ -409,3 +412,81 @@ CI integration is not part of this initial profile.
 
 Schema conformance establishes structural validity only.
 IR/SR/AR/Feature/Function/Module/Interface records remain drafts; confirmed Scenarios express accepted analysis knowledge. The existing repository contracts retain their authority during migration.
+
+## Current contribution projection and historical provenance
+
+The local operational-history refinement distinguishes current `SRC-CLI-ALLOCATION` contribution arguments from retained `SRC-CLI-ALLOCATION-BEFORE-LOCAL-STORE` history. The current contribution view must project only the former while preserving both source populations in full record detail. Historical arguments cannot be retargeted to newly edited criterion text as current coverage. The existing projection test compares the exact current source references, arguments, criteria and allocations and verifies exclusion plus preservation of historical entries; browser integration checks retain the active-source boundary. These checks protect projection meaning, not the semantic adequacy of an allocation or successful runtime storage migration. The [source register](../requirements/sources.md#src-local-operational-analysis) identifies the affected scope and outstanding architecture reconciliation.
+
+## Workflow architecture projection scope
+
+The [workflow composition and owning records](../architecture/README.md#requirement-first-workflow-composition) adds FUNC-078, IF-011 and AR-029–042 under existing Module boundaries. Projection checks retain explicit expected child allocations, empty allocations for unaffected Modules, parent roll-ups without duplicate ownership, and the exact additional MOD-012 consumption of IF-009–011. Browser checks preserve the matching cross-parent edges. This updates the earlier fixed empty/count expectations; it does not weaken ownership assertions or claim the workflow has been implemented. The CLI-only contribution panel retains its existing source scope; workflow criterion-composition arguments remain in the owning design.
+
+
+## Process projection refinement
+
+Scope disposition: the structured `process_models` extension below is retained as a deferred design option, not a prerequisite for refining the current Process View or an accepted customer product contract. Its former PP delivery allocation has been withdrawn. Current registered architecture explanations use D2 in owning documents and links from the views guide; existing admitted JSON and generated views retain their current contracts. The [customer browser composition](../architecture/README.md#customer-architecture-browser-composition) owns proposed product integration, and requirement/design assessment must settle that scope before any renderer extension is scheduled.
+
+This proposed application-profile refinement applies the [REM Process method](../../rem/methods/architecture-views.md#process-view). It defines the source mapping and projection behavior for subsequent schema and renderer work; the fields described as proposed below are not yet admitted by the current schemas. Existing observed execution, interaction and lifecycle records remain valid and retain their original qualification. This section owns projection mechanics; [Operations](../architecture/modules/MOD-018-engineering-operations/README.md) owns workflow cooperation and [Governance](../architecture/modules/MOD-017-engineering-governance/README.md) owns approval and applicability semantics.
+
+### Projection structure and source mapping
+
+The primary Process page presents runtime topology, followed by selectable activity, interaction and lifecycle details. Diagram type expresses the question being answered; a sequence is not a replacement for topology. Participant and topic handles are local projection references, not new REM entities or independently governed records.
+
+```mermaid
+flowchart LR
+    Sources["Owned runtime and Interface facts"] --> Projection["Validated Process projection"]
+    Projection --> Topology["Runtime topology overview"]
+    Topology --> Activity["Selected activity flow"]
+    Topology --> Interaction["Selected interaction"]
+    Topology --> Lifecycle["Selected runtime lifecycle"]
+```
+
+These arrows describe projection and navigation, not product execution. Topics without an established runtime participant remain accessible in a qualified topic list; navigation must not invent a topology node to attach them.
+
+| Presentation | Existing source and owner | Required refinement and interpretation |
+| --- | --- | --- |
+| Runtime topology | MOD-010 `runtime.json`, `observed.execution`: `name`, `environment`, `modules`, `entry_interfaces`, `calls`, `constraints` | Preserve the observed shared CLI process. Module boxes identify responsibilities inside the execution boundary; they are not independent processes. Calls retain their recorded conditional meaning. |
+| Additional runtime participants and channels | Owning Module runtime facets and runtime-significant Interface interaction facets | Proposed `process_models` entries of kind `topology` carry named participants and channels. Record participant kind, accountable Module, material multiplicity/isolation/failure constraints, and channel endpoints, kind, logical Interface where applicable, and communication constraints. Unknown behavior remains explicit. |
+| Requirement-first activity | MOD-018 handoff protocol, MOD-017 gate rules, and MOD-012 proposed runtime decision | Proposed MOD-018 runtime `process_models` entries of kind `activity` express authorized control flow. Nodes reference the responsible owner and governing contract; edges carry explicit conditions. Review roles and skills are activities, not new processes. |
+| Selected runtime interactions | Interface `observed.sequences`: `operation`, `participants`, `preconditions`, `steps`, `outcome`, `failures`, `constraints` | Retain existing observed interactions. New proposed interactions need equally explicit ordering and source qualification. Existing terminal branches cannot represent an activity loop, fork or join. |
+| Runtime lifecycle | Module `observed.lifecycles`: named `states`, guarded `transitions`, `constraints` | Preserve journal coordination semantics. Do not reuse journal lifecycle fields for requirement acceptance, review applicability or final completion; those belong to Governance and constrain activity edges. |
+| Scenario entry to Process detail | Governed Scenario plus explicitly selected architecture/realization references | Link a relevant runtime topic as supporting detail. Preserve the black-box Scenario and do not infer sequence from SR/Function/Module reachability. |
+
+### Proposed structured source contract
+
+Add an optional `process_models` collection to an individual proposed realization decision, retaining that decision's rationale, alternatives, consequences and revisit conditions. Each model declares one kind (`topology`, `activity`, `interaction` or `lifecycle`), a local name, exact governing source references and constraints. This keeps proposed semantics separate from `observed`; the current `proposed` decision representation must not be silently reinterpreted as observations. The collection is a design for a schema extension, not a currently supported JSON field. Existing observations use their current structures without duplicate authoring.
+
+A topology contains locally named participants and directed channels. A participant identifies an accountable Module or an explicitly external runtime/resource; external actors do not receive invented Module IDs. A channel references existing participants and identifies the realized Interface where one is established. The projection retains containment, proposal/observation qualification and source pointers on every displayed item. Similar labels, shared files or shared locations do not merge participants. Missing multiplicity or synchronization detail is shown as unspecified, never defaulted to one instance or synchronous execution. Actual filesystem/database placement remains a Physical concern.
+
+An activity contains locally named nodes, directed edges and entry/exit nodes. Node kinds are `action`, `decision`, `merge`, `fork`, `join`, `entry` and `exit`. Actions identify responsible owners and the invoked responsibility; decision exits carry explicit guards. A fork/join requires explicit concurrency and synchronization semantics. An iterative System/Architecture Design relationship alone does not justify a fork. Correction edges name the responsible destination and the condition requiring reconsideration of prior reliance. Activities reference gate predicates owned by Governance; they do not define a competing gate state machine. These vocabularies are proposed closed sets: implementation must reject unknown kinds before consistency checks.
+
+Runtime facets admit proposed topology, activity and lifecycle models; Interface interaction facets admit proposed interaction models. Runtime topology channels may reference Interface facts without giving the Interface a second topology owner. Other facet/model combinations reject. Proposed model names are unique across all decisions within the same owner, facet and kind.
+
+Resolve topic references by owner, facet, qualification (`observed` or `proposed`), model kind and local name, then emit the current source pointer. Observed and proposed models may share a name but must have distinct routes and qualification. The observed `sequences` field maps to model kind `interaction`; observed `execution` maps to `topology`. Reordering a source array must not select a different topic. Reject unresolved endpoints, duplicate names, incompatible facet/model kinds, or unsupported control-flow semantics before producing output. Keep the existing observed sequence and lifecycle validation rules. A proposed interaction/lifecycle must receive the same semantic checks as its observed counterpart plus explicit design-source attribution; it cannot acquire observed status merely by passing validation.
+
+No automatic promotion from proposed to observed is defined here. Later implementation inspection establishes fresh observed facts and their source basis; any retirement of proposed facts reconciles consumers explicitly. Render mixed scopes with visible qualification per item and never combine them into an unqualified execution path. Where facts establish only topology, render only topology and explain the absent behavioral detail. Timing and formal-concurrency projections are deferred because this scope establishes neither deadlines nor a formal liveness/deadlock analysis question.
+
+### Workflow activity selection
+
+The first proposed activity selects the [Operations handoff protocol](../architecture/modules/MOD-018-engineering-operations/README.md#authoring-assessment-and-handoff-protocol), without copying its detailed obligations into another workflow document. Its main path covers requirement analysis/review, iterative System/Architecture Design, integrated Design Review, planning/delivery review, checked implementation, whole-change Code Review and separate Verify. RR is input. Optional PR requires separate authorization.
+
+The activity must distinguish required conditions from automatic execution. Requirement acceptance enables authorized design even when Function/AR allocations are incomplete. Milestone completion with required checks permits otherwise authorized continuation; it does not require a review record. Interim advice is optional and cannot establish gate approval. A direct isolated invocation exits at its authorized scope rather than following the whole path automatically.
+
+Corrections return to the responsible requirement, design or implementation owner. Whole-change correction and reassessment remain within one gate, with distinct truthful attempts and current subject applicability. Verify failures distinguish engineering changes requiring affected reassessment from evidence-only retries. Failed required checks and missing authority block affected work. Persistence success cannot satisfy any of these engineering predicates. These conditions are selected from Governance and Operations, not inferred from arrows or the latest record timestamp.
+
+### Verification intent and delivery boundary
+
+The shared projection and browser test owners remain the existing architecture view/browser suites. Extend their realistic private-root fixtures when implementing this profile; this document does not claim those cases already exist. Use independently specified expected relationships and meanings rather than deriving expectations from the projection under test.
+
+| Risk and representative condition | Required observation |
+| --- | --- |
+| Logical allocation or shared filenames mistaken for runtime topology | Only authored execution/participant/channel facts create topology; containment and actual Interface ownership remain visible. |
+| Proposed workflow mistaken for implemented execution | Observed CLI facts retain their qualification; proposed activity and participants carry distinct labels and source links throughout overview and detail. |
+| Invalid local name, endpoint, model kind or node kind | Specific rejection precedes consistency inference and generation leaves prior output unchanged. |
+| Source models reordered, two owners reuse a local name, or observed/proposed models share a name | Fully qualified topic selection reaches the same intended model and current pointer without collision; duplicate names within one qualified scope reject. |
+| Only topology exists | Overview remains useful and explicitly reports missing behavioral detail without manufacturing order or concurrency. |
+| Accepted requirements lack Function/AR allocation; a checked milestone lacks review | Activity permits the relevant authorized design/implementation continuation and makes no design-completeness or approval claim. |
+| Clean advisory review; whole-change corrections; changed subjects; evidence-only retry | Semantic walkthrough preserves one formal gate, applicable reassessment, independent judgment and distinct Verify, with no milestone gate or unnecessary review restart. |
+| Scenario navigation opens a runtime interaction | Selected Scenario meaning and source qualification remain unchanged; broader topic detail does not expand Scenario coverage. |
+
+Automated schema/projection checks protect admissibility, topology, references, qualification and generation preservation. An explicit semantic comparison against the owning handoff and gate contracts assesses activity meaning; rendered inspection checks legibility and navigation. Passing structural checks alone cannot establish either claim. Preserve existing publication/recovery regression coverage. Delivery must allocate source/schema changes, projection and navigation changes, generated output regeneration, and these observations together before implementation; this design does not change product CLI behavior, adopt SQLite or grant review approval.

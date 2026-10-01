@@ -3,7 +3,7 @@
   "type": "allocated-requirement",
   "title": "Return exactly selected records and factual discovery context",
   "status": "draft",
-  "statement": "The Engineering command interface Module shall apply only the actor-selected query or declared discovery scope, preserve complete selected meaning and accurate scope metadata, and report unavailable or incoherent content without inferring relevance, a selected change, workflow authority, or recovery.",
+  "statement": "The Command handling Module shall apply only the actor-selected query or declared discovery scope, preserve complete selected meaning and accurate scope metadata, and report unavailable or incoherent content without inferring relevance, a selected change, workflow authority, or recovery.",
   "analysis": {
     "method": "5W2H",
     "what": {

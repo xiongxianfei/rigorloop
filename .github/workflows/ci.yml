@@ -52,6 +52,12 @@ jobs:
           tar -xzf "$rem_tools/d2.tar.gz" -C "$rem_tools"
           "$rem_tools/d2-v0.9.0/bin/d2" --version
           echo "$rem_tools/d2-v0.9.0/bin" >> "$GITHUB_PATH"
+          mkdir "$rem_tools/browser-tests"
+          cp tests/engineering/validation/browser-toolchain/package*.json "$rem_tools/browser-tests/"
+          npm ci --prefix "$rem_tools/browser-tests" --ignore-scripts --no-audit --no-fund
+          PUPPETEER_CACHE_DIR="$rem_tools/chromium" "$rem_tools/browser-tests/node_modules/.bin/puppeteer" browsers install chrome@149.0.7827.55
+          echo "REM_PUPPETEER=$rem_tools/browser-tests/node_modules/puppeteer" >> "$GITHUB_ENV"
+          echo "REM_CHROMIUM=$rem_tools/chromium/chrome/linux-149.0.7827.55/chrome-linux64/chrome" >> "$GITHUB_ENV"
 
       - name: Install public package dependencies
         run: npm ci --prefix packages/rigorloop

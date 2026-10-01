@@ -12,7 +12,7 @@
         "Declared claim, exact subject and state, requirement and acceptance-criterion basis, included scope and relevant assessment conditions, with missing basis explicit.",
         "Verification definitions and actual observations, each with its original method, subject, criteria, execution state, conditions, occurrence, accountable source and supporting evidence; planned, unavailable and incomplete observations remain distinguishable.",
         "Existing applicability judgments, contradiction dispositions and scoped engineering judgments with their rationale and provenance, together with identified changes to the claim basis and incomplete dependency information.",
-        "Applicable freshness requirements and explicit owner-recorded deferrals and their limits. For release consumption, the exact retained candidate and required qualification basis supplied by Product release coordination remain identifiable, with later public obligations distinguished from prepublication support."
+        "Applicable freshness requirements and explicit owner-recorded deferrals and their limits. For release consumption, the exact retained candidate and required qualification basis supplied by Release coordination remain identifiable, with later public obligations distinguished from prepublication support."
       ],
       "preconditions": [
         "The proposed claim and offered evidence are identifiable; unresolved subject, criterion or condition binding remains an explicit assessment gap."
@@ -56,7 +56,8 @@
     "Verification definitions, observations, applicability assessments, criterion coverage, semantic judgments and execution authority retain distinct meanings and original attributable bases.",
     "Coverage is scoped to the declared claim and included criteria. Prepublication qualification and later public verification remain distinct claims; absence of a later observation is never a fabricated current pass or an invented requirement to publish before candidate approval.",
     "MOD-015 retains release-specific requirement selection, qualification, immutable candidate sealing, publication and external outcome reporting. This assessment supplies one input to those responsibilities; IF-005 artifact supply and IF-006 installation keep their existing contracts.",
-    "Favorable evidence support does not establish applicable authorization. A valid authority assessment under IF-009 does not waive missing, adverse, stale or contradictory required support."
+    "Favorable evidence support does not establish applicable authorization. A valid authority assessment under IF-009 does not waive missing, adverse, stale or contradictory required support.",
+    "For MOD-012 workflow consumption, use the declared requirement, integrated-design, advisory, whole-change or Verify claim. Advisory support cannot establish whole-change approval; correction reuse requires explicit applicability to the complete current claim. Human or agent assessors still supply semantic judgments."
   ],
   "compatibility_rules": [
     "The existing assurance and Release contracts retain evidence meaning, exact identity, applicability, freshness, deferral and nondeferable duties. This draft prescribes no new evidence format, runner, persistence service or release qualification engine.",
@@ -78,6 +79,11 @@
       "source": "SRC-PUBLISHED-RELEASE",
       "locator": "docs/design/engineering/release/release.md#REL-SR-08; REL-SR-09; REL-SR-23; REL-SR-24; SR-069; SR-070; FUNC-069; FUNC-070",
       "basis": "Preserve exact-candidate qualification support, mandatory applicable non-deferred checks, explicit freshness, independent authority, changed-basis invalidation and separation of generated expectations from actual results. Release-specific sealing, publication and public verification remain consumer-owned."
+    },
+    {
+      "source": "SRC-WORKFLOW-DESIGN",
+      "locator": "IF-010",
+      "basis": "Draft integrated design from the accepted requirement-first basis. This defines target responsibility and cooperation, not installed capability, design approval, runtime evidence or SQLite adoption."
     }
   ]
 }

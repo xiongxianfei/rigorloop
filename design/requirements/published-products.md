@@ -1,4 +1,4 @@
-# Published CLI and skill coverage
+# Published product coverage
 
 This analysis connects RigorLoop's published product contracts to the REM requirement, system-design, and proposed architecture model.
 It extends the original engineering-model scope; it does not replace the current contracts or claim that published tools implement the new REM record formats.
@@ -304,3 +304,41 @@ Review subject SHA-256: `05e0909b9c58b7e293857320b25c6e20465ba17c788ed19044dd4fb
 The digest covers the sorted repository-relative paths and SHA-256 content digests of all 247 entity JSON files under `design/`, excluding schemas, using `path + NUL + content_digest + newline` for each manifest entry. The earlier 118-entity and 139-entity review subjects remain identified in their original review sections; this digest does not retarget them.
 
 These checks and reviews establish bounded structural and design consistency. Detailed Skill child-contract migration, remaining Interfaces and ARs, runtime realization, adoption, and requirement-satisfaction evidence remain outstanding engineering work. The CLI help discrepancy above remains a recorded implementation follow-up. No skills or CI were run, and no installation, publication, registry inspection, or runtime product verification was performed.
+
+
+## Customer architecture browser analysis
+
+The RR requests a reusable architecture browser distributed to customers, with RigorLoop's own architecture as a reference application. The selected requirement basis is a local generator plus portable, read-only, offline architecture snapshots. It excludes a live editor, hosted-service requirement, automatic publication, cross-project aggregation and operational-history browsing. This section records analysis dispositions; the linked JSON records own current obligations, scope and relationships.
+
+### Reuse and refinement conclusions
+
+| Basis | Disposition and reason |
+| --- | --- |
+| IR-001; SR-004/005 | Reuse unchanged: current definition and applicable rationale remain understandable without Change-history reconstruction. |
+| IR-002; SR-008/009 | Preserve identity and traceability semantics; refine IR analysis for customer snapshots. Generic traversal does not cover generation, portable reading or safe output, so add SR-084–087 beneath this IR. |
+| IR-005; SR-012/013/014 | Reuse unchanged: declared-profile interpretation, diagnostics and separation of structural results from engineering judgment. |
+| IR-010 | Refine the same trustworthy-tools need to include browser generation/reading resources; update 5W2H scope without prescribing an artifact format or platform. |
+| SR-060; FEAT-018 | Refine existing candidate-production scope to include browser resources and qualification. Existing CLI/skill obligations survive. |
+| SR-061/062/067/069–072 | Reuse determinism, integrity, compatibility, exact-candidate qualification and separately authorized/observed publication. |
+| SR-063/064/065; FEAT-019 | Preserve their CLI completeness and skill-installation scope; do not make the existing skill installer a browser installer by implication. |
+| FEAT-022 | Create one durable capability for generating and sharing attributable architecture views. FEAT-003 remains relationship navigation/change impact; it does not already own portable snapshot production. |
+
+No new IR is needed. Existing Scenarios describe relationship navigation, installed skills or CLI qualification; relabeling their historical scope would hide the distinct customer generation/offline outcomes. Add five bounded black-box Scenarios instead. The original published-product inventory above retains its earlier inspected population and meaning.
+
+### Concrete requirement and Scenario changes
+
+| Requirement | Outcome | Scenario basis |
+| --- | --- | --- |
+| [SR-084](IR-002-trace-engineering-obligations-and-responsibilities/SR-084-generate-architecture-views-for-a-selected-customer-model/sr.json) | Generate architecture views for a selected customer model | [SCN-083](scenarios/SCN-083-generate-architecture-views-for-a-customer-project.json), [SCN-085](scenarios/SCN-085-preserve-prior-architecture-output-when-generation-fails.json) |
+| [SR-085](IR-002-trace-engineering-obligations-and-responsibilities/SR-085-preserve-engineering-meaning-across-architecture-views/sr.json) | Preserve engineering meaning across architecture views | [SCN-083](scenarios/SCN-083-generate-architecture-views-for-a-customer-project.json), [SCN-086](scenarios/SCN-086-distinguish-proposed-behavior-from-observed-architecture.json) |
+| [SR-086](IR-002-trace-engineering-obligations-and-responsibilities/SR-086-read-portable-architecture-snapshots-offline/sr.json) | Read portable architecture snapshots offline | [SCN-084](scenarios/SCN-084-read-a-copied-architecture-snapshot-offline.json) |
+| [SR-087](IR-002-trace-engineering-obligations-and-responsibilities/SR-087-generate-architecture-snapshots-within-safe-output-boundaries/sr.json) | Generate architecture snapshots within safe output boundaries | [SCN-085](scenarios/SCN-085-preserve-prior-architecture-output-when-generation-fails.json) |
+| [SR-088](IR-010-obtain-trustworthy-compatible-rigorloop-tools/SR-088-qualify-complete-customer-architecture-browser-artifacts/sr.json) | Qualify complete customer architecture browser artifacts | [SCN-087](scenarios/SCN-087-qualify-a-browser-candidate-for-independent-customer-use.json) |
+
+SR-084–087 constrain FEAT-022; SR-088 constrains FEAT-018. Existing FUNC-007/009/012 provide relevant presentation, navigation and interpretation behavior for FEAT-022, but that partial reuse does not establish complete generation/portability behavior. The subsequent [Functional Analysis](../system/README.md#customer-browser-behavior) adds FUNC-079–083 and explicit SR confirmations after requirement acceptance; existing presentation/navigation/interpretation behavior retains its meaning.
+
+### Assessment and downstream boundary
+
+The [source register](sources.md#src-customer-browser-requirements) identifies this scoped basis as author-assessed, not independently reviewed. IR/SR/Feature JSON retains the current profile's `draft` lifecycle; Scenario `confirmed` means accepted analysis knowledge, not implemented or satisfied obligations.
+
+The subsequent System and Architecture Design supplies scoped Function coverage, IF-012 and AR-043–051; integrated assessment and actual product qualification remain distinct. The [proposed browser composition](../architecture/README.md#customer-architecture-browser-composition) is an input to that work, not an accepted complete design. Packaging/command selection, supported profile/platform/browser configurations and safe publication/recovery mechanics remain design decisions; no currently available command or package is invented by these requirements.

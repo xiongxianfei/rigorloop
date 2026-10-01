@@ -1,0 +1,30 @@
+{
+  "id": "FEAT-021",
+  "type": "feature",
+  "title": "Preserve and restore operational history",
+  "status": "draft",
+  "description": "Project maintainers and authorized participants can retain a recoverable operational scope, restore it after local-store loss, and transfer it to another local environment without losing the original work and evidence meaning.",
+  "scope": {
+    "includes": [
+      "Create an identifiable coherent backup of selected records and retained artifacts.",
+      "Validate and restore the declared scope with project association and original identities.",
+      "Transfer retained work to another authorized environment with explicit conflicts and exclusions."
+    ],
+    "excludes": [
+      "Engineering Baseline recovery, which remains FEAT-006.",
+      "Interrupted transaction repair, which remains FEAT-013.",
+      "Migration of unsupported source representations, hosted backup, history synchronization or automatic conflict merging."
+    ]
+  },
+  "realized_by": [
+    "FUNC-074",
+    "FUNC-075"
+  ],
+  "sources": [
+    {
+      "source": "SRC-LOCAL-OPERATIONAL-ANALYSIS",
+      "locator": "FEAT-021",
+      "basis": "Draft derivation from the refined IRs and RR proposal; no approval, implementation or satisfaction claim."
+    }
+  ]
+}

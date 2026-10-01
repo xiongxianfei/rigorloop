@@ -1,5 +1,5 @@
 # Generated from canonical REM records; do not edit.
-# Source identity: 2cf8f01cf8087e0b226dbd431d6452970b13954a16b84408d91173987708417e
+# Source identity: 3b423207b261cd33066f4517d60da462b029232e9d9a626120e9b455a4b27e5a
 # Arrows show consumer -> provider; they do not show execution order.
 vars: {
   d2-config: {
@@ -8,35 +8,35 @@ vars: {
 }
 direction: down
 
-m_4d4f442d303138: "Engineering operations" {
+m_4d4f442d303138: "Skills and commands" {
   link: "#module/MOD-018"
-  tooltip: "Engineering operations (MOD-018)"
+  tooltip: "Skills and commands (MOD-018)"
   style.fill: "#ECF3FF"
   style.stroke: "#426898"
   style.font-color: "#23334A"
   style.font-size: 18
   style.border-radius: 8
-  m_4d4f442d303130: "Engineering command\ninterface" {
+  m_4d4f442d303130: "Command handling" {
     link: "#module/MOD-010"
-    tooltip: "Engineering command interface (MOD-010)"
+    tooltip: "Command handling (MOD-010)"
     style.fill: "#ECF3FF"
     style.stroke: "#426898"
     style.font-color: "#23334A"
     style.font-size: 18
     style.border-radius: 8
   }
-  m_4d4f442d303131: "Operational record\npersistence" {
+  m_4d4f442d303131: "Work record storage" {
     link: "#module/MOD-011"
-    tooltip: "Operational record persistence (MOD-011)"
+    tooltip: "Work record storage (MOD-011)"
     style.fill: "#ECF3FF"
     style.stroke: "#426898"
     style.font-color: "#23334A"
     style.font-size: 18
     style.border-radius: 8
   }
-  m_4d4f442d303132: "Published engineering\ncapability guidance" {
+  m_4d4f442d303132: "Skill procedures" {
     link: "#module/MOD-012"
-    tooltip: "Published engineering capability guidance (MOD-012)"
+    tooltip: "Skill procedures (MOD-012)"
     style.fill: "#ECF3FF"
     style.stroke: "#426898"
     style.font-color: "#23334A"
@@ -44,9 +44,9 @@ m_4d4f442d303138: "Engineering operations" {
     style.border-radius: 8
   }
 }
-m_4d4f442d303137: "Engineering governance" {
-  link: "#module/MOD-017"
-  tooltip: "Engineering governance (MOD-017)"
+m_4d4f442d303136: "Project model" {
+  link: "#module/MOD-016"
+  tooltip: "Project model (MOD-016)"
   style.fill: "#F6F8FB"
   style.stroke: "#8292A9"
   style.font-color: "#23334A"
@@ -54,9 +54,19 @@ m_4d4f442d303137: "Engineering governance" {
   style.border-radius: 8
   style.stroke-dash: 3
 }
-m_4d4f442d303139: "Product delivery" {
+m_4d4f442d303137: "Change and quality control" {
+  link: "#module/MOD-017"
+  tooltip: "Change and quality control (MOD-017)"
+  style.fill: "#F6F8FB"
+  style.stroke: "#8292A9"
+  style.font-color: "#23334A"
+  style.font-size: 18
+  style.border-radius: 8
+  style.stroke-dash: 3
+}
+m_4d4f442d303139: "Packaging and distribution" {
   link: "#module/MOD-019"
-  tooltip: "Product delivery (MOD-019)"
+  tooltip: "Packaging and distribution (MOD-019)"
   style.fill: "#F6F8FB"
   style.stroke: "#8292A9"
   style.font-color: "#23334A"
@@ -91,6 +101,38 @@ m_4d4f442d303138.m_4d4f442d303130 -> m_4d4f442d303139: "Verified skill\ninstalla
 m_4d4f442d303138.m_4d4f442d303132 -> m_4d4f442d303137: "Engineering\nauthoring guidance" {
   link: "#interface/IF-008"
   tooltip: "Applicable engineering authoring guidance (IF-008)"
+  style.stroke: "#667A96"
+  style.font-color: "#34445B"
+  style.fill: "#FFFFFF"
+  style.font-size: 14
+}
+m_4d4f442d303138.m_4d4f442d303132 -> m_4d4f442d303137: "Governed-action\nauthority" {
+  link: "#interface/IF-009"
+  tooltip: "Applicable governed-action authority (IF-009)"
+  style.stroke: "#667A96"
+  style.font-color: "#34445B"
+  style.fill: "#FFFFFF"
+  style.font-size: 14
+}
+m_4d4f442d303138.m_4d4f442d303132 -> m_4d4f442d303137: "Claim evidence\napplicability and\ncoverage" {
+  link: "#interface/IF-010"
+  tooltip: "Claim evidence applicability and coverage (IF-010)"
+  style.stroke: "#667A96"
+  style.font-color: "#34445B"
+  style.fill: "#FFFFFF"
+  style.font-size: 14
+}
+m_4d4f442d303138.m_4d4f442d303132 -> m_4d4f442d303137: "Engineering work\ncontext and\nworkflow adoption" {
+  link: "#interface/IF-011"
+  tooltip: "Engineering work context and workflow adoption (IF-011)"
+  style.stroke: "#667A96"
+  style.font-color: "#34445B"
+  style.fill: "#FFFFFF"
+  style.font-size: 14
+}
+m_4d4f442d303138.m_4d4f442d303130 -> m_4d4f442d303136: "Qualified\narchitecture\nsnapshot\ngeneration" {
+  link: "#interface/IF-012"
+  tooltip: "Qualified architecture snapshot generation (IF-012)"
   style.stroke: "#667A96"
   style.font-color: "#34445B"
   style.fill: "#FFFFFF"

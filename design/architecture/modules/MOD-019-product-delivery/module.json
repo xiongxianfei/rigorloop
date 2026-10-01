@@ -1,13 +1,13 @@
 {
   "id": "MOD-019",
   "type": "module",
-  "title": "Product delivery",
+  "title": "Packaging and distribution",
   "status": "draft",
-  "description": "Account for trustworthy product delivery by preserving candidate identity, compatibility, integrity, and applicable execution authority across package production, installation, and release coordination.",
+  "description": "Coordinates package production, installation and release around an identified product candidate.",
   "responsibilities": [
     "Compose candidate production, verified installation, and release coordination so downstream actions refer to the actual selected candidate and its applicable qualification.",
     "Keep package integrity, installation destination effects, publication authority, and observed release outcomes distinct while preserving their end-to-end relationship.",
-    "Provide IF-006 as the accountable installation contract for Product delivery. MOD-014 retains acquisition, verification, bounded destination changes, and outcome behavior; candidate production and release responsibilities retain their own boundaries."
+    "Provide IF-006 as the accountable installation contract for Packaging and distribution. MOD-014 retains acquisition, verification, bounded destination changes, and outcome behavior; candidate production and release responsibilities retain their own boundaries."
   ],
   "owned_state": [],
   "scope": {

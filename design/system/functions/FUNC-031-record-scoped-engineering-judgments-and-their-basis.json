@@ -20,7 +20,8 @@
     "Do not present full satisfaction as established when required criterion support is missing or a material contradiction remains unresolved.",
     "Allow a narrower supported conclusion only with explicit included and excluded scope; distinguish an accepted exception or tradeoff from observed satisfaction.",
     "After reassessment, record the new judgment against its new basis while keeping earlier conclusions attributable to their historical state.",
-    "Keep permission to execute governed actions outside the judgment and do not convert mechanical coverage into an unstated semantic conclusion."
+    "Keep permission to execute governed actions outside the judgment and do not convert mechanical coverage into an unstated semantic conclusion.",
+    "Retain each actor-supplied review attempt with exact subjects, judgment, reasoning and predecessor/correction relationships. Attempts share a gate only for the same selected Change and gate purpose; a later attempt does not overwrite an earlier judgment or itself establish whole-change adequacy."
   ],
   "failure_behavior": [
     {
@@ -46,6 +47,11 @@
       "source": "SRC-ARCHITECTURE-PILOT",
       "locator": "FUNC-031",
       "basis": "Propose MOD-007 as the single accountable architectural responsibility for the existing behavior. This allocation preserves the Function definition and does not establish implementation or completed interface/AR coverage outside the IR-001 pilot."
+    },
+    {
+      "source": "SRC-WORKFLOW-DESIGN",
+      "locator": "FUNC-031",
+      "basis": "Draft integrated design from the accepted requirement-first basis. This defines target responsibility and cooperation, not installed capability, design approval, runtime evidence or SQLite adoption."
     }
   ],
   "allocated_to": "MOD-007"

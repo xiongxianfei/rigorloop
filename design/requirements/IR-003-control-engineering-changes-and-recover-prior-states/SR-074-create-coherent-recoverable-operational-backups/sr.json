@@ -1,0 +1,63 @@
+{
+  "id": "SR-074",
+  "type": "system-requirement",
+  "title": "Create coherent recoverable operational backups",
+  "status": "draft",
+  "statement": "The system shall create an identifiable backup of the explicitly selected operational records and required retained evidence artifacts from a coherent project state, declaring its project association, supported interpretation, scope and integrity before reporting it complete.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Copying only records, or capturing changing records and artifacts at different states, can produce a backup that cannot restore its claimed scope.",
+      "desired_outcome": "A participant can distinguish a complete recoverable capture from an incomplete attempt and know which work it preserves."
+    },
+    "why": {
+      "rationale": "The refined IR-003 need requires this independently assessable outcome while preserving historical meaning and current work."
+    },
+    "who": {
+      "stakeholders": [
+        "Project maintainers and authorized engineers",
+        "Engineering agents acting for the user",
+        "Reviewers relying on retained evidence"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "When a participant requests a backup while operational work may continue."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "Selected project operational records, retained evidence and explicitly selected local source or destination scope."
+      ]
+    },
+    "how": {
+      "approach": "Use explicit scope and state identities, preserve original meaning and unrelated work, and report complete, unavailable, conflicting or failed outcomes according to the criteria below. Physical storage, commands and allocation remain downstream decisions."
+    },
+    "how_much": {
+      "scope": "One selected project and declared finite operational scope; no hosted storage, automatic history merging, recovery of destroyed copies, or numerical performance/recovery guarantee. Current-model understanding remains owned by SR-004/005."
+    }
+  },
+  "acceptance_criteria": [
+    "For a selected project state containing Changes, findings and retained artifacts, a complete backup identifies the captured state, project, interpretation version, included records and artifacts, and declared exclusions; all included references resolve within the retained scope or are explicitly external.",
+    "When recording continues during capture, the backup represents one coherent declared state or reports that capture could not complete; it never combines incompatible record and artifact versions as a complete backup.",
+    "If a required artifact is missing, unreadable or fails its recorded integrity check, backup creation reports the affected scope and does not declare a complete backup.",
+    "Interruption, cancellation or insufficient destination capacity leaves existing valid backups and source work unchanged and identifies any incomplete output as unusable for complete restoration.",
+    "An explicitly selected narrower scope identifies exclusions and cannot claim to preserve excluded evidence, post-capture work or unsaved content."
+  ],
+  "assumptions": [
+    "Required retained source material and supported interpretation information are accessible; failure of that premise is reported explicitly."
+  ],
+  "constraints": [
+    "A successful storage operation grants no engineering approval or action authority."
+  ],
+  "confirms": [
+    "FUNC-074"
+  ],
+  "sources": [
+    {
+      "source": "SRC-LOCAL-OPERATIONAL-ANALYSIS",
+      "locator": "SR-074",
+      "basis": "Draft derivation from the refined IRs and RR proposal; no approval, implementation or satisfaction claim."
+    }
+  ]
+}

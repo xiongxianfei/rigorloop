@@ -34,7 +34,7 @@
       "approach": "Apply each command family's closed grammar and required selectors, validating unknown vocabulary before dependent consistency work. Preserve the current version-dispatch and early-error tables, bounded command help, generic projection/exit contracts, v3-only stored support, and explicit withdrawal boundaries in the retained CLI and Record Format owners."
     },
     "how_much": {
-      "scope": "All current public command families and the exact declared retired set. Generic installation outcomes remain governed by Installation. This does not reintroduce compact, lifecycle, new-change, the withdrawn query shim, the spec configuration kind, or a REM-record CLI."
+      "scope": "All current public command families and the exact declared retired set. Generic installation outcomes remain governed by Installation. This does not reintroduce compact, lifecycle, new-change, the withdrawn query shim, the spec configuration kind, or a REM-record CLI. The local operational-history extension adds the criteria attributed to SRC-LOCAL-OPERATIONAL-ANALYSIS; retained product contracts and old allocation evidence do not establish implementation or coverage of that extension."
     }
   },
   "acceptance_criteria": [
@@ -42,7 +42,8 @@
     "Unknown or duplicate flags, extra positionals, missing or contradictory selectors, unsupported operations, and unknown configuration kinds reject before filesystem or stdin access where the owning command requires that order; rejected raw values are not echoed.",
     "Primary requests, primary result versions including review.set/verify.set early errors, advanced requests/results, workflow-context, generic projections, and stored v3 remain independently versioned according to the retained dispatch tables.",
     "Retired and unknown stored contracts, mixed-version stores, unsupported journals, and cross-version replacements receive the declared safe rejection with no conversion, fallback, implicit recovery, or historical-byte rewrite.",
-    "Generic human/JSON projection, quiet/debug/color behavior, semantic exit classes, and recording-specific outcome/exit classes retain their distinct published meanings."
+    "Generic human/JSON projection, quiet/debug/color behavior, semantic exit classes, and recording-specific outcome/exit classes retain their distinct published meanings.",
+    "Backup, restoration, transfer, migration and history queries require explicit supported project and scope selection. Storage schema versions, backup versions and command-interface versions are not interchangeable; wrong-project inputs reject before mutation."
   ],
   "assumptions": [],
   "constraints": [],
@@ -76,6 +77,11 @@
       "source": "SRC-CLI-ALLOCATION",
       "locator": "SR-040 AC5; allocated contributors: AR-011",
       "basis": "Generic and recording-specific presentation and exit domains remain distinct; detailed actual-outcome reporting composes with SR-046"
+    },
+    {
+      "source": "SRC-LOCAL-OPERATIONAL-ANALYSIS",
+      "locator": "SR-040",
+      "basis": "Draft derivation from the refined IRs and RR proposal; no approval, implementation or satisfaction claim."
     }
   ],
   "confirms": [

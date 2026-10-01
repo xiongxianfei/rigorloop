@@ -15,16 +15,27 @@
   const modules = model.modules || {};
   const interfaces = model.interfaces || {};
   const catalogs = model.catalogs || [];
+  const webCapabilities = model.web_capabilities || [];
   const views = model.views || {};
   const cooperation = model.cli_cooperation || {};
   const contributions = model.cli_contributions || [];
   const viewKinds = ["logical", "process", "development", "physical", "scenarios"];
+  const moduleViewQuestions = {
+    logical: "What responsibilities, contracts and technical structure does this Module have?",
+    process: "How does its behavior run and interact over time?",
+    development: "How is its software organized and built?",
+    physical: "Where does it run and keep its data?",
+    scenarios: "Which stakeholder situations involve or constrain it?"
+  };
   const viewRoute = kind => kind === "logical" ? "#overview" : `#${kind}`;
   const roots = model.roots || Object.keys(modules).filter(id => !modules[id].parent);
   const list = value => Array.isArray(value) ? value : [];
+  const authoredTopics = list(model.authored_topics);
+  let initializeDiagrams = [];
   const data = id => records[id]?.data || {};
   const title = id => data(id).title || id;
   const nice = key => key.replace(/_/g, " ").replace(/^./, letter => letter.toUpperCase());
+  const qualificationLabel = value => value === "proposed" ? "Design" : nice(value);
   const entityRoute = id => `#${modules[id] ? "module" : interfaces[id] ? "interface" : "entity"}/${encodeURIComponent(id)}`;
   const entryRoute = (catalog, entry) => `#entry/${encodeURIComponent(catalog.owner)}/${encodeURIComponent(entry.name)}`;
   const isCommand = catalog => data(catalog.owner).type === "interface";
@@ -107,7 +118,7 @@
   }
   function breadcrumb(items) {
     const nav = node("nav", "breadcrumb"); nav.setAttribute("aria-label", "Breadcrumb");
-    [{text:"Architecture", href:"#overview"}, ...items].forEach((item, index) => {
+    [{text:"Architecture", href:"#home"}, ...items].forEach((item, index) => {
       if (index) nav.append(node("span", "separator", "/"));
       if (item.href) nav.append(link(item.text, item.href));
       else { const current = node("span", "", item.text); current.setAttribute("aria-current", "page"); nav.append(current); }
@@ -263,35 +274,56 @@
   function processTopics() {
     return Object.values(model.view_diagrams || {}).filter(item => item.view === "process" && /^#process\/(?:interaction|lifecycle)\/[^/]+$/.test(item.route || ""));
   }
-  function processNavigation(activeRoute) {
-    const nav = node("nav", "process-navigation");
-    nav.setAttribute("aria-label", "Process diagrams");
-    const overview = link("Overview", "#process");
-    if (activeRoute === "#process") overview.setAttribute("aria-current", "page");
-    else if (/^#process\/[^/]+$/.test(activeRoute)) overview.setAttribute("aria-current", "location");
-    nav.append(overview);
-    processTopics().forEach(topic => {
-      const item = link(topic.navigation_label || topic.title, topic.route);
-      if (activeRoute === topic.route) item.setAttribute("aria-current", "page");
-      nav.append(item);
-    });
-    return nav;
+  function processTopicApplies(topic, owner) {
+    return !owner || topic.owner === owner || list(topic.sources).some(source =>
+      source.owner === owner || list(resolveSourceField(source)?.participants).includes(owner));
   }
-  function processTopicCards(owner) {
-    const topics = processTopics().filter(topic => !owner || topic.owner === owner || list(topic.sources).some(source =>
-      source.owner === owner || list(resolveSourceField(source)?.participants).includes(owner)));
-    if (!topics.length) return null;
-    const cards = node("div", "card-grid process-topic-grid");
-    topics.forEach(topic => {
-      const card = link("", topic.route, "module-card");
-      card.append(node("span", "eyebrow", topic.route.includes("/interaction/") ? "Selected interaction" : "Coordination and lifecycle"), node("h3", "", topic.title));
-      if (topic.summary) card.append(node("p", "", topic.summary));
-      cards.append(card);
+  function processTopicsContent(owner, inline = false, overview = null) {
+    const topics = processTopics().filter(topic => processTopicApplies(topic, owner)).map(topic => ({
+        ...topic, route:owner ? topic.route.replace("#process/", `#process/${owner}/`) : topic.route, group:topic.interaction ? "Interactions" : "State and coordination", qualification:"observed"
+      }));
+    authoredTopics.filter(topic => topic.view === "process" && (!owner || topic.owner === owner)).forEach(topic => {
+      topics.push({...topic, summary:topic.description, group:topic.kind === "topology" ? "Runtime topology" : ["sequence", "flowchart"].includes(topic.kind) ? "Interactions" : "State and coordination"});
     });
-    return section("Record publication and recovery", cards);
+    if (!topics.length) return null;
+    if (inline) {
+      const groups = ["Runtime topology", "Interactions", "State and coordination"];
+      return viewDiagramSections(groups.flatMap(group => topics.filter(topic => topic.group === group)), true, overview);
+    }
+    const result=node("div","process-details");
+    ["Runtime topology", "Interactions", "State and coordination"].forEach(group=>{
+      const selected=topics.filter(topic=>topic.group===group);
+      if(!selected.length)return;
+      const cards=node("div","card-grid process-topic-grid");
+      selected.forEach(topic=>{
+        const card=link("",topic.route,"module-card");
+        card.append(node("span",`qualification ${topic.qualification}`,qualificationLabel(topic.qualification)),node("h3","",topic.title));
+        if(topic.summary)card.append(node("p","",topic.summary));
+        card.append(node("p","small muted",title(topic.owner)));
+        cards.append(card);
+      });
+      result.append(section(group,cards));
+    });
+    return result;
   }
   function processTopicsForField(facet, key) {
-    return processTopics().filter(topic => list(topic.sources).some(source => source.owner === facet.owner && source.facet === facet.facet && (source.field === `/observed/${key}` || source.field?.startsWith(`/observed/${key}/`))));
+    return processTopics().filter(topic => list(topic.sources).some(source => source.owner === facet.owner && source.facet === facet.facet && (source.field === `/observed/${key}` || source.field?.startsWith(`/observed/${key}/`)))).map(topic => modules[facet.owner] ? {...topic, route:topic.route.replace("#process/", `#process/${facet.owner}/`)} : topic);
+  }
+  function parentProcessTopics(owner) {
+    const parent = modules[owner]?.parent;
+    const topics = authoredTopics.filter(topic => parent && topic.owner === parent && topic.view === "process");
+    if (!topics.length) return null;
+    const body = node("div", "parent-process-topics");
+    body.append(node("p", "section-note", "Parent-owned interactions provide composition context. These links do not establish this Module's participation or realization."));
+    const cards = node("div", "card-grid");
+    topics.forEach(topic => {
+      const card = link("", topic.route, "module-card");
+      card.append(node("span", `qualification ${topic.qualification}`, qualificationLabel(topic.qualification)), node("h3", "", topic.title),
+        node("p", "", topic.description), node("p", "small muted", title(parent)));
+      cards.append(card);
+    });
+    body.append(cards);
+    return section("Parent composition", body);
   }
   function physicalTopics() {
     return Object.values(model.view_diagrams || {}).filter(item => item.view === "physical" && /^#physical\/(?:consumer|storage|production)$/.test(item.route || ""));
@@ -390,13 +422,13 @@
     if (list(lifecycle.constraints).length) body.append(detail("Coordination constraints", valueView(lifecycle.constraints)));
     return body;
   }
-  function renderProcessTopic(kind, name) {
+  function renderProcessTopic(kind, name, owner) {
     const route = `#process/${kind}/${encodeURIComponent(name)}`;
     const topic = processTopics().find(item => item.route === route);
-    if (!topic) return notFound("Process diagram", name);
-    breadcrumb([{text:"Process", href:"#process"}, {text:topic.title}]);
+    if (!topic || !processTopicApplies(topic, owner)) return notFound("Process diagram", name);
+    breadcrumb([...(owner ? [{text:title(owner),href:entityRoute(owner)}] : []), {text:"Process", href:scopeRoute(owner,"process")}, {text:topic.title}]);
     header(kind === "interaction" ? "Process view · Selected interaction" : "Process view · Coordination and lifecycle", topic.title, topic.summary);
-    main.append(processNavigation(route));
+    main.append(link("← Process overview", scopeRoute(owner,"process"), "topic-return"));
     main.append(node("p", "section-note", "This view preserves the selected source-defined steps, guards, and outcomes. It does not establish observed execution or add ordering between independent paths."));
     main.append(diagram(topic.key, topic.title, topic.caption || "", undefined, topic));
     const seen = new Set();
@@ -548,6 +580,7 @@
     const view = views[kind] || {};
     const body = node("div");
     if (view.scope) body.append(valueView(view.scope));
+    if (["process", "development", "physical"].includes(kind)) body.append(node("p", "", "Design describes the current intended behavior and structure; observed facts describe inspected implementation sources. Deferred items remain unresolved. These labels describe the basis, not an approval stage."));
     if (list(view.limits).length) body.append(node("h3", "", "Limits"), valueView(view.limits));
     body.append(node("h3", "", "Generated source"));
     body.append(node("p", "small muted", "The diagrams and details are derived from canonical records. Their source links remain available beside each definition and projection."));
@@ -668,9 +701,9 @@
           const matches = catalogs.filter(catalog => catalog.owner === facet.owner);
           matches.forEach(catalog => body.append(link(`Read individual ${catalogKind(catalog)} mappings →`, `#${catalogKind(catalog)}`, "source-link")));
         }
-        proposals.append(detail(proposal.choice || "Proposed choice", body));
+        proposals.append(detail(proposal.choice || "Design decision", body));
       });
-      result.append(node("h3", "qualification proposed", "Proposed choices"), proposals);
+      result.append(node("h3", "qualification proposed", "Design decisions"), proposals);
     }
     if (list(facet.data.deferred).length) result.append(detail("Deferred decisions and qualification", valueView(facet.data.deferred)));
     if (list(observed.sources).length) result.append(detail("Observation sources and limits", valueView(observed.sources)));
@@ -785,18 +818,198 @@
     }
     main.append(viewScope("development"));
   }
+  function scopeRoute(owner, view) {
+    if (!owner) return view === "summary" ? "#home" : viewRoute(view);
+    return view === "summary" ? entityRoute(owner) : `#${view}/${owner}`;
+  }
+  function architectureContext(route) {
+    const [kind, id] = route;
+    if (kind === "module" && modules[id]) return {owner:id, view:"summary"};
+    if (kind === "home") return {owner:null, view:"summary"};
+    if (kind === "overview") return {owner:null, view:"logical"};
+    if (viewKinds.includes(kind)) return {owner:modules[id] ? id : null, view:kind};
+    if (kind === "scenario") return {owner:null, view:"scenarios"};
+    if (["cooperation", "contributions"].includes(kind)) return {owner:null, view:"logical"};
+    return null;
+  }
+  function architectureViewNavigation(context) {
+    const nav = node("nav", "architecture-view-navigation"); nav.setAttribute("aria-label", "Architecture views");
+    ["summary", ...viewKinds].forEach(kind => {
+      const item = link(nice(kind), scopeRoute(context.owner, kind));
+      if (kind === context.view) item.setAttribute("aria-current", "page");
+      nav.append(item);
+    }); return nav;
+  }
+  function authoredDiagram(topic, inline = false) {
+    const panel = node("section", "diagram-panel authored-diagram");
+    const toolbar = node("div", "diagram-toolbar"), controls = node("div", "diagram-tools");
+    toolbar.append(node(inline ? "h3" : "h2", "", topic.title));
+    if (inline) controls.append(link("Open expanded →", topic.route, "diagram-expanded-link"));
+    const viewport = node("div", "diagram-viewport authored-viewport"); viewport.tabIndex=0; viewport.setAttribute("aria-label", `${topic.title}: scrollable diagram`);
+    const img = node("img"); img.src=topic.image; img.alt=`${topic.title}. Authored description and source text follow.`;
+    let width;
+    const available = () => Math.max(100, viewport.clientWidth-36);
+    const resize = n => { width=Math.max(120,Math.min(4000,n));img.style.width=width+"px"; };
+    [["−","Zoom out",()=>resize(width*.8)],["+","Zoom in",()=>resize(width*1.25)],["Fit","Fit diagram",()=>resize(available())]].forEach(([label,aria,action])=>{
+      const button=node("button","",label);button.type="button";button.setAttribute("aria-label",aria);button.onclick=action;controls.append(button);
+    }); toolbar.append(controls);viewport.append(img);panel.append(toolbar);
+    if (inline) panel.append(node("p", `qualification diagram-qualification ${topic.qualification}`, `${qualificationLabel(topic.qualification)} · ${title(topic.owner)} · ${nice(topic.kind)}`), node("p", "diagram-introduction", topic.description));
+    panel.append(viewport,node("p","diagram-caption","Scroll within the diagram or use Fit. Rendering does not establish implementation or approval."));
+    initializeDiagrams.push(() => resize(Math.max(Math.min(available(),topic.width),Math.min(topic.width,800))));
+    return panel;
+  }
+  function viewDiagramSections(topics, grouped, overview) {
+    const result = node("div", grouped ? "inline-view-diagrams process-details" : "inline-view-diagrams");
+    const targets = [];
+    const addTarget = (element, label, id) => {
+      element.id = id; element.tabIndex = -1;
+      targets.push({element, label});
+    };
+    const toc = node("nav", "diagram-section-navigation"); toc.setAttribute("aria-label", "On this page");
+    if (topics.length + (overview ? 1 : 0) > 1) result.append(toc);
+    if (overview) {
+      addTarget(overview, overview.querySelector("h2")?.textContent || "Overview", "diagram-overview");
+      result.append(overview);
+    }
+    let currentGroup, body = result;
+    const sources = node("div");
+    topics.forEach(topic => {
+      if (grouped && currentGroup !== topic.group) {
+        currentGroup = topic.group; body = node("div", "diagram-group-body");
+        result.append(section(currentGroup, body));
+      }
+      let panel;
+      if (topic.image) {
+        panel = authoredDiagram(topic, true);
+        const source = node("div");
+        source.append(sourceLink(topic.path, "Owning design ↗"), node("p", "small muted", `Anchor: ${topic.anchor}`), node("code", "source-digest", topic.source_digest), sourceLink(topic.registration, "View registration ↗"), node("pre", "authored-source", topic.source));
+        sources.append(detail(topic.title, source));
+      } else {
+        panel = diagram(topic.key, topic.title, topic.caption || "", undefined, topic);
+        panel.querySelector(".diagram-toolbar").append(link("Open expanded →", topic.route, "diagram-expanded-link"));
+        panel.querySelector(".diagram-toolbar").after(node("p", `qualification diagram-qualification ${topic.qualification}`, `${qualificationLabel(topic.qualification)} · ${title(topic.owner)}`));
+      }
+      panel.dataset.topicRoute = topic.route;
+      addTarget(panel, topic.title, `diagram-${topic.key}`);
+      body.append(panel);
+    });
+    if (toc.parentNode) {
+      toc.append(node("strong", "", "On this page"));
+      const entries = node("ul");
+      targets.forEach(({element, label}) => {
+        const button = node("button", "section-jump", label); button.type = "button";
+        button.setAttribute("aria-controls", element.id);
+        button.onclick = () => { element.focus({preventScroll:true}); element.scrollIntoView({block:"start"}); };
+        const entry = node("li"); entry.append(button); entries.append(entry);
+      });
+      toc.append(entries);
+    }
+    if (sources.childElementCount) result.append(detail("Diagram sources and attribution", sources));
+    return result;
+  }
+  function authoredTopicsContent(kind, owner, inline = false, overview = null) {
+    const selected = authoredTopics.filter(t => t.view === kind && (!owner || t.owner === owner));
+    if (!selected.length) return null;
+    if (inline) return viewDiagramSections(selected, false, overview);
+    const cards = node("div", "card-grid");
+    selected.forEach(t => {
+      const a = link("", t.route, "module-card");
+      a.append(node("span", `qualification ${t.qualification}`, qualificationLabel(t.qualification)), node("h3", "", t.title),
+        node("p", "", t.description), node("p", "small muted", `${title(t.owner)} · ${nice(t.kind)}`)); cards.append(a);
+    }); return section("Design details", cards);
+  }
+  function renderAuthoredTopic(kind, owner, qualification, diagramKind, identity) {
+    const requestedRoute = `#${kind}/${owner}/${qualification}/${diagramKind}/${identity}`;
+    const topic = authoredTopics.find(t => t.route === requestedRoute || list(t.previous_routes).includes(requestedRoute));
+    if (!topic) return notFound("Design topic", identity);
+    breadcrumb([{text:title(owner),href:entityRoute(owner)},{text:nice(kind),href:`#${kind}/${owner}`},{text:topic.title}]);
+    header(`${nice(kind)} · ${owner}`, topic.title, topic.description);
+    main.append(link(`← ${nice(kind)} overview`, scopeRoute(owner, kind), "topic-return"));
+    main.append(node("p", `qualification ${qualification}`, `${qualificationLabel(qualification)} · ${nice(topic.kind)}`));
+    main.append(authoredDiagram(topic));
+    const source=node("div");source.append(node("p","",topic.description),node("pre","authored-source",topic.source));
+    main.append(detail("Text explanation and exact diagram source",source));
+    const attribution=node("div");attribution.append(sourceLink(topic.path,"Owning design ↗"),node("p","small muted",`Anchor: ${topic.anchor}`),node("code","source-digest",topic.source_digest),sourceLink(topic.registration,"View registration ↗"));
+    main.append(detail("Source identity and qualification",attribution));
+    main.append(section("Accountable design owner",entityList([owner])),section("Direct Function allocations",entityList(modules[owner].functions)),section("Direct allocated requirements",entityList(modules[owner].allocated_requirements)));
+    const topics=kind === "process" ? processTopicsContent(owner) : authoredTopicsContent(kind,owner);if(topics)main.append(topics);
+    if (kind === "process") { const context = parentProcessTopics(owner); if (context) main.append(context); }
+  }
+  function renderHome() {
+    header("System overview", "RigorLoop architecture", "Explore the selected engineering model, its responsibilities and their architectural views.");
+    main.append(section("Top-level Modules",moduleCards(roots)));
+    main.append(node("p","notice","Views show selected relationships and source-owned explanations. Missing details and recorded design limits remain visible on their owning Module pages."));
+    const source = node("div");
+    source.append(node("p", "", "Model status and realization qualification are distinct; neither implies approval or satisfaction."), node("p", "", "Source identity for this generated model:"), node("code", "source-digest", model.source_digest));
+    main.append(detail("Snapshot and sources", source));
+  }
+  function renderModuleScenarios(owner) {
+    if(!modules[owner])return notFound("Module",owner);
+    breadcrumb([{text:title(owner),href:entityRoute(owner)},{text:"Scenarios"}]);header("Module Scenario view",title(owner),moduleViewQuestions.scenarios);
+    const selected=list(views.scenarios?.scenarios).filter(t=>list(t.modules).includes(owner));
+    if(selected.length)main.append(section("Participation walkthroughs",entityList(selected.map(t=>t.scenario))),node("p","section-note","Declared participation does not establish execution or satisfaction."));
+    const obligations=new Set(list(model.relationships).filter(r=>r.relation==="parent" && modules[owner].allocated_requirements.includes(r.source)).map(r=>r.target));
+    const related=Object.keys(records).filter(id=>data(id).type==="scenario" && list(data(id).informs).some(sr=>obligations.has(sr)));
+    if(related.length){main.append(section("Related stakeholder Scenarios",entityList(related)),node("p","section-note","Derived through this Module's directly allocated obligations and their SRs. These links preserve black-box intent; they do not assert declared execution participation or coverage."));}
+    const authored = authoredTopicsContent("scenarios", owner); if (authored) main.append(authored);
+    if (!selected.length) {
+      const explanation = "No selected walkthrough declares this Module's participation. Related Scenarios do not establish execution or coverage.";
+      main.append(related.length || authored
+        ? node("p", "section-note", `No participation walkthrough recorded. ${explanation}`)
+        : empty("No participation walkthrough recorded", explanation));
+    }
+    main.append(sourceDetails(owner));
+  }
+  function developmentTable(mapping, label, qualification) {
+    const body = node("div", "development-table");
+    body.append(node("p", `qualification ${qualification}`, `${qualificationLabel(qualification)} · ${label}`));
+    body.append(node("p", "small muted development-scroll-hint", "Scroll horizontally to read all columns."));
+    const scroll = node("div", "development-table-scroll"); scroll.tabIndex = 0;
+    scroll.setAttribute("role", "region"); scroll.setAttribute("aria-label", `${label} table`);
+    const table = node("table"), head = node("thead"), labels = node("tr"), rows = node("tbody");
+    mapping.headers.forEach(label => { const cell = node("th", "", label); cell.scope = "col"; labels.append(cell); });
+    head.append(labels);
+    mapping.rows.forEach(row => {
+      const entry = node("tr");
+      row.forEach(segments => {
+        const cell = node("td");
+        segments.forEach(segment => cell.append(segment.path ? sourceLink(segment.path, segment.text) : document.createTextNode(segment.text)));
+        entry.append(cell);
+      });
+      rows.append(entry);
+    });
+    table.append(head, rows); scroll.append(table); body.append(scroll);
+    if (mapping.explanation) body.append(node("p", "section-note", mapping.explanation));
+    const attribution = node("div");
+    attribution.append(sourceLink(mapping.source, "Owning design source ↗"), node("code", "source-digest", mapping.source_digest));
+    body.append(detail(`${label} source`, attribution));
+    return body;
+  }
+  function developmentBuildResources(owner) {
+    const mapping = model.development_build_resources?.[owner];
+    if (!mapping) return null;
+    const body = developmentTable(mapping, "Build and resources", "proposed");
+    body.classList.add("development-build-resources");
+    return section("Build and resources", body);
+  }
+  function developmentImplementationReferences(owner) {
+    const mapping = model.development_implementations?.[owner];
+    if (!mapping) return null;
+    const body = developmentTable(mapping, "Current implementation", "observed");
+    body.classList.add("development-implementation");
+    const references = detail("Implementation references", body);
+    references.classList.add("implementation-references");
+    return references;
+  }
   function renderFacetView(kind, owner) {
     const view = views[kind];
     if (!view) return notFound("Architecture view", kind);
     const facets = facetsFor(kind, owner);
-    if (owner && (!records[owner] || !facets.length)) return notFound(`${nice(kind)} scope`, owner);
+    if (owner && !records[owner]) return notFound(`${nice(kind)} scope`, owner);
     breadcrumb(owner ? [{text:nice(kind), href:viewRoute(kind)}, {text:title(owner)}] : [{text:nice(kind)}]);
-    header(`${nice(kind)} view`, owner ? title(owner) : view.title, owner ? data(owner).description : view.question);
-    if (kind === "process") main.append(processNavigation(owner ? `#process/${owner}` : "#process"));
-    if (kind === "physical") main.append(physicalNavigation(owner ? `#physical/${owner}` : "#physical"));
-    if (kind === "development") main.append(developmentNavigation(owner ? `#development/${owner}` : "#development"));
-    if (view.scope) main.append(node("p", "section-note", Array.isArray(view.scope) ? view.scope.join(" ") : view.scope));
-    main.append(node("p", "notice", "Observed facts describe inspected sources. Proposed choices remain design decisions; deferred items remain unresolved. These records do not establish executed or deployed behavior."));
+    header(`${nice(kind)} view`, owner ? title(owner) : view.title, modules[owner] ? moduleViewQuestions[kind] : owner ? data(owner).description : view.question);
+    if (!owner && kind === "physical") main.append(physicalNavigation(owner ? `#physical/${owner}` : "#physical"));
+    if (!owner && kind === "development") main.append(developmentNavigation(owner ? `#development/${owner}` : "#development"));
     let graphic = projectedDiagram(kind, owner);
     if (!graphic && kind === "physical" && owner) {
       const contexts = relatedPhysicalTopics(owner);
@@ -805,10 +1018,19 @@
         graphic = diagram(context.key, `${context.title} · context`, context.caption || "", undefined, context);
       }
     }
-    if (graphic) main.append(graphic);
+    const inline = Boolean(modules[owner]);
+    const authored = kind === "process" ? null : authoredTopicsContent(kind, owner, inline, graphic);
+    const topics = kind === "process" ? processTopicsContent(owner, inline, graphic) : kind === "physical" ? physicalTopicCards(owner) : null;
+    // A composed inline section already includes the scope's overview graph.
+    if (graphic && !(inline && (authored || (kind === "process" && topics)))) main.append(graphic);
+    if (authored) main.append(authored);
+    if (topics) main.append(topics);
+    const buildResources = kind === "development" ? developmentBuildResources(owner) : null;
+    if (buildResources) main.append(buildResources);
+    const implementation = kind === "development" ? developmentImplementationReferences(owner) : null;
     if (kind === "development") { const reading = testPerspectiveLink(owner); if (reading) main.append(reading); }
-    if (kind === "process") { const topics = processTopicCards(owner); if (topics) main.append(topics); }
-    if (kind === "physical") { const topics = physicalTopicCards(owner); if (topics) main.append(topics); }
+    if (owner && !facets.length && !graphic && !authored && !topics && !buildResources) main.append(empty(`No ${nice(kind).toLowerCase()} realization detail recorded`, "The selected owner and source limits remain unchanged. Missing detail is not inferred from another view."));
+    if (kind === "process" && owner) { const context = parentProcessTopics(owner); if (context) main.append(context); }
     if (!owner) {
       const owners = [...new Set(facets.map(facet => facet.owner))];
       const cards = node("div", "card-grid realization-grid");
@@ -820,13 +1042,16 @@
         card.append(tags); cards.append(card);
       });
       if (cards.childElementCount) main.append(section("Explore by responsibility", cards));
-      else main.append(empty("No realization facets recorded", "The view's scope and limits identify the remaining design work."));
+      else if (!graphic && !authored && !topics) main.append(empty("No realization facets recorded", "The view's scope and limits identify the remaining design work."));
     } else {
-      const links = node("div", "link-row"); links.append(link("Logical responsibility →", entityRoute(owner))); main.append(links);
-      const related = relatedViews([owner], kind); if (related) main.append(related);
+      if (!modules[owner]) {
+        const links = node("div", "link-row"); links.append(link("Definition →", entityRoute(owner))); main.append(links);
+        const related = relatedViews([owner], kind); if (related) main.append(related);
+      }
       facets.forEach(facet => main.append(facetPanel(facet)));
       if (list(data(owner).design_limits).length) main.append(detail("Responsibility design limits", valueView(data(owner).design_limits)));
     }
+    if (implementation) main.append(implementation);
     main.append(viewScope(kind));
   }
   function renderScenarios() {
@@ -844,7 +1069,9 @@
       card.append(node("div", "card-meta", `${list(slice.outcomes).length} recorded outcomes · ${list(slice.outcomes).some(item => item.profiled) ? "selected architecture readings" : "broader traceability; outcome detail unselected"}`));
       cards.append(card);
     });
-    main.append(cards, viewScope("scenarios"));
+    main.append(cards);
+    const authored = authoredTopicsContent("scenarios"); if (authored) main.append(authored);
+    main.append(viewScope("scenarios"));
   }
   function scenarioSlice(id) {
     return list(views.scenarios?.scenarios).find(item => item.scenario === id);
@@ -1229,7 +1456,6 @@
     const states = [...new Set(roots.map(id => data(id).status).filter(Boolean))];
     header("Logical architecture", "Explore the architecture", "Start with a responsibility, follow its collaborations, then explore the behavior it owns.", states.length === 1 ? states[0] : undefined);
     main.append(node("p", "section-note", "This view shows selected collaborations. Missing connections do not establish that the architecture is complete; recorded design limits remain part of each responsibility."));
-    main.append(cliReadingLinks());
     main.append(diagram("overview", "System responsibilities", "Select a Module to explore its children. Named Interfaces explain the collaboration contracts. Arrows run from consumer to provider; the list below identifies the exact owners.", model.overview_collaborations));
     const limits = node("div");
     roots.forEach(id => {
@@ -1242,14 +1468,16 @@
     });
     if (limits.childElementCount) main.append(detail("Recorded architecture limits by responsibility", limits));
     main.append(section("Choose a responsibility", moduleCards(roots)));
+    const authored = authoredTopicsContent("logical"); if (authored) main.append(authored);
     if (views.logical) main.append(viewScope("logical"));
   }
-  function renderModule(id) {
+  function renderModule(id, logical = false) {
     if (!modules[id]) return notFound("Module", id);
     const record = data(id), info = modules[id];
     const ancestors = [...list(info.ancestors)].reverse().map(parent => ({text:title(parent),href:entityRoute(parent)}));
     breadcrumb([...ancestors, {text:record.title}]);
-    header(`Module · ${id}`, record.title, record.description, record.status);
+    header(logical ? `Logical view · ${id}` : `Module · ${id}`, record.title, logical ? moduleViewQuestions.logical : record.description, record.status);
+    if (!logical) main.append(section("Responsibilities", valueView(record.responsibilities)));
     const testing = testPerspectiveLink(id); if (testing) main.append(testing);
     if (list(cooperation.walkthroughs).some(slice => list(slice.modules).concat(list(slice.context_modules)).includes(id))) main.append(cliReadingLinks());
     const hosted = catalogs.filter(catalog => catalog.host === id || catalog.owner === id);
@@ -1258,8 +1486,10 @@
       hosted.forEach(catalog => row.append(link(`Explore ${catalogKind(catalog)} →`, `#${catalogKind(catalog)}`)));
       main.append(row);
     }
-    const related = relatedViews([id]); if (related) main.append(related);
-    main.append(diagram(`module-${id}`, list(info.children).length ? "Responsibilities and collaboration" : "Collaboration context", "This diagram focuses on the selected Module, its immediate children, and relevant neighbors. Arrows run from consumer to provider. Dashed Modules provide surrounding context. Scroll or use Fit to see the complete diagram.", info.collaborations));
+    if (logical) {
+      const overview = diagram(`module-${id}`, list(info.children).length ? "Responsibilities and collaboration" : "Collaboration context", "This diagram focuses on the selected Module, its immediate children, and relevant neighbors. Arrows run from consumer to provider. Dashed Modules provide surrounding context. Scroll or use Fit to see the complete diagram.", info.collaborations);
+      main.append(authoredTopicsContent("logical", id, true, overview) || overview);
+    }
     if (list(info.children).length) main.append(section("Child responsibilities", moduleCards(info.children)));
     const contracts = node("div", "contract-grid");
     [["Provides", info.provides], ["Consumes", info.consumes]].forEach(([label, ids]) => {
@@ -1278,7 +1508,7 @@
     if (list(info.children).length) main.append(node("p", "section-note", "Child-owned contracts and allocations remain on the child pages."));
     if (list(info.exposed_interfaces).length) main.append(section("Child contracts exposed at this boundary", entityList(info.exposed_interfaces)));
     const details = node("div", "details-stack");
-    details.append(detail("Responsibilities and scope", recordFields(record, ["responsibilities", "owned_state", "scope"])));
+    details.append(detail("State authority and scope", recordFields(record, ["owned_state", "scope"])));
     const allocations = node("div");
     allocations.append(node("h3", "", "Direct Function allocations"), entityList(info.functions), node("h3", "", "Direct Allocated Requirements"), entityList(info.allocated_requirements));
     const descendantFunctions = list(info.subtree_functions).filter(item => !list(info.functions).includes(item));
@@ -1287,7 +1517,7 @@
       allocations.append(node("p", "notice", "The following descendant allocations are rolled up for navigation. Their accountable owners remain the child Modules."));
       allocations.append(node("h3", "", "Descendant Functions"), entityList(descendantFunctions), node("h3", "", "Descendant Allocated Requirements"), entityList(descendantRequirements));
     }
-    details.append(detail("Functions and requirement allocations", allocations));
+    details.append(detail("Functions and requirement allocations", allocations, !logical));
     if (record.design_limits?.length) details.append(detail("Design limits", valueView(record.design_limits)));
     details.append(sourceDetails(id)); main.append(details);
   }
@@ -1319,6 +1549,47 @@
   }
   function catalogItems(kind) {
     return catalogs.filter(catalog => catalogKind(catalog) === kind).flatMap(catalog => list(catalog.entries).map(entry => ({catalog,entry})));
+  }
+  function renderWebCapability(id) {
+    const capability = webCapabilities.find(item => item.id === id);
+    if (!capability) return notFound("Public capability", id);
+    breadcrumb([{text:"Public capabilities"},{text:capability.title}]);
+    header("Public capability · Web", capability.title, capability.content.purpose);
+    const paragraphs = text => {
+      const body = node("div");
+      text.split(/\n\s*\n/).forEach(part => body.append(node("p", "", part)));
+      return body;
+    };
+    const access = paragraphs(capability.content.access), actions = node("div", "link-row");
+    actions.append(link("Open architecture →", "#home"), link("Find a definition →", "#search/"),
+      link("Explore the responsible Module →", entityRoute(capability.owner)),
+      link("Technical design →", `#logical/${encodeURIComponent(capability.owner)}`),
+      link("Development design →", `#development/${encodeURIComponent(capability.owner)}`));
+    access.append(actions); main.append(section("Open and use", access));
+    const interactions = node("div", "card-grid");
+    capability.interactions.forEach(item => {
+      const card = node("article", "panel");
+      card.append(node("h3", "", item.title), node("p", "", item.description)); interactions.append(card);
+    });
+    main.append(section("Available interactions", interactions),
+      section("Current limits and proposed work", paragraphs(capability.content.limits)),
+      section("Related engineering basis", entityList([capability.feature, ...capability.related, capability.owner])));
+    const allocations = node("div");
+    allocations.append(node("p", "section-note", "These allocations describe the broader Feature, including proposed work. Each Function retains its accountable Module; links do not establish delivered support."));
+    list(data(capability.feature).realized_by).forEach(id => {
+      const row = node("p"); row.append(entityLink(id));
+      const owner = data(id).allocated_to;
+      if (owner) row.append(document.createTextNode(" → "), entityLink(owner));
+      else row.append(document.createTextNode(" · No accountable Module recorded"));
+      allocations.append(row);
+    });
+    main.append(detail("Functions and accountable Modules", allocations));
+    const sources = node("div");
+    sources.append(node("p", "", "Descriptions are included in this snapshot. These optional repository links may be unavailable in a copied file."),
+      sourceLink(capability.source, "Owning description ↗"), node("code", "source-digest", capability.source_digest),
+      sourceLink(capability.binding, "Presentation binding ↗"), node("code", "source-digest", capability.binding_digest),
+      recordFields(capability, ["selectors"]));
+    main.append(detail("Sources and snapshot identity", sources));
   }
   function renderCatalog(kind) {
     const items = catalogItems(kind);
@@ -1438,26 +1709,41 @@
   }
   function renderNavigation(activeRoute) {
     const nav=document.getElementById("navigation");nav.replaceChildren();
-    const routeKind = activeRoute.slice(1).split("/")[0];
-    const currentView = ["module", "interface", "entity", "logical"].includes(routeKind) ? "#overview"
-      : routeKind === "scenario" ? "#scenarios"
-      : ["cooperation", "contributions"].includes(routeKind) ? `#${routeKind}`
-      : ["process", "development", "physical"].includes(routeKind) ? `#${routeKind}` : null;
-    function item(label,href,subtext,className="") {
-      const a=link(label,href,`nav-link ${className}`);
-      if(subtext)a.append(node("small","",subtext));
-      if(activeRoute===href)a.setAttribute("aria-current","page");
-      else if(currentView===href)a.setAttribute("aria-current","location");
-      nav.append(a);
+    const route=activeRoute.slice(1).split("/");
+    const context=architectureContext(route);
+    const selectedOwner=context?.owner;
+    const view=context?.view || "summary";
+    nav.append(node("p","nav-label","Architecture"));
+    const root=link("RigorLoop",scopeRoute(null,view),"nav-link system-nav");
+    if(context && !selectedOwner)root.setAttribute("aria-current","location");
+    nav.append(root);
+    function tree(id) {
+      const children=list(modules[id].children);
+      const a=link(`${title(id)} (${id})`,scopeRoute(id,view),"nav-link module-nav");
+      a.dataset.scope=id;
+      if(id===selectedOwner)a.setAttribute("aria-current","location");
+      if(!children.length)return a;
+      const branch=node("details","module-tree"),summary=node("summary");summary.append(a);branch.append(summary);
+      branch.open=id===selectedOwner || list(modules[selectedOwner]?.ancestors).includes(id);
+      const nested=node("div","module-tree-children");children.forEach(child=>nested.append(tree(child)));branch.append(nested);return branch;
     }
-    nav.append(node("p","nav-label","Architecture views"));
-    viewKinds.forEach(kind => item(nice(kind),viewRoute(kind)));
-    nav.append(node("p","nav-label","Responsibilities"));
-    roots.forEach(id=>item(title(id),entityRoute(id),null,"module-nav"));
-    nav.append(node("p","nav-label","Public capabilities"));
-    item("Commands","#commands");item("Skills","#skills");
-    nav.append(node("p","nav-label","CLI design rationale"));
-    item("Cooperation","#cooperation");item("Acceptance contributions","#contributions");
+    const scopes=node("div","system-tree-children");
+    roots.forEach(id=>scopes.append(tree(id)));nav.append(scopes);
+    const kinds=[...new Set(catalogs.map(catalogKind))];
+    const activeCatalog=route[0]==="entry" ? catalogs.find(c=>c.owner===route[1]) : null;
+    if(kinds.length || webCapabilities.length){
+      nav.append(node("p","nav-label","Public capabilities"));
+      kinds.forEach(kind=>{
+        const a=link(nice(kind),`#${kind}`,"nav-link");
+        if(route[0]===kind || (activeCatalog && catalogKind(activeCatalog)===kind))a.setAttribute("aria-current",route[0]===kind ? "page" : "location");
+        nav.append(a);
+      });
+      webCapabilities.forEach(capability => {
+        const a = link(capability.title, capability.route, "nav-link");
+        if (activeRoute === capability.route) a.setAttribute("aria-current", "page");
+        nav.append(a);
+      });
+    }
   }
   const identityTooltip = node("div", "identity-tooltip");
   identityTooltip.id = "entity-identity-tooltip";
@@ -1538,17 +1824,22 @@
   document.addEventListener("scroll", repositionIdentity, true);
   function render() {
     if(location.hash==="#main") {
-      if(!main.querySelector("h1")) { main.replaceChildren();renderNavigation("#overview");renderOverview();annotateEntityLinks(); }
-      main.focus();return;
+      if(main.querySelector("h1")) { main.focus();return; }
     }
-    const raw=(location.hash || "#overview").slice(1);
+    const raw=(location.hash === "#main" ? "#home" : location.hash || "#home").slice(1);
     let route;
     try { route=raw.split("/").map(decodeURIComponent); }
     catch (_) { route=["invalid",raw]; }
     hoveredEntity = null;focusedEntity = null;hideIdentity();
+    initializeDiagrams = [];
     main.replaceChildren();renderNavigation(`#${raw}`);
     const [kind,id,name]=route;
-    if(["overview","logical"].includes(kind) && route.length===1)renderOverview();
+    if(kind==="home" && route.length===1)renderHome();
+    else if(viewKinds.includes(kind) && modules[id] && route.length===5)renderAuthoredTopic(kind,id,route[2],route[3],route[4]);
+    else if(kind==="process" && modules[id] && ["interaction","lifecycle"].includes(name) && route.length===4)renderProcessTopic(name,route[3],id);
+    else if(kind==="logical" && route.length===2)renderModule(id,true);
+    else if(kind==="scenarios" && route.length===2)renderModuleScenarios(id);
+    else if(["overview","logical"].includes(kind) && route.length===1)renderOverview();
     else if(kind==="cooperation" && route.length<=2)renderCooperation(id);
     else if(kind==="contributions" && route.length<=2)renderContributions(id);
     else if(kind==="process" && ["interaction","lifecycle"].includes(id) && route.length===3)renderProcessTopic(id,name);
@@ -1562,16 +1853,30 @@
     else if(kind==="module" && route.length===2)renderModule(id);
     else if(kind==="interface" && route.length===2)renderInterface(id);
     else if(kind==="entity" && route.length===2)renderEntity(id);
+    else if(kind==="capability" && route.length===2)renderWebCapability(id);
     else if(["commands","skills"].includes(kind) && route.length===1)renderCatalog(kind);
     else if(kind==="entry" && route.length===3)renderEntry(id,name);
     else if(kind==="search" && route.length<=2)renderSearch(id || "");
     else notFound("Page",raw);
+    const context=architectureContext(route);
+    if(context) {
+      const scope=node("p","architecture-scope",context.owner ? `${context.owner} · ${title(context.owner)}` : "RigorLoop · System");
+      const tabs=architectureViewNavigation(context);
+      const heading=main.querySelector(".page-header");
+      if(heading)heading.after(scope,tabs);
+    }
+    initializeDiagrams.forEach(initialize => initialize());
     annotateEntityLinks();
+    document.getElementById("navigation").classList.remove("mobile-open");
+    document.getElementById("navigation-toggle").setAttribute("aria-expanded","false");
     window.scrollTo(0,0);main.focus({preventScroll:true});
   }
   document.getElementById("search-form").addEventListener("submit",event=>{
     event.preventDefault();const query=document.getElementById("global-search").value.trim();const hash=`#search/${encodeURIComponent(query)}`;
     if(location.hash===hash)render();else location.hash=hash;
   });
+  const navigationToggle=document.getElementById("navigation-toggle");
+  navigationToggle.onclick=()=>{const open=document.getElementById("navigation").classList.toggle("mobile-open");navigationToggle.setAttribute("aria-expanded",String(open));};
+  document.addEventListener("keydown",event=>{if(event.key==="Escape" && document.getElementById("navigation").classList.contains("mobile-open")){document.getElementById("navigation").classList.remove("mobile-open");navigationToggle.setAttribute("aria-expanded","false");navigationToggle.focus();}});
   window.addEventListener("hashchange",render);render();
 })();

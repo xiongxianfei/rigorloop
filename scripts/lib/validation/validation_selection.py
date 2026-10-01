@@ -289,7 +289,9 @@ REM_TOOL_PATHS = frozenset({
     "scripts/lib/rem_architecture_physical.py", "scripts/lib/rem_architecture_process.py",
     "scripts/lib/rem_architecture_realization_diagrams.py", "scripts/lib/rem_architecture_scenario_diagrams.py",
     "scripts/lib/rem_architecture_scenarios.py", "scripts/lib/rem_architecture_test_diagrams.py",
-    "scripts/lib/rem_architecture_testing.py",
+    "scripts/lib/rem_architecture_testing.py", "scripts/lib/rem_authored_views.py",
+    "tests/engineering/validation/browser-toolchain/package.json",
+    "tests/engineering/validation/browser-toolchain/package-lock.json",
     "scripts/resources/rem-architecture-browser/index.html",
     "scripts/resources/rem-architecture-browser/viewer.css",
     "scripts/resources/rem-architecture-browser/viewer.js",
@@ -298,6 +300,7 @@ REM_TOOL_PATHS = frozenset({
     "tests/engineering/validation/architecture_schema_tests.py",
     "tests/engineering/validation/architecture_view_tests.py",
     "tests/engineering/validation/architecture_browser_tests.py",
+    "tests/engineering/validation/architecture_browser_ui_checks.cjs",
 })
 
 
@@ -1840,7 +1843,7 @@ def _path_category(path: str) -> str | None:
             or (path.startswith("rem/") and path.endswith(".md"))
             or path == "design/README.md"
             or (path.startswith(("design/requirements/", "design/system/", "design/architecture/", "design/support/"))
-                and path.endswith((".md", ".json", ".html", ".d2", ".svg", ".sha256")))):
+                and path.endswith((".md", ".json", ".html", ".d2", ".mmd", ".toml", ".svg", ".sha256")))):
         return "rem"
     if path in _TOOL_PACKAGE_CHECKS:
         return "tooling-package"

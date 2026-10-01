@@ -33,14 +33,15 @@
       "approach": "Compare the claim's subject state, criterion basis, scope, and relevant conditions with those of the observations. Expose concrete mismatches and unknowns. Record semantic applicability judgments with their rationale and source instead of equating mechanical identity matches with sufficient proof. Preserve the original evidence basis when assessing a different state."
     },
     "how_much": {
-      "scope": "Applicability within the declared claim scope. A matching recorded basis supports applicability checks but does not itself establish criterion satisfaction; a semantic equivalence or reuse conclusion requires its own recorded engineering basis. No automatic carry-forward of satisfaction is allowed."
+      "scope": "Applicability within the declared claim scope. A matching recorded basis supports applicability checks but does not itself establish criterion satisfaction; a semantic equivalence or reuse conclusion requires its own recorded engineering basis. No automatic carry-forward of satisfaction is allowed. The requirement-first workflow extension is draft; existing Function/AR and product-contract coverage must be reassessed before its adoption."
     }
   },
   "acceptance_criteria": [
     "Evidence for a different subject revision, criterion basis, scope, or materially different condition is identified with the mismatch and is not silently used as current support.",
     "When relevant applicability information is missing, the result is explicitly unknown or incomplete and identifies the missing basis.",
     "A recorded engineering conclusion that evidence remains applicable states its assessed scope, rationale, and provenance; the original observation basis remains unchanged.",
-    "An unchanged entity identity, existing test definition, or passing label alone cannot establish applicability to a changed claim basis."
+    "An unchanged entity identity, existing test definition, or passing label alone cannot establish applicability to a changed claim basis.",
+    "Advisory scope, whole-change review scope and final verification scope remain distinguishable when assessing applicability. A clean narrower advisory judgment cannot support a whole-change approval merely because the inspected files are part of the Change."
   ],
   "assumptions": [],
   "constraints": [],
@@ -52,6 +53,11 @@
       "source": "SRC-COMPLETE-ANALYSIS",
       "locator": "SR-027",
       "basis": "Derived from IR-004: IR-004 requires applicability to assessed revisions and states that unchanged identity does not by itself carry satisfaction across changes. The criteria describe intended observable behavior, not executed verification."
+    },
+    {
+      "source": "SRC-REQUIREMENT-FIRST-WORKFLOW",
+      "locator": "SR-027",
+      "basis": "User-selected requirement-first workflow and one mandatory whole-change Code Review gate. Proposed requirement analysis only; existing product contracts remain active until coordinated adoption. No new Function, AR, implementation or approval is inferred."
     }
   ]
 }

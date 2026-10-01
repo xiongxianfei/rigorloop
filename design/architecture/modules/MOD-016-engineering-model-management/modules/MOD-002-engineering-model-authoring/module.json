@@ -1,16 +1,16 @@
 {
   "id": "MOD-002",
   "type": "module",
-  "title": "Engineering model authoring",
+  "title": "Definition editing",
   "status": "draft",
-  "description": "Determine supported changes to engineering definitions and authored relationships while preserving entity identity and the meaning of containment.",
+  "description": "Prepares supported changes to definitions and relationships while preserving entity identity and containment meaning.",
   "responsibilities": [
     "Prepare same-entity revisions and explain unsupported identity or parentage changes.",
     "Author relationship facts once and preserve their intended endpoints when preparing a resulting model state.",
     "Submit an explicit revision candidate for checked retention and report its actual outcome."
   ],
   "owned_state": [
-    "Proposed definition and relationship edits while an authoring operation is being prepared; retained content belongs to Engineering model storage."
+    "Proposed definition and relationship edits while an authoring operation is being prepared; retained content belongs to Definition storage."
   ],
   "scope": {
     "includes": [

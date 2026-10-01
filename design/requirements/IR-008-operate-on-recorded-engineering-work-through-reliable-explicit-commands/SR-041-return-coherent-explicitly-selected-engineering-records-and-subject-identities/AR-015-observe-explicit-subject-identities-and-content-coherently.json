@@ -3,7 +3,7 @@
   "type": "allocated-requirement",
   "title": "Observe explicit subject identities and content coherently",
   "status": "draft",
-  "statement": "The Operational record persistence Module shall inspect only explicitly supplied safe subject paths and return identities and requested content from the same observed bytes, with explicit absence or failure and no partial subject set when observed change prevents coherence.",
+  "statement": "The Work record storage Module shall inspect only explicitly supplied safe subject paths and return identities and requested content from the same observed bytes, with explicit absence or failure and no partial subject set when observed change prevents coherence.",
   "analysis": {
     "method": "5W2H",
     "what": {

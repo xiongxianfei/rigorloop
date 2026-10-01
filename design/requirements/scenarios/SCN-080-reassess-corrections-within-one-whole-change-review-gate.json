@@ -1,0 +1,74 @@
+{
+  "id": "SCN-080",
+  "type": "scenario",
+  "title": "Reassess corrections within one whole change review gate",
+  "status": "confirmed",
+  "actor": "An independent code reviewer",
+  "goal": "Establish whether the complete current delivered scope is acceptable after owned corrections.",
+  "context": "Implementation is complete; a prior attempt at the same whole-change gate may have requested changes.",
+  "trigger": "The author submits the complete candidate or its corrected successor for independent assessment.",
+  "preconditions": [
+    "The requested scope and relevant project authority are identifiable."
+  ],
+  "interaction": [
+    {
+      "actor": "Author",
+      "action": "Provides the complete delivered scope, governing requirements/design/delivery basis and relevant evidence, identifying corrections since any earlier attempt."
+    },
+    {
+      "actor": "Reviewer",
+      "action": "Assesses the full claim scope, examines changed subjects and affected interactions, and determines what prior support remains applicable."
+    },
+    {
+      "actor": "Reviewer",
+      "action": "Records the current judgment, exact subjects, findings and rationale while preserving earlier attempts."
+    },
+    {
+      "actor": "System",
+      "action": "Reports whether the current whole-change judgment can support the separate Verify stage."
+    }
+  ],
+  "expected_outcome": "An adequate independent judgment covers the complete current Change through one gate, with honest attempt history and no milestone approval substitution.",
+  "alternatives": [
+    {
+      "condition": "The Change has one milestone.",
+      "outcome": "It receives one whole-change gate without a preceding duplicate milestone review."
+    },
+    {
+      "condition": "The correction is narrow and prior support demonstrably remains applicable.",
+      "outcome": "Reassessment reuses justified support without mechanically rereading unchanged files or rerunning unaffected checks."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "Impact is broad or uncertain, or material findings remain.",
+      "outcome": "The reviewer expands assessment or withholds approval; a narrow rereview cannot imply adequate whole-change coverage."
+    },
+    {
+      "condition": "Implementation changed after an approval without renewed applicability assessment.",
+      "outcome": "The old approval does not automatically cover the new candidate."
+    }
+  ],
+  "exercises": [
+    "FEAT-016"
+  ],
+  "informs": [
+    "SR-082",
+    "SR-027",
+    "SR-028",
+    "SR-029",
+    "SR-054"
+  ],
+  "sources": [
+    {
+      "source": "SRC-REQUIREMENT-FIRST-WORKFLOW",
+      "locator": "SCN-080",
+      "basis": "User-selected requirement-first workflow and one mandatory whole-change Code Review gate. Proposed requirement analysis only; existing product contracts remain active until coordinated adoption. No new Function, AR, implementation or approval is inferred."
+    },
+    {
+      "source": "SRC-WORKFLOW-REQUIREMENT-REVIEW",
+      "locator": "design/requirements/sources.md#src-workflow-requirement-review",
+      "basis": "Document-based author assessment under the explicit Constitution exception confirms this Scenario as requirement-analysis knowledge. It is not independent review, executed product evidence or workflow activation."
+    }
+  ]
+}

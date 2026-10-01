@@ -4,8 +4,12 @@ The source model owns relationships. These helpers add navigation and visual
 aggregation only; public-entry correspondences never become collaboration edges.
 """
 
+import hashlib
 import json
+import posixpath
+import re
 import textwrap
+import tomllib
 
 
 def _edge(edge):
@@ -159,6 +163,119 @@ def cli_cooperation(model):
             "interfaces": ["IF-003", "IF-004"]}
 
 
+def web_capabilities(model):
+    """Read explicit presentation bindings; never infer availability from Features."""
+    result, seen = [], set()
+    fields = {"version", "kind", "id", "title", "feature", "source", "sections", "related"}
+    sections = {"purpose", "access", "interactions", "limits"}
+    for owner in model.of_type("module"):
+        binding = model.root / owner.path.parent / "browser-capability.toml"
+        if binding.is_symlink():
+            raise ValueError("Web capability: symlinked binding is unsupported")
+        if not binding.exists():
+            continue
+        raw = binding.read_bytes()
+        spec = tomllib.loads(raw.decode())
+        # Closed vocabularies reject before source access or reference consistency.
+        if set(spec) != fields or type(spec["version"]) is not int or spec["version"] != 1 or spec["kind"] != "web":
+            raise ValueError("Web capability: unsupported binding fields, version or kind")
+        if any(not isinstance(spec[k], str) or not spec[k].strip() for k in ("id", "title", "feature", "source")):
+            raise ValueError("Web capability: invalid identity or source")
+        if not re.fullmatch(r"[a-z][a-z0-9-]*", spec["id"]) or spec["id"] in seen:
+            raise ValueError("Web capability: invalid or duplicate identity")
+        seen.add(spec["id"])
+        if not isinstance(spec["sections"], dict) or set(spec["sections"]) != sections or any(
+                not isinstance(v, str) or not re.fullmatch(r"[a-z][a-z0-9-]*", v) for v in spec["sections"].values()):
+            raise ValueError("Web capability: invalid section selectors")
+        if not isinstance(spec["related"], list) or not all(isinstance(v, str) for v in spec["related"]):
+            raise ValueError("Web capability: invalid related definitions")
+        feature = model.records.get(spec["feature"])
+        if not feature or feature.data["type"] != "feature" or any(v not in model.records for v in spec["related"]):
+            raise ValueError("Web capability: missing or invalid engineering basis")
+        if spec["source"] != "README.md":
+            raise ValueError("Web capability: source must be the owning README.md")
+        source = binding.parent / spec["source"]
+        if source.is_symlink() or not source.is_file():
+            raise ValueError("Web capability: missing or symlinked source")
+        content = source.read_bytes()
+        document, selected = content.decode(), {}
+        for name, anchor in spec["sections"].items():
+            start, end = f"<!-- browser-capability: {anchor} -->", f"<!-- /browser-capability: {anchor} -->"
+            if document.count(start) != 1 or document.count(end) != 1:
+                raise ValueError("Web capability: missing or ambiguous section")
+            match = re.search(re.escape(start) + r"(.*?)" + re.escape(end), document, re.S)
+            if not match or not match[1].strip():
+                raise ValueError("Web capability: empty or invalid section")
+            selected[name] = match[1].strip()
+        rows = [line.strip().split("|")[1:-1] for line in selected["interactions"].splitlines()]
+        if len(rows) < 3 or any(len(row) != 2 or any(not cell.strip() for cell in row) for row in rows):
+            raise ValueError("Web capability: invalid interaction table")
+        if [v.strip() for v in rows[0]] != ["Reader interaction", "Available behavior and destination"] or any(
+                not re.fullmatch(r":?-{3,}:?", v.strip()) for v in rows[1]):
+            raise ValueError("Web capability: unsupported interaction table")
+        result.append({"id": spec["id"], "kind": "web", "title": spec["title"], "owner": owner.id,
+                       "feature": spec["feature"], "related": spec["related"],
+                       "route": "#capability/" + spec["id"],
+                       "content": {k: v for k, v in selected.items() if k != "interactions"},
+                       "interactions": [{"title": a.strip(), "description": b.strip()} for a, b in rows[2:]],
+                       "source": source.relative_to(model.root).as_posix(), "selectors": spec["sections"],
+                       "source_digest": hashlib.sha256(content).hexdigest(),
+                       "binding": binding.relative_to(model.root).as_posix(),
+                       "binding_digest": hashlib.sha256(raw).hexdigest()})
+    return result
+
+
+def development_tables(model, marker, label):
+    """Project explicitly selected owner tables without creating a second mapping."""
+    result = {}
+    start, end = f'<!-- {marker} -->', f'<!-- /{marker} -->'
+    def fail(message):
+        raise ValueError(label + ': ' + message)
+    for owner in model.of_type('module'):
+        source = model.root / owner.path.parent / 'README.md'
+        if source.is_symlink():
+            fail('symlinked owning README is unsupported')
+        if not source.exists():
+            continue
+        raw = source.read_bytes()
+        document = raw.decode()
+        if start not in document and end not in document:
+            continue
+        if document.count(start) != 1 or document.count(end) != 1:
+            fail('missing or ambiguous markers')
+        match = re.search(re.escape(start) + r'(.*?)' + re.escape(end), document, re.S)
+        if not match:
+            fail('reversed markers')
+        parts = match[1].strip().split('\n\n', 1)
+        lines = parts[0].splitlines()
+        rows = [[cell.strip() for cell in line.strip()[1:-1].split('|')] for line in lines]
+        if len(rows) < 3 or any(not line.strip().startswith('|') or not line.strip().endswith('|') for line in lines) or any(len(row) != 3 or not all(row) for row in rows):
+            fail('expected one nonempty three-column table')
+        if any(not re.fullmatch(r':?-{3,}:?', cell) for cell in rows[1]):
+            fail('invalid table separator')
+        def cell_content(cell):
+            segments, offset = [], 0
+            for link in re.finditer(r'\[([^\[\]\n]+)\]\(([^\s()]+)\)', cell):
+                segments.append({'text': cell[offset:link.start()]})
+                target = link[2]
+                if re.match(r'^(?:[a-z][a-z\d+.-]*:|/)', target, re.I) or '\\' in target:
+                    fail('links must be repository-relative')
+                file, separator, fragment = target.partition('#')
+                path = posixpath.normpath(posixpath.join(owner.path.parent.as_posix(), file))
+                if path == '..' or path.startswith('../'):
+                    fail('link leaves repository')
+                segments.append({'text': link[1], 'path': path + (separator + fragment if separator else '')})
+                offset = link.end()
+            segments.append({'text': cell[offset:]})
+            return segments
+        result[owner.id] = {'headers': rows[0],
+                            'rows': [[cell_content(cell) for cell in row] for row in rows[2:]],
+                            'explanation': parts[1].strip() if len(parts) > 1 else '',
+                            'source': source.relative_to(model.root).as_posix(),
+                            'source_digest': hashlib.sha256(raw).hexdigest()}
+    return result
+
+
 def build_model(model):
     """Return lossless source records plus explicitly derived browser indexes."""
     modules = {}
@@ -228,6 +345,8 @@ def build_model(model):
         "modules": modules,
         "interfaces": interfaces,
         "catalogs": catalogs,
+        "development_implementations": development_tables(model, "development-implementation", "Development implementation"),
+        "development_build_resources": development_tables(model, "development-build-resources", "Development build resources"),
         "cli_contributions": contributions,
         "cli_cooperation": cli_cooperation(model),
         "overview_collaborations": overview_collaborations(model),

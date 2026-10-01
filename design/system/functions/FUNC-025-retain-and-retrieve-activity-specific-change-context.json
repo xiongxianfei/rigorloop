@@ -20,7 +20,10 @@
     "For authoring, retain affected definitions, derivation sources, decisions, unresolved analysis, and proposed edits; for implementation, retain the governing contract, assigned work, changed realization, remaining work, and verification obligations.",
     "For verification, retain exact assessed subjects, procedure, conditions, execution state, observations, evidence, and remaining checks; for review, retain reviewed subjects, basis, findings, disposition, correction responsibility, and next review or correction action.",
     "Reference facts at their authoritative owners and preserve applicable revisions instead of maintaining independently authored copies.",
-    "Expose unavailable or stale basis, distinguish planned verification from evidence, and explain inapplicable context without fabricating missing results."
+    "Expose unavailable or stale basis, distinguish planned verification from evidence, and explain inapplicable context without fabricating missing results.",
+    "After restoring an earlier operational backup, resumption identifies its recorded work state and original subject bases; it reports unavailable newer work and does not refresh assessment applicability or authorization.",
+    "When the operational history is unavailable, the result exposes that limitation rather than inferring an empty or completed Change from the engineering checkout.",
+    "Keep the adopted workflow contract and selected scope identifiable. Retain milestone work/check outcomes separately from formal gates, advisory findings, review attempts and Verify; retrieving these facts does not settle a gate."
   ],
   "failure_behavior": [
     {
@@ -42,6 +45,16 @@
       "source": "SRC-ARCHITECTURE-PILOT",
       "locator": "FUNC-025",
       "basis": "Propose MOD-006 as the single accountable architectural responsibility for the existing behavior. This allocation preserves the Function definition and does not establish implementation or completed interface/AR coverage outside the IR-001 pilot."
+    },
+    {
+      "source": "SRC-LOCAL-OPERATIONAL-ANALYSIS",
+      "locator": "FUNC-025",
+      "basis": "Draft derivation from the refined IRs and RR proposal; no approval, implementation or satisfaction claim."
+    },
+    {
+      "source": "SRC-WORKFLOW-DESIGN",
+      "locator": "FUNC-025",
+      "basis": "Draft integrated design from the accepted requirement-first basis. This defines target responsibility and cooperation, not installed capability, design approval, runtime evidence or SQLite adoption."
     }
   ],
   "allocated_to": "MOD-006"

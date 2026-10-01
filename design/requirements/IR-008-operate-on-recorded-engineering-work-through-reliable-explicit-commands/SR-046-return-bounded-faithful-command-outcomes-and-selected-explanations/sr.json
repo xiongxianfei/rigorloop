@@ -34,7 +34,7 @@
       "approach": "Project the actual outcome through the owning versioned result contract; preserve decoded multiline narrative, literal escapes and order. Guarantee the mandatory storage receipt before publication, summarize excess observations explicitly, and bind retrievable detail to both record revision and observed subject/diagnostic identity."
     },
     "how_much": {
-      "scope": "Current family-specific outcome/exit meanings and bounded result schemas remain authoritative in CLI. Mechanical detail is opt-in; logs are not a prerequisite for understanding the semantic result. This adds no alternative authoritative assessment or cached report."
+      "scope": "Current family-specific outcome/exit meanings and bounded result schemas remain authoritative in CLI. Mechanical detail is opt-in; logs are not a prerequisite for understanding the semantic result. This adds no alternative authoritative assessment or cached report. The local operational-history extension adds the criteria attributed to SRC-LOCAL-OPERATIONAL-ANALYSIS; retained product contracts and old allocation evidence do not establish implementation or coverage of that extension."
     }
   },
   "acceptance_criteria": [
@@ -43,7 +43,8 @@
     "Every admissible mutation has a prepublication mandatory receipt that fits independently of diagnostic volume. Excess optional details are explicitly omitted; increasing diagnostics cannot reject a sound correction or turn completed publication into rejected output.",
     "Observation summaries disclose omitted detail and count scope. Detail continuation binds revision plus actual observed subject basis and diagnostics, so subject drift conflicts even when record bytes and diagnostic text are unchanged; current detail is not promised historical replay.",
     "Full and projected Review/Verify explanations derive from the stored fields without inventing rationale, conflating absence with not-applicable, changing applicability, or claiming that retrieval completeness proves an adequate assessment.",
-    "Generic concise and detailed projections retain the same semantic exit, mutations, and safe-continuation facts; recording and discovery retain their separate result contracts."
+    "Generic concise and detailed projections retain the same semantic exit, mutations, and safe-continuation facts; recording and discovery retain their separate result contracts.",
+    "Backup, restoration, transfer and migration receipts identify their selected project, captured or restored scope, state identity, exclusions and actual completeness. Storage completion does not establish current evidence applicability or engineering approval."
   ],
   "assumptions": [],
   "constraints": [],
@@ -82,6 +83,11 @@
       "source": "SRC-CLI-ALLOCATION",
       "locator": "SR-046 AC6: generic projections preserve exits/effects/safe continuation; recording/discovery stay distinct; allocated contributors: AR-024 AC1, 7; AR-025 AC5 where reporting follows mutation",
       "basis": "SCN-041, SCN-048; FUNC-048 IF-004 owns independent public result domains. Logs are never necessary to recover omitted semantic continuation facts."
+    },
+    {
+      "source": "SRC-LOCAL-OPERATIONAL-ANALYSIS",
+      "locator": "SR-046",
+      "basis": "Draft derivation from the refined IRs and RR proposal; no approval, implementation or satisfaction claim."
     }
   ],
   "confirms": [

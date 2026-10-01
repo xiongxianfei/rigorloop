@@ -1,0 +1,60 @@
+{
+  "id": "AR-050",
+  "type": "allocated-requirement",
+  "title": "Keep browser qualification and publication authority distinct",
+  "status": "draft",
+  "statement": "The Release coordination Module shall keep browser qualification and publication authority distinct within its accountable browser contribution to SR-088, retaining the stated limits of collaborating owners.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "A locally successful browser step can hide missing ownership or an invalid cross-boundary conclusion.",
+      "desired_outcome": "Keep browser qualification and publication authority distinct."
+    },
+    "why": {
+      "rationale": "MOD-015 owns the behavior necessary for the selected SR-088 criteria; the SR remains the system-wide obligation."
+    },
+    "who": {
+      "stakeholders": [
+        "Customer authors and readers",
+        "Product maintainers and reviewers"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "When generating, reading, recovering or qualifying the selected browser scope."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "MOD-015 and its declared browser cooperation contracts."
+      ]
+    },
+    "how": {
+      "approach": "Apply the constrained Functions and preserve source, output, qualification and authority distinctions at the boundary."
+    },
+    "how_much": {
+      "scope": "Contribution to SR-088 criteria 6, 7. Other Module contributions and final product qualification remain distinct."
+    }
+  },
+  "acceptance_criteria": [
+    "The reusable tool artifact and RigorLoop reference-documentation snapshot have separately identifiable content and qualification. A hosted sample or successful local build does not establish customer-tool support or public availability.",
+    "Publication remains governed by the existing exact-candidate authorization and observed-outcome obligations; no public release is implied by qualification."
+  ],
+  "assumptions": [],
+  "constraints": [
+    "Draft allocation; does not establish implemented browser support or requirement satisfaction."
+  ],
+  "allocated_to": "MOD-015",
+  "constrains": [
+    "FUNC-068",
+    "FUNC-070",
+    "FUNC-071"
+  ],
+  "sources": [
+    {
+      "source": "SRC-CUSTOMER-BROWSER-DESIGN",
+      "locator": "AR-050; SR-088 criteria 6, 7",
+      "basis": "System and Architecture Design from SR-084–088 and refined SR-060; proposed responsibility, contract and realization only. No implementation, platform qualification or product availability is established."
+    }
+  ]
+}

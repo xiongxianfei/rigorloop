@@ -3,7 +3,7 @@
   "type": "allocated-requirement",
   "title": "Publish exact record candidates as coherent durable transactions",
   "status": "draft",
-  "statement": "The Operational record persistence Module shall publish each admitted exact record candidate as one recoverable logical transaction, expose only coherent states to supported readers, and report saved only after all requested replacement bytes are durably committed and required decision-basis checks hold.",
+  "statement": "The Work record storage Module shall publish each admitted exact record candidate as one recoverable logical transaction, expose only coherent states to supported readers, and report saved only after all requested replacement bytes are durably committed and required decision-basis checks hold.",
   "analysis": {
     "method": "5W2H",
     "what": {
@@ -43,7 +43,7 @@
     "Before any authoritative replacement, retain sufficient private before/candidate bytes and identities, exact write/read sets, and transaction state to restore the verified before-state or complete the exact candidate. At most one unfinished transaction is admitted for the selected change.",
     "Publish the complete validated batch as one logical transaction. No intermediate batch candidate or partially replaced set is exposed to supported readers as usable current state; readers receive a coherent before/after snapshot or explicit busy/recovery-required.",
     "Return saved only when all requested replacement bytes are durably committed. A committed result identifies the actual resulting revision and affected identities without implying a new engineering approval or semantic side effect.",
-    "Recheck the declared decision-basis identities before reporting commitment. Observed drift after replacement triggers restoration when verified safe, otherwise recovery-required; do not report saved merely because replacement has started or finished.",
+    "Recheck declared decision-basis identities before reporting commitment. Observed drift after replacement but before durable commit triggers verified safe restoration or recovery-required. Drift discovered after commit reports the actual committed revision and changed basis for semantic reassessment; it cannot roll back acknowledged commitment or be reported as no-effects rejection.",
     "An interrupted or indeterminate publication retains sufficient recoverability and reports recovery-required rather than an apparently successful mixed state. The resulting transaction and recovery identities are reported only where actually established.",
     "Preserve the source external-edit limit for both final checks and replacement. Drift after the final check is an ordinary later external edit; neither the transaction mechanism nor its result promises atomic exclusion of arbitrary outside writers."
   ],
@@ -63,6 +63,11 @@
       "source": "SRC-PUBLISHED-CLI",
       "locator": "docs/design/cli/cli.md#CLI-SR-04, CLI-SR-05, CLI-SR-06, CLI-SR-09, CLI-SR-12, CLI-SR-15; docs/design/cli/records.md#RF-SR-08",
       "basis": "Retains the named current CLI and Record Format obligations at this allocated responsibility boundary. Their detailed formats, supported versions, limits, and observed external-edit boundaries remain authoritative; no runtime behavior or public contract is changed by this draft."
+    },
+    {
+      "source": "SRC-WORKFLOW-CONTRACTS",
+      "locator": "AR-021",
+      "basis": "Reconcile the existing allocation with refined SR-042–044 and the explicit v4/v2 contract. Keep current-v3 byte and mutation guarantees version-scoped, preserve historical originals, and distinguish precommit recovery from committed outcome reporting. This target allocation is not runtime qualification."
     }
   ]
 }

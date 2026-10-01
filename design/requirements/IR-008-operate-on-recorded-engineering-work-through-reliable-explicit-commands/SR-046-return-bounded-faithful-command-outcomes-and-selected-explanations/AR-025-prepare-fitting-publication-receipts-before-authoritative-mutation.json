@@ -3,7 +3,7 @@
   "type": "allocated-requirement",
   "title": "Prepare fitting publication receipts before authoritative mutation",
   "status": "draft",
-  "statement": "The Engineering command interface Module shall serialize the required public storage receipt for an admitted publication before authoritative mutation, using exact candidate facts and the selected operation and format, with mandatory output guaranteed to fit independently of optional diagnostic volume.",
+  "statement": "The Command handling Module shall serialize the required public storage receipt for an admitted publication before authoritative mutation, using exact candidate facts and the selected operation and format, with mandatory output guaranteed to fit independently of optional diagnostic volume.",
   "analysis": {
     "method": "5W2H",
     "what": {

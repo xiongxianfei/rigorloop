@@ -1,0 +1,62 @@
+{
+  "id": "SCN-085",
+  "type": "scenario",
+  "title": "Preserve prior architecture output when generation fails",
+  "status": "confirmed",
+  "actor": "Customer model author",
+  "goal": "Attempt regeneration without losing existing readable output or source work.",
+  "context": "The author has an existing complete snapshot and revised project content.",
+  "trigger": "The author requests a replacement snapshot.",
+  "preconditions": [
+    "The selected scope and any available project or artifact identity are explicitly identified."
+  ],
+  "interaction": [
+    {
+      "actor": "Customer model author",
+      "action": "Selects the revised model and intended generated-output destination."
+    },
+    {
+      "actor": "System",
+      "action": "Validates the request and reports rejection or the actual generation result."
+    },
+    {
+      "actor": "Customer model author",
+      "action": "Inspects the prior output and project content after a reported failure."
+    },
+    {
+      "actor": "System",
+      "action": "Preserves the prior readable output or explains unresolved recovery without claiming success."
+    }
+  ],
+  "expected_outcome": "The author can identify actual effects and recover the declared readable output without losing unrelated work.",
+  "alternatives": [
+    {
+      "condition": "Output overlaps authoritative input.",
+      "outcome": "The request rejects before changing source or prior output."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "Rendering fails or generation is interrupted.",
+      "outcome": "Prior readable output is preserved or recovered under the declared procedure; unresolved partial state remains explicit."
+    },
+    {
+      "condition": "Input changes during collection.",
+      "outcome": "The result uses a coherent captured selection or reports failure, never a mixed-state success."
+    }
+  ],
+  "exercises": [
+    "FEAT-022"
+  ],
+  "informs": [
+    "SR-087",
+    "SR-084"
+  ],
+  "sources": [
+    {
+      "source": "SRC-CUSTOMER-BROWSER-REQUIREMENTS",
+      "locator": "SCN-085; confirmed as requirement-analysis knowledge by the scoped author assessment, not independent review or executed product proof.",
+      "basis": "User-requested reusable customer architecture browser; requirement-level author analysis. Current records remain draft; no implemented, published or independently approved behavior is claimed."
+    }
+  ]
+}

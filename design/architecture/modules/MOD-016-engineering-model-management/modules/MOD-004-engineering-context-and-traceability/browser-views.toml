@@ -1,0 +1,72 @@
+# Presentation registration; engineering diagrams remain in the owning README.
+version = 1
+
+[[topics]]
+id = "browser-technical-structure"
+title = "Browser technical structure"
+view = "logical"
+kind = "topology"
+qualification = "proposed"
+source = "README.md"
+anchor = "browser-technical-structure"
+description = "Technical structure: the Node command adapter uses the Rust engine's browser-operation contract; the engine composes responsibilities from MOD-001, MOD-003 and MOD-004, uses D2 and a matched reader template, and produces the website artifact. Technology annotations preserve Module accountability. Contracts and artifact relationships do not imply process membership or execution order. Development explains source/package organization; Process explains execution."
+
+[[topics]]
+id = "generation-topology"
+title = "Generation topology"
+view = "process"
+kind = "topology"
+qualification = "proposed"
+source = "README.md"
+anchor = "generation-topology"
+description = "The Node CLI supervises one Rust engine through a bounded request/result protocol. The engine captures and interprets the model, invokes bundled D2, and publishes output for a separate offline reader. Logical Modules are not separate deployed services."
+
+[[topics]]
+id = "generation-sequence"
+title = "Generation sequence"
+view = "process"
+kind = "sequence"
+qualification = "proposed"
+source = "README.md"
+anchor = "generation-sequence"
+description = "Capture and interpretation precede browser-data projection, diagram rendering, data/template compatibility checks and website assembly. Preparation failure stops before publication and preserves prior output. Publication reports actual commitment or recovery state; a lost engine response cannot establish unchanged output. Later, the embedded template reads project data and handles navigation in an offline browser without calling the generator."
+
+[[topics]]
+id = "publication-recovery"
+title = "Publication and recovery"
+view = "process"
+kind = "state"
+qualification = "proposed"
+source = "README.md"
+anchor = "publication-recovery"
+description = "These states describe output coordination. The entry switch commits a complete immutable version; interruption is reconciled against exact old and new identities. This is not a Change approval lifecycle."
+
+[[topics]]
+id = "browser-software-organization"
+title = "Browser software organization"
+view = "development"
+kind = "topology"
+qualification = "proposed"
+source = "README.md"
+anchor = "browser-software-organization"
+description = "Development organization of the technical model: the JavaScript CLI adapter depends on the packaged Rust crate; its capture, interpretation, projection, diagram-adapter, assembly and publication modules use shared browser-data contract resources, the reusable browser template sources and bundled D2. These are intended source-unit and resource dependencies, not claims that the files exist. Logical explains components and contracts; Process explains execution."
+
+[[topics]]
+id = "browser-file-organization"
+title = "Browser file and package organization"
+view = "development"
+kind = "topology"
+qualification = "proposed"
+source = "README.md"
+anchor = "browser-file-organization"
+description = "Intended containment: packages/rigorloop/browser/ holds authored Rust crate, template and protocol/data-contract sources plus selected profile and bundled renderer resources; dist/browser/ contains the compiled engine and generated package resources. A selected project output contains the generated website. Nested boxes mean located under. These locations are design choices, not claims that the files already exist."
+
+[[topics]]
+id = "browser-build-packaging"
+title = "Browser build and artifacts"
+view = "development"
+kind = "topology"
+qualification = "proposed"
+source = "README.md"
+anchor = "browser-build-packaging"
+description = "Two static artifact compositions: package assembly owned by MOD-013 produces the reusable CLI candidate; website assembly owned by MOD-004 combines its generator/template with project data and diagrams. The website contains platform and embedded project data. Execution order and recovery remain in Process; package qualification remains with MOD-013."

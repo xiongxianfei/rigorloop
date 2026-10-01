@@ -1,9 +1,9 @@
 {
   "id": "MOD-011",
   "type": "module",
-  "title": "Operational record persistence",
+  "title": "Work record storage",
   "status": "draft",
-  "description": "Inspect and preserve the published operational record format through exact candidate validation, conflict-aware atomic publication, and explicit recovery.",
+  "description": "Validates and stores operational work records through exact candidate construction, conflict-aware publication and explicit recovery.",
   "responsibilities": [
     "Read coherent operational-record snapshots and expose recorded values separately from observations.",
     "Validate supported record kinds and construct exact lossless candidates for explicit targeted edits.",
@@ -29,7 +29,7 @@
   ],
   "consumes": [],
   "design_limits": [
-    "This responsibility is distinct from MOD-001 Engineering model storage, whose first draft concerns REM definitions and does not select these operational-format or transaction guarantees.",
+    "This responsibility is distinct from MOD-001 Definition storage, whose first draft concerns REM definitions and does not select these operational-format or transaction guarantees.",
     "All existing CLI atomicity, exact-byte preservation, external-edit limits, and recovery rules remain applicable. No weaker guarantee is inferred from IF-001.",
     "IR-008 SR-040 through SR-047 have draft allocated obligations and explicit command cooperation through IF-003. The subordinate realization maps selected source responsibilities without claiming implementation conformance or adoption; current record-store code and Designs retain their authority."
   ],

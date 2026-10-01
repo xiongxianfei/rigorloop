@@ -2,10 +2,10 @@
   "id": "SCN-041",
   "type": "scenario",
   "title": "Discover recorded changes without inferring the next activity",
-  "status": "confirmed",
+  "status": "draft",
   "actor": "An engineer joining an existing project",
   "goal": "Identify the available current recorded changes and their observed identities so the engineer can explicitly choose which work to inspect.",
-  "context": "The engineer has project access but has not selected a change or authorized a workflow transition.",
+  "context": "The engineer has project access but has not selected a change or authorized a workflow transition. A fresh checkout may contain the engineering definition without its local operational history.",
   "trigger": "The engineer requests current-work discovery.",
   "preconditions": [
     "The project context and supported placement configuration are supplied or resolved under the published command contract."
@@ -43,6 +43,10 @@
     {
       "condition": "Discovery exceeds its supported bounds.",
       "outcome": "The system reports the limit and incomplete scope without silently truncating or selecting an arbitrary candidate."
+    },
+    {
+      "condition": "Operational history is absent or unavailable.",
+      "outcome": "The result identifies unavailable history; it neither claims no Changes exist nor initializes a new history through discovery."
     }
   ],
   "exercises": [
@@ -63,6 +67,11 @@
       "source": "SRC-PUBLISHED-PRODUCTS",
       "locator": "SCN-041; design/requirements/published-products.md#review-and-validation",
       "basis": "Independent review and author reconciliation confirmed this stakeholder situation, primary Feature, and SR coverage as current analysis knowledge. This does not approve requirements or establish implemented behavior or satisfaction."
+    },
+    {
+      "source": "SRC-LOCAL-OPERATIONAL-ANALYSIS",
+      "locator": "SCN-041",
+      "basis": "Draft derivation from the refined IRs and RR proposal; no approval, implementation or satisfaction claim."
     }
   ]
 }

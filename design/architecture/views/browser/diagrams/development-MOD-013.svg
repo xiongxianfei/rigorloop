@@ -1,26 +1,26 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" data-d2-version="v0.9.0" preserveAspectRatio="xMinYMin meet" viewBox="0 0 1752 1422"><svg class="d2-4100717732 d2-svg" width="1752" height="1422" viewBox="-17 -34 1752 1422"><rect x="-17" y="-34" width="1752" height="1422" rx="0" fill="#FFFFFF" class=" fill-N7" stroke-width="0" /><style type="text/css"><![CDATA[
-.d2-4100717732 .text {
-	font-family: "d2-4100717732-font-regular";
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" data-d2-version="v0.9.0" preserveAspectRatio="xMinYMin meet" viewBox="0 0 1752 1422"><svg class="d2-4269500241 d2-svg" width="1752" height="1422" viewBox="-17 -34 1752 1422"><rect x="-17" y="-34" width="1752" height="1422" rx="0" fill="#FFFFFF" class=" fill-N7" stroke-width="0" /><style type="text/css"><![CDATA[
+.d2-4269500241 .text {
+	font-family: "d2-4269500241-font-regular";
 }
 @font-face {
-	font-family: d2-4100717732-font-regular;
+	font-family: d2-4269500241-font-regular;
 	src: url("data:application/font-woff;base64,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");
 }
 .appendix-icon {
 	filter: drop-shadow(0px 0px 32px rgba(31, 36, 58, 0.1));
 }
-.d2-4100717732 .text-bold {
-	font-family: "d2-4100717732-font-bold";
+.d2-4269500241 .text-bold {
+	font-family: "d2-4269500241-font-bold";
 }
 @font-face {
-	font-family: d2-4100717732-font-bold;
+	font-family: d2-4269500241-font-bold;
 	src: url("data:application/font-woff;base64,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");
 }
-.d2-4100717732 .text-italic {
-	font-family: "d2-4100717732-font-italic";
+.d2-4269500241 .text-italic {
+	font-family: "d2-4269500241-font-italic";
 }
 @font-face {
-	font-family: d2-4100717732-font-italic;
+	font-family: d2-4269500241-font-italic;
 	src: url("data:application/font-woff;base64,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");
 }]]></style><style type="text/css"><![CDATA[.shape {
   shape-rendering: geometricPrecision;
@@ -35,640 +35,640 @@
   opacity: 0.5;
 }
 
-		.d2-4100717732 .fill-N2{fill:#676C7E;}
-		.d2-4100717732 .fill-N7{fill:#FFFFFF;}
-		.d2-4100717732 .stroke-B2{stroke:#0D32B2;}.appendix text.text{fill:#0A0F25}.md{--color-fg-default:#0A0F25;--color-fg-muted:#676C7E;--color-fg-subtle:#9499AB;--color-canvas-default:#FFFFFF;--color-canvas-subtle:#EEF1F8;--color-border-default:#0D32B2;--color-border-muted:#0D32B2;--color-neutral-muted:#EEF1F8;--color-accent-fg:#0D32B2;--color-accent-emphasis:#0D32B2;--color-attention-subtle:#676C7E;--color-danger-fg:red;}.light-code{display: block}.dark-code{display: none}]]></style><a href="../index.html#development/MOD-013" xlink:href="../index.html#development/MOD-013"><g class="b3duZXI="><g class="shape" ><rect x="611" y="12" width="321" height="67" rx="6" stroke="#7C8FA9" fill="#ECF3FF" style="stroke-width:2;" /></g><text x="771.5" y="51.5" fill="#23334A" class="text-bold" style="text-anchor:middle;font-size:17px">Product package production</text><title>Product package production (MOD-013)</title></g></a><a href="../index.html#development/MOD-013" xlink:href="../index.html#development/MOD-013"><g class="ZzA="><g class="shape" ><rect x="12" y="196" width="436" height="520" rx="6" stroke="#7C8FA9" fill="#F8FAFD" style="stroke-width:2;" /></g><text x="230" y="218" fill="#23334A" class="text" style="text-anchor:middle;font-size:17px">Implementation sources</text><title>Implementation sources</title></g></a><a href="../index.html#development/MOD-013" xlink:href="../index.html#development/MOD-013"><g class="ZzFwMA=="><g class="shape" ><rect x="468" y="196" width="608" height="1046" rx="6" stroke="#7C8FA9" fill="#F8FAFD" style="stroke-width:2;" /></g><text x="772" y="218" fill="#23334A" class="text" style="text-anchor:middle;font-size:17px">Skill archive production</text><title>Skill archive production</title></g></a><a href="../index.html#development/MOD-013" xlink:href="../index.html#development/MOD-013"><g class="ZzFwMQ=="><g class="shape" ><rect x="1096" y="196" width="593" height="1163" rx="6" stroke="#7C8FA9" fill="#F8FAFD" style="stroke-width:2;" /></g><text x="1392.5" y="218" fill="#23334A" class="text" style="text-anchor:middle;font-size:17px">CLI candidate composition</text><title>CLI candidate composition</title></g></a><a href="../index.html#development/MOD-013" xlink:href="../index.html#development/MOD-013"><g class="ZzAuZjA="><g class="shape" ><rect x="72" y="256" width="316" height="63" rx="6" stroke="#7C8FA9" fill="#FFFFFF" style="stroke-width:2;" /></g><text x="230" y="292.5" fill="#23334A" class="text-bold" style="text-anchor:middle;font-size:14px">scripts/build-adapters.py</text><title>The explicit --output-dir branch of main calls build_adapter_archives for a selected version; --check uses a temporary candidate. The remaining default-sync behavior is a recorded conformance gap.</title></g></a><a href="../index.html#development/MOD-013" xlink:href="../index.html#development/MOD-013"><g class="ZzAuZjE="><g class="shape" ><rect x="72" y="359" width="316" height="77" rx="6" stroke="#7C8FA9" fill="#FFFFFF" style="stroke-width:2;" /></g><text x="230" y="395.5" fill="#23334A" class="text-bold" style="text-anchor:middle;font-size:14px"><tspan x="230" dy="0">scripts/lib/packaging/</tspan><tspan x="230" dy="16">adapter_distribution.py</tspan></text><title>Supported target descriptors, expected_adapter_files, render_skill_for_adapter, resource copying, build_adapter_archives, and archive/hash helpers turn canonical skill sources into target archives. They package existing instructions; they do not synthesize instructions from REM.</title></g></a><a href="../index.html#development/MOD-013" xlink:href="../index.html#development/MOD-013"><g class="ZzAuZjI="><g class="shape" ><rect x="72" y="476" width="316" height="77" rx="6" stroke="#7C8FA9" fill="#FFFFFF" style="stroke-width:2;" /></g><text x="230" y="512.5" fill="#23334A" class="text-bold" style="text-anchor:middle;font-size:14px"><tspan x="230" dy="0">scripts/lib/release/</tspan><tspan x="230" dy="16">release_candidate.py</tspan></text><title>prepare_candidate orchestrates archive generation/validation, write_archive_metadata, and npm pack in an isolated prepared checkout. These production operations contribute to MOD-013; release-intent admission, qualification, candidate sealing, and publication coordination remain MOD-015 responsibilities in the shared implementation file.</title></g></a><a href="../index.html#development/MOD-013" xlink:href="../index.html#development/MOD-013"><g class="ZzAuZjM="><g class="shape" ><rect x="72" y="593" width="316" height="63" rx="6" stroke="#7C8FA9" fill="#FFFFFF" style="stroke-width:2;" /></g><text x="230" y="629.5" fill="#23334A" class="text-bold" style="text-anchor:middle;font-size:14px">packages/rigorloop/package.json</text><title>Declares the npm package name, existing dist/ payload, public README and license, one rigorloop executable, and yaml dependency. Its scripts contain no command-code compilation or generation step.</title></g></a><a href="../index.html#development/MOD-013" xlink:href="../index.html#development/MOD-013"><g class="ZzFwMC5pbnB1dHM="><g class="shape" ><rect x="543" y="286" width="457" height="403" rx="6" stroke="#7C8FA9" fill="#FFFFFF" style="stroke-width:2;" /></g><text x="771.5" y="308" fill="#23334A" class="text" style="text-anchor:middle;font-size:17px">Source inputs</text><title>Source inputs</title></g></a><a href="../index.html#development/MOD-013" xlink:href="../index.html#development/MOD-013"><g class="ZzFwMC5vdXRwdXRz"><g class="shape" ><rect x="538" y="906" width="468" height="286" rx="6" stroke="#7C8FA9" fill="#FFFFFF" style="stroke-width:2;" /></g><text x="772" y="928" fill="#23334A" class="text" style="text-anchor:middle;font-size:17px">Candidate output layouts</text><title>Candidate output layouts</title></g></a><a href="../index.html#development/MOD-013" xlink:href="../index.html#development/MOD-013"><g class="ZzFwMC50cmFuc2Zvcm0="><g class="shape" ><rect x="638" y="766" width="268" height="63" rx="6" stroke="#7C8FA9" fill="#E9F4EE" style="stroke-width:2;" /></g><text x="772" y="802.5" fill="#23334A" class="text-bold" style="text-anchor:middle;font-size:14px">scripts/build-adapters.py</text><title>With an explicit isolated --output-dir and selected --version, main calls build_adapter_archives. The shared helper validates canonical inventory, applies declared frontmatter transformations, copies selected resources, renders target entrypoints, and writes one ZIP per supported target. Candidate generation does not install or publish.</title></g></a><a href="../index.html#development/MOD-013" xlink:href="../index.html#development/MOD-013"><g class="ZzFwMS5pbnB1dHM="><g class="shape" ><rect x="1189" y="286" width="407" height="403" rx="6" stroke="#7C8FA9" fill="#FFFFFF" style="stroke-width:2;" /></g><text x="1392.5" y="308" fill="#23334A" class="text" style="text-anchor:middle;font-size:17px">Source inputs</text><title>Source inputs</title></g></a><a href="../index.html#development/MOD-013" xlink:href="../index.html#development/MOD-013"><g class="ZzFwMS5vdXRwdXRz"><g class="shape" ><rect x="1166" y="920" width="453" height="389" rx="6" stroke="#7C8FA9" fill="#FFFFFF" style="stroke-width:2;" /></g><text x="1392.5" y="942" fill="#23334A" class="text" style="text-anchor:middle;font-size:17px">Candidate output layouts</text><title>Candidate output layouts</title></g></a><a href="../index.html#development/MOD-013" xlink:href="../index.html#development/MOD-013"><g class="ZzFwMS50cmFuc2Zvcm0="><g class="shape" ><rect x="1271" y="766" width="243" height="77" rx="6" stroke="#7C8FA9" fill="#E9F4EE" style="stroke-width:2;" /></g><text x="1392.5" y="802.5" fill="#23334A" class="text-bold" style="text-anchor:middle;font-size:14px"><tspan x="1392.5" dy="0">scripts/lib/release/</tspan><tspan x="1392.5" dy="16">release_candidate.py</tspan></text><title>prepare_candidate uses an isolated prepared checkout, builds and validates target ZIPs, calls write_archive_metadata to overlay archive facts and their trusted index in the candidate package, then invokes npm pack --json --ignore-scripts --pack-destination on packages/rigorloop. Packaging steps are mapped here; Release retains selection, qualification, sealing, and publication decisions.</title></g></a><a href="../index.html#development/MOD-013" xlink:href="../index.html#development/MOD-013"><g class="ZzFwMC5pbnB1dHMuZjA="><g class="shape" ><rect x="603" y="346" width="337" height="63" rx="6" stroke="#7C8FA9" fill="#F3F6FA" style="stroke-width:2;" /></g><text x="771.5" y="382.5" fill="#23334A" class="text-bold" style="text-anchor:middle;font-size:14px">skills</text><title>Canonical authored skill directories and their assets, references, and scripts. This pass inspected directory names and the generator, not SKILL.md contents.</title></g></a><a href="../index.html#development/MOD-013" xlink:href="../index.html#development/MOD-013"><g class="ZzFwMC5pbnB1dHMuZjE="><g class="shape" ><rect x="603" y="449" width="337" height="63" rx="6" stroke="#7C8FA9" fill="#F3F6FA" style="stroke-width:2;" /></g><text x="771.5" y="485.5" fill="#23334A" class="text-bold" style="text-anchor:middle;font-size:14px">scripts/resources/adapter-templates</text><title>Canonical thin target entrypoint templates selected by the codex and claude descriptors.</title></g></a><a href="../index.html#development/MOD-013" xlink:href="../index.html#development/MOD-013"><g class="ZzFwMC5pbnB1dHMuZjI="><g class="shape" ><rect x="603" y="552" width="337" height="77" rx="6" stroke="#7C8FA9" fill="#F3F6FA" style="stroke-width:2;" /></g><text x="771.5" y="588.5" fill="#23334A" class="text-bold" style="text-anchor:middle;font-size:14px"><tspan x="771.5" dy="0">scripts/lib/packaging/</tspan><tspan x="771.5" dy="16">adapter_distribution.py</tspan></text><title>Supported target inventory, inclusion/transform rules, deterministic ZIP layout, and requested-version handling used by the wrapper.</title></g></a><a href="../index.html#development/MOD-013" xlink:href="../index.html#development/MOD-013"><g class="ZzFwMC5vdXRwdXRzLmYw"><g class="shape" ><rect x="598" y="966" width="348" height="63" rx="6" stroke="#7C8FA9" fill="#FFF5DB" style="stroke-width:2;" /></g><text x="772" y="1002.5" fill="#23334A" class="text-bold" style="text-anchor:middle;font-size:14px">rigorloop-adapter-codex-{release}.zip</text><title>Relative to the explicitly selected candidate output directory; {release} is the supplied archive version. Members include the Codex support entrypoint and .agents/skills/{skill}/ instruction/resource trees. This is a declared source-derived layout, not an existing or qualified artifact.</title></g></a><a href="../index.html#development/MOD-013" xlink:href="../index.html#development/MOD-013"><g class="ZzFwMC5vdXRwdXRzLmYx"><g class="shape" ><rect x="598" y="1069" width="348" height="63" rx="6" stroke="#7C8FA9" fill="#FFF5DB" style="stroke-width:2;" /></g><text x="772" y="1105.5" fill="#23334A" class="text-bold" style="text-anchor:middle;font-size:14px">rigorloop-adapter-claude-{release}.zip</text><title>Relative to the same candidate output directory; members include the Claude Code support entrypoint and .claude/skills/{skill}/ instruction/resource trees. This is a declared source-derived layout, not an existing or qualified artifact.</title></g></a><a href="../index.html#development/MOD-013" xlink:href="../index.html#development/MOD-013"><g class="ZzFwMS5pbnB1dHMuZjA="><g class="shape" ><rect x="1249" y="346" width="287" height="63" rx="6" stroke="#7C8FA9" fill="#F3F6FA" style="stroke-width:2;" /></g><text x="1392.5" y="382.5" fill="#23334A" class="text-bold" style="text-anchor:middle;font-size:14px">packages/rigorloop</text><title>Canonical package.json, README.md, LICENSE, existing dist/ JavaScript runtime, and bundled metadata inputs selected by the package allowlist. The CLI source is packaged, not generated from REM.</title></g></a><a href="../index.html#development/MOD-013" xlink:href="../index.html#development/MOD-013"><g class="ZzFwMS5pbnB1dHMuZjE="><g class="shape" ><rect x="1249" y="449" width="287" height="77" rx="6" stroke="#7C8FA9" fill="#F3F6FA" style="stroke-width:2;" /></g><text x="1392.5" y="485.5" fill="#23334A" class="text-bold" style="text-anchor:middle;font-size:14px"><tspan x="1392.5" dy="0">scripts/lib/packaging/</tspan><tspan x="1392.5" dy="16">adapter_distribution.py</tspan></text><title>Archive-production and hash definitions used by the candidate coordinator. At execution, the coordinator also consumes the actual target ZIP bytes produced by Skill archive production; candidate ZIPs are outputs, not canonical repository inputs.</title></g></a><a href="../index.html#development/MOD-013" xlink:href="../index.html#development/MOD-013"><g class="ZzFwMS5pbnB1dHMuZjI="><g class="shape" ><rect x="1249" y="566" width="287" height="63" rx="6" stroke="#7C8FA9" fill="#F3F6FA" style="stroke-width:2;" /></g><text x="1392.5" y="602.5" fill="#23334A" class="text-bold" style="text-anchor:middle;font-size:14px">scripts/validate-adapters.py</text><title>The candidate coordinator runs this archive validator successfully before calling write_archive_metadata; source inspection does not assert that validation ran for this architecture pass.</title></g></a><a href="../index.html#development/MOD-013" xlink:href="../index.html#development/MOD-013"><g class="ZzFwMS5vdXRwdXRzLmYw"><g class="shape" ><rect x="1226" y="980" width="333" height="63" rx="6" stroke="#7C8FA9" fill="#FFF5DB" style="stroke-width:2;" /></g><text x="1392.5" y="1016.5" fill="#23334A" class="text-bold" style="text-anchor:middle;font-size:14px">xiongxianfei-rigorloop-{version}.tgz</text><title>Relative to the selected candidate output directory; the filename is supplied by npm pack for @xiongxianfei/rigorloop. Its package/ tree contains the selected existing runtime and candidate dist/metadata overlay, with rigorloop mapped to dist/bin/rigorloop.js. No artifact was produced in this pass.</title></g></a><a href="../index.html#development/MOD-013" xlink:href="../index.html#development/MOD-013"><g class="ZzFwMS5vdXRwdXRzLmYx"><g class="shape" ><rect x="1226" y="1083" width="333" height="63" rx="6" stroke="#7C8FA9" fill="#FFF5DB" style="stroke-width:2;" /></g><text x="1392.5" y="1119.5" fill="#23334A" class="text-bold" style="text-anchor:middle;font-size:14px">adapter-artifacts-{release}.json</text><title>Relative to the candidate output directory; write_archive_metadata also copies the same metadata bytes into dist/metadata/ within the isolated package tree and updates that tree&#39;s releases.json trust index before packing.</title></g></a><a href="../index.html#development/MOD-013" xlink:href="../index.html#development/MOD-013"><g class="ZzFwMS5vdXRwdXRzLmYy"><g class="shape" ><rect x="1226" y="1186" width="333" height="63" rx="6" stroke="#7C8FA9" fill="#FFF5DB" style="stroke-width:2;" /></g><text x="1392.5" y="1222.5" fill="#23334A" class="text-bold" style="text-anchor:middle;font-size:14px">archive-proof-{release}.json</text><title>Relative to the candidate output directory; write_archive_metadata records the source commit, archive identities, and archive-validation result for the preceding validated candidate sequence. The helper is not independent verification or public-release evidence; this pass does not execute or approve it.</title></g></a><g class="KG93bmVyIC0mZ3Q7IGcwKVswXQ=="><marker id="mk-d2-4100717732-3446170533" markerWidth="10" markerHeight="12" refX="7" refY="6" viewBox="0 0 10 12" orient="auto" markerUnits="userSpaceOnUse"> <polygon points="0,0 10,6 0,12" fill="#667A96" class="connection" stroke-width="2" /> </marker><path d="M 691.75 81 L 691.75 104 S 691.75 114 681.75 114 L 240 114 S 230 114 230 124 L 230 192" stroke="#667A96" fill="none" class="connection" style="stroke-width:2;" marker-end="url(#mk-d2-4100717732-3446170533)" mask="url(#d2-4100717732)" /><rect x="390" y="103" width="95" height="23" rx="10" fill="#FFFFFF" /><text x="437.5" y="119" fill="#676C7E" class="text-italic fill-N2" style="text-anchor:middle;font-size:13px">source mapping</text></g><g class="ZzFwMC4oaW5wdXRzIC0mZ3Q7IHRyYW5zZm9ybSlbMF0="><path d="M 772 691 L 772 762" stroke="#667A96" fill="none" class="connection" style="stroke-width:2;" marker-end="url(#mk-d2-4100717732-3446170533)" mask="url(#d2-4100717732)" /><rect x="752" y="716" width="41" height="23" rx="10" fill="#FFFFFF" /><text x="772.5" y="732" fill="#676C7E" class="text-italic fill-N2" style="text-anchor:middle;font-size:13px">inputs</text></g><g class="ZzFwMC4odHJhbnNmb3JtIC0mZ3Q7IG91dHB1dHMpWzBd"><path d="M 772 831 L 772 902" stroke="#667A96" fill="none" class="connection" style="stroke-width:2;" marker-end="url(#mk-d2-4100717732-3446170533)" mask="url(#d2-4100717732)" /><rect x="719" y="856" width="106" height="23" rx="10" fill="#FFFFFF" /><text x="772" y="872" fill="#676C7E" class="text-italic fill-N2" style="text-anchor:middle;font-size:13px">candidate outputs</text></g><g class="KG93bmVyIC0mZ3Q7IGcxcDApWzBd"><path d="M 772 81 L 772 192" stroke="#667A96" fill="none" class="connection" style="stroke-width:2;" marker-end="url(#mk-d2-4100717732-3446170533)" mask="url(#d2-4100717732)" /><rect x="701" y="126" width="143" height="23" rx="10" fill="#FFFFFF" /><text x="772.5" y="142" fill="#676C7E" class="text-italic fill-N2" style="text-anchor:middle;font-size:13px">production responsibility</text></g><g class="ZzFwMS4oaW5wdXRzIC0mZ3Q7IHRyYW5zZm9ybSlbMF0="><path d="M 1392.5 691 L 1392.5 762" stroke="#667A96" fill="none" class="connection" style="stroke-width:2;" marker-end="url(#mk-d2-4100717732-3446170533)" mask="url(#d2-4100717732)" /><rect x="1372" y="716" width="41" height="23" rx="10" fill="#FFFFFF" /><text x="1392.5" y="732" fill="#676C7E" class="text-italic fill-N2" style="text-anchor:middle;font-size:13px">inputs</text></g><g class="ZzFwMS4odHJhbnNmb3JtIC0mZ3Q7IG91dHB1dHMpWzBd"><path d="M 1392.5 845 L 1392.5 916" stroke="#667A96" fill="none" class="connection" style="stroke-width:2;" marker-end="url(#mk-d2-4100717732-3446170533)" mask="url(#d2-4100717732)" /><rect x="1340" y="870" width="106" height="23" rx="10" fill="#FFFFFF" /><text x="1393" y="886" fill="#676C7E" class="text-italic fill-N2" style="text-anchor:middle;font-size:13px">candidate outputs</text></g><g class="KG93bmVyIC0mZ3Q7IGcxcDEpWzBd"><path d="M 852.25 81 L 852.25 104 S 852.25 114 862.25 114 L 1382.5 114 S 1392.5 114 1392.5 124 L 1392.5 192" stroke="#667A96" fill="none" class="connection" style="stroke-width:2;" marker-end="url(#mk-d2-4100717732-3446170533)" mask="url(#d2-4100717732)" /><rect x="1074" y="103" width="143" height="23" rx="10" fill="#FFFFFF" /><text x="1145.5" y="119" fill="#676C7E" class="text-italic fill-N2" style="text-anchor:middle;font-size:13px">production responsibility</text></g><g transform="translate(916 -4)" class="appendix-icon"><title>Product package production (MOD-013)</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3427_35082111-d2-4100717732-N53W4ZLS)">
+		.d2-4269500241 .fill-N2{fill:#676C7E;}
+		.d2-4269500241 .fill-N7{fill:#FFFFFF;}
+		.d2-4269500241 .stroke-B2{stroke:#0D32B2;}.appendix text.text{fill:#0A0F25}.md{--color-fg-default:#0A0F25;--color-fg-muted:#676C7E;--color-fg-subtle:#9499AB;--color-canvas-default:#FFFFFF;--color-canvas-subtle:#EEF1F8;--color-border-default:#0D32B2;--color-border-muted:#0D32B2;--color-neutral-muted:#EEF1F8;--color-accent-fg:#0D32B2;--color-accent-emphasis:#0D32B2;--color-attention-subtle:#676C7E;--color-danger-fg:red;}.light-code{display: block}.dark-code{display: none}]]></style><a href="../index.html#development/MOD-013" xlink:href="../index.html#development/MOD-013"><g class="b3duZXI="><g class="shape" ><rect x="643" y="12" width="258" height="67" rx="6" stroke="#7C8FA9" fill="#ECF3FF" style="stroke-width:2;" /></g><text x="772" y="51.5" fill="#23334A" class="text-bold" style="text-anchor:middle;font-size:17px">Package production</text><title>Package production (MOD-013)</title></g></a><a href="../index.html#development/MOD-013" xlink:href="../index.html#development/MOD-013"><g class="ZzA="><g class="shape" ><rect x="12" y="196" width="436" height="520" rx="6" stroke="#7C8FA9" fill="#F8FAFD" style="stroke-width:2;" /></g><text x="230" y="218" fill="#23334A" class="text" style="text-anchor:middle;font-size:17px">Implementation sources</text><title>Implementation sources</title></g></a><a href="../index.html#development/MOD-013" xlink:href="../index.html#development/MOD-013"><g class="ZzFwMA=="><g class="shape" ><rect x="468" y="196" width="608" height="1046" rx="6" stroke="#7C8FA9" fill="#F8FAFD" style="stroke-width:2;" /></g><text x="772" y="218" fill="#23334A" class="text" style="text-anchor:middle;font-size:17px">Skill archive production</text><title>Skill archive production</title></g></a><a href="../index.html#development/MOD-013" xlink:href="../index.html#development/MOD-013"><g class="ZzFwMQ=="><g class="shape" ><rect x="1096" y="196" width="593" height="1163" rx="6" stroke="#7C8FA9" fill="#F8FAFD" style="stroke-width:2;" /></g><text x="1392.5" y="218" fill="#23334A" class="text" style="text-anchor:middle;font-size:17px">CLI candidate composition</text><title>CLI candidate composition</title></g></a><a href="../index.html#development/MOD-013" xlink:href="../index.html#development/MOD-013"><g class="ZzAuZjA="><g class="shape" ><rect x="72" y="256" width="316" height="63" rx="6" stroke="#7C8FA9" fill="#FFFFFF" style="stroke-width:2;" /></g><text x="230" y="292.5" fill="#23334A" class="text-bold" style="text-anchor:middle;font-size:14px">scripts/build-adapters.py</text><title>The explicit --output-dir branch of main calls build_adapter_archives for a selected version; --check uses a temporary candidate. The remaining default-sync behavior is a recorded conformance gap.</title></g></a><a href="../index.html#development/MOD-013" xlink:href="../index.html#development/MOD-013"><g class="ZzAuZjE="><g class="shape" ><rect x="72" y="359" width="316" height="77" rx="6" stroke="#7C8FA9" fill="#FFFFFF" style="stroke-width:2;" /></g><text x="230" y="395.5" fill="#23334A" class="text-bold" style="text-anchor:middle;font-size:14px"><tspan x="230" dy="0">scripts/lib/packaging/</tspan><tspan x="230" dy="16">adapter_distribution.py</tspan></text><title>Supported target descriptors, expected_adapter_files, render_skill_for_adapter, resource copying, build_adapter_archives, and archive/hash helpers turn canonical skill sources into target archives. They package existing instructions; they do not synthesize instructions from REM.</title></g></a><a href="../index.html#development/MOD-013" xlink:href="../index.html#development/MOD-013"><g class="ZzAuZjI="><g class="shape" ><rect x="72" y="476" width="316" height="77" rx="6" stroke="#7C8FA9" fill="#FFFFFF" style="stroke-width:2;" /></g><text x="230" y="512.5" fill="#23334A" class="text-bold" style="text-anchor:middle;font-size:14px"><tspan x="230" dy="0">scripts/lib/release/</tspan><tspan x="230" dy="16">release_candidate.py</tspan></text><title>prepare_candidate orchestrates archive generation/validation, write_archive_metadata, and npm pack in an isolated prepared checkout. These production operations contribute to MOD-013; release-intent admission, qualification, candidate sealing, and publication coordination remain MOD-015 responsibilities in the shared implementation file.</title></g></a><a href="../index.html#development/MOD-013" xlink:href="../index.html#development/MOD-013"><g class="ZzAuZjM="><g class="shape" ><rect x="72" y="593" width="316" height="63" rx="6" stroke="#7C8FA9" fill="#FFFFFF" style="stroke-width:2;" /></g><text x="230" y="629.5" fill="#23334A" class="text-bold" style="text-anchor:middle;font-size:14px">packages/rigorloop/package.json</text><title>Declares the npm package name, existing dist/ payload, public README and license, one rigorloop executable, and yaml dependency. Its scripts contain no command-code compilation or generation step.</title></g></a><a href="../index.html#development/MOD-013" xlink:href="../index.html#development/MOD-013"><g class="ZzFwMC5pbnB1dHM="><g class="shape" ><rect x="543" y="286" width="457" height="403" rx="6" stroke="#7C8FA9" fill="#FFFFFF" style="stroke-width:2;" /></g><text x="771.5" y="308" fill="#23334A" class="text" style="text-anchor:middle;font-size:17px">Source inputs</text><title>Source inputs</title></g></a><a href="../index.html#development/MOD-013" xlink:href="../index.html#development/MOD-013"><g class="ZzFwMC5vdXRwdXRz"><g class="shape" ><rect x="538" y="906" width="468" height="286" rx="6" stroke="#7C8FA9" fill="#FFFFFF" style="stroke-width:2;" /></g><text x="772" y="928" fill="#23334A" class="text" style="text-anchor:middle;font-size:17px">Candidate output layouts</text><title>Candidate output layouts</title></g></a><a href="../index.html#development/MOD-013" xlink:href="../index.html#development/MOD-013"><g class="ZzFwMC50cmFuc2Zvcm0="><g class="shape" ><rect x="638" y="766" width="268" height="63" rx="6" stroke="#7C8FA9" fill="#E9F4EE" style="stroke-width:2;" /></g><text x="772" y="802.5" fill="#23334A" class="text-bold" style="text-anchor:middle;font-size:14px">scripts/build-adapters.py</text><title>With an explicit isolated --output-dir and selected --version, main calls build_adapter_archives. The shared helper validates canonical inventory, applies declared frontmatter transformations, copies selected resources, renders target entrypoints, and writes one ZIP per supported target. Candidate generation does not install or publish.</title></g></a><a href="../index.html#development/MOD-013" xlink:href="../index.html#development/MOD-013"><g class="ZzFwMS5pbnB1dHM="><g class="shape" ><rect x="1189" y="286" width="407" height="403" rx="6" stroke="#7C8FA9" fill="#FFFFFF" style="stroke-width:2;" /></g><text x="1392.5" y="308" fill="#23334A" class="text" style="text-anchor:middle;font-size:17px">Source inputs</text><title>Source inputs</title></g></a><a href="../index.html#development/MOD-013" xlink:href="../index.html#development/MOD-013"><g class="ZzFwMS5vdXRwdXRz"><g class="shape" ><rect x="1166" y="920" width="453" height="389" rx="6" stroke="#7C8FA9" fill="#FFFFFF" style="stroke-width:2;" /></g><text x="1392.5" y="942" fill="#23334A" class="text" style="text-anchor:middle;font-size:17px">Candidate output layouts</text><title>Candidate output layouts</title></g></a><a href="../index.html#development/MOD-013" xlink:href="../index.html#development/MOD-013"><g class="ZzFwMS50cmFuc2Zvcm0="><g class="shape" ><rect x="1271" y="766" width="243" height="77" rx="6" stroke="#7C8FA9" fill="#E9F4EE" style="stroke-width:2;" /></g><text x="1392.5" y="802.5" fill="#23334A" class="text-bold" style="text-anchor:middle;font-size:14px"><tspan x="1392.5" dy="0">scripts/lib/release/</tspan><tspan x="1392.5" dy="16">release_candidate.py</tspan></text><title>prepare_candidate uses an isolated prepared checkout, builds and validates target ZIPs, calls write_archive_metadata to overlay archive facts and their trusted index in the candidate package, then invokes npm pack --json --ignore-scripts --pack-destination on packages/rigorloop. Packaging steps are mapped here; Release retains selection, qualification, sealing, and publication decisions.</title></g></a><a href="../index.html#development/MOD-013" xlink:href="../index.html#development/MOD-013"><g class="ZzFwMC5pbnB1dHMuZjA="><g class="shape" ><rect x="603" y="346" width="337" height="63" rx="6" stroke="#7C8FA9" fill="#F3F6FA" style="stroke-width:2;" /></g><text x="771.5" y="382.5" fill="#23334A" class="text-bold" style="text-anchor:middle;font-size:14px">skills</text><title>Canonical authored skill directories and their assets, references, and scripts. This pass inspected directory names and the generator, not SKILL.md contents.</title></g></a><a href="../index.html#development/MOD-013" xlink:href="../index.html#development/MOD-013"><g class="ZzFwMC5pbnB1dHMuZjE="><g class="shape" ><rect x="603" y="449" width="337" height="63" rx="6" stroke="#7C8FA9" fill="#F3F6FA" style="stroke-width:2;" /></g><text x="771.5" y="485.5" fill="#23334A" class="text-bold" style="text-anchor:middle;font-size:14px">scripts/resources/adapter-templates</text><title>Canonical thin target entrypoint templates selected by the codex and claude descriptors.</title></g></a><a href="../index.html#development/MOD-013" xlink:href="../index.html#development/MOD-013"><g class="ZzFwMC5pbnB1dHMuZjI="><g class="shape" ><rect x="603" y="552" width="337" height="77" rx="6" stroke="#7C8FA9" fill="#F3F6FA" style="stroke-width:2;" /></g><text x="771.5" y="588.5" fill="#23334A" class="text-bold" style="text-anchor:middle;font-size:14px"><tspan x="771.5" dy="0">scripts/lib/packaging/</tspan><tspan x="771.5" dy="16">adapter_distribution.py</tspan></text><title>Supported target inventory, inclusion/transform rules, deterministic ZIP layout, and requested-version handling used by the wrapper.</title></g></a><a href="../index.html#development/MOD-013" xlink:href="../index.html#development/MOD-013"><g class="ZzFwMC5vdXRwdXRzLmYw"><g class="shape" ><rect x="598" y="966" width="348" height="63" rx="6" stroke="#7C8FA9" fill="#FFF5DB" style="stroke-width:2;" /></g><text x="772" y="1002.5" fill="#23334A" class="text-bold" style="text-anchor:middle;font-size:14px">rigorloop-adapter-codex-{release}.zip</text><title>Relative to the explicitly selected candidate output directory; {release} is the supplied archive version. Members include the Codex support entrypoint and .agents/skills/{skill}/ instruction/resource trees. This is a declared source-derived layout, not an existing or qualified artifact.</title></g></a><a href="../index.html#development/MOD-013" xlink:href="../index.html#development/MOD-013"><g class="ZzFwMC5vdXRwdXRzLmYx"><g class="shape" ><rect x="598" y="1069" width="348" height="63" rx="6" stroke="#7C8FA9" fill="#FFF5DB" style="stroke-width:2;" /></g><text x="772" y="1105.5" fill="#23334A" class="text-bold" style="text-anchor:middle;font-size:14px">rigorloop-adapter-claude-{release}.zip</text><title>Relative to the same candidate output directory; members include the Claude Code support entrypoint and .claude/skills/{skill}/ instruction/resource trees. This is a declared source-derived layout, not an existing or qualified artifact.</title></g></a><a href="../index.html#development/MOD-013" xlink:href="../index.html#development/MOD-013"><g class="ZzFwMS5pbnB1dHMuZjA="><g class="shape" ><rect x="1249" y="346" width="287" height="63" rx="6" stroke="#7C8FA9" fill="#F3F6FA" style="stroke-width:2;" /></g><text x="1392.5" y="382.5" fill="#23334A" class="text-bold" style="text-anchor:middle;font-size:14px">packages/rigorloop</text><title>Canonical package.json, README.md, LICENSE, existing dist/ JavaScript runtime, and bundled metadata inputs selected by the package allowlist. The CLI source is packaged, not generated from REM.</title></g></a><a href="../index.html#development/MOD-013" xlink:href="../index.html#development/MOD-013"><g class="ZzFwMS5pbnB1dHMuZjE="><g class="shape" ><rect x="1249" y="449" width="287" height="77" rx="6" stroke="#7C8FA9" fill="#F3F6FA" style="stroke-width:2;" /></g><text x="1392.5" y="485.5" fill="#23334A" class="text-bold" style="text-anchor:middle;font-size:14px"><tspan x="1392.5" dy="0">scripts/lib/packaging/</tspan><tspan x="1392.5" dy="16">adapter_distribution.py</tspan></text><title>Archive-production and hash definitions used by the candidate coordinator. At execution, the coordinator also consumes the actual target ZIP bytes produced by Skill archive production; candidate ZIPs are outputs, not canonical repository inputs.</title></g></a><a href="../index.html#development/MOD-013" xlink:href="../index.html#development/MOD-013"><g class="ZzFwMS5pbnB1dHMuZjI="><g class="shape" ><rect x="1249" y="566" width="287" height="63" rx="6" stroke="#7C8FA9" fill="#F3F6FA" style="stroke-width:2;" /></g><text x="1392.5" y="602.5" fill="#23334A" class="text-bold" style="text-anchor:middle;font-size:14px">scripts/validate-adapters.py</text><title>The candidate coordinator runs this archive validator successfully before calling write_archive_metadata; source inspection does not assert that validation ran for this architecture pass.</title></g></a><a href="../index.html#development/MOD-013" xlink:href="../index.html#development/MOD-013"><g class="ZzFwMS5vdXRwdXRzLmYw"><g class="shape" ><rect x="1226" y="980" width="333" height="63" rx="6" stroke="#7C8FA9" fill="#FFF5DB" style="stroke-width:2;" /></g><text x="1392.5" y="1016.5" fill="#23334A" class="text-bold" style="text-anchor:middle;font-size:14px">xiongxianfei-rigorloop-{version}.tgz</text><title>Relative to the selected candidate output directory; the filename is supplied by npm pack for @xiongxianfei/rigorloop. Its package/ tree contains the selected existing runtime and candidate dist/metadata overlay, with rigorloop mapped to dist/bin/rigorloop.js. No artifact was produced in this pass.</title></g></a><a href="../index.html#development/MOD-013" xlink:href="../index.html#development/MOD-013"><g class="ZzFwMS5vdXRwdXRzLmYx"><g class="shape" ><rect x="1226" y="1083" width="333" height="63" rx="6" stroke="#7C8FA9" fill="#FFF5DB" style="stroke-width:2;" /></g><text x="1392.5" y="1119.5" fill="#23334A" class="text-bold" style="text-anchor:middle;font-size:14px">adapter-artifacts-{release}.json</text><title>Relative to the candidate output directory; write_archive_metadata also copies the same metadata bytes into dist/metadata/ within the isolated package tree and updates that tree&#39;s releases.json trust index before packing.</title></g></a><a href="../index.html#development/MOD-013" xlink:href="../index.html#development/MOD-013"><g class="ZzFwMS5vdXRwdXRzLmYy"><g class="shape" ><rect x="1226" y="1186" width="333" height="63" rx="6" stroke="#7C8FA9" fill="#FFF5DB" style="stroke-width:2;" /></g><text x="1392.5" y="1222.5" fill="#23334A" class="text-bold" style="text-anchor:middle;font-size:14px">archive-proof-{release}.json</text><title>Relative to the candidate output directory; write_archive_metadata records the source commit, archive identities, and archive-validation result for the preceding validated candidate sequence. The helper is not independent verification or public-release evidence; this pass does not execute or approve it.</title></g></a><g class="KG93bmVyIC0mZ3Q7IGcwKVswXQ=="><marker id="mk-d2-4269500241-3446170533" markerWidth="10" markerHeight="12" refX="7" refY="6" viewBox="0 0 10 12" orient="auto" markerUnits="userSpaceOnUse"> <polygon points="0,0 10,6 0,12" fill="#667A96" class="connection" stroke-width="2" /> </marker><path d="M 707.5 81 L 707.5 104 S 707.5 114 697.5 114 L 240 114 S 230 114 230 124 L 230 192" stroke="#667A96" fill="none" class="connection" style="stroke-width:2;" marker-end="url(#mk-d2-4269500241-3446170533)" mask="url(#d2-4269500241)" /><rect x="398" y="103" width="95" height="23" rx="10" fill="#FFFFFF" /><text x="445.5" y="119" fill="#676C7E" class="text-italic fill-N2" style="text-anchor:middle;font-size:13px">source mapping</text></g><g class="ZzFwMC4oaW5wdXRzIC0mZ3Q7IHRyYW5zZm9ybSlbMF0="><path d="M 772 691 L 772 762" stroke="#667A96" fill="none" class="connection" style="stroke-width:2;" marker-end="url(#mk-d2-4269500241-3446170533)" mask="url(#d2-4269500241)" /><rect x="752" y="716" width="41" height="23" rx="10" fill="#FFFFFF" /><text x="772.5" y="732" fill="#676C7E" class="text-italic fill-N2" style="text-anchor:middle;font-size:13px">inputs</text></g><g class="ZzFwMC4odHJhbnNmb3JtIC0mZ3Q7IG91dHB1dHMpWzBd"><path d="M 772 831 L 772 902" stroke="#667A96" fill="none" class="connection" style="stroke-width:2;" marker-end="url(#mk-d2-4269500241-3446170533)" mask="url(#d2-4269500241)" /><rect x="719" y="856" width="106" height="23" rx="10" fill="#FFFFFF" /><text x="772" y="872" fill="#676C7E" class="text-italic fill-N2" style="text-anchor:middle;font-size:13px">candidate outputs</text></g><g class="KG93bmVyIC0mZ3Q7IGcxcDApWzBd"><path d="M 772 81 L 772 192" stroke="#667A96" fill="none" class="connection" style="stroke-width:2;" marker-end="url(#mk-d2-4269500241-3446170533)" mask="url(#d2-4269500241)" /><rect x="701" y="126" width="143" height="23" rx="10" fill="#FFFFFF" /><text x="772.5" y="142" fill="#676C7E" class="text-italic fill-N2" style="text-anchor:middle;font-size:13px">production responsibility</text></g><g class="ZzFwMS4oaW5wdXRzIC0mZ3Q7IHRyYW5zZm9ybSlbMF0="><path d="M 1392.5 691 L 1392.5 762" stroke="#667A96" fill="none" class="connection" style="stroke-width:2;" marker-end="url(#mk-d2-4269500241-3446170533)" mask="url(#d2-4269500241)" /><rect x="1372" y="716" width="41" height="23" rx="10" fill="#FFFFFF" /><text x="1392.5" y="732" fill="#676C7E" class="text-italic fill-N2" style="text-anchor:middle;font-size:13px">inputs</text></g><g class="ZzFwMS4odHJhbnNmb3JtIC0mZ3Q7IG91dHB1dHMpWzBd"><path d="M 1392.5 845 L 1392.5 916" stroke="#667A96" fill="none" class="connection" style="stroke-width:2;" marker-end="url(#mk-d2-4269500241-3446170533)" mask="url(#d2-4269500241)" /><rect x="1340" y="870" width="106" height="23" rx="10" fill="#FFFFFF" /><text x="1393" y="886" fill="#676C7E" class="text-italic fill-N2" style="text-anchor:middle;font-size:13px">candidate outputs</text></g><g class="KG93bmVyIC0mZ3Q7IGcxcDEpWzBd"><path d="M 836.5 81 L 836.5 104 S 836.5 114 846.5 114 L 1382.5 114 S 1392.5 114 1392.5 124 L 1392.5 192" stroke="#667A96" fill="none" class="connection" style="stroke-width:2;" marker-end="url(#mk-d2-4269500241-3446170533)" mask="url(#d2-4269500241)" /><rect x="1067" y="103" width="143" height="23" rx="10" fill="#FFFFFF" /><text x="1138.5" y="119" fill="#676C7E" class="text-italic fill-N2" style="text-anchor:middle;font-size:13px">production responsibility</text></g><g transform="translate(885 -4)" class="appendix-icon"><title>Package production (MOD-013)</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3427_35082111-d2-4269500241-N53W4ZLS)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M16 26C21.5228 26 26 21.5228 26 16C26 10.4772 21.5228 6 16 6C10.4772 6 6 10.4772 6 16C6 21.5228 10.4772 26 16 26Z" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 19.998V15.998" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 12H16.0098" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3427_35082111-d2-4100717732-N53W4ZLS">
+<clipPath id="clip0_3427_35082111-d2-4269500241-N53W4ZLS">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
-</g><g transform="translate(884 -4)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3440_35088111-d2-4100717732-N53W4ZLS)">
+</g><g transform="translate(853 -4)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3440_35088111-d2-4269500241-N53W4ZLS)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M14.3909 16.7965C14.7364 17.2584 15.1772 17.6406 15.6834 17.9171C16.1896 18.1938 16.7494 18.3582 17.3248 18.3993C17.9001 18.4405 18.4777 18.3575 19.0181 18.1559C19.5586 17.9543 20.0492 17.6389 20.4571 17.2309L22.8708 14.8173C23.6036 14.0586 24.0089 13.0425 23.9998 11.9877C23.9906 10.933 23.5676 9.92404 22.8217 9.17821C22.0759 8.43237 21.067 8.00931 20.0123 8.00015C18.9575 7.99098 17.9413 8.39644 17.1827 9.1292L15.7988 10.505" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M17.609 15.1874C17.2635 14.7255 16.8227 14.3433 16.3165 14.0667C15.8103 13.7902 15.2505 13.6257 14.6752 13.5845C14.0998 13.5433 13.5223 13.6263 12.9819 13.8279C12.4414 14.0295 11.9506 14.345 11.5428 14.753L9.1292 17.1666C8.39644 17.9252 7.99098 18.9414 8.00015 19.9962C8.00931 21.0509 8.43237 22.0598 9.17821 22.8056C9.92405 23.5515 10.933 23.9745 11.9877 23.9837C13.0425 23.9928 14.0586 23.5875 14.8173 22.8547L16.193 21.4788" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3440_35088111-d2-4100717732-N53W4ZLS">
+<clipPath id="clip0_3440_35088111-d2-4269500241-N53W4ZLS">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
 </g><g transform="translate(432 180)" class="appendix-icon"><title>Implementation sources</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3427_35082111-d2-4100717732-M4YA)">
+<g clip-path="url(#clip0_3427_35082111-d2-4269500241-M4YA)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M16 26C21.5228 26 26 21.5228 26 16C26 10.4772 21.5228 6 16 6C10.4772 6 6 10.4772 6 16C6 21.5228 10.4772 26 16 26Z" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 19.998V15.998" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 12H16.0098" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3427_35082111-d2-4100717732-M4YA">
+<clipPath id="clip0_3427_35082111-d2-4269500241-M4YA">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
 </g><g transform="translate(400 180)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3440_35088111-d2-4100717732-M4YA)">
+<g clip-path="url(#clip0_3440_35088111-d2-4269500241-M4YA)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M14.3909 16.7965C14.7364 17.2584 15.1772 17.6406 15.6834 17.9171C16.1896 18.1938 16.7494 18.3582 17.3248 18.3993C17.9001 18.4405 18.4777 18.3575 19.0181 18.1559C19.5586 17.9543 20.0492 17.6389 20.4571 17.2309L22.8708 14.8173C23.6036 14.0586 24.0089 13.0425 23.9998 11.9877C23.9906 10.933 23.5676 9.92404 22.8217 9.17821C22.0759 8.43237 21.067 8.00931 20.0123 8.00015C18.9575 7.99098 17.9413 8.39644 17.1827 9.1292L15.7988 10.505" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M17.609 15.1874C17.2635 14.7255 16.8227 14.3433 16.3165 14.0667C15.8103 13.7902 15.2505 13.6257 14.6752 13.5845C14.0998 13.5433 13.5223 13.6263 12.9819 13.8279C12.4414 14.0295 11.9506 14.345 11.5428 14.753L9.1292 17.1666C8.39644 17.9252 7.99098 18.9414 8.00015 19.9962C8.00931 21.0509 8.43237 22.0598 9.17821 22.8056C9.92405 23.5515 10.933 23.9745 11.9877 23.9837C13.0425 23.9928 14.0586 23.5875 14.8173 22.8547L16.193 21.4788" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3440_35088111-d2-4100717732-M4YA">
+<clipPath id="clip0_3440_35088111-d2-4269500241-M4YA">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
 </g><g transform="translate(1060 180)" class="appendix-icon"><title>Skill archive production</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3427_35082111-d2-4100717732-M4YXAMA)">
+<g clip-path="url(#clip0_3427_35082111-d2-4269500241-M4YXAMA)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M16 26C21.5228 26 26 21.5228 26 16C26 10.4772 21.5228 6 16 6C10.4772 6 6 10.4772 6 16C6 21.5228 10.4772 26 16 26Z" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 19.998V15.998" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 12H16.0098" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3427_35082111-d2-4100717732-M4YXAMA">
+<clipPath id="clip0_3427_35082111-d2-4269500241-M4YXAMA">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
 </g><g transform="translate(1028 180)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3440_35088111-d2-4100717732-M4YXAMA)">
+<g clip-path="url(#clip0_3440_35088111-d2-4269500241-M4YXAMA)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M14.3909 16.7965C14.7364 17.2584 15.1772 17.6406 15.6834 17.9171C16.1896 18.1938 16.7494 18.3582 17.3248 18.3993C17.9001 18.4405 18.4777 18.3575 19.0181 18.1559C19.5586 17.9543 20.0492 17.6389 20.4571 17.2309L22.8708 14.8173C23.6036 14.0586 24.0089 13.0425 23.9998 11.9877C23.9906 10.933 23.5676 9.92404 22.8217 9.17821C22.0759 8.43237 21.067 8.00931 20.0123 8.00015C18.9575 7.99098 17.9413 8.39644 17.1827 9.1292L15.7988 10.505" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M17.609 15.1874C17.2635 14.7255 16.8227 14.3433 16.3165 14.0667C15.8103 13.7902 15.2505 13.6257 14.6752 13.5845C14.0998 13.5433 13.5223 13.6263 12.9819 13.8279C12.4414 14.0295 11.9506 14.345 11.5428 14.753L9.1292 17.1666C8.39644 17.9252 7.99098 18.9414 8.00015 19.9962C8.00931 21.0509 8.43237 22.0598 9.17821 22.8056C9.92405 23.5515 10.933 23.9745 11.9877 23.9837C13.0425 23.9928 14.0586 23.5875 14.8173 22.8547L16.193 21.4788" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3440_35088111-d2-4100717732-M4YXAMA">
+<clipPath id="clip0_3440_35088111-d2-4269500241-M4YXAMA">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
 </g><g transform="translate(1673 180)" class="appendix-icon"><title>CLI candidate composition</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3427_35082111-d2-4100717732-M4YXAMI)">
+<g clip-path="url(#clip0_3427_35082111-d2-4269500241-M4YXAMI)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M16 26C21.5228 26 26 21.5228 26 16C26 10.4772 21.5228 6 16 6C10.4772 6 6 10.4772 6 16C6 21.5228 10.4772 26 16 26Z" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 19.998V15.998" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 12H16.0098" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3427_35082111-d2-4100717732-M4YXAMI">
+<clipPath id="clip0_3427_35082111-d2-4269500241-M4YXAMI">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
 </g><g transform="translate(1641 180)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3440_35088111-d2-4100717732-M4YXAMI)">
+<g clip-path="url(#clip0_3440_35088111-d2-4269500241-M4YXAMI)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M14.3909 16.7965C14.7364 17.2584 15.1772 17.6406 15.6834 17.9171C16.1896 18.1938 16.7494 18.3582 17.3248 18.3993C17.9001 18.4405 18.4777 18.3575 19.0181 18.1559C19.5586 17.9543 20.0492 17.6389 20.4571 17.2309L22.8708 14.8173C23.6036 14.0586 24.0089 13.0425 23.9998 11.9877C23.9906 10.933 23.5676 9.92404 22.8217 9.17821C22.0759 8.43237 21.067 8.00931 20.0123 8.00015C18.9575 7.99098 17.9413 8.39644 17.1827 9.1292L15.7988 10.505" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M17.609 15.1874C17.2635 14.7255 16.8227 14.3433 16.3165 14.0667C15.8103 13.7902 15.2505 13.6257 14.6752 13.5845C14.0998 13.5433 13.5223 13.6263 12.9819 13.8279C12.4414 14.0295 11.9506 14.345 11.5428 14.753L9.1292 17.1666C8.39644 17.9252 7.99098 18.9414 8.00015 19.9962C8.00931 21.0509 8.43237 22.0598 9.17821 22.8056C9.92405 23.5515 10.933 23.9745 11.9877 23.9837C13.0425 23.9928 14.0586 23.5875 14.8173 22.8547L16.193 21.4788" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3440_35088111-d2-4100717732-M4YXAMI">
+<clipPath id="clip0_3440_35088111-d2-4269500241-M4YXAMI">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
 </g><g transform="translate(372 240)" class="appendix-icon"><title>The explicit --output-dir branch of main calls build_adapter_archives for a selected version; --check uses a temporary candidate. The remaining default-sync behavior is a recorded conformance gap.</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3427_35082111-d2-4100717732-M4YC4ZRQ)">
+<g clip-path="url(#clip0_3427_35082111-d2-4269500241-M4YC4ZRQ)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M16 26C21.5228 26 26 21.5228 26 16C26 10.4772 21.5228 6 16 6C10.4772 6 6 10.4772 6 16C6 21.5228 10.4772 26 16 26Z" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 19.998V15.998" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 12H16.0098" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3427_35082111-d2-4100717732-M4YC4ZRQ">
+<clipPath id="clip0_3427_35082111-d2-4269500241-M4YC4ZRQ">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
 </g><g transform="translate(340 240)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3440_35088111-d2-4100717732-M4YC4ZRQ)">
+<g clip-path="url(#clip0_3440_35088111-d2-4269500241-M4YC4ZRQ)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M14.3909 16.7965C14.7364 17.2584 15.1772 17.6406 15.6834 17.9171C16.1896 18.1938 16.7494 18.3582 17.3248 18.3993C17.9001 18.4405 18.4777 18.3575 19.0181 18.1559C19.5586 17.9543 20.0492 17.6389 20.4571 17.2309L22.8708 14.8173C23.6036 14.0586 24.0089 13.0425 23.9998 11.9877C23.9906 10.933 23.5676 9.92404 22.8217 9.17821C22.0759 8.43237 21.067 8.00931 20.0123 8.00015C18.9575 7.99098 17.9413 8.39644 17.1827 9.1292L15.7988 10.505" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M17.609 15.1874C17.2635 14.7255 16.8227 14.3433 16.3165 14.0667C15.8103 13.7902 15.2505 13.6257 14.6752 13.5845C14.0998 13.5433 13.5223 13.6263 12.9819 13.8279C12.4414 14.0295 11.9506 14.345 11.5428 14.753L9.1292 17.1666C8.39644 17.9252 7.99098 18.9414 8.00015 19.9962C8.00931 21.0509 8.43237 22.0598 9.17821 22.8056C9.92405 23.5515 10.933 23.9745 11.9877 23.9837C13.0425 23.9928 14.0586 23.5875 14.8173 22.8547L16.193 21.4788" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3440_35088111-d2-4100717732-M4YC4ZRQ">
+<clipPath id="clip0_3440_35088111-d2-4269500241-M4YC4ZRQ">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
 </g><g transform="translate(372 343)" class="appendix-icon"><title>Supported target descriptors, expected_adapter_files, render_skill_for_adapter, resource copying, build_adapter_archives, and archive/hash helpers turn canonical skill sources into target archives. They package existing instructions; they do not synthesize instructions from REM.</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3427_35082111-d2-4100717732-M4YC4ZRR)">
+<g clip-path="url(#clip0_3427_35082111-d2-4269500241-M4YC4ZRR)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M16 26C21.5228 26 26 21.5228 26 16C26 10.4772 21.5228 6 16 6C10.4772 6 6 10.4772 6 16C6 21.5228 10.4772 26 16 26Z" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 19.998V15.998" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 12H16.0098" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3427_35082111-d2-4100717732-M4YC4ZRR">
+<clipPath id="clip0_3427_35082111-d2-4269500241-M4YC4ZRR">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
 </g><g transform="translate(340 343)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3440_35088111-d2-4100717732-M4YC4ZRR)">
+<g clip-path="url(#clip0_3440_35088111-d2-4269500241-M4YC4ZRR)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M14.3909 16.7965C14.7364 17.2584 15.1772 17.6406 15.6834 17.9171C16.1896 18.1938 16.7494 18.3582 17.3248 18.3993C17.9001 18.4405 18.4777 18.3575 19.0181 18.1559C19.5586 17.9543 20.0492 17.6389 20.4571 17.2309L22.8708 14.8173C23.6036 14.0586 24.0089 13.0425 23.9998 11.9877C23.9906 10.933 23.5676 9.92404 22.8217 9.17821C22.0759 8.43237 21.067 8.00931 20.0123 8.00015C18.9575 7.99098 17.9413 8.39644 17.1827 9.1292L15.7988 10.505" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M17.609 15.1874C17.2635 14.7255 16.8227 14.3433 16.3165 14.0667C15.8103 13.7902 15.2505 13.6257 14.6752 13.5845C14.0998 13.5433 13.5223 13.6263 12.9819 13.8279C12.4414 14.0295 11.9506 14.345 11.5428 14.753L9.1292 17.1666C8.39644 17.9252 7.99098 18.9414 8.00015 19.9962C8.00931 21.0509 8.43237 22.0598 9.17821 22.8056C9.92405 23.5515 10.933 23.9745 11.9877 23.9837C13.0425 23.9928 14.0586 23.5875 14.8173 22.8547L16.193 21.4788" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3440_35088111-d2-4100717732-M4YC4ZRR">
+<clipPath id="clip0_3440_35088111-d2-4269500241-M4YC4ZRR">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
 </g><g transform="translate(372 460)" class="appendix-icon"><title>prepare_candidate orchestrates archive generation/validation, write_archive_metadata, and npm pack in an isolated prepared checkout. These production operations contribute to MOD-013; release-intent admission, qualification, candidate sealing, and publication coordination remain MOD-015 responsibilities in the shared implementation file.</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3427_35082111-d2-4100717732-M4YC4ZRS)">
+<g clip-path="url(#clip0_3427_35082111-d2-4269500241-M4YC4ZRS)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M16 26C21.5228 26 26 21.5228 26 16C26 10.4772 21.5228 6 16 6C10.4772 6 6 10.4772 6 16C6 21.5228 10.4772 26 16 26Z" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 19.998V15.998" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 12H16.0098" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3427_35082111-d2-4100717732-M4YC4ZRS">
+<clipPath id="clip0_3427_35082111-d2-4269500241-M4YC4ZRS">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
 </g><g transform="translate(340 460)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3440_35088111-d2-4100717732-M4YC4ZRS)">
+<g clip-path="url(#clip0_3440_35088111-d2-4269500241-M4YC4ZRS)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M14.3909 16.7965C14.7364 17.2584 15.1772 17.6406 15.6834 17.9171C16.1896 18.1938 16.7494 18.3582 17.3248 18.3993C17.9001 18.4405 18.4777 18.3575 19.0181 18.1559C19.5586 17.9543 20.0492 17.6389 20.4571 17.2309L22.8708 14.8173C23.6036 14.0586 24.0089 13.0425 23.9998 11.9877C23.9906 10.933 23.5676 9.92404 22.8217 9.17821C22.0759 8.43237 21.067 8.00931 20.0123 8.00015C18.9575 7.99098 17.9413 8.39644 17.1827 9.1292L15.7988 10.505" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M17.609 15.1874C17.2635 14.7255 16.8227 14.3433 16.3165 14.0667C15.8103 13.7902 15.2505 13.6257 14.6752 13.5845C14.0998 13.5433 13.5223 13.6263 12.9819 13.8279C12.4414 14.0295 11.9506 14.345 11.5428 14.753L9.1292 17.1666C8.39644 17.9252 7.99098 18.9414 8.00015 19.9962C8.00931 21.0509 8.43237 22.0598 9.17821 22.8056C9.92405 23.5515 10.933 23.9745 11.9877 23.9837C13.0425 23.9928 14.0586 23.5875 14.8173 22.8547L16.193 21.4788" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3440_35088111-d2-4100717732-M4YC4ZRS">
+<clipPath id="clip0_3440_35088111-d2-4269500241-M4YC4ZRS">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
 </g><g transform="translate(372 577)" class="appendix-icon"><title>Declares the npm package name, existing dist/ payload, public README and license, one rigorloop executable, and yaml dependency. Its scripts contain no command-code compilation or generation step.</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3427_35082111-d2-4100717732-M4YC4ZRT)">
+<g clip-path="url(#clip0_3427_35082111-d2-4269500241-M4YC4ZRT)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M16 26C21.5228 26 26 21.5228 26 16C26 10.4772 21.5228 6 16 6C10.4772 6 6 10.4772 6 16C6 21.5228 10.4772 26 16 26Z" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 19.998V15.998" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 12H16.0098" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3427_35082111-d2-4100717732-M4YC4ZRT">
+<clipPath id="clip0_3427_35082111-d2-4269500241-M4YC4ZRT">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
 </g><g transform="translate(340 577)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3440_35088111-d2-4100717732-M4YC4ZRT)">
+<g clip-path="url(#clip0_3440_35088111-d2-4269500241-M4YC4ZRT)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M14.3909 16.7965C14.7364 17.2584 15.1772 17.6406 15.6834 17.9171C16.1896 18.1938 16.7494 18.3582 17.3248 18.3993C17.9001 18.4405 18.4777 18.3575 19.0181 18.1559C19.5586 17.9543 20.0492 17.6389 20.4571 17.2309L22.8708 14.8173C23.6036 14.0586 24.0089 13.0425 23.9998 11.9877C23.9906 10.933 23.5676 9.92404 22.8217 9.17821C22.0759 8.43237 21.067 8.00931 20.0123 8.00015C18.9575 7.99098 17.9413 8.39644 17.1827 9.1292L15.7988 10.505" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M17.609 15.1874C17.2635 14.7255 16.8227 14.3433 16.3165 14.0667C15.8103 13.7902 15.2505 13.6257 14.6752 13.5845C14.0998 13.5433 13.5223 13.6263 12.9819 13.8279C12.4414 14.0295 11.9506 14.345 11.5428 14.753L9.1292 17.1666C8.39644 17.9252 7.99098 18.9414 8.00015 19.9962C8.00931 21.0509 8.43237 22.0598 9.17821 22.8056C9.92405 23.5515 10.933 23.9745 11.9877 23.9837C13.0425 23.9928 14.0586 23.5875 14.8173 22.8547L16.193 21.4788" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3440_35088111-d2-4100717732-M4YC4ZRT">
+<clipPath id="clip0_3440_35088111-d2-4269500241-M4YC4ZRT">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
 </g><g transform="translate(984 270)" class="appendix-icon"><title>Source inputs</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3427_35082111-d2-4100717732-M4YXAMBONFXHA5LUOM)">
+<g clip-path="url(#clip0_3427_35082111-d2-4269500241-M4YXAMBONFXHA5LUOM)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M16 26C21.5228 26 26 21.5228 26 16C26 10.4772 21.5228 6 16 6C10.4772 6 6 10.4772 6 16C6 21.5228 10.4772 26 16 26Z" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 19.998V15.998" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 12H16.0098" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3427_35082111-d2-4100717732-M4YXAMBONFXHA5LUOM">
+<clipPath id="clip0_3427_35082111-d2-4269500241-M4YXAMBONFXHA5LUOM">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
 </g><g transform="translate(952 270)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3440_35088111-d2-4100717732-M4YXAMBONFXHA5LUOM)">
+<g clip-path="url(#clip0_3440_35088111-d2-4269500241-M4YXAMBONFXHA5LUOM)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M14.3909 16.7965C14.7364 17.2584 15.1772 17.6406 15.6834 17.9171C16.1896 18.1938 16.7494 18.3582 17.3248 18.3993C17.9001 18.4405 18.4777 18.3575 19.0181 18.1559C19.5586 17.9543 20.0492 17.6389 20.4571 17.2309L22.8708 14.8173C23.6036 14.0586 24.0089 13.0425 23.9998 11.9877C23.9906 10.933 23.5676 9.92404 22.8217 9.17821C22.0759 8.43237 21.067 8.00931 20.0123 8.00015C18.9575 7.99098 17.9413 8.39644 17.1827 9.1292L15.7988 10.505" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M17.609 15.1874C17.2635 14.7255 16.8227 14.3433 16.3165 14.0667C15.8103 13.7902 15.2505 13.6257 14.6752 13.5845C14.0998 13.5433 13.5223 13.6263 12.9819 13.8279C12.4414 14.0295 11.9506 14.345 11.5428 14.753L9.1292 17.1666C8.39644 17.9252 7.99098 18.9414 8.00015 19.9962C8.00931 21.0509 8.43237 22.0598 9.17821 22.8056C9.92405 23.5515 10.933 23.9745 11.9877 23.9837C13.0425 23.9928 14.0586 23.5875 14.8173 22.8547L16.193 21.4788" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3440_35088111-d2-4100717732-M4YXAMBONFXHA5LUOM">
+<clipPath id="clip0_3440_35088111-d2-4269500241-M4YXAMBONFXHA5LUOM">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
 </g><g transform="translate(990 890)" class="appendix-icon"><title>Candidate output layouts</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3427_35082111-d2-4100717732-M4YXAMBON52XI4DVORZQ)">
+<g clip-path="url(#clip0_3427_35082111-d2-4269500241-M4YXAMBON52XI4DVORZQ)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M16 26C21.5228 26 26 21.5228 26 16C26 10.4772 21.5228 6 16 6C10.4772 6 6 10.4772 6 16C6 21.5228 10.4772 26 16 26Z" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 19.998V15.998" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 12H16.0098" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3427_35082111-d2-4100717732-M4YXAMBON52XI4DVORZQ">
+<clipPath id="clip0_3427_35082111-d2-4269500241-M4YXAMBON52XI4DVORZQ">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
 </g><g transform="translate(958 890)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3440_35088111-d2-4100717732-M4YXAMBON52XI4DVORZQ)">
+<g clip-path="url(#clip0_3440_35088111-d2-4269500241-M4YXAMBON52XI4DVORZQ)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M14.3909 16.7965C14.7364 17.2584 15.1772 17.6406 15.6834 17.9171C16.1896 18.1938 16.7494 18.3582 17.3248 18.3993C17.9001 18.4405 18.4777 18.3575 19.0181 18.1559C19.5586 17.9543 20.0492 17.6389 20.4571 17.2309L22.8708 14.8173C23.6036 14.0586 24.0089 13.0425 23.9998 11.9877C23.9906 10.933 23.5676 9.92404 22.8217 9.17821C22.0759 8.43237 21.067 8.00931 20.0123 8.00015C18.9575 7.99098 17.9413 8.39644 17.1827 9.1292L15.7988 10.505" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M17.609 15.1874C17.2635 14.7255 16.8227 14.3433 16.3165 14.0667C15.8103 13.7902 15.2505 13.6257 14.6752 13.5845C14.0998 13.5433 13.5223 13.6263 12.9819 13.8279C12.4414 14.0295 11.9506 14.345 11.5428 14.753L9.1292 17.1666C8.39644 17.9252 7.99098 18.9414 8.00015 19.9962C8.00931 21.0509 8.43237 22.0598 9.17821 22.8056C9.92405 23.5515 10.933 23.9745 11.9877 23.9837C13.0425 23.9928 14.0586 23.5875 14.8173 22.8547L16.193 21.4788" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3440_35088111-d2-4100717732-M4YXAMBON52XI4DVORZQ">
+<clipPath id="clip0_3440_35088111-d2-4269500241-M4YXAMBON52XI4DVORZQ">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
 </g><g transform="translate(890 750)" class="appendix-icon"><title>With an explicit isolated --output-dir and selected --version, main calls build_adapter_archives. The shared helper validates canonical inventory, applies declared frontmatter transformations, copies selected resources, renders target entrypoints, and writes one ZIP per supported target. Candidate generation does not install or publish.</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3427_35082111-d2-4100717732-M4YXAMBOORZGC3TTMZXXE3I)">
+<g clip-path="url(#clip0_3427_35082111-d2-4269500241-M4YXAMBOORZGC3TTMZXXE3I)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M16 26C21.5228 26 26 21.5228 26 16C26 10.4772 21.5228 6 16 6C10.4772 6 6 10.4772 6 16C6 21.5228 10.4772 26 16 26Z" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 19.998V15.998" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 12H16.0098" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3427_35082111-d2-4100717732-M4YXAMBOORZGC3TTMZXXE3I">
+<clipPath id="clip0_3427_35082111-d2-4269500241-M4YXAMBOORZGC3TTMZXXE3I">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
 </g><g transform="translate(858 750)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3440_35088111-d2-4100717732-M4YXAMBOORZGC3TTMZXXE3I)">
+<g clip-path="url(#clip0_3440_35088111-d2-4269500241-M4YXAMBOORZGC3TTMZXXE3I)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M14.3909 16.7965C14.7364 17.2584 15.1772 17.6406 15.6834 17.9171C16.1896 18.1938 16.7494 18.3582 17.3248 18.3993C17.9001 18.4405 18.4777 18.3575 19.0181 18.1559C19.5586 17.9543 20.0492 17.6389 20.4571 17.2309L22.8708 14.8173C23.6036 14.0586 24.0089 13.0425 23.9998 11.9877C23.9906 10.933 23.5676 9.92404 22.8217 9.17821C22.0759 8.43237 21.067 8.00931 20.0123 8.00015C18.9575 7.99098 17.9413 8.39644 17.1827 9.1292L15.7988 10.505" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M17.609 15.1874C17.2635 14.7255 16.8227 14.3433 16.3165 14.0667C15.8103 13.7902 15.2505 13.6257 14.6752 13.5845C14.0998 13.5433 13.5223 13.6263 12.9819 13.8279C12.4414 14.0295 11.9506 14.345 11.5428 14.753L9.1292 17.1666C8.39644 17.9252 7.99098 18.9414 8.00015 19.9962C8.00931 21.0509 8.43237 22.0598 9.17821 22.8056C9.92405 23.5515 10.933 23.9745 11.9877 23.9837C13.0425 23.9928 14.0586 23.5875 14.8173 22.8547L16.193 21.4788" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3440_35088111-d2-4100717732-M4YXAMBOORZGC3TTMZXXE3I">
+<clipPath id="clip0_3440_35088111-d2-4269500241-M4YXAMBOORZGC3TTMZXXE3I">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
 </g><g transform="translate(1580 270)" class="appendix-icon"><title>Source inputs</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3427_35082111-d2-4100717732-M4YXAMJONFXHA5LUOM)">
+<g clip-path="url(#clip0_3427_35082111-d2-4269500241-M4YXAMJONFXHA5LUOM)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M16 26C21.5228 26 26 21.5228 26 16C26 10.4772 21.5228 6 16 6C10.4772 6 6 10.4772 6 16C6 21.5228 10.4772 26 16 26Z" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 19.998V15.998" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 12H16.0098" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3427_35082111-d2-4100717732-M4YXAMJONFXHA5LUOM">
+<clipPath id="clip0_3427_35082111-d2-4269500241-M4YXAMJONFXHA5LUOM">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
 </g><g transform="translate(1548 270)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3440_35088111-d2-4100717732-M4YXAMJONFXHA5LUOM)">
+<g clip-path="url(#clip0_3440_35088111-d2-4269500241-M4YXAMJONFXHA5LUOM)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M14.3909 16.7965C14.7364 17.2584 15.1772 17.6406 15.6834 17.9171C16.1896 18.1938 16.7494 18.3582 17.3248 18.3993C17.9001 18.4405 18.4777 18.3575 19.0181 18.1559C19.5586 17.9543 20.0492 17.6389 20.4571 17.2309L22.8708 14.8173C23.6036 14.0586 24.0089 13.0425 23.9998 11.9877C23.9906 10.933 23.5676 9.92404 22.8217 9.17821C22.0759 8.43237 21.067 8.00931 20.0123 8.00015C18.9575 7.99098 17.9413 8.39644 17.1827 9.1292L15.7988 10.505" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M17.609 15.1874C17.2635 14.7255 16.8227 14.3433 16.3165 14.0667C15.8103 13.7902 15.2505 13.6257 14.6752 13.5845C14.0998 13.5433 13.5223 13.6263 12.9819 13.8279C12.4414 14.0295 11.9506 14.345 11.5428 14.753L9.1292 17.1666C8.39644 17.9252 7.99098 18.9414 8.00015 19.9962C8.00931 21.0509 8.43237 22.0598 9.17821 22.8056C9.92405 23.5515 10.933 23.9745 11.9877 23.9837C13.0425 23.9928 14.0586 23.5875 14.8173 22.8547L16.193 21.4788" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3440_35088111-d2-4100717732-M4YXAMJONFXHA5LUOM">
+<clipPath id="clip0_3440_35088111-d2-4269500241-M4YXAMJONFXHA5LUOM">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
 </g><g transform="translate(1603 904)" class="appendix-icon"><title>Candidate output layouts</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3427_35082111-d2-4100717732-M4YXAMJON52XI4DVORZQ)">
+<g clip-path="url(#clip0_3427_35082111-d2-4269500241-M4YXAMJON52XI4DVORZQ)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M16 26C21.5228 26 26 21.5228 26 16C26 10.4772 21.5228 6 16 6C10.4772 6 6 10.4772 6 16C6 21.5228 10.4772 26 16 26Z" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 19.998V15.998" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 12H16.0098" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3427_35082111-d2-4100717732-M4YXAMJON52XI4DVORZQ">
+<clipPath id="clip0_3427_35082111-d2-4269500241-M4YXAMJON52XI4DVORZQ">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
 </g><g transform="translate(1571 904)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3440_35088111-d2-4100717732-M4YXAMJON52XI4DVORZQ)">
+<g clip-path="url(#clip0_3440_35088111-d2-4269500241-M4YXAMJON52XI4DVORZQ)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M14.3909 16.7965C14.7364 17.2584 15.1772 17.6406 15.6834 17.9171C16.1896 18.1938 16.7494 18.3582 17.3248 18.3993C17.9001 18.4405 18.4777 18.3575 19.0181 18.1559C19.5586 17.9543 20.0492 17.6389 20.4571 17.2309L22.8708 14.8173C23.6036 14.0586 24.0089 13.0425 23.9998 11.9877C23.9906 10.933 23.5676 9.92404 22.8217 9.17821C22.0759 8.43237 21.067 8.00931 20.0123 8.00015C18.9575 7.99098 17.9413 8.39644 17.1827 9.1292L15.7988 10.505" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M17.609 15.1874C17.2635 14.7255 16.8227 14.3433 16.3165 14.0667C15.8103 13.7902 15.2505 13.6257 14.6752 13.5845C14.0998 13.5433 13.5223 13.6263 12.9819 13.8279C12.4414 14.0295 11.9506 14.345 11.5428 14.753L9.1292 17.1666C8.39644 17.9252 7.99098 18.9414 8.00015 19.9962C8.00931 21.0509 8.43237 22.0598 9.17821 22.8056C9.92405 23.5515 10.933 23.9745 11.9877 23.9837C13.0425 23.9928 14.0586 23.5875 14.8173 22.8547L16.193 21.4788" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3440_35088111-d2-4100717732-M4YXAMJON52XI4DVORZQ">
+<clipPath id="clip0_3440_35088111-d2-4269500241-M4YXAMJON52XI4DVORZQ">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
 </g><g transform="translate(1498 750)" class="appendix-icon"><title>prepare_candidate uses an isolated prepared checkout, builds and validates target ZIPs, calls write_archive_metadata to overlay archive facts and their trusted index in the candidate package, then invokes npm pack --json --ignore-scripts --pack-destination on packages/rigorloop. Packaging steps are mapped here; Release retains selection, qualification, sealing, and publication decisions.</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3427_35082111-d2-4100717732-M4YXAMJOORZGC3TTMZXXE3I)">
+<g clip-path="url(#clip0_3427_35082111-d2-4269500241-M4YXAMJOORZGC3TTMZXXE3I)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M16 26C21.5228 26 26 21.5228 26 16C26 10.4772 21.5228 6 16 6C10.4772 6 6 10.4772 6 16C6 21.5228 10.4772 26 16 26Z" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 19.998V15.998" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 12H16.0098" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3427_35082111-d2-4100717732-M4YXAMJOORZGC3TTMZXXE3I">
+<clipPath id="clip0_3427_35082111-d2-4269500241-M4YXAMJOORZGC3TTMZXXE3I">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
 </g><g transform="translate(1466 750)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3440_35088111-d2-4100717732-M4YXAMJOORZGC3TTMZXXE3I)">
+<g clip-path="url(#clip0_3440_35088111-d2-4269500241-M4YXAMJOORZGC3TTMZXXE3I)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M14.3909 16.7965C14.7364 17.2584 15.1772 17.6406 15.6834 17.9171C16.1896 18.1938 16.7494 18.3582 17.3248 18.3993C17.9001 18.4405 18.4777 18.3575 19.0181 18.1559C19.5586 17.9543 20.0492 17.6389 20.4571 17.2309L22.8708 14.8173C23.6036 14.0586 24.0089 13.0425 23.9998 11.9877C23.9906 10.933 23.5676 9.92404 22.8217 9.17821C22.0759 8.43237 21.067 8.00931 20.0123 8.00015C18.9575 7.99098 17.9413 8.39644 17.1827 9.1292L15.7988 10.505" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M17.609 15.1874C17.2635 14.7255 16.8227 14.3433 16.3165 14.0667C15.8103 13.7902 15.2505 13.6257 14.6752 13.5845C14.0998 13.5433 13.5223 13.6263 12.9819 13.8279C12.4414 14.0295 11.9506 14.345 11.5428 14.753L9.1292 17.1666C8.39644 17.9252 7.99098 18.9414 8.00015 19.9962C8.00931 21.0509 8.43237 22.0598 9.17821 22.8056C9.92405 23.5515 10.933 23.9745 11.9877 23.9837C13.0425 23.9928 14.0586 23.5875 14.8173 22.8547L16.193 21.4788" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3440_35088111-d2-4100717732-M4YXAMJOORZGC3TTMZXXE3I">
+<clipPath id="clip0_3440_35088111-d2-4269500241-M4YXAMJOORZGC3TTMZXXE3I">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
 </g><g transform="translate(924 330)" class="appendix-icon"><title>Canonical authored skill directories and their assets, references, and scripts. This pass inspected directory names and the generator, not SKILL.md contents.</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3427_35082111-d2-4100717732-M4YXAMBONFXHA5LUOMXGMMA)">
+<g clip-path="url(#clip0_3427_35082111-d2-4269500241-M4YXAMBONFXHA5LUOMXGMMA)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M16 26C21.5228 26 26 21.5228 26 16C26 10.4772 21.5228 6 16 6C10.4772 6 6 10.4772 6 16C6 21.5228 10.4772 26 16 26Z" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 19.998V15.998" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 12H16.0098" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3427_35082111-d2-4100717732-M4YXAMBONFXHA5LUOMXGMMA">
+<clipPath id="clip0_3427_35082111-d2-4269500241-M4YXAMBONFXHA5LUOMXGMMA">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
 </g><g transform="translate(892 330)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3440_35088111-d2-4100717732-M4YXAMBONFXHA5LUOMXGMMA)">
+<g clip-path="url(#clip0_3440_35088111-d2-4269500241-M4YXAMBONFXHA5LUOMXGMMA)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M14.3909 16.7965C14.7364 17.2584 15.1772 17.6406 15.6834 17.9171C16.1896 18.1938 16.7494 18.3582 17.3248 18.3993C17.9001 18.4405 18.4777 18.3575 19.0181 18.1559C19.5586 17.9543 20.0492 17.6389 20.4571 17.2309L22.8708 14.8173C23.6036 14.0586 24.0089 13.0425 23.9998 11.9877C23.9906 10.933 23.5676 9.92404 22.8217 9.17821C22.0759 8.43237 21.067 8.00931 20.0123 8.00015C18.9575 7.99098 17.9413 8.39644 17.1827 9.1292L15.7988 10.505" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M17.609 15.1874C17.2635 14.7255 16.8227 14.3433 16.3165 14.0667C15.8103 13.7902 15.2505 13.6257 14.6752 13.5845C14.0998 13.5433 13.5223 13.6263 12.9819 13.8279C12.4414 14.0295 11.9506 14.345 11.5428 14.753L9.1292 17.1666C8.39644 17.9252 7.99098 18.9414 8.00015 19.9962C8.00931 21.0509 8.43237 22.0598 9.17821 22.8056C9.92405 23.5515 10.933 23.9745 11.9877 23.9837C13.0425 23.9928 14.0586 23.5875 14.8173 22.8547L16.193 21.4788" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3440_35088111-d2-4100717732-M4YXAMBONFXHA5LUOMXGMMA">
+<clipPath id="clip0_3440_35088111-d2-4269500241-M4YXAMBONFXHA5LUOMXGMMA">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
 </g><g transform="translate(924 433)" class="appendix-icon"><title>Canonical thin target entrypoint templates selected by the codex and claude descriptors.</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3427_35082111-d2-4100717732-M4YXAMBONFXHA5LUOMXGMMI)">
+<g clip-path="url(#clip0_3427_35082111-d2-4269500241-M4YXAMBONFXHA5LUOMXGMMI)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M16 26C21.5228 26 26 21.5228 26 16C26 10.4772 21.5228 6 16 6C10.4772 6 6 10.4772 6 16C6 21.5228 10.4772 26 16 26Z" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 19.998V15.998" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 12H16.0098" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3427_35082111-d2-4100717732-M4YXAMBONFXHA5LUOMXGMMI">
+<clipPath id="clip0_3427_35082111-d2-4269500241-M4YXAMBONFXHA5LUOMXGMMI">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
 </g><g transform="translate(892 433)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3440_35088111-d2-4100717732-M4YXAMBONFXHA5LUOMXGMMI)">
+<g clip-path="url(#clip0_3440_35088111-d2-4269500241-M4YXAMBONFXHA5LUOMXGMMI)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M14.3909 16.7965C14.7364 17.2584 15.1772 17.6406 15.6834 17.9171C16.1896 18.1938 16.7494 18.3582 17.3248 18.3993C17.9001 18.4405 18.4777 18.3575 19.0181 18.1559C19.5586 17.9543 20.0492 17.6389 20.4571 17.2309L22.8708 14.8173C23.6036 14.0586 24.0089 13.0425 23.9998 11.9877C23.9906 10.933 23.5676 9.92404 22.8217 9.17821C22.0759 8.43237 21.067 8.00931 20.0123 8.00015C18.9575 7.99098 17.9413 8.39644 17.1827 9.1292L15.7988 10.505" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M17.609 15.1874C17.2635 14.7255 16.8227 14.3433 16.3165 14.0667C15.8103 13.7902 15.2505 13.6257 14.6752 13.5845C14.0998 13.5433 13.5223 13.6263 12.9819 13.8279C12.4414 14.0295 11.9506 14.345 11.5428 14.753L9.1292 17.1666C8.39644 17.9252 7.99098 18.9414 8.00015 19.9962C8.00931 21.0509 8.43237 22.0598 9.17821 22.8056C9.92405 23.5515 10.933 23.9745 11.9877 23.9837C13.0425 23.9928 14.0586 23.5875 14.8173 22.8547L16.193 21.4788" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3440_35088111-d2-4100717732-M4YXAMBONFXHA5LUOMXGMMI">
+<clipPath id="clip0_3440_35088111-d2-4269500241-M4YXAMBONFXHA5LUOMXGMMI">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
 </g><g transform="translate(924 536)" class="appendix-icon"><title>Supported target inventory, inclusion/transform rules, deterministic ZIP layout, and requested-version handling used by the wrapper.</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3427_35082111-d2-4100717732-M4YXAMBONFXHA5LUOMXGMMQ)">
+<g clip-path="url(#clip0_3427_35082111-d2-4269500241-M4YXAMBONFXHA5LUOMXGMMQ)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M16 26C21.5228 26 26 21.5228 26 16C26 10.4772 21.5228 6 16 6C10.4772 6 6 10.4772 6 16C6 21.5228 10.4772 26 16 26Z" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 19.998V15.998" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 12H16.0098" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3427_35082111-d2-4100717732-M4YXAMBONFXHA5LUOMXGMMQ">
+<clipPath id="clip0_3427_35082111-d2-4269500241-M4YXAMBONFXHA5LUOMXGMMQ">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
 </g><g transform="translate(892 536)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3440_35088111-d2-4100717732-M4YXAMBONFXHA5LUOMXGMMQ)">
+<g clip-path="url(#clip0_3440_35088111-d2-4269500241-M4YXAMBONFXHA5LUOMXGMMQ)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M14.3909 16.7965C14.7364 17.2584 15.1772 17.6406 15.6834 17.9171C16.1896 18.1938 16.7494 18.3582 17.3248 18.3993C17.9001 18.4405 18.4777 18.3575 19.0181 18.1559C19.5586 17.9543 20.0492 17.6389 20.4571 17.2309L22.8708 14.8173C23.6036 14.0586 24.0089 13.0425 23.9998 11.9877C23.9906 10.933 23.5676 9.92404 22.8217 9.17821C22.0759 8.43237 21.067 8.00931 20.0123 8.00015C18.9575 7.99098 17.9413 8.39644 17.1827 9.1292L15.7988 10.505" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M17.609 15.1874C17.2635 14.7255 16.8227 14.3433 16.3165 14.0667C15.8103 13.7902 15.2505 13.6257 14.6752 13.5845C14.0998 13.5433 13.5223 13.6263 12.9819 13.8279C12.4414 14.0295 11.9506 14.345 11.5428 14.753L9.1292 17.1666C8.39644 17.9252 7.99098 18.9414 8.00015 19.9962C8.00931 21.0509 8.43237 22.0598 9.17821 22.8056C9.92405 23.5515 10.933 23.9745 11.9877 23.9837C13.0425 23.9928 14.0586 23.5875 14.8173 22.8547L16.193 21.4788" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3440_35088111-d2-4100717732-M4YXAMBONFXHA5LUOMXGMMQ">
+<clipPath id="clip0_3440_35088111-d2-4269500241-M4YXAMBONFXHA5LUOMXGMMQ">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
 </g><g transform="translate(930 950)" class="appendix-icon"><title>Relative to the explicitly selected candidate output directory; {release} is the supplied archive version. Members include the Codex support entrypoint and .agents/skills/{skill}/ instruction/resource trees. This is a declared source-derived layout, not an existing or qualified artifact.</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3427_35082111-d2-4100717732-M4YXAMBON52XI4DVORZS4ZRQ)">
+<g clip-path="url(#clip0_3427_35082111-d2-4269500241-M4YXAMBON52XI4DVORZS4ZRQ)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M16 26C21.5228 26 26 21.5228 26 16C26 10.4772 21.5228 6 16 6C10.4772 6 6 10.4772 6 16C6 21.5228 10.4772 26 16 26Z" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 19.998V15.998" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 12H16.0098" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3427_35082111-d2-4100717732-M4YXAMBON52XI4DVORZS4ZRQ">
+<clipPath id="clip0_3427_35082111-d2-4269500241-M4YXAMBON52XI4DVORZS4ZRQ">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
 </g><g transform="translate(898 950)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3440_35088111-d2-4100717732-M4YXAMBON52XI4DVORZS4ZRQ)">
+<g clip-path="url(#clip0_3440_35088111-d2-4269500241-M4YXAMBON52XI4DVORZS4ZRQ)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M14.3909 16.7965C14.7364 17.2584 15.1772 17.6406 15.6834 17.9171C16.1896 18.1938 16.7494 18.3582 17.3248 18.3993C17.9001 18.4405 18.4777 18.3575 19.0181 18.1559C19.5586 17.9543 20.0492 17.6389 20.4571 17.2309L22.8708 14.8173C23.6036 14.0586 24.0089 13.0425 23.9998 11.9877C23.9906 10.933 23.5676 9.92404 22.8217 9.17821C22.0759 8.43237 21.067 8.00931 20.0123 8.00015C18.9575 7.99098 17.9413 8.39644 17.1827 9.1292L15.7988 10.505" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M17.609 15.1874C17.2635 14.7255 16.8227 14.3433 16.3165 14.0667C15.8103 13.7902 15.2505 13.6257 14.6752 13.5845C14.0998 13.5433 13.5223 13.6263 12.9819 13.8279C12.4414 14.0295 11.9506 14.345 11.5428 14.753L9.1292 17.1666C8.39644 17.9252 7.99098 18.9414 8.00015 19.9962C8.00931 21.0509 8.43237 22.0598 9.17821 22.8056C9.92405 23.5515 10.933 23.9745 11.9877 23.9837C13.0425 23.9928 14.0586 23.5875 14.8173 22.8547L16.193 21.4788" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3440_35088111-d2-4100717732-M4YXAMBON52XI4DVORZS4ZRQ">
+<clipPath id="clip0_3440_35088111-d2-4269500241-M4YXAMBON52XI4DVORZS4ZRQ">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
 </g><g transform="translate(930 1053)" class="appendix-icon"><title>Relative to the same candidate output directory; members include the Claude Code support entrypoint and .claude/skills/{skill}/ instruction/resource trees. This is a declared source-derived layout, not an existing or qualified artifact.</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3427_35082111-d2-4100717732-M4YXAMBON52XI4DVORZS4ZRR)">
+<g clip-path="url(#clip0_3427_35082111-d2-4269500241-M4YXAMBON52XI4DVORZS4ZRR)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M16 26C21.5228 26 26 21.5228 26 16C26 10.4772 21.5228 6 16 6C10.4772 6 6 10.4772 6 16C6 21.5228 10.4772 26 16 26Z" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 19.998V15.998" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 12H16.0098" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3427_35082111-d2-4100717732-M4YXAMBON52XI4DVORZS4ZRR">
+<clipPath id="clip0_3427_35082111-d2-4269500241-M4YXAMBON52XI4DVORZS4ZRR">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
 </g><g transform="translate(898 1053)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3440_35088111-d2-4100717732-M4YXAMBON52XI4DVORZS4ZRR)">
+<g clip-path="url(#clip0_3440_35088111-d2-4269500241-M4YXAMBON52XI4DVORZS4ZRR)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M14.3909 16.7965C14.7364 17.2584 15.1772 17.6406 15.6834 17.9171C16.1896 18.1938 16.7494 18.3582 17.3248 18.3993C17.9001 18.4405 18.4777 18.3575 19.0181 18.1559C19.5586 17.9543 20.0492 17.6389 20.4571 17.2309L22.8708 14.8173C23.6036 14.0586 24.0089 13.0425 23.9998 11.9877C23.9906 10.933 23.5676 9.92404 22.8217 9.17821C22.0759 8.43237 21.067 8.00931 20.0123 8.00015C18.9575 7.99098 17.9413 8.39644 17.1827 9.1292L15.7988 10.505" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M17.609 15.1874C17.2635 14.7255 16.8227 14.3433 16.3165 14.0667C15.8103 13.7902 15.2505 13.6257 14.6752 13.5845C14.0998 13.5433 13.5223 13.6263 12.9819 13.8279C12.4414 14.0295 11.9506 14.345 11.5428 14.753L9.1292 17.1666C8.39644 17.9252 7.99098 18.9414 8.00015 19.9962C8.00931 21.0509 8.43237 22.0598 9.17821 22.8056C9.92405 23.5515 10.933 23.9745 11.9877 23.9837C13.0425 23.9928 14.0586 23.5875 14.8173 22.8547L16.193 21.4788" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3440_35088111-d2-4100717732-M4YXAMBON52XI4DVORZS4ZRR">
+<clipPath id="clip0_3440_35088111-d2-4269500241-M4YXAMBON52XI4DVORZS4ZRR">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
 </g><g transform="translate(1520 330)" class="appendix-icon"><title>Canonical package.json, README.md, LICENSE, existing dist/ JavaScript runtime, and bundled metadata inputs selected by the package allowlist. The CLI source is packaged, not generated from REM.</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3427_35082111-d2-4100717732-M4YXAMJONFXHA5LUOMXGMMA)">
+<g clip-path="url(#clip0_3427_35082111-d2-4269500241-M4YXAMJONFXHA5LUOMXGMMA)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M16 26C21.5228 26 26 21.5228 26 16C26 10.4772 21.5228 6 16 6C10.4772 6 6 10.4772 6 16C6 21.5228 10.4772 26 16 26Z" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 19.998V15.998" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 12H16.0098" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3427_35082111-d2-4100717732-M4YXAMJONFXHA5LUOMXGMMA">
+<clipPath id="clip0_3427_35082111-d2-4269500241-M4YXAMJONFXHA5LUOMXGMMA">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
 </g><g transform="translate(1488 330)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3440_35088111-d2-4100717732-M4YXAMJONFXHA5LUOMXGMMA)">
+<g clip-path="url(#clip0_3440_35088111-d2-4269500241-M4YXAMJONFXHA5LUOMXGMMA)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M14.3909 16.7965C14.7364 17.2584 15.1772 17.6406 15.6834 17.9171C16.1896 18.1938 16.7494 18.3582 17.3248 18.3993C17.9001 18.4405 18.4777 18.3575 19.0181 18.1559C19.5586 17.9543 20.0492 17.6389 20.4571 17.2309L22.8708 14.8173C23.6036 14.0586 24.0089 13.0425 23.9998 11.9877C23.9906 10.933 23.5676 9.92404 22.8217 9.17821C22.0759 8.43237 21.067 8.00931 20.0123 8.00015C18.9575 7.99098 17.9413 8.39644 17.1827 9.1292L15.7988 10.505" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M17.609 15.1874C17.2635 14.7255 16.8227 14.3433 16.3165 14.0667C15.8103 13.7902 15.2505 13.6257 14.6752 13.5845C14.0998 13.5433 13.5223 13.6263 12.9819 13.8279C12.4414 14.0295 11.9506 14.345 11.5428 14.753L9.1292 17.1666C8.39644 17.9252 7.99098 18.9414 8.00015 19.9962C8.00931 21.0509 8.43237 22.0598 9.17821 22.8056C9.92405 23.5515 10.933 23.9745 11.9877 23.9837C13.0425 23.9928 14.0586 23.5875 14.8173 22.8547L16.193 21.4788" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3440_35088111-d2-4100717732-M4YXAMJONFXHA5LUOMXGMMA">
+<clipPath id="clip0_3440_35088111-d2-4269500241-M4YXAMJONFXHA5LUOMXGMMA">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
 </g><g transform="translate(1520 433)" class="appendix-icon"><title>Archive-production and hash definitions used by the candidate coordinator. At execution, the coordinator also consumes the actual target ZIP bytes produced by Skill archive production; candidate ZIPs are outputs, not canonical repository inputs.</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3427_35082111-d2-4100717732-M4YXAMJONFXHA5LUOMXGMMI)">
+<g clip-path="url(#clip0_3427_35082111-d2-4269500241-M4YXAMJONFXHA5LUOMXGMMI)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M16 26C21.5228 26 26 21.5228 26 16C26 10.4772 21.5228 6 16 6C10.4772 6 6 10.4772 6 16C6 21.5228 10.4772 26 16 26Z" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 19.998V15.998" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 12H16.0098" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3427_35082111-d2-4100717732-M4YXAMJONFXHA5LUOMXGMMI">
+<clipPath id="clip0_3427_35082111-d2-4269500241-M4YXAMJONFXHA5LUOMXGMMI">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
 </g><g transform="translate(1488 433)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3440_35088111-d2-4100717732-M4YXAMJONFXHA5LUOMXGMMI)">
+<g clip-path="url(#clip0_3440_35088111-d2-4269500241-M4YXAMJONFXHA5LUOMXGMMI)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M14.3909 16.7965C14.7364 17.2584 15.1772 17.6406 15.6834 17.9171C16.1896 18.1938 16.7494 18.3582 17.3248 18.3993C17.9001 18.4405 18.4777 18.3575 19.0181 18.1559C19.5586 17.9543 20.0492 17.6389 20.4571 17.2309L22.8708 14.8173C23.6036 14.0586 24.0089 13.0425 23.9998 11.9877C23.9906 10.933 23.5676 9.92404 22.8217 9.17821C22.0759 8.43237 21.067 8.00931 20.0123 8.00015C18.9575 7.99098 17.9413 8.39644 17.1827 9.1292L15.7988 10.505" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M17.609 15.1874C17.2635 14.7255 16.8227 14.3433 16.3165 14.0667C15.8103 13.7902 15.2505 13.6257 14.6752 13.5845C14.0998 13.5433 13.5223 13.6263 12.9819 13.8279C12.4414 14.0295 11.9506 14.345 11.5428 14.753L9.1292 17.1666C8.39644 17.9252 7.99098 18.9414 8.00015 19.9962C8.00931 21.0509 8.43237 22.0598 9.17821 22.8056C9.92405 23.5515 10.933 23.9745 11.9877 23.9837C13.0425 23.9928 14.0586 23.5875 14.8173 22.8547L16.193 21.4788" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3440_35088111-d2-4100717732-M4YXAMJONFXHA5LUOMXGMMI">
+<clipPath id="clip0_3440_35088111-d2-4269500241-M4YXAMJONFXHA5LUOMXGMMI">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
 </g><g transform="translate(1520 550)" class="appendix-icon"><title>The candidate coordinator runs this archive validator successfully before calling write_archive_metadata; source inspection does not assert that validation ran for this architecture pass.</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3427_35082111-d2-4100717732-M4YXAMJONFXHA5LUOMXGMMQ)">
+<g clip-path="url(#clip0_3427_35082111-d2-4269500241-M4YXAMJONFXHA5LUOMXGMMQ)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M16 26C21.5228 26 26 21.5228 26 16C26 10.4772 21.5228 6 16 6C10.4772 6 6 10.4772 6 16C6 21.5228 10.4772 26 16 26Z" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 19.998V15.998" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 12H16.0098" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3427_35082111-d2-4100717732-M4YXAMJONFXHA5LUOMXGMMQ">
+<clipPath id="clip0_3427_35082111-d2-4269500241-M4YXAMJONFXHA5LUOMXGMMQ">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
 </g><g transform="translate(1488 550)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3440_35088111-d2-4100717732-M4YXAMJONFXHA5LUOMXGMMQ)">
+<g clip-path="url(#clip0_3440_35088111-d2-4269500241-M4YXAMJONFXHA5LUOMXGMMQ)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M14.3909 16.7965C14.7364 17.2584 15.1772 17.6406 15.6834 17.9171C16.1896 18.1938 16.7494 18.3582 17.3248 18.3993C17.9001 18.4405 18.4777 18.3575 19.0181 18.1559C19.5586 17.9543 20.0492 17.6389 20.4571 17.2309L22.8708 14.8173C23.6036 14.0586 24.0089 13.0425 23.9998 11.9877C23.9906 10.933 23.5676 9.92404 22.8217 9.17821C22.0759 8.43237 21.067 8.00931 20.0123 8.00015C18.9575 7.99098 17.9413 8.39644 17.1827 9.1292L15.7988 10.505" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M17.609 15.1874C17.2635 14.7255 16.8227 14.3433 16.3165 14.0667C15.8103 13.7902 15.2505 13.6257 14.6752 13.5845C14.0998 13.5433 13.5223 13.6263 12.9819 13.8279C12.4414 14.0295 11.9506 14.345 11.5428 14.753L9.1292 17.1666C8.39644 17.9252 7.99098 18.9414 8.00015 19.9962C8.00931 21.0509 8.43237 22.0598 9.17821 22.8056C9.92405 23.5515 10.933 23.9745 11.9877 23.9837C13.0425 23.9928 14.0586 23.5875 14.8173 22.8547L16.193 21.4788" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3440_35088111-d2-4100717732-M4YXAMJONFXHA5LUOMXGMMQ">
+<clipPath id="clip0_3440_35088111-d2-4269500241-M4YXAMJONFXHA5LUOMXGMMQ">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
 </g><g transform="translate(1543 964)" class="appendix-icon"><title>Relative to the selected candidate output directory; the filename is supplied by npm pack for @xiongxianfei/rigorloop. Its package/ tree contains the selected existing runtime and candidate dist/metadata overlay, with rigorloop mapped to dist/bin/rigorloop.js. No artifact was produced in this pass.</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3427_35082111-d2-4100717732-M4YXAMJON52XI4DVORZS4ZRQ)">
+<g clip-path="url(#clip0_3427_35082111-d2-4269500241-M4YXAMJON52XI4DVORZS4ZRQ)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M16 26C21.5228 26 26 21.5228 26 16C26 10.4772 21.5228 6 16 6C10.4772 6 6 10.4772 6 16C6 21.5228 10.4772 26 16 26Z" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 19.998V15.998" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 12H16.0098" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3427_35082111-d2-4100717732-M4YXAMJON52XI4DVORZS4ZRQ">
+<clipPath id="clip0_3427_35082111-d2-4269500241-M4YXAMJON52XI4DVORZS4ZRQ">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
 </g><g transform="translate(1511 964)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3440_35088111-d2-4100717732-M4YXAMJON52XI4DVORZS4ZRQ)">
+<g clip-path="url(#clip0_3440_35088111-d2-4269500241-M4YXAMJON52XI4DVORZS4ZRQ)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M14.3909 16.7965C14.7364 17.2584 15.1772 17.6406 15.6834 17.9171C16.1896 18.1938 16.7494 18.3582 17.3248 18.3993C17.9001 18.4405 18.4777 18.3575 19.0181 18.1559C19.5586 17.9543 20.0492 17.6389 20.4571 17.2309L22.8708 14.8173C23.6036 14.0586 24.0089 13.0425 23.9998 11.9877C23.9906 10.933 23.5676 9.92404 22.8217 9.17821C22.0759 8.43237 21.067 8.00931 20.0123 8.00015C18.9575 7.99098 17.9413 8.39644 17.1827 9.1292L15.7988 10.505" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M17.609 15.1874C17.2635 14.7255 16.8227 14.3433 16.3165 14.0667C15.8103 13.7902 15.2505 13.6257 14.6752 13.5845C14.0998 13.5433 13.5223 13.6263 12.9819 13.8279C12.4414 14.0295 11.9506 14.345 11.5428 14.753L9.1292 17.1666C8.39644 17.9252 7.99098 18.9414 8.00015 19.9962C8.00931 21.0509 8.43237 22.0598 9.17821 22.8056C9.92405 23.5515 10.933 23.9745 11.9877 23.9837C13.0425 23.9928 14.0586 23.5875 14.8173 22.8547L16.193 21.4788" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3440_35088111-d2-4100717732-M4YXAMJON52XI4DVORZS4ZRQ">
+<clipPath id="clip0_3440_35088111-d2-4269500241-M4YXAMJON52XI4DVORZS4ZRQ">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
 </g><g transform="translate(1543 1067)" class="appendix-icon"><title>Relative to the candidate output directory; write_archive_metadata also copies the same metadata bytes into dist/metadata/ within the isolated package tree and updates that tree&#39;s releases.json trust index before packing.</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3427_35082111-d2-4100717732-M4YXAMJON52XI4DVORZS4ZRR)">
+<g clip-path="url(#clip0_3427_35082111-d2-4269500241-M4YXAMJON52XI4DVORZS4ZRR)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M16 26C21.5228 26 26 21.5228 26 16C26 10.4772 21.5228 6 16 6C10.4772 6 6 10.4772 6 16C6 21.5228 10.4772 26 16 26Z" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 19.998V15.998" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 12H16.0098" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3427_35082111-d2-4100717732-M4YXAMJON52XI4DVORZS4ZRR">
+<clipPath id="clip0_3427_35082111-d2-4269500241-M4YXAMJON52XI4DVORZS4ZRR">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
 </g><g transform="translate(1511 1067)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3440_35088111-d2-4100717732-M4YXAMJON52XI4DVORZS4ZRR)">
+<g clip-path="url(#clip0_3440_35088111-d2-4269500241-M4YXAMJON52XI4DVORZS4ZRR)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M14.3909 16.7965C14.7364 17.2584 15.1772 17.6406 15.6834 17.9171C16.1896 18.1938 16.7494 18.3582 17.3248 18.3993C17.9001 18.4405 18.4777 18.3575 19.0181 18.1559C19.5586 17.9543 20.0492 17.6389 20.4571 17.2309L22.8708 14.8173C23.6036 14.0586 24.0089 13.0425 23.9998 11.9877C23.9906 10.933 23.5676 9.92404 22.8217 9.17821C22.0759 8.43237 21.067 8.00931 20.0123 8.00015C18.9575 7.99098 17.9413 8.39644 17.1827 9.1292L15.7988 10.505" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M17.609 15.1874C17.2635 14.7255 16.8227 14.3433 16.3165 14.0667C15.8103 13.7902 15.2505 13.6257 14.6752 13.5845C14.0998 13.5433 13.5223 13.6263 12.9819 13.8279C12.4414 14.0295 11.9506 14.345 11.5428 14.753L9.1292 17.1666C8.39644 17.9252 7.99098 18.9414 8.00015 19.9962C8.00931 21.0509 8.43237 22.0598 9.17821 22.8056C9.92405 23.5515 10.933 23.9745 11.9877 23.9837C13.0425 23.9928 14.0586 23.5875 14.8173 22.8547L16.193 21.4788" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3440_35088111-d2-4100717732-M4YXAMJON52XI4DVORZS4ZRR">
+<clipPath id="clip0_3440_35088111-d2-4269500241-M4YXAMJON52XI4DVORZS4ZRR">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
 </g><g transform="translate(1543 1170)" class="appendix-icon"><title>Relative to the candidate output directory; write_archive_metadata records the source commit, archive identities, and archive-validation result for the preceding validated candidate sequence. The helper is not independent verification or public-release evidence; this pass does not execute or approve it.</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3427_35082111-d2-4100717732-M4YXAMJON52XI4DVORZS4ZRS)">
+<g clip-path="url(#clip0_3427_35082111-d2-4269500241-M4YXAMJON52XI4DVORZS4ZRS)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M16 26C21.5228 26 26 21.5228 26 16C26 10.4772 21.5228 6 16 6C10.4772 6 6 10.4772 6 16C6 21.5228 10.4772 26 16 26Z" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 19.998V15.998" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 12H16.0098" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3427_35082111-d2-4100717732-M4YXAMJON52XI4DVORZS4ZRS">
+<clipPath id="clip0_3427_35082111-d2-4269500241-M4YXAMJON52XI4DVORZS4ZRS">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
 </g><g transform="translate(1511 1170)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3440_35088111-d2-4100717732-M4YXAMJON52XI4DVORZS4ZRS)">
+<g clip-path="url(#clip0_3440_35088111-d2-4269500241-M4YXAMJON52XI4DVORZS4ZRS)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M14.3909 16.7965C14.7364 17.2584 15.1772 17.6406 15.6834 17.9171C16.1896 18.1938 16.7494 18.3582 17.3248 18.3993C17.9001 18.4405 18.4777 18.3575 19.0181 18.1559C19.5586 17.9543 20.0492 17.6389 20.4571 17.2309L22.8708 14.8173C23.6036 14.0586 24.0089 13.0425 23.9998 11.9877C23.9906 10.933 23.5676 9.92404 22.8217 9.17821C22.0759 8.43237 21.067 8.00931 20.0123 8.00015C18.9575 7.99098 17.9413 8.39644 17.1827 9.1292L15.7988 10.505" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M17.609 15.1874C17.2635 14.7255 16.8227 14.3433 16.3165 14.0667C15.8103 13.7902 15.2505 13.6257 14.6752 13.5845C14.0998 13.5433 13.5223 13.6263 12.9819 13.8279C12.4414 14.0295 11.9506 14.345 11.5428 14.753L9.1292 17.1666C8.39644 17.9252 7.99098 18.9414 8.00015 19.9962C8.00931 21.0509 8.43237 22.0598 9.17821 22.8056C9.92405 23.5515 10.933 23.9745 11.9877 23.9837C13.0425 23.9928 14.0586 23.5875 14.8173 22.8547L16.193 21.4788" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3440_35088111-d2-4100717732-M4YXAMJON52XI4DVORZS4ZRS">
+<clipPath id="clip0_3440_35088111-d2-4269500241-M4YXAMJON52XI4DVORZS4ZRS">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
-</g><mask id="d2-4100717732" maskUnits="userSpaceOnUse" x="-17" y="-34" width="1752" height="1422">
+</g><mask id="d2-4269500241" maskUnits="userSpaceOnUse" x="-17" y="-34" width="1752" height="1422">
 <rect x="-17" y="-34" width="1752" height="1422" fill="white"></rect>
-<rect x="392" y="106" width="91" height="17" fill="black"></rect>
+<rect x="400" y="106" width="91" height="17" fill="black"></rect>
 <rect x="754" y="719" width="37" height="17" fill="black"></rect>
 <rect x="721" y="859" width="102" height="17" fill="black"></rect>
 <rect x="703" y="129" width="139" height="17" fill="black"></rect>
 <rect x="1374" y="719" width="37" height="17" fill="black"></rect>
 <rect x="1342" y="873" width="102" height="17" fill="black"></rect>
-<rect x="1076" y="106" width="139" height="17" fill="black"></rect>
+<rect x="1069" y="106" width="139" height="17" fill="black"></rect>
 </mask></svg></svg>

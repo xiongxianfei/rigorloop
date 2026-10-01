@@ -72,5 +72,23 @@
   },
   "deferred": [
     "Qualify the retained filesystem/platform assumptions, interrupted publication, committed-journal recovery, and output failure with the existing implementation verification allocation before claiming conformance."
+  ],
+  "proposed": [
+    {
+      "choice": "Use a separately versioned successor operational contract for requirement/design bases, workflow identity, milestones, gate attempts and adoption provenance.",
+      "rationale": "The subordinate MOD-011 contract defines exact v4 records and preservation; MOD-010 defines v2 scoped operations. Immutable attempts, typed record identities and explicit applicability avoid reinterpretation of v3. The physical adapter and schema/dispatch artifacts require implementation; historical import is explicit and does not promote old judgments.",
+      "alternatives": [
+        "Silently reinterpret v3 Proposal or milestone judgments.",
+        "Indefinite dual-write or fallback runtime between obsolete internals."
+      ],
+      "consequences": [
+        "Implement the subordinate v4/v2 specifications over the initial adapter reusing the existing filesystem transaction engine and private local record mapping, independently of SQLite migration. Qualify its atomicity, artifact availability and recovery; switch to SQLite only through separately qualified migration, without active dual writes or legacy fallback.",
+        "Preserve original historical bytes and provenance; an importer cannot promote old judgments to new approval.",
+        "SQLite realization remains separately scoped under SR-074–078 and is not required merely to author this design."
+      ],
+      "revisit_when": [
+        "External compatibility disposition or the separate store migration changes the supported adoption boundary."
+      ]
+    }
   ]
 }

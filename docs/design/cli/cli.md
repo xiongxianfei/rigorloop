@@ -914,6 +914,10 @@ CLI-SR-32 withdraws only the `spec` member from the bundled location set and acc
 
 Coverage compares a default result lacking `spec`, a config with only the retired override, and a control with retained overrides. Observe actual CLI exit/result, no candidates on invalid configuration, preserved source/configuration bytes and no recovery writes. Existing unknown-kind/configuration and current-record tests remain meaningful. This narrows the existing configuration interface without changing deployment or persistence architecture.
 
+## Planned requirement-first workflow contract
+
+The [Module-owned successor contract](../../../design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/README.md) defines the proposed replacement boundary. It is design input for coordinated implementation and adoption; the current runtime contract above remains version-specific and is not silently reinterpreted. Historical bytes and assessments retain their original meaning. The scoped repository analysis exception does not activate this product behavior.
+
 ## Historical provenance
 
 Completed source-transfer mappings and original adoption handoffs are recoverable at `38a3042e63c7c2462ecf8ffed29f4ac0cbb8923f:docs/design/cli/cli.md`. Their source-qualified IDs and judgments retain their original scope; they do not supply current approval or operational inputs. Current behavior and proof obligations are specified in this Design and its named owners.

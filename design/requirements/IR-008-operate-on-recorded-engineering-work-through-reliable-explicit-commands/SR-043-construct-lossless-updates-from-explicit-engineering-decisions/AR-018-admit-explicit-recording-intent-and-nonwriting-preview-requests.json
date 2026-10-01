@@ -3,7 +3,7 @@
   "type": "allocated-requirement",
   "title": "Admit explicit recording intent and nonwriting preview requests",
   "status": "draft",
-  "statement": "The Engineering command interface Module shall require explicit actor decisions and the declared revision, subject basis, and target selection for recording requests, pass the selected targeted or advanced intent unchanged to persistence, and distinguish preview from execution without inventing inputs or authority.",
+  "statement": "The Command handling Module shall require explicit actor decisions and the declared revision, subject basis, and target selection for recording requests, pass the selected targeted or advanced intent unchanged to persistence, and distinguish preview from execution without inventing inputs or authority.",
   "analysis": {
     "method": "5W2H",
     "what": {
@@ -39,7 +39,7 @@
   "acceptance_criteria": [
     "A request supplies its required semantic fields and exact selectors; missing decisions reject with the named required field without defaults, interactive invention, or calling another actor. Callers do not have to build registry entries, deterministic paths, or serialization scaffolding.",
     "The command, operation, change identity, contract, expected revision, and declared subject read identities agree under their owning request rules. Null revision is admitted only for current creation and null read identity only for expected absence; the adapter does not refresh a supplied expectation.",
-    "A targeted batch admits only the bounded ordered catalog and exact targets, while advanced replacement retains complete explicit candidate bytes. Unsupported operations, arbitrary patches, cross-change edits, and creation inside a batch reject.",
+    "A targeted batch admits only the bounded ordered catalogue and exact targets. Advanced replacement, where explicitly supported by the selected version, retains complete candidate bytes; v4 exposes no generic file replacement API. Unsupported operations, arbitrary patches, cross-Change edits and creation inside a batch reject.",
     "Every targeted mutation admits its declared dry-run form and passes preview intent without requesting publication, reservation, or recovery. Its result identifies the candidate effects as a preview and never as a saved update.",
     "Actual execution does not reuse preview as a reservation, approval, or freshness guarantee; it sends the explicit request through the fresh checked execution boundary and preserves conflict or missing-input outcomes for the actor."
   ],
@@ -56,6 +56,11 @@
       "source": "SRC-PUBLISHED-CLI",
       "locator": "docs/design/cli/cli.md#CLI-SR-03, CLI-SR-12, CLI-SR-15, CLI-SR-16, CLI-SR-25, CLI-SR-26; docs/design/cli/records.md#RF-SR-02, RF-SR-03",
       "basis": "Preserve the applicable current public and stored-record guarantees at this accountable boundary. The named source retains exact schemas, operation tables, classifications, limits, and historical adoption obligations; this allocation neither replaces those details nor accepts REM authoring JSON as operational records."
+    },
+    {
+      "source": "SRC-WORKFLOW-CONTRACTS",
+      "locator": "AR-018",
+      "basis": "Reconcile the existing allocation with refined SR-042–044 and the explicit v4/v2 contract. Keep current-v3 byte and mutation guarantees version-scoped, preserve historical originals, and distinguish precommit recovery from committed outcome reporting. This target allocation is not runtime qualification."
     }
   ],
   "constrains": [

@@ -2,10 +2,10 @@
   "id": "SCN-042",
   "type": "scenario",
   "title": "Read a selected assessment with its explanation and scope",
-  "status": "confirmed",
+  "status": "draft",
   "actor": "A reviewer preparing to assess recorded engineering work",
   "goal": "Obtain the requested recorded assessment and its explanation with enough scope and state information to understand what was read.",
-  "context": "The reviewer needs one selected assessment rather than all records and unrelated diagnostic detail.",
+  "context": "The reviewer needs one selected assessment rather than all records and unrelated diagnostic detail. The selected assessment may be retained in local history independently of the current model.",
   "trigger": "The reviewer requests the selected Review or Verify report, optionally naming admitted fields.",
   "preconditions": [
     "The change and intended assessment are explicitly selected."
@@ -43,6 +43,10 @@
     {
       "condition": "The requested content cannot fit the permitted output bound.",
       "outcome": "The system reports a read limit before partial output and explains available selection or budget choices."
+    },
+    {
+      "condition": "The assessment exists but required retained evidence is unavailable.",
+      "outcome": "Recorded explanation and retrieval scope remain distinct from evidence availability; no complete supported assessment is inferred."
     }
   ],
   "exercises": [
@@ -63,6 +67,11 @@
       "source": "SRC-PUBLISHED-PRODUCTS",
       "locator": "SCN-042; design/requirements/published-products.md#review-and-validation",
       "basis": "Independent review and author reconciliation confirmed this stakeholder situation, primary Feature, and SR coverage as current analysis knowledge. This does not approve requirements or establish implemented behavior or satisfaction."
+    },
+    {
+      "source": "SRC-LOCAL-OPERATIONAL-ANALYSIS",
+      "locator": "SCN-042",
+      "basis": "Draft derivation from the refined IRs and RR proposal; no approval, implementation or satisfaction claim."
     }
   ]
 }

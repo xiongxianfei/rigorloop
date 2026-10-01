@@ -1,0 +1,73 @@
+{
+  "id": "SCN-081",
+  "type": "scenario",
+  "title": "Resolve a verification problem through its responsible owner",
+  "status": "confirmed",
+  "actor": "A verifier assessing final completion",
+  "goal": "Determine whether the current work and evidence justify final completion and route any failure correctly.",
+  "context": "The complete implementation is submitted for final Verify with a claimed whole-change approval whose presence and applicability must be assessed.",
+  "trigger": "Final Verify evaluates the current scope and evidence.",
+  "preconditions": [
+    "The requested scope and relevant project authority are identifiable."
+  ],
+  "interaction": [
+    {
+      "actor": "Verifier",
+      "action": "Inspects current subjects, governing obligations, review applicability and actual evidence."
+    },
+    {
+      "actor": "Verifier",
+      "action": "Classifies an observed gap as an engineering defect, evidence-collection issue or contradictory assessment basis."
+    },
+    {
+      "actor": "System",
+      "action": "Identifies the responsible correction and required reassessment or verification retry."
+    },
+    {
+      "actor": "Verifier",
+      "action": "Makes a final completion claim only when the applicable basis and evidence support it."
+    }
+  ],
+  "expected_outcome": "Verify remains distinct from authoring and Code Review, with correction proportional to the observed problem.",
+  "alternatives": [
+    {
+      "condition": "Only evidence collection failed and engineering subjects did not change.",
+      "outcome": "The collection issue is resolved and affected verification repeated without inventing a new Code Review gate."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "Whole-change approval is missing or inapplicable.",
+      "outcome": "Governed final success is withheld; Verify cannot substitute for Code Review."
+    },
+    {
+      "condition": "An implementation defect is discovered.",
+      "outcome": "The defect returns to Implement, followed by affected independent reassessment and renewed Verify."
+    },
+    {
+      "condition": "A requirement or design defect, or contradictory new evidence, is discovered.",
+      "outcome": "The responsible upstream owner or assessment owner addresses it before renewed reliance; Verify does not silently fix and approve authored work."
+    }
+  ],
+  "exercises": [
+    "FEAT-016"
+  ],
+  "informs": [
+    "SR-082",
+    "SR-027",
+    "SR-029",
+    "SR-054"
+  ],
+  "sources": [
+    {
+      "source": "SRC-REQUIREMENT-FIRST-WORKFLOW",
+      "locator": "SCN-081",
+      "basis": "User-selected requirement-first workflow and one mandatory whole-change Code Review gate. Proposed requirement analysis only; existing product contracts remain active until coordinated adoption. No new Function, AR, implementation or approval is inferred."
+    },
+    {
+      "source": "SRC-WORKFLOW-REQUIREMENT-REVIEW",
+      "locator": "design/requirements/sources.md#src-workflow-requirement-review",
+      "basis": "Document-based author assessment under the explicit Constitution exception confirms this Scenario as requirement-analysis knowledge. It is not independent review, executed product evidence or workflow activation."
+    }
+  ]
+}

@@ -50,7 +50,8 @@
   "compatibility_rules": [
     "The current CLI Design owns literal names, flags, envelopes, output contracts, and supported versions. This Interface does not create another RPC or network protocol.",
     "Skill-guided consumers must use supported command contracts and cannot assume new REM model operations exist.",
-    "Public contract changes must reconcile all invoking skill guidance, examples, and affected consumers before adoption."
+    "Public contract changes must reconcile all invoking skill guidance, examples, and affected consumers before adoption.",
+    "The proposed browser-v1 request/result family is defined by MOD-010 and IF-012; it is not a v2 operational-record command or an observed public entry. Existing command/record behavior remains version-scoped until coordinated adoption."
   ],
   "sources": [
     {
@@ -77,6 +78,11 @@
       "source": "SRC-PARENT-INTERFACE-OWNERSHIP",
       "locator": "IF-004; design/requirements/sources.md#src-parent-interface-ownership",
       "basis": "Refine contract accountability: MOD-018 provides IF-004 and MOD-019 provides IF-006. MOD-010 and MOD-014 retain their behavioral allocations and state responsibilities. This supersedes the provider/exposure choice recorded by SRC-MODULE-HIERARCHY without changing Interface guarantees, consumers, Function/AR allocations, or realization observations. Earlier source entries retain their prior design meaning; this draft refinement supplies no runtime adoption or satisfaction evidence."
+    },
+    {
+      "source": "SRC-CUSTOMER-BROWSER-DESIGN",
+      "locator": "IF-004",
+      "basis": "System and Architecture Design from SR-084\u2013088 and refined SR-060; proposed responsibility, contract and realization only. No implementation, platform qualification or product availability is established."
     }
   ]
 }

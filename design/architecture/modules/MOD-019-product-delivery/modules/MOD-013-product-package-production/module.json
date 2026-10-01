@@ -1,20 +1,22 @@
 {
   "id": "MOD-013",
   "type": "module",
-  "title": "Product package production",
+  "title": "Package production",
   "status": "draft",
-  "description": "Produce faithful, reproducible product candidates and attributable integrity metadata from canonical supported sources without changing active installations.",
+  "description": "Builds reproducible product candidates and integrity metadata from canonical sources without changing active installations.",
   "responsibilities": [
     "Select the supported canonical inventory and apply declared target transformations faithfully.",
     "Generate isolated skill and CLI candidates with complete dependencies and reproducible identity.",
-    "Derive artifact metadata and assess packed CLI completeness without fabricating qualification evidence."
+    "Derive artifact metadata and assess packed CLI completeness without fabricating qualification evidence.",
+    "Produce and qualify complete browser resources within the selected CLI candidate for independent customer generation and offline reading."
   ],
   "owned_state": [
     "Generated candidate artifacts, their inventory and integrity metadata, and attributable production observations; canonical behavior and publication authority remain separately owned."
   ],
   "scope": {
     "includes": [
-      "Skill-target artifacts, product metadata, and packed CLI candidate completeness."
+      "Skill-target artifacts, product metadata, and packed CLI candidate completeness.",
+      "Browser resource inventory, declared compatibility and actual packaged-customer qualification."
     ],
     "excludes": [
       "Installing into projects as a build side effect, asserting unexecuted checks, rewriting published artifacts, or authorizing publication."
@@ -26,7 +28,8 @@
   "consumes": [],
   "design_limits": [
     "Packaging and Release retain exact archive layouts, hash algorithms, target populations, version domains, and evidence definitions. IF-005 is the proposed artifact boundary, not a replacement format.",
-    "Source-attributed archive/CLI production paths and isolated candidate placement are recorded in realization/software.json and realization/deployment.json. No package is generated or qualified by this task; ARs, complete dependency mapping, and the recorded default-output conformance gap remain unresolved."
+    "Source-attributed archive/CLI production paths and isolated candidate placement are recorded in realization/software.json and realization/deployment.json. No package is generated or qualified by this task; IR-010 ARs, complete dependency mapping, and the recorded default-output conformance gap remain unresolved.",
+    "The requirement-first workflow design supplies the selected SR-079–083 collaboration and AR allocation. Earlier broader deferrals remain only outside that bounded extension; existing runtime observations and installed contracts do not implement the target design."
   ],
   "sources": [
     {
@@ -38,6 +41,11 @@
       "source": "SRC-PRODUCT-REALIZATION",
       "locator": "MOD-013 subordinate realization facets; design/requirements/sources.md#src-product-realization",
       "basis": "The user authorized an initial coherent five-view set. Record bounded source observations and remaining qualification gaps beneath the existing accountable Module; preserve its requirements, Functions, Interface ownership, and previous source meanings."
+    },
+    {
+      "source": "SRC-CUSTOMER-BROWSER-DESIGN",
+      "locator": "MOD-013",
+      "basis": "System and Architecture Design from SR-084–088 and refined SR-060; proposed responsibility, contract and realization only. No implementation, platform qualification or product availability is established."
     }
   ]
 }

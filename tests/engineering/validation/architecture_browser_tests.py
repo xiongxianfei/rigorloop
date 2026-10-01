@@ -1,8 +1,8 @@
 """Focused contracts for the generated offline architecture browser.
 
-Run: REM_D2=/path/to/d2 python3 tests/engineering/validation/architecture_browser_tests.py
-D2 0.9.0 is required for the composed generation case; semantic and rejection
-checks run without it. Browser interaction/visual review is separate evidence.
+Run with REM_D2, REM_PUPPETEER and REM_CHROMIUM for composed generation and
+offline reader checks. The generator itself requires D2 0.9.0 only; Puppeteer
+and Chromium are test dependencies. Semantic and rejection checks run without them.
 Private fixtures stat placeholder source references without reading skill files.
 """
 
@@ -26,6 +26,8 @@ ROOT = Path(__file__).resolve().parents[3]
 RENDERER = ROOT / "scripts/render-rem-architecture-browser.py"
 OUTPUT = Path("design/architecture/views/browser")
 D2 = os.environ.get("REM_D2") or shutil.which("d2")
+PUPPETEER = os.environ.get("REM_PUPPETEER")
+CHROMIUM = os.environ.get("REM_CHROMIUM")
 sys.path.insert(0, str(ROOT / "scripts"))
 spec = importlib.util.spec_from_file_location("rem_browser_under_test", RENDERER)
 browser = importlib.util.module_from_spec(spec)
@@ -134,12 +136,20 @@ class ArchitectureBrowserTests(unittest.TestCase):
             ("IF-008", "MOD-012", "MOD-017", "MOD-018", "MOD-017"),
             ("IF-009", "MOD-015", "MOD-017", "MOD-019", "MOD-017"),
             ("IF-010", "MOD-015", "MOD-017", "MOD-019", "MOD-017"),
+            ("IF-009", "MOD-012", "MOD-017", "MOD-018", "MOD-017"),
+            ("IF-010", "MOD-012", "MOD-017", "MOD-018", "MOD-017"),
+            ("IF-011", "MOD-012", "MOD-017", "MOD-018", "MOD-017"),
+            ("IF-012", "MOD-010", "MOD-016", "MOD-018", "MOD-016"),
         }
         actual = {(item["interface"], item["consumer"], item["provider"],
                    item["consumer_boundary"], item["provider_boundary"])
                   for item in data["overview_collaborations"]}
         self.assertEqual(actual, expected)
-        self.assertEqual(len(data["cli_contributions"]), 44)
+        self.assertTrue(data["cli_contributions"])
+        self.assertTrue(all(
+            data["records"][item["requirement"]]["data"]["sources"][
+                int(item["source_pointer"].rsplit("/", 1)[1])]["source"] == "SRC-CLI-ALLOCATION"
+            for item in data["cli_contributions"]))
         self.assertEqual(data["records"]["MOD-017"]["data"]["design_limits"],
                          json.loads(self.entity_path(root, "MOD-017").read_text())["design_limits"])
 
@@ -198,7 +208,11 @@ class ArchitectureBrowserTests(unittest.TestCase):
                     token = token.replace("~1", "/").replace("~0", "~")
                     value = value[int(token)] if isinstance(value, list) else value[token]
                 self.assertIsNotNone(value)
-        self.assertEqual(len(data["cli_contributions"]), 44)
+        self.assertTrue(data["cli_contributions"])
+        self.assertTrue(all(
+            data["records"][item["requirement"]]["data"]["sources"][
+                int(item["source_pointer"].rsplit("/", 1)[1])]["source"] == "SRC-CLI-ALLOCATION"
+            for item in data["cli_contributions"]))
         for item in data["cli_contributions"]:
             sr = data["records"][item["requirement"]]
             self.assertEqual(item["path"], sr["path"])
@@ -630,6 +644,156 @@ class ArchitectureBrowserTests(unittest.TestCase):
         self.assertIn("missing reference 'MOD-999999'", result.stderr)
         self.assertEqual(snapshot(root), before)
 
+    def test_authored_topic_sources_and_qualifications_remain_exact(self):
+        root = self.fixture()
+        topics = browser.read_authored_topics(browser.Model(root))
+        self.assertEqual(len(topics), 10)
+        self.assertEqual({t["kind"] for t in topics}, {"topology", "sequence", "state"})
+        technical = next(t for t in topics if t["id"] == "browser-technical-structure")
+        self.assertEqual(technical["route"], "#logical/MOD-004/proposed/topology/browser-technical-structure")
+        self.assertIn('adapter -> engine: "Browser operation contract"', technical["source"])
+        self.assertIn('Rust · MOD-001 / MOD-003 / MOD-004', technical["source"])
+        build_topic = next(t for t in topics if t["id"] == "browser-build-packaging")
+        self.assertEqual(build_topic["route"], "#development/MOD-004/proposed/topology/browser-build-packaging")
+        self.assertIn('tool: "Reusable tool package — MOD-013"', build_topic["source"])
+        self.assertIn('tool.assembly -> tool.candidate: "Produces"', build_topic["source"])
+        self.assertIn('website.assembly -> website.output: "Produces"', build_topic["source"])
+        self.assertEqual(build_topic["source"].count(': "Included in"'), 4)
+        files = next(t for t in topics if t["id"] == "browser-file-organization")
+        self.assertIn('packages/rigorloop/browser/', files["source"])
+        self.assertIn('packages/rigorloop/dist/browser/', files["source"])
+        self.assertIn('index.html — platform and embedded project data', files["source"])
+        self.assertNotIn(' -> ', files["source"])
+        software = next(t for t in topics if t["id"] == "browser-software-organization")
+        self.assertIn('template -> data: "Reads for presentation"', software["source"])
+        self.assertIn('generator.projection -> contract: "Conforms to"', software["source"])
+
+        for topic in topics:
+            self.assertIn(topic["owner"], {"MOD-004", "MOD-006", "MOD-017"})
+            self.assertEqual(topic["qualification"], "proposed")
+            self.assertIn(topic["source"], (root / topic["path"]).read_text())
+            self.assertEqual(topic["source_digest"], hashlib.sha256(topic["source"].encode()).hexdigest())
+            self.assertIn("/proposed/", topic["route"])
+
+        mappings = browser.build_model(browser.Model(root))["development_implementations"]
+        self.assertEqual(set(mappings), {"MOD-004"})
+        mapping = mappings["MOD-004"]
+        self.assertEqual(mapping["headers"], ["Software responsibility", "Current source", "Scope and limitation"])
+        self.assertEqual(len(mapping["rows"]), 5)
+        self.assertEqual(mapping["rows"][0][0], [{"text": "Model reading and interpretation"}])
+        self.assertEqual(mapping["rows"][0][1][1], {"text": "rem_architecture_model.py", "path": "scripts/lib/rem_architecture_model.py"})
+        self.assertIn("do not establish clean-customer package qualification", mapping["explanation"])
+        self.assertEqual(mapping["source_digest"], hashlib.sha256((root / mapping["source"]).read_bytes()).hexdigest())
+        document = root / mapping["source"]
+        document.write_text(document.read_text().replace('Model reading and interpretation |', 'Changed source responsibility |', 1))
+        refreshed = browser.build_model(browser.Model(root))["development_implementations"]["MOD-004"]
+        self.assertEqual(refreshed["rows"][0][0], [{"text": "Changed source responsibility"}])
+        self.assertNotEqual(refreshed["source_digest"], mapping["source_digest"])
+
+        builds = browser.build_model(browser.Model(root))["development_build_resources"]
+        self.assertEqual(set(builds), {"MOD-004"})
+        build = builds["MOD-004"]
+        self.assertEqual(build["headers"], ["Software or resource", "Role in browser design", "Build/package relationship"])
+        self.assertEqual(len(build["rows"]), 6)
+        self.assertEqual(build["rows"][0][0], [{"text": "Rust browser engine and Node adapter"}])
+        self.assertEqual(build["rows"][-1][2][1]["text"], "Package production (MOD-013)")
+        self.assertEqual(build["rows"][-1][2][1]["path"], "design/architecture/modules/MOD-019-product-delivery/modules/MOD-013-product-package-production/README.md#browser-candidate-contract")
+        self.assertIn("Customer snapshot generation is runtime product behavior", build["explanation"])
+        self.assertEqual(build["source_digest"], hashlib.sha256(document.read_bytes()).hexdigest())
+        content = document.read_text()
+        document.write_text(re.sub(r'<!-- development-implementation -->.*?<!-- /development-implementation -->', '', content, flags=re.S))
+        design_only = browser.build_model(browser.Model(root))
+        self.assertFalse(design_only["development_implementations"])
+        self.assertEqual(design_only["development_build_resources"]["MOD-004"]["rows"], build["rows"])
+        document.write_text(re.sub(r'<!-- development-build-resources -->.*?<!-- /development-build-resources -->', '', content, flags=re.S))
+        implementation_only = browser.build_model(browser.Model(root))
+        self.assertFalse(implementation_only["development_build_resources"])
+        self.assertIn("MOD-004", implementation_only["development_implementations"])
+
+    def test_authored_admission_rejects_unknown_vocabulary_before_source_access(self):
+        root = self.fixture()
+        owner = self.entity_path(root, "MOD-004").parent
+        registry = owner / "browser-views.toml"
+        original = registry.read_text()
+        for old, new in [('version = 1', 'version = 99'), ('view = "process"', 'view = "unknown"'),
+                         ('kind = "sequence"', 'kind = "unknown"'),
+                         ('qualification = "proposed"', 'qualification = "unknown"'),
+                         ('kind = "sequence"', 'kind = "flowchart"\nprevious_kind = "unknown"')]:
+            with self.subTest(new=new):
+                registry.write_text(original.replace(old, new).replace('source = "README.md"', 'source = "missing.md"'))
+                before = snapshot(root)
+                with self.assertRaisesRegex(ValueError, "unsupported"):
+                    browser.read_authored_topics(browser.Model(root))
+                self.assertEqual(snapshot(root), before)
+        registry.write_text(original)
+
+    def test_authored_svg_rejects_executable_and_external_content(self):
+        from lib.rem_authored_views import validate_svg
+        wrap = lambda body: ('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 50">' + body + '</svg>').encode()
+        self.assertEqual(validate_svg(wrap('<path fill="url(#local)"/>')), [100, 50])
+        for body in ['<script>alert(1)</script>', '<g onload="alert(1)"/>',
+                     '<image href="https://example.invalid/image"/>',
+                     '<path fill="url(https://example.invalid/image)"/>',
+                     '<style>@IMPORT "https://example.invalid/style";</style>',
+                     '<set attributeName="href" to="javascript:alert(1)"/>']:
+            with self.subTest(body=body), self.assertRaises(ValueError):
+                validate_svg(wrap(body))
+
+    def test_authored_source_rejection_preserves_existing_output(self):
+        root = self.fixture()
+        owner = self.entity_path(root, "MOD-004").parent
+        registry = owner / "browser-views.toml"
+        document = owner / "README.md"
+        original, content = registry.read_text(), document.read_text()
+        output = root / OUTPUT
+        output.mkdir(parents=True)
+        (output / "index.html").write_text("Prior complete output")
+        cases = [(original.replace('source = "README.md"', 'source = "../README.md"'), content),
+                 (original, content.replace('shape: sequence_diagram', 'shape: sequence_diagram\nicon: "https://example.invalid"')),
+                 (original, content.replace('shape: sequence_diagram', 'shape: sequence_diagram\n...@private-file')),
+                 (original, content.replace('shape: sequence_diagram', 'shape: sequence_diagram\nvars: {d2-config: {theme-id: 1}}')),
+                 (original, content.replace('shape: sequence_diagram', 'shape: sequence_diagram\nshape: image')),
+                 (original, content.replace('architecture-diagram: generation-sequence', 'architecture-diagram: absent'))]
+        for registration, source in cases:
+            registry.write_text(registration)
+            document.write_text(source)
+            before = snapshot(root)
+            result = self.invoke(root, root / "compiler-must-not-run")
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("Authored view", result.stderr)
+            self.assertEqual(snapshot(root), before)
+
+        registry.write_text(original)
+        for old, new in [
+                ('<!-- /development-implementation -->', ''),
+                ('<!-- development-implementation -->', '<!-- development-implementation --><!-- development-implementation -->'),
+                ('| --- | --- | --- |', '| --- | --- |'),
+                ('(../../../../../../scripts/lib/rem_architecture_model.py)', '(javascript:alert)'),
+                ('(../../../../../../scripts/lib/rem_architecture_model.py)', '(../../../../../../../outside.py)')]:
+            with self.subTest(replacement=new):
+                changed = content.replace(old, new)
+                self.assertNotEqual(changed, content)
+                document.write_text(changed)
+                before = snapshot(root)
+                result = self.invoke(root, root / "compiler-must-not-run")
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn("Development implementation", result.stderr)
+                self.assertEqual(snapshot(root), before)
+
+        for old, new in [
+                ('<!-- /development-build-resources -->', ''),
+                ('<!-- development-build-resources -->', '<!-- development-build-resources --><!-- development-build-resources -->'),
+                ('(../../../MOD-019-product-delivery/modules/MOD-013-product-package-production/README.md#browser-candidate-contract)', '(javascript:invalid)')]:
+            with self.subTest(build_replacement=new):
+                changed = content.replace(old, new)
+                self.assertNotEqual(changed, content)
+                document.write_text(changed)
+                before = snapshot(root)
+                result = self.invoke(root, root / "compiler-must-not-run")
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn("Development build resources", result.stderr)
+                self.assertEqual(snapshot(root), before)
+
     def test_compiler_failures_leave_every_existing_output_untouched(self):
         root = self.fixture()
         output = root / OUTPUT
@@ -652,7 +816,7 @@ class ArchitectureBrowserTests(unittest.TestCase):
                 self.assertIn(diagnostic, result.stderr)
                 self.assertEqual(snapshot(root), before)
 
-    @unittest.skipUnless(D2, "Set REM_D2 to D2 0.9.0 for composed browser generation")
+    @unittest.skipUnless(D2 and PUPPETEER and CHROMIUM, "Set REM_D2, REM_PUPPETEER and REM_CHROMIUM for generation and offline reader checks")
     def test_real_generation_escapes_model_text_and_checks_drift_without_writes(self):
         root = self.fixture()
         payload = '</script><script>globalThis.untrustedTextExecuted=true</script> & {{DIAGRAMS}}'
@@ -665,6 +829,14 @@ class ArchitectureBrowserTests(unittest.TestCase):
         self.assertTrue(set(after) - set(before))
         self.assertTrue(all(path.startswith(OUTPUT.as_posix() + "/") for path in set(after) - set(before)))
         original_page = (output / "index.html").read_bytes()
+        # Copy just the page: successful navigation/diagrams cannot rely on source or sibling files.
+        copied = root / "copied-browser.html"
+        copied.write_bytes(original_page)
+        ui = subprocess.run(["node", str(ROOT / "tests/engineering/validation/architecture_browser_ui_checks.cjs"), str(copied)],
+                            capture_output=True, text=True, timeout=90)
+        self.assert_success(ui)
+        copied.unlink()
+
         page = PageContents(original_page.decode())
         self.assertEqual(len(page.scripts), 2)
         self.assertFalse(page.resources)
@@ -684,6 +856,11 @@ class ArchitectureBrowserTests(unittest.TestCase):
         manifest = (output / "manifest.sha256").read_text()
         self.assertIn(data["source_digest"], manifest)
         self.assertIn("D2 v0.9.0; ELK layout", manifest)
+        self.assertEqual(len(data["authored_topics"]), 10)
+        for topic in data["authored_topics"]:
+            self.assertTrue(topic["image"].startswith("data:image/svg+xml;base64,"))
+            self.assertEqual((output / "diagrams" / (topic["key"] + ".d2")).read_text(), topic["source"] + "\n")
+            self.assertIn(topic["source"], (root / topic["path"]).read_text())
         members = {line.split("  ", 1)[1]: line.split("  ", 1)[0]
                    for line in manifest.splitlines() if line and not line.startswith("#")}
         self.assertEqual(set(members), {path.relative_to(output).as_posix()
@@ -693,10 +870,10 @@ class ArchitectureBrowserTests(unittest.TestCase):
         for name, expected_hash in members.items():
             self.assertEqual(hashlib.sha256((output / name).read_bytes()).hexdigest(), expected_hash, name)
         diagrams = list((output / "diagrams").glob("*.svg"))
-        self.assertEqual(len(diagrams), 55)
+        self.assertEqual(len(diagrams), 65)
         self.assertEqual({path.stem for path in diagrams},
                          {"overview", *["module-" + identity for identity in data["modules"]],
-                          *data["view_diagrams"]})
+                          *data["view_diagrams"], *[t["key"] for t in data["authored_topics"]]})
         # Names lead navigation. Identity remains on the link and in metadata,
         # while visible text retains meaningful names without routine ID labels.
         shortened_names = {"IF-008": "Engineering authoring guidance",

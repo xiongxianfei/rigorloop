@@ -19,7 +19,8 @@
     "Retain the Change's initiating basis, scope, affected subjects and revisions, responsible actors, decisions, and actual disposition.",
     "Associate an established transition with identifiable before and resulting Baselines and the applicable decision basis.",
     "Keep assessment references and suggested actions distinguishable from authorizations and adopted decisions.",
-    "Preserve earlier decisions and transitions when later corrections or supersession are recorded; leave current definitions directly understandable at their owners."
+    "Preserve earlier decisions and transitions when later corrections or supersession are recorded; leave current definitions directly understandable at their owners.",
+    "Change provenance remains inspectable independently of current engineering definitions, and unavailable history is reported without invented decisions or a false claim that no Change occurred."
   ],
   "failure_behavior": [
     {
@@ -41,6 +42,11 @@
       "source": "SRC-ARCHITECTURE-PILOT",
       "locator": "FUNC-023",
       "basis": "Propose MOD-006 as the single accountable architectural responsibility for the existing behavior. This allocation preserves the Function definition and does not establish implementation or completed interface/AR coverage outside the IR-001 pilot."
+    },
+    {
+      "source": "SRC-LOCAL-OPERATIONAL-ANALYSIS",
+      "locator": "FUNC-023",
+      "basis": "Draft derivation from the refined IRs and RR proposal; no approval, implementation or satisfaction claim."
     }
   ],
   "allocated_to": "MOD-006"

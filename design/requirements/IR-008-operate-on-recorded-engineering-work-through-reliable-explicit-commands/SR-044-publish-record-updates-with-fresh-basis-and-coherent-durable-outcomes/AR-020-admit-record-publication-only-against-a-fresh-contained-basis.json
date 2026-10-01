@@ -3,7 +3,7 @@
   "type": "allocated-requirement",
   "title": "Admit record publication only against a fresh contained basis",
   "status": "draft",
-  "statement": "The Operational record persistence Module shall admit record publication only for the explicit allowed target set after checking the supplied revision, target identities, declared decision basis, and complete candidate under the common supported-writer exclusion and containment rules.",
+  "statement": "The Work record storage Module shall admit record publication only for the explicit allowed target set after checking the supplied revision, target identities, declared decision basis, and complete candidate under the common supported-writer exclusion and containment rules.",
   "analysis": {
     "method": "5W2H",
     "what": {

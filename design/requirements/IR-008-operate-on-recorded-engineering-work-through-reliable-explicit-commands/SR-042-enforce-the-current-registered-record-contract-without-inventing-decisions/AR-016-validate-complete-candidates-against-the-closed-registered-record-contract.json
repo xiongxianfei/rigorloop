@@ -3,7 +3,7 @@
   "type": "allocated-requirement",
   "title": "Validate complete candidates against the closed registered record contract",
   "status": "draft",
-  "statement": "The Operational record persistence Module shall validate each complete current recording candidate against closed record shapes, manifest registration, explicit applicability, and field-compatible reference rules before publication, without inferring missing representation or decisions.",
+  "statement": "The Work record storage Module shall validate each complete current recording candidate against closed record shapes, manifest registration, explicit applicability, and field-compatible reference rules before publication, without inferring missing representation or decisions.",
   "analysis": {
     "method": "5W2H",
     "what": {
@@ -38,8 +38,8 @@
   },
   "acceptance_criteria": [
     "Unknown fields or closed-vocabulary values, duplicate keys or identities, missing required values, invalid encodings or versions, mixed stores, body/dual assessment representations, and malformed current records reject before authoritative writes.",
-    "Each manifest-registered supporting record has matching kind and change identity plus exactly one explicit record-level applicability declaration; an extra physical file contributes no authority.",
-    "Every EntryRef resolves exactly one field-compatible object within the same complete candidate and the declared disjoint referenceable-ID namespaces. Missing, ambiguous, wrong-kind, or cross-change fallback targets reject.",
+    "Each supporting record has matching kind and Change identity plus explicit applicability where its selected contract requires a reliance declaration. A physical registry is adapter-owned bookkeeping; an extra physical file contributes no authority.",
+    "Every typed reference resolves exactly one field-compatible object within the same complete candidate and declared identity namespace. Missing, ambiguous, wrong-kind, or cross-Change fallback targets reject.",
     "Combined batch references may resolve to explicitly introduced entries in the complete final candidate; incomplete intermediate construction is not a workflow gate or a reason to invent other actors' decisions.",
     "Review and Verify use their required closed explanation fields. Optional verification_basis is either absent or a complete allowed object; null, partial, or unknown members reject, while absence alone remains structurally valid.",
     "Targeted construction, advanced replacement, and current recovery apply the same structural obligations; validator success does not authorize publication or establish engineering approval."
@@ -57,6 +57,11 @@
       "source": "SRC-PUBLISHED-CLI",
       "locator": "docs/design/cli/cli.md#CLI-SR-02, CLI-SR-12, CLI-SR-15, CLI-SR-27; docs/design/cli/records.md#RF-SR-01, RF-SR-02, RF-SR-08, RF-SR-09, RF-SR-11",
       "basis": "Preserve the applicable current public and stored-record guarantees at this accountable boundary. The named source retains exact schemas, operation tables, classifications, limits, and historical adoption obligations; this allocation neither replaces those details nor accepts REM authoring JSON as operational records."
+    },
+    {
+      "source": "SRC-WORKFLOW-CONTRACTS",
+      "locator": "AR-016",
+      "basis": "Reconcile the existing allocation with refined SR-042–044 and the explicit v4/v2 contract. Keep current-v3 byte and mutation guarantees version-scoped, preserve historical originals, and distinguish precommit recovery from committed outcome reporting. This target allocation is not runtime qualification."
     }
   ],
   "constrains": [

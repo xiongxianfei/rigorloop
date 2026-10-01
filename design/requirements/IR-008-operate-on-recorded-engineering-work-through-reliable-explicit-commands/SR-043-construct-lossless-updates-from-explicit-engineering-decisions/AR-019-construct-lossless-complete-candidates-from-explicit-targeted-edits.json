@@ -3,7 +3,7 @@
   "type": "allocated-requirement",
   "title": "Construct lossless complete candidates from explicit targeted edits",
   "status": "draft",
-  "statement": "The Operational record persistence Module shall construct one complete candidate from explicitly targeted actor edits against a coherent before-state, preserve all unselected meaning and bytes, validate the combined final candidate, and support equivalent construction in nonwriting preview.",
+  "statement": "The Work record storage Module shall construct one complete candidate from explicitly targeted actor edits against a coherent before-state, preserve all unselected meaning and bytes, validate the combined final candidate, and support equivalent construction in nonwriting preview.",
   "analysis": {
     "method": "5W2H",
     "what": {
@@ -37,11 +37,11 @@
     }
   },
   "acceptance_criteria": [
-    "Only named values and necessary adjacent syntax or registration bookkeeping change. Omitted fields, unselected entries, order, unrelated narratives, neighboring whitespace, and semantically unchanged values retain their original bytes; admitted new files use the current deterministic encoding contract.",
-    "The engine generates schema/change metadata, deterministic paths, containers, and registry entries without synthesizing actor decisions. Newly created supporting records require explicit applicability; omission on an existing record preserves its declaration where the operation permits.",
+    "Only named values and necessary registration bookkeeping change. Omitted fields, unselected entries, order, unrelated narrative and semantically unchanged values retain their meaning; untouched file records retain bytes where the adapter promises that property. Required historical originals and evidence payloads retain exact bytes and identities independently of backend encoding.",
+    "The engine generates schema/Change metadata, containers, registry entries and adapter paths without synthesizing actor decisions. New reliance declarations require explicit applicability where the selected contract requires it; omission preserves an existing declaration where the operation permits.",
     "Ordered batch edits form one complete candidate and resolve final references there. Duplicate or overlapping semantic assignments reject even if equal; the documented separate Review-assessment/finding and decision/shared-body spans remain composable.",
     "Full Review recording and explanation updates preserve complete findings. Explicit finding correction preserves IDs while admitting valid non-ID current-field edits, and blocker operations preserve the complete immutable origin under their distinct construction rules.",
-    "Narrow Review/Verify explanation updates change only the selected allowed explanation values and preserve applicability, actors, subjects, judgment, and optional basis. Complete Verify replacement follows its full-field contract, including removal of an omitted optional verification_basis.",
+    "Current v3 narrow explanation and full Verify replacement follow their retained version-specific rules. V4 assessment changes create explicit immutable successors, preserving predecessor contents, findings and optional basis; changing applicability requires its own explicit decision. No correction silently edits another assessment core.",
     "Registered missing records reject as unavailable content and existing unregistered files reject as unexpected overwrite; neither becomes an empty creation target. Advanced explicit restoration still requires supplied actual content and every normal safety check.",
     "Preview constructs and validates the same intended complete candidate for the same before-state and intent without any filesystem write capability, lock/reservation, transaction files, or saved claim. Invalid final structure, overlap, or preservation rejects the whole candidate without partial publication.",
     "Real execution starts afresh under writer exclusion, rereads the coherent before-state, checks the declared expectations, and reconstructs and validates the exact candidate before required receipt serialization and publication. It does not trust preview bytes or reserve a previewed revision; subsequent recovery uses exact prepared bytes without replaying targeted operations."
@@ -59,6 +59,11 @@
       "source": "SRC-PUBLISHED-CLI",
       "locator": "docs/design/cli/cli.md#CLI-SR-03, CLI-SR-12, CLI-SR-13, CLI-SR-15, CLI-SR-16, CLI-SR-25, CLI-SR-26; docs/design/cli/records.md#RF-SR-02, RF-SR-03, RF-SR-04, RF-SR-08, RF-SR-10, RF-SR-11, RF-SR-13",
       "basis": "Preserve the applicable current public and stored-record guarantees at this accountable boundary. The named source retains exact schemas, operation tables, classifications, limits, and historical adoption obligations; this allocation neither replaces those details nor accepts REM authoring JSON as operational records."
+    },
+    {
+      "source": "SRC-WORKFLOW-CONTRACTS",
+      "locator": "AR-019",
+      "basis": "Reconcile the existing allocation with refined SR-042–044 and the explicit v4/v2 contract. Keep current-v3 byte and mutation guarantees version-scoped, preserve historical originals, and distinguish precommit recovery from committed outcome reporting. This target allocation is not runtime qualification."
     }
   ],
   "constrains": [
