@@ -14,13 +14,14 @@
       ],
       "preconditions": [],
       "outputs": [
-        "Attributable activity, milestone progress, check results, formal gate and advisory scopes, attempts, blockers and recorded next work.",
+        "Current seven-section handoff with attributable progress, useful evidence, formal/advisory standing, unresolved issues and next action; no permanent attempt history required.",
         "Explicit absent, stale, conflicting or incomplete context with affected scope; no invented next decision."
       ],
       "behavior": [
-        "Keep work progress distinct from approval, and historical judgments distinct from current applicability.",
+        "Return the current seven-section handoff: goal/scope/authority, governing basis, progress, open issues and rationale, relevant evidence, review standing, and next action. Preserve single-owner facts and distinguish missing/unknown from approved.",
         "Preserve references to authoritative definitions and recorded subjects rather than reconstructing them from private conversation or treating the checkout as complete history.",
-        "Return semantic context from MOD-006/FUNC-025; the caller obtains current record observations through IF-004 and retains their exact identity."
+        "Return semantic context from MOD-006/FUNC-025; the caller obtains current record observations through IF-004 and retains their exact identity.",
+        "Update at meaningful handoffs or material decision changes. Permit replacement of comparable working evidence and selective compaction after issue disposition; no activity replay or permanent attempt history is required. Completed accounts return historical meaning, not current system health."
       ],
       "failure_behavior": [
         {
@@ -70,6 +71,11 @@
       "source": "SRC-WORKFLOW-DESIGN",
       "locator": "SCN-078; SCN-082; SR-082; SR-083; IF-011",
       "basis": "Draft integrated design from the accepted requirement-first basis. This defines target responsibility and cooperation, not installed capability, design approval, runtime evidence or SQLite adoption."
+    },
+    {
+      "source": "SRC-CURRENT-HANDOFF",
+      "locator": "IF-011",
+      "basis": "Refine existing current-state responsibility and selective retention; observed runtime mappings remain version-scoped."
     }
   ]
 }

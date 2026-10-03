@@ -1,118 +1,434 @@
-# Work record storage: successor workflow contract
+# Work record storage: current engineering handoff
 
-This Module owns the proposed `rigorloop-records-v4` semantic representation for SR-083 and AR-040. [Governance](../../../MOD-017-engineering-governance/README.md) owns the decisions represented here; [command admission](../MOD-010-engineering-command-interface/README.md) owns requests and receipts. The [current Records contract](../../../../../../docs/design/cli/records.md) and implemented v3 schema remain the current runtime baseline. This proposal is not runtime support, a database schema migration or workflow adoption.
+This Module owns the proposed `rigorloop-records-v4` representation for SR-006, SR-043 and SR-083/AR-040. [Governance](../../../MOD-017-engineering-governance/README.md) owns decision meaning; [Command handling](../MOD-010-engineering-command-interface/README.md) owns supported requests. The implemented [v3 Records contract](../../../../../../docs/design/cli/records.md) stays unchanged until coordinated adoption. This revision replaces the unimplemented append-only v4 draft; it does not rewrite existing customer history or migrate storage.
 
 ## Boundary and representation
 
-V4 removes the mandatory Proposal subject and path-based registry from its public semantic representation. Supporting records use stable typed IDs within one Change; the CLI owns backend lookup and registration. Engineering definitions remain repository-held subjects, not copied IR/SR/AR tables in the operational store. Large evidence uses immutable artifact references. A serialized export is a projection of these records, not a requirement to persist one JSON file per record.
-
-The authoritative target remains the local operational store, with SQLite as the selected storage direction under SR-074–078. To satisfy SR-083 without making database migration mandatory, the initial v4 adapter reuses the existing filesystem transaction engine with the private mapping below. It does not add v4 objects to historical v3 directories. A supported adapter must supply the atomicity and preservation below before governed recording is available; portable authoring remains usable independently. Workflow and SQLite adoption have separate acceptance criteria, with one authoritative backend selected at a time and no dual writes.
+Maintain the information needed to make the next sound engineering decision. Preserve older information only while its meaning still matters. The authoritative operational state is the current handoff, assembled from single-owner records. It is not an event log and need not reconstruct previous handoffs. Repository-held IR/SR/AR, Features, Scenarios, Functions, Modules and Interfaces remain the engineering definition.
 
 ```mermaid
 flowchart LR
-  Actor["Explicit actor decision"] --> CLI["MOD-010 admission"]
-  CLI --> Store["MOD-011 coherent candidate and publication"]
-  Store --> Records["Typed operational records"]
-  Records --> Refs["Exact repository subjects and artifact references"]
-  Store --> Receipt["Storage outcome; no approval inference"]
+  Actor["Explicit progress or assessment"] --> CLI["Command handling"]
+  CLI --> Store["Current Change and owned supporting records"]
+  Store --> Context["Seven-section handoff"]
+  Store --> Selected["Selected attachments and compact completion"]
 ```
 
-## Exact common types
+SQLite is the selected first backend for v4, directly replacing the unimplemented intermediate filesystem adapter. One embedded database per local checkout stores operational accounts; the CLI opens it through MOD-011 without a database service. SQLite is a technical realization, not a new REM Module. The supported v3 filesystem runtime remains unchanged until qualified adoption; there is no v4 filesystem fallback or dual write.
 
-All objects are closed. Every listed field is required unless marked optional; null is permitted only where stated. No semantic defaults are synthesized. Duplicate JSON keys and duplicate IDs reject. `ID`, `Text`, `Path` and `Digest` retain the v3 lexical rules: IDs are 1–80 lowercase letters/digits/hyphens starting with a letter or digit; Text contains a non-whitespace character; paths are normalized contained repository-relative paths; digests are `sha256:` plus 64 lowercase hexadecimal digits. An empty list explicitly means no entries.
+## Current handoff and ownership
 
-| Type | Exact fields and constraints |
+| Section returned by change context | Single authoritative source |
 | --- | --- |
-| Actor | `{id: ID, role}`; role is `human`, `requirement-analysis`, `system-design`, `architecture-design`, `plan`, `review`, `route`, `implement`, `verify`, or `support`. A role is attribution, not authentication or proof of independence. |
-| Subject | `{path: Path, state, identity}`. `state` is `present` with a Digest, or `absent` with null identity. Absence is explicit negative evidence of deletion; it is never a fabricated content hash. One path occurs once in a subject set. |
-| Ref | `{kind, id: ID}` within the containing Change. `kind` is `basis`, `candidate`, `review`, `evidence`, `decision`, `verification`, `applicability`, or `adoption`. Cross-Change or path-based implicit lookup is forbidden. |
-| RequestSource | `{id: ID, locator: Text, content: Text, captured_by: Actor}`. Preserve the supplied request/proposal/incident meaning and source; a locator is attribution, never an instruction to fetch or execute it. Large exact originals may also be registered as Evidence. |
-| Artifact | `{identity: Digest, byte_count: nonnegative integer, media_type: Text}`. Resolve through the artifact store; never interpret an arbitrary actor-supplied pathname as a payload location. Metadata registration alone does not establish payload availability. |
-| Resolution | null for `open`; otherwise `{actor: Actor, rationale: Text, evidence_refs: [Ref]}` selecting Evidence. |
-| Finding | `{id: ID, reporter: Actor, owner: Actor, subjects: [Subject], evidence: Text, required_outcome: Text, state, resolution: Resolution}`; state is `open`, `resolved`, or `deferred`. |
-| FindingUpdate | `{id: ID, finding_id: ID, actor: Actor, reason: Text, account: Finding}`; account.id equals finding_id. Append in publication order to the containing review; it supplies a new current account without rewriting the original finding or earlier updates. |
-| Origin | `{reporter: Actor, subjects: [Subject], evidence: Text, required_outcome: Text, rationale: Text, supporting_review: Ref or null}`. The review reference selects an immutable assessment core. Origin is captured once and never changed or removed. |
-| Blocker | Finding fields plus `origin: Origin`. Current fields may be corrected explicitly; original reporter/claim basis remains in Origin. |
+| Goal, scope and authority | Change intent and recorded authority basis/limits |
+| Governing basis | Selected requirement/design Basis records and plan reference |
+| Progress | Change activity and Work accounts, including remaining work and locations |
+| Open issues and important rationale | Change blockers, Review findings and selected Decisions |
+| Relevant evidence | Evidence summaries selected by the work and assessments that rely on them |
+| Review standing | Current Review for each formal purpose, plus relevant advisory findings |
+| Next action | Explicit Change next_action with owner and rationale |
 
-Common status is `pending`, `in-progress`, `blocked`, `ready`, `completed`, or `cancelled`. Stage is `requirement-analysis`, `requirement-review`, `system-design`, `architecture-design`, `design-review`, `plan`, `delivery-review`, `implement`, `code-review`, `verify`, or `support`. Unknown values reject before cross-field validation. These are recorded labels, not proof that prerequisites have been met.
+The projection adds missing/conflicting/not-recorded observations, not another editable copy of facts. It never guesses a next step or grants authority. An unavailable store is not an empty handoff. Record updates at material decision changes and handoffs; do not require a record after every command, file edit or local test run.
 
-## Record shapes
+## Engineering design stays in the repository
 
-Every record contains `{schema_version: 4, contract: "rigorloop-records-v4", change_id: ID}`. Supporting records also have `id: ID`; IDs are unique within each kind and Change. The following table defines all additional fields. `Ref` values must select the specified kinds and actually exist in the complete candidate. Reference cycles through predecessors are invalid. Semantic lists preserve actor order; no latest-time selection is implied.
+Git owns the current IR/SR/AR, Features, Scenarios, Functions, Modules, Interfaces, technical choices, applicable design rationale and D2 diagram sources. The SQLite database does not contain authoritative copies of these definitions or a Design entity/table. Operational subject references identify the repository basis of work and assessments without importing the engineering model into storage. A fresh clone remains understandable and buildable without another engineer's database.
 
-| Record kind | Additional fields |
+An engineer changes the owning design files; change update records relevant progress and basis references; review prepare selects those files; the reviewer assesses their content and review record saves the judgment and findings in SQLite. Corrections go back to the owning files. Acceptance does not move design text into the database or create a second authoritative rationale. Skills use supported CLI tasks, never raw SQL. Generated browser views continue to derive from repository sources and require no operational database.
+
+## SQLite representation and project association
+
+The live database is `.rigorloop/rigorloop.db`; managed payloads remain under `.rigorloop/artifacts/changes/`. The entire runtime directory, including SQLite sidecars and temporary attachment staging, is excluded from Git. A small project-owned, Git-tracked `.rigorloop.json` declares `{schema_version: 1, project_id: UUID}`. The project owner establishes this stable identity through ordinary configuration authoring or explicit migration; it is not inferred from a directory name or Git remote. On first authorized change create, an absent database may be initialized only for that declared identity. Reads and dry-run never initialize a database or edit project configuration. A failed first creation may leave an empty correctly associated database; retry still uses absent-Change semantics. Partial or incompatible database initialization is unavailable, never an empty usable store. Connection admission protects even first creation against concurrent maintenance.
+
+Database metadata contains project_id, an opaque store incarnation and a whole-store revision. PRAGMA user_version owns the database schema version. Opening checks project association, supported schema and required settings before returning records. A mismatch refuses access and directs explicit association/restore work; it does not rewrite either identity. Supporting IDs retain their Change-local scope. An expected Change revision is bound to the store incarnation; an explicit restore replaces that incarnation so pre-restore update tokens cannot silently become valid again.
+
+| Relational responsibility | Intended structure and query purpose |
 | --- | --- |
-| Change | `requests: [RequestSource]`, `workflow_contract: "requirement-first-v1"`, `requirement_basis: Ref or null`, `design_basis: Ref or null`, `plan: Subject or null`, `activity: {stage, status, owner: Actor, reason: Text}`, `work: [Work]`, `gates: [Gate]`, `blockers: [Blocker]`, `active_adoption: Ref or null` |
-| Basis | `kind: requirements or design`, `subjects: [Subject]`, `decision: proposed or accepted`, `actor: Actor`, `rationale: Text`, `review_ref: Ref or null`, `predecessor: Ref or null`. A requirements basis may include unchanged IR/SR/Feature/Scenario subjects; a design basis includes applicable logical, architectural, AR and realization subjects. Acceptance is an actor assertion requiring independent applicability assessment, not an automatically derived state. |
-| Candidate | `purpose: requirements or design or delivery or code`, `subjects: [Subject]`, `basis_refs: [Ref]`, `plan: Subject or null`, `scope: Text`, `coverage_rationale: Text`, `actor: Actor`, `predecessor: Ref or null`. Basis refs select Basis records; predecessor selects a Candidate of the same purpose. The rationale accounts for the complete selected scope and dependencies, including additions/deletions and dirty work. |
-| Review | `target: requirements or design or delivery or code`, `scope: formal or advisory`, `gate_id: ID or null`, `candidate_ref: Ref`, `reviewer: Actor`, `contributors: [Actor]`, `independence_basis: Text`, `judgment`, `predecessors: [Ref]`, `findings: [Finding]`, `finding_updates: [FindingUpdate]`, `summary: Text`, `assessment_scope: Text`, `rationale: [Text]`, `limitations: [Text]`. Formal judgment is `approved`, `changes-requested`, `blocked`, or `inconclusive`; advisory judgment is null. |
-| Evidence | `actor: Actor`, `subjects: [Subject]`, `result: passed or failed or inconclusive`, `procedure: Text`, `summary: Text`, `artifacts: [Artifact]` |
-| Decision | `actor: Actor`, `subjects: [Subject]`, `decision: Text`, `rationale: Text`, `source_refs: [Ref]` |
-| Applicability | `gate_id: ID`, `review_ref: Ref`, `candidate_ref: Ref`, `actor: Actor`, `value: current or stale or not-applicable`, `rationale: Text`, `evidence_refs: [Ref]`, `predecessor: Ref or null`. Evidence refs select Evidence. This is a claim about an exact review and candidate, not an approval itself. |
-| Verification | `scope: scoped or final`, `verifier: Actor`, `candidate_ref: Ref`, `subjects: [Subject]`, `evidence_refs: [Ref]`, `review_refs: [Ref]`, `applicability_ref: Ref or null`, `outcome: success or failed or inconclusive`, `summary: Text`, `assessment_scope: Text`, `rationale: [Text]`, `limitations: [Text]`, `changes: [Text]`, `predecessor: Ref or null`, optional `verification_basis` using the complete v3 VerificationBasis shape. A Git-specific basis remains conditional, never a universal requirement. |
-| Adoption | `source_contract: Text`, `source_identity: Digest`, `target_workflow: "requirement-first-v1"`, `actor: Actor`, `policy_subjects: [Subject]`, `guidance_subjects: [Subject]`, `candidate_identity: Digest`, `record_contract: "rigorloop-records-v4"`, `capabilities_identity: Digest`, `retained_originals: [Artifact]`, `dispositions: [{source_ref: Text, disposition: reuse or reassess or blocked or historical, rationale: Text, target_ref: Ref or null}]`, `phase: prepared or activated or unavailable`, `rationale: Text`, `predecessor: Ref or null` |
+| Project metadata and Changes | Project association, database schema version, per-Change revision, intent, authority, activity and next action. |
+| Work and issues | Named work accounts, Change blockers and Review findings with owner, state and disposition; query actionable work directly. |
+| Bases, subjects and selections | Repository references and assessed/reported subject information, plus selected requirement/design bases and formal Reviews. These are operational references, not copied design definitions. |
+| Reviews and Verification | Current prepared scope, attributable assessment, applicability/support standing and selected dependencies. |
+| Evidence and decisions | Procedure, result, relevant scope and important operational rationale. |
+| Attachments and supporting relationships | Change/name metadata and typed reference relationships needed for retained support and safe cleanup. No large payload blobs. |
+| Completion and notes | Self-contained historical acceptance and explicit annotations, independent of later working-record compaction. |
 
-`Work` is `{id, status, owner: Actor, requirement_refs: [Text], check_refs: [Ref], blocker_ids: [ID], completion_reason: Text or null}`. Check refs select Evidence; blocker IDs select Change blockers. Completed work requires a supplied completion reason. It has no reviewer or approval field. Adequacy and failed-check effects remain semantic assessment, so failed results and truthful progress corrections remain recordable.
+Use relational keys, foreign keys, indexes and constrained status fields for identity, references and common queries. Queryable state is not hidden in a single Change JSON blob. Small structured explanatory fields may use bounded JSON where no independent query relationship is needed. The table mapping and selected Node binding below govern implementation; executable migrations remain product-source deliverables. Neither the browser's Rust engine nor a hosted service is required for this store. The Records v4 JSON exchange contract and database schema version are separate domains. Database migrations and package resources are tracked product source; live project databases are not.
 
-`Gate` is `{id: ID, target, applicability_ref: Ref or null}` with target `requirements`, `design`, `delivery`, or `code`. At most one gate per target exists within a Change. Formal reviews identify its matching gate and candidate purpose. Advisory reviews have target code and null gate_id; they cannot acquire formal judgment through a scope update. Review predecessors select formal reviews in the same gate or advisory reviews of the same scope; advisory advice can instead be cited as evidence in formal rationale. No work-item identity creates a gate.
+## Relational schema and query boundaries
 
-Change requirement_basis and design_basis select Basis of the matching kind; active_adoption selects Adoption. Candidate basis_refs select Basis; Review candidate_ref selects Candidate of matching purpose; Review predecessors select Review. Verification candidate_ref selects Candidate, review_refs select Review, evidence_refs select Evidence, applicability_ref selects Applicability, and predecessor selects Verification. Applicability predecessors select Applicability in the same gate. Basis and Adoption predecessors select their own kind; Basis kind is preserved. Gate identity and target cannot change after creation. Every FindingUpdate must name an existing original finding in its containing Review. Origin supporting_review selects a formal Review. Decision source_refs may use any Ref kind. Other fields cannot silently broaden these reference domains.
+Database schema 1 maps the existing v4 record contract below; it introduces no new engineering entities. Public JSON field ownership remains in Current records. Tables expose identity, state, scope, selectors and relationships as columns. Bounded explanatory objects such as an Actor, observation, intent or disposition may use validated JSON; required relationships and status values must not be hidden inside those objects.
 
-When supplied, VerificationBasis is exactly `{repository_identity, remote_identity, base_branch, base_revision, merge_base_revision, head_branch, verified_subject_revision}`, all Text; no nullable/partial representation is admitted. The field retains its conditional meaning and does not make Git mandatory.
+| Table family | Key and relational content |
+| --- | --- |
+| project | One row: project_id, store_incarnation and store_revision. PRAGMA user_version alone owns the database schema number. store_revision advances on every committed record mutation; it supports whole-store maintenance preconditions. |
+| changes | Primary key change_id; current workflow/activity/status, per-Change revision and explanatory intent/request/authority/next-action fields. A Change has no mandatory previous-revision rows. |
+| accounts | Primary key `(change_id, kind, id)`; kind is basis, review, evidence, decision, verification, adoption or work. Foreign key to changes. This is an identity registry with no record-body JSON. |
+| bases, reviews, evidence, decisions, verifications, adoptions, work | One typed row per account. Each has the same composite key, a constant checked kind and a foreign key to accounts. Store queryable purpose/scope/status/judgment/applicability/result/support_state separately; preserve the existing record's other fields in their owning row or child relationship. |
+| blockers, findings | Blocker key `(change_id, id)`; finding key `(change_id, review_id, id)` referencing a Review. Columns include state, owner, description and required outcome, with nullable attributable disposition. Omitted issues survive replacements. |
+| selections | Key `(change_id, slot)`; target account composite foreign key. Slots are requirement-basis, design-basis, active-adoption and one review slot per formal purpose. Candidate validation checks required kind, purpose and applicability; membership alone grants no acceptance. |
+| account_refs | Key `(change_id, owner_kind, owner_id, relation, ordinal)`; both endpoints reference accounts within that Change. Relations realize basis review, prepared bases, assessment evidence, Verification reviews/evidence, Decision sources and Work checks. Ordered fields retain order; repeated targets are rejected where the public contract forbids duplicates. |
+| subjects | Key `(change_id, owner_kind, owner_id, role, ordinal)`; owner is the Change or an account, enforced by checked owner form plus foreign key. Store path, present/absent state and nullable compared identity. Role distinguishes current plan, prepared, assessed, governing and evidence subjects; a path is not a global identity for every assessment of that file. |
+| work_blockers | Work and Change-blocker foreign keys in the same Change; preserves Work blocker_ids as queryable relationships. |
+| support_summaries | Key `(change_id, owner_kind, owner_id, ordinal)` for Review or Verification. Store assessed result/explanation/limitations and source account reference; separate support_subjects rows keyed by that summary and ordinal carry its assessed basis. Replacement of source evidence cannot overwrite these assessor-owned values. |
+| attachments, attachment_refs | Attachment key `(change_id, name)` with media_type and observed byte_count. Reference rows identify an Evidence, support summary or Completion owner and attachment name with foreign keys. Payloads remain external files. |
+| completions, completion_notes | At most one Completion per Change; ordered explicit notes reference that Change. Preserve original Verification ID as historical attribution, not a live foreign key that would prevent allowed compaction. Completion-selected attachments remain live protected relationships. |
 
-## Preservation and applicability
+Use STRICT tables, NOT NULL for required fields, checks for the existing closed vocabularies and deferred foreign keys where the complete candidate contains cycles. A Basis can refer to its approving Review while that Review refers to the Basis. Validate the complete candidate and commit-time constraints together; never disable reference enforcement to import such a cycle. Deletes use NO ACTION with deferred checking, not broad cascades that could erase unresolved work. Explicitly remove an authorized unused set and its outgoing child rows; surviving incoming references block the transaction. [SQLite foreign-key semantics](https://www.sqlite.org/foreignkeys.html) supply the constraint mechanism.
 
-Basis, Candidate, Evidence, Decision, Applicability, Verification and Adoption records are immutable after creation. Review assessment fields and original findings are immutable; only append-only findings and FindingUpdates extend their current account. IDs and original contents cannot be removed or renamed. A correction creates a successor assessment/record with explicit predecessor and rationale rather than rewriting an old judgment. Change activity, selected basis/plan, work, blocker current accounts and gate/applicable-adoption pointers are explicit mutable coordination facts guarded by store revision. Clearing a reliance pointer does not delete its history.
+The registry is internal, not a generic public CRUD interface. Each committed registry entry must have exactly one matching typed body. Candidate admission and post-import integrity validation enforce this totality and legal relation endpoints, beyond what foreign keys alone prove. An absent typed body is corruption, never an empty account. Relations and owner-role values form schema-owned closed vocabularies derived from the existing record fields; executable migration DDL and negative validation cases must implement the mapped fields above without inventing additional public record kinds.
 
-Recording an approved formal review does not select current applicability. An actor records Applicability separately and explicitly sets the gate pointer in the same atomic batch if intended. The pointer must select an Applicability for that gate and its exact formal review/candidate; review.target, candidate.purpose and gate.target agree. A `current` record must reference an approved review. At most one pointer is selected, without deleting competing assessments. A revised candidate needs a new review attempt even when most prior evidence remains reusable; predecessor references and the rationale state what earlier assessment is retained.
+The first indexes support changes by activity/status; blockers/findings by Change and state; reviews by Change, purpose and applicability; evidence by Change and result; subjects by path and owner; and both directions of account/attachment references. change context reads the selected Change, selections, open issues and required support in one snapshot. It does not load all Changes. Cross-Change subject queries can use the subject index later without making a new public history command part of this adoption.
 
-Reliance also requires fresh subject observations, adequate full-scope coverage, resolved adverse evidence and applicable execution authority. A stale file, absent/present mismatch, later finding or contrary evidence is exposed to the responsible assessor; a saved `current` label does not suppress it. Final-success Verification requires a code candidate, a non-null current Applicability reference for that candidate, and its approved Review in review_refs. Structural checks verify these references; they do not certify judgment quality, reviewer independence, absence of defects or current external bytes. Missing approval can be recorded as failed/inconclusive verification, but cannot support final-success reliance.
+### Current record relationships
 
-A successor review with no findings does not resolve findings from earlier attempts. Finding current accounts and blockers retain their explicit disposition until their responsible assessor changes it. Gate/context observations expose open findings from every attempt in that gate and potentially relevant advisory findings from the Change, with exact review/finding IDs; large result sets require a bounded follow-up or explicit size-limit result, never silent omission. The actor determines relevance and adequacy rather than the CLI treating the newest attempt as a clean slate.
+This logical data diagram groups typed tables for readability. Arrows label containment or references; the table mapping owns exact keys and constraints. Repository subjects are references, not copies of the engineering model.
 
-The same distinction permits recording an accepted requirements basis without Function/AR allocation. Requirement Review judges the obligations; System/Architecture Design completion is assessed later. An accepted Basis requires a matching approved formal Review through its Candidate, which references the earlier proposed Basis. A successor accepted Basis must preserve exactly the proposed subjects reviewed; material changes require another proposed basis and review. This avoids a self-referential acceptance cycle.
+<!-- architecture-diagram: sqlite-record-relationships -->
 
-## Atomic publication and adoption
+```d2
+direction: down
+project: "Project association"
+change: "Change\nIntent, authority and revision"
+work: "Work and open issues"
+accounts: "Current typed accounts\nBasis, Review, Evidence\nDecision, Verification, Adoption"
+relations: "Selections and dependencies"
+subjects: "Repository subject references"
+support: "Assessed support summaries"
+completion: "Compact completion"
+attachments: "Attachment metadata and references"
+project -> change: "Owns Changes"
+change -> work: "Owns current progress"
+change -> accounts: "Owns Change-local identities"
+change -> completion: "At most one final account"
+accounts -> relations: "Reference current accounts"
+accounts -> subjects: "Identify prepared or assessed basis"
+accounts -> support: "Retain relied-on meaning"
+support -> attachments: "Select useful bytes"
+completion -> attachments: "Protect selected payloads"
+```
 
-One atomic mutation unit is one Change and all supporting records touched by its batch, including gate/applicable-adoption pointers. A supplied opaque store revision binds the complete Change record set and coordination epoch. The adapter serializes participating writers, checks the revision and external read set again before publication, and preserves exact before/candidate state for recovery. Record IDs never substitute for a concurrency token. External filesystem writers are not locked by a database or CLI lock; subsequent reliance must reobserve subjects and report drift.
+## Typed CLI-to-storage boundary
 
-Recheck declared external subjects before reporting commitment. Detected drift before commit stops publication or invokes supported uncommitted recovery. Detected drift after commit reports the actual committed revision plus subject-drift and requires renewed semantic applicability; it never restores over a committed state or reports rejected/no-effects. Required referenced artifact availability must be established before publication and protected by the adapter's retention contract; incomplete payloads cannot be advertised as available evidence.
+[IF-003](../../../../interfaces/IF-003-operational-record-access-and-publication/interface.json) is the internal engineering contract consumed by MOD-010. Its v4 inputs and outputs are closed typed values. They are not command-line strings, SQL statements, database rows, serialized record files, connection handles or filesystem readers. The following names describe contract types, not installed JavaScript exports or a new network protocol. Record field meanings remain owned by Current records; public task inputs remain owned by MOD-010.
 
-Activation is per selected Change. An actor supplies an activated Adoption record and updates active_adoption in one guarded batch, referencing a prepared predecessor and the actually observed compatible policy, installed guidance and capabilities. All dispositions and retained-original availability must be explicit. The command records this decision; it does not decide policy adoption. A project-wide completion claim requires applicable activation for every Change explicitly selected by the actor; separate Change transactions are not advertised as one atomic project migration. An unselected old Change is preserved and reported unsupported by the new runtime, not silently migrated.
+| Type | Required fields and variants |
+| --- | --- |
+| QueryRequest | `{project_root, query}`. project_root is the explicitly resolved local project root. query is one of the variants below; it cannot identify a database file directly. |
+| Query | `{kind: "change-context", change_id, selectors: [Selector] or null, include_observations: boolean}`; `{kind: "review", change_id, id}`; `{kind: "verification-context", change_id}`; `{kind: "verification", change_id, id}`; or `{kind: "store"}`. Null selectors requests the complete handoff; a selected list is nonempty and bounded by the public contract. Selector is the existing context kind/ID pair. |
+| TaskRequest | `{project_root, task, change_id, item_id: ID or null, expected_revision: Text or null, reads: [Subject], input, receipt_profile}`. task is one of the mutation tasks below. Null expected_revision is allowed only for absent-Change creation. Input is that task's closed public semantic input after transport fields are removed; it is not an arbitrary object patch. |
+| MaintenanceRequest | `{project_root, task, preview: boolean, input, receipt_profile}`. task is store.backup, store.restore or store.migrate; input is its defined initial or resume variant, including its own source/destination expectations. No Change revision is substituted for a whole-store expectation. Preview is permitted only for the initial operations whose public contract admits dry-run; resume requires false. |
+| ReceiptProfile | record-json-v1, record-text-v1, maintenance-json-v1 or maintenance-text-v1. MOD-010 owns their encoding and fixed bounds; caller-supplied formats, functions and plugins are not admitted. These internal profiles are not skill configuration or a new public workflow mode. |
 
-Record recovery finishes or exposes the known publication outcome without replaying semantic decisions. A committed write followed by output failure remains committed and discoverable by record ID/revision; the caller rereads before any retry. An exact immutable create retry is unchanged only when its original content matches; changing a predecessor or subject with the same ID rejects. Unknown/unrecoverable state is unavailable, never an empty store or inferred rollback.
+Task values are change.create, change.update, change.complete, review.prepare, review.record and verification.record. Review/Verification tasks require item_id; Change tasks require null. Dispatch preview through preview_record_task and execution through execute_record_task with the same request type. Command spelling, stdin parsing, transport versions and format choice are resolved by MOD-010 before dispatch. Storage independently checks the variant, current project association, expected revision, typed references, authority-bearing fields and allowed effects; a parsed request is not permission or review adequacy.
 
-## Initial filesystem adapter and later database replacement
+ReadOutcome is `{kind: "read", status, committed: false, records: [RecordValue], projections: [Projection], diagnostics: [Diagnostic], identity}`. A RecordValue is `{kind, id, value}` using the selected v4 record type. Projection is `{query_kind, value}` for the task-owned handoff, review standing, verification context or store observation; it is derived, not another editable record. identity is `{record_contract: Text or null, change_revision: Text or null, store_revision: Text or null}`. Populate identities only when established from the coherent observation. Unavailable selected content produces a diagnostic, never an invented empty record.
 
-The initial v4 adapter uses `.rigorloop/record-store/_v4/<change-id>/` as its private Change root. A safe ID names the directory; actors never supply a record path. `change.json` is the closed storage envelope `{storage_profile: "rigorloop-record-files-v4", change: Change, records: [{kind, id, path}]}`. Each supporting record lives at exactly `records/<kind>/<id>.json`, where kind is the singular Ref kind. The envelope declares every authoritative supporting record exactly once. A missing declared object is unavailable data; an unregistered existing target is an overwrite conflict, never an empty slot. The CLI constructs and changes the envelope atomically with the selected records. The public Change value excludes this physical registry.
+MutationOutcome is `{kind: "mutation", status, committed: boolean or null, changed: ChangeSummary or null, diagnostics: [Diagnostic], identity}`. MaintenanceOutcome has kind maintenance and additionally the task-owned maintenance details. ChangeSummary is `{count, entries: [RecordKey], omitted}` with nonnegative integers and count equal to entries.length plus omitted. A RecordKey is `{kind,id}` within the selected Change; a finding additionally names its review_id. A changed finding also lists its containing Review. Entries are deterministic and bounded; count includes all changed current records even when optional detail is omitted. Exact no-op and precommit rejection have an empty summary. Preview describes prospective records while committed remains false; unknown effects use changed=null and carry a diagnostic explaining the limit. Read outcomes imply an empty change summary. Maintenance reports an empty summary for backup and null for a whole-store replacement whose individual changed accounts are not enumerated; its maintenance details identify the authoritative effect scope.
 
-Reuse the existing transaction engine's full before/candidate snapshots, containment checks, writer exclusion, guarded publication and explicit recovery, with a v4 format adapter replacing hard-coded v3/path assumptions. Coordination state lives separately under `.rigorloop/record-store/_v4-coordination/<change-id>/`; it is never discovered as an authoritative Change. V4 discovery inspects only the declared private root and supported envelopes, not `docs/changes/`, transaction directories or arbitrary files. The underscore-prefixed infrastructure names cannot collide with valid v3 Change IDs; preexisting unsafe or unrecognized namespace content still blocks initialization. The existing 65-authoritative-file and 1-MiB-per-file safety bounds apply initially, including the manifest; over-limit candidates reject before writes. This is a documented adapter capacity, not silent history truncation. Later SQLite storage removes dependence on this file mapping through its own qualified migration.
+Status and primary Diagnostic codes use MOD-010's [outcome mapping](../MOD-010-engineering-command-interface/README.md#outcome-mapping). A Diagnostic is `{code,message}`; database error numbers and raw driver messages are private diagnostic detail, not the supported public taxonomy. MOD-010 translates typed records/projections into the task's public result and text presentation; MOD-011 supplies current facts and never manufactures the next engineering decision. These type names do not create additional public versions; the selected v4 adapter is the implementation boundary.
 
-V3 source directories are read only by the separately authorized importer and remain byte-for-byte unchanged. Before publishing the first v4 target, retain exact source artifacts, dispositions and the source digest; reject an occupied target rather than overwrite it. Subsequent v4 mutations affect only the selected private store. This mapping preserves local operational custody without introducing more Git-tracked Change files; `.rigorloop/record-store/` is already machine-local and ignored in this repository. Customer installation/adoption must apply the corresponding local-state exclusion without claiming that ignore rules are a backup.
+Before an ordinary commit, MOD-011 submits the bounded typed outcome summary to the shared pure MOD-010-owned receipt codec for its selected fixed profile. The codec sees no database, filesystem reader or write authority; it must deterministically prepare the mandatory receipt within its bound. It is an internal product dependency, not a function supplied by a skill or arbitrary callback in TaskRequest. Optional changed-entry details may be omitted with explicit counts. Successful encoding is not a claim that commit has happened: only the actual storage outcome permits emission as saved. A failed commit emits the failure outcome; a later rendering/output fault preserves established commitment. This retains receipt readiness without exposing record-file serialization or an executable preview candidate.
 
-Resolve Artifact payloads at `.rigorloop/artifacts/sha256/<first-two-hex-digits>/<remaining-hex-digits>` of the declared digest. Stage and verify regular-file bytes, byte count and digest before no-clobber publication; an existing object must match rather than be overwritten. Publish payloads before referencing record commit and retain them across a failed record commit. Such unreferenced objects are harmless recoverable leftovers, not evidence that the record saved. V4 performs no automatic payload garbage collection; referenced originals remain retained. The adapter must check containment, symlinks and observed payload identity before claiming availability. Corruption or later disappearance is reported as unavailable evidence, never repaired by changing the recorded digest. Backup/export and eventual retention policy remain separate SR-074–078 work; private placement is not durability qualification.
+V3 inspect/prepare/publish/recover operations retain their original byte-preservation and callback realization until their supported contract is retired. They do not define the v4 API. V4 executes typed tasks against SQLite and performs its internal transaction recovery on opening. Explicit backup restoration or migration resume remains a MaintenanceRequest, never a replay of a failed engineering task. No new Interface or compatibility shim is introduced for the SQLite binding.
 
-The engine must expose a durable commit point separately from result delivery. If external subject drift is detected after file replacement but before its commit marker, restore the verified before-state only under the existing guarded recovery rules or expose recovery-needed. Once committed, retain that outcome and report drift for semantic reassessment. Recovery never recomputes actor decisions. This explicit adapter boundary reconciles the current file transaction machinery with SR-044's refined commit rule.
+## SQLite binding and software organization
 
-When the SQLite store is implemented and qualified, explicit migration imports the same typed v4 records and artifacts with their identities and original provenance. Switch authoritative backend selection only after integrity, compatibility and active-work disposition succeed. The prior file store becomes retained migration evidence; no active dual-write, fallback reader or compatibility shim survives its supported retirement. Exact SQLite tables, backup/restore and physical migration remain owned by SR-074–078, not by this workflow extension.
+Select the built-in node:sqlite DatabaseSync API for the initial Node 24 profile, minimum 24.15.0, with the module's backup API for database snapshots. This fits the existing Node CLI and avoids adding an npm native-addon build or a separate Rust record service. [Node 24.15.0](https://nodejs.org/en/blog/release/v24.15.0) advances node:sqlite to release-candidate status and includes SQLite 3.51.3. Require that SQLite minimum as well as the Node floor and reject known withdrawn or unqualified builds: [SQLite 3.51.3](https://www.sqlite.org/releaselog/3_51_3.html) fixes a WAL-reset corruption defect affecting the earlier library used by the local Node 24.14.1 environment. Keep the binding behind MOD-011's adapter; release-candidate API status remains a compatibility consideration. Qualify the selected patched Node/platform builds before adopting the runtime floor in package metadata and CI; the minimum is not a recommendation to ignore later fixes. The current v3 package is unchanged by this decision.
 
-## Compatibility and disposition
+Use bound parameters for values and packaged SQL for schema/queries. Configure defensive mode, disable loadable extensions and double-quoted string literals, enable foreign keys and verify WAL/FULL. Ordinary writes use a bounded 5-second busy timeout; failure returns busy. Read integer revisions as BigInt internally and serialize opaque revision tokens without JavaScript number truncation. A Change token combines store incarnation and its integer revision; whole-store tokens combine incarnation and store_revision. Both counters are nonnegative SQLite 64-bit integers; exhaustion rejects without wraparound. Exact no-ops do not advance either counter. SQLite settings and counters do not authenticate actors.
 
-V3 bytes, paths and judgments are historical inputs after explicit selected adoption. V4 runtime does not read/write v3 or reinterpret Proposal approval as Requirement Review, milestone review as whole-change approval, or old saved applicability as present applicability. Dedicated offline import is a separately authorized migration tool, not a runtime fallback. It validates the supported source contract, archives exact originals and a digest inventory, then requires actor-supplied dispositions before constructing v4 records. Source data is never overwritten; unsupported source versions reject before target writes. Unresolved source recovery must be completed with its compatible original tooling before import.
+Keep synchronous work bounded to the selected snapshot/transaction. The backup API may be awaited while maintenance exclusion remains held; do not hold an ordinary Change write transaction over an asynchronous callback. Unknown/future schemas and unsupported runtime profiles reject before record mutation. CLI JSON remains on stdout; runtime warnings and diagnostics remain separate. No runtime fallback selects a different binding silently.
 
-Current public v1 transport and v3 format remain unchanged until coordinated versioned adoption. The successor client uses explicit v2 transport and v4 records; unsupported clients receive an explicit version error, not a translated old response. Retain version-pinned historical tooling only for its authorized historical recovery scope. There is no indefinite dual-write or automatic fallback in the adopted runtime.
+### Persistence software organization
+
+These are cohesive implementation responsibilities within MOD-011, not new Modules or mandated filenames. Package SQL migrations beside the adapter's product sources and include them in the distributed CLI; user data never enters that package.
+
+<!-- architecture-diagram: sqlite-software-organization -->
+
+```d2
+direction: down
+cli: "MOD-010\nTask admission and results"
+store: "MOD-011 — Work record storage" {
+  candidate: "Current-account rules\nCandidate and dependency validation"
+  adapter: "SQLite adapter\nQueries, revisions and transactions"
+  payloads: "Named attachment handling\nCapture, references and cleanup"
+  maintenance: "Backup, restore and migration\nAdmission and activation recovery"
+  migrations: "Packaged schema migrations"
+}
+binding: "Node runtime\nnode:sqlite"
+cli -> store.candidate: "Explicit Change tasks"
+cli -> store.maintenance: "Explicit store maintenance"
+store.candidate -> store.adapter: "Validated current-state updates"
+store.adapter -> store.payloads: "Coordinate selected bytes before commit"
+store.maintenance -> store.adapter: "Snapshot or validate staged state"
+store.maintenance -> store.payloads: "Capture or restore selected payloads"
+store.maintenance -> store.migrations: "Apply supported ordered upgrades"
+store.adapter -> binding: "Prepared SQL and transaction operations"
+```
+
+## Common types and identity
+
+All record objects are closed; listed fields are required unless marked optional or nullable. Reject duplicate keys, unknown values and invalid reference kinds before consistency checks. Exact JSON schemas are an implementation deliverable that must preserve these semantics.
+
+- ID: 1–80 lowercase letters/digits/hyphens, starting with a letter or digit. Change IDs are project-local. Supporting IDs are unique within Change and kind; finding IDs are unique within their Review. No cross-Change implicit lookup.
+- Actor: `{id, role}` with role human, requirement-analysis, system-design, architecture-design, plan, review, route, implement, verify or support. Attribution is not authentication or proof of independence.
+- Text: a non-whitespace string. Path: a normalized contained repository-relative path. Subject: `{path, state, identity}` with state present/absent; identity is a SHA-256 digest for a mechanically compared present file, otherwise null. An absent file has null identity. Present with null identity is a reported basis, never mechanical proof of unchanged bytes. No source copies or whole-repository snapshot are required.
+- BasisObservation: `{method, actor, scope, summary}` with method reported, compared or unknown. Compared requires actual scoped observations, not a timestamp or actor assertion. Missing support remains unknown.
+- Ref: `{kind, id}` selecting basis, review, evidence, decision, verification or adoption within the same Change. References resolve against the complete proposed current state. Names and IDs do not replace the opaque store revision used for concurrency.
+- Issue: `{id, reporter, owner, scope, description, required_outcome, state, disposition}`. State is open, resolved, withdrawn or deferred. Open has null disposition; other states require `{actor, reason, follow_up}` where follow_up is Text or null. Deferral requires an accountable follow-up and cannot waive mandatory acceptance. Omitting an issue preserves it.
+- Attachment: `{name, media_type, byte_count}`. Name is unique within a Change, 1–120 ASCII letters/digits/dots/underscores/hyphens, starts alphanumeric and is neither a path nor `.`/`..`. Payload identity is its Change and name; hashes and deduplication are not required. byte_count is engine-observed metadata, not an actor-maintained integrity promise.
+
+Current status is pending, in-progress, blocked, ready, completed or cancelled. Activity stage is requirement-analysis, requirement-review, system-design, architecture-design, design-review, plan, delivery-review, implement, code-review, verify or support. Status is a reported fact, not proof of a gate or authority.
+
+## Current records
+
+All records carry `{schema_version: 4, contract: "rigorloop-records-v4", change_id}`. Supporting records also carry id. The engine supplies these fields.
+
+| Record | Current content |
+| --- | --- |
+| Change | `intent: {goal, scope, exclusions}`, `request: {locator, content, captured_by}`, `authority: {source, allowed, limits, reported_by}`, `workflow_contract: "requirement-first-v1"`, `requirement_basis: Ref or null`, `design_basis: Ref or null`, `plan: Subject or null`, `activity: {stage, status, owner, reason}`, `work: [Work]`, `blockers: [Issue]`, `reviews: [{purpose, review: Ref}]`, `next_action: {action, owner, rationale} or null`, `active_adoption: Ref or null`, `attachments: [Attachment]`, `completion: Completion or null`, `completion_notes: [{actor, reason, explanation}]` |
+| Basis | `kind: requirements or design`, `subjects: [Subject]`, `decision: proposed or accepted`, `actor`, `rationale`, `review: Ref or null`. An accepted basis requires the current applicable formal approved Review of that subject scope. |
+| Review | `purpose: requirements or design or delivery or code`, `scope: formal or advisory`, `prepared: ReviewInput`, `assessment: Assessment or null`, `applicability: {value, actor, rationale, observation}`, `findings: [Issue]` |
+| Evidence | `actor`, `reported_at: Text`, `procedure`, `scope`, `subjects: [Subject]`, `observation: BasisObservation`, `result: passed or failed or inconclusive`, `summary`, `limitations: [Text]`, `attachments: [name]` |
+| Decision | `actor`, `scope`, `decision`, `rationale`, `source_refs: [Ref]` |
+| Verification | `scope: scoped or final`, `verifier`, `subjects: [Subject]`, `governing_basis: [Subject]`, `review_refs: [Ref]`, `evidence_refs: [Ref]`, `observation: BasisObservation`, `outcome: success or failed or inconclusive`, `summary`, `rationale: [Text]`, `limitations: [Text]`, `support: [SupportSummary]`, engine-maintained `support_state: current or needs-reassessment` |
+| Adoption | `actor`, `source_contract`, `target_workflow`, `source_basis: Text`, `compatibility: Text`, `disposition: Text`, `phase: prepared or activated or unavailable`, `rationale`. It describes selected transition facts, not a general activity history. |
+
+Work is `{id, status, owner, scope, locations: [Path], remaining: Text or null, check_refs: [Ref], blocker_ids: [ID], completion_reason: Text or null}`. Completed/cancelled work requires a reason. Check refs select Evidence; blocker IDs select Change blockers. There is no milestone approval field.
+
+ReviewInput is `{subjects: [Subject], basis_refs: [Ref], plan: Subject or null, scope: Text, coverage_rationale: Text, prepared_by: Actor}`. Basis refs select Basis; a selected plan is included among subjects. Assessment is `{reviewer, contributors: [Actor], independence_basis, judgment, assessed_subjects: [Subject], governing_basis: [Subject], summary, rationale: [Text], limitations: [Text], evidence_refs: [Ref], support: [SupportSummary]}`. Formal judgment is approved, changes-requested, blocked or inconclusive; advisory judgment is null and cannot support a formal gate.
+
+Applicability value is current, needs-reassessment or not-applicable; observation is a BasisObservation. Missing assessment cannot be current. SupportSummary is `{source: Ref, scope, basis: [Subject], result: Text, explanation, limitations: [Text], attachments: [name]}`: the small amount of assessment-owned support still needed to explain the conclusion if a working Evidence is replaced. It is not an independently editable duplicate of current evidence. Selected attachments are referenced separately and retained only when their bytes matter. A changed current evidence summary never rewrites this assessed support.
+
+Open findings from every retained formal/advisory Review remain visible, including unselected review accounts. Selecting a replacement Review is never a disposition of those findings.
+
+There is one selected formal Review per purpose in Change.reviews. Reassessment can update that same Review ID; optional advisory Reviews remain distinct. Candidate, Gate, Applicability and FindingUpdate are no longer separate v4 record kinds. Their former unimplemented predecessor chains are retired, not retained as aliases. Historical v3 representations remain governed by their original supported tooling until adoption.
+
+## Updating current state without losing decision meaning
+
+Current Basis, Evidence, Decision, Review and Verification accounts can be explicitly replaced through their owning tasks. Use the inspected store revision; omission preserves neighbors. No mandatory previous version, event stream, retry ledger of semantic actions or summary of each intermediate test run is created.
+
+A Review preparation updates its current proposed input; it does not rewrite its last assessment or assert that the reviewer examined the new input. An unchanged input leaves standing unchanged. Changed input conservatively marks needs-reassessment. The responsible engineer can explicitly establish harmless continuation against the retained assessed scope and governing basis; material or unknown effects require independent reassessment in the same gate. This may replace superseded assessment detail after open issues are dispositioned. Preserve only the support needed for the current decision, including cumulative comparison where prior approval is still relied upon.
+
+Replacing an assessment resets its applicability to needs-reassessment unless the same task supplies an explicit valid current disposition for the new assessment. An old current label cannot silently carry over to a replacement judgment.
+
+A new evidence result can replace the previous account for the same procedure and relevant scope. A smoke-test pass cannot replace an unrelated integration failure. Material scope/procedure changes require another Evidence ID. A replacement affecting a selected Review or Verification exposes support changes; it cannot silently renew that assessment. Relevant dependencies trigger needs-reassessment or a displayed verification-support gap until the responsible actor supplies a disposition. Unknown effects are not harmless by default. An exact no-op creates no invalidation or new record.
+
+While the Change is active, Verification support_state persists in the same atomic update as a support change. Replacing referenced Evidence or a Review's assessment, changing its prepared input, applicability or findings, or changing the Verification's governing basis marks it needs-reassessment, even when the same record ID remains. Final Verification also depends on the Change's scope/authority, selected bases/plan/reviews, work completion and issue dispositions; changes to these completion inputs mark its support needs-reassessment. Scoped Verification follows its declared scope and dependencies. Next-action wording, unrelated records, cleanup of unused disposed detail and exact no-ops do not invalidate support. Unknown dependency effects remain needs-reassessment. Merely accepting an unchanged reviewed Basis or selecting its approving Review does not change that Review's assessed engineering basis.
+
+A later current Review cannot clear an earlier Verification support gap. Only verification record can renew support by submitting the verifier's explicit assessment against the reconciled current inputs; even an otherwise identical submission must explicitly reassess a needs-reassessment account. The engine sets current after the submission's admission and dependency checks, not from a caller-supplied flag. Current means no unresolved recorded support change, not a proof of unreported repository stability or a successful outcome. The original outcome and assessed support remain readable while needs-reassessment, but cannot qualify closeout. Proportionate reassessment may reuse unaffected checks and approval; it neither requires a new Code Review for an evidence-only retry nor a permanent history of support changes.
+
+Findings and blockers survive omission and newer clean reviews until an explicit disposition. Responsible actors decide resolution, withdrawal or deferral; persistence enforces attributable input and does not decide adequacy. Disposed issue detail and unreferenced supporting records may be explicitly compacted with a reason once no current decision or retained account needs them. Do not silently compact during reads or remove open issues, selected bases/reviews in active Changes, active authority or required attachments. Closed compaction follows the completion rules below. Evidence loss must remain reportable even when the missing payload prevents renewed reliance.
+
+## Completion record and preservation
+
+Completion is a self-contained historical account: `{actor, verification_id: ID, summary, reason, delivered_scope, governing_references: [Text], acceptance: [Text], limitations: [Text], retained_attachments: [name]}`. The acceptance entries identify the actual review and final Verify conclusions, their scope and accountable sources; no full log is mandatory. The CLI constructs this account from the explicit closeout input and selected current support without inventing assessment meaning. verification_id retains the selected final Verification as historical attribution, not a live Ref requiring permanent retention of its working account. Together with the other supplied fields, it permits exact closeout-input comparison after compaction; acceptance entries are generated once and are not recomputed on retry.
+
+Only change complete writes completion and verify/completed activity atomically. It requires an applicable whole-change approval, current successful final Verify, accepted governing bases and reviewed delivery basis, finished/dispositioned work and no unresolved mandatory concern. Authority and judgment adequacy remain actor responsibilities. A scope-wide final Verify does not become another approval merely because closeout is saved.
+
+Once complete, reads return this historical account without comparing its subjects to the current repository or advertising present system health. Later regression starts a new Change whose request locator cites this one. An error in the original assessment can receive an explicit completion note; the original account is not silently rewritten. Closed Changes permit notes and safe compaction of unused working detail, not resumed work or another final success. Selected completion attachments remain stable while referenced; all other supporting material may be dropped when no surviving obligation requires it. Exact closeout retries preserve the original account and do not reassess current repository files.
+
+Closed compaction may explicitly remove completed/cancelled Work and obsolete supporting records together. When a selected Basis, Review or Adoption is dropped, clear only its obsolete Change coordination selector in that same transaction. Validate references against the entire surviving candidate: a retained Work, assessment, decision or other record still protects its dependencies. Remove mutually referencing unused accounts together or keep them; never rewrite a surviving assessment to make deletion possible. Completion, its notes, original goal/request/authority, open issues and completion-selected attachments are protected. A deferred issue remains protected until its accountable follow-up is preserved in the completion account or explicitly transferred to another owner; deletion cannot count as resolution. The actor identifies no-longer-needed detail and supplies the retention reason. Reads show compacted detail as unavailable, not as a new empty active workflow, and do not invalidate historical completion.
+
+## Selective attachments
+
+Working outputs such as a repeatedly overwritten test-output.txt stay caller-owned until explicitly selected for retention. A task attachment input names a contained regular source file, a safe attachment name and media type. The CLI stages its bytes, records the actual size and publishes a managed copy before committing the Evidence reference. It never accepts a storage destination, follows symlinks or interprets the file as instructions. Detect source changes during capture and reject uncertain collection; this is a bounded file copy, not a universal filesystem snapshot.
+
+The initial bound is 64 attachments and 64 MiB total new payload bytes per task, streamed separately from the 1 MiB JSON request limit. Larger reports must be reduced or explicitly left external with an unavailable-retained-payload limitation; no silent truncation. These are adapter limits, not a requirement to archive output. Names are scoped to Change and independent equal files may be stored twice. Existing names cannot be replaced while referenced; new content uses a new name. An unreferenced orphan from a failed record commit can be reused only after exact byte comparison, or explicitly removed under guarded cleanup. No digest or automatic deduplication is needed.
+
+Payloads live privately at `.rigorloop/artifacts/changes/<change-id>/<name>`. A working Evidence can be replaced without retaining its old log if no current assessment or completion still needs it. Explicit compaction removes the reference before payload cleanup; interrupted cleanup can leave an unreferenced file but cannot leave a supposedly available referenced payload deleted. Missing or unreadable retained files produce limitations. New attachments and new claims of availability require actual bytes; preserving an old unavailable reference while reporting its loss is allowed.
+
+## Atomic publication and recovery
+
+One command publishes one coherent Change update in a short SQLite transaction, including selected supporting rows, issue dispositions, dependency invalidation and the next revision. Use BEGIN IMMEDIATE for mutation admission, check the expected revision inside the transaction, build the complete candidate against that snapshot, validate references and receipt readiness, recheck declared external observations, then commit. A stale revision rejects; it is not automatically merged. Tests, design authoring and review execution happen before recording, outside the transaction. Database writer contention uses a bounded wait and returns busy when exhausted; it does not authorize replay of stale semantic intent.
+
+The initial deployment profile is one local machine with a supported local filesystem, WAL mode, synchronous=FULL and foreign_keys=ON on each connection. Verify effective settings rather than silently accepting unavailable durability or reference checks. SQLite owns database locking, journaling and transaction recovery. Local WAL permits concurrent readers with one writer; network/shared-filesystem deployments are outside this initial profile. Journal settings and platform behavior must be qualified with the selected binding and package. [SQLite transactions](https://www.sqlite.org/lang_transaction.html), [WAL](https://www.sqlite.org/wal.html) and [connection settings](https://www.sqlite.org/pragma.html) provide the mechanism basis; they do not establish RigorLoop's application correctness.
+
+Read related records in one consistent read transaction. A logical read does not alter engineering records, initialize or migrate the schema, compact evidence or choose a recovery outcome; opening SQLite may perform its own journal recovery and coordination. Dry-run validates a candidate without engineering-record writes or attachment publication and reserves nothing for later execution. Temporary connection-admission leases described below are coordination only. Recheck on actual execution. Direct SQL or external editing of the live database is unsupported; repository design files remain outside SQLite's lock and retain the declared observed-check limits.
+
+Before commit, any failed application condition aborts the transaction; do not leave an errored statement's earlier updates eligible for accidental commit. After confirmed commit, response or diagnostic failure cannot roll back the saved decision. If commit outcome cannot be established, report committed unknown and require inspection; a new connection reads recovered current facts before any reconciled retry. SQLite recovery never proves an engineering judgment or repairs arbitrary corruption. Unreadable, corrupt, wrong-project or unsupported-schema stores remain unavailable; never replace them with an empty database or guessed records.
+
+The v4 contract has no application-managed before/candidate record-file journal, per-record publication protocol or caller-selected complete/restore/finish action. The old change recover draft is withdrawn. Supported v3 explicit recovery remains version-scoped. Backup restoration, import and attachment cleanup have distinct explicit scope; none is automatic replay of a failed command.
+
+### Attachment coordination
+
+Capture selected report bytes in a private unique staging file before acquiring the database writer. Detect unstable or unsafe sources; stage without overwriting an existing retained name. Inside the short record transaction, validate the Change revision and destination, publish a stable managed copy with the qualified filesystem durability steps, then insert its metadata and references before commit. A copied payload followed by a database rollback can leave an unused file, never a committed reference to bytes not successfully captured. SQLite does not make external file writes transactional.
+
+Database writers also serialize managed-name publication and explicit unused-payload cleanup. Before deleting an unused managed name, acquire writer exclusion and recheck that no committed reference or retained metadata protects it; keep exclusion through the deletion. Removal of referenced metadata first commits the authorized retention update, then cleanup reacquires exclusion and rechecks current use. A concurrent actor may have reused or selected the name; such a file must remain. Staging is invocation-owned and is not swept while capture is active. Failed cleanup leaves a reportable unused file; it does not undo the record update. No background deletion based solely on age or a directory scan is admitted.
+
+### Inspect after an interrupted update
+
+This target path starts with a lost or interrupted recording call. The caller inspects current context; SQLite resolves its own transaction state. The old design's user-selected record-file recovery actions are no longer needed.
+
+<!-- architecture-diagram: recover-record-update -->
+
+```d2
+shape: sequence_diagram
+agent: "Engineering agent"
+cli: "Command handling\nMOD-010"
+store: "Work record storage\nMOD-011"
+db: "Embedded SQLite"
+agent -> cli: "change context: inspect after interruption"
+cli -> store: "Read the selected Change without replay"
+store -> db: "Open associated database and establish a read snapshot"
+db -> db: "Resolve journal state using SQLite recovery"
+db -> store: "Return a coherent committed snapshot or an explicit error"
+store -> cli: "Return current facts and revision; report any limitation"
+cli -> agent: "Show current handoff or explain store unavailability"
+agent -> agent: "Reconcile intent before any new update"
+```
+
+The success path returns the state SQLite establishes; the diagram does not claim that an error path supplies a snapshot. If the original transaction did not commit, its database changes are absent. If it committed, current state may include that update or subsequent updates. Matching IDs alone cannot prove a permanent operation receipt. Missing report bytes remain visible as an evidence limitation. An unreadable store requires investigation or authorized backup restoration, not another automatic attempt to complete the original intent.
+
+### Transaction states
+
+These are application-visible transaction outcomes, not stored workflow states or a second recovery journal. SQLite makes a database transaction all-or-nothing. Unknown is the caller's knowledge after an uncertain response; it is not a partially approved or usable record state.
+
+<!-- architecture-diagram: record-transaction-states -->
+
+```d2
+direction: down
+ready: "Coherent current state"
+active: "Write transaction\nUncommitted changes"
+saved: "Committed\nNew coherent state"
+prior: "Rolled back\nPrior coherent state"
+unknown: "Caller outcome unknown\nDo not replay"
+inspect: "Reopen and inspect\nSQLite resolves journal state"
+unavailable: "Store unavailable\nInvestigate or restore backup"
+ready -> active: "Begin write; check expected revision"
+active -> saved: "Commit validated update"
+active -> prior: "Abort; SQLite rolls back uncommitted changes"
+active -> unknown: "Connection or process interrupted"
+saved -> unknown: "Response not delivered"
+unknown -> inspect: "Read current context"
+inspect -> ready: "Coherent current snapshot established"
+inspect -> unavailable: "State cannot be read safely"
+```
+
+Inspection may reveal later committed work; it does not recreate a receipt history. A confirmed commit is never rolled back to compensate for response loss. An unused attachment may survive either failed recording path until guarded cleanup, while database records remain coherent. Restoring a backup is a separately authorized replacement of operational data, not transaction rollback or a continuation of an old command.
+
+### Target operational storage placement
+
+The first v4 implementation uses one SQLite database per local checkout. Nested boxes mean containment. Engineering design, applicable rationale and diagram sources remain in Git; only operational accounts and selected payloads are private local data.
+
+<!-- architecture-diagram: operational-storage-placement -->
+
+```d2
+direction: down
+project: "Selected local project" {
+  definitions: "Git-tracked engineering model\ndesign/ and source code\n.rigorloop.json — project identity"
+  private: "Private runtime area\n.rigorloop/ — excluded from Git" {
+    current: "Operational accounts\nrigorloop.db\nSQLite-owned WAL and SHM sidecars"
+    attachments: "Selected retained payloads\nartifacts/changes/\n{change-id}/{name}"
+    staging: "Temporary attachment staging\nartifacts/.staging/\nInvocation-owned copies"
+    maintenance: "Maintenance coordination\naccess/ leases and maintenance/\nFence, candidate and retained prior bytes"
+  }
+}
+```
+
+SQLite sidecars are operational database state, not extra authoritative record stores or files users should clean manually. The existing generated Physical placement retains the observed v3 docs/changes implementation. It does not imply active dual writes. The withdrawn v4 filesystem paths and coordination snapshots are not implementation targets. Schema/migration code belongs to the packaged product; backup output belongs to an explicitly selected destination outside the live store.
+
+## Database schema, backup and migration
+
+The maintenance contract serves SR-074–077 through store backup, store restore and store migrate, specified by [Command handling](../MOD-010-engineering-command-interface/README.md#store-maintenance). Transfer uses a selected backup and restore into a matching empty destination; there is no separate transfer or general SQL command. Database schema 1 and record exchange v4 are independently versioned. Maintenance never edits repository design, project identity, approvals or skill installation.
+
+### Maintenance admission
+
+Maintenance needs a quiescent local store, including attachment capture/cleanup. Every supported operational invocation publishes an invocation-owned connection lease under `.rigorloop/access/` before opening the database or capturing attachments, rechecks for a maintenance fence, and closes all resources before removing the lease. Capability inspection may read the fence and its observation token without opening the database or removing it. A maintenance operation exclusively creates `.rigorloop/maintenance/active.json` before checking leases; new ordinary operations return busy while it exists. Check-fence, publish-lease, recheck-fence closes the admission race: a late entrant seeing the fence must exit before database access. Reads and dry-run use the same temporary admission protocol without changing engineering records or reserving future updates.
+
+Maintenance waits at most 5 seconds for admitted operations to leave, then returns busy without replacement and removes only its own unused fence; it does not kill another actor. An ordinary lease can be removed as stale only after its local owner is conclusively absent. PID reuse, permission errors or uncertain process identity are not evidence of absence. A crashed maintenance owner leaves its fence and manifest for explicit resume, not age-based deletion. Bind exclusion and owned paths to the project and store incarnation. Local process checks and filesystem durability require supported-platform proof. Arbitrary direct SQL/file editing is outside this cooperation contract.
+
+This small admission protocol exists because replacing a database plus external attachments cannot be protected solely by a lock inside a database being replaced. SQLite still owns ordinary transaction atomicity and concurrent reads/writes; the fence is used only for maintenance. No per-Change filesystem transaction journal is reintroduced.
+
+### Backup scope and format
+
+A backup input selects all retained Changes or an explicit nonempty list of Change IDs. Snapshot the database with the binding's backup API while holding maintenance exclusion, then, for a selected subset, remove excluded Changes and their owned rows only from the private snapshot. Validate the resulting closure. Finalize the staged snapshot in rollback-journal mode and close it before hashing so database.sqlite is self-contained; live WAL/SHM files are not backup members. Record excluded Change IDs and external repository references explicitly. Each included Change brings its complete currently retained accounts and registered attachments; compact unnecessary detail explicitly before backup if desired. No discarded run history or unselected directory contents are reconstructed.
+
+Publish an absent destination directory containing `manifest.json`, `database.sqlite`, `attachments/<change-id>/<name>` and a final `complete.json`. The manifest declares backup format 1, backup ID, project ID, source incarnation/store revision, database schema, record contract, included/excluded Changes, external references and a list of each included file's path, byte count and SHA-256 digest. complete.json contains the manifest digest and is written only after database checks, payload checks and durable publication succeed. The exact archive/container can be added later; the first format is a portable directory that existing backup tools can copy.
+
+Backup-specific digests detect corruption of retained bytes; they are not attachment IDs, deduplication keys, assessment approval or a requirement to hash every working file. Validate the manifest and its completion marker before trusting members; unknown fields/versions, duplicate or escaping paths, symlinks, digest/size mismatch and missing required payloads reject. A package with no valid completion marker is incomplete. Stage output beside the destination, never replace an existing backup, and report incomplete staging after failure. The source and other backups remain unchanged. The [SQLite backup API](https://www.sqlite.org/backup.html) covers the database snapshot; RigorLoop owns attachment capture and complete-bundle validation.
+
+### Create a coherent backup
+
+<!-- architecture-diagram: sqlite-backup-sequence -->
+
+```d2
+shape: sequence_diagram
+actor: "Engineer or agent"
+cli: "Command handling\nMOD-010"
+store: "Work record storage\nMOD-011"
+db: "SQLite"
+files: "Private backup staging"
+actor -> cli: "store backup: scope and absent destination"
+cli -> store: "Validate explicit request"
+store -> store: "Fence new access; wait for active leases"
+store -> db: "Snapshot associated store through backup API"
+db -> files: "Write standalone database snapshot"
+store -> files: "Select Change closure; copy required attachments"
+store -> files: "Check integrity; write manifest and completion marker"
+store -> store: "Publish backup directory; release maintenance fence"
+store -> cli: "Return captured scope, revision and backup identity"
+cli -> actor: "Report complete backup or explicit failure"
+```
+
+Snapshot and artifact capture share exclusion, so cleanup cannot delete a needed file between them. Failure before complete publication never reports a restorable backup. This is an intentionally short offline maintenance window, not a claim of uninterrupted recording during arbitrary large backups.
+
+### Restore and staged activation
+
+Restore validates a complete backup, project association, schema support and all selected payloads in private staging before touching active data. Run database integrity_check, foreign_key_check and semantic validation, including typed-account totality and required attachment coverage. A subset backup restores exactly its declared subset into an empty destination or explicitly replaces the entire selected live operational store; it never merges with the destination's other Changes. Show the omitted destination scope in the request assessment. Restored conclusions retain their original applicability, and context does not claim they were newly assessed against current repository files.
+
+An occupied destination requires an expected whole-store revision token and explicit replacement intent. Recheck under maintenance exclusion after staging. An unreadable destination instead requires a fresh recovery observation identifying the exact existing file set and explicit replacement intent; do not invent a normal revision. capabilities supplies either kind of bounded store observation. Reject foreign files or changed destination identity rather than guessing overwrite authority. Configure the staged candidate for the active WAL profile and close/checkpoint it before its final file identities are recorded. Restore creates a new store incarnation, preserving original Change revisions and recording source identity in the maintenance receipt; old expected-revision tokens cannot match it.
+
+Before replacing an existing store, checkpoint the quiescent live database where possible and close all connections. A corrupt unreadable store is preserved with its sidecars as a displaced set; it is never mixed with the replacement. A temporary manifest under `.rigorloop/maintenance/<operation-id>/` declares the operation, expected destination, exact before/candidate file identities, selected backup identity and candidate incarnation. Preserve the previous database/sidecars and managed `artifacts/changes/` in the operation's displaced directory, then install the validated candidate database and attachments at their canonical paths. Other `.rigorloop` contents remain untouched. All moves use the qualified same-filesystem protocol and durable directory updates.
+
+Multiple path moves are not one filesystem transaction. Keep the fence present while installing, reopening and validating the candidate. Only a durable activated marker establishes publication; then release the fence and return the prepared result. Interruption before activation leaves the store unavailable, with before/candidate bytes preserved. Explicit resume uses the operation ID and manifest observation token and selects finish or rollback. Reconcile each path against the recorded before/candidate identities; any foreign or ambiguous value stops. Rollback restores only verified prior operational bytes and is allowed only before activation. After activation, finish may validate and release the fence but cannot undo committed replacement. A lost result never authorizes restoring the old store over subsequent work. Displaced data remains reported and retained until separately authorized retirement resolves current reliance; it is not automatically deleted as cleanup.
+
+### Restore an authorized snapshot
+
+<!-- architecture-diagram: sqlite-restore-sequence -->
+
+```d2
+shape: sequence_diagram
+actor: "Engineer or agent"
+cli: "Command handling\nMOD-010"
+store: "Work record storage\nMOD-011"
+staging: "Validated candidate and retained prior store"
+live: "Active SQLite and managed attachments"
+actor -> cli: "store restore: backup and destination expectation"
+cli -> store: "Admit explicit replacement scope"
+store -> staging: "Validate backup, project, records and payloads"
+store -> store: "Fence access; wait for leases; recheck destination"
+store -> staging: "Retain recovery manifest and prior bytes"
+staging -> live: "Install candidate while access remains fenced"
+store -> live: "Reopen and validate new store incarnation"
+store -> staging: "Durably mark activated"
+store -> store: "Release fence; retain prior store for explicit retirement"
+store -> cli: "Return replacement outcome and retained prior location"
+cli -> actor: "Report restored scope; no renewed engineering approval"
+```
+
+The diagram shows successful activation. Before the activated marker, failure leaves the fenced recovery state; after it, reporting failure preserves the activated result. Resume never replays engineering decisions.
+
+### Schema upgrades and legacy import
+
+store migrate has two explicit modes. Schema-upgrade validates the current project and supported source user_version, creates a complete pre-upgrade backup, copies the live store into private staging and applies packaged ordered migrations transactionally there. Update user_version only with a successfully validated migration step; reject newer unknown schemas. Activate the completed candidate through the same fenced replacement protocol, with a new incarnation. Reads never run migrations. A failed upgrade preserves the original active or recoverable store and the pre-upgrade backup.
+
+Legacy-import is a supported-source transformation into an absent destination, never a merge with an existing SQLite history. The request selects source contract/root, Change IDs, exact source observations, required original-retention destination and attributable dispositions. Classify each selected source record as imported with unchanged meaning, retained original with explicit current disposition, or blocked. Preserve the original bytes and source identity of imported/archival material in the selected external originals package; source docs/changes remains untouched. Capture source records through their supported coherent reader; unresolved source transactions or unavailable registered content block import. Quiesce legacy writers during capture and recheck the source basis before activation; the v4 maintenance fence does not control an old v3 executable or arbitrary external editor. Package source adapters explicitly enumerate supported versions and field mappings; an unknown format is not accepted by a generic JSON converter.
+
+A legacy Proposal or milestone approval is not a requirements or whole-change approval. Preserve its original meaning in retained source material. Imported active work must explicitly expose missing target bases/reviews and all unresolved issues; mapping a source approval into an incompatible target purpose is blocked. Any identity collision, unresolved reference or unexplained change in decision meaning blocks activation. Reusable IDs are preserved; mappings that require identity changes need explicit disposition and source attribution, never silent renumbering. A successful import reports the disposition of every selected source record and the preserved originals location; it neither retires source data nor activates workflow policy automatically. Subsequent ordinary operation uses only SQLite, without v3 fallback or dual writes.
+
+### Browser navigation walkthrough
+
+For chg-browser-navigation, create one Change and its revision; record Work navigation, Evidence navigation-checks and any named selected report in one transaction. Repeating local tests replaces the comparable Evidence account and relevant work links, not an activity ledger. review prepare creates the code Review's prepared subjects; review record supplies the independent conclusion and findings. verification record supplies the distinct final assessment, and change complete saves the compact historical account once its prerequisites are satisfied. The database contains references to the browser design and implementation files, never their authoritative definitions.
+
+Agent B reading an older revision cannot overwrite Agent A's update. Interruption before commit leaves the previous records and possibly an unused report copy; interruption after commit with a lost response requires current-context reconciliation. Replacing evidence after review exposes its support change. At completion the selected acceptance support survives optional working-account compaction. A backup of that Change contains only its currently retained scope; restoring it preserves the historical account and changes the store incarnation, not the review's engineering meaning.
+
+## Adoption and compatibility
+
+SR-083 adoption reconciles policy, guidance, validators, recording and active-work dependencies together. Prepared Adoption does not activate anything; activated requires the actor's compatible installed/canonical basis and selects active_adoption, while unavailable clears it. Installation or a saved record cannot decide adoption. Per-Change activation is atomic; multiple Changes are not advertised as an atomic project migration.
+
+V3 and any explicitly retained source data retain their original meaning under the supported migration contract. A qualified importer preserves required originals and records active-work disposition; this design edit does not migrate or delete user evidence. V4 selects SQLite directly with no filesystem fallback, dual-write or withdrawn draft-command aliases. SR-074–078 retain their selected backup, restoration, transfer, migration and bounded history-query obligations. They do not impose an exhaustive activity history. Publishing the browser or installing skills does not activate this backend.
 
 ## Test design
 
-Use the [shared rules](../../../../../../docs/design/test-design/rules.md) and the [Operations parent groups](../../test-design.md). The following are proposed proof obligations, not passing implementation evidence.
-
-| Group | Fault and independently observable outcome |
-| --- | --- |
-| Shape and reference integrity | Unknown stage, role, kind, scope and outcome; absent subject with a hash; duplicate IDs; wrong-kind and cyclic predecessor refs; unknown value plus unrelated inconsistency. Reject before publication, with unchanged store bytes/rows. |
-| Requirement/design separation | Valid reuse basis has no new IR and no completed AR/Function allocation; proposed-to-reviewed-to-accepted subjects match. Future-design absence does not block requirement recording; changed accepted subjects reject structurally. |
-| Assessment preservation | Candidate A changes requested, B approved in the same code gate; update a finding and compare original A bytes/core, original finding and both attempts. Advisory cannot be relabeled; a single milestone has one formal gate. |
-| Current reliance | Pointer to wrong candidate, stale external bytes, absent-path reappearance, unresolved contrary evidence and a new finding after approval. Structural mismatches reject; external/semantic contradictions remain visible and prevent unsupported final reliance. |
-| Publication and retry | Two actors start at one revision; only one guarded update wins. Interrupt before commit, after commit and before receipt. Independently inspect prior/candidate preservation, IDs and outcome; retry must not duplicate a decision. |
-| Import and adoption | V3 source, malformed/unknown source, outstanding recovery, changed archive identity, unselected Change, partial installation and competing activation. Preserve originals and unrelated work; never infer new review authority or atomic multi-Change activation. |
-
-Process sequencing is defined by the publication/adoption protocol; physical backend and artifact durability remain with the separate operational-store design. Existing observed realization facets remain unchanged. Alternatives rejected are reinterpretation of v3, mutable review cores, file paths as public record identities, and simultaneous authoritative backends. Revisit backend-specific transaction realization when the storage design supplies its supported adapter; do not weaken these semantic guarantees.
+Apply [Operations integration intent](../../test-design.md) and the shared test rules. Compare a complete handoff with omitted review standing, missing authority and unavailable evidence: the gaps must remain visible. Compare replacement of an equivalent working check with a smoke pass that would hide another failure. Replace an assessment after correction while preserving an omitted open finding; permit explicit disposition and later safe compaction. Retain a compact assessed support summary when a current evidence account changes. Exercise atomic updates, stale writers, uncertain receipts, SQLite interruption outcomes, unavailable stores and explicit attachment ingestion/cleanup. A completed Change read must be stable after unrelated repository edits, while a linked new regression remains actionable. These are design observations; no successor runtime implementation or new executable suite is claimed.

@@ -38,8 +38,8 @@
   },
   "acceptance_criteria": [
     "A request supplies its required semantic fields and exact selectors; missing decisions reject with the named required field without defaults, interactive invention, or calling another actor. Callers do not have to build registry entries, deterministic paths, or serialization scaffolding.",
-    "The command, operation, change identity, contract, expected revision, and declared subject read identities agree under their owning request rules. Null revision is admitted only for current creation and null read identity only for expected absence; the adapter does not refresh a supplied expectation.",
-    "A targeted batch admits only the bounded ordered catalogue and exact targets. Advanced replacement, where explicitly supported by the selected version, retains complete candidate bytes; v4 exposes no generic file replacement API. Unsupported operations, arbitrary patches, cross-Change edits and creation inside a batch reject.",
+    "Command, Change, selected contract and expected revision/read basis agree. V3 retains its identity rules. V4 labels reported versus compared subject bases and uses a recovery-specific expected identity when a normal coherent revision is unavailable; no expectation is silently refreshed.",
+    "Admit only the selected version’s bounded task inputs. V3 retains its targeted-batch contract; v4 constructs related task facts internally with no public arbitrary batch, file replacement, SQL or cross-Change mutation.",
     "Every targeted mutation admits its declared dry-run form and passes preview intent without requesting publication, reservation, or recovery. Its result identifies the candidate effects as a preview and never as a saved update.",
     "Actual execution does not reuse preview as a reservation, approval, or freshness guarantee; it sends the explicit request through the fresh checked execution boundary and preserves conflict or missing-input outcomes for the actor."
   ],
@@ -61,6 +61,11 @@
       "source": "SRC-WORKFLOW-CONTRACTS",
       "locator": "AR-018",
       "basis": "Reconcile the existing allocation with refined SR-042–044 and the explicit v4/v2 contract. Keep current-v3 byte and mutation guarantees version-scoped, preserve historical originals, and distinguish precommit recovery from committed outcome reporting. This target allocation is not runtime qualification."
+    },
+    {
+      "source": "SRC-CURRENT-HANDOFF",
+      "locator": "AR-018",
+      "basis": "Refine existing current-state responsibility and selective retention; observed runtime mappings remain version-scoped."
     }
   ],
   "constrains": [

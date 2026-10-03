@@ -8,7 +8,7 @@
     "method": "5W2H",
     "what": {
       "problem": "Published command behavior, record preservation, and failure outcomes are not explicit in the initial REM model; broad knowledge and change capabilities alone do not explain how callers safely operate on the delivered recording interface. Callers should not have to navigate operational storage files or manage manifests to obtain context or record decisions; separate local history also needs explicit availability and recovery outcomes.",
-      "desired_outcome": "Callers can select useful recorded context, supply their own decisions, obtain faithful bounded outcomes, and recover interruption under the published command contract. This includes bounded project-local operational queries and explicit backup, restoration and transfer requests without conflating those operations with engineering decisions."
+      "desired_outcome": "Callers obtain a coherent current handoff and record explicit decision-relevant changes through supported tasks, without managing storage layout or reconstructing activity history."
     },
     "why": {
       "rationale": "Automation and people depend on predictable commands, precise selection, preserved neighboring work, and outcomes that separate storage success from approval. The same responsibility applies when multiple local agents share operational records and when storage realization changes."
@@ -32,7 +32,7 @@
       ]
     },
     "how": {
-      "approach": "Derive explicit, bounded inspection and recording obligations from the retained CLI and Record Format contracts and the local operational-history need. Preserve actor-supplied meaning, project and subject identity, reference integrity, stale-write protection, coherent publication and faithful outcomes while reconciling representation-specific behavior through controlled migration. Callers select engineering meaning without constructing storage scaffolding. Expose absence, incomplete scope and incompatible recovery inputs explicitly; do not silently initialize over missing history or infer approval. IR-003 owns backup content, retention and restoration meaning; this IR owns their reliable explicit command interface."
+      "approach": "Provide bounded current-state reads and explicit updates with actor attribution, reference integrity, stale-write protection, atomic publication and truthful recovery outcomes. Retain selected history only under its declared scope; unavailable information is not empty state or approval. IR-003 owns handoff and retention meaning; this IR owns reliable commands."
     },
     "how_much": {
       "scope": "Covers command admission, discovery, selected reads, explicit recording, concurrent local access, transaction recovery, result projection and private diagnostics, extended to supported operational backup, restoration, transfer and migration commands. SR-040–047 and new SR-078 express the revised draft operational obligations. Existing ARs, Interfaces and realization observations retain their v3 scope and require downstream architecture reconciliation before replacement-store adoption; their prior assessments do not establish coverage of the extension. Installation content and policy remain separately owned. The scope does not introduce command support for editing REM design JSON, a workflow decision engine, hosted services, distributed history merging or new platform/performance guarantees. Database transaction recovery and backup restoration remain distinct operations; a fresh engineering checkout alone supplies no operational-history availability claim."
@@ -61,6 +61,11 @@
       "source": "SRC-LOCAL-OPERATIONAL-ANALYSIS",
       "locator": "IR-008",
       "basis": "Draft derivation from the refined IRs and RR proposal; no approval, implementation or satisfaction claim."
+    },
+    {
+      "source": "SRC-CURRENT-HANDOFF",
+      "locator": "IR-008",
+      "basis": "User-selected current handoff and selective retention refinement. Reuse existing identity and responsibility; no runtime adoption or independent approval is asserted."
     }
   ],
   "confirms": [

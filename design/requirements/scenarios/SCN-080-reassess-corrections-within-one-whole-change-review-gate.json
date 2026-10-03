@@ -21,14 +21,14 @@
     },
     {
       "actor": "Reviewer",
-      "action": "Records the current judgment, exact subjects, findings and rationale while preserving earlier attempts."
+      "action": "Updates attributable current review standing, assessed scope, findings and rationale; retains prior support only where needed for current reliance."
     },
     {
       "actor": "System",
       "action": "Reports whether the current whole-change judgment can support the separate Verify stage."
     }
   ],
-  "expected_outcome": "An adequate independent judgment covers the complete current Change through one gate, with honest attempt history and no milestone approval substitution.",
+  "expected_outcome": "An adequate independent judgment covers the current complete Change through one gate, without milestone approval substitution or a mandatory permanent attempt ledger.",
   "alternatives": [
     {
       "condition": "The Change has one milestone.",
@@ -37,6 +37,10 @@
     {
       "condition": "The correction is narrow and prior support demonstrably remains applicable.",
       "outcome": "Reassessment reuses justified support without mechanically rereading unchanged files or rerunning unaffected checks."
+    },
+    {
+      "condition": "An approved whole-change review is followed only by edits shown to have no material effect on its conclusions.",
+      "outcome": "The responsible engineer records the changed scope and reason for retaining applicability. The original judgment remains unchanged, no additional Review attempt is required, and relevant checks and final Verify still apply."
     }
   ],
   "failures": [
@@ -47,6 +51,10 @@
     {
       "condition": "Implementation changed after an approval without renewed applicability assessment.",
       "outcome": "The old approval does not automatically cover the new candidate."
+    },
+    {
+      "condition": "Changes are labeled harmless solely because they are small, affect comments, or appear to be formatting; cumulative effects or comparison evidence remain unresolved.",
+      "outcome": "The label cannot establish current applicability. Assess the actual effects and obtain independent reassessment for material changes before relying on approval."
     }
   ],
   "exercises": [
@@ -69,6 +77,16 @@
       "source": "SRC-WORKFLOW-REQUIREMENT-REVIEW",
       "locator": "design/requirements/sources.md#src-workflow-requirement-review",
       "basis": "Document-based author assessment under the explicit Constitution exception confirms this Scenario as requirement-analysis knowledge. It is not independent review, executed product evidence or workflow activation."
+    },
+    {
+      "source": "SRC-PROPORTIONATE-REVIEW",
+      "locator": "SCN-080",
+      "basis": "User-directed refinement of review applicability after subsequent edits: preserve original judgments, allow justified harmless-change continuation and independently reassess material effects. Author-assessed design/requirement refinement only; no runtime adoption or independent approval is claimed."
+    },
+    {
+      "source": "SRC-CURRENT-HANDOFF",
+      "locator": "SCN-080",
+      "basis": "User-selected current handoff and selective retention refinement. Reuse existing identity and responsibility; no runtime adoption or independent approval is asserted."
     }
   ]
 }

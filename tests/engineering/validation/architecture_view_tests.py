@@ -54,6 +54,8 @@ class ArchitectureViewProjectionTests(unittest.TestCase):
             source_paths = []
             for entry in facet.get("observed", {}).get("public_entries", []):
                 source_paths.extend(entry[field] for field in ("source_path", "contract"))
+            for choice in facet.get("proposed", []):
+                source_paths.extend(entry["contract"] for entry in choice.get("public_capabilities", []))
             for group in facet.get("observed", {}).get("test_groups", []):
                 source_paths.extend((group["contract"], group["execution"]["owner_contract"]))
                 for items in (group["test_sources"], group["fixtures"],
@@ -124,7 +126,19 @@ class ArchitectureViewProjectionTests(unittest.TestCase):
         })
         (owner / "modules").mkdir()
         command = self.entity_path(root, "MOD-010").parent
-        command.rename(owner / "modules" / command.name)
+        relocated = owner / "modules" / command.name
+        command.rename(relocated)
+        for path in (root / "design/architecture").rglob("*.json"):
+            record = json.loads(path.read_text())
+            changed = False
+            for choice in record.get("proposed", []):
+                for entry in choice.get("public_capabilities", []):
+                    prefix = command.relative_to(root).as_posix() + "/"
+                    if entry["contract"].startswith(prefix):
+                        entry["contract"] = relocated.relative_to(root).as_posix() + "/" + entry["contract"][len(prefix):]
+                        changed = True
+            if changed:
+                self.write_record(path, record)
         interface = self.entity_path(root, "IF-004")
         record = json.loads(interface.read_text())
         record["exposed_through"] = ["MOD-020", "MOD-018"]

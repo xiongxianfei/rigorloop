@@ -37,8 +37,8 @@
     }
   },
   "acceptance_criteria": [
-    "Validate and publish explicit work, gate, attempt and Verify facts under the selected supported record contract without requiring approval per milestone.",
-    "Preserve every prior judgment and exact subject while changing active-work representation; reject unknown or mixed contracts before mutation.",
+    "Publish coherent current work, review, evidence and Verify accounts under the selected contract without mandatory milestone approval or an activity ledger.",
+    "During workflow adoption preserve required original source meaning and reconcile active dependencies. During normal work permit explicit current-account replacement and selective compaction; reject unknown or mixed contracts before mutation.",
     "Use fresh guarded coherent publication and truthful recovery outcomes; persistence must not infer semantic approval or alter engineering model files."
   ],
   "assumptions": [
@@ -58,6 +58,11 @@
       "source": "SRC-WORKFLOW-DESIGN",
       "locator": "SR-083; AR-040",
       "basis": "Draft integrated design from the accepted requirement-first basis. This defines target responsibility and cooperation, not installed capability, design approval, runtime evidence or SQLite adoption."
+    },
+    {
+      "source": "SRC-CURRENT-HANDOFF",
+      "locator": "AR-040",
+      "basis": "User-selected current handoff and selective retention refinement. Reuse existing identity and responsibility; no runtime adoption or independent approval is asserted."
     }
   ]
 }

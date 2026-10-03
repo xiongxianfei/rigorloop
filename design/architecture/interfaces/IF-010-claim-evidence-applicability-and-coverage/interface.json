@@ -27,7 +27,7 @@
         "Account for every included criterion, expose missing or inapplicable observations, and retain unperformed, interrupted and failed-to-execute assessment states separately from observed criterion failure.",
         "Keep contrary observations and their recorded disposition visible alongside favorable evidence. Missing required support or an unresolved material contradiction leaves the affected claim unestablished.",
         "Expose the reasoning, accountable source and limits of supplied engineering judgments without creating an unstated semantic conclusion from mechanical coverage. A narrower supported judgment names excluded scope; an accepted exception or tradeoff is not observed satisfaction.",
-        "After relevant changes, identify affected support and necessary reassessment or verification repetition. Incomplete dependencies remain visible as uncertainty; preserve original evidence and prior judgments against their historical basis.",
+        "For current claims, identify affected support and proportionate reassessment. Retain the assessed basis and concise support needed for reliance, not every superseded observation. Completed Change accounts remain historical and are not continuously compared with the repository; later regressions become new linked work.",
         "Apply the supplied governing freshness and deferral requirements to reliance on evidence. For release consumption, required stale, incomplete, failed, contradictory or mismatched support remains blocking despite applicable approval; local, cached or preflight results cannot replace explicitly required fresh public observations.",
         "Keep owner-recorded deferrals attributable with their rationale, accepted risk, follow-up and limits. An unapproved deferral, or one that purports to waive a nondeferable duty, does not supply the missing support. Any question of applicable permission remains separate under IF-009.",
         "Return the bounded assessment and its provenance without executing verification, inventing observations or judgments, sealing a candidate, declaring full release qualification, authorizing publication or claiming public success."
@@ -84,6 +84,11 @@
       "source": "SRC-WORKFLOW-DESIGN",
       "locator": "IF-010",
       "basis": "Draft integrated design from the accepted requirement-first basis. This defines target responsibility and cooperation, not installed capability, design approval, runtime evidence or SQLite adoption."
+    },
+    {
+      "source": "SRC-CURRENT-HANDOFF",
+      "locator": "IF-010",
+      "basis": "Refine existing current-state responsibility and selective retention; observed runtime mappings remain version-scoped."
     }
   ]
 }

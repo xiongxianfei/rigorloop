@@ -41,7 +41,7 @@
     "The adoption scope identifies and reconciles the Constitution, Workflow/Assessment, specialist skills and conditional references, templates, routing/automation, validators, recording interfaces and generated distributions that consume the replaced responsibilities.",
     "The active proposal/proposal-review responsibilities are replaced by requirement-analysis/requirement-review, and combined design authoring by the three selected authors. The old meanings do not remain as parallel active public routes; retained RR proposal material and historical approvals preserve their original meaning.",
     "Every active Change within the selected adoption scope receives an explicit disposition of its requirement basis, remaining work, blockers, gate state and still-applicable review evidence. Missing approvals are not fabricated and old milestone reviews are not relabeled as whole-change approval.",
-    "Supported records distinguish milestone progress, advisory scope, whole-change gate identity, individual assessment attempts and final Verify; each judgment retains its subjects, outcome and basis. Milestones do not require approval records to represent completion.",
+    "Supported records distinguish milestone progress, advisory feedback, current formal review standing and distinct final Verify. Retain the subjects, attribution and rationale needed for current decisions and compact completion; neither milestone approval records nor permanent assessment-attempt history is required.",
     "Validators distinguish record structure, requirement-review adequacy, design completeness and final evidence sufficiency. Passing a schema or storing a result grants no engineering approval; missing downstream design cannot by itself reject an otherwise sufficient requirement basis. Canonical requirement and System Design methods apply Function-coverage completeness at the design stage, not as a prerequisite for accepting the requirement basis.",
     "Skills use the actually supported scoped CLI interface for governed recording. They neither write SQL nor depend on invented commands; workflow adoption and database migration have explicit separable prerequisites rather than a mandatory mutual dependency.",
     "A partial or failed transition does not expose conflicting contracts as one valid active workflow or destroy current work. Existing active authority remains identifiable until a coherent adoption or supported recovery is established.",
@@ -76,18 +76,23 @@
     },
     {
       "source": "SRC-WORKFLOW-DESIGN",
-      "locator": "SR-083 AC1\u20133,7; AR-038, AR-039, AR-041, AR-042",
+      "locator": "SR-083 AC1–3,7; AR-038, AR-039, AR-041, AR-042",
       "basis": "Proposed allocation composition: Adoption disposition spans selected work and consumers; package and installation facts are necessary inputs, not activation or review judgments. This is a design argument, not executed satisfaction evidence."
     },
     {
       "source": "SRC-WORKFLOW-DESIGN",
-      "locator": "SR-083 AC4\u20136; AR-039, AR-040",
+      "locator": "SR-083 AC4–6; AR-039, AR-040",
       "basis": "Proposed allocation composition: Guidance supplies explicit supported operations and stage decisions; persistence preserves exact work/attempt facts and guarded publication without semantic approval. This is a design argument, not executed satisfaction evidence."
     },
     {
       "source": "SRC-WORKFLOW-DESIGN",
       "locator": "SR-083 AC8,9; AR-039, AR-041",
       "basis": "Proposed allocation composition: One canonical method source is distributed coherently while portable specialist use, support activities and external-action authority retain their limits. This is a design argument, not executed satisfaction evidence."
+    },
+    {
+      "source": "SRC-CURRENT-HANDOFF",
+      "locator": "SR-083",
+      "basis": "User-selected current handoff and selective retention refinement. Reuse existing identity and responsibility; no runtime adoption or independent approval is asserted."
     }
   ],
   "confirms": [

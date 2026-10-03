@@ -15,7 +15,7 @@ MOD-017 provides [IF-011](../../../../interfaces/IF-011-engineering-work-context
 
 ## Resume and progress
 
-Start with an identified project, Change, selected workflow contract and requested scope. Read the current operational basis and inspect the referenced engineering subjects. FUNC-025 exposes missing, stale or conflicting context; a checkout without operational history does not prove that no work occurred. FUNC-026 recognizes applicable standing authority without demanding another approval for an already covered action.
+Start with an identified project, Change, selected workflow contract and requested scope. Read the seven-section current handoff: goal/scope/authority, governing basis, progress, open issues and rationale, relevant evidence, review standing, and next action. Inspect the referenced engineering subjects needed for the next decision, not all historical activity. FUNC-025 exposes missing, stale or conflicting context; a checkout without operational history does not prove that no work occurred. FUNC-026 recognizes applicable standing authority without demanding another approval for an already covered action.
 
 <!-- architecture-diagram: resume-and-progress -->
 
@@ -45,13 +45,15 @@ Publication outcomes distinguish a rejected stale update from an interrupted att
 
 Once progress is coherently recorded, route selects the next eligible activity within existing authorization. Completed milestone scope and passing required checks can permit the next milestone without a review assignment. Failed checks, known in-scope defects and unresolved dependencies remain substantive blockers for affected work. A complete implementation candidate is handed to the [parent-owned whole-change review interaction](../../README.md#whole-change-review-and-correction). An isolated slice request does not authorize additional implementation.
 
+Update the handoff when a material blocker, evidence basis, review conclusion, authority limit or next action changes, and before transfer. Routine local runs need no permanent records. Current evidence can be replaced where comparable; open issues survive omission. Completed Changes return a compact historical account without ongoing comparison to the repository; later regression becomes linked new work.
+
 ## State and approval distinctions
 
 | Fact | What it establishes |
 | --- | --- |
 | Milestone progress and check outcomes | Work actually performed within its scope, remaining work and blockers; no review approval. |
 | Advisory findings | Feedback on the inspected subjects; serious defects still require disposition, but advice cannot settle the formal gate. |
-| Review attempt | One attributable judgment on exact subjects and governing basis; corrections retain earlier attempts under their original meaning. |
+| Review attempt | One attributable judgment on exact subjects and governing basis; retain its basis while relied upon; superseded detail may be compacted after issue disposition. |
 | Applicable whole-change approval | An assessor-supported conclusion for the complete current candidate, including justified retained coverage after corrections. |
 | Verify result | A separate scoped assessment of whether current evidence supports completion. |
 | Authority assessment | Whether a specific proposed action is covered by applicable policy and grants; evidence and approval cannot substitute for it. |

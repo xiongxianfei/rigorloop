@@ -37,7 +37,7 @@
     },
     {
       "condition": "The reviewer also explicitly decides to change applicability.",
-      "outcome": "A supported batch can include that separate explicit decision without inferring it from the limitations prose."
+      "outcome": "The owning task can publish the explicitly supplied applicability decision with the explanation change without inferring it from prose."
     }
   ],
   "failures": [
@@ -46,7 +46,7 @@
       "outcome": "The system rejects or conflicts without constructing a partial assessment or silently retargeting the correction."
     },
     {
-      "condition": "The update overlaps another assignment in the same batch.",
+      "condition": "The update overlaps another assignment in the same task submission.",
       "outcome": "The whole candidate rejects rather than silently choosing one actor value."
     }
   ],
@@ -69,6 +69,11 @@
       "source": "SRC-PUBLISHED-PRODUCTS",
       "locator": "SCN-044; design/requirements/published-products.md#review-and-validation",
       "basis": "Independent review and author reconciliation confirmed this stakeholder situation, primary Feature, and SR coverage as current analysis knowledge. This does not approve requirements or establish implemented behavior or satisfaction."
+    },
+    {
+      "source": "SRC-CURRENT-HANDOFF",
+      "locator": "SCN-044",
+      "basis": "User-selected current handoff and selective retention refinement. Reuse existing identity and responsibility; no runtime adoption or independent approval is asserted."
     }
   ]
 }

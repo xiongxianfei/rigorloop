@@ -75,16 +75,17 @@
   ],
   "proposed": [
     {
-      "choice": "Use a separately versioned successor operational contract for requirement/design bases, workflow identity, milestones, gate attempts and adoption provenance.",
-      "rationale": "The subordinate MOD-011 contract defines exact v4 records and preservation; MOD-010 defines v2 scoped operations. Immutable attempts, typed record identities and explicit applicability avoid reinterpretation of v3. The physical adapter and schema/dispatch artifacts require implementation; historical import is explicit and does not promote old judgments.",
+      "choice": "Use a separately versioned current-handoff contract for requirement/design bases, checked milestone progress, current assessments and selective retained support.",
+      "rationale": "The subordinate MOD-011 contract defines v4 current accounts, safe replacement and compact historical completion; MOD-010 defines v2 scoped operations. Typed identities and explicit applicability preserve decision meaning without a mandatory attempt archive or reinterpretation of v3. The physical adapter and schema/dispatch artifacts require implementation; historical import is explicit and does not promote old judgments.",
       "alternatives": [
         "Silently reinterpret v3 Proposal or milestone judgments.",
         "Indefinite dual-write or fallback runtime between obsolete internals."
       ],
       "consequences": [
-        "Implement the subordinate v4/v2 specifications over the initial adapter reusing the existing filesystem transaction engine and private local record mapping, independently of SQLite migration. Qualify its atomicity, artifact availability and recovery; switch to SQLite only through separately qualified migration, without active dual writes or legacy fallback.",
-        "Preserve original historical bytes and provenance; an importer cannot promote old judgments to new approval.",
-        "SQLite realization remains separately scoped under SR-074–078 and is not required merely to author this design."
+        "Implement v4 current accounts directly over SQLite; no intermediate filesystem backend, dual writes or legacy runtime fallback. Store queryable relationships in tables and selected bulky payloads as managed named files.",
+        "Preserve required migration originals and provenance; explicit import cannot promote old judgments to new approval.",
+        "SR-074–078 govern selected backup, restore, transfer, migration and discovery. Qualify these prerequisites before runtime adoption; authoring the current design requires no database.",
+        "Database schema 1 uses typed current-account tables and constrained relationships; maintenance supplies selected-scope integrity manifests and staged replacement with retained prior bytes. Revisions include store incarnation to reject pre-restore tokens."
       ],
       "revisit_when": [
         "External compatibility disposition or the separate store migration changes the supported adoption boundary."

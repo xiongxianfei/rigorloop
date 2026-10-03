@@ -14,9 +14,9 @@
   ],
   "behavior": [
     "The actor supplies required semantic inputs; the tool constructs identities and storage bookkeeping without requiring directories, manifests or database fields from callers.",
-    "Only explicitly selected semantic values and necessary mechanical metadata change. Omitted fields, ordered entries, narrative content, original subject identities and unrelated records remain equal; exact retained evidence payloads keep their content identity. Physical database bytes are not a semantic preservation oracle.",
-    "A bounded ordered batch constructs one final candidate; valid references to newly introduced entries resolve there. Duplicate or overlapping semantic assignments reject even if equal, while explicitly separate assessment/finding and decision/body spans retain their declared composition rules.",
-    "A new or corrected assessment preserves prior judgments and complete finding history. Under an immutable-attempt contract, corrected explanation or verification content is a new explicitly linked successor with its own supplied fields; omission does not erase the predecessor or silently change its applicability, actors, subjects or judgment. Narrow current-account updates cannot rewrite assessment cores.",
+    "Only explicitly selected values and necessary metadata change. Omitted fields and unrelated records remain unchanged. Explicit replacement of comparable working information is permitted; attachments still supporting retained conclusions cannot silently change meaning.",
+    "A task submission constructs one coherent candidate containing its related facts. Same-request references resolve before publication; conflicting assignments reject. This does not require a public arbitrary batch interface.",
+    "Current evidence and assessment accounts may be replaced through their owning tasks without permanent predecessor chains. Retain open findings until explicit disposition, the attribution and basis of judgments still relied upon, and compact completed accounts. Progress updates cannot create reviewer judgments or widen authority.",
     "Preview validates the same intended semantic candidate without authoritative writes, persistent reservations or a saved claim. Execution checks freshness again and does not treat preview as authority.",
     "Unavailable known records or occupied destinations cannot be treated as empty creation targets. Explicit restoration remains subject to its own supported operation and normal integrity, authority and conflict checks."
   ],
@@ -46,6 +46,11 @@
       "source": "SRC-WORKFLOW-CONTRACTS",
       "locator": "FUNC-045",
       "basis": "Reconcile the refined existing requirement with successor workflow recording while keeping attributed observed v3 realization unchanged."
+    },
+    {
+      "source": "SRC-CURRENT-HANDOFF",
+      "locator": "FUNC-045",
+      "basis": "User-selected current handoff and selective retention refinement. Reuse existing identity and responsibility; no runtime adoption or independent approval is asserted."
     }
   ],
   "allocated_to": "MOD-011"

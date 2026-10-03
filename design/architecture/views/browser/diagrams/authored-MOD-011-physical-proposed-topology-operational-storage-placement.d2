@@ -1,0 +1,10 @@
+direction: down
+project: "Selected local project" {
+  definitions: "Git-tracked engineering model\ndesign/ and source code\n.rigorloop.json — project identity"
+  private: "Private runtime area\n.rigorloop/ — excluded from Git" {
+    current: "Operational accounts\nrigorloop.db\nSQLite-owned WAL and SHM sidecars"
+    attachments: "Selected retained payloads\nartifacts/changes/\n{change-id}/{name}"
+    staging: "Temporary attachment staging\nartifacts/.staging/\nInvocation-owned copies"
+    maintenance: "Maintenance coordination\naccess/ leases and maintenance/\nFence, candidate and retained prior bytes"
+  }
+}

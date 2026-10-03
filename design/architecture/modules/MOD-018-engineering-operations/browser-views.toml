@@ -1,0 +1,32 @@
+# Presentation registration; engineering diagrams remain in the owning README.
+version = 1
+
+[[topics]]
+id = "record-handoff-update"
+title = "Record a handoff update"
+view = "process"
+kind = "sequence"
+qualification = "proposed"
+source = "README.md"
+anchor = "record-handoff-update"
+description = "Target recording of completed browser navigation, passing checks, an explicit blocker disposition and an optional retained report. MOD-010 admits the request; MOD-011 stages selected bytes, checks the revision inside a SQLite write transaction and commits a coherent update. Attachment handling remains inside MOD-011. The commit boundary and interrupted-write limits are explained in the owning source."
+
+[[topics]]
+id = "discover-saved-update"
+title = "Discover a saved update after a lost response"
+view = "process"
+kind = "sequence"
+qualification = "proposed"
+source = "README.md"
+anchor = "discover-saved-update"
+description = "After SQLite commitment, response loss leads to a fresh context read and reconciliation, not automatic replay or rollback. A newer intervening update requires reconciliation; matching IDs do not establish a permanent receipt. SQLite opening establishes a coherent current snapshot or reports unavailable storage."
+
+[[topics]]
+id = "record-review-assessment"
+title = "Record a review assessment"
+view = "process"
+kind = "sequence"
+qualification = "proposed"
+source = "README.md"
+anchor = "record-review-assessment"
+description = "An explicit whole-change judgment crosses public CLI admission and the typed storage boundary. Storage checks revision and support, prepares a bounded receipt and commits related records. A saved outcome does not perform review, final Verify or automatic progression."

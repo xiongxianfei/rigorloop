@@ -14,7 +14,7 @@
   const records = model.records || {};
   const modules = model.modules || {};
   const interfaces = model.interfaces || {};
-  const catalogs = model.catalogs || [];
+  const catalogs = model.designed_catalogs || [];
   const webCapabilities = model.web_capabilities || [];
   const views = model.views || {};
   const cooperation = model.cli_cooperation || {};
@@ -687,19 +687,16 @@
         ))) result.append(observationField(key, observed[key]));
       });
       if (list(observed.public_entries).length) {
-        const matches = catalogs.filter(catalog => catalog.owner === facet.owner);
-        const links = node("div", "link-row");
-        matches.forEach(catalog => links.append(link(`Explore ${catalogKind(catalog)} →`, `#${catalogKind(catalog)}`)));
-        result.append(node("p", "small muted", "Public names, purposes, and mappings are available in the capability catalog."), links);
+        result.append(detail("Observed public sources", valueView(observed.public_entries)));
       }
     }
     if (list(facet.data.proposed).length) {
       const proposals = node("div");
       facet.data.proposed.forEach(proposal => {
         const body = recordFields(proposal, ["choice", "rationale", "alternatives", "consequences", "revisit_when"]);
-        if (list(proposal.public_entry_mappings).length) {
+        if (list(proposal.public_capabilities).length) {
           const matches = catalogs.filter(catalog => catalog.owner === facet.owner);
-          matches.forEach(catalog => body.append(link(`Read individual ${catalogKind(catalog)} mappings →`, `#${catalogKind(catalog)}`, "source-link")));
+          matches.forEach(catalog => body.append(link(`Explore designed ${catalogKind(catalog)} →`, `#${catalogKind(catalog)}`, "source-link")));
         }
         proposals.append(detail(proposal.choice || "Design decision", body));
       });
@@ -1594,9 +1591,9 @@
   function renderCatalog(kind) {
     const items = catalogItems(kind);
     breadcrumb([{text:nice(kind)}]);
-    header("Public capabilities", nice(kind), kind === "commands" ? "Executable entry points, their purposes, and the architectural responsibilities they reach." : "Engineering procedures, the behavior they guide, and the responsibilities that remain with specialist owners.");
+    header("Public capabilities", nice(kind), kind === "commands" ? "Designed command entry points, their purposes, and the architectural responsibilities they reach." : "Designed engineering procedures, the behavior they guide, and their specialist responsibilities.");
     if (kind === "commands") main.append(cliReadingLinks());
-    main.append(node("p", "section-note", "Public names are observed in the repository. Their architectural mappings are proposed; each entry retains its detailed contract and mapping limits."));
+    main.append(node("p", "section-note", "Design catalogue: intended capabilities and their governing contracts. Implementation and installation are assessed separately."));
     const controls = node("div", "catalog-controls");
     const field = node("div", "filter-field");
     const label = node("label", "", `Find ${kind}`); label.htmlFor = "catalog-filter";
@@ -1615,7 +1612,7 @@
       const matches = items.filter(({entry}) => (!select.value || entry.group === select.value) && `${entry.name} ${entry.purpose} ${list(entry.modules).map(id => `${id} ${title(id)}`).join(" ")}`.toLocaleLowerCase().includes(query));
       count.textContent = `${matches.length} of ${items.length} ${kind}`;
       results.replaceChildren();
-      if (!matches.length) { results.append(empty("No matching entries", "Try another name or clear the group filter.")); return; }
+      if (!matches.length) { results.append(items.length ? empty("No matching entries", "Try another name or clear the group filter.") : empty(`No designed ${kind} recorded`, "The owning model has not supplied a design catalogue.")); return; }
       [...new Set(matches.map(({entry}) => entry.group))].forEach(group => {
         const sectionNode = node("section", "catalog-group"); sectionNode.append(node("h2", "", group));
         matches.filter(({entry}) => entry.group === group).forEach(({catalog,entry}) => {
@@ -1635,12 +1632,13 @@
     const kind = catalogKind(catalog), mapping = entry.mapping || {};
     breadcrumb([{text:nice(kind),href:`#${kind}`},{text:entry.name}]);
     header(entry.group, entry.name, entry.purpose);
+    main.append(node("p", "qualification", "Design"));
     const entryLinks = node("div", "link-row");
-    if (entry.contract) entryLinks.append(sourceLink(entry.contract,"Read detailed contract ↗"));
+    if (entry.contract) entryLinks.append(sourceLink(entry.contract,"Read design contract ↗"));
     if (entry.source_path) entryLinks.append(sourceLink(entry.source_path,"Open implementation or procedure ↗"));
     main.append(entryLinks);
     const related = relatedViews([catalog.owner, catalog.host, ...list(entry.modules)].filter(Boolean)); if (related) main.append(related);
-    const boundary = node("section", "panel"); boundary.append(node("h2", "", isCommand(catalog) ? "Public contract" : "Published guidance responsibility"), entityList([catalog.owner]));
+    const boundary = node("section", "panel"); boundary.append(node("h2", "", isCommand(catalog) ? "Public contract" : "Capability owner"), entityList([catalog.owner]));
     if (entry.operation) boundary.append(node("p", "small muted", `Operation: ${entry.operation}`));
     main.append(boundary);
     const mappings = node("div", "panel");
@@ -1652,7 +1650,7 @@
       if (allocated) { const ownerRow = node("div", "pill-list"); ownerRow.append(node("span", "small muted", "Accountable Module"), entityLink(allocated)); row.append(ownerRow); }
       mappings.append(row);
     });
-    main.append(section("Proposed architectural correspondence", mappings));
+    main.append(section("Architectural responsibility", mappings));
     if (list(mapping.limits).length) main.append(detail("Mapping limits", valueView(mapping.limits), true));
     if (list(entry.features).length) main.append(detail("Related Features", entityList(entry.features)));
     const sources = node("div");

@@ -324,6 +324,20 @@ def build_model(model):
         catalogs.append({"owner": catalog.owner.id, "host": model.catalog_host(catalog),
                          "path": catalog.facet.path.as_posix(),
                          "label": catalog.label, "entries": entries})
+    designed_catalogs = []
+    for owner, facet, capabilities in model.designed_catalogs:
+        entries = []
+        for capability, pointer in capabilities:
+            functions = {item["function"] for item in capability["functions"]}
+            entries.append({**capability, "entry_pointer": pointer,
+                            "mapping": {"functions": capability["functions"], "limits": capability["limits"]},
+                            "features": sorted({edge.source for identity in functions
+                                                for edge in model.incoming(identity, "realized_by")}),
+                            "modules": sorted({edge.target for identity in functions
+                                               for edge in model.outgoing(identity, "allocated_to")})})
+        host = owner.id if owner.data["type"] == "module" else model.incoming(owner.id, "provides")[0].source
+        designed_catalogs.append({"owner": owner.id, "host": host, "path": facet.path.as_posix(),
+                                  "entries": entries})
     contributions = [
         {"requirement": sr.id, "path": sr.path.as_posix(),
          "source_pointer": f"/sources/{index}", "criterion": criterion,
@@ -345,6 +359,7 @@ def build_model(model):
         "modules": modules,
         "interfaces": interfaces,
         "catalogs": catalogs,
+        "designed_catalogs": designed_catalogs,
         "development_implementations": development_tables(model, "development-implementation", "Development implementation"),
         "development_build_resources": development_tables(model, "development-build-resources", "Development build resources"),
         "cli_contributions": contributions,

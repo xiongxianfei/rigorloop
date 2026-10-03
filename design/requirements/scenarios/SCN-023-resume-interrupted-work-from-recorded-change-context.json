@@ -18,7 +18,7 @@
     },
     {
       "actor": "System",
-      "action": "Presents the recorded scope, state, responsible participants, findings or blockers, next action, and activity-specific subjects and basis revisions."
+      "action": "Presents the current goal/scope/authority, governing basis, progress, open issues, relevant evidence, review standing and next action with responsible source and reason."
     },
     {
       "actor": "Participant",
@@ -38,6 +38,10 @@
     {
       "condition": "An existing applicable grant covers the next action.",
       "outcome": "Resumption recognizes that grant without requiring confirmation solely because the session changed."
+    },
+    {
+      "condition": "Several routine test attempts were superseded before handoff.",
+      "outcome": "The latest relevant summary is sufficient; earlier logs and run summaries need not exist unless they explain an unresolved issue or retained decision."
     }
   ],
   "failures": [
@@ -71,6 +75,11 @@
       "source": "SRC-LOCAL-OPERATIONAL-ANALYSIS",
       "locator": "SCN-023",
       "basis": "Draft derivation from the refined IRs and RR proposal; no approval, implementation or satisfaction claim."
+    },
+    {
+      "source": "SRC-CURRENT-HANDOFF",
+      "locator": "SCN-023",
+      "basis": "User-selected current handoff and selective retention refinement. Reuse existing identity and responsibility; no runtime adoption or independent approval is asserted."
     }
   ]
 }

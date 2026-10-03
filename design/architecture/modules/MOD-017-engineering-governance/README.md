@@ -1,18 +1,37 @@
 # Change and quality control composition
 
-[MOD-017](module.json) owns cooperation among Change control, Assurance and Authoring guidance. Child records retain direct Function, state and AR ownership. These design rules address SR-079–083 and are maintained directly here as the design evolves. Implementation and customer workflow adoption remain separately evidenced. Cross-parent cooperation belongs to the [architecture composition](../../README.md#requirement-first-workflow-composition).
+[MOD-017](module.json) owns handoff, authority and assessment meaning. [Operations](../MOD-018-engineering-operations/README.md) composes guidance, CLI and storage. These are target design rules; installed workflow adoption and runtime implementation remain separate.
 
 ## Gate and work-state semantics
 
-Milestone state describes planned/active/completed/blocked work and its checks; it contains no mandatory reviewer assignment or approval reference. Milestone completion requires the recorded scope and required checks to be complete, with known defects explicitly addressed. A blocked dependency blocks affected work; unrelated authorized work need not become a separate approval cycle.
+Maintain a current structured handoff, not an activity history. Milestones describe checked progress and dependencies, with no mandatory reviewer or approval field. Optional interim advice remains advisory. After implementation there is one independent whole-change Code Review gate, followed by distinct final Verify. Corrections and reassessment stay within the same gate; a gate does not require permanent copies of every attempt.
 
-A formal gate is identified by the selected Change and assessment purpose. A whole-change gate remains the same gate across candidate corrections. Each assessment attempt has its own identity, reviewer provenance, exact candidate subjects, governing basis, judgment, findings and rationale. Its predecessor/correction links explain renewed assessment without overwriting earlier subjects. Advisory feedback has separate scope and cannot become an approved formal attempt by relabeling it.
+The current handoff identifies goal/scope/authority, governing basis, progress, open issues and important rationale, relevant evidence, review standing, and next action with reason. Each fact has one owner. The context projection does not maintain its own editable approval or infer authority from a next-step suggestion. [Change control](modules/MOD-006-engineering-change-control/README.md#resume-and-progress) owns resumption interpretation.
 
-The current approval is an explicit applicability conclusion for the complete current candidate, not the attempt with the latest timestamp, a global clean flag or an inherited approval attached to stable file names. A candidate identifies affected code, tests, configuration, migrations, generated outputs, skills and documentation, including relevant additions and deletions. Repository revision alone is insufficient for a dirty or partially selected checkout; supported subject inspection must bind the actual content and dependency scope.
+## Review subjects and retained basis
+
+The reviewer owns the conclusion, assessed scope, governing obligations, accountable provenance, limitations and unresolved findings. Retain enough support to understand a conclusion still being used; summaries often suffice. Full console logs and source copies are optional unless their actual bytes are necessary for a decision or selected preservation obligation. Earlier failed development runs need no records merely because they happened.
+
+Review preparation is current input. It is not approval and cannot silently replace the assessed basis of a conclusion. The current assessment can be replaced by an explicit independent reassessment after corrections while retaining open obligations and useful support. Original approved scope remains identifiable when that approval is still being relied upon. Once superseded and no longer needed, intermediate detail may be compacted. No universal Candidate archive or predecessor chain is required.
+
+Evidence reports identify procedure, relevant scope/basis, result, limitations and source. Distinguish an engineer's report of no subsequent changes from an actual defined comparison. File names, timestamps, status labels and digests alone do not establish relevance, meaning, adequate inspection or independent judgment. Git is an optional source of context, not required authority.
+
+### Changes after approval
+
+| Change affecting a currently relied-on conclusion | Required response |
+| --- | --- |
+| Demonstrably harmless wording/formatting or equivalent collection retry | Responsible engineer records the scope and cumulative impact rationale; retain approval without another review gate. |
+| Material behavior, requirement, Interface, test expectation or supporting evidence change | Return to its owner, perform relevant checks and independently reassess affected scope/interactions in the same gate. |
+| Missing comparison basis, unknown impact or contradictory evidence | Expose uncertainty and withhold unsupported current reliance. |
+| Superseded working output with no remaining decision value | Replace or discard it without an activity-history entry. |
+
+Assess effects, not file types or edit counts. A smoke-test pass cannot hide a different integration failure. Updating working evidence must not rewrite what a reviewer concluded from an earlier basis: keep a concise assessment-owned support summary or obtain a replacement assessment. Open findings survive omission and newer clean judgments until explicit attributable disposition. Resolved details may later be compacted when no current decision needs them.
+
+The [Records owner](../MOD-018-engineering-operations/modules/MOD-011-operational-record-persistence/README.md#updating-current-state-without-losing-decision-meaning) owns representation; [CLI](../MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/README.md#record-an-assessment-finding-or-reliance-decision) owns task inputs. Update handoffs at meaningful decision changes or transfers, not after each edit or command. Mutability does not transfer reviewer authority to the implementer.
 
 ## Whole-change review and correction
 
-[Change control's resume-and-progress design](modules/MOD-006-engineering-change-control/README.md#resume-and-progress) supplies attributable work context and authority analysis. The interaction below owns the cooperation of that contribution with assurance and the independent assessment roles. Record access denotes the supported Command handling and Work record storage boundary; actors submit explicit results rather than asking persistence to choose judgments. The first sequence shows a complete candidate receiving applicable approval and a distinct Verify assessment. The second isolates the correction exchange. Each sequence names responsible roles; it does not introduce new deployed services. Change control supplies context and authority analysis, and Review and verification supplies evidence-applicability support to the independent assessor. Runtime placement and implemented commands require their own implementation observations.
+The sequence shows the normal whole-change assessment and closeout dependency. Actor roles are not separate deployed services. Change control supplies context and authority interpretation; Review and verification supports assessment, while the named reviewer and verifier make the judgments.
 
 <!-- architecture-diagram: whole-change-review-and-correction -->
 
@@ -23,20 +42,26 @@ route: "Coordination\nroute"
 reviewer: "Independent\nCode Reviewer"
 verifier: "Final Verify\nassessor"
 records: "Command handling and\nWork record storage"
-implementer -> route: "Complete the implementation scope and required checks"
-route -> reviewer: "Request whole-change review of the exact current candidate"
-reviewer -> reviewer: "Assess requirements, design, delivery and interactions"
-reviewer -> records: "Record the candidate, basis, approval and coverage"
-records -> reviewer: "Confirm the actual committed review result"
+implementer -> route: "Complete required work/checks and declare review scope"
+route -> records: "review prepare: select the scope and governing basis"
+records -> route: "Return the prepared review scope"
+route -> reviewer: "Request whole-change review of the prepared scope"
+reviewer -> records: "review show: read the basis and outstanding findings"
+records -> reviewer: "Return scope, current issues and supporting summaries"
+reviewer -> reviewer: "Inspect selected files and assess the whole change"
+reviewer -> records: "review record: update judgment and explicit applicability"
+records -> reviewer: "Confirm the current review standing"
 reviewer -> route: "Return applicable approval for the complete current candidate"
 route -> verifier: "Request distinct final Verify with current evidence"
 verifier -> verifier: "Assess whether evidence supports the completion claim"
-verifier -> records: "Record the scoped Verify result and rationale"
+verifier -> records: "verification record: save current acceptance support and rationale"
 records -> verifier: "Confirm the actual committed Verify result"
-verifier -> route: "Return the supported completion result"
+verifier -> route: "Return the supported final Verification reference"
+route -> records: "change complete: declare closeout within existing authority"
+records -> route: "Confirm recorded completion and its verification basis"
 ```
 
-Implementation reaches this handoff after its complete agreed scope and required checks are ready; milestone completion alone does not invoke this gate. Coordination inspects current context and authority before each dependent handoff. The reviewer and Verify assessor use Review and verification (MOD-007) for evidence-applicability support; those roles own the judgments. The diagram's successful path assumes approval and completion are supported. Findings instead follow the correction sequence below; failed or inconclusive Verify cannot be reported as completion.
+Review records the independent conclusion and explicit applicability for the complete delivered scope. Missing or adverse conclusions remain visible; persistence success grants no approval. Verify separately assesses acceptance support, and change complete records the compact historical outcome within existing authority. No milestone review or new closeout approval is introduced.
 
 ### Correct and reassess
 
@@ -48,26 +73,32 @@ reviewer: "Independent\nCode Reviewer"
 records: "Command handling and\nWork record storage"
 route: "Coordination\nroute"
 owner: "Responsible\ncorrection owner"
-reviewer -> records: "Record findings against the inspected candidate"
+reviewer -> records: "Record actionable findings against inspected scope"
 records -> reviewer: "Confirm the actual committed findings"
 reviewer -> route: "Return findings and required outcomes"
 route -> owner: "Assign corrections to the proper owner within authority"
 owner -> owner: "Correct the subjects and perform relevant checks"
-owner -> records: "Record changed subjects, evidence and correction links"
+owner -> records: "review prepare: update current scope after checks"
 records -> owner: "Confirm the actual committed correction result"
-owner -> route: "Return the revised candidate and affected interactions"
-route -> reviewer: "Request reassessment within the same whole-change gate"
-reviewer -> reviewer: "Assess corrections and complete-current-candidate coverage"
-reviewer -> records: "Record a new assessment; preserve earlier attempts"
+owner -> route: "Return revised scope and affected interactions"
+route -> reviewer: "Request material-change reassessment in the same gate"
+reviewer -> records: "review show: read revised basis and earlier support"
+records -> reviewer: "Return scope, open issues and retained support"
+reviewer -> reviewer: "Inspect material corrections and affected interactions"
+reviewer -> records: "review record: update assessment and explicit applicability"
 records -> reviewer: "Confirm the actual committed reassessment"
 reviewer -> route: "Return the current judgment and its applicability"
 ```
 
-The correction exchange can repeat without creating another gate. An implementation defect returns to implementation; changed requirements or architecture return to their upstream owners and applicable upstream review before renewed downstream reliance. The correction owner cannot approve their own repair. Reassessment covers the changed subjects and affected interactions, with justified reuse of unaffected support; it does not require a mechanical reread of every unchanged file. Optional interim advice has no whole-change approval authority. A one-milestone Change still has one whole-change review gate.
+An implementation defect returns to implementation; changed requirements/design return to their author and review owners. Independent reassessment may update the same current Review. Preserve unresolved findings, relevant support and adequate whole-change coverage; do not require all prior attempts or automatic rereading/rerunning of unaffected material. Unchanged-subject evidence collection retries do not automatically restart Code Review.
 
-Each handoff relies on current subjects, authority and an actual reconciled recording outcome. Record conflicts or uncertain commitment require rereading and reconciliation before reliance, as described in [Change control](modules/MOD-006-engineering-change-control/README.md#resume-and-progress). Verify cannot repair and approve an engineering defect itself. A collection retry without engineering changes repeats the affected verification; new contrary evidence returns applicability to the assessment owner. [Operations' existing SCN-079–081 groups](../MOD-018-engineering-operations/test-design.md) retain the integrated proof intent; rendering this interaction does not establish that proof.
+Concurrent submissions carry the inspected operational revision. Stale writes require rereading and explicit reconciliation; atomic persistence protects current state without a permanent version history. Interrupted transaction recovery establishes known storage outcomes and never replays engineering decisions.
 
-Concurrent actors may produce observations or attempts, but a decision offered for a stale candidate cannot silently settle the current gate. An update carries the inspected work/record basis and preserves unrelated facts. On conflict, the caller rereads relevant context and explicitly re-evaluates the decision; it does not replay stale intent against a fresh revision automatically. A late adverse observation remains visible even if another actor previously recorded approval. Contradictory evidence returns to the assessment owner before renewed reliance.
+## Completion and later corrections
+
+Completion records what changed, why, delivered scope, actual review and verification support, exclusions and limitations. Selected attachments are retained only where useful. The account contains enough acceptance meaning to stand independently of disposable working records.
+
+A completed Change is an immutable historical declaration, not a live assertion about today's system. Stop repository applicability comparisons for closed Changes. Later regression becomes a new problem or Change linked through the request source. If the original assessment itself was mistaken, append an attributable explanatory note without silently rewriting the original account. Closed work is not automatically reopened; external publication retains separate authority.
 
 ## Adoption and recovery
 
@@ -79,7 +110,7 @@ On partial replacement or interruption, stop affected dependent operations and r
 
 The database migration can precede or follow workflow adoption only when its own compatibility and preservation prerequisites are met. A transitional supported persistence backend may carry the successor semantic contract without SQLite; no speculative backend or command is advertised as supported. SQLite does not itself satisfy the workflow migration, and workflow adoption does not erase backup/restore or historical-byte obligations.
 
-The [successor record contract](../MOD-018-engineering-operations/modules/MOD-011-operational-record-persistence/README.md#atomic-publication-and-adoption) settles activation granularity: one guarded transaction per selected Change. Project-wide success requires current activation for the complete explicitly selected set; partial activation is reported as partial, without converting unrelated work or promising a multi-Change atomic commit. The [installation extension](../MOD-019-product-delivery/modules/MOD-014-verified-skill-installation/README.md) supplies exact replacement effects. V4 rollout qualifies the specified adapter over the existing filesystem transaction engine. SQLite migration is independently scheduled; only one backend is authoritative at a time, and active dual writes or fallback are forbidden after retirement.
+The [successor record contract](../MOD-018-engineering-operations/modules/MOD-011-operational-record-persistence/README.md#adoption-and-compatibility) settles activation granularity: one guarded transaction per selected Change. Project-wide success requires current activation for the complete explicitly selected set; partial activation is reported as partial, without converting unrelated work or promising a multi-Change atomic commit. The [installation extension](../MOD-019-product-delivery/modules/MOD-014-verified-skill-installation/README.md) supplies exact replacement effects. V4 rollout qualifies the specified adapter over the existing filesystem transaction engine. SQLite migration is independently scheduled; only one backend is authoritative at a time, and active dual writes or fallback are forbidden after retirement.
 
 ## Verification intent
 

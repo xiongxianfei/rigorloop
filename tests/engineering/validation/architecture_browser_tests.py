@@ -246,12 +246,45 @@ class ArchitectureBrowserTests(unittest.TestCase):
         self.assertTrue(route["mapping"]["limits"])
         facet = self.entity_path(root, "MOD-012").parent / "realization/software.json"
         record = json.loads(facet.read_text())
+        designed = {catalog["owner"]: catalog for catalog in original["designed_catalogs"]}
+        skills = {entry["name"]: entry for entry in designed["MOD-012"]["entries"]}
+        self.assertTrue({"requirement-analysis", "requirement-review", "system-design", "architecture-design"} <= skills.keys())
+        self.assertFalse({"proposal", "proposal-review", "design"} & skills.keys())
+        analysis = skills["requirement-analysis"]
+        self.assertNotIn("source_path", analysis)
+        self.assertEqual(analysis["modules"], ["MOD-008", "MOD-012"])
+        self.assertEqual(analysis["entry_pointer"], "/proposed/1/public_capabilities/0")
+        commands = {entry["name"] for entry in designed["IF-004"]["entries"]}
+        self.assertEqual(commands, {
+            "store backup", "store restore", "store migrate", "init", "change create", "change context", "change update", "change complete",
+            "review prepare", "review show", "review record", "verification show", "verification record",
+            "browser generate", "browser check", "browser recover",
+            "--help", "version", "capabilities", "logs",
+        })
+        # New names and text come from design sources, with no corresponding source file.
+        capability = record["proposed"][1]["public_capabilities"][0]
+        capability["name"] = "renamed-analysis"
+        capability["purpose"] = "Changed design meaning."
+        facet.write_text(json.dumps(record, indent=2) + "\n")
+        updated = browser.build_model(browser.Model(root))
+        projected = next(c for c in updated["designed_catalogs"] if c["owner"] == "MOD-012")["entries"][0]
+        self.assertEqual(projected["name"], "renamed-analysis")
+        self.assertEqual(projected["purpose"], "Changed design meaning.")
+        # Invalid design relationships reject before unresolved references are followed.
+        capability["functions"][0].update(relation="unknown", function="FUNC-999999")
+        facet.write_text(json.dumps(record, indent=2) + "\n")
+        with self.assertRaisesRegex(ValueError, "unsupported public entry relation"):
+            browser.Model(root)
         mapping = next(item for proposal in record["proposed"]
                        for item in proposal.get("public_entry_mappings", []) if item["entry"] == "route")
         mapping["functions"] = []
         mapping["limits"] = ["Specialist correspondence requires separate analysis."]
+        record["proposed"] = [choice for choice in record["proposed"] if "public_entry_mappings" in choice]
         facet.write_text(json.dumps(record, indent=2) + "\n")
         changed = browser.build_model(browser.Model(root))
+        changed_catalog = next(item for item in changed["catalogs"] if item["owner"] == "MOD-012")
+        self.assertNotIn("MOD-012", {c["owner"] for c in changed["designed_catalogs"]})
+        self.assertEqual(len(changed_catalog["entries"]), 19)
         route = next(item for catalog in changed["catalogs"] if catalog["owner"] == "MOD-012"
                      for item in catalog["entries"] if item["name"] == "route")
         self.assertEqual(route["modules"], [])
@@ -647,7 +680,7 @@ class ArchitectureBrowserTests(unittest.TestCase):
     def test_authored_topic_sources_and_qualifications_remain_exact(self):
         root = self.fixture()
         topics = browser.read_authored_topics(browser.Model(root))
-        self.assertEqual(len(topics), 10)
+        self.assertEqual(len(topics), 20)
         self.assertEqual({t["kind"] for t in topics}, {"topology", "sequence", "state"})
         technical = next(t for t in topics if t["id"] == "browser-technical-structure")
         self.assertEqual(technical["route"], "#logical/MOD-004/proposed/topology/browser-technical-structure")
@@ -669,7 +702,7 @@ class ArchitectureBrowserTests(unittest.TestCase):
         self.assertIn('generator.projection -> contract: "Conforms to"', software["source"])
 
         for topic in topics:
-            self.assertIn(topic["owner"], {"MOD-004", "MOD-006", "MOD-017"})
+            self.assertIn(topic["owner"], {"MOD-004", "MOD-006", "MOD-011", "MOD-017", "MOD-018"})
             self.assertEqual(topic["qualification"], "proposed")
             self.assertIn(topic["source"], (root / topic["path"]).read_text())
             self.assertEqual(topic["source_digest"], hashlib.sha256(topic["source"].encode()).hexdigest())
@@ -856,7 +889,7 @@ class ArchitectureBrowserTests(unittest.TestCase):
         manifest = (output / "manifest.sha256").read_text()
         self.assertIn(data["source_digest"], manifest)
         self.assertIn("D2 v0.9.0; ELK layout", manifest)
-        self.assertEqual(len(data["authored_topics"]), 10)
+        self.assertEqual(len(data["authored_topics"]), 20)
         for topic in data["authored_topics"]:
             self.assertTrue(topic["image"].startswith("data:image/svg+xml;base64,"))
             self.assertEqual((output / "diagrams" / (topic["key"] + ".d2")).read_text(), topic["source"] + "\n")
@@ -870,7 +903,7 @@ class ArchitectureBrowserTests(unittest.TestCase):
         for name, expected_hash in members.items():
             self.assertEqual(hashlib.sha256((output / name).read_bytes()).hexdigest(), expected_hash, name)
         diagrams = list((output / "diagrams").glob("*.svg"))
-        self.assertEqual(len(diagrams), 65)
+        self.assertEqual(len(diagrams), 75)
         self.assertEqual({path.stem for path in diagrams},
                          {"overview", *["module-" + identity for identity in data["modules"]],
                           *data["view_diagrams"], *[t["key"] for t in data["authored_topics"]]})

@@ -3,7 +3,7 @@
   "type": "system-requirement",
   "title": "Reassess claim support after engineering changes",
   "status": "draft",
-  "statement": "The system shall identify the need to reassess evidence applicability and repeat affected verification when a claimed subject, governing criterion, or relevant assessment condition changes, while preserving earlier observations and judgments against their original basis.",
+  "statement": "The system shall expose reassessment needs when the basis of a currently relied-on engineering claim changes, retaining enough assessed context to judge applicability without requiring every superseded observation or judgment to remain stored.",
   "analysis": {
     "method": "5W2H",
     "what": {
@@ -30,7 +30,7 @@
       ]
     },
     "how": {
-      "approach": "Identify changed claim bases and affected support through recorded dependencies. Reassess applicability, mark insufficiently supported current conclusions as unestablished, and identify affected verification that must be repeated. Treat scheduled checks as plans until actual observations are recorded. Preserve earlier evidence and judgments with their historical basis; a new assessment yields new current support rather than rewriting old observations."
+      "approach": "Assess changed scope, criteria and conditions for currently relied-on claims. Keep sufficient assessed basis and concise support for the current judgment, expose uncertainty, and repeat only affected verification. Superseded detail need not be archived. Completed Changes remain historical; new regressions are linked new work."
     },
     "how_much": {
       "scope": "Changes within the governed scope and explicit assessment dependencies. The system exposes unresolved impact or applicability when dependencies are incomplete. This obligation defines required reassessment behavior without prescribing automatic execution, CI triggers, or an unrestricted inference engine. The requirement-first workflow extension is draft; existing Function/AR and product-contract coverage must be reassessed before its adoption."
@@ -39,10 +39,11 @@
   "acceptance_criteria": [
     "Changing an assessed subject or acceptance criterion makes the affected earlier support subject to applicability reassessment and identifies verification that requires repetition.",
     "Planning a repeated check does not restore current satisfaction; the affected scope remains unestablished until applicable observations and a justified conclusion support it.",
-    "New observations and a revised judgment retain their own assessed basis, while the earlier observation and judgment remain inspectable against their original state.",
+    "A replacement current judgment names its assessed basis, accountable assessor, reasoning and limitations. Preserve unresolved obligations and any prior conclusion still being relied upon; superseded detail without decision value may be compacted.",
     "When incomplete dependencies prevent determining which support is affected, the uncertainty and potentially affected scope are visible rather than treated as unaffected.",
     "Correction reassessment examines the changes and affected interactions and explicitly preserves only still-applicable prior support. It establishes adequate coverage for the current claim without automatically rereading unchanged files or repeating unaffected checks.",
-    "Bookkeeping changes or evidence-collection retries alone do not automatically invalidate an engineering approval; changed meaning, subject, criterion, conditions or contradictory evidence require an applicability decision before renewed reliance."
+    "Bookkeeping changes, evidence-collection retries or edits shown to leave assessed meaning and support unchanged do not require a new Review. A concise applicability disposition identifies the changed scope and why prior approval remains sufficient. Material effects require affected reassessment; unknown impact or contradictory evidence prevents unsupported renewed reliance. Changed file bytes alone do not decide approval applicability.",
+    "Completed Change accounts are historical, not continuously reassessed against the repository. A later regression becomes linked new work; a discovered mistake in the original account is explicitly annotated without silently rewriting the declared outcome."
   ],
   "assumptions": [],
   "constraints": [],
@@ -61,6 +62,16 @@
       "source": "SRC-REQUIREMENT-FIRST-WORKFLOW",
       "locator": "SR-029",
       "basis": "User-selected requirement-first workflow and one mandatory whole-change Code Review gate. Proposed requirement analysis only; existing product contracts remain active until coordinated adoption. No new Function, AR, implementation or approval is inferred."
+    },
+    {
+      "source": "SRC-PROPORTIONATE-REVIEW",
+      "locator": "SR-029",
+      "basis": "User-directed refinement of review applicability after subsequent edits: preserve original judgments, allow justified harmless-change continuation and independently reassess material effects. Author-assessed design/requirement refinement only; no runtime adoption or independent approval is claimed."
+    },
+    {
+      "source": "SRC-CURRENT-HANDOFF",
+      "locator": "SR-029",
+      "basis": "User-selected current handoff and selective retention refinement. Reuse existing identity and responsibility; no runtime adoption or independent approval is asserted."
     }
   ]
 }

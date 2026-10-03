@@ -3,7 +3,7 @@
   "type": "system-requirement",
   "title": "Resume changes from recorded work context",
   "status": "draft",
-  "statement": "The system shall make the recorded scope, current work state, responsible participants, outstanding findings or blockers, and next action of an in-progress Change retrievable by another authorized participant without dependence on the originating conversation or agent session.",
+  "statement": "The system shall maintain and return a current structured handoff for each active Change so another authorized participant can identify an appropriate next action without the originating conversation or reconstructing activity history.",
   "analysis": {
     "method": "5W2H",
     "what": {
@@ -37,14 +37,14 @@
     }
   },
   "acceptance_criteria": [
-    "Record the scope, work state, responsible participants, outstanding findings or blockers, and next action for a Change, then close the originating session. Another authorized participant can retrieve those recorded details and their authoritative references without the original conversation or agent memory.",
-    "When a resumption item is missing or conflicting, a reader can identify that gap or conflict from the returned context; the system does not present an inferred value as an established fact.",
-    "When a next action is recorded but its required authorization is absent, retrieving the resumption context does not grant that authorization.",
-    "For each supported activity, record its applicable context: authoring subjects and derivation decisions; implementation contract, assigned work, and changed realization; verification subjects, procedure, execution state, and evidence; or review subjects, findings, disposition, and correction responsibility. A different authorized participant can retrieve these facts through their authoritative references and identify the relevant basis revisions and next action.",
-    "When verification is planned but has not run, the resumed context identifies that state and does not present planned checks as observed evidence. When retained evidence or a review applies to a different subject revision, its recorded basis remains identifiable rather than being silently presented as current.",
-    "When activity-specific information is inapplicable, the context states the reason. When it is required but unavailable, the context identifies the gap and the responsible participant or decision needed without fabricating the missing result.",
-    "After restoring an earlier operational backup, resumption identifies its recorded work state and original subject bases; it reports unavailable newer work and does not refresh assessment applicability or authorization.",
-    "When the operational history is unavailable, the result exposes that limitation rather than inferring an empty or completed Change from the engineering checkout."
+    "The handoff presents goal, scope and authority; governing requirement/design/plan references; current progress and remaining work; open issues and important rationale; relevant evidence; review standing; and the next action with reason and responsible participant. Each fact has one authoritative owner, not an independently editable duplicate.",
+    "After the originating session ends, another authorized participant can identify the next permitted step, its supporting basis and unresolved uncertainty from this handoff and bounded supporting reads.",
+    "Missing, conflicting or unavailable context is explicitly distinguished from not-applicable, not-run, no finding or approved. A suggested action never supplies its own execution authority.",
+    "Working state and equivalent evidence summaries may be explicitly replaced without preserving prior versions or recording every local action. Relevant scope, assessed basis, result, limitations and reporting source remain available for conclusions currently relied upon.",
+    "Open findings cannot disappear through omitted fields or shorter handoffs. An explicit attributable disposition is needed; resolved detail may later be compacted when no current reliance requires it.",
+    "Changes to material scope, blockers, evidence applicability, review standing or next action require a current handoff at the next dependent decision or transfer. Routine edits and intermediate test runs require no permanent record.",
+    "A restored backup identifies its retained state and unavailable later work; it does not renew authority or applicability. An unavailable store cannot be presented as an empty or completed Change.",
+    "Completion retains a compact account of outcome, reason, delivered scope, acceptance support and limitations. It is historical and is not continuously compared with the current repository; a later regression becomes a new linked problem or Change."
   ],
   "assumptions": [],
   "constraints": [],
@@ -78,6 +78,11 @@
       "source": "SRC-LOCAL-OPERATIONAL-ANALYSIS",
       "locator": "SR-006",
       "basis": "Draft derivation from the refined IRs and RR proposal; no approval, implementation or satisfaction claim."
+    },
+    {
+      "source": "SRC-CURRENT-HANDOFF",
+      "locator": "SR-006",
+      "basis": "User-selected current handoff and selective retention refinement. Reuse existing identity and responsibility; no runtime adoption or independent approval is asserted."
     }
   ],
   "confirms": [

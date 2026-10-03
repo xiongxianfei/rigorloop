@@ -3,7 +3,7 @@
   "type": "function",
   "title": "Assess and apply retirement of current-view material",
   "status": "draft",
-  "description": "Determines whether a proposed removal can preserve recoverable historical meaning and current dependencies, and records or carries out the permitted current-view retirement within its authorized scope. It does not treat current-view cleanup as release of retained history.",
+  "description": "Reconciles current dependencies before retiring engineering material or compacting operational detail. Explicitly retained engineering history has its own recovery policy; routine working information need not be archived.",
   "inputs": [
     "Proposed material-removal scope and reason.",
     "Retained recovery basis, active reliance, surviving obligations and consumers, and their proposed dispositions.",
@@ -17,16 +17,16 @@
     "Recorded disposition and current-view removal outcome when the action is applicable and authorized."
   ],
   "behavior": [
-    "Assess whether original content and meaning are recoverable and whether unretained work would be lost.",
+    "Determine whether the material is explicitly retained engineering history or replaceable operational detail, and identify surviving reliance.",
     "Identify active work, unresolved findings, current evidence, obligations, and consumers requiring retention, transfer, replacement, or explicit retirement.",
     "Require reconciliation of surviving current reliance and applicable authorization before removing the material from the working view.",
     "Record the disposition, recovery basis, affected scope, and actual outcome; preserve current operation without dependence on fetching retired definitions.",
-    "Treat release of retained history as a separate controlled retention-policy decision rather than an age-based consequence of cleanup.",
+    "Permit compaction of superseded operational detail once current reliance is resolved; retain selected history only under its applicable preservation policy.",
     "Before retiring operational source files, current consumers and required evidence must have a coherent replacement or explicit disposition, and original content required for historical reliance remains recoverable. A successful import alone does not authorize deletion."
   ],
   "failure_behavior": [
     {
-      "condition": "Historical recoverability or reconciliation of current reliance is unestablished.",
+      "condition": "Required historical recoverability or reconciliation of current reliance is unestablished.",
       "outcome": "Withhold removal and identify the missing recovery basis or surviving dependency."
     },
     {
@@ -53,6 +53,11 @@
       "source": "SRC-LOCAL-OPERATIONAL-ANALYSIS",
       "locator": "FUNC-024",
       "basis": "Draft derivation from the refined IRs and RR proposal; no approval, implementation or satisfaction claim."
+    },
+    {
+      "source": "SRC-CURRENT-HANDOFF",
+      "locator": "FUNC-024",
+      "basis": "User-selected current handoff and selective retention refinement. Reuse existing identity and responsibility; no runtime adoption or independent approval is asserted."
     }
   ],
   "allocated_to": "MOD-006"

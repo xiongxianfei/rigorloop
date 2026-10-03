@@ -41,7 +41,7 @@
     "Unknown fields or vocabularies, duplicate keys or identities, missing required values, unsupported encodings/versions, mixed stores, dual report representations, and malformed current records reject before authoritative writes.",
     "Every supporting record has an unambiguous identity, owning Change and kind, with explicit applicability wherever the selected contract requires a reliance decision. References resolve exactly one admissible object in the complete candidate; storage-layout adjacency grants no authority and cross-Change fallback cannot repair an unresolved reference.",
     "Actor-supplied status, subjects, applicability, narrative order, provenance, and decisions are preserved. Failed evidence, completed activity, stale external subjects, or absent conditional verification basis alone do not prohibit a structurally sound correction or establish approval.",
-    "Review finding IDs and their historical accounts cannot be silently removed or renamed. Explicit corrections preserve original assessment subjects, judgments and findings while recording attributable successor assessments or finding accounts under the selected contract. Change-level blocker origins retain their complete original basis unchanged for their lifetime.",
+    "Omitted issues remain unchanged, and open findings/blockers require explicit attributable disposition. The selected v4 contract permits later compaction and current-assessment replacement without permanent history; v3 retains its finding and immutable-origin rules. Validation must not infer resolution or reviewer judgment.",
     "Review/Verify use their closed explanation fields; the optional Verify basis is either absent or complete and never inferred from prose, required universally, or resolved as a Git instruction. Exact source shape and reliance policy remain distinct."
   ],
   "assumptions": [],
@@ -88,6 +88,11 @@
       "source": "SRC-WORKFLOW-CONTRACTS",
       "locator": "SR-042; immutable assessment correction and explicit commit boundary",
       "basis": "Refine the existing IR-008 obligation for v4 without rewriting historical v3 meaning: preserve original assessments, actor decisions and truthful commitment rather than requiring in-place explanation mutation or rollback after commit. Author-assessed under the scoped Constitution exception; not runtime adoption."
+    },
+    {
+      "source": "SRC-CURRENT-HANDOFF",
+      "locator": "SR-042",
+      "basis": "Reconcile current-state replacement, unresolved issue preservation and selective retention; retain version-specific v3 behavior until adoption."
     }
   ],
   "confirms": [

@@ -203,14 +203,17 @@
   },
   "proposed": [
     {
-      "choice": "Keep candidate construction without filesystem authority and prepare the bounded public receipt inside the store-controlled candidate execution.",
+      "choice": "Separate candidate construction and public receipt preparation from the SQLite persistence adapter.",
       "rationale": "SR-043 and SR-044 distinguish nonwriting preview from a fresh execution, while SR-046 requires a fitting receipt before authoritative replacement.",
       "alternatives": [
         "Reusing preview bytes as publication authority or preparing receipts only after writing would fail to preserve the selected freshness and outcome boundaries."
       ],
       "consequences": [
-        "The caller supplies construction and receipt callbacks, but the store controls their candidate context and publication timing. Source-file co-location does not transfer logical ownership.",
-        "Construction without write authority is an architectural constraint, not a claim that JavaScript callbacks run in a capability sandbox."
+        "The store owns connection configuration, project/schema checks, short write transactions and expected-revision checks. Candidate construction supplies no independent persistence authority.",
+        "Prepare the bounded receipt and validate the complete candidate before commit; abort the whole transaction on precommit failure. A committed result survives output-delivery failure.",
+        "Coordinate optional attachment publication and cleanup under database writer exclusion as specified by the owning Records contract. Repository subject observations retain their explicit external-edit limits.",
+        "The proposed software organization separates typed candidate rules, a node:sqlite adapter, named payload handling and fenced maintenance; SQL migrations are packaged product inputs, not live project data.",
+        "IF-003 v4 dispatch uses closed query/task/maintenance requests and typed outcomes. MOD-011 alone owns SQL and connection handles; precommit receipt readiness uses the fixed shared MOD-010-owned pure codec, never arbitrary caller callbacks."
       ],
       "revisit_when": [
         "The execution mechanism changes, requiring these freshness, authority, and receipt guarantees to be re-established."

@@ -14,19 +14,20 @@
       ],
       "preconditions": [],
       "outputs": [
-        "The command family's declared human or structured result, exit outcome, diagnostics, omitted-detail access where applicable, and accurate mutation or no-mutation disposition."
+        "The command family's declared human or structured result, exit outcome, diagnostics, omitted-detail access where applicable, and accurate mutation or no-mutation disposition.",
+        "For target operational families, MOD-010 defines the exact closed JSON envelope, primary diagnostic codes, null/omission rules and status/commit/exit mapping. A saved storage outcome is not approval or lifecycle progression."
       ],
       "behavior": [
         "Reject unknown commands, unsupported versions, malformed selectors, and invalid modes under the family-specific early-error contract.",
-        "Dispatch record operations through IF-003 and installation through IF-006 while preserving each operation's exact allowed effects.",
+        "Dispatch operational reads, previews, updates and store maintenance through IF-003; installation uses IF-006 and browser operations use IF-012. Each retains its declared version domain and allowed effects.",
         "Keep recorded values separate from observations and bounded advice. Preserve conflict, unchanged, failed, partial, and committed outcomes rather than converting them to workflow judgments.",
         "Protect private diagnostic content and provide the supported route to materially omitted detail; output bounds cannot hide failures or make a valid correction unrecordable.",
         "Permit standalone skills to avoid command use; governed recording uses an explicit supported request, not implicit installation or inferred state changes.",
         "Honor each family's help/version and invalid-input ordering before repository or stdin access where required, including independent early-error response versions. Omit unavailable identities instead of inventing a validated stored contract.",
         "Perform discovery as bounded factual observation and record queries as literal actor selection. Never auto-select a sole candidate, hide malformed current residue as retired history, or broaden selection from a skill label.",
         "Preserve full versus selected content, optional absence, deliberate omissions, count scope, and separate selection/observation-detail continuation identities. Serialize complete bounded human or machine output before emitting it; do not silently truncate narrative or create a nonprogressing page.",
-        "For mutations, use IF-003's fresh execution under writer exclusion, obtain its exact guarded candidate and bounded storage facts, and serialize the mandatory public receipt before replacement. Establish readiness applicable to that same operation/candidate/format; preserve the published bound with optional diagnostic omission rather than rejecting an admissible correction. No preview is an executable transaction, and no new wire token or callback mechanism is implied.",
-        "Preview preserves the intended candidate and bounded result while remaining non-writing and non-reserving. Recovery uses explicit transaction identity and complete/restore selection; retries never invent renewed decision basis or replay an old mutation implicitly.",
+        "For target v2/v4 mutations, normalize the selected task into the typed IF-003 request. MOD-011 owns fresh candidate construction, dependency validation and the database transaction. Before commit, establish bounded receipt readiness using the shared MOD-010-owned pure encoder and the selected fixed receipt profile. No SQL, connection, filesystem reader or arbitrary construction/render callback is a v4 request value. Supported v3 retains its existing exact-byte publication and receipt procedure.",
+        "Preview makes no engineering-record or attachment-publication changes and reserves nothing; temporary admission leases and SQLite-internal recovery follow the v4 storage contract. Supported v3 manual transaction recovery retains explicit complete/restore selection. V4 ordinary transactions are recovered internally by SQLite; interrupted store replacement uses explicit maintenance resume. Browser recovery remains separately scoped. No retry implicitly replays old intent or renews a decision basis.",
         "Keep private invocation diagnostics bounded and independent of semantic results, stdout, authoritative repository bytes, and transaction/recovery behavior. Validate closed logging options at the declared admission boundary, protect owned paths and sensitive input, and expose exact-ID lookup as read-only diagnosis rather than command replay or workflow evidence."
       ],
       "failure_behavior": [
@@ -48,10 +49,11 @@
     "Public result domains remain independent of stored v3 and of generic/discovery/advanced interfaces. In particular, unsupported or unavailable stored content cannot justify a fabricated validated revision or a guessed response version."
   ],
   "compatibility_rules": [
-    "The current CLI Design owns literal names, flags, envelopes, output contracts, and supported versions. This Interface does not create another RPC or network protocol.",
+    "The supported CLI Design owns current executable contracts. MOD-010 owns the proposed targeted-recording-v2 and store-maintenance-v1 syntax and result shapes; this Interface defines their responsibility boundary without introducing another RPC or network protocol.",
     "Skill-guided consumers must use supported command contracts and cannot assume new REM model operations exist.",
     "Public contract changes must reconcile all invoking skill guidance, examples, and affected consumers before adoption.",
-    "The proposed browser-v1 request/result family is defined by MOD-010 and IF-012; it is not a v2 operational-record command or an observed public entry. Existing command/record behavior remains version-scoped until coordinated adoption."
+    "The proposed browser-v1 request/result family is defined by MOD-010 and IF-012; it is not a v2 operational-record command or an observed public entry. Existing command/record behavior remains version-scoped until coordinated adoption.",
+    "Skills use supported public tasks, task schemas and opaque revision expectations. They do not need SQL, database schema versions, tables or runtime coordination paths; backend realization is owned by MOD-011. Target tasks cannot be advertised as installed before implementation and qualified adoption."
   ],
   "sources": [
     {
@@ -82,7 +84,7 @@
     {
       "source": "SRC-CUSTOMER-BROWSER-DESIGN",
       "locator": "IF-004",
-      "basis": "System and Architecture Design from SR-084\u2013088 and refined SR-060; proposed responsibility, contract and realization only. No implementation, platform qualification or product availability is established."
+      "basis": "System and Architecture Design from SR-084–088 and refined SR-060; proposed responsibility, contract and realization only. No implementation, platform qualification or product availability is established."
     }
   ]
 }

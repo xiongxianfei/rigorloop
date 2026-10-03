@@ -1046,6 +1046,467 @@
           ]
         }
       ]
+    },
+    {
+      "choice": "Expose current handoff, owned assessments and optional evidence retention through engineering tasks.",
+      "rationale": "Recurring engineering tasks determine public operations; typed records and atomic linking remain internal responsibilities.",
+      "alternatives": [
+        "Keep a public create/update/read command for every operational record kind.",
+        "Hide the same low-level operation list beneath one generic command."
+      ],
+      "consequences": [
+        "The designed catalogue has sixteen tasks and four supporting entries. Current handoff replaces mandatory activity history; counts do not constrain required behavior.",
+        "Current v1/v3 commands remain unchanged until coherent adoption of v2/v4. No aliases preserve withdrawn draft record-oriented operations.",
+        "Progress, assessment and closeout retain separate authority; working facts can be replaced without erasing unresolved obligations.",
+        "Named optional attachments enter through evidence-bearing tasks. Store backup, restore and migrate provide explicit maintenance; SQLite handles ordinary transaction recovery. Runtime qualification remains required before adoption.",
+        "Completion preserves a compact historical acceptance account and stops tracking repository applicability. New regressions become linked new work.",
+        "Target mutations and store maintenance consistently read JSON through --input -; MOD-010 owns the closed public envelope and outcome mapping. Typed IF-003 requests keep SQL and connection handles inside MOD-011. The owning review-record walkthrough explains scope, attribution and actual commitment without automatic workflow progression."
+      ],
+      "revisit_when": [
+        "The owning public command contracts add or revise a capability."
+      ],
+      "public_capabilities": [
+        {
+          "name": "init",
+          "group": "Install skills",
+          "purpose": "Install the selected supported agent skills; codex and claude are agent arguments to one operation.",
+          "contract": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/README.md#supporting-commands",
+          "functions": [
+            {
+              "function": "FUNC-063",
+              "relation": "invokes",
+              "contribution": "Install the selected supported agent skills; codex and claude are agent arguments to one operation."
+            },
+            {
+              "function": "FUNC-064",
+              "relation": "invokes",
+              "contribution": "Install the selected supported agent skills; codex and claude are agent arguments to one operation."
+            },
+            {
+              "function": "FUNC-065",
+              "relation": "invokes",
+              "contribution": "Install the selected supported agent skills; codex and claude are agent arguments to one operation."
+            }
+          ],
+          "limits": [
+            "Explicit replacement and actual installation outcomes follow the Installation owner. Installation grants no workflow adoption or skill execution authority."
+          ]
+        },
+        {
+          "name": "change create",
+          "group": "Change",
+          "purpose": "Capture goal, request, scope, authority and initial activity without inventing downstream decisions.",
+          "contract": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/README.md#start-work",
+          "functions": [
+            {
+              "function": "FUNC-045",
+              "relation": "invokes",
+              "contribution": "Capture goal, request, scope, authority and initial activity without inventing downstream decisions."
+            },
+            {
+              "function": "FUNC-046",
+              "relation": "invokes",
+              "contribution": "Capture goal, request, scope, authority and initial activity without inventing downstream decisions."
+            }
+          ],
+          "limits": [
+            "The actor supplies engineering facts and decisions; storage success grants no approval, progression or execution authority."
+          ]
+        },
+        {
+          "name": "change context",
+          "group": "Change",
+          "purpose": "Return the seven-section current handoff, or a compact historical completion, with explicit gaps and bounded supporting reads.",
+          "contract": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/README.md#resume-and-inspect-work",
+          "functions": [
+            {
+              "function": "FUNC-042",
+              "relation": "invokes",
+              "contribution": "Return the seven-section current handoff, or a compact historical completion, with explicit gaps and bounded supporting reads."
+            },
+            {
+              "function": "FUNC-043",
+              "relation": "invokes",
+              "contribution": "Return the seven-section current handoff, or a compact historical completion, with explicit gaps and bounded supporting reads."
+            },
+            {
+              "function": "FUNC-048",
+              "relation": "invokes",
+              "contribution": "Return the seven-section current handoff, or a compact historical completion, with explicit gaps and bounded supporting reads."
+            }
+          ],
+          "limits": [
+            "Read-only bounded context exposes missing support and unresolved findings; it does not determine readiness or run an assessment."
+          ]
+        },
+        {
+          "name": "change update",
+          "group": "Change",
+          "purpose": "Update current progress, comparable evidence and important rationale; retain optional named attachments and explicitly compact unused detail.",
+          "contract": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/README.md#record-progress-and-engineering-outputs",
+          "functions": [
+            {
+              "function": "FUNC-043",
+              "relation": "invokes",
+              "contribution": "Update current progress, comparable evidence and important rationale; retain optional named attachments and explicitly compact unused detail."
+            },
+            {
+              "function": "FUNC-045",
+              "relation": "invokes",
+              "contribution": "Update current progress, comparable evidence and important rationale; retain optional named attachments and explicitly compact unused detail."
+            },
+            {
+              "function": "FUNC-046",
+              "relation": "invokes",
+              "contribution": "Update current progress, comparable evidence and important rationale; retain optional named attachments and explicitly compact unused detail."
+            }
+          ],
+          "limits": [
+            "The actor supplies engineering facts and decisions; storage success grants no approval, progression or execution authority.",
+            "No generic operation list, review judgment, review-gate selection or verification outcome is admitted.",
+            "An activity completed label cannot close the Change. Completed Changes accept only the permitted audit additions."
+          ]
+        },
+        {
+          "name": "change complete",
+          "group": "Change",
+          "purpose": "Record a compact historical outcome and acceptance basis after distinct successful final Verify.",
+          "contract": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/README.md#complete-the-change",
+          "functions": [
+            {
+              "function": "FUNC-043",
+              "relation": "invokes",
+              "contribution": "Record a compact historical outcome and acceptance basis after distinct successful final Verify."
+            },
+            {
+              "function": "FUNC-045",
+              "relation": "invokes",
+              "contribution": "Record a compact historical outcome and acceptance basis after distinct successful final Verify."
+            },
+            {
+              "function": "FUNC-046",
+              "relation": "invokes",
+              "contribution": "Record a compact historical outcome and acceptance basis after distinct successful final Verify."
+            }
+          ],
+          "limits": [
+            "Closeout requires current supported final verification and resolved work/blockers; the CLI does not perform the engineering assessment or grant new authority.",
+            "Completion is a compact historical account, not ongoing current-system approval; later regressions start linked new work."
+          ]
+        },
+        {
+          "name": "review prepare",
+          "group": "Review",
+          "purpose": "Assemble or update the current input for a Review without creating an assessment or approval.",
+          "contract": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/README.md#preparation",
+          "functions": [
+            {
+              "function": "FUNC-043",
+              "relation": "invokes",
+              "contribution": "Assemble or update the current input for a Review without creating an assessment or approval."
+            },
+            {
+              "function": "FUNC-045",
+              "relation": "invokes",
+              "contribution": "Assemble or update the current input for a Review without creating an assessment or approval."
+            },
+            {
+              "function": "FUNC-046",
+              "relation": "invokes",
+              "contribution": "Assemble or update the current input for a Review without creating an assessment or approval."
+            }
+          ],
+          "limits": [
+            "The actor supplies engineering facts and decisions; storage success grants no approval, progression or execution authority."
+          ]
+        },
+        {
+          "name": "review show",
+          "group": "Review",
+          "purpose": "Read current review input, actual conclusion, applicability and actionable findings without requiring attempt history.",
+          "contract": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/README.md#read-the-review",
+          "functions": [
+            {
+              "function": "FUNC-042",
+              "relation": "invokes",
+              "contribution": "Read current review input, actual conclusion, applicability and actionable findings without requiring attempt history."
+            },
+            {
+              "function": "FUNC-043",
+              "relation": "invokes",
+              "contribution": "Read current review input, actual conclusion, applicability and actionable findings without requiring attempt history."
+            },
+            {
+              "function": "FUNC-048",
+              "relation": "invokes",
+              "contribution": "Read current review input, actual conclusion, applicability and actionable findings without requiring attempt history."
+            }
+          ],
+          "limits": [
+            "Read-only bounded context exposes missing support and unresolved findings; it does not determine readiness or run an assessment."
+          ]
+        },
+        {
+          "name": "review record",
+          "group": "Review",
+          "purpose": "Update assessor-owned current judgment, issue dispositions and explicit applicability while preserving unresolved obligations.",
+          "contract": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/README.md#record-an-assessment-finding-or-reliance-decision",
+          "functions": [
+            {
+              "function": "FUNC-045",
+              "relation": "invokes",
+              "contribution": "Update assessor-owned current judgment, issue dispositions and explicit applicability while preserving unresolved obligations."
+            },
+            {
+              "function": "FUNC-046",
+              "relation": "invokes",
+              "contribution": "Update assessor-owned current judgment, issue dispositions and explicit applicability while preserving unresolved obligations."
+            }
+          ],
+          "limits": [
+            "The actor supplies engineering facts and decisions; storage success grants no approval, progression or execution authority.",
+            "Advisory feedback cannot establish formal approval; material changes require independent reassessment."
+          ]
+        },
+        {
+          "name": "verification show",
+          "group": "Verification",
+          "purpose": "Read the current verification basis and gaps, or one selected current Verification account and its assessed support.",
+          "contract": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/README.md#verification-tasks",
+          "functions": [
+            {
+              "function": "FUNC-042",
+              "relation": "invokes",
+              "contribution": "Read the current verification basis and gaps, or one selected current Verification account and its assessed support."
+            },
+            {
+              "function": "FUNC-043",
+              "relation": "invokes",
+              "contribution": "Read the current verification basis and gaps, or one selected current Verification account and its assessed support."
+            },
+            {
+              "function": "FUNC-048",
+              "relation": "invokes",
+              "contribution": "Read the current verification basis and gaps, or one selected current Verification account and its assessed support."
+            }
+          ],
+          "limits": [
+            "Read-only bounded context exposes missing support and unresolved findings; it does not determine readiness or run an assessment."
+          ]
+        },
+        {
+          "name": "verification record",
+          "group": "Verification",
+          "purpose": "Save the distinct current verification assessment and related actual evidence, with optional selected attachments.",
+          "contract": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/README.md#verification-tasks",
+          "functions": [
+            {
+              "function": "FUNC-045",
+              "relation": "invokes",
+              "contribution": "Save the distinct current verification assessment and related actual evidence, with optional selected attachments."
+            },
+            {
+              "function": "FUNC-046",
+              "relation": "invokes",
+              "contribution": "Save the distinct current verification assessment and related actual evidence, with optional selected attachments."
+            }
+          ],
+          "limits": [
+            "The actor supplies engineering facts and decisions; storage success grants no approval, progression or execution authority.",
+            "The command runs no tests or repairs, invents no review and does not set activity completed."
+          ]
+        },
+        {
+          "name": "browser generate",
+          "group": "Architecture browser",
+          "purpose": "Generate a portable architecture snapshot from explicit project inputs and publish to the selected output.",
+          "contract": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/README.md#browser-command-family",
+          "functions": [
+            {
+              "function": "FUNC-079",
+              "relation": "invokes",
+              "contribution": "Generate a portable architecture snapshot from explicit project inputs and publish to the selected output."
+            },
+            {
+              "function": "FUNC-080",
+              "relation": "invokes",
+              "contribution": "Generate a portable architecture snapshot from explicit project inputs and publish to the selected output."
+            },
+            {
+              "function": "FUNC-081",
+              "relation": "invokes",
+              "contribution": "Generate a portable architecture snapshot from explicit project inputs and publish to the selected output."
+            },
+            {
+              "function": "FUNC-082",
+              "relation": "invokes",
+              "contribution": "Generate a portable architecture snapshot from explicit project inputs and publish to the selected output."
+            }
+          ],
+          "limits": [
+            "Browser operations require no Change and grant no engineering approval; browser-v1 retains its separate contract."
+          ]
+        },
+        {
+          "name": "browser check",
+          "group": "Architecture browser",
+          "purpose": "Compare the selected snapshot against the same source and tool scope without mutation.",
+          "contract": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/README.md#browser-command-family",
+          "functions": [
+            {
+              "function": "FUNC-080",
+              "relation": "invokes",
+              "contribution": "Compare the selected snapshot against the same source and tool scope without mutation."
+            },
+            {
+              "function": "FUNC-081",
+              "relation": "invokes",
+              "contribution": "Compare the selected snapshot against the same source and tool scope without mutation."
+            }
+          ],
+          "limits": [
+            "Browser operations require no Change and grant no engineering approval; browser-v1 retains its separate contract."
+          ]
+        },
+        {
+          "name": "browser recover",
+          "group": "Architecture browser",
+          "purpose": "Recover the selected interrupted browser publication without replaying generation.",
+          "contract": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/README.md#browser-command-family",
+          "functions": [
+            {
+              "function": "FUNC-082",
+              "relation": "invokes",
+              "contribution": "Recover the selected interrupted browser publication without replaying generation."
+            }
+          ],
+          "limits": [
+            "Browser operations require no Change and grant no engineering approval; browser-v1 retains its separate contract."
+          ]
+        },
+        {
+          "name": "--help",
+          "group": "Help and diagnostics",
+          "purpose": "Display the supported task surface and operation-specific usage.",
+          "contract": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/README.md#supporting-commands",
+          "functions": [
+            {
+              "function": "FUNC-040",
+              "relation": "invokes",
+              "contribution": "Display the supported task surface and operation-specific usage."
+            },
+            {
+              "function": "FUNC-048",
+              "relation": "invokes",
+              "contribution": "Display the supported task surface and operation-specific usage."
+            }
+          ],
+          "limits": [
+            "Help requires no project access; displayed capabilities grant no execution authority."
+          ]
+        },
+        {
+          "name": "version",
+          "group": "Help and diagnostics",
+          "purpose": "Report the executing package name and version.",
+          "contract": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/README.md#supporting-commands",
+          "functions": [
+            {
+              "function": "FUNC-048",
+              "relation": "invokes",
+              "contribution": "Report the executing package name and version."
+            }
+          ],
+          "limits": [
+            "Package identity is not proof of registry state, compatibility or qualification."
+          ]
+        },
+        {
+          "name": "capabilities",
+          "group": "Help and diagnostics",
+          "purpose": "Report actually supported operations, interface contracts and operational-backend availability.",
+          "contract": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/README.md#supporting-commands",
+          "functions": [
+            {
+              "function": "FUNC-042",
+              "relation": "invokes",
+              "contribution": "Report actually supported operations, interface contracts and operational-backend availability."
+            },
+            {
+              "function": "FUNC-048",
+              "relation": "invokes",
+              "contribution": "Report actually supported operations, interface contracts and operational-backend availability."
+            }
+          ],
+          "limits": [
+            "Unimplemented commands are not advertised by an installed runtime; discovery does not adopt a workflow."
+          ]
+        },
+        {
+          "name": "logs",
+          "group": "Help and diagnostics",
+          "purpose": "Report the diagnostic location or inspect bounded events for an explicit invocation ID.",
+          "contract": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/README.md#supporting-commands",
+          "functions": [
+            {
+              "function": "FUNC-049",
+              "relation": "invokes",
+              "contribution": "Report the diagnostic location or inspect bounded events for an explicit invocation ID."
+            }
+          ],
+          "limits": [
+            "Diagnostics neither replay operations nor substitute for engineering evidence; privacy and retention boundaries remain in force."
+          ]
+        },
+        {
+          "name": "store backup",
+          "group": "Store maintenance",
+          "purpose": "Create an integrity-checked backup of the selected retained Change scope and required attachments.",
+          "contract": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/README.md#store-maintenance",
+          "functions": [
+            {
+              "function": "FUNC-074",
+              "relation": "invokes",
+              "contribution": "Create an integrity-checked backup of the selected retained Change scope and required attachments."
+            }
+          ],
+          "limits": [
+            "Maintenance is project-scoped, requires explicit inputs and preserves judgment meaning; it does not grant workflow adoption or new approval."
+          ]
+        },
+        {
+          "name": "store restore",
+          "group": "Store maintenance",
+          "purpose": "Validate and activate a selected backup with explicit destination expectations and preserved prior data.",
+          "contract": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/README.md#store-maintenance",
+          "functions": [
+            {
+              "function": "FUNC-075",
+              "relation": "invokes",
+              "contribution": "Validate and activate a selected backup with explicit destination expectations and preserved prior data."
+            }
+          ],
+          "limits": [
+            "Maintenance is project-scoped, requires explicit inputs and preserves judgment meaning; it does not grant workflow adoption or new approval."
+          ]
+        },
+        {
+          "name": "store migrate",
+          "group": "Store maintenance",
+          "purpose": "Stage a supported schema upgrade or explicitly dispositioned legacy import before activating SQLite.",
+          "contract": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/README.md#store-maintenance",
+          "functions": [
+            {
+              "function": "FUNC-076",
+              "relation": "invokes",
+              "contribution": "Stage a supported schema upgrade or explicitly dispositioned legacy import before activating SQLite."
+            }
+          ],
+          "limits": [
+            "Maintenance is project-scoped, requires explicit inputs and preserves judgment meaning; it does not grant workflow adoption or new approval."
+          ]
+        }
+      ]
     }
   ],
   "deferred": [

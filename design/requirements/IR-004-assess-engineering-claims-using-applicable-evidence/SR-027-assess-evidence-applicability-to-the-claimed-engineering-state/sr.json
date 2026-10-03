@@ -39,9 +39,10 @@
   "acceptance_criteria": [
     "Evidence for a different subject revision, criterion basis, scope, or materially different condition is identified with the mismatch and is not silently used as current support.",
     "When relevant applicability information is missing, the result is explicitly unknown or incomplete and identifies the missing basis.",
-    "A recorded engineering conclusion that evidence remains applicable states its assessed scope, rationale, and provenance; the original observation basis remains unchanged.",
+    "A current applicability conclusion states its scope, rationale and reporter. Preserve the assessed basis and selected support needed for that conclusion; no full source archive or old-run inventory is required.",
     "An unchanged entity identity, existing test definition, or passing label alone cannot establish applicability to a changed claim basis.",
-    "Advisory scope, whole-change review scope and final verification scope remain distinguishable when assessing applicability. A clean narrower advisory judgment cannot support a whole-change approval merely because the inspected files are part of the Change."
+    "Advisory scope, whole-change review scope and final verification scope remain distinguishable when assessing applicability. A clean narrower advisory judgment cannot support a whole-change approval merely because the inspected files are part of the Change.",
+    "A claim of no relevant changes distinguishes an actor report from a defined mechanical comparison and states its scope. Timestamps, current labels and saved summaries alone do not establish unchanged subjects."
   ],
   "assumptions": [],
   "constraints": [],
@@ -58,6 +59,11 @@
       "source": "SRC-REQUIREMENT-FIRST-WORKFLOW",
       "locator": "SR-027",
       "basis": "User-selected requirement-first workflow and one mandatory whole-change Code Review gate. Proposed requirement analysis only; existing product contracts remain active until coordinated adoption. No new Function, AR, implementation or approval is inferred."
+    },
+    {
+      "source": "SRC-CURRENT-HANDOFF",
+      "locator": "SR-027",
+      "basis": "User-selected current handoff and selective retention refinement. Reuse existing identity and responsibility; no runtime adoption or independent approval is asserted."
     }
   ]
 }

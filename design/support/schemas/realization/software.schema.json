@@ -415,6 +415,85 @@
               ]
             },
             "description": "Reasoned proposed Function correspondence for observed entries, with explicit unmapped scope. Does not establish implementation conformance or transfer Function allocation."
+          },
+          "public_capabilities": {
+            "description": "Designed public capabilities independent of observed source entries. Contracts must exist; implementation files and dispatch operations are not prerequisites.",
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "name",
+                "group",
+                "purpose",
+                "contract",
+                "functions",
+                "limits"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "pattern": "\\S"
+                },
+                "group": {
+                  "type": "string",
+                  "pattern": "\\S"
+                },
+                "purpose": {
+                  "type": "string",
+                  "pattern": "\\S"
+                },
+                "contract": {
+                  "type": "string",
+                  "pattern": "^[^#\\s]+\\.md(?:#[^#\\s]+)?$",
+                  "not": {
+                    "pattern": "\\s"
+                  },
+                  "description": "Repository-relative Markdown contract path with an optional heading fragment."
+                },
+                "functions": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "function",
+                      "relation",
+                      "contribution"
+                    ],
+                    "properties": {
+                      "function": {
+                        "type": "string",
+                        "pattern": "^FUNC-[0-9]+$",
+                        "not": {
+                          "pattern": "\\s"
+                        }
+                      },
+                      "relation": {
+                        "type": "string",
+                        "enum": [
+                          "guides",
+                          "invokes",
+                          "realizes"
+                        ]
+                      },
+                      "contribution": {
+                        "type": "string",
+                        "pattern": "\\S"
+                      }
+                    }
+                  }
+                },
+                "limits": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "pattern": "\\S"
+                  }
+                }
+              }
+            }
           }
         }
       }

@@ -39,10 +39,11 @@
   "acceptance_criteria": [
     "An established Change identifies its originating and resulting Baselines, affected subjects, initiating basis, adopted outcome, and recorded actor and decision provenance.",
     "A proposed or interrupted Change remains distinguishable from an established transition and does not claim a resulting Baseline or decision that has not been recorded.",
-    "When a Change is corrected or superseded, the prior recorded decision and state remain attributable to their original basis instead of appearing to have always reflected the correction.",
+    "A correction to a significant adopted decision or completion statement is explicit and attributable to its original basis. Routine working-state updates need not preserve every previous version.",
     "Reading the current engineering model does not require replaying Changes to obtain its current definitions; inspecting the Change explains the transition and its recorded provenance.",
     "Assessment results and suggested actions are identifiable as such and do not become authorization merely because they appear in the Change history.",
-    "Change provenance remains inspectable independently of current engineering definitions, and unavailable history is reported without invented decisions or a false claim that no Change occurred."
+    "Change provenance remains inspectable independently of current engineering definitions, and unavailable history is reported without invented decisions or a false claim that no Change occurred.",
+    "The provenance of a completed operational Change may be a compact outcome and acceptance account. Engineering Baseline provenance does not require logging all implementation actions or intermediate checks."
   ],
   "assumptions": [],
   "constraints": [],
@@ -59,6 +60,11 @@
       "source": "SRC-LOCAL-OPERATIONAL-ANALYSIS",
       "locator": "SR-023",
       "basis": "Draft derivation from the refined IRs and RR proposal; no approval, implementation or satisfaction claim."
+    },
+    {
+      "source": "SRC-CURRENT-HANDOFF",
+      "locator": "SR-023",
+      "basis": "User-selected current handoff and selective retention refinement. Reuse existing identity and responsibility; no runtime adoption or independent approval is asserted."
     }
   ]
 }

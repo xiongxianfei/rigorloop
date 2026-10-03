@@ -14,6 +14,34 @@ const puppeteer = require(process.env.REM_PUPPETEER);
     const text=()=>page.$eval('main',e=>e.innerText);
     const capture=async name=>{if(shots){fs.mkdirSync(shots,{recursive:true});await page.screenshot({path:path.join(shots,name+'.png'),fullPage:true})}};
     const overflow=async()=>assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'viewport overflow');
+    const skillsCase = async prefix => {
+      await go('skills');
+      assert.match(await text(),/Design catalogue/);
+      const names=await page.$$eval('.catalog-entry strong',n=>n.map(x=>x.textContent));
+      for (const name of ['requirement-analysis','requirement-review','system-design','architecture-design']) assert(names.includes(name));
+      for (const name of ['proposal','proposal-review','design']) assert(!names.includes(name));
+      assert.equal(await page.$('.observed-skill-sources'),null);
+      await overflow();await capture(prefix+'-designed-skills');
+      await page.type('#catalog-filter','requirement-analysis');
+      assert.equal(await page.$$eval('.catalog-entry',n=>n.length),1);
+      await page.click('.catalog-entry');await page.waitForFunction(()=>document.querySelector('main h1')?.textContent === 'requirement-analysis');
+      assert.equal(await page.$eval('main .qualification',n=>n.textContent),'Design');
+      assert.match(await text(),/Read design contract/);
+      assert.equal(await page.$('a[href$="skills/requirement-analysis/SKILL.md"]'),null);
+      await overflow();await capture(prefix+'-designed-skill-detail');
+      await go('commands');
+      const commands=await page.$$eval('.catalog-entry strong',n=>n.map(x=>x.textContent));
+      assert.deepEqual([...commands].sort(), [
+        'store backup','store restore','store migrate','init','change create','change context','change update','change complete',
+        'review prepare','review show','review record','verification show','verification record',
+        'browser generate','browser check','browser recover',
+        '--help','version','capabilities','logs'
+      ].sort());
+      await page.type('#catalog-filter','browser');
+      await overflow();await capture(prefix+'-designed-commands');
+      await go('development/MOD-012');
+      assert(await page.$$eval('details > summary',n=>n.some(x=>x.textContent==='Observed public sources')));
+    };
     const inlineCase = async (route, titles, shot) => {
       await go(route);await page.reload();
       await page.waitForFunction(()=>document.querySelector('main h1'));
@@ -83,6 +111,8 @@ const puppeteer = require(process.env.REM_PUPPETEER);
       }
       await overflow();if(shot)await capture(shot);
     };
+
+    await skillsCase('desktop');
 
     // Scope tree and perspective navigation must agree after actual clicks.
     const clickRoute=async(selector,hash)=>{await page.click(selector);await page.waitForFunction(expected=>location.hash===expected && document.querySelector('#navigation [aria-current]')?.getAttribute('href')===expected,{},hash);};
@@ -204,6 +234,7 @@ const puppeteer = require(process.env.REM_PUPPETEER);
     await go('process/MOD-004/observed/sequence/generation-sequence');assert.match(await text(),/not found/);
     for(const hash of ['overview','process','development','physical','scenarios','cooperation','contributions','commands','skills','process/interaction/publication','development/testing','physical/storage']){await go(hash);assert.doesNotMatch(await page.$eval('h1',e=>e.textContent),/not found/)}
     await page.setViewport({width:390,height:844});
+    await skillsCase('mobile');
     await inlineCase('development/MOD-009',[],'mobile-zero-graphs');
     await inlineCase('process/MOD-006',['Resume and coordinate work'],'mobile-one-graph');
     await inlineCase('development/MOD-004',['Browser software organization','Browser file and package organization','Browser build and artifacts'],'mobile-development-graphs');

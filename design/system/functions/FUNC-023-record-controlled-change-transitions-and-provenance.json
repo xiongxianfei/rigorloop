@@ -19,7 +19,7 @@
     "Retain the Change's initiating basis, scope, affected subjects and revisions, responsible actors, decisions, and actual disposition.",
     "Associate an established transition with identifiable before and resulting Baselines and the applicable decision basis.",
     "Keep assessment references and suggested actions distinguishable from authorizations and adopted decisions.",
-    "Preserve earlier decisions and transitions when later corrections or supersession are recorded; leave current definitions directly understandable at their owners.",
+    "Keep significant adopted decisions and completion corrections attributable to their original basis. Routine current-state updates need no historical copy; current engineering definitions remain directly understandable.",
     "Change provenance remains inspectable independently of current engineering definitions, and unavailable history is reported without invented decisions or a false claim that no Change occurred."
   ],
   "failure_behavior": [
@@ -29,7 +29,7 @@
     },
     {
       "condition": "A correction conflicts with an earlier recorded decision or history.",
-      "outcome": "Retain both attributable states and identify the correction; do not silently rewrite the earlier provenance."
+      "outcome": "Identify a correction to significant adopted provenance explicitly; do not silently change a retained completion or fabricate continuity. Superseded working detail may be replaced under the current handoff contract."
     }
   ],
   "sources": [
@@ -47,6 +47,11 @@
       "source": "SRC-LOCAL-OPERATIONAL-ANALYSIS",
       "locator": "FUNC-023",
       "basis": "Draft derivation from the refined IRs and RR proposal; no approval, implementation or satisfaction claim."
+    },
+    {
+      "source": "SRC-CURRENT-HANDOFF",
+      "locator": "FUNC-023",
+      "basis": "User-selected current handoff and selective retention refinement. Reuse existing identity and responsibility; no runtime adoption or independent approval is asserted."
     }
   ],
   "allocated_to": "MOD-006"
