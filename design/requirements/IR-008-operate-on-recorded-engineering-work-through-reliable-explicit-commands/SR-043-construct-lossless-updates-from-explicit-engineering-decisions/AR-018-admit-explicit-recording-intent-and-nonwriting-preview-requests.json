@@ -56,7 +56,7 @@
     },
     {
       "source": "SRC-PUBLISHED-CLI",
-      "locator": "docs/design/cli/cli.md#CLI-SR-03, CLI-SR-12, CLI-SR-15, CLI-SR-16, CLI-SR-25, CLI-SR-26; docs/design/cli/records.md#RF-SR-02, RF-SR-03",
+      "locator": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/command-contract.md#CLI-SR-03, CLI-SR-12, CLI-SR-15, CLI-SR-16, CLI-SR-25, CLI-SR-26; design/architecture/modules/MOD-018-engineering-operations/modules/MOD-011-operational-record-persistence/record-contract.md#RF-SR-02, RF-SR-03",
       "basis": "Preserve the applicable current public and stored-record guarantees at this accountable boundary. The named source retains exact schemas, operation tables, classifications, limits, and historical adoption obligations; this allocation neither replaces those details nor accepts REM authoring JSON as operational records."
     },
     {
@@ -71,7 +71,7 @@
     },
     {
       "source": "SRC-SQLITE-ADOPTION",
-      "locator": "docs/design/cli/records.md; Work records (MOD-011) current transaction and maintenance contract",
+      "locator": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-011-operational-record-persistence/record-contract.md; Work records (MOD-011) current transaction and maintenance contract",
       "basis": "Reconciles existing stakeholder need and allocation with SQLite ordinary recovery. No new need, approval, or executed result is inferred."
     }
   ],

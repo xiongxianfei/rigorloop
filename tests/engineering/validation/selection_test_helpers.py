@@ -90,7 +90,7 @@ EXPECTED_CATALOG = {
     "release_evidence.validate": "python scripts/release_evidence.py <path>...",
     "validation_execution.regression": "python tests/engineering/validation/test-validation-execution.py",
     "record_store.schema": "node scripts/build-record-store-schema.mjs --check",
-    "model.validate": "python scripts/validate-boundary-first.py --check --path docs/design/skill/workflow.md --path docs/design/cli/cli.md --path docs/design/cli/records.md",
+    "model.validate": "python scripts/validate-boundary-first.py --check --path design/architecture/modules/MOD-017-engineering-governance/modules/MOD-006-engineering-change-control/workflow.md --path design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/command-contract.md --path design/architecture/modules/MOD-018-engineering-operations/modules/MOD-011-operational-record-persistence/record-contract.md",
     "operational_guidance.check": "python scripts/project-operational-guidance.py --check",
     "record_retirement.regression": "node --test packages/rigorloop/test/record-retirement.test.js",
     "boundary_first.validate": "python scripts/validate-boundary-first.py --check",

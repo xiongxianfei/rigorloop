@@ -36,22 +36,22 @@
   "sources": [
     {
       "source": "SRC-PUBLISHED-PACKAGING",
-      "locator": "docs/design/engineering/packaging.md#DIST-SR-06",
+      "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-013-product-package-production/packaging.md#DIST-SR-06",
       "basis": "Logical behavior derived from the identified published-product contracts for IR-010; existing source details and compatibility/adoption limits remain applicable."
     },
     {
       "source": "SRC-PUBLISHED-PACKAGING",
-      "locator": "docs/design/engineering/packaging.md#DIST-SR-09",
+      "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-013-product-package-production/packaging.md#DIST-SR-09",
       "basis": "Logical behavior derived from the identified published-product contracts for IR-010; existing source details and compatibility/adoption limits remain applicable."
     },
     {
       "source": "SRC-PUBLISHED-PACKAGING",
-      "locator": "docs/design/engineering/packaging.md#DIST-SR-18",
+      "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-013-product-package-production/packaging.md#DIST-SR-18",
       "basis": "Logical behavior derived from the identified published-product contracts for IR-010; existing source details and compatibility/adoption limits remain applicable."
     },
     {
       "source": "SRC-PUBLISHED-PACKAGING",
-      "locator": "docs/design/engineering/packaging.md#DIST-SR-21",
+      "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-013-product-package-production/packaging.md#DIST-SR-21",
       "basis": "Logical behavior derived from the identified published-product contracts for IR-010; existing source details and compatibility/adoption limits remain applicable."
     },
     {

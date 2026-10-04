@@ -4,8 +4,8 @@
 
 - Map status: partial
 - Scope: repository
-- Baseline: 38a3042e63c7c2462ecf8ffed29f4ac0cbb8923f+dirty on refactor/validation-organization; this refresh inspected tests/skill/, tests/engineering/, scripts/lib/, scripts/resources/, their top-level command callers and the two changed CI workflow commands. Other sections retain the prior cleanup-map baseline.
-- Last reviewed: 2026-09-14
+- Baseline: 85a1b9ba7cd1a43ad9e72b924edd88a68fe15872 plus the canonical-design-ownership change. Definition ownership, contract paths and current recording guidance refreshed; unrelated tooling observations retain their earlier qualification.
+- Last reviewed: 2026-10-04
 - Coverage: current test/fixture placement and validation/CI callers; prior repository orientation retained outside this refresh.
 - Exclusions: external account configuration, hosted release execution and historical artifact contents.
 - Parent map: not-applicable
@@ -13,29 +13,31 @@
 
 ## Purpose and scope
 
-This map orients contributors to the inspected repository. [System](design/system.md) owns model composition; [CONSTITUTION.md](../CONSTITUTION.md) owns governance. This map does not own workflow stage order; Workflow owns it. CLI owns deterministic workflow-context facts, and route owns semantic routing. Exact workflow state belongs to the selected change record. The previous map described retired specs, YAML lifecycle engines, three-target distribution and direct CI gates; the current source paths below correct those claims.
+This map orients contributors to the inspected repository. [System](../design/architecture/composition.md) owns model composition; [CONSTITUTION.md](../CONSTITUTION.md) owns governance. This map does not own workflow stage order; Workflow owns it. CLI owns deterministic change-context facts, and route owns semantic routing. Exact workflow state belongs to the selected change record. The previous map described retired specs, YAML lifecycle engines, three-target distribution and direct CI gates; the current source paths below correct those claims.
 
 ## System overview
 
-RigorLoop publishes skill guidance and a command-line executable. [Skill](design/skill/skill.md), [CLI](design/cli/cli.md) and [Engineering](design/engineering/engineering.md) are the three main model owners. Canonical skills live in [skills/](../skills/), and the npm package is [packages/rigorloop/](../packages/rigorloop/). Individual skills work without CLI recording; governed recording uses the executable. No long-running service is present in the inspected runtime. [Explore](../skills/explore/SKILL.md) and [Research](../skills/research/SKILL.md) provide optional discovery support; their conclusions return to the owning stage before changing a decision.
+RigorLoop publishes skill guidance and a command-line executable. The REM model owns current engineering definitions; detailed contracts live with responsible Modules and repository support under [design/](../design/). Canonical skills live in [skills/](../skills/), and the npm package is [packages/rigorloop/](../packages/rigorloop/). Individual skills work without CLI recording; governed recording uses the executable. No long-running service is present in the inspected runtime. [Explore](../skills/explore/SKILL.md) and [Research](../skills/research/SKILL.md) provide optional discovery support; their conclusions return to the owning stage before changing a decision.
 
 ## Repository layout
 
 | Path | Observed responsibility |
 | --- | --- |
 | [VISION.md](../VISION.md), [AGENTS.md](../AGENTS.md), [CONSTITUTION.md](../CONSTITUTION.md) | Project direction, operating guidance and governing principles. |
-| [docs/design/](design/) | Current behavioral and technical contracts, decisions and acceptance intent. |
+| [design/](../design/) | Current REM definitions and owner-scoped detailed contracts; start at design/README.md and design/support/ownership.md. |
 | [docs/proposals/](proposals/), [docs/plans/](plans/), [docs/plan.md](plan.md) | Direction, stable delivery intent and plan navigation. |
-| [docs/changes/](changes/) | Current v3 stores and unchanged historical evidence; filename alone does not imply current runtime support. |
+| [docs/changes/](changes/) | Historical filesystem records and unchanged evidence; current operational state is CLI-managed SQLite under the private .rigorloop/ area. |
 | [skills/](../skills/), [templates/](../templates/) | Authored skill packages, scaffolds and shared projection inputs. |
 | [packages/rigorloop/dist/](../packages/rigorloop/dist/) | Tracked executable JavaScript, runtime schemas and bundled installation metadata; no separate src tree exists. |
 | [scripts/](../scripts/), [schemas/](../schemas/) | Repository validation, generation, release tooling and schema resources. |
 | [tests/skill/](../tests/skill/), [tests/engineering/](../tests/engineering/), [tests/fixtures/](../tests/fixtures/), [packages/rigorloop/test/](../packages/rigorloop/test/) | Capability-owned repository cases, shared inputs, package cases and owned dynamic fixture builders. Exclusive boundary fixtures live beside Validation tests. |
 | [dist/adapters/](../dist/adapters/) | Tracked support README and manifest; generated public skill bodies are archive output. |
 | [docs/releases/](releases/), [docs/reports/](reports/) | Release intent/notes, profiles and retained operational evidence. |
-| [docs/learn/](learn/), [docs/research/](research/), [docs/explorations/](explorations/) | Learning and optional standalone investigation artifacts. |
+| [docs/learn/](learn/), [docs/research/](research/) | Learning and optional standalone investigation artifacts. |
 
-The retired repository specs and mixed architecture/ADR trees are recoverable from Git. Their current responsibilities are covered by the Designs and the cleanup's [source disposition](changes/2026-09-14-retire-specs-and-stale-tests/source-disposition.md).
+The retired repository specs and mixed architecture/ADR trees are recoverable from Git. Their current responsibilities are covered by the REM owners. Retired source-transfer evidence retains its original revision and is not a current authority.
+
+Optional Explore output uses `docs/explorations/` when invoked; that directory need not exist before an artifact is authored.
 
 ## Runtime flow
 
@@ -45,7 +47,7 @@ Repository validation enters through [ci.sh](../scripts/ci.sh), uses [validation
 
 ## Data flow
 
-Current governed storage is rigorloop-records-v3: change.json plus registered review, evidence, decision and Verify JSON records. [Records](design/cli/records.md) owns representation; [CLI](design/cli/cli.md) owns safe queries and writes. Proposals, Designs and plans remain separate engineering subjects with exact identities. Historical stores are excluded from ordinary discovery without executing old validators; malformed current stores remain errors.
+Current operational storage uses rigorloop-records-v4 in project-local SQLite with the targeted-recording-v2 interface. Skills call the CLI; they do not write SQL. [Records](../design/architecture/modules/MOD-018-engineering-operations/modules/MOD-011-operational-record-persistence/record-contract.md) owns representation; [CLI](../design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/command-contract.md) owns safe queries and writes. Engineering definitions remain repository files and stable plans remain separate from mutable operational state. Historical stores are excluded from ordinary discovery without executing old validators; malformed current stores remain errors.
 
 Skill frontmatter and Markdown resources become generated ZIP archives. The packed npm tarball contains the executable and its allowlisted runtime inputs. [release_candidate.py](../scripts/lib/release/release_candidate.py) binds prepared source, profile and artifact identities; qualification checks real candidate bytes before approval or execution.
 
@@ -55,9 +57,9 @@ Skill frontmatter and Markdown resources become generated ZIP archives. The pack
 
 ## Test map
 
-Python unittest entrypoints now live in `tests/skill/` and `tests/engineering/{validation,packaging,release}/`. The release suite imports its sibling `release_candidate_tests.py`, `release_coordination_tests.py`, `release_execution_tests.py` and `release_evidence_tests.py`. Supported validation commands remain in `scripts/`; internal helpers live under `scripts/lib/{validation,packaging,release}/`, and authored templates/manifest under `scripts/resources/`; the test-only phrase helper lives in `tests/skill/`. Node tests and builders live in packages/rigorloop/test/. The earlier [M5 audit](changes/2026-09-14-retire-specs-and-stale-tests/m5-test-maintenance.json) records its reviewed population and generated domains at the earlier paths; it is change evidence, not a permanent test registry.
+Python unittest entrypoints now live in `tests/skill/` and `tests/engineering/{validation,packaging,release}/`. The release suite imports its sibling `release_candidate_tests.py`, `release_coordination_tests.py`, `release_execution_tests.py` and `release_evidence_tests.py`. Supported validation commands remain in `scripts/`; internal helpers live under `scripts/lib/{validation,packaging,release}/`, and authored templates/manifest under `scripts/resources/`; the test-only phrase helper lives in `tests/skill/`. Node tests and builders live in packages/rigorloop/test/. Earlier test-maintenance assessments retain their original population and do not serve as a permanent test registry.
 
-Current groups protect skills/resources, portable boundary inputs, documentation, selectors/execution, v3 records/discovery, installation/privacy, archives/npm and actual release candidates. Retired lifecycle/review engines and exclusive fixtures are absent. [validate-governed-lifecycle-cli.py](../scripts/validate-governed-lifecycle-cli.py) validates current discovery or exact Git snapshots; [release_evidence.py](../scripts/release_evidence.py) retains the release-owned checklist.
+Current groups protect skills/resources, portable boundary inputs, documentation, selectors/execution, current SQLite operations and explicit historical-record import, installation/privacy, archives/npm and actual release candidates. Retired lifecycle/review engines and exclusive fixtures are absent. [validate-governed-lifecycle-cli.py](../scripts/validate-governed-lifecycle-cli.py) validates current discovery or exact Git snapshots; [release_evidence.py](../scripts/release_evidence.py) retains the release-owned checklist.
 
 ## CI and release map
 
@@ -74,7 +76,7 @@ The CI workflow selects PR-range checks or full main gates, then separately prov
 
 ## Architecture rules observed
 
-[AGENTS.md](../AGENTS.md) keeps skills/ as the only authored skill source and generated adapter bodies out of tracked source. [Workflow](design/skill/workflow.md) separates stable plans from mutable records. [Assessment](design/skill/assessment.md) requires independent whole-change review and distinct final Verify. Current operations do not fetch retired contracts from Git; historical links identify provenance only.
+[AGENTS.md](../AGENTS.md) keeps skills/ as the only authored skill source and generated adapter bodies out of tracked source. [Workflow](../design/architecture/modules/MOD-017-engineering-governance/modules/MOD-006-engineering-change-control/workflow.md) separates stable plans from mutable records. [Assessment](../design/architecture/modules/MOD-017-engineering-governance/modules/MOD-007-engineering-verification-and-assurance/assessment.md) requires independent whole-change review and distinct final Verify. Current operations do not fetch retired contracts from Git; historical links identify provenance only.
 
 ## Risk areas
 

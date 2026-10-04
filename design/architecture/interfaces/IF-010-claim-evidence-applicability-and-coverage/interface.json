@@ -77,7 +77,7 @@
     },
     {
       "source": "SRC-PUBLISHED-RELEASE",
-      "locator": "docs/design/engineering/release/release.md#REL-SR-08; REL-SR-09; REL-SR-23; REL-SR-24; SR-069; SR-070; FUNC-069; FUNC-070",
+      "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-015-product-release-coordination/release.md#REL-SR-08; REL-SR-09; REL-SR-23; REL-SR-24; SR-069; SR-070; FUNC-069; FUNC-070",
       "basis": "Preserve exact-candidate qualification support, mandatory applicable non-deferred checks, explicit freshness, independent authority, changed-basis invalidation and separation of generated expectations from actual results. Release-specific sealing, publication and public verification remain consumer-owned."
     },
     {

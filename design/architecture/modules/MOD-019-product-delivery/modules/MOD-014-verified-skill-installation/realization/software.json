@@ -26,14 +26,14 @@
       },
       {
         "source": "SRC-PRODUCT-REALIZATION",
-        "locator": "docs/design/cli/installation.md#destination-conflicts-and-explicit-replacement; docs/design/cli/installation.md#test-design; packages/rigorloop/test/cli.test.js; packages/rigorloop/test/installer-replacement.test.js; packages/rigorloop/package.json; scripts/ci.sh; scripts/select-validation.py; scripts/lib/validation/validation_selection.py; scripts/lib/validation/validation_execution.py; scripts/lib/validation/validation_node_adapter.mjs",
+        "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-014-verified-skill-installation/installation.md#destination-conflicts-and-explicit-replacement; design/architecture/modules/MOD-019-product-delivery/modules/MOD-014-verified-skill-installation/installation.md#test-design; packages/rigorloop/test/cli.test.js; packages/rigorloop/test/installer-replacement.test.js; packages/rigorloop/package.json; scripts/ci.sh; scripts/select-validation.py; scripts/lib/validation/validation_selection.py; scripts/lib/validation/validation_execution.py; scripts/lib/validation/validation_node_adapter.mjs",
         "basis": "Static inspection of retained test-design contracts, current test sources, fixture helpers and execution callers identifies these bounded test groups and dependencies. No mapped product suite or CI was executed, no skill instructions were read, and source organization is not coverage, passing evidence or a transfer of Verification/Evidence responsibility."
       }
     ],
     "test_groups": [
       {
         "name": "Verified acquisition and installation admission",
-        "contract": "docs/design/cli/installation.md#test-design",
+        "contract": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-014-verified-skill-installation/installation.md#test-design",
         "test_sources": [
           {
             "path": "packages/rigorloop/test/cli.test.js",
@@ -48,7 +48,7 @@
           }
         ],
         "execution": {
-          "owner_contract": "docs/design/engineering/validation.md",
+          "owner_contract": "design/support/validation.md",
           "selection": [
             {
               "path": "scripts/select-validation.py",
@@ -93,7 +93,7 @@
       },
       {
         "name": "Bounded replacement and partial failure",
-        "contract": "docs/design/cli/installation.md#destination-conflicts-and-explicit-replacement",
+        "contract": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-014-verified-skill-installation/installation.md#destination-conflicts-and-explicit-replacement",
         "test_sources": [
           {
             "path": "packages/rigorloop/test/installer-replacement.test.js",
@@ -108,7 +108,7 @@
           }
         ],
         "execution": {
-          "owner_contract": "docs/design/engineering/validation.md",
+          "owner_contract": "design/support/validation.md",
           "selection": [
             {
               "path": "scripts/select-validation.py",

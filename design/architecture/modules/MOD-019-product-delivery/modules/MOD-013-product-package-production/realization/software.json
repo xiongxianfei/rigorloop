@@ -94,14 +94,14 @@
       },
       {
         "source": "SRC-PRODUCT-REALIZATION",
-        "locator": "docs/design/engineering/packaging.md#test-design; tests/engineering/packaging/adapter_archive_tests.py; tests/engineering/packaging/adapter_fixture_helpers.py; tests/engineering/packaging/adapter_generation_tests.py; tests/engineering/packaging/adapter_install_tests.py; tests/engineering/packaging/adapter_metadata_tests.py; tests/engineering/packaging/adapter_resources_tests.py; tests/engineering/packaging/npm_fixture_helpers.py; tests/engineering/packaging/npm_recording_tests.py; tests/engineering/packaging/test-npm-package-publication.py; packages/rigorloop/package.json; scripts/ci.sh; scripts/select-validation.py; scripts/lib/validation/validation_selection.py; scripts/lib/validation/validation_execution.py; scripts/lib/validation/validation_node_adapter.mjs",
+        "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-013-product-package-production/packaging.md#test-design; tests/engineering/packaging/adapter_archive_tests.py; tests/engineering/packaging/adapter_fixture_helpers.py; tests/engineering/packaging/adapter_generation_tests.py; tests/engineering/packaging/adapter_install_tests.py; tests/engineering/packaging/adapter_metadata_tests.py; tests/engineering/packaging/adapter_resources_tests.py; tests/engineering/packaging/npm_fixture_helpers.py; tests/engineering/packaging/npm_recording_tests.py; tests/engineering/packaging/test-npm-package-publication.py; packages/rigorloop/package.json; scripts/ci.sh; scripts/select-validation.py; scripts/lib/validation/validation_selection.py; scripts/lib/validation/validation_execution.py; scripts/lib/validation/validation_node_adapter.mjs",
         "basis": "Static inspection of retained test-design contracts, current test sources, fixture helpers and execution callers identifies these bounded test groups and dependencies. No mapped product suite or CI was executed, no skill instructions were read, and source organization is not coverage, passing evidence or a transfer of Verification/Evidence responsibility."
       }
     ],
     "test_groups": [
       {
         "name": "Isolated archive generation and integrity",
-        "contract": "docs/design/engineering/packaging.md#test-design",
+        "contract": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-013-product-package-production/packaging.md#test-design",
         "test_sources": [
           {
             "path": "tests/engineering/packaging/adapter_generation_tests.py",
@@ -132,7 +132,7 @@
           }
         ],
         "execution": {
-          "owner_contract": "docs/design/engineering/validation.md",
+          "owner_contract": "design/support/validation.md",
           "selection": [
             {
               "path": "scripts/select-validation.py",
@@ -175,7 +175,7 @@
       },
       {
         "name": "Packed candidate and installed-consumer composition",
-        "contract": "docs/design/engineering/packaging.md#test-design",
+        "contract": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-013-product-package-production/packaging.md#test-design",
         "test_sources": [
           {
             "path": "tests/engineering/packaging/test-npm-package-publication.py",
@@ -194,7 +194,7 @@
           }
         ],
         "execution": {
-          "owner_contract": "docs/design/engineering/validation.md",
+          "owner_contract": "design/support/validation.md",
           "selection": [
             {
               "path": "scripts/select-validation.py",

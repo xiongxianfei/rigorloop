@@ -11,7 +11,7 @@ See [VISION.md](VISION.md) for goals, non-goals, and falsifiability.
 <!-- vision:end -->
 
 RigorLoop makes AI-assisted delivery inspectable after the chat ends.
-The chain runs from proposal through Design, delivery planning, implementation, review, and final verification. PR handoff is an optional external integration after compact lifecycle completion.
+The chain runs from request and Requirement Analysis through reviewed design, delivery planning, implementation, review, and final verification. PR handoff is an optional external integration after compact lifecycle completion.
 
 It is for contributors and maintainers who want AI agents to help with serious software work without losing the reasoning, proof, and review trail that make a change safe to continue.
 
@@ -47,36 +47,19 @@ npx rigorloop --help
 Recommended first pass:
 
 1. Run `init` for one agent adapter.
-2. Run `npx rigorloop workflow-context` to inspect deterministic project workflow facts.
-3. Start your first real change with `proposal`.
+2. For an existing Change, run `npx rigorloop change context --root . --change CHANGE` to inspect its current handoff.
+3. Start your first real change with `requirement-analysis`; use `route` to coordinate authorized continuation.
 4. Move through review gates only when the durable artifacts are current.
 
-Read the [normative workflow contract](docs/design/skill/workflow.md) when you need to customize the lifecycle or resolve a process question.
+Read the [normative workflow contract](design/architecture/modules/MOD-017-engineering-governance/modules/MOD-006-engineering-change-control/workflow.md) when you need to customize the lifecycle or resolve a process question.
 
-Key paths: [workflow contract](docs/design/skill/workflow.md) · [contribute](CONTRIBUTING.md) · [bug report](.github/ISSUE_TEMPLATE/bug.yml) · [feature request](.github/ISSUE_TEMPLATE/feature.yml) · [security](SECURITY.md)
+Key paths: [workflow contract](design/architecture/modules/MOD-017-engineering-governance/modules/MOD-006-engineering-change-control/workflow.md) · [contribute](CONTRIBUTING.md) · [bug report](.github/ISSUE_TEMPLATE/bug.yml) · [feature request](.github/ISSUE_TEMPLATE/feature.yml) · [security](SECURITY.md)
 
 ## Recommended Use
 
-Use RigorLoop as a repository-local workflow, not as a chat convention. The useful path is:
+Use the [standard workflow](#workflow-at-a-glance) and current engineering owners. Start Requirement Analysis from the caller's request, reuse existing needs where adequate, and keep requirements, logical behavior and architecture distinct. Plan reviewed work into bounded milestones with required checks, then obtain one independent whole-change Code Review and distinct final Verify.
 
-```text
-proposal -> proposal-review -> design -> design-review -> plan -> delivery-review -> implement -> code-review -> verify
-```
-
-`design` reconciles behavior, technical realization, decisions and acceptance in owning living Designs; `design-review` independently assesses the exact affected subjects and interactions. Delivery Review jointly approves safe implementation sequencing and the plan's verification allocation.
-
-Add `review-resolution` when review records material findings. Add `ci-maintenance` only when CI workflows or related automation must change.
-
-Best practices:
-
-1. Start with `proposal` for substantive work. Use it to settle the problem, goals, non-goals, scope, options, risks, and recommended direction before implementation pressure starts.
-2. Keep each lifecycle stage grounded in the current authoritative artifacts. Do not rely on chat-only approval when a later stage needs reviewable evidence.
-3. Let `plan` allocate requirements to milestones, verification groups, concrete checks, and evidence expectations before writing implementation code.
-4. Implement one approved milestone at a time, then run `code-review` against the actual diff and governing artifacts.
-5. Run `verify` after implementation and review closeout. Verify selects current evidence, decides governed-change readiness, and writes the final explanation only in a successful Verify report.
-6. When the project uses pull requests, run `pr` only after successful final verification. `pr` consumes Verify's evidence basis and explanation as an optional external handoff.
-
-For smaller focused tasks, you can invoke an individual skill directly. Treat that as isolated output unless you intentionally route the work through the full workflow.
+Keep the current handoff useful for the next engineer: goal and authority, governing basis, progress, open issues, relevant evidence, review standing and next action. Preserve older detail selectively where it still supports a decision. A direct skill invocation performs its authorized scope without silently starting the full workflow.
 
 ## Starting a new repository
 
@@ -94,7 +77,7 @@ For a new repository, use this order:
    - `vision` creates or updates `VISION.md` for project direction and fit checks.
    - `constitution` creates or updates `CONSTITUTION.md` for source-of-truth and governance rules.
    - `project-map` creates or updates `docs/project-map.md` when repository orientation is needed.
-   - `route` uses `rigorloop workflow-context` for deterministic project-local workflow information and retains semantic routing judgment.
+   - `route` uses `rigorloop change context --root . --change CHANGE` for deterministic project-local workflow information and retains semantic routing judgment.
    - `docs/plan.md` starts as the small active/blocked/recent-work index.
 3. Start the first real change with the per-change lifecycle described above.
 
@@ -107,7 +90,7 @@ Do not rewrite durable guides just for symmetry.
 | --- | --- |
 | Understand project direction | [VISION.md](VISION.md) |
 | Understand governance and source-of-truth order | [CONSTITUTION.md](CONSTITUTION.md) |
-| Find workflow stages and artifact paths | Run `rigorloop workflow-context`; read [the workflow contract](docs/design/skill/workflow.md) for policy |
+| Find workflow stages and artifact paths | Run `rigorloop change context --root . --change CHANGE`; read [the workflow contract](design/architecture/modules/MOD-017-engineering-governance/modules/MOD-006-engineering-change-control/workflow.md) for policy |
 | Orient to repository structure | [docs/project-map.md](docs/project-map.md) |
 | See active, blocked, and recent work | [docs/plan.md](docs/plan.md) |
 | Use one lifecycle stage | [skills/](skills/) |
@@ -116,85 +99,50 @@ Do not rewrite durable guides just for symmetry.
 
 ```mermaid
 flowchart LR
-  A[Idea] --> B[Proposal]
-  B --> C[Proposal review]
-  C --> D[Architecture]
-  D --> E[Specification]
-  E --> F[Design review]
-  F --> G[Plan]
-  G --> H[Delivery review]
-  H --> I[Implementation]
-  I --> J[Code review]
-  J --> K[Verify]
-  K -. optional external handoff .-> L[PR]
+  A[Request / RR] --> B[Requirement analysis]
+  B --> C[Requirement review]
+  C --> D[System design and Architecture design]
+  D --> E[Integrated Design review]
+  E --> F[Plan]
+  F --> G[Delivery review]
+  G --> H[Implementation and required checks]
+  H --> I[Whole-change Code review]
+  I --> J[Final Verify]
+  J -. authorized external handoff .-> K[PR]
 ```
 
-This is the recommended full chain for complete AI-assisted delivery.
-Individual skills can also be used in isolation when the project does not need the full lifecycle.
+Requirement Analysis reuses, refines or creates obligations as needed. Milestones organize implementation and proof; optional interim advice does not add approval gates. Corrections return to their responsible owner, with affected reassessment before renewed reliance. One independent whole-change Code Review gate precedes distinct final Verify.
 
-## Automatic Workflow
+Individual skills can perform isolated authorized work. `route` coordinates the current handoff and authority; it does not approve work or invent judgments. Humans and agents supply engineering decisions and evidence; the CLI validates and persists explicit submissions. A save or passing schema check is not approval.
 
-Use automatic workflow only after the human-owned decision point is clean.
-RigorLoop treats automation as change-local authorization, not a project-wide default.
+## Authorized continuation
 
-### Target-driven automation
+A caller can authorize continuation toward an outcome such as final Verify or PR submission. Record the scope and limits in the current Change. Continue eligible work across milestones, stop affected work at missing authority or unresolved blockers, and obtain the required independent reviews. PR submission, merge and release are distinct actions; authorize each applicable external boundary explicitly.
 
-Select the exact stage where automation should stop:
-
-```text
-$route auto: <target-stage>
-```
-
-Supported targets are:
-
-```text
-proposal-review, design, design-review,
-plan, delivery-review, implement, code-review, verify
-```
-
-The mechanism persists one `bounded-review-fix` run under `workflow.automation`.
-The target is a destination, not blanket consent: authoring, implementation, and verification use separate authorization boundaries, and only a current effective capability authorizes one concrete stage operation.
-
-Use `$route auto: status` for a read-only status projection and `$route auto: off` to durably cancel the run while preserving receipts.
-
-Repeated `implement` and `code-review` targets bind the current plan milestone before persistence and never silently rebind on resume.
-A final `verify` target may be selected early, but verification authority is created only after implementation closeout, final review, promotion, branch-state, and verification-input evidence is concrete.
-
-Historical v1/v2 records may name retired stages or commands. They remain readable evidence only and do not provide current workflow progression authority.
-
-Automation always stops before PR creation, push, publication, release, deployment, merge, destructive Git operations, credential access, or other external mutation.
-
-### Safety rules
-
-- Profiles are off by default.
-- Authorization is recorded per change.
-- Direct skill requests such as `proposal-review`, `design-review`, `delivery-review`, `code-review`, or `verify` remain isolated unless you explicitly resume the workflow-managed change.
-- Automatic review-driven fixes require reviewer-declared eligibility and bounded affected paths.
-- Automatic workflow never merges, releases, deploys, publishes, or performs destructive Git actions by default.
-- `pr` is an optional human-visible external boundary for projects that use pull requests; open it only when readiness checks pass.
-
-For the complete contract, read [Workflow](docs/design/skill/workflow.md) and [Assessment](docs/design/skill/assessment.md).
+Resume with `rigorloop change context --root . --change CHANGE`. Use the current command contract and packaged skill guidance for supported recording operations. Historical automation profiles and filesystem records retain their original meaning; they do not activate a successor workflow.
 
 ## Worked Example
 
-A RigorLoop change leaves a traceable artifact chain:
-
-| Stage | Example artifact |
+| Information | Current owner and location |
 | --- | --- |
-| Proposal | `docs/proposals/<change>.md` |
-| Design | `docs/design/<model>/<model>.md` |
-| Retained legacy contracts | Existing project-declared spec/architecture/ADR paths until explicitly migrated |
-| Plan | `docs/plans/<change>.md` |
-| Review records | `docs/changes/<change>/reviews/` |
-| Validation evidence | `docs/changes/<change>/change.yaml` |
-| Successful Verify result and final explanation | `docs/changes/<change>/verify-report.md` |
-| Optional external handoff | linked from change records or release notes when used |
+| Request and authorized goal | Current Change handoff through the CLI |
+| Obligations and use | `design/requirements/`: IR, SR, AR and Scenarios |
+| Logical behavior | `design/system/`: Features and Functions |
+| Responsibility and realization | `design/architecture/`: Modules, Interfaces and subordinate detail |
+| Reusable methods | `rem/` |
+| Stable delivery plan | `docs/plans/<change>.md` |
+| Review judgments, findings and selected evidence | CLI-managed local operational records in SQLite |
+| Bulky supporting evidence | Local artifact store, retained selectively |
+| Successful completion | Compact final acceptance account, with distinct final Verify |
+| Optional PR | Authorized external handoff linked from the Change |
+
+This is RigorLoop's repository layout. Customer projects select their own canonical model locations and explicitly adopt applicable contracts; installation alone does not adopt governance or migrate records.
 
 ## When to use / When not to use
 
 Use RigorLoop when:
 
-- you want AI-assisted work to stay reviewable, traceable, and grounded in explicit proposals, Designs, plans, tests, and verification
+- you want AI-assisted work to stay reviewable, traceable, and grounded in explicit requirements, designs, plans, tests, and verification
 - you need a repository-local workflow that leaves durable change history instead of burying decisions in chat
 - you want a workflow that makes the path from idea to reviewed change visible and auditable
 
@@ -209,7 +157,7 @@ Do not use RigorLoop when:
 - **Reviewable artifacts.** Important decisions become files in your repository, not lost chat logs.
 - **Human-understandable AI work.** Reviewers can see what changed, why it changed, and what evidence supports it.
 - **Resumable across sessions and agents.** Work can continue because current authoritative state lives in durable project artifacts, not one model session.
-- **Traceable from idea to verified change.** A change has a visible chain from proposal through final verification; external handoff is optional.
+- **Traceable from idea to verified change.** A change has a visible chain from request through final verification; external handoff is optional.
 - **Durable lessons.** Mistakes become reusable guidance and checks, improving reliability over time.
 
 ## npm Usage
@@ -265,11 +213,11 @@ The current CLI candidate supports:
 - `rigorloop version`
 - `rigorloop init codex|claude [--force] [--dry-run] [--json]`
 - `rigorloop change create --root PATH --input - --format json`
-- `rigorloop workflow-context [--change ID] --format json`
+- `rigorloop change context --root . --change CHANGE --format json`
 
 `init codex` installs verified Codex support into `.agents/skills/`. The CLI uses package-bundled official metadata, downloads the official GitHub release archive, verifies archive SHA-256 and installed tree hash, and leaves `rigorloop.yaml` / `rigorloop.lock` untouched without reading or writing them.
 
-`change create` constructs a new v2 record set from an explicit targeted request. It does not replace proposal, Design, review, Verify or PR judgment. See [CLI recording usage](packages/rigorloop/README.md).
+`change create` creates a current Change through the v2 interface from an explicit targeted request. It does not replace requirement, design, review, Verify or PR judgment. See [CLI recording usage](packages/rigorloop/README.md).
 
 The npm package is a delivery channel for the CLI. It is not the canonical source for workflow rules, skills, schemas, templates, or adapter archives. Canonical source remains in this repository, and adapter archives remain verified GitHub release artifacts.
 
@@ -303,8 +251,9 @@ Ordinary contributors do not need all supported tools installed locally to run n
 Claude Code uses native skill slash commands after the Claude adapter is installed. TUI examples:
 
 ```text
-/proposal Evaluate whether this change should be specified.
-/spec Define the observable behavior for this change.
+/requirement-analysis Analyze this request against the existing requirements.
+/system-design Define the required logical behavior.
+/architecture-design Allocate responsibilities and realization.
 /implement Build the approved milestone with tests first.
 /code-review Review the current diff against the approved artifacts.
 /pr Prepare the verified change for pull request review.
@@ -314,8 +263,8 @@ Existing destination skills conflict even when identical. Use `--force` for comp
 
 ## Learn More / Contribute
 
-- Workflow detail: [Workflow](docs/design/skill/workflow.md); inspect project facts with `rigorloop workflow-context`
-- Artifact and skill docs: [System](docs/design/system.md) and [skills/](skills/)
+- Workflow detail: [Workflow](design/architecture/modules/MOD-017-engineering-governance/modules/MOD-006-engineering-change-control/workflow.md); inspect project facts with `rigorloop change context --root . --change CHANGE`
+- Artifact and skill docs: [System](design/architecture/composition.md) and [skills/](skills/)
 - Report problems or feature ideas: [bug report template](.github/ISSUE_TEMPLATE/bug.yml) and [feature request template](.github/ISSUE_TEMPLATE/feature.yml)
 - Review PR expectations before contributing: [.github/pull_request_template.md](.github/pull_request_template.md)
 - Contribution guide: [CONTRIBUTING.md](CONTRIBUTING.md)
@@ -329,7 +278,7 @@ RigorLoop recommends one standard workflow for complete AI-assisted delivery:
 - Living references: `docs/project-map.md` when repository shape is not obvious enough for safe reliance
 - Workflow infrastructure: Designs, CLI workflow context, affected root guidance, affected skills, and generated outputs
 - On-demand support: `explore` and `research`
-- Compact per-change chain: `proposal -> proposal-review -> design -> design-review -> plan -> delivery-review -> implement -> code-review -> review-resolution when triggered -> ci-maintenance when triggered -> verify`. PR is an optional external handoff after lifecycle completion.
+- Compact per-change chain: `requirement-analysis -> requirement-review -> system-design / architecture-design -> design-review -> plan -> delivery-review -> implement -> code-review -> verify`. PR is an optional external handoff after lifecycle completion.
 - Periodic learning: `learn`
 
 Explore (`explore`) expands a materially unclear decision space; Research (`research`) reduces bounded uncertainty about facts that can change a decision. Use both when the option comparison depends on unanswered research questions, and neither when direction and relevant facts are already clear. They are optional supporting skills: an explicit invocation writes a standalone artifact under `docs/explorations/` or `docs/research/`, and the owning stage must adopt any conclusion that affects its decision. Neither skill approves a direction or advances the lifecycle. `learn` is periodic or explicitly invoked, not a final stage for every change. `ci-maintenance` means updating hosted workflow automation or related CI infrastructure; validation execution belongs to `verify`.
@@ -338,7 +287,7 @@ Do not rely on `docs/project-map.md` when it is absent, stale, contradicted, or 
 
 Users may manually invoke individual skills for focused output. A manual skill invocation is isolated by default and does not imply that the full workflow is complete.
 
-The normative contract lives in [Workflow](docs/design/skill/workflow.md). Deterministic project-local workflow facts come from `rigorloop workflow-context`; semantic routing belongs to `route`.
+The normative contract lives in [Workflow](design/architecture/modules/MOD-017-engineering-governance/modules/MOD-006-engineering-change-control/workflow.md). Deterministic project-local workflow facts come from `rigorloop change context --root . --change CHANGE`; semantic routing belongs to `route`.
 
 ## What This Repository Contains
 
@@ -346,23 +295,22 @@ The normative contract lives in [Workflow](docs/design/skill/workflow.md). Deter
 - isolated manual skill invocation for focused skill output
 - standing artifacts, living references, on-demand support, a per-change chain, and periodic learning as distinct lifecycle categories
 - a repository orientation map at `docs/project-map.md`
-- canonical workflow sources in `docs/`, `skills/`, `schemas/`, and `scripts/`
+- canonical engineering definitions in `design/`, reusable methods in `rem/`, and instructions/tooling in `skills/`, `schemas/` and `scripts/`
 - ignored local Codex runtime state in `.codex/skills/`
 - generated public adapter packages in `dist/adapters/`
-- a change-local artifact pattern under `docs/changes/<change-id>/` for non-trivial work
+- a current local Change handoff through the CLI for coordinated engineering work
 
-## Change-Local Artifact Packs
+## Current operational records
 
-- Manual skill invocations may omit `docs/changes/<change-id>/` when they are not used to claim complete workflow delivery.
-- Only `rigorloop-records-v3` is supported at runtime: `change.json`, registered JSON reviews, evidence, material decisions and the success-only Verify record. Canonical engineering artifacts remain referenced in place.
-- Actors own judgments and closeout; the CLI records explicit decisions and observations. Recording does not require Git history or PR access.
-- Named legacy stored formats and their execution engines are retired. Preserve historical records unchanged as archival evidence; current commands reject retired input without fallback or migration.
-- Historical explanations formerly under `docs/explain/` are retained in the plan archive; see the [retired-path mapping](docs/plan-archive.md#retired-explanation-paths). New work records its final explanation in the owning change’s contract-selected Verify report.
+Current operations use the v2 public interface and v4 semantic records in SQLite. The CLI owns persistence; skills supply explicit inputs and never write SQL. The handoff preserves unresolved obligations, attributed judgments and useful evidence without recording every action. Completion retains a compact historical acceptance account.
+
+Engineering definitions remain Git-held model sources. Historical filesystem records and synthetic examples retain their original contracts; explicit import preserves required original identities and does not silently adopt old judgments as current approval. See [Work record storage](design/architecture/modules/MOD-018-engineering-operations/modules/MOD-011-operational-record-persistence/README.md) for the full contract.
 
 ## Source Of Truth
 
 - Edit canonical workflow content in:
-  - `docs/`
+  - `design/` and `rem/`
+  - `docs/` for usage and contributor guidance
   - `skills/`
   - `schemas/`
   - `scripts/`
@@ -379,7 +327,7 @@ Run the repository-owned selector and required checks for your change:
 bash scripts/ci.sh --mode local
 ```
 
-[Contributing](CONTRIBUTING.md#validation-scope) explains scoped and PR-range checks. Packaging changes also use `python scripts/build-adapters.py --check`; release qualification follows the actual prepared-candidate procedure in [Release](docs/design/engineering/release/release.md).
+[Contributing](CONTRIBUTING.md#validation-scope) explains scoped and PR-range checks. Packaging changes also use `python scripts/build-adapters.py --check`; release qualification follows the actual prepared-candidate procedure in [Release](design/architecture/modules/MOD-019-product-delivery/modules/MOD-015-product-release-coordination/release.md).
 
 ## Repository Layout
 
@@ -389,8 +337,9 @@ bash scripts/ci.sh --mode local
 ├── CONSTITUTION.md
 ├── VISION.md
 ├── .github/
+├── design/                    Current engineering definitions
+├── rem/                       Reusable engineering methods
 ├── docs/
-│   ├── design/
 │   ├── changes/
 │   ├── plans/
 │   ├── proposals/
@@ -410,4 +359,4 @@ bash scripts/ci.sh --mode local
 
 This repository currently ships with the MIT license.
 
-The unified authoring skill replaces `spec` and `architecture` with `design`. Existing retired entries require [separate inspection and reconciliation](packages/rigorloop/README.md#upgrading-retired-authoring-skills); installation does not manage project state or automatically migrate those entries. The selected [Design](docs/design/skill/authoring/design.md) and [System](docs/design/system.md) own the bounded method/composition migration. The three main models are [Skill](docs/design/skill/skill.md), [CLI](docs/design/cli/cli.md) and [Engineering](docs/design/engineering/engineering.md). Engineering [Packaging](docs/design/engineering/packaging.md) owns artifact production; CLI [Installation](docs/design/cli/installation.md) owns trusted acquisition and destination writes. Current responsibilities are self-contained in these models; retired source provenance and removal evidence are recorded in the [cleanup change](docs/changes/2026-09-14-retire-specs-and-stale-tests/change.json).
+The unified authoring skill replaces `spec` and `architecture` with `design`. Existing retired entries require [separate inspection and reconciliation](packages/rigorloop/README.md#upgrading-retired-authoring-skills); installation does not manage project state or automatically migrate those entries. The selected [Design](design/architecture/modules/MOD-017-engineering-governance/modules/MOD-008-engineering-authoring-guidance/design-authoring.md) and [System](design/architecture/composition.md) own the bounded method/composition migration. The three main models are [Skill](design/architecture/modules/MOD-018-engineering-operations/modules/MOD-012-published-engineering-capability-guidance/capability-contract.md), [CLI](design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/command-contract.md) and [Engineering](design/support/development.md). Engineering [Packaging](design/architecture/modules/MOD-019-product-delivery/modules/MOD-013-product-package-production/packaging.md) owns artifact production; CLI [Installation](design/architecture/modules/MOD-019-product-delivery/modules/MOD-014-verified-skill-installation/installation.md) owns trusted acquisition and destination writes. Current responsibilities are self-contained in these models; retired source provenance and removal evidence are recorded in the cleanup change (historical operational reference; original assessment unavailable in the current tree).

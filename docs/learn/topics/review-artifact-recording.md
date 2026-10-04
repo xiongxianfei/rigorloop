@@ -1,6 +1,6 @@
 # Review artifact recording
 
-[Assessment](../../design/skill/assessment.md) owns finding meaning and independent disposition; [Records](../../design/cli/records.md) owns the current stored grammar. Use the public CLI's targeted review and finding commands for governed recording, with exact subjects and current revision.
+[Assessment](../../../design/architecture/modules/MOD-017-engineering-governance/modules/MOD-007-engineering-verification-and-assurance/assessment.md) owns finding meaning and independent disposition; [Records](../../../design/architecture/modules/MOD-018-engineering-operations/modules/MOD-011-operational-record-persistence/record-contract.md) owns the current stored grammar. Use the public CLI's targeted review and finding commands for governed recording, with exact subjects and current revision.
 
 Record a stable finding identity, severity, location, evidence, required outcome and safe resolution path before relying on a review. Human-readable prose must not replace required structured fields. Preserve the finding's origin and let its reporter assess resolution.
 

@@ -202,6 +202,7 @@ class TestDesignAdmissionTests(unittest.TestCase):
                     write_json(self.root, PACKAGES['release'][1]+'/test-cases.json', index)
                 else:
                     old = self.root/'docs/design/engineering/release.md'
+                    old.parent.mkdir(parents=True, exist_ok=True)
                     old.write_text((self.root/index['owner']['design']).read_text())
                     selected = ['docs/design/engineering/release.md']
                 code, result = self.validate(*selected)
@@ -210,14 +211,14 @@ class TestDesignAdmissionTests(unittest.TestCase):
 
     def test_shared_guidance_pairs_system_and_checks_local_references(self):
         from catalog_admission_fixture_helpers import model_text, write
-        write(self.root, 'docs/design/system.md', model_text('SYS-SR-01'))
-        readme = 'docs/design/test-design/README.md'
-        rules = 'docs/design/test-design/rules.md'
+        write(self.root, 'design/architecture/composition.md', model_text('SYS-SR-01'))
+        readme = 'design/support/test-design/README.md'
+        rules = 'design/support/test-design/rules.md'
         write(self.root, readme, '# Navigation\n\n[Rules](rules.md).\n')
         write(self.root, rules, '# Rules\n\nCurrent rules.\n')
         code, result = self.validate(readme)
         self.assertEqual(code, 0, result)
-        self.assertEqual(set(result['paths']), {readme, rules, 'docs/design/system.md'})
+        self.assertEqual(set(result['paths']), {readme, rules, 'design/architecture/composition.md'})
         write(self.root, rules, '# Rules\n\n[Missing](missing.md).\n')
         code, result = self.validate(readme)
         self.assertEqual(code, 1)
@@ -263,9 +264,9 @@ if __name__ == "__main__":
         for fault in ('reference-link', 'undefined-reference', 'symlink-before-parent'):
             with self.subTest(fault=fault), tempfile.TemporaryDirectory() as temporary:
                 self.root = Path(temporary)
-                write(self.root, 'docs/design/system.md', model_text('SYS-SR-01'))
-                readme = 'docs/design/test-design/README.md'
-                rules = 'docs/design/test-design/rules.md'
+                write(self.root, 'design/architecture/composition.md', model_text('SYS-SR-01'))
+                readme = 'design/support/test-design/README.md'
+                rules = 'design/support/test-design/rules.md'
                 write(self.root, readme, '# Navigation\n\n[Rules][rules]\n\n[rules]: rules.md\n')
                 write(self.root, rules, '# Rules\n\nCurrent rules.\n')
                 self.assertEqual(self.validate(readme)[0], 0)
@@ -275,7 +276,7 @@ if __name__ == "__main__":
                     write(self.root, readme, '# Navigation\n\n[Missing][undefined]\n')
                 else:
                     # Normalizing hop/.. must not conceal traversal of a symlink.
-                    (self.root/'docs/design/test-design/hop').symlink_to(self.root.parent, target_is_directory=True)
+                    (self.root/'design/support/test-design/hop').symlink_to(self.root.parent, target_is_directory=True)
                     write(self.root, readme, '# Navigation\n\n[Rules](hop/../rules.md)\n')
                 code, result = self.validate(readme)
                 self.assertEqual(code, 1, result)

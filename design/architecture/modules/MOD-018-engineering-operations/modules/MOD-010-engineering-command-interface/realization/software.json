@@ -36,7 +36,7 @@
     "test_groups": [
       {
         "name": "Command admission and selected reading",
-        "contract": "docs/design/cli/cli.md#test-design",
+        "contract": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/command-contract.md#test-design",
         "test_sources": [
           {
             "path": "packages/rigorloop/test/operational-store.test.js",
@@ -55,7 +55,7 @@
           }
         ],
         "execution": {
-          "owner_contract": "docs/design/engineering/validation.md",
+          "owner_contract": "design/support/validation.md",
           "selection": [
             {
               "path": "scripts/select-validation.py",
@@ -98,7 +98,7 @@
       },
       {
         "name": "Private diagnostics and result presentation",
-        "contract": "docs/design/cli/cli.md#generic-commands-and-local-observability",
+        "contract": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/command-contract.md#generic-commands-and-local-observability",
         "test_sources": [
           {
             "path": "packages/rigorloop/test/operational-store.test.js",
@@ -117,7 +117,7 @@
           }
         ],
         "execution": {
-          "owner_contract": "docs/design/engineering/validation.md",
+          "owner_contract": "design/support/validation.md",
           "selection": [
             {
               "path": "scripts/select-validation.py",
@@ -160,7 +160,7 @@
       },
       {
         "name": "Public recording interaction composition",
-        "contract": "docs/design/cli/cli.md#test-design",
+        "contract": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/command-contract.md#test-design",
         "test_sources": [
           {
             "path": "packages/rigorloop/test/operational-review.test.js",
@@ -179,7 +179,7 @@
           }
         ],
         "execution": {
-          "owner_contract": "docs/design/engineering/validation.md",
+          "owner_contract": "design/support/validation.md",
           "selection": [
             {
               "path": "scripts/select-validation.py",

@@ -42,7 +42,7 @@ class CurrentBoundaryCommandTests(unittest.TestCase):
             self.assertEqual(set(output["paths"]), set(EXPECTED_MODEL_PATHS) | details)
             self.assertNotIn("activation", output)
             self.assertNotIn("rollback_release", output)
-            (root / "docs/design/system.md").unlink()
+            (root / "design/architecture/composition.md").unlink()
             code, output = self.run_check(root)
             self.assertEqual(code, 1, output)
             self.assertTrue(output["issues"])
@@ -51,10 +51,10 @@ class CurrentBoundaryCommandTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             details = current_documents(root)
-            parent = root / "docs/design/skill/authoring/design.md"
-            worked_example = (root / "docs/design/skill/workflow.md").read_text()
+            parent = root / "design/architecture/modules/MOD-017-engineering-governance/modules/MOD-008-engineering-authoring-guidance/design-authoring.md"
+            worked_example = (root / "design/architecture/modules/MOD-017-engineering-governance/modules/MOD-006-engineering-change-control/workflow.md").read_text()
             parent.write_text(parent.read_text() + "\n````markdown\n" + worked_example + "\n````\n")
-            example = root / "docs/design/cli/examples/case.json"
+            example = root / "tests/fixtures/cli-contract-examples/case.json"
             example.parent.mkdir(parents=True)
             example.write_text('{"secret": "private-value"}')
             code, output = self.run_check(root)
@@ -66,7 +66,7 @@ class CurrentBoundaryCommandTests(unittest.TestCase):
             self.assertEqual(code, 1)
             self.assertNotIn("private-value", json.dumps(output))
             example.unlink()
-            example.symlink_to(root / "docs/design/system.md")
+            example.symlink_to(root / "design/architecture/composition.md")
             code, output = self.run_check(root)
             self.assertEqual(code, 1)
             self.assertIn("BFR-EXAMPLE-PATH", {item["check_id"] for item in output["issues"]})

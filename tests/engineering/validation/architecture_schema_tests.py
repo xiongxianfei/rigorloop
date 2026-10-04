@@ -16,6 +16,7 @@ import json
 import os
 from pathlib import Path, PurePosixPath
 import re
+import sys
 import tempfile
 import unittest
 
@@ -23,6 +24,9 @@ from jsonschema import Draft202012Validator, ValidationError
 
 
 ROOT = Path(__file__).resolve().parents[3]
+sys.path.insert(0, str(ROOT / "scripts"))
+from lib.validation.model_layout import supporting_architecture_json_paths
+
 KINDS = {"module": "MOD", "interface": "IF", "ar": "AR"}
 FACETS = {
     "module": {"software", "runtime", "persistence", "deployment", "technology"},
@@ -81,7 +85,7 @@ def architecture_paths(root):
                 expected.add(facet)
             if kind == "module" and (owner / "modules").is_dir():
                 collections.append((kind, owner / "modules"))
-    unexpected = authored - expected
+    unexpected = authored - expected - supporting_architecture_json_paths(root.parent.parent)
     if unexpected:
         raise ValueError(f"Unexpected architecture JSON path: {sorted(unexpected)[0]}")
     return records, facets
@@ -1223,6 +1227,7 @@ class ArchitectureDirectoryTests(unittest.TestCase):
              "MOD-2-child/module.json", "Unexpected architecture JSON path"),
             ("nested_interface", "interfaces/IF-1-retain-engineering-definitions/interfaces/"
              "IF-2-child/interface.json", "Unexpected architecture JSON path"),
+            ("unregistered_catalog", "modules/MOD-1-retain-engineering-definitions/test-design/cases/unregistered.json", "Unexpected architecture JSON path"),
             ("unowned_root_json", "unowned.json", "Unexpected architecture JSON path"),
         )
         for name, relative, reason in cases:

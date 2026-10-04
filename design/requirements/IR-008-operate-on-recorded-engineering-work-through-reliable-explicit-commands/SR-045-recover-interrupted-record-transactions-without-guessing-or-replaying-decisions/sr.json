@@ -51,7 +51,7 @@
   "sources": [
     {
       "source": "SRC-PUBLISHED-CLI",
-      "locator": "docs/design/cli/cli.md#CLI-SR-05, CLI-SR-06, CLI-SR-09, CLI-SR-10, CLI-SR-26, CLI-SR-27, CLI-SR-28; docs/design/cli/records.md#RF-SR-04, RF-SR-06, RF-SR-08, RF-SR-12, RF-SR-14",
+      "locator": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/command-contract.md#CLI-SR-05, CLI-SR-06, CLI-SR-09, CLI-SR-10, CLI-SR-26, CLI-SR-27, CLI-SR-28; design/architecture/modules/MOD-018-engineering-operations/modules/MOD-011-operational-record-persistence/record-contract.md#RF-SR-04, RF-SR-06, RF-SR-08, RF-SR-12, RF-SR-14",
       "basis": "Derives this bounded published-product obligation from IR-008 and the named current CLI/Record Format contracts. Detailed schemas, command catalogs, limits and completed-retirement dispositions remain at those owners; this record does not transfer approval or implement REM-record operations."
     },
     {
