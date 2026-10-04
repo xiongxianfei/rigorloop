@@ -1,7 +1,7 @@
 # Requirement model
 
-The [concepts](../concepts/README.md#requirements) distinguish the Initial Requirement, System Requirement, and Allocated Requirement.
-The [Requirement Analysis method](../methods/requirement-analysis.md) develops those three levels.
+The [concepts](../concepts/README.md#requirement-input) distinguish the incoming Raw Requirement (RR) from the durable Initial Requirement, System Requirement, and Allocated Requirement.
+The [Requirement Analysis method](../methods/requirement-analysis.md) reconciles RR input with the current requirement model and develops the three durable levels.
 
 ```text
 IR
@@ -11,6 +11,20 @@ IR
 └── SR
     └── AR
 ```
+
+## Requirement input and reconciliation
+
+An RR is outside the durable requirement hierarchy. It supplies source intent, context, or evidence for analysis but does not become an IR merely because it was submitted or accepted for analysis.
+
+Requirement Analysis MUST inspect applicable current IRs and SRs before creating durable requirements. For each material part of the RR, the analysis SHOULD establish one of these semantic dispositions:
+
+- already covered without requirement change;
+- refine an existing IR or SR while preserving its identity when the same need or obligation remains;
+- create a new IR when a distinct durable need is justified, then derive or refine its SRs;
+- separate several independent needs before creating or changing requirements;
+- retain an explicit unresolved or conflicting disposition when the available basis is insufficient.
+
+An RR may affect several durable requirements, and several RRs may contribute provenance to the same requirement. These source relationships do not create additional requirement parents. REM does not require RR to have a stable REM identity; a project MAY preserve an external request/proposal identity and exact source reference through Operational Support.
 
 ## Containment
 
@@ -24,7 +38,7 @@ These parent relationships are exclusive: an SR cannot belong to several IRs, an
 An IR may have multiple SR children, and an SR may have multiple AR children.
 Source references and other relationships do not establish additional parents.
 
-IR-to-SR decomposition converts an initial need into system-level obligations.
+IR-to-SR decomposition converts a durable need into system-level obligations.
 SR-to-AR derivation creates lower-level obligations assigned to architectural responsibility.
 An AR is a durable requirement, not a record that an allocation event occurred.
 
@@ -33,6 +47,11 @@ An AR is a durable requirement, not a record that an allocation event occurred.
 An approved SR MUST be stated so that satisfaction can be assessed through defined verification criteria.
 An approved AR MUST likewise be assessable at its allocated architectural scope.
 Draft requirements may retain explicit unknowns while analysis is incomplete.
+
+Requirement approval establishes an assessable obligation as a basis for design; it does not require completed Function design or AR allocation.
+Missing downstream design MUST remain explicit without being treated, by itself, as a requirement-validity failure.
+The [System Design model](system-design.md#function-relationships) owns Function coverage required for design completeness; architectural allocation has its own completeness conditions below.
+Requirement validity, design completeness, and demonstrated satisfaction are distinct claims.
 
 An SR SHOULD avoid prescribing implementation unless that implementation is itself a required constraint.
 An AR may be more architecture-specific because its purpose is to state the obligation assigned to a Module, but it still states what must be satisfied rather than implementation steps.
@@ -75,7 +94,7 @@ If one lower-level obligation spans several Modules, decompose it into separate 
 ## Identity and content
 
 Every requirement has a stable identity, a clear name, and analysis that accounts for all seven 5W2H questions at its level.
-An IR states the initial need.
+An IR states the durable need established or refined after RR reconciliation.
 An SR or AR states the obligation and the conditions needed to assess satisfaction.
 Analysis, rationale, and provenance support the requirement without becoming substitutes for its statement.
 The statement is the authoritative need or obligation; What explains its problem and desired outcome as part of the supporting analysis.

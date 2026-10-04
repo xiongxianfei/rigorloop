@@ -37,7 +37,7 @@
     {
       "id": "review-package",
       "initial_state": [
-        "Use the Review fixture basis in the strategy plus this case’s concrete facts and counterexample. Resolve every actual instruction and authority claim to the exact current owner/body/triggered resources.",
+        "Use the Review fixture basis in the strategy plus this case\u2019s concrete facts and counterexample. Resolve every actual instruction and authority claim to the exact current owner/body/triggered resources.",
         "Materialize a fresh private review packet for each variant. F0/F1/F2, G0/G1/G2 and S0/S1 are synthetic byte-identity labels; an actual assessment records inspected identities.",
         "Inspect proposed decisions, outputs and prohibited side effects without running an agent or writing production, workflow records, hosted CI or publication state."
       ],

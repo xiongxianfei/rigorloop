@@ -4,13 +4,12 @@ Model validation contract: model-document-v1
 
 Parent model: [Engineering](engineering.md#packaging).
 
-Owning change: [current-design repository cleanup](../../changes/2026-09-13-current-design-repository-cleanup/change.json).
 
-Original composition adoption: [three-model reconciliation](../../changes/2026-09-12-unified-validation-model/change.json).
+Original composition adoption: three-model reconciliation (historical operational material, unavailable in the current tree).
 
-Prior refinement: [independent parallel tests](../../changes/2026-09-13-independent-parallel-tests/change.json); its selected behavior and evidence retain their own scope.
+Prior refinement: independent parallel tests (historical operational material, unavailable in the current tree); its selected behavior and evidence retain their own scope.
 
-For this repository’s [complete source retirement](../../changes/2026-09-14-retire-specs-and-stale-tests/source-disposition.md), current responsibilities are self-contained in the owning Designs. Original source-transfer inventories remain recoverable through [Historical provenance](#historical-provenance); their instructions to retain or amend legacy specs, architecture, activation state or retired engines are historical and superseded by this complete retirement. Source-qualified IDs and original judgments keep their original meaning; provenance is not a runtime input or current approval. Customer source documents retain their project-owned authority and historical meaning. Current RigorLoop output and format support follow Design; source interpretation does not authorize retired feature/proof operations or automatic conversion.
+For this repository’s complete source retirement (historical operational material, unavailable in the current tree), current responsibilities are self-contained in the owning Designs. Original source-transfer inventories remain recoverable through [Historical provenance](#historical-provenance); their instructions to retain or amend legacy specs, architecture, activation state or retired engines are historical and superseded by this complete retirement. Source-qualified IDs and original judgments keep their original meaning; provenance is not a runtime input or current approval. Customer source documents retain their project-owned authority and historical meaning. Current RigorLoop output and format support follow Design; source interpretation does not authorize retired feature/proof operations or automatic conversion.
 
 ## Introduction and Goals
 
@@ -246,6 +245,10 @@ Use the existing shared-source infrastructure with `templates/shared/boundary-fi
 Check the actual selected sources, complete consumer sets, containment, absent/escaped files and raw-byte parity through projection, generated candidates, archives and clean installation. Use independent expected inventories, not the producer's registry as its own oracle. Package generation needs no specs directory, activation ledger or historical source fetch. Existing released archives keep their original bytes; current archive/CLI candidate metadata must agree with the new contents. Installation grants no authority to migrate customer documents or remove unrelated installed files. Release communication must disclose feature/proof support withdrawal; this change does not publish a release or select a version.
 
 This reuses the existing shared-source → skill projection → candidate graph and isolated output deployment. The choice avoids a new skill, alternate archive tree or Git fetch in ordinary builds. A partial move, stale manifest or missing copy blocks affected generation; rollback restores source, manifest, readers and package checks together. Initial relocation can be assessed by exact old/new byte equality plus complete resource boundary proof, without a token metric or target-agent execution.
+
+## Planned requirement-first workflow contract
+
+The [Module-owned successor contract](../../../design/architecture/modules/MOD-019-product-delivery/modules/MOD-013-product-package-production/README.md) defines the successor replacement boundary implemented in the 2.0.0 candidate. Every generated successor archive includes the canonical workflow descriptor as checksum-covered support outside install roots. Historical runtime contracts remain version-specific and are not silently reinterpreted. Historical bytes and assessments retain their original meaning. The scoped repository analysis exception does not activate this product behavior.
 
 ## Historical provenance
 

@@ -3,7 +3,7 @@
   "type": "function",
   "title": "Retain and retrieve activity-specific change context",
   "status": "draft",
-  "description": "Records and presents the authoritative work context needed to resume a governed Change across sessions or participants. It identifies missing, conflicting, stale, and inapplicable details instead of inferring private conversation state or permission.",
+  "description": "Maintains and assembles a current structured handoff for an active Change so another authorized participant can decide what to do next without conversation history.",
   "inputs": [
     "Change identity and supported activity: authoring, implementation, verification, or review.",
     "Recorded scope, state, responsible participants, findings or blockers, next action, and authoritative activity-specific references and basis revisions."
@@ -16,11 +16,13 @@
     "Explicit missing, conflicting, stale, or inapplicable context and the next recorded action without an implied authority grant."
   ],
   "behavior": [
-    "Retain the common scope, work state, responsible participants, outstanding findings or blockers, and next action.",
-    "For authoring, retain affected definitions, derivation sources, decisions, unresolved analysis, and proposed edits; for implementation, retain the governing contract, assigned work, changed realization, remaining work, and verification obligations.",
-    "For verification, retain exact assessed subjects, procedure, conditions, execution state, observations, evidence, and remaining checks; for review, retain reviewed subjects, basis, findings, disposition, correction responsibility, and next review or correction action.",
-    "Reference facts at their authoritative owners and preserve applicable revisions instead of maintaining independently authored copies.",
-    "Expose unavailable or stale basis, distinguish planned verification from evidence, and explain inapplicable context without fabricating missing results."
+    "Assemble goal/scope/authority, governing basis, progress, open issues and rationale, relevant evidence, review standing and next action from their single authoritative owners.",
+    "Accept explicit updates at meaningful handoffs and material decision changes; no record per edit, local command or intermediate test run is required.",
+    "Replace superseded working summaries where comparable; retain unresolved issues until explicit disposition and enough assessed basis for current judgments.",
+    "Distinguish reported applicability from mechanical observations, planned checks from results and missing data from approval or no work.",
+    "Return gaps, responsible owners and authority limits without inventing the next action or review judgment.",
+    "For completion return the compact historical outcome; do not monitor it against current repository files. Later regression belongs to linked new work.",
+    "Restored or unavailable operational state has explicit scope and limitations; neither renews support or authority."
   ],
   "failure_behavior": [
     {
@@ -42,6 +44,21 @@
       "source": "SRC-ARCHITECTURE-PILOT",
       "locator": "FUNC-025",
       "basis": "Propose MOD-006 as the single accountable architectural responsibility for the existing behavior. This allocation preserves the Function definition and does not establish implementation or completed interface/AR coverage outside the IR-001 pilot."
+    },
+    {
+      "source": "SRC-LOCAL-OPERATIONAL-ANALYSIS",
+      "locator": "FUNC-025",
+      "basis": "Draft derivation from the refined IRs and RR proposal; no approval, implementation or satisfaction claim."
+    },
+    {
+      "source": "SRC-WORKFLOW-DESIGN",
+      "locator": "FUNC-025",
+      "basis": "Draft integrated design from the accepted requirement-first basis. This defines target responsibility and cooperation, not installed capability, design approval, runtime evidence or SQLite adoption."
+    },
+    {
+      "source": "SRC-CURRENT-HANDOFF",
+      "locator": "FUNC-025",
+      "basis": "User-selected current handoff and selective retention refinement. Reuse existing identity and responsibility; no runtime adoption or independent approval is asserted."
     }
   ],
   "allocated_to": "MOD-006"

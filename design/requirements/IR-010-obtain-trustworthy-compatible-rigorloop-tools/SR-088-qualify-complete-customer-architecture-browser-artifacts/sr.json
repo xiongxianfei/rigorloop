@@ -1,0 +1,75 @@
+{
+  "id": "SR-088",
+  "type": "system-requirement",
+  "title": "Qualify complete customer architecture browser artifacts",
+  "status": "draft",
+  "statement": "The system shall qualify the actual distributed architecture browser capability for its declared profiles and execution environments using an independent customer project, with complete resources, explicit dependencies and safe acquisition and update behavior.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "A sample page does not prove the shipped generator is complete and compatible.",
+      "desired_outcome": "qualify the actual distributed architecture browser capability for its declared profiles and execution environments using an independent customer project, with complete resources, explicit dependencies and safe acquisition and update behavior."
+    },
+    "why": {
+      "rationale": "Customer use needs attributable, portable views and truthful boundaries beyond repository-local demonstration."
+    },
+    "who": {
+      "stakeholders": [
+        "Customer model authors and readers",
+        "Product maintainers and reviewers"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "When generating, reading or qualifying the selected architecture browser capability."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "One selected customer project/state and explicitly selected output; declared product generation and reading environments."
+      ]
+    },
+    "how": {
+      "approach": "Assess the stated observable outcomes against explicit supported profiles, selected source identity and actual artifacts; preserve ownership and diagnose unavailable or incomplete results."
+    },
+    "how_much": {
+      "scope": "Read-only local generation and portable snapshot reading. No live editor, hosted-service requirement, cross-project aggregation, automatic publication or invented performance target. Detailed realization and platform support are downstream design decisions."
+    }
+  },
+  "acceptance_criteria": [
+    "The candidate inventory identifies generator, supported profile definitions, projection and reading resources, relevant licenses and all required generation/runtime dependencies, bound to actual artifact identity.",
+    "In a clean declared generation environment, the acquired candidate generates views for a minimal customer project without the RigorLoop source checkout, undeclared build steps or hidden downloads.",
+    "Qualification includes reading a copied output offline in the declared browser environment; dependency and profile incompatibilities produce explicit diagnostics rather than a false successful result.",
+    "Acquisition or update verifies the selected artifact through the declared trust/integrity mechanism and preserves customer engineering definitions, unrelated files and existing shared snapshots; failed operations report actual effects and recovery limits.",
+    "Generator, profile, reading environment and dependency compatibility are declared and assessed together for each supported configuration; unsupported configurations are not implied by a generic download.",
+    "The reusable tool artifact and RigorLoop reference-documentation snapshot have separately identifiable content and qualification. A hosted sample or successful local build does not establish customer-tool support or public availability.",
+    "Publication remains governed by the existing exact-candidate authorization and observed-outcome obligations; no public release is implied by qualification."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "confirms": [
+    "FUNC-040",
+    "FUNC-048",
+    "FUNC-060",
+    "FUNC-061",
+    "FUNC-083",
+    "FUNC-068",
+    "FUNC-070",
+    "FUNC-071"
+  ],
+  "constrains": [
+    "FEAT-018"
+  ],
+  "sources": [
+    {
+      "source": "SRC-CUSTOMER-BROWSER-REQUIREMENTS",
+      "locator": "SR-088",
+      "basis": "User-requested reusable customer architecture browser; requirement-level author analysis. Current records remain draft; no implemented, published or independently approved behavior is claimed."
+    },
+    {
+      "source": "SRC-CUSTOMER-BROWSER-DESIGN",
+      "locator": "SR-088",
+      "basis": "System and Architecture Design from SR-084\u2013088 and refined SR-060; proposed responsibility, contract and realization only. No implementation, platform qualification or product availability is established."
+    }
+  ]
+}

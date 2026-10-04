@@ -3,7 +3,7 @@
   "type": "system-requirement",
   "title": "Retire current-view material only after resolving surviving dependencies",
   "status": "draft",
-  "statement": "The system shall permit removal of completed or retired engineering material from the current working view only when its original meaning remains recoverable under the retention policy and surviving obligations and dependencies have been reconciled or explicitly dispositioned.",
+  "statement": "The system shall permit compaction of superseded operational detail after resolving current reliance, while preserving unresolved obligations, meaningful completed accounts and explicitly retained engineering material under its applicable retention policy.",
   "analysis": {
     "method": "5W2H",
     "what": {
@@ -30,18 +30,20 @@
       ]
     },
     "how": {
-      "approach": "Identify the proposed removal scope, current reliance, and recoverable original state. Keep active work, unresolved findings, and material needed for current reliance available until resolved or coherently replaced. Transfer or explicitly retire surviving obligations through their accountable decisions; reconcile current references and consumers before removal. Record the disposition and recovery basis. Retention release requires its own applicable policy decision and does not follow automatically from age or current-view removal."
+      "approach": "Separate replaceable operational detail from explicitly retained engineering history. Resolve current obligations and reliance before compaction; no historical copy is required for superseded working information with no decision value. Retained Baselines, selected completion meaning and migration originals keep their applicable preservation rules."
     },
     "how_much": {
-      "scope": "Governed engineering material and its declared current consumers. Removal from the current working view differs from destruction of retained history. No permanent duplicate archive, automatic age-based expiry, or universal retention duration is required. SR-007 governs authorization for destructive actions and policy changes."
+      "scope": "Governed engineering material and its declared current consumers. Removal from the current working view differs from destruction of retained history. No permanent duplicate archive, automatic age-based expiry, or universal retention duration is required. SR-007 governs authorization for destructive actions and policy changes. The local operational-history extension adds the criteria attributed to SRC-LOCAL-OPERATIONAL-ANALYSIS; retained product contracts and old allocation evidence do not establish implementation or coverage of that extension."
     }
   },
   "acceptance_criteria": [
-    "A cleanup proposal identifies each affected subject, a recoverable original Baseline or revision, the surviving obligations and consumers, and their reconciled disposition before removal is permitted.",
+    "For engineering definitions, retained Baselines and explicitly preserved history, cleanup identifies recoverable originals and reconciles consumers. Superseded working summaries and routine logs need no historical copy when no open obligation, current conclusion or explicit retention decision relies on them.",
     "When active work, unresolved findings, required evidence, or another current dependency still relies on the material without a coherent replacement, removal is prevented and the unmet reliance is identified.",
     "Uncommitted or otherwise unretained content cannot be described as historically recoverable without first establishing a retained recovery basis.",
     "After permitted cleanup, current obligations and references remain usable without retrieving retired definitions to operate the current model, while historical inspection preserves the retired material's original meaning.",
-    "Age alone or removal from the current working view does not authorize release of retained history; a separate controlled retention-policy decision must resolve surviving dependencies and applicable authority."
+    "Age alone cannot decide usefulness. Operational detail may be discarded when current dependencies are resolved; release of explicitly retained engineering history remains subject to its selected retention policy.",
+    "Before retiring operational source files, current consumers and required evidence must have a coherent replacement or explicit disposition, and original content required for historical reliance remains recoverable. A successful import alone does not authorize deletion.",
+    "Replacing comparable working evidence cannot erase a failure for another scope. Unavailable discarded detail is reported honestly and cannot silently resolve to newer bytes."
   ],
   "assumptions": [],
   "constraints": [],
@@ -53,6 +55,16 @@
       "source": "SRC-COMPLETE-ANALYSIS",
       "locator": "SR-024",
       "basis": "Derived from IR-003: IR-003 requires retention of active work and current-reliance material and permits cleanup only after historical recoverability and dependency reconciliation. The criteria describe intended observable behavior, not executed verification."
+    },
+    {
+      "source": "SRC-LOCAL-OPERATIONAL-ANALYSIS",
+      "locator": "SR-024",
+      "basis": "Draft derivation from the refined IRs and RR proposal; no approval, implementation or satisfaction claim."
+    },
+    {
+      "source": "SRC-CURRENT-HANDOFF",
+      "locator": "SR-024",
+      "basis": "User-selected current handoff and selective retention refinement. Reuse existing identity and responsibility; no runtime adoption or independent approval is asserted."
     }
   ]
 }

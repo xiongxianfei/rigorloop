@@ -1,5 +1,5 @@
 # Generated from canonical REM records; do not edit.
-# Source identity: 2cf8f01cf8087e0b226dbd431d6452970b13954a16b84408d91173987708417e
+# Source identity: 7978be139fe27eda655003b22781018baac550ab5be13f735b6a2800fc2e5371
 # Arrows show consumer -> provider; they do not show execution order.
 vars: {
   d2-config: {
@@ -8,44 +8,44 @@ vars: {
 }
 direction: down
 
-m_4d4f442d303136: "Engineering model management" {
+m_4d4f442d303136: "Project model" {
   link: "#module/MOD-016"
-  tooltip: "Engineering model management (MOD-016)"
+  tooltip: "Project model (MOD-016)"
   style.fill: "#ECF3FF"
   style.stroke: "#426898"
   style.font-color: "#23334A"
   style.font-size: 18
   style.border-radius: 8
-  m_4d4f442d303031: "Engineering model storage" {
+  m_4d4f442d303031: "Definition storage" {
     link: "#module/MOD-001"
-    tooltip: "Engineering model storage (MOD-001)"
+    tooltip: "Definition storage (MOD-001)"
     style.fill: "#ECF3FF"
     style.stroke: "#426898"
     style.font-color: "#23334A"
     style.font-size: 18
     style.border-radius: 8
   }
-  m_4d4f442d303032: "Engineering model authoring" {
+  m_4d4f442d303032: "Definition editing" {
     link: "#module/MOD-002"
-    tooltip: "Engineering model authoring (MOD-002)"
+    tooltip: "Definition editing (MOD-002)"
     style.fill: "#ECF3FF"
     style.stroke: "#426898"
     style.font-color: "#23334A"
     style.font-size: 18
     style.border-radius: 8
   }
-  m_4d4f442d303033: "Engineering model\nconformance" {
+  m_4d4f442d303033: "Interpretation and\nvalidation" {
     link: "#module/MOD-003"
-    tooltip: "Engineering model conformance (MOD-003)"
+    tooltip: "Interpretation and validation (MOD-003)"
     style.fill: "#ECF3FF"
     style.stroke: "#426898"
     style.font-color: "#23334A"
     style.font-size: 18
     style.border-radius: 8
   }
-  m_4d4f442d303034: "Engineering context and\ntraceability" {
+  m_4d4f442d303034: "Views and traceability" {
     link: "#module/MOD-004"
-    tooltip: "Engineering context and traceability (MOD-004)"
+    tooltip: "Views and traceability (MOD-004)"
     style.fill: "#ECF3FF"
     style.stroke: "#426898"
     style.font-color: "#23334A"
@@ -53,9 +53,19 @@ m_4d4f442d303136: "Engineering model management" {
     style.border-radius: 8
   }
 }
-m_4d4f442d303137: "Engineering governance" {
+m_4d4f442d303137: "Change and quality control" {
   link: "#module/MOD-017"
-  tooltip: "Engineering governance (MOD-017)"
+  tooltip: "Change and quality control (MOD-017)"
+  style.fill: "#F6F8FB"
+  style.stroke: "#8292A9"
+  style.font-color: "#23334A"
+  style.font-size: 18
+  style.border-radius: 8
+  style.stroke-dash: 3
+}
+m_4d4f442d303138: "Skills and commands" {
+  link: "#module/MOD-018"
+  tooltip: "Skills and commands (MOD-018)"
   style.fill: "#F6F8FB"
   style.stroke: "#8292A9"
   style.font-color: "#23334A"
@@ -95,9 +105,25 @@ m_4d4f442d303136.m_4d4f442d303032 -> m_4d4f442d303136.m_4d4f442d303033: "Enginee
   style.fill: "#FFFFFF"
   style.font-size: 14
 }
+m_4d4f442d303136.m_4d4f442d303034 -> m_4d4f442d303136.m_4d4f442d303033: "Engineering model\ninterpretation and\nidentity checks" {
+  link: "#interface/IF-002"
+  tooltip: "Engineering model interpretation and identity checks (IF-002)"
+  style.stroke: "#667A96"
+  style.font-color: "#34445B"
+  style.fill: "#FFFFFF"
+  style.font-size: 14
+}
 m_4d4f442d303137 -> m_4d4f442d303136: "Engineering state\ncontent and\ninterpretation" {
   link: "#interface/IF-007"
   tooltip: "Engineering state content and interpretation (IF-007)"
+  style.stroke: "#667A96"
+  style.font-color: "#34445B"
+  style.fill: "#FFFFFF"
+  style.font-size: 14
+}
+m_4d4f442d303138 -> m_4d4f442d303136: "Qualified\narchitecture\nsnapshot\ngeneration" {
+  link: "#interface/IF-012"
+  tooltip: "Qualified architecture snapshot generation (IF-012)"
   style.stroke: "#667A96"
   style.font-color: "#34445B"
   style.fill: "#FFFFFF"

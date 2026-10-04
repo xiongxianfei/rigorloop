@@ -3,15 +3,15 @@
   "type": "initial-requirement",
   "title": "Control engineering changes and recover prior states",
   "status": "draft",
-  "statement": "Project decision owners, engineers, and maintainers need to evolve coherent engineering states through controlled changes while preserving the ability to identify, compare, and recover retained prior states and understand their original decisions and provenance.",
+  "statement": "Project decision owners, engineers and maintainers need to resume controlled engineering work from a current structured handoff, understand important decisions and completed outcomes, and recover explicitly retained engineering states and operational information without depending on the originating conversation.",
   "analysis": {
     "method": "5W2H",
     "what": {
-      "problem": "Changes can obscure earlier engineering states and their provenance, while interruptions can separate unfinished work from its context and decision authority.",
-      "desired_outcome": "Participants can identify and compare retained states, recover them with their original meaning, and continue controlled work with its recorded context and applicable authority."
+      "problem": "Interrupted work can lose its goal, authority, current progress and decision basis. Exhaustive activity recording adds effort without necessarily helping the next participant decide. Loss of local operational state also requires an explicit bounded recovery contract.",
+      "desired_outcome": "Another authorized participant can identify the next sound engineering action from current context. Important rationale and compact completion accounts remain understandable; older operational detail is retained only while it has decision value or an explicit preservation obligation."
     },
     "why": {
-      "rationale": "A current model alone cannot explain how it came to exist, establish what an earlier assessment examined, or support reliable recovery of a previous engineering state. Controlled work also needs continuity after interruptions and respect for the project's decision authority."
+      "rationale": "Continuity requires useful current information, not reconstruction of every action. Engineering Baselines and explicitly retained backups remain recoverable within their declared scope; disposable working evidence does not become a permanent archive obligation."
     },
     "who": {
       "stakeholders": [
@@ -24,28 +24,35 @@
     "when": {
       "conditions": [
         "Applies when changes are proposed, assessed, adopted, corrected, or retired, and when a retained baseline is inspected or recovered. It also applies when in-progress work is interrupted, resumed, or handed to another participant.",
-        "Retain active work, unresolved findings, applicable decisions, and evidence needed for current reliance until resolved or coherently replaced. Retained baselines have no automatic age-based expiry; release of retained material is a separate controlled retention-policy decision that first resolves surviving dependencies."
+        "Keep active obligations, unresolved findings, important rationale and evidence needed for current reliance until explicitly resolved or coherently replaced. Working summaries and routine outputs may be replaced without historical copies. Retained engineering Baselines follow their separate preservation policy.",
+        "Also applies when creating an operational backup, restoring after loss or interruption, transferring retained work to another local environment, or migrating its storage representation. Backup and transfer do not renew assessments or authorize engineering actions."
       ]
     },
     "where": {
       "contexts": [
-        "Across Changes, Baselines, configuration management, and provenance in the governed engineering environment."
+        "Across Changes, Baselines, configuration management, and provenance in the governed engineering environment.",
+        "The selected project operational store, retained evidence artifacts, and explicitly selected backup or restoration destination, initially for one local checkout and one user with one or more local agents."
       ]
     },
     "how": {
-      "approach": "Identify coherent Baselines, control transitions, and preserve recoverable states and their provenance under the selected retention policy. In the initial authoring profile, a retained baseline identifies its governed requirement and asset definitions, relationship facts, applicable metamodel and rules, source provenance, and any realization or assurance material included in its declared scope. References alone do not claim recovery of unavailable external content. On-demand recovery selects an intact retained baseline and reproduces its recorded authoritative content and meaning; unavailable or incomplete recovery is reported explicitly. Keep current work context available for resumption and distinguish project decision authority from assessment results and suggested actions; SR-006 and SR-007 elaborate these obligations."
+      "approach": "Maintain one current handoff with goal/authority, governing basis, progress, open issues, relevant evidence, review standing and next action. Reference current engineering definitions at their owners. Record at meaningful handoffs or material decision changes, not every edit or test run. Preserve compact completed outcomes and selected decision-relevant detail. Recover retained Baselines and coherent operational backups within their declared scope without inventing unavailable work or renewing approval. IR-001 owns current definitions and applicable rationale; IR-008 owns reliable command access."
     },
     "how_much": {
-      "scope": "Covers Changes, Baselines, configuration management, revision provenance, and historical meaning under the project's retention policy. It does not require permanent working-tree copies, a particular version-control technology, or a specific external handoff service. Recovery applies to retained states. It also covers continuity of recorded in-progress work and human decision authority under the selected project policy, without requiring a new confirmation for every already-authorized action. Completed historical material may leave the current working view only after its original meaning is recoverable and current dependencies are reconciled. The initial authoring profile includes recovery from an available intact retained baseline, with no elapsed recovery-time commitment or storage-disaster recovery guarantee. Unsaved or unrecorded work and destruction of the retained storage are outside that guarantee.",
+      "scope": "One checkout and one user with one or more local agents. Current handoff and selective supporting detail, not event sourcing or a complete activity history. Completed Changes are historical statements, not live monitors of the repository; new regressions become linked new work. Explicit engineering Baseline retention and supported backup/restore remain distinct obligations. No guaranteed recovery of discarded, unsaved or unbacked-up information; no hosted synchronization or automatic merging.",
       "limits": [
-        "Zero loss or alteration of the selected baseline's recorded authoritative content, identities, relationships, and provenance in a recovery declared complete. This bound is relative to that baseline, not to later unrecorded work."
+        "Zero loss or alteration of the selected baseline's recorded authoritative content, identities, relationships, and provenance in a recovery declared complete. This bound is relative to that baseline, not to later unrecorded work.",
+        "A restoration declared complete preserves the selected backup scope, record and subject identities, relationships, original decisions, assessment meaning and required retained artifact content. This claim does not include later unrecorded or unbacked-up work."
       ]
     }
   },
   "assumptions": [
-    "The selected retained baseline and its applicable interpretation rules remain intact and accessible through the project's configuration-management arrangement."
+    "Engineering Baseline recovery requires an intact retained Baseline and applicable interpretation rules. Operational restoration requires an accessible valid backup containing the declared records and retained artifact scope; the original operational store need not survive.",
+    "The user or selected backup arrangement keeps a usable copy outside the failure scope against which recovery is expected; no hosted storage service is supplied by this requirement."
   ],
-  "constraints": [],
+  "constraints": [
+    "Backup, import and restoration preserve historical meaning and do not grant fresh approval, evidence applicability or action authority.",
+    "Retirement and migration must resolve current dependencies and preserve required originals; a new storage representation does not authorize deletion of the only usable evidence."
+  ],
   "sources": [
     {
       "source": "SRC-REM",
@@ -81,6 +88,21 @@
       "source": "SRC-COMPLETE-ANALYSIS",
       "locator": "IR-003",
       "basis": "Complete the existing bounded initial need through the linked draft Scenarios, Features, and single-parent SR decomposition. Preserve the original statement, 5W2H scope, assumptions, and prior source history; author relationship facts once."
+    },
+    {
+      "source": "SRC-LOCAL-OPERATIONAL-RECORDS",
+      "locator": "IR-003",
+      "basis": "User-requested RR/proposal analysis selects refinement of existing needs rather than a new IR. Extends local operational-history and command scope while preserving identity; draft analysis does not adopt SQLite, approve requirements, or establish downstream coverage."
+    },
+    {
+      "source": "SRC-LOCAL-OPERATIONAL-ANALYSIS",
+      "locator": "IR-003",
+      "basis": "Draft derivation from the refined IRs and RR proposal; no approval, implementation or satisfaction claim."
+    },
+    {
+      "source": "SRC-CURRENT-HANDOFF",
+      "locator": "IR-003",
+      "basis": "User-selected current handoff and selective retention refinement. Reuse existing identity and responsibility; no runtime adoption or independent approval is asserted."
     }
   ],
   "confirms": [
@@ -92,6 +114,11 @@
     "SCN-022",
     "SCN-023",
     "SCN-024",
-    "SCN-025"
+    "SCN-025",
+    "FEAT-021",
+    "SCN-070",
+    "SCN-071",
+    "SCN-072",
+    "SCN-073"
   ]
 }

@@ -33,6 +33,11 @@
       "source": "SRC-PUBLISHED-PRODUCTS",
       "locator": "FUNC-052",
       "basis": "Assign MOD-012 as the proposed accountable primary responsibility after Functional Analysis. Current product source contracts retain detailed behavior authority; allocation is not runtime adoption or complete AR coverage."
+    },
+    {
+      "source": "SRC-WORKFLOW-DESIGN",
+      "locator": "FUNC-052",
+      "basis": "Draft integrated design from the accepted requirement-first basis. This defines target responsibility and cooperation, not installed capability, design approval, runtime evidence or SQLite adoption."
     }
   ],
   "description": "Select and make available the complete evidence and resource procedure required by the current capability path. This behavior handles invocation dependencies; package-wide build parity and conformance assessment remain separate.",
@@ -51,7 +56,8 @@
     "Preserve COPY/assets, READ/references, and RUN/scripts meaning and expose script inputs, results, and failure actions under the existing package contract.",
     "Use scoped evidence when sufficient, obtaining complete subjects when the judgment or behavior-changing decision requires them; keep material omitted detail obtainable.",
     "On a late trigger, select the additional complete procedure before dependent action rather than inferring it from examples or memory.",
-    "Allow only a disclosed redundant-convenience fallback when the entire needed contract is already loaded; keep invocation success separate from package integrity."
+    "Allow only a disclosed redundant-convenience fallback when the entire needed contract is already loaded; keep invocation success separate from package integrity.",
+    "For the adopted requirement-first workflow, resolve distinct requirement, logical-design, architectural-design and review methods from one canonical version. Refuse mixed old proposal-first and replacement handoffs on a dependent path."
   ],
   "failure_behavior": [
     {

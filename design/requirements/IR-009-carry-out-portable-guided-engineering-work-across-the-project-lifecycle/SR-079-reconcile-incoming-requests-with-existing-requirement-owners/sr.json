@@ -1,0 +1,78 @@
+{
+  "id": "SR-079",
+  "type": "system-requirement",
+  "title": "Reconcile incoming requests with existing requirement owners",
+  "status": "draft",
+  "statement": "The system shall analyze each material part of an incoming request against the existing requirement model and record a justified reuse, refinement, creation or explicit unresolved disposition before proposing a requirement basis for review.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Incoming solution suggestions or proposal approvals can be mistaken for requirements, producing duplicate entities or hidden scope loss.",
+      "desired_outcome": "Reviewers can trace the requested outcomes to existing or proposed obligations and inspect every material exclusion or uncertainty."
+    },
+    "why": {
+      "rationale": "The user-selected workflow must preserve traceability and independent judgment while assigning each engineering decision one owner and avoiding redundant approval cycles."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineers and engineering agents",
+        "Independent reviewers and project decision owners",
+        "Maintainers of guidance, validation and recording tools"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "When a request, proposal, issue or incident introduces or questions engineering needs, behavior or architecture."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "The project-selected governed workflow and its scoped specialist activities, including portable isolated use where applicable."
+      ]
+    },
+    "how": {
+      "approach": "Apply the explicit ownership and dependency conditions in the criteria; record exact scope, decisions, exceptions and assessment basis without inferring approval from mechanics. Detailed Function, Module, Interface and storage realization belongs to subsequent design."
+    },
+    "how_much": {
+      "scope": "The selected requirement-first workflow within one Change and its affected dependencies. No new preliminary proposal gate, per-method approval, mandatory milestone approval, automatic external permission or mandatory SQLite prerequisite. Functional and architectural completeness are deliberately deferred to design; the Feature constraints express workflow conditions, not a completed behavior realization."
+    }
+  },
+  "acceptance_criteria": [
+    "The original RR source and interpretation remain attributable without requiring a separate proposal or RR file; a technical suggestion is distinguished from an established required constraint.",
+    "If existing IRs and SRs cover the request under the same conditions, the proposed basis identifies them and explains reuse without manufacturing edits, new entities or a new IR.",
+    "A request spanning several needs maps to their existing owners. Refinement preserves identity where the same need continues; a new IR requires a distinct justified stakeholder need rather than a new implementation technology.",
+    "Material exclusions, unsupported portions, deferred decisions and conflicts remain visible with their responsible owner or decision need; the proposed basis cannot silently narrow the original request.",
+    "Proposed IR/SR changes include their applicable 5W2H analysis, supporting stakeholder Feature/Scenario analysis and assessable acceptance criteria. Architecture implications remain provisional; Requirement Analysis does not finalize Modules, Interfaces, AR allocation or implementation tasks."
+  ],
+  "assumptions": [
+    "Existing governance and recording remain available until explicit coordinated adoption; target skill and CLI support is not assumed installed."
+  ],
+  "constraints": [
+    "Draft authoring and structural validation do not establish independent review approval or activate the new workflow."
+  ],
+  "constrains": [
+    "FEAT-016"
+  ],
+  "sources": [
+    {
+      "source": "SRC-REQUIREMENT-FIRST-WORKFLOW",
+      "locator": "SR-079",
+      "basis": "User-selected requirement-first workflow and one mandatory whole-change Code Review gate. Proposed requirement analysis only; existing product contracts remain active until coordinated adoption. No new Function, AR, implementation or approval is inferred."
+    },
+    {
+      "source": "SRC-WORKFLOW-DESIGN",
+      "locator": "SR-079",
+      "basis": "Draft integrated design from the accepted requirement-first basis. This defines target responsibility and cooperation, not installed capability, design approval, runtime evidence or SQLite adoption."
+    },
+    {
+      "source": "SRC-WORKFLOW-DESIGN",
+      "locator": "SR-079 AC1–5; AR-029, AR-030",
+      "basis": "Proposed allocation composition: Canonical method selection/explanation supplies reuse and derivation rules; bounded specialist composition produces the attributable proposed basis and preserves unresolved scope. This is a design argument, not executed satisfaction evidence."
+    }
+  ],
+  "confirms": [
+    "FUNC-053",
+    "FUNC-032",
+    "FUNC-033"
+  ]
+}

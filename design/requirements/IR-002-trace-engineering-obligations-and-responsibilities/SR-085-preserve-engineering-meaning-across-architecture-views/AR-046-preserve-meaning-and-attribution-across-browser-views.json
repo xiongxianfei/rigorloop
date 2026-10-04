@@ -1,0 +1,65 @@
+{
+  "id": "AR-046",
+  "type": "allocated-requirement",
+  "title": "Preserve meaning and attribution across browser views",
+  "status": "draft",
+  "statement": "The Views and traceability Module shall preserve meaning and attribution across browser views within its accountable browser contribution to SR-085, retaining the stated limits of collaborating owners.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "A locally successful browser step can hide missing ownership or an invalid cross-boundary conclusion.",
+      "desired_outcome": "Preserve meaning and attribution across browser views."
+    },
+    "why": {
+      "rationale": "MOD-004 owns the behavior necessary for the selected SR-085 criteria; the SR remains the system-wide obligation."
+    },
+    "who": {
+      "stakeholders": [
+        "Customer authors and readers",
+        "Product maintainers and reviewers"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "When generating, reading, recovering or qualifying the selected browser scope."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "MOD-004 and its declared browser cooperation contracts."
+      ]
+    },
+    "how": {
+      "approach": "Apply the constrained Functions and preserve source, output, qualification and authority distinctions at the boundary."
+    },
+    "how_much": {
+      "scope": "Contribution to SR-085 criteria 1, 2, 3, 4, 5, 6. Other Module contributions and final product qualification remain distinct."
+    }
+  },
+  "acceptance_criteria": [
+    "Readers can navigate each available view from an overview to relevant definitions, relationships and applicable rationale, using readable labels and keyboard-accessible navigation.",
+    "Logical ownership and containment remain distinct from execution and deployment; a shared source file does not merge logical responsibilities.",
+    "Process topology does not imply execution order or concurrency. Selected activity, interaction and lifecycle details appear only where authoritative semantics establish them.",
+    "Proposed and observed facts remain distinguishable in overviews and details, even when names are identical; each detail exposes its selected-state source basis.",
+    "Scenario navigation retains stakeholder meaning and identified architecture participation without turning reachability or rendering into coverage, approval or satisfaction.",
+    "Missing required explanation and incomplete selections remain explicit; absent details are not fabricated and view success does not establish a complete design."
+  ],
+  "assumptions": [],
+  "constraints": [
+    "Draft allocation; does not establish implemented browser support or requirement satisfaction."
+  ],
+  "allocated_to": "MOD-004",
+  "constrains": [
+    "FUNC-007",
+    "FUNC-009",
+    "FUNC-080",
+    "FUNC-081"
+  ],
+  "sources": [
+    {
+      "source": "SRC-CUSTOMER-BROWSER-DESIGN",
+      "locator": "AR-046; SR-085 criteria 1, 2, 3, 4, 5, 6",
+      "basis": "System and Architecture Design from SR-084–088 and refined SR-060; proposed responsibility, contract and realization only. No implementation, platform qualification or product availability is established."
+    }
+  ]
+}

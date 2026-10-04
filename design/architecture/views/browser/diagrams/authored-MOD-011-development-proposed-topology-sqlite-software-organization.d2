@@ -1,0 +1,18 @@
+direction: down
+cli: "MOD-010\nTask admission and results"
+store: "MOD-011 — Work record storage" {
+  candidate: "Current-account rules\nCandidate and dependency validation"
+  adapter: "SQLite adapter\nQueries, revisions and transactions"
+  payloads: "Named attachment handling\nCapture, references and cleanup"
+  maintenance: "Backup, restore and migration\nAdmission and activation recovery"
+  migrations: "Packaged schema migrations"
+}
+binding: "Node runtime\nnode:sqlite"
+cli -> store.candidate: "Explicit Change tasks"
+cli -> store.maintenance: "Explicit store maintenance"
+store.candidate -> store.adapter: "Validated current-state updates"
+store.adapter -> store.payloads: "Coordinate selected bytes before commit"
+store.maintenance -> store.adapter: "Snapshot or validate staged state"
+store.maintenance -> store.payloads: "Capture or restore selected payloads"
+store.maintenance -> store.migrations: "Apply supported ordered upgrades"
+store.adapter -> binding: "Prepared SQL and transaction operations"

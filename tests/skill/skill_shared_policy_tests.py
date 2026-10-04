@@ -21,109 +21,24 @@ from lib.validation import skill_validation
 # Current adopted resource owners, inspected against each published Resource map.
 # Keep the expected domain independent of the validator's selected consumers.
 DELIVERY_CONSUMERS = frozenset({
-    "proposal", "proposal-review", "design-review", "plan",
+    "requirement-analysis", "requirement-review", "design-review", "plan",
     "delivery-review", "code-review", "verify",
 })
 REVIEW_CONSUMERS = frozenset({
-    "proposal-review", "design-review", "delivery-review", "code-review",
+    "requirement-review", "design-review", "delivery-review", "code-review",
     "plan", "route", "verify", "pr", "implement", "ci-maintenance",
 })
 ASSESSMENT_CONSUMERS = frozenset({
-    "proposal-review", "design-review", "delivery-review", "code-review",
+    "requirement-review", "design-review", "delivery-review", "code-review",
 })
 QUALITY_CONSUMERS = frozenset({
-    "design", "bugfix", "ci-maintenance", "code-review", "delivery-review",
+    "system-design", "architecture-design", "bugfix", "ci-maintenance", "code-review", "delivery-review",
     "design-review", "implement", "plan", "route", "verify",
 })
 MAINTENANCE_CONSUMERS = frozenset({
     "bugfix", "ci-maintenance", "code-review", "delivery-review",
     "implement", "plan", "route", "verify",
 })
-
-
-class RequirementDeliveryModelM1Tests(unittest.TestCase):
-    def test_m1_shared_model_defines_lightweight_refinement_and_work_decomposition(self) -> None:
-        shared_path = ROOT / "templates" / "shared" / "requirement-to-delivery-model.md"
-        self.assertTrue(shared_path.is_file(), shared_path)
-        shared = shared_path.read_text(encoding="utf-8")
-        for term in (
-            "RR → IR → SR → AR",
-            "Epic → Feature → Story → Task",
-            "The two views are not equivalent hierarchies.",
-            "SR identities are the durable downstream requirement references.",
-            "RR, IR, and AR do not require separate artifacts or identifiers.",
-            "Add a work level only when it materially improves ownership, sequencing, reviewability, traceability, or coordination.",
-            "SR-01 → M1 and M2",
-            "SR-01 + SR-02 → M2",
-        ):
-            with self.subTest(term=term):
-                self.assertIn(term, shared)
-
-    def test_m1_authoring_skills_map_local_responsibility_and_conditionally_load_model(self) -> None:
-        expected = {
-            "proposal": (
-                "Treat the incoming need as RR and the approved proposal as the durable IR-level direction.",
-                "when clarifying an incoming need into proposal direction or explaining how proposal approval feeds Design",
-            ),
-            "plan": (
-                "Treat the plan as the primary allocation surface from SRs and architecture boundaries into proportional delivery work.",
-                "when allocating system requirements and architecture boundaries into milestones or optional work hierarchy",
-            ),
-        }
-        for skill_name, (responsibility, load_condition) in expected.items():
-            skill_root = ROOT / "skills" / skill_name
-            body = (skill_root / "SKILL.md").read_text(encoding="utf-8")
-            local_reference = skill_root / "references" / "requirement-to-delivery-model.md"
-            with self.subTest(skill=skill_name, check="responsibility"):
-                self.assertIn(responsibility, body)
-            with self.subTest(skill=skill_name, check="resource-map"):
-                self.assertIn(
-                    f"READ `references/requirement-to-delivery-model.md` {load_condition}.",
-                    body,
-                )
-            with self.subTest(skill=skill_name, check="packaged-reference"):
-                self.assertTrue(local_reference.is_file(), local_reference)
-
-    def test_m1_existing_artifact_structures_already_expose_traceability_without_new_entities(self) -> None:
-        spec_asset = (ROOT / "skills" / "design" / "assets" / "design-skeleton.md").read_text(encoding="utf-8")
-        milestone_asset = (ROOT / "skills" / "plan" / "assets" / "milestone.md").read_text(encoding="utf-8")
-        self.assertIn("## Requirements", spec_asset)
-        self.assertIn("## Architecture Decisions", spec_asset)
-        self.assertIn("- Requirements:", milestone_asset)
-        self.assertIn("- Architecture responsibility:", milestone_asset)
-        combined = "\n".join((spec_asset, milestone_asset))
-        for forbidden in ("RR ID", "IR ID", "AR ID", "## Epic", "## Feature", "## Story"):
-            with self.subTest(forbidden=forbidden):
-                self.assertNotIn(forbidden, combined)
-
-
-class RequirementDeliveryModelM2Tests(unittest.TestCase):
-    def test_m2_review_and_verification_skills_apply_stage_local_traceability(self) -> None:
-        expected = {
-            "proposal-review": "Judge whether the proposal responsibly refines the incoming RR into an IR-level direction sufficient for Design.",
-            "design-review": "Trace the approved IR-level direction into coherent requirements and their Design realization.",
-            "delivery-review": "Trace SRs and architecture boundaries into proportional allocated work and proof.",
-            "code-review": "Trace the implementation to its allocated work, governing SRs, and approved design boundaries.",
-            "verify": "Trace current evidence backward through implementation and allocated work to governing SRs and the approved proposal direction.",
-        }
-        shared = (ROOT / "templates" / "shared" / "requirement-to-delivery-model.md").read_bytes()
-        for skill_name, criterion in expected.items():
-            skill_root = ROOT / "skills" / skill_name
-            body = (skill_root / "SKILL.md").read_text(encoding="utf-8")
-            local_reference = skill_root / "references" / "requirement-to-delivery-model.md"
-            with self.subTest(skill=skill_name, check="criterion"):
-                self.assertIn(criterion, body)
-            with self.subTest(skill=skill_name, check="resource-map"):
-                self.assertIn("READ `references/requirement-to-delivery-model.md` when tracing", body)
-            with self.subTest(skill=skill_name, check="packaged-reference"):
-                self.assertEqual(local_reference.read_bytes(), shared)
-
-    def test_m2_shared_guidance_does_not_grant_review_or_lifecycle_authority(self) -> None:
-        shared = (ROOT / "templates" / "shared" / "requirement-to-delivery-model.md").read_text(encoding="utf-8")
-        self.assertIn("It creates no lifecycle stage, artifact, identifier, settlement authority, readiness claim, or required hierarchy.", shared)
-        for forbidden in ("approval authority", "may settle", "may advance", "automatically approves"):
-            with self.subTest(forbidden=forbidden):
-                self.assertNotIn(forbidden, shared.lower())
 
 
 class RequirementDeliveryModelM3Tests(unittest.TestCase):
@@ -148,18 +63,18 @@ class RequirementDeliveryModelM3Tests(unittest.TestCase):
             root = Path(temporary)
             canonical = root / "canonical.md"
             canonical.write_text("canonical\n", encoding="utf-8")
-            skill_path = root / "skills" / "proposal" / "SKILL.md"
+            skill_path = root / "skills" / "requirement-analysis" / "SKILL.md"
             skill_path.parent.mkdir(parents=True)
             skill_path.write_text("# Proposal\n", encoding="utf-8")
             missing = skill_validation.validate_requirement_delivery_model_copy(
-                skill_path, "proposal", canonical_path=canonical
+                skill_path, "requirement-analysis", canonical_path=canonical
             )
             self.assertIn("is missing", missing[0])
             local = skill_path.parent / "references" / "requirement-to-delivery-model.md"
             local.parent.mkdir()
             local.write_text("drifted\n", encoding="utf-8")
             drifted = skill_validation.validate_requirement_delivery_model_copy(
-                skill_path, "proposal", canonical_path=canonical
+                skill_path, "requirement-analysis", canonical_path=canonical
             )
             self.assertIn("differs from canonical", drifted[0])
 
@@ -167,15 +82,15 @@ class RequirementDeliveryModelM3Tests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             skills_root = root / "skills"
-            shutil.copytree(ROOT / "skills" / "proposal", skills_root / "proposal")
-            missing = skills_root / "proposal" / "references" / "requirement-to-delivery-model.md"
+            shutil.copytree(ROOT / "skills" / "requirement-analysis", skills_root / "requirement-analysis")
+            missing = skills_root / "requirement-analysis" / "references" / "requirement-to-delivery-model.md"
             missing.unlink()
             with mock.patch.object(skill_validation, "CANONICAL_SKILLS_DIR", skills_root), mock.patch.object(
                 skill_validation,
                 "REQUIREMENT_DELIVERY_MODEL_SOURCE",
                 ROOT / "templates" / "shared" / "requirement-to-delivery-model.md",
             ):
-                result = skill_validation.validate_skill_tree(skills_root / "proposal")
+                result = skill_validation.validate_skill_tree(skills_root / "requirement-analysis")
             self.assertTrue(
                 any("mapped requirement-to-delivery reference is missing" in error for error in result.errors),
                 result.errors,

@@ -1,14 +1,15 @@
 {
   "id": "MOD-016",
   "type": "module",
-  "title": "Engineering model management",
+  "title": "Project model",
   "status": "draft",
-  "description": "Account for coherent engineering definitions across authoring, interpretation, retention, and contextual retrieval within a selected governed model state.",
+  "description": "Maintains consistent requirements, behavior and architecture definitions across editing, storage, validation and views.",
   "responsibilities": [
     "Compose definition authoring, storage, conformance, and traceability responsibilities so identity, selected-state context, and governing model interpretation retain one coherent meaning across their interactions.",
     "Maintain the architectural boundary between current engineering definitions and the governance decisions or operational records that use them.",
     "Keep definition-access and model-interpretation cooperation explicit within this boundary while preserving the exact child responsible for each behavior, obligation, and information set.",
-    "Provide IF-007 as the accountable selected-state content and interpretation contract for Governance Baseline analysis, composing MOD-001 definition access and MOD-003 interpretation without granting authority or claiming retention."
+    "Provide IF-007 as the accountable selected-state content and interpretation contract for Governance Baseline analysis, composing MOD-001 definition access and MOD-003 interpretation without granting authority or claiming retention.",
+    "Provide IF-012 through MOD-001 input capture, MOD-003 interpretation and MOD-004 projection/snapshot responsibility; preserve Baseline-specific IF-007 meaning."
   ],
   "owned_state": [],
   "scope": {
@@ -21,7 +22,8 @@
     ]
   },
   "provides": [
-    "IF-007"
+    "IF-007",
+    "IF-012"
   ],
   "consumes": [],
   "design_limits": [
@@ -39,6 +41,11 @@
       "source": "SRC-BOUNDARY-CONTRACTS",
       "locator": "MOD-016; SCN-019, SCN-053, SCN-066 selected collaboration analysis",
       "basis": "Derive consumer-focused parent contracts for selected-state inspection, adopted-REM authoring guidance, applicable action authority, and evidence applicability. Preserve child behavior/state authority, existing Function/AR allocations, and earlier contract guarantees. The selected contracts refine prior blanket deferrals; remaining retention, wider collaboration, AR, and realization gaps stay explicit. This is draft design analysis, not implemented or satisfied behavior."
+    },
+    {
+      "source": "SRC-CUSTOMER-BROWSER-DESIGN",
+      "locator": "MOD-016",
+      "basis": "System and Architecture Design from SR-084–088 and refined SR-060; proposed responsibility, contract and realization only. No implementation, platform qualification or product availability is established."
     }
   ]
 }

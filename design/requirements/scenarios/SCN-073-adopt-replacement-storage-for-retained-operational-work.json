@@ -1,0 +1,67 @@
+{
+  "id": "SCN-073",
+  "type": "scenario",
+  "title": "Adopt replacement storage for retained operational work",
+  "status": "draft",
+  "actor": "A maintainer adopting a replacement record store",
+  "goal": "Preserve current work and required history through a supported storage migration.",
+  "context": "Existing operational records contain active work, retained evidence and potentially unsupported historical formats.",
+  "trigger": "The maintainer requests migration of an explicit source scope.",
+  "preconditions": [
+    "The actor explicitly identifies the project and intended scope.",
+    "Any requested mutation is subject to applicable project authority."
+  ],
+  "interaction": [
+    {
+      "actor": "Maintainer",
+      "action": "Selects source scope and replacement destination."
+    },
+    {
+      "actor": "System",
+      "action": "Reports supported import, archival-only content, source identities and unresolved dependencies."
+    },
+    {
+      "actor": "Maintainer",
+      "action": "Supplies any required disposition and requests the authorized migration."
+    },
+    {
+      "actor": "System",
+      "action": "Reports one coherent imported scope with provenance, or a blocked/interrupted outcome that preserves sources."
+    }
+  ],
+  "expected_outcome": "Current work remains retrievable through one authoritative destination, with required originals recoverable and source dispositions explicit.",
+  "alternatives": [
+    {
+      "condition": "Some completed historical records are unsupported for import.",
+      "outcome": "They remain attributable archival evidence after current dependencies are resolved; they acquire no runtime support."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "An unsupported record is still needed by active work.",
+      "outcome": "Activation remains blocked pending an explicit responsible disposition."
+    },
+    {
+      "condition": "Source content changes, destination conflicts or migration is interrupted.",
+      "outcome": "The system preserves original and unrelated work, reports the actual outcome and never activates a partial import as complete."
+    }
+  ],
+  "exercises": [
+    "FEAT-007"
+  ],
+  "informs": [
+    "SR-077",
+    "SR-024",
+    "SR-023",
+    "SR-007",
+    "SR-040",
+    "SR-046"
+  ],
+  "sources": [
+    {
+      "source": "SRC-LOCAL-OPERATIONAL-ANALYSIS",
+      "locator": "SCN-073",
+      "basis": "Draft derivation from the refined IRs and RR proposal; no approval, implementation or satisfaction claim."
+    }
+  ]
+}

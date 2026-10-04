@@ -1,0 +1,20 @@
+{
+  "proposed": [
+    {
+      "choice": "The Node CLI supervises one Rust engine subprocess; that engine supervises D2, and the static reader runs independently.",
+      "rationale": "One engine owns capture through publication and recovery; bounded versioned JSON carries operation control and truthful outcomes across the adapter boundary.",
+      "alternatives": [
+        "A hosted browsing service required for reading."
+      ],
+      "consequences": [
+        "Response loss after a potentially mutating launch requires recovery inspection, not an unchanged-output claim or automatic retry.",
+        "No new service or Module is implied by a role or skill.",
+        "The renderer receives only safe generated input and bundled resources; no model-directed network access.",
+        "Proposed execution only; existing observed CLI runtime remains unchanged."
+      ],
+      "revisit_when": [
+        "A selected requirement, supported platform or actual qualification result defeats this realization."
+      ]
+    }
+  ]
+}

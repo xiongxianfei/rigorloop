@@ -3,15 +3,15 @@
   "type": "allocated-requirement",
   "title": "Present faithful bounded command outcomes and selected explanations",
   "status": "draft",
-  "statement": "The Engineering command interface Module shall project actual command outcomes and selected recorded explanations into the owning bounded human or machine result contract without changing their meaning, scope, availability, diagnostic identity, or semantic exit.",
+  "statement": "The Command handling Module shall present bounded complete selected content and actual effects under the owning result contract without changing meaning, scope, availability or semantic exit.",
   "analysis": {
     "method": "5W2H",
     "what": {
       "problem": "Formatting and summary logic can truncate explanation, conflate missing information with a favorable result, or hide drift behind unchanged record revision.",
-      "desired_outcome": "A caller can identify what was observed and changed, what was omitted or unavailable, and whether the same current detail remains retrievable."
+      "desired_outcome": "The caller understands current selected content, explicit gaps and actual effects without a second authoritative rendering."
     },
     "why": {
-      "rationale": "SR-046 requires equivalent selected meaning and honest continuation across representations while keeping engineering judgment separate from retrieval or storage success."
+      "rationale": "SR-046 requires truthful equivalent result meaning while keeping persistence and retrieval separate from engineering judgment."
     },
     "who": {
       "stakeholders": [
@@ -22,31 +22,29 @@
     },
     "when": {
       "conditions": [
-        "An admitted query, preview, mutation, discovery, generic command, or explicit diagnostic-detail request returns an outcome.",
-        "A selected result exceeds its bound or current observation basis differs from the caller expectation."
+        "A current query, task, preview, maintenance, installation or diagnostic request returns an outcome."
       ]
     },
     "where": {
       "contexts": [
-        "Public result projection through IF-004 using attributable selected facts from IF-003 where applicable.",
-        "The independently versioned primary, advanced, discovery, and generic result domains."
+        "IF-004 result encoding using typed IF-003 facts for operational work; other result domains retain their own contracts."
       ]
     },
     "how": {
-      "approach": "Render selected stored values and actual effects under the admitted operation contract, preserving exact absence and omission semantics. Size reads before output, summarize optional detail explicitly, and require current revision plus actual subject/diagnostic identity for observation continuation."
+      "approach": "Serialize bounded complete results from coherent current facts before emission; reject oversized reads and preserve committed truth after output failure."
     },
     "how_much": {
-      "scope": "Current family-specific result schemas, exits, query/projection bounds, and observation identity rules remain authoritative. This does not create another assessment, a cached explanatory report, a historical observation replay service, or a requirement to consult logs for safe continuation."
+      "scope": "Current task receipts, selected context/accounts and independent installation/diagnostic formats; no diagnostic-page protocol."
     }
   },
   "acceptance_criteria": [
-    "Preserve saved, unchanged, valid preview, inspected, rejected, conflict, busy, recovery-required, and generic outcomes in their own operation/version/exit domains. Retain only independently available identities; distinguish observations from errors and limit a recording claim to persistence, never approval or satisfaction.",
+    "Preserve saved, unchanged, valid preview, ok, rejected, conflict, busy, recovery-needed, and generic outcomes in their own operation/version/exit domains. Retain only independently available identities; distinguish observations from errors and limit a recording claim to persistence, never approval or satisfaction.",
     "Text and JSON return equivalent selected fields, order, decoded multiline narrative, indentation, Unicode, literal backslash sequences, state, scope, optional absence, and omission metadata. Do not interpret literal escape text, synthesize a second explanation, or omit a required field merely for concise presentation.",
     "A selected read that cannot fit the admitted complete-output bound fails before emitting partial content. Return the safe limit outcome and available selection/budget guidance; optional mutation details follow the guaranteed receipt rule instead of turning a completed save into rejection.",
-    "Full and projected Review/Verify explanations derive from the stored fields and explicit selection. Keep unselected, absent optional, missing registered, unreadable, and not-applicable meanings distinct; do not invent rationale or treat complete retrieval as an adequate assessment.",
-    "Observation summaries disclose the scope and count of omitted detail. Detail continuation is checked against both record revision and the identity of the actual observed subjects and diagnostics; changed subject bytes or absence conflict even when record bytes and diagnostic wording are unchanged. Do not substitute historical expected hashes or only declared request reads for the complete source-defined observation basis.",
-    "Return only complete admitted detail items, with accurate scope and continuation, after verifying the current observation identity. Invalid or changed continuation returns no detail page; unsafe or unreadable subjects do not become null absence, and no historical replay of a prior receipt is promised.",
-    "Generic concise and detailed projections retain the same mutations, semantic exit, and facts needed for safe continuation without log lookup. Preserve recording and discovery result contracts separately; safe diagnostics never echo arbitrary payloads, invalid raw selectors, or secrets."
+    "Selected Review and Verification content preserves scope, support, optional absence and unavailable payload distinctions. No projection invents rationale or approval.",
+    "Context uses a bounded complete selector index with explicit selection omissions, rather than hidden pagination or exhaustive database output.",
+    "Compared observations disclose the actual checked scope and gaps; reported assertions are not presented as mechanical comparison, and unsafe/unreadable subjects are not matching absence.",
+    "Generic concise and detailed projections retain the same mutations, semantic exit, and facts needed for safe continuation without log lookup. Preserve operational and maintenance result contracts separately; safe diagnostics never echo arbitrary payloads, invalid raw selectors, or secrets."
   ],
   "assumptions": [],
   "constraints": [],
@@ -65,6 +63,11 @@
       "source": "SRC-PUBLISHED-CLI",
       "locator": "docs/design/cli/cli.md#CLI-SR-07, CLI-SR-11, CLI-SR-14, CLI-SR-17, CLI-SR-20, CLI-SR-21, CLI-SR-22, CLI-SR-24, CLI-SR-26, CLI-SR-27, CLI-SR-29, CLI-SR-30; docs/design/cli/records.md#RF-SR-03, RF-SR-07, RF-SR-10",
       "basis": "Retains the named current CLI and Record Format obligations at this allocated responsibility boundary. Their detailed formats, supported versions, limits, and observed external-edit boundaries remain authoritative; no runtime behavior or public contract is changed by this draft."
+    },
+    {
+      "source": "SRC-SQLITE-ADOPTION",
+      "locator": "AR-024",
+      "basis": "Reconcile current bounded task receipts with complete selected results and truthful commit outcomes; predecessor cursor/ordinary-journal protocols remain historical."
     }
   ]
 }

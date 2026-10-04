@@ -9,7 +9,8 @@
       "Record Change scope, before and resulting states, decision basis, provenance, and current disposition.",
       "Record and retrieve activity-specific context for authoring, implementation, verification, and review handoffs.",
       "Apply existing project authority and bounded prior grants without demanding redundant confirmation.",
-      "Assess current reliance and recoverability before removing completed or retired material."
+      "Assess current reliance and recoverability before removing completed or retired material.",
+      "Adopt supported replacement operational storage with explicit source disposition, original provenance and preserved current reliance."
     ],
     "excludes": [
       "Creating a universal approval workflow or granting authority through assessments and next-action suggestions.",
@@ -21,13 +22,19 @@
     "FUNC-023",
     "FUNC-024",
     "FUNC-025",
-    "FUNC-026"
+    "FUNC-026",
+    "FUNC-076"
   ],
   "sources": [
     {
       "source": "SRC-COMPLETE-ANALYSIS",
       "locator": "FEAT-007",
       "basis": "IR-003, existing SR-006 and SR-007, and SR-023 and SR-024 establish controlled evolution, resumption, authority, and dependency-safe retirement."
+    },
+    {
+      "source": "SRC-LOCAL-OPERATIONAL-ANALYSIS",
+      "locator": "FEAT-007",
+      "basis": "Draft derivation from the refined IRs and RR proposal; no approval, implementation or satisfaction claim."
     }
   ]
 }

@@ -23,7 +23,6 @@ from release_provider_fixtures import RecordingPublicEvidenceProvider
 
 FIXTURES = ROOT / "tests/fixtures/release-transaction"
 PROFILE_FIXTURES = FIXTURES / "profiles"
-CHANGE_ROOT = ROOT / "docs/changes/2026-06-29-release-transaction-automation"
 
 
 def relative_tree(root: Path) -> dict[str, tuple]:

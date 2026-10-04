@@ -3,7 +3,7 @@
   "type": "allocated-requirement",
   "title": "Inspect exact retained invocation diagnostics safely",
   "status": "draft",
-  "statement": "The Engineering command interface Module shall inspect only the explicitly requested invocation within bounded retained owned log files, return matching supported events and safe availability diagnostics, and leave semantic command execution and governed state unchanged.",
+  "statement": "The Command handling Module shall inspect only the explicitly requested invocation within bounded retained owned log files, return matching supported events and safe availability diagnostics, and leave semantic command execution and governed state unchanged.",
   "analysis": {
     "method": "5W2H",
     "what": {

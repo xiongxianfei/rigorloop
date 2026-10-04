@@ -47,7 +47,8 @@
   "consistency_rules": [
     "The authority conclusion is bound to the assessed action, subject, policy, grant and conditions. A relevant change requires reassessment; the conclusion is not a transferable permission token for other subjects.",
     "An applicable authorization and adequate evidence are independent prerequisites where the governing policy requires both. IF-010 supplies evidence-support analysis without granting authority, and IF-009 supplies no release qualification or satisfaction claim.",
-    "The consumer retains its actual execution safeguards and outcome responsibility. This contract neither changes immutable candidate identity nor authorizes overwrite, blind retry, an unsupported release path or a special release relabeled as routine."
+    "The consumer retains its actual execution safeguards and outcome responsibility. This contract neither changes immutable candidate identity nor authorizes overwrite, blind retry, an unsupported release path or a special release relabeled as routine.",
+    "For MOD-012 workflow consumption, assess authority for the exact requested slice or continuation. Removing milestone review gates does not widen authorization; valid standing authority need not be re-requested for each milestone."
   ],
   "compatibility_rules": [
     "The selected project policy and existing Constitution retain authority ordering and decision ownership. This draft introduces no new approval workflow, permission persistence format or executable authorization service.",
@@ -69,6 +70,11 @@
       "source": "SRC-PUBLISHED-RELEASE",
       "locator": "docs/design/engineering/release/release.md#REL-SR-12; REL-SR-22; REL-SR-23; REL-SR-24; SR-070; FUNC-070",
       "basis": "Apply the existing exact-candidate publication authority, one normal approval, changed-subject invalidation, unchanged satisfactory recheck, duplicate-event and truthful recorded-basis guarantees without introducing a new release mechanism."
+    },
+    {
+      "source": "SRC-WORKFLOW-DESIGN",
+      "locator": "IF-009",
+      "basis": "Draft integrated design from the accepted requirement-first basis. This defines target responsibility and cooperation, not installed capability, design approval, runtime evidence or SQLite adoption."
     }
   ]
 }

@@ -147,7 +147,12 @@ class Model:
                     raise ValueError(f"{relative}: missing title")
                 if kind in ("module", "interface"):
                     slug = re.sub(r"[^a-z0-9]+", "-", data["title"].lower()).strip("-")
-                    if path.parent.name != f"{identity}-{slug}":
+                    if not slug:
+                        raise ValueError(f"{relative}: title has no descriptive name")
+                    if kind == "module":
+                        if not re.fullmatch(re.escape(identity) + r"-[a-z0-9]+(?:-[a-z0-9]+)*", path.parent.name):
+                            raise ValueError(f"{relative}: owner directory does not match identity and retained slug")
+                    elif path.parent.name != f"{identity}-{slug}":
                         raise ValueError(f"{relative}: owner directory does not match identity and title")
                 if kind == "module" and ({"parent_module", "children"} & set(data)):
                     raise ValueError(f"{relative}: duplicate authored Module containment")
@@ -162,6 +167,7 @@ class Model:
                     self.facets[(record.id, path.stem)] = Record(relative, data)
         # Parse all mapping vocabularies before resolving any model reference.
         self.public_catalogs = self.read_public_catalogs()
+        self.designed_catalogs = self.read_designed_catalogs()
         paths = {r.path: r for r in self.records.values()}
         for child, parent in parent_paths.items():
             self.parents[paths[child].id] = paths[parent].id
@@ -217,6 +223,7 @@ class Model:
                 if missing:
                     raise ValueError(f"{interface.path}: missing exposure through {', '.join(sorted(missing))} for consumer {edge.source}")
         self.validate_public_catalogs()
+        self.validate_designed_catalogs()
         self.validate_realization_structure()
         validate_process_facts(self)
         validate_physical_facts(self)
@@ -425,6 +432,64 @@ class Model:
                     raise ValueError(f"{facet.path}: missing Interface operation {entry['operation']!r} for {entry['name']!r}")
             validated.append(PublicCatalog(owner, facet, entries, indexed))
         self.public_catalogs = validated
+
+    def read_designed_catalogs(self):
+        """Parse designed capabilities without requiring observed implementation entries."""
+        catalogs = []
+        for (identity, facet_name), facet in sorted(self.facets.items()):
+            entries = []
+            for choice_index, choice in enumerate(facet.data.get("proposed", [])):
+                if "public_capabilities" not in choice:
+                    continue
+                values = choice["public_capabilities"]
+                if not isinstance(values, list) or not values:
+                    raise ValueError(f"{facet.path}: public_capabilities must be a nonempty array")
+                for index, entry in enumerate(values):
+                    pointer = f"/proposed/{choice_index}/public_capabilities/{index}"
+                    location = f"{facet.path} {pointer}"
+                    if not isinstance(entry, dict) or set(entry) != {"name", "group", "purpose", "contract", "functions", "limits"}:
+                        raise ValueError(f"{location}: unsupported designed capability shape")
+                    for field in ("name", "group", "purpose", "contract"):
+                        if not isinstance(entry[field], str) or not entry[field].strip():
+                            raise ValueError(f"{location}: {field} must be nonblank text")
+                    if not isinstance(entry["functions"], list) or not isinstance(entry["limits"], list):
+                        raise ValueError(f"{location}: functions and limits must be arrays")
+                    if not entry["functions"] and not entry["limits"]:
+                        raise ValueError(f"{location}: unmapped designed capability requires explicit limits")
+                    if any(not isinstance(limit, str) or not limit.strip() for limit in entry["limits"]):
+                        raise ValueError(f"{location}: limits must be nonblank text")
+                    for function in entry["functions"]:
+                        if not isinstance(function, dict) or set(function) != {"function", "relation", "contribution"}:
+                            raise ValueError(f"{location}: unsupported designed Function mapping shape")
+                        if not isinstance(function["relation"], str) or function["relation"] not in PUBLIC_RELATIONS:
+                            raise ValueError(f"{location}: unsupported public entry relation {function['relation']!r}")
+                        if any(not isinstance(function[key], str) or not function[key].strip() for key in ("function", "contribution")):
+                            raise ValueError(f"{location}: Function and contribution must be nonblank text")
+                    entries.append((entry, pointer))
+            if entries:
+                owner = self.records[identity]
+                required_facet = "interaction" if owner.data["type"] == "interface" else "software"
+                if facet_name != required_facet:
+                    raise ValueError(f"{facet.path}: unsupported designed capability owner/facet")
+                catalogs.append((owner, facet, entries))
+        return catalogs
+
+    def validate_designed_catalogs(self):
+        for owner, facet, entries in self.designed_catalogs:
+            names = set()
+            for entry, pointer in entries:
+                location = f"{facet.path} {pointer}"
+                if entry["name"] in names:
+                    raise ValueError(f"{location}: duplicate designed capability name")
+                names.add(entry["name"])
+                self.public_path(entry["contract"], location, contract=True)
+                pairs = set()
+                for item in entry["functions"]:
+                    self.resolve(item["function"], ("function",), location)
+                    pair = (item["function"], item["relation"])
+                    if pair in pairs:
+                        raise ValueError(f"{location}: duplicate designed Function/relation mapping")
+                    pairs.add(pair)
 
     def public_path(self, value, location, contract=False):
         """Stat a canonical local reference without opening the target content."""

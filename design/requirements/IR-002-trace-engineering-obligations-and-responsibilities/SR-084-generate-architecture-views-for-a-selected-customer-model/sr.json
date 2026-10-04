@@ -1,0 +1,70 @@
+{
+  "id": "SR-084",
+  "type": "system-requirement",
+  "title": "Generate architecture views for a selected customer model",
+  "status": "draft",
+  "statement": "The system shall let a customer generate a read-only architecture browser for one explicitly selected supported project model state without requiring the RigorLoop source checkout or its project-specific content.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Repository-specific tooling may fail on customer inputs.",
+      "desired_outcome": "let a customer generate a read-only architecture browser for one explicitly selected supported project model state without requiring the RigorLoop source checkout or its project-specific content."
+    },
+    "why": {
+      "rationale": "Customer use needs attributable, portable views and truthful boundaries beyond repository-local demonstration."
+    },
+    "who": {
+      "stakeholders": [
+        "Customer model authors and readers",
+        "Product maintainers and reviewers"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "When generating, reading or qualifying the selected architecture browser capability."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "One selected customer project/state and explicitly selected output; declared product generation and reading environments."
+      ]
+    },
+    "how": {
+      "approach": "Assess the stated observable outcomes against explicit supported profiles, selected source identity and actual artifacts; preserve ownership and diagnose unavailable or incomplete results."
+    },
+    "how_much": {
+      "scope": "Read-only local generation and portable snapshot reading. No live editor, hosted-service requirement, cross-project aggregation, automatic publication or invented performance target. Detailed realization and platform support are downstream design decisions."
+    }
+  },
+  "acceptance_criteria": [
+    "A minimal supported customer model using its own entity IDs can produce Logical, Process, Development, Physical and Scenario entry points without RigorLoop-specific records, contribution tables or local operational history.",
+    "The result identifies selected project, declared profile, input content identity, generator version and generation scope. A Git revision alone does not identify changed working-tree content.",
+    "Missing, ambiguous or unsupported profile selection yields a specific diagnostic without silently applying another profile; invalid required content prevents publication of a successful snapshot.",
+    "If input changes during collection, either use a demonstrably coherent captured selection or report failure; never combine different states under one unqualified identity.",
+    "An absent optional view fact remains an explicit absence or limitation rather than making the supported minimal model invalid."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "confirms": [
+    "FUNC-079",
+    "FUNC-012",
+    "FUNC-013",
+    "FUNC-080",
+    "FUNC-081"
+  ],
+  "constrains": [
+    "FEAT-022"
+  ],
+  "sources": [
+    {
+      "source": "SRC-CUSTOMER-BROWSER-REQUIREMENTS",
+      "locator": "SR-084",
+      "basis": "User-requested reusable customer architecture browser; requirement-level author analysis. Current records remain draft; no implemented, published or independently approved behavior is claimed."
+    },
+    {
+      "source": "SRC-CUSTOMER-BROWSER-DESIGN",
+      "locator": "SR-084",
+      "basis": "System and Architecture Design from SR-084\u2013088 and refined SR-060; proposed responsibility, contract and realization only. No implementation, platform qualification or product availability is established."
+    }
+  ]
+}

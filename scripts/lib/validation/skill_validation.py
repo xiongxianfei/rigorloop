@@ -26,8 +26,8 @@ SKILL_SCHEMA_PATH = ROOT / "schemas" / "skill.schema.json"
 REQUIREMENT_DELIVERY_MODEL_SOURCE = ROOT / "templates" / "shared" / "requirement-to-delivery-model.md"
 REQUIREMENT_DELIVERY_MODEL_CONSUMERS = frozenset(
     {
-        "proposal",
-        "proposal-review",
+        "requirement-analysis",
+        "requirement-review",
         "design-review",
         "plan",
         "delivery-review",
@@ -40,12 +40,11 @@ DISCOVERY_SUPPORT_SOURCE = ROOT / "templates" / "shared" / "discovery-support.md
 DISCOVERY_SUPPORT_CONSUMERS = frozenset({"explore", "research"})
 DISCOVERY_SUPPORT_TARGET = Path("references/discovery-support.md")
 
-REVIEW_CLOSEOUT_CONSUMERS = frozenset({"proposal-review", "design-review", "delivery-review", "code-review", "plan", "route", "verify", "pr", "implement", "ci-maintenance"})
-REVIEW_ASSESSMENT_CONSUMERS = frozenset({"proposal-review", "design-review", "delivery-review", "code-review"})
+REVIEW_CLOSEOUT_CONSUMERS = frozenset({"requirement-review", "design-review", "delivery-review", "code-review", "plan", "route", "verify", "pr", "implement", "ci-maintenance"})
+REVIEW_ASSESSMENT_CONSUMERS = frozenset({"requirement-review", "design-review", "delivery-review", "code-review"})
 
 
-TEST_QUALITY_CONSUMERS = frozenset(['design', 'bugfix', 'ci-maintenance', 'code-review', 'delivery-review', 'design-review', 'implement', 'plan', 'route', 'verify'])
-DESIGN_RESOURCES = frozenset(['references/architecture-view-examples.md', 'assets/design-skeleton.md', 'assets/diagram-styles.mmd', 'references/boundary-first-method-v1.md', 'references/governed-design-authoring.md', 'references/legacy-source-reconciliation.md', 'references/model-authoring.md', 'references/system-composition.md', 'references/technical-design.md', 'references/test-quality.md'])
+TEST_QUALITY_CONSUMERS = frozenset(['system-design', 'architecture-design', 'bugfix', 'ci-maintenance', 'code-review', 'delivery-review', 'design-review', 'implement', 'plan', 'route', 'verify'])
 
 TEST_MAINTENANCE_CONSUMERS = frozenset(['bugfix', 'ci-maintenance', 'code-review', 'delivery-review', 'implement', 'plan', 'route', 'verify'])
 
@@ -219,12 +218,12 @@ PACKAGED_NON_ASSET_RESOURCE_ALLOWLIST = {
     ("code-review", "references/governed-code-review-recording.md"),
     ("code-review", "references/workflow-managed-automated-review.md"),
     ("code-review", "references/requirement-to-delivery-model.md"),
-    ("proposal", "references/governed-proposal-authoring.md"),
-    ("proposal", "references/requirement-to-delivery-model.md"),
-    ("proposal", "references/strategic-and-scope-gates.md"),
-    ("proposal-review", "references/proposal-review-recording-and-settlement.md"),
-    ("proposal-review", "references/conditional-proposal-gates.md"),
-    ("proposal-review", "references/requirement-to-delivery-model.md"),
+    ("requirement-analysis", "references/governed-proposal-authoring.md"),
+    ("requirement-analysis", "references/requirement-to-delivery-model.md"),
+    ("requirement-analysis", "references/strategic-and-scope-gates.md"),
+    ("requirement-review", "references/proposal-review-recording-and-settlement.md"),
+    ("requirement-review", "references/conditional-proposal-gates.md"),
+    ("requirement-review", "references/requirement-to-delivery-model.md"),
 }
 
 
@@ -364,19 +363,6 @@ PUBLISHED_ALLOWED_PROJECT_LOCAL_TERMS = [
     "direct target",
     "packaged",
 ]
-PLAN_ASSET_PILOT_APPROVED_ASSETS = {
-    "assets/plan-skeleton.md",
-    "assets/milestone.md",
-    "assets/decision-log-row.md",
-}
-PLAN_ASSET_REQUIRED_METADATA_FIELDS = {
-    "Template",
-    "Skill",
-    "Template status",
-    "Structural-fingerprint",
-    "Maintained alongside",
-}
-PLAN_ASSET_TEMPLATE_STATUS_VALUES = {"normative", "optional", "example", "deprecated"}
 PLAN_ASSET_PLACEHOLDER_PATTERN = re.compile(r"<[^>\n]+>|\[FILL IN\]")
 PLAN_ASSET_FIELDS_TO_FILL_PATTERN = re.compile(r"\b(?:Fill|Fields|Structures):", re.IGNORECASE)
 PLAN_ASSET_METADATA_PATTERN = re.compile(r"^<!--\s*(?P<key>[^:]+):\s*(?P<value>.*?)\s*-->$")
@@ -452,70 +438,11 @@ PROPOSAL_FAMILY_ASSET_APPROVED_ASSETS = {
     "proposal": {
         "assets/proposal-skeleton.md",
     },
-    "proposal-review": {
+    "requirement-review": {
         "assets/review-result-skeleton.md",
         "assets/material-finding.md",
     },
 }
-PROPOSAL_REVIEW_ASSET_ALLOWED_FIELD_LABELS = {
-    "skill",
-    "review-status",
-    "vision-alignment",
-    "material-findings",
-    "recording-status",
-    "recording-blocker",
-    "review-record",
-    "review-log",
-    "review-resolution",
-    "open-blockers",
-    "immediate-next-stage",
-    "proposal-readiness",
-    "automatic-downstream-handoff",
-    "claim-limitations",
-    "review-dimensions",
-    "scope-preservation-result",
-    "recommended-edits",
-    "recommendation",
-    "active-gate-predicates",
-    "gate-outcomes",
-    "trigger-ambiguity",
-    "record-path",
-    "finding-record-paths",
-    "review-id",
-    "proposal-settlement",
-    "governed-change-identity",
-    "formal-next-stage-eligibility",
-    "packet-identity",
-    "phase-receipt-identity",
-    "independence-result",
-    "correction-eligibility",
-    "correction-cycle-state",
-    "promotion-or-pause-result",
-    "rereview-requirement",
-    "finding-id",
-    "severity",
-    "location",
-    "evidence",
-    "required-outcome",
-    "safe-resolution-path",
-    "needs-decision-rationale",
-}
-PROPOSAL_REVIEW_ASSET_FORBIDDEN_POLICY_PATTERN = re.compile(
-    r"\b(?:must|should|severity[- ]policy|material[- ]finding sufficiency|"
-    r"safe[- ]resolution decision rule|recording[- ]status rules?|"
-    r"scope[- ]preservation rules?|scope[- ]budget review|vision fit review|"
-    r"standing artifact gate review|review dimension guidance|"
-    r"review[- ]dimension definitions?|security|privacy|rollout examples?)\b",
-    re.IGNORECASE,
-)
-PROPOSAL_REVIEW_ASSET_FORBIDDEN_LABEL_PATTERN = re.compile(
-    r"\b(?:severity[- ]policy|material[- ]finding[- ]sufficiency|"
-    r"safe[- ]resolution[- ]decision[- ]rule|recording[- ]status[- ]rules?|"
-    r"scope[- ]preservation[- ]rules?|scope[- ]budget[- ]review|"
-    r"vision[- ]fit[- ]review|standing[- ]artifact[- ]gate[- ]review|"
-    r"review[- ]dimension[- ]guidance)\b",
-    re.IGNORECASE,
-)
 CI_MAINTENANCE_SKILL_NAME = "ci-maintenance"
 CI_ASSEMBLY_NAMES = (
     "CIM0-narrow-review", "CIM1-coverage-review",
@@ -529,7 +456,7 @@ CI_MAINTENANCE_RISK_MAP = "references/risk-to-check-map.md"
 CI_MAINTENANCE_AUTHORING_REFERENCE = "references/github-workflow-authoring.md"
 REVIEW_FAMILY_FIRST_SLICE_SKILLS = {
     "code-review",
-    "proposal-review",
+    "requirement-review",
 }
 REVIEW_FAMILY_ASSET_APPROVED_ASSETS = {
     skill_name: {
@@ -550,25 +477,10 @@ REVIEW_FAMILY_MATERIAL_FINDING_ALLOWED_LABELS = {
     *REVIEW_FAMILY_PARSER_FIELD_LABELS,
     "needs-decision rationale",
 }
-REVIEW_FAMILY_ASSET_FORBIDDEN_POLICY_PATTERN = re.compile(
-    r"\b(?:must|should|review[- ]dimension definitions?|review[- ]dimension guidance|"
-    r"severity[- ]policy|review[- ]status[- ]policy|material[- ]finding[- ]sufficiency|"
-    r"safe[- ]resolution[- ]decision(?:[- ]rule)?|recording[- ]status[- ]rules?|"
-    r"isolation[- ]rules?|scope[- ]preservation[- ]rules?|vision[- ]fit[- ]review|"
-    r"standing[- ]artifact[- ]gate[- ]review|workflow[- ]handoff|"
-    r"lifecycle[- ]boundary)\b",
-    re.IGNORECASE,
-)
 ASSET_ROLLOUT_APPROVED_ASSETS = {
     **PROPOSAL_FAMILY_ASSET_APPROVED_ASSETS,
     **REVIEW_FAMILY_ASSET_APPROVED_ASSETS,
 }
-INSTALLED_SKILL_PLACEMENT_REVIEW_PATHS = {'proposal-review': 'docs/changes/<change-id>/reviews/proposal-review-r<n>.md'}
-INSTALLED_SKILL_PLACEMENT_REVIEW_RECORD_TYPES = {'proposal-review': {'record_type_terms': ('proposal-review record', 'proposal-review records'), 'forbidden_record_type_terms': ('spec-review record', 'spec-review records')}}
-INSTALLED_SKILL_PLACEMENT_REVIEW_LOG_PATH = "docs/changes/<change-id>/review-log.md"
-INSTALLED_SKILL_PLACEMENT_REVIEW_RESOLUTION_PATH = (
-    "docs/changes/<change-id>/review-resolution.md"
-)
 
 
 
@@ -583,13 +495,6 @@ INSTALLED_SKILL_PLACEMENT_REVIEW_RESOLUTION_PATH = (
 
 
 
-INSTALLED_SKILL_PLAN_SURFACE_PATHS = (
-    "docs/plan.md",
-    "docs/plans/YYYY-MM-DD-slug.md",
-    "docs/changes/<change-id>/change.yaml",
-    "docs/changes/<change-id>/",
-)
-INSTALLED_SKILL_PLAN_INDEX_LINK_EXAMPLE = "[Title](plans/YYYY-MM-DD-slug.md)"
 
 
 @dataclass(frozen=True)
@@ -792,160 +697,16 @@ def _normalized_prose(text: str) -> str:
     return re.sub(r"\s+", " ", text).strip().lower()
 
 
-def _has_create_or_request_change_pack_behavior(text: str) -> bool:
-    normalized = _normalized_prose(text)
-    has_create_or_request = (
-        "create or request" in normalized
-        or "create or require" in normalized
-        or "create or block" in normalized
-    )
-    return (
-        "change pack" in normalized
-        and has_create_or_request
-        and "recording status:" in normalized
-        and "recorded" in normalized
-    )
 
 
-def _has_conditional_review_resolution_behavior(text: str) -> bool:
-    normalized = _normalized_prose(text)
-    if INSTALLED_SKILL_PLACEMENT_REVIEW_RESOLUTION_PATH not in text:
-        return False
-    conditional_terms = (
-        "only when",
-        "when material",
-        "when findings",
-        "when blocking",
-        "conditional",
-        "if material",
-    )
-    return any(term in normalized for term in conditional_terms)
 
 
-def _has_isolated_advisory_carveout(text: str) -> bool:
-    normalized = _normalized_prose(text)
-    return (
-        "isolated advisory" in normalized
-        and (
-            "do not create lifecycle artifacts" in normalized
-            or "without lifecycle artifacts" in normalized
-            or "no formal recording" in normalized
-            or "no lifecycle artifacts" in normalized
-        )
-    )
 
 
-def _validate_stage_owned_review_record_type(
-    *,
-    path: Path,
-    skill_name: str,
-    text: str,
-    errors: list[str],
-) -> None:
-    config = INSTALLED_SKILL_PLACEMENT_REVIEW_RECORD_TYPES.get(skill_name)
-    if config is None:
-        return
-
-    normalized = _normalized_prose(text)
-    expected_terms = config["record_type_terms"]
-    forbidden_terms = config["forbidden_record_type_terms"]
-
-    if not any(term in normalized for term in expected_terms):
-        errors.append(
-            f"{path}: installed-skill placement contract must state the stage-owned record type {skill_name} record(s)"
-        )
-    for forbidden in forbidden_terms:
-        if forbidden in normalized:
-            errors.append(
-                f"{path}: installed-skill placement contract names the wrong stage-owned record type {forbidden}"
-            )
 
 
-def validate_installed_skill_artifact_placement_contract(
-    path: Path,
-    skill_name: str,
-    body: str,
-) -> list[str]:
-    """Validate first-slice installed-skill placement contract wording.
-
-    M1 exposed this as a fixture-backed helper. M2 connects it to canonical
-    first-slice skill validation after updating the public skill text.
-    """
-    errors: list[str] = []
-    review_path = INSTALLED_SKILL_PLACEMENT_REVIEW_PATHS.get(skill_name)
-    if review_path is None:
-        return errors
-
-    # Current v3 recording uses its registry; legacy Markdown document fixtures
-    # below remain an independent placement grammar, never a stored-root reader.
-    if (skill_name == "proposal-review" and "## Recording boundary" in body) or ("## Explicit recording" in body and "rigorloop-records-v3" in body):
-        placement = _extract_markdown_section(body, "Artifact placement") or ""
-        current_path = f"docs/changes/<change-id>/reviews/{skill_name}.json"
-        if current_path not in placement or "review record" not in placement:
-            errors.append(f"{path}: current review placement requires its v3 path and review record command")
-        if not _has_isolated_advisory_carveout(placement):
-            errors.append(f"{path}: current review placement must preserve isolated advisory review")
-        return errors
-
-    placement_source = body
-
-    placement = _extract_markdown_section(placement_source, "Artifact placement")
-    if placement is None:
-        errors.append(
-            f"{path}: installed-skill placement contract must include an Artifact placement section"
-        )
-        placement = body
-
-    _validate_stage_owned_review_record_type(
-        path=path,
-        skill_name=skill_name,
-        text=placement,
-        errors=errors,
-    )
-    if review_path not in placement:
-        errors.append(
-            f"{path}: installed-skill placement contract missing default formal review record path {review_path}"
-        )
-    if INSTALLED_SKILL_PLACEMENT_REVIEW_LOG_PATH not in placement:
-        errors.append(
-            f"{path}: installed-skill placement contract missing review-log path {INSTALLED_SKILL_PLACEMENT_REVIEW_LOG_PATH}"
-        )
-    if not _has_conditional_review_resolution_behavior(placement):
-        errors.append(
-            f"{path}: installed-skill placement contract must describe {INSTALLED_SKILL_PLACEMENT_REVIEW_RESOLUTION_PATH} as conditional"
-        )
-    if not _has_create_or_request_change_pack_behavior(placement):
-        errors.append(
-            f"{path}: installed-skill placement contract must state create-or-request change-pack behavior before claiming Recording status: recorded"
-        )
-    if not _has_isolated_advisory_carveout(placement):
-        errors.append(
-            f"{path}: installed-skill placement contract must preserve isolated advisory review without lifecycle artifacts"
-        )
-    return errors
 
 
-def validate_installed_skill_plan_surface_contract(
-    path: Path,
-    skill_name: str,
-    body: str,
-) -> list[str]:
-    """Validate first-slice plan-surface disambiguation fixture wording."""
-    if skill_name not in {"plan", "plan-review", "implement", "verify"}:
-        return []
-    errors: list[str] = []
-    missing = [
-        surface for surface in (tuple(p.replace("change.yaml", "change.json") for p in INSTALLED_SKILL_PLAN_SURFACE_PATHS) if ("## Explicit recording" in body or (skill_name in {"implement", "plan"} and "## Recording boundary" in body)) else INSTALLED_SKILL_PLAN_SURFACE_PATHS) if surface not in body
-    ]
-    if missing:
-        errors.append(
-            f"{path}: installed-skill plan surface contract must distinguish docs/plan.md, docs/plans/YYYY-MM-DD-slug.md, docs/changes/<change-id>/change.yaml, and docs/changes/<change-id>/"
-        )
-    if skill_name == "plan" and INSTALLED_SKILL_PLAN_INDEX_LINK_EXAMPLE not in body:
-        errors.append(
-            f"{path}: installed-skill plan surface contract must tell plan authors to use clickable relative Markdown links like {INSTALLED_SKILL_PLAN_INDEX_LINK_EXAMPLE} in docs/plan.md"
-        )
-    return errors
 
 
 def _parse_colon_fields(section: str) -> dict[str, str]:
@@ -1248,133 +1009,8 @@ def _asset_body_without_metadata(text: str) -> str:
     return "\n".join(lines)
 
 
-def _validate_plan_asset_file(path: Path, relative_resource: str, text: str) -> list[str]:
-    errors: list[str] = []
-    metadata = _asset_metadata(text)
-
-    missing = sorted(PLAN_ASSET_REQUIRED_METADATA_FIELDS - metadata.keys())
-    for field in missing:
-        errors.append(f"{path}: asset metadata missing required field '{field}'")
-
-    if missing:
-        return errors
-
-    if metadata["Skill"] != "plan":
-        errors.append(
-            f"{path}: plan asset pilot asset '{relative_resource}' must declare Skill: plan"
-        )
-
-    status = metadata["Template status"]
-    if status not in PLAN_ASSET_TEMPLATE_STATUS_VALUES:
-        allowed = ", ".join(sorted(PLAN_ASSET_TEMPLATE_STATUS_VALUES))
-        errors.append(f"{path}: asset metadata Template status must be one of {allowed}")
-    if status != "normative":
-        errors.append(
-            f"{path}: plan asset pilot asset '{relative_resource}' must use normative status"
-        )
-
-    maintained_alongside = metadata["Maintained alongside"]
-    if maintained_alongside != "skills/plan/SKILL.md":
-        errors.append(
-            f"{path}: plan asset pilot asset '{relative_resource}' must be maintained alongside skills/plan/SKILL.md"
-        )
-
-    fingerprint = metadata["Structural-fingerprint"]
-    expected_fingerprint = _asset_structural_fingerprint(text)
-    if fingerprint != expected_fingerprint:
-        errors.append(
-            f"{path}: asset '{relative_resource}' structural fingerprint mismatch: expected {expected_fingerprint}"
-        )
-
-    if not PLAN_ASSET_PLACEHOLDER_PATTERN.search(_asset_body_without_metadata(text)):
-        errors.append(
-            f"{path}: asset '{relative_resource}' must include a visible placeholder"
-        )
-
-    for line_number, line in enumerate(_iter_lines_outside_fences(text), start=1):
-        if not PUBLISHED_INTERNAL_PATH_PATTERN.search(line):
-            continue
-        context = _required_repository_dependency_context(line)
-        if context is None:
-            continue
-        match = PUBLISHED_INTERNAL_PATH_REFERENCE_PATTERN.search(line)
-        dependency = match.group("path") if match else line.strip()
-        errors.append(
-            f"{path}:{line_number}: asset '{relative_resource}' must not require repository-root dependency: {dependency}"
-        )
-
-    return errors
 
 
-def _validate_plan_asset_pilot(path: Path, body: str, skill_name: str | None) -> list[str]:
-    skill_dir = path.parent
-    asset_dir = skill_dir / "assets"
-    if not asset_dir.is_dir():
-        return []
-    if skill_name != "plan":
-        return []
-
-    errors: list[str] = []
-    assets = [
-        asset
-        for asset in sorted(asset_dir.rglob("*"))
-        if asset.is_file() and asset.name != ".gitkeep"
-    ]
-    relative_assets = {asset.relative_to(skill_dir).as_posix() for asset in assets}
-    if relative_assets != PLAN_ASSET_PILOT_APPROVED_ASSETS:
-        expected = ", ".join(sorted(PLAN_ASSET_PILOT_APPROVED_ASSETS))
-        actual = ", ".join(sorted(relative_assets)) or "none"
-        errors.append(
-            f"{path}: plan asset pilot must ship exactly approved assets: expected {expected}; found {actual}"
-        )
-
-    section = _extract_markdown_section(body, "Resource map")
-    if section is None:
-        return errors
-
-    for relative_resource in sorted(relative_assets & PLAN_ASSET_PILOT_APPROVED_ASSETS):
-        entry = _resource_entry_text(section, relative_resource)
-        if entry is None:
-            continue
-        expected_prefix = f"- COPY `{relative_resource}`"
-        if not entry.startswith(expected_prefix):
-            errors.append(
-                f"{path}: Resource map entry for '{relative_resource}' must use literal COPY"
-            )
-        if not RESOURCE_LOAD_CONDITION_PATTERN.search(entry):
-            errors.append(
-                f"{path}: Resource map entry for '{relative_resource}' must include a trigger condition"
-            )
-        if not PLAN_ASSET_FIELDS_TO_FILL_PATTERN.search(entry):
-            errors.append(
-                f"{path}: Resource map entry for '{relative_resource}' must name fields or structures to fill"
-            )
-    if "Do not emit unfilled placeholders" not in section:
-        errors.append(
-            f"{path}: Resource map must instruct agents not to emit unfilled placeholders"
-        )
-
-    for asset in assets:
-        relative_resource = asset.relative_to(skill_dir).as_posix()
-        if relative_resource not in PLAN_ASSET_PILOT_APPROVED_ASSETS:
-            continue
-        text = asset.read_text(encoding="utf-8")
-        errors.extend(_validate_plan_asset_file(asset, relative_resource, text))
-
-    skeleton = asset_dir / "plan-skeleton.md"
-    if skeleton.is_file():
-        skeleton_entry = _resource_entry_text(section, "assets/plan-skeleton.md")
-        if skeleton_entry is not None:
-            expected_sections = _expected_sections_from_resource_entry(skeleton_entry)
-            actual_sections = _markdown_h2_sections(
-                skeleton.read_text(encoding="utf-8")
-            )
-            if expected_sections and set(expected_sections) != set(actual_sections):
-                errors.append(
-                    f"{path}: plan-skeleton section set does not match SKILL.md expected sections"
-                )
-
-    return errors
 
 
 def validate_project_map_contract_fixture(
@@ -1531,79 +1167,10 @@ def validate_project_map_canonical_contract(
 
 
 
-def _proposal_review_asset_policy_errors(
-    path: Path,
-    relative_resource: str,
-    asset_body: str,
-) -> list[str]:
-    errors: list[str] = []
-    review_policy_lines: list[str] = []
-    for line in asset_body.splitlines():
-        if not line.strip() or line.lstrip().startswith("#"):
-            continue
-        field_label_match = ASSET_FIELD_LABEL_PATTERN.match(line)
-        if PROPOSAL_REVIEW_ASSET_FORBIDDEN_POLICY_PATTERN.search(line):
-            review_policy_lines.append(line)
-            continue
-        if field_label_match is not None:
-            label = field_label_match.group("label")
-            normalized_label = _normalized_asset_label(label)
-            if PROPOSAL_REVIEW_ASSET_FORBIDDEN_LABEL_PATTERN.search(
-                line
-            ) or PROPOSAL_REVIEW_ASSET_FORBIDDEN_LABEL_PATTERN.search(normalized_label):
-                review_policy_lines.append(line)
-                continue
-            if normalized_label not in PROPOSAL_REVIEW_ASSET_ALLOWED_FIELD_LABELS:
-                errors.append(
-                    f"{path}: proposal-review asset '{relative_resource}' field label is not in the approved "
-                    f"structural-label allowlist: {label}"
-                )
-                continue
-            continue
-        review_policy_lines.append(line)
-
-    if PROPOSAL_REVIEW_ASSET_FORBIDDEN_POLICY_PATTERN.search("\n".join(review_policy_lines)):
-        errors.append(
-            f"{path}: proposal-review asset '{relative_resource}' must not contain review-policy labels or guidance"
-        )
-
-    return errors
 
 
-def _proposal_review_asset_baseline_errors(
-    path: Path,
-    relative_resource: str,
-    asset_body: str,
-) -> list[str]:
-    errors: list[str] = []
-    if relative_resource != "assets/review-result-skeleton.md":
-        return errors
-
-    if not re.search(r"(?m)^## Result$", asset_body):
-        errors.append(
-            f"{path}: proposal-review review-result-skeleton must include baseline heading: ## Result"
-        )
-
-    if not re.search(r"(?m)^- Skill:\s*proposal-review$", asset_body):
-        errors.append(
-            f"{path}: proposal-review review-result-skeleton must include baseline field: Skill"
-        )
-
-    return errors
 
 
-def _review_family_should_validate(
-    skill_name: str | None,
-    relative_assets: set[str],
-    resource_map: str | None,
-) -> bool:
-    if skill_name not in REVIEW_FAMILY_FIRST_SLICE_SKILLS:
-        return False
-    if "assets/material-finding.md" not in relative_assets:
-        return False
-    if skill_name == "code-review":
-        return True
-    return bool(resource_map and "Finding ID:" in resource_map)
 
 
 def _asset_field_labels(asset_body: str) -> list[str]:
@@ -1627,234 +1194,10 @@ def _review_family_material_finding_field_block(asset_body: str) -> str:
     return "\n".join(block_lines)
 
 
-def _validate_review_family_asset_file(
-    path: Path,
-    relative_resource: str,
-    skill_name: str,
-    text: str,
-) -> list[str]:
-    errors: list[str] = []
-    metadata = _asset_metadata(text)
-
-    missing = sorted(SHARED_ASSET_REQUIRED_METADATA_FIELDS - metadata.keys())
-    for field in missing:
-        errors.append(f"{path}: asset metadata missing required field '{field}'")
-
-    if missing:
-        return errors
-
-    if metadata["Skill"] != skill_name:
-        errors.append(
-            f"{path}: review-family asset '{relative_resource}' must declare Skill: {skill_name}"
-        )
-
-    if metadata["Template status"] != "normative":
-        errors.append(
-            f"{path}: review-family asset '{relative_resource}' Template status must be normative"
-        )
-
-    maintained_alongside = metadata["Maintained alongside"]
-    expected_maintained_alongside = f"skills/{skill_name}/SKILL.md"
-    if maintained_alongside != expected_maintained_alongside:
-        errors.append(
-            f"{path}: review-family asset '{relative_resource}' must be maintained alongside {expected_maintained_alongside}"
-        )
-
-    asset_body = _asset_body_without_metadata(text)
-    if not SHARED_ASSET_PLACEHOLDER_PATTERN.search(asset_body):
-        errors.append(
-            f"{path}: asset '{relative_resource}' must include a visible placeholder"
-        )
-
-    if SHARED_ASSET_FILLER_PATTERN.search(asset_body):
-        errors.append(
-            f"{path}: asset '{relative_resource}' must not use filler placeholder text"
-        )
-
-    if REVIEW_FAMILY_ASSET_FORBIDDEN_POLICY_PATTERN.search(asset_body):
-        errors.append(
-            f"{path}: review-family asset '{relative_resource}' must not contain review-policy labels or guidance"
-        )
-
-    if relative_resource != "assets/material-finding.md":
-        return errors
-
-    labels = _asset_field_labels(asset_body)
-    for label in REVIEW_FAMILY_PARSER_FIELD_LABELS:
-        if label not in labels:
-            errors.append(
-                f"{path}: review-family material-finding must include parser-owned label '{label}:'"
-            )
-
-    extra_labels = [
-        label
-        for label in labels
-        if label not in REVIEW_FAMILY_MATERIAL_FINDING_ALLOWED_LABELS
-    ]
-    for label in extra_labels:
-        errors.append(
-            f"{path}: review-family material-finding label is not parser-owned: {label}"
-        )
-
-    return errors
 
 
-def _validate_review_family_asset_rollout(
-    path: Path,
-    body: str,
-    skill_name: str | None,
-) -> list[str]:
-    if skill_name not in REVIEW_FAMILY_FIRST_SLICE_SKILLS:
-        return []
-
-    skill_dir = path.parent
-    assets = [
-        asset
-        for asset in sorted((skill_dir / "assets").rglob("*"))
-        if asset.is_file() and asset.name != ".gitkeep"
-    ] if (skill_dir / "assets").is_dir() else []
-    relative_assets = {asset.relative_to(skill_dir).as_posix() for asset in assets}
-    section = _extract_markdown_section(body, "Resource map")
-    if not _review_family_should_validate(skill_name, relative_assets, section):
-        return []
-
-    errors: list[str] = []
-    resources = _resource_files(skill_dir)
-    unexpected_resource_classes = [
-        resource.relative_to(skill_dir).as_posix()
-        for resource in resources
-        if not resource.relative_to(skill_dir).as_posix().startswith("assets/")
-        and not _is_approved_packaged_non_asset_resource(
-            skill_name,
-            resource.relative_to(skill_dir).as_posix(),
-        )
-    ]
-    for relative_resource in unexpected_resource_classes:
-        errors.append(
-            f"{path}: review-family asset rollout must not ship packaged non-asset resource '{relative_resource}'"
-        )
-
-    approved_assets = REVIEW_FAMILY_ASSET_APPROVED_ASSETS[skill_name]
-    if relative_assets != approved_assets:
-        expected = ", ".join(sorted(approved_assets))
-        actual = ", ".join(sorted(relative_assets)) or "none"
-        errors.append(
-            f"{path}: review-family asset rollout must ship exactly approved assets: expected {expected}; found {actual}"
-        )
-
-    if section is None:
-        return errors
-
-    for relative_resource in sorted(relative_assets & approved_assets):
-        entry = _resource_entry_text(section, relative_resource)
-        if entry is None:
-            continue
-        expected_prefix = f"- COPY `{relative_resource}`"
-        if not entry.startswith(expected_prefix):
-            errors.append(
-                f"{path}: Resource map entry for '{relative_resource}' must use literal COPY"
-            )
-        if not RESOURCE_LOAD_CONDITION_PATTERN.search(entry):
-            errors.append(
-                f"{path}: Resource map entry for '{relative_resource}' must include a trigger condition"
-            )
-        if not PLAN_ASSET_FIELDS_TO_FILL_PATTERN.search(entry):
-            errors.append(
-                f"{path}: Resource map entry for '{relative_resource}' must name fields or structures to fill"
-            )
-        if "Do not emit unfilled placeholders" not in entry:
-            errors.append(
-                f"{path}: Resource map entry for '{relative_resource}' must instruct agents not to emit unfilled placeholders"
-            )
-        if (
-            relative_resource == "assets/material-finding.md"
-            and "Finding ID:" not in entry
-        ):
-            errors.append(
-                f"{path}: Resource map entry for '{relative_resource}' must instruct agents to confirm the literal Finding ID line before linking"
-            )
-
-    for asset in assets:
-        relative_resource = asset.relative_to(skill_dir).as_posix()
-        if relative_resource not in approved_assets:
-            continue
-        text = asset.read_text(encoding="utf-8")
-        errors.extend(
-            _validate_review_family_asset_file(asset, relative_resource, skill_name, text)
-        )
-
-    return errors
 
 
-def _validate_proposal_family_asset_file(
-    path: Path,
-    relative_resource: str,
-    skill_name: str,
-    text: str,
-) -> list[str]:
-    errors: list[str] = []
-    metadata = _asset_metadata(text)
-
-    missing = sorted(SHARED_ASSET_REQUIRED_METADATA_FIELDS - metadata.keys())
-    for field in missing:
-        errors.append(f"{path}: asset metadata missing required field '{field}'")
-
-    if missing:
-        return errors
-
-    if metadata["Skill"] != skill_name:
-        errors.append(
-            f"{path}: proposal-family asset '{relative_resource}' must declare Skill: {skill_name}"
-        )
-
-    status = metadata["Template status"]
-    if status not in SHARED_ASSET_TEMPLATE_STATUS_VALUES:
-        allowed = ", ".join(sorted(SHARED_ASSET_TEMPLATE_STATUS_VALUES))
-        errors.append(
-            f"{path}: proposal-family asset '{relative_resource}' Template status must be one of {allowed}"
-        )
-
-    maintained_alongside = metadata["Maintained alongside"]
-    expected_maintained_alongside = f"skills/{skill_name}/SKILL.md"
-    if maintained_alongside != expected_maintained_alongside:
-        errors.append(
-            f"{path}: proposal-family asset '{relative_resource}' must be maintained alongside {expected_maintained_alongside}"
-        )
-
-    asset_body = _asset_body_without_metadata(text)
-    if not SHARED_ASSET_PLACEHOLDER_PATTERN.search(asset_body):
-        errors.append(
-            f"{path}: asset '{relative_resource}' must include a visible placeholder"
-        )
-
-    if SHARED_ASSET_FILLER_PATTERN.search(asset_body):
-        errors.append(
-            f"{path}: asset '{relative_resource}' must not use filler placeholder text"
-        )
-
-    for line_number, line in enumerate(_iter_lines_outside_fences(text), start=1):
-        if not PUBLISHED_INTERNAL_PATH_PATTERN.search(line):
-            continue
-        context = _required_repository_dependency_context(line)
-        if context is None:
-            continue
-        match = PUBLISHED_INTERNAL_PATH_REFERENCE_PATTERN.search(line)
-        dependency = match.group("path") if match else line.strip()
-        errors.append(
-            f"{path}:{line_number}: asset '{relative_resource}' must not require repository-root dependency: {dependency}"
-        )
-
-    if skill_name == "proposal-review":
-        errors.extend(
-            _proposal_review_asset_baseline_errors(
-                path, relative_resource, asset_body
-            )
-        )
-        errors.extend(
-            _proposal_review_asset_policy_errors(path, relative_resource, asset_body)
-        )
-
-    return errors
 
 
 def mapped_asset_paths_for_skill(skill_dir: Path) -> list[str]:
@@ -1914,83 +1257,6 @@ def validate_generated_asset_presence(
 
 
 
-def _validate_proposal_family_asset_rollout(
-    path: Path,
-    body: str,
-    skill_name: str | None,
-) -> list[str]:
-    if skill_name not in PROPOSAL_FAMILY_ASSET_APPROVED_ASSETS:
-        return []
-
-    skill_dir = path.parent
-    resources = _resource_files(skill_dir)
-    if not resources:
-        return []
-
-    errors: list[str] = []
-    unexpected_resource_classes = [
-        resource.relative_to(skill_dir).as_posix()
-        for resource in resources
-        if not resource.relative_to(skill_dir).as_posix().startswith("assets/")
-        and not _is_approved_packaged_non_asset_resource(
-            skill_name, resource.relative_to(skill_dir).as_posix()
-        )
-    ]
-    for relative_resource in unexpected_resource_classes:
-        errors.append(
-            f"{path}: proposal-family asset rollout must not ship packaged non-asset resource '{relative_resource}'"
-        )
-
-    assets = [
-        asset
-        for asset in sorted((skill_dir / "assets").rglob("*"))
-        if asset.is_file() and asset.name != ".gitkeep"
-    ] if (skill_dir / "assets").is_dir() else []
-    relative_assets = {asset.relative_to(skill_dir).as_posix() for asset in assets}
-    approved_assets = PROPOSAL_FAMILY_ASSET_APPROVED_ASSETS[skill_name]
-    if relative_assets != approved_assets:
-        expected = ", ".join(sorted(approved_assets))
-        actual = ", ".join(sorted(relative_assets)) or "none"
-        errors.append(
-            f"{path}: proposal-family asset rollout must ship exactly approved assets: expected {expected}; found {actual}"
-        )
-
-    section = _extract_markdown_section(body, "Resource map")
-    if section is None:
-        return errors
-
-    for relative_resource in sorted(relative_assets & approved_assets):
-        entry = _resource_entry_text(section, relative_resource)
-        if entry is None:
-            continue
-        expected_prefix = f"- COPY `{relative_resource}`"
-        if not entry.startswith(expected_prefix):
-            errors.append(
-                f"{path}: Resource map entry for '{relative_resource}' must use literal COPY"
-            )
-        if not RESOURCE_LOAD_CONDITION_PATTERN.search(entry):
-            errors.append(
-                f"{path}: Resource map entry for '{relative_resource}' must include a trigger condition"
-            )
-        if not PLAN_ASSET_FIELDS_TO_FILL_PATTERN.search(entry):
-            errors.append(
-                f"{path}: Resource map entry for '{relative_resource}' must name fields or structures to fill"
-            )
-        if "Do not emit unfilled placeholders" not in entry:
-            errors.append(
-                f"{path}: Resource map entry for '{relative_resource}' must instruct agents not to emit unfilled placeholders"
-            )
-
-    for asset in assets:
-        relative_resource = asset.relative_to(skill_dir).as_posix()
-        if relative_resource not in approved_assets:
-            continue
-        text = asset.read_text(encoding="utf-8")
-        errors.extend(
-            _validate_proposal_family_asset_file(asset, relative_resource, skill_name, text)
-        )
-
-    return errors
 
 
 def _references_packaged_resource(line: str, skill_dir: Path) -> bool:
@@ -2513,68 +1779,8 @@ def validate_metadata_against_schema(metadata: dict[str, str], schema: dict, pat
     return errors
 
 
-RECORDING_REFERENCES = {
-    'route': 'references/governed-lifecycle-routing.md',
-    'verify': 'references/governed-verification-recording.md',
-    'pr': 'references/governed-pr-readiness.md',
-    'design-review': 'references/design-review-recording-and-settlement.md',
-    'delivery-review': 'references/delivery-review-recording-and-settlement.md',
-
-    "plan": "references/governed-plan-authoring.md",
-    "proposal": "references/governed-proposal-authoring.md",
-    "proposal-review": "references/proposal-review-recording-and-settlement.md",
-    "implement": "references/governed-implementation-recording.md",
-    "code-review": "references/governed-code-review-recording.md",
-}
 
 
-def validate_targeted_recording_profile(path: Path, body: str) -> list[str]:
-    """Check the selected primary interface, not semantic workflow eligibility."""
-    relative = RECORDING_REFERENCES.get(path.parent.name)
-    errors: list[str] = []
-    if relative is not None:
-        resource_map = _extract_markdown_section(body, "Resource map") or ""
-        if f"READ `{relative}`" not in resource_map:
-            errors.append(f"{path}: selected recording reference must be mapped: {relative}")
-        if "## Recording boundary" not in body:
-            errors.append(f"{path}: missing body recording boundary")
-        classification = _extract_markdown_section(body, "Invocation classification") or ""
-        trigger = {
-            'route': 'governed_change_context',
-            'verify': 'adopted recording authority',
-            'pr': 'PR1-governed',
-            'design-review': 'durable or formal review',
-            'delivery-review': 'durable or formal review',
-
-            "plan": "valid governed plan authority",
-            "proposal": "governed_proposal_candidate_context",
-            "proposal-review": "durable_recording_context",
-            "implement": "governed_recording_context",
-            "code-review": "governed_recording_context",
-        }[path.parent.name]
-        if trigger not in classification or trigger not in resource_map:
-            errors.append(f"{path}: selected recording reference requires its body classification and load trigger: {trigger}")
-        resource = path.parent / relative
-        try:
-            if not resource.resolve().is_relative_to(path.parent.resolve()):
-                return errors + [f"{path}: selected recording reference escapes skill root: {relative}"]
-            source = resource.read_text(encoding="utf-8")
-        except (OSError, UnicodeError, RuntimeError) as exc:
-            return errors + [f"{path}: selected recording reference unreadable: {relative}: {type(exc).__name__}"]
-        block = _extract_markdown_section(source, "Explicit recording")
-        if block is None:
-            return errors + [f"{path}: selected recording reference missing Explicit recording profile: {relative}"]
-    else:
-        block = _extract_markdown_section(body, "Explicit recording")
-        if block is None:
-            return []
-    required = ("rigorloop-records-v3", "record contract", "rigorloop context", "subject inspect",
-                "record_contract", "expected_revision", "targeted", "does not approve", "Do not migrate")
-    errors.extend(f"{path}: explicit recording profile missing primary contract token: {token}"
-                  for token in required if token not in block)
-    if "record-store check|record" in block or "explicit writes" in block:
-        errors.append(f"{path}: explicit recording profile retains a normal full-record writer")
-    return errors
 
 
 def validate_skill_file(path: Path, schema: dict) -> tuple[list[str], str | None]:
@@ -2609,37 +1815,9 @@ def validate_skill_file(path: Path, schema: dict) -> tuple[list[str], str | None
 
     errors.extend(_validate_published_description(path, metadata))
     errors.extend(_validate_resource_map(path, body))
-    if skill_name == "design":
-        actual = {p.relative_to(path.parent).as_posix() for p in path.parent.rglob("*") if p.is_file() and p != path}
-        for unknown in sorted(actual - DESIGN_RESOURCES):
-            errors.append(f"{path}: unknown design resource: {unknown}")
-        for missing in sorted(DESIGN_RESOURCES - actual):
-            errors.append(f"{path}: required design resource missing: {missing}")
     errors.extend(validate_ci_maintenance_contract(path, metadata, body))
-    errors.extend(validate_targeted_recording_profile(path, body))
     errors.extend(_validate_published_self_containment(path, metadata, body))
     errors.extend(validate_readability_contract(path, metadata, body))
-    errors.extend(
-        _validate_plan_asset_pilot(
-            path,
-            body,
-            name.strip() if isinstance(name, str) else None,
-        )
-    )
-    errors.extend(
-        _validate_proposal_family_asset_rollout(
-            path,
-            body,
-            name.strip() if isinstance(name, str) else None,
-        )
-    )
-    errors.extend(
-        _validate_review_family_asset_rollout(
-            path,
-            body,
-            name.strip() if isinstance(name, str) else None,
-        )
-    )
     errors.extend(validate_project_map_canonical_contract(path, metadata, body))
     if skill_name and _is_relative_to(path.resolve(), CANONICAL_SKILLS_DIR.resolve()):
         errors.extend(validate_requirement_delivery_model_copy(path, skill_name))
@@ -2652,21 +1830,6 @@ def validate_skill_file(path: Path, schema: dict) -> tuple[list[str], str | None
                 validate_discovery_support_copy(
                     path.parent / DISCOVERY_SUPPORT_TARGET,
                     skill_name,
-                )
-            )
-        errors.extend(
-            validate_installed_skill_artifact_placement_contract(
-                path,
-                skill_name,
-                body,
-            )
-        )
-        if skill_name == "plan":
-            errors.extend(
-                validate_installed_skill_plan_surface_contract(
-                    path,
-                    skill_name,
-                    body,
                 )
             )
     return errors, skill_name
@@ -2695,7 +1858,6 @@ def validate_skill_tree(target: Path, *, allow_generated: bool = False) -> Valid
     errors: list[str] = []
     owners: dict[str, Path] = {}
     checked_files: list[Path] = []
-    review_family_material_blocks: dict[str, str] = {}
 
     for directory in skill_dirs:
         path = directory if directory.is_file() else directory / "SKILL.md"
@@ -2718,32 +1880,12 @@ def validate_skill_tree(target: Path, *, allow_generated: bool = False) -> Valid
             ]
             name = None
         errors.extend(file_errors)
-        if (
-            name in REVIEW_FAMILY_FIRST_SLICE_SKILLS
-            and (path.parent / "assets" / "material-finding.md").is_file()
-        ):
-            material_finding_text = (path.parent / "assets" / "material-finding.md").read_text(
-                encoding="utf-8"
-            )
-            material_finding_body = _asset_body_without_metadata(material_finding_text)
-            review_family_material_blocks[name] = (
-                _review_family_material_finding_field_block(material_finding_body)
-            )
         if not name:
             continue
         if name in owners:
             errors.append(f"duplicate skill name: {name} in {owners[name]} and {path}")
             continue
         owners[name] = path
-
-    if len(review_family_material_blocks) > 1:
-        unique_blocks = set(review_family_material_blocks.values())
-        if len(unique_blocks) > 1:
-            skills = ", ".join(sorted(review_family_material_blocks))
-            errors.append(
-                "review-family material-finding parser-owned field block must be byte-identical "
-                f"across first-slice review skills: {skills}"
-            )
 
     canonical_root = CANONICAL_SKILLS_DIR.resolve()
     if (

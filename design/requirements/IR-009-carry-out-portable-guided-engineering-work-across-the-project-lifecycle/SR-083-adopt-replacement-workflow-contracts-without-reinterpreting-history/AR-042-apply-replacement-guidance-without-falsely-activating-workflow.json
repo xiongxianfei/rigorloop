@@ -1,0 +1,60 @@
+{
+  "id": "AR-042",
+  "type": "allocated-requirement",
+  "title": "Apply replacement guidance without falsely activating workflow",
+  "status": "draft",
+  "statement": "The Skill installation Module shall apply replacement guidance without falsely activating workflow within its accountable boundary so that SR-083 can be satisfied without transferring another owner's decisions or state authority.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "The SR-083 obligation crosses guidance, governance or publication boundaries; an unowned contribution can make a locally valid step appear sufficient for the whole workflow.",
+      "desired_outcome": "Apply only explicitly selected supported installation units, preserving unrelated files and reporting actual per-unit effects."
+    },
+    "why": {
+      "rationale": "MOD-014 owns the behavior or state needed for this contribution; separating it preserves one accountable owner while allowing the parent SR to compose several contributors."
+    },
+    "who": {
+      "stakeholders": [
+        "Participants relying on Skill installation",
+        "Authors, reviewers and project decision owners"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "When the selected requirement-first workflow exercises SR-083 or reassesses its affected basis."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "The MOD-014 responsibility boundary and its declared logical Interfaces."
+      ]
+    },
+    "how": {
+      "approach": "Apply the allocated criteria through the constrained Functions and explicit contract inputs/outcomes; preserve actual actor decisions, subject identity and known limitations."
+    },
+    "how_much": {
+      "scope": "This allocated contribution to SR-083; other contributors, independent assessment, physical recording implementation and product activation remain distinct."
+    }
+  },
+  "acceptance_criteria": [
+    "Apply only explicitly selected supported installation units, preserving unrelated files and reporting actual per-unit effects.",
+    "An incomplete or conflicting replacement cannot establish workflow activation; report installed identities for the separate adoption decision rather than claiming atomic project rollback."
+  ],
+  "assumptions": [
+    "The selected project contract, scope and required counterpart contributions are identifiable; absence is reported rather than inferred."
+  ],
+  "constraints": [
+    "This draft allocation neither activates replacement runtime contracts nor proves implementation or satisfaction."
+  ],
+  "allocated_to": "MOD-014",
+  "constrains": [
+    "FUNC-064"
+  ],
+  "sources": [
+    {
+      "source": "SRC-WORKFLOW-DESIGN",
+      "locator": "SR-083; AR-042",
+      "basis": "Draft integrated design from the accepted requirement-first basis. This defines target responsibility and cooperation, not installed capability, design approval, runtime evidence or SQLite adoption."
+    }
+  ]
+}

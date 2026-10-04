@@ -3,12 +3,12 @@
   "type": "system-requirement",
   "title": "Publish record updates with fresh basis and coherent durable outcomes",
   "status": "draft",
-  "statement": "The system shall publish structurally valid explicit record replacements as one coherent durable transaction after checking expected revision, target identities, and declared decision-basis identities under writer exclusion, with contained writes, safe stale retries, and no usable mixed state.",
+  "statement": "The system shall publish structurally valid explicit record updates as one coherent durable transaction after checking expected revision, target identities, and declared decision-basis identities under writer exclusion, with contained writes, safe stale retries, and no usable mixed state.",
   "analysis": {
     "method": "5W2H",
     "what": {
       "problem": "Competing writers, stale decisions, or partial publication can lose work or leave a reader with a combination of states that never existed coherently.",
-      "desired_outcome": "A successful save identifies fully committed requested bytes; conflict, contention, and interruption remain explicit without overwriting an observed incompatible state."
+      "desired_outcome": "Readers observe one coherent recorded state; contention, drift and interruption do not overwrite winning work or conceal missing evidence."
     },
     "why": {
       "rationale": "Reliable mechanical publication is necessary even when the stored engineering judgment is incomplete, adverse, or awaiting review."
@@ -27,11 +27,11 @@
     },
     "where": {
       "contexts": [
-        "The exact allowed write set of one selected change, declared contained decision-basis subjects, and private transaction state."
+        "One explicitly selected Change, its referenced artifacts and declared engineering decision basis, under the supported local writer boundary."
       ]
     },
     "how": {
-      "approach": "Use the same validation, containment, identity, writer-exclusion, and recoverable publication protections across every supported writer. Check revision before no-op recognition, prepare recovery before authoritative replacement, and report saved only after durable commitment with the required observed read-set checks."
+      "approach": "Check expected state and declared decision basis, validate the complete candidate and coordinate supported writers before coherent durable publication. Preserve existing successful work and expose interruption without inventing decisions; external engineering-file edits remain subject to observed checks rather than a universal atomicity claim."
     },
     "how_much": {
       "scope": "Preserves the published local save-safety boundary. CLI writers coordinate; outside edits are protected at observed identity checks only. An exact-target outside edit after the final check can be overwritten; no atomic exclusion of all external writers, platform expansion, or disaster-recovery service is promised."
@@ -39,14 +39,16 @@
   },
   "acceptance_criteria": [
     "Every write names its expected revision, target set and identities, and declared decision-basis identities. Observed mismatches produce conflict requiring reread and a new actor decision, with no silent refresh or merge.",
-    "Competing CLI writers cannot overwrite one another. Supported readers obtain coherent before/after records or busy/recovery-required, never a usable mixed snapshot; saved means all requested replacement bytes are durably committed.",
-    "Primary, advanced, helper, creation, and recovery paths share path containment and protection against observed ancestor substitution. Cross-change writes, traversal, symlink escape, hard-linked authoritative targets, unsupported paths, and unexpected overwrite are rejected.",
+    "Competing supported writers cannot overwrite one another. Supported readers obtain coherent before/after state or an explicit unavailable/busy/recovery outcome, never a usable mixed state; saved means all selected record effects are durably committed.",
+    "Every supported path preserves selected project and Change boundaries and unrelated content. Cross-project or cross-Change mutation, unsafe file destinations where applicable, and unexpected overwrite reject before publication; the physical containment mechanism is an architecture responsibility.",
     "A fresh identical candidate returns unchanged only after current preconditions pass. A lost-response retry with the old revision conflicts even if the earlier save succeeded; no retry duplicates entries, increments semantic state, or creates new approval.",
-    "Observed decision-basis drift is checked before publication and again before commitment is reported. Drift after replacement triggers safe restoration or recovery-required, retaining the documented external-edit timing limitation.",
-    "All-or-none batch publication validates the complete final candidate and creates recovery information before replacement. Incomplete publication is explicitly recoverable and unavailable as coherent current state."
+    "Observed decision-basis drift is checked before publication and again before commitment is reported. Before commit it prevents publication or requires supported uncommitted recovery. If detected after commit, report the actual committed outcome and drift for renewed applicability assessment; never roll back acknowledged commitment or conceal the external-edit timing limitation.",
+    "A batch publishes its complete validated candidate coherently. Interruption exposes either an established before/committed state or an explicit recovery condition; a record claiming available evidence cannot commit with an incomplete required payload. Record publication does not atomically govern arbitrary engineering-file edits."
   ],
   "assumptions": [],
-  "constraints": [],
+  "constraints": [
+    "Current allocations and source-observed facets describe v4 SQLite. Source availability does not establish passing execution, project adoption or requirement satisfaction; historical v3 contribution arguments retain their original subjects."
+  ],
   "sources": [
     {
       "source": "SRC-PUBLISHED-CLI",
@@ -54,34 +56,44 @@
       "basis": "Derives this bounded published-product obligation from IR-008 and the named current CLI/Record Format contracts. Detailed schemas, command catalogs, limits and completed-retirement dispositions remain at those owners; this record does not transfer approval or implement REM-record operations."
     },
     {
-      "source": "SRC-CLI-ALLOCATION",
+      "source": "SRC-CLI-ALLOCATION-BEFORE-LOCAL-STORE",
       "locator": "SR-044 AC1: explicit revision, targets, identities and declared basis; conflict rather than refresh/merge; allocated contributors: AR-020 AC1, 6",
       "basis": "SCN-043, SCN-044, SCN-046; FUNC-046 compares caller-supplied expectations IF-003 `publish_record_candidate` consumes exact candidate/basis; actor selection and subject acquisition remain with SR-040/041 allocations."
     },
     {
-      "source": "SRC-CLI-ALLOCATION",
+      "source": "SRC-CLI-ALLOCATION-BEFORE-LOCAL-STORE",
       "locator": "SR-044 AC2: competing writers, coherent reads, saved means durable exact bytes; allocated contributors: AR-020 AC2; AR-021 AC2, 3",
       "basis": "SCN-046; FUNC-046 owns exclusion and actual publication IF-003 publication and inspection must expose coherent before/after or busy/recovery-required, never mixed usable state."
     },
     {
-      "source": "SRC-CLI-ALLOCATION",
+      "source": "SRC-CLI-ALLOCATION-BEFORE-LOCAL-STORE",
       "locator": "SR-044 AC3: every path shares containment and rejects unsafe writes; allocated contributors: AR-020 AC2, 3; shared AR-022 AC2 for the recovery path",
       "basis": "SCN-044, SCN-046, SCN-047; FUNC-046/047 IF-003 publication/recovery share the same selected-change safety boundary. AR-022 retains SR-045 as its sole parent; its reuse here does not duplicate that obligation. Observed external-edit timing limits remain."
     },
     {
-      "source": "SRC-CLI-ALLOCATION",
+      "source": "SRC-CLI-ALLOCATION-BEFORE-LOCAL-STORE",
       "locator": "SR-044 AC4: fresh no-op versus stale lost-response retry; no semantic increments; allocated contributors: AR-020 AC5",
       "basis": "SCN-044, SCN-046; FUNC-046 IF-003 returns unchanged only after current expectations pass; IF-004 reporting preserves conflict instead of retrying or inventing authority."
     },
     {
-      "source": "SRC-CLI-ALLOCATION",
+      "source": "SRC-CLI-ALLOCATION-BEFORE-LOCAL-STORE",
       "locator": "SR-044 AC5: basis checks before publication and before commitment; restoration or recovery after observed drift; allocated contributors: AR-020 AC6; AR-021 AC4, 6",
       "basis": "SCN-043, SCN-046; FUNC-046 IF-003 checks declared basis at both source-defined boundaries. No atomic protection from all external edits is promised."
     },
     {
-      "source": "SRC-CLI-ALLOCATION",
+      "source": "SRC-CLI-ALLOCATION-BEFORE-LOCAL-STORE",
       "locator": "SR-044 AC6: complete batch candidate, recovery information first, no usable incomplete publication; allocated contributors: AR-020 AC4; AR-021 AC1, 2, 5",
       "basis": "SCN-046, SCN-047; FUNC-046 IF-003 prepare/publication composition uses one complete candidate and prepared exact before/candidate state; recovery itself follows AR-022."
+    },
+    {
+      "source": "SRC-LOCAL-OPERATIONAL-ANALYSIS",
+      "locator": "SR-044",
+      "basis": "Refines the proposed operational representation and safety boundary. Prior allocation contribution arguments retain their original v3 criterion subjects under the historical source marker."
+    },
+    {
+      "source": "SRC-WORKFLOW-CONTRACTS",
+      "locator": "SR-044; immutable assessment correction and explicit commit boundary",
+      "basis": "Refine the existing IR-008 obligation for v4 without rewriting historical v3 meaning: preserve original assessments, actor decisions and truthful commitment rather than requiring in-place explanation mutation or rollback after commit. Author-assessed under the scoped Constitution exception; not runtime adoption."
     }
   ],
   "confirms": [

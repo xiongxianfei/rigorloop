@@ -2,10 +2,10 @@
   "id": "SCN-025",
   "type": "scenario",
   "title": "Retire completed material while preserving current reliance and history",
-  "status": "confirmed",
+  "status": "draft",
   "actor": "A maintainer cleaning the current engineering working view",
   "goal": "Remove material no longer needed in the current view while keeping surviving obligations usable and original history recoverable.",
-  "context": "Completed or retired records clutter the current view, but some consumers or unresolved work may still rely on them.",
+  "context": "Completed or retired records clutter the current view, but some consumers or unresolved work may still rely on them. The removal scope may contain operational files replaced by a separately retained operational store.",
   "trigger": "The maintainer proposes a defined cleanup scope.",
   "preconditions": [
     "The candidate material and applicable retention policy are identified."
@@ -51,6 +51,10 @@
     {
       "condition": "The proposal concerns releasing retained history itself.",
       "outcome": "The system identifies the need for the separate retention-policy decision and surviving-dependency review instead of applying ordinary current-view cleanup."
+    },
+    {
+      "condition": "A migration leaves unresolved consumers, unretained originals or active evidence dependencies.",
+      "outcome": "Retirement remains blocked until a coherent replacement or explicit disposition exists."
     }
   ],
   "exercises": [
@@ -66,6 +70,11 @@
       "source": "SRC-COMPLETE-ANALYSIS",
       "locator": "SCN-025",
       "basis": "IR-003 owns cleanup and retention. SR-024 derives retirement conditions, SR-020 provides a retained recovery basis, and SR-007 governs destructive authority. Accepted as current requirement-analysis knowledge after independent coverage and clarity review: one owning IR and primary Feature, observable goal and interactions, classified outcomes, and applicable SR coverage. This confirms analysis only, not requirement approval, implementation, or satisfaction."
+    },
+    {
+      "source": "SRC-LOCAL-OPERATIONAL-ANALYSIS",
+      "locator": "SCN-025",
+      "basis": "Draft derivation from the refined IRs and RR proposal; no approval, implementation or satisfaction claim."
     }
   ]
 }

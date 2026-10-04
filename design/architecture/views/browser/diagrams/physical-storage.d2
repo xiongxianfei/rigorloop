@@ -1,5 +1,5 @@
 # Generated from explicit REM realization facts; do not edit.
-# Source identity: 2cf8f01cf8087e0b226dbd431d6452970b13954a16b84408d91173987708417e
+# Source identity: 7978be139fe27eda655003b22781018baac550ab5be13f735b6a2800fc2e5371
 # Source-observed physical relationships. Names identify recorded packages, execution contexts, and placement locations; location text does not identify a machine or establish connectivity. Select a placement for exact paths and constraints. This is not deployment or artifact qualification. Arrows preserve each access's participant and mode; a shared process does not grant every participant access to every placement. Dashed undirected links are explicit location constraints.
 vars: { d2-config: { layout-engine: elk } }
 direction: down
@@ -20,27 +20,27 @@ n_657865637574696f6e3a4d4f442d3031303a434c492070726f63657373: "CLI process\nNode
   style.font-size: 18
   style.border-radius: 9
   label.near: top-left
-  n_4d4f442d303130: "Engineering command\ninterface" {
+  n_4d4f442d303130: "Command handling" {
     link: "#module/MOD-010"
-    tooltip: "Engineering command interface (MOD-010)"
+    tooltip: "Command handling (MOD-010)"
     style.fill: "#ECF3FF"
     style.stroke: "#597390"
     style.font-color: "#24364A"
     style.font-size: 16
     style.border-radius: 7
   }
-  n_4d4f442d303131: "Operational record\npersistence" {
+  n_4d4f442d303131: "Work record storage" {
     link: "#module/MOD-011"
-    tooltip: "Operational record persistence (MOD-011)"
+    tooltip: "Work record storage (MOD-011)"
     style.fill: "#ECF3FF"
     style.stroke: "#597390"
     style.font-color: "#24364A"
     style.font-size: 16
     style.border-radius: 7
   }
-  n_4d4f442d303134: "Verified skill\ninstallation" {
+  n_4d4f442d303134: "Skill installation" {
     link: "#module/MOD-014"
-    tooltip: "Verified skill installation (MOD-014)"
+    tooltip: "Skill installation (MOD-014)"
     style.fill: "#ECF3FF"
     style.stroke: "#597390"
     style.font-color: "#24364A"
@@ -56,7 +56,7 @@ n_706c6163656d656e743a4d4f442d3031303a6465706c6f796d656e743a434c492072756e74696d
 }
 n_706c6163656d656e743a4d4f442d3031313a70657273697374656e63653a52656769737465726564206f7065726174696f6e616c207265636f726473: "Registered operational\nrecords\n\nSelected project\nfilesystem" {
   link: "#physical/MOD-011"
-  tooltip: "Registered operational records; location: Selected project filesystem; relative paths: docs/changes/{change_id}/"
+  tooltip: "Registered operational records; location: Selected project filesystem; relative paths: .rigorloop/rigorloop.db; .rigorloop/rigorloop.db-wal; .rigorloop/rigorloop.db-shm; .rigorloop/artifacts/changes/"
   style.fill: "#EEF6F1"
   style.stroke: "#597390"
   style.font-color: "#24364A"
@@ -68,11 +68,11 @@ n_657865637574696f6e3a4d4f442d3031303a434c492070726f63657373.n_4d4f442d303131 ->
   style.font-color: "#344D67"
   style.fill: "#FFFFFF"
   style.font-size: 14
-  tooltip: "Inspect registered operational records and publish or recover explicitly selected record changes.\nConditions: The command selects its project root explicitly. Queries and preview only read authoritative bytes; admitted writes and recovery use the current transaction protocol.; This access concerns current registered operational records. It does not establish that the CLI reads or writes the REM design tree."
+  tooltip: "Read/write project-local SQLite records and selected payloads.\nConditions: Explicit project association and supported task admission are required.; A physical access relationship is neither an execution sequence nor evidence of durable success."
 }
 n_706c6163656d656e743a4d4f442d3031313a70657273697374656e63653a5265636f7264207472616e73616374696f6e206d65746164617461: "Record transaction\nmetadata\n\nSelected project\nfilesystem" {
   link: "#physical/MOD-011"
-  tooltip: "Record transaction metadata; location: Selected project filesystem; relative paths: .rigorloop/record-store/{change_id}/lock; .rigorloop/record-store/{change_id}/epoch; .rigorloop/record-store/{change_id}/journal.json"
+  tooltip: "Record transaction metadata; location: Selected project filesystem; relative paths: .rigorloop/maintenance/; .rigorloop/coordination/"
   style.fill: "#EEF6F1"
   style.stroke: "#597390"
   style.font-color: "#24364A"
@@ -84,7 +84,7 @@ n_657865637574696f6e3a4d4f442d3031303a434c492070726f63657373.n_4d4f442d303131 ->
   style.font-color: "#344D67"
   style.fill: "#FFFFFF"
   style.font-size: 14
-  tooltip: "Inspect reader gates and retained recovery state; maintain owned lock, epoch, and journal during actual publication or recovery.\nConditions: The private paths use the same explicitly selected root and change as the record operation. Preview does not create private transaction data.; Journal/lock lifecycle and exact recovery guarantees remain in the Process view; a physical access edge is not a sequence or proof of durable effects."
+  tooltip: "Coordinate ordinary leases and fenced maintenance capture/recovery.\nConditions: Explicit project association and supported task admission are required.; A physical access relationship is neither an execution sequence nor evidence of durable success."
 }
 n_706c6163656d656e743a4d4f442d3031343a6465706c6f796d656e743a53656c65637465642074617267657420736b696c6c20756e697473: "Selected target skill\nunits\n\nInvocation project\nfilesystem" {
   link: "#physical/MOD-014"
@@ -135,7 +135,7 @@ n_657865637574696f6e3a4d4f442d3031303a434c492070726f63657373.n_4d4f442d303130 ->
   tooltip: "Append bounded diagnostics for eligible invocations and read the selected retained invocation on explicit log lookup.\nConditions: Primary/advanced recording and retired-command admission bypass the generic logging wrapper; other eligible commands may have file logging disabled or degraded.; The configured log root is selected independently of the record --root and installation working directory. This aggregate access describes distinct append and lookup paths, not a requirement that each invocation reads and writes logs."
 }
 n_706c6163656d656e743a4d4f442d3031313a70657273697374656e63653a52656769737465726564206f7065726174696f6e616c207265636f726473 -- n_706c6163656d656e743a4d4f442d3031313a70657273697374656e63653a5265636f7264207472616e73616374696f6e206d65746164617461: "disjoint locations" {
-  tooltip: "Authoritative records and private transaction state remain separate; Private locks, epochs, and journals coordinate storage and exact recovery without becoming registered engineering records or workflow authority.; The record operation has selected and validated one project root and change. Current source addresses authoritative files under docs/changes/{change_id} and private coordination under .rigorloop/record-store/{change_id}.; Disjoint describes those declared path-containment scopes; it does not assert different devices, users, hosts, or immunity from all filesystem aliases."
+  tooltip: "Authoritative records and private transaction state remain separate; Maintenance exclusion and staged recovery are physical safeguards, not engineering activity history.; Current typed records/payloads and temporary maintenance/coordination state occupy disjoint selected runtime paths.; Disjoint scopes do not imply distinct hosts, devices or protection against arbitrary external writers."
   style.stroke: "#987335"
   style.font-color: "#725321"
   style.fill: "#FFFFFF"

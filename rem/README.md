@@ -4,6 +4,8 @@ RigorLoop Engineering Method (REM) is a tool-independent, model-based engineerin
 Requirements express what must be satisfied; System Design describes capabilities and behavior; Architecture Design assigns responsibility through hierarchical Modules, encapsulated Interfaces, and material realization.
 Operational Support defines how the engineering model is represented, governed, validated, and maintained.
 
+Requirement Analysis begins from Raw Requirement (RR) input such as a request, proposal, issue, incident, or observation. RR is reconciled against current engineering knowledge and does not become a durable IR merely because it was submitted.
+
 Implementation realizes the design, verification produces evidence, and controlled Changes evolve identifiable Baselines.
 
 ## Status and use
@@ -39,15 +41,17 @@ Reference that owner when another document needs the rule instead of creating an
 | --- | --- | --- |
 | Analyze requirements | [5W2H](methods/5w2h.md) | Account for every question at each IR, SR, and AR level |
 | Analyze stakeholder scenarios | [Scenario Analysis](methods/scenario-analysis.md) | Confirm the durable Feature and governed black-box Scenarios; expose candidate obligations |
-| Derive system obligations | [Requirement Analysis](methods/requirement-analysis.md#derive-system-requirements) | Create verifiable SRs under one IR and hand behavior questions to Functional Analysis |
+| Reconcile incoming needs and derive system obligations | [Requirement Analysis](methods/requirement-analysis.md) | Treat request/proposal material as RR input, reuse/refine/create IRs as justified, derive/refine verifiable SRs, and hand behavior questions to Functional Analysis |
 | Confirm logical behavior | [Functional Analysis](methods/functional-analysis.md) | Confirm durable Functions from SRs and reconcile Feature realization |
-| Allocate logical architecture | [Architecture Allocation](methods/architecture-allocation.md) | Establish/refine Module hierarchy, allocate one primary Module per Function and exactly one Module per AR, and identify/expose logical Interfaces |
+| Allocate logical architecture | [Architecture Allocation](methods/architecture-allocation.md) | Establish/refine Module hierarchy, allocate one primary Module per Function, derive/refine justified ARs with architecture context and allocate each to exactly one Module, and identify/expose logical Interfaces |
 | Complete architecture design | [Architecture Design](methods/architecture-design.md) | Produce hierarchical Module/Interface architecture outputs, encapsulation boundaries, state/data ownership, and material subordinate physical/software realization without prescribing storage |
 | Generate architecture views | [4+1 Architecture Views](methods/architecture-views.md) | Apply REM's adaptation of Logical, Process, Development, Physical, and Scenario views, assess semantic fidelity and reading tasks, and maintain identifiable, regenerable presentations |
 | Evolve and assess the model | [Engineering cycle](methods/README.md#engineering-cycle) | Iterate between need, design, realization, evidence, and baseline decisions |
 
-The current core now has explicit procedures from Initial Requirement through logical allocation, physical/software architecture realization, and generated 4+1 architecture views.
-Verification and the broader universal engineering concerns remain later refinements.
+The current core now has explicit procedures from RR reconciliation through durable Requirements, logical System Design, hierarchical Architecture Design, physical/software realization, and generated 4+1 architecture views.
+Verification and the broader universal engineering concerns remain later refinements. Concrete workflow-stage names, review cadence, implementation milestone policy, and RigorLoop skill boundaries remain reference-implementation concerns rather than REM methodology semantics.
+
+Architecture guidance distinguishes [authored explanations and generated presentations](methods/architecture-views.md#authored-explanations-and-generated-presentations), selects [readable behavioral explanations](methods/architecture-views.md#readable-behavioral-explanations) by question and scope, clarifies [Module naming and identity](models/architecture-design.md#module-names-and-identity), and separates [current engineering knowledge from operational records](models/operational-support.md#engineering-knowledge-and-operational-records). These rules do not select a renderer, storage technology, browser layout, or review cadence.
 
 For architecture-view rationale, start with the [original 4+1 approach](methods/architecture-views.md#origin-and-reference), then read [REM's adoption and adaptation](methods/architecture-views.md#adoption-and-adaptation-in-rem). The optional [Logical reading perspectives](methods/architecture-views.md#logical-reading-perspectives) guide comprehension within the Logical View; they do not add standard views or prescribe repository pages.
 

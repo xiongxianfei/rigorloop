@@ -21,13 +21,13 @@
     {
       "id": "inventory",
       "initial_state": [
-        "Fresh copy of tests/fixtures/release-transaction/surface-inventory/valid-inventory.yaml; the selected runtime inventory also exists at docs/changes/2026-06-29-release-transaction-automation/release-surface-inventory.yaml."
+        "Caller-selected inventory represented by tests/fixtures/release-transaction/surface-inventory/valid-inventory.yaml. This parser fixture does not establish availability or consumption of a project release-audit resource."
       ]
     },
     {
       "id": "literal",
       "initial_state": [
-        "Fresh copy of tests/fixtures/release-transaction/literal-audit/valid-baseline.yaml; the selected runtime baseline is docs/changes/2026-06-29-release-transaction-automation/release-literal-audit-baseline.yaml."
+        "Caller-selected baseline represented by tests/fixtures/release-transaction/literal-audit/valid-baseline.yaml. The optional Change-local release-literal-audit hook remains in the release reader, but its referenced file is absent in the prior main baseline and this tree. Existing resource-availability debt remains Release-owned and outside this operational-store adoption; these parser checks do not claim live baseline consumption."
       ]
     },
     {
@@ -128,7 +128,7 @@
         "REL-SR-19"
       ],
       "technique": "equivalence-partition",
-      "risk": "Live inventory consumption disappears while isolated parser fixtures still pass.",
+      "risk": "Missing or unknown ownership permits unintended changes to generated, human-owned or historical material.",
       "target": {
         "path": "scripts/lib/release/release_transaction.py",
         "symbol": "load_surface_inventory_file"
@@ -152,10 +152,6 @@
           {
             "path": "tests/engineering/release/release_profile_tests.py",
             "symbol": "ReleaseSurfaceInventoryTests.test_valid_surface_inventory_classifies_release_surfaces"
-          },
-          {
-            "path": "tests/engineering/release/release_profile_tests.py",
-            "symbol": "ReleaseSurfaceInventoryTests.test_change_local_surface_inventory_artifact_loads"
           },
           {
             "path": "tests/engineering/release/release_profile_tests.py",
@@ -183,7 +179,7 @@
         "REL-SR-19"
       ],
       "technique": "equivalence-partition",
-      "risk": "Drift is silently accepted or the live resource path is orphaned.",
+      "risk": "Drift is silently accepted or required ownership and rationale are lost.",
       "target": {
         "path": "scripts/lib/release/release_transaction.py",
         "symbol": "load_literal_audit_baseline_file"
@@ -191,7 +187,7 @@
       "given": {
         "fixture": "literal",
         "conditions": [
-          "Use the actual selected baseline and a fresh literal fixture; distinguish current generated, historical and unauthorized literals."
+          "Use the explicitly selected baseline fixture; distinguish current generated, historical and unauthorized literals."
         ]
       },
       "when": [
@@ -207,10 +203,6 @@
           {
             "path": "tests/engineering/release/release_profile_tests.py",
             "symbol": "LiteralAuditBaselineTests.test_valid_literal_audit_baseline_reports_baseline_drift"
-          },
-          {
-            "path": "tests/engineering/release/release_profile_tests.py",
-            "symbol": "LiteralAuditBaselineTests.test_change_local_literal_audit_baseline_artifact_loads"
           },
           {
             "path": "tests/engineering/release/release_profile_tests.py",

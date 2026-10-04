@@ -1,0 +1,60 @@
+{
+  "id": "SCN-084",
+  "type": "scenario",
+  "title": "Read a copied architecture snapshot offline",
+  "status": "confirmed",
+  "actor": "Architecture reviewer",
+  "goal": "Understand a shared architecture without the original author environment.",
+  "context": "A complete snapshot has been explicitly shared with the reviewer.",
+  "trigger": "The reviewer opens the copied output without network access.",
+  "preconditions": [
+    "The selected scope and any available project or artifact identity are explicitly identified."
+  ],
+  "interaction": [
+    {
+      "actor": "Architecture reviewer",
+      "action": "Opens the copied snapshot in a supported reading environment."
+    },
+    {
+      "actor": "System",
+      "action": "Provides view navigation, diagrams and required selected source detail offline."
+    },
+    {
+      "actor": "Architecture reviewer",
+      "action": "Checks source identity and available rationale."
+    },
+    {
+      "actor": "System",
+      "action": "Identifies the captured state and explains that live freshness is not established."
+    }
+  ],
+  "expected_outcome": "The reviewer understands the captured architecture and its limits without source checkout or generator.",
+  "alternatives": [
+    {
+      "condition": "An optional external source link is unavailable.",
+      "outcome": "Included required explanation remains readable; the link limitation is visible."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "The received copy lacks required reading resources.",
+      "outcome": "The missing content is diagnosed where detectable; an incomplete copy is not presented as complete."
+    }
+  ],
+  "exercises": [
+    "FEAT-022"
+  ],
+  "informs": [
+    "SR-086",
+    "SR-085",
+    "SR-004",
+    "SR-005"
+  ],
+  "sources": [
+    {
+      "source": "SRC-CUSTOMER-BROWSER-REQUIREMENTS",
+      "locator": "SCN-084; confirmed as requirement-analysis knowledge by the scoped author assessment, not independent review or executed product proof.",
+      "basis": "User-requested reusable customer architecture browser; requirement-level author analysis. Current records remain draft; no implemented, published or independently approved behavior is claimed."
+    }
+  ]
+}

@@ -1,13 +1,14 @@
 {
   "observed": {
     "technologies": [
-      "Node.js built-ins supply process I/O, paths, cryptographic identities, and filesystem access. The package declares the yaml dependency used by recording-result.js for human presentation; stored operational records remain JSON. The manifest does not declare a minimum Node version."
+      "JavaScript ES modules on qualified Node 24.15.0+ within Node 24; node:sqlite with SQLite 3.51.3+.",
+      "Linux filesystem/process ownership primitives; no assertion of all-platform qualification."
     ],
     "sources": [
       {
-        "source": "SRC-CLI-SOURCE",
-        "locator": "packages/rigorloop/package.json; packages/rigorloop/dist/bin/rigorloop.js main, dispatchMain, executable wrapper; the software_units paths at 9055b3c0",
-        "basis": "Static package and source inspection establishes this bounded mapping and dispatch structure, not a packed artifact, registry version, or executed outcome."
+        "source": "SRC-SQLITE-ADOPTION",
+        "locator": "packages/rigorloop/package.json; packages/rigorloop/dist/lib/operational-layout.js; operational-store.js; operational-maintenance.js",
+        "basis": "Static inspection of the successor working-tree source identifies this implementation binding. It does not establish passing tests, installed availability, publication or engineering approval. Prior observations remain recoverable at 39be9c81."
       }
     ]
   },

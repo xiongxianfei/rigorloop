@@ -2,11 +2,10 @@
 
 Model validation contract: model-document-v1
 
-Owning change: [current-design repository cleanup](../../changes/2026-09-13-current-design-repository-cleanup/change.json).
 
-Original composition adoption: [three-model reconciliation](../../changes/2026-09-12-unified-validation-model/change.json).
+Original composition adoption: three-model reconciliation (historical operational material, unavailable in the current tree).
 
-Prior refinement: [independent parallel tests](../../changes/2026-09-13-independent-parallel-tests/change.json); its selected behavior and evidence retain their own scope.
+Prior refinement: independent parallel tests (historical operational material, unavailable in the current tree); its selected behavior and evidence retain their own scope.
 
 ## Introduction and Goals
 
@@ -279,7 +278,7 @@ This retirement procedure refines Development's existing implementation/proof lo
 
 ### Living test-design adoption
 
-The [complete coverage direction](../../proposals/2026-09-17-complete-model-test-coverage.md) extends the earlier Release, Skill and Authoring packages to every current document model and section-owned responsibility. Apply [Design's authoring method](../skill/authoring/design.md#living-test-design) and [System's selection procedure](../test-design/rules.md#select-requirements-and-proof). Each model accounts for all current requirement groups and relevant regressions, states concrete independent observations and fixture boundaries, and exposes missing realization. Parents add interaction proof and reference child detail. Design completeness, implemented protection, observed results and independent assessment remain distinct; this expansion does not retire compatibility or claim those later stages are complete.
+The [complete coverage direction](../../proposals/2026-09-17-complete-model-test-coverage.md) extends the earlier Release, Skill and Authoring packages to every current document model and section-owned responsibility. Apply [Design's authoring method](../skill/authoring/design.md#proportionate-design-and-proof) and [System's selection procedure](../test-design/rules.md#select-requirements-and-proof). Each model accounts for all current requirement groups and relevant regressions, states concrete independent observations and fixture boundaries, and exposes missing realization. Parents add interaction proof and reference child detail. Design completeness, implemented protection, observed results and independent assessment remain distinct; this expansion does not retire compatibility or claim those later stages are complete.
 
 Use existing requirement IDs, semantic group references and test paths. Assess changed groups as retained, strengthened, consolidated, replaced or removed with their remaining failure detection. A plan-only coverage map or an unexplained disappearance cannot establish protection. Actual execution status remains in change records.
 

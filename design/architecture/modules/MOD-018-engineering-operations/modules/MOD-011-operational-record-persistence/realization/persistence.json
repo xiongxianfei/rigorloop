@@ -1,19 +1,13 @@
 {
   "observed": {
     "persistence": [
-      "Store addresses registered operational records under docs/changes/<change_id>/ and coordinates transaction state under .rigorloop/record-store/<change_id>/ using lock, epoch, and journal.json. The journal retains exact before/candidate bytes and a prepared or committed phase.",
-      "RecordFiles uses file identities, no-follow opens, digest comparisons, exclusive creation, file fsync, temporary-file rename, and parent-directory fsync. These are observed mechanisms; their presence is not proof of all-platform crash or external-editor safety."
+      "Current operational semantics use normalized SQLite rows with opaque revisions. Named retained payloads live outside the DB; Git owns current engineering definitions."
     ],
     "sources": [
       {
-        "source": "SRC-CLI-SOURCE",
-        "locator": "packages/rigorloop/dist/lib/record-store.js Store, executeTargetedStore, executeRecordStore, withRecordSnapshot; record-store-files.js RecordFiles; remaining software_units at 9055b3c0",
-        "basis": "Static inspection identifies transaction mechanisms, format dispatch, construction, and physical co-location; it does not execute fault, durability, preservation, or recovery verification."
-      },
-      {
-        "source": "SRC-PHYSICAL-REALIZATION",
-        "locator": "packages/rigorloop/dist/lib/record-store.js Store constructor, gate, preparePrivate and cleanup; record-store-files.js RecordFiles path and containment checks at 33f56fe84ff730d7bd48900cef32170fd0682412",
-        "basis": "Static inspection records existing package, runtime, selected filesystem, and artifact-source relationships with their conditions. It does not observe a deployed host, execute a product operation, inspect a published package, or qualify installation, storage safety, platform support, remote availability, or network topology. Existing logical ownership and earlier source observations remain unchanged."
+        "source": "SRC-SQLITE-ADOPTION",
+        "locator": "packages/rigorloop/package.json; packages/rigorloop/dist/lib/operational-layout.js; operational-store.js; operational-maintenance.js",
+        "basis": "Static inspection of the successor working-tree source identifies this implementation binding. It does not establish passing tests, installed availability, publication or engineering approval. Prior observations remain recoverable at 39be9c81."
       }
     ],
     "placements": [
@@ -24,10 +18,13 @@
           "MOD-011"
         ],
         "paths": [
-          "docs/changes/{change_id}/"
+          ".rigorloop/rigorloop.db",
+          ".rigorloop/rigorloop.db-wal",
+          ".rigorloop/rigorloop.db-shm",
+          ".rigorloop/artifacts/changes/"
         ],
         "constraints": [
-          "The path template is relative to the explicitly selected project root. Only registered operational records are addressed; this is not an assertion that the current CLI stores REM design JSON."
+          "Relative to the explicitly associated project root. Live database and sidecars form one operational state; no direct file-copy backup is supported."
         ]
       },
       {
@@ -37,12 +34,11 @@
           "MOD-011"
         ],
         "paths": [
-          ".rigorloop/record-store/{change_id}/lock",
-          ".rigorloop/record-store/{change_id}/epoch",
-          ".rigorloop/record-store/{change_id}/journal.json"
+          ".rigorloop/maintenance/",
+          ".rigorloop/coordination/"
         ],
         "constraints": [
-          "Paths are relative to the explicitly selected project root. The journal retains prepared or committed transaction state; path presence alone proves no crash, durability, or recovery guarantee."
+          "Relative to the explicitly associated project root. Live database and sidecars form one operational state; no direct file-copy backup is supported."
         ]
       }
     ],
@@ -63,14 +59,30 @@
           }
         ],
         "conditions": [
-          "The record operation has selected and validated one project root and change. Current source addresses authoritative files under docs/changes/{change_id} and private coordination under .rigorloop/record-store/{change_id}.",
-          "Disjoint describes those declared path-containment scopes; it does not assert different devices, users, hosts, or immunity from all filesystem aliases."
+          "Current typed records/payloads and temporary maintenance/coordination state occupy disjoint selected runtime paths.",
+          "Disjoint scopes do not imply distinct hosts, devices or protection against arbitrary external writers."
         ],
-        "rationale": "Private locks, epochs, and journals coordinate storage and exact recovery without becoming registered engineering records or workflow authority."
+        "rationale": "Maintenance exclusion and staged recovery are physical safeguards, not engineering activity history."
       }
     ]
   },
-  "deferred": [
-    "Qualify the retained filesystem/platform assumptions, interrupted publication, committed-journal recovery, and output failure with the existing implementation verification allocation before claiming conformance."
+  "proposed": [
+    {
+      "choice": "Use a separately versioned current-handoff contract for requirement/design bases, checked milestone progress, current assessments and selective retained support.",
+      "rationale": "The subordinate MOD-011 contract defines v4 current accounts, safe replacement and compact historical completion; MOD-010 defines v2 scoped operations. Typed identities and explicit applicability preserve decision meaning without a mandatory attempt archive or reinterpretation of v3. Current source implements the normalized schema and task dispatch; passing execution and project adoption require their own evidence. Historical import is explicit and does not promote old judgments.",
+      "alternatives": [
+        "Silently reinterpret v3 Proposal or milestone judgments.",
+        "Indefinite dual-write or fallback runtime between obsolete internals."
+      ],
+      "consequences": [
+        "Implement v4 current accounts directly over SQLite; no intermediate filesystem backend, dual writes or legacy runtime fallback. Store queryable relationships in tables and selected bulky payloads as managed named files.",
+        "Preserve required migration originals and provenance; explicit import cannot promote old judgments to new approval.",
+        "SR-074\u2013078 govern selected backup, restore, transfer, migration and discovery. Qualify these prerequisites before runtime adoption; authoring the current design requires no database.",
+        "Database schema 1 uses typed current-account tables and constrained relationships; maintenance supplies selected-scope integrity manifests and staged replacement with retained prior bytes. Revisions include store incarnation to reject pre-restore tokens."
+      ],
+      "revisit_when": [
+        "External compatibility disposition or the separate store migration changes the supported adoption boundary."
+      ]
+    }
   ]
 }

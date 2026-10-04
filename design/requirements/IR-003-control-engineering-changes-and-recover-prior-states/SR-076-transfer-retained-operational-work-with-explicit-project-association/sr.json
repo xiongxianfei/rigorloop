@@ -1,0 +1,63 @@
+{
+  "id": "SR-076",
+  "type": "system-requirement",
+  "title": "Transfer retained operational work with explicit project association",
+  "status": "draft",
+  "statement": "The system shall transfer an explicitly selected retained operational scope to another local environment with its project association, record and subject identities, provenance and required artifacts intact, validating the destination and reporting exclusions or conflicts without silently merging histories.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "A copied engineering checkout does not contain private work history, and importing history into the wrong project can create false provenance.",
+      "desired_outcome": "Another local environment can inspect and resume the selected retained work with its original meaning and explicit limits."
+    },
+    "why": {
+      "rationale": "The refined IR-003 need requires this independently assessable outcome while preserving historical meaning and current work."
+    },
+    "who": {
+      "stakeholders": [
+        "Project maintainers and authorized engineers",
+        "Engineering agents acting for the user",
+        "Reviewers relying on retained evidence"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "When a participant transfers recorded work to a second local environment."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "Selected project operational records, retained evidence and explicitly selected local source or destination scope."
+      ]
+    },
+    "how": {
+      "approach": "Use explicit scope and state identities, preserve original meaning and unrelated work, and report complete, unavailable, conflicting or failed outcomes according to the criteria below. Physical storage, commands and allocation remain downstream decisions."
+    },
+    "how_much": {
+      "scope": "One selected project and declared finite operational scope; no hosted storage, automatic history merging, recovery of destroyed copies, or numerical performance/recovery guarantee. Current-model understanding remains owned by SR-004/005."
+    }
+  },
+  "acceptance_criteria": [
+    "Transfer declares source project, retained scope, included artifacts and state identity; the receiving environment can inspect those facts before activation.",
+    "A matching project in an empty authorized destination receives the selected scope with the same identities and provenance through the backup/restoration integrity obligations of SR-074/075.",
+    "A different project identity, divergent existing history or reused record identity with different content causes a conflict and leaves both histories intact; project-name similarity does not establish identity.",
+    "Excluded records or artifacts are visible before reliance, and the receiving result does not claim completeness outside the declared transferable scope.",
+    "Transfer leaves the source usable, does not change engineering-model files, and does not silently refresh assessments to the destination checkout revision."
+  ],
+  "assumptions": [
+    "Required retained source material and supported interpretation information are accessible; failure of that premise is reported explicitly."
+  ],
+  "constraints": [
+    "A successful storage operation grants no engineering approval or action authority."
+  ],
+  "confirms": [
+    "FUNC-075"
+  ],
+  "sources": [
+    {
+      "source": "SRC-LOCAL-OPERATIONAL-ANALYSIS",
+      "locator": "SR-076",
+      "basis": "Draft derivation from the refined IRs and RR proposal; no approval, implementation or satisfaction claim."
+    }
+  ]
+}

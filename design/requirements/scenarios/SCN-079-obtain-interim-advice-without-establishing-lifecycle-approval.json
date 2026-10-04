@@ -1,0 +1,61 @@
+{
+  "id": "SCN-079",
+  "type": "scenario",
+  "title": "Obtain interim advice without establishing lifecycle approval",
+  "status": "confirmed",
+  "actor": "An implementer requesting early feedback",
+  "goal": "Obtain useful independent feedback on selected work without creating an implementation approval gate.",
+  "context": "Implementation is in progress and the engineer explicitly requests advice on a bounded subject.",
+  "trigger": "The engineer supplies the advisory review scope.",
+  "preconditions": [
+    "The requested scope and relevant project authority are identifiable."
+  ],
+  "interaction": [
+    {
+      "actor": "Implementer",
+      "action": "Identifies the inspected scope and requests advisory feedback."
+    },
+    {
+      "actor": "Reviewer",
+      "action": "Examines that scope and records attributable findings or a bounded clean conclusion."
+    },
+    {
+      "actor": "System",
+      "action": "Reports the advisory scope and any responsible correction without establishing whole-change approval."
+    }
+  ],
+  "expected_outcome": "Useful findings are captured once and their limits are clear; interim advice does not become a mandatory milestone dossier.",
+  "alternatives": [
+    {
+      "condition": "The advisory assessment finds no concerns.",
+      "outcome": "The result remains advisory and does not permit final Verify to claim governed success."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "A serious defect or unsafe action is identified.",
+      "outcome": "The finding triggers responsible correction or stopping affected unsafe work; advisory status does not make the evidence ignorable."
+    }
+  ],
+  "exercises": [
+    "FEAT-016"
+  ],
+  "informs": [
+    "SR-082",
+    "SR-027",
+    "SR-028",
+    "SR-055"
+  ],
+  "sources": [
+    {
+      "source": "SRC-REQUIREMENT-FIRST-WORKFLOW",
+      "locator": "SCN-079",
+      "basis": "User-selected requirement-first workflow and one mandatory whole-change Code Review gate. Proposed requirement analysis only; existing product contracts remain active until coordinated adoption. No new Function, AR, implementation or approval is inferred."
+    },
+    {
+      "source": "SRC-WORKFLOW-REQUIREMENT-REVIEW",
+      "locator": "design/requirements/sources.md#src-workflow-requirement-review",
+      "basis": "Document-based author assessment under the explicit Constitution exception confirms this Scenario as requirement-analysis knowledge. It is not independent review, executed product evidence or workflow activation."
+    }
+  ]
+}

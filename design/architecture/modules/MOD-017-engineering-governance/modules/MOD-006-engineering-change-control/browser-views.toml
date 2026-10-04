@@ -1,0 +1,13 @@
+# Presentation registration; engineering meaning remains in the owning README.
+version = 1
+
+[[topics]]
+id = "resume-and-progress"
+title = "Resume and coordinate work"
+view = "process"
+kind = "sequence"
+previous_kind = "flowchart"
+qualification = "proposed"
+source = "README.md"
+anchor = "resume-and-progress"
+description = "Resume from attributable context, assess authority, perform bounded work and reconcile its recorded outcome. Missing prerequisites block affected work; stale updates require fresh interpretation. Milestone progress does not create review approval."

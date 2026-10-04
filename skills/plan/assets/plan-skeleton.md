@@ -1,7 +1,6 @@
-<!-- Template: plan-skeleton-v3 -->
+<!-- Template: plan-skeleton-v4 -->
 <!-- Skill: plan -->
 <!-- Template status: normative -->
-<!-- Structural-fingerprint: sha256:41e5a53fc9626de70a61c8506ea7fd8b4de125eb1c1d35e0d65831f0c7cbff35 -->
 <!-- Maintained alongside: skills/plan/SKILL.md -->
 <!-- Readability contract: use normal prose paragraphs, keep complete sentences intact, and retain stable IDs and tables for repeated proof or mapping structures. -->
 
@@ -11,15 +10,15 @@
 
 ## Current Handoff Summary
 
-- Owning change record: <docs/changes/change-id/change.json>
+- Owning Change: <Change ID; resume using change context>
 
-Mutable lifecycle state, current milestone state, review status, blockers, routing, and closeout readiness live only in this record.
+Mutable lifecycle state, current milestone state, review status, blockers, routing, and closeout readiness belong to the current CLI handoff, not this plan.
 
 ## Source artifacts
 
-- Proposal: <path or none>
-- Spec: <path or none>
-- Architecture: <path or not-required>
+- Accepted requirement basis: <IR/SR and relevant Feature/Scenario references>
+- Reviewed logical behavior: <Function and behavior definitions>
+- Reviewed architecture: <Modules, Interfaces, realization and applicable ARs>
 - Prior-contract test spec: <path only when independently applicable to current approved scope, otherwise none>
 
 ## Context and orientation
@@ -42,7 +41,7 @@ Mutable lifecycle state, current milestone state, review status, blockers, routi
 
 - Kind: lifecycle-closeout.
 - Dependency: all in-scope implementation milestones and required corrections complete.
-- Assessment: fresh independent final whole-change Code Review of the complete delivered engineering change and cross-milestone interactions.
+- Assessment: independent whole-change Code Review of the complete delivered engineering change and cross-milestone interactions.
 - Evidence: exact final subjects, independent reviewer basis, judgment and concern dispositions.
 - Successor: final Verify; corrections return to their owner and require affected reassessment.
 
@@ -70,11 +69,9 @@ This checkpoint applies the selected review policy. A verification-group non-app
 
 - <dependency or sequencing constraint>
 
-## Decision log
+## Material rationale
 
-| Date | Decision | Reason | Alternatives rejected |
-| --- | --- | --- | --- |
-<copy assets/decision-log-row.md once per material decision>
+<links to applicable decisions; keep mutable operational decisions in the current handoff>
 
 ## Readiness
 

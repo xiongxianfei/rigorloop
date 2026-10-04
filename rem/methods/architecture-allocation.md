@@ -18,7 +18,7 @@ These allocations approach architecture from different directions and MUST be re
 Start with:
 
 - confirmed Functions from [Functional Analysis](functional-analysis.md);
-- SRs and derived ARs from [Requirement Analysis](requirement-analysis.md);
+- approved or otherwise applicable SRs from [Requirement Analysis](requirement-analysis.md), plus any existing ARs that remain applicable;
 - candidate or existing Module responsibilities and containment relationships;
 - known state, policy, data, interaction, ownership, and encapsulation boundaries.
 
@@ -57,7 +57,9 @@ Allocate to the lowest Module in the hierarchy that can coherently own the compl
 
 If no Module can own the Function coherently, reconsider the Module boundaries or the Function boundary rather than assigning arbitrary ownership.
 
-## Allocate ARs
+## Derive and allocate ARs
+
+Once Module responsibilities are coherent enough to make lower-level accountability meaningful, derive or refine the ARs needed to express architecture-level obligations. Apply the [Requirement Analysis AR rules](requirement-analysis.md#formulate-allocated-requirements-with-architectural-context) so each AR remains a real verifiable requirement rather than an allocation placeholder.
 
 Every active AR MUST be allocated to exactly one Module.
 
@@ -127,7 +129,7 @@ Architecture Allocation is complete enough for realization when:
 
 - Module containment, where used, is acyclic and every parent/child relationship represents genuine responsibility refinement;
 - every active Function has exactly one primary Module, normally the lowest coherent accountable Module;
-- every active AR has exactly one allocated Module, normally the lowest coherent accountable Module;
+- required architecture-level obligations have been expressed as justified ARs, and every active AR has exactly one allocated Module, normally the lowest coherent accountable Module;
 - supporting Module participation is explicit where needed;
 - requirement allocation and functional allocation have been reconciled;
 - architecturally significant cross-Module interactions have explicit Interfaces;

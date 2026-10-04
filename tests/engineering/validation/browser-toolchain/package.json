@@ -1,0 +1,9 @@
+{
+  "name": "rigorloop-architecture-browser-tests",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Browser automation used only by offline architecture reader tests",
+  "dependencies": {
+    "puppeteer": "25.10.0"
+  }
+}

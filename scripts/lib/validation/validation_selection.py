@@ -51,6 +51,9 @@ class CheckCatalogEntry:
 
 
 CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
+    "operational_guidance.check": CheckCatalogEntry(
+        "operational_guidance.check", "python scripts/project-operational-guidance.py --check", "skills",
+    ),
     "current_records.validate": CheckCatalogEntry(
         "current_records.validate", "python scripts/validate-governed-lifecycle-cli.py", "current-records",
         label="Validate current records", modes=("broad-smoke",),
@@ -289,7 +292,9 @@ REM_TOOL_PATHS = frozenset({
     "scripts/lib/rem_architecture_physical.py", "scripts/lib/rem_architecture_process.py",
     "scripts/lib/rem_architecture_realization_diagrams.py", "scripts/lib/rem_architecture_scenario_diagrams.py",
     "scripts/lib/rem_architecture_scenarios.py", "scripts/lib/rem_architecture_test_diagrams.py",
-    "scripts/lib/rem_architecture_testing.py",
+    "scripts/lib/rem_architecture_testing.py", "scripts/lib/rem_authored_views.py",
+    "tests/engineering/validation/browser-toolchain/package.json",
+    "tests/engineering/validation/browser-toolchain/package-lock.json",
     "scripts/resources/rem-architecture-browser/index.html",
     "scripts/resources/rem-architecture-browser/viewer.css",
     "scripts/resources/rem-architecture-browser/viewer.js",
@@ -298,6 +303,7 @@ REM_TOOL_PATHS = frozenset({
     "tests/engineering/validation/architecture_schema_tests.py",
     "tests/engineering/validation/architecture_view_tests.py",
     "tests/engineering/validation/architecture_browser_tests.py",
+    "tests/engineering/validation/architecture_browser_ui_checks.cjs",
 })
 
 
@@ -1272,6 +1278,7 @@ def _apply_path_selection(
         )
 
     if category == "skills":
+        _add_check(selected, "operational_guidance.check", "Current workflow resources must match their canonical CLI and REM sources.")
         root = _skill_root(path)
         if root:
             affected_roots.add(root)
@@ -1524,6 +1531,7 @@ def _apply_path_selection(
         return
 
     if category == "validator-skills":
+        _add_check(selected, "operational_guidance.check", "Current workflow resource generation must remain reproducible.")
         _add_check(selected, "skills.regression", "Changed skill generation or validation requires skill regression fixtures.")
         _add_check(
             selected,
@@ -1833,14 +1841,19 @@ _TOOL_PACKAGE_CHECKS = {'scripts/lib/validation/__init__.py': ('adapters.regress
                              'validation_execution.regression')}
 
 
-_TOOL_PACKAGE_CHECKS["scripts/lib/__init__.py"] += tuple(REM_CHECK_COMMANDS)
+_TOOL_PACKAGE_CHECKS["scripts/lib/__init__.py"] += tuple(REM_CHECK_COMMANDS) + ("operational_guidance.check",)
+_TOOL_PACKAGE_CHECKS["scripts/lib/validation/__init__.py"] += ("operational_guidance.check",)
 
 def _path_category(path: str) -> str | None:
+    if path in {'tests/skill/skill_plan_guidance_tests.py', 'tests/skill/skill_readability_guidance_tests.py', 'tests/skill/skill_pr_guidance_tests.py', 'scripts/project-operational-guidance.py', 'tests/skill/skill_authority_tests.py', 'tests/skill/skill_verify_guidance_tests.py', 'tests/skill/skill_design_resource_tests.py', 'tests/skill/skill_route_guidance_tests.py', 'tests/skill/skill_placement_tests.py', 'tests/skill/skill_proposal_guidance_tests.py'}:
+        # This owner includes removed pilot test files so deletion still selects
+        # the surviving semantic/resource regression suite.
+        return "validator-skills"
     if (path in REM_TOOL_PATHS
             or (path.startswith("rem/") and path.endswith(".md"))
             or path == "design/README.md"
             or (path.startswith(("design/requirements/", "design/system/", "design/architecture/", "design/support/"))
-                and path.endswith((".md", ".json", ".html", ".d2", ".svg", ".sha256")))):
+                and path.endswith((".md", ".json", ".html", ".d2", ".mmd", ".toml", ".svg", ".sha256")))):
         return "rem"
     if path in _TOOL_PACKAGE_CHECKS:
         return "tooling-package"
@@ -1965,17 +1978,8 @@ def _path_category(path: str) -> str | None:
         'tests/skill/skill_canonical_tests.py',
         'tests/skill/skill_portability_tests.py',
         'tests/skill/skill_project_map_tests.py',
-        'tests/skill/skill_placement_tests.py',
         'tests/skill/skill_fixture_helpers.py',
         'tests/skill/skill_guidance_helpers.py',
-        'tests/skill/skill_readability_guidance_tests.py',
-        'tests/skill/skill_authority_tests.py',
-        'tests/skill/skill_route_guidance_tests.py',
-        'tests/skill/skill_verify_guidance_tests.py',
-        'tests/skill/skill_pr_guidance_tests.py',
-        'tests/skill/skill_plan_guidance_tests.py',
-        'tests/skill/skill_proposal_guidance_tests.py',
-        'tests/skill/skill_design_resource_tests.py',
         'tests/skill/skill_vision_guidance_tests.py',
         'tests/skill/skill_learn_guidance_tests.py',
         'tests/skill/skill_project_map_guidance_tests.py',
@@ -1985,7 +1989,7 @@ def _path_category(path: str) -> str | None:
         'tests/skill/skill_discovery_guidance_tests.py',
     }:
         return "validator-skills"
-    if path == "packages/rigorloop" or path.startswith("packages/rigorloop/"):
+    if path in {"packages/rigorloop", ".rigorloop.json"} or path.startswith("packages/rigorloop/"):
         return "rigorloop-cli"
     if path in {
         '.github/workflows/publish-github-packages.yml',

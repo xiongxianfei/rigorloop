@@ -58,7 +58,8 @@ Do not split Functions solely to mirror requirement identifiers.
 
 ## Confirm relationships
 
-An approved SR MUST confirm at least one Function that carries the behavior required by the obligation.
+Before System Design for an approved SR is considered complete, it MUST confirm at least one Function that carries the behavior required by the obligation.
+An approved requirement may enter Functional Analysis without that relationship; approval establishes the obligation to design against, not completed logical behavior.
 The same Function may be confirmed by several SRs.
 A Function may realize several Features.
 

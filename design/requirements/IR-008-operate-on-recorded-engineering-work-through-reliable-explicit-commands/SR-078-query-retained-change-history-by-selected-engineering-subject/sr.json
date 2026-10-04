@@ -1,0 +1,64 @@
+{
+  "id": "SR-078",
+  "type": "system-requirement",
+  "title": "Query retained change history by selected engineering subject",
+  "status": "draft",
+  "statement": "The system shall return bounded explicitly selected retained Change history for a project-qualified engineering subject, with recorded relationships, original subject and assessment identities, declared selection and state scope, and accurate completeness or unavailability, without inferring engineering relevance or approval.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Per-Change reads alone do not let a participant identify recorded decisions and findings about the same subject across retained work.",
+      "desired_outcome": "Participants can inspect attributable cross-Change results without reading all history or mistaking partial retrieval for absence."
+    },
+    "why": {
+      "rationale": "The refined IR-008 need requires this independently assessable outcome while preserving historical meaning and current work."
+    },
+    "who": {
+      "stakeholders": [
+        "Project maintainers and authorized engineers",
+        "Engineering agents acting for the user",
+        "Reviewers relying on retained evidence"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "When an actor requests retained Changes, decisions, findings or evidence related to an explicitly selected engineering subject."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "Selected project operational records, retained evidence and explicitly selected local source or destination scope."
+      ]
+    },
+    "how": {
+      "approach": "Use explicit scope and state identities, preserve original meaning and unrelated work, and report complete, unavailable, conflicting or failed outcomes according to the criteria below. Physical storage, commands and allocation remain downstream decisions."
+    },
+    "how_much": {
+      "scope": "One selected project and declared finite operational scope; no hosted storage, automatic history merging, recovery of destroyed copies, or numerical performance/recovery guarantee. Current-model understanding remains owned by SR-004/005."
+    }
+  },
+  "acceptance_criteria": [
+    "Given retained Changes with explicit relationships to the selected subject and unrelated records, results include only matching records under the declared filters, each identifying its Change, original subject basis and provenance.",
+    "Filters for recorded finding disposition or verification outcome operate on recorded facts and do not infer current applicability, unresolved work or semantic relevance from prose.",
+    "An available supported history with no matches returns an empty complete selection; absent, unreadable, incompatible or partially retained history reports its distinct limitation and cannot claim no relevant work ever existed.",
+    "Bounded continuation binds the project, normalized selection, ordering and observed history state. If that state changes, continuation conflicts rather than silently omitting or duplicating results.",
+    "Historical subject paths or display names may differ while identity continues; the result preserves the recorded identity and revision instead of retargeting old assessments to the current definition.",
+    "A lookup performs no operational initialization, recovery, migration, source-model modification or assessment update."
+  ],
+  "assumptions": [
+    "Required retained source material and supported interpretation information are accessible; failure of that premise is reported explicitly."
+  ],
+  "constraints": [
+    "A successful storage operation grants no engineering approval or action authority."
+  ],
+  "confirms": [
+    "FUNC-077"
+  ],
+  "sources": [
+    {
+      "source": "SRC-LOCAL-OPERATIONAL-ANALYSIS",
+      "locator": "SR-078",
+      "basis": "Draft derivation from the refined IRs and RR proposal; no approval, implementation or satisfaction claim."
+    }
+  ]
+}

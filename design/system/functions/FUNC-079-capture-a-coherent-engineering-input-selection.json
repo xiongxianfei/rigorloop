@@ -1,0 +1,40 @@
+{
+  "id": "FUNC-079",
+  "type": "function",
+  "title": "Capture a coherent engineering input selection",
+  "status": "draft",
+  "description": "Capture the explicitly selected authoritative model and permitted supporting content with a complete membership and content identity for subsequent interpretation and projection.",
+  "inputs": [
+    "Selected project, immutable state/export and explicit model/supporting-content membership.",
+    "Requested profile identity and access context."
+  ],
+  "preconditions": [],
+  "outputs": [
+    "Captured content and member digests with selected-state identity.",
+    "Explicit missing, changed, unsafe or unsupported selection outcomes."
+  ],
+  "behavior": [
+    "Admit an immutable selected state or a declared immutable export; a live mutable directory without an established stable selection is rejected rather than assumed coherent.",
+    "Collect only profile-declared members and explicitly selected supporting rationale; never recursively export unrelated workspace or operational history.",
+    "Bind file membership, bytes and profile identity to the capture; detect additions, removals and content drift against the declared basis.",
+    "Return captured content without changing authoritative input or claiming baseline retention."
+  ],
+  "failure_behavior": [
+    {
+      "condition": "The selection is mutable, changed, incomplete or unsafe.",
+      "outcome": "Return the affected scope and no coherent-input success."
+    },
+    {
+      "condition": "An optional explanation is unavailable.",
+      "outcome": "Preserve its explicit limitation separately from required-input validity."
+    }
+  ],
+  "sources": [
+    {
+      "source": "SRC-CUSTOMER-BROWSER-DESIGN",
+      "locator": "FUNC-079",
+      "basis": "System and Architecture Design from SR-084\u2013088 and refined SR-060; proposed responsibility, contract and realization only. No implementation, platform qualification or product availability is established."
+    }
+  ],
+  "allocated_to": "MOD-001"
+}

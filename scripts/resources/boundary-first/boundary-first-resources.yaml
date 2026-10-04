@@ -6,7 +6,8 @@ resources:
     target: references/boundary-first-method-v1.md
     consumers:
       - route
-      - design
+      - system-design
+      - architecture-design
       - design-review
       - plan
       - delivery-review

@@ -28,6 +28,11 @@
       "source": "SRC-PUBLISHED-PRODUCTS",
       "locator": "FUNC-054",
       "basis": "Assign MOD-012 as the proposed accountable primary responsibility after Functional Analysis. Current product source contracts retain detailed behavior authority; allocation is not runtime adoption or complete AR coverage."
+    },
+    {
+      "source": "SRC-WORKFLOW-DESIGN",
+      "locator": "FUNC-054",
+      "basis": "Draft integrated design from the accepted requirement-first basis. This defines target responsibility and cooperation, not installed capability, design approval, runtime evidence or SQLite adoption."
     }
   ],
   "description": "Determine the next responsible engineering activity and its prerequisites from current work, workflow policy, and assessment state. This Function interprets progression; work-context retention, authority decisions, and evidence judgments remain with their existing Functions.",
@@ -45,7 +50,11 @@
     "Use current work context and applicable assessment basis to identify prerequisites, required independence, unresolved findings, and correction ownership.",
     "Keep progress, local task completion, readiness, governed closeout, and external handoff distinguishable.",
     "Prepare the appropriate receiving activity and its inputs; preserve isolated invocation limits unless broader progression is authorized.",
-    "Apply the common authority decision before continuation and do not infer it from a persisted record or favorable judgment."
+    "Apply the common authority decision before continuation and do not infer it from a persisted record or favorable judgment.",
+    "Treat accepted requirements as sufficient to enter design even when Functions/ARs are unfinished; require integrated design assessment before dependent delivery planning.",
+    "Continue through authorized checked milestones without review IDs or clean-review labels. Request the whole-change review gate only when the complete implementation scope is ready. Advisory findings cannot satisfy that gate.",
+    "Keep corrections within the same whole-change gate and determine the responsible owner from defect meaning. Final Verify requires applicable current whole-change approval; evidence-only collection retry does not create a new review gate.",
+    "Determine gate reliance from exact current subjects and explicit applicability, never solely from the most recent attempt or a cached status. Unknown stages and contradictory current contracts stop affected routing."
   ],
   "failure_behavior": [
     {

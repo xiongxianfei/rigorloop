@@ -22,7 +22,8 @@
     "Connect naming, relationship, correction, and retirement steps to their canonical rules and current affected definitions.",
     "Explain identifiable diagnostics and how a proposed correction can be checked without treating the diagnostic itself as an editing authorization.",
     "Select one consequential clarification at a time when necessary, retaining uncertainty and refraining from invented answers.",
-    "Distinguish a recommendation, a conformant record, an approved change, and a satisfied requirement."
+    "Distinguish a recommendation, a conformant record, an approved change, and a satisfied requirement.",
+    "Explain RR reuse/refinement/creation and stage-owned corrections; keep AR derivation with Architecture Design, current stakeholder intent with Requirement Analysis and delivery tasks distinct from allocated obligations."
   ],
   "failure_behavior": [
     {
@@ -44,6 +45,11 @@
       "source": "SRC-ARCHITECTURE-PILOT",
       "locator": "FUNC-033",
       "basis": "Propose MOD-008 as the single accountable architectural responsibility for the existing behavior. This allocation preserves the Function definition and does not establish implementation or completed interface/AR coverage outside the IR-001 pilot."
+    },
+    {
+      "source": "SRC-WORKFLOW-DESIGN",
+      "locator": "FUNC-033",
+      "basis": "Draft integrated design from the accepted requirement-first basis. This defines target responsibility and cooperation, not installed capability, design approval, runtime evidence or SQLite adoption."
     }
   ],
   "allocated_to": "MOD-008"

@@ -28,7 +28,8 @@ Once System Design for the Feature is considered complete, it MUST be realized b
 ## Function relationships
 
 A Function is durable logical behavior.
-An approved SR MUST confirm at least one Function that carries the behavior required by that obligation.
+Before System Design for an approved SR is considered complete, that SR MUST confirm at least one Function that carries the behavior required by the obligation.
+Requirement approval may precede that design; missing Function coverage remains an explicit design obligation, not a prerequisite for accepting the requirement basis.
 A Function may be confirmed by several SRs and may realize several Features.
 Do not create one Function per SR merely to preserve symmetry.
 

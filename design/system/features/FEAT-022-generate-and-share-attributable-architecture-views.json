@@ -1,0 +1,43 @@
+{
+  "id": "FEAT-022",
+  "type": "feature",
+  "title": "Generate and share attributable architecture views",
+  "status": "draft",
+  "description": "Customers can generate, copy and read a portable architecture snapshot of a selected project, understanding its engineering facts, rationale, provenance and limits without authoring a second model. Sharing remains an explicit user action.",
+  "scope": {
+    "includes": [
+      "Generate and inspect the five REM architecture perspectives from selected supported inputs.",
+      "Read a complete copied snapshot offline with attribution and explicit missing/proposed information.",
+      "Preserve selected source meaning and existing output through diagnosed generation failures."
+    ],
+    "excludes": [
+      "Editing engineering truth, hosted collaboration, automatic publication and operational-history export.",
+      "A particular renderer, package format or claim of design completeness."
+    ]
+  },
+  "realized_by": [
+    "FUNC-004",
+    "FUNC-007",
+    "FUNC-009",
+    "FUNC-012",
+    "FUNC-013",
+    "FUNC-040",
+    "FUNC-048",
+    "FUNC-079",
+    "FUNC-080",
+    "FUNC-081",
+    "FUNC-082"
+  ],
+  "sources": [
+    {
+      "source": "SRC-CUSTOMER-BROWSER-REQUIREMENTS",
+      "locator": "FEAT-022; existing Functions support definition presentation, navigation and interpretation only; complete generation and portability realization remains System Design work.",
+      "basis": "User-requested reusable customer architecture browser; requirement-level author analysis. Current records remain draft; no implemented, published or independently approved behavior is claimed."
+    },
+    {
+      "source": "SRC-CUSTOMER-BROWSER-DESIGN",
+      "locator": "FEAT-022",
+      "basis": "System and Architecture Design from SR-084\u2013088 and refined SR-060; proposed responsibility, contract and realization only. No implementation, platform qualification or product availability is established."
+    }
+  ]
+}

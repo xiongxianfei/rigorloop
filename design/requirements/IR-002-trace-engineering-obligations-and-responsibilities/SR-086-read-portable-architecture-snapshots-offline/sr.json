@@ -1,0 +1,66 @@
+{
+  "id": "SR-086",
+  "type": "system-requirement",
+  "title": "Read portable architecture snapshots offline",
+  "status": "draft",
+  "statement": "The system shall let a reader inspect a complete generated architecture snapshot offline without the generation tools, original project checkout or operational database, while identifying the snapshot scope and its limits of currency.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "A shared page may depend on unavailable source files or network services.",
+      "desired_outcome": "let a reader inspect a complete generated architecture snapshot offline without the generation tools, original project checkout or operational database, while identifying the snapshot scope and its limits of currency."
+    },
+    "why": {
+      "rationale": "Customer use needs attributable, portable views and truthful boundaries beyond repository-local demonstration."
+    },
+    "who": {
+      "stakeholders": [
+        "Customer model authors and readers",
+        "Product maintainers and reviewers"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "When generating, reading or qualifying the selected architecture browser capability."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "One selected customer project/state and explicitly selected output; declared product generation and reading environments."
+      ]
+    },
+    "how": {
+      "approach": "Assess the stated observable outcomes against explicit supported profiles, selected source identity and actual artifacts; preserve ownership and diagnose unavailable or incomplete results."
+    },
+    "how_much": {
+      "scope": "Read-only local generation and portable snapshot reading. No live editor, hosted-service requirement, cross-project aggregation, automatic publication or invented performance target. Detailed realization and platform support are downstream design decisions."
+    }
+  },
+  "acceptance_criteria": [
+    "Copy the complete output to another supported reading environment, make the source checkout unavailable and disable network access; required navigation, diagrams, definitions and included rationale remain usable.",
+    "The snapshot contains the reading resources and source detail needed to understand its selected scope; unavailable optional external links do not replace required explanations.",
+    "Reading requires no generator, rendering compiler, remote fonts or script CDN, hosted service or local operational database.",
+    "The reader can identify project/profile, input content identity and generator provenance; the snapshot does not claim live freshness without a fresh comparison.",
+    "Opening or copying the snapshot does not alter engineering sources or grant permission to publish customer information."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "confirms": [
+    "FUNC-081"
+  ],
+  "constrains": [
+    "FEAT-022"
+  ],
+  "sources": [
+    {
+      "source": "SRC-CUSTOMER-BROWSER-REQUIREMENTS",
+      "locator": "SR-086",
+      "basis": "User-requested reusable customer architecture browser; requirement-level author analysis. Current records remain draft; no implemented, published or independently approved behavior is claimed."
+    },
+    {
+      "source": "SRC-CUSTOMER-BROWSER-DESIGN",
+      "locator": "SR-086",
+      "basis": "System and Architecture Design from SR-084\u2013088 and refined SR-060; proposed responsibility, contract and realization only. No implementation, platform qualification or product availability is established."
+    }
+  ]
+}

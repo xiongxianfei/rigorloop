@@ -12,7 +12,7 @@ from typing import Mapping
 METHOD_VERSION = "boundary-first-v1"
 RESOURCE_MANIFEST = Path("scripts/resources/boundary-first/boundary-first-resources.yaml")
 RESOURCE_MANIFEST_SHA256 = (
-    "fe19865387955cf3354f7aff285e5a67c6fa2260f313e379a4a39eab888276c2"
+    "72e29796dfb9a477490bf90a9444ea8a11c3aebb4ccccc047efd448c67fde6eb"
 )
 CANONICAL_REFERENCE = Path(
     "templates/shared/boundary-first-method-v1.md"
@@ -20,7 +20,8 @@ CANONICAL_REFERENCE = Path(
 PROJECTED_REFERENCE = Path("references/boundary-first-method-v1.md")
 GOVERNED_SKILLS = (
     "route",
-    "design",
+    "system-design",
+    "architecture-design",
     "design-review",
     "plan",
     "delivery-review",
@@ -31,7 +32,7 @@ GOVERNED_SKILLS = (
 RESOURCE_IDS = ("compact-core",)
 RESOURCE_IDENTITY_SHA256 = {
     "compact-core": (
-        "89337cf5da8462ad2afa0c50e04fb7233beea7ce030a049fa3a1695fc57ea2d0"
+        "ba90e67d3da9fa2efb27ef1cdc54c366e5966ef6a1f728ee2c6ef43e8366cc84"
     ),
 
 }

@@ -1,0 +1,87 @@
+{
+  "id": "SR-080",
+  "type": "system-requirement",
+  "title": "Establish the reviewed requirement basis before dependent design",
+  "status": "draft",
+  "statement": "The system shall require independent Requirement Review of the proposed requirement basis as the first mandatory workflow approval, including justified reuse conclusions, and shall bind its judgment to the exact requested scope and assessed requirement and supporting analysis subjects.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "A preliminary direction approval can be mistaken for accepted obligations, or a requirement gate can incorrectly demand design artifacts that it is meant to enable.",
+      "desired_outcome": "Accepted requirements can guide design without implying that the design, implementation or verification is complete."
+    },
+    "why": {
+      "rationale": "The user-selected workflow must preserve traceability and independent judgment while assigning each engineering decision one owner and avoiding redundant approval cycles."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineers and engineering agents",
+        "Independent reviewers and project decision owners",
+        "Maintainers of guidance, validation and recording tools"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "Before relying on a proposed requirement basis for dependent System or Architecture Design, and after material changes to that basis."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "The project-selected governed workflow and its scoped specialist activities, including portable isolated use where applicable."
+      ]
+    },
+    "how": {
+      "approach": "Apply the explicit ownership and dependency conditions in the criteria; record exact scope, decisions, exceptions and assessment basis without inferring approval from mechanics. Detailed Function, Module, Interface and storage realization belongs to subsequent design."
+    },
+    "how_much": {
+      "scope": "The selected requirement-first workflow within one Change and its affected dependencies. No new preliminary proposal gate, per-method approval, mandatory milestone approval, automatic external permission or mandatory SQLite prerequisite. Functional and architectural completeness are deliberately deferred to design; the Feature constraints express workflow conditions, not a completed behavior realization."
+    }
+  },
+  "acceptance_criteria": [
+    "Review assesses RR fidelity, existing-owner reuse, explicit scope, proposed IR/SR meaning, supporting Feature/Scenario coverage, assessability and material uncertainty; the author cannot independently approve the same subjects.",
+    "A no-change requirement conclusion receives review of its selected existing subjects and reuse rationale rather than being rejected for having no edited requirement files.",
+    "An otherwise sufficient requirement basis may be accepted while Functions, Module allocation and ARs remain unfinished. Their absence is reported as downstream work, not a requirement-validity failure.",
+    "Approval identifies the exact reviewed subjects and governing basis and permits reliance for design only; it does not imply design completeness, implementation authority, requirement satisfaction or permission for external actions.",
+    "Material requirement changes after approval require applicability reassessment and affected review before dependent reliance; an earlier proposal approval or successful save cannot substitute for this judgment.",
+    "Bounded feasibility investigation may inform the proposed basis before approval, but must not be presented as approved detailed design or authorized implementation."
+  ],
+  "assumptions": [
+    "Existing governance and recording remain available until explicit coordinated adoption; target skill and CLI support is not assumed installed."
+  ],
+  "constraints": [
+    "Draft authoring and structural validation do not establish independent review approval or activate the new workflow."
+  ],
+  "constrains": [
+    "FEAT-016",
+    "FEAT-017"
+  ],
+  "sources": [
+    {
+      "source": "SRC-REQUIREMENT-FIRST-WORKFLOW",
+      "locator": "SR-080",
+      "basis": "User-selected requirement-first workflow and one mandatory whole-change Code Review gate. Proposed requirement analysis only; existing product contracts remain active until coordinated adoption. No new Function, AR, implementation or approval is inferred."
+    },
+    {
+      "source": "SRC-WORKFLOW-DESIGN",
+      "locator": "SR-080",
+      "basis": "Draft integrated design from the accepted requirement-first basis. This defines target responsibility and cooperation, not installed capability, design approval, runtime evidence or SQLite adoption."
+    },
+    {
+      "source": "SRC-WORKFLOW-DESIGN",
+      "locator": "SR-080 AC1,2,4,5; AR-031, AR-032",
+      "basis": "Proposed allocation composition: Assurance preserves exact actor/subject/judgment scope; capability routing requires the applicable basis rather than a saved label or old Proposal review. This is a design argument, not executed satisfaction evidence."
+    },
+    {
+      "source": "SRC-WORKFLOW-DESIGN",
+      "locator": "SR-080 AC3,6; AR-032 with AR-031",
+      "basis": "Proposed allocation composition: The routing boundary permits design from sufficient requirements without requiring completed Functions/ARs; feasibility remains bounded and cannot imply implementation authority. This is a design argument, not executed satisfaction evidence."
+    }
+  ],
+  "confirms": [
+    "FUNC-053",
+    "FUNC-054",
+    "FUNC-029",
+    "FUNC-030",
+    "FUNC-031"
+  ]
+}

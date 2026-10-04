@@ -3,7 +3,7 @@
   "type": "allocated-requirement",
   "title": "Resolve identities without hiding absence or ambiguity",
   "status": "draft",
-  "statement": "The Engineering model storage Module shall resolve a requested identity to a unique entity reference in the selected model state only when the inspected scope establishes uniqueness, and shall distinguish absence, ambiguity, and inability to inspect that scope.",
+  "statement": "The Definition storage Module shall resolve a requested identity to a unique entity reference in the selected model state only when the inspected scope establishes uniqueness, and shall distinguish absence, ambiguity, and inability to inspect that scope.",
   "analysis": {
     "method": "5W2H",
     "what": {

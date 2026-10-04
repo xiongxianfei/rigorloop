@@ -1,5 +1,5 @@
 # Generated from explicit REM realization facts; do not edit.
-# Source identity: 2cf8f01cf8087e0b226dbd431d6452970b13954a16b84408d91173987708417e
+# Source identity: 7978be139fe27eda655003b22781018baac550ab5be13f735b6a2800fc2e5371
 # Containment records named placement; there are no transfer or execution edges.
 vars: { d2-config: { layout-engine: elk } }
 direction: down
@@ -13,7 +13,7 @@ n_434c49207061636b61676520726f6f74: "CLI package root" {
   style.border-radius: 9
   n_4d4f442d3031303a6465706c6f796d656e743a30: "CLI runtime package\n\ndist/bin/rigorloop.js\ndist/lib/\ndist/metadata/\npackage.json" {
     link: "#physical/MOD-010"
-    tooltip: "CLI runtime package; responsibilities: Engineering command interface, Operational record persistence, Verified skill installation; paths: dist/bin/rigorloop.js; dist/lib/; dist/metadata/; package.json"
+    tooltip: "CLI runtime package; responsibilities: Command handling, Work record storage, Skill installation; paths: dist/bin/rigorloop.js; dist/lib/; dist/metadata/; package.json"
     style.fill: "#EEF6F1"
     style.stroke: "#597390"
     style.font-color: "#24364A"
@@ -27,18 +27,18 @@ n_53656c65637465642070726f6a6563742066696c6573797374656d: "Selected project file
   style.stroke: "#91A3BA"
   style.font-size: 18
   style.border-radius: 9
-  n_4d4f442d3031313a70657273697374656e63653a30: "Registered operational records\n\ndocs/changes/{change_id}/" {
+  n_4d4f442d3031313a70657273697374656e63653a30: "Registered operational records\n\n.rigorloop/rigorloop.db\n.rigorloop/rigorloop.db-wal\n.rigorloop/rigorloop.db-shm\n.rigorloop/artifacts/changes/" {
     link: "#physical/MOD-011"
-    tooltip: "Registered operational records; responsibilities: Operational record persistence; paths: docs/changes/{change_id}/"
+    tooltip: "Registered operational records; responsibilities: Work record storage; paths: .rigorloop/rigorloop.db; .rigorloop/rigorloop.db-wal; .rigorloop/rigorloop.db-shm; .rigorloop/artifacts/changes/"
     style.fill: "#EEF6F1"
     style.stroke: "#597390"
     style.font-color: "#24364A"
     style.font-size: 16
     style.border-radius: 7
   }
-  n_4d4f442d3031313a70657273697374656e63653a31: "Record transaction metadata\n\n.rigorloop/record-store/{change_id}/\nlock\n.rigorloop/record-store/{change_id}/\nepoch\n.rigorloop/record-store/{change_id}/\njournal.json" {
+  n_4d4f442d3031313a70657273697374656e63653a31: "Record transaction metadata\n\n.rigorloop/maintenance/\n.rigorloop/coordination/" {
     link: "#physical/MOD-011"
-    tooltip: "Record transaction metadata; responsibilities: Operational record persistence; paths: .rigorloop/record-store/{change_id}/lock; .rigorloop/record-store/{change_id}/epoch; .rigorloop/record-store/{change_id}/journal.json"
+    tooltip: "Record transaction metadata; responsibilities: Work record storage; paths: .rigorloop/maintenance/; .rigorloop/coordination/"
     style.fill: "#EEF6F1"
     style.stroke: "#597390"
     style.font-color: "#24364A"

@@ -32,17 +32,32 @@ EXPECTED_RUNTIME_PATHS = frozenset({
     "package/dist/bin/rigorloop.js",
     "package/dist/lib/command-result.js",
     "package/dist/lib/installer-replacement.js",
-    "package/dist/lib/record-store.js",
+        "package/dist/lib/operational-cli.js",
+        "package/dist/lib/operational-contract.js",
+        "package/dist/lib/operational-receipt.js",
+        "package/dist/lib/operational-files.js",
+        "package/dist/lib/operational-store.js",
+        "package/dist/lib/operational-layout.js",
+        "package/dist/lib/operational-rows.js",
+        "package/dist/lib/operational-model.js",
+        "package/dist/lib/operational-tasks.js",
+        "package/dist/lib/operational-attachments.js",
+        "package/dist/lib/operational-maintenance.js",
+        "package/dist/lib/operational-maintenance-contract.js",
+        "package/dist/lib/operational-bundle.js",
+        "package/dist/lib/operational-coordination.js",
+        "package/dist/lib/operational-legacy-import.js",
+        "package/dist/lib/record-store-files.js",
+        "package/dist/lib/workflow-package.js",
+        "package/dist/lib/migrations/operational-schema-1.sql",
+        "package/dist/schemas/rigorloop-records-v4.schema.json",
+        "package/dist/schemas/targeted-recording-v2.schema.json",
+        "package/dist/schemas/store-maintenance-v1.schema.json",
+        "package/dist/templates/shared/rigorloop-workflow.json",
     "package/dist/lib/record-json.js",
     "package/dist/lib/record-format-v3.js",
     "package/dist/lib/record-format-core.js",
     "package/dist/schemas/rigorloop-records-v3.schema.json",
-    "package/dist/templates/rigorloop-records-v3/records.json",
-    "package/dist/lib/recording-cli.js",
-    "package/dist/lib/record-discovery.js",
-    "package/dist/lib/record-store-transport.js",
-    "package/dist/schemas/targeted-recording-v1.schema.json",
-    "package/dist/schemas/record-store-transport.schema.json",
     "package/dist/lib/official-archive-url.js",
     "package/dist/metadata/adapter-artifacts-v0.3.4.json",
     "package/dist/metadata/releases.json",
@@ -261,7 +276,7 @@ class NpmPackagePublicationTests(unittest.TestCase):
 
                 with self.subTest(target=target, mode="empty-unit-default-and-force"):
                     conflict_project = Path(project_temp) / f"empty-{target}"
-                    unit = conflict_project / TARGET_SKILL_ROOTS[target] / "design"
+                    unit = conflict_project / TARGET_SKILL_ROOTS[target] / "system-design"
                     unit.mkdir(parents=True)
                     sentinels = {"rigorloop.yaml": b"preserve state\r\n",
                                  "rigorloop.lock": b"preserve lock\x00",
@@ -294,7 +309,7 @@ class NpmPackagePublicationTests(unittest.TestCase):
                     victim = Path(project_temp) / f"outside-{target}"
                     victim.mkdir()
                     (victim / "keep.md").write_bytes(b"outside destination\r\n")
-                    unsafe_unit = unsafe_project / TARGET_SKILL_ROOTS[target] / "design"
+                    unsafe_unit = unsafe_project / TARGET_SKILL_ROOTS[target] / "system-design"
                     unsafe_unit.parent.mkdir(parents=True)
                     unsafe_unit.symlink_to(victim, target_is_directory=True)
                     (unsafe_project / "rigorloop.yaml").write_bytes(b"keep state")
@@ -328,7 +343,7 @@ class NpmPackagePublicationTests(unittest.TestCase):
             self.assertEqual(new_change_payload["errors"][0]["code"], "invalid-usage")
             self.assertFalse((Path(project_temp) / "docs/changes/test-change").exists())
             workflow = run_command(
-                ["node", "--test", "--test-name-pattern=TG-05 actors", "packages/rigorloop/test/record-store-workflow.test.js"],
+                ["node", "--test", "--test-name-pattern=operational completion", "packages/rigorloop/test/operational-review.test.js"],
                 env={**os.environ, "RIGORLOOP_TEST_PACKAGED_BIN": str(bin_path)},
             )
             self.assertEqual(workflow.returncode, 0, workflow.stdout + workflow.stderr)
@@ -368,12 +383,12 @@ class NpmPackagePublicationTests(unittest.TestCase):
             self.assertEqual(concise_payload["observability"], "recorded")
             invocation_id = concise_payload["invocation_id"]
 
-            path_result = run_command([str(bin_path), "logs", "path"], cwd=project_root, env=command_env)
+            path_result = run_command([str(bin_path), "logs"], cwd=project_root, env=command_env)
             self.assertEqual(path_result.returncode, 0, path_result.stderr)
             self.assertEqual(Path(path_result.stdout.strip()), log_root)
 
             show_result = run_command(
-                [str(bin_path), "logs", "show", invocation_id, "--format", "json"], cwd=project_root, env=command_env
+                [str(bin_path), "logs", "--invocation", invocation_id, "--format", "json"], cwd=project_root, env=command_env
             )
             self.assertEqual(show_result.returncode, 0, show_result.stderr or show_result.stdout)
             show_payload = json.loads(show_result.stdout)
@@ -429,8 +444,8 @@ class NpmPackagePublicationTests(unittest.TestCase):
 
             readme = (package_root / "README.md").read_text(encoding="utf-8")
             for documented_surface in (
-                "rigorloop logs path",
-                "rigorloop logs show <invocation-id>",
+                "rigorloop logs",
+                "rigorloop logs --invocation <invocation-id>",
                 "--no-file-log",
                 "--console-log-level debug|info|warning|error|off",
                 "--format concise-json",

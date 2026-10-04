@@ -1,18 +1,13 @@
 {
   "observed": {
     "persistence": [
-      "Command selection and rendering use transient process state. Eligible invocation diagnostics use the location selected by log-config.js; its defaults are user-local state/log directories, with an explicit directory override. Primary/advanced recording and retired-command admission bypass runObservedCli at the entry point."
+      "Current operational semantics use normalized SQLite rows with opaque revisions. Named retained payloads live outside the DB; Git owns current engineering definitions."
     ],
     "sources": [
       {
-        "source": "SRC-CLI-SOURCE",
-        "locator": "packages/rigorloop/package.json; packages/rigorloop/dist/bin/rigorloop.js main, dispatchMain, executable wrapper; the software_units paths at 9055b3c0",
-        "basis": "Static package and source inspection establishes this bounded mapping and dispatch structure, not a packed artifact, registry version, or executed outcome."
-      },
-      {
-        "source": "SRC-PHYSICAL-REALIZATION",
-        "locator": "packages/rigorloop/dist/lib/log-config.js defaultLogDirectory, resolveLogConfig; log-sink.js LOG_NAMES, appendDiagnosticEvent, readRetainedLogs; packages/rigorloop/dist/bin/rigorloop.js main and executable wrapper at 33f56fe84ff730d7bd48900cef32170fd0682412",
-        "basis": "Static inspection records existing package, runtime, selected filesystem, and artifact-source relationships with their conditions. It does not observe a deployed host, execute a product operation, inspect a published package, or qualify installation, storage safety, platform support, remote availability, or network topology. Existing logical ownership and earlier source observations remain unchanged."
+        "source": "SRC-SQLITE-ADOPTION",
+        "locator": "packages/rigorloop/package.json; packages/rigorloop/dist/lib/operational-layout.js; operational-store.js; operational-maintenance.js",
+        "basis": "Static inspection of the successor working-tree source identifies this implementation binding. It does not establish passing tests, installed availability, publication or engineering approval. Prior observations remain recoverable at 39be9c81."
       }
     ],
     "placements": [

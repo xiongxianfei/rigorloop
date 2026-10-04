@@ -33,7 +33,7 @@
       "approach": "Account for every criterion in the claim, identify applicable observations and gaps, and preserve material contradictory evidence with its disposition or unresolved status. Record the judging participant or accountable source, conclusion, scope, and rationale. Allow a narrower supported claim only when its boundaries and excluded criteria remain explicit. Mechanical coverage checks expose support and inconsistencies; they do not supply unstated semantic judgments or action authority."
     },
     "how_much": {
-      "scope": "Claims within explicitly stated criterion and subject scope. No universal test count, coverage percentage, confidence score, or review-vote threshold is required. Judgment is separate from the authorization governed by SR-007 and does not itself execute a governed action."
+      "scope": "Claims within explicitly stated criterion and subject scope. No universal test count, coverage percentage, confidence score, or review-vote threshold is required. Judgment is separate from the authorization governed by SR-007 and does not itself execute a governed action. The requirement-first workflow extension is draft; existing Function/AR and product-contract coverage must be reassessed before its adoption."
     }
   },
   "acceptance_criteria": [
@@ -41,7 +41,9 @@
     "A missing applicable observation or unresolved material contradictory observation leaves the affected claim unestablished and is visible in its coverage and judgment.",
     "A narrower supported conclusion names its supported scope and excludes the unsupported portion without presenting the entire requirement or broader readiness claim as satisfied.",
     "A mechanical check reporting complete references or passing labels does not substitute for a recorded semantic conclusion that the evidence supports the criteria.",
-    "A judgment does not confer execution authority, and a permitted exception or accepted tradeoff is not mislabeled as observed requirement satisfaction."
+    "A judgment does not confer execution authority, and a permitted exception or accepted tradeoff is not mislabeled as observed requirement satisfaction.",
+    "A requirement-review judgment may accept a reuse conclusion or assessable requirement basis before Function/AR design is complete; a design-review judgment assesses that later completeness separately. Each judgment names its scope and independence basis rather than substituting one gate for another.",
+    "Retain attributable current conclusions and sufficient supporting summaries, not every intermediate assessment file. Updating working progress cannot author reviewer approval or change the meaning of support still being relied upon."
   ],
   "assumptions": [],
   "constraints": [],
@@ -54,6 +56,16 @@
       "source": "SRC-COMPLETE-ANALYSIS",
       "locator": "SR-028",
       "basis": "Derived from IR-004: IR-004 selects criterion coverage and applicability as its sufficiency rule and distinguishes mechanical inspection from semantic engineering judgment. The criteria describe intended observable behavior, not executed verification."
+    },
+    {
+      "source": "SRC-REQUIREMENT-FIRST-WORKFLOW",
+      "locator": "SR-028",
+      "basis": "User-selected requirement-first workflow and one mandatory whole-change Code Review gate. Proposed requirement analysis only; existing product contracts remain active until coordinated adoption. No new Function, AR, implementation or approval is inferred."
+    },
+    {
+      "source": "SRC-CURRENT-HANDOFF",
+      "locator": "SR-028",
+      "basis": "User-selected current handoff and selective retention refinement. Reuse existing identity and responsibility; no runtime adoption or independent approval is asserted."
     }
   ]
 }

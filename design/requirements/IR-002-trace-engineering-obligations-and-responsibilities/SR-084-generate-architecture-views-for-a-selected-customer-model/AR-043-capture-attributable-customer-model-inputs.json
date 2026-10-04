@@ -1,0 +1,59 @@
+{
+  "id": "AR-043",
+  "type": "allocated-requirement",
+  "title": "Capture attributable customer model inputs",
+  "status": "draft",
+  "statement": "The Definition storage Module shall capture attributable customer model inputs within its accountable browser contribution to SR-084, retaining the stated limits of collaborating owners.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "A locally successful browser step can hide missing ownership or an invalid cross-boundary conclusion.",
+      "desired_outcome": "Capture attributable customer model inputs."
+    },
+    "why": {
+      "rationale": "MOD-001 owns the behavior necessary for the selected SR-084 criteria; the SR remains the system-wide obligation."
+    },
+    "who": {
+      "stakeholders": [
+        "Customer authors and readers",
+        "Product maintainers and reviewers"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "When generating, reading, recovering or qualifying the selected browser scope."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "MOD-001 and its declared browser cooperation contracts."
+      ]
+    },
+    "how": {
+      "approach": "Apply the constrained Functions and preserve source, output, qualification and authority distinctions at the boundary."
+    },
+    "how_much": {
+      "scope": "Contribution to SR-084 criteria 1, 2, 4. Other Module contributions and final product qualification remain distinct."
+    }
+  },
+  "acceptance_criteria": [
+    "A minimal supported customer model using its own entity IDs can produce Logical, Process, Development, Physical and Scenario entry points without RigorLoop-specific records, contribution tables or local operational history.",
+    "The result identifies selected project, declared profile, input content identity, generator version and generation scope. A Git revision alone does not identify changed working-tree content.",
+    "If input changes during collection, either use a demonstrably coherent captured selection or report failure; never combine different states under one unqualified identity."
+  ],
+  "assumptions": [],
+  "constraints": [
+    "Draft allocation; does not establish implemented browser support or requirement satisfaction."
+  ],
+  "allocated_to": "MOD-001",
+  "constrains": [
+    "FUNC-079"
+  ],
+  "sources": [
+    {
+      "source": "SRC-CUSTOMER-BROWSER-DESIGN",
+      "locator": "AR-043; SR-084 criteria 1, 2, 4",
+      "basis": "System and Architecture Design from SR-084–088 and refined SR-060; proposed responsibility, contract and realization only. No implementation, platform qualification or product availability is established."
+    }
+  ]
+}

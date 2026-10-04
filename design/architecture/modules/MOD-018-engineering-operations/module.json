@@ -1,13 +1,13 @@
 {
   "id": "MOD-018",
   "type": "module",
-  "title": "Engineering operations",
+  "title": "Skills and commands",
   "status": "draft",
-  "description": "Account for usable engineering activity guidance and explicit command interactions whose recorded outcomes preserve the supplied decisions, selected scope, and actual storage effects.",
+  "description": "Provides skills and command interactions, preserving supplied decisions and their operational records.",
   "responsibilities": [
     "Compose published capability guidance, command admission/presentation, and operational record persistence into an understandable invocation and recording boundary.",
     "Preserve the distinction between actor-supplied engineering decisions, command-owned public results, and store-owned publication or recovery facts across that boundary.",
-    "Provide IF-004 as the accountable public command contract for Engineering operations. Compose MOD-010 command behavior and MOD-011 record cooperation to meet that contract, while Product delivery owns the installation contract."
+    "Provide IF-004 as the accountable public command contract for Skills and commands. Compose MOD-010 command behavior and MOD-011 record cooperation to meet that contract, while Packaging and distribution owns the installation contract."
   ],
   "owned_state": [],
   "scope": {
@@ -25,9 +25,10 @@
   "consumes": [],
   "design_limits": [
     "MOD-018 provides IF-004 directly. MOD-010 retains command admission, dispatch, presentation, receipt, and diagnostic behavior under its existing Function and AR allocations; MOD-011 retains record publication and recovery. IF-003 remains internal to this subtree.",
-    "IF-006 is provided by MOD-019 Product delivery and consumed by MOD-010. MOD-014 retains installation behavior within Product delivery; no exposure or second provider is introduced for these directly parent-owned contracts.",
-    "IR-008 retains its bounded CLI allocation and realization. MOD-012 consumes IF-008 for adopted-REM authoring guidance; wider specialist, authority/assurance, handoff, AR, and realization scope remain deferred.",
-    "Contract ownership adds no direct parent Function, AR, persistent state, or new physical realization. Child behavior and source observations retain their existing scope."
+    "IF-006 is provided by MOD-019 Packaging and distribution and consumed by MOD-010. MOD-014 retains installation behavior within Packaging and distribution; no exposure or second provider is introduced for these directly parent-owned contracts.",
+    "IR-008 retains its bounded CLI allocation and realization. MOD-012 consumes IF-008–011 for the requirement-first workflow; wider specialist contracts and concrete recording-schema realization remain separate work.",
+    "Contract ownership adds no direct parent Function, AR, persistent state, or new physical realization. Child behavior and source observations retain their existing scope.",
+    "The requirement-first workflow design supplies the selected SR-079–083 collaboration and AR allocation. Earlier broader deferrals remain only outside that bounded extension; existing runtime observations and installed contracts do not implement the target design."
   ],
   "sources": [
     {

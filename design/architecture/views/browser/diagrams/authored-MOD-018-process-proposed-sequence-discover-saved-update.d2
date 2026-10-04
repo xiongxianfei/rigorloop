@@ -1,0 +1,11 @@
+shape: sequence_diagram
+agent: "Engineering agent"
+cli: "Command handling\nMOD-010"
+store: "Work record storage\nMOD-011"
+store -> cli: "Committed update and revision"
+cli -> cli: "Response delivery fails"
+agent -> cli: "change context: inspect before retrying"
+cli -> store: "Read the coherent current Change"
+store -> cli: "Return current facts, revision and explicit limitations"
+cli -> agent: "Show saved progress, evidence and issue disposition"
+agent -> agent: "Reconcile intended update with current facts"

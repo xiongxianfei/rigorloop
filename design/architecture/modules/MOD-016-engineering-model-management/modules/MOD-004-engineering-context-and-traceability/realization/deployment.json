@@ -1,0 +1,19 @@
+{
+  "proposed": [
+    {
+      "choice": "Generate locally into an owned versioned output root and read complete static snapshots offline.",
+      "rationale": "Immutable per-version resources and one replaceable entry file separate preparation from commitment and preserve older readable versions.",
+      "alternatives": [
+        "Overwrite a flat directory of live assets in place."
+      ],
+      "consequences": [
+        "Initial target: Linux x86-64 and Node 24, with a bundled Rust engine built for x86_64-unknown-linux-musl and D2 0.9.0 with licenses. Qualify the exact binaries, kernel/filesystem behavior and runtime dependencies; other browser-generation targets reject.",
+        "Reader qualification covers exact Chromium and Firefox configurations recorded per release; reading requires no Node, Rust, D2, Python, source checkout, network or database.",
+        "Local filesystems with qualified atomic same-directory rename and durability behavior are required for replacement; network/synchronized filesystems are not initial qualified write targets."
+      ],
+      "revisit_when": [
+        "A selected requirement, supported platform or actual qualification result defeats this realization."
+      ]
+    }
+  ]
+}

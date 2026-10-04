@@ -3,15 +3,15 @@
   "type": "allocated-requirement",
   "title": "Require explicit recovery selection and preserve its actual outcome",
   "status": "draft",
-  "statement": "The Engineering command interface Module shall request transaction recovery only for an explicitly admitted current recovery operation and shall preserve the selected action, supplied recovery identity, and actual persistence outcome without automatic repair or replay.",
+  "statement": "The Command handling Module shall distinguish ordinary interruption inspection from explicitly selected maintenance recovery and preserve actual outcome limits.",
   "analysis": {
     "method": "5W2H",
     "what": {
-      "problem": "A command adapter can turn inspection into an implicit mutation or hide an unresolved recovery state behind a generic successful response.",
-      "desired_outcome": "The actor controls whether to restore or complete, receives the true storage result, and can make a later decision using newly inspected state."
+      "problem": "A command could silently replay uncertain work or choose a replacement state when only inspection was requested.",
+      "desired_outcome": "Ordinary inspection establishes current state; only explicit maintenance resume can finish or permissibly roll back a staged replacement."
     },
     "why": {
-      "rationale": "SR-045 requires explicit recovery ownership at the command boundary as well as exact recovery mechanics inside persistence."
+      "rationale": "SR-045 separates ordinary storage recovery from actor-authorized store replacement and requires truthful outcome limits at the public boundary."
     },
     "who": {
       "stakeholders": [
@@ -22,32 +22,32 @@
     },
     "when": {
       "conditions": [
-        "A recovery command is submitted or an ordinary command encounters interrupted transaction state.",
-        "A recovery result is unavailable, interrupted, rejected, or requires another explicit attempt."
+        "An ordinary command follows interruption, or a caller explicitly requests supported maintenance resume."
       ]
     },
     "where": {
       "contexts": [
-        "IF-004 public request admission and reporting.",
-        "MOD-010 invocation of IF-003 recover_record_transaction."
+        "IF-004 query/task admission and reporting using IF-003 inspect_records or the selected maintenance operation."
       ]
     },
     "how": {
-      "approach": "Validate the explicit change, transaction, expected recovery identity, and restore/complete action under the existing command contract. Forward only that admitted request, then project the actual returned outcome without adding a semantic decision."
+      "approach": "Apply the current v4 SQLite task and maintenance contract. Admit a normal scoped inspection after an interrupted ordinary update; no public record-transaction completion/restore command is exposed."
     },
     "how_much": {
-      "scope": "Current explicit advanced recovery and commands that can encounter its state. Ordinary inspection, check, preview, discovery, and diagnostic lookup remain non-recovering; no background completion, automatic retry, legacy handler, or general historical rollback is added."
+      "scope": "This allocation preserves its existing parent SR and accountable Module. Prior v3 file-journal mechanisms are historical at 39be9c81; current maintenance remains separately explicit."
     }
   },
   "acceptance_criteria": [
-    "Recovery dispatch requires one supported explicit action and the declared change, transaction, and expected-recovery selectors. Missing, ambiguous, invalid, or unsupported input rejects at the owning admission boundary without inventing selectors or choosing an action.",
-    "Only the admitted recovery operation invokes IF-003 recovery. Ordinary reads, check, preview, discovery, and diagnostic lookup do not complete, restore, or clean an interrupted transaction; they preserve the applicable busy or recovery-required observation.",
-    "Pass the actor-selected action and recovery expectation unchanged. Do not silently refresh a stale expectation, change complete into restore, replay targeted semantic operations, or select a compatibility handler for retired or mixed state.",
-    "Report the actual verified restored/completed state or the actual stop, conflict, unsupported, busy, or recovery-required result under the current recovery result contract, retaining only established identities and safe diagnostics. A response does not imply a workflow decision or a general rollback of acknowledged success.",
-    "After interruption or a stale recovery expectation, expose available refreshed recovery identity and the explicit reinspection/selection boundary without automatically resubmitting. Preserve source historical bytes and unsupported status when the requested recovery format is retired."
+    "Admit a normal scoped inspection after an interrupted ordinary update; no public record-transaction completion/restore command is exposed.",
+    "Ordinary reads may trigger internal SQLite recovery but never choose a new engineering effect, import history or activate a replacement.",
+    "Preserve the supplied project/Change selection and report actual established state; do not replay the failed task or refresh stale writes.",
+    "Report truthful committed/prior/unknown standing through the command result without converting storage outcome into approval.",
+    "Maintenance finish or rollback requires an explicit supported task, operation identity and fresh recovery observation; no automatic resubmission or legacy handler."
   ],
   "assumptions": [],
-  "constraints": [],
+  "constraints": [
+    "Current v4 SQLite realization; source observations do not establish engineering approval or passing implementation proof."
+  ],
   "allocated_to": "MOD-010",
   "constrains": [
     "FUNC-040",
@@ -64,6 +64,11 @@
       "source": "SRC-PUBLISHED-CLI",
       "locator": "docs/design/cli/cli.md#CLI-SR-05, CLI-SR-06, CLI-SR-09, CLI-SR-10, CLI-SR-11, CLI-SR-27, CLI-SR-28; docs/design/cli/records.md#RF-SR-06, RF-SR-12, RF-SR-14",
       "basis": "Retains the named current CLI and Record Format obligations at this allocated responsibility boundary. Their detailed formats, supported versions, limits, and observed external-edit boundaries remain authoritative; no runtime behavior or public contract is changed by this draft."
+    },
+    {
+      "source": "SRC-SQLITE-ADOPTION",
+      "locator": "docs/design/cli/records.md; Work records (MOD-011) current transaction and maintenance contract",
+      "basis": "Reconciles existing stakeholder need and allocation with SQLite ordinary recovery. No new need, approval, or executed result is inferred."
     }
   ]
 }

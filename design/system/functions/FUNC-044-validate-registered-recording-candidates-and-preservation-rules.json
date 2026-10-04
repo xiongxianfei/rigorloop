@@ -3,31 +3,26 @@
   "type": "function",
   "title": "Validate registered recording candidates and preservation rules",
   "status": "draft",
-  "description": "Assess a complete current-format recording candidate against closed record shape, registry/reference, and prior-state preservation rules. Distinguish mechanical admissibility from substantive adequacy so explicit corrections remain recordable.",
+  "description": "Validate complete current typed candidates while preserving unresolved obligations and the scope and attribution of retained judgments.",
   "inputs": [
-    "Complete candidate manifest and registered supporting records under the explicit supported contract.",
-    "Coherent prior records when finding-ID, blocker-origin, or update-preservation rules apply."
+    "Explicit supported operation, selected project/Change and expected coherent state.",
+    "Actor-supplied candidate or verified recovery basis, with declared subject and artifact identities."
   ],
   "preconditions": [],
   "outputs": [
-    "A structurally admissible complete candidate or safe rule-specific rejection.",
-    "Separate factual observations of changed subjects, failed evidence, or inconsistent recorded claims without rewritten decisions."
+    "Structurally admissible complete candidate or explicit bounded rejection/conflict; validity supplies no engineering approval."
   ],
   "behavior": [
-    "Reject unknown record/field/vocabulary/version input, duplicate keys/IDs, invalid encoding and missing required values before dependent reference or preservation checks.",
-    "Validate every registered record's path, kind, change identity and explicit record-level applicability, and resolve field-specific EntryRefs against the final combined candidate with disjoint referenceable IDs.",
-    "Preserve complete immutable blocker origins; preserve existing Review finding IDs while permitting explicit valid correction of non-ID current fields and retaining full findings during assessment-only edits.",
-    "Apply the exact Review/Verify explanation and optional complete verification_basis shapes without parsing prose for decisions, requiring Git universally, or equating metadata with authentic authority.",
-    "Keep structural errors separate from observations of external subject drift, failed evidence and contradictory claims; do not gate a valid correction on stage eligibility or assessment adequacy."
+    "Unknown fields or vocabularies, duplicate keys or identities, missing required values, unsupported encodings/versions, mixed stores, dual report representations, and malformed current records reject before authoritative writes.",
+    "Every supporting record has an unambiguous identity, owning Change and kind, with explicit applicability wherever the selected contract requires a reliance decision. References resolve exactly one admissible object in the complete candidate; storage-layout adjacency grants no authority and cross-Change fallback cannot repair an unresolved reference.",
+    "Supplied scope, subjects, narrative, provenance and decisions are preserved. Adverse evidence and explicit invalidation remain recordable; new success claims must meet the selected contract’s current support requirements.",
+    "Omitted issues remain unchanged, and open findings/blockers require explicit attributable disposition. The selected v4 contract permits later compaction and current-assessment replacement without permanent history; v3 retains its finding and immutable-origin rules. Validation must not infer resolution or reviewer judgment.",
+    "Reviews and Verifications use distinct closed assessment shapes with explicit scope, governing basis, support and limitations. Final successful Verify requires applicable mandatory review and accepted bases; scoped adverse results can be recorded without inventing missing success prerequisites."
   ],
   "failure_behavior": [
     {
-      "condition": "A candidate contains an unknown/mixed contract, invalid shape/reference, or preservation violation.",
-      "outcome": "Reject before publication with safe diagnostic context; do not normalize a retired record or guess a reference."
-    },
-    {
-      "condition": "Engineering adequacy or reliance is unsettled despite a structurally valid candidate.",
-      "outcome": "Keep the supplied decision and distinct observation; do not fabricate approval or reject a correction solely to enforce workflow progression."
+      "condition": "The requested candidate, expected state or recovery basis cannot be established safely.",
+      "outcome": "Return the corresponding bounded rejection, conflict or recovery condition without invented decisions, silent merge or unrelated overwrite."
     }
   ],
   "sources": [
@@ -40,6 +35,26 @@
       "source": "SRC-PUBLISHED-PRODUCTS",
       "locator": "FUNC-044",
       "basis": "Assign MOD-011 as the proposed accountable primary responsibility after Functional Analysis. Current product source contracts retain detailed behavior authority; allocation is not runtime adoption or complete AR coverage."
+    },
+    {
+      "source": "SRC-LOCAL-OPERATIONAL-ANALYSIS",
+      "locator": "FUNC-044",
+      "basis": "Draft derivation from the refined IRs and RR proposal; no approval, implementation or satisfaction claim."
+    },
+    {
+      "source": "SRC-WORKFLOW-CONTRACTS",
+      "locator": "FUNC-044",
+      "basis": "Reconcile the refined existing requirement with successor workflow recording while keeping attributed observed v3 realization unchanged."
+    },
+    {
+      "source": "SRC-CURRENT-HANDOFF",
+      "locator": "FUNC-044",
+      "basis": "Reconcile current-state replacement, unresolved issue preservation and selective retention; retain version-specific v3 behavior until adoption."
+    },
+    {
+      "source": "SRC-SQLITE-ADOPTION",
+      "locator": "FUNC-044",
+      "basis": "Reconcile existing use/behavior with current explicit task selection, coherent SQLite outcomes and attributable judgments; no new stakeholder need or runtime qualification is inferred."
     }
   ],
   "allocated_to": "MOD-011"

@@ -13,7 +13,6 @@ import subprocess
 import sys
 import tempfile
 import zipfile
-from collections import Counter
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path, PurePosixPath
@@ -64,7 +63,8 @@ COMMON_FRONTMATTER = frozenset({"name", "description"})
 TRANSFORMABLE_FRONTMATTER = frozenset({"argument-hint", "schema-version", "version"})
 PORTABLE_NAME_PATTERN = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 PUBLISHED_SKILL_INVOCATION_NAMES = (
-    "design",
+    "system-design",
+    "architecture-design",
     "bugfix",
     "ci-maintenance",
     "code-review",
@@ -77,8 +77,8 @@ PUBLISHED_SKILL_INVOCATION_NAMES = (
     "plan",
     "pr",
     "project-map",
-    "proposal",
-    "proposal-review",
+    "requirement-analysis",
+    "requirement-review",
     "research",
     "verify",
     "vision",
@@ -96,10 +96,6 @@ CODEX_SKILL_INVOCATION_PATTERN = re.compile(
     )
     + r")",
     re.IGNORECASE | re.ASCII,
-)
-CLAUDE_ROUTE_INVOCATION_PATTERN = re.compile(
-    r"(?<![\w./-])/(?ai:route)"
-    r"(?=$|[ \t\r\n`\"',;:!?)}\]]|\.(?:$|[ \t\r\n]))",
 )
 PAIRED_DOLLAR_MATH_SUFFIX_PATTERN = re.compile(
     r"(?:|[ \t]*[+\-*/^=<>](?:\\\$|[^$\r\n`;,:])*)"
@@ -357,71 +353,11 @@ def _non_codex_reasons(metadata: dict[str, str], text: str) -> list[str]:
         reasons.append("Depends on agents/openai.yaml.")
     if _references_codex_skills_as_only_install_location(text):
         reasons.append("References .codex/skills as the only install location.")
-    if (
-        _has_codex_skill_invocation(text)
-        and not _documents_cross_adapter_skill_invocation(text)
-    ):
+    if _has_codex_skill_invocation(text):
         reasons.append("Requires Codex-specific $skill invocation.")
     if _has_codex_runtime_assumption(text):
         reasons.append("Assumes Codex-only tool, UI, approval, or runtime assumption.")
     return reasons
-
-
-def _documents_cross_adapter_skill_invocation(text: str) -> bool:
-    """Recognize the exact route invocation-equivalence contract."""
-
-    expected_codex_code_spans = Counter(
-        (
-            "$route auto: <argument>",
-            "$route auto: <target-stage>",
-            "$route auto: status",
-            "$route auto: off",
-        )
-    )
-    actual_codex_code_spans = Counter(
-        span
-        for span in re.findall(r"`([^`\n]+)`", text)
-        if _has_codex_skill_invocation(span)
-    )
-    if actual_codex_code_spans != expected_codex_code_spans:
-        return False
-
-    equivalence_blocks = re.findall(
-        r"(?ms)^- Adapter invocation equivalents\b.*?(?=^- |\Z)",
-        text,
-    )
-    if len(equivalence_blocks) != 1:
-        return False
-
-    expected_block = (
-        "- Adapter invocation equivalents preserve the same arguments: Codex uses "
-        "`$route auto: <argument>` and Claude uses `/route auto: <argument>`. "
-        "Here `<argument>` is `<target-stage>`, `status`, or `off`.\n"
-    )
-    if equivalence_blocks[0] != expected_block:
-        return False
-    command_blocks = re.findall(
-        r"(?ms)^- `\$route auto: (?:<target-stage>|status)`.*?(?=^- |\Z)",
-        text,
-    )
-    expected_command_blocks = (
-        "- `$route auto: <target-stage>` selects a structured target. Supported "
-        "targets are `proposal-review`, `design`, `design-review`, "
-        "`plan`, `delivery-review`, `implement`, `code-review`, and "
-        "`verify`.\n",
-        "- `$route auto: status` is read-only. `$route auto: off` durably "
-        "cancels the unified run and preserves transition evidence.\n",
-    )
-    if tuple(command_blocks) != expected_command_blocks:
-        return False
-    remaining_source = text
-    for approved_block in (*equivalence_blocks, *command_blocks):
-        remaining_source = remaining_source.replace(approved_block, "", 1)
-    if _has_codex_skill_invocation(remaining_source):
-        return False
-    if CLAUDE_ROUTE_INVOCATION_PATTERN.search(remaining_source):
-        return False
-    return True
 
 
 def _is_identifier_continuation(character: str) -> bool:
@@ -1218,6 +1154,9 @@ def _expected_adapter_files_from_reports(
     for adapter_name in SUPPORTED_ADAPTERS:
         config = ADAPTERS[adapter_name]
         package_root = _adapter_package_relative_root(config)
+        expected[package_root / "rigorloop-workflow.json"] = (
+            ROOT / "templates/shared/rigorloop-workflow.json"
+        ).read_text(encoding="utf-8")
         template_path = template_root / adapter_name / _path_from_posix(config.entrypoint)
         expected[package_root / _path_from_posix(config.entrypoint)] = render_entrypoint_template(
             template_path,
@@ -2215,6 +2154,9 @@ def _prepare_local_cli_release_candidate(
     candidate_root = Path(tempfile.mkdtemp(prefix="rigorloop-clean-install-cli-"))
     candidate_dist = candidate_root / "dist"
     shutil.copytree(RIGORLOOP_CLI_DIST_ROOT, candidate_dist)
+    # The local qualification executable has the same runtime dependencies as
+    # the packed npm installation; copied dist files alone are not a package.
+    shutil.copytree(RIGORLOOP_CLI_DIST_ROOT.parent / "node_modules", candidate_root / "node_modules")
     package_json_path = candidate_root / "package.json"
     shutil.copy2(RIGORLOOP_CLI_DIST_ROOT.parent / "package.json", package_json_path)
     package_data = json.loads(package_json_path.read_text(encoding="utf-8"))

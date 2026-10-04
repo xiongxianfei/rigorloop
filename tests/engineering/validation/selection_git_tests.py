@@ -191,7 +191,8 @@ class SelectionGitChecks:
         (repo / private).parent.mkdir(parents=True)
         (repo / private).write_text("not excluded\n")
         result = select_validation(SelectionRequest(mode="local", repo_root=repo))
-        self.assertIn(private, result.unclassified_paths)
+        self.assertNotIn(private, result.changed_paths)
+        self.assertNotIn(private, result.unclassified_paths)
 
 
     def test_er_m5_001_unknown_value_contract_and_unregistered_paths_fail_closed(self):

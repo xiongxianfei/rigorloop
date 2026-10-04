@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / "scripts"))
 
 from lib.packaging.adapter_distribution import ADAPTERS, adapter_archive_name, build_adapter_archives, validate_clean_install_smoke
-from adapter_fixture_helpers import (configure_adapter_case, clean_install_runner_with_resource_mutation, copy_fixture_skills)
+from adapter_fixture_helpers import (configure_adapter_case, clean_install_runner_with_resource_mutation, copy_workflow_fixture_skills)
 
 
 class AdapterInstallTests(unittest.TestCase):
@@ -52,7 +52,7 @@ class AdapterInstallTests(unittest.TestCase):
 
         self.assertTrue(
             any(
-                "clean-install skill root missing: claude/route" in error
+                "workflow-skill-missing" in error
                 for error in errors
             ),
             errors,
@@ -160,7 +160,7 @@ class AdapterInstallTests(unittest.TestCase):
     def test_clean_install_smoke_installs_mapped_resources_from_local_archives(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
-            skills_root = copy_fixture_skills(root, ("portable-with-assets",))
+            skills_root = copy_workflow_fixture_skills(root, ("portable-with-assets",))
             output_dir = root / "release-output"
             build_adapter_archives("v0.3.4", output_dir, skills_root=skills_root)
 
@@ -193,7 +193,7 @@ class AdapterInstallTests(unittest.TestCase):
     def test_clean_install_smoke_rejects_non_installing_command_runner(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
-            skills_root = copy_fixture_skills(root, ("portable-with-assets",))
+            skills_root = copy_workflow_fixture_skills(root, ("portable-with-assets",))
             output_dir = root / "release-output"
             build_adapter_archives("v0.3.4", output_dir, skills_root=skills_root)
 
@@ -216,7 +216,7 @@ class AdapterInstallTests(unittest.TestCase):
     def test_clean_install_smoke_rejects_missing_installed_mapped_resource(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
-            skills_root = copy_fixture_skills(root, ("portable-with-assets",))
+            skills_root = copy_workflow_fixture_skills(root, ("portable-with-assets",))
             output_dir = root / "release-output"
             build_adapter_archives("v0.3.4", output_dir, skills_root=skills_root)
 
@@ -246,7 +246,7 @@ class AdapterInstallTests(unittest.TestCase):
     def test_clean_install_smoke_rejects_stale_installed_mapped_resource(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
-            skills_root = copy_fixture_skills(root, ("portable-with-assets",))
+            skills_root = copy_workflow_fixture_skills(root, ("portable-with-assets",))
             output_dir = root / "release-output"
             build_adapter_archives("v0.3.4", output_dir, skills_root=skills_root)
 
@@ -279,7 +279,7 @@ class AdapterInstallTests(unittest.TestCase):
     ) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
-            skills_root = copy_fixture_skills(root, ("portable-with-assets",))
+            skills_root = copy_workflow_fixture_skills(root, ("portable-with-assets",))
             output_dir = root / "release-output"
             build_adapter_archives("v0.3.4", output_dir, skills_root=skills_root)
 

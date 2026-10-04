@@ -6,19 +6,19 @@ Parent model: [Engineering](engineering.md#validation).
 
 This child owns repository check selection, execution, isolation, scheduling and truthful reporting. It applies [System-owned testing policy](../test-design/rules.md) alongside Skill and CLI. The executor, CI allocation and no-cache implementation belong to Engineering; individual customer skill use does not install or require this repository’s executor.
 
-Current test-structure refinement: [test design and complete suite organization](../../changes/2026-09-16-test-design-and-suite-organization/change.json), following its [approved direction](../../proposals/2026-09-16-test-design-and-suite-organization.md).
+Current test-structure refinement: test design and complete suite organization (historical operational material, unavailable in the current tree), following its [approved direction](../../proposals/2026-09-16-test-design-and-suite-organization.md).
 
-Original cleanup ownership: [current-design repository cleanup](../../changes/2026-09-13-current-design-repository-cleanup/change.json).
+Original cleanup ownership: current-design repository cleanup (historical operational material, unavailable in the current tree).
 
-Prior refinement: [independent parallel tests](../../changes/2026-09-13-independent-parallel-tests/change.json); its selected behavior and evidence retain their own scope.
+Prior refinement: independent parallel tests (historical operational material, unavailable in the current tree); its selected behavior and evidence retain their own scope.
 
-For this repository’s [complete source retirement](../../changes/2026-09-14-retire-specs-and-stale-tests/source-disposition.md), current responsibilities are self-contained in the owning Designs. Original source-transfer inventories remain recoverable through [Historical provenance](#historical-provenance); their instructions to retain or amend legacy specs, architecture, activation state or retired engines are historical and superseded by this complete retirement. Source-qualified IDs and original judgments keep their original meaning; provenance is not a runtime input or current approval. Customer source documents retain their project-owned authority and historical meaning. Current RigorLoop output and format support follow Design; source interpretation does not authorize retired feature/proof operations or automatic conversion.
+For this repository’s complete source retirement (historical operational material, unavailable in the current tree), current responsibilities are self-contained in the owning Designs. Original source-transfer inventories remain recoverable through [Historical provenance](#historical-provenance); their instructions to retain or amend legacy specs, architecture, activation state or retired engines are historical and superseded by this complete retirement. Source-qualified IDs and original judgments keep their original meaning; provenance is not a runtime input or current approval. Customer source documents retain their project-owned authority and historical meaning. Current RigorLoop output and format support follow Design; source interpretation does not authorize retired feature/proof operations or automatic conversion.
 
 ## Introduction and Goals
 
 Validation owns deterministic check selection, independent execution and truthful reporting. It applies System’s shared risk-driven, contract-centered testing policy: protect important behavior against plausible defects at the smallest sufficient observation boundary. Add broader proof where interactions, artifact identity or execution conditions introduce failures that narrower checks cannot establish. The [independent-parallel-tests direction](../../proposals/2026-09-13-independent-parallel-tests.md) refines this owner, removes redundant cases without losing distinct protection, and extends independently runnable cases across the remaining repository-owned automated test inventory. Selection includes each canonical check once per invocation; validation-result caching remains retired.
 
-The [original adoption](../../changes/2026-09-12-unified-validation-model/change.json) established the unified owner, preserved TEST-SR criteria, retired caching and adopted case execution for three suites. Its exact source-disposition maps remain recoverable through [Historical provenance](#historical-provenance); historical judgments retain their original scope. The independent-parallel-tests refinement changes check composition and remaining-case adoption as explicitly described here; it does not reopen the original cleanup. New behavior requires reviewed implementation and successful Verify of the [independent-parallel-tests change](../../changes/2026-09-13-independent-parallel-tests/change.json). Authoring and structural validation do not establish adoption.
+The original adoption (historical operational material, unavailable in the current tree) established the unified owner, preserved TEST-SR criteria, retired caching and adopted case execution for three suites. Its exact source-disposition maps remain recoverable through [Historical provenance](#historical-provenance); historical judgments retain their original scope. The independent-parallel-tests refinement changes check composition and remaining-case adoption as explicitly described here; it does not reopen the original cleanup. New behavior requires reviewed implementation and successful Verify of the independent-parallel-tests change (historical operational material, unavailable in the current tree). Authoring and structural validation do not establish adoption.
 
 ## Context and Scope
 
@@ -187,7 +187,7 @@ System owns the shared [test-design rules](../test-design/rules.md), including s
 
 ### Living test-design rules
 
-[Shared rules](../test-design/rules.md#layout-and-responsibility) own the detailed method; [Design DES-SR-25/26](../skill/authoring/design.md#living-test-design) owns its authoring application. Model-specific scenarios stay beside their requirements. Delivery and evidence retain allocation and actual-result ownership. This section is an ownership pointer, with no duplicate rule body.
+[Shared rules](../test-design/rules.md#layout-and-responsibility) own the detailed method; [Design DES-SR-25/26](../skill/authoring/design.md#proportionate-design-and-proof) owns its authoring application. Model-specific scenarios stay beside their requirements. Delivery and evidence retain allocation and actual-result ownership. This section is an ownership pointer, with no duplicate rule body.
 
 The current initiative applies the method across the model hierarchy and repository/package tests. Delivery accounts for the complete population, including generated cases, alternate callers and changes since its baseline. Release, Skill parent and Authoring are separately authored applications; their presence cannot establish complete adoption. The existing catalog admission contracts below retain their exact format and validation boundaries. A shared directory adds neither a model nor execution authority.
 
@@ -412,7 +412,7 @@ The reusable TEST-SR-01–18 and existing VAL-SR identities keep their meaning. 
 
 ### Current maintenance allocation
 
-For the current independent-parallel-tests initiative only, the affected population is the repository-owned automated inventory and its necessary executor, selector, fixture and reader changes under VAL-SR-19–22. This extends the maintenance allocation to that population without extending the original cache/source deletion map. The following exact amendment to `7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e:specs/published-skill-first-repository-simplification.md` takes effect through reviewed coherent implementation and successful Verify of the [independent-parallel-tests change](../../changes/2026-09-13-independent-parallel-tests/change.json); its preserved protection governs the proposed delivery allocation.
+For the current independent-parallel-tests initiative only, the affected population is the repository-owned automated inventory and its necessary executor, selector, fixture and reader changes under VAL-SR-19–22. This extends the maintenance allocation to that population without extending the original cache/source deletion map. The following exact amendment to `7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e:specs/published-skill-first-repository-simplification.md` takes effect through reviewed coherent implementation and successful Verify of the independent-parallel-tests change (historical operational material, unavailable in the current tree); its preserved protection governs the proposed delivery allocation.
 
 | Retained source boundary | Current replacement and preserved meaning |
 | --- | --- |
@@ -659,7 +659,7 @@ System declares `docs/design/skill/authoring/authoring.md` with `test-design/tes
 
 VAL-SR-35's exact membership, containment, duplicate/unknown-first rejection and reference checks apply to later admission implementation. Review cases must name current owner sections, valid AUTH-SR requirements and usable fixture references. Reject invented executable links or a review case marked as existing automated protection. Zero executable links in this declared review population is not a missing-test error or evidence of completed assessment; do not compare it to the aggregate's full native method count. Resolve the referenced shared contract as part of the relied-on package without silently admitting every Skill detail file.
 
-Author checks do not replace repository admission or semantic review. Implementation allocation and observed limitations for all three packages belong to the [owning change](../../changes/2026-09-17-model-test-design/change.json), together with actual validation results.
+Author checks do not replace repository admission or semantic review. Implementation allocation and observed limitations for all three packages belong to the owning change (historical operational material, unavailable in the current tree), together with actual validation results.
 
 ### Test design
 

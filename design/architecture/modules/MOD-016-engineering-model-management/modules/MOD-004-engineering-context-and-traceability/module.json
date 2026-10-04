@@ -1,20 +1,24 @@
 {
   "id": "MOD-004",
   "type": "module",
-  "title": "Engineering context and traceability",
+  "title": "Views and traceability",
   "status": "draft",
-  "description": "Compose understandable engineering context and explain relationship paths, responsibility gaps, and possible change impact without authoring competing model facts.",
+  "description": "Presents engineering definitions, views and relationship paths, explaining allocation gaps and possible change impact without creating competing model facts.",
   "responsibilities": [
     "Present current definitions and applicable recorded rationale with distinct completeness and applicability outcomes.",
     "Traverse declared relationship scope and derive reverse views from authoritative edges.",
-    "Explain allocation gaps and possible impact with the paths and limits supporting the conclusion."
+    "Explain allocation gaps and possible impact with the paths and limits supporting the conclusion.",
+    "Compose qualified five-view projections and portable offline reading artifacts.",
+    "Own explicitly selected derived snapshot publication and recovery without becoming authoritative model storage."
   ],
   "owned_state": [
-    "Derived presentation and traversal results tied to their source state and scope; no separately authoritative copy of engineering relationships."
+    "Derived presentation and traversal results tied to their source state and scope; no separately authoritative copy of engineering relationships.",
+    "Prepared and retained derived snapshot versions, publication-entry identity and output coordination scoped to the selected generated artifact."
   ],
   "scope": {
     "includes": [
-      "Current context presentation, relationship navigation, allocation analysis, and possible-impact reporting."
+      "Current context presentation, relationship navigation, allocation analysis, and possible-impact reporting.",
+      "Customer view composition, safe output replacement and portable reading."
     ],
     "excludes": [
       "Definition mutation, invented rationale, approval judgments, or treating graph reachability as proof of impact or satisfaction."
@@ -22,17 +26,23 @@
   },
   "provides": [],
   "consumes": [
-    "IF-001"
+    "IF-001",
+    "IF-002"
   ],
   "design_limits": [
-    "IF-001 supports the IR-001 presentation slice. Traversal and impact interfaces for IR-002 remain deferred.",
-    "Rendering technology and delivery surfaces remain undecided; the contract concerns observable meaning and diagnostics."
+    "General traversal/impact contracts outside the customer browser remain deferred.",
+    "Browser target realization is defined in the owning README and proposed facets; no current customer support or implementation is inferred."
   ],
   "sources": [
     {
       "source": "SRC-ARCHITECTURE-PILOT",
       "locator": "MOD-004",
       "basis": "Analyst-proposed responsibility boundary derived from the existing Function landscape. Assigned Functions remain authoritative for behavior; this record describes target architecture, not observed implementation."
+    },
+    {
+      "source": "SRC-CUSTOMER-BROWSER-DESIGN",
+      "locator": "MOD-004",
+      "basis": "System and Architecture Design from SR-084–088 and refined SR-060; proposed responsibility, contract and realization only. No implementation, platform qualification or product availability is established."
     }
   ]
 }

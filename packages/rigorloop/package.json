@@ -1,7 +1,7 @@
 {
   "name": "@xiongxianfei/rigorloop",
-  "version": "1.0.0",
-  "description": "Rigorous workflow for AI coding agents: proposals, Designs, review gates, and durable validation evidence from idea to verified change.",
+  "version": "2.0.0",
+  "description": "Requirement-first engineering for AI coding agents: current handoffs, independent review, verification and local SQLite records.",
   "keywords": [
     "ai-agents",
     "ai-coding",
@@ -40,5 +40,8 @@
   "dependencies": {
     "yaml": "2.9.0"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "engines": {
+    "node": ">=24.15.0 <25"
+  }
 }

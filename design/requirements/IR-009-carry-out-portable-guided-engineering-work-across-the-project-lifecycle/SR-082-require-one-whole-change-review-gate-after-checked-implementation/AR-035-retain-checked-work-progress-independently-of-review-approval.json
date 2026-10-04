@@ -1,0 +1,61 @@
+{
+  "id": "AR-035",
+  "type": "allocated-requirement",
+  "title": "Retain checked work progress independently of review approval",
+  "status": "draft",
+  "statement": "The Change control Module shall retain checked work progress independently of review approval within its accountable boundary so that SR-082 can be satisfied without transferring another owner's decisions or state authority.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "The SR-082 obligation crosses guidance, governance or publication boundaries; an unowned contribution can make a locally valid step appear sufficient for the whole workflow.",
+      "desired_outcome": "Keep authorized milestone scope, required check results, known-defect dispositions and dependencies retrievable without a mandatory milestone review ID."
+    },
+    "why": {
+      "rationale": "MOD-006 owns the behavior or state needed for this contribution; separating it preserves one accountable owner while allowing the parent SR to compose several contributors."
+    },
+    "who": {
+      "stakeholders": [
+        "Participants relying on Change control",
+        "Authors, reviewers and project decision owners"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "When the selected requirement-first workflow exercises SR-082 or reassesses its affected basis."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "The MOD-006 responsibility boundary and its declared logical Interfaces."
+      ]
+    },
+    "how": {
+      "approach": "Apply the allocated criteria through the constrained Functions and explicit contract inputs/outcomes; preserve actual actor decisions, subject identity and known limitations."
+    },
+    "how_much": {
+      "scope": "This allocated contribution to SR-082; other contributors, independent assessment, physical recording implementation and product activation remain distinct."
+    }
+  },
+  "acceptance_criteria": [
+    "Keep authorized milestone scope, required check results, known-defect dispositions and dependencies retrievable without a mandatory milestone review ID.",
+    "Return uncovered authority or unresolved work as a blocker; progress and suggested next work do not grant permission or settle a gate."
+  ],
+  "assumptions": [
+    "The selected project contract, scope and required counterpart contributions are identifiable; absence is reported rather than inferred."
+  ],
+  "constraints": [
+    "This draft allocation neither activates replacement runtime contracts nor proves implementation or satisfaction."
+  ],
+  "allocated_to": "MOD-006",
+  "constrains": [
+    "FUNC-025",
+    "FUNC-026"
+  ],
+  "sources": [
+    {
+      "source": "SRC-WORKFLOW-DESIGN",
+      "locator": "SR-082; AR-035",
+      "basis": "Draft integrated design from the accepted requirement-first basis. This defines target responsibility and cooperation, not installed capability, design approval, runtime evidence or SQLite adoption."
+    }
+  ]
+}

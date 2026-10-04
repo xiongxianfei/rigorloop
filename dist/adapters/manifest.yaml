@@ -1,5 +1,8 @@
-version: v0.5.1
+version: v1.0.0
 skills:
+  architecture-design:
+    portable: true
+    adapters: [codex, claude]
   bugfix:
     portable: true
     adapters: [codex, claude]
@@ -13,9 +16,6 @@ skills:
     portable: true
     adapters: [codex, claude]
   delivery-review:
-    portable: true
-    adapters: [codex, claude]
-  design:
     portable: true
     adapters: [codex, claude]
   design-review:
@@ -39,16 +39,19 @@ skills:
   project-map:
     portable: true
     adapters: [codex, claude]
-  proposal:
+  requirement-analysis:
     portable: true
     adapters: [codex, claude]
-  proposal-review:
+  requirement-review:
     portable: true
     adapters: [codex, claude]
   research:
     portable: true
     adapters: [codex, claude]
   route:
+    portable: true
+    adapters: [codex, claude]
+  system-design:
     portable: true
     adapters: [codex, claude]
   verify:

@@ -38,15 +38,18 @@ def run_command(
 
 def pack_package(destination: Path) -> Path:
     package_root = PACKAGE_ROOT
+    # Produce local archives for installation in both source and prepared runs.
+    # In prepared runs the packed metadata's digest still validates their exact
+    # bytes, so regeneration cannot silently substitute a different candidate.
+    from lib.packaging.adapter_distribution import build_adapter_archives
+    archives = destination / "archives"
+    build_adapter_archives(RELEASE_TAG, archives, skills_root=ROOT / "skills")
     if not (package_root / "dist/metadata" / METADATA_FILE).is_file():
         # Source checkouts do not author candidate metadata. Exercise the real
         # producer in a private fixture; prepared-candidate runs use their bytes.
-        from lib.packaging.adapter_distribution import build_adapter_archives
         from lib.release.release_candidate import write_archive_metadata
         package_root = destination / "candidate-package"
         shutil.copytree(PACKAGE_ROOT, package_root, ignore=shutil.ignore_patterns("node_modules"))
-        archives = destination / "archives"
-        build_adapter_archives(RELEASE_TAG, archives, skills_root=ROOT / "skills")
         write_archive_metadata(ROOT, archives, RELEASE_TAG, "0" * 40, package_root)
     result = run_command(
         ["npm", "pack", "--json", "--prefix", str(package_root), "--pack-destination", str(destination), str(package_root)]

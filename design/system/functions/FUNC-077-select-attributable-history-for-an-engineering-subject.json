@@ -1,0 +1,44 @@
+{
+  "id": "FUNC-077",
+  "type": "function",
+  "title": "Select attributable history for an engineering subject",
+  "status": "draft",
+  "description": "Select recorded subject relationships across retained Changes without relevance inference or altering applicability.",
+  "inputs": [
+    "Project-qualified subject identity and explicit filters",
+    "Selected retained history state and bounded continuation"
+  ],
+  "preconditions": [
+    "The requested scope and applicable action authority are explicit."
+  ],
+  "outputs": [
+    "Ordered bounded matching records with Change and original subject identities",
+    "Declared completeness, exclusions, next continuation or explicit unavailability"
+  ],
+  "behavior": [
+    "Given retained Changes with explicit relationships to the selected subject and unrelated records, results include only matching records under the declared filters, each identifying its Change, original subject basis and provenance.",
+    "Filters for recorded finding disposition or verification outcome operate on recorded facts and do not infer current applicability, unresolved work or semantic relevance from prose.",
+    "An available supported history with no matches returns an empty complete selection; absent, unreadable, incompatible or partially retained history reports its distinct limitation and cannot claim no relevant work ever existed.",
+    "Bounded continuation binds the project, normalized selection, ordering and observed history state. If that state changes, continuation conflicts rather than silently omitting or duplicating results.",
+    "Historical subject paths or display names may differ while identity continues; the result preserves the recorded identity and revision instead of retargeting old assessments to the current definition.",
+    "A lookup performs no operational initialization, recovery, migration, source-model modification or assessment update."
+  ],
+  "failure_behavior": [
+    {
+      "condition": "Required source, interpretation or scope integrity cannot be established.",
+      "outcome": "Report the specific gap without claiming completeness, inventing decisions or mutating unrelated work."
+    },
+    {
+      "condition": "The selected history state changes during continuation.",
+      "outcome": "Reject the stale continuation without partial results or silent merging; request a fresh explicit selection."
+    }
+  ],
+  "unallocated_reason": "The local operational-history extension is draft system analysis. Module/Interface and AR allocation are deferred to Architecture Allocation; existing v3 facets do not establish realization of this behavior.",
+  "sources": [
+    {
+      "source": "SRC-LOCAL-OPERATIONAL-ANALYSIS",
+      "locator": "FUNC-077",
+      "basis": "Draft derivation from the refined IRs and RR proposal; no approval, implementation or satisfaction claim."
+    }
+  ]
+}

@@ -5,7 +5,7 @@ The [principles](../principles/README.md) govern these models; [methods](../meth
 
 | Domain | Primary content | Owning model |
 | --- | --- | --- |
-| Requirement Analysis | IR → SR → AR | [Requirements](requirements.md) |
+| Requirement Analysis | RR input reconciliation; durable IR → SR → AR | [Requirements](requirements.md) |
 | Scenario Analysis | IR → Scenario → Feature; Scenario → SR | [Scenarios](scenarios.md) |
 | System Design | IR → Feature; SR → Function; Feature → Function | [System Design](system-design.md) |
 | Architecture Design | Function/AR allocation, hierarchical Module containment and encapsulation, Interface contracts/exposure, state/data ownership, and subordinate physical/software realization semantics | [Architecture Design](architecture-design.md) |
@@ -39,7 +39,7 @@ flowchart TD
     VER -->|produces| EV[Evidence]
 ```
 
-The requirement branch has containment semantics; Scenario, System Design, Architecture, and Assurance relationships form a typed graph.
+RR input remains outside the requirement containment hierarchy. The durable requirement branch has containment semantics; Scenario, System Design, Architecture, and Assurance relationships form a typed graph.
 The diagram illustrates common paths and does not require every entity to have every optional relationship.
 The realization-view nodes are subordinate architecture information, not first-class governed REM entities.
 
@@ -51,7 +51,7 @@ The tightened REM core establishes:
 - AR parent SR: exactly 1;
 - confirmed Scenario owning IR: exactly 1;
 - confirmed Scenario primary Feature: exactly 1;
-- approved SR confirmed Functions: at least 1;
+- approved SR confirmed Functions: at least 1 before its System Design is complete;
 - active Function primary Module: exactly 1 before allocation is complete;
 - active Function supporting Modules: 0..*;
 - active AR allocated Module: exactly 1;

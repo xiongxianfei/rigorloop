@@ -1,0 +1,44 @@
+{
+  "id": "FUNC-043",
+  "type": "function",
+  "title": "Compare declared engineering subjects",
+  "status": "draft",
+  "description": "Observe explicit contained subjects for declared-read checks or review preparation without replacing actor expectations or inferring assessment adequacy.",
+  "inputs": [
+    "Explicit contained subject paths and reported or compared basis."
+  ],
+  "preconditions": [],
+  "outputs": [
+    "Scope-limited factual comparison, explicit absence, or safe mismatch/failure."
+  ],
+  "behavior": [
+    "Inspect only declared contained regular files within defined bounds.",
+    "Check supplied compared expectations against observed bytes; reported assertions remain attributable.",
+    "A mismatch cannot silently refresh expected basis, rewrite historical assessed subjects or broaden approval.",
+    "Observed checks do not lock arbitrary external engineering edits."
+  ],
+  "failure_behavior": [
+    {
+      "condition": "Observed state differs, changes during inspection or cannot be read safely.",
+      "outcome": "Return a gap or dependent-write conflict/rejection without partial state or inferred agreement."
+    }
+  ],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-CLI",
+      "locator": "docs/design/cli/cli.md#CLI-SR-19, CLI-SR-04, CLI-SR-09",
+      "basis": "Functional Analysis of the IR-008 system obligations confirms this distinct published command/record responsibility. The retained CLI/Record Format contract supplies exact public operations and limits; logical behavior is defined before Module allocation."
+    },
+    {
+      "source": "SRC-PUBLISHED-PRODUCTS",
+      "locator": "FUNC-043",
+      "basis": "Assign MOD-011 as the proposed accountable primary responsibility after Functional Analysis. Current product source contracts retain detailed behavior authority; allocation is not runtime adoption or complete AR coverage."
+    },
+    {
+      "source": "SRC-SQLITE-ADOPTION",
+      "locator": "FUNC-043",
+      "basis": "Reconcile existing use/behavior with current explicit task selection, coherent SQLite outcomes and attributable judgments; no new stakeholder need or runtime qualification is inferred."
+    }
+  ],
+  "allocated_to": "MOD-011"
+}

@@ -2,10 +2,10 @@
   "id": "SCN-022",
   "type": "scenario",
   "title": "Explain an adopted change from its recorded transition",
-  "status": "confirmed",
+  "status": "draft",
   "actor": "An engineer or reviewer inspecting an adopted engineering Change",
   "goal": "Understand which engineering state changed, why it changed, and what decision and provenance support the resulting state.",
-  "context": "The original participants or conversation are no longer available, but the Change and engineering states are retained.",
+  "context": "The original participants or conversation are no longer available, but the Change and engineering states are retained. Operational history can be retained separately from the current engineering definition.",
   "trigger": "A participant needs to explain an adopted transition or a later correction to it.",
   "preconditions": [
     "The Change identity is known and its recorded scope is within the governed project."
@@ -39,6 +39,10 @@
     {
       "condition": "The selected Change is still proposed or incomplete.",
       "outcome": "The system shows its actual disposition and missing transition basis without inventing an established resulting state."
+    },
+    {
+      "condition": "The requested historical account is unavailable.",
+      "outcome": "The system exposes unavailable history without inventing decisions; current model definitions and applicable rationale remain understandable."
     }
   ],
   "exercises": [
@@ -53,6 +57,11 @@
       "source": "SRC-COMPLETE-ANALYSIS",
       "locator": "SCN-022",
       "basis": "IR-003 owns Change provenance under SR-023. Cross-IR SR-004 retains current-definition readability without history replay; this reference does not create another requirement parent. Accepted as current requirement-analysis knowledge after independent coverage and clarity review: one owning IR and primary Feature, observable goal and interactions, classified outcomes, and applicable SR coverage. This confirms analysis only, not requirement approval, implementation, or satisfaction."
+    },
+    {
+      "source": "SRC-LOCAL-OPERATIONAL-ANALYSIS",
+      "locator": "SCN-022",
+      "basis": "Draft derivation from the refined IRs and RR proposal; no approval, implementation or satisfaction claim."
     }
   ]
 }

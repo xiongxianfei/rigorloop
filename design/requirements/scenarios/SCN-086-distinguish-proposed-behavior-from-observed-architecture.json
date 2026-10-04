@@ -1,0 +1,58 @@
+{
+  "id": "SCN-086",
+  "type": "scenario",
+  "title": "Distinguish proposed behavior from observed architecture",
+  "status": "confirmed",
+  "actor": "Architecture reviewer",
+  "goal": "Assess architecture facts without mistaking proposed behavior for implementation.",
+  "context": "The selected model includes proposed and observed runtime information.",
+  "trigger": "The reviewer examines a Process detail.",
+  "preconditions": [
+    "The selected scope and any available project or artifact identity are explicitly identified."
+  ],
+  "interaction": [
+    {
+      "actor": "Architecture reviewer",
+      "action": "Selects a runtime topic and examines related detail."
+    },
+    {
+      "actor": "System",
+      "action": "Shows qualification, accountable owner and source basis for each selected fact."
+    },
+    {
+      "actor": "Architecture reviewer",
+      "action": "Follows a related Scenario or logical responsibility."
+    },
+    {
+      "actor": "System",
+      "action": "Preserves relationship meaning and completeness limits without inferring order or approval."
+    }
+  ],
+  "expected_outcome": "The reviewer can distinguish the recorded claims and missing details.",
+  "alternatives": [
+    {
+      "condition": "Proposed and observed topics have the same display name.",
+      "outcome": "Qualification and source identity keep them distinguishable."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "Required behavioral detail is absent.",
+      "outcome": "The view reports the gap instead of fabricating ordering or satisfaction."
+    }
+  ],
+  "exercises": [
+    "FEAT-022"
+  ],
+  "informs": [
+    "SR-085",
+    "SR-014"
+  ],
+  "sources": [
+    {
+      "source": "SRC-CUSTOMER-BROWSER-REQUIREMENTS",
+      "locator": "SCN-086; confirmed as requirement-analysis knowledge by the scoped author assessment, not independent review or executed product proof.",
+      "basis": "User-requested reusable customer architecture browser; requirement-level author analysis. Current records remain draft; no implemented, published or independently approved behavior is claimed."
+    }
+  ]
+}

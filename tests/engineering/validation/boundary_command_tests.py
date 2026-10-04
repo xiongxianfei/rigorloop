@@ -51,6 +51,9 @@ class CurrentBoundaryCommandTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             details = current_documents(root)
+            parent = root / "docs/design/skill/authoring/design.md"
+            worked_example = (root / "docs/design/skill/workflow.md").read_text()
+            parent.write_text(parent.read_text() + "\n````markdown\n" + worked_example + "\n````\n")
             example = root / "docs/design/cli/examples/case.json"
             example.parent.mkdir(parents=True)
             example.write_text('{"secret": "private-value"}')

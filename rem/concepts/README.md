@@ -3,10 +3,20 @@
 These definitions belong to the proposed [RigorLoop Engineering Method](../README.md).
 [Models](../models/README.md) define the relationships and constraints between concepts; [methods](../methods/README.md) explain how to apply them.
 
+## Requirement input
+
+| Concept | Meaning |
+| --- | --- |
+| Raw Requirement (RR) | Incoming request, proposal, issue, incident, observation, or other source expression offered for Requirement Analysis; may be incomplete, solution-shaped, redundant, conflicting, or already covered. An RR is analysis input and provenance, not by itself a durable normative Requirement or a lifecycle stage. |
+
+Requirement Analysis reconciles an RR with the current requirement model before changing durable requirements.
+One RR may justify no requirement change, refinement of existing IRs or SRs, creation of one or more IRs, or an explicit unresolved/conflicting disposition.
+An RR is outside the `IR → SR → AR` containment tree. A project MAY retain the RR's external identity or source as provenance without promoting it to a first-class REM entity.
+
 ## Requirements
 
 Requirements describe what must become or remain true.
-They are durable obligations or needs, separate from the Changes that introduce or modify them.
+They are durable obligations or needs, separate from the RRs that motivate analysis and the Changes that introduce or modify them.
 
 | Concept | Meaning |
 | --- | --- |
@@ -45,9 +55,10 @@ Requirements shape their evolution across Changes and Baselines without becoming
 | Interface | Explicit interaction contract between architectural elements, potentially defining operations, messages, data structures, protocols, failures, and compatibility. |
 | Interface exposure | Explicit declaration that an Interface provided by a contained Module may cross one or more parent Module encapsulation boundaries; exposure preserves the Interface and provider identities rather than creating a wrapper contract automatically. |
 | Realization | Code, configuration, or another implementation artifact that realizes the design; distinct from the design asset it implements. |
+| Technical model | Owned architecture design of the intended implementation: components, responsibilities, contracts, relationships, data authority and material technology choices. Its structural projection is a Logical reading perspective; components retain explicit mappings to accountable Modules and Interfaces. |
 | Architecture realization view | Subordinate architecture information, owned by a Module or Interface, describing material physical/software realization without creating another first-class REM asset. |
 | Software realization | Subordinate view of the software units or implementation structures that realize a Module responsibility. |
-| Runtime realization | Subordinate view of material execution, process, lifecycle, scaling, isolation, concurrency, or resource boundaries. |
+| Runtime realization | Subordinate view of material execution, process, lifecycle, scaling, isolation, concurrency, synchronization, communication, resource, failure, ordering, retry, or recovery semantics where architecturally significant. |
 | Persistence realization | Subordinate view of how architecturally significant state or data is retained, including authority, derivation, consistency, recovery, or lifecycle implications. |
 | Deployment realization | Subordinate view of material packaging, placement, isolation, target, or external runtime dependencies. |
 | Technology rationale | Attributable reasoning for a technology choice whose consequences are architecturally material, including driver, consequences, significant alternatives, and revisit conditions. |
@@ -67,6 +78,7 @@ Those realization facets are semantic outputs of Architecture Design, not univer
 Services, libraries, processes, datastores, deployment units, deployment targets, protocols, and technology choices do not acquire independent REM identity merely because they appear in those views.
 A project may structure or locally identify subordinate realization information for tooling, but storage structure does not change its REM meaning or promote it to a first-class entity.
 Architecture views are derived presentations and do not own facts that belong to Module, Interface, Requirement, Function, Scenario, or realization information.
+The [technical model](../models/architecture-design.md#technical-model) is subordinate architecture knowledge. Its Logical technical-structure presentation and its Development, Process and Physical projections select different concerns without creating additional engineering entities or duplicated authority.
 REM uses the classic 4+1 names—Logical, Process, Development, Physical, and Scenario—for standard architecture projections.
 The Scenario View is generated from a governed black-box Scenario and relevant downstream architecture; it does not add internal architecture steps to the Scenario entity itself.
 A 4+1 Architecture View Graph may normalize the authoritative architecture for graph traversal and projection, but every generated fact must remain attributable to its authoritative source and the graph must remain fully replaceable by regeneration.

@@ -1,0 +1,23 @@
+# Parent-owned collaboration; child pages link this source without copying it.
+version = 1
+
+[[topics]]
+id = "whole-change-review-and-correction"
+title = "Review and verify the completed change"
+view = "process"
+kind = "sequence"
+previous_kind = "flowchart"
+qualification = "proposed"
+source = "README.md"
+anchor = "whole-change-review-and-correction"
+description = "One independent whole-change Code Review gate follows checked implementation. A separate correction sequence explains renewed assessment within that gate. Change control supplies context and authority analysis, assurance supports assessment, records retain outcomes, and Verify separately assesses completion."
+
+[[topics]]
+id = "correct-and-reassess"
+title = "Correct and reassess"
+view = "process"
+kind = "sequence"
+qualification = "proposed"
+source = "README.md"
+anchor = "correct-and-reassess"
+description = "Recorded findings return to the responsible owner. Corrections and relevant checks produce a revised candidate for independent reassessment within the same whole-change review gate; earlier attempts retain their original meaning."

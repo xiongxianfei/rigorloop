@@ -1,0 +1,81 @@
+{
+  "id": "IF-011",
+  "type": "interface",
+  "title": "Engineering work context and workflow adoption",
+  "status": "draft",
+  "description": "Engineering Governance supplies attributable activity context and semantic adoption dispositions to published capability guidance. It does not publish records, install packages, choose a review judgment or grant authority.",
+  "operations": [
+    {
+      "name": "inspect_activity_context",
+      "purpose": "Interpret selected recorded work and its contract for bounded routing and resumption.",
+      "inputs": [
+        "Selected project/Change and workflow contract identity, requested scope, exact recorded work and referenced subject/evidence bases.",
+        "Portable supplied context when explicitly authorized, or supported CLI snapshot facts when governed."
+      ],
+      "preconditions": [],
+      "outputs": [
+        "Current seven-section handoff with attributable progress, useful evidence, formal/advisory standing, unresolved issues and next action; no permanent attempt history required.",
+        "Explicit absent, stale, conflicting or incomplete context with affected scope; no invented next decision."
+      ],
+      "behavior": [
+        "Return the current seven-section handoff: goal/scope/authority, governing basis, progress, open issues and rationale, relevant evidence, review standing, and next action. Preserve single-owner facts and distinguish missing/unknown from approved.",
+        "Preserve references to authoritative definitions and recorded subjects rather than reconstructing them from private conversation or treating the checkout as complete history.",
+        "Return semantic context from MOD-006/FUNC-025; the caller obtains current record observations through IF-004 and retains their exact identity.",
+        "Update at meaningful handoffs or material decision changes. Permit replacement of comparable working evidence and selective compaction after issue disposition; no activity replay or permanent attempt history is required. Completed accounts return historical meaning, not current system health."
+      ],
+      "failure_behavior": [
+        {
+          "condition": "Scope, contract or required facts are unavailable or inconsistent.",
+          "outcome": "Return the known context and explicit gaps; no readiness or empty-history conclusion is inferred."
+        }
+      ]
+    },
+    {
+      "name": "prepare_workflow_adoption",
+      "purpose": "Prepare or reconcile one bounded semantic adoption disposition.",
+      "inputs": [
+        "Selected current and target workflow contract identities, affected active work and live consumer inventory.",
+        "Compatibility/installation/publication observations, exact read basis and actor-supplied adoption decision or applicable authority assessment."
+      ],
+      "preconditions": [],
+      "outputs": [
+        "Prepared disposition of current work, reviews, blockers, required replacements, historical retention and recovery; or explicit unmet dependencies.",
+        "After an attempt, the observed coherent active contract or unavailable dependent scope, without assuming successful installation or publication."
+      ],
+      "behavior": [
+        "Use MOD-006/FUNC-078 to reconcile the entire selected adoption scope and its dependencies.",
+        "Keep proposal and milestone review history under original meanings; do not manufacture requirement or whole-change approval.",
+        "Require fresh work and candidate identities before activation; a partial update cannot be advertised as one coherent replacement.",
+        "Supply decisions to the caller for supported recording and installation operations; this operation itself performs neither."
+      ],
+      "failure_behavior": [
+        {
+          "condition": "The selected basis drifts, a consumer is incompatible, or the adoption attempt is interrupted.",
+          "outcome": "Expose actual current facts and preserve history; require reconciliation before dependent continuation, retaining prior authority only where its implementation is intact."
+        }
+      ]
+    }
+  ],
+  "consistency_rules": [
+    "The same project, selected work scope, contract and inspected basis apply throughout a response; concurrent drift is reported instead of merged silently.",
+    "Milestone progress, review judgments, evidence applicability, authority and persistence have distinct owners. IF-009 supplies authority and IF-010 evidence support; neither is inferred from context.",
+    "MOD-017 is the sole contract provider. MOD-006 contributes FUNC-025 and FUNC-078 without duplicate parent allocation."
+  ],
+  "compatibility_rules": [
+    "This is a target logical collaboration, not a public CLI command or installed service. It requires explicit adoption before runtime reliance.",
+    "Portable operation requires explicit project support. A malformed governed store cannot silently trigger portable operation.",
+    "Current supported record and installation contracts retain their guarantees; changed vocabulary and target representations require coordinated versioned migration."
+  ],
+  "sources": [
+    {
+      "source": "SRC-WORKFLOW-DESIGN",
+      "locator": "SCN-078; SCN-082; SR-082; SR-083; IF-011",
+      "basis": "Draft integrated design from the accepted requirement-first basis. This defines target responsibility and cooperation, not installed capability, design approval, runtime evidence or SQLite adoption."
+    },
+    {
+      "source": "SRC-CURRENT-HANDOFF",
+      "locator": "IF-011",
+      "basis": "Refine existing current-state responsibility and selective retention; observed runtime mappings remain version-scoped."
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "proposed": [
+    {
+      "choice": "Keep repository definitions, local agent guidance, CLI and operational custody as distinct local authority boundaries.",
+      "rationale": "The primary deployment is one local checkout, one user and one or more agents. Engineering meaning remains readable from Git; operational history and bulky artifacts have separate custody.",
+      "alternatives": [
+        "Make a local operational database necessary to understand the repository.",
+        "Treat SQLite or an agent process as a new logical Module."
+      ],
+      "consequences": [
+        "Canonical rem/ methods and skills/ sources feed a versioned package candidate; bounded installation supplies guidance to the local agent.",
+        "The local agent edits the Git-held model and uses supported CLI operations for operational facts; no new hosted service is assumed.",
+        "Deployment describes proposed placement, not backup/restore qualification or implementation of the SQLite migration."
+      ],
+      "revisit_when": [
+        "Supported deployment or operational-store compatibility is redesigned."
+      ]
+    }
+  ]
+}

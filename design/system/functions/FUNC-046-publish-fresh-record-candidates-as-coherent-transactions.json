@@ -3,32 +3,27 @@
   "type": "function",
   "title": "Publish fresh record candidates as coherent transactions",
   "status": "draft",
-  "description": "Publish the exact explicit replacement set after current identity and structural checks while excluding competing supported writers and preserving recoverability. It owns storage publication, not the validity of the actor's engineering judgment or arbitrary repository edits.",
+  "description": "Readers observe one coherent recorded state; contention, drift and interruption do not overwrite winning work or conceal missing evidence. This logical behavior has the scope and limits of SR-044; current SQLite realization and maintenance remain distinct.",
   "inputs": [
-    "Exact candidate write set, expected revision/target identities, and actor-declared decision-basis identities.",
-    "Selected change and coherent current registered state, including explicit absence for permitted creation."
+    "Explicit supported operation, selected project/Change and expected coherent state.",
+    "Actor-supplied candidate or verified recovery basis, with declared subject and artifact identities."
   ],
   "preconditions": [],
   "outputs": [
-    "Saved or unchanged result with actual resulting revision and affected identities.",
-    "Conflict, busy, rejection, or recovery-required outcome identifying the bounded storage result."
+    "Exact attributable result or explicit conflict, unavailability, rejection or recovery-required outcome."
   ],
   "behavior": [
-    "Apply shared containment and identity protection on every supported publication path, including observed ancestor substitution and exact selected-change allowlists.",
-    "Acquire the common supported-writer exclusion, read current coherent state, check expected revision, targets and declared basis, and validate the complete candidate before publication.",
-    "Check revision before no-op recognition: fresh identical content is unchanged; an old-revision retry conflicts even if prior publication succeeded.",
-    "Prepare exact before/candidate recovery information before authoritative replacement, publish the related set as one logical transaction, and report saved only when all requested bytes are durably committed.",
-    "Expose coherent before/after snapshots or busy/recovery-required to supported readers; never publish an intermediate candidate as usable current state.",
-    "Recheck declared decision-basis identities at the required observed points, restoring safely or requiring recovery after detected drift, without claiming atomic exclusion of outside edits after the final check."
+    "Every write names its expected revision, target set and identities, and declared decision-basis identities. Observed mismatches produce conflict requiring reread and a new actor decision, with no silent refresh or merge.",
+    "Competing supported writers cannot overwrite one another. Supported readers obtain coherent before/after state or an explicit unavailable/busy/recovery outcome, never a usable mixed state; saved means all selected record effects are durably committed.",
+    "Supported task, creation and maintenance paths share path containment and protection against observed ancestor substitution. Cross-change writes, traversal, symlink escape, hard-linked authoritative targets, unsupported paths, and unexpected overwrite are rejected.",
+    "A fresh identical candidate returns unchanged only after current preconditions pass. A lost-response retry with the old revision conflicts even if the earlier save succeeded; no retry duplicates entries, increments semantic state, or creates new approval.",
+    "Observed decision-basis drift is checked before publication and again before commitment is reported. Before commit it prevents publication or requires supported uncommitted recovery. If detected after commit, report the actual committed outcome and drift for renewed applicability assessment; never roll back acknowledged commitment or conceal the external-edit timing limitation.",
+    "A typed task publishes its complete validated candidate coherently. Interruption exposes either an established before/committed state or an explicit recovery condition; a record claiming available evidence cannot commit with an incomplete required payload. Record publication does not atomically govern arbitrary engineering-file edits."
   ],
   "failure_behavior": [
     {
-      "condition": "Expected state or declared basis differs at an observed check, or a supported writer already owns publication.",
-      "outcome": "Report conflict or busy without merging decisions, refreshing expectations, or overwriting the winning work."
-    },
-    {
-      "condition": "Publication or its final checks are interrupted or cannot reach a verified committed state.",
-      "outcome": "Retain verified recovery information and expose recovery-required rather than saved or a usable mixed snapshot."
+      "condition": "The requested candidate, expected state or recovery basis cannot be established safely.",
+      "outcome": "Return the corresponding bounded rejection, conflict or recovery condition without invented decisions, silent merge or unrelated overwrite."
     }
   ],
   "sources": [
@@ -41,6 +36,16 @@
       "source": "SRC-PUBLISHED-PRODUCTS",
       "locator": "FUNC-046",
       "basis": "Assign MOD-011 as the proposed accountable primary responsibility after Functional Analysis. Current product source contracts retain detailed behavior authority; allocation is not runtime adoption or complete AR coverage."
+    },
+    {
+      "source": "SRC-LOCAL-OPERATIONAL-ANALYSIS",
+      "locator": "FUNC-046",
+      "basis": "Draft derivation from the refined IRs and RR proposal; no approval, implementation or satisfaction claim."
+    },
+    {
+      "source": "SRC-WORKFLOW-CONTRACTS",
+      "locator": "FUNC-046",
+      "basis": "Reconcile the refined existing requirement with successor workflow recording while keeping attributed observed v3 realization unchanged."
     }
   ],
   "allocated_to": "MOD-011"

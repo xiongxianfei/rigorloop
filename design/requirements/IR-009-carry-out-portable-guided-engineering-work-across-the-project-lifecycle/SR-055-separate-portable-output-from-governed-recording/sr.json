@@ -33,6 +33,11 @@
       "source": "SRC-PUBLISHED-SKILLS",
       "locator": "docs/design/skill/skill.md#SKL-SR-34",
       "basis": "Derives the stated common Skills-product obligation while preserving the cited clause population and retained specialist or package-owner detail; this draft is not source retirement or runtime adoption."
+    },
+    {
+      "source": "SRC-REQUIREMENT-FIRST-WORKFLOW",
+      "locator": "SR-055",
+      "basis": "User-selected requirement-first workflow and one mandatory whole-change Code Review gate. Proposed requirement analysis only; existing product contracts remain active until coordinated adoption. No new Function, AR, implementation or approval is inferred."
     }
   ],
   "statement": "The system shall support the selected capability's authorized portable output without CLI recording, and shall activate the complete supported recording procedure when a governed or durable-recording trigger applies, preserving exact scope, explicit decisions, conflict handling, and truthful recording results.",
@@ -66,7 +71,7 @@
       "approach": "Identify portable versus governed obligations from the actual capability and project context. Load the applicable supported CLI procedure when required, prepare explicit scope and decisions, inspect operation results, and handle conflicts without treating persistence as approval."
     },
     "how_much": {
-      "scope": "The common boundary between published guidance and the currently supported CLI. Current stored-format details, selectors, revision identities, atomicity and recovery remain with CLI/Records; this draft introduces no new command or record version and no fallback from malformed governed context to ungoverned writes."
+      "scope": "The common boundary between published guidance and the currently supported CLI. Current stored-format details, selectors, revision identities, atomicity and recovery remain with CLI/Records; this draft introduces no new command or record version and no fallback from malformed governed context to ungoverned writes. The requirement-first workflow extension is draft; existing Function/AR and product-contract coverage must be reassessed before its adoption."
     }
   },
   "acceptance_criteria": [
@@ -74,7 +79,8 @@
     "A governed or durable trigger, including one discovered late, activates the complete applicable recording procedure before dependent action; missing authority, resources, or CLI support results in an explicit stop.",
     "Recording requests use current supported commands and selectors with explicit target, scope, applicable read or revision identity, and actor-owned decisions; the agent inspects actual results.",
     "A conflict, interruption, or unexpected response is handled through the current owner's recovery procedure, preserving existing records and historical meaning without an invented success claim.",
-    "Successful recording establishes only the observed persistence outcome; it grants neither assessment approval nor permission to continue or publish."
+    "Successful recording establishes only the observed persistence outcome; it grants neither assessment approval nor permission to continue or publish.",
+    "Under the adopted workflow, operational recording preserves separate milestone progress, advisory findings, formal review scope and exact attempt subjects; it does not synthesize milestone approvals or relabel historical proposal or milestone judgments to satisfy a new gate."
   ],
   "assumptions": [],
   "constraints": [],

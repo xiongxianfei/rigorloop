@@ -57,7 +57,8 @@ REM requirement analysis is built from the requirement [Concepts](concepts/READM
 
 REM distinguishes:
 
-- [Initial Requirement (IR)](concepts/README.md#requirements) — the initial durable expression of the need.
+- [Raw Requirement (RR)](concepts/README.md#requirement-input) — incoming request/proposal/issue/incident/source material offered for analysis, not a durable normative Requirement by itself.
+- [Initial Requirement (IR)](concepts/README.md#requirements) — the initial durable expression of the need after reconciliation with current requirement knowledge.
 - [System Requirement (SR)](concepts/README.md#requirements) — the durable system-level obligation derived from the IR.
 - [Allocated Requirement (AR)](concepts/README.md#requirements) — the durable lower-level obligation derived from an SR and allocated to architecture.
 - [Scenario](concepts/README.md#requirement-analysis-entities) — a first-class governed stakeholder-visible situation with stable identity, lifecycle, one owning IR, and one primary Feature.
@@ -117,12 +118,15 @@ REM currently uses [5W2H analysis](methods/5w2h.md) to analyze every IR, SR, and
 - How?
 - How much?
 
-The [Requirement Analysis method](methods/requirement-analysis.md) uses that analysis to establish the IR, derive SRs, and derive ARs.
+The [Requirement Analysis method](methods/requirement-analysis.md) first reconciles RR input with current requirements, then establishes or refines justified IRs and derives/refines SRs. AR formulation uses the same requirement-quality rules later, once Architecture Allocation has enough responsibility context to make lower-level allocation meaningful.
 
 For the IR, REM additionally uses [Scenario Analysis](methods/scenario-analysis.md):
 
 ```text
-initial need
+RR input
+    │
+    ▼
+reconcile current needs
     │
     ▼
 5W2H
@@ -140,7 +144,7 @@ IR
 
 Scenario Analysis creates and maintains first-class governed Scenario entities and confirms the durable Feature they exercise.
 It may reveal candidate behavior, but [Functional Analysis](methods/functional-analysis.md) confirms the corresponding Function only after SR obligations are sufficiently clear.
-[Architecture Allocation](methods/architecture-allocation.md) then assigns accountable Module responsibility.
+[Architecture Allocation](methods/architecture-allocation.md) then assigns each Function to accountable Module responsibility and, with architecture context available, derives/refines and allocates the required AR obligations.
 
 ### Why REM is built this way
 
@@ -193,7 +197,7 @@ The SR establishes what the system must satisfy.
 The Function expresses the behavior the system performs to satisfy that obligation.
 
 Principle 16 connects naming to engineering meaning.
-The [System Design model](models/system-design.md#clear-names-and-boundaries) defines Feature and Function clarity criteria. [Scenario Analysis](methods/scenario-analysis.md#step-1--confirm-or-reuse-the-feature) applies them to capabilities, [Requirement Analysis](methods/requirement-analysis.md#derive-system-requirements) derives the SR obligations, and [Functional Analysis](methods/functional-analysis.md) confirms the Functions those SRs require.
+The [System Design model](models/system-design.md#clear-names-and-boundaries) defines Feature and Function clarity criteria. [Scenario Analysis](methods/scenario-analysis.md#step-1-confirm-or-reuse-the-feature) applies them to capabilities, [Requirement Analysis](methods/requirement-analysis.md#derive-system-requirements) derives the SR obligations, and [Functional Analysis](methods/functional-analysis.md) confirms the Functions those SRs require.
 The [Operational Support model](models/operational-support.md#naming-and-location) separately owns representation choices such as deriving filenames from an ID and title.
 
 [Requirement Analysis](methods/requirement-analysis.md#derive-system-requirements) owns SR derivation.
@@ -232,6 +236,9 @@ The AR says what lower-level obligation the architecture must satisfy.
 The Module owns architectural responsibility and significant state/data authority. A parent Module may contain child Modules that refine that responsibility; the parent remains a real encapsulation boundary rather than a visual group. Function and AR allocation normally target the lowest coherent accountable Module, while parent roll-up is derived.
 The Interface owns a significant logical interaction contract. A descendant-provided Interface remains internal to its containing Module boundary unless explicitly exposed through that boundary and any additional provider ancestors it must cross.
 Subordinate realization information explains how those responsibilities and contracts are concretely realized without introducing new universal entity classes.
+The [technical model](models/architecture-design.md#technical-model) organizes the intended implementation into components, responsibilities, contracts, data/artifact authority and technology decisions. Technical structure is a Logical reading perspective with explicit mappings back to accountable Modules and Interfaces. Development selects source/package/build organization, Process selects execution, and Physical selects placement from that same owned design. A component does not become a Module or a process merely because it is drawn as a box.
+
+For the Process View, REM uses a stable runtime-topology projection for whole-system orientation when material, and selects Sequence/Interaction, State Machine, Activity/Control-flow, Timing, or formal-concurrency explanations according to the concern and scope when the corresponding authoritative semantics exist. A focused Module interaction need not add a topology diagram solely for symmetry. The [4+1 Architecture View method](methods/architecture-views.md#process-view) owns those selection rules and explicitly forbids deriving execution order from logical graph reachability.
 
 ### Why REM keeps logical and physical architecture separate
 
@@ -255,9 +262,9 @@ Reviewing them together helps detect architecture that performs behavior without
 
 The [Architecture Design model](models/architecture-design.md#architecture-semantic-outputs) defines semantic outputs rather than filenames or documents.
 These include Module definitions and containment, Function and AR allocations, Interface definitions and exposure across parent boundaries, significant state/data ownership, and material software/runtime/persistence/deployment/Interface-realization/technology information where relevant.
-Derived logical, runtime, datastore, deployment, or technology views help review but do not own the underlying facts.
+Authoritative knowledge may include [authored architecture explanations](models/architecture-design.md#authored-architecture-explanations) as well as structured relationships. Derived logical, runtime, datastore, deployment, or technology views render or project those sources for comprehension without acquiring ownership of the underlying facts. Current applicable rationale stays with the engineering owner; judgments and execution history remain [operational records](models/operational-support.md#engineering-knowledge-and-operational-records).
 
-[Requirement Analysis](methods/requirement-analysis.md#derive-allocated-requirements) defines how AR obligations are derived.
+[Requirement Analysis](methods/requirement-analysis.md#formulate-allocated-requirements-with-architectural-context) defines the requirement-quality rules for AR obligations; [Architecture Allocation](methods/architecture-allocation.md#derive-and-allocate-ars) supplies the architectural context in which they are derived/refined and allocated.
 [Architecture Allocation](methods/architecture-allocation.md) establishes Module containment, logical Function/AR responsibility, Interface contracts, and required exposure through encapsulation boundaries.
 [Architecture Design](methods/architecture-design.md) completes state/data ownership, material physical/software realization, architecture review, and completion assessment without prescribing a storage format.
 [4+1 Architecture Views](methods/architecture-views.md) then generates Logical, Process, Development, Physical, and Scenario projections from the same authoritative REM knowledge for comprehension and cross-view validation.
@@ -406,7 +413,7 @@ REM does not prescribe a universal maximum hierarchy depth. A project or impleme
 
 1. Read Principle 16 in [Principles](principles/README.md).
 2. Read the naming and definition criteria in the [System Design model](models/system-design.md#clear-names-and-boundaries).
-3. Follow the Feature procedure in [Scenario Analysis](methods/scenario-analysis.md#step-1--confirm-or-reuse-the-feature), the Function procedure in [Functional Analysis](methods/functional-analysis.md), or the allocation procedure in [Architecture Allocation](methods/architecture-allocation.md).
+3. Follow the Feature procedure in [Scenario Analysis](methods/scenario-analysis.md#step-1-confirm-or-reuse-the-feature), the Function procedure in [Functional Analysis](methods/functional-analysis.md), or the allocation procedure in [Architecture Allocation](methods/architecture-allocation.md).
 4. Read [Operational Support](models/operational-support.md#naming-and-location) for the separate question of how a project represents that name in directories, filenames, or other storage.
 
 This is the intended role of this file: it tells the reader which authoritative knowledge to follow rather than restating that knowledge here.

@@ -1,21 +1,21 @@
 # Generated from explicit REM realization facts; do not edit.
-# Source identity: 2cf8f01cf8087e0b226dbd431d6452970b13954a16b84408d91173987708417e
+# Source identity: 7978be139fe27eda655003b22781018baac550ab5be13f735b6a2800fc2e5371
 # Source-observed control flow for the selected record operation. Solid arrows follow the recorded main-step order; dashed paths are conditional terminal alternatives and never rejoin. Failures are listed separately because their records do not identify a single triggering step. Scroll vertically to follow the remaining stages and terminal alternatives. This source projection is not an executed transaction or durability result.
 vars: { d2-config: { layout-engine: elk } }
 direction: down
 
-n_6d61696e3a30: "Admit explicit recovery\n\nEngineering command interface" {
+n_6d61696e3a30: "Admit current inspection\n\nCommand handling" {
   link: "#process/interaction/recovery"
-  tooltip: "Admit explicit recovery; Engineering command interface (MOD-010); Validate selectors and the closed complete/restore action before dispatching the exact recovery request to executeRecordStore."
+  tooltip: "Admit current inspection; Command handling (MOD-010); Admit an ordinary scoped read without choosing a recovery action."
   style.fill: "#ECF3FF"
   style.stroke: "#597390"
   style.font-color: "#24364A"
   style.font-size: 16
   style.border-radius: 7
 }
-n_6d61696e3a31: "Validate retained journal\n\nOperational record persistence" {
+n_6d61696e3a31: "Establish coherent storage state\n\nWork record storage" {
   link: "#process/interaction/recovery"
-  tooltip: "Validate retained journal; Operational record persistence (MOD-011); Before exclusion, load the expected journal bytes and verify their digest, transaction/change identity, canonical encoding, supported version and prepared/committed phase, snapshot content hashes, scope, preservation, write/read sets, and tracked directory identities."
+  tooltip: "Establish coherent storage state; Work record storage (MOD-011); Open supported SQLite state; internal recovery determines committed/uncommitted outcome without replay."
   style.fill: "#EEF6F1"
   style.stroke: "#597390"
   style.font-color: "#24364A"
@@ -28,9 +28,9 @@ n_6d61696e3a30 -> n_6d61696e3a31 {
   style.fill: "#FFFFFF"
   style.font-size: 14
 }
-n_6d61696e3a32: "Acquire recovery exclusion\n\nOperational record persistence" {
+n_6d61696e3a32: "Read current account\n\nWork record storage" {
   link: "#process/interaction/recovery"
-  tooltip: "Acquire recovery exclusion; Operational record persistence (MOD-011); Reject a live competing lock owner. Remove an exactly observed stale owner lock when admitted, exclusively acquire a new owned lock, and update the epoch. Private coordination effects are distinct from authoritative recovery."
+  tooltip: "Read current account; Work record storage (MOD-011); Read coherent typed rows and current revision; report busy/unavailable where not established."
   style.fill: "#EEF6F1"
   style.stroke: "#597390"
   style.font-color: "#24364A"
@@ -43,10 +43,10 @@ n_6d61696e3a31 -> n_6d61696e3a32 {
   style.fill: "#FFFFFF"
   style.font-size: 14
 }
-n_6d61696e3a33: "Recheck recovery admissibility\n\nOperational record persistence" {
+n_6d61696e3a33: "Report established outcome\n\nCommand handling" {
   link: "#process/interaction/recovery"
-  tooltip: "Recheck recovery admissibility; Operational record persistence (MOD-011); Reload the exact expected journal under exclusion and require every observed target to equal its retained before or candidate identity, including absence. A committed journal requires candidate identities and rejects restore; it cannot authorize rollback."
-  style.fill: "#EEF6F1"
+  tooltip: "Report established outcome; Command handling (MOD-010); Return actual current account and limitations; caller decides any next task."
+  style.fill: "#ECF3FF"
   style.stroke: "#597390"
   style.font-color: "#24364A"
   style.font-size: 16
@@ -58,158 +58,16 @@ n_6d61696e3a32 -> n_6d61696e3a33 {
   style.fill: "#FFFFFF"
   style.font-size: 14
 }
-n_6272616e63683a333a303a636f6e646974696f6e: "The requested action is restore\nand the verified journal is\nprepared." {
+outcome: "Main-path outcome\nCurrent coherent state is available or\na safe limitation is explicit.\nCommitted work is not rolled back to\nrepair missing output." {
   link: "#process/interaction/recovery"
-  tooltip: "The requested action is restore and the verified journal is prepared."
-  style.fill: "#FFF5DB"
-  style.stroke: "#597390"
-  style.font-color: "#24364A"
-  style.font-size: 16
-  style.border-radius: 7
-  style.stroke-dash: 3
-}
-n_6d61696e3a33 -> n_6272616e63683a333a303a636f6e646974696f6e: "terminal alternative" {
-  style.stroke: "#526C8A"
-  style.font-color: "#344D67"
-  style.fill: "#FFFFFF"
-  style.font-size: 14
-  style.stroke-dash: 3
-}
-n_6272616e63683a333a303a737465703a30: "Prepare before-state recovery\nreceipt\n\nOperational record persistence" {
-  link: "#process/interaction/recovery"
-  tooltip: "Prepare before-state recovery receipt; Operational record persistence (MOD-011); Prepare and validate the recovered result against the exact retained before-set before touching authoritative files. Restoration does not require external read-basis files to retain their old values and never writes those files."
-  style.fill: "#EEF6F1"
-  style.stroke: "#597390"
-  style.font-color: "#24364A"
-  style.font-size: 16
-  style.border-radius: 7
-}
-n_6272616e63683a333a303a636f6e646974696f6e -> n_6272616e63683a333a303a737465703a30 {
-  style.stroke: "#526C8A"
-  style.font-color: "#344D67"
-  style.fill: "#FFFFFF"
-  style.font-size: 14
-  style.stroke-dash: 3
-}
-n_6272616e63683a333a303a737465703a31: "Restore exact retained before\nbytes\n\nOperational record persistence" {
-  link: "#process/interaction/recovery"
-  tooltip: "Restore exact retained before bytes; Operational record persistence (MOD-011); Publish the retained before-set with repeated exclusion, containment, and known-state checks. Remove only permitted transaction-created files and tracked empty directories; do not overwrite an observed third state or unrelated content."
-  style.fill: "#EEF6F1"
-  style.stroke: "#597390"
-  style.font-color: "#24364A"
-  style.font-size: 16
-  style.border-radius: 7
-}
-n_6272616e63683a333a303a737465703a30 -> n_6272616e63683a333a303a737465703a31 {
-  style.stroke: "#526C8A"
-  style.font-color: "#344D67"
-  style.fill: "#FFFFFF"
-  style.font-size: 14
-  style.stroke-dash: 3
-}
-n_6272616e63683a333a303a737465703a32: "Finish verified restoration\n\nOperational record persistence" {
-  link: "#process/interaction/recovery"
-  tooltip: "Finish verified restoration; Operational record persistence (MOD-011); Verify the terminal before identities, remove the retained journal, release owned exclusion, and return the prepared recovered receipt. Failure at any point preserves an explicit incomplete/unknown outcome for reinspection."
-  style.fill: "#EEF6F1"
-  style.stroke: "#597390"
-  style.font-color: "#24364A"
-  style.font-size: 16
-  style.border-radius: 7
-}
-n_6272616e63683a333a303a737465703a31 -> n_6272616e63683a333a303a737465703a32 {
-  style.stroke: "#526C8A"
-  style.font-color: "#344D67"
-  style.fill: "#FFFFFF"
-  style.font-size: 14
-  style.stroke-dash: 3
-}
-n_6272616e63683a333a303a6f7574636f6d65: "Alternative outcome\nReturn recovered for the verified\nexact before-state only after\nsuccessful restoration and cleanup. No\nworkflow decision, replay, or blanket\nproject rollback is performed." {
-  link: "#process/interaction/recovery"
-  tooltip: "Return recovered for the verified exact before-state only after successful restoration and cleanup. No workflow decision, replay, or blanket project rollback is performed."
-  style.fill: "#FFF5DB"
-  style.stroke: "#597390"
-  style.font-color: "#24364A"
-  style.font-size: 16
-  style.border-radius: 7
-  style.stroke-dash: 3
-}
-n_6272616e63683a333a303a737465703a32 -> n_6272616e63683a333a303a6f7574636f6d65 {
-  style.stroke: "#526C8A"
-  style.font-color: "#344D67"
-  style.fill: "#FFFFFF"
-  style.font-size: 14
-  style.stroke-dash: 3
-}
-n_6d61696e3a34: "Prepare candidate recovery receipt\n\nOperational record persistence" {
-  link: "#process/interaction/recovery"
-  tooltip: "Prepare candidate recovery receipt; Operational record persistence (MOD-011); For complete, verify the retained declared read basis and prepare/validate a recovered result against the exact retained candidate before authoritative writes. The advanced recovery result is prepared within Store.prepareResult."
-  style.fill: "#EEF6F1"
-  style.stroke: "#597390"
-  style.font-color: "#24364A"
-  style.font-size: 16
-  style.border-radius: 7
-}
-n_6d61696e3a33 -> n_6d61696e3a34 {
-  style.stroke: "#526C8A"
-  style.font-color: "#344D67"
-  style.fill: "#FFFFFF"
-  style.font-size: 14
-}
-n_6d61696e3a35: "Complete exact retained candidate\n\nOperational record persistence" {
-  link: "#process/interaction/recovery"
-  tooltip: "Complete exact retained candidate; Operational record persistence (MOD-011); Publish the retained candidate with repeated owned-lock, path, target before/candidate, and decision-basis checks. A committed journal permits only candidate bytes; unknown values stop completion."
-  style.fill: "#EEF6F1"
-  style.stroke: "#597390"
-  style.font-color: "#24364A"
-  style.font-size: 16
-  style.border-radius: 7
-}
-n_6d61696e3a34 -> n_6d61696e3a35 {
-  style.stroke: "#526C8A"
-  style.font-color: "#344D67"
-  style.fill: "#FFFFFF"
-  style.font-size: 14
-}
-n_6d61696e3a36: "Recheck basis and commit recovery\n\nOperational record persistence" {
-  link: "#process/interaction/recovery"
-  tooltip: "Recheck basis and commit recovery; Operational record persistence (MOD-011); Recheck declared reads after candidate publication. For a prepared journal, observed basis drift attempts guarded restoration before reporting failure. Otherwise persist phase=committed; a previously committed journal is never rolled back."
-  style.fill: "#EEF6F1"
-  style.stroke: "#597390"
-  style.font-color: "#24364A"
-  style.font-size: 16
-  style.border-radius: 7
-}
-n_6d61696e3a35 -> n_6d61696e3a36 {
-  style.stroke: "#526C8A"
-  style.font-color: "#344D67"
-  style.fill: "#FFFFFF"
-  style.font-size: 14
-}
-n_6d61696e3a37: "Finish verified completion\n\nOperational record persistence" {
-  link: "#process/interaction/recovery"
-  tooltip: "Finish verified completion; Operational record persistence (MOD-011); Remove the verified terminal journal, release the owned lock, and return the prepared recovered result. Interrupted cleanup or a subsequent failure requires reinspection with the current recovery identity."
-  style.fill: "#EEF6F1"
-  style.stroke: "#597390"
-  style.font-color: "#24364A"
-  style.font-size: 16
-  style.border-radius: 7
-}
-n_6d61696e3a36 -> n_6d61696e3a37 {
-  style.stroke: "#526C8A"
-  style.font-color: "#344D67"
-  style.fill: "#FFFFFF"
-  style.font-size: 14
-}
-outcome: "Main-path outcome\nReturn recovered for the exact\nretained candidate after verified\ncompletion and cleanup. The result\nproves no new engineering decision,\nrequirement satisfaction, or\nsuccessful output delivery." {
-  link: "#process/interaction/recovery"
-  tooltip: "Return recovered for the exact retained candidate after verified completion and cleanup. The result proves no new engineering decision, requirement satisfaction, or successful output delivery."
+  tooltip: "Current coherent state is available or a safe limitation is explicit. Committed work is not rolled back to repair missing output."
   style.fill: "#E5F1E9"
   style.stroke: "#597390"
   style.font-color: "#24364A"
   style.font-size: 16
   style.border-radius: 7
 }
-n_6d61696e3a37 -> outcome {
+n_6d61696e3a33 -> outcome {
   style.stroke: "#526C8A"
   style.font-color: "#344D67"
   style.fill: "#FFFFFF"
@@ -217,7 +75,7 @@ n_6d61696e3a37 -> outcome {
 }
 failures: "2 guarded failure cases\nSee the recorded conditions and effects below" {
   link: "#process/interaction/recovery"
-  tooltip: "A selected journal, snapshot, target, action, version, or identity is missing, changed, incompatible, or untrusted; a target matches neither retained side.\nStop recovery without guessing state or replaying actor intent. The advanced wrapper reports recovery-required, except a live writer is busy.\nChecks made before exclusion produce no recovery writes; later rejection may follow private lock/epoch effects. Missing recovery metadata is reported as unavailable, not invented.; A committed journal with an observed before-state target is inconsistent and rejected. Restore is rejected even when a committed journal otherwise validates.\n\nCompletion observes changed declared read basis, or a restore/complete filesystem operation or cleanup is interrupted.\nKeep the actual incomplete or uncertain recovery outcome explicit; reinspection and an explicitly selected current recovery identity are required.\nBefore committed phase, the source may attempt exact guarded restoration after post-publication basis drift. That attempt is not a guarantee that all previous bytes were restored.; After committed phase, no recovery path restores before bytes. Retained evidence and known target identities govern completion/cleanup, not a blind retry."
+  tooltip: "Corrupt, unsupported or unavailable store.\nStop without guessed repair or empty replacement.\nNo new engineering decision is written.\n\nInspection is interrupted or exclusion prevents access.\nReport only established busy/unavailable standing; later fresh inspection is permitted.\nNo semantic replay or duplicate task."
   style.fill: "#F9EEEE"
   style.stroke: "#597390"
   style.font-color: "#24364A"

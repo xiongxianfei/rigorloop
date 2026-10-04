@@ -1,0 +1,69 @@
+{
+  "id": "SR-087",
+  "type": "system-requirement",
+  "title": "Generate architecture snapshots within safe output boundaries",
+  "status": "draft",
+  "statement": "The system shall generate a selected architecture snapshot without modifying engineering sources, unrelated files or a prior readable snapshot on rejected or failed generation, and shall report truthful output and recovery outcomes.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Generation may corrupt prior output, change sources or disclose unrelated information.",
+      "desired_outcome": "generate a selected architecture snapshot without modifying engineering sources, unrelated files or a prior readable snapshot on rejected or failed generation, and shall report truthful output and recovery outcomes."
+    },
+    "why": {
+      "rationale": "Customer use needs attributable, portable views and truthful boundaries beyond repository-local demonstration."
+    },
+    "who": {
+      "stakeholders": [
+        "Customer model authors and readers",
+        "Product maintainers and reviewers"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "When generating, reading or qualifying the selected architecture browser capability."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "One selected customer project/state and explicitly selected output; declared product generation and reading environments."
+      ]
+    },
+    "how": {
+      "approach": "Assess the stated observable outcomes against explicit supported profiles, selected source identity and actual artifacts; preserve ownership and diagnose unavailable or incomplete results."
+    },
+    "how_much": {
+      "scope": "Read-only local generation and portable snapshot reading. No live editor, hosted-service requirement, cross-project aggregation, automatic publication or invented performance target. Detailed realization and platform support are downstream design decisions."
+    }
+  },
+  "acceptance_criteria": [
+    "Reject an output selection overlapping authoritative input or requiring replacement of unrelated files before mutation; replacement is confined to explicitly selected generated output.",
+    "For invalid input, rendering failure or interrupted generation, preserve the prior complete readable snapshot or restore it through the declared recovery procedure before reporting successful replacement; an unresolved partial state is reported and never called complete.",
+    "Generation leaves canonical model bytes unchanged and includes only selected model content and necessary reading resources, excluding unrelated workspace content and private operational history.",
+    "Hostile text, links and paths cannot execute supplied script, escape the selected output boundary or cause undeclared resource acquisition.",
+    "Generation and reading do not publish or upload content. Publication requires a separate explicit action and applicable authority.",
+    "Equivalent declared inputs and tool versions produce equivalent declared snapshot content; actual provenance observations are identified separately from deterministic content."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "confirms": [
+    "FUNC-079",
+    "FUNC-081",
+    "FUNC-082"
+  ],
+  "constrains": [
+    "FEAT-022"
+  ],
+  "sources": [
+    {
+      "source": "SRC-CUSTOMER-BROWSER-REQUIREMENTS",
+      "locator": "SR-087",
+      "basis": "User-requested reusable customer architecture browser; requirement-level author analysis. Current records remain draft; no implemented, published or independently approved behavior is claimed."
+    },
+    {
+      "source": "SRC-CUSTOMER-BROWSER-DESIGN",
+      "locator": "SR-087",
+      "basis": "System and Architecture Design from SR-084\u2013088 and refined SR-060; proposed responsibility, contract and realization only. No implementation, platform qualification or product availability is established."
+    }
+  ]
+}

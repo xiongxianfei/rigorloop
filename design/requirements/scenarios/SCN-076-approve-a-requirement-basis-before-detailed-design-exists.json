@@ -1,0 +1,73 @@
+{
+  "id": "SCN-076",
+  "type": "scenario",
+  "title": "Approve a requirement basis before detailed design exists",
+  "status": "confirmed",
+  "actor": "An independent requirement reviewer",
+  "goal": "Decide whether the proposed requirement basis is sufficient for downstream design.",
+  "context": "Requirement analysis supplies proposed changes or justified reuse, while Functions and ARs may be unfinished.",
+  "trigger": "The author requests independent Requirement Review.",
+  "preconditions": [
+    "The requested scope and relevant project authority are identifiable."
+  ],
+  "interaction": [
+    {
+      "actor": "Author",
+      "action": "Supplies the RR basis, exact requirement and supporting analysis subjects, proposed disposition and acceptance criteria."
+    },
+    {
+      "actor": "Reviewer",
+      "action": "Assesses request fidelity, ownership, coverage, assessability and material uncertainty."
+    },
+    {
+      "actor": "Reviewer",
+      "action": "Records a scoped judgment and any findings against the exact basis."
+    },
+    {
+      "actor": "System",
+      "action": "Presents the judgment and its design-reliance limits."
+    }
+  ],
+  "expected_outcome": "A justified independent judgment establishes or withholds the requirement basis for design without claiming design or implementation completeness.",
+  "alternatives": [
+    {
+      "condition": "Existing requirements fully cover the request.",
+      "outcome": "The review assesses the reuse conclusion without requiring artificial edits."
+    },
+    {
+      "condition": "Required logical behavior and architectural allocations are not yet designed.",
+      "outcome": "A sufficient requirement basis may be accepted while the later design obligations remain explicit."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "The author supplies their own judgment as independent review, or material requirements are ambiguous.",
+      "outcome": "The gate does not establish independent acceptance and exposes the missing basis or correction."
+    },
+    {
+      "condition": "Material requirement subjects change after the assessment.",
+      "outcome": "Earlier approval retains its original meaning and is not silently applied to the revised basis."
+    }
+  ],
+  "exercises": [
+    "FEAT-016"
+  ],
+  "informs": [
+    "SR-079",
+    "SR-080",
+    "SR-027",
+    "SR-028"
+  ],
+  "sources": [
+    {
+      "source": "SRC-REQUIREMENT-FIRST-WORKFLOW",
+      "locator": "SCN-076",
+      "basis": "User-selected requirement-first workflow and one mandatory whole-change Code Review gate. Proposed requirement analysis only; existing product contracts remain active until coordinated adoption. No new Function, AR, implementation or approval is inferred."
+    },
+    {
+      "source": "SRC-WORKFLOW-REQUIREMENT-REVIEW",
+      "locator": "design/requirements/sources.md#src-workflow-requirement-review",
+      "basis": "Document-based author assessment under the explicit Constitution exception confirms this Scenario as requirement-analysis knowledge. It is not independent review, executed product evidence or workflow activation."
+    }
+  ]
+}

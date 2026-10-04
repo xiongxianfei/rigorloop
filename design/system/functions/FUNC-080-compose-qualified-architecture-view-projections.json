@@ -1,0 +1,41 @@
+{
+  "id": "FUNC-080",
+  "type": "function",
+  "title": "Compose qualified architecture view projections",
+  "status": "draft",
+  "description": "Derive the five semantic architecture perspectives from one interpreted captured model, preserving source qualification, ownership and explicit limits.",
+  "inputs": [
+    "Captured interpreted definitions, typed relationships, realization facts and source identity.",
+    "Selected view scope and declared optional reading profiles."
+  ],
+  "preconditions": [],
+  "outputs": [
+    "Logical, Process, Development, Physical and Scenario projections with exact source references.",
+    "Missing-detail, incomplete-scope and incompatible-selection diagnostics."
+  ],
+  "behavior": [
+    "Reuse authoritative containment and relationships; derive inverse navigation without a second fact store.",
+    "Keep logical responsibility, runtime execution and physical placement distinct, and use sequence/activity/lifecycle order only from explicitly established source semantics.",
+    "Scope each topic by owner, facet, qualification, kind and local name; do not resolve collisions by display label or array position.",
+    "Omit repository-specific panels unless explicitly selected and supported; never require RigorLoop entity IDs in a customer model.",
+    "Expose absent optional detail and missing required explanation without inventing satisfaction, approval or complete design."
+  ],
+  "failure_behavior": [
+    {
+      "condition": "Required interpretation or references are invalid.",
+      "outcome": "Reject a successful new projection and preserve identified diagnostics."
+    },
+    {
+      "condition": "A requested optional view has no authoritative detail.",
+      "outcome": "Return its explicit absent-detail result without fabricating facts."
+    }
+  ],
+  "sources": [
+    {
+      "source": "SRC-CUSTOMER-BROWSER-DESIGN",
+      "locator": "FUNC-080",
+      "basis": "System and Architecture Design from SR-084\u2013088 and refined SR-060; proposed responsibility, contract and realization only. No implementation, platform qualification or product availability is established."
+    }
+  ],
+  "allocated_to": "MOD-004"
+}

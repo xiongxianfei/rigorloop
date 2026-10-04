@@ -4,7 +4,7 @@ const OBSERVABILITY_STATES = new Set(["recorded", "degraded", "disabled"]);
 const CONCISE_FIELDS = new Set([
   "schema_version", "projection", "invocation_id", "command", "operation", "status", "exit_code",
   "change_id", "lifecycle_revision", "state_changed", "next_operation", "codes", "finding_ids",
-  "milestone_ids", "observability",
+  "milestone_ids", "observability", "unit_results",
 ]);
 
 function unique(values) {
@@ -63,6 +63,7 @@ export function projectConciseResult(result, options = {}) {
     finding_ids: unique([...(result.finding_ids ?? []), ...identities.filter((item) => /^F(?:-|\d)/i.test(String(item)))]),
     milestone_ids: unique([...(result.milestone_ids ?? []), result.effective_state?.active_milestone, ...identities.filter((item) => /^M\d+$/i.test(String(item)))]),
     observability,
+    unit_results: result.command === 'init' ? result.unit_results : undefined,
   });
   for (const field of Object.keys(projected)) {
     if (!CONCISE_FIELDS.has(field)) throw new Error(`Unsupported concise result field ${field}`);
@@ -81,7 +82,7 @@ function conciseHuman(result, options) {
   const identity = projected.change_id ?? projected.milestone_ids?.[0] ?? "-";
   const name = projected.operation ?? projected.command ?? "command";
   const details = [projected.codes?.[0], projected.next_operation ? `next=${projected.next_operation}` : null, `observability=${projected.observability}`, `invocation=${projected.invocation_id ?? "unavailable"}`].filter(Boolean);
-  return `${name} ${projected.status} (${identity})${details.length ? `: ${details.join("; ")}` : ""}\n`;
+  return `${name} ${projected.status} (${identity})${details.length ? `: ${details.join("; ")}` : ""}\n${projected.unit_results ? JSON.stringify(projected.unit_results) + '\n' : ''}`;
 }
 
 export function renderResult(result, options = {}) {

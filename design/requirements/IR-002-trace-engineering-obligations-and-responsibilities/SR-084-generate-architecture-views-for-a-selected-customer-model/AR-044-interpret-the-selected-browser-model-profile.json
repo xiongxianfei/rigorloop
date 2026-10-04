@@ -1,0 +1,59 @@
+{
+  "id": "AR-044",
+  "type": "allocated-requirement",
+  "title": "Interpret the selected browser model profile",
+  "status": "draft",
+  "statement": "The Interpretation and validation Module shall interpret the selected browser model profile within its accountable browser contribution to SR-084, retaining the stated limits of collaborating owners.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "A locally successful browser step can hide missing ownership or an invalid cross-boundary conclusion.",
+      "desired_outcome": "Interpret the selected browser model profile."
+    },
+    "why": {
+      "rationale": "MOD-003 owns the behavior necessary for the selected SR-084 criteria; the SR remains the system-wide obligation."
+    },
+    "who": {
+      "stakeholders": [
+        "Customer authors and readers",
+        "Product maintainers and reviewers"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "When generating, reading, recovering or qualifying the selected browser scope."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "MOD-003 and its declared browser cooperation contracts."
+      ]
+    },
+    "how": {
+      "approach": "Apply the constrained Functions and preserve source, output, qualification and authority distinctions at the boundary."
+    },
+    "how_much": {
+      "scope": "Contribution to SR-084 criteria 3, 5. Other Module contributions and final product qualification remain distinct."
+    }
+  },
+  "acceptance_criteria": [
+    "Missing, ambiguous or unsupported profile selection yields a specific diagnostic without silently applying another profile; invalid required content prevents publication of a successful snapshot.",
+    "An absent optional view fact remains an explicit absence or limitation rather than making the supported minimal model invalid."
+  ],
+  "assumptions": [],
+  "constraints": [
+    "Draft allocation; does not establish implemented browser support or requirement satisfaction."
+  ],
+  "allocated_to": "MOD-003",
+  "constrains": [
+    "FUNC-012",
+    "FUNC-013"
+  ],
+  "sources": [
+    {
+      "source": "SRC-CUSTOMER-BROWSER-DESIGN",
+      "locator": "AR-044; SR-084 criteria 3, 5",
+      "basis": "System and Architecture Design from SR-084–088 and refined SR-060; proposed responsibility, contract and realization only. No implementation, platform qualification or product availability is established."
+    }
+  ]
+}

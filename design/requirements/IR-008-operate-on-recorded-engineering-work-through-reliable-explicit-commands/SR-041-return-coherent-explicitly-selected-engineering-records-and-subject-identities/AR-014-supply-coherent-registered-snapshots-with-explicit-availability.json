@@ -3,7 +3,7 @@
   "type": "allocated-requirement",
   "title": "Supply coherent registered snapshots with explicit availability",
   "status": "draft",
-  "statement": "The Operational record persistence Module shall supply recorded values and availability facts from the selected registered store with a coherent state identity when established, preserving missing, invalid, inaccessible, busy, and recovery-required distinctions without returning a usable mixed snapshot.",
+  "statement": "The Work records Module shall supply selected current values from the associated SQLite store with coherent revision and explicit absent, invalid, inaccessible, busy or recovery-needed standing, never a usable mixed snapshot.",
   "analysis": {
     "method": "5W2H",
     "what": {
@@ -21,31 +21,33 @@
     },
     "when": {
       "conditions": [
-        "A command requests a selected store snapshot or current-candidate facts while records may be absent, malformed, concurrently changing, or interrupted."
+        "A selected current read is requested while the store may be absent, changing, interrupted or fenced for maintenance."
       ]
     },
     "where": {
       "contexts": [
-        "The IF-003 read boundary for one selected operational store and its manifest-declared authoritative records."
+        "The IF-003 read boundary for the associated project SQLite database and explicitly referenced retained payloads."
       ]
     },
     "how": {
-      "approach": "Resolve registered authority, observe state and content coherently under the retained reader safety contract, and return distinct availability and transaction-attention outcomes for selection by the consumer."
+      "approach": "Provide explicit scoped current-context and item queries plus project capability inspection through the current CLI, preserving coherent values and truthful limitations."
     },
     "how_much": {
-      "scope": "One operational store per coherent snapshot. Physical discovery does not register extra files, and the read boundary provides no atomic snapshot across all discovered changes."
+      "scope": "Current operational query responsibility; no requirement to scan docs/changes, expose SQL, enumerate the database or preserve the predecessor query grammar."
     }
   },
   "acceptance_criteria": [
-    "When a coherent supported snapshot is established, its recorded contract, revision, identities, and returned values describe that same observed state, including when the command selects no items or only a projection.",
-    "A supporting file gains authority only through valid manifest registration with matching record identity; extra physical files cannot silently enter the snapshot as registered records.",
-    "No entry, unregistered optional content, registered-but-missing content, malformed or unsafe content, and read failure remain distinguishable to the consumer. Selected missing content is not represented as an empty authoritative record.",
-    "Concurrent or interrupted state cannot produce a usable mixture of before and candidate records; the reader returns the applicable coherent state, busy, conflict, or recovery-required result under the retained contract and performs no recovery.",
-    "No record contract or revision is invented for an absent or invalid store. An established state identity and independently unavailable selected content retain the distinctions required by the specific read contract.",
-    "Reads leave authoritative records, transaction material, actor decisions, and historical content unchanged; factual observations remain separate from recorded values."
+    "Established contract, revision and values originate from one coherent associated SQLite snapshot.",
+    "Typed database relationships determine current record authority; extra physical files cannot enter the snapshot by discovery.",
+    "Missing selected rows and unavailable retained payloads remain explicit; they never become invented successful evidence.",
+    "Concurrent operations yield a coherent snapshot or explicit busy/unavailable result. SQLite-internal recovery does not replay decisions.",
+    "No stored revision or contract is invented for an absent, corrupt, mismatched or unsupported database.",
+    "Reads never initialize, migrate, compact payloads or change engineering judgments."
   ],
   "assumptions": [],
-  "constraints": [],
+  "constraints": [
+    "Current selected task/query contract; predecessor filesystem discovery and field-projection interfaces are retired in the successor."
+  ],
   "allocated_to": "MOD-011",
   "sources": [
     {
@@ -57,6 +59,11 @@
       "source": "SRC-PUBLISHED-CLI",
       "locator": "docs/design/cli/cli.md#CLI-SR-01, CLI-SR-04, CLI-SR-05, CLI-SR-14, CLI-SR-21, CLI-SR-22, CLI-SR-23; docs/design/cli/records.md#RF-SR-02, RF-SR-07",
       "basis": "Preserve the applicable current public and stored-record guarantees at this accountable boundary. The named source retains exact schemas, operation tables, classifications, limits, and historical adoption obligations; this allocation neither replaces those details nor accepts REM authoring JSON as operational records."
+    },
+    {
+      "source": "SRC-SQLITE-ADOPTION",
+      "locator": "MOD-010 current task/query contract; MOD-011 typed read boundary",
+      "basis": "Refines the existing inspection need to the selected successor task interface; no new IR or implementation approval."
     }
   ]
 }

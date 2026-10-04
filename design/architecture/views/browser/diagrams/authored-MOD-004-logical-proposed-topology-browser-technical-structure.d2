@@ -1,0 +1,11 @@
+direction: down
+adapter: "Command adapter\nNode.js · MOD-010"
+engine: "Browser engine\nRust · MOD-001 / MOD-003 / MOD-004"
+renderer: "Diagram renderer\nD2 · MOD-004 dependency"
+template: "Reader platform template\nHTML / CSS / JavaScript · MOD-004"
+website: "Architecture website\nReader platform + project data"
+adapter -> engine: "Browser operation contract"
+engine -> renderer: "Admitted D2 / validated SVG contract"
+engine -> template: "Uses matched reader-data contract"
+engine -> website: "Publishes complete snapshot"
+template -> website: "Supplies offline reader"

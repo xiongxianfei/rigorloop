@@ -2,362 +2,165 @@
   "observed": {
     "bindings": [
       {
+        "path": "packages/rigorloop/dist/lib/operational-cli.js",
+        "role": "Admits scoped v2 record and maintenance requests; dispatches typed operations and renders bounded storage outcomes."
+      },
+      {
         "path": "packages/rigorloop/dist/bin/rigorloop.js",
-        "role": "The rigorloop executable wrapper consumes argv, calls main/dispatchMain, writes selected stdout/stderr, and sets process.exitCode."
-      },
-      {
-        "path": "packages/rigorloop/dist/lib/recording-cli.js",
-        "role": "executeRecordingCli selects primary query or mutation handling."
-      },
-      {
-        "path": "packages/rigorloop/dist/lib/record-store-cli.js",
-        "role": "executeRecordStoreCli parses the separate advanced command and reads bounded stdin where required."
-      },
-      {
-        "path": "packages/rigorloop/dist/lib/recording-result.js",
-        "role": "serializePrimary and renderPrimary provide bounded JSON and human-readable recording results; primaryReceiptPreparer prepares mutation output before storage publication."
+        "role": "Dispatches installation and diagnostics; retired command names reject without operational effects."
       }
     ],
     "mechanism": [
-      "Local process invocation using command-line arguments, stdin for declared request bodies, stdout/stderr for command-owned output, and process exit status. Internal main and dispatch functions are implementation bindings, not an additional public API."
+      "Local process arguments and bounded UTF-8 JSON stdin; no server required."
     ],
     "addressing": [
-      "The package-declared rigorloop executable selects commands and explicit root/change/subject/transaction selectors according to the existing CLI contract. There is no HTTP endpoint in this binding."
+      "Explicit project root, Change ID and applicable Change-local item ID; store tasks are project-scoped."
     ],
     "failure_compatibility": [
-      "dispatchMain preserves command-family output/exit selection. The executable wrapper bypasses generic file logging for primary/advanced recording and retired commands; other eligible commands use runObservedCli. Source inspection does not qualify broken output pipes or every late rendering failure."
+      "Closed versioned contracts; no v3 writer or legacy command fallback. Historical sources are admitted only by qualified explicit import."
     ],
     "sources": [
       {
-        "source": "SRC-CLI-SOURCE",
-        "locator": "packages/rigorloop/dist/bin/rigorloop.js main, dispatchMain, executable wrapper; packages/rigorloop/package.json bin; remaining bindings at 9055b3c0",
-        "basis": "The inspected entry point and adapters establish the process binding. This is not an observation of an installed or publicly published package."
-      },
-      {
-        "source": "SRC-PUBLIC-ENTRIES",
-        "locator": "Public command rows in docs/design/cli/cli.md; docs/design/cli/installation.md; public_entries source_path implementations, including recording query SHOW and mutation MUTATIONS dispatch",
-        "basis": "Static inspection establishes 40 canonical command spellings and their declared source contracts. Aliases, flags, selectors, and detailed input grammars remain at those owners. The old help-text v2/v3 discrepancy remains deferred; the supported operational record contract is v3. No command was executed and no installed or publicly released package was qualified."
+        "source": "SRC-SQLITE-ADOPTION",
+        "locator": "packages/rigorloop/dist/bin/rigorloop.js; packages/rigorloop/dist/lib/operational-cli.js",
+        "basis": "Static inspection of the successor working-tree source identifies this implementation binding. It does not establish passing tests, installed availability, publication or engineering approval. Prior observations remain recoverable at 39be9c81."
       }
     ],
     "public_entries": [
       {
-        "name": "workflow-context",
-        "group": "Inspect engineering work",
-        "purpose": "Discover current recorded changes and project placement facts without selecting work or authority.",
-        "source_path": "packages/rigorloop/dist/lib/workflow-context.js",
-        "contract": "docs/design/cli/cli.md#current-work-discovery-and-retired-inputs",
-        "operation": "execute_public_request"
-      },
-      {
-        "name": "status",
-        "group": "Inspect engineering work",
-        "purpose": "Read recorded activity and aggregate work, blocker, finding, review, and evidence counts.",
-        "source_path": "packages/rigorloop/dist/lib/recording-query-cli.js",
-        "contract": "docs/design/cli/cli.md#bounded-queries-and-scope",
-        "operation": "execute_public_request"
-      },
-      {
-        "name": "context",
-        "group": "Inspect engineering work",
-        "purpose": "Read explicitly selected records with declared filters, detail, and bounded continuation.",
-        "source_path": "packages/rigorloop/dist/lib/recording-query-cli.js",
-        "contract": "docs/design/cli/cli.md#bounded-queries-and-scope",
-        "operation": "execute_public_request"
-      },
-      {
-        "name": "subject inspect",
-        "group": "Inspect engineering work",
-        "purpose": "Inspect identities and optionally the same-byte content of explicitly selected engineering subjects.",
-        "source_path": "packages/rigorloop/dist/lib/recording-query-cli.js",
-        "contract": "docs/design/cli/cli.md#subject-inspection-and-mechanical-identities",
-        "operation": "execute_public_request"
-      },
-      {
-        "name": "work show",
-        "group": "Inspect engineering work",
-        "purpose": "Read one explicitly selected work item.",
-        "source_path": "packages/rigorloop/dist/lib/recording-query-cli.js",
-        "contract": "docs/design/cli/cli.md#bounded-queries-and-scope",
-        "operation": "execute_public_request"
-      },
-      {
-        "name": "review show",
-        "group": "Inspect engineering work",
-        "purpose": "Read one selected review, including its findings and explanation, with optional declared field projection.",
-        "source_path": "packages/rigorloop/dist/lib/recording-query-cli.js",
-        "contract": "docs/design/cli/cli.md#bounded-queries-and-scope",
-        "operation": "execute_public_request"
-      },
-      {
-        "name": "blocker show",
-        "group": "Inspect engineering work",
-        "purpose": "Read one selected change-level blocker and its retained origin.",
-        "source_path": "packages/rigorloop/dist/lib/recording-query-cli.js",
-        "contract": "docs/design/cli/cli.md#bounded-queries-and-scope",
-        "operation": "execute_public_request"
-      },
-      {
-        "name": "evidence show",
-        "group": "Inspect engineering work",
-        "purpose": "Read one selected recorded evidence check.",
-        "source_path": "packages/rigorloop/dist/lib/recording-query-cli.js",
-        "contract": "docs/design/cli/cli.md#bounded-queries-and-scope",
-        "operation": "execute_public_request"
-      },
-      {
-        "name": "decision show",
-        "group": "Inspect engineering work",
-        "purpose": "Read one selected material decision.",
-        "source_path": "packages/rigorloop/dist/lib/recording-query-cli.js",
-        "contract": "docs/design/cli/cli.md#bounded-queries-and-scope",
-        "operation": "execute_public_request"
-      },
-      {
-        "name": "finding show",
-        "group": "Inspect engineering work",
-        "purpose": "Read one selected finding within an explicitly selected review.",
-        "source_path": "packages/rigorloop/dist/lib/recording-query-cli.js",
-        "contract": "docs/design/cli/cli.md#bounded-queries-and-scope",
-        "operation": "execute_public_request"
-      },
-      {
-        "name": "verify show",
-        "group": "Inspect engineering work",
-        "purpose": "Read the selected change's complete Verify report, with optional declared field projection.",
-        "source_path": "packages/rigorloop/dist/lib/recording-query-cli.js",
-        "contract": "docs/design/cli/cli.md#bounded-queries-and-scope",
-        "operation": "execute_public_request"
-      },
-      {
-        "name": "decisions show",
-        "group": "Inspect engineering work",
-        "purpose": "Read the complete material-decisions record, including its shared narrative.",
-        "source_path": "packages/rigorloop/dist/lib/recording-query-cli.js",
-        "contract": "docs/design/cli/cli.md#bounded-queries-and-scope",
-        "operation": "execute_public_request"
-      },
-      {
-        "name": "observations show",
-        "group": "Inspect engineering work",
-        "purpose": "Read bounded mechanical diagnostic detail for the selected change.",
-        "source_path": "packages/rigorloop/dist/lib/recording-query-cli.js",
-        "contract": "docs/design/cli/cli.md#bounded-storage-receipt-and-diagnostic-detail",
+        "name": "init",
+        "group": "Install skills",
+        "purpose": "Install the selected supported agent skills; codex and claude are agent arguments to one operation.",
+        "contract": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/README.md#supporting-commands",
+        "source_path": "packages/rigorloop/dist/bin/rigorloop.js",
         "operation": "execute_public_request"
       },
       {
         "name": "change create",
-        "group": "Record decisions",
-        "purpose": "Create an absent change record from explicit actor-supplied initial values.",
-        "source_path": "packages/rigorloop/dist/lib/recording-mutation-cli.js",
-        "contract": "docs/design/cli/cli.md#targeted-request-and-operation-definitions",
+        "group": "Change",
+        "purpose": "Capture goal, request, scope, authority and initial activity without inventing downstream decisions.",
+        "contract": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/README.md#start-work",
+        "source_path": "packages/rigorloop/dist/lib/operational-cli.js",
         "operation": "execute_public_request"
       },
       {
-        "name": "change link",
-        "group": "Record decisions",
-        "purpose": "Record an explicit proposal, plan, or model subject reference in the selected change.",
-        "source_path": "packages/rigorloop/dist/lib/recording-mutation-cli.js",
-        "contract": "docs/design/cli/cli.md#targeted-request-and-operation-definitions",
+        "name": "change context",
+        "group": "Change",
+        "purpose": "Return the seven-section current handoff, or a compact historical completion, with explicit gaps and bounded supporting reads.",
+        "contract": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/README.md#resume-and-inspect-work",
+        "source_path": "packages/rigorloop/dist/lib/operational-cli.js",
         "operation": "execute_public_request"
       },
       {
-        "name": "activity set",
-        "group": "Record decisions",
-        "purpose": "Record the actor's explicit activity stage, status, owner, and reason.",
-        "source_path": "packages/rigorloop/dist/lib/recording-mutation-cli.js",
-        "contract": "docs/design/cli/cli.md#targeted-request-and-operation-definitions",
+        "name": "change update",
+        "group": "Change",
+        "purpose": "Update current progress, comparable evidence and important rationale; retain optional named attachments and explicitly compact unused detail.",
+        "contract": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/README.md#record-progress-and-engineering-outputs",
+        "source_path": "packages/rigorloop/dist/lib/operational-cli.js",
         "operation": "execute_public_request"
       },
       {
-        "name": "work add",
-        "group": "Record decisions",
-        "purpose": "Add one absent work item with explicit status, owner, and requirement references.",
-        "source_path": "packages/rigorloop/dist/lib/recording-mutation-cli.js",
-        "contract": "docs/design/cli/cli.md#targeted-request-and-operation-definitions",
+        "name": "change complete",
+        "group": "Change",
+        "purpose": "Record a compact historical outcome and acceptance basis after distinct successful final Verify.",
+        "contract": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/README.md#complete-the-change",
+        "source_path": "packages/rigorloop/dist/lib/operational-cli.js",
         "operation": "execute_public_request"
       },
       {
-        "name": "work set",
-        "group": "Record decisions",
-        "purpose": "Update explicitly supplied mutable fields of one existing work item.",
-        "source_path": "packages/rigorloop/dist/lib/recording-mutation-cli.js",
-        "contract": "docs/design/cli/cli.md#targeted-request-and-operation-definitions",
+        "name": "review prepare",
+        "group": "Review",
+        "purpose": "Assemble or update the current input for a Review without creating an assessment or approval.",
+        "contract": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/README.md#preparation",
+        "source_path": "packages/rigorloop/dist/lib/operational-cli.js",
+        "operation": "execute_public_request"
+      },
+      {
+        "name": "review show",
+        "group": "Review",
+        "purpose": "Read current review input, actual conclusion, applicability and actionable findings without requiring attempt history.",
+        "contract": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/README.md#read-the-review",
+        "source_path": "packages/rigorloop/dist/lib/operational-cli.js",
         "operation": "execute_public_request"
       },
       {
         "name": "review record",
-        "group": "Record decisions",
-        "purpose": "Record a complete supplied review assessment against the actor-named subject basis.",
-        "source_path": "packages/rigorloop/dist/lib/recording-mutation-cli.js",
-        "contract": "docs/design/cli/cli.md#targeted-request-and-operation-definitions",
+        "group": "Review",
+        "purpose": "Update assessor-owned current judgment, issue dispositions and explicit applicability while preserving unresolved obligations.",
+        "contract": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/README.md#record-an-assessment-finding-or-reliance-decision",
+        "source_path": "packages/rigorloop/dist/lib/operational-cli.js",
         "operation": "execute_public_request"
       },
       {
-        "name": "review set",
-        "group": "Record decisions",
-        "purpose": "Update only selected explanation fields of an existing review.",
-        "source_path": "packages/rigorloop/dist/lib/recording-mutation-cli.js",
-        "contract": "docs/design/cli/cli.md#targeted-request-and-operation-definitions",
+        "name": "verification show",
+        "group": "Verification",
+        "purpose": "Read the current verification basis and gaps, or one selected current Verification account and its assessed support.",
+        "contract": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/README.md#verification-tasks",
+        "source_path": "packages/rigorloop/dist/lib/operational-cli.js",
         "operation": "execute_public_request"
       },
       {
-        "name": "verify set",
-        "group": "Record decisions",
-        "purpose": "Update only selected explanation fields of the existing Verify report.",
-        "source_path": "packages/rigorloop/dist/lib/recording-mutation-cli.js",
-        "contract": "docs/design/cli/cli.md#targeted-request-and-operation-definitions",
-        "operation": "execute_public_request"
-      },
-      {
-        "name": "finding add",
-        "group": "Record decisions",
-        "purpose": "Add one explicit current finding to an existing selected review.",
-        "source_path": "packages/rigorloop/dist/lib/recording-mutation-cli.js",
-        "contract": "docs/design/cli/cli.md#targeted-request-and-operation-definitions",
-        "operation": "execute_public_request"
-      },
-      {
-        "name": "finding set",
-        "group": "Record decisions",
-        "purpose": "Update explicitly selected current fields of one finding in a named review.",
-        "source_path": "packages/rigorloop/dist/lib/recording-mutation-cli.js",
-        "contract": "docs/design/cli/cli.md#targeted-request-and-operation-definitions",
-        "operation": "execute_public_request"
-      },
-      {
-        "name": "blocker add",
-        "group": "Record decisions",
-        "purpose": "Add one change-level blocker with explicit current fields and retained original basis.",
-        "source_path": "packages/rigorloop/dist/lib/recording-mutation-cli.js",
-        "contract": "docs/design/cli/cli.md#targeted-request-and-operation-definitions",
-        "operation": "execute_public_request"
-      },
-      {
-        "name": "blocker set",
-        "group": "Record decisions",
-        "purpose": "Update selected current fields of one existing change-level blocker.",
-        "source_path": "packages/rigorloop/dist/lib/recording-mutation-cli.js",
-        "contract": "docs/design/cli/cli.md#targeted-request-and-operation-definitions",
-        "operation": "execute_public_request"
-      },
-      {
-        "name": "evidence record",
-        "group": "Record decisions",
-        "purpose": "Record the actor's supplied observation, procedure, subjects, and result for one evidence check.",
-        "source_path": "packages/rigorloop/dist/lib/recording-mutation-cli.js",
-        "contract": "docs/design/cli/cli.md#targeted-request-and-operation-definitions",
-        "operation": "execute_public_request"
-      },
-      {
-        "name": "applicability set",
-        "group": "Record decisions",
-        "purpose": "Record an explicit applicability declaration for an already registered supporting record.",
-        "source_path": "packages/rigorloop/dist/lib/recording-mutation-cli.js",
-        "contract": "docs/design/cli/cli.md#targeted-request-and-operation-definitions",
-        "operation": "execute_public_request"
-      },
-      {
-        "name": "decision record",
-        "group": "Record decisions",
-        "purpose": "Record one supplied material decision and, when explicitly provided, its shared narrative.",
-        "source_path": "packages/rigorloop/dist/lib/recording-mutation-cli.js",
-        "contract": "docs/design/cli/cli.md#targeted-request-and-operation-definitions",
-        "operation": "execute_public_request"
-      },
-      {
-        "name": "verify record",
-        "group": "Record decisions",
-        "purpose": "Record a complete actor-supplied successful Verify assessment and final explanation.",
-        "source_path": "packages/rigorloop/dist/lib/recording-mutation-cli.js",
-        "contract": "docs/design/cli/cli.md#targeted-request-and-operation-definitions",
-        "operation": "execute_public_request"
-      },
-      {
-        "name": "batch",
-        "group": "Record decisions",
-        "purpose": "Record an explicit ordered set of supported targeted edits as one coherent candidate.",
-        "source_path": "packages/rigorloop/dist/lib/recording-mutation-cli.js",
-        "contract": "docs/design/cli/cli.md#targeted-request-and-operation-definitions",
-        "operation": "execute_public_request"
-      },
-      {
-        "name": "record-store inspect",
-        "group": "Advanced storage and recovery",
-        "purpose": "Inspect the selected registered record snapshot, identities, revision, and observations.",
-        "source_path": "packages/rigorloop/dist/lib/record-store-cli.js",
-        "contract": "docs/design/cli/cli.md#paths-and-command-interface",
-        "operation": "execute_public_request"
-      },
-      {
-        "name": "record-store check",
-        "group": "Advanced storage and recovery",
-        "purpose": "Validate an explicitly supplied complete replacement candidate without writing.",
-        "source_path": "packages/rigorloop/dist/lib/record-store-cli.js",
-        "contract": "docs/design/cli/cli.md#advanced-candidate-update-contract",
-        "operation": "execute_public_request"
-      },
-      {
-        "name": "record-store record",
-        "group": "Advanced storage and recovery",
-        "purpose": "Publish explicitly supplied complete record replacements under freshness and preservation checks.",
-        "source_path": "packages/rigorloop/dist/lib/record-store-cli.js",
-        "contract": "docs/design/cli/cli.md#advanced-candidate-update-contract",
-        "operation": "execute_public_request"
-      },
-      {
-        "name": "record-store recover",
-        "group": "Advanced storage and recovery",
-        "purpose": "Restore a verified transaction before-state or complete its exact prepared candidate.",
-        "source_path": "packages/rigorloop/dist/lib/record-store-cli.js",
-        "contract": "docs/design/cli/cli.md#paths-and-command-interface",
-        "operation": "execute_public_request"
-      },
-      {
-        "name": "init codex",
-        "group": "Install skills",
-        "purpose": "Acquire, verify, and install the supported codex skill package with explicit conflict or replacement handling.",
-        "source_path": "packages/rigorloop/dist/bin/rigorloop.js",
-        "contract": "docs/design/cli/installation.md",
-        "operation": "execute_public_request"
-      },
-      {
-        "name": "init claude",
-        "group": "Install skills",
-        "purpose": "Acquire, verify, and install the supported claude skill package with explicit conflict or replacement handling.",
-        "source_path": "packages/rigorloop/dist/bin/rigorloop.js",
-        "contract": "docs/design/cli/installation.md",
+        "name": "verification record",
+        "group": "Verification",
+        "purpose": "Save the distinct current verification assessment and related actual evidence, with optional selected attachments.",
+        "contract": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/README.md#verification-tasks",
+        "source_path": "packages/rigorloop/dist/lib/operational-cli.js",
         "operation": "execute_public_request"
       },
       {
         "name": "--help",
         "group": "Help and diagnostics",
-        "purpose": "Display the implemented public command surface and usage guidance.",
+        "purpose": "Display the supported task surface and operation-specific usage.",
+        "contract": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/README.md#supporting-commands",
         "source_path": "packages/rigorloop/dist/bin/rigorloop.js",
-        "contract": "docs/design/cli/cli.md#generic-command-results",
         "operation": "execute_public_request"
       },
       {
         "name": "version",
         "group": "Help and diagnostics",
-        "purpose": "Report the executable package name and version.",
+        "purpose": "Report the executing package name and version.",
+        "contract": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/README.md#supporting-commands",
         "source_path": "packages/rigorloop/dist/bin/rigorloop.js",
-        "contract": "docs/design/cli/cli.md#generic-command-results",
         "operation": "execute_public_request"
       },
       {
-        "name": "logs path",
+        "name": "capabilities",
         "group": "Help and diagnostics",
-        "purpose": "Report the configured local diagnostic log location.",
-        "source_path": "packages/rigorloop/dist/bin/rigorloop.js",
-        "contract": "docs/design/cli/cli.md#local-diagnostic-logging",
+        "purpose": "Report actually supported operations, interface contracts and operational-backend availability.",
+        "contract": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/README.md#supporting-commands",
+        "source_path": "packages/rigorloop/dist/lib/operational-cli.js",
         "operation": "execute_public_request"
       },
       {
-        "name": "logs show",
+        "name": "logs",
         "group": "Help and diagnostics",
-        "purpose": "Inspect retained diagnostic events for one explicitly supplied invocation identity.",
+        "purpose": "Report the diagnostic location or inspect bounded events for an explicit invocation ID.",
+        "contract": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/README.md#supporting-commands",
         "source_path": "packages/rigorloop/dist/bin/rigorloop.js",
-        "contract": "docs/design/cli/cli.md#local-diagnostic-logging",
+        "operation": "execute_public_request"
+      },
+      {
+        "name": "store backup",
+        "group": "Store maintenance",
+        "purpose": "Create an integrity-checked backup of the selected retained Change scope and required attachments.",
+        "contract": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/README.md#store-maintenance",
+        "source_path": "packages/rigorloop/dist/lib/operational-cli.js",
+        "operation": "execute_public_request"
+      },
+      {
+        "name": "store restore",
+        "group": "Store maintenance",
+        "purpose": "Validate and activate a selected backup with explicit destination expectations and preserved prior data.",
+        "contract": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/README.md#store-maintenance",
+        "source_path": "packages/rigorloop/dist/lib/operational-cli.js",
+        "operation": "execute_public_request"
+      },
+      {
+        "name": "store migrate",
+        "group": "Store maintenance",
+        "purpose": "Stage a supported schema upgrade or explicitly dispositioned legacy import before activating SQLite.",
+        "contract": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/README.md#store-maintenance",
+        "source_path": "packages/rigorloop/dist/lib/operational-cli.js",
         "operation": "execute_public_request"
       }
     ]
@@ -394,172 +197,26 @@
       ],
       "public_entry_mappings": [
         {
-          "entry": "workflow-context",
+          "entry": "init",
           "functions": [
             {
-              "function": "FUNC-041",
+              "function": "FUNC-063",
               "relation": "invokes",
-              "contribution": "Discover bounded current-change candidates or inspect the explicitly named change without deriving workflow eligibility."
+              "contribution": "Install the selected supported agent skills; codex and claude are agent arguments to one operation."
+            },
+            {
+              "function": "FUNC-064",
+              "relation": "invokes",
+              "contribution": "Install the selected supported agent skills; codex and claude are agent arguments to one operation."
+            },
+            {
+              "function": "FUNC-065",
+              "relation": "invokes",
+              "contribution": "Install the selected supported agent skills; codex and claude are agent arguments to one operation."
             }
           ],
           "limits": [
-            "Discovery uses its own result and configuration domains. No sole-candidate selection, lifecycle judgment, or current authority is inferred."
-          ]
-        },
-        {
-          "entry": "status",
-          "functions": [
-            {
-              "function": "FUNC-042",
-              "relation": "invokes",
-              "contribution": "Retrieve the selected change's recorded summary with explicit incompleteness for unavailable registered content."
-            }
-          ],
-          "limits": [
-            "Counts describe stored values, not engineering readiness or satisfaction."
-          ]
-        },
-        {
-          "entry": "context",
-          "functions": [
-            {
-              "function": "FUNC-042",
-              "relation": "invokes",
-              "contribution": "Select the caller-named record scope and preserve actual content, absence, omissions, and continuation."
-            }
-          ],
-          "limits": [
-            "The required input selectors determine the read; --for only attributes activity and selects no additional records."
-          ]
-        },
-        {
-          "entry": "subject inspect",
-          "functions": [
-            {
-              "function": "FUNC-043",
-              "relation": "invokes",
-              "contribution": "Compute the contained selected files' identities and return their same-byte content when requested."
-            }
-          ],
-          "limits": [
-            "Identity computation does not authenticate the actor, select an adequate assessment basis, or establish evidence applicability."
-          ]
-        },
-        {
-          "entry": "work show",
-          "functions": [
-            {
-              "function": "FUNC-042",
-              "relation": "invokes",
-              "contribution": "Retrieve the exact selected entry with the owning contract's containing-record and missing-content distinctions."
-            }
-          ],
-          "limits": [
-            "Reading a stored decision or assessment does not renew its applicability or establish permission to continue."
-          ]
-        },
-        {
-          "entry": "review show",
-          "functions": [
-            {
-              "function": "FUNC-042",
-              "relation": "invokes",
-              "contribution": "Retrieve the exact selected entry with the owning contract's containing-record and missing-content distinctions."
-            }
-          ],
-          "limits": [
-            "Reading a stored decision or assessment does not renew its applicability or establish permission to continue."
-          ]
-        },
-        {
-          "entry": "blocker show",
-          "functions": [
-            {
-              "function": "FUNC-042",
-              "relation": "invokes",
-              "contribution": "Retrieve the exact selected entry with the owning contract's containing-record and missing-content distinctions."
-            }
-          ],
-          "limits": [
-            "Reading a stored decision or assessment does not renew its applicability or establish permission to continue."
-          ]
-        },
-        {
-          "entry": "evidence show",
-          "functions": [
-            {
-              "function": "FUNC-042",
-              "relation": "invokes",
-              "contribution": "Retrieve the exact selected entry with the owning contract's containing-record and missing-content distinctions."
-            }
-          ],
-          "limits": [
-            "Reading a stored decision or assessment does not renew its applicability or establish permission to continue."
-          ]
-        },
-        {
-          "entry": "decision show",
-          "functions": [
-            {
-              "function": "FUNC-042",
-              "relation": "invokes",
-              "contribution": "Retrieve the exact selected entry with the owning contract's containing-record and missing-content distinctions."
-            }
-          ],
-          "limits": [
-            "This selects an individual decision; the separate decisions show command returns the containing record and shared narrative."
-          ]
-        },
-        {
-          "entry": "finding show",
-          "functions": [
-            {
-              "function": "FUNC-042",
-              "relation": "invokes",
-              "contribution": "Retrieve the exact selected entry with the owning contract's containing-record and missing-content distinctions."
-            }
-          ],
-          "limits": [
-            "Finding identity is scoped by --review; the command never searches across reviews for a matching ID."
-          ]
-        },
-        {
-          "entry": "verify show",
-          "functions": [
-            {
-              "function": "FUNC-042",
-              "relation": "invokes",
-              "contribution": "Retrieve the exact selected report with the owning contract's containing-record and missing-content distinctions."
-            }
-          ],
-          "limits": [
-            "The report is selected without a synthetic singleton ID. A stored report remains an attributed historical/current assertion, not a newly performed assessment."
-          ]
-        },
-        {
-          "entry": "decisions show",
-          "functions": [
-            {
-              "function": "FUNC-042",
-              "relation": "invokes",
-              "contribution": "Retrieve the exact selected report with the owning contract's containing-record and missing-content distinctions."
-            }
-          ],
-          "limits": [
-            "The report is selected without a synthetic singleton ID. A stored report remains an attributed historical/current assertion, not a newly performed assessment."
-          ]
-        },
-        {
-          "entry": "observations show",
-          "functions": [
-            {
-              "function": "FUNC-048",
-              "relation": "invokes",
-              "contribution": "Project separately requested observations bound to the record revision and actual observed subject basis."
-            }
-          ],
-          "limits": [
-            "Observations are mechanical diagnostics and do not replace engineering assessment; changed observation basis invalidates continuation."
+            "Static source binding only; actual availability is reported by the installed executable/package."
           ]
         },
         {
@@ -568,93 +225,131 @@
             {
               "function": "FUNC-045",
               "relation": "invokes",
-              "contribution": "Construct the selected absent change root and mechanical metadata from the supplied values."
+              "contribution": "Capture goal, request, scope, authority and initial activity without inventing downstream decisions."
             },
             {
               "function": "FUNC-046",
               "relation": "invokes",
-              "contribution": "Publish the combined candidate only against fresh checked state; --dry-run remains a nonwriting, nonreserving preview."
+              "contribution": "Capture goal, request, scope, authority and initial activity without inventing downstream decisions."
             }
           ],
           "limits": [
-            "Creation is standalone and excluded from batch; it cannot claim an existing directory or create supporting records implicitly.",
-            "These are targeted operational-record commands; they do not accept or author the proposed REM entity JSON formats."
+            "Static source binding only; actual availability is reported by the installed executable/package."
           ]
         },
         {
-          "entry": "change link",
+          "entry": "change context",
           "functions": [
             {
-              "function": "FUNC-045",
+              "function": "FUNC-042",
               "relation": "invokes",
-              "contribution": "Replace or append only the selected subject reference, preserving assessment and applicability declarations."
+              "contribution": "Return the seven-section current handoff, or a compact historical completion, with explicit gaps and bounded supporting reads."
             },
             {
-              "function": "FUNC-046",
+              "function": "FUNC-043",
               "relation": "invokes",
-              "contribution": "Publish the combined candidate only against fresh checked state; --dry-run remains a nonwriting, nonreserving preview."
+              "contribution": "Return the seven-section current handoff, or a compact historical completion, with explicit gaps and bounded supporting reads."
+            },
+            {
+              "function": "FUNC-048",
+              "relation": "invokes",
+              "contribution": "Return the seven-section current handoff, or a compact historical completion, with explicit gaps and bounded supporting reads."
             }
           ],
           "limits": [
-            "The supplied subject identity must be declared as the same current read basis; no unlink, model rename, or approval refresh is implied.",
-            "These are targeted operational-record commands; they do not accept or author the proposed REM entity JSON formats."
+            "Static source binding only; actual availability is reported by the installed executable/package."
           ]
         },
         {
-          "entry": "activity set",
+          "entry": "change update",
           "functions": [
+            {
+              "function": "FUNC-043",
+              "relation": "invokes",
+              "contribution": "Update current progress, comparable evidence and important rationale; retain optional named attachments and explicitly compact unused detail."
+            },
             {
               "function": "FUNC-045",
               "relation": "invokes",
-              "contribution": "Replace only the supplied activity value without deriving a stage or changing neighboring decisions."
+              "contribution": "Update current progress, comparable evidence and important rationale; retain optional named attachments and explicitly compact unused detail."
             },
             {
               "function": "FUNC-046",
               "relation": "invokes",
-              "contribution": "Publish the combined candidate only against fresh checked state; --dry-run remains a nonwriting, nonreserving preview."
+              "contribution": "Update current progress, comparable evidence and important rationale; retain optional named attachments and explicitly compact unused detail."
             }
           ],
           "limits": [
-            "This records the actor's activity decision; it neither assesses progression nor changes work, applicability, or Verify.",
-            "These are targeted operational-record commands; they do not accept or author the proposed REM entity JSON formats."
+            "Static source binding only; actual availability is reported by the installed executable/package."
           ]
         },
         {
-          "entry": "work add",
+          "entry": "change complete",
           "functions": [
+            {
+              "function": "FUNC-043",
+              "relation": "invokes",
+              "contribution": "Record a compact historical outcome and acceptance basis after distinct successful final Verify."
+            },
             {
               "function": "FUNC-045",
               "relation": "invokes",
-              "contribution": "Insert exactly the selected work item while deriving only its structural identity placement."
+              "contribution": "Record a compact historical outcome and acceptance basis after distinct successful final Verify."
             },
             {
               "function": "FUNC-046",
               "relation": "invokes",
-              "contribution": "Publish the combined candidate only against fresh checked state; --dry-run remains a nonwriting, nonreserving preview."
+              "contribution": "Record a compact historical outcome and acceptance basis after distinct successful final Verify."
             }
           ],
           "limits": [
-            "Duplicate identity rejects; status and owner are never inferred.",
-            "These are targeted operational-record commands; they do not accept or author the proposed REM entity JSON formats."
+            "Static source binding only; actual availability is reported by the installed executable/package."
           ]
         },
         {
-          "entry": "work set",
+          "entry": "review prepare",
           "functions": [
+            {
+              "function": "FUNC-043",
+              "relation": "invokes",
+              "contribution": "Assemble or update the current input for a Review without creating an assessment or approval."
+            },
             {
               "function": "FUNC-045",
               "relation": "invokes",
-              "contribution": "Apply the selected nonempty field update while preserving omitted work fields and neighboring items."
+              "contribution": "Assemble or update the current input for a Review without creating an assessment or approval."
             },
             {
               "function": "FUNC-046",
               "relation": "invokes",
-              "contribution": "Publish the combined candidate only against fresh checked state; --dry-run remains a nonwriting, nonreserving preview."
+              "contribution": "Assemble or update the current input for a Review without creating an assessment or approval."
             }
           ],
           "limits": [
-            "The work item must exist; the command does not infer completion or assignment.",
-            "These are targeted operational-record commands; they do not accept or author the proposed REM entity JSON formats."
+            "Static source binding only; actual availability is reported by the installed executable/package."
+          ]
+        },
+        {
+          "entry": "review show",
+          "functions": [
+            {
+              "function": "FUNC-042",
+              "relation": "invokes",
+              "contribution": "Read current review input, actual conclusion, applicability and actionable findings without requiring attempt history."
+            },
+            {
+              "function": "FUNC-043",
+              "relation": "invokes",
+              "contribution": "Read current review input, actual conclusion, applicability and actionable findings without requiring attempt history."
+            },
+            {
+              "function": "FUNC-048",
+              "relation": "invokes",
+              "contribution": "Read current review input, actual conclusion, applicability and actionable findings without requiring attempt history."
+            }
+          ],
+          "limits": [
+            "Static source binding only; actual availability is reported by the installed executable/package."
           ]
         },
         {
@@ -663,329 +358,57 @@
             {
               "function": "FUNC-045",
               "relation": "invokes",
-              "contribution": "Create or replace only the selected review assessment fields and preserve its complete findings."
+              "contribution": "Update assessor-owned current judgment, issue dispositions and explicit applicability while preserving unresolved obligations."
             },
             {
               "function": "FUNC-046",
               "relation": "invokes",
-              "contribution": "Publish the combined candidate only against fresh checked state; --dry-run remains a nonwriting, nonreserving preview."
+              "contribution": "Update assessor-owned current judgment, issue dispositions and explicit applicability while preserving unresolved obligations."
             }
           ],
           "limits": [
-            "The caller supplies the independent judgment and basis. Recording cannot perform the review, restore applicability, or dispose findings.",
-            "These are targeted operational-record commands; they do not accept or author the proposed REM entity JSON formats."
+            "Static source binding only; actual availability is reported by the installed executable/package."
           ]
         },
         {
-          "entry": "review set",
-          "functions": [
-            {
-              "function": "FUNC-045",
-              "relation": "invokes",
-              "contribution": "Apply a narrow explanation edit while preserving review actors, subjects, judgment, and findings."
-            },
-            {
-              "function": "FUNC-046",
-              "relation": "invokes",
-              "contribution": "Publish the combined candidate only against fresh checked state; --dry-run remains a nonwriting, nonreserving preview."
-            }
-          ],
-          "limits": [
-            "Whether the edited explanation changes supported reliance remains an assessor decision; a successful save cannot renew approval.",
-            "These are targeted operational-record commands; they do not accept or author the proposed REM entity JSON formats."
-          ]
-        },
-        {
-          "entry": "verify set",
-          "functions": [
-            {
-              "function": "FUNC-045",
-              "relation": "invokes",
-              "contribution": "Apply the requested Verify explanation changes while preserving its assessment identity and evidence basis."
-            },
-            {
-              "function": "FUNC-046",
-              "relation": "invokes",
-              "contribution": "Publish the combined candidate only against fresh checked state; --dry-run remains a nonwriting, nonreserving preview."
-            }
-          ],
-          "limits": [
-            "A narrow edit is not a new successful Verify, an applicability judgment, or activity completion.",
-            "These are targeted operational-record commands; they do not accept or author the proposed REM entity JSON formats."
-          ]
-        },
-        {
-          "entry": "finding add",
-          "functions": [
-            {
-              "function": "FUNC-045",
-              "relation": "invokes",
-              "contribution": "Insert the supplied finding into the named review with its stable ID and current account."
-            },
-            {
-              "function": "FUNC-046",
-              "relation": "invokes",
-              "contribution": "Publish the combined candidate only against fresh checked state; --dry-run remains a nonwriting, nonreserving preview."
-            }
-          ],
-          "limits": [
-            "The command does not create a review or manufacture origin/basis data; --review identifies the exact containing review.",
-            "These are targeted operational-record commands; they do not accept or author the proposed REM entity JSON formats."
-          ]
-        },
-        {
-          "entry": "finding set",
-          "functions": [
-            {
-              "function": "FUNC-045",
-              "relation": "invokes",
-              "contribution": "Apply the named finding's current-account changes while preserving its ID and the review assessment."
-            },
-            {
-              "function": "FUNC-046",
-              "relation": "invokes",
-              "contribution": "Publish the combined candidate only against fresh checked state; --dry-run remains a nonwriting, nonreserving preview."
-            }
-          ],
-          "limits": [
-            "State and resolution changes must be supplied together; the command does not assess disposition authority.",
-            "These are targeted operational-record commands; they do not accept or author the proposed REM entity JSON formats."
-          ]
-        },
-        {
-          "entry": "blocker add",
-          "functions": [
-            {
-              "function": "FUNC-045",
-              "relation": "invokes",
-              "contribution": "Construct immutable blocker origin from the supplied basis and copy an explicitly selected supporting judgment when requested."
-            },
-            {
-              "function": "FUNC-046",
-              "relation": "invokes",
-              "contribution": "Publish the combined candidate only against fresh checked state; --dry-run remains a nonwriting, nonreserving preview."
-            }
-          ],
-          "limits": [
-            "The caller selects the supporting judgment; no favorable or latest judgment is inferred.",
-            "These are targeted operational-record commands; they do not accept or author the proposed REM entity JSON formats."
-          ]
-        },
-        {
-          "entry": "blocker set",
-          "functions": [
-            {
-              "function": "FUNC-045",
-              "relation": "invokes",
-              "contribution": "Apply the explicit blocker update while preserving its immutable original basis and identity."
-            },
-            {
-              "function": "FUNC-046",
-              "relation": "invokes",
-              "contribution": "Publish the combined candidate only against fresh checked state; --dry-run remains a nonwriting, nonreserving preview."
-            }
-          ],
-          "limits": [
-            "The command records the supplied disposition without judging its sufficiency or changing the origin.",
-            "These are targeted operational-record commands; they do not accept or author the proposed REM entity JSON formats."
-          ]
-        },
-        {
-          "entry": "evidence record",
-          "functions": [
-            {
-              "function": "FUNC-045",
-              "relation": "invokes",
-              "contribution": "Create or replace only the selected evidence check and required mechanical containing-record metadata."
-            },
-            {
-              "function": "FUNC-046",
-              "relation": "invokes",
-              "contribution": "Publish the combined candidate only against fresh checked state; --dry-run remains a nonwriting, nonreserving preview."
-            }
-          ],
-          "limits": [
-            "The command performs no verification and does not infer applicability. Creating a supporting record requires an explicit applicability declaration.",
-            "These are targeted operational-record commands; they do not accept or author the proposed REM entity JSON formats."
-          ]
-        },
-        {
-          "entry": "applicability set",
-          "functions": [
-            {
-              "function": "FUNC-045",
-              "relation": "invokes",
-              "contribution": "Replace the selected record-level declaration with the supplied value, actor, and reason."
-            },
-            {
-              "function": "FUNC-046",
-              "relation": "invokes",
-              "contribution": "Publish the combined candidate only against fresh checked state; --dry-run remains a nonwriting, nonreserving preview."
-            }
-          ],
-          "limits": [
-            "Storage does not decide evidence or review applicability, and a record declaration does not establish universal support from all entries.",
-            "These are targeted operational-record commands; they do not accept or author the proposed REM entity JSON formats."
-          ]
-        },
-        {
-          "entry": "decision record",
-          "functions": [
-            {
-              "function": "FUNC-045",
-              "relation": "invokes",
-              "contribution": "Create or replace the selected decision while preserving neighboring decisions and any omitted existing narrative."
-            },
-            {
-              "function": "FUNC-046",
-              "relation": "invokes",
-              "contribution": "Publish the combined candidate only against fresh checked state; --dry-run remains a nonwriting, nonreserving preview."
-            }
-          ],
-          "limits": [
-            "A new containing record needs its narrative and applicability supplied; storage does not invent rationale or grant authority.",
-            "These are targeted operational-record commands; they do not accept or author the proposed REM entity JSON formats."
-          ]
-        },
-        {
-          "entry": "verify record",
-          "functions": [
-            {
-              "function": "FUNC-045",
-              "relation": "invokes",
-              "contribution": "Construct the explicitly supplied complete Verify record and its mechanical registry metadata."
-            },
-            {
-              "function": "FUNC-046",
-              "relation": "invokes",
-              "contribution": "Publish the combined candidate only against fresh checked state; --dry-run remains a nonwriting, nonreserving preview."
-            }
-          ],
-          "limits": [
-            "No verification is executed and activity completion is not set; replacing the assessment follows the exact optional-basis rules.",
-            "These are targeted operational-record commands; they do not accept or author the proposed REM entity JSON formats."
-          ]
-        },
-        {
-          "entry": "batch",
-          "functions": [
-            {
-              "function": "FUNC-045",
-              "relation": "invokes",
-              "contribution": "Compose the declared non-overlapping operations into one candidate before validation and publication."
-            },
-            {
-              "function": "FUNC-046",
-              "relation": "invokes",
-              "contribution": "Publish the combined candidate only against fresh checked state; --dry-run remains a nonwriting, nonreserving preview."
-            }
-          ],
-          "limits": [
-            "Creation is excluded, each semantic decision must be supplied, and ordering cannot manufacture readiness or authority.",
-            "These are targeted operational-record commands; they do not accept or author the proposed REM entity JSON formats."
-          ]
-        },
-        {
-          "entry": "record-store inspect",
+          "entry": "verification show",
           "functions": [
             {
               "function": "FUNC-042",
               "relation": "invokes",
-              "contribution": "Expose the selected complete registered snapshot through the separate advanced inspection contract."
+              "contribution": "Read the current verification basis and gaps, or one selected current Verification account and its assessed support."
+            },
+            {
+              "function": "FUNC-043",
+              "relation": "invokes",
+              "contribution": "Read the current verification basis and gaps, or one selected current Verification account and its assessed support."
+            },
+            {
+              "function": "FUNC-048",
+              "relation": "invokes",
+              "contribution": "Read the current verification basis and gaps, or one selected current Verification account and its assessed support."
             }
           ],
           "limits": [
-            "This advanced complete-snapshot read does not replace ordinary scoped queries or evaluate workflow eligibility."
+            "Static source binding only; actual availability is reported by the installed executable/package."
           ]
         },
         {
-          "entry": "record-store check",
+          "entry": "verification record",
           "functions": [
             {
-              "function": "FUNC-044",
+              "function": "FUNC-045",
               "relation": "invokes",
-              "contribution": "Check complete candidate bytes, structural invariants, identities, preservation rules, and supplied read basis."
-            }
-          ],
-          "limits": [
-            "A successful check makes no reservation and cannot authorize later recording without fresh checks."
-          ]
-        },
-        {
-          "entry": "record-store record",
-          "functions": [
-            {
-              "function": "FUNC-044",
-              "relation": "invokes",
-              "contribution": "Validate the supplied complete replacement bytes under the supported stored contract."
+              "contribution": "Save the distinct current verification assessment and related actual evidence, with optional selected attachments."
             },
             {
               "function": "FUNC-046",
               "relation": "invokes",
-              "contribution": "Publish only the exact admitted candidate as a fresh coherent transaction."
+              "contribution": "Save the distinct current verification assessment and related actual evidence, with optional selected attachments."
             }
           ],
           "limits": [
-            "The advanced caller supplies complete bytes; this path does not invoke targeted semantic edit construction or an eligibility engine."
-          ]
-        },
-        {
-          "entry": "record-store recover",
-          "functions": [
-            {
-              "function": "FUNC-047",
-              "relation": "invokes",
-              "contribution": "Recover the explicitly selected interrupted transaction under expected recovery identity, path, and exact-state checks."
-            }
-          ],
-          "limits": [
-            "Only the declared restore or complete action is admitted. Recovery cannot overwrite a third state, restore over acknowledged success, or invent a new candidate."
-          ]
-        },
-        {
-          "entry": "init codex",
-          "functions": [
-            {
-              "function": "FUNC-063",
-              "relation": "invokes",
-              "contribution": "Admit the codex target and acquire and verify the selected trusted installation candidate."
-            },
-            {
-              "function": "FUNC-064",
-              "relation": "invokes",
-              "contribution": "Apply only the selected candidate skill units after complete preflight and applicable explicit replacement choice."
-            },
-            {
-              "function": "FUNC-065",
-              "relation": "invokes",
-              "contribution": "Present the installation plan, actual effects, or bounded failure under the installation result contract."
-            }
-          ],
-          "limits": [
-            "Installation is delegated through IF-006 to MOD-014. --dry-run does not acquire or fully verify an archive; installation grants no project-state adoption or skill execution authority."
-          ]
-        },
-        {
-          "entry": "init claude",
-          "functions": [
-            {
-              "function": "FUNC-063",
-              "relation": "invokes",
-              "contribution": "Admit the claude target and acquire and verify the selected trusted installation candidate."
-            },
-            {
-              "function": "FUNC-064",
-              "relation": "invokes",
-              "contribution": "Apply only the selected candidate skill units after complete preflight and applicable explicit replacement choice."
-            },
-            {
-              "function": "FUNC-065",
-              "relation": "invokes",
-              "contribution": "Present the installation plan, actual effects, or bounded failure under the installation result contract."
-            }
-          ],
-          "limits": [
-            "Installation is delegated through IF-006 to MOD-014. --dry-run does not acquire or fully verify an archive; installation grants no project-state adoption or skill execution authority."
+            "Static source binding only; actual availability is reported by the installed executable/package."
           ]
         },
         {
@@ -994,16 +417,16 @@
             {
               "function": "FUNC-040",
               "relation": "invokes",
-              "contribution": "Admit the general help request without treating displayed commands as execution authority."
+              "contribution": "Display the supported task surface and operation-specific usage."
             },
             {
               "function": "FUNC-048",
               "relation": "invokes",
-              "contribution": "Present the general help result under its declared output and exit contract."
+              "contribution": "Display the supported task surface and operation-specific usage."
             }
           ],
           "limits": [
-            "This entry is the canonical help spelling; -h, empty invocation, and command-specific --help remain grammar details at the source owner."
+            "Static source binding only; actual availability is reported by the installed executable/package."
           ]
         },
         {
@@ -1012,43 +435,548 @@
             {
               "function": "FUNC-048",
               "relation": "invokes",
-              "contribution": "Present package identity under the generic result contract."
+              "contribution": "Report the executing package name and version."
             }
           ],
           "limits": [
-            "A version response identifies the executing package metadata; it does not prove current registry state or qualification of an installed package."
+            "Static source binding only; actual availability is reported by the installed executable/package."
           ]
         },
         {
-          "entry": "logs path",
+          "entry": "capabilities",
+          "functions": [
+            {
+              "function": "FUNC-042",
+              "relation": "invokes",
+              "contribution": "Report actually supported operations, interface contracts and operational-backend availability."
+            },
+            {
+              "function": "FUNC-048",
+              "relation": "invokes",
+              "contribution": "Report actually supported operations, interface contracts and operational-backend availability."
+            }
+          ],
+          "limits": [
+            "Static source binding only; actual availability is reported by the installed executable/package."
+          ]
+        },
+        {
+          "entry": "logs",
           "functions": [
             {
               "function": "FUNC-049",
               "relation": "invokes",
-              "contribution": "Expose the selected diagnostic location under the logging configuration and privacy boundary."
+              "contribution": "Report the diagnostic location or inspect bounded events for an explicit invocation ID."
             }
           ],
           "limits": [
-            "A diagnostic path is user-requested result information, not permission to record arbitrary paths or inspect unrelated project state."
+            "Static source binding only; actual availability is reported by the installed executable/package."
           ]
         },
         {
-          "entry": "logs show",
+          "entry": "store backup",
+          "functions": [
+            {
+              "function": "FUNC-074",
+              "relation": "invokes",
+              "contribution": "Create an integrity-checked backup of the selected retained Change scope and required attachments."
+            }
+          ],
+          "limits": [
+            "Static source binding only; actual availability is reported by the installed executable/package."
+          ]
+        },
+        {
+          "entry": "store restore",
+          "functions": [
+            {
+              "function": "FUNC-075",
+              "relation": "invokes",
+              "contribution": "Validate and activate a selected backup with explicit destination expectations and preserved prior data."
+            }
+          ],
+          "limits": [
+            "Static source binding only; actual availability is reported by the installed executable/package."
+          ]
+        },
+        {
+          "entry": "store migrate",
+          "functions": [
+            {
+              "function": "FUNC-076",
+              "relation": "invokes",
+              "contribution": "Stage a supported schema upgrade or explicitly dispositioned legacy import before activating SQLite."
+            }
+          ],
+          "limits": [
+            "Static source binding only; actual availability is reported by the installed executable/package."
+          ]
+        }
+      ]
+    },
+    {
+      "choice": "Expose current handoff, owned assessments and optional evidence retention through engineering tasks.",
+      "rationale": "Recurring engineering tasks determine public operations; typed records and atomic linking remain internal responsibilities.",
+      "alternatives": [
+        "Keep a public create/update/read command for every operational record kind.",
+        "Hide the same low-level operation list beneath one generic command."
+      ],
+      "consequences": [
+        "The designed catalogue has sixteen tasks and four supporting entries. Current handoff replaces mandatory activity history; counts do not constrain required behavior.",
+        "Current v1/v3 commands remain unchanged until coherent adoption of v2/v4. No aliases preserve withdrawn draft record-oriented operations.",
+        "Progress, assessment and closeout retain separate authority; working facts can be replaced without erasing unresolved obligations.",
+        "Named optional attachments enter through evidence-bearing tasks. Store backup, restore and migrate provide explicit maintenance; SQLite handles ordinary transaction recovery. Runtime qualification remains required before adoption.",
+        "Completion preserves a compact historical acceptance account and stops tracking repository applicability. New regressions become linked new work.",
+        "Target mutations and store maintenance consistently read JSON through --input -; MOD-010 owns the closed public envelope and outcome mapping. Typed IF-003 requests keep SQL and connection handles inside MOD-011. The owning review-record walkthrough explains scope, attribution and actual commitment without automatic workflow progression."
+      ],
+      "revisit_when": [
+        "The owning public command contracts add or revise a capability."
+      ],
+      "public_capabilities": [
+        {
+          "name": "init",
+          "group": "Install skills",
+          "purpose": "Install the selected supported agent skills; codex and claude are agent arguments to one operation.",
+          "contract": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/README.md#supporting-commands",
+          "functions": [
+            {
+              "function": "FUNC-063",
+              "relation": "invokes",
+              "contribution": "Install the selected supported agent skills; codex and claude are agent arguments to one operation."
+            },
+            {
+              "function": "FUNC-064",
+              "relation": "invokes",
+              "contribution": "Install the selected supported agent skills; codex and claude are agent arguments to one operation."
+            },
+            {
+              "function": "FUNC-065",
+              "relation": "invokes",
+              "contribution": "Install the selected supported agent skills; codex and claude are agent arguments to one operation."
+            }
+          ],
+          "limits": [
+            "Explicit replacement and actual installation outcomes follow the Installation owner. Installation grants no workflow adoption or skill execution authority."
+          ]
+        },
+        {
+          "name": "change create",
+          "group": "Change",
+          "purpose": "Capture goal, request, scope, authority and initial activity without inventing downstream decisions.",
+          "contract": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/README.md#start-work",
+          "functions": [
+            {
+              "function": "FUNC-045",
+              "relation": "invokes",
+              "contribution": "Capture goal, request, scope, authority and initial activity without inventing downstream decisions."
+            },
+            {
+              "function": "FUNC-046",
+              "relation": "invokes",
+              "contribution": "Capture goal, request, scope, authority and initial activity without inventing downstream decisions."
+            }
+          ],
+          "limits": [
+            "The actor supplies engineering facts and decisions; storage success grants no approval, progression or execution authority."
+          ]
+        },
+        {
+          "name": "change context",
+          "group": "Change",
+          "purpose": "Return the seven-section current handoff, or a compact historical completion, with explicit gaps and bounded supporting reads.",
+          "contract": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/README.md#resume-and-inspect-work",
+          "functions": [
+            {
+              "function": "FUNC-042",
+              "relation": "invokes",
+              "contribution": "Return the seven-section current handoff, or a compact historical completion, with explicit gaps and bounded supporting reads."
+            },
+            {
+              "function": "FUNC-043",
+              "relation": "invokes",
+              "contribution": "Return the seven-section current handoff, or a compact historical completion, with explicit gaps and bounded supporting reads."
+            },
+            {
+              "function": "FUNC-048",
+              "relation": "invokes",
+              "contribution": "Return the seven-section current handoff, or a compact historical completion, with explicit gaps and bounded supporting reads."
+            }
+          ],
+          "limits": [
+            "Read-only bounded context exposes missing support and unresolved findings; it does not determine readiness or run an assessment."
+          ]
+        },
+        {
+          "name": "change update",
+          "group": "Change",
+          "purpose": "Update current progress, comparable evidence and important rationale; retain optional named attachments and explicitly compact unused detail.",
+          "contract": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/README.md#record-progress-and-engineering-outputs",
+          "functions": [
+            {
+              "function": "FUNC-043",
+              "relation": "invokes",
+              "contribution": "Update current progress, comparable evidence and important rationale; retain optional named attachments and explicitly compact unused detail."
+            },
+            {
+              "function": "FUNC-045",
+              "relation": "invokes",
+              "contribution": "Update current progress, comparable evidence and important rationale; retain optional named attachments and explicitly compact unused detail."
+            },
+            {
+              "function": "FUNC-046",
+              "relation": "invokes",
+              "contribution": "Update current progress, comparable evidence and important rationale; retain optional named attachments and explicitly compact unused detail."
+            }
+          ],
+          "limits": [
+            "The actor supplies engineering facts and decisions; storage success grants no approval, progression or execution authority.",
+            "No generic operation list, review judgment, review-gate selection or verification outcome is admitted.",
+            "An activity completed label cannot close the Change. Completed Changes accept only the permitted audit additions."
+          ]
+        },
+        {
+          "name": "change complete",
+          "group": "Change",
+          "purpose": "Record a compact historical outcome and acceptance basis after distinct successful final Verify.",
+          "contract": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/README.md#complete-the-change",
+          "functions": [
+            {
+              "function": "FUNC-043",
+              "relation": "invokes",
+              "contribution": "Record a compact historical outcome and acceptance basis after distinct successful final Verify."
+            },
+            {
+              "function": "FUNC-045",
+              "relation": "invokes",
+              "contribution": "Record a compact historical outcome and acceptance basis after distinct successful final Verify."
+            },
+            {
+              "function": "FUNC-046",
+              "relation": "invokes",
+              "contribution": "Record a compact historical outcome and acceptance basis after distinct successful final Verify."
+            }
+          ],
+          "limits": [
+            "Closeout requires current supported final verification and resolved work/blockers; the CLI does not perform the engineering assessment or grant new authority.",
+            "Completion is a compact historical account, not ongoing current-system approval; later regressions start linked new work."
+          ]
+        },
+        {
+          "name": "review prepare",
+          "group": "Review",
+          "purpose": "Assemble or update the current input for a Review without creating an assessment or approval.",
+          "contract": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/README.md#preparation",
+          "functions": [
+            {
+              "function": "FUNC-043",
+              "relation": "invokes",
+              "contribution": "Assemble or update the current input for a Review without creating an assessment or approval."
+            },
+            {
+              "function": "FUNC-045",
+              "relation": "invokes",
+              "contribution": "Assemble or update the current input for a Review without creating an assessment or approval."
+            },
+            {
+              "function": "FUNC-046",
+              "relation": "invokes",
+              "contribution": "Assemble or update the current input for a Review without creating an assessment or approval."
+            }
+          ],
+          "limits": [
+            "The actor supplies engineering facts and decisions; storage success grants no approval, progression or execution authority."
+          ]
+        },
+        {
+          "name": "review show",
+          "group": "Review",
+          "purpose": "Read current review input, actual conclusion, applicability and actionable findings without requiring attempt history.",
+          "contract": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/README.md#read-the-review",
+          "functions": [
+            {
+              "function": "FUNC-042",
+              "relation": "invokes",
+              "contribution": "Read current review input, actual conclusion, applicability and actionable findings without requiring attempt history."
+            },
+            {
+              "function": "FUNC-043",
+              "relation": "invokes",
+              "contribution": "Read current review input, actual conclusion, applicability and actionable findings without requiring attempt history."
+            },
+            {
+              "function": "FUNC-048",
+              "relation": "invokes",
+              "contribution": "Read current review input, actual conclusion, applicability and actionable findings without requiring attempt history."
+            }
+          ],
+          "limits": [
+            "Read-only bounded context exposes missing support and unresolved findings; it does not determine readiness or run an assessment."
+          ]
+        },
+        {
+          "name": "review record",
+          "group": "Review",
+          "purpose": "Update assessor-owned current judgment, issue dispositions and explicit applicability while preserving unresolved obligations.",
+          "contract": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/README.md#record-an-assessment-finding-or-reliance-decision",
+          "functions": [
+            {
+              "function": "FUNC-045",
+              "relation": "invokes",
+              "contribution": "Update assessor-owned current judgment, issue dispositions and explicit applicability while preserving unresolved obligations."
+            },
+            {
+              "function": "FUNC-046",
+              "relation": "invokes",
+              "contribution": "Update assessor-owned current judgment, issue dispositions and explicit applicability while preserving unresolved obligations."
+            }
+          ],
+          "limits": [
+            "The actor supplies engineering facts and decisions; storage success grants no approval, progression or execution authority.",
+            "Advisory feedback cannot establish formal approval; material changes require independent reassessment."
+          ]
+        },
+        {
+          "name": "verification show",
+          "group": "Verification",
+          "purpose": "Read the current verification basis and gaps, or one selected current Verification account and its assessed support.",
+          "contract": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/README.md#verification-tasks",
+          "functions": [
+            {
+              "function": "FUNC-042",
+              "relation": "invokes",
+              "contribution": "Read the current verification basis and gaps, or one selected current Verification account and its assessed support."
+            },
+            {
+              "function": "FUNC-043",
+              "relation": "invokes",
+              "contribution": "Read the current verification basis and gaps, or one selected current Verification account and its assessed support."
+            },
+            {
+              "function": "FUNC-048",
+              "relation": "invokes",
+              "contribution": "Read the current verification basis and gaps, or one selected current Verification account and its assessed support."
+            }
+          ],
+          "limits": [
+            "Read-only bounded context exposes missing support and unresolved findings; it does not determine readiness or run an assessment."
+          ]
+        },
+        {
+          "name": "verification record",
+          "group": "Verification",
+          "purpose": "Save the distinct current verification assessment and related actual evidence, with optional selected attachments.",
+          "contract": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/README.md#verification-tasks",
+          "functions": [
+            {
+              "function": "FUNC-045",
+              "relation": "invokes",
+              "contribution": "Save the distinct current verification assessment and related actual evidence, with optional selected attachments."
+            },
+            {
+              "function": "FUNC-046",
+              "relation": "invokes",
+              "contribution": "Save the distinct current verification assessment and related actual evidence, with optional selected attachments."
+            }
+          ],
+          "limits": [
+            "The actor supplies engineering facts and decisions; storage success grants no approval, progression or execution authority.",
+            "The command runs no tests or repairs, invents no review and does not set activity completed."
+          ]
+        },
+        {
+          "name": "browser generate",
+          "group": "Architecture browser",
+          "purpose": "Generate a portable architecture snapshot from explicit project inputs and publish to the selected output.",
+          "contract": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/README.md#browser-command-family",
+          "functions": [
+            {
+              "function": "FUNC-079",
+              "relation": "invokes",
+              "contribution": "Generate a portable architecture snapshot from explicit project inputs and publish to the selected output."
+            },
+            {
+              "function": "FUNC-080",
+              "relation": "invokes",
+              "contribution": "Generate a portable architecture snapshot from explicit project inputs and publish to the selected output."
+            },
+            {
+              "function": "FUNC-081",
+              "relation": "invokes",
+              "contribution": "Generate a portable architecture snapshot from explicit project inputs and publish to the selected output."
+            },
+            {
+              "function": "FUNC-082",
+              "relation": "invokes",
+              "contribution": "Generate a portable architecture snapshot from explicit project inputs and publish to the selected output."
+            }
+          ],
+          "limits": [
+            "Browser operations require no Change and grant no engineering approval; browser-v1 retains its separate contract."
+          ]
+        },
+        {
+          "name": "browser check",
+          "group": "Architecture browser",
+          "purpose": "Compare the selected snapshot against the same source and tool scope without mutation.",
+          "contract": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/README.md#browser-command-family",
+          "functions": [
+            {
+              "function": "FUNC-080",
+              "relation": "invokes",
+              "contribution": "Compare the selected snapshot against the same source and tool scope without mutation."
+            },
+            {
+              "function": "FUNC-081",
+              "relation": "invokes",
+              "contribution": "Compare the selected snapshot against the same source and tool scope without mutation."
+            }
+          ],
+          "limits": [
+            "Browser operations require no Change and grant no engineering approval; browser-v1 retains its separate contract."
+          ]
+        },
+        {
+          "name": "browser recover",
+          "group": "Architecture browser",
+          "purpose": "Recover the selected interrupted browser publication without replaying generation.",
+          "contract": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/README.md#browser-command-family",
+          "functions": [
+            {
+              "function": "FUNC-082",
+              "relation": "invokes",
+              "contribution": "Recover the selected interrupted browser publication without replaying generation."
+            }
+          ],
+          "limits": [
+            "Browser operations require no Change and grant no engineering approval; browser-v1 retains its separate contract."
+          ]
+        },
+        {
+          "name": "--help",
+          "group": "Help and diagnostics",
+          "purpose": "Display the supported task surface and operation-specific usage.",
+          "contract": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/README.md#supporting-commands",
+          "functions": [
+            {
+              "function": "FUNC-040",
+              "relation": "invokes",
+              "contribution": "Display the supported task surface and operation-specific usage."
+            },
+            {
+              "function": "FUNC-048",
+              "relation": "invokes",
+              "contribution": "Display the supported task surface and operation-specific usage."
+            }
+          ],
+          "limits": [
+            "Help requires no project access; displayed capabilities grant no execution authority."
+          ]
+        },
+        {
+          "name": "version",
+          "group": "Help and diagnostics",
+          "purpose": "Report the executing package name and version.",
+          "contract": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/README.md#supporting-commands",
+          "functions": [
+            {
+              "function": "FUNC-048",
+              "relation": "invokes",
+              "contribution": "Report the executing package name and version."
+            }
+          ],
+          "limits": [
+            "Package identity is not proof of registry state, compatibility or qualification."
+          ]
+        },
+        {
+          "name": "capabilities",
+          "group": "Help and diagnostics",
+          "purpose": "Report actually supported operations, interface contracts and operational-backend availability.",
+          "contract": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/README.md#supporting-commands",
+          "functions": [
+            {
+              "function": "FUNC-042",
+              "relation": "invokes",
+              "contribution": "Report actually supported operations, interface contracts and operational-backend availability."
+            },
+            {
+              "function": "FUNC-048",
+              "relation": "invokes",
+              "contribution": "Report actually supported operations, interface contracts and operational-backend availability."
+            }
+          ],
+          "limits": [
+            "Unimplemented commands are not advertised by an installed runtime; discovery does not adopt a workflow."
+          ]
+        },
+        {
+          "name": "logs",
+          "group": "Help and diagnostics",
+          "purpose": "Report the diagnostic location or inspect bounded events for an explicit invocation ID.",
+          "contract": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/README.md#supporting-commands",
           "functions": [
             {
               "function": "FUNC-049",
               "relation": "invokes",
-              "contribution": "Select the exact invocation across bounded retained diagnostic files and report unavailable or corrupt content safely."
+              "contribution": "Report the diagnostic location or inspect bounded events for an explicit invocation ID."
             }
           ],
           "limits": [
-            "This read does not replay the command, establish engineering evidence, or prove that an absent event never occurred."
+            "Diagnostics neither replay operations nor substitute for engineering evidence; privacy and retention boundaries remain in force."
+          ]
+        },
+        {
+          "name": "store backup",
+          "group": "Store maintenance",
+          "purpose": "Create an integrity-checked backup of the selected retained Change scope and required attachments.",
+          "contract": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/README.md#store-maintenance",
+          "functions": [
+            {
+              "function": "FUNC-074",
+              "relation": "invokes",
+              "contribution": "Create an integrity-checked backup of the selected retained Change scope and required attachments."
+            }
+          ],
+          "limits": [
+            "Maintenance is project-scoped, requires explicit inputs and preserves judgment meaning; it does not grant workflow adoption or new approval."
+          ]
+        },
+        {
+          "name": "store restore",
+          "group": "Store maintenance",
+          "purpose": "Validate and activate a selected backup with explicit destination expectations and preserved prior data.",
+          "contract": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/README.md#store-maintenance",
+          "functions": [
+            {
+              "function": "FUNC-075",
+              "relation": "invokes",
+              "contribution": "Validate and activate a selected backup with explicit destination expectations and preserved prior data."
+            }
+          ],
+          "limits": [
+            "Maintenance is project-scoped, requires explicit inputs and preserves judgment meaning; it does not grant workflow adoption or new approval."
+          ]
+        },
+        {
+          "name": "store migrate",
+          "group": "Store maintenance",
+          "purpose": "Stage a supported schema upgrade or explicitly dispositioned legacy import before activating SQLite.",
+          "contract": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/README.md#store-maintenance",
+          "functions": [
+            {
+              "function": "FUNC-076",
+              "relation": "invokes",
+              "contribution": "Stage a supported schema upgrade or explicitly dispositioned legacy import before activating SQLite."
+            }
+          ],
+          "limits": [
+            "Maintenance is project-scoped, requires explicit inputs and preserves judgment meaning; it does not grant workflow adoption or new approval."
           ]
         }
       ]
     }
   ],
   "deferred": [
-    "Reconcile the already recorded v2/v3 help-text discrepancy with the v3-only stored contract in a later implementation task."
+    "Browser command runtime: the designed browser operations are not implemented by this adoption."
   ]
 }
