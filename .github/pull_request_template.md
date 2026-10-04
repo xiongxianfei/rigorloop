@@ -26,11 +26,11 @@ paste commands here
 
 ## RigorLoop artifacts
 
-- Proposal:
-- Owning Designs:
+- Accepted requirement basis (including justified reuse):
+- Reviewed System/Architecture Design:
 - Execution plan and verification allocation:
 - Final review and Verify evidence:
-- Owning change:
+- Owning Change ID and context command:
 
 ## Risks and follow-ups
 

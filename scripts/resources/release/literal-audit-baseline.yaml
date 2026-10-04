@@ -1,0 +1,43 @@
+# Current scoped observations, not a reconstruction of the retired Change-local audit.
+# This reviewed inventory does not scan for unlisted literals. Tag/profile/line name
+# the observation basis; release input selection remains profile-owned.
+# release_profile names the generated v2.0.0 profile destination, not a tracked input.
+# baseline_created_at records the observation date at midnight, not an execution time.
+schema_version: release-literal-audit-baseline-v1
+change_id: 2026-10-04-post-adoption-release-audit
+baseline_created_at: 2026-10-04T00:00:00Z
+audited_release_tag: v2.0.0
+release_profile: docs/releases/profiles/v2.0.0.yaml
+entries:
+  - id: package-version
+    literal: 2.0.0
+    file: packages/rigorloop/package.json
+    line: 3
+    classification: profile-owned
+    expected_owner: release-profile
+    disposition: allowed
+    rationale: "Reviewed source version; preparation projects the selected release profile into the package."
+  - id: legacy-profile-v035
+    literal: v0.3.5
+    file: scripts/lib/release/release_transaction.py
+    line: 32
+    classification: historical-fixture
+    expected_owner: historical-profile-compatibility
+    disposition: allowed
+    rationale: "Explicit legacy implicit-latest profile admission; not a selector for the current candidate."
+  - id: legacy-profile-v036
+    literal: v0.3.6
+    file: scripts/lib/release/release_transaction.py
+    line: 32
+    classification: historical-fixture
+    expected_owner: historical-profile-compatibility
+    disposition: allowed
+    rationale: "Explicit legacy implicit-latest profile admission; preserve historical reader compatibility."
+  - id: pending-notes-old-version
+    literal: v0.3.6
+    file: scripts/lib/release/release_transaction.py
+    line: 1765
+    classification: baseline-drift
+    expected_owner: release-profile
+    disposition: report-only
+    rationale: "Existing generic pending-publication prose unnecessarily names v0.3.6. Preserve and report this pre-existing wording pending a scoped projection correction; it does not select or authorize publication."

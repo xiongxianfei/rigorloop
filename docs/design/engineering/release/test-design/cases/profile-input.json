@@ -27,7 +27,7 @@
     {
       "id": "literal",
       "initial_state": [
-        "Caller-selected baseline represented by tests/fixtures/release-transaction/literal-audit/valid-baseline.yaml. The optional Change-local release-literal-audit hook remains in the release reader, but its referenced file is absent in the prior main baseline and this tree. Existing resource-availability debt remains Release-owned and outside this operational-store adoption; these parser checks do not claim live baseline consumption."
+        "Caller-selected historical v1 parser fixtures retain their classification meaning. Current preflight separately requires scripts/resources/release/literal-audit-baseline.yaml; REL-PF-004 covers missing/malformed admission and REL-PF-002 covers the actual CLI consumer. Parser checks alone do not establish live resource consumption or exhaustive literal discovery."
       ]
     },
     {

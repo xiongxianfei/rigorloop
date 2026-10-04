@@ -22,6 +22,50 @@ from release_fixture_helpers import (PROFILE_FIXTURES, assert_errors_contain, in
 class ReleasePreflightTests(unittest.TestCase):
     maxDiff = None
 
+    def test_release_preflight_requires_readable_valid_audit_without_legacy_fallback(self) -> None:
+        audit_path = "scripts/resources/release/literal-audit-baseline.yaml"
+        for fault, diagnostic in (("missing", "not found"),
+                                  ("malformed", "could not parse"),
+                                  ("invalid-encoding", "could not read"),
+                                  ("directory", "could not read"),
+                                  ("legacy-only", "not found")):
+            with self.subTest(fault=fault), tempfile.TemporaryDirectory() as tmp:
+                root = Path(tmp)
+                make_prepared_release(root)
+                self.assertEqual(release_preflight("v0.3.5", root=root).errors, ())
+                audit = root / audit_path
+                original = audit.read_bytes()
+                if fault == "malformed":
+                    audit.write_text("not a mapping\n", encoding="utf-8")
+                elif fault == "invalid-encoding":
+                    audit.write_bytes(b"\xff")
+                else:
+                    audit.unlink()
+                    if fault == "directory":
+                        audit.mkdir()
+                    elif fault == "legacy-only":
+                        legacy = root / "docs/changes/2026-06-29-release-transaction-automation/release-literal-audit-baseline.yaml"
+                        legacy.parent.mkdir(parents=True)
+                        legacy.write_bytes(original)
+                before = relative_tree(root)
+                result = release_preflight("v0.3.5", root=root)
+                assert_errors_contain(self, result.errors, audit_path, diagnostic)
+                self.assertEqual(relative_tree(root), before)
+
+    def test_release_preflight_consumes_current_repository_audit(self) -> None:
+        audit_path = "scripts/resources/release/literal-audit-baseline.yaml"
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            make_prepared_release(root)
+            shutil.copy2(ROOT / audit_path, root / audit_path)
+            before = relative_tree(root)
+            result = release_preflight("v0.3.5", root=root)
+            self.assertEqual(result.errors, ())
+            self.assertTrue(any("literal=v0.3.6 file=scripts/lib/release/release_transaction.py"
+                                in warning and "classification=baseline-drift" in warning
+                                for warning in result.warnings), result.warnings)
+            self.assertEqual(relative_tree(root), before)
+
     def test_release_preflight_clean_fixture_is_idempotent_and_side_effect_light(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -213,8 +257,8 @@ class ReleasePreflightTests(unittest.TestCase):
 
     def test_release_preflight_fails_changed_unauthorized_literal(self) -> None:
         def mutate(root: Path) -> None:
-            baseline = root / "docs" / "changes" / "2026-06-29-release-transaction-automation" / "release-literal-audit-baseline.yaml"
-            baseline.parent.mkdir(parents=True)
+            baseline = root / "scripts/resources/release/literal-audit-baseline.yaml"
+            baseline.parent.mkdir(parents=True, exist_ok=True)
             baseline.write_text(
                 "schema_version: release-literal-audit-baseline-v1\n"
                 "change_id: 2026-06-29-release-transaction-automation\n"
@@ -253,7 +297,7 @@ class ReleasePreflightTests(unittest.TestCase):
             changed_file = root / "scripts" / "new_release_state.py"
             changed_file.parent.mkdir(parents=True, exist_ok=True)
             changed_file.write_text('CURRENT_RELEASE = "v0.3.5"\n', encoding="utf-8")
-            baseline = root / "docs" / "changes" / "2026-06-29-release-transaction-automation" / "release-literal-audit-baseline.yaml"
+            baseline = root / "scripts/resources/release/literal-audit-baseline.yaml"
             baseline.parent.mkdir(parents=True, exist_ok=True)
             baseline.write_text(
                 "schema_version: release-literal-audit-baseline-v1\n"

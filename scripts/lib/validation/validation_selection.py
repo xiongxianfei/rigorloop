@@ -2050,6 +2050,7 @@ def _path_category(path: str) -> str | None:
         'scripts/prepare-release.py',
         'scripts/release-preflight.py',
         'scripts/lib/release/release_transaction.py',
+        'scripts/resources/release/literal-audit-baseline.yaml',
         'scripts/lib/release/release_candidate.py',
         'tests/engineering/release/release_candidate_tests.py',
         'scripts/lib/release/release_execution.py',

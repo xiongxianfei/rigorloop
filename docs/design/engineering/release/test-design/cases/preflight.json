@@ -15,7 +15,8 @@
     {
       "id": "prepared",
       "initial_state": [
-        "Fresh v0.3.5 prepared release. Snapshot all relative file paths and bytes. Initialize local Git only for variants that claim Git discovery or tag behavior."
+        "Fresh v0.3.5 prepared release. Snapshot all relative file paths and bytes. Initialize local Git only for variants that claim Git discovery or tag behavior.",
+        "The fixture contains an explicit valid audit at scripts/resources/release/literal-audit-baseline.yaml; historical Change directories are not required."
       ],
       "builder": {
         "path": "tests/engineering/release/release_fixture_helpers.py",
@@ -122,7 +123,9 @@
       "title": "Preflight rejects an incoherent prepared release",
       "requirements": [
         "REL-SR-03",
-        "REL-SR-06"
+        "REL-SR-06",
+        "REL-SR-07",
+        "REL-SR-19"
       ],
       "technique": "equivalence-partition",
       "risk": "A specific local inconsistency escapes cheap preflight and is discovered only after expensive qualification.",
@@ -137,11 +140,13 @@
         ]
       },
       "when": [
-        "Run preflight after removing/corrupting the profile or required validation/metadata input, mismatching package version or metadata pointer, claiming published target smoke, or leaving release-output debris."
+        "Run preflight after removing/corrupting the profile or required validation/metadata input, mismatching package version or metadata pointer, claiming published target smoke, or leaving release-output debris.",
+        "Remove or malform the required audit resource independently after observing successful preflight. Supplying only the former Change-local path cannot satisfy admission."
       ],
       "then": [
         "Every mutation produces its attributable prerequisite/consistency diagnostic before expensive qualification; a valid tree passes.",
-        "Preflight leaves all release artifacts unchanged."
+        "Preflight leaves all release artifacts unchanged.",
+        "Missing or malformed audit input fails with the required resource path; the observed fixture tree is unchanged and the legacy path is never a fallback."
       ],
       "realization": {
         "state": "existing",
@@ -177,6 +182,14 @@
           {
             "path": "tests/engineering/release/release_preflight_tests.py",
             "symbol": "ReleasePreflightTests.test_release_preflight_fails_dirty_release_output"
+          },
+          {
+            "path": "tests/engineering/release/release_preflight_tests.py",
+            "symbol": "ReleasePreflightTests.test_release_preflight_requires_readable_valid_audit_without_legacy_fallback"
+          },
+          {
+            "path": "tests/engineering/release/release_preflight_tests.py",
+            "symbol": "ReleasePreflightTests.test_release_preflight_consumes_current_repository_audit"
           }
         ],
         "gaps": []

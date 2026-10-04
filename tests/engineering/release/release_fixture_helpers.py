@@ -57,6 +57,9 @@ def approval_fixture():
 
 
 def make_release_repo(root: Path) -> None:
+    audit = root / "scripts/resources/release/literal-audit-baseline.yaml"
+    audit.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(FIXTURES / "literal-audit/valid-baseline.yaml", audit)
     profile_dir = root / "docs" / "releases" / "profiles"
     profile_dir.mkdir(parents=True)
     shutil.copy2(PROFILE_FIXTURES / "valid-routine-v0.3.5.yaml", profile_dir / "v0.3.5.yaml")

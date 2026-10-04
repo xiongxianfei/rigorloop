@@ -777,6 +777,13 @@ class SelectionContractChecks:
         )
 
 
+    def test_release_audit_resource_alone_selects_release_regression(self) -> None:
+        result = self.select(["scripts/resources/release/literal-audit-baseline.yaml"])
+        payload = result.to_json_dict()
+        self.assertEqual(result.status, "ok")
+        self.assertEqual(payload["unclassified_paths"], [])
+        self.assertIn("release_transaction.regression", selected_ids(payload))
+
     def test_release_transaction_scripts_and_fixtures_select_focused_regression(self) -> None:
         result = self.select(
             [
