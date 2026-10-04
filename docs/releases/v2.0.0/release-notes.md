@@ -9,3 +9,12 @@ New Changes use `change create`, `change context` and `change update`; supportin
 The obsolete Proposal, Proposal Review and combined Design skills are replaced explicitly with `init codex|claude --replace-workflow requirement-first-v1 --force`. Selected originals are retained outside discovery, and partial installation effects are reported. Ordinary `--force` does not authorize workflow retirement. Other target roots and unrelated skills remain outside the replacement scope.
 
 This file records candidate changes, not release approval, publication, completed qualification or hosted CI success. The existing v1.0.0 release keeps its original artifact identity.
+
+<!-- rigorloop:generated:start release-transaction surface=release-metadata profile=docs/releases/profiles/v2.0.0.yaml -->
+- Release profile: `docs/releases/profiles/v2.0.0.yaml`
+- npm package: `@xiongxianfei/rigorloop@2.0.0`
+- npm dist-tag: `latest`
+- Supported targets: codex, claude
+- Adapter metadata: `adapter-artifacts-v2.0.0.json`
+- Pending publication evidence: `docs/releases/v2.0.0/npm-publication.md`
+<!-- rigorloop:generated:end release-transaction surface=release-metadata -->
