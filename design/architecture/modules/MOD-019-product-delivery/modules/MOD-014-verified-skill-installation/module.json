@@ -1,9 +1,9 @@
 {
   "id": "MOD-014",
   "type": "module",
-  "title": "Verified skill installation",
+  "title": "Skill installation",
   "status": "draft",
-  "description": "Acquire and validate an explicitly selected compatible skill candidate and apply only the permitted destination-unit changes with truthful plans, conflicts, outcomes, and recovery limits.",
+  "description": "Acquires and verifies selected skill packages, applies permitted installation changes and reports conflicts, outcomes and recovery limits.",
   "responsibilities": [
     "Verify trusted package metadata, archive identity, extraction boundaries, and candidate completeness before relying on content.",
     "Preflight all selected destination units and apply only authorized creation or replacement while preserving unrelated content.",
@@ -15,7 +15,8 @@
   ],
   "scope": {
     "includes": [
-      "Supported target installation and explicitly scoped replacement under the existing Installation contract."
+      "Supported target installation and explicitly scoped replacement under the existing Installation contract.",
+      "Proposed explicit bounded workflow replacement under the subordinate contract; ordinary force does not authorize noncandidate retirement."
     ],
     "excludes": [
       "Automatic upgrades, managed-state creation, bypassing integrity with force, replacing shared installation parents, or granting workflow authority."
@@ -27,7 +28,8 @@
   ],
   "design_limits": [
     "Current Installation rules retain the exact supported targets, trusted acquisition channels, conflict units, flags, diagnostics, and per-unit partial-failure guarantees.",
-    "Source-attributed implementation, invocation, and placement mappings are recorded in subordinate realization facets and IF-006 interaction. This draft does not promise whole-project atomic rollback or platform qualification; ARs and complete implementation conformance remain deferred."
+    "Source-attributed implementation, invocation, and placement mappings are recorded in subordinate realization facets and IF-006 interaction. This draft does not promise whole-project atomic rollback or platform qualification; IR-010 ARs and complete implementation conformance remain deferred.",
+    "The requirement-first workflow design supplies the selected SR-079–083 collaboration and AR allocation. Earlier broader deferrals remain only outside that bounded extension; existing runtime observations and installed contracts do not implement the target design."
   ],
   "sources": [
     {
@@ -44,6 +46,11 @@
       "source": "SRC-PRODUCT-REALIZATION",
       "locator": "MOD-014 subordinate realization facets; design/requirements/sources.md#src-product-realization",
       "basis": "The user authorized an initial coherent five-view set. Record bounded source observations and remaining qualification gaps beneath the existing accountable Module; preserve its requirements, Functions, Interface ownership, and previous source meanings."
+    },
+    {
+      "source": "SRC-WORKFLOW-CONTRACTS",
+      "locator": "MOD-014; successor installation contract",
+      "basis": "Requirement-first workflow boundary refinement. Existing identities and historical judgments retain their original scope; this target contract is not implemented or adopted behavior."
     }
   ]
 }

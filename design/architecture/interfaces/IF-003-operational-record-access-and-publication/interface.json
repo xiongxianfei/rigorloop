@@ -3,166 +3,165 @@
   "type": "interface",
   "title": "Operational record access and publication",
   "status": "draft",
-  "description": "Coherent access to the published operational-record store, exact candidate construction and checking, atomic publication, and explicit transaction recovery. Public command syntax remains owned by CLI.",
+  "description": "Typed current queries, task preview/execution and explicit store maintenance with coherent outcomes; CLI syntax and rendering remain outside storage ownership.",
   "operations": [
     {
       "name": "inspect_records",
       "purpose": "Read a selected coherent snapshot and its bounded observations.",
       "inputs": [
-        "Explicit store and actor-selected record scope, selected operation/transport contract, and supplied revision/continuation expectations when applicable. The caller need not already know the observed stored contract.",
-        "Read intent distinguishing current coherent record retrieval from bounded observation-detail retrieval; the caller retains public selection and projection policy."
+        "Typed QueryRequest with associated project root, selected Change/item and explicit optional selectors. The caller need not already know the observed revision."
       ],
       "preconditions": [],
       "outputs": [
-        "Recorded values, observed stored contract, and snapshot/revision identity established from the same checked snapshot, separately labeled observations and diagnostics, and explicit absent, unavailable, busy, recovery-required, or incomplete outcomes. Preserve the owning result contract's null/omission distinctions when no validated stored contract or revision is available.",
-        "For diagnostic detail, the observation identity and bounded scan facts needed to preserve current revision, actual observed subject identities including absence, and deterministic diagnostic scope; request-only mutation reads are a separate freshness basis."
+        "ReadOutcome with coherent selected values, contract and revision, observations, limitations and absent/unavailable/busy outcomes."
       ],
       "behavior": [
-        "Return only the selected scope; preserve explicit distinctions between recorded decisions and observations.",
-        "Do not modify records, recover an interrupted transaction, or invent authoritative next-stage/approval/applicability values during inspection.",
-        "Report a coherent supported snapshot or explicit inability to obtain one; a mixed view cannot be reported usable.",
-        "Read the complete required registered basis for a coherent snapshot without granting authority to extra physical files. Return selected recorded values and applicability from that same snapshot; preserve full supplied explanations and optional-member absence for the caller's projection.",
-        "Preserve a stable checked snapshot for literal selection, counts, and continuation. Changed revision or invalid continuation cannot return partial selected items; unavailable selected content cannot become known absence or an empty successful collection.",
-        "For observation detail, recompute the complete current observation identity from the selected registered state, schema-declared subjects observed once each, and deterministic diagnostics. Observe authoritative subject paths from the same snapshot bytes; unsafe or unreadable external subjects remain errors rather than null absence. Changing an observed subject invalidates detail continuation even if record bytes and displayed diagnostics stay unchanged. No historical detail replay or atomic exclusion of arbitrary outside edits is promised."
+        "Open an existing associated SQLite store; never initialize or migrate as a read.",
+        "Allow only internal storage recovery of its already determined transaction outcome; never select an engineering effect or replay a task.",
+        "Return one coherent snapshot with explicit selected scope and missing/omitted distinctions.",
+        "Compare only requested supported subjects and label reported/compared/unknown basis honestly; completed accounts remain historical.",
+        "Expose actionable reliance gaps without authoring approval, activity or next action."
       ],
       "failure_behavior": [
         {
           "condition": "Input or selected records are unsupported, unavailable, unsafe, or incoherent.",
-          "outcome": "Return the applicable diagnostic and bounded observations without mutation, automatic migration, or implicit recovery."
+          "outcome": "Return the applicable diagnostic and bounded observations without mutation, automatic migration, or application-level recovery selection."
         }
       ]
     },
     {
-      "name": "inspect_declared_subjects",
-      "purpose": "Observe exact identities and optional full content for explicitly selected safe project subjects.",
+      "name": "backup_operational_scope",
+      "purpose": "Capture a coherent selected v4 operational scope and its required payloads.",
       "inputs": [
-        "Explicit repository root and distinct contained subject paths.",
-        "Identity-only or full-content selection with the current public count and output bounds."
+        "Explicit Change selection, absent backup destination and actor.",
+        "Use MaintenanceRequest and MaintenanceOutcome from the typed v4 boundary. The CLI supplies normalized task values and expectations, never SQL or a connection handle."
       ],
-      "preconditions": [],
+      "preconditions": [
+        "This operation belongs to store-maintenance-v1; qualified source import does not establish legacy runtime dispatch."
+      ],
       "outputs": [
-        "One coherent observed subject set with exact byte identities and the same inspected content when requested, or explicit expected absence and the applicable safe failure outcome."
+        "Actual captured or activated scope, store/backup identity, retained-prior location and truthful outcome; or explicit conflict, busy, unavailable or incomplete maintenance facts."
       ],
       "behavior": [
-        "Inspect only supplied safe paths without executing content, inferring stage dependencies, or selecting an authoritative decision basis.",
-        "Compute identity from the same observed bytes returned as content; preserve explicit expected absence rather than inventing a non-null stored subject.",
-        "Return the observations for explicit caller use. A later mutation must compare the supplied expectation without silently refreshing it."
+        "Acquire maintenance exclusion after draining ordinary access leases. Capture a database snapshot, retain the selected Change closure and copy its required attachments.",
+        "Validate project/schema, references and backup-specific integrity; publish a complete marker only after all selected members are durable. Partial output never becomes a complete backup."
       ],
       "failure_behavior": [
         {
-          "condition": "Observed changes prevent a coherent subject set.",
-          "outcome": "Report conflict without a partial subject set and preserve the owning contract's observed-check limit for outside edits."
-        },
-        {
-          "condition": "A subject is unsafe, symlinked, unreadable, nonregular, or too large for requested complete output.",
-          "outcome": "Reject safely without execution or truncated full content; identity-only access is not proof of sufficient engineering context."
+          "condition": "Interruption, invalid source, unavailable required payload or changed destination prevents a verified result.",
+          "outcome": "Preserve source/unrelated work and explicit incomplete or fenced recovery state. Do not replay decisions, silently initialize an empty recovered store or undo established activation to repair output delivery."
         }
       ]
     },
     {
-      "name": "prepare_record_candidate",
-      "purpose": "Validate explicit record changes and construct their exact complete candidate.",
+      "name": "restore_operational_scope",
+      "purpose": "Activate a validated selected backup with explicit destination authority.",
       "inputs": [
-        "Selected coherent snapshot, expected revision/identities and decision-basis identities.",
-        "Explicit target set and actor-supplied edits or complete advanced replacements under the selected operation contract."
+        "Complete backup identity, expected destination observation, explicit replacement intent, actor and reason; or an exact maintenance-resume request.",
+        "Use MaintenanceRequest and MaintenanceOutcome from the typed v4 boundary. The CLI supplies normalized task values and expectations, never SQL or a connection handle."
       ],
-      "preconditions": [],
+      "preconditions": [
+        "This operation belongs to store-maintenance-v1; qualified source import does not establish legacy runtime dispatch."
+      ],
       "outputs": [
-        "Exact candidate bytes, explicit changed targets and preservation basis, structural findings, and applicable bounded diagnostic/receipt context.",
-        "The exact candidate identity/revision, changed targets, and bounded storage and observation facts needed by MOD-010 to prepare the public receipt, without introducing an authoritative candidate record or reservation."
+        "Actual captured or activated scope, store/backup identity, retained-prior location and truthful outcome; or explicit conflict, busy, unavailable or incomplete maintenance facts."
       ],
       "behavior": [
-        "Validate current record kinds, closed vocabulary, versions, identities, references, and target safety before authoritative publication.",
-        "Preserve unnamed content and omitted decisions; do not fill semantic defaults, normalize unrelated bytes, or rewrite historical review subjects.",
-        "Candidate preparation and structural validity do not establish engineering permission, progression, or satisfaction.",
-        "Resolve closed fields, supported stored versions, duplicate keys/identities, typed references, and applicable preservation rules over the complete combined candidate. A well-formed correction is not refused merely because recorded work is complete, evidence failed, or external subjects drifted.",
-        "For targeted updates preserve source bytes outside explicit semantic edits and necessary adjacent syntax or registry bookkeeping. Reject duplicate or overlapping assignments while retaining the declared composition of separate assessment, finding, and applicability edits; advanced complete replacements retain their own explicit contract.",
-        "Preserve finding identities, immutable blocker origins, omitted semantic values, and exact explicit full-replacement versus narrow-update rules. Do not manufacture missing registered content, overwrite unregistered files as new records, infer verification basis, or confuse reference validity with engineering reliance.",
-        "The construction phase has no filesystem write capability. Checking and preview create no authoritative, lock, reservation, or transaction files. Preview uses a coherent read and the same construction/validation logic, but a real write starts afresh under writer exclusion, rereads and checks its snapshot, reconstructs against that exact basis, and repeats all checks; preview bytes are not an executable transaction or authority."
+        "Validate the staged backup and association before changing live state; recheck expected destination under maintenance exclusion. No implicit merge or refreshed engineering approval.",
+        "Retain before/candidate identities and prior operational bytes; keep access fenced through path replacement, validation and a durable activated marker. Before activation allow only verified finish/rollback; after activation permit finish but no rollback."
       ],
       "failure_behavior": [
         {
-          "condition": "An input is invalid, unsupported, unsafe, or cannot preserve required content.",
-          "outcome": "Reject that candidate before any authoritative write and expose the actionable cause."
+          "condition": "Interruption, invalid source, unavailable required payload or changed destination prevents a verified result.",
+          "outcome": "Preserve source/unrelated work and explicit incomplete or fenced recovery state. Do not replay decisions, silently initialize an empty recovered store or undo established activation to repair output delivery."
         }
       ]
     },
     {
-      "name": "publish_record_candidate",
-      "purpose": "Publish the exact candidate subject to the current safety and receipt contract.",
+      "name": "migrate_operational_scope",
+      "purpose": "Stage a supported schema upgrade or dispositioned legacy import.",
       "inputs": [
-        "Explicit targeted operations or complete advanced replacement bytes, selected targets, expected revision/target identities, and explicitly declared decision-basis identities. A preview result is not a substitute for these inputs.",
-        "MOD-010's selected operation, public output contract, and format. During the guarded execution, public receipt readiness must be established for the exact reconstructed candidate before replacement; this logical cooperation prescribes no token, stored field, or callback mechanism."
+        "Selected supported migration mode, exact source/destination expectations, required backup/original retention destinations and attributable dispositions; or an exact maintenance-resume request.",
+        "Use MaintenanceRequest and MaintenanceOutcome from the typed v4 boundary. The CLI supplies normalized task values and expectations, never SQL or a connection handle."
       ],
-      "preconditions": [],
+      "preconditions": [
+        "This operation belongs to store-maintenance-v1; qualified source import does not establish legacy runtime dispatch."
+      ],
       "outputs": [
-        "Durable committed or unchanged result with applicable receipt, or explicit conflict, busy, recovery-required, or failed outcome describing actual known effects."
+        "Actual captured or activated scope, store/backup identity, retained-prior location and truthful outcome; or explicit conflict, busy, unavailable or incomplete maintenance facts."
       ],
       "behavior": [
-        "Begin real execution by obtaining writer exclusion, reading a coherent snapshot, and checking expected revision and declared basis. Reconstruct targeted edits against that exact snapshot using the non-writing construction phase, or admit advanced supplied bytes through the same complete-candidate validation boundary. Never execute previously previewed bytes without this fresh guarded process.",
-        "Under the existing writer-exclusion and containment boundary, recheck the expected revision, exact target identities, declared basis, and observed ancestor safety. Observed mismatches conflict rather than silently refresh, merge, or overwrite a newer decision.",
-        "Publish related replacements as one logical transaction. Before replacement retain verified before/candidate content and transaction identity sufficient for exact recovery. Supported readers receive coherent before/after state or busy/recovery-required, never a usable mixed state.",
-        "Supply the exact guarded candidate and bounded storage facts to MOD-010's public receipt preparation before replacement, and require readiness for that same operation and candidate. MOD-010 owns public serialization and its bounds; no amount of optional diagnostic detail may reject an otherwise admissible correction. Actual terminal result facts retain the selected bounded format.",
-        "Report saved only after all requested bytes are durably committed and the required decision-basis checks succeed. Observed basis drift after replacement triggers safe restoration or recovery-required; known partial or indeterminate effects cannot become saved.",
-        "Report unchanged only after fresh preconditions pass and preserve the existing bytes. A lost-response retry with an old expected revision conflicts even if the candidate equals the current stored content.",
-        "Preserve the retained external-editor timing limit for save and recovery: supported writers coordinate, while arbitrary outside changes are detected at observed checks. An edit after the final target check may be overwritten; this is not a broader operating-system atomicity promise.",
-        "A completed publication retains its committed result if subsequent rendering, output delivery, or optional diagnostics fail; do not relabel it rejected or roll it back to repair reporting."
+        "Schema upgrade creates its complete pre-upgrade backup and applies packaged ordered migrations to a staged candidate. Legacy import requires an absent destination, supported field mapping and explicit disposition of every selected source record.",
+        "Preserve required originals, unresolved obligations and original judgment meaning. Unknown formats, stale observations, unresolved dependencies or changed semantics block activation; activate through the same fenced replacement boundary as restore."
       ],
       "failure_behavior": [
         {
-          "condition": "Basis changes, targets conflict, or required checks/receipt cannot be established before publication.",
-          "outcome": "Return the applicable rejection or conflict without publication. An unexpected prepublication rendering failure is an implementation fault, not an admissible diagnostic-overflow policy."
-        },
-        {
-          "condition": "Publication is interrupted or effects cannot be conclusively determined.",
-          "outcome": "Report the actual known transaction state and recovery requirement; do not retry or claim all requested bytes committed without that basis."
+          "condition": "Interruption, invalid source, unavailable required payload or changed destination prevents a verified result.",
+          "outcome": "Preserve source/unrelated work and explicit incomplete or fenced recovery state. Do not replay decisions, silently initialize an empty recovered store or undo established activation to repair output delivery."
         }
       ]
     },
     {
-      "name": "recover_record_transaction",
-      "purpose": "Apply explicitly selected recovery to a recognized interrupted operational transaction.",
+      "name": "preview_record_task",
+      "purpose": "Preview one typed v4 engineering task without reserving execution.",
       "inputs": [
-        "Explicitly identified retained transaction, current expected-recovery identity, and selected complete or restore action under the supported recovery contract.",
-        "Applicable current target/read identities and output context sufficient for the actual bounded recovery result; no semantic edit replay is requested."
+        "The closed TaskRequest and fixed receipt profile owned by the MOD-011 typed boundary; substantive values follow the selected MOD-010 task schema."
       ],
-      "preconditions": [],
+      "preconditions": [
+        "Selected contract is rigorloop-records-v4. No v3 runtime fallback or semantic task replay."
+      ],
       "outputs": [
-        "A coherent recovered state and attributable actual result, or explicit unsupported, ambiguous, changed-basis, or failed recovery outcome."
+        "Typed MutationOutcome with the established revision, bounded changed-record summary, diagnostics and truthful committed disposition."
       ],
       "behavior": [
-        "Verify the supported journal, its manifest identity and exact before/candidate snapshots before any recovery writes. Each target must match before or candidate bytes, including absence; an observed third state stops recovery without overwrite.",
-        "Complete publishes the exact prepared candidate only after unchanged declared reads and verified snapshots are established. Restore uses verified before snapshots and never changes external decision-basis files or recalculates engineering decisions.",
-        "A committed transaction permits completion/cleanup only, not rollback of acknowledged saved success. Restoration of initial creation removes only transaction-created files and empty created directories, preserving preexisting or externally added content.",
-        "Recovery shares the publication writer-exclusion, containment, before/after-reader, and external-edit boundaries. If interrupted again it remains recoverable; a further explicit attempt uses the refreshed recovery identity rather than an assumed unchanged token.",
-        "Remove private recovery snapshots only after a verified terminal outcome. Ordinary read, check, preview, discovery, and diagnostics perform no implicit recovery; snapshots are storage bookkeeping rather than workflow evidence."
+        "Read a coherent current snapshot, check the expected revision and validate the complete proposed current state using the same task rules as execution.",
+        "Return a bounded prospective effect summary with committed=false. Publish no records or retained attachment bytes; preview does not supply an executable candidate, approval or reservation."
       ],
       "failure_behavior": [
         {
-          "condition": "The retained recovery basis is missing, incompatible, changed, or ambiguous.",
-          "outcome": "Report the unresolved scope and required action without inventing or silently forcing recovery."
-        },
+          "condition": "Input, expected revision, support, writer admission or commit cannot be established.",
+          "outcome": "Return the precise typed failure category and actual effect disposition. Do not invent a revision, silently merge stale intent or report an unknown commit as rejected with no effects."
+        }
+      ]
+    },
+    {
+      "name": "execute_record_task",
+      "purpose": "Execute one typed v4 task and return its actual storage outcome.",
+      "inputs": [
+        "The closed TaskRequest and fixed receipt profile owned by the MOD-011 typed boundary; substantive values follow the selected MOD-010 task schema."
+      ],
+      "preconditions": [
+        "Selected contract is rigorloop-records-v4. No v3 runtime fallback or semantic task replay."
+      ],
+      "outputs": [
+        "Typed MutationOutcome with the established revision, bounded changed-record summary, diagnostics and truthful committed disposition."
+      ],
+      "behavior": [
+        "Take the closed TaskRequest; acquire admission and writer exclusion, compare the opaque Change revision and reconstruct all related effects against that snapshot. No caller-supplied record bytes, SQL or construction callback are admitted.",
+        "Validate the complete candidate, preserve omitted obligations, update support standing and coordinate selected attachments under MOD-011 ownership. Establish the selected receipt profile before commit through the shared pure MOD-010-owned codec, without exposing candidate or database capabilities.",
+        "Commit related records and their revisions atomically or abort the whole transaction before commitment. Return a typed MutationOutcome with actual effects. A confirmed commit survives output failure; uncertain effects remain unknown and require a current read before reconciliation."
+      ],
+      "failure_behavior": [
         {
-          "condition": "A journal or snapshot is missing, tampered, unsupported or mixed, or a target has an observed foreign third state.",
-          "outcome": "Stop without guessed repair, conversion, or overwriting unrelated content; expose the bounded unresolved recovery state."
-        },
-        {
-          "condition": "Required completion reads changed or another recovery interruption prevents a terminal result.",
-          "outcome": "Preserve the remaining recoverable state and actual safe outcome. Do not replay edits, assume cleanup succeeded, or claim acknowledged commitment can be restored away."
+          "condition": "Input, expected revision, support, writer admission or commit cannot be established.",
+          "outcome": "Return the precise typed failure category and actual effect disposition. Do not invent a revision, silently merge stale intent or report an unknown commit as rejected with no effects."
         }
       ]
     }
   ],
   "consistency_rules": [
     "Results identify the requested scope and any store, snapshot, revision, or subject identity that was actually established. Preserve the owning public contract's null, omission, absent-store, and error distinctions when that basis is unavailable; never invent an identity. Established identity, revision, assessment subject, and diagnostic observation identity remain distinct.",
-    "All public guarantees in CLI-SR-01–07/20 and the remaining applicable CLI/Record Format clauses continue to govern. This logical boundary does not weaken their exact transaction or preservation rules.",
+    "The successor supports the current v2/v4 typed boundary only. Prior file-journal interface clauses are recoverable at 39be9c81 and do not supply a parallel operational path.",
     "The caller supplies substantive decisions. Mechanical validity and a successful save grant no approval, progression, or satisfaction.",
-    "MOD-010 owns public envelopes, rendering and selection; MOD-011 supplies coherent state and actual effect facts and enforces the prepublication safety boundary. Public receipt readiness must cover that same candidate without giving either Module authority over engineering decisions."
+    "MOD-010 owns public envelopes, rendering and selection; MOD-011 supplies coherent state and actual effect facts and enforces the prepublication safety boundary. Public receipt readiness must cover that same candidate without giving either Module authority over engineering decisions.",
+    "The MOD-011 typed-boundary section owns target request variants and storage facts; MOD-010 owns public projection, encoding, primary diagnostic codes and exits. Fixed receipt profiles preserve precommit readiness without accepting arbitrary caller callbacks. Exact-file candidate operations and their associated recovery are v3-only, not aliases for the v4 tasks."
   ],
   "compatibility_rules": [
-    "Current v3 stored records and each command family's independently versioned transport are interpreted under their existing contracts; unknown or retired inputs are rejected before mutation.",
+    "Current v4 record values and each public family’s transport retain independent versions; unknown ordinary contracts reject before mutation.",
     "The new REM JSON authoring profile is not an accepted operational stored format by virtue of this Interface.",
-    "Changing this contract requires coherent CLI consumer, persistence, and evidence/recovery reconciliation; prior subjects retain their original meaning."
+    "Changing this contract requires coherent CLI consumer, persistence, and evidence/recovery reconciliation; prior subjects retain their original meaning.",
+    "File/journal-specific historical rules describe the preceding executable. V4 uses SQLite directly for current typed accounts, selective retention and atomic per-Change updates. SQLite establishes its internal transaction state on opening; callers reconcile current context. The v3 recovery operation is not a v4 alias. The store-maintenance-v1 operations own backup, staged restoration and explicit migration; they require implementation qualification before adoption, with no runtime legacy fallback.",
+    "The deliberately installed successor executable implements v2/v4 operational commands only. Retained v3 operation clauses describe the preceding package, not a parallel dispatcher. Help/read semantics follow executing package identity; unknown/legacy input and absent v4 storage never trigger backend fallback. Explicit qualified import remains the sole successor legacy-data entrypoint."
   ],
   "sources": [
     {
@@ -179,6 +178,21 @@
       "source": "SRC-CLI-REALIZATION",
       "locator": "IF-003; design/requirements/sources.md#src-cli-realization",
       "basis": "Apply refined REM Architecture Design through subordinate observed and proposed views. Preserve the logical allocation, existing public contracts, and draft status; source mapping is not executed satisfaction evidence."
+    },
+    {
+      "source": "SRC-WORKFLOW-CONTRACTS",
+      "locator": "IF-003; versioned v4 semantic boundary",
+      "basis": "Preserve current v3 guarantees and source-attributed realization while specifying the successor record contract explicitly; no implementation or backend qualification is inferred."
+    },
+    {
+      "source": "SRC-CURRENT-HANDOFF",
+      "locator": "IF-003",
+      "basis": "Refine existing current-state responsibility and selective retention; observed runtime mappings remain version-scoped."
+    },
+    {
+      "source": "SRC-SQLITE-ADOPTION",
+      "locator": "packages/rigorloop/dist/lib/operational-store.js; operational-maintenance.js",
+      "basis": "Current typed runtime binding and ordinary/maintenance recovery distinction; no execution approval."
     }
   ]
 }

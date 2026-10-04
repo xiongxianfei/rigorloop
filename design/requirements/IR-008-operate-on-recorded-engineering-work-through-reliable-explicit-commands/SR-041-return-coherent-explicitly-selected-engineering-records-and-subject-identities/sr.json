@@ -3,7 +3,7 @@
   "type": "system-requirement",
   "title": "Return coherent explicitly selected engineering records and subject identities",
   "status": "draft",
-  "statement": "The system shall provide read-only project discovery, actor-selected record queries, and explicitly selected subject inspection with coherent identities, accurate scope and completeness, and observable absence or failure, without deriving relevance, workflow authority, or a recovery action.",
+  "statement": "The system shall provide read-only project capability inspection and explicit actor-selected current record queries with coherent identity, bounded complete meaning and observable absence or failure, without deriving workflow authority or choosing a recovery action.",
   "analysis": {
     "method": "5W2H",
     "what": {
@@ -22,31 +22,34 @@
     },
     "when": {
       "conditions": [
-        "When an actor discovers current changes, reads status/context/show or advanced inspection, pages selected results, or inspects explicit engineering subjects."
+        "A caller inspects executable capabilities, resumes an explicitly selected Change, reads a selected Review or Verification, or supplies compared reads for a task."
       ]
     },
     "where": {
       "contexts": [
-        "Supported current change stores and actor-selected contained repository subjects; bounded project discovery is not an atomic cross-change snapshot."
+        "Public CLI operations over the associated project store and explicitly selected contained engineering subjects."
       ]
     },
     "how": {
-      "approach": "Use explicit filters and the declared complete/default and projection contracts. Read one coherent registered snapshot, expose its actual contract and revision, retain selected report explanations and applicability, and bind continuation to the selection and state. Classify current/archive candidates structurally, and inspect content and identity from the same observed bytes."
+      "approach": "Provide explicit scoped current-context and item queries plus project capability inspection through the current CLI, preserving coherent values and truthful limitations."
     },
     "how_much": {
-      "scope": "Current published read populations, selector namespaces, ordering, byte/count bounds, and archive-classification rules remain defined in the retained CLI contract. No directory discovery grants record authority, no retired records become operational input, and no query performs recovery."
+      "scope": "Current operational query responsibility; no requirement to scan docs/changes, expose SQL, enumerate the database or preserve the predecessor query grammar."
     }
   },
   "acceptance_criteria": [
-    "Status, context, show, and inspect preserve their exact scope, selected content, counts, omitted fields, missing paths, contract, revision, and continuation meanings; complete means retrieval scope only, not engineering adequacy.",
-    "Full selected Verify and material-decisions reads expose the complete recorded explanation and applicability without requiring unrelated record bodies. Review/Verify field projections show exact selection, omissions, and optional-member absence without altering storage.",
-    "Absent, unregistered, registered-missing, malformed, unsafe, and unreadable records remain distinguishable; missing selected content cannot become an empty successful collection or an inferred stored contract.",
-    "Pagination deduplicates and orders the declared selection; changed revision, different selection, or invalid/nonmember cursor rejects or conflicts without partial items. Byte/count overflow does not silently truncate rationale, return partial items, or create a nonprogressing page.",
-    "Subject inspection returns identity and requested content from the same observed bytes, reports expected absence explicitly, and returns no partial subject set on an observed change that prevents coherence.",
-    "Discovery reports only coherent current candidates, bounded exclusions, errors, and completeness. Ambiguous or malformed current residue and interrupted transactions remain visible; no sole candidate is automatically selected and no stage, readiness, or archival approval is inferred."
+    "Change context and item reads preserve explicit selected scope, complete current values, contract, revision, limitations and omissions; retrieval is not engineering adequacy.",
+    "Selected Review, Verification, Evidence and Decision accounts expose the meaning and support needed for current decisions without requiring the entire database.",
+    "Missing store, absent selected item, invalid/corrupt state and missing retained payload remain distinguishable. None becomes inferred approval or an empty substitute database.",
+    "A bounded selection returns complete admissible accounts or an explicit size failure; it never silently truncates rationale or unresolved issues.",
+    "Compared subject observations identify the explicitly compared scope; reported and unknown basis remain distinct. No standalone subject-hashing command is required.",
+    "Project capabilities reports executable contract/task availability and observed backend standing without selecting a Change or workflow authority.",
+    "Reads never initialize, import or restore a store implicitly; only storage-internal atomic recovery may establish an already determined ordinary outcome."
   ],
   "assumptions": [],
-  "constraints": [],
+  "constraints": [
+    "Current selected task/query contract; predecessor filesystem discovery and field-projection interfaces are retired in the successor."
+  ],
   "sources": [
     {
       "source": "SRC-PUBLISHED-CLI",
@@ -82,6 +85,16 @@
       "source": "SRC-CLI-ALLOCATION",
       "locator": "SR-041 AC6; allocated contributors: AR-013, AR-014",
       "basis": "Exact candidate classification and visible interrupted/malformed state without automatic selection or cross-change atomicity claim"
+    },
+    {
+      "source": "SRC-LOCAL-OPERATIONAL-ANALYSIS",
+      "locator": "SR-041",
+      "basis": "Draft derivation from the refined IRs and RR proposal; no approval, implementation or satisfaction claim."
+    },
+    {
+      "source": "SRC-SQLITE-ADOPTION",
+      "locator": "MOD-010 current task/query contract; MOD-011 typed read boundary",
+      "basis": "Refines the existing inspection need to the selected successor task interface; no new IR or implementation approval."
     }
   ],
   "confirms": [

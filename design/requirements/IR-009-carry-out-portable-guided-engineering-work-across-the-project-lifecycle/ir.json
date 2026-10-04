@@ -23,14 +23,19 @@
       "source": "SRC-PUBLISHED-SKILLS",
       "locator": "docs/design/skill/skill.md#SKL-SR-27",
       "basis": "The published Skills product provides distinct portable engineering capabilities across project lifecycle activities; this need restores that product scope to the REM draft without migrating every specialist clause or adopting new output formats."
+    },
+    {
+      "source": "SRC-REQUIREMENT-FIRST-WORKFLOW",
+      "locator": "IR-009",
+      "basis": "User-selected requirement-first workflow and one mandatory whole-change Code Review gate. Proposed requirement analysis only; existing product contracts remain active until coordinated adoption. No new Function, AR, implementation or approval is inferred."
     }
   ],
   "statement": "People working with engineering agents need discoverable and usable guidance for carrying out bounded engineering activities across a project lifecycle, so they can produce the appropriate artifacts, corrections, assessments, and handoffs under their own project authority without depending on RigorLoop repository internals.",
   "analysis": {
     "method": "5W2H",
     "what": {
-      "problem": "Model-authoring guidance alone does not cover choosing a capability, investigating a project, implementing or repairing software, assessing work, and coordinating the resulting handoff in a customer project.",
-      "desired_outcome": "People can select an applicable engineering capability and use its project-portable instructions, resources, and specialist output contract to complete or explicitly stop the requested activity."
+      "problem": "Model-authoring guidance alone does not cover choosing a capability, investigating a project, implementing or repairing software, assessing work, and coordinating the resulting handoff in a customer project. A proposal-based entry and combined design authoring can confuse request sources with durable requirements, while milestone approval cycles can duplicate the complete-change review gate.",
+      "desired_outcome": "People can select an applicable engineering capability and use its project-portable instructions, resources, and specialist output contract to complete or explicitly stop the requested activity. Participants can establish a reviewed requirement basis, develop logical and architectural design under distinct ownership, and deliver through explicit assessment dependencies without unnecessary per-milestone approvals."
     },
     "why": {
       "rationale": "A reusable engineering method needs usable specialist guidance at the point of work while preserving local governance and the differences between making an artifact, judging it, and authorizing another action."
@@ -44,7 +49,8 @@
     },
     "when": {
       "conditions": [
-        "When selecting, starting, resuming, correcting, reviewing, or handing off an engineering activity."
+        "When selecting, starting, resuming, correcting, reviewing, or handing off an engineering activity.",
+        "When analyzing a new request, reusing or revising existing requirements, composing System and Architecture Design, implementing milestones, correcting review findings, or adopting a replacement workflow."
       ]
     },
     "where": {
@@ -53,14 +59,17 @@
       ]
     },
     "how": {
-      "approach": "Provide distinct capability descriptions, resolve project context and authority, select applicable resources, guide the requested specialist procedure, and report usable outputs and remaining limits. Use the supported CLI procedure only when governed recording applies. Existing authority, work-context, evidence, model-authoring, and learning responsibilities remain shared rather than copied into this need."
+      "approach": "Provide distinct capability descriptions, resolve project context and authority, select applicable resources, guide the requested specialist procedure, and report usable outputs and remaining limits. Use the supported CLI procedure only when governed recording applies. Existing authority, work-context, evidence, model-authoring, and learning responsibilities remain shared rather than copied into this need. Treat requests, proposals, issues and incidents as RR input. Analyze existing needs before creating entities. Requirement Review establishes the first accepted basis; System Design and Architecture Design remain distinct authoring responsibilities with one integrated Design Review. Milestones organize implementation and proof, with optional interim advice and one independent whole-change Code Review gate before distinct final Verify. Reassessment may repeat within a gate. Scope and authority determine continuation; support methods are not automatic extra stages."
     },
     "how_much": {
-      "scope": "The current published inventory has 19 capabilities covering workflow, authoring, implementation and repair, assessment, foundations, discovery, learning, and delivery handoff. This draft models their common invocation and composition behavior; detailed specialist contracts remain authoritative at their existing owners pending clause-level migration. Package generation, installation, and release are separate product responsibilities. The new REM authoring model is a target proposal and does not automatically re-enable retired public feature or standalone architecture outputs."
+      "scope": "The refined scope covers the requirement-first workflow, authoring ownership, stage-specific assessment dependencies, bounded isolated activities and coordinated adoption of published guidance. Existing detailed specialist contracts remain active until reviewed replacement and explicit adoption; the draft does not claim that the new skill names or CLI operations already exist. It adds no new IR, universal requirement to edit already adequate entities, standalone RR file, preliminary proposal approval, mandatory milestone approval or per-method approval gates. Package generation, installation and release remain separately owned. The workflow and operational database migration are coordinated but independently deliverable."
     }
   },
   "assumptions": [],
-  "constraints": [],
+  "constraints": [
+    "Requirement approval establishes a basis for design; it does not require complete Function or AR allocation or grant implementation or external-action authority.",
+    "One whole-change Code Review gate may contain several independent assessment attempts. Optional advisory feedback cannot settle that gate or be ignored when it exposes a material defect."
+  ],
   "confirms": [
     "FEAT-015",
     "FEAT-016",
@@ -72,6 +81,14 @@
     "SCN-054",
     "SCN-055",
     "SCN-056",
-    "SCN-057"
+    "SCN-057",
+    "SCN-075",
+    "SCN-076",
+    "SCN-077",
+    "SCN-078",
+    "SCN-079",
+    "SCN-080",
+    "SCN-081",
+    "SCN-082"
   ]
 }

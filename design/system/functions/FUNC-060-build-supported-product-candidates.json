@@ -3,10 +3,11 @@
   "type": "function",
   "title": "Build supported product candidates",
   "status": "draft",
-  "description": "Produce faithful supported target archives and the CLI package from canonical product inputs in isolated safe output. Candidate generation does not install, publish, adopt a target, or manufacture check results.",
+  "description": "Produce faithful supported target archives and the CLI package including browser generation/reading resources from canonical product inputs in isolated safe output. Candidate generation does not install, publish, adopt a target, or manufacture check results.",
   "inputs": [
     "Canonical skill/CLI sources, declared resource projections and target transformations.",
-    "Requested candidate version, supported population, required package inputs, and temporary or explicit output selection."
+    "Requested candidate version, supported population, required package inputs, and temporary or explicit output selection.",
+    "Declared bundled browser engine, profiles, renderer binaries, compatibility matrix and license inventory."
   ],
   "preconditions": [],
   "outputs": [
@@ -18,7 +19,8 @@
     "Apply declared target transformations, preserving selected behavior and unchanged resource paths/bytes and required dependencies.",
     "Generate equivalent declared contents for identical inputs in isolated safe output; reject missing output intent, overlap, unsafe containment, or use of an active installation as source.",
     "Include the declared executable and required package inputs; keep unsupported targets, wrappers, retired exclusive resources, secrets, and permission-broadening instructions outside accepted output.",
-    "Report generation facts without declaring installation, publication, or unexecuted validation success."
+    "Report generation facts without declaring installation, publication, or unexecuted validation success.",
+    "Include complete browser generation and reading resources for declared configurations; keep reference documentation snapshots separate from reusable tool candidate identity."
   ],
   "failure_behavior": [
     {
@@ -69,6 +71,11 @@
       "source": "SRC-PUBLISHED-PRODUCTS",
       "locator": "FUNC-060",
       "basis": "Assign MOD-013 as the proposed accountable primary responsibility after Functional Analysis. Current product source contracts retain detailed behavior authority; allocation is not runtime adoption or complete AR coverage."
+    },
+    {
+      "source": "SRC-CUSTOMER-BROWSER-DESIGN",
+      "locator": "FUNC-060",
+      "basis": "System and Architecture Design from SR-084\u2013088 and refined SR-060; proposed responsibility, contract and realization only. No implementation, platform qualification or product availability is established."
     }
   ],
   "allocated_to": "MOD-013"

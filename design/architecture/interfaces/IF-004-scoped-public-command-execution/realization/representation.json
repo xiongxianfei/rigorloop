@@ -1,17 +1,16 @@
 {
   "observed": {
     "representation": [
-      "Each command family admits its own request and result domain. Primary recording prepares JSON and human text, with YAML rendering used inside human presentation. Advanced recording and generic command results retain their separate envelopes; stored record version is not a universal transport version."
+      "Typed in-process request/result values behind the public command boundary.",
+      "Public operational input uses targeted-recording-v2 with rigorloop-records-v4; store tasks use store-maintenance-v1.",
+      "Normalized SQLite records and explicitly retained named payloads are private persistence, never skill-authored SQL."
     ],
     "sources": [
       {
-        "source": "SRC-CLI-SOURCE",
-        "locator": "packages/rigorloop/dist/bin/rigorloop.js main, dispatchMain, executable wrapper; packages/rigorloop/package.json bin; remaining bindings at 9055b3c0",
-        "basis": "The inspected entry point and adapters establish the process binding. This is not an observation of an installed or publicly published package."
+        "source": "SRC-SQLITE-ADOPTION",
+        "locator": "packages/rigorloop/dist/lib/operational-cli.js; operational-contract.js; operational-store.js; operational-maintenance-contract.js",
+        "basis": "Static inspection of the successor working-tree source identifies this implementation binding. It does not establish passing tests, installed availability, publication or engineering approval. Prior observations remain recoverable at 39be9c81."
       }
     ]
-  },
-  "deferred": [
-    "Verify emitted output, limits, failure exits, and installed-package behavior against the retained contracts before making conformance or adoption claims."
-  ]
+  }
 }

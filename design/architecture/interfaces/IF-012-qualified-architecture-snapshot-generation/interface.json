@@ -1,0 +1,95 @@
+{
+  "id": "IF-012",
+  "type": "interface",
+  "title": "Qualified architecture snapshot generation",
+  "status": "draft",
+  "description": "Compose selected model capture, interpretation, qualified projection and bounded derived-output publication for a customer request. Project model is accountable; command admission remains with Operations.",
+  "operations": [
+    {
+      "name": "generate_architecture_snapshot",
+      "purpose": "Prepare and publish a qualified selected snapshot.",
+      "inputs": [
+        "Project/profile, immutable input selection, output path, expected output identity and replacement authority."
+      ],
+      "preconditions": [
+        "Requested project/output scope is explicit; generation or recovery requires its applicable write authority."
+      ],
+      "outputs": [
+        "Published output identity, captured-source provenance and actual committed/uncommitted/recovery-required outcome."
+      ],
+      "behavior": [
+        "Compose MOD-001 capture and MOD-003 interpretation before MOD-004 projection and preparation.",
+        "Reject invalid required input and unsupported profiles; retain optional gaps and proposed/observed qualifications.",
+        "Publish only complete prepared output after exact ownership and expected-current checks."
+      ],
+      "failure_behavior": [
+        {
+          "condition": "Input interpretation, output ownership, dependency compatibility or expected-state binding cannot be established.",
+          "outcome": "Return a scoped failure or recovery requirement without a complete result or unrelated writes."
+        }
+      ]
+    },
+    {
+      "name": "check_architecture_snapshot",
+      "purpose": "Compare declared source/tool inputs and selected output without writes.",
+      "inputs": [
+        "The same selection and tool identity plus existing output identity."
+      ],
+      "preconditions": [
+        "Requested project/output scope is explicit; generation or recovery requires its applicable write authority."
+      ],
+      "outputs": [
+        "Current, stale, invalid or unavailable comparison with its exact scope; no generation or approval claim."
+      ],
+      "behavior": [
+        "Read identified content and manifests without taking a write action or repairing output.",
+        "Do not treat a matching source revision alone as current when dirty content or tool/resource versions differ."
+      ],
+      "failure_behavior": [
+        {
+          "condition": "Input interpretation, output ownership, dependency compatibility or expected-state binding cannot be established.",
+          "outcome": "Return a scoped failure or recovery requirement without a complete result or unrelated writes."
+        }
+      ]
+    },
+    {
+      "name": "recover_architecture_snapshot",
+      "purpose": "Reconcile an exact interrupted derived-output operation under explicit authority.",
+      "inputs": [
+        "Owned output, retained candidate/previous entry identities, operation ownership and requested bounded disposition."
+      ],
+      "preconditions": [
+        "Requested project/output scope is explicit; generation or recovery requires its applicable write authority."
+      ],
+      "outputs": [
+        "Actual committed, uncommitted or unresolved output state, retained versions and remaining recovery requirement."
+      ],
+      "behavior": [
+        "Inspect entry and retained manifests before acting; do not blindly replay a generation request.",
+        "Never remove a writer lock based only on age or a reused process ID. Require reliable owner-death/exclusion and exact expected-state evidence or stop."
+      ],
+      "failure_behavior": [
+        {
+          "condition": "Input interpretation, output ownership, dependency compatibility or expected-state binding cannot be established.",
+          "outcome": "Return a scoped failure or recovery requirement without a complete result or unrelated writes."
+        }
+      ]
+    }
+  ],
+  "consistency_rules": [
+    "Every successful result binds project/profile, exact captured input, generator/renderer and complete output identity; profile conformance is not engineering approval.",
+    "Only the selected owned output may change. Input definitions, unrelated content, operational history and external publication are excluded.",
+    "The entry-file switch is the output commit point. Failed preparation preserves old output; failed reporting after commitment reports committed state and does not imply rollback."
+  ],
+  "compatibility_rules": [
+    "This proposed browser-v1 contract does not change Baseline-specific IF-007 or operational v3/v4 recording. No callable implementation or public command is claimed by this model.",
+    "Initial compatibility is the exact profile/runtime/platform/reader matrix shipped with a qualified candidate. Unknown versions, operations or outcome values reject rather than fallback."
+  ],
+  "sources": [
+    {
+      "source": "SRC-CUSTOMER-BROWSER-DESIGN",
+      "locator": "IF-012",
+      "basis": "System and Architecture Design from SR-084–088 and refined SR-060; proposed responsibility, contract and realization only. No implementation, platform qualification or product availability is established."
+    }
+  ]
+}

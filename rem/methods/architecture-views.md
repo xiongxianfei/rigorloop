@@ -22,7 +22,7 @@ Keep the original framework, REM's engineering rules, and a project's presentati
 
 | Original concern | REM interpretation and authoritative inputs |
 | --- | --- |
-| Logical: abstractions supporting functionality | Module responsibilities and containment, Interface contracts, Feature/Function context, Function/AR allocation, and state/data authority |
+| Logical: abstractions supporting functionality | Module responsibilities and containment, Interface contracts, allocations and state/data authority, plus technical components/contracts and their explicit realization mappings |
 | Process: execution, concurrency, and synchronization | Module runtime and Interface realization information about execution boundaries, lifecycle, communication, and failure behavior |
 | Development: static software organization | Module software realization, source/package mappings, material build dependencies, and test organization |
 | Physical: software mapping onto hardware and distribution | Deployment and persistence realization, placement, connectivity, and significant external infrastructure |
@@ -35,6 +35,14 @@ REM keeps the canonical Scenario black-box and derives internal architecture par
 A project's Operational Support selects representation, tools, and presentation resources under these rules.
 Browser pages, diagrams, reading levels, labels, and navigation are presentation choices; they are neither additional 4+1 view kinds nor first-class REM entities.
 The [Logical reading perspectives](#logical-reading-perspectives) are optional REM guidance for organizing comprehension within one view, not a subdivision prescribed by Kruchten's paper.
+
+### Viewpoint and model-kind basis
+
+REM treats each 4+1 view as a concern-oriented architecture projection rather than as one mandatory diagram notation. This is consistent with ISO/IEC/IEEE 42010:2022, which distinguishes architecture viewpoints and model kinds and does not prescribe one notation or tool for an architecture description. See the [ISO standard entry](https://www.iso.org/standard/74393.html).
+
+For Process View behavioral drill-downs, REM uses established modeling semantics where they fit the concern rather than inventing diagram meaning. UML 2.5.1 standardizes Interactions, State Machines, and Activities as distinct behavioral formalisms; see the [OMG UML 2.5.1 specification](https://www.omg.org/spec/UML/2.5.1/About-UML/). For concurrency requiring formal analysis beyond descriptive architecture, high-level Petri nets provide a standardized formal technique for concurrent discrete-event systems; see [ISO/IEC 15909-1:2019](https://www.iso.org/standard/67235.html).
+
+These references supply a scientific and standards-based foundation for model-kind selection. REM still owns the semantic correspondence to its Modules, Interfaces, runtime realization, provenance, and generated-view rules; adopting a notation does not transfer architecture authority to the diagram.
 
 ## Purpose
 
@@ -82,6 +90,26 @@ Material Module/Interface realization information belongs to the authoritative k
 Presentation choices MUST preserve the selected engineering meaning.
 A change to which relationships are included or how ownership is aggregated changes the projection rules, even when implemented in a rendering tool.
 Visual arrangement MUST NOT create Module containment, Interface ownership, allocation, or an execution sequence absent from the authoritative information.
+
+### Authored explanations and generated presentations
+
+Authoritative engineering knowledge may include structured definitions and relationships, prose, and authored interaction or lifecycle explanations. The [Architecture Design model](../models/architecture-design.md#authored-architecture-explanations) owns their semantic authority. Authoring a sequence in an owning design is a way to define or explain an interaction; rendering that sequence in a 4+1 view is a presentation of the same source.
+
+```text
+Owning architecture knowledge
+├── Structured definitions and relationships
+└── Authored interaction and lifecycle explanations
+                    │
+                    ▼
+       Selected, attributable view content
+                    │
+                    ▼
+        Rendered 4+1 presentations
+```
+
+Do not require a tool to invent an interaction from a dependency graph, or require every authored exchange to become a new entity or duplicate structured record. Select the authoritative explanation, retain its owner and source state, and render or reference it in the relevant view. When a presentation combines authored explanations and derived relationships, distinguish what each source establishes; a shared page does not establish an unrecorded relationship between them.
+
+A diagram source can contain engineering semantics as well as layout instructions. A change to participants, ordering, conditions, guarantees, or outcomes belongs to the engineering owner. A change only to spacing, visual arrangement, or faithful labels belongs to presentation. Correct the source that owns the changed meaning, reconcile affected contracts, and regenerate; do not maintain a separately edited browser version of the interaction.
 
 ## Inputs
 
@@ -132,7 +160,7 @@ Architectural adequacy remains an engineering judgment against the applicable ob
 
 The Logical View answers:
 
-> What architectural responsibilities exist, what behavior and obligations do they own, and how do they collaborate logically?
+> What architectural responsibilities and technical components exist, what contracts connect them, and how do the components realize the accountable responsibilities?
 
 Prefer these semantic inputs:
 
@@ -141,6 +169,7 @@ Prefer these semantic inputs:
 - AR-to-Module allocation;
 - Module definitions, responsibilities, exclusions, dependencies, and significant state/data ownership;
 - logical Interfaces and their providers/consumers.
+- the owned technical model's component responsibilities, contracts, state/artifact authority, realization mappings and relevant technology annotations.
 
 The Logical View SHOULD begin with the highest useful in-scope Module level so a reader can understand the major responsibility boundaries before seeing lower-level detail. Show parent Modules and the significant Interfaces visible at that level first; reveal child Modules and internal Interfaces when the reader drills into a parent. Functions, ARs, Features, and state/data ownership SHOULD be progressively disclosed only after the relevant Module context is understood.
 
@@ -148,7 +177,7 @@ A parent Module boundary SHOULD hide descendant-internal Interfaces by default. 
 
 Label directly parent-provided contracts as provided by that parent. Keep contract ownership distinct from child behavior and exposed child-owned contracts. Views MUST NOT infer Interface implementation by every child from containment alone.
 
-Physical technologies, process boundaries, deployment targets, and source paths SHOULD be hidden by default unless needed to explain a logical constraint.
+Begin with responsibilities and contracts. Technical structure MAY then expose selected components and technology choices that explain their realization. Runtime process boundaries, deployment targets and source paths retain their Process, Physical and Development concerns; do not infer them from a component box.
 
 A simplified Module-to-Module edge MAY be rendered for readability when it is derived from an Interface, provided the underlying Interface remains discoverable and the simplification does not change the contract meaning.
 
@@ -157,11 +186,12 @@ Show recorded collaboration limits beside the overview to distinguish undevelope
 ### Logical reading perspectives
 
 A Logical presentation MAY separate or combine the following reading perspectives to answer its readers' questions while preserving the responsibility overview and progressive disclosure.
-They are optional presentations of the Logical concern, not six additional architecture-view kinds, owning models, mandatory pages, or mandatory diagrams.
+They are optional presentations of the Logical concern, not additional architecture-view kinds, owning models, mandatory pages, or mandatory diagrams.
 
 | Reading perspective | Reader's question | Selected information |
 | --- | --- | --- |
 | Architecture overview | What are the major responsibilities? | Highest useful Module boundaries and significant visible Interfaces |
+| Technical structure | Which components and contracts realize those responsibilities? | Owned technical model: component boundaries, meaningful dependencies, data/artifact authority, technology annotations and explicit Module/Interface mappings |
 | Public capabilities | What can a participant use? | Public entry names, purposes, contracts, and attributed Function correspondence |
 | Module structure | How is this responsibility divided? | Selected Module, immediate children, responsibilities, exclusions, and state/data ownership |
 | Collaboration | How do these responsibilities interact? | Named Interfaces, exact providers/consumers, and declared boundary exposure |
@@ -173,7 +203,7 @@ These navigation paths do not imply an execution sequence or transfer responsibi
 Select and combine perspectives for the intended concern rather than requiring a fixed number of screens or one complete diagram.
 
 A production responsibility and its logical artifact contract may appear here when modeled.
-Concrete source files, generators, transformations, and build/package dependencies belong in the Development View; runtime execution and physical placement retain their respective view concerns.
+The technical model may show a generator as a component with an input/output contract. Its source units, build transformations and package dependencies belong in Development; runtime execution and physical placement retain their respective view concerns. Classify the relationship by the question it answers, rather than assigning every diagram containing a software component or technology name to Development.
 Missing production mappings must be resolved with their authoritative owners before a view can present them as established facts.
 
 ### Public-entry navigation
@@ -195,22 +225,79 @@ Validate entry identity within its owner, supported mapping roles, compatible re
 
 The Process View answers:
 
-> How does the architecture behave at runtime, especially where execution boundaries, concurrency, lifecycle, communication, isolation, or failure behavior are architecturally significant?
+> How does the architecture execute, communicate, coordinate, change runtime state, and fail where those concerns are architecturally significant?
 
 Prefer these semantic inputs:
 
 - Module runtime realization;
 - runtime-significant Interface realization;
-- execution/process boundaries;
-- worker or background execution relationships;
-- lifecycle, scaling, isolation, concurrency, resource, and failure-boundary information;
-- runtime communication that realizes logical Interfaces.
+- execution/process boundaries and architecturally significant tasks/workers;
+- lifecycle, scaling, isolation, concurrency, resource, synchronization, and failure-boundary information;
+- runtime communication that realizes logical Interfaces;
+- authoritative ordering, state-transition, timing, retry, transaction, or recovery information when explicitly modeled.
 
-Runtime/process items are subordinate realization information unless REM defines them elsewhere as first-class entities.
-The Process View MUST preserve the owning Module/Interface relationship and Module containment context so readers can move from runtime structure back to logical responsibility and understand which runtime interactions cross encapsulation boundaries.
+Runtime/process items are subordinate realization information unless REM defines them elsewhere as first-class entities. The Process View MUST preserve the owning Module/Interface relationship and Module containment context so readers can move from runtime structure back to logical responsibility and understand which runtime interactions cross encapsulation boundaries.
 
-Do not invent runtime detail merely to populate the view.
-A library or simple system may have a minimal Process View when runtime boundaries are not architecturally material.
+### Primary model kind — Runtime Topology Graph
+
+Use a **Runtime Topology Graph** as the primary whole-system Process projection whenever runtime concerns are material. It is a typed directed graph of architecturally significant runtime participants/resources and their declared runtime communication relationships.
+
+Typical generated participant kinds include process, task/worker, external runtime, and runtime resource. These are realization projections, not new first-class REM entities. Each participant SHOULD retain its owning Module realization and, where material, its runtime kind, multiplicity, lifecycle, concurrency/isolation role, and failure boundary.
+
+Typical communication-edge kinds include synchronous call, asynchronous message/event, stream, shared-state access, or another explicitly modeled runtime channel. Each edge SHOULD retain direction, its owning or realized logical Interface when applicable, and material synchronization, delivery, ordering, or failure semantics.
+
+A topology edge states a runtime communication relationship. It MUST NOT, by itself, assert that one participant executes before another.
+
+### Conditional Process model kinds
+
+Select additional model kinds by the runtime concern that needs explanation. Do not use a diagram merely because a rendering tool supports it.
+
+| Runtime question | Preferred model kind | Selection rule |
+| --- | --- | --- |
+| What executes independently and how do runtime participants communicate? | Runtime Topology Graph | Primary Process projection when runtime architecture is material |
+| In what established causal/order sequence do participants interact for a selected runtime operation? | Sequence/Interaction Diagram | Use only when authoritative runtime information establishes the participants and relevant ordering/messages |
+| What lifecycle states and transitions govern a runtime participant or resource? | State Machine | Use when durable runtime state/transition semantics are architecturally material |
+| How does control or data branch, merge, fork, and join across activities? | Activity/Control-flow Diagram | Use when control-flow or parallel-flow structure is material and cannot be understood from topology/interaction alone |
+| What timing relationships or deadlines materially constrain execution? | Timing model/diagram | Use when timing semantics are explicit architecture constraints |
+| Can synchronization, reachability, boundedness, deadlock, or liveness require formal concurrency analysis? | Formal concurrency model such as a Petri net | Use only when the analytical question and available semantics justify formal modeling |
+
+UML-style Sequence, State Machine, and Activity notations are useful standard presentations for the corresponding model kinds, but REM does not mandate UML, Mermaid, PlantUML, Graphviz, or another renderer. A project MAY use any notation that preserves the selected model-kind semantics and provenance.
+
+### Readable behavioral explanations
+
+Give each diagram a clear question and declared scope. Use a sequence to explain who exchanges what and in which established order, an activity/control-flow diagram to explain decisions and branching, and a state machine to explain allowed lifecycle transitions. Do not choose a flowchart merely to avoid unfamiliar sequence notation when participant cooperation is the concern.
+
+For a sequence or interaction explanation:
+
+- Name actual roles or architectural participants and make their responsibilities clear. Relate them to owning Modules and significant Interface contracts where applicable; do not equate a role with a process or assign ownership through visual placement.
+- Use concrete messages that identify the request, result, information, or decision exchanged. Make meaningful ordering and preconditions explicit without inventing timing or delivery guarantees.
+- Keep the main path focused. A substantial correction, retry, or recovery interaction may have its own linked diagram with an explicit trigger and outcome; do not turn every conditional step into another diagram.
+- Use ordinary language for conditions. Combined fragments or other formal notation are appropriate when they clarify material semantics, but readers should not need unexplained notation to follow routine cooperation.
+- Keep material failures, alternatives, concurrency, and uncertain outcomes discoverable in the diagram or adjacent owning explanation. A simple success sequence must not imply that every attempt succeeds or that omitted paths are impossible.
+
+Separate diagrams remain parts of one coherent design. Identify where an alternate path begins, what basis it uses, and whether it returns to the main interaction, stops affected work, or leaves recovery unresolved. Splitting a diagram must not discard ordering, authority, state, or failure guarantees. Rendering tests establish presentation behavior; the [readability assessment](#rendered-readability-and-navigation) also checks whether the result explains its intended question.
+
+### Process drill-down and Scenario separation
+
+At whole-system scope, the primary Process presentation SHOULD remain a stable runtime topology when execution boundaries and communication are material. A reader MAY select a runtime participant, channel, or operation and drill down to the applicable Sequence, State Machine, Activity, timing, or formal-concurrency projection. This progressive structure keeps detailed explanations connected to the architecture they explain.
+
+At a Module or selected-operation scope, lead with the model kind that answers the reader's actual question. A focused interaction may be the useful first presentation; it does not require an additional topology diagram solely to fill the page. Identify the containing responsibility and relevant collaborators, and retain access to material wider topology where it exists. Roles, logical responsibilities, and independently executing processes must remain distinguishable; drawing a participant does not create a deployed service. Missing runtime facts remain explicit rather than being inferred from a role or Module name.
+
+A Process interaction diagram explains runtime mechanics. The Scenario View starts from a governed stakeholder-observable Scenario and traces its architecture participation across obligations, Functions, Modules, Interfaces, and relevant realization. A Scenario View MAY select a Process interaction projection as supporting runtime detail, but that interaction does not become part of the canonical black-box Scenario.
+
+### Semantic safeguards
+
+The Process projection MUST NOT infer:
+
+- execution order from Logical Module/Interface reachability;
+- synchronous behavior merely because one Module consumes an Interface;
+- concurrency merely because two Functions are independent in the logical graph;
+- transaction, retry, persistence, or recovery semantics from implementation names;
+- deployment placement from process membership unless Physical realization establishes it.
+
+When the authoritative model establishes only runtime topology, render only topology. When ordering, lifecycle, control-flow, timing, or formal concurrency semantics are absent, mark that detail as unknown/deferred rather than manufacturing a more complete behavioral diagram.
+
+Do not invent runtime detail merely to populate the view. A library or simple system may have a minimal Process View when runtime boundaries are not architecturally material.
 
 ## Development View
 
@@ -231,6 +318,9 @@ Prefer these semantic inputs:
 
 The Development View MUST NOT redefine Module boundaries or parent-child containment from current package or source layout.
 It shows how hierarchical logical responsibility is realized by software organization, including deliberate many-to-many mappings when they exist.
+Its component names may match the Logical technical structure, but its relationships explain source units, package dependencies, builds and maintenance. A component-and-contract overview belongs to Logical; source organization is more than a filename inventory and can be designed before files exist. Keep these projections attributable to one technical design instead of maintaining competing component definitions.
+
+Development describes intended software organization independently of implementation progress. Its design can be authored and reviewed before source files, builds or tests exist. Keep software units, material dependencies, build/resource relationships and test architecture grounded in the governing requirements and architectural decisions. Existing source mappings and observed behavior provide supporting traceability and conformance information; they do not automatically define or approve the intended design. Preserve their qualification and any divergence. A design-oriented presentation should lead with the design and rationale, with implementation references available separately; missing references do not invalidate a design, and references alone do not fill a design gap. This design/observation distinction applies across all five views.
 
 ### Test architecture
 
@@ -344,7 +434,7 @@ Human and agent views SHOULD derive from the same semantic projection rules even
 
 ### Rendered readability and navigation
 
-Choose a presentation tool for the intended reading environment. A browser view MAY use generated interactive diagrams and linked detail pages; a document MAY use small linked diagrams. The tool remains replaceable, and its graph/layout source MUST derive from the authoritative model rather than become a second authored architecture.
+Choose a presentation tool for the intended reading environment. A browser view MAY use generated interactive diagrams and linked detail pages; a document MAY use small linked diagrams. The tool remains replaceable. Generated graph/layout source MUST derive from authoritative knowledge; when the selected input is an authored architecture explanation, render that owning source without creating a second independently maintained account of its semantics.
 
 Show one useful responsibility level at a time. Keep public-entry catalogs, complete allocation inventories, and provenance outside the initial diagram. A reader SHOULD be able to select a Module or Interface, understand its responsibility or contract, follow its children or collaborators, and return to the previous context. Diagram simplification MUST retain discoverable exact relationship owners and recorded scope limits.
 
@@ -394,7 +484,7 @@ Do not introduce a separate tailoring layer merely to make a sparse view optiona
 The 4+1 view set is sufficiently generated for a declared architecture scope when:
 
 - the Logical View explains the Module hierarchy from the highest useful level, primary responsibilities, allocations, encapsulation/exposure, significant Interfaces, and state/data authority;
-- the Process View exposes material runtime/execution concerns where applicable;
+- the Process View exposes material runtime/execution concerns where applicable, using a stable Runtime Topology Graph for whole-system orientation when needed and selecting focused behavioral/formal explanations by scope and authoritative semantics;
 - the Development View maps material software and test organization back to the logical architecture, preserving assessed subjects and execution ownership;
 - the Physical View exposes material deployment/persistence placement where applicable;
 - important confirmed Scenarios have Scenario Views that trace through relevant obligations, behavior, architecture, and realization;

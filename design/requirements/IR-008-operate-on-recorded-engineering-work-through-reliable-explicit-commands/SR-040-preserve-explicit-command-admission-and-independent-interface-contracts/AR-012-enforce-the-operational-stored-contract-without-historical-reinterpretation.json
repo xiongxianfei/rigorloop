@@ -3,7 +3,7 @@
   "type": "allocated-requirement",
   "title": "Enforce the operational stored contract without historical reinterpretation",
   "status": "draft",
-  "statement": "The Operational record persistence Module shall accept only the declared current v3 stored contract for operational record access, candidate validation, publication, and recovery, and reject retired, unknown, mixed, or cross-version input without conversion, fallback, or historical-byte modification.",
+  "statement": "The Work records Module shall enforce the associated v4 SQLite store and supported schema on every ordinary entry path, with no legacy execution fallback or historical reinterpretation.",
   "analysis": {
     "method": "5W2H",
     "what": {
@@ -21,7 +21,7 @@
     },
     "when": {
       "conditions": [
-        "A current store, creation candidate, replacement, or recovery journal reaches an operational-record entry point."
+        "An ordinary task or query opens the associated project store, or explicit maintenance validates a replacement/import candidate."
       ]
     },
     "where": {
@@ -30,17 +30,17 @@
       ]
     },
     "how": {
-      "approach": "Check explicit stored discriminators and the applicable journal contract before operational interpretation; keep this selection independent from public transport and document versions."
+      "approach": "Check project association and database schema before current interpretation. Keep command, stored-record, database and backup versions independent; imports use only qualified source adapters."
     },
     "how_much": {
-      "scope": "The exact current and retired stored populations named in CLI and Record Format. Bounded archive recognition for discovery remains classification, not a historical record validator or operational reader."
+      "scope": "Current v4 ordinary operation and explicit supported maintenance. Historical v3 originals are read only by the qualified source importer or repository historical validator, never an ordinary runtime fallback."
     }
   },
   "acceptance_criteria": [
-    "A new operational store identifies contract rigorloop-records-v3 on its change manifest; that manifest and every registered supporting record use stored schema_version 3. Supporting records are not required to repeat the manifest's contract field, and a transport or model-document version never substitutes for the applicable stored discriminator.",
-    "Retired or unknown contracts, unsupported stored versions, mixed registered records, and cross-version replacements receive their declared safe rejection with no authoritative write, conversion, fallback reader, or inferred renewed authority.",
-    "An unsupported or retired journal cannot trigger recovery or operational continuation; inspection and rejected access do not alter historical bytes, identities, or meaning.",
-    "The same stored support boundary applies to targeted candidates, advanced complete-byte replacements, and explicit recovery, while independently supported transport and shared-definition versions remain usable under their own contracts."
+    "New current records identify rigorloop-records-v4 and schema_version 4 in the associated project database; PRAGMA schema version and project metadata are separately validated.",
+    "Unknown or mismatched projects, unsupported database schemas and corrupt stores stop safely without initializing an empty substitute.",
+    "Legacy directory or journal residue cannot select an executable backend or trigger recovery; original records remain unchanged by ordinary access.",
+    "Qualified explicit import preserves selected source originals and dispositions; it does not promote earlier judgments or bypass ordinary current-record validation."
   ],
   "assumptions": [],
   "constraints": [],
@@ -55,6 +55,11 @@
       "source": "SRC-PUBLISHED-CLI",
       "locator": "docs/design/cli/cli.md#CLI-SR-10, CLI-SR-27, CLI-SR-28; docs/design/cli/records.md#RF-SR-01, RF-SR-06, RF-SR-09, RF-SR-12, RF-SR-14",
       "basis": "Preserve the applicable current public and stored-record guarantees at this accountable boundary. The named source retains exact schemas, operation tables, classifications, limits, and historical adoption obligations; this allocation neither replaces those details nor accepts REM authoring JSON as operational records."
+    },
+    {
+      "source": "SRC-SQLITE-ADOPTION",
+      "locator": "AR-012",
+      "basis": "Reconcile the complete existing allocation with the selected current v2/v4 contract, preserving independent admission, coherent state, explicit scope and actor judgment. Prior version-specific sources retain their historical meaning."
     }
   ],
   "constrains": [

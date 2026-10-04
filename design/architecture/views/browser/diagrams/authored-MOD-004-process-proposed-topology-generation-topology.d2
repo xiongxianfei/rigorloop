@@ -1,0 +1,16 @@
+direction: right
+entry: "Node CLI process\nAdmission and supervision"
+generator: "Rust engine process" {
+  engine: "Capture, interpretation and projection\nAssembly, publication and recovery"
+}
+entry -> generator.engine: "Versioned request"
+generator.engine -> entry: "Actual outcome"
+input: "Immutable selected model"
+renderer: "Bundled D2\nrenderer subprocess"
+output: "Owned generated output"
+reader: "Separate reader browser\nOffline"
+input -> generator.engine
+generator.engine -> renderer: "Bounded diagram input"
+renderer -> generator.engine: "Validated SVG or failure"
+generator.engine -> output: "Complete local snapshot"
+output -> reader: "Copy complete snapshot"

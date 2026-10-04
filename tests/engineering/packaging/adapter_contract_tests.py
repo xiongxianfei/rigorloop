@@ -21,20 +21,14 @@ class AdapterContractTests(unittest.TestCase):
     maxDiff = None
 
     def test_validate_adapters_cli_rejects_retired_repository_output(self) -> None:
-        result = subprocess.run(
-            [
-                sys.executable,
-                str(ROOT / "scripts" / "validate-adapters.py"),
-                "--version",
-                "v0.1.3",
-            ],
-            capture_output=True,
-            text=True,
-            cwd=ROOT,
-        )
-
-        self.assertNotEqual(result.returncode, 0)
-        self.assertIn("missing adapter directory", result.stdout)
+        with tempfile.TemporaryDirectory() as temporary:
+            result = subprocess.run(
+                [sys.executable, str(ROOT / "scripts/validate-adapters.py"),
+                 "--version", "v0.1.3", "--adapter-root", temporary],
+                capture_output=True, text=True, cwd=ROOT,
+            )
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("missing adapter archive", result.stdout)
 
     def test_ci_script_runs_adapter_checks_and_filters_generated_paths(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
@@ -227,7 +221,7 @@ class AdapterContractTests(unittest.TestCase):
             self.assertIn(required, text)
         self.assertNotIn("rigorloop-adapter-opencode-<version>.zip", text)
         self.assertNotIn("init opencode", text)
-        self.assertIn("Historical release archives retain their original inventories", text)
+        self.assertIn("Historical archives require their matching earlier executable", text)
 
     def test_root_guidance_points_to_adapter_install_contract_surface(self) -> None:
         """Observe retained root-link migration debt, not generated-only adoption."""

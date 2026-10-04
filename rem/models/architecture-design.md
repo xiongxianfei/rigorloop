@@ -3,7 +3,7 @@
 Architecture Design assigns accountable responsibility to Modules, defines architecturally significant interactions through Interfaces, and records the material physical/software realization needed to make that logical architecture implementable.
 The [concept definitions](../concepts/README.md#system-and-architecture-assets) explain these architectural assets and the subordinate architecture realization view.
 
-REM keeps two coupled views:
+REM keeps two coupled bodies of authoritative information:
 
 ```text
 Logical architecture
@@ -18,6 +18,26 @@ Physical/software realization
 
 Modules and Interfaces remain the first-class governed architecture entities.
 Physical/software realization details do not become independent REM entities by default.
+The technical model below explains the selected component structure within that realization. Its structural presentation is a Logical reading perspective; Development, Process and Physical select other concerns from the same owned design.
+
+## Technical model
+
+A technical model describes the intended architectural implementation through components, their responsibilities, contracts, relationships, data authority and material technology choices. It makes the responsibility architecture implementable while retaining the accountable Modules, Interfaces and Function/AR allocations. It can be authored before code exists; implementation observations retain their separate qualification.
+
+| Element | Required meaning when material |
+| --- | --- |
+| Component | A coherent technical responsibility, its scope and exclusions, and its mapping to the Modules/Functions it realizes |
+| Contract | The interaction's participants, inputs/outputs or representation, guarantees, failures and compatibility; reference an existing Interface or detailed owner where applicable |
+| Relationship | An explicit meaning such as uses, realizes, produces, consumes or embeds; containment means technical composition, not automatically Module containment or process membership |
+| Data and artifact authority | Who interprets, produces, mutates or only reads each significant input, state or output |
+| Technology decision | The selected technology, governing need, alternatives, consequences and revisit conditions |
+| Qualification and limits | Intended design versus observed implementation, unresolved mappings and the constraints needed to assess the composition |
+
+One component may realize contributions from several Modules, and one Module may be realized by several components. Preserve those mappings explicitly; co-location does not transfer Function or AR accountability. A component, library or technology label does not acquire first-class REM identity merely by appearing in the technical model. Local names suffice unless a project has a justified identity contract.
+
+The Technical structure perspective of the Logical View presents components and their contracts with relevant technology annotations. Development presents their organization into source units, packages, build resources and tests. Process presents independently executing participants and their interactions; Physical presents artifact placement and deployment constraints. Reuse the same authoritative relationships and distinguish each diagram's edge meanings. A technology list alone does not establish a technical model, and a structural dependency does not establish execution order.
+
+Author the model with proportionate prose, component/contract tables and diagrams at the existing Module or Interface owner. Cross-owner composition references the participating owners rather than moving their authority into a convenient executable or document. Structured realization fields may be added when their semantics and tooling need are settled; no new entity class, universal schema, standalone document or sixth view is required.
 
 ## Allocation
 
@@ -80,6 +100,12 @@ A Module is a meaningful architectural responsibility boundary and may own:
 
 Module boundaries SHOULD be justified by responsibility and evolution rather than copied mechanically from current source directories, packages, processes, or deployment units. Parent-child decomposition SHOULD likewise reflect responsibility refinement and encapsulation rather than organization charts or filesystem convenience.
 
+### Module names and identity
+
+A Module name should identify its responsibility and subject in terms that distinguish it from neighboring Modules. Avoid repeated generic qualifiers and broad words such as “management” when they hide the actual responsibility. Retain context needed to make the canonical name understandable outside its current tree position; brevity alone is not the goal. Parent names describe the broader responsibility, while child names distinguish the parts they own. The [Architecture Design method](../methods/architecture-design.md#define-coherent-module-boundaries) applies these criteria when refining a decomposition.
+
+A clearer name for the same responsibility preserves the Module's stable identity, allocations, Interfaces, and containment. If the work changes any of those relationships or the responsibility boundary, assess that architectural change explicitly rather than treating it as a cosmetic rename. [Operational Support](operational-support.md#naming-and-location) owns reference and location reconciliation; the [view method](../methods/architecture-views.md#rendered-readability-and-navigation) owns faithful shortened display labels.
+
 ## Interfaces
 
 A Module may `provide` and `consume` Interfaces.
@@ -118,7 +144,7 @@ For the declared architecture scope, the authoritative information is organized 
 | Interface definition and exposure | Defines a significant logical interaction contract, provider/consumers, and any parent boundaries through which a descendant-provided contract is intentionally exposed | Interface | When cross-Module interaction is architecturally significant |
 | State/data ownership | States which Module owns meaning and permitted mutation of significant information | Module | When state/data authority matters to correctness or evolution |
 | Software realization | Explains the software structures that materially realize a Module | Module realization view | When software structure matters architecturally |
-| Runtime realization | Explains significant execution/process, lifecycle, scaling, isolation, concurrency, or resource boundaries | Module realization view | When runtime boundaries materially affect architecture |
+| Runtime realization | Explains significant execution/process topology, lifecycle, scaling, isolation, concurrency, synchronization, communication, resource, failure, ordering, retry, or recovery semantics | Module realization view | When runtime behavior or boundaries materially affect architecture |
 | Persistence realization | Explains physical retention of significant state/data and whether it is authoritative, replicated, cached, or derived | Module realization view | When persistence choices materially affect architecture |
 | Deployment realization | Explains significant packaging, placement, isolation, deployment target, or external runtime dependency | Module realization view | When deployment materially affects architecture |
 | Interface realization | Explains material interaction mechanism, concrete binding, representation, addressing, and realization-specific guarantees | Interface realization view | When the logical contract requires a concrete architectural realization decision |
@@ -135,9 +161,20 @@ A persistence mechanism may retain bytes without owning their domain meaning or 
 A realization facet is required only when omitting it would hide a material architectural consequence.
 Do not create empty or speculative realization information merely for symmetry.
 
+## Authored architecture explanations
+
+Authoritative architecture knowledge may be represented by structured records, prose, or authored diagrams under a declared Module, Interface, or architecture-composition owner. An authored sequence may define significant exchanges and ordering; an authored lifecycle explanation may define states and permitted transitions. These are subordinate architecture information, not new first-class entities merely because they have a title or diagram.
+
+Declare which source owns each semantic fact. An explanation that cites an existing allocation, Interface guarantee, or state rule must preserve that source's meaning rather than establish a competing definition. New or changed guarantees must be reconciled with the responsible requirement, behavior, or contract owner before dependent views rely on them. Resolve disagreement between structured and narrative sources through their declared ownership; neither format has automatic precedence.
+
+Place a local explanation with its responsibility owner. Place a shared composition explanation with the scope accountable for that cooperation, referencing the participants' own contracts and allocations. A child view may link a parent-owned explanation without copying it or acquiring ownership. Scope labels and navigation do not establish that every child participates in every parent interaction.
+
+Rendered diagrams and browser pages present this knowledge under the [Architecture Views method](../methods/architecture-views.md#authored-explanations-and-generated-presentations). Changing the rendered presentation alone does not revise the architecture. File layout, diagram syntax, and any structured representation of authored interactions remain project choices.
+
 ## Architecture realization views
 
 Each in-scope Module and Interface MAY carry an architecture realization view.
+Here, the retained term “realization view” denotes owner-held architecture information, including the technical model. It is not a separately authoritative generated 4+1 presentation.
 The view records material physical/software choices whose consequences cross implementation units, affect runtime/deployment/state/quality behavior, constrain future evolution, or are needed to understand how the logical architecture is realized.
 
 A realization detail is architecture-significant when at least one of the following is true:
@@ -153,6 +190,7 @@ A Module realization view may describe, when relevant:
 
 - software units such as applications, libraries, services, workers, adapters, or jobs;
 - execution or process boundaries and significant runtime topology;
+- authoritative runtime communication, synchronization, ordering, lifecycle, retry, transaction, failure, or recovery semantics when architecturally material;
 - persistence mechanisms or datastores used to realize state owned or used by the Module;
 - packaging or deployment units and significant deployment targets;
 - implementation paths or artifact mappings;
@@ -234,8 +272,8 @@ Use the [4+1 Architecture View method](../methods/architecture-views.md) to cons
 
 | View | Primary concern | Typical authoritative inputs |
 | --- | --- | --- |
-| Logical | Hierarchical responsibilities, behavior, obligations, logical collaboration, encapsulation, and state/data authority | Module containment, exposed/internal Interfaces, Feature/Function context, Function/AR allocation, Module definitions, state/data ownership |
-| Process | Runtime behavior, execution boundaries, concurrency, lifecycle, communication, isolation, and failure boundaries | Module runtime realization and runtime-significant Interface realization |
+| Logical | Hierarchical responsibilities, contracts and technical component structure, with explicit realization mappings | Module containment, Interfaces, Feature/Function context, Function/AR allocation, state/data ownership and the owned technical model |
+| Process | Runtime topology plus concern-specific interaction, lifecycle, control-flow, timing, or formal-concurrency projections | Module runtime realization and runtime-significant Interface realization; authoritative ordering/state/timing facts where applicable |
 | Development | Static software organization used for development/build/testing/maintenance | Module software realization, source/package mappings, material dependencies, test groups and supporting infrastructure |
 | Physical | Deployment, placement, connectivity, persistence placement, and infrastructure topology | Module deployment/persistence realization, external runtime dependencies, concrete connectivity |
 | Scenario | End-to-end architecture participation for one governed stakeholder Scenario | Scenario → SR/Function/AR → Module/Interface plus relevant realization |

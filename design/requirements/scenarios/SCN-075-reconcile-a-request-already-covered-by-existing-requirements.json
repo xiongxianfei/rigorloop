@@ -1,0 +1,63 @@
+{
+  "id": "SCN-075",
+  "type": "scenario",
+  "title": "Reconcile a request already covered by existing requirements",
+  "status": "confirmed",
+  "actor": "An engineer interpreting an incoming request",
+  "goal": "Establish whether existing requirements already address the request without manufacturing model changes.",
+  "context": "A request names desired behavior and may suggest a technology; relevant IRs and SRs already exist.",
+  "trigger": "The engineer submits the request for requirement analysis.",
+  "preconditions": [
+    "The requested scope and relevant project authority are identifiable."
+  ],
+  "interaction": [
+    {
+      "actor": "Engineer",
+      "action": "Provides the original request, desired outcome and known constraints."
+    },
+    {
+      "actor": "System",
+      "action": "Presents the affected existing requirement owners and the proposed reuse or change disposition with its basis."
+    },
+    {
+      "actor": "Engineer",
+      "action": "Examines uncovered or conflicting parts and prepares the selected requirement basis for review."
+    }
+  ],
+  "expected_outcome": "The original request remains attributable and each material part has a justified disposition; reuse can be the complete proposed result.",
+  "alternatives": [
+    {
+      "condition": "The request spans several established needs.",
+      "outcome": "The proposed basis identifies the affected owners rather than creating one artificial broad IR."
+    },
+    {
+      "condition": "The named technology is a suggestion rather than a required constraint.",
+      "outcome": "The analysis retains the suggestion as source context and distinguishes it from the proposed obligations."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "An important constraint or requested outcome conflicts with current requirements.",
+      "outcome": "The conflict and responsible decision remain explicit; the analysis cannot claim complete reuse or silently omit that part."
+    }
+  ],
+  "exercises": [
+    "FEAT-016"
+  ],
+  "informs": [
+    "SR-079",
+    "SR-053"
+  ],
+  "sources": [
+    {
+      "source": "SRC-REQUIREMENT-FIRST-WORKFLOW",
+      "locator": "SCN-075",
+      "basis": "User-selected requirement-first workflow and one mandatory whole-change Code Review gate. Proposed requirement analysis only; existing product contracts remain active until coordinated adoption. No new Function, AR, implementation or approval is inferred."
+    },
+    {
+      "source": "SRC-WORKFLOW-REQUIREMENT-REVIEW",
+      "locator": "design/requirements/sources.md#src-workflow-requirement-review",
+      "basis": "Document-based author assessment under the explicit Constitution exception confirms this Scenario as requirement-analysis knowledge. It is not independent review, executed product evidence or workflow activation."
+    }
+  ]
+}

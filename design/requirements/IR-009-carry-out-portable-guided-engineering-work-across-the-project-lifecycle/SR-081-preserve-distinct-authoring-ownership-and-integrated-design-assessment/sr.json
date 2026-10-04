@@ -1,0 +1,87 @@
+{
+  "id": "SR-081",
+  "type": "system-requirement",
+  "title": "Preserve distinct authoring ownership and integrated design assessment",
+  "status": "draft",
+  "statement": "The system shall distinguish requirement authoring, logical System Design and Architecture Design responsibilities and require one integrated independent Design Review of their affected design composition against the accepted requirement basis before delivery planning relies on it.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Combined authoring contracts and per-technique approvals can duplicate authority, conceal missing behavior or allocations, and turn delivery tasks into substitutes for architectural obligations.",
+      "desired_outcome": "Participants can identify the responsible author and assess whether the combined design can satisfy accepted requirements."
+    },
+    "why": {
+      "rationale": "The user-selected workflow must preserve traceability and independent judgment while assigning each engineering decision one owner and avoiding redundant approval cycles."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineers and engineering agents",
+        "Independent reviewers and project decision owners",
+        "Maintainers of guidance, validation and recording tools"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "During design development, integrated assessment, correction routing and handoff to delivery planning."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "The project-selected governed workflow and its scoped specialist activities, including portable isolated use where applicable."
+      ]
+    },
+    "how": {
+      "approach": "Apply the explicit ownership and dependency conditions in the criteria; record exact scope, decisions, exceptions and assessment basis without inferring approval from mechanics. Detailed Function, Module, Interface and storage realization belongs to subsequent design."
+    },
+    "how_much": {
+      "scope": "The selected requirement-first workflow within one Change and its affected dependencies. No new preliminary proposal gate, per-method approval, mandatory milestone approval, automatic external permission or mandatory SQLite prerequisite. Functional and architectural completeness are deliberately deferred to design; the Feature constraints express workflow conditions, not a completed behavior realization."
+    }
+  },
+  "acceptance_criteria": [
+    "Requirement Analysis owns IR/SR meaning and stakeholder Feature/Scenario intent. System Design owns logical Functions, their behavior and Feature/SR relationships; it does not silently redefine stakeholder intent.",
+    "Architecture Design owns accountable Module boundaries, Function allocation, Interfaces and exposure, state/data authority, material realization and AR derivation. Each AR remains a requirement beneath one SR with one accountable Module, not a delivery task or duplicate Module obligation.",
+    "System and Architecture Design may iterate. A newly discovered need or missing system obligation returns to Requirement Analysis and affected Requirement Review rather than being hidden in design or code.",
+    "One integrated Design Review assesses affected logical behavior, architectural allocation, Interfaces, ARs, material realization and cross-boundary feasibility against the exact accepted requirement basis. Separate mandatory System Design, architecture, AR or 4+1 approval gates are not introduced.",
+    "Missing Function or AR coverage blocks design-completeness claims where required, while previously accepted requirement validity remains distinct. One SR need not produce one Function, and a quality obligation may constrain existing behavior.",
+    "Planning consumes the accepted requirements and reviewed design and allocates delivery work and proof. A missing accountable architectural boundary returns to Architecture Design; a task assignment cannot substitute for an AR.",
+    "5W2H, Scenario Analysis, Functional Analysis, Architecture Allocation, Interface analysis and 4+1 views remain methods or tools inside their responsible activities. Views neither redefine black-box Scenarios nor establish approval or satisfaction."
+  ],
+  "assumptions": [
+    "Existing governance and recording remain available until explicit coordinated adoption; target skill and CLI support is not assumed installed."
+  ],
+  "constraints": [
+    "Draft authoring and structural validation do not establish independent review approval or activate the new workflow."
+  ],
+  "constrains": [
+    "FEAT-016",
+    "FEAT-017"
+  ],
+  "sources": [
+    {
+      "source": "SRC-REQUIREMENT-FIRST-WORKFLOW",
+      "locator": "SR-081",
+      "basis": "User-selected requirement-first workflow and one mandatory whole-change Code Review gate. Proposed requirement analysis only; existing product contracts remain active until coordinated adoption. No new Function, AR, implementation or approval is inferred."
+    },
+    {
+      "source": "SRC-WORKFLOW-DESIGN",
+      "locator": "SR-081",
+      "basis": "Draft integrated design from the accepted requirement-first basis. This defines target responsibility and cooperation, not installed capability, design approval, runtime evidence or SQLite adoption."
+    },
+    {
+      "source": "SRC-WORKFLOW-DESIGN",
+      "locator": "SR-081 AC1–3,5,7; AR-033, AR-034",
+      "basis": "Proposed allocation composition: Distinct canonical methods preserve ownership and design completeness; composition routes upstream gaps and combines affected outputs. This is a design argument, not executed satisfaction evidence."
+    },
+    {
+      "source": "SRC-WORKFLOW-DESIGN",
+      "locator": "SR-081 AC4,6; AR-034",
+      "basis": "Proposed allocation composition: Integrated assessment is the single design reliance point before planning, which consumes architectural responsibility rather than inventing it. This is a design argument, not executed satisfaction evidence."
+    }
+  ],
+  "confirms": [
+    "FUNC-053",
+    "FUNC-054",
+    "FUNC-032",
+    "FUNC-033"
+  ]
+}

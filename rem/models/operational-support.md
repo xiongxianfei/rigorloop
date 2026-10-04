@@ -34,6 +34,14 @@ Do not retarget previous assessments to new subjects merely because identities o
 An implementation should explain how unsupported names or locations are handled rather than silently truncating titles or replacing identities.
 Changing a storage convention also requires reconciliation of the tools and consumers that rely on it.
 
+## Engineering knowledge and operational records
+
+Keep current engineering knowledge distinguishable from the operational account of how it was developed and assessed. Applicable rationale, assumptions, constraints, and unresolved design decisions belong with their engineering owners so the current definition remains understandable. Requests, work progress, review judgments, findings, exact assessed subjects, execution results, and historical assessment attempts belong to operational records with their original context and identity.
+
+When a finding changes the design, reconcile the current engineering source while preserving the original finding and judgment in the operational account. A concise provenance reference may connect the design to that account; it does not transfer approval to later revisions or make a review dossier part of the current definition. Recording, rendering, or successfully validating a source does not establish engineering approval, implementation, or requirement satisfaction.
+
+This is a separation of information ownership, not a mandate for separate products or physical stores. The project selects storage, retention, recovery, and access mechanisms that preserve current understanding and the operational history required for reliance. REM does not require Git, SQLite, a particular directory, or a universal review cadence.
+
 ## Validation and maintenance
 
 Structural checks assess representation, containment, identity, and reference integrity.
@@ -50,7 +58,7 @@ For each maintained family of generated views, Operational Support MUST define a
 The contract identifies:
 
 - the intended readers, concerns, and selected engineering scope;
-- the authoritative inputs and their actual source state, including working changes when present;
+- the authoritative inputs, including selected authored explanations, and their actual source state, including working changes when present;
 - the applicable metamodel interpretation and semantic projection rules, with enough identity to recover the versions used;
 - the presentation rules, templates, and relevant tool configuration needed to reproduce the claimed result;
 - the generated outputs, their relationship to their inputs, and the owner of their maintenance;
@@ -67,7 +75,7 @@ A presentation replacement MUST preserve the selected engineering meaning and it
 Freshness checking MUST distinguish outputs that match their declared inputs and generation rules from outputs requiring regeneration.
 Currentness relative to a selected historical state MUST remain distinguishable from currentness relative to the latest working model.
 A previous assessment remains attached to the source state and generated subject it actually inspected.
-Regeneration alone does not transfer that assessment to changed output.
+Regeneration alone does not transfer that assessment to changed output. Assessment judgments and execution observations remain [operational records](#engineering-knowledge-and-operational-records); model sources retain applicable rationale and concise provenance.
 
 The publication procedure MUST prevent a failed generation or a mixture of outputs from different generation states from being presented as one successfully refreshed view set.
 It MAY retain the last successful set with its original identity and an explicit indication that the requested refresh failed or remains pending.

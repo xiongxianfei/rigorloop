@@ -1,0 +1,63 @@
+{
+  "id": "AR-054",
+  "type": "allocated-requirement",
+  "title": "Transfer selected scope through explicit project association",
+  "status": "draft",
+  "statement": "The Work records Module shall transfer selected scope through explicit project association through its typed maintenance boundary, preserving actual scope, source meaning and safe failure.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "A copied engineering checkout does not contain private work history, and importing history into the wrong project can create false provenance.",
+      "desired_outcome": "Another local environment can inspect and resume the selected retained work with its original meaning and explicit limits."
+    },
+    "why": {
+      "rationale": "SR-076 requires operational preservation; MOD-011 owns the associated store and maintenance activation, while MOD-010 owns admission and result presentation."
+    },
+    "who": {
+      "stakeholders": [
+        "Project maintainers and authorized agents relying on retained operational work"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "An actor explicitly selects the supported maintenance task, scope, source expectations and destination."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "MOD-011 through IF-003, invoked by MOD-010 through IF-004; engineering definitions remain repository-owned."
+      ]
+    },
+    "how": {
+      "approach": "Use the reviewed MOD-011 maintenance contract: coherent staged scope, explicit project/schema/integrity checks, exclusive activation and attributable recovery outcomes."
+    },
+    "how_much": {
+      "scope": "Selected retained supported records and payloads only; no silent merge, universal history retention, source deletion or renewed engineering approval."
+    }
+  },
+  "acceptance_criteria": [
+    "Transfer declares source project, retained scope, included artifacts and state identity; the receiving environment can inspect those facts before activation.",
+    "A matching project in an empty authorized destination receives the selected scope with the same identities and provenance through the backup/restoration integrity obligations of SR-074/075.",
+    "A different project identity, divergent existing history or reused record identity with different content causes a conflict and leaves both histories intact; project-name similarity does not establish identity.",
+    "Excluded records or artifacts are visible before reliance, and the receiving result does not claim completeness outside the declared transferable scope.",
+    "Transfer leaves the source usable, does not change engineering-model files, and does not silently refresh assessments to the destination checkout revision.",
+    "The public maintenance contract identifies preview versus execution, current expectations and actual effects; interrupted activation remains fenced until explicitly reconciled."
+  ],
+  "assumptions": [
+    "Required retained source material and supported interpretation information are accessible; failure of that premise is reported explicitly."
+  ],
+  "constraints": [
+    "Historical subject/revision provenance remains stable; restoring operational state creates a fresh store incarnation so old mutation tokens cannot be replayed."
+  ],
+  "allocated_to": "MOD-011",
+  "constrains": [
+    "FUNC-075"
+  ],
+  "sources": [
+    {
+      "source": "SRC-SQLITE-ADOPTION",
+      "locator": "SR-076; MOD-011 store-maintenance-v1 contract",
+      "basis": "Reconcile the existing reviewed maintenance responsibility with explicit REM allocation. This allocation is design intent, not execution or satisfaction evidence."
+    }
+  ]
+}

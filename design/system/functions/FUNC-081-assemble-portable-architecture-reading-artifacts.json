@@ -1,0 +1,41 @@
+{
+  "id": "FUNC-081",
+  "type": "function",
+  "title": "Assemble portable architecture reading artifacts",
+  "status": "draft",
+  "description": "Prepare a self-contained offline reading artifact from qualified semantic views and explicitly selected explanatory content without publishing it.",
+  "inputs": [
+    "Qualified projections, selected source detail and exact generator/renderer/resource identity.",
+    "Private output candidate location and declared reading profile."
+  ],
+  "preconditions": [],
+  "outputs": [
+    "Complete candidate HTML, diagrams, reading resources and content manifest.",
+    "Explicit generation failure or missing-resource diagnostics."
+  ],
+  "behavior": [
+    "Embed the selected engineering definitions, rationale and source identity needed for understanding; optional external references remain distinguishable from included content.",
+    "Produce readable keyboard-accessible overview/detail navigation and preserve qualification and gaps in all five views.",
+    "Treat model content as data, escape text and constrain links; reject executable content or external resource dependencies in rendered output.",
+    "Use bundled reading resources and deterministic content identity independent of incidental wall-clock observations; no network, source checkout, generator or model database is required to read the completed output.",
+    "Validate the complete candidate inventory before handing it to the separate publication responsibility."
+  ],
+  "failure_behavior": [
+    {
+      "condition": "Rendering fails or required resources are absent or unsafe.",
+      "outcome": "Report incomplete preparation and do not replace existing readable output."
+    },
+    {
+      "condition": "An optional source link cannot be followed offline.",
+      "outcome": "Retain required included explanation and show the optional link limitation."
+    }
+  ],
+  "sources": [
+    {
+      "source": "SRC-CUSTOMER-BROWSER-DESIGN",
+      "locator": "FUNC-081",
+      "basis": "System and Architecture Design from SR-084\u2013088 and refined SR-060; proposed responsibility, contract and realization only. No implementation, platform qualification or product availability is established."
+    }
+  ],
+  "allocated_to": "MOD-004"
+}

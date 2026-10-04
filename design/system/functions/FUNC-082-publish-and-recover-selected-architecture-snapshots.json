@@ -1,0 +1,42 @@
+{
+  "id": "FUNC-082",
+  "type": "function",
+  "title": "Publish and recover selected architecture snapshots",
+  "status": "draft",
+  "description": "Publish a prepared derived snapshot within an explicitly selected owned output boundary and recover interruptions without overwriting unrelated content or misreporting commitment.",
+  "inputs": [
+    "Validated complete candidate, expected current-output identity and explicit output selection.",
+    "Output ownership and writer-exclusion evidence, plus any retained interrupted-publication state."
+  ],
+  "preconditions": [],
+  "outputs": [
+    "Published snapshot identity and actual committed/uncommitted/recovery-required outcome.",
+    "Retained earlier readable versions and precise conflict or recovery diagnostics."
+  ],
+  "behavior": [
+    "Reject input/output overlap, symlink escape, unrelated output ownership and stale expected output before publication.",
+    "Exclude competing writers and prepare an immutable version beneath the owned output; never update assets in the currently readable version.",
+    "Switch the single entry file only after candidate completeness and durable preparation are established; that switch defines commitment.",
+    "After interruption, inspect exact entry and candidate identities before recovery; never blindly replay stale intent or overwrite a competing writer.",
+    "Preserve the earlier version and report post-commit reporting failures as committed rather than rolling back an acknowledged result.",
+    "Perform no external upload, model mutation, automatic history export or automatic deletion of prior versions."
+  ],
+  "failure_behavior": [
+    {
+      "condition": "Validation, preparation or expected-current checks fail.",
+      "outcome": "Leave the prior readable version and unrelated content unchanged."
+    },
+    {
+      "condition": "Commitment cannot be established after interruption.",
+      "outcome": "Report recovery required, preserve candidate/previous bytes and block replacement until explicit reconciliation."
+    }
+  ],
+  "sources": [
+    {
+      "source": "SRC-CUSTOMER-BROWSER-DESIGN",
+      "locator": "FUNC-082",
+      "basis": "System and Architecture Design from SR-084\u2013088 and refined SR-060; proposed responsibility, contract and realization only. No implementation, platform qualification or product availability is established."
+    }
+  ],
+  "allocated_to": "MOD-004"
+}

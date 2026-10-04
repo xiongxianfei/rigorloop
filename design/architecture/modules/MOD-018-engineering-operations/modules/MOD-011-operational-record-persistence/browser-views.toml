@@ -1,0 +1,72 @@
+# Presentation registration; engineering diagrams remain in the owning README.
+version = 1
+
+[[topics]]
+id = "recover-record-update"
+title = "Inspect after an interrupted update"
+view = "process"
+kind = "sequence"
+qualification = "proposed"
+source = "README.md"
+anchor = "recover-record-update"
+description = "Open the associated SQLite store and read coherent current context after interruption. SQLite establishes its transaction state; the caller reconciles intent without replaying work or choosing file-journal restoration. Unavailable storage remains explicit."
+
+[[topics]]
+id = "record-transaction-states"
+title = "SQLite transaction outcomes"
+view = "process"
+kind = "state"
+qualification = "proposed"
+source = "README.md"
+anchor = "record-transaction-states"
+description = "A write transaction commits or aborts. Lost responses leave caller knowledge uncertain; fresh inspection establishes current state or reports unavailability. Commitment is never rolled back to repair reporting."
+
+[[topics]]
+id = "operational-storage-placement"
+title = "Target operational storage placement"
+view = "physical"
+kind = "topology"
+qualification = "proposed"
+source = "README.md"
+anchor = "operational-storage-placement"
+description = "Direct v4 SQLite placement: private database and sidecars, selected named attachments and invocation staging beneath .rigorloop/. Git owns engineering definitions and project identity. Observed v3 placement remains separately qualified."
+
+[[topics]]
+id = "sqlite-record-relationships"
+title = "Current record relationships"
+view = "logical"
+kind = "topology"
+qualification = "proposed"
+source = "README.md"
+anchor = "sqlite-record-relationships"
+description = "Relational ownership and support references for current Change accounts. Repository definitions remain outside SQLite; the owning table mapping specifies keys and constraints."
+
+[[topics]]
+id = "sqlite-software-organization"
+title = "SQLite software organization"
+view = "development"
+kind = "topology"
+qualification = "proposed"
+source = "README.md"
+anchor = "sqlite-software-organization"
+description = "Candidate rules, the SQLite adapter, attachment handling and maintenance remain within MOD-011. Packaged migrations and the selected node:sqlite binding provide implementation dependencies."
+
+[[topics]]
+id = "sqlite-backup-sequence"
+title = "Create a coherent backup"
+view = "process"
+kind = "sequence"
+qualification = "proposed"
+source = "README.md"
+anchor = "sqlite-backup-sequence"
+description = "Explicit selected-scope backup holds maintenance exclusion through database snapshot and attachment capture. Integrity and complete publication precede the success result."
+
+[[topics]]
+id = "sqlite-restore-sequence"
+title = "Restore an authorized snapshot"
+view = "process"
+kind = "sequence"
+qualification = "proposed"
+source = "README.md"
+anchor = "sqlite-restore-sequence"
+description = "Restore validates a staged candidate, rechecks destination expectations and preserves prior bytes before activation. Ordinary access stays fenced until validation and durable activation; interrupted replacement requires explicit resume."

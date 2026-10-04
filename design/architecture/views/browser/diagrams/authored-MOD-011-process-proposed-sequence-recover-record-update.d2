@@ -1,0 +1,13 @@
+shape: sequence_diagram
+agent: "Engineering agent"
+cli: "Command handling\nMOD-010"
+store: "Work record storage\nMOD-011"
+db: "Embedded SQLite"
+agent -> cli: "change context: inspect after interruption"
+cli -> store: "Read the selected Change without replay"
+store -> db: "Open associated database and establish a read snapshot"
+db -> db: "Resolve journal state using SQLite recovery"
+db -> store: "Return a coherent committed snapshot or an explicit error"
+store -> cli: "Return current facts and revision; report any limitation"
+cli -> agent: "Show current handoff or explain store unavailability"
+agent -> agent: "Reconcile intent before any new update"

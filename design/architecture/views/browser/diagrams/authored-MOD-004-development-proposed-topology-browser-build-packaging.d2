@@ -1,0 +1,24 @@
+direction: down
+tool: "Reusable tool package — MOD-013" {
+  generator: "Node adapter and Rust engine"
+  template: "Browser template and data contract"
+  profiles: "Profile resources"
+  renderer: "Pinned renderer and licenses"
+  assembly: "Package assembly"
+  candidate: "CLI candidate"
+}
+website: "Project website composition — MOD-004" {
+  data: "Generated project browser data"
+  diagrams: "Rendered diagrams"
+  assembly: "Website assembly"
+  output: "Architecture website\nPlatform and embedded project data"
+}
+tool.generator -> tool.assembly: "Included in"
+tool.template -> tool.assembly: "Included in"
+tool.profiles -> tool.assembly: "Included in"
+tool.renderer -> tool.assembly: "Included in"
+tool.assembly -> tool.candidate: "Produces"
+tool.candidate -> website.assembly: "Supplies generator and template"
+website.data -> website.assembly: "Input"
+website.diagrams -> website.assembly: "Input"
+website.assembly -> website.output: "Produces"

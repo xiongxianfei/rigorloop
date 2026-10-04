@@ -1,0 +1,1087 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rigorloop.dev/schemas/targeted-recording-v2.schema.json",
+  "$defs": {
+    "create_input": {
+      "type": "object",
+      "properties": {
+        "intent": {
+          "$ref": "rigorloop-records-v4.schema.json#/$defs/intent"
+        },
+        "request": {
+          "$ref": "rigorloop-records-v4.schema.json#/$defs/request"
+        },
+        "authority": {
+          "$ref": "rigorloop-records-v4.schema.json#/$defs/authority"
+        },
+        "activity": {
+          "$ref": "rigorloop-records-v4.schema.json#/$defs/activity"
+        },
+        "next_action": {
+          "anyOf": [
+            {
+              "$ref": "rigorloop-records-v4.schema.json#/$defs/next_action"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "intent",
+        "request",
+        "authority",
+        "activity",
+        "next_action"
+      ],
+      "additionalProperties": false
+    },
+    "selector": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": [
+            "change",
+            "work",
+            "blocker",
+            "basis",
+            "review",
+            "evidence",
+            "decision",
+            "verification",
+            "adoption",
+            "attachment"
+          ]
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        }
+      },
+      "required": [
+        "kind",
+        "id"
+      ],
+      "additionalProperties": false
+    },
+    "query": {
+      "type": "object",
+      "properties": {
+        "schema_version": {
+          "const": 2
+        },
+        "interface": {
+          "const": "targeted-recording-v2"
+        },
+        "contract": {
+          "const": "rigorloop-records-v4"
+        },
+        "selectors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/selector"
+          },
+          "minItems": 1,
+          "maxItems": 64
+        },
+        "include_observations": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "schema_version",
+        "interface",
+        "contract",
+        "selectors",
+        "include_observations"
+      ],
+      "additionalProperties": false
+    },
+    "create": {
+      "type": "object",
+      "properties": {
+        "schema_version": {
+          "const": 2
+        },
+        "interface": {
+          "const": "targeted-recording-v2"
+        },
+        "contract": {
+          "const": "rigorloop-records-v4"
+        },
+        "change_id": {
+          "$ref": "rigorloop-records-v4.schema.json#/$defs/id"
+        },
+        "expected_revision": {
+          "type": "null"
+        },
+        "reads": {
+          "type": "array",
+          "items": {
+            "$ref": "rigorloop-records-v4.schema.json#/$defs/subject"
+          },
+          "maxItems": 64
+        },
+        "input": {
+          "$ref": "#/$defs/create_input"
+        }
+      },
+      "required": [
+        "schema_version",
+        "interface",
+        "contract",
+        "change_id",
+        "expected_revision",
+        "reads",
+        "input"
+      ],
+      "additionalProperties": false
+    },
+    "update_input": {
+      "type": "object",
+      "properties": {
+        "intent": {
+          "$ref": "rigorloop-records-v4.schema.json#/$defs/intent"
+        },
+        "request": {
+          "$ref": "rigorloop-records-v4.schema.json#/$defs/request"
+        },
+        "authority": {
+          "$ref": "rigorloop-records-v4.schema.json#/$defs/authority"
+        },
+        "activity": {
+          "$ref": "rigorloop-records-v4.schema.json#/$defs/activity"
+        },
+        "next_action": {
+          "anyOf": [
+            {
+              "$ref": "rigorloop-records-v4.schema.json#/$defs/next_action"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "work": {
+          "type": "array",
+          "items": {
+            "$ref": "rigorloop-records-v4.schema.json#/$defs/work"
+          }
+        },
+        "blockers": {
+          "type": "array",
+          "items": {
+            "$ref": "rigorloop-records-v4.schema.json#/$defs/issue"
+          }
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "actor": {
+                "$ref": "rigorloop-records-v4.schema.json#/$defs/actor"
+              },
+              "reported_at": {
+                "$ref": "rigorloop-records-v4.schema.json#/$defs/text"
+              },
+              "procedure": {
+                "$ref": "rigorloop-records-v4.schema.json#/$defs/text"
+              },
+              "scope": {
+                "$ref": "rigorloop-records-v4.schema.json#/$defs/text"
+              },
+              "subjects": {
+                "type": "array",
+                "items": {
+                  "$ref": "rigorloop-records-v4.schema.json#/$defs/subject"
+                }
+              },
+              "observation": {
+                "$ref": "rigorloop-records-v4.schema.json#/$defs/observation"
+              },
+              "result": {
+                "type": "string",
+                "enum": [
+                  "passed",
+                  "failed",
+                  "inconclusive"
+                ]
+              },
+              "summary": {
+                "$ref": "rigorloop-records-v4.schema.json#/$defs/text"
+              },
+              "limitations": {
+                "type": "array",
+                "items": {
+                  "$ref": "rigorloop-records-v4.schema.json#/$defs/text"
+                }
+              },
+              "attachments": {
+                "type": "array",
+                "items": {
+                  "$ref": "rigorloop-records-v4.schema.json#/$defs/attachment_name"
+                }
+              },
+              "id": {
+                "$ref": "rigorloop-records-v4.schema.json#/$defs/id"
+              },
+              "retain": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "$ref": "rigorloop-records-v4.schema.json#/$defs/attachment_name"
+                    },
+                    "source": {
+                      "$ref": "rigorloop-records-v4.schema.json#/$defs/path"
+                    },
+                    "media_type": {
+                      "$ref": "rigorloop-records-v4.schema.json#/$defs/text"
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "source",
+                    "media_type"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "actor",
+              "reported_at",
+              "procedure",
+              "scope",
+              "subjects",
+              "observation",
+              "result",
+              "summary",
+              "limitations",
+              "attachments",
+              "id"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "decisions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "actor": {
+                "$ref": "rigorloop-records-v4.schema.json#/$defs/actor"
+              },
+              "scope": {
+                "$ref": "rigorloop-records-v4.schema.json#/$defs/text"
+              },
+              "decision": {
+                "$ref": "rigorloop-records-v4.schema.json#/$defs/text"
+              },
+              "rationale": {
+                "$ref": "rigorloop-records-v4.schema.json#/$defs/text"
+              },
+              "source_refs": {
+                "type": "array",
+                "items": {
+                  "$ref": "rigorloop-records-v4.schema.json#/$defs/ref"
+                }
+              },
+              "id": {
+                "$ref": "rigorloop-records-v4.schema.json#/$defs/id"
+              }
+            },
+            "required": [
+              "actor",
+              "scope",
+              "decision",
+              "rationale",
+              "source_refs",
+              "id"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "basis": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "$ref": "rigorloop-records-v4.schema.json#/$defs/id"
+            },
+            "kind": {
+              "type": "string",
+              "enum": [
+                "requirements",
+                "design"
+              ]
+            },
+            "decision": {
+              "type": "string",
+              "enum": [
+                "proposed",
+                "accepted"
+              ]
+            },
+            "selection": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "path": {
+                    "$ref": "rigorloop-records-v4.schema.json#/$defs/path"
+                  },
+                  "state": {
+                    "type": "string",
+                    "enum": [
+                      "present",
+                      "absent"
+                    ]
+                  }
+                },
+                "required": [
+                  "path",
+                  "state"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "actor": {
+              "$ref": "rigorloop-records-v4.schema.json#/$defs/actor"
+            },
+            "rationale": {
+              "$ref": "rigorloop-records-v4.schema.json#/$defs/text"
+            },
+            "review": {
+              "anyOf": [
+                {
+                  "$ref": "rigorloop-records-v4.schema.json#/$defs/ref"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "id",
+            "kind",
+            "decision",
+            "selection",
+            "actor",
+            "rationale",
+            "review"
+          ],
+          "additionalProperties": false
+        },
+        "plan": {
+          "anyOf": [
+            {
+              "$ref": "rigorloop-records-v4.schema.json#/$defs/path"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "adoption": {
+          "type": "object",
+          "properties": {
+            "actor": {
+              "$ref": "rigorloop-records-v4.schema.json#/$defs/actor"
+            },
+            "source_contract": {
+              "$ref": "rigorloop-records-v4.schema.json#/$defs/text"
+            },
+            "target_workflow": {
+              "$ref": "rigorloop-records-v4.schema.json#/$defs/text"
+            },
+            "source_basis": {
+              "$ref": "rigorloop-records-v4.schema.json#/$defs/text"
+            },
+            "compatibility": {
+              "$ref": "rigorloop-records-v4.schema.json#/$defs/text"
+            },
+            "disposition": {
+              "$ref": "rigorloop-records-v4.schema.json#/$defs/text"
+            },
+            "phase": {
+              "type": "string",
+              "enum": [
+                "prepared",
+                "activated",
+                "unavailable"
+              ]
+            },
+            "rationale": {
+              "$ref": "rigorloop-records-v4.schema.json#/$defs/text"
+            },
+            "id": {
+              "$ref": "rigorloop-records-v4.schema.json#/$defs/id"
+            }
+          },
+          "required": [
+            "actor",
+            "source_contract",
+            "target_workflow",
+            "source_basis",
+            "compatibility",
+            "disposition",
+            "phase",
+            "rationale",
+            "id"
+          ],
+          "additionalProperties": false
+        },
+        "retention": {
+          "type": "object",
+          "properties": {
+            "drop": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "type": "string",
+                    "enum": [
+                      "basis",
+                      "review",
+                      "evidence",
+                      "decision",
+                      "verification",
+                      "adoption",
+                      "work",
+                      "blocker",
+                      "attachment"
+                    ]
+                  },
+                  "id": {
+                    "$ref": "rigorloop-records-v4.schema.json#/$defs/text"
+                  }
+                },
+                "required": [
+                  "kind",
+                  "id"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "reason": {
+              "$ref": "rigorloop-records-v4.schema.json#/$defs/text"
+            },
+            "actor": {
+              "$ref": "rigorloop-records-v4.schema.json#/$defs/actor"
+            }
+          },
+          "required": [
+            "drop",
+            "reason",
+            "actor"
+          ],
+          "additionalProperties": false
+        },
+        "completion_note": {
+          "type": "object",
+          "properties": {
+            "actor": {
+              "$ref": "rigorloop-records-v4.schema.json#/$defs/actor"
+            },
+            "reason": {
+              "$ref": "rigorloop-records-v4.schema.json#/$defs/text"
+            },
+            "explanation": {
+              "$ref": "rigorloop-records-v4.schema.json#/$defs/text"
+            }
+          },
+          "required": [
+            "actor",
+            "reason",
+            "explanation"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "prepare_input": {
+      "type": "object",
+      "properties": {
+        "purpose": {
+          "$ref": "rigorloop-records-v4.schema.json#/$defs/purpose"
+        },
+        "scope": {
+          "type": "string",
+          "enum": [
+            "formal",
+            "advisory"
+          ]
+        },
+        "selection": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "path": {
+                "$ref": "rigorloop-records-v4.schema.json#/$defs/path"
+              },
+              "state": {
+                "type": "string",
+                "enum": [
+                  "present",
+                  "absent"
+                ]
+              }
+            },
+            "required": [
+              "path",
+              "state"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "basis_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "rigorloop-records-v4.schema.json#/$defs/ref"
+          }
+        },
+        "plan_path": {
+          "anyOf": [
+            {
+              "$ref": "rigorloop-records-v4.schema.json#/$defs/path"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "coverage_rationale": {
+          "$ref": "rigorloop-records-v4.schema.json#/$defs/text"
+        },
+        "description": {
+          "$ref": "rigorloop-records-v4.schema.json#/$defs/text"
+        },
+        "actor": {
+          "$ref": "rigorloop-records-v4.schema.json#/$defs/actor"
+        }
+      },
+      "required": [
+        "purpose",
+        "scope",
+        "selection",
+        "basis_refs",
+        "plan_path",
+        "coverage_rationale",
+        "description",
+        "actor"
+      ],
+      "additionalProperties": false
+    },
+    "review_input": {
+      "type": "object",
+      "properties": {
+        "assessment": {
+          "$ref": "rigorloop-records-v4.schema.json#/$defs/assessment"
+        },
+        "findings": {
+          "type": "array",
+          "items": {
+            "$ref": "rigorloop-records-v4.schema.json#/$defs/issue"
+          }
+        },
+        "applicability": {
+          "$ref": "rigorloop-records-v4.schema.json#/$defs/applicability"
+        },
+        "compact_findings": {
+          "type": "object",
+          "properties": {
+            "ids": {
+              "type": "array",
+              "items": {
+                "$ref": "rigorloop-records-v4.schema.json#/$defs/id"
+              }
+            },
+            "actor": {
+              "$ref": "rigorloop-records-v4.schema.json#/$defs/actor"
+            },
+            "reason": {
+              "$ref": "rigorloop-records-v4.schema.json#/$defs/text"
+            }
+          },
+          "required": [
+            "ids",
+            "actor",
+            "reason"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "complete_input": {
+      "type": "object",
+      "properties": {
+        "actor": {
+          "$ref": "rigorloop-records-v4.schema.json#/$defs/actor"
+        },
+        "verification": {
+          "$ref": "rigorloop-records-v4.schema.json#/$defs/id"
+        },
+        "summary": {
+          "$ref": "rigorloop-records-v4.schema.json#/$defs/text"
+        },
+        "reason": {
+          "$ref": "rigorloop-records-v4.schema.json#/$defs/text"
+        },
+        "delivered_scope": {
+          "$ref": "rigorloop-records-v4.schema.json#/$defs/text"
+        },
+        "governing_references": {
+          "type": "array",
+          "items": {
+            "$ref": "rigorloop-records-v4.schema.json#/$defs/text"
+          }
+        },
+        "limitations": {
+          "type": "array",
+          "items": {
+            "$ref": "rigorloop-records-v4.schema.json#/$defs/text"
+          }
+        },
+        "retained_attachments": {
+          "type": "array",
+          "items": {
+            "$ref": "rigorloop-records-v4.schema.json#/$defs/attachment_name"
+          }
+        }
+      },
+      "required": [
+        "actor",
+        "verification",
+        "summary",
+        "reason",
+        "delivered_scope",
+        "governing_references",
+        "limitations",
+        "retained_attachments"
+      ],
+      "additionalProperties": false
+    },
+    "update": {
+      "type": "object",
+      "properties": {
+        "schema_version": {
+          "const": 2
+        },
+        "interface": {
+          "const": "targeted-recording-v2"
+        },
+        "contract": {
+          "const": "rigorloop-records-v4"
+        },
+        "change_id": {
+          "$ref": "rigorloop-records-v4.schema.json#/$defs/id"
+        },
+        "expected_revision": {
+          "$ref": "rigorloop-records-v4.schema.json#/$defs/text"
+        },
+        "reads": {
+          "type": "array",
+          "items": {
+            "$ref": "rigorloop-records-v4.schema.json#/$defs/subject"
+          },
+          "maxItems": 64
+        },
+        "input": {
+          "$ref": "#/$defs/update_input"
+        }
+      },
+      "required": [
+        "schema_version",
+        "interface",
+        "contract",
+        "change_id",
+        "expected_revision",
+        "reads",
+        "input"
+      ],
+      "additionalProperties": false
+    },
+    "prepare": {
+      "type": "object",
+      "properties": {
+        "schema_version": {
+          "const": 2
+        },
+        "interface": {
+          "const": "targeted-recording-v2"
+        },
+        "contract": {
+          "const": "rigorloop-records-v4"
+        },
+        "change_id": {
+          "$ref": "rigorloop-records-v4.schema.json#/$defs/id"
+        },
+        "expected_revision": {
+          "$ref": "rigorloop-records-v4.schema.json#/$defs/text"
+        },
+        "reads": {
+          "type": "array",
+          "items": {
+            "$ref": "rigorloop-records-v4.schema.json#/$defs/subject"
+          },
+          "maxItems": 64
+        },
+        "input": {
+          "$ref": "#/$defs/prepare_input"
+        }
+      },
+      "required": [
+        "schema_version",
+        "interface",
+        "contract",
+        "change_id",
+        "expected_revision",
+        "reads",
+        "input"
+      ],
+      "additionalProperties": false
+    },
+    "review": {
+      "type": "object",
+      "properties": {
+        "schema_version": {
+          "const": 2
+        },
+        "interface": {
+          "const": "targeted-recording-v2"
+        },
+        "contract": {
+          "const": "rigorloop-records-v4"
+        },
+        "change_id": {
+          "$ref": "rigorloop-records-v4.schema.json#/$defs/id"
+        },
+        "expected_revision": {
+          "$ref": "rigorloop-records-v4.schema.json#/$defs/text"
+        },
+        "reads": {
+          "type": "array",
+          "items": {
+            "$ref": "rigorloop-records-v4.schema.json#/$defs/subject"
+          },
+          "maxItems": 64
+        },
+        "input": {
+          "$ref": "#/$defs/review_input"
+        }
+      },
+      "required": [
+        "schema_version",
+        "interface",
+        "contract",
+        "change_id",
+        "expected_revision",
+        "reads",
+        "input"
+      ],
+      "additionalProperties": false
+    },
+    "complete": {
+      "type": "object",
+      "properties": {
+        "schema_version": {
+          "const": 2
+        },
+        "interface": {
+          "const": "targeted-recording-v2"
+        },
+        "contract": {
+          "const": "rigorloop-records-v4"
+        },
+        "change_id": {
+          "$ref": "rigorloop-records-v4.schema.json#/$defs/id"
+        },
+        "expected_revision": {
+          "$ref": "rigorloop-records-v4.schema.json#/$defs/text"
+        },
+        "reads": {
+          "type": "array",
+          "items": {
+            "$ref": "rigorloop-records-v4.schema.json#/$defs/subject"
+          },
+          "maxItems": 64
+        },
+        "input": {
+          "$ref": "#/$defs/complete_input"
+        }
+      },
+      "required": [
+        "schema_version",
+        "interface",
+        "contract",
+        "change_id",
+        "expected_revision",
+        "reads",
+        "input"
+      ],
+      "additionalProperties": false
+    },
+    "verification_input": {
+      "type": "object",
+      "properties": {
+        "assessment": {
+          "type": "object",
+          "properties": {
+            "scope": {
+              "type": "string",
+              "enum": [
+                "scoped",
+                "final"
+              ]
+            },
+            "verifier": {
+              "$ref": "rigorloop-records-v4.schema.json#/$defs/actor"
+            },
+            "subjects": {
+              "type": "array",
+              "items": {
+                "$ref": "rigorloop-records-v4.schema.json#/$defs/subject"
+              }
+            },
+            "governing_basis": {
+              "type": "array",
+              "items": {
+                "$ref": "rigorloop-records-v4.schema.json#/$defs/subject"
+              }
+            },
+            "review_refs": {
+              "type": "array",
+              "items": {
+                "$ref": "rigorloop-records-v4.schema.json#/$defs/ref"
+              }
+            },
+            "evidence_refs": {
+              "type": "array",
+              "items": {
+                "$ref": "rigorloop-records-v4.schema.json#/$defs/ref"
+              }
+            },
+            "observation": {
+              "$ref": "rigorloop-records-v4.schema.json#/$defs/observation"
+            },
+            "outcome": {
+              "type": "string",
+              "enum": [
+                "success",
+                "failed",
+                "inconclusive"
+              ]
+            },
+            "summary": {
+              "$ref": "rigorloop-records-v4.schema.json#/$defs/text"
+            },
+            "rationale": {
+              "type": "array",
+              "items": {
+                "$ref": "rigorloop-records-v4.schema.json#/$defs/text"
+              }
+            },
+            "limitations": {
+              "type": "array",
+              "items": {
+                "$ref": "rigorloop-records-v4.schema.json#/$defs/text"
+              }
+            },
+            "support": {
+              "type": "array",
+              "items": {
+                "$ref": "rigorloop-records-v4.schema.json#/$defs/support"
+              }
+            }
+          },
+          "required": [
+            "scope",
+            "verifier",
+            "subjects",
+            "governing_basis",
+            "review_refs",
+            "evidence_refs",
+            "observation",
+            "outcome",
+            "summary",
+            "rationale",
+            "limitations",
+            "support"
+          ],
+          "additionalProperties": false
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "actor": {
+                "$ref": "rigorloop-records-v4.schema.json#/$defs/actor"
+              },
+              "reported_at": {
+                "$ref": "rigorloop-records-v4.schema.json#/$defs/text"
+              },
+              "procedure": {
+                "$ref": "rigorloop-records-v4.schema.json#/$defs/text"
+              },
+              "scope": {
+                "$ref": "rigorloop-records-v4.schema.json#/$defs/text"
+              },
+              "subjects": {
+                "type": "array",
+                "items": {
+                  "$ref": "rigorloop-records-v4.schema.json#/$defs/subject"
+                }
+              },
+              "observation": {
+                "$ref": "rigorloop-records-v4.schema.json#/$defs/observation"
+              },
+              "result": {
+                "type": "string",
+                "enum": [
+                  "passed",
+                  "failed",
+                  "inconclusive"
+                ]
+              },
+              "summary": {
+                "$ref": "rigorloop-records-v4.schema.json#/$defs/text"
+              },
+              "limitations": {
+                "type": "array",
+                "items": {
+                  "$ref": "rigorloop-records-v4.schema.json#/$defs/text"
+                }
+              },
+              "attachments": {
+                "type": "array",
+                "items": {
+                  "$ref": "rigorloop-records-v4.schema.json#/$defs/attachment_name"
+                }
+              },
+              "id": {
+                "$ref": "rigorloop-records-v4.schema.json#/$defs/id"
+              },
+              "retain": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "$ref": "rigorloop-records-v4.schema.json#/$defs/attachment_name"
+                    },
+                    "source": {
+                      "$ref": "rigorloop-records-v4.schema.json#/$defs/path"
+                    },
+                    "media_type": {
+                      "$ref": "rigorloop-records-v4.schema.json#/$defs/text"
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "source",
+                    "media_type"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "actor",
+              "reported_at",
+              "procedure",
+              "scope",
+              "subjects",
+              "observation",
+              "result",
+              "summary",
+              "limitations",
+              "attachments",
+              "id"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "assessment"
+      ],
+      "additionalProperties": false
+    },
+    "verification": {
+      "type": "object",
+      "properties": {
+        "schema_version": {
+          "const": 2
+        },
+        "interface": {
+          "const": "targeted-recording-v2"
+        },
+        "contract": {
+          "const": "rigorloop-records-v4"
+        },
+        "change_id": {
+          "$ref": "rigorloop-records-v4.schema.json#/$defs/id"
+        },
+        "expected_revision": {
+          "$ref": "rigorloop-records-v4.schema.json#/$defs/text"
+        },
+        "reads": {
+          "type": "array",
+          "items": {
+            "$ref": "rigorloop-records-v4.schema.json#/$defs/subject"
+          },
+          "maxItems": 64
+        },
+        "input": {
+          "$ref": "#/$defs/verification_input"
+        }
+      },
+      "required": [
+        "schema_version",
+        "interface",
+        "contract",
+        "change_id",
+        "expected_revision",
+        "reads",
+        "input"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "anyOf": [
+    {
+      "$ref": "#/$defs/create"
+    },
+    {
+      "$ref": "#/$defs/query"
+    },
+    {
+      "$ref": "#/$defs/update"
+    },
+    {
+      "$ref": "#/$defs/prepare"
+    },
+    {
+      "$ref": "#/$defs/review"
+    },
+    {
+      "$ref": "#/$defs/complete"
+    },
+    {
+      "$ref": "#/$defs/verification"
+    }
+  ]
+}

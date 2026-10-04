@@ -23,6 +23,11 @@
       "source": "SRC-PUBLISHED-PRODUCTS",
       "locator": "FUNC-051",
       "basis": "Assign MOD-012 as the proposed accountable primary responsibility after Functional Analysis. Current product source contracts retain detailed behavior authority; allocation is not runtime adoption or complete AR coverage."
+    },
+    {
+      "source": "SRC-WORKFLOW-DESIGN",
+      "locator": "FUNC-051",
+      "basis": "Draft integrated design from the accepted requirement-first basis. This defines target responsibility and cooperation, not installed capability, design approval, runtime evidence or SQLite adoption."
     }
   ],
   "description": "Resolve a selected capability's project context, requested outcome, safe target, and applicable invocation mode before dependent work. Common authority judgment remains with the existing authorization behavior.",
@@ -40,7 +45,8 @@
     "Identify a safe authorized target or report ambiguity; establish actual scope and inputs before a dependent action.",
     "Distinguish portable operation from governed or durable recording triggers under the selected specialist contract, including malformed signals and late triggers.",
     "Use the common authority result for reserved actions and preserve valid existing grants within their limits.",
-    "Reclassify before newly dependent work when scope, authority, or recording conditions materially change."
+    "Reclassify before newly dependent work when scope, authority, or recording conditions materially change.",
+    "Bind the invocation to an explicitly adopted workflow contract and separate isolated scope from authorized continuation. A project-selected document-based exception is attributable authority, not a fallback inferred from failed governed discovery."
   ],
   "failure_behavior": [
     {

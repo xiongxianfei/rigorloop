@@ -1,154 +1,40 @@
 ---
 name: delivery-review
-version: "1.0.0"
-schema-version: skill-readability-v1
-description: >
-  Independently review one plan-centered delivery package before implementation. Judge safe sequencing and verification adequacy together; use plan for delivery and verification allocation and design for behavioral gaps.
-argument-hint: [change ID, delivery package, or plan path]
+description: Independently assess whether a delivery plan can implement the accepted requirements/design and demonstrate the outcome, including dependencies, proof allocation and recovery.
 ---
 
-# Delivery review
+# Delivery Review
 
-## Test criteria application
+Review the plan against its accepted requirement and reviewed design basis. Check coherent sequencing, milestone completion criteria, realistic dependencies, actual check selection, cross-boundary interactions and recovery where failure matters. Missing design or Module accountability goes to its design owner, not to an invented delivery task.
 
-When the project explicitly adopts shared test criteria, use the selectively loaded guidance below for test quality and maintenance. These criteria replace source-local shared test-purpose, case-selection and maintenance criteria for adopted work; retain specialist methods and historical evidence. Actual judgments, evidence applicability and closeout consequences remain with the responsible assessors under the project's review policy.
+Assess proof quality using the project's applicable criteria. A passing path selector or list of requirement IDs does not show that meaningful observations exist. Inspect the relevant test intent, fixture strategy and failure boundaries, using a proportionate level of detail.
 
-## Review and Closeout application
+Require one independent whole-change Code Review after implementation and before separate final Verify. Missing milestone review gates are not defects. A one-milestone Change has one whole-change gate; corrections may require several attempts within it.
 
-When project authority explicitly adopts Review and Closeout policy, use the packaged application below for shared assessment meaning. It replaces source-local judgment, independence, applicability, concern-disposition and closeout rules in this skill and its conditional resources; retain specialist methods and contract-selected storage procedures. Historical assessments retain their original meaning but grant no current runtime support. Missing or contradictory required guidance stops dependent reliance.
-
-## Invocation classification
-
-A durable or formal review requires the mapped recording procedure before recording; an isolated advisory judgment without that trigger does not acquire lifecycle authority. Resolve the exact subject and applicable project authority before dependent work. Reassess a late durable trigger before writing.
-
-## Purpose
-
-Judge whether the approved design can be implemented safely and proved adequately through the exact primary plan. Review without editing the plan or approved design.
-
-Trace SRs and architecture boundaries into proportional allocated work and proof.
-
-Approve or reject one explicit plan-centered package in one independent decision covering implementation readiness and verification adequacy. Preserve requirement-to-proof traceability and precise finding ownership.
-
-## When to use
-
-Use after the execution plan has allocated the approved design's behavior, work, milestone verification, and applicable change-level verification, and before implementation.
-
-## When not to use
-
-Do not use to author the plan, repair specification behavior, redesign architecture, review implementation, execute final verification, or combine historical artifact-review evidence into package authority.
-
-## Workflow role
-
-- role_name: delivery-review
-- stage: review
-- upstream: one exact primary plan and the approved Design Review ID
-- downstream: implementation, author-owned correction, upstream design reconsideration, or isolated stop
-- summary: Decide whether the exact delivery package can implement and prove the approved design.
-- ownership: Write Delivery Review evidence and settle only the exact delivery package. Route owns semantic routing.
-- must_not_claim: plan or specification authorship, implementation completion, code-review, final verification, branch readiness, or PR readiness
-
-The reviewer does not edit the execution plan, design package, implementation, or routing state. Approval judges the plan's sequence and verification together; it is never a partial sequencing-only or proof-only approval.
-
-## Quick operating guide
-
-Use this skill to: review one exact primary-plan package against the approved design.
-
-Read first: `change.json`, scoped `rigorloop context`, the exact primary plan, the approved Design Review ID and member map, and relevant prior findings.
-
-Produce: one recorded package outcome, precise findings or a no-finding rationale, and an isolated or route-owned handoff.
-
-Stop when: membership, upstream authority, evidence, independence, or lifecycle identity is missing, unsafe, stale, or contradictory.
-
-Do not claim: implementation completion, code correctness, or final readiness.
-
-Next stage: `route` may send an approved package to implementation; otherwise route named corrections or stop.
-
-## Inputs to read
-
-Resolve the governed change, then obtain the package with the scoped primary context and exact subject inspection described above. Read the complete exact primary plan plus the approved Design Review ID and member map it operationalizes. Read current proposal constraints, the exact affected models and examples, applicable retained legacy contracts, and prior review or resolution evidence as needed to validate the trace.
-
-For a governed delivery assessment, the package must identify exactly the registered primary-plan artifact ID and normalized repository-relative path. A standalone test-spec substitute or extra member is invalid. Historical packages remain readable but grant no current review or progression authority. Use CLI subject inspection for exact identities; do not calculate an aggregate package revision.
-
-## Review contract
-
-Evaluate implementation readiness and verification adequacy in the same decision. Check safe dependency order, acceptable intermediate states, milestone boundaries, migration sequence, reversibility, SR allocation, milestone verification, applicable change-level verification, important normal and negative scenarios, compatibility, migration, recovery, concurrency, security and authority concerns, and realistic evidence expectations.
-
-Evaluate this exact trace for every applicable requirement and architecture risk:
-
-`requirement -> architectural boundary -> implementation milestone -> required proof -> validation command or manual evidence`
-
-Under adopted test criteria, apply the [selection method](references/test-quality.md#select-requirements-and-proof) to the plan's consumption of model-owned groups. Check that every affected requirement and parent interaction has feasible proof at the right boundary, realistic fixture prerequisites, independent expected observations and an allocated execution or assessment point. A parser check cannot discharge a persistence guarantee. Preserve justified unlisted regressions and distinguish proposed proof from inspected existing assertions; neither low cost nor a catalog link establishes adequacy.
-
-Reject or request correction for missing SR allocation, unsafe or overly broad sequencing, unreviewable milestones, insufficient milestone or change-level verification, proof at the wrong boundary, architecture risk without validation, compatibility or migration work without evidence, unrealistic proof, and verification that requires a different implementation order than the plan. Milestone completion must not be treated as complete-change correctness. Under adopted policy, check the named final whole-change Code Review checkpoint and its implementation/correction dependencies separately from integrated proof groups, as required by the packaged closeout application.
-
-Route the correction to `plan` when verification allocation is missing or inadequate; route missing observable behavior to `design`. Do not author the correction, accept a standalone test-spec substitute, or defer material pre-implementation coverage to final Verify.
-
-Apply the packaged assessment rule when adopted; approval covers this exact package for authorized implementation. Under historical contracts, use exactly one outcome: `approved`, `changes-requested`, `blocked`, or `inconclusive`; only approved package evidence permits reliance for implementation. Recording is not permission.
-
-## Findings and ownership
-
-Every material finding uses exactly one scope:
-
-- `artifact-local`: name exactly one plan artifact ID and its owning stage.
-- `cross-artifact`: name the plan plus affected approved design artifact IDs and every authoring stage needed for reconciliation.
-- `upstream-direction`: name the approved design package whose direction must be reconsidered.
-
-Each finding records a stable Finding ID, Severity, Location, Evidence, Required outcome, Safe resolution path or `needs-decision` rationale, finding scope, affected artifact IDs, and owning stages. Copy the finding asset once per material finding. Review resolution does not replace a required current Delivery Review after package members change.
-
-## Isolation and recording
-
-Recording mode is `none`, `advisory-durable`, or `formal-lifecycle`. Load the mapped procedure before durable recording. Use the contract-selected `review record` and finding operations with exact subjects, judgment, rationale and explicit applicability. Record supported non-approvals without requiring eligibility. There is no separate legacy settlement operation; successful recording does not advance workflow or grant authority. Isolated advisory assessments need no lifecycle artifacts.
-
-## Outputs
-
-Produce the package identity, upstream review ID, traceability judgment, outcome, findings, correction targets, recording results and current applicability, blockers, next owner, and claim limits.
-
-## Handoff
-
-An approved workflow-managed review returns to `route` for implementation. `changes-requested` routes plan allocation gaps to `plan` and behavioral or design gaps to their named upstream owner. `blocked` identifies the necessary decision and its actual owner; this may be the plan or an upstream owner. `inconclusive` stops for missing evidence. Direct review remains isolated.
-
-## Stop conditions
-
-Stop on incomplete or unsafe member maps, missing or stale design authority, stale record revision, wrong upstream review ID, self-review or reviewer-authored member changes, unresolved proof feasibility, failed recording, or an owner decision. Preserve supported findings even when reliance or recording is blocked.
-
-## Claims this skill must not make
-
-Do not claim plan authorship, implementation completion or correctness, or code-review, verification, branch, PR, release, or deployment readiness.
+Record exact reviewed plan/basis, actual authorship, findings and the judgment under the delivery purpose. Do not edit the plan and approve your own repaired result. A positive judgment establishes plan adequacy for its scope, not implementation correctness or publication authority.
 
 ## Recording boundary
 
-Read `references/delivery-review-recording-and-settlement.md` before dependent recording under durable or formal review. Loading a method or saving a record grants no approval or continuation. Missing, unreadable, escaped, conflicting or mixed-version required guidance stops dependent work without reconstructing it; untriggered guidance does not block unrelated portable work.
+For Change-managed work, read the packaged operational interface reference before relying on or updating current state. Use supported CLI tasks and the inspected opaque revision; skills do not use SQL or edit runtime storage. An isolated invocation keeps its requested scope. Installation alone does not adopt workflow policy.
 
 ## Resource map
 
-- READ `references/test-quality.md` when adopted criteria apply and this invocation authors, allocates or assesses test obligations.
-- READ `references/test-maintenance.md` when adopted criteria apply and this invocation changes tests or assesses test maintenance, removal or its impact.
+- READ `references/operational-recording.md` when inspecting or recording Change-managed work.
+- READ `references/targeted-recording-v2.schema.json` when constructing a recording request.
+- READ `references/rigorloop-records-v4.schema.json` when checking the types used by that request.
 
-- READ `references/review-reliance.md` when applying adopted assessment applicability, correction or closeout policy.
-- READ `references/review-assessment.md` for every review under explicitly adopted Review and Closeout policy.
+- READ `references/boundary-first-method-v1.md` when the project applies its boundary first method v1 criteria to this invocation.
 
-- READ `references/requirement-to-delivery-model.md` when tracing approved design into allocated milestones, work, and proof.
-- READ `references/boundary-first-method-v1.md` initially for every `delivery-review` invocation.
-- READ `references/delivery-review-recording-and-settlement.md` for every durable or formal review before recording or settlement.
-- COPY `assets/review-result-skeleton.md` when producing every result. Omit inapplicable groups and unfilled placeholders.
-- COPY `assets/material-finding.md` when a material finding exists, once per finding.
+- READ `references/requirement-to-delivery-model.md` when the project applies its requirement to delivery model criteria to this invocation.
 
-## Evidence collection efficiency
+- READ `references/review-assessment.md` when the project applies its review assessment criteria to this invocation.
 
-Use exact member IDs, paths, requirement IDs, boundary IDs, milestone IDs, proof IDs, command IDs, findings, and targeted excerpts before broad scans. Expand only when the delivery package cannot be judged from bounded evidence.
+- READ `references/review-reliance.md` when the project applies its review reliance criteria to this invocation.
 
-## When full-file read is required
+- READ `references/test-maintenance.md` when the project applies its test maintenance criteria to this invocation.
 
-Read the primary plan in full because the review decides its complete sequencing and verification contract. Read other files in full only when bounded evidence is insufficient or surrounding context changes the conclusion.
-
-## Output skeleton
-
-```md
-COPY `assets/review-result-skeleton.md` when producing the review result.
-COPY `assets/material-finding.md` when a material finding exists.
-Fill <every applicable result and finding field> and do not emit unfilled placeholders.
-```
+- READ `references/test-quality.md` when the project applies its test quality criteria to this invocation.
 
 ## Expected output
 
-Copy the result asset and each required finding asset. Report unavailable required data as blocked; do not invent package members, authority, proof, or evidence.
+Report the actual scoped outcome, governing basis, changed subjects or recorded judgment, material gaps and the next authorized action. Distinguish progress, review approval, final verification and external publication; claim only outcomes supported by this invocation.

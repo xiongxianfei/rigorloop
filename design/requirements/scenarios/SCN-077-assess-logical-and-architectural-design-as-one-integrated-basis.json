@@ -1,0 +1,70 @@
+{
+  "id": "SCN-077",
+  "type": "scenario",
+  "title": "Assess logical and architectural design as one integrated basis",
+  "status": "confirmed",
+  "actor": "An independent design reviewer",
+  "goal": "Determine whether the affected combined design can satisfy accepted requirements.",
+  "context": "System and Architecture Design have produced identifiable work from a reviewed requirement basis.",
+  "trigger": "The author requests integrated Design Review.",
+  "preconditions": [
+    "The requested scope and relevant project authority are identifiable."
+  ],
+  "interaction": [
+    {
+      "actor": "Authors",
+      "action": "Provide logical behavior, architectural responsibilities, Interfaces, allocated obligations and material realization with their accepted requirement basis."
+    },
+    {
+      "actor": "Reviewer",
+      "action": "Assesses the complete affected design and its interactions, including missing behavior or responsibility."
+    },
+    {
+      "actor": "Reviewer",
+      "action": "Records findings with their correction owners and the scoped integrated judgment."
+    },
+    {
+      "actor": "System",
+      "action": "Identifies whether delivery planning can rely on that design basis."
+    }
+  ],
+  "expected_outcome": "One integrated assessment establishes the design basis or identifies the precise upstream correction without manufacturing per-technique gates.",
+  "alternatives": [
+    {
+      "condition": "An architectural concern can be resolved within the accepted obligations.",
+      "outcome": "The responsible design author corrects the design and obtains affected integrated reassessment."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "Architecture exposes a missing system obligation or changed stakeholder intent.",
+      "outcome": "The requirement decision returns to Requirement Analysis and affected Requirement Review before dependent design reliance."
+    },
+    {
+      "condition": "An accountable boundary or necessary AR is missing.",
+      "outcome": "Design completeness is withheld; a delivery task cannot substitute for architectural responsibility."
+    }
+  ],
+  "exercises": [
+    "FEAT-016"
+  ],
+  "informs": [
+    "SR-081",
+    "SR-054",
+    "SR-027",
+    "SR-028",
+    "SR-029"
+  ],
+  "sources": [
+    {
+      "source": "SRC-REQUIREMENT-FIRST-WORKFLOW",
+      "locator": "SCN-077",
+      "basis": "User-selected requirement-first workflow and one mandatory whole-change Code Review gate. Proposed requirement analysis only; existing product contracts remain active until coordinated adoption. No new Function, AR, implementation or approval is inferred."
+    },
+    {
+      "source": "SRC-WORKFLOW-REQUIREMENT-REVIEW",
+      "locator": "design/requirements/sources.md#src-workflow-requirement-review",
+      "basis": "Document-based author assessment under the explicit Constitution exception confirms this Scenario as requirement-analysis knowledge. It is not independent review, executed product evidence or workflow activation."
+    }
+  ]
+}

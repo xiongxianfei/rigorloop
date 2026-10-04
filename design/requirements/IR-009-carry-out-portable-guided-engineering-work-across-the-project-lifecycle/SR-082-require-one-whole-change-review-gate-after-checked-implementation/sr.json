@@ -1,0 +1,103 @@
+{
+  "id": "SR-082",
+  "type": "system-requirement",
+  "title": "Require one whole-change review gate after checked implementation",
+  "status": "draft",
+  "statement": "The system shall allow authorized implementation to proceed through checked milestones without mandatory milestone review approval, require one independent whole-change Code Review gate for the complete implementation scope before successful final Verify, and handle corrections and reassessments within that same gate without requiring a permanent attempt history.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Per-milestone approvals duplicate the final gate, while removing them without explicit completion and reassessment obligations can conceal defects or permit stale approval.",
+      "desired_outcome": "Implementation progresses in bounded checked work, receives early advice when useful and obtains applicable independent approval of the complete delivered scope before separate final verification."
+    },
+    "why": {
+      "rationale": "The user-selected workflow must preserve traceability and independent judgment while assigning each engineering decision one owner and avoiding redundant approval cycles."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineers and engineering agents",
+        "Independent reviewers and project decision owners",
+        "Maintainers of guidance, validation and recording tools"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "During implementation progress, optional advisory assessment, whole-change review, correction and final Verify."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "The project-selected governed workflow and its scoped specialist activities, including portable isolated use where applicable."
+      ]
+    },
+    "how": {
+      "approach": "Apply the explicit ownership and dependency conditions in the criteria; record exact scope, decisions, exceptions and assessment basis without inferring approval from mechanics. Detailed Function, Module, Interface and storage realization belongs to subsequent design."
+    },
+    "how_much": {
+      "scope": "The selected requirement-first workflow within one Change and its affected dependencies. No new preliminary proposal gate, per-method approval, mandatory milestone approval, automatic external permission or mandatory SQLite prerequisite. Functional and architectural completeness are deliberately deferred to design; the Feature constraints express workflow conditions, not a completed behavior realization."
+    }
+  },
+  "acceptance_criteria": [
+    "A milestone is complete only when its recorded implementation scope and required checks are complete. If another milestone is authorized and its dependencies are satisfied, it may proceed without reviewer assignment, a milestone review ID or a clean-review status.",
+    "Failed required checks, missing authority, an unresolved requirement or architectural decision, or a material safety issue blocks affected work. Known in-scope defects must be corrected or explicitly dispositioned under applicable authority before implementation is claimed complete.",
+    "An explicitly requested interim code review is advisory: its findings concern the inspected scope and cannot settle the whole-change gate, advance lifecycle approval or become an automatic milestone prerequisite. Material findings remain attributable and require responsible correction or disposition without duplicate dossiers.",
+    "Implementation completion supplies the complete delivered scope for independent whole-change assessment against accepted IR/SR, applicable ARs, reviewed System/Architecture Design, delivery intent and current evidence, including cross-milestone interactions and relevant code, tests, configuration, migrations, generated output, skills and documentation.",
+    "A changes-requested assessment keeps its actionable findings and basis until explicit disposition or reassessment. Owned corrections and relevant checks receive independent reassessment within the same whole-change gate. The current assessment may replace superseded detail without losing open obligations or falsely retargeting a judgment still relied upon.",
+    "Reassessment establishes adequate coverage of the complete current result, inspecting corrections and affected interactions and explicitly determining retained applicability. It need not reread unchanged files or rerun unaffected checks automatically; uncertain impact or broad changes may require broader assessment.",
+    "Final Verify requires applicable whole-change approval and current evidence and remains distinct from Code Review. A clean advisory review, passed tests or a single completed milestone cannot substitute. A one-milestone Change has one whole-change gate, not an additional milestone approval.",
+    "An implementation defect discovered during Verify returns to implementation and affected independent reassessment before renewed Verify; requirement/design defects return to their authoring and review owners. Evidence-collection failure without changed engineering subjects permits affected verification retry without automatic Code Review restart. New contradictory evidence requires approval-applicability assessment.",
+    "Operational bookkeeping, evidence retries and edits shown to have no material effect on assessed behavior, instructions, obligations or support can retain an approved whole-change Review with an explicit applicability disposition, without another Review attempt. Material changes require independent reassessment of affected subjects and interactions; uncertain impact remains unresolved until assessed. Route coordinates recorded handoffs but does not create reviewer judgments or infer harmlessness from edit size or file type.",
+    "An isolated request for one implementation slice ends at that authorized scope. Removal of milestone review gates grants no additional execution, merge, publication or other external-action authority."
+  ],
+  "assumptions": [
+    "Existing governance and recording remain available until explicit coordinated adoption; target skill and CLI support is not assumed installed."
+  ],
+  "constraints": [
+    "Draft authoring and structural validation do not establish independent review approval or activate the new workflow."
+  ],
+  "constrains": [
+    "FEAT-016",
+    "FEAT-017"
+  ],
+  "sources": [
+    {
+      "source": "SRC-REQUIREMENT-FIRST-WORKFLOW",
+      "locator": "SR-082",
+      "basis": "User-selected requirement-first workflow and one mandatory whole-change Code Review gate. Proposed requirement analysis only; existing product contracts remain active until coordinated adoption. No new Function, AR, implementation or approval is inferred."
+    },
+    {
+      "source": "SRC-WORKFLOW-DESIGN",
+      "locator": "SR-082",
+      "basis": "Draft integrated design from the accepted requirement-first basis. This defines target responsibility and cooperation, not installed capability, design approval, runtime evidence or SQLite adoption."
+    },
+    {
+      "source": "SRC-WORKFLOW-DESIGN",
+      "locator": "SR-082 AC1,2,10; AR-035, AR-037",
+      "basis": "Proposed allocation composition: Work context exposes checks, blockers and scope while coordination permits only authorized eligible continuation. This is a design argument, not executed satisfaction evidence."
+    },
+    {
+      "source": "SRC-WORKFLOW-DESIGN",
+      "locator": "SR-082 AC3–9; AR-036, AR-037",
+      "basis": "Proposed allocation composition: Assurance preserves full-scope attempts and applicability; coordination distinguishes advice, the whole-change gate, correction ownership and final Verify. This is a design argument, not executed satisfaction evidence."
+    },
+    {
+      "source": "SRC-PROPORTIONATE-REVIEW",
+      "locator": "SR-082",
+      "basis": "User-directed refinement of review applicability after subsequent edits: preserve original judgments, allow justified harmless-change continuation and independently reassess material effects. Author-assessed design/requirement refinement only; no runtime adoption or independent approval is claimed."
+    },
+    {
+      "source": "SRC-CURRENT-HANDOFF",
+      "locator": "SR-082",
+      "basis": "User-selected current handoff and selective retention refinement. Reuse existing identity and responsibility; no runtime adoption or independent approval is asserted."
+    }
+  ],
+  "confirms": [
+    "FUNC-025",
+    "FUNC-026",
+    "FUNC-029",
+    "FUNC-030",
+    "FUNC-031",
+    "FUNC-053",
+    "FUNC-054"
+  ]
+}

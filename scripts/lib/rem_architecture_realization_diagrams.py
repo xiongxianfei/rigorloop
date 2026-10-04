@@ -209,8 +209,8 @@ def _interactions(model):
     if record is None:
         return []
     selections = {
-        "publish_record_candidate": ("publication", "Publication"),
-        "recover_record_transaction": ("recovery", "Recovery"),
+        "execute_record_task": ("publication", "Publication"),
+        "inspect_records": ("recovery", "Interrupted update inspection"),
     }
     results = []
     for index, sequence in enumerate(record.data.get("observed", {}).get("sequences", [])):
@@ -277,14 +277,14 @@ def _interactions(model):
 
 
 def _coordination(model):
-    """Render only the journal states and guarded transitions actually recorded."""
+    """Render only the maintenance states and guarded transitions actually recorded."""
     record = model.facets.get(("MOD-011", "runtime"))
     if record is None or not record.data.get("observed", {}).get("lifecycles"):
         return None
     route, key = "#process/lifecycle/coordination", "process-coordination"
-    caption = ("Source-observed journal states and guarded transitions. Arrows describe eligible changes, "
-               "not a mandatory sequence. Absence of a retained journal is distinct from the prepared and "
-               "committed journal phases. Guards, effects, and coordination limits remain attached to their "
+    caption = ("Source-observed maintenance states and guarded transitions. Arrows describe eligible changes, "
+               "not a mandatory sequence. Ordinary availability is distinct from the prepared and "
+               "activated maintenance phases. Guards, effects, and coordination limits remain attached to their "
                "source records; this diagram is not crash, concurrency, or recovery verification.")
     lines, sources = _header(model, caption), []
     lifecycles = record.data["observed"]["lifecycles"]
@@ -308,10 +308,10 @@ def _coordination(model):
         "key": key, "view": "process", "lifecycle": "coordination", "owner": "MOD-011",
         "route": route, "navigation_label": "Coordination and lifecycle",
         "title": lifecycles[0]["name"] if len(lifecycles) == 1 else "Record coordination lifecycles",
-        "summary": "Journal states, guarded transitions, and transaction exclusion limits.",
+        "summary": "Maintenance states, guarded transitions, and store exclusion limits.",
         "caption": caption,
         "legend": [
-            {"label": "State", "description": "A recorded journal state; no extra phase is inferred from malformed or foreign bytes."},
+            {"label": "State", "description": "A recorded maintenance state; no extra phase is inferred from malformed or foreign bytes."},
             {"label": "Arrow", "description": "An authored transition trigger, qualified by its retained guards and effects."},
         ],
         "sources": sources,

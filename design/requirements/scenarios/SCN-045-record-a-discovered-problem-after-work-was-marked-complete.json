@@ -5,44 +5,40 @@
   "status": "confirmed",
   "actor": "An engineer who discovers a problem in previously completed work",
   "goal": "Record the newly observed problem and its explicitly supplied basis without silently changing prior engineering decisions.",
-  "context": "The change currently records completed activity, and a newly failed check or changed subject contradicts that recorded state.",
-  "trigger": "The engineer decides to record a blocker and supporting evidence.",
+  "context": "A completed Change retains its historical acceptance account; a later regression or an error in that original account has been discovered.",
+  "trigger": "The engineer chooses linked new corrective work or an explicit completion annotation.",
   "preconditions": [
-    "The engineer explicitly selects the change and provides current expected state and the problem's required actor-supplied values."
+    "The engineer identifies the completed Change and supplies current authority and the required inputs for the chosen new-work or annotation task."
   ],
   "interaction": [
     {
       "actor": "Engineer",
-      "action": "Supplies the observed evidence and a new blocker with its required basis and explicit applicability where a new supporting record is needed."
+      "action": "Identifies a later regression or a mistake in an earlier completion account, preserving the distinction."
     },
     {
       "actor": "System",
-      "action": "Checks the complete recording candidate and preserves the supplied current problem and original blocker basis without deriving a new stage or approval."
-    },
-    {
-      "actor": "System",
-      "action": "Returns the storage outcome and separately labeled observations about the conflicting recorded state."
+      "action": "Provides the compact historical completion without presenting it as a claim about current repository health."
     },
     {
       "actor": "Engineer",
-      "action": "Uses the recorded facts to decide the subsequent governed action separately."
-    }
-  ],
-  "expected_outcome": "The problem and its basis are recordable despite contradictory completed-work claims, while previous activity, review judgment, and unrelated content remain unchanged unless explicitly edited.",
-  "alternatives": [
-    {
-      "condition": "The relevant evidence record already exists.",
-      "outcome": "The explicit update preserves its current applicability when legitimately omitted and retains other checks."
+      "action": "Creates linked new corrective work for the regression, or supplies an explicit annotation for a mistaken original account."
     },
     {
-      "condition": "An existing Review finding needs correction instead of a new change-level blocker.",
-      "outcome": "An explicit finding correction retains its stable ID and updates valid current fields without fabricating an immutable origin snapshot."
+      "actor": "System",
+      "action": "Records the selected current problem or annotation without reopening work, rewriting historical completion or granting authority."
+    }
+  ],
+  "expected_outcome": "A new regression is actionable through a new linked Change while the earlier completion keeps its original meaning; an original-assessment error can be explicitly annotated.",
+  "alternatives": [
+    {
+      "condition": "A finding was raised during active work before completion.",
+      "outcome": "It remains in the active handoff until explicitly dispositioned; it cannot disappear through replacement of working evidence."
     }
   ],
   "failures": [
     {
-      "condition": "The candidate lacks required semantic input or contains an invalid internal reference or a blocker-origin rewrite.",
-      "outcome": "The system rejects the structural or preservation violation without inventing missing evidence or a favorable judgment."
+      "condition": "An update attempts to silently overwrite a completion conclusion or hide an unresolved active issue.",
+      "outcome": "Reject the update and require an explicit correction annotation or issue disposition."
     },
     {
       "condition": "The selected state changed before publication.",
@@ -68,6 +64,16 @@
       "source": "SRC-PUBLISHED-PRODUCTS",
       "locator": "SCN-045; design/requirements/published-products.md#review-and-validation",
       "basis": "Independent review and author reconciliation confirmed this stakeholder situation, primary Feature, and SR coverage as current analysis knowledge. This does not approve requirements or establish implemented behavior or satisfaction."
+    },
+    {
+      "source": "SRC-CURRENT-HANDOFF",
+      "locator": "SCN-045",
+      "basis": "User-selected current handoff and selective retention refinement. Reuse existing identity and responsibility; no runtime adoption or independent approval is asserted."
+    },
+    {
+      "source": "SRC-SQLITE-ADOPTION",
+      "locator": "SCN-045",
+      "basis": "Reconcile existing use/behavior with current explicit task selection, coherent SQLite outcomes and attributable judgments; no new stakeholder need or runtime qualification is inferred."
     }
   ]
 }

@@ -2,10 +2,10 @@
   "id": "SCN-023",
   "type": "scenario",
   "title": "Resume interrupted work from recorded change context",
-  "status": "confirmed",
+  "status": "draft",
   "actor": "An authorized engineer or engineering agent taking over an in-progress Change",
   "goal": "Determine the recorded work state, outstanding issues, applicable basis, and next action without the originating conversation.",
-  "context": "A Change was interrupted or handed to another participant during authoring, implementation, verification, or review.",
+  "context": "A Change was interrupted or handed to another participant during authoring, implementation, verification, or review. Recorded context may have been restored from a retained backup into an environment with a newer engineering definition.",
   "trigger": "The new participant begins the assigned activity in another session.",
   "preconditions": [
     "The Change and intended activity are identified.",
@@ -18,7 +18,7 @@
     },
     {
       "actor": "System",
-      "action": "Presents the recorded scope, state, responsible participants, findings or blockers, next action, and activity-specific subjects and basis revisions."
+      "action": "Presents the current goal/scope/authority, governing basis, progress, open issues, relevant evidence, review standing and next action with responsible source and reason."
     },
     {
       "actor": "Participant",
@@ -38,6 +38,10 @@
     {
       "condition": "An existing applicable grant covers the next action.",
       "outcome": "Resumption recognizes that grant without requiring confirmation solely because the session changed."
+    },
+    {
+      "condition": "Several routine test attempts were superseded before handoff.",
+      "outcome": "The latest relevant summary is sufficient; earlier logs and run summaries need not exist unless they explain an unresolved issue or retained decision."
     }
   ],
   "failures": [
@@ -48,6 +52,10 @@
     {
       "condition": "The next action exceeds the applicable authorization.",
       "outcome": "The system identifies the specific unmet decision boundary before that action can proceed."
+    },
+    {
+      "condition": "Restored assessment subjects differ from current subjects.",
+      "outcome": "The original basis remains visible, and resumption does not silently renew evidence applicability or authority."
     }
   ],
   "exercises": [
@@ -62,6 +70,16 @@
       "source": "SRC-COMPLETE-ANALYSIS",
       "locator": "SCN-023",
       "basis": "IR-003 owns this scenario, elaborating existing SR-006 activity-specific resumption and SR-007 continuity of bounded authority without altering those obligations. Accepted as current requirement-analysis knowledge after independent coverage and clarity review: one owning IR and primary Feature, observable goal and interactions, classified outcomes, and applicable SR coverage. This confirms analysis only, not requirement approval, implementation, or satisfaction."
+    },
+    {
+      "source": "SRC-LOCAL-OPERATIONAL-ANALYSIS",
+      "locator": "SCN-023",
+      "basis": "Draft derivation from the refined IRs and RR proposal; no approval, implementation or satisfaction claim."
+    },
+    {
+      "source": "SRC-CURRENT-HANDOFF",
+      "locator": "SCN-023",
+      "basis": "User-selected current handoff and selective retention refinement. Reuse existing identity and responsibility; no runtime adoption or independent approval is asserted."
     }
   ]
 }

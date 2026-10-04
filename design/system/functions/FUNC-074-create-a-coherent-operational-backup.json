@@ -1,0 +1,48 @@
+{
+  "id": "FUNC-074",
+  "type": "function",
+  "title": "Create a coherent operational backup",
+  "status": "draft",
+  "description": "Capture selected retained operational scope without changing the source.",
+  "inputs": [
+    "Explicit project and scope selection",
+    "Current operational records and required retained artifacts",
+    "Selected backup destination"
+  ],
+  "preconditions": [
+    "The requested scope and applicable action authority are explicit."
+  ],
+  "outputs": [
+    "Identifiable complete backup or explicit incomplete/failed result"
+  ],
+  "behavior": [
+    "For a selected project state containing Changes, findings and retained artifacts, a complete backup identifies the captured state, project, interpretation version, included records and artifacts, and declared exclusions; all included references resolve within the retained scope or are explicitly external.",
+    "When recording continues during capture, the backup represents one coherent declared state or reports that capture could not complete; it never combines incompatible record and artifact versions as a complete backup.",
+    "If a required artifact is missing, unreadable or fails its recorded integrity check, backup creation reports the affected scope and does not declare a complete backup.",
+    "Interruption, cancellation or insufficient destination capacity leaves existing valid backups and source work unchanged and identifies any incomplete output as unusable for complete restoration.",
+    "An explicitly selected narrower scope identifies exclusions and cannot claim to preserve excluded evidence, post-capture work or unsaved content."
+  ],
+  "failure_behavior": [
+    {
+      "condition": "Required source, interpretation or scope integrity cannot be established.",
+      "outcome": "Report the specific gap without claiming completeness, inventing decisions or mutating unrelated work."
+    },
+    {
+      "condition": "Selected source or destination changes before a mutating operation can complete.",
+      "outcome": "Preserve established work and report conflict or interruption; no silent overwrite or automatic semantic merge."
+    }
+  ],
+  "sources": [
+    {
+      "source": "SRC-LOCAL-OPERATIONAL-ANALYSIS",
+      "locator": "FUNC-074",
+      "basis": "Draft derivation from the refined IRs and RR proposal; no approval, implementation or satisfaction claim."
+    },
+    {
+      "source": "SRC-SQLITE-ADOPTION",
+      "locator": "FUNC-074",
+      "basis": "Reconcile existing use/behavior with current explicit task selection, coherent SQLite outcomes and attributable judgments; no new stakeholder need or runtime qualification is inferred."
+    }
+  ],
+  "allocated_to": "MOD-011"
+}

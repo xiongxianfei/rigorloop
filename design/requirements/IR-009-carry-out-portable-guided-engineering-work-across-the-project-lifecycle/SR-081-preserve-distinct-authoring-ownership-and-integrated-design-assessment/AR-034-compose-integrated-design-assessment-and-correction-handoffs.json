@@ -1,0 +1,61 @@
+{
+  "id": "AR-034",
+  "type": "allocated-requirement",
+  "title": "Compose integrated design assessment and correction handoffs",
+  "status": "draft",
+  "statement": "The Skill procedures Module shall compose integrated design assessment and correction handoffs within its accountable boundary so that SR-081 can be satisfied without transferring another owner's decisions or state authority.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "The SR-081 obligation crosses guidance, governance or publication boundaries; an unowned contribution can make a locally valid step appear sufficient for the whole workflow.",
+      "desired_outcome": "Present the complete affected System and Architecture Design against the accepted requirements to one integrated review before planning."
+    },
+    "why": {
+      "rationale": "MOD-012 owns the behavior or state needed for this contribution; separating it preserves one accountable owner while allowing the parent SR to compose several contributors."
+    },
+    "who": {
+      "stakeholders": [
+        "Participants relying on Skill procedures",
+        "Authors, reviewers and project decision owners"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "When the selected requirement-first workflow exercises SR-081 or reassesses its affected basis."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "The MOD-012 responsibility boundary and its declared logical Interfaces."
+      ]
+    },
+    "how": {
+      "approach": "Apply the allocated criteria through the constrained Functions and explicit contract inputs/outcomes; preserve actual actor decisions, subject identity and known limitations."
+    },
+    "how_much": {
+      "scope": "This allocated contribution to SR-081; other contributors, independent assessment, physical recording implementation and product activation remain distinct."
+    }
+  },
+  "acceptance_criteria": [
+    "Present the complete affected System and Architecture Design against the accepted requirements to one integrated review before planning.",
+    "Route changed needs to Requirement Analysis, behavior to System Design, and boundary/allocation defects to Architecture Design; preserve iteration and assessed scope."
+  ],
+  "assumptions": [
+    "The selected project contract, scope and required counterpart contributions are identifiable; absence is reported rather than inferred."
+  ],
+  "constraints": [
+    "This draft allocation neither activates replacement runtime contracts nor proves implementation or satisfaction."
+  ],
+  "allocated_to": "MOD-012",
+  "constrains": [
+    "FUNC-053",
+    "FUNC-054"
+  ],
+  "sources": [
+    {
+      "source": "SRC-WORKFLOW-DESIGN",
+      "locator": "SR-081; AR-034",
+      "basis": "Draft integrated design from the accepted requirement-first basis. This defines target responsibility and cooperation, not installed capability, design approval, runtime evidence or SQLite adoption."
+    }
+  ]
+}

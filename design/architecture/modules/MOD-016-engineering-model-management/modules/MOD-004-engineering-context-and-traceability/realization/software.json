@@ -1,0 +1,24 @@
+{
+  "proposed": [
+    {
+      "choice": "Package a thin Node CLI adapter, one Rust browser engine, the static HTML/CSS/JavaScript reader and bundled D2.",
+      "rationale": "Retain the public CLI while giving one engine ownership of capture, projection and native publication/recovery. Native locking and no-replace rename support the existing filesystem contract; no performance claim is assumed.",
+      "alternatives": [
+        "Node-only engine with an additional native filesystem dependency or another qualified publication protocol.",
+        "Node generator with a separate native publisher.",
+        "Node wrapper around the current Python generator.",
+        "Rust-only public CLI."
+      ],
+      "consequences": [
+        "Adds a pinned Rust build, Cargo lockfile, platform executable and bounded browser-engine-v1 subprocess protocol; customers need no Rust compiler.",
+        "Current Python scripts remain the observed prototype until coordinated replacement; no permanent dual semantic engines are intended.",
+        "Use D2 0.9.0 for both generated projections and registered authored design diagrams; keep one authoritative source for each diagram and use plain-language conditions.",
+        "Package completeness and clean-customer qualification precede public support.",
+        "The owning technical model maps components and contracts to existing Modules. Logical presents that technical structure; Development presents intended source units, packages and build resources from the same design."
+      ],
+      "revisit_when": [
+        "A selected requirement, supported platform or actual qualification result defeats this realization."
+      ]
+    }
+  ]
+}

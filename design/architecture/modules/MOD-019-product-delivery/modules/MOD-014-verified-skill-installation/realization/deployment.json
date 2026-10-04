@@ -96,5 +96,22 @@
   },
   "deferred": [
     "Supported operating systems and actual candidate installation require platform-specific proof. The existing physical mapping does not add platform guarantees or authorize changes to active installations."
+  ],
+  "proposed": [
+    {
+      "choice": "Report bounded installed-unit replacement without inferring workflow activation.",
+      "rationale": "Governance composes actual installation effects with policy, recording compatibility and a current work basis before activation.",
+      "alternatives": [
+        "Assume installation is atomic whole-project migration.",
+        "Treat a successful install as a requirement or workflow approval."
+      ],
+      "consequences": [
+        "The subordinate installation contract defines an explicit replacement profile and force flag, complete candidate/obsolete-unit preflight, anchored detachment with retained originals, and observed absence before success.",
+        "Partial failure reports actual intact components; preserve unrelated user files and evidence, stop affected work, and recover explicitly."
+      ],
+      "revisit_when": [
+        "The installation contract provides a reviewed replacement and recovery mechanism."
+      ]
+    }
   ]
 }

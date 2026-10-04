@@ -1,11 +1,11 @@
 # Generated from canonical REM records; do not edit.
-# Source identity: 2cf8f01cf8087e0b226dbd431d6452970b13954a16b84408d91173987708417e
+# Source identity: 7978be139fe27eda655003b22781018baac550ab5be13f735b6a2800fc2e5371
 # Static mappings from accountable Modules and contracts to implementation sources. Production arrows mean declared inputs and candidate outputs, not software dependencies or evidence that a build ran. Open an owner to inspect its complete mapping.
 vars: {d2-config: {layout-engine: elk}}
 direction: down
-owner: "Engineering command\ninterface" {
+owner: "Command handling" {
   link: "#development/MOD-010"
-  tooltip: "Engineering command interface (MOD-010)"
+  tooltip: "Command handling (MOD-010)"
   style.fill: "#ECF3FF"
   style.stroke: "#7C8FA9"
   style.font-color: "#23334A"
@@ -23,106 +23,52 @@ g0: "Implementation sources" {
   grid-columns: 2
   f0: "packages/rigorloop/dist/bin/\nrigorloop.js" {
     link: "#development/MOD-010"
-    tooltip: "main and dispatchMain admit and dispatch commands and select final output; the executable wrapper applies the command-specific logging boundary."
+    tooltip: "Executable entrypoint and generic/operational dispatch."
     style.fill: "#FFFFFF"
     style.stroke: "#7C8FA9"
     style.font-color: "#23334A"
     style.font-size: 14
     style.border-radius: 6
   }
-  f1: "packages/rigorloop/dist/lib/\nrecording-cli.js" {
+  f1: "packages/rigorloop/dist/lib/\noperational-cli.js" {
     link: "#development/MOD-010"
-    tooltip: "Routes primary recording requests to query or mutation command adapters."
+    tooltip: "Task admission, explicit selectors, stdin, dispatch and help."
     style.fill: "#FFFFFF"
     style.stroke: "#7C8FA9"
     style.font-color: "#23334A"
     style.font-size: 14
     style.border-radius: 6
   }
-  f2: "packages/rigorloop/dist/lib/\nrecording-query-cli.js" {
+  f2: "packages/rigorloop/dist/lib/\noperational-contract.js" {
     link: "#development/MOD-010"
-    tooltip: "Owns public query admission, literal selection, pagination, and projection. Its inspectSubjects helper also hosts the MOD-011 subject-observation role."
+    tooltip: "Closed schemas, version domains and request/result primitives."
     style.fill: "#FFFFFF"
     style.stroke: "#7C8FA9"
     style.font-color: "#23334A"
     style.font-size: 14
     style.border-radius: 6
   }
-  f3: "packages/rigorloop/dist/lib/\nrecording-mutation-cli.js" {
+  f3: "packages/rigorloop/dist/lib/\noperational-receipt.js" {
     link: "#development/MOD-010"
-    tooltip: "Admits targeted recording intent and connects construction and receipt callbacks to the store."
+    tooltip: "Bounded command-owned results prepared before commitment."
     style.fill: "#FFFFFF"
     style.stroke: "#7C8FA9"
     style.font-color: "#23334A"
     style.font-size: 14
     style.border-radius: 6
   }
-  f4: "packages/rigorloop/dist/lib/\nrecord-store-cli.js" {
+  f4: "packages/rigorloop/dist/lib/\nlog-config.js" {
     link: "#development/MOD-010"
-    tooltip: "Admits the advanced inspect/check/record/recover command envelope and dispatches to executeRecordStore."
+    tooltip: "Generic diagnostic configuration; operational calls remain excluded."
     style.fill: "#FFFFFF"
     style.stroke: "#7C8FA9"
     style.font-color: "#23334A"
     style.font-size: 14
     style.border-radius: 6
   }
-  f5: "packages/rigorloop/dist/lib/\nrecording-result.js" {
+  f5: "packages/rigorloop/dist/lib/\nresult-renderer.js" {
     link: "#development/MOD-010"
-    tooltip: "Serializes primary results and prepares fitting mutation receipts; its observation helpers cooperate with MOD-011."
-    style.fill: "#FFFFFF"
-    style.stroke: "#7C8FA9"
-    style.font-color: "#23334A"
-    style.font-size: 14
-    style.border-radius: 6
-  }
-  f6: "packages/rigorloop/dist/lib/\nworkflow-context.js" {
-    link: "#development/MOD-010"
-    tooltip: "Implements bounded current-work discovery behind its own public contract."
-    style.fill: "#FFFFFF"
-    style.stroke: "#7C8FA9"
-    style.font-color: "#23334A"
-    style.font-size: 14
-    style.border-radius: 6
-  }
-  f7: "packages/rigorloop/dist/lib/\ncli-observability.js" {
-    link: "#development/MOD-010"
-    tooltip: "Wraps eligible command execution with bounded diagnostic events and deferred rendering."
-    style.fill: "#FFFFFF"
-    style.stroke: "#7C8FA9"
-    style.font-color: "#23334A"
-    style.font-size: 14
-    style.border-radius: 6
-  }
-  f8: "packages/rigorloop/dist/lib/\nlog-config.js" {
-    link: "#development/MOD-010"
-    tooltip: "Resolves platform default or explicitly overridden diagnostic directories and validates logging vocabulary."
-    style.fill: "#FFFFFF"
-    style.stroke: "#7C8FA9"
-    style.font-color: "#23334A"
-    style.font-size: 14
-    style.border-radius: 6
-  }
-  f9: "packages/rigorloop/dist/lib/\nlog-sink.js" {
-    link: "#development/MOD-010"
-    tooltip: "appendDiagnosticEvent and readRetainedLogs manage the owned bounded diagnostic files and their guarded read/write paths."
-    style.fill: "#FFFFFF"
-    style.stroke: "#7C8FA9"
-    style.font-color: "#23334A"
-    style.font-size: 14
-    style.border-radius: 6
-  }
-  f10: "packages/rigorloop/dist/lib/\nlog-inspection.js" {
-    link: "#development/MOD-010"
-    tooltip: "findInvocationEvents validates and selects the exact invocation from supported retained events, preserving corruption and unavailability outcomes."
-    style.fill: "#FFFFFF"
-    style.stroke: "#7C8FA9"
-    style.font-color: "#23334A"
-    style.font-size: 14
-    style.border-radius: 6
-  }
-  f11: "packages/rigorloop/package.json" {
-    link: "#development/MOD-010"
-    tooltip: "Declares the package entry point, included files, ESM format, and external dependencies."
+    tooltip: "Installation/diagnostic result projection."
     style.fill: "#FFFFFF"
     style.stroke: "#7C8FA9"
     style.font-color: "#23334A"

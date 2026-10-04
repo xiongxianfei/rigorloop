@@ -1,9 +1,9 @@
 {
   "id": "MOD-007",
   "type": "module",
-  "title": "Engineering verification and assurance",
+  "title": "Review and verification",
   "status": "draft",
-  "description": "Keep verification definitions, actual observations, evidence applicability, criterion coverage, and scoped engineering judgments distinguishable and traceable.",
+  "description": "Keeps review and verification criteria, observations, evidence and judgments distinct, with explicit applicability, coverage and provenance.",
   "responsibilities": [
     "Retain criterion-based verification definitions and actual observations with provenance.",
     "Assess applicability and coverage, including contradictions and reassessment after changes.",
@@ -25,7 +25,8 @@
   "consumes": [],
   "design_limits": [
     "IF-010 defines supplied claim/evidence applicability and coverage for release coordination. IR-004 ARs and verification execution, evidence storage, broader authority cooperation, and physical realization remain deferred.",
-    "Neither an Interface response nor its existence establishes verification execution, release qualification, authority, or requirement satisfaction."
+    "Neither an Interface response nor its existence establishes verification execution, release qualification, authority, or requirement satisfaction.",
+    "The requirement-first workflow design supplies the selected SR-079–083 collaboration and AR allocation. Earlier broader deferrals remain only outside that bounded extension; existing runtime observations and installed contracts do not implement the target design."
   ],
   "sources": [
     {

@@ -1,0 +1,42 @@
+{
+  "id": "FUNC-041",
+  "type": "function",
+  "title": "Inspect project capabilities and selected current context",
+  "status": "draft",
+  "description": "Expose available executable task contracts and observed project-store standing without selecting a Change or granting authority.",
+  "inputs": [
+    "Explicit project root and selected supported query intent."
+  ],
+  "preconditions": [],
+  "outputs": [
+    "Factual capability/backend standing or bounded selected Change context and explicit limitations."
+  ],
+  "behavior": [
+    "Report actual executable operations and interface identity, independently from backend availability.",
+    "Inspect only explicit selected operational scope; do not scan or interpret legacy directories as current authority.",
+    "Report absent, unavailable and maintenance-fenced state honestly; reads do not initialize or activate a store."
+  ],
+  "failure_behavior": [
+    {
+      "condition": "The associated store is absent, unsupported, corrupt, inaccessible or maintenance-fenced.",
+      "outcome": "Report its actual standing without initialization, fallback to legacy directories or inferred authority."
+    },
+    {
+      "condition": "An explicitly selected query exceeds its bounds or names unavailable content.",
+      "outcome": "Return explicit failure or scoped absence; do not silently truncate selected meaning or invent current records."
+    }
+  ],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-CLI",
+      "locator": "docs/design/cli/cli.md#CLI-SR-23, CLI-SR-28, CLI-SR-32",
+      "basis": "Functional Analysis of the IR-008 system obligations confirms this distinct published command/record responsibility. The retained CLI/Record Format contract supplies exact public operations and limits; logical behavior is defined before Module allocation."
+    },
+    {
+      "source": "SRC-PUBLISHED-PRODUCTS",
+      "locator": "FUNC-041",
+      "basis": "Assign MOD-010 as the proposed accountable primary responsibility after Functional Analysis. Current product source contracts retain detailed behavior authority; allocation is not runtime adoption or complete AR coverage."
+    }
+  ],
+  "allocated_to": "MOD-010"
+}

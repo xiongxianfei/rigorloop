@@ -27,9 +27,9 @@ test("public commands have one closed family", (t) => {
   assert.equal(classifyCommand(["lifecycle", "status"]).family, "invalid-input");
   assert.equal(classifyCommand(["init"]).family, "repository-setup");
   assert.equal(classifyCommand(["version"]).family, "introspection");
-  assert.equal(classifyCommand(["workflow-context"]).family, "introspection");
+  assert.equal(classifyCommand(["workflow-context"]).family, "invalid-input");
   assert.equal(classifyCommand(["compact", "project"]).family, "invalid-input");
-  assert.equal(classifyCommand(["logs", "path"]).family, "log-inspection");
+  assert.equal(classifyCommand(["logs"]).family, "log-inspection");
   assert.equal(classifyCommand(["future-command"]).family, "invalid-input");
   assert.equal(classifyCommand(["lifecycle", "private-raw-operation"]).operation, undefined);
 });
@@ -39,10 +39,9 @@ test("T06 public command families record deterministic terminal severity and sta
   const project = root(t);
   const cases = [
     { args: ["version"], family: "introspection", exit: 0, severity: "info", status: "success" },
-    { args: ["workflow-context", "--change", "example", "--format", "json"], family: "introspection", exit: 2, severity: "warning", status: "blocked" },
     { args: ["init", "unsupported", "--json"], family: "repository-setup", exit: 2, severity: "warning", status: "blocked" },
     { args: ["future-command", "--json"], family: "invalid-input", exit: 4, severity: "warning", status: "error" },
-    { args: ["logs", "path"], family: "log-inspection", exit: 0, severity: "info", status: "success" },
+    { args: ["logs"], family: "log-inspection", exit: 0, severity: "info", status: "success" },
   ];
   for (const [index, item] of cases.entries()) {
     const directory = join(root(t), `logs-${index}`);
@@ -129,7 +128,7 @@ test("CLI records correlated events, stays quiet on success, and supports exact 
   assert.equal(lines[0].invocation_id, lines[1].invocation_id);
   assert.deepEqual(findInvocationEvents(directory, lines[0].invocation_id).events, lines);
   assert.equal(findInvocationEvents(directory, "0000000000000000").code, "RL_LOG_NOT_FOUND");
-  const lookup = spawnSync(process.execPath, [cli.pathname, "logs", "show", lines[0].invocation_id, "--format", "json"], { encoding: "utf8", env: { ...process.env, RIGORLOOP_LOG_DIR: directory } });
+  const lookup = spawnSync(process.execPath, [cli.pathname, "logs", "--invocation", lines[0].invocation_id, "--format", "json"], { encoding: "utf8", env: { ...process.env, RIGORLOOP_LOG_DIR: directory } });
   assert.equal(lookup.status, 0);
   assert.equal(JSON.parse(lookup.stdout).events[0].invocation_id, lines[0].invocation_id);
 });
@@ -334,7 +333,7 @@ test("concise projections use the controller's semantic exit code", (t) => {
 
 test("unsafe log inspection fails without exposing or resolving the override", (t) => {
   const cli = new URL("../dist/bin/rigorloop.js", import.meta.url);
-  const child = spawnSync(process.execPath, [cli.pathname, "logs", "path", "--format", "json"], { encoding: "utf8", env: { ...process.env, RIGORLOOP_LOG_DIR: "private-relative-value" } });
+  const child = spawnSync(process.execPath, [cli.pathname, "logs", "--format", "json"], { encoding: "utf8", env: { ...process.env, RIGORLOOP_LOG_DIR: "private-relative-value" } });
   assert.equal(child.status, 3);
   assert.equal(JSON.parse(child.stdout).errors[0].code, "RL_LOG_UNSAFE_PATH");
   assert.equal(`${child.stdout}${child.stderr}`.includes("private-relative-value"), false);
@@ -342,7 +341,7 @@ test("unsafe log inspection fails without exposing or resolving the override", (
 
 test("log inspection rejects undocumented common-result projections", (t) => {
   const cli = new URL("../dist/bin/rigorloop.js", import.meta.url);
-  for (const args of [["logs", "path"], ["logs", "show", "a1b2c3d4e5f60718"]]) {
+  for (const args of [["logs"], ["logs", "--invocation", "a1b2c3d4e5f60718"]]) {
     const child = spawnSync(process.execPath, [cli.pathname, ...args, "--format", "detailed-json", "--no-file-log"], { encoding: "utf8" });
     assert.equal(child.status, 4);
     assert.match(child.stderr, /RL_INVALID_REQUEST: unknown log output format/);
@@ -387,7 +386,7 @@ test("CLIOBS-M3-R1-F1 lookup rejects matching schema-one objects outside the clo
   const marker = "M3_LOOKUP_PRIVATE_SENTINEL";
   writeFileSync(join(directory, "rigorloop.jsonl"), `${JSON.stringify({ schema_version: 1, invocation_id: identity, event: "invocation-start", private: marker })}\n`, { mode: 0o600 });
   const cli = new URL("../dist/bin/rigorloop.js", import.meta.url);
-  const child = spawnSync(process.execPath, [cli.pathname, "logs", "show", identity, "--format", "json", "--no-file-log"], {
+  const child = spawnSync(process.execPath, [cli.pathname, "logs", "--invocation", identity, "--format", "json", "--no-file-log"], {
     encoding: "utf8",
     env: { ...process.env, RIGORLOOP_LOG_DIR: directory },
   });
@@ -401,7 +400,7 @@ test("CLIOBS-M3-R1-F2 invalid lookup identities are never reflected", (t) => {
   const marker = "M3_INVALID_PRIVATE_SENTINEL";
   const cli = new URL("../dist/bin/rigorloop.js", import.meta.url);
   for (const extra of [[], ["--format", "json"]]) {
-    const child = spawnSync(process.execPath, [cli.pathname, "logs", "show", marker, ...extra, "--no-file-log"], {
+    const child = spawnSync(process.execPath, [cli.pathname, "logs", "--invocation", marker, ...extra, "--no-file-log"], {
       encoding: "utf8",
       env: { ...process.env, RIGORLOOP_LOG_DIR: directory },
     });

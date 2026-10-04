@@ -3,7 +3,7 @@
   "type": "allocated-requirement",
   "title": "Record bounded private diagnostics without changing command semantics",
   "status": "draft",
-  "statement": "The Engineering command interface Module shall record only bounded allowlisted private invocation diagnostics on the declared observed path, preserving command semantics, repository state, stdout, and exit behavior when logging is recorded, disabled, degraded, or interrupted.",
+  "statement": "The Command handling Module shall record only bounded allowlisted private invocation diagnostics on the declared observed path, preserving command semantics, repository state, stdout, and exit behavior when logging is recorded, disabled, degraded, or interrupted.",
   "analysis": {
     "method": "5W2H",
     "what": {

@@ -11,7 +11,7 @@
       "Path/concurrency protection, retained originals, safe diagnostics, and bounded failure/retry outcomes."
     ],
     "excludes": [
-      "Automatic managed upgrades, project-state creation or migration, and cleanup of unrelated or retired installed skills.",
+      "Automatic managed upgrades, project-state creation or migration, and arbitrary cleanup of unrelated or unselected retired skills; retirement is allowed only within an explicitly supported selected workflow replacement.",
       "Inferring replacement or workflow authority from package validity or installation.",
       "Making the CLI a prerequisite for individual portable skill use."
     ]

@@ -1,13 +1,13 @@
 {
   "observed": {
     "packaging": [
-      "Uses the shared CLI package mapping recorded by MOD-010; no separate persistence executable or service is introduced in the inspected path."
+      "The npm package co-locates command handling, SQLite operational storage and installation implementations; logical responsibility remains distinct."
     ],
     "sources": [
       {
-        "source": "SRC-CLI-SOURCE",
-        "locator": "packages/rigorloop/dist/lib/record-store.js Store, executeTargetedStore, executeRecordStore, withRecordSnapshot; record-store-files.js RecordFiles; remaining software_units at 9055b3c0",
-        "basis": "Static inspection identifies transaction mechanisms, format dispatch, construction, and physical co-location; it does not execute fault, durability, preservation, or recovery verification."
+        "source": "SRC-SQLITE-ADOPTION",
+        "locator": "packages/rigorloop/package.json; packages/rigorloop/dist/lib/operational-layout.js; operational-store.js; operational-maintenance.js",
+        "basis": "Static inspection of the successor working-tree source identifies this implementation binding. It does not establish passing tests, installed availability, publication or engineering approval. Prior observations remain recoverable at 39be9c81."
       }
     ]
   }

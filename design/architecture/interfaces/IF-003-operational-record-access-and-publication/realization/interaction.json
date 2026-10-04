@@ -2,272 +2,195 @@
   "observed": {
     "bindings": [
       {
-        "path": "packages/rigorloop/dist/lib/record-store.js",
-        "role": "withRecordSnapshot supplies checked state to primary readers; executeRecordStore serves advanced inspect/check/record/recover; executeTargetedStore invokes construction and receipt preparation within the selected preview or execution path."
+        "path": "packages/rigorloop/dist/lib/operational-store.js",
+        "role": "Typed inspect, preview and execute operations."
       },
       {
-        "path": "packages/rigorloop/dist/lib/recording-construction.js",
-        "role": "constructMutation realizes the pure candidate-construction part of prepare_record_candidate."
-      },
-      {
-        "path": "packages/rigorloop/dist/lib/recording-result.js",
-        "role": "primaryReceiptPreparer receives guarded candidate/storage facts and returns the prepared command-owned receipt."
-      },
-      {
-        "path": "packages/rigorloop/dist/lib/recording-query-cli.js",
-        "role": "inspectSubjects and its RecordFiles reader realize the declared-subject observation part; the logical operation does not have a dedicated exported function with the same name."
+        "path": "packages/rigorloop/dist/lib/operational-maintenance.js",
+        "role": "Explicit project-level backup, restore, migration and staged recovery."
       }
     ],
     "mechanism": [
-      "Direct in-process JavaScript calls and callbacks, without a network endpoint or serialized RPC boundary. Logical operation names are not asserted to be exported symbols."
+      "Direct typed in-process JavaScript calls; storage implementation uses SQLite internally."
     ],
     "addressing": [
-      "The caller supplies root and change_id or declared subject paths. The Module-owned filesystem addressing is recorded in MOD-011; no new public service address is defined here."
+      "Associated project root and explicit Change/item scope; maintenance is project-scoped."
     ],
     "failure_compatibility": [
-      "The engine reports or throws typed store failures for the command adapters to map into their own envelopes. Advanced Store.record revalidates candidate and before-state after acquiring exclusion; targeted execution constructs under exclusion. Preview uses the snapshot path without acquiring a writer lock.",
-      "Receipt preparation precedes journal creation/replacement for changed publication; recovery prepares from verified retained state, and a committed journal rejects restore. This source observation does not establish executed satisfaction of all logical failure outcomes."
+      "Truthful typed outcomes; no predecessor file-journal handler or automatic legacy fallback."
     ],
     "sources": [
       {
-        "source": "SRC-CLI-SOURCE",
-        "locator": "packages/rigorloop/dist/lib/record-store.js prepareResult, record, recover, executeRecordStore, withRecordSnapshot, executeTargetedStore; the remaining bindings at 9055b3c0",
-        "basis": "The concrete call and callback structure supports an operation-to-code mapping. Public/storage contracts remain authoritative, and source inspection alone is not runtime assurance."
-      },
-      {
-        "source": "SRC-RECORD-PROCESS",
-        "locator": "packages/rigorloop/dist/lib/record-store.js Store.gate, snapshot, candidate, acquire, loadJournal, known, publish, prepareResult, record, recover, executeRecordStore, executeTargetedStore; record-store-files.js RecordFiles; recording-result.js primaryReceiptPreparer and preparePrimaryReceipt; recording-mutation-cli.js and record-store-cli.js at 33f56fe84ff730d7bd48900cef32170fd0682412",
-        "basis": "Static source inspection records conditional operation order, terminal alternatives, coordination guards, and exact recovery boundaries under the current CLI/Records contracts. No product operation, failure injection, transaction recovery, platform test, or requirement verification was executed; source order is not inferred from Scenario traceability."
+        "source": "SRC-SQLITE-ADOPTION",
+        "locator": "docs/design/cli/records.md; Work records (MOD-011) current transaction and maintenance contract",
+        "basis": "Reconciles existing stakeholder need and allocation with SQLite ordinary recovery. No new need, approval, or executed result is inferred."
       }
     ],
     "sequences": [
       {
         "name": "Record publication",
-        "operation": "publish_record_candidate",
+        "operation": "execute_record_task",
         "participants": [
           "MOD-010",
           "MOD-011"
         ],
         "preconditions": [
-          "The caller selects a root and change, supplies an explicit supported v3 targeted mutation, expected revision, and declared decision-basis identities. The main sequence describes a changed targeted write; the preview and unchanged cases terminate separately.",
-          "The current CLI and Records contracts govern admission, complete candidate structure, preservation, and storage-only results. Source observations do not authorize a write or supply an engineering decision."
+          "Explicit task, associated project, selected Change, current revision and declared read basis."
         ],
         "steps": [
           {
             "name": "Admit explicit request",
             "participant": "MOD-010",
-            "action": "The mutation adapter validates request transport and selectors, then calls executeTargetedStore with construction and receipt-preparation callbacks. It does not infer missing decisions.",
+            "action": "Validate the bounded v2/v4 task and selectors; do not infer decisions.",
             "branches": [
               {
-                "condition": "Preview is explicitly requested.",
+                "condition": "Preview is selected.",
                 "steps": [
                   {
                     "name": "Inspect preview snapshot",
                     "participant": "MOD-011",
-                    "action": "Use the gated coherent snapshot path without acquiring the writer lock; construct the candidate from explicit intent and validate structure, preservation, expected revision, target identities, and declared read basis."
+                    "action": "Read a coherent snapshot and construct/validate the proposed candidate without authoring current state."
                   },
                   {
                     "name": "Prepare preview receipt",
                     "participant": "MOD-010",
-                    "action": "The bounded receipt callback serializes valid with both inspected before revision and candidate revision; candidate changed targets and observations are not saved effects."
-                  },
-                  {
-                    "name": "Recheck preview coherence",
-                    "participant": "MOD-011",
-                    "action": "The snapshot wrapper repeats gate/epoch and record revision checks before returning the prepared preview. It creates no reservation, journal, or transaction lock/epoch."
+                    "action": "Serialize bounded prospective effects without a saved claim."
                   }
                 ],
-                "outcome": "Return valid preview with no authoritative or private transaction writes. Actual execution must repeat freshness checks; preview does not reserve a later save."
+                "outcome": "Return preview; no reservation. Actual execution repeats freshness checks."
               }
             ]
-          },
-          {
-            "name": "Inspect coherent before-state",
-            "participant": "MOD-011",
-            "action": "Read the selected registered v3 record set through snapshot. Reader gates reject a live writer or retained transaction attention; gate/epoch and record revision checks exclude a mixed snapshot presented as usable."
           },
           {
             "name": "Acquire writer exclusion",
             "participant": "MOD-011",
-            "action": "Create the private directory when necessary, exclusively create the writer lock with an ownership token, and update the epoch. Competing CLI writers are excluded; these private effects precede authoritative publication."
+            "action": "Acquire ordinary lease, reject maintenance fence and start BEGIN IMMEDIATE."
+          },
+          {
+            "name": "Inspect coherent before-state",
+            "participant": "MOD-011",
+            "action": "Load selected typed rows from the associated supported database."
           },
           {
             "name": "Construct and recheck candidate",
             "participant": "MOD-011",
-            "action": "Require no retained journal, reread the before-set under exclusion, compare its revision with the initial snapshot, construct the lossless complete candidate, and validate the expected revision, target identities, declared reads, references, and preservation rules. No declared identity is silently refreshed."
+            "action": "Check opaque revision and declared reads; construct complete facts, issue dispositions and support state."
           },
           {
             "name": "Prepare bounded receipt",
             "participant": "MOD-010",
-            "action": "Store.record determines whether candidate bytes changed and invokes the command-owned primary receipt callback before journal creation or target replacement. Serialize the storage result and bounded diagnostic summary; optional details may be explicitly omitted. A prepared saved receipt remains private until commit succeeds.",
+            "action": "Prepare the fixed profile result before COMMIT and enforce candidate/result bounds.",
             "branches": [
               {
-                "condition": "The fresh complete candidate has exactly the before revision.",
+                "condition": "Candidate is semantically identical under fresh preconditions.",
                 "steps": [
                   {
                     "name": "Release unchanged writer",
                     "participant": "MOD-011",
-                    "action": "Release the owned lock and return the already prepared unchanged receipt. Do not create a journal or replace authoritative files; lock/epoch setup may already have occurred."
+                    "action": "End the transaction and return unchanged without incrementing semantic revision."
                   }
                 ],
-                "outcome": "Return unchanged with an empty changed list and exact authoritative before bytes. This fresh no-op is not a replay facility for a stale request."
+                "outcome": "No duplicate facts; a stale request remains conflict."
               }
             ]
           },
           {
-            "name": "Persist prepared journal",
+            "name": "Publish complete candidate",
             "participant": "MOD-011",
-            "action": "Retain exact before and candidate bytes/identities, declared writes and reads, transaction identity, and created-directory tracking in a phase=prepared journal under owned exclusion. Retention precedes authoritative replacement."
+            "action": "Persist normalized related rows and new revision inside the transaction."
           },
           {
-            "name": "Publish exact candidate bytes",
+            "name": "Commit durable transaction",
             "participant": "MOD-011",
-            "action": "Recheck declared read identities, recognize every target as its recorded before or candidate value, and publish only declared candidate writes through guarded filesystem operations. Repeat ownership, known-state, and target checks during replacement; verify all candidate identities afterward."
-          },
-          {
-            "name": "Persist committed phase",
-            "participant": "MOD-011",
-            "action": "Recheck the declared read basis after replacement and before commitment, then durably rewrite the journal with phase=committed. Failures do not expose the prepared saved receipt as successful publication."
+            "action": "COMMIT under the qualified WAL/FULL connection; precommit failure rolls back."
           },
           {
             "name": "Clean up and return receipt",
             "participant": "MOD-011",
-            "action": "After commitment, remove the exact retained journal, release owned exclusion, and return the previously prepared receipt for command output. Cleanup failure remains transaction attention; it is not an authorized rollback of committed content."
+            "action": "Release owned resources and return established outcome; failure after commit cannot imply rollback."
           }
         ],
-        "outcome": "The successfully completed source path returns saved for the exact candidate and a storage-only claim after commit and cleanup. Output delivery remains a separate transport boundary.",
+        "outcome": "The complete current account is committed atomically before saved is reported; output delivery is a separate boundary.",
         "failures": [
           {
-            "condition": "Admission, coherent inspection, freshness, candidate validation, or receipt preparation fails before a journal/authoritative replacement.",
-            "outcome": "Return the applicable rejected, conflict, busy, or recovery-required result; do not publish the candidate.",
+            "condition": "Admission, candidate or receipt validation fails.",
+            "outcome": "Reject without authoritative task effects.",
             "effects": [
-              "Authoritative records are not changed by this failed attempt before publication. After non-preview exclusion begins, private directories, epoch, or lock cleanup effects may already exist.",
-              "Unavailable or malformed state is not converted into an empty current snapshot or a successful no-op."
+              "Private temporary data is not current record authority."
             ]
           },
           {
-            "condition": "A non-crash failure occurs after the prepared journal is created but before committed phase.",
-            "outcome": "The source attempts guarded restoration of exact before bytes and cleanup. If that succeeds, report the original failure; otherwise require explicit recovery.",
+            "condition": "Revision/read basis conflicts or storage is busy.",
+            "outcome": "Conflict or busy; caller rereads before deciding.",
             "effects": [
-              "Restoration checks every current target against retained before/candidate identities and removes only tracked transaction-created files or empty created directories where permitted.",
-              "Observed unknown target bytes, missing/tampered evidence, or failed restoration prevent guessed repair; recovery metadata is reported only when available."
+              "Winning committed work remains authoritative."
             ]
           },
           {
-            "condition": "Execution is interrupted, commitment/cleanup is uncertain, or a failure occurs with a committed journal.",
-            "outcome": "Report recovery-required when control returns with transaction attention, or leave the interrupted caller without a success receipt. Do not claim rollback or saved content from an unknown outcome.",
+            "condition": "Transaction or response is interrupted.",
+            "outcome": "Inspect coherent recovered state; never replay semantic task or infer success from missing output.",
             "effects": [
-              "Readers do not expose an unfinished mixed store as current. Exact retained state and explicit recovery selection govern subsequent work.",
-              "A lost stdout response after successful commitment is a transport/lost-response problem. Retrying the old expected revision does not authorize replay; reread and reassess."
+              "SQLite establishes committed/uncommitted state; corrupt or unavailable state stops safely."
             ]
           }
         ],
         "constraints": [
-          "This ordered account is derived from executeTargetedStore, Store.record, and the primary receipt callback. It is not inferred from SCN-046 participation. The advanced record path uses the same publisher but validates its supplied complete candidate before and after acquiring exclusion instead of using targeted construction.",
-          "Receipt preparation precedes private journal creation and authoritative replacement; it does not turn a future saved result into an observed success.",
-          "CLI exclusion coordinates participating writers. External editors are covered only at observed identity checks; an exact-target edit after the final check may still be overwritten under the retained contract.",
-          "Calls execute synchronously inside the existing CLI process. Source inspection supplies no durability, crash, output-transport, concurrency, platform, or requirement-satisfaction evidence."
+          "Source-inspected control flow only; this explanation is not execution evidence or workflow authority.",
+          "Ordinary transaction behavior is distinct from fenced maintenance recovery."
         ]
       },
       {
-        "name": "Record recovery",
-        "operation": "recover_record_transaction",
+        "name": "Interrupted update inspection",
+        "operation": "inspect_records",
         "participants": [
           "MOD-010",
           "MOD-011"
         ],
         "preconditions": [
-          "The caller explicitly selects the root/change, exact transaction ID, current expected recovery digest, and complete or restore action. Recovery does not construct a new decision or candidate.",
-          "The retained journal must be supported v3, canonical and internally consistent, with verified exact before/candidate snapshots and declared scope. A missing, tampered, stale, or unrecognized journal is not repair authority."
+          "A prior ordinary update or response was interrupted; the actor supplies associated project and Change."
         ],
         "steps": [
           {
-            "name": "Admit explicit recovery",
+            "name": "Admit current inspection",
             "participant": "MOD-010",
-            "action": "Validate selectors and the closed complete/restore action before dispatching the exact recovery request to executeRecordStore."
+            "action": "Admit an ordinary scoped read without choosing a recovery action."
           },
           {
-            "name": "Validate retained journal",
+            "name": "Establish coherent storage state",
             "participant": "MOD-011",
-            "action": "Before exclusion, load the expected journal bytes and verify their digest, transaction/change identity, canonical encoding, supported version and prepared/committed phase, snapshot content hashes, scope, preservation, write/read sets, and tracked directory identities."
+            "action": "Open supported SQLite state; internal recovery determines committed/uncommitted outcome without replay."
           },
           {
-            "name": "Acquire recovery exclusion",
+            "name": "Read current account",
             "participant": "MOD-011",
-            "action": "Reject a live competing lock owner. Remove an exactly observed stale owner lock when admitted, exclusively acquire a new owned lock, and update the epoch. Private coordination effects are distinct from authoritative recovery."
+            "action": "Read coherent typed rows and current revision; report busy/unavailable where not established."
           },
           {
-            "name": "Recheck recovery admissibility",
-            "participant": "MOD-011",
-            "action": "Reload the exact expected journal under exclusion and require every observed target to equal its retained before or candidate identity, including absence. A committed journal requires candidate identities and rejects restore; it cannot authorize rollback.",
-            "branches": [
-              {
-                "condition": "The requested action is restore and the verified journal is prepared.",
-                "steps": [
-                  {
-                    "name": "Prepare before-state recovery receipt",
-                    "participant": "MOD-011",
-                    "action": "Prepare and validate the recovered result against the exact retained before-set before touching authoritative files. Restoration does not require external read-basis files to retain their old values and never writes those files."
-                  },
-                  {
-                    "name": "Restore exact retained before bytes",
-                    "participant": "MOD-011",
-                    "action": "Publish the retained before-set with repeated exclusion, containment, and known-state checks. Remove only permitted transaction-created files and tracked empty directories; do not overwrite an observed third state or unrelated content."
-                  },
-                  {
-                    "name": "Finish verified restoration",
-                    "participant": "MOD-011",
-                    "action": "Verify the terminal before identities, remove the retained journal, release owned exclusion, and return the prepared recovered receipt. Failure at any point preserves an explicit incomplete/unknown outcome for reinspection."
-                  }
-                ],
-                "outcome": "Return recovered for the verified exact before-state only after successful restoration and cleanup. No workflow decision, replay, or blanket project rollback is performed."
-              }
-            ]
-          },
-          {
-            "name": "Prepare candidate recovery receipt",
-            "participant": "MOD-011",
-            "action": "For complete, verify the retained declared read basis and prepare/validate a recovered result against the exact retained candidate before authoritative writes. The advanced recovery result is prepared within Store.prepareResult."
-          },
-          {
-            "name": "Complete exact retained candidate",
-            "participant": "MOD-011",
-            "action": "Publish the retained candidate with repeated owned-lock, path, target before/candidate, and decision-basis checks. A committed journal permits only candidate bytes; unknown values stop completion."
-          },
-          {
-            "name": "Recheck basis and commit recovery",
-            "participant": "MOD-011",
-            "action": "Recheck declared reads after candidate publication. For a prepared journal, observed basis drift attempts guarded restoration before reporting failure. Otherwise persist phase=committed; a previously committed journal is never rolled back."
-          },
-          {
-            "name": "Finish verified completion",
-            "participant": "MOD-011",
-            "action": "Remove the verified terminal journal, release the owned lock, and return the prepared recovered result. Interrupted cleanup or a subsequent failure requires reinspection with the current recovery identity."
+            "name": "Report established outcome",
+            "participant": "MOD-010",
+            "action": "Return actual current account and limitations; caller decides any next task."
           }
         ],
-        "outcome": "Return recovered for the exact retained candidate after verified completion and cleanup. The result proves no new engineering decision, requirement satisfaction, or successful output delivery.",
+        "outcome": "Current coherent state is available or a safe limitation is explicit. Committed work is not rolled back to repair missing output.",
         "failures": [
           {
-            "condition": "A selected journal, snapshot, target, action, version, or identity is missing, changed, incompatible, or untrusted; a target matches neither retained side.",
-            "outcome": "Stop recovery without guessing state or replaying actor intent. The advanced wrapper reports recovery-required, except a live writer is busy.",
+            "condition": "Corrupt, unsupported or unavailable store.",
+            "outcome": "Stop without guessed repair or empty replacement.",
             "effects": [
-              "Checks made before exclusion produce no recovery writes; later rejection may follow private lock/epoch effects. Missing recovery metadata is reported as unavailable, not invented.",
-              "A committed journal with an observed before-state target is inconsistent and rejected. Restore is rejected even when a committed journal otherwise validates."
+              "No new engineering decision is written."
             ]
           },
           {
-            "condition": "Completion observes changed declared read basis, or a restore/complete filesystem operation or cleanup is interrupted.",
-            "outcome": "Keep the actual incomplete or uncertain recovery outcome explicit; reinspection and an explicitly selected current recovery identity are required.",
+            "condition": "Inspection is interrupted or exclusion prevents access.",
+            "outcome": "Report only established busy/unavailable standing; later fresh inspection is permitted.",
             "effects": [
-              "Before committed phase, the source may attempt exact guarded restoration after post-publication basis drift. That attempt is not a guarantee that all previous bytes were restored.",
-              "After committed phase, no recovery path restores before bytes. Retained evidence and known target identities govern completion/cleanup, not a blind retry."
+              "No semantic replay or duplicate task."
             ]
           }
         ],
         "constraints": [
-          "Main steps describe complete; the restore branch is terminal and does not rejoin candidate completion. Every branch/failure remains conditional on its stated source checks.",
-          "Repeated recovery must use the current retained transaction identity/digest and cannot synthesize a replacement transaction. Recovery may itself be interrupted.",
-          "The same observed-check external-edit boundary applies to complete and restore. Source code inspection does not establish all-platform atomicity, durability, crash recovery, or consumer-visible verification."
+          "Source-inspected control flow only; this explanation is not execution evidence or workflow authority.",
+          "Ordinary transaction behavior is distinct from fenced maintenance recovery."
         ]
       }
     ]
@@ -286,8 +209,5 @@
         "Persistence moves into another process or trust boundary, requiring a new physical binding with equivalent logical guarantees."
       ]
     }
-  ],
-  "deferred": [
-    "The mapping is not a new public JavaScript API or a source-level conformance claim. Operation-level verification and any extraction of shared helpers remain separate implementation work."
   ]
 }

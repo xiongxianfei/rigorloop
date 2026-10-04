@@ -1,14 +1,15 @@
 {
   "id": "MOD-015",
   "type": "module",
-  "title": "Product release coordination",
+  "title": "Release coordination",
   "status": "draft",
-  "description": "Coordinate eligible product releases around an exact qualified candidate, applicable publication authority, observed external identity, and recoverable reporting outcomes.",
+  "description": "Coordinates release preparation, qualification, publication and recovery around an exact candidate and applicable authority.",
   "responsibilities": [
     "Determine eligible release identity and prepare profile-owned projections without inventing upstream version or compatibility decisions.",
     "Qualify and retain a candidate, bind publication authority to it, and perform only its authorized publication steps.",
     "Observe actual public outcomes, retain durable closeout, and select recovery from known external state rather than blindly repeating uncertain writes.",
-    "Consume IF-009 for applicable governed-action authority and IF-010 for exact-subject evidence applicability and coverage. Keep those separate findings tied to the selected candidate while retaining release-specific qualification, sealing, publication, and actual outcome responsibility."
+    "Consume IF-009 for applicable governed-action authority and IF-010 for exact-subject evidence applicability and coverage. Keep those separate findings tied to the selected candidate while retaining release-specific qualification, sealing, publication, and actual outcome responsibility.",
+    "Require exact packaged browser qualification through IF-005 and distinct reference-site evidence before any authorized product or documentation publication."
   ],
   "owned_state": [
     "Release preparation context, retained candidate references, qualification/authorization associations, and publication observations and closeout records; source product definitions and registry state remain distinct authorities."
@@ -42,6 +43,11 @@
       "source": "SRC-BOUNDARY-CONTRACTS",
       "locator": "MOD-015; SCN-019, SCN-053, SCN-066 selected collaboration analysis",
       "basis": "Derive consumer-focused parent contracts for selected-state inspection, adopted-REM authoring guidance, applicable action authority, and evidence applicability. Preserve child behavior/state authority, existing Function/AR allocations, and earlier contract guarantees. The selected contracts refine prior blanket deferrals; remaining retention, wider collaboration, AR, and realization gaps stay explicit. This is draft design analysis, not implemented or satisfied behavior."
+    },
+    {
+      "source": "SRC-CUSTOMER-BROWSER-DESIGN",
+      "locator": "MOD-015",
+      "basis": "System and Architecture Design from SR-084–088 and refined SR-060; proposed responsibility, contract and realization only. No implementation, platform qualification or product availability is established."
     }
   ]
 }

@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Validate current record discovery through the supported public CLI.
+"""Validate retained repository v3 record sources without operational CLI dispatch.
 
 The historical script name is retained for repository check callers. Archives
-are excluded by the shared discovery contract; this wrapper owns no eligibility.
+are excluded by the qualified source classifier; this wrapper owns no eligibility. SQLite runtime state is private and is not Git validation input.
 """
 from __future__ import annotations
 import json
@@ -70,20 +70,29 @@ def main(*, runner=subprocess.run, root: Path = ROOT, output=sys.stdout, revisio
         return 0 if report['status'] == 'passed' else 1
 
     try:
-        result = runner(
-            ["node", str(CLI), "workflow-context", "--format", "json"],
-            cwd=root, capture_output=True, text=True, timeout=60,
-            env={**__import__("os").environ, "RIGORLOOP_FILE_LOG": "off", "RIGORLOOP_CONSOLE_LOG_LEVEL": "off"},
-        )
-        payload = json.loads(result.stdout)
-        complete = (result.returncode == 0 and payload.get("schema_version") == 2
-                    and payload.get("command") == "workflow-context"
-                    and payload.get("status") == "success"
-                    and payload.get("scope", {}).get("complete") is True)
-        report = {"schema_version": 1, "status": "passed" if complete else "failed",
-                  "context": payload}
+        directory=root / "docs/changes"
+        for part in (root / "docs",directory):
+            if part.is_symlink() or part.exists() and not part.is_dir():
+                raise ValueError('unsafe source directory')
+        entries=sorted(directory.iterdir()) if directory.exists() else []
+        if len(entries)>1024: raise ValueError('source limit exceeded')
+        validated=excluded=0
+        for entry in entries:
+            if entry.is_symlink(): raise ValueError('unsafe source entry')
+            if not entry.is_dir(): continue
+            result=runner(["node",str(ROOT / "scripts/classify-record-store.mjs"),str(root),entry.name],cwd=root,capture_output=True,text=True,timeout=60)
+            if result.returncode: raise ValueError('source classification failed')
+            kind=result.stdout.strip()
+            if kind in ('archive','noncurrent'): excluded+=1
+            elif kind=='current':
+                if validated>=64: raise ValueError('source limit exceeded')
+                result=runner(["node",str(ROOT / "scripts/validate-record-store.mjs"),str(entry / "change.json")],cwd=root,capture_output=True,text=True,timeout=60)
+                if result.returncode: raise ValueError('source validation failed')
+                validated+=1
+            else: raise ValueError('unknown source classification')
+        report={"schema_version":1,"status":"passed","context":{"source_contract":"rigorloop-records-v3","scope":{"complete":True,"candidate_count":validated,"excluded_noncurrent":excluded}}}
     except (OSError, subprocess.TimeoutExpired, ValueError, AttributeError):
-        report = {"schema_version": 1, "status": "failed", "errors": ["current-record-discovery-unavailable"]}
+        report = {"schema_version": 1, "status": "failed", "errors": ["retained-record-source-unavailable"],"context":{"scope":{"complete":False}}}
     print(json.dumps(report, indent=2, sort_keys=True), file=output)
     return 0 if report["status"] == "passed" else 1
 

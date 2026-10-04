@@ -1,0 +1,68 @@
+{
+  "id": "AR-040",
+  "type": "allocated-requirement",
+  "title": "Preserve work and assessment facts through workflow record changes",
+  "status": "draft",
+  "statement": "The Work record storage Module shall preserve work and assessment facts through workflow record changes within its accountable boundary so that SR-083 can be satisfied without transferring another owner's decisions or state authority.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "The SR-083 obligation crosses guidance, governance or publication boundaries; an unowned contribution can make a locally valid step appear sufficient for the whole workflow.",
+      "desired_outcome": "Validate and publish explicit work, gate, attempt and Verify facts under the selected supported record contract without requiring approval per milestone."
+    },
+    "why": {
+      "rationale": "MOD-011 owns the behavior or state needed for this contribution; separating it preserves one accountable owner while allowing the parent SR to compose several contributors."
+    },
+    "who": {
+      "stakeholders": [
+        "Participants relying on Work record storage",
+        "Authors, reviewers and project decision owners"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "When the selected requirement-first workflow exercises SR-083 or reassesses its affected basis."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "The MOD-011 responsibility boundary and its declared logical Interfaces."
+      ]
+    },
+    "how": {
+      "approach": "Apply the allocated criteria through the constrained Functions and explicit contract inputs/outcomes; preserve actual actor decisions, subject identity and known limitations."
+    },
+    "how_much": {
+      "scope": "This allocated contribution to SR-083; other contributors, independent assessment, physical recording implementation and product activation remain distinct."
+    }
+  },
+  "acceptance_criteria": [
+    "Publish coherent current work, review, evidence and Verify accounts under the selected contract without mandatory milestone approval or an activity ledger.",
+    "During workflow adoption preserve required original source meaning and reconcile active dependencies. During normal work permit explicit current-account replacement and selective compaction; reject unknown or mixed contracts before mutation.",
+    "Use fresh guarded coherent publication and truthful recovery outcomes; persistence must not infer semantic approval or alter engineering model files."
+  ],
+  "assumptions": [
+    "The selected project contract, scope and required counterpart contributions are identifiable; absence is reported rather than inferred."
+  ],
+  "constraints": [
+    "This draft allocation neither activates replacement runtime contracts nor proves implementation or satisfaction."
+  ],
+  "allocated_to": "MOD-011",
+  "constrains": [
+    "FUNC-044",
+    "FUNC-045",
+    "FUNC-046"
+  ],
+  "sources": [
+    {
+      "source": "SRC-WORKFLOW-DESIGN",
+      "locator": "SR-083; AR-040",
+      "basis": "Draft integrated design from the accepted requirement-first basis. This defines target responsibility and cooperation, not installed capability, design approval, runtime evidence or SQLite adoption."
+    },
+    {
+      "source": "SRC-CURRENT-HANDOFF",
+      "locator": "AR-040",
+      "basis": "User-selected current handoff and selective retention refinement. Reuse existing identity and responsibility; no runtime adoption or independent approval is asserted."
+    }
+  ]
+}

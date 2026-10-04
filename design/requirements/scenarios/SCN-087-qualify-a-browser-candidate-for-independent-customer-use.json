@@ -1,0 +1,67 @@
+{
+  "id": "SCN-087",
+  "type": "scenario",
+  "title": "Qualify a browser candidate for independent customer use",
+  "status": "confirmed",
+  "actor": "Product maintainer",
+  "goal": "Establish that the actual browser candidate supports its declared customer use.",
+  "context": "An identifiable browser candidate and declared compatibility scope are available.",
+  "trigger": "The maintainer prepares the browser capability for a supported release.",
+  "preconditions": [
+    "The selected scope and any available project or artifact identity are explicitly identified."
+  ],
+  "interaction": [
+    {
+      "actor": "Product maintainer",
+      "action": "Selects the exact candidate and declared supported environments."
+    },
+    {
+      "actor": "System",
+      "action": "Makes its identity, resources and dependency/profile contract available for assessment."
+    },
+    {
+      "actor": "Product maintainer",
+      "action": "Exercises customer generation and offline reading with an independent model."
+    },
+    {
+      "actor": "System",
+      "action": "Retains actual results and explicit gaps tied to the candidate without claiming publication."
+    }
+  ],
+  "expected_outcome": "The maintainer has attributable qualification evidence for actual customer use.",
+  "alternatives": [
+    {
+      "condition": "A reference architecture site is also prepared.",
+      "outcome": "Its separate content identity and scope remain distinguishable from the reusable product."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "A resource is missing or a profile/dependency is incompatible.",
+      "outcome": "Qualification fails for that scope without substituting a sample-site result."
+    },
+    {
+      "condition": "Acquisition or update fails.",
+      "outcome": "Actual effects and recovery limits are reported while customer definitions and unrelated content remain protected."
+    }
+  ],
+  "exercises": [
+    "FEAT-018"
+  ],
+  "informs": [
+    "SR-088",
+    "SR-060",
+    "SR-061",
+    "SR-062",
+    "SR-069",
+    "SR-070",
+    "SR-071"
+  ],
+  "sources": [
+    {
+      "source": "SRC-CUSTOMER-BROWSER-REQUIREMENTS",
+      "locator": "SCN-087; confirmed as requirement-analysis knowledge by the scoped author assessment, not independent review or executed product proof.",
+      "basis": "User-requested reusable customer architecture browser; requirement-level author analysis. Current records remain draft; no implemented, published or independently approved behavior is claimed."
+    }
+  ]
+}

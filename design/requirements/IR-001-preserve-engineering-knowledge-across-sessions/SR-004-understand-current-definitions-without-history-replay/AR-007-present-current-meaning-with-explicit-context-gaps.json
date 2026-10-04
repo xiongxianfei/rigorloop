@@ -3,7 +3,7 @@
   "type": "allocated-requirement",
   "title": "Present current meaning with explicit context gaps",
   "status": "draft",
-  "statement": "The Engineering context and traceability Module shall present the selected current definition and its authoritative references in a form that exposes its engineering meaning, while distinguishing missing required context from unavailable optional history.",
+  "statement": "The Views and traceability Module shall present the selected current definition and its authoritative references in a form that exposes its engineering meaning, while distinguishing missing required context from unavailable optional history.",
   "analysis": {
     "method": "5W2H",
     "what": {

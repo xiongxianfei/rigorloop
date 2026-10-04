@@ -28,6 +28,11 @@
       "source": "SRC-PUBLISHED-SKILLS",
       "locator": "docs/design/skill/skill.md#SKL-SR-29",
       "basis": "Derives the stated common Skills-product obligation while preserving the cited clause population and retained specialist or package-owner detail; this draft is not source retirement or runtime adoption."
+    },
+    {
+      "source": "SRC-REQUIREMENT-FIRST-WORKFLOW",
+      "locator": "SR-054",
+      "basis": "User-selected requirement-first workflow and one mandatory whole-change Code Review gate. Proposed requirement analysis only; existing product contracts remain active until coordinated adoption. No new Function, AR, implementation or approval is inferred."
     }
   ],
   "statement": "The system shall identify the appropriate next engineering activity and receiving owner from the requested outcome, applicable workflow policy, work state, and assessment basis, preserving prerequisite, independence, correction, and authority boundaries before any dependent continuation.",
@@ -61,7 +66,7 @@
       "approach": "Interpret the selected workflow and assessment rules against current attributable subjects and evidence, reuse recorded activity context and authority decisions, and prepare a scoped handoff or responsible stop. Isolated capabilities remain isolated unless broader progression is authorized."
     },
     "how_much": {
-      "scope": "Workflow composition across published activities; detailed stage vocabularies, review precedence, exact evidence-identity rules, correction routing, and final-closeout contracts remain at Workflow and Assessment. The Function recommends or prepares the next activity; neither its result nor a favorable judgment independently grants an external action."
+      "scope": "Workflow composition across published activities; detailed stage vocabularies, review precedence, exact evidence-identity rules, correction routing, and final-closeout contracts remain at Workflow and Assessment. The Function recommends or prepares the next activity; neither its result nor a favorable judgment independently grants an external action. The requirement-first workflow extension is draft; existing Function/AR and product-contract coverage must be reassessed before its adoption."
     }
   },
   "acceptance_criteria": [
@@ -69,7 +74,10 @@
     "Missing, stale, inaccessible, or conflicting prerequisite evidence prevents a readiness or continuation claim and identifies the responsible correction or decision owner.",
     "A local implementation result remains distinguishable from independent review, successful verification, and authorized external handoff.",
     "An isolated invocation can report its local handoff without automatically starting it; already authorized broader progression follows the applicable prerequisites and authority rather than seeking redundant permission.",
-    "A correction follows its responsible owner and required reassessment; persisting a result or changing explanatory text does not renew approval or stale evidence."
+    "A correction follows its responsible owner and required reassessment; persisting a result or changing explanatory text does not renew approval or stale evidence.",
+    "For a requirement-affecting request, route prepares RR intake and Requirement Analysis, then Requirement Review, System/Architecture Design and integrated Design Review, Plan and Delivery Review, authorized implementation, one whole-change Code Review gate and distinct Verify. Optional PR retains separate authority; feasibility and design iteration do not silently bypass these reliance dependencies.",
+    "A requirement/scope defect returns to Requirement Analysis; a logical behavior defect to System Design; a Module/Interface/allocation or AR defect to Architecture Design; a sequencing/proof-allocation defect to Plan; and an implementation or fixture defect to Implement. The affected independent review basis is reconsidered before renewed reliance.",
+    "Milestone progress is distinct from gate approval. Satisfying authorized implementation dependencies permits the next milestone without a milestone-review handoff; after complete implementation, review attempts and corrections remain within the whole-change gate defined by SR-082."
   ],
   "assumptions": [],
   "constraints": [],

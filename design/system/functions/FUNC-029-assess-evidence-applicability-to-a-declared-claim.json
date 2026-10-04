@@ -20,7 +20,8 @@
     "Compare recorded subject state, criterion basis, scope, and relevant conditions without treating identity or a passing label as proof of applicability.",
     "Expose mismatches and missing context, retaining engineering judgments about continued applicability with their scope and source.",
     "After a relevant basis change, identify affected support and required reassessment or verification repetition; disclose uncertain impact when dependency information is incomplete.",
-    "Preserve original evidence and earlier applicability judgments rather than editing them to match the new claim."
+    "Retain the original assessed basis and concise support while a conclusion is still relied upon; superseded detail with no decision value may be compacted. Completed Change accounts remain historical, not live applicability monitors.",
+    "Assess advisory, requirement, integrated-design, whole-change and Verify claims within their own scope. Reassess corrected subjects and affected interactions, preserving only justified prior support; bookkeeping and evidence-only retries require assessment of semantic effect rather than automatic invalidation."
   ],
   "failure_behavior": [
     {
@@ -46,6 +47,16 @@
       "source": "SRC-ARCHITECTURE-PILOT",
       "locator": "FUNC-029",
       "basis": "Propose MOD-007 as the single accountable architectural responsibility for the existing behavior. This allocation preserves the Function definition and does not establish implementation or completed interface/AR coverage outside the IR-001 pilot."
+    },
+    {
+      "source": "SRC-WORKFLOW-DESIGN",
+      "locator": "FUNC-029",
+      "basis": "Draft integrated design from the accepted requirement-first basis. This defines target responsibility and cooperation, not installed capability, design approval, runtime evidence or SQLite adoption."
+    },
+    {
+      "source": "SRC-CURRENT-HANDOFF",
+      "locator": "FUNC-029",
+      "basis": "Reconcile current-state replacement, unresolved issue preservation and selective retention; retain version-specific v3 behavior until adoption."
     }
   ],
   "allocated_to": "MOD-007"

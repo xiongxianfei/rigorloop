@@ -54,18 +54,15 @@ class ModelRecordTests(unittest.TestCase):
 
     def test_model_design_example_and_parent_validate_without_counting_fenced_marker(self):
         parent = (ROOT / "docs/design/skill/authoring/design.md").read_text()
-        examples = re.findall(r"^(`{3,})markdown\n([\s\S]*?)^\1[ \t]*$", parent, re.MULTILINE)
-        example, = [text.rstrip("\n") for _,text in examples if text.startswith("# Label Normalization Design")]
+        # Own the parser fixture instead of requiring a retired skill's worked example.
+        example = self.text
+        parent += "\n````markdown\n" + example + "\n````\n"
         self.assertEqual(validate_model_record(parent, "docs/design/skill/authoring/design.md"), ())
-        self.assertEqual(validate_model_record(example, "docs/design/label-normalization/label-normalization.md"), ())
+        self.assertEqual(validate_model_record(example, "docs/design/skill/workflow.md"), ())
         invalid = example.replace("Model validation contract: model-document-v1",
                                   "Model validation contract: unknown_value", 1)
-        self.assertEqual([i.code for i in validate_model_record(invalid, "docs/design/label-normalization/label-normalization.md")],
+        self.assertEqual([i.code for i in validate_model_record(invalid, "docs/design/skill/workflow.md")],
                          ["BFR-MODEL-CONTRACT"])
-        for source in ("skills/design/references/model-authoring.md", "skills/design/assets/design-skeleton.md"):
-            text = (ROOT / source).read_text()
-            self.assertIn("Model validation contract: model-document-v1", text)
-            self.assertNotIn("Model validation contract: explicit-recording-v1", text)
 
     def test_model_mismatched_directory_examples_and_extra_nesting_reject(self):
         for relative in ("docs/design/cli/workflow.md", "docs/design/skill/examples/workflow/sample.md",

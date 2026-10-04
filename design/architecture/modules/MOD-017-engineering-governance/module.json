@@ -1,14 +1,15 @@
 {
   "id": "MOD-017",
   "type": "module",
-  "title": "Engineering governance",
+  "title": "Change and quality control",
   "status": "draft",
-  "description": "Account for controlled engineering evolution whose retained baselines, authority decisions, assurance judgments, authoring guidance, and improvement lessons remain mutually consistent and attributable.",
+  "description": "Coordinates baselines, change authority, assurance, authoring guidance and improvement lessons.",
   "responsibilities": [
     "Compose baseline management, change control, verification/assurance, authoring guidance, and learning so engineering decisions retain their applicable state, authority, and evidential basis.",
     "Keep recording a decision distinct from deciding its authority or evidential adequacy, and preserve the separate roles of observations, judgments, and historical baselines.",
     "Connect model-authoring guidance and reusable improvement lessons to the governing engineering meanings without duplicating the canonical model rules or published invocation procedures.",
-    "Provide IF-008 authoring guidance, IF-009 applicable action authority, and IF-010 claim/evidence applicability as distinct Governance contracts. MOD-008, MOD-006, and MOD-007 retain their behavioral contributions; MOD-005 consumes model-state inspection through IF-007 without duplicating parent consumption."
+    "Provide IF-008 authoring guidance, IF-009 applicable action authority, and IF-010 claim/evidence applicability as distinct Governance contracts. MOD-008, MOD-006, and MOD-007 retain their behavioral contributions; MOD-005 consumes model-state inspection through IF-007 without duplicating parent consumption.",
+    "Provide IF-011 work-context/adoption cooperation through MOD-006, alongside IF-008 guidance, IF-009 authority and IF-010 evidence support for the requirement-first workflow."
   ],
   "owned_state": [],
   "scope": {
@@ -23,13 +24,15 @@
   "provides": [
     "IF-008",
     "IF-009",
-    "IF-010"
+    "IF-010",
+    "IF-011"
   ],
   "consumes": [],
   "design_limits": [
     "SCN-019 content inspection, SCN-053 adopted-REM authoring guidance, and SCN-066 authority/evidence support now have selected cross-parent contracts. MOD-005 through MOD-009 retain wider cooperation and AR analysis, including retention confirmation and learning.",
     "MOD-008 contributes semantic authoring guidance to IF-008; MOD-012 retains published invocation and specialist composition. IF-009 authority and IF-010 evidence support remain distinct from each other and from release qualification.",
-    "No parent Function/AR allocation, persistent state, verification execution, or physical realization is introduced by these contracts. Their presence does not complete the selected Scenarios end to end."
+    "No parent Function/AR allocation, persistent state, verification execution, or physical realization is introduced by these contracts. Their presence does not complete the selected Scenarios end to end.",
+    "The requirement-first workflow design supplies the selected SR-079–083 collaboration and AR allocation. Earlier broader deferrals remain only outside that bounded extension; existing runtime observations and installed contracts do not implement the target design."
   ],
   "sources": [
     {
@@ -41,6 +44,11 @@
       "source": "SRC-BOUNDARY-CONTRACTS",
       "locator": "MOD-017; SCN-019, SCN-053, SCN-066 selected collaboration analysis",
       "basis": "Derive consumer-focused parent contracts for selected-state inspection, adopted-REM authoring guidance, applicable action authority, and evidence applicability. Preserve child behavior/state authority, existing Function/AR allocations, and earlier contract guarantees. The selected contracts refine prior blanket deferrals; remaining retention, wider collaboration, AR, and realization gaps stay explicit. This is draft design analysis, not implemented or satisfied behavior."
+    },
+    {
+      "source": "SRC-WORKFLOW-DESIGN",
+      "locator": "MOD-017",
+      "basis": "Draft integrated design from the accepted requirement-first basis. This defines target responsibility and cooperation, not installed capability, design approval, runtime evidence or SQLite adoption."
     }
   ]
 }

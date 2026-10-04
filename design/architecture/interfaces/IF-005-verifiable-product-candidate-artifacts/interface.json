@@ -14,7 +14,8 @@
       ],
       "preconditions": [],
       "outputs": [
-        "Identified artifact set and member inventory, declared transformation/source identities, exact integrity metadata and algorithm/version domain, and actual validation scope/results."
+        "Identified artifact set and member inventory, declared transformation/source identities, exact integrity metadata and algorithm/version domain, and actual validation scope/results.",
+        "For a browser-enabled candidate: exact profile/renderer/reading inventory, declared configuration matrix and independent customer/offline qualification; reference-site content has a separate identity."
       ],
       "behavior": [
         "Preserve canonical behavior and untransformed resources across the selected candidate; declare transformations and reject incomplete or unsupported content.",
@@ -37,7 +38,8 @@
   "consistency_rules": [
     "Candidate production, qualified release, public availability, and verified installation are separate states; this artifact boundary cannot substitute one for another.",
     "An installer must not trust an arbitrary local archive merely because it has a plausible filename or accompanying caller-provided metadata.",
-    "Retained artifact identities remain immutable across release authorization, public observation, and recovery; no false latest-version or publication claim follows from local production."
+    "Retained artifact identities remain immutable across release authorization, public observation, and recovery; no false latest-version or publication claim follows from local production.",
+    "A browser-enabled CLI candidate must contain its declared runtime inputs and renderer resources without customer-side product generation or hidden acquisition. Existing skill archive trust and installation behavior remain unchanged."
   ],
   "compatibility_rules": [
     "Packaging, Installation, and Release retain their exact current targets, archive layouts, algorithms, bundled metadata/release-index trust rules, and independently versioned compatibility domains.",
@@ -49,6 +51,11 @@
       "source": "SRC-PUBLISHED-PRODUCTS",
       "locator": "IF-005",
       "basis": "Connect package production to release and installation using SRC-PUBLISHED-PACKAGING, SRC-PUBLISHED-INSTALLATION, and SRC-PUBLISHED-RELEASE; retain separate qualification, trust, and authority boundaries."
+    },
+    {
+      "source": "SRC-CUSTOMER-BROWSER-DESIGN",
+      "locator": "IF-005",
+      "basis": "System and Architecture Design from SR-084\u2013088 and refined SR-060; proposed responsibility, contract and realization only. No implementation, platform qualification or product availability is established."
     }
   ]
 }

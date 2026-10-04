@@ -42,7 +42,7 @@ Contributor confirmation uses `pending`, `confirmed`, or `rejected`. Persist can
 
 - `observation`: session record only.
 - `durable-lesson`: add or curate a topic entry with date, lesson, source-session link, primary classification, and secondary routes.
-- `artifact-update`, `decision`, `direction`, or `process-follow-up`: create an owner-bound route; do not mutate the destination. `direction` normally routes to proposal work. A process follow-up routes to an issue, a current change-local follow-up, or a proposal—not `docs/roadmap.md` and not a plan edit.
+- `artifact-update`, `decision`, `direction`, or `process-follow-up`: create an owner-bound route; do not mutate the destination. `direction` supplies RR input to `requirement-analysis`. A process follow-up routes to an issue, a current Change follow-up, or RR intake; the receiving owner decides whether requirements or design need revision. It does not directly edit a delivery plan or roadmap.
 - `no-durable-lesson`: record its rationale and whether a follow-up was scheduled.
 
 Assign stable route IDs in encounter order as `ROUTE-NNN`. Each route records source observation, confirmed classification, requested action, destination kind and exact path or external identity, owning skill or process, evidence-basis identity, required completion kind, settlement, optional owner-result identity, and optional blocker. The completion kind is fixed when the route is created. Use only `pending-owner-action`, `complete`, or `blocked`.

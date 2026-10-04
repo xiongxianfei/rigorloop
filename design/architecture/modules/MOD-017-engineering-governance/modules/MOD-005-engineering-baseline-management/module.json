@@ -1,9 +1,9 @@
 {
   "id": "MOD-005",
   "type": "module",
-  "title": "Engineering baseline management",
+  "title": "Model baselines",
   "status": "draft",
-  "description": "Identify, preserve, compare, and recover coherent retained engineering states with their original governing meaning.",
+  "description": "Identifies, preserves, compares and recovers coherent engineering states with their original meaning.",
   "responsibilities": [
     "Establish identifiable baselines and expose their recorded content and governing profile.",
     "Compare retained states and recover selected content without rewriting historical meaning.",
@@ -25,7 +25,7 @@
     "IF-007"
   ],
   "design_limits": [
-    "IF-007 now defines content and interpretation inspection from Engineering model management for SCN-019. Complete IR-003 AR derivation, content-retention confirmation, change-authority cooperation, and comparison/recovery contracts remain deferred.",
+    "IF-007 now defines content and interpretation inspection from Project model for SCN-019. Complete IR-003 AR derivation, content-retention confirmation, change-authority cooperation, and comparison/recovery contracts remain deferred.",
     "Inspection success does not establish durable retention. Baseline establishment requires confirmed retention for the declared scope; partial or unavailable retention must remain unconfirmed in the reported outcome. Separately owned realization/assurance material needs its own acquisition and retention basis.",
     "The IR-001 pilot assumes an already identifiable accessible state; this bounded Interface analysis does not implement Baseline establishment or recovery."
   ],

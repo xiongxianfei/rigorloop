@@ -1,0 +1,111 @@
+{
+  "id": "SR-083",
+  "type": "system-requirement",
+  "title": "Adopt replacement workflow contracts without reinterpreting history",
+  "status": "draft",
+  "statement": "The system shall activate the requirement-first workflow only through an explicit coordinated replacement of conflicting authority, guidance, validation and recording contracts, preserving historical judgments and resolving active-work dependencies without requiring the operational database migration.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "A renamed skill or updated diagram can coexist with obsolete gate rules, invented commands, invalid active state or relabeled historical approval.",
+      "desired_outcome": "Participants receive one coherent active workflow with usable recording and truthful historical and current assessment boundaries."
+    },
+    "why": {
+      "rationale": "The user-selected workflow must preserve traceability and independent judgment while assigning each engineering decision one owner and avoiding redundant approval cycles."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineers and engineering agents",
+        "Independent reviewers and project decision owners",
+        "Maintainers of guidance, validation and recording tools"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "When preparing, adopting or recovering a transition from the proposal-first and milestone-gated workflow."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "The project-selected governed workflow and its scoped specialist activities, including portable isolated use where applicable."
+      ]
+    },
+    "how": {
+      "approach": "Apply the explicit ownership and dependency conditions in the criteria; record exact scope, decisions, exceptions and assessment basis without inferring approval from mechanics. Detailed Function, Module, Interface and storage realization belongs to subsequent design."
+    },
+    "how_much": {
+      "scope": "The selected requirement-first workflow within one Change and its affected dependencies. No new preliminary proposal gate, per-method approval, mandatory milestone approval, automatic external permission or mandatory SQLite prerequisite. Functional and architectural completeness are deliberately deferred to design; the Feature constraints express workflow conditions, not a completed behavior realization."
+    }
+  },
+  "acceptance_criteria": [
+    "The adoption scope identifies and reconciles the Constitution, Workflow/Assessment, specialist skills and conditional references, templates, routing/automation, validators, recording interfaces and generated distributions that consume the replaced responsibilities.",
+    "The active proposal/proposal-review responsibilities are replaced by requirement-analysis/requirement-review, and combined design authoring by the three selected authors. The old meanings do not remain as parallel active public routes; retained RR proposal material and historical approvals preserve their original meaning.",
+    "Every active Change within the selected adoption scope receives an explicit disposition of its requirement basis, remaining work, blockers, gate state and still-applicable review evidence. Missing approvals are not fabricated and old milestone reviews are not relabeled as whole-change approval.",
+    "Supported records distinguish milestone progress, advisory feedback, current formal review standing and distinct final Verify. Retain the subjects, attribution and rationale needed for current decisions and compact completion; neither milestone approval records nor permanent assessment-attempt history is required.",
+    "Validators distinguish record structure, requirement-review adequacy, design completeness and final evidence sufficiency. Passing a schema or storing a result grants no engineering approval; missing downstream design cannot by itself reject an otherwise sufficient requirement basis. Canonical requirement and System Design methods apply Function-coverage completeness at the design stage, not as a prerequisite for accepting the requirement basis.",
+    "Skills use the actually supported scoped CLI interface for governed recording. They neither write SQL nor depend on invented commands; workflow adoption and database migration have explicit separable prerequisites rather than a mandatory mutual dependency.",
+    "A partial or failed transition does not expose conflicting contracts as one valid active workflow or destroy current work. Existing active authority remains identifiable until a coherent adoption or supported recovery is established.",
+    "Canonical REM methods have one authored owner, with only the needed material included in versioned generated skill distributions. Feature retains its stakeholder-capability meaning; delivery decomposition uses milestones or work items, not a competing Feature hierarchy.",
+    "Explore, Research and specialist activities remain scoped support or isolated invocations; they do not create alternative requirement/design authority or mandatory extra gates. PR remains optional and separately authorized."
+  ],
+  "assumptions": [
+    "Existing governance and recording remain available until explicit coordinated adoption; target skill and CLI support is not assumed installed."
+  ],
+  "constraints": [
+    "Draft authoring and structural validation do not establish independent review approval or activate the new workflow."
+  ],
+  "constrains": [
+    "FEAT-015",
+    "FEAT-017"
+  ],
+  "sources": [
+    {
+      "source": "SRC-REQUIREMENT-FIRST-WORKFLOW",
+      "locator": "SR-083",
+      "basis": "User-selected requirement-first workflow and one mandatory whole-change Code Review gate. Proposed requirement analysis only; existing product contracts remain active until coordinated adoption. No new Function, AR, implementation or approval is inferred."
+    },
+    {
+      "source": "SRC-WORKFLOW-REQUIREMENT-REVIEW",
+      "locator": "design/requirements/sources.md#src-workflow-requirement-review",
+      "basis": "Author assessment reconciles stage-specific Function coverage and limits active-Change disposition to the explicitly selected adoption scope."
+    },
+    {
+      "source": "SRC-WORKFLOW-DESIGN",
+      "locator": "SR-083",
+      "basis": "Draft integrated design from the accepted requirement-first basis. This defines target responsibility and cooperation, not installed capability, design approval, runtime evidence or SQLite adoption."
+    },
+    {
+      "source": "SRC-WORKFLOW-DESIGN",
+      "locator": "SR-083 AC1–3,7; AR-038, AR-039, AR-041, AR-042",
+      "basis": "Proposed allocation composition: Adoption disposition spans selected work and consumers; package and installation facts are necessary inputs, not activation or review judgments. This is a design argument, not executed satisfaction evidence."
+    },
+    {
+      "source": "SRC-WORKFLOW-DESIGN",
+      "locator": "SR-083 AC4–6; AR-039, AR-040",
+      "basis": "Proposed allocation composition: Guidance supplies explicit supported operations and stage decisions; persistence preserves exact work/attempt facts and guarded publication without semantic approval. This is a design argument, not executed satisfaction evidence."
+    },
+    {
+      "source": "SRC-WORKFLOW-DESIGN",
+      "locator": "SR-083 AC8,9; AR-039, AR-041",
+      "basis": "Proposed allocation composition: One canonical method source is distributed coherently while portable specialist use, support activities and external-action authority retain their limits. This is a design argument, not executed satisfaction evidence."
+    },
+    {
+      "source": "SRC-CURRENT-HANDOFF",
+      "locator": "SR-083",
+      "basis": "User-selected current handoff and selective retention refinement. Reuse existing identity and responsibility; no runtime adoption or independent approval is asserted."
+    }
+  ],
+  "confirms": [
+    "FUNC-078",
+    "FUNC-023",
+    "FUNC-024",
+    "FUNC-051",
+    "FUNC-052",
+    "FUNC-055",
+    "FUNC-044",
+    "FUNC-045",
+    "FUNC-046",
+    "FUNC-060",
+    "FUNC-064"
+  ]
+}

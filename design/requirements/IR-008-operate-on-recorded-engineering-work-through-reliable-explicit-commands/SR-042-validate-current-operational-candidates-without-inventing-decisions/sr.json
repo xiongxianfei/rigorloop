@@ -1,0 +1,106 @@
+{
+  "id": "SR-042",
+  "type": "system-requirement",
+  "title": "Validate current operational candidates without inventing decisions",
+  "status": "draft",
+  "statement": "The system shall validate complete current operational candidates against the selected supported contract and preservation rules, resolving typed references while separating structural validity from engineering judgment.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "A superficially valid update can contain ambiguous references, mixed formats, rewritten concern history, or inferred approval and applicability.",
+      "desired_outcome": "Only structurally admissible, explicitly authored record candidates proceed, and correction remains possible when substantive work is incomplete or observations contradict a recorded claim."
+    },
+    "why": {
+      "rationale": "Preserving both record meaning and the ability to report problems prevents mechanical validation from fabricating authority or blocking necessary correction."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineers and reviewers operating on recorded engineering work",
+        "Engineering agents acting on explicit actor decisions",
+        "Maintainers and consumers of the published command-line interface"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "When previewing or publishing an ordinary task candidate, or validating a staged maintenance candidate."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "The complete candidate for one selected project Change and its supporting records, with prior state for preservation checks."
+      ]
+    },
+    "how": {
+      "approach": "Validate closed types before dependent reference and preservation rules. Preserve undispositioned issues and assessor attribution; typed support checks expose reliance gaps without authenticating judgments."
+    },
+    "how_much": {
+      "scope": "Supported operational record shapes, identities, applicability, reference namespaces and preservation rules. Storage registration is tool-owned; a physical path or schema version alone grants no authority. Retired history remains archival unless explicitly supported for migration under SR-077; REM engineering entity conformance is a separate responsibility."
+    }
+  },
+  "acceptance_criteria": [
+    "Unknown fields or vocabularies, duplicate keys or identities, missing required values, unsupported encodings/versions, mixed stores, dual report representations, and malformed current records reject before authoritative writes.",
+    "Every supporting record has an unambiguous identity, owning Change and kind, with explicit applicability wherever the selected contract requires a reliance decision. References resolve exactly one admissible object in the complete candidate; storage-layout adjacency grants no authority and cross-Change fallback cannot repair an unresolved reference.",
+    "Supplied scope, subjects, narrative, provenance and decisions are preserved. Adverse evidence and explicit invalidation remain recordable; new success claims must meet the selected contract’s current support requirements.",
+    "Omitted issues remain unchanged, and open findings/blockers require explicit attributable disposition. The selected v4 contract permits later compaction and current-assessment replacement without permanent history; v3 retains its finding and immutable-origin rules. Validation must not infer resolution or reviewer judgment.",
+    "Reviews and Verifications use distinct closed assessment shapes with explicit scope, governing basis, support and limitations. Final successful Verify requires applicable mandatory review and accepted bases; scoped adverse results can be recorded without inventing missing success prerequisites."
+  ],
+  "assumptions": [],
+  "constraints": [
+    "Current allocations describe v4 SQLite; historical contribution arguments retain their original criterion subjects and do not prove current satisfaction."
+  ],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-CLI",
+      "locator": "docs/design/cli/cli.md#CLI-SR-02, CLI-SR-07, CLI-SR-26, CLI-SR-27; docs/design/cli/records.md#RF-SR-01, RF-SR-02, RF-SR-03, RF-SR-04, RF-SR-05, RF-SR-08, RF-SR-09, RF-SR-10, RF-SR-11, RF-SR-13",
+      "basis": "Derives this bounded published-product obligation from IR-008 and the named current CLI/Record Format contracts. Detailed schemas, command catalogs, limits and completed-retirement dispositions remain at those owners; this record does not transfer approval or implement REM-record operations."
+    },
+    {
+      "source": "SRC-CLI-ALLOCATION-BEFORE-LOCAL-STORE",
+      "locator": "SR-042 AC1; allocated contributors: AR-016",
+      "basis": "Closed shape/type/version/encoding and required-value rejection before authoritative writes"
+    },
+    {
+      "source": "SRC-CLI-ALLOCATION-BEFORE-LOCAL-STORE",
+      "locator": "SR-042 AC2; allocated contributors: AR-016",
+      "basis": "Complete manifest registration/applicability and exact field-compatible references"
+    },
+    {
+      "source": "SRC-CLI-ALLOCATION-BEFORE-LOCAL-STORE",
+      "locator": "SR-042 AC3; allocated contributors: AR-017",
+      "basis": "Supplied meanings retained; substantive inadequacy alone does not block correction or imply approval"
+    },
+    {
+      "source": "SRC-CLI-ALLOCATION-BEFORE-LOCAL-STORE",
+      "locator": "SR-042 AC4; allocated contributors: AR-017",
+      "basis": "Existing finding IDs, complete findings on assessment edits, immutable blocker-origin basis"
+    },
+    {
+      "source": "SRC-CLI-ALLOCATION-BEFORE-LOCAL-STORE",
+      "locator": "SR-042 AC5; allocated contributors: AR-016, AR-017",
+      "basis": "Closed explanation/conditional-basis shape plus separate reliance meaning; absent basis remains valid"
+    },
+    {
+      "source": "SRC-LOCAL-OPERATIONAL-ANALYSIS",
+      "locator": "SR-042",
+      "basis": "Refines the proposed operational representation and safety boundary. Prior allocation contribution arguments retain their original v3 criterion subjects under the historical source marker."
+    },
+    {
+      "source": "SRC-WORKFLOW-CONTRACTS",
+      "locator": "SR-042; immutable assessment correction and explicit commit boundary",
+      "basis": "Refine the existing IR-008 obligation for v4 without rewriting historical v3 meaning: preserve original assessments, actor decisions and truthful commitment rather than requiring in-place explanation mutation or rollback after commit. Author-assessed under the scoped Constitution exception; not runtime adoption."
+    },
+    {
+      "source": "SRC-CURRENT-HANDOFF",
+      "locator": "SR-042",
+      "basis": "Reconcile current-state replacement, unresolved issue preservation and selective retention; retain version-specific v3 behavior until adoption."
+    },
+    {
+      "source": "SRC-SQLITE-ADOPTION",
+      "locator": "SR-042",
+      "basis": "Reconcile the complete existing allocation with the selected current v2/v4 contract, preserving independent admission, coherent state, explicit scope and actor judgment. Prior version-specific sources retain their historical meaning."
+    }
+  ],
+  "confirms": [
+    "FUNC-044"
+  ]
+}

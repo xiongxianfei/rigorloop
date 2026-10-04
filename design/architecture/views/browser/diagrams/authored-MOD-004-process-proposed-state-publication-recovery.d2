@@ -1,0 +1,12 @@
+direction: right
+prior: "Prior snapshot readable"
+preparing: "Preparing complete version"
+current: "New snapshot readable"
+unresolved: "Recovery required"
+prior -> preparing: "Owned output and expected entry established"
+preparing -> prior: "Reject or fail before entry switch"
+preparing -> current: "Complete version and entry committed"
+preparing -> unresolved: "Commitment or ownership uncertain"
+current -> current: "Retry inspects committed identity"
+unresolved -> prior: "Explicit recovery establishes old entry"
+unresolved -> current: "Explicit recovery establishes committed entry"

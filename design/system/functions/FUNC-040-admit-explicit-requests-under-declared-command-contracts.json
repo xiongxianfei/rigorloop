@@ -16,9 +16,10 @@
   "behavior": [
     "Recognize the command before dependent access and apply its exact closed grammar, including required explicit root/change where that family requires them.",
     "Reject unknown or duplicate flags, unsupported operations, ambiguous selectors, and unknown closed configuration values before repository/stdin access when required.",
-    "Keep stored v3, targeted and advanced transports, primary result dispatch, discovery, generic projections, and logging/document/configuration versions independent; apply declared early-error version selection without trusting unvalidated input.",
+    "Keep v2 operational transport, schema-4 result, stored-record/database versions, maintenance, installation and logging contracts independent; untrusted input cannot select another response domain.",
     "Return operation-specific help and package identity/version accurately, without advertising withdrawn commands as operational or turning help into a repository scan.",
-    "Retain current retirement boundaries, including unavailable legacy command families/query shim and the withdrawn spec location; do not introduce a fallback, conversion, or REM authoring runtime."
+    "Retain current retirement boundaries, including unavailable legacy command families/query shim and the withdrawn spec location; do not introduce a fallback, conversion, or REM authoring runtime.",
+    "Backup, restoration, transfer, migration and history queries require explicit supported project and scope selection. Storage schema versions, backup versions and command-interface versions are not interchangeable; wrong-project inputs reject before mutation."
   ],
   "failure_behavior": [
     {
@@ -40,6 +41,16 @@
       "source": "SRC-PUBLISHED-PRODUCTS",
       "locator": "FUNC-040",
       "basis": "Assign MOD-010 as the proposed accountable primary responsibility after Functional Analysis. Current product source contracts retain detailed behavior authority; allocation is not runtime adoption or complete AR coverage."
+    },
+    {
+      "source": "SRC-LOCAL-OPERATIONAL-ANALYSIS",
+      "locator": "FUNC-040",
+      "basis": "Draft derivation from the refined IRs and RR proposal; no approval, implementation or satisfaction claim."
+    },
+    {
+      "source": "SRC-SQLITE-ADOPTION",
+      "locator": "FUNC-040",
+      "basis": "Reconcile existing use/behavior with current explicit task selection, coherent SQLite outcomes and attributable judgments; no new stakeholder need or runtime qualification is inferred."
     }
   ],
   "allocated_to": "MOD-010"

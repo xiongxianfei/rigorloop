@@ -52,6 +52,7 @@ class CurrentRecordDiscoveryTests(unittest.TestCase):
         self.assertFalse(report["context"]["scope"]["complete"])
 
     def test_unavailable_malformed_and_incomplete_results_fail(self):
+        (self.root / "docs/changes/example").mkdir()
         for result in (SimpleNamespace(returncode=1, stdout=""), SimpleNamespace(returncode=0, stdout='{}'), SimpleNamespace(returncode=0, stdout='{"schema_version":2,"command":"workflow-context","status":"success","scope":{"complete":false}}')):
             with self.subTest(result=result):
                 self.assertEqual(self.run_check(runner=lambda *a, **k: result)[0], 1)

@@ -1,5 +1,5 @@
 # Generated from canonical REM records; do not edit.
-# Source identity: 2cf8f01cf8087e0b226dbd431d6452970b13954a16b84408d91173987708417e
+# Source identity: 7978be139fe27eda655003b22781018baac550ab5be13f735b6a2800fc2e5371
 # Arrows show consumer -> provider; they do not show execution order.
 vars: {
   d2-config: {
@@ -8,54 +8,54 @@ vars: {
 }
 direction: down
 
-m_4d4f442d303137: "Engineering governance" {
+m_4d4f442d303137: "Change and quality control" {
   link: "#module/MOD-017"
-  tooltip: "Engineering governance (MOD-017)"
+  tooltip: "Change and quality control (MOD-017)"
   style.fill: "#ECF3FF"
   style.stroke: "#426898"
   style.font-color: "#23334A"
   style.font-size: 18
   style.border-radius: 8
   grid-columns: 2
-  m_4d4f442d303035: "Engineering baseline\nmanagement" {
+  m_4d4f442d303035: "Model baselines" {
     link: "#module/MOD-005"
-    tooltip: "Engineering baseline management (MOD-005)"
+    tooltip: "Model baselines (MOD-005)"
     style.fill: "#ECF3FF"
     style.stroke: "#426898"
     style.font-color: "#23334A"
     style.font-size: 18
     style.border-radius: 8
   }
-  m_4d4f442d303036: "Engineering change control" {
+  m_4d4f442d303036: "Change control" {
     link: "#module/MOD-006"
-    tooltip: "Engineering change control (MOD-006)"
+    tooltip: "Change control (MOD-006)"
     style.fill: "#ECF3FF"
     style.stroke: "#426898"
     style.font-color: "#23334A"
     style.font-size: 18
     style.border-radius: 8
   }
-  m_4d4f442d303037: "Engineering verification and\nassurance" {
+  m_4d4f442d303037: "Review and verification" {
     link: "#module/MOD-007"
-    tooltip: "Engineering verification and assurance (MOD-007)"
+    tooltip: "Review and verification (MOD-007)"
     style.fill: "#ECF3FF"
     style.stroke: "#426898"
     style.font-color: "#23334A"
     style.font-size: 18
     style.border-radius: 8
   }
-  m_4d4f442d303038: "Engineering authoring\nguidance" {
+  m_4d4f442d303038: "Authoring guidance" {
     link: "#module/MOD-008"
-    tooltip: "Engineering authoring guidance (MOD-008)"
+    tooltip: "Authoring guidance (MOD-008)"
     style.fill: "#ECF3FF"
     style.stroke: "#426898"
     style.font-color: "#23334A"
     style.font-size: 18
     style.border-radius: 8
   }
-  m_4d4f442d303039: "Engineering learning" {
+  m_4d4f442d303039: "Lessons and improvement" {
     link: "#module/MOD-009"
-    tooltip: "Engineering learning (MOD-009)"
+    tooltip: "Lessons and improvement (MOD-009)"
     style.fill: "#ECF3FF"
     style.stroke: "#426898"
     style.font-color: "#23334A"
@@ -63,9 +63,9 @@ m_4d4f442d303137: "Engineering governance" {
     style.border-radius: 8
   }
 }
-m_4d4f442d303136: "Engineering model management" {
+m_4d4f442d303136: "Project model" {
   link: "#module/MOD-016"
-  tooltip: "Engineering model management (MOD-016)"
+  tooltip: "Project model (MOD-016)"
   style.fill: "#F6F8FB"
   style.stroke: "#8292A9"
   style.font-color: "#23334A"
@@ -73,9 +73,9 @@ m_4d4f442d303136: "Engineering model management" {
   style.border-radius: 8
   style.stroke-dash: 3
 }
-m_4d4f442d303138: "Engineering operations" {
+m_4d4f442d303138: "Skills and commands" {
   link: "#module/MOD-018"
-  tooltip: "Engineering operations (MOD-018)"
+  tooltip: "Skills and commands (MOD-018)"
   style.fill: "#F6F8FB"
   style.stroke: "#8292A9"
   style.font-color: "#23334A"
@@ -83,9 +83,9 @@ m_4d4f442d303138: "Engineering operations" {
   style.border-radius: 8
   style.stroke-dash: 3
 }
-m_4d4f442d303139: "Product delivery" {
+m_4d4f442d303139: "Packaging and distribution" {
   link: "#module/MOD-019"
-  tooltip: "Product delivery (MOD-019)"
+  tooltip: "Packaging and distribution (MOD-019)"
   style.fill: "#F6F8FB"
   style.stroke: "#8292A9"
   style.font-color: "#23334A"
@@ -109,6 +109,14 @@ m_4d4f442d303138 -> m_4d4f442d303137: "Engineering\nauthoring guidance" {
   style.fill: "#FFFFFF"
   style.font-size: 14
 }
+m_4d4f442d303138 -> m_4d4f442d303137: "Governed-action\nauthority" {
+  link: "#interface/IF-009"
+  tooltip: "Applicable governed-action authority (IF-009)"
+  style.stroke: "#667A96"
+  style.font-color: "#34445B"
+  style.fill: "#FFFFFF"
+  style.font-size: 14
+}
 m_4d4f442d303139 -> m_4d4f442d303137: "Governed-action\nauthority" {
   link: "#interface/IF-009"
   tooltip: "Applicable governed-action authority (IF-009)"
@@ -117,9 +125,25 @@ m_4d4f442d303139 -> m_4d4f442d303137: "Governed-action\nauthority" {
   style.fill: "#FFFFFF"
   style.font-size: 14
 }
+m_4d4f442d303138 -> m_4d4f442d303137: "Claim evidence\napplicability and\ncoverage" {
+  link: "#interface/IF-010"
+  tooltip: "Claim evidence applicability and coverage (IF-010)"
+  style.stroke: "#667A96"
+  style.font-color: "#34445B"
+  style.fill: "#FFFFFF"
+  style.font-size: 14
+}
 m_4d4f442d303139 -> m_4d4f442d303137: "Claim evidence\napplicability and\ncoverage" {
   link: "#interface/IF-010"
   tooltip: "Claim evidence applicability and coverage (IF-010)"
+  style.stroke: "#667A96"
+  style.font-color: "#34445B"
+  style.fill: "#FFFFFF"
+  style.font-size: 14
+}
+m_4d4f442d303138 -> m_4d4f442d303137: "Engineering work\ncontext and\nworkflow adoption" {
+  link: "#interface/IF-011"
+  tooltip: "Engineering work context and workflow adoption (IF-011)"
   style.stroke: "#667A96"
   style.font-color: "#34445B"
   style.fill: "#FFFFFF"

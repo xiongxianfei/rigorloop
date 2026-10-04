@@ -23,6 +23,11 @@
       "source": "SRC-PUBLISHED-PRODUCTS",
       "locator": "FUNC-055",
       "basis": "Assign MOD-012 as the proposed accountable primary responsibility after Functional Analysis. Current product source contracts retain detailed behavior authority; allocation is not runtime adoption or complete AR coverage."
+    },
+    {
+      "source": "SRC-WORKFLOW-DESIGN",
+      "locator": "FUNC-055",
+      "basis": "Draft integrated design from the accepted requirement-first basis. This defines target responsibility and cooperation, not installed capability, design approval, runtime evidence or SQLite adoption."
     }
   ],
   "description": "Translate an applicable capability recording obligation into supported explicit operations and interpret their observed results. Persistent record semantics remain with the CLI/Records contract; this behavior owns the invoking participant's scope and explicit decisions.",
@@ -40,7 +45,8 @@
     "Use supported commands, selectors, request shapes, destination identities, and applicable concurrency basis; supply the actor's engineering decisions explicitly.",
     "Inspect each actual operation result and distinguish persistence success from assessment approval, authority, or completed workflow.",
     "For conflict, interruption, or changed basis, follow the owning recovery procedure with fresh relevant context, preserving current and historical records.",
-    "Keep ordinary portable outputs outside recording unless their actual governed or durable trigger applies; never synthesize governed completion from an unrecorded result."
+    "Keep ordinary portable outputs outside recording unless their actual governed or durable trigger applies; never synthesize governed completion from an unrecorded result.",
+    "Preserve Review purpose and scope, actual assessed subjects, attributable current reassessment and selected support through the supported tasks; one whole-change gate does not require a permanent attempt archive."
   ],
   "failure_behavior": [
     {

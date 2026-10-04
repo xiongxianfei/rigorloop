@@ -3,7 +3,7 @@
   "type": "allocated-requirement",
   "title": "Interpret content under the selected state profile",
   "status": "draft",
-  "statement": "The Engineering model conformance Module shall interpret supplied engineering content under the profile declared by its selected state, preserving subject and scope and reporting missing, unsupported, incompatible, or incomplete interpretation without silent migration or profile substitution.",
+  "statement": "The Interpretation and validation Module shall interpret supplied engineering content under the profile declared by its selected state, preserving subject and scope and reporting missing, unsupported, incompatible, or incomplete interpretation without silent migration or profile substitution.",
   "analysis": {
     "method": "5W2H",
     "what": {

@@ -1,5 +1,5 @@
 # Generated from canonical REM records; do not edit.
-# Source identity: 2cf8f01cf8087e0b226dbd431d6452970b13954a16b84408d91173987708417e
+# Source identity: 7978be139fe27eda655003b22781018baac550ab5be13f735b6a2800fc2e5371
 # Arrows show consumer -> provider; they do not show execution order.
 vars: {
   d2-config: {
@@ -8,9 +8,9 @@ vars: {
 }
 direction: down
 
-m_4d4f442d303132: "Published engineering\ncapability guidance" {
+m_4d4f442d303132: "Skill procedures" {
   link: "#module/MOD-012"
-  tooltip: "Published engineering capability guidance (MOD-012)"
+  tooltip: "Skill procedures (MOD-012)"
   style.fill: "#ECF3FF"
   style.stroke: "#426898"
   style.font-color: "#23334A"
@@ -18,9 +18,9 @@ m_4d4f442d303132: "Published engineering\ncapability guidance" {
   style.border-radius: 8
   width: 420
 }
-m_4d4f442d303137: "Engineering governance" {
+m_4d4f442d303137: "Change and quality control" {
   link: "#module/MOD-017"
-  tooltip: "Engineering governance (MOD-017)"
+  tooltip: "Change and quality control (MOD-017)"
   style.fill: "#F6F8FB"
   style.stroke: "#8292A9"
   style.font-color: "#23334A"
@@ -28,9 +28,9 @@ m_4d4f442d303137: "Engineering governance" {
   style.border-radius: 8
   style.stroke-dash: 3
 }
-m_4d4f442d303138: "Engineering operations" {
+m_4d4f442d303138: "Skills and commands" {
   link: "#module/MOD-018"
-  tooltip: "Engineering operations (MOD-018)"
+  tooltip: "Skills and commands (MOD-018)"
   style.fill: "#F6F8FB"
   style.stroke: "#8292A9"
   style.font-color: "#23334A"
@@ -49,6 +49,30 @@ m_4d4f442d303132 -> m_4d4f442d303138: "Scoped public\ncommand execution" {
 m_4d4f442d303132 -> m_4d4f442d303137: "Engineering\nauthoring guidance" {
   link: "#interface/IF-008"
   tooltip: "Applicable engineering authoring guidance (IF-008)"
+  style.stroke: "#667A96"
+  style.font-color: "#34445B"
+  style.fill: "#FFFFFF"
+  style.font-size: 14
+}
+m_4d4f442d303132 -> m_4d4f442d303137: "Governed-action\nauthority" {
+  link: "#interface/IF-009"
+  tooltip: "Applicable governed-action authority (IF-009)"
+  style.stroke: "#667A96"
+  style.font-color: "#34445B"
+  style.fill: "#FFFFFF"
+  style.font-size: 14
+}
+m_4d4f442d303132 -> m_4d4f442d303137: "Claim evidence\napplicability and\ncoverage" {
+  link: "#interface/IF-010"
+  tooltip: "Claim evidence applicability and coverage (IF-010)"
+  style.stroke: "#667A96"
+  style.font-color: "#34445B"
+  style.fill: "#FFFFFF"
+  style.font-size: 14
+}
+m_4d4f442d303132 -> m_4d4f442d303137: "Engineering work\ncontext and\nworkflow adoption" {
+  link: "#interface/IF-011"
+  tooltip: "Engineering work context and workflow adoption (IF-011)"
   style.stroke: "#667A96"
   style.font-color: "#34445B"
   style.fill: "#FFFFFF"

@@ -9,7 +9,7 @@ argument-hint: [operation, exact target path, concern, and command evidence]
 
 # CI maintenance
 
-Maintain CI infrastructure from project-owned commands and risk evidence. Ordinary authoring does not run validation, does not design tests, does not specify validation commands, or wait for checks; validation stays under `verify`. A bounded PR CI repair may run already-authoritative validation commands and observe the replacement hosted check under the rules below.
+Maintain CI infrastructure from project-owned commands and risk evidence. Run the relevant existing checks for authored changes. Test-design and command ownership stay with the project; final `verify` remains a distinct assessment. A bounded PR CI repair may run already-authoritative validation commands and observe the replacement hosted check under the rules below.
 
 
 ## Test criteria application
@@ -22,22 +22,14 @@ When project authority explicitly adopts Review and Closeout policy, use the pac
 
 ## Explicit recording
 
-Use this profile when the project has adopted the RigorLoop Record Format and explicitly selected the change. Read the project's governing documents. The Workflow model owns coordination, Review and Closeout owns assessment policy, Record Format owns stored shapes, and CLI owns construction and persistence. Current storage uses `rigorloop-records-v3`; historical stores remain unchanged archival evidence. Select the actual record contract; never mix versions within a store. Retired or unknown stored formats are rejected without fallback. Do not migrate or reinterpret historical records; preserve their bytes and meaning as archival evidence. The project need not contain RigorLoop's internal design repository.
-
-Use the contract-selected recording procedures in this skill and its conditional resources. Dispatch primary results by schema_version (2 or 3), then status and operation; a schema-3 error alone does not establish v3 storage. Read scope and omissions before relying on selected content. Retain substantive stage duties, permissions, independent assessment and proof obligations. Historical records grant no current execution authority.
-
-Use `rigorloop context --root PATH --change ID --input - --format json` with explicitly selected kinds/filters and full detail. Expand the selection when needed: omitted content is not evidence of absence. Copy `record_contract` and `revision` into the targeted request's `contract` and `expected_revision`. Use `rigorloop subject inspect --root PATH --path FILE --content full --format json` for the exact engineering basis and mechanical identities; supply relied-on subjects as `reads` with their expected identities.
-
-Make your decision, then use the purpose-specific command's `--help` and submit its targeted operation on stdin. Use `batch` for related explicit updates. Supply semantic values and any required applicability; the CLI constructs registry entries, preserves neighbors and serializes records. Do not reconstruct complete files or invoke historical eligibility first. Preview is optional; normal writes validate. A save does not approve work, establish readiness or select the next actor. Conflict requires rereading and reassessment; busy/recovery-required is not a save. Use explicit `record-store recover` for interrupted storage. Missing or stale evidence prevents reliance, not recording a correction.
-
-Retain the requested CI scope and external execution permissions. Inspect relevant work and evidence; record observed local or hosted results with evidence record and exact subjects. Report newly found defects through blocker add with explicit ownership and required outcome. Never claim hosted success without observation, and hand the evidence to the responsible reviewer or Verify without selecting readiness.
+For explicitly selected Change-managed work, use the packaged operational-recording reference and the executing CLI's capabilities. Current work uses targeted-recording-v2 / rigorloop-records-v4. Preserve the invocation's actual scope and existing authority; a storage save does not approve engineering work or permit external action. Use current context and opaque revisions, and reconcile interruptions before retrying. Do not use SQL or edit runtime storage directly.
 
 ## Workflow role
 
 - role_name: ci-maintenance
 - stage: support
 - upstream: user request, exact repository target, project-owned commands, risk evidence, and approved privileged design when applicable
-- downstream: `verify` for ordinary current workflow-managed authoring; none for historical records or an eligible bounded PR CI repair
+- downstream: `code-review` for the complete ordinary workflow-managed implementation; none for historical records or an eligible bounded PR CI repair
 - summary: Review or conditionally author repository-owned CI automation without inventing commands, policy, or external state.
 - must_not_claim: unexecuted validation, unobserved hosted-CI status, verification, branch, PR, release, deployment, or lifecycle readiness
 
@@ -99,6 +91,11 @@ Late coverage, structure or privilege requires reclassification and complete res
 
 ## Resource map
 
+- READ `references/targeted-recording-v2.schema.json` when constructing a supported mutation input within the invocation’s authority.
+- READ `references/rigorloop-records-v4.schema.json` when interpreting closed record fields or referenced task types.
+
+- READ `references/operational-recording.md` when inspecting current Change context or recording support.
+
 - READ `references/test-quality.md` when adopted criteria apply and this invocation authors, allocates or assesses test obligations.
 - READ `references/test-maintenance.md` when adopted criteria apply and this invocation changes tests or assesses test maintenance, removal or its impact.
 
@@ -122,7 +119,7 @@ Classify batches as `independent`, `ordered-dependent`, or `atomic-group-require
 
 Report requested and actual operation, repair mode, target kind, provider, privilege, concerns, structure, assembly, target identity, mutation outcome, validation evidence, blockers, and hosted CI observation. Use `not-observed`, `pending`, `passed`, or `failed`; when observed, include the exact run and head.
 
-Do not claim tests or hosted CI succeeded unless executed or observed. A bounded repair does not claim branch readiness, PR readiness, deployment readiness, release readiness, or lifecycle completion. Ordinary current workflow-managed success hands off to `verify`; historical records, eligible repairs, and other direct invocations stay isolated.
+Do not claim tests or hosted CI succeeded unless executed or observed. A bounded repair does not claim branch readiness, PR readiness, deployment readiness, release readiness, or lifecycle completion. Ordinary workflow-managed authorship reports progress while implementation remains, then hands the complete scope to `code-review`; historical records, eligible repairs, and other direct invocations stay isolated.
 
 ## Evidence collection efficiency
 
@@ -147,8 +144,9 @@ Result
 - Validation evidence: <evidence>
 - Blockers: <none or exact blockers>
 - Hosted CI observation: <not-observed | pending | passed | failed; exact run and head when observed>
-- Next stage: <verify | none | blocked>
+- Next stage: <code-review | route | none | blocked>
 ```
+
 
 ## Expected output
 

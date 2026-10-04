@@ -1,7 +1,7 @@
-// Shared filesystem boundary for the unadopted explicit recorder.
+// Qualified legacy source reader and narrowly scoped import exclusion locks.
 import * as fs from "node:fs";
 import { resolve, join, dirname, basename } from "node:path";
-import { createHash, randomBytes } from "node:crypto";
+import { createHash } from "node:crypto";
 
 export const MIB = 1024 * 1024;
 export const digest = bytes => bytes === null ? null : `sha256:${createHash("sha256").update(bytes).digest("hex")}`;
@@ -91,42 +91,20 @@ export class RecordFiles {
     this.withParent(item,name=>fs.mkdirSync(name,{mode:0o700}));
     return true;
   }
-  write(path,bytes,{exclusive=false,expected}={}) {
+  createLock(path,bytes) {
+    if (!/^\.rigorloop\/record-store\/[a-z0-9][a-z0-9-]{0,79}\/lock$/.test(path)) stop("unsafe-path");
     const item=this.inspect(path);
     this.assert(item.chain);
-    if (expected !== undefined && this.hash(path) !== expected) stop("identity-conflict");
     this.withParent(item,name=>{
-    if(exclusive) {
       const fd=fs.openSync(name,fs.constants.O_WRONLY|fs.constants.O_CREAT|fs.constants.O_EXCL|fs.constants.O_NOFOLLOW,0o600);
       try { this.assert(item.chain); fs.writeFileSync(fd,bytes); fs.fsyncSync(fd); } finally { fs.closeSync(fd); }
-    } else {
-      const temporary=`.record-store-${randomBytes(16).toString("hex")}`;
-      const fd=fs.openSync(temporary,"wx",0o600);
-      try {
-        this.assert(item.chain); fs.writeFileSync(fd,bytes); fs.fsyncSync(fd);
-        this.assert(item.chain);
-        if (expected !== undefined && this.hash(path) !== expected) stop("identity-conflict");
-        fs.renameSync(temporary,name);
-        // Parent identities must still be the ones validated before publication.
-        this.assert(item.chain.filter(([p])=>p !== item.target));
-      } finally {
-        fs.closeSync(fd);
-        if(stat(temporary)) fs.unlinkSync(temporary);
-      }
-    }
     });
   }
-  remove(path,expected) {
+  removeLock(path,expected) {
+    if (!/^\.rigorloop\/record-store\/[a-z0-9][a-z0-9-]{0,79}\/lock$/.test(path)) stop("unsafe-path");
     const item=this.inspect(path); if(!item.info) return;
     this.assert(item.chain);
     if(this.hash(path) !== expected) stop("identity-conflict");
     this.withParent(item,name=>fs.unlinkSync(name));
-  }
-  removeDirectory(path,identity) {
-    const item=this.inspect(path,true); if(!item.info) return;
-    if(`${item.info.dev}:${item.info.ino}` !== identity) stop("recovery-needed");
-    this.assert(item.chain);
-    try { this.withParent(item,name=>fs.rmdirSync(name)); }
-    catch(e) { if(e.code !== "ENOTEMPTY" && e.code !== "EEXIST") throw e; }
   }
 }

@@ -1,9 +1,9 @@
 {
   "id": "MOD-003",
   "type": "module",
-  "title": "Engineering model conformance",
+  "title": "Interpretation and validation",
   "status": "draft",
-  "description": "Interpret engineering content under its declared metamodel and determine explicit structural findings without substituting them for engineering judgment.",
+  "description": "Interprets the declared model rules and reports structural and relationship violations without substituting checks for engineering judgment.",
   "responsibilities": [
     "Interpret the profile declared by a selected model state, including typed identities and authoritative references.",
     "Check explicit identity presence and uniqueness over an identified candidate scope.",

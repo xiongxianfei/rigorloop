@@ -25,10 +25,10 @@
     },
     {
       "actor": "System",
-      "action": "Presents the new support separately from the historical observations and conclusions."
+      "action": "Presents the current supported conclusion and its assessed basis; preserves open obligations and selected retained meaning without requiring all earlier attempts."
     }
   ],
-  "expected_outcome": "Current reliance is based on the changed subject and criteria; any unsupported portion remains unestablished until applicable observations and a justified judgment address it, while historical evidence keeps its original meaning.",
+  "expected_outcome": "Current reliance reflects the assessed subject, criteria and limitations. Superseded detail can be compacted, while unresolved issues and conclusions still relied upon retain their meaning.",
   "alternatives": [
     {
       "condition": "The change leaves some criterion support applicable with a recorded engineering basis.",
@@ -41,6 +41,10 @@
     {
       "condition": "New observations remain incomplete or materially contradictory.",
       "outcome": "The revised claim stays unestablished for the affected scope; earlier favorable results are not silently carried forward."
+    },
+    {
+      "condition": "The referenced Change is already complete and a new regression appears.",
+      "outcome": "The completion remains historical; record the regression as linked new work rather than continuously invalidating the completed Change."
     }
   ],
   "failures": [
@@ -62,6 +66,11 @@
       "source": "SRC-COMPLETE-ANALYSIS",
       "locator": "SCN-029",
       "basis": "IR-004 owns changed-state reassessment. SR-027 governs applicability, SR-028 governs scoped conclusions, and SR-029 derives reassessment and repeat-verification obligations without rewriting historical evidence. Accepted as current requirement-analysis knowledge after independent coverage and clarity review: one owning IR and primary Feature, observable goal and interactions, classified outcomes, and applicable SR coverage. This confirms analysis only, not requirement approval, implementation, or satisfaction."
+    },
+    {
+      "source": "SRC-CURRENT-HANDOFF",
+      "locator": "SCN-029",
+      "basis": "User-selected current handoff and selective retention refinement. Reuse existing identity and responsibility; no runtime adoption or independent approval is asserted."
     }
   ]
 }

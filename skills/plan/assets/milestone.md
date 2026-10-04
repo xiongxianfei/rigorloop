@@ -1,12 +1,11 @@
 <!-- Template: plan-milestone-v1 -->
 <!-- Skill: plan -->
 <!-- Template status: normative -->
-<!-- Structural-fingerprint: sha256:339cd1be51c01c3c14f395189e9c14b60641bd9a284f4bee780b7acb3e0f15da -->
 <!-- Maintained alongside: skills/plan/SKILL.md -->
 
 ### M<milestone-number>. <title>
 
-- Milestone kind: <implementation | lifecycle-closeout>
+- Milestone kind: implementation
 - Engineering purpose: <why this is a safe, dependency-correct reviewable slice>
 - Requirements: <requirement ids>
 - Architecture responsibility: <realization boundary or decision ids>
@@ -25,7 +24,7 @@
 - Expected observable result: <result>
 - Completion criteria: <stable completion criteria>
 - Required evidence: <stage-owned evidence expected>
-- Review handoff: <review target and scope>
+- Whole-change review contribution: <scope/evidence used by the final gate; no milestone approval prerequisite>
 - Optional commit boundary: `M<milestone-number>: <completed milestone outcome>`
 - Risks:
   - <risk>

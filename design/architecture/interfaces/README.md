@@ -4,7 +4,7 @@ An Interface defines an explicit interaction contract between architectural resp
 Apply the [REM Interface criteria](../../../rem/models/architecture-design.md#interfaces) to purpose, inputs, outputs, preconditions, failure outcomes, consistency, and compatibility.
 
 The collection uses `<IF-ID>-<full-title-slug>/interface.json` under the [entity naming convention](../../support/README.md#entity-naming-and-filenames).
-The ten draft contracts cover the [IR-001 architecture walkthrough](../README.md#scenario-walkthrough), the proposed [published-product responsibilities](../../requirements/published-products.md), and selected [parent-boundary cooperation](../views/browser/index.html#scenarios). They describe logical interactions and artifact contracts rather than asserting new public runtime APIs or implementation.
+The eleven draft contracts cover the [IR-001 architecture walkthrough](../README.md#scenario-walkthrough), the proposed [published-product responsibilities](../../requirements/published-products.md), and selected [parent-boundary cooperation](../views/browser/index.html#scenarios). They describe logical interactions and artifact contracts rather than asserting new public runtime APIs or implementation.
 IF-003 and IF-004 define the CLI cooperation contract, including fresh guarded writes, exact recovery, and prepublication receipt preparation. The [derived walkthrough](../views/browser/index.html#cooperation) summarizes their contribution to Scenarios and allocated obligations.
 Their optional sibling `realization/*.json` files follow the [realization profile](../../support/README.md#subordinate-realization-views). They record attributed process/function bindings and proposed choices separately from those logical contracts.
 
@@ -20,8 +20,9 @@ Their optional sibling `realization/*.json` files follow the [realization profil
 | [IF-006](IF-006-verified-skill-installation-execution/interface.json) | Verified skill installation execution | [MOD-019](../modules/MOD-019-product-delivery/module.json) | [MOD-010](../modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/module.json) | — |
 | [IF-007](IF-007-engineering-state-content-and-interpretation/interface.json) | Engineering state content and interpretation | [MOD-016](../modules/MOD-016-engineering-model-management/module.json) | [MOD-005](../modules/MOD-017-engineering-governance/modules/MOD-005-engineering-baseline-management/module.json) | — |
 | [IF-008](IF-008-applicable-engineering-authoring-guidance/interface.json) | Applicable engineering authoring guidance | [MOD-017](../modules/MOD-017-engineering-governance/module.json) | [MOD-012](../modules/MOD-018-engineering-operations/modules/MOD-012-published-engineering-capability-guidance/module.json) | — |
-| [IF-009](IF-009-applicable-governed-action-authority/interface.json) | Applicable governed-action authority | [MOD-017](../modules/MOD-017-engineering-governance/module.json) | [MOD-015](../modules/MOD-019-product-delivery/modules/MOD-015-product-release-coordination/module.json) | — |
-| [IF-010](IF-010-claim-evidence-applicability-and-coverage/interface.json) | Claim evidence applicability and coverage | [MOD-017](../modules/MOD-017-engineering-governance/module.json) | [MOD-015](../modules/MOD-019-product-delivery/modules/MOD-015-product-release-coordination/module.json) | — |
+| [IF-009](IF-009-applicable-governed-action-authority/interface.json) | Applicable governed-action authority | [MOD-017](../modules/MOD-017-engineering-governance/module.json) | [MOD-012](../modules/MOD-018-engineering-operations/modules/MOD-012-published-engineering-capability-guidance/module.json), [MOD-015](../modules/MOD-019-product-delivery/modules/MOD-015-product-release-coordination/module.json) | — |
+| [IF-010](IF-010-claim-evidence-applicability-and-coverage/interface.json) | Claim evidence applicability and coverage | [MOD-017](../modules/MOD-017-engineering-governance/module.json) | [MOD-012](../modules/MOD-018-engineering-operations/modules/MOD-012-published-engineering-capability-guidance/module.json), [MOD-015](../modules/MOD-019-product-delivery/modules/MOD-015-product-release-coordination/module.json) | — |
+| [IF-011](IF-011-engineering-work-context-and-workflow-adoption/interface.json) | Engineering work context and workflow adoption | [MOD-017](../modules/MOD-017-engineering-governance/module.json) | [MOD-012](../modules/MOD-018-engineering-operations/modules/MOD-012-published-engineering-capability-guidance/module.json) | — |
 
 <!-- interface-index:end -->
 
@@ -41,3 +42,7 @@ IF-001 preserves state and completeness across content access, including rationa
 IF-002 interprets supplied content and checks supplied candidate scope without recursively fetching its own interpretation basis.
 Their consistency rules connect identity checking to the state actually retained and prevent mixing different selected states into an apparently complete account.
 The written outcomes require later implementation verification; schema conformance alone cannot establish them.
+
+## Customer snapshot boundary
+
+[IF-012](IF-012-qualified-architecture-snapshot-generation/interface.json) is provided by MOD-016 and consumed by MOD-010. It composes generation, check and recovery without repurposing Baseline IF-007. The existing IF-001/004/005 contracts carry scoped capture, admission and candidate refinements; all remain proposed until implementation/adoption.

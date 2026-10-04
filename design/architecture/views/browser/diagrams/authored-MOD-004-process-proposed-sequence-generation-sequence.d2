@@ -1,0 +1,39 @@
+shape: sequence_diagram
+user: "Engineer"
+command: "Node CLI\nCommand admission"
+capture: "Rust engine\nCapture and interpretation"
+assembly: "Rust engine\nGenerator assembly"
+publication: "Rust engine\nOutput publication"
+reader: "Reader browser\nEmbedded template"
+user -> command: "Select input, profile, output and expected identity"
+command -> capture: "Capture selected content and interpret declared rules"
+invalid: "If input is invalid, mutable or unsupported: stop" {
+  capture -> command: "Scoped diagnostic"
+  command -> user: "No new snapshot; prior output unchanged"
+}
+valid: "If capture is qualified: prepare the artifact" {
+  capture -> assembly: "Content identity, interpreted model and optional gaps"
+  assembly -> assembly: "Project model into browser data"
+  assembly -> assembly: "Render and validate referenced diagrams"
+  assembly -> assembly: "Check data contract and template compatibility"
+  assembly -> assembly: "Embed template, browser data and diagrams"
+  assembly -> assembly: "Validate complete offline candidate"
+}
+failed: "If preparation fails: stop" {
+  assembly -> command: "Failed preparation; no commit"
+  command -> user: "Prior output unchanged"
+}
+complete: "If the candidate is complete: publish" {
+  assembly -> publication: "Candidate manifest and expected current output"
+  publication -> publication: "Exclude writers; check ownership and expected entry"
+  publication -> publication: "Retain immutable version; replace entry file"
+  publication -> command: "Actual committed identity or recovery required"
+  command -> user: "Actual outcome; no upload or engineering approval"
+}
+lost: "If the engine response is lost after launch" {
+  command -> user: "Commit state unknown; inspect through recovery"
+}
+reading: "Later, when a reader opens a successfully published copy" {
+  reader -> reader: "Load embedded template and browser data"
+  reader -> reader: "Display views and handle navigation locally"
+}

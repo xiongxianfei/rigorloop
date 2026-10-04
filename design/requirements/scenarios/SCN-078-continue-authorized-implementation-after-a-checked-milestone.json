@@ -1,0 +1,65 @@
+{
+  "id": "SCN-078",
+  "type": "scenario",
+  "title": "Continue authorized implementation after a checked milestone",
+  "status": "confirmed",
+  "actor": "An implementing engineer or agent",
+  "goal": "Proceed to the next authorized milestone after completing the current scope and required checks.",
+  "context": "The delivery basis is accepted and additional implementation is authorized.",
+  "trigger": "The current milestone work and checks reach their recorded completion point.",
+  "preconditions": [
+    "The requested scope and relevant project authority are identifiable."
+  ],
+  "interaction": [
+    {
+      "actor": "Implementer",
+      "action": "Records completed work, actual check results, remaining dependencies and blockers."
+    },
+    {
+      "actor": "System",
+      "action": "Identifies whether the next milestone is within authority and has satisfied dependencies."
+    },
+    {
+      "actor": "Implementer",
+      "action": "Continues the eligible work or addresses the identified blocking condition."
+    }
+  ],
+  "expected_outcome": "An eligible next milestone proceeds without reviewer assignment, milestone review record or approval status.",
+  "alternatives": [
+    {
+      "condition": "The request authorizes only the completed isolated slice.",
+      "outcome": "The result reports scoped progress and stops without assuming further authority."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "A required check fails or a material safety, authority or architectural issue remains.",
+      "outcome": "Affected continuation is blocked and the responsible correction is identified."
+    },
+    {
+      "condition": "Known in-scope defects remain undispositioned.",
+      "outcome": "Editing all planned files does not establish implementation completion."
+    }
+  ],
+  "exercises": [
+    "FEAT-017"
+  ],
+  "informs": [
+    "SR-082",
+    "SR-054",
+    "SR-006",
+    "SR-007"
+  ],
+  "sources": [
+    {
+      "source": "SRC-REQUIREMENT-FIRST-WORKFLOW",
+      "locator": "SCN-078",
+      "basis": "User-selected requirement-first workflow and one mandatory whole-change Code Review gate. Proposed requirement analysis only; existing product contracts remain active until coordinated adoption. No new Function, AR, implementation or approval is inferred."
+    },
+    {
+      "source": "SRC-WORKFLOW-REQUIREMENT-REVIEW",
+      "locator": "design/requirements/sources.md#src-workflow-requirement-review",
+      "basis": "Document-based author assessment under the explicit Constitution exception confirms this Scenario as requirement-analysis knowledge. It is not independent review, executed product evidence or workflow activation."
+    }
+  ]
+}

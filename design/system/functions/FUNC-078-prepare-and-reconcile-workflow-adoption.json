@@ -1,0 +1,45 @@
+{
+  "id": "FUNC-078",
+  "type": "function",
+  "title": "Prepare and reconcile workflow adoption",
+  "status": "draft",
+  "description": "Prepare an attributable transition from the selected current workflow to a coherent replacement for bounded active work, and reconcile observed adoption or interruption without rewriting prior judgments. Change Control owns the semantic disposition; package installation and record publication remain separate operations.",
+  "inputs": [
+    "Selected project and Change scope, current and proposed workflow contract identities, and attributable adoption authority.",
+    "Active work, exact requirement/design/review subjects and dependencies, and candidate guidance/validator/recording compatibility observations.",
+    "Observed installation and publication outcomes when reconciling an attempted adoption."
+  ],
+  "preconditions": [
+    "The selected scope and current authority are identifiable; incomplete prerequisites are reported outcomes, not assumed successes."
+  ],
+  "outputs": [
+    "A bounded adoption disposition with retained basis, required replacements, affected work/evidence, blockers and a recovery basis.",
+    "An observed current, target or unresolved adoption state with exact supported contract identity; no fabricated approval or successful publication."
+  ],
+  "behavior": [
+    "Compare selected current and target contracts and account for every affected active Change, live consumer and retained historical dependency.",
+    "Reuse supported current requirements and evidence only under an explicit applicability conclusion; old proposal or milestone judgments retain their original scope.",
+    "Require coherent canonical guidance, generated package inventory, validation and selected recording support before proposing activation. Database migration has separately declared prerequisites.",
+    "Bind the disposition to the inspected work and package identities. A changed basis invalidates dependent activation and requires fresh reconciliation.",
+    "Reconcile actual outcomes after interruption. Keep an intact prior contract identifiable, or report affected operation unavailable when neither old nor new is coherent. Never infer rollback or repeat writes from intent.",
+    "Supply the authorized adoption decision for controlled transition recording; record custody, physical installation and executing external actions remain with their owners."
+  ],
+  "failure_behavior": [
+    {
+      "condition": "Scope, authority, compatibility or active-work disposition is missing or contradictory.",
+      "outcome": "Return the unresolved dependency and responsible owner; do not declare the replacement workflow active."
+    },
+    {
+      "condition": "The basis changes or installation/publication is interrupted.",
+      "outcome": "Preserve original subjects and actual observations; recompute a safe recovery or renewed adoption disposition before further dependent work."
+    }
+  ],
+  "allocated_to": "MOD-006",
+  "sources": [
+    {
+      "source": "SRC-WORKFLOW-DESIGN",
+      "locator": "SR-083; FUNC-078",
+      "basis": "Draft integrated design from the accepted requirement-first basis. This defines target responsibility and cooperation, not installed capability, design approval, runtime evidence or SQLite adoption."
+    }
+  ]
+}

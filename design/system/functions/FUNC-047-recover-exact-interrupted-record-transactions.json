@@ -3,31 +3,26 @@
   "type": "function",
   "title": "Recover exact interrupted record transactions",
   "status": "draft",
-  "description": "Resolve an explicitly selected supported interrupted publication by completing its prepared candidate or restoring its verified before-state. Recovery preserves the supplied engineering decisions exactly and never reconstructs them by replaying operations against new state.",
+  "description": "An operator obtains an exact attributable terminal state or a safe recovery stop while retaining enough valid information for subsequent recovery. This logical behavior has the scope and limits of SR-045; current SQLite realization and maintenance remain distinct.",
   "inputs": [
-    "Explicit change, transaction and expected-recovery identity with requested restore or complete action.",
-    "Supported private journal, exact verified before/candidate snapshots, observed targets, and declared read-set identities."
+    "Explicit supported operation, selected project/Change and expected coherent state.",
+    "Actor-supplied candidate or verified recovery basis, with declared subject and artifact identities."
   ],
   "preconditions": [],
   "outputs": [
-    "Verified restored or completed storage result, or an explicit safe recovery stop.",
-    "Retained recoverability for another interrupted attempt, with refreshed recovery identity when available."
+    "Exact attributable result or explicit conflict, unavailability, rejection or recovery-required outcome."
   ],
   "behavior": [
-    "Validate journal/version, snapshots, containment and explicit expected recovery identity before mutation; reject unsupported retired or mixed recovery selectors.",
-    "At observed checks, require each target to match recorded before or candidate bytes/absence; never overwrite a third state.",
-    "Complete only the exact prepared candidate with current declared read basis; restore only verified before content while leaving external read subjects untouched.",
-    "Protect acknowledged committed success from rollback; restoration of initial creation removes only transaction-created content and empty created directories.",
-    "Keep recovery repeatable after interruption and clean private snapshots only after verified terminal recovery; those snapshots are mechanical recovery state rather than engineering evidence."
+    "Unavailable, corrupted, unsupported or unrecognized recovery information causes an explicit safe stop; foreign or newer work is not overwritten through guessed repair.",
+    "Where explicit completion or restoration is supported, completion reproduces the exact prepared candidate with applicable fresh basis checks and restoration reproduces the verified before-state; neither replays actor operations or edits external basis subjects.",
+    "Committed success cannot be rolled back as interruption repair. Recovery of uncommitted creation preserves all preexisting and externally added content.",
+    "Interruption during recovery remains attributable and repeatable without duplicate semantic effects; an unverified terminal state is never reported as complete.",
+    "Automatic storage recovery may only establish the transaction outcome already determined by the supported storage contract. Ordinary reads never choose completion versus restoration, import history or apply a new actor decision. An unresolved choice requires explicit recovery selection."
   ],
   "failure_behavior": [
     {
-      "condition": "Evidence is missing, corrupt, tampered, incompatible, or a target has an unknown third state.",
-      "outcome": "Stop without guessed repair or foreign-content overwrite, preserving available recovery context."
-    },
-    {
-      "condition": "Completion basis drifts or recovery is interrupted again.",
-      "outcome": "Report the corresponding safe stop/recovery-required state; do not silently choose restoration or synthesize a new decision."
+      "condition": "The requested candidate, expected state or recovery basis cannot be established safely.",
+      "outcome": "Return the corresponding bounded rejection, conflict or recovery condition without invented decisions, silent merge or unrelated overwrite."
     }
   ],
   "sources": [
@@ -40,6 +35,11 @@
       "source": "SRC-PUBLISHED-PRODUCTS",
       "locator": "FUNC-047",
       "basis": "Assign MOD-011 as the proposed accountable primary responsibility after Functional Analysis. Current product source contracts retain detailed behavior authority; allocation is not runtime adoption or complete AR coverage."
+    },
+    {
+      "source": "SRC-LOCAL-OPERATIONAL-ANALYSIS",
+      "locator": "FUNC-047",
+      "basis": "Draft derivation from the refined IRs and RR proposal; no approval, implementation or satisfaction claim."
     }
   ],
   "allocated_to": "MOD-011"

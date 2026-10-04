@@ -1,5 +1,5 @@
 # Generated from canonical REM records; do not edit.
-# Source identity: 2cf8f01cf8087e0b226dbd431d6452970b13954a16b84408d91173987708417e
+# Source identity: 7978be139fe27eda655003b22781018baac550ab5be13f735b6a2800fc2e5371
 # Each outcome opens its exact selected obligations and accountable responsibilities. The arrows summarize this reading selection, not execution order, causal flow, complete coverage or satisfaction. Broader Scenario traceability remains in the detail.
 vars: {d2-config: {layout-engine: elk}}
 direction: down
@@ -20,16 +20,16 @@ outcomes: "Selected outcome accountability" {
     style.font-color: "#23334A"
     style.font-size: 17
     style.border-radius: 6
-    outcome: "Exact selected recovery without\nsemantic replay" {
+    outcome: "Establish coherent current\noutcome without semantic replay" {
       link: "#scenario/SCN-047/outcome/expected"
-      tooltip: "The selected exact recovery outcome is established and attributable, without replaying semantic operations against newer content or rolling back acknowledged success."
+      tooltip: "The actor can distinguish established current state from unknown commitment; committed work is preserved and inspection supplies no new decision or approval."
       style.fill: "#E9F4EE"
       style.stroke: "#7C8FA9"
       style.font-color: "#23334A"
       style.font-size: 17
       style.border-radius: 6
     }
-    accountability: "Engineering command interface\nOperational record persistence" {
+    accountability: "Command handling\nWork record storage" {
       link: "#scenario/SCN-047/outcome/expected"
       tooltip: "Selected allocated-obligation owners: MOD-010, MOD-011"
       style.fill: "#ECF3FF"
@@ -52,16 +52,16 @@ outcomes: "Selected outcome accountability" {
     style.font-color: "#23334A"
     style.font-size: 17
     style.border-radius: 6
-    outcome: "Restore only\ntransaction-created initial\ncontent" {
+    outcome: "Uncommitted update leaves prior\nstate" {
       link: "#scenario/SCN-047/outcome/alternative-0"
-      tooltip: "Only transaction-created content and empty created directories are removed; preexisting or externally added content remains."
+      tooltip: "The coherent prior state remains authoritative; retry is a new explicit decision using current context."
       style.fill: "#FFF5DB"
       style.stroke: "#7C8FA9"
       style.font-color: "#23334A"
       style.font-size: 17
       style.border-radius: 6
     }
-    accountability: "Operational record persistence" {
+    accountability: "Work record storage" {
       link: "#scenario/SCN-047/outcome/alternative-0"
       tooltip: "Selected allocated-obligation owners: MOD-011"
       style.fill: "#ECF3FF"
@@ -84,18 +84,18 @@ outcomes: "Selected outcome accountability" {
     style.font-color: "#23334A"
     style.font-size: 17
     style.border-radius: 6
-    outcome: "Committed transaction permits\ncompletion and cleanup only" {
+    outcome: "Committed result survives a\nlost response" {
       link: "#scenario/SCN-047/outcome/alternative-1"
-      tooltip: "Only supported completion/cleanup is available; saved success is not rolled back."
+      tooltip: "Inspection exposes the committed state; it is not rolled back or duplicated to repair missing output."
       style.fill: "#FFF5DB"
       style.stroke: "#7C8FA9"
       style.font-color: "#23334A"
       style.font-size: 17
       style.border-radius: 6
     }
-    accountability: "Operational record persistence" {
+    accountability: "Command handling\nWork record storage" {
       link: "#scenario/SCN-047/outcome/alternative-1"
-      tooltip: "Selected allocated-obligation owners: MOD-011"
+      tooltip: "Selected allocated-obligation owners: MOD-010, MOD-011"
       style.fill: "#ECF3FF"
       style.stroke: "#7C8FA9"
       style.font-color: "#23334A"
@@ -116,18 +116,18 @@ outcomes: "Selected outcome accountability" {
     style.font-color: "#23334A"
     style.font-size: 17
     style.border-radius: 6
-    outcome: "Untrusted recovery information\nor foreign target stops repair" {
+    outcome: "Untrusted storage stops\ninspection safely" {
       link: "#scenario/SCN-047/outcome/failure-0"
-      tooltip: "The system stops without guessed repair, conversion, or overwrite of the foreign state."
+      tooltip: "Report safe unavailability; do not replace the store, guess a repair or overwrite foreign content."
       style.fill: "#F7EDEE"
       style.stroke: "#7C8FA9"
       style.font-color: "#23334A"
       style.font-size: 17
       style.border-radius: 6
     }
-    accountability: "Engineering command interface\nOperational record persistence" {
+    accountability: "Work record storage" {
       link: "#scenario/SCN-047/outcome/failure-0"
-      tooltip: "Selected allocated-obligation owners: MOD-010, MOD-011"
+      tooltip: "Selected allocated-obligation owners: MOD-011"
       style.fill: "#ECF3FF"
       style.stroke: "#7C8FA9"
       style.font-color: "#23334A"
@@ -148,16 +148,16 @@ outcomes: "Selected outcome accountability" {
     style.font-color: "#23334A"
     style.font-size: 17
     style.border-radius: 6
-    outcome: "Changed completion basis or\nrepeated interruption requires\nreinspection" {
+    outcome: "Interrupted inspection remains\nsafe to repeat" {
       link: "#scenario/SCN-047/outcome/failure-1"
-      tooltip: "The system reports the bounded stop or remaining recovery state and permits an explicit later attempt with refreshed recovery identity."
+      tooltip: "Report only the established busy/unavailable outcome; a later fresh read may retry inspection without replaying semantic decisions."
       style.fill: "#F7EDEE"
       style.stroke: "#7C8FA9"
       style.font-color: "#23334A"
       style.font-size: 17
       style.border-radius: 6
     }
-    accountability: "Engineering command interface\nOperational record persistence" {
+    accountability: "Command handling\nWork record storage" {
       link: "#scenario/SCN-047/outcome/failure-1"
       tooltip: "Selected allocated-obligation owners: MOD-010, MOD-011"
       style.fill: "#ECF3FF"

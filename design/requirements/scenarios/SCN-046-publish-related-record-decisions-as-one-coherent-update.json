@@ -6,9 +6,9 @@
   "actor": "An engineering agent recording a set of related explicit decisions",
   "goal": "Publish the supplied related decisions together so subsequent readers can rely on a coherent recorded state.",
   "context": "The update introduces a new supporting record and a related reference with explicitly chosen applicability; intermediate content would be incomplete.",
-  "trigger": "The agent submits one bounded batch against an observed revision.",
+  "trigger": "The agent submits one bounded engineering task against an observed current revision.",
   "preconditions": [
-    "The operations are explicitly supplied, within one selected current-format change, and have no conflicting target assignments.",
+    "The supplied related facts belong to one selected v4 Change and have no conflicting target assignments.",
     "Expected revision and relevant subject identities come from the actor's actual inspected basis."
   ],
   "interaction": [
@@ -50,8 +50,8 @@
       "outcome": "The system reports busy or conflict and preserves the coherent winning work."
     },
     {
-      "condition": "Publication is interrupted.",
-      "outcome": "The system exposes recovery-required instead of saved or a usable mixed state; explicit recovery is a separate request."
+      "condition": "Publication or delivery of its response is interrupted.",
+      "outcome": "A subsequent inspection establishes a coherent committed or uncommitted state through storage recovery without replaying the task. If that state cannot be established, the system reports unavailability or unknown commitment without presenting mixed state or guessed success."
     }
   ],
   "exercises": [
@@ -73,6 +73,11 @@
       "source": "SRC-PUBLISHED-PRODUCTS",
       "locator": "SCN-046; design/requirements/published-products.md#review-and-validation",
       "basis": "Independent review and author reconciliation confirmed this stakeholder situation, primary Feature, and SR coverage as current analysis knowledge. This does not approve requirements or establish implemented behavior or satisfaction."
+    },
+    {
+      "source": "SRC-SQLITE-ADOPTION",
+      "locator": "docs/design/cli/records.md; Work records (MOD-011) current transaction and maintenance contract",
+      "basis": "Reconciles existing stakeholder need and allocation with SQLite ordinary recovery. No new need, approval, or executed result is inferred."
     }
   ]
 }

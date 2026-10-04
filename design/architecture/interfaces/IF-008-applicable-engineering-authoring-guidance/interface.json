@@ -3,7 +3,7 @@
   "type": "interface",
   "title": "Applicable engineering authoring guidance",
   "status": "draft",
-  "description": "The Engineering governance contract for selecting and explaining canonical engineering authoring guidance within a declared adopted REM profile. Published capability guidance consumes this contract for the model-authoring branch of a bounded specialist activity; other specialist procedures retain their own owners and support boundaries.",
+  "description": "The Change and quality control contract for selecting and explaining canonical engineering authoring guidance within a declared adopted REM profile. Published capability guidance consumes this contract for the model-authoring branch of a bounded specialist activity; other specialist procedures retain their own owners and support boundaries.",
   "operations": [
     {
       "name": "select_applicable_authoring_guidance",
@@ -73,7 +73,8 @@
     "Guidance selection and explanation refer to the same applicable activity, profile, and identifiable canonical source versions. A changed or unresolved selection must remain visible rather than silently mixing incompatible rules.",
     "Human and agent presentations preserve the same governing meaning. Canonical rules remain at their owning sources; guidance does not create a competing policy copy or turn an example into authority.",
     "An explanation is not artifact mutation, model interpretation or migration, adoption, an authority determination, independent assessment, or requirement satisfaction. Partial and blocked guidance must remain distinguishable from a complete usable specialist result.",
-    "The contract covers the adopted REM model-authoring alternative in SCN-053. It does not substitute a universal procedure for the full set of published specialist activities or establish successful capability execution."
+    "The contract covers the adopted REM model-authoring alternative in SCN-053. It does not substitute a universal procedure for the full set of published specialist activities or establish successful capability execution.",
+    "For requirement-first consumption by MOD-012, canonical method selection distinguishes requirement validity, System Design completeness and architectural allocation; it supplies the three authoring methods without adding per-method approval gates."
   ],
   "compatibility_rules": [
     "The declared adopted profile and its canonical owners govern the supported activities, representations, rule vocabulary, and applicable versions. Unknown or incompatible context cannot be treated as a supported fallback.",
@@ -91,6 +92,11 @@
       "source": "SRC-BOUNDARY-CONTRACTS",
       "locator": "SR-032; SR-033; FUNC-032; FUNC-033; MOD-008",
       "basis": "Derive selection and explanation operations from the existing canonical authoring guidance behavior. MOD-008 retains those Function allocations and semantic responsibilities while MOD-017 accounts for this external contract. Neither this ownership nor consumption by MOD-012 creates new authority, runtime realization, or satisfaction evidence."
+    },
+    {
+      "source": "SRC-WORKFLOW-DESIGN",
+      "locator": "IF-008",
+      "basis": "Draft integrated design from the accepted requirement-first basis. This defines target responsibility and cooperation, not installed capability, design approval, runtime evidence or SQLite adoption."
     }
   ]
 }

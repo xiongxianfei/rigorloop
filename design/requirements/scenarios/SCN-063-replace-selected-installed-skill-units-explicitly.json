@@ -4,7 +4,7 @@
   "title": "Replace selected installed skill units explicitly",
   "status": "confirmed",
   "actor": "A project user replacing conflicting destination skills",
-  "goal": "Replace only the selected candidate units with the verified complete version while preserving unrelated work and retained originals.",
+  "goal": "Replace the selected candidate units and, when separately authorized, retire the bounded obsolete workflow units while preserving unrelated work and retained originals.",
   "context": "Some candidate skill destinations already exist, possibly with local changes or obsolete files.",
   "trigger": "The user decides whether to replace the reported existing units.",
   "preconditions": [
@@ -37,6 +37,10 @@
     {
       "condition": "Some units are absent while others conflict.",
       "outcome": "Default installation changes none of them; an applicable force request can replace conflicting units and install absent ones."
+    },
+    {
+      "condition": "The verified replacement workflow identifies obsolete installed units outside the new candidate.",
+      "outcome": "The system explains the additional bounded retirement scope. Only separate explicit authorization permits their removal from active discovery; originals are retained and actual effects are reported without claiming workflow activation."
     }
   ],
   "failures": [
@@ -51,6 +55,10 @@
     {
       "condition": "Replacement or verification fails after some effects.",
       "outcome": "Completed, failed, detached, partial, and untouched scope and retained-original locations are reported; retry requires fresh verification/preflight and explicit replacement choice."
+    },
+    {
+      "condition": "Obsolete workflow units remain but only ordinary replacement was authorized, or an obsolete path reappears during replacement.",
+      "outcome": "The system stops affected replacement without silently enlarging permission or claiming a coherent active workflow; it preserves unrelated content and reports any actual prior effects."
     }
   ],
   "exercises": [
@@ -91,6 +99,11 @@
       "source": "SRC-PUBLISHED-PRODUCTS",
       "locator": "SCN-063; design/requirements/published-products.md#review-and-validation",
       "basis": "Independent review and author reconciliation confirmed this stakeholder situation, primary Feature, and SR coverage as current analysis knowledge. This does not approve requirements or establish implemented behavior or satisfaction."
+    },
+    {
+      "source": "SRC-WORKFLOW-CONTRACTS",
+      "locator": "SCN-063; additional bounded replacement situation assessed by the author under the scoped Constitution exception",
+      "basis": "Requirement-first workflow boundary refinement. Existing identities and historical judgments retain their original scope; this target contract is not implemented or adopted behavior."
     }
   ]
 }

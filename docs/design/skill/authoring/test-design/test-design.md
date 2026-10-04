@@ -6,7 +6,7 @@ This package covers goal refinement, authorized handoffs and corrections across 
 
 ## Proof dependencies
 
-AUTH-RF-003/004 rely on [Design's living coverage contract](../design.md#living-test-design) and [Plan's proof allocation](../plan.md) to assess whether the model retains its scenario and the plan assigns an adequate observation. AUTH-SH-002/004 apply [Assessment's exact-subject and independence rules](../../assessment.md) to the handoff. Skill's SKL-AR-004 references this package for internal authoring interactions.
+AUTH-RF-003/004 rely on [Design's living coverage contract](../design.md#proportionate-design-and-proof) and [Plan's proof allocation](../plan.md) to assess whether the model retains its scenario and the plan assigns an adequate observation. AUTH-SH-002/004 apply [Assessment's exact-subject and independence rules](../../assessment.md) to the handoff. Skill's SKL-AR-004 references this package for internal authoring interactions.
 
 ## Case groups
 
@@ -49,7 +49,7 @@ Present the compliant control and the specified faulty candidate under the same 
 
 The reviewer records the exact source/fixture/output identities, observations, counterexample disposition and limits through the existing Assessment/evidence owner. Authoring this catalog is not executing those reviews. A synthetic walkthrough cannot establish target-agent runtime behavior; a future evaluation harness would require an explicit environment, authority, reproducibility and evidence design.
 
-Existing [authority checks](../../../../../tests/skill/skill_authority_tests.py) inspect authoring instructions for prohibited settlement wording and artifact assets for mutable-status headings. Existing [shared refinement checks](../../../../../tests/skill/skill_shared_policy_tests.py) inspect responsibility statements, traceability fields and the lack of added lifecycle authority. They provide useful structural support but do not establish the thirteen composed outcomes, so they are not linked as executable realization of these cases. Their detailed mechanical ownership remains with Skill and the child methods.
+Existing [authority checks](../../../../../tests/skill/skill_resource_tests.py) inspect authoring instructions for prohibited settlement wording and artifact assets for mutable-status headings. Existing [shared refinement checks](../../../../../tests/skill/skill_shared_policy_tests.py) inspect responsibility statements, traceability fields and the lack of added lifecycle authority. They provide useful structural support but do not establish the thirteen composed outcomes, so they are not linked as executable realization of these cases. Their detailed mechanical ownership remains with Skill and the child methods.
 
 The native aggregate remains [test-skill-validator.py](../../../../../tests/skill/test-skill-validator.py). This review-only catalog has no executable case population to compare with its full discovery count. Do not generate Python tests that merely assert the JSON's own expected text, invent a test method for a manual review, or delete existing unlinked regressions. If executable coverage is later added, link its real callable and verify trusted native discovery at that time.
 
@@ -75,7 +75,7 @@ All other field constraints are unchanged from the explicitly referenced contrac
 
 Author checks parse the index and groups, resolve declared ownership and shared contract, check fields/closed values/unique IDs/fixtures/requirements/section targets, and verify local links. Main-model and prose validation still apply. Independent assessment decides semantic sufficiency; author checks do not perform the thirteen reviews.
 
-[Validation](../../../engineering/validation.md#authoring-test-design-admission-contract) defines admission for the strategy, index and three groups. A passing main-model check does not establish catalog admission. Implementation allocation and observed tooling limitations are recorded in the [owning change](../../../../changes/2026-09-17-model-test-design/change.json).
+[Validation](../../../engineering/validation.md#authoring-test-design-admission-contract) defines admission for the strategy, index and three groups. A passing main-model check does not establish catalog admission. Implementation allocation and observed tooling limitations are recorded in the owning change (historical operational material, unavailable in the current tree).
 
 Maintain cases when a goal, requirement relationship, scope, observation, fixture or responsibility changes. Preserve case identities through moves and update affected current references without rewriting historical approval subjects. Keep detailed child rules with Proposal, Design and Plan; keep Skill's broader interactions referenced rather than copied. Delivery allocates any future proof implementation, while actual results and judgments remain in evidence.
 

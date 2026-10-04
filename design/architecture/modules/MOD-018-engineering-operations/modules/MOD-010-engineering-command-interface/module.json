@@ -1,16 +1,17 @@
 {
   "id": "MOD-010",
   "type": "module",
-  "title": "Engineering command interface",
+  "title": "Command handling",
   "status": "draft",
-  "description": "Interpret supported public command requests and present their actual scoped outcomes through the declared request, result, help, and exit contracts.",
+  "description": "Admits and dispatches supported command requests and presents their actual scoped results, help and diagnostics.",
   "responsibilities": [
     "Admit commands, versions, selectors, and explicit inputs under the selected public contract.",
     "Dispatch operational-record requests to their persistence contract and installation requests to the installation contract without making engineering judgments.",
     "Present bounded observations, diagnostics, omitted-detail access, and exit outcomes without hiding actual side effects or sensitive information.",
     "Select recorded changes and requested record projections under literal public query rules; preserve complete-source and omission distinctions and handle bounded private invocation diagnostics under the owning CLI contract.",
     "Prepare the mandatory bounded public receipt from exact candidate/storage facts before publication, and preserve the actual committed, unchanged, conflict, preview, or recovery outcome through reporting failures.",
-    "Realize the command behavior of IF-004 under MOD-018 contract accountability, composing IF-003 record services and IF-006 installation services. This behavioral responsibility does not create a second Interface provider."
+    "Realize the command behavior of IF-004 under MOD-018 contract accountability, composing IF-003 record services and IF-006 installation services. This behavioral responsibility does not create a second Interface provider.",
+    "Admit proposed browser generation/check/recovery requests under IF-004 and compose IF-012 results without claiming support from repository-only scripts."
   ],
   "owned_state": [
     "Admitted command context, rendered results, and optional bounded private invocation diagnostics under the current logging contract; authoritative project records and installation destinations have separate owners."
@@ -26,7 +27,8 @@
   "provides": [],
   "consumes": [
     "IF-003",
-    "IF-006"
+    "IF-006",
+    "IF-012"
   ],
   "design_limits": [
     "Existing CLI public envelopes, version domains, selectors, and exceptional command behavior remain specified by docs/design/cli/cli.md; the new logical Interfaces summarize responsibility and preserve that authority.",
@@ -52,6 +54,11 @@
       "source": "SRC-PARENT-INTERFACE-OWNERSHIP",
       "locator": "MOD-010; design/requirements/sources.md#src-parent-interface-ownership",
       "basis": "Refine contract accountability: MOD-018 provides IF-004 and MOD-019 provides IF-006. MOD-010 and MOD-014 retain their behavioral allocations and state responsibilities. This supersedes the provider/exposure choice recorded by SRC-MODULE-HIERARCHY without changing Interface guarantees, consumers, Function/AR allocations, or realization observations. Earlier source entries retain their prior design meaning; this draft refinement supplies no runtime adoption or satisfaction evidence."
+    },
+    {
+      "source": "SRC-CUSTOMER-BROWSER-DESIGN",
+      "locator": "MOD-010",
+      "basis": "System and Architecture Design from SR-084–088 and refined SR-060; proposed responsibility, contract and realization only. No implementation, platform qualification or product availability is established."
     }
   ]
 }

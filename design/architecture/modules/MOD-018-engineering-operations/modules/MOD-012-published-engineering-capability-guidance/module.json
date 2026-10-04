@@ -1,14 +1,15 @@
 {
   "id": "MOD-012",
   "type": "module",
-  "title": "Published engineering capability guidance",
+  "title": "Skill procedures",
   "status": "draft",
-  "description": "Expose portable engineering capabilities and guide their bounded invocation, specialist procedure, handoff, and optional governed recording without replacing project authority or specialist contracts.",
+  "description": "Guides skill selection, invocation, specialist steps and handoffs while preserving project authority and recording boundaries.",
   "responsibilities": [
     "Identify task fit, prepare applicable project context, and resolve resources needed by the selected invocation.",
     "Guide the selected specialist activity and determine an applicable handoff using its governing inputs, limits, and assessments.",
     "Prepare explicit recording operations and interpret actual command outcomes when governed recording is selected.",
-    "Consume IF-008 for the adopted-REM model-authoring branch of specialist guidance. Preserve governing source applicability and unresolved scope while retaining published invocation, specialist work, output presentation, and handoff responsibilities."
+    "Consume IF-008 for the adopted-REM model-authoring branch of specialist guidance. Preserve governing source applicability and unresolved scope while retaining published invocation, specialist work, output presentation, and handoff responsibilities.",
+    "Compose requirement-first ownership and handoffs using separate Governance guidance, authority, evidence-support and work/adoption contracts. Keep actor-authored judgments distinct from the routing result."
   ],
   "owned_state": [
     "Published capability descriptions and procedural composition at the common invocation boundary; specialist methods, project state, authority, and evidence retain their own owners."
@@ -24,12 +25,16 @@
   "provides": [],
   "consumes": [
     "IF-004",
-    "IF-008"
+    "IF-008",
+    "IF-009",
+    "IF-010",
+    "IF-011"
   ],
   "design_limits": [
     "MOD-008 retains semantic authoring guidance behavior under MOD-017's IF-008 contract; MOD-006/007/009 retain shared authority, assurance, and learning meanings. Consuming guidance does not duplicate these responsibilities.",
-    "SCN-053's adopted-REM authoring branch has an explicit guidance boundary. Specialist child Designs retain their complete clauses; wider specialist cooperation, authority/assurance handoffs, ARs, and complete specialist skill-to-Function realization remain deferred.",
-    "The current published capability output scope is not expanded by the new REM drafts. Actor-facing instruction packages remain distinct from agent execution and any public API."
+    "SCN-053 retains its guidance contract. SCN-075–082 now have selected guidance, authority, evidence-support and work/adoption cooperation and allocated workflow obligations; other specialist procedures and concrete implementation qualification remain outside this pass.",
+    "The current published capability output scope is not expanded by the new REM drafts. Actor-facing instruction packages remain distinct from agent execution and any public API.",
+    "The requirement-first workflow design supplies the selected SR-079–083 collaboration and AR allocation. Earlier broader deferrals remain only outside that bounded extension; existing runtime observations and installed contracts do not implement the target design."
   ],
   "sources": [
     {
@@ -46,6 +51,11 @@
       "source": "SRC-PUBLIC-ENTRIES",
       "locator": "MOD-012 realization/software.json public entries and proposed Function correspondence",
       "basis": "The catalog records public skill names and partial proposed contributions without changing Function allocation, specialist contract ownership, published output support, or runtime qualification. Complete specialist realization remains deferred."
+    },
+    {
+      "source": "SRC-WORKFLOW-DESIGN",
+      "locator": "MOD-012",
+      "basis": "Draft integrated design from the accepted requirement-first basis. This defines target responsibility and cooperation, not installed capability, design approval, runtime evidence or SQLite adoption."
     }
   ]
 }

@@ -1,0 +1,62 @@
+{
+  "id": "AR-031",
+  "type": "allocated-requirement",
+  "title": "Preserve exact requirement review scope and basis",
+  "status": "draft",
+  "statement": "The Review and verification Module shall preserve exact requirement review scope and basis within its accountable boundary so that SR-080 can be satisfied without transferring another owner's decisions or state authority.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "The SR-080 obligation crosses guidance, governance or publication boundaries; an unowned contribution can make a locally valid step appear sufficient for the whole workflow.",
+      "desired_outcome": "Bind the supplied requirement judgment to exact obligations and supporting analysis, actor provenance, contrary evidence and limitations."
+    },
+    "why": {
+      "rationale": "MOD-007 owns the behavior or state needed for this contribution; separating it preserves one accountable owner while allowing the parent SR to compose several contributors."
+    },
+    "who": {
+      "stakeholders": [
+        "Participants relying on Review and verification",
+        "Authors, reviewers and project decision owners"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "When the selected requirement-first workflow exercises SR-080 or reassesses its affected basis."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "The MOD-007 responsibility boundary and its declared logical Interfaces."
+      ]
+    },
+    "how": {
+      "approach": "Apply the allocated criteria through the constrained Functions and explicit contract inputs/outcomes; preserve actual actor decisions, subject identity and known limitations."
+    },
+    "how_much": {
+      "scope": "This allocated contribution to SR-080; other contributors, independent assessment, physical recording implementation and product activation remain distinct."
+    }
+  },
+  "acceptance_criteria": [
+    "Bind the supplied requirement judgment to exact obligations and supporting analysis, actor provenance, contrary evidence and limitations.",
+    "Do not demand downstream Function or AR coverage to assess requirement validity; old proposal approval is not substitute support."
+  ],
+  "assumptions": [
+    "The selected project contract, scope and required counterpart contributions are identifiable; absence is reported rather than inferred."
+  ],
+  "constraints": [
+    "This draft allocation neither activates replacement runtime contracts nor proves implementation or satisfaction."
+  ],
+  "allocated_to": "MOD-007",
+  "constrains": [
+    "FUNC-029",
+    "FUNC-030",
+    "FUNC-031"
+  ],
+  "sources": [
+    {
+      "source": "SRC-WORKFLOW-DESIGN",
+      "locator": "SR-080; AR-031",
+      "basis": "Draft integrated design from the accepted requirement-first basis. This defines target responsibility and cooperation, not installed capability, design approval, runtime evidence or SQLite adoption."
+    }
+  ]
+}

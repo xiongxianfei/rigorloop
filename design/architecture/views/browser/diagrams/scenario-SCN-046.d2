@@ -1,5 +1,5 @@
 # Generated from canonical REM records; do not edit.
-# Source identity: 2cf8f01cf8087e0b226dbd431d6452970b13954a16b84408d91173987708417e
+# Source identity: 7978be139fe27eda655003b22781018baac550ab5be13f735b6a2800fc2e5371
 # Each outcome opens its exact selected obligations and accountable responsibilities. The arrows summarize this reading selection, not execution order, causal flow, complete coverage or satisfaction. Broader Scenario traceability remains in the detail.
 vars: {d2-config: {layout-engine: elk}}
 direction: down
@@ -29,7 +29,7 @@ outcomes: "Selected outcome accountability" {
       style.font-size: 17
       style.border-radius: 6
     }
-    accountability: "Engineering command interface\nOperational record persistence" {
+    accountability: "Command handling\nWork record storage" {
       link: "#scenario/SCN-046/outcome/expected"
       tooltip: "Selected allocated-obligation owners: MOD-010, MOD-011"
       style.fill: "#ECF3FF"
@@ -61,7 +61,7 @@ outcomes: "Selected outcome accountability" {
       style.font-size: 17
       style.border-radius: 6
     }
-    accountability: "Operational record persistence" {
+    accountability: "Work record storage" {
       link: "#scenario/SCN-046/outcome/alternative-0"
       tooltip: "Selected allocated-obligation owners: MOD-011"
       style.fill: "#ECF3FF"
@@ -93,7 +93,7 @@ outcomes: "Selected outcome accountability" {
       style.font-size: 17
       style.border-radius: 6
     }
-    accountability: "Engineering command interface\nOperational record persistence" {
+    accountability: "Command handling\nWork record storage" {
       link: "#scenario/SCN-046/outcome/alternative-1"
       tooltip: "Selected allocated-obligation owners: MOD-010, MOD-011"
       style.fill: "#ECF3FF"
@@ -125,9 +125,9 @@ outcomes: "Selected outcome accountability" {
       style.font-size: 17
       style.border-radius: 6
     }
-    accountability: "Engineering command interface\nOperational record persistence" {
+    accountability: "Work record storage" {
       link: "#scenario/SCN-046/outcome/failure-0"
-      tooltip: "Selected allocated-obligation owners: MOD-010, MOD-011"
+      tooltip: "Selected allocated-obligation owners: MOD-011"
       style.fill: "#ECF3FF"
       style.stroke: "#7C8FA9"
       style.font-color: "#23334A"
@@ -157,7 +157,7 @@ outcomes: "Selected outcome accountability" {
       style.font-size: 17
       style.border-radius: 6
     }
-    accountability: "Operational record persistence" {
+    accountability: "Work record storage" {
       link: "#scenario/SCN-046/outcome/failure-1"
       tooltip: "Selected allocated-obligation owners: MOD-011"
       style.fill: "#ECF3FF"
@@ -180,18 +180,18 @@ outcomes: "Selected outcome accountability" {
     style.font-color: "#23334A"
     style.font-size: 17
     style.border-radius: 6
-    outcome: "Interrupted publication\nrequires explicit recovery" {
+    outcome: "Interrupted publication has an\natomic but possibly unobserved\noutcome" {
       link: "#scenario/SCN-046/outcome/failure-2"
-      tooltip: "The system exposes recovery-required instead of saved or a usable mixed state; explicit recovery is a separate request."
+      tooltip: "A subsequent inspection establishes a coherent committed or uncommitted state through storage recovery without replaying the task. If that state cannot be established, the system reports unavailability or unknown commitment without presenting mixed state or guessed success."
       style.fill: "#F7EDEE"
       style.stroke: "#7C8FA9"
       style.font-color: "#23334A"
       style.font-size: 17
       style.border-radius: 6
     }
-    accountability: "Engineering command interface\nOperational record persistence" {
+    accountability: "Work record storage" {
       link: "#scenario/SCN-046/outcome/failure-2"
-      tooltip: "Selected allocated-obligation owners: MOD-010, MOD-011"
+      tooltip: "Selected allocated-obligation owners: MOD-011"
       style.fill: "#ECF3FF"
       style.stroke: "#7C8FA9"
       style.font-color: "#23334A"

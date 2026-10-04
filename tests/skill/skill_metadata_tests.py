@@ -194,41 +194,7 @@ class SkillMetadataTests(unittest.TestCase):
         result = run_validator(FIXTURES / "published-design/when-to-use-replaces-description")
         assert_validation_fails(self, result, "when_to_use must not replace description")
 
-    def test_skill_readability_pilot_pair_opts_into_contract(self) -> None:
-        for skill_name in ("proposal", "proposal-review"):
-            skill_path = ROOT / "skills" / skill_name / "SKILL.md"
-            result = run_validator(skill_path)
-            with self.subTest(skill=skill_name):
-                self.assertEqual(
-                    result.returncode,
-                    0,
-                    msg=(
-                        f"expected {skill_name} to satisfy the readability contract\n"
-                        f"stdout:\n{result.stdout}\nstderr:\n{result.stderr}"
-                    ),
-                )
-                body = skill_path.read_text(encoding="utf-8")
-                self.assertIn("schema-version: skill-readability-v1", body)
-                self.assertIn("## Workflow role", body)
-                self.assertIn("## Output skeleton", body)
 
-    def test_skill_readability_execution_review_opts_into_contract(self) -> None:
-        for skill_name in ("implement", "code-review"):
-            skill_path = ROOT / "skills" / skill_name / "SKILL.md"
-            result = run_validator(skill_path)
-            with self.subTest(skill=skill_name):
-                self.assertEqual(
-                    result.returncode,
-                    0,
-                    msg=(
-                        f"expected {skill_name} to satisfy the readability contract\n"
-                        f"stdout:\n{result.stdout}\nstderr:\n{result.stderr}"
-                    ),
-                )
-                body = skill_path.read_text(encoding="utf-8")
-                self.assertIn("schema-version: skill-readability-v1", body)
-                self.assertIn("## Workflow role", body)
-                self.assertIn("## Output skeleton", body)
 
     def test_generated_output_path_is_rejected(self) -> None:
         result = run_validator(ROOT / ".codex" / "skills")

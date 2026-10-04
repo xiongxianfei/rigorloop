@@ -1,9 +1,9 @@
 {
   "id": "MOD-009",
   "type": "module",
-  "title": "Engineering learning",
+  "title": "Lessons and improvement",
   "status": "draft",
-  "description": "Turn supported findings into applicable reusable lessons and accountable improvement proposals, then assess observed effects at comparable opportunities.",
+  "description": "Turns supported findings into reusable lessons and improvement proposals, then assesses their observed effects.",
   "responsibilities": [
     "Characterize reusable lessons with their supporting findings and limits.",
     "Select applicable lessons for planned work and formulate accountable improvements.",

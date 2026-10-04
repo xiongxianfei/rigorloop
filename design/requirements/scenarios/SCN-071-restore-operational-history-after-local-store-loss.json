@@ -1,0 +1,71 @@
+{
+  "id": "SCN-071",
+  "type": "scenario",
+  "title": "Restore operational history after local store loss",
+  "status": "draft",
+  "actor": "An engineer recovering recorded work",
+  "goal": "Restore the retained work and evidence needed to resume after losing local operational records.",
+  "context": "The current engineering definition survives but its operational history is unavailable.",
+  "trigger": "The engineer selects a retained backup and requests restoration.",
+  "preconditions": [
+    "The actor explicitly identifies the project and intended scope.",
+    "Any requested mutation is subject to applicable project authority."
+  ],
+  "interaction": [
+    {
+      "actor": "Engineer",
+      "action": "Selects the backup, project and intended restoration destination."
+    },
+    {
+      "actor": "System",
+      "action": "Reports source identity, coverage, compatibility and any destination conflict."
+    },
+    {
+      "actor": "Engineer",
+      "action": "Requests restoration within the applicable authority."
+    },
+    {
+      "actor": "System",
+      "action": "Reports the restored scope and original assessment bases or the precise failure and remaining destination state."
+    }
+  ],
+  "expected_outcome": "The selected retained operational scope is available with its original identities and evidence meaning, and the engineer can judge its fitness for resumption.",
+  "alternatives": [
+    {
+      "condition": "The current model has advanced since the backup.",
+      "outcome": "The restored records retain their earlier subject basis and make no renewed applicability claim."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "The backup is missing, corrupt, incomplete or incompatible.",
+      "outcome": "Restoration does not activate an incomplete history and preserves unrelated destination content."
+    },
+    {
+      "condition": "Destination work differs from the selected restoration basis.",
+      "outcome": "The system reports a conflict without silently replacing newer work."
+    },
+    {
+      "condition": "Restoration is interrupted.",
+      "outcome": "The outcome identifies incomplete restoration; a later explicit retry checks actual destination state before proceeding."
+    }
+  ],
+  "exercises": [
+    "FEAT-021"
+  ],
+  "informs": [
+    "SR-075",
+    "SR-006",
+    "SR-007",
+    "SR-040",
+    "SR-046",
+    "SR-027"
+  ],
+  "sources": [
+    {
+      "source": "SRC-LOCAL-OPERATIONAL-ANALYSIS",
+      "locator": "SCN-071",
+      "basis": "Draft derivation from the refined IRs and RR proposal; no approval, implementation or satisfaction claim."
+    }
+  ]
+}

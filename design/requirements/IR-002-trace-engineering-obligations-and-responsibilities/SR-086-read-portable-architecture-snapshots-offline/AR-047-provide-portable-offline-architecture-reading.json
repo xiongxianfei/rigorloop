@@ -1,0 +1,61 @@
+{
+  "id": "AR-047",
+  "type": "allocated-requirement",
+  "title": "Provide portable offline architecture reading",
+  "status": "draft",
+  "statement": "The Views and traceability Module shall provide portable offline architecture reading within its accountable browser contribution to SR-086, retaining the stated limits of collaborating owners.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "A locally successful browser step can hide missing ownership or an invalid cross-boundary conclusion.",
+      "desired_outcome": "Provide portable offline architecture reading."
+    },
+    "why": {
+      "rationale": "MOD-004 owns the behavior necessary for the selected SR-086 criteria; the SR remains the system-wide obligation."
+    },
+    "who": {
+      "stakeholders": [
+        "Customer authors and readers",
+        "Product maintainers and reviewers"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "When generating, reading, recovering or qualifying the selected browser scope."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "MOD-004 and its declared browser cooperation contracts."
+      ]
+    },
+    "how": {
+      "approach": "Apply the constrained Functions and preserve source, output, qualification and authority distinctions at the boundary."
+    },
+    "how_much": {
+      "scope": "Contribution to SR-086 criteria 1, 2, 3, 4, 5. Other Module contributions and final product qualification remain distinct."
+    }
+  },
+  "acceptance_criteria": [
+    "Copy the complete output to another supported reading environment, make the source checkout unavailable and disable network access; required navigation, diagrams, definitions and included rationale remain usable.",
+    "The snapshot contains the reading resources and source detail needed to understand its selected scope; unavailable optional external links do not replace required explanations.",
+    "Reading requires no generator, rendering compiler, remote fonts or script CDN, hosted service or local operational database.",
+    "The reader can identify project/profile, input content identity and generator provenance; the snapshot does not claim live freshness without a fresh comparison.",
+    "Opening or copying the snapshot does not alter engineering sources or grant permission to publish customer information."
+  ],
+  "assumptions": [],
+  "constraints": [
+    "Draft allocation; does not establish implemented browser support or requirement satisfaction."
+  ],
+  "allocated_to": "MOD-004",
+  "constrains": [
+    "FUNC-081"
+  ],
+  "sources": [
+    {
+      "source": "SRC-CUSTOMER-BROWSER-DESIGN",
+      "locator": "AR-047; SR-086 criteria 1, 2, 3, 4, 5",
+      "basis": "System and Architecture Design from SR-084–088 and refined SR-060; proposed responsibility, contract and realization only. No implementation, platform qualification or product availability is established."
+    }
+  ]
+}

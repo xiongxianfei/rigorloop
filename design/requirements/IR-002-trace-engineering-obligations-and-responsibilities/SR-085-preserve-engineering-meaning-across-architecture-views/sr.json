@@ -1,0 +1,70 @@
+{
+  "id": "SR-085",
+  "type": "system-requirement",
+  "title": "Preserve engineering meaning across architecture views",
+  "status": "draft",
+  "statement": "The system shall present the five architecture views and their selected details as attributable projections of the selected model, preserving ownership, relationship meaning, qualification and completeness limits.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "A view may misrepresent facts or hide incomplete interpretation.",
+      "desired_outcome": "present the five architecture views and their selected details as attributable projections of the selected model, preserving ownership, relationship meaning, qualification and completeness limits."
+    },
+    "why": {
+      "rationale": "Customer use needs attributable, portable views and truthful boundaries beyond repository-local demonstration."
+    },
+    "who": {
+      "stakeholders": [
+        "Customer model authors and readers",
+        "Product maintainers and reviewers"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "When generating, reading or qualifying the selected architecture browser capability."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "One selected customer project/state and explicitly selected output; declared product generation and reading environments."
+      ]
+    },
+    "how": {
+      "approach": "Assess the stated observable outcomes against explicit supported profiles, selected source identity and actual artifacts; preserve ownership and diagnose unavailable or incomplete results."
+    },
+    "how_much": {
+      "scope": "Read-only local generation and portable snapshot reading. No live editor, hosted-service requirement, cross-project aggregation, automatic publication or invented performance target. Detailed realization and platform support are downstream design decisions."
+    }
+  },
+  "acceptance_criteria": [
+    "Readers can navigate each available view from an overview to relevant definitions, relationships and applicable rationale, using readable labels and keyboard-accessible navigation.",
+    "Logical ownership and containment remain distinct from execution and deployment; a shared source file does not merge logical responsibilities.",
+    "Process topology does not imply execution order or concurrency. Selected activity, interaction and lifecycle details appear only where authoritative semantics establish them.",
+    "Proposed and observed facts remain distinguishable in overviews and details, even when names are identical; each detail exposes its selected-state source basis.",
+    "Scenario navigation retains stakeholder meaning and identified architecture participation without turning reachability or rendering into coverage, approval or satisfaction.",
+    "Missing required explanation and incomplete selections remain explicit; absent details are not fabricated and view success does not establish a complete design."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "confirms": [
+    "FUNC-007",
+    "FUNC-009",
+    "FUNC-080",
+    "FUNC-081"
+  ],
+  "constrains": [
+    "FEAT-022"
+  ],
+  "sources": [
+    {
+      "source": "SRC-CUSTOMER-BROWSER-REQUIREMENTS",
+      "locator": "SR-085",
+      "basis": "User-requested reusable customer architecture browser; requirement-level author analysis. Current records remain draft; no implemented, published or independently approved behavior is claimed."
+    },
+    {
+      "source": "SRC-CUSTOMER-BROWSER-DESIGN",
+      "locator": "SR-085",
+      "basis": "System and Architecture Design from SR-084\u2013088 and refined SR-060; proposed responsibility, contract and realization only. No implementation, platform qualification or product availability is established."
+    }
+  ]
+}

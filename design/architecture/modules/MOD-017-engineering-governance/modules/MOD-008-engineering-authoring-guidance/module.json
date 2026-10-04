@@ -1,9 +1,9 @@
 {
   "id": "MOD-008",
   "type": "module",
-  "title": "Engineering authoring guidance",
+  "title": "Authoring guidance",
   "status": "draft",
-  "description": "Select and explain applicable canonical authoring guidance and assess it against prepared semantic authoring outcomes.",
+  "description": "Selects and explains applicable authoring methods and assesses how well the guidance supports engineering tasks.",
   "responsibilities": [
     "Select guidance applicable to the activity and declared profile.",
     "Explain bounded authoring and correction steps without replacing canonical rules.",
@@ -25,7 +25,8 @@
   "consumes": [],
   "design_limits": [
     "IF-008 defines the adopted-REM authoring branch of guidance cooperation with MOD-012. IR-006 ARs, guidance usefulness assessment under FUNC-034, and broader metamodel/authoring/assurance interactions remain deferred.",
-    "Contract selection does not adopt REM for a project, interpret or migrate its model, authorize mutation, or define all published specialist procedures."
+    "Contract selection does not adopt REM for a project, interpret or migrate its model, authorize mutation, or define all published specialist procedures.",
+    "The requirement-first workflow design supplies the selected SR-079–083 collaboration and AR allocation. Earlier broader deferrals remain only outside that bounded extension; existing runtime observations and installed contracts do not implement the target design."
   ],
   "sources": [
     {

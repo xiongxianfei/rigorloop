@@ -23,7 +23,7 @@ class BugfixSkillSimplificationTests(unittest.TestCase):
 
     def test_bugfix_package_keeps_supported_resources_and_complete_behavior(self):
         files = sorted(path.relative_to(self.skill_dir).as_posix() for path in self.skill_dir.rglob("*") if path.is_file())
-        self.assertEqual(files, ["SKILL.md", "references/test-maintenance.md", "references/test-quality.md"])
+        self.assertEqual(files, ["SKILL.md", "references/operational-recording.md", "references/rigorloop-records-v4.schema.json", "references/targeted-recording-v2.schema.json", "references/test-maintenance.md", "references/test-quality.md"])
         self.assertIn("Keep required behavior complete", self.skill)
         self.assertNotIn("Report before/after LF-normalized words", self.skill)
 

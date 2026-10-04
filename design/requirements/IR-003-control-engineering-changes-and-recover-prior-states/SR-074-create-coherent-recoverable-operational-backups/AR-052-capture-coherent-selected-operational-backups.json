@@ -1,0 +1,63 @@
+{
+  "id": "AR-052",
+  "type": "allocated-requirement",
+  "title": "Capture coherent selected operational backups",
+  "status": "draft",
+  "statement": "The Work records Module shall capture coherent selected operational backups through its typed maintenance boundary, preserving actual scope, source meaning and safe failure.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Copying only records, or capturing changing records and artifacts at different states, can produce a backup that cannot restore its claimed scope.",
+      "desired_outcome": "A participant can distinguish a complete recoverable capture from an incomplete attempt and know which work it preserves."
+    },
+    "why": {
+      "rationale": "SR-074 requires operational preservation; MOD-011 owns the associated store and maintenance activation, while MOD-010 owns admission and result presentation."
+    },
+    "who": {
+      "stakeholders": [
+        "Project maintainers and authorized agents relying on retained operational work"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "An actor explicitly selects the supported maintenance task, scope, source expectations and destination."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "MOD-011 through IF-003, invoked by MOD-010 through IF-004; engineering definitions remain repository-owned."
+      ]
+    },
+    "how": {
+      "approach": "Use the reviewed MOD-011 maintenance contract: coherent staged scope, explicit project/schema/integrity checks, exclusive activation and attributable recovery outcomes."
+    },
+    "how_much": {
+      "scope": "Selected retained supported records and payloads only; no silent merge, universal history retention, source deletion or renewed engineering approval."
+    }
+  },
+  "acceptance_criteria": [
+    "For a selected project state containing Changes, findings and retained artifacts, a complete backup identifies the captured state, project, interpretation version, included records and artifacts, and declared exclusions; all included references resolve within the retained scope or are explicitly external.",
+    "When recording continues during capture, the backup represents one coherent declared state or reports that capture could not complete; it never combines incompatible record and artifact versions as a complete backup.",
+    "If a required artifact is missing, unreadable or fails its recorded integrity check, backup creation reports the affected scope and does not declare a complete backup.",
+    "Interruption, cancellation or insufficient destination capacity leaves existing valid backups and source work unchanged and identifies any incomplete output as unusable for complete restoration.",
+    "An explicitly selected narrower scope identifies exclusions and cannot claim to preserve excluded evidence, post-capture work or unsaved content.",
+    "The public maintenance contract identifies preview versus execution, current expectations and actual effects; interrupted activation remains fenced until explicitly reconciled."
+  ],
+  "assumptions": [
+    "Required retained source material and supported interpretation information are accessible; failure of that premise is reported explicitly."
+  ],
+  "constraints": [
+    "Historical subject/revision provenance remains stable; restoring operational state creates a fresh store incarnation so old mutation tokens cannot be replayed."
+  ],
+  "allocated_to": "MOD-011",
+  "constrains": [
+    "FUNC-074"
+  ],
+  "sources": [
+    {
+      "source": "SRC-SQLITE-ADOPTION",
+      "locator": "SR-074; MOD-011 store-maintenance-v1 contract",
+      "basis": "Reconcile the existing reviewed maintenance responsibility with explicit REM allocation. This allocation is design intent, not execution or satisfaction evidence."
+    }
+  ]
+}

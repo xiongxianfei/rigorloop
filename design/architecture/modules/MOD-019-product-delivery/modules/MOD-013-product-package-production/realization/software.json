@@ -239,5 +239,22 @@
     "Packaging DIST-SR-22 requires rejection when neither --check nor --output-dir is selected, but the inspected build-adapters.py main still calls sync_adapter_output in that case. This mapping documents the explicit-output path and retains the discrepancy for implementation correction; no default invocation was run.",
     "Complete dependency/resource inventory, semantic preservation of generated skill guidance, reproducibility, archive-integrity proof, actual packed-content inspection, and current release qualification require their existing owners and executable evidence.",
     "The recorded output templates describe source-derived layouts, not files known to exist. Shared release_candidate.py code does not transfer release authority to MOD-013. No automatic synthesis of skill instructions or command code from REM is designed."
+  ],
+  "proposed": [
+    {
+      "choice": "Generate one coherent replacement capability distribution from canonical methods and authored skills.",
+      "rationale": "Package identity must cover the selected replacement inventory and conditional resources so source correctness cannot mask a missing installed dependency.",
+      "alternatives": [
+        "Independently maintain per-skill copies of REM.",
+        "Publish mixed old and replacement authoring contracts."
+      ],
+      "consequences": [
+        "Reconcile catalogs, templates, generator inputs, adapters and validation selectors together; qualification remains distinct from project workflow activation.",
+        "The subordinate production contract defines a checksum-bound workflow descriptor and a new release identity, preserving the existing trusted metadata and root hash algorithms while rejecting old-client/new-candidate substitution."
+      ],
+      "revisit_when": [
+        "Reviewed replacement inventory or support/packaging contracts change."
+      ]
+    }
   ]
 }

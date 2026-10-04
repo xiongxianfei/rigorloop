@@ -12,7 +12,7 @@ ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / "scripts"))
 
 from lib.release.release_transaction import ReleaseProfileError, is_routine_release_profile, load_literal_audit_baseline_file, load_release_profile, load_release_profile_file, load_surface_inventory_file
-from release_fixture_helpers import (CHANGE_ROOT, REQUIRED_PROFILE_FIELD_CASES, literal_audit_fixture, profile_fixture, surface_inventory_fixture)
+from release_fixture_helpers import (REQUIRED_PROFILE_FIELD_CASES, literal_audit_fixture, profile_fixture, surface_inventory_fixture)
 
 
 class ReleaseProfileTests(unittest.TestCase):
@@ -213,13 +213,6 @@ class ReleaseSurfaceInventoryTests(unittest.TestCase):
             "\n".join(raised.exception.errors),
         )
 
-    def test_change_local_surface_inventory_artifact_loads(self) -> None:
-        inventory = load_surface_inventory_file(CHANGE_ROOT / "release-surface-inventory.yaml")
-
-        surface_ids = {surface["id"] for surface in inventory.surfaces}
-        self.assertIn("release-metadata", surface_ids)
-        self.assertIn("release-notes-narrative", surface_ids)
-        self.assertIn("prior-release-evidence", surface_ids)
 
 
 class LiteralAuditBaselineTests(unittest.TestCase):
@@ -286,11 +279,3 @@ class LiteralAuditBaselineTests(unittest.TestCase):
             "generated-current literal requires release_profile or generated_region owner",
             "\n".join(raised.exception.errors),
         )
-
-    def test_change_local_literal_audit_baseline_artifact_loads(self) -> None:
-        baseline = load_literal_audit_baseline_file(
-            CHANGE_ROOT / "release-literal-audit-baseline.yaml"
-        )
-
-        self.assertEqual(baseline.change_id, "2026-06-29-release-transaction-automation")
-        self.assertEqual(baseline.audited_release_tag, "v0.3.5")

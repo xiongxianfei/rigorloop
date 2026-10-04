@@ -536,7 +536,7 @@ class ReleaseCandidateIntegrationTests(unittest.TestCase):
                     return subprocess.run(command + list(extra), cwd=project, text=True, capture_output=True)
                 fresh = invoke(); self.assertEqual(fresh.returncode, 0, fresh.stdout + fresh.stderr)
                 repeated = invoke(); self.assertEqual(repeated.returncode, 5, repeated.stdout + repeated.stderr)
-                obsolete = project / skill_root / 'proposal' / 'obsolete'; obsolete.write_text('local edit')
+                obsolete = project / skill_root / 'requirement-analysis' / 'obsolete'; obsolete.write_text('local edit')
                 replaced = invoke(['--force']); self.assertEqual(replaced.returncode, 0, replaced.stdout + replaced.stderr)
                 self.assertFalse(obsolete.exists()); self.assertTrue(json.loads(replaced.stdout)['retained'])
                 self.assertEqual((unrelated / 'keep').read_text(), 'preserve')

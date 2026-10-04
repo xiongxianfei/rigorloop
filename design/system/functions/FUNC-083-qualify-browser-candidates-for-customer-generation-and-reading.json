@@ -1,0 +1,41 @@
+{
+  "id": "FUNC-083",
+  "type": "function",
+  "title": "Qualify browser candidates for customer generation and reading",
+  "status": "draft",
+  "description": "Assess the actual packaged browser resources and declared configurations using independent customer inputs and offline reading, retaining exact-candidate evidence for release.",
+  "inputs": [
+    "Identified packaged candidate, complete inventory and dependency/profile compatibility declaration.",
+    "Independent customer model, isolated generation environment and declared offline reading environment."
+  ],
+  "preconditions": [],
+  "outputs": [
+    "Attributable generation, reading, dependency and content-preservation observations for the exact candidate.",
+    "Explicit unsupported configurations, missing proof and qualification failures."
+  ],
+  "behavior": [
+    "Check all generator/profile/renderer/reading resources and licenses against the artifact inventory; do not substitute a source-tree run.",
+    "Exercise minimal independent customer IDs without RigorLoop-specific content, local history or hidden acquisition.",
+    "Generate and copy a complete snapshot; inspect offline reading without the checkout, generation tools or network.",
+    "Assess safe acquisition/update boundaries and exact artifact trust, and preserve customer definitions and shared snapshots.",
+    "Keep reference-site qualification distinct and return actual observations to release coordination without authorizing publication."
+  ],
+  "failure_behavior": [
+    {
+      "condition": "The candidate lacks a required resource or a configuration is incompatible.",
+      "outcome": "Fail qualification for that scope with exact candidate identity."
+    },
+    {
+      "condition": "Required customer or offline evidence is unavailable.",
+      "outcome": "Report an unqualified scope, not a passing sample-site substitute."
+    }
+  ],
+  "sources": [
+    {
+      "source": "SRC-CUSTOMER-BROWSER-DESIGN",
+      "locator": "FUNC-083",
+      "basis": "System and Architecture Design from SR-084\u2013088 and refined SR-060; proposed responsibility, contract and realization only. No implementation, platform qualification or product availability is established."
+    }
+  ],
+  "allocated_to": "MOD-013"
+}

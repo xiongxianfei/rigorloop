@@ -18,17 +18,17 @@ def _named(field, value):
 
 def _publication(*selection):
     return _source("IF-003", "interaction", "observed", "sequences",
-                   _named("/operation", "publish_record_candidate"), *selection)
+                   _named("/operation", "execute_record_task"), *selection)
 
 
 def _recovery(*selection):
     return _source("IF-003", "interaction", "observed", "sequences",
-                   _named("/operation", "recover_record_transaction"), *selection)
+                   _named("/operation", "inspect_records"), *selection)
 
 
 def _coordination(*selection):
     return _source("MOD-011", "runtime", "observed", "lifecycles",
-                   _named("/name", "Record journal coordination"), *selection)
+                   _named("/name", "Store maintenance coordination"), *selection)
 
 
 def _software(owner, filename):
@@ -50,9 +50,9 @@ _STORAGE = [
     _source("MOD-011", "persistence", "observed", "location_constraints",
             _named("/name", "Authoritative records and private transaction state remain separate")),
 ]
-_STORE_IMPLEMENTATION = [_software("MOD-011", "record-store.js"),
-                         _software("MOD-011", "record-store-files.js")]
-_RECOVERY_IMPLEMENTATION = [_software("MOD-010", "record-store-cli.js"), *_STORE_IMPLEMENTATION]
+_STORE_IMPLEMENTATION = [_software("MOD-011", "operational-store.js"),
+                         _software("MOD-011", "operational-rows.js")]
+_RECOVERY_IMPLEMENTATION = [_software("MOD-010", "operational-cli.js"), *_STORE_IMPLEMENTATION]
 _PUBLICATION_TESTS = [_test("MOD-010", "Public recording interaction composition"),
                       _test("MOD-011", "Guarded publication and exact recovery")]
 _RECOVERY_TESTS = [_test("MOD-011", "Guarded publication and exact recovery")]
@@ -69,109 +69,48 @@ def _profile(title, obligations, process, development, tests, gaps=(), limit_sou
 # labels are presentation only; actual outcome/condition text is never copied.
 OUTCOME_PROFILES = {
     "SCN-046": {
-        "expected": _profile(
-            "Coherent durable publication",
-            [("SR-042", 1), ("SR-043", 2), ("SR-044", 1), ("SR-046", 0),
-             ("AR-016", 3), ("AR-019", 2), ("AR-021", 1), ("AR-021", 2), ("AR-024", 0)],
-            [_publication("steps", _named("/name", "Construct and recheck candidate")),
-             _publication("steps", _named("/name", "Publish exact candidate bytes")),
-             _publication("steps", _named("/name", "Persist committed phase")),
-             _publication("steps", _named("/name", "Clean up and return receipt"))],
-            [_software("MOD-010", "recording-mutation-cli.js"),
-             _software("MOD-011", "recording-construction.js"), *_STORE_IMPLEMENTATION],
-            _PUBLICATION_TESTS,
-            ["The selected Process account describes changed targeted publication. Its advanced supplied-byte variant remains qualified context, not the same construction path.",
-             "AR-018 /acceptance_criteria/2 uses broad creation-in-batch wording alongside this Scenario's supporting-record context. This criterion is a source of reading uncertainty, not a supporting obligation here; reconciliation remains with the requirement owner."],
-            limit_sources=[("AR-018", 2)]),
-        "alternative-0": _profile(
-            "Fresh identical candidate remains unchanged",
-            [("SR-044", 3), ("AR-020", 4), ("AR-026", 3)],
-            [_publication("steps", _named("/name", "Prepare bounded receipt"), "branches", 0),
-             _coordination("constraints", 3)],
-            [_software("MOD-010", "recording-result.js"), *_STORE_IMPLEMENTATION],
-            _PUBLICATION_TESTS,
-            ["Unchanged authoritative records do not imply zero private effects: the recorded non-preview path may already update lock/epoch coordination."]),
-        "alternative-1": _profile(
-            "Fitting receipt with explicit omitted detail",
-            [("SR-046", 2), ("SR-046", 3), ("AR-024", 4), ("AR-025", 1),
-             ("AR-025", 2), ("AR-025", 4), ("AR-026", 2), ("AR-026", 4)],
-            [_publication("steps", _named("/name", "Prepare bounded receipt"))],
-            [_software("MOD-010", "recording-result.js"),
-             _software("MOD-010", "recording-query-cli.js"),
-             _software("MOD-011", "record-store.js"),
-             _software("MOD-011", "recording-observations.js")],
-            [_test("MOD-010", "Command admission and selected reading"), *_PUBLICATION_TESTS],
-            ["The selected Process step records bounded receipt preparation, not a separate diagnostic-detail retrieval interaction or observed transport delivery."]),
-        "failure-0": _profile(
-            "Lost-response retry conflicts on stale revision",
-            [("SR-044", 3), ("SR-046", 0), ("AR-020", 4), ("AR-024", 0), ("AR-026", 4)],
-            [_publication("steps", _named("/name", "Construct and recheck candidate")),
-             _publication("failures", 2)],
-            [_software("MOD-010", "recording-mutation-cli.js"), *_STORE_IMPLEMENTATION],
-            _PUBLICATION_TESTS,
-            ["A lost output response is not proof that storage failed. The selected source failure context also contains other interruption cases; only the canonical retry outcome is being discussed."]),
-        "failure-1": _profile(
-            "Competing writer or changed basis stops publication",
-            [("SR-044", 0), ("SR-044", 1), ("SR-044", 4),
-             ("AR-020", 0), ("AR-020", 1), ("AR-020", 5), ("AR-021", 3)],
-            [_publication("steps", _named("/name", "Acquire writer exclusion")),
-             _publication("steps", _named("/name", "Construct and recheck candidate")),
-             _publication("failures", 0), _publication("failures", 1)],
-            _STORE_IMPLEMENTATION, _PUBLICATION_TESTS,
-            ["Supported CLI writers coordinate; arbitrary outside edits are detected only at the recorded checks. This context establishes no universal external-writer exclusion."]),
-        "failure-2": _profile(
-            "Interrupted publication requires explicit recovery",
-            [("SR-044", 5), ("SR-046", 0), ("AR-021", 0), ("AR-021", 1),
-             ("AR-021", 4), ("AR-024", 0), ("AR-026", 3)],
-            [_publication("failures", 2),
-             _coordination("states", _named("/name", "Prepared journal")),
-             _coordination("constraints", 1)],
-            _STORE_IMPLEMENTATION, _PUBLICATION_TESTS,
-            ["A terminated caller may receive no response. The source reports recovery-required when control returns with transaction attention; an unconditional delivered error receipt is not established.",
-             "The separate recovery request is inspected under SCN-047; this publication outcome does not choose or automatically execute it."]),
+        "expected": _profile("Coherent durable publication",
+            [("SR-042",1),("SR-043",2),("SR-044",1),("SR-046",0),("AR-019",2),("AR-021",1),("AR-021",2),("AR-024",0)],
+            [_publication("steps",_named("/name",name)) for name in ["Construct and recheck candidate","Publish complete candidate","Commit durable transaction","Clean up and return receipt"]],
+            [_software("MOD-010","operational-cli.js"),*_STORE_IMPLEMENTATION],_PUBLICATION_TESTS),
+        "alternative-0": _profile("Fresh identical candidate remains unchanged",
+            [("SR-044",3),("AR-020",4),("AR-019",6)],
+            [_publication("steps",_named("/name","Prepare bounded receipt"),"branches",0)],
+            _STORE_IMPLEMENTATION,_PUBLICATION_TESTS),
+        "alternative-1": _profile("Fitting receipt with explicit omitted detail",
+            [("SR-046",2),("SR-046",3),("AR-024",4),("AR-025",1),("AR-025",2),("AR-021",1)],
+            [_publication("steps",_named("/name","Prepare bounded receipt"))],
+            [_software("MOD-010","operational-receipt.js"),*_STORE_IMPLEMENTATION],_PUBLICATION_TESTS),
+        "failure-0": _profile("Lost-response retry conflicts on stale revision",
+            [("SR-044",3),("AR-020",4),("AR-021",4)],
+            [_publication("steps",_named("/name","Construct and recheck candidate")),_publication("failures",2)],
+            _STORE_IMPLEMENTATION,_PUBLICATION_TESTS),
+        "failure-1": _profile("Competing writer or changed basis stops publication",
+            [("SR-044",0),("SR-044",1),("AR-020",0),("AR-020",1),("AR-020",2)],
+            [_publication("steps",_named("/name","Acquire writer exclusion")),_publication("steps",_named("/name","Construct and recheck candidate")),_publication("failures",1)],
+            _STORE_IMPLEMENTATION,_PUBLICATION_TESTS,
+            ["Declared comparisons observe only selected scope; arbitrary external edits are not universally excluded."]),
+        "failure-2": _profile("Interrupted publication has an atomic but possibly unobserved outcome",
+            [("SR-044",5),("SR-046",0),("AR-021",0),("AR-021",4),("AR-021",5)],
+            [_publication("failures",2)],_STORE_IMPLEMENTATION,_PUBLICATION_TESTS,
+            ["Missing output does not prove rollback. A later inspection establishes what can actually be relied upon."]),
     },
     "SCN-047": {
-        "expected": _profile(
-            "Exact selected recovery without semantic replay",
-            [("SR-045", 1), ("SR-045", 2), ("SR-046", 0),
-             ("AR-022", 2), ("AR-022", 3), ("AR-023", 2), ("AR-023", 3)],
-            [_recovery("steps", _named("/name", "Recheck recovery admissibility")),
-             _recovery("steps", _named("/name", "Complete exact retained candidate")),
-             _recovery("steps", _named("/name", "Finish verified completion"))],
-            _RECOVERY_IMPLEMENTATION, _RECOVERY_TESTS,
-            ["The main recorded path completes the candidate; its restore branch terminates separately and must not rejoin completion.",
-             "The inspected advanced recovery path prepares its retained-state result inside Store.prepareResult. It does not establish invocation of the primary MOD-010 receipt callback."]),
-        "alternative-0": _profile(
-            "Restore only transaction-created initial content",
-            [("SR-045", 2), ("AR-022", 2), ("AR-022", 3)],
-            [_recovery("steps", _named("/name", "Recheck recovery admissibility"), "branches", 0)],
-            _RECOVERY_IMPLEMENTATION, _RECOVERY_TESTS,
-            ["The selected terminal restore branch includes initial-creation cleanup; it does not describe blanket project rollback or removal of externally added content."]),
-        "alternative-1": _profile(
-            "Committed transaction permits completion and cleanup only",
-            [("SR-045", 2), ("AR-022", 3), ("AR-026", 4)],
-            [_recovery("steps", _named("/name", "Recheck recovery admissibility")),
-             _coordination("states", _named("/name", "Committed journal")),
-             _coordination("transitions", _named("/from", "Committed journal"))],
-            _RECOVERY_IMPLEMENTATION, _RECOVERY_TESTS,
-            ["The committed journal controls restore admissibility even when the caller did not receive the success response; acknowledgement must not be interpreted as confirmed stdout delivery."]),
-        "failure-0": _profile(
-            "Untrusted recovery information or foreign target stops repair",
-            [("SR-040", 3), ("SR-045", 0), ("AR-022", 0), ("AR-022", 1), ("AR-023", 2)],
-            [_recovery("steps", _named("/name", "Validate retained journal")),
-             _recovery("steps", _named("/name", "Recheck recovery admissibility")),
-             _recovery("failures", 0)],
-            _RECOVERY_IMPLEMENTATION, _RECOVERY_TESTS,
-            ["A failure before exclusion has no recovery writes; a later safe stop may follow private lock/epoch effects. Unavailable identities remain unavailable."]),
-        "failure-1": _profile(
-            "Changed completion basis or repeated interruption requires reinspection",
-            [("SR-045", 1), ("SR-045", 3), ("AR-022", 2), ("AR-022", 4),
-             ("AR-022", 5), ("AR-023", 4)],
-            [_recovery("steps", _named("/name", "Prepare candidate recovery receipt")),
-             _recovery("steps", _named("/name", "Recheck basis and commit recovery")),
-             _recovery("failures", 1)],
-            _RECOVERY_IMPLEMENTATION, _RECOVERY_TESTS,
-            ["The existing failure record combines changed reads, interrupted filesystem work and cleanup. The profile retains that combined source instead of inventing one triggering step or guaranteed restoration."]),
+        "expected": _profile("Establish coherent current outcome without semantic replay",
+            [("SR-045",1),("SR-045",4),("AR-022",1),("AR-022",2),("AR-023",1)],
+            [_recovery("steps",_named("/name",name)) for name in ["Establish coherent storage state","Read current account","Report established outcome"]],
+            _RECOVERY_IMPLEMENTATION,_RECOVERY_TESTS),
+        "alternative-0": _profile("Uncommitted update leaves prior state",
+            [("SR-045",2),("AR-021",3),("AR-022",1)],
+            [_recovery("steps",_named("/name","Establish coherent storage state"))],_RECOVERY_IMPLEMENTATION,_RECOVERY_TESTS),
+        "alternative-1": _profile("Committed result survives a lost response",
+            [("SR-045",2),("AR-022",3),("AR-023",3)],
+            [_recovery("steps",_named("/name","Read current account"))],_RECOVERY_IMPLEMENTATION,_RECOVERY_TESTS),
+        "failure-0": _profile("Untrusted storage stops inspection safely",
+            [("SR-045",0),("AR-022",0)],[_recovery("failures",0)],_RECOVERY_IMPLEMENTATION,_RECOVERY_TESTS),
+        "failure-1": _profile("Interrupted inspection remains safe to repeat",
+            [("SR-045",3),("AR-022",4),("AR-023",2)],[_recovery("failures",1)],_RECOVERY_IMPLEMENTATION,_RECOVERY_TESTS,
+            ["Ordinary inspection does not choose staged maintenance finish or rollback. Those are separate explicitly selected operations."]),
     },
 }
 

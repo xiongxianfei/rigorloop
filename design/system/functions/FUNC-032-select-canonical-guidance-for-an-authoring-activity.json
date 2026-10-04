@@ -19,7 +19,8 @@
     "Match the declared activity and profile with their canonical guidance owners.",
     "Present concepts, methods, required rules, and illustrative examples with their roles distinguished.",
     "Preserve normative meaning across human and agent presentations, identifying source versions.",
-    "Disclose guidance that is unavailable or no longer applicable after a profile change; do not silently choose an incompatible substitute."
+    "Disclose guidance that is unavailable or no longer applicable after a profile change; do not silently choose an incompatible substitute.",
+    "Select requirement, logical-system or architectural-design methods according to the activity and adopted contract. Require Function coverage for design completion rather than initial requirement acceptance."
   ],
   "failure_behavior": [
     {
@@ -41,6 +42,11 @@
       "source": "SRC-ARCHITECTURE-PILOT",
       "locator": "FUNC-032",
       "basis": "Propose MOD-008 as the single accountable architectural responsibility for the existing behavior. This allocation preserves the Function definition and does not establish implementation or completed interface/AR coverage outside the IR-001 pilot."
+    },
+    {
+      "source": "SRC-WORKFLOW-DESIGN",
+      "locator": "FUNC-032",
+      "basis": "Draft integrated design from the accepted requirement-first basis. This defines target responsibility and cooperation, not installed capability, design approval, runtime evidence or SQLite adoption."
     }
   ],
   "allocated_to": "MOD-008"

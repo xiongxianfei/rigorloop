@@ -1,0 +1,61 @@
+<!-- Generated from rem/methods/5w2h.md; source SHA-256 6c44ffbbe94834879a1b7047b6961bb7ed9c1b923b445c29bb0b3059a9dbd999. Edit the owning REM source. -->
+
+# 5W2H analysis
+
+5W2H examines a need or obligation through What, Why, Who, When, Where, How, and How much.
+Use all seven questions for every IR, SR, and AR when deriving or refining it.
+This strengthens the original REM proposal's preferred technique into the user-selected requirement-analysis method.
+
+## Inputs and output
+
+Start with the applicable RR source or parent requirement, available stakeholder context, governing constraints, and relevant source material.
+Produce a supported account of the need or obligation, its boundaries, and the questions still open.
+The resulting requirement states the durable need or obligation; the analysis explains its basis and conditions.
+
+## Questions
+
+| Question | Establish | Avoid |
+| --- | --- | --- |
+| What? | The problem, desired outcome, and affected subject that explain the need or obligation | Copying the statement without explaining its context, or choosing a solution before understanding the need |
+| Why? | The value, consequence, or obligation that makes the need important | Restating the desired outcome as its own justification |
+| Who? | Stakeholders, users, affected parties, and relevant decision owners | Assuming every stakeholder is a direct product user |
+| When? | Triggering conditions, lifecycle stages, frequency, or an actual deadline | Inventing dates or omitting relevant timing conditions |
+| Where? | The operating context, boundary, environment, or engineering scope | Automatically translating context into a filesystem path |
+| How? | How the outcome could be achieved, existing constraints, and what remains open | Treating one possible implementation as an approved requirement |
+| How much? | Scope, quantity, scale, quality thresholds, cost, or resource limits where relevant | Fabricating numeric targets or claiming an unbounded guarantee |
+
+At IR level, How normally identifies an approach and genuine constraints without fixing architecture prematurely.
+At SR level, answer each question for the system obligation; at AR level, answer it for the obligation allocated to architectural responsibility.
+In particular, How and How much should make obligations and their assessment conditions sufficiently precise without turning an unsupported implementation choice into a requirement.
+A parent's analysis provides context but does not automatically answer every question for its children.
+
+## Procedure
+
+1. Identify the source of the need or obligation and distinguish source statements from analyst interpretation.
+2. Consider all seven questions; record supported answers or references to already authoritative information.
+3. Mark unknown answers explicitly and explain what decision or evidence is needed to resolve them.
+4. Mark a question not applicable only with a reason; an unanswered question is not a non-applicable question.
+5. Resolve contradictions and separate independent needs where one statement would hide different outcomes or stakeholders.
+6. Draft a clear requirement name and statement at the appropriate level using the [requirement-analysis method](rem-methods-requirement-analysis.md).
+7. Check the result against the analysis and retain material assumptions and unresolved questions.
+
+Drafting may proceed with visible unknowns.
+Do not present a dependent scope, target, or implementation choice as settled while its basis is unresolved.
+
+## Recording
+
+Answers may be in the requirement's existing content or in linked analysis material when the selected representation supports it.
+Reference existing answers rather than copying the same authoritative fact into a second maintained field.
+Every question must be accounted for; REM does not prescribe a field layout or a separate analysis file.
+The requirement statement is authoritative. What explains the problem and intended outcome without copying that statement.
+Keep provisional assumptions, established constraints, and unresolved questions distinct, and record each fact once.
+Unknowns may concern any of the seven questions.
+Additional supporting documents are useful for substantial investigations, alternatives, or derivations, without duplicating the authoritative answers.
+
+RigorLoop's separate reference implementation selects structured inline objects for all seven questions and separate lists for assumptions, constraints, and open questions.
+For IRs and SRs, apply the [single consequential open-question rule](rem-methods-requirement-analysis.md#keep-one-consequential-open-question) when deciding what remains unresolved.
+That JSON representation is an implementation choice.
+
+For example, a retention need may define its What, Why, and Who while its retention duration is unknown.
+Record it as an unresolved How much question using the selected representation; do not silently turn it into indefinite retention.
+An analysis record describes reasoning and uncertainty, not proof that the eventual requirement is satisfied.

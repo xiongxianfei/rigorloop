@@ -1,159 +1,36 @@
 ---
 name: pr
-description: >
-  Prepare a verified pull request from actual diff and evidence.
-argument-hint: [branch, feature name, plan path, or PR request]
+description: Prepare or submit a pull request from the actual delivered diff, current review and verification evidence, and explicit external-action authority. Use after final Verify or for an isolated PR preparation request.
 ---
 
-# Pull request preparation
+# Pull request
 
+Identify the requested repository, remote, base, branch and submission intent. An isolated preparation request produces a reviewable title/body and next action; it does not push or create a PR. Existing user authorization to continue through PR submission permits the necessary push and creation. Merge, release, force-push, deleting remote branches and changing an existing PR's publication state require their own applicable authorization.
 
-## Review and Closeout application
+Inspect the actual cumulative diff against a freshly observed remote base, including relevant uncommitted work. Preserve unrelated user work. For Change-managed delivery, consume the recorded accepted basis, independent whole-change Code Review and distinct successful final Verify through the supported CLI. Read the conditional readiness reference. Unknown or outdated support returns to the responsible owner; PR work does not supply an assessment judgment.
 
-When project authority explicitly adopts Review and Closeout policy, use the packaged application below for shared assessment meaning. It replaces source-local judgment, independence, applicability, concern-disposition and closeout rules in this skill and its conditional resources; retain specialist methods and contract-selected storage procedures. Historical assessments retain their original meaning but grant no current runtime support. Missing or contradictory required guidance stops dependent reliance.
+Before pushing, identify the exact remote branch relation. Normal pushes may create an absent branch or advance a known ancestor. If remote work is ahead, diverged or uncertain, reconcile it safely and reassess affected scope. Do not force-push as a shortcut. Record the actual resulting branch/head and verify remote readback.
 
-## Purpose
+Look for an existing PR matching the repository, head and base before creating one. Reuse an appropriate open/draft PR. Closed, merged or ambiguous matches need an explicit disposition; do not silently create a replacement. Preserve user-authored title/body unless the request authorizes refresh or replacement. Inspect and reconcile an uncertain submission result before retrying creation.
 
-Open one evidence-grounded pull request. `verify` owns `branch-ready`; this skill owns `pr-body-ready` and `pr-open-ready`. No downstream continuation.
+Write the title and description around the concrete problem, delivered behavior and actual validation. Include material limitations and current review/Verify basis when relevant. Use the project's template or packaged skeleton when helpful. Do not claim hosted CI success from local tests: distinguish passed, failed, pending, unavailable, unobserved and not-applicable using actual observations. Follow supported PR/remote tools and preserve exact multiline text.
 
-## When to use
-
-Use after `verify` or for a nearly ready direct PR request.
-
-## When not to use
-
-Do not implement, review, verify, settle lifecycle state, merge, release, or fabricate evidence.
-
-## Project-local evidence
-
-Public skills operate in customer-project mode by default. Use project-local artifacts and authoritative CLI workflow context when governed. Do not require RigorLoop repository-internal files. Use safe portable defaults without governed claims; block on ambiguity.
-
-## Inputs to read
-
-Resolve repository, remote, branches, evidence, handoff, diff, and matching PR; never use memory. For consolidated gates, consume verify-owned accepted Proposal evidence, approved Design Review ID and exact member map, and approved Delivery Review ID and exact member map. Never reconstruct or reperform those reviews. The exact successful Verify report owns explanation, basis, and authority. Reject missing, stale, new, or competing authoritative rationale. Historical rationale grants no current PR authority.
-
-## Invocation classification
-
-Any explicit change, workflow, owning-change, or governed pointer is a signal. governed signal: `no-governed-signal`, `single-governed-candidate`, or `invalid-or-ambiguous-governed-signal`. The first uses `PR0-portable`; the second loads `PR1-governed`; malformed, stale, conflicting, duplicated, unsafe, escaped, or ambiguous signals stop without portable fallback. Loading grants no authority.
-
-## Closed classifications
-
-Classify each independent axis exactly. Unknown values fail before consistency checks.
-
-- submission intent: `open`, `draft`, `prepare-only`;
-- refresh authority: `none`, `explicit-title-refresh`, `explicit-full-replacement`, `workflow-title-refresh`;
-- state-transition authority: `none`, `publish-existing-draft`, `convert-existing-open-to-draft`;
-- branch relation: `absent`, `same`, `remote-ancestor-of-local`, `local-ancestor-of-remote`, `diverged`, `ambiguous`;
-- PR state: `absent`, `open`, `draft`, `closed`, `merged`, `ambiguous`;
-- operation result: `opened`, `draft-opened`, `updated`, `reused`, `prepared-not-opened`, `blocked`;
-- hosted-CI state: `passed`, `failed`, `pending`, `unavailable`, `unobserved`, `not-applicable`;
-- evidence suffix: `none`, `evidence-only`, `invalidating`.
-
-Explicit `pr` defaults to `open`; the other intents require current authority. `prepare-only` performs no push, PR creation, refresh, publication, draft conversion, or other external mutation and returns `prepared-not-opened` with `actual_external_mutation: none`. A blocker does not reclassify intent; report requested intent, actual operation, blocker, and actual mutation.
-
-Submission intent does not grant refresh or PR-state transition authority. Default `open` preserves an existing draft. Explicit `draft` preserves an existing open PR. Publishing or conversion needs matching authority.
-
-## Verification and local safety
-
-Consume and revalidate verify-owned `verification_basis` from the v3 object: immutable `repository_identity`, `remote_identity`, `base_branch`, `base_revision`, `merge_base_revision`, `head_branch`, and `verified_subject_revision`. Do not reconstruct it from commands, names, Git state, or prose. Legacy, prose-only, command-only, missing, stale, unresolved, conflicting, or ambiguous evidence supports preparation only; it blocks opening and routes to verify.
-
-Require the verified subject to equal or precede the local handoff; a non-ancestor blocks. Classify their cumulative final change as `none`, `evidence-only`, or `invalidating`. Evidence-only permits any commit count or direct-parent topology only for current attributable final-review, workflow, and Verify evidence. Path, file name, commit message, or author identity alone grants no authority. Protected, mixed, unknown, stale, cross-change, or unattributable content invalidates opening and routes to its owner for review and fresh Verify.
-
-Before mutation, require scoped commits, safe tree and diff, no secrets or debug residue, intentional generated files and migrations, and every operation identity.
-
-## Remote safety and PR selection
-
-`remote-ancestor-of-local` means remote is a strict ancestor of the local handoff revision and permits normal fast-forward push after reread. `local-ancestor-of-remote` means remote contains work absent locally and blocks. `absent` may create; `same` does not push; `diverged` or `ambiguous` stops. The skill must not force-push, delete, overwrite, rewrite, or replace remote.
-
-Resolve PR state for exact repository, host, head, and base. Create absent once; reuse adequate open or draft unchanged. Closed, merged, multiple, mismatched, or ambiguous state stops. Retry reconciles state and must never create a duplicate matching PR.
-
-Refresh supports title replacement or explicitly authorized whole-body replacement. It must not parse or mutate Markdown sections, add hidden managed markers, or infer ownership. Existing body bytes remain unchanged without full-replacement authority.
-
-## Hosted CI
-
-`passed` requires current hosted evidence for the exact handoff revision at the PR head. Route `failed` to its owner. `pending`, `unavailable`, and `unobserved` must never be described as passed and open only under current policy. `not-applicable` needs evidence. Local validation is not hosted CI.
-
-## External operation
-
-1. Resolve all local identities, evidence, content, states, and independent authorities.
-2. Immediately before push, require the current remote base to equal the verified base and the observed remote-head baseline to match its classified relation.
-3. Push only when the intent and relation permit it.
-4. After push and before PR mutation, reread remote head, remote base, and matching PR state; require head equal to handoff and base equal to verified base.
-5. Immediately before PR mutation, reread exact PR identity, head, base, title, body identity, and draft state; reclassify any concurrent change.
-6. Create, reuse, refresh, or transition only within current independent authority.
-7. After creation, reuse, refresh, or transition, read back URL, number, state, head, base branch, current base identity, title, and body identity.
-
-Report a successful external write truthfully after later identity drift, but set `pr-open-ready: false` and require fresh verification or the approved base-update route. External success and readiness are separate.
-
-## Body, result, and claims
-
-Compose the asset's core plus applicable governed and impact groups. Procedure owns applicability and adequacy; unresolved data or placeholders block.
-
-## Outputs
-
-Report requested intent, operation, actual external mutation, actual PR state, readiness booleans, hosted-CI state, blockers, claim limitations, and post-read-back URL.
-
-## Review closeout
-
-Inspect registered reviews, findings, owned dispositions and blockers. Required unresolved corrections or necessary owner decisions prevent reliance on closeout. A later substantive revision requires the appropriate independent reassessment; a resolution note alone cannot substitute for review. Summarize material dispositions without duplicating every finding.
-
-Treat the plan and upstream artifacts as read-only.
-
-## Handoff
-
-- Normal next stage: open or reuse the PR when all three readiness gates pass.
-- Conditional next stages: return through `route` to fresh verify, review resolution, implementation, or an owning artifact stage; stop on external or authority blockers.
-
-## Stop conditions
-
-Stop on unresolved target or authority, stale verification, unsafe branch relation, ambiguous PR state, unrelated changes, missing required evidence or resources, open review closeout, failed required validation, or unconfirmed external read-back.
-
-## Claims this skill must not make
-
-Do not claim implementation passed, review passed, tests passed, verification passed, CI passed, generated currency, branch readiness, or lifecycle completion without current owning evidence. This skill must not mutate `change.json`, workflow, artifact, plan, review, merge, release, or publication state.
-
-Progress means work that has happened so far. Readiness means the next stage that can happen. Closeout means the current artifact or stage satisfied its checklist. Done means final lifecycle state after required gates are complete. Readiness is not Done.
-
-## Required-resource safety
-
-A missing, unreadable, escaped, stale, transformed, or mixed-version governed reference must stop before governed readiness judgment. A missing or invalid body asset must stop before body generation and external mutation. The skill must not reconstruct, recall, or partially invent required resource content.
+After an authorized submission, report the PR link and observed CI standing. An authorized bounded CI repair may route defects to their owner, then require applicable review and verification before updating the PR. Do not broaden execution authority or conceal a failing check merely to finish the handoff.
 
 ## Recording boundary
 
-For `PR1-governed`, read `references/governed-pr-readiness.md` before relying on stored assessments. This skill consumes records and must not mutate lifecycle state. Loading a method or saving a record grants no approval or continuation. Missing, unreadable, escaped, conflicting or mixed-version required guidance stops dependent work without reconstructing it; untriggered guidance does not block unrelated portable work.
+PR preparation reads current operational support and does not author review or verification judgments. A submitted PR is an external handoff, not completion evidence or merge authority. Skills use CLI operations and opaque revisions; never SQL or direct runtime-file edits.
 
 ## Resource map
 
-- READ `references/review-reliance.md` when applying adopted assessment applicability, correction or closeout policy.
+- READ `references/targeted-recording-v2.schema.json` when constructing a supported mutation input within the invocation’s authority.
+- READ `references/rigorloop-records-v4.schema.json` when interpreting closed record fields or referenced task types.
 
-- READ `references/governed-pr-readiness.md` once for `PR1-governed` after candidate classification and before governed judgment.
-- COPY `assets/pr-body-skeleton.md` once when body applicability is known and before any external mutation.
-
-## Evidence collection efficiency
-
-Use bounded evidence before broad reads or raw excerpts.
-Use summary and stable-ID first reasoning before broad reads or raw excerpts.
-Prefer check IDs, requirement IDs, test IDs, file paths, counts, line citations, matching line numbers, diffs, and targeted excerpts when inspecting large files, generated output, validation logs, or repeated scans.
-Output caps are safety rails, not evidence-selection strategy.
-Validation summaries must not change selected check coverage, command exit behavior, failure detection, or required validation evidence.
-Read exact ranges after locating relevant lines, then expand only when the narrower evidence is insufficient.
-
-## When full-file read is required
-
-Read the full file when the whole file is the review target, the relevant section cannot be isolated safely, surrounding context can change the conclusion, bounded searches disagree or produce incomplete evidence, or a behavior-changing edit depends on the whole source-of-truth artifact.
+- READ `references/operational-recording.md` when inspecting the selected Change's current handoff.
+- READ `references/governed-pr-readiness.md` when assessing Change-managed external readiness.
+- READ `references/review-reliance.md` when later changes may affect a relied-upon judgment.
+- COPY `assets/pr-body-skeleton.md` when drafting a PR description; fill applicable sections with actual scope and evidence and remove unfilled placeholders.
 
 ## Expected output
 
-Start with:
-
-```md
-## Result
-
-- Skill: pr
-- Status: <completed | blocked>
-- Artifacts changed: <external PR or none>
-- Open blockers: <blockers or none>
-- Next stage: <human review | owning stage | none>
-```
-
-Then provide readiness, mutation, PR and CI state, content, risks, reviewer focus, and evidence.
+Return the actual PR link or prepared title/body, submitted repository/head/base, validation and observed hosted CI standing, current blockers and next authorized action. Distinguish prepared, submitted, reused and blocked outcomes.

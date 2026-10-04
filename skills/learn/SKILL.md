@@ -10,15 +10,7 @@ argument-hint: [trigger, scope, session, or route result]
 
 ## Explicit recording
 
-Use this profile when the project has adopted the RigorLoop Record Format and explicitly selected the change. Read the project's governing documents. The Workflow model owns coordination, Review and Closeout owns assessment policy, Record Format owns stored shapes, and CLI owns construction and persistence. Current storage uses `rigorloop-records-v3`; historical stores remain unchanged archival evidence. Select the actual record contract; never mix versions within a store. Retired or unknown stored formats are rejected without fallback. Do not migrate or reinterpret historical records; preserve their bytes and meaning as archival evidence. The project need not contain RigorLoop's internal design repository.
-
-Use the contract-selected recording procedures in this skill and its conditional resources. Dispatch primary results by schema_version (2 or 3), then status and operation; a schema-3 error alone does not establish v3 storage. Read scope and omissions before relying on selected content. Retain substantive stage duties, permissions, independent assessment and proof obligations. Historical records grant no current execution authority.
-
-Use `rigorloop context --root PATH --change ID --input - --format json` with explicitly selected kinds/filters and full detail. Expand the selection when needed: omitted content is not evidence of absence. Copy `record_contract` and `revision` into the targeted request's `contract` and `expected_revision`. Use `rigorloop subject inspect --root PATH --path FILE --content full --format json` for the exact engineering basis and mechanical identities; supply relied-on subjects as `reads` with their expected identities.
-
-Make your decision, then use the purpose-specific command's `--help` and submit its targeted operation on stdin. Use `batch` for related explicit updates. Supply semantic values and any required applicability; the CLI constructs registry entries, preserves neighbors and serializes records. Do not reconstruct complete files or invoke historical eligibility first. Preview is optional; normal writes validate. A save does not approve work, establish readiness or select the next actor. Conflict requires rereading and reassessment; busy/recovery-required is not a save. Use explicit `record-store recover` for interrupted storage. Missing or stale evidence prevents reliance, not recording a correction.
-
-Retain the requested learning scope, durable-lesson and standalone-artifact rules. When supporting this profile, read selected current evidence, concerns and retained origin. Do not invent missing historical origin, rewrite review judgments or mutate another actor’s work. Return any proposed workflow or design change to its responsible owner.
+For explicitly selected Change-managed work, use the packaged operational-recording reference and the executing CLI's capabilities. Current work uses targeted-recording-v2 / rigorloop-records-v4. Preserve the invocation's actual scope and existing authority; a storage save does not approve engineering work or permit external action. Use current context and opaque revisions, and reconcile interruptions before retrying. Do not use SQL or edit runtime storage directly.
 
 ## Purpose
 
@@ -60,6 +52,11 @@ If the required session method is missing, unreadable, escaped, stale, contradic
 
 ## Resource map
 
+- READ `references/targeted-recording-v2.schema.json` when constructing a supported mutation input within the invocation’s authority.
+- READ `references/rigorloop-records-v4.schema.json` when interpreting closed record fields or referenced task types.
+
+- READ `references/operational-recording.md` when inspecting or recording Change-managed work.
+
 - READ `references/session-method.md` exactly for `run-learn-session`, at most once. It owns phases, collision handling, topic effects, and routes.
 
 Untriggered resources do not block `LR0-route-result`.
@@ -68,7 +65,7 @@ Untriggered resources do not block `LR0-route-result`.
 
 The trigger permits a session; evidence controls capture. A single event remains `observation` or `no-durable-lesson` without a reusable pattern or systemic gap. Trigger type does not lower this standard.
 
-Maintainer-driven rule adoption without accumulated evidence is not durable capture. Without repeated review findings, repeated incidents, failed smoke patterns, recurring validation gaps, or prior session evidence, classify the item as `direction`, not `durable-lesson`, and route it to proposal work. That proposal may later produce an ADR or another accepted authoritative artifact.
+Maintainer-driven rule adoption without accumulated evidence is not durable capture. Without repeated review findings, repeated incidents, failed smoke patterns, recurring validation gaps, or prior session evidence, classify the item as `direction`, not `durable-lesson`, and treat it as RR input for requirement-analysis. Resulting accepted obligations may later guide an architectural decision.
 
 Contributor confirmation settles classification only, not destination mutation. Candidate classifications may be recorded; effects require confirmation.
 
@@ -108,6 +105,8 @@ Stop when trigger, scope, evidence, identity, path, confirmation, owner, authori
 ## Claims this skill must not make
 
 Do not claim new workflow policy or any authoritative artifact is accepted merely because learning was recorded. This skill does not prove destination approval, implementation, release, workflow completion, verification, branch readiness, PR readiness, CI status, or lifecycle closeout. Route through the `route` skill when another governed stage is required.
+
+A later accepted authoritative artifact may incorporate the learning; a material architecture choice may later produce an ADR. Learning itself grants no approval.
 
 ## Expected output
 

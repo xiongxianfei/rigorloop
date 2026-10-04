@@ -26,27 +26,6 @@ from skill_guidance_helpers import (
 class SkillPortabilityTests(unittest.TestCase):
     maxDiff = None
 
-    def test_customer_portable_public_skills_define_project_local_evidence_contract(self) -> None:
-        for skill_name in CUSTOMER_PORTABLE_M2_SKILLS:
-            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
-            if skill_name == "design":
-                self.assertIn("Missing, stale, conflicting, escaped or malformed governed signals", body)
-                self.assertIn("without lifecycle claims", body)
-                self.assertIn("portable default", body)
-                continue
-            block = extract_markdown_block(body, "Project-local evidence")
-
-            required_terms = [
-                "customer-project mode by default",
-                "project-local",
-                "RigorLoop repository-internal",
-                "portable defaults",
-                "block on ambiguity",
-                "authoritative CLI workflow context",
-            ]
-            for term in required_terms:
-                with self.subTest(skill=skill_name, term=term):
-                    self.assertIn(term, block)
 
     def test_project_map_treats_local_orientation_inputs_as_optional(self) -> None:
         project_map = (ROOT / "skills" / "project-map" / "SKILL.md").read_text(

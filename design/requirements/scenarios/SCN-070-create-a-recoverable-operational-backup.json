@@ -1,0 +1,60 @@
+{
+  "id": "SCN-070",
+  "type": "scenario",
+  "title": "Create a recoverable operational backup",
+  "status": "draft",
+  "actor": "A project maintainer",
+  "goal": "Retain an identifiable usable copy of selected operational work and required evidence.",
+  "context": "Engineering work continues while the maintainer prepares recovery material.",
+  "trigger": "The maintainer requests a backup of an explicitly selected project scope.",
+  "preconditions": [
+    "The actor explicitly identifies the project and intended scope.",
+    "Any requested mutation is subject to applicable project authority."
+  ],
+  "interaction": [
+    {
+      "actor": "Maintainer",
+      "action": "Selects the project, retained scope and backup destination."
+    },
+    {
+      "actor": "System",
+      "action": "Reports the captured state, included records and evidence, exclusions and whether capture completed."
+    },
+    {
+      "actor": "Maintainer",
+      "action": "Inspects the backup identity and scope before relying on it for recovery."
+    }
+  ],
+  "expected_outcome": "A coherent complete backup can be identified and distinguished from incomplete attempts.",
+  "alternatives": [
+    {
+      "condition": "The maintainer deliberately selects less than all history.",
+      "outcome": "The retained scope and exclusions are explicit; completeness applies only to that scope."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "Required evidence is missing or capture is interrupted.",
+      "outcome": "The system reports incomplete or failed capture, preserving source work and existing usable backups."
+    },
+    {
+      "condition": "Work changes during capture.",
+      "outcome": "The system captures a coherent identifiable state or reports failure rather than claiming a mixed capture is complete."
+    }
+  ],
+  "exercises": [
+    "FEAT-021"
+  ],
+  "informs": [
+    "SR-074",
+    "SR-040",
+    "SR-046"
+  ],
+  "sources": [
+    {
+      "source": "SRC-LOCAL-OPERATIONAL-ANALYSIS",
+      "locator": "SCN-070",
+      "basis": "Draft derivation from the refined IRs and RR proposal; no approval, implementation or satisfaction claim."
+    }
+  ]
+}

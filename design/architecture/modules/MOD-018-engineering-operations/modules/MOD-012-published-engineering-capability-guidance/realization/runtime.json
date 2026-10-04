@@ -1,0 +1,19 @@
+{
+  "proposed": [
+    {
+      "choice": "Use actor-driven specialist handoffs with one whole-change review gate.",
+      "rationale": "Separate responsibility, applicable assessment, authorization and persistence outcome; MOD-018 composition owns the handoff protocol and MOD-017 owns gate semantics. No hosted coordinator is required.",
+      "alternatives": [
+        "Mandatory review between each milestone.",
+        "Automatic semantic routing in the record store."
+      ],
+      "consequences": [
+        "Optional interim advice cannot establish whole-change approval; corrections and proportionate reassessment remain inside the same gate.",
+        "Current observed CLI execution is unchanged; this proposed actor protocol does not assert a new service, supported command or implemented skill."
+      ],
+      "revisit_when": [
+        "Integrated review changes the allocation or a supported execution boundary is specified."
+      ]
+    }
+  ]
+}

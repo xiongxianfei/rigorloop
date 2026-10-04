@@ -442,7 +442,10 @@ class CurrentEngineeringModelTests(unittest.TestCase):
                         self.assertIn(collection.parent, module_directories)
                     else:
                         self.assertEqual(collection, top_level)
-                    self.assertEqual(path.parent.name, label)
+                    if kind == "module":
+                        self.assertRegex(path.parent.name, re.escape(record["id"]) + r"-[a-z0-9]+(?:-[a-z0-9]+)*$")
+                    else:
+                        self.assertEqual(path.parent.name, label)
                     self.assertEqual(path.name, f"{kind}.json")
                 else:
                     self.assertEqual(path.name, label + ".json")

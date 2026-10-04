@@ -1,0 +1,62 @@
+{
+  "id": "SCN-074",
+  "type": "scenario",
+  "title": "Inspect retained change history for an engineering subject",
+  "status": "draft",
+  "actor": "A reviewer investigating a selected engineering subject",
+  "goal": "Find attributable recorded decisions, findings and evidence across Changes concerning the selected subject.",
+  "context": "Several retained Changes reference the same subject at different revisions.",
+  "trigger": "The reviewer requests a bounded history selection.",
+  "preconditions": [
+    "The actor explicitly identifies the project and intended scope.",
+    "Any requested mutation is subject to applicable project authority."
+  ],
+  "interaction": [
+    {
+      "actor": "Reviewer",
+      "action": "Selects a project-qualified subject and recorded-history filters."
+    },
+    {
+      "actor": "System",
+      "action": "Returns matching records with originating Changes, subject bases, selection scope and continuation or an explicit availability limitation."
+    },
+    {
+      "actor": "Reviewer",
+      "action": "Inspects selected detail or requests the next bounded selection."
+    }
+  ],
+  "expected_outcome": "The reviewer can trace the selected recorded facts without reading unrelated history or treating historical assessment as current approval.",
+  "alternatives": [
+    {
+      "condition": "Available supported history has no matching records.",
+      "outcome": "The result is an empty complete selection for the declared scope, not a claim about unretained history."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "History is missing, unreadable, unsupported or incompletely retained.",
+      "outcome": "The result reports the limitation rather than an empty complete history."
+    },
+    {
+      "condition": "The selected history changes between result pages.",
+      "outcome": "Continuation conflicts and requires a fresh selection rather than omitting or duplicating work."
+    }
+  ],
+  "exercises": [
+    "FEAT-012"
+  ],
+  "informs": [
+    "SR-078",
+    "SR-041",
+    "SR-046",
+    "SR-023",
+    "SR-027"
+  ],
+  "sources": [
+    {
+      "source": "SRC-LOCAL-OPERATIONAL-ANALYSIS",
+      "locator": "SCN-074",
+      "basis": "Draft derivation from the refined IRs and RR proposal; no approval, implementation or satisfaction claim."
+    }
+  ]
+}

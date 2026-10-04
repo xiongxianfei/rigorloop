@@ -1,6 +1,6 @@
 # Test design
 
-Start with the [shared rules](rules.md) for choosing scenarios, organizing scripts, writing assertions and maintaining useful protection. [System](../system.md#living-test-design-composition) owns those rules; [Design](../skill/authoring/design.md#living-test-design) owns their application in living models. [System](../system.md#repository-directory-layout) declares this supporting directory.
+Start with the [shared rules](rules.md) for choosing scenarios, organizing scripts, writing assertions and maintaining useful protection. [System](../system.md#living-test-design-composition) owns those rules; [Design](../skill/authoring/design.md#proportionate-design-and-proof) owns their application in living models. [System](../system.md#repository-directory-layout) declares this supporting directory.
 
 ## Model test designs
 
@@ -39,4 +39,4 @@ An entry identifies durable coverage intent; it does not certify implemented ass
 
 Shared rules stay here. Model-specific strategy and selected cases stay in their owning model's `test-design/` directory. Executable sources remain under `tests/` and `packages/rigorloop/test/` following [Validation's source layout](../engineering/validation.md#test-sources-groups-and-fixtures). Delivery plans allocate changes, and evidence records hold actual results. Existing scaffolds remain in their canonical template or skill-asset locations.
 
-The published Design skill carries [portable application guidance](../../../skills/design/references/model-authoring.md#living-test-design) for projects with their own layout; it does not require this repository's directory to exist after installation.
+The published Design skill carries [portable application guidance](../../../skills/architecture-design/SKILL.md) for projects with their own layout; it does not require this repository's directory to exist after installation.

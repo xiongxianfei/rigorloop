@@ -3,7 +3,7 @@
   "type": "allocated-requirement",
   "title": "Construct lossless complete candidates from explicit targeted edits",
   "status": "draft",
-  "statement": "The Operational record persistence Module shall construct one complete candidate from explicitly targeted actor edits against a coherent before-state, preserve all unselected meaning and bytes, validate the combined final candidate, and support equivalent construction in nonwriting preview.",
+  "statement": "The Work records Module shall construct a complete current semantic candidate while preserving unresolved obligations and attributed assessment meaning.",
   "analysis": {
     "method": "5W2H",
     "what": {
@@ -11,7 +11,7 @@
       "desired_outcome": "Only the requested semantic effects and necessary representation bookkeeping appear in the complete candidate, with no publication during construction."
     },
     "why": {
-      "rationale": "SR-043 requires lossless and practical recording; MOD-011 owns source bytes, candidate construction, preservation validation, and the construction/publication boundary."
+      "rationale": "SR-043 requires preservation of current decisions and unresolved obligations; MOD-011 owns typed candidate construction and dependency validation."
     },
     "who": {
       "stakeholders": [
@@ -21,7 +21,7 @@
     },
     "when": {
       "conditions": [
-        "An admitted targeted edit or ordered batch is constructed for preview or checked execution against one supported before-state."
+        "An admitted semantic task is constructed for preview or checked execution against one coherent current snapshot."
       ]
     },
     "where": {
@@ -30,24 +30,26 @@
       ]
     },
     "how": {
-      "approach": "Retain exact before bytes, replace only admitted value spans and necessary adjacent syntax, generate mechanical metadata and registration, and validate the combined candidate under the same preservation rules used by advanced replacement."
+      "approach": "Apply the current v4 SQLite task and maintenance contract. Construct one complete semantic candidate from explicit task intent against a coherent snapshot; reject malformed typed references before commitment."
     },
     "how_much": {
-      "scope": "Current targeted creation, field and explanation edits, explicit finding/blocker corrections, and bounded batch composition. Advanced replacement continues to provide complete exact bytes rather than reconstructed targeted edits."
+      "scope": "This allocation preserves its existing parent SR and accountable Module. Prior v3 file-journal mechanisms are historical at 39be9c81; current maintenance remains separately explicit."
     }
   },
   "acceptance_criteria": [
-    "Only named values and necessary adjacent syntax or registration bookkeeping change. Omitted fields, unselected entries, order, unrelated narratives, neighboring whitespace, and semantically unchanged values retain their original bytes; admitted new files use the current deterministic encoding contract.",
-    "The engine generates schema/change metadata, deterministic paths, containers, and registry entries without synthesizing actor decisions. Newly created supporting records require explicit applicability; omission on an existing record preserves its declaration where the operation permits.",
-    "Ordered batch edits form one complete candidate and resolve final references there. Duplicate or overlapping semantic assignments reject even if equal; the documented separate Review-assessment/finding and decision/shared-body spans remain composable.",
-    "Full Review recording and explanation updates preserve complete findings. Explicit finding correction preserves IDs while admitting valid non-ID current-field edits, and blocker operations preserve the complete immutable origin under their distinct construction rules.",
-    "Narrow Review/Verify explanation updates change only the selected allowed explanation values and preserve applicability, actors, subjects, judgment, and optional basis. Complete Verify replacement follows its full-field contract, including removal of an omitted optional verification_basis.",
-    "Registered missing records reject as unavailable content and existing unregistered files reject as unexpected overwrite; neither becomes an empty creation target. Advanced explicit restoration still requires supplied actual content and every normal safety check.",
-    "Preview constructs and validates the same intended complete candidate for the same before-state and intent without any filesystem write capability, lock/reservation, transaction files, or saved claim. Invalid final structure, overlap, or preservation rejects the whole candidate without partial publication.",
-    "Real execution starts afresh under writer exclusion, rereads the coherent before-state, checks the declared expectations, and reconstructs and validates the exact candidate before required receipt serialization and publication. It does not trust preview bytes or reserve a previewed revision; subsequent recovery uses exact prepared bytes without replaying targeted operations."
+    "Construct one complete semantic candidate from explicit task intent against a coherent snapshot; reject malformed typed references before commitment.",
+    "Preserve omitted current facts, unresolved issues, assessor attribution and meaning; JSON file whitespace is not a SQLite semantic obligation.",
+    "Typed supporting records are linked atomically to their Change; callers need not maintain a filesystem registry.",
+    "Overlapping or inconsistent facts reject without partial semantic state.",
+    "Replacing comparable evidence does not silently renew dependent review or verification; current reliance gaps remain visible.",
+    "Bounded candidate and disposition reserve checks precede commitment; a too-large candidate does not strand ordinary issue disposition.",
+    "An identical complete candidate with fresh preconditions returns unchanged; a stale revision still conflicts.",
+    "Preview returns a candidate and limitations without claiming persistence, approval or reserved future access."
   ],
   "assumptions": [],
-  "constraints": [],
+  "constraints": [
+    "Current v4 SQLite realization; source observations do not establish engineering approval or passing implementation proof."
+  ],
   "allocated_to": "MOD-011",
   "sources": [
     {
@@ -59,6 +61,21 @@
       "source": "SRC-PUBLISHED-CLI",
       "locator": "docs/design/cli/cli.md#CLI-SR-03, CLI-SR-12, CLI-SR-13, CLI-SR-15, CLI-SR-16, CLI-SR-25, CLI-SR-26; docs/design/cli/records.md#RF-SR-02, RF-SR-03, RF-SR-04, RF-SR-08, RF-SR-10, RF-SR-11, RF-SR-13",
       "basis": "Preserve the applicable current public and stored-record guarantees at this accountable boundary. The named source retains exact schemas, operation tables, classifications, limits, and historical adoption obligations; this allocation neither replaces those details nor accepts REM authoring JSON as operational records."
+    },
+    {
+      "source": "SRC-WORKFLOW-CONTRACTS",
+      "locator": "AR-019",
+      "basis": "Reconcile the existing allocation with refined SR-042–044 and the explicit v4/v2 contract. Keep current-v3 byte and mutation guarantees version-scoped, preserve historical originals, and distinguish precommit recovery from committed outcome reporting. This target allocation is not runtime qualification."
+    },
+    {
+      "source": "SRC-CURRENT-HANDOFF",
+      "locator": "AR-019",
+      "basis": "Refine existing current-state responsibility and selective retention; observed runtime mappings remain version-scoped."
+    },
+    {
+      "source": "SRC-SQLITE-ADOPTION",
+      "locator": "docs/design/cli/records.md; Work records (MOD-011) current transaction and maintenance contract",
+      "basis": "Reconciles existing stakeholder need and allocation with SQLite ordinary recovery. No new need, approval, or executed result is inferred."
     }
   ],
   "constrains": [

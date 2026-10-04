@@ -15,7 +15,7 @@
     {
       "id": "review-package",
       "initial_state": [
-        "Use the Review fixture basis in the strategy plus this case’s concrete facts and counterexample. Resolve every actual instruction and authority claim to the exact current owner/body/triggered resources.",
+        "Use the Review fixture basis in the strategy plus this case\u2019s concrete facts and counterexample. Resolve every actual instruction and authority claim to the exact current owner/body/triggered resources.",
         "Materialize a fresh private review packet for each variant. F0/F1/F2, G0/G1/G2 and S0/S1 are synthetic byte-identity labels; an actual assessment records inspected identities.",
         "Inspect proposed decisions, outputs and prohibited side effects without running an agent or writing production, workflow records, hosted CI or publication state."
       ],
@@ -38,13 +38,13 @@
       "boundary": "review",
       "target": {
         "path": "docs/design/skill/skill.md",
-        "section": "Behavioral submodels"
+        "section": "Context and Scope"
       },
       "given": {
         "fixture": "review-package",
         "conditions": [
-          "On separate packets supply an attributed Research finding recommending option B while the direction owner has not adopted B; a Project Foundations context package limiting work to local files; or a Learning follow-up proposing a future retry change with no implementation authorization. Preserve exact producer identities and each input’s limitations.",
-          "Internal Proposal/Design/Plan refinement and handoffs resolve to Authoring’s catalog, including AUTH-RF-001..004 and AUTH-SH-001..004."
+          "On separate packets supply an attributed Research finding recommending option B while the direction owner has not adopted B; a Project Foundations context package limiting work to local files; or a Learning follow-up proposing a future retry change with no implementation authorization. Preserve exact producer identities and each input\u2019s limitations.",
+          "Internal Proposal/Design/Plan refinement and handoffs resolve to Authoring\u2019s catalog, including AUTH-RF-001..004 and AUTH-SH-001..004."
         ]
       },
       "when": [
@@ -96,9 +96,7 @@
       "requirements": [
         "SKL-SR-03",
         "SKL-SR-06",
-        "SKL-SR-18",
-        "SKL-SR-20",
-        "SKL-SR-31",
+        "SKL-SR-05",
         "SKL-SR-34",
         "SKL-SR-35"
       ],
@@ -113,7 +111,7 @@
       "given": {
         "fixture": "review-package",
         "conditions": [
-          "Choose a currently supported invocation of Route, Verify, PR, Design Review, Delivery Review, Implement or Code Review whose guidance is being assessed. Use that owner’s actual native values and output obligations, all triggered references and the exact current package. These names identify applicable consumers, not a replay of historical rollout rounds."
+          "Choose a currently supported invocation of Route, Verify, PR, Design Review, Delivery Review, Implement or Code Review whose guidance is being assessed. Use that owner\u2019s actual native values and output obligations, all triggered references and the exact current package. These names identify applicable consumers, not a replay of historical rollout rounds."
         ]
       },
       "when": [
@@ -145,7 +143,7 @@
       "boundary": "review",
       "target": {
         "path": "docs/design/skill/skill.md",
-        "section": "Delivery Handoff"
+        "section": "Context and Scope"
       },
       "given": {
         "fixture": "review-package",
