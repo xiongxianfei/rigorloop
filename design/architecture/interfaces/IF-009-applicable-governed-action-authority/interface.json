@@ -68,7 +68,7 @@
     },
     {
       "source": "SRC-PUBLISHED-RELEASE",
-      "locator": "docs/design/engineering/release/release.md#REL-SR-12; REL-SR-22; REL-SR-23; REL-SR-24; SR-070; FUNC-070",
+      "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-015-product-release-coordination/release.md#REL-SR-12; REL-SR-22; REL-SR-23; REL-SR-24; SR-070; FUNC-070",
       "basis": "Apply the existing exact-candidate publication authority, one normal approval, changed-subject invalidation, unchanged satisfactory recheck, duplicate-event and truthful recorded-basis guarantees without introducing a new release mechanism."
     },
     {

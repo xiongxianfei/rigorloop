@@ -1,6 +1,6 @@
 # Script Output Optimization
 
-This topic is curated learn guidance. [Validation](../../design/engineering/validation.md) owns current execution and reporting behavior.
+This topic is curated learn guidance. [Validation](../../../design/support/validation.md) owns current execution and reporting behavior.
 
 ## 2026-05-22: Optimize Every Output Layer, Not Just One Producer
 

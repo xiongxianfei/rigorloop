@@ -10,7 +10,7 @@ import {
 const read = (p) =>
   JSON.parse(
     readFileSync(
-      new URL(`../../../docs/design/cli/examples/records/${p}`, import.meta.url),
+      new URL(`../../../tests/fixtures/cli-contract-examples/records/${p}`, import.meta.url),
       'utf8',
     ),
   );

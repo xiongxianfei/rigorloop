@@ -18,9 +18,93 @@ from selection_test_helpers import (
 
 
 class SelectionGitChecks:
+    def test_complete_contract_tree_move_validates_current_population_in_local_and_pr(self):
+        from catalog_admission_fixture_helpers import current_documents
+        from lib.validation.validation_selection import catalog_command
+        from lib.validation.model_layout import PROJECT_MODEL_PATHS
+        from selection_test_helpers import run_ci
+        repo = self.make_git_repo()
+        shutil.copytree(ROOT / "scripts", repo / "scripts", dirs_exist_ok=True,
+                        ignore=shutil.ignore_patterns("__pycache__"))
+        registry = repo / "scripts/lib/validation/model_layout.py"
+        registry.parent.mkdir(parents=True, exist_ok=True)
+        (repo / "scripts/example.py").write_text("def operation():\n    return 1\n")
+        old_paths = ("docs/design/alpha/alpha.md", "docs/design/beta/beta.md")
+        registry.write_text("PROJECT_MODEL_PATHS = " + repr(dict(zip(("alpha", "beta"), old_paths))))
+        for path in old_paths:
+            target = repo / path
+            target.parent.mkdir(parents=True)
+            target.write_text("Prior contract fixture; never read as current authority.\n")
+        self.git_output(repo, "add", ".")
+        self.git_output(repo, "commit", "-m", "declare original contract tree")
+        base = self.git_output(repo, "rev-parse", "HEAD")
+        shutil.rmtree(repo / "docs/design")
+        current_documents(repo)
+        registry.write_text((ROOT / "scripts/lib/validation/model_layout.py").read_text())
+        self.git_output(repo, "add", ".")
+        for mode in ("local", "pr"):
+            if mode == "pr":
+                self.git_output(repo, "commit", "-m", "move complete contract tree")
+            head = self.git_output(repo, "rev-parse", "HEAD")
+            result = select_validation(SelectionRequest(mode=mode, base=base, head=head, repo_root=repo))
+            self.assertEqual(result.status, "ok", result.to_json_dict())
+            command = shlex.split(next(c["command"] for c in result.selected_checks if c["id"] == "model.validate"))
+            for path in old_paths:
+                self.assertNotIn(path, command)
+            self.assertTrue(set(PROJECT_MODEL_PATHS.values()).issubset(command))
+            command[1] = str(ROOT / command[1])
+            checked = subprocess.run([*command, "--root", str(repo)], cwd=ROOT, capture_output=True, text=True)
+            self.assertEqual(checked.returncode, 0, checked.stdout + checked.stderr)
+            payload = result.to_json_dict()
+            payload["selected_checks"] = [c for c in payload["selected_checks"] if c["id"] == "model.validate"]
+            fixture = self.write_selector_fixture(payload)
+            args = ["--mode", mode, "--jobs", "1", "--timeout", "30"]
+            if mode == "pr":
+                args.extend(["--base", base, "--head", head])
+            executed = run_ci(*args, cwd=repo, script=repo / "scripts/ci.sh",
+                              env={"RIGORLOOP_SELECTOR_FIXTURE": str(fixture)})
+            self.assertEqual(executed.returncode, 0, executed.stdout + executed.stderr)
+            self.assertIn("Selected CI checks passed.", executed.stdout)
+            if mode == "local":
+                # A --path argument is explicit even when the selected mode is local.
+                selected = select_validation(SelectionRequest(mode="local", paths=old_paths, repo_root=repo))
+                command = shlex.split(next(c["command"] for c in selected.selected_checks if c["id"] == "model.validate"))
+                self.assertTrue(set(old_paths).issubset(command))
+                command[1] = str(ROOT / command[1])
+                checked = subprocess.run([*command, "--root", str(repo)], cwd=ROOT, capture_output=True, text=True)
+                self.assertNotEqual(checked.returncode, 0)
+                self.assertIn("BFR-MODEL-PATH", checked.stdout)
+                payload = selected.to_json_dict()
+                payload["selected_checks"] = [c for c in payload["selected_checks"] if c["id"] == "model.validate"]
+                fixture.write_text(json.dumps(payload))
+                executed = run_ci("--mode", "local", "--path", old_paths[0], "--path", old_paths[1],
+                                  "--jobs", "1", "--timeout", "30", cwd=repo,
+                                  script=repo / "scripts/ci.sh",
+                                  env={"RIGORLOOP_SELECTOR_FIXTURE": str(fixture)})
+                self.assertNotEqual(executed.returncode, 0)
+                self.assertIn("BFR-MODEL-PATH", executed.stdout + executed.stderr)
+                self.assertNotIn("command does not match catalog", executed.stdout + executed.stderr)
+        # Explicit and unproven paths are never aliases for the current population.
+        explicit = shlex.split(catalog_command("model.validate", repo_root=repo, mode="explicit", paths=old_paths))
+        self.assertTrue(set(old_paths).issubset(explicit))
+        unknown = "docs/design/ghost/ghost.md"
+        command = shlex.split(catalog_command("model.validate", repo_root=repo, mode="pr", base=base, head=head, paths=(unknown,), contract_relocation=True))
+        self.assertIn(unknown, command)
+        # A present old tree is partial migration, not proof of whole-tree retirement.
+        restored = repo / old_paths[0]
+        restored.parent.mkdir(parents=True)
+        restored.write_text("Still present old contract\n")
+        command = shlex.split(catalog_command("model.validate", repo_root=repo, mode="pr", base=base, head=head, paths=old_paths, contract_relocation=True))
+        self.assertTrue(set(old_paths).issubset(command))
+        shutil.rmtree(repo / "docs")
+        (repo / "empty").mkdir()
+        (repo / "docs").symlink_to(repo / "empty", target_is_directory=True)
+        command = shlex.split(catalog_command("model.validate", repo_root=repo, mode="pr", base=base, head=head, paths=old_paths, contract_relocation=True))
+        self.assertTrue(set(old_paths).issubset(command))
+
     def test_v3_registered_paths_select_owner_and_unknown_value_versions_fail_closed(self):
         repo = self.make_git_repo()
-        source = ROOT / "docs/design/cli/examples/records/v3-complete-store"
+        source = ROOT / "tests/fixtures/cli-contract-examples/records/v3-complete-store"
         target = repo / "docs/changes/example-change"
         for file in source.rglob("*.json"):
             destination = target / file.relative_to(source)
@@ -234,11 +318,12 @@ class SelectionGitChecks:
 
     def test_model_selection_keeps_unsupported_exact_input(self):
         repo = self.make_git_repo()
-        for owner in ("docs/design/skill/workflow.md", "docs/design/cli/cli.md", "docs/design/cli/records.md"):
+        for owner in ("design/architecture/modules/MOD-017-engineering-governance/modules/MOD-006-engineering-change-control/workflow.md", "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/command-contract.md", "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-011-operational-record-persistence/record-contract.md"):
             (repo / owner).parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(ROOT / owner, repo / owner)
         flat = "docs/design/workflow.md"
-        (repo / flat).write_text((ROOT / "docs/design/skill/workflow.md").read_text())
+        (repo / flat).parent.mkdir(parents=True, exist_ok=True)
+        (repo / flat).write_text((ROOT / "design/architecture/modules/MOD-017-engineering-governance/modules/MOD-006-engineering-change-control/workflow.md").read_text())
         subprocess.run(["git", "add", "."], cwd=repo, check=True, capture_output=True)
         selected = select_validation(SelectionRequest(mode="explicit", paths=(flat,), repo_root=repo))
         command = shlex.split(next(c["command"] for c in selected.selected_checks if c["id"] == "model.validate"))
@@ -321,10 +406,10 @@ class SelectionGitChecks:
 
     def test_model_selection_retains_authoritative_tracking_preflight(self):
         repo = self.make_git_repo()
-        path = repo / "docs/design/skill/workflow.md"
+        path = repo / "design/architecture/modules/MOD-017-engineering-governance/modules/MOD-006-engineering-change-control/workflow.md"
         path.parent.mkdir(parents=True)
         path.write_text("# Model fixture\n")
-        result = select_validation(SelectionRequest(mode="explicit", paths=("docs/design/skill/workflow.md",), repo_root=repo))
+        result = select_validation(SelectionRequest(mode="explicit", paths=("design/architecture/modules/MOD-017-engineering-governance/modules/MOD-006-engineering-change-control/workflow.md",), repo_root=repo))
         self.assertIn("untracked-authoritative-artifacts", {item.get("code") for item in result.blocking_results})
 
 
@@ -901,7 +986,7 @@ class SelectionGitChecks:
     def test_document_symlink_keeps_lexical_identity_for_admission(self):
         repo = self.make_git_repo()
         (repo/'README.md').write_text('# Valid unrelated target\n')
-        path = 'docs/design/test-design/extra.md'
+        path = 'design/support/test-design/extra.md'
         target = repo/path
         target.parent.mkdir(parents=True)
         target.symlink_to('../../../README.md')
@@ -918,7 +1003,7 @@ class SelectionGitChecks:
         repo = self.make_git_repo()
         current_documents(repo)
         shutil.copytree(ROOT/'scripts', repo/'scripts', dirs_exist_ok=True, ignore=shutil.ignore_patterns('__pycache__'))
-        current = 'docs/design/engineering/release/release.md'
+        current = 'design/architecture/modules/MOD-019-product-delivery/modules/MOD-015-product-release-coordination/release.md'
         self.git_output(repo, 'add', '.')
         self.git_output(repo, 'commit', '-m', 'current declared documents')
         with (repo/current).open('a') as file:
@@ -934,7 +1019,7 @@ class SelectionGitChecks:
         result = execute()
         self.assertEqual(result.returncode, 0, result.stdout+result.stderr)
         self.assertIn('Selected CI checks passed.', result.stdout)
-        (repo/'docs/design/engineering/release/test-design/test-cases.json').unlink()
+        (repo/'design/architecture/modules/MOD-019-product-delivery/modules/MOD-015-product-release-coordination/test-design/test-cases.json').unlink()
         selected = parse_stdout(run_selector('--mode', 'local', cwd=repo))
         selected['selected_checks'] = [c for c in selected['selected_checks'] if c['id'] == 'model.validate']
         fixture.write_text(json.dumps(selected))

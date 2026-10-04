@@ -1,53 +1,54 @@
-"""Declared repository model paths; no validator or runtime dependencies."""
+"""Declared supporting contract paths; keys are validation identities, not REM Modules."""
 
-# Explicit repository layout owned by System. Portable model paths remain valid.
+# Exact subordinate contract layout owned by design/support/ownership.md.
+# Source-qualified contract keys and customer portable model paths remain valid.
 PROJECT_MODEL_PATHS = {
-    "system": "docs/design/system.md",
-    "authoring": "docs/design/skill/authoring/authoring.md",
-    "proposal": "docs/design/skill/authoring/proposal.md",
-    "design": "docs/design/skill/authoring/design.md",
-    "plan": "docs/design/skill/authoring/plan.md",
-    "project-foundations": "docs/design/skill/project-foundations/project-foundations.md",
-    "vision": "docs/design/skill/project-foundations/vision.md",
-    "constitution": "docs/design/skill/project-foundations/constitution.md",
-    "project-map": "docs/design/skill/project-foundations/project-map.md",
-    "discovery": "docs/design/skill/discovery/discovery.md",
-    "explore": "docs/design/skill/discovery/explore.md",
-    "research": "docs/design/skill/discovery/research.md",
-    "learning": "docs/design/skill/learning.md",
-    "delivery-handoff": "docs/design/skill/delivery-handoff.md",
-    "workflow": "docs/design/skill/workflow.md",
-    "review-closeout": "docs/design/skill/assessment.md",
-    "record-format": "docs/design/cli/records.md",
-    "installation": "docs/design/cli/installation.md",
-    "validation": "docs/design/engineering/validation.md",
-    "packaging": "docs/design/engineering/packaging.md",
-    "release": "docs/design/engineering/release/release.md",
-    "skill": "docs/design/skill/skill.md",
-    "cli": "docs/design/cli/cli.md",
-    "engineering": "docs/design/engineering/engineering.md"
+    "system": "design/architecture/composition.md",
+    "authoring": "design/architecture/modules/MOD-017-engineering-governance/modules/MOD-008-engineering-authoring-guidance/authoring.md",
+    "proposal": "design/architecture/modules/MOD-017-engineering-governance/modules/MOD-008-engineering-authoring-guidance/requirement-analysis.md",
+    "design": "design/architecture/modules/MOD-017-engineering-governance/modules/MOD-008-engineering-authoring-guidance/design-authoring.md",
+    "plan": "design/architecture/modules/MOD-017-engineering-governance/modules/MOD-006-engineering-change-control/planning.md",
+    "project-foundations": "design/architecture/modules/MOD-017-engineering-governance/modules/MOD-008-engineering-authoring-guidance/project-foundations.md",
+    "vision": "design/architecture/modules/MOD-017-engineering-governance/modules/MOD-008-engineering-authoring-guidance/vision.md",
+    "constitution": "design/architecture/modules/MOD-017-engineering-governance/modules/MOD-008-engineering-authoring-guidance/constitution.md",
+    "project-map": "design/architecture/modules/MOD-017-engineering-governance/modules/MOD-008-engineering-authoring-guidance/project-map.md",
+    "discovery": "design/architecture/modules/MOD-017-engineering-governance/modules/MOD-008-engineering-authoring-guidance/discovery.md",
+    "explore": "design/architecture/modules/MOD-017-engineering-governance/modules/MOD-008-engineering-authoring-guidance/explore.md",
+    "research": "design/architecture/modules/MOD-017-engineering-governance/modules/MOD-008-engineering-authoring-guidance/research.md",
+    "learning": "design/architecture/modules/MOD-017-engineering-governance/modules/MOD-009-engineering-learning/learning.md",
+    "delivery-handoff": "design/architecture/modules/MOD-017-engineering-governance/modules/MOD-006-engineering-change-control/delivery-handoff.md",
+    "workflow": "design/architecture/modules/MOD-017-engineering-governance/modules/MOD-006-engineering-change-control/workflow.md",
+    "review-closeout": "design/architecture/modules/MOD-017-engineering-governance/modules/MOD-007-engineering-verification-and-assurance/assessment.md",
+    "record-format": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-011-operational-record-persistence/record-contract.md",
+    "installation": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-014-verified-skill-installation/installation.md",
+    "validation": "design/support/validation.md",
+    "packaging": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-013-product-package-production/packaging.md",
+    "release": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-015-product-release-coordination/release.md",
+    "skill": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-012-published-engineering-capability-guidance/capability-contract.md",
+    "cli": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/command-contract.md",
+    "engineering": "design/support/development.md"
 }
 
 # Exact supporting-document declarations, not prefix-based model authority.
 SHARED_TEST_DESIGN_PATHS = (
-    'docs/design/test-design/README.md',
-    'docs/design/test-design/rules.md',
+    'design/support/test-design/README.md',
+    'design/support/test-design/rules.md',
 )
 TEST_DESIGN_PACKAGES = {
     'release': {
-        'directory': 'docs/design/engineering/release/test-design',
+        'directory': 'design/architecture/modules/MOD-019-product-delivery/modules/MOD-015-product-release-coordination/test-design',
         'entrypoint': 'tests/engineering/release/test-release-transaction.py',
         'groups': ('profile-input', 'preparation', 'preflight', 'candidate-identity',
                    'approval-recovery', 'evidence-closeout', 'maintenance-review'),
     },
     'skill': {
-        'directory': 'docs/design/skill/test-design',
+        'directory': 'design/architecture/modules/MOD-018-engineering-operations/modules/MOD-012-published-engineering-capability-guidance/test-design',
         'entrypoint': 'tests/skill/test-skill-validator.py',
         'groups': ('capability-contract', 'resource-contract', 'recording-composition',
                    'implementation-handoffs', 'capability-composition'),
     },
     'authoring': {
-        'directory': 'docs/design/skill/authoring/test-design',
+        'directory': 'design/architecture/modules/MOD-017-engineering-governance/modules/MOD-008-engineering-authoring-guidance/test-design',
         'entrypoint': 'tests/skill/test-skill-validator.py',
         'groups': ('refinement', 'scope-handoff', 'correction-reconciliation'),
     },
@@ -59,3 +60,9 @@ def test_design_paths(model):
     directory = package['directory']
     return (PROJECT_MODEL_PATHS[model], directory+'/test-design.md', directory+'/test-cases.json',
             *(directory+'/cases/'+group+'.json' for group in package['groups']))
+
+
+def supporting_architecture_json_paths(root):
+    """Exact selected catalogs, separate from entity/facet discovery and validation."""
+    return {root / path for model in TEST_DESIGN_PACKAGES
+            for path in test_design_paths(model) if path.endswith('.json')}

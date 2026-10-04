@@ -1,6 +1,6 @@
 # Command interface: current engineering handoff
 
-This defines the `targeted-recording-v2` interface for [v4 current-state records](../MOD-011-operational-record-persistence/README.md), refining SR-006 and SR-040–045 under AR-040. The successor package implements the operational families under the [current CLI contract](../../../../../../docs/design/cli/cli.md); browser-family entries remain designed capabilities. Use the executing package’s capabilities to distinguish availability. This project has explicitly adopted selected operational work; installing the package does not activate customer policy or migrate other work.
+This defines the `targeted-recording-v2` interface for [v4 current-state records](../MOD-011-operational-record-persistence/README.md), refining SR-006 and SR-040–045 under AR-040. The successor package implements the operational families under the [current CLI contract](command-contract.md); browser-family entries remain designed capabilities. Use the executing package’s capabilities to distinguish availability. This project has explicitly adopted selected operational work; installing the package does not activate customer policy or migrate other work.
 
 ## Public task surface
 
@@ -384,7 +384,7 @@ Maintenance uses the common result envelope with interface store-maintenance-v1 
 
 ## Supporting commands
 
-init AGENT delegates to IF-006 and the existing [Installation contract](../../../../../../docs/design/cli/installation.md). --force and --dry-run retain their qualified meanings. A successful installation does not activate workflow policy.
+init AGENT delegates to IF-006 and the existing [Installation contract](../../../MOD-019-product-delivery/modules/MOD-014-verified-skill-installation/installation.md). --force and --dry-run retain their qualified meanings. A successful installation does not activate workflow policy.
 
 capabilities --root PATH reports `{interface, record_contract, workflow_contract, operations: [Text], backend_available: boolean, limitation: Text or null, identity, store}` for the executing implementation. Operations list only actually supported spellings, sorted; identity is the canonical capability-description digest for compatibility, not an attachment identifier. Unimplemented target commands are never advertised by the current runtime.
 
@@ -442,3 +442,9 @@ The exact machine serialization and platform-specific interruption mechanisms mu
 ### Deferred cross-Change history query
 
 SR-078 / FUNC-077 remains a draft cross-Change subject-history requirement. The selected v2/v4 task contract implements current explicitly selected Change context and maintenance, not this history lookup or its continuation protocol. Define and review its bounded public query and persistence allocation before implementing or advertising it; no current capability or adoption satisfaction claim includes SR-078.
+
+## Supporting contracts
+
+These documents retain detailed clauses and proof under this Module; they are not additional REM entities.
+
+- [Command interface](command-contract.md)

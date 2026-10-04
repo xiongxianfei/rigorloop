@@ -1,6 +1,6 @@
 # Plan lifecycle closeout
 
-[Workflow](../../design/skill/workflow.md) and [Assessment](../../design/skill/assessment.md) own progression and closeout. Plans contain stable intent; mutable work, activity and completion state belong to the owning change record.
+[Workflow](../../../design/architecture/modules/MOD-017-engineering-governance/modules/MOD-006-engineering-change-control/workflow.md) and [Assessment](../../../design/architecture/modules/MOD-017-engineering-governance/modules/MOD-007-engineering-verification-and-assurance/assessment.md) own progression and closeout. Plans contain stable intent; mutable work, activity and completion state belong to the owning change record.
 
 Complete required implementation, corrections, fresh whole-change Code Review and distinct Verify before claiming governed completion. Readiness for the next gate is not completion, and merge is not a routine closeout trigger. A genuine external dependency retains its explicit owner and unresolved state.
 

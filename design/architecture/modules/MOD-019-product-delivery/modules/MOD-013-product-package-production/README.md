@@ -1,6 +1,6 @@
 # Package production: workflow replacement identity
 
-This proposed extension realizes AR-041 and supplies [Installation's bounded replacement contract](../MOD-014-verified-skill-installation/README.md). Existing [Packaging](../../../../../../docs/design/engineering/packaging.md) retains archive acquisition, target descriptors, tree-hash algorithms, normalization and qualification ownership. No current package is relabeled or claimed qualified by this design.
+This proposed extension realizes AR-041 and supplies [Installation's bounded replacement contract](../MOD-014-verified-skill-installation/README.md). Existing [Packaging](packaging.md) retains archive acquisition, target descriptors, tree-hash algorithms, normalization and qualification ownership. No current package is relabeled or claimed qualified by this design.
 
 ## Exact package member
 
@@ -53,3 +53,9 @@ Supported acquisition/update uses the existing package-manager trust/integrity p
 RigorLoop's own repository is the first supported project. Qualify an actual installed candidate through IF-012's public command boundary using an explicitly selected immutable snapshot of this model; the repository wrapper must invoke that candidate rather than import a separate source-tree generator. Keep a minimal independent model as a supplementary check for accidental project assumptions. Check generated content, optional missing views, source attribution, safe output failure/recovery, bundled binary/resource completeness and copied offline reading without the checkout, network or generator. Record the exact candidate and configurations; untested platforms remain unsupported. MOD-015 receives those observations through IF-005 and separately applies release authority and observes publication. No customer-package support claim follows from the existing repository Python tests.
 
 The first candidate supports one fixed engineering-model contract, one generator and its matched static reader. Internal data-contract definitions may be implemented with the producer/reader; they are not a separately distributed universal schema or template SDK. Generated reference documentation uses the same supported path as customer websites. The [first-project adoption design](../../../MOD-016-engineering-model-management/modules/MOD-004-engineering-context-and-traceability/README.md#rigorloop-as-the-first-supported-project) owns the current gap assessment and cutover conditions. This narrowing does not relax the no-customer-Python, complete-resource, input identity or safe-publication obligations.
+
+## Supporting contracts
+
+These documents retain detailed clauses and proof under this Module; they are not additional REM entities.
+
+- [Packaging Model Design](packaging.md)

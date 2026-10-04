@@ -50,22 +50,22 @@
   "sources": [
     {
       "source": "SRC-PUBLISHED-PACKAGING",
-      "locator": "docs/design/engineering/packaging.md#DIST-SR-04",
+      "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-013-product-package-production/packaging.md#DIST-SR-04",
       "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. Candidate production and user-authorized installation have different responsibility and mutation boundaries. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
     },
     {
       "source": "SRC-PUBLISHED-PACKAGING",
-      "locator": "docs/design/engineering/packaging.md#DIST-SR-05",
+      "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-013-product-package-production/packaging.md#DIST-SR-05",
       "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. Candidate production and user-authorized installation have different responsibility and mutation boundaries. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
     },
     {
       "source": "SRC-PUBLISHED-PACKAGING",
-      "locator": "docs/design/engineering/packaging.md#DIST-SR-21",
+      "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-013-product-package-production/packaging.md#DIST-SR-21",
       "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. Candidate production and user-authorized installation have different responsibility and mutation boundaries. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
     },
     {
       "source": "SRC-PUBLISHED-PACKAGING",
-      "locator": "docs/design/engineering/packaging.md#DIST-SR-22",
+      "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-013-product-package-production/packaging.md#DIST-SR-22",
       "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. Candidate production and user-authorized installation have different responsibility and mutation boundaries. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
     }
   ]

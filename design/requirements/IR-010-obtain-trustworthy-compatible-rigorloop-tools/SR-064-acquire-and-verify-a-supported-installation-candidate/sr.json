@@ -50,22 +50,22 @@
   "sources": [
     {
       "source": "SRC-PUBLISHED-INSTALLATION",
-      "locator": "docs/design/cli/installation.md#DIST-SR-02",
+      "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-014-verified-skill-installation/installation.md#DIST-SR-02",
       "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. Users must be able to obtain tooling without trusting arbitrary metadata or exposing their project to unsafe extraction. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
     },
     {
       "source": "SRC-PUBLISHED-INSTALLATION",
-      "locator": "docs/design/cli/installation.md#DIST-SR-07",
+      "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-014-verified-skill-installation/installation.md#DIST-SR-07",
       "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. Users must be able to obtain tooling without trusting arbitrary metadata or exposing their project to unsafe extraction. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
     },
     {
       "source": "SRC-PUBLISHED-INSTALLATION",
-      "locator": "docs/design/cli/installation.md#DIST-SR-08",
+      "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-014-verified-skill-installation/installation.md#DIST-SR-08",
       "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. Users must be able to obtain tooling without trusting arbitrary metadata or exposing their project to unsafe extraction. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
     },
     {
       "source": "SRC-PUBLISHED-INSTALLATION",
-      "locator": "docs/design/cli/installation.md#DIST-SR-11",
+      "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-014-verified-skill-installation/installation.md#DIST-SR-11",
       "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. Users must be able to obtain tooling without trusting arbitrary metadata or exposing their project to unsafe extraction. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
     }
   ]

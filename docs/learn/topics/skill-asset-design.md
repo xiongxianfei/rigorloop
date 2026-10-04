@@ -1,6 +1,6 @@
 # Skill Asset Design
 
-[Skill](../../design/skill/skill.md) owns current packaged-resource requirements. This topic preserves a design lesson, not additional template policy.
+[Skill](../../../design/architecture/modules/MOD-018-engineering-operations/modules/MOD-012-published-engineering-capability-guidance/capability-contract.md) owns current packaged-resource requirements. This topic preserves a design lesson, not additional template policy.
 
 ## 2026-05-20: Require Assets To Earn Their File
 

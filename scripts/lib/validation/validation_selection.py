@@ -6,6 +6,8 @@ from __future__ import annotations
 from lib.validation.record_store_classification import is_archival_record_store
 from lib.validation.model_layout import PROJECT_MODEL_PATHS, TEST_DESIGN_PACKAGES
 
+import ast
+import os
 import json
 import hashlib
 import fnmatch
@@ -71,7 +73,7 @@ CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
     ),
     "model.validate": CheckCatalogEntry(
         "model.validate",
-        "python scripts/validate-boundary-first.py --check --path docs/design/skill/workflow.md --path docs/design/cli/cli.md --path docs/design/cli/records.md",
+        "python scripts/validate-boundary-first.py --check --path design/architecture/modules/MOD-017-engineering-governance/modules/MOD-006-engineering-change-control/workflow.md --path design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/command-contract.md --path design/architecture/modules/MOD-018-engineering-operations/modules/MOD-011-operational-record-persistence/record-contract.md",
         "explicit-recording", parallel_safe=True,
     ),
     "record_retirement.regression": CheckCatalogEntry(
@@ -598,7 +600,7 @@ def normalize_path(raw_path: str, *, repo_root: Path | str) -> NormalizedPath:
     except ValueError:
         requested = relative.as_posix()
     package_owners = {PROJECT_MODEL_PATHS[name] for name in TEST_DESIGN_PACKAGES} | {PROJECT_MODEL_PATHS['system']}
-    detail_directories = ('docs/design/test-design/', *(package['directory']+'/' for package in TEST_DESIGN_PACKAGES.values()))
+    detail_directories = ('design/support/test-design/', *(package['directory']+'/' for package in TEST_DESIGN_PACKAGES.values()))
     if requested in package_owners or requested.startswith(detail_directories):
         return NormalizedPath(True, path=requested)
     return NormalizedPath(True, path=PurePosixPath(relative.as_posix()).as_posix())
@@ -607,6 +609,47 @@ def normalize_path(raw_path: str, *, repo_root: Path | str) -> NormalizedPath:
 def classify_path(path: str) -> PathClassification:
     category = _path_category(path)
     return PathClassification(path=path, category=category)
+
+
+def _retired_contract_tree_inputs(repo_root: Path, mode: str, base: str | None) -> set[str]:
+    """Prove a complete registered-tree relocation from this diff's source revision.
+
+    This is selection of current proof, never an alias or historical file loader.
+    Explicit missing inputs and partial/unregistered removals keep failing closed.
+    """
+    if mode not in {"local", "pr", "main"}:
+        return set()
+    revision = "HEAD" if mode == "local" else base
+    if not revision:
+        return set()
+    result = subprocess.run(
+        ["git", "show", f"{revision}:scripts/lib/validation/model_layout.py"],
+        cwd=repo_root, capture_output=True, text=True,
+    )
+    if result.returncode:
+        return set()
+    try:
+        assignment = next(node for node in ast.parse(result.stdout).body
+                          if isinstance(node, ast.Assign)
+                          and any(isinstance(target, ast.Name) and target.id == "PROJECT_MODEL_PATHS"
+                                  for target in node.targets))
+        prior = ast.literal_eval(assignment.value)
+        if not isinstance(prior, dict) or len(prior) < 2 or not all(
+                isinstance(path, str) and not Path(path).is_absolute()
+                and ".." not in PurePosixPath(path).parts for path in prior.values()):
+            return set()
+        old_root = os.path.commonpath([str(PurePosixPath(path).parent) for path in prior.values()])
+    except (StopIteration, SyntaxError, TypeError, ValueError):
+        return set()
+    if old_root in {"", "."} or any(
+            path == old_root or path.startswith(old_root + "/") for path in PROJECT_MODEL_PATHS.values()):
+        return set()
+    # A present or symlinked old tree is not a completed relocation.
+    target = repo_root / old_root
+    if target.exists() or any((repo_root / Path(*PurePosixPath(old_root).parts[:i])).is_symlink()
+                              for i in range(1, len(PurePosixPath(old_root).parts) + 1)):
+        return set()
+    return set(_git_lines(repo_root, "ls-tree", "-r", "--name-only", revision, "--", old_root))
 
 
 def catalog_command(
@@ -621,6 +664,7 @@ def catalog_command(
     mode: str = "explicit",
     base: str | None = None,
     head: str | None = None,
+    contract_relocation: bool = False,
 ) -> str:
     if mode not in {"local", "explicit", "pr", "main", "release"}:
         raise ValueError(f"unsupported catalog mode: {mode}")
@@ -641,14 +685,19 @@ def catalog_command(
         return _join(*args)
     if check_id == "model.validate":
         args = ["python", "scripts/validate-boundary-first.py", "--check"]
-        models = {"docs/design/skill/workflow.md", "docs/design/cli/cli.md",
-                  "docs/design/cli/records.md"}
+        models = {"design/architecture/modules/MOD-017-engineering-governance/modules/MOD-006-engineering-change-control/workflow.md", "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/command-contract.md",
+                  "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-011-operational-record-persistence/record-contract.md"}
+        retired_inputs = _retired_contract_tree_inputs(repo_root, mode, base) if contract_relocation else set()
+        if retired_inputs.intersection(paths):
+            models.update(PROJECT_MODEL_PATHS.values())
         for path in paths:
+            if path in retired_inputs:
+                continue
             # Records is a child of CLI, with its own examples. Match it before CLI.
             example_owners = {
-                "docs/design/cli/examples/records/": PROJECT_MODEL_PATHS["record-format"],
-                "docs/design/skill/examples/workflow/": PROJECT_MODEL_PATHS["workflow"],
-                "docs/design/cli/examples/": PROJECT_MODEL_PATHS["cli"],
+                "tests/fixtures/cli-contract-examples/records/": PROJECT_MODEL_PATHS["record-format"],
+                "design/architecture/modules/MOD-017-engineering-governance/modules/MOD-006-engineering-change-control/examples/": PROJECT_MODEL_PATHS["workflow"],
+                "tests/fixtures/cli-contract-examples/": PROJECT_MODEL_PATHS["cli"],
             }
             owner = next((owner for prefix, owner in example_owners.items() if path.startswith(prefix)), None)
             example = re.fullmatch(r"docs/design/([a-z0-9][a-z0-9-]{0,79})/examples/.+", path)
@@ -657,7 +706,8 @@ def catalog_command(
             elif example:
                 model = example.group(1)
                 models.add(f"docs/design/{model}/{model}.md")
-            elif path.startswith("docs/design/"):
+            elif (path in PROJECT_MODEL_PATHS.values() or path.startswith("docs/design/")
+                  or path.startswith(("design/support/test-design/", *(package["directory"]+"/" for package in TEST_DESIGN_PACKAGES.values())))):
                 models.add(path)
         for path in sorted(models):
             args.extend(["--path", path])
@@ -824,6 +874,7 @@ def select_validation(request: SelectionRequest) -> SelectionResult:
         status=status,
         adapter_version=request.adapter_version,
         repo_root=repo_root,
+        contract_relocation=not request.paths,
     )
 
 
@@ -1729,6 +1780,7 @@ def _build_result(
     registration_debt: list[dict[str, Any]] | None = None,
     status: str,
     adapter_version: str = DEFAULT_ADAPTER_VERSION,
+    contract_relocation: bool = False,
 ) -> SelectionResult:
     selected_checks: list[dict[str, Any]] = []
     build_errors: list[dict[str, str]] = []
@@ -1752,6 +1804,7 @@ def _build_result(
                 affected_roots=roots,
                 versions=versions,
                 adapter_version=adapter_version,
+                contract_relocation=contract_relocation,
             )
         except ValueError as exc:
             build_errors.append(
@@ -1849,6 +1902,10 @@ def _path_category(path: str) -> str | None:
         # This owner includes removed pilot test files so deletion still selects
         # the surviving semantic/resource regression suite.
         return "validator-skills"
+    if (path in PROJECT_MODEL_PATHS.values()
+            or path.startswith(("design/support/test-design/", *(package["directory"]+"/" for package in TEST_DESIGN_PACKAGES.values())))
+            or path.startswith(("tests/fixtures/cli-contract-examples/", 'design/architecture/modules/MOD-017-engineering-governance/modules/MOD-006-engineering-change-control/examples/'))):
+        return "explicit-recording"
     if (path in REM_TOOL_PATHS
             or (path.startswith("rem/") and path.endswith(".md"))
             or path == "design/README.md"

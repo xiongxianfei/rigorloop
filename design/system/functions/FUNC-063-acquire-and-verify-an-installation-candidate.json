@@ -37,22 +37,22 @@
   "sources": [
     {
       "source": "SRC-PUBLISHED-INSTALLATION",
-      "locator": "docs/design/cli/installation.md#DIST-SR-02",
+      "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-014-verified-skill-installation/installation.md#DIST-SR-02",
       "basis": "Logical behavior derived from the identified published-product contracts for IR-010; existing source details and compatibility/adoption limits remain applicable."
     },
     {
       "source": "SRC-PUBLISHED-INSTALLATION",
-      "locator": "docs/design/cli/installation.md#DIST-SR-07",
+      "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-014-verified-skill-installation/installation.md#DIST-SR-07",
       "basis": "Logical behavior derived from the identified published-product contracts for IR-010; existing source details and compatibility/adoption limits remain applicable."
     },
     {
       "source": "SRC-PUBLISHED-INSTALLATION",
-      "locator": "docs/design/cli/installation.md#DIST-SR-08",
+      "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-014-verified-skill-installation/installation.md#DIST-SR-08",
       "basis": "Logical behavior derived from the identified published-product contracts for IR-010; existing source details and compatibility/adoption limits remain applicable."
     },
     {
       "source": "SRC-PUBLISHED-INSTALLATION",
-      "locator": "docs/design/cli/installation.md#DIST-SR-11",
+      "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-014-verified-skill-installation/installation.md#DIST-SR-11",
       "basis": "Logical behavior derived from the identified published-product contracts for IR-010; existing source details and compatibility/adoption limits remain applicable."
     },
     {

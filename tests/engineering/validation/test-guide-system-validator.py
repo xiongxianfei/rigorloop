@@ -41,9 +41,9 @@ class RouteGuideValidatorTests(unittest.TestCase):
             "CONSTITUTION.md",
             "docs/project-map.md",
             "docs/plan.md",
-            "docs/design/skill/workflow.md",
-            "docs/design/skill/assessment.md",
-            "docs/design/skill/skill.md",
+            "design/architecture/modules/MOD-017-engineering-governance/modules/MOD-006-engineering-change-control/workflow.md",
+            "design/architecture/modules/MOD-017-engineering-governance/modules/MOD-007-engineering-verification-and-assurance/assessment.md",
+            "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-012-published-engineering-capability-guidance/capability-contract.md",
             "skills/route/SKILL.md",
         ):
             source = ROOT / path
@@ -52,7 +52,7 @@ class RouteGuideValidatorTests(unittest.TestCase):
             shutil.copy2(source, target)
 
     def test_current_workflow_model_cannot_restore_retired_guide_authority(self):
-        owner = self.repo / "docs/design/skill/workflow.md"
+        owner = self.repo / "design/architecture/modules/MOD-017-engineering-governance/modules/MOD-006-engineering-change-control/workflow.md"
         owner.parent.mkdir(parents=True, exist_ok=True)
         owner.write_text("Use docs/workflows.md.\n")
         self.assertTrue(any("ROUTE-GUIDE-006" in item for item in validator.validate(self.repo).messages))
@@ -95,15 +95,15 @@ class RouteGuideValidatorTests(unittest.TestCase):
         self.assertTrue(any("ROUTE-GUIDE-006" in item for item in validator.validate(self.repo).messages))
 
     def test_current_skill_owner_cannot_restore_retired_authority(self) -> None:
-        owner = self.repo / "docs/design/skill/skill.md"
+        owner = self.repo / "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-012-published-engineering-capability-guidance/capability-contract.md"
         owner.write_text(owner.read_text() + "\nUse docs/workflows.md.\n")
         self.assertTrue(any("ROUTE-GUIDE-006" in item for item in validator.validate(self.repo).messages))
 
     def test_extracted_model_owners_cannot_restore_retired_authority(self) -> None:
         for relative in (
-            "docs/design/skill/authoring/plan.md",
-            "docs/design/skill/discovery/research.md",
-            "docs/design/skill/delivery-handoff.md",
+            "design/architecture/modules/MOD-017-engineering-governance/modules/MOD-006-engineering-change-control/planning.md",
+            "design/architecture/modules/MOD-017-engineering-governance/modules/MOD-008-engineering-authoring-guidance/research.md",
+            "design/architecture/modules/MOD-017-engineering-governance/modules/MOD-006-engineering-change-control/delivery-handoff.md",
         ):
             with self.subTest(relative=relative):
                 owner = self.repo / relative

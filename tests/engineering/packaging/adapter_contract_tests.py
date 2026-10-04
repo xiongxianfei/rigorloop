@@ -147,15 +147,19 @@ class AdapterContractTests(unittest.TestCase):
         text = (ROOT / "README.md").read_text(encoding="utf-8")
         recommended = text.split("## Recommended Use", 1)[1].split("## Starting a new repository", 1)[0]
 
-        self.assertIn(
-            "proposal -> proposal-review -> design -> design-review -> plan -> delivery-review -> implement -> code-review -> verify",
-            recommended,
-        )
-        self.assertIn("optional external integration", text)
-        self.assertIn(
-            "writes the final explanation only in a successful Verify report",
-            text,
-        )
+        self.assertIn("#workflow-at-a-glance", recommended)
+        workflow = text.split("## Workflow At A Glance", 1)[1].split("## Authorized continuation", 1)[0]
+        stages = ("Request / RR", "Requirement analysis", "Requirement review",
+                  "System design and Architecture design", "Integrated Design review",
+                  "Plan", "Delivery review", "Implementation and required checks",
+                  "Whole-change Code review", "Final Verify")
+        positions = [workflow.index("[" + stage + "]") for stage in stages]
+        self.assertEqual(positions, sorted(positions))
+        self.assertIn("authorized external handoff", workflow)
+        self.assertIn("optional interim advice does not add approval gates", workflow)
+        self.assertIn("distinct final Verify", recommended)
+        self.assertIn("Successful completion", text)
+        self.assertIn("Compact final acceptance account", text)
         for retired_entrypoint in (
             "explain-change",
             "spec-review",
@@ -228,8 +232,8 @@ class AdapterContractTests(unittest.TestCase):
         agents = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
         constitution = (ROOT / "CONSTITUTION.md").read_text(encoding="utf-8")
         self.assertIn("dist/adapters/README.md", agents)
-        self.assertIn("docs/design/engineering/packaging.md", agents)
-        self.assertIn("docs/design/system.md", constitution)
+        self.assertIn("design/architecture/modules/MOD-019-product-delivery/modules/MOD-013-product-package-production/packaging.md", agents)
+        self.assertIn("design/architecture/composition.md", constitution)
         self.assertTrue((ROOT / "dist/adapters/README.md").is_file())
         self.assertTrue((ROOT / "packages/rigorloop/README.md").is_file())
 

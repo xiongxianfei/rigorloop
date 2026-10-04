@@ -171,7 +171,7 @@ def validate_repository_examples(root: Path) -> tuple[tuple[str, ...], tuple[Val
     """
     checked = []
     issues = []
-    for namespace in ("docs/design/cli/examples", "docs/design/skill/examples/workflow"):
+    for namespace in ("tests/fixtures/cli-contract-examples", "design/architecture/modules/MOD-017-engineering-governance/modules/MOD-006-engineering-change-control/examples"):
         base = root / namespace
         if any(parent.is_symlink() for parent in (base, *base.parents) if parent != root):
             issues.append(_issue("BFR-EXAMPLE-PATH", namespace, "example namespace must not traverse symlinks"))

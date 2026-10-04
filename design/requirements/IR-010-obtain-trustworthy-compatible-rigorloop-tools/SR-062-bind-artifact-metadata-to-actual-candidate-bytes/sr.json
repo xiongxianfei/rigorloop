@@ -50,22 +50,22 @@
   "sources": [
     {
       "source": "SRC-PUBLISHED-PACKAGING",
-      "locator": "docs/design/engineering/packaging.md#DIST-SR-06",
+      "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-013-product-package-production/packaging.md#DIST-SR-06",
       "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. The archive producer, installer, and release operation must agree on the artifact identity they exchange. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
     },
     {
       "source": "SRC-PUBLISHED-PACKAGING",
-      "locator": "docs/design/engineering/packaging.md#DIST-SR-09",
+      "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-013-product-package-production/packaging.md#DIST-SR-09",
       "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. The archive producer, installer, and release operation must agree on the artifact identity they exchange. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
     },
     {
       "source": "SRC-PUBLISHED-PACKAGING",
-      "locator": "docs/design/engineering/packaging.md#DIST-SR-18",
+      "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-013-product-package-production/packaging.md#DIST-SR-18",
       "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. The archive producer, installer, and release operation must agree on the artifact identity they exchange. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
     },
     {
       "source": "SRC-PUBLISHED-PACKAGING",
-      "locator": "docs/design/engineering/packaging.md#DIST-SR-21",
+      "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-013-product-package-production/packaging.md#DIST-SR-21",
       "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. The archive producer, installer, and release operation must agree on the artifact identity they exchange. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
     }
   ]

@@ -52,37 +52,37 @@
   "sources": [
     {
       "source": "SRC-PUBLISHED-RELEASE",
-      "locator": "docs/design/engineering/release/release.md#REL-SR-03",
+      "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-015-product-release-coordination/release.md#REL-SR-03",
       "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. One authoritative profile and explicit projection ownership prevent competing release identities and preparation from masquerading as publication. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
     },
     {
       "source": "SRC-PUBLISHED-RELEASE",
-      "locator": "docs/design/engineering/release/release.md#REL-SR-04",
+      "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-015-product-release-coordination/release.md#REL-SR-04",
       "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. One authoritative profile and explicit projection ownership prevent competing release identities and preparation from masquerading as publication. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
     },
     {
       "source": "SRC-PUBLISHED-RELEASE",
-      "locator": "docs/design/engineering/release/release.md#REL-SR-05",
+      "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-015-product-release-coordination/release.md#REL-SR-05",
       "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. One authoritative profile and explicit projection ownership prevent competing release identities and preparation from masquerading as publication. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
     },
     {
       "source": "SRC-PUBLISHED-RELEASE",
-      "locator": "docs/design/engineering/release/release.md#REL-SR-06",
+      "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-015-product-release-coordination/release.md#REL-SR-06",
       "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. One authoritative profile and explicit projection ownership prevent competing release identities and preparation from masquerading as publication. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
     },
     {
       "source": "SRC-PUBLISHED-RELEASE",
-      "locator": "docs/design/engineering/release/release.md#REL-SR-07",
+      "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-015-product-release-coordination/release.md#REL-SR-07",
       "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. One authoritative profile and explicit projection ownership prevent competing release identities and preparation from masquerading as publication. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
     },
     {
       "source": "SRC-PUBLISHED-RELEASE",
-      "locator": "docs/design/engineering/release/release.md#REL-SR-19",
+      "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-015-product-release-coordination/release.md#REL-SR-19",
       "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. One authoritative profile and explicit projection ownership prevent competing release identities and preparation from masquerading as publication. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
     },
     {
       "source": "SRC-PUBLISHED-RELEASE",
-      "locator": "docs/design/engineering/release/release.md#REL-SR-24",
+      "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-015-product-release-coordination/release.md#REL-SR-24",
       "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. One authoritative profile and explicit projection ownership prevent competing release identities and preparation from masquerading as publication. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
     }
   ]

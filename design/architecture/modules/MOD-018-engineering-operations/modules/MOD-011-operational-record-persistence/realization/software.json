@@ -68,7 +68,7 @@
     "test_groups": [
       {
         "name": "Stored record invariants and preservation",
-        "contract": "docs/design/cli/records.md#test-design",
+        "contract": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-011-operational-record-persistence/record-contract.md#test-design",
         "test_sources": [
           {
             "path": "packages/rigorloop/test/operational-store.test.js",
@@ -87,7 +87,7 @@
           }
         ],
         "execution": {
-          "owner_contract": "docs/design/engineering/validation.md",
+          "owner_contract": "design/support/validation.md",
           "selection": [
             {
               "path": "scripts/select-validation.py",
@@ -130,7 +130,7 @@
       },
       {
         "name": "Guarded publication and exact recovery",
-        "contract": "docs/design/cli/cli.md#save-safety-and-recovery-boundary",
+        "contract": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/command-contract.md#save-safety-and-recovery-boundary",
         "test_sources": [
           {
             "path": "packages/rigorloop/test/operational-store.test.js",
@@ -149,7 +149,7 @@
           }
         ],
         "execution": {
-          "owner_contract": "docs/design/engineering/validation.md",
+          "owner_contract": "design/support/validation.md",
           "selection": [
             {
               "path": "scripts/select-validation.py",

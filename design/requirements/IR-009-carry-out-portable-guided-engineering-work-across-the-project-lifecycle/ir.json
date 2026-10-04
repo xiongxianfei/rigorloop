@@ -6,22 +6,22 @@
   "sources": [
     {
       "source": "SRC-PUBLISHED-SKILLS",
-      "locator": "docs/design/skill/skill.md#SKL-SR-05",
+      "locator": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-012-published-engineering-capability-guidance/capability-contract.md#SKL-SR-05",
       "basis": "The published Skills product provides distinct portable engineering capabilities across project lifecycle activities; this need restores that product scope to the REM draft without migrating every specialist clause or adopting new output formats."
     },
     {
       "source": "SRC-PUBLISHED-SKILLS",
-      "locator": "docs/design/skill/skill.md#SKL-SR-24",
+      "locator": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-012-published-engineering-capability-guidance/capability-contract.md#SKL-SR-24",
       "basis": "The published Skills product provides distinct portable engineering capabilities across project lifecycle activities; this need restores that product scope to the REM draft without migrating every specialist clause or adopting new output formats."
     },
     {
       "source": "SRC-PUBLISHED-SKILLS",
-      "locator": "docs/design/skill/skill.md#SKL-SR-25",
+      "locator": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-012-published-engineering-capability-guidance/capability-contract.md#SKL-SR-25",
       "basis": "The published Skills product provides distinct portable engineering capabilities across project lifecycle activities; this need restores that product scope to the REM draft without migrating every specialist clause or adopting new output formats."
     },
     {
       "source": "SRC-PUBLISHED-SKILLS",
-      "locator": "docs/design/skill/skill.md#SKL-SR-27",
+      "locator": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-012-published-engineering-capability-guidance/capability-contract.md#SKL-SR-27",
       "basis": "The published Skills product provides distinct portable engineering capabilities across project lifecycle activities; this need restores that product scope to the REM draft without migrating every specialist clause or adopting new output formats."
     },
     {

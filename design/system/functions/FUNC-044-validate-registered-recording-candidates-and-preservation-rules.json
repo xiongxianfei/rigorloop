@@ -28,7 +28,7 @@
   "sources": [
     {
       "source": "SRC-PUBLISHED-CLI",
-      "locator": "docs/design/cli/cli.md#CLI-SR-02, CLI-SR-07, CLI-SR-26; docs/design/cli/records.md#RF-SR-01, RF-SR-02, RF-SR-03, RF-SR-04, RF-SR-05, RF-SR-08, RF-SR-09, RF-SR-10, RF-SR-11, RF-SR-13",
+      "locator": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/command-contract.md#CLI-SR-02, CLI-SR-07, CLI-SR-26; design/architecture/modules/MOD-018-engineering-operations/modules/MOD-011-operational-record-persistence/record-contract.md#RF-SR-01, RF-SR-02, RF-SR-03, RF-SR-04, RF-SR-05, RF-SR-08, RF-SR-09, RF-SR-10, RF-SR-11, RF-SR-13",
       "basis": "Functional Analysis of the IR-008 system obligations confirms this distinct published command/record responsibility. The retained CLI/Record Format contract supplies exact public operations and limits; logical behavior is defined before Module allocation."
     },
     {

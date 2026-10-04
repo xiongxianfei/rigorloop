@@ -1,6 +1,6 @@
 # Change and quality control: adoption integration test design
 
-Apply the [shared test rules](../../../../docs/design/test-design/rules.md). MOD-017 owns the adoption decision composed from work, authority, assurance and external package/installation observations. Canonical Scenario records remain black-box; the following is an internal cooperation walkthrough and future proof intent.
+Apply the [shared test rules](../../../support/test-design/rules.md). MOD-017 owns the adoption decision composed from work, authority, assurance and external package/installation observations. Canonical Scenario records remain black-box; the following is an internal cooperation walkthrough and future proof intent.
 
 | Scenario / basis | Cooperation and representative observation | Plausible defect and required proof boundary |
 | --- | --- | --- |
