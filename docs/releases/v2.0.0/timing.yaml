@@ -1,7 +1,7 @@
 schema_version: release-timing-v1
 release_tag: v2.0.0
 release_profile: docs/releases/profiles/v2.0.0.yaml
-created_at: "2026-10-04T19:49:59.149818+00:00"
+created_at: "2026-10-04T19:50:09.955433+00:00"
 phases: []
 checks:
   - id: tag_publication-0
@@ -18,4 +18,9 @@ checks:
     phase: "publication_wait"
     command: "npm publication of qualified identity"
     duration_seconds: 4.551177711000008
+    result: "pass"
+  - id: public_smoke-3
+    phase: "public_closeout"
+    command: "fresh public version and target init smoke"
+    duration_seconds: 6.422128406000013
     result: "pass"
