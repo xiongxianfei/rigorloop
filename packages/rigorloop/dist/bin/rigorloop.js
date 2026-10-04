@@ -1008,11 +1008,11 @@ async function handleInit(flags, initArgs = []) {
   const archive = await archiveWorkForInit(flags, packageInfo(), descriptor);
   if (archive.error) return writeValidationErrorResult(flags, plan, archive.error);
   if (archive.blocker) return writeBlockedResult(flags, plan, archive.blocker.message, [archive.blocker]);
-  const retired = retiredAuthoringPaths(descriptor, archive.entries);
+  const retired = retiredAuthoringPaths(descriptor, archive.entries ?? []);
   const installedRetired = retiredAuthoringPaths(descriptor);
   if (retired.length || installedRetired.length) {
     const paths = [...new Set([...retired, ...installedRetired])];
-    return writeBlockedResult(flags, plan, "Retired authoring entries require separate inspection.", paths.map(path => ({code: retired.includes(path) ? "retired-authoring-candidate" : "retired-authoring-installation", path, message: `Retired entry: ${path}`, next_action: "Preserve local content and inspect the exact retired entry separately. Use a package containing design. --force does not remove noncandidate entries."})));
+    return writeBlockedResult(flags, plan, "Retired authoring entries require separate inspection.", paths.map(path => ({code: retired.includes(path) ? "retired-authoring-candidate" : "retired-authoring-installation", path, message: `Retired entry: ${path}`, next_action: "Preserve local content and inspect the exact retired entry separately. Use a complete requirement-first package after separately resolving the retired entry. --force does not authorize removal of these entries."})));
   }
   const obsolete = obsoleteWorkflowSkillBlocker(descriptor, archive.entries);
   if (obsolete) return writeBlockedResult(flags, plan, obsolete.message, [obsolete]);

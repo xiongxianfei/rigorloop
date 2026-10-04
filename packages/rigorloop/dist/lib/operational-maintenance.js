@@ -1,5 +1,5 @@
 import { readFileSync, readdirSync, mkdirSync, renameSync, unlinkSync, rmSync } from 'node:fs';
-import { join, dirname } from 'node:path';
+import { join, dirname, resolve } from 'node:path';
 import { randomUUID } from 'node:crypto';
 import { inspectLegacy, buildImportedCandidate, recheckLegacy, legacyLockDescriptors, acquireLegacyLocks } from './operational-legacy-import.js';
 import { CONTRACT, fail, exact, canonical, parseInput, failure, LIMIT } from './operational-contract.js';
@@ -176,10 +176,35 @@ async function activate(info,operation,manifest,rollback=false) {
   try{({db}=await openOperationalDatabase(info,false));revision=storeToken(metadata(db,info));db.exec('PRAGMA wal_checkpoint(TRUNCATE)');}finally{db?.close();}
   manifest.phase='activated';manifest.store_revision=revision;manifest.activation_started=true;writeManifest(operation,manifest);manifest.activation_durable=true;return revision;
 }
+function validateRecoveryManifest(info, current) {
+  const { entry, manifest: m } = current;
+  exact(entry,['operation_id','project_id','task','owner']);
+  if (!['store.backup','store.restore','store.migrate'].includes(entry.task)) fail('maintenance-required','Unsupported maintenance fence task.');
+  if (!m) return; // A fence without capture admits only rollback below.
+  exact(m,['version','id','task','project_id','phase','limitations'],['input','scope','integrity','output','retained_prior','stage','stage_identity','publication_started','publication_durable','candidate','before','store_revision','activation_started','activation_durable','rolled_back','legacy_locks','legacy_prior_locks','originals_output','originals_stage','originals_identity','originals_published']);
+  if (m.version!==1 || m.id!==entry.operation_id || m.project_id!==info.id || m.task!==entry.task || !['prepared','activated','complete'].includes(m.phase)) fail('maintenance-required','Unsupported or inconsistent maintenance manifest.');
+  for (const key of ['publication_started','publication_durable','activation_started','activation_durable','rolled_back','originals_published']) if (Object.hasOwn(m,key) && typeof m[key]!=='boolean') fail('maintenance-required','Invalid maintenance marker.');
+  if (!Array.isArray(m.limitations) || m.limitations.some(value=>typeof value!=='string')) fail('maintenance-required','Invalid maintenance limitations.');
+  if (m.rolled_back && m.phase!=='complete' || m.phase==='activated' && (m.task==='store.backup'||!m.activation_started||typeof m.store_revision!=='string'||!m.before||!m.candidate) || m.phase==='complete'&&!m.rolled_back&&m.task!=='store.backup') fail('maintenance-required','Inconsistent maintenance phase.');
+  if (!m.input) {
+    if (!m.rolled_back || m.before || m.candidate) fail('maintenance-required','Maintenance request is missing.');
+  } else {
+    validateMaintenance(m.task,{schema_version:1,interface:MAINTENANCE_INTERFACE,input:m.input},false);
+    if (m.input.resume) fail('maintenance-required','Capture cannot contain a resume request.');
+  }
+  for (const key of ['before','candidate']) if (m[key]) {
+    exact(m[key],units);
+    if (units.some(unit=>!Object.hasOwn(m[key],unit)||m[key][unit]!==null&&!Array.isArray(m[key][unit]))) fail('maintenance-required','Invalid replacement inventory.');
+  }
+  if (m.task==='store.backup') {
+    if (m.output && m.output!==resolve(info.root,m.input.output) || m.stage && m.stage!==join(dirname(resolve(info.root,m.input.output)),'.rigorloop-backup-'+m.id) || m.phase==='complete'&&!m.rolled_back&&(!m.integrity||!m.stage_identity)) fail('maintenance-required','Inconsistent backup publication.');
+  } else if (m.output && m.output!==join(info.root,'.rigorloop/rigorloop.db') || m.retained_prior && m.retained_prior!==join(current.operation,'displaced')) fail('maintenance-required','Inconsistent replacement locations.');
+}
 async function resumeMaintenance(info,task,input) {
   const current=active(info);
   if(!current||current.entry.task!==task||current.entry.operation_id!==input.resume.operation_id||current.observation!==input.resume.expected_observation)fail('destination-conflict','Maintenance observation no longer matches.');
   if(!ownerAbsent(current.entry.owner))fail('store-busy','Maintenance owner may still be active.');
+  validateRecoveryManifest(info,current);
   // A private SQLite transaction supplies crash-released process exclusion.
   // Stale PID-file deletion cannot safely arbitrate competing resumptions.
   directory(current.operation,true);
@@ -207,7 +232,7 @@ async function resumeMaintenance(info,task,input) {
     const rollback=input.resume.action==='rollback';
     if(!manifest) {
       if(!rollback)fail('maintenance-required','Capture did not establish a manifest; only fence rollback is available.');
-      manifest={id:current.entry.operation_id,task,project_id:info.id,phase:'complete',rolled_back:true,limitations:['No capture manifest was established; all existing operation bytes were retained.']};
+      manifest={version:1,id:current.entry.operation_id,task,project_id:info.id,phase:'complete',rolled_back:true,limitations:['No capture manifest was established; all existing operation bytes were retained.']};
       writeManifest(operation,manifest);
     }
     if(task==='store.migrate'&&manifest.legacy_locks) {
@@ -252,11 +277,16 @@ async function resumeMaintenance(info,task,input) {
     const saved=parseInput(readFileSync(fencePath));if(canonical(saved)!==canonical(current.entry))fail('destination-conflict','Fence ownership changed during recovery.');
     unlinkSync(fencePath);syncDirectory(dirname(fencePath));
     return outcome(task,'saved',committed,manifest,manifest.store_revision??null);
-  } catch(error){error.committed=committed;error.maintenance=manifest?details(manifest):null;throw error;}
+  } catch(error){error.committed=actualCommit(manifest,committed);error.maintenance=manifest?details(manifest):null;throw error;}
   finally{
     try{try{releaseLegacy?.();}finally{try{guard.exec('ROLLBACK');}finally{guard.close();}}}
-    catch(error){error.committed=committed;error.maintenance=manifest?details(manifest):null;throw error;}
+    catch(error){error.committed=actualCommit(manifest,committed);error.maintenance=manifest?details(manifest):null;throw error;}
   }
+}
+function actualCommit(manifest, committed) {
+  if (manifest?.activation_durable || manifest?.publication_durable) return true;
+  if (manifest?.activation_started || manifest?.publication_started) return committed === true ? true : null;
+  return committed;
 }
 function maintenanceFailure(task,error,manifest,committed) {
   error.committed=Object.hasOwn(error,'committed')?error.committed:committed;
@@ -292,7 +322,7 @@ export async function executeMaintenance(request) {
           absolutePath(input.output,info,true);let db;
           try{
             ({db}=await openOperationalDatabase(info,false));
-            const checked=await validateDatabase(join(info.root,'.rigorloop/rigorloop.db'),info.id,join(info.root,'.rigorloop/artifacts/changes'));
+            const checked=await validateDatabase(join(info.root,'.rigorloop/rigorloop.db'),info.id,join(info.root,'.rigorloop/artifacts/changes'),input.scope.changes==='all'?null:input.scope.changes);
             const selected=input.scope.changes==='all'?checked.changes:input.scope.changes;
             if(selected.some(id=>!checked.changes.includes(id)))fail('record-missing','Backup selected a missing Change.');
             manifest.scope={included_changes:selected,excluded_changes:checked.changes.filter(id=>!selected.includes(id))};
@@ -338,8 +368,7 @@ export async function executeMaintenance(request) {
     lock.release();
     return outcome(request.task,'saved',true,manifest,revision);
   } catch(error) {
-    if(manifest?.activation_durable||manifest?.publication_durable)committed=true;
-    else if(manifest?.activation_started||manifest?.publication_started)committed=null;
+    committed=actualCommit(manifest,committed);
     return maintenanceFailure(request.task,error,manifest,committed);
-  } finally {try{releaseLegacy?.();}catch(error){return maintenanceFailure(request.task,error,manifest,committed);}}
+  } finally {try{releaseLegacy?.();}catch(error){return maintenanceFailure(request.task,error,manifest,actualCommit(manifest,committed));}}
 }

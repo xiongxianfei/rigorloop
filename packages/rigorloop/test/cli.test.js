@@ -2146,8 +2146,23 @@ test("DIST retired authoring guards preserve installed and candidate entries eve
         JSON.parse(result.stdout).blockers[0].code,
         installed ? "retired-authoring-installation" : "retired-authoring-candidate",
       );
+      const nextAction = JSON.parse(result.stdout).blockers[0].next_action;
+      assert.match(nextAction, /complete requirement-first package/);
+      assert.match(nextAction, /separately resolving the retired entry/);
+      assert.doesNotMatch(nextAction, /package containing design/);
       if (installed)
         assert.equal(readFileSync(join(cwd, `.agents/skills/${skill}/SKILL.md`), "utf8"), "local");
       else assert.equal(existsSync(join(cwd, ".agents")), false);
     }
+});
+
+
+test("DIST preview attributes local retired authoring entries to installation without archive content", t => {
+  const cwd=tempProject(t);
+  mkdirSync(join(cwd,'.agents/skills/spec'),{recursive:true});
+  writeFileSync(join(cwd,'.agents/skills/spec/SKILL.md'),'local');
+  const result=runCli(['init','codex','--dry-run','--json','--no-file-log'],{cwd});
+  assert.equal(result.status,2,result.stdout+result.stderr);
+  assert.equal(JSON.parse(result.stdout).blockers[0].code,'retired-authoring-installation');
+  assert.equal(readFileSync(join(cwd,'.agents/skills/spec/SKILL.md'),'utf8'),'local');
 });

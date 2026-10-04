@@ -260,3 +260,13 @@ test('operational capacity reserves future disposition for retained findings, in
   review.findings[0].disposition.reason='x'.repeat(16384);
   assert.throws(()=>validateSnapshot(snapshot),e=>e.operationalCode==='size-limit');
 });
+
+
+test('context rejects every explicitly supplied non-object query', t => {
+  const root=project(t);assert.equal(invoke(root,['change','create'],createInput()).exit,0);
+  for (const value of [null,false,0,'',[],{}]) {
+    const child=spawnSync(process.execPath,[cli,'change','context','--root',root,'--change','navigation','--input','-','--format','json'],{encoding:'utf8',input:JSON.stringify(value)});
+    assert.equal(child.status,2,child.stdout);assert.equal(JSON.parse(child.stdout).errors[0].code,'invalid-request');
+  }
+  assert.equal(invoke(root,['change','context']).exit,0);
+});

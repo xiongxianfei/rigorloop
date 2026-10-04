@@ -53,7 +53,7 @@ export function copyDurable(source, target) {
 export function atomicJSON(path, value) {
   const temporary = path + '.' + randomUUID(); durableWrite(temporary, JSON.stringify(value) + '\n'); renameSync(temporary, path); syncDirectory(dirname(path));
 }
-export async function validateDatabase(path, projectId, payloadRoot) {
+export async function validateDatabase(path, projectId, payloadRoot, selected = null) {
   const { DatabaseSync } = await import('node:sqlite');
   regular(path);
   const db = new DatabaseSync(path, { readOnly: true, readBigInts: true, allowExtension: false, defensive: true });
@@ -64,7 +64,8 @@ export async function validateDatabase(path, projectId, payloadRoot) {
     if (db.prepare('PRAGMA integrity_check').all().some(row => Object.values(row)[0] !== 'ok') || db.prepare('PRAGMA foreign_key_check').all().length) fail('store-unavailable', 'Database integrity or relationship check failed.');
     const changes = db.prepare('SELECT change_id FROM changes ORDER BY change_id').all().map(row => row.change_id);
     const attachments = [], external = [];
-    for (const id of changes) {
+    if (selected !== null && selected.some(id => !changes.includes(id))) fail('record-missing', 'Backup selected a missing Change.');
+    for (const id of selected ?? changes) {
       const snapshot = loadSnapshot(db, id); validateSnapshot(snapshot);
       for (const attachment of snapshot.change.attachments) {
         const path = contained(payloadRoot, id + '/' + attachment.name); regular(path);

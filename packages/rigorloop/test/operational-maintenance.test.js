@@ -158,3 +158,61 @@ test('legacy source cleanup failure after activation preserves truthful commit a
   assert.equal(command(root,['capabilities']).result.store.state,'ready');
   assert.equal(existsSync(join(root,'.rigorloop/record-store',id,'lock')),false);
 });
+
+
+test('selected backup preview ignores excluded payloads but rejects missing selected payloads',t=>{
+  const {root}=setup(t),output=join(root,'subset');
+  const created=spawnSync(process.execPath,[cli,'change','create','--root',root,'--change','unselected','--input','-','--format','json'],{encoding:'utf8',input:JSON.stringify(createInput({change_id:'unselected'}))});
+  assert.equal(created.status,0,created.stdout);
+  unlinkSync(join(root,'.rigorloop/artifacts/changes/navigation/report.txt'));
+  assert.notEqual(command(root,['store','backup'],backupInput(output),['--dry-run']).exit,0);
+  const selected={...backupInput(output),scope:{changes:['unselected']}};
+  assert.equal(command(root,['store','backup'],selected,['--dry-run']).exit,0);
+  assert.equal(existsSync(output),false);
+  assert.equal(command(root,['store','backup'],selected).exit,0);
+});
+
+test('resume rejects incompatible capture metadata before writes and reports uncertain activation honestly',t=>{
+  const {root}=setup(t),output=join(root,'backup');
+  const saved=command(root,['store','backup'],backupInput(output));
+  const current=command(root,['capabilities']).result.store;
+  const input={backup:output,expected_backup:saved.result.maintenance.integrity,expected_store:{kind:'current',revision:current.revision},replace:true,actor,reason:'Interrupted recovery admission'};
+  const crash=new URL('./helpers/operational-maintenance-crash.mjs',import.meta.url).href;
+  const killed=spawnSync(process.execPath,['--import',crash,cli,'store','restore','--root',root,'--input','-','--format','json'],{input:JSON.stringify({schema_version:1,interface:'store-maintenance-v1',input}),encoding:'utf8',env:{...process.env,RIGORLOOP_TEST_MAINTENANCE_CRASH:'candidate'}});
+  assert.equal(killed.signal,'SIGKILL');
+  let state=command(root,['capabilities']).result.store;
+  const operation=join(root,'.rigorloop/maintenance',state.maintenance.operation_id),path=join(operation,'manifest.json'),original=readFileSync(path),manifest=JSON.parse(original);
+  const resume=state=>({resume:{operation_id:state.maintenance.operation_id,expected_observation:state.observation,action:'finish'},actor,reason:'Finish inspected recovery'});
+  for(const patch of [{version:999},{id:'foreign'},{project_id:'foreign'},{task:'store.backup'},{phase:'unknown'},{phase:'activated'}]) {
+    writeFileSync(path,JSON.stringify({...manifest,...patch}));
+    state=command(root,['capabilities']).result.store;
+    const rejected=command(root,['store','restore'],resume(state));
+    assert.notEqual(rejected.exit,0,JSON.stringify(patch));
+    assert.equal(existsSync(join(operation,'resume-exclusion.sqlite')),false);
+    assert.equal(command(root,['capabilities']).result.store.observation,state.observation);
+  }
+  writeFileSync(path,original);state=command(root,['capabilities']).result.store;
+  const injection=new URL('./helpers/operational-maintenance-fault.mjs',import.meta.url).href;
+  const child=spawnSync(process.execPath,['--import',injection,cli,'store','restore','--root',root,'--input','-','--format','json'],{input:JSON.stringify({schema_version:1,interface:'store-maintenance-v1',input:resume(state)}),encoding:'utf8',env:{...process.env,RIGORLOOP_TEST_MAINTENANCE_FAULT:'activation-receipt'}});
+  const receipt=JSON.parse(child.stdout);
+  assert.notEqual(child.status,0);assert.equal(receipt.committed,null);assert.equal(receipt.changed,null);
+  assert.equal(receipt.maintenance.phase,'activated');assert.equal(invoke(root,['change','context']).exit,4);
+  state=command(root,['capabilities']).result.store;
+  const finished=command(root,['store','restore'],resume(state));
+  assert.equal(finished.exit,0,JSON.stringify(finished));assert.equal(finished.result.committed,true);
+});
+
+
+test('manifest-absent recovery permits rollback while preserving the untouched store',t=>{
+  const {root}=setup(t),revision=command(root,['capabilities']).result.store.revision;
+  const injection=new URL('./helpers/operational-maintenance-crash.mjs',import.meta.url).href;
+  const child=spawnSync(process.execPath,['--import',injection,cli,'store','backup','--root',root,'--input','-','--format','json'],{input:JSON.stringify({schema_version:1,interface:'store-maintenance-v1',input:backupInput(join(root,'backup'))}),encoding:'utf8',env:{...process.env,RIGORLOOP_TEST_MAINTENANCE_CRASH:'before-capture'}});
+  assert.equal(child.signal,'SIGKILL');
+  const state=command(root,['capabilities']).result.store;
+  const input={resume:{operation_id:state.maintenance.operation_id,expected_observation:state.observation,action:'finish'},actor,reason:'Inspect capture interruption'};
+  assert.notEqual(command(root,['store','backup'],input).exit,0);
+  const fresh=command(root,['capabilities']).result.store;
+  const result=command(root,['store','backup'],{...input,resume:{...input.resume,expected_observation:fresh.observation,action:'rollback'}});
+  assert.equal(result.exit,0,JSON.stringify(result));assert.equal(result.result.committed,false);
+  assert.equal(command(root,['capabilities']).result.store.revision,revision);
+});

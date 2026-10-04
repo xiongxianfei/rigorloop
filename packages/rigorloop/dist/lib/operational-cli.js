@@ -79,7 +79,7 @@ export async function executeOperationalCli(args) {
       outcome=await executeMaintenance({project_root:root,task:operation,preview:!!flags['--dry-run'],input,receipt_profile:`maintenance-${format}-v1`});
     } else if (operation === 'change.context') {
       const body = flags['--input'] ? parseInput(stdin()) : null;
-      if (body) validateTask('query', body);
+      if (flags['--input']) validateTask('query', body);
       outcome = await inspectRecords({ project_root: root, query: { kind: 'change-context', change_id: changeId, selectors: body?.selectors ?? null, include_observations: body?.include_observations ?? true } });
     } else if(reading) {
       const query=operation==='review.show'?{kind:'review',change_id:changeId,id:itemId}:itemId?{kind:'verification',change_id:changeId,id:itemId}:{kind:'verification-context',change_id:changeId};

@@ -15,7 +15,7 @@ DatabaseSync.prototype.prepare=function(sql,...args){
 };
 fs.renameSync=function(from,to){
   const result=rename.apply(this,arguments);
-  if(String(to).endsWith('/manifest.json')&&JSON.parse(fs.readFileSync(to,'utf8')).phase==='activated')activated=true;
+  if(String(to).endsWith('/manifest.json')&&JSON.parse(fs.readFileSync(to,'utf8')).phase==='activated'){activated=true;if(point==='activation-receipt')throw Object.assign(new Error('Injected activation durability failure'),{code:'EIO'});}
   return result;
 };
 fs.unlinkSync=function(path){

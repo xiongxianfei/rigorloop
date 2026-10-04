@@ -1,4 +1,4 @@
-# RigorLoop v2.0.0 candidate
+# RigorLoop v2.0.0
 
 This breaking candidate replaces Proposal-first delivery with requirement analysis and review, separate System and Architecture Design, integrated Design Review, delivery planning, one whole-change Code Review gate and final Verify. Milestones organize implementation and checks; interim reviews are optional advice.
 
