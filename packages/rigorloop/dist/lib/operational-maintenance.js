@@ -320,6 +320,7 @@ export async function executeMaintenance(request) {
         manifest={id:null,phase:'prepared',scope:null,limitations:['Preview reserves no source, destination or store revision.']};
         if(request.task==='store.backup') {
           absolutePath(input.output,info,true);let db;
+          manifest.limitations.push('Metadata is read from one database snapshot; retained payload observations reserve no files against subsequent concurrent updates.');
           try{
             ({db}=await openOperationalDatabase(info,false));
             const checked=await validateDatabase(join(info.root,'.rigorloop/rigorloop.db'),info.id,join(info.root,'.rigorloop/artifacts/changes'),input.scope.changes==='all'?null:input.scope.changes);

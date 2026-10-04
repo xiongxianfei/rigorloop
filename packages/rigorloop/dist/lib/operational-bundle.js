@@ -58,6 +58,8 @@ export async function validateDatabase(path, projectId, payloadRoot, selected = 
   regular(path);
   const db = new DatabaseSync(path, { readOnly: true, readBigInts: true, allowExtension: false, defensive: true });
   try {
+    // Every relational read belongs to one snapshot even while WAL writers commit.
+    db.exec('BEGIN');
     if (db.prepare('PRAGMA user_version').get().user_version !== 1n) fail('schema-unsupported', 'Backup database schema is unsupported.');
     const project = db.prepare('SELECT * FROM project WHERE singleton=1').get();
     if (project?.project_id !== projectId) fail('project-mismatch', 'Backup and project identities differ.');
@@ -74,6 +76,7 @@ export async function validateDatabase(path, projectId, payloadRoot, selected = 
       }
       for (const row of db.prepare('SELECT DISTINCT path FROM subjects WHERE change_id=? ORDER BY path').all(id)) external.push({ change_id: id, path: row.path });
     }
+    db.exec('COMMIT');
     return { project, changes, attachments, external };
   } finally { db.close(); }
 }

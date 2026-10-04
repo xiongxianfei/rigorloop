@@ -216,3 +216,19 @@ test('manifest-absent recovery permits rollback while preserving the untouched s
   assert.equal(result.exit,0,JSON.stringify(result));assert.equal(result.result.committed,false);
   assert.equal(command(root,['capabilities']).result.store.revision,revision);
 });
+
+
+test('backup preview reads coherent relational state across a concurrent successful writer',t=>{
+  const root=project(t),created=invoke(root,['change','create'],createInput());assert.equal(created.exit,0);
+  writeFileSync(join(root,'report.txt'),'concurrent retained support');
+  const evidence={id:'concurrent',actor,reported_at:'2026-10-04',procedure:'navigation checks',scope:'Navigation',subjects:[],observation:{method:'reported',actor,scope:'Navigation',summary:'Observed'},result:'passed',summary:'Checks pass',limitations:[],attachments:['report.txt'],retain:[{name:'report.txt',source:'report.txt',media_type:'text/plain'}]};
+  writeFileSync(join(root,'writer.json'),JSON.stringify({...createInput(),expected_revision:created.result.revision,input:{evidence:[evidence]}}));
+  const injection=new URL('./helpers/operational-maintenance-fault.mjs',import.meta.url).href;
+  const input=backupInput(join(root,'backup'));
+  const preview=spawnSync(process.execPath,['--import',injection,cli,'store','backup','--root',root,'--input','-','--format','json','--dry-run'],{input:JSON.stringify({schema_version:1,interface:'store-maintenance-v1',input}),encoding:'utf8',env:{...process.env,RIGORLOOP_TEST_MAINTENANCE_FAULT:'preview-writer',RIGORLOOP_TEST_CLI:cli,RIGORLOOP_TEST_ROOT:root,RIGORLOOP_TEST_WRITER_INPUT:join(root,'writer.json'),RIGORLOOP_TEST_WRITER_RESULT:join(root,'writer-result.json')}});
+  assert.equal(JSON.parse(readFileSync(join(root,'writer-result.json'))).status,0);
+  assert.equal(preview.status,0,preview.stdout+preview.stderr);
+  assert.equal(JSON.parse(preview.stdout).committed,false);
+  assert.equal(existsSync(join(root,'backup')),false);
+  assert.equal(command(root,['store','backup'],input,['--dry-run']).exit,0);
+});
