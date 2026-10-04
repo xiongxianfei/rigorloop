@@ -1,0 +1,84 @@
+{
+  "id": "SCN-044",
+  "type": "scenario",
+  "title": "Correct an assessment without losing open work",
+  "status": "draft",
+  "actor": "A reviewer refining a recorded assessment",
+  "goal": "Record an attributed current assessment correction while preserving unresolved findings and unrelated facts.",
+  "context": "The reviewer has reassessed the stated scope and needs to correct the current assessment, including its limitations.",
+  "trigger": "The reviewer submits the complete corrected assessment under the current Review task.",
+  "preconditions": [
+    "The selected current-format report is complete and readable.",
+    "The reviewer has obtained its actual current contract/revision and the intended decision basis."
+  ],
+  "interaction": [
+    {
+      "actor": "Reviewer",
+      "action": "Supplies the complete corrected assessment and explicit current revision, optionally previewing the task."
+    },
+    {
+      "actor": "System",
+      "action": "Returns a bounded preview of the intended changes without saving or reserving the state."
+    },
+    {
+      "actor": "Reviewer",
+      "action": "Explicitly submits the intended update for publication."
+    },
+    {
+      "actor": "System",
+      "action": "Validates the combined candidate, preserves omitted findings and unrelated facts, and reports the actual storage result."
+    }
+  ],
+  "expected_outcome": "The current assessment reflects the explicit reviewer submission; omitted findings survive and dependent reliance is reconciled rather than silently renewed.",
+  "alternatives": [
+    {
+      "condition": "The entire submitted candidate is unchanged and current preconditions hold.",
+      "outcome": "Report unchanged without advancing the semantic revision."
+    },
+    {
+      "condition": "The reviewer also explicitly decides to change applicability.",
+      "outcome": "The owning task can publish the explicitly supplied applicability decision with the explanation change without inferring it from prose."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "The expected revision changed or the assessment shape contains unknown or incomplete fields.",
+      "outcome": "Reject or conflict without inventing assessment values or silently retargeting the correction."
+    },
+    {
+      "condition": "The update overlaps another assignment in the same task submission.",
+      "outcome": "The whole candidate rejects rather than silently choosing one actor value."
+    }
+  ],
+  "exercises": [
+    "FEAT-013"
+  ],
+  "informs": [
+    "SR-042",
+    "SR-043",
+    "SR-044",
+    "SR-046"
+  ],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-CLI",
+      "locator": "docs/design/cli/cli.md#CLI-SR-03, CLI-SR-13, CLI-SR-16, CLI-SR-25, CLI-SR-26; docs/design/cli/records.md#RF-SR-10, RF-SR-11, RF-SR-13",
+      "basis": "IR-008 owns this black-box published-product situation. It exercises one durable Feature and informs the named system obligations; draft status leaves confirmation to semantic review and does not claim runtime verification."
+    },
+    {
+      "source": "SRC-PUBLISHED-PRODUCTS",
+      "locator": "SCN-044; design/requirements/published-products.md#review-and-validation",
+      "basis": "Independent review and author reconciliation confirmed this stakeholder situation, primary Feature, and SR coverage as current analysis knowledge. This does not approve requirements or establish implemented behavior or satisfaction."
+    },
+    {
+      "source": "SRC-CURRENT-HANDOFF",
+      "locator": "SCN-044",
+      "basis": "User-selected current handoff and selective retention refinement. Reuse existing identity and responsibility; no runtime adoption or independent approval is asserted."
+    },
+    {
+      "source": "SRC-SQLITE-ADOPTION",
+      "locator": "SCN-044",
+      "basis": "Reconcile existing use/behavior with current explicit task selection, coherent SQLite outcomes and attributable judgments; no new stakeholder need or runtime qualification is inferred."
+    }
+  ]
+}

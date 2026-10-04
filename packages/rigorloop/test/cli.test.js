@@ -3,6 +3,7 @@ import { execFileSync, spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import {
   copyFileSync,
+  cpSync,
   existsSync,
   lstatSync,
   mkdirSync,
@@ -18,6 +19,7 @@ import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { test } from "node:test";
 
+import { workflowContract } from "../dist/lib/workflow-package.js";
 import { exitCodeForResult } from "../dist/lib/command-result.js";
 import { adapterDescriptor, supportedAdapterNames } from "../dist/lib/adapters.js";
 import {
@@ -278,16 +280,21 @@ function fixtureArchive(projectRoot, options = {}) {
   const metadataFile = options.metadataFile ?? `adapter-artifacts-${releaseTag}.json`;
   const archiveName = options.archiveName ?? `rigorloop-adapter-${adapter}-${releaseTag}.zip`;
   const installRoot = options.installRoot ?? ".agents/skills";
-  const entries = options.entries ?? [
+  const entries = [...(options.entries ?? [
     {
-      name: `${installRoot}/proposal/SKILL.md`,
+      name: `${installRoot}/requirement-analysis/SKILL.md`,
       bytes: Buffer.from("# Proposal\n\nUse proposal guidance.\r\n", "utf8"),
     },
     {
       name: `${installRoot}/verify/SKILL.md`,
       bytes: Buffer.from("# Verify\n\nUse verify guidance.\n", "utf8"),
     },
-  ];
+  ])];
+  for(const name of workflowContract.required_skills) {
+    const path=`${installRoot}/${name}/SKILL.md`;
+    if(!entries.some(entry=>entry.name===path))entries.push({name:path,bytes:Buffer.from(`# ${name}\n`)});
+  }
+  entries.push({name:'rigorloop-workflow.json',bytes:Buffer.from(JSON.stringify(workflowContract))});
   const archiveBytes = options.archiveBytes ?? createZip(entries);
   const archivePath = join(projectRoot, archiveName);
   writeFileSync(archivePath, archiveBytes);
@@ -360,6 +367,8 @@ function fixturePackage(t, options = {}) {
     join(root, "dist", "lib", "command-result.js"),
   );
   for (const file of [
+    "workflow-package.js",
+    "record-json.js",
     "installer-replacement.js",
     "cli-observability.js",
     "diagnostic-event.js",
@@ -374,6 +383,9 @@ function fixturePackage(t, options = {}) {
     join(packageRoot, "dist", "lib", "official-archive-url.js"),
     join(root, "dist", "lib", "official-archive-url.js"),
   );
+
+  cpSync(join(packageRoot, "dist/templates/shared"), join(root, "dist/templates/shared"), {recursive:true});
+  cpSync(join(packageRoot, "node_modules"), join(root,"node_modules"), {recursive:true});
 
   if (options.metadata !== false) {
     const metadata =
@@ -753,7 +765,7 @@ test("RT-R30 init rejects an archive containing the obsolete workflow package", 
 
   assert.equal(result.status, 2);
   const output = parseJsonResult(result);
-  assert.equal(output.blockers[0].code, "obsolete-workflow-skill");
+  assert.equal(output.blockers[0].code, "mixed-route-workflow-skills");
   assert.equal(output.blockers[0].replacement, "route");
   assert.deepEqual(listProject(cwd), before);
   assert.equal(existsSync(join(cwd, ".agents", "skills")), false);
@@ -782,7 +794,7 @@ test("T6 JSON envelope is stable and stdout contains JSON only", (t) => {
   ]) {
     assert.ok(Object.hasOwn(output, key), key);
   }
-  assert.equal(output.schema_version, 1);
+  assert.equal(output.schema_version, 2);
   assert.equal(output.command, "init");
   assert.equal(output.package.name, "@xiongxianfei/rigorloop");
   assert.equal(output.package.version, publicPackageVersion);
@@ -974,7 +986,7 @@ test("T15 network mode uses bundled metadata before downloading the official arc
   assertNoStateFiles(cwd);
   assert.equal(output.artifacts[0].sha256, fixture.metadata.artifacts[0].sha256);
   assert.equal(
-    readProjectFile(cwd, ".agents/skills/proposal/SKILL.md"),
+    readProjectFile(cwd, ".agents/skills/requirement-analysis/SKILL.md"),
     "# Proposal\n\nUse proposal guidance.\n",
   );
 });
@@ -1247,7 +1259,7 @@ test("T15 network mode rejects non-official archive URLs before fetch", (t) => {
     assert.equal(output.status, "error", name);
     assert.equal(output.errors[0].code, "non-official-archive-url", name);
     assert.equal(output.errors[0].path, "metadata.artifacts[codex].url", name);
-    assert.equal(existsSync(join(cwd, ".agents", "skills", "proposal", "SKILL.md")), false, name);
+    assert.equal(existsSync(join(cwd, ".agents", "skills", "requirement-analysis", "SKILL.md")), false, name);
   }
 });
 
@@ -1299,7 +1311,7 @@ test("T16 bundled metadata hash verification uses the bundled release index", (t
   const output = JSON.parse(result.stdout);
   assert.equal(output.status, "error");
   assert.equal(output.errors[0].code, "metadata-sha256-mismatch");
-  assert.equal(existsSync(join(cwd, ".agents", "skills", "proposal", "SKILL.md")), false);
+  assert.equal(existsSync(join(cwd, ".agents", "skills", "requirement-analysis", "SKILL.md")), false);
 });
 
 test("T16 bundled metadata bytes are verified before parsing", (t) => {
@@ -1381,7 +1393,7 @@ test("T16 runtime release metadata environment override is ignored", (t) => {
 
   assert.equal(result.status, 0, result.stderr);
   assert.equal(
-    readProjectFile(cwd, ".agents/skills/proposal/SKILL.md"),
+    readProjectFile(cwd, ".agents/skills/requirement-analysis/SKILL.md"),
     "# Proposal\n\nUse proposal guidance.\n",
   );
 });
@@ -1400,7 +1412,7 @@ test("T17 incompatible local archive release is blocked", (t) => {
   const output = JSON.parse(result.stdout);
   assert.equal(output.status, "blocked");
   assert.equal(output.blockers[0].code, "release-version-incompatible");
-  assert.equal(existsSync(join(cwd, ".agents", "skills", "proposal", "SKILL.md")), false);
+  assert.equal(existsSync(join(cwd, ".agents", "skills", "requirement-analysis", "SKILL.md")), false);
 });
 
 test("T18 local archive mode uses bundled metadata and no metadata flag", (t) => {
@@ -1419,7 +1431,7 @@ test("T18 local archive mode uses bundled metadata and no metadata flag", (t) =>
   assert.equal(output.artifacts[0].sha256, fixture.metadata.artifacts[0].sha256);
   assert.equal(output.artifacts[0].tree_sha256, fixture.metadata.artifacts[0].tree_sha256);
   assert.equal(
-    readProjectFile(cwd, ".agents/skills/proposal/SKILL.md"),
+    readProjectFile(cwd, ".agents/skills/requirement-analysis/SKILL.md"),
     "# Proposal\n\nUse proposal guidance.\n",
   );
   assert.doesNotMatch(result.stdout, /metadata/);
@@ -1447,7 +1459,7 @@ test("T18 runtime local metadata environment override is ignored", (t) => {
 
   assert.equal(result.status, 0, result.stderr);
   assert.equal(
-    readProjectFile(cwd, ".agents/skills/proposal/SKILL.md"),
+    readProjectFile(cwd, ".agents/skills/requirement-analysis/SKILL.md"),
     "# Proposal\n\nUse proposal guidance.\n",
   );
 });
@@ -1456,7 +1468,7 @@ test("T19 missing bundled metadata blocks local archive install", (t) => {
   const cwd = tempProject(t);
   const archive = createZip([
     {
-      name: ".agents/skills/proposal/SKILL.md",
+      name: ".agents/skills/requirement-analysis/SKILL.md",
       bytes: Buffer.from("# Proposal\n", "utf8"),
     },
   ]);
@@ -1480,7 +1492,7 @@ test("T19 missing bundled metadata blocks local archive install", (t) => {
   const output = JSON.parse(result.stdout);
   assert.equal(output.status, "blocked");
   assert.equal(output.blockers[0].code, "metadata-unavailable");
-  assert.equal(existsSync(join(cwd, ".agents", "skills", "proposal", "SKILL.md")), false);
+  assert.equal(existsSync(join(cwd, ".agents", "skills", "requirement-analysis", "SKILL.md")), false);
 });
 
 test("TTNI-INST-001 default init installs single-root targets without state files", (t) => {
@@ -1506,7 +1518,7 @@ test("TTNI-INST-001 default init installs single-root targets without state file
     assert.equal(existsSync(join(cwd, "rigorloop.yaml")), false, adapter);
     assert.equal(existsSync(join(cwd, "rigorloop.lock")), false, adapter);
     assert.equal(
-      readProjectFile(cwd, `${root}/proposal/SKILL.md`),
+      readProjectFile(cwd, `${root}/requirement-analysis/SKILL.md`),
       "# Proposal\n\nUse proposal guidance.\n",
       adapter,
     );
@@ -1562,8 +1574,8 @@ test("T26 leaf install-root file conflict is refused without replacing user file
 test("T26 existing adapter files cause destination conflicts without replacing user files", (t) => {
   const cwd = tempProject(t);
   const fixture = fixtureArchive(cwd);
-  mkdirSync(join(cwd, ".agents", "skills", "proposal"), { recursive: true });
-  writeFileSync(join(cwd, ".agents", "skills", "proposal", "SKILL.md"), "user file\n");
+  mkdirSync(join(cwd, ".agents", "skills", "requirement-analysis"), { recursive: true });
+  writeFileSync(join(cwd, ".agents", "skills", "requirement-analysis", "SKILL.md"), "user file\n");
   const result = runCliWithBundledMetadata(
     t,
     ["init", "codex", "--from-archive", `./${fixture.archiveName}`, "--json"],
@@ -1572,7 +1584,7 @@ test("T26 existing adapter files cause destination conflicts without replacing u
   );
 
   assert.equal(result.status, 5);
-  assert.equal(readProjectFile(cwd, ".agents/skills/proposal/SKILL.md"), "user file\n");
+  assert.equal(readProjectFile(cwd, ".agents/skills/requirement-analysis/SKILL.md"), "user file\n");
   const output = JSON.parse(result.stdout);
   assert.equal(output.status, "blocked");
   assert.equal(output.blockers[0].code, "destination-conflict");
@@ -1716,7 +1728,7 @@ test("T31 archive entries must remain under .agents/skills", (t) => {
   const supportFixture = fixtureArchive(supportProject, {
     entries: [
       {
-        name: ".agents/skills/proposal/SKILL.md",
+        name: ".agents/skills/requirement-analysis/SKILL.md",
         bytes: Buffer.from("# Proposal\n", "utf8"),
       },
       {
@@ -1734,7 +1746,7 @@ test("T31 archive entries must remain under .agents/skills", (t) => {
 
   assert.equal(supportResult.status, 0, supportResult.stderr);
   assert.equal(existsSync(join(supportProject, "AGENTS.md")), false);
-  assert.equal(readProjectFile(supportProject, ".agents/skills/proposal/SKILL.md"), "# Proposal\n");
+  assert.equal(readProjectFile(supportProject, ".agents/skills/requirement-analysis/SKILL.md"), "# Proposal\n");
 });
 
 test("T33 symlink archive entries are rejected", (t) => {
@@ -1742,7 +1754,7 @@ test("T33 symlink archive entries are rejected", (t) => {
   const fixture = fixtureArchive(cwd, {
     entries: [
       {
-        name: ".agents/skills/proposal/SKILL.md",
+        name: ".agents/skills/requirement-analysis/SKILL.md",
         bytes: Buffer.from("target", "utf8"),
         externalAttributes: 0o120777 << 16,
       },
@@ -1819,17 +1831,18 @@ test("DIST independent tree representation and unknown algorithm precedence", (t
       const names = algorithm === "rigorloop-tree-hash-v2"
         ? ["A.md", "Z.md", "a-b.md", "a.md", "a_b.md", "c.bin", "e\u0301.md", "t.md", "ß.md", "é.md", "İ.md"]
         : ["ß.md", "t.md"];
-      const normalized = names.map(name => [`proposal/${name}`, name === "c.bin"
+      const normalized = names.map(name => [`zz-samples/${name}`, name === "c.bin"
         ? Buffer.from([0xef, 0xbb, 0xbf, 0, 13, 10, 255]) : Buffer.from("Text\nkeep  \n")]);
       const selected = algorithm ?? "rigorloop-tree-hash-v1";
-      const expected = sha256(Buffer.from(`${selected}\n` + normalized
+      const required = ['architecture-design','code-review','delivery-review','design-review','implement','plan','requirement-analysis','requirement-review','route','system-design','verify'].map(name=>[`${name}/SKILL.md`,Buffer.from(`# ${name}\n`)]);
+      const expected = sha256(Buffer.from(`${selected}\n` + [...required, ...normalized]
         .map(([path, bytes]) => `${path}\t${sha256(bytes)}\n`).join("")));
       const fixture = fixtureArchive(cwd, { adapter: target, installRoot: root,
         entries: [...normalized].reverse().map(([path, bytes]) => ({ name: `${root}/${path}`,
           bytes: path.endsWith(".md") ? Buffer.from("\ufeffText\r\nkeep  \r") : bytes })),
         metadata(metadata) {
           metadata.artifacts[0].tree_sha256 = expected;
-          metadata.artifacts[0].file_count = normalized.length;
+          metadata.artifacts[0].file_count = required.length + normalized.length;
           if (algorithm === undefined) delete metadata.artifacts[0].tree_hash_algorithm;
           else metadata.artifacts[0].tree_hash_algorithm = algorithm;
           return metadata;
@@ -1909,12 +1922,12 @@ for (const [target, installRoot] of [
         adapter: target,
         installRoot,
         metadata(metadata) {
-          metadata.artifacts[0].skill_names = ["proposal", "verify"];
+          metadata.artifacts[0].skill_names = ["requirement-analysis", "verify"];
           return metadata;
         },
       });
-      mkdirSync(join(cwd, installRoot, "proposal"), { recursive: true });
-      writeFileSync(join(cwd, installRoot, "proposal", "local.md"), "preserve local change");
+      mkdirSync(join(cwd, installRoot, "requirement-analysis"), { recursive: true });
+      writeFileSync(join(cwd, installRoot, "requirement-analysis", "local.md"), "preserve local change");
       mkdirSync(join(cwd, installRoot, "unrelated"));
       writeFileSync(join(cwd, installRoot, "unrelated", "keep"), "unrelated");
       writeFileSync(join(cwd, "rigorloop.yaml"), "malformed: [");
@@ -1932,19 +1945,19 @@ for (const [target, installRoot] of [
       if (local) {
         assert.equal(result.stderr, "");
         assert.match(result.stdout, /archive verification and complete destination preflight are unperformed/);
-        assert.ok(result.stdout.includes(`replace: ${installRoot}/proposal`));
-        assert.ok(result.stdout.includes(`create: ${installRoot}/verify`));
-        assert.match(result.stdout, /Local changes within replaced skill directories will be lost/);
+        assert.ok(result.stdout.includes(`replace: ${installRoot}/requirement-analysis`));
+        assert.ok(result.stdout.includes(`install: ${installRoot}/verify`));
+        assert.match(result.stdout, /retained outside discovery/);
       } else {
         const output = parseJsonResult(result);
         assert.equal(output.status, "success");
-        assert.deepEqual(output.preliminary_conflicts, [`${installRoot}/proposal`]);
+        assert.deepEqual(output.preliminary_conflicts, [`${installRoot}/requirement-analysis`]);
         assert.deepEqual(output.completed, []);
         assert.deepEqual(output.retained, []);
         assert.deepEqual(output.unperformed_checks, ["archive acquisition", "archive verification", "complete candidate preflight"]);
         assert.deepEqual(output.actions.map(({ path, action, status }) => ({ path, action, status })), [
-          { path: `${installRoot}/proposal`, action: "conflict", status: "planned" },
-          { path: `${installRoot}/verify`, action: "create", status: "planned" },
+          { path: `${installRoot}/requirement-analysis`, action: "conflict", status: "planned" },
+          { path: `${installRoot}/verify`, action: "install", status: "planned" },
         ]);
         assert.equal(output.state_files.action, "skipped");
       }
@@ -1954,8 +1967,8 @@ for (const [target, installRoot] of [
   for (const format of ["json", "human"]) {
     test(`DIST public partial installation and retry preserve actual state: ${target} ${format}`, (t) => {
       const cwd = tempProject(t);
-      const first = `${installRoot}/a`;
-      const partial = `${installRoot}/design`;
+      const first = `${installRoot}/0-first`;
+      const partial = `${installRoot}/1-partial`;
       const untouched = `${installRoot}/z`;
       const entries = [
         { name: `${first}/SKILL.md`, bytes: Buffer.from("first\n") },
@@ -1983,7 +1996,7 @@ for (const [target, installRoot] of [
       let output;
       if (format === "json") {
         output = parseJsonResult(result);
-        assert.equal(output.schema_version, 1);
+        assert.equal(output.schema_version, 2);
         assert.equal(output.command, "init");
         assert.equal(output.status, "blocked");
         assert.equal(output.blockers[0].code, "partial-installation-failed");
@@ -1996,7 +2009,7 @@ for (const [target, installRoot] of [
       }
       assert.deepEqual(output.completed, [first]);
       assert.equal(output.failed, partial);
-      assert.deepEqual(output.untouched, [untouched]);
+      assert.deepEqual(output.untouched, [...workflowContract.required_skills.map(n=>`${installRoot}/${n}`).sort(), untouched]);
       assert.equal(readProjectFile(cwd, `${first}/SKILL.md`), "first\n");
       assert.equal(readProjectFile(cwd, `${partial}/SKILL.md`), "second\n");
       assert.deepEqual(readdirSync(join(cwd, partial)), ["SKILL.md"]);
@@ -2048,11 +2061,12 @@ for (const [target, installRoot] of [
       if (format === "json") {
         const completed = parseJsonResult(forced);
         assert.equal(completed.status, "success");
-        assert.deepEqual(completed.completed, [first, partial, untouched]);
+        assert.deepEqual(completed.completed, [first, partial, ...workflowContract.required_skills.map(n=>`${installRoot}/${n}`).sort(), untouched]);
         assert.deepEqual(completed.actions.map(({ path, action }) => ({ path, action })), [
           { path: first, action: "replace" },
           { path: partial, action: "replace" },
-          { path: untouched, action: "create" },
+          ...workflowContract.required_skills.map(n=>`${installRoot}/${n}`).sort().map(path=>({path,action:"install"})),
+          { path: untouched, action: "install" },
         ]);
         assert.deepEqual(completed.retained.map(({ path }) => path), [first, partial]);
         assert.equal(completed.state_files.action, "skipped");
@@ -2060,8 +2074,8 @@ for (const [target, installRoot] of [
         assert.equal(forced.stderr, "");
         assert.ok(forced.stdout.includes(`replace: ${first}`));
         assert.ok(forced.stdout.includes(`replace: ${partial}`));
-        assert.ok(forced.stdout.includes(`create: ${untouched}`));
-        assert.match(forced.stdout, /Local changes within replaced skill directories will be lost/);
+        assert.ok(forced.stdout.includes(`install: ${untouched}`));
+        assert.match(forced.stdout, /retained outside discovery/);
       }
     });
   }

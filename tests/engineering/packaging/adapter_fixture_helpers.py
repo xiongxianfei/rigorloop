@@ -53,6 +53,15 @@ def copy_fixture_skills(target: Path, names: tuple[str, ...]) -> Path:
         shutil.copytree(fixture_path(name), skills_root / name)
     return skills_root
 
+def copy_workflow_fixture_skills(target: Path, names: tuple[str, ...]) -> Path:
+    """Real successor installation needs the complete required workflow."""
+    import json
+    skills_root = copy_fixture_skills(target, names)
+    descriptor = json.loads((ROOT / "templates/shared/rigorloop-workflow.json").read_text())
+    for name in descriptor["required_skills"]:
+        shutil.copytree(ROOT / "skills" / name, skills_root / name)
+    return skills_root
+
 def generate_fixture_adapters(
     root: Path,
     names: tuple[str, ...] = ("portable-basic", "transformable-frontmatter"),

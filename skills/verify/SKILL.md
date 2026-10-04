@@ -1,249 +1,42 @@
 ---
 name: verify
-description: >
-  Run final verification and produce durable change rationale only on success, with optional PR handoff. Use to verify artifact-code-test coherence,
-  requirement coverage, validation commands, CI readiness, drift, release safety, and scoped direct validation checks.
-argument-hint: [feature name, branch, plan path, spec path, or verification scope]
+description: Assess whether current engineering work, applicable reviews and actual evidence justify a scoped result or final completion. Keep Verify separate from authoring and whole-change Code Review.
 ---
 
-# Verification gate
+# Verify
 
-## Test criteria application
+State whether the requested assessment is scoped or final. Read accepted IR/SRs and applicable ARs, reviewed System/Architecture Design, delivery intent, actual implementation/work, open issues and selected current evidence. For final success, require adequate applicable whole-change Code Review and current support for the other mandatory bases. A review for every milestone is not required.
 
-When the project explicitly adopts shared test criteria, use the selectively loaded guidance below for test quality and maintenance. These criteria replace source-local shared test-purpose, case-selection and maintenance criteria for adopted work; retain specialist methods and historical evidence. Actual judgments, evidence applicability and closeout consequences remain with the responsible assessors under the project's review policy.
+Run the applicable repository checks and any required direct validation; report commands actually executed, results and limitations. Reuse evidence only where its scope and applicability justify it. Trace evidence through implementation/work to governing SR/AR and accepted IR/request basis. Saving records or passing schemas does not satisfy engineering obligations.
 
-## Review and Closeout application
+Keep correction ownership: implementation defects return to implement, requirement defects to requirement-analysis, and design defects to their responsible designer. Independently reassess materially changed subjects, then reverify. Verify cannot fix code and silently approve that correction. An evidence-collection retry alone does not require another Code Review; contradictory evidence requires assessing its effect on earlier reliance.
 
-When project authority explicitly adopts Review and Closeout policy, use the packaged application below for shared assessment meaning. It replaces source-local judgment, independence, applicability, concern-disposition and closeout rules in this skill and its conditional resources; retain specialist methods and contract-selected storage procedures. Historical assessments retain their original meaning but grant no current runtime support. Missing or contradictory required guidance stops dependent reliance.
+Record an explicit Verification assessment, including support and limitations. Current support means recorded dependencies are reconciled; it does not establish unreported repository stability. Renewing a Review does not renew a stale Verification automatically. Failed and inconclusive results remain recordable without a success claim.
 
-## Purpose
+Only after successful final assessment, use change complete to retain the compact delivered outcome, actual acceptance basis, limitations and selected useful attachments. Preserve meaningful deferred follow-up; it cannot waive mandatory acceptance. Completion is historical and stops tracking later repository applicability. A later regression is linked new work; an error in the original account gets an explicit completion note.
 
-Prove that the requested scope, current evidence, implementation, tests, and governing artifacts agree. Verify owns justified final closeout; PR owns the separate external handoff.
-
-Trace current evidence backward through implementation and allocated work to governing SRs and the approved proposal direction.
-
-Perform either a bounded evidence check or a final readiness assessment without taking ownership from authoring, review, workflow, or PR stages. Final verification validates the reviewed final change pack before PR and creates the final durable explanation. It generates the final explanation only after successful final readiness.
-
-Final verification is scoped evidence and must not own artifact settlement, milestone state, or routing. For planned work, use `change.json` to assess current state and treat the plan and upstream artifacts as read-only.
-
-## When to use
-
-Use this skill for an explicit validation surface, a direct branch-readiness assessment, or governed final verification after implementation, review closeout, and triggered CI maintenance are complete.
-
-## When not to use
-
-Do not use it to replace code-review, settle upstream artifacts, repair implementation, prepare or open a PR, or claim hosted CI that was not observed.
-
-## Workflow role
-
-`verify` evaluates evidence and records only verify-owned results. The `route` skill owns semantic lifecycle progression, and `pr` owns PR preparation and opening. A successful workflow-managed verification hands off to `pr`; it never invokes `pr` itself.
-
-Run `ci-maintenance` first when hosted workflow automation, validation automation, or related platform configuration must change.
-
-## Project-local evidence
-
-Public skills operate in customer-project mode by default. Use project-local instructions, specs, plans, change records, code, tests, validation, and authoritative CLI workflow context when governed. Do not require RigorLoop repository-internal specs, docs, reports, or governance files in customer projects. Use portable defaults where safe without claiming governed placement, and block on ambiguity.
-
-## Invocation classification
-
-Classify the requested outcome and, independently, whether adopted recording authority exists: the project selected the supported record contract and exact change for this result. This does not establish governed-final execution.
-
-Classify exactly one requested outcome:
-
-- `scoped-verification`: verify one explicit command, artifact, requirement, or evidence surface.
-- `branch-readiness`: assess one resolved repository branch or commit and exactly one governed change or explicit evidence root.
-- `workflow-final-verification`: assess a valid governed change whose canonical current stage is final `verify`.
-
-A direct request may establish `branch-readiness`, but only after the branch or commit and one evidence root resolve without ambiguity. Words such as “ready”, “final”, or “closeout” do not establish `workflow-final-verification`; current governed lifecycle evidence does. Treat release sensitivity as an evidence-applicability flag, never as publication authority. Stop on an unknown outcome or a missing, ambiguous, stale, mismatched, or conflicting target.
-
-## Resource profiles
-
-Loaded procedure and execution authority are independent:
-
-| Profile | Final readiness | Boundary-first | Loaded package |
-| --- | --- | --- | --- |
-| `VP0-scoped` | no | no | this file |
-| `VP0B-scoped-boundary` | no | yes | this file plus the boundary reference |
-| `VP1-final-readiness` | yes | no | this file plus the branch-readiness reference |
-| `VP1B-final-readiness-boundary` | yes | yes | this file plus both references |
-
-Use execution mode `isolated` for direct checks and direct branch-readiness assessments. Use `governed-final` only when current governed evidence establishes final `verify` for the same change. Never infer the mode from conversational wording.
-
-### Final-readiness profile
-
-Final readiness loads impact analysis and evidence applicability; successful results then load explanation guidance. Failed or inconclusive attempts emit no successful final explanation. Scoped verification loads none of those final-closeout resources.
-
-## Execution authority
-
-An `isolated` result does not mutate lifecycle state, perform governed recording unless explicitly authorized by an existing contract, or invoke `pr`. It may name `pr` only as a possible next stage.
-
-In `governed-final`, perform only verify-owned recording, then return the result to `route` for progression. Verification authority is separate from implementation, correction, lifecycle-transition, and PR authority.
-
-Under armed workflow automation, use fresh actual-run evidence for correctness-bearing, security-sensitive, release-sensitive, lifecycle, review-closeout, metadata, generated-output, and required test-suite checks. `cache hits` may support only informational sub-checks when current and identified. A `verify failure` pauses automation and `does not trigger automatic repair`. A pass reports `pr` next and records that human authorization for `pr` is required.
-
-## Inputs to read
-
-Read only evidence needed for the classified outcome. This may include the relevant spec, architecture or ADR, plan and `change.json`, actual diff, tests, validation output, observed CI, review and review-resolution evidence, release metadata, generated artifacts, project instructions, and CI definitions.
-
-For placement, prefer the explicit target; authoritative CLI workflow context; current change or plan metadata; governing schema; then a safe portable default. Block when authority remains ambiguous. For planned records, bounded queries may orient the read, but escalate to full `change.json` for whole-record review, disputed or unsupported state, or forensic reconstruction.
-
-For work governed by consolidated gates, require the current accepted proposal evidence, approved Design Review ID and exact member map, approved Delivery Review ID and exact member map, implementation and Code Review evidence, and current validation results. A review-required, partial, stale, or historical-only package blocks final readiness. This evidence requirement does not merge Verify with any earlier gate.
-
-## Evidence truthfulness
-
-- Distinguish `passed`, `failed`, `skipped`, `pending`, `not-run`, and `unknown`; reject unknown closed-vocabulary values before consistency checks.
-- A configured command is not an actual run. Never present an unrun, interrupted, or stale command as proof.
-- local validation is not observed hosted CI; report CI only from current observed evidence.
-- Distinguish current from stale evidence and stop when relied-on evidence is missing, conflicting, or insufficient.
-- Check generated-output currency against its governing source; do not infer currency from file presence.
-- Accept manual proof only when the governing contract permits it and the record names the check, result, reason, performer, date, and evidence. Use `manual by design` only when intentional.
-- Respect network, publication, destructive-action, credential, and external-state boundaries before collecting evidence.
-- A scoped result cannot support a broader readiness claim unless the broader evidence set is deliberately assembled and verified.
-
-## Verification dimensions
-
-Evaluate applicable dimensions as `pass`, `concern`, or `block`: requirement and test coverage; test validity; architecture coherence; artifact lifecycle state; plan completion; validation and CI evidence; generated-output and documentation drift; review closeout; risk and release evidence; and branch state.
-
-## Operating sequence
-
-1. Classify outcome, exact target, execution mode, and resource profile.
-2. Resolve evidence authority and load only triggered resources.
-3. Map requirements or requested checks to tests, changed files, and current evidence. Under adopted test criteria, use the [selection method](references/test-quality.md#select-requirements-and-proof) to reconcile the current model groups, Delivery allocation, actual case discovery/assertions and independent assessment. Include parent interactions and useful unlisted regressions; an unresolved required observation or an unrun planned method cannot support completeness, regardless of passing counts or lower cost.
-4. Run named targeted proof; for planned initiatives or authoritative triggers, also run the project's broad validation command when required.
-5. Check drift, blockers, claim limits, and the permitted handoff.
-6. Report the verdict and exact commands actually run.
-
-When `broad_smoke_required: true` appears in governing evidence, missing broad smoke blocks final readiness. Inspect registered evidence for required normal-change manual proof and assess its subjects and applicability. Successful Verify references the supporting evidence; an existing successful Verify record is not a prerequisite for this assessment. Inspect release metadata for release smoke or release manual proof.
-
-## Review and lifecycle closeout
-
-For governed work, verify every implementation milestone is closed and current change-local state agrees with the stable plan. A stale touched, referenced, generated, or authoritative lifecycle-managed artifact blocks readiness; unrelated baseline debt is a warning. A branch-readiness assessment requires tracked governing artifacts. Governed storage closeout binds exact file identities and does not universally require Git or PR access.
-
-## Generated Markdown readability
-
-When this skill creates or updates generated or generator-shaped Markdown:
-
-- Write ordinary prose as normal Markdown paragraphs. Do not split a sentence across physical source lines merely for wrapping or clause separation; multiple sentences may remain in one paragraph.
-- Preserve stable IDs for requirements, findings, commands, milestones, and evidence; use tables for repeated mappings.
-- Keep commands fenced or table-owned when they carry proof.
-- Diagrams are optional. Use them only when they reduce cognitive load and map to real artifacts, stages, components, actors, or states.
-- Do not require manual-proof contracts from this readability guidance alone; use governing project rules when manual proof is otherwise required.
-
-## Outputs
-
-Produce the classified outcome, exact target and execution mode, verdict, traceability, commands and results, CI status or gap, drift, blockers, claim limits, and permitted next stage.
-
-For `branch-readiness`, or `workflow-final-verification` that explicitly includes a Git/PR handoff assessment, emit one normalized `verification_basis` in the portable result, or the closed optional verification_basis object of a v3 Verify record. This is conditional external-handoff evidence, not a prerequisite for non-Git closeout. A v3 basis object has exactly the seven fields below; omit it when this owning policy does not apply. Complete verify.record replaces it, so omission removes an existing basis; verify.set cannot change it. It contains immutable resolved values for:
-
-```yaml
-repository_identity: <exact repository identity>
-remote_identity: <exact remote identity>
-base_branch: <resolved branch>
-base_revision: <immutable revision>
-merge_base_revision: <immutable revision>
-head_branch: <resolved branch>
-verified_subject_revision: <immutable revision>
-```
-
-Do not substitute commands, unresolved names, or prose for these fields. Missing or ambiguous values block `branch-ready`.
-
-## Handoff
-
-- Normal next stage: return a clean governed-final result to `route` for handoff to `pr`.
-- Conditional next stages: route CI-infrastructure gaps to `ci-maintenance`, verification-allocation gaps to `plan`, behavior-contract gaps to `design`, and other failures to their exact owning stage. Verify never repairs and continues.
-- Direct requests remain isolated unless explicitly broadened; stop when blockers remain.
-
-## Stop conditions
-
-Stop before a dependent verdict or downstream handoff when the target is unresolved; applicable proof is missing, stale, conflicting, or failing; review or milestone closeout is open; lifecycle state drifts; required generated output or manual proof is not current; or the claim exceeds the verified scope.
-
-A missing or unreadable triggered reference is a package-integrity blocker: stop before dependent interpretation, verdict, recording, or handoff. The skill must not reconstruct, recall, or partially invent missing conditional procedure. An untriggered reference does not load and does not block the applicable profile.
-
-## Claims this skill must not make
-
-Do not claim:
-
-- PR-ready, PR body ready, `pr-body-ready`, or `pr-open-ready`;
-- review passed unless the current owning review evidence is cited;
-- CI passed unless hosted CI was actually observed, or the statement is explicitly local validation only;
-- generated or derived artifacts are current without direct currency proof;
-- `branch-ready` from a scoped check, unresolved lifecycle state, local-only governing artifacts, or unresolved named edge-case proof.
-
-Progress means work that has happened so far.
-Readiness means the next stage that can happen.
-Closeout means the current artifact or stage satisfied its checklist.
-Done means final lifecycle state after required gates are complete.
-Readiness is not Done. `branch-ready` is neither PR body readiness nor lifecycle Done.
-
-## Evidence collection efficiency
-
-Use bounded evidence before broad reads or raw excerpts.
-Use summary and stable-ID first reasoning before broad reads or raw excerpts.
-Prefer check IDs, requirement IDs, test IDs, file paths, counts, line citations, matching line numbers, diffs, and targeted excerpts when inspecting large files, generated output, validation logs, or repeated scans.
-Output caps are safety rails, not evidence-selection strategy.
-Validation summaries must not change selected check coverage, command exit behavior, failure detection, or required validation evidence.
-Read exact ranges after locating relevant lines, then expand only when the narrower evidence is insufficient.
-
-## When full-file read is required
-
-Read the full file when the whole file is the review target, the relevant section cannot be isolated safely, surrounding context can change the conclusion, bounded searches disagree or produce incomplete evidence, or a behavior-changing edit depends on the whole source-of-truth artifact.
-
-## Boundary-first method
-
-Run this compact scan before any stage-owned decision that can change observable behavior, and whenever the input cites an active boundary contract or stable boundary, interaction, or proof ID. Do not wait for the user to name the method.
-
-1. Which inputs or actors can change the outcome?
-2. Which state or timing conditions can change the outcome?
-3. Which public, sibling, helper, or alternate path can change the outcome?
-4. Which failure, retry, recovery, compatibility, or external condition can change the outcome?
-
-If the work is non-behavioral, cites no active boundary identity, and the scan finds no outcome-changing condition, continue under the ordinary stage contract. The scan alone does not create a formal record, ID, proof map, artifact, or user-visible scenario inventory.
-
-Start with the exact approved rows cited for the current decision. Expand approved context only when an ID or outcome is missing, stale, unknown, ambiguous, conflicting, escaped, or insufficient to explain observed behavior. A new or changed normative outcome routes to `design`. A pre-implementation verification-allocation gap routes to `plan`. Historical contracts grant no current progression authority. Downstream stages do not redefine or rename upstream IDs.
-
-Add a scenario only for a distinct outcome or material authority, trust, state, timing, recovery, path, compatibility, external-dependency, incident, or regression hazard. Stop when every applicable boundary and selected interaction has direct proof; do not build a Cartesian inventory.
-
-The project's selected contract owns formal adoption and document format. Unknown current model markers and malformed records fail structural validation. Feature/proof operations are unsupported; existing documents may be read as sources, and scoped adoption requires explicit project authority. Do not infer adoption from a historical activation snapshot or from installing a skill. Explain concisely when a formal record is required or an upstream gap blocks progress; do not request redundant consent for contract-required work. Structural validation cannot author, repair, or approve semantic content.
-
-Confirm contract-to-proof-to-implementation coherence and unresolved-gap closure. Stop verification before readiness claims when evidence is missing or stale, an ID is unknown, or a discovery still requires upstream ownership.
+Continue to the pr skill when external handoff is authorized. Commit, PR, merge and release remain separate actions; a completion save does not authorize them.
 
 ## Recording boundary
 
-Read `references/governed-verification-recording.md` before dependent recording under adopted recording authority. Loading a method or saving a record grants no approval or continuation. Missing, unreadable, escaped, conflicting or mixed-version required guidance stops dependent work without reconstructing it; untriggered guidance does not block unrelated portable work.
+For Change-managed work, read the packaged operational interface reference before relying on or updating current state. Use supported CLI tasks and the inspected opaque revision; skills do not use SQL or edit runtime storage. An isolated invocation keeps its requested scope. Installation alone does not adopt workflow policy.
 
 ## Resource map
 
-- READ `references/governed-verification-recording.md` when adopted recording authority requires this result to be recorded, including a late trigger, before dependent writes.
+- READ `references/operational-recording.md` when inspecting or recording Change-managed work.
+- READ `references/targeted-recording-v2.schema.json` when constructing a recording request.
+- READ `references/rigorloop-records-v4.schema.json` when checking the types used by that request.
 
-- READ `references/test-quality.md` when adopted criteria apply and this invocation authors, allocates or assesses test obligations.
-- READ `references/test-maintenance.md` when adopted criteria apply and this invocation changes tests or assesses test maintenance, removal or its impact.
+- READ `references/boundary-first-method-v1.md` when the project applies its boundary first method v1 criteria to this invocation.
 
-- READ `references/review-reliance.md` when applying adopted assessment applicability, correction or closeout policy.
+- READ `references/requirement-to-delivery-model.md` when the project applies its requirement to delivery model criteria to this invocation.
 
-- READ `references/requirement-to-delivery-model.md` when tracing final evidence backward to implementation, requirements, and proposal direction.
-- READ `references/branch-readiness-verification.md` for `branch-readiness` or `workflow-final-verification` after exact target resolution.
-- READ `references/boundary-first-method-v1.md` when the final approved boundary, interaction, or proof trace is missing, stale, unknown, ambiguous, conflicting, or insufficient for verification.
-- READ `references/final-impact-analysis.md` only for a selected final-readiness attempt after exact target resolution.
-- READ `references/evidence-applicability.md` only for a selected final-readiness attempt after impact classification.
-- READ `references/successful-explanation.md` only after a selected final-readiness attempt has succeeded.
-- COPY `assets/verify-report-skeleton.md` only when recording a selected final-readiness result.
+- READ `references/review-reliance.md` when the project applies its review reliance criteria to this invocation.
 
-Conditional references specialize their activation context; they cannot override this file or each other's owned contract. A contradiction is a package defect and stops dependent work.
+- READ `references/test-maintenance.md` when the project applies its test maintenance criteria to this invocation.
+
+- READ `references/test-quality.md` when the project applies its test quality criteria to this invocation.
 
 ## Expected output
 
-Start with:
-
-```md
-## Result
-
-- Skill: verify
-- Status:
-- Artifacts changed:
-- Open blockers:
-- Next stage:
-- Validation:
-- Readiness:
-```
-
-Then give the verdict, target and execution mode, traceability, validation evidence, CI status or gap, drift, remaining risk, and claim-bounded readiness statement.
+Report the actual scoped outcome, governing basis, changed subjects or recorded judgment, material gaps and the next authorized action. Distinguish progress, review approval, final verification and external publication; claim only outcomes supported by this invocation.

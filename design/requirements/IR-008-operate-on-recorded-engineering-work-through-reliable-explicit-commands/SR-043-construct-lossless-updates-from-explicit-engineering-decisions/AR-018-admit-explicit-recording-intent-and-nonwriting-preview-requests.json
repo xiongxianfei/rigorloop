@@ -3,12 +3,12 @@
   "type": "allocated-requirement",
   "title": "Admit explicit recording intent and nonwriting preview requests",
   "status": "draft",
-  "statement": "The Command handling Module shall require explicit actor decisions and the declared revision, subject basis, and target selection for recording requests, pass the selected targeted or advanced intent unchanged to persistence, and distinguish preview from execution without inventing inputs or authority.",
+  "statement": "The Command handling Module shall admit explicit bounded task intent and preserve its authority, scope and preview/execution distinction.",
   "analysis": {
     "method": "5W2H",
     "what": {
-      "problem": "A public adapter can undermine lossless construction by defaulting an actor decision, changing target interpretation, or presenting a preview as an authorized save.",
-      "desired_outcome": "The persistence boundary receives an unambiguous requested edit or explicit complete replacement with its original decision basis and preview intent."
+      "problem": "Defaulting actor decisions or changing scope can undermine explicit recording intent.",
+      "desired_outcome": "The persistence boundary receives one unambiguous bounded semantic task with its declared basis and preview intent."
     },
     "why": {
       "rationale": "SR-043 requires explicit semantic inputs and equivalent nonwriting preview; MOD-010 owns their public admission and outcome meaning while MOD-011 constructs candidates."
@@ -21,7 +21,7 @@
     },
     "when": {
       "conditions": [
-        "A caller invokes a targeted mutation or batch, requests its dry-run preview, or uses advanced exact replacement."
+        "A caller invokes a supported task mutation or its nonwriting preview."
       ]
     },
     "where": {
@@ -30,21 +30,23 @@
       ]
     },
     "how": {
-      "approach": "Validate the selected public request shape and command/operation agreement, retain explicit decisions and expectations, and dispatch preview and actual execution through their corresponding persistence paths."
+      "approach": "Apply the current v4 SQLite task and maintenance contract. Require explicit semantic task values, project/Change/item scope and current revision; missing or unknown input rejects without invented decisions."
     },
     "how_much": {
-      "scope": "The closed targeted mutation catalog, bounded ordered batches, and advanced complete-byte requests; no arbitrary patch language, cross-change batch, delete operation, or automatic decision generation."
+      "scope": "This allocation preserves its existing parent SR and accountable Module. Prior v3 file-journal mechanisms are historical at 39be9c81; current maintenance remains separately explicit."
     }
   },
   "acceptance_criteria": [
-    "A request supplies its required semantic fields and exact selectors; missing decisions reject with the named required field without defaults, interactive invention, or calling another actor. Callers do not have to build registry entries, deterministic paths, or serialization scaffolding.",
-    "Command, Change, selected contract and expected revision/read basis agree. V3 retains its identity rules. V4 labels reported versus compared subject bases and uses a recovery-specific expected identity when a normal coherent revision is unavailable; no expectation is silently refreshed.",
-    "Admit only the selected version’s bounded task inputs. V3 retains its targeted-batch contract; v4 constructs related task facts internally with no public arbitrary batch, file replacement, SQL or cross-Change mutation.",
-    "Every targeted mutation admits its declared dry-run form and passes preview intent without requesting publication, reservation, or recovery. Its result identifies the candidate effects as a preview and never as a saved update.",
-    "Actual execution does not reuse preview as a reservation, approval, or freshness guarantee; it sends the explicit request through the fresh checked execution boundary and preserves conflict or missing-input outcomes for the actor."
+    "Require explicit semantic task values, project/Change/item scope and current revision; missing or unknown input rejects without invented decisions.",
+    "Creation selects an unused Change ID and explicit request/authority; it does not require or infer prior requirement/design approval.",
+    "Admit one bounded task with its related typed facts. Review assessment, evidence, issue disposition and completion remain distinct semantic operations.",
+    "Preview and execution use the same closed input definitions; preview makes no reservation and actual execution repeats freshness checks.",
+    "No legacy advanced replacement or arbitrary batch command survives. Skills use the public task contract without SQL or runtime-file reconstruction."
   ],
   "assumptions": [],
-  "constraints": [],
+  "constraints": [
+    "Current v4 SQLite realization; source observations do not establish engineering approval or passing implementation proof."
+  ],
   "allocated_to": "MOD-010",
   "sources": [
     {
@@ -66,6 +68,11 @@
       "source": "SRC-CURRENT-HANDOFF",
       "locator": "AR-018",
       "basis": "Refine existing current-state responsibility and selective retention; observed runtime mappings remain version-scoped."
+    },
+    {
+      "source": "SRC-SQLITE-ADOPTION",
+      "locator": "docs/design/cli/records.md; Work records (MOD-011) current transaction and maintenance contract",
+      "basis": "Reconciles existing stakeholder need and allocation with SQLite ordinary recovery. No new need, approval, or executed result is inferred."
     }
   ],
   "constrains": [

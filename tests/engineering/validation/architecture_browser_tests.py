@@ -236,9 +236,9 @@ class ArchitectureBrowserTests(unittest.TestCase):
         root = self.fixture()
         original = browser.build_model(browser.Model(root))
         catalogs = {catalog["owner"]: catalog for catalog in original["catalogs"]}
-        self.assertEqual(len(catalogs["IF-004"]["entries"]), 40)
-        self.assertEqual(len(catalogs["MOD-012"]["entries"]), 19)
-        installation = next(item for item in catalogs["IF-004"]["entries"] if item["name"] == "init codex")
+        self.assertEqual(len(catalogs["IF-004"]["entries"]), 17)
+        self.assertEqual(len(catalogs["MOD-012"]["entries"]), 20)
+        installation = next(item for item in catalogs["IF-004"]["entries"] if item["name"] == "init")
         self.assertEqual(installation["modules"], ["MOD-014"])
         self.assertEqual({item["relation"] for item in installation["mapping"]["functions"]}, {"invokes"})
         route = next(item for item in catalogs["MOD-012"]["entries"] if item["name"] == "route")
@@ -284,7 +284,7 @@ class ArchitectureBrowserTests(unittest.TestCase):
         changed = browser.build_model(browser.Model(root))
         changed_catalog = next(item for item in changed["catalogs"] if item["owner"] == "MOD-012")
         self.assertNotIn("MOD-012", {c["owner"] for c in changed["designed_catalogs"]})
-        self.assertEqual(len(changed_catalog["entries"]), 19)
+        self.assertEqual(len(changed_catalog["entries"]), 20)
         route = next(item for catalog in changed["catalogs"] if catalog["owner"] == "MOD-012"
                      for item in catalog["entries"] if item["name"] == "route")
         self.assertEqual(route["modules"], [])
@@ -511,14 +511,14 @@ class ArchitectureBrowserTests(unittest.TestCase):
                               for item in metadata[key]["sources"]], [(owner, facet, field)])
             self.assertTrue(all(link == route for link in re.findall(r'link: "([^"]+)"', sources[key])))
         publication = sources["process-publication"].replace("\\n", " ")
-        self.assertLess(publication.index("Prepare bounded receipt"), publication.index("Persist prepared journal"))
-        self.assertLess(publication.index("Persist prepared journal"), publication.index("Publish exact candidate bytes"))
-        self.assertIn("Recheck preview coherence", publication)
+        self.assertLess(publication.index("Prepare bounded receipt"), publication.index("Publish complete candidate"))
+        self.assertLess(publication.index("Publish complete candidate"), publication.index("Commit durable transaction"))
+        self.assertIn("Inspect preview snapshot", publication)
         self.assertIn("Release unchanged writer", publication)
         self.assertIn("terminal alternative", publication)
         recovery = sources["process-recovery"].replace("\\n", " ")
-        self.assertIn("Restore exact retained before bytes", recovery)
-        self.assertIn("Complete exact retained candidate", recovery)
+        self.assertIn("Establish coherent storage state", recovery)
+        self.assertIn("Read current account", recovery)
         # Alternative outcomes and unlocated failures cannot secretly rejoin
         # the main path through a generated outgoing edge.
         for key in ("process-publication", "process-recovery"):
@@ -530,10 +530,10 @@ class ArchitectureBrowserTests(unittest.TestCase):
         lifecycle = sources["process-coordination"]
         state_edges = [(bytes.fromhex(a[2:]).decode(), bytes.fromhex(b[2:]).decode())
                        for a, b in re.findall(r"^\s*(n_[a-f0-9]+) -> (n_[a-f0-9]+):", lifecycle, re.MULTILINE)]
-        self.assertEqual(state_edges, [("No retained journal", "Prepared journal"),
-                                      ("Prepared journal", "Committed journal"),
-                                      ("Prepared journal", "No retained journal"),
-                                      ("Committed journal", "No retained journal")])
+        self.assertEqual(state_edges, [("Available", "Fenced preparation"),
+                                      ("Fenced preparation", "Activated replacement"),
+                                      ("Fenced preparation", "Available"),
+                                      ("Activated replacement", "Available")])
         self.assertIn("Guards:", lifecycle)
         self.assertIn("Effects:", lifecycle)
         # Omitted observations remain omitted; prose/Scenario paths do not

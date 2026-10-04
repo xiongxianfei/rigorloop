@@ -339,13 +339,3 @@ class SkillResourceMapTests(unittest.TestCase):
         ) as skill_dir:
             result = run_validator(skill_dir)
             assert_validation_fails(self, result, "architecture: unmapped skill-local resource reference `templates/unapproved.md`")
-
-    def test_current_design_resource_map_uses_packaged_assets(self) -> None:
-        root = ROOT / "skills/design"
-        body = (root / "SKILL.md").read_text()
-        for name in ("design-skeleton.md", "diagram-styles.mmd"):
-            self.assertIn(f"COPY `assets/{name}`", body)
-            self.assertTrue((root / "assets" / name).is_file())
-        for private in ("templates/architecture.md", "templates/adr.md", "templates/diagram-styles.mmd"):
-            self.assertNotIn(private, body)
-        self.assertEqual(run_validator(root).returncode, 0)

@@ -62,8 +62,8 @@ Use the inputs somehow and produce a useful result.
                 env = {**os.environ, "PATH": str(tools), "HOME": str(root),
                        "RIGORLOOP_TARGET_TRAP": str(marker), "PYTHONDONTWRITEBYTECODE": "1"}
                 result = subprocess.run(
-                    [sys.executable, str(VALIDATOR), str(ROOT / "skills/proposal"),
-                     str(ROOT / "skills/proposal-review")],
+                    [sys.executable, str(VALIDATOR), str(ROOT / "skills/requirement-analysis"),
+                     str(ROOT / "skills/requirement-review")],
                     cwd=root, env=env, text=True, capture_output=True, check=False, timeout=30)
                 self.assertFalse(marker.exists(), "structural validation invoked a target runtime")
                 self.assertEqual(result.returncode, 0, result.stderr)

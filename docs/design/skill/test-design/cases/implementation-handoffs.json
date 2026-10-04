@@ -25,7 +25,7 @@
     {
       "id": "review-package",
       "initial_state": [
-        "Use the Review fixture basis in the strategy plus this case’s concrete facts and counterexample. Resolve every actual instruction and authority claim to the exact current owner/body/triggered resources.",
+        "Use the Review fixture basis in the strategy plus this case\u2019s concrete facts and counterexample. Resolve every actual instruction and authority claim to the exact current owner/body/triggered resources.",
         "Materialize a fresh private review packet for each variant. F0/F1/F2, G0/G1/G2 and S0/S1 are synthetic byte-identity labels; an actual assessment records inspected identities.",
         "Inspect proposed decisions, outputs and prohibited side effects without running an agent or writing production, workflow records, hosted CI or publication state."
       ],
@@ -93,7 +93,7 @@
         "SKL-SR-24",
         "SKL-SR-27",
         "SKL-SR-29",
-        "SKL-SR-31"
+        "SKL-SR-34"
       ],
       "technique": "walkthrough",
       "risk": "Implementation marks its own milestone accepted or skips review after a green local test.",
@@ -399,7 +399,7 @@
         "Trace the current entrypoint and triggered methods for each packet. Inspect the selected assembly, reached resources, supplied external evidence and proposed permitted writes against the independently declared selection table."
       ],
       "then": [
-        "Each valid packet selects exactly one full assembly identity from CIM0–CIM8. Review remains read-only regardless of provider/privilege; project-native authoring selects CIM6 and requires its native contract, without loading GitHub serialization.",
+        "Each valid packet selects exactly one full assembly identity from CIM0\u2013CIM8. Review remains read-only regardless of provider/privilege; project-native authoring selects CIM6 and requires its native contract, without loading GitHub serialization.",
         "Ordinary create selects CIM2 with risk map and skeleton; narrow/coverage/structural revision selects CIM3/CIM4/CIM5. Coverage adds its risk map independently to structural revision. Approved GitHub privilege selects CIM7/CIM8; revise independently adds coverage and structure resources when triggered.",
         "Late additions reclassify and load the complete newly required resources before dependent action. Late privilege without exact Design/review stops; unknown values reject before consistency work, and external-state authoring or incomplete native authority cannot become a valid assembly.",
         "Matching assembly words in a result or passing declaration parsing alone cannot establish unique semantic selection or complete resource reachability."
@@ -442,7 +442,7 @@
       "then": [
         "Only the complete authorized restoration packet can use bounded-pr-ci-repair. A missing prerequisite blocks; new product or decision-bearing behavior returns to the earliest applicable owner rather than using the exception.",
         "The admitted correction runs the required authoritative checks, reports their actual outcomes and observes the replacement hosted run for the actual current pushed head. R1 for H0 cannot prove H1; local-only success reports hosted CI as unobserved.",
-        "Existing assessment/evidence may remain usable only while its decision basis remains unchanged under Assessment. The exception cannot create external permission, alter another owner’s decision, fabricate refreshed Verify or claim completion from unobserved hosted results."
+        "Existing assessment/evidence may remain usable only while its decision basis remains unchanged under Assessment. The exception cannot create external permission, alter another owner\u2019s decision, fabricate refreshed Verify or claim completion from unobserved hosted results."
       ]
     }
   ]

@@ -1,0 +1,1663 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rigorloop.dev/schemas/rigorloop-records-v4.schema.json",
+  "$defs": {
+    "text": {
+      "type": "string",
+      "pattern": "\\S"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{0,79}$(?![\\s\\S])"
+    },
+    "path": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1024,
+      "pattern": "^(?!/)(?!.*\\\\)(?!.*(?:^|/)\\.{1,2}(?:/|$))(?!.*//)(?!.*:$)[^\\x00-\\x1f]+$"
+    },
+    "actor": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "role": {
+          "type": "string",
+          "enum": [
+            "human",
+            "requirement-analysis",
+            "system-design",
+            "architecture-design",
+            "plan",
+            "review",
+            "route",
+            "implement",
+            "verify",
+            "support"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "role"
+      ],
+      "additionalProperties": false
+    },
+    "subject": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "$ref": "#/$defs/path"
+        },
+        "state": {
+          "type": "string",
+          "enum": [
+            "present",
+            "absent"
+          ]
+        },
+        "identity": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^sha256:[a-f0-9]{64}$(?![\\s\\S])"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "path",
+        "state",
+        "identity"
+      ],
+      "additionalProperties": false
+    },
+    "ref": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": [
+            "basis",
+            "review",
+            "evidence",
+            "decision",
+            "verification",
+            "adoption"
+          ]
+        },
+        "id": {
+          "$ref": "#/$defs/id"
+        }
+      },
+      "required": [
+        "kind",
+        "id"
+      ],
+      "additionalProperties": false
+    },
+    "observation": {
+      "type": "object",
+      "properties": {
+        "method": {
+          "type": "string",
+          "enum": [
+            "reported",
+            "compared",
+            "unknown"
+          ]
+        },
+        "actor": {
+          "$ref": "#/$defs/actor"
+        },
+        "scope": {
+          "$ref": "#/$defs/text"
+        },
+        "summary": {
+          "$ref": "#/$defs/text"
+        }
+      },
+      "required": [
+        "method",
+        "actor",
+        "scope",
+        "summary"
+      ],
+      "additionalProperties": false
+    },
+    "intent": {
+      "type": "object",
+      "properties": {
+        "goal": {
+          "$ref": "#/$defs/text"
+        },
+        "scope": {
+          "$ref": "#/$defs/text"
+        },
+        "exclusions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/text"
+          }
+        }
+      },
+      "required": [
+        "goal",
+        "scope",
+        "exclusions"
+      ],
+      "additionalProperties": false
+    },
+    "request": {
+      "type": "object",
+      "properties": {
+        "locator": {
+          "$ref": "#/$defs/text"
+        },
+        "content": {
+          "$ref": "#/$defs/text"
+        },
+        "captured_by": {
+          "$ref": "#/$defs/actor"
+        }
+      },
+      "required": [
+        "locator",
+        "content",
+        "captured_by"
+      ],
+      "additionalProperties": false
+    },
+    "authority": {
+      "type": "object",
+      "properties": {
+        "source": {
+          "$ref": "#/$defs/text"
+        },
+        "allowed": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/text"
+          }
+        },
+        "limits": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/text"
+          }
+        },
+        "reported_by": {
+          "$ref": "#/$defs/actor"
+        }
+      },
+      "required": [
+        "source",
+        "allowed",
+        "limits",
+        "reported_by"
+      ],
+      "additionalProperties": false
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "in-progress",
+        "blocked",
+        "ready",
+        "completed",
+        "cancelled"
+      ]
+    },
+    "activity": {
+      "type": "object",
+      "properties": {
+        "stage": {
+          "type": "string",
+          "enum": [
+            "requirement-analysis",
+            "requirement-review",
+            "system-design",
+            "architecture-design",
+            "design-review",
+            "plan",
+            "delivery-review",
+            "implement",
+            "code-review",
+            "verify",
+            "support"
+          ]
+        },
+        "status": {
+          "$ref": "#/$defs/status"
+        },
+        "owner": {
+          "$ref": "#/$defs/actor"
+        },
+        "reason": {
+          "$ref": "#/$defs/text"
+        }
+      },
+      "required": [
+        "stage",
+        "status",
+        "owner",
+        "reason"
+      ],
+      "additionalProperties": false
+    },
+    "next_action": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "$ref": "#/$defs/text"
+        },
+        "owner": {
+          "$ref": "#/$defs/actor"
+        },
+        "rationale": {
+          "$ref": "#/$defs/text"
+        }
+      },
+      "required": [
+        "action",
+        "owner",
+        "rationale"
+      ],
+      "additionalProperties": false
+    },
+    "disposition": {
+      "type": "object",
+      "properties": {
+        "actor": {
+          "$ref": "#/$defs/actor"
+        },
+        "reason": {
+          "$ref": "#/$defs/text"
+        },
+        "follow_up": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/text"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "actor",
+        "reason",
+        "follow_up"
+      ],
+      "additionalProperties": false
+    },
+    "issue": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "reporter": {
+          "$ref": "#/$defs/actor"
+        },
+        "owner": {
+          "$ref": "#/$defs/actor"
+        },
+        "scope": {
+          "$ref": "#/$defs/text"
+        },
+        "description": {
+          "$ref": "#/$defs/text"
+        },
+        "required_outcome": {
+          "$ref": "#/$defs/text"
+        },
+        "state": {
+          "type": "string",
+          "enum": [
+            "open",
+            "resolved",
+            "withdrawn",
+            "deferred"
+          ]
+        },
+        "disposition": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/disposition"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "reporter",
+        "owner",
+        "scope",
+        "description",
+        "required_outcome",
+        "state",
+        "disposition"
+      ],
+      "additionalProperties": false
+    },
+    "work": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "status": {
+          "$ref": "#/$defs/status"
+        },
+        "owner": {
+          "$ref": "#/$defs/actor"
+        },
+        "scope": {
+          "$ref": "#/$defs/text"
+        },
+        "locations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/path"
+          }
+        },
+        "remaining": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/text"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "check_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ref"
+          }
+        },
+        "blocker_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          }
+        },
+        "completion_reason": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/text"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "status",
+        "owner",
+        "scope",
+        "locations",
+        "remaining",
+        "check_refs",
+        "blocker_ids",
+        "completion_reason"
+      ],
+      "additionalProperties": false
+    },
+    "attachment_name": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,119}$(?![\\s\\S])"
+    },
+    "attachment": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "$ref": "#/$defs/attachment_name"
+        },
+        "media_type": {
+          "$ref": "#/$defs/text"
+        },
+        "byte_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 67108864
+        }
+      },
+      "required": [
+        "name",
+        "media_type",
+        "byte_count"
+      ],
+      "additionalProperties": false
+    },
+    "purpose": {
+      "type": "string",
+      "enum": [
+        "requirements",
+        "design",
+        "delivery",
+        "code"
+      ]
+    },
+    "review_input": {
+      "type": "object",
+      "properties": {
+        "subjects": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/subject"
+          }
+        },
+        "basis_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ref"
+          }
+        },
+        "plan": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/subject"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "scope": {
+          "$ref": "#/$defs/text"
+        },
+        "coverage_rationale": {
+          "$ref": "#/$defs/text"
+        },
+        "prepared_by": {
+          "$ref": "#/$defs/actor"
+        }
+      },
+      "required": [
+        "subjects",
+        "basis_refs",
+        "plan",
+        "scope",
+        "coverage_rationale",
+        "prepared_by"
+      ],
+      "additionalProperties": false
+    },
+    "support": {
+      "type": "object",
+      "properties": {
+        "source": {
+          "$ref": "#/$defs/ref"
+        },
+        "scope": {
+          "$ref": "#/$defs/text"
+        },
+        "basis": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/subject"
+          }
+        },
+        "result": {
+          "$ref": "#/$defs/text"
+        },
+        "explanation": {
+          "$ref": "#/$defs/text"
+        },
+        "limitations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/text"
+          }
+        },
+        "attachments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/attachment_name"
+          }
+        }
+      },
+      "required": [
+        "source",
+        "scope",
+        "basis",
+        "result",
+        "explanation",
+        "limitations",
+        "attachments"
+      ],
+      "additionalProperties": false
+    },
+    "assessment": {
+      "type": "object",
+      "properties": {
+        "reviewer": {
+          "$ref": "#/$defs/actor"
+        },
+        "contributors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/actor"
+          }
+        },
+        "independence_basis": {
+          "$ref": "#/$defs/text"
+        },
+        "judgment": {
+          "anyOf": [
+            {
+              "type": "string",
+              "enum": [
+                "approved",
+                "changes-requested",
+                "blocked",
+                "inconclusive"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "assessed_subjects": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/subject"
+          }
+        },
+        "governing_basis": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/subject"
+          }
+        },
+        "summary": {
+          "$ref": "#/$defs/text"
+        },
+        "rationale": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/text"
+          }
+        },
+        "limitations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/text"
+          }
+        },
+        "evidence_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ref"
+          }
+        },
+        "support": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/support"
+          }
+        }
+      },
+      "required": [
+        "reviewer",
+        "contributors",
+        "independence_basis",
+        "judgment",
+        "assessed_subjects",
+        "governing_basis",
+        "summary",
+        "rationale",
+        "limitations",
+        "evidence_refs",
+        "support"
+      ],
+      "additionalProperties": false
+    },
+    "applicability": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "string",
+          "enum": [
+            "current",
+            "needs-reassessment",
+            "not-applicable"
+          ]
+        },
+        "actor": {
+          "$ref": "#/$defs/actor"
+        },
+        "rationale": {
+          "$ref": "#/$defs/text"
+        },
+        "observation": {
+          "$ref": "#/$defs/observation"
+        }
+      },
+      "required": [
+        "value",
+        "actor",
+        "rationale",
+        "observation"
+      ],
+      "additionalProperties": false
+    },
+    "change": {
+      "type": "object",
+      "properties": {
+        "schema_version": {
+          "const": 4
+        },
+        "contract": {
+          "const": "rigorloop-records-v4"
+        },
+        "change_id": {
+          "$ref": "#/$defs/id"
+        },
+        "intent": {
+          "$ref": "#/$defs/intent"
+        },
+        "request": {
+          "$ref": "#/$defs/request"
+        },
+        "authority": {
+          "$ref": "#/$defs/authority"
+        },
+        "workflow_contract": {
+          "const": "requirement-first-v1"
+        },
+        "requirement_basis": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "design_basis": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "plan": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/subject"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "activity": {
+          "$ref": "#/$defs/activity"
+        },
+        "work": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/work"
+          }
+        },
+        "blockers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/issue"
+          }
+        },
+        "reviews": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "purpose": {
+                "$ref": "#/$defs/purpose"
+              },
+              "review": {
+                "$ref": "#/$defs/ref"
+              }
+            },
+            "required": [
+              "purpose",
+              "review"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "next_action": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/next_action"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "active_adoption": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "attachments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/attachment"
+          }
+        },
+        "completion": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/completion"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "completion_notes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "actor": {
+                "$ref": "#/$defs/actor"
+              },
+              "reason": {
+                "$ref": "#/$defs/text"
+              },
+              "explanation": {
+                "$ref": "#/$defs/text"
+              }
+            },
+            "required": [
+              "actor",
+              "reason",
+              "explanation"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "schema_version",
+        "contract",
+        "change_id",
+        "intent",
+        "request",
+        "authority",
+        "workflow_contract",
+        "requirement_basis",
+        "design_basis",
+        "plan",
+        "activity",
+        "work",
+        "blockers",
+        "reviews",
+        "next_action",
+        "active_adoption",
+        "attachments",
+        "completion",
+        "completion_notes"
+      ],
+      "additionalProperties": false
+    },
+    "basis_fields": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": [
+            "requirements",
+            "design"
+          ]
+        },
+        "subjects": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/subject"
+          }
+        },
+        "decision": {
+          "type": "string",
+          "enum": [
+            "proposed",
+            "accepted"
+          ]
+        },
+        "actor": {
+          "$ref": "#/$defs/actor"
+        },
+        "rationale": {
+          "$ref": "#/$defs/text"
+        },
+        "review": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "kind",
+        "subjects",
+        "decision",
+        "actor",
+        "rationale",
+        "review"
+      ],
+      "additionalProperties": false
+    },
+    "review_fields": {
+      "type": "object",
+      "properties": {
+        "purpose": {
+          "$ref": "#/$defs/purpose"
+        },
+        "scope": {
+          "type": "string",
+          "enum": [
+            "formal",
+            "advisory"
+          ]
+        },
+        "prepared": {
+          "$ref": "#/$defs/review_input"
+        },
+        "assessment": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/assessment"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "applicability": {
+          "$ref": "#/$defs/applicability"
+        },
+        "findings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/issue"
+          }
+        }
+      },
+      "required": [
+        "purpose",
+        "scope",
+        "prepared",
+        "assessment",
+        "applicability",
+        "findings"
+      ],
+      "additionalProperties": false
+    },
+    "evidence_fields": {
+      "type": "object",
+      "properties": {
+        "actor": {
+          "$ref": "#/$defs/actor"
+        },
+        "reported_at": {
+          "$ref": "#/$defs/text"
+        },
+        "procedure": {
+          "$ref": "#/$defs/text"
+        },
+        "scope": {
+          "$ref": "#/$defs/text"
+        },
+        "subjects": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/subject"
+          }
+        },
+        "observation": {
+          "$ref": "#/$defs/observation"
+        },
+        "result": {
+          "type": "string",
+          "enum": [
+            "passed",
+            "failed",
+            "inconclusive"
+          ]
+        },
+        "summary": {
+          "$ref": "#/$defs/text"
+        },
+        "limitations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/text"
+          }
+        },
+        "attachments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/attachment_name"
+          }
+        }
+      },
+      "required": [
+        "actor",
+        "reported_at",
+        "procedure",
+        "scope",
+        "subjects",
+        "observation",
+        "result",
+        "summary",
+        "limitations",
+        "attachments"
+      ],
+      "additionalProperties": false
+    },
+    "decision_fields": {
+      "type": "object",
+      "properties": {
+        "actor": {
+          "$ref": "#/$defs/actor"
+        },
+        "scope": {
+          "$ref": "#/$defs/text"
+        },
+        "decision": {
+          "$ref": "#/$defs/text"
+        },
+        "rationale": {
+          "$ref": "#/$defs/text"
+        },
+        "source_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ref"
+          }
+        }
+      },
+      "required": [
+        "actor",
+        "scope",
+        "decision",
+        "rationale",
+        "source_refs"
+      ],
+      "additionalProperties": false
+    },
+    "verification_fields": {
+      "type": "object",
+      "properties": {
+        "scope": {
+          "type": "string",
+          "enum": [
+            "scoped",
+            "final"
+          ]
+        },
+        "verifier": {
+          "$ref": "#/$defs/actor"
+        },
+        "subjects": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/subject"
+          }
+        },
+        "governing_basis": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/subject"
+          }
+        },
+        "review_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ref"
+          }
+        },
+        "evidence_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ref"
+          }
+        },
+        "observation": {
+          "$ref": "#/$defs/observation"
+        },
+        "outcome": {
+          "type": "string",
+          "enum": [
+            "success",
+            "failed",
+            "inconclusive"
+          ]
+        },
+        "summary": {
+          "$ref": "#/$defs/text"
+        },
+        "rationale": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/text"
+          }
+        },
+        "limitations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/text"
+          }
+        },
+        "support": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/support"
+          }
+        },
+        "support_state": {
+          "type": "string",
+          "enum": [
+            "current",
+            "needs-reassessment"
+          ]
+        }
+      },
+      "required": [
+        "scope",
+        "verifier",
+        "subjects",
+        "governing_basis",
+        "review_refs",
+        "evidence_refs",
+        "observation",
+        "outcome",
+        "summary",
+        "rationale",
+        "limitations",
+        "support",
+        "support_state"
+      ],
+      "additionalProperties": false
+    },
+    "adoption_fields": {
+      "type": "object",
+      "properties": {
+        "actor": {
+          "$ref": "#/$defs/actor"
+        },
+        "source_contract": {
+          "$ref": "#/$defs/text"
+        },
+        "target_workflow": {
+          "$ref": "#/$defs/text"
+        },
+        "source_basis": {
+          "$ref": "#/$defs/text"
+        },
+        "compatibility": {
+          "$ref": "#/$defs/text"
+        },
+        "disposition": {
+          "$ref": "#/$defs/text"
+        },
+        "phase": {
+          "type": "string",
+          "enum": [
+            "prepared",
+            "activated",
+            "unavailable"
+          ]
+        },
+        "rationale": {
+          "$ref": "#/$defs/text"
+        }
+      },
+      "required": [
+        "actor",
+        "source_contract",
+        "target_workflow",
+        "source_basis",
+        "compatibility",
+        "disposition",
+        "phase",
+        "rationale"
+      ],
+      "additionalProperties": false
+    },
+    "basis": {
+      "type": "object",
+      "properties": {
+        "schema_version": {
+          "const": 4
+        },
+        "contract": {
+          "const": "rigorloop-records-v4"
+        },
+        "change_id": {
+          "$ref": "#/$defs/id"
+        },
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "requirements",
+            "design"
+          ]
+        },
+        "subjects": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/subject"
+          }
+        },
+        "decision": {
+          "type": "string",
+          "enum": [
+            "proposed",
+            "accepted"
+          ]
+        },
+        "actor": {
+          "$ref": "#/$defs/actor"
+        },
+        "rationale": {
+          "$ref": "#/$defs/text"
+        },
+        "review": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "schema_version",
+        "contract",
+        "change_id",
+        "id",
+        "kind",
+        "subjects",
+        "decision",
+        "actor",
+        "rationale",
+        "review"
+      ],
+      "additionalProperties": false
+    },
+    "review": {
+      "type": "object",
+      "properties": {
+        "schema_version": {
+          "const": 4
+        },
+        "contract": {
+          "const": "rigorloop-records-v4"
+        },
+        "change_id": {
+          "$ref": "#/$defs/id"
+        },
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "purpose": {
+          "$ref": "#/$defs/purpose"
+        },
+        "scope": {
+          "type": "string",
+          "enum": [
+            "formal",
+            "advisory"
+          ]
+        },
+        "prepared": {
+          "$ref": "#/$defs/review_input"
+        },
+        "assessment": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/assessment"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "applicability": {
+          "$ref": "#/$defs/applicability"
+        },
+        "findings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/issue"
+          }
+        }
+      },
+      "required": [
+        "schema_version",
+        "contract",
+        "change_id",
+        "id",
+        "purpose",
+        "scope",
+        "prepared",
+        "assessment",
+        "applicability",
+        "findings"
+      ],
+      "additionalProperties": false
+    },
+    "evidence": {
+      "type": "object",
+      "properties": {
+        "schema_version": {
+          "const": 4
+        },
+        "contract": {
+          "const": "rigorloop-records-v4"
+        },
+        "change_id": {
+          "$ref": "#/$defs/id"
+        },
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "actor": {
+          "$ref": "#/$defs/actor"
+        },
+        "reported_at": {
+          "$ref": "#/$defs/text"
+        },
+        "procedure": {
+          "$ref": "#/$defs/text"
+        },
+        "scope": {
+          "$ref": "#/$defs/text"
+        },
+        "subjects": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/subject"
+          }
+        },
+        "observation": {
+          "$ref": "#/$defs/observation"
+        },
+        "result": {
+          "type": "string",
+          "enum": [
+            "passed",
+            "failed",
+            "inconclusive"
+          ]
+        },
+        "summary": {
+          "$ref": "#/$defs/text"
+        },
+        "limitations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/text"
+          }
+        },
+        "attachments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/attachment_name"
+          }
+        }
+      },
+      "required": [
+        "schema_version",
+        "contract",
+        "change_id",
+        "id",
+        "actor",
+        "reported_at",
+        "procedure",
+        "scope",
+        "subjects",
+        "observation",
+        "result",
+        "summary",
+        "limitations",
+        "attachments"
+      ],
+      "additionalProperties": false
+    },
+    "decision": {
+      "type": "object",
+      "properties": {
+        "schema_version": {
+          "const": 4
+        },
+        "contract": {
+          "const": "rigorloop-records-v4"
+        },
+        "change_id": {
+          "$ref": "#/$defs/id"
+        },
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "actor": {
+          "$ref": "#/$defs/actor"
+        },
+        "scope": {
+          "$ref": "#/$defs/text"
+        },
+        "decision": {
+          "$ref": "#/$defs/text"
+        },
+        "rationale": {
+          "$ref": "#/$defs/text"
+        },
+        "source_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ref"
+          }
+        }
+      },
+      "required": [
+        "schema_version",
+        "contract",
+        "change_id",
+        "id",
+        "actor",
+        "scope",
+        "decision",
+        "rationale",
+        "source_refs"
+      ],
+      "additionalProperties": false
+    },
+    "verification": {
+      "type": "object",
+      "properties": {
+        "schema_version": {
+          "const": 4
+        },
+        "contract": {
+          "const": "rigorloop-records-v4"
+        },
+        "change_id": {
+          "$ref": "#/$defs/id"
+        },
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "scope": {
+          "type": "string",
+          "enum": [
+            "scoped",
+            "final"
+          ]
+        },
+        "verifier": {
+          "$ref": "#/$defs/actor"
+        },
+        "subjects": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/subject"
+          }
+        },
+        "governing_basis": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/subject"
+          }
+        },
+        "review_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ref"
+          }
+        },
+        "evidence_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ref"
+          }
+        },
+        "observation": {
+          "$ref": "#/$defs/observation"
+        },
+        "outcome": {
+          "type": "string",
+          "enum": [
+            "success",
+            "failed",
+            "inconclusive"
+          ]
+        },
+        "summary": {
+          "$ref": "#/$defs/text"
+        },
+        "rationale": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/text"
+          }
+        },
+        "limitations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/text"
+          }
+        },
+        "support": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/support"
+          }
+        },
+        "support_state": {
+          "type": "string",
+          "enum": [
+            "current",
+            "needs-reassessment"
+          ]
+        }
+      },
+      "required": [
+        "schema_version",
+        "contract",
+        "change_id",
+        "id",
+        "scope",
+        "verifier",
+        "subjects",
+        "governing_basis",
+        "review_refs",
+        "evidence_refs",
+        "observation",
+        "outcome",
+        "summary",
+        "rationale",
+        "limitations",
+        "support",
+        "support_state"
+      ],
+      "additionalProperties": false
+    },
+    "adoption": {
+      "type": "object",
+      "properties": {
+        "schema_version": {
+          "const": 4
+        },
+        "contract": {
+          "const": "rigorloop-records-v4"
+        },
+        "change_id": {
+          "$ref": "#/$defs/id"
+        },
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "actor": {
+          "$ref": "#/$defs/actor"
+        },
+        "source_contract": {
+          "$ref": "#/$defs/text"
+        },
+        "target_workflow": {
+          "$ref": "#/$defs/text"
+        },
+        "source_basis": {
+          "$ref": "#/$defs/text"
+        },
+        "compatibility": {
+          "$ref": "#/$defs/text"
+        },
+        "disposition": {
+          "$ref": "#/$defs/text"
+        },
+        "phase": {
+          "type": "string",
+          "enum": [
+            "prepared",
+            "activated",
+            "unavailable"
+          ]
+        },
+        "rationale": {
+          "$ref": "#/$defs/text"
+        }
+      },
+      "required": [
+        "schema_version",
+        "contract",
+        "change_id",
+        "id",
+        "actor",
+        "source_contract",
+        "target_workflow",
+        "source_basis",
+        "compatibility",
+        "disposition",
+        "phase",
+        "rationale"
+      ],
+      "additionalProperties": false
+    },
+    "completion": {
+      "type": "object",
+      "properties": {
+        "actor": {
+          "$ref": "#/$defs/actor"
+        },
+        "verification_id": {
+          "$ref": "#/$defs/id"
+        },
+        "summary": {
+          "$ref": "#/$defs/text"
+        },
+        "reason": {
+          "$ref": "#/$defs/text"
+        },
+        "delivered_scope": {
+          "$ref": "#/$defs/text"
+        },
+        "governing_references": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/text"
+          }
+        },
+        "acceptance": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/text"
+          }
+        },
+        "limitations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/text"
+          }
+        },
+        "retained_attachments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/attachment_name"
+          }
+        }
+      },
+      "required": [
+        "actor",
+        "verification_id",
+        "summary",
+        "reason",
+        "delivered_scope",
+        "governing_references",
+        "acceptance",
+        "limitations",
+        "retained_attachments"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "anyOf": [
+    {
+      "$ref": "#/$defs/change"
+    },
+    {
+      "$ref": "#/$defs/basis"
+    },
+    {
+      "$ref": "#/$defs/review"
+    },
+    {
+      "$ref": "#/$defs/evidence"
+    },
+    {
+      "$ref": "#/$defs/decision"
+    },
+    {
+      "$ref": "#/$defs/verification"
+    },
+    {
+      "$ref": "#/$defs/adoption"
+    }
+  ]
+}

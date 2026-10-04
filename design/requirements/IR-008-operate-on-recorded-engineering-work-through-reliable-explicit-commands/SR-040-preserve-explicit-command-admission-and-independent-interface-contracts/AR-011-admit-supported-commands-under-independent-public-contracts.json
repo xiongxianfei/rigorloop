@@ -39,9 +39,9 @@
   "acceptance_criteria": [
     "Recognized operation-specific help discloses that operation and common safety fields without repository access where required; package version/help identify the delivered supported interface rather than advertise withdrawn operations.",
     "Unknown or duplicate flags, extra positionals, absent or contradictory required selectors, unsupported operations, and unknown configuration kinds reject at their declared boundary before filesystem or stdin access where required; invalid raw values are not echoed or replaced with invented selectors.",
-    "Recognized review.set and verify.set return response schema 3 even on early selector, request, and store failures. Other primary operations retain the documented before-validation and after-validation dispatch; untrusted contract values or nested batch operations cannot select that response version.",
-    "Primary request/result, advanced request/result, workflow-context, generic projection, and stored-record versions remain independent. Failure responses expose no inferred record_contract and include a revision only when a coherent snapshot revision was established.",
-    "Generic human/JSON output, quiet/debug/color behavior and semantic exits preserve their published meanings; primary recording, advanced record-store, and workflow-context results retain their separate envelopes and exit distinctions.",
+    "Recognized current operational tasks use their schema-4 response domain on early and late failures; an untrusted request or absent backend cannot select a predecessor response or invent stored identity.",
+    "Operational, maintenance, installation and diagnostic version domains remain independent. Return record/store revisions only when established from the relevant coherent state.",
+    "Each family preserves its declared human/JSON meaning and exit classes, including actual committed, failed, conflicting or uncertain effects.",
     "Withdrawn command families, the removed query-shim interface, and the retired spec configuration kind acquire no fallback or advertised operational support; rejecting an override does not rewrite configuration or invoke discovery."
   ],
   "assumptions": [],
@@ -57,6 +57,11 @@
       "source": "SRC-PUBLISHED-CLI",
       "locator": "docs/design/cli/cli.md#CLI-SR-02, CLI-SR-10, CLI-SR-17, CLI-SR-18, CLI-SR-27, CLI-SR-28, CLI-SR-30, CLI-SR-31, CLI-SR-32; docs/design/cli/records.md#RF-SR-14",
       "basis": "Preserve the applicable current public and stored-record guarantees at this accountable boundary. The named source retains exact schemas, operation tables, classifications, limits, and historical adoption obligations; this allocation neither replaces those details nor accepts REM authoring JSON as operational records."
+    },
+    {
+      "source": "SRC-SQLITE-ADOPTION",
+      "locator": "AR-011",
+      "basis": "Reconcile the complete existing allocation with the selected current v2/v4 contract, preserving independent admission, coherent state, explicit scope and actor judgment. Prior version-specific sources retain their historical meaning."
     }
   ],
   "constrains": [

@@ -1,5 +1,5 @@
 # Generated from canonical REM records; do not edit.
-# Source identity: 53f63fcf1ca7513ab5f1fd872d338be32ce1bda945a9429ccd0bac1f370c74f1
+# Source identity: 7978be139fe27eda655003b22781018baac550ab5be13f735b6a2800fc2e5371
 # Static mappings from accountable Modules and contracts to implementation sources. Production arrows mean declared inputs and candidate outputs, not software dependencies or evidence that a build ran. Open an owner to inspect its complete mapping.
 vars: {d2-config: {layout-engine: elk}}
 direction: down
@@ -21,63 +21,126 @@ g0: "Implementation sources" {
   style.font-size: 17
   style.border-radius: 6
   grid-columns: 2
-  f0: "packages/rigorloop/dist/lib/\nrecord-store.js" {
+  f0: "packages/rigorloop/dist/lib/\noperational-store.js" {
     link: "#development/MOD-011"
-    tooltip: "Store, withRecordSnapshot, executeTargetedStore, and executeRecordStore coordinate snapshots, validation, writer exclusion, receipt preparation, publication, and exact journal recovery."
+    tooltip: "Coherent inspection, BEGIN IMMEDIATE transaction, candidate validation and current revision."
     style.fill: "#FFFFFF"
     style.stroke: "#7C8FA9"
     style.font-color: "#23334A"
     style.font-size: 14
     style.border-radius: 6
   }
-  f1: "packages/rigorloop/dist/lib/\nrecord-store-files.js" {
+  f1: "packages/rigorloop/dist/lib/\noperational-layout.js" {
     link: "#development/MOD-011"
-    tooltip: "RecordFiles implements guarded reads and hashes, exclusive creation, temporary-file replacement, directory/file synchronization, and bounded removal."
+    tooltip: "Stable project association, qualified SQLite connection and schema initialization."
     style.fill: "#FFFFFF"
     style.stroke: "#7C8FA9"
     style.font-color: "#23334A"
     style.font-size: 14
     style.border-radius: 6
   }
-  f2: "packages/rigorloop/dist/lib/\nrecording-construction.js" {
+  f2: "packages/rigorloop/dist/lib/\noperational-rows.js" {
     link: "#development/MOD-011"
-    tooltip: "constructMutation transforms an explicit request and supplied before-state into complete candidate writes and effects using source-span edits; the caller supplies stored content and Store performs publication."
+    tooltip: "Normalized typed SQL row loading and saving."
     style.fill: "#FFFFFF"
     style.stroke: "#7C8FA9"
     style.font-color: "#23334A"
     style.font-size: 14
     style.border-radius: 6
   }
-  f3: "packages/rigorloop/dist/lib/\nrecord-store-format.js" {
+  f3: "packages/rigorloop/dist/lib/\noperational-model.js" {
     link: "#development/MOD-011"
-    tooltip: "Selects the supported stored format independently of advanced transport schemas and dispatches candidate/preservation validation."
+    tooltip: "Complete record/reference and current support validation."
     style.fill: "#FFFFFF"
     style.stroke: "#7C8FA9"
     style.font-color: "#23334A"
     style.font-size: 14
     style.border-radius: 6
   }
-  f4: "packages/rigorloop/dist/lib/\nrecord-format-v3.js" {
+  f4: "packages/rigorloop/dist/lib/\noperational-tasks.js" {
     link: "#development/MOD-011"
-    tooltip: "Loads the stored v3 JSON schema and supplies record, set, and preservation validators through createRecordFormat."
+    tooltip: "Explicit task construction and issue disposition."
     style.fill: "#FFFFFF"
     style.stroke: "#7C8FA9"
     style.font-color: "#23334A"
     style.font-size: 14
     style.border-radius: 6
   }
-  f5: "packages/rigorloop/dist/lib/\nrecording-observations.js" {
+  f5: "packages/rigorloop/dist/lib/\noperational-attachments.js" {
     link: "#development/MOD-011"
-    tooltip: "Builds factual observations and identities from the supplied record set and reader."
+    tooltip: "Named retained payloads and safe referenced cleanup."
     style.fill: "#FFFFFF"
     style.stroke: "#7C8FA9"
     style.font-color: "#23334A"
     style.font-size: 14
     style.border-radius: 6
   }
-  f6: "packages/rigorloop/dist/lib/\nrecording-query-cli.js" {
+  f6: "packages/rigorloop/dist/lib/\noperational-maintenance.js" {
     link: "#development/MOD-011"
-    tooltip: "The inspectSubjects helper uses RecordFiles reads/hashes for declared subjects; admission and result selection in the same file belong to MOD-010."
+    tooltip: "Fenced backup, restore, migration and exact staged recovery."
+    style.fill: "#FFFFFF"
+    style.stroke: "#7C8FA9"
+    style.font-color: "#23334A"
+    style.font-size: 14
+    style.border-radius: 6
+  }
+  f7: "packages/rigorloop/dist/lib/\noperational-bundle.js" {
+    link: "#development/MOD-011"
+    tooltip: "Selected snapshot/payload inventory and integrity."
+    style.fill: "#FFFFFF"
+    style.stroke: "#7C8FA9"
+    style.font-color: "#23334A"
+    style.font-size: 14
+    style.border-radius: 6
+  }
+  f8: "packages/rigorloop/dist/lib/\noperational-coordination.js" {
+    link: "#development/MOD-011"
+    tooltip: "Ordinary operation leases and exclusive maintenance exclusion."
+    style.fill: "#FFFFFF"
+    style.stroke: "#7C8FA9"
+    style.font-color: "#23334A"
+    style.font-size: 14
+    style.border-radius: 6
+  }
+  f9: "packages/rigorloop/dist/lib/\noperational-legacy-import.js" {
+    link: "#development/MOD-011"
+    tooltip: "Qualified readonly v3 source capture and explicit disposition."
+    style.fill: "#FFFFFF"
+    style.stroke: "#7C8FA9"
+    style.font-color: "#23334A"
+    style.font-size: 14
+    style.border-radius: 6
+  }
+  f10: "packages/rigorloop/dist/lib/\noperational-files.js" {
+    link: "#development/MOD-011"
+    tooltip: "Contained durable filesystem primitives."
+    style.fill: "#FFFFFF"
+    style.stroke: "#7C8FA9"
+    style.font-color: "#23334A"
+    style.font-size: 14
+    style.border-radius: 6
+  }
+  f11: "packages/rigorloop/dist/lib/\nrecord-store-files.js" {
+    link: "#development/MOD-011"
+    tooltip: "Qualified v3 source reads and narrow source-lock coordination; no legacy record writer."
+    style.fill: "#FFFFFF"
+    style.stroke: "#7C8FA9"
+    style.font-color: "#23334A"
+    style.font-size: 14
+    style.border-radius: 6
+  }
+  f12: "packages/rigorloop/dist/lib/\nmigrations/operational-schema-1.sql" {
+    link: "#development/MOD-011"
+    tooltip: "Normalized schema version 1; migration ownership stays with the executable."
+    style.fill: "#FFFFFF"
+    style.stroke: "#7C8FA9"
+    style.font-color: "#23334A"
+    style.font-size: 14
+    style.border-radius: 6
+  }
+  f13: "packages/rigorloop/dist/lib/\noperational-contract.js" {
+    link: "#development/MOD-011"
+    tooltip: "Shared closed record validation and storage outcome primitives consumed by the persistence implementation; public admission remains MOD-010-owned."
     style.fill: "#FFFFFF"
     style.stroke: "#7C8FA9"
     style.font-color: "#23334A"

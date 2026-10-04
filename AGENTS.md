@@ -10,10 +10,10 @@ Use [docs/project-map.md](docs/project-map.md) only when current for the area; o
 
 ## Workflow
 
-- Use `rigorloop workflow-context` for project-local workflow facts and `route` for semantic routing. The local executable is `node packages/rigorloop/dist/bin/rigorloop.js`.
+- Use `rigorloop change context --root . --change ID --format json` for the selected current handoff and `route` for semantic routing. The local executable is `node packages/rigorloop/dist/bin/rigorloop.js`.
 - Follow [Workflow](docs/design/skill/workflow.md) and [Assessment](docs/design/skill/assessment.md) for progression, ownership and review gates.
-- Read `docs/plan.md` as navigation; concrete plans live under `docs/plans/`, and mutable state belongs to the owning `docs/changes/<change-id>/change.json` and its registered records.
-- Use scoped CLI reads, subject inspection and targeted recording under [CLI](docs/design/cli/cli.md) and [Records](docs/design/cli/records.md). Do not routinely reconstruct record stores or resume retired formats.
+- Read `docs/plan.md` as navigation; concrete plans live under `docs/plans/`, and mutable state belongs to the selected Change in the project-local SQLite store through the supported CLI. The adoption plan alone retains its explicit private prior-executable bootstrap procedure until qualified migration.
+- Use scoped CLI reads, Review preparation and explicit task recording under [CLI](docs/design/cli/cli.md) and [Records](docs/design/cli/records.md). Do not routinely reconstruct record stores or resume retired formats.
 - Keep review judgments, findings, assessed-subject manifests and execution results in operational records, not `design/`. For the Constitution's document-based exception, use its private local review location; model sources retain only applicable rationale and concise provenance.
 - Use `bugfix` for defects, `ci-maintenance` for CI configuration changes and `pr` for a ready external handoff. Individual skill requests stay isolated unless broader progression is authorized.
 

@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "workflow_contract": "requirement-first-v1",
+  "record_contract": "rigorloop-records-v4",
+  "recording_interface": "targeted-recording-v2",
+  "required_skills": ["requirement-analysis", "requirement-review", "system-design", "architecture-design", "route", "design-review", "plan", "delivery-review", "implement", "code-review", "verify"],
+  "retired_skills": ["proposal", "proposal-review", "design"]
+}

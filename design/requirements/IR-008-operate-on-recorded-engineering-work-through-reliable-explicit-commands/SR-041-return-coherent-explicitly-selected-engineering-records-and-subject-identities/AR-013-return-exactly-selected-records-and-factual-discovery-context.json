@@ -3,7 +3,7 @@
   "type": "allocated-requirement",
   "title": "Return exactly selected records and factual discovery context",
   "status": "draft",
-  "statement": "The Command handling Module shall apply only the actor-selected query or declared discovery scope, preserve complete selected meaning and accurate scope metadata, and report unavailable or incoherent content without inferring relevance, a selected change, workflow authority, or recovery.",
+  "statement": "The Command handling Module shall return the explicitly selected current operational information and factual capabilities with coherent scope and availability, without selecting authority or choosing maintenance recovery.",
   "analysis": {
     "method": "5W2H",
     "what": {
@@ -21,32 +21,34 @@
     },
     "when": {
       "conditions": [
-        "A caller requests current-work discovery, status, context, show, advanced inspection, a field projection, or continuation of an explicit query."
+        "A caller requests capabilities, Change context, or a selected Review or Verification."
       ]
     },
     "where": {
       "contexts": [
-        "IF-004 query presentation using IF-003 snapshots and availability facts; workflow-context discovery within its declared project-local scope."
+        "IF-004 current query presentation using IF-003 coherent reads and availability facts."
       ]
     },
     "how": {
-      "approach": "Apply the retained literal filters, ordering, projection, and cursor rules to coherent supplied records; classify current candidates under the exact discovery rules and preserve storage failures as distinct outcomes."
+      "approach": "Provide explicit scoped current-context and item queries plus project capability inspection through the current CLI, preserving coherent values and truthful limitations."
     },
     "how_much": {
-      "scope": "Supported selectors, complete/default reads, named Review/Verify projections, and bounded discovery and pagination. Retrieval completeness is not engineering adequacy; discovery is not an atomic cross-change snapshot."
+      "scope": "Current operational query responsibility; no requirement to scan docs/changes, expose SQL, enumerate the database or preserve the predecessor query grammar."
     }
   },
   "acceptance_criteria": [
-    "Status, context, show, and inspect return their specified content, counts, exact scope, omissions, missing paths, actual contract and established revision; no content is selected merely because it appears relevant to a stage.",
-    "Full selected Verify and material-decisions reads include the complete recorded explanation and applicability without unrelated bodies. Review/Verify field selection preserves the declared identity metadata and distinguishes omitted fields from optional-member absence without changing storage.",
-    "Absent or unregistered optional content, registered-missing content, malformed content, unsafe paths, and read failures retain their different outcomes. An unknown selected total cannot become zero, and an absent or invalid store cannot gain an inferred contract.",
-    "Filters compose, deduplicate, and order exactly as the retained query contract specifies. Continuation is bound to normalized selection and revision; changed revision, different selection, invalid tokens, or nonmember cursors reject or conflict without partial items.",
-    "Byte/count bounds return only whole admissible items or the declared failure; an oversized first item cannot be truncated or yield a nonprogressing page, and unknown missing content cannot be hidden behind a continuation token.",
-    "Discovery exposes coherent current candidates, bounded archival exclusions, ambiguity, malformed current residue, interruption attention, and completeness under the exact classifier. A sole candidate is not automatically selected and archival classification implies no approval.",
-    "An explicit change selection avoids enumeration of unrelated candidates; discovery or query never recovers a transaction, mutates records, or computes authoritative readiness, applicability, or a next activity."
+    "Admit explicit Change/item queries and optional bounded context selectors; no stage label implicitly broadens selection.",
+    "Return full selected meaning and current support, with explicit absent/omitted distinctions; views are derived from one authority.",
+    "Unknown, unavailable or malformed content does not become an empty valid record or inferred contract.",
+    "Deduplicate and bound declared selectors according to the closed current query contract; no retired cursor/page interface is implied.",
+    "Oversized selected accounts fail explicitly rather than truncate rationale or hide unresolved issues.",
+    "Capabilities reports actual executable tasks, contract identity and backend standing without scanning legacy directories or choosing authority.",
+    "Read operations never author engineering state or choose replacement recovery; SQLite may recover its already determined transaction outcome."
   ],
   "assumptions": [],
-  "constraints": [],
+  "constraints": [
+    "Current selected task/query contract; predecessor filesystem discovery and field-projection interfaces are retired in the successor."
+  ],
   "allocated_to": "MOD-010",
   "sources": [
     {
@@ -58,6 +60,11 @@
       "source": "SRC-PUBLISHED-CLI",
       "locator": "docs/design/cli/cli.md#CLI-SR-01, CLI-SR-14, CLI-SR-21, CLI-SR-22, CLI-SR-23, CLI-SR-24, CLI-SR-28, CLI-SR-32; docs/design/cli/records.md#RF-SR-02, RF-SR-07",
       "basis": "Preserve the applicable current public and stored-record guarantees at this accountable boundary. The named source retains exact schemas, operation tables, classifications, limits, and historical adoption obligations; this allocation neither replaces those details nor accepts REM authoring JSON as operational records."
+    },
+    {
+      "source": "SRC-SQLITE-ADOPTION",
+      "locator": "MOD-010 current task/query contract; MOD-011 typed read boundary",
+      "basis": "Refines the existing inspection need to the selected successor task interface; no new IR or implementation approval."
     }
   ],
   "constrains": [

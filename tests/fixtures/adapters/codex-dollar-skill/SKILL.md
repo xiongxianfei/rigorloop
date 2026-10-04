@@ -5,7 +5,7 @@ description: This skill depends on dollar-prefixed Codex skill invocation.
 
 # Codex Dollar Skill
 
-Invoke this workflow as `$proposal` before continuing.
+Invoke this workflow as `$requirement-analysis` before continuing.
 
 ## Expected output
 

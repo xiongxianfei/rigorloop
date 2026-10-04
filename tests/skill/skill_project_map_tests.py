@@ -214,57 +214,6 @@ class ProjectMapInputTests(unittest.TestCase):
             self.assertEqual(fault_bytes, map_fixture_bytes(skill_dir))
             assert_contract_errors(self, errors, "project-map skeleton must not own refresh triggers")
 
-    def test_project_map_representative_outputs_cover_m3_contract(self) -> None:
-        proof_path = (
-            ROOT
-            / "docs"
-            / "changes"
-            / "2026-06-23-evidence-bound-incremental-project-map"
-            / "representative-project-map-outputs.md"
-        )
-        proof = proof_path.read_text(encoding="utf-8")
-
-        required_terms = [
-            "Representative fixture excerpts, not claims about this repository.",
-            "Map status: current",
-            "Baseline: abc1234+dirty",
-            "Inspected uncommitted paths:",
-            "Parent map: not-applicable",
-            "Parent map: docs/project-map.md",
-            "Durable-boundary rationale:",
-            "Overlap owner:",
-            "Observed:",
-            "Inference:",
-            "Unknown:",
-            "Configured command, not executed in this mapping session",
-            "Executed command:",
-            "Exit code: 0",
-            "Correction note:",
-            "wrong at the previous baseline",
-            "Planned state:",
-            "Current state:",
-            "not represented as deployed",
-            "statically traced",
-            "demonstrated by tests",
-            "partially inferred",
-            "Diagram evidence:",
-            "inferred edge",
-            "Placeholder audit: passed",
-        ]
-        for term in required_terms:
-            with self.subTest(term=term):
-                self.assertIn(term, proof)
-
-        for heading in skill_validation.PROJECT_MAP_REQUIRED_OUTPUT_SECTIONS:
-            with self.subTest(heading=heading):
-                self.assertIn(f"## {heading}", proof)
-        self.assertIn("## Area maps", proof)
-
-        for column in skill_validation.PROJECT_MAP_AREA_REGISTRATION_COLUMNS:
-            with self.subTest(column=column):
-                self.assertIn(column, proof)
-
-        self.assertNotRegex(proof, r"<[^>\n]+>|\[FILL IN\]|\bTODO\b|\bTBD\b")
 
     def test_follow_up_ownership_m1_project_map_skill_boundary(self) -> None:
         project_map = (ROOT / "skills" / "project-map" / "SKILL.md").read_text(

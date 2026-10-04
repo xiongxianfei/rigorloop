@@ -3,15 +3,15 @@
   "type": "allocated-requirement",
   "title": "Recover only exact verified operational record transactions",
   "status": "draft",
-  "statement": "The Work record storage Module shall recover an explicitly selected current-format transaction only by completing its verified exact prepared candidate or restoring its verified before-state, preserving unknown target states, acknowledged commitment, and available recoverability.",
+  "statement": "The Work records Module shall establish ordinary transaction outcomes through supported storage recovery without guessing, semantic replay or rollback of committed work.",
   "analysis": {
     "method": "5W2H",
     "what": {
-      "problem": "A stale or damaged recovery record can cause guessed replacement, replay of old semantic operations, or destruction of outside work.",
-      "desired_outcome": "Recovery produces the selected verified storage state or an explicit safe stop while keeping unrelated content and historical meaning intact."
+      "problem": "Lost output or interrupted writes can leave a caller uncertain whether its decision was committed.",
+      "desired_outcome": "A coherent current state or explicit safe unavailability allows a fresh decision without replaying old semantic intent."
     },
     "why": {
-      "rationale": "SR-045 makes recovery an exact byte-preserving transaction operation rather than a new engineering decision or general rollback facility."
+      "rationale": "SR-045 requires establishing the already determined storage outcome without selecting a new engineering effect or rolling back committed work."
     },
     "who": {
       "stakeholders": [
@@ -22,33 +22,35 @@
     },
     "when": {
       "conditions": [
-        "The caller explicitly selects restore or complete with the transaction and expected recovery identity.",
-        "Recovery is interrupted, repeated, or encounters changed targets or unavailable private data."
+        "An ordinary command opens the associated supported SQLite store after interruption.",
+        "The storage engine cannot establish a coherent outcome or maintenance has fenced the store."
       ]
     },
     "where": {
       "contexts": [
-        "IF-003 recovery of one selected current operational-record transaction.",
-        "Its private journal and verified before/candidate snapshots; external decision-basis subjects remain read-only."
+        "IF-003 ordinary current-state reads and transactions backed by SQLite WAL recovery.",
+        "Explicit replacement resume remains a separate maintenance operation with preserved prior and staged units."
       ]
     },
     "how": {
-      "approach": "Validate the supported journal, exact snapshots, current recovery identity, containment, and observed target states under the shared protection boundary. Apply only the selected supported action, preserve repeatability until a verified terminal outcome, and never rerun semantic edits."
+      "approach": "Apply the current v4 SQLite task and maintenance contract. Open only an associated supported database; corruption or unsupported state yields explicit unavailability without guessed repair."
     },
     "how_much": {
-      "scope": "Current v3 transaction recovery, including initial creation with absent before-state. Retired, mixed, or unknown formats have no conversion or compatibility repair. The same observed external-editor race limit as publication applies; this does not provide historical-baseline restoration or an atomic guard against arbitrary outside edits."
+      "scope": "This allocation preserves its existing parent SR and accountable Module. Prior v3 file-journal mechanisms are historical at 39be9c81; current maintenance remains separately explicit."
     }
   },
   "acceptance_criteria": [
-    "Before mutation, require the explicit transaction and expected-recovery identity to match a recognized current journal and verified exact snapshots. Missing, corrupt, tampered, unsupported, retired, or mixed recovery information returns the safe recovery stop without guessed repair, conversion, or cleanup of unrecognized state.",
-    "Use the same containment, selected-change target, identity, and supported-writer protections as publication. At each required observed target check, accept only the recorded before or candidate bytes or absence; a third state stops recovery without overwrite.",
-    "Complete publishes only the exact verified prepared candidate and requires the declared decision-basis inputs still to match. Restore uses only verified before bytes and leaves external read-set files untouched. Neither action reruns targeted operations against a new snapshot or manufactures a decision, origin, or approval.",
-    "A transaction whose journal records committed state permits completion/cleanup but not restoration of the before-state, including when the success response was lost and the caller never observed it. Restoring uncommitted initial creation removes only transaction-created files and empty transaction-created directories, preserving preexisting or externally added content.",
-    "Another interruption preserves available recovery information and allows a later explicitly selected attempt with the refreshed recovery identity. Cleanup of private snapshots occurs only after a verified terminal recovery outcome; these snapshots never become workflow evidence.",
-    "Return the established recovered outcome or the specific stop and remaining recovery state. Unknown identities remain unavailable, and neither a failure to observe a terminal outcome nor retired historical bytes authorizes a fallback repair."
+    "Open only an associated supported database; corruption or unsupported state yields explicit unavailability without guessed repair.",
+    "Storage-engine recovery establishes the already determined ordinary transaction outcome without replaying actor decisions.",
+    "Current inspection returns a coherent committed/prior snapshot and opaque revision when established, not a synthetic recovery approval.",
+    "Committed work cannot be rolled back to repair an absent response; uncommitted work cannot become success by retry inference.",
+    "Repeated inspection after interruption has no duplicate semantic effects; uncertain outcome remains explicitly uncertain.",
+    "Explicit staged store restoration/import recovery belongs to the maintenance contract, with fence, observed state, exact candidate and preserved prior units."
   ],
   "assumptions": [],
-  "constraints": [],
+  "constraints": [
+    "Current v4 SQLite realization; source observations do not establish engineering approval or passing implementation proof."
+  ],
   "allocated_to": "MOD-011",
   "constrains": [
     "FUNC-047"
@@ -63,6 +65,11 @@
       "source": "SRC-PUBLISHED-CLI",
       "locator": "docs/design/cli/cli.md#CLI-SR-05, CLI-SR-06, CLI-SR-09, CLI-SR-10, CLI-SR-26, CLI-SR-27, CLI-SR-28; docs/design/cli/records.md#RF-SR-04, RF-SR-06, RF-SR-08, RF-SR-12, RF-SR-14",
       "basis": "Retains the named current CLI and Record Format obligations at this allocated responsibility boundary. Their detailed formats, supported versions, limits, and observed external-edit boundaries remain authoritative; no runtime behavior or public contract is changed by this draft."
+    },
+    {
+      "source": "SRC-SQLITE-ADOPTION",
+      "locator": "docs/design/cli/records.md; Work records (MOD-011) current transaction and maintenance contract",
+      "basis": "Reconciles existing stakeholder need and allocation with SQLite ordinary recovery. No new need, approval, or executed result is inferred."
     }
   ]
 }

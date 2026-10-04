@@ -1,5 +1,5 @@
 # Generated from canonical REM records; do not edit.
-# Source identity: 53f63fcf1ca7513ab5f1fd872d338be32ce1bda945a9429ccd0bac1f370c74f1
+# Source identity: 7978be139fe27eda655003b22781018baac550ab5be13f735b6a2800fc2e5371
 # Static mappings from accountable Modules and contracts to implementation sources. Production arrows mean declared inputs and candidate outputs, not software dependencies or evidence that a build ran. Open an owner to inspect its complete mapping.
 vars: {d2-config: {layout-engine: elk}}
 direction: down
@@ -21,36 +21,18 @@ g0: "Contract implementation\nbindings" {
   style.font-size: 17
   style.border-radius: 6
   grid-columns: 1
-  f0: "packages/rigorloop/dist/lib/\nrecord-store.js" {
+  f0: "packages/rigorloop/dist/lib/\noperational-store.js" {
     link: "#development/IF-003"
-    tooltip: "withRecordSnapshot supplies checked state to primary readers; executeRecordStore serves advanced inspect/check/record/recover; executeTargetedStore invokes construction and receipt preparation within the selected preview or execution path."
+    tooltip: "Typed inspect, preview and execute operations."
     style.fill: "#FFFFFF"
     style.stroke: "#7C8FA9"
     style.font-color: "#23334A"
     style.font-size: 14
     style.border-radius: 6
   }
-  f1: "packages/rigorloop/dist/lib/\nrecording-construction.js" {
+  f1: "packages/rigorloop/dist/lib/\noperational-maintenance.js" {
     link: "#development/IF-003"
-    tooltip: "constructMutation realizes the pure candidate-construction part of prepare_record_candidate."
-    style.fill: "#FFFFFF"
-    style.stroke: "#7C8FA9"
-    style.font-color: "#23334A"
-    style.font-size: 14
-    style.border-radius: 6
-  }
-  f2: "packages/rigorloop/dist/lib/\nrecording-result.js" {
-    link: "#development/IF-003"
-    tooltip: "primaryReceiptPreparer receives guarded candidate/storage facts and returns the prepared command-owned receipt."
-    style.fill: "#FFFFFF"
-    style.stroke: "#7C8FA9"
-    style.font-color: "#23334A"
-    style.font-size: 14
-    style.border-radius: 6
-  }
-  f3: "packages/rigorloop/dist/lib/\nrecording-query-cli.js" {
-    link: "#development/IF-003"
-    tooltip: "inspectSubjects and its RecordFiles reader realize the declared-subject observation part; the logical operation does not have a dedicated exported function with the same name."
+    tooltip: "Explicit project-level backup, restore, migration and staged recovery."
     style.fill: "#FFFFFF"
     style.stroke: "#7C8FA9"
     style.font-color: "#23334A"

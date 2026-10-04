@@ -1,0 +1,64 @@
+{
+  "id": "AR-055",
+  "type": "allocated-requirement",
+  "title": "Import qualified source facts with preserved originals",
+  "status": "draft",
+  "statement": "The Work records Module shall import qualified source facts with preserved originals through its typed maintenance boundary, preserving actual scope, source meaning and safe failure.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "A storage conversion can lose unsupported records, unresolved findings or exact evidence, or misrepresent old approvals as current.",
+      "desired_outcome": "Maintainers can account for every selected source and rely on one coherent operational destination without losing historical meaning."
+    },
+    "why": {
+      "rationale": "SR-077 requires operational preservation; MOD-011 owns the associated store and maintenance activation, while MOD-010 owns admission and result presentation."
+    },
+    "who": {
+      "stakeholders": [
+        "Project maintainers and authorized agents relying on retained operational work"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "An actor explicitly selects the supported maintenance task, scope, source expectations and destination."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "MOD-011 through IF-003, invoked by MOD-010 through IF-004; engineering definitions remain repository-owned."
+      ]
+    },
+    "how": {
+      "approach": "Use the reviewed MOD-011 maintenance contract: coherent staged scope, explicit project/schema/integrity checks, exclusive activation and attributable recovery outcomes."
+    },
+    "how_much": {
+      "scope": "Selected retained supported records and payloads only; no silent merge, universal history retention, source deletion or renewed engineering approval."
+    }
+  },
+  "acceptance_criteria": [
+    "Before publication, migration identifies selected source content and identities and classifies each record as supported for import, retained archival evidence, or blocked pending disposition; counts alone do not establish semantic equivalence.",
+    "Imported records preserve stable identities, actor decisions, unresolved findings, relationships, original subject identities and assessment meaning; source format, original location and content identity remain attributable.",
+    "Unsupported historical formats remain archival and do not acquire runtime support or renewed approval; active work that depends on them blocks activation until a responsible disposition is recorded.",
+    "Required original bytes, uncommitted source content and required artifacts remain recoverable. Migrating records does not itself authorize source deletion; SR-024 governs retirement.",
+    "Changed source identity, interruption, conflicting destination content or an invalid final reference prevents partial activation and preserves sources and unrelated destination work. A retry cannot duplicate already imported identities or silently merge conflicts.",
+    "Activation identifies one authoritative operational destination and reconciles current readers and writers; no permanent dual-write or silent legacy fallback is established.",
+    "The public maintenance contract identifies preview versus execution, current expectations and actual effects; interrupted activation remains fenced until explicitly reconciled."
+  ],
+  "assumptions": [
+    "Required retained source material and supported interpretation information are accessible; failure of that premise is reported explicitly."
+  ],
+  "constraints": [
+    "Historical subject/revision provenance remains stable; restoring operational state creates a fresh store incarnation so old mutation tokens cannot be replayed."
+  ],
+  "allocated_to": "MOD-011",
+  "constrains": [
+    "FUNC-076"
+  ],
+  "sources": [
+    {
+      "source": "SRC-SQLITE-ADOPTION",
+      "locator": "SR-077; MOD-011 store-maintenance-v1 contract",
+      "basis": "Reconcile the existing reviewed maintenance responsibility with explicit REM allocation. This allocation is design intent, not execution or satisfaction evidence."
+    }
+  ]
+}

@@ -3,32 +3,33 @@
   "type": "function",
   "title": "Project bounded command results without changing meaning",
   "status": "draft",
-  "description": "Render an actual command outcome and explicitly selected recorded values through the correct human or machine projection while preserving scope, identities, narrative and storage-only meaning. Provide bounded receipt and observation-detail behavior independent of diagnostic volume.",
+  "description": "Present bounded selected task outcomes and actual effects without inventing authority or hiding commitment.",
   "inputs": [
     "Admitted operation/result domain, actual semantic/storage outcome, and selected values with scope and identities.",
     "Requested format/detail, applicable byte budget, and observations with revision and exact observed-subject basis."
   ],
   "preconditions": [],
   "outputs": [
-    "Faithful versioned bounded output and matching semantic exit, or a safe pre-output failure for a read that cannot fit.",
-    "Guaranteed publication receipt, explicit omitted diagnostic/detail scope, and current observation identity for separate detail retrieval."
+    "Complete bounded family-specific outcome with actual effects, established identities and safe diagnostic distinctions.",
+    "Selected scope, explicit gaps or omissions and the actual committed, unchanged, failed or uncertain standing."
   ],
   "behavior": [
-    "Select the owning family's result schema and preserve its operation/outcome/exit distinctions; available selectors remain accurate and invalid raw values are not echoed.",
-    "Render equivalent decoded selected data in text and JSON, preserving multiline text, Unicode, literal escapes, collection order, optional absence and projection metadata without inventing a second report.",
-    "Size the guaranteed storage receipt before publication; diagnostic expansion and optional detail omission cannot block an admissible correction or reverse a completed save into rejected output.",
-    "Bind diagnostic detail to revision plus actual observed subject basis and observations; report changes as conflict even if diagnosis wording and record revision are unchanged.",
-    "Separate observations from errors, persistence from engineering approval, and retrieval completeness from assessment adequacy. Keep generic concise/detailed semantics and recording/discovery domains distinct.",
+    "Saved, unchanged, preview, rejected, conflict, busy, and recovery-needed outcomes retain their exact operation/version/exit meanings and available identities. A recording receipt claims persistence only; errors and observations remain distinct and never echo arbitrary payloads or secrets.",
+    "Text and JSON preserve equivalent selected fields, state, omissions, optional absence, and decoded narrative, including paragraphs, code, Unicode, literal backslash sequences, and ordered arrays. Budget failure occurs before output rather than emitting truncated content.",
+    "Every admissible mutation has a prepublication mandatory receipt that fits independently of diagnostic volume. Excess optional details are explicitly omitted; increasing diagnostics cannot reject a sound correction or turn completed publication into rejected output.",
+    "Current context identifies the selected scope, available selectors and explicit omissions. Compared observations remain scope-limited and separate from attributed judgments; no cursor or observation-detail continuation protocol is required.",
+    "Selected Review and Verification accounts derive from stored values without inventing rationale, conflating absent support with approval or treating complete retrieval as engineering adequacy.",
+    "Each supported public family preserves actual effects, safe-continuation facts and its declared exit meaning across admitted output formats.",
     "Backup, restoration, transfer and migration receipts identify their selected project, captured or restored scope, state identity, exclusions and actual completeness. Storage completion does not establish current evidence applicability or engineering approval."
   ],
   "failure_behavior": [
     {
-      "condition": "A selected read or rendered output exceeds its allowed bound.",
-      "outcome": "Fail before partial output with guidance to narrow selection or use an admitted budget/projection; never silently truncate required rationale."
+      "condition": "A selected read or mandatory receipt cannot fit its defined bound.",
+      "outcome": "Stop before partial output or commitment with an explicit limit result."
     },
     {
-      "condition": "Optional diagnostics/details exceed the guaranteed receipt or current observation state changes.",
-      "outcome": "Expose explicit omissions with safe bounded summaries, or conflict on detail retrieval; never claim replay of a historical observation or change saved status."
+      "condition": "Output delivery fails after actual commitment.",
+      "outcome": "Preserve the known committed or uncertain standing; require current inspection before a fresh actor decision, never semantic replay."
     }
   ],
   "sources": [

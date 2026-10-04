@@ -3,12 +3,12 @@
   "type": "feature",
   "title": "Record and recover explicit engineering decisions",
   "status": "draft",
-  "description": "Engineers and agents can record their chosen engineering decisions through narrow operations, bounded batches, or advanced exact replacements, preserve neighboring information, and recover interrupted publication without assigning the command engineering authority.",
+  "description": "Engineers and agents can record explicit current engineering facts through bounded tasks, preserve unresolved work and relied-upon judgments, and establish coherent outcomes after interruption.",
   "scope": {
     "includes": [
-      "Explicit supported operational creation, targeted edits, complete semantic replacement, validation and non-writing preview.",
-      "Preservation of actor meaning, exact target boundaries, review findings, blocker origins, and supplied applicability.",
-      "Fresh coherent durable publication and verified interrupted-transaction recovery under the selected supported contract."
+      "Supported current task creation/update, complete candidate validation and nonwriting preview.",
+      "Attributable current decisions, unresolved issue preservation and explicit support reconciliation.",
+      "Fresh atomic durable updates and internal ordinary transaction recovery; explicit whole-store maintenance has its separate contract."
     ],
     "excludes": [
       "Automatic workflow progression, supplied-decision approval, implied permission, or arbitrary engineering-document edits.",
@@ -33,6 +33,11 @@
       "source": "SRC-LOCAL-OPERATIONAL-ANALYSIS",
       "locator": "FEAT-013",
       "basis": "Draft derivation from the refined IRs and RR proposal; no approval, implementation or satisfaction claim."
+    },
+    {
+      "source": "SRC-SQLITE-ADOPTION",
+      "locator": "FEAT-013",
+      "basis": "Preserve the stakeholder capability while reconciling current task scope and explicitly deferred history discovery."
     }
   ]
 }

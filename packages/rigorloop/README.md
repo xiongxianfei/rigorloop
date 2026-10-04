@@ -2,7 +2,7 @@
 
 RigorLoop CLI for repository-local AI-assisted software delivery.
 
-This package exposes the `rigorloop` binary for approved CLI workflows such as target initialization and change metadata scaffolding. Release archives remain verified GitHub release artifacts; they are not bundled into the npm package. npm is the CLI delivery channel, not the canonical source for workflow rules, skills, schemas, templates, or adapter archives.
+This package exposes the `rigorloop` binary for approved CLI workflows such as target initialization and current engineering handoffs. Release archives remain verified GitHub release artifacts; they are not bundled into the npm package. npm is the CLI delivery channel, not the canonical source for workflow rules, skills, schemas, templates, or adapter archives.
 
 ## Quick Start
 
@@ -15,10 +15,10 @@ npx @xiongxianfei/rigorloop@latest init codex
 npx @xiongxianfei/rigorloop@latest init claude
 ```
 
-Use a pinned version when you want reproducible setup:
+After the candidate is published, pin its version for reproducible setup:
 
 ```bash
-npx @xiongxianfei/rigorloop@0.5.1 init codex
+npx @xiongxianfei/rigorloop@2.0.0 init codex
 ```
 
 Install as a project-local development dependency:
@@ -39,71 +39,70 @@ rigorloop init codex
 
 ## Commands
 
-### Explicit workflow recording
+The successor uses targeted-recording-v2 / rigorloop-records-v4 and project-local SQLite. Skills supply engineering intent and judgments through the CLI; they do not execute SQL. Installation alone does not adopt a workflow, import records or approve work.
 
-The coordinated local candidate provides the RigorLoop Record Format through targeted commands. Workflow owns actor decisions; Record Format owns stored representation; CLI owns construction, encoding and recoverable persistence. Projects must explicitly adopt the matching models and skills. Installation alone does not activate a project or customer, and this candidate does not claim a released version.
+Create a tracked `.rigorloop.json` containing `{"schema_version":1,"project_id":"<stable UUID>"}` and ignore `.rigorloop/`. Current requirements, designs and implementation stay in the repository. Operational state lives in `.rigorloop/rigorloop.db`; selected large payloads live under `.rigorloop/artifacts/changes/`. Use a qualified Node 24.15.0+ build within Node 24, with SQLite 3.51.3+; current coordination and safe installation require Linux filesystem primitives.
 
 ```sh
-rigorloop status --root /path/to/project --change example --format json
-rigorloop context --root /path/to/project --change example --input - --format json
-rigorloop subject inspect --root /path/to/project --path docs/design/example.md --content full --format json
-rigorloop work set work-1 --root /path/to/project --change example --input - --format json
-rigorloop batch --root /path/to/project --change example --input - --format json
-rigorloop verify show --root /path/to/project --change example --format json
-rigorloop decisions show --root /path/to/project --change example --format json
+rigorloop capabilities --root . --format json
+rigorloop change create --root . --change example --input - --format json
+rigorloop change context --root . --change example --format json
+rigorloop change update --root . --change example --input - --format json
+rigorloop review prepare code --root . --change example --input - --format json
+rigorloop review show code --root . --change example --format json
+rigorloop review record code --root . --change example --input - --format json
+rigorloop verification record final --root . --change example --input - --format json
+rigorloop verification show final --root . --change example --format json
+rigorloop change complete --root . --change example --input - --format json
+rigorloop store backup --root . --input - --format json
+rigorloop store restore --root . --input - --format json
+rigorloop store migrate --root . --input - --format json
 ```
 
-Context input is `{ "schema_version": 1, "select": [{ "kind": "work", "where": { "ids": ["work-1"] } }] }`. Full selected fields are the default; scope reports omissions, missing content and continuation. Expand the selection when the engineering decision needs more basis. Status reports recorded activity and counts, never an authoritative next stage.
+`--input -` reads one bounded JSON request from stdin. Record mutations use `{schema_version:2, interface:"targeted-recording-v2", contract:"rigorloop-records-v4", change_id, expected_revision, reads, input}`. Creation supplies a null expected revision; updates use the exact current revision. Task inputs are defined in the bundled `dist/schemas/targeted-recording-v2.schema.json`. Read results use schema 4; a save is a storage result, never an inferred approval. Review and Verification IDs are Change-local.
 
-For reading reports in the terminal, omit `--format json` or use `--format text`:
+Context supplies the current seven-part engineering handoff and bounded observations. Selected queries expose omissions and unknown support. Replace comparable working information when useful; open obligations and judgments still relied upon retain explicit dispositions and attribution. One formal whole-change Code Review gate precedes distinct final Verify. Completed Changes retain compact historical acceptance rather than tracking future repository drift.
 
-```bash
-rigorloop review show design-review --root /path/to/project --change example
-rigorloop verify show --root /path/to/project --change example
+Preview with `--dry-run` reserves nothing. Conflicts require rereading and reconciling the caller's decision. Maintenance uses its separately versioned `store-maintenance-v1` request and explicit store/source observations. Interrupted replacement remains fenced until an explicit finish or rollback can reconcile known bytes. Do not copy a live WAL database manually; use `store backup`. Restore creates a new store incarnation so earlier revision tokens cannot authorize updates.
+
+Earlier filesystem recording commands and targeted-recording-v1 are not supported by this executable. Retain the earlier executable for unconverted work. `store migrate` supports explicit qualified v3 import with complete dispositions and separately retained originals; it never promotes old approvals to the new requirement basis. No bulk deletion of historical files is implied.
+
+### Maintenance input
+
+`dist/schemas/store-maintenance-v1.schema.json` supplies the complete `backup`, `restore` and `migrate` definitions; `rigorloop store TASK --help` resolves its installed location. Every request wraps `input` in `{"schema_version":1,"interface":"store-maintenance-v1","input":...}`.
+
+For example, pipe this JSON to `rigorloop store backup --root . --input - --format json`:
+
+```json
+{"schema_version":1,"interface":"store-maintenance-v1","input":{"scope":{"changes":"all"},"output":"../project-backup","actor":{"id":"engineer","role":"human"}}}
 ```
 
-Text output displays labeled YAML fields with multiline bodies as indented literal blocks, preserving paragraphs, lists and code blocks. It includes the same selected information, identities and scope as JSON. Use `--format json` for automation; JSON strings retain their required newline escapes. Display formatting does not rewrite stored records.
+A selected backup uses `scope.changes: ["change-id"]`. The destination must be absent and outside the live runtime directory. Restore input supplies `backup`, its returned `expected_backup` integrity, `expected_store` (`{"kind":"absent"}` or the current revision from `capabilities`), explicit `replace`, `actor` and `reason`. Run with `--dry-run` to inspect admission before the real request.
 
-New stored JSON records use two-space indentation. Later targeted edits preserve readable indentation in multiline files while leaving untouched fields and records unchanged. Existing compact records retain their formatting; historical files are not bulk-reformatted. JSON still escapes newlines inside string fields, and machine output remains compact.
+For qualified v3 import use `migrate` with `mode: "legacy-import"`, exact source scope and a disposition for every selected record. A preview permits null `expected_source` to obtain the source observation; execution requires that returned digest. Unsupported source contracts stop without conversion. Required originals go to an explicit external `originals_output`.
 
-A targeted write has `schema_version: 1`, `interface: targeted-recording-v1`, the observed `contract`, `change_id`, `expected_revision`, `reads: [{path, identity}]`, and `operation: {op, target, values}`. Batch replaces operation with operations. Use the read result's exact record_contract and revision, and subject inspection's identities; the CLI does not substitute newly observed content for the actor's decision basis. Each command's --help gives its exact selectors and fields. The CLI constructs registry entries and serialized bytes and preserves omitted fields, neighbors and narrative. Newly created supporting records require explicit applicability; actor judgments and dispositions are never inferred.
+An interrupted operation is visible through `capabilities`. Resume the same task using `input: {"resume":{"operation_id":"...","expected_observation":"sha256:...","action":"finish"},"actor":{"id":"engineer","role":"human"},"reason":"Inspected recovery state"}`. `rollback` is available only while the inspected state permits it. Resume does not accept `--dry-run`; stale observations and foreign content stop recovery. No successful save or recovery establishes review approval.
 
-Use `change create` only with explicit new-change authority, an absent root and contract rigorloop-records-v3. New records are change.json, reviews/<id>.json, evidence.json, material-decisions.json and success-only verify-report.json. Retired stored formats are unsupported runtime input and reject without fallback or mutation. Historical records remain unchanged archival evidence. V2 and v3 have packaged schemas/templates; targeted transport has its own targeted-recording-v1.schema.json. Templates illustrate stored shapes, not normal full-file write requests or approval. Create docs/changes/ before creating an absent change root.
+### Installation and diagnostics
 
-Normal writes validate and optionally support --dry-run; preview reserves nothing. Results are compact and storage-only. Saved/unchanged/valid/inspected use exit 0, rejected 2, conflict 3, busy 4 and recovery-required 5. Reread and reassess conflicts instead of retry-merging. Observation summaries disclose omitted detail; observations show retrieves bounded detail with revision and observation-identity checks. Diagnostic volume cannot prevent an otherwise valid correction. A saved judgment, failed check or completion claim does not justify downstream reliance.
-
-V3 Review and Verify store `summary`, `assessment_scope`, `rationale` and `limitations`; Verify also stores `changes`. Reasons, limitations and changes are arrays of complete strings. Judgment, findings, actors, subjects and evidence retain their existing authoritative fields. Review/Verify v3 records do not store `body`; material decisions still do. The optional closed `verification_basis` belongs only to a Git/PR readiness assessment.
-
-Use `review show ID --fields summary,rationale,limitations` or `verify show --fields changes,limitations` with the normal root/change/format selectors. Omitting `--fields` returns the full selected record. Explicit selection returns exact requested values with identity, applicability, revision, omissions and absent optional fields; `complete: true` describes retrieval, not a complete assessment read. Human output renders the same decoded values.
-
-`review set ID` and `verify set` accept a nonempty subset of explanation fields through the normal request envelope. They replace whole fields, preserve omitted bytes, and reject stale revisions. They cannot change judgment, actors, subjects, findings or verification basis. Use complete assessment operations for reassessment and finding operations for explicit corrections. V3 findings preserve only ID immutability; all blockers retain immutable origins. Saving never approves, restores applicability or runs verification.
-
-Primary requests remain schema 1. Results are schema 3 for the recognized new set commands, even for errors before store access; retained commands select schema 3 only after validated v3 selection, otherwise schema 2. Preserve the returned operation and dispatch by schema_version, status and operation. A schema-3 error does not prove that a v3 store exists. Advanced requests remain schema 2 and advanced results schema 1.
-
-Advanced `record-store inspect|check|record|recover` remains for diagnostics, complete explicit restoration and persistence maintenance. Storage requires v3; historical v2 records are preserved without operational reads, writes, recovery or migration. The independently versioned advanced result schema 1 and targeted-recording-v1 transport remain supported. Advanced replacements contain exact complete bytes under the selected stored version, while primary writes construct bytes. Both share containment, conflict and recovery protections. For interrupted storage use `record-store recover --root PATH --change ID --transaction ID --expected-recovery DIGEST --action restore|complete --format json` with one explicit action. Do not edit records with external tools during save/recovery; the documented limitation for external edits after the final identity check is unchanged.
-
-The retired new-change, compact and lifecycle command families reject before request processing or side effects. Use v3 `change create` with explicit authority for new work. Recovery classifies the journal's recorded format selector and saved before/candidate/write/read basis; consistent v3 transactions recover, including initial creation with no current manifest. Retired, unknown, inconsistent or ambiguous bases stop before restore/complete writes and preserve evidence. Journal selector 1 selects retired v1; the advanced result's schema 1 is independent. Never change a discriminator to simulate recovery or rollback.
-
-### Other command families
-
-```bash
+```sh
 rigorloop --help
 rigorloop version
 rigorloop init codex|claude [--force] [--from-archive <path>] [--dry-run] [--json]
-rigorloop workflow-context [--change <id>] [--format human|json]
-rigorloop logs path [--format human|json]
-rigorloop logs show <invocation-id> [--format human|json]
+rigorloop init codex --replace-workflow requirement-first-v1 --force
+rigorloop logs [--format human|json]
+rigorloop logs --invocation <invocation-id> [--format human|json]
 ```
 
-`workflow-context` returns factual schema-2 discovery, never eligibility, an authoritative next stage or implicit change selection. It reports validated v3 stores, excludes v2 archives by bounded manifest and supporting-record headers, and excludes unrelated YAML-only archives without running legacy validators. Malformed or ambiguous stores and private transaction residue remain explicit errors. Explicit targets avoid unrelated enumeration. Limits are inclusive: 1,024 directories, 64 candidates and an 8 MiB response budget. Exceeding a bound reports incomplete scope and limit-exceeded without silent truncation. The `spec` artifact location and configuration kind are no longer supported. A configuration retaining that override fails with `invalid-input`; remove it only as an explicit project configuration edit. Other location kinds retain their current behavior. An optional root `rigorloop.workflow.yaml` may override supported artifact locations; retired record-slot overrides, unsafe paths and invalid configuration fail closed. Use primary context/show for complete selected current-record content.
+Every successor archive includes a verified workflow descriptor. Explicit replacement retires only `proposal`, `proposal-review` and `design` under the selected target root and retains originals outside discovery. It installs the verified candidate without sweeping unrelated skills or other targets. Ordinary force cannot retire the old workflow. Init result schema 2 reports actual per-unit effects, including partial failures; retry does not imply rollback. Dry-run reports a preliminary plan without acquiring an archive.
 
 ## Local CLI logs and concise results
 
-RigorLoop records privacy-bounded local JSON Lines diagnostics by default and prints console diagnostics at `error` level by default. Routine success is therefore quiet on stderr. Logs rotate at 5 MiB and retain `rigorloop.jsonl` plus four archives in the platform user-state directory; use `rigorloop logs path` to locate it and `rigorloop logs show <invocation-id>` for exact lookup.
+RigorLoop records privacy-bounded local JSON Lines diagnostics by default and prints console diagnostics at `error` level by default. Routine success is therefore quiet on stderr. Logs rotate at 5 MiB and retain `rigorloop.jsonl` plus four archives in the platform user-state directory; use `rigorloop logs` to locate it and `rigorloop logs --invocation <invocation-id>` for exact lookup.
 
-For historical commands, use `--no-file-log` or `RIGORLOOP_FILE_LOG=off` to disable file logging. Set `--file-log-level debug|info|warning|error` and `--console-log-level debug|info|warning|error|off` for one invocation; the matching environment variables are `RIGORLOOP_FILE_LOG_LEVEL` and `RIGORLOOP_CONSOLE_LOG_LEVEL`. `RIGORLOOP_LOG_DIR` accepts only an absolute, non-symlinked safe directory. Primary recording commands and the advanced `record-store` namespace must be the first argument; they reject these flags, ignore this logging environment and emit only their model-defined results.
+For installation and general commands, use `--no-file-log` or `RIGORLOOP_FILE_LOG=off` to disable file logging. Set `--file-log-level debug|info|warning|error` and `--console-log-level debug|info|warning|error|off` for one invocation; the matching environment variables are `RIGORLOOP_FILE_LOG_LEVEL` and `RIGORLOOP_CONSOLE_LOG_LEVEL`. `RIGORLOOP_LOG_DIR` accepts only an absolute, non-symlinked safe directory. Operational recording commands, `capabilities` and `store` must be the first argument; they reject these flags, ignore this logging environment and emit only their model-defined results.
 
-Existing v0.4.x output defaults and `--json` remain unchanged. Agents can opt into compact results with `--format concise-json` or `--format concise-human`; complete results remain available with `--format detailed-json`. Local logs are diagnostics only and never authorize lifecycle transitions.
+General commands support `--json`. Agents can opt into compact results with `--format concise-json` or `--format concise-human`; complete results remain available with `--format detailed-json`. Local logs are diagnostics only and never authorize lifecycle transitions.
 
 ## Target Init
 
@@ -125,13 +124,13 @@ Dry-run reports preliminary destination checks and unperformed archive verificat
 
 Network failures report bounded diagnostics without proxy credentials. Configure Node's `NODE_USE_ENV_PROXY` or `--use-env-proxy` support when needed, or download the matching official archive and use `--from-archive`.
 
-## New change recording
+## New Change recording
 
-Use `rigorloop change create --help` for the targeted request shape, then submit the explicit v3-contract request with `--root PATH --input - --format json`. Add `--dry-run` for an optional preview. Creation requires explicit authority and an absent root; it grants no proposal, Design, review, Verify or PR judgment. The removed `new-change` scaffold is unsupported.
+Use `rigorloop change create --help` for the request envelope and bundled schema location. Submit a v2 request for the v4 record contract with `--root PATH --change ID --input - --format json`. Creation requires explicit authority and an unused Change ID; it grants no engineering judgment. The removed `new-change` scaffold is unsupported.
 
-## Version Guidance
+## Version guidance
 
-Use `@latest` for manual exploration. Use an explicit version such as `@0.3.5` for CI, onboarding docs, and repeatable agent setup.
+This source describes the 2.0.0 candidate. It does not assert that the candidate is published. Pin an actually published version for repeatable installation; historical releases retain their original interface and runtime requirements.
 
 ## Source of Truth
 
@@ -143,7 +142,7 @@ https://github.com/xiongxianfei/rigorloop
 
 ## Upgrading retired authoring skills
 
-The current package contains `design` and `route`; `spec`, `architecture` and `workflow` are retired. Candidates or installed inventories containing retired entries stop with exact-path diagnostics. `--force` replaces only current candidate skills and cannot delete unrelated retired entries. Inspect and preserve old content separately before reconciling those entries; the installer provides no migration or state-repair procedure. Historical release archives retain their original inventories.
+The successor supplies `requirement-analysis`, `requirement-review`, `system-design` and `architecture-design`. Use the explicit workflow replacement above to retire `proposal`, `proposal-review` and `design`. Earlier unrelated retired entries are not swept. Historical archives require their matching earlier executable; the successor requires its verified workflow descriptor. Importing old records is a separate, qualified maintenance operation.
 
 ## Feature-format support change
 

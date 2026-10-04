@@ -3,21 +3,21 @@
   "type": "function",
   "title": "Validate registered recording candidates and preservation rules",
   "status": "draft",
-  "description": "Only structurally admissible, explicitly authored record candidates proceed, and correction remains possible when substantive work is incomplete or observations contradict a recorded claim. This logical behavior has the scope and limits of SR-042; retained v3 realization facets require reconciliation before replacement-store adoption.",
+  "description": "Validate complete current typed candidates while preserving unresolved obligations and the scope and attribution of retained judgments.",
   "inputs": [
     "Explicit supported operation, selected project/Change and expected coherent state.",
     "Actor-supplied candidate or verified recovery basis, with declared subject and artifact identities."
   ],
   "preconditions": [],
   "outputs": [
-    "Exact attributable result or explicit conflict, unavailability, rejection or recovery-required outcome."
+    "Structurally admissible complete candidate or explicit bounded rejection/conflict; validity supplies no engineering approval."
   ],
   "behavior": [
     "Unknown fields or vocabularies, duplicate keys or identities, missing required values, unsupported encodings/versions, mixed stores, dual report representations, and malformed current records reject before authoritative writes.",
     "Every supporting record has an unambiguous identity, owning Change and kind, with explicit applicability wherever the selected contract requires a reliance decision. References resolve exactly one admissible object in the complete candidate; storage-layout adjacency grants no authority and cross-Change fallback cannot repair an unresolved reference.",
-    "Actor-supplied status, subjects, applicability, narrative order, provenance, and decisions are preserved. Failed evidence, completed activity, stale external subjects, or absent conditional verification basis alone do not prohibit a structurally sound correction or establish approval.",
-    "Omitted issues survive updates. V4 requires explicit attributable disposition before compaction, preserves current judgment ownership and support still relied upon, and permits replacement of superseded accounts. V3 finding and immutable blocker-origin rules remain version-scoped.",
-    "Review/Verify use their closed explanation fields; the optional Verify basis is either absent or complete and never inferred from prose, required universally, or resolved as a Git instruction. Exact source shape and reliance policy remain distinct."
+    "Supplied scope, subjects, narrative, provenance and decisions are preserved. Adverse evidence and explicit invalidation remain recordable; new success claims must meet the selected contract’s current support requirements.",
+    "Omitted issues remain unchanged, and open findings/blockers require explicit attributable disposition. The selected v4 contract permits later compaction and current-assessment replacement without permanent history; v3 retains its finding and immutable-origin rules. Validation must not infer resolution or reviewer judgment.",
+    "Reviews and Verifications use distinct closed assessment shapes with explicit scope, governing basis, support and limitations. Final successful Verify requires applicable mandatory review and accepted bases; scoped adverse results can be recorded without inventing missing success prerequisites."
   ],
   "failure_behavior": [
     {
@@ -50,6 +50,11 @@
       "source": "SRC-CURRENT-HANDOFF",
       "locator": "FUNC-044",
       "basis": "Reconcile current-state replacement, unresolved issue preservation and selective retention; retain version-specific v3 behavior until adoption."
+    },
+    {
+      "source": "SRC-SQLITE-ADOPTION",
+      "locator": "FUNC-044",
+      "basis": "Reconcile existing use/behavior with current explicit task selection, coherent SQLite outcomes and attributable judgments; no new stakeholder need or runtime qualification is inferred."
     }
   ],
   "allocated_to": "MOD-011"

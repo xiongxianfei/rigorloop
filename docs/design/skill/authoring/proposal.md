@@ -1,130 +1,43 @@
-# Proposal Design
+# Request and proposal intake
 
 Model validation contract: model-document-v1
 
-## Introduction and Goals
+A request, proposal, issue or incident supplies RR input to Requirement Analysis. It is not an IR merely because its proposed direction was approved, and it does not introduce a separate Proposal Review gate. Preserve its source, intended outcome, constraints and open questions without requiring an extra document or record solely to begin analysis.
 
-Proposal turns user intent into a bounded direction decision with sufficient scope, principle and feasibility to support responsible Design. It owns proposal content and authoring procedure, including portable and governed targets. Detailed engineering design and delivery allocation remain with their sibling models.
+[Engineering authoring](design.md#authoring-responsibilities) and the canonical [Requirement Analysis method](../../../../rem/methods/requirement-analysis.md) own interpretation against existing requirements. Reuse without modification, refinement, creation, deferral and an explicit conflict are valid dispositions when justified. Proposed technology remains a candidate solution unless the caller establishes it as a genuine constraint.
 
-## Context and Scope
+[Workflow](../workflow.md) owns the first mandatory Requirement Review, followed by System/Architecture Design and one integrated Design Review. Optional Explore and Research can resolve material uncertainty without supplying approval or expanding execution authority.
 
-[Skill](../skill.md) owns common capability, resource and evidence-access rules. [Authoring](authoring.md) owns composition; [Workflow](../workflow.md) owns progression and [Assessment](../assessment.md) owns independent judgments. Published skills realize these contracts; model extraction does not rename invocations, change stored formats or grant execution authority.
+## Historical disposition
+
+The former Proposal authoring capability, its preliminary approval semantics and exclusive presentation pilot are retired from the successor. Applicable intent, scope, feasibility, uncertainty and authority duties move to Requirement Analysis and its supporting REM methods. Earlier proposal bytes and judgments retain their original meaning; they are not rewritten as accepted IR/SR assessments. The prior contract is recoverable at commit `39be9c81` under this path and `skills/proposal/`.
 
 ## Requirements
 
+These stable local references reconcile the prior document contract with the current REM and Module owners linked above. They do not retain the superseded workflow or filesystem interface.
+
 | ID | Required behavior |
 | --- | --- |
-| PROP-SR-01 | Proposal MUST express the challenge, goals, bounds, governing principle, selected direction, feasibility and requested decision using the content contract below. |
-| PROP-SR-02 | Proposal MUST preserve approved scope and disclose material feasibility, vision and scope uncertainties without silently selecting detailed implementation or deferring required goals. |
-| PROP-SR-03 | Authoring MUST classify exact create/revise targets and governed signals before mutation, reject ambiguous or invalid authority without portable fallback, and preserve unrelated artifacts. |
-| PROP-SR-04 | All applicable strategic predicates and required resources MUST be classified and loaded before dependent work; unknown predicate values and missing required resources MUST reject. |
-| PROP-SR-05 | Governed writes MUST use current exact subjects and supported recording/recovery interfaces; retries and competing writes MUST not retarget approval or mutate another owner’s state. |
-| PROP-SR-06 | Outputs MUST remain direction-level artifacts with explicit limits; portable output MUST not create lifecycle state, and recording MUST NOT grant review approval or continuation. |
-
-## Architecture Overview
-
-```mermaid
-flowchart LR
-    Intent["User intent and project authority"] -->|"bounded request"| Author
-    subgraph Owned["Proposal"]
-        Author["Classify and author direction"] -->|"required sections and feasibility"| Output["Proposal subject"]
-    end
-    Basis["Vision and evidence"] -->|"constraints and credible basis"| Author
-    Output -->|"direction assessment subject"| Review["Assessment: Proposal Review"]
-```
-
-The overview names the owned method and its external inputs and consumers. Detailed behavior is defined in the sections below; arrows to review identify submitted subjects, not automatic approvals.
-
-| View | Necessity and reason | Owning detail |
-| --- | --- | --- |
-| Context | Necessary: user authority, upstream basis and independent assessment are separate boundaries. | [Context view](#context-view) |
-| Building Block | No separate diagram: this method has no independent internal subsystem; its procedure and output structure provide the required decomposition. | Specialist procedure and output sections below. |
-| Runtime | Necessary: classification, authoring, failure and handoff have distinct authority effects. | [Runtime view](#runtime-view) |
-| Deployment | No separate deployment: the capability is packaged guidance, not a separately deployed service; source, archive and installation boundaries are unchanged. | [Skill Deployment](../skill.md#deployment-view) and [Packaging](../../engineering/packaging.md). |
-
-## Proposal content
-
-Under SKL-SR-24/27, a current proposal has one title and exactly these required level-two sections in order: `Challenge`, `Goals`, `Scope and non-goals`, `Governing principle`, `Proposed direction`, `Feasibility`, and `Decision requested`. `Impact and major trade-offs` is the only optional level-two section; include it between Feasibility and Decision requested only when it could materially affect approval. Deeper headings may organize those sections. Unknown, duplicated or misordered required sections are invalid.
-
-Feasibility must contain a proportionate assessment, credible evidence or bounded assumptions, material constraints and blockers to responsible Design. A proposal fixes direction and approval-relevant impacts; it does not prescribe detailed requirements, APIs, schemas, architecture, implementation sequencing, tests or rollout mechanics. Decision sufficiency determines depth, with no fixed length or token budget. Material vision issues belong in Impact and major trade-offs and Decision requested; Assessment owns the review judgment.
-
-This repository's current proposal content contains no `Status`, `Owning change record`, routine `Vision fit` or reverse ownership pointer. Other projects may require a stable ownership pointer through their governing artifact convention; mutable lifecycle metadata stays in records. Portable proposals need no record or CLI call. Governed records identify the proposal and own its lifecycle under Records; recording grants no downstream approval. Historical settled proposals retain their original contract and bytes. Existing cutover classification remains applicable to historical or unsettled proposals without a new document-version marker or forced rewrite.
-
-## Proposal procedure
-
-Under SKL-SR-04/05/08/10/24/27, proposal authoring supports exactly `create-primary-proposal` and `revise-primary-proposal`. Resolve one normalized exact target; portable creation requires absence and revision requires the intended existing artifact. Ambiguity stops. Portable authoring writes only the proposal, without lifecycle, review, automation or routing state. An explicit change ID, workflow-managed exact change or structured owning-change pointer selects governed procedure; conversational wording alone does not. Missing, malformed, stale or conflicting governed authority stops without portable fallback. Reclassify a late governed signal before dependent work.
-
-Apply [Conditional resources](../skill.md#conditional-resources). `governed-proposal-authoring.md` applies governed authority, recording and recovery; `strategic-and-scope-gates.md` applies strategic procedure; `proposal-skeleton.md` owns structure. The four procedure assemblies are `PA0-portable`, `PA0G-portable-gated`, `PA1-governed` and `PA1G-governed-gated`, independently adding governed and strategic references.
-
-Specialized predicates are exactly `vision_exception_context`, `standing_artifact_context`, `initial_intent_table_context` and `scope_budget_context`. The author judges applicability; deterministic validation checks vocabulary and structure, never semantic truth. Apply every true predicate and load strategic procedure once for any nonempty set. Complete late classification before dependent drafting or readiness; unresolved material ambiguity stops. Broad or multipart intent activates detailed intent treatment. Scope classification covers multiple independent items, lifecycle families or downstream artifacts, workflow/release/validation policy, generated output, public skill behavior, or a review concern about hidden follow-up, silent narrowing or multiple workstreams. Apply the work-item treatment and follow-up rules in [Evidence access and proportional effort](../skill.md#evidence-access-and-proportional-effort) within the allowed proposal sections.
-
-Governed authoring binds the exact change, proposal path, current governing inputs, prior identity for revision, authoring evidence and applicable authority before writing. Verify absence and no competing primary target for creation. Preserve historical reviews, unrelated artifacts and completed evidence; a changed proposal needs current assessment of its new identity. Workflow owns decisions about downstream reliance and reopening; the author never retargets an earlier judgment. Current registration, revision conflicts, retries and storage recovery follow [Records](../../cli/records.md) and [CLI](../../cli/cli.md). Reread and reassess stale or competing writes, preserve partial evidence and stop on ambiguous outcomes. A retry cannot silently adopt a different path, basis or transaction. Cleanup grants no reset authority: recovery must identify the exact authorized surfaces and preserve other owners' state.
-
-Preserve proof of exact portable targets, authority rejection without fallback, independent and late resource triggers, unknown predicates, partial/conflicting recording and resource failure.
-
-
-## Context view
-
-```mermaid
-flowchart LR
-    User["User and project decision owner"] -->|"intent, scope and authority"| Proposal["Proposal authoring"]
-    Vision["Vision and supplied evidence"] -->|"direction constraints and feasibility basis"| Proposal
-    Proposal -->|"exact proposal and authoring basis"| Review["Independent Proposal Review"]
-```
-
-## Runtime view
-
-```mermaid
-flowchart TB
-    Input["Resolve intent and exact target"] --> Classify["Classify portable/governed and strategic predicates"]
-    Classify --> Authority{"Required authority and resources valid?"}
-    Authority -->|"no"| Stop["Report owned gap; preserve existing work"]
-    Authority -->|"yes"| Draft["Author direction, scope and feasibility"]
-    Draft --> Check["Recheck target and relied-on basis"]
-    Check -->|"stale or ambiguous"| Stop
-    Check -->|"current"| Save["Write authorized proposal and author-owned evidence"]
-    Save --> Review["Hand exact subject to independent review"]
-```
-
-The author applies every triggered strategic predicate before dependent drafting. A newly arriving governed signal requires reclassification; a saved proposal or prior review does not authorize downstream Design. Required resource failures stop the dependent invocation under Skill's common contract.
-
-## Acceptance intent
-
-The following outcomes refine SKL-SR-04/05/08/10/24/27 for Proposal. Existing common Skill requirements retain their IDs and applicability. Proposal's structural resources implement the content contract; its authoring skill and conditional methods implement classification and safe writes. Assessment supplies Proposal Review criteria independently.
+| PROP-SR-01 | RR intake MUST preserve the request’s outcome, constraints, source and proposed solution without treating a proposal as approved IR. |
+| PROP-SR-02 | Analysis MUST inspect existing IR/SRs and decide justified reuse, refinement or creation, keeping material uncertainty visible. |
+| PROP-SR-03 | Authoring MUST respect exact requested scope, authority and existing work; ambiguous authority does not justify fallback or implicit expansion. |
+| PROP-SR-04 | Requirement Analysis MUST load the relevant REM methods and enough current model context to assess stakeholder need and supporting Feature/Scenario coverage. |
+| PROP-SR-05 | Operational recording MUST use current CLI tasks and revisions; recorded source material does not grant engineering acceptance. |
+| PROP-SR-06 | The first mandatory review MUST assess the requirement basis, including reuse. No separate Proposal approval gate or mandatory RR document is required. |
 
 ### Boundary scan and acceptance scenarios
 
 | Dimension | Requirement basis | Distinct outcome to demonstrate |
 | --- | --- | --- |
-| Input domain | PROP-SR-01, PROP-SR-04 | Missing, duplicated or unknown sections/predicates reject; valid conditional impact appears only when needed. |
-| State/lifecycle | PROP-SR-03, PROP-SR-06 | Portable create/revise changes only its exact proposal; governed work uses its selected current record contract. |
-| Identity/authority | PROP-SR-03, PROP-SR-05 | A stale or conflicting target stops without replacing another proposal or inheriting its approval. |
-| Composition/path | PROP-SR-02, PROP-SR-04 | Multiple independent goals trigger scope treatment; the complete required resource set supports the selected assembly. |
-| Temporal/retry | PROP-SR-04, PROP-SR-05 | A late governed signal or changed subject causes reclassification/reassessment before further writes. |
-| Failure/recovery | PROP-SR-03, PROP-SR-05 | Interrupted or ambiguous recording preserves partial evidence and returns to supported recovery without reset. |
-| Compatibility/migration | PROP-SR-01, PROP-SR-06 | Historical proposals retain their original bytes and contract; current authoring does not force retrospective sections. |
-| External/environment | PROP-SR-02, PROP-SR-04 | Unavailable external feasibility evidence remains an explicit bounded assumption or blocker; missing packaged methods stop dependent work. |
+| Input domain | PROP-SR-01 | Unknown contracts, malformed references or unsupported scope stop the affected operation without inferred defaults. |
+| State/lifecycle | PROP-SR-01 | Progress, accepted basis, review judgment, final Verify and historical completion remain distinct; saved state alone advances none. |
+| Identity/authority | PROP-SR-01 | The actual responsible actor, declared scope and current support govern reliance; an identifier or role label does not establish authority. |
+| Composition/path | PROP-SR-01 | Changed producer and consumer contracts are reconciled together, including packaged conditional resources and referenced engineering definitions. |
+| Temporal/retry | PROP-SR-01 | A changed basis requires rereading and proportionate reassessment; an old submission does not acquire current authority on retry. |
+| Failure/recovery | PROP-SR-01 | Interrupted work exposes its actual outcome and an owned next step without erasing unresolved issues or inventing success. |
+| Compatibility/migration | PROP-SR-01 | Retired procedures remain historical; successor behavior requires explicit applicable adoption/import and cannot relabel old approval. |
+| External/environment | PROP-SR-01 | Local engineering results remain separate from installed, published or hosted outcomes; required observations must actually be made. |
 
-### Test design
+## Test design
 
-The supported outcomes are a decision-sufficient direction artifact, safe exact-target authorship and an honest independent-review handoff. Apply [System's selection rules](../../test-design/rules.md): the groups below account for all six requirements. Direction loss, wrong-target writes and assumed approval have different consequences and need distinct observations; the four resource assemblies are input partitions, not four mandatory suites.
-
-| Group and requirement basis | Scenario, plausible defect and independent observation | Fixture and method | Realization and limits |
-| --- | --- | --- | --- |
-| Direction and feasibility; PROP-SR-01, PROP-SR-02, PROP-SR-06 | Given the batch-import goal in [Authoring's fixture](test-design/test-design.md#synthetic-artifact-fixture), inspect a proposal that silently permits partial import, one that postpones atomicity, and one that preserves it. The first two fail direction/scope sufficiency; the third exposes credible assumptions without prescribing implementation or claiming Design approval. A separate unavailable-evidence variant must disclose the assumption or blocker. | Independent walkthrough against the user's original goal and supplied evidence; compare actual complete proposal outputs, not their matching headings. | Proposed procedure here, with parent refinement in AUTH-RF-001. [Proposal guidance tests](../../../../tests/skill/skill_proposal_guidance_tests.py) and [authority tests](../../../../tests/skill/skill_authority_tests.py) protect section/wording contracts only. |
-| Content and conditional gates; PROP-SR-01, PROP-SR-04 | Starting with one valid current proposal, remove, duplicate or misorder a required section; supply an unknown strategic predicate alongside another consistency defect. Observe the relevant structural rejection, with unknown-value rejection first where the vocabulary is validated. Separately inspect a broad multipart request with two true predicates and a late additional predicate: all applicable gates are used before drafting, without inventing an extra level-two section. | Fresh valid proposal/package per malformed variation; independently enumerated seven required sections and optional impact position. Use actual validators for structure and independent walkthrough for predicate meaning. | Existing skeleton/gate wording checks in [Proposal guidance](../../../../tests/skill/skill_proposal_guidance_tests.py) are partial support. Executable negative-content and precedence coverage must be located or supplied during alignment; semantic predicate selection remains proposed. |
-| Exact target and authority; PROP-SR-03, PROP-SR-06 | Portable create selects an absent path and portable revise the exact existing proposal. Contrast an existing create target, a conflicting primary proposal, an escaped path and malformed governed identity. Inspect the proposed write set: invalid requests stop with original and neighboring bytes preserved, without portable fallback or lifecycle records. A late valid governed signal changes the required procedure before further action. | Private artifact tree with sentinel neighboring bytes, separately supplied authority and exact before/after identities; decision-table walkthrough of actual package guidance and proposed actions. | Proposed semantic procedure; [Proposal guidance](../../../../tests/skill/skill_proposal_guidance_tests.py) protects instructions and [Skill recording scenarios](../test-design/cases/recording-composition.json) supply common selection interactions. No agent runtime execution is implied. |
-| Recording, retry and history; PROP-SR-05, PROP-SR-06 | Given a governed revision based on P0, change its target to P1 before recording, or lose the response after a successful save. Inspect the next action: reread and reassess the exact target rather than overwrite P1, invent success, replay approval or reset unrelated state. An old settled proposal stays under its original contract; only the explicitly selected current proposal is authored. | Fresh synthetic v3 request/result packets, including conflict, saved-but-response-lost and recovery-required responses; historical bytes are immutable comparison inputs. | Proposed owner-level walkthrough. [CLI persistence proof](../../cli/cli.md#test-design) supplies actual storage guarantees; wording checks cannot establish the actor's retry decision. |
-| Portable resource sufficiency; PROP-SR-02, PROP-SR-04 | In a customer-like project without the internal checkout, follow ordinary portable and strategically gated paths. Remove the triggered strategic method in a separate copy: dependent work stops and identifies the missing resource; an untriggered method does not become a runtime prerequisite. | Installed-package reading packet with explicit project authority, complete baseline resources and one omission. Compare the reachable procedure with each required outcome. | [Portability tests](../../../../tests/skill/skill_portability_tests.py) and [resource tests](../../../../tests/skill/skill_resource_tests.py) provide bounded structural support; useful direction output and trigger decisions require the proposed independent review. |
-
-Record the inspected inputs, actual candidate artifact/action, expected difference, observations and limitations when each semantic procedure is performed. Authoring owns goal preservation across sibling stages; Proposal owns these local decisions. No recurring historic-proposal corpus or external evidence collection is required merely to exercise the procedure. The existing overview, Context and Runtime views already cover these authoring, resource and handoff boundaries; no new component or deployment is introduced.
-
-## Architecture Decisions
-
-| ID | Decision and rationale | Alternatives and consequences |
-| --- | --- | --- |
-| PROP-DEC-01 | Extract Proposal’s direction contract under Authoring while retaining common Skill policy and Assessment review ownership. | Keeping all specialist prose in Skill obscures the owner; duplicating it would create competing contracts. The extracted model adds focused review scope without adding a workflow stage. |
-
-## Quality and risks
-
-Requirements and representative outcomes guide review; structural validation does not establish semantic adequacy. Incomplete authority or a material upstream conflict stops dependent work with an explicit owner. Shared policy changes require reconciliation with the named owners, and moved documents retain historical approvals only for their original subjects.
+Inspect the current responsibilities and boundary scenarios against the owning REM model and Module contract. Structural checks establish format only; independent review judges semantic coverage. Runtime record behavior is exercised by the package’s operational store, update, reliance, review and maintenance tests; skill guidance is assessed in actual generated archives with the resource validator and independent scenario inspection. Required combined and negative proof is allocated in the adoption plan.

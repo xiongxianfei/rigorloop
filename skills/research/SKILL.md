@@ -14,15 +14,7 @@ Research answers: What decision-relevant facts can be established with sufficien
 
 ## Explicit recording
 
-Use this profile when the project has adopted the RigorLoop Record Format and explicitly selected the change. Read the project's governing documents. The Workflow model owns coordination, Review and Closeout owns assessment policy, Record Format owns stored shapes, and CLI owns construction and persistence. Current storage uses `rigorloop-records-v3`; historical stores remain unchanged archival evidence. Select the actual record contract; never mix versions within a store. Retired or unknown stored formats are rejected without fallback. Do not migrate or reinterpret historical records; preserve their bytes and meaning as archival evidence. The project need not contain RigorLoop's internal design repository.
-
-Use the contract-selected recording procedures in this skill and its conditional resources. Dispatch primary results by schema_version (2 or 3), then status and operation; a schema-3 error alone does not establish v3 storage. Read scope and omissions before relying on selected content. Retain substantive stage duties, permissions, independent assessment and proof obligations. Historical records grant no current execution authority.
-
-Use `rigorloop context --root PATH --change ID --input - --format json` with explicitly selected kinds/filters and full detail. Expand the selection when needed: omitted content is not evidence of absence. Copy `record_contract` and `revision` into the targeted request's `contract` and `expected_revision`. Use `rigorloop subject inspect --root PATH --path FILE --content full --format json` for the exact engineering basis and mechanical identities; supply relied-on subjects as `reads` with their expected identities.
-
-Make your decision, then use the purpose-specific command's `--help` and submit its targeted operation on stdin. Use `batch` for related explicit updates. Supply semantic values and any required applicability; the CLI constructs registry entries, preserves neighbors and serializes records. Do not reconstruct complete files or invoke historical eligibility first. Preview is optional; normal writes validate. A save does not approve work, establish readiness or select the next actor. Conflict requires rereading and reassessment; busy/recovery-required is not a save. Use explicit `record-store recover` for interrupted storage. Missing or stale evidence prevents reliance, not recording a correction.
-
-Retain the requested bounded factual investigation and source-attribution duties. When supporting this profile, read explicitly relevant records and engineering subjects; provide conclusions to the named decision owner. Use evidence record only for an actual observed check within your authorized scope. The owning actor adopts any material decision; research does not select applicability, approve a stage or invent a record type.
+For explicitly selected Change-managed work, use the packaged operational-recording reference and the executing CLI's capabilities. Current work uses targeted-recording-v2 / rigorloop-records-v4. Preserve the invocation's actual scope and existing authority; a storage save does not approve engineering work or permit external action. Use current context and opaque revisions, and reconcile interruptions before retrying. Do not use SQL or edit runtime storage directly.
 
 ## Workflow role
 
@@ -88,6 +80,11 @@ Return the artifact to the named Proposal, Design, Delivery, Implementation, Ver
 Do not claim that evidence approves a proposal, design, delivery package, implementation, verification result, or product direction; that another stage's artifact or lifecycle state changed; that unsourced inference is established fact; or that unavailable evidence proves absence. Research completion proves only that its supporting artifact was produced or explicitly revised.
 
 ## Resource map
+
+- READ `references/targeted-recording-v2.schema.json` when constructing a supported mutation input within the invocation’s authority.
+- READ `references/rigorloop-records-v4.schema.json` when interpreting closed record fields or referenced task types.
+
+- READ `references/operational-recording.md` when inspecting or recording Change-managed work.
 
 - READ `references/discovery-support.md` for every explicit invocation before creating or revising the supporting artifact.
 - READ `references/source-and-repository-method.md` when source selection, freshness, repository-first investigation, external evidence, or citation needs more than the core sequence.

@@ -3,33 +3,28 @@
   "type": "function",
   "title": "Read explicitly selected engineering records",
   "status": "draft",
-  "description": "Retrieve recorded values from a coherent supported registered change snapshot according to exact actor selection. Preserve each query's content, scope, absence, and continuation contract without evaluating readiness or changing records.",
+  "description": "Read explicit current operational scope from one coherent associated snapshot, preserving complete selected meaning, explicit absence and current support.",
   "inputs": [
-    "Selected supported change identity and explicit status/context/show/advanced-inspection request.",
-    "Selection filters, requested complete or allowed projection detail, output budget, and any expected revision/cursor."
+    "Explicit project, Change and supported context or item query.",
+    "Optional admitted bounded selectors."
   ],
   "preconditions": [],
   "outputs": [
-    "Selected records, complete explanations or requested projections with actual record contract, revision, identities, applicability where specified, and exact scope.",
-    "Known counts, omissions, optional absence, missing paths, continuation, or explicit structural/I/O/conflict/recovery outcomes."
+    "Complete selected current content, coherent record contract/revision and bounded selector index where applicable.",
+    "Explicit absent, unavailable, conflicting or failed outcome."
   ],
   "behavior": [
-    "Resolve authority from the declared registry and obtain a coherent snapshot or an explicit busy/recovery-required outcome.",
-    "Apply literal filters with declared combination, deduplication and ordering; never infer relevance, add stage-selected records, or derive a next action.",
-    "Return complete selected Verify and shared material-decision explanation without unrelated bodies; preserve Review/findings differences and explicitly requested field selection with omission/absence metadata.",
-    "Distinguish no entry, unregistered optional record, registered missing content, unknown selected total, unreadability and malformation; do not infer a contract for an absent or invalid store.",
-    "Bind pagination to normalized selection and observed revision, return only whole admissible items, and reject oversized first items or changed/invalid continuation without partial content.",
-    "Supply raw selected values and exact scope to result projection; no renderer/projection becomes a second authoritative record or modifies stored bytes.",
-    "A missing operational store is reported as unavailable history, distinct from an available store with no matching records; reads never initialize, import or restore a store implicitly."
+    "Resolve current typed records from one coherent SQLite snapshot; maintenance exclusion yields explicit unavailability or busy.",
+    "Apply only declared selectors; no inferred authority or automatic next activity.",
+    "Return complete selected assessment, evidence, rationale and support without unrelated bodies.",
+    "Distinguish omitted selections, absent accounts, unavailable retained payloads and invalid stores.",
+    "Serialize the bounded complete selected result before output; no cursor or field-projection protocol is implied.",
+    "Reads never initialize, migrate, choose maintenance recovery or edit judgments; SQLite may establish its determined transaction outcome."
   ],
   "failure_behavior": [
     {
-      "condition": "The expected revision/cursor no longer identifies the requested coherent selection.",
-      "outcome": "Report conflict or invalid continuation without selected items; require a fresh actor choice."
-    },
-    {
-      "condition": "Selected data is unavailable, unsafe, malformed, unsupported, or exceeds the declared complete-output bounds.",
-      "outcome": "Return the specific missing/incomplete/rejected outcome without substituting empty success, truncating content, or performing recovery."
+      "condition": "Selected scope is absent, invalid, unavailable or oversized.",
+      "outcome": "Return explicit scoped failure or absence without truncation, invented success or silent legacy fallback."
     }
   ],
   "sources": [
@@ -47,6 +42,11 @@
       "source": "SRC-LOCAL-OPERATIONAL-ANALYSIS",
       "locator": "FUNC-042",
       "basis": "Draft derivation from the refined IRs and RR proposal; no approval, implementation or satisfaction claim."
+    },
+    {
+      "source": "SRC-SQLITE-ADOPTION",
+      "locator": "FUNC-042",
+      "basis": "Reconcile existing use/behavior with current explicit task selection, coherent SQLite outcomes and attributable judgments; no new stakeholder need or runtime qualification is inferred."
     }
   ],
   "allocated_to": "MOD-010"

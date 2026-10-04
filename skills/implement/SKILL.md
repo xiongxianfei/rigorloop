@@ -1,234 +1,38 @@
 ---
 name: implement
-version: "1.0.0"
-schema-version: skill-readability-v1
-description: >
-  Implement one approved milestone or isolated implementation request with tests or proof first, then hand it to code-review with validation evidence. Use when requirements, scope, and validation commands are clear enough to code. Use bugfix for defect reproduction/fix loops, code-review to review implementation, verify for final readiness, and pr for PR handoff.
-argument-hint: [plan path, milestone ID, feature name, or implementation request]
+description: Realize accepted requirements and reviewed design in authorized, testable milestones. Maintain current evidence and hand off the complete implementation for independent whole-change Code Review.
 ---
 
-# Test-driven implementation
+# Implement
 
-## Workflow role
+Read the governing requirements/design, material decisions, delivery plan and verification allocation before changing implementation. Use concrete proof first when feasible; reproduce defects and test the affected behavior. Run existing relevant checks and address known in-scope defects before claiming implementation complete.
 
-- role_name: implement
-- stage: execution
-- upstream: approved Design Review package, approved Delivery Review package, accepted review-resolution finding, bugfix request, or isolated implementation request with clear scope
-- downstream: code-review
-- summary: Implement one scope-complete slice, record validation evidence, and hand it to code-review.
-- must_not_claim: review passed, clean review, branch readiness, PR readiness, final verification, final closeout readiness, or derived artifact currency without owning proof.
+Keep changes bounded and complete across affected producers, consumers and generated resources. Preserve unrelated work. Discoveries that change obligations return to requirement-analysis; logical behavior to system-design; allocation or Interface design to architecture-design; delivery sequencing to plan. Do not hide a changed requirement in code or test expectations.
 
-For planned initiatives, treat the plan and upstream artifacts as read-only.
-Write implementation, tests, and implementation evidence only; route owns milestone and routing state.
+Complete milestones with their required checks and report actual progress. Continue remaining eligible implementation when already authorized; no milestone reviewer or clean-review record is required. Optional advisory reviews can expose defects, but they do not settle milestones or replace whole-change approval. A request for one isolated slice grants no wider continuation.
 
-## Scope and inputs
+Maintain selected current evidence, actionable blockers, rationale and the next action at meaningful transitions. Comparable working evidence can be replaced; preserve unresolved obligations and support still relied upon. Do not record every command or preserve every test log.
 
-Implement one approved milestone or a clear isolated implementation request with tests or proof first. Requirements, scope and validation must be stable. Use `bugfix` for defect investigation or repair, the authoring/review owner for artifact work, `verify` for final readiness, and `pr` for PR preparation. Do not invent requirements or implement unrecorded review findings.
-
-Read the applicable project instructions and governing behavior, relevant code/tests and neighboring patterns, proof obligations and validation commands before editing. Retained feature specs, test specs and ADRs apply when the project's selected contract requires them; they are not mandatory artifacts for every isolated request.
-
-For planned work, additionally require the active plan's exact current milestone, current recorded approved Delivery Review ID and member map, and the approved Design Review ID and package it binds. Read accepted resolution evidence when implementing findings and architecture/ADRs when their boundaries are touched. Missing or stale required approval stops implementation and returns to its owner.
-
-Start with the smallest sufficient evidence set and expand when missing, stale, contradictory or insufficient. Read the whole file when it or surrounding context controls the decision.
-
-## Project-local evidence
-
-Public skills operate in customer-project mode by default.
-Use relevant project-local artifacts such as `AGENTS.md`, `CONSTITUTION.md`, approved specs, the active plan and test spec, architecture records, review resolution, code, tests, and CI commands. For governed placement and lifecycle facts, consume authoritative CLI workflow context.
-Do not require RigorLoop repository-internal artifacts in customer projects; use safe portable defaults and block on ambiguity.
-
-## Invocation classification
-
-Classify the invocation before loading conditional procedure or mutating implementation state.
-
-| Profile | Required authority | Conditional procedure |
-| --- | --- | --- |
-| `IP0-isolated` | Clear direct implementation scope | neither planned nor automation reference |
-| `IP1-planned` | Valid `planned_milestone_context` | planned-milestone reference |
-| `IP2-planned-armed` | Valid planned context plus matching `armed_automation_context` | planned and automation references |
-
-`planned_milestone_context` requires a workflow-managed invocation, a valid active plan, one exact current milestone owned by `implement`, and a milestone state that permits implementation.
-
-`armed_automation_context` additionally requires current durable workflow authorization, the current review or correction mode, matching change and milestone identity, and non-stale evidence.
-
-Armed automation without a valid planned milestone is invalid.
-Conversational wording alone establishes neither predicate.
-Missing, stale, mismatched, contradictory, or ambiguous evidence stops before conditional procedure is loaded or implementation state is mutated.
-
-Classify `governed_recording_context` independently using the Recording boundary below; it can apply to any valid IP0/IP1/IP2 invocation. Shared-method triggers remain independent. Unknown profiles stop before consistency checks; reassess late triggers before dependent action.
+When the complete delivered scope is ready, hand all relevant code, tests, configuration, migrations, generated resources, instructions and documentation to an independent whole-change reviewer. Implementation completion is a substantive claim about that scope, not review approval or final Verify. Own the corrections and relevant checks; return the revised candidate for proportionate reassessment within the same gate.
 
 ## Recording boundary
 
-`governed_recording_context` means the project has adopted the RigorLoop Record Format and explicitly selected a change requiring its current recording profile. It is independent of planned or armed execution and does not mean every durable advisory result uses a governed store.
-
-Read `references/governed-implementation-recording.md` before dependent recording, including when the trigger becomes true later. Select the actual `rigorloop-records-v3` contract; malformed, stale, conflicting or ambiguous governed signals stop affected writes without portable fallback. Missing, unreadable, escaped, stale or mixed-version required resources stop dependent work; do not reconstruct them. Untriggered resources do not block unrelated runtime work.
-
-Loading or saving grants no approval, readiness or continuation. Preserve exact subjects, other actors' decisions and unresolved origins; use the mapped procedure for scoped reads, targeted writes, applicability and conflict/recovery. Project-selected recording outside this profile keeps its own authority.
-
-## Test criteria application
-
-When the project explicitly adopts shared test criteria, use the selectively loaded guidance below for test quality and maintenance. These criteria replace source-local shared test-purpose, case-selection and maintenance criteria for adopted work; retain specialist methods and historical evidence. Actual judgments, evidence applicability and closeout consequences remain with the responsible assessors under the project's review policy.
-
-## Review and Closeout application
-
-When project authority explicitly adopts Review and Closeout policy, use the packaged application below for shared assessment meaning. It replaces source-local judgment, independence, applicability, concern-disposition and closeout rules in this skill and its conditional resources; retain specialist methods and contract-selected storage procedures. Historical assessments retain their original meaning but grant no current runtime support. Missing or contradictory required guidance stops dependent reliance.
-
-## First-pass completeness
-
-Before editing, identify the same-slice completeness set: in-scope requirements, authored and aligned surfaces, named edge cases, and targeted validation.
-
-A `first-pass acceptable result` means:
-
-- every in-scope requirement and edge case is addressed;
-- each required surface is updated or recorded as `unaffected with rationale`;
-- no known in-scope defect is deferred to review or cleanup;
-- the smallest scope-complete change, rather than merely the smallest diff, is implemented;
-- required targeted validation passes;
-- the result does not depend on later cleanup to become contract-complete.
-
-Record any unchanged required surface and its rationale in contributor-visible evidence.
-A later issue that this completeness set should have caught is a `preventable first-pass miss`.
-If missing or conflicting inputs prevent a complete first pass, stop rather than guess.
-If a formal workflow-managed delivery package lacks recorded, approved, current `delivery-review` evidence, or a substantive member edit made that approval stale, stop before implementation and route to the owning authoring or review stage.
-
-## Implementation contract
-
-### Tests and validation
-
-- Under adopted test criteria, use the [selection method](references/test-quality.md#select-requirements-and-proof) to realize allocated model groups with concrete conditions, fresh realistic fixtures, independent assertions and required public or integrated observations. Inspect existing assertions and native discovery; preserve useful unlisted regressions and reconcile changed realization links. Route missing behavior or allocation to its owner instead of treating a passing or cheaper suite as sufficient protection.
-- Write or update tests or deterministic proof first when feasible.
-- Confirm expected failure for new behavior or regression coverage when feasible.
-- Implement the minimum scope-complete change, rerun narrow proof, then refactor only within scope.
-- Prefer selector-selected targeted proof before optional broad smoke.
-- Use the project's validation selector, run all selected checks, and preserve stable check IDs such as `skills.validate` when they apply.
-- Preserve authoritative broad-smoke triggers and record stable selected check IDs when useful.
-- Stop on a failing required command until it is fixed or recorded as a blocker.
-
-### Scope and ownership
-
-- Implement only approved requirements and the current slice.
-- Do not add unrelated refactors or unapproved public behavior.
-- Do not defer a required same-slice correction.
-- Stop and route newly discovered spec, architecture, security, permission, or owner-decision gaps.
-- Do not update the plan, upstream artifacts, artifact settlement, or workflow as implementation bookkeeping.
-
-### Change-local evidence
-
-For ordinary non-trivial work, maintain `docs/changes/<change-id>/change.json` plus stage-owned implementation evidence. Successful final Verify records the durable change explanation in the registered Verify record.
-When creating a root in governed mode, use the CLI-resolved location. In portable mode, use `YYYY-MM-DD-slug` without claiming governed placement.
-Do not broaden this requirement to isolated manual work that does not claim complete workflow delivery.
-## Operating sequence
-
-1. Confirm authority, profile, scope, requirements, approved boundaries, proof obligations, and edge cases.
-2. Load only the resources mapped for that profile.
-3. Add or update tests/proof first and run the narrowest relevant command.
-4. Implement the smallest scope-complete change and rerun narrow proof.
-5. Audit authored and aligned surfaces; refactor only inside the slice.
-6. Run milestone-targeted validation before optional broad smoke.
-7. Record decisions, discoveries, commands, results, unchanged surfaces, and follow-ups in implementation evidence.
-8. For planned work, follow the mapped milestone procedure for commit and state-sync evidence.
-9. Hand the completed slice to `code-review`; do not start the next milestone before clean review.
-
-Tests must assert real behavior rather than broad mocks or snapshots that pass for the wrong reason.
-Before changing behavior, confirm every implemented boundary or selected interaction has an approved owner and proof obligation.
-
-## Handoff
-
-- Normal next stage: `code-review` for the implemented milestone or isolated slice.
-- Conditional next stages: stop for a spec, architecture, owner-decision, permission, or validation blocker; return to the same milestone for accepted review corrections; continue to another milestone only after `route` confirms a recorded clean review.
-- Route planned stage transitions through the `route` skill.
-
-## Stop conditions
-
-Stop before mutation or review handoff when:
-
-- required authority, source artifacts, boundary ownership, or proof is missing, stale, unknown, or contradictory;
-- scope is ambiguous or a spec, architecture, security, permission, or owner decision is needed;
-- tests or required validation fail and are not fixed;
-- the slice cannot meet first-pass completeness;
-- planned work cannot produce current implementation evidence, state synchronization, and a review-requested handoff.
-
-## Claims this skill must not make
-
-Do not claim review passed, clean review, review-clean status, branch-ready, PR-ready, `pr-body-ready`, `pr-open-ready`, ready-for-final-closeout, final verification, final closeout, or generated-resource currency without owning proof.
-
-Implementation completion is evidence for review, not milestone closeout.
-
-## Progress, readiness, closeout, and Done
-
-- Progress means work that has happened so far.
-- Readiness means the next stage that can happen.
-- Closeout means the current artifact or stage satisfied its checklist.
-- Done means final lifecycle state after required gates are complete.
-- Readiness is not Done. Implementation readiness for `code-review` is not review closeout, branch readiness, or PR readiness.
-
-## Generated Markdown readability
-
-When creating generated or generator-shaped Markdown, write ordinary prose as normal Markdown paragraphs. Do not split a sentence across physical source lines merely for wrapping or clause separation; multiple sentences may remain in one paragraph. Keep stable IDs and use tables for repeated mappings.
-Diagrams are optional and should reduce real cognitive load.
-Do not require manual-proof contracts from readability guidance alone.
+For Change-managed work, read the packaged operational interface reference before relying on or updating current state. Use supported CLI tasks and the inspected opaque revision; skills do not use SQL or edit runtime storage. An isolated invocation keeps its requested scope. Installation alone does not adopt workflow policy.
 
 ## Resource map
 
-- READ `references/governed-implementation-recording.md` when `governed_recording_context` is true, before dependent recording.
+- READ `references/operational-recording.md` when inspecting or recording Change-managed work.
+- READ `references/targeted-recording-v2.schema.json` when constructing a recording request.
+- READ `references/rigorloop-records-v4.schema.json` when checking the types used by that request.
 
-- READ `references/test-quality.md` when adopted criteria apply and this invocation authors, allocates or assesses test obligations.
-- READ `references/test-maintenance.md` when adopted criteria apply and this invocation changes tests or assesses test maintenance, removal or its impact.
+- READ `references/boundary-first-method-v1.md` when the project applies its boundary first method v1 criteria to this invocation.
 
-- READ `references/review-reliance.md` when applying adopted assessment applicability, correction or closeout policy.
+- READ `references/review-reliance.md` when the project applies its review reliance criteria to this invocation.
 
-- READ `references/boundary-first-method-v1.md` when approved boundary, interaction, or proof IDs are missing, stale, unknown, ambiguous, conflicting, or insufficient for implementation.
-- READ `references/planned-milestone-implementation.md` when authoritative workflow evidence establishes a current planned milestone owned by `implement`.
-- READ `references/automated-review-correction.md` only when durable workflow evidence formally arms automated review or correction for that same current change and milestone.
-- COPY `assets/implementation-result-skeleton.md` when producing the implementation result.
-  Fill: the core result and only the conditional groups applicable to the classified profile.
-  Omit: inapplicable groups, empty fields, and meaningless `not applicable` values.
-  Do not emit unfilled placeholders.
+- READ `references/test-maintenance.md` when the project applies its test maintenance criteria to this invocation.
 
-## Boundary-first method
-
-Run this compact scan before any stage-owned decision that can change observable behavior, and whenever the input cites an active boundary contract or stable boundary, interaction, or proof ID. Do not wait for the user to name the method.
-
-1. Which inputs or actors can change the outcome?
-2. Which state or timing conditions can change the outcome?
-3. Which public, sibling, helper, or alternate path can change the outcome?
-4. Which failure, retry, recovery, compatibility, or external condition can change the outcome?
-
-If the work is non-behavioral, cites no active boundary identity, and the scan finds no outcome-changing condition, continue under the ordinary stage contract. The scan alone does not create a formal record, ID, proof map, artifact, or user-visible scenario inventory.
-
-Start with the exact approved rows cited for the current decision. Expand approved context only when an ID or outcome is missing, stale, unknown, ambiguous, conflicting, escaped, or insufficient to explain observed behavior. A new or changed normative outcome routes to `design`. A pre-implementation verification-allocation gap routes to `plan`. Historical contracts grant no current progression authority. Downstream stages do not redefine or rename upstream IDs.
-
-Add a scenario only for a distinct outcome or material authority, trust, state, timing, recovery, path, compatibility, external-dependency, incident, or regression hazard. Stop when every applicable boundary and selected interaction has direct proof; do not build a Cartesian inventory.
-
-The project's selected contract owns formal adoption and document format. Unknown current model markers and malformed records fail structural validation. Feature/proof operations are unsupported; existing documents may be read as sources, and scoped adoption requires explicit project authority. Do not infer adoption from a historical activation snapshot or from installing a skill. Explain concisely when a formal record is required or an upstream gap blocks progress; do not request redundant consent for contract-required work. Structural validation cannot author, repair, or approve semantic content.
-
-Stop on missing boundary or proof ownership and implement against the approved model and Delivery allocation.
-
-Before changing production behavior, confirm every implemented boundary or selected interaction has an approved owner and proof obligation. Stop implementation before mutation when an owner is absent, an ID is stale or unknown, required proof is missing, or implementation exposes a new boundary that requires an upstream decision.
-
-## Evidence collection efficiency
-
-Use bounded evidence before broad reads or raw excerpts.
-Use summary and stable-ID first reasoning before broad reads or raw excerpts.
-Prefer check IDs, requirement IDs, test IDs, file paths, counts, line citations, matching line numbers, diffs, and targeted excerpts when inspecting large files, generated output, validation logs, or repeated scans.
-Output caps are safety rails, not evidence-selection strategy.
-Validation summaries must not change selected check coverage, command exit behavior, failure detection, or required validation evidence.
-Read exact ranges after locating relevant lines, then expand only when the narrower evidence is insufficient.
-
-## When full-file read is required
-
-Read the full file when the whole file is the review target, the relevant section cannot be isolated safely, surrounding context can change the conclusion, bounded searches disagree or produce incomplete evidence, or a behavior-changing edit depends on the whole source-of-truth artifact.
-
-## Output skeleton
-
-```md
-COPY `assets/implementation-result-skeleton.md` for the implementation result.
-Fill <core fields and applicable profile groups> required by this skill.
-Omit inapplicable groups and do not emit unfilled placeholders.
-```
+- READ `references/test-quality.md` when the project applies its test quality criteria to this invocation.
 
 ## Expected output
 
-Copy `assets/implementation-result-skeleton.md` and emit its core result plus only the groups applicable to the invocation profile.
-The asset owns labels and layout; this file and the applicable procedure reference own status meaning, permission, claims, and handoff behavior.
-Do not imply review, verification, branch, PR, or final-closeout outcomes.
+Report the actual scoped outcome, governing basis, changed subjects or recorded judgment, material gaps and the next authorized action. Distinguish progress, review approval, final verification and external publication; claim only outcomes supported by this invocation.

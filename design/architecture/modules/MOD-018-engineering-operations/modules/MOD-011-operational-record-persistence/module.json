@@ -3,22 +3,23 @@
   "type": "module",
   "title": "Work record storage",
   "status": "draft",
-  "description": "Validates and stores operational work records through exact candidate construction, conflict-aware publication and explicit recovery.",
+  "description": "Stores coherent current operational accounts and selected support, validates typed tasks, and owns explicit backup, restore and qualified migration.",
   "responsibilities": [
-    "Read coherent operational-record snapshots and expose recorded values separately from observations.",
-    "Validate supported record kinds and construct exact lossless candidates for explicit targeted edits.",
-    "Enforce revision, identity, byte-preservation, transaction, and recovery guarantees at the authoritative write boundary.",
-    "Inspect explicitly selected safe subject bytes and their identities for caller-owned decision bases; do not choose those subjects or rewrite prior expectations during a later mutation.",
-    "Supply exact bounded storage and observation facts for command-owned receipt preparation, bind publication to that same candidate context, and report actual terminal state without projecting an engineering judgment."
+    "Read coherent current accounts with explicit availability and support gaps.",
+    "Validate complete typed candidates and preserve unresolved obligations and assessor attribution.",
+    "Enforce project association, opaque revisions, atomic transactions and safe declared-read/attachment boundaries.",
+    "Supply exact current facts for the command-owned fixed receipt encoder and report actual commitment.",
+    "Capture coherent selected backups, validate associated restoration and explicitly import qualified source facts with preserved originals."
   ],
   "owned_state": [
-    "Current operational record bytes, storage revisions, coherent snapshot identity, and transaction/recovery bookkeeping under the existing Record Format and CLI contracts.",
-    "Transient subject identity/content observations used for declared read sets; the inspected external project files remain outside this Module's mutation authority."
+    "Associated project SQLite records and revisions, selected retained payloads and maintenance coordination.",
+    "Transient declared-read observations; repository engineering definitions remain external read-only subjects."
   ],
   "scope": {
     "includes": [
-      "Published v3 record inspection, structural checking, exact candidate construction, coherent publication, and recovery.",
-      "Read-only byte identity and optional full-content inspection of explicitly selected project subjects used by the operational record safety contract."
+      "Current v4 operational tasks and typed queries through IF-003.",
+      "Safe scope-limited compared reads and review preparation.",
+      "Explicit selected backup, restore, transfer and qualified migration."
     ],
     "excludes": [
       "Engineering judgment or progression policy, implicit stored-format migration, interpretation of the new REM model collections, or publication/installation authority."
@@ -29,9 +30,10 @@
   ],
   "consumes": [],
   "design_limits": [
-    "This responsibility is distinct from MOD-001 Definition storage, whose first draft concerns REM definitions and does not select these operational-format or transaction guarantees.",
-    "All existing CLI atomicity, exact-byte preservation, external-edit limits, and recovery rules remain applicable. No weaker guarantee is inferred from IF-001.",
-    "IR-008 SR-040 through SR-047 have draft allocated obligations and explicit command cooperation through IF-003. The subordinate realization maps selected source responsibilities without claiming implementation conformance or adoption; current record-store code and Designs retain their authority."
+    "MOD-001 owns engineering definitions; MOD-011 owns operational records.",
+    "External edits are covered at declared observations, not atomically locked with repository files.",
+    "Historical contracts and imported judgments retain their original meaning. Source-observed realization is distinct from execution qualification and project adoption.",
+    "SR-078 cross-Change history lookup remains separately deferred."
   ],
   "sources": [
     {

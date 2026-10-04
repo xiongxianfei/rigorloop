@@ -1,10 +1,9 @@
-import { isDeepStrictEqual } from "node:util";
-import {MIB,fail,plain,jsonDomain,decode,strictJSON,parseRequestJSON} from "./record-json.js";
+import {MIB,fail,plain,jsonDomain,decode,strictJSON} from "./record-json.js";
 
 
 // Shared mechanics; each selected schema retains its own closed contract.
 export function createRecordFormat(schemaDocument, {version, contract}) {
-const KINDS = new Set(["change", "review", "evidence", "decisions", "verify", "request"]);
+const KINDS = new Set(["change", "review", "evidence", "decisions", "verify"]);
 function safePath(path) {
   if (typeof path !== "string" || !/^[\x20-\x7e]+$/.test(path) || path.length > 1024 || path.includes("\\") || path.startsWith("/") || /^[A-Za-z]:/.test(path) || path.split("/").some(p => !p || p === "." || p === "..")) fail("unsafe-path");
 }
@@ -70,8 +69,8 @@ function pathKind(changeId, path) {
 function validateRecord(kind, value) {
   if (!KINDS.has(kind)) fail("unknown_value kind");
   jsonDomain(value);
-  if (plain(value) && Object.hasOwn(value,"schema_version") && value.schema_version!==(kind === "request" ? 2 : version)) fail("unsupported-contract");
-  if (["change","request"].includes(kind) && typeof value?.contract === "string" && value.contract !== contract) fail("unsupported-contract");
+  if (plain(value) && Object.hasOwn(value,"schema_version") && value.schema_version!==version) fail("unsupported-contract");
+  if (kind === "change" && typeof value?.contract === "string" && value.contract !== contract) fail("unsupported-contract");
   validate(schemaDocument.$defs[kind], value);
   visit(value, entry => {
     if (plain(entry) && Object.hasOwn(entry, "required_outcome") && Object.hasOwn(entry, "resolution")) {
@@ -83,16 +82,6 @@ function validateRecord(kind, value) {
     const paths = new Set(value.records.map(r => r.path));
     if (value.applicability.length !== paths.size || value.applicability.some(a => !paths.has(a.path))) fail("applicability registry mismatch");
   }
-  if (kind === "request") {
-    const writePaths = new Set(value.writes.map(write => write.path));
-    if (value.reads.some(read => writePaths.has(read.path))) fail("read/write path overlap");
-    for (const write of value.writes) {
-      pathKind(value.change_id, write.path);
-      const parsed = parseRecord(pathKind(value.change_id, write.path), write.content);
-      if (parsed.change_id !== value.change_id) fail("candidate change identity mismatch");
-    }
-    for (const read of value.reads) if (read.path === ".rigorloop/record-store" || read.path.startsWith(".rigorloop/record-store/")) fail("transient decision basis");
-  }
   const ids = kind === "change" ? [...value.models, ...value.work, ...value.blockers].map(x=>x.id)
     : kind === "review" ? [value.id, ...value.findings.map(x=>x.id)] : [];
   if (new Set(ids).size !== ids.length) fail("ambiguous referenceable identity");
@@ -101,27 +90,16 @@ function validateRecord(kind, value) {
 
 function parseRecord(kind, input) {
   if (!KINDS.has(kind)) fail("unknown_value kind");
-  const text = decode(input, kind === "request" ? 8*MIB : MIB);
+  const text = decode(input, MIB);
   return validateRecord(kind, strictJSON(text));
-}
-
-function validateRequest(input) {
-  return parseRecord("request", input);
-}
-
-function creation(request, rootExists) {
-  validateRecord("request", request);
-  if (typeof rootExists !== "boolean") fail("root existence must be explicit");
-  if (request.expected_revision !== null || rootExists || request.writes.some(w => w.expected_identity !== null) || !request.writes.some(w => w.path === `docs/changes/${request.change_id}/change.json`)) fail("creation requires an absent root and absent write targets");
-  return request;
 }
 
 // Reference namespaces belong to the stored format, never inferred from ID shape.
 function validateSet(changeId, files) {
-  return parseSet(changeId,files,false);
+  return parseSet(changeId,files);
 }
 
-function parseSet(changeId, files, before) {
+function parseSet(changeId, files) {
   if (!plain(files)) fail("expected candidate file map");
   validate(schemaDocument.$defs.id, changeId);
   const root=`docs/changes/${changeId}/`, manifest=root+"change.json";
@@ -129,7 +107,6 @@ function parseSet(changeId, files, before) {
   if (Object.keys(files).length > 65) fail("candidate file limit");
   let total=0;
   for (const content of Object.values(files)) {
-    if(before && content===null) continue;
     if (!(typeof content === "string" || Buffer.isBuffer(content))) fail("invalid candidate bytes");
     total+=Buffer.byteLength(content);
   }
@@ -140,7 +117,6 @@ function parseSet(changeId, files, before) {
   const parsed=new Map([[manifest,change]]), kinds=new Map([[manifest,"change"]]);
   for(const record of change.records) {
     if (!Object.hasOwn(files,record.path) || files[record.path]===null) {
-      if(before) continue;
       fail("broken-reference");
     }
     const data=parseRecord(record.kind,files[record.path]);
@@ -150,7 +126,6 @@ function parseSet(changeId, files, before) {
   }
   const membership=new Set([manifest,...change.records.map(r=>r.path)]);
   if(Object.keys(files).some(path=>!membership.has(path))) fail("unregistered candidate file");
-  if(before) return parsed; // Missing/dangling prior content may be repaired.
   const targets=new Map();
   for(const [path,data] of parsed) {
     const ids=new Map();
@@ -173,24 +148,5 @@ function parseSet(changeId, files, before) {
   return parsed;
 }
 
-function preserve(changeId, beforeFiles, afterFiles) {
-  const before=parseSet(changeId,beforeFiles,true), after=validateSet(changeId,afterFiles);
-  const manifest=`docs/changes/${changeId}/change.json`;
-  const membership=new Set(after.get(manifest).records.map(r=>r.path));
-  if(before.get(manifest).records.some(r=>!membership.has(r.path))) fail("existing registry member removed");
-  for(const [path,data] of before) {
-    const next=after.get(path);
-    if(!next) fail("existing record removed");
-    for(const collection of ["blockers","findings"]) {
-      for(const concern of data[collection]??[]) {
-        const retained=next[collection]?.find(x=>x.id===concern.id);
-        if(!retained) fail("existing concern identity must be preserved");
-        if(collection==="blockers" && !isDeepStrictEqual(concern.origin,retained.origin)) fail("concern origin must be preserved");
-      }
-    }
-  }
-  return after;
-}
-
-return {parseRecord,validateRecord,validateSet,preserve,creation,pathKind,validateRequest,parseRequestJSON};
+return {parseRecord,validateRecord,validateSet,pathKind};
 }

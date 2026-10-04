@@ -3,7 +3,7 @@
   "type": "function",
   "title": "Publish fresh record candidates as coherent transactions",
   "status": "draft",
-  "description": "Readers observe one coherent recorded state; contention, drift and interruption do not overwrite winning work or conceal missing evidence. This logical behavior has the scope and limits of SR-044; retained v3 realization facets require reconciliation before replacement-store adoption.",
+  "description": "Readers observe one coherent recorded state; contention, drift and interruption do not overwrite winning work or conceal missing evidence. This logical behavior has the scope and limits of SR-044; current SQLite realization and maintenance remain distinct.",
   "inputs": [
     "Explicit supported operation, selected project/Change and expected coherent state.",
     "Actor-supplied candidate or verified recovery basis, with declared subject and artifact identities."
@@ -15,10 +15,10 @@
   "behavior": [
     "Every write names its expected revision, target set and identities, and declared decision-basis identities. Observed mismatches produce conflict requiring reread and a new actor decision, with no silent refresh or merge.",
     "Competing supported writers cannot overwrite one another. Supported readers obtain coherent before/after state or an explicit unavailable/busy/recovery outcome, never a usable mixed state; saved means all selected record effects are durably committed.",
-    "Primary, advanced, helper, creation, and recovery paths share path containment and protection against observed ancestor substitution. Cross-change writes, traversal, symlink escape, hard-linked authoritative targets, unsupported paths, and unexpected overwrite are rejected.",
+    "Supported task, creation and maintenance paths share path containment and protection against observed ancestor substitution. Cross-change writes, traversal, symlink escape, hard-linked authoritative targets, unsupported paths, and unexpected overwrite are rejected.",
     "A fresh identical candidate returns unchanged only after current preconditions pass. A lost-response retry with the old revision conflicts even if the earlier save succeeded; no retry duplicates entries, increments semantic state, or creates new approval.",
     "Observed decision-basis drift is checked before publication and again before commitment is reported. Before commit it prevents publication or requires supported uncommitted recovery. If detected after commit, report the actual committed outcome and drift for renewed applicability assessment; never roll back acknowledged commitment or conceal the external-edit timing limitation.",
-    "A batch publishes its complete validated candidate coherently. Interruption exposes either an established before/committed state or an explicit recovery condition; a record claiming available evidence cannot commit with an incomplete required payload. Record publication does not atomically govern arbitrary engineering-file edits."
+    "A typed task publishes its complete validated candidate coherently. Interruption exposes either an established before/committed state or an explicit recovery condition; a record claiming available evidence cannot commit with an incomplete required payload. Record publication does not atomically govern arbitrary engineering-file edits."
   ],
   "failure_behavior": [
     {

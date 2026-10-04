@@ -35,7 +35,7 @@
       "approach": "Provide bounded current-state reads and explicit updates with actor attribution, reference integrity, stale-write protection, atomic publication and truthful recovery outcomes. Retain selected history only under its declared scope; unavailable information is not empty state or approval. IR-003 owns handoff and retention meaning; this IR owns reliable commands."
     },
     "how_much": {
-      "scope": "Covers command admission, discovery, selected reads, explicit recording, concurrent local access, transaction recovery, result projection and private diagnostics, extended to supported operational backup, restoration, transfer and migration commands. SR-040–047 and new SR-078 express the revised draft operational obligations. Existing ARs, Interfaces and realization observations retain their v3 scope and require downstream architecture reconciliation before replacement-store adoption; their prior assessments do not establish coverage of the extension. Installation content and policy remain separately owned. The scope does not introduce command support for editing REM design JSON, a workflow decision engine, hosted services, distributed history merging or new platform/performance guarantees. Database transaction recovery and backup restoration remain distinct operations; a fresh engineering checkout alone supplies no operational-history availability claim."
+      "scope": "Covers command admission, discovery, selected reads, explicit recording, concurrent local access, transaction recovery, result projection and private diagnostics, extended to supported operational backup, restoration, transfer and migration commands. SR-040–047 and new SR-078 express the revised draft operational obligations. Current allocations and source-observed facets describe the successor v2/v4 scope. SR-078 cross-Change history query remains a separate draft capability, excluded from this adoption. Earlier assessments retain their exact original subjects and do not establish coverage of new obligations. Installation content and policy remain separately owned. The scope does not introduce command support for editing REM design JSON, a workflow decision engine, hosted services, distributed history merging or new platform/performance guarantees. Database transaction recovery and backup restoration remain distinct operations; a fresh engineering checkout alone supplies no operational-history availability claim."
     }
   },
   "assumptions": [
@@ -66,6 +66,11 @@
       "source": "SRC-CURRENT-HANDOFF",
       "locator": "IR-008",
       "basis": "User-selected current handoff and selective retention refinement. Reuse existing identity and responsibility; no runtime adoption or independent approval is asserted."
+    },
+    {
+      "source": "SRC-SQLITE-ADOPTION",
+      "locator": "IR-008",
+      "basis": "Reconcile the complete existing allocation with the selected current v2/v4 contract, preserving independent admission, coherent state, explicit scope and actor judgment. Prior version-specific sources retain their historical meaning."
     }
   ],
   "confirms": [

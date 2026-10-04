@@ -1,0 +1,70 @@
+{
+  "id": "SCN-041",
+  "type": "scenario",
+  "title": "Inspect project capabilities before selecting work",
+  "status": "draft",
+  "actor": "An engineer joining an existing project",
+  "goal": "Understand available operations and local store standing without receiving an inferred Change or authority.",
+  "context": "The engineer has project access but has not selected a change or authorized a workflow transition. A fresh checkout may contain the engineering definition without its local operational history.",
+  "trigger": "The engineer requests project capabilities.",
+  "preconditions": [
+    "The project root is explicit."
+  ],
+  "interaction": [
+    {
+      "actor": "Engineer",
+      "action": "Requests actual operation and contract availability for the project."
+    },
+    {
+      "actor": "System",
+      "action": "Reports supported tasks and backend standing without scanning historical directories or choosing work."
+    },
+    {
+      "actor": "Engineer",
+      "action": "Uses the Change identifier supplied by the handoff or request to inspect that work explicitly."
+    }
+  ],
+  "expected_outcome": "The engineer distinguishes executable availability, backend readiness and actor-selected work without automatic activation or approval.",
+  "alternatives": [
+    {
+      "condition": "The Change is already known.",
+      "outcome": "Read its current context directly under explicit selection."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "The backend is absent, mismatched, unsupported, corrupt or fenced.",
+      "outcome": "Report that standing without creating a store or presenting unavailable history as an empty valid selection."
+    }
+  ],
+  "exercises": [
+    "FEAT-012"
+  ],
+  "informs": [
+    "SR-040",
+    "SR-041",
+    "SR-046"
+  ],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-CLI",
+      "locator": "docs/design/cli/cli.md#CLI-SR-23, CLI-SR-28, CLI-SR-32",
+      "basis": "IR-008 owns this black-box published-product situation. It exercises one durable Feature and informs the named system obligations; draft status leaves confirmation to semantic review and does not claim runtime verification."
+    },
+    {
+      "source": "SRC-PUBLISHED-PRODUCTS",
+      "locator": "SCN-041; design/requirements/published-products.md#review-and-validation",
+      "basis": "Independent review and author reconciliation confirmed this stakeholder situation, primary Feature, and SR coverage as current analysis knowledge. This does not approve requirements or establish implemented behavior or satisfaction."
+    },
+    {
+      "source": "SRC-LOCAL-OPERATIONAL-ANALYSIS",
+      "locator": "SCN-041",
+      "basis": "Draft derivation from the refined IRs and RR proposal; no approval, implementation or satisfaction claim."
+    },
+    {
+      "source": "SRC-SQLITE-ADOPTION",
+      "locator": "SCN-041",
+      "basis": "Reconcile existing use/behavior with current explicit task selection, coherent SQLite outcomes and attributable judgments; no new stakeholder need or runtime qualification is inferred."
+    }
+  ]
+}

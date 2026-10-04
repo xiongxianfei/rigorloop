@@ -11,8 +11,5 @@ node_modules/
 
 # Local validation cache state
 
-# Machine-local compact transaction and recovery state
-.rigorloop/transactions/
-
-# Machine-local explicit recorder coordination and recovery state
-.rigorloop/record-store/
+# Project-local operational databases, payloads, diagnostics and recovery state
+.rigorloop/

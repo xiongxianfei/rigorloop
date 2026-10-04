@@ -1,13 +1,14 @@
 {
   "observed": {
     "technologies": [
-      "The inspected adapter selects rigorloop-records-v3, whose manifest and supporting records declare schema version 3. SHA-256 byte identities and synchronous Node filesystem calls support the storage protocol. This operational JSON format is independent of the new design/ authoring schemas."
+      "JavaScript ES modules on qualified Node 24.15.0+ within Node 24; node:sqlite with SQLite 3.51.3+.",
+      "Linux filesystem/process ownership primitives; no assertion of all-platform qualification."
     ],
     "sources": [
       {
-        "source": "SRC-CLI-SOURCE",
-        "locator": "packages/rigorloop/dist/lib/record-store.js Store, executeTargetedStore, executeRecordStore, withRecordSnapshot; record-store-files.js RecordFiles; remaining software_units at 9055b3c0",
-        "basis": "Static inspection identifies transaction mechanisms, format dispatch, construction, and physical co-location; it does not execute fault, durability, preservation, or recovery verification."
+        "source": "SRC-SQLITE-ADOPTION",
+        "locator": "packages/rigorloop/package.json; packages/rigorloop/dist/lib/operational-layout.js; operational-store.js; operational-maintenance.js",
+        "basis": "Static inspection of the successor working-tree source identifies this implementation binding. It does not establish passing tests, installed availability, publication or engineering approval. Prior observations remain recoverable at 39be9c81."
       }
     ]
   },
@@ -24,7 +25,7 @@
       "consequences": [
         "MOD-011 owns relational current records, revisions and project association in .rigorloop/rigorloop.db; selected named attachments remain outside the database.",
         "Select node:sqlite with initial minimum Node 24.15.0 and SQLite 3.51.3, behind the MOD-011 adapter. Its release-candidate API status and bundled-library version require platform qualification; reject older WAL-reset-affected or unqualified builds. Use local WAL/FULL, foreign keys, packaged migrations and supported backup snapshots.",
-        "SQLite determines transaction outcomes; callers inspect current context after interruption rather than choosing file-journal complete/restore actions. Existing v3 runtime and its recovery remain version-scoped."
+        "SQLite determines transaction outcomes; callers inspect current context after interruption rather than choosing file-journal complete/restore actions. The preceding v3 executable retains its historical scope; the successor exposes no v3 runtime fallback."
       ],
       "revisit_when": [
         "The supported deployment or measured workload exceeds the local SQLite profile."

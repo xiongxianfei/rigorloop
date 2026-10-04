@@ -103,26 +103,15 @@ def cli_cooperation(model):
                 for field in fields or ("",)]
 
     public = lambda *fields: operation("IF-004", "execute_public_request", *fields)
-    publish = lambda *fields: operation("IF-003", "publish_record_candidate", *fields)
     topics = [
-        {"key": "admission", "title": "Admit an explicit public request", "sources":
-         public("purpose", "behavior/0", "behavior/5", "behavior/6") +
-         [source("IF-004", "/consistency_rules/1")]},
-        {"key": "selected-records", "title": "Read and present selected records", "sources":
-         operation("IF-003", "inspect_records") + public("behavior/7")},
-        {"key": "decision-basis", "title": "Inspect an explicit decision basis", "sources":
-         operation("IF-003", "inspect_declared_subjects")},
-        {"key": "candidate-construction", "title": "Construct and preview a candidate", "sources":
-         operation("IF-003", "prepare_record_candidate")},
-        {"key": "guarded-execution", "title": "Execute afresh and prepare the receipt", "sources":
-         publish("inputs", "behavior/0", "behavior/1", "behavior/3") + public("behavior/8")},
-        {"key": "publication", "title": "Publish coherent durable state", "sources":
-         publish("outputs", "behavior/2", "behavior/4", "behavior/5", "behavior/6", "failure_behavior")},
-        {"key": "actual-outcomes", "title": "Report actual effects independently of diagnostics", "sources":
-         publish("behavior/7") + public("behavior/2", "behavior/3", "behavior/10") +
-         [source("IF-004", "/consistency_rules/0")]},
-        {"key": "recovery", "title": "Recover only an explicitly selected transaction", "sources":
-         operation("IF-003", "recover_record_transaction") + public("behavior/9")},
+        {"key":"admission","title":"Admit an explicit public request","sources":public("purpose","inputs","preconditions")},
+        {"key":"selected-records","title":"Read and present selected current records","sources":operation("IF-003","inspect_records")},
+        {"key":"decision-basis","title":"Check the supplied decision basis","sources":operation("IF-003","execute_record_task","inputs","preconditions")},
+        {"key":"candidate-construction","title":"Construct and preview a task candidate","sources":operation("IF-003","preview_record_task")},
+        {"key":"guarded-execution","title":"Execute against current revision and declared reads","sources":operation("IF-003","execute_record_task","behavior")},
+        {"key":"publication","title":"Commit coherent durable current state","sources":operation("IF-003","execute_record_task","outputs","failure_behavior")},
+        {"key":"actual-outcomes","title":"Report actual effects independently of diagnostics","sources":[source("IF-004","/consistency_rules/0")]},
+        {"key":"recovery","title":"Inspect interrupted updates; explicitly recover maintenance","sources":operation("IF-003","inspect_records")+operation("IF-003","restore_operational_scope")},
     ]
     walkthroughs = []
     for identity, allocated in CLI_WALKTHROUGH_ALLOCATIONS.items():

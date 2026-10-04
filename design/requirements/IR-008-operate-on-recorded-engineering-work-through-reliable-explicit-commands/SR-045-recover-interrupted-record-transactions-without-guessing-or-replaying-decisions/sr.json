@@ -34,7 +34,7 @@
       "approach": "Allow storage-engine recovery to establish an already determined committed or uncommitted transaction outcome without choosing new engineering effects. If exact completion versus restoration is an exposed supported choice, require explicit selection and verify the corresponding prepared/before state. Stop on untrusted or unknown recovery information and never replay semantic edits against newer work."
     },
     "how_much": {
-      "scope": "Interrupted supported operational transactions only, distinct from Baseline recovery and backup restoration. Deterministic storage recovery is not authority to select a new decision, infer workflow progression, convert old formats or overwrite foreign content. Detailed engine recovery and public command behavior require architecture reconciliation."
+      "scope": "Interrupted supported operational transactions only, distinct from Baseline recovery and backup restoration. Deterministic storage recovery is not authority to select a new decision, infer workflow progression, convert old formats or overwrite foreign content. MOD-011 owns ordinary engine recovery; explicit whole-store replacement follows the separate maintenance contract."
     }
   },
   "acceptance_criteria": [
@@ -46,7 +46,7 @@
   ],
   "assumptions": [],
   "constraints": [
-    "This draft replacement-store requirement does not activate a new runtime contract. Existing ARs and realization facets retain their v3 scope and require explicit architecture reconciliation before adoption; historical contribution arguments do not prove the revised criteria."
+    "Current allocations and source-observed facets describe v4 SQLite. Source availability does not establish passing execution, project adoption or requirement satisfaction; historical v3 contribution arguments retain their original subjects."
   ],
   "sources": [
     {

@@ -7,6 +7,7 @@ import { basename, dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { installCandidate } from "../lib/installer-replacement.js";
+import { workflowContract, workflowMember, validateWorkflowDescriptor } from "../lib/workflow-package.js";
 
 import { EXIT, exitCodeForResult } from "../lib/command-result.js";
 import { adapterDescriptor, supportedAdapterNames } from "../lib/adapters.js";
@@ -17,6 +18,7 @@ import { isInvocationId, createInvocationId } from "../lib/diagnostic-event.js";
 import { findInvocationEvents } from "../lib/log-inspection.js";
 import { renderResult, RESULT_FORMATS } from "../lib/result-renderer.js";
 
+const OPERATIONAL_FAMILIES = new Set(["change", "review", "verification", "store", "capabilities"]);
 const RECORDING_FAMILIES = new Set(["status","context","subject","change","activity","work","review","finding","blocker","evidence","applicability","decision","decisions","verify","observations","batch"]);
 const isRecordingCommand = argv => RECORDING_FAMILIES.has(argv[0]);
 const isRetiredCommand = argv => {
@@ -62,8 +64,13 @@ function parseFlags(args) {
   };
 
   const positional = [];
+  const seen = new Set();
   for (let index = 0; index < args.length; index += 1) {
     const arg = args[index];
+    if (arg.startsWith('--')) {
+      if (seen.has(arg)) flags.syntaxError = `Duplicate flag: ${arg}`;
+      seen.add(arg);
+    }
     if (arg === "--json") {
       flags.json = true;
       flags.format = "json";
@@ -98,6 +105,9 @@ function parseFlags(args) {
       }
     } else if (arg === "--force") {
       flags.force = true;
+    } else if (arg === "--replace-workflow") {
+      flags.replaceWorkflow = args[++index];
+      if (flags.replaceWorkflow !== workflowContract.workflow_contract) flags.syntaxError = "Unsupported workflow replacement profile.";
     } else {
       positional.push(arg);
     }
@@ -109,7 +119,8 @@ function parseFlags(args) {
 function envelope(command, flags, overrides = {}) {
   const diagnostics = flags.debug ? { debug: true } : {};
   return {
-    schema_version: 1,
+    schema_version: command === 'init' ? 2 : 1,
+    ...(command === 'init' ? {unit_results: []} : {}),
     command,
     package: packageInfo(),
     cwd: process.cwd(),
@@ -159,30 +170,18 @@ function usage() {
 Usage:
   rigorloop --help
   rigorloop version
-  rigorloop init codex|claude [--force] [--dry-run] [--json]
+  rigorloop init codex|claude [--force] [--replace-workflow requirement-first-v1] [--dry-run] [--json]
   --force: Replace existing destination skills. Local changes within replaced skill directories will be lost.
-  rigorloop workflow-context [--change <id>] [--format human|json]
-  rigorloop status --root PATH --change ID [--format text|json]
-  rigorloop context --root PATH --change ID --input - [--format text|json]
-  rigorloop subject inspect --root PATH --path FILE [--content none|full] [--format text|json]
-  rigorloop <record-kind> show [ID] --root PATH --change ID [--format text|json]
-  rigorloop <record-kind> add|set|record [ID] --root PATH --change ID --input - [--dry-run] [--format text|json]
-  rigorloop change create|link --root PATH --change ID --input - [--dry-run] [--format text|json]
-  rigorloop batch --root PATH --change ID --input - [--dry-run] [--format text|json]
-  rigorloop record-store inspect --root PATH --change ID [--format text|json]
-  rigorloop record-store check|record --root PATH --change ID --input - [--format text|json]
-  rigorloop record-store recover --root PATH --change ID --transaction ID --expected-recovery DIGEST --action restore|complete [--format text|json]
-  rigorloop logs path [--format human|json]
-  rigorloop logs show <invocation-id> [--format human|json]
+  Operational contract: targeted-recording-v2 / rigorloop-records-v4
+  rigorloop change create --root PATH --change ID --input - [--dry-run] [--format text|json]
+  rigorloop change context --root PATH --change ID [--input -] [--format text|json]
+  rigorloop logs [--invocation ID] [--format human|json]
 
 Commands:
   version                 Print package name and version.
   init codex|claude
                           Initialize verified target support.
-  workflow-context        Report read-only project or exact-change workflow facts.
-  status/context/show     Inspect explicitly selected recorded information; storage only.
-  add/set/record/batch     Record explicit actor decisions; use per-command --help for exact selectors.
-  record-store            Advanced inspection, replacement and recovery for v2/v3 records; storage only.
+  change                  Create and resume current operational work in SQLite.
   logs                    Show the local log path or inspect one exact invocation.
 `;
 }
@@ -194,8 +193,16 @@ function logCommandFormat(args) {
 }
 
 function handleLogs(args, invocation) {
-  const [operation, identity] = args;
-  const format = logCommandFormat(args);
+  const flags = new Map();
+  for(let index=0;index<args.length;index++) {
+    const flag=args[index],value=args[++index];
+    if(!['--invocation','--format'].includes(flag)||flags.has(flag)||!value||value.startsWith('--')) {
+      activeOutput.terminalClass='expected-rejection';writeStderr('RL_INVALID_REQUEST: logs accepts --invocation ID and --format human|json\n');return 4;
+    }
+    flags.set(flag,value);
+  }
+  const identity=flags.get('--invocation'),operation=identity?'show':'path';
+  const format=flags.get('--format')??'human';
   if (!["human", "json"].includes(format)) {
     activeOutput.terminalClass = "expected-rejection";
     writeStderr("RL_INVALID_REQUEST: unknown log output format\n");
@@ -239,7 +246,7 @@ function handleLogs(args, invocation) {
     return lookup.status === "error" ? (lookup.code === "RL_INVALID_INVOCATION_ID" ? 4 : 3) : 0;
   }
   activeOutput.terminalClass = "expected-rejection";
-  writeStderr("RL_INVALID_REQUEST: logs requires path or show <invocation-id>\n");
+  writeStderr("RL_INVALID_REQUEST: logs accepts an optional --invocation ID\n");
   return 4;
 }
 
@@ -621,7 +628,7 @@ function unsafePathCode(name, descriptor, artifact) {
 }
 
 function isArchiveSupportEntry(name) {
-  return name === "AGENTS.md" || name === "CLAUDE.md";
+  return name === "AGENTS.md" || name === "CLAUDE.md" || name === workflowMember;
 }
 
 function fileRowsForTreeRoot(entries, installRoot, algorithm) {
@@ -726,8 +733,14 @@ function inspectArchive(archiveBytes, artifact, descriptor) {
   }
 
   const installEntries = [];
+  let workflow;
   for (const entry of entries) {
     if (isArchiveSupportEntry(entry.name)) {
+      if (entry.directory || entry.symlink) return {error: {code: "archive-support-invalid", message: `Support member must be a regular file: ${entry.name}`}};
+      if (entry.name === workflowMember) {
+        try { workflow = validateWorkflowDescriptor(entry.bytes); }
+        catch (error) { return {error: {code: "workflow-descriptor-invalid", message: error.message}}; }
+      }
       continue;
     }
     const pathCode = unsafePathCode(entry.name, descriptor, artifact);
@@ -741,6 +754,12 @@ function inspectArchive(archiveBytes, artifact, descriptor) {
   }
 
   const files = installEntries.filter((entry) => !entry.directory);
+  // This successor candidate must carry the contract; historical archives use
+  // their matching historical executable and metadata, not an inferred profile.
+  if (!workflow) return {error: {code: "workflow-descriptor-missing", message: "Candidate workflow descriptor is missing."}};
+  const root = descriptor.primaryInstallRoot();
+  if (workflow.retired_skills.some(name => files.some(entry => entry.name.startsWith(`${root}/${name}/`)))) return {error: {code: "retired-workflow-candidate", message: "Candidate contains retired workflow skills."}};
+  if (workflow.required_skills.some(name => !files.some(entry => entry.name === `${root}/${name}/SKILL.md`))) return {error: {code: "workflow-skill-missing", message: "Candidate is missing a required workflow skill."}};
   const rootHashes = rootHashesForEntries(files, descriptor, artifact);
   for (const [role, hash] of Object.entries(rootHashes)) {
     const expected = artifact.root_hashes?.[role] ?? { tree_sha256: artifact.tree_sha256, file_count: artifact.file_count };
@@ -751,7 +770,7 @@ function inspectArchive(archiveBytes, artifact, descriptor) {
       return { error: { code: "tree-hash-mismatch", message: "Installed tree file count does not match metadata." } };
     }
   }
-  return { entries: files, archiveHash, rootHashes, treeHash: rootHashes.skills?.tree_sha256, fileCount: rootHashes.skills?.file_count ?? files.length };
+  return { workflow, entries: files, archiveHash, rootHashes, treeHash: rootHashes.skills?.tree_sha256, fileCount: rootHashes.skills?.file_count ?? files.length };
 }
 
 
@@ -978,6 +997,7 @@ async function archiveWorkForInit(flags, info, descriptor) {
 }
 
 async function handleInit(flags, initArgs = []) {
+  if (flags.replaceWorkflow && !flags.force) return invalidUsage("--replace-workflow requires --force.", flags, "init");
   if (flags.adapterOptionUsed) return removedAdapterSyntax(flags);
   if (flags.writeState) return writeBlockedResult(flags, {actions: [], artifacts: []}, "--write-state is retired.", [{code: "state-writing-retired", message: "Installation does not manage project state.", next_action: "Install without --write-state; use --force only for explicit destination replacement."}]);
   if (initArgs.length !== 1) return invalidUsage(`init requires exactly one target: ${supportedAdapterNames().join(", ")}.`, flags, "init");
@@ -997,27 +1017,32 @@ async function handleInit(flags, initArgs = []) {
   const obsolete = obsoleteWorkflowSkillBlocker(descriptor, archive.entries);
   if (obsolete) return writeBlockedResult(flags, plan, obsolete.message, [obsolete]);
   const root = descriptor.primaryInstallRoot();
+  const retiredWorkflow = workflowContract.retired_skills.map(name => `${root}/${name}`);
+  const installedOld = retiredWorkflow.filter(presentPath);
+  if (!flags.dryRun && !flags.replaceWorkflow && installedOld.length) return writeBlockedResult(flags, plan, "Explicit workflow replacement is required.", installedOld.map(path => ({code: "workflow-replacement-required", path, message: `Retired workflow skill: ${path}`, next_action: "Use --replace-workflow requirement-first-v1 --force to retain and retire the selected obsolete skills."})));
   const files = archive.entries?.map(entry => ({path: entry.name, content: entry.name.endsWith(".md") ? normalizeText(entry.bytes) : entry.bytes})) ?? (archive.artifact?.skill_names ?? []).map(name => ({path: `${root}/${name}/SKILL.md`, content: Buffer.alloc(0)}));
   let installed = {units: [], conflicts: [], completed: [], retained: []};
   try {
-    if (files.length) installed = installCandidate({projectRoot: process.cwd(), files, roots: [root], force: flags.force, dryRun: flags.dryRun});
+    if (files.length) installed = installCandidate({projectRoot: process.cwd(), files, roots: [root], retireUnits: flags.replaceWorkflow ? retiredWorkflow : [], force: flags.force, dryRun: flags.dryRun});
     else if (!flags.dryRun) throw new Error("Verified archive contains no installable files.");
   } catch (error) {
     if (error.conflicts) return writeBlockedResult(flags, plan, "Installation stopped: destination skills already exist.", error.conflicts.map(path => ({code: "destination-conflict", path, message: `Existing destination: ${path}`, next_action: "Run again with --force to replace these skills. Local changes within replaced skill directories will be lost."})), "mutation_conflict");
-    const result = envelope("init", flags, {status: "blocked", summary: error.message, completed: error.completed ?? [], failed: error.failed ?? null, untouched: error.untouched ?? [], retained: error.retained ?? [], blockers: [{code: error.code ?? "partial-installation-failed", message: error.message, next_action: "Preserve partial files and retained originals; inspect the reported paths before retrying. --force does not bypass safety checks."}]});
+    const result = envelope("init", flags, {schema_version: 2, unit_results: error.unit_results ?? [], status: "blocked", summary: error.message, completed: error.completed ?? [], failed: error.failed ?? null, untouched: error.untouched ?? [], retained: error.retained ?? [], blockers: [{code: error.code ?? "partial-installation-failed", message: error.message, next_action: "Preserve partial files and retained originals; inspect the reported paths before retrying. --force does not bypass safety checks."}]});
     if (flags.json) writeJson(result); else writeStderr(`${result.summary}\n${JSON.stringify({completed: result.completed, failed: result.failed, untouched: result.untouched, retained: result.retained})}\n`);
     return exitCodeForResult({...result, exit_class: "mutation_conflict"});
   }
   const result = envelope("init", flags, {
+    schema_version: 2,
+    unit_results: installed.unit_results ?? [],
     status: "success",
     summary: flags.dryRun ? `RigorLoop init dry run: ${descriptor.displayName} installation; archive verification and complete destination preflight are unperformed.` : `Installed ${descriptor.displayName} skills.`,
-    actions: installed.units.map(path => ({path, action: installed.conflicts.includes(path) ? (flags.force ? "replace" : "conflict") : "create", status: flags.dryRun ? "planned" : "completed"})),
+    actions: installed.units.map(path => ({path, action: flags.replaceWorkflow && retiredWorkflow.includes(path) ? "retire" : installed.conflicts.includes(path) ? (flags.force ? "replace" : "conflict") : "install", status: flags.dryRun ? "planned" : "completed"})),
     artifacts: archive.artifact ? [archive.artifact] : [],
     planned_target: {target: descriptor.name, install_root: root},
     completed: installed.completed, retained: installed.retained,
     state_files: {action: "skipped", reason: "Installation does not read or write project state."},
-    ...(flags.dryRun ? {unperformed_checks: ["archive acquisition", "archive verification", "complete candidate preflight"], preliminary_conflicts: installed.conflicts} : {}),
-    warnings: flags.force ? [{code: "explicit-replacement", message: "Replace existing destination skills. Local changes within replaced skill directories will be lost."}] : [],
+    ...(flags.dryRun ? {possible_retirements: flags.replaceWorkflow ? retiredWorkflow : [], unperformed_checks: ["archive acquisition", "archive verification", "complete candidate preflight"], preliminary_conflicts: installed.conflicts} : {}),
+    warnings: flags.force ? [{code: "explicit-replacement", message: "Selected existing skill units are retained outside discovery before replacement or retirement."}] : [],
   });
   if (flags.json) writeJson(result); else writeHuman(`${result.summary}\n${result.actions.map(a => `${a.action}: ${a.path}`).join("\n")}\n${result.retained.map(r => `Retained original: ${r.path} -> ${r.backup}`).join("\n")}\n${flags.force ? result.warnings[0].message : ""}\n`, flags);
   return EXIT.success;
@@ -1025,39 +1050,23 @@ async function handleInit(flags, initArgs = []) {
 
 async function dispatchMain(rawArgs, invocation) {
   try {
-    if (isRecordingCommand(rawArgs)) {
-      const {executeRecordingCli} = await import("../lib/recording-cli.js");
-      const execution = executeRecordingCli(rawArgs, invocation.recordStoreOptions);
+    if (OPERATIONAL_FAMILIES.has(rawArgs[0])) {
+      const { executeOperationalCli } = await import("../lib/operational-cli.js");
+      const execution = await executeOperationalCli(rawArgs);
       activeOutput.terminalClass = execution.exitCode === 0 ? "success" : "expected-rejection";
-      activeOutput.deferredRender = () => ({stdout: execution.format === "json" ? execution.json : execution.human, stderr: ""});
+      activeOutput.deferredRender = () => ({ stdout: execution.output, stderr: "" });
       return execution.exitCode;
     }
-    // Contract-separated explicit recording; no lifecycle transition evaluator.
-    if (rawArgs[0] === "record-store") {
-      const { executeRecordStoreCli } = await import("../lib/record-store-cli.js");
-      const execution = executeRecordStoreCli(rawArgs.slice(1), invocation.recordStoreOptions);
-      activeOutput.terminalClass = execution.exitCode === 0 ? "success" : "expected-rejection";
-      activeOutput.deferredRender = () => execution.format === "json"
-        ? { stdout: `${JSON.stringify(execution.result)}\n`, stderr: "" }
-        : execution.exitCode === 0 ? { stdout: execution.human, stderr: "" } : { stdout: "", stderr: execution.human };
-      return execution.exitCode;
+    if (isRecordingCommand(rawArgs) || ["record-store", "workflow-context"].includes(rawArgs[0])) {
+      return invalidUsage("This executable supports targeted-recording-v2 / rigorloop-records-v4. Use the retained earlier executable for legacy work.", parseFlags(rawArgs).flags);
     }
     if (rawArgs[0] === "logs") return handleLogs(rawArgs.slice(1), invocation);
-    if (rawArgs[0] === "workflow-context") {
-      const { executeWorkflowContext } = await import("../lib/workflow-context.js");
-      const execution = executeWorkflowContext(rawArgs.slice(1));
-      activeOutput.terminalClass = execution.exitCode === 0 ? "success" : execution.exitCode === 2 || execution.exitCode === 4 ? "expected-rejection" : "internal-error";
-      activeOutput.deferredRender = () => execution.format === "json"
-        ? { stdout: `${JSON.stringify(execution.result, null, 2)}\n`, stderr: "" }
-        : execution.exitCode === 0
-          ? { stdout: execution.human, stderr: "" }
-          : { stdout: "", stderr: execution.human };
-      return execution.exitCode;
-    }
     const { flags, positional } = parseFlags(rawArgs);
     activeOutput.format = flags.format;
+    if (flags.syntaxError) return invalidUsage(flags.syntaxError, flags);
     if (flags.formatError) return invalidUsage("Unknown result format.", flags);
     const [command] = positional;
+    if (flags.replaceWorkflow && command !== 'init') return invalidUsage("--replace-workflow is only valid for init.", flags);
 
     if (!command || command === "--help" || command === "-h") {
       return handleHelp(flags);
@@ -1091,7 +1100,7 @@ export async function main(rawArgs = process.argv.slice(2), invocation = {}) {
 
 if (process.argv[1] && realpathSync(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const rawArgs = process.argv.slice(2);
-  if (rawArgs[0] === "record-store" || isRecordingCommand(rawArgs) || isRetiredCommand(rawArgs)) {
+  if (OPERATIONAL_FAMILIES.has(rawArgs[0]) || ["record-store", "workflow-context"].includes(rawArgs[0]) || isRecordingCommand(rawArgs) || isRetiredCommand(rawArgs)) {
     // Retired commands reject before any diagnostic file effects. The recorder
     // owns its complete grammar and result envelope. Historical
     // logging flags and environment must not consume or replace either.
@@ -1104,7 +1113,7 @@ if (process.argv[1] && realpathSync(process.argv[1]) === fileURLToPath(import.me
     process.exitCode = await runObservedCli(rawArgs, (args, invocation) =>
       // Logging preprocessing cannot turn a historical invocation into a
       // recorder invocation by removing leading flags.
-      main(args[0] === "record-store" ? ["record-store", ...rawArgs] : isRecordingCommand(args) ? [args[0], ...rawArgs] : args, invocation),
+      main(args[0] === "record-store" ? ["record-store", ...rawArgs] : (isRecordingCommand(args) || OPERATIONAL_FAMILIES.has(args[0])) ? [args[0], ...rawArgs] : args, invocation),
     { cliVersion: packageInfo().version });
   }
 }

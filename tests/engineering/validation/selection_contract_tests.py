@@ -174,7 +174,7 @@ class SelectionContractChecks:
               'scripts/lib/validation/validation_selection.py',
               'scripts/lib/validation/validation_node_adapter.mjs'),
              {'selector.regression', 'validation_execution.regression'}),
-            (('scripts/lib/validation/skill_validation.py',), {'skills.regression', 'adapters.regression'}),
+            (('scripts/lib/validation/skill_validation.py',), {'skills.regression', 'adapters.regression', 'operational_guidance.check'}),
             (('scripts/lib/packaging/adapter_distribution.py',
               'scripts/resources/adapter-templates/codex/AGENTS.md',
               'scripts/resources/adapter-templates/claude/CLAUDE.md'),
@@ -283,17 +283,8 @@ class SelectionContractChecks:
             "skill_canonical_tests.py",
             "skill_portability_tests.py",
             "skill_project_map_tests.py",
-            "skill_placement_tests.py",
             "skill_fixture_helpers.py",
             "skill_guidance_helpers.py",
-            "skill_readability_guidance_tests.py",
-            "skill_authority_tests.py",
-            "skill_route_guidance_tests.py",
-            "skill_verify_guidance_tests.py",
-            "skill_pr_guidance_tests.py",
-            "skill_plan_guidance_tests.py",
-            "skill_proposal_guidance_tests.py",
-            "skill_design_resource_tests.py",
             "skill_vision_guidance_tests.py",
             "skill_learn_guidance_tests.py",
             "skill_project_map_guidance_tests.py",
@@ -306,17 +297,22 @@ class SelectionContractChecks:
                 payload = self.select(["tests/skill/" + name]).to_json_dict()
                 self.assertEqual(payload["unclassified_paths"], [])
                 checks = {check["id"]: check for check in payload["selected_checks"]}
-                self.assertEqual(set(checks), {"skills.regression", "adapters.regression"})
+                self.assertEqual(set(checks), {"skills.regression", "adapters.regression", "operational_guidance.check"})
                 self.assertEqual(checks["skills.regression"]["command"],
                                  "python tests/skill/test-skill-validator.py")
                 self.assertEqual(len(checks), len(payload["selected_checks"]))
 
 
+    def test_project_association_selects_operational_package_checks(self):
+        payload = self.select([".rigorloop.json"]).to_json_dict()
+        self.assertEqual(payload["unclassified_paths"], [])
+        self.assertIn("rigorloop_cli.test", {check["id"] for check in payload["selected_checks"]})
+
     def test_current_skill_packaging_and_release_suites_preserve_selection(self):
         # TEST-SR-17: imported helpers retain their owning suite's selection too.
         groups = (
             ('tests/skill/', ('test-skill-validator.py', 'review_independence_skill_phrases.py'),
-             {'skills.regression', 'adapters.regression'}),
+             {'skills.regression', 'adapters.regression', 'operational_guidance.check'}),
             ('tests/engineering/packaging/', ('test-adapter-distribution.py',),
              {'adapters.regression', 'adapters.drift', 'adapters.validate'}),
             ('tests/engineering/packaging/', ('test-npm-package-publication.py',),
@@ -624,7 +620,7 @@ class SelectionContractChecks:
 
 
     def test_canonical_skill_only_uses_purpose_built_checks_without_lifecycle(self) -> None:
-        path = "skills/design/SKILL.md"
+        path = "skills/architecture-design/SKILL.md"
         payload = self.select([path]).to_json_dict()
 
         self.assertEqual(payload["status"], "ok")
@@ -639,7 +635,7 @@ class SelectionContractChecks:
                 "documentation_prose.audit",
             }.issubset(selected_ids(payload))
         )
-        self.assertIn("skills/design", payload["affected_roots"])
+        self.assertIn("skills/architecture-design", payload["affected_roots"])
 
 
     def test_generated_skill_only_uses_derivation_checks_without_lifecycle(self) -> None:
@@ -896,13 +892,13 @@ class SelectionContractChecks:
                 "path": "scripts/validate-skills.py",
                 "category": "validator-skills",
                 "status": "ok",
-                "checks": {"skills.regression", "adapters.regression"},
+                "checks": {"skills.regression", "adapters.regression", "operational_guidance.check"},
             },
             {
                 "path": "tests/skill/review_independence_skill_phrases.py",
                 "category": "validator-skills",
                 "status": "ok",
-                "checks": {"skills.regression", "adapters.regression"},
+                "checks": {"skills.regression", "adapters.regression", "operational_guidance.check"},
             },
             {
                 "path": "scripts/validate-guide-system.py",
@@ -920,13 +916,13 @@ class SelectionContractChecks:
                 "path": "tests/fixtures/skills/skill-readability/valid-pilot/SKILL.md",
                 "category": "validator-skills",
                 "status": "ok",
-                "checks": {"skills.regression", "adapters.regression"},
+                "checks": {"skills.regression", "adapters.regression", "operational_guidance.check"},
             },
             {
                 "path": "tests/fixtures/skills",
                 "category": "validator-skills",
                 "status": "ok",
-                "checks": {"skills.regression", "adapters.regression"},
+                "checks": {"skills.regression", "adapters.regression", "operational_guidance.check"},
             },
             {
                 "path": "scripts/validate-release.py",
@@ -1372,35 +1368,13 @@ class SelectionContractChecks:
 
 
     def test_workflow_guidance_aligns_with_validation_layering_contract(self) -> None:
+        # Guidance remains portable; repository check IDs belong to contributors.
+        # These narrow drift checks do not establish semantic instruction adequacy.
         expectations = {
-            "skills/implement/SKILL.md": [
-                "targeted proof",
-                "broad smoke",
-                "project's validation selector",
-                "selected checks",
-                "skills.validate",
-            ],
-            "skills/code-review/SKILL.md": [
-                "targeted proof",
-                "broad smoke",
-                "selected checks",
-                "direct proof",
-            ],
-            "skills/verify/SKILL.md": [
-                "registered evidence",
-                "manual by design",
-                "manual proof",
-                "release metadata",
-                "not-run",
-                "project's broad validation command",
-                "broad_smoke_required",
-            ],
-            "skills/route/SKILL.md": [
-                "targeted proof",
-                "broad smoke",
-                "broad_smoke.sources",
-                "workflow-context",
-            ],
+            "skills/implement/SKILL.md": ["verification allocation", "Run existing relevant checks"],
+            "skills/code-review/SKILL.md": ["evidence and failure behavior"] ,
+            "skills/verify/SKILL.md": ["applicable repository checks", "commands actually executed"],
+            "skills/route/SKILL.md": ["required checks", "whole-change Code Review"],
         }
 
         for path, required_terms in expectations.items():

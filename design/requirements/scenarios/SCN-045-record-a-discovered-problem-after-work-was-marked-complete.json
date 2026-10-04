@@ -5,10 +5,10 @@
   "status": "confirmed",
   "actor": "An engineer who discovers a problem in previously completed work",
   "goal": "Record the newly observed problem and its explicitly supplied basis without silently changing prior engineering decisions.",
-  "context": "The change currently records completed activity, and a newly failed check or changed subject contradicts that recorded state.",
-  "trigger": "The engineer decides to record a blocker and supporting evidence.",
+  "context": "A completed Change retains its historical acceptance account; a later regression or an error in that original account has been discovered.",
+  "trigger": "The engineer chooses linked new corrective work or an explicit completion annotation.",
   "preconditions": [
-    "The engineer explicitly selects the change and provides current expected state and the problem's required actor-supplied values."
+    "The engineer identifies the completed Change and supplies current authority and the required inputs for the chosen new-work or annotation task."
   ],
   "interaction": [
     {
@@ -69,6 +69,11 @@
       "source": "SRC-CURRENT-HANDOFF",
       "locator": "SCN-045",
       "basis": "User-selected current handoff and selective retention refinement. Reuse existing identity and responsibility; no runtime adoption or independent approval is asserted."
+    },
+    {
+      "source": "SRC-SQLITE-ADOPTION",
+      "locator": "SCN-045",
+      "basis": "Reconcile existing use/behavior with current explicit task selection, coherent SQLite outcomes and attributable judgments; no new stakeholder need or runtime qualification is inferred."
     }
   ]
 }

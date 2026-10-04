@@ -41,9 +41,9 @@
     }
   },
   "acceptance_criteria": [
-    "Before publication, obtain the exact operation facts from guarded persistence execution: new targeted publication reconstructs and validates against the freshly checked state, advanced publication validates supplied complete bytes, and recovery uses the verified exact retained before/candidate state for the selected action without semantic replay. Serialize the mandatory public receipt in the selected format for that same operation, exact content, changed targets, and applicable revision/observation facts; changed content or format requires renewed preparation, and a preview receipt cannot authorize the later write.",
+    "Under guarded execution, construct and validate the exact current task candidate and supply its revision, affected identities and observations to the MOD-010 pure receipt encoder before commit. A changed candidate/profile requires new preparation; preview grants no later write reservation.",
     "For every structurally admissible mutation, mandatory receipt content fits its source-defined reserved bound independently of the number of admitted diagnostic occurrences. A primary receipt carries the required common fields, identity/revision, changed targets, and at most the bounded observation summary; diagnostic bodies and optional effect expansion do not enter that guarantee.",
-    "When optional detail cannot fit beside the guaranteed receipt, return the defined explicit omission and bounded summary with the supported route to current diagnostic detail. More observations cannot block a sound correction or silently discard a required safe-continuation fact.",
+    "Bound changed-item summaries with explicit omission counts; retain mandatory safe-continuation facts. Complete selected current accounts remain available through supported reads; no diagnostic cursor is required.",
     "Provide persistence only readiness established for the exact selected operation/candidate/format before authoritative publication. Unexpected serialization failure stops before writing as an implementation failure, not a supported diagnostic-overflow rejection policy.",
     "Project the actual terminal storage result returned by persistence. Once saved or unchanged is established, later renderer or stdout-delivery failure cannot be reported as a storage rejection; retain the source transport/lost-response boundary and require normal fresh-state handling for a later retry."
   ],
@@ -63,6 +63,11 @@
       "source": "SRC-PUBLISHED-CLI",
       "locator": "docs/design/cli/cli.md#CLI-SR-11, CLI-SR-17, CLI-SR-20, CLI-SR-30",
       "basis": "Retains the named current CLI and Record Format obligations at this allocated responsibility boundary. Their detailed formats, supported versions, limits, and observed external-edit boundaries remain authoritative; no runtime behavior or public contract is changed by this draft."
+    },
+    {
+      "source": "SRC-SQLITE-ADOPTION",
+      "locator": "AR-025",
+      "basis": "Reconcile current bounded task receipts with complete selected results and truthful commit outcomes; predecessor cursor/ordinary-journal protocols remain historical."
     }
   ]
 }

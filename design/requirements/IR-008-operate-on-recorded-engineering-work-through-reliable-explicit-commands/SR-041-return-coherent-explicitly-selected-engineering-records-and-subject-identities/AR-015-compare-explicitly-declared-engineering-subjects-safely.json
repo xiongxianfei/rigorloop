@@ -1,0 +1,69 @@
+{
+  "id": "AR-015",
+  "type": "allocated-requirement",
+  "title": "Compare explicitly declared engineering subjects safely",
+  "status": "draft",
+  "statement": "The Work records Module shall compare explicitly declared contained engineering subjects with the supplied basis, report observed gaps, and never silently replace the actor’s expected or assessed subjects.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Refreshing caller expectations or conflating reported and observed basis can silently broaden an assessment.",
+      "desired_outcome": "Compared basis is factual, scope-limited and distinct from the attributed judgment."
+    },
+    "why": {
+      "rationale": "SR-041 requires honest reported/compared basis for current decisions; MOD-011 supplies safe declared-read checks for tasks and review preparation."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineers and agents supplying explicit command requests",
+        "Maintainers of MOD-011 and its Interface consumers"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "A task supplies compared reads, or review preparation checks explicitly assessed subjects."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "IF-003 declared-read admission and review preparation, presented through IF-004."
+      ]
+    },
+    "how": {
+      "approach": "Inspect only admitted contained regular files with bounded observations and freshness checks; compare supplied expectations without executing content or converting observations to approval."
+    },
+    "how_much": {
+      "scope": "Declared compared basis and explicit absence only; no standalone subject command, full-content inspection mode, universal file hashing or Git requirement."
+    }
+  },
+  "acceptance_criteria": [
+    "Compared observations identify the explicitly selected subjects and distinguish reported basis from mechanically checked basis.",
+    "Missing, unsafe, symlinked, unreadable or over-limit subjects produce explicit applicable gaps or safe rejection, never invented matching content.",
+    "Declared-read mismatch rejects a dependent mutation without partial state; observed changes during inspection cannot produce an asserted coherent match.",
+    "Only declared subjects are inspected; no dependency discovery or automatic authority selection broadens the scope.",
+    "Observations do not refresh supplied expectations or rewrite historical assessed subjects; external edits remain covered only at the defined observed checks."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "allocated_to": "MOD-011",
+  "sources": [
+    {
+      "source": "SRC-CLI-ALLOCATION",
+      "locator": "SR-041 / AR-015; MOD-011",
+      "basis": "Derive this draft lower-level obligation from the containing SR at the selected command or operational-record responsibility boundary. Allocation and acceptance criteria are design claims for review, not implementation, requirement approval, or satisfaction evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-CLI",
+      "locator": "docs/design/cli/cli.md#CLI-SR-19, CLI-SR-04, CLI-SR-09",
+      "basis": "Preserve the applicable current public and stored-record guarantees at this accountable boundary. The named source retains exact schemas, operation tables, classifications, limits, and historical adoption obligations; this allocation neither replaces those details nor accepts REM authoring JSON as operational records."
+    },
+    {
+      "source": "SRC-SQLITE-ADOPTION",
+      "locator": "AR-015; MOD-011 declared reads and review preparation",
+      "basis": "Refines the existing SR-041 allocation to current compared-read support; retires predecessor full-content subject modes without weakening containment or attribution."
+    }
+  ],
+  "constrains": [
+    "FUNC-043"
+  ]
+}

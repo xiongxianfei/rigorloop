@@ -1,0 +1,73 @@
+{
+  "id": "SCN-043",
+  "type": "scenario",
+  "title": "Check declared subjects before recording a decision",
+  "status": "draft",
+  "actor": "An engineering agent acting on an explicit project decision",
+  "goal": "Keep the supplied decision basis distinct from current mechanical observations.",
+  "context": "The agent has identified relevant subjects and must communicate its actual observed basis in a later recording request.",
+  "trigger": "The agent prepares a review or submits a task with declared compared reads.",
+  "preconditions": [
+    "The actor has selected contained subjects and supplied its reported or compared basis."
+  ],
+  "interaction": [
+    {
+      "actor": "Engineering agent",
+      "action": "Supplies the explicit selected subjects and expectations rather than asking the system to infer relevant files."
+    },
+    {
+      "actor": "System",
+      "action": "Checks admitted compared reads and reports current observations separately from attributed judgment."
+    },
+    {
+      "actor": "Engineering agent",
+      "action": "Reconciles any changed basis before submitting a fresh decision."
+    }
+  ],
+  "expected_outcome": "A mismatch cannot silently refresh expectations or broaden approval; reported basis remains honestly labeled.",
+  "alternatives": [
+    {
+      "condition": "The decision basis is actor-reported.",
+      "outcome": "Keep its attribution without presenting it as mechanical repository comparison."
+    },
+    {
+      "condition": "An explicitly selected path must be absent.",
+      "outcome": "Check that absence as a declared precondition without inventing a present subject."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "A declared compared subject differs or changes during inspection.",
+      "outcome": "Return a gap or dependent-write conflict without silently substituting the new basis."
+    },
+    {
+      "condition": "A declared path is unsafe, symlinked, unreadable or exceeds limits.",
+      "outcome": "Reject or report the applicable gap without broadening selection or executing content."
+    }
+  ],
+  "exercises": [
+    "FEAT-012"
+  ],
+  "informs": [
+    "SR-040",
+    "SR-041",
+    "SR-044"
+  ],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-CLI",
+      "locator": "docs/design/cli/cli.md#CLI-SR-19, CLI-SR-04, CLI-SR-09",
+      "basis": "IR-008 owns this black-box published-product situation. It exercises one durable Feature and informs the named system obligations; draft status leaves confirmation to semantic review and does not claim runtime verification."
+    },
+    {
+      "source": "SRC-PUBLISHED-PRODUCTS",
+      "locator": "SCN-043; design/requirements/published-products.md#review-and-validation",
+      "basis": "Independent review and author reconciliation confirmed this stakeholder situation, primary Feature, and SR coverage as current analysis knowledge. This does not approve requirements or establish implemented behavior or satisfaction."
+    },
+    {
+      "source": "SRC-SQLITE-ADOPTION",
+      "locator": "SCN-043",
+      "basis": "Reconcile existing use/behavior with current explicit task selection, coherent SQLite outcomes and attributable judgments; no new stakeholder need or runtime qualification is inferred."
+    }
+  ]
+}

@@ -1,0 +1,587 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "store-maintenance-v1.schema.json",
+  "title": "Project store maintenance requests; preview-only null source observation and task-specific recovery rules are additionally enforced by the adapter.",
+  "$defs": {
+    "backup": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "interface",
+        "input"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": 1
+        },
+        "interface": {
+          "const": "store-maintenance-v1"
+        },
+        "input": {
+          "anyOf": [
+            {
+              "type": "object",
+              "required": [
+                "scope",
+                "output",
+                "actor"
+              ],
+              "properties": {
+                "scope": {
+                  "type": "object",
+                  "required": [
+                    "changes"
+                  ],
+                  "properties": {
+                    "changes": {
+                      "anyOf": [
+                        {
+                          "const": "all"
+                        },
+                        {
+                          "type": "array",
+                          "minItems": 1,
+                          "maxItems": 64,
+                          "uniqueItems": true,
+                          "items": {
+                            "$ref": "rigorloop-records-v4.schema.json#/$defs/id"
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "output": {
+                  "$ref": "rigorloop-records-v4.schema.json#/$defs/text"
+                },
+                "actor": {
+                  "$ref": "rigorloop-records-v4.schema.json#/$defs/actor"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "required": [
+                "resume",
+                "actor",
+                "reason"
+              ],
+              "properties": {
+                "resume": {
+                  "type": "object",
+                  "required": [
+                    "operation_id",
+                    "expected_observation",
+                    "action"
+                  ],
+                  "properties": {
+                    "operation_id": {
+                      "$ref": "rigorloop-records-v4.schema.json#/$defs/id"
+                    },
+                    "expected_observation": {
+                      "type": "string",
+                      "pattern": "^sha256:[a-f0-9]{64}$(?![\\s\\S])"
+                    },
+                    "action": {
+                      "enum": [
+                        "finish",
+                        "rollback"
+                      ]
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "actor": {
+                  "$ref": "rigorloop-records-v4.schema.json#/$defs/actor"
+                },
+                "reason": {
+                  "$ref": "rigorloop-records-v4.schema.json#/$defs/text"
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "restore": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "interface",
+        "input"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": 1
+        },
+        "interface": {
+          "const": "store-maintenance-v1"
+        },
+        "input": {
+          "anyOf": [
+            {
+              "type": "object",
+              "required": [
+                "backup",
+                "expected_backup",
+                "expected_store",
+                "replace",
+                "actor",
+                "reason"
+              ],
+              "properties": {
+                "backup": {
+                  "$ref": "rigorloop-records-v4.schema.json#/$defs/text"
+                },
+                "expected_backup": {
+                  "type": "string",
+                  "pattern": "^sha256:[a-f0-9]{64}$(?![\\s\\S])"
+                },
+                "expected_store": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "required": [
+                        "kind"
+                      ],
+                      "properties": {
+                        "kind": {
+                          "const": "absent"
+                        }
+                      },
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "kind",
+                        "revision"
+                      ],
+                      "properties": {
+                        "kind": {
+                          "const": "current"
+                        },
+                        "revision": {
+                          "$ref": "rigorloop-records-v4.schema.json#/$defs/text"
+                        }
+                      },
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "kind",
+                        "observation"
+                      ],
+                      "properties": {
+                        "kind": {
+                          "const": "unavailable"
+                        },
+                        "observation": {
+                          "type": "string",
+                          "pattern": "^sha256:[a-f0-9]{64}$(?![\\s\\S])"
+                        }
+                      },
+                      "additionalProperties": false
+                    }
+                  ]
+                },
+                "replace": {
+                  "type": "boolean"
+                },
+                "actor": {
+                  "$ref": "rigorloop-records-v4.schema.json#/$defs/actor"
+                },
+                "reason": {
+                  "$ref": "rigorloop-records-v4.schema.json#/$defs/text"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "required": [
+                "resume",
+                "actor",
+                "reason"
+              ],
+              "properties": {
+                "resume": {
+                  "type": "object",
+                  "required": [
+                    "operation_id",
+                    "expected_observation",
+                    "action"
+                  ],
+                  "properties": {
+                    "operation_id": {
+                      "$ref": "rigorloop-records-v4.schema.json#/$defs/id"
+                    },
+                    "expected_observation": {
+                      "type": "string",
+                      "pattern": "^sha256:[a-f0-9]{64}$(?![\\s\\S])"
+                    },
+                    "action": {
+                      "enum": [
+                        "finish",
+                        "rollback"
+                      ]
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "actor": {
+                  "$ref": "rigorloop-records-v4.schema.json#/$defs/actor"
+                },
+                "reason": {
+                  "$ref": "rigorloop-records-v4.schema.json#/$defs/text"
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "migrate": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "interface",
+        "input"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": 1
+        },
+        "interface": {
+          "const": "store-maintenance-v1"
+        },
+        "input": {
+          "anyOf": [
+            {
+              "type": "object",
+              "required": [
+                "mode",
+                "expected_store",
+                "actor",
+                "reason",
+                "target_schema",
+                "backup_output"
+              ],
+              "properties": {
+                "mode": {
+                  "const": "schema-upgrade"
+                },
+                "expected_store": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "required": [
+                        "kind"
+                      ],
+                      "properties": {
+                        "kind": {
+                          "const": "absent"
+                        }
+                      },
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "kind",
+                        "revision"
+                      ],
+                      "properties": {
+                        "kind": {
+                          "const": "current"
+                        },
+                        "revision": {
+                          "$ref": "rigorloop-records-v4.schema.json#/$defs/text"
+                        }
+                      },
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "kind",
+                        "observation"
+                      ],
+                      "properties": {
+                        "kind": {
+                          "const": "unavailable"
+                        },
+                        "observation": {
+                          "type": "string",
+                          "pattern": "^sha256:[a-f0-9]{64}$(?![\\s\\S])"
+                        }
+                      },
+                      "additionalProperties": false
+                    }
+                  ]
+                },
+                "actor": {
+                  "$ref": "rigorloop-records-v4.schema.json#/$defs/actor"
+                },
+                "reason": {
+                  "$ref": "rigorloop-records-v4.schema.json#/$defs/text"
+                },
+                "target_schema": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "backup_output": {
+                  "$ref": "rigorloop-records-v4.schema.json#/$defs/text"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "required": [
+                "mode",
+                "expected_store",
+                "actor",
+                "reason",
+                "source_contract",
+                "source_root",
+                "changes",
+                "expected_source",
+                "originals_output",
+                "dispositions"
+              ],
+              "properties": {
+                "mode": {
+                  "const": "legacy-import"
+                },
+                "expected_store": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "required": [
+                        "kind"
+                      ],
+                      "properties": {
+                        "kind": {
+                          "const": "absent"
+                        }
+                      },
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "kind",
+                        "revision"
+                      ],
+                      "properties": {
+                        "kind": {
+                          "const": "current"
+                        },
+                        "revision": {
+                          "$ref": "rigorloop-records-v4.schema.json#/$defs/text"
+                        }
+                      },
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "kind",
+                        "observation"
+                      ],
+                      "properties": {
+                        "kind": {
+                          "const": "unavailable"
+                        },
+                        "observation": {
+                          "type": "string",
+                          "pattern": "^sha256:[a-f0-9]{64}$(?![\\s\\S])"
+                        }
+                      },
+                      "additionalProperties": false
+                    }
+                  ]
+                },
+                "actor": {
+                  "$ref": "rigorloop-records-v4.schema.json#/$defs/actor"
+                },
+                "reason": {
+                  "$ref": "rigorloop-records-v4.schema.json#/$defs/text"
+                },
+                "source_contract": {
+                  "$ref": "rigorloop-records-v4.schema.json#/$defs/text"
+                },
+                "source_root": {
+                  "$ref": "rigorloop-records-v4.schema.json#/$defs/text"
+                },
+                "changes": {
+                  "type": "array",
+                  "minItems": 1,
+                  "maxItems": 64,
+                  "uniqueItems": true,
+                  "items": {
+                    "$ref": "rigorloop-records-v4.schema.json#/$defs/id"
+                  }
+                },
+                "expected_source": {
+                  "anyOf": [
+                    {
+                      "type": "null"
+                    },
+                    {
+                      "type": "string",
+                      "pattern": "^sha256:[a-f0-9]{64}$(?![\\s\\S])"
+                    }
+                  ]
+                },
+                "originals_output": {
+                  "$ref": "rigorloop-records-v4.schema.json#/$defs/text"
+                },
+                "dispositions": {
+                  "type": "array",
+                  "maxItems": 64,
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "source_record",
+                      "action",
+                      "reason",
+                      "target"
+                    ],
+                    "properties": {
+                      "source_record": {
+                        "$ref": "rigorloop-records-v4.schema.json#/$defs/text"
+                      },
+                      "action": {
+                        "enum": [
+                          "import",
+                          "retain",
+                          "block"
+                        ]
+                      },
+                      "reason": {
+                        "$ref": "rigorloop-records-v4.schema.json#/$defs/text"
+                      },
+                      "target": {
+                        "anyOf": [
+                          {
+                            "type": "null"
+                          },
+                          {
+                            "type": "object",
+                            "required": [
+                              "change_id",
+                              "kind",
+                              "id",
+                              "parent_id"
+                            ],
+                            "properties": {
+                              "change_id": {
+                                "$ref": "rigorloop-records-v4.schema.json#/$defs/id"
+                              },
+                              "kind": {
+                                "enum": [
+                                  "change",
+                                  "basis",
+                                  "review",
+                                  "evidence",
+                                  "decision",
+                                  "verification",
+                                  "adoption",
+                                  "work",
+                                  "blocker",
+                                  "finding"
+                                ]
+                              },
+                              "id": {
+                                "$ref": "rigorloop-records-v4.schema.json#/$defs/id"
+                              },
+                              "parent_id": {
+                                "anyOf": [
+                                  {
+                                    "type": "null"
+                                  },
+                                  {
+                                    "$ref": "rigorloop-records-v4.schema.json#/$defs/id"
+                                  }
+                                ]
+                              }
+                            },
+                            "additionalProperties": false
+                          }
+                        ]
+                      }
+                    },
+                    "additionalProperties": false
+                  }
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "required": [
+                "resume",
+                "actor",
+                "reason"
+              ],
+              "properties": {
+                "resume": {
+                  "type": "object",
+                  "required": [
+                    "operation_id",
+                    "expected_observation",
+                    "action"
+                  ],
+                  "properties": {
+                    "operation_id": {
+                      "$ref": "rigorloop-records-v4.schema.json#/$defs/id"
+                    },
+                    "expected_observation": {
+                      "type": "string",
+                      "pattern": "^sha256:[a-f0-9]{64}$(?![\\s\\S])"
+                    },
+                    "action": {
+                      "enum": [
+                        "finish",
+                        "rollback"
+                      ]
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "actor": {
+                  "$ref": "rigorloop-records-v4.schema.json#/$defs/actor"
+                },
+                "reason": {
+                  "$ref": "rigorloop-records-v4.schema.json#/$defs/text"
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "anyOf": [
+    {
+      "$ref": "#/$defs/backup"
+    },
+    {
+      "$ref": "#/$defs/restore"
+    },
+    {
+      "$ref": "#/$defs/migrate"
+    }
+  ]
+}

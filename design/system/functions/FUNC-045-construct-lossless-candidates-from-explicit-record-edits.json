@@ -3,7 +3,7 @@
   "type": "function",
   "title": "Construct lossless candidates from explicit record edits",
   "status": "draft",
-  "description": "Actors can supply a bounded meaningful edit or batch and see exactly its intended candidate effects without hidden semantic changes. This logical behavior has the scope and limits of SR-043; retained v3 realization facets require reconciliation before replacement-store adoption.",
+  "description": "Actors can supply a bounded meaningful engineering task and see exactly its intended candidate effects without hidden semantic changes. This logical behavior has the scope and limits of SR-043; current SQLite realization and maintenance remain distinct.",
   "inputs": [
     "Explicit supported operation, selected project/Change and expected coherent state.",
     "Actor-supplied candidate or verified recovery basis, with declared subject and artifact identities."

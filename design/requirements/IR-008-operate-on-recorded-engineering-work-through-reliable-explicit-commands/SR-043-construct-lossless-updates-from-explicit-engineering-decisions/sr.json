@@ -47,7 +47,7 @@
   ],
   "assumptions": [],
   "constraints": [
-    "This draft replacement-store requirement does not activate a new runtime contract. Existing ARs and realization facets retain their v3 scope and require explicit architecture reconciliation before adoption; historical contribution arguments do not prove the revised criteria."
+    "Current allocations and source-observed facets describe v4 SQLite. Source availability does not establish passing execution, project adoption or requirement satisfaction; historical v3 contribution arguments retain their original subjects."
   ],
   "sources": [
     {

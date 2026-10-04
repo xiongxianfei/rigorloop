@@ -1,6 +1,6 @@
 # Shared test-design rules
 
-Owner: [System](../system.md#living-test-design-composition), with stable TEST-SR-01–23 requirements in [System’s Requirements](../system.md#requirements). These shared rules apply to CLI, Skill, Engineering and their children, including Validation. [Design](../skill/authoring/design.md#living-test-design) owns the authoring method; [Validation](../engineering/validation.md) owns check selection, execution and reporting. This document is supporting detail of System and carries no additional model ID. [README](README.md) provides navigation to model designs.
+Owner: [System](../system.md#living-test-design-composition), with stable TEST-SR-01–23 requirements in [System’s Requirements](../system.md#requirements). These shared rules apply to CLI, Skill, Engineering and their children, including Validation. [Design](../skill/authoring/design.md#proportionate-design-and-proof) owns the authoring method; [Validation](../engineering/validation.md) owns check selection, execution and reporting. This document is supporting detail of System and carries no additional model ID. [README](README.md) provides navigation to model designs.
 
 ## Start from supported outcomes
 

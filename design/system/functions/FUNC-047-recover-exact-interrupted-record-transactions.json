@@ -3,7 +3,7 @@
   "type": "function",
   "title": "Recover exact interrupted record transactions",
   "status": "draft",
-  "description": "An operator obtains an exact attributable terminal state or a safe recovery stop while retaining enough valid information for subsequent recovery. This logical behavior has the scope and limits of SR-045; retained v3 realization facets require reconciliation before replacement-store adoption.",
+  "description": "An operator obtains an exact attributable terminal state or a safe recovery stop while retaining enough valid information for subsequent recovery. This logical behavior has the scope and limits of SR-045; current SQLite realization and maintenance remain distinct.",
   "inputs": [
     "Explicit supported operation, selected project/Change and expected coherent state.",
     "Actor-supplied candidate or verified recovery basis, with declared subject and artifact identities."

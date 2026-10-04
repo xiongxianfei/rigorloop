@@ -46,7 +46,7 @@
     "Inspect each actual operation result and distinguish persistence success from assessment approval, authority, or completed workflow.",
     "For conflict, interruption, or changed basis, follow the owning recovery procedure with fresh relevant context, preserving current and historical records.",
     "Keep ordinary portable outputs outside recording unless their actual governed or durable trigger applies; never synthesize governed completion from an unrecorded result.",
-    "Supply milestone work facts separately from review judgments. Preserve gate identity, attempt identity, advisory scope, exact subjects and correction references through supported operations; never issue raw SQL or invent an unsupported command."
+    "Preserve Review purpose and scope, actual assessed subjects, attributable current reassessment and selected support through the supported tasks; one whole-change gate does not require a permanent attempt archive."
   ],
   "failure_behavior": [
     {

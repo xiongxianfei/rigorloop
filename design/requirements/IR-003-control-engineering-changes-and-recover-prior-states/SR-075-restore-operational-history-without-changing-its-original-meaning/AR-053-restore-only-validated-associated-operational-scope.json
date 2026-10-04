@@ -1,0 +1,64 @@
+{
+  "id": "AR-053",
+  "type": "allocated-requirement",
+  "title": "Restore only validated associated operational scope",
+  "status": "draft",
+  "statement": "The Work records Module shall restore only validated associated operational scope through its typed maintenance boundary, preserving actual scope, source meaning and safe failure.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Loss of a local operational store can erase resumption context; an apparently successful restore can silently omit evidence or renew old judgments.",
+      "desired_outcome": "An authorized participant can recover the declared retained work and identify every limitation before relying on it."
+    },
+    "why": {
+      "rationale": "SR-075 requires operational preservation; MOD-011 owns the associated store and maintenance activation, while MOD-010 owns admission and result presentation."
+    },
+    "who": {
+      "stakeholders": [
+        "Project maintainers and authorized agents relying on retained operational work"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "An actor explicitly selects the supported maintenance task, scope, source expectations and destination."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "MOD-011 through IF-003, invoked by MOD-010 through IF-004; engineering definitions remain repository-owned."
+      ]
+    },
+    "how": {
+      "approach": "Use the reviewed MOD-011 maintenance contract: coherent staged scope, explicit project/schema/integrity checks, exclusive activation and attributable recovery outcomes."
+    },
+    "how_much": {
+      "scope": "Selected retained supported records and payloads only; no silent merge, universal history retention, source deletion or renewed engineering approval."
+    }
+  },
+  "acceptance_criteria": [
+    "With the original store unavailable and a valid complete backup accessible, restore reproduces the selected records, finding dispositions, subjects and revisions, decisions, provenance and required artifact content in the declared project scope.",
+    "Wrong-project input, unsupported interpretation, corrupted content or missing required artifacts is rejected before destination activation; source backup and unrelated destination content remain unchanged.",
+    "Restored reviews and verification results retain their original subject identities and applicability; neither restoration nor a different current engineering revision renews approval or evidence freshness.",
+    "An occupied or changed destination causes an explicit conflict unless a separately authorized safe replacement is supported; restoration never silently merges divergent histories or overwrites newer work.",
+    "An interrupted restoration exposes no partially restored state as complete or ready for resumption; retry identifies the actual destination state and preserves existing usable content.",
+    "When no usable backup exists, restoration reports unavailable and does not initialize an empty history as successful recovery.",
+    "The public maintenance contract identifies preview versus execution, current expectations and actual effects; interrupted activation remains fenced until explicitly reconciled."
+  ],
+  "assumptions": [
+    "Required retained source material and supported interpretation information are accessible; failure of that premise is reported explicitly."
+  ],
+  "constraints": [
+    "Historical subject/revision provenance remains stable; restoring operational state creates a fresh store incarnation so old mutation tokens cannot be replayed."
+  ],
+  "allocated_to": "MOD-011",
+  "constrains": [
+    "FUNC-075"
+  ],
+  "sources": [
+    {
+      "source": "SRC-SQLITE-ADOPTION",
+      "locator": "SR-075; MOD-011 store-maintenance-v1 contract",
+      "basis": "Reconcile the existing reviewed maintenance responsibility with explicit REM allocation. This allocation is design intent, not execution or satisfaction evidence."
+    }
+  ]
+}

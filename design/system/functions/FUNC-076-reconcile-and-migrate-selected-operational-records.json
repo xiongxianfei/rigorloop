@@ -34,12 +34,17 @@
       "outcome": "Preserve established work and report conflict or interruption; no silent overwrite or automatic semantic merge."
     }
   ],
-  "unallocated_reason": "The local operational-history extension is draft system analysis. Module/Interface and AR allocation are deferred to Architecture Allocation; existing v3 facets do not establish realization of this behavior.",
   "sources": [
     {
       "source": "SRC-LOCAL-OPERATIONAL-ANALYSIS",
       "locator": "FUNC-076",
       "basis": "Draft derivation from the refined IRs and RR proposal; no approval, implementation or satisfaction claim."
+    },
+    {
+      "source": "SRC-SQLITE-ADOPTION",
+      "locator": "FUNC-076",
+      "basis": "Reconcile existing use/behavior with current explicit task selection, coherent SQLite outcomes and attributable judgments; no new stakeholder need or runtime qualification is inferred."
     }
-  ]
+  ],
+  "allocated_to": "MOD-011"
 }

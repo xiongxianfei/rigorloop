@@ -22,30 +22,27 @@
     },
     "when": {
       "conditions": [
-        "Candidate preparation supplies facts to the command Module.",
-        "An admitted publication crosses the authoritative mutation boundary.",
-        "Publication or explicit recovery establishes a terminal result or leaves interrupted or indeterminate effects."
+        "An ordinary task reaches the transaction commit boundary, or a separately selected maintenance operation establishes its actual outcome."
       ]
     },
     "where": {
       "contexts": [
-        "IF-003 candidate preparation and publication interaction with MOD-010.",
-        "Actual storage and recovery outcomes for the selected operational-record transaction."
+        "IF-003 typed outcomes and the qualified database or maintenance boundary."
       ]
     },
     "how": {
-      "approach": "Expose exact candidate identity/revision, changed-target and attributable observation facts before publication; verify their correspondence to command-side receipt readiness without owning its renderer. Preserve known committed, unchanged, failed, and recovery-required state in the resulting storage facts."
+      "approach": "Construct current facts under exclusion and call the fixed pure receipt encoder before commitment. Return known committed, unchanged, failed or uncertain state; never replay semantics for cleaner output."
     },
     "how_much": {
       "scope": "MOD-011 supplies storage and observed-basis facts and enforces the prepublication condition; MOD-010 retains FUNC-048 and the public output limits/serialization. No extra rendering Function, mandatory callback, new public protocol, or inferred approval is introduced."
     }
   },
   "acceptance_criteria": [
-    "For new publication, start afresh under supported-writer exclusion, reread and check the current state, and reconstruct targeted edits or admit advanced supplied bytes through the common complete-candidate validation boundary. Supply the resulting exact candidate, changed targets, available state identities, and attributable observations for MOD-010 receipt preparation before mutation; outside-guard preparation or preview is not this publication basis. For explicit recovery, verify and use the exact retained before/candidate bytes for the selected action and supply those exact outcome facts without reconstructing or replaying semantic edits. In both cases, preserve candidate/current scope and unavailable-versus-established identity distinctions.",
-    "Observation facts identify the actual source-defined observed subject basis and diagnostics of the selected scan. They do not substitute historical expected subject hashes, a partial request read set, or observations reconstructed from a different selected state; unavailable or unsafe basis remains explicit.",
+    "Under supported exclusion, read the coherent current state, check supplied revision/reads and construct the typed candidate. Establish receipt readiness for those same candidate facts before committing. Maintenance separately validates selected staged state and observed recovery expectations; ordinary SQLite recovery does not replay tasks.",
+    "Reported and compared basis remain distinguishable, and observations derive from the selected current checked scope. Missing or unsafe subjects remain explicit; no global repository-stability claim is inferred.",
     "Before authoritative publication, ensure the mandatory receipt readiness applies to the exact operation, candidate, format, and required facts supplied for that attempt. A changed candidate or stale basis cannot reuse earlier readiness; known nonmatching or unavailable readiness stops before publication while preserving the source guarantee that diagnostic volume alone cannot make an admissible correction unrecordable.",
-    "Return saved only for the actual durably committed candidate, unchanged only after its current preconditions pass, and conflict, busy, failed, or recovery-required when those are the actual known outcomes. Supply available identities and transaction context without inventing a coherent snapshot or presenting a partially published changed list as a saved result.",
-    "Postcommit optional-detail, renderer, or output-delivery failure cannot change the storage disposition into rejected or authorize rollback of acknowledged success. Preserve exact recovery and lost-response facts for explicit caller reconciliation; do not rerun a semantic update to manufacture a cleaner receipt."
+    "Return saved only for the actual durably committed candidate, unchanged only after its current preconditions pass, and conflict, busy, failed, or recovery-needed when those are the actual known outcomes. Supply available identities and transaction context without inventing a coherent snapshot or presenting a partially published changed list as a saved result.",
+    "After commit, reporting failure cannot turn saved into rejected or roll back committed work. Return committed=true where established, unknown where necessary, and require current inspection before a fresh actor decision."
   ],
   "assumptions": [],
   "constraints": [],
@@ -64,6 +61,11 @@
       "source": "SRC-PUBLISHED-CLI",
       "locator": "docs/design/cli/cli.md#CLI-SR-05, CLI-SR-06, CLI-SR-08, CLI-SR-11, CLI-SR-20, CLI-SR-26; docs/design/cli/records.md#RF-SR-08",
       "basis": "Retains the named current CLI and Record Format obligations at this allocated responsibility boundary. Their detailed formats, supported versions, limits, and observed external-edit boundaries remain authoritative; no runtime behavior or public contract is changed by this draft."
+    },
+    {
+      "source": "SRC-SQLITE-ADOPTION",
+      "locator": "AR-026",
+      "basis": "Reconcile current bounded task receipts with complete selected results and truthful commit outcomes; predecessor cursor/ordinary-journal protocols remain historical."
     }
   ]
 }

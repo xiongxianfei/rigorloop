@@ -113,31 +113,21 @@ class AdapterArchiveTests(unittest.TestCase):
                     pr_entry = next(name for name in names if name.endswith("/pr/SKILL.md"))
                     verify_entry = next(
                         name for name in names
-                        if name.endswith("/verify/references/successful-explanation.md")
+                        if name.endswith("/verify/references/operational-recording.md")
                     )
                     pr_body = archive.read(pr_entry).decode("utf-8")
                     verify_explanation = archive.read(verify_entry).decode("utf-8")
                 self.assertTrue(any("/route/SKILL.md" in name for name in names))
                 self.assertFalse(any("/workflow/" in name for name in names))
-                self.assertIn("evidence suffix: `none`, `evidence-only`, `invalidating`", pr_body)
-                self.assertIn("any commit count or direct-parent topology", pr_body)
+                self.assertEqual(verify_explanation, (ROOT / "skills/verify/references/operational-recording.md").read_text())
                 self.assertNotIn("exactly one direct-child verify-owned evidence commit", pr_body)
-                self.assertIn(
-                    "Keep substantive success, durable save and current reliance distinct",
-                    verify_explanation,
-                )
 
     def test_current_archives_omit_explain_change_and_package_complete_verify_resources(self) -> None:
         with tempfile.TemporaryDirectory(prefix="current-adapters-") as temp_dir:
             output = Path(temp_dir)
             archives = build_adapter_archives("v0.1.6", output)
             self.assertEqual(validate_adapter_archives("v0.1.6", output), [])
-            required = {
-                "final-impact-analysis.md",
-                "evidence-applicability.md",
-                "successful-explanation.md",
-                "verify-report-skeleton.md",
-            }
+            required = {"operational-recording.md","targeted-recording-v2.schema.json","rigorloop-records-v4.schema.json","review-reliance.md"}
             for archive_path in archives:
                 with zipfile.ZipFile(archive_path) as archive:
                     names = set(archive.namelist())
@@ -155,7 +145,7 @@ class AdapterArchiveTests(unittest.TestCase):
                 ):
                     self.assertNotIn(forbidden, verify_body)
                 self.assertIn(
-                    "final explanation only after successful final readiness",
+                    "Only after successful final assessment",
                     verify_body,
                 )
 
@@ -224,9 +214,9 @@ class AdapterArchiveTests(unittest.TestCase):
             archives = build_adapter_archives("v1.0.0", Path(tmp))
             self.assertEqual(validate_adapter_archives("v1.0.0", Path(tmp)), [])
             # One actual candidate/install operation covers the formerly separate
-            # discovery and proposal happy paths; assertions inspect installed resources.
+            # discovery and requirement happy paths; assertions inspect installed resources.
             self.assertEqual(validate_clean_install_smoke(
-                "v1.0.0", Path(tmp), skill_names=("explore", "research", "proposal", "proposal-review")), [])
+                "v1.0.0", Path(tmp), skill_names=("explore", "research", "requirement-analysis", "requirement-review")), [])
             self.assertEqual(len(archives), 2)
             for target, archive_path in zip(("codex", "claude"), archives):
                 prefix = {"codex": ".agents/skills/", "claude": ".claude/skills/"}[target]
@@ -290,11 +280,11 @@ class AdapterArchiveTests(unittest.TestCase):
             build_adapter_archives("v0.1.3", output_dir, skills_root=ROOT / "skills")
 
             packaged_adapters: list[str] = []
-            expected_text = (ROOT / "skills" / "route" / "references" / "governed-lifecycle-routing.md").read_text(encoding="utf-8")
+            expected_text = (ROOT / "skills" / "route" / "references" / "operational-recording.md").read_text(encoding="utf-8")
             for adapter in SUPPORTED_ADAPTERS:
                 config = ADAPTERS[adapter]
                 skill_entry = config.skill_path("route").as_posix()
-                resource_entry = (config.skill_root / "route" / "references" / "governed-lifecycle-routing.md").as_posix()
+                resource_entry = (config.skill_root / "route" / "references" / "operational-recording.md").as_posix()
                 archive_path = output_dir / adapter_archive_name(adapter, "v0.1.3")
                 with zipfile.ZipFile(archive_path) as archive:
                     names = set(archive.namelist())

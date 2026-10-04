@@ -1,0 +1,78 @@
+{
+  "id": "SCN-047",
+  "type": "scenario",
+  "title": "Establish the outcome of an interrupted recorded update",
+  "status": "confirmed",
+  "actor": "An engineer responsible for an interrupted recording operation",
+  "goal": "Read the coherent current outcome after interruption without replaying decisions or rolling back committed work.",
+  "context": "An ordinary record update or its response was interrupted, so the actor does not know whether its supplied decision committed.",
+  "trigger": "The engineer inspects the selected Change before deciding whether further work is needed.",
+  "preconditions": [
+    "The engineer supplies the associated project and selected Change; no ordinary recovery action is invented."
+  ],
+  "interaction": [
+    {
+      "actor": "Engineer",
+      "action": "Requests current context after an interrupted update."
+    },
+    {
+      "actor": "System",
+      "action": "Lets the storage engine establish its committed/uncommitted outcome and reads a coherent snapshot without semantic replay."
+    },
+    {
+      "actor": "System",
+      "action": "Reports the current state and established revision, or explicit unavailability with safe limitations."
+    },
+    {
+      "actor": "Engineer",
+      "action": "Reconciles the actual state and decides any new authorized action using a fresh revision."
+    }
+  ],
+  "expected_outcome": "The actor can distinguish established current state from unknown commitment; committed work is preserved and inspection supplies no new decision or approval.",
+  "alternatives": [
+    {
+      "condition": "The interrupted transaction did not commit.",
+      "outcome": "The coherent prior state remains authoritative; retry is a new explicit decision using current context."
+    },
+    {
+      "condition": "The transaction committed but its response was lost.",
+      "outcome": "Inspection exposes the committed state; it is not rolled back or duplicated to repair missing output."
+    }
+  ],
+  "failures": [
+    {
+      "condition": "Store recovery or integrity cannot establish a supported coherent snapshot.",
+      "outcome": "Report safe unavailability; do not replace the store, guess a repair or overwrite foreign content."
+    },
+    {
+      "condition": "Inspection is interrupted or a concurrent operation prevents a current snapshot.",
+      "outcome": "Report only the established busy/unavailable outcome; a later fresh read may retry inspection without replaying semantic decisions."
+    }
+  ],
+  "exercises": [
+    "FEAT-013"
+  ],
+  "informs": [
+    "SR-040",
+    "SR-044",
+    "SR-045",
+    "SR-046"
+  ],
+  "sources": [
+    {
+      "source": "SRC-PUBLISHED-CLI",
+      "locator": "docs/design/cli/cli.md#CLI-SR-05, CLI-SR-06, CLI-SR-09, CLI-SR-26, CLI-SR-27; docs/design/cli/records.md#RF-SR-08, RF-SR-14",
+      "basis": "IR-008 owns this black-box published-product situation. It exercises one durable Feature and informs the named system obligations; draft status leaves confirmation to semantic review and does not claim runtime verification."
+    },
+    {
+      "source": "SRC-PUBLISHED-PRODUCTS",
+      "locator": "SCN-047; design/requirements/published-products.md#review-and-validation",
+      "basis": "Independent review and author reconciliation confirmed this stakeholder situation, primary Feature, and SR coverage as current analysis knowledge. This does not approve requirements or establish implemented behavior or satisfaction."
+    },
+    {
+      "source": "SRC-SQLITE-ADOPTION",
+      "locator": "docs/design/cli/records.md; Work records (MOD-011) current transaction and maintenance contract",
+      "basis": "Reconciles existing stakeholder need and allocation with SQLite ordinary recovery. No new need, approval, or executed result is inferred."
+    }
+  ]
+}

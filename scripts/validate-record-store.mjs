@@ -2,10 +2,10 @@ import {snapshotGitEnvironment,assertSnapshotRoot} from './lib/validation/record
 // Repository metadata validation reuses the recorder's read-only, bounded checks.
 import { basename, dirname, resolve } from "node:path";
 import { execFileSync } from "node:child_process";
-import { executeRecordStore } from "../packages/rigorloop/dist/lib/record-store.js";
+import { RecordFiles } from "../packages/rigorloop/dist/lib/record-store-files.js";
+import {parseV3Record, validateV3Set} from "../packages/rigorloop/dist/lib/record-format-v3.js";
 
-import { storedFormat } from "../packages/rigorloop/dist/lib/record-store-format.js";
-const formatFor = bytes => storedFormat(JSON.parse(bytes.toString()));
+const formatFor = () => ({parse: parseV3Record, set: validateV3Set});
 
 function snapshotFiles(root, changeId, revision) {
   if (!/^(?:[a-f0-9]{40}|[a-f0-9]{64})$/.test(revision)) throw new Error();
@@ -46,9 +46,15 @@ try {
   let files;
   if (snapshot) files = snapshotFiles(dirname(docs), changeId, process.argv[4]);
   else {
-    const result = executeRecordStore({ root: dirname(docs), changeId, operation: "inspect" });
-    if (result.status !== "inspected" || result.revision === null || !result.files.some(file=>file.path===`docs/changes/${changeId}/${basename(path)}`)) throw new Error();
-    files = Object.fromEntries(result.snapshot.records.map(record => [record.path, record.content]));
+    const reader = new RecordFiles(dirname(docs));
+    const local = `.rigorloop/record-store/${changeId}`;
+    if(reader.read(local+'/lock') !== null || reader.read(local+'/journal.json') !== null) throw new Error();
+    const epoch=reader.hash(local+'/epoch'), manifest=`docs/changes/${changeId}/change.json`;
+    files = {[manifest]:reader.read(manifest)};
+    const change=parseV3Record('change', files[manifest]);
+    for(const record of change.records) files[record.path]=reader.read(record.path);
+    for(const [path,bytes] of Object.entries(files)) if(bytes===null || !bytes.equals(reader.read(path))) throw new Error();
+    if(reader.hash(local+'/epoch')!==epoch || reader.read(local+'/lock')!==null || reader.read(local+'/journal.json')!==null) throw new Error();
   }
   const parsed = formatFor(files[`docs/changes/${changeId}/change.json`]).set(changeId, files);
   if (subjects) {

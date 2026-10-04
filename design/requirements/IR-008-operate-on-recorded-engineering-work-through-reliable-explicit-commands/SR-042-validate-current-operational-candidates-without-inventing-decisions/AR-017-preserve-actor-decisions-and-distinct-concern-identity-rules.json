@@ -1,0 +1,75 @@
+{
+  "id": "AR-017",
+  "type": "allocated-requirement",
+  "title": "Preserve actor decisions and distinct concern identity rules",
+  "status": "draft",
+  "statement": "The Work records Module shall preserve unresolved obligations and the attribution, scope and support of retained judgments while allowing explicit current-state replacement and dependency-safe compaction.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "A shaped update can erase unresolved work or silently broaden a judgment.",
+      "desired_outcome": "Corrections remain possible with attributable current obligations and honest reliance gaps."
+    },
+    "why": {
+      "rationale": "SR-042 separates structural validity from engineering judgment and preserves the facts needed for sound current decisions."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineers and agents supplying explicit command requests",
+        "Maintainers of MOD-011 and its Interface consumers"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "A candidate changes assessments, explanation values, findings, or blockers, or contains failed evidence, completed activity, or historical subject drift."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "IF-003 validation against the coherent prior records and complete candidate for the same selected change."
+      ]
+    },
+    "how": {
+      "approach": "Compare only the preservation invariants applicable to the declared operation, retaining supplied decisions and separating recorded assertions from current mechanical observations."
+    },
+    "how_much": {
+      "scope": "Current actor-supplied scope, subjects, narrative, status, issue identity and assessment support; no exhaustive history or mandatory immutable-origin snapshots."
+    }
+  },
+  "acceptance_criteria": [
+    "Actor-supplied status, subjects, applicability, provenance, explanation collection order and multiline meaning survive validation unchanged; neither a renderer nor validation creates another authoritative report.",
+    "Issue IDs remain stable while their accounts are retained. Omission never removes a finding; explicit disposition and dependency-free compaction follow the selected contract.",
+    "Assessment replacement preserves unresolved findings even when the new assessment is clean. V4 permits removal of disposed details only with explicit reason and no surviving reliance.",
+    "V3 retains immutable change-level blocker Origins. V4 uses attributable current issue accounts and dispositions without mandatory origin snapshots or complete history; no update silently rewrites a judgment still relied upon.",
+    "Adverse evidence, explicit invalidation and correction remain recordable. New accepted bases or successful final Verification require their declared support; invalid references and stale declared reads reject independently.",
+    "Actor labels, hashes and successful validation do not establish independence or engineering adequacy. Current support checks reconcile recorded dependencies, not unreported repository stability."
+  ],
+  "assumptions": [],
+  "constraints": [],
+  "allocated_to": "MOD-011",
+  "sources": [
+    {
+      "source": "SRC-CLI-ALLOCATION",
+      "locator": "SR-042 / AR-017; MOD-011",
+      "basis": "Derive this draft lower-level obligation from the containing SR at the selected command or operational-record responsibility boundary. Allocation and acceptance criteria are design claims for review, not implementation, requirement approval, or satisfaction evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-CLI",
+      "locator": "docs/design/cli/cli.md#CLI-SR-07, CLI-SR-26; docs/design/cli/records.md#RF-SR-03, RF-SR-04, RF-SR-05, RF-SR-08, RF-SR-10, RF-SR-11, RF-SR-13",
+      "basis": "Preserve the applicable current public and stored-record guarantees at this accountable boundary. The named source retains exact schemas, operation tables, classifications, limits, and historical adoption obligations; this allocation neither replaces those details nor accepts REM authoring JSON as operational records."
+    },
+    {
+      "source": "SRC-CURRENT-HANDOFF",
+      "locator": "AR-017",
+      "basis": "Reconcile current-state replacement, unresolved issue preservation and selective retention; retain version-specific v3 behavior until adoption."
+    },
+    {
+      "source": "SRC-SQLITE-ADOPTION",
+      "locator": "AR-017",
+      "basis": "Reconcile the complete existing allocation with the selected current v2/v4 contract, preserving independent admission, coherent state, explicit scope and actor judgment. Prior version-specific sources retain their historical meaning."
+    }
+  ],
+  "constrains": [
+    "FUNC-044"
+  ]
+}

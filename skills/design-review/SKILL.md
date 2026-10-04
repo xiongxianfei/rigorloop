@@ -1,159 +1,43 @@
 ---
 name: design-review
-version: "1.0.0"
-schema-version: skill-readability-v1
-description: >
-  Independently assess the exact affected Designs, examples and interactions against approved direction before delivery planning. Use design-review for design coherence and package authority; use design for authorship.
-argument-hint: [change ID, affected Design package, or authorized source reconciliation]
+description: Independently assess System Design and Architecture Design together against the accepted requirement basis, including Functions, allocation, Interfaces, ARs and realization.
 ---
 
-# Design review
+# Design Review
 
-## Test criteria application
+Review the complete affected design composition: accepted obligations, required logical behavior, accountable Modules, Interfaces, derived ARs, state/data authority and material realization. Supporting views reveal interactions and gaps; they are projections of the owning design, not separate approval targets that must each receive a gate.
 
-When the project explicitly adopts shared test criteria, use the selectively loaded guidance below for test quality and maintenance. These criteria replace source-local shared test-purpose, case-selection and maintenance criteria for adopted work; retain specialist methods and historical evidence. Actual judgments, evidence applicability and closeout consequences remain with the responsible assessors under the project's review policy.
+Check that the combined design can satisfy the accepted IR/SRs and relevant constraints. Inspect scope, feasibility, boundary behavior, failures, compatibility, supporting rationale and acceptance intent. Reuse existing applicable definitions where sufficient. Distinguish a reviewed target design from current implementation observations.
 
-## Review and Closeout application
+Return need/scope/obligation defects to requirement-analysis, Function/behavior defects to system-design, and responsibility/Interface/AR/realization defects to architecture-design. Delivery sequencing and concrete proof allocation belong to plan; do not take them over to fill a design gap.
 
-When project authority explicitly adopts Review and Closeout policy, use the packaged application below for shared assessment meaning. It replaces source-local judgment, independence, applicability, concern-disposition and closeout rules in this skill and its conditional resources; retain specialist methods and contract-selected storage procedures. Historical assessments retain their original meaning but grant no current runtime support. Missing or contradictory required guidance stops dependent reliance.
-
-## Invocation classification
-
-A durable or formal review requires the mapped recording procedure before recording; an isolated advisory judgment without that trigger does not acquire lifecycle authority. Resolve the exact subject and applicable project authority before dependent work. Reassess a late durable trigger before writing.
-
-## Purpose
-
-Judge whether required behavior, technical realization, important decisions and representative acceptance intent form one coherent engineering contract across the affected owners. Review the exact package without editing its members.
-
-Trace the approved IR-level direction into coherent requirements and their Design realization.
-
-Approve or reject one explicit design package and preserve precise finding ownership.
-
-## When to use
-
-Use after the affected owning Designs and relevant interactions have been reconciled and before plan authoring relies on them.
-
-## When not to use
-
-Do not use to author architecture, specification, or ADR content; review implementation; verify final readiness; or infer package approval from historical artifact reviews.
-
-## Workflow role
-
-- role_name: design-review
-- stage: review
-- upstream: the exact affected models, scoped legacy members, relied-on examples, relevant interactions and accepted proposal evidence
-- downstream: plan authoring, author-owned correction, upstream proposal reconsideration, or isolated stop
-- summary: Decide whether the exact design package is coherent and feasible.
-- ownership: Write Design Review evidence and settle only the exact design package. Route owns semantic routing.
-- must_not_claim: component authorship, implementation authority, implementation correctness, final verification, branch readiness, or PR readiness
-
-The reviewer does not edit architecture, specification, ADRs, proposal content, or routing state. Approval is package authority, never component-only approval.
-
-## Quick operating guide
-
-Use this skill to: review one exact owning Design package and its proposal constraints.
-
-Read first: `change.json`, scoped `rigorloop context`, every member path shown there, the accepted proposal evidence, and relevant prior findings.
-
-Produce: one recorded package outcome, precise findings or a no-finding rationale, and an isolated or route-owned handoff.
-
-Stop when: membership, upstream authority, evidence, independence, or lifecycle identity is missing, unsafe, stale, or contradictory.
-
-Do not claim: implementation authorization, final readiness, or approval of only one member.
-
-Next stage: `route` may send an approved package to plan authoring; otherwise route named corrections or stop.
-
-## Inputs to read
-
-Resolve the governed change, then obtain the package with the scoped primary context and exact subject inspection described above. Read each complete affected model and scoped legacy member, relied-on examples, relevant shared-contract owners and interactions, and accepted proposal evidence and accepted Proposal Review ID identified by the context. Expand for material missing or contradictory evidence; a whole-repository load is not the default. Read project governance and prior review or resolution evidence only when they affect the judgment.
-
-Retained architecture documents and ADRs may supply source authority and preservation evidence; they are not supported Design-authored outputs. Distinguish those inputs from living-Design output members. A package requiring feature/proof or standalone architecture/ADR authoring returns to the direction/project owner; historical approval or a supplied template cannot re-enable that output.
-
-The package member map identifies each affected owner and its exact path/subject, including retained legacy contracts and relied-on examples. Use an explicit stable order appropriate to that selected set; no fixed architecture/specification/ADR tuple is required. Use CLI subject inspection for exact identities; do not calculate an aggregate package revision.
-
-## Review contract
-
-Evaluate all of the following as one decision:
-
-1. Technical realization can support each required behavior, invariant and failure outcome.
-2. Required behavior respects real technical, authority, compatibility, migration, security and operational constraints.
-3. A material feasibility constraint has not silently weakened an approved goal for implementation convenience.
-4. System, data, ownership, trust, recovery, and external boundaries are explicit and mutually consistent.
-5. Important decisions retain identity, context, alternatives and consequences, with one current owner. Applicable historical/legacy ADRs retain their original meaning.
-6. Shared contracts have one owner, affected consumers are reconciled, and system-wide obligations reference component contracts without overriding them.
-7. Important claims have credible assessment/feasibility bases, visible assumptions and representative local/integrated outcomes from which Delivery can derive concrete proof. Under adopted test criteria, use the [selection method](references/test-quality.md#select-requirements-and-proof) to assess current requirement and section-owned coverage, plausible violations, independent observations, fixture realism, parent interactions and explicit realization gaps. Challenge the stopping rationale with a faulty candidate; neither a passing structural check nor a catalog whitelist establishes adequacy.
-8. Migration maps preserve each displaced obligation and decision, retire only the approved selected authorities, and assign remaining consolidation. Retained feature/proof and architecture/ADR documents are read-only source inputs; old-format output remains unsupported. Separately authorized adoption reconciles selected obligations into living Designs while preserving source bytes, historical meaning and judgments; reading a source does not authorize its conversion or amendment.
-9. Every affected living model has a concise Architecture Overview graph with clear ownership, external inputs/outputs and meaningful labeled relationships. Each material element resolves to its detailed owning view or model. All four supporting views have reasoned necessity decisions; every necessary Context, Building Block, Runtime and Deployment view is drawn and agrees with the overview and requirements. A missing necessary view, unowned outcome or competing detailed authority requires correction; graph presence or rendering alone does not establish adequacy. Read retained legacy inputs under their declared source contracts without imposing model conversion.
-
-Apply the packaged assessment rule when adopted; approval covers this exact package for authorized plan authoring. Under historical contracts, use exactly one outcome: `approved`, `changes-requested`, `blocked`, or `inconclusive`; only approved package evidence permits reliance for plan authoring. Recording is not permission.
-
-Assess examples alongside their owner and exact identity. Check parse/schema limits and illustrated before/after invariants separately from review applicability. If a relied-on example changed while the parent stayed unchanged, require its new exact subject in selection/handoff; prior parent or example approval is insufficient for current reliance without the required reassessment. Mechanical selection does not decide applicability or create automatic invalidation.
-
-Representative scenarios are not a test whitelist. Apply adopted shared test criteria to derived obligations and hazards and existing review policy to actual assessment/current reliance. Preserve required regression protection.
-
-## Findings and ownership
-
-Every material finding uses exactly one scope:
-
-- `artifact-local`: name exactly one member artifact ID and its owning authoring stage.
-- `cross-artifact`: name at least two affected artifact IDs and every authoring stage needed for reconciliation.
-- `upstream-direction`: name the proposal or accepted proposal direction that must be reconsidered.
-
-Each finding records a stable Finding ID, Severity, Location, Evidence, Required outcome, Safe resolution path or `needs-decision` rationale, finding scope, affected artifact IDs, and owning stages. Copy the finding asset once per material finding. Review resolution does not replace a required current Design Review after package members change.
-
-## Isolation and recording
-
-Recording mode is `none`, `advisory-durable`, or `formal-lifecycle`. Load the mapped procedure before durable recording. Use the contract-selected `review record` and finding operations with exact subjects, judgment, rationale and explicit applicability. Record supported non-approvals without requiring eligibility. There is no separate legacy settlement operation; successful recording does not advance workflow or grant authority. Isolated advisory assessments need no lifecycle artifacts.
-
-## Outputs
-
-Produce the package identity, upstream review ID, outcome, findings, correction targets, recording results and current applicability, blockers, next owner, and claim limits.
-
-## Handoff
-
-An approved workflow-managed review returns to `route` for plan authoring. `changes-requested` routes each named artifact-local or cross-artifact correction to its owning authoring stage. `blocked` routes only to the named upstream owner. `inconclusive` stops for missing evidence. Direct review remains isolated.
-
-## Stop conditions
-
-Stop on incomplete or unsafe member maps, missing applicable ADR evidence, stale record revision, wrong upstream review ID, self-review or reviewer-authored member changes, unresolved direction, failed recording, or an owner decision. Preserve supported findings even when reliance or recording is blocked.
-
-## Claims this skill must not make
-
-Do not claim that architecture or specification is independently approved, that implementation is authorized, that reviewed content was fixed, or that verification, branch, PR, release, or deployment readiness exists.
+Record the exact reviewed subjects, accepted governing basis, actual independent reviewer, findings and judgment under the design purpose. Do not edit the authors' definitions and approve the repaired result. Assess corrections in proportion to their effects while retaining adequate integrated coverage. One integrated design-review covers the two authoring responsibilities.
 
 ## Recording boundary
 
-Read `references/design-review-recording-and-settlement.md` before dependent recording under durable or formal review. Loading a method or saving a record grants no approval or continuation. Missing, unreadable, escaped, conflicting or mixed-version required guidance stops dependent work without reconstructing it; untriggered guidance does not block unrelated portable work.
+For Change-managed work, read the packaged operational interface reference before relying on or updating current state. Use supported CLI tasks and the inspected opaque revision; skills do not use SQL or edit runtime storage. An isolated invocation keeps its requested scope. Installation alone does not adopt workflow policy.
 
 ## Resource map
 
-- READ `references/test-quality.md` when adopted criteria apply and this invocation authors, allocates or assesses test obligations.
+- READ `references/operational-recording.md` when inspecting or recording Change-managed work.
+- READ `references/targeted-recording-v2.schema.json` when constructing a recording request.
+- READ `references/rigorloop-records-v4.schema.json` when checking the types used by that request.
 
-- READ `references/review-reliance.md` when applying adopted assessment applicability, correction or closeout policy.
-- READ `references/review-assessment.md` for every review under explicitly adopted Review and Closeout policy.
+- READ `references/rem-models-system-design.md` when reviewing logical behavior.
+- READ `references/rem-models-architecture-design.md` when reviewing architectural responsibility and realization.
+- READ `references/rem-models-requirements.md` when reviewing AR and governing requirement consistency.
+- READ `references/rem-methods-architecture-views.md` when assessing view fidelity and coverage.
 
-- READ `references/requirement-to-delivery-model.md` when tracing proposal direction into system requirements and architecture realization.
-- READ `references/boundary-first-method-v1.md` when the selected legacy contract has boundary records or a relied-on boundary identity needs interpretation.
-- READ `references/design-review-recording-and-settlement.md` for every durable or formal review before recording or settlement.
-- COPY `assets/review-result-skeleton.md` when producing every result. Omit inapplicable groups and unfilled placeholders.
-- COPY `assets/material-finding.md` when a material finding exists, once per finding.
+- READ `references/boundary-first-method-v1.md` when the project applies its boundary first method v1 criteria to this invocation.
 
-## Evidence collection efficiency
+- READ `references/requirement-to-delivery-model.md` when the project applies its requirement to delivery model criteria to this invocation.
 
-Use exact member IDs, paths, requirement IDs, ADR IDs, findings, and targeted excerpts before broad scans. Expand only when the package cannot be judged from bounded evidence.
+- READ `references/review-assessment.md` when the project applies its review assessment criteria to this invocation.
 
-## When full-file read is required
+- READ `references/review-reliance.md` when the project applies its review reliance criteria to this invocation.
 
-Read every package member in full because the review decides cross-artifact coherence. Read other files in full only when bounded evidence is insufficient or surrounding context changes the conclusion.
-
-## Output skeleton
-
-```md
-COPY `assets/review-result-skeleton.md` when producing the review result.
-COPY `assets/material-finding.md` when a material finding exists.
-Fill <every applicable result and finding field> and do not emit unfilled placeholders.
-```
+- READ `references/test-quality.md` when the project applies its test quality criteria to this invocation.
 
 ## Expected output
 
-Copy the result asset and each required finding asset. Report unavailable required data as blocked; do not invent package members, authority, or evidence.
+Report the actual scoped outcome, governing basis, changed subjects or recorded judgment, material gaps and the next authorized action. Distinguish progress, review approval, final verification and external publication; claim only outcomes supported by this invocation.

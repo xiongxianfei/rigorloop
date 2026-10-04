@@ -25,11 +25,19 @@ export function candidateUnits(files, roots=['.agents/skills','.claude/skills'])
   return [...units].sort();
 }
 
-export function installCandidate({projectRoot, files, roots, force=false, dryRun=false, discoveryRoots=[], descriptorRoot='/proc/self/fd', checkpoint=()=>{}}) {
+export function installCandidate({projectRoot, files, roots, retireUnits=[], force=false, dryRun=false, discoveryRoots=[], descriptorRoot='/proc/self/fd', checkpoint=()=>{}}) {
   projectRoot=resolve(projectRoot);
-  const units=candidateUnits(files,roots);
+  const candidate=candidateUnits(files,roots);
+  const retired=[...retireUnits].sort();
+  if (retired.length && !force) throw failure('Workflow replacement requires explicit force.');
+  if (new Set(retired).size !== retired.length || retired.some(unit => {
+    relative(unit);
+    return !roots?.some(root => unit.startsWith(`${root}/`) && unit.slice(root.length+1).split('/').length===1) || candidate.includes(unit);
+  })) throw failure('Retirement and candidate units must be disjoint children of the selected root.');
+  const units=[...retired,...candidate];
   const handles=new Set(); const parents=new Map();
   const retained=[]; const completed=[]; let active=null; let retention=null;
+  const unitResults=[];
   function pin(path) {
     const fd=openSync(path,constants.O_RDONLY|constants.O_DIRECTORY|constants.O_NOFOLLOW);
     handles.add(fd);
@@ -91,9 +99,10 @@ export function installCandidate({projectRoot, files, roots, force=false, dryRun
     if(realpathSync(projectRoot)!==projectRoot)throw failure('Project root must not traverse symlinks.');
     parents.set('.',pin(projectRoot));
     const basis=Object.fromEntries(units.map(unit=>[unit,actual(unit)]));
+    unitResults.push(...units.map(path=>({path, action:retired.includes(path)?'retire':basis[path]?'replace':'install', outcome:'untouched', retained_path:null})));
     const conflicts=units.filter(unit=>basis[unit]);
     checkParents();
-    if(dryRun)return {units,conflicts,completed,retained};
+    if(dryRun)return {units,conflicts,completed,retained,unit_results:unitResults};
     if(conflicts.length&&!force)throw Object.assign(failure('Destination skills already exist. Use --force to replace them.','destination-conflict'),{conflicts});
     checkpoint('preflight');
     // Validate all required placement/capability before detaching any original.
@@ -120,16 +129,25 @@ export function installCandidate({projectRoot, files, roots, force=false, dryRun
         if(stat(`${retention.path}/${name}`))throw failure('Retention name collision.');
         renameSync(target,`${retention.path}/${name}`);
         retained.push({path:unit,backup:join(projectRoot,stageName,name)});
+        Object.assign(unitResults.find(row=>row.path===unit),{outcome:'partial',retained_path:join(projectRoot,stageName,name)});
         expected[unit]=null;
         if(!equal(inspect(`${retention.path}/${name}`),basis[unit]))throw failure('Detached original changed; inspect retained content.');
         checkpoint(`detached:${unit}`);assertCurrent();
       }
+      if (retired.includes(unit)) {
+        unitResults.find(row=>row.path===unit).outcome=basis[unit]?'completed':'absent';
+        completed.push(unit);checkpoint(`retired:${unit}`);assertCurrent();continue;
+      }
       const selected=files.filter(f=>f.path===unit||f.path.startsWith(`${unit}/`));
       for(const file of selected) {
+        // Also check retirements during multi-file candidate publication.
+        checkParents();
+        for(const obsolete of retired) if(actual(obsolete)!==null)throw failure(`Retired destination reappeared: ${obsolete}`);
         const p=parentFor(file.path,true);checkParents();
         const temporary=`candidate-${randomBytes(24).toString('hex')}`;
         writeFileSync(`${retention.path}/${temporary}`,file.content,{flag:'wx',mode:0o644});
         linkSync(`${retention.path}/${temporary}`,`${p.path}/${basename(file.path)}`);
+        unitResults.find(row=>row.path===unit).outcome='partial';
         unlinkSync(`${retention.path}/${temporary}`);
         checkpoint(`file-published:${file.path}`);
       }
@@ -141,10 +159,13 @@ export function installCandidate({projectRoot, files, roots, force=false, dryRun
       verify(unit,expected[unit]);
       if(!equal(installed.sort(),expectedPaths))throw failure('Installed candidate inventory mismatch.');
       for(const file of selected){const p=parentFor(file.path);const value=inspect(`${p.path}/${basename(file.path)}`);if(value.hash!==createHash('sha256').update(file.content).digest('hex'))throw failure('Installed candidate bytes mismatch.');}
-      completed.push(unit);checkpoint(`published:${unit}`);assertCurrent();
+      completed.push(unit);unitResults.find(row=>row.path===unit).outcome='completed';checkpoint(`published:${unit}`);assertCurrent();
     }
-    return {units,conflicts,completed,retained};
+    return {units,conflicts,completed,retained,unit_results:unitResults};
   } catch(error) {
+    const row=unitResults.find(row=>row.path===active);
+    if(row?.outcome==='untouched')row.outcome='failed';
+    error.unit_results=unitResults;
     error.completed=completed;error.retained=retained;error.failed=active;error.untouched=units.filter(u=>!completed.includes(u)&&u!==active);throw error;
   } finally {for(const fd of [...handles].reverse())closeSync(fd);}
 }

@@ -1,7 +1,7 @@
 # Plan index
 
 `docs/plan.md` is a navigation index to stable plan bodies and owning change records.
-Mutable lifecycle state, current milestones, review state, blockers, and next stages live in each plan's owning change record (`change.json` for current record-format work).
+Current lifecycle state, milestones, review standing, blockers and next actions belong to the owning local Change, read through `rigorloop change context CHANGE`. Links to earlier `change.json` records retain their historical contract; they do not activate a filesystem backend in the successor.
 
 <!--
 Index policy:

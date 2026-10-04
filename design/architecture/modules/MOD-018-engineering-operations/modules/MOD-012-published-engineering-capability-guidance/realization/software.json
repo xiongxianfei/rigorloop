@@ -2,144 +2,151 @@
   "observed": {
     "public_entries": [
       {
+        "name": "requirement-analysis",
+        "group": "Requirements",
+        "purpose": "Interpret RR, reuse or refine existing IR/SR and supporting Features/Scenarios, and propose new requirements only for distinct needs.",
+        "contract": "design/requirements/workflow-refactor.md",
+        "source_path": "skills/requirement-analysis/SKILL.md"
+      },
+      {
+        "name": "requirement-review",
+        "group": "Requirements",
+        "purpose": "Independently assess the exact requirement basis, including justified reuse; establish the first mandatory approval.",
+        "contract": "design/architecture/modules/MOD-017-engineering-governance/README.md",
+        "source_path": "skills/requirement-review/SKILL.md"
+      },
+      {
+        "name": "system-design",
+        "group": "Design",
+        "purpose": "Define logical Functions and behavior against accepted SRs, preserving Feature intent and requirement ownership.",
+        "contract": "design/architecture/modules/MOD-018-engineering-operations/README.md#authoring-assessment-and-handoff-protocol",
+        "source_path": "skills/system-design/SKILL.md"
+      },
+      {
+        "name": "architecture-design",
+        "group": "Design",
+        "purpose": "Define responsible Modules, Interfaces, realization and derived ARs; use the architecture views to examine the design.",
+        "contract": "design/architecture/modules/MOD-018-engineering-operations/README.md#authoring-assessment-and-handoff-protocol",
+        "source_path": "skills/architecture-design/SKILL.md"
+      },
+      {
+        "name": "design-review",
+        "group": "Design",
+        "purpose": "Assess System and Architecture Design together against the accepted requirement basis in one integrated review.",
+        "contract": "design/architecture/modules/MOD-017-engineering-governance/README.md",
+        "source_path": "skills/design-review/SKILL.md"
+      },
+      {
+        "name": "plan",
+        "group": "Delivery",
+        "purpose": "Define implementation milestones, dependencies, proof and recovery from accepted requirements and reviewed design.",
+        "contract": "design/architecture/modules/MOD-018-engineering-operations/README.md#authoring-assessment-and-handoff-protocol",
+        "source_path": "skills/plan/SKILL.md"
+      },
+      {
+        "name": "delivery-review",
+        "group": "Delivery",
+        "purpose": "Assess sequencing and proof allocation, including one whole-change review before final Verify.",
+        "contract": "design/architecture/modules/MOD-017-engineering-governance/README.md",
+        "source_path": "skills/delivery-review/SKILL.md"
+      },
+      {
+        "name": "implement",
+        "group": "Delivery",
+        "purpose": "Implement authorized work with relevant checks; continue across milestones when conditions permit and hand off the complete scope for review.",
+        "contract": "design/architecture/modules/MOD-018-engineering-operations/README.md#authoring-assessment-and-handoff-protocol",
+        "source_path": "skills/implement/SKILL.md"
+      },
+      {
+        "name": "code-review",
+        "group": "Delivery",
+        "purpose": "Provide optional interim advice or the mandatory independent whole-change review; reassess corrections within the same gate.",
+        "contract": "design/architecture/modules/MOD-017-engineering-governance/README.md",
+        "source_path": "skills/code-review/SKILL.md"
+      },
+      {
+        "name": "verify",
+        "group": "Completion",
+        "purpose": "Assess the final completion claim using current evidence and applicable whole-change approval; return defects to their owner.",
+        "contract": "design/architecture/modules/MOD-017-engineering-governance/README.md",
+        "source_path": "skills/verify/SKILL.md"
+      },
+      {
+        "name": "route",
+        "group": "Coordination",
+        "purpose": "Coordinate authorized activities, blockers and correction ownership without creating engineering approval.",
+        "contract": "design/architecture/modules/MOD-018-engineering-operations/README.md#authoring-assessment-and-handoff-protocol",
+        "source_path": "skills/route/SKILL.md"
+      },
+      {
         "name": "vision",
         "group": "Foundations",
         "purpose": "Establish or revise the project purpose, intended outcomes, and product direction.",
-        "source_path": "skills/vision/SKILL.md",
-        "contract": "docs/design/skill/project-foundations/vision.md"
+        "contract": "docs/design/skill/project-foundations/vision.md",
+        "source_path": "skills/vision/SKILL.md"
       },
       {
         "name": "constitution",
         "group": "Foundations",
         "purpose": "Establish or revise the project's governing engineering principles.",
-        "source_path": "skills/constitution/SKILL.md",
-        "contract": "docs/design/skill/project-foundations/constitution.md"
+        "contract": "docs/design/skill/project-foundations/constitution.md",
+        "source_path": "skills/constitution/SKILL.md"
       },
       {
         "name": "project-map",
         "group": "Foundations",
         "purpose": "Build or refresh an observed repository orientation map with source and uncertainty boundaries.",
-        "source_path": "skills/project-map/SKILL.md",
-        "contract": "docs/design/skill/project-foundations/project-map.md"
+        "contract": "docs/design/skill/project-foundations/project-map.md",
+        "source_path": "skills/project-map/SKILL.md"
       },
       {
         "name": "explore",
         "group": "Discovery",
         "purpose": "Compare materially distinct directions for an unsettled engineering problem.",
-        "source_path": "skills/explore/SKILL.md",
-        "contract": "docs/design/skill/discovery/explore.md"
+        "contract": "docs/design/skill/discovery/explore.md",
+        "source_path": "skills/explore/SKILL.md"
       },
       {
         "name": "research",
         "group": "Discovery",
         "purpose": "Resolve a bounded factual uncertainty with attributable evidence and an explicit conclusion.",
-        "source_path": "skills/research/SKILL.md",
-        "contract": "docs/design/skill/discovery/research.md"
-      },
-      {
-        "name": "proposal",
-        "group": "Authoring",
-        "purpose": "Write a bounded engineering direction proposal and its feasibility basis.",
-        "source_path": "skills/proposal/SKILL.md",
-        "contract": "docs/design/skill/authoring/proposal.md"
-      },
-      {
-        "name": "design",
-        "group": "Authoring",
-        "purpose": "Create or revise a living Design that reconciles behavior, architecture, decisions, and acceptance intent.",
-        "source_path": "skills/design/SKILL.md",
-        "contract": "docs/design/skill/authoring/design.md"
-      },
-      {
-        "name": "plan",
-        "group": "Authoring",
-        "purpose": "Allocate implementation work, dependencies, milestones, and verification from settled design.",
-        "source_path": "skills/plan/SKILL.md",
-        "contract": "docs/design/skill/authoring/plan.md"
-      },
-      {
-        "name": "implement",
-        "group": "Implementation",
-        "purpose": "Implement an approved milestone or explicitly bounded change with concrete proof for independent review.",
-        "source_path": "skills/implement/SKILL.md",
-        "contract": "docs/design/skill/skill.md#implement"
+        "contract": "docs/design/skill/discovery/research.md",
+        "source_path": "skills/research/SKILL.md"
       },
       {
         "name": "bugfix",
         "group": "Implementation",
         "purpose": "Diagnose or correct a bounded defect against its governing behavior and reproducible evidence.",
-        "source_path": "skills/bugfix/SKILL.md",
-        "contract": "docs/design/skill/skill.md#bugfix"
+        "contract": "docs/design/skill/skill.md#bugfix",
+        "source_path": "skills/bugfix/SKILL.md"
       },
       {
         "name": "ci-maintenance",
         "group": "Implementation",
         "purpose": "Review or revise repository automation for coverage, execution, permissions, and maintenance needs.",
-        "source_path": "skills/ci-maintenance/SKILL.md",
-        "contract": "docs/design/skill/skill.md#ci-maintenance"
-      },
-      {
-        "name": "proposal-review",
-        "group": "Review",
-        "purpose": "Review a proposed direction and feasibility basis before dependent design.",
-        "source_path": "skills/proposal-review/SKILL.md",
-        "contract": "docs/design/skill/assessment.md"
-      },
-      {
-        "name": "design-review",
-        "group": "Review",
-        "purpose": "Review the affected Designs and interactions against approved direction.",
-        "source_path": "skills/design-review/SKILL.md",
-        "contract": "docs/design/skill/assessment.md"
-      },
-      {
-        "name": "delivery-review",
-        "group": "Review",
-        "purpose": "Review implementation sequencing and verification allocation before implementation.",
-        "source_path": "skills/delivery-review/SKILL.md",
-        "contract": "docs/design/skill/assessment.md"
-      },
-      {
-        "name": "code-review",
-        "group": "Review",
-        "purpose": "Review delivered implementation and proof against the approved design and delivery basis.",
-        "source_path": "skills/code-review/SKILL.md",
-        "contract": "docs/design/skill/assessment.md"
-      },
-      {
-        "name": "route",
-        "group": "Coordination and completion",
-        "purpose": "Select and coordinate the applicable engineering activity, correction owner, and authorized continuation.",
-        "source_path": "skills/route/SKILL.md",
-        "contract": "docs/design/skill/workflow.md"
-      },
-      {
-        "name": "verify",
-        "group": "Coordination and completion",
-        "purpose": "Assess requested verification scope, current evidence, and engineering coherence, recording successful closeout only when justified.",
-        "source_path": "skills/verify/SKILL.md",
-        "contract": "docs/design/skill/assessment.md"
+        "contract": "docs/design/skill/skill.md#ci-maintenance",
+        "source_path": "skills/ci-maintenance/SKILL.md"
       },
       {
         "name": "pr",
         "group": "Coordination and completion",
         "purpose": "Prepare or perform an explicitly authorized pull-request handoff from the current verified subject.",
-        "source_path": "skills/pr/SKILL.md",
-        "contract": "docs/design/skill/delivery-handoff.md"
+        "contract": "docs/design/skill/delivery-handoff.md",
+        "source_path": "skills/pr/SKILL.md"
       },
       {
         "name": "learn",
         "group": "Coordination and completion",
         "purpose": "Capture supported reusable lessons and route derivative work to its accountable owner.",
-        "source_path": "skills/learn/SKILL.md",
-        "contract": "docs/design/skill/learning.md"
+        "contract": "docs/design/skill/learning.md",
+        "source_path": "skills/learn/SKILL.md"
       }
     ],
     "sources": [
       {
-        "source": "SRC-PUBLIC-ENTRIES",
-        "locator": "The nineteen skills/*/SKILL.md path names; docs/design/skill/skill.md and the public_entries contract paths; design/requirements/published-products.md retained child-obligation inventory",
-        "basis": "Directory-entry inspection establishes canonical source names and file existence only; published-purpose descriptions come from the current owning Designs. No SKILL.md content was read or invoked, no installed package was inspected, and no current public-release qualification or complete skill implementation audit is claimed."
+        "source": "SRC-SQLITE-ADOPTION",
+        "locator": "skills/architecture-design/SKILL.md; skills/bugfix/SKILL.md; skills/ci-maintenance/SKILL.md; skills/code-review/SKILL.md; skills/constitution/SKILL.md; skills/delivery-review/SKILL.md; skills/design-review/SKILL.md; skills/explore/SKILL.md; skills/implement/SKILL.md; skills/learn/SKILL.md; skills/plan/SKILL.md; skills/pr/SKILL.md; skills/project-map/SKILL.md; skills/requirement-analysis/SKILL.md; skills/requirement-review/SKILL.md; skills/research/SKILL.md; skills/route/SKILL.md; skills/system-design/SKILL.md; skills/verify/SKILL.md; skills/vision/SKILL.md",
+        "basis": "Static inspection of the successor working-tree source identifies this implementation binding. It does not establish passing tests, installed availability, publication or engineering approval. Prior observations remain recoverable at 39be9c81."
       }
     ]
   },
@@ -163,6 +170,244 @@
       ],
       "public_entry_mappings": [
         {
+          "entry": "requirement-analysis",
+          "functions": [
+            {
+              "function": "FUNC-032",
+              "relation": "guides",
+              "contribution": "Interpret RR, reuse or refine existing IR/SR and supporting Features/Scenarios, and propose new requirements only for distinct needs."
+            },
+            {
+              "function": "FUNC-033",
+              "relation": "guides",
+              "contribution": "Interpret RR, reuse or refine existing IR/SR and supporting Features/Scenarios, and propose new requirements only for distinct needs."
+            },
+            {
+              "function": "FUNC-053",
+              "relation": "guides",
+              "contribution": "Interpret RR, reuse or refine existing IR/SR and supporting Features/Scenarios, and propose new requirements only for distinct needs."
+            }
+          ],
+          "limits": [
+            "Static source binding only; actual availability is reported by the installed executable/package."
+          ]
+        },
+        {
+          "entry": "requirement-review",
+          "functions": [
+            {
+              "function": "FUNC-029",
+              "relation": "guides",
+              "contribution": "Independently assess the exact requirement basis, including justified reuse; establish the first mandatory approval."
+            },
+            {
+              "function": "FUNC-031",
+              "relation": "guides",
+              "contribution": "Independently assess the exact requirement basis, including justified reuse; establish the first mandatory approval."
+            },
+            {
+              "function": "FUNC-053",
+              "relation": "guides",
+              "contribution": "Independently assess the exact requirement basis, including justified reuse; establish the first mandatory approval."
+            }
+          ],
+          "limits": [
+            "Static source binding only; actual availability is reported by the installed executable/package."
+          ]
+        },
+        {
+          "entry": "system-design",
+          "functions": [
+            {
+              "function": "FUNC-032",
+              "relation": "guides",
+              "contribution": "Define logical Functions and behavior against accepted SRs, preserving Feature intent and requirement ownership."
+            },
+            {
+              "function": "FUNC-033",
+              "relation": "guides",
+              "contribution": "Define logical Functions and behavior against accepted SRs, preserving Feature intent and requirement ownership."
+            },
+            {
+              "function": "FUNC-053",
+              "relation": "guides",
+              "contribution": "Define logical Functions and behavior against accepted SRs, preserving Feature intent and requirement ownership."
+            }
+          ],
+          "limits": [
+            "Static source binding only; actual availability is reported by the installed executable/package."
+          ]
+        },
+        {
+          "entry": "architecture-design",
+          "functions": [
+            {
+              "function": "FUNC-032",
+              "relation": "guides",
+              "contribution": "Define responsible Modules, Interfaces, realization and derived ARs; use the architecture views to examine the design."
+            },
+            {
+              "function": "FUNC-033",
+              "relation": "guides",
+              "contribution": "Define responsible Modules, Interfaces, realization and derived ARs; use the architecture views to examine the design."
+            },
+            {
+              "function": "FUNC-053",
+              "relation": "guides",
+              "contribution": "Define responsible Modules, Interfaces, realization and derived ARs; use the architecture views to examine the design."
+            }
+          ],
+          "limits": [
+            "Static source binding only; actual availability is reported by the installed executable/package."
+          ]
+        },
+        {
+          "entry": "design-review",
+          "functions": [
+            {
+              "function": "FUNC-029",
+              "relation": "guides",
+              "contribution": "Assess System and Architecture Design together against the accepted requirement basis in one integrated review."
+            },
+            {
+              "function": "FUNC-031",
+              "relation": "guides",
+              "contribution": "Assess System and Architecture Design together against the accepted requirement basis in one integrated review."
+            },
+            {
+              "function": "FUNC-053",
+              "relation": "guides",
+              "contribution": "Assess System and Architecture Design together against the accepted requirement basis in one integrated review."
+            }
+          ],
+          "limits": [
+            "Static source binding only; actual availability is reported by the installed executable/package."
+          ]
+        },
+        {
+          "entry": "plan",
+          "functions": [
+            {
+              "function": "FUNC-053",
+              "relation": "guides",
+              "contribution": "Define implementation milestones, dependencies, proof and recovery from accepted requirements and reviewed design."
+            }
+          ],
+          "limits": [
+            "Static source binding only; actual availability is reported by the installed executable/package."
+          ]
+        },
+        {
+          "entry": "delivery-review",
+          "functions": [
+            {
+              "function": "FUNC-029",
+              "relation": "guides",
+              "contribution": "Assess sequencing and proof allocation, including one whole-change review before final Verify."
+            },
+            {
+              "function": "FUNC-031",
+              "relation": "guides",
+              "contribution": "Assess sequencing and proof allocation, including one whole-change review before final Verify."
+            },
+            {
+              "function": "FUNC-053",
+              "relation": "guides",
+              "contribution": "Assess sequencing and proof allocation, including one whole-change review before final Verify."
+            }
+          ],
+          "limits": [
+            "Static source binding only; actual availability is reported by the installed executable/package."
+          ]
+        },
+        {
+          "entry": "implement",
+          "functions": [
+            {
+              "function": "FUNC-053",
+              "relation": "guides",
+              "contribution": "Implement authorized work with relevant checks; continue across milestones when conditions permit and hand off the complete scope for review."
+            }
+          ],
+          "limits": [
+            "Static source binding only; actual availability is reported by the installed executable/package."
+          ]
+        },
+        {
+          "entry": "code-review",
+          "functions": [
+            {
+              "function": "FUNC-029",
+              "relation": "guides",
+              "contribution": "Provide optional interim advice or the mandatory independent whole-change review; reassess corrections within the same gate."
+            },
+            {
+              "function": "FUNC-031",
+              "relation": "guides",
+              "contribution": "Provide optional interim advice or the mandatory independent whole-change review; reassess corrections within the same gate."
+            },
+            {
+              "function": "FUNC-053",
+              "relation": "guides",
+              "contribution": "Provide optional interim advice or the mandatory independent whole-change review; reassess corrections within the same gate."
+            }
+          ],
+          "limits": [
+            "Static source binding only; actual availability is reported by the installed executable/package."
+          ]
+        },
+        {
+          "entry": "verify",
+          "functions": [
+            {
+              "function": "FUNC-029",
+              "relation": "guides",
+              "contribution": "Assess the final completion claim using current evidence and applicable whole-change approval; return defects to their owner."
+            },
+            {
+              "function": "FUNC-030",
+              "relation": "guides",
+              "contribution": "Assess the final completion claim using current evidence and applicable whole-change approval; return defects to their owner."
+            },
+            {
+              "function": "FUNC-031",
+              "relation": "guides",
+              "contribution": "Assess the final completion claim using current evidence and applicable whole-change approval; return defects to their owner."
+            },
+            {
+              "function": "FUNC-053",
+              "relation": "guides",
+              "contribution": "Assess the final completion claim using current evidence and applicable whole-change approval; return defects to their owner."
+            }
+          ],
+          "limits": [
+            "Static source binding only; actual availability is reported by the installed executable/package."
+          ]
+        },
+        {
+          "entry": "route",
+          "functions": [
+            {
+              "function": "FUNC-026",
+              "relation": "guides",
+              "contribution": "Coordinate authorized activities, blockers and correction ownership without creating engineering approval."
+            },
+            {
+              "function": "FUNC-054",
+              "relation": "guides",
+              "contribution": "Coordinate authorized activities, blockers and correction ownership without creating engineering approval."
+            },
+            {
+              "function": "FUNC-055",
+              "relation": "guides",
+              "contribution": "Coordinate authorized activities, blockers and correction ownership without creating engineering approval."
+            }
+          ],
+          "limits": [
+            "Static source binding only; actual availability is reported by the installed executable/package."
+          ]
+        },
+        {
           "entry": "vision",
           "functions": [
             {
@@ -172,7 +417,7 @@
             }
           ],
           "limits": [
-            "Only common specialist guidance is mapped. Vision artifacts, ownership, linked surface updates, and write/recovery rules remain in VIS-SR-01–03; no dedicated vision-definition Function or automatic IR conversion is established."
+            "Static source binding only; actual availability is reported by the installed executable/package."
           ]
         },
         {
@@ -185,7 +430,7 @@
             }
           ],
           "limits": [
-            "Only common specialist guidance is mapped. GOV-SR-01–03 retain principles structure, authority, and mutation rules; an authored constitution does not automatically become the REM metamodel or grant implementation permission."
+            "Static source binding only; actual availability is reported by the installed executable/package."
           ]
         },
         {
@@ -198,7 +443,7 @@
             }
           ],
           "limits": [
-            "Only common specialist guidance is mapped. MAP-SR-01–03 retain exact map/area/write behavior; an observed orientation map does not define proposed Module allocation or an execution backlog."
+            "Static source binding only; actual availability is reported by the installed executable/package."
           ]
         },
         {
@@ -211,7 +456,7 @@
             }
           ],
           "limits": [
-            "Only common specialist guidance is mapped. EXP-SR-01–03 retain the option-space method and outputs; exploration does not select implementation authority or replace a settled proposal."
+            "Static source binding only; actual availability is reported by the installed executable/package."
           ]
         },
         {
@@ -224,59 +469,7 @@
             }
           ],
           "limits": [
-            "Only common specialist guidance is mapped. RES-SR-01–03 retain research methods and artifacts; factual research is not automatically requirement verification or a REM Evidence record."
-          ]
-        },
-        {
-          "entry": "proposal",
-          "functions": [
-            {
-              "function": "FUNC-053",
-              "relation": "guides",
-              "contribution": "Guide proposal authorship from selected direction, preserving problem, intended outcomes, bounds, and feasibility for the decision owner."
-            }
-          ],
-          "limits": [
-            "Only common specialist guidance is mapped. AUTH-SR-01–05 and PROP-SR-01–06 retain the exact proposal contract; a proposal is not a REM Initial Requirement and does not grant design or implementation approval."
-          ]
-        },
-        {
-          "entry": "design",
-          "functions": [
-            {
-              "function": "FUNC-053",
-              "relation": "guides",
-              "contribution": "Guide current living-Design authorship and source reconciliation under the selected project contract."
-            }
-          ],
-          "limits": [
-            "Only common specialist guidance is mapped. DES-SR-01–26 and LAB-SR-01–03 retain the detailed living-Design and lab contract. Current published guidance does not author REM Feature/Function entities or standalone architecture/ADR outputs by default; IF-008 applies only after explicit REM adoption."
-          ]
-        },
-        {
-          "entry": "plan",
-          "functions": [
-            {
-              "function": "FUNC-053",
-              "relation": "guides",
-              "contribution": "Guide stable delivery intent, safe sequencing, and owned execution/verification allocation without recording mutable progress in the plan."
-            }
-          ],
-          "limits": [
-            "Only common specialist guidance is mapped. PLAN-SR-01–08 retain plan operations, review prerequisites, initialization, and proof allocation. Planning assessment intent is not observed verification or automatic authorship of a REM Verification entity."
-          ]
-        },
-        {
-          "entry": "implement",
-          "functions": [
-            {
-              "function": "FUNC-053",
-              "relation": "guides",
-              "contribution": "Guide the selected implementation procedure, scoped changes, proof, and review handoff while returning behavioral gaps to their author."
-            }
-          ],
-          "limits": [
-            "Only common specialist guidance is mapped. Exact isolated/planned profiles, write identities, proof-first exceptions, and implementation behavior remain in the Implement owner; MOD-012 does not become accountable for every product behavior an agent edits."
+            "Static source binding only; actual availability is reported by the installed executable/package."
           ]
         },
         {
@@ -289,7 +482,7 @@
             }
           ],
           "limits": [
-            "Only common specialist guidance is mapped. Bugfix retains reproduction, authority, root-cause, regression, retry, and mutation rules; diagnosis does not authorize a product behavior change or imply independent review."
+            "Static source binding only; actual availability is reported by the installed executable/package."
           ]
         },
         {
@@ -302,156 +495,7 @@
             }
           ],
           "limits": [
-            "Only common specialist guidance is mapped. CI assembly selection, privileged-context decisions, bounded PR repair, and exact hosted-run evidence remain source-owned; this mapping does not treat a local check as hosted CI success."
-          ]
-        },
-        {
-          "entry": "proposal-review",
-          "functions": [
-            {
-              "function": "FUNC-053",
-              "relation": "guides",
-              "contribution": "Judge the exact proposal's problem, outcome, scope, direction, and feasibility under its specialist review method."
-            },
-            {
-              "function": "FUNC-029",
-              "relation": "guides",
-              "contribution": "Guide applicability assessment of the exact offered subject/evidence basis without relying on matching identities alone."
-            },
-            {
-              "function": "FUNC-031",
-              "relation": "guides",
-              "contribution": "Guide an attributable scoped judgment with rationale, supported limits, and unresolved material findings."
-            }
-          ],
-          "limits": [
-            "Proposal criteria, decision ownership, and independent judgment gates remain in the Assessment specialist contract. These semantic correspondences do not migrate its full clauses or turn MOD-012 into the assurance owner.",
-            "The relation guides denotes agent-facing procedure; it does not invoke a deterministic review service, perform a review here, or establish complete skill-to-Function realization."
-          ]
-        },
-        {
-          "entry": "design-review",
-          "functions": [
-            {
-              "function": "FUNC-053",
-              "relation": "guides",
-              "contribution": "Judge the exact affected design package, examples, interactions, and retained source obligations."
-            },
-            {
-              "function": "FUNC-029",
-              "relation": "guides",
-              "contribution": "Guide applicability assessment of the exact offered subject/evidence basis without relying on matching identities alone."
-            },
-            {
-              "function": "FUNC-031",
-              "relation": "guides",
-              "contribution": "Guide an attributable scoped judgment with rationale, supported limits, and unresolved material findings."
-            }
-          ],
-          "limits": [
-            "Design package completeness, preserved source meaning, interaction adequacy, and applicable review gates remain in the Assessment specialist contract. These semantic correspondences do not migrate its full clauses or turn MOD-012 into the assurance owner.",
-            "The relation guides denotes agent-facing procedure; it does not invoke a deterministic review service, perform a review here, or establish complete skill-to-Function realization."
-          ]
-        },
-        {
-          "entry": "delivery-review",
-          "functions": [
-            {
-              "function": "FUNC-053",
-              "relation": "guides",
-              "contribution": "Judge the exact plan's safe milestones, dependencies, proof allocation, and final review/Verify sequence."
-            },
-            {
-              "function": "FUNC-029",
-              "relation": "guides",
-              "contribution": "Guide applicability assessment of the exact offered subject/evidence basis without relying on matching identities alone."
-            },
-            {
-              "function": "FUNC-031",
-              "relation": "guides",
-              "contribution": "Guide an attributable scoped judgment with rationale, supported limits, and unresolved material findings."
-            }
-          ],
-          "limits": [
-            "Plan-centered delivery adequacy, proof partitions, prerequisite design, and implementation admission remain in the Assessment specialist contract. These semantic correspondences do not migrate its full clauses or turn MOD-012 into the assurance owner.",
-            "The relation guides denotes agent-facing procedure; it does not invoke a deterministic review service, perform a review here, or establish complete skill-to-Function realization."
-          ]
-        },
-        {
-          "entry": "code-review",
-          "functions": [
-            {
-              "function": "FUNC-053",
-              "relation": "guides",
-              "contribution": "Judge the exact milestone or complete delivered change with current design, plan, and proof as its declared basis."
-            },
-            {
-              "function": "FUNC-029",
-              "relation": "guides",
-              "contribution": "Guide applicability assessment of the exact offered subject/evidence basis without relying on matching identities alone."
-            },
-            {
-              "function": "FUNC-031",
-              "relation": "guides",
-              "contribution": "Guide an attributable scoped judgment with rationale, supported limits, and unresolved material findings."
-            }
-          ],
-          "limits": [
-            "Milestone versus final whole-change scope, independent inspection, concern ownership, and correction review remain in the Assessment specialist contract. These semantic correspondences do not migrate its full clauses or turn MOD-012 into the assurance owner.",
-            "The relation guides denotes agent-facing procedure; it does not invoke a deterministic review service, perform a review here, or establish complete skill-to-Function realization."
-          ]
-        },
-        {
-          "entry": "route",
-          "functions": [
-            {
-              "function": "FUNC-054",
-              "relation": "guides",
-              "contribution": "Guide the applicable receiving activity and owned correction path using current work, prerequisites, and assessment basis."
-            },
-            {
-              "function": "FUNC-026",
-              "relation": "guides",
-              "contribution": "Guide the authority check before covered continuation while preserving independent project permission and valid bounded grants."
-            },
-            {
-              "function": "FUNC-055",
-              "relation": "guides",
-              "contribution": "Guide explicit scoped inspection and actor-supplied recording when the invocation is governed."
-            }
-          ],
-          "limits": [
-            "WF-SR-01–19 retain the complete routing, correction, adoption, and follow-up-placement method. A stored status, favorable assessment, or candidate listing never determines authority automatically.",
-            "Guidance does not create a CLI eligibility engine or claim full specialist realization; MOD-006 retains authority meaning and MOD-012 retains invocation/coordination guidance."
-          ]
-        },
-        {
-          "entry": "verify",
-          "functions": [
-            {
-              "function": "FUNC-053",
-              "relation": "guides",
-              "contribution": "Guide the selected scoped-check or final-closeout procedure without conflating their outcomes."
-            },
-            {
-              "function": "FUNC-029",
-              "relation": "guides",
-              "contribution": "Guide current evidence applicability and justified reuse or required new proof for the declared claim."
-            },
-            {
-              "function": "FUNC-030",
-              "relation": "guides",
-              "contribution": "Guide criterion coverage and visible contradiction/gap accounting for the requested scope."
-            },
-            {
-              "function": "FUNC-031",
-              "relation": "guides",
-              "contribution": "Guide the scoped conclusion and, only on successful governed Verify, its final explanation and completion evidence."
-            }
-          ],
-          "limits": [
-            "RC-SR-01–23 and the Verify specialist contract retain exact execution modes, independence, mandatory final Code Review, failed-Verify correction, and branch-readiness basis. Generic assurance mappings do not replace them.",
-            "The capability does not gain PR, release, or external-action authority from success; recorded evidence must reflect actual performed checks."
+            "Static source binding only; actual availability is reported by the installed executable/package."
           ]
         },
         {
@@ -474,8 +518,7 @@
             }
           ],
           "limits": [
-            "HAND-SR-01–04 retain exact Git/PR relationships, prepared payload, hosted observations, partial effects, and retry boundaries. The REM model does not yet define a dedicated pull-request publication Function.",
-            "PR handoff is distinct from product-release publication: this mapping does not bind pr to FUNC-070 or grant merge, force-push, or release authority."
+            "Static source binding only; actual availability is reported by the installed executable/package."
           ]
         },
         {
@@ -493,8 +536,7 @@
             }
           ],
           "limits": [
-            "LRN-SR-01–03 retain session/topic identities, contributor confirmation, no-clobber writes, and exact route-result fields. Classification or routing does not authorize destination changes.",
-            "FUNC-036, FUNC-037, and FUNC-038 remain related learning-model behavior; this source inspection does not establish that learn itself implements lesson-selection, complete improvement proposals, or adopted-improvement effectiveness assessment."
+            "Static source binding only; actual availability is reported by the installed executable/package."
           ]
         }
       ]
@@ -801,7 +843,7 @@
             }
           ],
           "limits": [
-            "Only common specialist guidance is mapped. Vision artifacts, ownership, linked surface updates, and write/recovery rules remain in VIS-SR-01–03; no dedicated vision-definition Function or automatic IR conversion is established."
+            "Only common specialist guidance is mapped. Vision artifacts, ownership, linked surface updates, and write/recovery rules remain in VIS-SR-01\u201303; no dedicated vision-definition Function or automatic IR conversion is established."
           ]
         },
         {
@@ -817,7 +859,7 @@
             }
           ],
           "limits": [
-            "Only common specialist guidance is mapped. GOV-SR-01–03 retain principles structure, authority, and mutation rules; an authored constitution does not automatically become the REM metamodel or grant implementation permission."
+            "Only common specialist guidance is mapped. GOV-SR-01\u201303 retain principles structure, authority, and mutation rules; an authored constitution does not automatically become the REM metamodel or grant implementation permission."
           ]
         },
         {
@@ -833,7 +875,7 @@
             }
           ],
           "limits": [
-            "Only common specialist guidance is mapped. MAP-SR-01–03 retain exact map/area/write behavior; an observed orientation map does not define proposed Module allocation or an execution backlog."
+            "Only common specialist guidance is mapped. MAP-SR-01\u201303 retain exact map/area/write behavior; an observed orientation map does not define proposed Module allocation or an execution backlog."
           ]
         },
         {
@@ -849,7 +891,7 @@
             }
           ],
           "limits": [
-            "Only common specialist guidance is mapped. EXP-SR-01–03 retain the option-space method and outputs; exploration does not select implementation authority or replace a settled proposal."
+            "Only common specialist guidance is mapped. EXP-SR-01\u201303 retain the option-space method and outputs; exploration does not select implementation authority or replace a settled proposal."
           ]
         },
         {
@@ -865,7 +907,7 @@
             }
           ],
           "limits": [
-            "Only common specialist guidance is mapped. RES-SR-01–03 retain research methods and artifacts; factual research is not automatically requirement verification or a REM Evidence record."
+            "Only common specialist guidance is mapped. RES-SR-01\u201303 retain research methods and artifacts; factual research is not automatically requirement verification or a REM Evidence record."
           ]
         },
         {
@@ -923,7 +965,7 @@
             }
           ],
           "limits": [
-            "HAND-SR-01–04 retain exact Git/PR relationships, prepared payload, hosted observations, partial effects, and retry boundaries. The REM model does not yet define a dedicated pull-request publication Function.",
+            "HAND-SR-01\u201304 retain exact Git/PR relationships, prepared payload, hosted observations, partial effects, and retry boundaries. The REM model does not yet define a dedicated pull-request publication Function.",
             "PR handoff is distinct from product-release publication: this mapping does not bind pr to FUNC-070 or grant merge, force-push, or release authority."
           ]
         },
@@ -945,7 +987,7 @@
             }
           ],
           "limits": [
-            "LRN-SR-01–03 retain session/topic identities, contributor confirmation, no-clobber writes, and exact route-result fields. Classification or routing does not authorize destination changes.",
+            "LRN-SR-01\u201303 retain session/topic identities, contributor confirmation, no-clobber writes, and exact route-result fields. Classification or routing does not authorize destination changes.",
             "FUNC-036, FUNC-037, and FUNC-038 remain related learning-model behavior; this source inspection does not establish that learn itself implements lesson-selection, complete improvement proposals, or adopted-improvement effectiveness assessment."
           ]
         }

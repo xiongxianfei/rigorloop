@@ -22,7 +22,7 @@ class LearnSkillSimplificationTests(unittest.TestCase):
         self.package = self.skill + "\n" + self.method
 
     def test_package_profiles_and_resource_trigger_are_exact(self) -> None:
-        self.assertEqual(sorted(path.name for path in (self.root / "references").iterdir()), ["session-method.md"])
+        self.assertEqual(sorted(path.name for path in (self.root / "references").iterdir()), ["operational-recording.md", "rigorloop-records-v4.schema.json", "session-method.md", "targeted-recording-v2.schema.json"])
         self.assertFalse((self.root / "assets").exists())
         self.assertIn("LR0-route-result", self.skill)
         self.assertIn("LR1-session", self.skill)

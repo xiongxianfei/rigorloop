@@ -3,13 +3,13 @@
   "type": "feature",
   "title": "Inspect selected engineering work through command-line queries",
   "status": "draft",
-  "description": "Engineers and agents can discover current recorded changes, inspect explicitly selected work and assessments, and obtain exact subject identities through the published command-line interface, with understandable scope and missing-content distinctions.",
+  "description": "Engineers and agents can inspect actual project capabilities, explicitly selected current work and assessments, and declared compared basis with honest scope and support gaps.",
   "scope": {
     "includes": [
-      "Read-only current-work discovery, selected status/context/show and advanced record inspection.",
-      "Complete selected explanations, deliberate projection and bounded state-aware pagination.",
-      "Explicit safe subject identity and optional content inspection.",
-      "Inspect explicitly related retained Changes, decisions, findings and evidence across work history for one selected engineering subject."
+      "Current capability/backend inspection and explicitly selected Change context and assessment reads.",
+      "Complete bounded selected accounts and current selector index with explicit absent/omitted distinctions.",
+      "Safe comparison of declared engineering subjects without inferred authority.",
+      "Separately designed draft cross-Change subject history under SR-078/FUNC-077; not implemented or advertised by the current adoption."
     ],
     "excludes": [
       "Semantic relevance ranking, next-stage selection, approval or applicability inference.",
@@ -34,6 +34,11 @@
       "source": "SRC-LOCAL-OPERATIONAL-ANALYSIS",
       "locator": "FEAT-012",
       "basis": "Draft derivation from the refined IRs and RR proposal; no approval, implementation or satisfaction claim."
+    },
+    {
+      "source": "SRC-SQLITE-ADOPTION",
+      "locator": "FEAT-012",
+      "basis": "Preserve the stakeholder capability while reconciling current task scope and explicitly deferred history discovery."
     }
   ]
 }
