@@ -683,12 +683,17 @@ class ArchitectureViewProjectionTests(unittest.TestCase):
         parent = projected["modules"]["MOD-018"]
         self.assertEqual(parent["functions"], [])
         self.assertEqual(parent["allocated_requirements"], [])
-        self.assertEqual(len(parent["subtree_functions"]), 16)
+        self.assertEqual(parent["subtree_functions"],
+                         [f"FUNC-{i:03}" for i in range(40, 56)] + ["FUNC-074", "FUNC-075", "FUNC-076"])
         self.assertEqual(parent["subtree_allocated_requirements"],
                          [f"AR-{i:03}" for i in range(11, 29)] +
-                         ["AR-030", "AR-032", "AR-034", "AR-037", "AR-039", "AR-040", "AR-051"])
+                         ["AR-030", "AR-032", "AR-034", "AR-037", "AR-039", "AR-040", "AR-051", "AR-052", "AR-053", "AR-054", "AR-055"])
         self.assertIn("FUNC-046", projected["modules"]["MOD-011"]["functions"])
         self.assertIn("FUNC-046", parent["subtree_functions"])
+        for identity in ("FUNC-074", "FUNC-075", "FUNC-076"):
+            self.assertEqual([owner for owner, item in projected["modules"].items() if identity in item["functions"]], ["MOD-011"])
+        for identity in ("AR-052", "AR-053", "AR-054", "AR-055"):
+            self.assertEqual([owner for owner, item in projected["modules"].items() if identity in item["allocated_requirements"]], ["MOD-011"])
         self.assertEqual(snapshot(root), before)
 
     def test_overview_collaboration_keeps_parent_contract_ownership(self):

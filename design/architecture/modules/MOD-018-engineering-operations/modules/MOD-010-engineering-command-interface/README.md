@@ -1,6 +1,6 @@
 # Command interface: current engineering handoff
 
-This is the proposed `targeted-recording-v2` interface for [v4 current-state records](../MOD-011-operational-record-persistence/README.md). It refines SR-006 and SR-040–045 under AR-040. These are target commands, not installed capabilities. The [implemented v1 contract](../../../../../../docs/design/cli/cli.md), schemas and customer skills remain unchanged until coordinated adoption.
+This defines the `targeted-recording-v2` interface for [v4 current-state records](../MOD-011-operational-record-persistence/README.md), refining SR-006 and SR-040–045 under AR-040. The successor package implements the operational families under the [current CLI contract](../../../../../../docs/design/cli/cli.md); browser-family entries remain designed capabilities. Use the executing package’s capabilities to distinguish availability. This project has explicitly adopted selected operational work; installing the package does not activate customer policy or migrate other work.
 
 ## Public task surface
 
@@ -62,7 +62,7 @@ Browser generate/recover do not advertise dry-run; check is their read-only comp
 
 ## Successor package and compatibility boundary
 
-The installed executable selects one operational command contract. The current package implements targeted-recording-v1 / rigorloop-records-v3; the deliberately installed successor implements targeted-recording-v2 / rigorloop-records-v4. Overlapping spellings such as review show are interpreted only by that executable's declared contract. Neither repository residue, a missing database nor an input body selects a fallback backend. Help and capabilities identify the executing package's actual contract and operations without claiming customer workflow activation.
+The installed executable selects one operational command contract. The successor package implements targeted-recording-v2 / rigorloop-records-v4. Explicitly retained prior executables implement their original targeted-recording-v1 / rigorloop-records-v3 contract for unmigrated work. Overlapping spellings such as review show are interpreted only by that executable's declared contract. Neither repository residue, a missing database nor an input body selects a fallback backend. Help and capabilities identify the executing package's actual contract and operations without claiming customer workflow activation.
 
 The successor rejects v1/v3 operational envelopes and retired recording commands; it does not include a parallel v3 dispatcher or permit live v3 writes. Its explicitly invoked migration adapter may read only qualified legacy formats and preserve selected originals under the migration contract. Before upgrade, the owner preserves access to a qualified prior executable for unfinished v3 work and recovery. A legacy store is never silently upgraded by a read or ordinary write. During migration, old writers must be quiescent because the new package's maintenance fence cannot control them.
 
@@ -82,7 +82,7 @@ Supporting record input omits engine-owned schema, contract and change_id. The e
 
 ## Public request and result schema
 
-This section is the normative field contract for the proposed operational families. Executable JSON Schema files and parser dispatch must implement it during delivery; the current CLI does not accept these target envelopes. All listed request members are required unless explicitly optional, unknown members reject, duplicate JSON keys reject, and closed discriminator values reject before cross-field consistency checks. Task-specific semantic fields reuse the existing Records types; no field names a SQL table, database file, transaction handle or stored-row encoding.
+This section is the normative field contract for the successor operational families. Packaged JSON Schema files and parser dispatch implement these envelopes. All listed request members are required unless explicitly optional, unknown members reject, duplicate JSON keys reject, and closed discriminator values reject before cross-field consistency checks. Task-specific semantic fields reuse the existing Records types; no field names a SQL table, database file, transaction handle or stored-row encoding.
 
 | Request family | Transport and field rules |
 | --- | --- |
@@ -117,7 +117,7 @@ The first error is the primary actionable diagnostic. These are the closed targe
 | output-failed | failed / 1 | Preserve true/false/null already established. When stdout delivery itself fails, a complete JSON envelope may be impossible; emit only the available bounded diagnostic to stderr and keep actual storage state. |
 | internal-error | failed / 1 | Actual known commitment or null. No raw SQL exception becomes a public code. |
 
-The current v3 recovery and browser-v1 families keep their own result semantics. Preview's no-write claim concerns engineering records and retained payload publication; temporary admission leases and SQLite journal housekeeping remain storage coordination. An interrupted SQLite write leads to a coherent current read or explicit unavailability. Maintenance resume is the separate project-store task defined below. No status or exit value grants workflow progression.
+Recovery in explicitly retained v3 executables keeps its original result semantics; the designed browser-v1 family has its own result contract. Preview's no-write claim concerns engineering records and retained payload publication; temporary admission leases and SQLite journal housekeeping remain storage coordination. An interrupted SQLite write leads to a coherent current read or explicit unavailability. Maintenance resume is the separate project-store task defined below. No status or exit value grants workflow progression.
 
 ## Change tasks
 
