@@ -7,7 +7,7 @@
   "analysis": {
     "method": "5W2H",
     "what": {
-      "problem": "Approval of one candidate can be incorrectly reused for changed bytes, a different source, or a duplicate external write.",
+      "problem": "Authority to start one release can be incorrectly reused for a different source, changed packages or duplicate external writes.",
       "desired_outcome": "The external operation publishes only the reviewed and authorized product identity with truthful authentication and provenance."
     },
     "why": {
@@ -30,7 +30,7 @@
       ]
     },
     "how": {
-      "approach": "Apply the existing candidate-specific authority and authentication/provenance policy, preferring trusted publishing where supported and honoring stricter profile requirements. Recheck bound source/artifacts/configuration, applicable evidence, external conflicts, and authority before writes. Publish retained qualified bytes without rebuilding from a mutable source. Material changes require affected requalification and a new applicable approval; an unchanged satisfactorily rechecked candidate need not acquire redundant approval."
+      "approach": "Treat an authorized release workflow start as permission for the selected source, version/channel, destinations and execution policy. Bind the subsequently prepared candidate to that start and qualify its actual bytes. Recheck binding, evidence, public state and runtime authority before writes; publish retained packages without rebuilding. Failed checks stop execution. Material source, configuration or destination changes require a new authorized start and qualification; retries reuse the original candidate. No second routine approval is required."
     },
     "how_much": {
       "scope": "Existing approved publication paths only. General manual fallback prose cannot override a profile requiring trusted publication; bounded token/2FA fallback needs its specific authority and does not waive checks. Serializing a workflow is neither a distributed publication lock nor permission to retry an uncertain write. Credentials and private environment data must not enter artifacts, evidence, or diagnostics."
@@ -41,7 +41,8 @@
     "Publication uses retained checked artifact bytes, and a conflicting existing tag or public artifact blocks without overwrite or an independent unguarded fallback publisher.",
     "Authorization alone does not waive stale, incomplete, or failed required evidence, and passing checks do not create authorization.",
     "The selected authentication and provenance policy is preserved; secret-bearing package contents or diagnostics block the unsafe operation.",
-    "Duplicate events do not confer fresh authority or duplicate writes; uncertain external outcomes are inspected under the recovery requirement."
+    "Duplicate events do not confer fresh authority or duplicate writes; uncertain external outcomes are inspected under the recovery requirement.",
+    "An eligible authorized workflow start permits publication after qualification without a later human approval; a local check, PR validation run or unsupported trigger cannot grant that authority."
   ],
   "assumptions": [],
   "constraints": [],
@@ -69,6 +70,11 @@
       "source": "SRC-PUBLISHED-RELEASE",
       "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-015-product-release-coordination/release.md#REL-SR-23",
       "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. An artifact check and a favorable assessment do not grant publication permission or permit an altered publication subject. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "user-request:2026-10-04-release-workflow-start-authority",
+      "basis": "User selects initiation of the authorized release workflow as publication authority, with no later routine approval. Refines the existing IR-010 need; exact candidate qualification, bounded authority and recovery remain. Design change only; running workflow adoption requires implementation."
     }
   ]
 }

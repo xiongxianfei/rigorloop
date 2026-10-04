@@ -3,21 +3,21 @@
   "type": "function",
   "title": "Coordinate an eligible routine release",
   "status": "draft",
-  "description": "Coordinate the existing release responsibilities for supported reviewed input around one exact prepared-candidate approval. The coordinator supplies bounded sequencing and result continuity, not a new general workflow policy or product decision.",
+  "description": "Coordinate an eligible release from its authorized workflow start through qualification, publication and reporting without a second human approval.",
   "inputs": [
     "Eligible reviewed release intent and established supported configuration.",
     "Preparation, qualification, candidate, authorization, publication, public observation, and reporting results from their authoritative owners."
   ],
   "preconditions": [],
   "outputs": [
-    "Prepared candidate for one normal maintainer approval and subsequent attributable operation results.",
+    "Qualified retained packages and attributable execution results bound to the initiating run.",
     "Precise intervention request or retained failure/uncertainty when supported progression cannot continue."
   ],
   "behavior": [
     "Derive supported profiles, notes, and projections from authoritative reviewed intent without duplicate manual entry.",
-    "Coordinate preparation and exact-candidate qualification before presenting its approval summary.",
-    "After applicable approval, continue covered publication, public observation, and durable reporting against the same retained subject.",
-    "Reuse existing authority and evidence semantics; an unchanged satisfactory recheck does not create redundant approval work.",
+    "Validate initiating source/configuration authority, prepare and qualify the exact packages, and retain their manifest and check results.",
+    "After qualification succeeds, continue publication and public observation against the same retained subject without requesting approval.",
+    "Retry only the original authorized scope and candidate; changed material scope requires a new start and qualification.",
     "Stop for ambiguous engineering/version choices, unsupported populations, missing setup, mismatched candidates, or uncertain writes and preserve each owner's actual disposition."
   ],
   "failure_behavior": [

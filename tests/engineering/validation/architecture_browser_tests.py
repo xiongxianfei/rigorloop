@@ -680,8 +680,15 @@ class ArchitectureBrowserTests(unittest.TestCase):
     def test_authored_topic_sources_and_qualifications_remain_exact(self):
         root = self.fixture()
         topics = browser.read_authored_topics(browser.Model(root))
-        self.assertEqual(len(topics), 20)
-        self.assertEqual({t["kind"] for t in topics}, {"topology", "sequence", "state"})
+        self.assertEqual(len(topics), 24)
+        self.assertEqual({t["kind"] for t in topics}, {"topology", "sequence", "state", "flowchart"})
+        release_topics = {t["id"]: (t["view"], t["kind"], t["qualification"]) for t in topics if t["owner"] == "MOD-015"}
+        self.assertEqual(release_topics, {
+            "publication-flow": ("process", "sequence", "observed"),
+            "publication-recovery": ("process", "flowchart", "observed"),
+            "release-code": ("development", "topology", "observed"),
+            "release-placement": ("physical", "topology", "observed"),
+        })
         technical = next(t for t in topics if t["id"] == "browser-technical-structure")
         self.assertEqual(technical["route"], "#logical/MOD-004/proposed/topology/browser-technical-structure")
         self.assertIn('adapter -> engine: "Browser operation contract"', technical["source"])
@@ -702,11 +709,12 @@ class ArchitectureBrowserTests(unittest.TestCase):
         self.assertIn('generator.projection -> contract: "Conforms to"', software["source"])
 
         for topic in topics:
-            self.assertIn(topic["owner"], {"MOD-004", "MOD-006", "MOD-011", "MOD-017", "MOD-018"})
-            self.assertEqual(topic["qualification"], "proposed")
+            self.assertIn(topic["owner"], {"MOD-004", "MOD-006", "MOD-011", "MOD-015", "MOD-017", "MOD-018"})
+            qualification = "observed" if topic["owner"] == "MOD-015" else "proposed"
+            self.assertEqual(topic["qualification"], qualification)
             self.assertIn(topic["source"], (root / topic["path"]).read_text())
             self.assertEqual(topic["source_digest"], hashlib.sha256(topic["source"].encode()).hexdigest())
-            self.assertIn("/proposed/", topic["route"])
+            self.assertIn("/" + qualification + "/", topic["route"])
 
         mappings = browser.build_model(browser.Model(root))["development_implementations"]
         self.assertEqual(set(mappings), {"MOD-004"})
@@ -889,7 +897,7 @@ class ArchitectureBrowserTests(unittest.TestCase):
         manifest = (output / "manifest.sha256").read_text()
         self.assertIn(data["source_digest"], manifest)
         self.assertIn("D2 v0.9.0; ELK layout", manifest)
-        self.assertEqual(len(data["authored_topics"]), 20)
+        self.assertEqual(len(data["authored_topics"]), 24)
         for topic in data["authored_topics"]:
             self.assertTrue(topic["image"].startswith("data:image/svg+xml;base64,"))
             self.assertEqual((output / "diagrams" / (topic["key"] + ".d2")).read_text(), topic["source"] + "\n")
@@ -903,7 +911,7 @@ class ArchitectureBrowserTests(unittest.TestCase):
         for name, expected_hash in members.items():
             self.assertEqual(hashlib.sha256((output / name).read_bytes()).hexdigest(), expected_hash, name)
         diagrams = list((output / "diagrams").glob("*.svg"))
-        self.assertEqual(len(diagrams), 75)
+        self.assertEqual(len(diagrams), 79)
         self.assertEqual({path.stem for path in diagrams},
                          {"overview", *["module-" + identity for identity in data["modules"]],
                           *data["view_diagrams"], *[t["key"] for t in data["authored_topics"]]})

@@ -15,27 +15,26 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 from lib.release.release_transaction import PublicSmokeResult
 import copy
-from release_fixture_helpers import approval_fixture
+from release_fixture_helpers import authority_fixture
 from lib.release.release_execution import ExecutionError
 
 
 class FixtureHostedServices:
     """Only provider effects substituted; caller uses real coordinator and checks."""
     def __init__(self, event, remote):
-        from release_provider_fixtures import FixtureApprovals
+        from release_provider_fixtures import FixtureReleaseAuthority
         self.event, self.remote = event, remote
-        _, _, self.facts = approval_fixture()
+        _, _, self.facts = authority_fixture()
         self.facts['branch'] = {'name': 'main', 'protected': True}
         self.facts['run'].update(id=event['run_id'], head_sha=event['source_commit'], run_attempt=event['attempt'])
         self.facts['artifact']['workflow_run'].update(id=event['run_id'], head_sha=event['source_commit'])
-        self.facts['approvals'] = []
-        class ArtifactService(FixtureApprovals):
+        class ArtifactService(FixtureReleaseAuthority):
             payloads = None
             def artifact_bytes(self, binding):
                 return self.payloads.get(binding['artifact_id'], self.payload)
-        self.approvals = ArtifactService(self.facts)
-        self.approvals.payloads = {}
-        self.approval_count = 0
+        self.authorities = ArtifactService(self.facts)
+        self.authorities.payloads = {}
+        self.retention_count = 0
         self.retained = []
         self.public_version = '0.5.0'
 
@@ -47,18 +46,17 @@ class FixtureHostedServices:
         from lib.release.release_execution import GitEvidence
         return GitEvidence(str(self.remote), ref, source_ref=source_ref)
 
-    def retain_and_approve(self, candidate, output):
+    def retain_candidate(self, candidate, output):
         import io, zipfile, hashlib
         stream = io.BytesIO()
         with zipfile.ZipFile(stream, 'w') as archive:
             for path in output.iterdir(): archive.write(path, path.name)
-        self.approvals.payload = stream.getvalue()
+        self.authorities.payload = stream.getvalue()
         digest = 'sha256:' + hashlib.sha256(stream.getvalue()).hexdigest()
         artifact = self.facts['artifact']
         artifact.update(digest=digest, name='release-candidate-' + str(self.event['run_id']))
         self.retained = [artifact]
-        self.facts['approvals'] = [{'state': 'approved', 'environments': [{'id': 9, 'name': 'release'}], 'user': {'id': 2}}]
-        self.approval_count += 1
+        self.retention_count += 1
         self.publisher = PackedPublicFixture(candidate, output)
         return {'run_id': self.event['run_id'], 'artifact_id': artifact['id'], 'artifact_digest': digest,
             'candidate_id': candidate['candidate_id'], 'environment': 'release', 'artifact_name': artifact['name']}
@@ -69,7 +67,7 @@ class FixtureHostedServices:
         with zipfile.ZipFile(data, 'w') as archive:
             archive.write(output / 'observed-outcome.json', 'observed-outcome.json')
         artifact_id = 100 + attempt
-        self.approvals.payloads[artifact_id] = data.getvalue()
+        self.authorities.payloads[artifact_id] = data.getvalue()
         self.retained.append({'id': artifact_id, 'name': f"release-observation-{self.event['run_id']}-{attempt}",
             'digest': 'sha256:' + hashlib.sha256(data.getvalue()).hexdigest(), 'expired': False})
 

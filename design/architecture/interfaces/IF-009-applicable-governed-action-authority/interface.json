@@ -11,7 +11,7 @@
       "inputs": [
         "Proposed action, exact subject and state, acting participant, intended scope, relevant conditions, and selected project context.",
         "Applicable policy and decision owners, and attributable authorization or bounded delegation with its subject, scope, conditions, limits, completion, revocation, and supersession state; unavailable or conflicting basis is explicit.",
-        "For release consumption, the retained candidate identity including reviewed/prepared source, final artifacts, version/channel, destinations, configuration and publication path, together with the candidate-specific approval basis and any material changes affecting reliance."
+        "For release initiation, the exact initiating repository/workflow/event/run, source, configuration, destinations and applicable policy/grant; no candidate exists yet. For publication, additionally supply the retained qualified candidate identity, reviewed/prepared source, artifacts, version/channel, execution path and binding to that initiation, with any material changes affecting reliance."
       ],
       "preconditions": [
         "The proposed action and selected project context are identifiable; missing authorization is an assessed outcome rather than an assumed satisfied precondition."
@@ -22,9 +22,9 @@
       ],
       "behavior": [
         "Determine whether the selected policy reserves the action for a human decision and whether its required owner, grant, scope, conditions and limits cover the proposed subject and participant. Do not impose a universal approval gate on every engineering action.",
-        "Recognize an applicable prior grant or bounded standing delegation across covered steps and resumed sessions. For the supported release case, one applicable candidate approval covers its stated publication actions; a fresh satisfactory recheck of the unchanged candidate does not by itself require another confirmation.",
+        "Recognize an applicable prior grant or bounded standing delegation across covered steps and resumed sessions. For the supported release case, the authorized workflow start covers its stated preparation and publication actions, conditional on exact candidate derivation and qualification; a fresh satisfactory recheck of the unchanged candidate does not by itself require another confirmation.",
         "Identify completion, revocation, supersession, exceeded scope, changed conditions or conflict with higher authority that prevents reliance. Preserve recognition of any still-covered scope rather than silently broadening or discarding the grant.",
-        "For a materially changed release subject, report that the earlier candidate-specific approval no longer covers the changed subject; the release consumer must address affected requalification and obtain applicable authorization before publication.",
+        "For a materially changed release subject, report that the earlier workflow-start grant no longer covers the changed subject; the release consumer must address affected requalification and obtain applicable authorization before publication.",
         "Keep favorable reviews, passing checks, engineering judgments and suggested next actions distinct from permission. Authorization does not waive independent assessment, failed or stale required evidence, explicit fresh checks, or an expressly nondelegable policy boundary.",
         "Report the existing authority basis or unmet boundary without creating a grant, impersonating a decision owner, or executing the proposed action. A duplicate event or uncertain earlier external write supplies no fresh authority or permission to repeat publication."
       ],
@@ -52,14 +52,14 @@
   ],
   "compatibility_rules": [
     "The selected project policy and existing Constitution retain authority ordering and decision ownership. This draft introduces no new approval workflow, permission persistence format or executable authorization service.",
-    "The existing Release contract retains exact candidate binding, one applicable routine approval, supported authentication/publication paths and recovery duties; this Interface cannot relax them.",
+    "The existing Release contract retains exact candidate binding, authorized workflow initiation without a subsequent routine approval, supported authentication/publication paths and recovery duties; this Interface cannot relax them.",
     "Changes to authority interpretation require controlled reconciliation of provider and consumers. Earlier grants and recorded assessments retain their original subject, scope and conditions rather than being rewritten to fit a later action."
   ],
   "sources": [
     {
       "source": "SRC-BOUNDARY-CONTRACTS",
       "locator": "SCN-066; IF-009; MOD-017; MOD-015",
-      "basis": "Derive the selected Product delivery consumption of Engineering governance authority from the exact-candidate approval Scenario. MOD-017 owns the contract; MOD-006 contributes FUNC-026. This is draft collaboration analysis, not a grant, runtime adoption, complete AR coverage or publication evidence."
+      "basis": "Derive the selected Product delivery consumption of Engineering governance authority from the workflow-start authority Scenario. MOD-017 owns the contract; MOD-006 contributes FUNC-026. This is draft collaboration analysis, not a grant, runtime adoption, complete AR coverage or publication evidence."
     },
     {
       "source": "SRC-COMPLETE-ANALYSIS",
@@ -69,7 +69,7 @@
     {
       "source": "SRC-PUBLISHED-RELEASE",
       "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-015-product-release-coordination/release.md#REL-SR-12; REL-SR-22; REL-SR-23; REL-SR-24; SR-070; FUNC-070",
-      "basis": "Apply the existing exact-candidate publication authority, one normal approval, changed-subject invalidation, unchanged satisfactory recheck, duplicate-event and truthful recorded-basis guarantees without introducing a new release mechanism."
+      "basis": "Apply the existing exact-candidate publication authority, one authorized workflow start, changed-subject invalidation, unchanged satisfactory recheck, duplicate-event and truthful recorded-basis guarantees without introducing a new release mechanism."
     },
     {
       "source": "SRC-WORKFLOW-DESIGN",

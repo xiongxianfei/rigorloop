@@ -70,7 +70,6 @@ jobs:
     permissions:
       contents: write
       actions: read
-      deployments: read
       id-token: write
     steps:
       - name: Check out exact workflow source
@@ -89,7 +88,7 @@ jobs:
           node-version: 24
       - name: Install check dependencies
         run: npm ci --prefix packages/rigorloop --ignore-scripts --no-audit --no-fund
-      - name: Publish approved candidate, observe and report
+      - name: Publish qualified candidate, observe and report
         id: operation
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -227,7 +227,7 @@ class ReleaseCandidateTests(unittest.TestCase):
     def test_material_change_invalidates_sealed_candidate(self):
         manifest = self.candidate()
         verify_candidate(self.root, manifest['candidate_id'])
-        (self.root / 'package.tgz').write_bytes(b'changed after approval')
+        (self.root / 'package.tgz').write_bytes(b'changed after authority')
         with self.assertRaisesRegex(CandidateError, 'identity'):
             verify_candidate(self.root, manifest['candidate_id'])
 
@@ -423,7 +423,7 @@ class ReleaseCandidateIntegrationTests(unittest.TestCase):
             bad = dict(settings, trusted_publisher='')
             with self.assertRaises(ExecutionError): prepare_operation(source, output, event, bad, services)
             self.assertFalse(output.exists())
-            status, errors, approval_summary, outputs = invoke_dispatch('prepare', source, services, event, workspace)
+            status, errors, candidate_summary, outputs = invoke_dispatch('prepare', source, services, event, workspace)
             self.assertEqual(status, 0, errors)
             self.assertIn('ready=true', outputs)
             data = json.loads((output / 'candidate.json').read_text())
@@ -431,22 +431,22 @@ class ReleaseCandidateIntegrationTests(unittest.TestCase):
             verified_commands = [check['command'] for check in verification['checks']]
             self.assertIn('packed CLI version and init codex/claude', verified_commands)
             self.assertFalse(any('opencode' in command for command in verified_commands))
-            self.assertIn(data['candidate_id'], approval_summary)
-            self.assertEqual(services.approval_count, 0)
+            self.assertIn(data['candidate_id'], candidate_summary)
+            self.assertEqual(services.retention_count, 0)
             self.assertIn(data['candidate_id'], summary(data))
-            binding = services.retain_and_approve(data, output)
+            binding = services.retain_candidate(data, output)
             status, errors, outcome_summary, _ = invoke_dispatch('execute', source, services, event, workspace / 'executor', binding)
             self.assertEqual(status, 0, errors)
             self.assertIn('completed', outcome_summary)
             state = json.loads((workspace / 'executor/release-candidate/observed-outcome.json').read_text())
             self.assertEqual(state['status'], 'completed')
             self.assertEqual(state['mirror']['result'], 'copied')
-            self.assertEqual(services.approval_count, 1)
+            self.assertEqual(services.retention_count, 1)
             self.assertEqual(services.publisher.writes, ['tag', 'github', 'npm'])
             self.assertEqual(read_evidence(services, settings['evidence_ref'], data['tag'])['status'], 'completed')
             execute_operation(source, workspace / 'duplicate', event, settings, binding, services)
             self.assertEqual(services.publisher.writes, ['tag', 'github', 'npm'])
-            self.assertEqual(services.approval_count, 1)
+            self.assertEqual(services.retention_count, 1)
             services.retain_observations(workspace / 'executor/release-candidate', 1)
             retry_event = dict(event, attempt=2)
             services.facts['run']['run_attempt'] = 2
@@ -454,14 +454,14 @@ class ReleaseCandidateIntegrationTests(unittest.TestCase):
             self.assertEqual(retried['candidate']['candidate_id'], data['candidate_id'])
             execute_operation(source, workspace / 'retry', retry_event, settings, retried['binding'], services)
             self.assertEqual(services.publisher.writes, ['tag', 'github', 'npm'])
-            self.assertEqual(services.approval_count, 1)
+            self.assertEqual(services.retention_count, 1)
             services.facts['run']['run_attempt'] = 1
             for scenario in ['lost-response', 'failed-smoke', 'failed-reporting', 'missing-timing-mirror']:
                 case_root = workspace / scenario; case_root.mkdir()
                 case_remote = case_root / 'evidence.git'
                 subprocess.run(['git', 'init', '--bare', '--quiet', str(case_remote)], check=True)
                 case = FixtureHostedServices(event, case_remote)
-                case_binding = case.retain_and_approve(data, output)
+                case_binding = case.retain_candidate(data, output)
                 if scenario == 'lost-response': case.publisher.lose_response = 'npm'
                 if scenario == 'failed-smoke': case.publisher.fail_smoke = True
                 if scenario == 'missing-timing-mirror': case.publisher.fail_mirror = True
@@ -496,7 +496,33 @@ class ReleaseCandidateIntegrationTests(unittest.TestCase):
                     self.assertEqual(recovered['status'], 'completed')
                     self.assertTrue(any(e['result'] == 'incomplete' for e in recovered['events']))
                     self.assertEqual(case.publisher.writes, ['tag', 'github', 'npm'])
-                    self.assertEqual(case.approval_count, 1)
+                    self.assertEqual(case.retention_count, 1)
+            # A failed actual qualification command must not emit ready/binding
+            # output or reach the publisher. Corrupt only the fresh build's ZIP
+            # immediately before the real integrity command examines it.
+            from lib.release import release_candidate as builder
+            from release_provider_fixtures import FixturePublisher
+            failed = FixtureHostedServices(event, remote)
+            failed.publisher = FixturePublisher(data, output)
+            real_run = builder.run
+            injected = []
+            def corrupt_before_integrity(argv, cwd, **kwargs):
+                if argv[:2] == ['bash', 'scripts/release-verify.sh']:
+                    archive = Path(argv[-1]) / 'rigorloop-adapter-codex-v0.5.1.zip'
+                    self.assertTrue(archive.is_file())
+                    archive.write_bytes(b'invalid qualification archive')
+                    injected.append(str(archive))
+                return real_run(argv, cwd, **kwargs)
+            with patch.object(builder, 'run', side_effect=corrupt_before_integrity):
+                code, error, _, failed_outputs = invoke_dispatch(
+                    'prepare', source, failed, event, workspace / 'failed-qualification')
+            self.assertEqual(len(injected), 1)
+            self.assertEqual(code, 1, error)
+            self.assertNotIn('ready=true', failed_outputs)
+            self.assertNotIn('candidate_id=', failed_outputs)
+            self.assertFalse((workspace / 'failed-qualification/release-candidate/candidate.json').exists())
+            self.assertEqual(failed.retained, [])
+            self.assertEqual(failed.publisher.writes, [])
             services.public_version = data['version']
             self.assertEqual(prepare_operation(source, workspace / 'noop', event, settings, services)['status'], 'already-published')
             # Same version on a different reviewed commit is an upstream exception.

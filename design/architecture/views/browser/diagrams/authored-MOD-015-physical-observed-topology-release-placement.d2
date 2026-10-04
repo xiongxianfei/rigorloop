@@ -1,0 +1,21 @@
+direction: down
+github: "GitHub Actions" {
+  prepare: "Prepare runner\nRead-only provider access"
+  artifacts: "Retained candidate\nArtifacts and checks"
+  execute: "Execute runner\nWrite and OIDC permissions"
+  recovery: "Recovery artifact\nObserved outcome"
+}
+source: "Protected main\nExact event commit"
+maintainer: "Maintainer"
+releases: "GitHub tag\nand release assets"
+npm: "npm registry\nTrusted publishing"
+evidence: "Durable evidence\nSeparate Git ref"
+source -> github.prepare: "Read selected commit"
+github.prepare -> github.artifacts: "Upload once\nReuse on retry"
+maintainer -> source: "Initiate authorized\nrelease through main push"
+github.artifacts -> github.execute: "Retrieve and verify\nexact binding"
+github.prepare -> github.execute: "Checks pass; proceed\nwithout another approval"
+github.execute -> releases: "Publish and\nobserve"
+github.execute -> npm: "Publish and\nobserve"
+github.execute -> evidence: "Persist actual\noutcomes"
+github.execute -> github.recovery: "Retain recovery\nobservations"

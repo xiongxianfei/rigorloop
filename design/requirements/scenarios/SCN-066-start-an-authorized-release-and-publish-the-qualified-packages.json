@@ -1,35 +1,35 @@
 {
   "id": "SCN-066",
   "type": "scenario",
-  "title": "Approve and publish one exact qualified candidate",
+  "title": "Start an authorized release and publish the qualified packages",
   "status": "confirmed",
-  "actor": "A maintainer authorized to approve a supported routine release",
-  "goal": "Authorize the concrete qualified product once and have its supported publication stages operate on that same candidate.",
-  "context": "Required preparation and candidate checks have produced a retained release subject with known source, artifacts, version, and destinations.",
-  "trigger": "The maintainer reviews the candidate approval summary.",
+  "actor": "A maintainer authorized to initiate a supported release",
+  "goal": "Start publication of reviewed release input once and receive the checked public outcome without another approval.",
+  "context": "Reviewed release intent and supported publication setup are established; actual packages will be prepared and checked by the release operation.",
+  "trigger": "The maintainer initiates the authorized release workflow for the selected reviewed source.",
   "preconditions": [
-    "The candidate and its applicable qualification evidence are identifiable.",
-    "The supported publication setup and decision owner are established."
+    "Reviewed source, version intent, publication destinations and permitted workflow are identified.",
+    "The maintainer has authority to initiate this release; required setup is established."
   ],
   "interaction": [
     {
-      "actor": "System",
-      "action": "Presents the exact candidate, material source/artifact differences, version/channel, destinations, required checks, and limits."
-    },
-    {
       "actor": "Maintainer",
-      "action": "Approves that candidate and its stated publication actions within applicable authority."
+      "action": "Initiates the supported release operation for the selected reviewed source and configured destinations."
     },
     {
       "actor": "System",
-      "action": "Reports the actual publication attempt and subsequent public verification/closeout outcomes against the same retained subject."
+      "action": "Prepares, checks and retains the exact packages, showing their identities and check results."
+    },
+    {
+      "actor": "System",
+      "action": "Publishes the retained qualified packages without asking for another approval and reports actual public verification and closeout."
     }
   ],
-  "expected_outcome": "Supported routine release proceeds from one applicable candidate approval without manual hash copying or repeated stage approval, preserving exact identity and actual outcomes.",
+  "expected_outcome": "The authorized start leads to qualified publication and an honest result without an intervening human approval.",
   "alternatives": [
     {
-      "condition": "The unchanged candidate receives a fresh satisfactory recheck.",
-      "outcome": "Existing applicable approval remains usable without a redundant confirmation."
+      "condition": "The same operation is retried after interruption.",
+      "outcome": "The original retained packages and observed public state determine the remaining authorized work; no redundant approval or duplicate publication."
     }
   ],
   "failures": [
@@ -48,6 +48,10 @@
     {
       "condition": "A requested special release lies outside routine automation.",
       "outcome": "Its need for an explicit supported owner disposition is reported rather than relabeling it routine."
+    },
+    {
+      "condition": "A required check fails, or execution comes from local checks, PR validation or an unauthorized trigger.",
+      "outcome": "Publication is blocked; workflow execution or a passing unrelated check cannot manufacture authority."
     }
   ],
   "exercises": [
@@ -91,6 +95,11 @@
       "source": "SRC-PUBLISHED-PRODUCTS",
       "locator": "SCN-066; design/requirements/published-products.md#review-and-validation",
       "basis": "Independent review and author reconciliation confirmed this stakeholder situation, primary Feature, and SR coverage as current analysis knowledge. This does not approve requirements or establish implemented behavior or satisfaction."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "user-request:2026-10-04-release-workflow-start-authority",
+      "basis": "User selects initiation of the authorized release workflow as publication authority, with no later routine approval. Refines the existing IR-010 need; exact candidate qualification, bounded authority and recovery remain. Design change only; running workflow adoption requires implementation."
     }
   ]
 }

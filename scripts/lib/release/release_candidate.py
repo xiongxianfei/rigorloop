@@ -29,7 +29,7 @@ SHA = re.compile(r'[0-9a-f]{40}\Z')
 
 
 class CandidateError(ValueError):
-    """An actionable exception that must precede any publication approval."""
+    """An actionable exception that must stop publication."""
 
 
 def canonical_bytes(data: Any) -> bytes:
@@ -199,7 +199,7 @@ def run(argv: list[str], cwd: Path, *, env: dict | None = None, timeout: int = 1
         raise CandidateError('required test command discovered zero tests')
     if result.returncode:
         # Retain diagnostic output locally with private permissions; never dump
-        # potentially sensitive tool output into an approval or public report.
+        # potentially sensitive tool output into a release summary or public report.
         fd, log = tempfile.mkstemp(prefix='rigorloop-release-check-', suffix='.log')
         with os.fdopen(fd, 'w') as handle:
             handle.write(result.stdout + '\n' + result.stderr)
@@ -302,7 +302,7 @@ def prepare_candidate(source: Path, source_commit: str, merged_ref: str, publish
         else:
             profile.parent.mkdir(parents=True, exist_ok=True)
             profile.write_text(profile_text(tag))
-        prepared = prepare_release(tag, root=root, approval_driven=True)
+        prepared = prepare_release(tag, root=root, workflow_driven=True)
         notes = root / 'docs/releases' / tag / 'release-notes.md'
         original_notes = run(['git', 'ls-tree', source_commit, '--', str(notes.relative_to(root))], root)
         if not original_notes:

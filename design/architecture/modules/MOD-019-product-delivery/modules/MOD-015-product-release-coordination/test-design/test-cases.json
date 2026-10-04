@@ -8,7 +8,7 @@
   },
   "scope": {
     "model": "release",
-    "boundary": "Prepare the intended stable release, qualify its exact artifacts, publish with candidate-specific approval, and report or recover honestly.",
+    "boundary": "Prepare the intended stable release, qualify its exact artifacts, publish within authorized workflow-start scope without a second approval, and report or recover honestly.",
     "entrypoint": "tests/engineering/release/test-release-transaction.py",
     "coverage_claim": "Outcome-driven scenarios cover the 24 recurring Release requirements; REL-SR-20/21 retain their original scoped source-consolidation obligations outside this recurring catalog. Linked methods provide supporting realization; native discovery owns the full executable inventory and no per-method catalog entry is required. Partial/proposed proof remains explicit. Local fixture and candidate checks do not establish live publication or hosted authorization."
   },
@@ -42,7 +42,7 @@
     },
     {
       "id": "approval-recovery",
-      "title": "Approval and recovery",
+      "title": "Publication authority and recovery",
       "path": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-015-product-release-coordination/test-design/cases/approval-recovery.json"
     },
     {

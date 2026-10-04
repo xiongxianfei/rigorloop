@@ -334,7 +334,7 @@ def prepare_release(
     *,
     root: Path | str = Path("."),
     check: bool = False,
-    approval_driven: bool = False,
+    workflow_driven: bool = False,
 ) -> PrepareReleaseResult:
     repo_root = Path(root)
     profile = load_release_profile(tag, root=repo_root)
@@ -354,7 +354,7 @@ def prepare_release(
     _plan_adapter_artifact_report(planned, repo_root, profile)
     _plan_current_version_fixture(planned, repo_root, profile)
 
-    if approval_driven:
+    if workflow_driven:
         # Generated expectations are never observations. Preserve reviewed human
         # sections in the existing standing record and add only missing sections.
         import re

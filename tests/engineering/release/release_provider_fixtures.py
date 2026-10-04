@@ -95,7 +95,7 @@ class RecordingPublicEvidenceProvider:
             summary=summary,
         )
 
-class FixtureApprovals:
+class FixtureReleaseAuthority:
     def __init__(self, facts, payload=b''): self.facts, self.payload = facts, payload
     def artifact_bytes(self, binding): return self.payload
     def fetch(self, binding): return copy.deepcopy(self.facts)

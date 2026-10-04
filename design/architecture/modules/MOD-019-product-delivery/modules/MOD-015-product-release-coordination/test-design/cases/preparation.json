@@ -116,7 +116,7 @@
           },
           {
             "path": "tests/engineering/release/release_preparation_tests.py",
-            "symbol": "PrepareReleaseTests.test_approval_driven_preparation_preserves_reviewed_version_and_no_generated_passes"
+            "symbol": "PrepareReleaseTests.test_workflow_driven_preparation_preserves_reviewed_version_and_no_generated_passes"
           },
           {
             "path": "tests/engineering/release/release_preparation_tests.py",
@@ -213,7 +213,7 @@
           },
           {
             "path": "tests/engineering/release/release_preparation_tests.py",
-            "symbol": "PrepareReleaseTests.test_approval_driven_preserves_human_notes_outside_generated_region"
+            "symbol": "PrepareReleaseTests.test_workflow_driven_preserves_human_notes_outside_generated_region"
           }
         ],
         "gaps": [

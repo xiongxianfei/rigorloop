@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Repository CI dispatcher; no public product command or approval bypass."""
+"""Repository CI dispatcher; no public product command or authority bypass."""
 import argparse
 import json
 import os
@@ -63,7 +63,7 @@ def main(argv=None, *, services=None, root=None):
                 for key in ['artifact_id', 'artifact_digest']:
                     if key in result.get('binding', {}): values[key] = str(result['binding'][key])
                 text = summary(result['candidate'])
-            else: text = 'Already-published unchanged source; no approval or publication requested.\n'
+            else: text = 'Already-published unchanged source; no new publication requested.\n'
             with open(os.environ['GITHUB_OUTPUT'], 'a') as handle:
                 for key, value in values.items():
                     if '\n' in value: raise ExecutionError('invalid workflow output')

@@ -8,24 +8,24 @@
   },
   "scope": {
     "group": "approval-recovery",
-    "title": "Approval and recovery",
-    "boundary": "Real approval/executor/coordinator decisions and temporary Git evidence. Controlled providers expose observations, write histories and injected faults. These scenarios never authorize real publication or certify remote environment configuration."
+    "title": "Publication authority and recovery",
+    "boundary": "Workflow-start authority, exact candidate binding and recovery. Fixtures use initiating run facts without human approval responses. No fixture proves remote configuration or live publication."
   },
   "fixtures": [
     {
-      "id": "approval",
+      "id": "authority",
       "initial_state": [
-        "approval_fixture(): candidate a repeated 64, source b repeated 40 on refs/heads/main; repository xiongxianfei/rigorloop id 7; run 12 attempt 1, push, in_progress; artifact 13 with digest sha256:c repeated 64; protected release environment 9 and configured reviewer 2 approving. Each mutation owns a deep copy."
+        "authority_fixture(): candidate a repeated 64, workflow-start-v1 initiation for run 12, source b repeated 40 on refs/heads/main; repository xiongxianfei/rigorloop id 7; run 12 attempt 1, push, in_progress; artifact 13 with digest sha256:c repeated 64; protected main and release environment 9 without required reviewers or waiting rules. Each mutation owns a deep copy."
       ],
       "builder": {
         "path": "tests/engineering/release/release_fixture_helpers.py",
-        "symbol": "approval_fixture"
+        "symbol": "authority_fixture"
       }
     },
     {
       "id": "executor",
       "initial_state": [
-        "ReleaseExecutorTests.setUp creates real source/prepared commits, source bundle, two small target ZIPs, exact retained provider ZIP and digest, fake package bytes clearly excluded from package validity proof, matching FixtureApprovals/FixturePublisher, and a private bare Git evidence ref."
+        "ReleaseExecutorTests.setUp creates real source/prepared commits, source bundle, two small target ZIPs, exact retained provider ZIP and digest, fake package bytes clearly excluded from package validity proof, matching FixtureReleaseAuthority/FixturePublisher, and a private bare Git evidence ref."
       ],
       "builder": {
         "path": "tests/engineering/release/release_execution_tests.py",
@@ -35,7 +35,7 @@
     {
       "id": "setup",
       "initial_state": [
-        "Approval facts plus protected main branch, settings evidence_ref=refs/heads/release-evidence and trusted_publisher=github:xiongxianfei/rigorloop:release.yml:release; event run_id=12, source=b repeated 40, source_ref=refs/heads/main, attempt=1."
+        "Initiation, source, artifact and environment facts plus protected main branch, settings evidence_ref=refs/heads/release-evidence and trusted_publisher=github:xiongxianfei/rigorloop:release.yml:release; event run_id=12, source=b repeated 40, source_ref=refs/heads/main, attempt=1."
       ],
       "builder": {
         "path": "tests/engineering/release/release_coordination_tests.py",
@@ -52,7 +52,7 @@
   "cases": [
     {
       "id": "REL-AR-001",
-      "title": "Only current provider approval for these retained bytes permits publication",
+      "title": "Only an authorized release start bound to qualified retained bytes permits publication",
       "requirements": [
         "REL-SR-08",
         "REL-SR-12",
@@ -60,7 +60,7 @@
         "REL-SR-23"
       ],
       "technique": "equivalence-partition",
-      "risk": "Provider approval is reused for an unauthorized, changed or unretained candidate.",
+      "risk": "An unrelated trigger or changed candidate is accepted as publication authority.",
       "target": {
         "path": "scripts/lib/release/release_execution.py",
         "symbol": "execute_candidate"
@@ -68,61 +68,58 @@
       "given": {
         "fixture": "executor",
         "conditions": [
-          "Use approval for policy checks and executor for retained-artifact/write observations. Start from mutually consistent provider, reviewer, workflow, candidate and digest facts.",
-          "Independently omit/reject approval, change a binding/provider identity or protection setting, supply a CI-only candidate, modify local bytes, or substitute a new seal/retained ZIP. Pair an unknown binding field with a candidate mismatch."
+          "Use exact repository, workflow, main-push event, source/configuration, run and candidate/artifact facts from a permitted initiation. No human approval response is supplied.",
+          "Independently substitute a PR/local/unsupported event, wrong repository/source/run/configuration, CI-only candidate or changed retained bytes."
         ]
       },
       "when": [
-        "Validate policy in a fresh process, including absent/malformed unrelated package metadata; execute the actual publication boundary with rejected or substituted inputs."
+        "Execute candidate admission and inspect actual provider writes."
       ],
       "then": [
-        "Valid provider approval identifies the exact candidate/reviewer independently of package generation.",
-        "Missing, stale, unknown or mismatched authority and unsafe/corrupt retained ZIP content reject. Unknown fields reject before identity consistency.",
-        "Rejected authority or changed local/retained bytes produces no public write; a new local seal cannot reuse the old provider artifact approval."
+        "A permitted start with the correctly bound qualified packages proceeds without a reviewer or approval-provider query.",
+        "Each unsupported trigger, mismatched binding, failed check or changed package blocks writes; naming a version or passing a local check cannot grant authority."
       ],
       "realization": {
-        "state": "partial",
+        "state": "existing",
         "tests": [
           {
             "path": "tests/engineering/release/release_execution_tests.py",
-            "symbol": "ReleaseApprovalTests.test_exact_provider_approval_binds_candidate"
+            "symbol": "ReleaseAuthorityTests.test_exact_workflow_authority_binds_candidate_without_reviewer"
           },
           {
             "path": "tests/engineering/release/release_execution_tests.py",
-            "symbol": "ReleaseApprovalTests.test_approval_policy_runs_without_usable_package_metadata"
+            "symbol": "ReleaseAuthorityTests.test_unsupported_trigger_and_different_start_cannot_publish"
           },
           {
             "path": "tests/engineering/release/release_execution_tests.py",
-            "symbol": "ReleaseApprovalTests.test_ci_only_candidate_cannot_receive_publication_authority"
+            "symbol": "ReleaseAuthorityTests.test_material_provider_changes_and_unprotected_environment_reject"
           },
           {
             "path": "tests/engineering/release/release_execution_tests.py",
-            "symbol": "ReleaseApprovalTests.test_missing_rejected_stale_or_unknown_value_approval_rejects"
+            "symbol": "ReleaseAuthorityTests.test_unknown_initiation_policy_rejects_before_identity_consistency"
           },
           {
             "path": "tests/engineering/release/release_execution_tests.py",
-            "symbol": "ReleaseApprovalTests.test_material_provider_changes_and_unprotected_environment_reject"
+            "symbol": "ReleaseExecutorTests.test_candidate_tamper_and_cancelled_run_cause_no_external_writes"
           },
           {
             "path": "tests/engineering/release/release_execution_tests.py",
-            "symbol": "ReleaseApprovalTests.test_unknown_value_approval_field_rejects_before_consistency"
+            "symbol": "ReleaseExecutorTests.test_legacy_attempt_stops_without_rewriting_evidence"
+          },
+          {
+            "path": "tests/engineering/release/release_coordination_tests.py",
+            "symbol": "ReleaseCoordinationTests.test_authority_transport_does_not_request_approval_records"
           },
           {
             "path": "tests/engineering/release/release_execution_tests.py",
-            "symbol": "ReleaseExecutorTests.test_candidate_tamper_and_rejected_approval_cause_no_external_writes"
+            "symbol": "ReleaseExecutorTests.test_different_invocation_attempt_stops_before_writes"
           },
           {
             "path": "tests/engineering/release/release_execution_tests.py",
-            "symbol": "ReleaseExecutorTests.test_provider_digest_does_not_authorize_another_valid_local_candidate"
-          },
-          {
-            "path": "tests/engineering/release/release_execution_tests.py",
-            "symbol": "ReleaseExecutorTests.test_unsafe_or_mismatched_retained_zip_rejects"
+            "symbol": "ReleaseExecutorTests.test_unknown_legacy_or_mismatched_recovery_authority_preserves_bytes"
           }
         ],
-        "gaps": [
-          "Unknown binding fields reject before identity consistency: Existing test supplies only the extra field; add the simultaneous candidate mismatch to establish precedence explicitly."
-        ]
+        "gaps": []
       },
       "method": "automated-test",
       "boundary": "composition"
@@ -266,7 +263,7 @@
     },
     {
       "id": "REL-AR-034",
-      "title": "One approval completes the actual routine path and duplicate delivery is safe",
+      "title": "One authorized start completes the routine path without later approval",
       "requirements": [
         "REL-SR-02",
         "REL-SR-08",
@@ -283,7 +280,7 @@
         "REL-SR-24"
       ],
       "technique": "state-transition",
-      "risk": "Individually correct helpers are wired into a coordinator that bypasses approval, rebuilds bytes, hides failures or publishes twice.",
+      "risk": "The composed workflow still waits for a second confirmation, rebuilds packages or publishes twice.",
       "target": {
         "path": "scripts/lib/release/release_coordination.py",
         "symbol": "execute_operation"
@@ -291,48 +288,28 @@
       "given": {
         "fixture": "hosted-composition",
         "conditions": [
-          "Use hosted-composition with actual preparation/build/coordinator dispatch, one fixture approval, retained artifacts and local provider/evidence substitutes."
+          "Use real preparation/build/coordinator dispatch with an authorized main-push event, retained artifacts and controlled publication/evidence services. No required-reviewer grant exists."
         ]
       },
       "when": [
-        "Drive prepare, qualify, approve, execute, observe and report through the real coordinator.",
-        "Repeat delivery; drive a controlled smoke/reporting failure through real dispatch and resume from retained state; compare unchanged already-published source with changed source lacking a new version."
+        "Drive preparation through checks, publication and public closeout; repeat the original run against the same candidate and inspect write history.",
+        "Independently fail a required check before execution and verify no publication is attempted."
       ],
       "then": [
-        "The protected executor publishes the retained tarball/archives through the selected OIDC path and records actual outcomes after exactly one candidate approval.",
-        "Workflow composition retains one protected executor and required local/CI gate parity.",
-        "Duplicates and unchanged published source perform no second immutable write; actual dispatch preserves failures during recovery. Changed source needs new version intent."
+        "Successful qualification automatically leads to publishing the retained packages and recording public outcomes without a later human action.",
+        "Workflow, setup and executor use event/source/configuration binding; no approval-provider call or waiting review gate is present.",
+        "Failed checks block dependent publication. Repeated delivery observes matching public state and performs no duplicate immutable write."
       ],
       "realization": {
         "state": "existing",
         "tests": [
           {
-            "path": "tests/engineering/release/release_execution_tests.py",
-            "symbol": "ReleaseExecutorTests.test_one_approval_path_persists_and_duplicate_never_republishes"
-          },
-          {
-            "path": "tests/engineering/release/release_execution_tests.py",
-            "symbol": "ReleaseExecutorTests.test_network_publish_uses_retained_tarball_and_oidc_without_token_fallback"
-          },
-          {
-            "path": "tests/engineering/release/release_coordination_tests.py",
-            "symbol": "ReleaseCoordinationTests.test_actual_workflow_has_one_protected_executor_and_no_tag_bypass"
-          },
-          {
-            "path": "tests/engineering/release/release_coordination_tests.py",
-            "symbol": "ReleaseCoordinationTests.test_unknown_workflow_job_or_unguarded_write_rejects"
-          },
-          {
-            "path": "tests/engineering/release/release_timing_tests.py",
-            "symbol": "ReleaseGateParityAndTimingTests.test_release_workflow_matches_current_coordination_contract"
-          },
-          {
-            "path": "tests/engineering/release/release_timing_tests.py",
-            "symbol": "ReleaseGateParityAndTimingTests.test_release_workflow_parity_rejects_direct_validate_release_gate"
-          },
-          {
             "path": "tests/engineering/release/release_candidate_tests.py",
             "symbol": "ReleaseCandidateIntegrationTests.test_actual_candidate_build_and_packed_metadata_chain"
+          },
+          {
+            "path": "tests/engineering/release/release_coordination_tests.py",
+            "symbol": "ReleaseCoordinationTests.test_actual_workflow_has_automatic_executor_and_no_tag_bypass"
           }
         ],
         "gaps": []
@@ -342,14 +319,14 @@
     },
     {
       "id": "REL-AR-028",
-      "title": "Missing setup or runtime credentials stops before publication authority",
+      "title": "Missing permitted source setup or runtime credentials blocks publication",
       "requirements": [
         "REL-SR-11",
         "REL-SR-22",
         "REL-SR-23"
       ],
       "technique": "equivalence-partition",
-      "risk": "The coordinator requests approval for an unprotected or misconfigured source.",
+      "risk": "Removing environment reviewer checks also removes source, trigger or authentication restrictions.",
       "target": {
         "path": "scripts/lib/release/release_coordination.py",
         "symbol": "validate_setup"
@@ -357,15 +334,15 @@
       "given": {
         "fixture": "setup",
         "conditions": [
-          "Use setup with independently defined reviewer/environment/branch protection, evidence ref and trusted publisher; remove one prerequisite at a time."
+          "Use permitted main-push source policy, evidence ref and trusted-publisher configuration; omit each necessary prerequisite independently. Required environment reviewers are absent by design."
         ]
       },
       "when": [
-        "Inspect setup and enter the actual coordinator with each missing/unprotected fact or missing required credential."
+        "Inspect setup and enter the coordinator with each variant."
       ],
       "then": [
-        "Report inspected configuration and distinguish it from runtime authorization.",
-        "Missing protection or credentials prevents the approval/publication path with the prerequisite named; configuration inspection itself grants no permission."
+        "Absence of a second approval is valid. Missing source protection, unsupported workflow/event or missing required credentials blocks publication with a precise diagnostic.",
+        "Runtime authority is checked without inferring it from a setup declaration or local success."
       ],
       "realization": {
         "state": "existing",
@@ -376,7 +353,11 @@
           },
           {
             "path": "tests/engineering/release/release_coordination_tests.py",
-            "symbol": "ReleaseCoordinationTests.test_missing_or_unprotected_setup_cannot_request_approval"
+            "symbol": "ReleaseCoordinationTests.test_missing_or_unprotected_setup_blocks_publication"
+          },
+          {
+            "path": "tests/engineering/release/release_coordination_tests.py",
+            "symbol": "ReleaseCoordinationTests.test_additional_review_or_waiting_gate_is_an_adoption_mismatch"
           },
           {
             "path": "tests/engineering/release/release_coordination_tests.py",
@@ -625,13 +606,13 @@
     },
     {
       "id": "REL-AR-036",
-      "title": "Authority revoked between boundaries prevents subsequent writes",
+      "title": "Loss of execution authority between boundaries stops subsequent writes",
       "requirements": [
         "REL-SR-12",
         "REL-SR-23"
       ],
       "technique": "state-transition",
-      "risk": "Only the initial approval check protects a multi-boundary publication.",
+      "risk": "An initial authorized start is treated as unlimited permission after execution authority is lost.",
       "target": {
         "path": "scripts/lib/release/release_execution.py",
         "symbol": "execute_candidate"
@@ -639,21 +620,32 @@
       "given": {
         "fixture": "executor",
         "conditions": [
-          "Allow tag publication and matching observation, then return rejected approval facts on the next approvals.fetch call while the sealed candidate remains unchanged."
+          "Allow matching tag publication, then make the current run cancelled or its required runtime authority unavailable before the next boundary. Keep the candidate unchanged."
         ]
       },
       "when": [
-        "Continue the same execution."
+        "Continue execution while inspecting current execution authority; do not query reviewer approval facts."
       ],
       "then": [
-        "Execution raises ExecutionError before GitHub/npm writes; the tag observation remains recorded and total write history is [tag]."
+        "Stop before later GitHub/npm writes when authority loss is observed; retain the completed tag outcome and report incomplete publication. Cancellation does not erase a committed write."
       ],
       "realization": {
-        "state": "proposed",
-        "tests": [],
-        "gaps": [
-          "Authority revoked between boundaries prevents subsequent writes: Add a provider-fact change between actual boundaries; initial rejection tests do not establish repeated safeguards."
-        ]
+        "state": "existing",
+        "tests": [
+          {
+            "path": "tests/engineering/release/release_execution_tests.py",
+            "symbol": "ReleaseExecutorTests.test_run_cancelled_after_tag_prevents_later_boundaries"
+          },
+          {
+            "path": "tests/engineering/release/release_execution_tests.py",
+            "symbol": "ReleaseExecutorTests.test_attempt_drift_before_first_write_stops_publication"
+          },
+          {
+            "path": "tests/engineering/release/release_execution_tests.py",
+            "symbol": "ReleaseExecutorTests.test_attempt_drift_after_tag_preserves_completed_boundary"
+          }
+        ],
+        "gaps": []
       },
       "method": "automated-test",
       "boundary": "composition"

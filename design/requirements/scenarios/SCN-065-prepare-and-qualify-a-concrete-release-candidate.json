@@ -1,7 +1,7 @@
 {
   "id": "SCN-065",
   "type": "scenario",
-  "title": "Prepare a concrete release candidate for review",
+  "title": "Prepare and qualify a concrete release candidate",
   "status": "confirmed",
   "actor": "A release maintainer preparing reviewed product work",
   "goal": "Obtain an identifiable qualified candidate and concise review basis without manual duplication of release facts or publication side effects.",
@@ -21,7 +21,7 @@
     },
     {
       "actor": "System",
-      "action": "Provides the retained candidate identity and approval summary when the required non-deferred obligations are established."
+      "action": "Provides the retained candidate identity and check summary when all required non-deferred obligations are established."
     }
   ],
   "expected_outcome": "The maintainer receives a reviewable exact candidate whose actual checks, generated expectations, permitted source differences, and remaining limits are explicit; no preparation action publishes it.",
@@ -34,7 +34,7 @@
   "failures": [
     {
       "condition": "Version intent, profile, required artifact, current literal ownership, or qualification evidence is missing or conflicting.",
-      "outcome": "The system reports the precise defect and does not request approval of a falsely ready candidate."
+      "outcome": "The system reports the precise defect and does not present the candidate as ready for publication."
     },
     {
       "condition": "The request requires unsupported historical replay or a new unresolved product/publish-mechanics decision.",
@@ -99,6 +99,11 @@
       "source": "SRC-PUBLISHED-PRODUCTS",
       "locator": "SCN-065; design/requirements/published-products.md#review-and-validation",
       "basis": "Independent review and author reconciliation confirmed this stakeholder situation, primary Feature, and SR coverage as current analysis knowledge. This does not approve requirements or establish implemented behavior or satisfaction."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "user-request:2026-10-04-release-workflow-start-authority",
+      "basis": "User selects initiation of the authorized release workflow as publication authority, with no later routine approval. Refines the existing IR-010 need; exact candidate qualification, bounded authority and recovery remain. Design change only; running workflow adoption requires implementation."
     }
   ]
 }

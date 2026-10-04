@@ -14,21 +14,21 @@ import sys
 ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / "scripts"))
 
-from lib.release.release_execution import ExecutionError, GitEvidence, validate_approval, environment_identity
-from release_fixture_helpers import approval_fixture
-from release_provider_fixtures import FixtureApprovals, FixturePublisher
+from lib.release.release_execution import ExecutionError, GitEvidence, validate_authority, environment_identity
+from release_fixture_helpers import authority_fixture
+from release_provider_fixtures import FixtureReleaseAuthority, FixturePublisher
 
 
-class ReleaseApprovalTests(unittest.TestCase):
+class ReleaseAuthorityTests(unittest.TestCase):
     def test_ci_only_candidate_cannot_receive_publication_authority(self):
         self.candidate['inputs'] = {'ci_only': True}
         with self.assertRaisesRegex(ExecutionError, 'CI-only'):
-            validate_approval(self.candidate, self.binding, self.facts)
+            validate_authority(self.candidate, self.binding, self.facts)
 
     def setUp(self):
-        self.candidate, self.binding, self.facts = approval_fixture()
+        self.candidate, self.binding, self.facts = authority_fixture()
 
-    def test_approval_policy_runs_without_usable_package_metadata(self):
+    def test_authority_policy_runs_without_usable_package_metadata(self):
         # Policy must not need package generation merely to inspect provider facts.
         import shutil
         for metadata in (None, "malformed package metadata"):
@@ -41,59 +41,77 @@ class ReleaseApprovalTests(unittest.TestCase):
                     package.parent.mkdir(parents=True)
                     package.write_text(metadata)
                 command = ("import json,sys; sys.path.insert(0,'scripts'); "
-                           "from lib.release.release_execution import validate_approval; "
-                           "print(json.dumps(validate_approval(*json.load(sys.stdin))))")
+                           "from lib.release.release_execution import validate_authority; "
+                           "print(json.dumps(validate_authority(*json.load(sys.stdin))))")
                 result = subprocess.run([sys.executable, "-B", "-c", command], cwd=root,
                     input=json.dumps([self.candidate, self.binding, self.facts]),
                     text=True, capture_output=True, check=False)
                 self.assertEqual(result.returncode, 0, result.stderr)
                 self.assertEqual(json.loads(result.stdout)["candidate_id"], self.candidate["candidate_id"])
-                self.assertEqual(json.loads(result.stdout)["reviewer_id"], 2)
+                self.assertEqual(json.loads(result.stdout)["policy"], "workflow-start-v1")
                 self.assertEqual(package.read_text() if package.exists() else None, metadata)
 
-    def test_exact_provider_approval_binds_candidate(self):
-        result = validate_approval(self.candidate, self.binding, self.facts)
+    def test_exact_workflow_authority_binds_candidate_without_reviewer(self):
+        result = validate_authority(self.candidate, self.binding, self.facts)
         self.assertEqual(result['candidate_id'], self.candidate['candidate_id'])
-        self.assertEqual(result['reviewer_id'], 2)
+        self.assertEqual(result['policy'], 'workflow-start-v1')
 
-    def test_missing_rejected_stale_or_unknown_value_approval_rejects(self):
-        for state in ['rejected', 'pending', 'unknown_value']:
+    def test_missing_cancelled_stale_or_unknown_run_rejects(self):
+        for state in ['cancelled', 'queued', 'completed', 'unknown_value']:
             with self.subTest(state=state):
-                facts = copy.deepcopy(self.facts); facts['approvals'][0]['state'] = state
-                with self.assertRaises(ExecutionError): validate_approval(self.candidate, self.binding, facts)
-        for field in ['approvals', 'artifact', 'environment']:
+                facts = copy.deepcopy(self.facts); facts['run']['status'] = state
+                with self.assertRaises(ExecutionError): validate_authority(self.candidate, self.binding, facts)
+        for field in ['branch', 'artifact', 'environment']:
             facts = copy.deepcopy(self.facts); facts.pop(field)
-            with self.assertRaises(ExecutionError): validate_approval(self.candidate, self.binding, facts)
+            with self.assertRaises(ExecutionError): validate_authority(self.candidate, self.binding, facts)
 
     def test_material_provider_changes_and_unprotected_environment_reject(self):
         changes = [('artifact', 'expired', True), ('artifact', 'digest', 'sha256:' + 'd' * 64),
             ('run', 'head_sha', 'd' * 40), ('run', 'event', 'push_tag'), ('run', 'status', 'completed'),
-            ('environment', 'protection_rules', []), ('repository', 'full_name', 'another/repository')]
+            ('environment', 'protection_rules', [{'type': 'required_reviewers'}]), ('repository', 'full_name', 'another/repository')]
         for section, field, value in changes:
             with self.subTest(field=field):
                 facts = copy.deepcopy(self.facts); facts[section][field] = value
-                with self.assertRaises(ExecutionError): validate_approval(self.candidate, self.binding, facts)
-        self.facts['approvals'][0]['user']['id'] = 99
-        with self.assertRaises(ExecutionError): validate_approval(self.candidate, self.binding, self.facts)
+                with self.assertRaises(ExecutionError): validate_authority(self.candidate, self.binding, facts)
+        self.facts['branch']['protected'] = False
+        with self.assertRaises(ExecutionError): validate_authority(self.candidate, self.binding, self.facts)
 
-    def test_unknown_value_approval_field_rejects_before_consistency(self):
-        accepted = validate_approval(self.candidate, self.binding, self.facts)
+    def test_unknown_value_authority_field_rejects_before_consistency(self):
+        accepted = validate_authority(self.candidate, self.binding, self.facts)
         self.assertEqual(accepted['candidate_id'], self.candidate['candidate_id'])
-        self.assertEqual(accepted['reviewer_id'], 2)
+        self.assertEqual(accepted['policy'], 'workflow-start-v1')
         candidate, facts = copy.deepcopy(self.candidate), copy.deepcopy(self.facts)
         binding = dict(self.binding, unknown_value='must-not-be-retained', candidate_id='f' * 64)
         self.assertNotEqual(binding['candidate_id'], candidate['candidate_id'])
         before = copy.deepcopy(binding)
         with self.assertRaises(ExecutionError) as raised:
-            validate_approval(candidate, binding, facts)
-        self.assertEqual(str(raised.exception), 'unknown or missing approval binding field')
+            validate_authority(candidate, binding, facts)
+        self.assertEqual(str(raised.exception), 'unknown or missing authority binding field')
         self.assertEqual(binding, before)
         binding.pop('unknown_value')
         with self.assertRaises(ExecutionError) as raised:
-            validate_approval(candidate, binding, facts)
-        self.assertEqual(str(raised.exception), 'approval candidate mismatch')
+            validate_authority(candidate, binding, facts)
+        self.assertEqual(str(raised.exception), 'authority candidate mismatch')
         self.assertEqual(candidate, self.candidate)
         self.assertEqual(facts, self.facts)
+
+    def test_unknown_initiation_policy_rejects_before_identity_consistency(self):
+        candidate = dict(self.candidate, initiation={'policy': 'unknown_value', 'run_id': 12})
+        binding = dict(self.binding, candidate_id='f' * 64)
+        with self.assertRaisesRegex(ExecutionError, 'unknown or malformed initiation policy'):
+            validate_authority(candidate, binding, self.facts)
+
+    def test_unsupported_trigger_and_different_start_cannot_publish(self):
+        for event in ['pull_request', 'workflow_dispatch', 'push_tag', 'unknown_value']:
+            facts = copy.deepcopy(self.facts); facts['run']['event'] = event
+            with self.subTest(event=event), self.assertRaises(ExecutionError):
+                validate_authority(self.candidate, self.binding, facts)
+        for initiation in [None, {'policy': 'unknown_value', 'run_id': 12},
+                           {'policy': 'workflow-start-v1', 'run_id': 99}]:
+            candidate = dict(self.candidate, initiation=initiation)
+            with self.subTest(initiation=initiation), self.assertRaises(ExecutionError):
+                validate_authority(candidate, self.binding, self.facts)
+
 
 
 class ReleaseEvidenceStoreTests(unittest.TestCase):
@@ -145,7 +163,7 @@ class ReleaseExecutorTests(unittest.TestCase):
         inputs = derive_release_inputs(self.source, '0.5.0')
         profile = self.source / 'docs/releases/profiles/v0.5.1.yaml'
         profile.parent.mkdir(); profile.write_text(profile_text('v0.5.1'))
-        prepare_release('v0.5.1', root=self.source, approval_driven=True)
+        prepare_release('v0.5.1', root=self.source, workflow_driven=True)
         git('add', '.'); git('commit', '--quiet', '-m', 'Prepared fixture')
         commit = git('rev-parse', 'HEAD')
         for target in ['codex', 'claude']:
@@ -159,7 +177,7 @@ class ReleaseExecutorTests(unittest.TestCase):
         shutil.copyfile(profile, self.output / 'profile.yaml')
         shutil.copyfile(self.source / 'docs/releases/v0.5.1/release-notes.md', self.output / 'release-notes.md')
         git('bundle', 'create', str(self.output / 'source.bundle'), 'HEAD')
-        _, self.binding, self.facts = approval_fixture()
+        _, self.binding, self.facts = authority_fixture()
         self.facts['run']['head_sha'] = original
         self.facts['artifact']['workflow_run']['head_sha'] = original
         self.candidate = seal_candidate(self.output, {'source_commit': original, 'prepared_commit': commit,
@@ -168,7 +186,8 @@ class ReleaseExecutorTests(unittest.TestCase):
             'evidence_ref': 'refs/heads/release-evidence', 'inputs': inputs, 'tarball': 'package.tgz',
             'files': {p.name: file_identity(p) for p in self.output.iterdir()},
             'checks': [{'id': key, 'result': 'pass'} for key in sorted(CANDIDATE_CHECKS)],
-            'approval_environment_identity': environment_identity(self.facts['environment']),
+            'release_environment_identity': environment_identity(self.facts['environment']),
+            'initiation': {'policy': 'workflow-start-v1', 'run_id': self.binding['run_id']},
             'tool_identity': script_identity(repo / 'scripts'), 'workflow_identity': file_identity(repo / '.github/workflows/release.yml'),
             'environment': {name: run([name, '--version'], repo) for name in ['python', 'node', 'npm']}})
         self.binding['candidate_id'] = self.candidate['candidate_id']
@@ -180,15 +199,15 @@ class ReleaseExecutorTests(unittest.TestCase):
         self.payload = archive.getvalue()
         self.binding['artifact_digest'] = 'sha256:' + hashlib.sha256(self.payload).hexdigest()
         self.facts['artifact']['digest'] = self.binding['artifact_digest']
-        self.approvals = FixtureApprovals(self.facts, self.payload)
+        self.authorities = FixtureReleaseAuthority(self.facts, self.payload)
         self.publisher = FixturePublisher(self.candidate, self.output)
 
-    def execute(self, store=None):
+    def execute(self, store=None, *, attempt=None):
         from lib.release.release_execution import execute_candidate
         if store is not None:
-            return execute_candidate(self.output, self.binding, approvals=self.approvals, publisher=self.publisher, evidence=store)
+            return execute_candidate(self.output, self.binding, attempt=self.facts['run']['run_attempt'] if attempt is None else attempt, authorities=self.authorities, publisher=self.publisher, evidence=store)
         with GitEvidence(str(self.remote), self.candidate['evidence_ref']) as evidence:
-            return self.execute(evidence)
+            return self.execute(evidence, attempt=attempt)
 
     def stored(self):
         from lib.release.release_execution import read_execution_state
@@ -199,9 +218,9 @@ class ReleaseExecutorTests(unittest.TestCase):
     def accepted_execution_inputs(self):
         from lib.release.release_candidate import verify_candidate
         self.assertEqual(verify_candidate(self.output, self.binding['candidate_id']), self.candidate)
-        approval = validate_approval(self.candidate, self.binding, self.approvals.fetch(self.binding))
-        self.assertEqual(approval['candidate_id'], self.candidate['candidate_id'])
-        self.assertEqual(approval['reviewer_id'], 2)
+        authority = validate_authority(self.candidate, self.binding, self.authorities.fetch(self.binding))
+        self.assertEqual(authority['candidate_id'], self.candidate['candidate_id'])
+        self.assertEqual(authority['policy'], 'workflow-start-v1')
         self.assertEqual(self.publisher.states, {'tag': None, 'github': None, 'npm': None})
         self.assertEqual(self.publisher.writes, [])
 
@@ -318,30 +337,30 @@ class ReleaseExecutorTests(unittest.TestCase):
         self.assertEqual(self.stored(), recovered)
         self.assertEqual(self.sealed_input_bytes(), before)
 
-    def test_provider_approval_revoked_after_tag_prevents_later_boundaries(self):
+    def test_run_cancelled_after_tag_prevents_later_boundaries(self):
         self.accepted_execution_inputs()
         before = self.sealed_input_bytes()
-        fetch, observe = self.approvals.fetch, self.publisher.observe
+        fetch, observe = self.authorities.fetch, self.publisher.observe
         authority_states, observed_boundaries = [], []
 
         def revoked(binding):
             facts = fetch(binding)
             if self.publisher.states['tag'] is not None:
-                facts['approvals'][0]['state'] = 'rejected'
-            authority_states.append(facts['approvals'][0]['state'])
+                facts['run']['status'] = 'completed'
+            authority_states.append(facts['run']['status'])
             return facts
 
         def observed(boundary, candidate):
             observed_boundaries.append(boundary)
             return observe(boundary, candidate)
 
-        self.approvals.fetch, self.publisher.observe = revoked, observed
+        self.authorities.fetch, self.publisher.observe = revoked, observed
         with self.assertRaises(ExecutionError) as raised:
             self.execute()
         self.assertEqual(str(raised.exception),
                          'Required github outcome unavailable or conflicting; inspect before recovery.')
-        self.assertEqual(str(raised.exception.__cause__), 'missing, rejected or unknown provider approval')
-        self.assertEqual(authority_states, ['approved', 'approved', 'rejected'])
+        self.assertEqual(str(raised.exception.__cause__), 'stale or mismatched workflow run')
+        self.assertEqual(authority_states, ['in_progress', 'in_progress', 'completed'])
         self.assertEqual(observed_boundaries, ['tag', 'tag'])
         self.assertEqual(self.publisher.writes, ['tag'])
         self.assertEqual(self.publisher.states, {
@@ -355,7 +374,79 @@ class ReleaseExecutorTests(unittest.TestCase):
                          ('github', 'incomplete'))
         self.assertEqual(self.sealed_input_bytes(), before)
 
-    def test_one_approval_path_persists_and_duplicate_never_republishes(self):
+    def test_different_invocation_attempt_stops_before_writes(self):
+        with self.assertRaisesRegex(ExecutionError, 'attempt differs'):
+            self.execute(attempt=2)
+        self.assertEqual(self.publisher.writes, [])
+        self.assertIsNone(self.stored())
+
+    def test_attempt_drift_before_first_write_stops_publication(self):
+        fetch = self.authorities.fetch
+        calls = []
+        def changed(binding):
+            facts = fetch(binding)
+            if calls:
+                facts['run']['run_attempt'] = 2
+            calls.append(facts['run']['run_attempt'])
+            return facts
+        self.authorities.fetch = changed
+        with self.assertRaises(ExecutionError) as error:
+            self.execute()
+        self.assertIn('authority changed', str(error.exception.__cause__))
+        self.assertEqual(calls, [1, 2])
+        self.assertEqual(self.publisher.writes, [])
+        self.assertEqual(self.stored()['authority']['run_attempt'], 1)
+        self.assertFalse(self.stored()['active'])
+
+    def test_attempt_drift_after_tag_preserves_completed_boundary(self):
+        fetch = self.authorities.fetch
+        def changed(binding):
+            facts = fetch(binding)
+            if self.publisher.states['tag'] is not None:
+                facts['run']['run_attempt'] = 2
+            return facts
+        self.authorities.fetch = changed
+        with self.assertRaises(ExecutionError) as error:
+            self.execute()
+        self.assertIn('authority changed', str(error.exception.__cause__))
+        self.assertEqual(self.publisher.writes, ['tag'])
+        state = self.stored()
+        self.assertEqual(state['authority']['run_attempt'], 1)
+        self.assertEqual(state['status'], 'failed-after-publication')
+        self.assertFalse(state['active'])
+        self.assertEqual(state['observations']['tag']['commit'], self.candidate['prepared_commit'])
+
+    def test_unknown_legacy_or_mismatched_recovery_authority_preserves_bytes(self):
+        from lib.release.release_execution import validate_authority
+        import copy
+        authority = validate_authority(self.candidate, self.binding, self.facts)
+        baseline = {'candidate_id': self.candidate['candidate_id'], 'status': 'pending-publication',
+                    'active': False, 'events': [], 'observations': {}, 'authority': authority}
+        variants = []
+        for field, value in [('policy', 'unknown_value'), ('run_attempt', True), ('run_attempt', 0),
+                             ('run_attempt', 2), ('run_id', 99), ('artifact_id', 99),
+                             ('source_commit', 'f' * 40), ('unexpected', 'value')]:
+            state = copy.deepcopy(baseline)
+            state['authority'][field] = value
+            variants.append(state)
+        legacy = copy.deepcopy(baseline)
+        legacy['approval'] = legacy.pop('authority')
+        variants.append(legacy)
+        history = copy.deepcopy(baseline)
+        history['authorities'] = [dict(authority, policy='unknown_value')]
+        variants.append(history)
+        path = self.output / 'observed-outcome.json'
+        for state in variants:
+            with self.subTest(authority=state):
+                original = json.dumps(state).encode()
+                path.write_bytes(original)
+                with self.assertRaises(ExecutionError):
+                    self.execute()
+                self.assertEqual(path.read_bytes(), original)
+                self.assertIsNone(self.stored())
+                self.assertEqual(self.publisher.writes, [])
+
+    def test_one_start_path_persists_and_duplicate_never_republishes(self):
         self.assertEqual(self.execute()['status'], 'completed')
         self.assertEqual(self.publisher.writes, ['tag', 'github', 'npm'])
         self.assertEqual(self.stored()['status'], 'completed')
@@ -385,11 +476,11 @@ class ReleaseExecutorTests(unittest.TestCase):
         self.assertEqual(self.publisher.writes, ['tag', 'github', 'npm'])
         self.assertTrue(any(e['result'] == 'incomplete' for e in self.stored()['events']))
 
-    def test_candidate_tamper_and_rejected_approval_cause_no_external_writes(self):
-        self.facts['approvals'][0]['state'] = 'rejected'
+    def test_candidate_tamper_and_cancelled_run_cause_no_external_writes(self):
+        self.facts['run']['status'] = 'completed'
         with self.assertRaises(ExecutionError): self.execute()
         self.assertEqual(self.publisher.writes, [])
-        self.facts['approvals'][0]['state'] = 'approved'
+        self.facts['run']['status'] = 'in_progress'
         (self.output / 'package.tgz').write_bytes(b'tampered')
         from lib.release.release_candidate import CandidateError
         with self.assertRaises(CandidateError): self.execute()
@@ -429,10 +520,25 @@ class ReleaseExecutorTests(unittest.TestCase):
         self.assertIn('reporting', json.loads((self.output / 'observed-outcome.json').read_text())['failure'])
         self.facts['run']['run_attempt'] = 2
         self.execute()
-        self.assertEqual([a['run_attempt'] for a in self.stored()['approvals']], [1, 2])
+        self.assertEqual([a['run_attempt'] for a in self.stored()['authorities']], [1, 2])
         self.assertEqual(self.publisher.writes, ['tag', 'github', 'npm'])
         self.assertEqual(self.stored()['status'], 'completed')
         self.assertTrue(any(e['boundary'] == 'reporting' and e['result'] == 'incomplete' for e in self.stored()['events']))
+
+    def test_legacy_attempt_stops_without_rewriting_evidence(self):
+        from lib.release.release_execution import render_standing
+        state = {'candidate_id': self.candidate['candidate_id'], 'status': 'pending-publication',
+                 'active': True, 'events': [], 'observations': {}, 'approval': {'run_id': 12}}
+        with GitEvidence(str(self.remote), self.candidate['evidence_ref']) as store:
+            store.refresh()
+            original = render_standing(self.candidate, state)
+            path = 'docs/releases/v0.5.1.md'
+            store.save({path: original})
+            with self.assertRaisesRegex(ExecutionError, 'legacy release attempt'):
+                self.execute(store)
+            store.refresh()
+            self.assertEqual(store.read(path), original)
+        self.assertEqual(self.publisher.writes, [])
 
     def test_first_persistence_failure_cannot_publish(self):
         class FailingStore(GitEvidence):

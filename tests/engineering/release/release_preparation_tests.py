@@ -65,7 +65,7 @@ def finalize_prepublication(root: Path) -> tuple[str, str]:
     report_path.write_text(report_text, encoding="utf-8")
 
     prepare_release("v0.3.5", root=root)
-    prepare_release("v0.3.5", root=root, approval_driven=True)
+    prepare_release("v0.3.5", root=root, workflow_driven=True)
     return release_text, report_text
 
 
@@ -115,7 +115,7 @@ class PrepareReleaseTests(unittest.TestCase):
             self.assertEqual(prepare_release("v0.3.5", root=root, check=True).changed_paths, ())
             self.assertEqual(relative_tree(root), before)
 
-    def test_approval_driven_preparation_preserves_reviewed_version_and_no_generated_passes(self):
+    def test_workflow_driven_preparation_preserves_reviewed_version_and_no_generated_passes(self):
         for existing_timing in (None, b"# existing diagnostic evidence\ncreated_at: pending\n"):
             with self.subTest(existing_timing=existing_timing is not None), release_repo() as root:
                 path = root / "docs/releases/v0.3.5.md"
@@ -125,7 +125,7 @@ class PrepareReleaseTests(unittest.TestCase):
                 timing = root / "docs/releases/v0.3.5/timing.yaml"
                 if existing_timing is not None:
                     timing.write_bytes(existing_timing)
-                prepare_release("v0.3.5", root=root, approval_driven=True)
+                prepare_release("v0.3.5", root=root, workflow_driven=True)
                 first = path.read_text()
                 self.assertTrue(first.startswith(original))
                 self.assertNotIn("| pass |", first)
@@ -138,11 +138,11 @@ class PrepareReleaseTests(unittest.TestCase):
                     row = pending.split(f"  {target}:\n", 1)[1].split("\n  claude:\n", 1)[0].split("\n```", 1)[0]
                     self.assertIn('result: "pending-publication"', row)
                 before = relative_tree(root)
-                prepare_release("v0.3.5", root=root, approval_driven=True)
+                prepare_release("v0.3.5", root=root, workflow_driven=True)
                 self.assertEqual(path.read_text(), first)
                 self.assertEqual(relative_tree(root), before)
 
-    def test_approval_driven_preserves_human_notes_outside_generated_region(self):
+    def test_workflow_driven_preserves_human_notes_outside_generated_region(self):
         for existing_region in (False, True):
             with self.subTest(existing_region=existing_region), release_repo() as root:
                 notes = root / "docs/releases/v0.3.5/release-notes.md"
@@ -155,7 +155,7 @@ class PrepareReleaseTests(unittest.TestCase):
                 end = original.index("-->", end) + 3
                 notes.write_text(prefix + (original[start:end] if existing_region else "") + suffix)
                 history = (root / "docs/releases/v0.3.4/release.yaml").read_bytes()
-                prepare_release("v0.3.5", root=root, approval_driven=True)
+                prepare_release("v0.3.5", root=root, workflow_driven=True)
                 actual = notes.read_text()
                 if existing_region:
                     self.assertEqual(actual[:actual.index("<!-- rigorloop:generated:start")], prefix)
@@ -166,7 +166,7 @@ class PrepareReleaseTests(unittest.TestCase):
                 self.assertEqual((root / "docs/releases/v0.3.4/release.yaml").read_bytes(), history)
                 self.assertIn("Status: pending-publication", (root / "docs/releases/v0.3.5/npm-publication.md").read_text())
                 first = notes.read_bytes()
-                prepare_release("v0.3.5", root=root, approval_driven=True)
+                prepare_release("v0.3.5", root=root, workflow_driven=True)
                 self.assertEqual(notes.read_bytes(), first)
 
     def test_prepare_release_generates_pending_artifacts_idempotently(self) -> None:
