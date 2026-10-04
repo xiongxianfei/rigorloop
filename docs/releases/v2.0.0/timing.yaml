@@ -1,7 +1,7 @@
 schema_version: release-timing-v1
 release_tag: v2.0.0
 release_profile: docs/releases/profiles/v2.0.0.yaml
-created_at: "2026-10-04T19:47:56.771172+00:00"
+created_at: "2026-10-04T19:49:59.149818+00:00"
 phases: []
 checks:
   - id: tag_publication-0
@@ -13,4 +13,9 @@ checks:
     phase: "publication_wait"
     command: "github publication of qualified identity"
     duration_seconds: 2.965808647000003
+    result: "pass"
+  - id: npm_publication-2
+    phase: "publication_wait"
+    command: "npm publication of qualified identity"
+    duration_seconds: 4.551177711000008
     result: "pass"
