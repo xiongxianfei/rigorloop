@@ -1,0 +1,23 @@
+direction: down
+problem: "Failed check, interruption\nor uncertain outcome"
+basis: "Can the original candidate\nand authority still be relied on?" {
+  shape: diamond
+}
+inspect: "Inspect retained evidence\nand actual public state"
+state: "Observed publication state" {
+  shape: diamond
+}
+missing: "Persist intent; perform only\nconfirmed authorized missing work"
+checks: "Repeat affected public checks\nand reconcile reporting"
+stop: "Stop affected work\nRetain facts and required correction"
+done: "Record confirmed outcome\nand actual limitations"
+problem -> basis
+basis -> stop: "Unauthorized start, failed qualification,\nchanged binding or unavailable original"
+basis -> inspect: "Same qualified candidate\nand applicable authority"
+inspect -> state
+state -> missing: "Absent or supported incomplete state;\nmissing write confirmed and authorized"
+missing -> inspect: "Observe actual result\nbefore continuing"
+state -> checks: "Existing product publication matches"
+state -> stop: "Conflicting identity or\nstate remains unknown/unavailable"
+checks -> done: "Required checks and\ndurable closeout succeed"
+checks -> stop: "Checks or required reporting fail"

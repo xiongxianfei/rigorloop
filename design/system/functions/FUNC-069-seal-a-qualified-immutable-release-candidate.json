@@ -3,21 +3,22 @@
   "type": "function",
   "title": "Seal a qualified immutable release candidate",
   "status": "draft",
-  "description": "Bind the exact reviewed/prepared source, generated build inputs, artifacts, profile, configuration, and observed qualification into a retained candidate identity suitable for specific approval and later execution.",
+  "description": "Bind the exact reviewed/prepared source, generated build inputs, artifacts, profile, configuration, and observed qualification into a retained candidate identity bound to authorized workflow initiation for later execution.",
   "inputs": [
     "Reviewed source, permitted prepared-source changes, profile and notes.",
-    "Actual archives, derived bundled metadata/index, packed CLI bytes, selected destinations/path/configuration, and qualification evidence."
+    "Actual archives, derived bundled metadata/index, packed CLI bytes, selected destinations/path/configuration, and qualification evidence.",
+    "Initiating event/run and source/configuration authority reference, assessed before preparation, to bind the qualified candidate to its permitted publication scope."
   ],
   "preconditions": [],
   "outputs": [
-    "Immutable retained candidate set and concise exact-identity approval summary.",
+    "Immutable retained candidate set and concise exact-identity check summary.",
     "Mismatch, incomplete dependency, unexpected change, or stale qualification findings."
   ],
   "behavior": [
     "Preserve the distinction between reviewed source and permitted deterministic prepared source and expose their allowed differences.",
     "Bind archive bytes before their generated metadata/index and consuming CLI package; create outer candidate identity only after final artifacts and checks exist.",
     "Exclude self-referential digest inputs and keep later public observations outside sealed candidate content.",
-    "Expose every material identity, destination, execution path, qualification limit, and required approval subject.",
+    "Expose every material identity, destination, execution path, qualification limit, and initiating authority basis.",
     "Invalidate affected candidate reliance when source, overlay, artifact, metadata, configuration, or other material input changes."
   ],
   "failure_behavior": [
@@ -27,7 +28,7 @@
     },
     {
       "condition": "Unexplained source/overlay changes or missing final bytes remain.",
-      "outcome": "Return the incomplete or unsupported candidate for correction before approval."
+      "outcome": "Return the incomplete or unsupported candidate for correction before publication."
     }
   ],
   "sources": [

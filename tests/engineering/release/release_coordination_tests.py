@@ -8,13 +8,13 @@ ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / "scripts"))
 
 from lib.release.release_coordination import validate_setup, validate_workflow, runtime_credentials
-from release_fixture_helpers import approval_fixture
+from release_fixture_helpers import authority_fixture
 from lib.release.release_execution import ExecutionError
 
 
 class ReleaseCoordinationTests(unittest.TestCase):
     def setUp(self):
-        _, _, self.facts = approval_fixture()
+        _, _, self.facts = authority_fixture()
         self.facts['branch'] = {'name': 'main', 'protected': True}
         self.settings = {'evidence_ref': 'refs/heads/release-evidence',
             'trusted_publisher': 'github:xiongxianfei/rigorloop:release.yml:release'}
@@ -25,7 +25,7 @@ class ReleaseCoordinationTests(unittest.TestCase):
         self.assertEqual(result['environment'], 'release')
         self.assertEqual(result['npm_configuration'], 'declared; runtime authorization required')
 
-    def test_missing_or_unprotected_setup_cannot_request_approval(self):
+    def test_missing_or_unprotected_setup_blocks_publication(self):
         for field in ['environment', 'branch', 'run']:
             facts = copy.deepcopy(self.facts); facts.pop(field)
             with self.assertRaises(ExecutionError): validate_setup(facts, self.settings, self.event)
@@ -34,6 +34,27 @@ class ReleaseCoordinationTests(unittest.TestCase):
             with self.assertRaises(ExecutionError): validate_setup(self.facts, settings, self.event)
         self.facts['branch']['protected'] = False
         with self.assertRaises(ExecutionError): validate_setup(self.facts, self.settings, self.event)
+
+    def test_additional_review_or_waiting_gate_is_an_adoption_mismatch(self):
+        for kind in ['required_reviewers', 'wait_timer', 'unknown_value']:
+            facts = copy.deepcopy(self.facts)
+            facts['environment']['protection_rules'] = [{'type': kind}]
+            with self.subTest(kind=kind), self.assertRaisesRegex(ExecutionError, 'unsupported approval or waiting'):
+                validate_setup(facts, self.settings, self.event)
+
+    def test_authority_transport_does_not_request_approval_records(self):
+        from lib.release.release_provider import GitHubReleaseAuthority
+        from unittest.mock import patch
+        _, binding, _ = authority_fixture()
+        with patch('lib.release.release_provider.github_json', return_value={}) as request:
+            facts = GitHubReleaseAuthority().fetch(binding)
+        self.assertEqual(set(facts), {'repository', 'run', 'artifact', 'environment', 'branch'})
+        self.assertEqual([call.args[0] for call in request.call_args_list], [
+            'repos/xiongxianfei/rigorloop',
+            'repos/xiongxianfei/rigorloop/actions/runs/12',
+            'repos/xiongxianfei/rigorloop/actions/artifacts/13',
+            'repos/xiongxianfei/rigorloop/environments/release',
+            'repos/xiongxianfei/rigorloop/branches/main'])
 
     def test_missing_runtime_oidc_stops_before_any_publication(self):
         with self.assertRaises(ExecutionError): runtime_credentials({'GITHUB_ACTIONS': 'true'})
@@ -91,7 +112,7 @@ class ReleaseCoordinationTests(unittest.TestCase):
         with self.assertRaisesRegex(ExecutionError, 'observation artifact unavailable'):
             restore_recovery(Path('/unused'), EmptyArtifacts(), dict(self.event, attempt=2), {})
 
-    def test_actual_workflow_has_one_protected_executor_and_no_tag_bypass(self):
+    def test_actual_workflow_has_automatic_executor_and_no_tag_bypass(self):
         self.assertEqual(validate_workflow(ROOT), [])
 
     def test_unknown_workflow_job_or_unguarded_write_rejects(self):

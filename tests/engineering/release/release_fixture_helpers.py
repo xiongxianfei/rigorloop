@@ -35,7 +35,7 @@ def relative_tree(root: Path) -> dict[str, tuple]:
         entries[path.relative_to(root).as_posix()] = (kind, stat.S_IMODE(mode), content)
     return entries
 
-def approval_fixture():
+def authority_fixture():
     """Return independently owned candidate, binding and inspected provider facts."""
     candidate = {'candidate_id': 'a' * 64, 'source_commit': 'b' * 40,
         'source_ref': 'refs/heads/main', 'repository': 'xiongxianfei/rigorloop'}
@@ -48,10 +48,11 @@ def approval_fixture():
         'artifact': {'id': 13, 'name': 'release-candidate-12', 'digest': binding['artifact_digest'],
             'expired': False, 'workflow_run': {'id': 12, 'head_sha': 'b' * 40, 'repository_id': 7, 'head_repository_id': 7}},
         'environment': {'id': 9, 'name': 'release', 'deployment_branch_policy': {'protected_branches': True, 'custom_branch_policies': False},
-            'protection_rules': [{'type': 'required_reviewers', 'reviewers': [{'type': 'User', 'reviewer': {'id': 2}}]}]},
-        'approvals': [{'state': 'approved', 'environments': [{'id': 9, 'name': 'release'}], 'user': {'id': 2, 'login': 'maintainer'}}]}
+            'protection_rules': []},
+        'branch': {'name': 'main', 'protected': True}}
 
-    candidate['approval_environment_identity'] = environment_identity(facts['environment'])
+    candidate['initiation'] = {'policy': 'workflow-start-v1', 'run_id': 12}
+    candidate['release_environment_identity'] = environment_identity(facts['environment'])
 
     return candidate, binding, facts
 

@@ -54,7 +54,7 @@ def public_bytes(url: str, prefix: str) -> bytes:
         raise ExternalUnavailable('public artifact is not yet observable') from exc
 
 
-class GitHubApprovals:
+class GitHubReleaseAuthority:
     def artifact_bytes(self, binding: dict) -> bytes:
         from lib.release.release_execution import MAX_ARTIFACT_BYTES
         identity = binding.get('artifact_id')
@@ -74,17 +74,17 @@ class GitHubApprovals:
                 raise ExternalUnavailable('retained candidate download unavailable') from exc
 
     def fetch(self, binding: dict) -> dict:
-        from lib.release.release_execution import APPROVAL_FIELDS
+        from lib.release.release_execution import AUTHORITY_FIELDS
         import re
-        if set(binding) != APPROVAL_FIELDS or any(type(binding[k]) is not int or binding[k] <= 0 for k in ('run_id', 'artifact_id')) or not re.fullmatch(r'[a-z0-9][a-z0-9-]*', binding['environment']):
-            raise ExecutionError('invalid approval provider request')
+        if set(binding) != AUTHORITY_FIELDS or any(type(binding[k]) is not int or binding[k] <= 0 for k in ('run_id', 'artifact_id')) or not re.fullmatch(r'[a-z0-9][a-z0-9-]*', binding['environment']):
+            raise ExecutionError('invalid authority provider request')
         base = 'repos/' + SOURCE_REPOSITORY
         environment = urllib.parse.quote(binding['environment'], safe='')
         return {'repository': github_json(base),
             'run': github_json(f"{base}/actions/runs/{binding['run_id']}"),
             'artifact': github_json(f"{base}/actions/artifacts/{binding['artifact_id']}"),
             'environment': github_json(f'{base}/environments/{environment}'),
-            'approvals': github_json(f"{base}/actions/runs/{binding['run_id']}/approvals")}
+            'branch': github_json(f'{base}/branches/main')}
 
 
 class NetworkPublisher(NetworkPublicEvidenceProvider):
@@ -254,6 +254,6 @@ class NetworkPublisher(NetworkPublicEvidenceProvider):
             if 'install_roots' in artifact:
                 for key, root in artifact['install_roots'].items():
                     if installed.get(root) != artifact['root_hashes'][key]:
-                        raise ExecutionError('public installed tree differs from approved archive')
+                        raise ExecutionError('public installed tree differs from qualified archive')
             elif installed.get(artifact['install_root']) != {'tree_sha256': artifact['tree_sha256'], 'file_count': artifact['file_count']}:
-                raise ExecutionError('public installed tree differs from approved archive')
+                raise ExecutionError('public installed tree differs from qualified archive')

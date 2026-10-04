@@ -54,7 +54,7 @@ flowchart TB
     Packaging -->|"exact release artifacts"| Release
     Release -->|"candidate-specific qualification checks"| Validation
     Validation -->|"actual qualification results"| Release
-    Authorization -->|"candidate-specific permission"| Release
+    Authorization -->|"workflow-start permission bound to qualified output"| Release
     Release -->|"publish and observe"| Products
 ```
 
@@ -69,7 +69,7 @@ Repository development coordinates these four engineering activities under [Syst
 | Context | Necessary: Product contracts, assessment policy, maintainer permissions and public products bound engineering work. | [Context view](#context-view) |
 | Building Block | Necessary: Development, Validation, Packaging and Release compose distinct implementation, proof and delivery responsibilities. | [Building Block view](#building-block-view) |
 | Runtime | Necessary: Implementation, independent assessment and publication cannot be treated as one successful command. | [Runtime view](#runtime-view) |
-| Deployment | Necessary: Local/CI execution, candidate roots and protected release jobs have distinct resource and authority boundaries. | [Deployment view](#deployment-view) |
+| Deployment | Necessary: Local/CI execution, candidate roots and authorized release jobs have distinct resource and authority boundaries. | [Deployment view](#deployment-view) |
 
 
 ## Architecture Constraints
@@ -86,7 +86,7 @@ These views elaborate the overview at the owning model boundary. Existing detail
 flowchart LR
     Behavior["Skill and CLI behavior owners"] -->|"required outcomes"| Engineering["Engineering"]
     Policy["Assessment owner"] -->|"independent review and Verify duties"| Engineering
-    Maintainer["Maintainer"] -->|"candidate-specific publication authority"| Engineering
+    Maintainer["Maintainer"] -->|"workflow-start publication authority"| Engineering
     Engineering -->|"qualified and authorized delivery"| Products["Published skills and CLI"]
 ```
 
@@ -118,9 +118,9 @@ flowchart TB
     More -->|"yes"| Implement
     More -->|"no"| Whole["Fresh whole-change Code Review"]
     Whole --> Verify["Distinct final Verify"]
-    Verify -->|"successful applicable engineering basis"| Release["Release qualifies exact candidate"]
-    Release --> Authorize["Obtain separate publication authorization"]
-    Authorize --> Publish["Publish and observe actual public outcome"]
+    Verify -->|"successful applicable engineering basis"| Authorize["Initiate authorized release workflow"]
+    Authorize --> Release["Prepare and qualify exact packages"]
+    Release --> Publish["Publish automatically and observe actual public outcome"]
 ```
 
 Implementation, independent assessment and publication cannot be treated as one successful command. Detailed requirements and scenarios in this model remain authoritative.
@@ -131,12 +131,12 @@ Implementation, independent assessment and publication cannot be treated as one 
 flowchart LR
     Repo["Repository source and reviewed artifacts"] -->|"local or CI work"| Dev["Development and validation processes"]
     Dev -->|"Packaging generation"| Candidates["Isolated candidate output"]
-    Candidates -->|"qualification inputs"| Protected["Release protected execution"]
-    Approval["Maintainer authorization"] -->|"candidate-specific permission"| Protected
+    Candidates -->|"qualification inputs"| Protected["Release authorized execution"]
+    Approval["Maintainer authorization"] -->|"workflow-start permission bound to qualified output"| Protected
     Protected -->|"publish and observe"| Public["Public registry and release assets"]
 ```
 
-Local/CI execution, candidate roots and protected release jobs have distinct resource and authority boundaries. Detailed requirements and scenarios in this model remain authoritative.
+Local/CI execution, candidate roots and authorized release jobs have distinct resource and authority boundaries. Detailed requirements and scenarios in this model remain authoritative.
 
 ## Requirements
 
@@ -242,7 +242,7 @@ Repository development governs the section-level Development responsibility and 
 | Development authority and independent closeout — ENG-SR-01, ENG-SR-02, ENG-SR-03, ENG-SR-04, ENG-SR-09, ENG-SR-12 | Walk an exact candidate through accepted requirements/reviewed Design/Delivery, bounded implementation and required checks, one whole-change Code Review and distinct Verify. Introduce a changed relied-on subject or behavioral gap after a local pass: return the affected issue to its owner, retain actual partial work and reassess before renewed reliance. Record installed/checkout tool identity separately from the artifact under test; neither self-use nor a non-final review grants completion. | Proposed independent walkthrough of the actual plan, subjects, reviews and evidence, with [Workflow](../architecture/modules/MOD-017-engineering-governance/modules/MOD-006-engineering-change-control/workflow.md) and [Assessment](../architecture/modules/MOD-017-engineering-governance/modules/MOD-007-engineering-verification-and-assurance/assessment.md) as semantic owners. A small synthetic valid/invalid handoff pair can exercise the procedure; it cannot approve the real change. CLI interaction and record tests support storage only. |
 | Canonical source to usable products — ENG-SR-01, ENG-SR-06, ENG-SR-07, ENG-SR-11, ENG-SR-16 | Generate supported archives and pack the actual CLI from the same candidate. Independently inspect mapped resources and execute installed recording/installation commands from a fresh consumer root. Missing nested implementation/resource or stale bundled metadata must fail, while no repository executor or internal change identity is required for customer use. Read generated instructions against actual supported invocation forms. | Real source→archive/tarball→installed consumer, using [Packaging's composed proof](../architecture/modules/MOD-019-product-delivery/modules/MOD-013-product-package-production/packaging.md#test-design), [packed recording](../../tests/engineering/packaging/npm_recording_tests.py) and [Skill portability tests](../../tests/skill/skill_portability_tests.py). Independent guidance walkthrough remains necessary for semantic usability; artifact membership alone is insufficient. |
 | Complete protective population and attributable cost — ENG-SR-05, ENG-SR-07, ENG-SR-09, ENG-SR-15, ENG-SR-16 | Compare native discovery through actual suite callers with the owning requirement groups, including imported/generated Node cases, Python subtests and inline/file/resource fixtures. Move or refine a group and show retained observations and supported selectors remain reachable once. A dropped registration, failed discovery, skipped/unstarted required check or stale cached result cannot become a pass. Compare before/after costs for the affected realized population with the same declared conditions. | [Validation](validation.md#test-design) owns actual selection/execution proof and [cost reporting](validation.md#execution-cost-reporting); Delivery owns the audit/disposition evidence. Use a small controlled failing/discovery fixture plus actual affected callers. No fabricated repository-wide total may be derived from broad-smoke alone, and worker-process cost is not test-body-only latency. |
-| Qualification versus publication authority — ENG-SR-06, ENG-SR-07, ENG-SR-08, ENG-SR-09 | Feed the exact built candidate and check identities into Release. An altered artifact or missing approval prevents the external write; a lost provider response remains uncertain and recovery observes before retry. Local success cannot supply public identity/smoke evidence. The same product checked during development cannot silently be replaced during qualification. | [Release's candidate/publication scenarios](../architecture/modules/MOD-019-product-delivery/modules/MOD-015-product-release-coordination/test-design/test-design.md#candidate-and-publication) own the actual coordinator and provider-fault realization; Packaging supplies real bytes. Engineering independently assesses their identity/evidence handoff. Future actual publication observations apply only to an authorized release, never to a benchmark run. |
+| Qualification versus publication authority — ENG-SR-06, ENG-SR-07, ENG-SR-08, ENG-SR-09 | Feed the exact built candidate and check identities into Release. An altered artifact or missing workflow-start authority prevents the external write; a lost provider response remains uncertain and recovery observes before retry. Local success cannot supply public identity/smoke evidence. The same product checked during development cannot silently be replaced during qualification. | [Release's candidate/publication scenarios](../architecture/modules/MOD-019-product-delivery/modules/MOD-015-product-release-coordination/test-design/test-design.md#candidate-and-publication) own the actual coordinator and provider-fault realization; Packaging supplies real bytes. Engineering independently assesses their identity/evidence handoff. Future actual publication observations apply only to an authorized release, never to a benchmark run. |
 | Retirement, fixture independence and current reliance — ENG-SR-10, ENG-SR-12, ENG-SR-13, ENG-SR-14, ENG-SR-15 | Inspect a concrete source-family removal with its baseline, recoverable revision, live readers, uncommitted bytes and obligation/proof mapping. A changed source, new reader, missing recovery basis or unique negative case prevents deletion. The retained fixture independently establishes current behavior without loading an archived production record; restored recovery includes the whole source/reader/resource/check slice. Final assessment accounts for every selected family and unresolved exception. | Proposed independent disposition walkthrough plus the actual affected child tests and dependency checks. Historical cleanup acceptance stays with its owning completed change; no perpetual deletion/replay suite or historical compatibility promise is created. Existing inventories and passing builds are inputs, not proof that semantic duties transferred. |
 | Stable tooling and local/CI composition — ENG-SR-05, ENG-SR-09, ENG-SR-16 | Run a stable command from a different working directory and through its subprocess caller after an internal relocation; compare arguments, diagnostics, exit and selected checks. Change nested candidate implementation/resource bytes and observe source-integrity rejection. Missing imports/resources fail rather than falling back to a second implementation. Local and CI use the same owned checks and shared worker budget. | Private copied candidate where source identity matters, real subprocess invocation, [Validation's selection/execution proof](validation.md#test-design) and [Release candidate tests](../../tests/engineering/release/release_candidate_tests.py). Preserve current supported consumers; retired internal aliases have no continuing execution promise. |
 

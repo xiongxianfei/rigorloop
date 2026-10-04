@@ -3,12 +3,12 @@
   "type": "system-requirement",
   "title": "Qualify the exact prepared release candidate",
   "status": "draft",
-  "statement": "The system shall qualify the exact prepared source and product artifacts against every applicable non-deferred release obligation before requesting routine approval, retaining actual applicable evidence and rejecting stale, incomplete, contradictory, or mismatched candidate support.",
+  "statement": "The system shall qualify the exact prepared source and product artifacts against every applicable non-deferred release obligation before publication, retaining actual applicable evidence and rejecting stale, incomplete, contradictory, or mismatched candidate support.",
   "analysis": {
     "method": "5W2H",
     "what": {
-      "problem": "A passing source-tree check or a newly rebuilt artifact can be substituted for the product the maintainer is asked to approve.",
-      "desired_outcome": "The approval subject is a concrete qualified candidate with inspectable artifact identities and honest remaining limits."
+      "problem": "A source-tree check or rebuilt artifact can be substituted for the actual package selected for publication.",
+      "desired_outcome": "The publication subject is a concrete qualified candidate with inspectable identities and honest limits."
     },
     "why": {
       "rationale": "Release readiness must compose packaging, installed-consumer, security, and release evidence against the same candidate."
@@ -20,7 +20,7 @@
     },
     "when": {
       "conditions": [
-        "Before candidate approval and at the applicable execution safeguards."
+        "Before publication and at applicable execution safeguards."
       ]
     },
     "where": {
@@ -36,7 +36,7 @@
     }
   },
   "acceptance_criteria": [
-    "The approval summary binds reviewed/prepared source, allowed generated changes, actual CLI/archive bytes, profile, destination, configuration, and required observed checks to one candidate.",
+    "The candidate summary binds reviewed/prepared source, allowed generated changes, actual CLI/archive bytes, profile, destination, configuration, and required observed checks to one candidate.",
     "Required package preview and smoke concern the actual packed candidate and selected archives rather than a source checkout; missing contents, forbidden inclusions, stale evidence, or unresolved blockers prevent readiness.",
     "Generated metadata and index precede the consuming CLI package, and outer artifact identities do not create self-referential digest inputs; later observations do not modify sealed inputs.",
     "All applicable non-deferred checks pass with evidence applicable to the exact candidate; any exceptional deferral has its required owner, rationale, accepted risk, follow-up, and limit and cannot waive nondeferable duties.",
@@ -78,6 +78,11 @@
       "source": "SRC-PUBLISHED-RELEASE",
       "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-015-product-release-coordination/release.md#REL-SR-24",
       "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. Release readiness must compose packaging, installed-consumer, security, and release evidence against the same candidate. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "user-request:2026-10-04-release-workflow-start-authority",
+      "basis": "User selects initiation of the authorized release workflow as publication authority, with no later routine approval. Refines the existing IR-010 need; exact candidate qualification, bounded authority and recovery remain. Design change only; running workflow adoption requires implementation."
     }
   ]
 }

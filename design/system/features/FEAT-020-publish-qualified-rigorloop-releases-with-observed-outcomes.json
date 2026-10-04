@@ -3,13 +3,13 @@
   "type": "feature",
   "title": "Publish qualified RigorLoop releases with observed outcomes",
   "status": "draft",
-  "description": "Product maintainers can prepare a compatible version, assess and approve the exact candidate, and carry its supported publication through actual public observations and durable closeout. Routine coordination reduces manual bookkeeping while preserving explicit decisions, authorization, immutable identity, and recovery after uncertain or failed effects.",
+  "description": "Product maintainers can initiate a supported release of reviewed source and receive qualified publication with actual public observations and reporting. Routine coordination needs no second approval and preserves exact artifact identity, bounded authority and recovery.",
   "scope": {
     "includes": [
       "Supported release identity, compatibility decisions, profile-owned preparation, and exact candidate qualification.",
       "Candidate-bound authorization and publication using retained artifacts and the supported authentication/provenance path.",
       "Fresh public observations, durable version-scoped reporting, and authorized failure/recovery disposition.",
-      "Existing routine coordination with one normal candidate approval and precise exceptions."
+      "Routine coordination from an authorized release workflow start without a later human approval, with precise exceptions."
     ],
     "excludes": [
       "New release policies, unsupported automation populations, automatic approval, or fabricated public success.",
@@ -64,6 +64,11 @@
       "source": "SRC-PUBLISHED-RELEASE",
       "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-015-product-release-coordination/release.md#REL-SR-24",
       "basis": "IR-010 establishes this stakeholder-visible published-product capability. This draft models existing selected obligations, not observed publication or installation success."
+    },
+    {
+      "source": "SRC-PUBLISHED-RELEASE",
+      "locator": "user-request:2026-10-04-release-workflow-start-authority",
+      "basis": "User selects initiation of the authorized release workflow as publication authority, with no later routine approval. Refines the existing IR-010 need; exact candidate qualification, bounded authority and recovery remain. Design change only; running workflow adoption requires implementation."
     }
   ]
 }

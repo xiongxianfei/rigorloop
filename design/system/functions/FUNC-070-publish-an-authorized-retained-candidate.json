@@ -3,10 +3,10 @@
   "type": "function",
   "title": "Publish an authorized retained candidate",
   "status": "draft",
-  "description": "Perform the selected external publication using retained qualified bytes and applicable exact-candidate authorization. It preserves provider identity, authentication/provenance, conflict, and uncertain-write boundaries.",
+  "description": "Perform the selected external publication using retained qualified bytes and workflow-start authority bound to that candidate. It preserves provider identity, authentication/provenance, conflict, and uncertain-write boundaries.",
   "inputs": [
     "Retained sealed candidate and its actual qualified artifacts.",
-    "Applicable candidate-specific authorization, supported publication path and credentials, and fresh external conflict/evidence basis."
+    "Authorized initiating event/source/configuration and its bound qualified candidate, supported publication path and credentials, and fresh external conflict/evidence basis."
   ],
   "preconditions": [
     "Applicable policy permits the selected execution path; absence is reported rather than bypassed."
@@ -16,7 +16,7 @@
     "Blocked mismatch/authority/authentication/conflict or uncertain/partial write requiring recovery assessment."
   ],
   "behavior": [
-    "Check candidate, source/tag, version/channel, destinations, configuration, evidence, and authority against the approved subject before writes.",
+    "Check source/tag, version/channel, destinations, configuration, evidence and candidate binding against the initiating grant before writes, without a second human approval.",
     "Use the selected trusted publishing or specifically authorized fallback while preserving stricter profile requirements and honest provenance.",
     "Publish retained artifacts without regeneration from a mutable working basis; reject conflicting public identities and unguarded alternate trigger paths.",
     "Suppress secrets and private environment details in commands, artifacts, and durable outcomes.",

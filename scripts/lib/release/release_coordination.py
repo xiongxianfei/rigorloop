@@ -12,10 +12,10 @@ import zipfile
 
 from lib.release.release_candidate import (SOURCE_REPOSITORY, CandidateError, canonical_bytes, derive_release_inputs,
     prepare_candidate, seal_candidate, run, version_tuple)
-from lib.release.release_execution import (ExecutionError, ExternalUnavailable, GitEvidence, environment_identity,
+from lib.release.release_execution import (ExecutionError, ExternalUnavailable, GitEvidence, validate_release_environment,
     execute_candidate, materialize_artifact, read_execution_state, retained_artifact_files,
     classify_observation, BOUNDARIES)
-from lib.release.release_provider import GitHubApprovals, NetworkPublisher, github_json, public_bytes
+from lib.release.release_provider import GitHubReleaseAuthority, NetworkPublisher, github_json, public_bytes
 
 ENVIRONMENT = 'release'
 TRUSTED_PUBLISHER = 'github:' + SOURCE_REPOSITORY + ':release.yml:' + ENVIRONMENT
@@ -25,8 +25,11 @@ def validate_setup(facts: dict, settings: dict, event: dict) -> dict:
     try:
         if set(settings) != {'evidence_ref', 'trusted_publisher'} or settings['trusted_publisher'] != TRUSTED_PUBLISHER:
             raise ExecutionError('missing established trusted-publisher configuration intent')
+        if (type(event['run_id']) is not int or event['run_id'] <= 0
+            or type(event['attempt']) is not int or event['attempt'] <= 0):
+            raise ExecutionError('invalid initiating run or attempt')
         repo, workflow, branch, environment = (facts[k] for k in ('repository', 'run', 'branch', 'environment'))
-        if (repo['full_name'] != SOURCE_REPOSITORY or event['source_ref'] != 'refs/heads/' + repo['default_branch']
+        if (repo['full_name'] != SOURCE_REPOSITORY or repo['default_branch'] != 'main' or event['source_ref'] != 'refs/heads/' + repo['default_branch']
             or branch['name'] != repo['default_branch'] or branch['protected'] is not True
             or workflow['id'] != event['run_id'] or workflow['head_sha'] != event['source_commit']
             or workflow['head_branch'] != repo['default_branch'] or workflow['event'] != 'push'
@@ -36,14 +39,9 @@ def validate_setup(facts: dict, settings: dict, event: dict) -> dict:
         ref = settings['evidence_ref']
         if not re.fullmatch(r'refs/heads/[a-z0-9][a-z0-9/-]*', ref) or '..' in ref or ref.endswith('/') or ref == event['source_ref']:
             raise ExecutionError('configure a separate valid release evidence ref')
-        if (environment['name'] != ENVIRONMENT or environment['deployment_branch_policy'] !=
-            {'protected_branches': True, 'custom_branch_policies': False}):
-            raise ExecutionError('release environment must require protected branches')
-        rules = [r for r in environment['protection_rules'] if r['type'] == 'required_reviewers']
-        if len(rules) != 1 or not rules[0]['reviewers'] or any(r['type'] != 'User' for r in rules[0]['reviewers']):
-            raise ExecutionError('configure authorized individual release reviewers')
+        config_identity = validate_release_environment(environment)
         return {'environment': ENVIRONMENT, 'evidence_ref': ref,
-            'approval_environment_identity': environment_identity(environment),
+            'release_environment_identity': config_identity,
             'npm_configuration': 'declared; runtime authorization required'}
     except (KeyError, TypeError, AttributeError) as exc:
         raise ExecutionError('required release setup is missing or unavailable') from exc
@@ -72,10 +70,10 @@ def validate_workflow(root: Path) -> list[str]:
         if set(jobs) != {'prepare', 'execute'}: errors.append('release workflow has unknown or missing jobs')
         prepare, execute = jobs.get('prepare', {}), jobs.get('execute', {})
         if 'environment' in prepare or prepare.get('permissions') != {'contents': 'read', 'actions': 'read'}:
-            errors.append('preparation must be read-only and precede approval')
+            errors.append('preparation must be read-only and precede publication')
         if execute.get('needs') != 'prepare' or execute.get('environment') != ENVIRONMENT:
             errors.append('exactly one protected executor must depend on preparation')
-        if execute.get('permissions') != {'contents': 'write', 'actions': 'read', 'deployments': 'read', 'id-token': 'write'}:
+        if execute.get('permissions') != {'contents': 'write', 'actions': 'read', 'id-token': 'write'}:
             errors.append('executor permissions must match the approved release operation')
         for name, job in jobs.items():
             if job.get('runs-on') != 'ubuntu-latest' or job.get('timeout-minutes') != 60:
@@ -102,8 +100,8 @@ def validate_workflow(root: Path) -> list[str]:
             'if-no-files-found': 'error', 'retention-days': 30, 'overwrite': False, 'compression-level': 0}:
             errors.append('candidate retention must be immutable with explicit expiry and complete inventory')
         if uploads and uploads[0].get('if') != "steps.candidate.outputs.ready == 'true' && github.run_attempt == 1":
-            errors.append('retry cannot replace the approved candidate artifact')
-        if execute.get('if') != "needs.prepare.outputs.ready == 'true'": errors.append('failed or no-op preparation cannot request approval')
+            errors.append('retry cannot replace the qualified candidate artifact')
+        if execute.get('if') != "needs.prepare.outputs.ready == 'true'": errors.append('failed or no-op preparation cannot permit publication')
         recovery = [s for s in execute.get('steps', []) if s.get('uses') == 'actions/upload-artifact@v4']
         if (len(recovery) != 1 or recovery[0].get('if') != "always() && steps.operation.outcome != 'skipped'"
             or recovery[0].get('with') != {'name': 'release-observation-${{ github.run_id }}-${{ github.run_attempt }}',
@@ -116,7 +114,7 @@ def validate_workflow(root: Path) -> list[str]:
 
 class HostedServices:
     def __init__(self):
-        self.approvals = GitHubApprovals()
+        self.authorities = GitHubReleaseAuthority()
         self.publisher = NetworkPublisher()
 
     def setup(self, event):
@@ -147,12 +145,12 @@ class HostedServices:
     def credentials(self): runtime_credentials(os.environ)
 
 
-def binding_from_artifact(artifact: dict, event: dict, approvals) -> tuple[dict, bytes]:
+def binding_from_artifact(artifact: dict, event: dict, authorities) -> tuple[dict, bytes]:
     if artifact.get('expired') is not False or artifact.get('name') != 'release-candidate-' + str(event['run_id']):
         raise ExecutionError('required immutable candidate artifact unavailable')
     binding = {'run_id': event['run_id'], 'artifact_id': artifact['id'], 'artifact_digest': artifact['digest'],
         'candidate_id': '', 'environment': ENVIRONMENT, 'artifact_name': artifact['name']}
-    payload = approvals.artifact_bytes(binding)
+    payload = authorities.artifact_bytes(binding)
     if 'sha256:' + hashlib.sha256(payload).hexdigest() != binding['artifact_digest']:
         raise ExecutionError('retained candidate download digest mismatch')
     try:
@@ -177,10 +175,10 @@ def prepare_operation(root: Path, output: Path, event: dict, settings: dict, ser
     if run(['git', 'rev-parse', 'HEAD'], root) != event['source_commit']:
         raise ExecutionError('checkout differs from reviewed workflow source')
     if event['attempt'] > 1:
-        binding, payload = binding_from_artifact(candidate_artifact(services, event), event, services.approvals)
+        binding, payload = binding_from_artifact(candidate_artifact(services, event), event, services.authorities)
         # Download/validate exact original data; no builder is invoked on retry.
-        candidate = materialize_artifact(output, binding, services.approvals)
-        if candidate['source_commit'] != event['source_commit'] or candidate['approval_environment_identity'] != setup['approval_environment_identity']:
+        candidate = materialize_artifact(output, binding, services.authorities)
+        if candidate['source_commit'] != event['source_commit'] or candidate.get('initiation') != {'policy': 'workflow-start-v1', 'run_id': event['run_id']} or candidate.get('release_environment_identity') != setup['release_environment_identity']:
             raise ExecutionError('retained candidate setup/source changed; requires a new candidate decision')
         return dict(status='ready', candidate=candidate, binding=binding)
     latest = services.latest()
@@ -201,7 +199,8 @@ def prepare_operation(root: Path, output: Path, event: dict, settings: dict, ser
     run(['git', 'update-ref', event['source_ref'], event['source_commit']], root)
     candidate = prepare_candidate(root, event['source_commit'], event['source_ref'], latest, output, evidence_ref=setup['evidence_ref'])
     candidate.pop('candidate_id')
-    candidate['approval_environment_identity'] = setup['approval_environment_identity']
+    candidate['release_environment_identity'] = setup['release_environment_identity']
+    candidate['initiation'] = {'policy': 'workflow-start-v1', 'run_id': event['run_id']}
     candidate['setup'] = setup
     candidate = seal_candidate(output, candidate)
     return {'status': 'ready', 'candidate': candidate}
@@ -216,7 +215,7 @@ def restore_recovery(output, services, event, binding):
         raise ExecutionError('ambiguous recovery artifact identity')
     for artifact in sorted(previous, key=lambda a: int(a['name'].rsplit('-', 1)[1]), reverse=True):
         if artifact['expired']: raise ExecutionError('recovery observations expired; inspect durable/public state before resuming')
-        payload = services.approvals.artifact_bytes({'artifact_id': artifact['id']})
+        payload = services.authorities.artifact_bytes({'artifact_id': artifact['id']})
         if 'sha256:' + hashlib.sha256(payload).hexdigest() != artifact['digest']:
             raise ExecutionError('recovery observation digest mismatch')
         with zipfile.ZipFile(io.BytesIO(payload)) as archive:
@@ -231,16 +230,18 @@ def restore_recovery(output, services, event, binding):
 
 def execute_operation(root: Path, output: Path, event: dict, settings: dict, binding: dict, services):
     validate_setup(services.setup(event), settings, event)
+    if binding['run_id'] != event['run_id']:
+        raise ExecutionError('candidate binding differs from executing run')
     if validate_workflow(root): raise ExecutionError('current workflow composition changed')
     services.credentials()  # Missing credentials stop before tag/GitHub/npm writes.
-    candidate = materialize_artifact(output, binding, services.approvals)
+    candidate = materialize_artifact(output, binding, services.authorities)
     if candidate['source_commit'] != event['source_commit'] or candidate['evidence_ref'] != settings['evidence_ref']:
         raise ExecutionError('candidate differs from execution source/destination')
     restore_recovery(output, services, event, binding)
     with services.evidence(candidate['evidence_ref'], candidate['source_ref']) as store:
-        state = execute_candidate(output, binding, approvals=services.approvals, publisher=services.publisher, evidence=store)
+        state = execute_candidate(output, binding, attempt=event['attempt'], authorities=services.authorities, publisher=services.publisher, evidence=store)
         # The durable ref is authoritative. Mirror its exact version-scoped
-        # snapshot when possible, never rebuild or mutate the approved package.
+        # snapshot when possible, never rebuild or mutate the qualified package.
         commit = store.base
         paths = [f"docs/releases/{candidate['tag']}.md", f"docs/releases/{candidate['tag']}",
             f"docs/releases/profiles/{candidate['tag']}.yaml", f"docs/reports/adapter-artifacts/releases/{candidate['tag']}.yaml"]
@@ -302,7 +303,7 @@ def summary(candidate: dict) -> str:
         f"Candidate: `{candidate['candidate_id']}`.",
         'Required checks: ' + ', '.join(c['id'] + '=' + c['result'] for c in candidate['checks']) + '.',
         'Generated source changes: ' + ', '.join(candidate['source_diff']) + '.',
-        'Approval authorizes the retained tag, GitHub assets and npm tarball through trusted publishing; automatic public verification and reporting follow.',
+        'The authorized main-push start permits these retained packages to publish after checks; no second approval is requested. Public verification and reporting follow.',
         f"Destinations: GitHub `{SOURCE_REPOSITORY}`, npm `{candidate['package']}`, evidence `{candidate['evidence_ref']}`.",
         'Artifacts: ' + ', '.join(candidate['files']) + '.',
         'Setup: inspected GitHub protection; npm configuration intent declared, actual runtime authorization remains required.',

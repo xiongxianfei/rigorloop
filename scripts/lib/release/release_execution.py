@@ -1,7 +1,7 @@
 """Candidate-specific release authority, external observation and durable evidence.
 
 No hosted trigger is registered here. External effects use explicit provider
-boundaries; tests replace public services, never approval/identity validators.
+boundaries; tests replace public services, never authority/identity validators.
 """
 from __future__ import annotations
 
@@ -43,34 +43,56 @@ def environment_identity(environment: dict) -> str:
     return hashlib.sha256(canonical_bytes(selected)).hexdigest()
 
 
-APPROVAL_FIELDS = frozenset({'run_id', 'artifact_id', 'artifact_digest', 'candidate_id', 'environment', 'artifact_name'})
+AUTHORITY_FIELDS = frozenset({'run_id', 'artifact_id', 'artifact_digest', 'candidate_id', 'environment', 'artifact_name'})
 
 
-def validate_approval(candidate: dict, binding: dict, facts: dict) -> dict:
-    """Validate fresh provider responses, not a caller-supplied approval boolean.
+def validate_release_environment(environment: dict) -> str:
+    """Credential/branch scope only; never a second human or waiting gate."""
+    try:
+        if (environment['name'] != 'release' or type(environment['id']) is not int
+            or environment['id'] <= 0 or environment['deployment_branch_policy'] !=
+                {'protected_branches': True, 'custom_branch_policies': False}):
+            raise ExecutionError('release environment must restrict execution to protected branches')
+        rules = environment['protection_rules']
+        if not isinstance(rules, list) or any(rule['type'] != 'branch_policy' for rule in rules):
+            raise ExecutionError('release environment has an unsupported approval or waiting rule; reconcile setup')
+        return environment_identity(environment)
+    except (KeyError, TypeError, AttributeError) as exc:
+        raise ExecutionError('missing or malformed release environment scope') from exc
 
-    Sources: GitHub REST workflow-runs /approvals, artifacts and environments.
-    Initial support uses named individual environment reviewers. Unknown/new
-    policies require an explicit integration decision; they do not fail open.
-    """
+
+def validate_authority(candidate: dict, binding: dict, facts: dict) -> dict:
+    """Validate run/source/artifact facts without a reviewer approval response."""
     if candidate.get('inputs', {}).get('ci_only'):
         raise ExecutionError('CI-only candidate cannot authorize publication')
     try:
-        if set(binding) != APPROVAL_FIELDS:
-            raise ExecutionError('unknown or missing approval binding field')
+        if set(binding) != AUTHORITY_FIELDS:
+            raise ExecutionError('unknown or missing authority binding field')
         for field in ['run_id', 'artifact_id']:
             if type(binding[field]) is not int or binding[field] <= 0:
                 raise ExecutionError('invalid provider identity')
+        initiation = candidate.get('initiation')
+        if initiation is None:
+            raise ExecutionError('candidate lacks workflow-start authority; preserve original and prepare a new authorized run')
+        if (not isinstance(initiation, dict) or set(initiation) != {'policy', 'run_id'}
+            or initiation['policy'] != 'workflow-start-v1' or type(initiation['run_id']) is not int
+            or initiation['run_id'] <= 0):
+            raise ExecutionError('unknown or malformed initiation policy')
         if binding['candidate_id'] != candidate['candidate_id']:
-            raise ExecutionError('approval candidate mismatch')
-        repo, run_info, artifact, environment = (facts[x] for x in ['repository', 'run', 'artifact', 'environment'])
+            raise ExecutionError('authority candidate mismatch')
+        if initiation['run_id'] != binding['run_id']:
+            raise ExecutionError('candidate belongs to a different initiating run')
+        repo, run_info, artifact, environment, branch = (facts[x] for x in
+            ['repository', 'run', 'artifact', 'environment', 'branch'])
         if repo['full_name'] != candidate['repository'] or repo['full_name'] != SOURCE_REPOSITORY:
-            raise ExecutionError('approval destination mismatch')
-        if candidate['source_ref'] != 'refs/heads/' + repo['default_branch']:
-            raise ExecutionError('routine source is not the reviewed default branch')
-        if (run_info['id'] != binding['run_id'] or run_info['head_sha'] != candidate['source_commit']
-            or run_info['head_branch'] != repo['default_branch'] or run_info['event'] != 'push'
-            or run_info['path'] != '.github/workflows/release.yml' or run_info['status'] != 'in_progress'):
+            raise ExecutionError('authority destination mismatch')
+        if (repo['default_branch'] != 'main' or candidate['source_ref'] != 'refs/heads/main'
+            or branch['name'] != 'main' or branch['protected'] is not True):
+            raise ExecutionError('routine source is not protected main')
+        if (type(run_info['id']) is not int or run_info['id'] != binding['run_id']
+            or run_info['head_sha'] != candidate['source_commit'] or run_info['head_branch'] != 'main'
+            or run_info['event'] != 'push' or run_info['path'] != '.github/workflows/release.yml'
+            or run_info['status'] != 'in_progress'):
             raise ExecutionError('stale or mismatched workflow run')
         if type(run_info['run_attempt']) is not int or run_info['run_attempt'] < 1:
             raise ExecutionError('invalid workflow attempt')
@@ -84,32 +106,16 @@ def validate_approval(candidate: dict, binding: dict, facts: dict) -> dict:
         if (artifact_run['id'] != binding['run_id'] or artifact_run['head_sha'] != candidate['source_commit']
             or artifact_run['repository_id'] != repo['id'] or artifact_run['head_repository_id'] != repo['id']):
             raise ExecutionError('artifact producer mismatch')
-        if environment['name'] != binding['environment']:
-            raise ExecutionError('approval environment mismatch')
-        policy = environment['deployment_branch_policy']
-        if policy != {'protected_branches': True, 'custom_branch_policies': False}:
-            raise ExecutionError('routine environment must require protected branches')
-        reviewer_rules = [rule for rule in environment['protection_rules'] if rule['type'] == 'required_reviewers']
-        if len(reviewer_rules) != 1 or not reviewer_rules[0]['reviewers']:
-            raise ExecutionError('required environment reviewer protection is missing')
-        reviewers = reviewer_rules[0]['reviewers']
-        if any(r['type'] != 'User' for r in reviewers):
-            raise ExecutionError('routine approval requires configured individual reviewers')
-        ids = {r['reviewer']['id'] for r in reviewers}
-        applicable = [item for item in facts['approvals'] if any(
-            e['id'] == environment['id'] and e['name'] == environment['name'] for e in item['environments'])]
-        if not applicable or any(item['state'] != 'approved' for item in applicable):
-            raise ExecutionError('missing, rejected or unknown provider approval')
-        approved = [item for item in applicable if item['user']['id'] in ids]
-        if not approved:
-            raise ExecutionError('approval is not from a configured reviewer')
-        config_id = environment_identity(environment)
-        if candidate['approval_environment_identity'] != config_id:
+        if binding['environment'] != 'release':
+            raise ExecutionError('authority environment mismatch')
+        config_id = validate_release_environment(environment)
+        if candidate['release_environment_identity'] != config_id:
             raise ExecutionError('environment policy changed after preparation')
-        return dict(binding, source_commit=candidate['source_commit'], reviewer_id=approved[-1]['user']['id'],
-                    environment_id=environment['id'], environment_identity=config_id, run_attempt=run_info['run_attempt'])
+        return dict(binding, policy='workflow-start-v1', source_commit=candidate['source_commit'],
+                    environment_id=environment['id'], environment_identity=config_id,
+                    run_attempt=run_info['run_attempt'])
     except (KeyError, TypeError, AttributeError) as exc:
-        raise ExecutionError('missing or malformed provider approval evidence') from exc
+        raise ExecutionError('missing or malformed workflow authority evidence') from exc
 
 
 MAX_ARTIFACT_BYTES = 256 * 1024 * 1024
@@ -118,7 +124,7 @@ MAX_ARTIFACT_BYTES = 256 * 1024 * 1024
 def retained_artifact_files(payload: bytes, binding: dict) -> dict[str, bytes]:
     """Bind the physical provider ZIP to its digest and exact sealed contents."""
     if len(payload) > MAX_ARTIFACT_BYTES or 'sha256:' + hashlib.sha256(payload).hexdigest() != binding['artifact_digest']:
-        raise ExecutionError('retained artifact bytes differ from approved provider digest')
+        raise ExecutionError('retained artifact bytes differ from retained provider digest')
     try:
         with zipfile.ZipFile(io.BytesIO(payload)) as archive:
             entries = archive.infolist()
@@ -145,9 +151,9 @@ def retained_artifact_files(payload: bytes, binding: dict) -> dict[str, bytes]:
         raise ExecutionError('invalid or mismatched retained release artifact') from exc
 
 
-def materialize_artifact(output: Path, binding: dict, approvals) -> dict:
-    """Read-only provider download; this does not establish approval by itself."""
-    contents = retained_artifact_files(approvals.artifact_bytes(binding), binding)
+def materialize_artifact(output: Path, binding: dict, authorities) -> dict:
+    """Read-only provider download; this does not establish authority by itself."""
+    contents = retained_artifact_files(authorities.artifact_bytes(binding), binding)
     output.mkdir(parents=True, exist_ok=True)
     if output.is_symlink() or any(output.iterdir()):
         raise ExecutionError('artifact extraction requires an empty regular destination')
@@ -156,14 +162,35 @@ def materialize_artifact(output: Path, binding: dict, approvals) -> dict:
     return verify_candidate(output, binding['candidate_id'])
 
 
-def bind_local_artifact(output: Path, binding: dict, approvals):
-    contents = retained_artifact_files(approvals.artifact_bytes(binding), binding)
+def bind_local_artifact(output: Path, binding: dict, authorities):
+    contents = retained_artifact_files(authorities.artifact_bytes(binding), binding)
     for name, data in contents.items():
         if local_file(output, name).read_bytes() != data:
-            raise ExecutionError('local candidate differs from approved retained artifact')
+            raise ExecutionError('local candidate differs from qualified retained artifact')
 
 
-def reconcile_recovery(previous: dict | None, recovery: Path, candidate: dict, approval: dict) -> dict | None:
+def validate_recorded_authority(state: dict, authority: dict):
+    """Admit current-policy observations without converting historical grants."""
+    recorded = state.get('authority')
+    if not isinstance(recorded, dict) or 'policy' not in recorded:
+        raise ExecutionError('legacy release attempt requires explicit recovery; preserve original evidence')
+    history = state.get('authorities', [])
+    if not isinstance(history, list):
+        raise ExecutionError('invalid recorded authority history')
+    for item in [recorded, *history]:
+        if not isinstance(item, dict) or item.get('policy') != 'workflow-start-v1':
+            raise ExecutionError('unknown recorded authority policy; preserve original evidence')
+        if set(item) != set(authority):
+            raise ExecutionError('unknown or missing recorded authority field')
+        attempt = item['run_attempt']
+        if type(attempt) is not int or not 1 <= attempt <= authority['run_attempt']:
+            raise ExecutionError('invalid recorded authority attempt')
+        if any(type(item[key]) is not type(value) or item[key] != value
+               for key, value in authority.items() if key != 'run_attempt'):
+            raise ExecutionError('recorded authority has a different execution basis')
+
+
+def reconcile_recovery(previous: dict | None, recovery: Path, candidate: dict, authority: dict) -> dict | None:
     if not recovery.exists():
         return previous
     if recovery.is_symlink():
@@ -173,9 +200,10 @@ def reconcile_recovery(previous: dict | None, recovery: Path, candidate: dict, a
         # Validate the ordinary state vocabulary and append-only ancestry. These
         # observations preserve history; fresh provider checks still own action.
         read_execution_state((STATE_START + '\n```json\n' + json.dumps(recovered) + '\n```\n' + STATE_END).encode())
+        validate_recorded_authority(recovered, authority)
         if (recovered['candidate_id'] != candidate['candidate_id']
-            or recovered['approval']['run_id'] != approval['run_id']
-            or recovered['approval']['run_attempt'] > approval['run_attempt']):
+            or recovered['authority']['run_id'] != authority['run_id']
+            or recovered['authority']['run_attempt'] > authority['run_attempt']):
             raise ExecutionError('recovery observation has a different execution basis')
         if previous:
             old, new = previous['events'], recovered['events']
@@ -280,7 +308,7 @@ def public_files(candidate: dict) -> tuple[str, ...]:
     names += [candidate['tarball'], f'adapter-artifacts-{tag}.json', f'archive-proof-{tag}.json',
               'release-verification.json', 'profile.yaml', 'release-notes.md']
     if len(set(names)) != len(names) or any(name not in candidate['files'] for name in names):
-        raise ExecutionError('incomplete approved publication inventory')
+        raise ExecutionError('incomplete qualified publication inventory')
     return tuple(names)
 
 
@@ -348,7 +376,7 @@ def render_standing(candidate: dict, state: dict) -> bytes:
     display_status = {'completed': 'published', 'pending-publication': 'not-published', 'partial-publication': 'failed-during-publish', 'failed-before-publication': 'failed-before-publish', 'failed-after-publication': 'failed-after-publish', 'uncertain-publication': 'failed-during-publish'}[state['status']]
     npm = state['observations'].get('npm', {})
     sections = [f"# Release {candidate['tag']}", '## Result',
-        f"- Status: {display_status}\n- Routine publish: yes\n- No new decision introduced: yes; reviewed source and candidate approval bound below\n- Provenance: --provenance requested through trusted publishing; public attestation not independently asserted\n- Package: {candidate['package']}\n- Version: {candidate['version']}\n"
+        f"- Status: {display_status}\n- Routine publish: yes\n- No new decision introduced: yes; reviewed source and candidate authority bound below\n- Provenance: --provenance requested through trusted publishing; public attestation not independently asserted\n- Package: {candidate['package']}\n- Version: {candidate['version']}\n"
         f"- Release type: routine\n- Source commit: {candidate['source_commit']}\n- Source branch: {candidate['source_ref']}\n"
         f"- Prepared commit: {candidate['prepared_commit']}\n- Candidate: {candidate['candidate_id']}\n"
         f"- npm dist-tag: {candidate['channel']}\n- Publish path: trusted-publishing",
@@ -356,7 +384,7 @@ def render_standing(candidate: dict, state: dict) -> bytes:
         f"- Reporting ref: {candidate['evidence_ref']}\n- Release profile: docs/releases/profiles/{candidate['tag']}.yaml\n"
         f"- Public observations: docs/releases/{candidate['tag']}/npm-publication.md\n- Immutable check receipt: release-verification.json",
         '## Version Decision', f"- Version decision: {candidate['inputs']['version_decision']}\n- Change summary: {candidate['inputs']['summary']}",
-        '## Routine Publish Boundary', 'Reviewed merged input and exact candidate approval; no new semantic recovery action selected.',
+        '## Routine Publish Boundary', 'Reviewed merged input and exact candidate authority; no new semantic recovery action selected.',
         '## Preflight Gate', '| Check | Result | Evidence |\n| --- | --- | --- |\n' + checks,
         '## Package Contents', f"- Package filename: {candidate['tarball']}\n- Package size: {identity['size']}\n"
         f"- Integrity or checksum: sha256:{identity['sha256']}\n- Included-file review: sealed package-content check\n"
@@ -465,7 +493,7 @@ def timing_projection(candidate: dict, state: dict) -> bytes:
     return ('\n'.join(lines) + '\n').encode()
 
 
-def execute_candidate(output: Path, binding: dict, *, approvals, publisher, evidence: GitEvidence) -> dict:
+def execute_candidate(output: Path, binding: dict, *, attempt: int, authorities, publisher, evidence: GitEvidence) -> dict:
     """One protected invocation; publication capability resides in its provider.
 
     A durable active attempt excludes competing execution. A later provider run
@@ -474,25 +502,29 @@ def execute_candidate(output: Path, binding: dict, *, approvals, publisher, evid
     """
     candidate = verify_candidate(output, binding['candidate_id'])
     if evidence.ref != candidate['evidence_ref']:
-        raise ExecutionError('evidence destination differs from approval')
+        raise ExecutionError('evidence destination differs from authority')
     public_files(candidate)
-    approval = validate_approval(candidate, binding, approvals.fetch(binding))
-    bind_local_artifact(output, binding, approvals)
+    authority = validate_authority(candidate, binding, authorities.fetch(binding))
+    if type(attempt) is not int or attempt < 1 or authority['run_attempt'] != attempt:
+        raise ExecutionError('workflow attempt differs from executing invocation')
+    bind_local_artifact(output, binding, authorities)
     evidence.refresh()
     path = f"docs/releases/{candidate['tag']}.md"
     previous = read_execution_state(evidence.read(path))
+    if previous:
+        validate_recorded_authority(previous, authority)
     if previous and previous['candidate_id'] != candidate['candidate_id']:
         raise ExecutionError('different candidate already has release evidence; preserve prior attempt for explicit disposition')
-    if previous and previous['active'] and approval['run_attempt'] <= previous['approval']['run_attempt']:
+    if previous and previous['active'] and authority['run_attempt'] <= previous['authority']['run_attempt']:
         raise ExecutionError('release attempt is already active; do not compete with publication')
-    previous = reconcile_recovery(previous, output / 'observed-outcome.json', candidate, approval)
+    previous = reconcile_recovery(previous, output / 'observed-outcome.json', candidate, authority)
     state = dict(previous) if previous else {'candidate_id': candidate['candidate_id'], 'status': 'pending-publication',
         'events': [], 'observations': {}}
     state['events'] = list(state['events'])
-    state['approvals'] = list(state.get('approvals', []))
-    if approval not in state['approvals']:
-        state['approvals'].append(approval)
-    state.update(active=True, approval=approval)
+    state['authorities'] = list(state.get('authorities', []))
+    if authority not in state['authorities']:
+        state['authorities'].append(authority)
+    state.update(active=True, authority=authority)
     # The source bundle is retained input, never a mutable branch checkout.
     with tempfile.TemporaryDirectory(prefix='rigorloop-release-operation-') as temporary:
         source = Path(temporary) / 'source'
@@ -534,7 +566,7 @@ def execute_candidate(output: Path, binding: dict, *, approvals, publisher, evid
             files = dict(projections, **{path: render_standing(candidate, state),
                 f"docs/releases/{candidate['tag']}/timing.yaml": telemetry})
             # Keep a recoverable local observation copy even if durable reporting
-            # fails. This is separate from immutable approved artifacts.
+            # fails. This is separate from immutable qualified artifacts.
             (output / 'observed-outcome.json').write_bytes(canonical_bytes(state))
             try:
                 evidence.save(files)
@@ -543,16 +575,18 @@ def execute_candidate(output: Path, binding: dict, *, approvals, publisher, evid
 
         def event(boundary, result):
             state['events'].append({'at': now(), 'boundary': boundary, 'result': result,
-                'run_id': approval['run_id'], 'run_attempt': approval['run_attempt']})
+                'run_id': authority['run_id'], 'run_attempt': authority['run_attempt']})
 
-        persist()  # Required pending and approval facts precede every publication.
+        persist()  # Required pending and authority facts precede every publication.
         boundary = 'observation'
         try:
             for boundary in BOUNDARIES:
                 # Revalidate exact bytes and provider authority at actual writes.
                 verify_candidate(output, binding['candidate_id'])
                 validate_execution_basis(candidate, output, source)
-                validate_approval(candidate, binding, approvals.fetch(binding))
+                current_authority = validate_authority(candidate, binding, authorities.fetch(binding))
+                if current_authority != authority:
+                    raise ExecutionError('workflow authority changed during executing invocation')
                 observed = publisher.observe(boundary, candidate)
                 disposition = classify_observation(boundary, observed, candidate)
                 if disposition == 'conflict':
@@ -571,7 +605,7 @@ def execute_candidate(output: Path, binding: dict, *, approvals, publisher, evid
                         event(boundary, 'write-response-unavailable')
                     state.setdefault('timings', []).append({'id': boundary + '_publication',
                         'phase': 'publication_wait', 'duration_seconds': time.monotonic() - started,
-                        'result': 'pending', 'command': boundary + ' publication of approved identity'})
+                        'result': 'pending', 'command': boundary + ' publication of qualified identity'})
                     observed = None
                     # npm scans accepted uploads before making them installable.
                     observation_attempts = 121 if boundary == 'npm' else 6

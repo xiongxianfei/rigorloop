@@ -13,7 +13,7 @@ from release_evidence_tests import ReleaseEvidenceTests
 from release_candidate_tests import ReleaseCandidateTests, ReleaseCandidateIntegrationTests, CurrentSourceQualificationTests
 from release_coordination_tests import ReleaseCoordinationTests
 from release_provider_tests import ReleasePublicTreeIdentityTests
-from release_execution_tests import ReleaseApprovalTests, ReleaseEvidenceStoreTests, ReleaseExecutorTests
+from release_execution_tests import ReleaseAuthorityTests, ReleaseEvidenceStoreTests, ReleaseExecutorTests
 
 
 if __name__ == "__main__":

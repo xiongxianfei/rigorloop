@@ -1,0 +1,43 @@
+# Presentation registration; README.md owns diagrams; release.md owns the detailed release contract.
+version = 1
+
+[[topics]]
+id = "publication-flow"
+title = "Publication sequence"
+view = "process"
+kind = "sequence"
+previous_kind = "flowchart"
+qualification = "observed"
+source = "README.md"
+anchor = "publication-flow"
+description = "Successful cooperation with separate authority and public facts. Repeat the depicted boundary exchange in tag, GitHub assets, then npm order; record each outcome before advancing. Final smoke follows all matching boundaries. Recovery is separate. Observed in repository sources; hosted configuration and publication are not established."
+
+[[topics]]
+id = "publication-recovery"
+title = "Publication recovery"
+view = "process"
+kind = "flowchart"
+qualification = "observed"
+source = "README.md"
+anchor = "publication-recovery"
+description = "Failure and retry decisions preserve original candidate identity, applicable authority, observed public state and durable closeout; uncertain writes are not blindly repeated."
+
+[[topics]]
+id = "release-code"
+title = "Release code and dependencies"
+view = "development"
+kind = "topology"
+qualification = "observed"
+source = "README.md"
+anchor = "release-code"
+description = "Workflow and dispatcher compose coordination, candidate, execution and shared helpers. Packaging production remains separately owned."
+
+[[topics]]
+id = "release-placement"
+title = "Release jobs and destinations"
+view = "physical"
+kind = "topology"
+qualification = "observed"
+source = "README.md"
+anchor = "release-placement"
+description = "Separate preparation and automatic execution runners after successful checks, retained artifacts, GitHub/npm publication and durable evidence. Repository configuration uses initiation authority; live setup and publication require separate observation."
