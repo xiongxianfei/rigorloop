@@ -74,7 +74,7 @@ class OptionalDiscoverySkillContractTests(unittest.TestCase):
     def test_skill_contract_names_discovery_shared_policy(self) -> None:
         # Structural name-presence guard only. Admission meaning is assessed by
         # independent semantic review; this substring cannot establish it.
-        contract = (ROOT / "docs/design/skill/skill.md").read_text(encoding="utf-8")
+        contract = (ROOT / "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-012-published-engineering-capability-guidance/capability-contract.md").read_text(encoding="utf-8")
         self.assertIn("discovery-support", contract)
 
     def test_every_discovery_package_file_omits_maintainer_only_details(self) -> None:

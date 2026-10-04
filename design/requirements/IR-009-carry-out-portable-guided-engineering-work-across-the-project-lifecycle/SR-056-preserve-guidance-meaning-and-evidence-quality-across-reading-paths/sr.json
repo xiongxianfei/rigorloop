@@ -6,37 +6,37 @@
   "sources": [
     {
       "source": "SRC-PUBLISHED-SKILLS",
-      "locator": "docs/design/skill/skill.md#SKL-SR-01",
+      "locator": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-012-published-engineering-capability-guidance/capability-contract.md#SKL-SR-01",
       "basis": "Derives the stated common Skills-product obligation while preserving the cited clause population and retained specialist or package-owner detail; this draft is not source retirement or runtime adoption."
     },
     {
       "source": "SRC-PUBLISHED-SKILLS",
-      "locator": "docs/design/skill/skill.md#SKL-SR-06",
+      "locator": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-012-published-engineering-capability-guidance/capability-contract.md#SKL-SR-06",
       "basis": "Derives the stated common Skills-product obligation while preserving the cited clause population and retained specialist or package-owner detail; this draft is not source retirement or runtime adoption."
     },
     {
       "source": "SRC-PUBLISHED-SKILLS",
-      "locator": "docs/design/skill/skill.md#SKL-SR-07",
+      "locator": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-012-published-engineering-capability-guidance/capability-contract.md#SKL-SR-07",
       "basis": "Derives the stated common Skills-product obligation while preserving the cited clause population and retained specialist or package-owner detail; this draft is not source retirement or runtime adoption."
     },
     {
       "source": "SRC-PUBLISHED-SKILLS",
-      "locator": "docs/design/skill/skill.md#SKL-SR-14",
+      "locator": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-012-published-engineering-capability-guidance/capability-contract.md#SKL-SR-14",
       "basis": "Derives the stated common Skills-product obligation while preserving the cited clause population and retained specialist or package-owner detail; this draft is not source retirement or runtime adoption."
     },
     {
       "source": "SRC-PUBLISHED-SKILLS",
-      "locator": "docs/design/skill/skill.md#SKL-SR-15",
+      "locator": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-012-published-engineering-capability-guidance/capability-contract.md#SKL-SR-15",
       "basis": "Derives the stated common Skills-product obligation while preserving the cited clause population and retained specialist or package-owner detail; this draft is not source retirement or runtime adoption."
     },
     {
       "source": "SRC-PUBLISHED-SKILLS",
-      "locator": "docs/design/skill/skill.md#SKL-SR-18",
+      "locator": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-012-published-engineering-capability-guidance/capability-contract.md#SKL-SR-18",
       "basis": "Derives the stated common Skills-product obligation while preserving the cited clause population and retained specialist or package-owner detail; this draft is not source retirement or runtime adoption."
     },
     {
       "source": "SRC-PUBLISHED-SKILLS",
-      "locator": "docs/design/skill/skill.md#SKL-SR-35",
+      "locator": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-012-published-engineering-capability-guidance/capability-contract.md#SKL-SR-35",
       "basis": "Derives the stated common Skills-product obligation while preserving the cited clause population and retained specialist or package-owner detail; this draft is not source retirement or runtime adoption."
     }
   ],

@@ -58,7 +58,7 @@
     },
     {
       "source": "SRC-PUBLISHED-CLI",
-      "locator": "docs/design/cli/cli.md#CLI-SR-01, CLI-SR-14, CLI-SR-21, CLI-SR-22, CLI-SR-23, CLI-SR-24, CLI-SR-28, CLI-SR-32; docs/design/cli/records.md#RF-SR-02, RF-SR-07",
+      "locator": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/command-contract.md#CLI-SR-01, CLI-SR-14, CLI-SR-21, CLI-SR-22, CLI-SR-23, CLI-SR-24, CLI-SR-28, CLI-SR-32; design/architecture/modules/MOD-018-engineering-operations/modules/MOD-011-operational-record-persistence/record-contract.md#RF-SR-02, RF-SR-07",
       "basis": "Preserve the applicable current public and stored-record guarantees at this accountable boundary. The named source retains exact schemas, operation tables, classifications, limits, and historical adoption obligations; this allocation neither replaces those details nor accepts REM authoring JSON as operational records."
     },
     {

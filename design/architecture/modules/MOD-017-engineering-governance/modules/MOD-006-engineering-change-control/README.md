@@ -70,3 +70,11 @@ Inspect a resumed Change with one completed milestone and remaining authorized w
 ## Browser presentation
 
 The existing [Change control Process page](../../../../views/browser/index.html#process/MOD-006) shows Resume and progress as the current design. Its Parent composition section links the parent's review/Verify and correction sequences without duplicating its source or transferring ownership. Revise these owning sources directly when the design changes, then regenerate the browser. The optional local registration selects the D2 block above; the generated browser preserves its source identity and distinguishes design from implementation observations.
+
+## Supporting contracts
+
+These documents retain detailed clauses and proof under this Module; they are not additional REM entities.
+
+- [Delivery Handoff Design](delivery-handoff.md)
+- [Plan Design](planning.md)
+- [Workflow](workflow.md)

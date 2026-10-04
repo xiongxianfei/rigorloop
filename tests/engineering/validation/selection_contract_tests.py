@@ -97,7 +97,7 @@ class SelectionContractChecks:
 
     def test_explicit_recording_adoption_surfaces_select_real_proof(self):
         paths = (
-            "docs/design/cli/cli.md", "docs/design/skill/workflow.md",
+            "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/command-contract.md", "design/architecture/modules/MOD-017-engineering-governance/modules/MOD-006-engineering-change-control/workflow.md",
             "schemas/targeted-recording-v1.schema.json",
             "scripts/build-record-store-schema.mjs",
             "scripts/validate-record-store.mjs",
@@ -363,10 +363,10 @@ class SelectionContractChecks:
 
     def test_model_example_selection_uses_owner_not_example_as_model(self):
         import shlex
-        for path in ("docs/design/cli/examples/records/v3-complete-store/change.json",
-                     "docs/design/cli/examples/v3-review-limitations-update/request.json",
-                     "docs/design/cli/examples/observation-freshness/scan-b.json",
-                     "docs/design/skill/examples/workflow/correction-cycle.mmd"):
+        for path in ("tests/fixtures/cli-contract-examples/records/v3-complete-store/change.json",
+                     "tests/fixtures/cli-contract-examples/v3-review-limitations-update/request.json",
+                     "tests/fixtures/cli-contract-examples/observation-freshness/scan-b.json",
+                     "design/architecture/modules/MOD-017-engineering-governance/modules/MOD-006-engineering-change-control/examples/correction-cycle.mmd"):
             result = select_validation(SelectionRequest(
                 mode="explicit", paths=(path,), repo_root=ROOT,
                 preflight_context=self.root_preflight_context))
@@ -374,9 +374,9 @@ class SelectionContractChecks:
             check = next(c for c in result.selected_checks if c["id"] == "model.validate")
             command = shlex.split(check["command"])
             self.assertNotIn(path, command)
-            owner = ("docs/design/cli/records.md" if "/examples/records/" in path else
-                     "docs/design/skill/workflow.md" if path.startswith("docs/design/skill/") else
-                     "docs/design/cli/cli.md")
+            owner = ("design/architecture/modules/MOD-018-engineering-operations/modules/MOD-011-operational-record-persistence/record-contract.md" if "/cli-contract-examples/records/" in path else
+                     "design/architecture/modules/MOD-017-engineering-governance/modules/MOD-006-engineering-change-control/workflow.md" if path.startswith('design/architecture/modules/MOD-017-engineering-governance/modules/MOD-006-engineering-change-control/examples/') else
+                     "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/command-contract.md")
             self.assertIn(owner, command)
 
 
@@ -515,7 +515,7 @@ class SelectionContractChecks:
     def test_documentation_prose_tier_c_paths_do_not_select_first_slice_prose_validation(self) -> None:
         result = self.select(
             [
-                "docs/design/engineering/validation.md",
+                "design/support/validation.md",
                 "docs/plans/2026-06-24-semantic-source-line-contract.md",
                 "docs/changes/2026-04-25-example/reviews/code-review-r1.md",
                 "docs/learn/topics/documentation-prose.md",
@@ -776,6 +776,13 @@ class SelectionContractChecks:
             "python scripts/validate-release.py --recorded-source-auto --version v0.4.0",
         )
 
+
+    def test_release_audit_resource_alone_selects_release_regression(self) -> None:
+        result = self.select(["scripts/resources/release/literal-audit-baseline.yaml"])
+        payload = result.to_json_dict()
+        self.assertEqual(result.status, "ok")
+        self.assertEqual(payload["unclassified_paths"], [])
+        self.assertIn("release_transaction.regression", selected_ids(payload))
 
     def test_release_transaction_scripts_and_fixtures_select_focused_regression(self) -> None:
         result = self.select(

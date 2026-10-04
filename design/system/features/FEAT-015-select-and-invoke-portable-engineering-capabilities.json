@@ -6,22 +6,22 @@
   "sources": [
     {
       "source": "SRC-PUBLISHED-SKILLS",
-      "locator": "docs/design/skill/skill.md#SKL-SR-02",
+      "locator": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-012-published-engineering-capability-guidance/capability-contract.md#SKL-SR-02",
       "basis": "IR-009 establishes this durable Skills-product capability; existing generic Functions are reused without changing their definitions or requirement parentage."
     },
     {
       "source": "SRC-PUBLISHED-SKILLS",
-      "locator": "docs/design/skill/skill.md#SKL-SR-05",
+      "locator": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-012-published-engineering-capability-guidance/capability-contract.md#SKL-SR-05",
       "basis": "IR-009 establishes this durable Skills-product capability; existing generic Functions are reused without changing their definitions or requirement parentage."
     },
     {
       "source": "SRC-PUBLISHED-SKILLS",
-      "locator": "docs/design/skill/skill.md#SKL-SR-08",
+      "locator": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-012-published-engineering-capability-guidance/capability-contract.md#SKL-SR-08",
       "basis": "IR-009 establishes this durable Skills-product capability; existing generic Functions are reused without changing their definitions or requirement parentage."
     },
     {
       "source": "SRC-PUBLISHED-SKILLS",
-      "locator": "docs/design/skill/skill.md#SKL-SR-25",
+      "locator": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-012-published-engineering-capability-guidance/capability-contract.md#SKL-SR-25",
       "basis": "IR-009 establishes this durable Skills-product capability; existing generic Functions are reused without changing their definitions or requirement parentage."
     }
   ],

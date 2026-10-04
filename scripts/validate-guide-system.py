@@ -113,7 +113,7 @@ def validate(repo: Path) -> ValidationResult:
     project_map = _read(repo / "docs" / "project-map.md").lower()
     required_map_terms = (
         "does not own workflow stage order",
-        "cli owns deterministic workflow-context",
+        "cli owns deterministic change-context",
         "route",
     )
     if any(term not in project_map for term in required_map_terms):

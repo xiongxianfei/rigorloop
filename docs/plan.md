@@ -1,7 +1,7 @@
 # Plan index
 
 `docs/plan.md` is a navigation index to stable plan bodies and owning change records.
-Current lifecycle state, milestones, review standing, blockers and next actions belong to the owning local Change, read through `rigorloop change context CHANGE`. Links to earlier `change.json` records retain their historical contract; they do not activate a filesystem backend in the successor.
+Current lifecycle state, milestones, review standing, blockers and next actions belong to the owning local Change, read through `rigorloop change context --root . --change CHANGE`. Links to earlier `change.json` records retain their historical contract; they do not activate a filesystem backend in the successor.
 
 <!--
 Index policy:
@@ -35,7 +35,11 @@ Current blockers are not recorded in this index.
 
 ## Current plan references
 
-- [Requirement-first workflow](plans/2026-09-29-requirement-first-workflow.md) — document-based draft under the scoped Constitution exception; no governed Change record selected.
+- [Canonical engineering definition ownership](plans/2026-10-04-canonical-design-ownership.md) — owning local Change `2026-10-04-consolidate-engineering-design`.
+
+- [Post-adoption guidance and release audit input](plans/2026-10-04-post-adoption-release-audit.md) — owning local Change `2026-10-04-post-adoption-release-audit`.
+
+- [Requirement-first workflow](plans/2026-09-29-requirement-first-workflow.md) — owning local Change `2026-10-03-requirement-first-sqlite-adoption`; inspect its account through the CLI.
 
 - [Complete model test coverage and execution cost](plans/2026-09-17-complete-model-test-coverage.md) — [owning change](changes/2026-09-17-complete-model-test-coverage/change.json).
 

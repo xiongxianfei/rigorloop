@@ -66,7 +66,7 @@
   "sources": [
     {
       "source": "SRC-PUBLISHED-CLI",
-      "locator": "docs/design/cli/cli.md#CLI-SR-04, CLI-SR-05, CLI-SR-08, CLI-SR-12, CLI-SR-15, CLI-SR-20; docs/design/cli/records.md#RF-SR-02",
+      "locator": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/command-contract.md#CLI-SR-04, CLI-SR-05, CLI-SR-08, CLI-SR-12, CLI-SR-15, CLI-SR-20; design/architecture/modules/MOD-018-engineering-operations/modules/MOD-011-operational-record-persistence/record-contract.md#RF-SR-02",
       "basis": "IR-008 owns this black-box published-product situation. It exercises one durable Feature and informs the named system obligations; draft status leaves confirmation to semantic review and does not claim runtime verification."
     },
     {
@@ -76,7 +76,7 @@
     },
     {
       "source": "SRC-SQLITE-ADOPTION",
-      "locator": "docs/design/cli/records.md; Work records (MOD-011) current transaction and maintenance contract",
+      "locator": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-011-operational-record-persistence/record-contract.md; Work records (MOD-011) current transaction and maintenance contract",
       "basis": "Reconciles existing stakeholder need and allocation with SQLite ordinary recovery. No new need, approval, or executed result is inferred."
     }
   ]

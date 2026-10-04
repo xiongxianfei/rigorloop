@@ -1,6 +1,6 @@
 # Work record storage: current engineering handoff
 
-This Module owns the `rigorloop-records-v4` representation for SR-006, SR-043 and SR-083/AR-040. [Governance](../../../MOD-017-engineering-governance/README.md) owns decision meaning; [Command handling](../MOD-010-engineering-command-interface/README.md) owns supported requests. The successor implements the [current v4 Records contract](../../../../../../docs/design/cli/records.md). This project has explicitly adopted selected operational work after qualified import and original preservation. Other customer records and judgments retain their original contract until separately adopted; installation alone does not migrate them.
+This Module owns the `rigorloop-records-v4` representation for SR-006, SR-043 and SR-083/AR-040. [Governance](../../../MOD-017-engineering-governance/README.md) owns decision meaning; [Command handling](../MOD-010-engineering-command-interface/README.md) owns supported requests. The successor implements the [current v4 Records contract](record-contract.md). This project has explicitly adopted selected operational work after qualified import and original preservation. Other customer records and judgments retain their original contract until separately adopted; installation alone does not migrate them.
 
 ## Boundary and representation
 
@@ -450,3 +450,9 @@ Apply [Operations integration intent](../../test-design.md) and the shared test 
 ### Deferred cross-Change history query
 
 SR-078 / FUNC-077 remains a draft cross-Change subject-history requirement. The selected v2/v4 task contract implements current explicitly selected Change context and maintenance, not this history lookup or its continuation protocol. Define and review its bounded public query and persistence allocation before implementing or advertising it; no current capability or adoption satisfaction claim includes SR-078.
+
+## Supporting contracts
+
+These documents retain detailed clauses and proof under this Module; they are not additional REM entities.
+
+- [Operational records](record-contract.md)

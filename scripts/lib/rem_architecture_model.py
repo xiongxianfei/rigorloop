@@ -12,6 +12,8 @@ import os
 from pathlib import Path
 import re
 
+from lib.validation.model_layout import supporting_architecture_json_paths
+
 from lib.rem_architecture_process import validate_process_facts
 from lib.rem_architecture_physical import validate_physical_facts
 from lib.rem_architecture_testing import validate_test_groups
@@ -115,7 +117,7 @@ def architecture_paths(root):
                 children = owner / "modules"
                 if kind == "module" and children.exists():
                     pending.append((children, record))
-    unexpected = set(architecture.rglob("*.json")) - expected
+    unexpected = set(architecture.rglob("*.json")) - expected - supporting_architecture_json_paths(root)
     if unexpected:
         raise ValueError(f"{sorted(unexpected)[0]}: unexpected architecture JSON path")
     return records, parents

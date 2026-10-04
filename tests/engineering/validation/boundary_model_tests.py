@@ -28,11 +28,11 @@ class ModelRecordTests(unittest.TestCase):
         self.temp = tempfile.TemporaryDirectory(prefix="rigorloop-model-")
         self.addCleanup(self.temp.cleanup)
         self.root = Path(self.temp.name)
-        self.path = self.root / "docs/design/skill/workflow.md"
+        self.path = self.root / "design/architecture/modules/MOD-017-engineering-governance/modules/MOD-006-engineering-change-control/workflow.md"
         self.path.parent.mkdir(parents=True)
-        self.text = (ROOT / "docs/design/skill/workflow.md").read_text(encoding="utf-8")
+        self.text = (ROOT / "design/architecture/modules/MOD-017-engineering-governance/modules/MOD-006-engineering-change-control/workflow.md").read_text(encoding="utf-8")
 
-    def check(self, text=None, relative="docs/design/skill/workflow.md"):
+    def check(self, text=None, relative="design/architecture/modules/MOD-017-engineering-governance/modules/MOD-006-engineering-change-control/workflow.md"):
         self.path.write_text(self.text if text is None else text, encoding="utf-8")
         return validate_model_path(self.root, relative)
 
@@ -53,23 +53,23 @@ class ModelRecordTests(unittest.TestCase):
             self.assertIn("model-document-v1", issues[0].message)
 
     def test_model_design_example_and_parent_validate_without_counting_fenced_marker(self):
-        parent = (ROOT / "docs/design/skill/authoring/design.md").read_text()
+        parent = (ROOT / "design/architecture/modules/MOD-017-engineering-governance/modules/MOD-008-engineering-authoring-guidance/design-authoring.md").read_text()
         # Own the parser fixture instead of requiring a retired skill's worked example.
         example = self.text
         parent += "\n````markdown\n" + example + "\n````\n"
-        self.assertEqual(validate_model_record(parent, "docs/design/skill/authoring/design.md"), ())
-        self.assertEqual(validate_model_record(example, "docs/design/skill/workflow.md"), ())
+        self.assertEqual(validate_model_record(parent, "design/architecture/modules/MOD-017-engineering-governance/modules/MOD-008-engineering-authoring-guidance/design-authoring.md"), ())
+        self.assertEqual(validate_model_record(example, "design/architecture/modules/MOD-017-engineering-governance/modules/MOD-006-engineering-change-control/workflow.md"), ())
         invalid = example.replace("Model validation contract: model-document-v1",
                                   "Model validation contract: unknown_value", 1)
-        self.assertEqual([i.code for i in validate_model_record(invalid, "docs/design/skill/workflow.md")],
+        self.assertEqual([i.code for i in validate_model_record(invalid, "design/architecture/modules/MOD-017-engineering-governance/modules/MOD-006-engineering-change-control/workflow.md")],
                          ["BFR-MODEL-CONTRACT"])
 
     def test_model_mismatched_directory_examples_and_extra_nesting_reject(self):
-        for relative in ("docs/design/cli/workflow.md", "docs/design/skill/examples/workflow/sample.md",
+        for relative in ("docs/design/cli/workflow.md", "design/architecture/modules/MOD-017-engineering-governance/modules/MOD-006-engineering-change-control/examples/sample.md",
                          "docs/design/workflow/nested/workflow.md", "docs/design/skill/unknown_value.md",
                          "docs/design/skill/project-foundations/unknown_value.md", "docs/design/skill/discovery/unknown_value.md",
                          "docs/design/skill/authoring/unknown_value.md", "docs/design/skill/design.md",
-                         "docs/design/cli/examples/records/records.md"):
+                         "tests/fixtures/cli-contract-examples/records/records.md"):
             path = self.root / relative
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text(self.text)
@@ -77,6 +77,7 @@ class ModelRecordTests(unittest.TestCase):
 
     def test_model_flat_path_rejects_valid_bytes_without_mutation(self):
         path = self.root / "docs/design/workflow.md"
+        path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(self.text)
         self.assertEqual([i.code for i in validate_model_path(self.root, "docs/design/workflow.md")], ["BFR-MODEL-PATH"])
         self.assertEqual(path.read_text(), self.text)
@@ -134,14 +135,14 @@ class ModelRecordTests(unittest.TestCase):
         outside = self.root / "outside.md"
         outside.write_text(self.text, encoding="utf-8")
         self.path.symlink_to(outside)
-        self.assertTrue(validate_model_path(self.root, "docs/design/skill/workflow.md"))
+        self.assertTrue(validate_model_path(self.root, "design/architecture/modules/MOD-017-engineering-governance/modules/MOD-006-engineering-change-control/workflow.md"))
         self.path.unlink()
         self.path.parent.rmdir()
         other = self.root / "other"
         other.mkdir()
         (other / "workflow.md").write_text(self.text, encoding="utf-8")
         self.path.parent.symlink_to(other, target_is_directory=True)
-        self.assertTrue(validate_model_path(self.root, "docs/design/skill/workflow.md"))
+        self.assertTrue(validate_model_path(self.root, "design/architecture/modules/MOD-017-engineering-governance/modules/MOD-006-engineering-change-control/workflow.md"))
 
     def test_model_fenced_contract_or_tables_are_not_authority(self):
         self.assertTrue(self.check("```md\n" + self.text + "\n```\n"))
@@ -171,7 +172,7 @@ class ModelRecordTests(unittest.TestCase):
     def test_model_public_check_is_read_only_and_not_activation(self):
         self.check()
         before = relevant_tree_snapshot(self.root)
-        result = subprocess.run([sys.executable, str(ROOT / "scripts/validate-boundary-first.py"), "--check", "--root", str(self.root), "--path", "docs/design/skill/workflow.md"], cwd=ROOT, capture_output=True, text=True)
+        result = subprocess.run([sys.executable, str(ROOT / "scripts/validate-boundary-first.py"), "--check", "--root", str(self.root), "--path", "design/architecture/modules/MOD-017-engineering-governance/modules/MOD-006-engineering-change-control/workflow.md"], cwd=ROOT, capture_output=True, text=True)
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         data = json.loads(result.stdout)
         self.assertEqual(data["validation"], "structure-and-references-only")

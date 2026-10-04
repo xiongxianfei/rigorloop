@@ -50,32 +50,32 @@
   "sources": [
     {
       "source": "SRC-PUBLISHED-RELEASE",
-      "locator": "docs/design/engineering/release/release.md#REL-SR-01",
+      "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-015-product-release-coordination/release.md#REL-SR-01",
       "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. Version and support compatibility are public product obligations, not consequences inferred from a successful build. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
     },
     {
       "source": "SRC-PUBLISHED-RELEASE",
-      "locator": "docs/design/engineering/release/release.md#REL-SR-02",
+      "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-015-product-release-coordination/release.md#REL-SR-02",
       "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. Version and support compatibility are public product obligations, not consequences inferred from a successful build. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
     },
     {
       "source": "SRC-PUBLISHED-RELEASE",
-      "locator": "docs/design/engineering/release/release.md#REL-SR-03",
+      "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-015-product-release-coordination/release.md#REL-SR-03",
       "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. Version and support compatibility are public product obligations, not consequences inferred from a successful build. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
     },
     {
       "source": "SRC-PUBLISHED-RELEASE",
-      "locator": "docs/design/engineering/release/release.md#REL-SR-25",
+      "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-015-product-release-coordination/release.md#REL-SR-25",
       "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. Version and support compatibility are public product obligations, not consequences inferred from a successful build. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
     },
     {
       "source": "SRC-PUBLISHED-RELEASE",
-      "locator": "docs/design/engineering/release/release.md#REL-SR-26",
+      "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-015-product-release-coordination/release.md#REL-SR-26",
       "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. Version and support compatibility are public product obligations, not consequences inferred from a successful build. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
     },
     {
       "source": "SRC-PUBLISHED-RELEASE",
-      "locator": "docs/design/engineering/release/release.md#Distribution support transition",
+      "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-015-product-release-coordination/release.md#Distribution support transition",
       "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. Version and support compatibility are public product obligations, not consequences inferred from a successful build. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
     }
   ]

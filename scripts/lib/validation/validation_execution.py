@@ -1528,6 +1528,7 @@ def _selected_main(argv, run):
                 mode=requested_mode,
                 base=requested_base,
                 head=requested_head,
+                contract_relocation=not requested_paths,
             )
         except ValueError as exc:
             fail(f"Selected check {check_id} cannot be converted to a trusted command: {exc}")

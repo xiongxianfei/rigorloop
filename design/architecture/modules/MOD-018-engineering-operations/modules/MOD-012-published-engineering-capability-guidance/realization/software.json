@@ -82,63 +82,63 @@
         "name": "vision",
         "group": "Foundations",
         "purpose": "Establish or revise the project purpose, intended outcomes, and product direction.",
-        "contract": "docs/design/skill/project-foundations/vision.md",
+        "contract": "design/architecture/modules/MOD-017-engineering-governance/modules/MOD-008-engineering-authoring-guidance/vision.md",
         "source_path": "skills/vision/SKILL.md"
       },
       {
         "name": "constitution",
         "group": "Foundations",
         "purpose": "Establish or revise the project's governing engineering principles.",
-        "contract": "docs/design/skill/project-foundations/constitution.md",
+        "contract": "design/architecture/modules/MOD-017-engineering-governance/modules/MOD-008-engineering-authoring-guidance/constitution.md",
         "source_path": "skills/constitution/SKILL.md"
       },
       {
         "name": "project-map",
         "group": "Foundations",
         "purpose": "Build or refresh an observed repository orientation map with source and uncertainty boundaries.",
-        "contract": "docs/design/skill/project-foundations/project-map.md",
+        "contract": "design/architecture/modules/MOD-017-engineering-governance/modules/MOD-008-engineering-authoring-guidance/project-map.md",
         "source_path": "skills/project-map/SKILL.md"
       },
       {
         "name": "explore",
         "group": "Discovery",
         "purpose": "Compare materially distinct directions for an unsettled engineering problem.",
-        "contract": "docs/design/skill/discovery/explore.md",
+        "contract": "design/architecture/modules/MOD-017-engineering-governance/modules/MOD-008-engineering-authoring-guidance/explore.md",
         "source_path": "skills/explore/SKILL.md"
       },
       {
         "name": "research",
         "group": "Discovery",
         "purpose": "Resolve a bounded factual uncertainty with attributable evidence and an explicit conclusion.",
-        "contract": "docs/design/skill/discovery/research.md",
+        "contract": "design/architecture/modules/MOD-017-engineering-governance/modules/MOD-008-engineering-authoring-guidance/research.md",
         "source_path": "skills/research/SKILL.md"
       },
       {
         "name": "bugfix",
         "group": "Implementation",
         "purpose": "Diagnose or correct a bounded defect against its governing behavior and reproducible evidence.",
-        "contract": "docs/design/skill/skill.md#bugfix",
+        "contract": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-012-published-engineering-capability-guidance/capability-contract.md#bugfix",
         "source_path": "skills/bugfix/SKILL.md"
       },
       {
         "name": "ci-maintenance",
         "group": "Implementation",
         "purpose": "Review or revise repository automation for coverage, execution, permissions, and maintenance needs.",
-        "contract": "docs/design/skill/skill.md#ci-maintenance",
+        "contract": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-012-published-engineering-capability-guidance/capability-contract.md#ci-maintenance",
         "source_path": "skills/ci-maintenance/SKILL.md"
       },
       {
         "name": "pr",
         "group": "Coordination and completion",
         "purpose": "Prepare or perform an explicitly authorized pull-request handoff from the current verified subject.",
-        "contract": "docs/design/skill/delivery-handoff.md",
+        "contract": "design/architecture/modules/MOD-017-engineering-governance/modules/MOD-006-engineering-change-control/delivery-handoff.md",
         "source_path": "skills/pr/SKILL.md"
       },
       {
         "name": "learn",
         "group": "Coordination and completion",
         "purpose": "Capture supported reusable lessons and route derivative work to its accountable owner.",
-        "contract": "docs/design/skill/learning.md",
+        "contract": "design/architecture/modules/MOD-017-engineering-governance/modules/MOD-009-engineering-learning/learning.md",
         "source_path": "skills/learn/SKILL.md"
       }
     ],
@@ -834,7 +834,7 @@
           "name": "vision",
           "group": "Foundations",
           "purpose": "Establish or revise the project purpose, intended outcomes, and product direction.",
-          "contract": "docs/design/skill/project-foundations/vision.md",
+          "contract": "design/architecture/modules/MOD-017-engineering-governance/modules/MOD-008-engineering-authoring-guidance/vision.md",
           "functions": [
             {
               "function": "FUNC-053",
@@ -850,7 +850,7 @@
           "name": "constitution",
           "group": "Foundations",
           "purpose": "Establish or revise the project's governing engineering principles.",
-          "contract": "docs/design/skill/project-foundations/constitution.md",
+          "contract": "design/architecture/modules/MOD-017-engineering-governance/modules/MOD-008-engineering-authoring-guidance/constitution.md",
           "functions": [
             {
               "function": "FUNC-053",
@@ -866,7 +866,7 @@
           "name": "project-map",
           "group": "Foundations",
           "purpose": "Build or refresh an observed repository orientation map with source and uncertainty boundaries.",
-          "contract": "docs/design/skill/project-foundations/project-map.md",
+          "contract": "design/architecture/modules/MOD-017-engineering-governance/modules/MOD-008-engineering-authoring-guidance/project-map.md",
           "functions": [
             {
               "function": "FUNC-053",
@@ -882,7 +882,7 @@
           "name": "explore",
           "group": "Discovery",
           "purpose": "Compare materially distinct directions for an unsettled engineering problem.",
-          "contract": "docs/design/skill/discovery/explore.md",
+          "contract": "design/architecture/modules/MOD-017-engineering-governance/modules/MOD-008-engineering-authoring-guidance/explore.md",
           "functions": [
             {
               "function": "FUNC-053",
@@ -898,7 +898,7 @@
           "name": "research",
           "group": "Discovery",
           "purpose": "Resolve a bounded factual uncertainty with attributable evidence and an explicit conclusion.",
-          "contract": "docs/design/skill/discovery/research.md",
+          "contract": "design/architecture/modules/MOD-017-engineering-governance/modules/MOD-008-engineering-authoring-guidance/research.md",
           "functions": [
             {
               "function": "FUNC-053",
@@ -914,7 +914,7 @@
           "name": "bugfix",
           "group": "Implementation",
           "purpose": "Diagnose or correct a bounded defect against its governing behavior and reproducible evidence.",
-          "contract": "docs/design/skill/skill.md#bugfix",
+          "contract": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-012-published-engineering-capability-guidance/capability-contract.md#bugfix",
           "functions": [
             {
               "function": "FUNC-053",
@@ -930,7 +930,7 @@
           "name": "ci-maintenance",
           "group": "Implementation",
           "purpose": "Review or revise repository automation for coverage, execution, permissions, and maintenance needs.",
-          "contract": "docs/design/skill/skill.md#ci-maintenance",
+          "contract": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-012-published-engineering-capability-guidance/capability-contract.md#ci-maintenance",
           "functions": [
             {
               "function": "FUNC-053",
@@ -946,7 +946,7 @@
           "name": "pr",
           "group": "Coordination and completion",
           "purpose": "Prepare or perform an explicitly authorized pull-request handoff from the current verified subject.",
-          "contract": "docs/design/skill/delivery-handoff.md",
+          "contract": "design/architecture/modules/MOD-017-engineering-governance/modules/MOD-006-engineering-change-control/delivery-handoff.md",
           "functions": [
             {
               "function": "FUNC-053",
@@ -973,7 +973,7 @@
           "name": "learn",
           "group": "Coordination and completion",
           "purpose": "Capture supported reusable lessons and route derivative work to its accountable owner.",
-          "contract": "docs/design/skill/learning.md",
+          "contract": "design/architecture/modules/MOD-017-engineering-governance/modules/MOD-009-engineering-learning/learning.md",
           "functions": [
             {
               "function": "FUNC-053",

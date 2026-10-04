@@ -5,7 +5,7 @@ export const manifest = prefix + 'change.json';
 export const encode = (x) => JSON.stringify(x) + '\n';
 export function fixture() {
   const dir = new URL(
-    '../../../../docs/design/cli/examples/records/v3-complete-store/',
+    '../../../../tests/fixtures/cli-contract-examples/records/v3-complete-store/',
     import.meta.url,
   );
   return Object.fromEntries(

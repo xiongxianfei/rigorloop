@@ -23,7 +23,7 @@
   "sources": [
     {
       "source": "SRC-PUBLISHED-CLI",
-      "locator": "docs/design/cli/cli.md#CLI-SR-11, CLI-SR-17, CLI-SR-20, CLI-SR-29, CLI-SR-30",
+      "locator": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/command-contract.md#CLI-SR-11, CLI-SR-17, CLI-SR-20, CLI-SR-29, CLI-SR-30",
       "basis": "IR-008 Scenario Analysis identifies this durable user-visible capability across current published command use; it remains distinct from the required safety obligations and their implementation."
     }
   ]

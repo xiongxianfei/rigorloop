@@ -60,7 +60,7 @@ The five new SRs constrain existing stakeholder capabilities. They do not claim 
 | Generated adapters, catalog, tests and packaging | Regenerate from canonical sources and demonstrate the same adopted contract through supported reading and invocation paths | SR-083; existing IR-010 |
 | Active and historical Changes | Record explicit adoption disposition for active work; retain old judgments with their original subjects and authority | SR-083; SR-023/024/029 |
 
-The current [Constitution](../../CONSTITUTION.md), [Workflow](../../docs/design/skill/workflow.md), [Assessment](../../docs/design/skill/assessment.md), and canonical [skills](../../skills/) still contain the existing product contracts. This draft identifies their required replacement; it does not activate a mixture of old and new routing rules. Future adoption must reconcile all live consumers and retire obsolete internal paths together.
+The current [Constitution](../../CONSTITUTION.md), [Workflow](../architecture/modules/MOD-017-engineering-governance/modules/MOD-006-engineering-change-control/workflow.md), [Assessment](../architecture/modules/MOD-017-engineering-governance/modules/MOD-007-engineering-verification-and-assurance/assessment.md), and canonical [skills](../../skills/) still contain the existing product contracts. This draft identifies their required replacement; it does not activate a mixture of old and new routing rules. Future adoption must reconcile all live consumers and retire obsolete internal paths together.
 
 ## Storage relationship and remaining work
 

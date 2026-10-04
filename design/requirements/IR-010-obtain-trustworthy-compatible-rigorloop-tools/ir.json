@@ -62,52 +62,52 @@
   "sources": [
     {
       "source": "SRC-PUBLISHED-PACKAGING",
-      "locator": "docs/design/engineering/packaging.md#DIST-SR-03",
+      "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-013-product-package-production/packaging.md#DIST-SR-03",
       "basis": "Existing product candidate, public archive, and executable completeness needs justify this IR without making their implementation choices requirements of REM itself."
     },
     {
       "source": "SRC-PUBLISHED-PACKAGING",
-      "locator": "docs/design/engineering/packaging.md#DIST-SR-06",
+      "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-013-product-package-production/packaging.md#DIST-SR-06",
       "basis": "Existing product candidate, public archive, and executable completeness needs justify this IR without making their implementation choices requirements of REM itself."
     },
     {
       "source": "SRC-PUBLISHED-PACKAGING",
-      "locator": "docs/design/engineering/packaging.md#DIST-SR-23",
+      "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-013-product-package-production/packaging.md#DIST-SR-23",
       "basis": "Existing product candidate, public archive, and executable completeness needs justify this IR without making their implementation choices requirements of REM itself."
     },
     {
       "source": "SRC-PUBLISHED-INSTALLATION",
-      "locator": "docs/design/cli/installation.md#DIST-SR-07",
+      "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-014-verified-skill-installation/installation.md#DIST-SR-07",
       "basis": "Existing trusted acquisition and safe scoped installation duties protect users obtaining the product."
     },
     {
       "source": "SRC-PUBLISHED-INSTALLATION",
-      "locator": "docs/design/cli/installation.md#DIST-SR-10",
+      "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-014-verified-skill-installation/installation.md#DIST-SR-10",
       "basis": "Existing trusted acquisition and safe scoped installation duties protect users obtaining the product."
     },
     {
       "source": "SRC-PUBLISHED-INSTALLATION",
-      "locator": "docs/design/cli/installation.md#DIST-SR-14",
+      "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-014-verified-skill-installation/installation.md#DIST-SR-14",
       "basis": "Existing trusted acquisition and safe scoped installation duties protect users obtaining the product."
     },
     {
       "source": "SRC-PUBLISHED-RELEASE",
-      "locator": "docs/design/engineering/release/release.md#REL-SR-02",
+      "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-015-product-release-coordination/release.md#REL-SR-02",
       "basis": "Existing controlled delivery and observed public availability duties justify maintainer-facing scope; source applicability and transition qualifications remain explicit."
     },
     {
       "source": "SRC-PUBLISHED-RELEASE",
-      "locator": "docs/design/engineering/release/release.md#REL-SR-13",
+      "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-015-product-release-coordination/release.md#REL-SR-13",
       "basis": "Existing controlled delivery and observed public availability duties justify maintainer-facing scope; source applicability and transition qualifications remain explicit."
     },
     {
       "source": "SRC-PUBLISHED-RELEASE",
-      "locator": "docs/design/engineering/release/release.md#REL-SR-22",
+      "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-015-product-release-coordination/release.md#REL-SR-22",
       "basis": "Existing controlled delivery and observed public availability duties justify maintainer-facing scope; source applicability and transition qualifications remain explicit."
     },
     {
       "source": "SRC-PUBLISHED-RELEASE",
-      "locator": "docs/design/engineering/release/release.md#Distribution support transition",
+      "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-015-product-release-coordination/release.md#Distribution support transition",
       "basis": "Existing controlled delivery and observed public availability duties justify maintainer-facing scope; source applicability and transition qualifications remain explicit."
     },
     {

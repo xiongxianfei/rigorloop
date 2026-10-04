@@ -31,7 +31,7 @@
     "IF-012"
   ],
   "design_limits": [
-    "Existing CLI public envelopes, version domains, selectors, and exceptional command behavior remain specified by docs/design/cli/cli.md; the new logical Interfaces summarize responsibility and preserve that authority.",
+    "Existing CLI public envelopes, version domains, selectors, and exceptional command behavior remain specified by design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/command-contract.md; the new logical Interfaces summarize responsibility and preserve that authority.",
     "IR-008 SR-040 through SR-047 have draft allocated obligations and a reviewed logical composition through IF-003/IF-004. The subordinate realization records a bounded source inspection and proposed choices; installation dispatch under IR-010/IF-006, implementation qualification, and public adoption remain separate work."
   ],
   "sources": [

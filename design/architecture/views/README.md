@@ -37,7 +37,7 @@ Offline reader tests use the locked Puppeteer package in `tests/engineering/vali
 
 The [REM method](../../../rem/methods/architecture-views.md) defines the concerns; the [application profile](../../support/README.md#four-plus-one-view-projection) defines their repository interpretation. Canonical records own facts and source qualifications. This directory maintains one browser presentation and this reading guide.
 
-The [consolidation record](../../../docs/changes/2026-09-26-rem-architecture-refinement/browser-view-consolidation.md) records validation and the recovery revision for retired Markdown views and their earlier evidence links. Historical subjects retain their original meaning; current generation does not depend on retired files.
+The consolidation record (historical operational reference; original assessment unavailable in the current tree) records validation and the recovery revision for retired Markdown views and their earlier evidence links. Historical subjects retain their original meaning; current generation does not depend on retired files.
 
 ## Workflow design projections
 

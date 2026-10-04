@@ -4,13 +4,13 @@ import json
 
 ROOT = Path(__file__).resolve().parents[3]
 PACKAGES = {
-    'release': ('docs/design/engineering/release/release.md', 'docs/design/engineering/release/test-design',
+    'release': ('design/architecture/modules/MOD-019-product-delivery/modules/MOD-015-product-release-coordination/release.md', 'design/architecture/modules/MOD-019-product-delivery/modules/MOD-015-product-release-coordination/test-design',
                 'tests/engineering/release/test-release-transaction.py', 'REL-SR-01',
                 ('profile-input', 'preparation', 'preflight', 'candidate-identity', 'approval-recovery', 'evidence-closeout', 'maintenance-review')),
-    'skill': ('docs/design/skill/skill.md', 'docs/design/skill/test-design',
+    'skill': ('design/architecture/modules/MOD-018-engineering-operations/modules/MOD-012-published-engineering-capability-guidance/capability-contract.md', 'design/architecture/modules/MOD-018-engineering-operations/modules/MOD-012-published-engineering-capability-guidance/test-design',
               'tests/skill/test-skill-validator.py', 'SKL-SR-01',
               ('capability-contract', 'resource-contract', 'recording-composition', 'implementation-handoffs', 'capability-composition')),
-    'authoring': ('docs/design/skill/authoring/authoring.md', 'docs/design/skill/authoring/test-design',
+    'authoring': ('design/architecture/modules/MOD-017-engineering-governance/modules/MOD-008-engineering-authoring-guidance/authoring.md', 'design/architecture/modules/MOD-017-engineering-governance/modules/MOD-008-engineering-authoring-guidance/test-design',
                   'tests/skill/test-skill-validator.py', 'AUTH-SR-01',
                   ('refinement', 'scope-handoff', 'correction-reconciliation')),
 }
@@ -77,8 +77,8 @@ def current_documents(root):
     from boundary_fixture_helpers import EXPECTED_MODEL_PATHS
     for relative in EXPECTED_MODEL_PATHS:
         write(root, relative, (ROOT/relative).read_text())
-    details = {'docs/design/test-design/README.md', 'docs/design/test-design/rules.md'}
-    write(root, 'docs/design/system.md', model_text('SYS-SR-01'))
+    details = {'design/support/test-design/README.md', 'design/support/test-design/rules.md'}
+    write(root, 'design/architecture/composition.md', model_text('SYS-SR-01'))
     for path in details:
         write(root, path, '# Shared test guidance\n\nCurrent rules.\n')
     for model in PACKAGES:

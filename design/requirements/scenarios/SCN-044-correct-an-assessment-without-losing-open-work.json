@@ -62,7 +62,7 @@
   "sources": [
     {
       "source": "SRC-PUBLISHED-CLI",
-      "locator": "docs/design/cli/cli.md#CLI-SR-03, CLI-SR-13, CLI-SR-16, CLI-SR-25, CLI-SR-26; docs/design/cli/records.md#RF-SR-10, RF-SR-11, RF-SR-13",
+      "locator": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/command-contract.md#CLI-SR-03, CLI-SR-13, CLI-SR-16, CLI-SR-25, CLI-SR-26; design/architecture/modules/MOD-018-engineering-operations/modules/MOD-011-operational-record-persistence/record-contract.md#RF-SR-10, RF-SR-11, RF-SR-13",
       "basis": "IR-008 owns this black-box published-product situation. It exercises one durable Feature and informs the named system obligations; draft status leaves confirmation to semantic review and does not claim runtime verification."
     },
     {

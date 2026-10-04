@@ -142,6 +142,13 @@ class ArchitectureViewProjectionTests(unittest.TestCase):
                 if entry["contract"].startswith(prefix):
                     entry["contract"]=relocated.relative_to(root).as_posix()+"/"+entry["contract"][len(prefix):]
                     changed=True
+            # Owned coverage now moves with the Module's detailed contract.
+            for group in record.get("observed", {}).get("test_groups", []):
+                prefix = command.relative_to(root).as_posix() + "/"
+                for container, field in ((group, "contract"), (group["execution"], "owner_contract")):
+                    if container[field].startswith(prefix):
+                        container[field] = relocated.relative_to(root).as_posix() + "/" + container[field][len(prefix):]
+                        changed = True
             if changed:
                 self.write_record(path, record)
         interface = self.entity_path(root, "IF-004")
@@ -552,6 +559,7 @@ class ArchitectureViewProjectionTests(unittest.TestCase):
 
     def test_invalid_nested_layout_is_rejected_without_writes(self):
         for malformed, diagnostic in (("stray", "unexpected architecture JSON"),
+                                      ("catalog_neighbor", "unexpected architecture JSON"),
                                       ("orphan", "missing logical owner"),
                                       ("duplicate", "duplicate identity"),
                                       ("cycle", "symlink")):
@@ -561,6 +569,9 @@ class ArchitectureViewProjectionTests(unittest.TestCase):
                 module = self.entity_path(root, "MOD-018").parent
                 if malformed == "stray":
                     self.write_record(module / "unexpected.json", {})
+                elif malformed == "catalog_neighbor":
+                    owner = self.entity_path(root, "MOD-008").parent
+                    self.write_record(owner / "test-design/cases/unregistered.json", {})
                 elif malformed == "orphan":
                     (module / "modules/MOD-020-orphan/modules").mkdir(parents=True)
                 elif malformed == "duplicate":
@@ -987,7 +998,7 @@ class ArchitectureViewProjectionTests(unittest.TestCase):
             index = int(item["field"].split("/")[-1])
             self.assertEqual(item["group"], source["observed"]["test_groups"][index])
             self.assertEqual(item["group"]["execution"]["owner_contract"].split("#")[0],
-                             "docs/design/engineering/validation.md")
+                             "design/support/validation.md")
             self.assertTrue(source["observed"]["sources"])
         edges = model.edges
         for (owner, kind), facet in model.facets.items():

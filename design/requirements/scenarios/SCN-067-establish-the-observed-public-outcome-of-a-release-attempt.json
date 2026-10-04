@@ -58,27 +58,27 @@
   "sources": [
     {
       "source": "SRC-PUBLISHED-RELEASE",
-      "locator": "docs/design/engineering/release/release.md#REL-SR-10",
+      "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-015-product-release-coordination/release.md#REL-SR-10",
       "basis": "IR-010 owns this stakeholder situation. It exercises the selected published-product capability while preserving the source contract's observable success and adverse outcomes."
     },
     {
       "source": "SRC-PUBLISHED-RELEASE",
-      "locator": "docs/design/engineering/release/release.md#REL-SR-13",
+      "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-015-product-release-coordination/release.md#REL-SR-13",
       "basis": "IR-010 owns this stakeholder situation. It exercises the selected published-product capability while preserving the source contract's observable success and adverse outcomes."
     },
     {
       "source": "SRC-PUBLISHED-RELEASE",
-      "locator": "docs/design/engineering/release/release.md#REL-SR-14",
+      "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-015-product-release-coordination/release.md#REL-SR-14",
       "basis": "IR-010 owns this stakeholder situation. It exercises the selected published-product capability while preserving the source contract's observable success and adverse outcomes."
     },
     {
       "source": "SRC-PUBLISHED-RELEASE",
-      "locator": "docs/design/engineering/release/release.md#REL-SR-18",
+      "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-015-product-release-coordination/release.md#REL-SR-18",
       "basis": "IR-010 owns this stakeholder situation. It exercises the selected published-product capability while preserving the source contract's observable success and adverse outcomes."
     },
     {
       "source": "SRC-PUBLISHED-RELEASE",
-      "locator": "docs/design/engineering/release/release.md#REL-SR-24",
+      "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-015-product-release-coordination/release.md#REL-SR-24",
       "basis": "IR-010 owns this stakeholder situation. It exercises the selected published-product capability while preserving the source contract's observable success and adverse outcomes."
     },
     {

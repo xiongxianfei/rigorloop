@@ -52,22 +52,22 @@
   "sources": [
     {
       "source": "SRC-PUBLISHED-RELEASE",
-      "locator": "docs/design/engineering/release/release.md#REL-SR-11",
+      "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-015-product-release-coordination/release.md#REL-SR-11",
       "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. An artifact check and a favorable assessment do not grant publication permission or permit an altered publication subject. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
     },
     {
       "source": "SRC-PUBLISHED-RELEASE",
-      "locator": "docs/design/engineering/release/release.md#REL-SR-12",
+      "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-015-product-release-coordination/release.md#REL-SR-12",
       "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. An artifact check and a favorable assessment do not grant publication permission or permit an altered publication subject. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
     },
     {
       "source": "SRC-PUBLISHED-RELEASE",
-      "locator": "docs/design/engineering/release/release.md#REL-SR-17",
+      "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-015-product-release-coordination/release.md#REL-SR-17",
       "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. An artifact check and a favorable assessment do not grant publication permission or permit an altered publication subject. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
     },
     {
       "source": "SRC-PUBLISHED-RELEASE",
-      "locator": "docs/design/engineering/release/release.md#REL-SR-23",
+      "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-015-product-release-coordination/release.md#REL-SR-23",
       "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. An artifact check and a favorable assessment do not grant publication permission or permit an altered publication subject. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
     }
   ]

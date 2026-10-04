@@ -1,6 +1,6 @@
 # Verified installation: explicit workflow replacement
 
-This successor contract settles AR-042's bounded replacement mechanism. It extends the [Installation contract](../../../../../../docs/design/cli/installation.md) in the 2.0.0 candidate. Installation remains distinct from project workflow adoption. Existing `init --force` remains replacement of candidate destination units; it does not acquire authority to remove unrelated directories. The installer never creates a workflow activation or engineering approval.
+This successor contract settles AR-042's bounded replacement mechanism. It extends the [Installation contract](installation.md) in the 2.0.0 candidate. Installation remains distinct from project workflow adoption. Existing `init --force` remains replacement of candidate destination units; it does not acquire authority to remove unrelated directories. The installer never creates a workflow activation or engineering approval.
 
 ## Candidate contract and authority
 
@@ -59,3 +59,9 @@ On any failure stop further writes and report completed, detached/partial, faile
 Use the existing Installation test harness and independent byte/inventory oracles, plus the [Governance adoption group](../../../MOD-017-engineering-governance/test-design.md). Canonical source inspection is insufficient for installed-resource and recovery claims. Physical placement and anchoring follow the current installer; no service, managed project-state format or automatic recovery controller is added.
 
 The chosen mechanism is explicit profile-limited detachment with preservation. Ordinary force cannot safely infer removal of noncandidate units; a generic remove-path option grants excessive scope; automatic cleanup based on old names hides authority. Revisit the fixed profile only through a separately versioned reviewed replacement contract, not by expanding an installed candidate's arbitrary path list.
+
+## Supporting contracts
+
+These documents retain detailed clauses and proof under this Module; they are not additional REM entities.
+
+- [Installation Model Design](installation.md)

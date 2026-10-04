@@ -2349,22 +2349,14 @@ def _preflight_literal_audit(
     *,
     changed_files: tuple[str, ...],
 ) -> None:
-    baseline_path = (
-        repo_root
-        / "docs"
-        / "changes"
-        / "2026-06-29-release-transaction-automation"
-        / "release-literal-audit-baseline.yaml"
-    )
-    if not baseline_path.exists():
-        return
+    baseline_path = repo_root / "scripts/resources/release/literal-audit-baseline.yaml"
     try:
         baseline = load_literal_audit_baseline_file(
             baseline_path,
             changed_files=changed_files,
         )
     except ReleaseProfileError as exc:
-        errors.extend(exc.errors)
+        errors.extend(f"{_repo_relative(baseline_path, repo_root)}: {error}" for error in exc.errors)
         return
     warnings.extend(baseline.warnings)
 
@@ -2968,7 +2960,7 @@ def _load_yaml_subset(path: Path, label: str) -> dict[str, Any]:
         text = path.read_text(encoding="utf-8")
     except FileNotFoundError as exc:
         raise ReleaseProfileError(path, [f"{label} not found: {path}"]) from exc
-    except OSError as exc:
+    except (OSError, UnicodeError) as exc:
         raise ReleaseProfileError(path, [f"could not read {label}: {exc}"]) from exc
     try:
         return _parse_yaml_subset(text)

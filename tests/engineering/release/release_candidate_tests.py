@@ -377,8 +377,9 @@ class ReleaseCandidateIntegrationTests(unittest.TestCase):
             shutil.copytree(repository / 'scripts', source / 'scripts', ignore=shutil.ignore_patterns('__pycache__'))
             for workflow in ['release.yml', 'ci.yml', 'publish-github-packages.yml']:
                 shutil.copyfile(repository / '.github/workflows' / workflow, source / '.github/workflows' / workflow)
-            # Include complete current canonical skills, installer and templates, including removals.
-            for relative in ['skills', 'templates/shared', 'packages/rigorloop/dist', 'scripts/resources/adapter-templates', 'docs/design', 'tests', 'packages/rigorloop/test']:
+            # Include complete current canonical skills, installer, templates and
+            # documentation, including removals; clone HEAD may contain retired contracts.
+            for relative in ['skills', 'templates/shared', 'packages/rigorloop/dist', 'scripts/resources/adapter-templates', 'design', 'docs', 'tests', 'packages/rigorloop/test']:
                 shutil.rmtree(source / relative)
                 shutil.copytree(repository / relative, source / relative)
             # A pre-commit no-spec run must not silently restore retired trees
@@ -407,7 +408,7 @@ class ReleaseCandidateIntegrationTests(unittest.TestCase):
             git('checkout', '--detach')
             git('checkout', '-B', 'main')
             git('add', 'scripts', 'skills', 'templates/shared', 'docs/releases/v0.5.1.md', '.github/workflows/release.yml',
-                'packages/rigorloop', 'dist/adapters', 'docs/design', 'tests', 'AGENTS.md', 'CONSTITUTION.md', 'VISION.md', 'README.md')
+                'packages/rigorloop', 'dist/adapters', 'design', 'tests', 'AGENTS.md', 'CONSTITUTION.md', 'VISION.md', 'README.md')
             git('add', '-u')
             git('-c', 'user.name=Release Fixture', '-c', 'user.email=fixture@example.invalid',
                 '-c', 'commit.gpgsign=false', 'commit', '--allow-empty', '-m', 'Reviewed source fixture')

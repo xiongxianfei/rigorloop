@@ -6,22 +6,22 @@
   "sources": [
     {
       "source": "SRC-PUBLISHED-SKILLS",
-      "locator": "docs/design/skill/skill.md#SKL-SR-04",
+      "locator": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-012-published-engineering-capability-guidance/capability-contract.md#SKL-SR-04",
       "basis": "Draft black-box stakeholder situation for IR-009 common Skills-product behavior. The Scenario awaits independent semantic review and does not claim detailed specialist clause migration or runtime evidence."
     },
     {
       "source": "SRC-PUBLISHED-SKILLS",
-      "locator": "docs/design/skill/skill.md#SKL-SR-07",
+      "locator": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-012-published-engineering-capability-guidance/capability-contract.md#SKL-SR-07",
       "basis": "Draft black-box stakeholder situation for IR-009 common Skills-product behavior. The Scenario awaits independent semantic review and does not claim detailed specialist clause migration or runtime evidence."
     },
     {
       "source": "SRC-PUBLISHED-SKILLS",
-      "locator": "docs/design/skill/skill.md#SKL-SR-27",
+      "locator": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-012-published-engineering-capability-guidance/capability-contract.md#SKL-SR-27",
       "basis": "Draft black-box stakeholder situation for IR-009 common Skills-product behavior. The Scenario awaits independent semantic review and does not claim detailed specialist clause migration or runtime evidence."
     },
     {
       "source": "SRC-PUBLISHED-SKILLS",
-      "locator": "docs/design/skill/skill.md#SKL-SR-29",
+      "locator": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-012-published-engineering-capability-guidance/capability-contract.md#SKL-SR-29",
       "basis": "Draft black-box stakeholder situation for IR-009 common Skills-product behavior. The Scenario awaits independent semantic review and does not claim detailed specialist clause migration or runtime evidence."
     },
     {

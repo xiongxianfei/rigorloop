@@ -49,17 +49,17 @@
   "sources": [
     {
       "source": "SRC-PUBLISHED-INSTALLATION",
-      "locator": "docs/design/cli/installation.md#DIST-SR-13",
+      "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-014-verified-skill-installation/installation.md#DIST-SR-13",
       "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. Planning and honest limited results support safe user choice without manufacturing package verification or installation evidence. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
     },
     {
       "source": "SRC-PUBLISHED-INSTALLATION",
-      "locator": "docs/design/cli/installation.md#DIST-SR-15",
+      "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-014-verified-skill-installation/installation.md#DIST-SR-15",
       "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. Planning and honest limited results support safe user choice without manufacturing package verification or installation evidence. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
     },
     {
       "source": "SRC-PUBLISHED-INSTALLATION",
-      "locator": "docs/design/cli/installation.md#DIST-SR-16",
+      "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-014-verified-skill-installation/installation.md#DIST-SR-16",
       "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. Planning and honest limited results support safe user choice without manufacturing package verification or installation evidence. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
     }
   ]

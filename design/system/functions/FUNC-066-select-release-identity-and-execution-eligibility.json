@@ -36,32 +36,32 @@
   "sources": [
     {
       "source": "SRC-PUBLISHED-RELEASE",
-      "locator": "docs/design/engineering/release/release.md#REL-SR-01",
+      "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-015-product-release-coordination/release.md#REL-SR-01",
       "basis": "Logical behavior derived from the identified published-product contracts for IR-010; existing source details and compatibility/adoption limits remain applicable."
     },
     {
       "source": "SRC-PUBLISHED-RELEASE",
-      "locator": "docs/design/engineering/release/release.md#REL-SR-02",
+      "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-015-product-release-coordination/release.md#REL-SR-02",
       "basis": "Logical behavior derived from the identified published-product contracts for IR-010; existing source details and compatibility/adoption limits remain applicable."
     },
     {
       "source": "SRC-PUBLISHED-RELEASE",
-      "locator": "docs/design/engineering/release/release.md#REL-SR-03",
+      "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-015-product-release-coordination/release.md#REL-SR-03",
       "basis": "Logical behavior derived from the identified published-product contracts for IR-010; existing source details and compatibility/adoption limits remain applicable."
     },
     {
       "source": "SRC-PUBLISHED-RELEASE",
-      "locator": "docs/design/engineering/release/release.md#REL-SR-25",
+      "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-015-product-release-coordination/release.md#REL-SR-25",
       "basis": "Logical behavior derived from the identified published-product contracts for IR-010; existing source details and compatibility/adoption limits remain applicable."
     },
     {
       "source": "SRC-PUBLISHED-RELEASE",
-      "locator": "docs/design/engineering/release/release.md#REL-SR-26",
+      "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-015-product-release-coordination/release.md#REL-SR-26",
       "basis": "Logical behavior derived from the identified published-product contracts for IR-010; existing source details and compatibility/adoption limits remain applicable."
     },
     {
       "source": "SRC-PUBLISHED-RELEASE",
-      "locator": "docs/design/engineering/release/release.md#Distribution support transition",
+      "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-015-product-release-coordination/release.md#Distribution support transition",
       "basis": "Logical behavior derived from the identified published-product contracts for IR-010; existing source details and compatibility/adoption limits remain applicable."
     },
     {

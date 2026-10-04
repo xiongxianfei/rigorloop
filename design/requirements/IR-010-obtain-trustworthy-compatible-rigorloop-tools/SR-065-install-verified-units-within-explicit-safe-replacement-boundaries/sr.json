@@ -51,22 +51,22 @@
   "sources": [
     {
       "source": "SRC-PUBLISHED-INSTALLATION",
-      "locator": "docs/design/cli/installation.md#DIST-SR-10",
+      "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-014-verified-skill-installation/installation.md#DIST-SR-10",
       "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. Installation must respect the user's explicit replacement choice and remain safe when the filesystem changes or an operation fails. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
     },
     {
       "source": "SRC-PUBLISHED-INSTALLATION",
-      "locator": "docs/design/cli/installation.md#DIST-SR-12",
+      "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-014-verified-skill-installation/installation.md#DIST-SR-12",
       "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. Installation must respect the user's explicit replacement choice and remain safe when the filesystem changes or an operation fails. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
     },
     {
       "source": "SRC-PUBLISHED-INSTALLATION",
-      "locator": "docs/design/cli/installation.md#DIST-SR-13",
+      "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-014-verified-skill-installation/installation.md#DIST-SR-13",
       "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. Installation must respect the user's explicit replacement choice and remain safe when the filesystem changes or an operation fails. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
     },
     {
       "source": "SRC-PUBLISHED-INSTALLATION",
-      "locator": "docs/design/cli/installation.md#DIST-SR-14",
+      "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-014-verified-skill-installation/installation.md#DIST-SR-14",
       "basis": "IR-010 draft decomposition preserves this source obligation at the published-product boundary. Installation must respect the user's explicit replacement choice and remain safe when the filesystem changes or an operation fails. Detailed source formats and adopted-population limits retain their existing owner; this record does not migrate runtime behavior or establish publication evidence."
     },
     {

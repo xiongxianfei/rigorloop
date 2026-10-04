@@ -19,8 +19,7 @@ Within repository artifacts, follow this order:
 Contributors MUST identify conflicts and follow the highest applicable authority; they MUST NOT silently blend contradictory rules or invent missing decisions.
 [VISION.md](VISION.md) governs vision and proposal fit below this Constitution, ahead of feature documents, proposals and README summaries.
 
-[System](docs/design/system.md) owns model composition and delegates detailed contracts to [Skill](docs/design/skill/skill.md), [CLI](docs/design/cli/cli.md) and [Engineering](docs/design/engineering/engineering.md).
-Their approved child contracts govern their declared responsibilities; this Constitution establishes principles, and AGENTS supplies repository operating instructions.
+[Engineering definition ownership](design/support/ownership.md) places obligations in the Requirement model, behavior in the System model, and responsibility/realization in the Architecture model. [Architecture composition](design/architecture/composition.md) owns system-wide cooperation and shared policy; detailed contracts remain subordinate to their accountable Modules and Interfaces. Repository development and validation are supporting engineering practices. This Constitution establishes principles, and AGENTS supplies repository operating instructions.
 Customer projects retain their explicitly selected contracts. Current repository responsibilities follow these owners; a new document, package or installation alone MUST NOT establish adoption or expand an approval.
 Actors MUST respect artifact ownership and return corrections to the responsible owner; recording a decision does not grant approval, progression or execution permission.
 
@@ -28,7 +27,7 @@ Actors MUST respect artifact ownership and return corrections to the responsible
 
 Externally observable behavior MUST have an approved owning Design before implementation.
 Contracts MUST define requirements, edge cases, non-goals, compatibility and acceptance; required behavior MUST map to concrete verification, retaining stable requirement IDs where used.
-[Design](docs/design/skill/authoring/design.md) owns authoring conventions and reconciled behavioral and technical decisions.
+[Design](design/architecture/modules/MOD-017-engineering-governance/modules/MOD-008-engineering-authoring-guidance/design-authoring.md) owns authoring conventions and reconciled behavioral and technical decisions.
 Architecture or behavior changes MUST update the affected contract, consumers, documentation and examples in the same change.
 
 Workflow, CI, schema, generation and public contributor-contract changes MUST address compatibility and appropriate adoption, migration or recovery.
@@ -37,7 +36,7 @@ Generated output MUST be deterministic and reproducible from canonical sources.
 
 ## Workflow and review
 
-[Workflow](docs/design/skill/workflow.md) owns the standard delivery lifecycle, routing and authorized progression; [Review and Closeout](docs/design/skill/assessment.md) owns assessment and completion policy.
+[Workflow](design/architecture/modules/MOD-017-engineering-governance/modules/MOD-006-engineering-change-control/workflow.md) owns the standard delivery lifecycle, routing and authorized progression; [Review and Closeout](design/architecture/modules/MOD-017-engineering-governance/modules/MOD-007-engineering-verification-and-assurance/assessment.md) owns assessment and completion policy.
 RigorLoop MUST present one standard delivery workflow, without separate public routes labeled by speed, completeness, size or risk.
 Multi-file, risky, ambiguous, architecture-affecting or migration-heavy work MUST have a reviewable execution plan before implementation.
 Plans carry stable intent; the owning change record and stage-owned evidence carry mutable progress, decisions and closeout.
@@ -58,7 +57,7 @@ For the requirement-first workflow, operational records MUST support the current
 
 ## Validation and evidence
 
-[System](docs/design/system.md#living-test-design-composition) owns project-wide test-design, proof-quality and test-maintenance rules. Each model owns its coverage intent; parents own additional integrated outcomes. [Validation](docs/design/engineering/validation.md) owns check selection, execution, isolation and reporting under those rules; specialist reviewers judge actual adequacy.
+[System](design/architecture/composition.md#living-test-design-composition) owns project-wide test-design, proof-quality and test-maintenance rules. Each model owns its coverage intent; parents own additional integrated outcomes. [Validation](design/support/validation.md) owns check selection, execution, isolation and reporting under those rules; specialist reviewers judge actual adequacy.
 Tests or other concrete proof SHOULD precede implementation when feasible; bug fixes MUST include regression coverage or an explicit failure reproduction path.
 Contributors MUST run the applicable repository-owned checks, starting with focused validation and resolving failures before advancing dependent work.
 CI SHOULD delegate validation logic to repository-owned scripts.

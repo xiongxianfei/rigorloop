@@ -392,7 +392,7 @@ class ArchitectureBrowserTests(unittest.TestCase):
                 index = int(item["field"].rsplit("/", 1)[1])
                 self.assertEqual(group, record.data["observed"]["test_groups"][index])
                 self.assertEqual(group["execution"]["owner_contract"],
-                                 "docs/design/engineering/validation.md")
+                                 "design/support/validation.md")
                 self.assertNotIn("allocated_to", group["execution"])
                 # A test assessment is not a software implementation binding.
                 self.assertNotIn(group["name"], sources["development-" + owner].replace("\\n", " "))
