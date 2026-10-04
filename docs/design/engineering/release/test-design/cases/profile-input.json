@@ -21,13 +21,13 @@
     {
       "id": "inventory",
       "initial_state": [
-        "Caller-selected inventory represented by tests/fixtures/release-transaction/surface-inventory/valid-inventory.yaml. Retired Change-local audit files are not current runtime dependencies."
+        "Caller-selected inventory represented by tests/fixtures/release-transaction/surface-inventory/valid-inventory.yaml. This parser fixture does not establish availability or consumption of a project release-audit resource."
       ]
     },
     {
       "id": "literal",
       "initial_state": [
-        "Caller-selected baseline represented by tests/fixtures/release-transaction/literal-audit/valid-baseline.yaml. Retired Change-local audit files are not current runtime dependencies."
+        "Caller-selected baseline represented by tests/fixtures/release-transaction/literal-audit/valid-baseline.yaml. The optional Change-local release-literal-audit hook remains in the release reader, but its referenced file is absent in the prior main baseline and this tree. Existing resource-availability debt remains Release-owned and outside this operational-store adoption; these parser checks do not claim live baseline consumption."
       ]
     },
     {
