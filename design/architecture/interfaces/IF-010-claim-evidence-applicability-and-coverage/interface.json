@@ -62,7 +62,7 @@
   "compatibility_rules": [
     "The existing assurance and Release contracts retain evidence meaning, exact identity, applicability, freshness, deferral and nondeferable duties. This draft prescribes no new evidence format, runner, persistence service or release qualification engine.",
     "Changes to criterion or subject interpretation require explicit reassessment of affected support and reconciliation with consumers; prior evidence and judgments remain inspectable against their original basis.",
-    "This selected collaboration does not complete all assurance storage, execution, judgment-authoring, governance or release interactions, AR derivation, or runtime conformance."
+    "This interface remains support inspection. IF-014 and MOD-007 assurance-content.md separately define IR-004 preparation, attributable judgment content, participant-mediated retention and assessor-assisted realization; universal execution automation and runtime qualification remain outside those contracts."
   ],
   "sources": [
     {
@@ -89,6 +89,11 @@
       "source": "SRC-CURRENT-HANDOFF",
       "locator": "IF-010",
       "basis": "Refine existing current-state responsibility and selective retention; observed runtime mappings remain version-scoped."
+    },
+    {
+      "source": "SRC-ASSURANCE-CONTENT-DESIGN",
+      "locator": "IR-004; SR-025–029; SCN-026–029",
+      "basis": "Derive assessor-assisted assurance preparation, explicit retention cooperation and scoped reliance through MOD-007 and IF-014. Preserve actual judgment, command and persistence ownership; target Design only."
     }
   ]
 }

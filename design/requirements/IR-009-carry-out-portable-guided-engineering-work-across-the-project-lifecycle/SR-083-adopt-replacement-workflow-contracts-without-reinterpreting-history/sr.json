@@ -3,15 +3,15 @@
   "type": "system-requirement",
   "title": "Adopt replacement workflow contracts without reinterpreting history",
   "status": "draft",
-  "statement": "The system shall activate the requirement-first workflow only through an explicit coordinated replacement of conflicting authority, guidance, validation and recording contracts, preserving historical judgments and resolving active-work dependencies without requiring the operational database migration.",
+  "statement": "The system shall activate the requirement-first workflow only through an explicit coordinated replacement of conflicting authority, guidance, validation and recording contracts, preserving historical judgments and resolving active-work dependencies through compatible recording support for the selected work and any migration required by that work.",
   "analysis": {
     "method": "5W2H",
     "what": {
-      "problem": "A renamed skill or updated diagram can coexist with obsolete gate rules, invented commands, invalid active state or relabeled historical approval.",
+      "problem": "A renamed skill or updated diagram can coexist with obsolete gate rules, invented commands, invalid active state or relabeled historical approval. An unconditional promise of migration-independent activation can admit work whose required earlier records are incompatible with the selected successor.",
       "desired_outcome": "Participants receive one coherent active workflow with usable recording and truthful historical and current assessment boundaries."
     },
     "why": {
-      "rationale": "The user-selected workflow must preserve traceability and independent judgment while assigning each engineering decision one owner and avoiding redundant approval cycles."
+      "rationale": "The user-selected workflow must preserve traceability and independent judgment while assigning each engineering decision one owner and avoiding redundant approval cycles. Required record dependencies must be preserved without forcing unrelated historical imports."
     },
     "who": {
       "stakeholders": [
@@ -31,10 +31,10 @@
       ]
     },
     "how": {
-      "approach": "Apply the explicit ownership and dependency conditions in the criteria; record exact scope, decisions, exceptions and assessment basis without inferring approval from mechanics. Detailed Function, Module, Interface and storage realization belongs to subsequent design."
+      "approach": "Apply the explicit ownership and dependency conditions in the criteria; record exact scope, decisions, exceptions and assessment basis without inferring approval from mechanics. Detailed Function, Module, Interface and storage realization belongs to subsequent design. Classify selected work by its actual recording compatibility and retained dependencies before activation; required unavailable migration blocks only affected adoption."
     },
     "how_much": {
-      "scope": "The selected requirement-first workflow within one Change and its affected dependencies. No new preliminary proposal gate, per-method approval, mandatory milestone approval, automatic external permission or mandatory SQLite prerequisite. Functional and architectural completeness are deliberately deferred to design; the Feature constraints express workflow conditions, not a completed behavior realization."
+      "scope": "The selected requirement-first workflow and its affected dependencies. A new project without earlier records requires no historical import; compatible existing work still requires authority and dependency checks. Work depending on incompatible earlier records requires qualified migration before activation. Unrelated history is not automatically imported. No new preliminary proposal gate, per-method approval, mandatory milestone approval or automatic external permission is introduced. Portable or isolated authoring remains governed by its own applicable scope; activation has the separately selected recording prerequisites."
     }
   },
   "acceptance_criteria": [
@@ -43,7 +43,7 @@
     "Every active Change within the selected adoption scope receives an explicit disposition of its requirement basis, remaining work, blockers, gate state and still-applicable review evidence. Missing approvals are not fabricated and old milestone reviews are not relabeled as whole-change approval.",
     "Supported records distinguish milestone progress, advisory feedback, current formal review standing and distinct final Verify. Retain the subjects, attribution and rationale needed for current decisions and compact completion; neither milestone approval records nor permanent assessment-attempt history is required.",
     "Validators distinguish record structure, requirement-review adequacy, design completeness and final evidence sufficiency. Passing a schema or storing a result grants no engineering approval; missing downstream design cannot by itself reject an otherwise sufficient requirement basis. Canonical requirement and System Design methods apply Function-coverage completeness at the design stage, not as a prerequisite for accepting the requirement basis.",
-    "Skills use the actually supported scoped CLI interface for governed recording. They neither write SQL nor depend on invented commands; workflow adoption and database migration have explicit separable prerequisites rather than a mandatory mutual dependency.",
+    "Skills use the actually supported scoped CLI interface for governed recording, without direct SQL or invented commands. Adoption requires compatible recording for selected work: a new project without earlier records needs no historical import; existing compatible work may adopt after authority and dependency checks; work depending on incompatible earlier records requires qualified migration. When necessary migration is unavailable, affected adoption remains blocked and actual active authority, work and historical judgments remain identifiable and preserved. An empty store does not discharge existing dependencies, and unrelated history is not automatically imported.",
     "A partial or failed transition does not expose conflicting contracts as one valid active workflow or destroy current work. Existing active authority remains identifiable until a coherent adoption or supported recovery is established.",
     "Canonical REM methods have one authored owner, with only the needed material included in versioned generated skill distributions. Feature retains its stakeholder-capability meaning; delivery decomposition uses milestones or work items, not a competing Feature hierarchy.",
     "Explore, Research and specialist activities remain scoped support or isolated invocations; they do not create alternative requirement/design authority or mandatory extra gates. PR remains optional and separately authorized."
@@ -93,6 +93,11 @@
       "source": "SRC-CURRENT-HANDOFF",
       "locator": "SR-083",
       "basis": "User-selected current handoff and selective retention refinement. Reuse existing identity and responsibility; no runtime adoption or independent approval is asserted."
+    },
+    {
+      "source": "SRC-ADOPTION-DEPENDENCY-REFINEMENT",
+      "locator": "IR-009; SR-079–083; SCN-082",
+      "basis": "User-authorized scope refinement: compatible recording for selected work, historical import only when required by its dependencies, and blocked affected adoption when necessary migration is unavailable. Preserve identities, original judgments and separate portable authoring; no workflow activation or migration is performed."
     }
   ],
   "confirms": [

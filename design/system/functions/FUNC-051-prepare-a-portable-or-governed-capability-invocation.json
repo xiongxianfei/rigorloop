@@ -28,6 +28,11 @@
       "source": "SRC-WORKFLOW-DESIGN",
       "locator": "FUNC-051",
       "basis": "Draft integrated design from the accepted requirement-first basis. This defines target responsibility and cooperation, not installed capability, design approval, runtime evidence or SQLite adoption."
+    },
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "SR-051; SR-055; FUNC-051",
+      "basis": "Clarify the conditional workflow binding for portable versus governed invocation while preserving project authority, late-trigger reclassification and the prohibition on downgrading failed governed discovery. No new stakeholder obligation or runtime availability is inferred."
     }
   ],
   "description": "Resolve a selected capability's project context, requested outcome, safe target, and applicable invocation mode before dependent work. Common authority judgment remains with the existing authorization behavior.",
@@ -46,7 +51,7 @@
     "Distinguish portable operation from governed or durable recording triggers under the selected specialist contract, including malformed signals and late triggers.",
     "Use the common authority result for reserved actions and preserve valid existing grants within their limits.",
     "Reclassify before newly dependent work when scope, authority, or recording conditions materially change.",
-    "Bind the invocation to an explicitly adopted workflow contract and separate isolated scope from authorized continuation. A project-selected document-based exception is attributable authority, not a fallback inferred from failed governed discovery."
+    "Bind the invocation to applicable project instructions and authority. When an adopted workflow governs the requested work, identify its selected contract and separate isolated scope from authorized continuation. Otherwise sufficient authorized portable work requires no RigorLoop workflow adoption, internal records or CLI. A project-selected document-based exception is attributable authority, not a fallback inferred from failed governed discovery."
   ],
   "failure_behavior": [
     {

@@ -1,0 +1,62 @@
+{
+  "id": "AR-073",
+  "type": "allocated-requirement",
+  "title": "Recover baselines into isolated verified output",
+  "status": "draft",
+  "statement": "The MOD-005 responsibility shall recover baselines into isolated verified output within the exact selected scope, preserving original meaning and explicit incomplete outcomes.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Baseline recovery orchestration and complete-result responsibility can otherwise conflate preparation with confirmed effects or hide unavailable content.",
+      "desired_outcome": "Recover baselines into isolated verified output."
+    },
+    "why": {
+      "rationale": "SR-022 requires this accountable architectural contribution; other contributions retain their own owners."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineers and maintainers",
+        "Reviewers and project decision owners",
+        "MOD-005 maintainers"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "A participant requests baseline recovery orchestration and complete-result responsibility."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "The selected local project state and declared retained/current material under state-control.md."
+      ]
+    },
+    "how": {
+      "approach": "Apply state-control.md with exact identity/scope and original interpretation, explicit custody/authority boundaries and attributable incomplete or confirmed outcomes."
+    },
+    "how_much": {
+      "scope": "Baseline recovery orchestration and complete-result responsibility. No full IR003 assessment, runtime qualification, destructive adoption or operational maintenance execution is claimed."
+    }
+  },
+  "acceptance_criteria": [
+    "Select the exact retained descriptor and custody manifest, and recover all declared authoritative content, original rules and provenance without retargeting identities, allocations or judgments.",
+    "Use an owned isolated output area and reject pre-existing or active-work destinations; recovery does not authorize destructive adoption.",
+    "Compare recovered inventory, bytes and supported recorded attributes with the retained basis and preserve original interpretation; complete recovery requires zero loss or alteration within declared scope.",
+    "Report missing, damaged, unsupported, inaccessible or partially recovered scope explicitly, including lost-receipt uncertainty, without a complete recovery claim.",
+    "Exclude unretained external material and later unsaved work; failure/cancellation preserves active work and the retained baseline, with cleanup confined to owned temporary output."
+  ],
+  "assumptions": [],
+  "constraints": [
+    "Proposed Design; no implementation, executed criterion verification or satisfaction claim."
+  ],
+  "allocated_to": "MOD-005",
+  "constrains": [
+    "FUNC-022"
+  ],
+  "sources": [
+    {
+      "source": "SRC-BASELINE-STATE-DESIGN",
+      "locator": "SR-020–024; SCN-019–022/025",
+      "basis": "Define immutable baseline custody, original-meaning comparison/recovery, attributable transition preparation and dependency-safe retirement. Preserve selective retention and separate action authority, operational maintenance and actual execution; proposed Design only."
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+direction: down
+source: "MOD-001 / IF-001\nCoherent state and full required membership"
+rules: "MOD-003 / IF-002\nProfile rules, known facts and diagnostic gaps"
+analysis: "MOD-004: derived analysis" {
+  allocation: "FUNC-010 / AR-060\nAllocation paths and deciding rules"
+  traversal: "FUNC-009 / AR-056\nEligible graph, finite witnesses and limits"
+  impact: "FUNC-011 / AR-061\nExact influence scope and potential candidates"
+}
+findings: "Allocation findings\nConsistent / violated / deferred / review needed / incomplete"
+candidates: "Potential impact for review\nComplete / bounded / incomplete / rejected"
+source -> analysis.allocation
+rules -> analysis.allocation
+source -> analysis.traversal
+rules -> analysis.traversal
+analysis.traversal -> analysis.impact: "Exact scoped witnesses; no completeness upgrade"
+analysis.allocation -> findings: "Paths, rules and unassessed scope"
+analysis.impact -> candidates: "Changed subjects, influence and supporting paths"

@@ -3,7 +3,7 @@
   "type": "interface",
   "title": "Engineering definition access",
   "status": "draft",
-  "description": "State-scoped access to retained engineering definitions, identity resolution, and recorded rationale. The storage provider reports what was actually retained or retrieved; consumers preserve those result distinctions.",
+  "description": "State-scoped access to retained engineering definitions, identity resolution, and recorded rationale. The storage provider reports what was actually retained or retrieved; consumers preserve those result distinctions. Includes isolated immutable baseline custody and conditional current-model retirement; baseline meaning and authority remain with Governance.",
   "operations": [
     {
       "name": "retain_definition",
@@ -23,7 +23,8 @@
         "Check that the candidate is supported by the declared profile and use IF-002 identity findings over the complete required candidate scope before representing it as accepted.",
         "Bind checking to the candidate and base state that are actually retained. Reject or re-evaluate a changed base or candidate; do not reuse a stale identity conclusion.",
         "Retain the supplied identity, type, and authored content independently of the caller session. An existing subject may only be updated under its preserved identity; a distinct subject cannot take that identity.",
-        "Return confirmed success only when the requested retention is established. A partial or indeterminate effect remains explicitly incomplete; do not promise rollback or advise blind retry."
+        "Return confirmed success only when the requested retention is established. A partial or indeterminate effect remains explicitly incomplete; do not promise rollback or advise blind retry.",
+        "Apply MOD-001 README.md shared definition/rationale custody: exact complete candidate and reference scope, final exclusion-bound checks, staged publication, durable unresolved effects before writes and confirmed readback. Interruption blocks coherent affected access until actual membership/content are reconciled; no assumed rollback or blind retry."
       ],
       "failure_behavior": [
         {
@@ -115,7 +116,9 @@
         "Preserve supplied reasoning and its association without filling gaps or certifying the decision.",
         "Bind the association to the selected definition state; changed identity-stable content does not automatically renew applicability.",
         "Keep still-relied-on reasoning accessible from the current model independently of whether the originating Change explanation remains in current working material.",
-        "Check the selected definition/state at retention; report a mismatch rather than silently associating reasoning with an intervening revision."
+        "Check the selected definition/state at retention; report a mismatch rather than silently associating reasoning with an intervening revision.",
+        "Apply MOD-001 README.md shared definition/rationale custody: exact complete candidate and reference scope, final exclusion-bound checks, staged publication, durable unresolved effects before writes and confirmed readback. Interruption blocks coherent affected access until actual membership/content are reconciled; no assumed rollback or blind retry.",
+        "Use the owning documentary association with exact definition-content/profile identity, resolvable rationale locator, captured rationale identity, five recorded reasoning fields and actor-supplied applicability basis. Finalize definition bytes with their locator before computing the association; observe combined state outside hashed content to avoid recursive identity. Missing or stale associations remain explicit."
       ],
       "failure_behavior": [
         {
@@ -142,7 +145,8 @@
       "behavior": [
         "Follow recorded associations for the selected definition, retaining the state to which each basis refers.",
         "Return an explicit missing or unresolved result where reasoning or applicability cannot be established.",
-        "Do not replace current reasoning with unrelated historical material or infer that no reasoning is needed from an empty retrieval."
+        "Do not replace current reasoning with unrelated historical material or infer that no reasoning is needed from an empty retrieval.",
+        "Use the owning documentary association with exact definition-content/profile identity, resolvable rationale locator, captured rationale identity, five recorded reasoning fields and actor-supplied applicability basis. Finalize definition bytes with their locator before computing the association; observe combined state outside hashed content to avoid recursive identity. Missing or stale associations remain explicit."
       ],
       "failure_behavior": [
         {
@@ -157,24 +161,181 @@
     },
     {
       "name": "capture_model_selection",
-      "purpose": "Supply an immutable content-bound model selection for customer view generation.",
+      "purpose": "Supply immutable content-bound model input for engineering reading, including customer view generation, relationship traversal, conformance and migration preparation.",
       "inputs": [
-        "Selected immutable project state/export, profile identifier and explicit member/supporting-content scope."
+        "Selected immutable project state/export, or a selected current-state reference which the provider binds to a coherent immutable read state, with profile identifier and explicit member/supporting-content scope."
       ],
       "preconditions": [
-        "The caller identifies an immutable source basis; an ordinary mutable checkout without established capture consistency is not admitted."
+        "Capture requires an established immutable source basis. For current-state traversal, conformance or migration preparation the provider establishes a consistent read snapshot or holds model-wide read exclusion while binding the complete membership and bytes; an ordinary mutable checkout without such consistency is not admitted. Existing browser callers continue to require their declared immutable input selection."
       ],
       "outputs": [
         "Captured members and digests, source selection identity, included rationale and separate optional-content gaps."
       ],
       "behavior": [
         "Capture declared model content without model edits, operational-history export or unrelated workspace traversal.",
-        "Bind membership, bytes and profile to the selected immutable basis and reject unestablished coherence."
+        "Bind membership, bytes and profile to the selected immutable basis and reject unestablished coherence.",
+        "For traversal, enumerate the complete profile-declared entity and relationship membership of the selected model, not only starts or outbound-reachable files. Bind membership completeness as well as per-member bytes; partial access cannot establish absence of incoming edges.",
+        "A coherent current-state read is an ephemeral read basis of the requested current model, not a retained Baseline or an implicit switch to another revision. Preserve partial observations only when they can still be attributed to that exact basis.",
+        "For conformance and migration preparation, enumerate complete required membership and capture attributable raw bytes even for malformed members; validity is assessed by MOD-003 after acquisition. Missing access or coherence remains a capture gap. Capture does not call interpreted retrieval or require successful model validation."
       ],
       "failure_behavior": [
         {
           "condition": "The selected basis changes, a required member cannot be obtained, or paths escape the permitted scope.",
           "outcome": "Report the exact gap and withhold coherent capture; do not silently substitute another state."
+        }
+      ]
+    },
+    {
+      "name": "retain_relationship_change",
+      "purpose": "Retain an explicitly authorized relationship change with complete candidate checking and state-bound outcomes.",
+      "inputs": [
+        "Selected model, expected base state and declared profile; explicit create, replace or remove intent and original fact when applicable.",
+        "Complete resulting candidate scope and exact write set, including affected definitions and authoritative containment membership, plus candidate content identity.",
+        "Applicable authority/disposition for the relationship edit; semantic reparenting requires explicit derivation reconsideration rather than rename authority."
+      ],
+      "preconditions": [
+        "The request is within applicable authority; storage does not grant engineering approval."
+      ],
+      "outputs": [
+        "Confirmed resulting state and exact retained relationship effects, or invalid, unsupported, stale-state, failed or incomplete outcome with known effects and unresolved scope."
+      ],
+      "behavior": [
+        "Bind the exact affected definitions, containment changes, base state, profile and candidate content to one requested relationship change; do not retain an independently authored inverse.",
+        "Before acceptance, obtain complete applicable IF-002 identity and relationship findings for the actual resulting candidate and enforce the expected base at publication.",
+        "Reject or re-evaluate a changed base, candidate or profile without silently overwriting intervening work; report invalid or unsupported candidates without a successful save.",
+        "Confirm acceptance only when all requested effects are established and identify the resulting state; replacement/removal must no longer expose the old fact as current.",
+        "After interruption or uncertain partial effects, report known changed and unresolved scope without confirmed acceptance, automatic retry, assumed rollback or mixing states.",
+        "Preserve previous selected-state meaning and provide content-bound resulting-state read references for endpoint derivation; retention does not renew approval or evidence applicability.",
+        "Use IF-002 check_candidate_identities and check_candidate_relationships on the exact resulting candidate. Preliminary author checks cannot replace the final storage-owned acceptance check.",
+        "Hold model write exclusion across the final expected-base comparison, checking and publication; stage the complete candidate separately. Coherent reads use the matching storage exclusion/snapshot boundary, so they cannot label an in-progress multi-member write as a complete model state.",
+        "If publication is interrupted, mark the affected state unresolved and withhold coherent reads of that scope until inspected and reconciled. The design does not promise multi-file rollback or exactly-once retry.",
+        "Before authoritative publication, persist an unresolved-write marker binding base, candidate and write scope. Preserve it across restart until exact effects are reconciled; withhold coherent affected-model reads and further writes while unresolved. External changes that defeat custody must produce conflict or incomplete coherence, never a confirmed state."
+      ],
+      "failure_behavior": [
+        {
+          "condition": "Base, profile, candidate or authority changes before acceptance.",
+          "outcome": "Report the mismatch and affected scope; require a newly justified request rather than replaying stale checks."
+        },
+        {
+          "condition": "A write or confirmation is interrupted or effects are uncertain.",
+          "outcome": "Report known retained effects and unresolved membership; withhold accepted completion and complete affected-state reads until reconciliation."
+        }
+      ]
+    },
+    {
+      "name": "retain_baseline_content",
+      "purpose": "Retain an exact immutable baseline bundle and confirm actual custody.",
+      "inputs": [
+        "Project/baseline and request identities, exact immutable source manifest/content, original profile/rules and included provenance/material.",
+        "Selected retention policy, authority and complete coherence support, with external-only references distinguished."
+      ],
+      "preconditions": [
+        "The selected project, exact subject and requested scope are identifiable; missing required support is an explicit gap, not an assumed favorable result."
+      ],
+      "outputs": [
+        "Exact sealed bundle and manifest identity with confirmed durable custody, or partial/unsupported/failed/unconfirmed effects."
+      ],
+      "behavior": [
+        "Apply MOD-017 state-control.md immutable custody; stage complete selected bytes separately from mutable current definitions, verify integrity and durably publish without replacing another baseline binding.",
+        "Preserve included original rules and supplied material; do not fetch external references, adopt current state or establish a baseline catalog entry.",
+        "Read back sealed membership before confirming; reconcile request-bound effects after lost receipt and preserve sealed-but-unregistered content."
+      ],
+      "failure_behavior": [
+        {
+          "condition": "Required material, scope integrity, supported member kind, authority or durability is unestablished.",
+          "outcome": "Withhold complete confirmation and expose affected scope without silent substitution."
+        },
+        {
+          "condition": "Publication or response is interrupted.",
+          "outcome": "Report known and uncertain effects; preserve sealed originals and do not blindly replay or claim rollback."
+        }
+      ]
+    },
+    {
+      "name": "read_baseline_content",
+      "purpose": "Read exact sealed retained engineering content.",
+      "inputs": [
+        "Exact baseline/bundle identity and requested member scope."
+      ],
+      "preconditions": [
+        "The selected project, exact subject and requested scope are identifiable; missing required support is an explicit gap, not an assumed favorable result."
+      ],
+      "outputs": [
+        "Original immutable manifest/content and selected rules, with complete, partial, corrupt, unsupported or unavailable scope."
+      ],
+      "behavior": [
+        "Verify exact manifest membership and content integrity before declaring complete access.",
+        "Return original bytes and provenance; newer definitions or rules cannot substitute for unavailable originals."
+      ],
+      "failure_behavior": [
+        {
+          "condition": "Identity, required member, integrity or access cannot be established.",
+          "outcome": "Return precise known/unavailable scope; missing data is not absence or a complete interpreted state."
+        }
+      ]
+    },
+    {
+      "name": "recover_baseline_content",
+      "purpose": "Materialize retained content into a newly owned isolated recovery area.",
+      "inputs": [
+        "Exact sealed baseline manifest/content and requested scope; selected parent for a newly created isolated output."
+      ],
+      "preconditions": [
+        "The selected project, exact subject and requested scope are identifiable; missing required support is an explicit gap, not an assumed favorable result."
+      ],
+      "outputs": [
+        "Owned output identity, reproduced membership/content and fidelity observations, or partial/failed/uncertain result."
+      ],
+      "behavior": [
+        "Apply state-control.md containment and isolated materialization; reject existing/active-work destinations and escaped or aliased paths.",
+        "Compare full output manifest, bytes and supported recorded attributes against the retained basis; caller assesses original interpretation and full recovery meaning.",
+        "Do not modify retained history or active work; cleanup only owned temporary output."
+      ],
+      "failure_behavior": [
+        {
+          "condition": "Output already exists, source integrity fails, member kinds are unsupported, access fails or materialization is interrupted.",
+          "outcome": "Withhold complete recovery, preserve source/active work and disclose actual partial or unavailable scope."
+        },
+        {
+          "condition": "Receipt is lost.",
+          "outcome": "Inspect exact owned output/request before reconciling; do not infer failure or authorize overwrite."
+        }
+      ]
+    },
+    {
+      "name": "remove_retired_model_material",
+      "purpose": "Apply an exact authorized current-model retirement candidate.",
+      "inputs": [
+        "Expected model state, exact removal/replacement inventory and supported resulting candidate.",
+        "Applicable authority, resolved reliance dispositions, required exact original recovery and complete resulting-model check basis.",
+        "Accountable executor and established maintenance interval covering all relevant model, operational, external dependency/replacement and authority writers through final checks, effects and reconciliation."
+      ],
+      "preconditions": [
+        "The selected project, exact subject and requested scope are identifiable; missing required support is an explicit gap, not an assumed favorable result.",
+        "The executor holds the state-control.md cross-custody stability boundary; inability to establish or retain it withholds removal. Model exclusion or a revision recheck alone is insufficient."
+      ],
+      "outputs": [
+        "Exact actual current-state effects and resulting state, or invalid/stale/partial/unresolved effect scope."
+      ],
+      "behavior": [
+        "Apply state-control.md retirement under model write exclusion and final expected-base/authority checks; delegate resulting candidate checks to IF-002.",
+        "Publish required replacements before removing selected current members, with durable unresolved-write metadata before effects.",
+        "Never remove retained bundles/history, silently broaden scope or conflate prepared readiness with actual completion.",
+        "Preserve incomplete publication and withhold coherent affected reads/further writes until reconciled.",
+        "Preserve the maintenance interval through actual effect inspection and outcome retention; loss/interruption blocks further affected work and requires explicit stable-scope reconciliation before release/resumption."
+      ],
+      "failure_behavior": [
+        {
+          "condition": "Expected base, authority, recovery, dependencies or candidate checks no longer support removal.",
+          "outcome": "Withhold affected action and require reconciliation without overwriting intervening work."
+        },
+        {
+          "condition": "Publication is partial or uncertain.",
+          "outcome": "Report actual effects and block coherent affected access; no blind retry or assumed rollback."
+        },
+        {
+          "condition": "Required writer quiescence/exclusion is absent, lost or cannot survive safe interruption handling.",
+          "outcome": "Withhold or stop removal, report actual partial/unconfirmed effects and retain blocked-scope recovery information; do not infer completed retirement or safe resumed access."
         }
       ]
     }
@@ -183,7 +344,8 @@
     "Every outcome carries the requested subject and selected state, or explicitly identifies why they could not be established. Identity alone never designates a revision.",
     "A consumer must not merge successful results from different selected states into one complete current account. Changed selections require a new consistent request or an explicit incomplete result.",
     "The storage provider owns the final acceptance check for retained content; preliminary caller checks do not override changed-state or identity conflicts.",
-    "Incomplete or indeterminate writes expose known effects. This contract selects no transaction technology and does not promise rollback or exactly-once execution."
+    "Incomplete or indeterminate writes expose known effects. This contract selects no transaction technology and does not promise rollback or exactly-once execution.",
+    "MOD-001 README.md owns the current-knowledge realization. Coherent definition, reference and rationale results share one captured state; changed names/paths do not change identity, but changed definition content does not silently renew rationale applicability."
   ],
   "compatibility_rules": [
     "Interpret content according to the profile declared by the selected state; unknown profiles or kinds receive explicit unsupported outcomes.",
@@ -199,7 +361,32 @@
     {
       "source": "SRC-CUSTOMER-BROWSER-DESIGN",
       "locator": "IF-001",
-      "basis": "System and Architecture Design from SR-084\u2013088 and refined SR-060; proposed responsibility, contract and realization only. No implementation, platform qualification or product availability is established."
+      "basis": "System and Architecture Design from SR-084–088 and refined SR-060; proposed responsibility, contract and realization only. No implementation, platform qualification or product availability is established."
+    },
+    {
+      "source": "SRC-SCOPED-TRAVERSAL-DESIGN",
+      "locator": "SR-009; SCN-008; FUNC-009",
+      "basis": "Derive selected-state traversal responsibility, admission/completeness outcomes and necessary allocation from existing obligations. Proposed architecture only; no implementation, verification or satisfaction claim."
+    },
+    {
+      "source": "SRC-RELATIONSHIP-AUTHORING-DESIGN",
+      "locator": "SR-008; FUNC-008",
+      "basis": "Derive single-fact relationship editing, candidate admission and retention boundaries from SR-008. Proposed Design only; no runtime implementation or satisfaction claim."
+    },
+    {
+      "source": "SRC-CONFORMANCE-MIGRATION-DESIGN",
+      "locator": "IR-005; SR-012–015; SCN-011–014",
+      "basis": "Derive whole-model diagnostics, separate mechanical/review presentation and source-preserving explicit migration candidates through MOD-003. Reuse capture, interpretation and scoped-check ownership; proposed Design only."
+    },
+    {
+      "source": "SRC-BASELINE-STATE-DESIGN",
+      "locator": "SR-020–024; SCN-019–022/025",
+      "basis": "Define immutable baseline custody, original-meaning comparison/recovery, attributable transition preparation and dependency-safe retirement. Preserve selective retention and separate action authority, operational maintenance and actual execution; proposed Design only."
+    },
+    {
+      "source": "SRC-CURRENT-KNOWLEDGE-DESIGN",
+      "locator": "IR-001; SR-001–005; AR-001–009; SCN-001–006",
+      "basis": "Refine existing definition custody, identity-preserving evolution and current-context/rationale presentation through IF-001/002. Preserve requirements and allocations; proposed Design only, without runtime implementation or satisfaction."
     }
   ]
 }

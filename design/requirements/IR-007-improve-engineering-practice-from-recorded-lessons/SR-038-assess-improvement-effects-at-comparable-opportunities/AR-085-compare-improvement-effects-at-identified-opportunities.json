@@ -1,0 +1,62 @@
+{
+  "id": "AR-085",
+  "type": "allocated-requirement",
+  "title": "Compare improvement effects at identified opportunities",
+  "status": "draft",
+  "statement": "The Lessons and improvement Module shall prepare context-bound comparisons of an adopted improvement's actual triggering and later comparable observations, preserving adverse or missing support and explicit reassessment without claiming effectiveness from adoption or elapsed time.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Adoption, reproduction success or elapsed time can be mistaken for effectiveness without comparable observations.",
+      "desired_outcome": "Compare improvement effects at identified opportunities."
+    },
+    "why": {
+      "rationale": "SR-038 requires this accountable MOD-009 contribution; source meaning, adoption and evidence authority must remain distinct."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineering participants and reviewers",
+        "Lesson and improvement owners",
+        "Project decision owners and assurance assessors"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "During supported finding analysis, work preparation, proposal disposition or opportunity-based effect assessment as applicable; reconsider when the material basis changes."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "MOD-009 contribution to MOD-017 IF-017 consumed by MOD-012; existing controlled-change, assurance and selected retention boundaries."
+      ]
+    },
+    "how": {
+      "approach": "Apply improvement.md to exact participant-supplied context and observations, preserve missing/contrary support, and confirm authority, adopted effects and retention through their existing owners."
+    },
+    "how_much": {
+      "scope": "Complete allocated contribution to SR-038 within the declared finite project/activity/observation scope; no automatic causal discovery, policy adoption or universal effectiveness claim."
+    }
+  },
+  "acceptance_criteria": [
+    "Bind actual reproducible triggering results to the adopted version and criteria; nonreproducibility or an unperformed attempt cannot be reported as a correction result.",
+    "Identify the next comparable known activity after adoption with context/order/acquisition limits and compare recurrence, intended behavior and adverse effects against prepared criteria; do not hide an earlier comparable failure.",
+    "Distinguish no comparable opportunity from missing observations at one that occurred; both leave dependent effectiveness unassessed regardless of adoption or reproduction success.",
+    "Carry actual contrary, mixed and incomplete observations to separate assurance preparation with bounded conclusions; no universal duration, sample threshold or recurrence-prevention guarantee is implied.",
+    "On recurrence or material context/version/criterion change, explain affected current reliance and required reassessment while preserving original observations and their earlier bounded meaning."
+  ],
+  "assumptions": [],
+  "constraints": [
+    "Existing Learn contributor confirmation and topic/route custody remain applicable to their actual operations; Design approval does not execute them."
+  ],
+  "allocated_to": "MOD-009",
+  "constrains": [
+    "FUNC-038"
+  ],
+  "sources": [
+    {
+      "source": "SRC-LESSON-IMPROVEMENT-DESIGN",
+      "locator": "IR-007; SR-035–038; SCN-035–039",
+      "basis": "Refine supported lesson characterization, bounded contextual use, accountable proposals and opportunity-based effect assessment through MOD-009 and parent IF-017. Preserve existing Learn confirmation/custody/route boundaries and separate controlled adoption, assurance and retention. Proposed Design only."
+    }
+  ]
+}

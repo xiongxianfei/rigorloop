@@ -1,0 +1,62 @@
+{
+  "id": "AR-057",
+  "type": "allocated-requirement",
+  "title": "Prepare single-authority relationship changes",
+  "status": "draft",
+  "statement": "The Definition editing Module shall prepare explicit relationship changes against one selected model state, author each fact only in its profile-declared representation, and derive consistent endpoint views from the confirmed resulting state while preserving actual rejection and incomplete outcomes.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Relationship edits can duplicate authority, accept invalid facts or produce inconsistent endpoint observations.",
+      "desired_outcome": "Prepare single-authority relationship changes."
+    },
+    "why": {
+      "rationale": "SR-008 requires one authoritative relationship and state-consistent forward and inverse views."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineering model authors and readers",
+        "Maintainers of MOD-002"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "A relationship is created, replaced or removed in a selected model state."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "MOD-002 within MOD-016 using IF-001 and IF-002."
+      ]
+    },
+    "how": {
+      "approach": "Use explicit candidate and base identities, profile-governed representation, complete scoped checks and truthful outcome reporting."
+    },
+    "how_much": {
+      "scope": "The MOD-002 contribution to SR-008; other owners retain their own obligations."
+    }
+  },
+  "acceptance_criteria": [
+    "For create, replace and remove requests, identify the original fact where applicable, intended typed endpoints, governing profile and expected base; prepare exactly one authoritative representation without an authored inverse.",
+    "For requirement parent edits, use the declared containment representation and preserve entity identity; treat semantic reparenting as an explicit relationship change requiring applicable authority, never as a same-entity rename.",
+    "Submit the complete affected candidate and checking scope to IF-002 and IF-001; report invalid, unsupported, changed-state or incomplete outcomes without claiming acceptance.",
+    "After confirmed retention, derive both endpoint views from the same resulting state; replacement and removal cannot leave the prior inverse in that current view.",
+    "Bind each derived view to its state and profile; invalidate derived caches by state and preserve historical observations without mixing states.",
+    "If retention or subsequent view acquisition is incomplete, expose known effects and affected scope separately; do not turn uncertain retention into a completed accepted change or a missing view into a rolled-back write."
+  ],
+  "assumptions": [],
+  "constraints": [
+    "Design allocation only; no implementation or verification claim."
+  ],
+  "allocated_to": "MOD-002",
+  "constrains": [
+    "FUNC-008"
+  ],
+  "sources": [
+    {
+      "source": "SRC-RELATIONSHIP-AUTHORING-DESIGN",
+      "locator": "SR-008; FUNC-008",
+      "basis": "Derive single-fact relationship editing, candidate admission and retention boundaries from SR-008. Proposed Design only; no runtime implementation or satisfaction claim."
+    }
+  ]
+}

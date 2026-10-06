@@ -1,0 +1,21 @@
+version = 1
+
+[[topics]]
+id = "assurance-responsibilities"
+title = "Assurance responsibilities"
+view = "logical"
+kind = "topology"
+qualification = "proposed"
+source = "README.md"
+anchor = "assurance-responsibilities"
+description = "MOD-007 owns assurance meaning and AR-062–066. MOD-017 supplies IF-014 preparation to MOD-012, which explicitly records actor-selected content through existing Operations. Contract dependencies preserve semantic judgment, technique execution and actual retention as separate responsibilities."
+
+[[topics]]
+id = "assurance-preparation-and-retention"
+title = "Assurance preparation and retention"
+view = "process"
+kind = "sequence"
+qualification = "proposed"
+source = "README.md"
+anchor = "assurance-preparation-and-retention"
+description = "An assessor supplies actual content and basis; preparation exposes gaps and reliance limits. Guided recording preserves actor decisions and reports actual effects. Uncertain retention requires scoped readback, while conflict requires reassessment. Preparation and saved outcomes supply neither verification observations nor approval."

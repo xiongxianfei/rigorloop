@@ -1,0 +1,25 @@
+direction: down
+model: "Selected engineering model\nAuthoritative requirements, Features, Functions and Modules"
+interpretation: "Capture and interpretation\nMOD-001 / MOD-003 · IF-001 / IF-002"
+views: "MOD-004 · Views and traceability" {
+  assembly: "Browser projection and assembly\nFUNC-080 / FUNC-081"
+  snapshot: "Derived offline artifact\nRecords, parent edges and typed links"
+  reader: "Optional RigorLoop system view · FUNC-007 / FUNC-009" {
+    navigation: "Architecture scope and view navigation\nRequirements enabled only at system root"
+    index: "Navigation index\nContainment, bounded occurrences and inverse lookup"
+    tree: "One system requirement tree\nIR / SR / AR and expandable Feature / Function / Module references"
+    detail: "One optional detail panel\nSelected requirement, Feature, Function or Module"
+    state: "Disposable reading state\nOccurrence selection, independent expansion, filter and focus"
+    navigation -> tree: "Enabled system Requirements tab"
+    index -> tree: "Requirement hierarchy and direct references"
+    index -> detail: "Definitions and attributed relationships"
+    tree -> detail: "Selected entity and occurrence path"
+    state -> tree: "Tree context"
+    state -> detail: "Selected detail and return context"
+  }
+  assembly -> snapshot: "Matched template and embedded model"
+  snapshot -> reader.navigation: "Explicit system_requirement_view flag"
+  snapshot -> reader.index: "Captured records and relationships"
+}
+model -> interpretation: "Selected content and profile"
+interpretation -> views.assembly: "Validated model and explicit gaps"

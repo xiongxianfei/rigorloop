@@ -1,0 +1,13 @@
+shape: sequence_diagram
+participant: "Author or agent"
+procedure: "Skill procedures\nMOD-012"
+governance: "IF-008\nMOD-017 / MOD-008 contribution"
+sources: "Selected canonical sources"
+participant -> procedure: "Activity, adopted profile, subjects and authority"
+procedure -> governance: "Select applicable guidance"
+governance -> sources: "Inspect exact owners, versions, rules and examples"
+sources -> governance: "Selected content or explicit availability/conflict gaps"
+governance -> procedure: "Source-bound selection and applicability explanation"
+procedure -> governance: "Explain authoring or identified correction"
+governance -> procedure: "Expected result, checks, unresolved decisions and limits"
+procedure -> participant: "Usable bounded explanation and source navigation"

@@ -1,0 +1,62 @@
+{
+  "id": "AR-063",
+  "type": "allocated-requirement",
+  "title": "Preserve actual observation meaning through recording",
+  "status": "draft",
+  "statement": "The Review and verification Module shall prepare attributable occurrence and observation content that preserves actual execution state, assessed scope and contrary evidence through explicit retention without inventing results.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Assurance preparation and retention can conflate planned methods, actual observations, semantic judgment and current reliance.",
+      "desired_outcome": "Preserve actual observation meaning through recording."
+    },
+    "why": {
+      "rationale": "SR-026 needs accountable assurance content and failure semantics in MOD-007."
+    },
+    "who": {
+      "stakeholders": [
+        "Verification engineers and independent reviewers",
+        "Project decision owners",
+        "MOD-007 and MOD-012 maintainers"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "An assessor prepares or reassesses assurance content for a declared engineering claim."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "MOD-007 contribution to MOD-017 IF-014; guided recording through MOD-012 and existing IF-004/003."
+      ]
+    },
+    "how": {
+      "approach": "Apply assurance-content.md to exact supplied bases, preserve gaps and actual actor decisions, then confirm selected retention separately."
+    },
+    "how_much": {
+      "scope": "All parent SR-026 criteria within the declared finite claim; operational persistence and execution authority retain their existing owners."
+    }
+  },
+  "acceptance_criteria": [
+    "Identify the occurrence, method and criterion basis, exact observed subject/state, actual conditions, observing source and supporting evidence.",
+    "Distinguish unperformed, unable-to-assess, interrupted and completed activity from favorable, adverse or inconclusive criterion observations; preserve actual partial observations and the unassessed remainder.",
+    "Expose missing provenance, exact state or unavailable supporting bytes as limitations, and never substitute expected observations for actual results.",
+    "Preserve relevant conflicting/adverse observations and their original provenance when current summaries are replaced until an accountable disposition resolves their reliance; later favorable results cannot erase them.",
+    "Confirm retention through actual selected artifact or command outcomes, preserve unresolved effects after interruption, and never replay a stale prepared update automatically."
+  ],
+  "assumptions": [],
+  "constraints": [
+    "Target Design; no implemented automation, executed verification or requirement satisfaction is asserted."
+  ],
+  "allocated_to": "MOD-007",
+  "constrains": [
+    "FUNC-028"
+  ],
+  "sources": [
+    {
+      "source": "SRC-ASSURANCE-CONTENT-DESIGN",
+      "locator": "IR-004; SR-025–029; SCN-026–029",
+      "basis": "Derive assessor-assisted assurance preparation, explicit retention cooperation and scoped reliance through MOD-007 and IF-014. Preserve actual judgment, command and persistence ownership; target Design only."
+    }
+  ]
+}

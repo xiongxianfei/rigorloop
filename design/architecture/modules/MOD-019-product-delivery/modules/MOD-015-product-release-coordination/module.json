@@ -30,7 +30,7 @@
   ],
   "design_limits": [
     "Existing Release owns channels, exact candidate identity, authorization, external-write failure classes, and closeout. This draft does not approve or execute a release.",
-    "IF-009/IF-010 define the selected authority/evidence cooperation for SCN-066. MOD-006/MOD-007 retain the contributing behavior; applicable authority cannot replace evidence and supporting evidence cannot grant authority. IR-010 ARs and wider collaboration remain deferred.",
+    "IF-009/IF-010 define authority/evidence cooperation. MOD-006/MOD-007 retain the contributing behavior; applicable authority cannot replace evidence and supporting evidence cannot grant authority. The parent MOD-019 README supplies IR-010 composition and the SR-067–073 allocation rationale; SR-088 retains AR-050. Further collaboration outside this scope remains separately accountable.",
     "Publication readiness, provider authentication/conflict checks, later public observations, and recovery still require the owning release analysis and execution evidence. Realization mapping and full migration of source-specific maintenance obligations remain separate work."
   ],
   "sources": [

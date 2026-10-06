@@ -1,0 +1,30 @@
+direction: down
+navigation: "RigorLoop · System architecture\nSummary / Logical / Process / Development\nPhysical / Scenarios / [Requirements]"
+system: "▼ RigorLoop · Requirements\nOne workspace · Expand all / Collapse all / SR level"
+ir: "▼ IR-A · Export reliable reports"
+features: "▼ Features"
+feature: "▼ ↗ FEAT-A · Export reports\nconfirms"
+realizing: "▼ Realizing Functions"
+feature_function: "▶ ↗ FUNC-A · Generate report\nrealized by · shared reference"
+sr: "▼ SR-A · Export every selected record"
+functions: "▼ Functions"
+sr_function: "▶ ↗ FUNC-A · Generate report\nconfirms · selected occurrence"
+ars: "▼ Allocated requirements"
+ar: "▼ AR-A · Complete report or failure"
+module: "▶ ↗ MOD-A · Report production\nallocated to · one accountable Module"
+ar_function: "▶ ↗ FUNC-A · Generate report\nconstrains · shared reference"
+other: "▶ IR-B · Another stakeholder need"
+navigation -> system: "Optional view enabled only at system root"
+system -> ir: "Requirement branch"
+system -> other: "Collapsed branch"
+ir -> features: "Reference group"
+features -> feature
+feature -> realizing
+realizing -> feature_function
+ir -> sr: "Requirement child"
+sr -> functions: "Reference group"
+functions -> sr_function
+sr -> ars: "Requirement group"
+ars -> ar: "Derived requirement"
+ar -> module: "Accountable Module group"
+ar -> ar_function: "Constrained Functions group"

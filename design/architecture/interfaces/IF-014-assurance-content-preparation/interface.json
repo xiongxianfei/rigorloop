@@ -1,0 +1,65 @@
+{
+  "id": "IF-014",
+  "type": "interface",
+  "title": "Assurance content preparation",
+  "status": "draft",
+  "description": "Governance prepares assessor-supplied method, observation, applicability, coverage and judgment content for explicit recording, preserving incomplete scope and actual semantic authority.",
+  "operations": [
+    {
+      "name": "prepare_assurance_content",
+      "purpose": "Prepare inspectable assurance content and reliance diagnostics for a guided assessor without executing techniques, inventing judgments or retaining records.",
+      "inputs": [
+        "Selected assurance content kind and stable identity, actor/contributor provenance, exact claim/criterion/subject basis and relevant conditions.",
+        "Assessor-supplied definition, observations, applicability rationale, coverage, contradiction dispositions or judgment and its supporting content.",
+        "Coherent selected record read, inspected subject observations and intended retention contract/scope; identified gaps and changes remain explicit."
+      ],
+      "preconditions": [
+        "The participant identifies the requested content and scope. Missing required semantic context remains inspectable incompleteness; malformed or ambiguous identity rejects."
+      ],
+      "outputs": [
+        "Exact prepared content and its attributable basis, identified missing context, affected criteria, reliance restrictions and remaining assessor decisions.",
+        "Complete-for-declared-purpose or incomplete content, or rejected preparation with diagnostics; never an inferred execution, saved record, approval or permission."
+      ],
+      "behavior": [
+        "Apply MOD-007 assurance-content.md for FUNC-027–031 and AR-062–066; child allocation and judgment authority remain with their respective owners.",
+        "Keep method definitions, execution occurrences, actual observations, applicability, coverage and semantic judgments distinct; assess all selected criteria without silently narrowing the claim.",
+        "Use IF-010 claim-support meanings for applicability/coverage while requiring actual assessor reasoning and independence where policy requires it; no passing-label inference.",
+        "Reject justified favorable reliance that contradicts known gaps or unresolved material contradictions; return the assertion and diagnostic meaning without manufacturing a replacement judgment.",
+        "Return a prepared candidate only. MOD-012 carries actor-selected content through IF-004 and interprets actual retention; no direct storage call, implicit save or automatic retry.",
+        "Preserve original bases, relevant contrary evidence and unresolved obligations through replacement; current reassessment and historical completion retain distinct meanings."
+      ],
+      "failure_behavior": [
+        {
+          "condition": "Unsupported kind, ambiguous identity, unsupported selected contract or invalid request.",
+          "outcome": "Return actionable rejection without coercing a type, changing scope or mutating records."
+        },
+        {
+          "condition": "Required state, conditions, evidence, provenance, independence or semantic reasoning is missing.",
+          "outcome": "Expose incomplete content and affected reliance; do not invent observations or a favorable judgment."
+        },
+        {
+          "condition": "Current record or engineering basis changes before retention, or retention effects are unresolved.",
+          "outcome": "Require readback and proportionate reassessment of affected support; preparation never establishes saved state or authorizes blind replay."
+        }
+      ]
+    }
+  ],
+  "consistency_rules": [
+    "MOD-017 owns this external Governance boundary; MOD-007 owns preparation/assessment meanings and MOD-012 owns guided invocation and explicit recording.",
+    "IF-010 remains bounded support inspection and IF-009 remains authority. IF-014 does not supersede either contract.",
+    "MOD-018/010/011 preserve public command and persistence effects; successful storage supplies no semantic approval.",
+    "A human or agent supplies attributable reasoning. No universally authenticated actor identity, evidence discovery, automatic sufficiency engine or verification runner is promised."
+  ],
+  "compatibility_rules": [
+    "Logical contract only: no public command, wire vocabulary, new record type, schema migration or implicit installed capability.",
+    "For selected v2/v4 recording use existing native fields plus explicitly retained supporting attachments where criterion/method detail lacks a field; unknown versions reject under the existing contracts.",
+    "Guidance realization and any future automation need their own qualified delivery; historical judgments retain their original scope."
+  ],
+  "sources": [
+    {
+      "source": "SRC-ASSURANCE-CONTENT-DESIGN",
+      "locator": "IR-004; SR-025–029; SCN-026–029",
+      "basis": "Derive assessor-assisted assurance preparation, explicit retention cooperation and scoped reliance through MOD-007 and IF-014. Preserve actual judgment, command and persistence ownership; target Design only."
+    }
+  ]
+}

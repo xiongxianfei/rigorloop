@@ -1,0 +1,60 @@
+{
+  "id": "AR-058",
+  "type": "allocated-requirement",
+  "title": "Check relationship candidates in their declared scope",
+  "status": "draft",
+  "statement": "The Interpretation and validation Module shall check proposed relationship changes against the declared profile over a complete candidate scope, rejecting unknown types, unresolved endpoints, conflicting authority, invalid containment and forbidden cardinality before the proposal can be accepted.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Relationship edits can duplicate authority, accept invalid facts or produce inconsistent endpoint observations.",
+      "desired_outcome": "Check relationship candidates in their declared scope."
+    },
+    "why": {
+      "rationale": "SR-008 requires one authoritative relationship and state-consistent forward and inverse views."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineering model authors and readers",
+        "Maintainers of MOD-003"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "A relationship is created, replaced or removed in a selected model state."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "MOD-003 within MOD-016 using IF-001 and IF-002."
+      ]
+    },
+    "how": {
+      "approach": "Use explicit candidate and base identities, profile-governed representation, complete scoped checks and truthful outcome reporting."
+    },
+    "how_much": {
+      "scope": "The MOD-003 contribution to SR-008; other owners retain their own obligations."
+    }
+  },
+  "acceptance_criteria": [
+    "Reject unknown relationship or operation kinds before endpoint and consistency checks; do not substitute a known type or profile.",
+    "Identify missing or ambiguous endpoints and incompatible endpoint kinds using candidate-state identity findings.",
+    "Check the complete profile-required cardinality scope, including incoming facts and unchanged entities, against the resulting candidate after removals and replacements.",
+    "For parentage, check exactly one permitted parent and acyclic containment with one authoritative representation; an extra inverse or competing parent representation is invalid.",
+    "Return findings, candidate/base/profile identities and inspected scope; incomplete or unavailable input cannot produce a complete valid conclusion.",
+    "Keep relationship admission separate from whole-model conformance, authority, engineering approval and satisfaction."
+  ],
+  "assumptions": [],
+  "constraints": [
+    "Design allocation only; no implementation or verification claim."
+  ],
+  "allocated_to": "MOD-003",
+  "constrains": [],
+  "sources": [
+    {
+      "source": "SRC-RELATIONSHIP-AUTHORING-DESIGN",
+      "locator": "SR-008; FUNC-008",
+      "basis": "Derive single-fact relationship editing, candidate admission and retention boundaries from SR-008. Proposed Design only; no runtime implementation or satisfaction claim."
+    }
+  ]
+}

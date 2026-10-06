@@ -28,7 +28,7 @@
   "consumes": [],
   "design_limits": [
     "Packaging and Release retain exact archive layouts, hash algorithms, target populations, version domains, and evidence definitions. IF-005 is the proposed artifact boundary, not a replacement format.",
-    "Source-attributed archive/CLI production paths and isolated candidate placement are recorded in realization/software.json and realization/deployment.json. No package is generated or qualified by this task; IR-010 ARs, complete dependency mapping, and the recorded default-output conformance gap remain unresolved.",
+    "Source-attributed archive/CLI production paths and isolated candidate placement are recorded in realization/software.json and realization/deployment.json. The parent MOD-019 README supplies IR-010 composition and the SR-060–063 allocation rationale; SR-088 retains AR-049. No package is generated or qualified by this Design work; complete dependency mapping and the recorded default-output conformance gap remain unresolved.",
     "The requirement-first workflow design supplies the selected SR-079–083 collaboration and AR allocation. Earlier broader deferrals remain only outside that bounded extension; existing runtime observations and installed contracts do not implement the target design."
   ],
   "sources": [

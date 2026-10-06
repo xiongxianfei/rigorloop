@@ -3,7 +3,7 @@
   "type": "interface",
   "title": "Engineering model interpretation and identity checks",
   "status": "draft",
-  "description": "Interpret supplied state-scoped model content under its declared profile and assess identity presence and uniqueness over an explicitly supplied candidate scope. These operations do not retain content or authorize changes.",
+  "description": "Interpret supplied state-scoped content, diagnose declared model rules and prepare explicit isolated migration candidates. Existing scoped identity and relationship checks retain their meanings; no operation writes source content, adopts a profile or grants approval.",
   "operations": [
     {
       "name": "interpret_model_content",
@@ -22,7 +22,8 @@
         "Interpret identities, record kinds, and authoritative references only within the understood supplied scope.",
         "Preserve incomplete acquisition limits in the result; successful interpretation of a portion does not establish full-state completeness.",
         "Make this operation independent of IF-001 interpreted retrieval; raw content and its declaration are supplied by the caller.",
-        "Expose the governing definitions alongside interpretation results. A profile label without accessible rules does not establish an inspectable interpretation context; report unavailable context explicitly."
+        "Expose the governing definitions alongside interpretation results. A profile label without accessible rules does not establish an inspectable interpretation context; report unavailable context explicitly.",
+        "For read-only allocation diagnostics, expose unambiguous known identities and typed facts with field-specific missing, invalid or unresolved allocation/constraint observations even when the whole model is not valid. Preserve interpretation gaps; unknown or unparseable content cannot establish complete scope. This diagnostic use never accepts a write, repairs a definition or asserts whole-model validity."
       ],
       "failure_behavior": [
         {
@@ -63,6 +64,97 @@
           "outcome": "Identify the conflicting records and reject identity validity for that candidate."
         }
       ]
+    },
+    {
+      "name": "check_candidate_relationships",
+      "purpose": "Assess the structural validity of an explicit relationship change over its supplied resulting candidate.",
+      "inputs": [
+        "Expected base state, candidate content identity, declared profile and complete required model membership.",
+        "Explicit create, replace or remove operation with original fact when applicable, intended typed endpoints and authoritative containment or cross-domain representation.",
+        "Interpreted resulting candidate, including unchanged facts needed for endpoint uniqueness, incoming cardinalities and parentage checks; explicit acquisition completeness."
+      ],
+      "preconditions": [],
+      "outputs": [
+        "Complete valid, invalid, unsupported or incomplete relationship-check outcome with findings, checked base/candidate/profile identities and affected scope."
+      ],
+      "behavior": [
+        "Reject unknown relationship or operation kinds before endpoint and consistency checks; do not substitute a known type or profile.",
+        "Identify missing or ambiguous endpoints and incompatible endpoint kinds using candidate-state identity findings.",
+        "Check the complete profile-required cardinality scope, including incoming facts and unchanged entities, against the resulting candidate after removals and replacements.",
+        "For parentage, check exactly one permitted parent and acyclic containment with one authoritative representation; an extra inverse or competing parent representation is invalid.",
+        "Return findings, candidate/base/profile identities and inspected scope; incomplete or unavailable input cannot produce a complete valid conclusion.",
+        "Keep relationship admission separate from whole-model conformance, authority, engineering approval and satisfaction."
+      ],
+      "failure_behavior": [
+        {
+          "condition": "Required profile, identity, incoming cardinality or containment scope cannot be inspected.",
+          "outcome": "Return incomplete or unsupported checking with known findings; do not infer validity from a partial candidate."
+        },
+        {
+          "condition": "The proposal violates a declared type, endpoint, authority representation, cardinality or parentage rule.",
+          "outcome": "Return invalid with the conflicting fact and rule; do not retain or repair the proposal implicitly."
+        }
+      ]
+    },
+    {
+      "name": "check_model_conformance",
+      "purpose": "Diagnose complete selected model rule scope with explicit findings and assessment limits.",
+      "inputs": [
+        "Immutable captured model/state, raw members and membership completeness, exact declared metamodel/profile and governing definitions.",
+        "Explicit subject/rule-family scope, prior/proposed states and decision inputs for transition rules where required, and separately supplied judgments with their actual bases."
+      ],
+      "outputs": [
+        "Exact checked basis and rule families; actionable violations, unsupported/unassessed dependencies and acquisition/assessment completeness.",
+        "Separately attributed supplied judgments and semantic-review needs; no conformance result establishes approval, implementation or satisfaction."
+      ],
+      "behavior": [
+        "Apply MOD-003 conformance-and-migration.md: decode/shape/closed-value checks precede dependent identity, naming, parent/cycle, reference and cardinality checks.",
+        "Use complete relevant membership including incoming facts; do not infer uniqueness or absence from a partial neighborhood.",
+        "Assess lifecycle transitions only with required exact prior/proposed state and decision inputs; preserve valid state-only findings when a transition is unassessed.",
+        "Keep known violations separate from completeness; cancellation or unsupported rules cannot become an unqualified conformance claim.",
+        "Present supplied engineering judgments with original subject, basis and limitations, exposing mismatches without supplying semantic approval."
+      ],
+      "preconditions": [],
+      "failure_behavior": [
+        {
+          "condition": "Required acquisition, profile, rule interpretation or supporting basis is missing, ambiguous or unsupported.",
+          "outcome": "Return identified unavailable or unassessed scope and any attributable known findings; do not substitute profiles or invent complete success."
+        },
+        {
+          "condition": "The request is malformed, has unknown operation/rule selectors, or execution is interrupted.",
+          "outcome": "Distinguish request rejection from actual violations and partial execution; preserve inspected scope without mutation."
+        }
+      ]
+    },
+    {
+      "name": "prepare_model_migration",
+      "purpose": "Transform an explicitly mapped source into an isolated candidate and report target and consumer readiness limits before controlled adoption.",
+      "inputs": [
+        "Immutable source state/content/membership; exact source and target profiles; explicit finite mapping and intentional semantic-change basis.",
+        "Declared consumer inventory/completeness, compatibility criteria and actual candidate-bound observations or accountable judgments; unavailable support remains explicit."
+      ],
+      "outputs": [
+        "Identified complete or unresolved target candidate and source-to-target transformation report with preserved identities, facts and intentional changes.",
+        "Separate target conformance, semantic-review needs, consumer compatibility and controlled-adoption readiness limits; no source write or implicit adoption."
+      ],
+      "behavior": [
+        "Apply the bounded declarative mapping, full source-accounting and isolated target construction in MOD-003 conformance-and-migration.md; unsupported or ambiguous transformations cannot drop or invent content.",
+        "Preserve stable identities and relationship meaning for representation-only changes; expose each declared semantic change and unresolved equivalence.",
+        "Bind target conformance and consumer evidence to exact candidate/profile/mapping; report missing consumers, stale support and required unassessed checks as readiness gaps.",
+        "Return candidate/report for further assessment when unresolved. A complete candidate is not adopted and does not confer change authority.",
+        "Cancellation, failure, abandonment or lost response cannot rewrite source/history/current profile; discard only owned private buffers and report actual candidate availability."
+      ],
+      "preconditions": [],
+      "failure_behavior": [
+        {
+          "condition": "Required acquisition, profile, rule interpretation or supporting basis is missing, ambiguous or unsupported.",
+          "outcome": "Return identified unavailable or unassessed scope and any attributable known findings; do not substitute profiles or invent complete success."
+        },
+        {
+          "condition": "The request is malformed, has unknown operation/rule selectors, or execution is interrupted.",
+          "outcome": "Distinguish request rejection from actual violations and partial execution; preserve inspected scope without mutation."
+        }
+      ]
     }
   ],
   "consistency_rules": [
@@ -73,13 +165,28 @@
   "compatibility_rules": [
     "Support is explicit for the profile declared by the subject state. Unsupported constructs receive a diagnostic rather than a fallback interpretation.",
     "Changes to interpretation or identity-result meaning require reassessing both storage and authoring consumers and preserving historical-state meaning.",
-    "The contract chooses no parser, schema implementation, wire format, or migration mechanism."
+    "Existing logical operations retain their narrower meanings. conformance-and-migration.md selects pure checker/transformer responsibilities in the proposed local model engine; no public wire format, universal historical-profile support or runtime migration writer is implied."
   ],
   "sources": [
     {
       "source": "SRC-ARCHITECTURE-PILOT",
       "locator": "IF-002",
       "basis": "Derive the conformance boundary from SR-002/FUNC-002 and shared SR-012/FUNC-012; preserve SR-014 separation of structural findings and judgments. Supplied scope avoids circular interpretation dependencies."
+    },
+    {
+      "source": "SRC-RELATIONSHIP-AUTHORING-DESIGN",
+      "locator": "SR-008; FUNC-008",
+      "basis": "Derive single-fact relationship editing, candidate admission and retention boundaries from SR-008. Proposed Design only; no runtime implementation or satisfaction claim."
+    },
+    {
+      "source": "SRC-ALLOCATION-IMPACT-DESIGN",
+      "locator": "SR-010; SR-011; SCN-009; SCN-010",
+      "basis": "Derive rule-bound allocation assessment and scope-bound potential-impact result contracts with distinct MOD-004 obligations. Reuse content, interpretation and traversal ownership; proposed Design only."
+    },
+    {
+      "source": "SRC-CONFORMANCE-MIGRATION-DESIGN",
+      "locator": "IR-005; SR-012–015; SCN-011–014",
+      "basis": "Derive whole-model diagnostics, separate mechanical/review presentation and source-preserving explicit migration candidates through MOD-003. Reuse capture, interpretation and scoped-check ownership; proposed Design only."
     }
   ]
 }

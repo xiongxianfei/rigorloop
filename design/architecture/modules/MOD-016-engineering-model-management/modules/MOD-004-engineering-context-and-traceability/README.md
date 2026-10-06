@@ -2,6 +2,8 @@
 
 [MOD-004](module.json) owns derived engineering context, qualified view composition and portable browser output. This is the target design for SR-084–088, not evidence of shipped browser commands. Entity JSON owns Function/AR allocation; [the architecture composition](../../../../README.md#customer-architecture-browser-composition) owns cross-parent cooperation. The current Python/D2 repository browser remains the observed implementation until a coordinated replacement is qualified.
 
+General SR-009 traversal, its IF-013 boundary and AR-056 allocation are defined in [Scoped relationship traversal](traversal.md). The finite Requirements tree remains a presentation grammar, separate from general reachability.
+
 ## Logical responsibility and cooperation
 
 FUNC-007/009 retain definition/rationale presentation and relationship navigation. FUNC-080 composes semantic views; FUNC-081 assembles the reading artifact; FUNC-082 publishes/reconciles the selected derived output. MOD-001/FUNC-079 owns input capture, MOD-003/FUNC-012/013 interprets the declared profile, and MOD-013/FUNC-083 owns packaged-customer qualification. Capture is not baseline retention; publication of local output is not release to customers.
@@ -18,6 +20,18 @@ flowchart LR
 ```
 
 IF-012 is provided by parent MOD-016, consumed by MOD-010. The parent composes its children's contributions; it does not take their direct allocations. MOD-004 consumes IF-001/002 internally. IF-007 remains the Baseline contract. Inputs exclude operational SQLite records and arbitrary filesystem traversal. A source link does not authorize acquisition of its target.
+
+## Current definition and rationale presentation
+
+FUNC-007 supplies SR-004/005 through AR-007/009. Bind one selected model state and profile through IF-001, resolve the requested identity over complete required membership, then compose definition content, current authoritative references and recorded rationale from that same captured state. [Definition storage](../MOD-001-engineering-model-storage/README.md) owns custody and exact association information; IF-002 supplies governing interpretation. MOD-004 owns presentation, not new authoritative facts or decision applicability judgments.
+
+Present identity, type, selected state/profile and the authored engineering meaning: requirement obligation and criteria, Feature capability, Function behavior or Module/Interface responsibility as appropriate. Preserve authoritative-reference provenance and allow the reader to inspect the applicable governing definition. Summaries are derived and cannot replace unavailable required fields with guesses from history. No original conversation or operational Change database is required to read current content.
+
+Expose separate outcomes for definition content, required current context, recorded rationale and optional history. Show known content with each specific unavailable, unsupported, incomplete, failed or unresolved scope. A complete definition with missing rationale remains visible as complete definition content; its explanatory context is incomplete when that rationale is required. Missing optional history is an optional-history limitation. No retrieved rationale does not mean no rationale is needed.
+
+Display all recorded context, choice, rationale, alternatives and consequences only under their actual association basis, together with its author-supplied applicability scope. A rationale for another content/profile state may be shown as historical or unresolved, never silently relabeled current. Preserve the distinction between an explicit author disposition after a harmless edit and an inferred carry-forward. Neither rationale presentation nor a complete model establishes engineering approval or requirement satisfaction.
+
+The derived projection retains selected-state identity, source locators, exact available content and the separate gaps. In the proposed engine this is a pure composition over captured inputs; HTML views or participant-assisted reading consume the same semantic result. Reusable views are keyed to their exact captured basis, and a state change requires a new composition. Memory limits, cancellation or missing referenced inputs produce explicit bounded results. No separate editable rationale cache or automatic history reconstruction is introduced. The present repository browser's Design pages do not by themselves qualify every target retrieval behavior.
 
 ## Technical model: browser components and contracts
 
@@ -85,7 +99,183 @@ The initial engine projects existing admitted JSON. The earlier proposed `proces
 
 ## Web page information design
 
+The [unified system Requirements view](requirement-tree.md) is an optional supplementary architecture view, enabled only at the RigorLoop system root in this scope. Its system-rooted IR/SR/AR tree includes expandable Feature, Function and accountable Module references with one detail panel. It has no separate top-level destination or Module-scoped variant and is available in the repository design browser at [RigorLoop → Requirements](../../../../views/browser/index.html#requirements). The repository renderer explicitly enables this presentation; customer generator delivery remains separately scoped.
+
 This proposed reading design refines SR-085/086 through FUNC-007/009/080/081 and AR-046/047. It reuses the existing requirement basis; it introduces no new IR, Module or approval gate. It defines the customer browser and the RigorLoop reference site's common presentation. The repository browser implements the shared scope and view navigation described under [Integrated browser reading](#integrated-browser-reading); the broader customer generator remains proposed.
+
+AR rows distinguish definition lifecycle from [implementation and verification indicators](requirement-tree.md#ar-implementation-and-verification-indicators). An AR without a selected assessment shows Unknown and Not assessed. Explicitly selected operational accounts expose separate implementation and verification claims, criterion evidence and gaps; changed material bases retain historical detail while withholding current positive claims.
+
+The [delivery assessment format](requirement-delivery-format.md) defines the G0 target for IR/SR/AR Implementation and Verification, with an exact version 2 schema, currentness/conflict rules and preserved version 1 compatibility. The existing Design disclosure remains separate. The repository reader accepts both delivery versions through one normalized projection. Unselected SR/IR claims continue to express absence; accepting a format never supplies an assessment.
+
+### Delivery assessment selection
+
+The [versioned delivery format](requirement-delivery-format.md) owns the exact admission, applicability, conflict and compatibility rules for this proposed cooperation. No live record discovery or judgment generation is delegated to the browser.
+
+<!-- architecture-diagram: select-delivery-assessments -->
+
+```d2
+shape: sequence_diagram
+assessor: "Accountable reporter / verifier"
+records: "Operational records\nMOD-011 / governed CLI"
+producer: "Explicit disclosure preparation"
+importer: "Admission and projection\nMOD-004"
+reader: "Offline Requirements reader\nMOD-004"
+assessor -> records: "Record actual scoped judgment, evidence and concerns"
+producer -> records: "Read explicitly selected records and retained payloads"
+records -> producer: "Original identities, judgments, dispositions and limitations"
+producer -> producer: "Check attribution and complete basis; select safe disclosure"
+producer -> importer: "Delivery v1 or v2; separate optional Design selection"
+importer -> importer: "Admit closed format, identities, coverage and safe resources"
+importer -> importer: "Compare captured basis; reconcile explicit conflicts and dependencies"
+importer -> importer: "Prepare bounded normalized projection or reject before publication"
+importer -> reader: "Embed attributable current states, history and reasons"
+reader -> assessor: "Read separate indicators and exact explanation; no live lookup"
+```
+
+### Requirements view design diagrams
+
+The [Requirements view design](requirement-tree.md) owns the detailed tree, link and navigation rules.
+These diagrams expose its proposed technical composition and offline reader interaction through the existing Logical and Process perspectives.
+They describe the proposed system-only Requirements tab; they do not establish that the view is implemented.
+
+The Logical diagram separates authoritative input from the derived artifact and disposable reader indexes.
+MOD-001 captures content and MOD-003 interprets it; MOD-004 owns projection, assembly and the reader.
+Canonical containment stays IR/SR/AR; the displayed tree additionally includes labeled groups and expandable Feature, Function and Module references, connected to one shared detail panel.
+Arrows describe data dependencies, not execution order or independently deployed services.
+
+<!-- architecture-diagram: requirement-view-structure -->
+
+```d2
+direction: down
+model: "Selected engineering model\nAuthoritative requirements, Features, Functions and Modules"
+interpretation: "Capture and interpretation\nMOD-001 / MOD-003 · IF-001 / IF-002"
+views: "MOD-004 · Views and traceability" {
+  assembly: "Browser projection and assembly\nFUNC-080 / FUNC-081"
+  snapshot: "Derived offline artifact\nRecords, parent edges and typed links"
+  reader: "Optional RigorLoop system view · FUNC-007 / FUNC-009" {
+    navigation: "Architecture scope and view navigation\nRequirements enabled only at system root"
+    index: "Navigation index\nContainment, bounded occurrences and inverse lookup"
+    tree: "One system requirement tree\nIR / SR / AR and expandable Feature / Function / Module references"
+    detail: "One optional detail panel\nSelected requirement, Feature, Function or Module"
+    state: "Disposable reading state\nOccurrence selection, independent expansion, filter and focus"
+    navigation -> tree: "Enabled system Requirements tab"
+    index -> tree: "Requirement hierarchy and direct references"
+    index -> detail: "Definitions and attributed relationships"
+    tree -> detail: "Selected entity and occurrence path"
+    state -> tree: "Tree context"
+    state -> detail: "Selected detail and return context"
+  }
+  assembly -> snapshot: "Matched template and embedded model"
+  snapshot -> reader.navigation: "Explicit system_requirement_view flag"
+  snapshot -> reader.index: "Captured records and relationships"
+}
+model -> interpretation: "Selected content and profile"
+interpretation -> views.assembly: "Validated model and explicit gaps"
+```
+
+The following wireframe shows the optional Requirements tab at the RigorLoop system root and the visible branches inside its one workspace.
+Module scopes retain the standard five architecture perspectives and Summary; Requirements is absent there.
+Edges mean display nesting, with relationship labels distinguishing shared references from requirement containment.
+The RigorLoop shell illustrates placement; report-related names and letter-suffixed IDs are synthetic examples, not repository entities, and repeated FUNC-A boxes refer to the same definition through different occurrence paths.
+The indented [UI wireframe and control rules](requirement-tree.md#ui-wireframe) specify the actual row layout, disclosure controls and adjacent detail panel.
+Every shown branch can collapse independently; Function and Module disclosures reveal summaries rather than recursively expanding the whole engineering graph.
+
+<!-- architecture-diagram: unified-requirement-tree -->
+
+```d2
+direction: down
+navigation: "RigorLoop · System architecture\nSummary / Logical / Process / Development\nPhysical / Scenarios / [Requirements]"
+system: "▼ RigorLoop · Requirements\nOne workspace · Expand all / Collapse all / SR level"
+ir: "▼ IR-A · Export reliable reports"
+features: "▼ Features"
+feature: "▼ ↗ FEAT-A · Export reports\nconfirms"
+realizing: "▼ Realizing Functions"
+feature_function: "▶ ↗ FUNC-A · Generate report\nrealized by · shared reference"
+sr: "▼ SR-A · Export every selected record"
+functions: "▼ Functions"
+sr_function: "▶ ↗ FUNC-A · Generate report\nconfirms · selected occurrence"
+ars: "▼ Allocated requirements"
+ar: "▼ AR-A · Complete report or failure"
+module: "▶ ↗ MOD-A · Report production\nallocated to · one accountable Module"
+ar_function: "▶ ↗ FUNC-A · Generate report\nconstrains · shared reference"
+other: "▶ IR-B · Another stakeholder need"
+navigation -> system: "Optional view enabled only at system root"
+system -> ir: "Requirement branch"
+system -> other: "Collapsed branch"
+ir -> features: "Reference group"
+features -> feature
+feature -> realizing
+realizing -> feature_function
+ir -> sr: "Requirement child"
+sr -> functions: "Reference group"
+functions -> sr_function
+sr -> ars: "Requirement group"
+ars -> ar: "Derived requirement"
+ar -> module: "Accountable Module group"
+ar -> ar_function: "Constrained Functions group"
+```
+
+The Process diagram begins after a generated artifact is opened, independently of the generator, and admits Requirements only at enabled system scope.
+Reading builds disposable indexes once, then expands bounded reference occurrences and selects definitions inside the same workspace.
+The Feature-to-Function step is a separate traversal, not a newly inferred requirement relationship.
+Back restores the prior detail selection; the explicit reveal action restores the selected occurrence's visible path.
+Malformed navigation data prevents tree rendering; a missing selected identity produces a scoped unavailable result rather than another entity's details.
+
+<!-- architecture-diagram: requirement-reader-interaction -->
+
+```d2
+shape: sequence_diagram
+person: "Reader"
+navigation: "Architecture navigation\nSystem / Module scope and views"
+workspace: "Requirements workspace\nTree and local navigation state"
+index: "Embedded model index\nRecords and typed edges"
+details: "Entity detail pane"
+person -> navigation: "Open RigorLoop system root and select Requirements"
+navigation -> navigation: "Check explicit view enablement and system scope"
+unavailable: "If disabled or a Module-scoped Requirements URL is requested" {
+  navigation -> person: "Unavailable view with System / Module Summary links"
+}
+enabled: "If enabled at system scope" {
+  navigation -> workspace: "Admit system Requirements view"
+  workspace -> index: "Build containment and direct / inverse lookups"
+}
+invalid: "If required navigation data is malformed: stop tree rendering" {
+  index -> workspace: "Bounded diagnostic"
+  workspace -> person: "Requirement navigation unavailable"
+}
+valid: "With valid navigation data" {
+  index -> workspace: "System root, IR / SR / AR children and reference groups"
+  person -> workspace: "Expand an IR, its Features and a Feature's Functions"
+  workspace -> index: "Derive bounded occurrences from existing edges"
+  index -> workspace: "Reference rows with independent expansion keys"
+  person -> workspace: "Expand an SR and select a Function reference"
+  workspace -> index: "Resolve selected ID and direct relationships"
+  index -> details: "One Function definition and selected occurrence path"
+  workspace -> workspace: "Preserve occurrence expansion, selection, filter and focus"
+  person -> workspace: "Expand an AR and its accountable Module reference"
+  workspace -> index: "Resolve the AR's allocated_to edge"
+  index -> workspace: "One Module reference and expandable summary"
+  person -> workspace: "Select Module name"
+  workspace -> index: "Resolve the selected Module identity"
+  index -> details: "Module definition in the same panel"
+  person -> workspace: "Collapse a branch, search, or use Back / Reveal in tree"
+  workspace -> workspace: "Apply declared filter and occurrence-state rules"
+  workspace -> details: "Retain or restore the selected definition"
+  workspace -> person: "One tree with preserved selection and return focus"
+}
+missing: "If a requested identity is absent from this snapshot" {
+  index -> workspace: "Selected identity unavailable"
+  workspace -> person: "Explicit unavailable result with return navigation"
+}
+scope_change: "If the reader explicitly changes architecture scope" {
+  person -> navigation: "Select a Module scope or Open Module architecture"
+  navigation -> workspace: "Save system tree reading state"
+  navigation -> person: "Module Summary · no Requirements tab"
+  person -> navigation: "Select RigorLoop root, then Requirements"
+  navigation -> workspace: "Restore saved system tree state"
+  workspace -> person: "Requirements active at RigorLoop system scope"
+}
+```
 
 ### Reader questions and navigation
 
@@ -96,7 +286,7 @@ Project name                         Search by name or ID
 
 Architecture                         Project · System / selected Module
   Project root                       Summary | Logical | Process | Development
-    Parent Modules                   Physical | Scenarios
+    Parent Modules                   Physical | Scenarios | Requirements*
       Child Modules
                                      Selected view explanation and diagrams
 Public capabilities                  Related definitions and applicable rationale
@@ -104,12 +294,13 @@ Public capabilities                  Related definitions and applicable rational
   Architecture browser
 ```
 
-The vertical tree selects scope: one selectable project root contains the Module hierarchy. Horizontal links select Summary or one of the five architecture views for that scope. Do not repeat view links beneath each Module or in a separate system-only sidebar section. Selecting a Module or the project root in the tree preserves the current architecture view; selecting a view preserves scope. From a catalogue or other entity page, selecting a scope opens its Summary. Breadcrumbs expose the current scope and return path. On narrow screens, collapse the scope tree into a labeled keyboard-operable menu while keeping view links horizontally scrollable. Search and essential content must not depend on hover.
+The vertical tree selects scope: one selectable project root contains the Module hierarchy. Horizontal links select Summary or one of the five standard architecture views for that scope. The proposed Requirements tab marked with an asterisk is an optional supplement enabled only at the RigorLoop root; Module pages omit it. Do not repeat view links beneath each Module or in a separate system-only sidebar section. Selecting a Module or the project root preserves a current standard architecture view; selecting a view preserves scope. The explicit exception is leaving system Requirements for a Module scope: open that Module's Summary and retain the system tree state for return. Selecting the RigorLoop root from that Summary opens System Summary, then selecting Requirements restores its saved state. From a catalogue or other entity page, selecting a scope opens its Summary. Breadcrumbs expose the current scope and return path. On narrow screens, collapse the scope tree into a labeled keyboard-operable menu while keeping view links horizontally scrollable. Search and essential content must not depend on hover.
 
 | Destination | Primary content | Boundary |
 | --- | --- | --- |
 | System Summary | Project purpose from an explicitly supplied source, selected model scope/state, top-level responsibilities and known omissions. | No invented purpose, completeness score or approval badge. The Logical view owns the responsibility graph. |
 | System architecture views | Logical composition, runtime topology and selected cross-Module interactions, development organization, deployment/storage, and stakeholder walkthroughs. | Compose significant relationships; do not concatenate every Module's details. A graph does not imply execution order or requirement satisfaction. |
+| Requirements, optional system view | One system-rooted requirement tree with expandable Feature/Function/Module references and a shared detail panel. | Proposed only at the RigorLoop root with explicit enablement; no separate top-level destination or Module variant. Selecting a Module reference keeps system scope; an explicit architecture action changes scope. |
 | Module scope | Expandable parent/child navigation by title and visible ID; opens the current perspective for the selected Module. | Missing view information remains an explicit scoped gap; no silent fallback to Summary or another Module. |
 | Public capabilities | Supplied command/skill catalogues and explicitly described web capabilities, with purpose, access and linked responsible Modules. | Capability descriptions are not architecture views. Omit absent kinds and omit the group when no capabilities are supplied. A renderer alone does not establish a project's public web capability. |
 | Search and linked entity details | Requirements, Features, Functions, Scenarios, Modules and Interfaces by stable identity/title, with typed relationships and sources. | Requirements and Functions retain detail pages, not five artificial architecture views. Search does not expose private operational records. |
@@ -693,3 +884,75 @@ Registered D2 source uses one statement per line: lowercase identifiers with opt
 The generator uses D2 0.9.0 with ELK for derived projections and Dagre for registered design diagrams. It admits the bounded source grammar below before invoking the compiler, rejects executable or external SVG content, and embeds authored SVGs as isolated images. Local embedded WOFF fonts and local fragment references are permitted; arbitrary data URLs and remote resources are rejected. Source and registration digests, qualification, exact diagram text and reading explanation travel in the page. Generation needs no Mermaid, Node or Chromium. Puppeteer and Chromium remain test-only dependencies for real offline reader checks. The customer package's eventual dependency inventory and hostile-input qualification remain separate obligations.
 
 All selected diagrams are prepared before existing generated output is written; a missing compiler or invalid topic cannot silently drop a diagram or replace prior output. `--check` compares regenerated bytes without writes. Tests cover admission vocabulary, source preservation, compiler failures, copied offline page behavior, existing fragments, source-qualified topics and navigation across scopes. The capability-to-Logical and capability-to-Development paths must select the actual bound owner, retain the selected perspective and tree selection, open the registered design with its qualification, and return to the same Module view; it must not create a second capability-specific view or claim implemented customer support. This existing repository generator does not claim the target atomic snapshot-publication/recovery protocol is implemented.
+
+## General traversal views
+
+### Scoped traversal structure
+
+<!-- architecture-diagram: scoped-traversal-structure -->
+
+```d2
+direction: right
+operations: "MOD-010\nRequest and result presentation"
+model: "MOD-016\nIF-013 accountable boundary" {
+  storage: "MOD-001 / IF-001\nCoherent complete source inventory"
+  interpretation: "MOD-003 / IF-002\nSelected-profile interpretation"
+  traversal: "MOD-004 / FUNC-009 / AR-056\nScoped adjacency, exploration and outcomes"
+}
+operations -> model: "Consumes IF-013"
+model.traversal -> model.storage: "Requires exact state and full membership"
+model.traversal -> model.interpretation: "Uses bound interpreted facts"
+```
+
+Arrows above are dependencies. Child participation does not transfer traversal ownership to the parent or content authority to MOD-004.
+
+### Scoped traversal interaction
+
+<!-- architecture-diagram: scoped-traversal-interaction -->
+
+```d2
+shape: sequence_diagram
+caller: "MOD-010"
+model: "MOD-016 / IF-013"
+storage: "MOD-001 / IF-001"
+interpretation: "MOD-003 / IF-002"
+traversal: "MOD-004 / FUNC-009"
+caller -> model: "Selected state, starts, types, direction and limits"
+model -> storage: "Bind coherent state; obtain complete required inventory"
+storage -> interpretation: "Interpret captured bytes in the same state/profile"
+interpretation -> storage: "Facts and explicit interpretation scope/outcome"
+storage -> model: "Bound inventory or acquisition diagnostic"
+model -> traversal: "Admit resolved request and inspect bound graph"
+traversal -> model: "Complete / bounded / incomplete / rejected with provenance"
+model -> caller: "Preserve request, result and all limits"
+```
+
+Admission errors stop before exploration; failed acquisition does not flow as a complete graph. Cross-boundary calls above express designed cooperation, not a promise of separately deployed processes. Storage supplies raw inputs to IF-002; interpretation does not recursively request interpreted retrieval from storage.
+
+## Allocation and impact responsibilities
+
+[Allocation consistency and potential impact](allocation-and-impact.md) define MOD-004's logical participant request/result boundaries for SR-010/011. AR-060/061 preserve distinct rule-based findings and witnessed potential-impact outcomes. These are proposed capabilities, with callable adapters and runtime qualification still separate.
+
+<!-- architecture-diagram: allocation-and-impact-responsibilities -->
+
+```d2
+direction: down
+source: "MOD-001 / IF-001\nCoherent state and full required membership"
+rules: "MOD-003 / IF-002\nProfile rules, known facts and diagnostic gaps"
+analysis: "MOD-004: derived analysis" {
+  allocation: "FUNC-010 / AR-060\nAllocation paths and deciding rules"
+  traversal: "FUNC-009 / AR-056\nEligible graph, finite witnesses and limits"
+  impact: "FUNC-011 / AR-061\nExact influence scope and potential candidates"
+}
+findings: "Allocation findings\nConsistent / violated / deferred / review needed / incomplete"
+candidates: "Potential impact for review\nComplete / bounded / incomplete / rejected"
+source -> analysis.allocation
+rules -> analysis.allocation
+source -> analysis.traversal
+rules -> analysis.traversal
+analysis.traversal -> analysis.impact: "Exact scoped witnesses; no completeness upgrade"
+analysis.allocation -> findings: "Paths, rules and unassessed scope"
+analysis.impact -> candidates: "Changed subjects, influence and supporting paths"
+```
+
+Arrows show data dependencies, not execution order or deployed processes. Both allocation assessment and traversal consume the coherent state-bound inventory from IF-001 and interpreted facts from IF-002. Allocation assessment uses the applicable rule basis and known gaps; traversal uses typed edges and interpretation limits. The analysis results do not write model relationships, decide requirement satisfaction or invalidate evidence. Detailed admission, failure, realization and Scenario walkthroughs remain in the owning contract.

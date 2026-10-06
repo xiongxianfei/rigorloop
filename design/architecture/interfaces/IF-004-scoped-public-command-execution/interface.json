@@ -28,7 +28,8 @@
         "Preserve selected content, optional absence and deliberate omissions with a bounded complete selector index. Serialize the complete bounded result before emission; no cursor or diagnostic-continuation protocol is implied and narrative must not be silently truncated.",
         "For v2/v4 mutations, normalize the selected task into the typed IF-003 request. MOD-011 owns fresh candidate construction, dependency validation and the database transaction. Before commit, establish bounded receipt readiness using the shared MOD-010-owned pure encoder and the selected fixed receipt profile. No SQL, connection, filesystem reader or arbitrary construction/render callback is a v4 request value.",
         "Preview makes no engineering-record or attachment-publication changes and reserves nothing; temporary admission leases and SQLite-internal recovery follow the v4 storage contract. V4 ordinary transactions are recovered internally by SQLite; interrupted store replacement uses explicit maintenance resume. Browser recovery remains separately scoped. No retry implicitly replays old intent or renews a decision basis.",
-        "Keep private invocation diagnostics bounded and independent of semantic results, stdout, authoritative repository bytes, and transaction/recovery behavior. Validate closed logging options at the declared admission boundary, protect owned paths and sensitive input, and expose exact-ID lookup as read-only diagnosis rather than command replay or workflow evidence."
+        "Keep private invocation diagnostics bounded and independent of semantic results, stdout, authoritative repository bytes, and transaction/recovery behavior. Validate closed logging options at the declared admission boundary, protect owned paths and sensitive input, and expose exact-ID lookup as read-only diagnosis rather than command replay or workflow evidence.",
+        "For SR074–077 maintenance, preserve the owning MOD011 contract: transfer composes backup and same-project absent-destination restoration; migration requires source stability, preserved originals and explicit current-consumer disposition. No new public operation or automatic authority is inferred from this composition."
       ],
       "failure_behavior": [
         {
@@ -38,6 +39,35 @@
         {
           "condition": "The selected operation reports conflict, incomplete effects, failed access, or required recovery.",
           "outcome": "Preserve that actual result and its safe next decision boundary without asserting successful progression or silently repeating a mutation."
+        }
+      ]
+    },
+    {
+      "name": "query_subject_history",
+      "purpose": "Admit and present the separately proposed bounded subject-history lookup.",
+      "inputs": [
+        "Explicit associated project, finite retained Change scope, recorded subject key or exact original basis, literal supported filters, page bound and optional state-bound continuation."
+      ],
+      "preconditions": [
+        "The separately proposed history profile and complete cooperating writer/maintenance population are qualified; current v2/v4 support does not imply this capability."
+      ],
+      "outputs": [
+        "Bounded complete result units with originating Change/record/subject identities, normalized selection, captured history state, coverage limits, exhaustion and optional continuation; or explicit invalid, conflict, busy, unavailable or too-large outcome."
+      ],
+      "behavior": [
+        "Apply MOD-011 history-selection.md: MOD-010 owns admission/public presentation; MOD-011 owns recorded associations, coherent read snapshot, ordering and authenticated continuation.",
+        "Preserve original facts and partial/unavailable scope; no semantic relevance, current approval inference, implicit history reconstruction or mutation.",
+        "Keep the separate proposed operation distinct from current ordinary query grammar, schema and no-cursor result semantics.",
+        "MOD-010 performs structural and independently known request checks only; MOD-011 authenticates the opaque continuation and checks bound selection and captured state before any page results, retaining its key and state authority."
+      ],
+      "failure_behavior": [
+        {
+          "condition": "Association/retention coverage is missing, source/profile is unavailable, or selected scope is unreadable.",
+          "outcome": "Expose the actual missing or incomplete scope; do not present an empty complete history or initialize, recover or migrate storage."
+        },
+        {
+          "condition": "Continuation identity/state/selection fails or bounded complete output cannot be formed.",
+          "outcome": "Return the specified bounded rejection without silent restart, partial conflicting page, omitted narrative or cursor advance past an unreturned unit."
         }
       ]
     }
@@ -54,7 +84,8 @@
     "Public contract changes must reconcile all invoking skill guidance, examples, and affected consumers before adoption.",
     "The proposed browser-v1 request/result family is defined by MOD-010 and IF-012; it is not a v2 operational-record command or an observed public entry. Existing command/record behavior remains version-scoped until coordinated adoption.",
     "Skills use supported public tasks, task schemas and opaque revision expectations. They do not need SQL, database schema versions, tables or runtime coordination paths; backend realization is owned by MOD-011. Target tasks cannot be advertised as installed before implementation and qualified adoption.",
-    "The deliberately installed successor executable implements v2/v4 operational commands only. Retained v3 operation clauses describe the preceding package, not a parallel dispatcher. Help/read semantics follow executing package identity; unknown/legacy input and absent v4 storage never trigger backend fallback. Explicit qualified import remains the sole successor legacy-data entrypoint."
+    "The deliberately installed successor executable implements v2/v4 operational commands only. Retained v3 operation clauses describe the preceding package, not a parallel dispatcher. Help/read semantics follow executing package identity; unknown/legacy input and absent v4 storage never trigger backend fallback. Explicit qualified import remains the sole successor legacy-data entrypoint.",
+    "The proposed subject-history operation is separately qualified under MOD-011 history-selection.md. Existing targeted-recording-v2/current v4 requests and installed command availability remain unchanged; no implicit cursor or association migration is introduced."
   ],
   "sources": [
     {
@@ -86,6 +117,16 @@
       "source": "SRC-CUSTOMER-BROWSER-DESIGN",
       "locator": "IF-004",
       "basis": "System and Architecture Design from SR-084–088 and refined SR-060; proposed responsibility, contract and realization only. No implementation, platform qualification or product availability is established."
+    },
+    {
+      "source": "SRC-OPERATIONAL-MAINTENANCE-DESIGN",
+      "locator": "SR-074–077; AR-052–055; SCN-070–073",
+      "basis": "Refine existing maintenance cooperation, same-project transfer, preserved-source migration and resumption boundaries without new requirements, public operations or runtime qualification."
+    },
+    {
+      "source": "SRC-SUBJECT-HISTORY-DESIGN",
+      "locator": "SR-078; FUNC-077; SCN-074",
+      "basis": "Define recorded subject association, coherent bounded history selection and state-bound continuation through existing command/storage owners. Target Design only; current ordinary queries, schema and installed capability remain unchanged."
     }
   ]
 }

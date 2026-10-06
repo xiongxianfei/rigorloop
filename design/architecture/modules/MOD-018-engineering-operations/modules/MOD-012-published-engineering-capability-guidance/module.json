@@ -9,7 +9,12 @@
     "Guide the selected specialist activity and determine an applicable handoff using its governing inputs, limits, and assessments.",
     "Prepare explicit recording operations and interpret actual command outcomes when governed recording is selected.",
     "Consume IF-008 for the adopted-REM model-authoring branch of specialist guidance. Preserve governing source applicability and unresolved scope while retaining published invocation, specialist work, output presentation, and handoff responsibilities.",
-    "Compose requirement-first ownership and handoffs using separate Governance guidance, authority, evidence-support and work/adoption contracts. Keep actor-authored judgments distinct from the routing result."
+    "Compose requirement-first ownership and handoffs using separate Governance guidance, authority, evidence-support and work/adoption contracts. Keep actor-authored judgments distinct from the routing result.",
+    "Consume IF-014 for assessor-supplied assurance content; preserve exact bases and gaps, then arrange explicit actor-authorized IF-004 recording and inspect actual retention. Do not turn preparation or saved outcomes into judgment authority.",
+    "Carry participant-prepared transition/retirement content from IF016 through existing IF004 tasks and exact attachments, with actual retention readback and no invented native Baseline type or automatic filesystem cleanup.",
+    "For SCN034, preserve IF008 prepared task expectations and actual participant results, then use IF014 for supplied assurance content and IF004 for explicitly selected retention; report assistance and unsupported/unassessed scope.",
+    "Consume IF-017 for SCN-035–039, preserving exact learning basis, contributor-confirmation and route limits; hand proposals/observations to existing change-control/assurance and arrange only explicitly selected retention.",
+    "Compose the common SR-050–056 invocation under README.md: bind applicable local scope and authority, resolve complete triggered resources, preserve late-trigger stops, guide the specialist output and distinguish portable result, governed persistence and authorized continuation."
   ],
   "owned_state": [
     "Published capability descriptions and procedural composition at the common invocation boundary; specialist methods, project state, authority, and evidence retain their own owners."
@@ -28,13 +33,17 @@
     "IF-008",
     "IF-009",
     "IF-010",
-    "IF-011"
+    "IF-011",
+    "IF-014",
+    "IF-016",
+    "IF-017"
   ],
   "design_limits": [
     "MOD-008 retains semantic authoring guidance behavior under MOD-017's IF-008 contract; MOD-006/007/009 retain shared authority, assurance, and learning meanings. Consuming guidance does not duplicate these responsibilities.",
-    "SCN-053 retains its guidance contract. SCN-075–082 now have selected guidance, authority, evidence-support and work/adoption cooperation and allocated workflow obligations; other specialist procedures and concrete implementation qualification remain outside this pass.",
+    "README.md defines the common SR-050–056 invocation and its existing contract allocation; SCN-075–082 retain their guidance, authority, evidence-support and work/adoption cooperation with existing workflow ARs. Specialist execution and installed-package qualification remain separate from this target composition.",
     "The current published capability output scope is not expanded by the new REM drafts. Actor-facing instruction packages remain distinct from agent execution and any public API.",
-    "The requirement-first workflow design supplies the selected SR-079–083 collaboration and AR allocation. Earlier broader deferrals remain only outside that bounded extension; existing runtime observations and installed contracts do not implement the target design."
+    "The requirement-first workflow design supplies the selected SR-079–083 collaboration and AR allocation. Earlier broader deferrals remain only outside that bounded extension; existing runtime observations and installed contracts do not implement the target design.",
+    "SCN-026–029 use IF-014 preparation and existing IF-004 recording. Semantic content without a native record field uses explicit retained support; no new task/schema or installed-guidance qualification is implied."
   ],
   "sources": [
     {
@@ -56,6 +65,31 @@
       "source": "SRC-WORKFLOW-DESIGN",
       "locator": "MOD-012",
       "basis": "Draft integrated design from the accepted requirement-first basis. This defines target responsibility and cooperation, not installed capability, design approval, runtime evidence or SQLite adoption."
+    },
+    {
+      "source": "SRC-ASSURANCE-CONTENT-DESIGN",
+      "locator": "IR-004; SR-025–029; SCN-026–029",
+      "basis": "Derive assessor-assisted assurance preparation, explicit retention cooperation and scoped reliance through MOD-007 and IF-014. Preserve actual judgment, command and persistence ownership; target Design only."
+    },
+    {
+      "source": "SRC-BASELINE-STATE-DESIGN",
+      "locator": "SR-020–024; SCN-019–022/025",
+      "basis": "Define immutable baseline custody, original-meaning comparison/recovery, attributable transition preparation and dependency-safe retirement. Preserve selective retention and separate action authority, operational maintenance and actual execution; proposed Design only."
+    },
+    {
+      "source": "SRC-AUTHORING-GUIDANCE-DESIGN",
+      "locator": "IR-006; SR-032–034; SCN-031–034/040",
+      "basis": "Define source-bound guidance selection, bounded authoring/correction and participant-assisted semantic task assessment, with justified MOD-008 allocation and existing assurance/recording cooperation. Target Design only; no observed usability or installed capability claim."
+    },
+    {
+      "source": "SRC-LESSON-IMPROVEMENT-DESIGN",
+      "locator": "IR-007; SR-035–038; SCN-035–039",
+      "basis": "Refine supported lesson characterization, bounded contextual use, accountable proposals and opportunity-based effect assessment through MOD-009 and parent IF-017. Preserve existing Learn confirmation/custody/route boundaries and separate controlled adoption, assurance and retention. Proposed Design only."
+    },
+    {
+      "source": "SRC-PUBLISHED-SKILLS",
+      "locator": "IR-009; SR-050–056; README.md#common-invocation-and-ownership",
+      "basis": "Compose existing common capability Functions and detailed obligations without duplicating specialist or provider ownership. Explain retained allocation without synthetic ARs; target Design only, with actual invocation and package qualification separate."
     }
   ]
 }

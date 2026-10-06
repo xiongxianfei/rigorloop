@@ -1,0 +1,56 @@
+{
+  "id": "IF-013",
+  "type": "interface",
+  "title": "Scoped engineering relationship traversal",
+  "status": "draft",
+  "description": "Project model supplies attributable traversal of a selected engineering state to command consumers, composing child-owned content, interpretation and traversal without publishing or mutating definitions.",
+  "operations": [
+    {
+      "name": "traverse_relationships",
+      "purpose": "Return complete, explicitly bounded or incomplete reachability for one admitted scope.",
+      "inputs": [
+        "One project and selected-state reference, declared profile, nonempty starting identities, selected relationship types and outgoing, incoming or both direction.",
+        "Optional nonnegative maximum depth and entity-count bound no smaller than the unique start count; absence means no requested bound."
+      ],
+      "preconditions": [],
+      "outputs": [
+        "Exact admitted request and captured state/profile/membership identity; separate acquisition and exploration completeness.",
+        "Distinct reachable entities, finite supporting typed edges and witness paths with authored orientation and provenance.",
+        "Complete, bounded, incomplete or rejected outcome; explicit requested bounds, omitted/unfinished scope, diagnostics and reasons."
+      ],
+      "behavior": [
+        "MOD-016 composes MOD-001 IF-001 state binding/content, MOD-003 IF-002 interpretation and MOD-004 FUNC-009/AR-056 traversal; child allocations and state authority remain unchanged.",
+        "Require the complete applicable relationship inventory, including incoming edges from entities outside the starting neighborhood. A caller-selected subset cannot silently become the whole selected model.",
+        "Apply the admission, deterministic breadth-first traversal, limit semantics and outcome contract in MOD-004 traversal.md. Current-state selection is bound to one coherent read state before exploration; do not switch to a retained Baseline or mix later reads.",
+        "Return derived read results only. Graph connectivity does not approve changes, determine impact, establish requirement satisfaction or confirm baseline retention."
+      ],
+      "failure_behavior": [
+        {
+          "condition": "A start is absent/ambiguous, type/direction/limit is unsupported or invalid, or selection spans projects/states/baselines.",
+          "outcome": "Reject with the requested scope and actionable diagnostic; do not reinterpret the request."
+        },
+        {
+          "condition": "Acquisition cannot establish coherent complete input, interpretation fails, a selected edge is unresolved, or traversal is interrupted/exhausts resources.",
+          "outcome": "Return incomplete with separately stated acquisition/exploration scope, known attributable observations and unresolved frontier; never report complete empty reachability."
+        }
+      ]
+    }
+  ],
+  "consistency_rules": [
+    "Every entity, edge and diagnostic binds the same selected state/profile. Reading current content requires an established consistent read, not before/after timestamps or a best-effort mutable scan.",
+    "Requested limits qualify the result even if fulfilled. Environmental resource limits or cancellation never become a requested bound or a complete result.",
+    "MOD-010 preserves all four outcomes, request and source attribution. It does not discard partial-result diagnostics or infer completion from a successful dispatch."
+  ],
+  "compatibility_rules": [
+    "This logical read contract does not add a callable CLI command, wire version or entry to the current supported-capabilities catalogue. Admission and user syntax remain MOD-010-owned when realized.",
+    "IF-007 retains Baseline inspection meaning and IF-012 retains snapshot publication/recovery meaning. Neither is repurposed for traversal.",
+    "Unknown operations, types, directions and outcome values reject before dependent consistency or result processing; no fallback to outgoing or unrestricted scope."
+  ],
+  "sources": [
+    {
+      "source": "SRC-SCOPED-TRAVERSAL-DESIGN",
+      "locator": "SR-009; SCN-008; FUNC-009",
+      "basis": "Derive selected-state traversal responsibility, admission/completeness outcomes and necessary allocation from existing obligations. Proposed architecture only; no implementation, verification or satisfaction claim."
+    }
+  ]
+}

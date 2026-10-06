@@ -672,3 +672,57 @@ Refine IR-003/008 and existing SR-006/023/024/027–029/042/043/082/083; reuse t
 ## SRC-SQLITE-ADOPTION
 
 Source: current requirement-first SQLite adoption working-tree implementation, inspected on 2026-10-04. Named source paths in each realization facet identify the current binding; no source inspection asserts passing execution, installation, migration or publication. Earlier file-journal and Proposal-first observations retain their original scope at recoverable commit `39be9c81`; they are not current runtime descriptions. Requirement and Scenario refinements preserve the existing stakeholder needs while reconciling transaction recovery and explicit maintenance with the accepted Module design.
+
+## SRC-SCOPED-TRAVERSAL-DESIGN
+
+Source: the user’s instruction to continue concrete Design after the requirement evaluation exposed SR-009’s traversal and allocation gap.
+Derive the bounded SCN-008 cooperation from unchanged SR-009 and FUNC-009: MOD-004 owns general traversal and its allocated obligation; MOD-016 supplies a consumer-focused read contract to MOD-010 using existing definition and interpretation owners.
+This source records architecture rationale and proposed semantics only; review judgments and execution evidence remain operational records.
+
+## SRC-RELATIONSHIP-AUTHORING-DESIGN
+
+Design derivation from SR-008 and FUNC-008: single authoritative relationship facts, state-bound candidate admission and retention, and derived endpoint views. AR-057–059 allocate distinct editing, validation and storage obligations. Existing identity, interpretation and traversal allocations remain with their owners. This source records proposed architecture and rationale, not implementation or satisfaction.
+
+## SRC-ALLOCATION-IMPACT-DESIGN
+
+Architecture derivation from SR-010/011, FUNC-010/011 and SCN-009/010. MOD-004 owns attributable rule-based allocation assessment and witnessed potential-impact composition through AR-060/061; existing content, interpretation and traversal responsibilities are reused. This records target Design and rationale, not execution, implementation or requirement satisfaction.
+
+## SRC-ASSURANCE-CONTENT-DESIGN
+
+Architecture derivation from IR-004, SR-025–029, FUNC-027–031 and SCN-026–029 under the user's instruction to complete the Design assessment. AR-062–066 allocate distinct assurance-content obligations to MOD-007. MOD-017 supplies IF-014 preparation to MOD-012, with explicit participant-mediated recording through existing Operations. Assessor-assisted realization preserves separate method, observation, applicability, judgment, authority and actual retention meanings. This records proposed Design and rationale, not installed guidance, executed verification or satisfaction.
+
+## SRC-CONFORMANCE-MIGRATION-DESIGN
+
+Architecture derivation from IR-005, SR-012–015 and SCN-011–014 under the user's instruction to complete this Design pass. Existing AR-010 retains original-profile interpretation; AR-067–069 assign complete conformance diagnostics, separate mechanical/review presentation and source-preserving migration preparation to MOD-003. IF-001 captures attributable raw inputs before pure IF-002 checking and transformation. Candidate preparation leaves adoption and operational-record migration separate. This records proposed Design and rationale, not runtime availability, implementation, executed verification or satisfaction.
+
+## SRC-BASELINE-STATE-DESIGN
+
+Architecture derivation for SR-020–024 and SCN-019–022/025: [baseline state control](../architecture/modules/MOD-017-engineering-governance/state-control.md), immutable custody, original-meaning comparison/recovery and accountable transition/retirement. This source records proposed architecture rationale, not implementation or satisfaction.
+
+## SRC-RESUMPTION-AUTHORITY-DESIGN
+
+Architecture derivation from unchanged SR-006/007, FUNC-025/026 and SCN-023/024: [Change control](../architecture/modules/MOD-017-engineering-governance/modules/MOD-006-engineering-change-control/README.md) owns current handoff interpretation and applicable action authority through AR-077/078 and existing IF-011/009. This records proposed architecture rationale; retained review judgments and execution evidence remain operational records.
+
+## SRC-OPERATIONAL-MAINTENANCE-DESIGN
+
+Architecture refinement from unchanged SR-074–077, AR-052–055, FUNC-074–076 and SCN-070–073. [Work record storage](../architecture/modules/MOD-018-engineering-operations/modules/MOD-011-operational-record-persistence/README.md#database-schema-backup-and-migration) owns finite coherent backup, explicit same-project transfer and preserved-source migration; [the system composition](../architecture/README.md#controlled-work-and-recoverability) connects these outcomes to IR-003 resumption, authority, Baselines and selective retention. This records Design rationale; review judgments, exact assessed identities and execution evidence remain operational records.
+
+## SRC-CURRENT-KNOWLEDGE-DESIGN
+
+Architecture refinement from unchanged IR-001, SR-001–005, AR-001–009 and SCN-001–006. The owning Definition storage, Definition editing and Views and traceability contracts define exact retained content, complete identity scope, supported same-entity revisions and separately applicable current rationale through existing IF-001/002. This records Design rationale; independent judgments and actual execution evidence remain operational records.
+
+## SRC-AUTHORING-GUIDANCE-DESIGN
+
+User-authorized Design assessment of IR-006 and SR-032–034, with existing FEAT-010, FUNC-032–034 and SCN-031–034/040. Derive only the missing MOD-008 source-selection, bounded-correction and prepared-task obligations, preserving canonical method ownership and existing assurance/recording boundaries. This source records proposed Design rationale, not participant results, installed implementation or satisfaction.
+
+## SRC-LESSON-IMPROVEMENT-DESIGN
+
+User-authorized Design assessment of IR-007 and SR-035–038 with existing FEAT-011, FUNC-035–038 and SCN-035–039. Derive missing MOD-009 obligations and IF-017 preparation while preserving existing Learn confirmation/custody, controlled adoption, assurance and retention owners. This is proposed Design rationale, not an executed learning session or evidence of effectiveness.
+
+## SRC-SUBJECT-HISTORY-DESIGN
+
+User-authorized SR-078 Design extends existing command/storage responsibility through FUNC-077, AR-086/087 and proposed IF-003/004 history operations. Explicit recorded identity, retained-scope completeness and state-bound continuation preserve historical meaning. Current runtime contracts, selective retention and separate adoption remain intact; no whole-IR-008 coverage or implementation conclusion follows.
+
+## SRC-ADOPTION-DEPENDENCY-REFINEMENT
+
+User-approved refinement of IR-009, SR-083 and SCN-082 on 2026-10-06: adoption requires compatible recording for selected work; historical import is unnecessary when there are no earlier dependencies, while necessary unavailable migration blocks affected adoption. This narrows the earlier unconditional migration-independent promise to reconcile the [Constitution successor policy](../../CONSTITUTION.md#workflow-and-review). Preserve actual authority, work and historical judgments; authoring, review and portable invocation do not activate a workflow. Supporting allocation and design follow this refined obligation; review judgments and execution evidence remain operational records.

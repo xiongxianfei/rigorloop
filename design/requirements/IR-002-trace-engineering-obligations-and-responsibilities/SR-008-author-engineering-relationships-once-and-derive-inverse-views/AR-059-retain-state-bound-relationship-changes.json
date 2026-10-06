@@ -1,0 +1,60 @@
+{
+  "id": "AR-059",
+  "type": "allocated-requirement",
+  "title": "Retain state-bound relationship changes",
+  "status": "draft",
+  "statement": "The Definition storage Module shall retain a relationship change only against its checked base and complete candidate, preserve one authoritative fact across the declared write scope, and report confirmed or incomplete effects without accepting stale or invalid relationship proposals.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Relationship edits can duplicate authority, accept invalid facts or produce inconsistent endpoint observations.",
+      "desired_outcome": "Retain state-bound relationship changes."
+    },
+    "why": {
+      "rationale": "SR-008 requires one authoritative relationship and state-consistent forward and inverse views."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineering model authors and readers",
+        "Maintainers of MOD-001"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "A relationship is created, replaced or removed in a selected model state."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "MOD-001 within MOD-016 using IF-001 and IF-002."
+      ]
+    },
+    "how": {
+      "approach": "Use explicit candidate and base identities, profile-governed representation, complete scoped checks and truthful outcome reporting."
+    },
+    "how_much": {
+      "scope": "The MOD-001 contribution to SR-008; other owners retain their own obligations."
+    }
+  },
+  "acceptance_criteria": [
+    "Bind the exact affected definitions, containment changes, base state, profile and candidate content to one requested relationship change; do not retain an independently authored inverse.",
+    "Before acceptance, obtain complete applicable IF-002 identity and relationship findings for the actual resulting candidate and enforce the expected base at publication.",
+    "Reject or re-evaluate a changed base, candidate or profile without silently overwriting intervening work; report invalid or unsupported candidates without a successful save.",
+    "Confirm acceptance only when all requested effects are established and identify the resulting state; replacement/removal must no longer expose the old fact as current.",
+    "After interruption or uncertain partial effects, report known changed and unresolved scope without confirmed acceptance, automatic retry, assumed rollback or mixing states.",
+    "Preserve previous selected-state meaning and provide content-bound resulting-state read references for endpoint derivation; retention does not renew approval or evidence applicability."
+  ],
+  "assumptions": [],
+  "constraints": [
+    "Design allocation only; no implementation or verification claim."
+  ],
+  "allocated_to": "MOD-001",
+  "constrains": [],
+  "sources": [
+    {
+      "source": "SRC-RELATIONSHIP-AUTHORING-DESIGN",
+      "locator": "SR-008; FUNC-008",
+      "basis": "Derive single-fact relationship editing, candidate admission and retention boundaries from SR-008. Proposed Design only; no runtime implementation or satisfaction claim."
+    }
+  ]
+}

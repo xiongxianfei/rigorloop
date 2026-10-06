@@ -1,0 +1,62 @@
+{
+  "id": "AR-056",
+  "type": "allocated-requirement",
+  "title": "Preserve scoped traversal completeness and attribution",
+  "status": "draft",
+  "statement": "The Views and traceability Module shall traverse the complete applicable relationship inventory of one selected model state, deriving incoming navigation from authored facts, terminating cycles, and preserving exact request, path provenance, explicit boundaries and incomplete outcomes through its result.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "A finite navigation tree or partial inventory can conceal reachable obligations and appear complete.",
+      "desired_outcome": "The traversal owner returns the full requested reachability or an attributable bounded/incomplete result."
+    },
+    "why": {
+      "rationale": "SR-009 requires completeness to refer to the actual selected types, direction, state and limits, including incoming paths and cyclic graphs."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineers following responsibility paths",
+        "Command and view consumers of model traversal"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "When a participant requests or changes a relationship traversal scope."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "MOD-004 traversal responsibility inside MOD-016; external consumers use IF-013."
+      ]
+    },
+    "how": {
+      "approach": "Compose state-bound content and interpretation from IF-001/IF-002, build attributable forward/inverse adjacency, use finite visited traversal, and retain admission, acquisition and exploration outcomes separately."
+    },
+    "how_much": {
+      "scope": "Covers all six SR-009 criteria for the traversal contribution. No implicit depth/result cap or latency guarantee. Supporting storage and interpretation obligations keep their existing owners."
+    }
+  },
+  "acceptance_criteria": [
+    "For an admitted request and complete finite applicable inventory, return every reachable entity and finite typed edge/path support under the selected types and direction, with no hidden depth or count cutoff.",
+    "Derive incoming and bidirectional exploration from the same authored edges, retaining original source, target, relationship and provenance.",
+    "Process each entity at its minimum distance from the selected starts; terminate valid cross-domain cycles without dropping reachable entities or treating them as invalid requirement parentage.",
+    "For requested depth or entity-count limits, identify their exact semantics, delivered boundary and any omitted frontier; distinguish fulfilled bounded selection from unrestricted completeness.",
+    "If inventory acquisition, interpretation or traversal is incomplete or interrupted, preserve usable state-bound observations, affected scope and reason, without returning complete empty reachability.",
+    "Reject unresolved or ambiguous starts, unknown relationship types, unsupported direction and mixed project/state/baseline selection with actionable diagnostics and no substituted scope."
+  ],
+  "assumptions": [],
+  "constraints": [
+    "Design allocation only; existing reader navigation and schema checks do not establish this obligation as implemented or verified."
+  ],
+  "allocated_to": "MOD-004",
+  "constrains": [
+    "FUNC-009"
+  ],
+  "sources": [
+    {
+      "source": "SRC-SCOPED-TRAVERSAL-DESIGN",
+      "locator": "SR-009; SCN-008; FUNC-009",
+      "basis": "Derive selected-state traversal responsibility, admission/completeness outcomes and necessary allocation from existing obligations. Proposed architecture only; no implementation, verification or satisfaction claim."
+    }
+  ]
+}

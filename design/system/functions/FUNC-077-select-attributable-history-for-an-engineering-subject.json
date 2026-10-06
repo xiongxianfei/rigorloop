@@ -33,12 +33,17 @@
       "outcome": "Reject the stale continuation without partial results or silent merging; request a fresh explicit selection."
     }
   ],
-  "unallocated_reason": "The local operational-history extension is draft system analysis. Module/Interface and AR allocation are deferred to Architecture Allocation; existing v3 facets do not establish realization of this behavior.",
   "sources": [
     {
       "source": "SRC-LOCAL-OPERATIONAL-ANALYSIS",
       "locator": "FUNC-077",
       "basis": "Draft derivation from the refined IRs and RR proposal; no approval, implementation or satisfaction claim."
+    },
+    {
+      "source": "SRC-SUBJECT-HISTORY-DESIGN",
+      "locator": "SR-078; FUNC-077; SCN-074",
+      "basis": "Define recorded subject association, coherent bounded history selection and state-bound continuation through existing command/storage owners. Target Design only; current ordinary queries, schema and installed capability remain unchanged."
     }
-  ]
+  ],
+  "allocated_to": "MOD-011"
 }

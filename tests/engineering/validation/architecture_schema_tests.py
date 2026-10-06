@@ -1512,5 +1512,123 @@ class InterfaceExposureTests(unittest.TestCase):
                     validate_interface_exposure(records)
 
 
+class DeliveryDisclosureSchemaTests(unittest.TestCase):
+    """Structural Design examples only; no importer or real assessment proof."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.schema = json.loads((ROOT / "design/support/requirement-delivery-v2.schema.json").read_text())
+        Draft202012Validator.check_schema(cls.schema)
+        cls.validator = Draft202012Validator(cls.schema)
+
+    def fixture(self, kind="system-requirement"):
+        digest = "sha256:" + "a" * 64  # Deliberately synthetic; identity semantics are a separate contract.
+        subject = {"path": "tests/fixtures/example.txt", "identity": digest}
+        source = {"change": "synthetic-design-example", "kind": "evidence", "id": "observation", "identity": digest}
+        rid = {"initial-requirement": "IR-900", "system-requirement": "SR-900", "allocated-requirement": "AR-900"}[kind]
+        claim = {"identity": digest, "state": "partial", "actor": "Synthetic author", "reported_at": "2026-10-06T00:00:00Z",
+                 "source": source, "summary": "One contribution exists; the remaining outcome is unproved.",
+                 "limitations": ["Synthetic structural example only."], "subjects": [subject],
+                 "applicability": {"state": "current", "explanation": "Explicit synthetic disposition."},
+                 "criteria": [{"key": "O1" if kind == "initial-requirement" else "C1", "state": "partial",
+                               "explanation": "Partial contribution, with its gap retained.", "evidence": [{"source": source,
+                               "summary": "Synthetic observation.", "subjects": [subject], "limitations": []}],
+                               "gaps": ["The remaining outcome is not established."]}],
+                 "membership": None, "child_support": [], "nonreliance": [], "design_support": [],
+                 "concerns": [{"id": "remaining-outcome", "source": source, "state": "open",
+                               "explanation": "Required outcome remains unresolved.", "disposition": None}]}
+        verification = deepcopy(claim)
+        verification.update(state="not-assessed", source={**source, "kind": "verification"})
+        verification["criteria"][0]["state"] = "not-assessed"
+        basis = None
+        if kind == "initial-requirement":
+            basis = {"identity": digest, "outcomes": [{"key": "O1", "text": "An assessable synthetic stakeholder outcome.", "sources": [subject]}],
+                     "review": {"source": {**source, "kind": "review"}, "purpose": "design", "judgment": "approved",
+                                "actor": "Synthetic reviewer", "reported_at": "2026-10-06T00:00:00Z", "scope": "Synthetic whole need.",
+                                "summary": "The example outcome basis is reviewed.", "subjects": [subject]}}
+        account = {"requirement": rid, "kind": kind, "definition": {"path": "design/requirements/example.json", "identity": digest,
+                   "content": json.dumps({"id": rid, "type": kind, **({"statement": "Synthetic stakeholder need."} if kind == "initial-requirement" else {"acceptance_criteria": ["Synthetic outcome."]})})},
+                   "scope": "Synthetic whole requirement.", "outcome_basis": basis, "implementation": claim, "verification": verification}
+        return {"format_version": 2, "assessments": [account], "resolutions": []}
+
+    def changed(self, document, path, value):
+        result = deepcopy(document)
+        target = result
+        for key in path[:-1]:
+            target = target[key]
+        target[path[-1]] = value
+        return result
+
+    def test_structural_examples_accept_each_requirement_kind_and_explicit_absence(self):
+        for kind in ("initial-requirement", "system-requirement", "allocated-requirement"):
+            with self.subTest(kind=kind):
+                document = self.fixture(kind)
+                self.validator.validate(document)
+                document["assessments"][0].update(implementation=None, verification=None, outcome_basis=None)
+                self.validator.validate(document)
+        self.validator.validate({"format_version": 2, "assessments": [], "resolutions": []})
+
+    def test_unknown_closed_vocabulary_rejects_from_valid_baselines(self):
+        document = self.fixture("initial-requirement")
+        self.validator.validate(document)
+        account = ("assessments", 0)
+        paths = [("format_version",), account + ("kind",),
+                 account + ("implementation", "source", "kind"),
+                 account + ("outcome_basis", "review", "purpose"),
+                 account + ("outcome_basis", "review", "judgment"),
+                 account + ("implementation", "concerns", 0, "state")]
+        for claim in ("implementation", "verification"):
+            paths += [account + (claim, "state"), account + (claim, "criteria", 0, "state"),
+                      account + (claim, "applicability", "state")]
+        for path in paths:
+            with self.subTest(path=path), self.assertRaises(ValidationError):
+                self.validator.validate(self.changed(document, path, 999 if path == ("format_version",) else "future-value"))
+        source = document["assessments"][0]["verification"]["source"]
+        digest = source["identity"]
+        resolution = {"requirement": "IR-900", "kind": "verification", "selected": digest,
+                      "superseded": [{"claim": "sha256:" + "b" * 64, "disposition": source,
+                                      "explanation": "Synthetic correction disposition.", "addressed": ["criterion:O1"]}],
+                      "source": source, "actor": "Synthetic verifier", "reported_at": "2026-10-06T00:00:00Z",
+                      "explanation": "Explicit synthetic selection.", "subjects": document["assessments"][0]["verification"]["subjects"],
+                      "applicability": {"state": "current", "explanation": "Explicit synthetic disposition."}}
+        document["resolutions"] = [resolution]
+        self.validator.validate(document)
+        with self.assertRaises(ValidationError):
+            self.validator.validate(self.changed(document, ("resolutions", 0, "kind"), "future-value"))
+
+    def test_absent_ir_basis_cannot_carry_claims_and_non_ir_cannot_carry_outcomes(self):
+        document = self.fixture("initial-requirement")
+        self.validator.validate(document)
+        for path, value in [(("assessments", 0, "outcome_basis"), None),
+                            (("assessments", 0, "kind"), "system-requirement")]:
+            with self.subTest(path=path), self.assertRaises(ValidationError):
+                self.validator.validate(self.changed(document, path, value))
+
+    def test_required_nullable_fields_and_unknown_fields_are_not_interchangeable(self):
+        document = self.fixture()
+        self.validator.validate(document)
+        for owner in [(), ("assessments", 0), ("assessments", 0, "implementation"),
+                      ("assessments", 0, "implementation", "criteria", 0)]:
+            changed = deepcopy(document)
+            target = changed
+            for key in owner:
+                target = target[key]
+            target["unexpected"] = True
+            with self.subTest(owner=owner), self.assertRaises(ValidationError):
+                self.validator.validate(changed)
+        del document["assessments"][0]["outcome_basis"]
+        with self.assertRaises(ValidationError):
+            self.validator.validate(document)
+
+    def test_structural_resource_bounds_reject_excess_without_truncation(self):
+        document = self.fixture()
+        self.validator.validate(document)
+        for path, value in [(("assessments",), document["assessments"] * 257),
+                            (("assessments", 0, "scope"), "x" * 16385),
+                            (("assessments", 0, "definition", "content"), "x" * 262145)]:
+            with self.subTest(path=path), self.assertRaises(ValidationError):
+                self.validator.validate(self.changed(document, path, value))
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -1,0 +1,22 @@
+# Presentation registration; owning semantics are in README.md and improvement.md.
+version = 1
+
+[[topics]]
+id = "lesson-to-controlled-improvement"
+title = "From supported lesson to controlled improvement"
+view = "process"
+kind = "sequence"
+qualification = "proposed"
+source = "README.md"
+anchor = "lesson-to-controlled-improvement"
+description = "Separate supported reuse, proposed improvement, actual authority and owner-produced adopted scope."
+
+[[topics]]
+id = "consult-lessons-and-assess-effects"
+title = "Consult lessons and assess observed effects"
+view = "process"
+kind = "sequence"
+qualification = "proposed"
+source = "README.md"
+anchor = "consult-lessons-and-assess-effects"
+description = "Compare lesson context and later opportunities while preserving missing evidence, adverse effects and separate retention."

@@ -2,7 +2,7 @@
   "id": "SCN-042",
   "type": "scenario",
   "title": "Read a selected assessment with its explanation and scope",
-  "status": "draft",
+  "status": "confirmed",
   "actor": "A reviewer preparing to assess recorded engineering work",
   "goal": "Obtain the requested recorded assessment and its explanation with enough scope and state information to understand what was read.",
   "context": "The reviewer needs one selected assessment rather than all records and unrelated diagnostic detail. The selected assessment may be retained in local history independently of the current model.",
@@ -77,6 +77,11 @@
       "source": "SRC-SQLITE-ADOPTION",
       "locator": "SCN-042",
       "basis": "Reconcile existing use/behavior with current explicit task selection, coherent SQLite outcomes and attributable judgments; no new stakeholder need or runtime qualification is inferred."
+    },
+    {
+      "source": "SRC-PUBLISHED-CLI",
+      "locator": "SCN-042; IR-008; SR-040; SR-041; SR-046",
+      "basis": "Current analysis confirms this selected-assessment stakeholder situation, its single owning IR and primary FEAT-012, and its downstream obligations for explicit admission, complete scoped reads and truthful results. Confirmation describes analysis knowledge; it does not establish runtime implementation, evidence availability or verification."
     }
   ]
 }

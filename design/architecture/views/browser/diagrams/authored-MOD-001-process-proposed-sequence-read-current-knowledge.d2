@@ -1,0 +1,12 @@
+shape: sequence_diagram
+reader: "Later-session reader"
+views: "Views and traceability\nMOD-004"
+store: "Definition storage\nMOD-001"
+rules: "Interpretation and validation\nMOD-003"
+reader -> views: "Select entity and current or retained state"
+views -> store: "IF-001: acquire one coherent state and identity scope"
+store -> rules: "IF-002: interpret captured content and profile"
+rules -> store: "Return governing definitions and explicit gaps"
+store -> views: "Return resolved content, references and rationale basis"
+views -> views: "Separate definition, required context and rationale outcomes"
+views -> reader: "Present current meaning and recorded limits without replay"

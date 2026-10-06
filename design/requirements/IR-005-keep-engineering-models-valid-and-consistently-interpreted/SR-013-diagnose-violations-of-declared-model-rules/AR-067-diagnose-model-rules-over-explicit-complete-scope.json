@@ -1,0 +1,63 @@
+{
+  "id": "AR-067",
+  "type": "allocated-requirement",
+  "title": "Diagnose model rules over explicit complete scope",
+  "status": "draft",
+  "statement": "The Interpretation and validation Module shall diagnose the selected model against its declared mechanically decidable rules with actionable subject and rule attribution, preserving invalid values, incomplete acquisition and unassessed transitions without an unsupported conformance claim.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Whole-model checks and migration preparation can hide incomplete rules or alter meaning while appearing valid.",
+      "desired_outcome": "Diagnose model rules over explicit complete scope."
+    },
+    "why": {
+      "rationale": "SR-013 requires accountable diagnostics and candidate outcomes within MOD-003."
+    },
+    "who": {
+      "stakeholders": [
+        "Model authors and maintainers",
+        "Engineering reviewers",
+        "MOD-003 maintainers"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "A participant requests selected-state conformance or an explicit model migration candidate."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "MOD-003 logical request boundary and pure IF-002 operations over IF-001 captured input."
+      ]
+    },
+    "how": {
+      "approach": "Bind explicit source/profile/mapping scope, preserve all relevant findings and missingness, and return separate attributable mechanical, semantic and adoption limits."
+    },
+    "how_much": {
+      "scope": "All parent SR-013 criteria for the selected finite model; capture custody, existing interpretation and later adoption retain their separate owners."
+    }
+  },
+  "acceptance_criteria": [
+    "Check record shape, required values, property names and closed vocabularies before dependent consistency, identifying malformed members even when their entity identity is unreadable.",
+    "Assess complete relevant identity, naming, requirement-parent, cycle and typed-reference scope; preserve incoming dependencies and diagnose duplicate or ambiguous endpoints without selecting one arbitrarily.",
+    "Apply declared cardinalities from authoritative facts, including exactly one owning IR per Scenario, independently of display names and filename similarity.",
+    "Evaluate transition rules only with matching prior/proposed states and required decision input; retain unassessed/unsupported transition scope separately from valid state-only findings.",
+    "Return exact state/profile, governing rules, checked families, attributable findings and unassessed scope. Known violations survive interruption; narrowed or incomplete checks cannot claim whole-model conformance."
+  ],
+  "assumptions": [],
+  "constraints": [
+    "Proposed Design only; no product runtime, current migration support, implementation or verification is claimed."
+  ],
+  "allocated_to": "MOD-003",
+  "constrains": [
+    "FUNC-002",
+    "FUNC-013"
+  ],
+  "sources": [
+    {
+      "source": "SRC-CONFORMANCE-MIGRATION-DESIGN",
+      "locator": "IR-005; SR-012–015; SCN-011–014",
+      "basis": "Derive whole-model diagnostics, separate mechanical/review presentation and source-preserving explicit migration candidates through MOD-003. Reuse capture, interpretation and scoped-check ownership; proposed Design only."
+    }
+  ]
+}

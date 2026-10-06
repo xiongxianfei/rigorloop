@@ -11,7 +11,9 @@
     "Select recorded changes and requested record projections under literal public query rules; preserve complete-source and omission distinctions and handle bounded private invocation diagnostics under the owning CLI contract.",
     "Prepare the mandatory bounded public receipt from exact candidate/storage facts before publication, and preserve the actual committed, unchanged, conflict, preview, or recovery outcome through reporting failures.",
     "Realize the command behavior of IF-004 under MOD-018 contract accountability, composing IF-003 record services and IF-006 installation services. This behavioral responsibility does not create a second Interface provider.",
-    "Admit proposed browser generation/check/recovery requests under IF-004 and compose IF-012 results without claiming support from repository-only scripts."
+    "Admit proposed browser generation/check/recovery requests under IF-004 and compose IF-012 results without claiming support from repository-only scripts.",
+    "For designed relationship traversal, pass the exact selected request to IF-013 and preserve complete, bounded, incomplete and rejected results, source identity and diagnostics; do not infer engineering judgment from dispatch success.",
+    "For the separately proposed history query, admit explicit project/subject/filter/page scope and preserve IF-003 state, completeness, conflicts and bounded results under history-selection.md."
   ],
   "owned_state": [
     "Admitted command context, rendered results, and optional bounded private invocation diagnostics under the current logging contract; authoritative project records and installation destinations have separate owners."
@@ -28,11 +30,14 @@
   "consumes": [
     "IF-003",
     "IF-006",
-    "IF-012"
+    "IF-012",
+    "IF-013"
   ],
   "design_limits": [
     "Existing CLI public envelopes, version domains, selectors, and exceptional command behavior remain specified by design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/command-contract.md; the new logical Interfaces summarize responsibility and preserve that authority.",
-    "IR-008 SR-040 through SR-047 have draft allocated obligations and a reviewed logical composition through IF-003/IF-004. The subordinate realization records a bounded source inspection and proposed choices; installation dispatch under IR-010/IF-006, implementation qualification, and public adoption remain separate work."
+    "IR-008 SR-040 through SR-047 have draft allocated obligations and a reviewed logical composition through IF-003/IF-004. The subordinate realization records a bounded source inspection and proposed choices; installation dispatch under IR-010/IF-006, implementation qualification, and public adoption remain separate work.",
+    "IF-013 is a proposed semantic cooperation contract; command syntax, executable availability and qualification are not added to the current operational CLI by this design.",
+    "AR-087 defines proposed history admission/presentation only; existing public grammar has no new command or implicit cursor. Capability advertisement requires separately qualified profile and complete cooperating writer support."
   ],
   "sources": [
     {
@@ -59,6 +64,16 @@
       "source": "SRC-CUSTOMER-BROWSER-DESIGN",
       "locator": "MOD-010",
       "basis": "System and Architecture Design from SR-084–088 and refined SR-060; proposed responsibility, contract and realization only. No implementation, platform qualification or product availability is established."
+    },
+    {
+      "source": "SRC-SCOPED-TRAVERSAL-DESIGN",
+      "locator": "SR-009; SCN-008; FUNC-009",
+      "basis": "Derive selected-state traversal responsibility, admission/completeness outcomes and necessary allocation from existing obligations. Proposed architecture only; no implementation, verification or satisfaction claim."
+    },
+    {
+      "source": "SRC-SUBJECT-HISTORY-DESIGN",
+      "locator": "SR-078; FUNC-077; SCN-074",
+      "basis": "Define recorded subject association, coherent bounded history selection and state-bound continuation through existing command/storage owners. Target Design only; current ordinary queries, schema and installed capability remain unchanged."
     }
   ]
 }

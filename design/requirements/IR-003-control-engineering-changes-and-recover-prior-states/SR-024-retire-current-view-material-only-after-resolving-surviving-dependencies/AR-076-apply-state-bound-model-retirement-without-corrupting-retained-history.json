@@ -1,0 +1,62 @@
+{
+  "id": "AR-076",
+  "type": "allocated-requirement",
+  "title": "Apply state-bound model retirement without corrupting retained history",
+  "status": "draft",
+  "statement": "The MOD-001 responsibility shall apply state-bound model retirement without corrupting retained history within the exact selected scope, preserving original meaning and explicit incomplete outcomes.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Conditional current-model publication and removal custody can otherwise conflate preparation with confirmed effects or hide unavailable content.",
+      "desired_outcome": "Apply state-bound model retirement without corrupting retained history."
+    },
+    "why": {
+      "rationale": "SR-024 requires this accountable architectural contribution; other contributions retain their own owners."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineers and maintainers",
+        "Reviewers and project decision owners",
+        "MOD-001 maintainers"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "A participant requests conditional current-model publication and removal custody."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "The selected local project state and declared retained/current material under state-control.md."
+      ]
+    },
+    "how": {
+      "approach": "Apply state-control.md with exact identity/scope and original interpretation, explicit custody/authority boundaries and attributable incomplete or confirmed outcomes."
+    },
+    "how_much": {
+      "scope": "Conditional current-model publication and removal custody. No full IR003 assessment, runtime qualification, destructive adoption or operational maintenance execution is claimed."
+    }
+  },
+  "acceptance_criteria": [
+    "Accept only exact current-model removal/replacement scope with expected state, applicable authority and resolved reliance/recovery basis; never treat a prepared disposition as execution permission.",
+    "Require executor-held cross-custody quiescence/exclusion through final reliance/authority checks, effects and reconciliation, in addition to model write exclusion; verify the exact base/resulting-model rules, preserve replacements and never touch immutable retained bundles.",
+    "Persist unresolved-write scope before effects and block coherent affected reads and further writes after partial or uncertain publication until exact effects are reconciled.",
+    "Report actual retained, replaced, removed and unresolved membership; changed bases reject, unrelated work remains untouched and failure cannot imply rollback or complete cleanup."
+  ],
+  "assumptions": [],
+  "constraints": [
+    "Proposed Design; no implementation, executed criterion verification or satisfaction claim."
+  ],
+  "allocated_to": "MOD-001",
+  "constrains": [
+    "FUNC-001",
+    "FUNC-004"
+  ],
+  "sources": [
+    {
+      "source": "SRC-BASELINE-STATE-DESIGN",
+      "locator": "SR-020–024; SCN-019–022/025",
+      "basis": "Define immutable baseline custody, original-meaning comparison/recovery, attributable transition preparation and dependency-safe retirement. Preserve selective retention and separate action authority, operational maintenance and actual execution; proposed Design only."
+    }
+  ]
+}

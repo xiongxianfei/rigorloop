@@ -1,0 +1,12 @@
+# Presentation registration; engineering meaning remains in the owning README.
+version = 1
+
+[[topics]]
+id = "prepare-and-use-guidance"
+title = "Prepare and use portable guidance"
+view = "process"
+kind = "sequence"
+qualification = "proposed"
+source = "README.md"
+anchor = "prepare-and-use-guidance"
+description = "Select complete applicable resources, retain project authority, guide bounded specialist work and reclassify late triggers before a scoped handoff. Portable work needs no operational database."

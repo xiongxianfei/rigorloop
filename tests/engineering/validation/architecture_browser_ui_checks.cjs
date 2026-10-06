@@ -112,13 +112,122 @@ const puppeteer = require(process.env.REM_PUPPETEER);
       await overflow();if(shot)await capture(shot);
     };
 
+    // MOD-004 requirement-tree: real canonical containment, shared references,
+    // root-only scope, local reader state and offline details at the DOM boundary.
+    const requirementsCase = async prefix => {
+      await go('home');await page.reload();await page.waitForSelector('.architecture-view-navigation');
+      await page.click('.architecture-view-navigation a[href="#requirements"]');
+      await page.waitForSelector('.requirement-tree');
+      assert.equal(await page.$eval('.architecture-view-navigation [aria-current]',n=>n.textContent),'Requirements');
+      assert.equal(await page.$$eval('.requirement-node[data-entity^="IR-"]',n=>n.length),10);
+      assert.equal(await page.$$eval('.requirement-node[data-entity^="SR-"]',n=>n.length),0);
+      await page.click('.requirement-toggle[aria-label="Expand IR-002"]');
+      assert(await page.$('.requirement-node[data-entity="SR-085"]'));
+      await page.click('.requirement-toggle[aria-label="Expand SR-085"]');
+      const sr='.requirement-node[data-entity="SR-085"]';
+      await page.click(sr+' > ul > .requirement-group:last-child > .requirement-row > button');
+      assert(await page.$(sr+' .requirement-node[data-entity="AR-046"]'));
+      await page.click('.requirement-toggle[aria-label="Expand AR-046"]');
+      await page.click('.requirement-node[data-entity="AR-046"] > ul > .requirement-group:first-child > .requirement-row > button');
+      await page.click('.requirement-node[data-entity="AR-046"] .requirement-node[data-entity="MOD-004"] > .requirement-row > a');
+      await page.waitForSelector('.requirement-detail');
+      assert.equal(await page.$eval('.architecture-view-navigation [aria-current]',n=>n.textContent),'Requirements');
+      assert.match(await page.$eval('.requirement-detail',n=>n.innerText),/MOD-004/);
+      await overflow(); await capture(prefix+'-requirements');
+      await page.click('.requirement-module-scope');await page.waitForFunction(()=>location.hash==='#module/MOD-004');
+      assert.equal(await page.$('.architecture-view-navigation a[href="#requirements"]'),null);
+      await page.goBack();await page.waitForSelector('.requirement-detail');
+      assert(await page.$('.requirement-node[data-entity="AR-046"] .requirement-node[data-entity="MOD-004"]'));
+      await page.click('.requirement-detail-actions button:last-child');
+      assert.equal(await page.$('.requirement-detail'),null);
+      await page.click('.requirement-toggle[aria-label="Collapse IR-002"]');
+      await page.click('.architecture-view-navigation a[href="#process"]');await page.waitForFunction(()=>location.hash==='#process');
+      await page.goBack();await page.waitForSelector('.requirement-tree');
+      assert.equal(await page.$('.requirement-detail'),null);
+      assert.equal(await page.$('.requirement-node[data-entity="SR-085"]'),null);
+      await page.type('#requirement-search','FUNC-080');
+      assert((await page.$$eval('.requirement-node[data-entity="FUNC-080"]',n=>n.length))>1);
+      const references=await page.$$('.requirement-node[data-entity="FUNC-080"] > .requirement-row > button');
+      await references[0].click();
+      assert.equal(await references[1].evaluate(n=>n.getAttribute('aria-expanded')),'true');
+      // Re-select through the filtered tree, keeping the system and query.
+      await page.click('.requirement-node[data-entity="FUNC-080"] > .requirement-row > a');
+      await page.waitForSelector('.requirement-detail');
+      assert.equal(await page.$eval('#requirement-search',n=>n.value),'FUNC-080');
+      await page.click('.requirement-detail a[href="#module/MOD-004"]');
+      assert.match(await page.$eval('.requirement-detail',n=>n.innerText),/MOD-004/);
+      assert.match(await page.evaluate(()=>location.hash),/^#requirements/);
+      await page.goBack();await page.waitForFunction(()=>document.querySelector('.requirement-detail .eyebrow')?.textContent.startsWith('FUNC-080'));
+      await page.click('.requirement-detail-actions button:last-child');
+      await page.click('.requirement-actions button:nth-child(3)');
+      assert.equal(await page.$eval('#requirement-search',n=>n.value),'');
+      assert(!(await page.evaluate(()=>location.hash)).includes('q='));
+      assert.equal(await page.$$eval('.requirement-node[data-entity^="SR-"]',n=>n.length),76);
+      await page.click('.requirement-actions button:nth-child(1)');
+      assert.equal(await page.$$eval('.requirement-node[data-entity^="AR-"]',n=>n.length),87);
+      assert.equal(await page.$$eval('.requirement-row .delivery-assessment-badges',n=>n.length),173);
+      assert(await page.$$eval('.requirement-row .delivery-assessment-badges',nodes=>nodes.every(n=>n.children.length===3)));
+      assert.equal(await page.$$eval('.requirement-node[data-entity^="AR-"] > .requirement-row .delivery-assessment-badges',n=>n.length),87);
+      await page.click('.requirement-actions button:nth-child(2)');
+      assert.equal(await page.$$eval('.requirement-node[data-entity^="SR-"]',n=>n.length),0);
+      await page.type('#requirement-search','no-such-requirement');assert.match(await text(),/No matching requirements/);
+      await go('requirements/SR-085/related/FUNC-080');assert(await page.$('.requirement-detail'));
+      await go('requirements/SR-085?at=wrong');assert.match(await text(),/Requirement occurrence not found/);
+      await go('requirements/SR-085/related/FUNC-001');assert.match(await text(),/not found/);
+      await go('requirements/MOD-004');assert.match(await text(),/not found/);
+      await go('requirements/AR-046');
+      // Model-only snapshots must not equate definition lifecycle, rendered
+      // browser behavior or existing code with an AR implementation judgment.
+      const arStatuses='.requirement-node[data-entity="AR-046"] > .requirement-row .delivery-assessment-badges';
+      assert.deepEqual(await page.$$eval(arStatuses+' > span',n=>n.map(x=>x.textContent)),['Design: Not reviewed','Implementation: Unknown','Verification: Not assessed']);
+      assert.equal(await page.$eval('.requirement-detail > .badge',n=>n.textContent),'Definition: Draft');
+      assert.match(await page.$eval('.delivery-assessment-detail',n=>n.innerText),/No implementation or verification assessments are included for this requirement in this snapshot/);
+      assert.match(await page.$eval('.requirement-detail',n=>n.innerText),/Acceptance criteria/);
+      assert.deepEqual(await page.$$eval('.requirement-node[data-entity="SR-085"] > .requirement-row .delivery-assessment-badges > span',n=>n.map(x=>x.textContent)),['Design: Not reviewed','Implementation: Unknown','Verification: Not assessed']);
+      await capture(prefix+'-delivery-assessment');
+      await page.click('.requirement-detail-actions button:last-child');
+      await page.focus('.requirement-toggle[aria-label="Expand AR-046"]');await page.keyboard.press('Space');
+      assert(await page.$('.requirement-toggle[aria-label="Collapse AR-046"]'));
+      await overflow();
+    };
+    await requirementsCase('desktop');
+    await page.setViewport({width:390,height:844});
+    await requirementsCase('mobile');
+    await page.setViewport({width:1440,height:1000});
+
+    // Copied snapshots must diagnose unusable data rather than draw a partial tree.
+    const snapshotHtml=fs.readFileSync(path.resolve(process.argv[2]),'utf8');
+    const modelPattern=/(<script id="architecture-model" type="application\/json">)([\s\S]*?)(<\/script>)/;
+    const sourceModel=JSON.parse(modelPattern.exec(snapshotHtml)[2]);
+    const fixtureDir=fs.mkdtempSync(path.join(require('node:os').tmpdir(),'requirements-reader-'));
+    try {
+      const cases=[
+        ['disabled',m=>{m.system_requirement_view=false;},/disabled in this snapshot/],
+        ['invalid-flag',m=>{m.system_requirement_view='true';},/invalid presentation selection/],
+        ['missing-parent',m=>{m.relationships=m.relationships.filter(e=>!(e.source==='SR-085' && e.relation==='parent'));},/invalid parent for SR-085/],
+        ['wrong-target-type',m=>{m.records['SR-085'].data.confirms=['MOD-004'];},/invalid confirms reference/],
+        ['empty',m=>{for(const id of Object.keys(m.records))if(/^(IR|SR|AR)-/.test(id))delete m.records[id];m.relationships=m.relationships.filter(e=>m.records[e.source] && m.records[e.target]);},/No requirements in this snapshot/]
+      ];
+      for(const [name,mutate,message] of cases) {
+        const fixture=structuredClone(sourceModel);mutate(fixture);
+        const html=snapshotHtml.replace(modelPattern,(_,start,model,end)=>start+JSON.stringify(fixture).replace(/</g,'\\u003c')+end);
+        const file=path.join(fixtureDir,name+'.html');fs.writeFileSync(file,html);
+        await page.goto(pathToFileURL(file).href+'#requirements');await page.waitForSelector('main h1');
+        assert.match(await text(),message,name);
+        if(name==='disabled') {
+          await page.goto(pathToFileURL(file).href+'#entity/SR-085');await page.waitForSelector('main h1');
+          assert.equal(await page.$('a[href^="#requirements"]'),null);
+        }
+      }
+    } finally {fs.rmSync(fixtureDir,{recursive:true,force:true});}
+
     await skillsCase('desktop');
 
     // Scope tree and perspective navigation must agree after actual clicks.
     const clickRoute=async(selector,hash)=>{await page.click(selector);await page.waitForFunction(expected=>location.hash===expected && document.querySelector('#navigation [aria-current]')?.getAttribute('href')===expected,{},hash);};
     await go('home');
     assert.deepEqual(await page.$$eval('#navigation .nav-label',nodes=>nodes.map(n=>n.textContent)),['Architecture','Public capabilities']);
-    assert.equal(await page.$$eval('.architecture-view-navigation a',nodes=>nodes.length),6);
+    assert.equal(await page.$$eval('.architecture-view-navigation a',nodes=>nodes.length),7);
     assert.equal(await page.$eval('#navigation .system-nav',n=>n.textContent),'RigorLoop');
     await clickRoute('.architecture-view-navigation a[href="#process"]','#process');
     await clickRoute('#navigation a[data-scope="MOD-016"]','#process/MOD-016');
@@ -130,7 +239,7 @@ const puppeteer = require(process.env.REM_PUPPETEER);
     assert.equal(await page.$eval('.architecture-view-navigation [aria-current]',n=>n.textContent),'Physical');
     await page.goBack();await page.waitForFunction(()=>location.hash==='#physical/MOD-004');
     assert.equal(await page.$eval('#navigation [aria-current]',n=>n.dataset.scope),'MOD-004');
-    await go('process/MOD-009');
+    await go('process/MOD-002');
     assert.equal(await page.$eval('.architecture-view-navigation [aria-current]',n=>n.textContent),'Process');
     assert.match(await text(),/No process realization detail recorded/);
     await go('commands');assert.equal(await page.$('.architecture-view-navigation'),null);
@@ -138,10 +247,10 @@ const puppeteer = require(process.env.REM_PUPPETEER);
     await go('home');assert.match(await text(),/Top-level Modules/);await capture('home');await overflow();
     await go('module/MOD-004');assert.equal(await page.$$eval('.architecture-view-navigation a',n=>n.length),6);assert.match(await text(),/Direct Interfaces/);await capture('module');
     await go('logical/MOD-004');assert.equal(await page.$$eval('.diagram-canvas > svg',n=>n.length),1);
-    assert.equal(await page.$$eval('.inline-view-diagrams .diagram-panel',n=>n.length),2);
-    assert.deepEqual(await page.$$eval('.section-jump',n=>n.map(x=>x.textContent)),['Collaboration context','Browser technical structure']);
+    assert.equal(await page.$$eval('.inline-view-diagrams .diagram-panel',n=>n.length),6);
+    assert.deepEqual(await page.$$eval('.section-jump',n=>n.map(x=>x.textContent)),['Collaboration context','Browser technical structure','Requirements view structure','Unified Requirements tree wireframe','Scoped traversal responsibility','Allocation and impact responsibilities']);
     await page.waitForFunction(()=>document.querySelector('.inline-view-diagrams img')?.naturalWidth>0);
-    const technicalJump=(await page.$$('.section-jump')).at(-1);await technicalJump.focus();await page.keyboard.press('Enter');
+    const technicalJump=(await page.$$('.section-jump')).at(1);await technicalJump.focus();await page.keyboard.press('Enter');
     assert.equal(await page.evaluate(()=>document.activeElement.id),await technicalJump.evaluate(n=>n.getAttribute('aria-controls')));
     assert.equal(await page.evaluate(()=>location.hash),'#logical/MOD-004');
     await overflow();await capture('logical-technical');
@@ -152,7 +261,7 @@ const puppeteer = require(process.env.REM_PUPPETEER);
     await inlineCase('development/MOD-009',[],'zero-graphs');
     await inlineCase('process/MOD-006',['Resume and coordinate work'],'one-graph');
     await inlineCase('development/MOD-004',['Browser software organization','Browser file and package organization','Browser build and artifacts'],'development-graphs');
-    await inlineCase('process/MOD-004',['Generation topology','Generation sequence','Publication and recovery'],'several-graphs');
+    await inlineCase('process/MOD-004',['Generation topology','Requirements reader interaction','Generation sequence','Scoped traversal interaction','Select attributable delivery assessments','Publication and recovery'],'several-graphs');
     assert.deepEqual(await page.$$eval('.process-details h2',nodes=>nodes.map(n=>n.textContent)),['Runtime topology','Interactions','State and coordination']);
     assert.doesNotMatch(await text(),/Source-owned design topics/);
     await go('process/MOD-011');
@@ -226,10 +335,10 @@ const puppeteer = require(process.env.REM_PUPPETEER);
     await go('process/MOD-006');await page.reload();
     assert.equal(await page.$$eval('.inline-view-diagrams .authored-diagram',n=>n.length),1);
     assert.equal(await page.$$eval('.parent-process-topics .authored-diagram',n=>n.length),0);
-    assert.equal(await page.$$eval('.parent-process-topics a.module-card',n=>n.length),2);
+    assert.equal(await page.$$eval('.parent-process-topics a.module-card',n=>n.length),3);
     await go('physical/MOD-004');assert.match(await text(),/Design decisions/);
     await go('scenarios/MOD-004');assert.match(await text(),/No participation walkthrough recorded/);
-    await go('process/MOD-009');assert.match(await text(),/No process realization detail recorded/);
+    await go('process/MOD-002');assert.match(await text(),/No process realization detail recorded/);
     await go('process/MOD-009/interaction/publication');assert.match(await text(),/Process diagram not found/);
     await go('process/MOD-004/observed/sequence/generation-sequence');assert.match(await text(),/not found/);
     for(const hash of ['overview','process','development','physical','scenarios','cooperation','contributions','commands','skills','process/interaction/publication','development/testing','physical/storage']){await go(hash);assert.doesNotMatch(await page.$eval('h1',e=>e.textContent),/not found/)}
@@ -239,9 +348,9 @@ const puppeteer = require(process.env.REM_PUPPETEER);
     await inlineCase('process/MOD-006',['Resume and coordinate work'],'mobile-one-graph');
     await inlineCase('development/MOD-004',['Browser software organization','Browser file and package organization','Browser build and artifacts'],'mobile-development-graphs');
     await go('logical/MOD-004');await page.waitForFunction(()=>document.querySelector('.inline-view-diagrams img')?.naturalWidth>0);
-    assert.equal(await page.$$eval('.inline-view-diagrams .diagram-panel',n=>n.length),2);
+    assert.equal(await page.$$eval('.inline-view-diagrams .diagram-panel',n=>n.length),6);
     await overflow();await capture('mobile-logical-technical');
-    await inlineCase('process/MOD-004',['Generation topology','Generation sequence','Publication and recovery'],'mobile-several-graphs');
+    await inlineCase('process/MOD-004',['Generation topology','Requirements reader interaction','Generation sequence','Scoped traversal interaction','Select attributable delivery assessments','Publication and recovery'],'mobile-several-graphs');
     await go('module/MOD-004');await overflow();
     await page.click('#navigation-toggle');assert.equal(await page.$eval('#navigation-toggle',e=>e.getAttribute('aria-expanded')),'true');
     await page.keyboard.press('Escape');assert.equal(await page.$eval('#navigation-toggle',e=>e.getAttribute('aria-expanded')),'false');

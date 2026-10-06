@@ -1,19 +1,19 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" data-d2-version="v0.9.0" preserveAspectRatio="xMinYMin meet" viewBox="0 0 1003 1062"><svg class="d2-2902781010 d2-svg" width="1003" height="1062" viewBox="-17 -34 1003 1062"><rect x="-17" y="-34" width="1003" height="1062" rx="0" fill="#FFFFFF" class=" fill-N7" stroke-width="0" /><style type="text/css"><![CDATA[
-.d2-2902781010 .text {
-	font-family: "d2-2902781010-font-regular";
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" data-d2-version="v0.9.0" preserveAspectRatio="xMinYMin meet" viewBox="0 0 1003 1163"><svg class="d2-169890754 d2-svg" width="1003" height="1163" viewBox="-17 -34 1003 1163"><rect x="-17" y="-34" width="1003" height="1163" rx="0" fill="#FFFFFF" class=" fill-N7" stroke-width="0" /><style type="text/css"><![CDATA[
+.d2-169890754 .text {
+	font-family: "d2-169890754-font-regular";
 }
 @font-face {
-	font-family: d2-2902781010-font-regular;
+	font-family: d2-169890754-font-regular;
 	src: url("data:application/font-woff;base64,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");
 }
 .appendix-icon {
 	filter: drop-shadow(0px 0px 32px rgba(31, 36, 58, 0.1));
 }
-.d2-2902781010 .text-bold {
-	font-family: "d2-2902781010-font-bold";
+.d2-169890754 .text-bold {
+	font-family: "d2-169890754-font-bold";
 }
 @font-face {
-	font-family: d2-2902781010-font-bold;
+	font-family: d2-169890754-font-bold;
 	src: url("data:application/font-woff;base64,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");
 }]]></style><style type="text/css"><![CDATA[.shape {
   shape-rendering: geometricPrecision;
@@ -28,383 +28,408 @@
   opacity: 0.5;
 }
 
-		.d2-2902781010 .fill-N7{fill:#FFFFFF;}
-		.d2-2902781010 .stroke-B2{stroke:#0D32B2;}.appendix text.text{fill:#0A0F25}.md{--color-fg-default:#0A0F25;--color-fg-muted:#676C7E;--color-fg-subtle:#9499AB;--color-canvas-default:#FFFFFF;--color-canvas-subtle:#EEF1F8;--color-border-default:#0D32B2;--color-border-muted:#0D32B2;--color-neutral-muted:#EEF1F8;--color-accent-fg:#0D32B2;--color-accent-emphasis:#0D32B2;--color-attention-subtle:#676C7E;--color-danger-fg:red;}.light-code{display: block}.dark-code{display: none}]]></style><a href="../index.html#scenarios" xlink:href="../index.html#scenarios"><g class="d2Fsa3Rocm91Z2hz"><g class="shape" ><rect x="12" y="12" width="928" height="987" rx="6" stroke="#7C8FA9" fill="#FFFFFF" style="stroke-width:2;" /></g><text x="476" y="34" fill="#23334A" class="text" style="text-anchor:middle;font-size:17px"><tspan x="476" dy="0">Selected Scenario</tspan><tspan x="476" dy="19.5">responsibilities</tspan></text><title>Selected Scenario responsibilities</title></g></a><a href="../index.html#scenario/SCN-019" xlink:href="../index.html#scenario/SCN-019"><g class="d2Fsa3Rocm91Z2hzLm1fNTM0MzRlMmQzMDMxMzk="><g class="shape" ><rect x="72" y="72" width="382" height="193" rx="6" stroke="#7C8FA9" fill="#E9F4EE" style="stroke-width:2;" /></g><text x="263" y="94" fill="#23334A" class="text" style="text-anchor:middle;font-size:17px"><tspan x="263" dy="0">Establish an identifiable</tspan><tspan x="263" dy="18.666667">baseline for later</tspan><tspan x="263" dy="18.666667">engineering reliance</tspan></text><title>Establish an identifiable baseline for later engineering reliance (SCN-019)</title></g></a><a href="../index.html#scenario/SCN-046" xlink:href="../index.html#scenario/SCN-046"><g class="d2Fsa3Rocm91Z2hzLm1fNTM0MzRlMmQzMDM0MzY="><g class="shape" ><rect x="72" y="305" width="382" height="300" rx="6" stroke="#7C8FA9" fill="#E9F4EE" style="stroke-width:2;" /></g><text x="263" y="327" fill="#23334A" class="text" style="text-anchor:middle;font-size:17px"><tspan x="263" dy="0">Publish related record</tspan><tspan x="263" dy="18.666667">decisions as one coherent</tspan><tspan x="263" dy="18.666667">update</tspan></text><title>Publish related record decisions as one coherent update (SCN-046)</title></g></a><a href="../index.html#scenario/SCN-047" xlink:href="../index.html#scenario/SCN-047"><g class="d2Fsa3Rocm91Z2hzLm1fNTM0MzRlMmQzMDM0Mzc="><g class="shape" ><rect x="72" y="645" width="382" height="294" rx="6" stroke="#7C8FA9" fill="#E9F4EE" style="stroke-width:2;" /></g><text x="263" y="667" fill="#23334A" class="text" style="text-anchor:middle;font-size:17px"><tspan x="263" dy="0">Establish the outcome of an</tspan><tspan x="263" dy="19.5">interrupted recorded update</tspan></text><title>Establish the outcome of an interrupted recorded update (SCN-047)</title></g></a><a href="../index.html#scenario/SCN-053" xlink:href="../index.html#scenario/SCN-053"><g class="d2Fsa3Rocm91Z2hzLm1fNTM0MzRlMmQzMDM1MzM="><g class="shape" ><rect x="494" y="72" width="386" height="413" rx="6" stroke="#7C8FA9" fill="#E9F4EE" style="stroke-width:2;" /></g><text x="687" y="94" fill="#23334A" class="text" style="text-anchor:middle;font-size:17px"><tspan x="687" dy="0">Produce a usable result</tspan><tspan x="687" dy="19.5">through specialist guidance</tspan></text><title>Produce a usable result through specialist guidance (SCN-053)</title></g></a><a href="../index.html#scenario/SCN-066" xlink:href="../index.html#scenario/SCN-066"><g class="d2Fsa3Rocm91Z2hzLm1fNTM0MzRlMmQzMDM2MzY="><g class="shape" ><rect x="494" y="525" width="386" height="413" rx="6" stroke="#7C8FA9" fill="#E9F4EE" style="stroke-width:2;" /></g><text x="687" y="547" fill="#23334A" class="text" style="text-anchor:middle;font-size:17px"><tspan x="687" dy="0">Start an authorized release</tspan><tspan x="687" dy="18.666667">and publish the qualified</tspan><tspan x="687" dy="18.666667">packages</tspan></text><title>Start an authorized release and publish the qualified packages (SCN-066)</title></g></a><a href="../index.html#module/MOD-005" xlink:href="../index.html#module/MOD-005"><g class="d2Fsa3Rocm91Z2hzLm1fNTM0MzRlMmQzMDMxMzkubV80ZDRmNDQyZDMwMzAzNQ=="><g class="shape" ><rect x="132" y="138" width="229" height="67" rx="6" stroke="#7C8FA9" fill="#ECF3FF" style="stroke-width:2;" /></g><text x="246.5" y="177.5" fill="#23334A" class="text-bold" style="text-anchor:middle;font-size:17px">Model baselines</text><title>Model baselines (MOD-005)</title></g></a><a href="../index.html#module/MOD-010" xlink:href="../index.html#module/MOD-010"><g class="d2Fsa3Rocm91Z2hzLm1fNTM0MzRlMmQzMDM0MzYubV80ZDRmNDQyZDMwMzEzMA=="><g class="shape" ><rect x="132" y="371" width="262" height="67" rx="6" stroke="#7C8FA9" fill="#ECF3FF" style="stroke-width:2;" /></g><text x="263" y="410.5" fill="#23334A" class="text-bold" style="text-anchor:middle;font-size:17px">Command handling</text><title>Command handling (MOD-010)</title></g></a><a href="../index.html#module/MOD-011" xlink:href="../index.html#module/MOD-011"><g class="d2Fsa3Rocm91Z2hzLm1fNTM0MzRlMmQzMDM0MzYubV80ZDRmNDQyZDMwMzEzMQ=="><g class="shape" ><rect x="132" y="478" width="262" height="67" rx="6" stroke="#7C8FA9" fill="#ECF3FF" style="stroke-width:2;" /></g><text x="263" y="517.5" fill="#23334A" class="text-bold" style="text-anchor:middle;font-size:17px">Work record storage</text><title>Work record storage (MOD-011)</title></g></a><a href="../index.html#module/MOD-010" xlink:href="../index.html#module/MOD-010"><g class="d2Fsa3Rocm91Z2hzLm1fNTM0MzRlMmQzMDM0MzcubV80ZDRmNDQyZDMwMzEzMA=="><g class="shape" ><rect x="132" y="705" width="262" height="67" rx="6" stroke="#7C8FA9" fill="#ECF3FF" style="stroke-width:2;" /></g><text x="263" y="744.5" fill="#23334A" class="text-bold" style="text-anchor:middle;font-size:17px">Command handling</text><title>Command handling (MOD-010)</title></g></a><a href="../index.html#module/MOD-011" xlink:href="../index.html#module/MOD-011"><g class="d2Fsa3Rocm91Z2hzLm1fNTM0MzRlMmQzMDM0MzcubV80ZDRmNDQyZDMwMzEzMQ=="><g class="shape" ><rect x="132" y="812" width="262" height="67" rx="6" stroke="#7C8FA9" fill="#ECF3FF" style="stroke-width:2;" /></g><text x="263" y="851.5" fill="#23334A" class="text-bold" style="text-anchor:middle;font-size:17px">Work record storage</text><title>Work record storage (MOD-011)</title></g></a><a href="../index.html#module/MOD-008" xlink:href="../index.html#module/MOD-008"><g class="d2Fsa3Rocm91Z2hzLm1fNTM0MzRlMmQzMDM1MzMubV80ZDRmNDQyZDMwMzAzOA=="><g class="shape" ><rect x="554" y="132" width="258" height="67" rx="6" stroke="#7C8FA9" fill="#ECF3FF" style="stroke-width:2;" /></g><text x="683" y="171.5" fill="#23334A" class="text-bold" style="text-anchor:middle;font-size:17px">Authoring guidance</text><title>Authoring guidance (MOD-008)</title></g></a><a href="../index.html#module/MOD-012" xlink:href="../index.html#module/MOD-012"><g class="d2Fsa3Rocm91Z2hzLm1fNTM0MzRlMmQzMDM1MzMubV80ZDRmNDQyZDMwMzEzMg=="><g class="shape" ><rect x="554" y="239" width="258" height="67" rx="6" stroke="#7C8FA9" fill="#ECF3FF" style="stroke-width:2;" /></g><text x="683" y="278.5" fill="#23334A" class="text-bold" style="text-anchor:middle;font-size:17px">Skill procedures</text><title>Skill procedures (MOD-012)</title></g></a><a href="../index.html#module/MOD-006" xlink:href="../index.html#module/MOD-006"><g class="d2Fsa3Rocm91Z2hzLm1fNTM0MzRlMmQzMDM2MzYubV80ZDRmNDQyZDMwMzAzNg=="><g class="shape" ><rect x="554" y="591" width="266" height="67" rx="6" stroke="#7C8FA9" fill="#ECF3FF" style="stroke-width:2;" /></g><text x="687" y="630.5" fill="#23334A" class="text-bold" style="text-anchor:middle;font-size:17px">Change control</text><title>Change control (MOD-006)</title></g></a><a href="../index.html#module/MOD-015" xlink:href="../index.html#module/MOD-015"><g class="d2Fsa3Rocm91Z2hzLm1fNTM0MzRlMmQzMDM2MzYubV80ZDRmNDQyZDMwMzEzNQ=="><g class="shape" ><rect x="554" y="698" width="266" height="67" rx="6" stroke="#7C8FA9" fill="#ECF3FF" style="stroke-width:2;" /></g><text x="687" y="737.5" fill="#23334A" class="text-bold" style="text-anchor:middle;font-size:17px">Release coordination</text><title>Release coordination (MOD-015)</title></g></a><g transform="translate(924 -4)" class="appendix-icon"><title>Selected Scenario responsibilities</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3427_35082111-d2-2902781010-O5QWY23UNBZG65LHNBZQ)">
+		.d2-169890754 .fill-N7{fill:#FFFFFF;}
+		.d2-169890754 .stroke-B2{stroke:#0D32B2;}.appendix text.text{fill:#0A0F25}.md{--color-fg-default:#0A0F25;--color-fg-muted:#676C7E;--color-fg-subtle:#9499AB;--color-canvas-default:#FFFFFF;--color-canvas-subtle:#EEF1F8;--color-border-default:#0D32B2;--color-border-muted:#0D32B2;--color-neutral-muted:#EEF1F8;--color-accent-fg:#0D32B2;--color-accent-emphasis:#0D32B2;--color-attention-subtle:#676C7E;--color-danger-fg:red;}.light-code{display: block}.dark-code{display: none}]]></style><a href="../index.html#scenarios" xlink:href="../index.html#scenarios"><g class="d2Fsa3Rocm91Z2hz"><g class="shape" ><rect x="12" y="12" width="928" height="1088" rx="6" stroke="#7C8FA9" fill="#FFFFFF" style="stroke-width:2;" /></g><text x="476" y="34" fill="#23334A" class="text" style="text-anchor:middle;font-size:17px"><tspan x="476" dy="0">Selected Scenario</tspan><tspan x="476" dy="19.5">responsibilities</tspan></text><title>Selected Scenario responsibilities</title></g></a><a href="../index.html#scenario/SCN-019" xlink:href="../index.html#scenario/SCN-019"><g class="d2Fsa3Rocm91Z2hzLm1fNTM0MzRlMmQzMDMxMzk="><g class="shape" ><rect x="72" y="72" width="382" height="464" rx="6" stroke="#7C8FA9" fill="#E9F4EE" style="stroke-width:2;" /></g><text x="263" y="94" fill="#23334A" class="text" style="text-anchor:middle;font-size:17px"><tspan x="263" dy="0">Establish an identifiable</tspan><tspan x="263" dy="18.666667">baseline for later</tspan><tspan x="263" dy="18.666667">engineering reliance</tspan></text><title>Establish an identifiable baseline for later engineering reliance (SCN-019)</title></g></a><a href="../index.html#scenario/SCN-046" xlink:href="../index.html#scenario/SCN-046"><g class="d2Fsa3Rocm91Z2hzLm1fNTM0MzRlMmQzMDM0MzY="><g class="shape" ><rect x="72" y="576" width="382" height="464" rx="6" stroke="#7C8FA9" fill="#E9F4EE" style="stroke-width:2;" /></g><text x="263" y="598" fill="#23334A" class="text" style="text-anchor:middle;font-size:17px"><tspan x="263" dy="0">Publish related record</tspan><tspan x="263" dy="18.666667">decisions as one coherent</tspan><tspan x="263" dy="18.666667">update</tspan></text><title>Publish related record decisions as one coherent update (SCN-046)</title></g></a><a href="../index.html#scenario/SCN-047" xlink:href="../index.html#scenario/SCN-047"><g class="d2Fsa3Rocm91Z2hzLm1fNTM0MzRlMmQzMDM0Mzc="><g class="shape" ><rect x="494" y="72" width="386" height="294" rx="6" stroke="#7C8FA9" fill="#E9F4EE" style="stroke-width:2;" /></g><text x="687" y="94" fill="#23334A" class="text" style="text-anchor:middle;font-size:17px"><tspan x="687" dy="0">Establish the outcome of an</tspan><tspan x="687" dy="19.5">interrupted recorded update</tspan></text><title>Establish the outcome of an interrupted recorded update (SCN-047)</title></g></a><a href="../index.html#scenario/SCN-053" xlink:href="../index.html#scenario/SCN-053"><g class="d2Fsa3Rocm91Z2hzLm1fNTM0MzRlMmQzMDM1MzM="><g class="shape" ><rect x="494" y="406" width="386" height="294" rx="6" stroke="#7C8FA9" fill="#E9F4EE" style="stroke-width:2;" /></g><text x="687" y="428" fill="#23334A" class="text" style="text-anchor:middle;font-size:17px"><tspan x="687" dy="0">Produce a usable result</tspan><tspan x="687" dy="19.5">through specialist guidance</tspan></text><title>Produce a usable result through specialist guidance (SCN-053)</title></g></a><a href="../index.html#scenario/SCN-066" xlink:href="../index.html#scenario/SCN-066"><g class="d2Fsa3Rocm91Z2hzLm1fNTM0MzRlMmQzMDM2MzY="><g class="shape" ><rect x="494" y="740" width="386" height="300" rx="6" stroke="#7C8FA9" fill="#E9F4EE" style="stroke-width:2;" /></g><text x="687" y="762" fill="#23334A" class="text" style="text-anchor:middle;font-size:17px"><tspan x="687" dy="0">Start an authorized release</tspan><tspan x="687" dy="18.666667">and publish the qualified</tspan><tspan x="687" dy="18.666667">packages</tspan></text><title>Start an authorized release and publish the qualified packages (SCN-066)</title></g></a><a href="../index.html#module/MOD-001" xlink:href="../index.html#module/MOD-001"><g class="d2Fsa3Rocm91Z2hzLm1fNTM0MzRlMmQzMDMxMzkubV80ZDRmNDQyZDMwMzAzMQ=="><g class="shape" ><rect x="132" y="138" width="244" height="67" rx="6" stroke="#7C8FA9" fill="#ECF3FF" style="stroke-width:2;" /></g><text x="254" y="177.5" fill="#23334A" class="text-bold" style="text-anchor:middle;font-size:17px">Definition storage</text><title>Definition storage (MOD-001)</title></g></a><a href="../index.html#module/MOD-005" xlink:href="../index.html#module/MOD-005"><g class="d2Fsa3Rocm91Z2hzLm1fNTM0MzRlMmQzMDMxMzkubV80ZDRmNDQyZDMwMzAzNQ=="><g class="shape" ><rect x="132" y="245" width="244" height="67" rx="6" stroke="#7C8FA9" fill="#ECF3FF" style="stroke-width:2;" /></g><text x="254" y="284.5" fill="#23334A" class="text-bold" style="text-anchor:middle;font-size:17px">Model baselines</text><title>Model baselines (MOD-005)</title></g></a><a href="../index.html#module/MOD-010" xlink:href="../index.html#module/MOD-010"><g class="d2Fsa3Rocm91Z2hzLm1fNTM0MzRlMmQzMDM0MzYubV80ZDRmNDQyZDMwMzEzMA=="><g class="shape" ><rect x="132" y="642" width="262" height="67" rx="6" stroke="#7C8FA9" fill="#ECF3FF" style="stroke-width:2;" /></g><text x="263" y="681.5" fill="#23334A" class="text-bold" style="text-anchor:middle;font-size:17px">Command handling</text><title>Command handling (MOD-010)</title></g></a><a href="../index.html#module/MOD-011" xlink:href="../index.html#module/MOD-011"><g class="d2Fsa3Rocm91Z2hzLm1fNTM0MzRlMmQzMDM0MzYubV80ZDRmNDQyZDMwMzEzMQ=="><g class="shape" ><rect x="132" y="749" width="262" height="67" rx="6" stroke="#7C8FA9" fill="#ECF3FF" style="stroke-width:2;" /></g><text x="263" y="788.5" fill="#23334A" class="text-bold" style="text-anchor:middle;font-size:17px">Work record storage</text><title>Work record storage (MOD-011)</title></g></a><a href="../index.html#module/MOD-010" xlink:href="../index.html#module/MOD-010"><g class="d2Fsa3Rocm91Z2hzLm1fNTM0MzRlMmQzMDM0MzcubV80ZDRmNDQyZDMwMzEzMA=="><g class="shape" ><rect x="554" y="132" width="262" height="67" rx="6" stroke="#7C8FA9" fill="#ECF3FF" style="stroke-width:2;" /></g><text x="685" y="171.5" fill="#23334A" class="text-bold" style="text-anchor:middle;font-size:17px">Command handling</text><title>Command handling (MOD-010)</title></g></a><a href="../index.html#module/MOD-011" xlink:href="../index.html#module/MOD-011"><g class="d2Fsa3Rocm91Z2hzLm1fNTM0MzRlMmQzMDM0MzcubV80ZDRmNDQyZDMwMzEzMQ=="><g class="shape" ><rect x="554" y="239" width="262" height="67" rx="6" stroke="#7C8FA9" fill="#ECF3FF" style="stroke-width:2;" /></g><text x="685" y="278.5" fill="#23334A" class="text-bold" style="text-anchor:middle;font-size:17px">Work record storage</text><title>Work record storage (MOD-011)</title></g></a><a href="../index.html#module/MOD-008" xlink:href="../index.html#module/MOD-008"><g class="d2Fsa3Rocm91Z2hzLm1fNTM0MzRlMmQzMDM1MzMubV80ZDRmNDQyZDMwMzAzOA=="><g class="shape" ><rect x="554" y="466" width="258" height="67" rx="6" stroke="#7C8FA9" fill="#ECF3FF" style="stroke-width:2;" /></g><text x="683" y="505.5" fill="#23334A" class="text-bold" style="text-anchor:middle;font-size:17px">Authoring guidance</text><title>Authoring guidance (MOD-008)</title></g></a><a href="../index.html#module/MOD-012" xlink:href="../index.html#module/MOD-012"><g class="d2Fsa3Rocm91Z2hzLm1fNTM0MzRlMmQzMDM1MzMubV80ZDRmNDQyZDMwMzEzMg=="><g class="shape" ><rect x="554" y="573" width="258" height="67" rx="6" stroke="#7C8FA9" fill="#ECF3FF" style="stroke-width:2;" /></g><text x="683" y="612.5" fill="#23334A" class="text-bold" style="text-anchor:middle;font-size:17px">Skill procedures</text><title>Skill procedures (MOD-012)</title></g></a><a href="../index.html#module/MOD-006" xlink:href="../index.html#module/MOD-006"><g class="d2Fsa3Rocm91Z2hzLm1fNTM0MzRlMmQzMDM2MzYubV80ZDRmNDQyZDMwMzAzNg=="><g class="shape" ><rect x="554" y="806" width="266" height="67" rx="6" stroke="#7C8FA9" fill="#ECF3FF" style="stroke-width:2;" /></g><text x="687" y="845.5" fill="#23334A" class="text-bold" style="text-anchor:middle;font-size:17px">Change control</text><title>Change control (MOD-006)</title></g></a><a href="../index.html#module/MOD-015" xlink:href="../index.html#module/MOD-015"><g class="d2Fsa3Rocm91Z2hzLm1fNTM0MzRlMmQzMDM2MzYubV80ZDRmNDQyZDMwMzEzNQ=="><g class="shape" ><rect x="554" y="913" width="266" height="67" rx="6" stroke="#7C8FA9" fill="#ECF3FF" style="stroke-width:2;" /></g><text x="687" y="952.5" fill="#23334A" class="text-bold" style="text-anchor:middle;font-size:17px">Release coordination</text><title>Release coordination (MOD-015)</title></g></a><g transform="translate(924 -4)" class="appendix-icon"><title>Selected Scenario responsibilities</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3427_35082111-d2-169890754-O5QWY23UNBZG65LHNBZQ)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M16 26C21.5228 26 26 21.5228 26 16C26 10.4772 21.5228 6 16 6C10.4772 6 6 10.4772 6 16C6 21.5228 10.4772 26 16 26Z" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 19.998V15.998" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 12H16.0098" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3427_35082111-d2-2902781010-O5QWY23UNBZG65LHNBZQ">
+<clipPath id="clip0_3427_35082111-d2-169890754-O5QWY23UNBZG65LHNBZQ">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
 </g><g transform="translate(892 -4)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3440_35088111-d2-2902781010-O5QWY23UNBZG65LHNBZQ)">
+<g clip-path="url(#clip0_3440_35088111-d2-169890754-O5QWY23UNBZG65LHNBZQ)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M14.3909 16.7965C14.7364 17.2584 15.1772 17.6406 15.6834 17.9171C16.1896 18.1938 16.7494 18.3582 17.3248 18.3993C17.9001 18.4405 18.4777 18.3575 19.0181 18.1559C19.5586 17.9543 20.0492 17.6389 20.4571 17.2309L22.8708 14.8173C23.6036 14.0586 24.0089 13.0425 23.9998 11.9877C23.9906 10.933 23.5676 9.92404 22.8217 9.17821C22.0759 8.43237 21.067 8.00931 20.0123 8.00015C18.9575 7.99098 17.9413 8.39644 17.1827 9.1292L15.7988 10.505" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M17.609 15.1874C17.2635 14.7255 16.8227 14.3433 16.3165 14.0667C15.8103 13.7902 15.2505 13.6257 14.6752 13.5845C14.0998 13.5433 13.5223 13.6263 12.9819 13.8279C12.4414 14.0295 11.9506 14.345 11.5428 14.753L9.1292 17.1666C8.39644 17.9252 7.99098 18.9414 8.00015 19.9962C8.00931 21.0509 8.43237 22.0598 9.17821 22.8056C9.92405 23.5515 10.933 23.9745 11.9877 23.9837C13.0425 23.9928 14.0586 23.5875 14.8173 22.8547L16.193 21.4788" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3440_35088111-d2-2902781010-O5QWY23UNBZG65LHNBZQ">
+<clipPath id="clip0_3440_35088111-d2-169890754-O5QWY23UNBZG65LHNBZQ">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
 </g><g transform="translate(438 56)" class="appendix-icon"><title>Establish an identifiable baseline for later engineering reliance (SCN-019)</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3427_35082111-d2-2902781010-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGMYTGOI)">
+<g clip-path="url(#clip0_3427_35082111-d2-169890754-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGMYTGOI)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M16 26C21.5228 26 26 21.5228 26 16C26 10.4772 21.5228 6 16 6C10.4772 6 6 10.4772 6 16C6 21.5228 10.4772 26 16 26Z" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 19.998V15.998" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 12H16.0098" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3427_35082111-d2-2902781010-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGMYTGOI">
+<clipPath id="clip0_3427_35082111-d2-169890754-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGMYTGOI">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
 </g><g transform="translate(406 56)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3440_35088111-d2-2902781010-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGMYTGOI)">
+<g clip-path="url(#clip0_3440_35088111-d2-169890754-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGMYTGOI)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M14.3909 16.7965C14.7364 17.2584 15.1772 17.6406 15.6834 17.9171C16.1896 18.1938 16.7494 18.3582 17.3248 18.3993C17.9001 18.4405 18.4777 18.3575 19.0181 18.1559C19.5586 17.9543 20.0492 17.6389 20.4571 17.2309L22.8708 14.8173C23.6036 14.0586 24.0089 13.0425 23.9998 11.9877C23.9906 10.933 23.5676 9.92404 22.8217 9.17821C22.0759 8.43237 21.067 8.00931 20.0123 8.00015C18.9575 7.99098 17.9413 8.39644 17.1827 9.1292L15.7988 10.505" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M17.609 15.1874C17.2635 14.7255 16.8227 14.3433 16.3165 14.0667C15.8103 13.7902 15.2505 13.6257 14.6752 13.5845C14.0998 13.5433 13.5223 13.6263 12.9819 13.8279C12.4414 14.0295 11.9506 14.345 11.5428 14.753L9.1292 17.1666C8.39644 17.9252 7.99098 18.9414 8.00015 19.9962C8.00931 21.0509 8.43237 22.0598 9.17821 22.8056C9.92405 23.5515 10.933 23.9745 11.9877 23.9837C13.0425 23.9928 14.0586 23.5875 14.8173 22.8547L16.193 21.4788" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3440_35088111-d2-2902781010-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGMYTGOI">
+<clipPath id="clip0_3440_35088111-d2-169890754-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGMYTGOI">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
-</g><g transform="translate(438 289)" class="appendix-icon"><title>Publish related record decisions as one coherent update (SCN-046)</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3427_35082111-d2-2902781010-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2DGNQ)">
+</g><g transform="translate(438 560)" class="appendix-icon"><title>Publish related record decisions as one coherent update (SCN-046)</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3427_35082111-d2-169890754-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2DGNQ)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M16 26C21.5228 26 26 21.5228 26 16C26 10.4772 21.5228 6 16 6C10.4772 6 6 10.4772 6 16C6 21.5228 10.4772 26 16 26Z" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 19.998V15.998" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 12H16.0098" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3427_35082111-d2-2902781010-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2DGNQ">
+<clipPath id="clip0_3427_35082111-d2-169890754-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2DGNQ">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
-</g><g transform="translate(406 289)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3440_35088111-d2-2902781010-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2DGNQ)">
+</g><g transform="translate(406 560)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3440_35088111-d2-169890754-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2DGNQ)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M14.3909 16.7965C14.7364 17.2584 15.1772 17.6406 15.6834 17.9171C16.1896 18.1938 16.7494 18.3582 17.3248 18.3993C17.9001 18.4405 18.4777 18.3575 19.0181 18.1559C19.5586 17.9543 20.0492 17.6389 20.4571 17.2309L22.8708 14.8173C23.6036 14.0586 24.0089 13.0425 23.9998 11.9877C23.9906 10.933 23.5676 9.92404 22.8217 9.17821C22.0759 8.43237 21.067 8.00931 20.0123 8.00015C18.9575 7.99098 17.9413 8.39644 17.1827 9.1292L15.7988 10.505" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M17.609 15.1874C17.2635 14.7255 16.8227 14.3433 16.3165 14.0667C15.8103 13.7902 15.2505 13.6257 14.6752 13.5845C14.0998 13.5433 13.5223 13.6263 12.9819 13.8279C12.4414 14.0295 11.9506 14.345 11.5428 14.753L9.1292 17.1666C8.39644 17.9252 7.99098 18.9414 8.00015 19.9962C8.00931 21.0509 8.43237 22.0598 9.17821 22.8056C9.92405 23.5515 10.933 23.9745 11.9877 23.9837C13.0425 23.9928 14.0586 23.5875 14.8173 22.8547L16.193 21.4788" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3440_35088111-d2-2902781010-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2DGNQ">
+<clipPath id="clip0_3440_35088111-d2-169890754-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2DGNQ">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
-</g><g transform="translate(438 629)" class="appendix-icon"><title>Establish the outcome of an interrupted recorded update (SCN-047)</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3427_35082111-d2-2902781010-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2DGNY)">
+</g><g transform="translate(864 56)" class="appendix-icon"><title>Establish the outcome of an interrupted recorded update (SCN-047)</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3427_35082111-d2-169890754-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2DGNY)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M16 26C21.5228 26 26 21.5228 26 16C26 10.4772 21.5228 6 16 6C10.4772 6 6 10.4772 6 16C6 21.5228 10.4772 26 16 26Z" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 19.998V15.998" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 12H16.0098" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3427_35082111-d2-2902781010-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2DGNY">
-<rect width="32" height="32" fill="white"/>
-</clipPath>
-</defs>
-</svg>
-</g><g transform="translate(406 629)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3440_35088111-d2-2902781010-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2DGNY)">
-<path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
-<path d="M14.3909 16.7965C14.7364 17.2584 15.1772 17.6406 15.6834 17.9171C16.1896 18.1938 16.7494 18.3582 17.3248 18.3993C17.9001 18.4405 18.4777 18.3575 19.0181 18.1559C19.5586 17.9543 20.0492 17.6389 20.4571 17.2309L22.8708 14.8173C23.6036 14.0586 24.0089 13.0425 23.9998 11.9877C23.9906 10.933 23.5676 9.92404 22.8217 9.17821C22.0759 8.43237 21.067 8.00931 20.0123 8.00015C18.9575 7.99098 17.9413 8.39644 17.1827 9.1292L15.7988 10.505" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M17.609 15.1874C17.2635 14.7255 16.8227 14.3433 16.3165 14.0667C15.8103 13.7902 15.2505 13.6257 14.6752 13.5845C14.0998 13.5433 13.5223 13.6263 12.9819 13.8279C12.4414 14.0295 11.9506 14.345 11.5428 14.753L9.1292 17.1666C8.39644 17.9252 7.99098 18.9414 8.00015 19.9962C8.00931 21.0509 8.43237 22.0598 9.17821 22.8056C9.92405 23.5515 10.933 23.9745 11.9877 23.9837C13.0425 23.9928 14.0586 23.5875 14.8173 22.8547L16.193 21.4788" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-</g>
-<defs>
-<clipPath id="clip0_3440_35088111-d2-2902781010-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2DGNY">
-<rect width="32" height="32" fill="white"/>
-</clipPath>
-</defs>
-</svg>
-</g><g transform="translate(864 56)" class="appendix-icon"><title>Produce a usable result through specialist guidance (SCN-053)</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3427_35082111-d2-2902781010-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2TGMY)">
-<path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
-<path d="M16 26C21.5228 26 26 21.5228 26 16C26 10.4772 21.5228 6 16 6C10.4772 6 6 10.4772 6 16C6 21.5228 10.4772 26 16 26Z" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M16 19.998V15.998" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M16 12H16.0098" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-</g>
-<defs>
-<clipPath id="clip0_3427_35082111-d2-2902781010-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2TGMY">
+<clipPath id="clip0_3427_35082111-d2-169890754-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2DGNY">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
 </g><g transform="translate(832 56)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3440_35088111-d2-2902781010-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2TGMY)">
+<g clip-path="url(#clip0_3440_35088111-d2-169890754-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2DGNY)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M14.3909 16.7965C14.7364 17.2584 15.1772 17.6406 15.6834 17.9171C16.1896 18.1938 16.7494 18.3582 17.3248 18.3993C17.9001 18.4405 18.4777 18.3575 19.0181 18.1559C19.5586 17.9543 20.0492 17.6389 20.4571 17.2309L22.8708 14.8173C23.6036 14.0586 24.0089 13.0425 23.9998 11.9877C23.9906 10.933 23.5676 9.92404 22.8217 9.17821C22.0759 8.43237 21.067 8.00931 20.0123 8.00015C18.9575 7.99098 17.9413 8.39644 17.1827 9.1292L15.7988 10.505" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M17.609 15.1874C17.2635 14.7255 16.8227 14.3433 16.3165 14.0667C15.8103 13.7902 15.2505 13.6257 14.6752 13.5845C14.0998 13.5433 13.5223 13.6263 12.9819 13.8279C12.4414 14.0295 11.9506 14.345 11.5428 14.753L9.1292 17.1666C8.39644 17.9252 7.99098 18.9414 8.00015 19.9962C8.00931 21.0509 8.43237 22.0598 9.17821 22.8056C9.92405 23.5515 10.933 23.9745 11.9877 23.9837C13.0425 23.9928 14.0586 23.5875 14.8173 22.8547L16.193 21.4788" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3440_35088111-d2-2902781010-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2TGMY">
+<clipPath id="clip0_3440_35088111-d2-169890754-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2DGNY">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
-</g><g transform="translate(864 509)" class="appendix-icon"><title>Start an authorized release and publish the qualified packages (SCN-066)</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3427_35082111-d2-2902781010-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM3DGNQ)">
+</g><g transform="translate(864 390)" class="appendix-icon"><title>Produce a usable result through specialist guidance (SCN-053)</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3427_35082111-d2-169890754-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2TGMY)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M16 26C21.5228 26 26 21.5228 26 16C26 10.4772 21.5228 6 16 6C10.4772 6 6 10.4772 6 16C6 21.5228 10.4772 26 16 26Z" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 19.998V15.998" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 12H16.0098" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3427_35082111-d2-2902781010-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM3DGNQ">
+<clipPath id="clip0_3427_35082111-d2-169890754-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2TGMY">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
-</g><g transform="translate(832 509)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3440_35088111-d2-2902781010-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM3DGNQ)">
+</g><g transform="translate(832 390)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3440_35088111-d2-169890754-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2TGMY)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M14.3909 16.7965C14.7364 17.2584 15.1772 17.6406 15.6834 17.9171C16.1896 18.1938 16.7494 18.3582 17.3248 18.3993C17.9001 18.4405 18.4777 18.3575 19.0181 18.1559C19.5586 17.9543 20.0492 17.6389 20.4571 17.2309L22.8708 14.8173C23.6036 14.0586 24.0089 13.0425 23.9998 11.9877C23.9906 10.933 23.5676 9.92404 22.8217 9.17821C22.0759 8.43237 21.067 8.00931 20.0123 8.00015C18.9575 7.99098 17.9413 8.39644 17.1827 9.1292L15.7988 10.505" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M17.609 15.1874C17.2635 14.7255 16.8227 14.3433 16.3165 14.0667C15.8103 13.7902 15.2505 13.6257 14.6752 13.5845C14.0998 13.5433 13.5223 13.6263 12.9819 13.8279C12.4414 14.0295 11.9506 14.345 11.5428 14.753L9.1292 17.1666C8.39644 17.9252 7.99098 18.9414 8.00015 19.9962C8.00931 21.0509 8.43237 22.0598 9.17821 22.8056C9.92405 23.5515 10.933 23.9745 11.9877 23.9837C13.0425 23.9928 14.0586 23.5875 14.8173 22.8547L16.193 21.4788" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3440_35088111-d2-2902781010-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM3DGNQ">
+<clipPath id="clip0_3440_35088111-d2-169890754-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2TGMY">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
-</g><g transform="translate(345 122)" class="appendix-icon"><title>Model baselines (MOD-005)</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3427_35082111-d2-2902781010-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGMYTGOJONVPTIZBUMY2DIMTEGMYDGMBTGU)">
+</g><g transform="translate(864 724)" class="appendix-icon"><title>Start an authorized release and publish the qualified packages (SCN-066)</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3427_35082111-d2-169890754-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM3DGNQ)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M16 26C21.5228 26 26 21.5228 26 16C26 10.4772 21.5228 6 16 6C10.4772 6 6 10.4772 6 16C6 21.5228 10.4772 26 16 26Z" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 19.998V15.998" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 12H16.0098" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3427_35082111-d2-2902781010-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGMYTGOJONVPTIZBUMY2DIMTEGMYDGMBTGU">
+<clipPath id="clip0_3427_35082111-d2-169890754-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM3DGNQ">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
-</g><g transform="translate(313 122)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3440_35088111-d2-2902781010-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGMYTGOJONVPTIZBUMY2DIMTEGMYDGMBTGU)">
+</g><g transform="translate(832 724)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3440_35088111-d2-169890754-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM3DGNQ)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M14.3909 16.7965C14.7364 17.2584 15.1772 17.6406 15.6834 17.9171C16.1896 18.1938 16.7494 18.3582 17.3248 18.3993C17.9001 18.4405 18.4777 18.3575 19.0181 18.1559C19.5586 17.9543 20.0492 17.6389 20.4571 17.2309L22.8708 14.8173C23.6036 14.0586 24.0089 13.0425 23.9998 11.9877C23.9906 10.933 23.5676 9.92404 22.8217 9.17821C22.0759 8.43237 21.067 8.00931 20.0123 8.00015C18.9575 7.99098 17.9413 8.39644 17.1827 9.1292L15.7988 10.505" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M17.609 15.1874C17.2635 14.7255 16.8227 14.3433 16.3165 14.0667C15.8103 13.7902 15.2505 13.6257 14.6752 13.5845C14.0998 13.5433 13.5223 13.6263 12.9819 13.8279C12.4414 14.0295 11.9506 14.345 11.5428 14.753L9.1292 17.1666C8.39644 17.9252 7.99098 18.9414 8.00015 19.9962C8.00931 21.0509 8.43237 22.0598 9.17821 22.8056C9.92405 23.5515 10.933 23.9745 11.9877 23.9837C13.0425 23.9928 14.0586 23.5875 14.8173 22.8547L16.193 21.4788" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3440_35088111-d2-2902781010-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGMYTGOJONVPTIZBUMY2DIMTEGMYDGMBTGU">
+<clipPath id="clip0_3440_35088111-d2-169890754-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM3DGNQ">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
-</g><g transform="translate(378 355)" class="appendix-icon"><title>Command handling (MOD-010)</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3427_35082111-d2-2902781010-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2DGNRONVPTIZBUMY2DIMTEGMYDGMJTGA)">
+</g><g transform="translate(360 122)" class="appendix-icon"><title>Definition storage (MOD-001)</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3427_35082111-d2-169890754-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGMYTGOJONVPTIZBUMY2DIMTEGMYDGMBTGE)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M16 26C21.5228 26 26 21.5228 26 16C26 10.4772 21.5228 6 16 6C10.4772 6 6 10.4772 6 16C6 21.5228 10.4772 26 16 26Z" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 19.998V15.998" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 12H16.0098" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3427_35082111-d2-2902781010-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2DGNRONVPTIZBUMY2DIMTEGMYDGMJTGA">
+<clipPath id="clip0_3427_35082111-d2-169890754-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGMYTGOJONVPTIZBUMY2DIMTEGMYDGMBTGE">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
-</g><g transform="translate(346 355)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3440_35088111-d2-2902781010-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2DGNRONVPTIZBUMY2DIMTEGMYDGMJTGA)">
+</g><g transform="translate(328 122)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3440_35088111-d2-169890754-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGMYTGOJONVPTIZBUMY2DIMTEGMYDGMBTGE)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M14.3909 16.7965C14.7364 17.2584 15.1772 17.6406 15.6834 17.9171C16.1896 18.1938 16.7494 18.3582 17.3248 18.3993C17.9001 18.4405 18.4777 18.3575 19.0181 18.1559C19.5586 17.9543 20.0492 17.6389 20.4571 17.2309L22.8708 14.8173C23.6036 14.0586 24.0089 13.0425 23.9998 11.9877C23.9906 10.933 23.5676 9.92404 22.8217 9.17821C22.0759 8.43237 21.067 8.00931 20.0123 8.00015C18.9575 7.99098 17.9413 8.39644 17.1827 9.1292L15.7988 10.505" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M17.609 15.1874C17.2635 14.7255 16.8227 14.3433 16.3165 14.0667C15.8103 13.7902 15.2505 13.6257 14.6752 13.5845C14.0998 13.5433 13.5223 13.6263 12.9819 13.8279C12.4414 14.0295 11.9506 14.345 11.5428 14.753L9.1292 17.1666C8.39644 17.9252 7.99098 18.9414 8.00015 19.9962C8.00931 21.0509 8.43237 22.0598 9.17821 22.8056C9.92405 23.5515 10.933 23.9745 11.9877 23.9837C13.0425 23.9928 14.0586 23.5875 14.8173 22.8547L16.193 21.4788" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3440_35088111-d2-2902781010-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2DGNRONVPTIZBUMY2DIMTEGMYDGMJTGA">
+<clipPath id="clip0_3440_35088111-d2-169890754-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGMYTGOJONVPTIZBUMY2DIMTEGMYDGMBTGE">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
-</g><g transform="translate(378 462)" class="appendix-icon"><title>Work record storage (MOD-011)</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3427_35082111-d2-2902781010-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2DGNRONVPTIZBUMY2DIMTEGMYDGMJTGE)">
+</g><g transform="translate(360 229)" class="appendix-icon"><title>Model baselines (MOD-005)</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3427_35082111-d2-169890754-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGMYTGOJONVPTIZBUMY2DIMTEGMYDGMBTGU)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M16 26C21.5228 26 26 21.5228 26 16C26 10.4772 21.5228 6 16 6C10.4772 6 6 10.4772 6 16C6 21.5228 10.4772 26 16 26Z" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 19.998V15.998" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 12H16.0098" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3427_35082111-d2-2902781010-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2DGNRONVPTIZBUMY2DIMTEGMYDGMJTGE">
+<clipPath id="clip0_3427_35082111-d2-169890754-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGMYTGOJONVPTIZBUMY2DIMTEGMYDGMBTGU">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
-</g><g transform="translate(346 462)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3440_35088111-d2-2902781010-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2DGNRONVPTIZBUMY2DIMTEGMYDGMJTGE)">
+</g><g transform="translate(328 229)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3440_35088111-d2-169890754-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGMYTGOJONVPTIZBUMY2DIMTEGMYDGMBTGU)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M14.3909 16.7965C14.7364 17.2584 15.1772 17.6406 15.6834 17.9171C16.1896 18.1938 16.7494 18.3582 17.3248 18.3993C17.9001 18.4405 18.4777 18.3575 19.0181 18.1559C19.5586 17.9543 20.0492 17.6389 20.4571 17.2309L22.8708 14.8173C23.6036 14.0586 24.0089 13.0425 23.9998 11.9877C23.9906 10.933 23.5676 9.92404 22.8217 9.17821C22.0759 8.43237 21.067 8.00931 20.0123 8.00015C18.9575 7.99098 17.9413 8.39644 17.1827 9.1292L15.7988 10.505" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M17.609 15.1874C17.2635 14.7255 16.8227 14.3433 16.3165 14.0667C15.8103 13.7902 15.2505 13.6257 14.6752 13.5845C14.0998 13.5433 13.5223 13.6263 12.9819 13.8279C12.4414 14.0295 11.9506 14.345 11.5428 14.753L9.1292 17.1666C8.39644 17.9252 7.99098 18.9414 8.00015 19.9962C8.00931 21.0509 8.43237 22.0598 9.17821 22.8056C9.92405 23.5515 10.933 23.9745 11.9877 23.9837C13.0425 23.9928 14.0586 23.5875 14.8173 22.8547L16.193 21.4788" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3440_35088111-d2-2902781010-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2DGNRONVPTIZBUMY2DIMTEGMYDGMJTGE">
+<clipPath id="clip0_3440_35088111-d2-169890754-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGMYTGOJONVPTIZBUMY2DIMTEGMYDGMBTGU">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
-</g><g transform="translate(378 689)" class="appendix-icon"><title>Command handling (MOD-010)</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3427_35082111-d2-2902781010-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2DGNZONVPTIZBUMY2DIMTEGMYDGMJTGA)">
+</g><g transform="translate(378 626)" class="appendix-icon"><title>Command handling (MOD-010)</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3427_35082111-d2-169890754-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2DGNRONVPTIZBUMY2DIMTEGMYDGMJTGA)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M16 26C21.5228 26 26 21.5228 26 16C26 10.4772 21.5228 6 16 6C10.4772 6 6 10.4772 6 16C6 21.5228 10.4772 26 16 26Z" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 19.998V15.998" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 12H16.0098" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3427_35082111-d2-2902781010-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2DGNZONVPTIZBUMY2DIMTEGMYDGMJTGA">
+<clipPath id="clip0_3427_35082111-d2-169890754-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2DGNRONVPTIZBUMY2DIMTEGMYDGMJTGA">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
-</g><g transform="translate(346 689)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3440_35088111-d2-2902781010-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2DGNZONVPTIZBUMY2DIMTEGMYDGMJTGA)">
+</g><g transform="translate(346 626)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3440_35088111-d2-169890754-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2DGNRONVPTIZBUMY2DIMTEGMYDGMJTGA)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M14.3909 16.7965C14.7364 17.2584 15.1772 17.6406 15.6834 17.9171C16.1896 18.1938 16.7494 18.3582 17.3248 18.3993C17.9001 18.4405 18.4777 18.3575 19.0181 18.1559C19.5586 17.9543 20.0492 17.6389 20.4571 17.2309L22.8708 14.8173C23.6036 14.0586 24.0089 13.0425 23.9998 11.9877C23.9906 10.933 23.5676 9.92404 22.8217 9.17821C22.0759 8.43237 21.067 8.00931 20.0123 8.00015C18.9575 7.99098 17.9413 8.39644 17.1827 9.1292L15.7988 10.505" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M17.609 15.1874C17.2635 14.7255 16.8227 14.3433 16.3165 14.0667C15.8103 13.7902 15.2505 13.6257 14.6752 13.5845C14.0998 13.5433 13.5223 13.6263 12.9819 13.8279C12.4414 14.0295 11.9506 14.345 11.5428 14.753L9.1292 17.1666C8.39644 17.9252 7.99098 18.9414 8.00015 19.9962C8.00931 21.0509 8.43237 22.0598 9.17821 22.8056C9.92405 23.5515 10.933 23.9745 11.9877 23.9837C13.0425 23.9928 14.0586 23.5875 14.8173 22.8547L16.193 21.4788" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3440_35088111-d2-2902781010-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2DGNZONVPTIZBUMY2DIMTEGMYDGMJTGA">
+<clipPath id="clip0_3440_35088111-d2-169890754-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2DGNRONVPTIZBUMY2DIMTEGMYDGMJTGA">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
-</g><g transform="translate(378 796)" class="appendix-icon"><title>Work record storage (MOD-011)</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3427_35082111-d2-2902781010-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2DGNZONVPTIZBUMY2DIMTEGMYDGMJTGE)">
+</g><g transform="translate(378 733)" class="appendix-icon"><title>Work record storage (MOD-011)</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3427_35082111-d2-169890754-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2DGNRONVPTIZBUMY2DIMTEGMYDGMJTGE)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M16 26C21.5228 26 26 21.5228 26 16C26 10.4772 21.5228 6 16 6C10.4772 6 6 10.4772 6 16C6 21.5228 10.4772 26 16 26Z" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 19.998V15.998" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 12H16.0098" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3427_35082111-d2-2902781010-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2DGNZONVPTIZBUMY2DIMTEGMYDGMJTGE">
+<clipPath id="clip0_3427_35082111-d2-169890754-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2DGNRONVPTIZBUMY2DIMTEGMYDGMJTGE">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
-</g><g transform="translate(346 796)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3440_35088111-d2-2902781010-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2DGNZONVPTIZBUMY2DIMTEGMYDGMJTGE)">
+</g><g transform="translate(346 733)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3440_35088111-d2-169890754-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2DGNRONVPTIZBUMY2DIMTEGMYDGMJTGE)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M14.3909 16.7965C14.7364 17.2584 15.1772 17.6406 15.6834 17.9171C16.1896 18.1938 16.7494 18.3582 17.3248 18.3993C17.9001 18.4405 18.4777 18.3575 19.0181 18.1559C19.5586 17.9543 20.0492 17.6389 20.4571 17.2309L22.8708 14.8173C23.6036 14.0586 24.0089 13.0425 23.9998 11.9877C23.9906 10.933 23.5676 9.92404 22.8217 9.17821C22.0759 8.43237 21.067 8.00931 20.0123 8.00015C18.9575 7.99098 17.9413 8.39644 17.1827 9.1292L15.7988 10.505" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M17.609 15.1874C17.2635 14.7255 16.8227 14.3433 16.3165 14.0667C15.8103 13.7902 15.2505 13.6257 14.6752 13.5845C14.0998 13.5433 13.5223 13.6263 12.9819 13.8279C12.4414 14.0295 11.9506 14.345 11.5428 14.753L9.1292 17.1666C8.39644 17.9252 7.99098 18.9414 8.00015 19.9962C8.00931 21.0509 8.43237 22.0598 9.17821 22.8056C9.92405 23.5515 10.933 23.9745 11.9877 23.9837C13.0425 23.9928 14.0586 23.5875 14.8173 22.8547L16.193 21.4788" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3440_35088111-d2-2902781010-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2DGNZONVPTIZBUMY2DIMTEGMYDGMJTGE">
+<clipPath id="clip0_3440_35088111-d2-169890754-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2DGNRONVPTIZBUMY2DIMTEGMYDGMJTGE">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
-</g><g transform="translate(796 116)" class="appendix-icon"><title>Authoring guidance (MOD-008)</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3427_35082111-d2-2902781010-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2TGMZONVPTIZBUMY2DIMTEGMYDGMBTHA)">
+</g><g transform="translate(800 116)" class="appendix-icon"><title>Command handling (MOD-010)</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3427_35082111-d2-169890754-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2DGNZONVPTIZBUMY2DIMTEGMYDGMJTGA)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M16 26C21.5228 26 26 21.5228 26 16C26 10.4772 21.5228 6 16 6C10.4772 6 6 10.4772 6 16C6 21.5228 10.4772 26 16 26Z" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 19.998V15.998" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 12H16.0098" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3427_35082111-d2-2902781010-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2TGMZONVPTIZBUMY2DIMTEGMYDGMBTHA">
+<clipPath id="clip0_3427_35082111-d2-169890754-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2DGNZONVPTIZBUMY2DIMTEGMYDGMJTGA">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
-</g><g transform="translate(764 116)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3440_35088111-d2-2902781010-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2TGMZONVPTIZBUMY2DIMTEGMYDGMBTHA)">
+</g><g transform="translate(768 116)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3440_35088111-d2-169890754-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2DGNZONVPTIZBUMY2DIMTEGMYDGMJTGA)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M14.3909 16.7965C14.7364 17.2584 15.1772 17.6406 15.6834 17.9171C16.1896 18.1938 16.7494 18.3582 17.3248 18.3993C17.9001 18.4405 18.4777 18.3575 19.0181 18.1559C19.5586 17.9543 20.0492 17.6389 20.4571 17.2309L22.8708 14.8173C23.6036 14.0586 24.0089 13.0425 23.9998 11.9877C23.9906 10.933 23.5676 9.92404 22.8217 9.17821C22.0759 8.43237 21.067 8.00931 20.0123 8.00015C18.9575 7.99098 17.9413 8.39644 17.1827 9.1292L15.7988 10.505" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M17.609 15.1874C17.2635 14.7255 16.8227 14.3433 16.3165 14.0667C15.8103 13.7902 15.2505 13.6257 14.6752 13.5845C14.0998 13.5433 13.5223 13.6263 12.9819 13.8279C12.4414 14.0295 11.9506 14.345 11.5428 14.753L9.1292 17.1666C8.39644 17.9252 7.99098 18.9414 8.00015 19.9962C8.00931 21.0509 8.43237 22.0598 9.17821 22.8056C9.92405 23.5515 10.933 23.9745 11.9877 23.9837C13.0425 23.9928 14.0586 23.5875 14.8173 22.8547L16.193 21.4788" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3440_35088111-d2-2902781010-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2TGMZONVPTIZBUMY2DIMTEGMYDGMBTHA">
+<clipPath id="clip0_3440_35088111-d2-169890754-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2DGNZONVPTIZBUMY2DIMTEGMYDGMJTGA">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
-</g><g transform="translate(796 223)" class="appendix-icon"><title>Skill procedures (MOD-012)</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3427_35082111-d2-2902781010-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2TGMZONVPTIZBUMY2DIMTEGMYDGMJTGI)">
+</g><g transform="translate(800 223)" class="appendix-icon"><title>Work record storage (MOD-011)</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3427_35082111-d2-169890754-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2DGNZONVPTIZBUMY2DIMTEGMYDGMJTGE)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M16 26C21.5228 26 26 21.5228 26 16C26 10.4772 21.5228 6 16 6C10.4772 6 6 10.4772 6 16C6 21.5228 10.4772 26 16 26Z" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 19.998V15.998" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 12H16.0098" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3427_35082111-d2-2902781010-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2TGMZONVPTIZBUMY2DIMTEGMYDGMJTGI">
+<clipPath id="clip0_3427_35082111-d2-169890754-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2DGNZONVPTIZBUMY2DIMTEGMYDGMJTGE">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
-</g><g transform="translate(764 223)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3440_35088111-d2-2902781010-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2TGMZONVPTIZBUMY2DIMTEGMYDGMJTGI)">
+</g><g transform="translate(768 223)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3440_35088111-d2-169890754-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2DGNZONVPTIZBUMY2DIMTEGMYDGMJTGE)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M14.3909 16.7965C14.7364 17.2584 15.1772 17.6406 15.6834 17.9171C16.1896 18.1938 16.7494 18.3582 17.3248 18.3993C17.9001 18.4405 18.4777 18.3575 19.0181 18.1559C19.5586 17.9543 20.0492 17.6389 20.4571 17.2309L22.8708 14.8173C23.6036 14.0586 24.0089 13.0425 23.9998 11.9877C23.9906 10.933 23.5676 9.92404 22.8217 9.17821C22.0759 8.43237 21.067 8.00931 20.0123 8.00015C18.9575 7.99098 17.9413 8.39644 17.1827 9.1292L15.7988 10.505" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M17.609 15.1874C17.2635 14.7255 16.8227 14.3433 16.3165 14.0667C15.8103 13.7902 15.2505 13.6257 14.6752 13.5845C14.0998 13.5433 13.5223 13.6263 12.9819 13.8279C12.4414 14.0295 11.9506 14.345 11.5428 14.753L9.1292 17.1666C8.39644 17.9252 7.99098 18.9414 8.00015 19.9962C8.00931 21.0509 8.43237 22.0598 9.17821 22.8056C9.92405 23.5515 10.933 23.9745 11.9877 23.9837C13.0425 23.9928 14.0586 23.5875 14.8173 22.8547L16.193 21.4788" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3440_35088111-d2-2902781010-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2TGMZONVPTIZBUMY2DIMTEGMYDGMJTGI">
+<clipPath id="clip0_3440_35088111-d2-169890754-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2DGNZONVPTIZBUMY2DIMTEGMYDGMJTGE">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
-</g><g transform="translate(804 575)" class="appendix-icon"><title>Change control (MOD-006)</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3427_35082111-d2-2902781010-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM3DGNRONVPTIZBUMY2DIMTEGMYDGMBTGY)">
+</g><g transform="translate(796 450)" class="appendix-icon"><title>Authoring guidance (MOD-008)</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3427_35082111-d2-169890754-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2TGMZONVPTIZBUMY2DIMTEGMYDGMBTHA)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M16 26C21.5228 26 26 21.5228 26 16C26 10.4772 21.5228 6 16 6C10.4772 6 6 10.4772 6 16C6 21.5228 10.4772 26 16 26Z" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 19.998V15.998" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 12H16.0098" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3427_35082111-d2-2902781010-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM3DGNRONVPTIZBUMY2DIMTEGMYDGMBTGY">
+<clipPath id="clip0_3427_35082111-d2-169890754-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2TGMZONVPTIZBUMY2DIMTEGMYDGMBTHA">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
-</g><g transform="translate(772 575)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3440_35088111-d2-2902781010-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM3DGNRONVPTIZBUMY2DIMTEGMYDGMBTGY)">
+</g><g transform="translate(764 450)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3440_35088111-d2-169890754-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2TGMZONVPTIZBUMY2DIMTEGMYDGMBTHA)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M14.3909 16.7965C14.7364 17.2584 15.1772 17.6406 15.6834 17.9171C16.1896 18.1938 16.7494 18.3582 17.3248 18.3993C17.9001 18.4405 18.4777 18.3575 19.0181 18.1559C19.5586 17.9543 20.0492 17.6389 20.4571 17.2309L22.8708 14.8173C23.6036 14.0586 24.0089 13.0425 23.9998 11.9877C23.9906 10.933 23.5676 9.92404 22.8217 9.17821C22.0759 8.43237 21.067 8.00931 20.0123 8.00015C18.9575 7.99098 17.9413 8.39644 17.1827 9.1292L15.7988 10.505" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M17.609 15.1874C17.2635 14.7255 16.8227 14.3433 16.3165 14.0667C15.8103 13.7902 15.2505 13.6257 14.6752 13.5845C14.0998 13.5433 13.5223 13.6263 12.9819 13.8279C12.4414 14.0295 11.9506 14.345 11.5428 14.753L9.1292 17.1666C8.39644 17.9252 7.99098 18.9414 8.00015 19.9962C8.00931 21.0509 8.43237 22.0598 9.17821 22.8056C9.92405 23.5515 10.933 23.9745 11.9877 23.9837C13.0425 23.9928 14.0586 23.5875 14.8173 22.8547L16.193 21.4788" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3440_35088111-d2-2902781010-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM3DGNRONVPTIZBUMY2DIMTEGMYDGMBTGY">
+<clipPath id="clip0_3440_35088111-d2-169890754-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2TGMZONVPTIZBUMY2DIMTEGMYDGMBTHA">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
-</g><g transform="translate(804 682)" class="appendix-icon"><title>Release coordination (MOD-015)</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3427_35082111-d2-2902781010-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM3DGNRONVPTIZBUMY2DIMTEGMYDGMJTGU)">
+</g><g transform="translate(796 557)" class="appendix-icon"><title>Skill procedures (MOD-012)</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3427_35082111-d2-169890754-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2TGMZONVPTIZBUMY2DIMTEGMYDGMJTGI)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M16 26C21.5228 26 26 21.5228 26 16C26 10.4772 21.5228 6 16 6C10.4772 6 6 10.4772 6 16C6 21.5228 10.4772 26 16 26Z" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 19.998V15.998" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 12H16.0098" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3427_35082111-d2-2902781010-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM3DGNRONVPTIZBUMY2DIMTEGMYDGMJTGU">
+<clipPath id="clip0_3427_35082111-d2-169890754-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2TGMZONVPTIZBUMY2DIMTEGMYDGMJTGI">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
-</g><g transform="translate(772 682)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3440_35088111-d2-2902781010-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM3DGNRONVPTIZBUMY2DIMTEGMYDGMJTGU)">
+</g><g transform="translate(764 557)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3440_35088111-d2-169890754-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2TGMZONVPTIZBUMY2DIMTEGMYDGMJTGI)">
 <path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
 <path d="M14.3909 16.7965C14.7364 17.2584 15.1772 17.6406 15.6834 17.9171C16.1896 18.1938 16.7494 18.3582 17.3248 18.3993C17.9001 18.4405 18.4777 18.3575 19.0181 18.1559C19.5586 17.9543 20.0492 17.6389 20.4571 17.2309L22.8708 14.8173C23.6036 14.0586 24.0089 13.0425 23.9998 11.9877C23.9906 10.933 23.5676 9.92404 22.8217 9.17821C22.0759 8.43237 21.067 8.00931 20.0123 8.00015C18.9575 7.99098 17.9413 8.39644 17.1827 9.1292L15.7988 10.505" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M17.609 15.1874C17.2635 14.7255 16.8227 14.3433 16.3165 14.0667C15.8103 13.7902 15.2505 13.6257 14.6752 13.5845C14.0998 13.5433 13.5223 13.6263 12.9819 13.8279C12.4414 14.0295 11.9506 14.345 11.5428 14.753L9.1292 17.1666C8.39644 17.9252 7.99098 18.9414 8.00015 19.9962C8.00931 21.0509 8.43237 22.0598 9.17821 22.8056C9.92405 23.5515 10.933 23.9745 11.9877 23.9837C13.0425 23.9928 14.0586 23.5875 14.8173 22.8547L16.193 21.4788" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_3440_35088111-d2-2902781010-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM3DGNRONVPTIZBUMY2DIMTEGMYDGMJTGU">
+<clipPath id="clip0_3440_35088111-d2-169890754-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM2TGMZONVPTIZBUMY2DIMTEGMYDGMJTGI">
 <rect width="32" height="32" fill="white"/>
 </clipPath>
 </defs>
 </svg>
-</g><mask id="d2-2902781010" maskUnits="userSpaceOnUse" x="-17" y="-34" width="1003" height="1062">
-<rect x="-17" y="-34" width="1003" height="1062" fill="white"></rect>
+</g><g transform="translate(804 790)" class="appendix-icon"><title>Change control (MOD-006)</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3427_35082111-d2-169890754-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM3DGNRONVPTIZBUMY2DIMTEGMYDGMBTGY)">
+<path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
+<path d="M16 26C21.5228 26 26 21.5228 26 16C26 10.4772 21.5228 6 16 6C10.4772 6 6 10.4772 6 16C6 21.5228 10.4772 26 16 26Z" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16 19.998V15.998" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16 12H16.0098" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_3427_35082111-d2-169890754-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM3DGNRONVPTIZBUMY2DIMTEGMYDGMBTGY">
+<rect width="32" height="32" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+</g><g transform="translate(772 790)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3440_35088111-d2-169890754-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM3DGNRONVPTIZBUMY2DIMTEGMYDGMBTGY)">
+<path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
+<path d="M14.3909 16.7965C14.7364 17.2584 15.1772 17.6406 15.6834 17.9171C16.1896 18.1938 16.7494 18.3582 17.3248 18.3993C17.9001 18.4405 18.4777 18.3575 19.0181 18.1559C19.5586 17.9543 20.0492 17.6389 20.4571 17.2309L22.8708 14.8173C23.6036 14.0586 24.0089 13.0425 23.9998 11.9877C23.9906 10.933 23.5676 9.92404 22.8217 9.17821C22.0759 8.43237 21.067 8.00931 20.0123 8.00015C18.9575 7.99098 17.9413 8.39644 17.1827 9.1292L15.7988 10.505" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M17.609 15.1874C17.2635 14.7255 16.8227 14.3433 16.3165 14.0667C15.8103 13.7902 15.2505 13.6257 14.6752 13.5845C14.0998 13.5433 13.5223 13.6263 12.9819 13.8279C12.4414 14.0295 11.9506 14.345 11.5428 14.753L9.1292 17.1666C8.39644 17.9252 7.99098 18.9414 8.00015 19.9962C8.00931 21.0509 8.43237 22.0598 9.17821 22.8056C9.92405 23.5515 10.933 23.9745 11.9877 23.9837C13.0425 23.9928 14.0586 23.5875 14.8173 22.8547L16.193 21.4788" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_3440_35088111-d2-169890754-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM3DGNRONVPTIZBUMY2DIMTEGMYDGMBTGY">
+<rect width="32" height="32" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+</g><g transform="translate(804 897)" class="appendix-icon"><title>Release coordination (MOD-015)</title><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3427_35082111-d2-169890754-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM3DGNRONVPTIZBUMY2DIMTEGMYDGMJTGU)">
+<path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
+<path d="M16 26C21.5228 26 26 21.5228 26 16C26 10.4772 21.5228 6 16 6C10.4772 6 6 10.4772 6 16C6 21.5228 10.4772 26 16 26Z" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16 19.998V15.998" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16 12H16.0098" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_3427_35082111-d2-169890754-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM3DGNRONVPTIZBUMY2DIMTEGMYDGMJTGU">
+<rect width="32" height="32" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+</g><g transform="translate(772 897)" class="appendix-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3440_35088111-d2-169890754-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM3DGNRONVPTIZBUMY2DIMTEGMYDGMJTGU)">
+<path d="M16 31.1109C24.3456 31.1109 31.1111 24.3454 31.1111 15.9998C31.1111 7.65415 24.3456 0.888672 16 0.888672C7.65436 0.888672 0.888885 7.65415 0.888885 15.9998C0.888885 24.3454 7.65436 31.1109 16 31.1109Z" fill="white" stroke="#DEE1EB"/>
+<path d="M14.3909 16.7965C14.7364 17.2584 15.1772 17.6406 15.6834 17.9171C16.1896 18.1938 16.7494 18.3582 17.3248 18.3993C17.9001 18.4405 18.4777 18.3575 19.0181 18.1559C19.5586 17.9543 20.0492 17.6389 20.4571 17.2309L22.8708 14.8173C23.6036 14.0586 24.0089 13.0425 23.9998 11.9877C23.9906 10.933 23.5676 9.92404 22.8217 9.17821C22.0759 8.43237 21.067 8.00931 20.0123 8.00015C18.9575 7.99098 17.9413 8.39644 17.1827 9.1292L15.7988 10.505" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M17.609 15.1874C17.2635 14.7255 16.8227 14.3433 16.3165 14.0667C15.8103 13.7902 15.2505 13.6257 14.6752 13.5845C14.0998 13.5433 13.5223 13.6263 12.9819 13.8279C12.4414 14.0295 11.9506 14.345 11.5428 14.753L9.1292 17.1666C8.39644 17.9252 7.99098 18.9414 8.00015 19.9962C8.00931 21.0509 8.43237 22.0598 9.17821 22.8056C9.92405 23.5515 10.933 23.9745 11.9877 23.9837C13.0425 23.9928 14.0586 23.5875 14.8173 22.8547L16.193 21.4788" stroke="#2E3346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_3440_35088111-d2-169890754-O5QWY23UNBZG65LHNBZS43K7GUZTIMZUMUZGIMZQGM3DGNRONVPTIZBUMY2DIMTEGMYDGMJTGU">
+<rect width="32" height="32" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+</g><mask id="d2-169890754" maskUnits="userSpaceOnUse" x="-17" y="-34" width="1003" height="1163">
+<rect x="-17" y="-34" width="1003" height="1163" fill="white"></rect>
 
 </mask></svg></svg>

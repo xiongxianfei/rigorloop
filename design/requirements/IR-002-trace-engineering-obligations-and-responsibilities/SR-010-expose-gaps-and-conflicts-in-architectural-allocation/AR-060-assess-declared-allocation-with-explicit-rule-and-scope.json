@@ -1,0 +1,61 @@
+{
+  "id": "AR-060",
+  "type": "allocated-requirement",
+  "title": "Assess declared allocation with explicit rule and scope",
+  "status": "draft",
+  "statement": "The Views and traceability Module shall assess applicable Allocated Requirement and Function responsibilities using exact selected-state facts and declared deciding rules, exposing missing or conflicting allocations, permitted deferrals and unresolved scope without converting mechanical consistency into engineering approval.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Derived responsibility or impact results can hide missing scope and be mistaken for stronger engineering conclusions.",
+      "desired_outcome": "Assess declared allocation with explicit rule and scope."
+    },
+    "why": {
+      "rationale": "SR-010 requires an accountable result owner preserving its exact finding and completeness semantics."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineering authors, architects and reviewers",
+        "Maintainers of MOD-004"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "A participant requests the corresponding analysis in one selected model state."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "MOD-004 logical analysis boundary using IF-001/IF-002 and its internal traversal contribution."
+      ]
+    },
+    "how": {
+      "approach": "Bind explicit request and source identities, derive attributable results, preserve unknown or limited scope, and leave stronger judgments with their owners."
+    },
+    "how_much": {
+      "scope": "The MOD-004 result obligation for all five SR-010 criteria; content custody, profile interpretation and general traversal retain existing owners and ARs."
+    }
+  },
+  "acceptance_criteria": [
+    "For each selected applicable AR or Function, establish declared rule applicability and required ownership; identify missing responsibility and preserve only explicitly permitted deferrals with their source and conditions.",
+    "For every relevant AR-to-Function constraint, preserve both allocation paths, known or unresolved owner identities, authored provenance and the deciding rule basis.",
+    "Report a violation only where complete relevant facts and an applicable rule decide it; differing ownership without such a rule remains an engineering review question, including unsupported or conflicting rule meaning.",
+    "Inspect complete required membership, incoming constraints and architecture context; expose unmodeled, unavailable, ambiguous or interrupted scope and retain known findings without claiming complete consistency.",
+    "Keep acquisition/evaluation completeness, consistent facts, violations, deferrals and review questions distinguishable; no result invents allocation, creates an AR, approves architecture or establishes satisfaction."
+  ],
+  "assumptions": [],
+  "constraints": [
+    "Proposed architecture only; no runtime availability, implementation or verification claim."
+  ],
+  "allocated_to": "MOD-004",
+  "constrains": [
+    "FUNC-010"
+  ],
+  "sources": [
+    {
+      "source": "SRC-ALLOCATION-IMPACT-DESIGN",
+      "locator": "SR-010; SR-011; SCN-009; SCN-010",
+      "basis": "Derive rule-bound allocation assessment and scope-bound potential-impact result contracts with distinct MOD-004 obligations. Reuse content, interpretation and traversal ownership; proposed Design only."
+    }
+  ]
+}

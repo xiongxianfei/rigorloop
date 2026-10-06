@@ -30,8 +30,9 @@
     "IF-002"
   ],
   "design_limits": [
-    "General traversal/impact contracts outside the customer browser remain deferred.",
-    "Browser target realization is defined in the owning README and proposed facets; no current customer support or implementation is inferred."
+    "General selected-state traversal is defined by traversal.md and IF-013. allocation-and-impact.md defines FUNC-010/011 logical request/result contracts and AR-060/061; callable external analysis adapters remain separate.",
+    "Browser target realization is defined in the owning README and proposed facets; no current customer support or implementation is inferred.",
+    "The owning README refines IR001 current-knowledge Design and existing AR001–009 contributions. Logical model services and participant-assisted documentary association do not establish installed commands or executed satisfaction."
   ],
   "sources": [
     {
@@ -43,6 +44,21 @@
       "source": "SRC-CUSTOMER-BROWSER-DESIGN",
       "locator": "MOD-004",
       "basis": "System and Architecture Design from SR-084–088 and refined SR-060; proposed responsibility, contract and realization only. No implementation, platform qualification or product availability is established."
+    },
+    {
+      "source": "SRC-SCOPED-TRAVERSAL-DESIGN",
+      "locator": "SR-009; SCN-008; FUNC-009",
+      "basis": "Derive selected-state traversal responsibility, admission/completeness outcomes and necessary allocation from existing obligations. Proposed architecture only; no implementation, verification or satisfaction claim."
+    },
+    {
+      "source": "SRC-ALLOCATION-IMPACT-DESIGN",
+      "locator": "SR-010; SR-011; SCN-009; SCN-010",
+      "basis": "Derive rule-bound allocation assessment and scope-bound potential-impact result contracts with distinct MOD-004 obligations. Reuse content, interpretation and traversal ownership; proposed Design only."
+    },
+    {
+      "source": "SRC-CURRENT-KNOWLEDGE-DESIGN",
+      "locator": "IR-001; SR-001–005; AR-001–009; SCN-001–006",
+      "basis": "Refine existing definition custody, identity-preserving evolution and current-context/rationale presentation through IF-001/002. Preserve requirements and allocations; proposed Design only, without runtime implementation or satisfaction."
     }
   ]
 }

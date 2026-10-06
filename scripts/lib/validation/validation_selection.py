@@ -291,6 +291,7 @@ for _key, _command in REM_CHECK_COMMANDS.items():
 REM_TOOL_PATHS = frozenset({
     "scripts/render-rem-architecture-browser.py", "scripts/render-rem-product-inventory.py",
     "scripts/lib/rem_architecture_browser.py", "scripts/lib/rem_architecture_model.py",
+    "scripts/lib/rem_browser_assessments.py",
     "scripts/lib/rem_architecture_physical.py", "scripts/lib/rem_architecture_process.py",
     "scripts/lib/rem_architecture_realization_diagrams.py", "scripts/lib/rem_architecture_scenario_diagrams.py",
     "scripts/lib/rem_architecture_scenarios.py", "scripts/lib/rem_architecture_test_diagrams.py",
@@ -306,6 +307,7 @@ REM_TOOL_PATHS = frozenset({
     "tests/engineering/validation/architecture_view_tests.py",
     "tests/engineering/validation/architecture_browser_tests.py",
     "tests/engineering/validation/architecture_browser_ui_checks.cjs",
+    "tests/engineering/validation/architecture_assessment_ui_checks.cjs",
 })
 
 
@@ -1907,6 +1909,7 @@ def _path_category(path: str) -> str | None:
             or path.startswith(("tests/fixtures/cli-contract-examples/", 'design/architecture/modules/MOD-017-engineering-governance/modules/MOD-006-engineering-change-control/examples/'))):
         return "explicit-recording"
     if (path in REM_TOOL_PATHS
+            or path in ("design/architecture/views/browser/assessment-snapshot.data", "design/architecture/views/browser/design-review-snapshot.data")
             or (path.startswith("rem/") and path.endswith(".md"))
             or path == "design/README.md"
             or (path.startswith(("design/requirements/", "design/system/", "design/architecture/", "design/support/"))
