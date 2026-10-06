@@ -111,7 +111,7 @@ These records propose an architecture. Selected owners additionally carry explic
 
 ### Subordinate realization views
 
-Each Module or Interface owns one directory containing its logical definition and optional realization facets. This applies REM's [architecture realization model](../../rem/models/architecture-design.md#architecture-realization-views) without making subordinate records independent entities.
+Each Module or Interface owns one directory containing its logical definition and optional realization facets. This applies REM's [architecture realization model](../../rem/models/architecture-realization.md#architecture-realization-views) without making subordinate records independent entities.
 
 ```text
 architecture/
@@ -239,7 +239,7 @@ Ancestry supplies structural context rather than extra executing participants. I
 
 ### Scenario outcome reading profile
 
-The shared projection's `scripts/lib/rem_architecture_scenarios.py` selects explanatory context for the eleven expected, alternative and failure outcomes of SCN-046 publication and SCN-047 recovery. It implements REM's [outcome walkthrough method](../../rem/methods/architecture-views.md#outcome-walkthroughs). Canonical Scenario records and their schema retain only their existing stakeholder meaning and requirement relationships. No internal architecture or outcome-coverage assertion is added to them.
+The shared projection's `scripts/lib/rem_architecture_scenarios.py` selects explanatory context for the eleven expected, alternative and failure outcomes of SCN-046 publication and SCN-047 recovery. It implements REM's [outcome walkthrough method](../../rem/methods/views/scenario.md#outcome-walkthroughs). Canonical Scenario records and their schema retain only their existing stakeholder meaning and requirement relationships. No internal architecture or outcome-coverage assertion is added to them.
 
 Each projected outcome retains its exact Scenario source pointer, condition and outcome text. Short labels are navigation aids. Pilot selections identify existing SR/AR acceptance criteria and material realization fields; the generated representation retains their canonical paths and field pointers. Selected SRs must be informed by that Scenario, and selected ARs must belong to an informed SR. Accountable Modules derive from the selected AR allocations; Interface provider context retains the logical model's exact ownership. Reading selection does not add a logical relationship or turn contextual parents into executing participants.
 
@@ -273,7 +273,7 @@ Process graphs derive execution boundaries and conditional paths from `observed.
 
 The overview shows four parent responsibilities and declared cross-parent collaboration, with draft/selected-scope qualification and access to the owners' recorded `design_limits`. Missing edges do not imply independence. Render limits directly without guessing categories from prose or inventing collaboration. Counts are descriptive and do not establish coverage adequacy. Separate searchable Commands and Skills pages present designed names, Function correspondence, derived Feature/Module context and limits. Observed names remain attributed Development facts. Catalog placement does not change exact accountability.
 
-RigorLoop applies REM's [optional Logical reading perspectives](../../rem/methods/architecture-views.md#logical-reading-perspectives) through the following browser organization. These choices belong to this application profile; the [original method and REM adaptation](../../rem/methods/architecture-views.md#origin-and-reference) do not prescribe these pages or product categories.
+RigorLoop applies REM's [optional Logical reading perspectives](../../rem/methods/views/logical.md#logical-reading-perspectives) through the following browser organization. These choices belong to this application profile; the [original method and REM adaptation](../../rem/methods/architecture-views.md#origin-and-reference) do not prescribe these pages or product categories.
 
 | Reading perspective | RigorLoop presentation |
 | --- | --- |
@@ -428,7 +428,7 @@ The [workflow composition and owning records](../architecture/README.md#requirem
 
 Scope disposition: the structured `process_models` extension below is retained as a deferred design option, not a prerequisite for refining the current Process View or an accepted customer product contract. Its former PP delivery allocation has been withdrawn. Current registered architecture explanations use D2 in owning documents and links from the views guide; existing admitted JSON and generated views retain their current contracts. The [customer browser composition](../architecture/README.md#customer-architecture-browser-composition) owns proposed product integration, and requirement/design assessment must settle that scope before any renderer extension is scheduled.
 
-This proposed application-profile refinement applies the [REM Process method](../../rem/methods/architecture-views.md#process-view). It defines the source mapping and projection behavior for subsequent schema and renderer work; the fields described as proposed below are not yet admitted by the current schemas. Existing observed execution, interaction and lifecycle records remain valid and retain their original qualification. This section owns projection mechanics; [Operations](../architecture/modules/MOD-018-engineering-operations/README.md) owns workflow cooperation and [Governance](../architecture/modules/MOD-017-engineering-governance/README.md) owns approval and applicability semantics.
+This proposed application-profile refinement applies the [REM Process method](../../rem/methods/views/process.md#process-view). It defines the source mapping and projection behavior for subsequent schema and renderer work; the fields described as proposed below are not yet admitted by the current schemas. Existing observed execution, interaction and lifecycle records remain valid and retain their original qualification. This section owns projection mechanics; [Operations](../architecture/modules/MOD-018-engineering-operations/README.md) owns workflow cooperation and [Governance](../architecture/modules/MOD-017-engineering-governance/README.md) owns approval and applicability semantics.
 
 ### Projection structure and source mapping
 

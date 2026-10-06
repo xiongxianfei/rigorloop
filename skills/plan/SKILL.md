@@ -54,6 +54,12 @@ For Change-managed work, read the packaged operational interface reference befor
 - COPY `assets/plan-skeleton.md` when authoring a new delivery plan.
 - COPY `assets/milestone.md` when defining a milestone in that plan.
 
+- READ `references/rem-methods-plan-and-assess-verification.md` when planning or interpreting verification against specified obligations.
+- READ `references/rem-methods-validate-stakeholder-outcomes.md` when assessing intended-use outcomes separately from specified conformance.
+- READ `references/rem-concepts-assurance.md` when reasoning about assurance in the selected scope.
+- READ `references/rem-models-README.md` when reasoning about README in the selected scope.
+- READ `references/rem-practices-engineer-change-WORKED-EXAMPLE.md` when needing an illustrative application of the canonical methods; examples do not establish execution.
+
 ## Expected output
 
 Report the actual scoped outcome, governing basis, changed subjects or recorded judgment, material gaps and the next authorized action. Distinguish progress, review approval, final verification and external publication; claim only outcomes supported by this invocation.

@@ -1,6 +1,6 @@
 # Requirement model
 
-The [concepts](../concepts/README.md#requirement-input) distinguish the incoming Raw Requirement (RR) from the durable Initial Requirement, System Requirement, and Allocated Requirement.
+The [concepts](../concepts/requirement-input.md#requirement-input) distinguish the incoming Raw Requirement (RR) from the durable Initial Requirement, System Requirement, and Allocated Requirement.
 The [Requirement Analysis method](../methods/requirement-analysis.md) reconciles RR input with the current requirement model and develops the three durable levels.
 
 ```text
@@ -117,3 +117,8 @@ Moving an SR to a different IR, or an AR to a different SR, changes semantic par
 Requirement identities do not encode their current parent and are not renumbered solely because a parent changes.
 
 Requirement satisfaction, approval, implementation, and evidence applicability remain distinct concerns and MUST NOT be inferred from the presence of a requirement definition.
+
+## Source rationale
+
+[NASA requirements definition](../sources/S01.md) supports assessable obligations and rationale; [requirements management](../sources/S03.md) supports hierarchy and traceability.
+REM's exact three-level containment, cardinalities and analysis rules remain its own selected commitments.

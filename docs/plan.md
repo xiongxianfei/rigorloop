@@ -35,6 +35,8 @@ Current blockers are not recorded in this index.
 
 ## Current plan references
 
+- [Selective REM integration](plans/2026-10-06-rem-selective-integration.md) — owning local Change `2026-10-06-rem-selective-integration`.
+
 - [Requirement evaluation browser pilot](plans/2026-10-05-requirement-evaluation-pilot.md) — owning local Change `2026-10-04-system-requirements-view-design`.
 
 - [AR assessment browser pilot](plans/2026-10-05-ar-assessment-browser-pilot.md) — owning local Change `2026-10-04-system-requirements-view-design`.

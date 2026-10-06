@@ -33,6 +33,9 @@ For Change-managed work, read the packaged operational interface reference befor
 
 - READ `references/boundary-first-method-v1.md` when applying its criteria to this responsibility.
 
+- READ `references/rem-practices-engineer-change-README.md` when needing an illustrative application of the canonical methods; examples do not establish execution.
+- READ `references/rem-practices-engineer-change-WORKED-EXAMPLE.md` when needing an illustrative application of the canonical methods; examples do not establish execution.
+
 ## Expected output
 
 Report the actual scoped outcome, governing basis, changed subjects or recorded judgment, material gaps and the next authorized action. Distinguish progress, review approval, final verification and external publication; claim only outcomes supported by this invocation.

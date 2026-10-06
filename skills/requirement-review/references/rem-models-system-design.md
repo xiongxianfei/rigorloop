@@ -1,9 +1,9 @@
-<!-- Generated from rem/models/system-design.md; source SHA-256 be895c42416ea9d7eccda0a56671e7f8ba329c1b131ac6d60462774c1ced88dc. Edit the owning REM source. -->
+<!-- Generated from rem/models/system-design.md; source SHA-256 ba3f20f3c0854e9b3cbcebf9851773c68ed19a843fcd0aa92050a4a1571eec83. Edit the owning REM source. -->
 
 # System Design model
 
 System Design describes durable stakeholder-visible capabilities and the durable logical behavior that realizes them.
-The [concept definitions](https://github.com/xiongxianfei/rigorloop/blob/main/rem/concepts/README.md#system-and-architecture-assets) distinguish Features and Functions from Requirements.
+The [concept definitions](https://github.com/xiongxianfei/rigorloop/blob/main/rem/concepts/system-and-architecture.md#system-and-architecture-assets) distinguish Features and Functions from Requirements.
 The [Scenario model](rem-models-scenarios.md) defines the governed stakeholder situations that exercise Features.
 
 ```text

@@ -1,10 +1,10 @@
-<!-- Generated from rem/models/scenarios.md; source SHA-256 aff53f8697d04f4d94379e8fe995b01c4c0c8d82abd8e1a5801a66ba17a4820d. Edit the owning REM source. -->
+<!-- Generated from rem/models/scenarios.md; source SHA-256 a1fe76783ad57048938d690c7d1d3ca9df692d7aa7276f1d77c182a65b98511c. Edit the owning REM source. -->
 
 # Scenario model
 
 Scenarios are first-class governed REM entities used during Initial Requirement analysis.
 They describe stakeholder-observable situations in which a durable Feature is exercised.
-The [Scenario concept](https://github.com/xiongxianfei/rigorloop/blob/main/rem/concepts/README.md#requirement-analysis-entities) defines their meaning; [Scenario Analysis](https://github.com/xiongxianfei/rigorloop/blob/main/rem/methods/scenario-analysis.md) defines how to develop and maintain them.
+The [Scenario concept](https://github.com/xiongxianfei/rigorloop/blob/main/rem/concepts/scenarios.md#requirement-analysis-entities) defines their meaning; [Scenario Analysis](https://github.com/xiongxianfei/rigorloop/blob/main/rem/methods/scenario-analysis.md) defines how to develop and maintain them.
 
 ## Identity and ownership
 
@@ -117,6 +117,6 @@ A confirmed Scenario is acceptable when:
 
 ## Architecture walkthroughs
 
-The [Scenario View (+1)](https://github.com/xiongxianfei/rigorloop/blob/main/rem/methods/architecture-views.md#scenario-view-1) projects architectural context for an existing Scenario. Its [outcome walkthroughs](https://github.com/xiongxianfei/rigorloop/blob/main/rem/methods/architecture-views.md#outcome-walkthroughs) retain the Scenario's full expected, alternative and failure outcomes, then select relevant obligations and architecture details from their own sources.
+The [Scenario View (+1)](https://github.com/xiongxianfei/rigorloop/blob/main/rem/methods/views/scenario.md#scenario-view-1) projects architectural context for an existing Scenario. Its [outcome walkthroughs](https://github.com/xiongxianfei/rigorloop/blob/main/rem/methods/views/scenario.md#outcome-walkthroughs) retain the Scenario's full expected, alternative and failure outcomes, then select relevant obligations and architecture details from their own sources.
 
 The Scenario remains the stakeholder situation; the walkthrough is a derived reading of related engineering knowledge. Selecting architectural or test context does not confirm complete outcome coverage, executed behavior or applicable evidence. Missing explanations remain explicit without rewriting the Scenario to match the available implementation.

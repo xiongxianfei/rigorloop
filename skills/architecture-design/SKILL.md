@@ -38,6 +38,19 @@ For Change-managed work, read the packaged operational interface reference befor
 
 - READ `references/boundary-first-method-v1.md` when applying its criteria to this responsibility.
 
+- READ `references/rem-methods-realization-design.md` when reasoning about realization design in the selected scope.
+- READ `references/rem-methods-view-presentation.md` when reasoning about view presentation in the selected scope.
+- READ `references/rem-methods-views-logical.md` when assessing logical architecture concerns.
+- READ `references/rem-methods-views-process.md` when assessing process architecture concerns.
+- READ `references/rem-methods-views-development.md` when assessing development architecture concerns.
+- READ `references/rem-methods-views-physical.md` when assessing physical architecture concerns.
+- READ `references/rem-methods-views-scenario.md` when assessing scenario architecture concerns.
+- READ `references/rem-models-architecture-allocation.md` when reasoning about architecture allocation in the selected scope.
+- READ `references/rem-models-architecture-boundaries.md` when reasoning about architecture boundaries in the selected scope.
+- READ `references/rem-models-architecture-realization.md` when reasoning about architecture realization in the selected scope.
+- READ `references/rem-practices-engineer-change-README.md` when needing an illustrative application of the canonical methods; examples do not establish execution.
+- READ `references/rem-practices-engineer-change-WORKED-EXAMPLE.md` when needing an illustrative application of the canonical methods; examples do not establish execution.
+
 ## Expected output
 
 Report the actual scoped outcome, governing basis, changed subjects or recorded judgment, material gaps and the next authorized action. Distinguish progress, review approval, final verification and external publication; claim only outcomes supported by this invocation.
