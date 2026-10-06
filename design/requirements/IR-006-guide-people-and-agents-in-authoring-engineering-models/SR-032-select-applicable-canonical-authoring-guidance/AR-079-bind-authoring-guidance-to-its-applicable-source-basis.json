@@ -1,0 +1,61 @@
+{
+  "id": "AR-079",
+  "type": "allocated-requirement",
+  "title": "Bind authoring guidance to its applicable source basis",
+  "status": "draft",
+  "statement": "The Authoring guidance Module shall bind its guidance selections and explanations to the requested activity and declared profile with identifiable canonical sources, applicable worked examples and explicit unsupported or conflicting scope.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "An unbound guidance selection can silently mix incompatible rules or present examples as authority.",
+      "desired_outcome": "Bind authoring guidance to its applicable source basis."
+    },
+    "why": {
+      "rationale": "SR-032 needs an accountable MOD-008 obligation at the IF-008 guidance boundary; existing workflow AR-029/033 do not cover this complete guidance responsibility."
+    },
+    "who": {
+      "stakeholders": [
+        "New REM authors with basic engineering knowledge",
+        "Experienced authors/reviewers and engineering agents",
+        "Guidance maintainers and accountable assessors"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "During the selected authoring/correction or prepared guidance-assessment activity, and when its material source or subject basis changes."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "MOD-008 contribution to MOD-017 IF-008, with MOD-012 guided consumption and existing IF-014 assurance/IF-004 recording when selected."
+      ]
+    },
+    "how": {
+      "approach": "Apply guidance.md to exact declared inputs and owned source meanings; preserve actor decisions, incomplete scope and separately observed effects."
+    },
+    "how_much": {
+      "scope": "The complete allocated contribution to SR-032 within the declared finite activity/profile/task scope; no universal usability, runtime automation or population claim."
+    }
+  },
+  "acceptance_criteria": [
+    "Return each selection with activity, declared profile/version, canonical owners, inspected source identities, applicability reasoning and worked-example navigation; distinguish normative rules from illustrations.",
+    "Preserve the same governing basis and required meaning in human and agent presentations; report missing required sources or examples instead of claiming complete guidance.",
+    "Reassess changed activity/profile/source selections and identify incompatible, superseded, unavailable or unresolved prior material without silent fallback or mixed-version explanation.",
+    "Return the selected basis or explicit gaps through IF-008 without adopting a profile, interpreting or migrating the model, or granting editing authority."
+  ],
+  "assumptions": [],
+  "constraints": [
+    "Guidance and Design coverage do not establish participant success, execution authority or installed support."
+  ],
+  "allocated_to": "MOD-008",
+  "constrains": [
+    "FUNC-032"
+  ],
+  "sources": [
+    {
+      "source": "SRC-AUTHORING-GUIDANCE-DESIGN",
+      "locator": "IR-006; SR-032–034; SCN-031–034/040",
+      "basis": "Define source-bound guidance selection, bounded authoring/correction and participant-assisted semantic task assessment, with justified MOD-008 allocation and existing assurance/recording cooperation. Target Design only; no observed usability or installed capability claim."
+    }
+  ]
+}

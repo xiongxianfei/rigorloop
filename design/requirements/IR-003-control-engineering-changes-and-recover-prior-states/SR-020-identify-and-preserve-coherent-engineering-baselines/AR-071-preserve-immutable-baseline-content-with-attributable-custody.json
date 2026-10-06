@@ -1,0 +1,63 @@
+{
+  "id": "AR-071",
+  "type": "allocated-requirement",
+  "title": "Preserve immutable baseline content with attributable custody",
+  "status": "draft",
+  "statement": "The MOD-001 responsibility shall preserve immutable baseline content with attributable custody within the exact selected scope, preserving original meaning and explicit incomplete outcomes.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Exact immutable engineering content custody can otherwise conflate preparation with confirmed effects or hide unavailable content.",
+      "desired_outcome": "Preserve immutable baseline content with attributable custody."
+    },
+    "why": {
+      "rationale": "SR-020 requires this accountable architectural contribution; other contributions retain their own owners."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineers and maintainers",
+        "Reviewers and project decision owners",
+        "MOD-001 maintainers"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "A participant requests exact immutable engineering content custody."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "The selected local project state and declared retained/current material under state-control.md."
+      ]
+    },
+    "how": {
+      "approach": "Apply state-control.md with exact identity/scope and original interpretation, explicit custody/authority boundaries and attributable incomplete or confirmed outcomes."
+    },
+    "how_much": {
+      "scope": "Exact immutable engineering content custody. No full IR003 assessment, runtime qualification, destructive adoption or operational maintenance execution is claimed."
+    }
+  },
+  "acceptance_criteria": [
+    "Retain exact manifest membership, bytes, original profile/rules, provenance and included material independently of mutable current definitions; no alias to mutable source content.",
+    "Validate supported member kinds, containment and integrity; external-only references never count as preserved content and missing required members prevent full confirmation.",
+    "Stage and durably seal complete content before issuing a custody receipt; conflicting baseline bindings reject and unsupported platform durability cannot report complete preservation.",
+    "Preserve sealed bundles through catalog failure and uncertain receipts; reconcile exact stored effects after interruption without fabricated rollback or blind overwrite.",
+    "Return original selected content and precise missing, corrupt, unsupported or inaccessible scope without substitution of current bytes or rules."
+  ],
+  "assumptions": [],
+  "constraints": [
+    "Proposed Design; no implementation, executed criterion verification or satisfaction claim."
+  ],
+  "allocated_to": "MOD-001",
+  "constrains": [
+    "FUNC-001",
+    "FUNC-004"
+  ],
+  "sources": [
+    {
+      "source": "SRC-BASELINE-STATE-DESIGN",
+      "locator": "SR-020–024; SCN-019–022/025",
+      "basis": "Define immutable baseline custody, original-meaning comparison/recovery, attributable transition preparation and dependency-safe retirement. Preserve selective retention and separate action authority, operational maintenance and actual execution; proposed Design only."
+    }
+  ]
+}

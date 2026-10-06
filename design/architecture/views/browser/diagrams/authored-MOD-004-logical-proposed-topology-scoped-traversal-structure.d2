@@ -1,0 +1,10 @@
+direction: right
+operations: "MOD-010\nRequest and result presentation"
+model: "MOD-016\nIF-013 accountable boundary" {
+  storage: "MOD-001 / IF-001\nCoherent complete source inventory"
+  interpretation: "MOD-003 / IF-002\nSelected-profile interpretation"
+  traversal: "MOD-004 / FUNC-009 / AR-056\nScoped adjacency, exploration and outcomes"
+}
+operations -> model: "Consumes IF-013"
+model.traversal -> model.storage: "Requires exact state and full membership"
+model.traversal -> model.interpretation: "Uses bound interpreted facts"

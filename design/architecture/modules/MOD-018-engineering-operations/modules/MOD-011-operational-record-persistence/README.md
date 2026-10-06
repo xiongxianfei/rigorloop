@@ -260,6 +260,10 @@ Read related records in one consistent read transaction. A logical read does not
 
 Before commit, any failed application condition aborts the transaction; do not leave an errored statement's earlier updates eligible for accidental commit. After confirmed commit, response or diagnostic failure cannot roll back the saved decision. If commit outcome cannot be established, report committed unknown and require inspection; a new connection reads recovered current facts before any reconciled retry. SQLite recovery never proves an engineering judgment or repairs arbitrary corruption. Unreadable, corrupt, wrong-project or unsupported-schema stores remain unavailable; never replace them with an empty database or guessed records.
 
+After a confirmed commit and before returning its outcome, MOD-011 re-observes the same declared compared external subjects against the caller's original expectations. This is the second reporting-boundary check required by SR-044; it neither refreshes those expectations nor treats reported-only subjects as compared. A mismatch or an observation that can no longer be completed safely retains the saved outcome, committed=true, and the actual committed revision. Return a bounded source-conflict observation distinguishing detected drift from an unestablished final comparison, with current inspection and renewed applicability assessment as the safe continuation. MOD-010 preserves that observation in both result formats, separately from precommit errors. Do not roll back, replay the task, rewrite the supplied judgment or silently issue a second record update.
+
+Precommit receipt preparation reserves space for this bounded final observation within the existing 1 MiB limit, independently of the number of subjects or optional diagnostic details. The shared pure codec prepares the possible saved-with-observation result from the same candidate and fixed profile; the final check selects the truthful prepared form. An output failure still preserves known commitment. Interruption before the final check or receipt leaves the caller uncertain and requires fresh context inspection. This additional observed check cannot prevent later external edits, establish a global repository snapshot or automatically renew or invalidate an actor's engineering judgment; the actor reconciles current reliance explicitly.
+
 The v4 contract has no application-managed before/candidate record-file journal, per-record publication protocol or caller-selected complete/restore/finish action. The old change recover draft is withdrawn. Supported v3 explicit recovery remains version-scoped. Backup restoration, import and attachment cleanup have distinct explicit scope; none is automatic replay of a failed command.
 
 ### Attachment coordination
@@ -344,6 +348,23 @@ SQLite sidecars are operational database state, not extra authoritative record s
 
 The maintenance contract serves SR-074–077 through store backup, store restore and store migrate, specified by [Command handling](../MOD-010-engineering-command-interface/README.md#store-maintenance). Transfer uses a selected backup and restore into a matching empty destination; there is no separate transfer or general SQL command. Database schema 1 and record exchange v4 are independently versioned. Maintenance never edits repository design, project identity, approvals or skill installation.
 
+### Maintenance cooperation and preserved scope
+
+SR-074–077 already derive AR-052–055, each accountable to MOD-011. FUNC-074 supplies capture, FUNC-075 supplies restoration and transfer, and FUNC-076 supplies supported migration. One Function can serve both restoration and transfer without inventing another Module or public operation. The [public maintenance contract](../MOD-010-engineering-command-interface/README.md#store-maintenance) remains the sole owner of request syntax and result fields.
+
+| Responsibility | Boundary and authority |
+| --- | --- |
+| Guided participant, MOD-012 | Select the finite scope, source/destination, actor and reason; obtain applicable action authority through MOD-017's IF-009 and submit the explicit request through parent-provided IF-004. |
+| Command handling, MOD-010 | Admit the selected public maintenance family, normalize its typed request through IF-003 and present actual scope, exclusions, effects and recovery observations. Admission grants no permission. |
+| Work record storage, MOD-011 | Own the coherent capture, staged validation, maintenance exclusion, preserved originals/prior bytes and actual publication or activation facts. It provides IF-003, without receiving engineering decision authority. |
+| Change control and assurance, MOD-006/007 | Interpret the returned or restored facts for resumption through IF-011, action authority through IF-009 and assessment applicability through IF-010. A maintenance receipt does not settle any of those judgments. |
+
+The participant binds authorization to the exact maintenance action, project, selected scope, destination and relevant replacement conditions. Reuse a valid standing grant; withhold an uncovered effect without inventing a new confirmation rule. Preview is an observation of possible effects, not authority, exclusion or a reservation. Execution rechecks the source and destination expectations and material authority conditions; changes require fresh interpretation before the affected effect. No automatic authority engine or new public request field is introduced by this cooperation.
+
+Capture includes the complete currently retained account/reference closure of each selected Change and every required registered attachment. External engineering-subject references remain identifiable external references; copying an operational backup does not capture or restore the repository definitions, an engineering Baseline, installed skills, or discarded activity. If a required reference cannot be resolved or explicitly classified as external under the selected contract, the capture is incomplete. Report excluded Changes and unavailable required material before reliance. These limits apply equally to backup, transfer, restored context and compact completion accounts.
+
+The supported local writer/lease protocol below covers records and managed payloads together. It does not control arbitrary filesystem writers or another executable that ignores the protocol. An actor cannot claim a coherent capture while knowingly allowing such a writer to mutate selected material; establish source quiescence or withhold the capture. A digest or revision check detects a changed observation but does not itself exclude future changes.
+
 ### Maintenance admission
 
 Maintenance needs a quiescent local store, including attachment capture/cleanup. Every supported operational invocation publishes an invocation-owned connection lease under `.rigorloop/access/` before opening the database or capturing attachments, rechecks for a maintenance fence, and closes all resources before removing the lease. Capability inspection may read the fence and its observation token without opening the database or removing it. A maintenance operation exclusively creates `.rigorloop/maintenance/active.json` before checking leases; new ordinary operations return busy while it exists. Check-fence, publish-lease, recheck-fence closes the admission race: a late entrant seeing the fence must exit before database access. Reads and dry-run use the same temporary admission protocol without changing engineering records or reserving future updates.
@@ -423,13 +444,74 @@ cli -> actor: "Report restored scope; no renewed engineering approval"
 
 The diagram shows successful activation. Before the activated marker, failure leaves the fenced recovery state; after it, reporting failure preserves the activated result. Resume never replays engineering decisions.
 
+### Transfer to another local environment
+
+SCN-072 composes the existing backup and restore operations. The sender selects the retained scope and creates a complete backup under AR-052. A separately authorized copy transports the immutable complete directory to the receiving environment; transport success alone establishes neither integrity nor activation. The receiver validates the copied manifest, completion marker, database, reference closure and required payloads under AR-053/054. The source remains usable and unchanged.
+
+The receiving checkout must already declare the same stable project identity in its project-owned configuration. Preparing that configuration is explicit project-owner work outside maintenance; neither a matching name or remote nor the presence of a backup authorizes reassignment. Maintenance never edits `.rigorloop.json` or engineering files to make a mismatch disappear. A matching empty operational destination uses the existing absent expectation with replacement disabled. Recheck emptiness and association under exclusion before activation; reject a destination that became occupied after preview.
+
+Transfer does not merge or replace an existing history, even if only some incoming IDs collide. A divergent destination, reused ID with different content or different project identity leaves both histories intact. A separately authorized whole-store restoration is a different SR-075 action with its own replacement expectation and preserved prior scope; relabeling it transfer cannot bypass those safeguards. The receiver displays incoming scope and exclusions before activation and reports the same limited scope afterward, with original subject and decision provenance.
+
+Missing or corrupt transport members leave an unusable candidate, not a partial successful transfer. Interruption during activation follows the same fenced resume protocol as restoration. Inspect the actual destination before retry and do not import the same identities again after confirmed activation. The resulting new store incarnation invalidates old mutation tokens; historical source identities and assessments remain unchanged. After activation, the guided participant reads the retained handoff and obtains any needed applicability or authority assessment before resuming engineering work.
+
 ### Schema upgrades and legacy import
 
 store migrate has two explicit modes. Schema-upgrade validates the current project and supported source user_version, creates a complete pre-upgrade backup, copies the live store into private staging and applies packaged ordered migrations transactionally there. Update user_version only with a successfully validated migration step; reject newer unknown schemas. Activate the completed candidate through the same fenced replacement protocol, with a new incarnation. Reads never run migrations. A failed upgrade preserves the original active or recoverable store and the pre-upgrade backup.
 
-Legacy-import is a supported-source transformation into an absent destination, never a merge with an existing SQLite history. The request selects source contract/root, Change IDs, exact source observations, required original-retention destination and attributable dispositions. Classify each selected source record as imported with unchanged meaning, retained original with explicit current disposition, or blocked. Preserve the original bytes and source identity of imported/archival material in the selected external originals package; source docs/changes remains untouched. Capture source records through their supported coherent reader; unresolved source transactions or unavailable registered content block import. Quiesce legacy writers during capture and recheck the source basis before activation; the v4 maintenance fence does not control an old v3 executable or arbitrary external editor. Package source adapters explicitly enumerate supported versions and field mappings; an unknown format is not accepted by a generic JSON converter.
+Legacy-import is a supported-source transformation into an absent destination, never a merge with an existing SQLite history. The request selects source contract/root, Change IDs, exact source observations, required original-retention destination and attributable dispositions. Classify each selected source record as imported with unchanged meaning, retained original with explicit current disposition, or blocked. Preserve the original bytes and source identity of imported/archival material in the selected external originals package; source docs/changes remains untouched. Capture source records through their supported coherent reader; unresolved source transactions or unavailable registered content block import. Establish attributable quiescence of every selected legacy writer and retained-payload writer before capture, and maintain it through final source recheck and destination activation. The v4 maintenance fence does not control an old v3 executable or arbitrary external editor; source quiescence must be established with those participants. If it cannot be maintained, withhold activation and preserve the staged candidate, originals and explicit affected blocker. A final digest comparison alone is not exclusion. Package source adapters explicitly enumerate supported versions and field mappings; an unknown format is not accepted by a generic JSON converter.
 
 A legacy Proposal or milestone approval is not a requirements or whole-change approval. Preserve its original meaning in retained source material. Imported active work must explicitly expose missing target bases/reviews and all unresolved issues; mapping a source approval into an incompatible target purpose is blocked. Any identity collision, unresolved reference or unexplained change in decision meaning blocks activation. Reusable IDs are preserved; mappings that require identity changes need explicit disposition and source attribution, never silent renumbering. A successful import reports the disposition of every selected source record and the preserved originals location; it neither retires source data nor activates workflow policy automatically. Subsequent ordinary operation uses only SQLite, without v3 fallback or dual writes.
+
+### Migrate with preserved originals and one active destination
+
+The supported adapter's per-record mapping and the actor's disposition together explain how stable identities, actor decisions, unresolved findings, references and original assessed subjects retain meaning. Inventory every selected source record and required artifact before transformation. An imported record has a qualified target mapping; an archival record has attributable recoverable originals and no unresolved active dependency; a blocked record prevents activation. Duplicate target identities, conflicting meaning or an unexplained omission cannot be converted into successful counts. Unsupported historical material may remain archival only with an explicit responsible disposition; the importer does not pretend to understand an unknown format or activate it as current records.
+
+Publish and verify the required originals package before activation, preserving exact selected source bytes, locations, content identities and required uncommitted material. Copying a filename or recording a digest without recoverable bytes is insufficient. If preservation, source stability, target validation or the complete selected disposition fails, keep the source and unrelated destination unchanged and report the blocked or staged state. Existing source transactions must be resolved through their qualified owner before coherent capture. No migration authorizes deletion; current reliance and retirement remain governed by SR-024 and [state control](../../../MOD-017-engineering-governance/state-control.md).
+
+The responsible participant reconciles all selected current readers and writers before activation: identify the source contract, target contract, active-work disposition and which executable/guidance will read and write the result. Withhold activation while a live dependency still requires an unsupported source interpretation or while an old writer can continue authoritative writes. Maintain the source exclusion until activation is confirmed and the old write path is retired from current use; retained originals remain read-only historical material. Loss of this control requires explicit reconciliation of actual source and destination facts before continuation. A migration receipt neither installs a package nor adopts workflow policy; if either is a dependency, its owner must supply the compatible basis before reliance.
+
+<!-- architecture-diagram: operational-migration-sequence -->
+
+```d2
+shape: sequence_diagram
+actor: "Guided participant\nMOD-012"
+cli: "Command handling\nMOD-010"
+store: "Work record storage\nMOD-011"
+source: "Qualified source and\nits writer owners"
+staging: "Preserved originals and\nvalidated target candidate"
+actor -> cli: "Preview selected source, dispositions and destination"
+cli -> store: "IF-003: inspect supported migration scope"
+store -> source: "Read qualified source facts and dependency gaps"
+store -> actor: "Return exact source basis and blocked or eligible scope"
+actor -> source: "Establish source quiescence and reconcile live consumers"
+actor -> cli: "Submit authorized migration with current expectations"
+cli -> store: "Admit explicit execution; preview reserves nothing"
+store -> source: "Capture coherent scope while source remains quiescent"
+store -> staging: "Preserve originals; map and validate every disposition"
+store -> store: "Fence destination; recheck source and destination"
+store -> staging: "Activate validated target under existing recovery protocol"
+store -> actor: "Report actual activation and preserved source meaning"
+actor -> source: "Retire old writer from current use; retain originals"
+actor -> cli: "Read target handoff; reassess affected authority and support"
+```
+
+The sequence shows qualified legacy import. Source-owner control is participant-assisted, not supplied by the destination's fence. Schema upgrade reuses the same staged validation and activation boundary with its complete pre-upgrade backup and packaged ordered migrations. If interruption occurs before activation, preserve the recovery account and allow only verified finish or rollback; after activation, a lost response permits inspection and finish, never replacement replay or rollback over later work. These paths introduce no parallel runtime backend or permanent dual-write.
+
+### Maintenance acceptance walkthroughs
+
+| Selected case | Required observation and responsible boundary |
+| --- | --- |
+| SCN-070: all or selected Changes while writers are active | MOD-011 drains supported access or reports busy; one declared snapshot and required payload closure complete together, with exclusions explicit. |
+| Missing payload, changed source, cancellation or exhausted capacity | No complete marker or success for an invalid capture; source and existing backups remain usable, incomplete owned output and recovery scope are identified. |
+| SCN-071: original store lost, valid retained backup available | MOD-011 validates exact associated scope without requiring the lost source; activation restores historical facts and creates a new incarnation. No usable backup yields unavailable, never invented empty success. |
+| Wrong project, corrupt member, unsupported schema or occupied destination | Reject before activation; replacement requires its separately authorized current expectation and preserved prior bytes. No merge or project identity rewriting. |
+| Interrupted activation or missing result after commitment | Keep the affected store fenced until explicit exact-observation recovery. Only verified pre-activation rollback is allowed; established activation remains authoritative. |
+| SCN-072: selected transfer to a matching empty checkout | Inspect scope/exclusions, validate transported bytes and recheck association/emptiness; source remains usable and neither definitions nor judgments are rewritten. |
+| SCN-073: supported import with active and historical records | Explain every mapping/disposition, preserve required originals and unresolved issues, reconcile current consumers and hold source stability through activation. |
+| Unsupported active dependency, identity collision, stale source or missing originals | Block target activation with attributable gaps; preserve both sides, avoid duplicate imports and never silently fall back to a legacy writer. |
+| Successful restoration or migration followed by resumption | MOD-012 requests the seven-section handoff through existing boundaries; MOD-006/007 assess actual authority and support before reliance. Historical completion remains historical. |
+
+These cases map SR-074–077 and AR-052–055 to existing command/storage contracts and the handoff/authority owners. They define Design acceptance intent, not executed maintenance evidence. The existing software organization and physical placement views supply realization; the backup, restore and migration sequences explain the consequential interactions. Runtime qualification of platform durability, source adapters and preserved-byte recovery remains separate from this Design.
 
 ### Browser navigation walkthrough
 
@@ -441,15 +523,17 @@ Agent B reading an older revision cannot overwrite Agent A's update. Interruptio
 
 SR-083 adoption reconciles policy, guidance, validators, recording and active-work dependencies together. Prepared Adoption does not activate anything; activated requires the actor's compatible installed/canonical basis and selects active_adoption, while unavailable clears it. Installation or a saved record cannot decide adoption. Per-Change activation is atomic; multiple Changes are not advertised as an atomic project migration.
 
+The [Governance adoption disposition](../../../MOD-017-engineering-governance/README.md#adoption-and-recovery) determines which selected dependencies require migration. Provide actual record compatibility and migration outcomes under the supported contract; a fresh initialized store proves neither absence of legacy dependencies nor adoption readiness. New projects without earlier records require no historical import, while necessary migration for existing work must be qualified and complete before its activation.
+
 V3 and any explicitly retained source data retain their original meaning under the supported migration contract. A qualified importer preserves required originals and records active-work disposition; this design edit does not migrate or delete user evidence. V4 selects SQLite directly with no filesystem fallback, dual-write or withdrawn draft-command aliases. SR-074–078 retain their selected backup, restoration, transfer, migration and bounded history-query obligations. They do not impose an exhaustive activity history. Publishing the browser or installing skills does not activate this backend.
 
 ## Test design
 
 Apply [Operations integration intent](../../test-design.md) and the shared test rules. Compare a complete handoff with omitted review standing, missing authority and unavailable evidence: the gaps must remain visible. Compare replacement of an equivalent working check with a smoke pass that would hide another failure. Replace an assessment after correction while preserving an omitted open finding; permit explicit disposition and later safe compaction. Retain a compact assessed support summary when a current evidence account changes. Exercise atomic updates, stale writers, uncertain receipts, SQLite interruption outcomes, unavailable stores and explicit attachment ingestion/cleanup. A completed Change read must be stable after unrelated repository edits, while a linked new regression remains actionable. These are design observations; no successor runtime implementation or new executable suite is claimed.
 
-### Deferred cross-Change history query
+### Proposed cross-Change history query
 
-SR-078 / FUNC-077 remains a draft cross-Change subject-history requirement. The selected v2/v4 task contract implements current explicitly selected Change context and maintenance, not this history lookup or its continuation protocol. Define and review its bounded public query and persistence allocation before implementing or advertising it; no current capability or adoption satisfaction claim includes SR-078.
+[Subject-history Design](history-selection.md) allocates FUNC-077 and AR-086 to MOD-011 and AR-087 to MOD-010. It defines recorded identity, coherent selection, coverage and state-bound continuation through proposed IF-003/004 operations. The current v2/v4 task contract still supplies current Change context and maintenance; the history profile, schema/writer qualification, migration and public capability require separate delivery. No current runtime/adoption satisfaction claim includes SR-078.
 
 ## Supporting contracts
 

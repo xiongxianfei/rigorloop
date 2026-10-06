@@ -1,0 +1,12 @@
+direction: right
+participant: "Accountable assessor\nMethods, observations and reasoning"
+guide: "MOD-012\nGuided assessment and recording"
+governance: "MOD-017 / IF-014\nAssurance content preparation"
+assurance: "MOD-007 / AR-062–066\nDefinition, observation, applicability,\ncoverage and judgment meaning"
+operations: "MOD-018 / IF-004\nExplicit command outcome"
+records: "MOD-011 / IF-003\nActual retained content and basis"
+participant -> guide
+guide -> governance
+governance -> assurance
+guide -> operations
+operations -> records

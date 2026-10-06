@@ -1,0 +1,147 @@
+{
+  "id": "IF-015",
+  "type": "interface",
+  "title": "Engineering baseline content custody",
+  "status": "draft",
+  "description": "Model management supplies exact retained content, isolated recovery and state-bound current-model retirement to Governance; content custody is distinct from baseline meaning, authority and operational history.",
+  "operations": [
+    {
+      "name": "retain_baseline_content",
+      "purpose": "Retain an exact immutable baseline bundle and confirm actual custody.",
+      "inputs": [
+        "Project/baseline and request identities, exact immutable source manifest/content, original profile/rules and included provenance/material.",
+        "Selected retention policy, authority and complete coherence support, with external-only references distinguished."
+      ],
+      "preconditions": [
+        "The selected project, exact subject and requested scope are identifiable; missing required support is an explicit gap, not an assumed favorable result."
+      ],
+      "outputs": [
+        "Exact sealed bundle and manifest identity with confirmed durable custody, or partial/unsupported/failed/unconfirmed effects."
+      ],
+      "behavior": [
+        "MOD-016 composes exact IF-001 custody with IF-002 interpretation and whole-model conformance for the supplied captured basis; no recursive acquisition or baseline-catalog authority.",
+        "Apply MOD-017 state-control.md immutable custody; stage complete selected bytes separately from mutable current definitions, verify integrity and durably publish without replacing another baseline binding.",
+        "Preserve included original rules and supplied material; do not fetch external references, adopt current state or establish a baseline catalog entry.",
+        "Read back sealed membership before confirming; reconcile request-bound effects after lost receipt and preserve sealed-but-unregistered content."
+      ],
+      "failure_behavior": [
+        {
+          "condition": "Required material, scope integrity, supported member kind, authority or durability is unestablished.",
+          "outcome": "Withhold complete confirmation and expose affected scope without silent substitution."
+        },
+        {
+          "condition": "Publication or response is interrupted.",
+          "outcome": "Report known and uncertain effects; preserve sealed originals and do not blindly replay or claim rollback."
+        }
+      ]
+    },
+    {
+      "name": "read_baseline_content",
+      "purpose": "Read exact sealed retained engineering content.",
+      "inputs": [
+        "Exact baseline/bundle identity and requested member scope."
+      ],
+      "preconditions": [
+        "The selected project, exact subject and requested scope are identifiable; missing required support is an explicit gap, not an assumed favorable result."
+      ],
+      "outputs": [
+        "Original immutable manifest/content and selected rules, with complete, partial, corrupt, unsupported or unavailable scope.",
+        "Original interpreted identity/relationship facts, with exact governing basis and unsupported or unavailable interpretation scope."
+      ],
+      "behavior": [
+        "Verify exact manifest membership and content integrity before declaring complete access.",
+        "Return original bytes and provenance; newer definitions or rules cannot substitute for unavailable originals.",
+        "MOD-016 passes the exact retained content and original rules to MOD-003 through IF-002; return interpreted facts and explicit interpretation gaps separately from raw integrity/access outcomes."
+      ],
+      "failure_behavior": [
+        {
+          "condition": "Identity, required member, integrity or access cannot be established.",
+          "outcome": "Return precise known/unavailable scope; missing data is not absence or a complete interpreted state."
+        }
+      ]
+    },
+    {
+      "name": "recover_baseline_content",
+      "purpose": "Materialize retained content into a newly owned isolated recovery area.",
+      "inputs": [
+        "Exact sealed baseline manifest/content and requested scope; selected parent for a newly created isolated output."
+      ],
+      "preconditions": [
+        "The selected project, exact subject and requested scope are identifiable; missing required support is an explicit gap, not an assumed favorable result."
+      ],
+      "outputs": [
+        "Owned output identity, reproduced membership/content and fidelity observations, or partial/failed/uncertain result."
+      ],
+      "behavior": [
+        "MOD-016 composes IF-001 exact retained reads/materialization and IF-002 original interpretation, preserving separate fidelity and interpretation outcomes.",
+        "Apply state-control.md containment and isolated materialization; reject existing/active-work destinations and escaped or aliased paths.",
+        "Compare full output manifest, bytes and supported recorded attributes against the retained basis; caller assesses original interpretation and full recovery meaning.",
+        "Do not modify retained history or active work; cleanup only owned temporary output."
+      ],
+      "failure_behavior": [
+        {
+          "condition": "Output already exists, source integrity fails, member kinds are unsupported, access fails or materialization is interrupted.",
+          "outcome": "Withhold complete recovery, preserve source/active work and disclose actual partial or unavailable scope."
+        },
+        {
+          "condition": "Receipt is lost.",
+          "outcome": "Inspect exact owned output/request before reconciling; do not infer failure or authorize overwrite."
+        }
+      ]
+    },
+    {
+      "name": "retire_current_model_material",
+      "purpose": "Apply an exact authorized current-model retirement candidate.",
+      "inputs": [
+        "Expected model state, exact removal/replacement inventory and supported resulting candidate.",
+        "Applicable authority, resolved reliance dispositions, required exact original recovery and complete resulting-model check basis.",
+        "Accountable executor and established maintenance interval covering all relevant model, operational, external dependency/replacement and authority writers through final checks, effects and reconciliation."
+      ],
+      "preconditions": [
+        "The selected project, exact subject and requested scope are identifiable; missing required support is an explicit gap, not an assumed favorable result.",
+        "The executor holds the state-control.md cross-custody stability boundary; inability to establish or retain it withholds removal. Model exclusion or a revision recheck alone is insufficient."
+      ],
+      "outputs": [
+        "Exact actual current-state effects and resulting state, or invalid/stale/partial/unresolved effect scope."
+      ],
+      "behavior": [
+        "MOD-016 composes MOD-001 custody through IF-001 and MOD-003 supported checks through IF-002; never invoke operational record deletion.",
+        "Apply state-control.md retirement under model write exclusion and final expected-base/authority checks; delegate resulting candidate checks to IF-002.",
+        "Publish required replacements before removing selected current members, with durable unresolved-write metadata before effects.",
+        "Never remove retained bundles/history, silently broaden scope or conflate prepared readiness with actual completion.",
+        "Preserve incomplete publication and withhold coherent affected reads/further writes until reconciled.",
+        "Preserve the maintenance interval through actual effect inspection and outcome retention; loss/interruption blocks further affected work and requires explicit stable-scope reconciliation before release/resumption."
+      ],
+      "failure_behavior": [
+        {
+          "condition": "Expected base, authority, recovery, dependencies or candidate checks no longer support removal.",
+          "outcome": "Withhold affected action and require reconciliation without overwriting intervening work."
+        },
+        {
+          "condition": "Publication is partial or uncertain.",
+          "outcome": "Report actual effects and block coherent affected access; no blind retry or assumed rollback."
+        },
+        {
+          "condition": "Required writer quiescence/exclusion is absent, lost or cannot survive safe interruption handling.",
+          "outcome": "Withhold or stop removal, report actual partial/unconfirmed effects and retain blocked-scope recovery information; do not infer completed retirement or safe resumed access."
+        }
+      ]
+    }
+  ],
+  "consistency_rules": [
+    "MOD-016 owns the composed boundary; MOD-001 owns content custody, MOD-003 original interpretation/checks and MOD-005 baseline identity/catalog and complete recovery claims.",
+    "IF-007 remains read-only inspection. Exact source membership, rules, integrity, authority and actual effects remain attributable and separate.",
+    "No operation silently adopts a recovered/migrated state, overwrites active work, changes operational records or releases retained history."
+  ],
+  "compatibility_rules": [
+    "Proposed logical operations only; no new public command, wire schema, selected storage migration or installed runtime.",
+    "Use the qualified custody adapter and supported material kinds; unsupported semantics remain explicit. Existing IF-001/002/007 guarantees survive."
+  ],
+  "sources": [
+    {
+      "source": "SRC-BASELINE-STATE-DESIGN",
+      "locator": "SR-020–024; SCN-019–022/025",
+      "basis": "Define immutable baseline custody, original-meaning comparison/recovery, attributable transition preparation and dependency-safe retirement. Preserve selective retention and separate action authority, operational maintenance and actual execution; proposed Design only."
+    }
+  ]
+}

@@ -12,6 +12,36 @@ anchor = "browser-technical-structure"
 description = "Technical structure: the Node command adapter uses the Rust engine's browser-operation contract; the engine composes responsibilities from MOD-001, MOD-003 and MOD-004, uses D2 and a matched reader template, and produces the website artifact. Technology annotations preserve Module accountability. Contracts and artifact relationships do not imply process membership or execution order. Development explains source/package organization; Process explains execution."
 
 [[topics]]
+id = "requirement-view-structure"
+title = "Requirements view structure"
+view = "logical"
+kind = "topology"
+qualification = "proposed"
+source = "README.md"
+anchor = "requirement-view-structure"
+description = "The selected model remains authoritative. MOD-001 captures it and MOD-003 interprets it; MOD-004 projects and assembles an offline artifact. Explicit presentation metadata enables Requirements as an optional architecture tab only at the RigorLoop system root. Its bounded IR/SR/AR tree includes expandable Feature, Function and Module references with one detail panel and disposable occurrence state. Module scopes omit this view. Arrows show data dependencies, not call order. This is proposed design, not implemented tab availability."
+
+[[topics]]
+id = "unified-requirement-tree"
+title = "Unified Requirements tree wireframe"
+view = "logical"
+kind = "topology"
+qualification = "proposed"
+source = "README.md"
+anchor = "unified-requirement-tree"
+description = "Requirements is an optional supplementary architecture tab after Scenarios at the RigorLoop system root, with no separate top-level destination or Module-scoped variant. Its one tree contains IR/SR/AR branches and expandable Feature, Function and accountable Module references. Arrows show display nesting; relationship labels distinguish references from containment. The RigorLoop shell illustrates placement; report-related names and letter-suffixed IDs are synthetic examples, with one Function shared across three occurrences. Each occurrence expands independently and selection updates one detail panel. The root and groups are presentation only. This is the proposed view, not implemented tab availability."
+
+[[topics]]
+id = "requirement-reader-interaction"
+title = "Requirements reader interaction"
+view = "process"
+kind = "sequence"
+qualification = "proposed"
+source = "README.md"
+anchor = "requirement-reader-interaction"
+description = "A reader selects Requirements at the enabled RigorLoop system root. Disabled or Module-scoped view requests are unavailable; malformed required data stops tree rendering. Valid reading expands IR/SR/AR and bounded references within one tree. Reference selection updates the same panel without changing scope. An explicit Module-scope action saves tree state and opens Module Summary without a Requirements tab; returning to RigorLoop and selecting Requirements restores that state. Missing identities remain explicit. Reading uses embedded data without a generator, server or model mutation."
+
+[[topics]]
 id = "generation-topology"
 title = "Generation topology"
 view = "process"
@@ -70,3 +100,43 @@ qualification = "proposed"
 source = "README.md"
 anchor = "browser-build-packaging"
 description = "Two static artifact compositions: package assembly owned by MOD-013 produces the reusable CLI candidate; website assembly owned by MOD-004 combines its generator/template with project data and diagrams. The website contains platform and embedded project data. Execution order and recovery remain in Process; package qualification remains with MOD-013."
+
+[[topics]]
+id = "scoped-traversal-structure"
+title = "Scoped traversal responsibility"
+view = "logical"
+kind = "topology"
+qualification = "proposed"
+source = "README.md"
+anchor = "scoped-traversal-structure"
+description = "MOD-016 supplies IF-013 to MOD-010 while MOD-004 owns FUNC-009 and AR-056. MOD-001 and MOD-003 preserve state/content and interpretation authority. Dependency arrows do not imply process ordering or implemented availability."
+
+[[topics]]
+id = "scoped-traversal-interaction"
+title = "Scoped traversal interaction"
+view = "process"
+kind = "sequence"
+qualification = "proposed"
+source = "README.md"
+anchor = "scoped-traversal-interaction"
+description = "Bind one coherent selected state and complete required inventory before traversal. Storage supplies raw content for interpretation without recursive retrieval. Return complete, bounded, incomplete or rejected outcomes with scope and provenance; failed acquisition never becomes a complete graph. Proposed collaboration only."
+
+[[topics]]
+id = "allocation-and-impact"
+title = "Allocation and impact responsibilities"
+view = "logical"
+kind = "topology"
+qualification = "proposed"
+source = "README.md"
+anchor = "allocation-and-impact-responsibilities"
+description = "MOD-004 derives allocation findings through FUNC-010/AR-060 and potential impact through FUNC-011/AR-061. State capture and profile interpretation remain with MOD-001/003. Impact reuses finite scoped traversal witnesses and limitations; allocation requires complete applicable facts and deciding rules. Arrows are data dependencies, not process order. Proposed analysis does not establish runtime availability, actual effects, approval or satisfaction."
+
+[[topics]]
+id = "select-delivery-assessments"
+title = "Select attributable delivery assessments"
+view = "process"
+kind = "sequence"
+qualification = "proposed"
+source = "README.md"
+anchor = "select-delivery-assessments"
+description = "Explicit record selection and safe disclosure feed versioned admission, currentness/conflict checks and one offline reader projection. Design judgments remain separate; this proposed format does not assert implemented version 2 support or actual delivery results."

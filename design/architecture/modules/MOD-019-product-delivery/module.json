@@ -25,7 +25,7 @@
   "consumes": [],
   "design_limits": [
     "MOD-019 provides IF-006 directly to MOD-010. MOD-014 retains its installation Functions and state authority; IF-005 remains internal to candidate production, installation, and release cooperation.",
-    "MOD-015 consumes Governance IF-009 authority and IF-010 evidence-applicability support for SCN-066. Release qualification, publication, actual public observations, IR-010 AR derivation, further Interfaces, and physical qualification remain separately accountable work.",
+    "MOD-015 consumes Governance IF-009 authority and IF-010 evidence-applicability support. The parent README composes IR-010 and records the SR-060–073 no-additional-AR rationale; SR-088 retains AR-049–051. Actual candidate qualification, publication, public observations and physical qualification remain separately accountable execution and evidence.",
     "Contract analysis adds no direct parent Function, AR, persistent state, or new physical realization. Detailed IF-006 implementation mapping remains deferred."
   ],
   "sources": [

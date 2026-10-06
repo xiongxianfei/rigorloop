@@ -70,3 +70,13 @@ qualification = "proposed"
 source = "README.md"
 anchor = "sqlite-restore-sequence"
 description = "Restore validates a staged candidate, rechecks destination expectations and preserves prior bytes before activation. Ordinary access stays fenced until validation and durable activation; interrupted replacement requires explicit resume."
+
+[[topics]]
+id = "operational-migration-sequence"
+title = "Migrate with preserved originals"
+view = "process"
+kind = "sequence"
+qualification = "proposed"
+source = "README.md"
+anchor = "operational-migration-sequence"
+description = "Qualified migration holds source quiescence, preserves required originals and resolves current dependencies before fenced destination activation. Recovered context retains its original authority and assessment meaning."

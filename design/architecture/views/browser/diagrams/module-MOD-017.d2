@@ -1,5 +1,5 @@
 # Generated from canonical REM records; do not edit.
-# Source identity: 45c038c07e12e6780416c9a3833873518354213a1c976dcae38bd54077894c80
+# Source identity: 7b8440c54b5c4fada352158a820009762fd64568b87d27d147a47f19f6e4ee60
 # Arrows show consumer -> provider; they do not show execution order.
 vars: {
   d2-config: {
@@ -16,7 +16,6 @@ m_4d4f442d303137: "Change and quality control" {
   style.font-color: "#23334A"
   style.font-size: 18
   style.border-radius: 8
-  grid-columns: 2
   m_4d4f442d303035: "Model baselines" {
     link: "#module/MOD-005"
     tooltip: "Model baselines (MOD-005)"
@@ -144,6 +143,54 @@ m_4d4f442d303139 -> m_4d4f442d303137: "Claim evidence\napplicability and\ncovera
 m_4d4f442d303138 -> m_4d4f442d303137: "Engineering work\ncontext and\nworkflow adoption" {
   link: "#interface/IF-011"
   tooltip: "Engineering work context and workflow adoption (IF-011)"
+  style.stroke: "#667A96"
+  style.font-color: "#34445B"
+  style.fill: "#FFFFFF"
+  style.font-size: 14
+}
+m_4d4f442d303138 -> m_4d4f442d303137: "Assurance content\npreparation" {
+  link: "#interface/IF-014"
+  tooltip: "Assurance content preparation (IF-014)"
+  style.stroke: "#667A96"
+  style.font-color: "#34445B"
+  style.fill: "#FFFFFF"
+  style.font-size: 14
+}
+m_4d4f442d303137.m_4d4f442d303035 -> m_4d4f442d303136: "Engineering\nbaseline content\ncustody" {
+  link: "#interface/IF-015"
+  tooltip: "Engineering baseline content custody (IF-015)"
+  style.stroke: "#667A96"
+  style.font-color: "#34445B"
+  style.fill: "#FFFFFF"
+  style.font-size: 14
+}
+m_4d4f442d303137.m_4d4f442d303036 -> m_4d4f442d303136: "Engineering\nbaseline content\ncustody" {
+  link: "#interface/IF-015"
+  tooltip: "Engineering baseline content custody (IF-015)"
+  style.stroke: "#667A96"
+  style.font-color: "#34445B"
+  style.fill: "#FFFFFF"
+  style.font-size: 14
+}
+m_4d4f442d303137.m_4d4f442d303035 -> m_4d4f442d303137.m_4d4f442d303036: "Controlled state\npreparation" {
+  link: "#interface/IF-016"
+  tooltip: "Controlled state preparation (IF-016)"
+  style.stroke: "#667A96"
+  style.font-color: "#34445B"
+  style.fill: "#FFFFFF"
+  style.font-size: 14
+}
+m_4d4f442d303138 -> m_4d4f442d303137.m_4d4f442d303036: "Controlled state\npreparation" {
+  link: "#interface/IF-016"
+  tooltip: "Controlled state preparation (IF-016)"
+  style.stroke: "#667A96"
+  style.font-color: "#34445B"
+  style.fill: "#FFFFFF"
+  style.font-size: 14
+}
+m_4d4f442d303138 -> m_4d4f442d303137: "Engineering lesson\nand improvement\npreparation" {
+  link: "#interface/IF-017"
+  tooltip: "Engineering lesson and improvement preparation (IF-017)"
   style.stroke: "#667A96"
   style.font-color: "#34445B"
   style.fill: "#FFFFFF"

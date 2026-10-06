@@ -1,0 +1,62 @@
+{
+  "id": "AR-064",
+  "type": "allocated-requirement",
+  "title": "Expose scoped evidence applicability with attributable comparisons",
+  "status": "draft",
+  "statement": "The Review and verification Module shall compare offered evidence with the exact claim basis and expose applicability mismatches, unknowns and accountable rationale without converting mechanical identity into semantic adequacy.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Assurance preparation and retention can conflate planned methods, actual observations, semantic judgment and current reliance.",
+      "desired_outcome": "Expose scoped evidence applicability with attributable comparisons."
+    },
+    "why": {
+      "rationale": "SR-027 needs accountable assurance content and failure semantics in MOD-007."
+    },
+    "who": {
+      "stakeholders": [
+        "Verification engineers and independent reviewers",
+        "Project decision owners",
+        "MOD-007 and MOD-012 maintainers"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "An assessor prepares or reassesses assurance content for a declared engineering claim."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "MOD-007 contribution to MOD-017 IF-014; guided recording through MOD-012 and existing IF-004/003."
+      ]
+    },
+    "how": {
+      "approach": "Apply assurance-content.md to exact supplied bases, preserve gaps and actual actor decisions, then confirm selected retention separately."
+    },
+    "how_much": {
+      "scope": "All parent SR-027 criteria within the declared finite claim; operational persistence and execution authority retain their existing owners."
+    }
+  },
+  "acceptance_criteria": [
+    "Assess subject/state, criterion content, scope, conditions, provenance, evidence availability and governing freshness; retain concrete mismatches and unknown fields.",
+    "Require an attributable applicability rationale and inspected scope; a stable entity identity, method file or pass label alone cannot establish current applicability.",
+    "Keep requirement, Design, advisory, whole-change and Verify scope distinct; narrower advice cannot support broader approval merely through common files.",
+    "Distinguish an actor-reported no-change assertion from a defined mechanical comparison and preserve both scopes; neither timestamp nor saved status establishes unchanged content.",
+    "Expose incomplete evidence populations and uncertain dependencies, without assuming all contrary observations were discovered or all unchanged hashes imply adequate support."
+  ],
+  "assumptions": [],
+  "constraints": [
+    "Target Design; no implemented automation, executed verification or requirement satisfaction is asserted."
+  ],
+  "allocated_to": "MOD-007",
+  "constrains": [
+    "FUNC-029"
+  ],
+  "sources": [
+    {
+      "source": "SRC-ASSURANCE-CONTENT-DESIGN",
+      "locator": "IR-004; SR-025–029; SCN-026–029",
+      "basis": "Derive assessor-assisted assurance preparation, explicit retention cooperation and scoped reliance through MOD-007 and IF-014. Preserve actual judgment, command and persistence ownership; target Design only."
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "id": "IF-016",
+  "type": "interface",
+  "title": "Controlled state preparation",
+  "status": "draft",
+  "description": "Change control prepares attributable baseline action, transition and retirement content while preserving actual authority, custody and execution boundaries.",
+  "exposed_through": [
+    "MOD-017"
+  ],
+  "operations": [
+    {
+      "name": "prepare_controlled_state_action",
+      "purpose": "Prepare scoped authority, baseline transition or retirement content for an explicit state-control request.",
+      "inputs": [
+        "Identified action, project/Change, participant, exact state/subjects and scope; selected policy and attributable existing grants with current conditions.",
+        "Supplied immutable baseline descriptors, actual effect observations, decision/provenance, or retirement inventory with complete reliance/recovery dispositions as appropriate.",
+        "Selected operational record read and intended retention contract where the participant requests recording.",
+        "Retirement executor, complete relevant writer/dependency scope and proposed or actually established cross-custody maintenance interval."
+      ],
+      "preconditions": [
+        "The selected project, exact subject and requested scope are identifiable; missing required support is an explicit gap, not an assumed favorable result."
+      ],
+      "outputs": [
+        "Exact prepared action/transition/disposition content, applicable authority scope and unresolved conditions; incomplete/unsupported result when required context is missing."
+      ],
+      "behavior": [
+        "Apply MOD-017 state-control.md under MOD-006 responsibility; reuse existing FUNC-026 authority interpretation and preserve IF-009 policy meaning.",
+        "Keep actual grants, conformance, accountable decisions, confirmed custody and observed execution distinct; preparation creates none of them.",
+        "For an established transition require confirmed before/result baseline and observed adopted outcome with decision basis; otherwise retain proposed/incomplete meaning.",
+        "For retirement account for current dependencies, preserved history versus disposable detail, exact expected state, recoverability where required and actual effects.",
+        "MOD-005 consumes the action basis before baseline operations; MOD-012 carries actor-selected content through IF-004 and interprets actual retention. Changed semantic content or material basis requires fresh preparation.",
+        "Identify the stable maintenance scope required across model, operational, external-file/replacement and authority writers. Prepared readiness is not held exclusion: the executor must establish quiescence before final checks and hold it through effects/reconciliation, or withhold removal. Lost custody requires blocked-scope handoff and explicit recovery before resumption."
+      ],
+      "failure_behavior": [
+        {
+          "condition": "Policy, authority, required observation, baseline or reliance context is missing, conflicting or stale.",
+          "outcome": "Return affected gap and withhold favorable readiness/established-transition meaning; do not invent permission or executed effects."
+        },
+        {
+          "condition": "Recording or material effects are partial or uncertain.",
+          "outcome": "Preserve known effects and require exact readback/reconciliation; preparation cannot claim saved content or authorize blind replay."
+        }
+      ]
+    }
+  ],
+  "consistency_rules": [
+    "MOD-006 supplies semantic preparation; MOD-005 consumes baseline action support, and MOD-012 arranges explicit recording through existing Operations.",
+    "The selected project policy controls decisions. Existing standing grants remain usable within scope; no universal approval gate or authority token is created.",
+    "Operational Basis and engineering Baseline retain different meanings; supporting attachments do not create a new native record type."
+  ],
+  "compatibility_rules": [
+    "Logical participant-assisted contract only; existing v2/v4 fields and retained exact supporting attachments carry content without schema migration or new CLI commands.",
+    "SR006007 and operational maintenance duties retain their existing owners and scope; this contract does not complete those requirements."
+  ],
+  "sources": [
+    {
+      "source": "SRC-BASELINE-STATE-DESIGN",
+      "locator": "SR-020–024; SCN-019–022/025",
+      "basis": "Define immutable baseline custody, original-meaning comparison/recovery, attributable transition preparation and dependency-safe retirement. Preserve selective retention and separate action authority, operational maintenance and actual execution; proposed Design only."
+    }
+  ]
+}

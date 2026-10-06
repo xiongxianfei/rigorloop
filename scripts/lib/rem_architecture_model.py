@@ -41,7 +41,7 @@ RELATIONS = {
     "interface": {"exposed_through": ("module",)},
 }
 SCENARIO_INTERFACES = {
-    "SCN-019": ("IF-007",),
+    "SCN-019": ("IF-007", "IF-015", "IF-016"),
     "SCN-046": ("IF-003", "IF-004"),
     "SCN-047": ("IF-003", "IF-004"),
     "SCN-053": ("IF-008",),

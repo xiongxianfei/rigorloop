@@ -1,0 +1,61 @@
+{
+  "id": "AR-072",
+  "type": "allocated-requirement",
+  "title": "Compare retained states under their original bases",
+  "status": "draft",
+  "statement": "The MOD-005 responsibility shall compare retained states under their original bases within the exact selected scope, preserving original meaning and explicit incomplete outcomes.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Selected retained-state comparison can otherwise conflate preparation with confirmed effects or hide unavailable content.",
+      "desired_outcome": "Compare retained states under their original bases."
+    },
+    "why": {
+      "rationale": "SR-021 requires this accountable architectural contribution; other contributions retain their own owners."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineers and maintainers",
+        "Reviewers and project decision owners",
+        "MOD-005 maintainers"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "A participant requests selected retained-state comparison."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "The selected local project state and declared retained/current material under state-control.md."
+      ]
+    },
+    "how": {
+      "approach": "Apply state-control.md with exact identity/scope and original interpretation, explicit custody/authority boundaries and attributable incomplete or confirmed outcomes."
+    },
+    "how_much": {
+      "scope": "Selected retained-state comparison. No full IR003 assessment, runtime qualification, destructive adoption or operational maintenance execution is claimed."
+    }
+  },
+  "acceptance_criteria": [
+    "Bind both baseline identities, exact content and original rules to the selected comparison and match entities by stable identity; rename/move does not invent an addition.",
+    "Expose before/after changes in definitions, relationships, lifecycle, names/locations, governing rules and relevant provenance without rewriting either state.",
+    "Claim additions/removals only with complete relevant membership; ambiguity or unavailable interpretation remains explicit instead of unchanged or absent.",
+    "Bound no-recorded-difference to inspected content and scope; do not infer semantic equivalence, approval or satisfaction."
+  ],
+  "assumptions": [],
+  "constraints": [
+    "Proposed Design; no implementation, executed criterion verification or satisfaction claim."
+  ],
+  "allocated_to": "MOD-005",
+  "constrains": [
+    "FUNC-021"
+  ],
+  "sources": [
+    {
+      "source": "SRC-BASELINE-STATE-DESIGN",
+      "locator": "SR-020–024; SCN-019–022/025",
+      "basis": "Define immutable baseline custody, original-meaning comparison/recovery, attributable transition preparation and dependency-safe retirement. Preserve selective retention and separate action authority, operational maintenance and actual execution; proposed Design only."
+    }
+  ]
+}

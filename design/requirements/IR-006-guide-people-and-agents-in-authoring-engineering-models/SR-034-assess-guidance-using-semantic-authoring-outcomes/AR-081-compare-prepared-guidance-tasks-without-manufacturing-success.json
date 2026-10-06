@@ -1,0 +1,61 @@
+{
+  "id": "AR-081",
+  "type": "allocated-requirement",
+  "title": "Compare prepared guidance tasks without manufacturing success",
+  "status": "draft",
+  "statement": "The Authoring guidance Module shall prepare and compare participant-specific semantic authoring tasks against identified expectations, exposing actual outcomes, assistance and unassessed scope while leaving generic assurance judgments and retention to their accountable owners.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Passing shape checks can hide incorrect semantic outcomes, missing explanations or undocumented help.",
+      "desired_outcome": "Compare prepared guidance tasks without manufacturing success."
+    },
+    "why": {
+      "rationale": "SR-034 needs an accountable MOD-008 obligation at the IF-008 guidance boundary; existing workflow AR-029/033 do not cover this complete guidance responsibility."
+    },
+    "who": {
+      "stakeholders": [
+        "New REM authors with basic engineering knowledge",
+        "Experienced authors/reviewers and engineering agents",
+        "Guidance maintainers and accountable assessors"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "During the selected authoring/correction or prepared guidance-assessment activity, and when its material source or subject basis changes."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "MOD-008 contribution to MOD-017 IF-008, with MOD-012 guided consumption and existing IF-014 assurance/IF-004 recording when selected."
+      ]
+    },
+    "how": {
+      "approach": "Apply guidance.md to exact declared inputs and owned source meanings; preserve actor decisions, incomplete scope and separately observed effects."
+    },
+    "how_much": {
+      "scope": "The complete allocated contribution to SR-034 within the declared finite activity/profile/task scope; no universal usability, runtime automation or population claim."
+    }
+  },
+  "acceptance_criteria": [
+    "Before task performance, identify participant group, exact guidance/profile basis, prepared inputs, expected semantic outputs, rule explanation, applicable checks and assistance conditions across the declared activity coverage.",
+    "Report success only from the expected semantic outcome, passed applicable checks and an adequate rule explanation from canonical guidance; structural validity alone, absent observations or missing checks cannot establish success.",
+    "Preserve incorrect results, ambiguities, actual assistance, unsupported formats and interrupted/unperformed tasks; keep assisted and unassisted results and participant/version conclusions distinguishable.",
+    "Carry exact prepared expectations and actual task comparison separately into existing assurance preparation and selected retention; changed expectations do not rewrite prior observations, and preparation or saved content does not establish formal judgment or general usability."
+  ],
+  "assumptions": [],
+  "constraints": [
+    "Guidance and Design coverage do not establish participant success, execution authority or installed support."
+  ],
+  "allocated_to": "MOD-008",
+  "constrains": [
+    "FUNC-034"
+  ],
+  "sources": [
+    {
+      "source": "SRC-AUTHORING-GUIDANCE-DESIGN",
+      "locator": "IR-006; SR-032–034; SCN-031–034/040",
+      "basis": "Define source-bound guidance selection, bounded authoring/correction and participant-assisted semantic task assessment, with justified MOD-008 allocation and existing assurance/recording cooperation. Target Design only; no observed usability or installed capability claim."
+    }
+  ]
+}

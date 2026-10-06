@@ -5,7 +5,7 @@
   "status": "confirmed",
   "actor": "A project maintainer adopting the replacement workflow",
   "goal": "Move active work to one coherent workflow while preserving original approvals and actual obligations.",
-  "context": "Current guidance and records still express proposal-first entry and may require milestone reviews.",
+  "context": "The project selects the replacement workflow for new or existing work; earlier contracts, records and judgments may remain applicable to part of that work.",
   "trigger": "The maintainer requests adoption for an explicitly selected scope.",
   "preconditions": [
     "The requested scope and relevant project authority are identifiable."
@@ -31,8 +31,16 @@
   "expected_outcome": "The selected work uses one coherent requirement-first contract with truthful current obligations and preserved history.",
   "alternatives": [
     {
-      "condition": "SQLite migration is not available.",
-      "outcome": "The workflow uses an actually supported recording interface if its adoption obligations are satisfied, without invented commands or raw SQL."
+      "condition": "The selected project has no earlier records.",
+      "outcome": "The project can adopt after establishing supported recording, authority and coherent workflow prerequisites, without importing historical records."
+    },
+    {
+      "condition": "Selected existing work already has compatible recording support.",
+      "outcome": "Adoption can proceed after the work and its retained dependencies are explicitly disposed of and the applicable authority and coherent workflow prerequisites hold."
+    },
+    {
+      "condition": "Selected work depends on incompatible earlier records and required migration is unavailable.",
+      "outcome": "Affected adoption remains blocked; the system identifies the unmet dependency and actual active authority while preserving work and historical judgments. Empty replacement records cannot discharge those dependencies, and unrelated history is not automatically imported."
     },
     {
       "condition": "Old milestone reviews remain useful evidence.",
@@ -69,6 +77,11 @@
       "source": "SRC-WORKFLOW-REQUIREMENT-REVIEW",
       "locator": "design/requirements/sources.md#src-workflow-requirement-review",
       "basis": "Document-based author assessment under the explicit Constitution exception confirms this Scenario as requirement-analysis knowledge. It is not independent review, executed product evidence or workflow activation."
+    },
+    {
+      "source": "SRC-ADOPTION-DEPENDENCY-REFINEMENT",
+      "locator": "IR-009; SR-079–083; SCN-082",
+      "basis": "User-authorized scope refinement: compatible recording for selected work, historical import only when required by its dependencies, and blocked affected adoption when necessary migration is unavailable. Preserve identities, original judgments and separate portable authoring; no workflow activation or migration is performed."
     }
   ]
 }

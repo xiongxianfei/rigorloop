@@ -1,0 +1,61 @@
+{
+  "id": "AR-084",
+  "type": "allocated-requirement",
+  "title": "Prepare owner-bound improvements without implying adoption",
+  "status": "draft",
+  "statement": "The Lessons and improvement Module shall prepare a source-bound improvement proposal with accountable destination ownership and observable criteria, and preserve its exact association to separately governed disposition and adopted scope.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "A prepared proposal or finished route can be mistaken for an adopted improvement.",
+      "desired_outcome": "Prepare owner-bound improvements without implying adoption."
+    },
+    "why": {
+      "rationale": "SR-037 requires this accountable MOD-009 contribution; source meaning, adoption and evidence authority must remain distinct."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineering participants and reviewers",
+        "Lesson and improvement owners",
+        "Project decision owners and assurance assessors"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "During supported finding analysis, work preparation, proposal disposition or opportunity-based effect assessment as applicable; reconsider when the material basis changes."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "MOD-009 contribution to MOD-017 IF-017 consumed by MOD-012; existing controlled-change, assurance and selected retention boundaries."
+      ]
+    },
+    "how": {
+      "approach": "Apply improvement.md to exact participant-supplied context and observations, preserve missing/contrary support, and confirm authority, adopted effects and retention through their existing owners."
+    },
+    "how_much": {
+      "scope": "Complete allocated contribution to SR-037 within the declared finite project/activity/observation scope; no automatic causal discovery, policy adoption or universal effectiveness claim."
+    }
+  },
+  "acceptance_criteria": [
+    "Before adoption identify lesson/mechanism, applicable situations, exact affected authoritative subjects, owner, intended behavior and independently observable success/adverse-effect criteria.",
+    "Expose missing support, owner, subject or criterion as an incomplete proposal rather than readiness for adoption.",
+    "Carry the exact proposal to the authorized change owner through existing authority/transition cooperation; preserve revision/rejection decisions and original findings without executing adoption through preparation.",
+    "Relate any adopted claim to the exact proposal, governing decision, affected state/baseline and required owner-produced result; route settlement or scheduled follow-up alone establishes neither adoption nor effectiveness."
+  ],
+  "assumptions": [],
+  "constraints": [
+    "Existing Learn contributor confirmation and topic/route custody remain applicable to their actual operations; Design approval does not execute them."
+  ],
+  "allocated_to": "MOD-009",
+  "constrains": [
+    "FUNC-037"
+  ],
+  "sources": [
+    {
+      "source": "SRC-LESSON-IMPROVEMENT-DESIGN",
+      "locator": "IR-007; SR-035–038; SCN-035–039",
+      "basis": "Refine supported lesson characterization, bounded contextual use, accountable proposals and opportunity-based effect assessment through MOD-009 and parent IF-017. Preserve existing Learn confirmation/custody/route boundaries and separate controlled adoption, assurance and retention. Proposed Design only."
+    }
+  ]
+}

@@ -30,3 +30,13 @@ qualification = "proposed"
 source = "README.md"
 anchor = "record-review-assessment"
 description = "An explicit whole-change judgment crosses public CLI admission and the typed storage boundary. Storage checks revision and support, prepares a bounded receipt and commits related records. A saved outcome does not perform review, final Verify or automatic progression."
+
+[[topics]]
+id = "select-subject-history"
+title = "Select retained subject history"
+view = "process"
+kind = "sequence"
+qualification = "proposed"
+source = "README.md"
+anchor = "select-subject-history"
+description = "Explicit subject and fact filters cross command admission into one coherent retained-history snapshot; continuation detects changed state and preserves original meaning and coverage limits."

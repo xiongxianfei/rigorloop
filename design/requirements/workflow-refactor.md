@@ -64,7 +64,7 @@ The current [Constitution](../../CONSTITUTION.md), [Workflow](../architecture/mo
 
 ## Storage relationship and remaining work
 
-The [local operational-history analysis](sources.md#src-local-operational-analysis) remains coordinated but separately deliverable. Git retains the current engineering model; the proposed operational store retains work and judgments; artifacts retain bulky evidence. The workflow refactor must use the recording interface actually supported at adoption. It neither assumes SQLite exists nor authorizes deletion of `docs/changes/` or historical evidence.
+The [local operational-history analysis](sources.md#src-local-operational-analysis) remains a separately owned delivery responsibility. Git retains the current engineering model; the operational store retains work and judgments; artifacts retain bulky evidence. Under the [adoption dependency refinement](sources.md#src-adoption-dependency-refinement), authoring may precede storage delivery, while activation requires the recording support selected by the governing contract. New projects without earlier records need no historical import. Selected work depending on incompatible earlier records needs qualified migration; its absence blocks affected adoption. No empty replacement store, unrelated historical import or deletion of relied-on work is implied.
 
 The completed document-based Requirement Review assessed the exact IR-009 analysis, SR-079–083, refined SR-027–029 and SR-053–055, FEAT-016/017, and SCN-075–082, together with justified reuse conclusions. Its findings, corrections, subject identities and author-assessment limits are recorded in the linked review. Draft status and structural checks are not this judgment.
 

@@ -1,0 +1,64 @@
+{
+  "id": "AR-075",
+  "type": "allocated-requirement",
+  "title": "Resolve reliance before authorizing current material retirement",
+  "status": "draft",
+  "statement": "The MOD-006 responsibility shall resolve reliance before authorizing current material retirement within the exact selected scope, preserving original meaning and explicit incomplete outcomes.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Retirement disposition and actual outcome accountability can otherwise conflate preparation with confirmed effects or hide unavailable content.",
+      "desired_outcome": "Resolve reliance before authorizing current material retirement."
+    },
+    "why": {
+      "rationale": "SR-024 requires this accountable architectural contribution; other contributions retain their own owners."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineers and maintainers",
+        "Reviewers and project decision owners",
+        "MOD-006 maintainers"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "A participant requests retirement disposition and actual outcome accountability."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "The selected local project state and declared retained/current material under state-control.md."
+      ]
+    },
+    "how": {
+      "approach": "Apply state-control.md with exact identity/scope and original interpretation, explicit custody/authority boundaries and attributable incomplete or confirmed outcomes."
+    },
+    "how_much": {
+      "scope": "Retirement disposition and actual outcome accountability. No full IR003 assessment, runtime qualification, destructive adoption or operational maintenance execution is claimed."
+    }
+  },
+  "acceptance_criteria": [
+    "Distinguish preserved engineering/history material requiring recoverable originals from superseded operational detail that has no reliance or retention obligation and needs no archive.",
+    "Account for active work, unresolved findings, current evidence, obligations and consumers with complete relevant model and non-model scope; unresolved or unknown required reliance withholds removal.",
+    "Confirm required exact original recovery and usable replacement/current references before removal; uncommitted required content, age or a successful import is insufficient.",
+    "Assess exact action authority and relevant state/policy conditions within an executor-held maintenance interval covering relevant model, operational, external dependency/replacement and authority writers through effects/reconciliation; changed, missing or unstable basis prevents the affected reserved action.",
+    "Preserve failures and contrary support for other scopes when replacing working evidence; discarded detail cannot silently resolve to newer bytes.",
+    "Route model and operational effects to their custody owners and bounded external-file cleanup to the authorized participant; record actual partial/completed effects and remaining dependencies.",
+    "Keep release of retained history separate under its policy; current operation must remain usable without fetching retired definitions and later unavailability is explicit."
+  ],
+  "assumptions": [],
+  "constraints": [
+    "Proposed Design; no implementation, executed criterion verification or satisfaction claim."
+  ],
+  "allocated_to": "MOD-006",
+  "constrains": [
+    "FUNC-024"
+  ],
+  "sources": [
+    {
+      "source": "SRC-BASELINE-STATE-DESIGN",
+      "locator": "SR-020–024; SCN-019–022/025",
+      "basis": "Define immutable baseline custody, original-meaning comparison/recovery, attributable transition preparation and dependency-safe retirement. Preserve selective retention and separate action authority, operational maintenance and actual execution; proposed Design only."
+    }
+  ]
+}

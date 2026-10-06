@@ -1,0 +1,21 @@
+version = 1
+
+[[topics]]
+id = "conformance-responsibilities"
+title = "Conformance responsibilities"
+view = "logical"
+kind = "topology"
+qualification = "proposed"
+source = "README.md"
+anchor = "conformance-responsibilities"
+description = "MOD-003 coordinates immutable raw acquisition through MOD-001, then uses pure IF-002 interpretation, conformance and migration operations. Results keep mechanical findings, supplied judgments and adoption limits distinct. Dependency arrows are not execution order or deployed processes."
+
+[[topics]]
+id = "migration-preparation-interaction"
+title = "Migration preparation interaction"
+view = "process"
+kind = "sequence"
+qualification = "proposed"
+source = "README.md"
+anchor = "migration-preparation-interaction"
+description = "Capture exact source/profile content, prepare an isolated target from an explicit mapping and report target checks. Declared consumer support is assessed against the exact candidate. Missing or adverse support withholds readiness; preparation and abandonment leave source and historical meaning unchanged."

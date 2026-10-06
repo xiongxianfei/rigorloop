@@ -1,0 +1,61 @@
+{
+  "id": "AR-068",
+  "type": "allocated-requirement",
+  "title": "Keep conformance observations distinct from supplied judgments",
+  "status": "draft",
+  "statement": "The Interpretation and validation Module shall present mechanical conformance findings and supplied engineering judgments as separate attributable accounts, preserving their exact bases and limitations without inferring approval or semantic adequacy.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Whole-model checks and migration preparation can hide incomplete rules or alter meaning while appearing valid.",
+      "desired_outcome": "Keep conformance observations distinct from supplied judgments."
+    },
+    "why": {
+      "rationale": "SR-014 requires accountable diagnostics and candidate outcomes within MOD-003."
+    },
+    "who": {
+      "stakeholders": [
+        "Model authors and maintainers",
+        "Engineering reviewers",
+        "MOD-003 maintainers"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "A participant requests selected-state conformance or an explicit model migration candidate."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "MOD-003 logical request boundary and pure IF-002 operations over IF-001 captured input."
+      ]
+    },
+    "how": {
+      "approach": "Bind explicit source/profile/mapping scope, preserve all relevant findings and missingness, and return separate attributable mechanical, semantic and adoption limits."
+    },
+    "how_much": {
+      "scope": "All parent SR-014 criteria for the selected finite model; capture custody, existing interpretation and later adoption retain their separate owners."
+    }
+  },
+  "acceptance_criteria": [
+    "Limit a mechanical conclusion to the named state, profile, rules and inspected scope; it cannot establish requirement approval, implementation or satisfaction.",
+    "Leave clarity, rationale, derivation and evidence adequacy to accountable engineering review even when the model is structurally valid.",
+    "Preserve each supplied judgment's subject, basis, assessor, purpose, conclusion and limitations; expose mismatch or unknown applicability rather than refreshing, merging or inventing approval.",
+    "Keep allocation questions without a deciding mechanical rule as review needs under MOD-004's existing contract, without fabricating a conflict or adequate design."
+  ],
+  "assumptions": [],
+  "constraints": [
+    "Proposed Design only; no product runtime, current migration support, implementation or verification is claimed."
+  ],
+  "allocated_to": "MOD-003",
+  "constrains": [
+    "FUNC-013"
+  ],
+  "sources": [
+    {
+      "source": "SRC-CONFORMANCE-MIGRATION-DESIGN",
+      "locator": "IR-005; SR-012–015; SCN-011–014",
+      "basis": "Derive whole-model diagnostics, separate mechanical/review presentation and source-preserving explicit migration candidates through MOD-003. Reuse capture, interpretation and scoped-check ownership; proposed Design only."
+    }
+  ]
+}

@@ -9,7 +9,10 @@
     "Maintain the architectural boundary between current engineering definitions and the governance decisions or operational records that use them.",
     "Keep definition-access and model-interpretation cooperation explicit within this boundary while preserving the exact child responsible for each behavior, obligation, and information set.",
     "Provide IF-007 as the accountable selected-state content and interpretation contract for Governance Baseline analysis, composing MOD-001 definition access and MOD-003 interpretation without granting authority or claiming retention.",
-    "Provide IF-012 through MOD-001 input capture, MOD-003 interpretation and MOD-004 projection/snapshot responsibility; preserve Baseline-specific IF-007 meaning."
+    "Provide IF-012 through MOD-001 input capture, MOD-003 interpretation and MOD-004 projection/snapshot responsibility; preserve Baseline-specific IF-007 meaning.",
+    "Provide IF-013 for selected-state traversal to MOD-010 through MOD-001 content, MOD-003 interpretation and MOD-004/FUNC-009/AR-056; preserve exact child ownership and read-only result meaning.",
+    "Compose MOD-003 whole-model conformance and isolated migration preparation with MOD-001 raw capture through internal IF-001/002; keep supplied judgment and later adoption authority outside mechanical results.",
+    "Compose immutable baseline content custody and conditional current-model retirement through IF015, preserving child storage/interpretation ownership and Governance catalog/authority."
   ],
   "owned_state": [],
   "scope": {
@@ -23,13 +26,16 @@
   },
   "provides": [
     "IF-007",
-    "IF-012"
+    "IF-012",
+    "IF-013",
+    "IF-015"
   ],
   "consumes": [],
   "design_limits": [
     "Existing IR-001 and shared SR-012 architecture remains the detailed definition example. IF-007 adds the bounded SCN-019 inspection collaboration; remaining model-management interactions and AR coverage retain their child-owned deferrals.",
-    "IF-007 serves MOD-005 across the Governance boundary. Internal IF-001/IF-002 retain their providers and are not exposed wholesale. Retention confirmation, broader Operations access, and other cross-boundary contracts remain to be analyzed.",
-    "No direct parent Function, AR, persistent state, or physical realization is introduced. Coherent inspection does not establish a complete retained Baseline or whole-model conformance."
+    "IF007 serves read-only baseline inspection; IF015 adds custody/recovery/conditional current-model retirement. IF012/013 retain snapshot/traversal meanings. Internal IF001/002 are not exposed wholesale.",
+    "No direct parent Function, AR, persistent state, or physical realization is introduced. Coherent inspection does not establish a complete retained Baseline or whole-model conformance.",
+    "IR-005 conformance-and-migration.md supplies the previously deferred whole-model and candidate-preparation interaction under MOD-003. This does not expose internal IF-002 externally or establish an adoption writer."
   ],
   "sources": [
     {
@@ -46,6 +52,21 @@
       "source": "SRC-CUSTOMER-BROWSER-DESIGN",
       "locator": "MOD-016",
       "basis": "System and Architecture Design from SR-084–088 and refined SR-060; proposed responsibility, contract and realization only. No implementation, platform qualification or product availability is established."
+    },
+    {
+      "source": "SRC-SCOPED-TRAVERSAL-DESIGN",
+      "locator": "SR-009; SCN-008; FUNC-009",
+      "basis": "Derive selected-state traversal responsibility, admission/completeness outcomes and necessary allocation from existing obligations. Proposed architecture only; no implementation, verification or satisfaction claim."
+    },
+    {
+      "source": "SRC-CONFORMANCE-MIGRATION-DESIGN",
+      "locator": "IR-005; SR-012–015; SCN-011–014",
+      "basis": "Derive whole-model diagnostics, separate mechanical/review presentation and source-preserving explicit migration candidates through MOD-003. Reuse capture, interpretation and scoped-check ownership; proposed Design only."
+    },
+    {
+      "source": "SRC-BASELINE-STATE-DESIGN",
+      "locator": "SR-020–024; SCN-019–022/025",
+      "basis": "Define immutable baseline custody, original-meaning comparison/recovery, attributable transition preparation and dependency-safe retirement. Preserve selective retention and separate action authority, operational maintenance and actual execution; proposed Design only."
     }
   ]
 }

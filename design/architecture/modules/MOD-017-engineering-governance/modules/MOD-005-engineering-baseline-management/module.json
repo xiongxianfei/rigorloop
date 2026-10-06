@@ -7,7 +7,8 @@
   "responsibilities": [
     "Establish identifiable baselines and expose their recorded content and governing profile.",
     "Compare retained states and recover selected content without rewriting historical meaning.",
-    "Consume IF-007 to inspect the requested state, declared membership, original interpretation, and content gaps before composing a Baseline claim. Keep obtained material distinct from confirmed retained material and identify unconfirmed scope."
+    "Consume IF-007 to inspect the requested state, declared membership, original interpretation, and content gaps before composing a Baseline claim. Keep obtained material distinct from confirmed retained material and identify unconfirmed scope.",
+    "Apply state-control.md to establish descriptors only after confirmed complete coherent custody, compare original retained bases and recover into isolated verified output."
   ],
   "owned_state": [
     "Baseline identities, retained-state membership, and recovery/comparison selections; content custody and change authorization have separate owners."
@@ -22,12 +23,14 @@
   },
   "provides": [],
   "consumes": [
-    "IF-007"
+    "IF-007",
+    "IF-015",
+    "IF-016"
   ],
   "design_limits": [
-    "IF-007 now defines content and interpretation inspection from Project model for SCN-019. Complete IR-003 AR derivation, content-retention confirmation, change-authority cooperation, and comparison/recovery contracts remain deferred.",
-    "Inspection success does not establish durable retention. Baseline establishment requires confirmed retention for the declared scope; partial or unavailable retention must remain unconfirmed in the reported outcome. Separately owned realization/assurance material needs its own acquisition and retention basis.",
-    "The IR-001 pilot assumes an already identifiable accessible state; this bounded Interface analysis does not implement Baseline establishment or recovery."
+    "SR020–022 and AR070/072/073 have bounded baseline, comparison and recovery Design under parent state-control.md; runtime custody and platform qualification remain separate.",
+    "IF007 supplies read-only inspection; IF015 supplies actual custody/recovery and IF016 action preparation. No recovery/adoption permission follows from a retained baseline.",
+    "Other IR003 obligations retain their separate assessment scope."
   ],
   "sources": [
     {
@@ -39,6 +42,11 @@
       "source": "SRC-BOUNDARY-CONTRACTS",
       "locator": "MOD-005; SCN-019, SCN-053, SCN-066 selected collaboration analysis",
       "basis": "Derive consumer-focused parent contracts for selected-state inspection, adopted-REM authoring guidance, applicable action authority, and evidence applicability. Preserve child behavior/state authority, existing Function/AR allocations, and earlier contract guarantees. The selected contracts refine prior blanket deferrals; remaining retention, wider collaboration, AR, and realization gaps stay explicit. This is draft design analysis, not implemented or satisfied behavior."
+    },
+    {
+      "source": "SRC-BASELINE-STATE-DESIGN",
+      "locator": "SR-020–024; SCN-019–022/025",
+      "basis": "Define immutable baseline custody, original-meaning comparison/recovery, attributable transition preparation and dependency-safe retirement. Preserve selective retention and separate action authority, operational maintenance and actual execution; proposed Design only."
     }
   ]
 }

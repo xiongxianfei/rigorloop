@@ -8,7 +8,9 @@
     "Interpret the profile declared by a selected model state, including typed identities and authoritative references.",
     "Check explicit identity presence and uniqueness over an identified candidate scope.",
     "Diagnose rule violations and prepare explicit migration candidates while preserving source-state meaning.",
-    "Contribute original selected-state interpretation definitions and explicit incomplete or unsupported outcomes to MOD-016's IF-007 contract through IF-002, without treating interpretation as Baseline retention or complete model conformance."
+    "Contribute original selected-state interpretation definitions and explicit incomplete or unsupported outcomes to MOD-016's IF-007 contract through IF-002, without treating interpretation as Baseline retention or complete model conformance.",
+    "Check relationship candidate endpoint, representation, containment and cardinality rules over complete declared scope through IF-002.",
+    "Coordinate coherent raw acquisition through IF-001 before pure whole-model checking or migration preparation; preserve the nonrecursive supplied-input boundary of every IF-002 operation."
   ],
   "owned_state": [
     "The interpretation and checking rules applicable to a declared profile, plus transient findings and migration candidates. Stored profile documents retain their own identities and content custody."
@@ -24,9 +26,11 @@
   "provides": [
     "IF-002"
   ],
-  "consumes": [],
+  "consumes": [
+    "IF-001"
+  ],
   "design_limits": [
-    "IF-002 covers interpretation and identity checking needed by IR-001, including the shared SR-012 obligation. General conformance and migration interactions for FUNC-013 and FUNC-014 are deferred.",
+    "IF-002 covers interpretation, scoped admission, whole-model conformance and explicit migration preparation under conformance-and-migration.md and AR-067–069. Candidate preparation supplies no source write or adoption; external callable adapters and runtime qualification remain separate.",
     "The pilot supplies state-scoped raw content and the declared profile to the interpreter. It does not require interpreted retrieval from storage to bootstrap that same interpretation."
   ],
   "sources": [
@@ -39,6 +43,16 @@
       "source": "SRC-BOUNDARY-CONTRACTS",
       "locator": "MOD-003; SCN-019, SCN-053, SCN-066 selected collaboration analysis",
       "basis": "Derive consumer-focused parent contracts for selected-state inspection, adopted-REM authoring guidance, applicable action authority, and evidence applicability. Preserve child behavior/state authority, existing Function/AR allocations, and earlier contract guarantees. The selected contracts refine prior blanket deferrals; remaining retention, wider collaboration, AR, and realization gaps stay explicit. This is draft design analysis, not implemented or satisfied behavior."
+    },
+    {
+      "source": "SRC-RELATIONSHIP-AUTHORING-DESIGN",
+      "locator": "SR-008; FUNC-008",
+      "basis": "Derive single-fact relationship editing, candidate admission and retention boundaries from SR-008. Proposed Design only; no runtime implementation or satisfaction claim."
+    },
+    {
+      "source": "SRC-CONFORMANCE-MIGRATION-DESIGN",
+      "locator": "IR-005; SR-012–015; SCN-011–014",
+      "basis": "Derive whole-model diagnostics, separate mechanical/review presentation and source-preserving explicit migration candidates through MOD-003. Reuse capture, interpretation and scoped-check ownership; proposed Design only."
     }
   ]
 }

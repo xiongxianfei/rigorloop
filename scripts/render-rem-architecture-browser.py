@@ -19,6 +19,9 @@ import xml.etree.ElementTree as ET
 
 from lib.rem_architecture_browser import build_model, diagram_sources, web_capabilities
 from lib.rem_architecture_model import Model
+from lib.rem_browser_assessments import (EMPTY, SNAPSHOT, read_assessments, project_assessments,
+    EMPTY_DESIGN, DESIGN_SNAPSHOT, DESIGN_LIMIT, read_design_reviews, project_design_reviews,
+    DeliveryCapture, assessment_snapshot)
 from lib.rem_authored_views import read_authored_topics, compile_authored_topics
 
 
@@ -52,9 +55,20 @@ def compile_svg(d2, name, source, layout="elk"):
     return re.sub(r'\s+target="[^"]*"', '', svg)
 
 
-def render(model, d2):
+def render(model, d2, assessments=None, design_reviews=None):
     # Resolve every selected reading scope before invoking a compiler or writing.
-    projected = build_model(model)
+    selected = EMPTY if assessments is None else assessments
+    selected_design = EMPTY_DESIGN if design_reviews is None else design_reviews
+    capture = DeliveryCapture(model) if selected.get("format_version") == 2 else None
+    assessment_data = project_assessments(model, selected, selected_design, capture)
+    delivery_snapshot = assessment_snapshot(selected)
+    design_data = project_design_reviews(model, selected_design, capture)
+    design_snapshot = (json.dumps(selected_design, ensure_ascii=False, sort_keys=True, separators=(",", ":")) + "\n").encode()
+    if len(design_snapshot) > DESIGN_LIMIT:
+        raise ValueError("Assessment: normalized Design disclosure exceeds 4 MiB")
+    projected = build_model(model, system_requirement_view=True)
+    projected["delivery_assessments"] = json.loads(json.dumps(assessment_data, sort_keys=True))
+    projected["design_reviews"] = json.loads(json.dumps(design_data, sort_keys=True))
     projected["web_capabilities"] = web_capabilities(model)
     topics = read_authored_topics(model)
     version = subprocess.run([d2, "--version"], text=True, capture_output=True, timeout=10)
@@ -92,7 +106,9 @@ def render(model, d2):
             raise ValueError(f"Browser template requires exactly one {key} placeholder")
     page = re.sub(r"\{\{(MODEL_JSON|DIAGRAMS|STYLE|SCRIPT)\}\}",
                   lambda match: replacements[match.group(1)], template)
-    outputs = {"index.html": page.encode(), **authored_outputs}
+    outputs = {"index.html": page.encode(), **authored_outputs,
+               SNAPSHOT: delivery_snapshot}
+    outputs[DESIGN_SNAPSHOT] = design_snapshot
     for name, source in sources.items():
         outputs[f"diagrams/{name}.d2"] = source.encode()
         # Standalone SVGs return to the viewer; inline templates keep hash routes.
@@ -105,6 +121,8 @@ def render(model, d2):
         manifest.append("# Authored topics: D2; Dagre layout; qualified source digests embedded in HTML")
     manifest += [f"{digest(content)}  {name}" for name, content in sorted(outputs.items())]
     outputs["manifest.sha256"] = ("\n".join(manifest) + "\n").encode()
+    if capture is not None:
+        capture.verify()
     return outputs
 
 
@@ -120,12 +138,22 @@ def main():
     parser.add_argument("--root", type=Path, default=SCRIPTS.parent)
     parser.add_argument("--d2", default=os.environ.get("REM_D2", "d2"), help="path to D2 0.9.0")
     parser.add_argument("--check", action="store_true", help="regenerate and compare without writes")
+    selection = parser.add_mutually_exclusive_group()
+    selection.add_argument("--assessments", type=Path, help="explicitly selected sanitized operational assessment export")
+    selection.add_argument("--clear-assessments", action="store_true", help="replace frozen selection with explicit absence")
+    design_selection = parser.add_mutually_exclusive_group()
+    design_selection.add_argument("--design-reviews", type=Path, help="explicitly selected actual Design review disclosure")
+    design_selection.add_argument("--clear-design-reviews", action="store_true", help="clear only the selected Design reviews")
     args = parser.parse_args()
     try:
         root = args.root.resolve()
         model = Model(root)
-        outputs = render(model, args.d2)
         directory = root / OUTPUT
+        selected_path = args.assessments if args.assessments is not None else directory / SNAPSHOT
+        assessments = EMPTY if args.clear_assessments or (args.assessments is None and not selected_path.exists()) else read_assessments(selected_path)
+        design_path = args.design_reviews if args.design_reviews is not None else directory / DESIGN_SNAPSHOT
+        design_reviews = EMPTY_DESIGN if args.clear_design_reviews or (args.design_reviews is None and not design_path.exists()) else read_design_reviews(design_path)
+        outputs = render(model, args.d2, assessments, design_reviews)
         drift = [name for name, content in outputs.items()
                  if not (directory / name).is_file() or (directory / name).read_bytes() != content]
         obsolete = obsolete_diagrams(directory, outputs)
@@ -134,7 +162,7 @@ def main():
                 names = drift + [path.relative_to(directory).as_posix() for path in obsolete]
                 print("Architecture browser drift: " + ", ".join(names), file=sys.stderr)
                 return 1
-            print(f"Architecture browser and {len(outputs) // 2 - 1} diagrams current; source {model.digest}")
+            print(f"Architecture browser and {sum(name.endswith('.svg') for name in outputs)} diagrams current; source {model.digest}")
             return 0
         # Validate and compile the entire subject before publishing any output.
         for name in drift:

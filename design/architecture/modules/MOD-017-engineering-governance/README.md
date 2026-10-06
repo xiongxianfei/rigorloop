@@ -6,9 +6,11 @@
 
 Maintain a current structured handoff, not an activity history. Milestones describe checked progress and dependencies, with no mandatory reviewer or approval field. Optional interim advice remains advisory. After implementation there is one independent whole-change Code Review gate, followed by distinct final Verify. Corrections and reassessment stay within the same gate; a gate does not require permanent copies of every attempt.
 
-The current handoff identifies goal/scope/authority, governing basis, progress, open issues and important rationale, relevant evidence, review standing, and next action with reason. Each fact has one owner. The context projection does not maintain its own editable approval or infer authority from a next-step suggestion. [Change control](modules/MOD-006-engineering-change-control/README.md#resume-and-progress) owns resumption interpretation.
+The current handoff identifies goal/scope/authority, governing basis, progress, open issues and important rationale, relevant evidence, review standing, and next action with reason. Each fact has one owner. The context projection does not maintain its own editable approval or infer authority from a next-step suggestion. [Change control](modules/MOD-006-engineering-change-control/README.md#resume-and-progress) owns SR-006/007 resumption interpretation and action-bound authority through AR-077/078, including bounded supporting reads, explicit issue dispositions and prior-grant reuse.
 
 ## Review subjects and retained basis
+
+[Assurance content and current reliance](modules/MOD-007-engineering-verification-and-assurance/assurance-content.md) defines the IR-004 cooperation. MOD-017 supplies IF-014 preparation through MOD-007; MOD-012 obtains assessor decisions and arranges explicit recording through IF-004. IF-010 support analysis and IF-009 authority retain their separate meanings. Prepared content, actual retention, observed results and semantic approval are distinct outcomes.
 
 The reviewer owns the conclusion, assessed scope, governing obligations, accountable provenance, limitations and unresolved findings. Retain enough support to understand a conclusion still being used; summaries often suffice. Full console logs and source copies are optional unless their actual bytes are necessary for a decision or selected preservation obligation. Earlier failed development runs need no records merely because they happened.
 
@@ -108,10 +110,86 @@ Adoption has preparation, physical replacement and activation decisions, without
 
 On partial replacement or interruption, stop affected dependent operations and report which contract is actually intact. Reuse the earlier workflow only where all required earlier components remain compatible and available. Otherwise expose an unavailable workflow until explicit recovery or completed replacement; do not continue using a mixture or infer that rollback succeeded. Preserve unrelated work and historical evidence throughout. Two local agents racing adoption must not activate different interpretations against one unchanged work revision.
 
-The successor workflow is adopted with the qualified v4 SQLite backend; there is no transitional v4 filesystem adapter. Database migration, backup/restoration and semantic compatibility prerequisites must be satisfied before affected work activates. SQLite alone does not satisfy workflow adoption, and adoption does not erase preservation obligations or supply engineering approval. Before deliberate upgrade, the preceding package remains the authority for its v3 operations; the successor does not multiplex overlapping commands by inspecting repository residue.
+The successor workflow is adopted with the qualified v4 SQLite backend; there is no transitional v4 filesystem adapter. MOD-006 prepares the selected-work disposition through FUNC-078 and IF-011. MOD-010/011 supply supported recording and migration observations; their mechanics do not decide adoption. Establish recording compatibility and the applicable backup/restoration, migration and semantic prerequisites before affected work activates. SQLite alone does not satisfy workflow adoption, and adoption does not erase preservation obligations or supply engineering approval. Before deliberate upgrade, the preceding package remains the authority for its v3 operations; the successor does not multiplex overlapping commands by inspecting repository residue.
+
+Apply the three SR-083 / SCN-082 cases before proposing activation:
+
+| Selected basis | Adoption disposition |
+| --- | --- |
+| New project with no earlier records or dependent work | Establish qualified successor recording and coherent authority/consumer support; no historical import is required. A missing or unreadable old store is not evidence of this case. |
+| Existing work with compatible recording | Preserve and inspect its exact work, judgment and dependency basis. Authority and all other adoption prerequisites still apply; compatibility alone is not activation. |
+| Work depending on incompatible earlier records | Require qualified migration of the necessary scope with original meaning and dependencies preserved. Unavailable, failed or uncertain migration blocks affected adoption; an empty new store cannot replace that work. |
+
+For a new project, preparation accepts an attributable empty active-work inventory and established absence of prior workflow/record dependencies, together with the known target and project authority. It preserves existing identities where present and invents no prior contract or Change. Preparation initializes no storage and activates nothing; later supported operations and their actual results remain separately required. Missing, unreadable or uncertain evidence cannot establish absence.
+
+Recheck compatibility and dependency observations against the same current activation basis. Report affected blockers and the actual intact prior authority or explicit unavailability. Keep unrelated work outside the selected transition; an unrelated old record does not force import. Conversely, excluding an identifier from the selection cannot remove a dependency still relied upon. The existing guarded publication and interruption rules apply to every permitted activation.
 
 The [successor record contract](../MOD-018-engineering-operations/modules/MOD-011-operational-record-persistence/README.md#adoption-and-compatibility) settles activation granularity: one guarded transaction per selected Change. Project-wide success requires current activation for the complete explicitly selected set; partial activation is reported as partial, without converting unrelated work or promising a multi-Change atomic commit. The [installation extension](../MOD-019-product-delivery/modules/MOD-014-verified-skill-installation/README.md) supplies exact replacement effects. V4 rollout qualifies the directly selected SQLite adapter and explicit legacy import under the successor package boundary. Only one operational backend is authoritative for the selected adopted work; active dual writes and implicit fallback are forbidden. Preserve legacy originals and access to the prior executable until the selected migration/recovery obligations are settled.
 
 ## Verification intent
 
 [The parent-owned test design](test-design.md) defines the adoption interactions that can fail despite child conformance. [Operations](../MOD-018-engineering-operations/README.md) owns handoff cooperation and its assurance boundary.
+
+## Baseline state responsibilities
+
+[State control](state-control.md) defines SR-020–024 and AR-070–076. MOD-005 owns baseline meaning, MOD-006 controls transition and retirement preparation, and MOD-001 owns immutable content custody within MOD-016. IF-016 is child-provided and explicitly exposed through MOD-017 for guided recording.
+
+<!-- architecture-diagram: baseline-state-responsibilities -->
+
+```d2
+direction: down
+baseline: "MOD-005 Model baselines\nIdentity, comparison and recovery"
+control: "MOD-006 Change control\nAuthority, transition and retirement content"
+model: "MOD-016 / IF-007 and IF-015\nInspection, immutable custody and isolated output"
+storage: "MOD-001 / IF-001\nExact retained bytes and conditional current writes"
+checks: "MOD-003 / IF-002\nOriginal interpretation and conformance"
+guide: "MOD-012 Skill procedures\nParticipant-selected explicit recording"
+operations: "MOD-018 / IF-004\nActual operational retention"
+baseline -> control: "IF-016 action basis"
+baseline -> model: "Inspect, retain and recover"
+control -> model: "IF-015 selected model retirement"
+model -> storage
+model -> checks
+guide -> control: "IF-016 via MOD-017 exposure"
+guide -> operations: "Record actual prepared content"
+```
+
+Arrows identify consumed responsibilities, not a universal execution sequence. Applicable authority, confirmed content custody, accountable decisions and actual effects retain separate meanings. Current-model retirement cannot release retained history or mutate operational records.
+
+## Baseline retention and recovery interaction
+
+<!-- architecture-diagram: baseline-retention-and-recovery -->
+
+```d2
+shape: sequence_diagram
+participant: "Engineer or maintainer"
+baseline: "MOD-005 Baselines"
+control: "MOD-006 / IF-016"
+model: "MOD-016 / IF-007 and IF-015"
+participant -> baseline: "Select exact state, scope and retention policy"
+baseline -> model: "IF-007 inspect content and original rules"
+model -> baseline: "Captured basis and inspection limits"
+baseline -> control: "Assess supplied action authority and conditions"
+control -> baseline: "Covered scope or unmet boundary"
+baseline -> model: "IF-015 retain exact coherent content"
+model -> model: "Check exact scope through IF-002 before sealing"
+model -> baseline: "Sealed custody receipt or unconfirmed scope"
+baseline -> baseline: "Publish and read back bound catalog descriptor"
+baseline -> participant: "Established baseline only if both confirmed"
+participant -> baseline: "Select retained baseline for recovery"
+baseline -> model: "IF-015 materialize in new isolated output"
+model -> baseline: "Original content and fidelity/interpretation limits"
+baseline -> participant: "Verified scope; no active-work overwrite"
+participant -> control: "Supply actual transition or retirement observations"
+control -> participant: "Prepared attributable account and remaining gaps"
+```
+
+Incomplete acquisition, unresolved coherence or authority, partial custody and uncertain catalog effects stop a complete baseline claim. Recovery preserves original allocation and rules. The final account requires explicit recording through MOD-012 and IF-004; neither preparation nor isolated recovery performs adoption. [State control](state-control.md) defines those recording, comparison, retirement and interruption paths, plus Development and Physical realization.
+
+## Authoring guidance and semantic tasks
+
+[MOD-008 guidance](modules/MOD-008-engineering-authoring-guidance/guidance.md) owns IR-006 source selection, bounded correction and prepared semantic task comparison through IF-008. MOD-012 carries its explicit task content to existing IF-014 assurance preparation and chosen IF-004 retention. MOD-007 keeps generic judgment/applicability meaning; MOD-008 keeps authoring-specific expectations. No new policy gate, storage owner or automatic judge is introduced.
+
+## Lessons and improvement cooperation
+
+[MOD-009 improvement Design](modules/MOD-009-engineering-learning/improvement.md) supplies IR-007 learning through IF-017. MOD-012 composes that domain content with existing IF-009/016 authority and controlled transition, IF-010/014 assurance and selected IF-004 retention. Child state and decisions retain their owners; proposal, route settlement, adopted scope and observed effectiveness remain distinct.

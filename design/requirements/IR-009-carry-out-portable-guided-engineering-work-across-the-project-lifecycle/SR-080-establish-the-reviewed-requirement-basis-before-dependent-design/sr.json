@@ -34,7 +34,7 @@
       "approach": "Apply the explicit ownership and dependency conditions in the criteria; record exact scope, decisions, exceptions and assessment basis without inferring approval from mechanics. Detailed Function, Module, Interface and storage realization belongs to subsequent design."
     },
     "how_much": {
-      "scope": "The selected requirement-first workflow within one Change and its affected dependencies. No new preliminary proposal gate, per-method approval, mandatory milestone approval, automatic external permission or mandatory SQLite prerequisite. Functional and architectural completeness are deliberately deferred to design; the Feature constraints express workflow conditions, not a completed behavior realization."
+      "scope": "The selected requirement-first workflow within one Change and its affected dependencies. No new preliminary proposal gate, per-method approval, mandatory milestone approval or automatic external permission is introduced. Preparing successor definitions may precede their storage delivery; actual invocations retain their applicable current governance and recording requirements. This authoring or assessment obligation does not itself choose a storage technology. Workflow activation retains the compatible-recording and necessary-migration prerequisites owned by SR-083. Functional and architectural completeness are deliberately deferred to design; the Feature constraints express workflow conditions, not a completed behavior realization."
     }
   },
   "acceptance_criteria": [
@@ -75,6 +75,11 @@
       "source": "SRC-WORKFLOW-DESIGN",
       "locator": "SR-080 AC3,6; AR-032 with AR-031",
       "basis": "Proposed allocation composition: The routing boundary permits design from sufficient requirements without requiring completed Functions/ARs; feasibility remains bounded and cannot imply implementation authority. This is a design argument, not executed satisfaction evidence."
+    },
+    {
+      "source": "SRC-ADOPTION-DEPENDENCY-REFINEMENT",
+      "locator": "IR-009; SR-079–083; SCN-082",
+      "basis": "User-authorized scope refinement: compatible recording for selected work, historical import only when required by its dependencies, and blocked affected adoption when necessary migration is unavailable. Preserve identities, original judgments and separate portable authoring; no workflow activation or migration is performed."
     }
   ],
   "confirms": [

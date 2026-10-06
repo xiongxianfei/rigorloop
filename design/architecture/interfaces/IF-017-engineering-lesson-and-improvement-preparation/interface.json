@@ -1,0 +1,134 @@
+{
+  "id": "IF-017",
+  "type": "interface",
+  "title": "Engineering lesson and improvement preparation",
+  "status": "draft",
+  "description": "Governance prepares participant-supplied lesson, context, improvement and observed-effect content for guided engineering work while preserving separate learning, adoption, assurance and custody authority.",
+  "operations": [
+    {
+      "name": "characterize_supported_lesson",
+      "purpose": "Prepare supported reuse or a bounded local-correction disposition.",
+      "inputs": [
+        "Identifiable finding, original context/version and attributable observations.",
+        "Supplied causal interpretation, alternatives/contradictions, reuse rationale, applicability/exclusions and selected operation/confirmation context."
+      ],
+      "preconditions": [],
+      "outputs": [
+        "Exact characterized lesson candidate, explicit hypothesis/support limits or local-correction disposition; actual retention remains separate."
+      ],
+      "behavior": [
+        "Apply MOD-009 improvement.md under FUNC-035/AR-082; facts and causal inferences remain distinct.",
+        "Respect learning.md confirmation and no-clobber/topic/route custody for selected Learn operations; preparation has no topic or route effect."
+      ],
+      "failure_behavior": [
+        {
+          "condition": "Required identity, context, source support or governing decision is missing, contradictory or changed.",
+          "outcome": "Preserve available attributable content and affected unresolved scope; do not invent a lesson, adopted change, favorable claim or current applicability."
+        },
+        {
+          "condition": "Selected retention or owner effects are unavailable, incomplete or uncertain.",
+          "outcome": "Return prepared-versus-observed effects and the responsible reconciliation; no implicit save, owner invocation or blind retry."
+        }
+      ]
+    },
+    {
+      "name": "select_applicable_lessons",
+      "purpose": "Explain relevant lessons and current improvement disposition for a declared planned activity.",
+      "inputs": [
+        "Planned activity and material context, selected available lesson scope and exact inspected content/availability.",
+        "Supplied authoritative improvement decisions, affected versions and their known current applicability."
+      ],
+      "preconditions": [],
+      "outputs": [
+        "Lessons with compared applicability/exclusions, examined population and acquisition limits, current supported disposition or named missing context."
+      ],
+      "behavior": [
+        "Apply FUNC-036/AR-083; distinguish known exclusions, insufficient context, unavailable sources and no match in a completely inspected scope.",
+        "No implicit external search, adoption, policy override or permission; changed source/context requires a new basis or explicit unresolved result."
+      ],
+      "failure_behavior": [
+        {
+          "condition": "Required identity, context, source support or governing decision is missing, contradictory or changed.",
+          "outcome": "Preserve available attributable content and affected unresolved scope; do not invent a lesson, adopted change, favorable claim or current applicability."
+        },
+        {
+          "condition": "Selected retention or owner effects are unavailable, incomplete or uncertain.",
+          "outcome": "Return prepared-versus-observed effects and the responsible reconciliation; no implicit save, owner invocation or blind retry."
+        }
+      ]
+    },
+    {
+      "name": "prepare_accountable_improvement",
+      "purpose": "Prepare an assessable proposal and associate separately supplied controlled dispositions.",
+      "inputs": [
+        "Supported lesson/mechanism/basis, applicability, exact affected subjects and accountable owner.",
+        "Intended behavior and independently specified success/adverse-effect criteria; governing decision and actual adopted outcome when supplied."
+      ],
+      "preconditions": [],
+      "outputs": [
+        "Attributable proposal or missing readiness context, with proposed/revised/rejected/adopted scope distinctly tied to its governing basis."
+      ],
+      "behavior": [
+        "Apply FUNC-037/AR-084; missing owner, subject, support or criterion prevents a ready-for-adoption claim.",
+        "MOD-012 hands content to existing IF-009/016 and the authorized destination owner; a route, approval of direction or preparation cannot fabricate adopted artifacts or effectiveness."
+      ],
+      "failure_behavior": [
+        {
+          "condition": "Required identity, context, source support or governing decision is missing, contradictory or changed.",
+          "outcome": "Preserve available attributable content and affected unresolved scope; do not invent a lesson, adopted change, favorable claim or current applicability."
+        },
+        {
+          "condition": "Selected retention or owner effects are unavailable, incomplete or uncertain.",
+          "outcome": "Return prepared-versus-observed effects and the responsible reconciliation; no implicit save, owner invocation or blind retry."
+        }
+      ]
+    },
+    {
+      "name": "compare_observed_improvement_effects",
+      "purpose": "Compare actual opportunity-bound effects and identify current reassessment needs.",
+      "inputs": [
+        "Adopted version and exact prepared criteria, applicability, observer/provenance and triggering observations or nonreproducibility.",
+        "Available later activity context/order and comparability reasoning; actual recurrence, intended behavior, adverse effects, missing/contrary observations and material changes."
+      ],
+      "preconditions": [],
+      "outputs": [
+        "Context-bounded comparison with reproduction and later opportunity distinct, explicit unassessed scope or reassessment need, and original observations preserved."
+      ],
+      "behavior": [
+        "Apply FUNC-038/AR-085; no comparable activity and missing observations at an actual opportunity are different gaps.",
+        "Require actual supported observations for any effectiveness conclusion; preserve mixed results, known earlier comparable failures and limitations of the selected population.",
+        "MOD-012 passes supplied methods/observations or assessor judgments through IF-014/010; IF-017 does not create generic assurance approval or renew old observations."
+      ],
+      "failure_behavior": [
+        {
+          "condition": "Required identity, context, source support or governing decision is missing, contradictory or changed.",
+          "outcome": "Preserve available attributable content and affected unresolved scope; do not invent a lesson, adopted change, favorable claim or current applicability."
+        },
+        {
+          "condition": "Selected retention or owner effects are unavailable, incomplete or uncertain.",
+          "outcome": "Return prepared-versus-observed effects and the responsible reconciliation; no implicit save, owner invocation or blind retry."
+        }
+      ]
+    }
+  ],
+  "consistency_rules": [
+    "MOD-017 owns the external contract; MOD-009 retains FUNC-035–038, AR-082–085 and domain context. MOD-012 owns invocation and exact content handoff.",
+    "Observations, causal hypotheses, reusable lessons, proposals, adoption, route settlement and observed effectiveness remain distinct.",
+    "MOD-006 IF-009/016 retains authority/transition meaning; MOD-007 IF-010/014 retains generic assurance. Neither is replaced by lesson preparation.",
+    "Existing Learn confirmation and no-clobber/idempotent custody apply to selected operations; result-only route updates cannot invoke owners or mutate unrelated state.",
+    "Selected artifact or IF-004/003 retention confirms actual saved effects separately. No automatic discovery, polling, task execution or storage call is supplied."
+  ],
+  "compatibility_rules": [
+    "Logical participant-assisted contract only; no new public command, wire vocabulary, REM entity, native record type or mandatory lesson schema.",
+    "Existing Learn session/topic/route contracts and historical meanings remain intact; no implicit import or workflow adoption.",
+    "Current v2/v4 recording uses existing tasks and exact supporting attachments when required; standalone operation retains its chosen writer and project authority.",
+    "Unperformed or unsupported assessment remains explicit. Existing installed skills and tool runtimes are not qualified by this target Design."
+  ],
+  "sources": [
+    {
+      "source": "SRC-LESSON-IMPROVEMENT-DESIGN",
+      "locator": "IR-007; SR-035–038; SCN-035–039",
+      "basis": "Refine supported lesson characterization, bounded contextual use, accountable proposals and opportunity-based effect assessment through MOD-009 and parent IF-017. Preserve existing Learn confirmation/custody/route boundaries and separate controlled adoption, assurance and retention. Proposed Design only."
+    }
+  ]
+}

@@ -9,11 +9,13 @@
     "Validate complete typed candidates and preserve unresolved obligations and assessor attribution.",
     "Enforce project association, opaque revisions, atomic transactions and safe declared-read/attachment boundaries.",
     "Supply exact current facts for the command-owned fixed receipt encoder and report actual commitment.",
-    "Capture coherent selected backups, validate associated restoration and explicitly import qualified source facts with preserved originals."
+    "Capture coherent selected backups, validate associated restoration and explicitly import qualified source facts with preserved originals.",
+    "For the separately proposed subject-history profile, preserve explicit subject associations and history state and return coherent bounded selections with truthful coverage and continuation under history-selection.md."
   ],
   "owned_state": [
     "Associated project SQLite records and revisions, selected retained payloads and maintenance coordination.",
-    "Transient declared-read observations; repository engineering definitions remain external read-only subjects."
+    "Transient declared-read observations; repository engineering definitions remain external read-only subjects.",
+    "Proposed history subject associations, coverage metadata, live activation identity/generation and protected continuation key; no per-query retained state."
   ],
   "scope": {
     "includes": [
@@ -33,7 +35,7 @@
     "MOD-001 owns engineering definitions; MOD-011 owns operational records.",
     "External edits are covered at declared observations, not atomically locked with repository files.",
     "Historical contracts and imported judgments retain their original meaning. Source-observed realization is distinct from execution qualification and project adoption.",
-    "SR-078 cross-Change history lookup remains separately deferred."
+    "SR-078 history-selection.md defines the target allocation and query protocol semantics. Its storage/profile migration, writer qualification and public runtime availability remain separate from current v2/v4 adoption."
   ],
   "sources": [
     {
@@ -50,6 +52,16 @@
       "source": "SRC-CLI-REALIZATION",
       "locator": "MOD-011; design/requirements/sources.md#src-cli-realization",
       "basis": "Apply refined REM Architecture Design through subordinate observed and proposed views. Preserve the logical allocation, existing public contracts, and draft status; source mapping is not executed satisfaction evidence."
+    },
+    {
+      "source": "SRC-OPERATIONAL-MAINTENANCE-DESIGN",
+      "locator": "SR-074–077; AR-052–055; SCN-070–073",
+      "basis": "Refine existing maintenance cooperation, same-project transfer, preserved-source migration and resumption boundaries without new requirements, public operations or runtime qualification."
+    },
+    {
+      "source": "SRC-SUBJECT-HISTORY-DESIGN",
+      "locator": "SR-078; FUNC-077; SCN-074",
+      "basis": "Define recorded subject association, coherent bounded history selection and state-bound continuation through existing command/storage owners. Target Design only; current ordinary queries, schema and installed capability remain unchanged."
     }
   ]
 }

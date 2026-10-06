@@ -21,3 +21,23 @@ qualification = "proposed"
 source = "README.md"
 anchor = "correct-and-reassess"
 description = "Recorded findings return to the responsible owner. Corrections and relevant checks produce a revised candidate for independent reassessment within the same whole-change review gate; earlier attempts retain their original meaning."
+
+[[topics]]
+id = "baseline-state-responsibilities"
+title = "Baseline state responsibilities"
+view = "logical"
+kind = "topology"
+qualification = "proposed"
+source = "README.md"
+anchor = "baseline-state-responsibilities"
+description = "Baseline identity and recovery, immutable model custody, controlled action preparation and explicit operational recording retain separate owners and interfaces."
+
+[[topics]]
+id = "baseline-retention-and-recovery"
+title = "Baseline retention and recovery"
+view = "process"
+kind = "sequence"
+qualification = "proposed"
+source = "README.md"
+anchor = "baseline-retention-and-recovery"
+description = "Inspect exact content, assess supplied authority, confirm sealed custody and catalog before establishment, then recover into isolated output with original meaning. Actual transition/retirement observations require separate prepared recording."

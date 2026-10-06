@@ -1,0 +1,15 @@
+direction: down
+baseline: "MOD-005 Model baselines\nIdentity, comparison and recovery"
+control: "MOD-006 Change control\nAuthority, transition and retirement content"
+model: "MOD-016 / IF-007 and IF-015\nInspection, immutable custody and isolated output"
+storage: "MOD-001 / IF-001\nExact retained bytes and conditional current writes"
+checks: "MOD-003 / IF-002\nOriginal interpretation and conformance"
+guide: "MOD-012 Skill procedures\nParticipant-selected explicit recording"
+operations: "MOD-018 / IF-004\nActual operational retention"
+baseline -> control: "IF-016 action basis"
+baseline -> model: "Inspect, retain and recover"
+control -> model: "IF-015 selected model retirement"
+model -> storage
+model -> checks
+guide -> control: "IF-016 via MOD-017 exposure"
+guide -> operations: "Record actual prepared content"

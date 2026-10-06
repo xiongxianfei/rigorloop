@@ -1,5 +1,5 @@
 # Generated from canonical REM records; do not edit.
-# Source identity: 45c038c07e12e6780416c9a3833873518354213a1c976dcae38bd54077894c80
+# Source identity: 7b8440c54b5c4fada352158a820009762fd64568b87d27d147a47f19f6e4ee60
 # Traceability, not execution order. Requirement and behavior sets are collapsed by their exact accountable Module; arrows summarize the selected authored relationships. Dashed Modules provide contract context without receiving behavior allocations. The traceability details and source links below retain the selected entities and their authored basis.
 vars: {d2-config: {layout-engine: elk}}
 direction: down
@@ -26,6 +26,25 @@ scenario -> requirements: "informs" {
   style.fill: "#FFFFFF"
   style.font-size: 13
 }
+m_4d4f442d303031616c6c6f63617465645f726571756972656d656e7473: "1 allocated requirement" {
+  link: "#scenario/SCN-019"
+  tooltip: "Preserve immutable baseline content with attributable custody (AR-071)"
+  style.fill: "#FFF5DB"
+  style.stroke: "#7C8FA9"
+  style.font-color: "#23334A"
+  style.font-size: 17
+  style.border-radius: 6
+}
+requirements -> m_4d4f442d303031616c6c6f63617465645f726571756972656d656e7473: "derives" {
+  style.stroke: "#667A96"
+  style.fill: "#FFFFFF"
+  style.font-size: 13
+}
+m_4d4f442d303031616c6c6f63617465645f726571756972656d656e7473 -> m_4d4f442d303031: "allocated to" {
+  style.stroke: "#667A96"
+  style.fill: "#FFFFFF"
+  style.font-size: 13
+}
 m_4d4f442d30303566756e6374696f6e73: "1 Function" {
   link: "#scenario/SCN-019"
   tooltip: "Establish and inspect retained engineering baselines (FUNC-020)"
@@ -45,6 +64,34 @@ m_4d4f442d30303566756e6374696f6e73 -> m_4d4f442d303035: "allocated to" {
   style.fill: "#FFFFFF"
   style.font-size: 13
 }
+m_4d4f442d303035616c6c6f63617465645f726571756972656d656e7473: "1 allocated requirement" {
+  link: "#scenario/SCN-019"
+  tooltip: "Establish baselines from confirmed coherent retained scope (AR-070)"
+  style.fill: "#FFF5DB"
+  style.stroke: "#7C8FA9"
+  style.font-color: "#23334A"
+  style.font-size: 17
+  style.border-radius: 6
+}
+requirements -> m_4d4f442d303035616c6c6f63617465645f726571756972656d656e7473: "derives" {
+  style.stroke: "#667A96"
+  style.fill: "#FFFFFF"
+  style.font-size: 13
+}
+m_4d4f442d303035616c6c6f63617465645f726571756972656d656e7473 -> m_4d4f442d303035: "allocated to" {
+  style.stroke: "#667A96"
+  style.fill: "#FFFFFF"
+  style.font-size: 13
+}
+m_4d4f442d303031: "Definition storage" {
+  link: "#module/MOD-001"
+  tooltip: "Definition storage (MOD-001)"
+  style.fill: "#ECF3FF"
+  style.stroke: "#7C8FA9"
+  style.font-color: "#23334A"
+  style.font-size: 17
+  style.border-radius: 6
+}
 m_4d4f442d303035: "Model baselines" {
   link: "#module/MOD-005"
   tooltip: "Model baselines (MOD-005)"
@@ -53,6 +100,16 @@ m_4d4f442d303035: "Model baselines" {
   style.font-color: "#23334A"
   style.font-size: 17
   style.border-radius: 6
+}
+m_4d4f442d303036: "Change control" {
+  link: "#module/MOD-006"
+  tooltip: "Change control (MOD-006)"
+  style.fill: "#F3F6FA"
+  style.stroke: "#7C8FA9"
+  style.font-color: "#23334A"
+  style.font-size: 17
+  style.border-radius: 6
+  style.stroke-dash: 3
 }
 m_4d4f442d303136: "Project model" {
   link: "#module/MOD-016"
@@ -73,12 +130,50 @@ m_49462d303037: "Engineering state content\nand interpretation" {
   style.font-size: 17
   style.border-radius: 6
 }
+m_49462d303135: "Engineering baseline content\ncustody" {
+  link: "#interface/IF-015"
+  tooltip: "Engineering baseline content custody (IF-015)"
+  style.fill: "#E9F4EE"
+  style.stroke: "#7C8FA9"
+  style.font-color: "#23334A"
+  style.font-size: 17
+  style.border-radius: 6
+}
+m_49462d303136: "Controlled state preparation" {
+  link: "#interface/IF-016"
+  tooltip: "Controlled state preparation (IF-016)"
+  style.fill: "#E9F4EE"
+  style.stroke: "#7C8FA9"
+  style.font-color: "#23334A"
+  style.font-size: 17
+  style.border-radius: 6
+}
 m_4d4f442d303035 -> m_49462d303037: "consumes" {
   style.stroke: "#667A96"
   style.fill: "#FFFFFF"
   style.font-size: 13
 }
+m_4d4f442d303035 -> m_49462d303135: "consumes" {
+  style.stroke: "#667A96"
+  style.fill: "#FFFFFF"
+  style.font-size: 13
+}
+m_4d4f442d303035 -> m_49462d303136: "consumes" {
+  style.stroke: "#667A96"
+  style.fill: "#FFFFFF"
+  style.font-size: 13
+}
 m_4d4f442d303136 -> m_49462d303037: "provides" {
+  style.stroke: "#667A96"
+  style.fill: "#FFFFFF"
+  style.font-size: 13
+}
+m_4d4f442d303136 -> m_49462d303135: "provides" {
+  style.stroke: "#667A96"
+  style.fill: "#FFFFFF"
+  style.font-size: 13
+}
+m_4d4f442d303036 -> m_49462d303136: "provides" {
   style.stroke: "#667A96"
   style.fill: "#FFFFFF"
   style.font-size: 13

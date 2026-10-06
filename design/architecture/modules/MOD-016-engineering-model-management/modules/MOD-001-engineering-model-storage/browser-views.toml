@@ -1,0 +1,22 @@
+# Presentation registration; owning behavior remains in README.md.
+version = 1
+
+[[topics]]
+id = "retain-current-knowledge"
+title = "Retain current engineering knowledge"
+view = "process"
+kind = "sequence"
+qualification = "proposed"
+source = "README.md"
+anchor = "retain-current-knowledge"
+description = "Confirm exact candidate retention under model custody; preserve durable unresolved effects across interrupted multi-member writes."
+
+[[topics]]
+id = "read-current-knowledge"
+title = "Read definitions and applicable rationale"
+view = "process"
+kind = "sequence"
+qualification = "proposed"
+source = "README.md"
+anchor = "read-current-knowledge"
+description = "Bind identity, definition, references and rationale to one captured state; keep completeness and applicability gaps distinct without replaying history."

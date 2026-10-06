@@ -1,0 +1,61 @@
+{
+  "id": "AR-061",
+  "type": "allocated-requirement",
+  "title": "Compose witnessed potential impact with traversal limits",
+  "status": "draft",
+  "statement": "The Views and traceability Module shall compose relationship-based potential impact from an exact changed-subject and influence selection, retaining a supporting typed witness for every candidate and preserving traversal limitations without asserting actual consequences.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Derived responsibility or impact results can hide missing scope and be mistaken for stronger engineering conclusions.",
+      "desired_outcome": "Compose witnessed potential impact with traversal limits."
+    },
+    "why": {
+      "rationale": "SR-011 requires an accountable result owner preserving its exact finding and completeness semantics."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineering authors, architects and reviewers",
+        "Maintainers of MOD-004"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "A participant requests the corresponding analysis in one selected model state."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "MOD-004 logical analysis boundary using IF-001/IF-002 and its internal traversal contribution."
+      ]
+    },
+    "how": {
+      "approach": "Bind explicit request and source identities, derive attributable results, preserve unknown or limited scope, and leave stronger judgments with their owners."
+    },
+    "how_much": {
+      "scope": "The MOD-004 result obligation for all five SR-011 criteria; content custody, profile interpretation and general traversal retain existing owners and ARs."
+    }
+  },
+  "acceptance_criteria": [
+    "For every reported non-seed candidate, retain an identified changed subject and at least one finite typed path with original and traversal orientation, intermediate identities, provenance and exact selected-state basis.",
+    "Apply the selected relationship-type and orientation pairs at every step of one combined influence graph; reject supplied traversal support with mismatched state, profile, inventory, changed subjects, influence or limits rather than broaden or reinterpret it.",
+    "Keep changed subjects separate from impact candidates and report no additional relationship-based impact only after complete exploration, explicitly limited to the selected influence scope without denying unrecorded or real-world effects.",
+    "Carry explicit depth/count bounds and omitted frontier, incomplete acquisition/interpretation/traversal or witness composition, interruption and resource exhaustion into the result; missing/ambiguous starts and empty partial results cannot become complete no-impact.",
+    "Label every candidate as potential impact for engineering review; reached implementation or evidence does not by itself establish behavior change, invalidation, required action, permission or satisfaction."
+  ],
+  "assumptions": [],
+  "constraints": [
+    "Proposed architecture only; no runtime availability, implementation or verification claim."
+  ],
+  "allocated_to": "MOD-004",
+  "constrains": [
+    "FUNC-011"
+  ],
+  "sources": [
+    {
+      "source": "SRC-ALLOCATION-IMPACT-DESIGN",
+      "locator": "SR-010; SR-011; SCN-009; SCN-010",
+      "basis": "Derive rule-bound allocation assessment and scope-bound potential-impact result contracts with distinct MOD-004 obligations. Reuse content, interpretation and traversal ownership; proposed Design only."
+    }
+  ]
+}

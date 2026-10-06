@@ -48,7 +48,8 @@
     "The authority conclusion is bound to the assessed action, subject, policy, grant and conditions. A relevant change requires reassessment; the conclusion is not a transferable permission token for other subjects.",
     "An applicable authorization and adequate evidence are independent prerequisites where the governing policy requires both. IF-010 supplies evidence-support analysis without granting authority, and IF-009 supplies no release qualification or satisfaction claim.",
     "The consumer retains its actual execution safeguards and outcome responsibility. This contract neither changes immutable candidate identity nor authorizes overwrite, blind retry, an unsupported release path or a special release relabeled as routine.",
-    "For MOD-012 workflow consumption, assess authority for the exact requested slice or continuation. Removing milestone review gates does not widen authorization; valid standing authority need not be re-requested for each milestone."
+    "For MOD-012 workflow consumption, assess authority for the exact requested slice or continuation. Removing milestone review gates does not widen authorization; valid standing authority need not be re-requested for each milestone.",
+    "For resumed work, MOD-006 README.md binds the assessment to current applicable instruction precedence and attributable grants; the work owner rechecks material action conditions before the effect. The assessment reserves no authority and does not permit blind retry of an uncertain prior effect."
   ],
   "compatibility_rules": [
     "The selected project policy and existing Constitution retain authority ordering and decision ownership. This draft introduces no new approval workflow, permission persistence format or executable authorization service.",
@@ -75,6 +76,11 @@
       "source": "SRC-WORKFLOW-DESIGN",
       "locator": "IF-009",
       "basis": "Draft integrated design from the accepted requirement-first basis. This defines target responsibility and cooperation, not installed capability, design approval, runtime evidence or SQLite adoption."
+    },
+    {
+      "source": "SRC-RESUMPTION-AUTHORITY-DESIGN",
+      "locator": "SR-006/007; SCN-023/024; FUNC-025/026",
+      "basis": "Derive current handoff interpretation and action-bound authority through existing IF-011/009, with explicit participant recording, selective retention and one MOD-006 owner. Proposed Design only; no runtime adoption, execution or satisfaction claim."
     }
   ]
 }

@@ -265,8 +265,10 @@ def development_tables(model, marker, label):
     return result
 
 
-def build_model(model):
+def build_model(model, *, system_requirement_view=False):
     """Return lossless source records plus explicitly derived browser indexes."""
+    if type(system_requirement_view) is not bool:
+        raise ValueError("system_requirement_view must be a boolean")
     modules = {}
     for record in model.of_type("module"):
         identity = record.id
@@ -336,6 +338,7 @@ def build_model(model):
     ]
     return {
         "format_version": 1,
+        "system_requirement_view": system_requirement_view,
         "source_digest": model.digest,
         "records": {identity: {"path": record.path.as_posix(), "data": record.data}
                     for identity, record in sorted(model.records.items())},

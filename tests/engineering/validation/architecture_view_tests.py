@@ -695,15 +695,15 @@ class ArchitectureViewProjectionTests(unittest.TestCase):
         self.assertEqual(parent["functions"], [])
         self.assertEqual(parent["allocated_requirements"], [])
         self.assertEqual(parent["subtree_functions"],
-                         [f"FUNC-{i:03}" for i in range(40, 56)] + ["FUNC-074", "FUNC-075", "FUNC-076"])
+                         [f"FUNC-{i:03}" for i in range(40, 56)] + ["FUNC-074", "FUNC-075", "FUNC-076", "FUNC-077"])
         self.assertEqual(parent["subtree_allocated_requirements"],
                          [f"AR-{i:03}" for i in range(11, 29)] +
-                         ["AR-030", "AR-032", "AR-034", "AR-037", "AR-039", "AR-040", "AR-051", "AR-052", "AR-053", "AR-054", "AR-055"])
+                         ["AR-030", "AR-032", "AR-034", "AR-037", "AR-039", "AR-040", "AR-051", "AR-052", "AR-053", "AR-054", "AR-055", "AR-086", "AR-087"])
         self.assertIn("FUNC-046", projected["modules"]["MOD-011"]["functions"])
         self.assertIn("FUNC-046", parent["subtree_functions"])
-        for identity in ("FUNC-074", "FUNC-075", "FUNC-076"):
+        for identity in ("FUNC-074", "FUNC-075", "FUNC-076", "FUNC-077"):
             self.assertEqual([owner for owner, item in projected["modules"].items() if identity in item["functions"]], ["MOD-011"])
-        for identity in ("AR-052", "AR-053", "AR-054", "AR-055"):
+        for identity in ("AR-052", "AR-053", "AR-054", "AR-055", "AR-086"):
             self.assertEqual([owner for owner, item in projected["modules"].items() if identity in item["allocated_requirements"]], ["MOD-011"])
         self.assertEqual(snapshot(root), before)
 
@@ -711,12 +711,12 @@ class ArchitectureViewProjectionTests(unittest.TestCase):
         projected = self.projected(self.fixture())
         collaboration = projected["overview_collaborations"]
         self.assertEqual({item["interface"] for item in collaboration},
-                         {"IF-006", "IF-007", "IF-008", "IF-009", "IF-010", "IF-011", "IF-012"})
-        self.assertEqual(len(collaboration), 9)
+                         {"IF-006", "IF-007", "IF-008", "IF-009", "IF-010", "IF-011", "IF-012", "IF-013", "IF-014", "IF-015", "IF-016", "IF-017"})
+        self.assertEqual(len(collaboration), 15)
         self.assertEqual({(item["interface"], item["consumer"], item["provider"])
                           for item in collaboration if item["consumer"] == "MOD-012"},
                          {(identity, "MOD-012", "MOD-017")
-                          for identity in ("IF-008", "IF-009", "IF-010", "IF-011")})
+                          for identity in ("IF-008", "IF-009", "IF-010", "IF-011", "IF-014", "IF-017")} | {("IF-016", "MOD-012", "MOD-006")})
         self.assertTrue(all(item["consumer_boundary"] in projected["roots"] and
                             item["provider_boundary"] in projected["roots"] for item in collaboration))
         self.assertEqual(projected["interfaces"]["IF-004"]["provider"], "MOD-018")
@@ -740,13 +740,12 @@ class ArchitectureViewProjectionTests(unittest.TestCase):
         self.write_record(path, module)
         projected = self.projected(root)
         self.assertIn(limit, projected["records"]["MOD-017"]["data"]["design_limits"])
-        for identity in ("MOD-005", "MOD-009"):
-            self.assertEqual(projected["modules"][identity]["allocated_requirements"], [])
-            self.assertEqual(projected["modules"][identity]["subtree_allocated_requirements"], [])
         for identity, allocated in {
-            "MOD-006": ["AR-035", "AR-038"],
-            "MOD-007": ["AR-031", "AR-036"],
-            "MOD-008": ["AR-029", "AR-033"],
+            "MOD-005": ["AR-070", "AR-072", "AR-073"],
+            "MOD-006": ["AR-035", "AR-038", "AR-074", "AR-075", "AR-077", "AR-078"],
+            "MOD-007": ["AR-031", "AR-036", "AR-062", "AR-063", "AR-064", "AR-065", "AR-066"],
+            "MOD-008": ["AR-029", "AR-033", "AR-079", "AR-080", "AR-081"],
+            "MOD-009": ["AR-082", "AR-083", "AR-084", "AR-085"],
             "MOD-012": ["AR-030", "AR-032", "AR-034", "AR-037", "AR-039"],
             "MOD-013": ["AR-041", "AR-049"],
             "MOD-015": ["AR-050"],
@@ -756,7 +755,7 @@ class ArchitectureViewProjectionTests(unittest.TestCase):
             self.assertEqual(projected["modules"][identity]["subtree_allocated_requirements"], allocated)
         self.assertEqual(projected["modules"]["MOD-017"]["allocated_requirements"], [])
         self.assertEqual(projected["modules"]["MOD-017"]["subtree_allocated_requirements"],
-                         ["AR-029", "AR-031", "AR-033", "AR-035", "AR-036", "AR-038"])
+                         ["AR-029", "AR-031", "AR-033", "AR-035", "AR-036", "AR-038", "AR-062", "AR-063", "AR-064", "AR-065", "AR-066", "AR-070", "AR-072", "AR-073", "AR-074", "AR-075", "AR-077", "AR-078", "AR-079", "AR-080", "AR-081", "AR-082", "AR-083", "AR-084", "AR-085"])
         self.assertEqual(projected["records"]["MOD-017"]["data"]["owned_state"], [])
 
     def test_deeper_hierarchy_and_direct_parent_allocation_are_supported(self):
@@ -848,7 +847,8 @@ class ArchitectureViewProjectionTests(unittest.TestCase):
         projected = self.projected(root)
         slices = {item["scenario"]: item for item in projected["views"]["scenarios"]["scenarios"]}
         expected = {
-            "SCN-019": ({"IF-007"}, {"IF-007": "MOD-016"}, {"MOD-005"}),
+            "SCN-019": ({"IF-007", "IF-015", "IF-016"},
+                        {"IF-007": "MOD-016", "IF-015": "MOD-016", "IF-016": "MOD-006"}, {"MOD-001", "MOD-005"}),
             "SCN-046": ({"IF-003", "IF-004"}, {"IF-004": "MOD-018"}, {"MOD-010", "MOD-011"}),
             "SCN-047": ({"IF-003", "IF-004"}, {"IF-004": "MOD-018"}, {"MOD-010", "MOD-011"}),
             "SCN-053": ({"IF-008"}, {"IF-008": "MOD-017"}, {"MOD-008", "MOD-012"}),

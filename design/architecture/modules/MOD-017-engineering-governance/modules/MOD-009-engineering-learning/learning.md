@@ -110,3 +110,7 @@ Existing [Learn guidance tests](../../../../../../tests/skill/skill_learn_guidan
 ## Quality and limits
 
 Review outcomes against actual inputs, authority and observable effects; structural checks alone do not establish adequacy. Preserve historical subjects, existing public vocabulary and required resource behavior. Unresolved material authority or evidence gaps stop dependent claims rather than inventing a successful outcome.
+
+## IR-007 composition
+
+[Supported lessons and observed improvement](improvement.md) defines the broader lesson/applicability/proposal/effect cooperation through IF-017. This extends target Design while preserving the existing specialist operations, contributor confirmation, topic/session custody and narrow route-result boundary above. A proposed semantic account is neither a performed Learn session nor an adoption or effectiveness result.

@@ -7,7 +7,8 @@
   "responsibilities": [
     "Characterize reusable lessons with their supporting findings and limits.",
     "Select applicable lessons for planned work and formulate accountable improvements.",
-    "Assess observed improvement effects, including recurrence or unresolved effectiveness."
+    "Assess observed improvement effects, including recurrence or unresolved effectiveness.",
+    "Contribute lesson preparation, context selection, accountable proposals and effect comparison to MOD-017 IF-017 under improvement.md; preserve existing Learning confirmation/custody and separate generic assurance/adoption."
   ],
   "owned_state": [
     "Lesson definitions, applicability context, improvement proposals, and effect-assessment context; controlled adoption and evidence judgments remain separately owned."
@@ -23,14 +24,19 @@
   "provides": [],
   "consumes": [],
   "design_limits": [
-    "This is a proposed responsibility boundary only. IR-007 ARs and finding, assurance, and change-control interfaces remain deferred.",
-    "No learning policy or implementation is adopted merely by recording this draft boundary."
+    "improvement.md supplies IR-007 AR-082–085 and IF-017 cooperation with existing change-control, assurance and selected retention boundaries.",
+    "Participant observations, effectiveness, installed learning guidance and actual adoption/retention require their own evidence; this Design performs none."
   ],
   "sources": [
     {
       "source": "SRC-ARCHITECTURE-PILOT",
       "locator": "MOD-009",
       "basis": "Analyst-proposed responsibility boundary derived from the existing Function landscape. Assigned Functions remain authoritative for behavior; this record describes target architecture, not observed implementation."
+    },
+    {
+      "source": "SRC-LESSON-IMPROVEMENT-DESIGN",
+      "locator": "IR-007; SR-035–038; SCN-035–039",
+      "basis": "Refine supported lesson characterization, bounded contextual use, accountable proposals and opportunity-based effect assessment through MOD-009 and parent IF-017. Preserve existing Learn confirmation/custody/route boundaries and separate controlled adoption, assurance and retention. Proposed Design only."
     }
   ]
 }

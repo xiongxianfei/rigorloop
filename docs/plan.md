@@ -35,6 +35,10 @@ Current blockers are not recorded in this index.
 
 ## Current plan references
 
+- [Requirement evaluation browser pilot](plans/2026-10-05-requirement-evaluation-pilot.md) — owning local Change `2026-10-04-system-requirements-view-design`.
+
+- [AR assessment browser pilot](plans/2026-10-05-ar-assessment-browser-pilot.md) — owning local Change `2026-10-04-system-requirements-view-design`.
+
 - [Canonical engineering definition ownership](plans/2026-10-04-canonical-design-ownership.md) — owning local Change `2026-10-04-consolidate-engineering-design`.
 
 - [Post-adoption guidance and release audit input](plans/2026-10-04-post-adoption-release-audit.md) — owning local Change `2026-10-04-post-adoption-release-audit`.

@@ -1,0 +1,63 @@
+{
+  "id": "AR-078",
+  "type": "allocated-requirement",
+  "title": "Assess exact action authority without redundant confirmation",
+  "status": "draft",
+  "statement": "The MOD-006 responsibility shall assess exact action authority without redundant confirmation within the selected project and Change scope.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Resumption can otherwise invent missing context or authority and lose obligations still relied upon.",
+      "desired_outcome": "Assess exact action authority without redundant confirmation."
+    },
+    "why": {
+      "rationale": "SR-007 requires a complete accountable contribution beyond general workflow progression or adoption."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineers resuming work",
+        "Project decision owners",
+        "MOD-006 maintainers"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "A participant resumes or progresses governed work and prepares its next handoff."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "The selected project, Change, adopted contract and exact action context."
+      ]
+    },
+    "how": {
+      "approach": "Apply the MOD-006 README.md handoff and authority collaboration through IF-011/009 with explicit participant-mediated IF-004 recording."
+    },
+    "how_much": {
+      "scope": "Semantic resumption or authority interpretation. Operational maintenance execution, runtime adoption and overall IR-003 satisfaction remain separate."
+    }
+  },
+  "acceptance_criteria": [
+    "Assess an identified action, subject/state, participant, scope and conditions through IF-009 against attributable applicable policy, decision owner and grant or mandate; expose the exact unmet reserved boundary.",
+    "Recognize valid existing grants and bounded standing delegation across covered steps and resumed sessions without requesting confirmation solely because the session changed.",
+    "Identify the governing human boundaries for scope expansion, policy changes, reserved project tradeoffs and release decisions; require explicit applicable authorization for external mutation and destruction.",
+    "Withhold actions affected by revocation, supersession, completion, exceeded scope or failed conditions while retaining separately covered scope; higher authority and nondelegable decisions cannot be bypassed.",
+    "Keep favorable reviews, successful checks, routing suggestions and grants for other subjects separate from permission; authorization does not waive required independent assessment.",
+    "Require consumer rechecking of material authority conditions before a governed effect and reconciliation of uncertain prior effects before retry, preserving action-specific safeguards without treating an assessment as a reservation or new grant."
+  ],
+  "assumptions": [],
+  "constraints": [
+    "Proposed Design; no implementation, executed criterion verification or satisfaction claim."
+  ],
+  "allocated_to": "MOD-006",
+  "constrains": [
+    "FUNC-026"
+  ],
+  "sources": [
+    {
+      "source": "SRC-RESUMPTION-AUTHORITY-DESIGN",
+      "locator": "SR-006/007; SCN-023/024; FUNC-025/026",
+      "basis": "Derive current handoff interpretation and action-bound authority through existing IF-011/009, with explicit participant recording, selective retention and one MOD-006 owner. Proposed Design only; no runtime adoption, execution or satisfaction claim."
+    }
+  ]
+}

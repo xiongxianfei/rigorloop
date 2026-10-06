@@ -1,0 +1,63 @@
+{
+  "id": "AR-065",
+  "type": "allocated-requirement",
+  "title": "Prepare accountable judgments from explicit criterion coverage",
+  "status": "draft",
+  "statement": "The Review and verification Module shall compose per-criterion support and contradictions with an assessor-supplied scoped judgment, withholding unsupported favorable reliance while preserving accountable meaning through recording.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Assurance preparation and retention can conflate planned methods, actual observations, semantic judgment and current reliance.",
+      "desired_outcome": "Prepare accountable judgments from explicit criterion coverage."
+    },
+    "why": {
+      "rationale": "SR-028 needs accountable assurance content and failure semantics in MOD-007."
+    },
+    "who": {
+      "stakeholders": [
+        "Verification engineers and independent reviewers",
+        "Project decision owners",
+        "MOD-007 and MOD-012 maintainers"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "An assessor prepares or reassesses assurance content for a declared engineering claim."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "MOD-007 contribution to MOD-017 IF-014; guided recording through MOD-012 and existing IF-004/003."
+      ]
+    },
+    "how": {
+      "approach": "Apply assurance-content.md to exact supplied bases, preserve gaps and actual actor decisions, then confirm selected retention separately."
+    },
+    "how_much": {
+      "scope": "All parent SR-028 criteria within the declared finite claim; operational persistence and execution authority retain their existing owners."
+    }
+  },
+  "acceptance_criteria": [
+    "Account for every included criterion with applicable observations, contrary support, unresolved gaps and the assessor's semantic reasoning against an exact subject and criterion basis.",
+    "Leave claims with missing required support or unresolved material contradiction unestablished; a narrower conclusion requires explicit assessor-selected included and excluded scope.",
+    "Do not turn mechanically complete references, accepted exceptions or tradeoffs into observed satisfaction or action authority.",
+    "Identify gate purpose, actual contributors, assessor and required independence basis; requirement reuse can be accepted before architecture completion and Design review assesses the later completeness.",
+    "Preserve actual reviewer attribution, relied-on support and unresolved obligations through preparation and retention; work updates and successful storage never author or renew approval."
+  ],
+  "assumptions": [],
+  "constraints": [
+    "Target Design; no implemented automation, executed verification or requirement satisfaction is asserted."
+  ],
+  "allocated_to": "MOD-007",
+  "constrains": [
+    "FUNC-030",
+    "FUNC-031"
+  ],
+  "sources": [
+    {
+      "source": "SRC-ASSURANCE-CONTENT-DESIGN",
+      "locator": "IR-004; SR-025–029; SCN-026–029",
+      "basis": "Derive assessor-assisted assurance preparation, explicit retention cooperation and scoped reliance through MOD-007 and IF-014. Preserve actual judgment, command and persistence ownership; target Design only."
+    }
+  ]
+}

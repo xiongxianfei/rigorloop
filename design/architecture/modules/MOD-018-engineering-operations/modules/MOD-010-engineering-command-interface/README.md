@@ -382,6 +382,8 @@ Capabilities also reports `store` as `{state, revision, observation, database_sc
 
 Maintenance uses the common result envelope with interface store-maintenance-v1 and optional `store_revision` and `maintenance` fields. maintenance reports `{operation_id, phase, output, retained_prior, scope, integrity, limitations}` with unavailable values null; phases are prepared, activated, complete or unavailable, never inferred approval. Backup committed=true means a complete backup output was durably published; restore/migrate committed=true means replacement activation was established. Failure after either boundary preserves that truth, and uncertain outcomes use committed=null. A failed partial replacement remains fenced and recovery-needed, not an empty ready store. Output failure never repeats replacement automatically. [Records](../MOD-011-operational-record-persistence/README.md#database-schema-backup-and-migration) owns format, exclusion, integrity, staged activation and recovery behavior.
 
+The [owning maintenance cooperation](../MOD-011-operational-record-persistence/README.md#maintenance-cooperation-and-preserved-scope) composes these existing operations for SR-074–077. Transfer uses backup plus same-project restoration into an empty operational destination; occupied history is a conflict, not an implicit merge. Migration requires source-owner quiescence through activation, verified originals and explicit reconciliation of current consumers. These are storage and participant responsibilities, not additional request fields or automatic authority supplied by parsing.
+
 ## Supporting commands
 
 init AGENT delegates to IF-006 and the existing [Installation contract](../../../MOD-019-product-delivery/modules/MOD-014-verified-skill-installation/installation.md). --force and --dry-run retain their qualified meanings. A successful installation does not activate workflow policy.
@@ -395,6 +397,8 @@ logs returns the configured diagnostic location; --invocation ID selects bounded
 The [public result schema](#public-request-and-result-schema) and [outcome mapping](#outcome-mapping) own fields, diagnostics and exit behavior. A recovery-needed result requests investigation or qualified maintenance; it is not an instruction to invoke the withdrawn change recover draft and carries no invented record-transaction repair token.
 
 Updates are atomic per Change and preserve omitted neighbors. A stale revision requires rereading and reconciling intent. No automatic merge, semantic replay or permanent previous-revision archive is required. Store maintenance uses its distinct whole-store expectation and activation boundary. Artifact publication may precede record commit; an orphan does not imply a saved record. Read limits are explicit. Reads never initialize, migrate, compact or replay engineering state; SQLite may perform database-internal recovery when opening the store.
+
+For an ordinary committed task, [MOD-011's final basis observation](../MOD-011-operational-record-persistence/README.md#atomic-publication-and-recovery) can report source drift or an unestablished comparison after commitment. Preserve saved, committed=true, the committed revision and exit 0, with source-conflict in observations and no invented precommit error. The bounded observation directs current inspection and renewed applicability assessment; it does not declare a new judgment or authorize replay. Prepare room for that mandatory summary before commit, reducing optional detail as needed. Human and JSON results retain the same commitment and limitation; unavailable output delivery follows the existing output-failed rule.
 
 ## Disposition of earlier drafts
 
@@ -439,9 +443,9 @@ Results identify `browser-v1`, operation, project/profile, captured input identi
 
 The exact machine serialization and platform-specific interruption mechanisms must conform to this semantic contract when implemented; this does not add a schema to the currently supported CLI. Evidence must cover incompatible dependencies before writes, absent/stale expected identity, safe output boundaries, check-mode nonmutation and truthful post-commit failure. MOD-004 owns output recovery, MOD-010 preserves its outcome; neither owner silently repairs source definitions.
 
-### Deferred cross-Change history query
+### Proposed subject-history query
 
-SR-078 / FUNC-077 remains a draft cross-Change subject-history requirement. The selected v2/v4 task contract implements current explicitly selected Change context and maintenance, not this history lookup or its continuation protocol. Define and review its bounded public query and persistence allocation before implementing or advertising it; no current capability or adoption satisfaction claim includes SR-078.
+[The shared history contract](../MOD-011-operational-record-persistence/history-selection.md) defines AR-087 admission, literal filters, bounded output and failure presentation through IF-004/003. This separate proposed operation does not extend the current command catalogue, targeted-recording-v2 fields or ordinary no-cursor results. MOD-011 owns identity association, state and selection; MOD-010 preserves their exact outcomes.
 
 ## Supporting contracts
 

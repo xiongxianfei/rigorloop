@@ -161,8 +161,8 @@
       "consequences": [
         "The relation guides denotes an agent-facing procedure for the stated Function contribution, not a service invocation, runtime implementation, or proven conformance. Features and accountable Modules are derived from the existing Function relationships.",
         "FUNC-050, FUNC-051, and FUNC-052 define the common capability-selection, invocation, and resource boundary across this inventory. Entry mappings emphasize the selected activity and distinguish partial common correspondence from specialist coverage; they are not exhaustive instruction or call graphs.",
-        "Current source contracts retain every detailed clause. Published Design/proposal/plan outputs and customer-project adoption remain unchanged; a mapping to common guidance does not adopt REM entity authoring.",
-        "All nineteen entries have an explicit mapping disposition, but several expose only common specialist guidance. Their linked specialist procedures require further system-model analysis before complete Function coverage can be claimed."
+        "Current specialist contracts retain their detailed clauses and output boundaries. Requirement Analysis, System Design and Architecture Design are distinct current source entrypoints; retired proposal-first and combined-design routes remain historical. A common mapping does not adopt a customer workflow or certify installed output support.",
+        "All twenty current source entries have an explicit mapping disposition. Common guidance contributions and linked specialist contracts remain distinguishable; source correspondence alone does not establish complete specialist runtime realization."
       ],
       "revisit_when": [
         "An adopted change alters a skill's public purpose, canonical name, source contract, or output scope.",
@@ -551,8 +551,8 @@
       "consequences": [
         "Reconcile route, plan, delivery-review, implement, code-review and verify plus conditional resources, examples and templates as one coherent inventory.",
         "Keep methods canonical in rem/; distribute generated versioned resources for selective loading rather than independently maintaining duplicate manuals.",
-        "Proposed names are target entrypoints, not additions to the observed public catalog.",
-        "The successor MOD-010/011 contracts define proposed v2/v4 operations and capability checks. Skills must not invoke them before actual implementation and adapter availability.",
+        "The observed source catalog contains these replacement entrypoints. This architectural explanation preserves their distinct ownership without establishing installed availability, customer adoption or executed behavior.",
+        "MOD-010/011 own the current ordinary v2/v4 task contracts. Skills check the executing package and required backend before governed use; separately proposed browser/history capabilities are not inferred from the ordinary interface or this catalog.",
         "Skills consume supported public task schemas, opaque revisions and code/status/committed outcomes. They supply actor-owned meaning, reread after conflict or uncertain response, and never use raw SQL, table names or runtime coordination files. Saving an assessment neither conducts review nor completes the Change."
       ],
       "revisit_when": [
@@ -843,7 +843,7 @@
             }
           ],
           "limits": [
-            "Only common specialist guidance is mapped. Vision artifacts, ownership, linked surface updates, and write/recovery rules remain in VIS-SR-01\u201303; no dedicated vision-definition Function or automatic IR conversion is established."
+            "Only common specialist guidance is mapped. Vision artifacts, ownership, linked surface updates, and write/recovery rules remain in VIS-SR-01–03; no dedicated vision-definition Function or automatic IR conversion is established."
           ]
         },
         {
@@ -859,7 +859,7 @@
             }
           ],
           "limits": [
-            "Only common specialist guidance is mapped. GOV-SR-01\u201303 retain principles structure, authority, and mutation rules; an authored constitution does not automatically become the REM metamodel or grant implementation permission."
+            "Only common specialist guidance is mapped. GOV-SR-01–03 retain principles structure, authority, and mutation rules; an authored constitution does not automatically become the REM metamodel or grant implementation permission."
           ]
         },
         {
@@ -875,7 +875,7 @@
             }
           ],
           "limits": [
-            "Only common specialist guidance is mapped. MAP-SR-01\u201303 retain exact map/area/write behavior; an observed orientation map does not define proposed Module allocation or an execution backlog."
+            "Only common specialist guidance is mapped. MAP-SR-01–03 retain exact map/area/write behavior; an observed orientation map does not define proposed Module allocation or an execution backlog."
           ]
         },
         {
@@ -891,7 +891,7 @@
             }
           ],
           "limits": [
-            "Only common specialist guidance is mapped. EXP-SR-01\u201303 retain the option-space method and outputs; exploration does not select implementation authority or replace a settled proposal."
+            "Only common specialist guidance is mapped. EXP-SR-01–03 retain the option-space method and outputs; exploration does not select implementation authority or replace a settled proposal."
           ]
         },
         {
@@ -907,7 +907,7 @@
             }
           ],
           "limits": [
-            "Only common specialist guidance is mapped. RES-SR-01\u201303 retain research methods and artifacts; factual research is not automatically requirement verification or a REM Evidence record."
+            "Only common specialist guidance is mapped. RES-SR-01–03 retain research methods and artifacts; factual research is not automatically requirement verification or a REM Evidence record."
           ]
         },
         {
@@ -965,7 +965,7 @@
             }
           ],
           "limits": [
-            "HAND-SR-01\u201304 retain exact Git/PR relationships, prepared payload, hosted observations, partial effects, and retry boundaries. The REM model does not yet define a dedicated pull-request publication Function.",
+            "HAND-SR-01–04 retain exact Git/PR relationships, prepared payload, hosted observations, partial effects, and retry boundaries. The REM model does not yet define a dedicated pull-request publication Function.",
             "PR handoff is distinct from product-release publication: this mapping does not bind pr to FUNC-070 or grant merge, force-push, or release authority."
           ]
         },
@@ -987,7 +987,7 @@
             }
           ],
           "limits": [
-            "LRN-SR-01\u201303 retain session/topic identities, contributor confirmation, no-clobber writes, and exact route-result fields. Classification or routing does not authorize destination changes.",
+            "LRN-SR-01–03 retain session/topic identities, contributor confirmation, no-clobber writes, and exact route-result fields. Classification or routing does not authorize destination changes.",
             "FUNC-036, FUNC-037, and FUNC-038 remain related learning-model behavior; this source inspection does not establish that learn itself implements lesson-selection, complete improvement proposals, or adopted-improvement effectiveness assessment."
           ]
         }
@@ -996,6 +996,6 @@
   ],
   "deferred": [
     "Complete clause-by-clause specialist skill realization, package integrity, installed behavior, and current public-release qualification remain outside this source-inventory mapping.",
-    "Explicit REM adoption and remaining specialist cooperation Interfaces/ARs require their own analysis; the existing IF-008 contract covers only the adopted model-authoring branch."
+    "Complete runtime qualification of specialist guidance and customer-specific adoption remains separate. README.md defines the common invocation composition for SR-050–056 through existing owners; IF-008 remains limited to the adopted model-authoring branch, with other specialists governed by their own contracts."
   ]
 }

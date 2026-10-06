@@ -3,7 +3,7 @@
   "type": "interface",
   "title": "Applicable engineering authoring guidance",
   "status": "draft",
-  "description": "The Change and quality control contract for selecting and explaining canonical engineering authoring guidance within a declared adopted REM profile. Published capability guidance consumes this contract for the model-authoring branch of a bounded specialist activity; other specialist procedures retain their own owners and support boundaries.",
+  "description": "The Change and quality control contract for applicable canonical authoring guidance and prepared semantic task assessment within a declared adopted REM profile. MOD-008 supplies domain guidance; published procedure, generic assurance and retention retain their distinct owners.",
   "operations": [
     {
       "name": "select_applicable_authoring_guidance",
@@ -22,7 +22,8 @@
         "Keep the selected source version and applicability basis identifiable across human and agent presentations without changing the governing meaning.",
         "After a profile change, disclose previously used material that is incompatible, superseded, or unavailable instead of silently applying it or substituting a different version.",
         "For an activity outside the adopted REM model-authoring scope, explain that this contract is inapplicable and leave the selected specialist procedure with its existing owner.",
-        "Identify missing or conflicting guidance and its responsible owner. Selecting guidance neither interprets or migrates the engineering model nor establishes project adoption or permission to edit it."
+        "Identify missing or conflicting guidance and its responsible owner. Selecting guidance neither interprets or migrates the engineering model nor establishes project adoption or permission to edit it.",
+        "Use MOD-008 guidance.md to bind exact inspected source identities, relevant worked examples and applicability reasoning; incomplete examples or mixed source/profile bases remain explicit gaps."
       ],
       "failure_behavior": [
         {
@@ -67,20 +68,49 @@
           "outcome": "Explain the support or authority boundary and any available conceptual guidance. Leave the dependent action unperformed without reviving a retired operation, claiming format conformance, or deciding authority through guidance."
         }
       ]
+    },
+    {
+      "name": "prepare_or_compare_guidance_tasks",
+      "purpose": "Prepare an identified semantic task basis or compare supplied actual task observations without manufacturing successful performance.",
+      "inputs": [
+        "Requested preparation or comparison, participant group, selected activity/profile/source identities, prepared inputs and independently stated expected outcomes, required rule explanation, applicable checks and assistance conditions.",
+        "For comparison, exact prepared basis and actual output, explanation, check outcomes, used guidance, occurrence/provenance, help, ambiguities and interruptions."
+      ],
+      "preconditions": [],
+      "outputs": [
+        "Identified prepared task context or attributable task-specific outcome comparison, findings, assistance and unassessed/unsupported scope.",
+        "Exact content for separate assurance preparation and chosen retention, with missing semantic basis and all claim limits explicit."
+      ],
+      "behavior": [
+        "Apply MOD-008 guidance.md under FUNC-034 and AR-081; prepare expectations before task performance and retain the basis actually used.",
+        "Require expected semantic output, applicable passed checks and rule explanation from selected guidance before reporting success; distinguish unsuccessful content from missing or unperformed observations.",
+        "Keep participant groups, source versions, assistance, interrupted scope and changed expectations explicit; do not claim unassisted success or universal usability from bounded observations.",
+        "MOD-012 carries participant-supplied method/observations or assessor judgment through IF-014 and existing IF-004 where governed retention is selected. No implicit save, task execution or formal approval is supplied."
+      ],
+      "failure_behavior": [
+        {
+          "condition": "Participant, prepared expectation, source/profile basis or actual required observations cannot be established.",
+          "outcome": "Return the available attributable content and affected unassessed scope; no invented observation or success."
+        },
+        {
+          "condition": "The task requires an unsupported format, the basis changed, or assistance was undisclosed.",
+          "outcome": "Expose the limit and required reassessment; preserve earlier observations under their original basis and withhold dependent conformance or independent-completion claims."
+        }
+      ]
     }
   ],
   "consistency_rules": [
     "Guidance selection and explanation refer to the same applicable activity, profile, and identifiable canonical source versions. A changed or unresolved selection must remain visible rather than silently mixing incompatible rules.",
     "Human and agent presentations preserve the same governing meaning. Canonical rules remain at their owning sources; guidance does not create a competing policy copy or turn an example into authority.",
-    "An explanation is not artifact mutation, model interpretation or migration, adoption, an authority determination, independent assessment, or requirement satisfaction. Partial and blocked guidance must remain distinguishable from a complete usable specialist result.",
-    "The contract covers the adopted REM model-authoring alternative in SCN-053. It does not substitute a universal procedure for the full set of published specialist activities or establish successful capability execution.",
+    "A guidance explanation or task comparison is not artifact mutation, model interpretation/migration, adoption, an authority determination, formal independent assessment or requirement satisfaction. Partial, unsuccessful and unassessed task scope stays explicit.",
+    "Selection and explanation retain the adopted REM model-authoring alternative in SCN-053; task preparation/comparison additionally supports SCN-034. Neither substitutes a universal specialist procedure or establishes successful capability execution.",
     "For requirement-first consumption by MOD-012, canonical method selection distinguishes requirement validity, System Design completeness and architectural allocation; it supplies the three authoring methods without adding per-method approval gates."
   ],
   "compatibility_rules": [
     "The declared adopted profile and its canonical owners govern the supported activities, representations, rule vocabulary, and applicable versions. Unknown or incompatible context cannot be treated as a supported fallback.",
     "A published capability consumer must preserve source applicability, required rule coverage, privacy, stop conditions, and claim limits when composing the explanation into its own specialist output and handoff.",
     "This logical contract introduces no agent runtime, transport, public command, wire format, automatic model migration, or installed-skill adoption. Detailed published specialist contracts retain their existing authority and support boundaries.",
-    "Guidance usefulness assessment, action-authority decisions, and assurance judgments have separate responsibilities; defining this contract does not complete their collaboration or allocated-requirement analysis."
+    "Guidance task context/comparison follows MOD-008 guidance.md; generic assurance judgments, evidence applicability, retention and action-authority decisions retain existing IF-014/010/004/009 responsibilities. No new public command, schema or required assessment gate is introduced."
   ],
   "sources": [
     {
@@ -97,6 +127,11 @@
       "source": "SRC-WORKFLOW-DESIGN",
       "locator": "IF-008",
       "basis": "Draft integrated design from the accepted requirement-first basis. This defines target responsibility and cooperation, not installed capability, design approval, runtime evidence or SQLite adoption."
+    },
+    {
+      "source": "SRC-AUTHORING-GUIDANCE-DESIGN",
+      "locator": "IR-006; SR-032–034; SCN-031–034/040",
+      "basis": "Define source-bound guidance selection, bounded authoring/correction and participant-assisted semantic task assessment, with justified MOD-008 allocation and existing assurance/recording cooperation. Target Design only; no observed usability or installed capability claim."
     }
   ]
 }

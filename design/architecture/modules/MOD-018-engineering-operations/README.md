@@ -27,11 +27,15 @@ SR-006 owns the seven-section resumption outcome. MOD-006 interprets current wor
 
 Preserve attribution, review scope and assessed support still relied upon. Replacing evidence cannot silently transfer approval to a new basis. Reassessment can replace a current assessment within the same gate without a permanent attempt chain. Safe revisions, SQLite transactions and attachment coordination remain necessary even though activity history is optional.
 
+## Operational preservation and resumption
+
+[Work record storage](modules/MOD-011-operational-record-persistence/README.md#database-schema-backup-and-migration) owns SR-074–077 through existing AR-052–055 and FUNC-074–076. MOD-012 submits explicit authorized maintenance through MOD-018-provided IF-004; MOD-010 admits requests and consumes MOD-011-provided IF-003. Backup, same-project transfer and qualified migration preserve finite retained scope and original meaning. After activation, the same current-context path returns retained facts to Governance for resumption, authority and support interpretation. A maintenance receipt supplies actual effects without approving engineering work or adopting workflow policy.
+
 ## Recording cooperation
 
 Governance owns engineering meaning, including work context and supplied judgments; persistence owns coherent storage and recovery. This distinction does not create two authored copies. Governance responses reference the same operational facts and subject identities that the caller read. The participant doing a review makes the judgment; MOD-012 applies the review method, MOD-007 supplies common assurance interpretation, and MOD-011 persists the explicitly supplied result when required.
 
-The successor [v4 record specification](modules/MOD-011-operational-record-persistence/README.md) is owned by MOD-011; MOD-010 owns the [v2 command interface](modules/MOD-010-engineering-command-interface/README.md). Their field and operation definitions are proposed contracts, not available runtime commands. Machine schema artifacts, dispatch and a qualified store adapter remain implementation dependencies. [Parent-owned test design](test-design.md) covers handoff and assurance interactions; actual execution results belong outside the current design.
+The successor [v4 record specification](modules/MOD-011-operational-record-persistence/README.md) is owned by MOD-011; MOD-010 owns the [v2 command interface](modules/MOD-010-engineering-command-interface/README.md). The successor implements the ordinary operational tasks under those current contracts. The executing package's help and capabilities identify actual availability; installing it does not adopt customer policy or migrate earlier work. Browser generation and subject-history queries retain their separately proposed contracts and qualification prerequisites. [Parent-owned test design](test-design.md) covers handoff and assurance interactions; actual execution results belong outside the current design.
 
 ### Interface ownership
 
@@ -42,11 +46,11 @@ The successor [v4 record specification](modules/MOD-011-operational-record-persi
 | Store → SQLite and attachments | MOD-011 alone owns database transactions, query/schema mapping, connection admission and payload publication. SQLite is its embedded mechanism. |
 | Receipt preparation | A shared pure MOD-010-owned codec establishes bounded output readiness before commitment; it has no storage authority. Actual outcome still governs the emitted receipt. |
 
-[IF-004](../../interfaces/IF-004-scoped-public-command-execution/interface.json) and [IF-003](../../interfaces/IF-003-operational-record-access-and-publication/interface.json) distinguish target v4 tasks from supported v3 file-candidate/recovery operations. The [public schema and outcomes](modules/MOD-010-engineering-command-interface/README.md#public-request-and-result-schema) and [typed boundary](modules/MOD-011-operational-record-persistence/README.md#typed-cli-to-storage-boundary) hold their respective field contracts. Skills need the supported CLI contract and opaque revisions, not SQL or database schema knowledge.
+[IF-004](../../interfaces/IF-004-scoped-public-command-execution/interface.json) and [IF-003](../../interfaces/IF-003-operational-record-access-and-publication/interface.json) distinguish current v4 tasks, version-qualified v3 file-candidate/recovery operations in explicitly retained prior executables, and separately proposed extensions. The successor has no fallback v3 dispatcher or writer. The [public schema and outcomes](modules/MOD-010-engineering-command-interface/README.md#public-request-and-result-schema) and [typed boundary](modules/MOD-011-operational-record-persistence/README.md#typed-cli-to-storage-boundary) hold their respective field contracts. Skills need the supported CLI contract and opaque revisions, not SQL or database schema knowledge.
 
 ## Task-oriented public interaction
 
-The CLI presents change create/context/update/complete, review prepare/show/record, verification show/record, browser generate/check/recover, store backup/restore/migrate, and parameterized skill installation. These are task boundaries, not one command per stored kind. One milestone progress update can carry its work, actual checks, decisions and blockers while persistence constructs their identities and links coherently in SQLite. Engineering definitions and applicable design rationale stay in Git; operational decisions reference those owners rather than copying the design. Review and Verify remain separate actor-owned assessments. A read or save never supplies a semantic routing decision. Successful final Verify supplies the completion assessment; an authorized change complete records closeout against that exact result. Completed accounts are historical and stop tracking repository applicability. Later regressions start linked new work; an error in an original account can receive an explicit note.
+The current CLI task surface includes change create/context/update/complete, review prepare/show/record, verification show/record, store backup/restore/migrate, and parameterized skill installation. Browser generate/check/recover and subject-history selection are separate proposed capabilities, not advertised current operations. These are task boundaries, not one command per stored kind. One milestone progress update can carry its work, actual checks, decisions and blockers while persistence constructs their identities and links coherently in SQLite. Engineering definitions and applicable design rationale stay in Git; operational decisions reference those owners rather than copying the design. Review and Verify remain separate actor-owned assessments. A read or save never supplies a semantic routing decision. Successful final Verify supplies the completion assessment; an authorized change complete records closeout against that exact result. Completed accounts are historical and stop tracking repository applicability. Later regressions start linked new work; an error in an original account can receive an explicit note.
 
 [The CLI owner](modules/MOD-010-engineering-command-interface/README.md#walkthroughs-and-acceptance-intent) owns the end-to-end walkthroughs and retired-command disposition. [Records](modules/MOD-011-operational-record-persistence/README.md#current-records) preserves the supporting facts regardless of how many public operations expose them. Existing requirements and Functions are reused; consolidation changes interaction design rather than introducing another engineering model or authority owner.
 
@@ -75,6 +79,7 @@ store -> db: "Write related records, dependencies and next revision"
 store -> store: "Check external observations and receipt readiness"
 store -> db: "Commit the coherent update"
 db -> store: "Confirm commitment"
+store -> store: "Recheck declared external basis; preserve saved outcome and any drift"
 store -> cli: "Return actual committed revision and changed accounts"
 cli -> agent: "Report saved state; no approval is implied"
 ```
@@ -105,6 +110,7 @@ store -> cli: "Prepare bounded receipt with shared pure codec"
 cli -> store: "Receipt ready; no approval or commit is inferred"
 store -> db: "Write Review, selections and revision; commit"
 db -> store: "Confirm commitment"
+store -> store: "Recheck declared external basis; preserve saved outcome and any drift"
 store -> cli: "Return actual typed outcome and committed revision"
 cli -> reviewer: "Saved means persisted; final Verify remains separate"
 ```
@@ -134,3 +140,33 @@ agent -> agent: "Reconcile intended update with current facts"
 When the inspected current account already satisfies the intended update, no resubmission is needed. If another agent has since changed it, reconcile with that newer state; do not replay old mutable intent or infer a permanent operation receipt from matching IDs. If commitment or storage availability remains uncertain, opening SQLite follows the [storage-owned inspection sequence](modules/MOD-011-operational-record-persistence/README.md#inspect-after-an-interrupted-update). A coherent current snapshot is not a permanent receipt for the earlier request. A lost response alone never authorizes rollback or backup restoration.
 
 The [Process projection contract](../../../support/README.md#process-projection-refinement) distinguishes authored interaction detail from the projected runtime topology. Operations owns the composed handoff conditions; Governance retains gate meaning and the accountable Module/Interface facets retain execution facts. Actor roles and skills do not imply separate runtime processes. The D2 sequences above are registered from this owning source into the existing browser; they do not require the deferred structured activity projection extension. Customer generation and publication are addressed by the [proposed browser composition](../../README.md#customer-architecture-browser-composition). Diagram availability does not claim implemented workflow support.
+
+## Selected subject history
+
+[The owning history contract](modules/MOD-011-operational-record-persistence/history-selection.md) defines SR-078 through FUNC-077 and AR-086/087. MOD-018 composes command admission and storage selection, with existing ordinary query contracts intact. SCN-074 supplies the stakeholder walkthrough without promoting its draft lifecycle.
+
+<!-- architecture-diagram: select-subject-history -->
+
+```d2
+shape: sequence_diagram
+actor: "Reviewer"
+cli: "Command handling\nMOD-010 / IF-004"
+store: "Work record storage\nMOD-011 / IF-003"
+db: "Existing qualified\nSQLite history"
+actor -> cli: "Project, recorded subject, scope, filters and page bound"
+cli -> cli: "Admit separate history profile and normalize exact selection"
+cli -> store: "Typed read-only history request"
+store -> db: "Read state, coverage, associations and facts in one snapshot"
+db -> store: "Original identities and retained scope or explicit unavailability"
+store -> store: "Match literal facts; order whole units; bind next cursor"
+store -> cli: "State-bound page, provenance and completeness limits"
+cli -> actor: "Bounded complete outcome; no current approval inferred"
+actor -> cli: "Same selection and continuation"
+cli -> store: "Normalized selection with opaque continuation"
+store -> db: "Read current activation and generation in new snapshot"
+db -> store: "Same state or changed history"
+store -> cli: "Next deterministic page or conflict with no page units"
+cli -> actor: "Preserve result; changed state requires a fresh request"
+```
+
+The database, history generation and protected cursor key remain inside MOD-011. Writer/maintenance qualification must establish that every relevant mutation invalidates prior continuation. A read cannot backfill identities, initialize a store or perform recovery. Exhaustion and retained-scope completeness are distinct; absent or partially retained history is not an empty complete past. Installed command availability remains separate from this target Process view.

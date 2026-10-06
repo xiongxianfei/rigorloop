@@ -66,13 +66,18 @@
   "compatibility_rules": [
     "Preserve the existing IF-001 and IF-002 state, scope, interpretation, and completeness distinctions when composing their contributions. This external contract does not expose every internal operation or expand those operations' guarantees.",
     "The consumer must preserve all incomplete, unsupported, conflicting, and unavailable outcomes. Changes to their meaning or to selected-state binding require coordinated provider/consumer revision.",
-    "This draft chooses no storage technology, snapshot transaction, wire format, callable runtime API, or retention mechanism. Detailed retention confirmation, change-authority cooperation, and acquisition of separately owned realization/assurance material remain explicit later architecture work."
+    "This Interface remains read-only and selects no retention mechanism. Parent state-control.md and distinct IF015 supply content custody, IF016 supplies action preparation, and explicitly supplied material retains its accountable acquisition/retention basis. No inspection result confirms retention."
   ],
   "sources": [
     {
       "source": "SRC-BOUNDARY-CONTRACTS",
       "locator": "SCN-019; SR-020; FUNC-004, FUNC-012, FUNC-020; IF-001, IF-002",
       "basis": "Derive MOD-016's external content/interpretation contract for MOD-005 from the information needed to inspect a proposed or retained Baseline. MOD-001/FUNC-004 and MOD-003/FUNC-012 contribute existing retrieval and interpretation behavior through internal IF-001/IF-002; MOD-005/FUNC-020 retains Baseline identity, membership, coherence and preservation responsibilities. This bounded draft covers ordinary, missing/conflicting, external-reference, and historical-meaning acquisition outcomes. It preserves the separate unresolved need for actual retention confirmation, partial-retention reporting, and applicable authority, without claiming implementation, approval, complete SCN-019 coverage, or satisfaction."
+    },
+    {
+      "source": "SRC-BASELINE-STATE-DESIGN",
+      "locator": "SR-020–024; SCN-019–022/025",
+      "basis": "Define immutable baseline custody, original-meaning comparison/recovery, attributable transition preparation and dependency-safe retirement. Preserve selective retention and separate action authority, operational maintenance and actual execution; proposed Design only."
     }
   ]
 }

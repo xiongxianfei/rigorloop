@@ -1,0 +1,22 @@
+# Presentation registration; owning behavior is explained in guidance.md and the owning README.md.
+version = 1
+
+[[topics]]
+id = "guidance-selection-and-correction"
+title = "Select guidance and explain corrections"
+view = "process"
+kind = "sequence"
+qualification = "proposed"
+source = "README.md"
+anchor = "guidance-selection-and-correction"
+description = "Preserve the selected source/profile basis, explain expected outcomes and keep unsupported scope and authority distinct."
+
+[[topics]]
+id = "assess-guidance-tasks"
+title = "Assess prepared authoring tasks"
+view = "process"
+kind = "sequence"
+qualification = "proposed"
+source = "README.md"
+anchor = "assess-guidance-tasks"
+description = "Compare actual task outputs, checks and rule explanations with prepared expectations; retain results through existing assurance cooperation."

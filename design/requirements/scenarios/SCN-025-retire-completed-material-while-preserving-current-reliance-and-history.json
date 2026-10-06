@@ -4,7 +4,7 @@
   "title": "Retire completed material while preserving current reliance and history",
   "status": "draft",
   "actor": "A maintainer cleaning the current engineering working view",
-  "goal": "Remove material no longer needed in the current view while keeping surviving obligations usable and original history recoverable.",
+  "goal": "Remove material no longer needed in the current view while keeping surviving obligations usable and explicitly preserved history recoverable.",
   "context": "Completed or retired records clutter the current view, but some consumers or unresolved work may still rely on them. The removal scope may contain operational files replaced by a separately retained operational store.",
   "trigger": "The maintainer proposes a defined cleanup scope.",
   "preconditions": [
@@ -13,11 +13,11 @@
   "interaction": [
     {
       "actor": "Maintainer",
-      "action": "Identifies the proposed removals, their recovery basis, and proposed treatment of surviving obligations and consumers."
+      "action": "Identifies proposed removals, applicable preservation obligations and required recovery bases, and the proposed treatment of surviving obligations and consumers."
     },
     {
       "actor": "System",
-      "action": "Reports historical recoverability, current reliance, unresolved dependencies, and applicable authority for the removal."
+      "action": "Reports current reliance, unresolved dependencies, applicable authority, and recoverability where preservation is required; distinguishes disposable superseded operational detail."
     },
     {
       "actor": "Maintainer",
@@ -25,14 +25,18 @@
     },
     {
       "actor": "System",
-      "action": "Reports the actual removal disposition and retained recovery basis, or the condition that prevents removal."
+      "action": "Reports actual removal, remaining inconsistencies and any required retained recovery basis, or the condition that prevents removal."
     }
   ],
-  "expected_outcome": "Only material whose original meaning is recoverable and whose current dependencies are reconciled leaves the working view; current engineering operation remains coherent.",
+  "expected_outcome": "Material leaves the working view only after current dependencies and applicable authority are resolved. Explicitly preserved engineering material retains recoverable original meaning; superseded operational summaries and routine logs with no current reliance or retention obligation may be discarded without historical copies. Current engineering operation remains coherent.",
   "alternatives": [
     {
       "condition": "A surviving obligation remains valid under another current owner.",
       "outcome": "Its responsibility and current references are reconciled before the retired representation is removed."
+    },
+    {
+      "condition": "Superseded working summaries or routine logs have no open obligation, current conclusion or explicit retention decision relying on them.",
+      "outcome": "The material may be compacted without an archival copy. Later requests report discarded detail as unavailable; a replacement for one scope cannot erase a still-relevant failure for another scope."
     }
   ],
   "failures": [
@@ -41,8 +45,8 @@
       "outcome": "Removal is withheld and the surviving reliance is identified."
     },
     {
-      "condition": "Original content is uncommitted or otherwise lacks a retained recovery basis.",
-      "outcome": "The system identifies the unretained content and does not claim cleanup is historically recoverable."
+      "condition": "Material whose preservation is required is uncommitted or otherwise lacks a retained recovery basis.",
+      "outcome": "The system identifies the unretained content and withholds removal until the required basis is established; it does not claim historical recoverability."
     },
     {
       "condition": "The proposed destructive action lacks applicable authorization.",
@@ -75,6 +79,11 @@
       "source": "SRC-LOCAL-OPERATIONAL-ANALYSIS",
       "locator": "SCN-025",
       "basis": "Draft derivation from the refined IRs and RR proposal; no approval, implementation or satisfaction claim."
+    },
+    {
+      "source": "SRC-CURRENT-HANDOFF",
+      "locator": "IR-003; SR-024 C1/C5/C7; SCN-025",
+      "basis": "Reconcile retirement with selective retention: preserved history remains recoverable; unused superseded operational detail need not be archived. Preserve current reliance, distinct-scope failures and truthful later unavailability."
     }
   ]
 }

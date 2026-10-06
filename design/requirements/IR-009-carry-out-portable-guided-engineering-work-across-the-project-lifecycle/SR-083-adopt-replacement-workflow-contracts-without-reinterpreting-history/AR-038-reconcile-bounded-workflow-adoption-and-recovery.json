@@ -7,7 +7,7 @@
   "analysis": {
     "method": "5W2H",
     "what": {
-      "problem": "The SR-083 obligation crosses guidance, governance or publication boundaries; an unowned contribution can make a locally valid step appear sufficient for the whole workflow.",
+      "problem": "The SR-083 obligation crosses guidance, governance or publication boundaries; an unowned contribution can make a locally valid step appear sufficient for the whole workflow. Treating migration as either universally mandatory or universally independent can misclassify selected work and lose its required historical support.",
       "desired_outcome": "Prepare explicit dispositions for every affected active Change and dependency within the selected scope, retaining original review meanings."
     },
     "why": {
@@ -30,16 +30,16 @@
       ]
     },
     "how": {
-      "approach": "Apply the allocated criteria through the constrained Functions and explicit contract inputs/outcomes; preserve actual actor decisions, subject identity and known limitations."
+      "approach": "Apply the allocated criteria through the constrained Functions and explicit contract inputs/outcomes; preserve actual actor decisions, subject identity and known limitations. Prepare the dependency-specific migration disposition before any activation decision; storage qualification and physical migration remain with their existing owners."
     },
     "how_much": {
-      "scope": "This allocated contribution to SR-083; other contributors, independent assessment, physical recording implementation and product activation remain distinct."
+      "scope": "This allocated contribution to SR-083; other contributors, independent assessment, physical recording implementation and product activation remain distinct. Include the three SR-083 recording-compatibility cases and preserve unresolved dependent work without importing unrelated history."
     }
   },
   "acceptance_criteria": [
     "Prepare explicit dispositions for every affected active Change and dependency within the selected scope, retaining original review meanings.",
     "Require coherent consumer/recording support and a fresh adoption basis; interrupted or partial transition reports actual active authority and preserves recoverable work.",
-    "Keep database migration prerequisites separate and prohibit removal of relied-on historical material without retained identity and resolved dependencies."
+    "Determine whether selected work depends on incompatible earlier records. Require qualified migration for those dependencies before activation; new projects without earlier records need no historical import, and compatible existing work still needs fresh authority and dependency checks. Unavailable necessary migration blocks affected adoption. Preserve actual active authority, work and relied-on historical material; neither empty replacement records nor unrelated historical import discharges those obligations."
   ],
   "assumptions": [
     "The selected project contract, scope and required counterpart contributions are identifiable; absence is reported rather than inferred."
@@ -59,6 +59,11 @@
       "source": "SRC-WORKFLOW-DESIGN",
       "locator": "SR-083; AR-038",
       "basis": "Draft integrated design from the accepted requirement-first basis. This defines target responsibility and cooperation, not installed capability, design approval, runtime evidence or SQLite adoption."
+    },
+    {
+      "source": "SRC-ADOPTION-DEPENDENCY-REFINEMENT",
+      "locator": "SR-083; SCN-082; AR-038; FUNC-078",
+      "basis": "Refine the existing adoption responsibility to distinguish new, compatible and migration-dependent selected work. Necessary migration is an activation dependency; unsupported, absent or stale facts never imply successful adoption. Preserve original subjects, authority, custody and qualified successor ownership; target Design only."
     }
   ]
 }

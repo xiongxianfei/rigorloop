@@ -1,0 +1,944 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:rigorloop:requirement-delivery:2",
+  "title": "Proposed requirement delivery disclosure v2",
+  "description": "G0 target Design only. Structural schema; requirement-delivery-format.md defines mandatory identity, coverage, applicability, conflict, resource and compatibility validation. Existing renderer does not admit this version.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "format_version": {
+      "type": "integer",
+      "const": 2
+    },
+    "assessments": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/assessment"
+      },
+      "minItems": 0,
+      "maxItems": 256
+    },
+    "resolutions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/resolution"
+      },
+      "minItems": 0,
+      "maxItems": 256
+    }
+  },
+  "required": [
+    "format_version",
+    "assessments",
+    "resolutions"
+  ],
+  "$defs": {
+    "text": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 16384,
+      "pattern": "\\S"
+    },
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "requirement": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 32,
+      "pattern": "^(IR|SR|AR)-[0-9]+$"
+    },
+    "identity": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 71,
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "timestamp": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 20,
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+    },
+    "path": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1024
+    },
+    "subject": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "$ref": "#/$defs/path"
+        },
+        "identity": {
+          "$ref": "#/$defs/identity"
+        }
+      },
+      "required": [
+        "path",
+        "identity"
+      ]
+    },
+    "subjects": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/subject"
+      },
+      "minItems": 0,
+      "maxItems": 256
+    },
+    "texts": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/text"
+      },
+      "minItems": 0,
+      "maxItems": 256
+    },
+    "record": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "change": {
+          "$ref": "#/$defs/id"
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "evidence",
+            "review",
+            "verification"
+          ]
+        },
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "identity": {
+          "$ref": "#/$defs/identity"
+        }
+      },
+      "required": [
+        "change",
+        "kind",
+        "id",
+        "identity"
+      ]
+    },
+    "definition": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "$ref": "#/$defs/path"
+        },
+        "identity": {
+          "$ref": "#/$defs/identity"
+        },
+        "content": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 262144
+        }
+      },
+      "required": [
+        "path",
+        "identity",
+        "content"
+      ]
+    },
+    "review": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "source": {
+          "$ref": "#/$defs/record"
+        },
+        "purpose": {
+          "const": "design"
+        },
+        "judgment": {
+          "const": "approved"
+        },
+        "actor": {
+          "$ref": "#/$defs/text"
+        },
+        "reported_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "scope": {
+          "$ref": "#/$defs/text"
+        },
+        "summary": {
+          "$ref": "#/$defs/text"
+        },
+        "subjects": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/subject"
+          },
+          "minItems": 1,
+          "maxItems": 256
+        }
+      },
+      "required": [
+        "source",
+        "purpose",
+        "judgment",
+        "actor",
+        "reported_at",
+        "scope",
+        "summary",
+        "subjects"
+      ]
+    },
+    "outcome": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "key": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 16,
+          "pattern": "^O[1-9][0-9]*$"
+        },
+        "text": {
+          "$ref": "#/$defs/text"
+        },
+        "sources": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/subject"
+          },
+          "minItems": 1,
+          "maxItems": 256
+        }
+      },
+      "required": [
+        "key",
+        "text",
+        "sources"
+      ]
+    },
+    "outcome_basis": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "identity": {
+          "$ref": "#/$defs/identity"
+        },
+        "outcomes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/outcome"
+          },
+          "minItems": 1,
+          "maxItems": 256
+        },
+        "review": {
+          "$ref": "#/$defs/review"
+        }
+      },
+      "required": [
+        "identity",
+        "outcomes",
+        "review"
+      ]
+    },
+    "membership": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "identity": {
+          "$ref": "#/$defs/identity"
+        },
+        "children": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "requirement": {
+                "$ref": "#/$defs/requirement"
+              },
+              "definition_identity": {
+                "$ref": "#/$defs/identity"
+              }
+            },
+            "required": [
+              "requirement",
+              "definition_identity"
+            ]
+          },
+          "minItems": 0,
+          "maxItems": 256
+        }
+      },
+      "required": [
+        "identity",
+        "children"
+      ]
+    },
+    "design_support": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "requirement": {
+          "$ref": "#/$defs/requirement"
+        },
+        "identity": {
+          "$ref": "#/$defs/identity"
+        }
+      },
+      "required": [
+        "requirement",
+        "identity"
+      ]
+    },
+    "child_support": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "requirement": {
+          "$ref": "#/$defs/requirement"
+        },
+        "claim": {
+          "$ref": "#/$defs/identity"
+        },
+        "coverage": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 16,
+            "pattern": "^[CO][1-9][0-9]*$"
+          },
+          "minItems": 1,
+          "maxItems": 256
+        },
+        "explanation": {
+          "$ref": "#/$defs/text"
+        }
+      },
+      "required": [
+        "requirement",
+        "claim",
+        "coverage",
+        "explanation"
+      ]
+    },
+    "nonreliance": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "requirement": {
+          "$ref": "#/$defs/requirement"
+        },
+        "explanation": {
+          "$ref": "#/$defs/text"
+        }
+      },
+      "required": [
+        "requirement",
+        "explanation"
+      ]
+    },
+    "observation": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "source": {
+          "$ref": "#/$defs/record"
+        },
+        "summary": {
+          "$ref": "#/$defs/text"
+        },
+        "subjects": {
+          "$ref": "#/$defs/subjects"
+        },
+        "limitations": {
+          "$ref": "#/$defs/texts"
+        }
+      },
+      "required": [
+        "source",
+        "summary",
+        "subjects",
+        "limitations"
+      ]
+    },
+    "concern": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "source": {
+          "$ref": "#/$defs/record"
+        },
+        "state": {
+          "type": "string",
+          "enum": [
+            "open",
+            "deferred",
+            "resolved"
+          ]
+        },
+        "explanation": {
+          "$ref": "#/$defs/text"
+        },
+        "disposition": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "source": {
+                  "$ref": "#/$defs/record"
+                },
+                "explanation": {
+                  "$ref": "#/$defs/text"
+                }
+              },
+              "required": [
+                "source",
+                "explanation"
+              ]
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "source",
+        "state",
+        "explanation",
+        "disposition"
+      ]
+    },
+    "applicability": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "state": {
+          "type": "string",
+          "enum": [
+            "current",
+            "needs-reassessment",
+            "not-applicable"
+          ]
+        },
+        "explanation": {
+          "$ref": "#/$defs/text"
+        }
+      },
+      "required": [
+        "state",
+        "explanation"
+      ]
+    },
+    "implementation_criterion": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "key": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 16,
+          "pattern": "^[CO][1-9][0-9]*$"
+        },
+        "state": {
+          "type": "string",
+          "enum": [
+            "unknown",
+            "not-started",
+            "partial",
+            "implemented"
+          ]
+        },
+        "explanation": {
+          "$ref": "#/$defs/text"
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/observation"
+          },
+          "minItems": 0,
+          "maxItems": 256
+        },
+        "gaps": {
+          "$ref": "#/$defs/texts"
+        }
+      },
+      "required": [
+        "key",
+        "state",
+        "explanation",
+        "evidence",
+        "gaps"
+      ]
+    },
+    "implementation": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "identity": {
+          "$ref": "#/$defs/identity"
+        },
+        "state": {
+          "type": "string",
+          "enum": [
+            "unknown",
+            "not-started",
+            "partial",
+            "implemented"
+          ]
+        },
+        "actor": {
+          "$ref": "#/$defs/text"
+        },
+        "reported_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "source": {
+          "$ref": "#/$defs/record"
+        },
+        "summary": {
+          "$ref": "#/$defs/text"
+        },
+        "limitations": {
+          "$ref": "#/$defs/texts"
+        },
+        "subjects": {
+          "$ref": "#/$defs/subjects"
+        },
+        "applicability": {
+          "$ref": "#/$defs/applicability"
+        },
+        "criteria": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/implementation_criterion"
+          },
+          "minItems": 1,
+          "maxItems": 256
+        },
+        "membership": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/membership"
+            }
+          ]
+        },
+        "child_support": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/child_support"
+          },
+          "minItems": 0,
+          "maxItems": 256
+        },
+        "nonreliance": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/nonreliance"
+          },
+          "minItems": 0,
+          "maxItems": 256
+        },
+        "design_support": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/design_support"
+          },
+          "minItems": 0,
+          "maxItems": 256
+        },
+        "concerns": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/concern"
+          },
+          "minItems": 0,
+          "maxItems": 256
+        }
+      },
+      "required": [
+        "identity",
+        "state",
+        "actor",
+        "reported_at",
+        "source",
+        "summary",
+        "limitations",
+        "subjects",
+        "applicability",
+        "criteria",
+        "membership",
+        "child_support",
+        "nonreliance",
+        "design_support",
+        "concerns"
+      ]
+    },
+    "verification_criterion": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "key": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 16,
+          "pattern": "^[CO][1-9][0-9]*$"
+        },
+        "state": {
+          "type": "string",
+          "enum": [
+            "not-assessed",
+            "failed",
+            "passed",
+            "needs-reassessment"
+          ]
+        },
+        "explanation": {
+          "$ref": "#/$defs/text"
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/observation"
+          },
+          "minItems": 0,
+          "maxItems": 256
+        },
+        "gaps": {
+          "$ref": "#/$defs/texts"
+        }
+      },
+      "required": [
+        "key",
+        "state",
+        "explanation",
+        "evidence",
+        "gaps"
+      ]
+    },
+    "verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "identity": {
+          "$ref": "#/$defs/identity"
+        },
+        "state": {
+          "type": "string",
+          "enum": [
+            "not-assessed",
+            "failed",
+            "passed",
+            "needs-reassessment"
+          ]
+        },
+        "actor": {
+          "$ref": "#/$defs/text"
+        },
+        "reported_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "source": {
+          "$ref": "#/$defs/record"
+        },
+        "summary": {
+          "$ref": "#/$defs/text"
+        },
+        "limitations": {
+          "$ref": "#/$defs/texts"
+        },
+        "subjects": {
+          "$ref": "#/$defs/subjects"
+        },
+        "applicability": {
+          "$ref": "#/$defs/applicability"
+        },
+        "criteria": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/verification_criterion"
+          },
+          "minItems": 1,
+          "maxItems": 256
+        },
+        "membership": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/membership"
+            }
+          ]
+        },
+        "child_support": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/child_support"
+          },
+          "minItems": 0,
+          "maxItems": 256
+        },
+        "nonreliance": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/nonreliance"
+          },
+          "minItems": 0,
+          "maxItems": 256
+        },
+        "design_support": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/design_support"
+          },
+          "minItems": 0,
+          "maxItems": 256
+        },
+        "concerns": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/concern"
+          },
+          "minItems": 0,
+          "maxItems": 256
+        }
+      },
+      "required": [
+        "identity",
+        "state",
+        "actor",
+        "reported_at",
+        "source",
+        "summary",
+        "limitations",
+        "subjects",
+        "applicability",
+        "criteria",
+        "membership",
+        "child_support",
+        "nonreliance",
+        "design_support",
+        "concerns"
+      ]
+    },
+    "assessment": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "requirement": {
+          "$ref": "#/$defs/requirement"
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "initial-requirement",
+            "system-requirement",
+            "allocated-requirement"
+          ]
+        },
+        "definition": {
+          "$ref": "#/$defs/definition"
+        },
+        "scope": {
+          "$ref": "#/$defs/text"
+        },
+        "outcome_basis": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/outcome_basis"
+            }
+          ]
+        },
+        "implementation": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/implementation"
+            }
+          ]
+        },
+        "verification": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/verification"
+            }
+          ]
+        }
+      },
+      "required": [
+        "requirement",
+        "kind",
+        "definition",
+        "scope",
+        "outcome_basis",
+        "implementation",
+        "verification"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "enum": [
+                  "system-requirement",
+                  "allocated-requirement"
+                ]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "outcome_basis": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "initial-requirement"
+              },
+              "outcome_basis": {
+                "type": "null"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "implementation": {
+                "type": "null"
+              },
+              "verification": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "superseded": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "claim": {
+          "$ref": "#/$defs/identity"
+        },
+        "disposition": {
+          "$ref": "#/$defs/record"
+        },
+        "explanation": {
+          "$ref": "#/$defs/text"
+        },
+        "addressed": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160,
+            "pattern": "^(criterion:[CO][1-9][0-9]*|concern:[a-z0-9]+(?:-[a-z0-9]+)*)$"
+          },
+          "minItems": 0,
+          "maxItems": 256
+        }
+      },
+      "required": [
+        "claim",
+        "disposition",
+        "explanation",
+        "addressed"
+      ]
+    },
+    "resolution": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "requirement": {
+          "$ref": "#/$defs/requirement"
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "implementation",
+            "verification"
+          ]
+        },
+        "selected": {
+          "$ref": "#/$defs/identity"
+        },
+        "superseded": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/superseded"
+          },
+          "minItems": 1,
+          "maxItems": 256
+        },
+        "source": {
+          "$ref": "#/$defs/record"
+        },
+        "actor": {
+          "$ref": "#/$defs/text"
+        },
+        "reported_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "explanation": {
+          "$ref": "#/$defs/text"
+        },
+        "subjects": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/subject"
+          },
+          "minItems": 1,
+          "maxItems": 256
+        },
+        "applicability": {
+          "$ref": "#/$defs/applicability"
+        }
+      },
+      "required": [
+        "requirement",
+        "kind",
+        "selected",
+        "superseded",
+        "source",
+        "actor",
+        "reported_at",
+        "explanation",
+        "subjects",
+        "applicability"
+      ]
+    }
+  }
+}

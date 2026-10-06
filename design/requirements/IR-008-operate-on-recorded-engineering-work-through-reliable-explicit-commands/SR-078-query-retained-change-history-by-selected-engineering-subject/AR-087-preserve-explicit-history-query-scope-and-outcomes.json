@@ -1,0 +1,60 @@
+{
+  "id": "AR-087",
+  "type": "allocated-requirement",
+  "title": "Preserve explicit history query scope and outcomes",
+  "status": "draft",
+  "statement": "The Command handling Module shall admit the separately qualified history query with explicit subject, retained scope, literal filters and bounded continuation, and present exact storage outcomes without semantic inference, truncation or effects.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Cross-Change selection can lose identity, hide missing retained scope or mix states across pages.",
+      "desired_outcome": "Preserve explicit history query scope and outcomes."
+    },
+    "why": {
+      "rationale": "SR-078 requires this distinct accountable contribution; reuse current record, admission and authority ownership while qualifying new history semantics separately."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineers and reviewers inspecting recorded work",
+        "Engineering agents and operational record maintainers"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "When an explicitly selected subject-history lookup or continuation is requested; state metadata also constrains the cooperating target-profile writers."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "MOD-018 composition through IF-004 and IF-003; local associated project records under history-selection.md."
+      ]
+    },
+    "how": {
+      "approach": "Use explicit recorded identity, coherent read state, literal filters and bounded complete outcomes under the owning history contract."
+    },
+    "how_much": {
+      "scope": "Finite retained project scope; no exhaustive past, automatic migration, distributed history or implementation/adoption claim."
+    }
+  },
+  "acceptance_criteria": [
+    "Reject unsupported profile, unknown request fields/filter values, invalid bounds and contradictions visible in explicit request fields before dispatch; pass bounded opaque continuation to MOD-011 for authentication and bound-selection/state checks before page results, without adding cursor behavior to existing ordinary queries.",
+    "Pass the exact normalized subject, finite Change scope and literal recorded-fact filters to IF-003; no prose-based relevance or authority/applicability inference is introduced.",
+    "Present original Change/record/subject provenance, history state, exclusions, completeness and continuation faithfully; no-match remains distinct from unavailable, incomplete, conflict, busy and oversized outcomes.",
+    "Form complete encoded output within the public byte bound before emission; never truncate a unit or advance a cursor over an unreturned item, and preserve no-write outcomes on output failure."
+  ],
+  "assumptions": [],
+  "constraints": [
+    "Historical judgments do not establish current applicability or authority. Existing v2/v4 contracts remain independently versioned and unchanged by this target Design."
+  ],
+  "allocated_to": "MOD-010",
+  "constrains": [
+    "FUNC-077"
+  ],
+  "sources": [
+    {
+      "source": "SRC-SUBJECT-HISTORY-DESIGN",
+      "locator": "SR-078; FUNC-077; SCN-074",
+      "basis": "Define recorded subject association, coherent bounded history selection and state-bound continuation through existing command/storage owners. Target Design only; current ordinary queries, schema and installed capability remain unchanged."
+    }
+  ]
+}

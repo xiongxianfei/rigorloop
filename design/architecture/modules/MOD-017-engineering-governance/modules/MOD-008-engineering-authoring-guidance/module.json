@@ -8,7 +8,8 @@
     "Select guidance applicable to the activity and declared profile.",
     "Explain bounded authoring and correction steps without replacing canonical rules.",
     "Assess prepared authoring tasks using their observable semantic outcomes.",
-    "Contribute canonical guidance selection and authoring/correction explanation through FUNC-032/FUNC-033 to MOD-017's IF-008 contract. Preserve adopted profile applicability, source meaning, examples versus rules, and unsupported scope for MOD-012's specialist composition."
+    "Contribute canonical guidance selection and authoring/correction explanation through FUNC-032/FUNC-033 to MOD-017's IF-008 contract. Preserve adopted profile applicability, source meaning, examples versus rules, and unsupported scope for MOD-012's specialist composition.",
+    "Prepare source-bound semantic task contexts and attributable comparisons through IF-008; formal assurance meaning remains MOD-007 and actual participant observations remain attributable inputs."
   ],
   "owned_state": [
     "Guidance applicability selections and prepared task assessment context; canonical rules and actual evidence retain their respective authorities."
@@ -24,7 +25,7 @@
   "provides": [],
   "consumes": [],
   "design_limits": [
-    "IF-008 defines the adopted-REM authoring branch of guidance cooperation with MOD-012. IR-006 ARs, guidance usefulness assessment under FUNC-034, and broader metamodel/authoring/assurance interactions remain deferred.",
+    "guidance.md defines SR-032–034 and AR-079–081, including FUNC-034 prepared semantic task assessment through IF-008 and existing assurance cooperation. Actual participant performance and installed guidance qualification remain separate.",
     "Contract selection does not adopt REM for a project, interpret or migrate its model, authorize mutation, or define all published specialist procedures.",
     "The requirement-first workflow design supplies the selected SR-079–083 collaboration and AR allocation. Earlier broader deferrals remain only outside that bounded extension; existing runtime observations and installed contracts do not implement the target design."
   ],
@@ -38,6 +39,11 @@
       "source": "SRC-BOUNDARY-CONTRACTS",
       "locator": "MOD-008; SCN-019, SCN-053, SCN-066 selected collaboration analysis",
       "basis": "Derive consumer-focused parent contracts for selected-state inspection, adopted-REM authoring guidance, applicable action authority, and evidence applicability. Preserve child behavior/state authority, existing Function/AR allocations, and earlier contract guarantees. The selected contracts refine prior blanket deferrals; remaining retention, wider collaboration, AR, and realization gaps stay explicit. This is draft design analysis, not implemented or satisfied behavior."
+    },
+    {
+      "source": "SRC-AUTHORING-GUIDANCE-DESIGN",
+      "locator": "IR-006; SR-032–034; SCN-031–034/040",
+      "basis": "Define source-bound guidance selection, bounded authoring/correction and participant-assisted semantic task assessment, with justified MOD-008 allocation and existing assurance/recording cooperation. Target Design only; no observed usability or installed capability claim."
     }
   ]
 }

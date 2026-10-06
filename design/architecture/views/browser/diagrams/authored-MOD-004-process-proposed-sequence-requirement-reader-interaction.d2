@@ -1,0 +1,51 @@
+shape: sequence_diagram
+person: "Reader"
+navigation: "Architecture navigation\nSystem / Module scope and views"
+workspace: "Requirements workspace\nTree and local navigation state"
+index: "Embedded model index\nRecords and typed edges"
+details: "Entity detail pane"
+person -> navigation: "Open RigorLoop system root and select Requirements"
+navigation -> navigation: "Check explicit view enablement and system scope"
+unavailable: "If disabled or a Module-scoped Requirements URL is requested" {
+  navigation -> person: "Unavailable view with System / Module Summary links"
+}
+enabled: "If enabled at system scope" {
+  navigation -> workspace: "Admit system Requirements view"
+  workspace -> index: "Build containment and direct / inverse lookups"
+}
+invalid: "If required navigation data is malformed: stop tree rendering" {
+  index -> workspace: "Bounded diagnostic"
+  workspace -> person: "Requirement navigation unavailable"
+}
+valid: "With valid navigation data" {
+  index -> workspace: "System root, IR / SR / AR children and reference groups"
+  person -> workspace: "Expand an IR, its Features and a Feature's Functions"
+  workspace -> index: "Derive bounded occurrences from existing edges"
+  index -> workspace: "Reference rows with independent expansion keys"
+  person -> workspace: "Expand an SR and select a Function reference"
+  workspace -> index: "Resolve selected ID and direct relationships"
+  index -> details: "One Function definition and selected occurrence path"
+  workspace -> workspace: "Preserve occurrence expansion, selection, filter and focus"
+  person -> workspace: "Expand an AR and its accountable Module reference"
+  workspace -> index: "Resolve the AR's allocated_to edge"
+  index -> workspace: "One Module reference and expandable summary"
+  person -> workspace: "Select Module name"
+  workspace -> index: "Resolve the selected Module identity"
+  index -> details: "Module definition in the same panel"
+  person -> workspace: "Collapse a branch, search, or use Back / Reveal in tree"
+  workspace -> workspace: "Apply declared filter and occurrence-state rules"
+  workspace -> details: "Retain or restore the selected definition"
+  workspace -> person: "One tree with preserved selection and return focus"
+}
+missing: "If a requested identity is absent from this snapshot" {
+  index -> workspace: "Selected identity unavailable"
+  workspace -> person: "Explicit unavailable result with return navigation"
+}
+scope_change: "If the reader explicitly changes architecture scope" {
+  person -> navigation: "Select a Module scope or Open Module architecture"
+  navigation -> workspace: "Save system tree reading state"
+  navigation -> person: "Module Summary · no Requirements tab"
+  person -> navigation: "Select RigorLoop root, then Requirements"
+  navigation -> workspace: "Restore saved system tree state"
+  workspace -> person: "Requirements active at RigorLoop system scope"
+}

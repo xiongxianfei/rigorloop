@@ -68,7 +68,8 @@
       ],
       "behavior": [
         "Validate the staged backup and association before changing live state; recheck expected destination under maintenance exclusion. No implicit merge or refreshed engineering approval.",
-        "Retain before/candidate identities and prior operational bytes; keep access fenced through path replacement, validation and a durable activated marker. Before activation allow only verified finish/rollback; after activation permit finish but no rollback."
+        "Retain before/candidate identities and prior operational bytes; keep access fenced through path replacement, validation and a durable activated marker. Before activation allow only verified finish/rollback; after activation permit finish but no rollback.",
+        "For transfer, compose the selected backup with restoration only into a matching empty operational destination; expose exclusions, preserve the source and reject occupied/conflicting history. Project association is prepared explicitly outside maintenance and is never rewritten by this operation."
       ],
       "failure_behavior": [
         {
@@ -92,7 +93,8 @@
       ],
       "behavior": [
         "Schema upgrade creates its complete pre-upgrade backup and applies packaged ordered migrations to a staged candidate. Legacy import requires an absent destination, supported field mapping and explicit disposition of every selected source record.",
-        "Preserve required originals, unresolved obligations and original judgment meaning. Unknown formats, stale observations, unresolved dependencies or changed semantics block activation; activate through the same fenced replacement boundary as restore."
+        "Preserve required originals, unresolved obligations and original judgment meaning. Unknown formats, stale observations, unresolved dependencies or changed semantics block activation; activate through the same fenced replacement boundary as restore.",
+        "Maintain attributable source-writer quiescence through capture, final recheck and activation; the destination fence cannot supply it for legacy writers. Verify recoverable originals and reconcile every current consumer before activating one authoritative target; unresolved active dependencies or lost source control block continuation."
       ],
       "failure_behavior": [
         {
@@ -138,13 +140,42 @@
       ],
       "behavior": [
         "Take the closed TaskRequest; acquire admission and writer exclusion, compare the opaque Change revision and reconstruct all related effects against that snapshot. No caller-supplied record bytes, SQL or construction callback are admitted.",
-        "Validate the complete candidate, preserve omitted obligations, update support standing and coordinate selected attachments under MOD-011 ownership. Establish the selected receipt profile before commit through the shared pure MOD-010-owned codec, without exposing candidate or database capabilities.",
-        "Commit related records and their revisions atomically or abort the whole transaction before commitment. Return a typed MutationOutcome with actual effects. A confirmed commit survives output failure; uncertain effects remain unknown and require a current read before reconciliation."
+        "Validate the complete candidate, preserve omitted obligations, update support standing and coordinate selected attachments under MOD-011 ownership. Recheck declared compared external subjects before commitment. Establish the selected receipt profile, including a bounded final-basis observation reserve, through the shared pure MOD-010-owned codec without exposing candidate or database capabilities.",
+        "Commit related records and their revisions atomically or abort the whole transaction before commitment. After confirmed commit, re-observe the same declared compared subjects against the original expectations before returning the typed outcome. Detected drift or an unestablished final comparison retains saved, committed=true and the actual committed revision with a bounded source-conflict observation requiring current inspection and applicability reassessment; no rollback, replay, expectation refresh or automatic judgment update occurs. A confirmed commit survives output failure; uncertain effects remain unknown and require a current read before reconciliation."
       ],
       "failure_behavior": [
         {
           "condition": "Input, expected revision, support, writer admission or commit cannot be established.",
           "outcome": "Return the precise typed failure category and actual effect disposition. Do not invent a revision, silently merge stale intent or report an unknown commit as rejected with no effects."
+        }
+      ]
+    },
+    {
+      "name": "select_subject_history",
+      "purpose": "Select a coherent bounded retained history for an explicit recorded subject.",
+      "inputs": [
+        "Explicit associated project, finite retained Change scope, recorded subject key or exact original basis, literal supported filters, page bound and optional state-bound continuation."
+      ],
+      "preconditions": [
+        "The separately proposed history profile and complete cooperating writer/maintenance population are qualified; current v2/v4 support does not imply this capability."
+      ],
+      "outputs": [
+        "Bounded complete result units with originating Change/record/subject identities, normalized selection, captured history state, coverage limits, exhaustion and optional continuation; or explicit invalid, conflict, busy, unavailable or too-large outcome."
+      ],
+      "behavior": [
+        "Apply MOD-011 history-selection.md: MOD-010 owns admission/public presentation; MOD-011 owns recorded associations, coherent read snapshot, ordering and authenticated continuation.",
+        "Preserve original facts and partial/unavailable scope; no semantic relevance, current approval inference, implicit history reconstruction or mutation.",
+        "Keep the separate proposed operation distinct from current ordinary query grammar, schema and no-cursor result semantics.",
+        "MOD-010 performs structural and independently known request checks only; MOD-011 authenticates the opaque continuation and checks bound selection and captured state before any page results, retaining its key and state authority."
+      ],
+      "failure_behavior": [
+        {
+          "condition": "Association/retention coverage is missing, source/profile is unavailable, or selected scope is unreadable.",
+          "outcome": "Expose the actual missing or incomplete scope; do not present an empty complete history or initialize, recover or migrate storage."
+        },
+        {
+          "condition": "Continuation identity/state/selection fails or bounded complete output cannot be formed.",
+          "outcome": "Return the specified bounded rejection without silent restart, partial conflicting page, omitted narrative or cursor advance past an unreturned unit."
         }
       ]
     }
@@ -161,7 +192,8 @@
     "The new REM JSON authoring profile is not an accepted operational stored format by virtue of this Interface.",
     "Changing this contract requires coherent CLI consumer, persistence, and evidence/recovery reconciliation; prior subjects retain their original meaning.",
     "File/journal-specific historical rules describe the preceding executable. V4 uses SQLite directly for current typed accounts, selective retention and atomic per-Change updates. SQLite establishes its internal transaction state on opening; callers reconcile current context. The v3 recovery operation is not a v4 alias. The store-maintenance-v1 operations own backup, staged restoration and explicit migration; they require implementation qualification before adoption, with no runtime legacy fallback.",
-    "The deliberately installed successor executable implements v2/v4 operational commands only. Retained v3 operation clauses describe the preceding package, not a parallel dispatcher. Help/read semantics follow executing package identity; unknown/legacy input and absent v4 storage never trigger backend fallback. Explicit qualified import remains the sole successor legacy-data entrypoint."
+    "The deliberately installed successor executable implements v2/v4 operational commands only. Retained v3 operation clauses describe the preceding package, not a parallel dispatcher. Help/read semantics follow executing package identity; unknown/legacy input and absent v4 storage never trigger backend fallback. Explicit qualified import remains the sole successor legacy-data entrypoint.",
+    "The proposed subject-history operation is separately qualified under MOD-011 history-selection.md. Existing targeted-recording-v2/current v4 requests and installed command availability remain unchanged; no implicit cursor or association migration is introduced."
   ],
   "sources": [
     {
@@ -193,6 +225,16 @@
       "source": "SRC-SQLITE-ADOPTION",
       "locator": "packages/rigorloop/dist/lib/operational-store.js; operational-maintenance.js",
       "basis": "Current typed runtime binding and ordinary/maintenance recovery distinction; no execution approval."
+    },
+    {
+      "source": "SRC-OPERATIONAL-MAINTENANCE-DESIGN",
+      "locator": "SR-074–077; AR-052–055; SCN-070–073",
+      "basis": "Refine existing maintenance cooperation, same-project transfer, preserved-source migration and resumption boundaries without new requirements, public operations or runtime qualification."
+    },
+    {
+      "source": "SRC-SUBJECT-HISTORY-DESIGN",
+      "locator": "SR-078; FUNC-077; SCN-074",
+      "basis": "Define recorded subject association, coherent bounded history selection and state-bound continuation through existing command/storage owners. Target Design only; current ordinary queries, schema and installed capability remain unchanged."
     }
   ]
 }

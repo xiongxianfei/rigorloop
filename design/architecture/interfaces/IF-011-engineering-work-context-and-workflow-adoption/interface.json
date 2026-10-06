@@ -21,7 +21,8 @@
         "Return the current seven-section handoff: goal/scope/authority, governing basis, progress, open issues and rationale, relevant evidence, review standing, and next action. Preserve single-owner facts and distinguish missing/unknown from approved.",
         "Preserve references to authoritative definitions and recorded subjects rather than reconstructing them from private conversation or treating the checkout as complete history.",
         "Return semantic context from MOD-006/FUNC-025; the caller obtains current record observations through IF-004 and retains their exact identity.",
-        "Update at meaningful handoffs or material decision changes. Permit replacement of comparable working evidence and selective compaction after issue disposition; no activity replay or permanent attempt history is required. Completed accounts return historical meaning, not current system health."
+        "Update at meaningful handoffs or material decision changes. Permit replacement of comparable working evidence and selective compaction after issue disposition; no activity replay or permanent attempt history is required. Completed accounts return historical meaning, not current system health.",
+        "Apply MOD-006 README.md current handoff ownership and update protocol: bounded supported reads with complete selectors, coherent observations, explicit unresolved issue disposition and retained current reliance. Restored state exposes unavailable later work and does not renew authority or assessment applicability."
       ],
       "failure_behavior": [
         {
@@ -34,7 +35,7 @@
       "name": "prepare_workflow_adoption",
       "purpose": "Prepare or reconcile one bounded semantic adoption disposition.",
       "inputs": [
-        "Selected current and target workflow contract identities, affected active work and live consumer inventory.",
+        "Selected project scope, target workflow contract and attributable project authority; current contract/work identities and live consumer inventory where present, or explicit attributable absence of prior workflow/record dependencies with an empty active-work inventory for a new project.",
         "Compatibility/installation/publication observations, exact read basis and actor-supplied adoption decision or applicable authority assessment."
       ],
       "preconditions": [],
@@ -43,10 +44,10 @@
         "After an attempt, the observed coherent active contract or unavailable dependent scope, without assuming successful installation or publication."
       ],
       "behavior": [
-        "Use MOD-006/FUNC-078 to reconcile the entire selected adoption scope and its dependencies.",
+        "Use MOD-006/FUNC-078 to reconcile the entire selected adoption scope and its dependencies. Return the recording-compatibility disposition for new, compatible existing and migration-dependent work, including unmet necessary migration and preserved current authority. Absence of required facts cannot establish an empty dependency set. Admit established absence without inventing a prior contract or Change; missing, unreadable or uncertain evidence remains an unmet dependency.",
         "Keep proposal and milestone review history under original meanings; do not manufacture requirement or whole-change approval.",
         "Require fresh work and candidate identities before activation; a partial update cannot be advertised as one coherent replacement.",
-        "Supply decisions to the caller for supported recording and installation operations; this operation itself performs neither."
+        "Supply decisions to the caller for supported recording and installation operations; this operation itself initializes no store, creates no Change, publishes no records and activates no workflow."
       ],
       "failure_behavior": [
         {
@@ -76,6 +77,16 @@
       "source": "SRC-CURRENT-HANDOFF",
       "locator": "IF-011",
       "basis": "Refine existing current-state responsibility and selective retention; observed runtime mappings remain version-scoped."
+    },
+    {
+      "source": "SRC-RESUMPTION-AUTHORITY-DESIGN",
+      "locator": "SR-006/007; SCN-023/024; FUNC-025/026",
+      "basis": "Derive current handoff interpretation and action-bound authority through existing IF-011/009, with explicit participant recording, selective retention and one MOD-006 owner. Proposed Design only; no runtime adoption, execution or satisfaction claim."
+    },
+    {
+      "source": "SRC-ADOPTION-DEPENDENCY-REFINEMENT",
+      "locator": "SR-083; SCN-082; AR-038; FUNC-078",
+      "basis": "Refine the existing adoption responsibility to distinguish new, compatible and migration-dependent selected work. Necessary migration is an activation dependency; unsupported, absent or stale facts never imply successful adoption. Preserve original subjects, authority, custody and qualified successor ownership; target Design only."
     }
   ]
 }

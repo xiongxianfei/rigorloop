@@ -1,0 +1,63 @@
+{
+  "id": "AR-077",
+  "type": "allocated-requirement",
+  "title": "Interpret current handoffs with explicit reliance and gaps",
+  "status": "draft",
+  "statement": "The MOD-006 responsibility shall interpret current handoffs with explicit reliance and gaps within the selected project and Change scope.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Resumption can otherwise invent missing context or authority and lose obligations still relied upon.",
+      "desired_outcome": "Interpret current handoffs with explicit reliance and gaps."
+    },
+    "why": {
+      "rationale": "SR-006 requires a complete accountable contribution beyond general workflow progression or adoption."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineers resuming work",
+        "Project decision owners",
+        "MOD-006 maintainers"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "A participant resumes or progresses governed work and prepares its next handoff."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "The selected project, Change, adopted contract and exact action context."
+      ]
+    },
+    "how": {
+      "approach": "Apply the MOD-006 README.md handoff and authority collaboration through IF-011/009 with explicit participant-mediated IF-004 recording."
+    },
+    "how_much": {
+      "scope": "Semantic resumption or authority interpretation. Operational maintenance execution, runtime adoption and overall IR-003 satisfaction remain separate."
+    }
+  },
+  "acceptance_criteria": [
+    "Return all seven current handoff sections through IF-011 from authoritative record and subject references, with one semantic owner per fact and an identified next action, reason and responsible owner.",
+    "Use attributable supported bounded reads and complete selectors over one coherent project, Change and contract basis; report omitted, unavailable, stale or conflicting facts without inferring absence, approval or completion.",
+    "Keep actual outcomes, planned checks, not-applicable explanations, issue disposition, review standing and authority distinct; route returns changed-subject assessment applicability to its owner.",
+    "Prepare meaningful updates before dependent decisions or transfer and carry them through explicit IF-004 recording, preserving concurrent facts and reconciling uncertain effects before retry.",
+    "Permit comparable current summary replacement and selective detail retention while preserving unresolved issues and result, scope, basis, limitations and support still relied upon; require attributable disposition before compaction.",
+    "Expose restored retained state and unavailable later work without renewing authority or review; keep compact historical completion and its acceptance meaning distinct from current health and linked regression work."
+  ],
+  "assumptions": [],
+  "constraints": [
+    "Proposed Design; no implementation, executed criterion verification or satisfaction claim."
+  ],
+  "allocated_to": "MOD-006",
+  "constrains": [
+    "FUNC-025"
+  ],
+  "sources": [
+    {
+      "source": "SRC-RESUMPTION-AUTHORITY-DESIGN",
+      "locator": "SR-006/007; SCN-023/024; FUNC-025/026",
+      "basis": "Derive current handoff interpretation and action-bound authority through existing IF-011/009, with explicit participant recording, selective retention and one MOD-006 owner. Proposed Design only; no runtime adoption, execution or satisfaction claim."
+    }
+  ]
+}

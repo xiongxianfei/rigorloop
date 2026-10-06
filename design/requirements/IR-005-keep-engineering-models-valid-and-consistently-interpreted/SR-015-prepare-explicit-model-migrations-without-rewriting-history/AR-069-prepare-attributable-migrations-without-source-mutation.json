@@ -1,0 +1,63 @@
+{
+  "id": "AR-069",
+  "type": "allocated-requirement",
+  "title": "Prepare attributable migrations without source mutation",
+  "status": "draft",
+  "statement": "The Interpretation and validation Module shall produce isolated model migration candidates from explicit source-to-target mappings, account for preserved and intentionally changed meaning, and expose target and consumer assessment limits before controlled adoption.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Whole-model checks and migration preparation can hide incomplete rules or alter meaning while appearing valid.",
+      "desired_outcome": "Prepare attributable migrations without source mutation."
+    },
+    "why": {
+      "rationale": "SR-015 requires accountable diagnostics and candidate outcomes within MOD-003."
+    },
+    "who": {
+      "stakeholders": [
+        "Model authors and maintainers",
+        "Engineering reviewers",
+        "MOD-003 maintainers"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "A participant requests selected-state conformance or an explicit model migration candidate."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "MOD-003 logical request boundary and pure IF-002 operations over IF-001 captured input."
+      ]
+    },
+    "how": {
+      "approach": "Bind explicit source/profile/mapping scope, preserve all relevant findings and missingness, and return separate attributable mechanical, semantic and adoption limits."
+    },
+    "how_much": {
+      "scope": "All parent SR-015 criteria for the selected finite model; capture custody, existing interpretation and later adoption retain their separate owners."
+    }
+  },
+  "acceptance_criteria": [
+    "Bind source state, both profiles, explicit mapping and target candidate membership/content in an inspectable transformation report.",
+    "Preserve stable identities and equivalent authoritative relationship meaning for representation changes; attribute every intentional addition, removal, identity or semantic change to its supplied basis.",
+    "Account for all included source content and report unmapped or unknown facts, unsupported transforms, ambiguous rule overlaps, target conflicts and failed or partial transformation without silent loss or repair.",
+    "Assess whole-model target conformance and each declared consumer against the exact candidate, retaining provenance, mismatches, unassessed checks and inventory completeness; required gaps withhold readiness.",
+    "Keep semantic preservation review, mechanical validity, consumer compatibility and controlled-adoption authority distinct; a complete candidate does not adopt the target profile.",
+    "Prepare only in isolated target buffers and preserve source content, historical profile meaning and current selection after failure, cancellation or abandonment; uncertain response cannot establish a completed available candidate."
+  ],
+  "assumptions": [],
+  "constraints": [
+    "Proposed Design only; no product runtime, current migration support, implementation or verification is claimed."
+  ],
+  "allocated_to": "MOD-003",
+  "constrains": [
+    "FUNC-014"
+  ],
+  "sources": [
+    {
+      "source": "SRC-CONFORMANCE-MIGRATION-DESIGN",
+      "locator": "IR-005; SR-012–015; SCN-011–014",
+      "basis": "Derive whole-model diagnostics, separate mechanical/review presentation and source-preserving explicit migration candidates through MOD-003. Reuse capture, interpretation and scoped-check ownership; proposed Design only."
+    }
+  ]
+}

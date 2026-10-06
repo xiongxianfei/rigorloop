@@ -28,7 +28,7 @@
   ],
   "design_limits": [
     "Current Installation rules retain the exact supported targets, trusted acquisition channels, conflict units, flags, diagnostics, and per-unit partial-failure guarantees.",
-    "Source-attributed implementation, invocation, and placement mappings are recorded in subordinate realization facets and IF-006 interaction. This draft does not promise whole-project atomic rollback or platform qualification; IR-010 ARs and complete implementation conformance remain deferred.",
+    "Source-attributed implementation, invocation, and placement mappings are recorded in subordinate realization facets and IF-006 interaction. The parent MOD-019 README supplies IR-010 composition and the SR-064–066 allocation rationale. This draft does not promise whole-project atomic rollback or platform qualification; complete implementation conformance remains separate work.",
     "The requirement-first workflow design supplies the selected SR-079–083 collaboration and AR allocation. Earlier broader deferrals remain only outside that bounded extension; existing runtime observations and installed contracts do not implement the target design."
   ],
   "sources": [

@@ -5,7 +5,7 @@
   "status": "draft",
   "description": "Prepare an attributable transition from the selected current workflow to a coherent replacement for bounded active work, and reconcile observed adoption or interruption without rewriting prior judgments. Change Control owns the semantic disposition; package installation and record publication remain separate operations.",
   "inputs": [
-    "Selected project and Change scope, current and proposed workflow contract identities, and attributable adoption authority.",
+    "Selected project and bounded work scope, target workflow contract and attributable project authority; retain current contract and work identities where present, or supplied attributable evidence of no prior workflow/record dependencies and an empty active-work inventory for a new project.",
     "Active work, exact requirement/design/review subjects and dependencies, and candidate guidance/validator/recording compatibility observations.",
     "Observed installation and publication outcomes when reconciling an attempted adoption."
   ],
@@ -18,8 +18,9 @@
   ],
   "behavior": [
     "Compare selected current and target contracts and account for every affected active Change, live consumer and retained historical dependency.",
+    "Admit an established empty project inventory without inventing a prior contract or Change. Distinguish known absence from missing, unreadable or uncertain evidence; the latter leaves preparation incomplete. Semantic preparation does not initialize storage, create work records or activate the target. Subsequent execution requires its own supported operations and actual results.",
     "Reuse supported current requirements and evidence only under an explicit applicability conclusion; old proposal or milestone judgments retain their original scope.",
-    "Require coherent canonical guidance, generated package inventory, validation and selected recording support before proposing activation. Database migration has separately declared prerequisites.",
+    "Require coherent canonical guidance, generated package inventory, validation and compatible selected recording support before proposing activation. Classify the actual selected dependencies: a new project without earlier records needs no historical import; compatible existing work still needs authority and dependency checks; work relying on incompatible earlier records requires qualified migration before activation. Keep affected adoption blocked if necessary migration is unavailable; empty replacement records cannot discharge existing dependencies, and unrelated history is not automatically imported.",
     "Bind the disposition to the inspected work and package identities. A changed basis invalidates dependent activation and requires fresh reconciliation.",
     "Reconcile actual outcomes after interruption. Keep an intact prior contract identifiable, or report affected operation unavailable when neither old nor new is coherent. Never infer rollback or repeat writes from intent.",
     "Supply the authorized adoption decision for controlled transition recording; record custody, physical installation and executing external actions remain with their owners."
@@ -32,6 +33,10 @@
     {
       "condition": "The basis changes or installation/publication is interrupted.",
       "outcome": "Preserve original subjects and actual observations; recompute a safe recovery or renewed adoption disposition before further dependent work."
+    },
+    {
+      "condition": "Selected work requires migration whose support or outcome is unavailable, incompatible or uncertain.",
+      "outcome": "Return the affected adoption dependency and actual known authority without activating the successor; preserve work and original judgments. Fresh supported observations and a reconciled disposition are required before dependent continuation."
     }
   ],
   "allocated_to": "MOD-006",
@@ -40,6 +45,11 @@
       "source": "SRC-WORKFLOW-DESIGN",
       "locator": "SR-083; FUNC-078",
       "basis": "Draft integrated design from the accepted requirement-first basis. This defines target responsibility and cooperation, not installed capability, design approval, runtime evidence or SQLite adoption."
+    },
+    {
+      "source": "SRC-ADOPTION-DEPENDENCY-REFINEMENT",
+      "locator": "SR-083; SCN-082; AR-038; FUNC-078",
+      "basis": "Refine the existing adoption responsibility to distinguish new, compatible and migration-dependent selected work. Necessary migration is an activation dependency; unsupported, absent or stale facts never imply successful adoption. Preserve original subjects, authority, custody and qualified successor ownership; target Design only."
     }
   ]
 }

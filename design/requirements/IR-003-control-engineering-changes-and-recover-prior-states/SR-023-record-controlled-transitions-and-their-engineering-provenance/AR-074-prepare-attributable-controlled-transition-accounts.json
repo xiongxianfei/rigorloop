@@ -1,0 +1,63 @@
+{
+  "id": "AR-074",
+  "type": "allocated-requirement",
+  "title": "Prepare attributable controlled transition accounts",
+  "status": "draft",
+  "statement": "The MOD-006 responsibility shall prepare attributable controlled transition accounts within the exact selected scope, preserving original meaning and explicit incomplete outcomes.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Transition meaning and participant-assisted recording cooperation can otherwise conflate preparation with confirmed effects or hide unavailable content.",
+      "desired_outcome": "Prepare attributable controlled transition accounts."
+    },
+    "why": {
+      "rationale": "SR-023 requires this accountable architectural contribution; other contributions retain their own owners."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineers and maintainers",
+        "Reviewers and project decision owners",
+        "MOD-006 maintainers"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "A participant requests transition meaning and participant-assisted recording cooperation."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "The selected local project state and declared retained/current material under state-control.md."
+      ]
+    },
+    "how": {
+      "approach": "Apply state-control.md with exact identity/scope and original interpretation, explicit custody/authority boundaries and attributable incomplete or confirmed outcomes."
+    },
+    "how_much": {
+      "scope": "Transition meaning and participant-assisted recording cooperation. No full IR003 assessment, runtime qualification, destructive adoption or operational maintenance execution is claimed."
+    }
+  },
+  "acceptance_criteria": [
+    "Identify Change/project, initiating basis, affected subjects/revisions, actors, decisions, exact originating/resulting baselines and adopted outcome for an established transition.",
+    "Keep proposal, observed execution, accountable decision and confirmed retention separate; missing baseline, decision or execution context remains an incomplete transition.",
+    "Carry actual prepared content through explicit supported recording; storage success grants neither authority nor semantic approval and uncertain effects require scoped readback.",
+    "Preserve significant historical decisions and completion meaning through explicit attributable corrections; routine updates need not retain every former version.",
+    "Keep transition provenance inspectable independently of current definitions, while current-model reading requires no Change replay; unavailable history remains unavailable rather than no Change.",
+    "Permit a compact completed operational acceptance account without logging every action/check, preserving original baseline meaning and still-relied-on support."
+  ],
+  "assumptions": [],
+  "constraints": [
+    "Proposed Design; no implementation, executed criterion verification or satisfaction claim."
+  ],
+  "allocated_to": "MOD-006",
+  "constrains": [
+    "FUNC-023"
+  ],
+  "sources": [
+    {
+      "source": "SRC-BASELINE-STATE-DESIGN",
+      "locator": "SR-020–024; SCN-019–022/025",
+      "basis": "Define immutable baseline custody, original-meaning comparison/recovery, attributable transition preparation and dependency-safe retirement. Preserve selective retention and separate action authority, operational maintenance and actual execution; proposed Design only."
+    }
+  ]
+}

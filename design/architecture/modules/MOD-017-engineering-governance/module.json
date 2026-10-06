@@ -9,7 +9,11 @@
     "Keep recording a decision distinct from deciding its authority or evidential adequacy, and preserve the separate roles of observations, judgments, and historical baselines.",
     "Connect model-authoring guidance and reusable improvement lessons to the governing engineering meanings without duplicating the canonical model rules or published invocation procedures.",
     "Provide IF-008 authoring guidance, IF-009 applicable action authority, and IF-010 claim/evidence applicability as distinct Governance contracts. MOD-008, MOD-006, and MOD-007 retain their behavioral contributions; MOD-005 consumes model-state inspection through IF-007 without duplicating parent consumption.",
-    "Provide IF-011 work-context/adoption cooperation through MOD-006, alongside IF-008 guidance, IF-009 authority and IF-010 evidence support for the requirement-first workflow."
+    "Provide IF-011 work-context/adoption cooperation through MOD-006, alongside IF-008 guidance, IF-009 authority and IF-010 evidence support for the requirement-first workflow.",
+    "Provide IF-014 assurance-content preparation through MOD-007 to MOD-012, composed with IF-010 evidence support and separate IF-009 authority; preparation does not retain records.",
+    "Compose SR020–024 under state-control.md: MOD005 baselines and MOD006 transition/retirement, with child IF016 exposed to guided recording and IF015 model custody.",
+    "Compose IR006 guidance and semantic task preparation/comparison through MOD008 IF008, then existing MOD007 IF014/010 assurance through MOD012; source selection and task results create no authority or retention.",
+    "Provide IF-017 through MOD-009 for supported lessons and improvement preparation; compose separate change-control, assurance and custody without parent ownership of child state."
   ],
   "owned_state": [],
   "scope": {
@@ -25,14 +29,18 @@
     "IF-008",
     "IF-009",
     "IF-010",
-    "IF-011"
+    "IF-011",
+    "IF-014",
+    "IF-017"
   ],
   "consumes": [],
   "design_limits": [
-    "SCN-019 content inspection, SCN-053 adopted-REM authoring guidance, and SCN-066 authority/evidence support now have selected cross-parent contracts. MOD-005 through MOD-009 retain wider cooperation and AR analysis, including retention confirmation and learning.",
+    "State-control.md supplies SR020–024 retention confirmation, comparison/recovery and transition/retirement cooperation. Full resumption/authority and other unassessed IR003 criteria, plus guidance/learning outside their selected IR006/IR007 scope, remain separate.",
     "MOD-008 contributes semantic authoring guidance to IF-008; MOD-012 retains published invocation and specialist composition. IF-009 authority and IF-010 evidence support remain distinct from each other and from release qualification.",
     "No parent Function/AR allocation, persistent state, verification execution, or physical realization is introduced by these contracts. Their presence does not complete the selected Scenarios end to end.",
-    "The requirement-first workflow design supplies the selected SR-079–083 collaboration and AR allocation. Earlier broader deferrals remain only outside that bounded extension; existing runtime observations and installed contracts do not implement the target design."
+    "The requirement-first workflow design supplies the selected SR-079–083 collaboration and AR allocation. Earlier broader deferrals remain only outside that bounded extension; existing runtime observations and installed contracts do not implement the target design.",
+    "IR-004 assurance-content.md completes selected SCN-026–029 preparation and retention cooperation through existing Operations. Earlier wider assurance deferrals do not apply to that bounded Design; runtime guidance qualification remains separate.",
+    "IR006 guidance.md completes the selected guidance selection/correction and task assessment Design. Actual usability observations, installed instruction delivery and learning outside the selected IR007 scope remain separate."
   ],
   "sources": [
     {
@@ -49,6 +57,26 @@
       "source": "SRC-WORKFLOW-DESIGN",
       "locator": "MOD-017",
       "basis": "Draft integrated design from the accepted requirement-first basis. This defines target responsibility and cooperation, not installed capability, design approval, runtime evidence or SQLite adoption."
+    },
+    {
+      "source": "SRC-ASSURANCE-CONTENT-DESIGN",
+      "locator": "IR-004; SR-025–029; SCN-026–029",
+      "basis": "Derive assessor-assisted assurance preparation, explicit retention cooperation and scoped reliance through MOD-007 and IF-014. Preserve actual judgment, command and persistence ownership; target Design only."
+    },
+    {
+      "source": "SRC-BASELINE-STATE-DESIGN",
+      "locator": "SR-020–024; SCN-019–022/025",
+      "basis": "Define immutable baseline custody, original-meaning comparison/recovery, attributable transition preparation and dependency-safe retirement. Preserve selective retention and separate action authority, operational maintenance and actual execution; proposed Design only."
+    },
+    {
+      "source": "SRC-AUTHORING-GUIDANCE-DESIGN",
+      "locator": "IR-006; SR-032–034; SCN-031–034/040",
+      "basis": "Define source-bound guidance selection, bounded authoring/correction and participant-assisted semantic task assessment, with justified MOD-008 allocation and existing assurance/recording cooperation. Target Design only; no observed usability or installed capability claim."
+    },
+    {
+      "source": "SRC-LESSON-IMPROVEMENT-DESIGN",
+      "locator": "IR-007; SR-035–038; SCN-035–039",
+      "basis": "Refine supported lesson characterization, bounded contextual use, accountable proposals and opportunity-based effect assessment through MOD-009 and parent IF-017. Preserve existing Learn confirmation/custody/route boundaries and separate controlled adoption, assurance and retention. Proposed Design only."
     }
   ]
 }

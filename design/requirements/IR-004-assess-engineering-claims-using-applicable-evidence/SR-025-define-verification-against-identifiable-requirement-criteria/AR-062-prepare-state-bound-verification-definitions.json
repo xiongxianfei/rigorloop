@@ -1,0 +1,61 @@
+{
+  "id": "AR-062",
+  "type": "allocated-requirement",
+  "title": "Prepare state-bound verification definitions",
+  "status": "draft",
+  "statement": "The Review and verification Module shall prepare identifiable method definitions bound to exact criterion and subject bases, preserving incomplete context and revised method meaning separately from actual observations.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Assurance preparation and retention can conflate planned methods, actual observations, semantic judgment and current reliance.",
+      "desired_outcome": "Prepare state-bound verification definitions."
+    },
+    "why": {
+      "rationale": "SR-025 needs accountable assurance content and failure semantics in MOD-007."
+    },
+    "who": {
+      "stakeholders": [
+        "Verification engineers and independent reviewers",
+        "Project decision owners",
+        "MOD-007 and MOD-012 maintainers"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "An assessor prepares or reassesses assurance content for a declared engineering claim."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "MOD-007 contribution to MOD-017 IF-014; guided recording through MOD-012 and existing IF-004/003."
+      ]
+    },
+    "how": {
+      "approach": "Apply assurance-content.md to exact supplied bases, preserve gaps and actual actor decisions, then confirm selected retention separately."
+    },
+    "how_much": {
+      "scope": "All parent SR-025 criteria within the declared finite claim; operational persistence and execution authority retain their existing owners."
+    }
+  },
+  "acceptance_criteria": [
+    "Return each definition with criterion content/basis, intended scope, subject/state, technique, conditions, expected observations and accountable author, including manual techniques.",
+    "Identify missing or ambiguous required context and affected scope without presenting an incomplete definition as complete or performed.",
+    "Bind revisions to new content identities and preserve the method basis needed to interpret observations still relied upon; mutable paths alone cannot replace that basis.",
+    "Carry prepared method content through explicit retained support and actual recording outcomes; neither preparation, a retained method nor a successful save establishes observed criterion satisfaction."
+  ],
+  "assumptions": [],
+  "constraints": [
+    "Target Design; no implemented automation, executed verification or requirement satisfaction is asserted."
+  ],
+  "allocated_to": "MOD-007",
+  "constrains": [
+    "FUNC-027"
+  ],
+  "sources": [
+    {
+      "source": "SRC-ASSURANCE-CONTENT-DESIGN",
+      "locator": "IR-004; SR-025–029; SCN-026–029",
+      "basis": "Derive assessor-assisted assurance preparation, explicit retention cooperation and scoped reliance through MOD-007 and IF-014. Preserve actual judgment, command and persistence ownership; target Design only."
+    }
+  ]
+}

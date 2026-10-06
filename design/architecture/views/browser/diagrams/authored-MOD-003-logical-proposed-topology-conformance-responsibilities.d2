@@ -1,0 +1,10 @@
+direction: down
+participant: "Engineering participant\nSelected state, scope, mapping and supplied assessments"
+coordinator: "MOD-003 request coordinator\nCapture before pure interpretation"
+storage: "MOD-001 / IF-001\nImmutable raw content and membership"
+checks: "MOD-003 / IF-002\nDeclared-profile diagnostics and candidate preparation"
+result: "Attributable result\nFindings, unassessed scope, candidate and readiness limits"
+participant -> coordinator
+coordinator -> storage
+coordinator -> checks
+checks -> result

@@ -1,0 +1,12 @@
+# Presentation registration; engineering meaning remains in the owning README.
+version = 1
+
+[[topics]]
+id = "deliver-identified-product"
+title = "Deliver an identified product"
+view = "process"
+kind = "sequence"
+qualification = "proposed"
+source = "README.md"
+anchor = "deliver-identified-product"
+description = "Compose isolated production, exact-candidate qualification, authorized publication, public observation and trusted bounded installation. Child contracts retain identity, authority, failure and recovery detail; the view establishes no actual release or customer-product qualification."

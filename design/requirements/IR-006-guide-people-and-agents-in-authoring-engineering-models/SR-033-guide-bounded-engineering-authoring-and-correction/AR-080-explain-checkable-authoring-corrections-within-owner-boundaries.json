@@ -1,0 +1,61 @@
+{
+  "id": "AR-080",
+  "type": "allocated-requirement",
+  "title": "Explain checkable authoring corrections within owner boundaries",
+  "status": "draft",
+  "statement": "The Authoring guidance Module shall explain a supported authoring or correction outcome from its identified canonical rule and subject basis, preserving method ownership, unresolved decisions, representation limits and separate execution authority.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "A structural diagnostic or plausible example can be mistaken for a correct authorized engineering edit.",
+      "desired_outcome": "Explain checkable authoring corrections within owner boundaries."
+    },
+    "why": {
+      "rationale": "SR-033 needs an accountable MOD-008 obligation at the IF-008 guidance boundary; existing workflow AR-029/033 do not cover this complete guidance responsibility."
+    },
+    "who": {
+      "stakeholders": [
+        "New REM authors with basic engineering knowledge",
+        "Experienced authors/reviewers and engineering agents",
+        "Guidance maintainers and accountable assessors"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "During the selected authoring/correction or prepared guidance-assessment activity, and when its material source or subject basis changes."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "MOD-008 contribution to MOD-017 IF-008, with MOD-012 guided consumption and existing IF-014 assurance/IF-004 recording when selected."
+      ]
+    },
+    "how": {
+      "approach": "Apply guidance.md to exact declared inputs and owned source meanings; preserve actor decisions, incomplete scope and separately observed effects."
+    },
+    "how_much": {
+      "scope": "The complete allocated contribution to SR-033 within the declared finite activity/profile/task scope; no universal usability, runtime automation or population claim."
+    }
+  },
+  "acceptance_criteria": [
+    "Explain 5W2H and single-parent requirement derivation, black-box Scenarios, Feature/Function distinctions and consistent AR/Function/Module and Interface responsibility using applicable rules and worked reasoning.",
+    "For an identifiable finding, relate the diagnostic, affected subject and rule to a proposed correction and applicable checks; missing or changed basis prevents an unsupported complete-fix claim.",
+    "For rename and retirement, explain preserved identity/parentage and reference reconciliation or explicit surviving-obligation disposition and recoverable historical meaning; do not execute the action through guidance.",
+    "Return unresolved decisions, unsupported representations and authority limits with the next responsible clarification; do not treat a recommendation, conformant example or completed explanation as approval or satisfaction."
+  ],
+  "assumptions": [],
+  "constraints": [
+    "Guidance and Design coverage do not establish participant success, execution authority or installed support."
+  ],
+  "allocated_to": "MOD-008",
+  "constrains": [
+    "FUNC-033"
+  ],
+  "sources": [
+    {
+      "source": "SRC-AUTHORING-GUIDANCE-DESIGN",
+      "locator": "IR-006; SR-032–034; SCN-031–034/040",
+      "basis": "Define source-bound guidance selection, bounded authoring/correction and participant-assisted semantic task assessment, with justified MOD-008 allocation and existing assurance/recording cooperation. Target Design only; no observed usability or installed capability claim."
+    }
+  ]
+}

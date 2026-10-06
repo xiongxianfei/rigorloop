@@ -2,7 +2,7 @@
 (() => {
   "use strict";
   const main = document.getElementById("main");
-  let model;
+  let model, renderedHash = null;
   try {
     model = JSON.parse(document.getElementById("architecture-model").textContent);
   } catch (_) {
@@ -817,11 +817,12 @@
   }
   function scopeRoute(owner, view) {
     if (!owner) return view === "summary" ? "#home" : viewRoute(view);
-    return view === "summary" ? entityRoute(owner) : `#${view}/${owner}`;
+    return ["summary", "requirements"].includes(view) ? entityRoute(owner) : `#${view}/${owner}`;
   }
   function architectureContext(route) {
     const [kind, id] = route;
     if (kind === "module" && modules[id]) return {owner:id, view:"summary"};
+    if (kind === "requirements" && requirementsEnabled) return {owner:null, view:"requirements"};
     if (kind === "home") return {owner:null, view:"summary"};
     if (kind === "overview") return {owner:null, view:"logical"};
     if (viewKinds.includes(kind)) return {owner:modules[id] ? id : null, view:kind};
@@ -831,7 +832,7 @@
   }
   function architectureViewNavigation(context) {
     const nav = node("nav", "architecture-view-navigation"); nav.setAttribute("aria-label", "Architecture views");
-    ["summary", ...viewKinds].forEach(kind => {
+    ["summary", ...viewKinds, ...(!context.owner && requirementsEnabled ? ["requirements"] : [])].forEach(kind => {
       const item = link(nice(kind), scopeRoute(context.owner, kind));
       if (kind === context.view) item.setAttribute("aria-current", "page");
       nav.append(item);
@@ -1248,7 +1249,7 @@
     situation.append(node("h3", "", "Recorded stakeholder interaction"), steps);
     main.append(detail("Stakeholder situation and interaction", situation), scenarioTraceability(slice));
     const related = relatedViews(list(slice.modules).concat(list(slice.context_modules))); if (related) main.append(related);
-    main.append(sourceDetails(id));
+    main.append(requirementIncoming(id), sourceDetails(id));
   }
   function cliReadingLinks() {
     const result = node("div", "link-row");
@@ -1516,7 +1517,7 @@
     }
     details.append(detail("Functions and requirement allocations", allocations, !logical));
     if (record.design_limits?.length) details.append(detail("Design limits", valueView(record.design_limits)));
-    details.append(sourceDetails(id)); main.append(details);
+    details.append(sourceDetails(id)); main.append(requirementIncoming(id), details);
   }
   function renderInterface(id) {
     if (!interfaces[id]) return notFound("Interface", id);
@@ -1542,7 +1543,7 @@
     });
     main.append(section("Operations", operations));
     main.append(detail("Consistency and compatibility", recordFields(record, ["consistency_rules", "compatibility_rules"])));
-    main.append(sourceDetails(id));
+    main.append(requirementIncoming(id), sourceDetails(id));
   }
   function catalogItems(kind) {
     return catalogs.filter(catalog => catalogKind(catalog) === kind).flatMap(catalog => list(catalog.entries).map(entry => ({catalog,entry})));
@@ -1659,11 +1660,421 @@
     if (entry.mapping_pointer) sources.append(node("p", "small muted", `Mapping: ${entry.mapping_pointer}`));
     main.append(detail("Mapping source", sources));
   }
+  // Requirements are a finite projection of canonical parent/relationship edges.
+  // Occurrences own expansion; the shared entity record owns the definition.
+  const requirementsEnabled = model.system_requirement_view === true;
+  const requirementTypes = new Set(["initial-requirement", "system-requirement", "allocated-requirement"]);
+  const isRequirement = id => requirementTypes.has(data(id).type);
+  const requirementState = {expanded:new Set(["system"]), query:"", filter:"", selected:null, panel:null, scroll:0};
+  let requirementNodes = null, requirementIndex = new Map();
+  function persistRequirementState() {
+    renderedHash=location.hash;
+    if (location.hash.startsWith("#requirements")) history.replaceState({...history.state, requirementView:{...requirementState, sourceDigest:model.source_digest, expanded:[...requirementState.expanded]}}, "");
+  }
+  const assessmentLabels={unknown:"Unknown","not-started":"Not started",partial:"Partial",implemented:"Implemented","not-assessed":"Not assessed",passed:"Passed",failed:"Failed","needs-reassessment":"Needs reassessment"};
+  Object.assign(assessmentLabels,{covered:"Covered",gap:"Gap","not-reviewed":"Not reviewed"});
+  function requirementChildren(id) {
+    return [...new Set(list(model.relationships).filter(edge=>edge.relation==="parent" && edge.target===id && isRequirement(edge.source)).map(edge=>edge.source))].sort();
+  }
+  function designState(id) {return model.design_reviews?.[id]?.current_state || "not-reviewed";}
+  function requirementEvaluationBadges(id) {
+    const badges=deliveryBadges(id), state=designState(id);
+    badges.setAttribute("aria-label","Requirement design, implementation and verification");
+    badges.prepend(node("span",`delivery-assessment-badge design-${state}`,`Design: ${assessmentLabels[state]}`));
+    return badges;
+  }
+  function requirementEvaluationDetails(id) {
+    const body=node("section","requirement-evaluation-detail"), account=model.design_reviews?.[id], record=data(id), children=requirementChildren(id);
+    body.append(node("h3","","Requirement evaluation"),requirementEvaluationBadges(id));
+    if(!account) body.append(node("p","","Design: no applicable design review is selected for this requirement."));
+    else {
+      body.append(node("p","",account.summary),node("p","small",`Scope: ${account.scope}`),node("p","small muted",`Reviewed by ${account.actor} · ${account.reported_at}`));
+      if(account.applicability.length)body.append(node("p","assessment-stale",`Historical design result: ${assessmentLabels[account.state]}. ${account.applicability.join(" ")}`));
+      account.limitations.forEach(text=>body.append(node("p","small",`Limitation: ${text}`)));
+      const criteria=node("ol","evaluation-criteria");
+      account.criteria.forEach(c=>{const item=node("li");item.append(node("p","",c.text),node("p","",`${assessmentLabels[c.state]}${account.applicability.length?" (historical)":""}: ${c.explanation}`));criteria.append(item);});
+      const outcomeBasis=account.outcome_basis;
+      body.append(detail(outcomeBasis?(account.applicability.length?"Historical assessed stakeholder outcomes":"Assessed stakeholder outcomes"):(account.definition_current?"Reviewed design criteria":"Historical reviewed design criteria"),criteria,true));
+      if(outcomeBasis) {
+        const basis=node("div","assessment-sources outcome-basis-sources");
+        basis.append(node("p","",`Reviewed stakeholder outcome basis: ${outcomeBasis.identity}`),node("p","","These reviewed outcomes interpret the IR need and its Features and Scenarios. They are not canonical IR acceptance criteria or a child-status roll-up."));
+        outcomeBasis.outcomes.forEach(outcome=>{basis.append(node("p","",`Outcome ${outcome.number} sources:`));outcome.sources.forEach(source=>basis.append(node("p","small",`${source.path} · ${source.identity}`)));});
+        outcomeBasis.support.forEach(support=>{const row=node("p","small");row.append(entityLink(support.requirement),document.createTextNode(` · Selected Design account: ${support.identity}`));basis.append(row);});
+        body.append(detail("Stakeholder outcome basis and relied-upon SR accounts",basis));
+      }
+      if(account.allocation)body.append(node("p","notice",`${account.applicability.length?"Historical allocation":"Allocation"}: ${{required:"AR required","not-required":"No further AR needed","review-needed":"Review needed",deferred:"Deferred"}[account.allocation.state]}. ${account.allocation.explanation}`));
+      if(account.allocation && account.applicability.length)body.append(node("p","notice","Allocation review needed: the selected allocation basis has changed."));
+      const sources=node("div","assessment-sources");
+      sources.append(node("p","",`Change: ${account.review.change} · Design Review: ${account.review.id}`),node("p","",`Definition: ${account.definition.path} · ${account.definition.identity}`));
+      account.subjects.forEach(subject=>sources.append(node("p","",`${subject.path} · ${subject.identity}`)));
+      body.append(detail("Design review sources and exact identities",sources));
+    }
+    if(record.type!=="allocated-requirement") {
+      body.append(node("p","evaluation-child-count",`${children.length} direct ${record.type==="initial-requirement"?"SR":"AR"} children. Child counts do not determine this requirement’s result.`));
+      for(const [kind,label] of [["design","Design"],["implementation","Implementation"],["verification","Verification"]]) {
+        const counts=new Map();
+        children.forEach(child=>{const state=kind==="design"?designState(child):(model.delivery_assessments?.[child]?.[kind].state || (kind==="implementation"?"unknown":"not-assessed"));counts.set(state,(counts.get(state)||0)+1);});
+        body.append(node("p","evaluation-child-count",`Child ${label}: ${children.length?[...counts].map(([state,count])=>`${assessmentLabels[state]}: ${count}`).join(" · "):"No children declared"}`));
+      }
+
+      if(record.type==="system-requirement" && !children.length && account?.allocation)body.append(node("p","notice","No AR declared."));
+      if(record.type==="system-requirement" && !children.length && !account?.allocation)body.append(node("p","notice","No AR declared. Allocation review needed; absence alone does not establish a design gap or implementation failure."));
+    }
+    if(record.type==="initial-requirement" && !account)body.append(node("p","","Stakeholder outcome basis: not reviewed. This IR needs an explicit assessment of its stakeholder outcomes against its need, Features and Scenarios. Child SR results do not establish IR satisfaction."));
+    return body;
+  }
+  function deliveryBadges(id) {
+    const account=model.delivery_assessments?.[id];
+    const badges=node("span","delivery-assessment-badges");
+    badges.setAttribute("role","group");badges.setAttribute("aria-label","Requirement implementation and verification");
+    badges.append(node("span","delivery-assessment-badge",`Implementation: ${assessmentLabels[account?.implementation.state || "unknown"]}`),
+      node("span","delivery-assessment-badge",`Verification: ${assessmentLabels[account?.verification.state || "not-assessed"]}`));
+    return badges;
+  }
+  function deliveryDetails(id) {
+    const body=node("section","delivery-assessment-detail"), account=model.delivery_assessments?.[id];
+    body.append(node("h3","","Implementation and verification"),deliveryBadges(id),
+      node("p","small muted","Selected assessment snapshot. Definition lifecycle and Design remain separate; this page does not check live status."));
+    if(!account || ["implementation","verification"].every(kind=>!account[kind].selected && !account[kind].history.length)) {
+      body.append(node("p","","No implementation or verification assessments are included for this requirement in this snapshot."),
+        node("p","small muted","Unknown does not mean not started. An assessment must identify the covered scope, original criteria or reviewed outcomes, evidence and remaining gaps."));
+      return body;
+    }
+    function sourceText(source) {return source ? `${source.kind}: ${source.id} · Change: ${source.change} · ${source.identity}` : "Legacy observation; no new record reference supplied.";}
+    function sources(parent,subjects) {subjects.forEach(subject=>parent.append(node("p","small",`${subject.path} · ${subject.identity}`)));}
+    for(const kind of ["implementation","verification"]) {
+      const indicator=account[kind], label=kind==="implementation"?"Implementation":"Verification";
+      body.append(node("h4","",`${label}: ${assessmentLabels[indicator.state]}`),node("p","",indicator.explanation));
+      const reports=[...(indicator.selected?[indicator.selected]:[]),...indicator.history];
+      for(const report of reports) {
+        const historical=report!==indicator.selected, content=node("section","delivery-report");
+        content.dataset.claim=report.identity;
+        content.append(node("p","assessment-scope",`Assessed scope: ${report.scope}`),node("p","",report.summary),
+          node("p","small muted",`Reported by ${report.actor} · ${report.reported_at}`));
+        if(historical)content.append(node("p","assessment-stale",`Historical outcome: ${assessmentLabels[report.state]}. ${report.reason_codes.join(" · ")}`));
+        content.append(node("p","small",`Applicability: ${report.applicability.state}. ${report.applicability.explanation}`));
+        report.limitations.forEach(item=>content.append(node("p","",`Limitation: ${item}`)));
+        const outcomes=Boolean(report.outcome_basis);
+        content.append(node("h4","",outcomes?"Assessed stakeholder outcomes":historical?"Historical acceptance criterion assessment":"Acceptance criterion assessment"));
+        report.criteria.forEach(criterion=>{
+          const section=node("section","delivery-criterion");
+          section.append(node("h4","",`${outcomes?"Outcome":"Criterion"} ${criterion.key}`),node("p","",criterion.text),
+            node("p","small",`${label}${historical?" (historical)":""}: ${assessmentLabels[criterion.state]}`),node("p","",criterion.explanation));
+          criterion.evidence.forEach(item=>{
+            section.append(node("p","",`Evidence: ${item.summary}`),node("p","small",sourceText(item.source)));
+            sources(section,item.subjects);item.limitations.forEach(value=>section.append(node("p","small",`Evidence limitation: ${value}`)));
+          });
+          criterion.gaps.forEach(item=>section.append(node("p","",`Remaining gap: ${item}`)));content.append(section);
+        });
+        const source=node("div","assessment-sources");
+        source.append(node("p","",sourceText(report.source)),node("p","",`Claim: ${report.identity}`),
+          node("p","",`Assessed definition: ${report.definition.path} · ${report.definition.identity}`));
+        if(report.legacy_record)source.append(node("p","",`Change: ${report.legacy_record.change} · Evidence: ${report.legacy_record.evidence}`));
+        sources(source,report.subjects);
+        if(report.outcome_basis) {
+          const basis=report.outcome_basis;
+          source.append(node("p","",`Delivery outcome basis: ${basis.identity}`),node("p","",`Reviewed scope: ${basis.review.scope}`),
+            node("p","",`${basis.review.actor} · ${basis.review.reported_at} · ${sourceText(basis.review.source)}`),node("p","",basis.review.summary));
+          basis.outcomes.forEach(outcome=>{source.append(node("p","",`${outcome.key}: ${outcome.text}`));sources(source,outcome.sources);});sources(source,basis.review.subjects);
+        }
+        content.append(detail("Assessment sources and exact identities",source));
+        const dependencies=node("div","delivery-dependencies");
+        if(report.membership)dependencies.append(node("p","",`Captured child membership: ${report.membership.identity} · ${report.membership.children.length} children`));
+        report.child_support.forEach(child=>{const row=node("p");row.append(entityLink(child.requirement),document.createTextNode(` · ${child.claim} · ${child.coverage.join(", ")}: ${child.explanation}`));dependencies.append(row);});
+        report.nonreliance.forEach(child=>{const row=node("p"),state=model.delivery_assessments?.[child.requirement]?.[kind]?.state || (kind==="implementation"?"unknown":"not-assessed");row.append(entityLink(child.requirement),document.createTextNode(` · Not relied upon: ${child.explanation} · Child ${label}: ${assessmentLabels[state]}`));dependencies.append(row);});
+        report.design_support.forEach(dep=>{const row=node("p");row.append(entityLink(dep.requirement),document.createTextNode(` · Selected Design account: ${dep.identity}`));dependencies.append(row);});
+        if(dependencies.childNodes.length)content.append(detail("Declared dependencies and nonreliance",dependencies));
+        report.concerns.forEach(concern=>{content.append(node("p","notice",`Concern ${concern.id} (${concern.state}): ${concern.explanation}`),node("p","small",sourceText(concern.source)));if(concern.disposition)content.append(node("p","small",`${concern.disposition.explanation} · ${sourceText(concern.disposition.source)}`));});
+        report.dispositions.forEach(disposition=>{
+          const r=disposition.resolution,box=node("div","delivery-resolution");box.append(node("p","",`Resolution ${disposition.status}: ${disposition.explanation}`),node("p","",`${r.actor} · ${r.reported_at}: ${r.explanation}`),node("p","small",sourceText(r.source)));
+          r.superseded.forEach(old=>box.append(node("p","small",`${old.claim}: ${old.explanation} · ${old.addressed.join(", ")} · ${sourceText(old.disposition)}`)));sources(box,r.subjects);content.append(detail("Conflict disposition",box));
+        });
+        body.append(detail(`${label} ${historical?"history":"selected account"}: ${assessmentLabels[report.state]}`,content,!historical));
+      }
+    }
+    return body;
+  }
+  function requirementTree() {
+    if (requirementNodes) return requirementNodes;
+    const fail = message => {throw new Error(`Requirement navigation unavailable: ${message}`);};
+    if (!Array.isArray(model.relationships)) fail("missing relationship collection");
+    const expectedParent={"system-requirement":"initial-requirement", "allocated-requirement":"system-requirement"};
+    Object.keys(records).filter(isRequirement).forEach(id=>{
+      const record=data(id), parents=model.relationships.filter(edge=>edge.source===id && edge.relation==="parent");
+      if(expectedParent[record.type]) {
+        if(parents.length!==1 || data(parents[0].target).type!==expectedParent[record.type]) fail(`invalid parent for ${id}`);
+      } else if(parents.length) fail(`unexpected parent for ${id}`);
+      for(const field of ["confirms","constrains"]) {
+        if(record[field]!==undefined && !Array.isArray(record[field])) fail(`invalid ${field} on ${id}`);
+        const admitted=record.type==="initial-requirement" ? (field==="confirms" ? ["feature","scenario"] : []) : record.type==="system-requirement" ? (field==="confirms" ? ["function"] : ["function","feature"]) : (field==="constrains" ? ["function"] : []);
+        list(record[field]).forEach(target=>{if(!admitted.includes(data(target).type))fail(`invalid ${field} reference ${target} on ${id}`);});
+      }
+      if(record.type==="allocated-requirement" && data(record.allocated_to).type!=="module") fail(`invalid accountable Module on ${id}`);
+    });
+    Object.keys(records).filter(id=>data(id).type==="feature").forEach(id=>{
+      if(!Array.isArray(data(id).realized_by))fail(`invalid realization on ${id}`);
+      data(id).realized_by.forEach(target=>{if(data(target).type!=="function")fail(`invalid realizing Function ${target}`);});
+    });
+    model.relationships.filter(edge=>edge.relation==="parent").forEach(edge=>{if(!records[edge.source] || !records[edge.target])fail("missing parent endpoint");});
+    const children = new Map();
+    list(model.relationships).filter(edge => edge.relation === "parent" && isRequirement(edge.source)).forEach(edge => {
+      if (!children.has(edge.target)) children.set(edge.target, []);
+      children.get(edge.target).push(edge.source);
+    });
+    const make = (key, label, items = [], extra = {}) => ({key, label, children:items, ...extra});
+    function reference(id, parent, relation, owner) {
+      const key = `${parent}/${id}`, record = data(id);
+      const nested = [make(`${key}/summary`, record.description || record.statement || record.purpose || "No summary recorded.", [], {summary:true})];
+      if (record.type === "feature") nested.push(group(key, "Realized by", list(record.realized_by), "realized by", owner));
+      return make(key, title(id), nested, {id, owner, relation, reference:true});
+    }
+    function group(parent, label, ids, relation, owner) {
+      const key = `${parent}/${label}`;
+      return make(key, label, [...new Set(ids)].sort().map(id => reference(id, key, typeof relation === "function" ? relation(id) : relation, owner)), {group:true});
+    }
+    function requirement(id, parent) {
+      const key = `${parent}/${id}`, record = data(id), nested = [];
+      const confirms = list(record.confirms), constrains = list(record.constrains);
+      if (record.type === "initial-requirement") {
+        nested.push(group(key, "Features", confirms.filter(id => data(id).type === "feature"), "confirms", id));
+        nested.push(...(children.get(id) || []).sort().map(child => requirement(child, key)));
+      } else {
+        const functions = [...confirms, ...constrains].filter(target => data(target).type === "function");
+        if (record.type === "allocated-requirement") nested.push(group(key, "Accountable Module", record.allocated_to ? [record.allocated_to] : [], "allocated to", id));
+        nested.push(group(key, "Functions", functions, target => [confirms.includes(target) && "confirms", constrains.includes(target) && "constrains"].filter(Boolean).join(" · "), id));
+        if (record.type === "system-requirement") {
+          nested.push(group(key, "Features", constrains.filter(target => data(target).type === "feature"), "constrains", id));
+          const allocationKey = `${key}/Allocated requirements`;
+          nested.push(make(allocationKey, "Allocated requirements", (children.get(id) || []).sort().map(child => requirement(child, allocationKey)), {group:true}));
+        }
+      }
+      return make(key, title(id), nested, {id, owner:id});
+    }
+    requirementNodes = make("system", "RigorLoop · Requirements", Object.keys(records).filter(id => data(id).type === "initial-requirement").sort().map(id => requirement(id, "system")));
+    function index(item, parent) {
+      item.parent = parent; requirementIndex.set(item.key, item);
+      item.children.forEach(child => index(child, item));
+    }
+    index(requirementNodes, null);
+    return requirementNodes;
+  }
+  function requirementHref(owner, id = owner, key = null, query = requirementState.query) {
+    const params = new URLSearchParams();
+    if (key && owner) params.set("at", key);
+    if (query) params.set("q", query);
+    if (requirementState.filter) params.set("filter",requirementState.filter);
+    return `#requirements${owner ? "/" + encodeURIComponent(owner) : ""}${id && id !== owner ? "/related/" + encodeURIComponent(id) : ""}${params.size ? "?" + params : ""}`;
+  }
+  function requirementIncoming(id) {
+    const result = node("div", "link-row");
+    if (!requirementsEnabled) return result;
+    try {requirementTree();} catch (_) {return result;}
+    if (isRequirement(id)) result.append(link("Open in requirement tree →", requirementHref(id, id, null, "")));
+    else {
+      const owners = [...new Set([...requirementIndex.values()].filter(item => item.id === id).map(item => item.owner))];
+      owners.forEach(owner => result.append(link(`${owner} · ${title(owner)} →`, requirementHref(owner, id, null, ""))));
+    }
+    return result;
+  }
+  function renderRequirements(route, params) {
+    if (Object.hasOwn(model, "system_requirement_view") && typeof model.system_requirement_view !== "boolean") return notFound("Requirements view", "invalid presentation selection");
+    if (!requirementsEnabled) return notFound("Requirements view", "disabled in this snapshot");
+    let tree;
+    try {tree=requirementTree();} catch(error) {header("System architecture", "Requirements unavailable", error.message);return;}
+    const owner = route[1], target = route[3] || owner;
+    const candidates = [...requirementIndex.values()].filter(item => item.id === target && item.owner === owner);
+    if ((owner && !isRequirement(owner)) || (owner && !candidates.length) || ![1,2,4].includes(route.length) || (route.length === 4 && route[2] !== "related")) {
+      notFound("Requirement or related reference", target || route.join("/"));
+      main.append(link("Open system Requirements →", "#requirements"));
+      if (modules[owner]) main.append(link("Open Module Summary →", entityRoute(owner)));
+      return;
+    }
+    if (params.has("at") && !candidates.some(item=>item.key===params.get("at"))) {
+      notFound("Requirement occurrence",params.get("at")); main.append(link("Open system Requirements →","#requirements"));return;
+    }
+    const saved = history.state?.requirementView?.sourceDigest === model.source_digest ? history.state.requirementView : null;
+    if (saved) Object.assign(requirementState, saved, {expanded:new Set(saved.expanded)});
+    if (params.has("q")) requirementState.query = params.get("q");
+    else if (owner && !saved) requirementState.query = "";
+    const filterKinds=new Set(["", "no-ar", "design-gap", "not-assessed"]);
+    const requestedFilter=params.get("filter") ?? (saved?.filter || "");
+    if(!filterKinds.has(requestedFilter)) {notFound("Requirement filter",requestedFilter);return;}
+    requirementState.filter=requestedFilter;
+    const occurrence = candidates.find(item => item.key === params.get("at")) || candidates[0];
+    if (occurrence && !saved) {
+      requirementState.selected = occurrence.key; requirementState.panel = target; requirementState.panelVia = null;
+      for (let parent = occurrence.parent; parent; parent = parent.parent) requirementState.expanded.add(parent.key);
+    }
+    breadcrumb([{text:"RigorLoop", href:"#home"}, {text:"Requirements"}]);
+    header("System architecture · Requirement relationships", "Requirements", "Explore the system’s obligations and their related Features, Functions and accountable Modules.");
+    const evaluation=node("section","requirement-evaluation-banner");
+    evaluation.append(node("h2","","Requirement evaluation"),node("p","","Design judgments are selected reviews of the complete obligation. Implementation and verification retain their own recorded evidence. Open a node for criteria, gaps and review sources."));
+    const examples=node("div","link-row");
+    for(const id of ["IR-002","SR-085","SR-050","AR-046"])if(records[id])examples.append(link(`${id} · Design: ${assessmentLabels[designState(id)]}`,requirementHref(id,id,null,"")));
+    evaluation.append(examples);
+    const missing=Object.keys(records).filter(id=>data(id).type==="system-requirement" && !requirementChildren(id).length).sort(), links=node("div","evaluation-unallocated-links");
+    missing.forEach(id=>links.append(link(`${id} · ${title(id)}`,requirementHref(id,id,null,""))));
+    evaluation.append(detail(`SRs without ARs (${missing.length}) · allocation review list`,links));
+    const gaps=Object.keys(model.design_reviews || {}).filter(id=>designState(id)==="gap").sort(), gapLinks=node("div","link-row");
+    gaps.forEach(id=>gapLinks.append(link(`${id} · ${title(id)}`,requirementHref(id,id,null,""))));
+    evaluation.append(detail(`Selected design gaps (${gaps.length})`,gapLinks,true));
+    main.append(evaluation);
+    const controls = node("div", "requirement-controls");
+    const field = node("div", "filter-field"), label = node("label", "", "Search requirements and references");
+    label.htmlFor = "requirement-search";
+    const search = node("input"); search.type = "search"; search.id = label.htmlFor; search.placeholder = "ID or title, e.g. SR-085 or architecture"; search.value = requirementState.query;
+    field.append(label, search); controls.append(field);
+    const filterField=node("div","filter-field"), filterLabel=node("label","","Filter requirements"), filter=node("select");
+    filterLabel.htmlFor="requirement-filter";filter.id=filterLabel.htmlFor;
+    for(const [value,title] of [["","All requirements"],["no-ar","SRs without ARs"],["design-gap","Design gaps"],["not-assessed","Not assessed"]]) {const option=node("option","",title);option.value=value;filter.append(option);}
+    filter.value=requirementState.filter;filterField.append(filterLabel,filter);controls.append(filterField);
+    const actions = node("div", "requirement-actions"); controls.append(actions); main.append(controls);
+    const workspace = node("div", "requirement-workspace"), treePane = node("section", "requirement-tree-panel");
+    treePane.setAttribute("aria-label", "System requirement tree");
+    const count = node("p", "results-count"); count.setAttribute("role", "status");
+    const viewport = node("div", "requirement-tree-scroll"); viewport.tabIndex = 0; viewport.setAttribute("aria-label", "Expandable requirement graph");
+    treePane.append(count, viewport); workspace.append(treePane); main.append(workspace);
+    main.append(node("p", "section-note", "Solid branches show requirement containment. ↗ rows are shared references; their labels retain the authored relationship. Draft status and source definitions remain unchanged."));
+    let filteredExpanded = requirementState.filteredExpanded ? new Set(requirementState.filteredExpanded) : null, filteredQuery = requirementState.filteredQuery || "";
+    const buttons = new Map();
+    function action(text, callback) { const b=node("button", "", text); b.type="button"; b.onclick=callback; actions.append(b); }
+    function reveal() {
+      const selected = requirementIndex.get(requirementState.selected);
+      if (!selected) return;
+      search.value = ""; requirementState.query = ""; filter.value="";requirementState.filter="";
+      for (let parent = selected.parent; parent; parent = parent.parent) requirementState.expanded.add(parent.key);
+      history.replaceState(null,"",requirementHref(selected.owner,selected.id,selected.key,""));
+      drawTree(); buttons.get(selected.key)?.scrollIntoView({block:"nearest"}); buttons.get(selected.key)?.focus({preventScroll:true});
+    }
+    action("Expand all", () => { const expanded = filteredExpanded || requirementState.expanded; requirementIndex.forEach(item => {if(item.children.length)expanded.add(item.key);}); drawTree(); });
+    action("Collapse all", () => { const expanded = filteredExpanded || requirementState.expanded; expanded.clear(); expanded.add("system"); drawTree(); });
+    action("Expand to SR level", () => {search.value=""; requirementState.query="";filter.value="";requirementState.filter=""; requirementState.expanded=new Set(["system", ...tree.children.map(item=>item.key)]); history.replaceState(null,"",requirementHref(owner,target,requirementState.selected,"")); drawTree();});
+    action("Clear filters", () => {search.value="";filter.value="";requirementState.filter="";drawTree();const selected=requirementIndex.get(requirementState.selected);history.replaceState(null,"",requirementHref(selected?.owner,selected?.id,selected?.key,""));persistRequirementState();});
+    function drawTree() {
+      requirementState.query = search.value;requirementState.filter=filter.value;
+      const query = search.value.trim().toLocaleLowerCase();
+      const active=query || filter.value, token=query+"|"+filter.value;
+      const visible = new Set(), matches = new Set();
+      function matchesFilter(item) {
+        if(!filter.value)return true;
+        if(!isRequirement(item.id))return false;
+        if(filter.value==="no-ar")return data(item.id).type==="system-requirement" && !requirementChildren(item.id).length;
+        if(filter.value==="design-gap")return designState(item.id)==="gap";
+        return (model.delivery_assessments?.[item.id]?.verification.state || "not-assessed")==="not-assessed";
+      }
+      if (active) requirementIndex.forEach(item => {
+        if (item.id && matchesFilter(item) && `${item.id} ${item.label}`.toLocaleLowerCase().includes(query)) {
+          matches.add(item.key);
+          for(let ancestor=item;ancestor;ancestor=ancestor.parent) visible.add(ancestor.key);
+        }
+      });
+      if (!active) { filteredExpanded=null; filteredQuery=""; }
+      else if (token !== filteredQuery) { filteredExpanded = new Set(visible); filteredQuery=token; }
+      const expanded = filteredExpanded || requirementState.expanded;
+      viewport.replaceChildren(); buttons.clear();
+      count.textContent = active ? `${matches.size} matching occurrences` : `${tree.children.length} initial requirements · ${Object.keys(records).filter(id=>data(id).type==="system-requirement").length} system requirements · ${Object.keys(records).filter(id=>data(id).type==="allocated-requirement").length} allocated requirements`;
+      function row(item) {
+        const li = node("li", `requirement-node${item.reference ? " requirement-reference" : ""}${item.group ? " requirement-group" : ""}`);
+        li.dataset.key=item.key; if(item.id)li.dataset.entity=item.id;
+        const line=node("div", "requirement-row"); li.append(line);
+        if(item.key===requirementState.selected)line.classList.add("selected");
+        const children=item.children.filter(child=>!active || visible.has(child.key) || (matches.has(item.key) && child.summary));
+        if(children.length) {
+          const toggle=node("button", "requirement-toggle", expanded.has(item.key) ? "▾" : "▸"); toggle.type="button";
+          toggle.setAttribute("aria-label", `${expanded.has(item.key)?"Collapse":"Expand"} ${item.id || item.label}`);
+          toggle.setAttribute("aria-expanded", String(expanded.has(item.key)));
+          toggle.onclick=()=>{const scroll=viewport.scrollTop;expanded.has(item.key)?expanded.delete(item.key):expanded.add(item.key);drawTree();viewport.scrollTop=scroll;buttons.get(item.key+"/toggle")?.focus({preventScroll:true});};
+          buttons.set(item.key+"/toggle",toggle);line.append(toggle);
+        } else line.append(node("span", "requirement-spacer"));
+        if(item.id) {
+          const a=link("",requirementHref(item.owner,item.id,item.key),"requirement-label");
+          a.append(node("code","requirement-type",`${item.reference ? "↗ " : ""}${item.id}`),node("span","",item.label));
+          if(item.key===requirementState.selected)a.setAttribute("aria-current","true");
+          if(matches.has(item.key))a.classList.add("requirement-match");
+          if(item.relation)a.append(node("small","requirement-relation",item.relation));
+          if(isRequirement(item.id))a.append(requirementEvaluationBadges(item.id));
+          a.onclick=event=>{
+            if(event.ctrlKey||event.metaKey||event.shiftKey||event.altKey)return;
+            requirementState.scroll=viewport.scrollTop;
+            if(a.hash===location.hash) {
+              // The selected occurrence can be activated without a hashchange.
+              event.preventDefault();requirementState.panel=item.id;requirementState.panelVia=null;panel(item.id);
+            }
+            persistRequirementState();
+          };
+          buttons.set(item.key,a);line.append(a);
+        } else line.append(node("span", item.summary ? "requirement-summary" : "requirement-group-label", item.label + (item.group ? ` (${item.children.length})${item.children.length ? "" : " · None declared"}` : "")));
+        if(children.length && expanded.has(item.key)) {const ul=node("ul");children.forEach(child=>ul.append(row(child)));li.append(ul);}
+        return li;
+      }
+      requirementState.filteredExpanded=filteredExpanded ? [...filteredExpanded] : null; requirementState.filteredQuery=filteredQuery;
+      persistRequirementState();
+      if(active && !matches.size)viewport.append(empty("No matching requirements or references", "Try another ID or title."));
+      else {const ul=node("ul","requirement-tree");ul.append(row(tree));viewport.append(ul);if(!tree.children.length)viewport.append(node("p","notice","No requirements in this snapshot"));}
+    }
+    function panel(id) {
+      workspace.querySelector(".requirement-detail")?.remove();workspace.classList.toggle("has-detail", Boolean(id));
+      if(!id)return;
+      const aside=node("aside","requirement-detail");aside.setAttribute("aria-label","Selected definition");aside.tabIndex=-1;
+      const bar=node("div","requirement-detail-actions"), close=node("button","","Close details"), revealButton=node("button","","Reveal in tree");
+      close.onclick=()=>{requirementState.panel=null;persistRequirementState();panel(null);buttons.get(requirementState.selected)?.focus();}; revealButton.onclick=reveal;bar.append(revealButton,close);
+      aside.append(bar,node("p","eyebrow",`${id} · ${nice(data(id).type)}`),node("h2","",title(id)),node("span","badge",data(id).type==="allocated-requirement" ? `Definition: ${nice(data(id).status || "not recorded")}` : data(id).status || "Status not recorded"));
+      if(isRequirement(id))aside.append(requirementEvaluationDetails(id));
+      if(isRequirement(id))aside.append(deliveryDetails(id));
+      const origin=requirementIndex.get(requirementState.selected), path=[];
+      for(let item=origin;item;item=item.parent)if(item.id)path.unshift(item.id);
+      aside.append(node("p","requirement-origin",`Via ${path.join(" → ")}${origin?.relation ? " · " + origin.relation : ""}`));
+      if(requirementState.panelVia)aside.append(node("p","requirement-origin",requirementState.panelVia));
+      const record=data(id), fields=Object.keys(record).filter(key=>!["id","type","title","status","sources"].includes(key));
+      aside.append(recordFields(record,fields));
+      const relationships=node("ul","record-list");
+      list(model.relationships).filter(edge=>edge.source===id || edge.target===id).forEach(edge=>{
+        const target=edge.source===id?edge.target:edge.source, li=node("li"), a=link(`${target} · ${title(target)}`, isRequirement(target)?requirementHref(target):entityRoute(target));
+
+        li.append(node("small","muted",`${edge.source===id?"→":"←"} ${edge.relation.replace(/_/g," ")} `),a);relationships.append(li);
+      });
+      aside.append(detail("Engineering relationships",relationships,true),sourceDetails(id));
+      if(modules[id])aside.append(link("Open Module architecture →",entityRoute(id),"requirement-module-scope"));
+      aside.addEventListener("click",event=>{
+        const anchor=event.target.closest("a");
+        if(!anchor || anchor.classList.contains("requirement-module-scope") || event.ctrlKey || event.metaKey || event.shiftKey)return;
+        const match=/^#(?:module|interface|entity)\/([^/]+)$/.exec(anchor.getAttribute("href") || "");
+        if(!match || !records[match[1]])return;
+        event.preventDefault();
+        if(isRequirement(match[1])) {location.hash=requirementHref(match[1],match[1],null,"");return;}
+        persistRequirementState();
+        const edge=list(model.relationships).find(edge=>(edge.source===id && edge.target===match[1]) || (edge.target===id && edge.source===match[1]));
+        requirementState.panelVia=edge ? `Followed ${edge.source} → ${edge.relation.replace(/_/g," ")} → ${edge.target}` : `Referenced from ${id}`;
+        requirementState.panel=match[1];
+        history.pushState({requirementView:{...requirementState,sourceDigest:model.source_digest,expanded:[...requirementState.expanded]}},"",location.href);
+        panel(match[1]);
+      });
+      workspace.append(aside);
+      persistRequirementState();
+    }
+    filter.addEventListener("change",()=>{persistRequirementState();requirementState.filter=filter.value;const selected=requirementIndex.get(requirementState.selected);history.pushState(null,"",requirementHref(selected?.owner,selected?.id,selected?.key,search.value));drawTree();persistRequirementState();});
+    search.addEventListener("input",()=>{drawTree();const selected=requirementIndex.get(requirementState.selected);history.replaceState(null,"",requirementHref(selected?.owner,selected?.id,selected?.key,search.value));persistRequirementState();});
+    viewport.addEventListener("scroll",()=>{requirementState.scroll=viewport.scrollTop;persistRequirementState();});
+    viewport.addEventListener("focusin",event=>{
+      const item=event.target.closest(".requirement-node");
+      if(item) {requirementState.focus={key:item.dataset.key,toggle:event.target.tagName==="BUTTON"};persistRequirementState();}
+    });
+    viewport.addEventListener("keydown",event=>{
+      const controls=[...viewport.querySelectorAll("button,a")];const i=controls.indexOf(document.activeElement);
+      if(event.key==="ArrowDown" || event.key==="ArrowUp") {event.preventDefault();controls[Math.max(0,Math.min(controls.length-1,i+(event.key==="ArrowDown"?1:-1)))]?.focus();}
+      const item=document.activeElement.closest(".requirement-node"), toggle=item?.querySelector(":scope > .requirement-row > button");
+      if((event.key==="ArrowRight" && toggle?.getAttribute("aria-expanded")==="false") || (event.key==="ArrowLeft" && toggle?.getAttribute("aria-expanded")==="true")){event.preventDefault();toggle.click();}
+    });
+    const scroll=requirementState.scroll;drawTree();panel(requirementState.panel);viewport.scrollTop=scroll;persistRequirementState();
+  }
+
   function renderEntity(id) {
     if (!records[id]) return notFound("Entity", id);
     const record = data(id);
     breadcrumb([{text:id}]);
-    header(`${nice(record.type || "Entity")} · ${id}`, record.title, record.description || record.statement, record.status);
+    header(`${nice(record.type || "Entity")} · ${id}`, record.title, record.description || record.statement, record.type==="allocated-requirement" ? `Definition: ${nice(record.status || "not recorded")}` : record.status);
+    if(isRequirement(id))main.append(requirementEvaluationDetails(id));
+    if(isRequirement(id))main.append(deliveryDetails(id));
     if (contributions.some(item => item.requirement === id || list(item.allocated_requirements).includes(id))) {
       const row = node("div", "link-row"); row.append(link("Read related CLI contribution arguments →", `#contributions/${id}`)); main.append(row);
     }
@@ -1681,7 +2092,7 @@
       relationships.forEach(relation=>{const row=node("li");row.append(entityLink(relation.source),node("span","small muted",` ${relation.relation} `),entityLink(relation.target));items.append(row);});
       main.append(detail("Engineering relationships",items));
     }
-    main.append(sourceDetails(id));
+    main.append(requirementIncoming(id), sourceDetails(id));
   }
   function empty(heading, message) {
     const result = node("div", "empty-state"); result.append(node("h2", "", heading), node("p", "", message)); return result;
@@ -1707,7 +2118,7 @@
   }
   function renderNavigation(activeRoute) {
     const nav=document.getElementById("navigation");nav.replaceChildren();
-    const route=activeRoute.slice(1).split("/");
+    const route=activeRoute.slice(1).split("?")[0].split("/");
     const context=architectureContext(route);
     const selectedOwner=context?.owner;
     const view=context?.view || "summary";
@@ -1821,18 +2232,21 @@
   window.addEventListener("resize", repositionIdentity);
   document.addEventListener("scroll", repositionIdentity, true);
   function render() {
+    renderedHash=location.hash;
     if(location.hash==="#main") {
       if(main.querySelector("h1")) { main.focus();return; }
     }
     const raw=(location.hash === "#main" ? "#home" : location.hash || "#home").slice(1);
+    const [routePath, queryString] = raw.split("?");
     let route;
-    try { route=raw.split("/").map(decodeURIComponent); }
+    try { route=routePath.split("/").map(decodeURIComponent); }
     catch (_) { route=["invalid",raw]; }
     hoveredEntity = null;focusedEntity = null;hideIdentity();
     initializeDiagrams = [];
     main.replaceChildren();renderNavigation(`#${raw}`);
     const [kind,id,name]=route;
-    if(kind==="home" && route.length===1)renderHome();
+    if(kind==="requirements")renderRequirements(route, new URLSearchParams(queryString));
+    else if(kind==="home" && route.length===1)renderHome();
     else if(viewKinds.includes(kind) && modules[id] && route.length===5)renderAuthoredTopic(kind,id,route[2],route[3],route[4]);
     else if(kind==="process" && modules[id] && ["interaction","lifecycle"].includes(name) && route.length===4)renderProcessTopic(name,route[3],id);
     else if(kind==="logical" && route.length===2)renderModule(id,true);
@@ -1868,6 +2282,10 @@
     document.getElementById("navigation").classList.remove("mobile-open");
     document.getElementById("navigation-toggle").setAttribute("aria-expanded","false");
     window.scrollTo(0,0);main.focus({preventScroll:true});
+    if(kind==="requirements" && requirementState.focus) {
+      const item=[...main.querySelectorAll(".requirement-node")].find(item=>item.dataset.key===requirementState.focus.key);
+      item?.querySelector(requirementState.focus.toggle ? ":scope > .requirement-row > button" : ":scope > .requirement-row > a")?.focus({preventScroll:true});
+    }
   }
   document.getElementById("search-form").addEventListener("submit",event=>{
     event.preventDefault();const query=document.getElementById("global-search").value.trim();const hash=`#search/${encodeURIComponent(query)}`;
@@ -1876,5 +2294,6 @@
   const navigationToggle=document.getElementById("navigation-toggle");
   navigationToggle.onclick=()=>{const open=document.getElementById("navigation").classList.toggle("mobile-open");navigationToggle.setAttribute("aria-expanded",String(open));};
   document.addEventListener("keydown",event=>{if(event.key==="Escape" && document.getElementById("navigation").classList.contains("mobile-open")){document.getElementById("navigation").classList.remove("mobile-open");navigationToggle.setAttribute("aria-expanded","false");navigationToggle.focus();}});
-  window.addEventListener("hashchange",render);render();
+  window.addEventListener("popstate",render);
+  window.addEventListener("hashchange",()=>{if(location.hash!==renderedHash)render();});render();
 })();

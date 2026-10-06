@@ -1,5 +1,5 @@
 # Generated from canonical REM records; do not edit.
-# Source identity: 45c038c07e12e6780416c9a3833873518354213a1c976dcae38bd54077894c80
+# Source identity: 7b8440c54b5c4fada352158a820009762fd64568b87d27d147a47f19f6e4ee60
 # Arrows show consumer -> provider; they do not show execution order.
 vars: {
   d2-config: {
@@ -16,6 +16,17 @@ m_4d4f442d303035: "Model baselines" {
   style.font-color: "#23334A"
   style.font-size: 18
   style.border-radius: 8
+  width: 420
+}
+m_4d4f442d303036: "Change control" {
+  link: "#module/MOD-006"
+  tooltip: "Change control (MOD-006)"
+  style.fill: "#F6F8FB"
+  style.stroke: "#8292A9"
+  style.font-color: "#23334A"
+  style.font-size: 18
+  style.border-radius: 8
+  style.stroke-dash: 3
 }
 m_4d4f442d303136: "Project model" {
   link: "#module/MOD-016"
@@ -30,6 +41,22 @@ m_4d4f442d303136: "Project model" {
 m_4d4f442d303035 -> m_4d4f442d303136: "Engineering state\ncontent and\ninterpretation" {
   link: "#interface/IF-007"
   tooltip: "Engineering state content and interpretation (IF-007)"
+  style.stroke: "#667A96"
+  style.font-color: "#34445B"
+  style.fill: "#FFFFFF"
+  style.font-size: 14
+}
+m_4d4f442d303035 -> m_4d4f442d303136: "Engineering\nbaseline content\ncustody" {
+  link: "#interface/IF-015"
+  tooltip: "Engineering baseline content custody (IF-015)"
+  style.stroke: "#667A96"
+  style.font-color: "#34445B"
+  style.fill: "#FFFFFF"
+  style.font-size: 14
+}
+m_4d4f442d303035 -> m_4d4f442d303036: "Controlled state\npreparation" {
+  link: "#interface/IF-016"
+  tooltip: "Controlled state preparation (IF-016)"
   style.stroke: "#667A96"
   style.font-color: "#34445B"
   style.fill: "#FFFFFF"
