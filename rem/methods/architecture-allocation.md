@@ -138,4 +138,4 @@ Architecture Allocation is complete enough for realization when:
 - unresolved ownership, containment, encapsulation, or interaction gaps are explicit;
 - allocations describe responsibility rather than merely mirroring the current code layout.
 
-After logical allocation is coherent, use [Architecture Design](architecture-design.md#design-the-physicalsoftware-realization) to define the material physical/software realization as subordinate Module and Interface views.
+After logical allocation is coherent, use [Architecture Design](realization-design.md#design-the-physicalsoftware-realization) to define the material physical/software realization as subordinate Module and Interface views.

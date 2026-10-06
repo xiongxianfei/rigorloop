@@ -15,11 +15,26 @@ REM_SOURCES={
  'system-design':('methods/functional-analysis.md','models/system-design.md','models/requirements.md'),
  'architecture-design':('methods/architecture-design.md','methods/architecture-allocation.md','methods/architecture-views.md','methods/5w2h.md','models/architecture-design.md','models/requirements.md'),
  'design-review':('models/system-design.md','models/architecture-design.md','models/requirements.md','methods/architecture-views.md'),
+ 'plan':('methods/plan-and-assess-verification.md','methods/validate-stakeholder-outcomes.md','concepts/assurance.md','models/README.md','practices/engineer-change/WORKED-EXAMPLE.md'),
+ 'verify':('methods/plan-and-assess-verification.md','methods/validate-stakeholder-outcomes.md','concepts/assurance.md','models/README.md','practices/verify-and-validate-slice.md','practices/engineer-change/WORKED-EXAMPLE.md'),
 }
+
+# A split procedure/model remains complete in every distribution that selects it.
+REM_PARTS={
+ 'models/architecture-design.md':('models/architecture-allocation.md','models/architecture-boundaries.md','models/architecture-realization.md'),
+ 'methods/architecture-design.md':('methods/realization-design.md',),
+ 'methods/architecture-views.md':('methods/view-presentation.md','methods/views/logical.md','methods/views/process.md','methods/views/development.md','methods/views/physical.md','methods/views/scenario.md'),
+}
+for skill, sources in tuple(REM_SOURCES.items()):
+    REM_SOURCES[skill]=tuple(dict.fromkeys(source for parent in sources for source in (parent,*REM_PARTS.get(parent,()))))
+for skill in ('requirement-analysis','system-design','architecture-design'):
+    REM_SOURCES[skill]+=('practices/engineer-change/README.md','practices/engineer-change/WORKED-EXAMPLE.md')
+
+GENERATED_REM_PREFIX='<!-- Generated from rem/'
 
 def destination(source: str) -> str:
     parts=PurePosixPath(source).parts
-    return 'rem-'+parts[0]+'-'+parts[-1]
+    return 'rem-'+'-'.join(parts)
 
 def projected_rem(source: str, selected: tuple[str,...]) -> bytes:
     path=ROOT/'rem'/source
@@ -48,6 +63,13 @@ def outputs():
 def main():
     parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--check',action='store_true');args=parser.parse_args()
     errors=[]
+    expected={path for path,_ in outputs()}
+    for name in CORE+SUPPORT:
+        root=ROOT/'skills'/name/'references'
+        for path in root.glob('rem-*.md'):
+            if path not in expected and path.read_text().startswith(GENERATED_REM_PREFIX):
+                if args.check:errors.append(str(path.relative_to(ROOT))+' (obsolete generated resource)')
+                else:path.unlink()
     for target,data in outputs():
         if args.check:
             if not target.is_file() or target.read_bytes()!=data:errors.append(str(target.relative_to(ROOT)))

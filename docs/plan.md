@@ -1,7 +1,11 @@
 # Plan index
 
 `docs/plan.md` is a navigation index to stable plan bodies and owning change records.
-Current lifecycle state, milestones, review standing, blockers and next actions belong to the owning local Change, read through `rigorloop change context --root . --change CHANGE`. Links to earlier `change.json` records retain their historical contract; they do not activate a filesystem backend in the successor.
+Current lifecycle state, milestones, review standing, blockers and next actions belong to the owning local Change, read through `rigorloop change context --root . --change CHANGE`.
+
+Historical records labelled unavailable below are absent from this checkout. Their exact former repository-relative paths are retained as text; no recovery revision was verified in the locally available Git history, and the corresponding historical Change IDs were not found in the current local store. Availability in remote history or external backups is unknown. These former paths preserve historical references; they do not activate a retired record format or identify a migrated current record.
+
+An unavailable record or a compatibility heading does not establish current lifecycle status.
 
 <!--
 Index policy:
@@ -15,15 +19,15 @@ Index policy:
 
 ## Active
 
-- [Historical-path compatibility retirement](plans/2026-09-17-retire-historical-path-compatibility.md) — [owning change](changes/2026-09-17-retire-historical-path-compatibility/change.json).
+- [Historical-path compatibility retirement](plans/2026-09-17-retire-historical-path-compatibility.md) — historical record unavailable (`docs/changes/2026-09-17-retire-historical-path-compatibility/change.json`).
 
-- [Feature-format support retirement](plans/2026-09-17-retire-feature-format-support.md) — [owning change](changes/2026-09-17-retire-feature-format-support/change.json).
+- [Feature-format support retirement](plans/2026-09-17-retire-feature-format-support.md) — historical record unavailable (`docs/changes/2026-09-17-retire-feature-format-support/change.json`).
 
-- [Repository tooling organization](plans/2026-09-14-tooling-organization.md) — scoped portable refactor; [evidence](changes/2026-09-14-design-suitability-review/contract-refinement.md).
+- [Repository tooling organization](plans/2026-09-14-tooling-organization.md) — scoped portable refactor; historical evidence unavailable (`docs/changes/2026-09-14-design-suitability-review/contract-refinement.md`).
 
-- [Cleanup integration and local commit](plans/2026-09-14-cleanup-integration-and-commit.md) — [owning change](changes/2026-09-13-current-design-repository-cleanup/change.json).
+- [Cleanup integration and local commit](plans/2026-09-14-cleanup-integration-and-commit.md) — historical record unavailable (`docs/changes/2026-09-13-current-design-repository-cleanup/change.json`).
 
-- [Historical retirement-ledger removal](plans/2026-09-14-retirement-ledger-removal.md) — [owning change](changes/2026-09-13-current-design-repository-cleanup/change.json).
+- [Historical retirement-ledger removal](plans/2026-09-14-retirement-ledger-removal.md) — historical record unavailable (`docs/changes/2026-09-13-current-design-repository-cleanup/change.json`).
 
 Compatibility heading only.
 Current lifecycle state is not recorded in this index.
@@ -35,6 +39,10 @@ Current blockers are not recorded in this index.
 
 ## Current plan references
 
+- [Repair plan-index navigation](plans/2026-10-06-plan-index-navigation.md) — owning local Change `2026-10-06-plan-index-navigation`.
+
+- [Selective REM integration](plans/2026-10-06-rem-selective-integration.md) — owning local Change `2026-10-06-rem-selective-integration`.
+
 - [Requirement evaluation browser pilot](plans/2026-10-05-requirement-evaluation-pilot.md) — owning local Change `2026-10-04-system-requirements-view-design`.
 
 - [AR assessment browser pilot](plans/2026-10-05-ar-assessment-browser-pilot.md) — owning local Change `2026-10-04-system-requirements-view-design`.
@@ -45,63 +53,63 @@ Current blockers are not recorded in this index.
 
 - [Requirement-first workflow](plans/2026-09-29-requirement-first-workflow.md) — owning local Change `2026-10-03-requirement-first-sqlite-adoption`; inspect its account through the CLI.
 
-- [Complete model test coverage and execution cost](plans/2026-09-17-complete-model-test-coverage.md) — [owning change](changes/2026-09-17-complete-model-test-coverage/change.json).
+- [Complete model test coverage and execution cost](plans/2026-09-17-complete-model-test-coverage.md) — historical record unavailable (`docs/changes/2026-09-17-complete-model-test-coverage/change.json`).
 
-- [Model-owned test design and concise tests](plans/2026-09-17-model-test-design.md) — [owning change](changes/2026-09-17-model-test-design/change.json).
+- [Model-owned test design and concise tests](plans/2026-09-17-model-test-design.md) — historical record unavailable (`docs/changes/2026-09-17-model-test-design/change.json`).
 
 
 
-- [Test design adoption and complete suite organization](plans/2026-09-16-test-design-and-suite-organization.md) — [owning change](changes/2026-09-16-test-design-and-suite-organization/change.json).
+- [Test design adoption and complete suite organization](plans/2026-09-16-test-design-and-suite-organization.md) — historical record unavailable (`docs/changes/2026-09-16-test-design-and-suite-organization/change.json`).
 
-- [Complete skill refinement and stale-support retirement](plans/2026-09-15-refine-skills-and-retire-stale-support.md) — [owning change](changes/2026-09-15-refine-skills-and-retire-stale-support/change.json).
+- [Complete skill refinement and stale-support retirement](plans/2026-09-15-refine-skills-and-retire-stale-support.md) — historical record unavailable (`docs/changes/2026-09-15-refine-skills-and-retire-stale-support/change.json`).
 
-- [Retire standalone architecture and ADR authoring](plans/2026-09-15-retire-legacy-design-authoring.md) — [owning change](changes/2026-09-15-retire-legacy-design-authoring/change.json).
+- [Retire standalone architecture and ADR authoring](plans/2026-09-15-retire-legacy-design-authoring.md) — historical record unavailable (`docs/changes/2026-09-15-retire-legacy-design-authoring/change.json`).
 
-- [Design and Plan skill simplification](plans/2026-09-15-design-plan-simplification.md) — [owning change](changes/2026-09-15-design-plan-simplification/change.json).
+- [Design and Plan skill simplification](plans/2026-09-15-design-plan-simplification.md) — historical record unavailable (`docs/changes/2026-09-15-design-plan-simplification/change.json`).
 
-- [Skill simplification](plans/2026-09-15-skill-simplification.md) — [owning change](changes/2026-09-15-skill-simplification/change.json).
+- [Skill simplification](plans/2026-09-15-skill-simplification.md) — historical record unavailable (`docs/changes/2026-09-15-skill-simplification/change.json`).
 
 - [Risk-driven test redesign](plans/2026-09-15-risk-driven-test-redesign.md) — scoped portable plan; no governed change record selected.
 
 - [Validation test organization](plans/2026-09-14-validation-test-organization.md) — scoped plan; no governed change record selected.
 
-- [Retire all specs and stale tests](plans/2026-09-14-retire-specs-and-stale-tests.md) — [owning change](changes/2026-09-14-retire-specs-and-stale-tests/change.json).
+- [Retire all specs and stale tests](plans/2026-09-14-retire-specs-and-stale-tests.md) — historical record unavailable (`docs/changes/2026-09-14-retire-specs-and-stale-tests/change.json`).
 
-- [Retire fixed spec-read-log instrumentation](plans/2026-09-14-retire-spec-read-log.md) — [owning change](changes/2026-09-14-retire-spec-read-log/change.json).
+- [Retire fixed spec-read-log instrumentation](plans/2026-09-14-retire-spec-read-log.md) — historical record unavailable (`docs/changes/2026-09-14-retire-spec-read-log/change.json`).
 
-- [2026-09-13 Token-cost feature retirement](plans/2026-09-13-token-cost-retirement.md) — [owning cleanup change](changes/2026-09-13-current-design-repository-cleanup/change.json).
+- [2026-09-13 Token-cost feature retirement](plans/2026-09-13-token-cost-retirement.md) — historical record unavailable (`docs/changes/2026-09-13-current-design-repository-cleanup/change.json`).
 
-- [2026-09-13 Independent parallel tests and architecture-view adoption](plans/2026-09-13-independent-parallel-tests.md) — [owning change](changes/2026-09-13-independent-parallel-tests/change.json).
+- [2026-09-13 Independent parallel tests and architecture-view adoption](plans/2026-09-13-independent-parallel-tests.md) — historical record unavailable (`docs/changes/2026-09-13-independent-parallel-tests/change.json`).
 
-- [2026-09-12 Unified Validation implementation](plans/2026-09-12-unified-validation-implementation.md) — [owning change](changes/2026-09-12-unified-validation-model/change.json).
+- [2026-09-12 Unified Validation implementation](plans/2026-09-12-unified-validation-implementation.md) — historical record unavailable (`docs/changes/2026-09-12-unified-validation-model/change.json`).
 
-- [2026-09-12 Design directory organization](plans/2026-09-12-design-directory-layout.md) — [owning change](changes/2026-09-12-unified-validation-model/change.json).
+- [2026-09-12 Design directory organization](plans/2026-09-12-design-directory-layout.md) — historical record unavailable (`docs/changes/2026-09-12-unified-validation-model/change.json`).
 
-- [2026-09-11 Retire the v2 stored-record format](plans/2026-09-11-retire-v2-record-format.md) — [owning change](changes/2026-09-11-retire-v2-record-format/change.json).
+- [2026-09-11 Retire the v2 stored-record format](plans/2026-09-11-retire-v2-record-format.md) — historical record unavailable (`docs/changes/2026-09-11-retire-v2-record-format/change.json`).
 
-- [2026-09-11 Structured assessment explanations](plans/2026-09-11-structured-assessment-explanations.md) — [owning change](changes/2026-09-10-structured-assessment-explanations/change.json).
+- [2026-09-11 Structured assessment explanations](plans/2026-09-11-structured-assessment-explanations.md) — historical record unavailable (`docs/changes/2026-09-10-structured-assessment-explanations/change.json`).
 
-- [2026-09-10 Distribution and Explicit Force Installation](plans/2026-09-10-distribution-model-and-opencode-retirement.md) — [owning change](changes/2026-09-10-distribution-model-and-opencode-retirement/change.json).
+- [2026-09-10 Distribution and Explicit Force Installation](plans/2026-09-10-distribution-model-and-opencode-retirement.md) — historical record unavailable (`docs/changes/2026-09-10-distribution-model-and-opencode-retirement/change.json`).
 
-- [2026-09-10 Readable record output](plans/2026-09-10-readable-record-output.md) — [owning change](changes/2026-09-10-readable-record-output/change.json).
+- [2026-09-10 Readable record output](plans/2026-09-10-readable-record-output.md) — historical record unavailable (`docs/changes/2026-09-10-readable-record-output/change.json`).
 
-- [2026-09-10 Simplify release validation integration](plans/2026-09-10-release-validation-integration.md) — [owning change](changes/2026-09-10-release-validation-integration/change.json).
+- [2026-09-10 Simplify release validation integration](plans/2026-09-10-release-validation-integration.md) — historical record unavailable (`docs/changes/2026-09-10-release-validation-integration/change.json`).
 
-- [2026-09-09 Approval-Driven Release and Source Consolidation](plans/2026-09-09-release-model-source-consolidation.md) — [owning change](changes/2026-09-09-release-model-source-consolidation/change.json)
+- [2026-09-09 Approval-Driven Release and Source Consolidation](plans/2026-09-09-release-model-source-consolidation.md) — historical record unavailable (`docs/changes/2026-09-09-release-model-source-consolidation/change.json`)
 
-- [2026-09-09 Necessary Design Consolidation](plans/2026-09-09-necessary-design-consolidation.md) — [owning change](changes/2026-09-09-simplify-required-validation-and-design-retention/change.json)
+- [2026-09-09 Necessary Design Consolidation](plans/2026-09-09-necessary-design-consolidation.md) — historical record unavailable (`docs/changes/2026-09-09-simplify-required-validation-and-design-retention/change.json`)
 
-- [2026-09-08 Skill Model and Proposal-Family Pilot](plans/2026-09-08-skill-model-proposal-family-pilot.md) — [owning change](changes/2026-09-08-skill-model-proposal-family-pilot/change.json)
+- [2026-09-08 Skill Model and Proposal-Family Pilot](plans/2026-09-08-skill-model-proposal-family-pilot.md) — historical record unavailable (`docs/changes/2026-09-08-skill-model-proposal-family-pilot/change.json`)
 
-- [2026-09-08 Unified Design Authoring and Bounded Model Consolidation](plans/2026-09-08-unified-design-authoring-and-bounded-model-consolidation.md) — [owning change](changes/2026-09-08-unified-design-authoring-and-bounded-model-consolidation/change.json)
+- [2026-09-08 Unified Design Authoring and Bounded Model Consolidation](plans/2026-09-08-unified-design-authoring-and-bounded-model-consolidation.md) — historical record unavailable (`docs/changes/2026-09-08-unified-design-authoring-and-bounded-model-consolidation/change.json`)
 
-- [2026-09-08 V2-only Recording and Legacy Engine Retirement](plans/2026-09-08-retire-legacy-record-formats.md) — [owning change](changes/2026-09-08-retire-compact-workflow-mutations/change.json)
+- [2026-09-08 V2-only Recording and Legacy Engine Retirement](plans/2026-09-08-retire-legacy-record-formats.md) — historical record unavailable (`docs/changes/2026-09-08-retire-compact-workflow-mutations/change.json`)
 
-- [2026-09-08 Design-Derived Test Model](plans/2026-09-08-design-derived-test-model.md) — [owning change](changes/2026-09-08-design-derived-test-model/change.json)
+- [2026-09-08 Design-Derived Test Model](plans/2026-09-08-design-derived-test-model.md) — historical record unavailable (`docs/changes/2026-09-08-design-derived-test-model/change.json`)
 
-- [2026-09-08 Unify Review and Closeout Policy Ownership](plans/2026-09-08-unify-review-closeout-policy.md) — [owning change](changes/2026-09-07-unify-review-closeout-policy/change.json)
+- [2026-09-08 Unify Review and Closeout Policy Ownership](plans/2026-09-08-unify-review-closeout-policy.md) — historical record unavailable (`docs/changes/2026-09-07-unify-review-closeout-policy/change.json`)
 
-- [2026-09-07 Targeted Recording and Record Format v2](plans/2026-09-07-targeted-recording-primary-cli.md) — [owning change](changes/2026-09-07-targeted-recording-primary-cli/change.yaml)
+- [2026-09-07 Targeted Recording and Record Format v2](plans/2026-09-07-targeted-recording-primary-cli.md) — historical record unavailable (`docs/changes/2026-09-07-targeted-recording-primary-cli/change.yaml`)
 - [2026-09-05 Explicit Recording and Model-Centered Design](plans/2026-09-05-explicit-recording-and-model-centered-design.md)
 - [2026-09-03 Compact Current-State Change Record](plans/2026-09-03-compact-current-state-change-record.md)
 - [2026-09-03 Relax PR Evidence Tail Topology](plans/2026-09-03-relax-pr-evidence-tail.md)

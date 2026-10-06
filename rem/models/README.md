@@ -85,3 +85,9 @@ A later allocation or retirement does not rewrite an earlier baseline's responsi
 Typed references resolve to compatible entity types, and stable identities are independent of names and storage paths.
 Each semantic relationship has one authoritative representation; inverse views are derived.
 A project implementation selects formats, identity namespaces, revision references, and physical containment rules through [Operational Support](operational-support.md) while preserving REM semantics.
+
+## Assessment procedures
+
+Use [verification](../methods/plan-and-assess-verification.md) to assess specified conformance and [intended-use validation](../methods/validate-stakeholder-outcomes.md) to assess stakeholder outcomes.
+Each conclusion retains its own scope and support, even when observations are shared.
+The methods select no new record format or universal lifecycle gate.

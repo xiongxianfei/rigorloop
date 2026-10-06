@@ -1,8 +1,8 @@
-<!-- Generated from rem/models/requirements.md; source SHA-256 91e68cf217ed10cf4c794722bb48718926d3994f3495089f36fbd8a8372c88a8. Edit the owning REM source. -->
+<!-- Generated from rem/models/requirements.md; source SHA-256 85f97c2cbffdaef67b932eb810ce00a76c9cfbb89d818b4602437e6127be2422. Edit the owning REM source. -->
 
 # Requirement model
 
-The [concepts](https://github.com/xiongxianfei/rigorloop/blob/main/rem/concepts/README.md#requirement-input) distinguish the incoming Raw Requirement (RR) from the durable Initial Requirement, System Requirement, and Allocated Requirement.
+The [concepts](https://github.com/xiongxianfei/rigorloop/blob/main/rem/concepts/requirement-input.md#requirement-input) distinguish the incoming Raw Requirement (RR) from the durable Initial Requirement, System Requirement, and Allocated Requirement.
 The [Requirement Analysis method](rem-methods-requirement-analysis.md) reconciles RR input with the current requirement model and develops the three durable levels.
 
 ```text
@@ -119,3 +119,8 @@ Moving an SR to a different IR, or an AR to a different SR, changes semantic par
 Requirement identities do not encode their current parent and are not renumbered solely because a parent changes.
 
 Requirement satisfaction, approval, implementation, and evidence applicability remain distinct concerns and MUST NOT be inferred from the presence of a requirement definition.
+
+## Source rationale
+
+[NASA requirements definition](https://github.com/xiongxianfei/rigorloop/blob/main/rem/sources/S01.md) supports assessable obligations and rationale; [requirements management](https://github.com/xiongxianfei/rigorloop/blob/main/rem/sources/S03.md) supports hierarchy and traceability.
+REM's exact three-level containment, cardinalities and analysis rules remain its own selected commitments.

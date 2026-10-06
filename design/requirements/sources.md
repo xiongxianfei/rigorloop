@@ -11,7 +11,7 @@ These source references do not rename, replace, or migrate obligations from the 
 
 ## SRC-MODULE-HIERARCHY
 
-Source: the user's proposed four-parent Module decomposition and nested `modules/` representation, followed by authorization to apply the refined REM architecture rules. The living [Module hierarchy and encapsulation model](../../rem/models/architecture-design.md#module-hierarchy-and-encapsulation) defines responsibility containment, single accountable allocation, and continuous provider-side Interface exposure.
+Source: the user's proposed four-parent Module decomposition and nested `modules/` representation, followed by authorization to apply the refined REM architecture rules. The living [Module hierarchy and encapsulation model](../../rem/models/architecture-boundaries.md#module-hierarchy-and-encapsulation) defines responsibility containment, single accountable allocation, and continuous provider-side Interface exposure.
 
 The four draft parents compose the existing responsibilities: MOD-016 contains MOD-001–004; MOD-017 contains MOD-005–009; MOD-018 contains MOD-010–012; MOD-019 contains MOD-013–015. Their definitions explain broader integration responsibility and exclusions without taking ownership of child-held state or duplicating direct allocations. The distinction between MOD-008's semantic model-authoring guidance and MOD-012's published invocation procedures remains explicit.
 
@@ -437,7 +437,7 @@ The source-qualified product inventory remains the earlier coverage baseline; cu
 ## SRC-CLI-REALIZATION
 
 Source: the user's instruction to proceed after rereading refined REM Architecture Design, which includes material physical/software realization beneath Modules and Interfaces.
-The [architecture method](../../rem/methods/architecture-design.md#design-the-physicalsoftware-realization) and [realization model](../../rem/models/architecture-design.md#architecture-realization-views) govern this pass. The user's in-progress REM refinements are retained unchanged.
+The [architecture method](../../rem/methods/realization-design.md#design-the-physicalsoftware-realization) and [realization model](../../rem/models/architecture-realization.md#architecture-realization-views) govern this pass. The user's in-progress REM refinements are retained unchanged.
 The [application profile](../support/README.md#subordinate-realization-views) defines the optional representation. Canonical owner-contained facets record the bounded mapping and its limits; the [runtime view](../architecture/views/browser/index.html#process) summarizes the selected physical arrangement.
 
 MOD-010/MOD-011 and IF-003/IF-004 distinguish attributed source observations from draft choices and deferred qualification. No new requirement, logical allocation, Module, Interface, or public format is introduced.

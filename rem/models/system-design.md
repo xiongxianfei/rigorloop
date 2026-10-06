@@ -1,7 +1,7 @@
 # System Design model
 
 System Design describes durable stakeholder-visible capabilities and the durable logical behavior that realizes them.
-The [concept definitions](../concepts/README.md#system-and-architecture-assets) distinguish Features and Functions from Requirements.
+The [concept definitions](../concepts/system-and-architecture.md#system-and-architecture-assets) distinguish Features and Functions from Requirements.
 The [Scenario model](scenarios.md) defines the governed stakeholder situations that exercise Features.
 
 ```text

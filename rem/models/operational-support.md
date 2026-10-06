@@ -82,7 +82,7 @@ It MAY retain the last successful set with its original identity and an explicit
 The project defines the recovery mechanism and which checks are required before refreshed output can be relied on.
 
 The [Architecture Views method](../methods/architecture-views.md#generation-and-assessment-cycle) owns the procedure for producing and assessing architecture presentations.
-Its [correction ownership](../methods/architecture-views.md#correction-ownership) distinguishes model, projection, presentation, and maintenance findings.
+Its [correction ownership](../methods/view-presentation.md#correction-ownership) distinguishes model, projection, presentation, and maintenance findings.
 
 ## Method and application boundary
 
