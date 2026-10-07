@@ -35,7 +35,7 @@ It is an integration guide, not another knowledge category.
 | Package | Owns | Reader's question |
 | --- | --- | --- |
 | [Concepts](concepts/README.md) | Definitions and distinctions | What does each term mean? |
-| [Principles](principles/README.md) | Governing engineering commitments | What must the method preserve? |
+| [Principles](principles/README.md) | Explanatory relationships and the governing commitments they motivate | What deeper relationship matters, why, and what does REM preserve because of it? |
 | [Models](models/README.md) | Entity structures, relationships, and invariants | How does engineering information fit together? |
 | [Methods](methods/README.md) | Repeatable analysis and design procedures | How do we produce and refine the information? |
 | [Practices](practices/README.md) | Goal-oriented application and worked examples | How do these methods fit together in real work? |

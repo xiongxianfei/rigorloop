@@ -1,6 +1,9 @@
 # REM principles
 
 These are the twenty-two governing principles of the proposed [RigorLoop Engineering Method](../README.md).
+A principle explains a deeper engineering relationship and why it matters, then connects that explanation to a commitment REM preserves.
+Each document separates **Relationship and why**, **REM commitment**, and **Application** so readers can distinguish the reasoning, the selected rule, and its owning Model or Method.
+These explanations give the rationale for REM's choices; they do not claim that every chosen structure is a universal engineering law or that the method's effectiveness has been empirically established.
 [Concepts](../concepts/README.md) define the terms; [models](../models/README.md) own relationship constraints; [methods](../methods/README.md) explain their application.
 
 | Principle | Commitment |

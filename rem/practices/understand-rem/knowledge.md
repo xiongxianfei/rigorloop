@@ -5,7 +5,7 @@
 REM reconstructs engineering knowledge through five complementary kinds of material:
 
 - [Concepts](../../concepts/README.md) define what the engineering terms mean.
-- [Principles](../../principles/README.md) define the durable commitments REM must preserve.
+- [Principles](../../principles/README.md) explain deeper engineering relationships, why they matter, and the durable commitments REM preserves because of them.
 - [Models](../../models/README.md) define valid structures, relationships, and invariants.
 - [Methods](../../methods/README.md) define how engineers create and refine valid engineering information.
 - [Practices](../README.md) combine those methods around an engineering goal.
@@ -23,7 +23,7 @@ what do the terms mean?
       │
       ▼
 Principles
-what must remain true?
+what relationship matters, why, and what follows for REM?
       │
       ▼
 Models
