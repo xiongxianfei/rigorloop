@@ -15,7 +15,7 @@ Suppose a responsibility is reassigned in a design table but its old owner remai
 
 ## Source basis and REM synthesis
 
-The possibility of disagreement follows from independent updates. [W3C PROV-Overview](../sources/S15.md) supplies background on attribution and derivation. It does not prove that one database or generation alone ensures correctness. REM's [representation model](../models/README.md#representation) separately selects one authoritative representation per semantic fact.
+The possibility of disagreement follows from independent updates. [W3C PROV-Overview](../references/w3c-2013-prov-overview.md#located-contribution) supplies background on attribution and derivation. It does not prove that one database or generation alone ensures correctness. REM's [representation model](../models/README.md#representation) separately selects one authoritative representation per semantic fact.
 
 ## Applications
 Within REM, maintained links, deliberate projections, replicas and reviewed snapshots retain the declared authoritative source for each fact. A concern-specific view can repeat a subset of facts for comprehension, provided its authoritative basis and update responsibility remain intelligible.

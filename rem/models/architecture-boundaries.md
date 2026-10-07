@@ -58,5 +58,5 @@ A parent-provided Interface needs no exposure through its own provider. If that 
 
 ## Source rationale
 
-[Parnas on decomposition](../sources/S10.md) supports examining significant design decisions and change consequences when choosing boundaries.
+[Parnas on decomposition](../references/parnas-1972-criteria-for-decomposing-systems.md#located-contribution) supports examining significant design decisions and change consequences when choosing boundaries.
 REM owns its Module hierarchy, Interface exposure and allocation rules; the paper does not establish their exact cardinalities.

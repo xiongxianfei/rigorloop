@@ -4,7 +4,7 @@
 
 Determine whether an identified subject satisfies specified obligations and acceptance criteria.
 The [assurance concepts](../concepts/assurance.md) distinguish a verification definition, actual Evidence and Judgment; the [assurance model](../models/README.md#assurance) owns their relationship.
-[NASA Product Verification](../sources/S04.md) supports this assessment purpose and the choice of test, analysis, inspection or demonstration; REM owns the procedure and its application to REM requirements.
+[NASA Product Verification](../references/nasa-2016-systems-engineering-handbook.md#product-verification) supports this assessment purpose and the choice of test, analysis, inspection or demonstration; REM owns the procedure and its application to REM requirements.
 
 ## Inputs
 

@@ -18,7 +18,7 @@ A client retries an operation after a timeout. If timeout leaves completion unkn
 
 ## Source basis and REM synthesis
 
-[NASA Interface Management](../sources/S17.md) includes interface rationale, assumptions, anomalies and agreements. The acknowledgement and retry examples are REM-authored illustrations of semantic compatibility; the source does not prescribe an idempotency mechanism or REM provider cardinality.
+[NASA Interface Management](../references/nasa-2016-systems-engineering-handbook.md#interface-management) includes interface rationale, assumptions, anomalies and agreements. The acknowledgement and retry examples are REM-authored illustrations of semantic compatibility; the source does not prescribe an idempotency mechanism or REM provider cardinality.
 
 ## Scope and limits
 More contract detail is not always better. Exposing internal scheduling unnecessarily can restrict future designs. Leaving externally relevant failure behavior implicit can be equally damaging. The useful boundary is determined by what each party needs to rely on.

@@ -18,7 +18,7 @@ A reader that depends only on a release-retrieval contract need not know whether
 
 ## Source basis and REM synthesis
 
-[Parnas](../sources/S10.md) compares decomposition around processing steps with hiding change-sensitive design decisions. This supports reasoning about change propagation, not a universal Module size, nesting depth or benefit from every extra abstraction.
+[Parnas](../references/parnas-1972-criteria-for-decomposing-systems.md#located-contribution) compares decomposition around processing steps with hiding change-sensitive design decisions. This supports reasoning about change propagation, not a universal Module size, nesting depth or benefit from every extra abstraction.
 
 ## Scope and tradeoffs
 An extra abstraction can add indirection, latency and maintenance work. If the hidden detail is actually shared semantics that consumers must understand, suppressing it produces ambiguity rather than useful encapsulation. A project should compare concrete change scenarios, not only draw cleaner boxes.

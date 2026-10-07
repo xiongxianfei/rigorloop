@@ -19,7 +19,9 @@ Select architecture presentations through [explicit view tailoring](methods/arch
 
 ## Status and use
 
-This directory is the living home of the proposed method, reorganized from the user's initial 43-section REM proposal.
+[Method metadata](metadata.md) declares REM’s own version and the exact KPS version it is based on. Maintained REM documents inherit that declaration; stable document identities and source publication/inspection provenance remain distinct. The based-on relationship does not assert assessed KPS conformance or publish a software release.
+
+This directory holds the current knowledge for the declared REM edition.
 Refine the relevant document here as methodological decisions become clearer.
 The method describes reusable engineering practice; its application to RigorLoop is being drafted separately under `design/`.
 
@@ -27,7 +29,7 @@ The selected authoring rules apply all seven 5W2H questions to every IR, SR, and
 Those rules are recorded in [Requirement Analysis](methods/requirement-analysis.md).
 [Operational Support](models/operational-support.md#clear-engineering-definitions) owns the clarity commitment across engineering definitions; the [System Design model](models/system-design.md#clear-names-and-boundaries) defines its application to Features and Functions.
 RigorLoop's separate application draft selects readable IR and SR directory names and structured seven-part analysis with self-contained schemas as representation conventions.
-The rest of the methodology remains proposed; these documents do not silently replace existing approved repository contracts.
+These methodology documents do not silently replace existing approved repository contracts.
 
 [Knowledge Reconstruction](practices/understand-rem/README.md) explains how these authoritative Concept, Principle, Model, Method, and Practice documents combine to build REM and why each knowledge owner exists.
 It is an integration guide, not another knowledge category.

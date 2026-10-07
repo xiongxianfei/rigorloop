@@ -1,4 +1,4 @@
-<!-- Generated from rem/models/requirements.md; source SHA-256 433d8b0e391c814f4de8bc1b42d2f9f9b633d9502a0658c37e5683dcfdb8e59b. Edit the owning REM source. -->
+<!-- Generated from rem/models/requirements.md; source SHA-256 a6bafe4a744273f75a0ddc3c9c26fe932517cd965a24c6f2cd1b4880bfb2b0ec. Edit the owning REM source. -->
 
 # Requirement model
 
@@ -124,5 +124,5 @@ Requirement satisfaction, approval, implementation, and evidence applicability r
 
 ## Source rationale
 
-[NASA requirements definition](https://github.com/xiongxianfei/rigorloop/blob/main/rem/sources/S01.md) supports assessable obligations and rationale; [requirements management](https://github.com/xiongxianfei/rigorloop/blob/main/rem/sources/S03.md) supports hierarchy and traceability.
+[NASA requirements definition](https://github.com/xiongxianfei/rigorloop/blob/main/rem/references/nasa-2016-systems-engineering-handbook.md#requirements-definition) supports assessable obligations and rationale; [requirements management](https://github.com/xiongxianfei/rigorloop/blob/main/rem/references/nasa-2016-systems-engineering-handbook.md#requirements-management) supports hierarchy and traceability.
 REM's exact three-level containment, cardinalities and analysis rules remain its own selected commitments.

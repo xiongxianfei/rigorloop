@@ -18,7 +18,7 @@ Two complaints may lead to one timeout requirement. The implementation link show
 
 ## Source basis and REM synthesis
 
-[Gotel and Finkelstein](../sources/S13.md) distinguish traceability before and after requirements enter a specification. The separate questions about formation and realization follow that distinction. REM selects its own traceability relationships and retention rules.
+[Gotel and Finkelstein](../references/gotel-finkelstein-1994-requirements-traceability-problem.md#located-contribution) distinguish traceability before and after requirements enter a specification. The separate questions about formation and realization follow that distinction. REM selects its own traceability relationships and retention rules.
 
 ## Scope and limits
 The relationship supports maintaining reasons for reuse, rejection or modification of incoming requests. It does not imply retaining every chat message indefinitely or assigning every input a governed object. Sensitivity, privacy, retention cost and actual retrieval needs remain project considerations.

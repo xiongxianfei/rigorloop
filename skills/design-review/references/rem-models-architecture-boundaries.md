@@ -1,4 +1,4 @@
-<!-- Generated from rem/models/architecture-boundaries.md; source SHA-256 a7e312e3d9b9013927e2cd3ed80da82fc2bbddee442e40d737e7cac7671883c1. Edit the owning REM source. -->
+<!-- Generated from rem/models/architecture-boundaries.md; source SHA-256 485e90bcc64188038aff83ee403692884f64580fb8838eeb8da0736aa9536c3b. Edit the owning REM source. -->
 
 # Module hierarchy and encapsulation
 
@@ -60,5 +60,5 @@ A parent-provided Interface needs no exposure through its own provider. If that 
 
 ## Source rationale
 
-[Parnas on decomposition](https://github.com/xiongxianfei/rigorloop/blob/main/rem/sources/S10.md) supports examining significant design decisions and change consequences when choosing boundaries.
+[Parnas on decomposition](https://github.com/xiongxianfei/rigorloop/blob/main/rem/references/parnas-1972-criteria-for-decomposing-systems.md#located-contribution) supports examining significant design decisions and change consequences when choosing boundaries.
 REM owns its Module hierarchy, Interface exposure and allocation rules; the paper does not establish their exact cardinalities.

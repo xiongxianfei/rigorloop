@@ -1,4 +1,4 @@
-<!-- Generated from rem/methods/architecture-views.md; source SHA-256 a93c9386781abb7ce3c82ab06466c711941df61b5434310b72e62c0627d89f1c. Edit the owning REM source. -->
+<!-- Generated from rem/methods/architecture-views.md; source SHA-256 39fbe2267c53ce2fe98d8152e852a9d1e85e4d440134e5e12cc576ac9cd466cf. Edit the owning REM source. -->
 
 # 4+1 Architecture View method
 
@@ -69,7 +69,7 @@ An unknown concern remains a gap; it is not a justified omission.
 A combined view must preserve the distinctions between logical responsibility, source organization, execution and placement.
 For example, a small library may combine Logical and Development explanations and describe its execution and placement assumptions in prose; a distributed service still needs coverage of material concurrency, failure and deployment concerns.
 
-[Kruchten's tailoring discussion](https://github.com/xiongxianfei/rigorloop/blob/main/rem/sources/S11.md) supports omission and combination of unhelpful presentations.
+[Kruchten's tailoring discussion](https://github.com/xiongxianfei/rigorloop/blob/main/rem/references/kruchten-1995-architectural-blueprints.md#located-contributions) supports omission and combination of unhelpful presentations.
 REM's explicit coverage rationale, authoritative-source rules and permission boundaries remain local method decisions.
 The [worked example](rem-practices-WORKED-EXAMPLE.md#design-and-selected-views) demonstrates a selection without inventing additional architecture.
 

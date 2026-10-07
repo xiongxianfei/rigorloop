@@ -15,7 +15,7 @@ A retrieval test may show that one release can be read. It does not test interru
 
 ## Source basis and REM synthesis
 
-[NASA verification](../sources/S04.md) and [validation](../sources/S05.md) distinguish specified conformance from intended use and identify assessment conditions. [PROV-Overview](../sources/S15.md) explains how provenance can inform assessment. The applicability reasoning and release example here are REM's synthesis; provenance alone is not proof.
+[NASA verification](../references/nasa-2016-systems-engineering-handbook.md#product-verification) and [validation](../references/nasa-2016-systems-engineering-handbook.md#product-validation) distinguish specified conformance from intended use and identify assessment conditions. [PROV-Overview](../references/w3c-2013-prov-overview.md#located-contribution) explains how provenance can inform assessment. The applicability reasoning and release example here are REM's synthesis; provenance alone is not proof.
 
 ## Applications
 State the claim and its limits before selecting evidence. Distinguish analysis, inspection, demonstration, test and real use; choose what can actually answer the question. Preserve a test plan as a plan until the work is performed. An unexecuted plan can still be useful design knowledge.

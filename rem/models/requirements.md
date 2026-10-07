@@ -122,5 +122,5 @@ Requirement satisfaction, approval, implementation, and evidence applicability r
 
 ## Source rationale
 
-[NASA requirements definition](../sources/S01.md) supports assessable obligations and rationale; [requirements management](../sources/S03.md) supports hierarchy and traceability.
+[NASA requirements definition](../references/nasa-2016-systems-engineering-handbook.md#requirements-definition) supports assessable obligations and rationale; [requirements management](../references/nasa-2016-systems-engineering-handbook.md#requirements-management) supports hierarchy and traceability.
 REM's exact three-level containment, cardinalities and analysis rules remain its own selected commitments.

@@ -18,7 +18,7 @@ A Builder creates complete release content and a Store can retain it. Neither fa
 
 ## Source basis and REM synthesis
 
-[NASA Product Integration](../sources/S16.md) treats subsystem/environment interactions and adverse emergent behavior as integration concerns. The need for a composition argument and the publication example are REM's explanatory application of that concern.
+[NASA Product Integration](../references/nasa-2016-systems-engineering-handbook.md#product-integration) treats subsystem/environment interactions and adverse emergent behavior as integration concerns. The need for a composition argument and the publication example are REM's explanatory application of that concern.
 
 ## Scope and limits
 The explanatory relationship is useful whenever responsibility is distributed. It does not prohibit compositional proof: a valid proof with adequate assumptions can establish the whole. Nor does it require repeating every component test at system level. The assessment should target the missing interaction argument.

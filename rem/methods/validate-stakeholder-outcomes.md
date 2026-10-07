@@ -5,7 +5,7 @@
 Assess whether a solution supports an identified stakeholder outcome in its intended or explicitly representative context.
 This differs from conformance to specified criteria, addressed by [verification](plan-and-assess-verification.md).
 It also differs from checking whether a requirement statement is clear and assessable during [Requirement Analysis](requirement-analysis.md).
-[NASA Product Validation](../sources/S05.md) supports assessing intended use against stakeholder expectations; REM selects the procedure below without claiming compliance with NASA's process.
+[NASA Product Validation](../references/nasa-2016-systems-engineering-handbook.md#product-validation) supports assessing intended use against stakeholder expectations; REM selects the procedure below without claiming compliance with NASA's process.
 
 ## Inputs
 

@@ -1,4 +1,4 @@
-<!-- Generated from rem/methods/plan-and-assess-verification.md; source SHA-256 d7de3cdd64b77ec1ea61c69fd28d9bf6e28812b7f64697f2f99be3a510fe6bf6. Edit the owning REM source. -->
+<!-- Generated from rem/methods/plan-and-assess-verification.md; source SHA-256 9e667075706949406f6301cc881501a7a7710771e09dbd9e1b02a9592815f646. Edit the owning REM source. -->
 
 # Plan and assess verification
 
@@ -6,7 +6,7 @@
 
 Determine whether an identified subject satisfies specified obligations and acceptance criteria.
 The [assurance concepts](rem-concepts-assurance.md) distinguish a verification definition, actual Evidence and Judgment; the [assurance model](rem-models-README.md#assurance) owns their relationship.
-[NASA Product Verification](https://github.com/xiongxianfei/rigorloop/blob/main/rem/sources/S04.md) supports this assessment purpose and the choice of test, analysis, inspection or demonstration; REM owns the procedure and its application to REM requirements.
+[NASA Product Verification](https://github.com/xiongxianfei/rigorloop/blob/main/rem/references/nasa-2016-systems-engineering-handbook.md#product-verification) supports this assessment purpose and the choice of test, analysis, inspection or demonstration; REM owns the procedure and its application to REM requirements.
 
 ## Inputs
 

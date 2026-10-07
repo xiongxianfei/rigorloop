@@ -67,7 +67,7 @@ An unknown concern remains a gap; it is not a justified omission.
 A combined view must preserve the distinctions between logical responsibility, source organization, execution and placement.
 For example, a small library may combine Logical and Development explanations and describe its execution and placement assumptions in prose; a distributed service still needs coverage of material concurrency, failure and deployment concerns.
 
-[Kruchten's tailoring discussion](../sources/S11.md) supports omission and combination of unhelpful presentations.
+[Kruchten's tailoring discussion](../references/kruchten-1995-architectural-blueprints.md#located-contributions) supports omission and combination of unhelpful presentations.
 REM's explicit coverage rationale, authoritative-source rules and permission boundaries remain local method decisions.
 The [worked example](../practices/WORKED-EXAMPLE.md#design-and-selected-views) demonstrates a selection without inventing additional architecture.
 

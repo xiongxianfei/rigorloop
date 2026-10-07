@@ -17,7 +17,7 @@ For example, “recover the reviewed release” can remain a goal whether the im
 
 ## Source basis and REM synthesis
 
-[NASA requirements rationale](../sources/S01.md) distinguishes reasons, assumptions and implementation constraints. [Zave and Jackson](../sources/S12.md) distinguish requirements, specifications and domain knowledge. The enduring-need explanation is REM's synthesis; neither source prescribes its IR/SR/AR hierarchy.
+[NASA requirements rationale](../references/nasa-2016-systems-engineering-handbook.md#requirements-definition) distinguishes reasons, assumptions and implementation constraints. [Zave and Jackson](../references/zave-jackson-1997-four-dark-corners.md#located-claims-and-inspected-extent) distinguish requirements, specifications and domain knowledge. The enduring-need explanation is REM's synthesis; neither source prescribes its IR/SR/AR hierarchy.
 
 ## Applications and limits
 The relationship supports examining a raw request, comparing alternate realizations and deciding whether a change concerns a need or only its implementation. It does not establish a three-level hierarchy. A regulated component, purchased interface or compatibility mandate can make a specific solution an actual constraint; its authority then belongs in the reasoning.

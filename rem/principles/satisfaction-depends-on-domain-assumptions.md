@@ -18,7 +18,7 @@ A release reader that returns the correct identifier does not ensure users selec
 
 ## Source basis and REM synthesis
 
-[Zave and Jackson](../sources/S12.md) explain how specifications and domain knowledge jointly support requirements satisfaction, including assumptions that may fail. [NASA requirements definition](../sources/S01.md) calls for documenting and validating assumptions. The release example and review question here are REM-authored applications.
+[Zave and Jackson](../references/zave-jackson-1997-four-dark-corners.md#located-claims-and-inspected-extent) explain how specifications and domain knowledge jointly support requirements satisfaction, including assumptions that may fail. [NASA requirements definition](../references/nasa-2016-systems-engineering-handbook.md#requirements-definition) calls for documenting and validating assumptions. The release example and review question here are REM-authored applications.
 
 ## Scope and limits
 This reasoning is relevant to software-intensive systems and to broader system/environment boundaries. It does not determine which party should own a missing condition. A project may change the boundary, add a monitoring/recovery obligation, or limit the claim with authorization.

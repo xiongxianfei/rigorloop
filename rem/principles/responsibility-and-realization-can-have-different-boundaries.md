@@ -15,7 +15,7 @@ A service process may realize several responsibilities, and one responsibility m
 
 ## Source basis and REM synthesis
 
-[Kruchten](../sources/S11.md) describes mappings between logical, process, development and physical views that need not be one-to-one. REM's Module/Interface accountability and subordinate realization are selected rules in its [Architecture model](../models/architecture-design.md), not rules derived from the paper's class diagrams.
+[Kruchten](../references/kruchten-1995-architectural-blueprints.md#located-contributions) describes mappings between logical, process, development and physical views that need not be one-to-one. REM's Module/Interface accountability and subordinate realization are selected rules in its [Architecture model](../models/architecture-design.md), not rules derived from the paper's class diagrams.
 
 ## Methodological consequences
 An architecture discussion can use separate descriptions for “what is owned” and “where it runs,” connected by a rationale. This supports deployment changes, consolidation and extraction without inventing a new capability merely because an executable appears.

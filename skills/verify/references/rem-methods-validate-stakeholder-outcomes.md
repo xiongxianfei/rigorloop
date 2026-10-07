@@ -1,4 +1,4 @@
-<!-- Generated from rem/methods/validate-stakeholder-outcomes.md; source SHA-256 678d14244e4ec08709c125025350df5e88002e874a916000c9879726fc342972. Edit the owning REM source. -->
+<!-- Generated from rem/methods/validate-stakeholder-outcomes.md; source SHA-256 e977b9ac43afba44bac152e71841862b3a7ac6c867e79e4ace2f0540f3c465bf. Edit the owning REM source. -->
 
 # Assess intended-use outcomes
 
@@ -7,7 +7,7 @@
 Assess whether a solution supports an identified stakeholder outcome in its intended or explicitly representative context.
 This differs from conformance to specified criteria, addressed by [verification](rem-methods-plan-and-assess-verification.md).
 It also differs from checking whether a requirement statement is clear and assessable during [Requirement Analysis](https://github.com/xiongxianfei/rigorloop/blob/main/rem/methods/requirement-analysis.md).
-[NASA Product Validation](https://github.com/xiongxianfei/rigorloop/blob/main/rem/sources/S05.md) supports assessing intended use against stakeholder expectations; REM selects the procedure below without claiming compliance with NASA's process.
+[NASA Product Validation](https://github.com/xiongxianfei/rigorloop/blob/main/rem/references/nasa-2016-systems-engineering-handbook.md#product-validation) supports assessing intended use against stakeholder expectations; REM selects the procedure below without claiming compliance with NASA's process.
 
 ## Inputs
 

@@ -15,7 +15,7 @@ Separating a responsibility into another process can support independent deploym
 
 ## Source basis and REM synthesis
 
-The official [ATAM report abstract](../sources/S14.md) explains architectural tradeoffs affecting qualities including performance, availability, security and modifiability. The process example and conditional comparison questions here are REM-authored reasoning. This guidance is not a full ATAM execution or a universal numeric optimization rule.
+The official [ATAM report abstract](../references/kazman-2000-atam-method-for-architecture-evaluation.md#located-contributions) explains architectural tradeoffs affecting qualities including performance, availability, security and modifiability. The process example and conditional comparison questions here are REM-authored reasoning. This guidance is not a full ATAM execution or a universal numeric optimization rule.
 
 ## Use
 Form a scenario with a stimulus, context and observable response before claiming “faster,” “more reliable” or “easier to change.” Identify non-negotiable constraints separately from preferences. Record missing evidence and the assumptions that control the ranking. A small comparison can be enough when the alternatives are clear.

@@ -19,6 +19,8 @@ Index policy:
 
 ## Active
 
+- [Consolidate REM publication references](plans/2026-10-07-rem-reference-consolidation.md) — Change `2026-10-07-rem-reference-consolidation`.
+
 - [Historical-path compatibility retirement](plans/2026-09-17-retire-historical-path-compatibility.md) — historical record unavailable (`docs/changes/2026-09-17-retire-historical-path-compatibility/change.json`).
 
 - [Feature-format support retirement](plans/2026-09-17-retire-feature-format-support.md) — historical record unavailable (`docs/changes/2026-09-17-retire-feature-format-support/change.json`).
@@ -38,6 +40,8 @@ Compatibility heading only.
 Current blockers are not recorded in this index.
 
 ## Current plan references
+
+- [Declare REM edition and KPS basis](plans/2026-10-07-rem-version-basis.md) — owning local Change `2026-10-07-rem-version-basis`.
 
 - [Integrate original Practices with current REM rules](plans/2026-10-07-rem-practice-integration.md) — owning local Change `2026-10-07-rem-practice-integration`.
 

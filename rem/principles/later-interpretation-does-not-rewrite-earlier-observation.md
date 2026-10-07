@@ -15,7 +15,7 @@ An earlier test may have passed its stated criterion. Later work can reveal that
 
 ## Source basis and REM synthesis
 
-[NASA verification](../sources/S04.md) identifies conditions and discrepancies; [PROV-Overview](../sources/S15.md) discusses attribution, versioning and derivation. Separating earlier observations from later interpretation is REM's synthesis. It does not prescribe an event-store architecture; REM's [Evolution model](../models/README.md#evolution) preserves historical engineering meaning beyond observations alone.
+[NASA verification](../references/nasa-2016-systems-engineering-handbook.md#product-verification) identifies conditions and discrepancies; [PROV-Overview](../references/w3c-2013-prov-overview.md#located-contribution) discusses attribution, versioning and derivation. Separating earlier observations from later interpretation is REM's synthesis. It does not prescribe an event-store architecture; REM's [Evolution model](../models/README.md#evolution) preserves historical engineering meaning beyond observations alone.
 
 ## Applications
 Reassess old evidence after requirement, interface or implementation changes. Preserve the old context and explain why reliance is retained, narrowed or withdrawn. Maintain a concise current explanation so a reader need not reconstruct the whole change history just to understand today’s design.

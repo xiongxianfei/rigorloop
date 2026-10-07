@@ -7,7 +7,7 @@ This supporting design defines the portable guidance composition; it creates no 
 
 Use the existing REM semantics with three selected improvements: focused knowledge documents and Practices/examples/sources; explicit verification and intended-use validation methods; and concern-based architecture-view tailoring.
 Document splitting preserves requirement parentage, Scenario ownership, seven-question analysis, bounded open questions, Function coverage, accountable allocation, subordinate realization and evidence applicability.
-Imported reconstruction metadata, alternative profiles and release/check claims have no authority in this composition.
+The canonical REM method metadata owns its edition and explicitly selected KPS basis. A based-on relationship identifies the knowledge foundation; it does not assert KPS conformance, product release or completed source inspection. Imported reconstruction metadata, alternative profiles and release/check claims gain no authority merely by being copied into the tree. Document identities and source-specific publication/inspection provenance remain separate from the method edition.
 
 ## Logical behavior and ownership
 
@@ -25,7 +25,7 @@ Each new principle has a distinct named identity. A concise migration map identi
 Practices coordinate those owners into goal-oriented work with locally usable stage summaries, procedures, explanations, examples, checks and fallback actions. Concise inline summaries apply the current Model and Method rules; the owning definitions remain authoritative. Preserve the five operating routes: engineer a change, review an existing system, verify and validate a bounded slice, make an architecture decision, and improve REM through actual use. Supporting knowledge guides and worked examples supply depth without replacing executable stages.
 Current requirement parentage, Scenario ownership, Function coverage and allocation rules apply within those stages. Rule changes require explicit revision at their governing owner; an imported methodology-only or deferred-specification label cannot suspend existing rules.
 Indexes provide navigation rather than duplicate normative definitions.
-Source notes identify the exact external claim supported and distinguish REM's selected rules from external recommendations.
+One rich reference document per publication lives under `rem/references/`; chapter-specific contributions remain precise sections of that publication. `rem/SOURCES.md` preserves the existing source identifiers as claim-to-section navigation. References inherit the canonical REM method metadata, while retaining their own bibliographic identity, inspection dates, inspected passages and limits. Incoming inspection reports stay attributed until actually checked; source metadata does not establish approval or conformance. Source contributions support exact claims and do not suspend current Model or Method rules. Reconciliation updates live consumers and generated citations before retiring duplicate source notes.
 Examples are illustrative application records and keep plans, observations and judgments separate.
 
 Split large architecture documents into cohesive boundary, allocation, realization and view concerns.
