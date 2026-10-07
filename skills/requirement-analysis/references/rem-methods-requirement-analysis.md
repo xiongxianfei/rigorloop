@@ -75,7 +75,7 @@ Refining a title does not silently change the obligation, approve the IR, or ren
 Recheck the title against its statement and 5W2H analysis whenever either changes.
 
 Names in the engineering model remain distinct from physical storage labels.
-[Operational Support](https://github.com/xiongxianfei/rigorloop/blob/main/rem/models/operational-support.md#naming-and-location) defines how a project represents names and updates locations.
+[Operational Support](rem-models-operational-support.md#naming-and-location) defines how a project represents names and updates locations.
 The analysis method does not prescribe a directory structure or require an extra abbreviation of the title.
 
 ## Derive system requirements

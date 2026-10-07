@@ -32,6 +32,11 @@ For Change-managed work, read the packaged operational interface reference befor
 
 - READ `references/requirement-to-delivery-model.md` when applying its criteria to this responsibility.
 
+- READ `references/rem-practices-engineer-a-change.md` when needing an illustrative application of the canonical methods; examples do not establish execution.
+- READ `references/rem-practices-WORKED-EXAMPLE.md` when needing an illustrative application of the canonical methods; examples do not establish execution.
+
+- READ `references/rem-models-operational-support.md` when applying shared definition clarity, semantic authority, representation or maintenance rules.
+
 ## Expected output
 
 Report the actual scoped outcome, governing basis, changed subjects or recorded judgment, material gaps and the next authorized action. Distinguish progress, review approval, final verification and external publication; claim only outcomes supported by this invocation.

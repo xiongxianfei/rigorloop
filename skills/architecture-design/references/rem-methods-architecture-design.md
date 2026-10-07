@@ -1,4 +1,4 @@
-<!-- Generated from rem/methods/architecture-design.md; source SHA-256 45cc7f7d475238422514de05c8e1f84c78befd4b77d6688e0652e8c001bddb09. Edit the owning REM source. -->
+<!-- Generated from rem/methods/architecture-design.md; source SHA-256 41b33b8b828e5918283cf7b7932a365417ffef493bd812ec4ab64d1e0b4a1e71. Edit the owning REM source. -->
 
 # Architecture Design method
 
@@ -6,6 +6,11 @@ Use responsibility-based decomposition to assign logical behavior and allocated 
 The [Architecture Design model](rem-models-architecture-design.md) owns Module, Interface, and allocation semantics; the [requirement model](rem-models-requirements.md) owns SR-to-AR derivation and containment.
 The method is tool-independent at the REM level: it does not mandate a particular language, source layout, runtime, datastore, deployment platform, or protocol.
 A concrete architecture may nevertheless select such technologies when the choice is material to the system's physical/software realization.
+
+
+## Focused guidance
+
+- [Design the physical/software realization](rem-methods-realization-design.md)
 
 ## Inputs and intended result
 
@@ -37,7 +42,7 @@ Explain which decisions remain provisional instead of treating every candidate a
 
 ## Define coherent Module boundaries
 
-For each candidate, use the [Module definition criteria](rem-models-architecture-design.md#modules) and [Module hierarchy rules](rem-models-architecture-design.md#module-hierarchy-and-encapsulation) to explain its purpose, responsibilities, owned information or state, exclusions, cooperation, and relationship to any parent or child Modules.
+For each candidate, use the [Module definition criteria](rem-models-architecture-boundaries.md#modules) and [Module hierarchy rules](rem-models-architecture-boundaries.md#module-hierarchy-and-encapsulation) to explain its purpose, responsibilities, owned information or state, exclusions, cooperation, and relationship to any parent or child Modules.
 Group behavior when it enforces closely related rules over the same authoritative information or must coordinate to maintain a meaningful invariant.
 Separate responsibilities when they have distinct authority, independent policies or evolution, or a contract that readers can explain and assess.
 Treat these as engineering reasons to compare alternatives, not a numeric formula for producing a fixed number of Modules or hierarchy levels. REM does not prescribe a maximum Module depth; keep decomposing only while each level expresses durable architectural responsibility rather than implementation detail.
@@ -48,7 +53,7 @@ If a proposed Function spans unclear boundaries, refine the boundary or the logi
 
 A parent Module must remain meaningful as an architectural boundary in its own right; do not introduce it only to make a directory or diagram easier to browse. Its children refine portions of its responsibility, and descendant allocations should roll up for comprehension rather than being copied onto the parent.
 
-Apply the [Module naming criteria](rem-models-architecture-design.md#module-names-and-identity) to the complete affected neighborhood. Read the parent and child names together, then check each name outside the tree: its definition should make the responsibility, subject, and distinction from collaborators clear. For example, repeated names such as “Engineering model storage” and “Engineering model authoring” may be clearer as “Model storage” and “Model authoring” when those names still identify the responsibility unambiguously. Do not shorten a name until its subject becomes unclear.
+Apply the [Module naming criteria](rem-models-architecture-boundaries.md#module-names-and-identity) to the complete affected neighborhood. Read the parent and child names together, then check each name outside the tree: its definition should make the responsibility, subject, and distinction from collaborators clear. For example, repeated names such as “Engineering model storage” and “Engineering model authoring” may be clearer as “Model storage” and “Model authoring” when those names still identify the responsibility unambiguously. Do not shorten a name until its subject becomes unclear.
 
 Before renaming, decide whether this is a wording change or a responsibility/decomposition change. For wording alone, retain stable identity and existing relationships, reconcile current references and representation labels, and regenerate affected views. If a clearer name exposes overlapping or missing responsibilities, resolve that design issue explicitly; do not move allocations or reshape the hierarchy merely to make names look consistent.
 Document significant boundary choices and their basis in the authoritative definitions or their supported sources; a separate decision document is useful only when the reasoning needs it.
@@ -71,7 +76,7 @@ Assign an accountable Module to each Function within the declared architecture s
 Leave a Function explicitly deferred when its accountable boundary is not sufficiently understood; a placeholder Module does not resolve that uncertainty.
 Cooperation with another Module is expressed through a contract rather than an additional accountable allocation under REM's single-primary-owner rule.
 
-For each architecturally important interaction, define an Interface using the [Interface definition criteria](rem-models-architecture-design.md#interfaces).
+For each architecturally important interaction, define an Interface using the [Interface definition criteria](rem-models-architecture-boundaries.md#interfaces).
 Apply [consumer Scenario contract derivation](rem-methods-architecture-allocation.md#derive-a-contract-from-a-consumer-scenario) to decide reuse, refinement, or a new cohesive contract. A provider need not expose its entire responsibility through one Interface; each selected contract must explain the consumer outcome it supports and the Scenario scope that remains elsewhere.
 Explain the service or exchange, inputs, outputs, applicable state and preconditions, and meaningful failure or incomplete outcomes.
 Include consistency, authority, compatibility, ordering, or retry behavior where the obligations require them.
@@ -107,89 +112,10 @@ For each important information set, determine:
 Do not infer logical ownership from the location of a database, file, cache, or current implementation type.
 If two Modules appear to own unrestricted mutation of the same state, resolve the responsibility or define a deliberate coordination contract before proceeding.
 
-## Design the physical/software realization
+## Complete material realization
 
-After the logical Module, Interface, allocation, and state/data-ownership model is coherent enough for the selected scope, define the material physical/software realization.
-Keep these decisions subordinate to their owning Module or Interface rather than creating new universal REM entity classes.
-
-Record a realization detail only when it is architecture-significant: it changes or explains responsibility, lifecycle, isolation, failure behavior, state authority, deployment/recovery, compatibility, a governing requirement/quality, or an important future-evolution constraint.
-Leave incidental internal implementation choices to implementation.
-
-For each Module, identify only the realization details needed to understand significant structural, runtime, persistence, deployment, or technology consequences.
-Consider:
-
-- which software units realize the Module responsibility, such as applications, services, libraries, workers, adapters, or scheduled jobs;
-- which execution or process boundaries matter for lifecycle, scaling, failure isolation, security, or resource ownership;
-- which persistence mechanisms or datastores realize owned or required state;
-- how the software is packaged or deployed when that boundary is architecturally significant;
-- which implementation paths or artifacts realize the Module when a current implementation exists;
-- which technology selections materially constrain the Module and why.
-
-For each Interface, determine whether its logical contract needs a concrete realization decision.
-Where material, record:
-
-- interaction mechanism or protocol;
-- endpoint/channel/topic/file/in-process binding form;
-- serialization or exchanged data representation;
-- addressing/discovery assumptions;
-- technology choices required for the interaction;
-- realization-specific compatibility, ordering, failure, or delivery semantics required by the governing obligations.
-
-Do not assign a global REM identity to every service, process, datastore, deployment unit, or technology.
-Treat them as structured subordinate information owned by the Module or Interface unless a later REM refinement demonstrates that independent identity is required.
-
-### Choose technologies last enough to preserve reasoning
-
-Do not start architecture by selecting products or frameworks.
-First establish the logical responsibility, contract, state ownership, and runtime/deployment need.
-Then select technology that satisfies those decisions and applicable requirements.
-
-For each material technology choice, retain enough rationale to answer:
-
-- what architectural need or constraint drives the choice;
-- what significant alternatives were considered;
-- what consequences or limitations the choice introduces;
-- what condition would justify revisiting it.
-
-The rationale may be stored in the owning Module or Interface realization view or in an attributable decision record when the reasoning deserves independent review.
-
-### Author the technical model
-
-Use the [technical-model contract](rem-models-architecture-design.md#technical-model) to make the selected architectural implementation explicit before organizing its presentation.
-
-1. Identify the governing responsibilities, Functions, ARs and existing Interfaces. Reuse their identities and ownership.
-2. Define the necessary technical components, each component's responsibility/exclusions and its realization mappings. Name coherent roles before attaching technology choices; do not introduce a Module for every executable or dependency.
-3. Define or reference the connecting contracts: participants, requests/results or data representation, guarantees, compatibility and material failures. State who owns and may mutate each significant state or artifact.
-4. Record material technology choices with rationale, alternatives and consequences. Expose unresolved mappings and distinguish design intent from implementation observations.
-5. Walk through a normal interaction and material failure or incompatible-input cases to assess the composition. Draw Technical structure within Logical; use Development for source/package/build organization, Process for execution and Physical for placement. These projections reuse the same owned facts.
-
-Start with prose, component/contract tables and attributable diagrams at existing owners. Refine structured realization records when their semantics and tooling need are settled; the method does not require a new schema, standalone technical-model document or implementation before design.
-
-### Derive realization views
-
-Runtime topology, datastore topology, deployment topology, and technology inventories are useful views, but they SHOULD be generated or derived from the authoritative Module and Interface realization information.
-Do not create independently maintained copies of the same physical relationships.
-
-Example:
-
-```text
-MOD-query
-  logical responsibility: engineering query behavior
-  realization:
-    software units: query service, indexing worker
-    runtime: API process + worker process
-    persistence: search index
-    packaging: server deployment unit
-    technology: selected search/runtime technologies
-
-IF-engineering-query
-  logical contract: query engineering entities
-  realization:
-    mechanism: selected request/response protocol
-    representation: selected request/result encoding
-```
-
-The example describes subordinate views, not new first-class REM entities.
+Apply [Design the physical/software realization](rem-methods-realization-design.md) after logical responsibilities, Interfaces, allocation and state authority are coherent enough for the scope.
+Its technology reasoning, technical model and realization facets remain part of this Architecture Design procedure.
 
 ## Generate and use the 4+1 architecture views
 
@@ -206,7 +132,7 @@ Use the views to improve comprehension and expose missing or contradictory archi
 - Scenario: end-to-end gaps revealed by tracing a governed Scenario through obligations, Functions, Modules, Interfaces, and relevant realization.
 
 When a view exposes an architecture gap, update the authoritative Requirement, Function, Module, Interface, allocation, state/data ownership, or realization information and regenerate the affected views.
-Use the Architecture Views method's [correction ownership](rem-methods-architecture-views.md#correction-ownership) for projection, presentation, and maintenance findings.
+Use the Architecture Views method's [correction ownership](rem-methods-view-presentation.md#correction-ownership) for projection, presentation, and maintenance findings.
 
 ## Reconcile and review the architecture
 
@@ -268,7 +194,7 @@ Architecture Design is complete enough for the declared scope when:
 9. physical/software realization preserves rather than silently changes logical responsibilities, contracts, containment, and state authority;
 10. every material technology decision is attributable to an architectural need or constraint and records enough rationale to revisit it;
 11. traceability to governing Functions, SRs, ARs, and Scenarios remains intact;
-12. the applicable Logical, Process, Development, Physical, and Scenario views can be generated from the same authoritative architecture without semantic contradiction;
+12. the selected architecture presentations cover applicable Logical, Process, Development, Physical and Scenario concerns from the same authoritative architecture without semantic contradiction, with explicit omission/combination rationale under [view tailoring](rem-methods-architecture-views.md#view-selection-and-tailoring);
 13. unresolved decisions are visible and do not masquerade as completed architecture.
 
 Logical Module/Interface definitions, allocations, and state/data ownership are architecture truth.

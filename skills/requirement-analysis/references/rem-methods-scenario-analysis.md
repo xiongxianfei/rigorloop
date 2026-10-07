@@ -1,10 +1,10 @@
-<!-- Generated from rem/methods/scenario-analysis.md; source SHA-256 a095ea5dc500a5afcfb1eb9875c05ca80111f3af82eb53c8ea22f3613c5079be. Edit the owning REM source. -->
+<!-- Generated from rem/methods/scenario-analysis.md; source SHA-256 ba95740beacbd569c53fa84a5683b4d43b35c6a5a4565f977027fa6c97f0ac5e. Edit the owning REM source. -->
 
 # Scenario Analysis method
 
 Use Scenario Analysis during Initial Requirement analysis to develop first-class stakeholder-visible Scenarios, confirm the durable Feature exercised by those Scenarios, and expose candidate system obligations for later SR analysis.
 
-The [Scenario concept](https://github.com/xiongxianfei/rigorloop/blob/main/rem/concepts/README.md#requirement-analysis-entities) defines what a Scenario means.
+The [Scenario concept](https://github.com/xiongxianfei/rigorloop/blob/main/rem/concepts/scenarios.md#requirement-analysis-entities) defines what a Scenario means.
 The [Scenario model](rem-models-scenarios.md) owns identity, lifecycle, cardinality, and black-box invariants.
 The [Requirement model](rem-models-requirements.md) owns IR/SR/AR and cross-domain traceability.
 The [System Design model](rem-models-system-design.md) owns Features and Functions.

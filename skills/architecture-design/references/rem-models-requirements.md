@@ -1,8 +1,8 @@
-<!-- Generated from rem/models/requirements.md; source SHA-256 91e68cf217ed10cf4c794722bb48718926d3994f3495089f36fbd8a8372c88a8. Edit the owning REM source. -->
+<!-- Generated from rem/models/requirements.md; source SHA-256 a6bafe4a744273f75a0ddc3c9c26fe932517cd965a24c6f2cd1b4880bfb2b0ec. Edit the owning REM source. -->
 
 # Requirement model
 
-The [concepts](https://github.com/xiongxianfei/rigorloop/blob/main/rem/concepts/README.md#requirement-input) distinguish the incoming Raw Requirement (RR) from the durable Initial Requirement, System Requirement, and Allocated Requirement.
+The [concepts](https://github.com/xiongxianfei/rigorloop/blob/main/rem/concepts/requirement-input.md#requirement-input) distinguish the incoming Raw Requirement (RR) from the durable Initial Requirement, System Requirement, and Allocated Requirement.
 The [Requirement Analysis method](https://github.com/xiongxianfei/rigorloop/blob/main/rem/methods/requirement-analysis.md) reconciles RR input with the current requirement model and develops the three durable levels.
 
 ```text
@@ -39,6 +39,8 @@ An RR may affect several durable requirements, and several RRs may contribute pr
 These parent relationships are exclusive: an SR cannot belong to several IRs, and an AR cannot belong to several SRs.
 An IR may have multiple SR children, and an SR may have multiple AR children.
 Source references and other relationships do not establish additional parents.
+
+A need, a system obligation and an allocated obligation answer different questions and remain assessable at their own levels. REM selects this hierarchy to connect local obligations to their originating need; the explanatory relationship does not require every engineering method to use this same structure.
 
 IR-to-SR decomposition converts a durable need into system-level obligations.
 SR-to-AR derivation creates lower-level obligations assigned to architectural responsibility.
@@ -109,7 +111,7 @@ The statement is the authoritative need or obligation; What explains its problem
 
 Names and physical labels must not be treated as independent identities.
 A readable location can include an identity and a name, with one authoritative source for each and consistent derived labels.
-The [Operational Support model](https://github.com/xiongxianfei/rigorloop/blob/main/rem/models/operational-support.md#naming-and-location) owns representation and rename rules.
+The [Operational Support model](rem-models-operational-support.md#naming-and-location) owns representation and rename rules.
 
 Parentage is authored once.
 If a representation uses physical containment as its authoritative parent relation, it derives the parent view from that containment.
@@ -119,3 +121,8 @@ Moving an SR to a different IR, or an AR to a different SR, changes semantic par
 Requirement identities do not encode their current parent and are not renumbered solely because a parent changes.
 
 Requirement satisfaction, approval, implementation, and evidence applicability remain distinct concerns and MUST NOT be inferred from the presence of a requirement definition.
+
+## Source rationale
+
+[NASA requirements definition](https://github.com/xiongxianfei/rigorloop/blob/main/rem/references/nasa-2016-systems-engineering-handbook.md#requirements-definition) supports assessable obligations and rationale; [requirements management](https://github.com/xiongxianfei/rigorloop/blob/main/rem/references/nasa-2016-systems-engineering-handbook.md#requirements-management) supports hierarchy and traceability.
+REM's exact three-level containment, cardinalities and analysis rules remain its own selected commitments.

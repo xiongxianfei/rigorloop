@@ -2,7 +2,7 @@
 
 Use Scenario Analysis during Initial Requirement analysis to develop first-class stakeholder-visible Scenarios, confirm the durable Feature exercised by those Scenarios, and expose candidate system obligations for later SR analysis.
 
-The [Scenario concept](../concepts/README.md#requirement-analysis-entities) defines what a Scenario means.
+The [Scenario concept](../concepts/scenarios.md#requirement-analysis-entities) defines what a Scenario means.
 The [Scenario model](../models/scenarios.md) owns identity, lifecycle, cardinality, and black-box invariants.
 The [Requirement model](../models/requirements.md) owns IR/SR/AR and cross-domain traceability.
 The [System Design model](../models/system-design.md) owns Features and Functions.
