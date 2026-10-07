@@ -201,7 +201,7 @@ The Development browser derives its test overview and subject details from these
 
 ### Public entries and proposed correspondence
 
-The [REM discoverability principle](../../rem/principles/README.md) is implemented through the existing interaction and software facets. IF-004's `interaction.json` owns exact public command names. MOD-012's `software.json` owns public skill names. These subordinate entries have no independent REM type, global identity, or lifecycle.
+The [REM public-entry discoverability model](../../rem/models/architecture-realization.md#public-entry-discoverability) is implemented through the existing interaction and software facets. IF-004's `interaction.json` owns exact public command names. MOD-012's `software.json` owns public skill names. These subordinate entries have no independent REM type, global identity, or lifecycle.
 
 `observed.public_entries` is an optional nonempty array. Each entry requires `name`, `group`, `purpose`, `source_path`, and `contract`. Names are unique within the facet; groups are readable navigation labels, not closed architectural categories. `source_path` identifies an existing repository-relative file, and `contract` identifies a local Markdown contract with an optional anchor. Command entries also require `operation`, resolving to an operation on the owning Interface. Software entries reject that field. Paths to SKILL.md may be checked for existence without reading or invoking the skill.
 
@@ -303,7 +303,7 @@ The direct [projection tests](../../tests/engineering/validation/architecture_vi
 
 ## Entity naming and filenames
 
-Apply REM's [clarity principle](../../rem/principles/README.md), [Scenario criteria](../../rem/models/scenarios.md), and [System Design criteria](../../rem/models/system-design.md) to the name and definition before deriving a physical label.
+Apply REM's [clear-definition rule](../../rem/models/operational-support.md#clear-engineering-definitions), [Scenario criteria](../../rem/models/scenarios.md), and [System Design criteria](../../rem/models/system-design.md) to the name and definition before deriving a physical label.
 Names communicate engineering meaning; identities preserve continuity.
 The title must identify the engineering purpose and subject, distinguish the entity from its neighbors, and agree with its current scope.
 Scenario titles describe a stakeholder goal and situation; Feature titles describe a stakeholder capability; Function titles describe a logical action. Prefer action plus subject and add conditions when they distinguish the meaning.
@@ -329,7 +329,7 @@ Check the destination before renaming; a collision or unsupported filename must 
 Historical paths retain the meaning of their original states.
 
 IRs and SRs use title-derived directories containing `ir.json` or `sr.json`. AR files use the full-title filename convention directly within their single parent SR directory, without an additional AR directory.
-It is a repository representation choice. REM's clarity principle also applies to implementations that do not use files.
+It is a repository representation choice. REM's clear-definition rule also applies to implementations that do not use files.
 JSON Schema checks required text and shape; checking filename or directory agreement requires reading the file path, and judging clarity requires engineering review.
 
 ## Relationship ownership

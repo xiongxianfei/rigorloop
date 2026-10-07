@@ -2,7 +2,7 @@
 
 ## 7. Change, Baseline, and Provenance
 
-Evolution knowledge is built from the [Change, Baseline, Configuration Management, and Provenance concepts](../../concepts/evolution.md#evolution-and-history), Principles 10–12 and 15 in the [REM principles](../../principles/README.md), and the [Evolution model](../../models/README.md#evolution).
+Evolution knowledge is built from the [Change, Baseline, Configuration Management, and Provenance concepts](../../concepts/evolution.md#evolution-and-history), the [historical interpretation Principle](../../principles/later-interpretation-does-not-rewrite-earlier-observation.md) and [identity/representation rules](../../models/operational-support.md), and the [Evolution model](../../models/README.md#evolution).
 
 The core idea is:
 

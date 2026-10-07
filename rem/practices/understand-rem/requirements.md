@@ -20,7 +20,11 @@ These distinctions exist so REM does not collapse need, capability, usage contex
 
 ### Principles
 
-The requirement reasoning is governed primarily by the [REM principles](../../principles/README.md):
+[Needs can outlive solutions](../../principles/needs-can-outlive-solutions.md), [satisfaction depends on domain assumptions](../../principles/satisfaction-depends-on-domain-assumptions.md), and [origin differs from realization](../../principles/origin-and-realization-answer-different-questions.md) explain relevant relationships. They do not uniquely imply REM's selected hierarchy.
+
+### Selected model commitments
+
+The current models below retain these commitments:
 
 - requirements remain distinct from system assets;
 - the durable requirement hierarchy is `IR → SR → AR`;

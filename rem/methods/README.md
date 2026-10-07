@@ -1,7 +1,7 @@
 # REM methods
 
 Methods are repeatable procedures for producing and refining engineering information.
-They apply the [principles](../principles/README.md) to the structures defined by the [models](../models/README.md).
+They use the [principles](../principles/README.md) as explanatory guidance while applying the selected rules defined by the [models](../models/README.md).
 
 | Method | Use | Result |
 | --- | --- | --- |
@@ -24,7 +24,7 @@ They link to the authoritative knowledge and explain how engineers produce infor
 
 ## Applying methods together
 
-[Engineer a change](../practices/engineer-change/README.md#engineering-cycle) owns the iterative application sequence from RR reconciliation through design, realization, assessment and Baseline evolution.
+[Engineer a change](../practices/engineer-a-change.md#stage-map-and-entry-routes) owns the iterative application sequence from RR reconciliation through design, realization, assessment and Baseline evolution.
 [Practices](../practices/README.md) provide other goal-oriented reading paths without redefining individual methods.
 
 ## Using a method

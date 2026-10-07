@@ -1,4 +1,4 @@
-<!-- Generated from rem/models/system-design.md; source SHA-256 ba3f20f3c0854e9b3cbcebf9851773c68ed19a843fcd0aa92050a4a1571eec83. Edit the owning REM source. -->
+<!-- Generated from rem/models/system-design.md; source SHA-256 719bcb468e95c6c86fac5a1e2ab95d64eaa3867afce838a149b05e917f91cc1a. Edit the owning REM source. -->
 
 # System Design model
 
@@ -13,7 +13,7 @@ SR ── confirms ──────> Function
 Feature ─realizedBy──> Function
 ```
 
-Requirements shape durable system assets without becoming their containment hierarchy.
+Requirements shape durable system assets without becoming their containment hierarchy. A capability or behavior can remain relevant across requirement revisions and Changes; its own definition avoids treating every new request as a new asset. A Scenario supplies concrete use context without exhausting the Feature's meaning.
 
 ## Feature relationships
 
@@ -48,7 +48,7 @@ When an SR is primarily a quality or constraint obligation, confirm the Function
 
 ## Clear names and boundaries
 
-[Principle 16](https://github.com/xiongxianfei/rigorloop/blob/main/rem/principles/README.md) requires understandable, distinguishable engineering definitions.
+[Clear engineering definitions](rem-models-operational-support.md#clear-engineering-definitions) requires understandable, distinguishable engineering definitions.
 A Feature or Function name identifies its engineering purpose and subject, distinguishes neighboring assets, and agrees with its description and scope.
 Prefer an action and subject, adding a condition when it carries a meaningful distinction; an equally clear noun phrase is acceptable.
 

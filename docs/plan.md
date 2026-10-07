@@ -39,6 +39,10 @@ Current blockers are not recorded in this index.
 
 ## Current plan references
 
+- [Integrate original Practices with current REM rules](plans/2026-10-07-rem-practice-integration.md) — owning local Change `2026-10-07-rem-practice-integration`.
+
+- [Migrate REM explanatory principles](plans/2026-10-07-rem-principle-migration.md) — owning local Change `2026-10-07-rem-principle-migration`.
+
 - [Explain REM principles](plans/2026-10-06-rem-principle-explanations.md) — owning local Change `2026-10-06-rem-principle-explanations`.
 
 - [Repair plan-index navigation](plans/2026-10-06-plan-index-navigation.md) — owning local Change `2026-10-06-plan-index-navigation`.

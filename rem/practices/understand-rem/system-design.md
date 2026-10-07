@@ -2,7 +2,7 @@
 
 ## 3. System Design
 
-REM System Design is built from the [Feature and Function concepts](../../concepts/system-and-architecture.md#system-and-architecture-assets), the durable-asset and clarity [Principles](../../principles/README.md), and the [System Design model](../../models/system-design.md).
+REM System Design is built from the [Feature and Function concepts](../../concepts/system-and-architecture.md#system-and-architecture-assets), the [enduring-need explanation](../../principles/needs-can-outlive-solutions.md) and [shared clarity rule](../../models/operational-support.md#clear-engineering-definitions), and the [System Design model](../../models/system-design.md).
 
 The essential structure is:
 
@@ -37,7 +37,7 @@ A Function represents logical system behavior rather than a requirement statemen
 The SR establishes what the system must satisfy.
 The Function expresses the behavior the system performs to satisfy that obligation.
 
-Principle 16 connects naming to engineering meaning.
+[Clear engineering definitions](../../models/operational-support.md#clear-engineering-definitions) connects naming to engineering meaning.
 The [System Design model](../../models/system-design.md#clear-names-and-boundaries) defines Feature and Function clarity criteria. [Scenario Analysis](../../methods/scenario-analysis.md#step-1--confirm-or-reuse-the-feature) applies them to capabilities, [Requirement Analysis](../../methods/requirement-analysis.md#derive-system-requirements) derives the SR obligations, and [Functional Analysis](../../methods/functional-analysis.md) confirms the Functions those SRs require.
 The [Operational Support model](../../models/operational-support.md#naming-and-location) separately owns representation choices such as deriving filenames from an ID and title.
 

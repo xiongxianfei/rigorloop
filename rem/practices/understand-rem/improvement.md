@@ -2,6 +2,8 @@
 
 ## 9. How REM itself should be renewed
 
+Use [Improve REM through actual use](../improve-rem-through-actual-use.md) for the full operating procedure. This supporting explanation traces how a knowledge change affects its owners.
+
 When REM knowledge changes:
 
 1. identify the engineering problem;
@@ -15,7 +17,7 @@ When REM knowledge changes:
 For example, changing what `Feature` means requires checking:
 
 - the [Feature concept](../../concepts/system-and-architecture.md#system-and-architecture-assets);
-- the durable-asset [Principle](../../principles/README.md);
+- the [System Design model](../../models/system-design.md) and its enduring capability/behavior rationale;
 - the [Requirement model](../../models/requirements.md);
 - the [System Design model](../../models/system-design.md);
 - [Scenario Analysis](../../methods/scenario-analysis.md);

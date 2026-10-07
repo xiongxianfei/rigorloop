@@ -2,7 +2,7 @@
 
 ## 4. Architecture Design
 
-REM Architecture Design is built from the [Module, Interface, and architecture-realization concepts](../../concepts/system-and-architecture.md#system-and-architecture-assets), the allocation and logical/physical separation [Principles](../../principles/README.md), the [Architecture Design model](../../models/architecture-design.md), and the [Architecture Allocation](../../methods/architecture-allocation.md) and [Architecture Design](../../methods/architecture-design.md) methods.
+REM Architecture Design is built from the [Module, Interface, and architecture-realization concepts](../../concepts/system-and-architecture.md#system-and-architecture-assets), the [integration](../../principles/component-results-do-not-establish-system-results.md) and [responsibility/realization](../../principles/responsibility-and-realization-can-have-different-boundaries.md) Principles, the [Architecture Design model](../../models/architecture-design.md), and the [Architecture Allocation](../../methods/architecture-allocation.md) and [Architecture Design](../../methods/architecture-design.md) methods.
 
 Architecture has two coupled semantic layers:
 

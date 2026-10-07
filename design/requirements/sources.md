@@ -322,7 +322,7 @@ The [current authoring profile](README.md#record-content-and-schemas) now omits 
 ## SRC-ASSET-CLARITY-REFINEMENT
 
 Source: the user's direction that Feature and Function clarity is a REM principle, followed by selection of descriptive names and `<ID>-<full-title-in-kebab-case>.json` filenames.
-The [clarity principle](../../rem/principles/README.md) and [System Design model](../../rem/models/system-design.md) own reusable semantics; the [asset naming convention](../support/README.md#entity-naming-and-filenames) owns their repository representation.
+The [clear-definition rule](../../rem/models/operational-support.md#clear-engineering-definitions) and [System Design model](../../rem/models/system-design.md) own reusable semantics; the [asset naming convention](../support/README.md#entity-naming-and-filenames) owns their repository representation.
 
 Locators `FEAT-001`, `FEAT-002`, and `FUNC-001` through `FUNC-007` identify the existing draft assets refined under this instruction.
 Their names and descriptions identify the engineering subject and distinguish stakeholder capabilities from logical behavior.

@@ -36,5 +36,5 @@ This method adds no universal workflow gate, mandatory stakeholder meeting, nume
 
 A representative maintainer attempts to identify the Module accountable for an unfamiliar behavior using an exported architecture view.
 Agree beforehand what constitutes a correct identification and explanation, and record help required or misleading presentation.
-The [worked example](../practices/engineer-change/WORKED-EXAMPLE.md#assessment-plans) plans this activity but contains no observed participant results.
+The [worked example](../practices/WORKED-EXAMPLE.md#assessment-plans) plans this activity but contains no observed participant results.
 Fictional outcomes and a designer's expectation cannot establish actual stakeholder success.

@@ -48,8 +48,12 @@ For Change-managed work, read the packaged operational interface reference befor
 - READ `references/rem-models-architecture-allocation.md` when reasoning about architecture allocation in the selected scope.
 - READ `references/rem-models-architecture-boundaries.md` when reasoning about architecture boundaries in the selected scope.
 - READ `references/rem-models-architecture-realization.md` when reasoning about architecture realization in the selected scope.
-- READ `references/rem-practices-engineer-change-README.md` when needing an illustrative application of the canonical methods; examples do not establish execution.
-- READ `references/rem-practices-engineer-change-WORKED-EXAMPLE.md` when needing an illustrative application of the canonical methods; examples do not establish execution.
+- READ `references/rem-practices-engineer-a-change.md` when needing an illustrative application of the canonical methods; examples do not establish execution.
+- READ `references/rem-practices-WORKED-EXAMPLE.md` when needing an illustrative application of the canonical methods; examples do not establish execution.
+
+- READ `references/rem-models-operational-support.md` when applying shared definition clarity, semantic authority, representation or maintenance rules.
+
+- READ `references/rem-practices-make-an-architecture-decision.md` when comparing architecture alternatives, evidence and reopening conditions.
 
 ## Expected output
 

@@ -1,4 +1,4 @@
-<!-- Generated from rem/methods/plan-and-assess-verification.md; source SHA-256 bdda23b70dd0fd7868fbc06aee9178bcb27ea4818555a6b224615155ec733e91. Edit the owning REM source. -->
+<!-- Generated from rem/methods/plan-and-assess-verification.md; source SHA-256 d7de3cdd64b77ec1ea61c69fd28d9bf6e28812b7f64697f2f99be3a510fe6bf6. Edit the owning REM source. -->
 
 # Plan and assess verification
 
@@ -29,7 +29,7 @@ For integrated obligations, include interactions and composition assumptions tha
 
 Produce the verification definition, attributable observations when executed, criterion coverage, discrepancies and a scoped judgment.
 Keep waiver or risk-acceptance decisions distinguishable from evidence that a criterion passed.
-Use the project's [Operational Support](https://github.com/xiongxianfei/rigorloop/blob/main/rem/models/operational-support.md#engineering-knowledge-and-operational-records) to represent and retain the account; this method prescribes no file format, storage product or review cadence.
+Use the project's [Operational Support](rem-models-operational-support.md#engineering-knowledge-and-operational-records) to represent and retain the account; this method prescribes no file format, storage product or review cadence.
 
 A verification result is complete for its declared scope when another assessor can identify what was assessed, under which conditions, what happened, what remains unsupported and why the conclusion follows.
 This does not establish [intended-use success](rem-methods-validate-stakeholder-outcomes.md) or authorize release, baseline approval or workflow closeout.
@@ -38,5 +38,5 @@ This does not establish [intended-use success](rem-methods-validate-stakeholder-
 
 An offline export check may verify that required relationships remain available without a network connection.
 It does not demonstrate that an engineer can understand responsibility from the exported presentation.
-See the [worked assessment plans](rem-practices-engineer-change-WORKED-EXAMPLE.md#assessment-plans) for that distinction.
+See the [worked assessment plans](rem-practices-WORKED-EXAMPLE.md#assessment-plans) for that distinction.
 An unrun check or evidence from a different export version must leave the affected claim unestablished.

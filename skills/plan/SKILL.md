@@ -58,7 +58,9 @@ For Change-managed work, read the packaged operational interface reference befor
 - READ `references/rem-methods-validate-stakeholder-outcomes.md` when assessing intended-use outcomes separately from specified conformance.
 - READ `references/rem-concepts-assurance.md` when reasoning about assurance in the selected scope.
 - READ `references/rem-models-README.md` when reasoning about README in the selected scope.
-- READ `references/rem-practices-engineer-change-WORKED-EXAMPLE.md` when needing an illustrative application of the canonical methods; examples do not establish execution.
+- READ `references/rem-practices-WORKED-EXAMPLE.md` when needing an illustrative application of the canonical methods; examples do not establish execution.
+
+- READ `references/rem-models-operational-support.md` when applying shared definition clarity, semantic authority, representation or maintenance rules.
 
 ## Expected output
 

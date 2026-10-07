@@ -2,7 +2,7 @@
 
 ## 6. Verification, Evidence, and Engineering Claims
 
-The assurance knowledge is built from the [Verification, Evidence, Judgment, and Traceability concepts](../../concepts/assurance.md#assurance-and-traceability), Principle 13 in the [REM principles](../../principles/README.md), and the [Assurance model](../../models/README.md#assurance).
+The assurance knowledge is built from the [Verification, Evidence, Judgment, and Traceability concepts](../../concepts/assurance.md#assurance-and-traceability), the [evidence applicability Principle](../../principles/evidence-applies-to-a-claim-and-context.md), and the [Assurance model](../../models/README.md#assurance).
 
 The core relationship is:
 

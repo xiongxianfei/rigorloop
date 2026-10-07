@@ -1,7 +1,7 @@
 # REM models
 
 Models define structures, typed relationships, cardinalities, lifecycle, and consistency rules using the [concepts](../concepts/README.md).
-The [principles](../principles/README.md) govern these models; [methods](../methods/README.md) describe how to develop them.
+The [principles](../principles/README.md) explain relationships that inform these choices; the models own REM's selected constraints, and [methods](../methods/README.md) describe how to develop them.
 
 | Domain | Primary content | Owning model |
 | --- | --- | --- |
@@ -39,7 +39,7 @@ flowchart TD
     VER -->|produces| EV[Evidence]
 ```
 
-RR input remains outside the requirement containment hierarchy. The durable requirement branch has containment semantics; Scenario, System Design, Architecture, and Assurance relationships form a typed graph.
+RR input remains outside the requirement containment hierarchy. The durable requirement branch has containment semantics; Scenario, System Design, Architecture, and Assurance relationships form a typed graph. Containment identifies which whole an element belongs to; realization, constraint and interaction relationships can cross those boundaries. Do not force the entire engineering system into one hierarchy.
 The diagram illustrates common paths and does not require every entity to have every optional relationship.
 The realization-view nodes are subordinate architecture information, not first-class governed REM entities.
 
@@ -83,7 +83,7 @@ A later allocation or retirement does not rewrite an earlier baseline's responsi
 ## Representation
 
 Typed references resolve to compatible entity types, and stable identities are independent of names and storage paths.
-Each semantic relationship has one authoritative representation; inverse views are derived.
+Each semantic fact has one authoritative representation; inverse relationship views are derived. Multiple views do not require independently maintained authoritative copies of the same fact.
 A project implementation selects formats, identity namespaces, revision references, and physical containment rules through [Operational Support](operational-support.md) while preserving REM semantics.
 
 ## Assessment procedures

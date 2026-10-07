@@ -2,7 +2,7 @@
 
 **Purpose:** Explain how the existing REM Concepts, Principles, Models, and Methods combine to build the RigorLoop Engineering Method and why each part exists.
 
-This Practice is a reading guide for reconstructing engineering reasoning.
+This supporting guide explains engineering reasoning alongside the five [operating Practices](../README.md).
 It does not introduce another REM knowledge category and it does not redefine the linked material.
 The linked files remain authoritative for their own definitions, rules, structures, and procedures.
 

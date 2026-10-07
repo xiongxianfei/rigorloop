@@ -38,6 +38,8 @@ These parent relationships are exclusive: an SR cannot belong to several IRs, an
 An IR may have multiple SR children, and an SR may have multiple AR children.
 Source references and other relationships do not establish additional parents.
 
+A need, a system obligation and an allocated obligation answer different questions and remain assessable at their own levels. REM selects this hierarchy to connect local obligations to their originating need; the explanatory relationship does not require every engineering method to use this same structure.
+
 IR-to-SR decomposition converts a durable need into system-level obligations.
 SR-to-AR derivation creates lower-level obligations assigned to architectural responsibility.
 An AR is a durable requirement, not a record that an allocation event occurred.

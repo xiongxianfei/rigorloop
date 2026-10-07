@@ -1,4 +1,4 @@
-<!-- Generated from rem/methods/validate-stakeholder-outcomes.md; source SHA-256 0437ec639bfeb71aaf33a3cebd4e2d05913400035f342a24fb286bfc5934b917. Edit the owning REM source. -->
+<!-- Generated from rem/methods/validate-stakeholder-outcomes.md; source SHA-256 678d14244e4ec08709c125025350df5e88002e874a916000c9879726fc342972. Edit the owning REM source. -->
 
 # Assess intended-use outcomes
 
@@ -28,7 +28,7 @@ Use the existing evidence and applicability rules from the [assurance model](rem
 ## Outputs and completion
 
 Produce the intended-use assessment plan, actual observations if performed, conclusion against stakeholder expectations and unresolved corrective work.
-Use existing [Operational Support](https://github.com/xiongxianfei/rigorloop/blob/main/rem/models/operational-support.md#engineering-knowledge-and-operational-records) for representation and retention.
+Use existing [Operational Support](rem-models-operational-support.md#engineering-knowledge-and-operational-records) for representation and retention.
 The record must make verification and intended-use conclusions separately understandable even when one activity supplies evidence for both.
 
 Completion means the declared outcome has an adequately supported judgment or an explicit unestablished result with its next evidence need.
@@ -38,5 +38,5 @@ This method adds no universal workflow gate, mandatory stakeholder meeting, nume
 
 A representative maintainer attempts to identify the Module accountable for an unfamiliar behavior using an exported architecture view.
 Agree beforehand what constitutes a correct identification and explanation, and record help required or misleading presentation.
-The [worked example](rem-practices-engineer-change-WORKED-EXAMPLE.md#assessment-plans) plans this activity but contains no observed participant results.
+The [worked example](rem-practices-WORKED-EXAMPLE.md#assessment-plans) plans this activity but contains no observed participant results.
 Fictional outcomes and a designer's expectation cannot establish actual stakeholder success.

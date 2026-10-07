@@ -69,7 +69,7 @@ For example, a small library may combine Logical and Development explanations an
 
 [Kruchten's tailoring discussion](../sources/S11.md) supports omission and combination of unhelpful presentations.
 REM's explicit coverage rationale, authoritative-source rules and permission boundaries remain local method decisions.
-The [worked example](../practices/engineer-change/WORKED-EXAMPLE.md#design-and-selected-views) demonstrates a selection without inventing additional architecture.
+The [worked example](../practices/WORKED-EXAMPLE.md#design-and-selected-views) demonstrates a selection without inventing additional architecture.
 
 ## Purpose
 

@@ -19,8 +19,11 @@ No Function/AR allocation or Interface changes are required for this document co
 
 ## Knowledge and reading paths
 
-Concept documents own meanings, Principles retain the existing 22 commitments, Models own structures and invariants, and Methods own individual procedures.
-Practices link those owners into goal-oriented work, with inputs, iteration, exit conditions and examples.
+Concept documents own meanings. Eleven Principles explain deeper engineering relationships and why they matter, with assumptions, limits, examples and claim-specific sources. Models own selected structures and invariants; Methods own individual procedures; Operational Support owns cross-entity authoring guidance.
+The former 22 principle commitments remain applicable under those owners. Explanatory relationships do not uniquely entail REM's selected cardinalities, authority rules or workflow, and adopting this catalog does not relax them.
+Each new principle has a distinct named identity. A concise migration map identifies the recoverable original identities and current semantic owners; current consumers refer directly to those owners. Git retains retired documents, without live compatibility shims.
+Practices coordinate those owners into goal-oriented work with locally usable stage summaries, procedures, explanations, examples, checks and fallback actions. Concise inline summaries apply the current Model and Method rules; the owning definitions remain authoritative. Preserve the five operating routes: engineer a change, review an existing system, verify and validate a bounded slice, make an architecture decision, and improve REM through actual use. Supporting knowledge guides and worked examples supply depth without replacing executable stages.
+Current requirement parentage, Scenario ownership, Function coverage and allocation rules apply within those stages. Rule changes require explicit revision at their governing owner; an imported methodology-only or deferred-specification label cannot suspend existing rules.
 Indexes provide navigation rather than duplicate normative definitions.
 Source notes identify the exact external claim supported and distinguish REM's selected rules from external recommendations.
 Examples are illustrative application records and keep plans, observations and judgments separate.
@@ -57,7 +60,8 @@ Current repository consumers migrate together; historical records retain their o
 
 ## Proof and limitations
 
-Check transferred baseline sections, protected invariants, direct links and anchors, projection freshness and actual isolated adapter resources.
+Check every retired principle's commitments, rationale and application details against surviving owners, including clear definitions and public-entry traceability. Check protected invariants, direct links and anchors, projection freshness and actual isolated adapter resources.
+Source notes distinguish inspected external support, REM-authored inference and illustrative examples; a citation or proposed-package review label does not establish approval or empirical effectiveness.
 Walk through one example with one parent IR per SR, one parent SR per AR, one owning IR and primary Feature per Scenario, relevant Functions and accountable Modules.
 Inspect negative cases: unrun/stale evidence, unsupported intended-use claims and view omission hiding a material concern.
 Independent review judges semantic preservation and usefulness; structural checks alone cannot demonstrate observed stakeholder effectiveness.

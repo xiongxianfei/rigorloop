@@ -10,7 +10,9 @@ Implementation realizes the design, verification produces evidence, and controll
 
 ## Start from the work
 
-Use [Engineer a change](practices/engineer-change/README.md) for an end-to-end application and its [worked example](practices/engineer-change/WORKED-EXAMPLE.md) for a bounded design with unexecuted assessment plans.
+Choose among the five [operating Practices](practices/README.md) for change engineering, existing-system review, assessment, architecture decisions or improving REM. Their local stages apply current rules and link deeper canonical guidance.
+
+Use [Engineer a change](practices/engineer-a-change.md) for an end-to-end application and its [worked example](practices/WORKED-EXAMPLE.md) for a bounded design with unexecuted assessment plans.
 Use [verification](methods/plan-and-assess-verification.md) for specified conformance and [intended-use validation](methods/validate-stakeholder-outcomes.md) for stakeholder outcomes.
 Select architecture presentations through [explicit view tailoring](methods/architecture-views.md#view-selection-and-tailoring).
 [Source references](SOURCES.md) identify external support and distinguish it from REM's selected rules.
@@ -23,7 +25,7 @@ The method describes reusable engineering practice; its application to RigorLoop
 
 The selected authoring rules apply all seven 5W2H questions to every IR, SR, and AR, give IRs clear names, and limit each IR and SR to at most one consequential open question.
 Those rules are recorded in [Requirement Analysis](methods/requirement-analysis.md).
-[Principle 16](principles/README.md) extends the clarity commitment across engineering definitions; the [System Design model](models/system-design.md#clear-names-and-boundaries) defines its application to Features and Functions.
+[Operational Support](models/operational-support.md#clear-engineering-definitions) owns the clarity commitment across engineering definitions; the [System Design model](models/system-design.md#clear-names-and-boundaries) defines its application to Features and Functions.
 RigorLoop's separate application draft selects readable IR and SR directory names and structured seven-part analysis with self-contained schemas as representation conventions.
 The rest of the methodology remains proposed; these documents do not silently replace existing approved repository contracts.
 
@@ -35,7 +37,7 @@ It is an integration guide, not another knowledge category.
 | Package | Owns | Reader's question |
 | --- | --- | --- |
 | [Concepts](concepts/README.md) | Definitions and distinctions | What does each term mean? |
-| [Principles](principles/README.md) | Explanatory relationships and the governing commitments they motivate | What deeper relationship matters, why, and what does REM preserve because of it? |
+| [Principles](principles/README.md) | Explanatory relationships, rationale and limits | What deeper explanatory relationship matters, and why? |
 | [Models](models/README.md) | Entity structures, relationships, and invariants | How does engineering information fit together? |
 | [Methods](methods/README.md) | Repeatable analysis and design procedures | How do we produce and refine the information? |
 | [Practices](practices/README.md) | Goal-oriented application and worked examples | How do these methods fit together in real work? |
@@ -54,7 +56,7 @@ Reference that owner when another document needs the rule instead of creating an
 | Allocate logical architecture | [Architecture Allocation](methods/architecture-allocation.md) | Establish/refine Module hierarchy, allocate one primary Module per Function, derive/refine justified ARs with architecture context and allocate each to exactly one Module, and identify/expose logical Interfaces |
 | Complete architecture design | [Architecture Design](methods/architecture-design.md) | Produce hierarchical Module/Interface architecture outputs, encapsulation boundaries, state/data ownership, and material subordinate physical/software realization without prescribing storage |
 | Generate architecture views | [4+1 Architecture Views](methods/architecture-views.md) | Apply REM's adaptation of Logical, Process, Development, Physical, and Scenario views, assess semantic fidelity and reading tasks, and maintain identifiable, regenerable presentations |
-| Evolve and assess the model | [Engineer a change](practices/engineer-change/README.md#engineering-cycle) | Iterate between need, design, realization, evidence, and baseline decisions |
+| Evolve and assess the model | [Engineer a change](practices/engineer-a-change.md#stage-map-and-entry-routes) | Iterate between need, design, realization, evidence, and baseline decisions |
 
 The current core now has explicit procedures from RR reconciliation through durable Requirements, logical System Design, hierarchical Architecture Design, physical/software realization, and generated 4+1 architecture views.
 Dedicated verification and intended-use validation methods make assessment planning, observations and scoped conclusions explicit. Concrete workflow-stage names, review cadence, implementation milestone policy, and RigorLoop skill boundaries remain reference-implementation concerns rather than REM methodology semantics.

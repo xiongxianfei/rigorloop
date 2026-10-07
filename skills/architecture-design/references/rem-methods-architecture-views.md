@@ -1,4 +1,4 @@
-<!-- Generated from rem/methods/architecture-views.md; source SHA-256 c1ecd50c2f56d5ce5f7d7f054aa6fe81b197cfa77da335decd043d92f830b215. Edit the owning REM source. -->
+<!-- Generated from rem/methods/architecture-views.md; source SHA-256 a93c9386781abb7ce3c82ab06466c711941df61b5434310b72e62c0627d89f1c. Edit the owning REM source. -->
 
 # 4+1 Architecture View method
 
@@ -71,7 +71,7 @@ For example, a small library may combine Logical and Development explanations an
 
 [Kruchten's tailoring discussion](https://github.com/xiongxianfei/rigorloop/blob/main/rem/sources/S11.md) supports omission and combination of unhelpful presentations.
 REM's explicit coverage rationale, authoritative-source rules and permission boundaries remain local method decisions.
-The [worked example](rem-practices-engineer-change-WORKED-EXAMPLE.md#design-and-selected-views) demonstrates a selection without inventing additional architecture.
+The [worked example](rem-practices-WORKED-EXAMPLE.md#design-and-selected-views) demonstrates a selection without inventing additional architecture.
 
 ## Purpose
 
@@ -121,7 +121,7 @@ A generated node or relationship SHOULD retain enough provenance to identify its
 
 Identify the source state and scope used by each projection.
 When inputs include working changes, a baseline identifier alone is insufficient to identify that state.
-Use the project's [generated-view maintenance contract](https://github.com/xiongxianfei/rigorloop/blob/main/rem/models/operational-support.md#generated-view-maintenance) to identify applicable interpretation, projection rules, outputs, and relevant rendering configuration.
+Use the project's [generated-view maintenance contract](rem-models-operational-support.md#generated-view-maintenance) to identify applicable interpretation, projection rules, outputs, and relevant rendering configuration.
 The contract owns reproducibility, freshness checking, and failed-refresh handling without prescribing a particular configuration-management technology.
 
 ## Generation and assessment cycle

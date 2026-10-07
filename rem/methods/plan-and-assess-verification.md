@@ -36,5 +36,5 @@ This does not establish [intended-use success](validate-stakeholder-outcomes.md)
 
 An offline export check may verify that required relationships remain available without a network connection.
 It does not demonstrate that an engineer can understand responsibility from the exported presentation.
-See the [worked assessment plans](../practices/engineer-change/WORKED-EXAMPLE.md#assessment-plans) for that distinction.
+See the [worked assessment plans](../practices/WORKED-EXAMPLE.md#assessment-plans) for that distinction.
 An unrun check or evidence from a different export version must leave the affected claim unestablished.

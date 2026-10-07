@@ -2,7 +2,7 @@
 
 ## 5. Operational Support
 
-REM Operational Support is built from the engineering-model and metamodel [Concepts](../../concepts/model-support.md#engineering-model-and-its-support), the metamodel and tool-independence [Principles](../../principles/README.md), and the [Operational Support model](../../models/operational-support.md).
+REM Operational Support is built from the engineering-model and metamodel [Concepts](../../concepts/model-support.md#engineering-model-and-its-support), the [representation](../../principles/independent-representations-can-diverge.md) and [historical interpretation](../../principles/later-interpretation-does-not-rewrite-earlier-observation.md) Principles, and the [Operational Support model](../../models/operational-support.md).
 
 Operational Support answers how the engineering model itself is:
 

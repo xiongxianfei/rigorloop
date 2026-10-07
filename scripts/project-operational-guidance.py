@@ -15,20 +15,24 @@ REM_SOURCES={
  'system-design':('methods/functional-analysis.md','models/system-design.md','models/requirements.md'),
  'architecture-design':('methods/architecture-design.md','methods/architecture-allocation.md','methods/architecture-views.md','methods/5w2h.md','models/architecture-design.md','models/requirements.md'),
  'design-review':('models/system-design.md','models/architecture-design.md','models/requirements.md','methods/architecture-views.md'),
- 'plan':('methods/plan-and-assess-verification.md','methods/validate-stakeholder-outcomes.md','concepts/assurance.md','models/README.md','practices/engineer-change/WORKED-EXAMPLE.md'),
- 'verify':('methods/plan-and-assess-verification.md','methods/validate-stakeholder-outcomes.md','concepts/assurance.md','models/README.md','practices/verify-and-validate-slice.md','practices/engineer-change/WORKED-EXAMPLE.md'),
+ 'plan':('methods/plan-and-assess-verification.md','methods/validate-stakeholder-outcomes.md','concepts/assurance.md','models/README.md','practices/WORKED-EXAMPLE.md'),
+ 'verify':('methods/plan-and-assess-verification.md','methods/validate-stakeholder-outcomes.md','concepts/assurance.md','models/README.md','practices/verify-and-validate-a-bounded-slice.md','practices/WORKED-EXAMPLE.md'),
 }
 
 # A split procedure/model remains complete in every distribution that selects it.
 REM_PARTS={
- 'models/architecture-design.md':('models/architecture-allocation.md','models/architecture-boundaries.md','models/architecture-realization.md'),
+ 'models/architecture-design.md':('models/architecture-allocation.md','models/architecture-boundaries.md','models/architecture-realization.md','models/operational-support.md'),
+ 'models/system-design.md':('models/operational-support.md',),
+ 'models/README.md':('models/operational-support.md',),
  'methods/architecture-design.md':('methods/realization-design.md',),
  'methods/architecture-views.md':('methods/view-presentation.md','methods/views/logical.md','methods/views/process.md','methods/views/development.md','methods/views/physical.md','methods/views/scenario.md'),
 }
 for skill, sources in tuple(REM_SOURCES.items()):
     REM_SOURCES[skill]=tuple(dict.fromkeys(source for parent in sources for source in (parent,*REM_PARTS.get(parent,()))))
 for skill in ('requirement-analysis','system-design','architecture-design'):
-    REM_SOURCES[skill]+=('practices/engineer-change/README.md','practices/engineer-change/WORKED-EXAMPLE.md')
+    REM_SOURCES[skill]+=('practices/engineer-a-change.md','practices/WORKED-EXAMPLE.md')
+
+REM_SOURCES['architecture-design']+=('practices/make-an-architecture-decision.md',)
 
 GENERATED_REM_PREFIX='<!-- Generated from rem/'
 
