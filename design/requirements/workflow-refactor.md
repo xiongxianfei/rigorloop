@@ -4,7 +4,7 @@ The [2026-10-18 workflow refinement](sources.md#src-simplified-design-workflow) 
 
 This package analyzes the requested whole-system refactor before detailed skill, CLI, or persistence implementation. It is RR analysis and navigation to the draft engineering model, not another proposal approval gate. The [source register](sources.md#src-workflow-requirement-review) identifies the author-assessed requirement basis for downstream design under the explicit project exception. It is not independent approval or workflow activation.
 
-The user subsequently authorized document-based review of this refactor without governed recording and removed the Constitution's mandatory author/reviewer separation rule. The [Constitution exception](../../CONSTITUTION.md#workflow-and-review) governs this work. An author assessment must be identified as such; it does not constitute independent review or change the proposed product workflow's independent-review requirements.
+The user subsequently authorized document-based review of this refactor without governed recording and removed the repository instructions’ mandatory author/reviewer separation rule. The [Repository instructions](../../AGENTS.md#workflow) governs this work. An author assessment must be identified as such; it does not constitute independent review or change the proposed product workflow's independent-review requirements.
 
 ## Original request and selected rule
 
@@ -62,7 +62,7 @@ The five new SRs constrain existing stakeholder capabilities. They do not claim 
 | Generated adapters, catalog, tests and packaging | Regenerate from canonical sources and demonstrate the same adopted contract through supported reading and invocation paths | SR-083; existing IR-010 |
 | Active and historical Changes | Record explicit adoption disposition for active work; retain old judgments with their original subjects and authority | SR-083; SR-023/024/029 |
 
-The current [Constitution](../../CONSTITUTION.md), [Workflow](../architecture/modules/MOD-017-engineering-governance/modules/MOD-006-engineering-change-control/workflow.md), [Assessment](../architecture/modules/MOD-017-engineering-governance/modules/MOD-007-engineering-verification-and-assurance/assessment.md), and canonical [skills](../../skills/) still contain the existing product contracts. This draft identifies their required replacement; it does not activate a mixture of old and new routing rules. Future adoption must reconcile all live consumers and retire obsolete internal paths together.
+The current [Repository instructions](../../AGENTS.md), [Workflow](../architecture/modules/MOD-017-engineering-governance/modules/MOD-006-engineering-change-control/workflow.md), [Assessment](../architecture/modules/MOD-017-engineering-governance/modules/MOD-007-engineering-verification-and-assurance/assessment.md), and canonical [skills](../../skills/) still contain the existing product contracts. This draft identifies their required replacement; it does not activate a mixture of old and new routing rules. Future adoption must reconcile all live consumers and retire obsolete internal paths together.
 
 ## Storage relationship and remaining work
 

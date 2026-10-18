@@ -180,14 +180,14 @@ Rollback:
 
 ## Follow-on artifacts
 
-- [Workflow Stage Autoprogression](2026-04-21-workflow-stage-autoprogression.md): partially addressed the broader workflow-routing pain by defining bounded autoprogression for workflow-managed execution and authoring-to-review handoffs.
+- [Workflow Stage Autoprogression](https://github.com/xiongxianfei/rigorloop/blob/dc55c7f7a565ff0e61735fcea6b8c2bef2ef5f72/docs/proposals/2026-04-21-workflow-stage-autoprogression.md): partially addressed the broader workflow-routing pain by defining bounded autoprogression for workflow-managed execution and authoring-to-review handoffs.
 - Remaining review-handoff wording ambiguity for isolated review outputs is deferred. If the same problem recurs, create a new proposal that references this artifact instead of reactivating it in place.
 
 ## Readiness
 
 This proposal is abandoned.
 
-Its main pain was partly addressed by [Workflow Stage Autoprogression](2026-04-21-workflow-stage-autoprogression.md).
+Its main pain was partly addressed by [Workflow Stage Autoprogression](https://github.com/xiongxianfei/rigorloop/blob/dc55c7f7a565ff0e61735fcea6b8c2bef2ef5f72/docs/proposals/2026-04-21-workflow-stage-autoprogression.md).
 
 No further `proposal-review` action is pending for this artifact.
 

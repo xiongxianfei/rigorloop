@@ -4,6 +4,8 @@ Owner: [MOD-008 Authoring guidance](module.json). This is supporting contract de
 
 Model validation contract: model-document-v1
 
+Test scenarios and expected observations are defined in the single [system test design](../../../../../support/test-design/system-test-design.md).
+
 A request, proposal, issue or incident supplies RR input to Requirement Analysis. It is not an IR merely because its proposed direction was approved, and it does not introduce a separate Proposal Review gate. Preserve its source, intended outcome, constraints and open questions without requiring an extra document or record solely to begin analysis.
 
 [Engineering authoring](design-authoring.md#authoring-responsibilities) and the canonical [Requirement Analysis method](../../../../../../rem/methods/requirement-analysis.md) own interpretation against existing requirements. Reuse without modification, refinement, creation, deferral and an explicit conflict are valid dispositions when justified. Proposed technology remains a candidate solution unless the caller establishes it as a genuine constraint.
@@ -39,7 +41,3 @@ These stable local references reconcile the prior document contract with the cur
 | Failure/recovery | PROP-SR-01 | Interrupted work exposes its actual outcome and an owned next step without erasing unresolved issues or inventing success. |
 | Compatibility/migration | PROP-SR-01 | Retired procedures remain historical; successor behavior requires explicit applicable adoption/import and cannot relabel old approval. |
 | External/environment | PROP-SR-01 | Local engineering results remain separate from installed, published or hosted outcomes; required observations must actually be made. |
-
-## Test design
-
-Inspect the current responsibilities and boundary scenarios against the owning REM model and Module contract. Structural checks establish format only; independent review judges semantic coverage. Runtime record behavior is exercised by the package’s operational store, update, reliance, review and maintenance tests; skill guidance is assessed in actual generated archives with the resource validator and independent scenario inspection. Required combined and negative proof is allocated in the adoption plan.

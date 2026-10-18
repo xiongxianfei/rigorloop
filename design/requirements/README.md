@@ -52,7 +52,7 @@ The [local operational-history analysis](sources.md#src-local-operational-analys
 A shared SR retains exactly one IR parent even when Scenarios owned by other IRs use it.
 SR-014 is a constraint on existing assessment behavior; it does not create an artificial Function.
 
-The [requirement-first workflow analysis](workflow-refactor.md) refines IR-009, adds SR-079–083 and SCN-075–082, and reconciles shared guidance and assessment criteria. The [source register](sources.md#src-workflow-requirement-review) identifies the author-assessed requirement basis and SCN-075–082 confirmation under the Constitution exception. The [integrated design](../architecture/README.md#requirement-first-workflow-composition) now supplies Function and AR proposals; detailed boundary design, integrated review and coordinated adoption remain outstanding; no independent review or product activation is claimed.
+The [requirement-first workflow analysis](workflow-refactor.md) refines IR-009, adds SR-079–083 and SCN-075–082, and reconciles shared guidance and assessment criteria. The [source register](sources.md#src-workflow-requirement-review) identifies the author-assessed requirement basis and SCN-075–082 confirmation under the document-based exception. The [integrated design](../architecture/README.md#requirement-first-workflow-composition) now supplies Function and AR proposals; detailed boundary design, integrated review and coordinated adoption remain outstanding; no independent review or product activation is claimed.
 
 | SR | Parent | System obligation |
 | --- | --- | --- |
@@ -332,4 +332,4 @@ The [customer architecture browser analysis](published-products.md#customer-arch
 
 ## Definition and assessment ownership
 
-IRs, SRs, ARs, Scenarios and their supporting analysis define current engineering meaning. Source-register entries retain concise provenance and the rationale needed to understand that meaning. Review judgments, findings, exact assessed-subject identities and executed-check history belong to operational records under the [Constitution](../../CONSTITUTION.md#documentation-and-governance-maintenance). A document-based review is not a Requirements submodel. Moving its record does not change requirement meaning, Scenario confirmation or the subjects originally assessed.
+IRs, SRs, ARs, Scenarios and their supporting analysis define current engineering meaning. Source-register entries retain concise provenance and the rationale needed to understand that meaning. Review judgments, findings, exact assessed-subject identities and executed-check history belong to operational records under the [Repository instructions](../../AGENTS.md#workflow). A document-based review is not a Requirements submodel. Moving its record does not change requirement meaning, Scenario confirmation or the subjects originally assessed.

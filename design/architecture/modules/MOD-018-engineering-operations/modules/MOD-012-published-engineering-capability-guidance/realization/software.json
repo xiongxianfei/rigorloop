@@ -86,13 +86,6 @@
         "source_path": "skills/vision/SKILL.md"
       },
       {
-        "name": "constitution",
-        "group": "Foundations",
-        "purpose": "Establish or revise the project's governing engineering principles.",
-        "contract": "design/architecture/modules/MOD-017-engineering-governance/modules/MOD-008-engineering-authoring-guidance/constitution.md",
-        "source_path": "skills/constitution/SKILL.md"
-      },
-      {
         "name": "project-map",
         "group": "Foundations",
         "purpose": "Build or refresh an observed repository orientation map with source and uncertainty boundaries.",
@@ -145,7 +138,7 @@
     "sources": [
       {
         "source": "SRC-SQLITE-ADOPTION",
-        "locator": "skills/architecture-design/SKILL.md; skills/bugfix/SKILL.md; skills/ci-maintenance/SKILL.md; skills/code-review/SKILL.md; skills/constitution/SKILL.md; skills/delivery-review/SKILL.md; skills/design-review/SKILL.md; skills/explore/SKILL.md; skills/implement/SKILL.md; skills/learn/SKILL.md; skills/plan/SKILL.md; skills/pr/SKILL.md; skills/project-map/SKILL.md; skills/requirement-analysis/SKILL.md; skills/requirement-review/SKILL.md; skills/research/SKILL.md; skills/route/SKILL.md; skills/system-design/SKILL.md; skills/verify/SKILL.md; skills/vision/SKILL.md",
+        "locator": "skills/architecture-design/SKILL.md; skills/bugfix/SKILL.md; skills/ci-maintenance/SKILL.md; skills/code-review/SKILL.md; skills/delivery-review/SKILL.md; skills/design-review/SKILL.md; skills/explore/SKILL.md; skills/implement/SKILL.md; skills/learn/SKILL.md; skills/plan/SKILL.md; skills/pr/SKILL.md; skills/project-map/SKILL.md; skills/requirement-analysis/SKILL.md; skills/requirement-review/SKILL.md; skills/research/SKILL.md; skills/route/SKILL.md; skills/system-design/SKILL.md; skills/verify/SKILL.md; skills/vision/SKILL.md",
         "basis": "Static inspection of the successor working-tree source identifies this implementation binding. It does not establish passing tests, installed availability, publication or engineering approval. Prior observations remain recoverable at 39be9c81."
       }
     ]
@@ -414,19 +407,6 @@
               "function": "FUNC-053",
               "relation": "guides",
               "contribution": "Guide the bounded project-vision authoring activity under the current Vision owner."
-            }
-          ],
-          "limits": [
-            "Static source binding only; actual availability is reported by the installed executable/package."
-          ]
-        },
-        {
-          "entry": "constitution",
-          "functions": [
-            {
-              "function": "FUNC-053",
-              "relation": "guides",
-              "contribution": "Guide the bounded principles-authoring activity while preserving project authority and applicable amendment scope."
             }
           ],
           "limits": [
@@ -844,22 +824,6 @@
           ],
           "limits": [
             "Only common specialist guidance is mapped. Vision artifacts, ownership, linked surface updates, and write/recovery rules remain in VIS-SR-01–03; no dedicated vision-definition Function or automatic IR conversion is established."
-          ]
-        },
-        {
-          "name": "constitution",
-          "group": "Foundations",
-          "purpose": "Establish or revise the project's governing engineering principles.",
-          "contract": "design/architecture/modules/MOD-017-engineering-governance/modules/MOD-008-engineering-authoring-guidance/constitution.md",
-          "functions": [
-            {
-              "function": "FUNC-053",
-              "relation": "guides",
-              "contribution": "Guide the bounded principles-authoring activity while preserving project authority and applicable amendment scope."
-            }
-          ],
-          "limits": [
-            "Only common specialist guidance is mapped. GOV-SR-01–03 retain principles structure, authority, and mutation rules; an authored constitution does not automatically become the REM metamodel or grant implementation permission."
           ]
         },
         {

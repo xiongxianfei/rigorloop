@@ -75,7 +75,7 @@ For a new repository, use this order:
 1. Install the adapter for your agent: `init codex` or `init claude`.
 2. Bootstrap standing repository guidance:
    - `vision` creates or updates `VISION.md` for project direction and fit checks.
-   - `constitution` creates or updates `CONSTITUTION.md` for source-of-truth and governance rules.
+   - Maintain governance in the project’s existing instructions; this repository uses `AGENTS.md`.
    - `project-map` creates or updates `docs/project-map.md` when repository orientation is needed.
    - `route` uses `rigorloop change context --root . --change CHANGE` for deterministic project-local workflow information and retains semantic routing judgment.
    - `docs/plan.md` starts as the small active/blocked/recent-work index.
@@ -89,7 +89,7 @@ Do not rewrite durable guides just for symmetry.
 | Need | Read |
 | --- | --- |
 | Understand project direction | [VISION.md](VISION.md) |
-| Understand governance and source-of-truth order | [CONSTITUTION.md](CONSTITUTION.md) |
+| Understand governance and source-of-truth order | [Repository instructions](AGENTS.md) |
 | Find workflow stages and artifact paths | Run `rigorloop change context --root . --change CHANGE`; read [the workflow contract](design/architecture/modules/MOD-017-engineering-governance/modules/MOD-006-engineering-change-control/workflow.md) for policy |
 | Orient to repository structure | [docs/project-map.md](docs/project-map.md) |
 | See active, blocked, and recent work | [docs/plan.md](docs/plan.md) |
@@ -274,7 +274,7 @@ Existing destination skills conflict even when identical. Use `--force` for comp
 
 RigorLoop recommends one standard workflow for complete AI-assisted delivery:
 
-- Standing artifacts: `VISION.md` and `CONSTITUTION.md`
+- Standing artifacts: `VISION.md` and `AGENTS.md`
 - Living references: `docs/project-map.md` when repository shape is not obvious enough for safe reliance
 - Workflow infrastructure: Designs, CLI workflow context, affected root guidance, affected skills, and generated outputs
 - On-demand support: `explore` and `research`
@@ -327,14 +327,13 @@ Run the complete essential suite:
 bash scripts/ci.sh
 ```
 
-[Contributing](CONTRIBUTING.md#validation-scope) explains the selected coverage and when additional focused proof is needed. Packaging changes also use `python scripts/build-adapters.py --check`; release qualification follows the actual prepared-candidate procedure in [Release](design/architecture/modules/MOD-019-product-delivery/modules/MOD-015-product-release-coordination/release.md).
+The [system test design](design/support/test-design/system-test-design.md) describes stable scenarios and expected observations. [Contributing](CONTRIBUTING.md#validation-scope) explains the selected coverage and when additional focused proof is needed. Packaging changes also use `python scripts/build-adapters.py --check`; release qualification follows the actual prepared-candidate procedure in [Release](design/architecture/modules/MOD-019-product-delivery/modules/MOD-015-product-release-coordination/release.md).
 
 ## Repository Layout
 
 ```text
 .
 ├── AGENTS.md
-├── CONSTITUTION.md
 ├── VISION.md
 ├── .github/
 ├── design/                    Current engineering definitions

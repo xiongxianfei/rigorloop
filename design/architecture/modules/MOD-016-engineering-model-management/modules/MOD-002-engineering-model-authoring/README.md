@@ -69,4 +69,4 @@ The write boundary must be used by supported engine writers. External filesystem
 
 The change extends IF-001/002 with distinct logical operations and preserves existing definition and identity behavior. Existing readers retain state/completeness distinctions; newer content does not reinterpret earlier profiles or accepted states. Parent reassignment preserves entity identity but does not renew engineering approval or verification.
 
-Acceptance walkthroughs include typed creation, replacement and removal from either endpoint; required-parent replacement and rejected orphaning; unknown relationship types; competing incoming cardinality; ambiguous identity; changed base during checking; and interruption before, during and after publication. These are Design acceptance intentions. Runtime tests, implementation evidence and verification judgments remain separate.
+The [System test design](../../../../../support/test-design/system-test-design.md#additional-integrated-scenarios) owns integrated scenario conditions and expected observations. [Validation](../../../../../support/validation.md#current-coverage-allocation) records current coverage and limits.

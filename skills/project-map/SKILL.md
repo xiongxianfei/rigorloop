@@ -36,7 +36,7 @@ If a required reference is missing, unreadable, escaped from the package, contra
 
 ## Customer-project orientation
 
-Public skills operate in customer-project mode by default. Treat `AGENTS.md`, `CONSTITUTION.md`, `docs/`, and `specs/` as optional project-local orientation inputs whose absence is normal. Do not search for RigorLoop originals in customer projects. Use authoritative CLI workflow context for governed placement, portable defaults when safe without claiming governed placement, and block on ambiguity.
+Public skills operate in customer-project mode by default. Treat `AGENTS.md`, `docs/`, and `specs/` as optional project-local orientation inputs whose absence is normal. Do not search for RigorLoop originals in customer projects. Use authoritative CLI workflow context for governed placement, portable defaults when safe without claiming governed placement, and block on ambiguity.
 
 ## Invocation classification
 

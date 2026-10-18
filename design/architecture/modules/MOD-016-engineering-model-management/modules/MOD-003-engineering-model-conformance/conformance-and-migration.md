@@ -78,17 +78,4 @@ Physical execution is one local engine invocation over immutable source content 
 
 ## Scenario and criterion inspection
 
-SCN-011 uses the selected state's original rules or reports their unavailability. SCN-012 diagnoses model defects and unassessed transitions without calling a partial scan valid. SCN-013 juxtaposes mechanical facts and supplied accountable judgments without merging their meaning. SCN-014 returns an attributable candidate with transformation, target and consumer limits while preserving the source. These are walkthroughs of the governed Scenarios, not replacements for their black-box definitions.
-
-| Basis | Design inspection cases and expected distinctions |
-| --- | --- |
-| SR-012 C1–4; AR-010 | Two states with different retained profiles; missing/ambiguous/unsupported definitions; explicitly selected current authoring target. Verify governing rules accompany results, no latest-profile substitution and no implicit adoption. |
-| SR-013 C1 | Unknown property/value, missing field, malformed record. Identify subject/location and deciding rule before dependent consistency; independent findings survive. |
-| SR-013 C2–3 | Duplicate IDs with equal/different labels; wrong derived path; wrong/multiple requirement parent; finite cycle; missing/wrong-kind endpoint; zero/two owning IRs for a Scenario. Check authoritative facts and incoming scope, never filename similarity. |
-| SR-013 C4–5 | Transition without prior state or decision; unsupported predicate; narrowed rule scope; interrupted scan with known violations. Keep state-only observations, unsupported/unassessed scope and whole-model conclusions separate. |
-| SR-014 C1–4 | Structural pass with inadequate reasoning; separately supplied stale/current judgment; allocation difference with no deciding rule. Preserve exact mechanical scope and actual review attribution without asserting approval, implementation or satisfaction. |
-| SR-015 C1–2 | Complete explicit representation mapping; intentional semantic change; identity/edge preservation ledger. Return exact candidate/source/profile/mapping basis and meaningful change disclosure. |
-| SR-015 C3–4 | Unmapped/opaque source; overlapping rules; target collision; failed transformation; stale or absent consumer observation; unknown consumer inventory. Preserve diagnostics and withhold unsupported readiness. |
-| SR-015 C5 | Cancel, fail or abandon candidate; source changes after capture; retry after lost response. Source bytes, retained historical meaning and current profile selection remain unchanged. |
-
-These cases define Design acceptance intent. Implementation must later demonstrate actual decoding, graph diagnostics, source preservation and supported transformation/consumer outcomes; structural schema tests alone do not supply that proof.
+The [System test design](../../../../../support/test-design/system-test-design.md#additional-integrated-scenarios) owns integrated scenario conditions and expected observations. [Validation](../../../../../support/validation.md#current-coverage-allocation) records current coverage and limits.

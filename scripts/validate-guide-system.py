@@ -14,7 +14,7 @@ from lib.validation.model_layout import PROJECT_MODEL_PATHS
 
 PRIMARY_GUIDE_LINKS = (
     "VISION.md",
-    "CONSTITUTION.md",
+    "AGENTS.md",
     "docs/project-map.md",
     "docs/plan.md",
     "skills/",
@@ -98,7 +98,6 @@ def validate(repo: Path) -> ValidationResult:
 
     current_surfaces = (
         repo / "AGENTS.md",
-        repo / "CONSTITUTION.md",
         repo / "README.md",
         repo / "docs" / "project-map.md",
         *(repo / relative for relative in PROJECT_MODEL_PATHS.values()),

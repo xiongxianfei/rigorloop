@@ -6,7 +6,7 @@ accepted
 
 ## Relationship to prior work
 
-This proposal builds on the accepted [Code Review Independence Under Autoprogression](2026-04-22-code-review-independence-under-autoprogression.md) proposal.
+This proposal builds on the accepted [Code Review Independence Under Autoprogression](https://github.com/xiongxianfei/rigorloop/blob/dc55c7f7a565ff0e61735fcea6b8c2bef2ef5f72/docs/proposals/2026-04-22-code-review-independence-under-autoprogression.md) proposal.
 
 That earlier proposal kept hard fresh-session enforcement out of scope and focused on a narrower first-pass `code-review` contract. This proposal treats subsequent autoprogression work as new evidence that a stronger, workflow-level independence gate is worth considering.
 

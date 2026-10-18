@@ -52,7 +52,7 @@ The direction strengthens RigorLoop's traceability and resumability by ensuring 
 
 ## Context
 
-The accepted [Governed Lifecycle CLI proposal](2026-08-24-governed-lifecycle-cli.md) selected the local `rigorloop` executable as the mandatory boundary for supported lifecycle transitions. The approved [Governed Lifecycle CLI specification](../../specs/governed-lifecycle-cli.md) and [transaction-boundary ADR](../adr/ADR-20260824-governed-lifecycle-cli-transaction-boundary.md) deliberately limited first-release mutation to `change.yaml`; semantic Markdown remained stage-owned and was written before registration.
+The accepted [Governed Lifecycle CLI proposal](https://github.com/xiongxianfei/rigorloop/blob/dc55c7f7a565ff0e61735fcea6b8c2bef2ef5f72/docs/proposals/2026-08-24-governed-lifecycle-cli.md) selected the local `rigorloop` executable as the mandatory boundary for supported lifecycle transitions. The approved [Governed Lifecycle CLI specification](../../specs/governed-lifecycle-cli.md) and [transaction-boundary ADR](../adr/ADR-20260824-governed-lifecycle-cli-transaction-boundary.md) deliberately limited first-release mutation to `change.yaml`; semantic Markdown remained stage-owned and was written before registration.
 
 That first boundary remains valuable and should not be discarded. It established semantic operations, artifact identities, optimistic concurrency, deterministic interpretation, guarded repair, workflow routing ownership, and Git-native truth. The next problem is architectural: the implementation needs clearer internal separation, and the publication boundary needs to cover the change-local evidence on which lifecycle decisions depend.
 

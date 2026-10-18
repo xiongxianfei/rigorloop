@@ -4,4 +4,4 @@
 
 Record a stable finding identity, severity, location, evidence, required outcome and safe resolution path before relying on a review. Human-readable prose must not replace required structured fields. Preserve the finding's origin and let its reporter assess resolution.
 
-The [original field-shape incident](../sessions/2026-05-20-review-artifact-field-shape.md) motivates this lesson. Its Markdown ledger/parser and old validation command are retired; that historical procedure does not govern current recording.
+The [original field-shape incident](https://github.com/xiongxianfei/rigorloop/blob/dc55c7f7a565ff0e61735fcea6b8c2bef2ef5f72/docs/learn/sessions/2026-05-20-review-artifact-field-shape.md) motivates this lesson. Its Markdown ledger/parser and old validation command are retired; that historical procedure does not govern current recording.

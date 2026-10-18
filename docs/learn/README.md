@@ -9,13 +9,15 @@ This directory is the canonical namespace for learn artifacts.
 
 ## Sessions
 
+Obsolete completed sessions are retained in Git history rather than this working tree. Preserve active work and current reliance before cleanup; curated lessons remain under topics.
+
 Session records preserve the historical thread for a learn run. They record trigger, trigger type, scope, evidence reviewed, exclusions, prior learnings, observations, classification decisions, routing results, derivative artifact links, and no-learn rationale when applicable.
 
 ## Topics
 
 Topic files are curated guidance, not authoritative workflow, product, architecture, validation, skill, implementation, or decision contracts.
 
-They may summarize confirmed durable lessons and point to the session record and action-owning artifacts that explain the source. They must not override higher-priority artifacts such as `CONSTITUTION.md`, approved owning Designs and workflow contracts, skill files, accepted proposals, active plans, or the artifact that owns a behavior change.
+They may summarize confirmed durable lessons and point to the session record and action-owning artifacts that explain the source. They must not override higher-priority artifacts such as project-selected instructions, approved owning Designs and workflow contracts, skill files, accepted proposals, active plans, or the artifact that owns a behavior change.
 
 Topic entries may be added, superseded, removed, revised, or absorbed into an authoritative artifact. When curation must remove, revise, or absorb an entry, preserve traceability through a session link, authoritative-artifact link, topic-file rationale, or explain-change rationale.
 

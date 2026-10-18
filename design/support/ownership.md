@@ -4,7 +4,7 @@ The repository-held REM model is the entry point for current engineering meaning
 
 ## Detailed contracts
 
-A Module or Interface may retain supporting Markdown contracts, examples, decisions and test-design catalogs alongside its entity record. These are subordinate detail of that responsibility, not additional REM entities or independent submodels. The architecture index owns system-wide composition. Shared repository development and validation rules live under `design/support/`; the validation executor is not the product's engineering-model conformance Module.
+A Module or Interface may retain supporting Markdown contracts, examples and decisions alongside its entity record. These are subordinate detail of that responsibility, not additional REM entities or independent submodels. The architecture index owns system-wide composition. The single [system test design](test-design/system-test-design.md) owns local and integrated scenarios and expected observations; Validation owns implementation mappings and current coverage gaps; Module contracts retain required behavior. Shared repository development and validation rules live under `design/support/`; the validation executor is not the product's engineering-model conformance Module.
 
 | Responsibility | Current owner and supporting detail |
 | --- | --- |
@@ -15,15 +15,15 @@ A Module or Interface may retain supporting Markdown contracts, examples, decisi
 | Independent judgment, applicability and final Verify | MOD-007 Review and verification; assessment contract |
 | Requirement/design authoring, discovery and project foundations | MOD-008 Authoring guidance; activity-specific contracts consuming canonical REM methods |
 | Reusable lessons and improvement | MOD-009 Lessons and improvement; learning contract |
-| Published invocation and resource integrity | MOD-012 Skill procedures; capability contract and its coverage |
+| Published invocation and resource integrity | MOD-012 Skill procedures; capability contract |
 | Artifact construction and generated resources | MOD-013 Package production; packaging contract |
 | Verified acquisition and destination effects | MOD-014 Skill installation; installation contract |
-| Candidate qualification, publication and recovery | MOD-015 Release coordination; release contract and coverage |
+| Candidate qualification, publication and recovery | MOD-015 Release coordination; release contract |
 | Repository development, check admission/execution and shared test policy | Repository support documents and shared test-design rules; policy accountability remains system-wide composition |
 
 Retained source-qualified clauses such as CLI-SR, WF-SR, DIST-SR and TEST-SR preserve their existing meaning. They are detailed contract references, not newly introduced REM System Requirements. Existing IR/SR records retain their stable identities and refer to the responsible current clause where applicable. New or changed stakeholder obligations still require requirement analysis; moving a clause does not approve it, promote an entity's status or expand supported behavior.
 
-The explicit validation registry identifies supporting contract documents and selected coverage packages. Its contract keys do not define Module boundaries or a competing architecture hierarchy. The portable `model-document-v1` profile remains available to customer projects with their own layout; repository-owned contracts use exact registered locations. Structural conformance does not establish semantic adequacy or approval.
+The explicit validation registry identifies supporting contract documents and central test-design Markdown. Its contract keys do not define Module boundaries or a competing architecture hierarchy. The portable `model-document-v1` profile remains available to customer projects with their own layout; repository-owned contracts use exact registered locations. Structural conformance does not establish semantic adequacy or approval.
 
 ## Sources, views and evidence
 

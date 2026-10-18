@@ -58,15 +58,4 @@ The selected realization extends the existing local Node/SQLite ownership: MOD-0
 
 Delivery must qualify the complete writer, read-only acquisition and maintenance population together, including association migration and activation invalidation. Until that separately authorized work succeeds, capabilities must report this history extension unavailable. Current v2/v4 behavior and independently versioned contracts continue unchanged. The proposed IF-003/004 operations do not imply installed command syntax or permit older clients to send new fields to existing operations.
 
-Use independently prepared synthetic records in two Changes, including a renamed subject, two revisions, an unrelated same-name subject, an unmapped historical occurrence and a multi-subject Review. These Design walkthroughs allocate future proof; they are not executed query evidence.
-
-| Obligation and failure | Required observation |
-| --- | --- |
-| SR-078 C1/C5; AR-086: wrong identity or provenance | Match only the explicit project-qualified key; preserve both original revisions/paths and record origins. Do not join an unrelated same-name/path subject or fabricate mappings for old path-only facts. |
-| C2; AR-086/087: guessed finding relevance | Literal finding/Verification filters use actual recorded associations and values. A Review-wide subject list cannot manufacture finding-specific relationships; unknown filter values reject. |
-| C3; AR-086/087: false complete empty result | Contrast complete no-match with absent storage, unsupported profile, missing association, compacted detail and corrupt records. Page exhaustion never erases a retained-scope limitation. |
-| C4; AR-086: changed pages or cursor tampering | Compare fixed-state repeat/next pages, changed filter/project/order, altered token, concurrent committed mutation, change-and-revert, restoration of old bytes and generation overflow. No changed-state continuation returns partial results or silently resumes. |
-| C6; AR-086/087: writes during lookup | Observe missing database, recovery-needed state, sidecar initialization requirement and maintenance fence. Lookup neither creates/repairs storage nor changes model/assessment state. Verify actual supported read-only platform behavior before capability qualification. |
-| Public budget and handoff; AR-087 | Multibyte response at the byte cap, one oversized unit, empty limited page, unavailable detail and stdout failure retain whole units and exact scope. No omission is labeled full coverage. |
-
-Final independent whole-change review must judge these interactions against all six SR criteria; optional integrated Design review may assess them earlier. Executable query, migration, concurrency and platform tests belong to later delivery; schema conformance and the browser diagram do not establish runtime availability or implementation satisfaction.
+The [System test design](../../../../../support/test-design/system-test-design.md#additional-integrated-scenarios) owns integrated scenario conditions and expected observations. [Validation](../../../../../support/validation.md#current-coverage-allocation) records current coverage and limits.

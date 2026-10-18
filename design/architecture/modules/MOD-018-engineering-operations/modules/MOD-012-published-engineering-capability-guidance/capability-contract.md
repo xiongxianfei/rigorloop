@@ -4,6 +4,8 @@ Owner: [MOD-012 Skill procedures](module.json). This is supporting contract deta
 
 Model validation contract: model-document-v1
 
+Test scenarios and expected observations are defined in the single [system test design](../../../../../support/test-design/system-test-design.md).
+
 ## Introduction and Goals
 
 Skill owns published engineering guidance and its common invocation, resource and authority boundaries. Current responsibilities follow the requirement-first [Workflow](../../../MOD-017-engineering-governance/modules/MOD-006-engineering-change-control/workflow.md), [Assessment](../../../MOD-017-engineering-governance/modules/MOD-007-engineering-verification-and-assurance/assessment.md), [engineering authoring](../../../MOD-017-engineering-governance/modules/MOD-008-engineering-authoring-guidance/design-authoring.md) and the canonical [REM models](../../../../../../rem/README.md). A skill guides an authorized actor; it is not an autonomous service and does not supply permission or engineering approval merely by running or recording a result.
@@ -60,7 +62,7 @@ The caller supplies intent, authority and judgments; the CLI supplies identities
 | SKL-SR-13 | Canonical content and adopted shared-source projections MUST remain the authored authority for generated guidance. Required copied projections MUST match their declared source and owner, preserving supported transformations. Missing sources, stale copies or incoherent candidates MUST prevent the affected conformance claim. Repair MUST update the actual source and regenerate derived output, not patch a customer's installation as the durable fix. |
 | SKL-SR-14 | Mechanical checks MUST remain bounded, deterministic and explicit about the checked skill/resource and failure. They MUST distinguish instructions from negative examples, project-local paths and packaged resources; unknown closed values MUST fail before consistency checks. They MUST NOT claim semantic quality, complete reasoning or deterministic target-agent selection from keyword/structure checks. |
 | SKL-SR-15 | Skill guidance, resources and evidence MUST NOT require exposing secrets, credentials, raw private environment data or unrelated machine-local information. Examples MUST be public-safe or synthetic. Package validation, installed availability and stored labels MUST NOT grant execution, release or customer-adoption authority. |
-| SKL-SR-21 | Adoption MUST retire every mapped duplicate current authority only after its obligation and decision have a complete destination, explicit supersession or justified retention. Useful original bytes and historical identities MUST remain recoverable under the Constitution retention policy, with current reliance self-contained; mixed and operational sources MUST retain clearly bounded ownership. This earlier pilot does not authorize whole-directory deletion; subsequent complete repository retirement follows SYS-SR-13 and ENG-SR-15 with Git-backed historical recovery. |
+| SKL-SR-21 | Adoption MUST retire every mapped duplicate current authority only after its obligation and decision have a complete destination, explicit supersession or justified retention. Useful original bytes and historical identities MUST remain recoverable under the AGENTS retention policy, with current reliance self-contained; mixed and operational sources MUST retain clearly bounded ownership. This earlier pilot does not authorize whole-directory deletion; subsequent complete repository retirement follows SYS-SR-13 and ENG-SR-15 with Git-backed historical recovery. |
 | SKL-SR-22 | Governance, System references, contributor navigation, exact-text validator consumers and source-retirement evidence MUST agree on the adopted owner before final reliance. Previous approvals MUST NOT be retargeted to changed subjects. Reviewed implementation, one independent whole-change review gate, and distinct successful Verify remain prerequisites under their existing owners. |
 | SKL-SR-24 | Every published capability MUST have one behavioral owner under the responsibility inventory and expose its required inputs, scoped action, usable output, failure disposition and handoff; shared conventions MUST NOT substitute for its specialist behavior. |
 | SKL-SR-25 | Individual skills MUST support their authorized portable output without requiring CLI recording. A governed recording trigger MUST instead load and use the supported CLI procedure, retain its prerequisites, and stop on missing or conflicting authority; portable output MUST NOT claim governed completion. |
@@ -200,10 +202,6 @@ flowchart LR
 ```
 
 A successor archive carries its workflow descriptor. Installation verifies candidate identity and explicitly preserves/removes selected obsolete units when authorized; it does not adopt governance or import records. See [Installation](../../../MOD-019-product-delivery/modules/MOD-014-verified-skill-installation/installation.md) and [MOD-014](../../../MOD-019-product-delivery/modules/MOD-014-verified-skill-installation/README.md).
-
-## Test design
-
-Validate resource availability/parity, unknown closed values, actual generated and installed packages, and independent semantic walkthroughs of the complete affected responsibilities. Include covered-request reuse, missing upstream basis, direct invocation limits, milestones without review gates, advisory outcomes without approval, reassessment after material corrections, and a missing final whole-change review. Check optional support paths and their transitive resources too. Retain useful parser, resource, filesystem, negative and recovery tests; retired pilot wording is not current behavior.
 
 ## Reconciliation and historical provenance
 

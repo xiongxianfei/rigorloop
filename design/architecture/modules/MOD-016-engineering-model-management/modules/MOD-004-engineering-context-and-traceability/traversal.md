@@ -67,18 +67,7 @@ A transient read snapshot/index is discarded with the request. A reusable immuta
 
 ## Scenario walkthrough and criterion coverage
 
-SCN-008 remains the stakeholder-facing Scenario. Its ordinary, alternative and failure outcomes map to this cooperation without adding internal details to the Scenario record.
-
-| SR-009 criterion | Design obligation and inspection case |
-| --- | --- |
-| 1: all reachable entities | Complete selected inventory and unrestricted breadth-first queue exhaustion. Inspect a chain longer than any UI expansion convention and branching requirement ancestry/descendency; all reachable identities and witness paths remain present. |
-| 2: reverse facts | Derived inverse adjacency preserves authored provenance. Inspect an incoming edge authored outside the starting neighborhood; changing only direction finds it without a second authored reverse edge. |
-| 3: cycles | Visited minimum-depth entities plus retained typed cycle edges. Inspect a cross-domain cycle, self-edge and multiple starts with different path lengths; termination retains reachability. A requirement-parent cycle receives its own structural diagnostic. |
-| 4: requested bounds | Explicit depth/count rules and deterministic prefix/frontier. Inspect depth zero, a shallower second start, cap equal to start count, invalid smaller cap, combined bounds and exhaustion before a requested cap. Bound fulfillment never silently means unrestricted completeness. |
-| 5: incomplete results | Separate acquisition/exploration outcomes with affected scope. Inspect omitted source membership, missing eligible target, unreadable required content, interruption and resource exhaustion; none returns complete empty. |
-| 6: admission | Exact selected-state and profile validation. Inspect absent/ambiguous starts, unknown type/direction, invalid limit and mixed model/Baseline identities; no fallback scope is used. |
-
-These are design review and later verification observations, not executed tests or satisfaction claims. MOD-004 owns traversal outcome proof; MOD-001 owns coherent membership/content acquisition, MOD-003 owns interpretation, and MOD-010 owns preserving the composed request/result meaning. The integrated observation must exercise those contributions together before any system verification claim. Impact analysis, automatic requirement evaluation and general allocation adequacy remain separate responsibilities.
+The [System test design](../../../../../support/test-design/system-test-design.md#additional-integrated-scenarios) owns integrated scenario conditions and expected observations. [Validation](../../../../../support/validation.md#current-coverage-allocation) records current coverage and limits.
 
 ## Internal analysis reuse
 

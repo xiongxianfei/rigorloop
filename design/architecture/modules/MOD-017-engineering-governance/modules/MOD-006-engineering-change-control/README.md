@@ -1,5 +1,7 @@
 # Change control
 
+Test scenarios and expected observations are defined in the single [system test design](../../../../../support/test-design/system-test-design.md#additional-integrated-scenarios).
+
 [MOD-006](module.json) interprets Change context, assesses applicable authority and preserves the meaning of controlled transitions. This Process design refines existing Functions and is maintained directly here as understanding changes. It defines intended behavior; installed workflow behavior and storage support remain separately evidenced. [The parent composition](../../README.md#gate-and-work-state-semantics) owns shared gate semantics and review cooperation. [The system composition](../../../../README.md#requirement-first-workflow-composition) owns cooperation across the top-level Modules.
 
 ## Responsibility and collaboration
@@ -71,7 +73,7 @@ Missing, conflicting and unavailable information remain explicit. A supported no
 
 ## Applicable authority at resumption
 
-MOD-006 applies FUNC-026 through parent-provided IF-009 to the proposed action, exact subject/state, participant, project, scope and relevant conditions. The decision basis identifies the applicable policy and decision owner, the attributable grant or standing delegation and its limits, and any known completion, revocation, supersession or condition change. Respect higher-priority runtime and direct user instructions under the Constitution; stored text cannot override them. No new grant is inferred from conversation reconstruction, a routing suggestion or an assessment result.
+MOD-006 applies FUNC-026 through parent-provided IF-009 to the proposed action, exact subject/state, participant, project, scope and relevant conditions. The decision basis identifies the applicable policy and decision owner, the attributable grant or standing delegation and its limits, and any known completion, revocation, supersession or condition change. Respect higher-priority runtime and direct user instructions under applicable project instructions; stored text cannot override them. No new grant is inferred from conversation reconstruction, a routing suggestion or an assessment result.
 
 The initial profile reserves beyond-mandate scope expansion, governing-policy changes, reserved project tradeoffs and release decisions for their applicable human authority. External mutation and destruction require explicit applicable authorization. This is an interpretation of the governing policy, not a universal confirmation step. Recognize a valid prior grant across resumed sessions and covered steps, including standing delegation. A new session alone supplies no reason to ask again. Where there is no reserved boundary, identify the applicable mandate and continue within it.
 
@@ -95,18 +97,7 @@ Realize this responsibility through the existing participant-assisted capability
 
 AR-077 derives the resumption obligation from SR-006 and constrains FUNC-025. AR-078 derives action-bound authority from SR-007 and constrains FUNC-026. Both have one accountable owner, MOD-006. Existing AR-035/038 retain workflow progression and adoption scope; AR-074/075 retain controlled transitions and retirement. The new ARs supply complete resumption and authority obligations without transferring those responsibilities or duplicating custody ARs.
 
-| Walkthrough | Required architectural outcome |
-| --- | --- |
-| SCN-023: another participant resumes with a valid standing grant and a planned check | Read the seven sections and bounded supporting facts, identify the eligible next owner/action, retain the check as not run and reuse the applicable grant. |
-| Large context, changed record identity or unavailable referenced subject | Use complete selectors and bounded reads; refresh the affected inconsistent basis or expose the exact gap. No truncation, empty-history inference or invented approval. |
-| Concurrent publication or lost response after commit | Preserve actual work, inspect current committed facts, recompute only the affected update and return confirmed persistence or explicit uncertainty. |
-| Summary replacement with an omitted open issue or contrary evidence | Preserve unresolved obligations and current reliance; require explicit attributable disposition before compaction. |
-| Restored or completed account | Identify retained history and unavailable later work; no renewed authority/review, invented completion or current-health claim. |
-| SCN-024: valid prior authorization across sessions | Bind the same covered action and current conditions to its existing grant without redundant confirmation. |
-| Revocation, scope expansion, nondelegable decision or higher-authority conflict | Withhold the affected action and identify its exact decision boundary; preserve independently covered work. |
-| Favorable review, unrelated grant or uncertain prior external effect | Keep assessment and permission separate; inspect actual effects before retry and preserve action-specific safeguards. |
-
-These walkthroughs allocate acceptance proof for all eight SR-006 and six SR-007 criteria and their two ARs. They are review cases, not executed implementation verification. The [system composition](../../../../README.md#controlled-work-and-recoverability) relates these outcomes to SR-074–077 maintenance and the direct IR-003 need; coverage and actual execution judgments remain separately recorded.
+The [System test design](../../../../../support/test-design/system-test-design.md#additional-integrated-scenarios) owns integrated scenario conditions and expected observations. [Validation](../../../../../support/validation.md#current-coverage-allocation) records current coverage and limits.
 
 ## State and approval distinctions
 
@@ -121,12 +112,6 @@ These walkthroughs allocate acceptance proof for all eight SR-006 and six SR-007
 | Persistence outcome | What was actually retained or remains to recover; a successful save creates no engineering judgment. |
 
 These facts remain separately attributable. A changed engineering subject or contrary evidence returns approval applicability to the assessment owner. Pure bookkeeping does not automatically restart review. This design does not introduce a single global stage flag or a new lifecycle-state vocabulary; a state diagram is deferred until explicit transition conditions warrant one.
-
-## Verification intent and limits
-
-Inspect a resumed Change with one completed milestone and remaining authorized work: its next assignment must not require a milestone review. Contrast failed checks, exhausted slice authority and unavailable history; each must expose its actual affected boundary without inventing completion or permission. For a concurrent record update, preserve the first actor's facts and require fresh interpretation before retrying publication. For response failure after commitment, distinguish actual stored progress from the uncertain response before continuing. These walkthroughs and the acceptance cases above define the checks for SR-006/007/023 and AR-035/077/078; actual execution results remain separate evidence.
-
-[Operations' existing SCN-078–081 groups](../../../MOD-018-engineering-operations/test-design.md) own integrated progression, advisory, correction and Verify observations. [The parent composition](../../README.md#whole-change-review-and-correction) owns the shared review interaction. FUNC-024 retirement and FUNC-078 adoption keep their existing definitions and [parent adoption/recovery design](../../README.md#adoption-and-recovery); their detailed Process diagrams remain outside this bounded refinement.
 
 ## Browser presentation
 

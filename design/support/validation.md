@@ -44,19 +44,81 @@ Run from the repository root, reject arguments, execute declared groups in order
 
 ### Test sources, groups and fixtures
 
-| Group | Current sources | Protection |
-| --- | --- | --- |
-| Workflow | `packages/rigorloop/test/operational-review.test.js` | Complete the review-free intermediate path; block missing independent final approval, self-approval, missing/stale Verify and unresolved findings. |
-| Storage/recovery | `packages/rigorloop/test/operational-{store,update,maintenance}.test.js` | Persist/resume real records, reject malformed/stale requests atomically, preserve corrupt data and safely restore/recover backups. |
-| Installation | `packages/rigorloop/test/installer-replacement.test.js`; `tests/engineering/packaging/test-npm-package-publication.py`; `tests/engineering/packaging/test-adapter-distribution.py` | Actual tarball and target installation, authored archive resources, conflicts, unsafe paths and interrupted replacement. |
-| Skill integrity | `tests/skill/test-skill-validator.py` | Current skill/resource validity and missing-resource detection. |
-| Release boundary | `tests/engineering/release/test-release-transaction.py`; existing release validators | Candidate identity, publication authority and failure handling. Executed at release qualification, not routine PR CI. |
+The [system test design](test-design/system-test-design.md) owns scenarios and expected observations; this document owns current executable mappings and coverage gaps. This table locates execution sources.
+
+| Group | Current sources |
+| --- | --- |
+| Workflow | `packages/rigorloop/test/operational-review.test.js` |
+| Storage/recovery | `packages/rigorloop/test/operational-{store,update,maintenance}.test.js` |
+| Installation | `packages/rigorloop/test/installer-replacement.test.js`; `tests/engineering/packaging/test-npm-package-publication.py`; `tests/engineering/packaging/test-adapter-distribution.py` |
+| Skill integrity | `tests/skill/test-skill-validator.py` |
+| Release boundary | `tests/engineering/release/test-release-transaction.py`; existing release validators |
 
 Keep support local and small. Tests may contain an ordered recovery scenario; native runner execution does not require a custom scheduler or a receipt per case. Runtime generators, release scripts and record examples are product inputs and are not deleted merely because they live under scripts or fixtures.
 
 ### Proof quality, maintenance and evidence
 
-The selected reduction intentionally removes automatic coverage of exhaustive malformed-input combinations, detailed CLI rendering, legacy import permutations, model/schema validators, documentation wording, browser interaction and rare concurrency/interruption interleavings. These are reduced-assurance areas, not unsupported product features. Changes affecting them must allocate explicit focused tests or concrete manual/review evidence; the essential suite cannot establish their correctness. Preserve high-consequence state, authority and destructive-write assertions in the retained groups. Historical catalogs keep scenario intent and explicit missing realizations.
+The selected reduction intentionally removes automatic coverage of exhaustive malformed-input combinations, detailed CLI rendering, legacy import permutations, model/schema validators, documentation wording, browser interaction and rare concurrency/interruption interleavings. These are reduced-assurance areas, not unsupported product features. Changes affecting them must allocate explicit focused tests or concrete manual/review evidence; the essential suite cannot establish their correctness. Preserve high-consequence state, authority and destructive-write assertions in the retained groups. The [system test design](test-design/system-test-design.md) owns stable scenario intent; current missing proof is recorded here.
+
+## Current coverage allocation
+
+This implementation mapping changes when tests, discovery or coverage change. It refers to the stable scenarios in the [system test design](test-design/system-test-design.md); it does not prescribe additional scenarios or record run results.
+
+### Current essential scenarios
+
+| Design outcome | Current execution allocation and limits |
+| --- | --- |
+| Valid completion — [Workflow][workflow], [Assessment][assessment] | [Workflow tests][workflow-tests]: six cases exercising actual CLI records and transitions. |
+| Durable, atomic changes — [CLI][cli], [Records][records] | [Store tests][store-tests] and [update tests][update-tests]. |
+| Protected storage — [Records][records] | [Store tests][store-tests]. |
+| Recoverable state — [Records][records] | [Maintenance tests][maintenance-tests]. Store/update/maintenance together contain eleven cases. |
+| Safe installation — [Installation][installation] | [Installer tests][installer-tests]: three cases with actual filesystem effects. |
+| Complete usable artifacts — [Packaging][packaging], [Installation][installation] | [Archive test][archive-tests] and [package tests][package-tests]: three Python cases, including clean installation and a packed-CLI workflow check. |
+| Usable skill resources — [Skill procedures][skill] | [Skill tests][skill-tests]: two cases. Archive inventory above supplies the additional packaged-resource observation. |
+
+### Current release scenarios
+
+| Design outcome | Current execution allocation and limits |
+| --- | --- |
+| Exact publication authority — [Release][release], especially REL-SR-08/12/23 | [Tag identity tests][release-identity] and authority cases in [release execution tests][release-execution]. |
+| Honest publication and retry — [Release][release], especially REL-SR-10/14/24 | Executor cases in [release execution tests][release-execution]. Eight cases in total through the [release entrypoint][release-tests]. |
+
+### Current system coverage
+
+| Design outcome | Current execution allocation and limits |
+| --- | --- |
+| Resumable authorized work — SCN-023/075–081; SR-006/007/027–029/079–082 | Workflow assertions above cover selected record transitions. Actor interpretation, broader handoff variations and semantic harmlessness need an actual-subject walkthrough. |
+| Coherent adoption — SCN-082; SR-023/024/055/083 | Proposed integrated activation/migration proof. Retained installation/store checks supply only their listed boundaries. |
+| Payload and historical-account preservation — SCN-023/045–047; SR-006/023/024/043–047 | Backup/restore assertions observe selected records and payloads. Full retention/cleanup races, compaction and completion-retry variants remain gaps. |
+| Bounded transactional interfaces — SR-040–047/074–077 | Store/update tests cover selected rejection, stale-update and COMMIT-fault cases. Capacity limits, cross-Change cycles, before/after comparison races and complete selector discovery need focused proof when affected. |
+| Maintenance and acquired-runtime coherence — SR-043–047/074–077 | Existing maintenance and installed-package cases are partial proof. Rare lease/payload races, legacy import preservation and the full platform qualification matrix remain unproved by routine CI. |
+| Explicit obsolete-skill replacement — SCN-063 and [Installation][installation] | Generic conflict, unsafe-path and partial-install assertions remain. The full versioned replacement-profile and actual agent-discovery observations require their own qualified candidate proof. |
+| Customer browser and projection — SR-084–088; AR-043–051 | Current structural checks and freshness establish only their explicit boundaries. Full customer/offline/publication, semantic topology and reader-configuration proof remain gaps. |
+| Requirement-tree reading — [reading contract][requirement-tree] | Intended reading/assessment observations; the essential suite does not implement this browser coverage. Use independent fixture relationships and actual rendered/offline inspection for affected work. |
+| Model custody and authoring — SR-001–005 and MOD-002 | Proposed model-engine behavior and semantic readability require actual boundary proof; operational-store tests do not qualify model custody. |
+| Conformance and migration — SR-012–015 | Schema checks cover only declared structures. Actual decoding, graph checks, transformation and consumer compatibility need affected proof. |
+| Baselines, transitions and retirement — SR-020–024 | Proposed model custody/recovery and actor interpretation remain separate from retained operational maintenance assertions. |
+| Traversal, allocation and potential impact — SR-009–011 | Future composed acquisition, interpretation and analysis proof. Browser/schema counts establish neither complete analysis nor semantic allocation adequacy. |
+| Assurance content and methodology — SR-025–029; REM guidance | Workflow and packaging tests cover selected boundaries only. Exact criterion interpretation, semantic preservation and stakeholder effectiveness require accountable actual-subject assessment. |
+| Learning and improvement — SR-035–038; IR-007 | Semantic learning/adoption/effectiveness observations remain unautomated. A lesson or adopted version alone cannot establish the direct stakeholder outcome. |
+| Selected-subject history — SR-078 | Proposed query/migration/read-only platform qualification; current store tests do not establish this extension's availability. |
+| Requirement delivery and evaluation — SR/AR/IR assessment contracts | Former browser/runtime/UI tests are retired. Current structure and freshness checks do not establish these semantic, recovery or accessibility outcomes. |
+
+### Current coverage gaps
+
+The essential suite is intentionally small. For changes affecting the areas below, allocate focused executable proof or a concrete review/operational observation. Missing automation remains a gap; no routine change must rebuild the former catalog before proceeding.
+
+| Area | Significant outcomes not established by the retained suite |
+| --- | --- |
+| Input, compatibility and presentation | Exhaustive malformed-input permutations, detailed CLI diagnostics/rendering, legacy import/migration variants, all closed-vocabulary boundaries and private-data suppression. Use the affected public boundary and preserved-state/privacy observations when changing these contracts. |
+| Skill structure and resources | Every metadata/description boundary, readability vocabulary, resource verb/directory rule, escaped/unlisted paths, shared-resource projection drift and unknown-consumer precedence. Current validation and one missing-resource fault do not prove every negative rule or semantic portability. |
+| Specialist operations | All Bugfix write/proof-authority variants; CI assembly selection, concurrent replacement, partial write/retry and bounded PR repair; late invocation/recording triggers. Assess actual authority, original failing-proof identity, preserved newer state and hosted observations for the affected operation. |
+| Models and views | The integrated browser/projection/requirement-tree observations above remain unqualified by the essential suite. Structural checks and generated freshness establish only their stated boundaries. |
+| Release preparation and qualification | All profile/version-intent partitions, source/tooling identity faults, seal/receipt variants, cheap preflight/discovery failures, remote-tag uncertainty, generated-marker/literal ownership, check-mode no-write behavior, idempotence and interrupted preparation. Qualification must still use the actual candidate and preserve human content and earlier evidence. |
+| Publication and reporting | All concurrent attempts, unknown/uncertain remote states and bounded polling, partial assets, public identity conflicts or drift during smoke, authority revocation between writes, lost reporting, neighbor preservation and diagnostic-timing tolerance. Preserve observed public facts; a failed or incomplete report must not prompt duplicate immutable publication. |
+| Exceptional release or incident | Routine eligibility needs its existing engineering basis. Exceptional authentication/deferral needs explicit bounded authority. Recovery from bad public contents preserves failed history and uses the authorized correction path. These are actual-event assessments, not synthetic permission or extra routine review gates. |
+
+These gaps retain the reduced-assurance decision from the minimal-suite change. Centralizing documentation removes no retained executable assertion and does not retire supported product behavior or weaken final review/Verify.
 
 ### Execution cost reporting
 
@@ -64,7 +126,7 @@ Use native test output and optional external wall-clock timing for a scoped obse
 
 ### Model-owned test-design admission
 
-Supporting catalogs describe intended scenarios and actual realization references. A removed test reference becomes a documented proof gap. The optional structural validator may check those references using ordinary native discovery; it does not select routine tests or establish sufficient coverage.
+The single [system test design](test-design/system-test-design.md) describes intended conditions and observations independently of implementation. Optional structural validation checks declared Markdown and local references without importing test suites or admitting retired JSON catalogs. Requirement-to-assertion adequacy remains an independent semantic assessment; structural success does not establish coverage.
 
 ### Boundary scan and acceptance scenarios
 
@@ -102,3 +164,24 @@ Less automatic coverage makes changes outside the essential path more dependent 
 ## Historical provenance
 
 The prior validation contract and removed tests are recoverable at `d7761c8c9c34f0f3a4bb3a74504190e0ceafed53`. The [minimal-suite plan](../../docs/plans/2026-10-18-minimal-tests.md) records the selected scope; results and judgments belong to its Change.
+
+[workflow]: ../architecture/modules/MOD-017-engineering-governance/modules/MOD-006-engineering-change-control/workflow.md
+[assessment]: ../architecture/modules/MOD-017-engineering-governance/modules/MOD-007-engineering-verification-and-assurance/assessment.md
+[cli]: ../architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/command-contract.md
+[records]: ../architecture/modules/MOD-018-engineering-operations/modules/MOD-011-operational-record-persistence/record-contract.md
+[installation]: ../architecture/modules/MOD-019-product-delivery/modules/MOD-014-verified-skill-installation/installation.md
+[packaging]: ../architecture/modules/MOD-019-product-delivery/modules/MOD-013-product-package-production/packaging.md
+[skill]: ../architecture/modules/MOD-018-engineering-operations/modules/MOD-012-published-engineering-capability-guidance/capability-contract.md
+[release]: ../architecture/modules/MOD-019-product-delivery/modules/MOD-015-product-release-coordination/release.md
+[workflow-tests]: ../../packages/rigorloop/test/operational-review.test.js
+[store-tests]: ../../packages/rigorloop/test/operational-store.test.js
+[update-tests]: ../../packages/rigorloop/test/operational-update.test.js
+[maintenance-tests]: ../../packages/rigorloop/test/operational-maintenance.test.js
+[installer-tests]: ../../packages/rigorloop/test/installer-replacement.test.js
+[archive-tests]: ../../tests/engineering/packaging/adapter_archive_tests.py
+[package-tests]: ../../tests/engineering/packaging/test-npm-package-publication.py
+[skill-tests]: ../../tests/skill/test-skill-validator.py
+[release-identity]: ../../tests/engineering/release/release_identity_tests.py
+[release-execution]: ../../tests/engineering/release/release_execution_tests.py
+[release-tests]: ../../tests/engineering/release/test-release-transaction.py
+[requirement-tree]: ../architecture/modules/MOD-016-engineering-model-management/modules/MOD-004-engineering-context-and-traceability/requirement-tree.md

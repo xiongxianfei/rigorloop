@@ -16,7 +16,7 @@ Mutable lifecycle state, current milestone state, review status, blockers, routi
 - Spec: [Plan Design](../design/skill/authoring/plan.md), especially PLAN-SR-01–08, PLAN-DEC-02 and Authoring presentation; [Skill Design](../design/skill/skill.md) supplies the common preservation/resource contract.
 - Architecture: those models plus the retained [Design authoring model](../design/skill/authoring/design.md). Exact approved Design Review ID `design-review` and registered member IDs `skill`, `plan`, `design` are the governing package; consume their current exact identities through CLI context, not reconstructed aggregate hashes.
 - Prior-contract test spec: not applicable; acceptance intent belongs to the models and concrete verification allocation belongs to this plan.
-- Proof and handoff policy: [Validation](../design/engineering/validation.md), [Assessment](../design/skill/assessment.md), [Packaging](../design/engineering/packaging.md) and [CONSTITUTION.md](../../CONSTITUTION.md).
+- Proof and handoff policy: [Validation](../design/engineering/validation.md), [Assessment](../design/skill/assessment.md), [Packaging](../design/engineering/packaging.md) and [CONSTITUTION.md](https://github.com/xiongxianfei/rigorloop/blob/dc55c7f7a565ff0e61735fcea6b8c2bef2ef5f72/CONSTITUTION.md).
 
 ## Context and orientation
 

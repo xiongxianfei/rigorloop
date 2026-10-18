@@ -10,7 +10,6 @@ PROJECT_MODEL_PATHS = {
     "plan": "design/architecture/modules/MOD-017-engineering-governance/modules/MOD-006-engineering-change-control/planning.md",
     "project-foundations": "design/architecture/modules/MOD-017-engineering-governance/modules/MOD-008-engineering-authoring-guidance/project-foundations.md",
     "vision": "design/architecture/modules/MOD-017-engineering-governance/modules/MOD-008-engineering-authoring-guidance/vision.md",
-    "constitution": "design/architecture/modules/MOD-017-engineering-governance/modules/MOD-008-engineering-authoring-guidance/constitution.md",
     "project-map": "design/architecture/modules/MOD-017-engineering-governance/modules/MOD-008-engineering-authoring-guidance/project-map.md",
     "discovery": "design/architecture/modules/MOD-017-engineering-governance/modules/MOD-008-engineering-authoring-guidance/discovery.md",
     "explore": "design/architecture/modules/MOD-017-engineering-governance/modules/MOD-008-engineering-authoring-guidance/explore.md",
@@ -33,36 +32,5 @@ PROJECT_MODEL_PATHS = {
 SHARED_TEST_DESIGN_PATHS = (
     'design/support/test-design/README.md',
     'design/support/test-design/rules.md',
+    'design/support/test-design/system-test-design.md',
 )
-TEST_DESIGN_PACKAGES = {
-    'release': {
-        'directory': 'design/architecture/modules/MOD-019-product-delivery/modules/MOD-015-product-release-coordination/test-design',
-        'entrypoint': 'tests/engineering/release/test-release-transaction.py',
-        'groups': ('profile-input', 'preparation', 'preflight', 'candidate-identity',
-                   'approval-recovery', 'evidence-closeout', 'maintenance-review'),
-    },
-    'skill': {
-        'directory': 'design/architecture/modules/MOD-018-engineering-operations/modules/MOD-012-published-engineering-capability-guidance/test-design',
-        'entrypoint': 'tests/skill/test-skill-validator.py',
-        'groups': ('capability-contract', 'resource-contract', 'recording-composition',
-                   'implementation-handoffs', 'capability-composition'),
-    },
-    'authoring': {
-        'directory': 'design/architecture/modules/MOD-017-engineering-governance/modules/MOD-008-engineering-authoring-guidance/test-design',
-        'entrypoint': 'tests/skill/test-skill-validator.py',
-        'groups': ('refinement', 'scope-handoff', 'correction-reconciliation'),
-    },
-}
-
-
-def test_design_paths(model):
-    package = TEST_DESIGN_PACKAGES[model]
-    directory = package['directory']
-    return (PROJECT_MODEL_PATHS[model], directory+'/test-design.md', directory+'/test-cases.json',
-            *(directory+'/cases/'+group+'.json' for group in package['groups']))
-
-
-def supporting_architecture_json_paths(root):
-    """Exact selected catalogs, separate from entity/facet discovery and validation."""
-    return {root / path for model in TEST_DESIGN_PACKAGES
-            for path in test_design_paths(model) if path.endswith('.json')}

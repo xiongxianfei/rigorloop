@@ -68,7 +68,6 @@ PUBLISHED_SKILL_INVOCATION_NAMES = (
     "bugfix",
     "ci-maintenance",
     "code-review",
-    "constitution",
     "delivery-review",
     "design-review",
     "explore",

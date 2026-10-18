@@ -1,5 +1,7 @@
 # Views and traceability
 
+Test scenarios and expected observations are defined in the single [system test design](../../../../../support/test-design/system-test-design.md#additional-integrated-scenarios).
+
 [MOD-004](module.json) owns derived engineering context, qualified view composition and portable browser output. This is the target design for SR-084–088, not evidence of shipped browser commands. Entity JSON owns Function/AR allocation; [the architecture composition](../../../../README.md#customer-architecture-browser-composition) owns cross-parent cooperation. The current Python/D2 repository browser remains the observed implementation until a coordinated replacement is qualified.
 
 General SR-009 traversal, its IF-013 boundary and AR-056 allocation are defined in [Scoped relationship traversal](traversal.md). The finite Requirements tree remains a presentation grammar, separate from general reachability.
@@ -450,18 +452,7 @@ The selected presentation is build-time rendering of admitted source-owned diagr
 
 The project root replaces the separate system-view sidebar links, and the Module hierarchy sits beneath it. One horizontal view navigation applies to both scopes. Public capabilities remains optional and project-derived. CLI cooperation and contribution content moves into its owning context without losing exact subject/criterion qualification. Preserve already distributed fragment links through explicit navigation to equivalent content where semantics agree; otherwise explain that the old selection is unavailable. This is compatibility for published snapshot links, not a second maintained navigation system. New generation does not rewrite older copied snapshots.
 
-| Reading case | Required observation and governing basis |
-| --- | --- |
-| Open a sparse non-RigorLoop project | Overview identifies the selected project/state; no fabricated CLI/Skills sections; unavailable views explain their limits. SR-084/085. |
-| Open MOD-004 and switch Logical to Process to Physical | Scope remains MOD-004; topology, sequence/state and placement remain distinguishable and source-qualified. SR-085. |
-| Inspect a parent and then its child | Tree selection retains the active view; selecting the root retains that view at system scope. Direct accountability and descendant coverage remain separate; back navigation restores the previous scope/topic. SR-085. |
-| Read same-named proposed and observed topics | Both retain distinct identity and visible qualification in listings, diagrams, source disclosure and deep links. SR-085. |
-| Follow a command to responsibility, obligation and rationale | Public entry, Module, SR/AR and contribution explanation remain linked without implying evidence or approval. SR-085. |
-| Copy the snapshot and read without network/source checkout | Essential diagrams, explanations, keyboard navigation and required source context remain usable; optional missing links are labeled. SR-086. |
-| Supply hostile or invalid registered diagram content | No script, remote fetch or path escape; reject required invalid input without replacing prior output. SR-087. |
-| Use a narrow viewport, keyboard, or unavailable deep link | Scope and labels remain readable, content has text alternatives, controls work without hover, and unavailable targets are explicit. SR-085/086. |
-
-These cases define acceptance intent for the reading design. Assess information hierarchy with reader walkthroughs and actual rendered inspection; test navigation, snapshot portability and input rejection at their real boundaries. Schema checks alone cannot establish usability or safe diagram compilation. The repository integration is described below; further presentation refinements and the broader customer generator retain their own implementation and assessment scope.
+The [System test design](../../../../../support/test-design/system-test-design.md#additional-integrated-scenarios) owns integrated scenario conditions and expected observations. [Validation](../../../../../support/validation.md#current-coverage-allocation) records current coverage and limits.
 
 ## Process view: execution topology and selected interaction
 
@@ -856,14 +847,6 @@ Product build assembles the CLI candidate. Customer snapshot generation is runti
 Exact candidate versions, digests, platform/runtime combinations and qualification results remain with Package production and its candidate records. This view states required resource relationships without claiming delivery or duplicating the release inventory.
 
 <!-- /development-build-resources -->
-
-## Verification intent and limits
-
-AR-043–051 allocate the browser contributions beneath SR-084–088. All SR criterion coverage must be assessed across participants; a Function link or AR list alone is not proof. Capture requires real changed-membership/immutable-selection cases; projection requires independently expected ownership, qualification and missing-detail contrasts; assembly requires copied offline output and hostile-text tests; publication requires real filesystem interruption, concurrent writer and commit/reporting-failure observations. Package qualification uses the actual CLI candidate with independent customer IDs and no source checkout.
-
-Representative integrated cases are: valid sparse customer model to offline copy; unsupported profile preserving old output; identical proposed/observed display names; concurrent source/output changes; failure before and after entry commitment; incomplete/corrupt output or unowned destination; renderer resources missing in the packaged artifact; and an offline page with optional unavailable links. Inspect readable/keyboard navigation and source attribution on the declared reader configurations. Existing repository tests protect only their documented prototype surfaces; they do not establish these target guarantees.
-
-The [architecture composition](../../../../README.md#customer-architecture-browser-composition) owns cross-parent Scenario walkthroughs and the [product candidate owner](../../../MOD-019-product-delivery/modules/MOD-013-product-package-production/README.md#browser-candidate-contract) owns acquisition/qualification details. Actual assessments and execution results belong to local operational records, not this document. For the technical-model refinement, inspect the normal Node/engine/renderer/reader composition and failure contracts, verify explicit Module mappings and read the Logical and Development projections together. Logical dependencies must not be mistaken for runtime order; intended source units must not be labeled as observed files. Reuse the existing source-admission and offline browser checks for inline Logical diagrams, section jumps, expanded/return routes and retained Development links. No new test suite, implementation plan or PP milestones are introduced here.
 
 ## Integrated browser reading
 

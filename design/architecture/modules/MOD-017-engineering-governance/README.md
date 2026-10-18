@@ -1,5 +1,7 @@
 # Change and quality control composition
 
+Test scenarios and expected observations are defined in the single [system test design](../../../support/test-design/system-test-design.md#additional-integrated-scenarios).
+
 [MOD-017](module.json) owns handoff, authority and assessment meaning. [Operations](../MOD-018-engineering-operations/README.md) composes guidance, CLI and storage. These are target design rules; installed workflow adoption and runtime implementation remain separate.
 
 ## Gate and work-state semantics
@@ -125,10 +127,6 @@ For a new project, preparation accepts an attributable empty active-work invento
 Recheck compatibility and dependency observations against the same current activation basis. Report affected blockers and the actual intact prior authority or explicit unavailability. Keep unrelated work outside the selected transition; an unrelated old record does not force import. Conversely, excluding an identifier from the selection cannot remove a dependency still relied upon. The existing guarded publication and interruption rules apply to every permitted activation.
 
 The [successor record contract](../MOD-018-engineering-operations/modules/MOD-011-operational-record-persistence/README.md#adoption-and-compatibility) settles activation granularity: one guarded transaction per selected Change. Project-wide success requires current activation for the complete explicitly selected set; partial activation is reported as partial, without converting unrelated work or promising a multi-Change atomic commit. The [installation extension](../MOD-019-product-delivery/modules/MOD-014-verified-skill-installation/README.md) supplies exact replacement effects. V4 rollout qualifies the directly selected SQLite adapter and explicit legacy import under the successor package boundary. Only one operational backend is authoritative for the selected adopted work; active dual writes and implicit fallback are forbidden. Preserve legacy originals and access to the prior executable until the selected migration/recovery obligations are settled.
-
-## Verification intent
-
-[The parent-owned test design](test-design.md) defines the adoption interactions that can fail despite child conformance. [Operations](../MOD-018-engineering-operations/README.md) owns handoff cooperation and its assurance boundary.
 
 ## Baseline state responsibilities
 

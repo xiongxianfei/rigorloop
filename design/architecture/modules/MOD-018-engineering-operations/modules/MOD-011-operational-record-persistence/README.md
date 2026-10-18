@@ -1,5 +1,7 @@
 # Work record storage: current engineering handoff
 
+Test scenarios and expected observations are defined in the single [system test design](../../../../../support/test-design/system-test-design.md).
+
 This Module owns the `rigorloop-records-v4` representation for SR-006, SR-043 and SR-083/AR-040. [Governance](../../../MOD-017-engineering-governance/README.md) owns decision meaning; [Command handling](../MOD-010-engineering-command-interface/README.md) owns supported requests. The successor implements the [current v4 Records contract](record-contract.md). This project has explicitly adopted selected operational work after qualified import and original preservation. Other customer records and judgments retain their original contract until separately adopted; installation alone does not migrate them.
 
 ## Boundary and representation
@@ -499,19 +501,7 @@ The sequence shows qualified legacy import. Source-owner control is participant-
 
 ### Maintenance acceptance walkthroughs
 
-| Selected case | Required observation and responsible boundary |
-| --- | --- |
-| SCN-070: all or selected Changes while writers are active | MOD-011 drains supported access or reports busy; one declared snapshot and required payload closure complete together, with exclusions explicit. |
-| Missing payload, changed source, cancellation or exhausted capacity | No complete marker or success for an invalid capture; source and existing backups remain usable, incomplete owned output and recovery scope are identified. |
-| SCN-071: original store lost, valid retained backup available | MOD-011 validates exact associated scope without requiring the lost source; activation restores historical facts and creates a new incarnation. No usable backup yields unavailable, never invented empty success. |
-| Wrong project, corrupt member, unsupported schema or occupied destination | Reject before activation; replacement requires its separately authorized current expectation and preserved prior bytes. No merge or project identity rewriting. |
-| Interrupted activation or missing result after commitment | Keep the affected store fenced until explicit exact-observation recovery. Only verified pre-activation rollback is allowed; established activation remains authoritative. |
-| SCN-072: selected transfer to a matching empty checkout | Inspect scope/exclusions, validate transported bytes and recheck association/emptiness; source remains usable and neither definitions nor judgments are rewritten. |
-| SCN-073: supported import with active and historical records | Explain every mapping/disposition, preserve required originals and unresolved issues, reconcile current consumers and hold source stability through activation. |
-| Unsupported active dependency, identity collision, stale source or missing originals | Block target activation with attributable gaps; preserve both sides, avoid duplicate imports and never silently fall back to a legacy writer. |
-| Successful restoration or migration followed by resumption | MOD-012 requests the seven-section handoff through existing boundaries; MOD-006/007 assess actual authority and support before reliance. Historical completion remains historical. |
-
-These cases map SR-074–077 and AR-052–055 to existing command/storage contracts and the handoff/authority owners. They define Design acceptance intent, not executed maintenance evidence. The existing software organization and physical placement views supply realization; the backup, restore and migration sequences explain the consequential interactions. Runtime qualification of platform durability, source adapters and preserved-byte recovery remains separate from this Design.
+The [System test design](../../../../../support/test-design/system-test-design.md#additional-integrated-scenarios) owns integrated scenario conditions and expected observations. [Validation](../../../../../support/validation.md#current-coverage-allocation) records current coverage and limits.
 
 ### Browser navigation walkthrough
 
@@ -526,14 +516,6 @@ SR-083 adoption reconciles policy, guidance, validators, recording and active-wo
 The [Governance adoption disposition](../../../MOD-017-engineering-governance/README.md#adoption-and-recovery) determines which selected dependencies require migration. Provide actual record compatibility and migration outcomes under the supported contract; a fresh initialized store proves neither absence of legacy dependencies nor adoption readiness. New projects without earlier records require no historical import, while necessary migration for existing work must be qualified and complete before its activation.
 
 V3 and any explicitly retained source data retain their original meaning under the supported migration contract. A qualified importer preserves required originals and records active-work disposition; this design edit does not migrate or delete user evidence. V4 selects SQLite directly with no filesystem fallback, dual-write or withdrawn draft-command aliases. SR-074–078 retain their selected backup, restoration, transfer, migration and bounded history-query obligations. They do not impose an exhaustive activity history. Publishing the browser or installing skills does not activate this backend.
-
-## Test design
-
-Apply [Operations integration intent](../../test-design.md) and the shared test rules. Compare a complete handoff with omitted review standing, missing authority and unavailable evidence: the gaps must remain visible. Compare replacement of an equivalent working check with a smoke pass that would hide another failure. Replace an assessment after correction while preserving an omitted open finding; permit explicit disposition and later safe compaction. Retain a compact assessed support summary when a current evidence account changes. Exercise atomic updates, stale writers, uncertain receipts, SQLite interruption outcomes, unavailable stores and explicit attachment ingestion/cleanup. A completed Change read must be stable after unrelated repository edits, while a linked new regression remains actionable. These are design observations; no successor runtime implementation or new executable suite is claimed.
-
-### Proposed cross-Change history query
-
-[Subject-history Design](history-selection.md) allocates FUNC-077 and AR-086 to MOD-011 and AR-087 to MOD-010. It defines recorded identity, coherent selection, coverage and state-bound continuation through proposed IF-003/004 operations. The current v2/v4 task contract still supplies current Change context and maintenance; the history profile, schema/writer qualification, migration and public capability require separate delivery. No current runtime/adoption satisfaction claim includes SR-078.
 
 ## Supporting contracts
 

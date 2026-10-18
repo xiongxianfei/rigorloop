@@ -7,7 +7,6 @@ Responsibility and allocation are defined in [module.json](module.json).
 These documents retain detailed clauses and proof under this Module; they are not additional REM entities.
 
 - [Authoring Design](authoring.md)
-- [Constitution Design](constitution.md)
 - [Engineering authoring](design-authoring.md)
 - [Discovery Design](discovery.md)
 - [Explore Design](explore.md)

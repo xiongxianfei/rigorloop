@@ -1,5 +1,7 @@
 # Skill procedures
 
+Integrated scenario conditions and expected observations belong to the [System test design](../../../../../support/test-design/system-test-design.md#additional-integrated-scenarios).
+
 Responsibility and allocation are defined in [module.json](module.json).
 
 ## Common invocation and ownership
@@ -57,21 +59,10 @@ skill -> actor: "Scoped result and next owner; isolated work ends here"
 
 A missing prerequisite exits before the affected step; the successful arrows do not promise an output on failure. When a late trigger requires recording, use the [existing recording sequence](../../README.md#record-a-handoff-update) after its prerequisites are satisfied. The [parent handoff protocol](../../README.md#authoring-assessment-and-handoff-protocol) and [Governance review/correction sequences](../../../MOD-017-engineering-governance/README.md#whole-change-review-and-correction) retain the requirement-first dependencies and one whole-change gate. Guidance completion cannot stand for independent approval, adoption or permission to publish.
 
-## Composition acceptance intent
-
-Use the existing [Skill test-design groups](test-design/test-design.md) and [parent integration scenarios](../../test-design.md). The following walkthroughs identify the additional composition observations; they are Design intent, not executed agent or runtime proof.
-
-| Starting facts and variation | Independent observation and failure exposed |
-| --- | --- |
-| Customer project has sufficient local input and authority but no RigorLoop internal files, workflow adoption or CLI; contrast an ambiguous target. | Portable control produces the specialist's supported scoped result; ambiguous target stops dependent action. Requiring a database or inventing a target fails the outcome. |
-| A complete portable path gains a durable recording, privilege or output-scope trigger; compare missing transitive method, incompatible source version and absent untriggered resource. | Only affected work pauses and reclassifies; required dependencies and authority are settled before use. The unrelated absence neither blocks portable output nor proves package integrity. |
-| A summary supports navigation but a later assessment needs the complete subject; compare a copied stale rule, unknown value and private-data request. | Full required evidence remains obtainable, owner meaning and vocabulary remain intact, and private unrelated inputs are excluded. A short readable result cannot conceal missing basis. |
-| Governed recording returns saved, conflict, busy or uncertain commitment; contrast a valid standing grant with expanded scope. | Actual persistence, judgment and authority stay separate. Fresh inspection precedes reconciliation; no replay, portable downgrade or redundant request for already-covered authority occurs. |
-| Completed milestone, adverse advisory finding, materially changed review basis or interrupted adoption. | Existing Workflow/Assessment owners determine prerequisites and correction. No milestone approval is synthesized, open obligations remain, and incompatible partial adoption cannot become one valid active workflow. |
 
 ## Supporting contracts
 
-These documents retain detailed clauses and proof under this Module; they are not additional REM entities.
+These documents retain detailed behavior clauses under this Module; they are not additional REM entities.
 
 - [Skill Model Design](capability-contract.md)
 

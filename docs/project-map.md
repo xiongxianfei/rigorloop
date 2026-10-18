@@ -1,5 +1,7 @@
 # RigorLoop project map
 
+Test-design orientation refreshed for the central system design: use [system-test-design.md](../design/support/test-design/system-test-design.md) for scenarios and expected observations. The separate model sections and three catalog packages are retired; other map observations retain their stated scope.
+
 ## Map metadata
 
 - Map status: partial
@@ -13,7 +15,7 @@
 
 ## Purpose and scope
 
-This map orients contributors to the inspected repository. [System](../design/architecture/composition.md) owns model composition; [CONSTITUTION.md](../CONSTITUTION.md) owns governance. This map does not own workflow stage order; Workflow owns it. CLI owns deterministic change-context facts, and route owns semantic routing. Exact workflow state belongs to the selected change record. The previous map described retired specs, YAML lifecycle engines, three-target distribution and direct CI gates; the current source paths below correct those claims.
+This map orients contributors to the inspected repository. [System](../design/architecture/composition.md) owns model composition; [Repository instructions](../AGENTS.md) owns governance. This map does not own workflow stage order; Workflow owns it. CLI owns deterministic change-context facts, and route owns semantic routing. Exact workflow state belongs to the selected change record. The previous map described retired specs, YAML lifecycle engines, three-target distribution and direct CI gates; the current source paths below correct those claims.
 
 ## System overview
 
@@ -23,7 +25,7 @@ RigorLoop publishes skill guidance and a command-line executable. The REM model 
 
 | Path | Observed responsibility |
 | --- | --- |
-| [VISION.md](../VISION.md), [AGENTS.md](../AGENTS.md), [CONSTITUTION.md](../CONSTITUTION.md) | Project direction, operating guidance and governing principles. |
+| [VISION.md](../VISION.md), [AGENTS.md](../AGENTS.md) | Project direction, operating guidance and governing principles. |
 | [design/](../design/) | Current REM definitions and owner-scoped detailed contracts; start at design/README.md and design/support/ownership.md. |
 | [docs/proposals/](proposals/), [docs/plans/](plans/), [docs/plan.md](plan.md) | Direction, stable delivery intent and plan navigation. |
 | [docs/changes/](changes/) | Historical filesystem records and unchanged evidence; current operational state is CLI-managed SQLite under the private .rigorloop/ area. |
