@@ -197,20 +197,25 @@ def _symbol(root, reference):
 
 def collect_native(root, model, destination):
     """Trusted subprocess target; the catalog cannot select its module or command."""
-    from lib.validation.validation_execution import unittest_adapter
+    import runpy
+    import unittest
     root = Path(root).resolve()
-    found = []
-    def observe(test):
-        method = getattr(test, test._testMethodName)
-        source = inspect.getsourcefile(method)
-        if source is None:
-            raise ValueError('discovered method has no source identity')
-        path = Path(source).absolute().relative_to(root).as_posix()
-        _read(root, path)
-        found.append({'path': path, 'symbol': type(test).__name__+'.'+test._testMethodName})
     entrypoint = root / TEST_DESIGN_PACKAGES[model]['entrypoint']
-    with tempfile.TemporaryDirectory() as temporary:
-        unittest_adapter('collect', Path(temporary)/'receipt.json', [str(entrypoint)], case_observer=observe)
+    sys.path.insert(0, str(entrypoint.parent))
+    namespace = runpy.run_path(str(entrypoint), run_name='test_design_discovery')
+    found, seen = [], set()
+    for value in namespace.values():
+        if not isinstance(value, type) or not issubclass(value, unittest.TestCase) or value in seen:
+            continue
+        seen.add(value)
+        for name in unittest.defaultTestLoader.getTestCaseNames(value):
+            method = getattr(value, name)
+            source = inspect.getsourcefile(method)
+            if source is None:
+                raise ValueError('discovered method has no source identity')
+            path = Path(source).absolute().relative_to(root).as_posix()
+            _read(root, path)
+            found.append({'path': path, 'symbol': value.__name__+'.'+name})
     Path(destination).write_text(json.dumps(found))
 
 

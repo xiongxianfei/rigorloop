@@ -1,20 +1,7 @@
 #!/usr/bin/env python3
-"""Collect release behavior groups through the supported native entrypoint."""
-
+"""Release-boundary identity, authority and publication/recovery regression checks."""
 import unittest
-
-from release_identity_tests import TrustedReleaseTagIdentityTests, DeterministicReleaseGateTests
-from release_profile_tests import ReleaseProfileTests, ReleaseSurfaceInventoryTests, LiteralAuditBaselineTests
-from release_preparation_tests import PrepareReleaseTests
-from release_preflight_tests import ReleasePreflightTests
-from release_timing_tests import ReleaseGateParityAndTimingTests
-from release_publication_tests import PublishedEvidenceCloseoutTests, HistoricalReleaseReaderTests
-from release_evidence_tests import ReleaseEvidenceTests
-from release_candidate_tests import ReleaseCandidateTests, ReleaseCandidateIntegrationTests, CurrentSourceQualificationTests
-from release_coordination_tests import ReleaseCoordinationTests
-from release_provider_tests import ReleasePublicTreeIdentityTests
-from release_execution_tests import ReleaseAuthorityTests, ReleaseEvidenceStoreTests, ReleaseExecutorTests
-
-
-if __name__ == "__main__":
+from release_identity_tests import TrustedReleaseTagIdentityTests
+from release_execution_tests import ReleaseAuthorityTests, ReleaseExecutorTests
+if __name__ == '__main__':
     unittest.main()

@@ -1,5 +1,7 @@
 # Skill parent test design
 
+Current automation follows [the minimal-suite allocation](../../../../../../support/validation.md). Existing scenario descriptions retain intent; removed executable variants are explicit coverage gaps, and historical test paths do not establish current protection.
+
 Owner: [Skill](../capability-contract.md), model ID `skill`. Shared test-quality rules belong to [System](../../../../../../support/test-design/rules.md#start-from-supported-outcomes).
 
 This package covers recurring capability and resource contracts, recording paths, implementation authority and cross-capability handoffs. The [case index](test-cases.json) declares five JSON groups. The [model inventory](../capability-contract.md#context-and-scope) supplies responsibility boundaries. Select scenarios for a distinct observable failure; a parent requirement or discovered method does not need its own catalog row.
@@ -69,7 +71,7 @@ Record the exact inspected packet, candidate, expected difference and observed d
 
 ## Fixtures and script organization
 
-Executable sources remain under `tests/skill/`, with the current aggregate entrypoint and cohesive behavior files. [Fixture helpers](../../../../../../../tests/skill/skill_fixture_helpers.py) own setup operations; [recording fixtures](../../../../../../../tests/skill/skill_contract_tests.py) independently declare the selected profiles. Existing authored fixture directories are read-only inputs. New mutation-based implementations should use a fresh temporary root, establish a valid baseline, change the named field and assert its exact outcome. Do not derive expected values or supported names from validator registries.
+Executable sources remain under `tests/skill/`, with the current aggregate entrypoint and cohesive behavior files. [Fixture helpers (retired test)](https://github.com/xiongxianfei/rigorloop/blob/d7761c8c9c34f0f3a4bb3a74504190e0ceafed53/tests/skill/skill_fixture_helpers.py) own setup operations; [recording fixtures (retired test)](https://github.com/xiongxianfei/rigorloop/blob/d7761c8c9c34f0f3a4bb3a74504190e0ceafed53/tests/skill/skill_contract_tests.py) independently declare the selected profiles. Existing authored fixture directories are read-only inputs. New mutation-based implementations should use a fresh temporary root, establish a valid baseline, change the named field and assert its exact outcome. Do not derive expected values or supported names from validator registries.
 
 Use ordinary test functions or framework groups; `unittest.TestCase` supplies framework grouping, not a required domain-object hierarchy. A small context manager or resource object is useful when it owns one coherent lifetime. Keep the defining mutation, expected diagnostic and authority observation visible in the case. Share setup, not a helper that computes the expected answer with production logic. Split files by responsibility and setup cohesion when that improves navigation; line count alone is not a split rule.
 
@@ -114,7 +116,7 @@ Repository references use normalized POSIX relative paths without absolute prefi
 
 Author checks parse the exact index and five groups, validate shape/vocabularies/IDs/paths/fixtures, resolve source and section references, and confirm native discovery of the selected test links. Run applicable parent/prose checks and the referenced native tests. Those checks establish structure and bounded existing observations; independent review assesses whether conditions and expected outcomes expose the intended defect.
 
-[Validation's Skill admission contract](../../../../../../support/validation.md#skill-parent-test-design-admission-contract) defines package admission. A passing main-model check does not establish catalog admission. Implementation allocation and observed tooling limitations are recorded in the owning change (historical operational material, unavailable in the current tree).
+[Validation's Skill admission contract](../../../../../../support/validation.md#model-owned-test-design-admission) defines package admission. A passing main-model check does not establish catalog admission. Implementation allocation and observed tooling limitations are recorded in the owning change (historical operational material, unavailable in the current tree).
 
 Update the account when behavior, source paths, fixtures, discovery or responsibility ownership changes. Keep each scenario with its primary owner, preserve stable IDs and reconcile affected current links. A later child catalog owns its detailed requirements and references parent interactions; it does not copy these 39 cases. Record deliberate case consolidation, splits and scope transfers once in the owning change; keep no live aliases and never reuse retired case IDs. Remove exclusive obsolete tests only after their owner retires the obligation or establishes adequate replacement protection and reconciles consumers; an unlinked test or absent case is not removal permission. Delivery allocates future executable changes and commands; actual outcomes remain in evidence bound to exact subjects.
 

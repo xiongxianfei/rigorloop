@@ -10,7 +10,7 @@
     "model": "release",
     "boundary": "Prepare the intended stable release, qualify its exact artifacts, publish within authorized workflow-start scope without a second approval, and report or recover honestly.",
     "entrypoint": "tests/engineering/release/test-release-transaction.py",
-    "coverage_claim": "Outcome-driven scenarios cover the 24 recurring Release requirements; REL-SR-20/21 retain their original scoped source-consolidation obligations outside this recurring catalog. Linked methods provide supporting realization; native discovery owns the full executable inventory and no per-method catalog entry is required. Partial/proposed proof remains explicit. Local fixture and candidate checks do not establish live publication or hosted authorization."
+    "coverage_claim": "Scenario intent with explicit realization gaps. Routine automation is limited to the essential suite in design/support/validation.md; retained references identify only their asserted observations."
   },
   "fixture_rules": {
     "isolation": "Each executable case and variant owns its temporary root, mutable mappings and logs, with cleanup registered immediately. Review procedures identify their exact reviewed subjects without changing publication state.",

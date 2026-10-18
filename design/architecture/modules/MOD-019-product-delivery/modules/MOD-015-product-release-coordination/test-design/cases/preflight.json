@@ -18,10 +18,7 @@
         "Fresh v0.3.5 prepared release. Snapshot all relative file paths and bytes. Initialize local Git only for variants that claim Git discovery or tag behavior.",
         "The fixture contains an explicit valid audit at scripts/resources/release/literal-audit-baseline.yaml; historical Change directories are not required."
       ],
-      "builder": {
-        "path": "tests/engineering/release/release_fixture_helpers.py",
-        "symbol": "make_prepared_release"
-      }
+      "limitation": "Fixture implementation retired with the explicitly reduced regression suite; initial_state remains scenario intent, not executed proof."
     }
   ],
   "cases": [
@@ -52,15 +49,11 @@
         "No credentials, pack/build/archive generation, broad tests, public smoke or publication operation is invoked."
       ],
       "realization": {
-        "state": "partial",
-        "tests": [
-          {
-            "path": "tests/engineering/release/release_preflight_tests.py",
-            "symbol": "ReleasePreflightTests.test_release_preflight_clean_fixture_is_idempotent_and_side_effect_light"
-          }
-        ],
+        "state": "proposed",
+        "tests": [],
         "gaps": [
-          "Preflight never invokes expensive qualification or publication: Existing idempotence tests inspect files and a returned tuple; add command-boundary observation without mocking preflight itself."
+          "Preflight never invokes expensive qualification or publication: Existing idempotence tests inspect files and a returned tuple; add command-boundary observation without mocking preflight itself.",
+          "Automated realization removed under the maintainer-selected minimal suite. This scenario is not claimed covered by the retained suite; see design/support/validation.md."
         ]
       },
       "method": "automated-test",
@@ -94,26 +87,11 @@
         "Failed change discovery is an error and cannot be represented as an empty clean change set."
       ],
       "realization": {
-        "state": "existing",
-        "tests": [
-          {
-            "path": "tests/engineering/release/release_preflight_tests.py",
-            "symbol": "ReleasePreflightTests.test_release_preflight_cli_succeeds_on_clean_fixture"
-          },
-          {
-            "path": "tests/engineering/release/release_preflight_tests.py",
-            "symbol": "ReleasePreflightTests.test_release_preflight_cli_requires_changed_file_or_git_discovery"
-          },
-          {
-            "path": "tests/engineering/release/release_preflight_tests.py",
-            "symbol": "ReleasePreflightTests.test_release_preflight_fails_changed_unauthorized_literal"
-          },
-          {
-            "path": "tests/engineering/release/release_preflight_tests.py",
-            "symbol": "ReleasePreflightTests.test_release_preflight_cli_discovers_changed_unauthorized_literal"
-          }
-        ],
-        "gaps": []
+        "state": "proposed",
+        "tests": [],
+        "gaps": [
+          "Automated realization removed under the maintainer-selected minimal suite. This scenario is not claimed covered by the retained suite; see design/support/validation.md."
+        ]
       },
       "method": "automated-test",
       "boundary": "public-command"
@@ -149,50 +127,11 @@
         "Missing or malformed audit input fails with the required resource path; the observed fixture tree is unchanged and the legacy path is never a fallback."
       ],
       "realization": {
-        "state": "existing",
-        "tests": [
-          {
-            "path": "tests/engineering/release/release_preflight_tests.py",
-            "symbol": "ReleasePreflightTests.test_release_preflight_fails_missing_profile"
-          },
-          {
-            "path": "tests/engineering/release/release_preflight_tests.py",
-            "symbol": "ReleasePreflightTests.test_release_preflight_rejects_malformed_profile"
-          },
-          {
-            "path": "tests/engineering/release/release_preflight_tests.py",
-            "symbol": "ReleasePreflightTests.test_release_preflight_rejects_incomplete_profile"
-          },
-          {
-            "path": "tests/engineering/release/release_preflight_tests.py",
-            "symbol": "ReleasePreflightTests.test_release_preflight_rejects_missing_required_local_input"
-          },
-          {
-            "path": "tests/engineering/release/release_preflight_tests.py",
-            "symbol": "ReleasePreflightTests.test_release_preflight_fails_package_profile_version_mismatch"
-          },
-          {
-            "path": "tests/engineering/release/release_preflight_tests.py",
-            "symbol": "ReleasePreflightTests.test_release_preflight_fails_stale_metadata_pointer"
-          },
-          {
-            "path": "tests/engineering/release/release_preflight_tests.py",
-            "symbol": "ReleasePreflightTests.test_release_preflight_fails_invalid_pending_evidence_shape"
-          },
-          {
-            "path": "tests/engineering/release/release_preflight_tests.py",
-            "symbol": "ReleasePreflightTests.test_release_preflight_fails_dirty_release_output"
-          },
-          {
-            "path": "tests/engineering/release/release_preflight_tests.py",
-            "symbol": "ReleasePreflightTests.test_release_preflight_requires_readable_valid_audit_without_legacy_fallback"
-          },
-          {
-            "path": "tests/engineering/release/release_preflight_tests.py",
-            "symbol": "ReleasePreflightTests.test_release_preflight_consumes_current_repository_audit"
-          }
-        ],
-        "gaps": []
+        "state": "proposed",
+        "tests": [],
+        "gaps": [
+          "Automated realization removed under the maintainer-selected minimal suite. This scenario is not claimed covered by the retained suite; see design/support/validation.md."
+        ]
       },
       "method": "automated-test",
       "boundary": "contract"
@@ -224,22 +163,11 @@
         "Any explicitly allowed local conflict still names its required owner decision."
       ],
       "realization": {
-        "state": "existing",
-        "tests": [
-          {
-            "path": "tests/engineering/release/release_preflight_tests.py",
-            "symbol": "ReleasePreflightTests.test_release_preflight_fails_local_tag_conflict"
-          },
-          {
-            "path": "tests/engineering/release/release_preflight_tests.py",
-            "symbol": "ReleasePreflightTests.test_release_preflight_fails_reachable_remote_tag_conflict"
-          },
-          {
-            "path": "tests/engineering/release/release_preflight_tests.py",
-            "symbol": "ReleasePreflightTests.test_release_preflight_reports_unreachable_remote_tag_state"
-          }
-        ],
-        "gaps": []
+        "state": "proposed",
+        "tests": [],
+        "gaps": [
+          "Automated realization removed under the maintainer-selected minimal suite. This scenario is not claimed covered by the retained suite; see design/support/validation.md."
+        ]
       },
       "method": "automated-test",
       "boundary": "contract"

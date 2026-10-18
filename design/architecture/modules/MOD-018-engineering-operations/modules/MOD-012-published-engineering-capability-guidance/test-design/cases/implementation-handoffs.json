@@ -17,10 +17,7 @@
       "initial_state": [
         "Use the independent nine-name CI_ASSEMBLIES fixture and an otherwise valid current CI body. Change only the Assemblies declaration."
       ],
-      "builder": {
-        "path": "tests/skill/skill_contract_tests.py",
-        "symbol": "ci_assembly_input"
-      }
+      "limitation": "Fixture implementation retired with the explicitly reduced regression suite; initial_state remains scenario intent, not executed proof."
     },
     {
       "id": "review-package",
@@ -63,26 +60,11 @@
         "The complete table passes; the mixed case returns exactly unknown CI assembly: CIM9-unknown; isolated missing and duplicate cases identify their exact assembly. This does not prove semantic assembly selection."
       ],
       "realization": {
-        "state": "existing",
-        "tests": [
-          {
-            "path": "tests/skill/skill_contract_tests.py",
-            "symbol": "CiAssemblyDeclarationTests.test_valid_complete_declaration"
-          },
-          {
-            "path": "tests/skill/skill_contract_tests.py",
-            "symbol": "CiAssemblyDeclarationTests.test_unknown_rejected_before_missing_and_duplicate_checks"
-          },
-          {
-            "path": "tests/skill/skill_contract_tests.py",
-            "symbol": "CiAssemblyDeclarationTests.test_missing_known_assembly_rejected"
-          },
-          {
-            "path": "tests/skill/skill_contract_tests.py",
-            "symbol": "CiAssemblyDeclarationTests.test_duplicate_assembly_rejected"
-          }
-        ],
-        "gaps": []
+        "state": "proposed",
+        "tests": [],
+        "gaps": [
+          "Automated realization removed under the maintainer-selected minimal suite. This scenario is not claimed covered by the retained suite; see design/support/validation.md."
+        ]
       }
     },
     {

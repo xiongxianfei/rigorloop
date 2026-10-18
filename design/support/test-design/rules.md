@@ -4,6 +4,8 @@ Owner: [System](../../architecture/composition.md#living-test-design-composition
 
 ## Start from supported outcomes
 
+For this repository, the maintainer selected the [minimal essential suite](../validation.md). Reduced regression breadth is explicit: removed automation is a coverage gap unless retained assertions actually replace it. The earlier complete-model adoption and per-case worker requirements do not require retaining a parallel legacy suite. Meaningful negative observations, state safety, independent review and distinct Verify remain required.
+
 State the model's current responsibility, supported population and important outcomes before examining the existing suite. Identify plausible defects and their impact, then select sufficient observations. If a supporting capability needs a large catalog, first reassess its responsibilities, overlap and operational complexity. A large suite is evidence to inspect, not the required size of its Design.
 
 Keep temporary migration acceptance and implementation deferrals in their owning change or plan. Shared maintenance policy stays with System; Assessment owns judgments and evidence applicability. Release frequency, helper count and document length alone do not decide necessary protection; authority, irreversible writes and recovery can justify strong proof even for an infrequent operation.

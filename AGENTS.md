@@ -36,8 +36,7 @@ Follow [CONTRIBUTING.md](CONTRIBUTING.md#validation-scope), the owning plan and 
 Reuse existing commands; start with the smallest relevant checks and complete the required scope before claiming readiness.
 
 ```bash
-bash scripts/ci.sh --mode local
-bash scripts/ci.sh --mode explicit --path PATH
+bash scripts/ci.sh
 ```
 
 For packaging or release work, follow the owning [Packaging](design/architecture/modules/MOD-019-product-delivery/modules/MOD-013-product-package-production/packaging.md) and [Release](design/architecture/modules/MOD-019-product-delivery/modules/MOD-015-product-release-coordination/release.md) checks, including tracked release notes and actual candidate evidence.

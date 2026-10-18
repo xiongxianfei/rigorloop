@@ -321,13 +321,13 @@ Engineering definitions remain Git-held model sources. Historical filesystem rec
 
 ## Validation Commands
 
-Run the repository-owned selector and required checks for your change:
+Run the complete essential suite:
 
 ```bash
-bash scripts/ci.sh --mode local
+bash scripts/ci.sh
 ```
 
-[Contributing](CONTRIBUTING.md#validation-scope) explains scoped and PR-range checks. Packaging changes also use `python scripts/build-adapters.py --check`; release qualification follows the actual prepared-candidate procedure in [Release](design/architecture/modules/MOD-019-product-delivery/modules/MOD-015-product-release-coordination/release.md).
+[Contributing](CONTRIBUTING.md#validation-scope) explains the selected coverage and when additional focused proof is needed. Packaging changes also use `python scripts/build-adapters.py --check`; release qualification follows the actual prepared-candidate procedure in [Release](design/architecture/modules/MOD-019-product-delivery/modules/MOD-015-product-release-coordination/release.md).
 
 ## Repository Layout
 

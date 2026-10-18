@@ -148,7 +148,7 @@ def verify_prepared_release(version: str, output: Path) -> int:
     facts = json.loads((output / 'preparation.json').read_text())
     checks = []
     commands = [
-        ['python', 'scripts/validate-skills.py'],
+        ['python', 'tests/engineering/release/test-release-transaction.py'],
         ['python', 'tests/skill/test-skill-validator.py'],
         ['python', 'tests/engineering/packaging/test-adapter-distribution.py'],
         ['python', 'tests/engineering/packaging/test-npm-package-publication.py'],
@@ -182,14 +182,6 @@ def build_parser() -> argparse.ArgumentParser:
         help="Release tag matching the explicitly selected source package and profile.",
     )
     parser.add_argument(
-        "--recorded-source-auto",
-        action="store_true",
-        help=(
-            "For repository CI, validate the current prepared candidate and its source "
-            "identities without replaying historical releases."
-        ),
-    )
-    parser.add_argument(
         "--release-output-dir",
         help="Directory containing generated release adapter archives for archive metadata validation.",
     )
@@ -212,19 +204,9 @@ def main(argv: list[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
     if args.prepared_candidate:
-        if len(args.version) != 1 or args.recorded_source_auto or args.release_output_dir or args.release_commit or args.npm_tarball_root:
+        if len(args.version) != 1 or args.release_output_dir or args.release_commit or args.npm_tarball_root:
             parser.error("prepared-candidate requires one version and no historical-mode options")
         return verify_prepared_release(args.version[0], Path(args.prepared_candidate).resolve())
-    if args.recorded_source_auto and (
-        args.release_output_dir
-        or args.release_commit
-        or args.npm_tarball_root
-    ):
-        parser.error(
-            "--recorded-source-auto cannot be combined with "
-            "release-output, release-commit, or npm-tarball options"
-        )
-
     root = Path.cwd()
     for version in args.version:
         errors = current_source_errors(version, root, args.release_commit)
@@ -232,27 +214,12 @@ def main(argv: list[str] | None = None) -> int:
             for error in errors:
                 print(f"{GATE_NAME}: {error}", file=sys.stderr)
             return 1
-        context = (os.environ.get('RIGORLOOP_CI_CANDIDATE')
-                   if os.environ.get('RIGORLOOP_CI_WORKSPACE') == str(root) else None)
-        if context and args.recorded_source_auto:
-            from lib.release.release_candidate import ci_subject
-            output = Path(context)
-            try:
-                ci_subject(output, root)
-                errors = validate_prepared_release(version, root, output)
-            except (OSError, ValueError, KeyError, TypeError):
-                errors = ['current-source: missing or mismatched prepared candidate identity']
-            if errors:
-                for error in errors:
-                    print(f"{GATE_NAME}: {error}", file=sys.stderr)
-                return 1
-            print(f"{GATE_NAME}: current prepared candidate and verification receipt agree for {version}")
-        elif args.release_output_dir and not args.npm_tarball_root:
+        if args.release_output_dir and not args.npm_tarball_root:
             status = verify_prepared_release(version, Path(args.release_output_dir).resolve())
             if status:
                 return status
         else:
-            print(f"{GATE_NAME}: current-source: current qualification requires an explicit prepared output or CI candidate; historical replay is unsupported", file=sys.stderr)
+            print(f"{GATE_NAME}: current-source: current qualification requires an explicit prepared output; historical replay is unsupported", file=sys.stderr)
             return 1
 
     return 0

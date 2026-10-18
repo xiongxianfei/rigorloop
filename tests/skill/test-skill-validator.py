@@ -1,27 +1,34 @@
-"""Supported aggregate for all Skill validation and guidance tests.
-
-Behavior groups remain individually addressable through this script.
-"""
+#!/usr/bin/env python3
+"""Canonical skill integrity and a meaningful missing-resource counterexample."""
+import shutil
+import subprocess
+import sys
+import tempfile
 import unittest
+from pathlib import Path
+ROOT = Path(__file__).resolve().parents[2]
 
-from skill_metadata_tests import SkillMetadataTests
-from skill_resource_tests import SkillResourceMapTests
-from skill_asset_tests import SkillAssetContractTests
-from skill_ci_contract_tests import CiMaintenanceInputTests
-from skill_canonical_tests import CanonicalSkillGuidanceTests
-from skill_portability_tests import SkillPortabilityTests
-from skill_project_map_tests import ProjectMapInputTests
-from skill_guidance_tests import SkillGuidanceTests
-from skill_contract_tests import CiAssemblyDeclarationTests, WorkflowRoleStageTests
-from skill_cli_tests import SkillCliTests
-from skill_vision_guidance_tests import VisionSkillProgressiveDisclosureTests
-from skill_learn_guidance_tests import LearnSkillSimplificationTests
-from skill_project_map_guidance_tests import ProjectMapSkillSimplificationTests
-from skill_ci_guidance_tests import CiMaintenanceSkillSimplificationTests
-from skill_bugfix_guidance_tests import BugfixSkillSimplificationTests
-from skill_shared_policy_tests import RequirementDeliveryModelM3Tests, ReviewCloseoutResourceTests, TestPolicyResourceTests
-from skill_discovery_guidance_tests import OptionalDiscoverySkillContractTests
+def validate(path):
+    return subprocess.run([sys.executable, str(ROOT / 'scripts/validate-skills.py'), str(path)], cwd=ROOT, text=True, capture_output=True)
 
+class SkillIntegrityTests(unittest.TestCase):
+    def test_canonical_skills_and_resources(self):
+        result = validate(ROOT / 'skills')
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertTrue((ROOT / 'skills/route/SKILL.md').is_file())
+        self.assertTrue((ROOT / 'skills/verify/SKILL.md').is_file())
 
-if __name__ == "__main__":
-    unittest.main(verbosity=2)
+    def test_missing_declared_resource_is_rejected(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            skill = Path(temporary) / 'route'
+            shutil.copytree(ROOT / 'skills/route', skill)
+            control = validate(skill)
+            self.assertEqual(control.returncode, 0, control.stdout + control.stderr)
+            resource = skill / 'references/operational-recording.md'
+            resource.unlink()
+            result = validate(skill)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn('operational-recording.md', result.stderr)
+            self.assertFalse(resource.exists())
+if __name__ == '__main__':
+    unittest.main()
